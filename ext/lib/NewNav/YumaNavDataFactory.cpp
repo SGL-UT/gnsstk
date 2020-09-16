@@ -185,6 +185,9 @@ namespace gpstk
       gps = dynamic_cast<GPSLNavHealth*>(healthOut.get());
          // NavData
       fillNavData(navIn, healthOut);
+         // manipulate a time stamp to mirror convertToOrbit
+      gps->timeStamp = GPSWeekSecond(navIn.week, navIn.Toa);
+      gps->timeStamp -= (70 * 3600.0);
          // GPSLNavHealth
       gps->svHealth = navIn.SV_health;
       return rv;

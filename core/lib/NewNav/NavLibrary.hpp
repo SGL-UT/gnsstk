@@ -128,6 +128,12 @@ namespace gpstk
           */
       void addFactory(NavDataFactoryPtr& fact);
 
+         /** Print the contents of all factories in a human-readable
+          * format.
+          * @param[in,out] s The stream to write the data to.
+          * @param[in] dl The level of detail the output should contain. */
+      void dump(std::ostream& s, NavData::Detail dl) const;
+
    protected:
          /** Known nav data factories, organized by signal to make
           * searches simpler and/or quicker. */

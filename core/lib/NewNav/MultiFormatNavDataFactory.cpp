@@ -280,4 +280,22 @@ namespace gpstk
          // none of the existing factories were able to load the data
       return false;
    }
+
+
+   void MultiFormatNavDataFactory ::
+   dump(std::ostream& s, NavData::Detail dl) const
+   {
+         // factories can have multiple copies of a given factory, so
+         // keep track of which ones we've checked already.
+      std::set<NavDataFactory*> ptrs;
+      for (auto& fi : factories)
+      {
+         NavDataFactory *ptr = fi.second.get();
+         if (ptrs.count(ptr) == 0)
+         {
+            ptrs.insert(ptr);
+            ptr->dump(s,dl);
+         }
+      }
+   }
 }

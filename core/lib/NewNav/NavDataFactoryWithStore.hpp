@@ -73,7 +73,7 @@ namespace gpstk
           * format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-       void dump(std::ostream& s, NavData::Detail dl) const;
+       void dump(std::ostream& s, NavData::Detail dl) const override;
    protected:
          /** Add a nav message to an arbitrary NavMessageMap.
           * @param[in,out] nmm The map to add the nav data to.

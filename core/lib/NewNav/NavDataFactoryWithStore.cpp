@@ -9,6 +9,7 @@ namespace gpstk
         NavDataPtr& navData, NavValidityType valid,
         NavSearchOrder order)
    {
+      // std::cerr << __PRETTY_FUNCTION__ << std::endl;
          // dig through the maps of maps, matching keys with nmid along the way
       if (data.find(nmid.messageType) == data.end())
       {
@@ -38,6 +39,13 @@ namespace gpstk
             // (i.e. when the entire message will have been received).
          // std::cerr << " when=" << printTime(when,"%Y/%03j/%02H:%02M:%02S")
          //           << std::endl;
+            // If ti2 starts at the end of the map, that doesn't mean
+            // we've failed.  We should still try and back up at least
+            // once.
+         if (ti2 == nm.end())
+         {
+            ti2 = std::prev(ti2);
+         }
          while (((ti2 != nm.end()) && (ti2->second->getUserTime() > when)) ||
                 !validityCheck(ti2, nm, valid))
          {

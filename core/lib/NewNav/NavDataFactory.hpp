@@ -64,6 +64,13 @@ namespace gpstk
           * @return true If the factory was able to process the data in source. */
       virtual bool addDataSource(const std::string& source) = 0;
 
+         /** Print the contents of this factory in a human-readable
+          * format.
+          * @param[in,out] s The stream to write the data to.
+          * @param[in] dl The level of detail the output should contain. */
+      virtual void dump(std::ostream& s, NavData::Detail dl) const
+      {}
+
          /** Define which signals this factory supports.  This will be
           * empty by default, which means that NavLibrary would not
           * use this factory, so it is up to the derived classes to

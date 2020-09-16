@@ -74,6 +74,9 @@ namespace gpstk
         NavSearchOrder order)
    {
          // search factories until we find what we want.
+         /** @bug I'm worried this might not work as expected in the
+          * context of factories that produce multiple signals and
+          * wildcards are used. */
       auto range = factories.equal_range(nmid);
       for (auto fi = range.first; fi != range.second; ++fi)
       {
@@ -112,6 +115,24 @@ namespace gpstk
       for (const auto& si : fact->supportedSignals)
       {
          factories.insert(NavDataFactoryMap::value_type(si,fact));
+      }
+   }
+
+
+   void NavLibrary ::
+   dump(std::ostream& s, NavData::Detail dl) const
+   {
+         // factories can have multiple copies of a given factory, so
+         // keep track of which ones we've checked already.
+      std::set<NavDataFactory*> ptrs;
+      for (auto& fi : factories)
+      {
+         NavDataFactory *ptr = fi.second.get();
+         if (ptrs.count(ptr) == 0)
+         {
+            ptrs.insert(ptr);
+            ptr->dump(s,dl);
+         }
       }
    }
 }
