@@ -1,0 +1,11 @@
+add_executable(YumaNavDataFactory_T YumaNavDataFactory_T.cpp)
+target_link_libraries(YumaNavDataFactory_T gpstk)
+add_test(YumaNavDataFactory_T YumaNavDataFactory_T)
+
+add_executable(SEMNavDataFactory_T SEMNavDataFactory_T.cpp)
+target_link_libraries(SEMNavDataFactory_T gpstk)
+add_test(SEMNavDataFactory_T SEMNavDataFactory_T)
+
+add_executable(ExtFactoryInitializer_T ExtFactoryInitializer_T.cpp)
+target_link_libraries(ExtFactoryInitializer_T gpstk)
+add_test(ExtFactoryInitializer_T ExtFactoryInitializer_T)

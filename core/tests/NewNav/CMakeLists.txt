@@ -1,0 +1,83 @@
+add_executable(NavDataFactoryWithStore_T NavDataFactoryWithStore_T.cpp)
+target_link_libraries(NavDataFactoryWithStore_T gpstk)
+add_test(NavDataFactoryWithStore_T NavDataFactoryWithStore_T)
+
+add_executable(RinexNavDataFactory_T RinexNavDataFactory_T.cpp)
+target_link_libraries(RinexNavDataFactory_T gpstk)
+add_test(RinexNavDataFactory_T RinexNavDataFactory_T)
+
+add_executable(SP3NavDataFactory_T SP3NavDataFactory_T.cpp)
+target_link_libraries(SP3NavDataFactory_T gpstk)
+add_test(SP3NavDataFactory_T SP3NavDataFactory_T)
+
+add_executable(MultiFormatNavDataFactory_T MultiFormatNavDataFactory_T.cpp)
+target_link_libraries(MultiFormatNavDataFactory_T gpstk)
+add_test(MultiFormatNavDataFactory_T MultiFormatNavDataFactory_T)
+
+add_executable(GPSLNavData_T GPSLNavData_T.cpp)
+target_link_libraries(GPSLNavData_T gpstk)
+add_test(GPSLNavData_T GPSLNavData_T)
+
+add_executable(GPSLNavEph_T GPSLNavEph_T.cpp)
+target_link_libraries(GPSLNavEph_T gpstk)
+add_test(GPSLNavEph_T GPSLNavEph_T)
+
+add_executable(GPSLNavAlm_T GPSLNavAlm_T.cpp)
+target_link_libraries(GPSLNavAlm_T gpstk)
+add_test(GPSLNavAlm_T GPSLNavAlm_T)
+
+add_executable(GPSLNavHealth_T GPSLNavHealth_T.cpp)
+target_link_libraries(GPSLNavHealth_T gpstk)
+add_test(GPSLNavHealth_T GPSLNavHealth_T)
+
+add_executable(GPSLNavTimeOffset_T GPSLNavTimeOffset_T.cpp)
+target_link_libraries(GPSLNavTimeOffset_T gpstk)
+add_test(GPSLNavTimeOffset_T GPSLNavTimeOffset_T)
+
+add_executable(NavDataFactory_T NavDataFactory_T.cpp)
+target_link_libraries(NavDataFactory_T gpstk)
+add_test(NavDataFactory_T NavDataFactory_T)
+
+add_executable(NavHealthData_T NavHealthData_T.cpp)
+target_link_libraries(NavHealthData_T gpstk)
+add_test(NavHealthData_T NavHealthData_T)
+
+add_executable(NavMessageID_T NavMessageID_T.cpp)
+target_link_libraries(NavMessageID_T gpstk)
+add_test(NavMessageID_T NavMessageID_T)
+
+add_executable(NavMessageType_T NavMessageType_T.cpp)
+target_link_libraries(NavMessageType_T gpstk)
+add_test(NavMessageType_T NavMessageType_T)
+
+add_executable(NavValidityType_T NavValidityType_T.cpp)
+target_link_libraries(NavValidityType_T gpstk)
+add_test(NavValidityType_T NavValidityType_T)
+
+add_executable(SVHealth_T SVHealth_T.cpp)
+target_link_libraries(SVHealth_T gpstk)
+add_test(SVHealth_T SVHealth_T)
+
+add_executable(NavLibrary_T NavLibrary_T.cpp)
+target_link_libraries(NavLibrary_T gpstk)
+add_test(NavLibrary_T NavLibrary_T)
+
+add_executable(NavSignalID_T NavSignalID_T.cpp)
+target_link_libraries(NavSignalID_T gpstk)
+add_test(NavSignalID_T NavSignalID_T)
+
+add_executable(OrbitDataKepler_T OrbitDataKepler_T.cpp)
+target_link_libraries(OrbitDataKepler_T gpstk)
+add_test(OrbitDataKepler_T OrbitDataKepler_T)
+
+add_executable(GPSTKFormatInitializer_T GPSTKFormatInitializer_T.cpp)
+target_link_libraries(GPSTKFormatInitializer_T gpstk)
+add_test(GPSTKFormatInitializer_T GPSTKFormatInitializer_T)
+
+add_executable(WildSatID_T WildSatID_T.cpp)
+target_link_libraries(WildSatID_T gpstk)
+add_test(WildSatID_T WildSatID_T)
+
+add_executable(NavSatelliteID_T NavSatelliteID_T.cpp)
+target_link_libraries(NavSatelliteID_T gpstk)
+add_test(NavSatelliteID_T NavSatelliteID_T)

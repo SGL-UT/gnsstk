@@ -1,0 +1,193 @@
+#include "SP3NavDataFactory.hpp"
+#include "SP3Stream.hpp"
+#include "SP3Header.hpp"
+#include "SP3Data.hpp"
+#include "OrbitDataSP3.hpp"
+#include "TimeString.hpp"
+
+using namespace std;
+
+namespace gpstk
+{
+   SP3NavDataFactory ::
+   SP3NavDataFactory()
+   {
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L1,
+                                          TrackingCode::CA,
+                                          NavType::GPSLNAV));
+   }
+
+
+   bool SP3NavDataFactory ::
+   find(const NavMessageID& nmid, const CommonTime& when,
+        NavDataPtr& navData, NavValidityType valid,
+        NavSearchOrder order)
+   {
+      return false;
+   }
+
+
+   bool SP3NavDataFactory ::
+   loadIntoMap(const std::string& filename, NavMessageMap& navMap)
+   {
+      bool rv = true;
+      bool processEph = (procNavTypes.count(NavMessageType::Ephemeris) > 0);
+         // When either of these two change, we store the existing
+         // NavDataPtr and create a new one.
+      CommonTime lastTime;
+      SatID lastSat;
+      NavDataPtr eph;
+      try
+      {
+         SP3Stream is(filename.c_str(), ios::in);
+         SP3Header head;
+         SP3Data data;
+         if (!is)
+            return false;
+         is >> head;
+         if (!is)
+            return false;
+         while (is)
+         {
+            is >> data;
+            if (!is)
+            {
+               if (is.eof())
+                  break;
+               else
+                  return false; // some other error
+            }
+            if ((lastSat != data.sat) || (lastTime != data.time))
+            {
+               lastSat = data.sat;
+               lastTime = data.time;
+               if (!store(processEph, eph))
+                  return false;
+            }
+               // Don't process time records otherwise we'll end up
+               // storing junk in the store that has a time stamp and
+               // a bogus satellite ID.
+            if (processEph && (data.RecType != '*'))
+            {
+               if (!convertToOrbit(data, eph))
+                  return false;
+            }
+         }
+            // store the final record(s)
+         if (!store(processEph, eph))
+            return false;
+      }
+      catch (gpstk::Exception& exc)
+      {
+         rv = false;
+         cerr << exc << endl;
+      }
+      catch (std::exception& exc)
+      {
+         rv = false;
+         cerr << exc.what() << endl;
+      }
+      catch (...)
+      {
+         rv = false;
+         cerr << "Unknown exception" << endl;
+      }
+      return rv;
+   }
+
+
+   bool SP3NavDataFactory ::
+   convertToOrbit(const SP3Data& navIn, NavDataPtr& navOut)
+   {
+      bool rv = true;
+      OrbitDataSP3 *gps;
+         // SP3 needs to merge multiple records, position and
+         // velocity, so we only create new objects as needed.
+      if (!navOut)
+      {
+         navOut = std::make_shared<OrbitDataSP3>();
+      }
+      gps = dynamic_cast<OrbitDataSP3*>(navOut.get());
+      switch (navIn.RecType)
+      {
+         case 'P':
+            gps->timeStamp = navIn.time;
+               // SP3Data says x is in m for position, but it's really
+               // in km, so we scale it to m
+            gps->pos[0] = 1000.0 * navIn.x[0];
+            gps->pos[1] = 1000.0 * navIn.x[1];
+            gps->pos[2] = 1000.0 * navIn.x[2];
+            gps->signal.sat = navIn.sat;
+            gps->signal.xmitSat = navIn.sat;
+            gps->signal.system = navIn.sat.system;
+               // we can't obtain these from RINEX NAV, so just assume L1 C/A
+            navOut->signal.carrier = CarrierBand::L1;
+            navOut->signal.code = TrackingCode::CA;
+               /// @todo determine what should really be here for SP3 data.
+            navOut->signal.nav = NavType::GPSLNAV;
+            gps->clkBias = navIn.clk;
+            break;
+         case 'V':
+            gps->timeStamp = navIn.time;
+               // SP3Data says x is in dm/s for velocity so we scale it to m/s
+            gps->vel[0] = 10.0 * navIn.x[0];
+            gps->vel[1] = 10.0 * navIn.x[1];
+            gps->vel[2] = 10.0 * navIn.x[2];
+            gps->clkDrift = navIn.clk;
+            break;
+      }
+      return rv;
+   }
+
+
+   bool SP3NavDataFactory ::
+   store(bool processEph, NavDataPtr& eph)
+   {
+         // only process if we have something to process.
+      if (eph)
+      {
+            // check the validity
+         bool check = false;
+         bool expect = false;
+         switch (navValidity)
+         {
+            case NavValidityType::ValidOnly:
+               check = true;
+               expect = true;
+               break;
+            case NavValidityType::InvalidOnly:
+               check = true;
+               expect = false;
+               break;
+                  // Just treat everything else like All, which is to
+                  // say, no checks.
+            default:
+               break;
+         }
+         if (check)
+         {
+            if (processEph)
+            {
+               if (eph->validate() == expect)
+               {
+                  if (!addNavData(eph))
+                     return false;
+               }
+            }
+         }
+         else
+         {
+            if (processEph)
+            {
+               if (!addNavData(eph))
+                  return false;
+            }
+         }
+            // Clear the shared_ptr so the next time
+            // convertToOrbit is called, it creates a new one.
+         eph.reset();
+      }
+      return true;
+   }
+} // namespace gpstk
