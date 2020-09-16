@@ -68,6 +68,8 @@ namespace gpstk
        *   - M     integer minute-of-hour
        *   - S     integer second-of-minute
        *   - f     float second-of-minute
+       *   - a     abbreviated weekday name (locale ignored)
+       *   - A     full weekday name (locale ignored)
        *
        * - Week (GPS/BDS/GAL/QZS):
        *   - E     integer GPS Epoch

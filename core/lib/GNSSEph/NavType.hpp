@@ -55,6 +55,8 @@ namespace gpstk
       /// Supported navigation types
    enum class NavType
    {
+      Unknown,   ///< Uninitialized value
+      Any,       ///< Used to match any nav code
       GPSLNAV,
       GPSCNAVL2,
       GPSCNAVL5,
@@ -67,7 +69,6 @@ namespace gpstk
       GalFNAV,
       GalINAV,
       IRNSS_SPS,
-      Unknown,   ///< Uninitialized value
       Last,      ///< Used to verify that all items are described at compile time
    }; // enum class NavType
 

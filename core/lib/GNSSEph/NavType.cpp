@@ -51,6 +51,8 @@ namespace gpstk
       {
          switch (e)
          {
+            case NavType::Unknown:   return "Unknown";
+            case NavType::Any:       return "Any";
             case NavType::GPSLNAV:   return "GPS_LNAV";
             case NavType::GPSCNAVL2: return "GPS_CNAV_L2";
             case NavType::GPSCNAVL5: return "GPS_CNAV_L5";
@@ -63,7 +65,6 @@ namespace gpstk
             case NavType::GalFNAV:   return "GalFNAV";
             case NavType::GalINAV:   return "GalINAV";
             case NavType::IRNSS_SPS: return "IRNSS_SPS";
-            case NavType::Unknown:   return "Unknown";
             default:                 return "???";
          } // switch (e)
       } // asString(NavType)
@@ -71,6 +72,10 @@ namespace gpstk
 
       NavType asNavType(const std::string& s) throw()
       {
+         if (s == "Unknown")
+            return NavType::Unknown;
+         if (s == "Any")
+            return NavType::Any;
          if (s == "GPS_LNAV")
             return NavType::GPSLNAV;
          if (s == "GPS_CNAV_L2")
@@ -95,8 +100,6 @@ namespace gpstk
             return NavType::GalINAV;
          if (s == "IRNSS_SPS")
             return NavType::IRNSS_SPS;
-         if (s == "Unknown")
-            return NavType::Unknown;
          return NavType::Unknown;
       } // asNavType(string)
    } // namespace StringUtils

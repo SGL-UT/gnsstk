@@ -116,6 +116,7 @@ if (TEST_SWITCH)
     add_subdirectory( RefTime )
     add_subdirectory( CommandLine )
     add_subdirectory( NavFilter )
+    add_subdirectory( NewNav )
     add_subdirectory( ORD )
 
     # application testing
