@@ -287,7 +287,5 @@ namespace gpstk
 
       navOut.Toc = GPSWeekSecond(epochWeek, navIn.Toc, TimeSystem::GPS);
       navOut.Toe = GPSWeekSecond(epochWeek, navIn.Toe, TimeSystem::GPS);
-//      navOut.beginFit = computeBeginValid(satID, navOut.xmitTime, navOut.Toe);
-//      navOut.endFit = computeEndValid(navOut.Toe,fitDuration);
    }
 }

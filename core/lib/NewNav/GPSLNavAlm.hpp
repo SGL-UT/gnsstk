@@ -28,8 +28,7 @@ namespace gpstk
           */
       CommonTime getUserTime() const override;
 
-         /** Fill the beginFit and endFit values for this object.
-          * @todo Implement GPSLNavAlm::fixFit */
+         /// Fill the beginFit and endFit values for this object.
       void fixFit();
 
       uint8_t healthBits; ///< 8 SV health bits.

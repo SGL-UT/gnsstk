@@ -136,12 +136,7 @@ namespace gpstk
          // using af0 and af1, is the same as Toa in the almanac
          // context.
       gps->Toc = gps->Toe;
-         // There is no transmit time in the Yuma alamanc
-         // format.  Therefore, beginFit and endFit are
-         // estimated.  The estimate is based on IS-GPS-200
-         // Table 20-XIII.
-      gps->beginFit = gps->Toe - (70 * 3600.0);
-      gps->endFit = gps->beginFit + (144 * 3600.0);
+      gps->fixFit();
          // Transmit time is set to beginFit so that User-type
          // searches will work.  YumaData has a xmit_time field
          // but it's always set to 0.  Not sure why it's even
