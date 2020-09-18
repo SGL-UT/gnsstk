@@ -17,11 +17,9 @@ namespace gpstk
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
-          * @todo implement some checking.
           * @return true if this message is valid according to ICD criteria.
           */
-      bool validate() const override
-      { return true; }
+      bool validate() const override;
 
          /** Returns the time when the navigation message would have
           * first been available to the user equipment, i.e. the time
@@ -47,13 +45,19 @@ namespace gpstk
                      const CommonTime& when, double& offset)
          override;
 
-         // these terms are defined in IS-GPS-200, 20.3.3.5.2.4
+         // these terms are defined in IS-GPS-200, 203.3.3.5.1.7 & 20.3.3.5.2.4
 
-      double deltatLS; ///< &Delta;t<sub>LS</sub> term
-      double a0;       ///< A<sub>0</sub> term
-      double a1;       ///< A<sub>1</sub> term
-      double tot;      ///< t<sub>ot</sub> term
-      unsigned wnt;    ///< UTC reference week
+      double deltatLS;  ///< &Delta;t<sub>LS</sub> term
+      double a0;        ///< A<sub>0</sub> term
+      double a1;        ///< A<sub>1</sub> term
+      double tot;       ///< t<sub>ot</sub> term
+      unsigned wnt;     ///< UTC reference week
+         // These terms are not used in computing an offset, they're
+         // more of a warning of an upcoming change in the offset.  We
+         // keep them here for user convenience.
+      unsigned wnLSF;   ///< Week number for future scheduled increment.
+      unsigned dn;      ///< Day number for future leap second.
+      double deltatLSF; ///< Scheduled future time increment due to leap sec.
    };
 }
 
