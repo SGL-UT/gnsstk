@@ -118,32 +118,28 @@ addNavDataTest()
    gpstk::NavMessageMap &nmm(fact.getData());
    for (auto& nmmi : nmm)
    {
-      gpstk::NavSignalMap &nsm(nmmi.second);
-      for (auto& nsmi : nsm)
+      for (auto& nsatmi : nmmi.second)
       {
          TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
-                   nsmi.first.system);
+                   nsatmi.first.system);
          TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1,
-                   nsmi.first.carrier);
+                   nsatmi.first.carrier);
          TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA,
-                   nsmi.first.code);
-         TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, nsmi.first.nav);
-         for (auto& nsatmi : nsmi.second)
+                   nsatmi.first.code);
+         TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, nsatmi.first.nav);
+         TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
+                   nsatmi.first.system);
+         TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1,
+                   nsatmi.first.carrier);
+         TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA,
+                   nsatmi.first.code);
+         TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV,
+                   nsatmi.first.nav);
+         TUASSERTE(gpstk::WildSatID, subjID, nsatmi.first.sat);
+         TUASSERTE(gpstk::WildSatID, xmitID, nsatmi.first.xmitSat);
+         for (auto& nmi : nsatmi.second)
          {
-            TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
-                      nsatmi.first.system);
-            TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1,
-                      nsatmi.first.carrier);
-            TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA,
-                      nsatmi.first.code);
-            TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV,
-                      nsatmi.first.nav);
-            TUASSERTE(gpstk::WildSatID, subjID, nsatmi.first.sat);
-            TUASSERTE(gpstk::WildSatID, xmitID, nsatmi.first.xmitSat);
-            for (auto& nmi : nsatmi.second)
-            {
-               TUASSERTE(gpstk::CommonTime, ct, nmi.first);
-            }
+            TUASSERTE(gpstk::CommonTime, ct, nmi.first);
          }
       }
    }
@@ -435,13 +431,9 @@ checkForEmpty(gpstk::TestUtil& testFramework, TestClass& fact)
    for (auto& nmmi : data)
    {
       TUASSERT(!nmmi.second.empty());
-      for (auto& sigi : nmmi.second)
+      for (auto& sati : nmmi.second)
       {
-         TUASSERT(!sigi.second.empty());
-         for (auto& sati : sigi.second)
-         {
-            TUASSERT(!sati.second.empty());
-         }
+         TUASSERT(!sati.second.empty());
       }
    }
 }

@@ -52,10 +52,8 @@ namespace gpstk
    using NavMap = std::map<CommonTime, NavDataPtr>;
       /// Map satellite to nav data.
    using NavSatMap = std::map<NavSatelliteID, NavMap>;
-      /// Map signal to satellite navigation data.
-   using NavSignalMap = std::map<NavSignalID, NavSatMap>;
       /// Map nav message type to the rest of the storage.
-   using NavMessageMap = std::map<NavMessageType, NavSignalMap>;
+   using NavMessageMap = std::map<NavMessageType, NavSatMap>;
 }
 
 #endif // GPSTK_NAVDATA_HPP

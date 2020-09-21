@@ -11,74 +11,72 @@ namespace gpstk
    {
       // std::cerr << __PRETTY_FUNCTION__ << std::endl;
          // dig through the maps of maps, matching keys with nmid along the way
-      if (data.find(nmid.messageType) == data.end())
+      auto dataIt = data.find(nmid.messageType);
+      if (dataIt == data.end())
       {
          // std::cerr << " false = not found 1" << std::endl;
          return false; // not found.
       }
-      NavSignalMap &nsigm(data[nmid.messageType]);
-      if (nsigm.find(nmid) == nsigm.end())
+         // To support wildcard signals, we need to do a linear search.
+      for (auto& sati : dataIt->second)
       {
-         // std::cerr << " false = not found 2" << std::endl;
-         return false; // not found.
-      }
-      NavSatMap &nsm(nsigm[nmid]);
-      if (nsm.find(nmid) == nsm.end())
-      {
-         // std::cerr << " false = not found 3" << std::endl;
-         return false; // not found.
-      }
-      NavMap &nm(nsm[nmid]);
-         // This is not the entry we want, but it is instead the first
-         // entry we probably (depending on order) *don't* want.
-      auto ti2 = nm.lower_bound(when);
-      if (order == NavSearchOrder::User)
-      {
-            // The map goes by transmit time so we do what should be a
-            // quick linear search to find the best by user time
-            // (i.e. when the entire message will have been received).
-         // std::cerr << " when=" << printTime(when,"%Y/%03j/%02H:%02M:%02S")
-         //           << std::endl;
-            // If ti2 starts at the end of the map, that doesn't mean
-            // we've failed.  We should still try and back up at least
-            // once.
-         if (ti2 == nm.end())
+         if (sati.first != nmid)
+            continue; // skip non matches
+            // This is not the entry we want, but it is instead the first
+            // entry we probably (depending on order) *don't* want.
+         auto ti2 = sati.second.lower_bound(when);
+         if (order == NavSearchOrder::User)
          {
-            ti2 = std::prev(ti2);
+               // The map goes by transmit time so we do what should be a
+               // quick linear search to find the best by user time
+               // (i.e. when the entire message will have been received).
+               // std::cerr << " when="
+               //           << printTime(when,"%Y/%03j/%02H:%02M:%02S")
+               //           << std::endl;
+               // If ti2 starts at the end of the map, that doesn't mean
+               // we've failed.  We should still try and back up at least
+               // once.
+            if (ti2 == sati.second.end())
+            {
+               ti2 = std::prev(ti2);
+            }
+            while (((ti2 != sati.second.end()) &&
+                    (ti2->second->getUserTime() > when)) ||
+                   !validityCheck(ti2, sati.second, valid))
+            {
+                  // if (ti2 == sati.second.begin())
+                  // {
+                  //    std::cerr << "already at the beginning" << std::endl;
+                  // }
+                  // std::cerr << "  ti2->second->getUserTime()="
+                  //           << printTime(ti2->second->getUserTime(),
+                  //                        "%Y/%03j/%02H:%02M:%02S")
+                  //           << std::endl;
+                  // don't use operator--, it won't give the right results
+               ti2 = std::prev(ti2);
+                  // if (ti2 == sati.second.end())
+                  // {
+                  //    std::cerr << "reached the end" << std::endl;
+                  // }
+            }
+            if (ti2 == sati.second.end())
+            {
+                  // no good
+                  // std::cerr << " false = not good 4" << std::endl;
+               return false;
+            }
+               // std::cerr << "  ti2->second->getUserTime()="
+               //           << printTime(ti2->second->getUserTime(),
+               //                        "%Y/%03j/%02H:%02M:%02S")
+               //           << std::endl;
+               // ti2->second->dump(std::cerr,NavData::Detail::Full);
+               // good.
+            navData = ti2->second;
+            return true;
          }
-         while (((ti2 != nm.end()) && (ti2->second->getUserTime() > when)) ||
-                !validityCheck(ti2, nm, valid))
+         else if (order == NavSearchOrder::Nearest)
          {
-            // if (ti2 == nm.begin())
-            // {
-            //    std::cerr << "already at the beginning" << std::endl;
-            // }
-            // std::cerr << "  ti2->second->getUserTime()="
-            //           << printTime(ti2->second->getUserTime(),
-            //                        "%Y/%03j/%02H:%02M:%02S") << std::endl;
-               // don't use operator--, it won't give the right results
-            ti2 = std::prev(ti2);
-            // if (ti2 == nm.end())
-            // {
-            //    std::cerr << "reached the end" << std::endl;
-            // }
          }
-         if (ti2 == nm.end())
-         {
-               // no good
-            // std::cerr << " false = not good 4" << std::endl;
-            return false;
-         }
-         // std::cerr << "  ti2->second->getUserTime()="
-         //           << printTime(ti2->second->getUserTime(),
-         //                        "%Y/%03j/%02H:%02M:%02S") << std::endl;
-         // ti2->second->dump(std::cerr,NavData::Detail::Full);
-            // good.
-         navData = ti2->second;
-         return true;
-      }
-      else if (order == NavSearchOrder::Nearest)
-      {
       }
       // std::cerr << " false 5" << std::endl;
       return false;
@@ -90,33 +88,21 @@ namespace gpstk
    {
       for (auto mti = data.begin(); mti != data.end();)
       {
-         for (auto sigi = mti->second.begin(); sigi != mti->second.end();)
+         for (auto sati = mti->second.begin(); sati != mti->second.end();)
          {
-            for (auto sati = sigi->second.begin(); sati != sigi->second.end();)
-            {
-               auto ti1 = sati->second.lower_bound(fromTime);
-               auto ti2 = sati->second.lower_bound(toTime);
-               sati->second.erase(ti1,ti2);
-                  // clean out empty maps
-               if (sati->second.empty())
-               {
-                  sati = sigi->second.erase(sati);
-               }
-               else
-               {
-                  ++sati;
-               }
-            }
+            auto ti1 = sati->second.lower_bound(fromTime);
+            auto ti2 = sati->second.lower_bound(toTime);
+            sati->second.erase(ti1,ti2);
                // clean out empty maps
-            if (sigi->second.empty())
+            if (sati->second.empty())
             {
-               sigi = mti->second.erase(sigi);
+               sati = mti->second.erase(sati);
             }
             else
             {
-               ++sigi;
+               ++sati;
             }
-         } // for (auto& sigi : mti->second)
+         }
             // clean out empty maps
          if (mti->second.empty())
          {
@@ -136,27 +122,36 @@ namespace gpstk
    {
       for (auto mti = data.begin(); mti != data.end();)
       {
-         if (mti->second.find(satID) == mti->second.end())
+         for (auto sati = mti->second.begin(); sati != mti->second.end();)
+         {
+            if (sati->first != satID)
+            {
+                  // not a match
+               ++sati;
+               continue;
+            }
+            auto ti1 = sati->second.lower_bound(fromTime);
+            auto ti2 = sati->second.lower_bound(toTime);
+            sati->second.erase(ti1,ti2);
+               // clean out empty maps
+            if (sati->second.empty())
+            {
+               sati = mti->second.erase(sati);
+            }
+            else
+            {
+               ++sati;
+            }
+         }
+            // clean out empty maps
+         if (mti->second.empty())
+         {
+            mti = data.erase(mti);
+         }
+         else
          {
             ++mti;
-            continue;
          }
-         NavSatMap &nsm(mti->second[satID]);
-         if (nsm.find(satID) == nsm.end())
-            return; // nothing to do
-         NavMap &nm(nsm[satID]);
-         auto ti1 = nm.lower_bound(fromTime);
-         auto ti2 = nm.lower_bound(toTime);
-         nm.erase(ti1,ti2);
-            // clean out empty maps
-         if (nm.empty())
-            nsm.erase(satID);
-         if (nsm.empty())
-            mti->second.erase(satID);
-         if (mti->second.empty())
-            mti = data.erase(mti);
-         else
-            ++mti;
       }
    }
 
@@ -165,34 +160,8 @@ namespace gpstk
    edit(const CommonTime& fromTime, const CommonTime& toTime,
         const NavSignalID& signal)
    {
-      for (auto mti = data.begin(); mti != data.end();)
-      {
-         if (mti->second.find(signal) == mti->second.end())
-         {
-            ++mti;
-            continue;
-         }
-         NavSatMap &nsm(mti->second[signal]);
-
-         for (auto sati = nsm.begin(); sati != nsm.end();)
-         {
-            auto ti1 = sati->second.lower_bound(fromTime);
-            auto ti2 = sati->second.lower_bound(toTime);
-            sati->second.erase(ti1,ti2);
-               // clean out empty maps
-            if (sati->second.empty())
-               sati = nsm.erase(sati);
-            else
-               ++sati;
-         }
-            // clean out empty maps
-         if (nsm.empty())
-            mti->second.erase(signal);
-         if (mti->second.empty())
-            mti = data.erase(mti);
-         else
-            ++mti;
-      }
+      NavSatelliteID satMatch(signal);
+      return edit(fromTime, toTime, satMatch);
    }
 
 
@@ -227,9 +196,7 @@ namespace gpstk
          }
       }
          */
-         // It looks funny because we're relying on inheritance to
-         // implicitly become the proper key class type.
-      nmm[nd->signal.messageType][nd->signal][nd->signal][nd->timeStamp] = nd;
+      nmm[nd->signal.messageType][nd->signal][nd->timeStamp] = nd;
       return true;
    }
 
@@ -240,12 +207,9 @@ namespace gpstk
       size_t rv = 0;
       for (const auto& mti : data)
       {
-         for (const auto& sigIt : mti.second)
+         for (const auto& satIt : mti.second)
          {
-            for (const auto& satIt : sigIt.second)
-            {
-               rv += satIt.second.size();
-            }
+            rv += satIt.second.size();
          }
       }
       return rv;
@@ -258,9 +222,9 @@ namespace gpstk
       std::set<NavSignalID> uniques;
       for (const auto& mti : data)
       {
-         for (const auto& sigIt : mti.second)
+         for (const auto& satIt : mti.second)
          {
-            uniques.insert(sigIt.first);
+            uniques.insert(satIt.first);
          }
       }
       return uniques.size();
@@ -273,12 +237,9 @@ namespace gpstk
       std::set<NavSatelliteID> uniques;
       for (const auto& mti : data)
       {
-         for (const auto& sigIt : mti.second)
+         for (const auto& satIt : mti.second)
          {
-            for (const auto& satIt : sigIt.second)
-            {
-               uniques.insert(satIt.first);
-            }
+            uniques.insert(satIt.first);
          }
       }
       return uniques.size();
@@ -314,31 +275,28 @@ namespace gpstk
    {
       for (const auto& nmmi : data)
       {
-         for (const auto& nsimi : nmmi.second)
+         for (const auto& nsami : nmmi.second)
          {
-            for (const auto& nsami : nsimi.second)
+            s << StringUtils::asString(nmmi.first) << " "
+              << StringUtils::asString(nsami.first) << std::endl;
+            switch (dl)
             {
-               s << StringUtils::asString(nmmi.first) << " "
-                 << StringUtils::asString(nsami.first) << std::endl;
-               switch (dl)
-               {
-                  case NavData::Detail::OneLine:
-                     break;
-                  case NavData::Detail::Brief:
-                     for (const auto& cti : nsami.second)
-                     {
-                        s << "   " << printTime(cti.first,
-                                                "%Y %2m %2d %02H:%02M:%04.1f")
-                          << std::endl;
-                     }
-                     break;
-                  case NavData::Detail::Full:
-                     for (const auto& cti : nsami.second)
-                     {
-                        cti.second->dump(s,dl);
-                     }
-                     break;
-               }
+               case NavData::Detail::OneLine:
+                  break;
+               case NavData::Detail::Brief:
+                  for (const auto& cti : nsami.second)
+                  {
+                     s << "   " << printTime(cti.first,
+                                             "%Y %2m %2d %02H:%02M:%04.1f")
+                       << std::endl;
+                  }
+                  break;
+               case NavData::Detail::Full:
+                  for (const auto& cti : nsami.second)
+                  {
+                     cti.second->dump(s,dl);
+                  }
+                  break;
             }
          }
       }

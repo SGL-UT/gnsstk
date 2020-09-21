@@ -137,14 +137,11 @@ verifyDataType(gpstk::TestUtil& testFramework,
 {
    for (auto& nmti : nmm)
    {
-      for (auto& sigi : nmti.second)
+      for (auto& sati : nmti.second)
       {
-         for (auto& sati : sigi.second)
+         for (auto& ti : sati.second)
          {
-            for (auto& ti : sati.second)
-            {
-               TUASSERT(dynamic_cast<NavClass*>(ti.second.get()) != nullptr);
-            }
+            TUASSERT(dynamic_cast<NavClass*>(ti.second.get()) != nullptr);
          }
       }
    }

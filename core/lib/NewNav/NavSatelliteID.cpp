@@ -9,6 +9,14 @@ namespace gpstk
 
 
    NavSatelliteID ::
+   NavSatelliteID(const NavSignalID& right)
+         : NavSignalID(right)
+   {
+         // default constructor for WildSatID is wildcards for ID and system
+   }
+
+
+   NavSatelliteID ::
    NavSatelliteID(unsigned long subj, unsigned long xmit,
                   SatelliteSystem sys, CarrierBand car, TrackingCode track,
                   NavType nmt)
@@ -36,5 +44,15 @@ namespace gpstk
       if (sat > right.sat) return false;
       if (xmitSat < right.xmitSat) return true;
       return false;
+   }
+
+
+   bool NavSatelliteID ::
+   operator==(const NavSatelliteID& right) const
+   {
+         // Use the order() method so we don't have to compare
+         // everything in the parent class twice.
+      return ((NavSignalID::order(right) == 0) && (sat == right.sat) &&
+              (xmitSat == right.xmitSat));
    }
 }

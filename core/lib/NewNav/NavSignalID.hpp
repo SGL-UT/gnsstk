@@ -31,6 +31,9 @@ namespace gpstk
          /// Equality check (all data members)
       bool operator==(const NavSignalID& right) const
       { return (order(right) == 0); }
+         /// Inequality check (all data members)
+      bool operator!=(const NavSignalID& right) const
+      { return (order(right) != 0); }
 
       SatelliteSystem system; ///< GNSS for this signal.
       CarrierBand carrier;    ///< Carrier frequency for this signal.

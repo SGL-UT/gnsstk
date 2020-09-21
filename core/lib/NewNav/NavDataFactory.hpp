@@ -60,8 +60,10 @@ namespace gpstk
           * depending on the factory implementation.  This method is
           * declared here so that NavDataFactoryPtr objects can be set
           * up without having to do any casting of pointers.
-          * @param[in] source A string describing the source of data for the factory.
-          * @return true If the factory was able to process the data in source. */
+          * @param[in] source A string describing the source of data
+          *   for the factory.
+          * @return true If the factory was able to process the data
+          *   in source. */
       virtual bool addDataSource(const std::string& source) = 0;
 
          /** Print the contents of this factory in a human-readable

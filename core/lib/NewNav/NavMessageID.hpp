@@ -19,6 +19,18 @@ namespace gpstk
       NavMessageID(const NavSatelliteID& sat, NavMessageType nmt)
             : NavSatelliteID(sat), messageType(nmt)
       {}
+         /// Comparison operator, obv.
+      bool operator==(const NavMessageID& right) const
+      {
+         return ((messageType == right.messageType) &&
+                 NavSatelliteID::operator==(right));
+      }
+         /// Implicit != not available
+      bool operator!=(const NavMessageID& right) const
+      {
+         return ((messageType != right.messageType) ||
+                 NavSatelliteID::operator!=(right));
+      }
          /** Indicates whether a nav message is orbital elements,
           * health data or time offset information. */
       NavMessageType messageType;

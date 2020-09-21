@@ -189,12 +189,9 @@ namespace gpstk
          {
             for (const auto& mti : ndfs->data)
             {
-               for (const auto& sigIt : mti.second)
+               for (const auto& satIt : mti.second)
                {
-                  for (const auto& satIt : sigIt.second)
-                  {
-                     uniqueSat.insert(satIt.first);
-                  }
+                  uniqueSat.insert(satIt.first);
                }
             }
          }

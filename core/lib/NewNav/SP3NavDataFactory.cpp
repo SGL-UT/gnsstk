@@ -28,79 +28,74 @@ namespace gpstk
         NavSearchOrder order)
    {
          // dig through the maps of maps, matching keys with nmid along the way
-      if (data.find(nmid.messageType) == data.end())
+      auto dataIt = data.find(nmid.messageType);
+      if (dataIt == data.end())
       {
          std::cerr << " false = not found 1" << std::endl;
          return false; // not found.
       }
-      NavSignalMap &nsigm(data[nmid.messageType]);
-      if (nsigm.find(nmid) == nsigm.end())
+         // To support wildcard signals, we need to do a linear search.
+      for (auto& sati : dataIt->second)
       {
-         std::cerr << " false = not found 2" << std::endl;
-         return false; // not found.
-      }
-      NavSatMap &nsm(nsigm[nmid]);
-      if (nsm.find(nmid) == nsm.end())
-      {
-         std::cerr << " false = not found 3" << std::endl;
-         return false; // not found.
-      }
-      NavMap &nm(nsm[nmid]);
-         // This is not the entry we want, but it is instead the first
-         // entry we probably (depending on order) *don't* want.
-      auto ti2 = nm.lower_bound(when);
-      if (order == NavSearchOrder::User)
-      {
-            // The map goes by transmit time so we do what should be a
-            // quick linear search to find the best by user time
-            // (i.e. when the entire message will have been received).
-            // If ti2 starts at the end of the map, that doesn't mean
-            // we've failed.  We should still try and back up at least
-            // once.
-         if (ti2 == nm.end())
+         if (sati.first != nmid)
+            continue; // skip non matches
+            // This is not the entry we want, but it is instead the first
+            // entry we probably (depending on order) *don't* want.
+         auto ti2 = sati.second.lower_bound(when);
+         if (order == NavSearchOrder::User)
          {
-            ti2 = std::prev(ti2);
-         }
-         std::cerr << " when=" << printTime(when,"%Y/%03j/%02H:%02M:%02S")
-                   << std::endl;
-         while (((ti2 != nm.end()) && (ti2->second->getUserTime() > when)) ||
-                !validityCheck(ti2, nm, valid))
-         {
-            if (ti2 == nm.begin())
+               // The map goes by transmit time so we do what should be a
+               // quick linear search to find the best by user time
+               // (i.e. when the entire message will have been received).
+               // If ti2 starts at the end of the map, that doesn't mean
+               // we've failed.  We should still try and back up at least
+               // once.
+            if (ti2 == sati.second.end())
             {
-               std::cerr << "already at the beginning" << std::endl;
+               ti2 = std::prev(ti2);
+            }
+            std::cerr << " when=" << printTime(when,"%Y/%03j/%02H:%02M:%02S")
+                      << std::endl;
+            while (((ti2 != sati.second.end()) &&
+                    (ti2->second->getUserTime() > when)) ||
+                   !validityCheck(ti2, sati.second, valid))
+            {
+               if (ti2 == sati.second.begin())
+               {
+                  std::cerr << "already at the beginning" << std::endl;
+               }
+               std::cerr << "  ti2->second->getUserTime()="
+                         << printTime(ti2->second->getUserTime(),
+                                      "%Y/%03j/%02H:%02M:%02S") << std::endl;
+                  // don't use operator--, it won't give the right results
+               ti2 = std::prev(ti2);
+               if (ti2 == sati.second.end())
+               {
+                  std::cerr << "reached the end" << std::endl;
+               }
+            }
+            if (ti2 == sati.second.end())
+            {
+                  // no good
+               std::cerr << " false = not good 4" << std::endl;
+               return false;
             }
             std::cerr << "  ti2->second->getUserTime()="
                       << printTime(ti2->second->getUserTime(),
                                    "%Y/%03j/%02H:%02M:%02S") << std::endl;
-               // don't use operator--, it won't give the right results
-            ti2 = std::prev(ti2);
-            if (ti2 == nm.end())
+            if (fabs(when - ti2->second->getUserTime()) > limitDT)
             {
-               std::cerr << "reached the end" << std::endl;
+               std::cerr << " false = not good time 5" << std::endl;
+               return false;
             }
+               // ti2->second->dump(std::cerr,NavData::Detail::Full);
+               // good.
+            navData = ti2->second;
+            return true;
          }
-         if (ti2 == nm.end())
+         else if (order == NavSearchOrder::Nearest)
          {
-               // no good
-            std::cerr << " false = not good 4" << std::endl;
-            return false;
          }
-         std::cerr << "  ti2->second->getUserTime()="
-                   << printTime(ti2->second->getUserTime(),
-                                "%Y/%03j/%02H:%02M:%02S") << std::endl;
-         if (fabs(when - ti2->second->getUserTime()) > limitDT)
-         {
-            std::cerr << " false = not good time 5" << std::endl;
-            return false;
-         }
-         // ti2->second->dump(std::cerr,NavData::Detail::Full);
-            // good.
-         navData = ti2->second;
-         return true;
-      }
-      else if (order == NavSearchOrder::Nearest)
-      {
       }
       std::cerr << " false final" << std::endl;
       return false;

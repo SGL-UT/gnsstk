@@ -17,6 +17,11 @@ namespace gpstk
          /// Sets the IDs to 0.
       NavSatelliteID();
 
+         /** Initialize the parent class data while setting the sat
+          * and xmitSat to wildcard values.
+          * @param[in] sig The signal to initialize from. */
+      NavSatelliteID(const NavSignalID& right);
+
          /** Initialize all data to specific values.
           * @param[in] subj The ID of the satellite that nav data pertains to.
           * @param[in] xmit The ID of the satellite that transmitted
@@ -36,6 +41,11 @@ namespace gpstk
 
          /// Sorting so we can use this class as a map key
       bool operator<(const NavSatelliteID& right) const;
+         /// Comparison, including wildcards.
+      bool operator==(const NavSatelliteID& right) const;
+         /// Implicit != not available
+      bool operator!=(const NavSatelliteID& right) const
+      { return !(operator==(right)); }
 
       WildSatID sat;     ///< ID of satellite to which the nav data applies.
       WildSatID xmitSat; ///< ID of the satellite transmitting the nav data.
