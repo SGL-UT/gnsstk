@@ -15,7 +15,25 @@ namespace gpstk
    bool OrbitDataSP3 ::
    getXvt(const CommonTime& when, Xvt& xvt)
    {
-      return false;
+         // The OrbitDataSP3 object is generated on request and is
+         // specific to a given time since the data that must be used
+         // for interpolation is only available in the factory store.
+         // As such, we refuse to generate an XVT for anything other
+         // than the time that this OrbitDataSP3 object represents.
+      if (when != timeStamp)
+         return false;
+      xvt.x[0] = pos[0];
+      xvt.x[1] = pos[1];
+      xvt.x[2] = pos[2];
+      xvt.v[0] = vel[0];
+      xvt.v[1] = vel[1];
+      xvt.v[2] = vel[2];
+      xvt.clkbias = clkBias * 1e-6; // microseconds to seconds
+      xvt.clkdrift = clkDrift;
+      xvt.health = Xvt::HealthStatus::Unavailable;
+      xvt.computeRelativityCorrection();
+         /// @todo set xvt.frame
+      return true;
    }
 
 

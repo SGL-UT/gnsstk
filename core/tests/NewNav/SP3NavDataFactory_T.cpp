@@ -1,10 +1,41 @@
 #include "SP3NavDataFactory.hpp"
 #include "TestUtil.hpp"
 #include "OrbitDataSP3.hpp"
+#include "CivilTime.hpp"
 
 namespace gpstk
 {
+   std::ostream& operator<<(std::ostream& s, gpstk::GPSLNavEph::L2Codes e)
+   {
+      s << static_cast<long>(e);
+      return s;
+   }
+
    std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
+
+   std::ostream& operator<<(std::ostream& s, gpstk::SatelliteSystem e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
+
+   std::ostream& operator<<(std::ostream& s, gpstk::CarrierBand e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
+
+   std::ostream& operator<<(std::ostream& s, gpstk::TrackingCode e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
+
+   std::ostream& operator<<(std::ostream& s, gpstk::NavType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -29,6 +60,7 @@ public:
    unsigned constructorTest();
       /// Exercise loadIntoMap by loading data with different options in place.
    unsigned loadIntoMapTest();
+   unsigned findTest();
       /** Use dynamic_cast to verify that the contents of nmm are the
        * right class.
        * @param[in] testFramework The test framework created by TUDEF,
@@ -122,6 +154,55 @@ loadIntoMapTest()
 }
 
 
+unsigned SP3NavDataFactory_T ::
+findTest()
+{
+   TUDEF("SP3NavDataFactory", "find");
+   gpstk::SP3NavDataFactory fact;
+   gpstk::NavSatelliteID satID1a(7, 7, gpstk::SatelliteSystem::GPS,
+                                 gpstk::CarrierBand::L1,
+                                 gpstk::TrackingCode::CA,
+                                 gpstk::NavType::GPSLNAV);
+   gpstk::WildSatID expSat(7, gpstk::SatelliteSystem::GPS);
+   gpstk::NavMessageID nmid1a(satID1a, gpstk::NavMessageType::Ephemeris);
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "test_input_SP3a.sp3";
+   TUASSERT(fact.addDataSource(fname));
+   TUASSERTE(size_t, 116, fact.size());
+   gpstk::CivilTime civ1a(2001, 7, 22, 0, 0, 0, gpstk::TimeSystem::GPS);
+   gpstk::CommonTime ct1a(civ1a);
+   gpstk::NavDataPtr nd1a;
+   TUASSERT(fact.find(nmid1a, ct1a, nd1a, gpstk::NavValidityType::ValidOnly,
+                      gpstk::NavSearchOrder::User));
+   gpstk::OrbitDataSP3 *uut = dynamic_cast<gpstk::OrbitDataSP3*>(
+      nd1a.get());
+                // NavData
+   TUASSERTE(gpstk::CommonTime, ct1a, uut->timeStamp);
+   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Ephemeris,
+             uut->signal.messageType);
+   TUASSERTE(gpstk::WildSatID, expSat, uut->signal.sat);
+   TUASSERTE(gpstk::WildSatID, expSat, uut->signal.xmitSat);
+   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
+             uut->signal.system);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.carrier);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.code);
+   TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, uut->signal.nav);
+      // OrbitData
+      // OrbitDataSP3
+      // Epsilon specified because of rounding errors and because of
+      // what precision is available in the source data.
+   TUASSERTFEPS(-18707084.879, uut->pos[0], 0.001);
+   TUASSERTFEPS( 16766780.691, uut->pos[1], 0.001);
+   TUASSERTFEPS(  8582072.924, uut->pos[2], 0.001);
+   TUASSERTFEPS(468.885781, uut->clkBias, 0.000001);
+   TUASSERTFEPS(-107758.25536, uut->vel[0], 0.00001);
+   TUASSERTFEPS(  20775.83886, uut->vel[1], 0.00001);
+   TUASSERTFEPS(-289749.34472, uut->vel[2], 0.00001);
+   TUASSERTFEPS(-.252832, uut->clkDrift, 0.000001);
+   TURETURN();
+}
+
+
 template <class NavClass>
 void SP3NavDataFactory_T ::
 verifyDataType(gpstk::TestUtil& testFramework,
@@ -150,6 +231,7 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.loadIntoMapTest();
+   errorTotal += testClass.findTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
