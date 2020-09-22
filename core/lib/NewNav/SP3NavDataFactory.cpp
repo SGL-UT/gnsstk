@@ -24,7 +24,7 @@ namespace gpstk
 
    bool SP3NavDataFactory ::
    find(const NavMessageID& nmid, const CommonTime& when,
-        NavDataPtr& navData, NavValidityType valid,
+        NavDataPtr& navData, SVHealth health, NavValidityType valid,
         NavSearchOrder order)
    {
          // dig through the maps of maps, matching keys with nmid along the way

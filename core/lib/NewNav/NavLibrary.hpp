@@ -13,6 +13,8 @@ namespace gpstk
        * NavLibrary navLib;
        * NavDataFactoryPtr ndfp(std::make_shared<MultiFormatNavDataFactory>());
        * navLib.addFactory(ndfp);
+       * if (!ndfp->addDataSource(filename))
+       *    die("could not load " + filename);
        * NavSatelliteID sat(...);
        * CommonTime when(...);
        * Xvt xvt;
@@ -30,6 +32,8 @@ namespace gpstk
           * @param[in] useAlm If true, search for and use almanac
           *   orbital elements.  If false, search for and use
           *   ephemeris data instead.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
@@ -37,7 +41,7 @@ namespace gpstk
           * @return true if successful, false if no nav data was found
           *   to compute the Xvt. */
       bool getXvt(const NavSatelliteID& sat, const CommonTime& when,
-                  Xvt& xvt, bool useAlm,
+                  Xvt& xvt, bool useAlm, SVHealth xmitHealth = SVHealth::Any,
                   NavValidityType valid = NavValidityType::ValidOnly,
                   NavSearchOrder order = NavSearchOrder::User);
 
@@ -49,6 +53,8 @@ namespace gpstk
           * @param[in] sat Satellite to get the position/velocity for.
           * @param[in] when The time that the position should be computed for.
           * @param[out] xvt The computed position and velocity at when.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
@@ -56,13 +62,16 @@ namespace gpstk
           * @return true if successful, false if no nav data was found
           *   to compute the Xvt. */
       bool getXvt(const NavSatelliteID& sat, const CommonTime& when,
-                  Xvt& xvt, NavValidityType valid = NavValidityType::ValidOnly,
+                  Xvt& xvt, SVHealth xmitHealth = SVHealth::Any,
+                  NavValidityType valid = NavValidityType::ValidOnly,
                   NavSearchOrder order = NavSearchOrder::User);
 
          /** Get the health status of a satellite at a specific time.
           * @param[in] sat Satellite to get the health status for.
           * @param[in] when The time that the health should be retrieved.
           * @param[out] health The health status at when.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
@@ -70,7 +79,7 @@ namespace gpstk
           * @return true if successful, false if no nav data was found
           *   containing health status. */
       bool getHealth(const NavSatelliteID& sat, const CommonTime& when,
-                     SVHealth& health,
+                     SVHealth& health, SVHealth xmitHealth = SVHealth::Any,
                      NavValidityType valid = NavValidityType::ValidOnly,
                      NavSearchOrder order = NavSearchOrder::User);
 
@@ -84,6 +93,8 @@ namespace gpstk
           *   any other restrictions will be documented in each leaf
           *   class, e.g. GPSLNavTimeOffset.
           * @param[out] offset The offset when converting fromSys->toSys.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
@@ -91,6 +102,7 @@ namespace gpstk
           * @return true if an offset is available, false if not. */
       bool getOffset(TimeSystem fromSys, TimeSystem toSys,
                      const CommonTime& when, double& offset,
+                     SVHealth xmitHealth = SVHealth::Any,
                      NavValidityType valid = NavValidityType::ValidOnly,
                      NavSearchOrder order = NavSearchOrder::User);
 
@@ -101,13 +113,15 @@ namespace gpstk
           *   codes to match.
           * @param[in] when The time of interest to search for data.
           * @param[out] navData The resulting navigation message.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
           *   behavior or by nearest to when in time. 
           * @return true if successful.  If false, navData will be untouched. */
       bool find(const NavMessageID& nmid, const CommonTime& when,
-                NavDataPtr& navData, NavValidityType valid,
+                NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
                 NavSearchOrder order);
 
          /** Set the factories' handling of valid and invalid

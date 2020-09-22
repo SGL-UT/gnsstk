@@ -2,6 +2,7 @@
 #define GPSTK_NAVDATAFACTORYWITHSTORE_HPP
 
 #include "NavDataFactory.hpp"
+#include "TimeOffsetData.hpp"
 
 namespace gpstk
 {
@@ -16,6 +17,8 @@ namespace gpstk
           * @param[in] nmid Specify the message type, satellite and
           *   codes to match.
           * @param[in] when The time of interest to search for data.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
           * @param[out] navData The resulting navigation message.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
@@ -23,8 +26,31 @@ namespace gpstk
           *   behavior or by nearest to when in time. 
           * @return true if successful.  If false, navData will be untouched. */
       bool find(const NavMessageID& nmid, const CommonTime& when,
-                NavDataPtr& navData, NavValidityType valid,
+                NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
                 NavSearchOrder order) override;
+
+         /** Get the offset, in seconds, to apply to times when
+          * converting them from fromSys to toSys.
+          * @param[in] fromSys The time system to convert from.
+          * @param[in] toSys The time system to convert to.
+          * @param[in] when The time being converted, usually in the
+          *   time system appropriate for a given nav message source.
+          *   The details of what time system this should be in and
+          *   any other restrictions will be documented in each leaf
+          *   class, e.g. GPSLNavTimeOffset.
+          * @param[out] offset The offset when converting fromSys->toSys.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time. 
+          * @return true if an offset is available, false if not. */
+      bool getOffset(TimeSystem fromSys, TimeSystem toSys,
+                     const CommonTime& when, double& offset,
+                     SVHealth xmitHealth = SVHealth::Any,
+                     NavValidityType valid = NavValidityType::ValidOnly,
+                     NavSearchOrder order = NavSearchOrder::User) override;
 
          /** Remove all data from the internal storage in the time
           * span [fromTime,toTime).
@@ -74,13 +100,8 @@ namespace gpstk
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
        void dump(std::ostream& s, NavData::Detail dl) const override;
-   protected:
-         /** Add a nav message to an arbitrary NavMessageMap.
-          * @param[in,out] nmm The map to add the nav data to.
-          * @param[in] nd The nav data to add.
-          * @return true if successful. */
-      static bool addNavData(NavMessageMap& nmm, const NavDataPtr& nd);
 
+   protected:
          /** Performs an appropriate validity check based on the
           * desired validity.
           * @param[in] ti A container iterator pointing to the nav
@@ -96,6 +117,18 @@ namespace gpstk
 
          /// Internal storage of navigation data.
       NavMessageMap data;
+         // Time offset information is organized differently due to the use case
+         /** Map that will contain all TimeOffsetData objects with the
+          * same conversion pair broadcast at a given time. */
+      using OffsetMap = std::map<NavSatelliteID, NavDataPtr>;
+         /** Map from the timeStamp of a TimeOffsetData object to the
+          * collection of TimeOffsetData objects. */
+      using OffsetEpochMap = std::map<CommonTime, OffsetMap>;
+         /// Map from the time system conversion pair to the conversion objects.
+      using OffsetCvtMap = std::map<TimeOffsetData::TimeCvtKey, OffsetEpochMap>;
+         /** Store the time offset data separate from the other nav
+          * data because searching is very different. */
+      OffsetCvtMap offsetData;
          /// Grant access to MultiFormatNavDataFactory for various functions.
       friend class MultiFormatNavDataFactory;
    };

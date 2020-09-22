@@ -172,7 +172,8 @@ findTest()
    gpstk::CivilTime civ1a(2001, 7, 22, 0, 0, 0, gpstk::TimeSystem::GPS);
    gpstk::CommonTime ct1a(civ1a);
    gpstk::NavDataPtr nd1a;
-   TUASSERT(fact.find(nmid1a, ct1a, nd1a, gpstk::NavValidityType::ValidOnly,
+   TUASSERT(fact.find(nmid1a, ct1a, nd1a, gpstk::SVHealth::Any,
+                      gpstk::NavValidityType::ValidOnly,
                       gpstk::NavSearchOrder::User));
    gpstk::OrbitDataSP3 *uut = dynamic_cast<gpstk::OrbitDataSP3*>(
       nd1a.get());

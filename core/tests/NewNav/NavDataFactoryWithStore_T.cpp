@@ -1,6 +1,7 @@
 #include "NavDataFactoryWithStore.hpp"
 #include "GPSWeekSecond.hpp"
 #include "GPSLNavEph.hpp"
+#include "GPSLNavTimeOffset.hpp"
 #include "TestUtil.hpp"
 
 namespace gpstk
@@ -51,6 +52,7 @@ public:
 
    unsigned addNavDataTest();
    unsigned findTest();
+   unsigned getOffsetTest();
    unsigned editTest();
    unsigned clearTest();
 
@@ -139,7 +141,7 @@ addNavDataTest()
          TUASSERTE(gpstk::WildSatID, xmitID, nsatmi.first.xmitSat);
          for (auto& nmi : nsatmi.second)
          {
-            TUASSERTE(gpstk::CommonTime, ct, nmi.first);
+            TUASSERTE(gpstk::CommonTime, ct+18, nmi.first);
          }
       }
    }
@@ -160,26 +162,69 @@ findTest()
    TUCATCH(fillSat(nmid1a, 23, 32));
    nmid1a.messageType = gpstk::NavMessageType::Ephemeris;
       // check basic time stamps that should work
-   TUASSERT(fact1.find(nmid1a, ct+35, result, gpstk::NavValidityType::All,
+   TUASSERT(fact1.find(nmid1a, ct+35, result, gpstk::SVHealth::Any,
+                       gpstk::NavValidityType::All,
                        gpstk::NavSearchOrder::User));
-   TUASSERT(fact1.find(nmid1a, ct+30, result, gpstk::NavValidityType::All,
+   TUASSERT(fact1.find(nmid1a, ct+30, result, gpstk::SVHealth::Any,
+                       gpstk::NavValidityType::All,
                        gpstk::NavSearchOrder::User));
-   TUASSERT(fact1.find(nmid1a, ct+60, result, gpstk::NavValidityType::All,
+   TUASSERT(fact1.find(nmid1a, ct+60, result, gpstk::SVHealth::Any,
+                       gpstk::NavValidityType::All,
                        gpstk::NavSearchOrder::User));
       // check time stamps that don't work
-   TUASSERT(!fact1.find(nmid1a, ct, result, gpstk::NavValidityType::All,
+   TUASSERT(!fact1.find(nmid1a, ct, result, gpstk::SVHealth::Any,
+                        gpstk::NavValidityType::All,
                         gpstk::NavSearchOrder::User));
       // time edge cases.
-   TUASSERT(!fact1.find(nmid1a, ct+17, result, gpstk::NavValidityType::All,
+   TUASSERT(!fact1.find(nmid1a, ct+17, result, gpstk::SVHealth::Any,
+                        gpstk::NavValidityType::All,
                         gpstk::NavSearchOrder::User));
-   TUASSERT(fact1.find(nmid1a, ct+18, result, gpstk::NavValidityType::All,
-                        gpstk::NavSearchOrder::User));
-      // test validity flags
-   TUASSERT(fact1.find(nmid1a, ct+30, result, gpstk::NavValidityType::ValidOnly,
+   TUASSERT(fact1.find(nmid1a, ct+18, result, gpstk::SVHealth::Any,
+                       gpstk::NavValidityType::All,
                        gpstk::NavSearchOrder::User));
-   TUASSERT(!fact1.find(nmid1a, ct+30, result,
+      // test validity flags
+   TUASSERT(fact1.find(nmid1a, ct+30, result, gpstk::SVHealth::Any,
+                       gpstk::NavValidityType::ValidOnly,
+                       gpstk::NavSearchOrder::User));
+   TUASSERT(!fact1.find(nmid1a, ct+30, result, gpstk::SVHealth::Any,
                         gpstk::NavValidityType::InvalidOnly,
                         gpstk::NavSearchOrder::User));
+
+   TURETURN();
+}
+
+
+unsigned NavDataFactoryWithStore_T ::
+getOffsetTest()
+{
+   TUDEF("NavDataFactoryWithStore", "getOffset");
+   TestClass fact1;
+
+   gpstk::NavDataPtr navOut = std::make_shared<gpstk::GPSLNavTimeOffset>();
+   navOut->timeStamp = ct;
+   navOut->signal.messageType = gpstk::NavMessageType::TimeOffset;
+   gpstk::GPSLNavTimeOffset *toptr = dynamic_cast<gpstk::GPSLNavTimeOffset*>(
+      navOut.get());
+   fillSat(navOut->signal, 23, 23);
+   toptr->deltatLS = 23; // set a simple, easy to verify value.
+   TUASSERT(fact1.addNavData(navOut));
+   double result;
+   TUASSERT(fact1.getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC,
+                            ct+35, result, gpstk::SVHealth::Any,
+                            gpstk::NavValidityType::All,
+                            gpstk::NavSearchOrder::User));
+   TUASSERTFE(23.0, result);
+      // reverse the conversion and expect negative.
+   TUASSERT(fact1.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::GPS,
+                            ct+35, result, gpstk::SVHealth::Any,
+                            gpstk::NavValidityType::All,
+                            gpstk::NavSearchOrder::User));
+   TUASSERTFE(-23.0, result);
+      // expect this to not work
+   TUASSERT(!fact1.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::BDT,
+                             ct+35, result, gpstk::SVHealth::Any,
+                             gpstk::NavValidityType::All,
+                             gpstk::NavSearchOrder::User));
 
    TURETURN();
 }
@@ -448,6 +493,7 @@ int main()
    errorTotal += testClass.editTest();
    errorTotal += testClass.clearTest();
    errorTotal += testClass.findTest();
+   errorTotal += testClass.getOffsetTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

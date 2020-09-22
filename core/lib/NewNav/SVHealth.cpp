@@ -9,6 +9,7 @@ namespace gpstk
          switch (e)
          {
             case SVHealth::Unknown:    return "Unknown";
+            case SVHealth::Any:        return "Any";
             case SVHealth::Healthy:    return "Healthy";
             case SVHealth::Unhealthy:  return "Unhealthy";
             case SVHealth::Degraded:   return "Degraded";
@@ -21,6 +22,8 @@ namespace gpstk
       {
          if (s == "Unknown")
             return SVHealth::Unknown;
+         if (s == "Any")
+            return SVHealth::Any;
          if (s == "Healthy")
             return SVHealth::Healthy;
          if (s == "Unhealthy")

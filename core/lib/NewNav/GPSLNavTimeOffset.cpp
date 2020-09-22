@@ -35,9 +35,19 @@ namespace gpstk
       {
          GPSWeekSecond ws(when);
          offset = deltatLS + a0 + a1*(ws.sow - tot + 604800.0*(ws.week-wnt));
+         if (fromSys == TimeSystem::UTC)
+            offset = -offset;
          return true;
       }
       return false;
+   }
+
+
+   TimeOffsetData::TimeCvtSet GPSLNavTimeOffset ::
+   getConversions() const
+   {
+      TimeCvtKey key(TimeSystem::GPS,TimeSystem::UTC);
+      return TimeCvtSet({ key });
    }
 }
 

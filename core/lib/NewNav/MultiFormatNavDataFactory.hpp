@@ -36,6 +36,8 @@ namespace gpstk
           * @param[in] nmid Specify the message type, satellite and
           *   codes to match.
           * @param[in] when The time of interest to search for data.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
           * @param[out] navData The resulting navigation message.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
@@ -43,7 +45,7 @@ namespace gpstk
           *   behavior or by nearest to when in time. 
           * @return true if successful.  If false, navData will be untouched. */
       bool find(const NavMessageID& nmid, const CommonTime& when,
-                NavDataPtr& navData, NavValidityType valid,
+                NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
                 NavSearchOrder order) override;
 
          /** Remove all data from the internal storage in the time

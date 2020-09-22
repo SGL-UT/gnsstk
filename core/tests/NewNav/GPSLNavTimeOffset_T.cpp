@@ -17,8 +17,10 @@ class GPSLNavTimeOffset_T
 public:
       /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
+   unsigned validateTest();
    unsigned getUserTimeTest();
    unsigned getOffsetTest();
+   unsigned getConversionsTest();
 };
 
 
@@ -27,14 +29,38 @@ constructorTest()
 {
    TUDEF("GPSLNavTimeOffset", "GPSLNavTimeOffset");
    gpstk::GPSLNavTimeOffset obj;
-   TUASSERTE(double, 0.0, obj.deltatLS);
-   TUASSERTE(double, 0.0, obj.a0);
-   TUASSERTE(double, 0.0, obj.a1);
-   TUASSERTE(double, 0.0, obj.tot);
+   TUASSERTFE(0.0, obj.deltatLS);
+   TUASSERTFE(0.0, obj.a0);
+   TUASSERTFE(0.0, obj.a1);
+   TUASSERTFE(0.0, obj.tot);
 //   TUASSERTE(unsigned, 0, obj.wn);
    TUASSERTE(unsigned, 0, obj.wnt);
+   TUASSERTE(unsigned, 0, obj.wnLSF);
+   TUASSERTE(unsigned, 0, obj.dn);
+   TUASSERTFE(0.0, obj.deltatLSF);
    TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::TimeOffset,
              obj.signal.messageType);
+   TURETURN();
+}
+
+
+unsigned GPSLNavTimeOffset_T ::
+validateTest()
+{
+   TUDEF("GPSLNavTimeOffset", "validate");
+   gpstk::GPSLNavTimeOffset offs;
+   TUASSERTE(bool, true, offs.validate());
+   offs.tot = 602112.0;
+   TUASSERTE(bool, true, offs.validate());
+   offs.dn = 7;
+   TUASSERTE(bool, true, offs.validate());
+   offs.dn = 8;
+   TUASSERTE(bool, false, offs.validate());
+   offs.dn = 7;
+   offs.tot = -0.001;
+   TUASSERTE(bool, false, offs.validate());
+   offs.tot = 602112.1;
+   TUASSERTE(bool, false, offs.validate());
    TURETURN();
 }
 
@@ -77,14 +103,31 @@ getOffsetTest()
 }
 
 
+unsigned GPSLNavTimeOffset_T ::
+getConversionsTest()
+{
+   TUDEF("GPSLNavTimeOffset", "getConversions");
+   gpstk::TimeOffsetData::TimeCvtSet convs;
+   gpstk::GPSLNavTimeOffset offs;
+   gpstk::TimeOffsetData::TimeCvtKey key(gpstk::TimeSystem::GPS,
+                                         gpstk::TimeSystem::UTC);
+   TUCATCH(convs = offs.getConversions());
+   TUASSERTE(size_t, 1, convs.size());
+   TUASSERTE(size_t, 1, convs.count(key));
+   TURETURN();
+}
+
+
 int main()
 {
    GPSLNavTimeOffset_T testClass;
    unsigned errorTotal = 0;
 
    errorTotal += testClass.constructorTest();
+   errorTotal += testClass.validateTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getOffsetTest();
+   errorTotal += testClass.getConversionsTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

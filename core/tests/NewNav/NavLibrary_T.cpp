@@ -3,6 +3,7 @@
 #include "TestUtil.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
+#include "GPSLNavTimeOffset.hpp"
 
 namespace gpstk
 {
@@ -91,19 +92,21 @@ class NavLibrary_T
 public:
    NavLibrary_T();
 
-      /** Make sure addFactory() puts the factory in each supported
-       * signal in the factories map. */
-   unsigned addFactoryTest();
-      /** Make sure NavLibrary::setTypeFilter updates getTypeFilter() in
-       * all factories. */
-   unsigned setTypeFilterTest();
-      /** Make sure NavLibrary::setValidityFilter updates navValidity
-       * in all factories. */
-   unsigned setValidityFilterTest();
       /** Make sure that NavLibrary::getXvt pulls the correct
        * ephemeris and computes the correct xvt. */
    unsigned getXvtTest();
    unsigned getHealthTest();
+   unsigned getOffsetTest();
+   unsigned findTest();
+      /** Make sure NavLibrary::setValidityFilter updates navValidity
+       * in all factories. */
+   unsigned setValidityFilterTest();
+      /** Make sure NavLibrary::setTypeFilter updates getTypeFilter() in
+       * all factories. */
+   unsigned setTypeFilterTest();
+      /** Make sure addFactory() puts the factory in each supported
+       * signal in the factories map. */
+   unsigned addFactoryTest();
 
    gpstk::CivilTime civ;
    gpstk::CommonTime ct;
@@ -119,10 +122,186 @@ NavLibrary_T()
 
 
 unsigned NavLibrary_T ::
-addFactoryTest()
+getXvtTest()
 {
-   TUDEF("NavLibrary", "addFactory");
-   TestClass navLib;
+   TUDEF("NavLibrary", "getXvt");
+   gpstk::Xvt xvt;
+   gpstk::NavLibrary navLib;
+   gpstk::NavDataFactoryPtr
+      ndfp(std::make_shared<RinexTestFactory>());
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "arlm2000.15n";
+   TUCATCH(navLib.addFactory(ndfp));
+   RinexTestFactory *rndfp =
+      dynamic_cast<RinexTestFactory*>(ndfp.get());
+   TUASSERT(rndfp->addDataSource(fname));
+   gpstk::NavSatelliteID sat(5, 5, gpstk::SatelliteSystem::GPS,
+                             gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                             gpstk::NavType::GPSLNAV);
+   TUASSERT(navLib.getXvt(sat, ct+35, xvt, gpstk::SVHealth::Any));
+      // TUASSERTE is not good for this check as we're testing a bunch
+      // of floating point numbers, so we use TUSSERTFE instead for
+      // each field.
+      // @note These were checked against results provided by wheresat
+      // while it was still using OrbElemStore.
+   TUASSERTFE(  9345531.5274733770639, xvt.x[0]);
+   TUASSERTFE(-12408177.088141856715,  xvt.x[1]);
+   TUASSERTFE( 21486320.848036296666,  xvt.x[2]);
+   TUASSERTFE(2081.276961058104007,    xvt.v[0]);
+   TUASSERTFE(1792.4445008638492709,   xvt.v[1]);
+   TUASSERTFE( 148.29209115082824155,  xvt.v[2]);
+   TUASSERTFE(-0.00021641018042870913346, xvt.clkbias);
+   TUASSERTFE(4.3200998334200003381e-12, xvt.clkdrift);
+   TUASSERTFE(-8.8197758101551758427e-09, xvt.relcorr);
+
+   TUASSERTE(gpstk::Xvt::HealthStatus, gpstk::Xvt::Healthy, xvt.health);
+   TURETURN();
+}
+
+
+unsigned NavLibrary_T ::
+getHealthTest()
+{
+   TUDEF("NavLibrary", "getHealth");
+   gpstk::SVHealth health;
+   gpstk::NavLibrary navLib;
+   gpstk::NavDataFactoryPtr
+      ndfp(std::make_shared<RinexTestFactory>());
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "arlm2000.15n";
+   TUCATCH(navLib.addFactory(ndfp));
+   RinexTestFactory *rndfp = dynamic_cast<RinexTestFactory*>(ndfp.get());
+   TUASSERT(rndfp->addDataSource(fname));
+   gpstk::NavSatelliteID sat(10, 10, gpstk::SatelliteSystem::GPS,
+                             gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                             gpstk::NavType::GPSLNAV);
+      // shouldn't have data at this time
+   TUASSERT(!navLib.getHealth(sat, ct+35, health, gpstk::SVHealth::Any));
+      // shouldn't have data at this time, either
+      // Remember that the first line of a RINEX 2 nav like we use in
+      // this test is the Toc, NOT the transmit time.
+   gpstk::CivilTime civ2(2015,7,19,12,35,35.0,gpstk::TimeSystem::GPS);
+   TUASSERT(!navLib.getHealth(sat, civ2, health, gpstk::SVHealth::Any));
+      // should have data at this time, and it should be unhealthy
+   gpstk::CivilTime civ3(2015,7,19,12,35,36.0,gpstk::TimeSystem::GPS);
+   TUASSERT(navLib.getHealth(sat, civ3, health, gpstk::SVHealth::Any));
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, health);
+      // should have this data and healthy
+   gpstk::NavSatelliteID sat4(2, 2, gpstk::SatelliteSystem::GPS,
+                              gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                              gpstk::NavType::GPSLNAV);
+   gpstk::CivilTime civ4(2015,7,19,2,0,0.0,gpstk::TimeSystem::GPS);
+   TUASSERT(navLib.getHealth(sat4, civ4, health, gpstk::SVHealth::Any));
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, health);
+   TURETURN();
+}
+
+
+unsigned NavLibrary_T ::
+getOffsetTest()
+{
+   TUDEF("NavLibrary", "getOffset");
+   gpstk::NavLibrary navLib;
+   gpstk::NavDataFactoryPtr ndfp(std::make_shared<TestFactory>());
+   TestFactory *fact1 = dynamic_cast<TestFactory*>(ndfp.get());
+   gpstk::NavDataPtr navOut = std::make_shared<gpstk::GPSLNavTimeOffset>();
+   navOut->timeStamp = ct;
+   navOut->signal.messageType = gpstk::NavMessageType::TimeOffset;
+   gpstk::GPSLNavTimeOffset *toptr = dynamic_cast<gpstk::GPSLNavTimeOffset*>(
+      navOut.get());
+   navOut->signal.system = gpstk::SatelliteSystem::GPS;
+   navOut->signal.carrier = gpstk::CarrierBand::L1;
+   navOut->signal.code = gpstk::TrackingCode::CA;
+   navOut->signal.nav = gpstk::NavType::GPSLNAV;
+   navOut->signal.sat = gpstk::WildSatID(23,gpstk::SatelliteSystem::GPS);
+   navOut->signal.xmitSat = gpstk::WildSatID(32,gpstk::SatelliteSystem::GPS);
+   toptr->deltatLS = 23; // set a simple, easy to verify value.
+   TUASSERT(fact1->addNavData(navOut));
+   TUCATCH(navLib.addFactory(ndfp));
+   double result;
+   TUASSERT(navLib.getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC,
+                             ct+35, result, gpstk::SVHealth::Any,
+                             gpstk::NavValidityType::All,
+                             gpstk::NavSearchOrder::User));
+   TUASSERTFE(23.0, result);
+      // reverse the conversion and expect negative.
+   TUASSERT(navLib.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::GPS,
+                             ct+35, result, gpstk::SVHealth::Any,
+                             gpstk::NavValidityType::All,
+                             gpstk::NavSearchOrder::User));
+   TUASSERTFE(-23.0, result);
+      // expect this to not work
+   TUASSERT(!navLib.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::BDT,
+                              ct+35, result, gpstk::SVHealth::Any,
+                              gpstk::NavValidityType::All,
+                              gpstk::NavSearchOrder::User));
+   TURETURN();
+}
+
+
+unsigned NavLibrary_T ::
+findTest()
+{
+   TUDEF("NavLibrary", "find");
+   gpstk::NavLibrary navLib;
+   gpstk::NavDataFactoryPtr
+      ndfp(std::make_shared<RinexTestFactory>());
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "arlm2000.15n";
+   gpstk::NavDataPtr ndp;
+   TUCATCH(navLib.addFactory(ndfp));
+   RinexTestFactory *rndfp = dynamic_cast<RinexTestFactory*>(ndfp.get());
+   gpstk::GPSLNavEph *eph;
+   TUASSERT(rndfp->addDataSource(fname));
+   gpstk::NavSatelliteID sat(10, 10, gpstk::SatelliteSystem::GPS,
+                             gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                             gpstk::NavType::GPSLNAV);
+   gpstk::NavMessageID nmide(sat, gpstk::NavMessageType::Ephemeris);
+   gpstk::NavMessageID nmida(sat, gpstk::NavMessageType::Almanac);
+      // shouldn't have data at this time
+   TUASSERT(!navLib.find(nmide, ct+35, ndp, gpstk::SVHealth::Any,
+                         gpstk::NavValidityType::ValidOnly,
+                         gpstk::NavSearchOrder::User));
+      // shouldn't have data at this time, either
+      // Remember that the first line of a RINEX 2 nav like we use in
+      // this test is the Toc, NOT the transmit time.
+   gpstk::CivilTime civ2(2015,7,19,12,35,35.0,gpstk::TimeSystem::GPS);
+   TUASSERT(!navLib.find(nmide, civ2, ndp, gpstk::SVHealth::Any,
+                         gpstk::NavValidityType::ValidOnly,
+                         gpstk::NavSearchOrder::User));
+      // should have data at this time
+   gpstk::CivilTime civ3(2015,7,19,12,35,48.0,gpstk::TimeSystem::GPS);
+   TUASSERT(navLib.find(nmide, civ3, ndp, gpstk::SVHealth::Any,
+                        gpstk::NavValidityType::ValidOnly,
+                        gpstk::NavSearchOrder::User));
+   eph = dynamic_cast<gpstk::GPSLNavEph*>(ndp.get());
+   TUASSERT(eph != nullptr);
+   TUASSERTE(uint16_t, 64, eph->iode);
+      // shouldn't have almanac data though
+   TUASSERT(!navLib.find(nmida, civ3, ndp, gpstk::SVHealth::Any,
+                         gpstk::NavValidityType::ValidOnly,
+                         gpstk::NavSearchOrder::User));
+      // should have this data
+   gpstk::NavSatelliteID sat4(2, 2, gpstk::SatelliteSystem::GPS,
+                              gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                              gpstk::NavType::GPSLNAV);
+   gpstk::NavMessageID nmide4(sat4, gpstk::NavMessageType::Ephemeris);
+   gpstk::CivilTime civ4(2015,7,19,2,0,0.0,gpstk::TimeSystem::GPS);
+   TUASSERT(navLib.find(nmide4, civ4, ndp, gpstk::SVHealth::Any,
+                        gpstk::NavValidityType::ValidOnly,
+                        gpstk::NavSearchOrder::User));
+   eph = dynamic_cast<gpstk::GPSLNavEph*>(ndp.get());
+   TUASSERT(eph != nullptr);
+   TUASSERTE(uint16_t, 7, eph->iode);
+   TURETURN();
+}
+
+
+unsigned NavLibrary_T ::
+setValidityFilterTest()
+{
+   TUDEF("NavLibrary", "setValidityFilter");
+   gpstk::NavLibrary navLib;
    gpstk::NavDataFactoryPtr ndfp1(std::make_shared<TestFactory>());
    gpstk::NavDataFactoryPtr
       ndfp2(std::make_shared<RinexTestFactory>());
@@ -133,21 +312,16 @@ addFactoryTest()
       dynamic_cast<RinexTestFactory*>(ndfp2.get());
    TUASSERT(tfp != nullptr);
    TUASSERT(rndfp != nullptr);
-   gpstk::NavDataFactoryMap &fm(navLib.getFactories());
-      // make sure the factories map has the same number of items
-   size_t expTotal = tfp->supportedSignals.size() +
-      rndfp->supportedSignals.size();
-   TUASSERTE(size_t, expTotal, fm.size());
-      // make sure the map has the same set of signals
-   gpstk::NavSignalSet allSignals;
-   std::set_union(tfp->supportedSignals.begin(), tfp->supportedSignals.end(),
-                  rndfp->supportedSignals.begin(),rndfp->supportedSignals.end(),
-                  std::inserter(allSignals, allSignals.end()));
-   for (const auto& fi : fm)
-   {
-      TUASSERTE(size_t, 1, allSignals.count(fi.first));
-   }
-   
+   navLib.setValidityFilter(gpstk::NavValidityType::ValidOnly);
+   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::ValidOnly,
+             tfp->getValidityFilter());
+   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::ValidOnly,
+             rndfp->getValidityFilter());
+   navLib.setValidityFilter(gpstk::NavValidityType::All);
+   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::All,
+             tfp->getValidityFilter());
+   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::All,
+             rndfp->getValidityFilter());
    TURETURN();
 }
 
@@ -185,10 +359,10 @@ setTypeFilterTest()
 
 
 unsigned NavLibrary_T ::
-setValidityFilterTest()
+addFactoryTest()
 {
-   TUDEF("NavLibrary", "setValidityFilter");
-   gpstk::NavLibrary navLib;
+   TUDEF("NavLibrary", "addFactory");
+   TestClass navLib;
    gpstk::NavDataFactoryPtr ndfp1(std::make_shared<TestFactory>());
    gpstk::NavDataFactoryPtr
       ndfp2(std::make_shared<RinexTestFactory>());
@@ -199,93 +373,21 @@ setValidityFilterTest()
       dynamic_cast<RinexTestFactory*>(ndfp2.get());
    TUASSERT(tfp != nullptr);
    TUASSERT(rndfp != nullptr);
-   navLib.setValidityFilter(gpstk::NavValidityType::ValidOnly);
-   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::ValidOnly,
-             tfp->getValidityFilter());
-   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::ValidOnly,
-             rndfp->getValidityFilter());
-   navLib.setValidityFilter(gpstk::NavValidityType::All);
-   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::All,
-             tfp->getValidityFilter());
-   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::All,
-             rndfp->getValidityFilter());
-   TURETURN();
-}
-
-
-unsigned NavLibrary_T ::
-getXvtTest()
-{
-   TUDEF("NavLibrary", "getXvt");
-   gpstk::Xvt xvt;
-   gpstk::NavLibrary navLib;
-   gpstk::NavDataFactoryPtr
-      ndfp(std::make_shared<RinexTestFactory>());
-   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
-      "arlm2000.15n";
-   TUCATCH(navLib.addFactory(ndfp));
-   RinexTestFactory *rndfp =
-      dynamic_cast<RinexTestFactory*>(ndfp.get());
-   TUASSERT(rndfp->addDataSource(fname));
-   gpstk::NavSatelliteID sat(5, 5, gpstk::SatelliteSystem::GPS,
-                             gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                             gpstk::NavType::GPSLNAV);
-   TUASSERT(navLib.getXvt(sat, ct+35, xvt));
-      // TUASSERTE is not good for this check as we're testing a bunch
-      // of floating point numbers, so we use TUSSERTFE instead for
-      // each field.
-      // @note These were checked against results provided by wheresat
-      // while it was still using OrbElemStore.
-   TUASSERTFE(  9345531.5274733770639, xvt.x[0]);
-   TUASSERTFE(-12408177.088141856715,  xvt.x[1]);
-   TUASSERTFE( 21486320.848036296666,  xvt.x[2]);
-   TUASSERTFE(2081.276961058104007,    xvt.v[0]);
-   TUASSERTFE(1792.4445008638492709,   xvt.v[1]);
-   TUASSERTFE( 148.29209115082824155,  xvt.v[2]);
-   TUASSERTFE(-0.00021641018042870913346, xvt.clkbias);
-   TUASSERTFE(4.3200998334200003381e-12, xvt.clkdrift);
-   TUASSERTFE(-8.8197758101551758427e-09, xvt.relcorr);
-
-   TUASSERTE(gpstk::Xvt::HealthStatus, gpstk::Xvt::Healthy, xvt.health);
-   TURETURN();
-}
-
-
-unsigned NavLibrary_T ::
-getHealthTest()
-{
-   TUDEF("NavLibrary", "getHealth");
-   gpstk::SVHealth health;
-   gpstk::NavLibrary navLib;
-   gpstk::NavDataFactoryPtr
-      ndfp(std::make_shared<RinexTestFactory>());
-   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
-      "arlm2000.15n";
-   TUCATCH(navLib.addFactory(ndfp));
-   RinexTestFactory *rndfp =
-      dynamic_cast<RinexTestFactory*>(ndfp.get());
-   TUASSERT(rndfp->addDataSource(fname));
-   gpstk::NavSatelliteID sat(10, 10, gpstk::SatelliteSystem::GPS,
-                             gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                             gpstk::NavType::GPSLNAV);
-      // shouldn't have data at this time
-   TUASSERT(!navLib.getHealth(sat, ct+35, health));
-      // shouldn't have data at this time, either
-      // Remember that the first line of a RINEX 2 nav like we use in
-      // this test is the Toc, NOT the transmit time.
-   gpstk::CivilTime civ2(2015,7,19,12,35,35.0,gpstk::TimeSystem::GPS);
-   TUASSERT(!navLib.getHealth(sat, civ2, health));
-      // should have data at this time, and it should be unhealthy
-   gpstk::CivilTime civ3(2015,7,19,12,35,36.0,gpstk::TimeSystem::GPS);
-   TUASSERT(navLib.getHealth(sat, civ3, health));
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, health);
-      // should have this data and healthy
-   gpstk::NavSatelliteID sat4(2, 2, gpstk::SatelliteSystem::GPS,
-                              gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                              gpstk::NavType::GPSLNAV);
-   gpstk::CivilTime civ4(2015,7,19,2,0,0.0,gpstk::TimeSystem::GPS);
-   TUASSERT(navLib.getHealth(sat4, civ4, health));
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, health);
+   gpstk::NavDataFactoryMap &fm(navLib.getFactories());
+      // make sure the factories map has the same number of items
+   size_t expTotal = tfp->supportedSignals.size() +
+      rndfp->supportedSignals.size();
+   TUASSERTE(size_t, expTotal, fm.size());
+      // make sure the map has the same set of signals
+   gpstk::NavSignalSet allSignals;
+   std::set_union(tfp->supportedSignals.begin(), tfp->supportedSignals.end(),
+                  rndfp->supportedSignals.begin(),rndfp->supportedSignals.end(),
+                  std::inserter(allSignals, allSignals.end()));
+   for (const auto& fi : fm)
+   {
+      TUASSERTE(size_t, 1, allSignals.count(fi.first));
+   }
+   
    TURETURN();
 }
 
@@ -295,11 +397,13 @@ int main()
    NavLibrary_T testClass;
    unsigned errorTotal = 0;
 
-   errorTotal += testClass.addFactoryTest();
-   errorTotal += testClass.setTypeFilterTest();
-   errorTotal += testClass.setValidityFilterTest();
    errorTotal += testClass.getXvtTest();
    errorTotal += testClass.getHealthTest();
+   errorTotal += testClass.getOffsetTest();
+   errorTotal += testClass.findTest();
+   errorTotal += testClass.setValidityFilterTest();
+   errorTotal += testClass.setTypeFilterTest();
+   errorTotal += testClass.addFactoryTest();
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
 

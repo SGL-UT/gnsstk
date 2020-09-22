@@ -117,7 +117,8 @@ findTest()
    TUCSM("loadIntoMap");
    TUASSERT(fact.addDataSource(dpath + "arlm2000.15n"));
    TUASSERT(fact.addDataSource(dpath + "test_input_SP3a.sp3"));
-   TUASSERT(fact.find(nmid1a, civ1a, nd1a, gpstk::NavValidityType::ValidOnly,
+   TUASSERT(fact.find(nmid1a, civ1a, nd1a, gpstk::SVHealth::Any,
+                      gpstk::NavValidityType::ValidOnly,
                       gpstk::NavSearchOrder::User));
       // nd1a should be a pointer to a GPSLNavEph
    gpstk::GPSLNavEph *ephPtr = dynamic_cast<gpstk::GPSLNavEph*>(nd1a.get());
@@ -128,7 +129,8 @@ findTest()
    TUASSERTE(uint16_t, 0x4f, ephPtr->iodc);
       // This tests getting an updated ephemeris, i.e. a Toe not
       // aligned to 2 hours
-   TUASSERT(fact.find(nmid1a, civ1b, nd1b, gpstk::NavValidityType::ValidOnly,
+   TUASSERT(fact.find(nmid1a, civ1b, nd1b, gpstk::SVHealth::Any,
+                      gpstk::NavValidityType::ValidOnly,
                       gpstk::NavSearchOrder::User));
       // nd1b should be a pointer to a GPSLNavEph
    ephPtr = dynamic_cast<gpstk::GPSLNavEph*>(nd1b.get());

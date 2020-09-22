@@ -6,7 +6,7 @@ namespace gpstk
 {
    bool NavDataFactoryWithStore ::
    find(const NavMessageID& nmid, const CommonTime& when,
-        NavDataPtr& navData, NavValidityType valid,
+        NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
         NavSearchOrder order)
    {
       // std::cerr << __PRETTY_FUNCTION__ << std::endl;
@@ -79,6 +79,82 @@ namespace gpstk
          }
       }
       // std::cerr << " false 5" << std::endl;
+      return false;
+   }
+
+
+   bool NavDataFactoryWithStore ::
+   getOffset(TimeSystem fromSys, TimeSystem toSys,
+             const CommonTime& when, double& offset,
+             SVHealth xmitHealth, NavValidityType valid, NavSearchOrder order)
+   {
+      // std::cerr << printTime(when,"looking for %Y/%03j/%02H:%02M:%02S") << std::endl;
+      bool rv = false;
+      TimeOffsetData::TimeCvtKey fwdKey(fromSys,toSys), bwdKey(toSys,fromSys);
+         // These get set according to the direction of the search.
+      TimeSystem getFromSys = fromSys, getToSys = toSys;
+      bool reverse = false; // if true, we need to negate the offset
+      auto odi = offsetData.find(fwdKey);
+      if (odi == offsetData.end())
+      {
+         // std::cerr << "did not find forward key" << std::endl;
+         odi = offsetData.find(bwdKey);
+         if (odi == offsetData.end())
+         {
+            // std::cerr << "did not find reverse key, giving up" << std::endl;
+            return false; // no conversion available in either direction
+         }
+         // std::cerr << "found reverse key" << std::endl;
+            // The offset we get is actually going to fromSys from
+            // toSys so negate the offset at the end.
+         getFromSys = toSys;
+         getToSys = fromSys;
+         reverse = true;
+      }
+      // else
+      // {
+      //    std::cerr << "found forward key" << std::endl;
+      // }
+      auto oemi = odi->second.lower_bound(when);
+      if (oemi == odi->second.end())
+      {
+         // std::cerr << "got end right away, backing up one" << std::endl;
+         oemi = std::prev(oemi);
+      }
+      // std::cerr << printTime(oemi->first,"found %Y/%03j/%02H:%02M:%02S") << std::endl;
+      for (const auto& omi : oemi->second)
+      {
+         TimeOffsetData *todp = dynamic_cast<TimeOffsetData*>(omi.second.get());
+         if (todp == nullptr)
+            continue; // shouldn't happen.
+         switch (valid)
+         {
+            case NavValidityType::ValidOnly:
+               if (omi.second->validate())
+               {
+                  rv = todp->getOffset(getFromSys, getToSys, when, offset);
+                  if (reverse)
+                     offset = -offset;
+                  return rv;
+               }
+               break;
+            case NavValidityType::InvalidOnly:
+               if (!omi.second->validate())
+               {
+                  rv = todp->getOffset(getFromSys, getToSys, when, offset);
+                  if (reverse)
+                     offset = -offset;
+                  return rv;
+               }
+               break;
+            default:
+               rv = todp->getOffset(getFromSys, getToSys, when, offset);
+               if (reverse)
+                  offset = -offset;
+               return rv;
+               break;
+         }
+      }
       return false;
    }
 
@@ -175,28 +251,19 @@ namespace gpstk
    bool NavDataFactoryWithStore ::
    addNavData(const NavDataPtr& nd)
    {
-      return addNavData(data, nd);
-   }
-
-
-   bool NavDataFactoryWithStore ::
-   addNavData(NavMessageMap& nmm, const NavDataPtr& nd)
-   {
-         /* This is for testing only
-      if (data.find(nd->signal) != data.end())
+      TimeOffsetData *todp = nullptr;
+      if ((todp = dynamic_cast<TimeOffsetData*>(nd.get())) == nullptr)
       {
-         NavSatMap& nsm(data[nd->signal]);
-         if (nsm.find(nd->signal) != nsm.end())
-         {
-            NavMap& nm(nsm[nd->signal]);
-            if (nm.find(nd->timeStamp) != nm.end())
-            {
-               std::cerr << "duplicate message" << std::endl;
-            }
-         }
+            // everything BUT TimeOffsetData
+         data[nd->signal.messageType][nd->signal][nd->getUserTime()] = nd;
+         return true;
       }
-         */
-      nmm[nd->signal.messageType][nd->signal][nd->timeStamp] = nd;
+         // TimeOffsetData
+      TimeOffsetData::TimeCvtSet conversions = todp->getConversions();
+      for (const auto& ci : conversions)
+      {
+         offsetData[ci][nd->getUserTime()][nd->signal] = nd;
+      }
       return true;
    }
 
@@ -212,7 +279,21 @@ namespace gpstk
             rv += satIt.second.size();
          }
       }
-      return rv;
+         // OffsetCvtMap can contain duplicates when a TimeOffsetData
+         // object applies to multiple time systems, so count unique
+         // pointers.
+      std::set<NavData*> ndpUnique;
+      for (const auto& ocmi : offsetData)
+      {
+         for (const auto& oemi : ocmi.second)
+         {
+            for (const auto& omi : oemi.second)
+            {
+               ndpUnique.insert(omi.second.get());
+            }
+         }
+      }
+      return rv + ndpUnique.size();
    }
 
 
@@ -225,6 +306,16 @@ namespace gpstk
          for (const auto& satIt : mti.second)
          {
             uniques.insert(satIt.first);
+         }
+      }
+      for (const auto& ocmi : offsetData)
+      {
+         for (const auto& oemi : ocmi.second)
+         {
+            for (const auto& omi : oemi.second)
+            {
+               uniques.insert(omi.first);
+            }
          }
       }
       return uniques.size();
@@ -240,6 +331,16 @@ namespace gpstk
          for (const auto& satIt : mti.second)
          {
             uniques.insert(satIt.first);
+         }
+      }
+      for (const auto& ocmi : offsetData)
+      {
+         for (const auto& oemi : ocmi.second)
+         {
+            for (const auto& omi : oemi.second)
+            {
+               uniques.insert(omi.first);
+            }
          }
       }
       return uniques.size();

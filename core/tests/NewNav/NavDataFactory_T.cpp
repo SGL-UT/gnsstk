@@ -27,8 +27,13 @@ class TestClass : public gpstk::NavDataFactory
 {
 public:
    bool find(const gpstk::NavMessageID& nmid, const gpstk::CommonTime& when,
-             gpstk::NavDataPtr& navData, gpstk::NavValidityType valid,
-             gpstk::NavSearchOrder order) override
+             gpstk::NavDataPtr& navData, gpstk::SVHealth xmitHealth,
+             gpstk::NavValidityType valid, gpstk::NavSearchOrder order) override
+   { return false; }
+   bool getOffset(gpstk::TimeSystem fromSys, gpstk::TimeSystem toSys,
+                  const gpstk::CommonTime& when, double& offset,
+                  gpstk::SVHealth xmitHealth, gpstk::NavValidityType valid,
+                  gpstk::NavSearchOrder order) override
    { return false; }
    bool addDataSource(const std::string& source) override
    { return false; }

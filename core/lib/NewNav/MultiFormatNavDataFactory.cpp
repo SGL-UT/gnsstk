@@ -17,14 +17,14 @@ namespace gpstk
 
    bool MultiFormatNavDataFactory ::
    find(const NavMessageID& nmid, const CommonTime& when,
-        NavDataPtr& navData, NavValidityType valid,
+        NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
         NavSearchOrder order)
    {
          // search factories until we find what we want.
       auto range = factories.equal_range(nmid);
       for (auto fi = range.first; fi != range.second; ++fi)
       {
-         if (fi->second->find(nmid, when, navData, valid, order))
+         if (fi->second->find(nmid, when, navData, xmitHealth, valid, order))
             return true;
       }
       return false;

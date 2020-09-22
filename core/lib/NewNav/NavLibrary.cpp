@@ -7,12 +7,13 @@ namespace gpstk
 {
    bool NavLibrary ::
    getXvt(const NavSatelliteID& sat, const CommonTime& when, Xvt& xvt,
-          bool useAlm, NavValidityType valid, NavSearchOrder order)
+          bool useAlm, SVHealth xmitHealth, NavValidityType valid,
+          NavSearchOrder order)
    {
       NavMessageID nmid(sat, useAlm ? NavMessageType::Almanac :
                         NavMessageType::Ephemeris);
       NavDataPtr ndp;
-      if (!find(nmid, when, ndp, valid, order))
+      if (!find(nmid, when, ndp, xmitHealth, valid, order))
          return false;
       OrbitData *orb = dynamic_cast<OrbitData*>(ndp.get());
       return orb->getXvt(when, xvt);
@@ -21,14 +22,14 @@ namespace gpstk
 
    bool NavLibrary ::
    getXvt(const NavSatelliteID& sat, const CommonTime& when, Xvt& xvt,
-          NavValidityType valid, NavSearchOrder order)
+          SVHealth xmitHealth, NavValidityType valid, NavSearchOrder order)
    {
       NavMessageID nmid(sat, NavMessageType::Ephemeris);
       NavDataPtr ndp;
-      if (!find(nmid, when, ndp, valid, order))
+      if (!find(nmid, when, ndp, xmitHealth, valid, order))
       {
          NavMessageID nmida(sat, NavMessageType::Almanac);
-         if (!find(nmida, when, ndp, valid, order))
+         if (!find(nmida, when, ndp, xmitHealth, valid, order))
          {
             return false;
          }
@@ -40,11 +41,12 @@ namespace gpstk
 
    bool NavLibrary ::
    getHealth(const NavSatelliteID& sat, const CommonTime& when,
-             SVHealth& health, NavValidityType valid, NavSearchOrder order)
+             SVHealth& health, SVHealth xmitHealth, NavValidityType valid,
+             NavSearchOrder order)
    {
       NavMessageID nmid(sat, NavMessageType::Health);
       NavDataPtr ndp;
-      if (!find(nmid, when, ndp, valid, order))
+      if (!find(nmid, when, ndp, xmitHealth, valid, order))
          return false;
       NavHealthData *healthData = dynamic_cast<NavHealthData*>(ndp.get());
       health = healthData->getHealth();
@@ -54,24 +56,31 @@ namespace gpstk
 
    bool NavLibrary ::
    getOffset(TimeSystem fromSys, TimeSystem toSys,
-             const CommonTime& when, double& offset,
+             const CommonTime& when, double& offset, SVHealth xmitHealth,
              NavValidityType valid, NavSearchOrder order)
    {
-         // gotta figure out how to search for data without a sat.
-      // NavMessageID nmid(sat, NavMessageType::TimeOffset);
-      // NavDataPtr ndp;
-      // if (!find(nmid, when, ndp, valid, order))
-      //    return false;
-      // TimeOffsetData *timeOffsetData = dynamic_cast<TimeOffsetData*>(ndp.get());
-      // return timeOffsetData->getOffset(fromSys, toSys, when, offset);
+         // Search through factories until we get a match or run out
+         // of factories.  Use unique pointers to avoid double-searching.
+      std::set<NavDataFactory*> uniques;
+      for (auto fi = factories.begin(); fi != factories.end(); ++fi)
+      {
+         NavDataFactory *ndfp = dynamic_cast<NavDataFactory*>(fi->second.get());
+         if (uniques.count(ndfp))
+            continue; // already processed
+         uniques.insert(ndfp);
+         if (fi->second->getOffset(fromSys, toSys, when, offset, xmitHealth,
+                                   valid, order))
+         {
+            return true;
+         }
+      }
       return false;
    }
 
 
    bool NavLibrary ::
-   find(const NavMessageID& nmid, const CommonTime& when,
-        NavDataPtr& navData, NavValidityType valid,
-        NavSearchOrder order)
+   find(const NavMessageID& nmid, const CommonTime& when, NavDataPtr& navData,
+        SVHealth xmitHealth, NavValidityType valid, NavSearchOrder order)
    {
          // search factories until we find what we want.
          /** @bug I'm worried this might not work as expected in the
@@ -80,7 +89,7 @@ namespace gpstk
       auto range = factories.equal_range(nmid);
       for (auto fi = range.first; fi != range.second; ++fi)
       {
-         if (fi->second->find(nmid, when, navData, valid, order))
+         if (fi->second->find(nmid, when, navData, xmitHealth, valid, order))
             return true;
       }
       return false;

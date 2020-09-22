@@ -30,6 +30,21 @@ namespace gpstk
           * @return true if an offset is available, false if not. */
       virtual bool getOffset(TimeSystem fromSys, TimeSystem toSys,
                              const CommonTime& when, double& offset) = 0;
+
+         /** Define a pair of TimeSystems where first=convert from and
+          * second=convert to. */
+      using TimeCvtKey = std::pair<TimeSystem,TimeSystem>;
+         /// Define a unique set of time system conversions.
+      using TimeCvtSet = std::set<TimeCvtKey>;
+
+         /** The set of time system conversions this class is capable of making.
+          * @note This method should avoid returning bidirectional
+          *   conversions, e.g. either TimeCvtKey(GPS,UTC) or
+          *   TimeCvtKey(UTC,GPS) but not both.  The process of
+          *   reversing the conversion pair will be implemented in the
+          *   NavDataFactory.
+          * @return a set of supported time system conversion to/from pairs. */
+      virtual TimeCvtSet getConversions() const = 0;
    };
 }
 

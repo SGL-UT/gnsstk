@@ -10,6 +10,7 @@ namespace gpstk
    enum class SVHealth
    {
       Unknown,    ///< Health is not known or is uninitialized.
+      Any,        ///< Use in searches when you don't care about the SV health.
       Healthy,    ///< Satellite is in a healthy and useable state.
       Unhealthy,  ///< Satellite is unhealthy and should not be used.
       Degraded,   ///< Satellite is in a degraded state. Use at your own risk.
