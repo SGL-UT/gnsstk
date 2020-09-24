@@ -312,6 +312,20 @@ public:
          TUASSERTE(std::string, inputComparisonOutput1, outputStream1.str());
          TUASSERTE(std::string, inputComparisonOutput15, outputStream15.str());
          TUASSERTE(std::string, inputComparisonOutput31, outputStream31.str());
+
+            // interpolation test
+         CommonTime iTime = CivilTime(1997,4,6,6,17,36,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+         TUASSERTFE(-15643515.779275318608, rv.x[0]);
+         TUASSERTFE(17046376.009584486485, rv.x[1]);
+         TUASSERTFE(12835522.993916222826, rv.x[2]);
+         TUASSERTFE(411.87359147363480361, rv.v[0]);
+         TUASSERTFE(-1620.8344018608040642, rv.v[1]);
+         TUASSERTFE(2608.7591273316520528, rv.v[2]);
+         TUASSERTFE(0.00041155797411176868201, rv.clkbias);
+         TUASSERTFE(2.29094726634170796e-12, rv.clkdrift);
+         TUASSERTFE(1.307844316503671866e-08, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unused, rv.health);
       }
       catch (...)
       {
