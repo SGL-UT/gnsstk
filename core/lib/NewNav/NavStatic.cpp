@@ -14,8 +14,8 @@ namespace gpstk
    const NavMessageTypeSet allNavMessageTypes { NavMessageType::Almanac,
                                                 NavMessageType::Ephemeris,
                                                 NavMessageType::TimeOffset,
-                                                NavMessageType::Health,
-                                                NavMessageType::Clock };
+                                                NavMessageType::Health }; //,
+//                                                NavMessageType::Clock };
 
       // Don't try and initialize this, you really need to use
       // addFactory to do it properly.
