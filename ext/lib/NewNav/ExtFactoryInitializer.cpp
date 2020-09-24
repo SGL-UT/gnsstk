@@ -17,6 +17,7 @@ namespace gpstk
       {
          if (initialized)
             return;
+         std::cerr << "ExtFactoryInitializer() " << this << std::endl;
          initialized = true;
             // create our factories
          gpstk::NavDataFactoryPtr

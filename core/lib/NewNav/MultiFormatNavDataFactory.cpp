@@ -233,6 +233,7 @@ namespace gpstk
    {
          // make sure it's a valid class first
       NavDataFactory *ndfp = fact.get();
+      std::cerr << "MultiFormatNavDataFactory::addFactory() ndfp = " << ndfp << std::endl;
       if (dynamic_cast<NavDataFactoryWithStoreFile*>(ndfp) == nullptr)
       {
          return false;

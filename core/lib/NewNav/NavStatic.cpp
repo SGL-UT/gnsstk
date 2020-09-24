@@ -14,7 +14,8 @@ namespace gpstk
    const NavMessageTypeSet allNavMessageTypes { NavMessageType::Almanac,
                                                 NavMessageType::Ephemeris,
                                                 NavMessageType::TimeOffset,
-                                                NavMessageType::Health };
+                                                NavMessageType::Health,
+                                                NavMessageType::Clock };
 
       // Don't try and initialize this, you really need to use
       // addFactory to do it properly.
@@ -35,6 +36,7 @@ namespace gpstk
       {
          if (initialized)
             return;
+         std::cerr << "GPSTKFormatInitializer() " << this << std::endl;
          initialized = true;
             // create our factories
             /** @note The order that the factories are added defines
