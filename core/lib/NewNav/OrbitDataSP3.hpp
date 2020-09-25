@@ -13,6 +13,14 @@ namespace gpstk
          /// Set the vector sizes and initialize everything to 0.
       OrbitDataSP3();
 
+         /** Copy only the position, velocity and acceleration data.
+          * @param[in] right The OrbitDataSP3 to copy XV data from.
+          */
+      void copyXV(const OrbitDataSP3& right);
+         /** Copy only the clock correction data.
+          * @param[in] right The OrbitDataSP3 to copy clock data from.
+          */
+      void copyT(const OrbitDataSP3& right);
          /** Checks the contents of this message.
           * @todo Determine and implement validity criteria.
           * @return true if this data is valid according to some criteria.
@@ -41,10 +49,18 @@ namespace gpstk
           *   unavailable. */
       bool getXvt(const CommonTime& when, Xvt& xvt) override;
 
-      std::vector<double> pos;  ///< ECEF position (m) of satellite at time.
-      std::vector<double> vel;  ///< ECEF velocity (m/s) of satellite at time.
-      double clkBias;           ///< SV clock bias in microseconds.
-      double clkDrift;          ///< SV clock drift in s/s.
+      Triple pos;      ///< ECEF position (m) of satellite at time.
+      Triple posSig;   ///< Standard deviation of position.
+      Triple vel;      ///< ECEF velocity (m/s) of satellite at time.
+      Triple velSig;   ///< Standard deviation of velocity.
+      Triple acc;      ///< Acceleration (m/s/s) of satellite at time.
+      Triple accSig;   ///< Standard deviation of acceleration.
+      double clkBias;  ///< SV clock bias in microseconds.
+      double biasSig;  ///< SV clock bias std deviation in microseconds.
+      double clkDrift; ///< SV clock drift in s/s.
+      double driftSig; ///< SV clock drift std deviation in microseconds/sec.
+      double clkDrRate;///< SV clock drift rate in s/s**2.
+      double drRateSig;///< SV clock drift rate std deviation.
    };
 }
 

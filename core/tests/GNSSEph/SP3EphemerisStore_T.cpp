@@ -315,7 +315,9 @@ public:
 
             // interpolation test
          CommonTime iTime = CivilTime(1997,4,6,6,17,36,gpstk::TimeSystem::GPS);
+         cerr << "the test starts here" << endl;
          TUCATCH(rv = store.computeXvt(sid15,iTime));
+         cerr << "the test ends here" << endl;
          TUASSERTFE(-15643515.779275318608, rv.x[0]);
          TUASSERTFE(17046376.009584486485, rv.x[1]);
          TUASSERTFE(12835522.993916222826, rv.x[2]);
@@ -325,6 +327,126 @@ public:
          TUASSERTFE(0.00041155797411176868201, rv.clkbias);
          TUASSERTFE(2.29094726634170796e-12, rv.clkdrift);
          TUASSERTFE(1.307844316503671866e-08, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unused, rv.health);
+
+            // before the beginning
+         iTime = CivilTime(1997,4,5,23,59,58,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+            // all zero because computeXvt will have failed
+         TUASSERTFE(0.0, rv.x[0]);
+         TUASSERTFE(0.0, rv.x[1]);
+         TUASSERTFE(0.0, rv.x[2]);
+         TUASSERTFE(0.0, rv.v[0]);
+         TUASSERTFE(0.0, rv.v[1]);
+         TUASSERTFE(0.0, rv.v[2]);
+         TUASSERTFE(0.0, rv.clkbias);
+         TUASSERTFE(0.0, rv.clkdrift);
+         TUASSERTFE(0.0, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
+
+            // after the beginning
+         iTime = CivilTime(1997,4,6,0,0,2,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+            // all zero because computeXvt will have failed
+         TUASSERTFE(0.0, rv.x[0]);
+         TUASSERTFE(0.0, rv.x[1]);
+         TUASSERTFE(0.0, rv.x[2]);
+         TUASSERTFE(0.0, rv.v[0]);
+         TUASSERTFE(0.0, rv.v[1]);
+         TUASSERTFE(0.0, rv.v[2]);
+         TUASSERTFE(0.0, rv.clkbias);
+         TUASSERTFE(0.0, rv.clkdrift);
+         TUASSERTFE(0.0, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
+
+            // before the end
+         iTime = CivilTime(1997,4,6,23,44,58,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+            // all zero because computeXvt will have failed
+         TUASSERTFE(0.0, rv.x[0]);
+         TUASSERTFE(0.0, rv.x[1]);
+         TUASSERTFE(0.0, rv.x[2]);
+         TUASSERTFE(0.0, rv.v[0]);
+         TUASSERTFE(0.0, rv.v[1]);
+         TUASSERTFE(0.0, rv.v[2]);
+         TUASSERTFE(0.0, rv.clkbias);
+         TUASSERTFE(0.0, rv.clkdrift);
+         TUASSERTFE(0.0, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
+
+            // after the end
+         iTime = CivilTime(1997,4,6,23,45,2,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+            // all zero because computeXvt will have failed
+         TUASSERTFE(0.0, rv.x[0]);
+         TUASSERTFE(0.0, rv.x[1]);
+         TUASSERTFE(0.0, rv.x[2]);
+         TUASSERTFE(0.0, rv.v[0]);
+         TUASSERTFE(0.0, rv.v[1]);
+         TUASSERTFE(0.0, rv.v[2]);
+         TUASSERTFE(0.0, rv.clkbias);
+         TUASSERTFE(0.0, rv.clkdrift);
+         TUASSERTFE(0.0, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
+
+            // not enough records before the time stamp to interpolate
+         iTime = CivilTime(1997,4,6,0,45,2,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+            // all zero because computeXvt will have failed
+         TUASSERTFE(0.0, rv.x[0]);
+         TUASSERTFE(0.0, rv.x[1]);
+         TUASSERTFE(0.0, rv.x[2]);
+         TUASSERTFE(0.0, rv.v[0]);
+         TUASSERTFE(0.0, rv.v[1]);
+         TUASSERTFE(0.0, rv.v[2]);
+         TUASSERTFE(0.0, rv.clkbias);
+         TUASSERTFE(0.0, rv.clkdrift);
+         TUASSERTFE(0.0, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
+
+            // just enough records before the time stamp to interpolate
+         iTime = CivilTime(1997,4,6,1,0,2,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+         cerr << setprecision(20) << rv << endl;
+         TUASSERTFE(11828403.294941648841, rv.x[0]);
+         TUASSERTFE(14928607.236480718479, rv.x[1]);
+         TUASSERTFE(-18724238.162472143769, rv.x[2]);
+         TUASSERTFE(-2311.0302779592852858, rv.v[0]);
+         TUASSERTFE(-303.02212568403155046, rv.v[1]);
+         TUASSERTFE(-1722.9910235891636603, rv.v[2]);
+         TUASSERTFE(0.00041148478608542081577, rv.clkbias);
+         TUASSERTFE(5.0414722912013812421e-12, rv.clkdrift);
+         TUASSERTFE(-8.9501086430793832778e-09, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unused, rv.health);
+
+            // not enough records after the time stamp to interpolate
+         iTime = CivilTime(1997,4,6,22,46,0,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+            // all zero because computeXvt will have failed
+         TUASSERTFE(0.0, rv.x[0]);
+         TUASSERTFE(0.0, rv.x[1]);
+         TUASSERTFE(0.0, rv.x[2]);
+         TUASSERTFE(0.0, rv.v[0]);
+         TUASSERTFE(0.0, rv.v[1]);
+         TUASSERTFE(0.0, rv.v[2]);
+         TUASSERTFE(0.0, rv.clkbias);
+         TUASSERTFE(0.0, rv.clkdrift);
+         TUASSERTFE(0.0, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
+
+            // just enough records after the time stamp to interpolate
+         iTime = CivilTime(1997,4,6,22,36,0,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+         cerr << setprecision(20) << rv << endl;
+         TUASSERTFE(20430985.199506752193, rv.x[0]);
+         TUASSERTFE(16242900.914267791435, rv.x[1]);
+         TUASSERTFE(4656311.2732107555494, rv.x[2]);
+         TUASSERTFE(276.24271915985104897, rv.v[0]);
+         TUASSERTFE(595.94367782008657741, rv.v[1]);
+         TUASSERTFE(-3144.2228858024636793, rv.v[2]);
+         TUASSERTFE(0.00041179613487123963673, rv.clkbias);
+         TUASSERTFE(5.137432195220640398e-12, rv.clkdrift);
+         TUASSERTFE(-1.5205131796925821461e-08, rv.relcorr);
          TUASSERTE(Xvt::HealthStatus, Xvt::Unused, rv.health);
       }
       catch (...)

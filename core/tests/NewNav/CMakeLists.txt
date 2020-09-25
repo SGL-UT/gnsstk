@@ -81,3 +81,7 @@ add_test(WildSatID_T WildSatID_T)
 add_executable(NavSatelliteID_T NavSatelliteID_T.cpp)
 target_link_libraries(NavSatelliteID_T gpstk)
 add_test(NavSatelliteID_T NavSatelliteID_T)
+
+add_executable(OrbitDataSP3_T OrbitDataSP3_T.cpp)
+target_link_libraries(OrbitDataSP3_T gpstk)
+add_test(OrbitDataSP3_T OrbitDataSP3_T)

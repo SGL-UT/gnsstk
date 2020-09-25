@@ -3,7 +3,10 @@
 
 #include "NavDataFactoryWithStoreFile.hpp"
 #include "SP3Data.hpp"
+#include "SP3Header.hpp"
 #include "GPSLNavEph.hpp"
+#include "ClockSatStore.hpp"
+#include "PositionSatStore.hpp"
 
 namespace gpstk
 {
@@ -45,25 +48,94 @@ namespace gpstk
                 NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
                 NavSearchOrder order) override;
 
-         /** Load SP3 nav data into a map.
-          * @param[in] filename The path of the file to load.
-          * @param[out] navMap The map to store the loaded data in.
-          * @return true on succes, false on failure. */
-      bool loadIntoMap(const std::string& filename,
-                       NavMessageMap& navMap) override;
+         /** Load a file into internal store.
+          * @param[in] source The path to the SP3 file to load.
+          * @return true on success, false on failure. */
+      bool addDataSource(const std::string& source) override;
 
-         /** Convert SP3 nav data to a system/code-appropriate
-          * OrbitData object.
+         /** Convert SP3 nav data to a OrbitDataSP3 object with
+          * position and velocity data.
+          * @param[in] head The header from the SP3 file being converted.
           * @param[in] navIn The SP3 nav message data to convert.
-          * @param[out] navOut The OrbitData object to be added to the
+          * @param[in] isC If true, the SP3Data comes from an SP3c file.
+          * @param[out] navOut The OrbitDataSP3 object to be added to the
           *   factory data map.
           * @return true if the conversion is valid, false if the
           *   input data is unsupported.
           */
-      static bool convertToOrbit(const SP3Data& navIn,
-                                 NavDataPtr& navOut);
+      static bool convertToOrbit(const SP3Header& head, const SP3Data& navIn,
+                                 bool isC, NavDataPtr& navOut);
+
+         /** Convert SP3 nav data to a OrbitDataSP3 object with SV
+          * clock offset data.
+          * @param[in] head The header from the SP3 file being converted.
+          * @param[in] navIn The SP3 nav message data to convert.
+          * @param[in] isC If true, the SP3Data comes from an SP3c file.
+          * @param[out] clkOut The OrbitDataSP3 object to be added to the
+          *   factory data map.
+          * @return true if the conversion is valid, false if the
+          *   input data is unsupported.
+          */
+      static bool convertToClock(const SP3Header& head, const SP3Data& navIn,
+                                 bool isC, NavDataPtr& clkOut);
+
+         /** Half of the interpolation order.  When interpolating SP3
+          * records, 2x this number of records are used, centered on
+          * the time of interest. */
+      unsigned halfOrder;
+
    private:
-      bool store(bool processEph, NavDataPtr& eph);
+      bool store(bool process, NavDataPtr& obj);
+
+      bool findGeneric(NavMessageType nmt, const NavSatelliteID& nsid,
+                       const CommonTime& when, NavDataPtr& navData);
+
+         /** Interpolate the ephemeris data
+          * (position/velocity/acceleration) from the data in the
+          * sequence [ti1,ti3).
+          * @param[in] ti1 The iterator marking the first OrbitDataSP3
+          *   object in the internal store to be used in interpolation.
+          * @param[in] ti3 The iterator marking the first OrbitDataSP3
+          *   object in the internal store after ti1 to NOT be used
+          *   interpolation (use like end() in typical iterator
+          *   usage).
+          * @param[in] when The time at which to interpolate the data.
+          * @param[in,out] navData The pre-allocated NavDataPtr object
+          *   that stores the interpolated OrbitDataSP3. */
+      void interpolateEph(const NavMap::iterator& ti1,
+                          const NavMap::iterator& ti3,
+                          const CommonTime& when, NavDataPtr& navData);
+
+         /** Interpolate the SV clock correction data
+          * (bias/drift/drift rate) from the data in the sequence
+          * [ti1,ti3).
+          * @param[in] ti1 The iterator marking the first OrbitDataSP3
+          *   object in the internal store to be used in interpolation.
+          * @param[in] ti3 The iterator marking the first OrbitDataSP3
+          *   object in the internal store after ti1 to NOT be used
+          *   interpolation (use like end() in typical iterator
+          *   usage).
+          * @param[in] when The time at which to interpolate the data.
+          * @param[in,out] navData The pre-allocated NavDataPtr object
+          *   that stores the interpolated OrbitDataSP3. */
+      void interpolateClk(const NavMap::iterator& ti1,
+                          const NavMap::iterator& ti3,
+                          const CommonTime& when, NavDataPtr& navData);
+
+         /** Load SP3 nav data into a map.
+          * @note This method is unused, in favor of overriding
+          *   addDataSource directly and using its own store rather
+          *   than the one in NavDataFactoryWithStore.
+          * @param[in] filename The path of the file to load.
+          * @param[out] navMap The map to store the loaded data in.
+          * @return true on succes, false on failure. */
+      bool loadIntoMap(const std::string& filename,
+                       NavMessageMap& navMap) override
+      { return false; }
+
+         /** Used to make sure that we don't load SP3 data with
+          * inconsistent time systems. */
+      TimeSystem storeTimeSystem;
    };
 }
 

@@ -152,22 +152,32 @@ namespace gpstk
    void LagrangeInterpolation(const std::vector<T>& X, const std::vector<T>& Y,
                               const T& x, T& y, T& dydx)
    {
+      std::cerr << __PRETTY_FUNCTION__ << std::endl;
       if(Y.size() < X.size() || X.size() < 4) {
          GPSTK_THROW(Exception("Input vectors must be of same length, at least 4"));
       }
 
       std::size_t i,j,k,N=X.size(),M;
       M = (N*(N+1))/2;
+      std::cerr << "  M=" << M << std::endl
+                << "  x=" << x << std::endl;
       std::vector<T> P(N,T(1)),Q(M,T(1)),D(N,T(1));
       for(i=0; i<N; i++) {
          for(j=0; j<N; j++) {
             if(i != j) {
                P[i] *= x-X[j];
                D[i] *= X[i]-X[j];
+               std::cerr << "  X[" << j << "]=" << X[j]
+                         << "  X[" << i << "]=" << X[i]
+                         << "  P[" << i << "]=" << P[i]
+                         << "  D[" << i << "]=" << D[i] << std::endl;
                if(i < j) {
                   for(k=0; k<N; k++) {
                      if(k == i || k == j) continue;
                      Q[i+(j*(j+1))/2] *= (x-X[k]);
+                     std::cerr << "  X[" << k << "]=" << X[k]
+                               << "  Q[" << (i+(j*(j+1))/2) << "]="
+                               << Q[i+(j*(j+1))/2] << std::endl;
                   }
                }
             }
@@ -177,6 +187,10 @@ namespace gpstk
       for(i=0; i<N; i++) {
          y += Y[i]*(P[i]/D[i]);
          T S(0);
+         std::cerr << "  Y[" << i << "]=" << Y[i] << std::endl
+                   << "  P[" << i << "]=" << P[i] << std::endl
+                   << "  D[" << i << "]=" << D[i] << std::endl
+                   << "  y=" << y << std::endl;
          for(k=0; k<N; k++) if(i != k) {
                if(k<i) S += Q[k+(i*(i+1))/2]/D[i];
                else    S += Q[i+(k*(k+1))/2]/D[i];

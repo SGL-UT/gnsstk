@@ -15,6 +15,8 @@ class NavMessageType_T
 {
 public:
    unsigned convertTest();
+      /// Make sure allNavMessageTypes actually contains all.
+   unsigned allNavMessageTypesTest();
 };
 
 
@@ -38,12 +40,26 @@ convertTest()
 }
 
 
+unsigned NavMessageType_T ::
+allNavMessageTypesTest()
+{
+   TUDEF("NavMessageType", "allNavMessageTypes");
+   for (gpstk::NavMessageType e : gpstk::NavMessageTypeIterator())
+   {
+      size_t exp = (e == gpstk::NavMessageType::Unknown) ? 0 : 1;
+      TUASSERTE(size_t, exp, gpstk::allNavMessageTypes.count(e));
+   }
+   TURETURN();
+}
+
+
 int main()
 {
    NavMessageType_T testClass;
    unsigned errorTotal = 0;
 
    errorTotal += testClass.convertTest();
+   errorTotal += testClass.allNavMessageTypesTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

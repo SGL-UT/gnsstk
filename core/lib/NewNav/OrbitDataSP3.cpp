@@ -6,9 +6,37 @@ namespace gpstk
 {
    OrbitDataSP3 ::
    OrbitDataSP3()
-         : pos(3, 0.0), vel(3, 0.0), clkBias(0.0), clkDrift(0.0)
+         : pos(0.0, 0.0, 0.0), posSig(0.0, 0.0, 0.0),
+           vel(0.0, 0.0, 0.0), velSig(0.0, 0.0, 0.0),
+           acc(0.0, 0.0, 0.0), accSig(0.0, 0.0, 0.0),
+           clkBias(0.0), biasSig(0.0), clkDrift(0.0), driftSig(0.0),
+           clkDrRate(0.0), drRateSig(0.0)
    {
       signal.messageType = NavMessageType::Ephemeris;
+   }
+
+
+   void OrbitDataSP3 ::
+   copyXV(const OrbitDataSP3& right)
+   {
+      pos = right.pos;
+      posSig = right.posSig;
+      vel = right.vel;
+      velSig = right.velSig;
+      acc = right.acc;
+      accSig = right.accSig;
+   }
+
+
+   void OrbitDataSP3 ::
+   copyT(const OrbitDataSP3& right)
+   {
+      clkBias = right.clkBias;
+      biasSig = right.biasSig;
+      clkDrift = right.clkDrift;
+      driftSig = right.driftSig;
+      clkDrRate = right.clkDrRate;
+      drRateSig = right.drRateSig;
    }
 
 
@@ -22,12 +50,8 @@ namespace gpstk
          // than the time that this OrbitDataSP3 object represents.
       if (when != timeStamp)
          return false;
-      xvt.x[0] = pos[0];
-      xvt.x[1] = pos[1];
-      xvt.x[2] = pos[2];
-      xvt.v[0] = vel[0];
-      xvt.v[1] = vel[1];
-      xvt.v[2] = vel[2];
+      xvt.x = pos;
+      xvt.v = vel;
       xvt.clkbias = clkBias * 1e-6; // microseconds to seconds
       xvt.clkdrift = clkDrift;
       xvt.health = Xvt::HealthStatus::Unavailable;

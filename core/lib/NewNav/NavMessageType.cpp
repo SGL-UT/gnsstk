@@ -13,6 +13,7 @@ namespace gpstk
             case NavMessageType::Ephemeris:  return "Ephemeris";
             case NavMessageType::TimeOffset: return "TimeOffset";
             case NavMessageType::Health:     return "Health";
+            case NavMessageType::Clock:      return "Clock";
             default:                         return "???";
          } // switch (e)
       } // asString(NavMessageType)
@@ -30,6 +31,8 @@ namespace gpstk
             return NavMessageType::TimeOffset;
          if (s == "Health")
             return NavMessageType::Health;
+         if (s == "Clock")
+            return NavMessageType::Clock;
          return NavMessageType::Unknown;
       } // asNavMessageType(string)
    } // namespace StringUtils

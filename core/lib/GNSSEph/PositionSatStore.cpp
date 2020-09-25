@@ -42,6 +42,7 @@
 #include "PositionSatStore.hpp"
 #include "MiscMath.hpp"
 #include <vector>
+#include <iterator>
 
 using namespace std;
 
@@ -134,19 +135,38 @@ namespace gpstk
          // Lagrange interpolation
          rec.sigAcc = rec.Acc = Triple(0,0,0);        // default
          double dt(ttag-ttag0), err;           // dt in seconds
+         cerr << setprecision(20) << __PRETTY_FUNCTION__ << endl
+              << "  dt=" << dt << endl;
+         for (unsigned i = 0; i < times.size(); i++)
+         {
+            cerr << "  i=" << i << " times=" << times[i] << endl
+                 << "  P=" << (P[0][i]*1000) << " " << (P[1][i]*1000) << " "
+                 << (P[2][i]*1000) << endl
+                 << "  V=" << (V[0][i]*10) << " " << (V[1][i]*10) << " "
+                 << (V[2][i]*10) << endl
+                 << "  A=" << A[0][i] << " " << A[1][i] << " " << A[2][i]
+                 << endl;
+         }
+         cerr << "  haveVelocity=" << haveVelocity << "  haveAcceleration="
+              << haveAcceleration << endl;
          if(haveVelocity) {
             for(i=0; i<3; i++) {
                // interpolate the positions
                rec.Pos[i] = LagrangeInterpolation(times,P[i],dt,err);
+               cerr << "  pos[" << i << "]=" << (rec.Pos[i]*1000) << endl;
                if(haveAcceleration) {
                   // interpolate velocities and acclerations
                   rec.Vel[i] = LagrangeInterpolation(times,V[i],dt,err);
                   rec.Acc[i] = LagrangeInterpolation(times,A[i],dt,err);
+                  cerr << "  vel[" << i << "]=" << (rec.Vel[i]/10) << endl
+                       << "  acc[" << i << "]=" << rec.Acc[i] << endl;
                }
                else {
                   // interpolate velocities(dm/s) to get V and A
                   LagrangeInterpolation(times,V[i],dt,rec.Vel[i],rec.Acc[i]);
                   rec.Acc[i] *= 0.1;      // dm/s/s -> m/s/s
+                  cerr << "  vel[" << i << "]=" << (rec.Vel[i]/10) << endl
+                       << "  acc[" << i << "]=" << rec.Acc[i] << endl;
                }
 
                if(isExact) {
@@ -178,6 +198,12 @@ namespace gpstk
                }
                // TD
                rec.sigVel[i] = 0.0;
+            }
+            for (i = 0; i < 3; i++)
+            {
+               cerr << "  pos[" << i << "]=" << (rec.Pos[i]*1000) << endl
+                    << "  vel[" << i << "]=" << (rec.Vel[i]/10) << endl
+                    << "  acc[" << i << "]=" << rec.Acc[i] << endl;
             }
          }
          return rec;

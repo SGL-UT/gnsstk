@@ -15,6 +15,7 @@ namespace gpstk
       Ephemeris,  ///< Precision orbits for the transmitting SV.
       TimeOffset, ///< Message containing information about time system offsets
       Health,     ///< SV health status information message.
+      Clock,      ///< SV Clock offset data.  Currently only used by SP3.
       Last        ///< Used to create an iterator.
    };
 
