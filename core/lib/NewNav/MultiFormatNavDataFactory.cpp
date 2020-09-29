@@ -15,6 +15,13 @@ namespace gpstk
    }
 
 
+   MultiFormatNavDataFactory ::
+   ~MultiFormatNavDataFactory()
+   {
+      clear();
+   }
+
+
    bool MultiFormatNavDataFactory ::
    find(const NavMessageID& nmid, const CommonTime& when,
         NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,

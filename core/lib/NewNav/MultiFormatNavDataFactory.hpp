@@ -30,6 +30,11 @@ namespace gpstk
          /// Initialize supportedSignals from factories.
       MultiFormatNavDataFactory();
 
+         /** Clear all associated factories so as to avoid surprises
+          * if you ever instantiate more than one
+          * MultiFormatNavDataFactory in a session. */
+      virtual ~MultiFormatNavDataFactory();
+
          /** Search the store of each factory in factories to find the
           * navigation message that meets the specified criteria.  The
           * first successful match is returned.

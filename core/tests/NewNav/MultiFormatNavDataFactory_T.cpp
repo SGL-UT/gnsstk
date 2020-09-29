@@ -4,6 +4,7 @@
 #include "TestUtil.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
+#include "OrbitDataSP3.hpp"
 
 namespace gpstk
 {
@@ -14,6 +15,30 @@ namespace gpstk
    }
 
    std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
+
+   std::ostream& operator<<(std::ostream& s, gpstk::SatelliteSystem e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
+
+   std::ostream& operator<<(std::ostream& s, gpstk::CarrierBand e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
+
+   std::ostream& operator<<(std::ostream& s, gpstk::TrackingCode e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
+
+   std::ostream& operator<<(std::ostream& s, gpstk::NavType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -116,7 +141,7 @@ findTest()
    gpstk::NavDataPtr nd1a, nd1b;
    TUCSM("loadIntoMap");
    TUASSERT(fact.addDataSource(dpath + "arlm2000.15n"));
-   TUASSERT(fact.addDataSource(dpath + "test_input_SP3a.sp3"));
+   TUASSERT(fact.addDataSource(dpath + "test_input_sp3_nav_ephemerisData.sp3"));
    TUASSERT(fact.find(nmid1a, civ1a, nd1a, gpstk::SVHealth::Any,
                       gpstk::NavValidityType::ValidOnly,
                       gpstk::NavSearchOrder::User));
@@ -139,6 +164,59 @@ findTest()
       TURETURN();
       // make sure we got the ephemeris we expected.
    TUASSERTE(uint16_t, 0x0a, ephPtr->iodc);
+      // now check for SP3 data
+   gpstk::NavSatelliteID satID2(15, 15, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1,
+                                gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::WildSatID expSat2(15, gpstk::SatelliteSystem::GPS);
+   gpstk::NavMessageID nmid2(satID2, gpstk::NavMessageType::Ephemeris);
+   gpstk::CommonTime ct;
+   ct = gpstk::CivilTime(1997,4,6,6,17,36,gpstk::TimeSystem::GPS);
+   gpstk::NavDataPtr nd2;
+   TUASSERT(fact.find(nmid2, ct, nd2, gpstk::SVHealth::Any,
+                      gpstk::NavValidityType::ValidOnly,
+                      gpstk::NavSearchOrder::User));
+   gpstk::OrbitDataSP3 *uut = dynamic_cast<gpstk::OrbitDataSP3*>(nd2.get());
+   if (uut == nullptr)
+      TURETURN();
+      // NavData
+   TUASSERTE(gpstk::CommonTime, ct, uut->timeStamp);
+   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Ephemeris,
+             uut->signal.messageType);
+   TUASSERTE(gpstk::WildSatID, expSat2, uut->signal.sat);
+   TUASSERTE(gpstk::WildSatID, expSat2, uut->signal.xmitSat);
+   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
+             uut->signal.system);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.carrier);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.code);
+   TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, uut->signal.nav);
+      // OrbitData
+      // OrbitDataSP3
+   TUASSERTFE(-15643.515779275317982, uut->pos[0]);
+   TUASSERTFE(17046.376009584488202, uut->pos[1]);
+   TUASSERTFE(12835.522993916223641, uut->pos[2]);
+   TUASSERTFE(0, uut->posSig[0]);
+   TUASSERTFE(0, uut->posSig[1]);
+   TUASSERTFE(0, uut->posSig[2]);
+   TUASSERTFE(4118.735914736347695, uut->vel[0]);
+   TUASSERTFE(-16208.344018608038823, uut->vel[1]);
+   TUASSERTFE(26087.591273316520528, uut->vel[2]);
+   TUASSERTFE(0, uut->velSig[0]);
+   TUASSERTFE(0, uut->velSig[1]);
+   TUASSERTFE(0, uut->velSig[2]);
+   TUASSERTFE(0, uut->acc[0]);
+   TUASSERTFE(0, uut->acc[1]);
+   TUASSERTFE(0, uut->acc[2]);
+   TUASSERTFE(0, uut->accSig[0]);
+   TUASSERTFE(0, uut->accSig[1]);
+   TUASSERTFE(0, uut->accSig[2]);
+   TUASSERTFE(411.55797411176871492, uut->clkBias);
+   TUASSERTFE(0, uut->biasSig);
+   TUASSERTFE(2.2909472663417080121e-06, uut->clkDrift);
+   TUASSERTFE(0, uut->driftSig);
+   TUASSERTFE(0, uut->clkDrRate);
+   TUASSERTFE(0, uut->drRateSig);
    TURETURN();
 }
 
@@ -190,7 +268,6 @@ editTest()
    TUASSERTE(size_t, 336, rinFact->size());
    TUASSERT(fact.addDataSource(dpath + "test_input_SP3a.sp3"));
    TUASSERTE(size_t, 232, sp3Fact->size());
-   std::cerr << "numSignals = " << fact.numSignals() << std::endl;
 
    TUCSM("edit");
       // remove nothing
