@@ -48,13 +48,13 @@ namespace gpstk
    findGeneric(NavMessageType nmt, const NavSatelliteID& nsid,
                const CommonTime& when, NavDataPtr& navData)
    {
-      cerr << __PRETTY_FUNCTION__ << " nmt=" << StringUtils::asString(nmt)
-           << endl;
+      // cerr << __PRETTY_FUNCTION__ << " nmt=" << StringUtils::asString(nmt)
+      //      << endl;
       bool giveUp = false;
       auto dataIt = data.find(nmt);
       if (dataIt == data.end())
       {
-         cerr << "  no data for nav message type" << endl;
+         // cerr << "  no data for nav message type" << endl;
          return false;
       }
          // To support wildcard signals, we need to do a linear search.
@@ -66,22 +66,57 @@ namespace gpstk
             // entry we probably (depending on order) *don't* want.
          auto ti2 = sati.second.upper_bound(when);
          auto ti1 = ti2, ti3 = ti2;
+         // cerr << "  ti2 has been set" << endl;
          if (ti2 == sati.second.end())
          {
                // Since we're at the end we can't do interpolation,
                // but we can still check for an exact match.
-            cerr << "  probably giving up because we're at the end" << endl;
+            // cerr << "  probably giving up because we're at the end" << endl;
             giveUp = true;
          }
-         else if (((ti1 = std::prev(ti2,halfOrder)) == sati.second.end()) ||
-                  ((ti3 = std::next(ti2,halfOrder)) == sati.second.end()))
+         else
          {
-               // We're on the edge of available and can't interpolate.
-            cerr << "  probably giving up because we're near the bound" << endl;
-            giveUp = true;
+               // I wouldn't have done this except that I'm trying to
+               // match the behavior of SP3EphemerisStore.  Basically,
+               // for exact matches, the interpolation interval is
+               // shifted "left" by one, but not when the time match
+               // is not exact.
+            auto tiTmp = std::prev(ti2);
+            unsigned offs = 0;
+            if ((tiTmp != sati.second.end()) &&
+                (tiTmp->second->timeStamp == when))
+            {
+               offs = 1;
+            }
+               // This is consistent with SP3EphemerisStore for exact match
+               // Check to see if we can do interpolation.
+            giveUp |=
+               (std::distance(sati.second.begin(), ti2) < (halfOrder+offs)) |
+               (std::distance(ti2, sati.second.end()) < (halfOrder-offs));
+            // cerr << "  distance from begin = "
+            //      << std::distance(sati.second.begin(), ti2) << endl
+            //      << "  distance to end = "
+            //      << std::distance(ti2, sati.second.end()) << endl;
+            if (!giveUp)
+            {
+                  // we can do interpolation so set up iterators
+               ti1 = std::prev(ti2,halfOrder+offs);
+               ti3 = std::next(ti2,halfOrder-offs);
+            }
+            else
+            {
+                  // We're on the edge of available and can't interpolate.
+               // cerr << "  probably giving up because we're near the bound" << endl;
+            }
          }
             // always back up one which allows us to check for exact match.
          ti2 = std::prev(ti2);
+         if (ti2 == sati.second.end())
+         {
+            // cerr << "ti2 is now end?" << endl;
+               // Nothing available that's even close.
+            return false;
+         }
          if (ti2->second->timeStamp == when)
          {
                // Even though it's an exact match, we still need to
@@ -92,9 +127,24 @@ namespace gpstk
                OrbitDataSP3 *stored = dynamic_cast<OrbitDataSP3*>(
                   ti2->second.get());
                navData = std::make_shared<OrbitDataSP3>(*stored);
-               ti2->second->dump(std::cerr, NavData::Detail::Full);
-               navData->dump(std::cerr, NavData::Detail::Full);
-               cerr << "  found an exact match" << endl;
+               // ti2->second->dump(std::cerr, NavData::Detail::Full);
+               // navData->dump(std::cerr, NavData::Detail::Full);
+                  // If giveUp is not set, then we can do some
+                  // interpolation to fill in any missing data.
+               if (!giveUp)
+               {
+                  if (nmt == NavMessageType::Ephemeris)
+                  {
+                     // cerr << "  interpolating ephemeris for exact match" << endl;
+                     interpolateEph(ti1, ti3, when, navData);
+                  }
+                  else if (nmt == NavMessageType::Clock)
+                  {
+                     // cerr << "  interpolating clock for exact match" << endl;
+                     interpolateClk(ti1, ti3, when, navData);
+                  }
+               }
+               // cerr << "  found an exact match" << endl;
                return true;
             }
             else
@@ -106,29 +156,41 @@ namespace gpstk
                if (nmt == NavMessageType::Ephemeris)
                {
                   navOut->copyXV(*stored);
+                     // fill in missing data if we can
+                  if (!giveUp)
+                  {
+                     // cerr << "  interpolating ephemeris for exact match (2)" << endl;
+                     interpolateEph(ti1, ti3, when, navData);
+                  }
                }
                else if (nmt == NavMessageType::Clock)
                {
                   navOut->copyT(*stored);
+                     // fill in missing data if we can
+                  if (!giveUp)
+                  {
+                     // cerr << "  interpolating clock for exact match (2)" << endl;
+                     interpolateClk(ti1, ti3, when, navData);
+                  }
                }
-               stored->dump(std::cerr, NavData::Detail::Full);
-               navOut->dump(std::cerr, NavData::Detail::Full);
-               cerr << "  found an exact match with existing data" << endl;
+               // stored->dump(std::cerr, NavData::Detail::Full);
+               // navOut->dump(std::cerr, NavData::Detail::Full);
+               // cerr << "  found an exact match with existing data" << endl;
                return true;
             }
          }
          else if (giveUp)
          {
                // not an exact match and no data available for interpolation.
-            cerr << "  giving up, insufficient data for interpolation" << endl;
+            // cerr << "  giving up, insufficient data for interpolation" << endl;
             return false;
          }
          else
          {
-            cerr << "  faking interpolation" << endl;
+            // cerr << "  faking interpolation" << endl;
             if (!navData)
             {
-               cerr << "  creating new empty navData" << endl;
+               // cerr << "  creating new empty navData" << endl;
                OrbitDataSP3 *stored = dynamic_cast<OrbitDataSP3*>(
                   ti2->second.get());
                navData = std::make_shared<OrbitDataSP3>(*stored);
@@ -136,7 +198,7 @@ namespace gpstk
             }
             else
             {
-               cerr << "  already have valid navData" << endl;
+               // cerr << "  already have valid navData" << endl;
             }
             if (nmt == gpstk::NavMessageType::Ephemeris)
             {
@@ -150,7 +212,7 @@ namespace gpstk
             }
          } // else (do interpolation)
       } // for (auto& sati : dataIt->second)
-      cerr << "  giving up at the end" << endl;
+      // cerr << "  giving up at the end" << endl;
       return false;
    }
 
@@ -211,10 +273,10 @@ namespace gpstk
                // cerr << "time or satellite change, storing" << endl;
                lastSat = data.sat;
                lastTime = data.time;
-               cerr << "storing eph" << endl;
+               // cerr << "storing eph" << endl;
                if (!store(processEph, eph))
                   return false;
-               cerr << "storing clk" << endl;
+               // cerr << "storing clk" << endl;
                if (!store(processClk, clk))
                   return false;
             }
@@ -236,10 +298,10 @@ namespace gpstk
             }
          }
             // store the final record(s)
-         cerr << "storing last eph" << endl;
+         // cerr << "storing last eph" << endl;
          if (!store(processEph, eph))
             return false;
-         cerr << "storing last clk" << endl;
+         // cerr << "storing last clk" << endl;
          if (!store(processClk, clk))
             return false;
       }
@@ -292,7 +354,7 @@ namespace gpstk
                }
                else
                {
-                  gps->pos[i] = 1000.0 * navIn.x[i];
+                  gps->pos[i] = navIn.x[i];
                   if (isC && (navIn.sig[i] >= 0))
                   {
                      gps->posSig[i] = ::pow(head.basePV, navIn.sig[i]);
@@ -322,7 +384,7 @@ namespace gpstk
                      // Yes, x.  Because SP3Data stores position and
                      // velocity in separate records and the data from
                      // both goes into x.
-                  gps->vel[i] = 10.0 * navIn.x[i];
+                  gps->vel[i] = navIn.x[i];
                   if (isC && (navIn.sig[i] >= 0))
                   {
                      gps->velSig[i] = ::pow(head.basePV, navIn.sig[i]);
@@ -357,14 +419,14 @@ namespace gpstk
             gps->timeStamp = navIn.time;
             if (navIn.correlationFlag)
             {
-               gps->biasSig = navIn.sdev[3] * 1e-6;
+               gps->biasSig = navIn.sdev[3];
             }
             else
             {
                gps->clkBias = navIn.clk;
                if (isC && (navIn.sig[3] >= 0))
                {
-                  gps->biasSig = ::pow(head.baseClk, navIn.sig[3]) * 1e-6;
+                  gps->biasSig = ::pow(head.baseClk, navIn.sig[3]);
                }
             }
             gps->signal.sat = navIn.sat;
@@ -381,14 +443,14 @@ namespace gpstk
                // SP3Data says x is in dm/s for velocity so we scale it to m/s
             if (navIn.correlationFlag)
             {
-               gps->driftSig = navIn.sdev[3] * 1e-10;
+               gps->driftSig = navIn.sdev[3];
             }
             else
             {
                gps->clkDrift = navIn.clk;
                if (isC && (navIn.sig[3] >= 0))
                {
-                  gps->driftSig = ::pow(head.baseClk, navIn.sig[3]) * 1e-10;
+                  gps->driftSig = ::pow(head.baseClk, navIn.sig[3]);
                }
             }
             break;
@@ -400,11 +462,11 @@ namespace gpstk
    bool SP3NavDataFactory ::
    store(bool process, NavDataPtr& obj)
    {
-      cerr << __PRETTY_FUNCTION__ << endl;
+      // cerr << __PRETTY_FUNCTION__ << endl;
          // only process if we have something to process.
       if (obj)
       {
-         cerr << "  store storing " << obj.get() << endl;
+         // cerr << "  store storing " << obj.get() << endl;
             // check the validity
          bool check = false;
          bool expect = false;
@@ -431,7 +493,7 @@ namespace gpstk
                {
                   if (!addNavData(obj))
                   {
-                     cerr << "  store failed to add nav data" << endl;
+                     // cerr << "  store failed to add nav data" << endl;
                      return false;
                   }
                }
@@ -443,20 +505,20 @@ namespace gpstk
             {
                if (!addNavData(obj))
                {
-                  cerr << "  store failed to add nav data" << endl;
+                  // cerr << "  store failed to add nav data" << endl;
                   return false;
                }
             }
          }
             // Clear the shared_ptr so the next time
             // convertToOrbit is called, it creates a new one.
-         cerr << "  store resetting obj ptr, use_count=" << obj.use_count() << endl;
+         // cerr << "  store resetting obj ptr, use_count=" << obj.use_count() << endl;
          NavData *ptr = obj.get();
-         cerr << "DUMP BEFORE:" << endl;
-         ptr->dump(cerr, NavData::Detail::Full);
+         // cerr << "DUMP BEFORE:" << endl;
+         // ptr->dump(cerr, NavData::Detail::Full);
          obj.reset();
-         cerr << "DUMP AFTER:" << endl;
-         ptr->dump(cerr, NavData::Detail::Full);
+         // cerr << "DUMP AFTER:" << endl;
+         // ptr->dump(cerr, NavData::Detail::Full);
       }
       return true;
    }
@@ -466,10 +528,10 @@ namespace gpstk
    interpolateEph(const NavMap::iterator& ti1, const NavMap::iterator& ti3,
                   const CommonTime& when, NavDataPtr& navData)
    {
-      cerr << "  start interpolating ephemeris, distance = " << std::distance(ti1,ti3) << endl;
+      // cerr << "  start interpolating ephemeris, distance = " << std::distance(ti1,ti3) << endl;
       std::vector<double> tdata(2*halfOrder);
-      std::vector<std::vector<double>> posData(3), velData(3),
-         accData(3);
+      std::vector<std::vector<double>> posData(3), posSigData(3), velData(3),
+         velSigData(3), accData(3), accSigData(3);
       CommonTime firstTime(ti1->second->timeStamp);
       unsigned idx = 0;
          // posData etc are 2D arrays, where the first dimension
@@ -478,27 +540,30 @@ namespace gpstk
       for (unsigned i = 0; i < 3; i++)
       {
          posData[i].resize(2*halfOrder);
+         posSigData[i].resize(2*halfOrder);
          velData[i].resize(2*halfOrder);
+         velSigData[i].resize(2*halfOrder);
          accData[i].resize(2*halfOrder);
+         accSigData[i].resize(2*halfOrder);
       }
-      cerr << "  resized" << endl;
+      // cerr << "  resized" << endl;
       bool haveVel = false, haveAcc = false;
       NavMap::iterator ti2;
       for (ti2 = ti1, idx=0; ti2 != ti3; ++ti2, ++idx)
       {
-         cerr << "  idx=" << idx << endl;
+         // cerr << "  idx=" << idx << endl;
          tdata[idx] = ti2->second->timeStamp - firstTime;
          OrbitDataSP3 *nav = dynamic_cast<OrbitDataSP3*>(
             ti2->second.get());
-         cerr << "  nav=" << nav << endl;
-         ti2->second->dump(cerr, NavData::Detail::Full);
+         // cerr << "  nav=" << nav << endl;
+         // ti2->second->dump(cerr, NavData::Detail::Full);
          for (unsigned i = 0; i < 3; i++)
          {
-            cerr << "  i=" << i << endl
-                 << posData.size() << " " << velData.size() << " "
-                 << accData.size() << endl
-                 << nav->pos.size() << " " << nav->vel.size() << " "
-                 << nav->acc.size() << endl;
+            // cerr << "  i=" << i << endl
+            //      << posData.size() << " " << velData.size() << " "
+            //      << accData.size() << endl
+            //      << nav->pos.size() << " " << nav->vel.size() << " "
+            //      << nav->acc.size() << endl;
             posData[i][idx] = nav->pos[i];
             velData[i][idx] = nav->vel[i];
             accData[i][idx] = nav->acc[i];
@@ -508,37 +573,46 @@ namespace gpstk
       }
       double dt = when - firstTime, err;
       OrbitDataSP3 *osp3 = dynamic_cast<OrbitDataSP3*>(navData.get());
-      cerr << setprecision(20) << "  dt=" << dt << endl;
-      for (unsigned i = 0; i < tdata.size(); i++)
-      {
-         cerr << "  i=" << i << " times=" << tdata[i] << endl
-              << "  P=" << posData[0][i] << " " << posData[1][i] << " "
-              << posData[2][i] << endl
-              << "  V=" << velData[0][i] << " " << velData[1][i] << " "
-              << velData[2][i] << endl
-              << "  A=" << accData[0][i] << " " << accData[1][i] << " "
-              << accData[2][i] << endl;
-      }
-      cerr << "  haveVelocity=" << haveVel << "  haveAcceleration="
-           << haveAcc << endl;
+      // cerr << printTime(when, "  when=%Y/%02m/%02d %02H:%02M:%02S")
+      //      << endl
+      //      << printTime(firstTime, "  firstTime=%Y/%02m/%02d %02H:%02M:%02S")
+      //      << endl << setprecision(20) << "  dt=" << dt << endl;
+      // for (unsigned i = 0; i < tdata.size(); i++)
+      // {
+      //    cerr << "  i=" << i << " times=" << tdata[i] << endl
+      //         << "  P=" << posData[0][i] << " " << posData[1][i] << " "
+      //         << posData[2][i] << endl
+      //         << "  V=" << velData[0][i] << " " << velData[1][i] << " "
+      //         << velData[2][i] << endl
+      //         << "  A=" << accData[0][i] << " " << accData[1][i] << " "
+      //         << accData[2][i] << endl;
+      // }
+      // cerr << "  haveVelocity=" << haveVel << "  haveAcceleration="
+      //      << haveAcc << endl;
          // Interpolate XYZ position/velocity/acceleration.
       for (unsigned i = 0; i < 3; i++)
       {
-         if (haveVel && haveAcc)
+         if (haveVel)
          {
-            osp3->pos[i] = LagrangeInterpolation(tdata,posData[i],dt,
-                                                 err);
-            osp3->vel[i] = LagrangeInterpolation(tdata,velData[i],dt,
-                                                 err);
-            osp3->acc[i] = LagrangeInterpolation(tdata,accData[i],dt,
-                                                 err);
-         }
-         else if (haveVel && !haveAcc)
-         {
-            osp3->pos[i] = LagrangeInterpolation(tdata,posData[i],dt,
-                                                 err);
-            LagrangeInterpolation(tdata, velData[i], dt, osp3->vel[i],
-                                  osp3->acc[i]);
+               /** @todo figure out what the heck PositionSatStore is
+                * doing and duplicate it here. */
+               //osp3->posSig[i] = RSS(posSigData[i][
+            if (haveAcc)
+            {
+               osp3->pos[i] = LagrangeInterpolation(tdata,posData[i],dt,
+                                                    err);
+               osp3->vel[i] = LagrangeInterpolation(tdata,velData[i],dt,
+                                                    err);
+               osp3->acc[i] = LagrangeInterpolation(tdata,accData[i],dt,
+                                                    err);
+            }
+            else // if (!haveAcc)
+            {
+               osp3->pos[i] = LagrangeInterpolation(tdata,posData[i],dt,
+                                                    err);
+               LagrangeInterpolation(tdata, velData[i], dt, osp3->vel[i],
+                                     osp3->acc[i]);
+            }
          }
          else
          {
@@ -547,17 +621,18 @@ namespace gpstk
                // derive both.
             LagrangeInterpolation(tdata, posData[i], dt, osp3->pos[i],
                                   osp3->vel[i]);
+            osp3->vel[i] *= 10000.; // km/sec to dm/sec
                // PositionSatStore doesn't derive
                // acceleration in this case, near as I can
                // tell.
          }
       } // for (unsigned i = 0; i < 3; i++)
-      for (unsigned i = 0; i < 3; i++)
-      {
-         cerr << "  pos[" << i << "]=" << osp3->pos[i] << endl
-              << "  vel[" << i << "]=" << osp3->vel[i] << endl
-              << "  acc[" << i << "]=" << osp3->acc[i] << endl;
-      }
+      // for (unsigned i = 0; i < 3; i++)
+      // {
+      //    cerr << "  pos[" << i << "]=" << osp3->pos[i] << endl
+      //         << "  vel[" << i << "]=" << osp3->vel[i] << endl
+      //         << "  acc[" << i << "]=" << osp3->acc[i] << endl;
+      // }
    }
 
 
@@ -565,7 +640,7 @@ namespace gpstk
    interpolateClk(const NavMap::iterator& ti1, const NavMap::iterator& ti3,
                   const CommonTime& when, NavDataPtr& navData)
    {
-      cerr << "  start interpolating clock, distance = " << std::distance(ti1,ti3) << endl;
+      // cerr << "  start interpolating clock, distance = " << std::distance(ti1,ti3) << endl;
       std::vector<double> tdata(2*halfOrder), biasData(2*halfOrder),
          driftData(2*halfOrder), drRateData(2*halfOrder);
       CommonTime firstTime(ti1->second->timeStamp);
@@ -574,12 +649,12 @@ namespace gpstk
       NavMap::iterator ti2;
       for (ti2 = ti1, idx=0; ti2 != ti3; ++ti2, ++idx)
       {
-         cerr << "  idx=" << idx << endl;
+         // cerr << "  idx=" << idx << endl;
          tdata[idx] = ti2->second->timeStamp - firstTime;
          OrbitDataSP3 *nav = dynamic_cast<OrbitDataSP3*>(
             ti2->second.get());
-         cerr << "  nav=" << nav << endl;
-         ti2->second->dump(cerr, NavData::Detail::Full);
+         // cerr << "  nav=" << nav << endl;
+         // ti2->second->dump(cerr, NavData::Detail::Full);
          biasData[idx] = nav->clkBias;
          driftData[idx] = nav->clkDrift;
          drRateData[idx] = nav->clkDrRate;
@@ -588,7 +663,7 @@ namespace gpstk
       }
       double dt = when - firstTime, err;
       OrbitDataSP3 *osp3 = dynamic_cast<OrbitDataSP3*>(navData.get());
-      cerr << setprecision(20) << "  dt=" << dt << endl;
+      // cerr << setprecision(20) << "  dt=" << dt << endl;
       if (haveDrift && haveDriftRate)
       {
          osp3->clkBias = LagrangeInterpolation(tdata,biasData,dt,err);

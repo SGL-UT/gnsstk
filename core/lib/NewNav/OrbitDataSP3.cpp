@@ -50,10 +50,13 @@ namespace gpstk
          // than the time that this OrbitDataSP3 object represents.
       if (when != timeStamp)
          return false;
-      xvt.x = pos;
-      xvt.v = vel;
+      for (unsigned i = 0; i < 3; i++)
+      {
+         xvt.x[i] = pos[i] * 1000.0;
+         xvt.v[i] = vel[i] * 0.1;
+      }
       xvt.clkbias = clkBias * 1e-6; // microseconds to seconds
-      xvt.clkdrift = clkDrift;
+      xvt.clkdrift = clkDrift * 1e-6;
       xvt.health = Xvt::HealthStatus::Unavailable;
       xvt.computeRelativityCorrection();
          /// @todo set xvt.frame

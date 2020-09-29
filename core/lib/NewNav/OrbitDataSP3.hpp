@@ -49,9 +49,9 @@ namespace gpstk
           *   unavailable. */
       bool getXvt(const CommonTime& when, Xvt& xvt) override;
 
-      Triple pos;      ///< ECEF position (m) of satellite at time.
+      Triple pos;      ///< ECEF position (km) of satellite at time.
       Triple posSig;   ///< Standard deviation of position.
-      Triple vel;      ///< ECEF velocity (m/s) of satellite at time.
+      Triple vel;      ///< ECEF velocity (dm/s) of satellite at time.
       Triple velSig;   ///< Standard deviation of velocity.
       Triple acc;      ///< Acceleration (m/s/s) of satellite at time.
       Triple accSig;   ///< Standard deviation of acceleration.

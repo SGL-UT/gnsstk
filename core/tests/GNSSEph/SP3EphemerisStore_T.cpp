@@ -315,9 +315,7 @@ public:
 
             // interpolation test
          CommonTime iTime = CivilTime(1997,4,6,6,17,36,gpstk::TimeSystem::GPS);
-         cerr << "the test starts here" << endl;
          TUCATCH(rv = store.computeXvt(sid15,iTime));
-         cerr << "the test ends here" << endl;
          TUASSERTFE(-15643515.779275318608, rv.x[0]);
          TUASSERTFE(17046376.009584486485, rv.x[1]);
          TUASSERTFE(12835522.993916222826, rv.x[2]);
@@ -407,7 +405,6 @@ public:
             // just enough records before the time stamp to interpolate
          iTime = CivilTime(1997,4,6,1,0,2,gpstk::TimeSystem::GPS);
          TUCATCH(rv = store.computeXvt(sid15,iTime));
-         cerr << setprecision(20) << rv << endl;
          TUASSERTFE(11828403.294941648841, rv.x[0]);
          TUASSERTFE(14928607.236480718479, rv.x[1]);
          TUASSERTFE(-18724238.162472143769, rv.x[2]);
@@ -437,7 +434,6 @@ public:
             // just enough records after the time stamp to interpolate
          iTime = CivilTime(1997,4,6,22,36,0,gpstk::TimeSystem::GPS);
          TUCATCH(rv = store.computeXvt(sid15,iTime));
-         cerr << setprecision(20) << rv << endl;
          TUASSERTFE(20430985.199506752193, rv.x[0]);
          TUASSERTFE(16242900.914267791435, rv.x[1]);
          TUASSERTFE(4656311.2732107555494, rv.x[2]);
@@ -818,6 +814,92 @@ public:
       TURETURN();
    }
 
+
+#if 0
+      /** As the name indicates, this is not a test.  It was
+       * implemented in order to assist in creating a consistent
+       * "truth" data for SP3NavDataFactory.  Also this method
+       * requires access to the internal data for SP3EphemerisStore
+       * which is normally private, so leaving this here for future
+       * use but #if'd out. */
+   void notATest()
+   {
+      try
+      {
+         SP3EphemerisStore store;
+         store.loadFile(inputSP3Data);
+         SatID sid15(1,SatelliteSystem::GPS);
+         CommonTime ttag = gpstk::CivilTime(1997,4,6,22,45,2,
+                                            gpstk::TimeSystem::GPS);
+         std::cerr << "starting this thing here" << std::endl;
+         PositionRecord prec = store.posStore.getValue(sid15, ttag);
+         ClockRecord crec = store.clkStore.getValue(sid15, ttag);
+         std::cerr << "finished this thing here" << std::endl;
+         cerr << setprecision(20) << "prec" << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Pos[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigPos[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Vel[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigVel[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Acc[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigAcc[i];
+         cerr << endl;
+         cerr << "crec" << endl
+              << " " << crec.bias << " " << crec.sig_bias
+              << " " << crec.drift << " " << crec.sig_drift
+              << " " << crec.accel << " " << crec.sig_accel
+              << endl;
+      }
+      catch (gpstk::Exception& exc)
+      {
+         cerr << exc << endl;
+      }
+      try
+      {
+         std::string dataFilePath = gpstk::getPathData();
+         std::string fileSep = gpstk::getFileSep();
+
+         string data3c = dataFilePath + fileSep +
+            "test_input_SP3c.sp3";
+         cerr << "loading " << data3c << endl;
+         SP3EphemerisStore store;
+         store.loadFile(data3c);
+         cerr << "size = " << store.size() << endl;
+         SatID sid15(15,SatelliteSystem::GPS);
+         CommonTime ttag = gpstk::CivilTime(2011,10,9,2,1,3,
+                                            gpstk::TimeSystem::GPS);
+         PositionRecord prec = store.posStore.getValue(sid15, ttag);
+         ClockRecord crec = store.clkStore.getValue(sid15, ttag);
+         cerr << setprecision(20) << "prec" << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Pos[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigPos[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Vel[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigVel[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Acc[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigAcc[i];
+         cerr << endl;
+         cerr << "crec" << endl
+              << " " << crec.bias << " " << crec.sig_bias
+              << " " << crec.drift << " " << crec.sig_drift
+              << " " << crec.accel << " " << crec.sig_accel
+              << endl;
+      }
+      catch (gpstk::Exception& exc)
+      {
+         cerr << exc << endl;
+      }
+   }
+#endif
+
 private:
    double epsilon; // Floating point error threshold
    std::string dataFilePath;
@@ -850,6 +932,7 @@ int main() // Main function to initialize and run all tests above
    errorTotal += testClass.getFinalTimeTest();
    errorTotal += testClass.getPositionTest();
    errorTotal += testClass.getVelocityTest();
+   // testClass.tempNonTest();
 
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
