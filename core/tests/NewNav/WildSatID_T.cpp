@@ -53,6 +53,33 @@ unsigned WildSatID_T ::
 equalTest()
 {
    TUDEF("WildSatID", "operator==");
+   gpstk::WildSatID ws1(1, gpstk::SatelliteSystem::GPS);
+   gpstk::WildSatID ws2(1, gpstk::SatelliteSystem::GPS);
+   gpstk::WildSatID ws3(3, gpstk::SatelliteSystem::GPS);
+   gpstk::WildSatID ws4(1, gpstk::SatelliteSystem::QZSS);
+   gpstk::WildSatID ws5(1); // wildcard system
+   gpstk::WildSatID ws6(gpstk::SatelliteSystem::GPS); // wildcard satellite
+   gpstk::WildSatID ws7(gpstk::SatelliteSystem::QZSS); // wildcard satellite
+   gpstk::WildSatID ws8; // wildcard sat and sys
+   gpstk::WildSatID ws9(2); // wildcard system
+      // sanity checks
+   TUASSERTE(bool, false, ws5.wildSat);
+   TUASSERTE(bool, true,  ws5.wildSys);
+   TUASSERTE(bool, true,  ws6.wildSat);
+   TUASSERTE(bool, false, ws6.wildSys);
+   TUASSERTE(bool, true,  ws7.wildSat);
+   TUASSERTE(bool, false, ws7.wildSys);
+   TUASSERTE(bool, true,  ws8.wildSat);
+   TUASSERTE(bool, true,  ws8.wildSys);
+      // actual tests
+   TUASSERTE(bool, true,  ws1 == ws2);
+   TUASSERTE(bool, false, ws1 == ws3);
+   TUASSERTE(bool, false, ws1 == ws4);
+   TUASSERTE(bool, true,  ws1 == ws5);
+   TUASSERTE(bool, true,  ws1 == ws6);
+   TUASSERTE(bool, false, ws1 == ws7);
+   TUASSERTE(bool, true,  ws1 == ws8);
+   TUASSERTE(bool, false, ws1 == ws9);
    TURETURN();
 }
 
