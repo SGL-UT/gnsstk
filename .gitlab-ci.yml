@@ -734,7 +734,8 @@ sgltk_windows:
   tags:
     - win10
   script:
-    - cd build
+# windows removes build for reasons unknown
+#    - cd build
     - git clone -b $SGLTK_BRANCH https://repositories.arlut.utexas.edu/sgl/sgltk.git
     - cd sgltk
     - mkdir build
