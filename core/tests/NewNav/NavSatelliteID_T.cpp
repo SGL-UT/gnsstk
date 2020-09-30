@@ -63,7 +63,8 @@ constructorTest()
    TUASSERTE(gpstk::WildSatID, expx2a, nsid2.xmitSat);
    TUASSERT(nsid2.sat != exps2b);
    TUASSERT(nsid2.xmitSat != expx2b);
-   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::Transit, nsid2.system);
+   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::Transit,
+             nsid2.system);
    TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid2.carrier);
    TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid2.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid2.nav);
@@ -169,7 +170,26 @@ equalTest()
    TUASSERTE(bool, true,  nsid01 == nsid17);
    TUASSERTE(bool, true,  nsid01 == nsid18);
    TUASSERTE(bool, false, nsid01 == nsid19);
-TURETURN();
+   TUCSM("operator!=");
+   TUASSERTE(bool, false, nsid01 != nsid02);
+   TUASSERTE(bool, true,  nsid01 != nsid03);
+   TUASSERTE(bool, true,  nsid01 != nsid04);
+   TUASSERTE(bool, true,  nsid01 != nsid05);
+   TUASSERTE(bool, true,  nsid01 != nsid06);
+   TUASSERTE(bool, true,  nsid01 != nsid07);
+   TUASSERTE(bool, true,  nsid01 != nsid08);
+   TUASSERTE(bool, false, nsid01 != nsid09);
+   TUASSERTE(bool, false, nsid01 != nsid10);
+   TUASSERTE(bool, false, nsid01 != nsid11);
+   TUASSERTE(bool, false, nsid01 != nsid12);
+   TUASSERTE(bool, true,  nsid01 != nsid13);
+   TUASSERTE(bool, false, nsid01 != nsid14);
+   TUASSERTE(bool, true,  nsid01 != nsid15);
+   TUASSERTE(bool, true,  nsid01 != nsid16);
+   TUASSERTE(bool, false, nsid01 != nsid17);
+   TUASSERTE(bool, false, nsid01 != nsid18);
+   TUASSERTE(bool, true,  nsid01 != nsid19);
+   TURETURN();
 }
 
 
@@ -177,6 +197,118 @@ unsigned NavSatelliteID_T ::
 lessThanTest()
 {
    TUDEF("NavSatelliteID", "operator<");
+   gpstk::NavSatelliteID nsid01(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid02(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid03(1, 1, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid04(2, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid05(1, 2, gpstk::SatelliteSystem::QZSS,
+                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid06(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L2, gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid07(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1, gpstk::TrackingCode::Y,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid08(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSCNAV2);
+   gpstk::NavSatelliteID nsid09(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::Any,
+                                gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid10(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1,
+                                gpstk::TrackingCode::Any,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid11(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1,
+                                gpstk::TrackingCode::CA,
+                                gpstk::NavType::Any);
+   gpstk::NavSatelliteID nsid12(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1,
+                                gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid13(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1,
+                                gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid14(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1,
+                                gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid15(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1,
+                                gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid16(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1,
+                                gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid17(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1,
+                                gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid18(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1,
+                                gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID nsid19(1, 2, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1,
+                                gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   nsid12.sat = gpstk::WildSatID(1); // wildcard system
+   nsid13.sat = gpstk::WildSatID(2); // wildcard system
+   nsid14.sat = gpstk::WildSatID(gpstk::SatelliteSystem::GPS);  // wildcard sat
+   nsid15.sat = gpstk::WildSatID(gpstk::SatelliteSystem::QZSS); // wildcard sat
+   nsid16.xmitSat = gpstk::WildSatID(1); // wildcard system
+   nsid17.xmitSat = gpstk::WildSatID(2); // wildcard system
+   nsid18.xmitSat = gpstk::WildSatID(gpstk::SatelliteSystem::GPS);  // wild sat
+   nsid19.xmitSat = gpstk::WildSatID(gpstk::SatelliteSystem::QZSS); // wild sat
+   TUASSERTE(bool, false, nsid01 < nsid02);
+   TUASSERTE(bool, false, nsid02 < nsid01);
+   TUASSERTE(bool, false, nsid01 < nsid03);
+   TUASSERTE(bool, true,  nsid03 < nsid01);
+   TUASSERTE(bool, true,  nsid01 < nsid04);
+   TUASSERTE(bool, false, nsid04 < nsid01);
+   TUASSERTE(bool, true,  nsid01 < nsid05);
+   TUASSERTE(bool, false, nsid05 < nsid01);
+   TUASSERTE(bool, true,  nsid01 < nsid06);
+   TUASSERTE(bool, false, nsid06 < nsid01);
+   TUASSERTE(bool, true,  nsid01 < nsid07);
+   TUASSERTE(bool, false, nsid07 < nsid01);
+   TUASSERTE(bool, true,  nsid01 < nsid08);
+   TUASSERTE(bool, false, nsid08 < nsid01);
+   TUASSERTE(bool, false, nsid01 < nsid09);
+   TUASSERTE(bool, false, nsid09 < nsid01);
+   TUASSERTE(bool, false, nsid01 < nsid10);
+   TUASSERTE(bool, false, nsid10 < nsid01);
+   TUASSERTE(bool, false, nsid01 < nsid11);
+   TUASSERTE(bool, false, nsid11 < nsid01);
+   TUASSERTE(bool, false, nsid01 < nsid12);
+   TUASSERTE(bool, false, nsid12 < nsid01);
+   TUASSERTE(bool, true,  nsid01 < nsid13);
+   TUASSERTE(bool, false, nsid13 < nsid01);
+   TUASSERTE(bool, false, nsid01 < nsid14);
+   TUASSERTE(bool, false, nsid14 < nsid01);
+   TUASSERTE(bool, true,  nsid01 < nsid15);
+   TUASSERTE(bool, false, nsid15 < nsid01);
+   TUASSERTE(bool, false, nsid01 < nsid16);
+   TUASSERTE(bool, true,  nsid16 < nsid01);
+   TUASSERTE(bool, false, nsid01 < nsid17);
+   TUASSERTE(bool, false, nsid17 < nsid01);
+   TUASSERTE(bool, false, nsid01 < nsid18);
+   TUASSERTE(bool, false, nsid18 < nsid01);
+   TUASSERTE(bool, true,  nsid01 < nsid19);
+   TUASSERTE(bool, false, nsid19 < nsid01);
    TURETURN();
 }
 
