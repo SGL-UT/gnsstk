@@ -34,10 +34,10 @@ namespace gpstk
          /// Add gpstk factories to MultiFormatNavDataFactory
       GPSTKFormatInitializer()
       {
-         std::cerr << "starting GPSTKFormatInitializer() " << this << std::endl;
+         // std::cerr << "starting GPSTKFormatInitializer() " << this << std::endl;
          if (initialized)
             return;
-         std::cerr << "continuing GPSTKFormatInitializer() " << this << std::endl;
+         // std::cerr << "continuing GPSTKFormatInitializer() " << this << std::endl;
          initialized = true;
             // create our factories
             /** @note The order that the factories are added defines

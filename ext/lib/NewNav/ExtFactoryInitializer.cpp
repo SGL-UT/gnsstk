@@ -15,10 +15,10 @@ namespace gpstk
          /// Add gpstk ext factories to MultiFormatNavDataFactory
       ExtFactoryInitializer()
       {
-         std::cerr << "starting ExtFactoryInitializer() " << this << std::endl;
+         // std::cerr << "starting ExtFactoryInitializer() " << this << std::endl;
          if (initialized)
             return;
-         std::cerr << "continuing ExtFactoryInitializer() " << this << std::endl;
+         // std::cerr << "continuing ExtFactoryInitializer() " << this << std::endl;
          initialized = true;
             // create our factories
          gpstk::NavDataFactoryPtr

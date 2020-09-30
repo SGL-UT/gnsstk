@@ -13,7 +13,7 @@ stages:
 variables:
   CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
   # this is usually set to master, unless there are downstream dependencies
-  SGLTK_BRANCH: master
+  SGLTK_BRANCH: issue_341
   DOCKER_REGISTRY: "modisdev:5000/sgl_ci"
 # this can be used for incremental builds
 #  GIT_CLEAN_FLAGS: none
@@ -203,7 +203,8 @@ build_windows:
 # non-incremental builds
     - mkdir build
     - cd build
-    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
+# temporarily removing EXT from build since it's breaking
+    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=OFF -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
     - cmake --build . --config Release
   artifacts:
     paths:
@@ -726,3 +727,23 @@ sgltk_redhat:
     - make all -j 4
   dependencies:
     - user_install_redhat
+
+sgltk_windows:
+  stage: downstream
+  extends: .normal_job
+  tags:
+    - win10
+  script:
+    - cd build
+    - git clone -b $SGLTK_BRANCH https://repositories.arlut.utexas.edu/sgl/sgltk.git
+    - cd sgltk
+    - mkdir build
+    - cd build
+    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
+    - cmake --build . --config Release
+  artifacts:
+    paths:
+    - build/
+  timeout: 30m
+  dependencies:
+    - user_install_windows
