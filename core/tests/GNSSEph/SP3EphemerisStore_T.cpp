@@ -158,7 +158,7 @@ public:
       /// test loading of SP3c data
    unsigned sp3cTest()
    {
-      TUDEF("SP3EphemerisStore", "whatever");
+      TUDEF("SP3EphemerisStore", "loadFile");
       SP3EphemerisStore store;
       TUCATCH(store.loadFile(inputSP3cData));
       TUASSERTE(size_t, 750, store.size());
