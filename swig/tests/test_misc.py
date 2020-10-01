@@ -65,8 +65,8 @@ class EnumConversion_test(unittest.TestCase):
         with self.assertRaises(TypeError):
             _ = gpstk.NavType()
             self.fail("No default constructor")
-        self.assertEqual(gpstk.NavType(4), gpstk.NavType.GPSMNAV, msg='int GPSMNAV')
-        self.assertEqual(gpstk.NavType(2), gpstk.NavType.GPSCNAVL5, msg='int GPS')
+        self.assertEqual(gpstk.NavType(6), gpstk.NavType.GPSMNAV, msg='int GPSMNAV')
+        self.assertEqual(gpstk.NavType(4), gpstk.NavType.GPSCNAVL5, msg='int GPS')
         self.assertEqual(gpstk.NavType(gpstk.NavType.GPSCNAVL5), gpstk.NavType.GPSCNAVL5, msg='gpstk enum GPSCNAVL5')
         self.assertEqual(gpstk.NavType(gpstk.NavType.GPSMNAV), gpstk.NavType.GPSMNAV, msg='gpstk enum GPSMNAV')
 
