@@ -37,7 +37,8 @@ namespace gpstk
       CommonTime getUserTime() const override
       { return timeStamp; }
          /** Print the contents of this NavData object in a
-          * human-readable format.
+          * human-readable format.  Brief detail includes P/V.  Full
+          * detail includes P/V/A and sigma.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
       void dump(std::ostream& s, Detail dl) override;

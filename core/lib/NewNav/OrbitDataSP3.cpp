@@ -70,7 +70,6 @@ namespace gpstk
       NavData::dump(s,dl);
       if (dl == Detail::OneLine)
          return;
-         // brief and full are the same
       const ios::fmtflags oldFlags = s.flags();
       s << fixed << setprecision(6) << "P: {";
       for (unsigned i = 0; i < pos.size(); i++)
@@ -80,6 +79,24 @@ namespace gpstk
       for (unsigned i = 0; i < vel.size(); i++)
          s << " " << vel[i];
       s << "} drift: " << clkDrift << endl;
+      if (dl == Detail::Brief)
+         return;
+      s << "A: {";
+      for (unsigned i = 0; i < acc.size(); i++)
+         s << " " << acc[i];
+      s << "} drift rate: " << clkDrRate << endl
+        << "P sigma: {";
+      for (unsigned i = 0; i < posSig.size(); i++)
+         s << " " << posSig[i];
+      s << "} bias sigma: " << biasSig << endl
+        << "V sigma: {";
+      for (unsigned i = 0; i < velSig.size(); i++)
+         s << " " << velSig[i];
+      s << "} drift sigma: " << driftSig << endl
+        << "A sigma: {";
+      for (unsigned i = 0; i < accSig.size(); i++)
+         s << " " << accSig[i];
+      s << "} drift rate sigma: " << drRateSig << endl;
       s.flags(oldFlags);
    }
 }

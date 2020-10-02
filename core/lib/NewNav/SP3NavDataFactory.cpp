@@ -9,9 +9,6 @@
 
 using namespace std;
 
-/// @todo figure out what's a legitimate delta t to allow interpolation
-static const double limitDT = 900.0;
-
 namespace gpstk
 {
    SP3NavDataFactory ::
@@ -19,6 +16,7 @@ namespace gpstk
          : storeTimeSystem(TimeSystem::Any),
            halfOrder(5)
    {
+         /// @todo add foreign signals supported by SP3 (c?)
       supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
                                           CarrierBand::L1,
                                           TrackingCode::CA,
@@ -344,21 +342,24 @@ namespace gpstk
       {
          case 'P':
             gps->timeStamp = navIn.time;
-               // SP3Data says x is in m for position, but it's really
-               // in km, so we scale it to m
             for (unsigned i = 0; i < 3; i++)
             {
+               gps->pos[i] = navIn.x[i];
+                  /** @todo the ::pow statement was pulled from
+                   * SP3EphemerisStore.  I'm not 100% sure it's
+                   * possible to get sigma this way.  We should
+                   * determine if it is possible and if so write tests
+                   * for this case.  Look for all uses of isC and
+                   * correlationFlag. */
                if (navIn.correlationFlag)
                {
                   gps->posSig[i] = navIn.sdev[i];
+                  // cerr << "navIn.sdev[" << i << "] = " << gps->posSig[i] << endl;
                }
-               else
+               else if (isC && (navIn.sig[i] >= 0))
                {
-                  gps->pos[i] = navIn.x[i];
-                  if (isC && (navIn.sig[i] >= 0))
-                  {
-                     gps->posSig[i] = ::pow(head.basePV, navIn.sig[i]);
-                  }
+                  gps->posSig[i] = ::pow(head.basePV, navIn.sig[i]);
+                  // cerr << "pow(head.basePV,navIn.sig[" << i << "] = " << gps->posSig[i] << endl;
                }
             }
             gps->signal.sat = navIn.sat;
@@ -372,24 +373,16 @@ namespace gpstk
             break;
          case 'V':
             gps->timeStamp = navIn.time;
-               // SP3Data says x is in dm/s for velocity so we scale it to m/s
             for (unsigned i = 0; i < 3; i++)
             {
+                  // Yes, x.  Because SP3Data stores position and
+                  // velocity in separate records and the data from
+                  // both goes into x.
+               gps->vel[i] = navIn.x[i];
                if (navIn.correlationFlag)
-               {
                   gps->velSig[i] = navIn.sdev[i];
-               }
-               else
-               {
-                     // Yes, x.  Because SP3Data stores position and
-                     // velocity in separate records and the data from
-                     // both goes into x.
-                  gps->vel[i] = navIn.x[i];
-                  if (isC && (navIn.sig[i] >= 0))
-                  {
-                     gps->velSig[i] = ::pow(head.basePV, navIn.sig[i]);
-                  }
-               }
+               else if (isC && (navIn.sig[i] >= 0))
+                  gps->velSig[i] = ::pow(head.basePV, navIn.sig[i]);
             }
             break;
       }
@@ -417,18 +410,11 @@ namespace gpstk
       {
          case 'P':
             gps->timeStamp = navIn.time;
+            gps->clkBias = navIn.clk;
             if (navIn.correlationFlag)
-            {
-               gps->biasSig = navIn.sdev[3];
-            }
-            else
-            {
-               gps->clkBias = navIn.clk;
-               if (isC && (navIn.sig[3] >= 0))
-               {
-                  gps->biasSig = ::pow(head.baseClk, navIn.sig[3]);
-               }
-            }
+               gps->biasSig = navIn.sdev[3] * 1e-6;
+            else if (isC && (navIn.sig[3] >= 0))
+               gps->biasSig = ::pow(head.baseClk, navIn.sig[3]) * 1e-6;
             gps->signal.sat = navIn.sat;
             gps->signal.xmitSat = navIn.sat;
             gps->signal.system = navIn.sat.system;
@@ -440,19 +426,11 @@ namespace gpstk
             break;
          case 'V':
             gps->timeStamp = navIn.time;
-               // SP3Data says x is in dm/s for velocity so we scale it to m/s
+            gps->clkDrift = navIn.clk * 1e-4;
             if (navIn.correlationFlag)
-            {
-               gps->driftSig = navIn.sdev[3];
-            }
-            else
-            {
-               gps->clkDrift = navIn.clk;
-               if (isC && (navIn.sig[3] >= 0))
-               {
-                  gps->driftSig = ::pow(head.baseClk, navIn.sig[3]);
-               }
-            }
+               gps->driftSig = navIn.sdev[3] * 1e-10;
+            else if (isC && (navIn.sig[3] >= 0))
+               gps->driftSig = ::pow(head.baseClk, navIn.sig[3]) * 1e-10;
             break;
       }
       return rv;
@@ -533,6 +511,11 @@ namespace gpstk
       std::vector<std::vector<double>> posData(3), posSigData(3), velData(3),
          velSigData(3), accData(3), accSigData(3);
       CommonTime firstTime(ti1->second->timeStamp);
+         // This flag is only used to decide whether to compute sigmas
+         // or use existing ones.  It is expected that for exact time
+         // matches, navData will already have any sigma data filled
+         // in.
+      bool isExact = false;
       unsigned idx = 0;
          // posData etc are 2D arrays, where the first dimension
          // is positional, x=0,y=1,z=2 and the 2nd dimension is
@@ -553,6 +536,8 @@ namespace gpstk
       {
          // cerr << "  idx=" << idx << endl;
          tdata[idx] = ti2->second->timeStamp - firstTime;
+         if ((idx == halfOrder) && (ti2->second->timeStamp == when))
+            isExact = true;
          OrbitDataSP3 *nav = dynamic_cast<OrbitDataSP3*>(
             ti2->second.get());
          // cerr << "  nav=" << nav << endl;
@@ -567,6 +552,9 @@ namespace gpstk
             posData[i][idx] = nav->pos[i];
             velData[i][idx] = nav->vel[i];
             accData[i][idx] = nav->acc[i];
+            posSigData[i][idx] = nav->posSig[i];
+            velSigData[i][idx] = nav->velSig[i];
+            accSigData[i][idx] = nav->accSig[i];
             haveVel |= (nav->vel[i] != 0.0);
             haveAcc |= (nav->acc[i] != 0.0);
          }
@@ -592,39 +580,72 @@ namespace gpstk
          // Interpolate XYZ position/velocity/acceleration.
       for (unsigned i = 0; i < 3; i++)
       {
-         if (haveVel)
+         if (haveVel && haveAcc)
          {
-               /** @todo figure out what the heck PositionSatStore is
-                * doing and duplicate it here. */
-               //osp3->posSig[i] = RSS(posSigData[i][
-            if (haveAcc)
+            osp3->pos[i] = LagrangeInterpolation(tdata,posData[i],dt,err);
+            osp3->vel[i] = LagrangeInterpolation(tdata,velData[i],dt,err);
+            osp3->acc[i] = LagrangeInterpolation(tdata,accData[i],dt,err);
+            unsigned Nhi = halfOrder, Nlow=halfOrder-1;
+            // cerr << "!isExact sigP[" << i << "][" << Nhi << "] = " << posSigData[i][Nhi] << endl
+            //      << "         sigP[" << i << "][" << Nlow << "] = " << posSigData[i][Nlow] << endl
+            //      << "         sigV[" << i << "][" << Nhi << "] = " << velSigData[i][Nhi] << endl
+            //      << "         sigV[" << i << "][" << Nlow << "] = " << velSigData[i][Nlow] << endl
+            //      << "         sigA[" << i << "][" << Nhi << "] = " << accSigData[i][Nhi] << endl
+            //      << "         sigA[" << i << "][" << Nlow << "] = " << accSigData[i][Nlow] << endl;
+            if (!isExact)
             {
-               osp3->pos[i] = LagrangeInterpolation(tdata,posData[i],dt,
-                                                    err);
-               osp3->vel[i] = LagrangeInterpolation(tdata,velData[i],dt,
-                                                    err);
-               osp3->acc[i] = LagrangeInterpolation(tdata,accData[i],dt,
-                                                    err);
+               osp3->posSig[i] = RSS(posSigData[i][halfOrder-1],
+                                     posSigData[i][halfOrder]);
+               osp3->velSig[i] = RSS(velSigData[i][halfOrder-1],
+                                     velSigData[i][halfOrder]);
+               osp3->accSig[i] = RSS(accSigData[i][halfOrder-1],
+                                     accSigData[i][halfOrder]);
+               // cerr << "1 RSS(posSigData[" << i << "][" << (halfOrder-1)
+               //      << "],posSigData[" << i << "][" << halfOrder << "]) = "
+               //      << osp3->posSig[i] << endl;
             }
-            else // if (!haveAcc)
+         }
+         else if (haveVel && !haveAcc)
+         {
+            osp3->pos[i] = LagrangeInterpolation(tdata,posData[i],dt,err);
+            LagrangeInterpolation(tdata, velData[i], dt, osp3->vel[i],
+                                  osp3->acc[i]);
+            osp3->acc[i] *= 0.1;
+            unsigned Nhi = halfOrder, Nlow=halfOrder-1;
+            // cerr << "!isExact sigP[" << i << "][" << Nhi << "] = " << posSigData[i][Nhi] << endl
+            //      << "         sigP[" << i << "][" << Nlow << "] = " << posSigData[i][Nlow] << endl
+            //      << "         sigV[" << i << "][" << Nhi << "] = " << velSigData[i][Nhi] << endl
+            //      << "         sigV[" << i << "][" << Nlow << "] = " << velSigData[i][Nlow] << endl
+            //      << "         sigA[" << i << "][" << Nhi << "] = " << accSigData[i][Nhi] << endl
+            //      << "         sigA[" << i << "][" << Nlow << "] = " << accSigData[i][Nlow] << endl;
+            if (!isExact)
             {
-               osp3->pos[i] = LagrangeInterpolation(tdata,posData[i],dt,
-                                                    err);
-               LagrangeInterpolation(tdata, velData[i], dt, osp3->vel[i],
-                                     osp3->acc[i]);
+               osp3->posSig[i] = RSS(posSigData[i][halfOrder-1],
+                                     posSigData[i][halfOrder]);
+               osp3->velSig[i] = RSS(velSigData[i][halfOrder-1],
+                                     velSigData[i][halfOrder]);
             }
+            // cerr << "2 RSS(posSigData[" << i << "][" << (halfOrder-1)
+            //      << "],posSigData[" << i << "][" << halfOrder << "]) = "
+            //      << osp3->posSig[i] << endl;
          }
          else
          {
-               // It would be a strange case to have
-               // acceleration data but no velocity data, so
-               // derive both.
+               // have position, must derive velocity and acceleration
             LagrangeInterpolation(tdata, posData[i], dt, osp3->pos[i],
                                   osp3->vel[i]);
             osp3->vel[i] *= 10000.; // km/sec to dm/sec
                // PositionSatStore doesn't derive
                // acceleration in this case, near as I can
                // tell.
+            if (!isExact)
+            {
+               osp3->posSig[i] = RSS(posSigData[i][halfOrder-1],
+                                     posSigData[i][halfOrder]);
+            }
+            // cerr << "3 RSS(posSigData[" << i << "][" << (halfOrder-1)
+            //      << "],posSigData[" << i << "][" << halfOrder << "]) = "
+            //      << osp3->posSig[i] << endl;
          }
       } // for (unsigned i = 0; i < 3; i++)
       // for (unsigned i = 0; i < 3; i++)
@@ -641,9 +662,16 @@ namespace gpstk
                   const CommonTime& when, NavDataPtr& navData)
    {
       // cerr << "  start interpolating clock, distance = " << std::distance(ti1,ti3) << endl;
-      std::vector<double> tdata(2*halfOrder), biasData(2*halfOrder),
-         driftData(2*halfOrder), drRateData(2*halfOrder);
+      std::vector<double> tdata(2*halfOrder),
+         biasData(2*halfOrder), biasSigData(2*halfOrder),
+         driftData(2*halfOrder), driftSigData(2*halfOrder),
+         drRateData(2*halfOrder), drRateSigData(2*halfOrder);
       CommonTime firstTime(ti1->second->timeStamp);
+         // This flag is only used to decide whether to compute sigmas
+         // or use existing ones.  It is expected that for exact time
+         // matches, navData will already have any sigma data filled
+         // in.
+      bool isExact = false;
       unsigned idx = 0;
       bool haveDrift = false, haveDriftRate = false;
       NavMap::iterator ti2;
@@ -651,6 +679,8 @@ namespace gpstk
       {
          // cerr << "  idx=" << idx << endl;
          tdata[idx] = ti2->second->timeStamp - firstTime;
+         if ((idx == halfOrder) && (ti2->second->timeStamp == when))
+            isExact = true;
          OrbitDataSP3 *nav = dynamic_cast<OrbitDataSP3*>(
             ti2->second.get());
          // cerr << "  nav=" << nav << endl;
@@ -658,6 +688,9 @@ namespace gpstk
          biasData[idx] = nav->clkBias;
          driftData[idx] = nav->clkDrift;
          drRateData[idx] = nav->clkDrRate;
+         biasSigData[idx] = nav->biasSig;
+         driftSigData[idx] = nav->driftSig;
+         drRateSigData[idx] = nav->drRateSig;
          haveDrift |= (nav->clkDrift != 0.0);
          haveDriftRate |= (nav->clkDrRate != 0.0);
       }
@@ -667,21 +700,61 @@ namespace gpstk
       if (haveDrift && haveDriftRate)
       {
          osp3->clkBias = LagrangeInterpolation(tdata,biasData,dt,err);
-         osp3->clkDrift = LagrangeInterpolation(tdata,driftData,dt,
-                                                err);
-         osp3->clkDrRate = LagrangeInterpolation(tdata,drRateData,dt,
-                                                 err);
+         osp3->clkDrift = LagrangeInterpolation(tdata,driftData,dt,err);
+         osp3->clkDrRate = LagrangeInterpolation(tdata,drRateData,dt,err);
+         if (!isExact)
+         {
+            osp3->biasSig = RSS(biasSigData[halfOrder-1],
+                                biasSigData[halfOrder]);
+            osp3->driftSig = RSS(driftSigData[halfOrder-1],
+                                 driftSigData[halfOrder]);
+            osp3->drRateSig = RSS(drRateSigData[halfOrder-1],
+                                  drRateSigData[halfOrder]);
+            // cerr << " biasSig = " << osp3->biasSig << endl
+            //      << " driftSig = " << osp3->driftSig << endl
+            //      << " drRateSig = " << osp3->drRateSig << endl;
+         }
       }
       else if (haveDrift && !haveDriftRate)
       {
          osp3->clkBias = LagrangeInterpolation(tdata,biasData,dt,err);
          LagrangeInterpolation(tdata, driftData, dt, osp3->clkDrift,
                                osp3->clkDrRate);
+         if (!isExact)
+         {
+            osp3->biasSig = RSS(biasSigData[halfOrder-1],
+                                biasSigData[halfOrder]);
+            osp3->driftSig = RSS(driftSigData[halfOrder-1],
+                                 driftSigData[halfOrder]);
+            // cerr << " biasSig = " << osp3->biasSig << endl
+            //      << " driftSig = " << osp3->driftSig << endl;
+         }
+            // linear interpolation of drift rate
+            /** @todo this doesn't look right to me because it
+             * seems like it should be
+             * driftSigData[Nhi]-driftSigData[low] but this is how
+             * it is in SP3EphemerisStore. */
+         osp3->drRateSig = osp3->driftSig /
+            (tdata[halfOrder]-tdata[halfOrder-1]);
+         // cerr << "drRateSig set to " << osp3->driftSig << " / " << (tdata[halfOrder-1]-tdata[halfOrder]) << endl;
       }
       else
       {
          LagrangeInterpolation(tdata, biasData, dt, osp3->clkBias,
                                osp3->clkDrift);
+         if (!isExact)
+         {
+            osp3->biasSig = RSS(biasSigData[halfOrder-1],
+                                biasSigData[halfOrder]);
+            // cerr << " biasSig = " << osp3->biasSig << endl;
+         }
+            // linear interpolation of drift
+            /** @todo this doesn't look right to me because it
+             * seems like it should be
+             * biasSigData[Nhi]-biasSigData[low] but this is how
+             * it is in SP3EphemerisStore. */
+         osp3->driftSig = osp3->biasSig /
+            (tdata[halfOrder]-tdata[halfOrder-1]);
       }
    }
 } // namespace gpstk

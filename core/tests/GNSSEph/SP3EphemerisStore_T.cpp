@@ -876,34 +876,35 @@ public:
          std::string fileSep = gpstk::getFileSep();
 
          string data3c = dataFilePath + fileSep +
-            "test_input_SP3c.sp3";
+            "test_input_SP3c_pos.sp3";
          cerr << "loading " << data3c << endl;
          SP3EphemerisStore store;
          store.loadFile(data3c);
          cerr << "size = " << store.size() << endl;
          SatID sid15(15,SatelliteSystem::GPS);
          CommonTime ttag = gpstk::CivilTime(2011,10,9,2,1,3,
+//         CommonTime ttag = gpstk::CivilTime(2011,10,9,3,0,0,
                                             gpstk::TimeSystem::GPS);
          PositionRecord prec = store.posStore.getValue(sid15, ttag);
          ClockRecord crec = store.clkStore.getValue(sid15, ttag);
-         cerr << setprecision(20) << "prec" << endl;
+         cerr << setprecision(20) << "prec" << endl
+              << "    Pos ";
          for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Pos[i];
-         cerr << endl;
+         cerr << endl << " sigPos ";
          for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigPos[i];
-         cerr << endl;
+         cerr << endl << "    Vel ";
          for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Vel[i];
-         cerr << endl;
+         cerr << endl << " sigVel ";
          for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigVel[i];
-         cerr << endl;
+         cerr << endl << "    Acc ";
          for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Acc[i];
-         cerr << endl;
+         cerr << endl << " sigAcc ";
          for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigAcc[i];
-         cerr << endl;
-         cerr << "crec" << endl
-              << " " << crec.bias << " " << crec.sig_bias
-              << " " << crec.drift << " " << crec.sig_drift
-              << " " << crec.accel << " " << crec.sig_accel
-              << endl;
+         cerr << endl
+              << "crec" << endl
+              << " bias  " << crec.bias << " " << crec.sig_bias << endl
+              << " drift " << crec.drift << " " << crec.sig_drift << endl
+              << " accel " << crec.accel << " " << crec.sig_accel << endl;
       }
       catch (gpstk::Exception& exc)
       {
@@ -946,7 +947,7 @@ int main() // Main function to initialize and run all tests above
    errorTotal += testClass.getFinalTimeTest();
    errorTotal += testClass.getPositionTest();
    errorTotal += testClass.getVelocityTest();
-   // testClass.tempNonTest();
+   // testClass.notATest();
 
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 

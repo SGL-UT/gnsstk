@@ -66,6 +66,10 @@ public:
    unsigned findInterpTest();
       /// Test find with edge cases
    unsigned findEdgeTest();
+      /// Test find with an SP3c file which contains P/EP, V/EV records
+   unsigned sp3cPVTest();
+      /// Test find with an SP3c file which contains P/EP records (no V)
+   unsigned sp3cPTest();
       /** Use dynamic_cast to verify that the contents of nmm are the
        * right class.
        * @param[in] testFramework The test framework created by TUDEF,
@@ -208,7 +212,7 @@ findExactTest()
    TUASSERTFEPS(-10775.825536, uut->vel[0], 0.000001);
    TUASSERTFEPS(  2077.583886, uut->vel[1], 0.000001);
    TUASSERTFEPS(-28974.934472, uut->vel[2], 0.000001);
-   TUASSERTFEPS(-.252832, uut->clkDrift, 0.000001);
+   TUASSERTFEPS(-2.52832e-5, uut->clkDrift, 0.0000000001);
 
       // test find with exact epoch at end of file
    gpstk::CivilTime civ2(2001, 7, 22, 0, 45, 0, gpstk::TimeSystem::GPS);
@@ -246,7 +250,7 @@ findExactTest()
    TUASSERTFEPS( -15090.299480, uut->vel[0], 0.000001);
    TUASSERTFEPS(  13950.254271, uut->vel[1], 0.000001);
    TUASSERTFEPS(  20382.028718, uut->vel[2], 0.000001);
-   TUASSERTFEPS(       .008499, uut->clkDrift, 0.000001);
+   TUASSERTFEPS(      8.499e-7, uut->clkDrift, 0.0000000001);
 
       // test find with exact epoch in the middle of file
    gpstk::CivilTime civ3(2001, 7, 22, 0, 30, 0, gpstk::TimeSystem::GPS);
@@ -284,7 +288,7 @@ findExactTest()
    TUASSERTFEPS(   9547.031126, uut->vel[0], 0.000001);
    TUASSERTFEPS(    -35.054953, uut->vel[1], 0.000001);
    TUASSERTFEPS( -29243.893155, uut->vel[2], 0.000001);
-   TUASSERTFEPS(       .002133, uut->clkDrift, 0.000001);
+   TUASSERTFEPS(      2.133e-7, uut->clkDrift, 0.0000000001);
 
       // Test using data where velocity is missing and must be interpolated.
       // This test makes sure we're getting velocity data when there
@@ -708,6 +712,175 @@ findEdgeTest()
 }
 
 
+unsigned SP3NavDataFactory_T ::
+sp3cPVTest()
+{
+   TUDEF("SP3NavDataFactory", "addDataSource");
+   gpstk::SP3NavDataFactory fact;
+   gpstk::NavSatelliteID satID1(15, 15, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1,
+                                gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::WildSatID expSat1(15, gpstk::SatelliteSystem::GPS);
+   gpstk::NavMessageID nmid1(satID1, gpstk::NavMessageType::Ephemeris);
+   gpstk::CommonTime ct;
+   gpstk::NavDataPtr nd;
+   gpstk::OrbitDataSP3 *uut = nullptr;
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "test_input_SP3c.sp3";
+   TUASSERT(fact.addDataSource(fname));
+   TUASSERTE(size_t, 1500, fact.size());
+      // exact match
+   ct = gpstk::CivilTime(2011,10,9,3,0,0,gpstk::TimeSystem::GPS);
+   TUCSM("find");
+   TUASSERT(fact.find(nmid1, ct, nd, gpstk::SVHealth::Any,
+                      gpstk::NavValidityType::ValidOnly,
+                      gpstk::NavSearchOrder::User));
+   uut = dynamic_cast<gpstk::OrbitDataSP3*>(nd.get());
+   TUASSERTFE(10376.802922, uut->pos[0]);
+   TUASSERTFE(-12375.157793, uut->pos[1]);
+   TUASSERTFE(21068.993967, uut->pos[2]);
+   TUASSERTFE(240, uut->posSig[0]);
+   TUASSERTFE(431, uut->posSig[1]);
+   TUASSERTFE(95, uut->posSig[2]);
+   TUASSERTFE(13892.969748999999865, uut->vel[0]);
+   TUASSERTFE(22939.105573000000732, uut->vel[1]);
+   TUASSERTFE(6812.2288810000000012, uut->vel[2]);
+   TUASSERTFE(3739, uut->velSig[0]);
+   TUASSERTFE(7214, uut->velSig[1]);
+   TUASSERTFE(3199, uut->velSig[2]);
+      /// @note acc values not confirmed by SP3EphemerisStore
+   TUASSERTFE(0.16868203840330744381, uut->acc[0]);
+   TUASSERTFE(-0.0048099658207224796347, uut->acc[1]);
+   TUASSERTFE(-0.44889948984246021979, uut->acc[2]);
+   TUASSERTFE(0, uut->accSig[0]);
+   TUASSERTFE(0, uut->accSig[1]);
+   TUASSERTFE(0, uut->accSig[2]);
+   TUASSERTFE(-103.26419599999999832, uut->clkBias);
+   TUASSERTFE(0.0010629999999999999259, uut->biasSig);
+   TUASSERTFE(1.3259000000000000871e-06, uut->clkDrift);
+   TUASSERTFE(7.2199999999999998003e-08, uut->driftSig);
+      /// @note drift rate value not confirmed by SP3EphemerisStore
+   TUASSERTFE(-2.1102292768909279853e-13, uut->clkDrRate);
+   TUASSERTFE(8.0222222222222225231e-11, uut->drRateSig);
+      // interpolated match
+   ct = gpstk::CivilTime(2011,10,9,2,1,3,gpstk::TimeSystem::GPS);
+   TUASSERT(fact.find(nmid1, ct, nd, gpstk::SVHealth::Any,
+                      gpstk::NavValidityType::ValidOnly,
+                      gpstk::NavSearchOrder::User));
+   uut = dynamic_cast<gpstk::OrbitDataSP3*>(nd.get());
+   TUASSERTFE(6606.1838019497754431, uut->pos[0]);
+   TUASSERTFE(-20053.58342304438338, uut->pos[1]);
+   TUASSERTFE(16014.263355443908949, uut->pos[2]);
+   TUASSERTFE(196.15555052049893447, uut->posSig[0]);
+   TUASSERTFE(570.07017111931054387, uut->posSig[1]);
+   TUASSERTFE(220.51077071199944157, uut->posSig[2]);
+   TUASSERTFE(7401.8992499702417263, uut->vel[0]);
+   TUASSERTFE(19171.152303792601742, uut->vel[1]);
+   TUASSERTFE(21143.244357782645238, uut->vel[2]);
+   TUASSERTFE(4345.3593637350641075, uut->velSig[0]);
+   TUASSERTFE(8512.6561072323365806, uut->velSig[1]);
+   TUASSERTFE(13030.428695940898251, uut->velSig[2]);
+   TUASSERTFE(0.17323990334114644507, uut->acc[0]);
+   TUASSERTFE(0.21491163411773372971, uut->acc[1]);
+   TUASSERTFE(-0.34305460226999479056, uut->acc[2]);
+   TUASSERTFE(0, uut->accSig[0]);
+   TUASSERTFE(0, uut->accSig[1]);
+   TUASSERTFE(0, uut->accSig[2]);
+   TUASSERTFE(-103.26888741910860858, uut->clkBias);
+   TUASSERTFE(0.0012506254435281571272, uut->biasSig);
+   TUASSERTFE(1.3265841739403660333e-06, uut->clkDrift);
+   TUASSERTFE(9.9773393246897238821e-08, uut->driftSig);
+   TUASSERTFE(-2.5152847174005956486e-13, uut->clkDrRate);
+   TUASSERTFE(1.1085932582988582625e-10, uut->drRateSig);
+   TURETURN();
+}
+
+
+unsigned SP3NavDataFactory_T ::
+sp3cPTest()
+{
+   TUDEF("SP3NavDataFactory", "addDataSource");
+   gpstk::SP3NavDataFactory fact;
+   gpstk::NavSatelliteID satID1(15, 15, gpstk::SatelliteSystem::GPS,
+                                gpstk::CarrierBand::L1,
+                                gpstk::TrackingCode::CA,
+                                gpstk::NavType::GPSLNAV);
+   gpstk::WildSatID expSat1(15, gpstk::SatelliteSystem::GPS);
+   gpstk::NavMessageID nmid1(satID1, gpstk::NavMessageType::Ephemeris);
+   gpstk::CommonTime ct;
+   gpstk::NavDataPtr nd;
+   gpstk::OrbitDataSP3 *uut = nullptr;
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "test_input_SP3c_pos.sp3";
+   TUASSERT(fact.addDataSource(fname));
+   TUASSERTE(size_t, 1500, fact.size());
+      // exact match
+   ct = gpstk::CivilTime(2011,10,9,3,0,0,gpstk::TimeSystem::GPS);
+   TUCSM("find");
+   TUASSERT(fact.find(nmid1, ct, nd, gpstk::SVHealth::Any,
+                      gpstk::NavValidityType::ValidOnly,
+                      gpstk::NavSearchOrder::User));
+   uut = dynamic_cast<gpstk::OrbitDataSP3*>(nd.get());
+   TUASSERTFE(10376.802922, uut->pos[0]);
+   TUASSERTFE(-12375.157793, uut->pos[1]);
+   TUASSERTFE(21068.993967, uut->pos[2]);
+   TUASSERTFE(240, uut->posSig[0]);
+   TUASSERTFE(431, uut->posSig[1]);
+   TUASSERTFE(95, uut->posSig[2]);
+   TUASSERTFE(13892.970831807802824, uut->vel[0]);
+   TUASSERTFE(22939.106487579352688, uut->vel[1]);
+   TUASSERTFE(6812.2288926808514589, uut->vel[2]);
+   TUASSERTFE(0, uut->velSig[0]);
+   TUASSERTFE(0, uut->velSig[1]);
+   TUASSERTFE(0, uut->velSig[2]);
+   TUASSERTFE(0, uut->acc[0]);
+   TUASSERTFE(0, uut->acc[1]);
+   TUASSERTFE(0, uut->acc[2]);
+   TUASSERTFE(0, uut->accSig[0]);
+   TUASSERTFE(0, uut->accSig[1]);
+   TUASSERTFE(0, uut->accSig[2]);
+   TUASSERTFE(-103.26419599999999832, uut->clkBias);
+   TUASSERTFE(0.0010629999999999999259, uut->biasSig);
+   TUASSERTFE(1.3253443562296393209e-06, uut->clkDrift);
+   TUASSERTFE(1.1811111111111110024e-06, uut->driftSig);
+   TUASSERTFE(0, uut->clkDrRate);
+   TUASSERTFE(0, uut->drRateSig);
+      // interpolated match
+   ct = gpstk::CivilTime(2011,10,9,2,1,3,gpstk::TimeSystem::GPS);
+   TUASSERT(fact.find(nmid1, ct, nd, gpstk::SVHealth::Any,
+                      gpstk::NavValidityType::ValidOnly,
+                      gpstk::NavSearchOrder::User));
+   uut = dynamic_cast<gpstk::OrbitDataSP3*>(nd.get());
+   
+   TUASSERTFE(6606.1838019497745336, uut->pos[0]);
+   TUASSERTFE(-20053.583423044379742, uut->pos[1]);
+   TUASSERTFE(16014.263355443905311, uut->pos[2]);
+   TUASSERTFE(196.15555052049893447, uut->posSig[0]);
+   TUASSERTFE(570.07017111931054387, uut->posSig[1]);
+   TUASSERTFE(220.51077071199944157, uut->posSig[2]);
+   TUASSERTFE(7401.9009258281712391, uut->vel[0]);
+   TUASSERTFE(19171.152904308662983, uut->vel[1]);
+   TUASSERTFE(21143.244419124275737, uut->vel[2]);
+   TUASSERTFE(0, uut->velSig[0]);
+   TUASSERTFE(0, uut->velSig[1]);
+   TUASSERTFE(0, uut->velSig[2]);
+   TUASSERTFE(0, uut->acc[0]);
+   TUASSERTFE(0, uut->acc[1]);
+   TUASSERTFE(0, uut->acc[2]);
+   TUASSERTFE(0, uut->accSig[0]);
+   TUASSERTFE(0, uut->accSig[1]);
+   TUASSERTFE(0, uut->accSig[2]);
+   TUASSERTFE(-103.26888741910859437, uut->clkBias);
+   TUASSERTFE(0.0012506254435281571272, uut->biasSig);
+   TUASSERTFE(1.3266807555790851962e-06, uut->clkDrift);
+   TUASSERTFE(1.3895838261423968146e-06, uut->driftSig);
+   TUASSERTFE(0, uut->clkDrRate);
+   TUASSERTFE(0, uut->drRateSig);
+   TURETURN();
+}
+
+
 template <class NavClass>
 void SP3NavDataFactory_T ::
 verifyDataType(gpstk::TestUtil& testFramework,
@@ -736,6 +909,8 @@ int main()
    errorTotal += testClass.findExactTest();
    errorTotal += testClass.findInterpTest();
    errorTotal += testClass.findEdgeTest();
+   errorTotal += testClass.sp3cPVTest();
+   errorTotal += testClass.sp3cPTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
