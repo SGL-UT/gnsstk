@@ -198,6 +198,7 @@ build_windows:
   tags:
     - win10
   script:
+    - dir env:
 # incremental builds
 #    - if not exist "%CI_PROJECT_DIR%/build/" mkdir "%CI_PROJECT_DIR%/build"
 # non-incremental builds
@@ -417,6 +418,7 @@ test_windows:
   tags:
     - win10
   script:
+    - dir env:
     - cd build
     - cmake --build . --target RUN_TESTS --config Release
   artifacts:
@@ -474,6 +476,7 @@ user_install_windows:
   tags:
     - win10
   script:
+    - dir env:
     - cd build
     - cmake --build . --config Release --target install
   artifacts:
@@ -742,6 +745,7 @@ sgltk_windows:
   tags:
     - win10
   script:
+    - dir env:
     - cd build
     - git clone -b %SGLTK_BRANCH% https://repositories.arlut.utexas.edu/sgl/sgltk.git
     - cd sgltk
