@@ -90,6 +90,10 @@ add_executable(PNBNavDataFactory_T PNBNavDataFactory_T.cpp)
 target_link_libraries(PNBNavDataFactory_T gpstk)
 add_test(PNBNavDataFactory_T PNBNavDataFactory_T)
 
+add_executable(PNBMultiGNSSNavDataFactory_T PNBMultiGNSSNavDataFactory_T.cpp)
+target_link_libraries(PNBMultiGNSSNavDataFactory_T gpstk)
+add_test(PNBMultiGNSSNavDataFactory_T PNBMultiGNSSNavDataFactory_T)
+
 add_executable(PNBGPSLNavDataFactory_T PNBGPSLNavDataFactory_T.cpp)
 target_link_libraries(PNBGPSLNavDataFactory_T gpstk)
 add_test(PNBGPSLNavDataFactory_T PNBGPSLNavDataFactory_T)

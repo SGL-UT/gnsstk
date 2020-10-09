@@ -10,7 +10,16 @@ namespace gpstk
 
       /** Define a wrapper class for all known PNBNavDataFactory
        * classes, allowing a single class to be used to handle all
-       * GNSSes. */
+       * GNSSes. 
+       * @warning Because the factories used by this class are
+       *   maintained in a static object, the validity filters and
+       *   type filters are essentially "non-volatile" across object
+       *   instantiations.  That is, if you create one
+       *   PNBMultiGNSSNavDataFactory, change the filter settings,
+       *   destroy it and create another, the filter settings will be
+       *   the same as they were in the destroyed object.  Do not
+       *   expect the filter settings to be reinitialized with each
+       *   constructed PNBMultiGNSSNavDataFactory. */
    class PNBMultiGNSSNavDataFactory : public PNBNavDataFactory
    {
    public:
