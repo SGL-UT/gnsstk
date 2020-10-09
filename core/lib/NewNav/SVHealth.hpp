@@ -6,6 +6,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /// Identify different types of SV health states.
    enum class SVHealth
    {
@@ -28,6 +31,9 @@ namespace gpstk
          /// Convert a string name to an SVHealth
       SVHealth asSVHealth(const std::string& s) throw();
    }
+
+      //@}
+
 }
 
 #endif // GPSTK_SVHEALTH_HPP

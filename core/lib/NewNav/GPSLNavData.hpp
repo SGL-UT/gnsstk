@@ -5,6 +5,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Class that defines nav message data information that is
        * shared between GPS LNav almanac and ephemeris messages.
        * @note The data in this class should represent subframe 1's
@@ -25,9 +28,12 @@ namespace gpstk
 
       uint32_t pre; ///< The TLM preamble from word 1 of the subframe.
       uint32_t tlm; ///< The TLM message from word 1 of the subframe.
-      bool asFlag;  ///< Anti-spoof flag from HOW
       bool alert;   ///< Alert flag from HOW
+      bool asFlag;  ///< Anti-spoof flag from HOW
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_GPSLNAVDATA_HPP

@@ -6,6 +6,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Abstract base class for classes that provide satellite
        * health information. */
    class NavHealthData : public NavData
@@ -19,6 +22,9 @@ namespace gpstk
           * (not xmitSat). */
       virtual SVHealth getHealth() const = 0;
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_NAVHEALTHDATA_HPP

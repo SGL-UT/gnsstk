@@ -10,6 +10,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /// Class used to identify navigation data signal types.
    class NavSignalID
    {
@@ -60,6 +63,9 @@ namespace gpstk
         << StringUtils::asString(nsid.nav);
       return s;
    }
+
+      //@}
+
 }
 
 #endif // GPSTK_NAVSIGNALID_HPP

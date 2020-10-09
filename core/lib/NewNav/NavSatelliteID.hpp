@@ -4,9 +4,14 @@
 #include <iostream>
 #include "NavSignalID.hpp"
 #include "WildSatID.hpp"
+#include "ObsID.hpp"
+#include "NavID.hpp"
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Class for identifying the transmitting satellite of a
        * navigation message, as well as the "subject" satellite, in
        * the case of almanac data where the navigation data may be for
@@ -34,6 +39,18 @@ namespace gpstk
                      SatelliteSystem sys, CarrierBand car, TrackingCode track,
                      NavType nmt);
 
+         /** Initialize all data to specific values.  This is intended
+          * to be used when decoding GPS LNAV subframe 5 page 25, but
+          * it may have other uses.
+          * @param[in] subj The ID of the satellite that nav data pertains to.
+          * @param[in] xmit The ID of the satellite that transmitted
+          *   the nav data.
+          * @param[in] oid The carrier band/tracking code this signal
+          *   originates from.
+          * @param[in] navid The navigation message format of this signal. */
+      NavSatelliteID(unsigned long subj, const SatID& xmit, const ObsID& oid,
+                     const NavID& navid);
+
          /** Initialize system, sat to the given value, and the
           * remaining data members to wildcards.
           * @param[in] subj The satellite that nav data pertains to. */
@@ -58,6 +75,9 @@ namespace gpstk
         << static_cast<NavSignalID>(nsid);
       return s;
    }
+
+      //@}
+
 }
 
 #endif // GPSTK_NAVSATELLITEID_HPP

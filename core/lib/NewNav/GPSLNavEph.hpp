@@ -5,6 +5,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /// Class to distinguish between Almanac data and Ephemeris data.
    class GPSLNavEph : public GPSLNavData
    {
@@ -56,10 +59,10 @@ namespace gpstk
       uint8_t healthBits; ///< 6 SV health bits from subframe 1, word 3.
       uint8_t uraIndex;   ///< 4-bit URA index from subframe 1, word 3.
       double tgd;         ///< Ionospheric group delay in seconds.
-      bool asFlag2;       ///< Anti-spoof flag from SF2 HOW.
-      bool asFlag3;       ///< Anti-spoof flag from SF3 HOW.
       bool alert2;        ///< Alert flag from SF2 HOW
       bool alert3;        ///< Alert flag from SF3 HOW
+      bool asFlag2;       ///< Anti-spoof flag from SF2 HOW.
+      bool asFlag3;       ///< Anti-spoof flag from SF3 HOW.
       L2Codes codesL2;    ///< Code on L2 in-phase component.
          /** L2 P data flag from subframe 1, word 3.
           * @note This retains the behavior as described in
@@ -75,6 +78,9 @@ namespace gpstk
          /// Convert L2Codes to a printable string for dump().
       std::string asString(GPSLNavEph::L2Codes e);
    }
+
+      //@}
+
 }
 
 #endif // GPSTK_GPSLNAVEPH_HPP

@@ -5,6 +5,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /// Define an interface for loading nav data from a file
    class NavDataFactoryWithStoreFile : public NavDataFactoryWithStore
    {
@@ -26,6 +29,9 @@ namespace gpstk
       virtual bool loadIntoMap(const std::string& filename,
                                NavMessageMap& navMap) = 0;
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_NAVDATAFACTORYWITHSTOREFILE_HPP

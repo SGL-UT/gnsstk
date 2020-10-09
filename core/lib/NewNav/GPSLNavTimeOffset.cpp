@@ -1,6 +1,8 @@
 #include "GPSLNavTimeOffset.hpp"
 #include "GPSWeekSecond.hpp"
 
+using namespace std;
+
 static const unsigned maxDN = 7;
 static const double maxtot = 602112.0;
 static const double mintot = 0;
@@ -40,6 +42,41 @@ namespace gpstk
          return true;
       }
       return false;
+   }
+
+
+   void GPSLNavTimeOffset ::
+   dump(std::ostream& s, Detail dl)
+   {
+      const ios::fmtflags oldFlags = s.flags();
+      NavData::dump(s,dl);
+      double offset;
+      switch (dl)
+      {
+         case Detail::OneLine:
+            break;
+         case Detail::Brief:
+               // brief just shows the offset as of the reference time.
+            getOffset(TimeSystem::GPS, TimeSystem::UTC,
+                      gpstk::GPSWeekSecond(wnt,tot), offset);
+            s << "GPS-UTC offset = " << offset << endl;
+            break;
+         case Detail::Full:
+            getOffset(TimeSystem::GPS, TimeSystem::UTC,
+                      gpstk::GPSWeekSecond(wnt,tot), offset);
+            s << setprecision(16)
+              << "  A0         = " << a0 << endl
+              << "  A1         = " << a1 << endl
+              << "  delta tLS  = " << deltatLS << endl
+              << "  tot        = " << tot << endl
+              << "  WNt        = " << wnt << endl
+              << "  WN(LSF)    = " << wnLSF << endl
+              << "  DN         = " << dn << endl
+              << "  delta tLSF = " << deltatLSF << endl
+              << "  offset(ref)= " << offset << endl;
+            break;
+      }
+      s.flags(oldFlags);
    }
 
 

@@ -5,6 +5,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /// Base class for orbit information that uses Keplerian parameters.
    class OrbitDataKepler : public OrbitData
    {
@@ -39,6 +42,10 @@ namespace gpstk
          /** Dump the harmonic corrections section of a full detail dump.
           * @param[in,out] s The stream to write the data to. */
       virtual void dumpHarmonics(std::ostream& s);
+         /** This is just a method for making the dump output say
+          * "almanac" vs "ephemeris" when appropriate. */
+      virtual std::string getDataType() const
+      { return "Ephemeris"; }
 
          /** Compute the satellites position and velocity at a time.
           * @note Defaults to using the GPS ellipsoid parameters.
@@ -119,6 +126,9 @@ namespace gpstk
       CommonTime beginFit; ///< Time at beginning of fit interval
       CommonTime endFit;   ///< Time at end of fit interval
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_ORBITDATAKEPLER_HPP

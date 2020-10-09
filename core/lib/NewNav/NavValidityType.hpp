@@ -6,6 +6,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Enumeration used to determine how to handle valid and
        * invalid navigation data.  Validity is defined in the
        * individual ICDs, where ranges and such are defined. */
@@ -29,6 +32,9 @@ namespace gpstk
          /// Convert a string name to an NavValidityType
       NavValidityType asNavValidityType(const std::string& s) throw();
    }
+
+      //@}
+
 }
 
 #endif // GPSTK_NAVVALIDITYTYPE_HPP

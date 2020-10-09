@@ -5,6 +5,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Implement a satellite identifier that accepts wildcards for
        * system and/or satellite number. */
    class WildSatID : public SatID
@@ -42,6 +45,9 @@ namespace gpstk
       bool wildSat; ///< If true, any satellite matches.
       bool wildSys; ///< If true, any system matches.
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_WILDSATID_HPP

@@ -5,6 +5,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Wrapper for the 6-bit or 8-bit health status in GPS LNav
        * subframe 1, word 3, SV/Page ID 1-32, 51, and 63. */
    class GPSLNavHealth : public NavHealthData
@@ -34,6 +37,12 @@ namespace gpstk
       CommonTime getUserTime() const override
       { return timeStamp + 6.0; }
 
+         /** Print the contents of this object in a human-readable
+          * format.
+          * @param[in,out] s The stream to write the data to.
+          * @param[in] dl The level of detail the output should contain. */
+      void dump(std::ostream& s, Detail dl) override;
+
          /** Defines the status of NavData::signal, specifically sat
           * (not xmitSat).
           * @return Healthy if no health bits are set. */
@@ -43,6 +52,9 @@ namespace gpstk
          /// 6-bit or 8-bit health.
       uint8_t svHealth;
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_GPSLNAVHEALTH_HPP

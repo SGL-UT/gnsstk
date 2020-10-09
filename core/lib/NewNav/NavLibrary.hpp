@@ -7,6 +7,13 @@
 
 namespace gpstk
 {
+      /** @defgroup NavFactory Navigation Message Decoding and Finding
+       * @todo write something!
+       */
+
+      /// @ingroup NavFactory
+      //@{
+
       /** Provide a high-level interface for finding navigation data.
        * Simplified example:
        * \code
@@ -153,6 +160,9 @@ namespace gpstk
           * searches simpler and/or quicker. */
       NavDataFactoryMap factories;
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_NAVLIBRARY_HPP

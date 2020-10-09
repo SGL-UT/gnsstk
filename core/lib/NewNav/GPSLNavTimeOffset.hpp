@@ -6,6 +6,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Defines the interface for classes that provide the ability
        * to convert between time systems, using data extracted from
        * GPS navigation messages. */
@@ -30,6 +33,12 @@ namespace gpstk
           */
       CommonTime getUserTime() const override
       { return timeStamp + 6.0; }
+
+         /** Print the contents of this object in a human-readable
+          * format.
+          * @param[in,out] s The stream to write the data to.
+          * @param[in] dl The level of detail the output should contain. */
+      void dump(std::ostream& s, Detail dl) override;
 
          /** Get the offset, in seconds, to apply to times when
           * converting them from fromSys to toSys.
@@ -63,6 +72,9 @@ namespace gpstk
       unsigned dn;      ///< Day number for future leap second.
       double deltatLSF; ///< Scheduled future time increment due to leap sec.
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_GPSLNAVTIMEOFFSET_HPP

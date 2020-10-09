@@ -7,6 +7,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Defines the interface for classes that provide the ability
        * to convert between time systems, using data extracted from
        * GNSS navigation messages. */
@@ -46,6 +49,9 @@ namespace gpstk
           * @return a set of supported time system conversion to/from pairs. */
       virtual TimeCvtSet getConversions() const = 0;
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_TIMEOFFSETDATA_HPP

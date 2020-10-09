@@ -7,6 +7,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Factory class for loading RINEX NAV (2, 3) data.
        * @note While in theory Y code and P code LNav are supported,
        *   RINEX NAV does not support the identification of the codes
@@ -69,6 +72,9 @@ namespace gpstk
           *   stamps are to be set. */
       static void fixTimeGPS(const Rinex3NavData& navIn, GPSLNavEph& navOut);
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_RINEXNAVDATAFACTORY_HPP

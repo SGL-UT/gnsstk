@@ -6,6 +6,8 @@
 #include "MultiFormatNavDataFactory.hpp"
 #include "RinexNavDataFactory.hpp"
 #include "SP3NavDataFactory.hpp"
+#include "PNBMultiGNSSNavDataFactory.hpp"
+#include "PNBGPSLNavDataFactory.hpp"
 
 namespace gpstk
 {
@@ -22,6 +24,12 @@ namespace gpstk
       /** @note This MUST be defined before the initializer otherwise
        * you'll run into static initialization problems. */
    NavDataFactoryMap MultiFormatNavDataFactory::factories;
+
+      // Don't try and initialize this, you really need to use
+      // addFactory to do it properly.
+      /** @note This MUST be defined before the initializer otherwise
+       * you'll run into static initialization problems. */
+   PNBNavDataFactoryMap PNBMultiGNSSNavDataFactory::factories;
 
       /** This class is not for public use.  It is used to create a
        * singleton object to add supported formats to
@@ -50,6 +58,10 @@ namespace gpstk
             // ignore the return value
          MultiFormatNavDataFactory::addFactory(ndfp1);
          MultiFormatNavDataFactory::addFactory(ndfp2);
+
+         gpstk::PNBNavDataFactoryPtr
+            lnav(std::make_shared<gpstk::PNBGPSLNavDataFactory>());
+         PNBMultiGNSSNavDataFactory::addFactory(NavType::GPSLNAV,lnav);
       }
    };
 

@@ -25,6 +25,16 @@ namespace gpstk
 
 
    NavSatelliteID ::
+   NavSatelliteID(unsigned long subj, const SatID& xmit, const ObsID& oid,
+                  const NavID& navid)
+         : NavSignalID(xmit.system, oid.band, oid.code, navid.navType),
+           sat(subj, xmit.system),
+           xmitSat(xmit)
+   {
+   }
+
+
+   NavSatelliteID ::
    NavSatelliteID(const WildSatID& subj)
          : NavSignalID(subj.system, gpstk::CarrierBand::Any,
                        gpstk::TrackingCode::Any, gpstk::NavType::Any),

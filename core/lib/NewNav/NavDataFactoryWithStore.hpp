@@ -6,6 +6,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Define methods and data structures for internally storing
        * navigation message data internally as read from some
        * source. */
@@ -132,6 +135,9 @@ namespace gpstk
          /// Grant access to MultiFormatNavDataFactory for various functions.
       friend class MultiFormatNavDataFactory;
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_NAVDATAFACTORYWITHSTORE_HPP

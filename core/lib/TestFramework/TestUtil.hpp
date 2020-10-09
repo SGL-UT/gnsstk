@@ -615,7 +615,8 @@ namespace gpstk
       if (testMsg.empty())
       {
          std::ostringstream ostr;
-         ostr << "abs(" << expected << " - " << got << ") = " << err;
+         ostr << std::setprecision(20)
+              << "abs(" << expected << " - " << got << ") = " << err;
          if (good)
             ostr << " <= ";
          else

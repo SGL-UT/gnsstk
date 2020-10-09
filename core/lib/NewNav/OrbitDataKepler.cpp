@@ -31,7 +31,8 @@ namespace gpstk
          // "header"
       s << "****************************************************************"
         << "************" << endl
-        << "Broadcast Ephemeris (Engineering Units)" // - " << getNameLong();
+        << "Broadcast " << getDataType() << " (Engineering Units)"
+            // - " << getNameLong();
         << endl
         << endl
         << "PRN : " << setw(2) << signal.sat << " / "

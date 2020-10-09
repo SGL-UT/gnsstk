@@ -71,4 +71,34 @@ namespace gpstk
       return rv;
    }
 
+
+   long timeAdjust8BitWeekRollover(long toCorrectWeek, long& refWeek)
+   {
+         // gotta use signed ints so that the weeks can actually go
+         // negative when doing subtraction and comparison.
+      long rv = toCorrectWeek;
+      if (refWeek == 0)
+      {
+            // One might be inclined to try to cache the refWeek value
+            // from the clock internally, but that would mean that
+            // applications would be unable to process data from
+            // different epochs.  An unusual situation, to be sure,
+            // but I'd rather not make assumptions about everyone's
+            // use cases.
+         GPSWeekSecond ref = SystemTime().convertToCommonTime();
+         refWeek = ref.week;
+      }
+         // 128 is half an 8-bit week epoch.  The while loops allow us
+         // to correct data that's more than one "epoch" out.
+      while (refWeek - rv > 128)
+      {
+         rv += 256;
+      }
+      while (refWeek - rv < -128)
+      {
+         rv -= 256;
+      }
+      return rv;
+   }
+
 } // namespace gpstk

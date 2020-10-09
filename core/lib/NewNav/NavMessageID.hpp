@@ -7,6 +7,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /// Class used to identify/categorize navigation message data.
    class NavMessageID : public NavSatelliteID
    {
@@ -43,6 +46,9 @@ namespace gpstk
         << static_cast<NavSatelliteID>(nmid);
       return s;
    }
+
+      //@}
+
 }
 
 #endif // GPSTK_NAVMESSAGEID_HPP

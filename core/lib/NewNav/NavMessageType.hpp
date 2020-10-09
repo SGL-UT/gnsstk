@@ -7,6 +7,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /// Identify different types of navigation message data.
    enum class NavMessageType
    {
@@ -36,6 +39,9 @@ namespace gpstk
          /// Convert a string name to an NavMessageType
       NavMessageType asNavMessageType(const std::string& s) throw();
    }
+
+      //@}
+
 }
 
 #endif // GPSTK_NAVMESSAGETYPE_HPP

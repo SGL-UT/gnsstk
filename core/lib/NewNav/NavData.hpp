@@ -3,12 +3,16 @@
 
 #include <memory>
 #include <map>
+#include <list>
 #include "CommonTime.hpp"
 #include "NavSignalID.hpp"
 #include "NavMessageID.hpp"
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** This is an abstract base class for decoded navigation
        * message data, including orbit information, health data and
        * time offsets. */
@@ -54,6 +58,13 @@ namespace gpstk
    using NavSatMap = std::map<NavSatelliteID, NavMap>;
       /// Map nav message type to the rest of the storage.
    using NavMessageMap = std::map<NavMessageType, NavSatMap>;
+      /** List of NavDataPtr, typically used when converting from
+       * source data to NavDataPtr when multiple objects can be
+       * created from a single input. */
+   using NavDataPtrList = std::list<NavDataPtr>;
+
+      //@}
+
 }
 
 #endif // GPSTK_NAVDATA_HPP

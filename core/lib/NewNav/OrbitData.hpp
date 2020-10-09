@@ -6,6 +6,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Abstract base class for classes that compute satellite
        * positions.  Only the interface is defined as some systems use
        * Keplerian orbital elements, while others use tables. */
@@ -19,6 +22,9 @@ namespace gpstk
           *   unavailable. */
       virtual bool getXvt(const CommonTime& when, Xvt& xvt) = 0;
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_ORBITDATA_HPP

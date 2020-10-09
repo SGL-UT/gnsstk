@@ -85,3 +85,11 @@ add_test(NavSatelliteID_T NavSatelliteID_T)
 add_executable(OrbitDataSP3_T OrbitDataSP3_T.cpp)
 target_link_libraries(OrbitDataSP3_T gpstk)
 add_test(OrbitDataSP3_T OrbitDataSP3_T)
+
+add_executable(PNBNavDataFactory_T PNBNavDataFactory_T.cpp)
+target_link_libraries(PNBNavDataFactory_T gpstk)
+add_test(PNBNavDataFactory_T PNBNavDataFactory_T)
+
+add_executable(PNBGPSLNavDataFactory_T PNBGPSLNavDataFactory_T.cpp)
+target_link_libraries(PNBGPSLNavDataFactory_T gpstk)
+add_test(PNBGPSLNavDataFactory_T PNBGPSLNavDataFactory_T)

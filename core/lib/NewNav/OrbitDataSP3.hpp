@@ -6,6 +6,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /// Class for orbit information using SP3 data tables.
    class OrbitDataSP3 : public OrbitData
    {
@@ -63,6 +66,9 @@ namespace gpstk
       double clkDrRate;///< SV clock drift rate in s/s**2.
       double drRateSig;///< SV clock drift rate std deviation.
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_ORBITDATASP3_HPP

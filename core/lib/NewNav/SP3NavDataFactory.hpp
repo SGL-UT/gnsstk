@@ -10,6 +10,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Factory class for loading SP3 data.
        * @note While in theory Y code and P code LNav are supported,
        *   SP3 does not support the identification of the codes
@@ -137,6 +140,9 @@ namespace gpstk
           * inconsistent time systems. */
       TimeSystem storeTimeSystem;
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_SP3NAVDATAFACTORY_HPP

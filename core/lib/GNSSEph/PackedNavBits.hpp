@@ -42,6 +42,7 @@
 #ifndef GPSTK_PACKEDNAVBITS_HPP
 #define GPSTK_PACKEDNAVBITS_HPP
 
+#include <memory>
 #include <vector>
 #include <cstddef>
 #include "gpstkplatform.h" //#include <stdint.h>
@@ -189,6 +190,22 @@ namespace gpstk
                                    const unsigned len,
                                    const int scale ) const;
 
+         /** Unpack an unsigned long integer split into two pieces.
+          * @warning Be careful about what order you specify the parameters in.
+          * @note This prototype obviates constructing an array before calling.
+          * @param[in] startBit1 The 0-indexed first bit of the MSBs.
+          * @param[in] numBits1 The number of MSBs.
+          * @param[in] startBit2 The 0-indexed first bit of the LSBs.
+          * @param[in] numBits2 The number of LSBs.
+          * @param[in] scale A number to multiply the bits by before returning.
+          * @return The decoded value.
+          */
+      unsigned long asUnsignedLong(const unsigned startBit1,
+                                   const unsigned numBits1,
+                                   const unsigned startBit2,
+                                   const unsigned numBits2,
+                                   const int scale ) const;
+
          /* Unpack a signed long integer */
       long asLong(const unsigned startBits[],
                   const unsigned numBits[],
@@ -201,17 +218,69 @@ namespace gpstk
                                const unsigned len,
                                const int power2) const;
 
+         /** Unpack a positive-only floating point number split into two pieces.
+          * @warning Be careful about what order you specify the parameters in.
+          * @note This prototype obviates constructing an array before calling.
+          * @param[in] startBit1 The 0-indexed first bit of the MSBs.
+          * @param[in] numBits1 The number of MSBs.
+          * @param[in] startBit2 The 0-indexed first bit of the LSBs.
+          * @param[in] numBits2 The number of LSBs.
+          * @param[in] power2 The result is multiplied by 2^(power2)
+          *   before returning.
+          * @return The decoded value.
+          */
+      double asUnsignedDouble(const unsigned startBit1,
+                              const unsigned numBits1,
+                              const unsigned startBit2,
+                              const unsigned numBits2,
+                              const int power2) const;
+
          /* Unpack a split signed double */
       double asSignedDouble( const unsigned startBits[],
                              const unsigned numBits[],
                              const unsigned len,
                              const int power2) const;
 
+         /** Unpack a floating point number split into two pieces.
+          * @warning Be careful about what order you specify the parameters in.
+          * @note This prototype obviates constructing an array before calling.
+          * @param[in] startBit1 The 0-indexed first bit of the MSBs.
+          * @param[in] numBits1 The number of MSBs.
+          * @param[in] startBit2 The 0-indexed first bit of the LSBs.
+          * @param[in] numBits2 The number of LSBs.
+          * @param[in] power2 The result is multiplied by 2^(power2)
+          *   before returning.
+          * @return The decoded value.
+          */
+      double asSignedDouble(const unsigned startBit1,
+                            const unsigned numBits1,
+                            const unsigned startBit2,
+                            const unsigned numBits2,
+                            const int power2) const;
+
          /* Unpack a split double with units of semicircles */
       double asDoubleSemiCircles( const unsigned startBits[],
                                   const unsigned numBits[],
                                   const unsigned len,
                                   const int power2) const;      
+
+         /** Unpack a floating point number split into two pieces,
+          * converting from semi-circles to radians.
+          * @warning Be careful about what order you specify the parameters in.
+          * @note This prototype obviates constructing an array before calling.
+          * @param[in] startBit1 The 0-indexed first bit of the MSBs.
+          * @param[in] numBits1 The number of MSBs.
+          * @param[in] startBit2 The 0-indexed first bit of the LSBs.
+          * @param[in] numBits2 The number of LSBs.
+          * @param[in] power2 The result is multiplied by 2^(power2)
+          *   before returning.
+          * @return The decoded value.
+          */
+      double asDoubleSemiCircles(const unsigned startBit1,
+                                 const unsigned numBits1,
+                                 const unsigned startBit2,
+                                 const unsigned numBits2,
+                                 const int power2) const;
 
       bool asBool( const unsigned bitNum) const;
 
@@ -470,6 +539,9 @@ namespace gpstk
       double ScaleValue( const double value, const int power2) const;
 
    }; // class PackedNavBits
+
+      /// Managed pointer for passing PackedNavBits around.
+   using PackedNavBitsPtr = std::shared_ptr<PackedNavBits>;
 
       //@}
    std::ostream& operator<<(std::ostream& s, const PackedNavBits& pnb);

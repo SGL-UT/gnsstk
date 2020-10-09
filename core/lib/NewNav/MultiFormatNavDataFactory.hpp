@@ -5,6 +5,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Define a class that allows you to use a single factory
        * object that can read data from a variety of formats.  The
        * supported formats depend on what libraries you link against,
@@ -145,6 +148,9 @@ namespace gpstk
                        NavMessageMap& navMap) override
       { return false; }
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_MULTIFORMATNAVDATAFACTORY_HPP

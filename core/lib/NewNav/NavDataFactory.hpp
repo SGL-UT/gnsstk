@@ -1,5 +1,5 @@
-#ifndef NAVDATAFACTORY_HPP
-#define NAVDATAFACTORY_HPP
+#ifndef GPSTK_NAVDATAFACTORY_HPP
+#define GPSTK_NAVDATAFACTORY_HPP
 
 #include <memory>
 #include <map>
@@ -13,6 +13,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /** Abstract base class that defines the interface for searching
        * for navigation data. */
    class NavDataFactory
@@ -122,6 +125,9 @@ namespace gpstk
    using NavDataFactoryPtr = std::shared_ptr<NavDataFactory>;
       /// Map signal to a factory.
    using NavDataFactoryMap = std::multimap<NavSignalID, NavDataFactoryPtr>;
+
+      //@}
+
 }
 
-#endif // NAVDATAFACTORY_HPP
+#endif // GPSTK_NAVDATAFACTORY_HPP

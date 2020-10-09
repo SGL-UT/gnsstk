@@ -5,6 +5,9 @@
 
 namespace gpstk
 {
+      /// @ingroup NavFactory
+      //@{
+
       /// Class to distinguish between Almanac data and Almanac data.
    class GPSLNavAlm : public GPSLNavData
    {
@@ -28,11 +31,25 @@ namespace gpstk
           */
       CommonTime getUserTime() const override;
 
+         /** This is just a method for making the dump output say
+          * "almanac" vs "ephemeris" when appropriate. */
+      std::string getDataType() const override
+      { return "Almanac"; }
+         /** Override dumpHarmonics to hide them in output since GPS
+          * LNav almanacs don't contain this data. */
+      void dumpHarmonics(std::ostream& s)
+      {}
+
          /// Fill the beginFit and endFit values for this object.
       void fixFit();
 
       uint8_t healthBits; ///< 8 SV health bits.
+      double deltai;      ///< Inclination in rad relative to 0.3*pi rad.
+      double toa;         ///< Convenience storage of unqualified toa.
    };
+
+      //@}
+
 }
 
 #endif // GPSTK_GPSLNAVALM_HPP
