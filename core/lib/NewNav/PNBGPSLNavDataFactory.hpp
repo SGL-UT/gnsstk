@@ -82,6 +82,10 @@ namespace gpstk
           * @return true if successful. */
       bool processSVID56(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
+         /** For debugging purposes, dump the sizes of the accumulator maps.
+          * @param[in,out] s The stream to write the debug output to. */
+      void dumpState(std::ostream& s) const;
+
    protected:
          /** Map GPS transmit PRN to fully qualified week/second
           * (WNa/toa).  This is set by SV/page ID 51. */

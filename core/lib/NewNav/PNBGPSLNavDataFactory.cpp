@@ -255,13 +255,13 @@ namespace gpstk
             case 1:
             case 2:
             case 3:
-               cerr << "sfid " << sfid << " = ephemeris" << endl;
+                  //cerr << "sfid " << sfid << " = ephemeris" << endl;
                rv = processEph(sfid, navIn, navOut);
                break;
             case 4:
             case 5:
                svid = navIn->asUnsignedLong(62,6,1);
-               cerr << "sfid " << sfid << " = almanac, svid " << svid << endl;
+                  //cerr << "sfid " << sfid << " = almanac, svid " << svid << endl;
                if ((svid <= gpstk::MAX_PRN_GPS) && (svid >= 1))
                {
                      // process orbit and health
@@ -284,13 +284,13 @@ namespace gpstk
                }
                break;
             default:
-               cerr << "invalid sfid " << sfid << endl;
+                  //cerr << "invalid sfid " << sfid << endl;
                rv = false;
                break;
          }
-         cerr << "  results: " << navOut.size() << endl;
-         for (const auto& i : navOut)
-            i->dump(cerr,gpstk::NavData::Detail::Full);
+         // cerr << "  results: " << navOut.size() << endl;
+         // for (const auto& i : navOut)
+         //    i->dump(cerr,gpstk::NavData::Detail::Full);
       }
       catch (gpstk::Exception& exc)
       {
@@ -327,6 +327,7 @@ namespace gpstk
             NavMessageType::Health);
          dynamic_cast<gpstk::GPSLNavHealth*>(p1.get())->svHealth =
             navIn->asUnsignedLong(esbHea,enbHea,escHea);
+            //cerr << "add eph health" << endl;
          navOut.push_back(p1);
       }
       if (!PNBNavDataFactory::processEph)
@@ -351,7 +352,7 @@ namespace gpstk
           (ephSF[sf2]->getNumBits() != 300) ||
           (ephSF[sf3]->getNumBits() != 300))
       {
-         cerr << "Not ready for full eph processing" << endl;
+            //cerr << "Not ready for full eph processing" << endl;
          return true;
       }
          // Stop processing if we don't have matching IODC/IODE in
@@ -363,13 +364,13 @@ namespace gpstk
       iode3 = ephSF[esiIODE3]->asUnsignedLong(esbIODE3,enbIODE3,escIODE3);
       if ((iodc != iode2) || (iodc != iode3))
       {
-         cerr << "IODC/IODE mismatch, not processing" << endl;
+            //cerr << "IODC/IODE mismatch, not processing" << endl;
             // Even though the mismatch might be considered an error,
             // we don't really want to mark it as such and rather
             // consider it as a "valid" but unprocessable data set.
          return true;
       }
-      cerr << "Ready for full eph processing" << endl;
+         //cerr << "Ready for full eph processing" << endl;
       gpstk::NavDataPtr p0 = std::make_shared<gpstk::GPSLNavEph>();
       GPSLNavEph *eph = dynamic_cast<gpstk::GPSLNavEph*>(p0.get());
          // NavData
@@ -398,19 +399,15 @@ namespace gpstk
       eph->Crs = ephSF[esiCrs]->asSignedDouble(esbCrs,enbCrs,escCrs);
       eph->Cic = ephSF[esiCic]->asSignedDouble(esbCic,enbCic,escCic);
       eph->Cis = ephSF[esiCis]->asSignedDouble(esbCis,enbCis,escCis);
-      cerr << "getting M0" << endl;
       eph->M0  = ephSF[esiM0]->asDoubleSemiCircles(esbM0m,enbM0m,esbM0l,enbM0l,
                                                    escM0);
-      cerr << "got M0" << endl;
       eph->dn  = ephSF[esidn]->asDoubleSemiCircles(esbdn,enbdn,escdn);
          // no dndot in GPS LNAV
       eph->ecc = ephSF[esiEcc]->asUnsignedDouble(esbEccm,enbEccm,
                                                  esbEccl,enbEccl,escEcc);
-      cerr << "getting Ahalf" << endl;
       eph->Ahalf = ephSF[esiAhalf]->asUnsignedDouble(esbAhalfm,enbAhalfm,
                                                      esbAhalfl,enbAhalfl,
                                                      escAhalf);
-      cerr << "got Ahalf" << endl;
       eph->A = eph->Ahalf * eph->Ahalf;
          // no Adot in GPS LNAV
       eph->OMEGA0 = ephSF[esiOMEGA0]->asDoubleSemiCircles(esbOMEGA0m,enbOMEGA0m,
@@ -421,12 +418,8 @@ namespace gpstk
       eph->w = ephSF[esiw]->asDoubleSemiCircles(esbwm,enbwm,esbwl,enbwl,escw);
       eph->OMEGAdot = ephSF[esiOMEGAdot]->asDoubleSemiCircles(
          esbOMEGAdot,enbOMEGAdot,escOMEGAdot);
-      cerr << "getting idot" << endl;
       eph->idot = ephSF[esiidot]->asDoubleSemiCircles(esbidot,enbidot,escidot);
-      cerr << "got idot" << endl;
-      cerr << "getting af0" << endl;
       eph->af0 = ephSF[esiaf0]->asSignedDouble(esbaf0,enbaf0,escaf0);
-      cerr << "got af0" << endl;
       eph->af1 = ephSF[esiaf1]->asSignedDouble(esbaf1,enbaf1,escaf1);
       eph->af2 = ephSF[esiaf2]->asSignedDouble(esbaf2,enbaf2,escaf2);
          // GPSLNavData
@@ -457,6 +450,7 @@ namespace gpstk
          ephSF[esiL2]->asUnsignedLong(esbL2,enbL2,escL2));
       eph->L2Pdata = ephSF[esiL2P]->asUnsignedLong(esbL2P,enbL2P,escL2P);
       eph->fixFit();
+         //cerr << "add eph" << endl;
       navOut.push_back(p0);
          // Clear out the broadcast ephemeris that's been processed.
       ephAcc.erase(prn);
@@ -482,6 +476,7 @@ namespace gpstk
             NavMessageType::Health);
          dynamic_cast<gpstk::GPSLNavHealth*>(p1.get())->svHealth =
             navIn->asUnsignedLong(136,8,1);
+            //cerr << "add alm health" << endl;
          navOut.push_back(p1);
       }
       if (!PNBNavDataFactory::processAlm)
@@ -514,8 +509,8 @@ namespace gpstk
       alm->ecc = navIn->asSignedDouble(68,16,-21);
       alm->toa = navIn->asUnsignedDouble(90,8,12);
       gpstk::GPSWeekSecond ws(alm->xmitTime);
-      cerr << "page " << prn << " WNa = ??  toa = " << alm->toa
-           << "  WNx = " << (ws.week & 0x0ff) << "  tox = " << ws.sow << endl;
+      // cerr << "page " << prn << " WNa = ??  toa = " << alm->toa
+      //      << "  WNx = " << (ws.week & 0x0ff) << "  tox = " << ws.sow << endl;
       alm->deltai = navIn->asDoubleSemiCircles(98,16,-19);
       alm->i0 = (0.3 * PI) + alm->deltai;
       alm->OMEGAdot = navIn->asDoubleSemiCircles(120,16,-38);
@@ -539,6 +534,7 @@ namespace gpstk
       {
          alm->Toe = alm->Toc = fullWNaMap[xmitSat.id];
          alm->fixFit();
+            //cerr << "add alm" << endl;
          navOut.push_back(p0);
       }
       else
@@ -568,9 +564,9 @@ namespace gpstk
          long refWeek = ws.week;
          unsigned fullWNa = timeAdjust8BitWeekRollover(shortWNa, refWeek);
          fullWNaMap[xmitSat.id] = GPSWeekSecond(fullWNa, toa);
-         cerr << "page 51 WNa = " << shortWNa << "  toa = " << toa
-              << "  WNx = " << (ws.week & 0x0ff) << "  tox = " << ws.sow
-              << "  fullWNa = " << fullWNa << endl;
+         // cerr << "page 51 WNa = " << shortWNa << "  toa = " << toa
+         //      << "  WNx = " << (ws.week & 0x0ff) << "  tox = " << ws.sow
+         //      << "  fullWNa = " << fullWNa << endl;
          NavDataPtrList& ndpl(almAcc[xmitSat.id]);
          for (auto i = ndpl.begin(); i != ndpl.end();)
          {
@@ -579,6 +575,7 @@ namespace gpstk
             {
                alm->Toe = alm->Toc = fullWNaMap[xmitSat.id];
                alm->fixFit();
+                  //cerr << "add alm" << endl;
                navOut.push_back(*i);
                i = ndpl.erase(i);
             }
@@ -609,6 +606,7 @@ namespace gpstk
             gpstk::NavMessageType::Health);
          dynamic_cast<gpstk::GPSLNavHealth*>(p1.get())->svHealth =
             navIn->asUnsignedLong(bit+0, 6, 1);
+            //cerr << "add page 51 health" << endl;
          navOut.push_back(p1);
          p2->timeStamp = navIn->getTransmitTime();
          p2->signal = gpstk::NavMessageID(
@@ -616,6 +614,7 @@ namespace gpstk
             gpstk::NavMessageType::Health);
          dynamic_cast<gpstk::GPSLNavHealth*>(p2.get())->svHealth =
             navIn->asUnsignedLong(bit+6, 6, 1);
+            //cerr << "add page 51 health" << endl;
          navOut.push_back(p2);
          p3->timeStamp = navIn->getTransmitTime();
          p3->signal = gpstk::NavMessageID(
@@ -623,6 +622,7 @@ namespace gpstk
             gpstk::NavMessageType::Health);
          dynamic_cast<gpstk::GPSLNavHealth*>(p3.get())->svHealth =
             navIn->asUnsignedLong(bit+12, 6, 1);
+            //cerr << "add page 51 health" << endl;
          navOut.push_back(p3);
          p4->timeStamp = navIn->getTransmitTime();
          p4->signal = gpstk::NavMessageID(
@@ -630,6 +630,7 @@ namespace gpstk
             gpstk::NavMessageType::Health);
          dynamic_cast<gpstk::GPSLNavHealth*>(p4.get())->svHealth =
             navIn->asUnsignedLong(bit+18, 6, 1);
+            //cerr << "add page 51 health" << endl;
          navOut.push_back(p4);
       }
       return true;
@@ -660,6 +661,7 @@ namespace gpstk
          // prn 25 health starts at bit 229 (1-based), so we use 228 (0-based)
       dynamic_cast<gpstk::GPSLNavHealth*>(p0.get())->svHealth =
          navIn->asUnsignedLong(228, 6, 1);
+         //cerr << "add page 63 health" << endl;
       navOut.push_back(p0);      
       for (unsigned prn = 26, bit = 240; prn <= 32; prn += 4, bit += 30)
       {
@@ -673,6 +675,7 @@ namespace gpstk
             gpstk::NavMessageType::Health);
          dynamic_cast<gpstk::GPSLNavHealth*>(p1.get())->svHealth =
             navIn->asUnsignedLong(bit+0, 6, 1);
+            //cerr << "add page 63 health" << endl;
          navOut.push_back(p1);
          p2->timeStamp = navIn->getTransmitTime();
          p2->signal = gpstk::NavMessageID(
@@ -680,6 +683,7 @@ namespace gpstk
             gpstk::NavMessageType::Health);
          dynamic_cast<gpstk::GPSLNavHealth*>(p2.get())->svHealth =
             navIn->asUnsignedLong(bit+6, 6, 1);
+            //cerr << "add page 63 health" << endl;
          navOut.push_back(p2);
          p3->timeStamp = navIn->getTransmitTime();
          p3->signal = gpstk::NavMessageID(
@@ -687,6 +691,7 @@ namespace gpstk
             gpstk::NavMessageType::Health);
          dynamic_cast<gpstk::GPSLNavHealth*>(p3.get())->svHealth =
             navIn->asUnsignedLong(bit+12, 6, 1);
+            //cerr << "add page 63 health" << endl;
          navOut.push_back(p3);
             // Word 9 has 4 PRNs, word 10 only has 3, so we have to do
             // this check.
@@ -699,6 +704,7 @@ namespace gpstk
                gpstk::NavMessageType::Health);
             dynamic_cast<gpstk::GPSLNavHealth*>(p4.get())->svHealth =
                navIn->asUnsignedLong(bit+18, 6, 1);
+               //cerr << "add page 63 health" << endl;
             navOut.push_back(p4);
          }
       }
@@ -749,8 +755,38 @@ namespace gpstk
       to->wnt = timeAdjust8BitWeekRollover(to->wnt, refWeek);
       to->wnLSF = timeAdjust8BitWeekRollover(to->wnLSF, refWeek);
          // return results.
+         //cerr << "add page 56 time offset" << endl;
       navOut.push_back(p0);
       return true;
+   }
+
+
+   void PNBGPSLNavDataFactory ::
+   dumpState(std::ostream& s)
+      const
+   {
+      s << "fullWNaMap.size() = " << fullWNaMap.size() << " (expect 32)" << endl
+        << "almAcc.size() = " << almAcc.size() << " (expect 32)" << endl;
+      for (const auto& i : almAcc)
+      {
+         s << "  almAcc[" << i.first << "].size() = " << i.second.size()
+           << endl;
+      }
+      s << "ephAcc.size() = " << ephAcc.size() << " (expect 32)" << endl;
+      for (const auto& i : ephAcc)
+      {
+         s << "  ephAcc[" << i.first << "].size() = " << i.second.size()
+           << endl;
+         for (unsigned j = 0; j < i.second.size(); j++)
+         {
+            s << "    ephAcc[" << i.first << "][" << j << "] = ";
+            if (!i.second[j])
+               s << "unset";
+            else
+               s << i.second[j]->getNumBits() << " bits";
+            s << endl;
+         }
+      }
    }
 
 } // namespace gpstk
