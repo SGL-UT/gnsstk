@@ -467,7 +467,8 @@ namespace gpstk
       eph->pre = ephSF[ephM10]->asUnsignedLong(esbPre,enbPre,escPre);
       eph->alert = ephSF[ephM10]->asBool(esbAlert);
          // GPSCNavEph
-      eph->pre2 = ephSF[ephM11]->asUnsignedLong(esbPre,enbPre,escPre);
+      eph->pre11 = ephSF[ephM11]->asUnsignedLong(esbPre,enbPre,escPre);
+      eph->preClk = ephSF[ephMClk]->asUnsignedLong(esbPre,enbPre,escPre);
       eph->healthL1 = ephSF[esiHea]->asBool(esbHeaL1);
       eph->healthL2 = ephSF[esiHea]->asBool(esbHeaL2);
       eph->healthL5 = ephSF[esiHea]->asBool(esbHeaL5);
@@ -476,7 +477,8 @@ namespace gpstk
           * for L5 CNAV. */
       eph->healthy = (eph->healthL2 == 0); // actually in OrbitDataKepler
       eph->uraED = ephSF[esiURA]->asLong(esbURA,enbURA,escURA);
-      eph->alert2 = ephSF[ephM11]->asBool(esbAlert);
+      eph->alert11 = ephSF[ephM11]->asBool(esbAlert);
+      eph->alertClk = ephSF[ephMClk]->asBool(esbAlert);
       double top = ephSF[esitop]->asUnsignedLong(esbtop,enbtop,esctop);
       eph->top = GPSWeekSecond(wn,top);
       eph->xmit11 = ephSF[ephM11]->getTransmitTime();

@@ -29,13 +29,13 @@ namespace gpstk
           * at which the final bit of a given broadcast navigation
           * message is received.  This is used by
           * NavDataFactoryWithStore::find() in User mode.
-          * @return transmit time + 24s, which is the time required
-          *   for a full ephemeris.
+          * @return most recent transmit time + 12s, which is the time required
+          *   for a message.
           * @todo If this class ends up being used for L5 CNAV or
           *   CNAV2 make sure it's the right interval.
           */
       CommonTime getUserTime() const override
-      { return timeStamp + 24.0; }
+      { return std::max({xmitTime, xmit11, xmitClk}) + 12.0; }
 
          /** Fill the beginFit and endFit values for this object.
           * @pre Toe, iodc, fitIntFlag and xmitTime must all be set. */
@@ -45,7 +45,8 @@ namespace gpstk
           * @param[in,out] s The stream to write the data to. */
       void dumpSVStatus(std::ostream& s) const override;
 
-      uint32_t pre2;      ///< The preamble from the start of message type 11.
+      uint32_t pre11;     ///< The preamble from the start of message type 11.
+      uint32_t preClk;    ///< The preamble from the start of the clock message.
          /// @note The health flags are true if unhealthy.
       bool healthL1;      ///< L1 signal health from message type 10.
       bool healthL2;      ///< L2 signal health from message type 10.
@@ -54,7 +55,8 @@ namespace gpstk
       int8_t uraNED0;     ///< non-elevation dependent URA from clock message.
       uint8_t uraNED1;    ///< non-elevation dependent URA from clock message.
       uint8_t uraNED2;    ///< non-elevation dependent URA from clock message.
-      bool alert2;        ///< Alert flag from message type 11.
+      bool alert11;       ///< Alert flag from message type 11.
+      bool alertClk;      ///< Alert flag from the clock message.
       bool integStat;     ///< Integrity status flag.
       bool phasingL2C;    ///< L2C phasing
       double deltaA;      ///< Semi-major axis relative to reference (Aref).

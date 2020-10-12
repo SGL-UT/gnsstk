@@ -8,12 +8,24 @@ namespace gpstk
 {
    GPSCNavEph ::
    GPSCNavEph()
-         : pre2(0),
+         : pre11(0),
+           preClk(0),
            healthL1(true),
            healthL2(true),
            healthL5(true),
            uraED(-16),
-           alert2(false)
+           uraNED0(-16),
+           uraNED1(0),
+           uraNED2(0),
+           alert11(false),
+           alertClk(false),
+           integStat(false),
+           phasingL2C(false),
+           deltaA(false),
+           dOMEGAdot(false),
+           top(gpstk::CommonTime::BEGINNING_OF_TIME),
+           xmit11(gpstk::CommonTime::BEGINNING_OF_TIME),
+           xmitClk(gpstk::CommonTime::BEGINNING_OF_TIME)
    {
       signal.messageType = NavMessageType::Ephemeris;
    }
@@ -22,7 +34,8 @@ namespace gpstk
    bool GPSCNavEph ::
    validate() const
    {
-      return GPSCNavData::validate() && ((pre2 == 0) || (pre2 == 0x8b));
+      return GPSCNavData::validate() && ((pre11 == 0) || (pre11 == 0x8b)) &&
+         ((preClk == 0) || (preClk == 0x8b));
    }
 
 
@@ -30,18 +43,17 @@ namespace gpstk
    fixFit()
    {
       CommonTime xmit1st = std::min({xmitTime, xmit11, xmitClk});
-#if 0
-      GPSWeekSecond xws(xmitTime), toeWS(Toe);
+      GPSWeekSecond xws(xmit1st), toeWS(Toe);
       int xmitWeek = xws.week;
       long xmitSOW = (long) xws.sow;
-      bool isNominalToe = (long)toeWS.sow % 7200 == 0;
-      double fitSeconds = 3600.0 * getLegacyFitInterval(iodc, fitIntFlag);
-      endFit = Toe + (fitSeconds/2.0);
+         /** @todo replace all these magic numbers with named
+          * constants or enums, with sensible names, not
+          * "NINTY_MINUTES" [sic] */
+      bool isNominalToe = (long)toeWS.sow % 7200 == 90*60;
+      endFit = Toe + 90*60;
 
          // If the toe is NOT offset, then the begin valid time can be set
          // to the beginning of the two hour interval. 
-         // NOTE: This is only true for GPS.   We can't do this
-         // for QZSS, even though it also broadcasts the CNAV message format.
       if (signal.system==SatelliteSystem::GPS && isNominalToe)
       {
          xmitSOW = xmitSOW - (xmitSOW % 7200);
@@ -58,19 +70,10 @@ namespace gpstk
          // wasn't collected at the top of the hour.
       beginFit = GPSWeekSecond(xmitWeek, xmitSOW, TimeSystem::GPS);
          // If an upload cutover, need some adjustment.
-         // Calculate the SOW aligned with the mid point and then
-         // calculate the number of seconds the toe is SHORT
-         // of that value.   That's how far the endValid needs
-         // to be adjusted.   
       if (!isNominalToe)
       {
-         long sow = (long) toeWS.sow;
-         long num900secIntervals = sow / 900;
-         long midPointSOW = (num900secIntervals+1) * 900;
-         double adjustUp = (double) (midPointSOW - sow);
-         endFit += adjustUp;
+         endFit += 300;
       }
-#endif
    }
 
 
