@@ -41,7 +41,7 @@ namespace gpstk
           * human-readable format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-      virtual void dump(std::ostream& s, Detail dl);
+      virtual void dump(std::ostream& s, Detail dl) const;
          /** Time stamp used to sort the data.  This should be the
           * appropriate time stamp used when attempting to find the
           * data, usually the transmit time. */

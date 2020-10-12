@@ -21,7 +21,7 @@ namespace gpstk
 
 
    void OrbitDataKepler ::
-   dump(std::ostream& s, Detail dl)
+   dump(std::ostream& s, Detail dl) const
    {
       if (dl == Detail::OneLine)
       {
@@ -81,7 +81,7 @@ namespace gpstk
 
 
    void OrbitDataKepler ::
-   dumpClock(std::ostream& s)
+   dumpClock(std::ostream& s) const
    {
       s << endl
         << "           CLOCK PARAMETERS"
@@ -94,7 +94,7 @@ namespace gpstk
 
 
    void OrbitDataKepler ::
-   dumpOrbit(std::ostream& s)
+   dumpOrbit(std::ostream& s) const
    {
       s << endl
         << "           ORBIT PARAMETERS"
@@ -115,7 +115,7 @@ namespace gpstk
 
 
    void OrbitDataKepler ::
-   dumpHarmonics(std::ostream& s)
+   dumpHarmonics(std::ostream& s) const
    {
       s << endl
         << "           HARMONIC CORRECTIONS"

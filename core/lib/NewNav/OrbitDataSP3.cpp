@@ -65,7 +65,7 @@ namespace gpstk
 
 
    void OrbitDataSP3 ::
-   dump(std::ostream& s, Detail dl)
+   dump(std::ostream& s, Detail dl) const
    {
       NavData::dump(s,dl);
       if (dl == Detail::OneLine)

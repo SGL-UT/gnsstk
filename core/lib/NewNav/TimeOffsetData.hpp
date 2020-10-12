@@ -32,7 +32,7 @@ namespace gpstk
           * @param[out] offset The offset when converting fromSys->toSys.
           * @return true if an offset is available, false if not. */
       virtual bool getOffset(TimeSystem fromSys, TimeSystem toSys,
-                             const CommonTime& when, double& offset) = 0;
+                             const CommonTime& when, double& offset) const = 0;
 
          /** Define a pair of TimeSystems where first=convert from and
           * second=convert to. */

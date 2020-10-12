@@ -83,7 +83,7 @@ namespace gpstk
 
 
    void GPSLNavEph ::
-   dumpSVStatus(std::ostream& s)
+   dumpSVStatus(std::ostream& s) const
    {
       const ios::fmtflags oldFlags = s.flags();
          /** @note we add 6 seconds to xmitTime because we're printing

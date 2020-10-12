@@ -26,22 +26,22 @@ namespace gpstk
           * human-readable format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-      void dump(std::ostream& s, Detail dl) override;
+      void dump(std::ostream& s, Detail dl) const override;
 
          /** Dump SV status information (e.g. health).  Nothing to do
           * at this level, all the work is in derived classes.
           * @param[in,out] s The stream to write the data to. */
-      virtual void dumpSVStatus(std::ostream& s)
+      virtual void dumpSVStatus(std::ostream& s) const
       {}
          /** Dump the clock parameters.
           * @param[in,out] s The stream to write the data to. */
-      virtual void dumpClock(std::ostream& s);
+      virtual void dumpClock(std::ostream& s) const;
          /** Dump the orbit parameters section of a full detail dump.
           * @param[in,out] s The stream to write the data to. */
-      virtual void dumpOrbit(std::ostream& s);
+      virtual void dumpOrbit(std::ostream& s) const;
          /** Dump the harmonic corrections section of a full detail dump.
           * @param[in,out] s The stream to write the data to. */
-      virtual void dumpHarmonics(std::ostream& s);
+      virtual void dumpHarmonics(std::ostream& s) const;
          /** This is just a method for making the dump output say
           * "almanac" vs "ephemeris" when appropriate. */
       virtual std::string getDataType() const

@@ -31,6 +31,7 @@ namespace gpstk
    bool GPSLNavTimeOffset ::
    getOffset(TimeSystem fromSys, TimeSystem toSys,
              const CommonTime& when, double& offset)
+      const
    {
       if (((fromSys == TimeSystem::GPS) && (toSys == TimeSystem::UTC)) ||
           ((fromSys == TimeSystem::UTC) && (toSys == TimeSystem::GPS)))
@@ -46,7 +47,7 @@ namespace gpstk
 
 
    void GPSLNavTimeOffset ::
-   dump(std::ostream& s, Detail dl)
+   dump(std::ostream& s, Detail dl) const
    {
       const ios::fmtflags oldFlags = s.flags();
       NavData::dump(s,dl);

@@ -8,7 +8,7 @@ namespace gpstk
       /// @ingroup NavFactory
       //@{
 
-      /// Class to distinguish between Almanac data and Ephemeris data.
+      /// Class containing data elements unique to GPS LNav ephemerides.
    class GPSLNavEph : public GPSLNavData
    {
    public:
@@ -47,7 +47,7 @@ namespace gpstk
 
          /** Dump SV status information (e.g. health).
           * @param[in,out] s The stream to write the data to. */
-      void dumpSVStatus(std::ostream& s) override;
+      void dumpSVStatus(std::ostream& s) const override;
 
       uint32_t pre2;      ///< The TLM preamble from word 1 of subframe 2.
       uint32_t pre3;      ///< The TLM preamble from word 1 of subframe 3.

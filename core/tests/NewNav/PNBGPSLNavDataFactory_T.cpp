@@ -55,7 +55,6 @@ public:
    unsigned almCount, ephCount, toCount, heaCount, otherCount;
 };
 
-/// @todo Make sure to test the type filters for PNBGPSLNavDataFactory.
 
 PNBGPSLNavDataFactory_T ::
 PNBGPSLNavDataFactory_T()
@@ -178,8 +177,11 @@ addDataAllTest()
    TUDEF("PNBGPSLNavDataFactory", "addData");
    gpstk::PNBGPSLNavDataFactory uut;
    gpstk::SatID gloSid(1,gpstk::SatelliteSystem::Glonass);
+   gpstk::ObsID gloid(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::G1,
+                      gpstk::TrackingCode::Standard);
+   gpstk::NavID gloNav(gpstk::NavType::GloCivilF);
    gpstk::PackedNavBitsPtr nonGPS =
-      std::make_shared<gpstk::PackedNavBits>(gloSid,oid,alm26ct);
+      std::make_shared<gpstk::PackedNavBits>(gloSid,gloid,gloNav,"XX",alm26ct);
    gpstk::NavDataPtrList navOut;
       // should refuse non-GPS data
    TUASSERTE(bool, false, uut.addData(nonGPS, navOut));

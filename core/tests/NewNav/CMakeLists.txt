@@ -34,6 +34,10 @@ add_executable(GPSLNavTimeOffset_T GPSLNavTimeOffset_T.cpp)
 target_link_libraries(GPSLNavTimeOffset_T gpstk)
 add_test(GPSLNavTimeOffset_T GPSLNavTimeOffset_T)
 
+add_executable(GPSCNavData_T GPSCNavData_T.cpp)
+target_link_libraries(GPSCNavData_T gpstk)
+add_test(GPSCNavData_T GPSCNavData_T)
+
 add_executable(NavDataFactory_T NavDataFactory_T.cpp)
 target_link_libraries(NavDataFactory_T gpstk)
 add_test(NavDataFactory_T NavDataFactory_T)
@@ -97,3 +101,7 @@ add_test(PNBMultiGNSSNavDataFactory_T PNBMultiGNSSNavDataFactory_T)
 add_executable(PNBGPSLNavDataFactory_T PNBGPSLNavDataFactory_T.cpp)
 target_link_libraries(PNBGPSLNavDataFactory_T gpstk)
 add_test(PNBGPSLNavDataFactory_T PNBGPSLNavDataFactory_T)
+
+add_executable(PNBGPSCNavDataFactory_T PNBGPSCNavDataFactory_T.cpp)
+target_link_libraries(PNBGPSCNavDataFactory_T gpstk)
+add_test(PNBGPSCNavDataFactory_T PNBGPSCNavDataFactory_T)

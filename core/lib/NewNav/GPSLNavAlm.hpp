@@ -8,7 +8,7 @@ namespace gpstk
       /// @ingroup NavFactory
       //@{
 
-      /// Class to distinguish between Almanac data and Almanac data.
+      /// Class containing data elements unique to GPS LNav almanac pages.
    class GPSLNavAlm : public GPSLNavData
    {
    public:
@@ -37,7 +37,7 @@ namespace gpstk
       { return "Almanac"; }
          /** Override dumpHarmonics to hide them in output since GPS
           * LNav almanacs don't contain this data. */
-      void dumpHarmonics(std::ostream& s)
+      void dumpHarmonics(std::ostream& s) const override
       {}
 
          /// Fill the beginFit and endFit values for this object.

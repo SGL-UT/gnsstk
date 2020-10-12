@@ -38,7 +38,7 @@ namespace gpstk
           * format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-      void dump(std::ostream& s, Detail dl) override;
+      void dump(std::ostream& s, Detail dl) const override;
 
          /** Get the offset, in seconds, to apply to times when
           * converting them from fromSys to toSys.
@@ -52,7 +52,7 @@ namespace gpstk
           * @return true if an offset is available, false if not. */
       bool getOffset(TimeSystem fromSys, TimeSystem toSys,
                      const CommonTime& when, double& offset)
-         override;
+         const override;
 
          /** The set of time system conversions this class is capable of making.
           * @return a set of supported time system conversion to/from pairs. */

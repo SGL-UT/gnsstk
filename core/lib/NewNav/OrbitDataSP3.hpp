@@ -44,7 +44,7 @@ namespace gpstk
           * detail includes P/V/A and sigma.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-      void dump(std::ostream& s, Detail dl) override;
+      void dump(std::ostream& s, Detail dl) const override;
          /** Compute the satellites position and velocity at a time.
           * @note Defaults to using the GPS ellipsoid parameters.
           * @param[in] when The time at which to compute the xvt.

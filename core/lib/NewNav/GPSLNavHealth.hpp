@@ -41,7 +41,7 @@ namespace gpstk
           * format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-      void dump(std::ostream& s, Detail dl) override;
+      void dump(std::ostream& s, Detail dl) const override;
 
          /** Defines the status of NavData::signal, specifically sat
           * (not xmitSat).
