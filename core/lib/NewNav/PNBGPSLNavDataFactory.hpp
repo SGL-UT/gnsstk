@@ -43,7 +43,7 @@ namespace gpstk
                       NavDataPtrList& navOut);
 
          /** Process SV/page ID 1-32.  In order for GPSLNavAlm data to
-          * be produced, SV/page ID must have been processed.  This is
+          * be produced, SV/page ID 51 must have been processed.  This is
           * required in order to get the almanac week (WNa).  If page
           * 51 has not yet been processed, the almanac orbital
           * elements are stored in almAcc until such time as a page 51

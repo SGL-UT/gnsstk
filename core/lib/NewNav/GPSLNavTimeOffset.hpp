@@ -9,9 +9,9 @@ namespace gpstk
       /// @ingroup NavFactory
       //@{
 
-      /** Defines the interface for classes that provide the ability
-       * to convert between time systems, using data extracted from
-       * GPS navigation messages. */
+      /** Defines the class that provides the ability to convert
+       * between GPS and UTC, using data extracted from GPS legacy
+       * navigation messages. */
    class GPSLNavTimeOffset : public TimeOffsetData
    {
    public:
@@ -58,7 +58,7 @@ namespace gpstk
           * @return a set of supported time system conversion to/from pairs. */
       TimeCvtSet getConversions() const override;
 
-         // these terms are defined in IS-GPS-200, 203.3.3.5.1.7 & 20.3.3.5.2.4
+         // these terms are defined in IS-GPS-200, 20.3.3.5.1.7 & 20.3.3.5.2.4
 
       double deltatLS;  ///< &Delta;t<sub>LS</sub> term
       double a0;        ///< A<sub>0</sub> term

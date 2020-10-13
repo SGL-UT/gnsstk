@@ -27,7 +27,8 @@ namespace gpstk
           * at which the final bit of a given broadcast navigation
           * message is received.  This is used by
           * NavDataFactoryWithStore::find() in User mode.
-          * @return transmit time + 6s, as only one 6s subframe is used.
+          * @return transmit time + 12s, as only one 12s subframe is used.
+          * @todo Change this if needed for L5 CNAV.
           */
       CommonTime getUserTime() const override;
 
@@ -43,8 +44,12 @@ namespace gpstk
          /// Fill the beginFit and endFit values for this object.
       void fixFit();
 
-      uint8_t healthBits; ///< 8 SV health bits.
+         /// @note The health flags are true if unhealthy.
+      bool healthL1;      ///< L1 signal health from message type 10.
+      bool healthL2;      ///< L2 signal health from message type 10.
+      bool healthL5;      ///< L5 signal health from message type 10.
       double deltai;      ///< Inclination in rad relative to 0.3*pi rad.
+      unsigned wna;       ///< Reference week for toa.
       double toa;         ///< Convenience storage of unqualified toa.
    };
 

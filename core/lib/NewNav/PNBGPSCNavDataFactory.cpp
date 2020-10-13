@@ -1,9 +1,9 @@
 #include <math.h>
 #include "PNBGPSCNavDataFactory.hpp"
-//#include "GPSCNavAlm.hpp"
+#include "GPSCNavAlm.hpp"
 #include "GPSCNavEph.hpp"
-//#include "GPSCNavHealth.hpp"
-//#include "GPSCNavTimeOffset.hpp"
+#include "GPSCNavHealth.hpp"
+#include "GPSCNavTimeOffset.hpp"
 #include "TimeCorrection.hpp"
 
 using namespace std;
@@ -24,9 +24,9 @@ enum SFIndex
 static const double Aref = 26559710;
 static const double OMEGAdotREF = -2.6e-9 * gpstk::PI;
 
-/** Subframe index, start bits, bit counts and scale factor (*n for
- * integer quantities, *2^n for floating point quantities) for each of
- * the ephemeris fields.
+/** "Subframe" (message vector) index, start bits, bit counts and
+ * scale factor (*n for integer quantities, *2^n for floating point
+ * quantities) for each of the ephemeris fields.
  * Bit positions/sizes from IS-GPS-200 Figures 30-1 and 30-2.
  * Scale factors taken from Tables 20-I and 20-III.
  * @note When the comment for an esc* enum says "scale factor", the
@@ -36,190 +36,280 @@ static const double OMEGAdotREF = -2.6e-9 * gpstk::PI;
  */
 enum CNavBitInfo
 {
-      // every subframe has a preamble so no subframe index here.
+      // every message has a preamble so no index here.
       /// @todo Make sure all the scale factors are correct.
-   esbPre = 0, ///< Preamble start bit
-   enbPre = 8, ///< Preamble number of bits
-   escPre = 1, ///< Preamble scale factor
+   esbPre = 0,            ///< Preamble start bit
+   enbPre = 8,            ///< Preamble number of bits
+   escPre = 1,            ///< Preamble scale factor
 
-   esbPRN = 8, ///< PRN start bit
-   enbPRN = 6, ///< PRN number of bits
-   escPRN = 1, ///< PRN scale factor
+   esbPRN = 8,            ///< PRN start bit
+   enbPRN = 6,            ///< PRN number of bits
+   escPRN = 1,            ///< PRN scale factor
 
-   esbMsgType = 14, ///< Message type start bit
-   enbMsgType = 6, ///< Message type number of bits
-   escMsgType = 1, ///< Message type scale factor
+   esbMsgType = 14,       ///< Message type start bit
+   enbMsgType = 6,        ///< Message type number of bits
+   escMsgType = 1,        ///< Message type scale factor
 
-   esbTOW = 20, ///< TOW start bit
-   enbTOW = 17, ///< TOW number of bits
-   escTOW = 6,  ///< TOW scale factor
+   esbTOW = 20,           ///< TOW start bit
+   enbTOW = 17,           ///< TOW number of bits
+   escTOW = 6,            ///< TOW scale factor
 
-   esbAlert = 37, ///< Alert flag start bit
-   enbAlert = 1,  ///< Alert flag number of bits
-   escAlert = 1,  ///< Alert flag scale factor
+   esbAlert = 37,         ///< Alert flag start bit
+   enbAlert = 1,          ///< Alert flag number of bits
+   escAlert = 1,          ///< Alert flag scale factor
 
-   esiWN = ephM10, ///< WN subframe index
-   esbWN = 38,    ///< WN start bit
-   enbWN = 13,    ///< WN number of bits
-   escWN = 1,     ///< WN scale factor
+   esiWN = ephM10,        ///< WN message index
+   esbWN = 38,            ///< WN start bit
+   enbWN = 13,            ///< WN number of bits
+   escWN = 1,             ///< WN scale factor
 
-   esiHea   = ephM10, ///< Signal health subframe index
-   esbHeaL1 = 51,     ///< L1 Signal health bit
-   esbHeaL2 = 52,     ///< L2 Signal health bit
-   esbHeaL5 = 53,     ///< L5 Signal health bit
+   esiHea   = ephM10,     ///< Signal health message index
+   esbHeaL1 = 51,         ///< L1 Signal health bit
+   esbHeaL2 = 52,         ///< L2 Signal health bit
+   esbHeaL5 = 53,         ///< L5 Signal health bit
 
-   esitop = ephM10, ///< top subframe index
-   esbtop = 54,    ///< top start bit
-   enbtop = 11,    ///< top number of bits
-   esctop = 300,   ///< top scale factor
+   esitop = ephM10,       ///< top message index
+   esbtop = 54,           ///< top start bit
+   enbtop = 11,           ///< top number of bits
+   esctop = 300,          ///< top scale factor
 
-   esiURA = ephM10, ///< URA index subframe index
-   esbURA = 65,    ///< URA index start bit
-   enbURA = 5,     ///< URA index number of bits
-   escURA = 1,     ///< URA index scale factor
+   esiURA = ephM10,       ///< URA index message index
+   esbURA = 65,           ///< URA index start bit
+   enbURA = 5,            ///< URA index number of bits
+   escURA = 1,            ///< URA index scale factor
 
-   esitoe1 = ephM10, ///< toe (ephemeris 1) subframe index
-   esbtoe1 = 70,    ///< toe (ephemeris 1) start bit
-   enbtoe1 = 11,    ///< toe (ephemeris 1) number of bits
-   esctoe1 = 300,   ///< toe (ephemeris 1) scale factor
+   esitoe1 = ephM10,      ///< toe (ephemeris 1) message index
+   esbtoe1 = 70,          ///< toe (ephemeris 1) start bit
+   enbtoe1 = 11,          ///< toe (ephemeris 1) number of bits
+   esctoe1 = 300,         ///< toe (ephemeris 1) scale factor
 
-   esidA = ephM10, ///< Delta A subframe index
-   esbdA = 81,    ///< Delta A start bit
-   enbdA = 26,    ///< Delta A number of bits
-   escdA = -9,    ///< Delta A power factor
+   esidA = ephM10,        ///< Delta A message index
+   esbdA = 81,            ///< Delta A start bit
+   enbdA = 26,            ///< Delta A number of bits
+   escdA = -9,            ///< Delta A power factor
 
-   esiAdot = ephM10, ///< Adot subframe index
-   esbAdot = 107,   ///< Adot start bit
-   enbAdot = 25,    ///< Adot number of bits
-   escAdot = -21,   ///< Adot power factor
+   esiAdot = ephM10,      ///< Adot message index
+   esbAdot = 107,         ///< Adot start bit
+   enbAdot = 25,          ///< Adot number of bits
+   escAdot = -21,         ///< Adot power factor
 
-   esidn0 = ephM10, ///< Delta n0 subframe index
-   esbdn0 = 132,   ///< Delta n0 start bit
-   enbdn0 = 17,    ///< Delta n0 number of bits
-   escdn0 = -44, ///< Delta n0 power factor
+   esidn0 = ephM10,       ///< Delta n0 message index
+   esbdn0 = 132,          ///< Delta n0 start bit
+   enbdn0 = 17,           ///< Delta n0 number of bits
+   escdn0 = -44,          ///< Delta n0 power factor
 
-   esidn0dot = ephM10, ///< Delta n0 dot subframe index
-   esbdn0dot = 149,   ///< Delta n0 dot start bit
-   enbdn0dot = 23,    ///< Delta n0 dot number of bits
-   escdn0dot = -57,   ///< Delta n0 dot power factor
+   esidn0dot = ephM10,    ///< Delta n0 dot message index
+   esbdn0dot = 149,       ///< Delta n0 dot start bit
+   enbdn0dot = 23,        ///< Delta n0 dot number of bits
+   escdn0dot = -57,       ///< Delta n0 dot power factor
 
-   esiM0 = ephM10, ///< M0-n subframe index
-   esbM0 = 172,   ///< M0-n start bit
-   enbM0 = 33,    ///< M0-n number of bits
-   escM0 = -32,   ///< M0-n power factor
+   esiM0 = ephM10,        ///< M0-n message index
+   esbM0 = 172,           ///< M0-n start bit
+   enbM0 = 33,            ///< M0-n number of bits
+   escM0 = -32,           ///< M0-n power factor
 
-   esiEcc = ephM10, ///< Ecc n subframe index
-   esbEcc = 205,   ///< Ecc n start bit
-   enbEcc = 33,    ///< Ecc n number of bits
-   escEcc = -34,   ///< Ecc n power factor
+   esiEcc = ephM10,       ///< Ecc n message index
+   esbEcc = 205,          ///< Ecc n start bit
+   enbEcc = 33,           ///< Ecc n number of bits
+   escEcc = -34,          ///< Ecc n power factor
 
-   esiw = ephM10, ///< w subframe index
-   esbw = 238,   ///< w start bit
-   enbw = 33,    ///< w number of bits
-   escw = -32,   ///< w power factor
+   esiw = ephM10,         ///< w message index
+   esbw = 238,            ///< w start bit
+   enbw = 33,             ///< w number of bits
+   escw = -32,            ///< w power factor
 
       // stored as bool, no scale/bit count needed
-   esiInt = ephM10, ///< Integrity status flag subframe index
-   esbInt = 271,   ///< Integrity status flag start bit
+   esiInt = ephM10,       ///< Integrity status flag message index
+   esbInt = 271,          ///< Integrity status flag start bit
 
-   esiPL2C = ephM10, ///< L2C Phasing subframe index
-   esbPL2C = 272,   ///< L2C Phasing start bit
+   esiPL2C = ephM10,      ///< L2C Phasing message index
+   esbPL2C = 272,         ///< L2C Phasing start bit
 
-   esitoe2 = ephM11, ///< toe (ephemeris 2) subframe index
-   esbtoe2 = 38,    ///< toe (ephemeris 2) start bit
-   enbtoe2 = 11,    ///< toe (ephemeris 2) number of bits
-   esctoe2 = 300,   ///< toe (ephemeris 2) scale factor
+   esitoe2 = ephM11,      ///< toe (ephemeris 2) message index
+   esbtoe2 = 38,          ///< toe (ephemeris 2) start bit
+   enbtoe2 = 11,          ///< toe (ephemeris 2) number of bits
+   esctoe2 = 300,         ///< toe (ephemeris 2) scale factor
 
-   esiOMEGA0 = ephM11, ///< OMEGA0-n subframe index
-   esbOMEGA0 = 49,    ///< OMEGA0-n MSBs start bit
-   enbOMEGA0 = 33,    ///< OMEGA0-n MSBs number of bits
-   escOMEGA0 = -32,   ///< OMEGA0-n power factor
+   esiOMEGA0 = ephM11,    ///< OMEGA0-n message index
+   esbOMEGA0 = 49,        ///< OMEGA0-n MSBs start bit
+   enbOMEGA0 = 33,        ///< OMEGA0-n MSBs number of bits
+   escOMEGA0 = -32,       ///< OMEGA0-n power factor
 
-   esii0 = ephM11, ///< i0-n subframe index
-   esbi0 = 82,    ///< i0-n MSBs start bit
-   enbi0 = 33,    ///< i0-n MSBs number of bits
-   esci0 = -32,   ///< i0-n power factor
+   esii0 = ephM11,        ///< i0-n message index
+   esbi0 = 82,            ///< i0-n MSBs start bit
+   enbi0 = 33,            ///< i0-n MSBs number of bits
+   esci0 = -32,           ///< i0-n power factor
 
-   esidOMEGAdot = ephM11, ///< Delta OMEGAdot subframe index
-   esbdOMEGAdot = 115,   ///< Delta OMEGAdot start bit
-   enbdOMEGAdot = 17,    ///< Delta OMEGAdot number of bits
-   escdOMEGAdot = -44,   ///< Delta OMEGAdot power factor
+   esidOMEGAdot = ephM11, ///< Delta OMEGAdot message index
+   esbdOMEGAdot = 115,    ///< Delta OMEGAdot start bit
+   enbdOMEGAdot = 17,     ///< Delta OMEGAdot number of bits
+   escdOMEGAdot = -44,    ///< Delta OMEGAdot power factor
 
-   esiidot = ephM11, ///< i0-n - DOT subframe index
-   esbidot = 132,   ///< i0-n - DOT start bit
-   enbidot = 15,    ///< i0-n - DOT number of bits
-   escidot = -44,   ///< i0-n - DOT power factor
+   esiidot = ephM11,      ///< i0-n - DOT message index
+   esbidot = 132,         ///< i0-n - DOT start bit
+   enbidot = 15,          ///< i0-n - DOT number of bits
+   escidot = -44,         ///< i0-n - DOT power factor
 
-   esiCis = ephM11, ///< Cis-n subframe index
-   esbCis = 147,   ///< Cis-n start bit
-   enbCis = 16,    ///< Cis-n number of bits
-   escCis = -30,   ///< Cis-n power factor
+   esiCis = ephM11,       ///< Cis-n message index
+   esbCis = 147,          ///< Cis-n start bit
+   enbCis = 16,           ///< Cis-n number of bits
+   escCis = -30,          ///< Cis-n power factor
 
-   esiCic = ephM11, ///< Cic-n subframe index
-   esbCic = 163,   ///< Cic-n start bit
-   enbCic = 16,    ///< Cic-n number of bits
-   escCic = -30,   ///< Cic-n power factor
+   esiCic = ephM11,       ///< Cic-n message index
+   esbCic = 163,          ///< Cic-n start bit
+   enbCic = 16,           ///< Cic-n number of bits
+   escCic = -30,          ///< Cic-n power factor
 
-   esiCrs = ephM11, ///< Crs-n subframe index
-   esbCrs = 179,   ///< Crs-n start bit
-   enbCrs = 24,    ///< Crs-n number of bits
-   escCrs = -8,    ///< Crs-n power factor
+   esiCrs = ephM11,       ///< Crs-n message index
+   esbCrs = 179,          ///< Crs-n start bit
+   enbCrs = 24,           ///< Crs-n number of bits
+   escCrs = -8,           ///< Crs-n power factor
 
-   esiCrc = ephM11, ///< Crc-n subframe index
-   esbCrc = 203,   ///< Crc-n start bit
-   enbCrc = 24,    ///< Crc-n number of bits
-   escCrc = -8,    ///< Crc-n power factor
+   esiCrc = ephM11,       ///< Crc-n message index
+   esbCrc = 203,          ///< Crc-n start bit
+   enbCrc = 24,           ///< Crc-n number of bits
+   escCrc = -8,           ///< Crc-n power factor
 
-   esiCus = ephM11, ///< Cus-n subframe index
-   esbCus = 227,   ///< Cus-n start bit
-   enbCus = 21,    ///< Cus-n number of bits
-   escCus = -30,   ///< Cus-n power factor
+   esiCus = ephM11,       ///< Cus-n message index
+   esbCus = 227,          ///< Cus-n start bit
+   enbCus = 21,           ///< Cus-n number of bits
+   escCus = -30,          ///< Cus-n power factor
 
-   esiCuc = ephM11, ///< Cuc-n subframe index
-   esbCuc = 248,   ///< Cuc-n start bit
-   enbCuc = 21,    ///< Cuc-n number of bits
-   escCuc = -30,   ///< Cuc-n power factor
+   esiCuc = ephM11,       ///< Cuc-n message index
+   esbCuc = 248,          ///< Cuc-n start bit
+   enbCuc = 21,           ///< Cuc-n number of bits
+   escCuc = -30,          ///< Cuc-n power factor
 
       /// @note these apply to all clock messages, type 30-37
-   csitop = ephMClk, ///< top subframe index
-   csbtop = 38,      ///< top start bit
-   cnbtop = 11,      ///< top number of bits
-   csctop = 300,     ///< top scale factor
+   csitop = ephMClk,      ///< top message index
+   csbtop = 38,           ///< top start bit
+   cnbtop = 11,           ///< top number of bits
+   csctop = 300,          ///< top scale factor
 
-   csiURAned0 = ephMClk, ///< URA_NED0 subframe index
-   csbURAned0 = 49,      ///< URA_NED0 start bit
-   cnbURAned0 = 5,       ///< URA_NED0 number of bits
-   cscURAned0 = 1,       ///< URA_NED0 scale factor
+   csiURAned0 = ephMClk,  ///< URA_NED0 message index
+   csbURAned0 = 49,       ///< URA_NED0 start bit
+   cnbURAned0 = 5,        ///< URA_NED0 number of bits
+   cscURAned0 = 1,        ///< URA_NED0 scale factor
 
-   csiURAned1 = ephMClk, ///< URA_NED1 subframe index
-   csbURAned1 = 54,      ///< URA_NED1 start bit
-   cnbURAned1 = 3,       ///< URA_NED1 number of bits
-   cscURAned1 = 1,       ///< URA_NED1 scale factor
+   csiURAned1 = ephMClk,  ///< URA_NED1 message index
+   csbURAned1 = 54,       ///< URA_NED1 start bit
+   cnbURAned1 = 3,        ///< URA_NED1 number of bits
+   cscURAned1 = 1,        ///< URA_NED1 scale factor
 
-   csiURAned2 = ephMClk, ///< URA_NED2 subframe index
-   csbURAned2 = 57,      ///< URA_NED2 start bit
-   cnbURAned2 = 3,       ///< URA_NED2 number of bits
-   cscURAned2 = 1,       ///< URA_NED2 scale factor
+   csiURAned2 = ephMClk,  ///< URA_NED2 message index
+   csbURAned2 = 57,       ///< URA_NED2 start bit
+   cnbURAned2 = 3,        ///< URA_NED2 number of bits
+   cscURAned2 = 1,        ///< URA_NED2 scale factor
 
-   csitoc = ephMClk, ///< toc subframe index
-   csbtoc = 60,      ///< toc start bit
-   cnbtoc = 11,      ///< toc number of bits
-   csctoc = 300,     ///< toc scale factor
+   csitoc = ephMClk,      ///< toc message index
+   csbtoc = 60,           ///< toc start bit
+   cnbtoc = 11,           ///< toc number of bits
+   csctoc = 300,          ///< toc scale factor
 
-   csiaf0 = ephMClk, ///< af0 subframe index
-   csbaf0 = 71,      ///< af0 start bit
-   cnbaf0 = 26,      ///< af0 number of bits
-   cscaf0 = -35,     ///< af0 power factor
+   csiaf0 = ephMClk,      ///< af0 message index
+   csbaf0 = 71,           ///< af0 start bit
+   cnbaf0 = 26,           ///< af0 number of bits
+   cscaf0 = -35,          ///< af0 power factor
 
-   csiaf1 = ephMClk, ///< af1 subframe index
-   csbaf1 = 97,      ///< af1 start bit
-   cnbaf1 = 20,      ///< af1 number of bits
-   cscaf1 = -48,     ///< af1 power factor
+   csiaf1 = ephMClk,      ///< af1 message index
+   csbaf1 = 97,           ///< af1 start bit
+   cnbaf1 = 20,           ///< af1 number of bits
+   cscaf1 = -48,          ///< af1 power factor
 
-   csiaf2 = ephMClk, ///< af2 subframe index
-   csbaf2 = 117,     ///< af2 start bit
-   cnbaf2 = 10,      ///< af2 number of bits
-   cscaf2 = -60,     ///< af2 power factor
+   csiaf2 = ephMClk,      ///< af2 message index
+   csbaf2 = 117,          ///< af2 start bit
+   cnbaf2 = 10,           ///< af2 number of bits
+   cscaf2 = -60,          ///< af2 power factor
+
+      /// @note these apply to message type 37 (midi almanac)
+
+   asbWNa = 127,          ///< WNa-n start bit
+   anbWNa = 13,           ///< WNa-n number of bits
+   ascWNa = 1,            ///< WNa-n scale factor
+
+   asbtoa = 140,          ///< toa start bit
+   anbtoa = 8,            ///< toa number of bits
+   asctoa = 12,           ///< toa power factor
+
+   asbPRNa = 148,         ///< PRNa start bit
+   anbPRNa = 6,           ///< PRNa number of bits
+   ascPRNa = 1,           ///< PRNa scale factor
+
+   asbHeaL1 = 154,        ///< L1 Signal health bit
+   asbHeaL2 = 155,        ///< L2 Signal health bit
+   asbHeaL5 = 156,        ///< L5 Signal health bit
+
+   asbEcc = 157,          ///< Ecc n start bit
+   anbEcc = 11,           ///< Ecc n number of bits
+   ascEcc = -16,          ///< Ecc n power factor
+
+   asbdi = 168,           ///< delta i start bit
+   anbdi = 11,            ///< delta i n number of bits
+   ascdi = -14,           ///< delta i n power factor
+
+   asbOMEGAdot = 179,     ///< OMEGAdot start bit
+   anbOMEGAdot = 11,      ///< OMEGAdot number of bits
+   ascOMEGAdot = -33,     ///< OMEGAdot power factor
+
+   asbAhalf = 190,        ///< Ahalf MSBs start bit
+   anbAhalf = 17,         ///< Ahalf MSBs number of bits
+   ascAhalf = -4,         ///< Ahalf scale factor
+
+   asbOMEGA0 = 207,       ///< OMEGA0 MSBs start bit
+   anbOMEGA0 = 16,        ///< OMEGA0 MSBs number of bits
+   ascOMEGA0 = -15,       ///< OMEGA0 power factor
+
+   asbw = 223,            ///< w start bit
+   anbw = 16,             ///< w number of bits
+   ascw = -15,            ///< w power factor
+
+   asbM0 = 239,           ///< M0 start bit
+   anbM0 = 16,            ///< M0 number of bits
+   ascM0 = -15,           ///< M0 power factor
+
+   asbaf0 = 255,          ///< af0 start bit
+   anbaf0 = 11,           ///< af0 number of bits
+   ascaf0 = -20,          ///< af0 power factor
+
+   asbaf1 = 266,          ///< af1 start bit
+   anbaf1 = 10,           ///< af1 number of bits
+   ascaf1 = -37,          ///< af1 power factor
+
+   csbA0 = 127,           ///< A0-n start bit
+   cnbA0 = 16,            ///< A0-n number of bits
+   cscA0 = -35,           ///< A0-n power factor
+
+   csbA1 = 143,           ///< A1-n start bit
+   cnbA1 = 13,            ///< A1-n number of bits
+   cscA1 = -51,           ///< A1-n power factor
+
+   csbA2 = 156,           ///< A2-n start bit
+   cnbA2 = 7,             ///< A2-n number of bits
+   cscA2 = -68,           ///< A2-n power factor
+
+   csbdtLS = 163,         ///< dtLS start bit
+   cnbdtLS = 8,           ///< dtLS number of bits
+   cscdtLS = 1,           ///< dtLS scale factor
+
+   csbtot = 171,          ///< tot start bit
+   cnbtot = 16,           ///< tot number of bits
+   csctot = 4,            ///< tot power factor
+
+   csbWNot = 187,         ///< WNot start bit
+   cnbWNot = 13,          ///< WNot number of bits
+   cscWNot = 1,           ///< WNot scale factor
+
+   csbWNlsf = 200,        ///< WNlsf start bit
+   cnbWNlsf = 13,         ///< WNlsf number of bits
+   cscWNlsf = 1,          ///< WNlsf scale factor
+
+   csbDN = 213,           ///< DN start bit
+   cnbDN = 4,             ///< DN number of bits
+   cscDN = 1,             ///< DN scale factor
+
+   csbdtLSF = 217,        ///< dtLSF start bit
+   cnbdtLSF = 8,          ///< dtLSF number of bits
+   cscdtLSF = 1,          ///< dtLSF scale factor
 };
 
 
@@ -233,7 +323,7 @@ namespace gpstk
             // This class only processes GPS CNav.
          return false;
       }
-      bool rv = true;
+      bool rv = false;
       try
       {
             /*
@@ -251,54 +341,30 @@ namespace gpstk
             */
          unsigned long msgType = navIn->asUnsignedLong(esbMsgType,enbMsgType,
                                                        escMsgType);
-         cerr << "msgType = " << msgType << endl;
+         // cerr << "msgType = " << msgType << endl;
          unsigned long svid = 0;
-         switch (msgType)
+            // Clock messages (30-37) may get processed twice, once
+            // for ephemeris and once for whatever else they might
+            // contain.
+         if ((msgType == 10) || (msgType == 11) ||
+             ((msgType >= 30) && (msgType <= 37)))
          {
-            case 10:
-            case 11:
-            case 30:
-            case 31:
-            case 32:
-            case 33:
-            case 34:
-            case 35:
-            case 36:
-            case 37:
-                  //cerr << "sfid " << sfid << " = ephemeris" << endl;
-               rv = processEph(msgType, navIn, navOut);
-               break;
-/*
-            case 4:
-            case 5:
-               svid = navIn->asUnsignedLong(62,6,1);
-                  //cerr << "sfid " << sfid << " = almanac, svid " << svid << endl;
-               if ((svid <= gpstk::MAX_PRN_GPS) && (svid >= 1))
-               {
-                     // process orbit and health
-                  rv = processAlmOrb(svid, navIn, navOut);
-               }
-               else if (svid == 51)
-               {
-                     // process health
-                  rv = processSVID51(navIn, navOut);
-               }
-               else if (svid == 63)
-               {
-                     // process health
-                  rv = processSVID63(navIn, navOut);
-               }
-               else if (svid == 56)
-               {
-                     // process time offset
-                  rv = processSVID56(navIn, navOut);
-               }
-               break;
-*/
-            default:
-                  //cerr << "invalid sfid " << sfid << endl;
-               rv = false;
-               break;
+            rv = processEph(msgType, navIn, navOut);
+         }
+         if (msgType == 33)
+         {
+            rv = rv && process33(navIn, navOut);
+         }
+            // not currently broadcast
+         // else if (msgType == 35)
+         // {
+         //    rv = rv && process35(navIn, navOut);
+         // }
+         else if (msgType == 37)
+         {
+               // Not currently broadcast, but the code was written
+               // before I found that out.
+            rv = rv && processAlmOrb(navIn, navOut);
          }
          // cerr << "  results: " << navOut.size() << endl;
          // for (const auto& i : navOut)
@@ -353,22 +419,44 @@ namespace gpstk
          default:
             return false;
       }
-#if 0
       if ((msgType == 10) && processHea)
       {
-            // Add ephemeris health bits from subframe 1.
-         gpstk::NavDataPtr p1 = std::make_shared<gpstk::GPSCNavHealth>();
-         p1->timeStamp = navIn->getTransmitTime();
-         p1->signal = NavMessageID(
+            // Add ephemeris health bits from message type 10.
+         gpstk::NavDataPtr p1L1 = std::make_shared<gpstk::GPSCNavHealth>();
+         gpstk::NavDataPtr p1L2 = std::make_shared<gpstk::GPSCNavHealth>();
+         gpstk::NavDataPtr p1L5 = std::make_shared<gpstk::GPSCNavHealth>();
+         p1L1->timeStamp = navIn->getTransmitTime();
+         p1L2->timeStamp = navIn->getTransmitTime();
+         p1L5->timeStamp = navIn->getTransmitTime();
+            /** @todo I'm not entirely sure what's appropriate here.
+             * The source signal is actually L2C CNAV but it's
+             * broadcasting signal status for L1 signals that don't
+             * have CNAV. */
+         p1L1->signal = NavMessageID(
+            NavSatelliteID(prn, prn, navIn->getsatSys().system,
+                           gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                           gpstk::NavType::GPSLNAV),
+            NavMessageType::Health);
+         p1L2->signal = NavMessageID(
             NavSatelliteID(prn, navIn->getsatSys(), navIn->getobsID(),
                            navIn->getNavID()),
             NavMessageType::Health);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p1.get())->svHealth =
-            navIn->asUnsignedLong(esbHea,enbHea,escHea);
-            //cerr << "add eph health" << endl;
-         navOut.push_back(p1);
+         p1L5->signal = NavMessageID(
+            NavSatelliteID(prn, prn, navIn->getsatSys().system,
+                           gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
+                           gpstk::NavType::GPSCNAVL5),
+            NavMessageType::Health);
+         dynamic_cast<gpstk::GPSCNavHealth*>(p1L1.get())->health =
+            navIn->asBool(esbHeaL1);
+         dynamic_cast<gpstk::GPSCNavHealth*>(p1L2.get())->health =
+            navIn->asBool(esbHeaL2);
+         dynamic_cast<gpstk::GPSCNavHealth*>(p1L5.get())->health =
+            navIn->asBool(esbHeaL5);
+         // cerr << "add eph health" << endl;
+         navOut.push_back(p1L1);
+         navOut.push_back(p1L2);
+         navOut.push_back(p1L5);
       }
-#endif
       if (!PNBNavDataFactory::processEph)
       {
             // User doesn't want ephemerides so don't do any processing.
@@ -380,18 +468,18 @@ namespace gpstk
          ephAcc[prn].resize(3);
          ephAcc[prn][vecIdx] = navIn;
             // nothing in navOut yet and no further processing because
-            // we only have one of three subframes at this point.
+            // we only have one of three message types at this point.
          return true;
       }
       std::vector<PackedNavBitsPtr> &ephSF(ephAcc[prn]);
       ephSF[vecIdx] = navIn;
-         // stop processing if we don't have three full subframes
+         // stop processing if we don't have three full message types
       if (!ephSF[ephM10] || !ephSF[ephM11] || !ephSF[ephMClk] ||
           (ephSF[ephM10]->getNumBits() != 300) ||
           (ephSF[ephM11]->getNumBits() != 300) ||
           (ephSF[ephMClk]->getNumBits() != 300))
       {
-         cerr << "Not ready for full eph processing" << endl;
+         // cerr << "Not ready for full eph processing" << endl;
          return true;
       }
          // Stop processing if we don't have matching toe/toc in
@@ -406,13 +494,13 @@ namespace gpstk
       double toc = ephSF[csitoc]->asUnsignedLong(csbtoc,cnbtoc,csctoc);
       if ((toe10 != toe11) || (toe10 != toc))
       {
-         cerr << "IODC/IODE mismatch, not processing" << endl;
+         // cerr << "toe/toc mismatch, not processing" << endl;
             // Even though the mismatch might be considered an error,
             // we don't really want to mark it as such and rather
             // consider it as a "valid" but unprocessable data set.
          return true;
       }
-      cerr << "Ready for full eph processing" << endl;
+      // cerr << "Ready for full eph processing" << endl;
       gpstk::NavDataPtr p0 = std::make_shared<gpstk::GPSCNavEph>();
       GPSCNavEph *eph = dynamic_cast<gpstk::GPSCNavEph*>(p0.get());
          // NavData
@@ -475,7 +563,7 @@ namespace gpstk
          /** @todo should this be limited to only if the L2 health bit
           * is set?  Definitely not if this code ends up being used
           * for L5 CNAV. */
-      eph->healthy = (eph->healthL2 == 0); // actually in OrbitDataKepler
+      eph->healthy = (eph->healthL2 == false); // actually in OrbitDataKepler
       eph->uraED = ephSF[esiURA]->asLong(esbURA,enbURA,escURA);
       eph->alert11 = ephSF[ephM11]->asBool(esbAlert);
       eph->alertClk = ephSF[ephMClk]->asBool(esbAlert);
@@ -497,268 +585,103 @@ namespace gpstk
    }
 
 
-#if 0
    bool PNBGPSCNavDataFactory ::
-   processAlmOrb(unsigned long prn, const PackedNavBitsPtr& navIn,
-                 NavDataPtrList& navOut)
+   processAlmOrb(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
    {
+      unsigned long sprn = navIn->asUnsignedLong(asbPRNa,anbPRNa,ascPRNa);
+      gpstk::SatID xmitSat(navIn->getsatSys());
+      SatelliteSystem xmitSys = xmitSat.system;
+      unsigned long xprn = xmitSat.id;
          // No checks for correct svid, just assume that the input
          // data has already been checked (it will have been by
          // addData).
       if (processHea)
       {
-            // Add almanac orbit page health bits.
-         gpstk::NavDataPtr p1 = std::make_shared<gpstk::GPSCNavHealth>();
-         p1->timeStamp = navIn->getTransmitTime();
-         p1->signal = NavMessageID(
-            NavSatelliteID(prn, navIn->getsatSys(), navIn->getobsID(),
-                           navIn->getNavID()),
+            // Add almanac health bits from message type 37.
+         gpstk::NavDataPtr p1L1 = std::make_shared<gpstk::GPSCNavHealth>();
+         gpstk::NavDataPtr p1L2 = std::make_shared<gpstk::GPSCNavHealth>();
+         gpstk::NavDataPtr p1L5 = std::make_shared<gpstk::GPSCNavHealth>();
+         p1L1->timeStamp = navIn->getTransmitTime();
+         p1L2->timeStamp = navIn->getTransmitTime();
+         p1L5->timeStamp = navIn->getTransmitTime();
+            /** @todo I'm not entirely sure what's appropriate here.
+             * The source signal is actually L2C CNAV but it's
+             * broadcasting signal status for L1 signals that don't
+             * have CNAV. */
+         p1L1->signal = NavMessageID(
+            NavSatelliteID(sprn, xprn, navIn->getsatSys().system,
+                           gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                           gpstk::NavType::GPSLNAV),
             NavMessageType::Health);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p1.get())->svHealth =
-            navIn->asUnsignedLong(136,8,1);
-            //cerr << "add alm health" << endl;
-         navOut.push_back(p1);
+         p1L2->signal = NavMessageID(
+            NavSatelliteID(sprn, xmitSat, navIn->getobsID(), navIn->getNavID()),
+            NavMessageType::Health);
+         p1L5->signal = NavMessageID(
+            NavSatelliteID(sprn, xprn, xmitSys,
+                           gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
+                           gpstk::NavType::GPSCNAVL5),
+            NavMessageType::Health);
+         dynamic_cast<gpstk::GPSCNavHealth*>(p1L1.get())->health =
+            navIn->asBool(asbHeaL1);
+         dynamic_cast<gpstk::GPSCNavHealth*>(p1L2.get())->health =
+            navIn->asBool(asbHeaL2);
+         dynamic_cast<gpstk::GPSCNavHealth*>(p1L5.get())->health =
+            navIn->asBool(asbHeaL5);
+         // cerr << "add alm health" << endl;
+         navOut.push_back(p1L1);
+         navOut.push_back(p1L2);
+         navOut.push_back(p1L5);
       }
       if (!PNBNavDataFactory::processAlm)
       {
             // User doesn't want almanacs so don't do any processing.
          return true;
       }
-         // SVID 1-32 contain the almanac orbital elements as well as
-         // health information (Figure 20-1 sheet 4), so we'll end up
-         // returning two items in navOut.
-      gpstk::SatID xmitSat(navIn->getsatSys());
       gpstk::NavDataPtr p0 = std::make_shared<gpstk::GPSCNavAlm>();
-      p0->timeStamp = navIn->getTransmitTime();
-      p0->signal = gpstk::NavMessageID(
-         gpstk::NavSatelliteID(prn, xmitSat, navIn->getobsID(),
+      GPSCNavAlm *alm = dynamic_cast<gpstk::GPSCNavAlm*>(p0.get());
+         // NavData
+      alm->timeStamp = navIn->getTransmitTime();
+      alm->signal = gpstk::NavMessageID(
+         gpstk::NavSatelliteID(sprn, xmitSat, navIn->getobsID(),
                                navIn->getNavID()),
          gpstk::NavMessageType::Almanac);
-      GPSCNavAlm *alm = dynamic_cast<gpstk::GPSCNavAlm*>(p0.get());
-         // Bit positions taken from IS-GPS-200 figure 20-1 sheet 4,
-         // and figure 20-2, but subtracting 1 since PNB is 0-based.
-         // Scales taken from Table 20-VI
-         // Sinusoidal corrections and other unset parameters are not
-         // used by almanac data and are initialized to 0 by
-         // constructor
-      alm->pre = navIn->asUnsignedLong(esbPre,enbPre,escPre);
-      alm->tlm = navIn->asUnsignedLong(esbTLM,enbTLM,escTLM);
-      alm->alert = navIn->asBool(esbAlert);
-      alm->asFlag = navIn->asBool(esbAS);
-      alm->xmitTime = navIn->getTransmitTime();
-      alm->ecc = navIn->asSignedDouble(68,16,-21);
-      alm->toa = navIn->asUnsignedDouble(90,8,12);
-      gpstk::GPSWeekSecond ws(alm->xmitTime);
-      // cerr << "page " << prn << " WNa = ??  toa = " << alm->toa
-      //      << "  WNx = " << (ws.week & 0x0ff) << "  tox = " << ws.sow << endl;
-      alm->deltai = navIn->asDoubleSemiCircles(98,16,-19);
-      alm->i0 = (0.3 * PI) + alm->deltai;
-      alm->OMEGAdot = navIn->asDoubleSemiCircles(120,16,-38);
-      alm->healthBits = navIn->asUnsignedLong(136,8,1);
-      alm->healthy = alm->healthBits == 0;
-      alm->Ahalf = navIn->asUnsignedDouble(150,24,-11);
+         // OrbitData = empty
+         // OrbitDataKepler
+      alm->xmitTime = alm->timeStamp;
+         /** @todo apply 13-bit week rollover adjustment, not 10-bit.
+          * Must be completed by January, 2137 :-) */
+      alm->wna = navIn->asUnsignedLong(asbWNa,anbWNa,ascWNa);
+      alm->toa = navIn->asUnsignedDouble(asbtoa,anbtoa,asctoa);
+      alm->Toc = alm->Toe = GPSWeekSecond(alm->wna,alm->toa);
+      alm->M0 = navIn->asDoubleSemiCircles(asbM0,anbM0,ascM0);
+      alm->ecc = navIn->asUnsignedDouble(asbEcc,anbEcc,ascEcc);
+      alm->Ahalf = navIn->asUnsignedDouble(asbAhalf,anbAhalf,ascAhalf);
       alm->A = alm->Ahalf * alm->Ahalf;
-      alm->OMEGA0 = navIn->asDoubleSemiCircles(180,24,-23);
-      alm->w = navIn->asDoubleSemiCircles(210,24,-23);
-      alm->M0 = navIn->asDoubleSemiCircles(240,24,-23);
-      const unsigned af0start[] = {270,289};
-      const unsigned af0num[] = {8,3};
-         // 2 is the size of the af0start/af0num arrays
-      alm->af0 = navIn->asSignedDouble(af0start,af0num,2,-20);
-      alm->af1 = navIn->asSignedDouble(278,11,-38);
-         // If we have a wna for this transmitting PRN, use it to set
-         // the toa (identified as Toe/Toc in OrbitDataKepler).
-         // Otherwise, stash the data until we do have a wna.
-      if ((fullWNaMap.find(xmitSat.id) != fullWNaMap.end()) &&
-          (fullWNaMap[xmitSat.id].sow == alm->toa))
-      {
-         alm->Toe = alm->Toc = fullWNaMap[xmitSat.id];
-         alm->fixFit();
-            //cerr << "add alm" << endl;
-         navOut.push_back(p0);
-      }
-      else
-      {
-            // no WNa available yet, accumulate the data until we get a page 51
-         almAcc[xmitSat.id].push_back(p0);
-      }
+      alm->OMEGA0 = navIn->asDoubleSemiCircles(asbOMEGA0,anbOMEGA0,ascOMEGA0);
+         // i0 is set below
+      alm->w = navIn->asDoubleSemiCircles(asbw,anbw,ascw);
+      alm->OMEGAdot = navIn->asDoubleSemiCircles(asbOMEGAdot,anbOMEGAdot,
+                                                 ascOMEGAdot);
+      alm->af0 = navIn->asSignedDouble(asbaf0,anbaf0,ascaf0);
+      alm->af1 = navIn->asSignedDouble(asbaf1,anbaf1,ascaf1);
+         // GPSCNavAlm
+      alm->healthL1 = navIn->asBool(esbHeaL1);
+      alm->healthL2 = navIn->asBool(esbHeaL2);
+      alm->healthL5 = navIn->asBool(esbHeaL5);
+         /** @todo should this be limited to only if the L2 health bit
+          * is set?  Definitely not if this code ends up being used
+          * for L5 CNAV. */
+      alm->healthy = (alm->healthL2 == false); // actually in OrbitDataKepler
+      alm->deltai = navIn->asDoubleSemiCircles(asbdi,anbdi,ascdi);
+      alm->i0 = (0.3 * PI) + alm->deltai;
+      navOut.push_back(p0);
       return true;
    }
 
 
    bool PNBGPSCNavDataFactory ::
-   processSVID51(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   process33(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
    {
-         // No checks for correct svid, just assume that the input
-         // data has already been checked (it will have been by
-         // addData).
-      gpstk::SatID xmitSat(navIn->getsatSys());
-      if (PNBNavDataFactory::processAlm)
-      {
-            // Set the fullWNa now that we have something to go on,
-            // but only if we're processing almanac data, which is the
-            // only situation where it's used.
-         double toa = navIn->asUnsignedDouble(68,8,12);
-         unsigned shortWNa = navIn->asUnsignedLong(76, 8, 1);
-         gpstk::GPSWeekSecond ws(navIn->getTransmitTime());
-         long refWeek = ws.week;
-         unsigned fullWNa = timeAdjust8BitWeekRollover(shortWNa, refWeek);
-         fullWNaMap[xmitSat.id] = GPSWeekSecond(fullWNa, toa);
-         // cerr << "page 51 WNa = " << shortWNa << "  toa = " << toa
-         //      << "  WNx = " << (ws.week & 0x0ff) << "  tox = " << ws.sow
-         //      << "  fullWNa = " << fullWNa << endl;
-         NavDataPtrList& ndpl(almAcc[xmitSat.id]);
-         for (auto i = ndpl.begin(); i != ndpl.end();)
-         {
-            GPSCNavAlm *alm = dynamic_cast<GPSCNavAlm*>(i->get());
-            if (alm->toa == toa)
-            {
-               alm->Toe = alm->Toc = fullWNaMap[xmitSat.id];
-               alm->fixFit();
-                  //cerr << "add alm" << endl;
-               navOut.push_back(*i);
-               i = ndpl.erase(i);
-            }
-            else
-            {
-               ++i;
-            }
-         }
-      }
-         // svid 51 = sf 5 page 25. The format has 24 SVs in it,
-         // grouped 4 per word.
-      if (!PNBNavDataFactory::processHea)
-      {
-            // User doesn't want health so don't do any processing.
-         return true;
-      }
-      gpstk::ObsID oid(navIn->getobsID());
-      gpstk::NavID navid(navIn->getNavID());
-      for (unsigned prn = 1, bit = 90; prn <= 24; prn += 4, bit += 30)
-      {
-         gpstk::NavDataPtr p1 = std::make_shared<gpstk::GPSCNavHealth>();
-         gpstk::NavDataPtr p2 = std::make_shared<gpstk::GPSCNavHealth>();
-         gpstk::NavDataPtr p3 = std::make_shared<gpstk::GPSCNavHealth>();
-         gpstk::NavDataPtr p4 = std::make_shared<gpstk::GPSCNavHealth>();
-         p1->timeStamp = navIn->getTransmitTime();
-         p1->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+0, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p1.get())->svHealth =
-            navIn->asUnsignedLong(bit+0, 6, 1);
-            //cerr << "add page 51 health" << endl;
-         navOut.push_back(p1);
-         p2->timeStamp = navIn->getTransmitTime();
-         p2->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+1, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p2.get())->svHealth =
-            navIn->asUnsignedLong(bit+6, 6, 1);
-            //cerr << "add page 51 health" << endl;
-         navOut.push_back(p2);
-         p3->timeStamp = navIn->getTransmitTime();
-         p3->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+2, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p3.get())->svHealth =
-            navIn->asUnsignedLong(bit+12, 6, 1);
-            //cerr << "add page 51 health" << endl;
-         navOut.push_back(p3);
-         p4->timeStamp = navIn->getTransmitTime();
-         p4->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+3, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p4.get())->svHealth =
-            navIn->asUnsignedLong(bit+18, 6, 1);
-            //cerr << "add page 51 health" << endl;
-         navOut.push_back(p4);
-      }
-      return true;
-   }
-
-
-   bool PNBGPSCNavDataFactory ::
-   processSVID63(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
-   {
-         // No checks for correct svid, just assume that the input
-         // data has already been checked (it will have been by
-         // addData).
-         // svid 63 = sf 4 page 25. The format has SVs 25-32 in it.
-         // SV 25 is kind of off on its own so do it first, outside the loop
-      if (!PNBNavDataFactory::processHea)
-      {
-            // User doesn't want health so don't do any processing.
-         return true;
-      }
-      gpstk::SatID xmitSat(navIn->getsatSys());
-      gpstk::ObsID oid(navIn->getobsID());
-      gpstk::NavID navid(navIn->getNavID());
-      gpstk::NavDataPtr p0 = std::make_shared<gpstk::GPSCNavHealth>();
-      p0->timeStamp = navIn->getTransmitTime();
-      p0->signal = gpstk::NavMessageID(
-         gpstk::NavSatelliteID(25, xmitSat, oid, navid),
-         gpstk::NavMessageType::Health);
-         // prn 25 health starts at bit 229 (1-based), so we use 228 (0-based)
-      dynamic_cast<gpstk::GPSCNavHealth*>(p0.get())->svHealth =
-         navIn->asUnsignedLong(228, 6, 1);
-         //cerr << "add page 63 health" << endl;
-      navOut.push_back(p0);      
-      for (unsigned prn = 26, bit = 240; prn <= 32; prn += 4, bit += 30)
-      {
-         gpstk::NavDataPtr p1 = std::make_shared<gpstk::GPSCNavHealth>();
-         gpstk::NavDataPtr p2 = std::make_shared<gpstk::GPSCNavHealth>();
-         gpstk::NavDataPtr p3 = std::make_shared<gpstk::GPSCNavHealth>();
-         gpstk::NavDataPtr p4;
-         p1->timeStamp = navIn->getTransmitTime();
-         p1->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+0, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p1.get())->svHealth =
-            navIn->asUnsignedLong(bit+0, 6, 1);
-            //cerr << "add page 63 health" << endl;
-         navOut.push_back(p1);
-         p2->timeStamp = navIn->getTransmitTime();
-         p2->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+1, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p2.get())->svHealth =
-            navIn->asUnsignedLong(bit+6, 6, 1);
-            //cerr << "add page 63 health" << endl;
-         navOut.push_back(p2);
-         p3->timeStamp = navIn->getTransmitTime();
-         p3->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+2, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p3.get())->svHealth =
-            navIn->asUnsignedLong(bit+12, 6, 1);
-            //cerr << "add page 63 health" << endl;
-         navOut.push_back(p3);
-            // Word 9 has 4 PRNs, word 10 only has 3, so we have to do
-            // this check.
-         if (prn < 30)
-         {
-            p4 = std::make_shared<gpstk::GPSCNavHealth>();
-            p4->timeStamp = navIn->getTransmitTime();
-            p4->signal = gpstk::NavMessageID(
-               gpstk::NavSatelliteID(prn+3, xmitSat, oid, navid),
-               gpstk::NavMessageType::Health);
-            dynamic_cast<gpstk::GPSCNavHealth*>(p4.get())->svHealth =
-               navIn->asUnsignedLong(bit+18, 6, 1);
-               //cerr << "add page 63 health" << endl;
-            navOut.push_back(p4);
-         }
-      }
-      return true;
-   }
-
-
-   bool PNBGPSCNavDataFactory ::
-   processSVID56(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
-   {
-         // No checks for correct svid, just assume that the input
-         // data has already been checked (it will have been by
-         // addData).
-         // svid 56 = sf 4 page 18.
       if (!PNBNavDataFactory::processTim)
       {
             // User doesn't want time offset data so don't do any processing.
@@ -770,48 +693,26 @@ namespace gpstk
          gpstk::NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
                                navIn->getobsID(), navIn->getNavID()),
          gpstk::NavMessageType::TimeOffset);
-      GPSCNavTimeOffset *to = dynamic_cast<gpstk::GPSCNavTimeOffset*>(p0.get());
-         // Bit positions taken from IS-GPS-200 figure 20-1 sheet 8,
-         // but subtracting 1 since PNB is 0-based.
-         // Scales taken from Table 20-IX
-         /** @note while some of the values are stored as doubles,
-          * they may be extracted as long (e.g. deltatLS) because
-          * there is no scaling for the encoded value. */
-      const unsigned a0start[] = { 180,210 };
-      const unsigned a0num[] = { 24,8 };
-      to->deltatLS = navIn->asLong(240,8,1);
-         // 2 is the size of the start/num arrays, while -30 is the
-         // scale factor i.e. x*2^-30
-      to->a0 = navIn->asSignedDouble(a0start,a0num,2,-30);
-      to->a1 = navIn->asSignedDouble(150,24,-50);
-      to->tot = navIn->asUnsignedDouble(218,8,12);
-      to->wnt = navIn->asUnsignedLong(226,8,1);
-      to->wnLSF = navIn->asUnsignedLong(248,8,1);
-      to->dn = navIn->asUnsignedLong(256,8,1);
-      to->deltatLSF = navIn->asLong(270,8,1);
-         // adjust week numbers to full week
-      gpstk::GPSWeekSecond ws(p0->timeStamp);
-      long refWeek = ws.week;
-      to->wnt = timeAdjust8BitWeekRollover(to->wnt, refWeek);
-      to->wnLSF = timeAdjust8BitWeekRollover(to->wnLSF, refWeek);
-         // return results.
-         //cerr << "add page 56 time offset" << endl;
+      GPSCNavTimeOffset *to =
+         dynamic_cast<gpstk::GPSCNavTimeOffset*>(p0.get());
+      to->tgt = TimeSystem::UTC; // by definition
+      to->a0 = navIn->asSignedDouble(csbA0,cnbA0,cscA0);
+      to->a1 = navIn->asSignedDouble(csbA1,cnbA1,cscA1);
+      to->a2 = navIn->asSignedDouble(csbA2,cnbA2,cscA2);
+      to->deltatLS = navIn->asLong(csbdtLS,cnbdtLS,cscdtLS);
+      to->tot = navIn->asUnsignedDouble(csbtot,cnbtot,csctot);
+      to->wnot = navIn->asUnsignedLong(csbWNot,cnbWNot,cscWNot);
+      to->wnLSF = navIn->asUnsignedLong(csbWNlsf,cnbWNlsf,cscWNlsf);
+      to->dn = navIn->asUnsignedLong(csbDN,cnbDN,cscDN);
+      to->deltatLSF = navIn->asLong(csbdtLSF,cnbdtLSF,cscdtLSF);
       navOut.push_back(p0);
       return true;
    }
-#endif
 
    void PNBGPSCNavDataFactory ::
    dumpState(std::ostream& s)
       const
    {
-      s << "fullWNaMap.size() = " << fullWNaMap.size() << " (expect 32)" << endl
-        << "almAcc.size() = " << almAcc.size() << " (expect 32)" << endl;
-      for (const auto& i : almAcc)
-      {
-         s << "  almAcc[" << i.first << "].size() = " << i.second.size()
-           << endl;
-      }
       s << "ephAcc.size() = " << ephAcc.size() << " (expect 32)" << endl;
       for (const auto& i : ephAcc)
       {

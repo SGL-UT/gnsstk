@@ -293,9 +293,6 @@ addDataEphemerisTest()
 {
    TUDEF("PNBGPSLNavDataFactory", "addData");
    gpstk::PNBGPSLNavDataFactory uut;
-   gpstk::SatID gloSid(1,gpstk::SatelliteSystem::Glonass);
-   gpstk::PackedNavBitsPtr nonGPS =
-      std::make_shared<gpstk::PackedNavBits>(gloSid,oid,alm26ct);
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Ephemeris}));
       // Add subframe 1, expect nothing.
@@ -341,9 +338,6 @@ addDataHealthTest()
 {
    TUDEF("PNBGPSLNavDataFactory", "addData");
    gpstk::PNBGPSLNavDataFactory uut;
-   gpstk::SatID gloSid(1,gpstk::SatelliteSystem::Glonass);
-   gpstk::PackedNavBitsPtr nonGPS =
-      std::make_shared<gpstk::PackedNavBits>(gloSid,oid,alm26ct);
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Health}));
       // Add subframe 1, expect 1 health object.
@@ -397,9 +391,6 @@ addDataTimeTest()
 {
    TUDEF("PNBGPSLNavDataFactory", "addData");
    gpstk::PNBGPSLNavDataFactory uut;
-   gpstk::SatID gloSid(1,gpstk::SatelliteSystem::Glonass);
-   gpstk::PackedNavBitsPtr nonGPS =
-      std::make_shared<gpstk::PackedNavBits>(gloSid,oid,alm26ct);
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::TimeOffset}));
       // Add subframe 1, expect nothing.
@@ -445,9 +436,6 @@ addDataEphHealthTest()
 {
    TUDEF("PNBGPSLNavDataFactory", "addData");
    gpstk::PNBGPSLNavDataFactory uut;
-   gpstk::SatID gloSid(1,gpstk::SatelliteSystem::Glonass);
-   gpstk::PackedNavBitsPtr nonGPS =
-      std::make_shared<gpstk::PackedNavBits>(gloSid,oid,alm26ct);
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Ephemeris,
                               gpstk::NavMessageType::Health}));
@@ -515,8 +503,7 @@ processEphTest()
    gpstk::NavDataPtrList navOut;
    gpstk::GPSLNavHealth *hea;
    gpstk::GPSLNavEph *eph;
-      // construct our three ephemeris subframes.
-      // success, but no data
+      // success, health data only
    TUASSERTE(bool, true, uut.processEph(1, ephSF1, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    heaCount = 0, ephCount = 0, otherCount = 0;

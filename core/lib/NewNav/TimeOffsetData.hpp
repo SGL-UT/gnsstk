@@ -29,7 +29,8 @@ namespace gpstk
           *   The details of what time system this should be in and
           *   any other restrictions will be documented in each leaf
           *   class, e.g. GPSLNavTimeOffset.
-          * @param[out] offset The offset when converting fromSys->toSys.
+          * @param[out] offset The offset in seconds where
+          *   when(toSys)=when(fromSys)-offset.
           * @return true if an offset is available, false if not. */
       virtual bool getOffset(TimeSystem fromSys, TimeSystem toSys,
                              const CommonTime& when, double& offset) const = 0;

@@ -591,7 +591,8 @@ namespace gpstk
       if (testMsg.empty())
       {
          std::ostringstream ostr;
-         ostr << "Expected:'" << expected << "' ,But got:'" << got << "'";
+         ostr << std::boolalpha << "Expected:'" << expected << "' ,But got:'"
+              << got << "'";
          mess = ostr.str();
       }
       assert(expected == got, mess, lineNumber);

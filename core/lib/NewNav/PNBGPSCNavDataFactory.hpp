@@ -17,7 +17,13 @@ namespace gpstk
        * objects, according to what data is fed to the method and what
        * data is requested via the validity and type filters (see
        * PNBNavDataFactory).
-       * @note Currently validity is not checked in any way in this class. */
+       * @note Currently validity is not checked in any way in this class.
+       * @note Currently only message types 10, 11, 30, 32 and 33 are
+       *   being broadcast by the constellation.  As such, no further
+       *   effort is going to be spent at this time on decoding
+       *   messages outside this set.  GPSCNavAlm data structure and
+       *   decoding was already implemented by this time, but the data
+       *   isn't being transmitted and has not been tested. */
    class PNBGPSCNavDataFactory : public PNBNavDataFactory
    {
    public:
@@ -42,58 +48,25 @@ namespace gpstk
       bool processEph(unsigned msgType, const PackedNavBitsPtr& navIn,
                       NavDataPtrList& navOut);
 
-         /** Process SV/page ID 1-32.  In order for GPSCNavAlm data to
-          * be produced, SV/page ID must have been processed.  This is
-          * required in order to get the almanac week (WNa).  If page
-          * 51 has not yet been processed, the almanac orbital
-          * elements are stored in almAcc until such time as a page 51
-          * is processed.
-          * @param[in] prn The SV/page ID which represents the subject PRN.
+         /** Process message type 37.
           * @param[in] navIn The PackedNavBits data containing the subframe.
           * @param[in] navOut The GPSCNavAlm and/or GPSCNavHealth
           *   objects generated from navIn.
           * @return true if successful (navOut may still be empty). */
-      bool processAlmOrb(unsigned long prn, const PackedNavBitsPtr& navIn,
-                         NavDataPtrList& navOut);
+      bool processAlmOrb(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
-         /** Process SV/page ID 51.  This includes health data for
-          * PRNs 1-24 as well as the WNa.  This will likely result in
-          * the generation of both GPSCNavHealth (24 of them) as well
-          * as a set of GPSCNavAlm objects as the almanac structure
-          * means page 51 is always last.
-          * @param[in] navIn The PackedNavBits data containing the subframe.
-          * @param[in] navOut The GPSCNavAlm and/or GPSCNavHealth
-          *   objects generated from navIn.
-          * @return true if successful (navOut may still be empty). */
-//      bool processSVID51(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
-
-         /** Process SV/page ID 63.  This includes health data for
-          * PRNs 25-32.
-          * @param[in] navIn The PackedNavBits data containing the subframe.
-          * @param[in] navOut The GPSCNavHealth objects generated from
-          *   navIn.
-          * @return true if successful. */
-//      bool processSVID63(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
-
-         /** Process SV/page ID 56.  This includes GPS-UTC time offset data.
+         /** Process message type 33.  This includes GPS-GNSS time offset data.
           * @param[in] navIn The PackedNavBits data containing the subframe.
           * @param[in] navOut The GPSCNavTimeOffset object generated from
           *   navIn.
           * @return true if successful. */
-//      bool processSVID56(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
+      bool process33(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
          /** For debugging purposes, dump the sizes of the accumulator maps.
           * @param[in,out] s The stream to write the debug output to. */
       void dumpState(std::ostream& s) const;
 
    protected:
-         /** Map GPS transmit PRN to fully qualified week/second
-          * (WNa/toa).  This is set by SV/page ID 51. */
-      std::map<unsigned, GPSWeekSecond> fullWNaMap;
-         /** Accumulate almanac orbital element pages (page ID 1-32)
-          * until a page ID 51 becomes available to properly set the
-          * WNa.  Key is the transmitting PRN. */
-      std::map<unsigned, NavDataPtrList> almAcc;
          /** Map GPS PRN to a vector of PackedNavBits for accumulating
           * ephemeris data, where index 0 is subframe 1 and so on. */
       std::map<unsigned, std::vector<PackedNavBitsPtr> > ephAcc;

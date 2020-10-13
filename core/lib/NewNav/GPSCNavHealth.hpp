@@ -1,0 +1,63 @@
+#ifndef GPSTK_GPSCNAVHEALTH_HPP
+#define GPSTK_GPSCNAVHEALTH_HPP
+
+#include "NavHealthData.hpp"
+
+namespace gpstk
+{
+      /// @ingroup NavFactory
+      //@{
+
+      /** Wrapper for the 1-bit health status in GPS CNav message 10.
+       * @note this contains only the health information for a single
+       *   signal, though message 10 contains information on three
+       *   separate carriers.  Thus a single message 10 results in
+       *   three GPSCNavHealth messages. */
+   class GPSCNavHealth : public NavHealthData
+   {
+   public:
+         /// Initialize to unhealthy using a value typically not seen in health.
+      GPSCNavHealth()
+            : health(true)
+      {}
+
+         /** Checks the contents of this message against known
+          * validity rules as defined in the appropriate ICD.
+          * @return true always as there is nothing to check in this class.
+          */
+      bool validate() const override
+      { return true; }
+
+         /** Returns the time when the navigation message would have
+          * first been available to the user equipment, i.e. the time
+          * at which the final bit of a given broadcast navigation
+          * message is received.  This is used by
+          * NavDataFactoryWithStore::find() in User mode.
+          * @return transmit time + 12s.  In all cases in CNav, the
+          *   health bits represented by this class are in a single
+          *   subframe.
+          */
+      CommonTime getUserTime() const override
+      { return timeStamp + 12.0; }
+
+         /** Print the contents of this object in a human-readable
+          * format.
+          * @param[in,out] s The stream to write the data to.
+          * @param[in] dl The level of detail the output should contain. */
+      void dump(std::ostream& s, Detail dl) const override;
+
+         /** Defines the status of NavData::signal, specifically sat
+          * (not xmitSat).
+          * @return Healthy if no health bits are set. */
+      SVHealth getHealth() const override
+      { return (health ? SVHealth::Unhealthy : SVHealth::Healthy); }
+
+         /// 1-bit health.
+      bool health;
+   };
+
+      //@}
+
+}
+
+#endif // GPSTK_GPSCNAVHEALTH_HPP

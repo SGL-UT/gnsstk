@@ -3,5 +3,5 @@
 
 gpstk::ObsID oidCNAV;
 gpstk::SatID ephCNAVsid;
-gpstk::CommonTime msg10CNAVct, msg11CNAVct, msg30CNAVct;
-gpstk::PackedNavBitsPtr msg10CNAV, msg11CNAV, msg30CNAV;
+gpstk::CommonTime msg10CNAVct, msg11CNAVct, msg30CNAVct, msg32CNAVct, msg33CNAVct;
+gpstk::PackedNavBitsPtr msg10CNAV, msg11CNAV, msg30CNAV, msg32CNAV, msg33CNAV;
