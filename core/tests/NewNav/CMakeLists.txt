@@ -38,6 +38,22 @@ add_executable(GPSCNavData_T GPSCNavData_T.cpp)
 target_link_libraries(GPSCNavData_T gpstk)
 add_test(GPSCNavData_T GPSCNavData_T)
 
+add_executable(GPSCNavEph_T GPSCNavEph_T.cpp)
+target_link_libraries(GPSCNavEph_T gpstk)
+add_test(GPSCNavEph_T GPSCNavEph_T)
+
+#add_executable(GPSCNavAlm_T GPSCNavAlm_T.cpp)
+#target_link_libraries(GPSCNavAlm_T gpstk)
+#add_test(GPSCNavAlm_T GPSCNavAlm_T)
+
+add_executable(GPSCNavHealth_T GPSCNavHealth_T.cpp)
+target_link_libraries(GPSCNavHealth_T gpstk)
+add_test(GPSCNavHealth_T GPSCNavHealth_T)
+
+add_executable(GPSCNavTimeOffset_T GPSCNavTimeOffset_T.cpp)
+target_link_libraries(GPSCNavTimeOffset_T gpstk)
+add_test(GPSCNavTimeOffset_T GPSCNavTimeOffset_T)
+
 add_executable(NavDataFactory_T NavDataFactory_T.cpp)
 target_link_libraries(NavDataFactory_T gpstk)
 add_test(NavDataFactory_T NavDataFactory_T)

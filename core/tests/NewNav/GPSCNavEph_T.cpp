@@ -9,11 +9,6 @@ namespace gpstk
       s << StringUtils::asString(e);
       return s;
    }
-   std::ostream& operator<<(std::ostream& s, gpstk::GPSCNavEph::L2Codes e)
-   {
-      s << static_cast<long>(e);
-      return s;
-   }
 }
 
 class GPSCNavEph_T
@@ -81,12 +76,14 @@ fixFitTest()
    gpstk::GPSCNavEph obj;
    gpstk::GPSWeekSecond beginExpWS2(2059, 597600), endExpWS2(2060, 3600);
    gpstk::CommonTime beginExp2(beginExpWS2), endExp2(endExpWS2);
-   obj.Toe = obj.Toc = gpstk::GPSWeekSecond(2059, 603000);
+   obj.Toe = gpstk::GPSWeekSecond(2059, 603000);
    obj.xmitTime = gpstk::GPSWeekSecond(2059,597600);
+   obj.xmit11 = gpstk::GPSWeekSecond(2059,597612);
+   obj.xmitClk = gpstk::GPSWeekSecond(2059,597624);
    TUCATCH(obj.fixFit());
    TUASSERTE(gpstk::CommonTime, beginExp2, obj.beginFit);
    TUASSERTE(gpstk::CommonTime, endExp2, obj.endFit);
-   obj.dump(std::cerr, gpstk::OrbitDataKepler::Detail::Full);
+      //obj.dump(std::cerr, gpstk::OrbitDataKepler::Detail::Full);
    TURETURN();
 }
 

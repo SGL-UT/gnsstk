@@ -89,7 +89,7 @@ fixFitTest()
    TUCATCH(obj.fixFit());
    TUASSERTE(gpstk::CommonTime, beginExp2, obj.beginFit);
    TUASSERTE(gpstk::CommonTime, endExp2, obj.endFit);
-   obj.dump(std::cerr, gpstk::OrbitDataKepler::Detail::Full);
+      //obj.dump(std::cerr, gpstk::OrbitDataKepler::Detail::Full);
    TURETURN();
 }
 

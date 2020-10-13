@@ -38,7 +38,7 @@ namespace gpstk
       { return std::max({xmitTime, xmit11, xmitClk}) + 12.0; }
 
          /** Fill the beginFit and endFit values for this object.
-          * @pre Toe, iodc, fitIntFlag and xmitTime must all be set. */
+          * @pre xmitTime, xmit11, xmitClk, Toe must all be set. */
       void fixFit();
 
          /** Dump SV status information (e.g. health).
