@@ -173,6 +173,22 @@ msg32CNAVQZSSL5->addUnsignedLong(0x1EB923E7, 32, 1);
 msg32CNAVQZSSL5->addUnsignedLong(0xD7000F86, 32, 1);
 msg32CNAVQZSSL5->addUnsignedLong(0xF96, 12, 1);
 
+msg35CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345738);
+msg35CNAVQZSSL5 = std::make_shared<gpstk::PackedNavBits>(ephCNAVQZSSL5sid,
+                                                         oidCNAVQZSSL5,
+                                                         msg35CNAVQZSSL5ct);
+msg35CNAVQZSSL5->setNavID(gpstk::NavType::GPSCNAVL5);
+msg35CNAVQZSSL5->addUnsignedLong(0x8B063708, 32, 1);
+msg35CNAVQZSSL5->addUnsignedLong(0xC2467409, 32, 1);
+msg35CNAVQZSSL5->addUnsignedLong(0x19A63DCF, 32, 1);
+msg35CNAVQZSSL5->addUnsignedLong(0x804B7000, 32, 1);
+msg35CNAVQZSSL5->addUnsignedLong(0xAE068316, 32, 1);
+msg35CNAVQZSSL5->addUnsignedLong(0x00000000, 32, 1);
+msg35CNAVQZSSL5->addUnsignedLong(0x00000000, 32, 1);
+msg35CNAVQZSSL5->addUnsignedLong(0x00000000, 32, 1);
+msg35CNAVQZSSL5->addUnsignedLong(0x000001B2, 32, 1);
+msg35CNAVQZSSL5->addUnsignedLong(0x05C, 12, 1);
+
 msg37CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345642);
 msg37CNAVQZSSL5 = std::make_shared<gpstk::PackedNavBits>(ephCNAVQZSSL5sid,
                                                          oidCNAVQZSSL5,

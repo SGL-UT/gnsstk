@@ -275,6 +275,8 @@ enum CNavBitInfo
    anbaf1 = 10,           ///< af1 number of bits
    ascaf1 = -37,          ///< af1 power factor
 
+      /// @note these apply to message type 33 (clock & UTC)
+
    csbA0 = 127,           ///< A0-n start bit
    cnbA0 = 16,            ///< A0-n number of bits
    cscA0 = -35,           ///< A0-n power factor
@@ -310,6 +312,32 @@ enum CNavBitInfo
    csbdtLSF = 217,        ///< dtLSF start bit
    cnbdtLSF = 8,          ///< dtLSF number of bits
    cscdtLSF = 1,          ///< dtLSF scale factor
+
+      /// @note these apply to message type 35 (clock & GGTO)
+
+   gsbt = 127,            ///< tggto start bit
+   gnbt = 16,             ///< tggto number of bits
+   gsct = 4,              ///< tggto power factor
+
+   gsbWN = 143,           ///< WNggto start bit
+   gnbWN = 13,            ///< WNggto number of bits
+   gscWN = 1,             ///< WNggto scale factor
+
+   gsbGNSS = 156,         ///< GNSS ID start bit
+   gnbGNSS = 3,           ///< GNSS ID number of bits
+   gscGNSS = 1,           ///< GNSS ID scale factor
+
+   gsbA0 = 159,           ///< A0-n start bit
+   gnbA0 = 16,            ///< A0-n number of bits
+   gscA0 = -35,           ///< A0-n power factor
+
+   gsbA1 = 175,           ///< A1-n start bit
+   gnbA1 = 13,            ///< A1-n number of bits
+   gscA1 = -51,           ///< A1-n power factor
+
+   gsbA2 = 188,           ///< A2-n start bit
+   gnbA2 = 7,             ///< A2-n number of bits
+   gscA2 = -68,           ///< A2-n power factor
 };
 
 
@@ -751,6 +779,56 @@ namespace gpstk
       navOut.push_back(p0);
       return true;
    }
+
+
+   bool PNBGPSCNavDataFactory ::
+   process35(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   {
+      if (!PNBNavDataFactory::processTim)
+      {
+            // User doesn't want time offset data so don't do any processing.
+         return true;
+      }
+      NavDataPtr p0 = std::make_shared<GPSCNavTimeOffset>();
+      p0->timeStamp = navIn->getTransmitTime();
+      p0->signal = NavMessageID(
+         NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
+                               navIn->getobsID(), navIn->getNavID()),
+         NavMessageType::TimeOffset);
+      GPSCNavTimeOffset *to =
+         dynamic_cast<GPSCNavTimeOffset*>(p0.get());
+      uint8_t gnssID = navIn->asUnsignedLong(gsbGNSS,gnbGNSS,gscGNSS);
+      switch (gnssID)
+      {
+         case 0:
+               // no data available.
+            return true;
+         case 1:
+            to->tgt = TimeSystem::GAL;
+            break;
+         case 2:
+            to->tgt = TimeSystem::GLO;
+            break;
+         case 3:
+               /** @note this is defined in IS-QZSS.  Not sure if we
+                * should really be checking to make sure the signal is
+                * from a QZSS satellite. */
+            to->tgt = TimeSystem::QZS;
+            break;
+         default:
+            cerr << "Unknown GNSS ID " << gnssID << endl;
+               // unknown/unsupported
+            return false;
+      }
+      to->tot = navIn->asUnsignedDouble(gsbt,gnbt,gsct);
+      to->wnot = navIn->asUnsignedLong(gsbWN,gnbWN,gscWN);
+      to->a0 = navIn->asSignedDouble(gsbA0,gnbA0,gscA0);
+      to->a1 = navIn->asSignedDouble(gsbA1,gnbA1,gscA1);
+      to->a2 = navIn->asSignedDouble(gsbA2,gnbA2,gscA2);
+      navOut.push_back(p0);
+      return true;
+   }
+
 
    void PNBGPSCNavDataFactory ::
    dumpState(std::ostream& s)

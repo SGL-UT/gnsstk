@@ -57,12 +57,19 @@ namespace gpstk
       bool processAlmOrb(unsigned msgType, const PackedNavBitsPtr& navIn,
                          NavDataPtrList& navOut);
 
-         /** Process message type 33.  This includes GPS-GNSS time offset data.
+         /** Process message type 33.  This includes GPS-UTC time offset data.
           * @param[in] navIn The PackedNavBits data containing the subframe.
           * @param[in] navOut The GPSCNavTimeOffset object generated from
           *   navIn.
           * @return true if successful. */
       bool process33(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
+
+         /** Process message type 35.  This includes GPS-GNSS time offset data.
+          * @param[in] navIn The PackedNavBits data containing the subframe.
+          * @param[in] navOut The GPSCNavTimeOffset object generated from
+          *   navIn.
+          * @return true if successful. */
+      bool process35(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
          /** For debugging purposes, dump the sizes of the accumulator maps.
           * @param[in,out] s The stream to write the debug output to. */

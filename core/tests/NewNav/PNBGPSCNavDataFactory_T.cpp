@@ -29,6 +29,7 @@ public:
    unsigned processEphTest();
    unsigned processAlmOrbTest();
    unsigned process33Test();
+   unsigned process35Test();
 
 #include "CNavTestDataDecl.hpp"
 
@@ -606,7 +607,42 @@ process33Test()
    TUASSERTE(unsigned, 1929, to->wnLSF);
    TUASSERTE(unsigned, 7, to->dn);
    TUASSERTFE(18, to->deltatLSF);
+   TURETURN();
+}
 
+
+unsigned PNBGPSCNavDataFactory_T ::
+process35Test()
+{
+   TUDEF("PNBGPSCNavDataFactory", "process35");
+   gpstk::PNBGPSCNavDataFactory uut;
+   gpstk::NavMessageID nmidExp(
+      gpstk::NavSatelliteID(193, 193, gpstk::SatelliteSystem::QZSS,
+                            gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
+                            gpstk::NavType::GPSCNAVL5),
+      gpstk::NavMessageType::TimeOffset);
+   gpstk::NavDataPtrList navOut;
+   TUASSERTE(bool, true, uut.process35(msg35CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 1, navOut.size());
+      // Yes this code can cause seg faults on failure, but that's ok.
+   gpstk::GPSCNavTimeOffset *to =
+      dynamic_cast<gpstk::GPSCNavTimeOffset*>(navOut.begin()->get());
+   TUASSERT(to != nullptr);
+      // NavData fields
+   TUASSERTE(gpstk::CommonTime, msg35CNAVQZSSL5ct, to->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
+      // TimeOffsetData has no fields
+      // GPSCNavTimeOffset fields
+   TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::QZS, to->tgt);
+   TUASSERTFE(0, to->a0);
+   TUASSERTFE(0, to->a1);
+   TUASSERTFE(0, to->a2);
+   TUASSERTFE(0, to->deltatLS);
+   TUASSERTFE(356400, to->tot);
+   TUASSERTE(unsigned, 2097, to->wnot);
+   TUASSERTE(unsigned, 0, to->wnLSF);
+   TUASSERTE(unsigned, 0, to->dn);
+   TUASSERTFE(0, to->deltatLSF);
    TURETURN();
 }
 
@@ -657,6 +693,7 @@ int main()
    errorTotal += testClass.processEphTest();
    errorTotal += testClass.processAlmOrbTest();
    errorTotal += testClass.process33Test();
+   errorTotal += testClass.process35Test();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
