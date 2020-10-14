@@ -34,9 +34,10 @@ namespace gpstk
    void GPSCNavAlm ::
    fixFit()
    {
-         // Set the fit times to toa-70h through toa+74 hours.  This
-         // is an estimate based on IS-GPS-200 Table 20-XIII.
-      beginFit = Toe - (70.0 * 3600.0);
-      endFit   = Toe + (74.0 * 3600.0);
+         /** @todo Determine a more reasonable set of values.  This
+          * was copied from OrbAlmExt. */
+      beginFit = xmitTime;
+      endFit   = gpstk::CommonTime::END_OF_TIME;
+      endFit.setTimeSystem(beginFit.getTimeSystem());
    }
 }

@@ -48,12 +48,14 @@ namespace gpstk
       bool processEph(unsigned msgType, const PackedNavBitsPtr& navIn,
                       NavDataPtrList& navOut);
 
-         /** Process message type 37.
+         /** Process message type 37 (GPS, QZSS) or 53 (QZSS).
+          * @param[in] msgType The CNAV message type.
           * @param[in] navIn The PackedNavBits data containing the subframe.
           * @param[in] navOut The GPSCNavAlm and/or GPSCNavHealth
           *   objects generated from navIn.
           * @return true if successful (navOut may still be empty). */
-      bool processAlmOrb(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
+      bool processAlmOrb(unsigned msgType, const PackedNavBitsPtr& navIn,
+                         NavDataPtrList& navOut);
 
          /** Process message type 33.  This includes GPS-GNSS time offset data.
           * @param[in] navIn The PackedNavBits data containing the subframe.

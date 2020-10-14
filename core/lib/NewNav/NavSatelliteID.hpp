@@ -51,6 +51,19 @@ namespace gpstk
       NavSatelliteID(unsigned long subj, const SatID& xmit, const ObsID& oid,
                      const NavID& navid);
 
+         /** Initialize all data to specific values.  This is intended
+          * to be used when decoding CNAV almanacs on QZSS (which can
+          * have GPS satellites as the subject ID), but it may have
+          * other uses.
+          * @param[in] subj The ID of the satellite that nav data pertains to.
+          * @param[in] xmit The ID of the satellite that transmitted
+          *   the nav data.
+          * @param[in] oid The carrier band/tracking code this signal
+          *   originates from.
+          * @param[in] navid The navigation message format of this signal. */
+      NavSatelliteID(const SatID& subj, const SatID& xmit, const ObsID& oid,
+                     const NavID& navid);
+
          /** Initialize system, sat to the given value, and the
           * remaining data members to wildcards.
           * @param[in] subj The satellite that nav data pertains to. */

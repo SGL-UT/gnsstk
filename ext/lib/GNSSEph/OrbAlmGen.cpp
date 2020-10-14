@@ -763,7 +763,7 @@ namespace gpstk
       ecc = msg.asUnsignedDouble(157, 11, -16);
       deltai = msg.asDoubleSemiCircles(168, 11, -14);
       OMEGAdot = msg.asDoubleSemiCircles(179, 11, -33);
-      AHalf = msg.asSignedDouble(190, 17, -4);
+      AHalf = msg.asUnsignedDouble(190, 17, -4);
       OMEGA0 = msg.asDoubleSemiCircles(207, 16, -15);
       w = msg.asDoubleSemiCircles(223, 16, -15);
       M0 = msg.asDoubleSemiCircles(239, 16, -15);

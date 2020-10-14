@@ -318,7 +318,8 @@ namespace gpstk
    bool PNBGPSCNavDataFactory ::
    addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
    {
-      if (navIn->getNavID().navType != NavType::GPSCNAVL2)
+      if ((navIn->getNavID().navType != NavType::GPSCNAVL2) &&
+          (navIn->getNavID().navType != NavType::GPSCNAVL5))
       {
             // This class only processes GPS CNav.
          return false;
@@ -360,11 +361,11 @@ namespace gpstk
          // {
          //    rv = rv && process35(navIn, navOut);
          // }
-         else if (msgType == 37)
+         else if ((msgType == 37) ||
+                  ((navIn->getsatSys().system == SatelliteSystem::QZSS) &&
+                   (msgType == 53)))
          {
-               // Not currently broadcast, but the code was written
-               // before I found that out.
-            rv = rv && processAlmOrb(navIn, navOut);
+            rv = rv && processAlmOrb(msgType, navIn, navOut);
          }
          // cerr << "  results: " << navOut.size() << endl;
          // for (const auto& i : navOut)
@@ -422,9 +423,9 @@ namespace gpstk
       if ((msgType == 10) && processHea)
       {
             // Add ephemeris health bits from message type 10.
-         gpstk::NavDataPtr p1L1 = std::make_shared<gpstk::GPSCNavHealth>();
-         gpstk::NavDataPtr p1L2 = std::make_shared<gpstk::GPSCNavHealth>();
-         gpstk::NavDataPtr p1L5 = std::make_shared<gpstk::GPSCNavHealth>();
+         NavDataPtr p1L1 = std::make_shared<GPSCNavHealth>();
+         NavDataPtr p1L2 = std::make_shared<GPSCNavHealth>();
+         NavDataPtr p1L5 = std::make_shared<GPSCNavHealth>();
          p1L1->timeStamp = navIn->getTransmitTime();
          p1L2->timeStamp = navIn->getTransmitTime();
          p1L5->timeStamp = navIn->getTransmitTime();
@@ -434,8 +435,8 @@ namespace gpstk
              * have CNAV. */
          p1L1->signal = NavMessageID(
             NavSatelliteID(prn, prn, navIn->getsatSys().system,
-                           gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                           gpstk::NavType::GPSLNAV),
+                           CarrierBand::L1, TrackingCode::CA,
+                           NavType::GPSLNAV),
             NavMessageType::Health);
          p1L2->signal = NavMessageID(
             NavSatelliteID(prn, navIn->getsatSys(), navIn->getobsID(),
@@ -443,14 +444,14 @@ namespace gpstk
             NavMessageType::Health);
          p1L5->signal = NavMessageID(
             NavSatelliteID(prn, prn, navIn->getsatSys().system,
-                           gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
-                           gpstk::NavType::GPSCNAVL5),
+                           CarrierBand::L5, TrackingCode::L5I,
+                           NavType::GPSCNAVL5),
             NavMessageType::Health);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p1L1.get())->health =
+         dynamic_cast<GPSCNavHealth*>(p1L1.get())->health =
             navIn->asBool(esbHeaL1);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p1L2.get())->health =
+         dynamic_cast<GPSCNavHealth*>(p1L2.get())->health =
             navIn->asBool(esbHeaL2);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p1L5.get())->health =
+         dynamic_cast<GPSCNavHealth*>(p1L5.get())->health =
             navIn->asBool(esbHeaL5);
          // cerr << "add eph health" << endl;
          navOut.push_back(p1L1);
@@ -501,8 +502,8 @@ namespace gpstk
          return true;
       }
       // cerr << "Ready for full eph processing" << endl;
-      gpstk::NavDataPtr p0 = std::make_shared<gpstk::GPSCNavEph>();
-      GPSCNavEph *eph = dynamic_cast<gpstk::GPSCNavEph*>(p0.get());
+      NavDataPtr p0 = std::make_shared<GPSCNavEph>();
+      GPSCNavEph *eph = dynamic_cast<GPSCNavEph*>(p0.get());
          // NavData
       eph->timeStamp = ephSF[ephM10]->getTransmitTime();
       eph->signal = NavMessageID(
@@ -586,21 +587,40 @@ namespace gpstk
 
 
    bool PNBGPSCNavDataFactory ::
-   processAlmOrb(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   processAlmOrb(unsigned msgType, const PackedNavBitsPtr& navIn,
+                 NavDataPtrList& navOut)
    {
       unsigned long sprn = navIn->asUnsignedLong(asbPRNa,anbPRNa,ascPRNa);
-      gpstk::SatID xmitSat(navIn->getsatSys());
-      SatelliteSystem xmitSys = xmitSat.system;
-      unsigned long xprn = xmitSat.id;
+      SatID xmitSat(navIn->getsatSys());
+      SatelliteSystem subjSys = xmitSat.system;
+         // special handling for QZSS per IS-QZSS 1.8E Table 5.5.2-8
+      if (subjSys == SatelliteSystem::QZSS)
+      {
+         if (msgType == 37)
+         {
+               // When the message type number is 37, it indicates
+               // that this value is for a QZS satellite and
+               // represents the last 6 bits of the QZS PRN number.
+               // .. so we do a bitwise OR to get the QZS PRN.
+            sprn |= 0xc0;
+         }
+         else if (msgType == 52)
+         {
+               // When the message type number is 53, it indicates
+               // that this value is the PRN value for a GPS satellite
+            subjSys = SatelliteSystem::GPS;
+         }
+      }
+      SatID subjSat(sprn, subjSys);
          // No checks for correct svid, just assume that the input
          // data has already been checked (it will have been by
          // addData).
       if (processHea)
       {
             // Add almanac health bits from message type 37.
-         gpstk::NavDataPtr p1L1 = std::make_shared<gpstk::GPSCNavHealth>();
-         gpstk::NavDataPtr p1L2 = std::make_shared<gpstk::GPSCNavHealth>();
-         gpstk::NavDataPtr p1L5 = std::make_shared<gpstk::GPSCNavHealth>();
+         NavDataPtr p1L1 = std::make_shared<GPSCNavHealth>();
+         NavDataPtr p1L2 = std::make_shared<GPSCNavHealth>();
+         NavDataPtr p1L5 = std::make_shared<GPSCNavHealth>();
          p1L1->timeStamp = navIn->getTransmitTime();
          p1L2->timeStamp = navIn->getTransmitTime();
          p1L5->timeStamp = navIn->getTransmitTime();
@@ -609,23 +629,26 @@ namespace gpstk
              * broadcasting signal status for L1 signals that don't
              * have CNAV. */
          p1L1->signal = NavMessageID(
-            NavSatelliteID(sprn, xprn, navIn->getsatSys().system,
-                           gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                           gpstk::NavType::GPSLNAV),
+            NavSatelliteID(subjSat, xmitSat,
+                           ObsID(ObservationType::NavMsg, CarrierBand::L1,
+                                 TrackingCode::CA),
+                           NavID(NavType::GPSLNAV)),
             NavMessageType::Health);
          p1L2->signal = NavMessageID(
-            NavSatelliteID(sprn, xmitSat, navIn->getobsID(), navIn->getNavID()),
+            NavSatelliteID(subjSat, xmitSat, navIn->getobsID(),
+                           navIn->getNavID()),
             NavMessageType::Health);
          p1L5->signal = NavMessageID(
-            NavSatelliteID(sprn, xprn, xmitSys,
-                           gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
-                           gpstk::NavType::GPSCNAVL5),
+            NavSatelliteID(subjSat, xmitSat,
+                           ObsID(ObservationType::NavMsg, CarrierBand::L5,
+                                 TrackingCode::L5I),
+                           NavID(NavType::GPSCNAVL5)),
             NavMessageType::Health);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p1L1.get())->health =
+         dynamic_cast<GPSCNavHealth*>(p1L1.get())->health =
             navIn->asBool(asbHeaL1);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p1L2.get())->health =
+         dynamic_cast<GPSCNavHealth*>(p1L2.get())->health =
             navIn->asBool(asbHeaL2);
-         dynamic_cast<gpstk::GPSCNavHealth*>(p1L5.get())->health =
+         dynamic_cast<GPSCNavHealth*>(p1L5.get())->health =
             navIn->asBool(asbHeaL5);
          // cerr << "add alm health" << endl;
          navOut.push_back(p1L1);
@@ -637,14 +660,14 @@ namespace gpstk
             // User doesn't want almanacs so don't do any processing.
          return true;
       }
-      gpstk::NavDataPtr p0 = std::make_shared<gpstk::GPSCNavAlm>();
-      GPSCNavAlm *alm = dynamic_cast<gpstk::GPSCNavAlm*>(p0.get());
+      NavDataPtr p0 = std::make_shared<GPSCNavAlm>();
+      GPSCNavAlm *alm = dynamic_cast<GPSCNavAlm*>(p0.get());
          // NavData
       alm->timeStamp = navIn->getTransmitTime();
-      alm->signal = gpstk::NavMessageID(
-         gpstk::NavSatelliteID(sprn, xmitSat, navIn->getobsID(),
-                               navIn->getNavID()),
-         gpstk::NavMessageType::Almanac);
+      alm->signal = NavMessageID(
+         NavSatelliteID(subjSat, xmitSat, navIn->getobsID(),
+                        navIn->getNavID()),
+         NavMessageType::Almanac);
          // OrbitData = empty
          // OrbitDataKepler
       alm->xmitTime = alm->timeStamp;
@@ -664,16 +687,20 @@ namespace gpstk
                                                  ascOMEGAdot);
       alm->af0 = navIn->asSignedDouble(asbaf0,anbaf0,ascaf0);
       alm->af1 = navIn->asSignedDouble(asbaf1,anbaf1,ascaf1);
+         // GPSCNavData
+      alm->pre = navIn->asUnsignedLong(esbPre,enbPre,escPre);
+      alm->alert = navIn->asBool(esbAlert);
          // GPSCNavAlm
-      alm->healthL1 = navIn->asBool(esbHeaL1);
-      alm->healthL2 = navIn->asBool(esbHeaL2);
-      alm->healthL5 = navIn->asBool(esbHeaL5);
+      alm->healthL1 = navIn->asBool(asbHeaL1);
+      alm->healthL2 = navIn->asBool(asbHeaL2);
+      alm->healthL5 = navIn->asBool(asbHeaL5);
          /** @todo should this be limited to only if the L2 health bit
           * is set?  Definitely not if this code ends up being used
           * for L5 CNAV. */
       alm->healthy = (alm->healthL2 == false); // actually in OrbitDataKepler
       alm->deltai = navIn->asDoubleSemiCircles(asbdi,anbdi,ascdi);
       alm->i0 = (0.3 * PI) + alm->deltai;
+      alm->fixFit();
       navOut.push_back(p0);
       return true;
    }
@@ -687,14 +714,14 @@ namespace gpstk
             // User doesn't want time offset data so don't do any processing.
          return true;
       }
-      gpstk::NavDataPtr p0 = std::make_shared<gpstk::GPSCNavTimeOffset>();
+      NavDataPtr p0 = std::make_shared<GPSCNavTimeOffset>();
       p0->timeStamp = navIn->getTransmitTime();
-      p0->signal = gpstk::NavMessageID(
-         gpstk::NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
+      p0->signal = NavMessageID(
+         NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
                                navIn->getobsID(), navIn->getNavID()),
-         gpstk::NavMessageType::TimeOffset);
+         NavMessageType::TimeOffset);
       GPSCNavTimeOffset *to =
-         dynamic_cast<gpstk::GPSCNavTimeOffset*>(p0.get());
+         dynamic_cast<GPSCNavTimeOffset*>(p0.get());
       to->tgt = TimeSystem::UTC; // by definition
       to->a0 = navIn->asSignedDouble(csbA0,cnbA0,cscA0);
       to->a1 = navIn->asSignedDouble(csbA1,cnbA1,cscA1);
