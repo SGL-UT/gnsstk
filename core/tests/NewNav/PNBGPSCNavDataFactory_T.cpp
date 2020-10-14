@@ -227,6 +227,12 @@ addDataTimeTest()
    countResults(navOut);
    TUASSERTE(unsigned, 1, toCount);
    navOut.clear();
+      // message type 35, expect 1 time offset message
+   TUASSERTE(bool, true, uut.addData(msg35CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 1, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 1, toCount);
+   navOut.clear();
    TURETURN();
 }
 

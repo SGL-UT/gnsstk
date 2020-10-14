@@ -384,11 +384,10 @@ namespace gpstk
          {
             rv = rv && process33(navIn, navOut);
          }
-            // not currently broadcast
-         // else if (msgType == 35)
-         // {
-         //    rv = rv && process35(navIn, navOut);
-         // }
+         else if (msgType == 35)
+         {
+            rv = rv && process35(navIn, navOut);
+         }
          else if ((msgType == 37) ||
                   ((navIn->getsatSys().system == SatelliteSystem::QZSS) &&
                    (msgType == 53)))
