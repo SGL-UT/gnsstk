@@ -42,9 +42,9 @@ add_executable(GPSCNavEph_T GPSCNavEph_T.cpp)
 target_link_libraries(GPSCNavEph_T gpstk)
 add_test(GPSCNavEph_T GPSCNavEph_T)
 
-#add_executable(GPSCNavAlm_T GPSCNavAlm_T.cpp)
-#target_link_libraries(GPSCNavAlm_T gpstk)
-#add_test(GPSCNavAlm_T GPSCNavAlm_T)
+add_executable(GPSCNavAlm_T GPSCNavAlm_T.cpp)
+target_link_libraries(GPSCNavAlm_T gpstk)
+add_test(GPSCNavAlm_T GPSCNavAlm_T)
 
 add_executable(GPSCNavHealth_T GPSCNavHealth_T.cpp)
 target_link_libraries(GPSCNavHealth_T gpstk)

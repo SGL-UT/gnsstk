@@ -71,11 +71,22 @@ getUserTimeTest()
 {
    TUDEF("GPSCNavTimeOffset", "getUserTime");
    gpstk::GPSCNavTimeOffset uut;
+      // L2 has a 12s cadence, L5 has a 6s cadence
+   gpstk::CommonTime expL2(gpstk::GPSWeekSecond(2100,147.0));
+   gpstk::CommonTime expL5(gpstk::GPSWeekSecond(2100,141.0));
    uut.timeStamp = gpstk::GPSWeekSecond(2100,135.0);
-   gpstk::CommonTime exp(gpstk::GPSWeekSecond(2100,135.0));
-      // 1x 12s message
-   exp = exp + 12.0;
-   TUASSERTE(gpstk::CommonTime, exp, uut.getUserTime());
+   uut.signal = gpstk::NavMessageID(
+      gpstk::NavSatelliteID(1, 1, gpstk::SatelliteSystem::GPS,
+                            gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
+                            gpstk::NavType::GPSCNAVL5),
+      gpstk::NavMessageType::TimeOffset);
+   TUASSERTE(gpstk::CommonTime, expL5, uut.getUserTime());
+   uut.signal = gpstk::NavMessageID(
+      gpstk::NavSatelliteID(1, 1, gpstk::SatelliteSystem::GPS,
+                            gpstk::CarrierBand::L2, gpstk::TrackingCode::L2CM,
+                            gpstk::NavType::GPSCNAVL2),
+      gpstk::NavMessageType::TimeOffset);
+   TUASSERTE(gpstk::CommonTime, expL2, uut.getUserTime());
    TURETURN();
 }
 

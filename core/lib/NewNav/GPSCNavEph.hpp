@@ -29,13 +29,10 @@ namespace gpstk
           * at which the final bit of a given broadcast navigation
           * message is received.  This is used by
           * NavDataFactoryWithStore::find() in User mode.
-          * @return most recent transmit time + 12s, which is the time required
-          *   for a message.
-          * @todo If this class ends up being used for L5 CNAV or
-          *   CNAV2 make sure it's the right interval.
+          * @return most recent transmit time + 12s or 6s, depending
+          *   on whether this is CNAV on L5 or on L2.
           */
-      CommonTime getUserTime() const override
-      { return std::max({xmitTime, xmit11, xmitClk}) + 12.0; }
+      CommonTime getUserTime() const override;
 
          /** Fill the beginFit and endFit values for this object.
           * @pre xmitTime, xmit11, xmitClk, Toe must all be set. */

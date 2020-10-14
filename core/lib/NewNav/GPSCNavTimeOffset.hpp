@@ -38,12 +38,10 @@ namespace gpstk
           * at which the final bit of a given broadcast navigation
           * message is received.  This is used by
           * NavDataFactoryWithStore::find() in User mode.
-          * @return transmit time + 12s, which is the time required
-          *   for L2 CNav messages.
-          * @todo Update this as needed if other carriers are supported.
+          * @return transmit time + 12s or 6s, depending on whether
+          *   this is CNAV on L5 or on L2.
           */
-      CommonTime getUserTime() const override
-      { return timeStamp + 12.0; }
+      CommonTime getUserTime() const override;
 
          /** Print the contents of this object in a human-readable
           * format.

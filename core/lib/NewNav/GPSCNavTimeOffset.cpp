@@ -29,6 +29,15 @@ namespace gpstk
    }
 
 
+   CommonTime GPSCNavTimeOffset ::
+   getUserTime() const
+   {
+      if (signal.nav == NavType::GPSCNAVL2)
+         return timeStamp + 12.0;
+      return timeStamp + 6.0;
+   }
+
+
    bool GPSCNavTimeOffset ::
    getOffset(TimeSystem fromSys, TimeSystem toSys,
              const CommonTime& when, double& offset)

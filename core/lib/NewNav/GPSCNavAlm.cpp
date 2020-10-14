@@ -27,7 +27,9 @@ namespace gpstk
    CommonTime GPSCNavAlm ::
    getUserTime() const
    {
-      return timeStamp + 12.0;
+      if (signal.nav == NavType::GPSCNAVL2)
+         return timeStamp + 12.0;
+      return timeStamp + 6.0;
    }
 
 

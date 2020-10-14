@@ -561,10 +561,18 @@ namespace gpstk
       eph->healthL1 = ephSF[esiHea]->asBool(esbHeaL1);
       eph->healthL2 = ephSF[esiHea]->asBool(esbHeaL2);
       eph->healthL5 = ephSF[esiHea]->asBool(esbHeaL5);
-         /** @todo should this be limited to only if the L2 health bit
-          * is set?  Definitely not if this code ends up being used
-          * for L5 CNAV. */
-      eph->healthy = (eph->healthL2 == false); // actually in OrbitDataKepler
+      switch (navIn->getobsID().band)
+      {
+         case CarrierBand::L2:
+            eph->healthy = (eph->healthL2 == false);
+            break;
+         case CarrierBand::L5:
+            eph->healthy = (eph->healthL5 == false);
+            break;
+         default:
+               // unexpected/unsupported signal
+            return false;
+      }
       eph->uraED = ephSF[esiURA]->asLong(esbURA,enbURA,escURA);
       eph->alert11 = ephSF[ephM11]->asBool(esbAlert);
       eph->alertClk = ephSF[ephMClk]->asBool(esbAlert);
@@ -694,10 +702,18 @@ namespace gpstk
       alm->healthL1 = navIn->asBool(asbHeaL1);
       alm->healthL2 = navIn->asBool(asbHeaL2);
       alm->healthL5 = navIn->asBool(asbHeaL5);
-         /** @todo should this be limited to only if the L2 health bit
-          * is set?  Definitely not if this code ends up being used
-          * for L5 CNAV. */
-      alm->healthy = (alm->healthL2 == false); // actually in OrbitDataKepler
+      switch (navIn->getobsID().band)
+      {
+         case CarrierBand::L2:
+            alm->healthy = (alm->healthL2 == false);
+            break;
+         case CarrierBand::L5:
+            alm->healthy = (alm->healthL5 == false);
+            break;
+         default:
+               // unexpected/unsupported signal
+            return false;
+      }
       alm->deltai = navIn->asDoubleSemiCircles(asbdi,anbdi,ascdi);
       alm->i0 = (0.3 * PI) + alm->deltai;
       alm->fixFit();

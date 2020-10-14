@@ -4,6 +4,15 @@ using namespace std;
 
 namespace gpstk
 {
+   CommonTime GPSCNavHealth ::
+   getUserTime() const
+   {
+      if (signal.nav == NavType::GPSCNAVL2)
+         return timeStamp + 12.0;
+      return timeStamp + 6.0;
+   }
+
+
    void GPSCNavHealth ::
    dump(std::ostream& s, Detail dl) const
    {

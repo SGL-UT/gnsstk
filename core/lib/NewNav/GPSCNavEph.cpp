@@ -39,6 +39,16 @@ namespace gpstk
    }
 
 
+   CommonTime GPSCNavEph ::
+   getUserTime() const
+   {
+      CommonTime mr = std::max({xmitTime, xmit11, xmitClk});
+      if (signal.nav == NavType::GPSCNAVL2)
+         return mr + 12.0;
+      return mr + 6.0;
+   }
+
+
    void GPSCNavEph ::
    fixFit()
    {
