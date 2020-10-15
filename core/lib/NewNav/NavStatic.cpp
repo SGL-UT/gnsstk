@@ -8,6 +8,7 @@
 #include "SP3NavDataFactory.hpp"
 #include "PNBMultiGNSSNavDataFactory.hpp"
 #include "PNBGPSLNavDataFactory.hpp"
+#include "PNBGPSCNavDataFactory.hpp"
 
 namespace gpstk
 {
@@ -62,6 +63,14 @@ namespace gpstk
          gpstk::PNBNavDataFactoryPtr
             lnav(std::make_shared<gpstk::PNBGPSLNavDataFactory>());
          PNBMultiGNSSNavDataFactory::addFactory(NavType::GPSLNAV,lnav);
+
+         gpstk::PNBNavDataFactoryPtr
+            cnavL2(std::make_shared<gpstk::PNBGPSCNavDataFactory>());
+         PNBMultiGNSSNavDataFactory::addFactory(NavType::GPSCNAVL2,cnavL2);
+
+         gpstk::PNBNavDataFactoryPtr
+            cnavL5(std::make_shared<gpstk::PNBGPSCNavDataFactory>());
+         PNBMultiGNSSNavDataFactory::addFactory(NavType::GPSCNAVL5,cnavL5);
       }
    };
 

@@ -5,6 +5,12 @@
 #include "GPSLNavHealth.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavAlm.hpp"
+#include "PNBGPSCNavDataFactory.hpp"
+#include "GPSCNavTimeOffset.hpp"
+#include "GPSCNavHealth.hpp"
+#include "GPSCNavEph.hpp"
+#include "GPSCNavAlm.hpp"
+#include "GPSCNavRedAlm.hpp"
 
 namespace gpstk
 {
@@ -52,12 +58,8 @@ public:
       /// Count the various types of messages present in navOut.
    void countResults(const gpstk::NavDataPtrList& navOut);
 
-   gpstk::ObsID oidLNAV;
-   gpstk::PackedNavBitsPtr ephLNAVSF1, ephLNAVSF2, ephLNAVSF3, almLNAV25,
-      almLNAV26, pg51LNAV, pg56LNAV, pg63LNAV;
-   gpstk::CommonTime ephLNAVSF1ct, ephLNAVSF2ct, ephLNAVSF3ct, almLNAV25ct,
-      almLNAV26ct, pg51LNAVct, pg56LNAVct, pg63LNAVct;
-   gpstk::SatID ephLNAVSid, almLNAVSid;
+#include "LNavTestDataDecl.hpp"
+#include "CNavTestDataDecl.hpp"
 
       /// Counts of messages, set by countResults.
    unsigned almCount, ephCount, toCount, heaCount, otherCount;
@@ -66,124 +68,10 @@ public:
 
 PNBMultiGNSSNavDataFactory_T ::
 PNBMultiGNSSNavDataFactory_T()
-      : oidLNAV(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::L1,
-            gpstk::TrackingCode::CA),
-        ephLNAVSF1ct(gpstk::GPSWeekSecond(1869,6.0)),
-        ephLNAVSF2ct(gpstk::GPSWeekSecond(1869,12.0)),
-        ephLNAVSF3ct(gpstk::GPSWeekSecond(1869,18.0)),
-        almLNAV25ct(gpstk::GPSWeekSecond(1869,54.0)),
-        almLNAV26ct(gpstk::GPSWeekSecond(1869,84.0)),
-        pg51LNAVct(gpstk::GPSWeekSecond(1869,750.0)),
-        pg56LNAVct(gpstk::GPSWeekSecond(1869,528.0)),
-        pg63LNAVct(gpstk::GPSWeekSecond(1869,744.0)),
-        ephLNAVSid(4,gpstk::SatelliteSystem::GPS),
-        almLNAVSid(1,gpstk::SatelliteSystem::GPS),
-        almCount(0), ephCount(0), toCount(0), heaCount(0), otherCount(0)
+      : almCount(0), ephCount(0), toCount(0), heaCount(0), otherCount(0)
 {
-   ephLNAVSF1 = std::make_shared<gpstk::PackedNavBits>(ephLNAVSid,oidLNAV,
-                                                       ephLNAVSF1ct);
-   ephLNAVSF1->setNavID(gpstk::NavType::GPSLNAV);
-   ephLNAVSF1->addUnsignedLong(0x22C34D21,30,1);
-   ephLNAVSF1->addUnsignedLong(0x000029D4,30,1);
-   ephLNAVSF1->addUnsignedLong(0x34D44000,30,1);
-   ephLNAVSF1->addUnsignedLong(0x091B1DE7,30,1);
-   ephLNAVSF1->addUnsignedLong(0x1C33746E,30,1);
-   ephLNAVSF1->addUnsignedLong(0x2F701369,30,1);
-   ephLNAVSF1->addUnsignedLong(0x39F53CB5,30,1);
-   ephLNAVSF1->addUnsignedLong(0x128070A8,30,1);
-   ephLNAVSF1->addUnsignedLong(0x003FF454,30,1);
-   ephLNAVSF1->addUnsignedLong(0x3EAFC2F0,30,1);
-   ephLNAVSF2 = std::make_shared<gpstk::PackedNavBits>(ephLNAVSid,oidLNAV,
-                                                       ephLNAVSF2ct);
-   ephLNAVSF2->setNavID(gpstk::NavType::GPSLNAV);
-   ephLNAVSF2->addUnsignedLong(0x22C34D21,30,1);
-   ephLNAVSF2->addUnsignedLong(0x00004A44,30,1);
-   ephLNAVSF2->addUnsignedLong(0x12BFCB3A,30,1);
-   ephLNAVSF2->addUnsignedLong(0x0D7A9094,30,1);
-   ephLNAVSF2->addUnsignedLong(0x3B99FBAF,30,1);
-   ephLNAVSF2->addUnsignedLong(0x3FC081B8,30,1);
-   ephLNAVSF2->addUnsignedLong(0x09D171E1,30,1);
-   ephLNAVSF2->addUnsignedLong(0x04B0A847,30,1);
-   ephLNAVSF2->addUnsignedLong(0x03497656,30,1);
-   ephLNAVSF2->addUnsignedLong(0x00709FA0,30,1);
-   ephLNAVSF3 = std::make_shared<gpstk::PackedNavBits>(ephLNAVSid,oidLNAV,
-                                                       ephLNAVSF3ct);
-   ephLNAVSF3->setNavID(gpstk::NavType::GPSLNAV);
-   ephLNAVSF3->addUnsignedLong(0x22C34D21,30,1);
-   ephLNAVSF3->addUnsignedLong(0x00006BCC,30,1);
-   ephLNAVSF3->addUnsignedLong(0x3FE14ED4,30,1);
-   ephLNAVSF3->addUnsignedLong(0x05ABBB58,30,1);
-   ephLNAVSF3->addUnsignedLong(0x3FE3498B,30,1);
-   ephLNAVSF3->addUnsignedLong(0x145EE03A,30,1);
-   ephLNAVSF3->addUnsignedLong(0x062ECB6F,30,1);
-   ephLNAVSF3->addUnsignedLong(0x1C48068F,30,1);
-   ephLNAVSF3->addUnsignedLong(0x3FE95E1E,30,1);
-   ephLNAVSF3->addUnsignedLong(0x12844624,30,1);
-   almLNAV25 = std::make_shared<gpstk::PackedNavBits>(almLNAVSid,oidLNAV,
-                                                      almLNAV25ct);
-   almLNAV25->setNavID(gpstk::NavType::GPSLNAV);
-   almLNAV25->addUnsignedLong(0x22C34D21,30,1);
-   almLNAV25->addUnsignedLong(0x00012C68,30,1);
-   almLNAV25->addUnsignedLong(0x16499366,30,1);
-   almLNAV25->addUnsignedLong(0x0905E5C5,30,1);
-   almLNAV25->addUnsignedLong(0x3F52C035,30,1);
-   almLNAV25->addUnsignedLong(0x28431EEE,30,1);
-   almLNAV25->addUnsignedLong(0x39A2E96D,30,1);
-   almLNAV25->addUnsignedLong(0x075C3A2E,30,1);
-   almLNAV25->addUnsignedLong(0x117733C7,30,1);
-   almLNAV25->addUnsignedLong(0x3E3FF848,30,1);
-   almLNAV26 = std::make_shared<gpstk::PackedNavBits>(almLNAVSid,oidLNAV,
-                                                      almLNAV26ct);
-   almLNAV26->setNavID(gpstk::NavType::GPSLNAV);
-   almLNAV26->addUnsignedLong(0x22C34D21,30,1);
-   almLNAV26->addUnsignedLong(0x0001CC0C,30,1);
-   almLNAV26->addUnsignedLong(0x16809922,30,1);
-   almLNAV26->addUnsignedLong(0x0902F90F,30,1);
-   almLNAV26->addUnsignedLong(0x3F4EC036,30,1);
-   almLNAV26->addUnsignedLong(0x28433740,30,1);
-   almLNAV26->addUnsignedLong(0x3994EFA9,30,1);
-   almLNAV26->addUnsignedLong(0x3D38AA68,30,1);
-   almLNAV26->addUnsignedLong(0x0E3E305F,30,1);
-   almLNAV26->addUnsignedLong(0x3CBFE0A0,30,1);
-   pg51LNAV = std::make_shared<gpstk::PackedNavBits>(almLNAVSid,oidLNAV,
-                                                     pg51LNAVct);
-   pg51LNAV->setNavID(gpstk::NavType::GPSLNAV);
-   pg51LNAV->addUnsignedLong(0x22C34D21,30,1);
-   pg51LNAV->addUnsignedLong(0x000FAD48,30,1);
-   pg51LNAV->addUnsignedLong(0x1CC91377,30,1);
-   pg51LNAV->addUnsignedLong(0x0000003F,30,1);
-   pg51LNAV->addUnsignedLong(0x0000003F,30,1);
-   pg51LNAV->addUnsignedLong(0x00FC0005,30,1);
-   pg51LNAV->addUnsignedLong(0x00000016,30,1);
-   pg51LNAV->addUnsignedLong(0x00000029,30,1);
-   pg51LNAV->addUnsignedLong(0x00000016,30,1);
-   pg51LNAV->addUnsignedLong(0x0000008C,30,1);
-   pg63LNAV = std::make_shared<gpstk::PackedNavBits>(almLNAVSid,oidLNAV,
-                                                     pg63LNAVct);
-   pg63LNAV->setNavID(gpstk::NavType::GPSLNAV);
-   pg63LNAV->addUnsignedLong(0x22C34D21,30,1);
-   pg63LNAV->addUnsignedLong(0x000F8CC0,30,1);
-   pg63LNAV->addUnsignedLong(0x1FEE6E77,30,1);
-   pg63LNAV->addUnsignedLong(0x2AEAEEFF,30,1);
-   pg63LNAV->addUnsignedLong(0x26A66A4A,30,1);
-   pg63LNAV->addUnsignedLong(0x2A666659,30,1);
-   pg63LNAV->addUnsignedLong(0x26EEEE6C,30,1);
-   pg63LNAV->addUnsignedLong(0x2AEA402C,30,1);
-   pg63LNAV->addUnsignedLong(0x00000000,30,1);
-   pg63LNAV->addUnsignedLong(0x00000000,30,1);
-   pg56LNAV = std::make_shared<gpstk::PackedNavBits>(almLNAVSid,oidLNAV,
-                                                     pg56LNAVct);
-   pg56LNAV->setNavID(gpstk::NavType::GPSLNAV);
-   pg56LNAV->addUnsignedLong(0x22C34D21,30,1);
-   pg56LNAV->addUnsignedLong(0x000B2C64,30,1);
-   pg56LNAV->addUnsignedLong(0x1E05FFE1,30,1);
-   pg56LNAV->addUnsignedLong(0x3F808FEC,30,1);
-   pg56LNAV->addUnsignedLong(0x3F7F405F,30,1);
-   pg56LNAV->addUnsignedLong(0x00000413,30,1);
-   pg56LNAV->addUnsignedLong(0x0000003F,30,1);
-   pg56LNAV->addUnsignedLong(0x01491376,30,1);
-   pg56LNAV->addUnsignedLong(0x044EC0EB,30,1);
-   pg56LNAV->addUnsignedLong(0x044000D8,30,1);
+#include "LNavTestDataDef.hpp"
+#include "CNavTestDataDef.hpp"
 }
 
 
@@ -205,6 +93,7 @@ constructorTest()
 {
    TUDEF("PNBMultiGNSSNavDataFactory", "PNBMultiGNSSNavDataFactory()");
    bool foundGPSLNav = false;
+   bool foundGPSCNav = false;
    bool foundTest = false;
       // Iterate over the factories and try to find the expected
       // factory objects.  The factories map may also contain ext
@@ -216,12 +105,17 @@ constructorTest()
       {
          foundGPSLNav = true;
       }
+      else if (dynamic_cast<gpstk::PNBGPSCNavDataFactory*>(p) != nullptr)
+      {
+         foundGPSCNav = true;
+      }
       else if (dynamic_cast<PNBTestFactory*>(p) != nullptr)
       {
          foundTest = true;
       }
    }
    TUASSERT(foundGPSLNav);
+   TUASSERT(foundGPSCNav);
    TUASSERT(foundTest);
    TURETURN();
 }
@@ -334,54 +228,132 @@ addDataTest()
    uut.setTypeFilter(gpstk::allNavMessageTypes);
    uut.setValidityFilter(gpstk::NavValidityType::All);
       //
-      // Start with some GPS data.
+      // Start with some GPS LNAV data.
       //
       // Add subframe 1, expect only health initially.
-   TUASSERTE(bool, true, uut.addData(ephLNAVSF1, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF1, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
       // add subframe 2, expect nothing yet
-   TUASSERTE(bool, true, uut.addData(ephLNAVSF2, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF2, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add subframe 3, expect the completed ephemeris
-   TUASSERTE(bool, true, uut.addData(ephLNAVSF3, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF3, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, ephCount);
    navOut.clear();
       // add almanac sv id 25, expect health
-   TUASSERTE(bool, true, uut.addData(almLNAV25, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS25, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
       // add almanac sv id 26, expect health
-   TUASSERTE(bool, true, uut.addData(almLNAV26, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS26, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
       // add page 56, expect time offset
-   TUASSERTE(bool, true, uut.addData(pg56LNAV, navOut));
+   TUASSERTE(bool, true, uut.addData(pg56LNAVGPS, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, toCount);
    navOut.clear();
       // add page 63, expect 8 health
-   TUASSERTE(bool, true, uut.addData(pg63LNAV, navOut));
+   TUASSERTE(bool, true, uut.addData(pg63LNAVGPS, navOut));
    TUASSERTE(size_t, 8, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 8, heaCount);
    navOut.clear();
       // add page 51, expect 24 health and 2 almanacs
-   TUASSERTE(bool, true, uut.addData(pg51LNAV, navOut));
+   TUASSERTE(bool, true, uut.addData(pg51LNAVGPS, navOut));
    TUASSERTE(size_t, 26, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 24, heaCount);
    TUASSERTE(unsigned, 2, almCount);
+   navOut.clear();
+      //
+      // GPS CNav data (L2)
+      //
+      // get 3 health from ephemeris 1
+   TUASSERTE(bool, true, uut.addData(msg10CNAVGPSL2, navOut));
+   TUASSERTE(size_t, 3, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 3, heaCount);
+   navOut.clear();
+      // nothing from ephemeris 2 (incomplete ephemeris)
+   TUASSERTE(bool, true, uut.addData(msg11CNAVGPSL2, navOut));
+   TUASSERTE(size_t, 0, navOut.size());
+   navOut.clear();
+      // clock data completes the ephemeris
+   TUASSERTE(bool, true, uut.addData(msg30CNAVGPSL2, navOut));
+   TUASSERTE(size_t, 1, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 1, ephCount);
+   navOut.clear();
+      // nothing in message type 32 that we care about (not completing
+      // an ephemeris)
+   TUASSERTE(bool, true, uut.addData(msg32CNAVGPSL2, navOut));
+   TUASSERTE(size_t, 0, navOut.size());
+   navOut.clear();
+      // expecting a time offset record from 33
+   TUASSERTE(bool, true, uut.addData(msg33CNAVGPSL2, navOut));
+   TUASSERTE(size_t, 1, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 1, toCount);
+   navOut.clear();
+      //
+      // QZSS CNav data (L5)
+      //
+      // get 3 health from ephemeris 1
+   TUASSERTE(bool, true, uut.addData(msg10CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 3, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 3, heaCount);
+   navOut.clear();
+      // nothing from ephemeris 2 (incomplete ephemeris)
+   TUASSERTE(bool, true, uut.addData(msg11CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 0, navOut.size());
+   navOut.clear();
+      // clock data completes the ephemeris
+   TUASSERTE(bool, true, uut.addData(msg30CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 1, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 1, ephCount);
+   navOut.clear();
+      // nothing in message type 32 that we care about (not completing
+      // an ephemeris)
+   TUASSERTE(bool, true, uut.addData(msg32CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 0, navOut.size());
+   navOut.clear();
+      // expecting an almanac and 3 health from message type 37
+   TUASSERTE(bool, true, uut.addData(msg37CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 4, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 1, almCount);
+   TUASSERTE(unsigned, 3, heaCount);
+   navOut.clear();
+      // expecting 4 almanacs and 12 health from message type 31
+   TUASSERTE(bool, true, uut.addData(msg31CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 16, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 4, almCount);
+   TUASSERTE(unsigned, 12, heaCount);
+   navOut.clear();
+      // expecting nothing from message type 12 because it's empty.
+   TUASSERTE(bool, true, uut.addData(msg12CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 0, navOut.size());
+   navOut.clear();
+      // expecting a time offset record from 35
+   TUASSERTE(bool, true, uut.addData(msg35CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 1, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 1, toCount);
    navOut.clear();
       /// @todo Add additional signals as they are implemented.
    TURETURN();
@@ -407,6 +379,22 @@ countResults(const gpstk::NavDataPtrList& navOut)
          toCount++;
       }
       else if (dynamic_cast<gpstk::GPSLNavHealth*>(i.get()) != nullptr)
+      {
+         heaCount++;
+      }
+      else if (dynamic_cast<gpstk::GPSCNavAlm*>(i.get()) != nullptr)
+      {
+         almCount++;
+      }
+      else if (dynamic_cast<gpstk::GPSCNavEph*>(i.get()) != nullptr)
+      {
+         ephCount++;
+      }
+      else if (dynamic_cast<gpstk::GPSCNavTimeOffset*>(i.get()) != nullptr)
+      {
+         toCount++;
+      }
+      else if (dynamic_cast<gpstk::GPSCNavHealth*>(i.get()) != nullptr)
       {
          heaCount++;
       }

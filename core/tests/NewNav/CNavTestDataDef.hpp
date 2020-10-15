@@ -1,4 +1,4 @@
-/** @file CNavTestDataDecl.hpp This file contains data definitions
+/** @file CNavTestDataDef.hpp This file contains data definitions
  * for testing GPS CNav processing in the NavFactory code. */
 
 // message type quick reference

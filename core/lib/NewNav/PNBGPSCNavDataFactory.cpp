@@ -409,7 +409,10 @@ namespace gpstk
             // This class only processes GPS CNav.
          return false;
       }
-      bool rv = false;
+         // We actually return rv && processed because we have to do
+         // some extra work given that the clock message types get
+         // processed twice.
+      bool rv = true, processed = false;
       bool isQZSS = navIn->getsatSys().system == SatelliteSystem::QZSS;
       try
       {
@@ -439,27 +442,33 @@ namespace gpstk
                          (msgType == 49) || (msgType == 51) ||
                          (msgType == 53))))
          {
-            rv = processEph(msgType, navIn, navOut);
+            rv = rv && processEph(msgType, navIn, navOut);
+            processed = true;
          }
-         if ((msgType == 31) || (isQZSS && (msgType == 12)))
+         if ((msgType == 31) || (isQZSS && (msgType == 47)))
          {
             rv = rv && process31(msgType, navIn, navOut);
+            processed = true;
          }
          else if ((msgType == 12) || (isQZSS && (msgType == 28)))
          {
             rv = rv && process12(msgType, navIn, navOut);
+            processed = true;
          }
          else if ((msgType == 33) || (isQZSS && (msgType == 49)))
          {
             rv = rv && process33(navIn, navOut);
+            processed = true;
          }
          else if ((msgType == 35) || (isQZSS && (msgType == 51)))
          {
             rv = rv && process35(navIn, navOut);
+            processed = true;
          }
          else if ((msgType == 37) || (isQZSS && (msgType == 53)))
          {
             rv = rv && processAlmOrb(msgType, navIn, navOut);
+            processed = true;
          }
          // cerr << "  results: " << navOut.size() << endl;
          // for (const auto& i : navOut)
@@ -480,7 +489,7 @@ namespace gpstk
          rv = false;
          cerr << "Unknown exception" << endl;
       }
-      return rv;
+      return rv && processed;
    }
 
 

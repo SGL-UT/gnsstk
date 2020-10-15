@@ -44,12 +44,7 @@ public:
       /// Count the various types of messages present in navOut.
    void countResults(const gpstk::NavDataPtrList& navOut);
 
-   gpstk::ObsID oid;
-   gpstk::PackedNavBitsPtr ephSF1, ephSF2, ephSF3, alm25, alm26, pg51, pg56,
-      pg63;
-   gpstk::CommonTime ephSF1ct, ephSF2ct, ephSF3ct, alm25ct, alm26ct, pg51ct,
-      pg56ct, pg63ct;
-   gpstk::SatID ephSid, almSid;
+#include "LNavTestDataDecl.hpp"
 
       /// Counts of messages, set by countResults.
    unsigned almCount, ephCount, toCount, heaCount, otherCount;
@@ -58,116 +53,9 @@ public:
 
 PNBGPSLNavDataFactory_T ::
 PNBGPSLNavDataFactory_T()
-      : oid(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::L1,
-            gpstk::TrackingCode::CA),
-        ephSF1ct(gpstk::GPSWeekSecond(1869,6.0)),
-        ephSF2ct(gpstk::GPSWeekSecond(1869,12.0)),
-        ephSF3ct(gpstk::GPSWeekSecond(1869,18.0)),
-        alm25ct(gpstk::GPSWeekSecond(1869,54.0)),
-        alm26ct(gpstk::GPSWeekSecond(1869,84.0)),
-        pg51ct(gpstk::GPSWeekSecond(1869,750.0)),
-        pg56ct(gpstk::GPSWeekSecond(1869,528.0)),
-        pg63ct(gpstk::GPSWeekSecond(1869,744.0)),
-        ephSid(4,gpstk::SatelliteSystem::GPS),
-        almSid(1,gpstk::SatelliteSystem::GPS),
-        almCount(0), ephCount(0), toCount(0), heaCount(0), otherCount(0)
+      : almCount(0), ephCount(0), toCount(0), heaCount(0), otherCount(0)
 {
-   ephSF1 = std::make_shared<gpstk::PackedNavBits>(ephSid,oid,ephSF1ct);
-   ephSF1->setNavID(gpstk::NavType::GPSLNAV);
-   ephSF1->addUnsignedLong(0x22C34D21,30,1);
-   ephSF1->addUnsignedLong(0x000029D4,30,1);
-   ephSF1->addUnsignedLong(0x34D44000,30,1);
-   ephSF1->addUnsignedLong(0x091B1DE7,30,1);
-   ephSF1->addUnsignedLong(0x1C33746E,30,1);
-   ephSF1->addUnsignedLong(0x2F701369,30,1);
-   ephSF1->addUnsignedLong(0x39F53CB5,30,1);
-   ephSF1->addUnsignedLong(0x128070A8,30,1);
-   ephSF1->addUnsignedLong(0x003FF454,30,1);
-   ephSF1->addUnsignedLong(0x3EAFC2F0,30,1);
-   ephSF2 = std::make_shared<gpstk::PackedNavBits>(ephSid,oid,ephSF2ct);
-   ephSF2->setNavID(gpstk::NavType::GPSLNAV);
-   ephSF2->addUnsignedLong(0x22C34D21,30,1);
-   ephSF2->addUnsignedLong(0x00004A44,30,1);
-   ephSF2->addUnsignedLong(0x12BFCB3A,30,1);
-   ephSF2->addUnsignedLong(0x0D7A9094,30,1);
-   ephSF2->addUnsignedLong(0x3B99FBAF,30,1);
-   ephSF2->addUnsignedLong(0x3FC081B8,30,1);
-   ephSF2->addUnsignedLong(0x09D171E1,30,1);
-   ephSF2->addUnsignedLong(0x04B0A847,30,1);
-   ephSF2->addUnsignedLong(0x03497656,30,1);
-   ephSF2->addUnsignedLong(0x00709FA0,30,1);
-   ephSF3 = std::make_shared<gpstk::PackedNavBits>(ephSid,oid,ephSF3ct);
-   ephSF3->setNavID(gpstk::NavType::GPSLNAV);
-   ephSF3->addUnsignedLong(0x22C34D21,30,1);
-   ephSF3->addUnsignedLong(0x00006BCC,30,1);
-   ephSF3->addUnsignedLong(0x3FE14ED4,30,1);
-   ephSF3->addUnsignedLong(0x05ABBB58,30,1);
-   ephSF3->addUnsignedLong(0x3FE3498B,30,1);
-   ephSF3->addUnsignedLong(0x145EE03A,30,1);
-   ephSF3->addUnsignedLong(0x062ECB6F,30,1);
-   ephSF3->addUnsignedLong(0x1C48068F,30,1);
-   ephSF3->addUnsignedLong(0x3FE95E1E,30,1);
-   ephSF3->addUnsignedLong(0x12844624,30,1);
-   alm25 = std::make_shared<gpstk::PackedNavBits>(almSid,oid,alm25ct);
-   alm25->setNavID(gpstk::NavType::GPSLNAV);
-   alm25->addUnsignedLong(0x22C34D21,30,1);
-   alm25->addUnsignedLong(0x00012C68,30,1);
-   alm25->addUnsignedLong(0x16499366,30,1);
-   alm25->addUnsignedLong(0x0905E5C5,30,1);
-   alm25->addUnsignedLong(0x3F52C035,30,1);
-   alm25->addUnsignedLong(0x28431EEE,30,1);
-   alm25->addUnsignedLong(0x39A2E96D,30,1);
-   alm25->addUnsignedLong(0x075C3A2E,30,1);
-   alm25->addUnsignedLong(0x117733C7,30,1);
-   alm25->addUnsignedLong(0x3E3FF848,30,1);
-   alm26 = std::make_shared<gpstk::PackedNavBits>(almSid,oid,alm26ct);
-   alm26->setNavID(gpstk::NavType::GPSLNAV);
-   alm26->addUnsignedLong(0x22C34D21,30,1);
-   alm26->addUnsignedLong(0x0001CC0C,30,1);
-   alm26->addUnsignedLong(0x16809922,30,1);
-   alm26->addUnsignedLong(0x0902F90F,30,1);
-   alm26->addUnsignedLong(0x3F4EC036,30,1);
-   alm26->addUnsignedLong(0x28433740,30,1);
-   alm26->addUnsignedLong(0x3994EFA9,30,1);
-   alm26->addUnsignedLong(0x3D38AA68,30,1);
-   alm26->addUnsignedLong(0x0E3E305F,30,1);
-   alm26->addUnsignedLong(0x3CBFE0A0,30,1);
-   pg51 = std::make_shared<gpstk::PackedNavBits>(almSid,oid,pg51ct);
-   pg51->setNavID(gpstk::NavType::GPSLNAV);
-   pg51->addUnsignedLong(0x22C34D21,30,1);
-   pg51->addUnsignedLong(0x000FAD48,30,1);
-   pg51->addUnsignedLong(0x1CC91377,30,1);
-   pg51->addUnsignedLong(0x0000003F,30,1);
-   pg51->addUnsignedLong(0x0000003F,30,1);
-   pg51->addUnsignedLong(0x00FC0005,30,1);
-   pg51->addUnsignedLong(0x00000016,30,1);
-   pg51->addUnsignedLong(0x00000029,30,1);
-   pg51->addUnsignedLong(0x00000016,30,1);
-   pg51->addUnsignedLong(0x0000008C,30,1);
-   pg63 = std::make_shared<gpstk::PackedNavBits>(almSid,oid,pg63ct);
-   pg63->setNavID(gpstk::NavType::GPSLNAV);
-   pg63->addUnsignedLong(0x22C34D21,30,1);
-   pg63->addUnsignedLong(0x000F8CC0,30,1);
-   pg63->addUnsignedLong(0x1FEE6E77,30,1);
-   pg63->addUnsignedLong(0x2AEAEEFF,30,1);
-   pg63->addUnsignedLong(0x26A66A4A,30,1);
-   pg63->addUnsignedLong(0x2A666659,30,1);
-   pg63->addUnsignedLong(0x26EEEE6C,30,1);
-   pg63->addUnsignedLong(0x2AEA402C,30,1);
-   pg63->addUnsignedLong(0x00000000,30,1);
-   pg63->addUnsignedLong(0x00000000,30,1);
-   pg56 = std::make_shared<gpstk::PackedNavBits>(almSid,oid,pg56ct);
-   pg56->setNavID(gpstk::NavType::GPSLNAV);
-   pg56->addUnsignedLong(0x22C34D21,30,1);
-   pg56->addUnsignedLong(0x000B2C64,30,1);
-   pg56->addUnsignedLong(0x1E05FFE1,30,1);
-   pg56->addUnsignedLong(0x3F808FEC,30,1);
-   pg56->addUnsignedLong(0x3F7F405F,30,1);
-   pg56->addUnsignedLong(0x00000413,30,1);
-   pg56->addUnsignedLong(0x0000003F,30,1);
-   pg56->addUnsignedLong(0x01491376,30,1);
-   pg56->addUnsignedLong(0x044EC0EB,30,1);
-   pg56->addUnsignedLong(0x044000D8,30,1);
+#include "LNavTestDataDef.hpp"
 }
 
 
@@ -180,8 +68,8 @@ addDataAllTest()
    gpstk::ObsID gloid(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::G1,
                       gpstk::TrackingCode::Standard);
    gpstk::NavID gloNav(gpstk::NavType::GloCivilF);
-   gpstk::PackedNavBitsPtr nonGPS =
-      std::make_shared<gpstk::PackedNavBits>(gloSid,gloid,gloNav,"XX",alm26ct);
+   gpstk::PackedNavBitsPtr nonGPS = std::make_shared<gpstk::PackedNavBits>(
+      gloSid, gloid, gloNav, "XX", almLNAVGPS26ct);
    gpstk::NavDataPtrList navOut;
       // should refuse non-GPS data
    TUASSERTE(bool, false, uut.addData(nonGPS, navOut));
@@ -190,47 +78,47 @@ addDataAllTest()
       // contents as that is assumed to be tested in the process*
       // tests.
       // Add subframe 1, expect only health initially.
-   TUASSERTE(bool, true, uut.addData(ephSF1, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF1, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
       // add subframe 2, expect nothing yet
-   TUASSERTE(bool, true, uut.addData(ephSF2, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF2, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add subframe 3, expect the completed ephemeris
-   TUASSERTE(bool, true, uut.addData(ephSF3, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF3, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, ephCount);
    navOut.clear();
       // add almanac sv id 25, expect health
-   TUASSERTE(bool, true, uut.addData(alm25, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS25, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
       // add almanac sv id 26, expect health
-   TUASSERTE(bool, true, uut.addData(alm26, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS26, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
       // add page 56, expect time offset
-   TUASSERTE(bool, true, uut.addData(pg56, navOut));
+   TUASSERTE(bool, true, uut.addData(pg56LNAVGPS, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, toCount);
    navOut.clear();
       // add page 63, expect 8 health
-   TUASSERTE(bool, true, uut.addData(pg63, navOut));
+   TUASSERTE(bool, true, uut.addData(pg63LNAVGPS, navOut));
    TUASSERTE(size_t, 8, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 8, heaCount);
    navOut.clear();
       // add page 51, expect 24 health and 2 almanacs
-   TUASSERTE(bool, true, uut.addData(pg51, navOut));
+   TUASSERTE(bool, true, uut.addData(pg51LNAVGPS, navOut));
    TUASSERTE(size_t, 26, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 24, heaCount);
@@ -246,40 +134,43 @@ addDataAlmanacTest()
    TUDEF("PNBGPSLNavDataFactory", "addData");
    gpstk::PNBGPSLNavDataFactory uut;
    gpstk::SatID gloSid(1,gpstk::SatelliteSystem::Glonass);
-   gpstk::PackedNavBitsPtr nonGPS =
-      std::make_shared<gpstk::PackedNavBits>(gloSid,oid,alm26ct);
+   gpstk::ObsID gloid(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::G1,
+                      gpstk::TrackingCode::Standard);
+   gpstk::NavID gloNav(gpstk::NavType::GloCivilF);
+   gpstk::PackedNavBitsPtr nonGPS = std::make_shared<gpstk::PackedNavBits>(
+      gloSid, gloid, gloNav, "XX", almLNAVGPS26ct);
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Almanac}));
       // Add subframe 1, expect nothing.
-   TUASSERTE(bool, true, uut.addData(ephSF1, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF1, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add subframe 2, expect nothing.
-   TUASSERTE(bool, true, uut.addData(ephSF2, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF2, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add subframe 3, expect nothing.
-   TUASSERTE(bool, true, uut.addData(ephSF3, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF3, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add almanac sv id 25, expect nothing
-   TUASSERTE(bool, true, uut.addData(alm25, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS25, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add almanac sv id 26, expect nothing
-   TUASSERTE(bool, true, uut.addData(alm26, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS26, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add page 56, expect nothing
-   TUASSERTE(bool, true, uut.addData(pg56, navOut));
+   TUASSERTE(bool, true, uut.addData(pg56LNAVGPS, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add page 63, expect nothing
-   TUASSERTE(bool, true, uut.addData(pg63, navOut));
+   TUASSERTE(bool, true, uut.addData(pg63LNAVGPS, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add page 51, expect 2 almanacs
-   TUASSERTE(bool, true, uut.addData(pg51, navOut));
+   TUASSERTE(bool, true, uut.addData(pg51LNAVGPS, navOut));
    TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 2, almCount);
@@ -296,37 +187,37 @@ addDataEphemerisTest()
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Ephemeris}));
       // Add subframe 1, expect nothing.
-   TUASSERTE(bool, true, uut.addData(ephSF1, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF1, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add subframe 2, expect nothing.
-   TUASSERTE(bool, true, uut.addData(ephSF2, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF2, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add subframe 3, expect a completed ephemeris.
-   TUASSERTE(bool, true, uut.addData(ephSF3, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF3, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, ephCount);
    navOut.clear();
       // add almanac sv id 25, expect nothing
-   TUASSERTE(bool, true, uut.addData(alm25, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS25, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add almanac sv id 26, expect nothing
-   TUASSERTE(bool, true, uut.addData(alm26, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS26, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add page 56, expect nothing
-   TUASSERTE(bool, true, uut.addData(pg56, navOut));
+   TUASSERTE(bool, true, uut.addData(pg56LNAVGPS, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add page 63, expect nothing
-   TUASSERTE(bool, true, uut.addData(pg63, navOut));
+   TUASSERTE(bool, true, uut.addData(pg63LNAVGPS, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add page 51, expect nothing
-   TUASSERTE(bool, true, uut.addData(pg51, navOut));
+   TUASSERTE(bool, true, uut.addData(pg51LNAVGPS, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
    TURETURN();
@@ -341,43 +232,43 @@ addDataHealthTest()
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Health}));
       // Add subframe 1, expect 1 health object.
-   TUASSERTE(bool, true, uut.addData(ephSF1, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF1, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
       // add subframe 2, expect nothing.
-   TUASSERTE(bool, true, uut.addData(ephSF2, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF2, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add subframe 3, expect nothing.
-   TUASSERTE(bool, true, uut.addData(ephSF3, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF3, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add almanac sv id 25, expect 1 health
-   TUASSERTE(bool, true, uut.addData(alm25, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS25, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
       // add almanac sv id 26, expect 1 health
-   TUASSERTE(bool, true, uut.addData(alm26, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS26, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
       // add page 56, expect nothing
-   TUASSERTE(bool, true, uut.addData(pg56, navOut));
+   TUASSERTE(bool, true, uut.addData(pg56LNAVGPS, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add page 63, expect 8 health
-   TUASSERTE(bool, true, uut.addData(pg63, navOut));
+   TUASSERTE(bool, true, uut.addData(pg63LNAVGPS, navOut));
    TUASSERTE(size_t, 8, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 8, heaCount);
    navOut.clear();
       // add page 51, expect 24 health
-   TUASSERTE(bool, true, uut.addData(pg51, navOut));
+   TUASSERTE(bool, true, uut.addData(pg51LNAVGPS, navOut));
    TUASSERTE(size_t, 24, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 24, heaCount);
@@ -394,37 +285,37 @@ addDataTimeTest()
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::TimeOffset}));
       // Add subframe 1, expect nothing.
-   TUASSERTE(bool, true, uut.addData(ephSF1, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF1, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add subframe 2, expect nothing.
-   TUASSERTE(bool, true, uut.addData(ephSF2, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF2, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add subframe 3, expect nothing.
-   TUASSERTE(bool, true, uut.addData(ephSF3, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF3, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add almanac sv id 25, expect nothing.
-   TUASSERTE(bool, true, uut.addData(alm25, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS25, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add almanac sv id 26, expect nothing.
-   TUASSERTE(bool, true, uut.addData(alm26, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS26, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add page 56, expect time offset
-   TUASSERTE(bool, true, uut.addData(pg56, navOut));
+   TUASSERTE(bool, true, uut.addData(pg56LNAVGPS, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, toCount);
    navOut.clear();
       // add page 63, expect nothing.
-   TUASSERTE(bool, true, uut.addData(pg63, navOut));
+   TUASSERTE(bool, true, uut.addData(pg63LNAVGPS, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add page 51, expect nothing.
-   TUASSERTE(bool, true, uut.addData(pg51, navOut));
+   TUASSERTE(bool, true, uut.addData(pg51LNAVGPS, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
    TURETURN();
@@ -440,45 +331,45 @@ addDataEphHealthTest()
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Ephemeris,
                               gpstk::NavMessageType::Health}));
       // Add subframe 1, expect 1 health.
-   TUASSERTE(bool, true, uut.addData(ephSF1, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF1, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
       // add subframe 2, expect nothing.
-   TUASSERTE(bool, true, uut.addData(ephSF2, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF2, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add subframe 3, expect the completed ephemeris
-   TUASSERTE(bool, true, uut.addData(ephSF3, navOut));
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF3, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, ephCount);
    navOut.clear();
       // add almanac sv id 25, expect 1 health
-   TUASSERTE(bool, true, uut.addData(alm25, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS25, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
       // add almanac sv id 26, expect 1 health
-   TUASSERTE(bool, true, uut.addData(alm26, navOut));
+   TUASSERTE(bool, true, uut.addData(almLNAVGPS26, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
       // add page 56, expect nothing.
-   TUASSERTE(bool, true, uut.addData(pg56, navOut));
+   TUASSERTE(bool, true, uut.addData(pg56LNAVGPS, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // add page 63, expect 8 health
-   TUASSERTE(bool, true, uut.addData(pg63, navOut));
+   TUASSERTE(bool, true, uut.addData(pg63LNAVGPS, navOut));
    TUASSERTE(size_t, 8, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 8, heaCount);
    navOut.clear();
       // add page 51, expect 24 health
-   TUASSERTE(bool, true, uut.addData(pg51, navOut));
+   TUASSERTE(bool, true, uut.addData(pg51LNAVGPS, navOut));
    TUASSERTE(size_t, 24, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 24, heaCount);
@@ -504,7 +395,7 @@ processEphTest()
    gpstk::GPSLNavHealth *hea;
    gpstk::GPSLNavEph *eph;
       // success, health data only
-   TUASSERTE(bool, true, uut.processEph(1, ephSF1, navOut));
+   TUASSERTE(bool, true, uut.processEph(1, ephLNAVGPSSF1, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    heaCount = 0, ephCount = 0, otherCount = 0;
    for (const auto& i : navOut)
@@ -514,7 +405,7 @@ processEphTest()
          heaCount++;
          nmidExp.messageType = gpstk::NavMessageType::Health;
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, ephSF1ct, hea->timeStamp);
+         TUASSERTE(gpstk::CommonTime, ephLNAVGPSSF1ct, hea->timeStamp);
          TUASSERTE(gpstk::NavMessageID, nmidExp, hea->signal);
             // NavHealthData has no fields
             // GPSLNavHealth
@@ -531,11 +422,11 @@ processEphTest()
    TUASSERTE(unsigned, 0, otherCount);
    navOut.clear();
    heaCount = otherCount = 0;
-   TUASSERTE(bool, true, uut.processEph(2, ephSF2, navOut));
+   TUASSERTE(bool, true, uut.processEph(2, ephLNAVGPSSF2, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
       // success, and we have an ephemeris.
-   TUASSERTE(bool, true, uut.processEph(3, ephSF3, navOut));
+   TUASSERTE(bool, true, uut.processEph(3, ephLNAVGPSSF3, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    for (const auto& i : navOut)
    {
@@ -544,11 +435,11 @@ processEphTest()
          ephCount++;
          nmidExp.messageType = gpstk::NavMessageType::Ephemeris;
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, ephSF1ct, eph->timeStamp);
+         TUASSERTE(gpstk::CommonTime, ephLNAVGPSSF1ct, eph->timeStamp);
          TUASSERTE(gpstk::NavMessageID, nmidExp, eph->signal);
             // OrbitData has no fields
             // OrbitDataKepler fields
-         TUASSERTE(gpstk::CommonTime, ephSF1ct, eph->xmitTime);
+         TUASSERTE(gpstk::CommonTime, ephLNAVGPSSF1ct, eph->xmitTime);
          TUASSERTE(gpstk::CommonTime, toeExp, eph->Toe);
          TUASSERTE(gpstk::CommonTime, toeExp, eph->Toc); // same value as toe
          TUASSERTE(bool, true, eph->healthy);
@@ -624,23 +515,21 @@ processAlmOrbTest()
    gpstk::CommonTime beginExp = gpstk::GPSWeekSecond(1868, 500256.0);
    gpstk::CommonTime endExp = gpstk::GPSWeekSecond(1869, 413856.0);
    gpstk::NavDataPtrList navOut;
-   cerr << "processAlmOrb(25,alm25,navOut)" << endl;
-   TUASSERTE(bool, true, uut.processAlmOrb(25, alm25, navOut));
+   TUASSERTE(bool, true, uut.processAlmOrb(25, almLNAVGPS25, navOut));
    TUASSERTE(size_t, 1, navOut.size());
       // no page 51 yet so we only get the health data back
    gpstk::GPSLNavHealth *hea =
       dynamic_cast<gpstk::GPSLNavHealth*>(navOut.begin()->get());
    TUASSERT(hea != nullptr);
       // NavData fields
-   TUASSERTE(gpstk::CommonTime, alm25ct, hea->timeStamp);
+   TUASSERTE(gpstk::CommonTime, almLNAVGPS25ct, hea->timeStamp);
    TUASSERTE(gpstk::NavMessageID, nmidExp, hea->signal);
       // NavHealthData has no fields
       // GPSLNavHealth
    TUASSERTE(unsigned, 0, hea->svHealth);
    TUCSM("processSVID51()");
    navOut.clear();
-   cerr << "processSVID51(pg51,navOut)" << endl;
-   TUASSERTE(bool, true, uut.processSVID51(pg51, navOut));
+   TUASSERTE(bool, true, uut.processSVID51(pg51LNAVGPS, navOut));
       // 1 GPSLNavAlm and 24 GPSLNavHealth.
    TUASSERTE(size_t, 25, navOut.size());
    heaCount = 0, almCount = 0;
@@ -660,7 +549,7 @@ processAlmOrbTest()
             dynamic_cast<gpstk::GPSLNavHealth*>(i.get());
          TUASSERT(hea != nullptr);
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, pg51ct, hea->timeStamp);
+         TUASSERTE(gpstk::CommonTime, pg51LNAVGPSct, hea->timeStamp);
          TUASSERTE(gpstk::NavMessageID, nmidExp, hea->signal);
             // NavHealthData has no fields
             // GPSLNavHealth
@@ -678,11 +567,11 @@ processAlmOrbTest()
             // appropriate value for the almanac page.
          nmidExp.sat.id = 25;
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, alm25ct, alm->timeStamp);
+         TUASSERTE(gpstk::CommonTime, almLNAVGPS25ct, alm->timeStamp);
          TUASSERTE(gpstk::NavMessageID, nmidExp, alm->signal);
             // OrbitData has no fields
             // OrbitDataKepler fields
-         TUASSERTE(gpstk::CommonTime, alm25ct, alm->xmitTime);
+         TUASSERTE(gpstk::CommonTime, almLNAVGPS25ct, alm->xmitTime);
          TUASSERTE(gpstk::CommonTime, toaExp, alm->Toe);
          TUASSERTE(gpstk::CommonTime, toaExp, alm->Toc); // same value as toe
          TUASSERTE(bool, true, alm->healthy);
@@ -726,8 +615,7 @@ processAlmOrbTest()
       // both the almanac and health objects in return.
    navOut.clear();
    TUCSM("processAlmOrb");
-   cerr << "processAlmOrb(26,alm26,navOut)" << endl;
-   TUASSERTE(bool, true, uut.processAlmOrb(26, alm26, navOut));
+   TUASSERTE(bool, true, uut.processAlmOrb(26, almLNAVGPS26, navOut));
    TUASSERTE(size_t, 2, navOut.size());
    nmidExp.sat.id = 26;
    heaCount = 0, almCount = 0;
@@ -742,7 +630,7 @@ processAlmOrbTest()
             dynamic_cast<gpstk::GPSLNavHealth*>(i.get());
          TUASSERT(hea != nullptr);
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, alm26ct, hea->timeStamp);
+         TUASSERTE(gpstk::CommonTime, almLNAVGPS26ct, hea->timeStamp);
          TUASSERTE(gpstk::NavMessageID, nmidExp, hea->signal);
             // NavHealthData has no fields
             // GPSLNavHealth
@@ -755,11 +643,11 @@ processAlmOrbTest()
          almCount++;
          nmidExp.messageType = gpstk::NavMessageType::Almanac;
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, alm26ct, alm->timeStamp);
+         TUASSERTE(gpstk::CommonTime, almLNAVGPS26ct, alm->timeStamp);
          TUASSERTE(gpstk::NavMessageID, nmidExp, alm->signal);
             // OrbitData has no fields
             // OrbitDataKepler fields
-         TUASSERTE(gpstk::CommonTime, alm26ct, alm->xmitTime);
+         TUASSERTE(gpstk::CommonTime, almLNAVGPS26ct, alm->xmitTime);
          TUASSERTE(gpstk::CommonTime, toaExp, alm->Toe);
          TUASSERTE(gpstk::CommonTime, toaExp, alm->Toc); // same value as toe
          TUASSERTE(bool, true, alm->healthy);
@@ -814,7 +702,7 @@ processSVID51Test()
                             gpstk::NavType::GPSLNAV),
       gpstk::NavMessageType::Health);
    gpstk::NavDataPtrList navOut;
-   TUASSERTE(bool, true, uut.processSVID51(pg51, navOut));
+   TUASSERTE(bool, true, uut.processSVID51(pg51LNAVGPS, navOut));
    TUASSERTE(size_t, 24, navOut.size());
       // sv/page ID 51 contains health information for 24 satellites,
       // starting with PRN 1.
@@ -827,7 +715,7 @@ processSVID51Test()
          dynamic_cast<gpstk::GPSLNavHealth*>(i.get());
       TUASSERT(hea != nullptr);
          // NavData fields
-      TUASSERTE(gpstk::CommonTime, pg51ct, hea->timeStamp);
+      TUASSERTE(gpstk::CommonTime, pg51LNAVGPSct, hea->timeStamp);
       TUASSERTE(gpstk::NavMessageID, nmidExp, hea->signal);
          // NavHealthData has no fields
          // GPSLNavHealth
@@ -852,7 +740,7 @@ processSVID63Test()
                             gpstk::NavType::GPSLNAV),
       gpstk::NavMessageType::Health);
    gpstk::NavDataPtrList navOut;
-   TUASSERTE(bool, true, uut.processSVID63(pg63, navOut));
+   TUASSERTE(bool, true, uut.processSVID63(pg63LNAVGPS, navOut));
    TUASSERTE(size_t, 8, navOut.size());
       // sv/page ID 63 contains health information for 8 satellites,
       // starting with PRN 25.
@@ -865,7 +753,7 @@ processSVID63Test()
          dynamic_cast<gpstk::GPSLNavHealth*>(i.get());
       TUASSERT(hea != nullptr);
          // NavData fields
-      TUASSERTE(gpstk::CommonTime, pg63ct, hea->timeStamp);
+      TUASSERTE(gpstk::CommonTime, pg63LNAVGPSct, hea->timeStamp);
       TUASSERTE(gpstk::NavMessageID, nmidExp, hea->signal);
          // NavHealthData has no fields
          // GPSLNavHealth
@@ -890,14 +778,14 @@ processSVID56Test()
                             gpstk::NavType::GPSLNAV),
       gpstk::NavMessageType::TimeOffset);
    gpstk::NavDataPtrList navOut;
-   TUASSERTE(bool, true, uut.processSVID56(pg56, navOut));
+   TUASSERTE(bool, true, uut.processSVID56(pg56LNAVGPS, navOut));
    TUASSERTE(size_t, 1, navOut.size());
       // Yes this code can cause seg faults on failure, but that's ok.
    gpstk::GPSLNavTimeOffset *to =
       dynamic_cast<gpstk::GPSLNavTimeOffset*>(navOut.begin()->get());
    TUASSERT(to != nullptr);
       // NavData fields
-   TUASSERTE(gpstk::CommonTime, pg56ct, to->timeStamp);
+   TUASSERTE(gpstk::CommonTime, pg56LNAVGPSct, to->timeStamp);
    TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
       // TimeOffsetData has no fields
       // GPSLNavTimeOffset fields

@@ -100,6 +100,54 @@ addDataAllTest()
    countResults(navOut);
    TUASSERTE(unsigned, 1, toCount);
    navOut.clear();
+      //
+      // QZSS CNav data (L5)
+      //
+      // get 3 health from ephemeris 1
+   TUASSERTE(bool, true, uut.addData(msg10CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 3, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 3, heaCount);
+   navOut.clear();
+      // nothing from ephemeris 2 (incomplete ephemeris)
+   TUASSERTE(bool, true, uut.addData(msg11CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 0, navOut.size());
+   navOut.clear();
+      // clock data completes the ephemeris
+   TUASSERTE(bool, true, uut.addData(msg30CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 1, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 1, ephCount);
+   navOut.clear();
+      // nothing in message type 32 that we care about (not completing
+      // an ephemeris)
+   TUASSERTE(bool, true, uut.addData(msg32CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 0, navOut.size());
+   navOut.clear();
+      // expecting an almanac and 3 health from message type 37
+   TUASSERTE(bool, true, uut.addData(msg37CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 4, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 1, almCount);
+   TUASSERTE(unsigned, 3, heaCount);
+   navOut.clear();
+      // expecting 4 almanacs and 12 health from message type 31
+   TUASSERTE(bool, true, uut.addData(msg31CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 16, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 4, almCount);
+   TUASSERTE(unsigned, 12, heaCount);
+   navOut.clear();
+      // expecting nothing from message type 12 because it's empty.
+   TUASSERTE(bool, true, uut.addData(msg12CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 0, navOut.size());
+   navOut.clear();
+      // expecting a time offset record from 35
+   TUASSERTE(bool, true, uut.addData(msg35CNAVQZSSL5, navOut));
+   TUASSERTE(size_t, 1, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 1, toCount);
+   navOut.clear();
    TURETURN();
 }
 
