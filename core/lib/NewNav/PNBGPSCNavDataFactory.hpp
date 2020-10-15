@@ -41,7 +41,7 @@ namespace gpstk
           * consistent ephemeris is accumulated in ephAcc, that
           * ephemeris is placed in navOut.
           * @param[in] msgType The CNAV message type (10-11).
-          * @param[in] navIn The as-broadcast ephemeris subframe bits.
+          * @param[in] navIn The as-broadcast ephemeris message bits.
           * @param[out] navOut If an ephemeris is completed, this will
           *   contain a GPSCNavEph object.
           * @return false on error. */
@@ -50,22 +50,68 @@ namespace gpstk
 
          /** Process message type 37 (GPS, QZSS) or 53 (QZSS).
           * @param[in] msgType The CNAV message type.
-          * @param[in] navIn The PackedNavBits data containing the subframe.
+          * @param[in] navIn The PackedNavBits data containing the message.
           * @param[in] navOut The GPSCNavAlm and/or GPSCNavHealth
           *   objects generated from navIn.
           * @return true if successful (navOut may still be empty). */
       bool processAlmOrb(unsigned msgType, const PackedNavBitsPtr& navIn,
                          NavDataPtrList& navOut);
 
+         /** Process message type 12.  This includes reduced almanac data.
+          * @param[in] msgType Type of the message that contains the
+          *   packet being decoded.  Used to determine the subject
+          *   satellite in QZSS.
+          * @param[in] navIn The PackedNavBits data containing the message.
+          * @param[in] navOut The GPSCNavTimeOffset object generated from
+          *   navIn.
+          * @return true if successful. */
+      bool process12(unsigned msgType, const PackedNavBitsPtr& navIn,
+                     NavDataPtrList& navOut);
+
+         /** Process message type 31.  This includes reduced almanac data.
+          * @param[in] msgType Type of the message that contains the
+          *   packet being decoded.  Used to determine the subject
+          *   satellite in QZSS.
+          * @param[in] navIn The PackedNavBits data containing the message.
+          * @param[in] navOut The GPSCNavTimeOffset object generated from
+          *   navIn.
+          * @return true if successful. */
+      bool process31(unsigned msgType, const PackedNavBitsPtr& navIn,
+                     NavDataPtrList& navOut);
+
+         /** Process a single reduced almanac packed from either
+          * message type 12 or 31 (or, for QZSS, including message
+          * types 28 and 47).
+          * @param[in] msgType Type of the message that contains the
+          *   packet being decoded.  Used to determine the subject
+          *   satellite in QZSS.
+          * @param[in] offset The position of the first bit of the
+          *   reduced almanac packet within navIn.
+          * @param[in] pre The 8-bit preamble taken from the message start.
+          * @param[in] alert The 1-bit alert flag taken from the message start.
+          * @param[in] wna The WNa (almanac week number) as extracted
+          *   from the message.  This value is shared across the
+          *   message and applies to all packets in a given message.
+          * @param[in] toa The almanac reference time in seconds of
+          *   week (see wna).
+          * @param[in] navIn The PackedNavBits data containing the message.
+          * @param[in] navOut The GPSCNavRedAlm object generated from
+          *   navIn.
+          * @return true if successful. */
+      bool processRedAlmOrb(unsigned msgType, unsigned offset, unsigned pre,
+                            bool alert, unsigned wna, double toa,
+                            const PackedNavBitsPtr& navIn,
+                            NavDataPtrList& navOut);
+
          /** Process message type 33.  This includes GPS-UTC time offset data.
-          * @param[in] navIn The PackedNavBits data containing the subframe.
+          * @param[in] navIn The PackedNavBits data containing the message.
           * @param[in] navOut The GPSCNavTimeOffset object generated from
           *   navIn.
           * @return true if successful. */
       bool process33(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
          /** Process message type 35.  This includes GPS-GNSS time offset data.
-          * @param[in] navIn The PackedNavBits data containing the subframe.
+          * @param[in] navIn The PackedNavBits data containing the message.
           * @param[in] navOut The GPSCNavTimeOffset object generated from
           *   navIn.
           * @return true if successful. */
@@ -77,7 +123,7 @@ namespace gpstk
 
    protected:
          /** Map GPS PRN to a vector of PackedNavBits for accumulating
-          * ephemeris data, where index 0 is subframe 1 and so on. */
+          * ephemeris data, where index 0 is message 10 and so on. */
       std::map<unsigned, std::vector<PackedNavBitsPtr> > ephAcc;
    };
 

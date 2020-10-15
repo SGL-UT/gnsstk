@@ -8,7 +8,7 @@ namespace gpstk
       /// @ingroup NavFactory
       //@{
 
-      /// Class containing data elements unique to GPS CNav almanac pages.
+      /// Class containing data elements unique to GPS CNav midi almanac.
    class GPSCNavAlm : public GPSCNavData
    {
    public:
@@ -38,7 +38,7 @@ namespace gpstk
       { return "Almanac"; }
          /** Override dumpHarmonics to hide them in output since GPS
           * CNav almanacs don't contain this data. */
-      void dumpHarmonics(std::ostream& s)
+      void dumpHarmonics(std::ostream& s) const override
       {}
 
          /// Fill the beginFit and endFit values for this object.

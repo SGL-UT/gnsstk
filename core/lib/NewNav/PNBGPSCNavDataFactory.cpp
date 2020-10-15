@@ -1,6 +1,7 @@
 #include <math.h>
 #include "PNBGPSCNavDataFactory.hpp"
 #include "GPSCNavAlm.hpp"
+#include "GPSCNavRedAlm.hpp"
 #include "GPSCNavEph.hpp"
 #include "GPSCNavHealth.hpp"
 #include "GPSCNavTimeOffset.hpp"
@@ -21,8 +22,6 @@ enum SFIndex
 };
 
 /// More CNAV-related constants.
-static const double Aref = 26559710;
-static const double OMEGAdotREF = -2.6e-9 * gpstk::PI;
 
 /** "Subframe" (message vector) index, start bits, bit counts and
  * scale factor (*n for integer quantities, *2^n for floating point
@@ -338,6 +337,64 @@ enum CNavBitInfo
    gsbA2 = 188,           ///< A2-n start bit
    gnbA2 = 7,             ///< A2-n number of bits
    gscA2 = -68,           ///< A2-n power factor
+
+      /** @note these apply to message type 12 and 31 but are the
+       * "message level" data, rather than "packet level" data. */
+
+   rsb12WNa = 38,         ///< message type 12, WNa start bit
+   rnb12WNa = 13,         ///< message type 12, WNa number of bits
+   rsc12WNa = 1,          ///< message type 12, WNa scale factor
+
+   rsb12toa = 51,         ///< message type 12, toa start bit
+   rnb12toa = 8,          ///< message type 12, toa number of bits
+   rsc12toa = 12,         ///< message type 12, toa power factor
+
+   rsb12p1 = 59,          ///< message type 12, packet 1 start bit
+   rsb12p2 = 90,          ///< message type 12, packet 2 start bit
+   rsb12p3 = 121,         ///< message type 12, packet 3 start bit
+   rsb12p4 = 152,         ///< message type 12, packet 4 start bit
+   rsb12p5 = 183,         ///< message type 12, packet 5 start bit
+   rsb12p6 = 214,         ///< message type 12, packet 6 start bit
+   rsb12p7 = 245,         ///< message type 12, packet 7 start bit
+
+   rsb31WNa = 127,        ///< message type 31, WNa start bit
+   rnb31WNa = 13,         ///< message type 31, WNa number of bits
+   rsc31WNa = 1,          ///< message type 31, WNa scale factor
+
+   rsb31toa = 140,        ///< message type 31, toa start bit
+   rnb31toa = 8,          ///< message type 31, toa number of bits
+   rsc31toa = 31,         ///< message type 31, toa power factor
+
+   rsb31p1 = 148,         ///< message type 31, packet 1 start bit
+   rsb31p2 = 179,         ///< message type 31, packet 2 start bit
+   rsb31p3 = 210,         ///< message type 31, packet 3 start bit
+   rsb31p4 = 241,         ///< message type 31, packet 4 start bit
+
+      /** @note these apply to message types 12 and 31 (reduced
+       * almanac), but are specific to the 31-bit packets, in that the
+       * start bits are relative to the start of the packet rather
+       * than the start of the message. */
+
+   rsbPRNa = 0,           ///< PRNa start bit
+   rnbPRNa = 6,           ///< PRNa number of bits
+   rscPRNa = 1,           ///< PRNa scale factor
+
+   rsbdA = 6,             ///< dA start bit
+   rnbdA = 8,             ///< dA number of bits
+   rscdA = 9,             ///< dA power factor
+
+   rsbOMEGA0 = 14,        ///< OMEGA0 start bit
+   rnbOMEGA0 = 7,         ///< OMEGA0 number of bits
+   rscOMEGA0 = -6,        ///< OMEGA0 power factor
+
+   rsbPHI0 = 21,          ///< PHI0 start bit
+   rnbPHI0 = 7,           ///< PHI0 number of bits
+   rscPHI0 = -6,          ///< PHI0 power factor
+
+   rsbHeaL1 = 28,         ///< L1 Signal health bit
+   rsbHeaL2 = 29,         ///< L2 Signal health bit
+   rsbHeaL5 = 30,         ///< L5 Signal health bit
+   
 };
 
 
@@ -353,6 +410,7 @@ namespace gpstk
          return false;
       }
       bool rv = false;
+      bool isQZSS = navIn->getsatSys().system == SatelliteSystem::QZSS;
       try
       {
             /*
@@ -376,21 +434,30 @@ namespace gpstk
             // for ephemeris and once for whatever else they might
             // contain.
          if ((msgType == 10) || (msgType == 11) ||
-             ((msgType >= 30) && (msgType <= 37)))
+             ((msgType >= 30) && (msgType <= 37)) ||
+             (isQZSS && ((msgType == 46) || (msgType == 47) ||
+                         (msgType == 49) || (msgType == 51) ||
+                         (msgType == 53))))
          {
             rv = processEph(msgType, navIn, navOut);
          }
-         if (msgType == 33)
+         if ((msgType == 31) || (isQZSS && (msgType == 12)))
+         {
+            rv = rv && process31(msgType, navIn, navOut);
+         }
+         else if ((msgType == 12) || (isQZSS && (msgType == 28)))
+         {
+            rv = rv && process12(msgType, navIn, navOut);
+         }
+         else if ((msgType == 33) || (isQZSS && (msgType == 49)))
          {
             rv = rv && process33(navIn, navOut);
          }
-         else if (msgType == 35)
+         else if ((msgType == 35) || (isQZSS && (msgType == 51)))
          {
             rv = rv && process35(navIn, navOut);
          }
-         else if ((msgType == 37) ||
-                  ((navIn->getsatSys().system == SatelliteSystem::QZSS) &&
-                   (msgType == 53)))
+         else if ((msgType == 37) || (isQZSS && (msgType == 53)))
          {
             rv = rv && processAlmOrb(msgType, navIn, navOut);
          }
@@ -442,6 +509,15 @@ namespace gpstk
          case 35:
          case 36:
          case 37:
+               /** @todo Is this strictly relevant for ephemeris
+                * assembly?  Seems like if these are rebroadcast
+                * messages they're not going to correspond to the
+                * ephemeris data being broadcast by QZSS. */
+         case 46: // QZSS rebroadcast of GPS MT 30
+         case 47: // QZSS rebroadcast of GPS MT 31
+         case 49: // QZSS rebroadcast of GPS MT 33
+         case 51: // QZSS rebroadcast of GPS MT 35
+         case 53: // QZSS rebroadcast of GPS MT 37
             vecIdx = ephMClk;
             break;
          default:
@@ -465,15 +541,31 @@ namespace gpstk
                            CarrierBand::L1, TrackingCode::CA,
                            NavType::GPSLNAV),
             NavMessageType::Health);
-         p1L2->signal = NavMessageID(
-            NavSatelliteID(prn, navIn->getsatSys(), navIn->getobsID(),
-                           navIn->getNavID()),
-            NavMessageType::Health);
-         p1L5->signal = NavMessageID(
-            NavSatelliteID(prn, prn, navIn->getsatSys().system,
-                           CarrierBand::L5, TrackingCode::L5I,
-                           NavType::GPSCNAVL5),
-            NavMessageType::Health);
+         if (navIn->getobsID().band == CarrierBand::L2)
+         {
+            p1L2->signal = NavMessageID(
+               NavSatelliteID(prn, navIn->getsatSys(), navIn->getobsID(),
+                              navIn->getNavID()),
+               NavMessageType::Health);
+            p1L5->signal = NavMessageID(
+               NavSatelliteID(prn, prn, navIn->getsatSys().system,
+                              CarrierBand::L5, TrackingCode::L5I,
+                              NavType::GPSCNAVL5),
+               NavMessageType::Health);
+         }
+         else
+         {
+               // assume L5
+            p1L2->signal = NavMessageID(
+               NavSatelliteID(prn, prn, navIn->getsatSys().system,
+                              CarrierBand::L2, TrackingCode::L2CM,
+                              NavType::GPSCNAVL2),
+               NavMessageType::Health);
+            p1L5->signal = NavMessageID(
+               NavSatelliteID(prn, navIn->getsatSys(), navIn->getobsID(),
+                              navIn->getNavID()),
+               NavMessageType::Health);
+         }
          dynamic_cast<GPSCNavHealth*>(p1L1.get())->health =
             navIn->asBool(esbHeaL1);
          dynamic_cast<GPSCNavHealth*>(p1L2.get())->health =
@@ -565,7 +657,8 @@ namespace gpstk
                                                          escdn0dot);
       eph->ecc = ephSF[esiEcc]->asUnsignedDouble(esbEcc,enbEcc,escEcc);
       eph->deltaA = ephSF[esidA]->asSignedDouble(esbdA,enbdA,escdA);
-      eph->A = eph->deltaA + Aref;
+         /// @todo does this need changing for QZSS?
+      eph->A = eph->deltaA + GPSCNavData::refAGPS;
       eph->Ahalf = ::sqrt(eph->A);
       eph->Adot = ephSF[esiAdot]->asSignedDouble(esbAdot,enbAdot,escAdot);
       eph->OMEGA0 = ephSF[esiOMEGA0]->asDoubleSemiCircles(esbOMEGA0,enbOMEGA0,
@@ -574,7 +667,8 @@ namespace gpstk
       eph->w = ephSF[esiw]->asDoubleSemiCircles(esbw,enbw,escw);
       eph->dOMEGAdot = ephSF[esidOMEGAdot]->asDoubleSemiCircles(
          esbdOMEGAdot,enbdOMEGAdot,escdOMEGAdot);
-      eph->OMEGAdot = eph->dOMEGAdot + OMEGAdotREF;
+         /// @todo does this need changing for QZSS?
+      eph->OMEGAdot = eph->dOMEGAdot + GPSCNavData::refOMEGAdotGPS;
       eph->idot = ephSF[esiidot]->asDoubleSemiCircles(esbidot,enbidot,escidot);
       eph->af0 = ephSF[csiaf0]->asSignedDouble(csbaf0,cnbaf0,cscaf0);
       eph->af1 = ephSF[csiaf1]->asSignedDouble(csbaf1,cnbaf1,cscaf1);
@@ -669,16 +763,33 @@ namespace gpstk
                                  TrackingCode::CA),
                            NavID(NavType::GPSLNAV)),
             NavMessageType::Health);
-         p1L2->signal = NavMessageID(
-            NavSatelliteID(subjSat, xmitSat, navIn->getobsID(),
-                           navIn->getNavID()),
-            NavMessageType::Health);
-         p1L5->signal = NavMessageID(
-            NavSatelliteID(subjSat, xmitSat,
-                           ObsID(ObservationType::NavMsg, CarrierBand::L5,
-                                 TrackingCode::L5I),
-                           NavID(NavType::GPSCNAVL5)),
-            NavMessageType::Health);
+         if (navIn->getobsID().band == CarrierBand::L2)
+         {
+            p1L2->signal = NavMessageID(
+               NavSatelliteID(subjSat, xmitSat, navIn->getobsID(),
+                              navIn->getNavID()),
+               NavMessageType::Health);
+            p1L5->signal = NavMessageID(
+               NavSatelliteID(subjSat, xmitSat,
+                              ObsID(ObservationType::NavMsg, CarrierBand::L5,
+                                    TrackingCode::L5I),
+                              NavID(NavType::GPSCNAVL5)),
+               NavMessageType::Health);
+         }
+         else
+         {
+               // assume L5
+            p1L2->signal = NavMessageID(
+               NavSatelliteID(subjSat, xmitSat,
+                              ObsID(ObservationType::NavMsg, CarrierBand::L2,
+                                    TrackingCode::L2CM),
+                              NavID(NavType::GPSCNAVL2)),
+               NavMessageType::Health);
+            p1L5->signal = NavMessageID(
+               NavSatelliteID(subjSat, xmitSat, navIn->getobsID(),
+                              navIn->getNavID()),
+               NavMessageType::Health);
+         }
          dynamic_cast<GPSCNavHealth*>(p1L1.get())->health =
             navIn->asBool(asbHeaL1);
          dynamic_cast<GPSCNavHealth*>(p1L2.get())->health =
@@ -742,7 +853,186 @@ namespace gpstk
             return false;
       }
       alm->deltai = navIn->asDoubleSemiCircles(asbdi,anbdi,ascdi);
-      alm->i0 = (0.3 * PI) + alm->deltai;
+         /// @todo should this be different for QZSS?
+      alm->i0 = GPSCNavData::refioffsetGPS + alm->deltai;
+      alm->fixFit();
+      navOut.push_back(p0);
+      return true;
+   }
+
+
+   bool PNBGPSCNavDataFactory ::
+   process12(unsigned msgType, const PackedNavBitsPtr& navIn,
+             NavDataPtrList& navOut)
+   {
+      unsigned pre = navIn->asUnsignedLong(esbPre,enbPre,escPre);
+      bool alert = navIn->asBool(esbAlert);
+      unsigned wna = navIn->asUnsignedLong(rsb12WNa,rnb12WNa,rsc12WNa);
+      unsigned long toa = navIn->asUnsignedLong(rsb12toa,rnb12toa,rsc12toa);
+      return
+         processRedAlmOrb(msgType,rsb12p1,pre,alert,wna,toa,navIn,navOut) &&
+         processRedAlmOrb(msgType,rsb12p2,pre,alert,wna,toa,navIn,navOut) &&
+         processRedAlmOrb(msgType,rsb12p3,pre,alert,wna,toa,navIn,navOut) &&
+         processRedAlmOrb(msgType,rsb12p4,pre,alert,wna,toa,navIn,navOut) &&
+         processRedAlmOrb(msgType,rsb12p5,pre,alert,wna,toa,navIn,navOut) &&
+         processRedAlmOrb(msgType,rsb12p6,pre,alert,wna,toa,navIn,navOut) &&
+         processRedAlmOrb(msgType,rsb12p7,pre,alert,wna,toa,navIn,navOut);
+   }
+
+
+   bool PNBGPSCNavDataFactory ::
+   process31(unsigned msgType, const PackedNavBitsPtr& navIn,
+             NavDataPtrList& navOut)
+   {
+      unsigned pre = navIn->asUnsignedLong(esbPre,enbPre,escPre);
+      bool alert = navIn->asBool(esbAlert);
+      unsigned wna = navIn->asUnsignedLong(rsb31WNa,rnb31WNa,rsc31WNa);
+      unsigned long toa = navIn->asUnsignedLong(rsb31toa,rnb31toa,rsc31toa);
+      return
+         processRedAlmOrb(msgType,rsb31p1,pre,alert,wna,toa,navIn,navOut) &&
+         processRedAlmOrb(msgType,rsb31p2,pre,alert,wna,toa,navIn,navOut) &&
+         processRedAlmOrb(msgType,rsb31p3,pre,alert,wna,toa,navIn,navOut) &&
+         processRedAlmOrb(msgType,rsb31p4,pre,alert,wna,toa,navIn,navOut);
+   }
+
+
+   bool PNBGPSCNavDataFactory ::
+   processRedAlmOrb(unsigned msgType, unsigned offset, unsigned pre, bool alert,
+                    unsigned wna, double toa,
+                    const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   {
+      SatID xmitSat(navIn->getsatSys());
+      unsigned long sprn = navIn->asUnsignedLong(offset+rsbPRNa,rnbPRNa,
+                                                 rscPRNa);
+      SatelliteSystem subjSys = xmitSat.system;
+      if (sprn == 0)
+      {
+            // empty almanac
+         return true;
+      }
+         // special handling for QZSS per IS-QZSS 1.8E Table 5.5.2-9
+      if (subjSys == SatelliteSystem::QZSS)
+      {
+         if ((msgType == 31) || (msgType == 12))
+         {
+               // When the message type number is 31 or 12, it
+               // indicates that this value is for a QZS satellite and
+               // represents the last 6 bits of the QZS PRN number.
+               // .. so we do a bitwise OR to get the QZS PRN.
+            sprn |= 0xc0;
+         }
+         else if ((msgType == 47) || (msgType == 28))
+         {
+               // When the message type number is 47 or 28, it
+               // indicates that this value is the PRN value for a GPS
+               // satellite (PRN No.= 1 ~ 32)
+            subjSys = SatelliteSystem::GPS;
+         }
+      }
+      SatID subjSat(sprn, subjSys);
+      if (PNBNavDataFactory::processHea)
+      {
+            // Add reduced almanac health bits
+         NavDataPtr p1L1 = std::make_shared<GPSCNavHealth>();
+         NavDataPtr p1L2 = std::make_shared<GPSCNavHealth>();
+         NavDataPtr p1L5 = std::make_shared<GPSCNavHealth>();
+         p1L1->timeStamp = navIn->getTransmitTime();
+         p1L2->timeStamp = navIn->getTransmitTime();
+         p1L5->timeStamp = navIn->getTransmitTime();
+            /** @todo I'm not entirely sure what's appropriate here.
+             * The source signal is actually L2C CNAV but it's
+             * broadcasting signal status for L1 signals that don't
+             * have CNAV. */
+         p1L1->signal = NavMessageID(
+            NavSatelliteID(subjSat, xmitSat,
+                           ObsID(ObservationType::NavMsg, CarrierBand::L1,
+                                 TrackingCode::CA),
+                           NavID(NavType::GPSLNAV)),
+            NavMessageType::Health);
+         if (navIn->getobsID().band == CarrierBand::L2)
+         {
+            p1L2->signal = NavMessageID(
+               NavSatelliteID(subjSat, xmitSat, navIn->getobsID(),
+                              navIn->getNavID()),
+               NavMessageType::Health);
+            p1L5->signal = NavMessageID(
+               NavSatelliteID(subjSat, xmitSat,
+                              ObsID(ObservationType::NavMsg, CarrierBand::L5,
+                                    TrackingCode::L5I),
+                              NavID(NavType::GPSCNAVL5)),
+               NavMessageType::Health);
+         }
+         else
+         {
+               // assume L5
+            p1L2->signal = NavMessageID(
+               NavSatelliteID(subjSat, xmitSat,
+                              ObsID(ObservationType::NavMsg, CarrierBand::L2,
+                                    TrackingCode::L2CM),
+                              NavID(NavType::GPSCNAVL2)),
+               NavMessageType::Health);
+            p1L5->signal = NavMessageID(
+               NavSatelliteID(subjSat, xmitSat, navIn->getobsID(),
+                              navIn->getNavID()),
+               NavMessageType::Health);
+         }
+         dynamic_cast<GPSCNavHealth*>(p1L1.get())->health =
+            navIn->asBool(offset+rsbHeaL1);
+         dynamic_cast<GPSCNavHealth*>(p1L2.get())->health =
+            navIn->asBool(offset+rsbHeaL2);
+         dynamic_cast<GPSCNavHealth*>(p1L5.get())->health =
+            navIn->asBool(offset+rsbHeaL5);
+         // cerr << "add reduced alm health" << endl;
+         navOut.push_back(p1L1);
+         navOut.push_back(p1L2);
+         navOut.push_back(p1L5);
+      }
+      if (!PNBNavDataFactory::processAlm)
+      {
+            // User doesn't want almanac data so don't do any processing.
+         return true;
+      }
+      NavDataPtr p0 = std::make_shared<GPSCNavRedAlm>();
+      GPSCNavRedAlm *alm = dynamic_cast<GPSCNavRedAlm*>(p0.get());
+         // NavData
+      alm->timeStamp = navIn->getTransmitTime();
+      alm->signal = NavMessageID(
+         NavSatelliteID(subjSat, xmitSat, navIn->getobsID(),
+                        navIn->getNavID()),
+         NavMessageType::Almanac);
+         // OrbitData = empty
+         // OrbitDataKepler
+      alm->xmitTime = alm->timeStamp;
+         /** @todo apply 13-bit week rollover adjustment, not 10-bit.
+          * Must be completed by January, 2137 :-) */
+      alm->Toc = alm->Toe = GPSWeekSecond(wna,toa);
+      alm->OMEGA0 = navIn->asDoubleSemiCircles(offset+rsbOMEGA0,rnbOMEGA0,
+                                               rscOMEGA0);
+         // GPSCNavData
+      alm->pre = pre;
+      alm->alert = alert;
+         // GPSCNavAlm
+      alm->healthL1 = navIn->asBool(offset+rsbHeaL1);
+      alm->healthL2 = navIn->asBool(offset+rsbHeaL2);
+      alm->healthL5 = navIn->asBool(offset+rsbHeaL5);
+      alm->wna = wna;
+      alm->toa = toa;
+      switch (navIn->getobsID().band)
+      {
+         case CarrierBand::L2:
+            alm->healthy = (alm->healthL2 == false);
+            break;
+         case CarrierBand::L5:
+             alm->healthy = (alm->healthL5 == false);
+            break;
+         default:
+               // unexpected/unsupported signal
+            return false;
+      }
+         // GPSCNavRedAlm
+      alm->phi0 = navIn->asDoubleSemiCircles(offset+rsbPHI0,rnbPHI0,rscPHI0);
+      alm->deltaA = navIn->asSignedDouble(offset+rsbdA,rnbdA,rscdA);
+      alm->fixValues();
       alm->fixFit();
       navOut.push_back(p0);
       return true;

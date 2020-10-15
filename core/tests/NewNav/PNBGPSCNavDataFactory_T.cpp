@@ -4,6 +4,7 @@
 #include "GPSCNavHealth.hpp"
 #include "GPSCNavEph.hpp"
 #include "GPSCNavAlm.hpp"
+#include "GPSCNavRedAlm.hpp"
 #include "TimeString.hpp"
 
 using namespace std;
@@ -28,6 +29,12 @@ public:
    unsigned addDataAlmHealthTest();
    unsigned processEphTest();
    unsigned processAlmOrbTest();
+   unsigned processRedAlmOrbTest();
+   unsigned process12Test();
+      /** Test decoding of message type 31 - clock & reduced almanac.
+       * @note The truth data for the almanacs in this test have not
+       *   been vetted. */
+   unsigned process31Test();
    unsigned process33Test();
    unsigned process35Test();
 
@@ -576,7 +583,348 @@ processAlmOrbTest()
          TUASSERTFE(520192, alm->toa);
       }
    }
+   TURETURN();
+}
 
+
+unsigned PNBGPSCNavDataFactory_T ::
+processRedAlmOrbTest()
+{
+   TUDEF("PNBGPSCNavDataFactory", "processRedAlmOrb");
+      // This method is being tested implicitly by process12Test and
+      // process31Test, but I'm leaving this here as a placeholder in
+      // case someone gets ambitious.
+   TURETURN();
+}
+
+
+unsigned PNBGPSCNavDataFactory_T ::
+process12Test()
+{
+   TUDEF("PNBGPSCNavDataFactory", "process12");
+   gpstk::PNBGPSCNavDataFactory uut;
+   gpstk::NavDataPtrList navOut;
+   TUASSERTE(bool, true, uut.process12(12, msg12CNAVQZSSL5, navOut));
+      // easy test, the data is all empty
+   TUASSERTE(size_t, 0, navOut.size());
+   TURETURN();
+}
+
+
+unsigned PNBGPSCNavDataFactory_T ::
+process31Test()
+{
+   TUDEF("PNBGPSCNavDataFactory", "process31");
+   gpstk::PNBGPSCNavDataFactory uut;
+   gpstk::NavMessageID nmidExpL1(
+      gpstk::NavSatelliteID(193, 193, gpstk::SatelliteSystem::QZSS,
+                            gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                            gpstk::NavType::GPSLNAV),
+      gpstk::NavMessageType::Health);
+   gpstk::NavMessageID nmidExpL2(
+      gpstk::NavSatelliteID(193, 193, gpstk::SatelliteSystem::QZSS,
+                            gpstk::CarrierBand::L2, gpstk::TrackingCode::L2CM,
+                            gpstk::NavType::GPSCNAVL2),
+      gpstk::NavMessageType::Health);
+   gpstk::NavMessageID nmidExpL5(
+      gpstk::NavSatelliteID(193, 193, gpstk::SatelliteSystem::QZSS,
+                            gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
+                            gpstk::NavType::GPSCNAVL5),
+      gpstk::NavMessageType::Health);
+   gpstk::NavMessageID nmidExp(
+      gpstk::NavSatelliteID(193, 193, gpstk::SatelliteSystem::QZSS,
+                            gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
+                            gpstk::NavType::GPSCNAVL5),
+      gpstk::NavMessageType::Almanac);
+   gpstk::CommonTime toaExp = gpstk::GPSWeekSecond(2097, 3937.0);
+   gpstk::CommonTime beginExp = msg31CNAVQZSSL5ct;
+   gpstk::CommonTime endExp = gpstk::CommonTime::END_OF_TIME;
+   gpstk::NavDataPtrList navOut;
+   TUASSERTE(bool, true, uut.process31(31, msg31CNAVQZSSL5, navOut));
+      // 4 almanacs, 12 health
+   TUASSERTE(size_t, 16, navOut.size());
+   gpstk::GPSCNavHealth *hea = nullptr;
+   gpstk::GPSCNavRedAlm *alm = nullptr;
+      // Not really trying to enforce order, but this was the easiest
+      // way to verify that we got all the results we're expecting.
+   auto i = navOut.begin();
+      // first result
+   TUASSERT((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, hea->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExpL1, hea->signal);
+   TUASSERTE(bool, false, hea->health);
+   hea = nullptr;
+   alm = nullptr;
+      // second
+   ++i;
+   TUASSERT((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, hea->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExpL2, hea->signal);
+   TUASSERTE(bool, false, hea->health);
+   hea = nullptr;
+   alm = nullptr;
+      // third
+   ++i;
+   TUASSERT((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, hea->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExpL5, hea->signal);
+   TUASSERTE(bool, false, hea->health);
+   hea = nullptr;
+   alm = nullptr;
+      // fourth
+   ++i;
+   TUASSERT((alm = dynamic_cast<gpstk::GPSCNavRedAlm*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, alm->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExp, alm->signal);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, alm->xmitTime);
+   TUASSERTE(gpstk::CommonTime, toaExp, alm->Toe);
+   TUASSERTE(gpstk::CommonTime, toaExp, alm->Toc); // same value as toe
+   TUASSERTE(bool, true, alm->healthy);
+   TUASSERTFE(0, alm->Cuc);
+   TUASSERTFE(0, alm->Cus);
+   TUASSERTFE(0, alm->Crc);
+   TUASSERTFE(0, alm->Crs);
+   TUASSERTFE(0, alm->Cis);
+   TUASSERTFE(0, alm->Cic);
+   TUASSERTFE(3.0925052683774527651, alm->M0);
+   TUASSERTFE(0, alm->dn);
+   TUASSERTFE(0, alm->dndot);
+   TUASSERTFE(7.50000000E-02, alm->ecc);
+   TUASSERTFE(::sqrt(4.21560080E+07), alm->Ahalf);
+   TUASSERTFE(4.21560080E+07, alm->A);
+   TUASSERTFE(0, alm->Adot);
+   TUASSERTFE(-0.49087385212340517437, alm->OMEGA0);
+   TUASSERTFE(0.7505264849426015461, alm->i0);
+   TUASSERTFE(4.712388980384689674, alm->w);
+   TUASSERTFE(-8.16814090E-09, alm->OMEGAdot);
+   TUASSERTFE(0, alm->idot);
+   TUASSERTFE(0, alm->af0);
+   TUASSERTFE(0, alm->af1);
+   TUASSERTFE(0, alm->af2);
+   TUASSERTE(gpstk::CommonTime, beginExp, alm->beginFit);
+   TUASSERTE(gpstk::CommonTime, endExp, alm->endFit);
+   TUASSERTE(uint32_t, 0x8b, alm->pre);
+   TUASSERTE(bool, false, alm->alert);
+   TUASSERTE(bool, false, alm->healthL1);
+   TUASSERTE(bool, false, alm->healthL2);
+   TUASSERTE(bool, false, alm->healthL5);
+   TUASSERTFE(-0.034871678454846705142, alm->deltai);
+   TUASSERTE(unsigned, 2097, alm->wna);
+   TUASSERTFE(3937, alm->toa);
+   TUASSERTFE(-8192, alm->deltaA);
+   TUASSERTFE(3.0925052683774527651, alm->phi0);
+   hea = nullptr;
+   alm = nullptr;
+      // fifth
+   ++i;
+   nmidExpL1.sat.id = nmidExpL2.sat.id = nmidExpL5.sat.id = nmidExp.sat.id =
+      194;
+   TUASSERT((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, hea->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExpL1, hea->signal);
+   TUASSERTE(bool, false, hea->health);
+   hea = nullptr;
+   alm = nullptr;
+      // sixth
+   ++i;
+   TUASSERT((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, hea->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExpL2, hea->signal);
+   TUASSERTE(bool, false, hea->health);
+   hea = nullptr;
+   alm = nullptr;
+      // seventh
+   ++i;
+   TUASSERT((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, hea->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExpL5, hea->signal);
+   TUASSERTE(bool, false, hea->health);
+   hea = nullptr;
+   alm = nullptr; 
+      // eighth
+   ++i;
+   TUASSERT((alm = dynamic_cast<gpstk::GPSCNavRedAlm*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, alm->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExp, alm->signal);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, alm->xmitTime);
+   TUASSERTE(gpstk::CommonTime, toaExp, alm->Toe);
+   TUASSERTE(gpstk::CommonTime, toaExp, alm->Toc); // same value as toe
+   TUASSERTE(bool, true, alm->healthy);
+   TUASSERTFE(0, alm->Cuc);
+   TUASSERTFE(0, alm->Cus);
+   TUASSERTFE(0, alm->Crc);
+   TUASSERTFE(0, alm->Crs);
+   TUASSERTFE(0, alm->Cis);
+   TUASSERTFE(0, alm->Cic);
+   TUASSERTFE(0.88357293382212931387, alm->M0);
+   TUASSERTFE(0, alm->dn);
+   TUASSERTFE(0, alm->dndot);
+   TUASSERTFE(7.50000000E-02, alm->ecc);
+   TUASSERTFE(::sqrt(4.21657360E+07), alm->Ahalf);
+   TUASSERTFE(4.21657360E+07, alm->A);
+   TUASSERTFE(0, alm->Adot);
+   TUASSERTFE(1.8162332528565992007, alm->OMEGA0);
+   TUASSERTFE(0.7505264849426015461, alm->i0);
+   TUASSERTFE(4.712388980384689674, alm->w);
+   TUASSERTFE(-8.16814090E-09, alm->OMEGAdot);
+   TUASSERTFE(0, alm->idot);
+   TUASSERTFE(0, alm->af0);
+   TUASSERTFE(0, alm->af1);
+   TUASSERTFE(0, alm->af2);
+   TUASSERTE(gpstk::CommonTime, beginExp, alm->beginFit);
+   TUASSERTE(gpstk::CommonTime, endExp, alm->endFit);
+   TUASSERTE(uint32_t, 0x8b, alm->pre);
+   TUASSERTE(bool, false, alm->alert);
+   TUASSERTE(bool, false, alm->healthL1);
+   TUASSERTE(bool, false, alm->healthL2);
+   TUASSERTE(bool, false, alm->healthL5);
+   TUASSERTFE(-0.034871678454846705142, alm->deltai);
+   TUASSERTE(unsigned, 2097, alm->wna);
+   TUASSERTFE(3937, alm->toa);
+   TUASSERTFE(1536, alm->deltaA);
+   TUASSERTFE(0.88357293382212931387, alm->phi0);
+   hea = nullptr;
+   alm = nullptr;
+      // ninth
+   ++i;
+   nmidExpL1.sat.id = nmidExpL2.sat.id = nmidExpL5.sat.id = nmidExp.sat.id =
+      199;
+   TUASSERT((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, hea->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExpL1, hea->signal);
+   TUASSERTE(bool, false, hea->health);
+   hea = nullptr;
+   alm = nullptr;
+      // tenth
+   ++i;
+   TUASSERT((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, hea->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExpL2, hea->signal);
+   TUASSERTE(bool, false, hea->health);
+   hea = nullptr;
+   alm = nullptr;
+      // eleventh
+   ++i;
+   TUASSERT((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, hea->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExpL5, hea->signal);
+   TUASSERTE(bool, false, hea->health);
+   hea = nullptr;
+   alm = nullptr;
+      // twelfth
+   ++i;
+   TUASSERT((alm = dynamic_cast<gpstk::GPSCNavRedAlm*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, alm->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExp, alm->signal);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, alm->xmitTime);
+   TUASSERTE(gpstk::CommonTime, toaExp, alm->Toe);
+   TUASSERTE(gpstk::CommonTime, toaExp, alm->Toc); // same value as toe
+   TUASSERTE(bool, true, alm->healthy);
+   TUASSERTFE(0, alm->Cuc);
+   TUASSERTFE(0, alm->Cus);
+   TUASSERTFE(0, alm->Crc);
+   TUASSERTFE(0, alm->Crs);
+   TUASSERTFE(0, alm->Cis);
+   TUASSERTFE(0, alm->Cic);
+   TUASSERTFE(2.4543692606170259829, alm->M0);
+   TUASSERTFE(0, alm->dn);
+   TUASSERTFE(0, alm->dndot);
+   TUASSERTFE(7.50000000E-02, alm->ecc);
+   TUASSERTFE(::sqrt(4.21642000E+07), alm->Ahalf);
+   TUASSERTFE(4.21642000E+07, alm->A);
+   TUASSERTFE(0, alm->Adot);
+   TUASSERTFE(0, alm->OMEGA0);
+   TUASSERTFE(0.7505264849426015461, alm->i0);
+   TUASSERTFE(4.712388980384689674, alm->w);
+   TUASSERTFE(-8.16814090E-09, alm->OMEGAdot);
+   TUASSERTFE(0, alm->idot);
+   TUASSERTFE(0, alm->af0);
+   TUASSERTFE(0, alm->af1);
+   TUASSERTFE(0, alm->af2);
+   TUASSERTE(gpstk::CommonTime, beginExp, alm->beginFit);
+   TUASSERTE(gpstk::CommonTime, endExp, alm->endFit);
+   TUASSERTE(uint32_t, 0x8b, alm->pre);
+   TUASSERTE(bool, false, alm->alert);
+   TUASSERTE(bool, false, alm->healthL1);
+   TUASSERTE(bool, false, alm->healthL2);
+   TUASSERTE(bool, false, alm->healthL5);
+   TUASSERTFE(-0.034871678454846705142, alm->deltai);
+   TUASSERTE(unsigned, 2097, alm->wna);
+   TUASSERTFE(3937, alm->toa);
+   TUASSERTFE(0, alm->deltaA);
+   TUASSERTFE(2.4543692606170259829, alm->phi0);
+   hea = nullptr;
+   alm = nullptr;
+      // thirteenth
+   ++i;
+   nmidExpL1.sat.id = nmidExpL2.sat.id = nmidExpL5.sat.id = nmidExp.sat.id =
+      195;
+   TUASSERT((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, hea->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExpL1, hea->signal);
+   TUASSERTE(bool, false, hea->health);
+   hea = nullptr;
+   alm = nullptr;
+      // fourteenth
+   ++i;
+   TUASSERT((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, hea->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExpL2, hea->signal);
+   TUASSERTE(bool, false, hea->health);
+   hea = nullptr;
+   alm = nullptr;
+      // fifteenth
+   ++i;
+   TUASSERT((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, hea->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExpL5, hea->signal);
+   TUASSERTE(bool, false, hea->health);
+   hea = nullptr;
+   alm = nullptr;
+      // sixteenth
+   ++i;
+   TUASSERT((alm = dynamic_cast<gpstk::GPSCNavRedAlm*>(i->get())) != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, alm->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExp, alm->signal);
+   TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, alm->xmitTime);
+   TUASSERTE(gpstk::CommonTime, toaExp, alm->Toe);
+   TUASSERTE(gpstk::CommonTime, toaExp, alm->Toc); // same value as toe
+   TUASSERTE(bool, true, alm->healthy);
+   TUASSERTFE(0, alm->Cuc);
+   TUASSERTFE(0, alm->Cus);
+   TUASSERTFE(0, alm->Crc);
+   TUASSERTFE(0, alm->Crs);
+   TUASSERTFE(0, alm->Cis);
+   TUASSERTFE(0, alm->Cic);
+   TUASSERTFE(-0.83448554860978885195, alm->M0);
+   TUASSERTFE(0, alm->dn);
+   TUASSERTFE(0, alm->dndot);
+   TUASSERTFE(7.50000000E-02, alm->ecc);
+   TUASSERTFE(::sqrt(42161128), alm->Ahalf);
+   TUASSERTFE(42161128, alm->A);
+   TUASSERTFE(0, alm->Adot);
+   TUASSERTFE(-2.7979809571034093274, alm->OMEGA0);
+   TUASSERTFE(0.7505264849426015461, alm->i0);
+   TUASSERTFE(4.712388980384689674, alm->w);
+   TUASSERTFE(-8.16814090E-09, alm->OMEGAdot);
+   TUASSERTFE(0, alm->idot);
+   TUASSERTFE(0, alm->af0);
+   TUASSERTFE(0, alm->af1);
+   TUASSERTFE(0, alm->af2);
+   TUASSERTE(gpstk::CommonTime, beginExp, alm->beginFit);
+   TUASSERTE(gpstk::CommonTime, endExp, alm->endFit);
+   TUASSERTE(uint32_t, 0x8b, alm->pre);
+   TUASSERTE(bool, false, alm->alert);
+   TUASSERTE(bool, false, alm->healthL1);
+   TUASSERTE(bool, false, alm->healthL2);
+   TUASSERTE(bool, false, alm->healthL5);
+   TUASSERTFE(-0.034871678454846705142, alm->deltai);
+   TUASSERTE(unsigned, 2097, alm->wna);
+   TUASSERTFE(3937, alm->toa);
+   TUASSERTFE(-3072, alm->deltaA);
+   TUASSERTFE(-0.83448554860978885195, alm->phi0);
+   hea = nullptr;
+   alm = nullptr;
    TURETURN();
 }
 
@@ -698,6 +1046,9 @@ int main()
    errorTotal += testClass.addDataAlmHealthTest();
    errorTotal += testClass.processEphTest();
    errorTotal += testClass.processAlmOrbTest();
+   errorTotal += testClass.processRedAlmOrbTest();
+   errorTotal += testClass.process12Test();
+   errorTotal += testClass.process31Test();
    errorTotal += testClass.process33Test();
    errorTotal += testClass.process35Test();
 
