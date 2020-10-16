@@ -378,17 +378,18 @@ namespace gpstk
       {
          for (const auto& nsami : nmmi.second)
          {
-            s << StringUtils::asString(nmmi.first) << " "
-              << StringUtils::asString(nsami.first) << std::endl;
             switch (dl)
             {
                case NavData::Detail::OneLine:
+                  s << StringUtils::asString(nmmi.first) << " "
+                    << StringUtils::asString(nsami.first) << std::endl;
                   break;
                case NavData::Detail::Brief:
                   for (const auto& cti : nsami.second)
                   {
-                     s << "   " << printTime(cti.first,
-                                             "%Y %2m %2d %02H:%02M:%04.1f")
+                     s << StringUtils::asString(nmmi.first) << " "
+                       << StringUtils::asString(nsami.first) << "   "
+                       << printTime(cti.first, "%Y %2m %2d %02H:%02M:%04.1f")
                        << std::endl;
                   }
                   break;
