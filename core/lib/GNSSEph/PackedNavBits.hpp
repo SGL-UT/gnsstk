@@ -42,6 +42,7 @@
 #ifndef GPSTK_PACKEDNAVBITS_HPP
 #define GPSTK_PACKEDNAVBITS_HPP
 
+#include <bitset>
 #include <memory>
 #include <vector>
 #include <cstddef>
@@ -333,6 +334,20 @@ namespace gpstk
           */
       void addString(const std::string String, 
                      const int numChars);
+
+         /** Pack a bitset.  This is done by converting it first to a
+          * string of 0 and 1 characters which are then treated as an
+          * array that is appended to the end of the bits vector.  Not
+          * entirely sure if this is faster than iterating.
+          * @param[in] newbits The bitset containing the data to
+          *   append to the PackedNavBits data. */
+      template <size_t N>
+      void addBitset(const std::bitset<N>& newbits)
+      {
+         std::string binbits(newbits.to_string((char)0,(char)1));
+         bits.insert(bits.end(), &binbits[0], &binbits[binbits.length()]);
+         bits_used += binbits.length();
+      }
       
          /**
           * @throw InvalidParameter
