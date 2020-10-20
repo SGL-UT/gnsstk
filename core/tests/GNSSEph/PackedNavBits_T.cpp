@@ -62,6 +62,7 @@ public:
    unsigned realDataTest();
    unsigned equalityTest();
    unsigned ancillaryMethods();
+   unsigned addDataVecTest();
 
    double eps; 
 };
@@ -834,6 +835,32 @@ ancillaryMethods()
    TURETURN();
 }
 
+
+unsigned PackedNavBits_T ::
+addDataVecTest()
+{
+   TUDEF("PackedNavBits", "addDataVec");
+      // 33 bits.
+   std::vector<uint8_t> testVec { 0x8b, 0x31, 0x42, 0x59, 0x80 };
+   PackedNavBits uut;
+   uut.addDataVec(testVec, 33);
+   TUASSERTE(size_t, 33, uut.getNumBits());
+   for (unsigned i = 0; i < 33; i+= 8)
+   {
+      if (i+8 >= 33)
+      {
+            // one bit on the end.
+         TUASSERTE(unsigned long, 1, uut.asUnsignedLong(i,1,1));
+      }
+      else
+      {
+         TUASSERTE(unsigned long, testVec[i>>3], uut.asUnsignedLong(i,8,1));
+      }
+   }
+   TURETURN();
+}
+
+
 int main()
 {
    unsigned errorTotal = 0;
@@ -844,6 +871,7 @@ int main()
    errorTotal += testClass.realDataTest();
    errorTotal += testClass.equalityTest();
    errorTotal += testClass.ancillaryMethods();
+   errorTotal += testClass.addDataVecTest();
 
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 

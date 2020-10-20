@@ -17,7 +17,17 @@ namespace gpstk
        * objects, according to what data is fed to the method and what
        * data is requested via the validity and type filters (see
        * PNBNavDataFactory).
-       * @note Currently validity is not checked in any way in this class. */
+       * @note Currently validity is not checked in any way in this class.
+       * @note This class does not enforce sequential subframes in ephemerides.
+       * @todo Currently this code enforces strict matching of toa
+       *   between SVID 1-32 and 51.  While this helps ensure that the
+       *   time stamp of the almanac orbital elements has the correct
+       *   week number, it does mean that if you're missing the page
+       *   51 for a particular toa, you won't get those almanacs.
+       *   This is probably not ideal and likely needs to be enhanced
+       *   without significantly increasing the risk of using an
+       *   incorrect WNa.
+       */
    class PNBGPSLNavDataFactory : public PNBNavDataFactory
    {
    public:
@@ -92,11 +102,12 @@ namespace gpstk
       std::map<unsigned, GPSWeekSecond> fullWNaMap;
          /** Accumulate almanac orbital element pages (page ID 1-32)
           * until a page ID 51 becomes available to properly set the
-          * WNa.  Key is the transmitting PRN. */
-      std::map<unsigned, NavDataPtrList> almAcc;
+          * WNa.  Key is the transmitting PRN (only xmitSat is set,
+          * sat is ignored). */
+      std::map<NavSatelliteID, NavDataPtrList> almAcc;
          /** Map GPS PRN to a vector of PackedNavBits for accumulating
           * ephemeris data, where index 0 is subframe 1 and so on. */
-      std::map<unsigned, std::vector<PackedNavBitsPtr> > ephAcc;
+      std::map<NavSatelliteID, std::vector<PackedNavBitsPtr> > ephAcc;
    };
 
       //@}

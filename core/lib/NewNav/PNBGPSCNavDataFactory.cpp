@@ -599,7 +599,7 @@ namespace gpstk
           (ephSF[ephM11]->getNumBits() != 300) ||
           (ephSF[ephMClk]->getNumBits() != 300))
       {
-         // cerr << "Not ready for full eph processing" << endl;
+         // cerr << "Not ready for full CNAV eph processing" << endl;
          return true;
       }
          // Stop processing if we don't have matching toe/toc in
@@ -620,7 +620,6 @@ namespace gpstk
             // consider it as a "valid" but unprocessable data set.
          return true;
       }
-      // cerr << "Ready for full eph processing" << endl;
       NavDataPtr p0 = std::make_shared<GPSCNavEph>();
       GPSCNavEph *eph = dynamic_cast<GPSCNavEph*>(p0.get());
          // NavData
@@ -629,6 +628,7 @@ namespace gpstk
          NavSatelliteID(prn, navIn->getsatSys(), navIn->getobsID(),
                         navIn->getNavID()),
          NavMessageType::Ephemeris);
+      // cerr << "Ready for full CNAV eph processing for " << (NavSignalID)eph->signal << endl;
          // OrbitData = empty
          // OrbitDataKepler
       eph->xmitTime = eph->timeStamp;

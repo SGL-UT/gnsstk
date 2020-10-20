@@ -650,6 +650,38 @@ namespace gpstk
          addUint64_t(space, 8);
    }  
 
+   
+   void PackedNavBits::addDataVec(const std::vector<uint8_t>& data,
+                                  unsigned numBits)
+   {
+      if (numBits > data.size()*8)
+      {
+         gpstk::InvalidParameter exc("Requested more bits than are available");
+         GPSTK_THROW(exc);
+      }
+      unsigned numBytes = numBits >> 3;
+      unsigned rem = numBits % 8;
+      if (rem > 0)
+         numBytes++;
+      for (unsigned long i = 0; i < numBytes; i++)
+      {
+            // Add 8 bits at a time (at most) so we don't have to
+            // worry about byte swapping.  We also have to shift the
+            // final byte to the right if the bits are not
+            // byte-aligned, as addUint64_t adds the n LSBs, not the n
+            // MSBs.
+         unsigned bitsToAdd = 8;
+         unsigned shiftRight = 0;
+         if ((i+1)*8 >= numBits)
+         {
+            bitsToAdd = rem;
+            shiftRight = 8-rem;
+         }
+         addUint64_t(data[i] >> shiftRight, bitsToAdd);
+      }
+   }  
+
+
    void PackedNavBits::addPackedNavBits(const PackedNavBits& right)
    {
       int old_bits_used = bits_used;

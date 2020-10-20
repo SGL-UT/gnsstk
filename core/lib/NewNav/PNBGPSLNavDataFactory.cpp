@@ -262,7 +262,7 @@ namespace gpstk
             case 5:
                svid = navIn->asUnsignedLong(62,6,1);
                   //cerr << "sfid " << sfid << " = almanac, svid " << svid << endl;
-               if ((svid <= gpstk::MAX_PRN_GPS) && (svid >= 1))
+               if ((svid <= MAX_PRN_GPS) && (svid >= 1))
                {
                      // process orbit and health
                   rv = processAlmOrb(svid, navIn, navOut);
@@ -290,9 +290,9 @@ namespace gpstk
          }
          // cerr << "  results: " << navOut.size() << endl;
          // for (const auto& i : navOut)
-         //    i->dump(cerr,gpstk::NavData::Detail::Full);
+         //    i->dump(cerr,NavData::Detail::Full);
       }
-      catch (gpstk::Exception& exc)
+      catch (Exception& exc)
       {
          rv = false;
          cerr << exc << endl;
@@ -315,19 +315,17 @@ namespace gpstk
    processEph(unsigned sfid, const PackedNavBitsPtr& navIn,
               NavDataPtrList& navOut)
    {
-      unsigned prn = navIn->getsatSys().id;
+      NavSatelliteID key(navIn->getsatSys().id, navIn->getsatSys(),
+                         navIn->getobsID(), navIn->getNavID());
       if ((sfid == 1) && processHea)
       {
             // Add ephemeris health bits from subframe 1.
-         gpstk::NavDataPtr p1 = std::make_shared<gpstk::GPSLNavHealth>();
+         NavDataPtr p1 = std::make_shared<GPSLNavHealth>();
          p1->timeStamp = navIn->getTransmitTime();
-         p1->signal = NavMessageID(
-            NavSatelliteID(prn, navIn->getsatSys(), navIn->getobsID(),
-                           navIn->getNavID()),
-            NavMessageType::Health);
-         dynamic_cast<gpstk::GPSLNavHealth*>(p1.get())->svHealth =
+         p1->signal = NavMessageID(key, NavMessageType::Health);
+         dynamic_cast<GPSLNavHealth*>(p1.get())->svHealth =
             navIn->asUnsignedLong(esbHea,enbHea,escHea);
-            //cerr << "add eph health" << endl;
+         cerr << "add LNAV eph health" << endl;
          navOut.push_back(p1);
       }
       if (!PNBNavDataFactory::processEph)
@@ -335,16 +333,17 @@ namespace gpstk
             // User doesn't want ephemerides so don't do any processing.
          return true;
       }
-      if (ephAcc.find(prn) == ephAcc.end())
+      if (ephAcc.find(key) == ephAcc.end())
       {
+         cerr << "ephAcc is empty for signal " << key << endl;
             // set up a new ephemeris
-         ephAcc[prn].resize(3);
-         ephAcc[prn][sfid-1] = navIn;
+         ephAcc[key].resize(3);
+         ephAcc[key][sfid-1] = navIn;
             // nothing in navOut yet and no further processing because
             // we only have one of three subframes at this point.
          return true;
       }
-      std::vector<PackedNavBitsPtr> &ephSF(ephAcc[prn]);
+      std::vector<PackedNavBitsPtr> &ephSF(ephAcc[key]);
       ephSF[sfid-1] = navIn;
          // stop processing if we don't have three full subframes
       if (!ephSF[sf1] || !ephSF[sf2] || !ephSF[sf3] ||
@@ -352,7 +351,13 @@ namespace gpstk
           (ephSF[sf2]->getNumBits() != 300) ||
           (ephSF[sf3]->getNumBits() != 300))
       {
-            //cerr << "Not ready for full eph processing" << endl;
+         // cerr << "Not ready for full LNAV eph processing" << endl
+         //      << "  sf1: " << (bool)ephSF[sf1] << " "
+         //      << (ephSF[sf1] ? ephSF[sf1]->getNumBits() : -1) << endl
+         //      << "  sf2: " << (bool)ephSF[sf2] << " "
+         //      << (ephSF[sf2] ? ephSF[sf2]->getNumBits() : -1) << endl
+         //      << "  sf3: " << (bool)ephSF[sf3] << " "
+         //      << (ephSF[sf3] ? ephSF[sf3]->getNumBits() : -1) << endl;
          return true;
       }
          // Stop processing if we don't have matching IODC/IODE in
@@ -370,15 +375,12 @@ namespace gpstk
             // consider it as a "valid" but unprocessable data set.
          return true;
       }
-         //cerr << "Ready for full eph processing" << endl;
-      gpstk::NavDataPtr p0 = std::make_shared<gpstk::GPSLNavEph>();
-      GPSLNavEph *eph = dynamic_cast<gpstk::GPSLNavEph*>(p0.get());
+      NavDataPtr p0 = std::make_shared<GPSLNavEph>();
+      GPSLNavEph *eph = dynamic_cast<GPSLNavEph*>(p0.get());
          // NavData
       eph->timeStamp = ephSF[sf1]->getTransmitTime();
-      eph->signal = NavMessageID(
-         NavSatelliteID(prn, navIn->getsatSys(), navIn->getobsID(),
-                        navIn->getNavID()),
-         NavMessageType::Ephemeris);
+      eph->signal = NavMessageID(key, NavMessageType::Ephemeris);
+      // cerr << "Ready for full LNAV eph processing for " << (NavSignalID)key << endl;
          // OrbitData = empty
          // OrbitDataKepler
       eph->xmitTime = eph->timeStamp;
@@ -450,10 +452,10 @@ namespace gpstk
          ephSF[esiL2]->asUnsignedLong(esbL2,enbL2,escL2));
       eph->L2Pdata = ephSF[esiL2P]->asUnsignedLong(esbL2P,enbL2P,escL2P);
       eph->fixFit();
-         //cerr << "add eph" << endl;
+      // cerr << "add LNAV eph" << endl;
       navOut.push_back(p0);
          // Clear out the broadcast ephemeris that's been processed.
-      ephAcc.erase(prn);
+      ephAcc.erase(key);
       return true;
    }
 
@@ -462,21 +464,25 @@ namespace gpstk
    processAlmOrb(unsigned long prn, const PackedNavBitsPtr& navIn,
                  NavDataPtrList& navOut)
    {
+      SatID xmitSat(navIn->getsatSys());
+         // Key used for data accumulating, which we don't separate by
+         // subject satellite.
+      NavSatelliteID key(0, xmitSat, navIn->getobsID(), navIn->getNavID());
+         // Actual satellite ID (subject and transmit) used in a
+         // couple of places.
+      NavSatelliteID sat(prn, xmitSat, navIn->getobsID(), navIn->getNavID());
          // No checks for correct svid, just assume that the input
          // data has already been checked (it will have been by
          // addData).
       if (processHea)
       {
             // Add almanac orbit page health bits.
-         gpstk::NavDataPtr p1 = std::make_shared<gpstk::GPSLNavHealth>();
+         NavDataPtr p1 = std::make_shared<GPSLNavHealth>();
          p1->timeStamp = navIn->getTransmitTime();
-         p1->signal = NavMessageID(
-            NavSatelliteID(prn, navIn->getsatSys(), navIn->getobsID(),
-                           navIn->getNavID()),
-            NavMessageType::Health);
-         dynamic_cast<gpstk::GPSLNavHealth*>(p1.get())->svHealth =
+         p1->signal = NavMessageID(sat, NavMessageType::Health);
+         dynamic_cast<GPSLNavHealth*>(p1.get())->svHealth =
             navIn->asUnsignedLong(136,8,1);
-            //cerr << "add alm health" << endl;
+         // cerr << "add LNAV alm health" << endl;
          navOut.push_back(p1);
       }
       if (!PNBNavDataFactory::processAlm)
@@ -487,14 +493,10 @@ namespace gpstk
          // SVID 1-32 contain the almanac orbital elements as well as
          // health information (Figure 20-1 sheet 4), so we'll end up
          // returning two items in navOut.
-      gpstk::SatID xmitSat(navIn->getsatSys());
-      gpstk::NavDataPtr p0 = std::make_shared<gpstk::GPSLNavAlm>();
+      NavDataPtr p0 = std::make_shared<GPSLNavAlm>();
       p0->timeStamp = navIn->getTransmitTime();
-      p0->signal = gpstk::NavMessageID(
-         gpstk::NavSatelliteID(prn, xmitSat, navIn->getobsID(),
-                               navIn->getNavID()),
-         gpstk::NavMessageType::Almanac);
-      GPSLNavAlm *alm = dynamic_cast<gpstk::GPSLNavAlm*>(p0.get());
+      p0->signal = NavMessageID(sat, NavMessageType::Almanac);
+      GPSLNavAlm *alm = dynamic_cast<GPSLNavAlm*>(p0.get());
          // Bit positions taken from IS-GPS-200 figure 20-1 sheet 4,
          // and figure 20-2, but subtracting 1 since PNB is 0-based.
          // Scales taken from Table 20-VI
@@ -508,7 +510,7 @@ namespace gpstk
       alm->xmitTime = navIn->getTransmitTime();
       alm->ecc = navIn->asSignedDouble(68,16,-21);
       alm->toa = navIn->asUnsignedDouble(90,8,12);
-      gpstk::GPSWeekSecond ws(alm->xmitTime);
+      GPSWeekSecond ws(alm->xmitTime);
       // cerr << "page " << prn << " WNa = ??  toa = " << alm->toa
       //      << "  WNx = " << (ws.week & 0x0ff) << "  tox = " << ws.sow << endl;
       alm->deltai = navIn->asDoubleSemiCircles(98,16,-19);
@@ -534,13 +536,13 @@ namespace gpstk
       {
          alm->Toe = alm->Toc = fullWNaMap[xmitSat.id];
          alm->fixFit();
-            //cerr << "add alm" << endl;
+         // cerr << "add LNAV alm" << endl;
          navOut.push_back(p0);
       }
       else
       {
             // no WNa available yet, accumulate the data until we get a page 51
-         almAcc[xmitSat.id].push_back(p0);
+         almAcc[key].push_back(p0);
       }
       return true;
    }
@@ -552,7 +554,12 @@ namespace gpstk
          // No checks for correct svid, just assume that the input
          // data has already been checked (it will have been by
          // addData).
-      gpstk::SatID xmitSat(navIn->getsatSys());
+      SatID xmitSat(navIn->getsatSys());
+      ObsID oid(navIn->getobsID());
+      NavID navid(navIn->getNavID());
+         // Key used for data accumulating, which we don't separate by
+         // subject satellite.
+      NavSatelliteID key(0, xmitSat, oid, navid);
       if (PNBNavDataFactory::processAlm)
       {
             // Set the fullWNa now that we have something to go on,
@@ -560,14 +567,14 @@ namespace gpstk
             // only situation where it's used.
          double toa = navIn->asUnsignedDouble(68,8,12);
          unsigned shortWNa = navIn->asUnsignedLong(76, 8, 1);
-         gpstk::GPSWeekSecond ws(navIn->getTransmitTime());
+         GPSWeekSecond ws(navIn->getTransmitTime());
          long refWeek = ws.week;
          unsigned fullWNa = timeAdjust8BitWeekRollover(shortWNa, refWeek);
          fullWNaMap[xmitSat.id] = GPSWeekSecond(fullWNa, toa);
          // cerr << "page 51 WNa = " << shortWNa << "  toa = " << toa
          //      << "  WNx = " << (ws.week & 0x0ff) << "  tox = " << ws.sow
          //      << "  fullWNa = " << fullWNa << endl;
-         NavDataPtrList& ndpl(almAcc[xmitSat.id]);
+         NavDataPtrList& ndpl(almAcc[key]);
          for (auto i = ndpl.begin(); i != ndpl.end();)
          {
             GPSLNavAlm *alm = dynamic_cast<GPSLNavAlm*>(i->get());
@@ -575,7 +582,7 @@ namespace gpstk
             {
                alm->Toe = alm->Toc = fullWNaMap[xmitSat.id];
                alm->fixFit();
-                  //cerr << "add alm" << endl;
+               // cerr << "add LNAV alm" << endl;
                navOut.push_back(*i);
                i = ndpl.erase(i);
             }
@@ -592,45 +599,43 @@ namespace gpstk
             // User doesn't want health so don't do any processing.
          return true;
       }
-      gpstk::ObsID oid(navIn->getobsID());
-      gpstk::NavID navid(navIn->getNavID());
       for (unsigned prn = 1, bit = 90; prn <= 24; prn += 4, bit += 30)
       {
-         gpstk::NavDataPtr p1 = std::make_shared<gpstk::GPSLNavHealth>();
-         gpstk::NavDataPtr p2 = std::make_shared<gpstk::GPSLNavHealth>();
-         gpstk::NavDataPtr p3 = std::make_shared<gpstk::GPSLNavHealth>();
-         gpstk::NavDataPtr p4 = std::make_shared<gpstk::GPSLNavHealth>();
+         NavDataPtr p1 = std::make_shared<GPSLNavHealth>();
+         NavDataPtr p2 = std::make_shared<GPSLNavHealth>();
+         NavDataPtr p3 = std::make_shared<GPSLNavHealth>();
+         NavDataPtr p4 = std::make_shared<GPSLNavHealth>();
          p1->timeStamp = navIn->getTransmitTime();
-         p1->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+0, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSLNavHealth*>(p1.get())->svHealth =
+         p1->signal = NavMessageID(
+            NavSatelliteID(prn+0, xmitSat, oid, navid),
+            NavMessageType::Health);
+         dynamic_cast<GPSLNavHealth*>(p1.get())->svHealth =
             navIn->asUnsignedLong(bit+0, 6, 1);
-            //cerr << "add page 51 health" << endl;
+         // cerr << "add LNAV page 51 health" << endl;
          navOut.push_back(p1);
          p2->timeStamp = navIn->getTransmitTime();
-         p2->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+1, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSLNavHealth*>(p2.get())->svHealth =
+         p2->signal = NavMessageID(
+            NavSatelliteID(prn+1, xmitSat, oid, navid),
+            NavMessageType::Health);
+         dynamic_cast<GPSLNavHealth*>(p2.get())->svHealth =
             navIn->asUnsignedLong(bit+6, 6, 1);
-            //cerr << "add page 51 health" << endl;
+         // cerr << "add LNAV page 51 health" << endl;
          navOut.push_back(p2);
          p3->timeStamp = navIn->getTransmitTime();
-         p3->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+2, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSLNavHealth*>(p3.get())->svHealth =
+         p3->signal = NavMessageID(
+            NavSatelliteID(prn+2, xmitSat, oid, navid),
+            NavMessageType::Health);
+         dynamic_cast<GPSLNavHealth*>(p3.get())->svHealth =
             navIn->asUnsignedLong(bit+12, 6, 1);
-            //cerr << "add page 51 health" << endl;
+         // cerr << "add LNAV page 51 health" << endl;
          navOut.push_back(p3);
          p4->timeStamp = navIn->getTransmitTime();
-         p4->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+3, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSLNavHealth*>(p4.get())->svHealth =
+         p4->signal = NavMessageID(
+            NavSatelliteID(prn+3, xmitSat, oid, navid),
+            NavMessageType::Health);
+         dynamic_cast<GPSLNavHealth*>(p4.get())->svHealth =
             navIn->asUnsignedLong(bit+18, 6, 1);
-            //cerr << "add page 51 health" << endl;
+         // cerr << "add LNAV page 51 health" << endl;
          navOut.push_back(p4);
       }
       return true;
@@ -650,61 +655,61 @@ namespace gpstk
             // User doesn't want health so don't do any processing.
          return true;
       }
-      gpstk::SatID xmitSat(navIn->getsatSys());
-      gpstk::ObsID oid(navIn->getobsID());
-      gpstk::NavID navid(navIn->getNavID());
-      gpstk::NavDataPtr p0 = std::make_shared<gpstk::GPSLNavHealth>();
+      SatID xmitSat(navIn->getsatSys());
+      ObsID oid(navIn->getobsID());
+      NavID navid(navIn->getNavID());
+      NavDataPtr p0 = std::make_shared<GPSLNavHealth>();
       p0->timeStamp = navIn->getTransmitTime();
-      p0->signal = gpstk::NavMessageID(
-         gpstk::NavSatelliteID(25, xmitSat, oid, navid),
-         gpstk::NavMessageType::Health);
+      p0->signal = NavMessageID(
+         NavSatelliteID(25, xmitSat, oid, navid),
+         NavMessageType::Health);
          // prn 25 health starts at bit 229 (1-based), so we use 228 (0-based)
-      dynamic_cast<gpstk::GPSLNavHealth*>(p0.get())->svHealth =
+      dynamic_cast<GPSLNavHealth*>(p0.get())->svHealth =
          navIn->asUnsignedLong(228, 6, 1);
-         //cerr << "add page 63 health" << endl;
+      // cerr << "add LNAV page 63 health" << endl;
       navOut.push_back(p0);      
       for (unsigned prn = 26, bit = 240; prn <= 32; prn += 4, bit += 30)
       {
-         gpstk::NavDataPtr p1 = std::make_shared<gpstk::GPSLNavHealth>();
-         gpstk::NavDataPtr p2 = std::make_shared<gpstk::GPSLNavHealth>();
-         gpstk::NavDataPtr p3 = std::make_shared<gpstk::GPSLNavHealth>();
-         gpstk::NavDataPtr p4;
+         NavDataPtr p1 = std::make_shared<GPSLNavHealth>();
+         NavDataPtr p2 = std::make_shared<GPSLNavHealth>();
+         NavDataPtr p3 = std::make_shared<GPSLNavHealth>();
+         NavDataPtr p4;
          p1->timeStamp = navIn->getTransmitTime();
-         p1->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+0, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSLNavHealth*>(p1.get())->svHealth =
+         p1->signal = NavMessageID(
+            NavSatelliteID(prn+0, xmitSat, oid, navid),
+            NavMessageType::Health);
+         dynamic_cast<GPSLNavHealth*>(p1.get())->svHealth =
             navIn->asUnsignedLong(bit+0, 6, 1);
-            //cerr << "add page 63 health" << endl;
+         // cerr << "add LNAV page 63 health" << endl;
          navOut.push_back(p1);
          p2->timeStamp = navIn->getTransmitTime();
-         p2->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+1, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSLNavHealth*>(p2.get())->svHealth =
+         p2->signal = NavMessageID(
+            NavSatelliteID(prn+1, xmitSat, oid, navid),
+            NavMessageType::Health);
+         dynamic_cast<GPSLNavHealth*>(p2.get())->svHealth =
             navIn->asUnsignedLong(bit+6, 6, 1);
-            //cerr << "add page 63 health" << endl;
+         // cerr << "add LNAV page 63 health" << endl;
          navOut.push_back(p2);
          p3->timeStamp = navIn->getTransmitTime();
-         p3->signal = gpstk::NavMessageID(
-            gpstk::NavSatelliteID(prn+2, xmitSat, oid, navid),
-            gpstk::NavMessageType::Health);
-         dynamic_cast<gpstk::GPSLNavHealth*>(p3.get())->svHealth =
+         p3->signal = NavMessageID(
+            NavSatelliteID(prn+2, xmitSat, oid, navid),
+            NavMessageType::Health);
+         dynamic_cast<GPSLNavHealth*>(p3.get())->svHealth =
             navIn->asUnsignedLong(bit+12, 6, 1);
-            //cerr << "add page 63 health" << endl;
+         // cerr << "add LNAV page 63 health" << endl;
          navOut.push_back(p3);
             // Word 9 has 4 PRNs, word 10 only has 3, so we have to do
             // this check.
          if (prn < 30)
          {
-            p4 = std::make_shared<gpstk::GPSLNavHealth>();
+            p4 = std::make_shared<GPSLNavHealth>();
             p4->timeStamp = navIn->getTransmitTime();
-            p4->signal = gpstk::NavMessageID(
-               gpstk::NavSatelliteID(prn+3, xmitSat, oid, navid),
-               gpstk::NavMessageType::Health);
-            dynamic_cast<gpstk::GPSLNavHealth*>(p4.get())->svHealth =
+            p4->signal = NavMessageID(
+               NavSatelliteID(prn+3, xmitSat, oid, navid),
+               NavMessageType::Health);
+            dynamic_cast<GPSLNavHealth*>(p4.get())->svHealth =
                navIn->asUnsignedLong(bit+18, 6, 1);
-               //cerr << "add page 63 health" << endl;
+            // cerr << "add LNAV page 63 health" << endl;
             navOut.push_back(p4);
          }
       }
@@ -724,13 +729,13 @@ namespace gpstk
             // User doesn't want time offset data so don't do any processing.
          return true;
       }
-      gpstk::NavDataPtr p0 = std::make_shared<gpstk::GPSLNavTimeOffset>();
+      NavDataPtr p0 = std::make_shared<GPSLNavTimeOffset>();
       p0->timeStamp = navIn->getTransmitTime();
-      p0->signal = gpstk::NavMessageID(
-         gpstk::NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
+      p0->signal = NavMessageID(
+         NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
                                navIn->getobsID(), navIn->getNavID()),
-         gpstk::NavMessageType::TimeOffset);
-      GPSLNavTimeOffset *to = dynamic_cast<gpstk::GPSLNavTimeOffset*>(p0.get());
+         NavMessageType::TimeOffset);
+      GPSLNavTimeOffset *to = dynamic_cast<GPSLNavTimeOffset*>(p0.get());
          // Bit positions taken from IS-GPS-200 figure 20-1 sheet 8,
          // but subtracting 1 since PNB is 0-based.
          // Scales taken from Table 20-IX
@@ -750,12 +755,12 @@ namespace gpstk
       to->dn = navIn->asUnsignedLong(256,8,1);
       to->deltatLSF = navIn->asLong(270,8,1);
          // adjust week numbers to full week
-      gpstk::GPSWeekSecond ws(p0->timeStamp);
+      GPSWeekSecond ws(p0->timeStamp);
       long refWeek = ws.week;
       to->wnt = timeAdjust8BitWeekRollover(to->wnt, refWeek);
       to->wnLSF = timeAdjust8BitWeekRollover(to->wnLSF, refWeek);
          // return results.
-         //cerr << "add page 56 time offset" << endl;
+      // cerr << "add LNAV page 56 time offset" << endl;
       navOut.push_back(p0);
       return true;
    }

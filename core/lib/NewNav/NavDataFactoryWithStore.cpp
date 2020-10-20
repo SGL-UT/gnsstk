@@ -402,5 +402,38 @@ namespace gpstk
             }
          }
       }
+         // time offset data is a separate map, but still needs to be dumped.
+      std::string label = StringUtils::asString(NavMessageType::TimeOffset);
+      for (const auto& ocmi : offsetData)
+      {
+         switch (dl)
+         {
+            case NavData::Detail::OneLine:
+               s << label << " " << ocmi.first.first << " -> "
+                 << ocmi.first.second << std::endl;
+               break;
+            case NavData::Detail::Brief:
+               for (const auto& oemi : ocmi.second)
+               {
+                  for (const auto& omi : oemi.second)
+                  {
+                     s << label << " " << ocmi.first.first << " -> "
+                       << ocmi.first.second << " " << omi.first << "   "
+                       << printTime(oemi.first, "%Y %2m %2d %02H:%02M:%04.1f")
+                       << std::endl;
+                  }
+               }
+               break;
+            case NavData::Detail::Full:
+               for (const auto& oemi : ocmi.second)
+               {
+                  for (const auto& omi : oemi.second)
+                  {
+                     omi.second->dump(s,dl);
+                  }
+               }
+               break;
+         }
+      }
    }
 }

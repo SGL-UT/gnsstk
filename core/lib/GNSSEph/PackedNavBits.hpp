@@ -335,6 +335,21 @@ namespace gpstk
       void addString(const std::string String, 
                      const int numChars);
 
+         /**
+          * Pack a vector of bytes.
+          * @param[in] data The vector of bytes to append to the
+          *   packed nav bits.
+          * @param[in] numBits The actual number of bits to add.  Bits
+          *   are added starting with the MSB of data[0].
+          * @note The contents of data are assumed to be left-aligned
+          *   and right padded, meaning that if you have have a vector
+          *   of 8 bytes and you want to add 60 bits, data[7] is
+          *   expected to contain the bits in the 4 MSBs and not in
+          *   the 4 LSBs.
+          * @throw InvalidParameter if numBits is > 8*data.size().
+          */
+      void addDataVec(const std::vector<uint8_t>& data, unsigned numBits);
+
          /** Pack a bitset.  This is done by converting it first to a
           * string of 0 and 1 characters which are then treated as an
           * array that is appended to the end of the bits vector.  Not
