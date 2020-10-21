@@ -11,7 +11,16 @@ namespace gpstk
 
       /** Define methods and data structures for internally storing
        * navigation message data internally as read from some
-       * source. */
+       * source.
+       * @todo Currently it's possible for health messages from one
+       *   signal to stomp health messages on another signal.
+       *   Specific example: if you have a CNAV message with the three
+       *   signal health bits that get split up into L1, L2 and L5,
+       *   it's possible for the L1 signal from the CNAV message to
+       *   overwrite the health status from an LNAV message for L1 and
+       *   vice versa.  Since it's possible for the health bits to be
+       *   different, we probably need to decide if we need to do
+       *   something about this issue and if so, what. */
    class NavDataFactoryWithStore : public NavDataFactory
    {
    public:

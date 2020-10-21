@@ -38,6 +38,7 @@ public:
    bool getProcAlm() const { return processAlm; }
    bool getProcHea() const { return processHea; }
    bool getProcTim() const { return processTim; }
+   void resetState() override {}
 };
 
 

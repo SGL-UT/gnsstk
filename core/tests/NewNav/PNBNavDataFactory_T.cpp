@@ -20,6 +20,7 @@ private:
                 gpstk::NavDataPtrList& navOut)
       override
    { return false; }
+   void resetState() override {}
 };
 
 class PNBNavDataFactory_T

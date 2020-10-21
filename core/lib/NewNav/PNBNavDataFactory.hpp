@@ -50,6 +50,14 @@ namespace gpstk
       virtual bool addData(const PackedNavBitsPtr& navIn,
                            NavDataPtrList& navOut) = 0;
 
+         /** Reset the state of the data accumulator.  Most
+          * PNBNavDataFactory child classes will maintain some state
+          * to assemble data prior to processing.  This method is
+          * intended to be used to clear out that intermediate data to
+          * start from a fresh state, e.g. if you're loading
+          * discontinuous data. */
+      virtual void resetState() = 0;
+
    protected:
          /// Determines how the factory should filter added data.
       NavValidityType navValidity;

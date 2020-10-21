@@ -117,6 +117,15 @@ namespace gpstk
           * @return true if successful. */
       bool process35(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
+         /** Reset the state of the data accumulator.  Most
+          * PNBNavDataFactory child classes will maintain some state
+          * to assemble data prior to processing.  This method is
+          * intended to be used to clear out that intermediate data to
+          * start from a fresh state, e.g. if you're loading
+          * discontinuous data. */
+      void resetState() override
+      { ephAcc.clear(); }
+
          /** For debugging purposes, dump the sizes of the accumulator maps.
           * @param[in,out] s The stream to write the debug output to. */
       void dumpState(std::ostream& s) const;

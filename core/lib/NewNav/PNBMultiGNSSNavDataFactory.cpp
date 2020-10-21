@@ -52,4 +52,14 @@ namespace gpstk
       factories[navType] = fact;
       return true;
    }
+
+
+   void PNBMultiGNSSNavDataFactory ::
+   resetState()
+   {
+      for (auto& fi : factories)
+      {
+         fi.second->resetState();
+      }
+   }
 }

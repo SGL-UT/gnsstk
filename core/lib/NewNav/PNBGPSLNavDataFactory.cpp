@@ -794,4 +794,13 @@ namespace gpstk
       }
    }
 
+
+   void PNBGPSLNavDataFactory ::
+   resetState()
+   {
+      fullWNaMap.clear();
+      almAcc.clear();
+      ephAcc.clear();
+   }
+
 } // namespace gpstk

@@ -19,7 +19,12 @@ namespace gpstk
        *   destroy it and create another, the filter settings will be
        *   the same as they were in the destroyed object.  Do not
        *   expect the filter settings to be reinitialized with each
-       *   constructed PNBMultiGNSSNavDataFactory. */
+       *   constructed PNBMultiGNSSNavDataFactory.  Additionally,
+       *   contained factories will retain their state unless you
+       *   explicitly call resetState().  When using contiguous data,
+       *   it's probably best to not use resetState(), but when using
+       *   non-contiguous data, using resetState() prevents invalid
+       *   assembly of data. */
    class PNBMultiGNSSNavDataFactory : public PNBNavDataFactory
    {
    public:
@@ -54,6 +59,14 @@ namespace gpstk
           * @return false if fact is not a valid factory class.
           */
       static bool addFactory(NavType navType, PNBNavDataFactoryPtr& fact);
+
+         /** Reset the state of the data accumulator.  Most
+          * PNBNavDataFactory child classes will maintain some state
+          * to assemble data prior to processing.  This method is
+          * intended to be used to clear out that intermediate data to
+          * start from a fresh state, e.g. if you're loading
+          * discontinuous data. */
+      void resetState() override;
 
    protected:
          /** Known PNB -> nav data factories, organized by navigation
