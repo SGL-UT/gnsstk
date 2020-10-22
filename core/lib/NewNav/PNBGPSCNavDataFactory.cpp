@@ -572,9 +572,11 @@ namespace gpstk
             navIn->asBool(esbHeaL2);
          dynamic_cast<GPSCNavHealth*>(p1L5.get())->health =
             navIn->asBool(esbHeaL5);
-         // cerr << "add eph health" << endl;
+         // cerr << "add CNAV eph health" << endl;
          navOut.push_back(p1L1);
+         // cerr << "add CNAV eph health" << endl;
          navOut.push_back(p1L2);
+         // cerr << "add CNAV eph health" << endl;
          navOut.push_back(p1L5);
       }
       if (!PNBNavDataFactory::processEph)
@@ -707,7 +709,7 @@ namespace gpstk
       eph->uraNED2= ephSF[csiURAned2]->asUnsignedLong(csbURAned2,cnbURAned2,
                                                       cscURAned2);
       eph->fixFit();
-         //cerr << "add eph" << endl;
+      // cerr << "add CNAV eph" << endl;
       navOut.push_back(p0);
          // Clear out the broadcast ephemeris that's been processed.
       ephAcc.erase(prn);
@@ -796,9 +798,11 @@ namespace gpstk
             navIn->asBool(asbHeaL2);
          dynamic_cast<GPSCNavHealth*>(p1L5.get())->health =
             navIn->asBool(asbHeaL5);
-         // cerr << "add alm health" << endl;
+         // cerr << "add CNAV alm health" << endl;
          navOut.push_back(p1L1);
+         // cerr << "add CNAV alm health" << endl;
          navOut.push_back(p1L2);
+         // cerr << "add CNAV alm health" << endl;
          navOut.push_back(p1L5);
       }
       if (!PNBNavDataFactory::processAlm)
@@ -856,6 +860,7 @@ namespace gpstk
          /// @todo should this be different for QZSS?
       alm->i0 = GPSCNavData::refioffsetGPS + alm->deltai;
       alm->fixFit();
+      // cerr << "add CNAV alm" << endl;
       navOut.push_back(p0);
       return true;
    }
@@ -982,9 +987,11 @@ namespace gpstk
             navIn->asBool(offset+rsbHeaL2);
          dynamic_cast<GPSCNavHealth*>(p1L5.get())->health =
             navIn->asBool(offset+rsbHeaL5);
-         // cerr << "add reduced alm health" << endl;
+         // cerr << "add CNAV reduced alm health" << endl;
          navOut.push_back(p1L1);
+         // cerr << "add CNAV reduced alm health" << endl;
          navOut.push_back(p1L2);
+         // cerr << "add CNAV reduced alm health" << endl;
          navOut.push_back(p1L5);
       }
       if (!PNBNavDataFactory::processAlm)
@@ -1034,6 +1041,7 @@ namespace gpstk
       alm->deltaA = navIn->asSignedDouble(offset+rsbdA,rnbdA,rscdA);
       alm->fixValues();
       alm->fixFit();
+      // cerr << "add CNAV alm" << endl;
       navOut.push_back(p0);
       return true;
    }
@@ -1065,6 +1073,7 @@ namespace gpstk
       to->wnLSF = navIn->asUnsignedLong(csbWNlsf,cnbWNlsf,cscWNlsf);
       to->dn = navIn->asUnsignedLong(csbDN,cnbDN,cscDN);
       to->deltatLSF = navIn->asLong(csbdtLSF,cnbdtLSF,cscdtLSF);
+      // cerr << "add CNAV time offset" << endl;
       navOut.push_back(p0);
       return true;
    }
@@ -1105,7 +1114,7 @@ namespace gpstk
             to->tgt = TimeSystem::QZS;
             break;
          default:
-            cerr << "Unknown GNSS ID " << gnssID << endl;
+            // cerr << "Unknown GNSS ID " << gnssID << endl;
                // unknown/unsupported
             return false;
       }
@@ -1114,6 +1123,7 @@ namespace gpstk
       to->a0 = navIn->asSignedDouble(gsbA0,gnbA0,gscA0);
       to->a1 = navIn->asSignedDouble(gsbA1,gnbA1,gscA1);
       to->a2 = navIn->asSignedDouble(gsbA2,gnbA2,gscA2);
+      // cerr << "add CNAV time offset" << endl;
       navOut.push_back(p0);
       return true;
    }

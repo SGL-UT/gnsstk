@@ -284,8 +284,11 @@ namespace gpstk
                }
                break;
             default:
-                  //cerr << "invalid sfid " << sfid << endl;
-               rv = false;
+               // cerr << "invalid sfid " << sfid << endl;
+                  // This used to be false until I tried processing
+                  // MDP data, and immediately started getting invalid
+                  // subframe IDs.
+               rv = true;
                break;
          }
          // cerr << "  results: " << navOut.size() << endl;
@@ -325,7 +328,7 @@ namespace gpstk
          p1->signal = NavMessageID(key, NavMessageType::Health);
          dynamic_cast<GPSLNavHealth*>(p1.get())->svHealth =
             navIn->asUnsignedLong(esbHea,enbHea,escHea);
-         cerr << "add LNAV eph health" << endl;
+         // cerr << "add LNAV eph health" << endl;
          navOut.push_back(p1);
       }
       if (!PNBNavDataFactory::processEph)
@@ -335,7 +338,7 @@ namespace gpstk
       }
       if (ephAcc.find(key) == ephAcc.end())
       {
-         cerr << "ephAcc is empty for signal " << key << endl;
+         // cerr << "ephAcc is empty for signal " << key << endl;
             // set up a new ephemeris
          ephAcc[key].resize(3);
          ephAcc[key][sfid-1] = navIn;
