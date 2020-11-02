@@ -363,7 +363,7 @@ enum CNavBitInfo
 
    rsb31toa = 140,        ///< message type 31, toa start bit
    rnb31toa = 8,          ///< message type 31, toa number of bits
-   rsc31toa = 31,         ///< message type 31, toa power factor
+   rsc31toa = 31,         ///< message type 31, toa scale factor
 
    rsb31p1 = 148,         ///< message type 31, packet 1 start bit
    rsb31p2 = 179,         ///< message type 31, packet 2 start bit

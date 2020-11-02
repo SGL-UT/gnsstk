@@ -51,7 +51,7 @@ namespace gpstk
          /** Process message type 37 (GPS, QZSS) or 53 (QZSS).
           * @param[in] msgType The CNAV message type.
           * @param[in] navIn The PackedNavBits data containing the message.
-          * @param[in] navOut The GPSCNavAlm and/or GPSCNavHealth
+          * @param[out] navOut The GPSCNavAlm and/or GPSCNavHealth
           *   objects generated from navIn.
           * @return true if successful (navOut may still be empty). */
       bool processAlmOrb(unsigned msgType, const PackedNavBitsPtr& navIn,
@@ -62,7 +62,7 @@ namespace gpstk
           *   packet being decoded.  Used to determine the subject
           *   satellite in QZSS.
           * @param[in] navIn The PackedNavBits data containing the message.
-          * @param[in] navOut The GPSCNavTimeOffset object generated from
+          * @param[out] navOut The GPSCNavTimeOffset object generated from
           *   navIn.
           * @return true if successful. */
       bool process12(unsigned msgType, const PackedNavBitsPtr& navIn,
@@ -73,7 +73,7 @@ namespace gpstk
           *   packet being decoded.  Used to determine the subject
           *   satellite in QZSS.
           * @param[in] navIn The PackedNavBits data containing the message.
-          * @param[in] navOut The GPSCNavTimeOffset object generated from
+          * @param[out] navOut The GPSCNavTimeOffset object generated from
           *   navIn.
           * @return true if successful. */
       bool process31(unsigned msgType, const PackedNavBitsPtr& navIn,
@@ -95,7 +95,7 @@ namespace gpstk
           * @param[in] toa The almanac reference time in seconds of
           *   week (see wna).
           * @param[in] navIn The PackedNavBits data containing the message.
-          * @param[in] navOut The GPSCNavRedAlm object generated from
+          * @param[out] navOut The GPSCNavRedAlm object generated from
           *   navIn.
           * @return true if successful. */
       bool processRedAlmOrb(unsigned msgType, unsigned offset, unsigned pre,
@@ -105,21 +105,19 @@ namespace gpstk
 
          /** Process message type 33.  This includes GPS-UTC time offset data.
           * @param[in] navIn The PackedNavBits data containing the message.
-          * @param[in] navOut The GPSCNavTimeOffset object generated from
+          * @param[out] navOut The GPSCNavTimeOffset object generated from
           *   navIn.
           * @return true if successful. */
       bool process33(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
          /** Process message type 35.  This includes GPS-GNSS time offset data.
           * @param[in] navIn The PackedNavBits data containing the message.
-          * @param[in] navOut The GPSCNavTimeOffset object generated from
+          * @param[out] navOut The GPSCNavTimeOffset object generated from
           *   navIn.
           * @return true if successful. */
       bool process35(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
-         /** Reset the state of the data accumulator.  Most
-          * PNBNavDataFactory child classes will maintain some state
-          * to assemble data prior to processing.  This method is
+         /** Reset the state of the data accumulator.  This method is
           * intended to be used to clear out that intermediate data to
           * start from a fresh state, e.g. if you're loading
           * discontinuous data. */

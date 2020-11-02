@@ -22,6 +22,25 @@ namespace gpstk
       NavMessageID(const NavSatelliteID& sat, NavMessageType nmt)
             : NavSatelliteID(sat), messageType(nmt)
       {}
+         /// Ordering operator.
+      bool operator<(const NavMessageID& right) const
+      {
+         if (messageType < right.messageType)
+            return true;
+         if (messageType > right.messageType)
+            return false;
+         return NavSatelliteID::operator<(right);
+      }
+         /// Other ordering operator.
+      bool operator>(const NavMessageID& right) const
+      {
+         if (messageType > right.messageType)
+            return true;
+         if (messageType < right.messageType)
+            return false;
+         return (!NavSatelliteID::operator<(right) &&
+                 NavSatelliteID::operator!=(right));
+      }
          /// Comparison operator, obv.
       bool operator==(const NavMessageID& right) const
       {

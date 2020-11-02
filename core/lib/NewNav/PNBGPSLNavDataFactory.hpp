@@ -60,7 +60,7 @@ namespace gpstk
           * is processed.
           * @param[in] prn The SV/page ID which represents the subject PRN.
           * @param[in] navIn The PackedNavBits data containing the subframe.
-          * @param[in] navOut The GPSLNavAlm and/or GPSLNavHealth
+          * @param[out] navOut The GPSLNavAlm and/or GPSLNavHealth
           *   objects generated from navIn.
           * @return true if successful (navOut may still be empty). */
       bool processAlmOrb(unsigned long prn, const PackedNavBitsPtr& navIn,
@@ -72,7 +72,7 @@ namespace gpstk
           * as a set of GPSLNavAlm objects as the almanac structure
           * means page 51 is always last.
           * @param[in] navIn The PackedNavBits data containing the subframe.
-          * @param[in] navOut The GPSLNavAlm and/or GPSLNavHealth
+          * @param[out] navOut The GPSLNavAlm and/or GPSLNavHealth
           *   objects generated from navIn.
           * @return true if successful (navOut may still be empty). */
       bool processSVID51(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
@@ -80,14 +80,14 @@ namespace gpstk
          /** Process SV/page ID 63.  This includes health data for
           * PRNs 25-32.
           * @param[in] navIn The PackedNavBits data containing the subframe.
-          * @param[in] navOut The GPSLNavHealth objects generated from
+          * @param[out] navOut The GPSLNavHealth objects generated from
           *   navIn.
           * @return true if successful. */
       bool processSVID63(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
          /** Process SV/page ID 56.  This includes GPS-UTC time offset data.
           * @param[in] navIn The PackedNavBits data containing the subframe.
-          * @param[in] navOut The GPSLNavTimeOffset object generated from
+          * @param[out] navOut The GPSLNavTimeOffset object generated from
           *   navIn.
           * @return true if successful. */
       bool processSVID56(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
