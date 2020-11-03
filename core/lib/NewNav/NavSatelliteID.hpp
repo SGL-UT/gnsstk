@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include "NavSignalID.hpp"
-#include "WildSatID.hpp"
+#include "SatID.hpp"
 #include "ObsID.hpp"
 #include "NavID.hpp"
 
@@ -67,7 +67,7 @@ namespace gpstk
          /** Initialize system, sat to the given value, and the
           * remaining data members to wildcards.
           * @param[in] subj The satellite that nav data pertains to. */
-      NavSatelliteID(const WildSatID& subj);
+      NavSatelliteID(const SatID& subj);
 
          /// Sorting so we can use this class as a map key
       bool operator<(const NavSatelliteID& right) const;
@@ -77,8 +77,8 @@ namespace gpstk
       bool operator!=(const NavSatelliteID& right) const
       { return !(operator==(right)); }
 
-      WildSatID sat;     ///< ID of satellite to which the nav data applies.
-      WildSatID xmitSat; ///< ID of the satellite transmitting the nav data.
+      SatID sat;     ///< ID of satellite to which the nav data applies.
+      SatID xmitSat; ///< ID of the satellite transmitting the nav data.
    };
 
 

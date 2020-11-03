@@ -117,8 +117,8 @@ class SatID_test(unittest.TestCase):
         b = gpstk.SatID(1, gpstk.SatelliteSystem.LEO)
         self.assertEqual('LEO 1', str(b))
 
-        c = gpstk.SatID(4)  # optional arg should be SatelliteSystem.GPS
-        self.assertEqual('GPS 4', str(c))
+        c = gpstk.SatID(4)  # optional arg should result in a wildcard system
+        self.assertEqual('* 4', str(c))
 
 
 class Triple_test(unittest.TestCase):

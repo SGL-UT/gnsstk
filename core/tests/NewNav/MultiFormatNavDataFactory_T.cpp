@@ -169,7 +169,7 @@ findTest()
                                 gpstk::CarrierBand::L1,
                                 gpstk::TrackingCode::CA,
                                 gpstk::NavType::GPSLNAV);
-   gpstk::WildSatID expSat2(15, gpstk::SatelliteSystem::GPS);
+   gpstk::SatID expSat2(15, gpstk::SatelliteSystem::GPS);
    gpstk::NavMessageID nmid2(satID2, gpstk::NavMessageType::Ephemeris);
    gpstk::CommonTime ct;
    ct = gpstk::CivilTime(1997,4,6,6,17,36,gpstk::TimeSystem::GPS);
@@ -184,8 +184,8 @@ findTest()
    TUASSERTE(gpstk::CommonTime, ct, uut->timeStamp);
    TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Ephemeris,
              uut->signal.messageType);
-   TUASSERTE(gpstk::WildSatID, expSat2, uut->signal.sat);
-   TUASSERTE(gpstk::WildSatID, expSat2, uut->signal.xmitSat);
+   TUASSERTE(gpstk::SatID, expSat2, uut->signal.sat);
+   TUASSERTE(gpstk::SatID, expSat2, uut->signal.xmitSat);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
              uut->signal.system);
    TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.carrier);

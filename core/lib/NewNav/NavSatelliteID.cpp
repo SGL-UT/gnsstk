@@ -12,7 +12,8 @@ namespace gpstk
    NavSatelliteID(const NavSignalID& right)
          : NavSignalID(right)
    {
-         // default constructor for WildSatID is wildcards for ID and system
+      sat.makeWild();
+      xmitSat.makeWild();
    }
 
 
@@ -45,7 +46,7 @@ namespace gpstk
 
 
    NavSatelliteID ::
-   NavSatelliteID(const WildSatID& subj)
+   NavSatelliteID(const SatID& subj)
          : NavSignalID(subj.system, gpstk::CarrierBand::Any,
                        gpstk::TrackingCode::Any, gpstk::NavType::Any),
            sat(subj)

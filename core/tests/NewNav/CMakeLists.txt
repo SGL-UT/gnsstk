@@ -94,10 +94,6 @@ add_executable(GPSTKFormatInitializer_T GPSTKFormatInitializer_T.cpp)
 target_link_libraries(GPSTKFormatInitializer_T gpstk)
 add_test(GPSTKFormatInitializer_T GPSTKFormatInitializer_T)
 
-add_executable(WildSatID_T WildSatID_T.cpp)
-target_link_libraries(WildSatID_T gpstk)
-add_test(WildSatID_T WildSatID_T)
-
 add_executable(NavSatelliteID_T NavSatelliteID_T.cpp)
 target_link_libraries(NavSatelliteID_T gpstk)
 add_test(NavSatelliteID_T NavSatelliteID_T)

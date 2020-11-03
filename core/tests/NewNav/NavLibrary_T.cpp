@@ -213,8 +213,8 @@ getOffsetTest()
    navOut->signal.carrier = gpstk::CarrierBand::L1;
    navOut->signal.code = gpstk::TrackingCode::CA;
    navOut->signal.nav = gpstk::NavType::GPSLNAV;
-   navOut->signal.sat = gpstk::WildSatID(23,gpstk::SatelliteSystem::GPS);
-   navOut->signal.xmitSat = gpstk::WildSatID(32,gpstk::SatelliteSystem::GPS);
+   navOut->signal.sat = gpstk::SatID(23,gpstk::SatelliteSystem::GPS);
+   navOut->signal.xmitSat = gpstk::SatID(32,gpstk::SatelliteSystem::GPS);
    toptr->deltatLS = 23; // set a simple, easy to verify value.
    TUASSERT(fact1->addNavData(navOut));
    TUCATCH(navLib.addFactory(ndfp));

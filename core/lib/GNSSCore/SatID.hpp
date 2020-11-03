@@ -57,45 +57,94 @@ namespace gpstk
       /// @ingroup GNSSEph
       //@{
 
-      /// Satellite identifier consisting of a satellite number (PRN, etc.)
-      /// and a satellite system. For GLONASS (systemGlonass), the identifier
-      /// is the slot number as per section 3.5 of the RINEX 3 spec.
-      /// For SBAS (systemGeosync), the id is the PRN-100.
+      /** Class used to uniquely identify the transmitter of a signal
+       * being broadcast, either by satellite or by ground station
+       * (sometimes referred to as a "pseudolite").  The meaning of
+       * the identifier \a id depends on the context of the system, as
+       * does the \a extra field.  The meanings are as follows:
+       *
+       * system  | id           | extra
+       * ------- | ------------ | ----------------
+       * GPS     | PRN ID       | n/a
+       * Galileo | ?            | n/a
+       * Glonass | Slot Number  | frequency offset
+       * Geosync | PRN ID - 100 | n/a
+       * LEO     | ?            | n/a
+       * Transit | ?            | n/a
+       * BeiDou  | ?            | n/a
+       * QZSS    | PRN ID       | n/a
+       * IRNSS   | ?            | n/a
+       *
+       * For equality and ordering, any of the three fields may be
+       * treated as a wildcard, which means that a wildcard value for
+       * a given field will match any other field value.  The system
+       * and id fields use boolean flags (wildSys and wildId,
+       * respectively), and extra uses a bitmask where only the bits
+       * set in extraMask are compared between two SatID values.
+       *
+       * For example, if you want to match the GLONASS frequency
+       * offset, you might set id=2, extra=-3 and extraMask=-1.  This
+       * would only match id=2,extra=-3 (slot 2, freq offset -3).  On
+       * the other hand, if you only care about the slot number, you
+       * would set id=2, extra=don't-care and extraMask=0.
+       */
    class SatID
    {
    public:
-         /// empty constructor, creates an invalid object
-      SatID() { id=-1; system=SatelliteSystem::GPS; }
+         /// Initialize with system and id wildcards.
+      SatID();
 
          /// explicit constructor, no defaults
          /// @note if s is given a default value here,
          /// some compilers will silently cast int to SatID.
-      SatID(int p, SatelliteSystem s) { id=p; system=s; }
+      SatID(int p, SatelliteSystem s);
+         /** Constructor that allows for the specification of extra
+          * information to help uniquely identify a transmitter (see
+          * SatID).  Typically used to specify GLONASS frequency
+          * offset.
+          * @param[in] p The satellite number of the transmitter.
+          * @param[in] s The satellite system of the transmitter.
+          * @param[in] x The "extra" information for the transmitter
+          *   (e.g. frequency offset).
+          * @param[in] xm The bitmask used for matching extra.  The
+          *   default value is -1 which means that all bits will be
+          *   compared.
+          */
+      SatID(int p, SatelliteSystem s, int64_t x, int64_t xm = -1);
+         /** Initialize with a set number and a wild system (weird).
+          * @note explicit keyword to prevent assignment with
+          *   unexpected results.
+          * @param[in] p The satellite number to specifically match.
+          */
+      explicit SatID(int p);
+         /** Initialize with a set system and a wild satellite number.
+          * @note explicit keyword to prevent assignment with
+          *   unexpected results.
+          * @param[in] s The satellite system to specifically match.
+          */
+      explicit SatID(SatelliteSystem s);
+
+         /** Set all values to wildcard values, meaning that this
+          * SatID will equal any other SatID object.  This method
+          * attempts to obviate knowledge about the details of
+          * wildcard implementation. */
+      void makeWild();
 
          // operator=, copy constructor and destructor built by compiler
 
 
          /// Convenience output method.
-      void dump(std::ostream& s) const
-      {
-         s << convertSatelliteSystemToString(system) << " " << id;
-      }
+      void dump(std::ostream& s) const;
 
          /// operator == for SatID
-      bool operator==(const SatID& right) const
-      { return ((system == right.system) && (id == right.id)); }
+      bool operator==(const SatID& right) const;
 
          /// operator != for SatID
       bool operator!=(const SatID& right) const
       { return !(operator==(right)); }
 
-         /// operator < for SatID : order by system, then number
-      bool operator<(const SatID& right) const
-      {
-         if (system==right.system)
-            return (id<right.id);
-         return (system<right.system);
-      }
+         /// operator < for SatID : order by system, id, extra
+      bool operator<(const SatID& right) const;
 
          /// operator > for SatID
       bool operator>(const SatID& right) const
@@ -113,23 +162,14 @@ namespace gpstk
          /// @note assumes all id's are positive and less than 100;
          ///     plus GPS id's are less than or equal to MAX_PRN (32).
          /// @note this is not used internally in the gpstk library
-      bool isValid() const
-      {
-         switch(system)
-         {
-            case SatelliteSystem::GPS: return (id > 0 && id <= MAX_PRN);
-                  //case SatelliteSystem::Galileo:
-                  //case SatelliteSystem::Glonass:
-                  //case SatelliteSystem::Geosync:
-                  //case SatelliteSystem::LEO:
-                  //case SatelliteSystem::Transit:
-            default: return (id > 0 && id < 100);
-         }
-      }
+      bool isValid() const;
 
-      int id;                   ///< satellite identifier, e.g. PRN
-      SatelliteSystem system;   ///< system for this satellite
-
+      int id;                   ///< Satellite identifier, e.g. PRN
+      bool wildId;              ///< If true, any satellite matches.
+      int64_t extra;            ///< Extra data required to uniquely ID signal.
+      int64_t extraMask;        ///< Bitmask for matching extra.
+      SatelliteSystem system;   ///< System for this satellite
+      bool wildSys;             ///< If true, any system matches.
    }; // class SatID
 
       /// stream output for SatID

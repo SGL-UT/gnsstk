@@ -43,11 +43,11 @@ constructorTest()
 {
    TUDEF("NavSatelliteID", "NavSatelliteID");
    gpstk::NavSatelliteID nsid1;
-   gpstk::WildSatID exp1a(0,gpstk::SatelliteSystem::Unknown);
-   gpstk::WildSatID exp1b(0,gpstk::SatelliteSystem::GPS);
+   gpstk::SatID exp1a(0,gpstk::SatelliteSystem::Unknown);
+   gpstk::SatID exp1b(0,gpstk::SatelliteSystem::GPS);
       // test for exact match
-   TUASSERTE(gpstk::WildSatID, exp1a, nsid1.sat);
-   TUASSERTE(gpstk::WildSatID, exp1a, nsid1.xmitSat);
+   TUASSERTE(gpstk::SatID, exp1a, nsid1.sat);
+   TUASSERTE(gpstk::SatID, exp1a, nsid1.xmitSat);
       // test for expected mismatch
    TUASSERT(nsid1.sat != exp1b);
    TUASSERT(nsid1.xmitSat != exp1b);
@@ -55,12 +55,12 @@ constructorTest()
    gpstk::NavSatelliteID nsid2(23, 32, gpstk::SatelliteSystem::Transit,
                                gpstk::CarrierBand::L5, gpstk::TrackingCode::Y,
                                gpstk::NavType::GPSMNAV);
-   gpstk::WildSatID exps2a(23,gpstk::SatelliteSystem::Transit);
-   gpstk::WildSatID expx2a(32,gpstk::SatelliteSystem::Transit);
-   gpstk::WildSatID exps2b(23,gpstk::SatelliteSystem::GPS);
-   gpstk::WildSatID expx2b(32,gpstk::SatelliteSystem::GPS);
-   TUASSERTE(gpstk::WildSatID, exps2a, nsid2.sat);
-   TUASSERTE(gpstk::WildSatID, expx2a, nsid2.xmitSat);
+   gpstk::SatID exps2a(23,gpstk::SatelliteSystem::Transit);
+   gpstk::SatID expx2a(32,gpstk::SatelliteSystem::Transit);
+   gpstk::SatID exps2b(23,gpstk::SatelliteSystem::GPS);
+   gpstk::SatID expx2b(32,gpstk::SatelliteSystem::GPS);
+   TUASSERTE(gpstk::SatID, exps2a, nsid2.sat);
+   TUASSERTE(gpstk::SatID, expx2a, nsid2.xmitSat);
    TUASSERT(nsid2.sat != exps2b);
    TUASSERT(nsid2.xmitSat != expx2b);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::Transit,
@@ -144,14 +144,14 @@ equalTest()
                                 gpstk::CarrierBand::L1,
                                 gpstk::TrackingCode::CA,
                                 gpstk::NavType::GPSLNAV);
-   nsid12.sat = gpstk::WildSatID(1); // wildcard system
-   nsid13.sat = gpstk::WildSatID(2); // wildcard system
-   nsid14.sat = gpstk::WildSatID(gpstk::SatelliteSystem::GPS);  // wildcard sat
-   nsid15.sat = gpstk::WildSatID(gpstk::SatelliteSystem::QZSS); // wildcard sat
-   nsid16.xmitSat = gpstk::WildSatID(1); // wildcard system
-   nsid17.xmitSat = gpstk::WildSatID(2); // wildcard system
-   nsid18.xmitSat = gpstk::WildSatID(gpstk::SatelliteSystem::GPS);  // wild sat
-   nsid19.xmitSat = gpstk::WildSatID(gpstk::SatelliteSystem::QZSS); // wild sat
+   nsid12.sat = gpstk::SatID(1); // wildcard system
+   nsid13.sat = gpstk::SatID(2); // wildcard system
+   nsid14.sat = gpstk::SatID(gpstk::SatelliteSystem::GPS);  // wildcard sat
+   nsid15.sat = gpstk::SatID(gpstk::SatelliteSystem::QZSS); // wildcard sat
+   nsid16.xmitSat = gpstk::SatID(1); // wildcard system
+   nsid17.xmitSat = gpstk::SatID(2); // wildcard system
+   nsid18.xmitSat = gpstk::SatID(gpstk::SatelliteSystem::GPS);  // wild sat
+   nsid19.xmitSat = gpstk::SatID(gpstk::SatelliteSystem::QZSS); // wild sat
    TUASSERTE(bool, true,  nsid01 == nsid02);
    TUASSERTE(bool, false, nsid01 == nsid03);
    TUASSERTE(bool, false, nsid01 == nsid04);
@@ -265,14 +265,14 @@ lessThanTest()
                                 gpstk::CarrierBand::L1,
                                 gpstk::TrackingCode::CA,
                                 gpstk::NavType::GPSLNAV);
-   nsid12.sat = gpstk::WildSatID(1); // wildcard system
-   nsid13.sat = gpstk::WildSatID(2); // wildcard system
-   nsid14.sat = gpstk::WildSatID(gpstk::SatelliteSystem::GPS);  // wildcard sat
-   nsid15.sat = gpstk::WildSatID(gpstk::SatelliteSystem::QZSS); // wildcard sat
-   nsid16.xmitSat = gpstk::WildSatID(1); // wildcard system
-   nsid17.xmitSat = gpstk::WildSatID(2); // wildcard system
-   nsid18.xmitSat = gpstk::WildSatID(gpstk::SatelliteSystem::GPS);  // wild sat
-   nsid19.xmitSat = gpstk::WildSatID(gpstk::SatelliteSystem::QZSS); // wild sat
+   nsid12.sat = gpstk::SatID(1); // wildcard system
+   nsid13.sat = gpstk::SatID(2); // wildcard system
+   nsid14.sat = gpstk::SatID(gpstk::SatelliteSystem::GPS);  // wildcard sat
+   nsid15.sat = gpstk::SatID(gpstk::SatelliteSystem::QZSS); // wildcard sat
+   nsid16.xmitSat = gpstk::SatID(1); // wildcard system
+   nsid17.xmitSat = gpstk::SatID(2); // wildcard system
+   nsid18.xmitSat = gpstk::SatID(gpstk::SatelliteSystem::GPS);  // wild sat
+   nsid19.xmitSat = gpstk::SatID(gpstk::SatelliteSystem::QZSS); // wild sat
    TUASSERTE(bool, false, nsid01 < nsid02);
    TUASSERTE(bool, false, nsid02 < nsid01);
    TUASSERTE(bool, false, nsid01 < nsid03);

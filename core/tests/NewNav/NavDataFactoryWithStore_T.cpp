@@ -102,8 +102,8 @@ addNavDataTest()
    TestClass fact;
 
       // NavData is abstract so we instantiate a GPSLNavEph instead
-   gpstk::WildSatID subjID(23,gpstk::SatelliteSystem::GPS);
-   gpstk::WildSatID xmitID(32,gpstk::SatelliteSystem::GPS);
+   gpstk::SatID subjID(23,gpstk::SatelliteSystem::GPS);
+   gpstk::SatID xmitID(32,gpstk::SatelliteSystem::GPS);
    gpstk::NavDataPtr navOut = std::make_shared<gpstk::GPSLNavEph>();
    navOut->timeStamp = ct;
    navOut->signal.messageType = gpstk::NavMessageType::Ephemeris;
@@ -137,8 +137,8 @@ addNavDataTest()
                    nsatmi.first.code);
          TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV,
                    nsatmi.first.nav);
-         TUASSERTE(gpstk::WildSatID, subjID, nsatmi.first.sat);
-         TUASSERTE(gpstk::WildSatID, xmitID, nsatmi.first.xmitSat);
+         TUASSERTE(gpstk::SatID, subjID, nsatmi.first.sat);
+         TUASSERTE(gpstk::SatID, xmitID, nsatmi.first.xmitSat);
          for (auto& nmi : nsatmi.second)
          {
             TUASSERTE(gpstk::CommonTime, ct+18, nmi.first);
@@ -399,8 +399,8 @@ clearTest()
    gpstk::NavDataPtr navOut = std::make_shared<gpstk::GPSLNavEph>();
    navOut->timeStamp = ct;
    navOut->signal.messageType = gpstk::NavMessageType::Ephemeris;
-   navOut->signal.sat = gpstk::WildSatID(23,gpstk::SatelliteSystem::GPS);
-   navOut->signal.xmitSat = gpstk::WildSatID(32,gpstk::SatelliteSystem::GPS);
+   navOut->signal.sat = gpstk::SatID(23,gpstk::SatelliteSystem::GPS);
+   navOut->signal.xmitSat = gpstk::SatID(32,gpstk::SatelliteSystem::GPS);
    navOut->signal.system = gpstk::SatelliteSystem::GPS;
    navOut->signal.carrier = gpstk::CarrierBand::L1;
    navOut->signal.code = gpstk::TrackingCode::CA;
@@ -464,8 +464,8 @@ fillSat(gpstk::NavSatelliteID& satellite,
         gpstk::TrackingCode code, gpstk::NavType nav)
 {
    fillSignal(satellite, sys, car, code, nav);
-   satellite.sat = gpstk::WildSatID(sat,sys);
-   satellite.xmitSat = gpstk::WildSatID(xmitSat,sys);
+   satellite.sat = gpstk::SatID(sat,sys);
+   satellite.xmitSat = gpstk::SatID(xmitSat,sys);
 }
 
 

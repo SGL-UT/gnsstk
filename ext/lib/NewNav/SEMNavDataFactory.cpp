@@ -195,8 +195,8 @@ namespace gpstk
    {
          // NavData
          // SEM isn't really transmitted, so we set the sats the same
-      navOut->signal.sat = WildSatID(navIn.PRN,SatelliteSystem::GPS);
-      navOut->signal.xmitSat = WildSatID(navIn.PRN,SatelliteSystem::GPS);
+      navOut->signal.sat = SatID(navIn.PRN,SatelliteSystem::GPS);
+      navOut->signal.xmitSat = SatID(navIn.PRN,SatelliteSystem::GPS);
       navOut->signal.system = SatelliteSystem::GPS;
          // we can't obtain these from SEM nav, so just assume L1 C/A
       navOut->signal.carrier = CarrierBand::L1;
