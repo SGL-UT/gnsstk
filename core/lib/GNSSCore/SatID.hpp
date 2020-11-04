@@ -87,6 +87,9 @@ namespace gpstk
        * would only match id=2,extra=-3 (slot 2, freq offset -3).  On
        * the other hand, if you only care about the slot number, you
        * would set id=2, extra=don't-care and extraMask=0.
+       *
+       * @todo Update the above table for the proper nomenclature for
+       * identification.
        */
    class SatID
    {
