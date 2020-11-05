@@ -75,10 +75,13 @@ namespace gpstk
    operator==(const SatID& right) const
    {
       using namespace std;
+         // combined mask, which basically means that a 0 in either
+         // mask is a wildcard.
+      int64_t cmask = extraMask & right.extraMask;
       return
          (wildId || right.wildId || (id == right.id)) &&
          (wildSys || right.wildSys || (system == right.system)) &&
-         ((extra & extraMask) == (right.extra & right.extraMask));
+         ((extra & cmask) == (right.extra & cmask));
    }
 
 
@@ -90,7 +93,7 @@ namespace gpstk
       {
          if (system < right.system)
             return true;
-         if (system > right.system)
+         if (right.system < system)
             return false;
       }
          // if either id is a wildcard, the ids are effectively equal
@@ -98,8 +101,13 @@ namespace gpstk
       {
          if (id < right.id)
             return true;
+         if (right.id < id)
+            return false;
       }
-      return ((extra & extraMask) < (right.extra & right.extraMask));
+         // combined mask, which basically means that a 0 in either
+         // mask is a wildcard.
+      int64_t cmask = extraMask & right.extraMask;
+      return ((extra & cmask) < (right.extra & cmask));
    }
 
 

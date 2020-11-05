@@ -451,7 +451,7 @@ public:
       TUASSERTE(bool, false, ws13 < ws10);
       TUASSERTE(bool, true,  ws3 < ws10);
       TUASSERTE(bool, false, ws10 < ws3);
-      TUASSERTE(bool, true,  ws10 < ws14);
+      TUASSERTE(bool, false, ws10 < ws14); // 10 and 14 are equal due to 0 mask
       TUASSERTE(bool, false, ws14 < ws10);
       TURETURN();
    }

@@ -64,6 +64,16 @@ namespace gpstk
       NavSatelliteID(const SatID& subj, const SatID& xmit, const ObsID& oid,
                      const NavID& navid);
 
+         /** Initialize all data to specific values.
+          * @param[in] subj The ID of the satellite that nav data pertains to.
+          * @param[in] xmit The ID of the satellite that transmitted
+          *   the nav data.
+          * @param[in] car The carrier band of this signal.
+          * @param[in] track The tracking code of this signal.
+          * @param[in] nmt The navigation message format of this signal. */
+      NavSatelliteID(const SatID& subj, const SatID& xmit, CarrierBand car,
+                     TrackingCode track, NavType nmt);
+
          /** Initialize system, sat to the given value, and the
           * remaining data members to wildcards.
           * @param[in] subj The satellite that nav data pertains to. */
