@@ -687,10 +687,12 @@ namespace gpstk
       switch (navIn->getobsID().band)
       {
          case CarrierBand::L2:
-            eph->healthy = (eph->healthL2 == false);
+            eph->health = ((eph->healthL2 == false) ? SVHealth::Healthy :
+                           SVHealth::Unhealthy);
             break;
          case CarrierBand::L5:
-            eph->healthy = (eph->healthL5 == false);
+            eph->health = ((eph->healthL5 == false) ? SVHealth::Healthy :
+                           SVHealth::Unhealthy);
             break;
          default:
                // unexpected/unsupported signal
@@ -847,10 +849,12 @@ namespace gpstk
       switch (navIn->getobsID().band)
       {
          case CarrierBand::L2:
-            alm->healthy = (alm->healthL2 == false);
+            alm->health = ((alm->healthL2 == false) ? SVHealth::Healthy :
+                           SVHealth::Unhealthy);
             break;
          case CarrierBand::L5:
-            alm->healthy = (alm->healthL5 == false);
+            alm->health = ((alm->healthL5 == false) ? SVHealth::Healthy :
+                           SVHealth::Unhealthy);
             break;
          default:
                // unexpected/unsupported signal
@@ -1027,10 +1031,12 @@ namespace gpstk
       switch (navIn->getobsID().band)
       {
          case CarrierBand::L2:
-            alm->healthy = (alm->healthL2 == false);
+            alm->health = ((alm->healthL2 == false) ? SVHealth::Healthy :
+                           SVHealth::Unhealthy);
             break;
          case CarrierBand::L5:
-             alm->healthy = (alm->healthL5 == false);
+            alm->health = ((alm->healthL5 == false) ? SVHealth::Healthy :
+                           SVHealth::Unhealthy);
             break;
          default:
                // unexpected/unsupported signal

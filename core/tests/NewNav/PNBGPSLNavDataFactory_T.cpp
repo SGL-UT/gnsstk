@@ -15,6 +15,11 @@ namespace gpstk
       s << static_cast<int>(e);
       return s;
    }
+   std::ostream& operator<<(std::ostream& s, SVHealth h)
+   {
+      s << StringUtils::asString(h);
+      return s;
+   }
 }
 
 
@@ -442,7 +447,7 @@ processEphTest()
          TUASSERTE(gpstk::CommonTime, ephLNAVGPSSF1ct, eph->xmitTime);
          TUASSERTE(gpstk::CommonTime, toeExp, eph->Toe);
          TUASSERTE(gpstk::CommonTime, toeExp, eph->Toc); // same value as toe
-         TUASSERTE(bool, true, eph->healthy);
+         TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, eph->health);
          TUASSERTFE(-4.73111868E-07, eph->Cuc);
          TUASSERTFE(8.9444220066070556641e-06, eph->Cus);
          TUASSERTFE(1.97843750E+02, eph->Crc);
@@ -574,7 +579,7 @@ processAlmOrbTest()
          TUASSERTE(gpstk::CommonTime, almLNAVGPS25ct, alm->xmitTime);
          TUASSERTE(gpstk::CommonTime, toaExp, alm->Toe);
          TUASSERTE(gpstk::CommonTime, toaExp, alm->Toc); // same value as toe
-         TUASSERTE(bool, true, alm->healthy);
+         TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, alm->health);
          TUASSERTFE(0, alm->Cuc);
          TUASSERTFE(0, alm->Cus);
          TUASSERTFE(0, alm->Crc);
@@ -650,7 +655,7 @@ processAlmOrbTest()
          TUASSERTE(gpstk::CommonTime, almLNAVGPS26ct, alm->xmitTime);
          TUASSERTE(gpstk::CommonTime, toaExp, alm->Toe);
          TUASSERTE(gpstk::CommonTime, toaExp, alm->Toc); // same value as toe
-         TUASSERTE(bool, true, alm->healthy);
+         TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, alm->health);
          TUASSERTFE(0, alm->Cuc);
          TUASSERTFE(0, alm->Cus);
          TUASSERTFE(0, alm->Crc);

@@ -141,7 +141,8 @@ namespace gpstk
             fixTimeGPS(navIn, *gps);
 
             gps->Toc = navIn.time;
-            gps->healthy = (navIn.health == 0);
+            gps->health = ((navIn.health == 0) ? SVHealth::Healthy :
+                           SVHealth::Unhealthy);
             gps->Cuc = navIn.Cuc;
             gps->Cus = navIn.Cus;
             gps->Crc = navIn.Crc;

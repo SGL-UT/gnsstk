@@ -4,6 +4,15 @@
 #include "CivilTime.hpp"
 #include <iomanip>
 
+namespace gpstk
+{
+   std::ostream& operator<<(std::ostream& s, SVHealth h)
+   {
+      s << StringUtils::asString(h);
+      return s;
+   }
+}
+
 /// Allow us to test an abstract class
 class TestClass : public gpstk::OrbitDataKepler
 {
@@ -57,7 +66,7 @@ constructorTest()
              uut.beginFit);
    TUASSERTE(gpstk::CommonTime, gpstk::CommonTime::BEGINNING_OF_TIME,
              uut.endFit);
-   TUASSERTE(bool, false, uut.healthy);
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unknown, uut.health);
    TUASSERTFE(0.0, uut.Cuc);
    TUASSERTFE(0.0, uut.Cus);
    TUASSERTFE(0.0, uut.Crc);
@@ -150,7 +159,7 @@ fillTestClass(TestClass& uut)
    uut.xmitTime = gpstk::GPSWeekSecond(1854, .720000000000e+04);
    uut.Toe = gpstk::GPSWeekSecond(1854, .143840000000e+05);
    uut.Toc = gpstk::CivilTime(2015,7,19,3,59,44.0,gpstk::TimeSystem::GPS);
-   uut.healthy = true;
+   uut.health = gpstk::SVHealth::Healthy;
    uut.Cuc = .200793147087e-05;
    uut.Cus = .823289155960e-05;
    uut.Crc = .214593750000e+03;

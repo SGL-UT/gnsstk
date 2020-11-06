@@ -15,7 +15,7 @@ namespace gpstk
          : Cuc(0.0), Cus(0.0), Crc(0.0), Crs(0.0), Cic(0.0), Cis(0.0), M0(0.0),
            dn(0.0), dndot(0.0), ecc(0.0), A(0.0), Ahalf(0.0), Adot(0.0),
            OMEGA0(0.0), i0(0.0), w(0.0), OMEGAdot(0.0), idot(0.0), af0(0.0),
-           af1(0.0), af2(0.0), healthy(false)
+           af1(0.0), af2(0.0), health(SVHealth::Unknown)
    {
    }
 
@@ -288,7 +288,24 @@ namespace gpstk
       xvt.v[0] = vxef;
       xvt.v[1] = vyef;
       xvt.v[2] = vzef;
-      xvt.health = healthy ? Xvt::Healthy : Xvt::Unhealthy;
+      switch (health)
+      {
+         case SVHealth::Unknown:
+            xvt.health = Xvt::Unknown;
+            break;
+         case SVHealth::Healthy:
+            xvt.health = Xvt::Healthy;
+            break;
+         case SVHealth::Unhealthy:
+            xvt.health = Xvt::Unhealthy;
+            break;
+         case SVHealth::Degraded:
+            xvt.health = Xvt::Degraded;
+            break;
+         default:
+            xvt.health = Xvt::Uninitialized;
+            break;
+      }
 
       return true;
    }

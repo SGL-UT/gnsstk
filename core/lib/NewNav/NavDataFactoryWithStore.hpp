@@ -26,6 +26,12 @@ namespace gpstk
    public:
          /** Search the store to find the navigation message that meets
           * the specified criteria.
+          * @note In order for xmitHealth matching to occur, one must
+          *   have loaded health information, meaning that health data
+          *   must have been included in the type filter.  For formats
+          *   like SP3, which contain no health information, you won't
+          *   get any results if you specify "Healthy", "Unhealthy" or
+          *   "Degraded".  Use this option with care.
           * @param[in] nmid Specify the message type, satellite and
           *   codes to match.
           * @param[in] when The time of interest to search for data.
@@ -120,12 +126,15 @@ namespace gpstk
           *   data to check.
           * @param[in] nm The NavMap that ti is iterating over.
           * @param[in] valid The desired validity for navigation data.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
           * @return true if the validity of the nav data pointed to by
-          *   ti matches the requested validty described by valid.
+          *   ti matches the requested validity described by valid.
           */
-      static bool validityCheck(const NavMap::iterator& ti,
-                                NavMap& nm,
-                                NavValidityType valid);
+      bool validityCheck(const NavMap::iterator& ti,
+                         NavMap& nm,
+                         NavValidityType valid,
+                         SVHealth xmitHealth);
 
          /// Internal storage of navigation data.
       NavMessageMap data;

@@ -397,7 +397,7 @@ namespace gpstk
          // Now we can set the Toe/Toc properly
       eph->Toe = GPSWeekSecond(wn,toe);
       eph->Toc = GPSWeekSecond(wn,toc);
-         // healthy is set below
+         // health is set below
       eph->Cuc = ephSF[esiCuc]->asSignedDouble(esbCuc,enbCuc,escCuc);
       eph->Cus = ephSF[esiCus]->asSignedDouble(esbCus,enbCus,escCus);
       eph->Crc = ephSF[esiCrc]->asSignedDouble(esbCrc,enbCrc,escCrc);
@@ -444,7 +444,8 @@ namespace gpstk
       eph->fitIntFlag = ephSF[esiFitInt]->asUnsignedLong(esbFitInt,enbFitInt,
                                                          escFitInt);
       eph->healthBits = ephSF[esiHea]->asUnsignedLong(esbHea,enbHea,escHea);
-      eph->healthy = (eph->healthBits == 0); // actually in OrbitDataKepler
+      eph->health = ((eph->healthBits == 0) ? SVHealth::Healthy :
+                     SVHealth::Unhealthy); // actually in OrbitDataKepler
       eph->uraIndex = ephSF[esiURA]->asUnsignedLong(esbURA,enbURA,escURA);
       eph->tgd = ephSF[esiTGD]->asSignedDouble(esbTGD,enbTGD,escTGD);
       eph->alert2 = ephSF[sf2]->asBool(esbAlert);
@@ -520,7 +521,8 @@ namespace gpstk
       alm->i0 = (0.3 * PI) + alm->deltai;
       alm->OMEGAdot = navIn->asDoubleSemiCircles(120,16,-38);
       alm->healthBits = navIn->asUnsignedLong(136,8,1);
-      alm->healthy = alm->healthBits == 0;
+      alm->health = (alm->healthBits == 0 ? SVHealth::Healthy :
+                     SVHealth::Unhealthy);
       alm->Ahalf = navIn->asUnsignedDouble(150,24,-11);
       alm->A = alm->Ahalf * alm->Ahalf;
       alm->OMEGA0 = navIn->asDoubleSemiCircles(180,24,-23);

@@ -2,6 +2,7 @@
 #define GPSTK_ORBITDATAKEPLER_HPP
 
 #include "OrbitData.hpp"
+#include "SVHealth.hpp"
 
 namespace gpstk
 {
@@ -97,7 +98,7 @@ namespace gpstk
       CommonTime xmitTime; ///< Time of transmission of the start of the data.
       CommonTime Toe;      ///< Orbit epoch
       CommonTime Toc;      ///< Clock epoch
-      bool healthy;        ///< SV health (healthy=true, other=false)
+      SVHealth health;     ///< SV health status.
 
       double Cuc;          ///< Cosine latitude (rad)
       double Cus;          ///< Sine latitude (rad)

@@ -143,7 +143,8 @@ namespace gpstk
          // there.
       gps->xmitTime = gps->beginFit;
       gps->timeStamp = gps->xmitTime;
-      gps->healthy = (navIn.SV_health == 0);
+      gps->health = ((navIn.SV_health == 0) ? SVHealth::Healthy :
+                     SVHealth::Unhealthy);
          // not in almanac data.
       gps->Cuc = 0.0;
       gps->Cus = 0.0;

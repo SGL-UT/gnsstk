@@ -1,6 +1,8 @@
 #include <iterator>
 #include "NavDataFactoryWithStore.hpp"
 #include "TimeString.hpp"
+#include "OrbitDataKepler.hpp"
+#include "NavHealthData.hpp"
 
 namespace gpstk
 {
@@ -42,7 +44,7 @@ namespace gpstk
             }
             while (((ti2 != sati.second.end()) &&
                     (ti2->second->getUserTime() > when)) ||
-                   !validityCheck(ti2, sati.second, valid))
+                   !validityCheck(ti2, sati.second, valid, xmitHealth))
             {
                   // if (ti2 == sati.second.begin())
                   // {
@@ -52,8 +54,14 @@ namespace gpstk
                   //           << printTime(ti2->second->getUserTime(),
                   //                        "%Y/%03j/%02H:%02M:%02S")
                   //           << std::endl;
-                  // don't use operator--, it won't give the right results
-               ti2 = std::prev(ti2);
+                  // Don't use operator--, it won't give the right results.
+                  // Apparently prev doesn't always give the right
+                  // results either.  I'm pretty sure I've seen it
+                  // return end when doing prev on begin but now I'm
+                  // seeing it return begin over and over resulting in
+                  // an infinite loop.
+                  ti2 = (ti2 == sati.second.begin() ? sati.second.end()
+                         : std::prev(ti2));
                   // if (ti2 == sati.second.end())
                   // {
                   //    std::cerr << "reached the end" << std::endl;
@@ -61,9 +69,10 @@ namespace gpstk
             }
             if (ti2 == sati.second.end())
             {
-                  // no good
+                  // no good, but try to continue searching through
+                  // potential additional satellite matches.
                   // std::cerr << " false = not good 4" << std::endl;
-               return false;
+               continue;
             }
                // std::cerr << "  ti2->second->getUserTime()="
                //           << printTime(ti2->second->getUserTime(),
@@ -78,7 +87,6 @@ namespace gpstk
          {
                /// @todo implement "Nearest" search
          }
-            /// @todo Implement xmitHealth matching
       }
       // std::cerr << " false 5" << std::endl;
       return false;
@@ -354,8 +362,10 @@ namespace gpstk
    bool NavDataFactoryWithStore ::
    validityCheck(const NavMap::iterator& ti,
                  NavMap& nm,
-                 NavValidityType valid)
+                 NavValidityType valid,
+                 SVHealth xmitHealth)
    {
+      bool rv = true;
          // We can't check the validity of an invalid iterator, BUT we
          // have to say it's valid because otherwise the while loop in
          // find() breaks.
@@ -366,12 +376,96 @@ namespace gpstk
       switch (valid)
       {
          case NavValidityType::ValidOnly:
-            return ti->second->validate();
+            rv = ti->second->validate();
+            break;
          case NavValidityType::InvalidOnly:
-            return !ti->second->validate();
+            rv = !ti->second->validate();
+            break;
          default:
-            return true;
+            rv = true;
+            break;
       }
+      if (!rv)
+      {
+            // already determined to be invalid, don't bother doing
+            // further checking
+         return false;
+      }
+         // We're already trying to get health information, seems like
+         // we could/should avoid getting into a loop by just
+         // returning what we have.
+      if (ti->second->signal.messageType == gpstk::NavMessageType::Health)
+      {
+         return rv;
+      }
+         // Set to true if the health status matched.  If it remains
+         // false, we have to do a look up of the health status of the
+         // transmitting satellite because the presumed matched data
+         // doesn't contain the health status of the transmitting
+         // satellite.
+      bool rvSet = false;
+      NavData *ndp = ti->second.get();
+      OrbitDataKepler *orb;
+      NavHealthData *hea;
+      switch (xmitHealth)
+      {
+         case SVHealth::Healthy:
+         case SVHealth::Unhealthy:
+         case SVHealth::Degraded:
+               // make sure the health status is the desired state
+            if (ti->second->signal.sat == ti->second->signal.xmitSat)
+            {
+                  // If the subject and transmitting satellite are the
+                  // same, assume the health state is up-to-date for
+                  // the satellite.
+               if ((orb = dynamic_cast<OrbitDataKepler*>(ndp)) != nullptr)
+               {
+                  rv = (xmitHealth == orb->health);
+                  rvSet = true;
+               }
+               else if ((hea = dynamic_cast<NavHealthData*>(ndp)) != nullptr)
+               {
+                  rv = (xmitHealth == hea->getHealth());
+                  rvSet = true;
+               }
+            }
+            if (!rvSet)
+            {
+                  // We were not able to obtain health status of the
+                  // transmitting satellite so look it up.  We
+                  // specifically use SVHealth::Any because we're
+                  // looking up the health.  Not sure if
+                  // NavValidityType::All is the proper choice, but
+                  // NavSearchOrder::User definitely is, as that will
+                  // result in getting the most recent health
+                  // information prior to the time stamp of the data
+                  // we're interested in.
+               NavDataPtr heaPtr;
+               NavMessageID nmid = ti->second->signal;
+               nmid.messageType = NavMessageType::Health;
+                  /** @todo This next statement kind of sort of
+                   * enforces ephemeris health however it's possible,
+                   * for example in GPS LNAV to have almanac pages
+                   * with the transmit and subject satellites the
+                   * same, making it effectively indistinguishible
+                   * from ephemeris health.  Are there situations
+                   * where that could yield incorrect results? */
+               nmid.sat = nmid.xmitSat;
+               if (!find(nmid, ti->second->timeStamp, heaPtr,
+                         SVHealth::Any, NavValidityType::All,
+                         NavSearchOrder::User))
+               {
+                  return false;
+               }
+               hea = dynamic_cast<NavHealthData*>(heaPtr.get());
+               rv = (xmitHealth == hea->getHealth());
+            }
+            break;
+         default:
+               // treat all other cases as valid
+            break;
+      }
+      return rv;
    }
 
 

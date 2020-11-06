@@ -9,6 +9,16 @@
 
 using namespace std;
 
+namespace gpstk
+{
+   std::ostream& operator<<(std::ostream& s, SVHealth h)
+   {
+      s << StringUtils::asString(h);
+      return s;
+   }
+}
+
+
 class PNBGPSCNavDataFactory_T
 {
 public:
@@ -463,7 +473,7 @@ processEphTest()
          TUASSERTE(gpstk::CommonTime, msg10CNAVGPSL2ct, eph->xmitTime);
          TUASSERTE(gpstk::CommonTime, toeExp, eph->Toe);
          TUASSERTE(gpstk::CommonTime, toeExp, eph->Toc); // same value as toe
-         TUASSERTE(bool, true, eph->healthy);
+         TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, eph->health);
          TUASSERTFE(-6.6496431827545166016e-06, eph->Cuc);
          TUASSERTFE(1.1029653251171112061e-05, eph->Cus);
          TUASSERTFE(175.46484375, eph->Crc);
@@ -595,7 +605,7 @@ processAlmOrbTest()
          TUASSERTE(gpstk::CommonTime, msg37CNAVQZSSL5ct, alm->xmitTime);
          TUASSERTE(gpstk::CommonTime, toaExp, alm->Toe);
          TUASSERTE(gpstk::CommonTime, toaExp, alm->Toc); // same value as toe
-         TUASSERTE(bool, true, alm->healthy);
+         TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, alm->health);
          TUASSERTFE(0, alm->Cuc);
          TUASSERTFE(0, alm->Cus);
          TUASSERTFE(0, alm->Crc);
@@ -727,7 +737,7 @@ process31Test()
    TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, alm->xmitTime);
    TUASSERTE(gpstk::CommonTime, toaExp, alm->Toe);
    TUASSERTE(gpstk::CommonTime, toaExp, alm->Toc); // same value as toe
-   TUASSERTE(bool, true, alm->healthy);
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, alm->health);
    TUASSERTFE(0, alm->Cuc);
    TUASSERTFE(0, alm->Cus);
    TUASSERTFE(0, alm->Crc);
@@ -797,7 +807,7 @@ process31Test()
    TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, alm->xmitTime);
    TUASSERTE(gpstk::CommonTime, toaExp, alm->Toe);
    TUASSERTE(gpstk::CommonTime, toaExp, alm->Toc); // same value as toe
-   TUASSERTE(bool, true, alm->healthy);
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, alm->health);
    TUASSERTFE(0, alm->Cuc);
    TUASSERTFE(0, alm->Cus);
    TUASSERTFE(0, alm->Crc);
@@ -867,7 +877,7 @@ process31Test()
    TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, alm->xmitTime);
    TUASSERTE(gpstk::CommonTime, toaExp, alm->Toe);
    TUASSERTE(gpstk::CommonTime, toaExp, alm->Toc); // same value as toe
-   TUASSERTE(bool, true, alm->healthy);
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, alm->health);
    TUASSERTFE(0, alm->Cuc);
    TUASSERTFE(0, alm->Cus);
    TUASSERTFE(0, alm->Crc);
@@ -937,7 +947,7 @@ process31Test()
    TUASSERTE(gpstk::CommonTime, msg31CNAVQZSSL5ct, alm->xmitTime);
    TUASSERTE(gpstk::CommonTime, toaExp, alm->Toe);
    TUASSERTE(gpstk::CommonTime, toaExp, alm->Toc); // same value as toe
-   TUASSERTE(bool, true, alm->healthy);
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, alm->health);
    TUASSERTFE(0, alm->Cuc);
    TUASSERTFE(0, alm->Cus);
    TUASSERTFE(0, alm->Crc);
