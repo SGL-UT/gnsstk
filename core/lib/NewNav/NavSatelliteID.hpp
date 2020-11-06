@@ -24,7 +24,7 @@ namespace gpstk
 
          /** Initialize the parent class data while setting the sat
           * and xmitSat to wildcard values.
-          * @param[in] sig The signal to initialize from. */
+          * @param[in] right The signal to initialize from. */
       NavSatelliteID(const NavSignalID& right);
 
          /** Initialize all data to specific values.

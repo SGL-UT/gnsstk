@@ -76,7 +76,9 @@ namespace gpstk
          }
          else if (order == NavSearchOrder::Nearest)
          {
+               /// @todo implement "Nearest" search
          }
+            /// @todo Implement xmitHealth matching
       }
       // std::cerr << " false 5" << std::endl;
       return false;
@@ -88,6 +90,8 @@ namespace gpstk
              const CommonTime& when, double& offset,
              SVHealth xmitHealth, NavValidityType valid, NavSearchOrder order)
    {
+         /// @todo implement "Nearest" search
+         /// @todo Implement xmitHealth matching
       // std::cerr << printTime(when,"looking for %Y/%03j/%02H:%02M:%02S") << std::endl;
       bool rv = false;
       TimeOffsetData::TimeCvtKey fwdKey(fromSys,toSys), bwdKey(toSys,fromSys);

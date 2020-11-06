@@ -114,7 +114,7 @@ namespace gpstk
           * available factories, calling their load method until one
           * succeeds, since failure typically indicates an invalid
           * input.
-          * @param[in] filename The path of the file to load.
+          * @param[in] source The path of the file to load.
           * @return true on success, false if none of the available
           *   factories succeeded. */
       bool addDataSource(const std::string& source) override;
