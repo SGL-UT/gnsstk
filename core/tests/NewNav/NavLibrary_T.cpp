@@ -221,19 +221,19 @@ getOffsetTest()
    double result;
    TUASSERT(navLib.getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC,
                              ct+35, result, gpstk::SVHealth::Any,
-                             gpstk::NavValidityType::All,
+                             gpstk::NavValidityType::Any,
                              gpstk::NavSearchOrder::User));
    TUASSERTFE(23.0, result);
       // reverse the conversion and expect negative.
    TUASSERT(navLib.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::GPS,
                              ct+35, result, gpstk::SVHealth::Any,
-                             gpstk::NavValidityType::All,
+                             gpstk::NavValidityType::Any,
                              gpstk::NavSearchOrder::User));
    TUASSERTFE(-23.0, result);
       // expect this to not work
    TUASSERT(!navLib.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::BDT,
                               ct+35, result, gpstk::SVHealth::Any,
-                              gpstk::NavValidityType::All,
+                              gpstk::NavValidityType::Any,
                               gpstk::NavSearchOrder::User));
    TURETURN();
 }
@@ -317,10 +317,10 @@ setValidityFilterTest()
              tfp->getValidityFilter());
    TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::ValidOnly,
              rndfp->getValidityFilter());
-   navLib.setValidityFilter(gpstk::NavValidityType::All);
-   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::All,
+   navLib.setValidityFilter(gpstk::NavValidityType::Any);
+   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::Any,
              tfp->getValidityFilter());
-   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::All,
+   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::Any,
              rndfp->getValidityFilter());
    TURETURN();
 }

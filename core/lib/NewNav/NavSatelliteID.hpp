@@ -39,6 +39,18 @@ namespace gpstk
                      SatelliteSystem sys, CarrierBand car, TrackingCode track,
                      NavType nmt);
 
+         /** Initialize transmit satellite to a wildcard and all other
+          * data to specific values.  Intended to be used for
+          * searching.
+          * @param[in] subj The ID of the satellite that nav data pertains to.
+          * @param[in] sys The GNSS this signal originates from.
+          * @param[in] car The carrier band of this signal.
+          * @param[in] track The tracking code of this signal.
+          * @param[in] nmt The navigation message format of this signal. */
+      NavSatelliteID(unsigned long subj,
+                     SatelliteSystem sys, CarrierBand car, TrackingCode track,
+                     NavType nmt);
+
          /** Initialize all data to specific values.  This is intended
           * to be used when decoding GPS LNAV subframe 5 page 25, but
           * it may have other uses.
@@ -86,6 +98,9 @@ namespace gpstk
          /// Implicit != not available
       bool operator!=(const NavSatelliteID& right) const
       { return !(operator==(right)); }
+
+         /// return true if any of the fields are set to match wildcards.
+      bool isWild() const override;
 
       SatID sat;     ///< ID of satellite to which the nav data applies.
       SatID xmitSat; ///< ID of the satellite transmitting the nav data.

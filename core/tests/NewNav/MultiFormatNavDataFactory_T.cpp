@@ -410,11 +410,11 @@ setValidityFilterTest()
       TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::ValidOnly,
                 tfp->getValidityFilter());
    }
-   mfact.setValidityFilter(gpstk::NavValidityType::All);
+   mfact.setValidityFilter(gpstk::NavValidityType::Any);
    for (const auto& i : TestClass::getFactories())
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
-      TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::All,
+      TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::Any,
                 tfp->getValidityFilter());
    }
    TURETURN();

@@ -58,7 +58,7 @@ constructorTest()
 {
    TUDEF("NavDataFactory", "NavDataFactory");
    TestClass obj;
-   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::All,
+   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::Any,
              obj.getValidityFilter());
    TUASSERTE(gpstk::NavMessageTypeSet, gpstk::allNavMessageTypes,
              obj.getTypeFilter());

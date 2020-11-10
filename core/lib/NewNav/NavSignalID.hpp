@@ -38,6 +38,9 @@ namespace gpstk
       bool operator!=(const NavSignalID& right) const
       { return (order(right) != 0); }
 
+         /// return true if any of the fields are set to match wildcards.
+      virtual bool isWild() const;
+
       SatelliteSystem system; ///< GNSS for this signal.
       CarrierBand carrier;    ///< Carrier frequency for this signal.
       TrackingCode code;      ///< Tracking/ranging code for this signal.

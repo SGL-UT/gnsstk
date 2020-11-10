@@ -24,7 +24,7 @@ namespace gpstk
          /** Initialize navValidity to All and procNavTypes to all
           * known message types. */
       NavDataFactory()
-            : navValidity(NavValidityType::All),
+            : navValidity(NavValidityType::Any),
               procNavTypes(allNavMessageTypes)
       {}
 

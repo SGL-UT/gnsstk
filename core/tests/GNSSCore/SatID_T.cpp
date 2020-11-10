@@ -128,7 +128,7 @@ public:
 
       sat1.dump(outputStream1);
       outputString1 = outputStream1.str();
-      compareString1 = "GPS 5";
+      compareString1 = "GPS 5 0";
       TUASSERTE(std::string, compareString1, outputString1);
 
          //---------------------------------------------------------------------
@@ -140,7 +140,7 @@ public:
 
       sat2.dump(outputStream2);
       outputString2 = outputStream2.str();
-      compareString2 = "UserDefined 110";
+      compareString2 = "UserDefined 110 0";
       TUASSERTE(std::string, compareString2, outputString2);
 
          //---------------------------------------------------------------------
@@ -152,7 +152,7 @@ public:
 
       sat3.dump(outputStream3);
       outputString3 = outputStream3.str();
-      compareString3 = "??? -10";
+      compareString3 = "??? -10 0";
       TUASSERTE(std::string, compareString3, outputString3);
 
       TURETURN();
@@ -171,21 +171,21 @@ public:
          //Output for GPS satellite and single digit ID
          //---------------------------------------------------------------------
       gpstk::SatID sat1(5, gpstk::SatelliteSystem (1));
-      compareString1 = "GPS 5";
+      compareString1 = "GPS 5 0";
       TUASSERTE(std::string, compareString1,gpstk::StringUtils::asString(sat1));
 
          //---------------------------------------------------------------------
          //Output for invalid UserDefined satellite and triple digit ID
          //---------------------------------------------------------------------
       gpstk::SatID sat2(110, gpstk::SatelliteSystem (11));
-      compareString2 = "UserDefined 110";
+      compareString2 = "UserDefined 110 0";
       TUASSERTE(std::string, compareString2,gpstk::StringUtils::asString(sat2));
 
          //---------------------------------------------------------------------
          //Output for invalid satellite and negative ID
          //---------------------------------------------------------------------
       gpstk::SatID sat3(-10, gpstk::SatelliteSystem (50));
-      compareString3 = "?? -10";
+      compareString3 = "?? -10 0";
       TUASSERTE(std::string, compareString3,gpstk::StringUtils::asString(sat3));
 
       TURETURN();
@@ -373,7 +373,7 @@ public:
       std::stringstream outputStream;
       outputStream << redirected;
       outputString = outputStream.str();
-      compareString = "GPS 6";
+      compareString = "GPS 6 0";
 
       TUASSERTE(std::string, compareString, outputString);
 

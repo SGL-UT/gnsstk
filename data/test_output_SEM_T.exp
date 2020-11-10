@@ -1,5 +1,5 @@
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 1
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 1 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -18,7 +18,7 @@ M0           -1.63337495E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 2
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 2 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -37,7 +37,7 @@ M0           -4.24120970E-01 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 3
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 3 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -56,7 +56,7 @@ M0           -1.08161937E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 4
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 4 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -75,7 +75,7 @@ M0            2.13742621E+00 rad
 Health                  0x3F 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 5
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 5 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -94,7 +94,7 @@ M0            1.77548876E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 6
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 6 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -113,7 +113,7 @@ M0            3.13379242E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 7
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 7 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -132,7 +132,7 @@ M0            2.98849980E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 8
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 8 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -151,7 +151,7 @@ M0           -3.06681371E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 9
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 9 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -170,7 +170,7 @@ M0            2.85081341E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 10
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 10 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -189,7 +189,7 @@ M0            1.23539757E-01 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 11
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 11 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -208,7 +208,7 @@ M0           -2.64377844E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 12
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 12 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -227,7 +227,7 @@ M0           -2.01293146E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 13
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 13 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -246,7 +246,7 @@ M0           -1.68247282E-02 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 14
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 14 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -265,7 +265,7 @@ M0           -6.25626724E-01 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 16
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 16 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -284,7 +284,7 @@ M0            1.61121200E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 17
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 17 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -303,7 +303,7 @@ M0            5.00585943E-01 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 18
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 18 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -322,7 +322,7 @@ M0            1.53893589E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 19
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 19 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -341,7 +341,7 @@ M0            1.07280534E-01 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 20
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 20 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -360,7 +360,7 @@ M0            1.57870292E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 21
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 21 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -379,7 +379,7 @@ M0            2.88708180E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 22
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 22 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -398,7 +398,7 @@ M0            4.99910707E-02 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 23
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 23 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -417,7 +417,7 @@ M0           -8.46974983E-01 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 24
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 24 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -436,7 +436,7 @@ M0            1.78524392E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 25
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 25 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -455,7 +455,7 @@ M0           -2.94734634E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 26
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 26 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -474,7 +474,7 @@ M0           -1.61810668E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 27
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 27 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -493,7 +493,7 @@ M0            1.99468510E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 28
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 28 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -512,7 +512,7 @@ M0            8.09670713E-01 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 29
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 29 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -531,7 +531,7 @@ M0            1.96098247E-01 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 30
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 30 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS
@@ -550,7 +550,7 @@ M0            1.11891802E+00 rad
 Health                  0x00 8 bits
 Xmit by PRN                0
 **************************************************************
- ORB/CLK ALMANAC PARAMETERS FOR GPS 31
+ ORB/CLK ALMANAC PARAMETERS FOR GPS 31 0
 
               MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW
 Transmit   :  06/10/1987 161 21:50:24    78624   387 337824  GPS

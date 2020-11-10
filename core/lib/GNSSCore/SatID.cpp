@@ -2,9 +2,17 @@
 
 namespace gpstk
 {
+      /** @note Originally, extraMask was being set to 0, making it a
+       * wildcard by default, but doing so means that nav store
+       * searches will by default require linear searches through all
+       * signal identifiers, which is not optimal.  The choice was
+       * between making small changes to regression tests (that expect
+       * the string representation of SatID to not include the "extra"
+       * data) and having sub-optimal searches when looking for nav
+       * data.  I opted for the former. */
    SatID ::
    SatID()
-         :  id(-1), wildId(false), extra(0), extraMask(0),
+         :  id(-1), wildId(false), extra(0), extraMask(-1),
             system(SatelliteSystem::GPS), wildSys(false)
    {
    }
@@ -12,7 +20,7 @@ namespace gpstk
 
    SatID ::
    SatID(int p, SatelliteSystem s)
-         : id(p), wildId(false), extra(0), extraMask(0), system(s),
+         : id(p), wildId(false), extra(0), extraMask(-1), system(s),
            wildSys(false)
    {
    }
@@ -28,7 +36,7 @@ namespace gpstk
 
    SatID ::
    SatID(int p)
-         : id(p), wildId(false), extra(0), extraMask(0),
+         : id(p), wildId(false), extra(0), extraMask(-1),
            system(SatelliteSystem::Unknown), wildSys(true)
    {
    }
@@ -36,7 +44,7 @@ namespace gpstk
 
    SatID ::
    SatID(SatelliteSystem s)
-         : id(0), wildId(true), extra(0), extraMask(0),
+         : id(0), wildId(true), extra(0), extraMask(-1),
            system(s), wildSys(false)
    {
    }
@@ -48,6 +56,14 @@ namespace gpstk
       wildId = wildSys = true;
       extraMask = 0;
    }
+
+
+   bool SatID ::
+   isWild() const
+   {
+      return (wildId || wildSys || (extraMask != -1));
+   }
+
 
    void SatID ::
    dump(std::ostream& s) const

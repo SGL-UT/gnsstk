@@ -45,4 +45,13 @@ namespace gpstk
       }
       return 0;
    }
+
+
+   bool NavSignalID ::
+   isWild() const
+   {
+      return ((carrier == CarrierBand::Any) ||
+              (code == TrackingCode::Any) ||
+              (nav == NavType::Any));
+   }
 }

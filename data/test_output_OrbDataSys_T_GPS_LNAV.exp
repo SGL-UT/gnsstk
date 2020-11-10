@@ -30,7 +30,7 @@ HH:MM:SS   1   2   3
     GPS  3  56 12/31/2015 365 00:11:18  tot: 01/01/2016 001 19:56:48  A0: -1.8626451492E-09s,  A1: -3.5527136788E-15s/s,  dtLS:  17s,  dtLS_LSF:  17s 
 *******************************************************
  GPS System-level navigation message data.  UID: 51
- Transmitting SV : GPS 1
+ Transmitting SV : GPS 1 0
  Transmit Time   : 12/31/2015 DOY 365 00:02:24  1877 345744
 
  toa, WNa : 503808, 85
@@ -45,7 +45,7 @@ SV Health
   21: 0x 0   0   22: 0x 0   0   23: 0x 0   0   24: 0x 0   0 
 *******************************************************
  GPS System-level navigation message data.  UID: 52
- Transmitting SV : GPS 1
+ Transmitting SV : GPS 1 0
  Transmit Time   : 12/31/2015 DOY 365 00:08:48  1877 346128
 
            GPS NMCT Data
@@ -54,7 +54,7 @@ availIndicator     1 - Encrypted
 NMCT data is encrypted, not available, or reserved. No ERD output will be displayed.
 *******************************************************
  GPS System-level navigation message data.  UID: 52
- Transmitting SV : GPS 1
+ Transmitting SV : GPS 1 0
  Transmit Time   : 12/31/2015 DOY 365 12:26:18  1877 390378
 
            GPS NMCT Data
@@ -92,14 +92,14 @@ ERD[28]                  5.1 meters   valid
 ERD[29]                  1.5 meters   valid
 *******************************************************
  GPS System-level navigation message data.  UID: 55
- Transmitting SV : GPS 1
+ Transmitting SV : GPS 1 0
  Transmit Time   : 12/31/2015 DOY 365 00:10:48  1877 346248
  Text message 
 [DYJVYZL Z'IFZ1WC4TY:4Y]
 Reserved bits (6 bits, right-justified): 0x00
 *******************************************************
  GPS System-level navigation message data.  UID: 56
- Transmitting SV : GPS 1
+ Transmitting SV : GPS 1 0
  Transmit Time   : 12/31/2015 DOY 365 00:11:18  1877 346278
 
            GPS IONO PARAMETERS
@@ -125,7 +125,7 @@ DN                         3 day (1-7)
 Epoch(lsf)        06/30/2015
 *******************************************************
  GPS System-level navigation message data.  UID: 56
- Transmitting SV : GPS 1
+ Transmitting SV : GPS 1 0
  Transmit Time   : 12/31/2015 DOY 365 12:28:48  1877 390528
 
            GPS IONO PARAMETERS
@@ -151,14 +151,14 @@ DN                         3 day (1-7)
 Epoch(lsf)        06/30/2015
 *******************************************************
  GPS System-level navigation message data.  UID: 57
- Transmitting SV : GPS 1
+ Transmitting SV : GPS 1 0
  Transmit Time   : 12/31/2015 DOY 365 00:00:18  1877 345618
  Contents of Reserved Bits in Words 4-10 (with parity removed)
  182 bits, left-justified in 32 bit words
  0xC60770B9 0xA23D141F 0x91C24F9B 0x1C831F80 0x04065800
 *******************************************************
  GPS System-level navigation message data.  UID: 63
- Transmitting SV : GPS 1
+ Transmitting SV : GPS 1 0
  Transmit Time   : 12/31/2015 DOY 365 00:02:18  1877 345738
 
 SV Configuration
@@ -174,7 +174,7 @@ SV Health
   29: 0x00  00   30: 0x00  00   31: 0x00  00   32: 0x00  00 
 *******************************************************
  GPS System-level navigation message data.  UID: 52
- Transmitting SV : GPS 2
+ Transmitting SV : GPS 2 0
  Transmit Time   : 12/31/2015 DOY 365 00:08:48  1877 346128
 
            GPS NMCT Data
@@ -183,7 +183,7 @@ availIndicator     1 - Encrypted
 NMCT data is encrypted, not available, or reserved. No ERD output will be displayed.
 *******************************************************
  GPS System-level navigation message data.  UID: 56
- Transmitting SV : GPS 2
+ Transmitting SV : GPS 2 0
  Transmit Time   : 12/31/2015 DOY 365 00:11:18  1877 346278
 
            GPS IONO PARAMETERS
@@ -209,7 +209,7 @@ DN                         3 day (1-7)
 Epoch(lsf)        06/30/2015
 *******************************************************
  GPS System-level navigation message data.  UID: 56
- Transmitting SV : GPS 2
+ Transmitting SV : GPS 2 0
  Transmit Time   : 12/31/2015 DOY 365 18:43:48  1877 413028
 
            GPS IONO PARAMETERS
@@ -235,7 +235,7 @@ DN                         3 day (1-7)
 Epoch(lsf)        06/30/2015
 *******************************************************
  GPS System-level navigation message data.  UID: 56
- Transmitting SV : GPS 3
+ Transmitting SV : GPS 3 0
  Transmit Time   : 12/31/2015 DOY 365 00:11:18  1877 346278
 
            GPS IONO PARAMETERS

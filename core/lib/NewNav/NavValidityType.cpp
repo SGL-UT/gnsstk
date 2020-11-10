@@ -11,7 +11,7 @@ namespace gpstk
             case NavValidityType::Unknown:     return "Unknown";
             case NavValidityType::ValidOnly:   return "ValidOnly";
             case NavValidityType::InvalidOnly: return "InvalidOnly";
-            case NavValidityType::All:         return "All";
+            case NavValidityType::Any:         return "Any";
             default:                           return "???";
          } // switch (e)
       } // asString(NavValidityType)
@@ -25,8 +25,8 @@ namespace gpstk
             return NavValidityType::ValidOnly;
          if (s == "InvalidOnly")
             return NavValidityType::InvalidOnly;
-         if (s == "All")
-            return NavValidityType::All;
+         if (s == "Any")
+            return NavValidityType::Any;
          return NavValidityType::Unknown;
       } // asNavValidityType(string)
    } // namespace StringUtils

@@ -19,77 +19,124 @@ namespace gpstk
          // std::cerr << " false = not found 1" << std::endl;
          return false; // not found.
       }
-         // To support wildcard signals, we need to do a linear search.
-      for (auto& sati : dataIt->second)
+         // Make a collection of the NavMap iterators that match the
+         // requested NavMessageID.  If wildcards are used in the
+         // NavMessageID, we have to do a linear search for matches,
+         // otherwise we can do a direct match using map::find.  The
+         // bool of the pair in itMap is used to indicate that there
+         // is no point in further manipulating the iterator as it is
+         // either older than the most recent matching data or there's
+         // nothing more to find.
+      using ItPair = std::pair<bool,NavMap::iterator>;
+      std::map<NavMap*, ItPair> itMap;
+      if (nmid.isWild())
       {
-         if (sati.first != nmid)
-            continue; // skip non matches
-            // This is not the entry we want, but it is instead the first
-            // entry we probably (depending on order) *don't* want.
-         auto ti2 = sati.second.lower_bound(when);
-         if (order == NavSearchOrder::User)
+         // std::cerr << "wildcard search: " << nmid << std::endl;
+         for (NavSatMap::iterator sati = dataIt->second.begin();
+              sati != dataIt->second.end(); sati++)
          {
-               // The map goes by transmit time so we do what should be a
-               // quick linear search to find the best by user time
-               // (i.e. when the entire message will have been received).
-               // std::cerr << " when="
-               //           << printTime(when,"%Y/%03j/%02H:%02M:%02S")
-               //           << std::endl;
-               // If ti2 starts at the end of the map, that doesn't mean
-               // we've failed.  We should still try and back up at least
-               // once.
-            if (ti2 == sati.second.end())
+            if (sati->first != nmid)
+               continue; // skip non matches
+            // std::cerr << "  matches " << sati->first << std::endl;
+            NavMap::iterator nmi = sati->second.lower_bound(when);
+            if (nmi == sati->second.end())
             {
-               ti2 = std::prev(ti2);
+               nmi = std::prev(nmi);
             }
-            while (((ti2 != sati.second.end()) &&
-                    (ti2->second->getUserTime() > when)) ||
-                   !validityCheck(ti2, sati.second, valid, xmitHealth))
+            while ((nmi != sati->second.end()) &&
+                   (nmi->second->getUserTime() > when))
             {
-                  // if (ti2 == sati.second.begin())
-                  // {
-                  //    std::cerr << "already at the beginning" << std::endl;
-                  // }
-                  // std::cerr << "  ti2->second->getUserTime()="
-                  //           << printTime(ti2->second->getUserTime(),
-                  //                        "%Y/%03j/%02H:%02M:%02S")
-                  //           << std::endl;
-                  // Don't use operator--, it won't give the right results.
-                  // Apparently prev doesn't always give the right
-                  // results either.  I'm pretty sure I've seen it
-                  // return end when doing prev on begin but now I'm
-                  // seeing it return begin over and over resulting in
-                  // an infinite loop.
-                  ti2 = (ti2 == sati.second.begin() ? sati.second.end()
-                         : std::prev(ti2));
-                  // if (ti2 == sati.second.end())
-                  // {
-                  //    std::cerr << "reached the end" << std::endl;
-                  // }
+               nmi = (nmi == sati->second.begin() ? sati->second.end()
+                      : std::prev(nmi));
             }
-            if (ti2 == sati.second.end())
-            {
-                  // no good, but try to continue searching through
-                  // potential additional satellite matches.
-                  // std::cerr << " false = not good 4" << std::endl;
-               continue;
-            }
-               // std::cerr << "  ti2->second->getUserTime()="
-               //           << printTime(ti2->second->getUserTime(),
-               //                        "%Y/%03j/%02H:%02M:%02S")
-               //           << std::endl;
-               // ti2->second->dump(std::cerr,NavData::Detail::Full);
-               // good.
-            navData = ti2->second;
-            return true;
-         }
-         else if (order == NavSearchOrder::Nearest)
-         {
-               /// @todo implement "Nearest" search
+            if (nmi != sati->second.end())
+               itMap[&(sati->second)] = ItPair(false,nmi);
          }
       }
-      // std::cerr << " false 5" << std::endl;
-      return false;
+      else
+      {
+         // std::cerr << "non-wildcard search: " << nmid << std::endl;
+         auto sati = dataIt->second.find(nmid);
+         if (sati != dataIt->second.end())
+         {
+            // std::cerr << "  found" << std::endl;
+            NavMap::iterator nmi = sati->second.lower_bound(when);
+            if (nmi == sati->second.end())
+            {
+               nmi = std::prev(nmi);
+            }
+            while ((nmi != sati->second.end()) &&
+                   (nmi->second->getUserTime() > when))
+            {
+               nmi = (nmi == sati->second.begin() ? sati->second.end()
+                      : std::prev(nmi));
+            }
+            if (nmi != sati->second.end())
+               itMap[&(sati->second)] = ItPair(false,nmi);
+         }
+         // else
+         // {
+         //    std::cerr << "  not found" << std::endl;
+         // }
+      }
+      // std::cerr << "itMap.size() = " << itMap.size() << std::endl;
+      gpstk::CommonTime mostRecent = gpstk::CommonTime::BEGINNING_OF_TIME;
+      mostRecent.setTimeSystem(gpstk::TimeSystem::Any);
+      bool done = itMap.empty();
+      bool rv = false;
+      while (!done)
+      {
+         for (auto& imi : itMap)
+         {
+            done = true; // default to being done.  Gets reset to false below.
+            if (imi.second.first)
+            {
+                  // no need to process this iterator any further
+               continue;
+            }
+            else if ((imi.second.second != imi.first->end()) &&
+                     (imi.second.second->second->getUserTime() < mostRecent))
+            {
+                  // Data is less recent than the most recent good data, so stop
+                  // processing this iterator.
+               imi.second.first = true;
+            }
+            else if (((imi.second.second != imi.first->end()) &&
+                      (imi.second.second->second->getUserTime() > when)) ||
+                     !validityCheck(imi.second.second,*imi.first,valid,
+                                    xmitHealth))
+            {
+               // std::cerr << "  not end, not right time" << std::endl;
+               imi.second.second = (imi.second.second == imi.first->begin()
+                                    ? imi.first->end()
+                                    : std::prev(imi.second.second));
+               done = false;
+            }
+            else if (imi.second.second == imi.first->end())
+            {
+                  // give up.
+               imi.second.first = true;
+            }
+            else
+            {
+               // std::cerr << "Found something good at "
+               //           << printTime(imi.second.second->first,
+               //                        "%Y/%03j/%02H:%02M:%02S")
+               //           << std::endl;
+               if (imi.second.second->second->getUserTime() > mostRecent)
+               {
+                  mostRecent = imi.second.second->second->getUserTime();
+                  navData = imi.second.second->second;
+               }
+               imi.second.first = true;
+               rv = true;
+            }
+         }
+      }
+      // std::cerr << "Most recent = "
+      //           << printTime(mostRecent, "%Y/%03j/%02H:%02M:%02S")
+      //           << std::endl;
+      return rv;
    }
 
 
@@ -435,7 +482,7 @@ namespace gpstk
                   // transmitting satellite so look it up.  We
                   // specifically use SVHealth::Any because we're
                   // looking up the health.  Not sure if
-                  // NavValidityType::All is the proper choice, but
+                  // NavValidityType::Any is the proper choice, but
                   // NavSearchOrder::User definitely is, as that will
                   // result in getting the most recent health
                   // information prior to the time stamp of the data
@@ -452,7 +499,7 @@ namespace gpstk
                    * where that could yield incorrect results? */
                nmid.sat = nmid.xmitSat;
                if (!find(nmid, ti->second->timeStamp, heaPtr,
-                         SVHealth::Any, NavValidityType::All,
+                         SVHealth::Any, NavValidityType::Any,
                          NavSearchOrder::User))
                {
                   return false;

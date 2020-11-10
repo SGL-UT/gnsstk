@@ -17,7 +17,7 @@ namespace gpstk
       Unknown,     ///< Only used as an initial value.
       ValidOnly,   ///< Only load/find nav messages that pass validity checks.
       InvalidOnly, ///< Only load/find nav messages that fail validity checks.
-      All,         ///< Load/find nav messages regardless of validity checks.
+      Any,         ///< Load/find nav messages regardless of validity checks.
       Last         ///< Used to create an iterator.
    };
 

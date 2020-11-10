@@ -5,7 +5,8 @@ namespace gpstk
    NavSatelliteID ::
    NavSatelliteID()
          : sat(0,SatelliteSystem::Unknown), xmitSat(0,SatelliteSystem::Unknown)
-   {}
+   {
+   }
 
 
    NavSatelliteID ::
@@ -22,7 +23,18 @@ namespace gpstk
                   SatelliteSystem sys, CarrierBand car, TrackingCode track,
                   NavType nmt)
          : NavSignalID(sys,car,track,nmt), sat(subj,sys), xmitSat(xmit,sys)
-   {}
+   {
+   }
+
+
+   NavSatelliteID ::
+   NavSatelliteID(unsigned long subj,
+                  SatelliteSystem sys, CarrierBand car, TrackingCode track,
+                  NavType nmt)
+         : NavSignalID(sys,car,track,nmt), sat(subj,sys)
+   {
+      xmitSat.makeWild();
+   }
 
 
    NavSatelliteID ::
@@ -86,5 +98,12 @@ namespace gpstk
          // everything in the parent class twice.
       return ((NavSignalID::order(right) == 0) && (sat == right.sat) &&
               (xmitSat == right.xmitSat));
+   }
+
+
+   bool NavSatelliteID ::
+   isWild() const
+   {
+      return sat.isWild() || xmitSat.isWild() || NavSignalID::isWild();
    }
 }

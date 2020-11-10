@@ -37,7 +37,7 @@ constructorTest()
 {
    TUDEF("PNBNavDataFactory", "PNBNavDataFactory()");
    TestClass uut;
-   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::All,
+   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::Any,
              uut.navValidity);
    TUASSERTE(bool, true, uut.processEph);
    TUASSERTE(bool, true, uut.processAlm);
@@ -52,7 +52,7 @@ setValidityFilterTest()
 {
    TUDEF("PNBNavDataFactory", "satValidityFilter()");
    TestClass uut;
-   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::All,
+   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::Any,
              uut.navValidity);
    for (gpstk::NavValidityType i : gpstk::NavValidityTypeIterator())
    {

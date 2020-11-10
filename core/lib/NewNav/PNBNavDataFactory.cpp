@@ -6,7 +6,7 @@ namespace gpstk
 {
    PNBNavDataFactory ::
    PNBNavDataFactory()
-         : navValidity(NavValidityType::All)
+         : navValidity(NavValidityType::Any)
    {
       setTypeFilter(allNavMessageTypes);
    }

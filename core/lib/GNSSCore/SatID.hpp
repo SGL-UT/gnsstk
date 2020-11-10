@@ -134,6 +134,8 @@ namespace gpstk
           * attempts to obviate knowledge about the details of
           * wildcard implementation. */
       void makeWild();
+         /// return true if any of the fields are set to match wildcards.
+      bool isWild() const;
 
          // operator=, copy constructor and destructor built by compiler
 
@@ -163,10 +165,10 @@ namespace gpstk
       bool operator>=(const SatID& right) const
       { return !(operator<(right)); }
 
-         /// return true if this is a valid SatID
-         /// @note assumes all id's are positive and less than 100;
-         ///     plus GPS id's are less than or equal to MAX_PRN (32).
-         /// @note this is not used internally in the gpstk library
+         /** return true if this is a valid SatID
+          * @note assumes all id's are positive and less than 100;
+          *     plus GPS id's are less than or equal to MAX_PRN (32).
+          * @note this is not used internally in the gpstk library */
       bool isValid() const;
 
       int id;                   ///< Satellite identifier, e.g. PRN

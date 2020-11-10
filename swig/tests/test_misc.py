@@ -112,13 +112,13 @@ class SatID_test(unittest.TestCase):
 
     def test_str(self):
         a = gpstk.SatID(3, gpstk.SatelliteSystem.Glonass)
-        self.assertEqual('GLONASS 3', str(a))
+        self.assertEqual('GLONASS 3 0', str(a))
 
         b = gpstk.SatID(1, gpstk.SatelliteSystem.LEO)
-        self.assertEqual('LEO 1', str(b))
+        self.assertEqual('LEO 1 0', str(b))
 
         c = gpstk.SatID(4)  # optional arg should result in a wildcard system
-        self.assertEqual('* 4', str(c))
+        self.assertEqual('* 4 0', str(c))
 
 
 class Triple_test(unittest.TestCase):

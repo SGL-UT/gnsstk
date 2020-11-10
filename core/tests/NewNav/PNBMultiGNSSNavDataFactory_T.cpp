@@ -144,7 +144,7 @@ setValidityFilterTest()
       TURETURN();
    }
       // check default
-   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::All,
+   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::Any,
              fact->getValidity());
       // check possible values
    for (gpstk::NavValidityType i : gpstk::NavValidityTypeIterator())
@@ -227,7 +227,7 @@ addDataTest()
    gpstk::PNBMultiGNSSNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    uut.setTypeFilter(gpstk::allNavMessageTypes);
-   uut.setValidityFilter(gpstk::NavValidityType::All);
+   uut.setValidityFilter(gpstk::NavValidityType::Any);
       //
       // Start with some GPS LNAV data.
       //
