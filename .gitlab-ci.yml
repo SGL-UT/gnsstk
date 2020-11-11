@@ -107,7 +107,7 @@ generate_documentation:
 build_debian_7:
   stage: build
   needs: []
-  extends: .normal_job
+  extends: .big_build
   tags:
     - docker-executor
     # Not all docker runners support debian 7
@@ -161,7 +161,7 @@ build_debian_9:
 build_debian_10:
   stage: build
   needs: []
-  extends: .big_build
+  extends: .normal_job
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -276,7 +276,7 @@ build_windows:
 test_debian_7:
   stage: test
   needs: [build_debian_7]
-  extends: .normal_job
+  extends: .big_build
   tags:
     - docker-executor
     # Not all docker runners support debian 7
@@ -335,7 +335,7 @@ test_debian_9:
 test_debian_10:
   stage: test
   needs: [build_debian_10]
-  extends: .big_build
+  extends: .normal_job
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
