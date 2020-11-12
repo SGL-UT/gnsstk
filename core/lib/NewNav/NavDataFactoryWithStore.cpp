@@ -17,10 +17,17 @@ namespace gpstk
       class FindMatches
       {
       public:
+         FindMatches()
+               : map(nullptr), finished(true)
+         {}
+         FindMatches(NavMap *theMap, const NavMap::iterator& theIt)
+               : map(theMap), finished(false), it(theIt)
+         {}
          NavMap *map;
          bool finished;
          NavMap::iterator it;
       };
+      using MatchList = std::list<FindMatches>;
 
       // std::cerr << __PRETTY_FUNCTION__ << std::endl;
          // dig through the maps of maps, matching keys with nmid along the way
@@ -38,8 +45,7 @@ namespace gpstk
          // is no point in further manipulating the iterator as it is
          // either older than the most recent matching data or there's
          // nothing more to find.
-      using ItPair = std::pair<bool,NavMap::iterator>;
-      std::map<NavMap*, ItPair> itMap;
+      MatchList itList;
       if (nmid.isWild())
       {
          // std::cerr << "wildcard search: " << nmid << std::endl;
@@ -61,7 +67,9 @@ namespace gpstk
                       : std::prev(nmi));
             }
             if (nmi != sati->second.end())
-               itMap[&(sati->second)] = ItPair(false,nmi);
+            {
+               itList.push_back(FindMatches(&(sati->second), nmi));
+            }
          }
       }
       else
@@ -83,68 +91,69 @@ namespace gpstk
                       : std::prev(nmi));
             }
             if (nmi != sati->second.end())
-               itMap[&(sati->second)] = ItPair(false,nmi);
+            {
+               itList.push_back(FindMatches(&(sati->second), nmi));
+            }
          }
          // else
          // {
          //    std::cerr << "  not found" << std::endl;
          // }
       }
-      // std::cerr << "itMap.size() = " << itMap.size() << std::endl;
+      // std::cerr << "itList.size() = " << itList.size() << std::endl;
       gpstk::CommonTime mostRecent = gpstk::CommonTime::BEGINNING_OF_TIME;
       mostRecent.setTimeSystem(gpstk::TimeSystem::Any);
-      bool done = itMap.empty();
+      bool done = itList.empty();
       bool rv = false;
       while (!done)
       {
-         for (auto& imi : itMap)
+         for (auto& imi : itList)
          {
             // if (imi.second.second != imi.first->end())
             //    std::cerr << "examining " << imi.second.second->second->signal << std::endl;
             // else
             //    std::cerr << "examining end iterator" << std::endl;
             done = true; // default to being done.  Gets reset to false below.
-            if (imi.second.first)
+            if (imi.finished)
             {
                   // no need to process this iterator any further
                continue;
             }
-            else if ((imi.second.second != imi.first->end()) &&
-                     (imi.second.second->second->getUserTime() < mostRecent))
+            else if ((imi.it != imi.map->end()) &&
+                     (imi.it->second->getUserTime() < mostRecent))
             {
                   // Data is less recent than the most recent good data, so stop
                   // processing this iterator.
-               imi.second.first = true;
+               imi.finished = true;
             }
-            else if (((imi.second.second != imi.first->end()) &&
-                      (imi.second.second->second->getUserTime() > when)) ||
-                     !validityCheck(imi.second.second,*imi.first,valid,
-                                    xmitHealth))
+            else if (((imi.it != imi.map->end()) &&
+                      (imi.it->second->getUserTime() > when)) ||
+                     !validityCheck(imi.it,*imi.map,valid,xmitHealth))
             {
                // std::cerr << "  not end, not right time" << std::endl;
-               imi.second.second = (imi.second.second == imi.first->begin()
-                                    ? imi.first->end()
-                                    : std::prev(imi.second.second));
+               imi.it = (imi.it == imi.map->begin()
+                         ? imi.map->end()
+                         : std::prev(imi.it));
                done = false;
             }
-            else if (imi.second.second == imi.first->end())
+            else if (imi.it == imi.map->end())
             {
                   // give up.
-               imi.second.first = true;
+               imi.finished = true;
             }
             else
             {
                // std::cerr << "Found something good at "
-               //           << printTime(imi.second.second->first,
+               //           << printTime(imi.it->first,
                //                        "%Y/%03j/%02H:%02M:%02S")
                //           << std::endl;
-               if (imi.second.second->second->getUserTime() > mostRecent)
+               if (imi.it->second->getUserTime() > mostRecent)
                {
-                  mostRecent = imi.second.second->second->getUserTime();
-                  navData = imi.second.second->second;
+                  mostRecent = imi.it->second->getUserTime();
+                  navData = imi.it->second;
                   // std::cerr << "result is now " << navData->signal << std::endl;
                }
-               imi.second.first = true;
+               imi.finished = true;
                rv = true;
             }
          }
