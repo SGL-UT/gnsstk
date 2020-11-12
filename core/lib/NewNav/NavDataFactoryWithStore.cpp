@@ -11,6 +11,17 @@ namespace gpstk
         NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
         NavSearchOrder order)
    {
+
+         /** Class for gathering matches in find().  It's only used in
+          * find so it is declared and implemented here alone. */
+      class FindMatches
+      {
+      public:
+         NavMap *map;
+         bool finished;
+         NavMap::iterator it;
+      };
+
       // std::cerr << __PRETTY_FUNCTION__ << std::endl;
          // dig through the maps of maps, matching keys with nmid along the way
       auto dataIt = data.find(nmid.messageType);
@@ -88,6 +99,10 @@ namespace gpstk
       {
          for (auto& imi : itMap)
          {
+            // if (imi.second.second != imi.first->end())
+            //    std::cerr << "examining " << imi.second.second->second->signal << std::endl;
+            // else
+            //    std::cerr << "examining end iterator" << std::endl;
             done = true; // default to being done.  Gets reset to false below.
             if (imi.second.first)
             {
@@ -127,6 +142,7 @@ namespace gpstk
                {
                   mostRecent = imi.second.second->second->getUserTime();
                   navData = imi.second.second->second;
+                  // std::cerr << "result is now " << navData->signal << std::endl;
                }
                imi.second.first = true;
                rv = true;
