@@ -18,6 +18,11 @@ namespace gpstk
       NavHealthData()
       { signal.messageType = NavMessageType::Health; }
 
+         /** Returns the time for the data to be used when searching
+          * in "Nearest" mode. */
+      CommonTime getNearTime() const override
+      { return timeStamp; }
+
          /** Defines the status of NavData::signal, specifically sat
           * (not xmitSat). */
       virtual SVHealth getHealth() const = 0;

@@ -20,6 +20,11 @@ namespace gpstk
       TimeOffsetData()
       { signal.messageType = NavMessageType::TimeOffset; }
 
+         /** Returns the time for the data to be used when searching
+          * in "Nearest" mode. */
+      CommonTime getNearTime() const override
+      { return timeStamp; }
+
          /** Get the offset, in seconds, to apply to times when
           * converting them from fromSys to toSys.
           * @param[in] fromSys The time system to convert from.

@@ -37,6 +37,10 @@ namespace gpstk
           * message is received.  This is used by
           * NavDataFactoryWithStore::find() in User mode. */
       virtual CommonTime getUserTime() const = 0;
+         /** Returns the time for the data to be used when searching
+          * in "Nearest" mode.  Example: toe for ephemeris data.  This
+          * is used by NavDataFactoryWithStore::find(). */
+      virtual CommonTime getNearTime() const = 0;
          /** Print the contents of this NavData object in a
           * human-readable format.
           * @param[in,out] s The stream to write the data to.
@@ -62,6 +66,12 @@ namespace gpstk
        * source data to NavDataPtr when multiple objects can be
        * created from a single input. */
    using NavDataPtrList = std::list<NavDataPtr>;
+      /// Map from "nearest" time reference (e.g. toe) to list of NavDataPtr.
+   using NavNearMap = std::map<CommonTime, NavDataPtrList>;
+      /// Map satellite to nearest map.
+   using NavNearSatMap = std::map<NavSatelliteID, NavNearMap>;
+      /// Map nav message type to the rest of the storage.
+   using NavNearMessageMap = std::map<NavMessageType, NavNearSatMap>;
 
       //@}
 

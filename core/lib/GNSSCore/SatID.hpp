@@ -96,7 +96,7 @@ namespace gpstk
    class SatID
    {
    public:
-         /// Initialize with system and id wildcards.
+         /// Initialize with invalid data with no wildcards.
       SatID();
 
          /// explicit constructor, no defaults

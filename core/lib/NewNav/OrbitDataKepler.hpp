@@ -23,6 +23,11 @@ namespace gpstk
          /// Initialize all data members to 0.
       OrbitDataKepler();
 
+         /** Returns the time for the data to be used when searching
+          * in "Nearest" mode. */
+      CommonTime getNearTime() const override
+      { return Toe; }
+
          /** Print the contents of this NavData object in a
           * human-readable format.
           * @param[in,out] s The stream to write the data to.

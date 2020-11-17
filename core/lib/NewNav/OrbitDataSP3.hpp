@@ -39,6 +39,10 @@ namespace gpstk
           * timestamp. */
       CommonTime getUserTime() const override
       { return timeStamp; }
+         /** Returns the time for the data to be used when searching
+          * in "Nearest" mode. */
+      CommonTime getNearTime() const override
+      { return timeStamp; }
          /** Print the contents of this NavData object in a
           * human-readable format.  Brief detail includes P/V.  Full
           * detail includes P/V/A and sigma.

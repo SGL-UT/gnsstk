@@ -120,6 +120,49 @@ namespace gpstk
        void dump(std::ostream& s, NavData::Detail dl) const override;
 
    protected:
+         /** Search the store to find the navigation message that meets
+          * the specified criteria using User-oriented data.
+          * @note In order for xmitHealth matching to occur, one must
+          *   have loaded health information, meaning that health data
+          *   must have been included in the type filter.  For formats
+          *   like SP3, which contain no health information, you won't
+          *   get any results if you specify "Healthy", "Unhealthy" or
+          *   "Degraded".  Use this option with care.
+          * @param[in] nmid Specify the message type, satellite and
+          *   codes to match.
+          * @param[in] when The time of interest to search for data.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
+          * @param[out] navData The resulting navigation message.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          * @return true if successful.  If false, navData will be untouched. */
+      virtual bool findUser(const NavMessageID& nmid, const CommonTime& when,
+                            NavDataPtr& navData, SVHealth xmitHealth,
+                            NavValidityType valid);
+
+         /** Search the store to find the navigation message that
+          * meets the specified criteria using the nearest match in
+          * time (e.g. nearest toe to when).
+          * @note In order for xmitHealth matching to occur, one must
+          *   have loaded health information, meaning that health data
+          *   must have been included in the type filter.  For formats
+          *   like SP3, which contain no health information, you won't
+          *   get any results if you specify "Healthy", "Unhealthy" or
+          *   "Degraded".  Use this option with care.
+          * @param[in] nmid Specify the message type, satellite and
+          *   codes to match.
+          * @param[in] when The time of interest to search for data.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
+          * @param[out] navData The resulting navigation message.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          * @return true if successful.  If false, navData will be untouched. */
+      virtual bool findNearest(const NavMessageID& nmid, const CommonTime& when,
+                               NavDataPtr& navData, SVHealth xmitHealth,
+                               NavValidityType valid);
+
          /** Performs an appropriate validity check based on the
           * desired validity.
           * @param[in] ti A container iterator pointing to the nav
@@ -129,15 +172,41 @@ namespace gpstk
           * @param[in] xmitHealth The desired health status of the
           *   transmitting satellite.
           * @return true if the validity of the nav data pointed to by
-          *   ti matches the requested validity described by valid.
-          */
+          *   ti matches the requested validity described by valid and
+          *   the health status of the transmitting satellite matches
+          *   xmitHealth. */
       bool validityCheck(const NavMap::iterator& ti,
                          NavMap& nm,
                          NavValidityType valid,
                          SVHealth xmitHealth);
 
-         /// Internal storage of navigation data.
+         /** Performs an appropriate validity check based on the
+          * desired validity.
+          * @param[in] ndp The NavDataPtr object whose validity is to
+          *   be checked.
+          * @param[in] valid The desired validity for navigation data.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
+          * @return true if the validity of ndp matches the requested
+          *   validity described by valid and the health status of the
+          *   transmitting satellite matches xmitHealth. */
+      bool validityCheck(const NavDataPtr& ndp,
+                         NavValidityType valid,
+                         SVHealth xmitHealth);
+
+         /** Check the SV health status of the transmitting satellite
+          * of a navigation message.
+          * @param[in] ndp A pointer to the NavData to verify.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
+          * @return true if the health status of the satellite that
+          *   transmitted ndp matches xmitHealth. */
+      bool matchHealth(NavData *ndp, SVHealth xmitHealth);
+
+         /// Internal storage of navigation data for User searches
       NavMessageMap data;
+         /// Internal storage of navigation data for Nearest searches
+      NavNearMessageMap nearestData;
          // Time offset information is organized differently due to the use case
          /** Map that will contain all TimeOffsetData objects with the
           * same conversion pair broadcast at a given time. */

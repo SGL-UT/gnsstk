@@ -4,6 +4,9 @@
 #include "OrbitDataKepler.hpp"
 #include "NavHealthData.hpp"
 
+/// debug time string
+static const std::string dts("%Y/%03j/%02H:%02M:%02S");
+
 namespace gpstk
 {
    bool NavDataFactoryWithStore ::
@@ -11,9 +14,27 @@ namespace gpstk
         NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
         NavSearchOrder order)
    {
+      switch (order)
+      {
+         case NavSearchOrder::User:
+            return findUser(nmid, when, navData, xmitHealth, valid);
+         case NavSearchOrder::Nearest:
+            return findNearest(nmid, when, navData, xmitHealth, valid);
+         default:
+               // requested an invalid search order
+            return false;
+      }
+   }
 
-         /** Class for gathering matches in find().  It's only used in
-          * find so it is declared and implemented here alone. */
+
+   bool NavDataFactoryWithStore ::
+   findUser(const NavMessageID& nmid, const CommonTime& when,
+            NavDataPtr& navData, SVHealth xmitHealth,
+            NavValidityType valid)
+   {
+         /** Class for gathering matches in findUser().  It's only
+          * used in findUser so it is declared and implemented here
+          * alone. */
       class FindMatches
       {
       public:
@@ -145,7 +166,7 @@ namespace gpstk
             {
                // std::cerr << "Found something good at "
                //           << printTime(imi.it->first,
-               //                        "%Y/%03j/%02H:%02M:%02S")
+               //                        dts)
                //           << std::endl;
                if (imi.it->second->getUserTime() > mostRecent)
                {
@@ -159,9 +180,156 @@ namespace gpstk
          }
       }
       // std::cerr << "Most recent = "
-      //           << printTime(mostRecent, "%Y/%03j/%02H:%02M:%02S")
+      //           << printTime(mostRecent, dts)
       //           << std::endl;
       return rv;
+   }
+
+
+   bool NavDataFactoryWithStore ::
+   findNearest(const NavMessageID& nmid, const CommonTime& when,
+               NavDataPtr& navData, SVHealth xmitHealth,
+               NavValidityType valid)
+   {
+         /** Class for gathering matches in findNearest().  It's only
+          * used in findNearest so it is declared and implemented here
+          * alone. */
+      class FindMatches
+      {
+      public:
+         // FindMatches()
+         //       : map(nullptr)
+         // {}
+            /** Constructor for the iterator yielded by lower_bound.
+             * @param[in] theMap A pointer to the map containing the
+             *   matching data.
+             * @param[in] theIt The iterator referring to the result
+             *   from lower_bound.
+             */
+         FindMatches(NavNearMap *theMap, const NavNearMap::iterator& theIt,
+                     const CommonTime& t)
+               : map(theMap), itGT(theIt), when(t)
+         {
+               // set the "less than" iterator to an appropriate value
+            itLT = (itGT == theMap->begin() ? theMap->end() : std::prev(itGT));
+           
+         }
+         double getDistGT() const
+         { return itGT == map->end() ? 999e99 : fabs(itGT->first - when); }
+         double getDistLT() const
+         { return itLT == map->end() ? 999e99 : fabs(itLT->first - when); }
+         NavNearMap *map;
+         NavNearMap::iterator itGT, itLT;
+         const CommonTime& when;
+      };
+      using MatchList = std::list<FindMatches>;
+
+      // std::cerr << __PRETTY_FUNCTION__ << std::endl;
+         // dig through the maps of maps, matching keys with nmid along the way
+      auto dataIt = nearestData.find(nmid.messageType);
+      if (dataIt == nearestData.end())
+      {
+         // std::cerr << " false = not found 1" << std::endl;
+         return false; // not found.
+      }
+         // Make a collection of the NavMap iterators that match the
+         // requested NavMessageID.  If wildcards are used in the
+         // NavMessageID, we have to do a linear search for matches,
+         // otherwise we can do a direct match using map::find.  The
+         // bool of the pair in itMap is used to indicate that there
+         // is no point in further manipulating the iterator as it is
+         // either older than the most recent matching data or there's
+         // nothing more to find.
+      MatchList itList;
+      if (nmid.isWild())
+      {
+         // std::cerr << "wildcard search: " << nmid << std::endl;
+         for (NavNearSatMap::iterator sati = dataIt->second.begin();
+              sati != dataIt->second.end(); sati++)
+         {
+            if (sati->first != nmid)
+               continue; // skip non matches
+            // std::cerr << "  matches " << sati->first << std::endl
+            //           << "  when = " << gpstk::printTime(when,dts) << std::endl;
+            NavNearMap::iterator nmi = sati->second.lower_bound(when);
+            itList.push_back(FindMatches(&(sati->second), nmi, when));
+         }
+      }
+      else
+      {
+         // std::cerr << "non-wildcard search: " << nmid << std::endl;
+         auto sati = dataIt->second.find(nmid);
+         if (sati != dataIt->second.end())
+         {
+            // std::cerr << "  found" << std::endl;
+            NavNearMap::iterator nmi = sati->second.lower_bound(when);
+            itList.push_back(FindMatches(&(sati->second), nmi, when));
+         }
+         // else
+         // {
+         //    std::cerr << "  not found" << std::endl;
+         // }
+      }
+      bool done = itList.empty();
+      bool rv = false;
+      while (!done)
+      {
+         for (auto& imi : itList)
+         {
+            done = true; // default to being done.  Gets reset to false below.
+            if ((imi.itGT == imi.map->end()) && (imi.itLT == imi.map->end()))
+            {
+                  // nothing more to do, we've reached the end of both
+                  // directions
+               break;
+            }
+               // At this point we have up to two iterators that refer
+               // to data in a NavNearMap, which is a list of possible
+               // matches.  So we iterate through each item in the
+               // list until we find one that matches validity/health
+               // requirements and return that.  If we do *not* find a
+               // match in the list, then we increment or decrement
+               // the iterators accordingly and try again until we DO
+               // find a match or run out of options.
+            if ((imi.itGT != imi.map->end()) &&
+                ((imi.itLT == imi.map->end()) ||
+                 (fabs(imi.itGT->first - when) < fabs(imi.itLT->first - when))))
+            {
+                  // time for itGT is nearer to time of interest, try it first.
+               for (auto& ndpli : imi.itGT->second)
+               {
+                  if (validityCheck(ndpli, valid, xmitHealth))
+                  {
+                        // got a match
+                     navData = ndpli;
+                     return true;
+                  }
+               }
+                  // no match, so advance the iterator and try again
+               done = false;
+               ++(imi.itGT);
+            }
+            else
+            {
+                  // time for itLT is nearer to time of interest, try it first.
+               for (auto& ndpli : imi.itLT->second)
+               {
+                  if (validityCheck(ndpli, valid, xmitHealth))
+                  {
+                        // got a match
+                     navData = ndpli;
+                     return true;
+                  }
+               }
+                  // no match, so decrement the iterator and try again
+               done = false;
+               imi.itLT = (imi.itLT == imi.map->begin()
+                           ? imi.map->end()
+                           : std::prev(imi.itLT));
+            }
+         }
+      }
+      return false;
    }
 
 
@@ -171,16 +339,21 @@ namespace gpstk
              SVHealth xmitHealth, NavValidityType valid, NavSearchOrder order)
    {
          /// @todo implement "Nearest" search
-         /// @todo Implement xmitHealth matching
-      // std::cerr << printTime(when,"looking for %Y/%03j/%02H:%02M:%02S") << std::endl;
+      // std::cerr << printTime(when,"looking for "+dts) << std::endl;
       bool rv = false;
       TimeOffsetData::TimeCvtKey fwdKey(fromSys,toSys), bwdKey(toSys,fromSys);
          // These get set according to the direction of the search.
       TimeSystem getFromSys = fromSys, getToSys = toSys;
       bool reverse = false; // if true, we need to negate the offset
+         // First look in the offsetData map for the key matching the
+         // offset translation in the forward direction (fromSys->toSys).
       auto odi = offsetData.find(fwdKey);
       if (odi == offsetData.end())
       {
+            // Didn't find the key in the forward direction, try
+            // searching in the reverse direction (toSys->fromSys),
+            // which will then be subtracted instead of added, if
+            // an offset is available.
          // std::cerr << "did not find forward key" << std::endl;
          odi = offsetData.find(bwdKey);
          if (odi == offsetData.end())
@@ -205,47 +378,79 @@ namespace gpstk
          // std::cerr << "got end right away, backing up one" << std::endl;
          oemi = std::prev(oemi);
       }
-      // std::cerr << printTime(oemi->first,"found %Y/%03j/%02H:%02M:%02S") << std::endl;
-      for (const auto& omi : oemi->second)
+      // std::cerr << printTime(oemi->first,"found "+dts) << std::endl;
+      bool done = false;
+      while (!done)
       {
-         TimeOffsetData *todp = dynamic_cast<TimeOffsetData*>(omi.second.get());
-         if (todp == nullptr)
-            continue; // shouldn't happen.
-         switch (valid)
+         if (oemi == odi->second.end())
          {
-            case NavValidityType::ValidOnly:
-               if (omi.second->validate())
+               // give up, couldn't find any valid matches.
+            // std::cerr << "giving up, reached the end" << std::endl;
+            done = true;
+         }
+         else if (oemi->first > when)
+         {
+               // time of data is after the requested time of interest
+               // so back up if possible
+            oemi = (oemi == odi->second.begin()
+                    ? odi->second.end() : std::prev(oemi));
+            // std::cerr << printTime(oemi->first,"backed up to "+dts) << std::endl;
+         }
+         else
+         {
+            // std::cerr << "looking for acceptable data " << gpstk::StringUtils::asString(valid) << " " << gpstk::StringUtils::asString(xmitHealth) << std::endl;
+               // Message time is valid, so iterate through the
+               // per-signal data for a usable record (matching
+               // validity and transmit satellite health)
+            for (const auto& omi : oemi->second)
+            {
+               TimeOffsetData *todp = dynamic_cast<TimeOffsetData*>(
+                  omi.second.get());
+               // std::cerr << "checking " << todp->signal << std::endl;
+               if (todp == nullptr)
+                  continue; // shouldn't happen.
+               switch (valid)
                {
-                  rv = todp->getOffset(getFromSys, getToSys, when, offset);
-                  if (reverse)
-                     offset = -offset;
-                  return rv;
+                  case NavValidityType::ValidOnly:
+                     if (omi.second->validate() && matchHealth(todp,xmitHealth))
+                     {
+                        rv = todp->getOffset(getFromSys,getToSys,when,offset);
+                        if (reverse)
+                           offset = -offset;
+                        return rv;
+                     }
+                     break;
+                  case NavValidityType::InvalidOnly:
+                     if (!omi.second->validate() &&
+                         matchHealth(todp,xmitHealth))
+                     {
+                        rv = todp->getOffset(getFromSys,getToSys,when,offset);
+                        if (reverse)
+                           offset = -offset;
+                        return rv;
+                     }
+                     break;
+                  default:
+                     if (matchHealth(todp,xmitHealth))
+                     {
+                        rv = todp->getOffset(getFromSys,getToSys,when,offset);
+                        if (reverse)
+                           offset = -offset;
+                        return rv;
+                     }
+                     break;
                }
-               break;
-            case NavValidityType::InvalidOnly:
-               if (!omi.second->validate())
-               {
-                  rv = todp->getOffset(getFromSys, getToSys, when, offset);
-                  if (reverse)
-                     offset = -offset;
-                  return rv;
-               }
-               break;
-            default:
-               rv = todp->getOffset(getFromSys, getToSys, when, offset);
-               if (reverse)
-                  offset = -offset;
-               return rv;
-               break;
+            }
          }
       }
-      return false;
+      return rv;
    }
 
 
    void NavDataFactoryWithStore ::
    edit(const CommonTime& fromTime, const CommonTime& toTime)
    {
+         // edit transmit time storage
       for (auto mti = data.begin(); mti != data.end();)
       {
          for (auto sati = mti->second.begin(); sati != mti->second.end();)
@@ -273,6 +478,60 @@ namespace gpstk
             ++mti;
          }
       } // for (auto& mti : data)
+         // edit nearest storage
+         // iterate over message types
+      for (auto mti = nearestData.begin(); mti != nearestData.end();)
+      {
+            // iterate over NavSatelliteIDs
+         for (auto sati = mti->second.begin(); sati != mti->second.end();)
+         {
+               // iterate over CommonTimes
+            for (auto cti = sati->second.begin(); cti != sati->second.end();)
+            {
+                  // and iterate over the list.
+               for (auto ndpli = cti->second.begin();
+                    ndpli != cti->second.end();)
+               {
+                  if (((*ndpli)->timeStamp < toTime) &&
+                      ((*ndpli)->timeStamp >= fromTime))
+                  {
+                     ndpli = cti->second.erase(ndpli);
+                  }
+                  else
+                  {
+                     ++ndpli;
+                  }
+               }
+                  // clean out empty maps
+               if (cti->second.empty())
+               {
+                  cti = sati->second.erase(cti);
+               }
+               else
+               {
+                  ++cti;
+               }
+            }
+               // clean out empty maps
+            if (sati->second.empty())
+            {
+               sati = mti->second.erase(sati);
+            }
+            else
+            {
+               ++sati;
+            }
+         }
+            // clean out empty maps
+         if (mti->second.empty())
+         {
+            mti = nearestData.erase(mti);
+         }
+         else
+         {
+            ++mti;
+         }
+      }
    }
 
 
@@ -280,6 +539,7 @@ namespace gpstk
    edit(const CommonTime& fromTime, const CommonTime& toTime,
         const NavSatelliteID& satID)
    {
+         // edit transmit time storage
       for (auto mti = data.begin(); mti != data.end();)
       {
          for (auto sati = mti->second.begin(); sati != mti->second.end();)
@@ -313,6 +573,66 @@ namespace gpstk
             ++mti;
          }
       }
+         // edit nearest storage
+         // iterate over message types
+      for (auto mti = nearestData.begin(); mti != nearestData.end();)
+      {
+            // iterate over NavSatelliteIDs
+         for (auto sati = mti->second.begin(); sati != mti->second.end();)
+         {
+            if (sati->first != satID)
+            {
+                  // not a match
+               ++sati;
+               continue;
+            }
+               // iterate over CommonTimes
+            for (auto cti = sati->second.begin(); cti != sati->second.end();)
+            {
+                  // and iterate over the list.
+               for (auto ndpli = cti->second.begin();
+                    ndpli != cti->second.end();)
+               {
+                  if (((*ndpli)->timeStamp < toTime) &&
+                      ((*ndpli)->timeStamp >= fromTime))
+                  {
+                     ndpli = cti->second.erase(ndpli);
+                  }
+                  else
+                  {
+                     ++ndpli;
+                  }
+               }
+                  // clean out empty maps
+               if (cti->second.empty())
+               {
+                  cti = sati->second.erase(cti);
+               }
+               else
+               {
+                  ++cti;
+               }
+            }
+               // clean out empty maps
+            if (sati->second.empty())
+            {
+               sati = mti->second.erase(sati);
+            }
+            else
+            {
+               ++sati;
+            }
+         }
+            // clean out empty maps
+         if (mti->second.empty())
+         {
+            mti = nearestData.erase(mti);
+         }
+         else
+         {
+            ++mti;
+         }
+      }
    }
 
 
@@ -329,6 +649,7 @@ namespace gpstk
    clear()
    {
       data.clear();
+      nearestData.clear();
    }
 
 
@@ -336,10 +657,14 @@ namespace gpstk
    addNavData(const NavDataPtr& nd)
    {
       TimeOffsetData *todp = nullptr;
+      // std::cerr << "addNavData user = " << nd->getUserTime() << "  nearest = "
+      //           << nd->getNearTime() << std::endl;
       if ((todp = dynamic_cast<TimeOffsetData*>(nd.get())) == nullptr)
       {
             // everything BUT TimeOffsetData
          data[nd->signal.messageType][nd->signal][nd->getUserTime()] = nd;
+         nearestData[nd->signal.messageType][nd->signal][nd->getNearTime()]
+            .push_back(nd);
          return true;
       }
          // TimeOffsetData
@@ -437,7 +762,6 @@ namespace gpstk
                  NavValidityType valid,
                  SVHealth xmitHealth)
    {
-      bool rv = true;
          // We can't check the validity of an invalid iterator, BUT we
          // have to say it's valid because otherwise the while loop in
          // find() breaks.
@@ -445,13 +769,23 @@ namespace gpstk
       {
          return true;
       }
+      return validityCheck(ti->second, valid, xmitHealth);
+   }
+
+
+   bool NavDataFactoryWithStore ::
+   validityCheck(const NavDataPtr& ndp,
+                 NavValidityType valid,
+                 SVHealth xmitHealth)
+   {
+      bool rv = true;
       switch (valid)
       {
          case NavValidityType::ValidOnly:
-            rv = ti->second->validate();
+            rv = ndp->validate();
             break;
          case NavValidityType::InvalidOnly:
-            rv = !ti->second->validate();
+            rv = !ndp->validate();
             break;
          default:
             rv = true;
@@ -466,17 +800,24 @@ namespace gpstk
          // We're already trying to get health information, seems like
          // we could/should avoid getting into a loop by just
          // returning what we have.
-      if (ti->second->signal.messageType == gpstk::NavMessageType::Health)
+      if (ndp->signal.messageType == gpstk::NavMessageType::Health)
       {
          return rv;
       }
+      return matchHealth(ndp.get(), xmitHealth);
+   }
+
+
+   bool NavDataFactoryWithStore ::
+   matchHealth(NavData *ndp, SVHealth xmitHealth)
+   {
+      bool rv = true;
          // Set to true if the health status matched.  If it remains
          // false, we have to do a look up of the health status of the
          // transmitting satellite because the presumed matched data
          // doesn't contain the health status of the transmitting
          // satellite.
       bool rvSet = false;
-      NavData *ndp = ti->second.get();
       OrbitDataKepler *orb;
       NavHealthData *hea;
       switch (xmitHealth)
@@ -485,7 +826,7 @@ namespace gpstk
          case SVHealth::Unhealthy:
          case SVHealth::Degraded:
                // make sure the health status is the desired state
-            if (ti->second->signal.sat == ti->second->signal.xmitSat)
+            if (ndp->signal.sat == ndp->signal.xmitSat)
             {
                   // If the subject and transmitting satellite are the
                   // same, assume the health state is up-to-date for
@@ -513,7 +854,7 @@ namespace gpstk
                   // information prior to the time stamp of the data
                   // we're interested in.
                NavDataPtr heaPtr;
-               NavMessageID nmid = ti->second->signal;
+               NavMessageID nmid = ndp->signal;
                nmid.messageType = NavMessageType::Health;
                   /** @todo This next statement kind of sort of
                    * enforces ephemeris health however it's possible,
@@ -523,7 +864,7 @@ namespace gpstk
                    * from ephemeris health.  Are there situations
                    * where that could yield incorrect results? */
                nmid.sat = nmid.xmitSat;
-               if (!find(nmid, ti->second->timeStamp, heaPtr,
+               if (!find(nmid, ndp->timeStamp, heaPtr,
                          SVHealth::Any, NavValidityType::Any,
                          NavSearchOrder::User))
                {
