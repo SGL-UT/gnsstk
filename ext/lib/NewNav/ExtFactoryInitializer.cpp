@@ -59,13 +59,13 @@ namespace gpstk
          std::cerr << "continuing ExtFactoryInitializer() " << this << std::endl;
          initialized = true;
             // create our factories
-         gpstk::NavDataFactoryPtr
-            ndfp1(std::make_shared<gpstk::YumaNavDataFactory>());
-         gpstk::NavDataFactoryPtr
-            ndfp2(std::make_shared<gpstk::SEMNavDataFactory>());
-            // ignore the return value
-         MultiFormatNavDataFactory::addFactory(ndfp1);
-         MultiFormatNavDataFactory::addFactory(ndfp2);
+         // gpstk::NavDataFactoryPtr
+         //    ndfp1(std::make_shared<gpstk::YumaNavDataFactory>());
+         // gpstk::NavDataFactoryPtr
+         //    ndfp2(std::make_shared<gpstk::SEMNavDataFactory>());
+         //    // ignore the return value
+         // MultiFormatNavDataFactory::addFactory(ndfp1);
+         // MultiFormatNavDataFactory::addFactory(ndfp2);
       }
    };
 
