@@ -128,6 +128,7 @@ endif()
 #============================================================
 
 if( BUILD_EXT )
+  add_definitions(-DBUILD_EXT)
   file( GLOB_RECURSE EXT_SRC_FILES "ext/lib/*.cpp" "ext/lib/*.c" )
   file( GLOB_RECURSE EXT_INC_FILES "ext/lib/*.h" "ext/lib/*.hpp" )
 

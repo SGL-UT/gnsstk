@@ -49,15 +49,15 @@ namespace gpstk
    class ExtFactoryInitializer
    {
    public:
-      static bool initialized;
+      // static bool initialized;
          /// Add gpstk ext factories to MultiFormatNavDataFactory
       ExtFactoryInitializer()
       {
-         std::cerr << "starting ExtFactoryInitializer() " << this << std::endl;
-         if (initialized)
-            return;
-         std::cerr << "continuing ExtFactoryInitializer() " << this << std::endl;
-         initialized = true;
+         // std::cerr << "starting ExtFactoryInitializer() " << this << std::endl;
+         // if (initialized)
+         //    return;
+         // std::cerr << "continuing ExtFactoryInitializer() " << this << std::endl;
+         // initialized = true;
             // create our factories
          // gpstk::NavDataFactoryPtr
          //    ndfp1(std::make_shared<gpstk::YumaNavDataFactory>());
@@ -69,6 +69,6 @@ namespace gpstk
       }
    };
 
-   bool ExtFactoryInitializer::initialized = false;
-   static ExtFactoryInitializer gpstkEFI;
+   // bool ExtFactoryInitializer::initialized = false;
+   // static ExtFactoryInitializer gpstkEFI;
 }

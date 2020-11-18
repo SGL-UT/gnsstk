@@ -47,6 +47,11 @@
 #include "PNBMultiGNSSNavDataFactory.hpp"
 #include "PNBGPSLNavDataFactory.hpp"
 #include "PNBGPSCNavDataFactory.hpp"
+#ifdef BUILD_EXT
+// Support for Ext factories must be added here to enforce initialization order
+#include "YumaNavDataFactory.hpp"
+#include "SEMNavDataFactory.hpp"
+#endif
 
 namespace gpstk
 {
@@ -97,6 +102,14 @@ namespace gpstk
             // ignore the return value
          MultiFormatNavDataFactory::addFactory(ndfp1);
          MultiFormatNavDataFactory::addFactory(ndfp2);
+#ifdef BUILD_EXT
+         gpstk::NavDataFactoryPtr
+            ndfp3(std::make_shared<gpstk::YumaNavDataFactory>());
+         gpstk::NavDataFactoryPtr
+            ndfp4(std::make_shared<gpstk::SEMNavDataFactory>());
+         MultiFormatNavDataFactory::addFactory(ndfp3);
+         MultiFormatNavDataFactory::addFactory(ndfp4);
+#endif
 
          gpstk::PNBNavDataFactoryPtr
             lnav(std::make_shared<gpstk::PNBGPSLNavDataFactory>());
