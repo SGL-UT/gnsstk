@@ -872,6 +872,7 @@ sgltk_redhat:
 
 sgltk_windows:
   stage: downstream
+  needs: [user_install_windows]
   extends: .normal_job
   tags:
     - win10
@@ -884,9 +885,9 @@ sgltk_windows:
     - cd build_%CI_PIPELINE_ID%
     - cmake -DCMAKE_PREFIX_PATH=%CI_PROJECT_DIR%/build_%CI_PIPELINE_ID%/install -DCMAKE_INSTALL_PREFIX=install -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
     - cmake --build . --config Release
-  artifacts:
-    paths:
-    - build_%CI_PIPELINE_ID%/
+#  artifacts:
+#    paths:
+#    - build_%CI_PIPELINE_ID%/
   timeout: 30m
   dependencies:
     - user_install_windows
