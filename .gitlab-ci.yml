@@ -253,7 +253,7 @@ build_windows:
   script:
     - set
 # incremental builds
-    - if not exist "%CI_PROJECT_DIR%/build/" mkdir "%CI_PROJECT_DIR%/build"
+    - if not exist "build_%CI_PIPELINE_ID%" mkdir "build_%CI_PIPELINE_ID%"
 # non-incremental builds
 #    - mkdir build_%CI_PIPELINE_ID%
     - cd build_%CI_PIPELINE_ID%
