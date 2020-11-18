@@ -32,8 +32,8 @@ public:
    { return false; }
    bool getOffset(gpstk::TimeSystem fromSys, gpstk::TimeSystem toSys,
                   const gpstk::CommonTime& when, gpstk::NavDataPtr& offset,
-                  gpstk::SVHealth xmitHealth, gpstk::NavValidityType valid,
-                  gpstk::NavSearchOrder order) override
+                  gpstk::SVHealth xmitHealth, gpstk::NavValidityType valid)
+      override
    { return false; }
    bool addDataSource(const std::string& source) override
    { return false; }

@@ -1087,8 +1087,7 @@ getOffsetTest()
    double offset;
    TUASSERT(fact1.getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC,
                             ct+35, result, gpstk::SVHealth::Any,
-                            gpstk::NavValidityType::Any,
-                            gpstk::NavSearchOrder::User));
+                            gpstk::NavValidityType::Any));
    top = dynamic_cast<gpstk::TimeOffsetData*>(result.get());
    TUASSERT(top->getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC,
                            ct+35, offset));
@@ -1096,8 +1095,7 @@ getOffsetTest()
       // reverse the conversion and expect negative.
    TUASSERT(fact1.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::GPS,
                             ct+35, result, gpstk::SVHealth::Any,
-                            gpstk::NavValidityType::Any,
-                            gpstk::NavSearchOrder::User));
+                            gpstk::NavValidityType::Any));
    top = dynamic_cast<gpstk::TimeOffsetData*>(result.get());
    TUASSERT(top->getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::GPS,
                            ct+35, offset));
@@ -1105,8 +1103,7 @@ getOffsetTest()
       // expect this to not work
    TUASSERT(!fact1.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::BDT,
                              ct+35, result, gpstk::SVHealth::Any,
-                             gpstk::NavValidityType::Any,
-                             gpstk::NavSearchOrder::User));
+                             gpstk::NavValidityType::Any));
    TURETURN();
 }
 
@@ -1221,7 +1218,7 @@ getOffset2Test()
       // check getOffset with no restrictions on health or validity
    TUASSERTE(bool, true,
              uut.getOffset(gpstk::TimeSystem::GPS,gpstk::TimeSystem::UTC,
-                           findTime1,result,SH::Any,VT::Any,SO::User));
+                           findTime1,result,SH::Any,VT::Any));
    top = dynamic_cast<gpstk::TimeOffsetData*>(result.get());
    TUASSERT(top->getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC,
                            findTime1, offset));
@@ -1229,7 +1226,7 @@ getOffset2Test()
       // check getOffset requiring data from a healthy SV
    TUASSERTE(bool, true,
              uut.getOffset(gpstk::TimeSystem::GPS,gpstk::TimeSystem::UTC,
-                           findTime1,result,SH::Healthy,VT::Any,SO::User));
+                           findTime1,result,SH::Healthy,VT::Any));
    top = dynamic_cast<gpstk::TimeOffsetData*>(result.get());
    TUASSERT(top->getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC,
                            findTime1, offset));
@@ -1237,11 +1234,11 @@ getOffset2Test()
       // check getOffset with time prior to earliest data
    TUASSERTE(bool, false,
              uut.getOffset(gpstk::TimeSystem::GPS,gpstk::TimeSystem::UTC,
-                           findTime2,result,SH::Any,VT::Any,SO::User));
+                           findTime2,result,SH::Any,VT::Any));
       // check getOffset with time after most recent data
    TUASSERTE(bool, true,
              uut.getOffset(gpstk::TimeSystem::GPS,gpstk::TimeSystem::UTC,
-                           findTime3,result,SH::Any,VT::Any,SO::User));
+                           findTime3,result,SH::Any,VT::Any));
    top = dynamic_cast<gpstk::TimeOffsetData*>(result.get());
    TUASSERT(top->getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC,
                            findTime3, offset));

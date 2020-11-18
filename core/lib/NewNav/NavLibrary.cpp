@@ -57,10 +57,10 @@ namespace gpstk
    bool NavLibrary ::
    getOffset(TimeSystem fromSys, TimeSystem toSys,
              const CommonTime& when, double& offset, SVHealth xmitHealth,
-             NavValidityType valid, NavSearchOrder order)
+             NavValidityType valid)
    {
       NavDataPtr timeOffset;
-      if (getOffset(fromSys, toSys, when, timeOffset, xmitHealth, valid, order))
+      if (getOffset(fromSys, toSys, when, timeOffset, xmitHealth, valid))
       {
          TimeOffsetData *top = dynamic_cast<TimeOffsetData*>(timeOffset.get());
          return top->getOffset(fromSys, toSys, when, offset);
@@ -72,7 +72,7 @@ namespace gpstk
    bool NavLibrary ::
    getOffset(TimeSystem fromSys, TimeSystem toSys,
              const CommonTime& when, NavDataPtr& offset, SVHealth xmitHealth,
-             NavValidityType valid, NavSearchOrder order)
+             NavValidityType valid)
    {
          // Search through factories until we get a match or run out
          // of factories.  Use unique pointers to avoid double-searching.
@@ -84,7 +84,7 @@ namespace gpstk
             continue; // already processed
          uniques.insert(ndfp);
          if (fi->second->getOffset(fromSys, toSys, when, offset, xmitHealth,
-                                   valid, order))
+                                   valid))
          {
             return true;
          }

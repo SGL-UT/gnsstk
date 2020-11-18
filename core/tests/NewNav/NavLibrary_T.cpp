@@ -221,20 +221,17 @@ getOffsetTest()
    double result;
    TUASSERT(navLib.getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC,
                              ct+35, result, gpstk::SVHealth::Any,
-                             gpstk::NavValidityType::Any,
-                             gpstk::NavSearchOrder::User));
+                             gpstk::NavValidityType::Any));
    TUASSERTFE(23.0, result);
       // reverse the conversion and expect negative.
    TUASSERT(navLib.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::GPS,
                              ct+35, result, gpstk::SVHealth::Any,
-                             gpstk::NavValidityType::Any,
-                             gpstk::NavSearchOrder::User));
+                             gpstk::NavValidityType::Any));
    TUASSERTFE(-23.0, result);
       // expect this to not work
    TUASSERT(!navLib.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::BDT,
                               ct+35, result, gpstk::SVHealth::Any,
-                              gpstk::NavValidityType::Any,
-                              gpstk::NavSearchOrder::User));
+                              gpstk::NavValidityType::Any));
    TURETURN();
 }
 

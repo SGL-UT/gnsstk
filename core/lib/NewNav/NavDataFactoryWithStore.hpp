@@ -61,14 +61,12 @@ namespace gpstk
           *   transmitting satellite.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
-          * @param[in] order Specify whether to search by receiver
-          *   behavior or by nearest to when in time. 
           * @return true if an offset is available, false if not. */
       bool getOffset(TimeSystem fromSys, TimeSystem toSys,
                      const CommonTime& when, NavDataPtr& offset,
                      SVHealth xmitHealth = SVHealth::Any,
-                     NavValidityType valid = NavValidityType::ValidOnly,
-                     NavSearchOrder order = NavSearchOrder::User) override;
+                     NavValidityType valid = NavValidityType::ValidOnly)
+         override;
 
          /** Remove all data from the internal storage in the time
           * span [fromTime,toTime).

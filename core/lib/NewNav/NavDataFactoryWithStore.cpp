@@ -336,7 +336,7 @@ namespace gpstk
    bool NavDataFactoryWithStore ::
    getOffset(TimeSystem fromSys, TimeSystem toSys,
              const CommonTime& when, NavDataPtr& offset,
-             SVHealth xmitHealth, NavValidityType valid, NavSearchOrder order)
+             SVHealth xmitHealth, NavValidityType valid)
    {
          /// @todo implement "Nearest" search
       // std::cerr << printTime(when,"looking for "+dts) << std::endl;
