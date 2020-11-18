@@ -64,7 +64,7 @@ namespace gpstk
           *   behavior or by nearest to when in time. 
           * @return true if an offset is available, false if not. */
       virtual bool getOffset(TimeSystem fromSys, TimeSystem toSys,
-                             const CommonTime& when, double& offset,
+                             const CommonTime& when, NavDataPtr& offset,
                              SVHealth xmitHealth = SVHealth::Any,
                              NavValidityType valid = NavValidityType::ValidOnly,
                              NavSearchOrder order = NavSearchOrder::User) = 0;

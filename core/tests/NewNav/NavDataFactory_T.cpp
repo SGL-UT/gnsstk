@@ -31,7 +31,7 @@ public:
              gpstk::NavValidityType valid, gpstk::NavSearchOrder order) override
    { return false; }
    bool getOffset(gpstk::TimeSystem fromSys, gpstk::TimeSystem toSys,
-                  const gpstk::CommonTime& when, double& offset,
+                  const gpstk::CommonTime& when, gpstk::NavDataPtr& offset,
                   gpstk::SVHealth xmitHealth, gpstk::NavValidityType valid,
                   gpstk::NavSearchOrder order) override
    { return false; }

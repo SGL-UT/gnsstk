@@ -109,11 +109,14 @@ getConversionsTest()
    TUDEF("GPSLNavTimeOffset", "getConversions");
    gpstk::TimeOffsetData::TimeCvtSet convs;
    gpstk::GPSLNavTimeOffset offs;
-   gpstk::TimeOffsetData::TimeCvtKey key(gpstk::TimeSystem::GPS,
-                                         gpstk::TimeSystem::UTC);
+   gpstk::TimeOffsetData::TimeCvtKey key1(gpstk::TimeSystem::GPS,
+                                          gpstk::TimeSystem::UTC);
+   gpstk::TimeOffsetData::TimeCvtKey key2(gpstk::TimeSystem::UTC,
+                                          gpstk::TimeSystem::GPS);
    TUCATCH(convs = offs.getConversions());
-   TUASSERTE(size_t, 1, convs.size());
-   TUASSERTE(size_t, 1, convs.count(key));
+   TUASSERTE(size_t, 2, convs.size());
+   TUASSERTE(size_t, 1, convs.count(key1));
+   TUASSERTE(size_t, 1, convs.count(key2));
    TURETURN();
 }
 

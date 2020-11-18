@@ -126,11 +126,14 @@ getConversionsTest()
       // This looks a bit weird, but basically getConversions is
       // expected to return a set containing one key pair for GPS to
       // the target time system, which by default is Unknown.
-   gpstk::TimeOffsetData::TimeCvtKey key(gpstk::TimeSystem::GPS,
-                                         gpstk::TimeSystem::Unknown);
+   gpstk::TimeOffsetData::TimeCvtKey key1(gpstk::TimeSystem::GPS,
+                                          gpstk::TimeSystem::Unknown);
+   gpstk::TimeOffsetData::TimeCvtKey key2(gpstk::TimeSystem::Unknown,
+                                          gpstk::TimeSystem::GPS);
    TUCATCH(convs = offs.getConversions());
-   TUASSERTE(size_t, 1, convs.size());
-   TUASSERTE(size_t, 1, convs.count(key));
+   TUASSERTE(size_t, 2, convs.size());
+   TUASSERTE(size_t, 1, convs.count(key1));
+   TUASSERTE(size_t, 1, convs.count(key2));
    TURETURN();
 }
 

@@ -59,6 +59,21 @@ namespace gpstk
              const CommonTime& when, double& offset, SVHealth xmitHealth,
              NavValidityType valid, NavSearchOrder order)
    {
+      NavDataPtr timeOffset;
+      if (getOffset(fromSys, toSys, when, timeOffset, xmitHealth, valid, order))
+      {
+         TimeOffsetData *top = dynamic_cast<TimeOffsetData*>(timeOffset.get());
+         return top->getOffset(fromSys, toSys, when, offset);
+      }
+      return false;
+   }
+
+
+   bool NavLibrary ::
+   getOffset(TimeSystem fromSys, TimeSystem toSys,
+             const CommonTime& when, NavDataPtr& offset, SVHealth xmitHealth,
+             NavValidityType valid, NavSearchOrder order)
+   {
          // Search through factories until we get a match or run out
          // of factories.  Use unique pointers to avoid double-searching.
       std::set<NavDataFactory*> uniques;

@@ -335,38 +335,22 @@ namespace gpstk
 
    bool NavDataFactoryWithStore ::
    getOffset(TimeSystem fromSys, TimeSystem toSys,
-             const CommonTime& when, double& offset,
+             const CommonTime& when, NavDataPtr& offset,
              SVHealth xmitHealth, NavValidityType valid, NavSearchOrder order)
    {
          /// @todo implement "Nearest" search
       // std::cerr << printTime(when,"looking for "+dts) << std::endl;
       bool rv = false;
-      TimeOffsetData::TimeCvtKey fwdKey(fromSys,toSys), bwdKey(toSys,fromSys);
-         // These get set according to the direction of the search.
-      TimeSystem getFromSys = fromSys, getToSys = toSys;
-      bool reverse = false; // if true, we need to negate the offset
+         // Only search for forward key and let the TimeOffset classes
+         // and factories handle the reverse offset.
+      TimeOffsetData::TimeCvtKey fwdKey(fromSys,toSys);
          // First look in the offsetData map for the key matching the
          // offset translation in the forward direction (fromSys->toSys).
       auto odi = offsetData.find(fwdKey);
       if (odi == offsetData.end())
       {
-            // Didn't find the key in the forward direction, try
-            // searching in the reverse direction (toSys->fromSys),
-            // which will then be subtracted instead of added, if
-            // an offset is available.
-         // std::cerr << "did not find forward key" << std::endl;
-         odi = offsetData.find(bwdKey);
-         if (odi == offsetData.end())
-         {
-            // std::cerr << "did not find reverse key, giving up" << std::endl;
-            return false; // no conversion available in either direction
-         }
-         // std::cerr << "found reverse key" << std::endl;
-            // The offset we get is actually going to fromSys from
-            // toSys so negate the offset at the end.
-         getFromSys = toSys;
-         getToSys = fromSys;
-         reverse = true;
+            // std::cerr << "did not find key, giving up" << std::endl;
+         return false; // no conversion available
       }
       // else
       // {
@@ -414,29 +398,23 @@ namespace gpstk
                   case NavValidityType::ValidOnly:
                      if (omi.second->validate() && matchHealth(todp,xmitHealth))
                      {
-                        rv = todp->getOffset(getFromSys,getToSys,when,offset);
-                        if (reverse)
-                           offset = -offset;
-                        return rv;
+                        offset = omi.second;
+                        return true;
                      }
                      break;
                   case NavValidityType::InvalidOnly:
                      if (!omi.second->validate() &&
                          matchHealth(todp,xmitHealth))
                      {
-                        rv = todp->getOffset(getFromSys,getToSys,when,offset);
-                        if (reverse)
-                           offset = -offset;
-                        return rv;
+                        offset = omi.second;
+                        return true;
                      }
                      break;
                   default:
                      if (matchHealth(todp,xmitHealth))
                      {
-                        rv = todp->getOffset(getFromSys,getToSys,when,offset);
-                        if (reverse)
-                           offset = -offset;
-                        return rv;
+                        offset = omi.second;
+                        return true;
                      }
                      break;
                }
