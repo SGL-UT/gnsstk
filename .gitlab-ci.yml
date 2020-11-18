@@ -21,7 +21,7 @@ variables:
   SGLTK_BRANCH: issue_341
   DOCKER_REGISTRY: "modisdev:5000/sgl_ci"
   # this can be used for incremental builds
-  # GIT_CLEAN_FLAGS: none
+  #  GIT_CLEAN_FLAGS: none
   # This can be set to True by Gitlab UI to only build/test packages.
   RELEASE_ONLY: "False"
   REPO_HOST: "repositories.arlut.utexas.edu"
@@ -515,7 +515,7 @@ user_install_windows:
     - cmake --build . --config Release --target install
   artifacts:
     paths:
-      - build_%CI_PIPELINE_ID%/install
+      - build_%CI_PIPELINE_ID%
   dependencies:
     - build_windows
 # Temporarily allow failures as Windows Runner issues are resolved
