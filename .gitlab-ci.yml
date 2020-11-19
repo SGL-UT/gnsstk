@@ -884,7 +884,7 @@ sgltk_windows:
     - mkdir build_%CI_PIPELINE_ID%
     - cd build_%CI_PIPELINE_ID%
     - cmake -DCMAKE_PREFIX_PATH=%CI_PROJECT_DIR%/build_%CI_PIPELINE_ID%/install -DCMAKE_INSTALL_PREFIX=install -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
-    - cmake --build . --config Release
+    - cmake --build . --config Release --trace
 #  artifacts:
 #    paths:
 #    - build_%CI_PIPELINE_ID%/
