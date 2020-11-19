@@ -258,7 +258,7 @@ build_windows:
     - mkdir build_%CI_PIPELINE_ID%
     - cd build_%CI_PIPELINE_ID%
     - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" --trace ../
-    - cmake --build . --trace
+    - cmake --build .
   artifacts:
     paths:
     - build_%CI_PIPELINE_ID%/
@@ -434,7 +434,7 @@ test_windows:
   script:
     - set
     - cd build_%CI_PIPELINE_ID%
-    - cmake --build . --target RUN_TESTS --trace
+    - cmake --build . --target RUN_TESTS
   artifacts:
     when: on_failure
     paths:
@@ -512,7 +512,7 @@ user_install_windows:
   script:
     - set
     - cd build_%CI_PIPELINE_ID%
-    - cmake --build . --target install --trace
+    - cmake --build . --target install
   artifacts:
     paths:
       - build_%CI_PIPELINE_ID%
@@ -888,7 +888,7 @@ sgltk_windows:
     - mkdir build_%CI_PIPELINE_ID%
     - cd build_%CI_PIPELINE_ID%
     - cmake -DCMAKE_PREFIX_PATH=%CI_PROJECT_DIR%/build_%CI_PIPELINE_ID%/install -DCMAKE_INSTALL_PREFIX=install -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" --trace ../
-    - cmake --build . --trace
+    - cmake --build .
 #  artifacts:
 #    paths:
 #    - build_%CI_PIPELINE_ID%/
