@@ -878,6 +878,10 @@ sgltk_windows:
     - win10
   script:
     - set
+    - cd
+    - dir %CI_PROJECT_DIR%
+    - dir %CI_PROJECT_DIR%\build_%CI_PIPELINE_ID%
+    - dir %CI_PROJECT_DIR%\build_%CI_PIPELINE_ID%\install
     - cd build_%CI_PIPELINE_ID%
     - git clone -b %SGLTK_BRANCH% https://repositories.arlut.utexas.edu/sgl/sgltk.git
     - cd sgltk
