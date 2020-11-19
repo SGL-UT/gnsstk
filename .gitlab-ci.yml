@@ -258,7 +258,7 @@ build_windows:
     - mkdir build_%CI_PIPELINE_ID%
     - cd build_%CI_PIPELINE_ID%
     - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" --trace ../
-    - cmake --build . -j 6 --trace
+    - cmake --build . --trace
   artifacts:
     paths:
     - build_%CI_PIPELINE_ID%/
