@@ -36,7 +36,7 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "GPSCNavEph.hpp"
+#include "GPSCNav2Eph.hpp"
 #include "GPSWeekSecond.hpp"
 #include "TimeString.hpp"
 
@@ -44,54 +44,47 @@ using namespace std;
 
 namespace gpstk
 {
-   GPSCNavEph ::
-   GPSCNavEph()
-         : pre11(0),
-           preClk(0),
-           healthL1(true),
-           healthL2(true),
-           healthL5(true),
+   const double GPSCNav2Eph::refAGPS = 26559710;
+   const double GPSCNav2Eph::refOMEGAdotGPS = -2.6e-9 * PI;
+
+   GPSCNav2Eph ::
+   GPSCNav2Eph()
+         : healthL1C(true),
            uraED(-16),
            uraNED0(-16),
            uraNED1(0),
            uraNED2(0),
-           alert11(false),
-           alertClk(false),
            integStat(false),
-           phasingL2C(false),
            deltaA(0.0),
            dOMEGAdot(0.0),
            top(gpstk::CommonTime::BEGINNING_OF_TIME),
-           xmit11(gpstk::CommonTime::BEGINNING_OF_TIME),
-           xmitClk(gpstk::CommonTime::BEGINNING_OF_TIME)
+           tgd(0.0),
+           iscL1CP(0.0),
+           iscL1CD(0.0)
    {
       signal.messageType = NavMessageType::Ephemeris;
    }
 
 
-   bool GPSCNavEph ::
+   bool GPSCNav2Eph ::
    validate() const
    {
-      return GPSCNavData::validate() && ((pre11 == 0) || (pre11 == 0x8b)) &&
-         ((preClk == 0) || (preClk == 0x8b));
+         /// @todo implement some checks.
+      return true;
    }
 
 
-   CommonTime GPSCNavEph ::
+   CommonTime GPSCNav2Eph ::
    getUserTime() const
    {
-      CommonTime mr = std::max({xmitTime, xmit11, xmitClk});
-      if (signal.nav == NavType::GPSCNAVL2)
-         return mr + 12.0;
-      return mr + 6.0;
+      return xmitTime + 12.0;
    }
 
 
-   void GPSCNavEph ::
+   void GPSCNav2Eph ::
    fixFit()
    {
-      CommonTime xmit1st = std::min({xmitTime, xmit11, xmitClk});
-      GPSWeekSecond xws(xmit1st), toeWS(Toe);
+      GPSWeekSecond xws(xmitTime), toeWS(Toe);
       int xmitWeek = xws.week;
       long xmitSOW = (long) xws.sow;
          /** @todo replace all these magic numbers with named
@@ -125,9 +118,10 @@ namespace gpstk
    }
 
 
-   void GPSCNavEph ::
+   void GPSCNav2Eph ::
    dumpSVStatus(std::ostream& s) const
    {
+         /// @todo add the remaining class-specific data
       const ios::fmtflags oldFlags = s.flags();
       s.setf(ios::fixed, ios::floatfield);
       s.setf(ios::right, ios::adjustfield);
@@ -154,18 +148,13 @@ namespace gpstk
         << "           SV STATUS"
         << endl
         << endl
-        << "Health bits  L1, L2, L5        :     " << setfill('0') << setw(1)
-        << healthL1 << ",  " << healthL2 << ",  " << healthL5
-        << endl
-        << "L2C Phasing                    :     " << setfill(' ')
-        << phasingL2C << " (0=quadrature, 1=in-phase)"
+        << "Health L1C                     :     " << setfill('0') << setw(1)
+        << healthL1C
         << endl << endl << endl
         << "           TRANSMIT TIMES" << endl << endl
         << "              Week(10bt)     SOW     DOW   UTD     SOD"
         << "   MM/DD/YYYY   HH:MM:SS" << endl
-        << "Message 10:   " << printTime(xmitTime, dumpTimeFmt) << endl
-        << "Message 11:   " << printTime(xmit11, dumpTimeFmt) << endl
-        << "Clock:        " << printTime(xmitClk, dumpTimeFmt) << endl;
+        << "Subframe 2:   " << printTime(xmitTime, dumpTimeFmt) << endl;
       s.flags(oldFlags);
    }
 }

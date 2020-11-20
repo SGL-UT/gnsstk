@@ -44,6 +44,7 @@
 #include "GPSLNavEph.hpp"
 #include "GPSLNavAlm.hpp"
 #include "PNBGPSCNavDataFactory.hpp"
+#include "PNBGPSCNav2DataFactory.hpp"
 #include "GPSCNavTimeOffset.hpp"
 #include "GPSCNavHealth.hpp"
 #include "GPSCNavEph.hpp"
@@ -133,6 +134,7 @@ constructorTest()
    TUDEF("PNBMultiGNSSNavDataFactory", "PNBMultiGNSSNavDataFactory()");
    bool foundGPSLNav = false;
    bool foundGPSCNav = false;
+   bool foundGPSCNav2 = false;
    bool foundTest = false;
       // Iterate over the factories and try to find the expected
       // factory objects.  The factories map may also contain ext
@@ -148,6 +150,10 @@ constructorTest()
       {
          foundGPSCNav = true;
       }
+      else if (dynamic_cast<gpstk::PNBGPSCNav2DataFactory*>(p) != nullptr)
+      {
+         foundGPSCNav2 = true;
+      }
       else if (dynamic_cast<PNBTestFactory*>(p) != nullptr)
       {
          foundTest = true;
@@ -155,6 +161,7 @@ constructorTest()
    }
    TUASSERT(foundGPSLNav);
    TUASSERT(foundGPSCNav);
+   TUASSERT(foundGPSCNav2);
    TUASSERT(foundTest);
    TURETURN();
 }

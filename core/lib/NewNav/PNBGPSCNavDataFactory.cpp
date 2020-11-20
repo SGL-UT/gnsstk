@@ -684,7 +684,7 @@ namespace gpstk
          // set of data, and we've already enforced they're the same
          // above.
       eph->Toe = eph->Toc = GPSWeekSecond(wn,toe10);
-         // healthy is set below
+         // health is set below
       eph->Cuc = ephSF[esiCuc]->asSignedDouble(esbCuc,enbCuc,escCuc);
       eph->Cus = ephSF[esiCus]->asSignedDouble(esbCus,enbCus,escCus);
       eph->Crc = ephSF[esiCrc]->asSignedDouble(esbCrc,enbCrc,escCrc);
