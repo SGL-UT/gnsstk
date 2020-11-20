@@ -466,27 +466,22 @@ namespace gpstk
       eph->uraED = navIn->asLong(esbURA,enbURA,escURA);
       unsigned wnop = navIn->asUnsignedLong(esbWNop,enbWNop,escWNop);
       double top = navIn->asUnsignedLong(esbtop,enbtop,esctop);
-      cerr << "wnop(before)=" << wnop;
       wnop = timeAdjust8BitWeekRollover(wnop, wn);
       eph->top = GPSWeekSecond(wnop,top);
-      cerr << "  wn=" << wn << "  wnop=" << wnop << "  top=" << top << endl;
       eph->uraNED0= navIn->asLong(esbURAned0,enbURAned0,escURAned0);
       eph->uraNED1= navIn->asUnsignedLong(esbURAned1,enbURAned1,escURAned1);
       eph->uraNED2= navIn->asUnsignedLong(esbURAned2,enbURAned2,escURAned2);
          // We have to decode tgd twice unfortunately because a
          // special bit pattern is used to indicate tgd is invalid.
       unsigned long tgdBits = navIn->asUnsignedLong(esbTGD,enbTGD,1);
-      cerr << "tgdBits = " << hex << tgdBits << dec << endl;
       if (tgdBits == 0x1000)
       {
-         cerr << "setting tgd to nan" << endl;
             // set to NaN because tgd is not available
          eph->tgd = std::numeric_limits<float>::quiet_NaN();
       }
       else
       {
          eph->tgd = navIn->asSignedDouble(esbTGD,enbTGD,escTGD);
-         cerr << "set tgd to " << eph->tgd << endl;
       }
       eph->iscL1CP = navIn->asSignedDouble(esbISCL1CP,enbISCL1CP,escISCL1CP);
       eph->iscL1CD = navIn->asSignedDouble(esbISCL1CD,enbISCL1CD,escISCL1CD);
