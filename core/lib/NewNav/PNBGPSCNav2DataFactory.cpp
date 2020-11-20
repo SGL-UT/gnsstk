@@ -480,7 +480,8 @@ namespace gpstk
       if (tgdBits == 0x1000)
       {
          cerr << "setting tgd to nan" << endl;
-         eph->tgd = 0./0.; // set to NaN because tgd is not available
+            // set to NaN because tgd is not available
+         eph->tgd = std::numeric_limits<float>::quiet_NaN();
       }
       else
       {
