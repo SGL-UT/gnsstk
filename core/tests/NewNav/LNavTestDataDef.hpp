@@ -66,6 +66,7 @@ ephLNAVGPSSF1->addUnsignedLong(0x39F53CB5,30,1);
 ephLNAVGPSSF1->addUnsignedLong(0x128070A8,30,1);
 ephLNAVGPSSF1->addUnsignedLong(0x003FF454,30,1);
 ephLNAVGPSSF1->addUnsignedLong(0x3EAFC2F0,30,1);
+ephLNAVGPSSF1->trimsize();
 
 ephLNAVGPSSF2 = std::make_shared<gpstk::PackedNavBits>(ephLNAVGPSSid,oidLNAVGPS,
                                                        ephLNAVGPSSF2ct);
@@ -80,6 +81,7 @@ ephLNAVGPSSF2->addUnsignedLong(0x09D171E1,30,1);
 ephLNAVGPSSF2->addUnsignedLong(0x04B0A847,30,1);
 ephLNAVGPSSF2->addUnsignedLong(0x03497656,30,1);
 ephLNAVGPSSF2->addUnsignedLong(0x00709FA0,30,1);
+ephLNAVGPSSF2->trimsize();
 
 ephLNAVGPSSF3 = std::make_shared<gpstk::PackedNavBits>(ephLNAVGPSSid,oidLNAVGPS,
                                                        ephLNAVGPSSF3ct);
@@ -94,6 +96,7 @@ ephLNAVGPSSF3->addUnsignedLong(0x062ECB6F,30,1);
 ephLNAVGPSSF3->addUnsignedLong(0x1C48068F,30,1);
 ephLNAVGPSSF3->addUnsignedLong(0x3FE95E1E,30,1);
 ephLNAVGPSSF3->addUnsignedLong(0x12844624,30,1);
+ephLNAVGPSSF3->trimsize();
 
 almLNAVGPS25 = std::make_shared<gpstk::PackedNavBits>(almLNAVGPSSid,oidLNAVGPS,
                                                       almLNAVGPS25ct);
@@ -108,6 +111,7 @@ almLNAVGPS25->addUnsignedLong(0x39A2E96D,30,1);
 almLNAVGPS25->addUnsignedLong(0x075C3A2E,30,1);
 almLNAVGPS25->addUnsignedLong(0x117733C7,30,1);
 almLNAVGPS25->addUnsignedLong(0x3E3FF848,30,1);
+almLNAVGPS25->trimsize();
 
 almLNAVGPS26 = std::make_shared<gpstk::PackedNavBits>(almLNAVGPSSid,oidLNAVGPS,
                                                       almLNAVGPS26ct);
@@ -122,6 +126,7 @@ almLNAVGPS26->addUnsignedLong(0x3994EFA9,30,1);
 almLNAVGPS26->addUnsignedLong(0x3D38AA68,30,1);
 almLNAVGPS26->addUnsignedLong(0x0E3E305F,30,1);
 almLNAVGPS26->addUnsignedLong(0x3CBFE0A0,30,1);
+almLNAVGPS26->trimsize();
 
 pg51LNAVGPS = std::make_shared<gpstk::PackedNavBits>(almLNAVGPSSid,oidLNAVGPS,
                                                      pg51LNAVGPSct);
@@ -136,6 +141,7 @@ pg51LNAVGPS->addUnsignedLong(0x00000016,30,1);
 pg51LNAVGPS->addUnsignedLong(0x00000029,30,1);
 pg51LNAVGPS->addUnsignedLong(0x00000016,30,1);
 pg51LNAVGPS->addUnsignedLong(0x0000008C,30,1);
+pg51LNAVGPS->trimsize();
 
 pg63LNAVGPS = std::make_shared<gpstk::PackedNavBits>(almLNAVGPSSid,oidLNAVGPS,
                                                      pg63LNAVGPSct);
@@ -150,6 +156,7 @@ pg63LNAVGPS->addUnsignedLong(0x26EEEE6C,30,1);
 pg63LNAVGPS->addUnsignedLong(0x2AEA402C,30,1);
 pg63LNAVGPS->addUnsignedLong(0x00000000,30,1);
 pg63LNAVGPS->addUnsignedLong(0x00000000,30,1);
+pg63LNAVGPS->trimsize();
 
 pg56LNAVGPS = std::make_shared<gpstk::PackedNavBits>(almLNAVGPSSid,oidLNAVGPS,
                                                      pg56LNAVGPSct);
@@ -164,3 +171,4 @@ pg56LNAVGPS->addUnsignedLong(0x0000003F,30,1);
 pg56LNAVGPS->addUnsignedLong(0x01491376,30,1);
 pg56LNAVGPS->addUnsignedLong(0x044EC0EB,30,1);
 pg56LNAVGPS->addUnsignedLong(0x044000D8,30,1);
+pg56LNAVGPS->trimsize();

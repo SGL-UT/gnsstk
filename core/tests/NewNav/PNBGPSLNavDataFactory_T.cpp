@@ -78,6 +78,8 @@ public:
    unsigned addDataTimeTest();
       /// One additional combo test with no particular meaning behind selection.
    unsigned addDataEphHealthTest();
+      /// Test validity checking.
+   unsigned addDataValidityTest();
    unsigned processEphTest();
    unsigned processAlmOrbTest();
    unsigned processSVID51Test();
@@ -416,6 +418,52 @@ addDataEphHealthTest()
    TUASSERTE(size_t, 24, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 24, heaCount);
+   navOut.clear();
+   TURETURN();
+}
+
+
+unsigned PNBGPSLNavDataFactory_T ::
+addDataValidityTest()
+{
+   TUDEF("PNBGPSLNavDataFactory", "addData");
+   gpstk::PNBGPSLNavDataFactory uut;
+   gpstk::NavDataPtrList navOut;
+      // make a copy of page 63 and tweak a bit for bad parity
+   gpstk::PackedNavBitsPtr pg63Bad = std::make_shared<gpstk::PackedNavBits>(
+      *pg63LNAVGPS);
+   pg63Bad->insertUnsignedLong(0, 29, 1);
+   cerr << *pg63Bad << endl << *pg63LNAVGPS << endl;
+      // default = all validity
+      // add page 63, expect 8 health
+   TUASSERTE(bool, true, uut.addData(pg63LNAVGPS, navOut));
+   TUASSERTE(size_t, 8, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 8, heaCount);
+   navOut.clear();
+      // check valid only
+   uut.setValidityFilter(gpstk::NavValidityType::ValidOnly);
+      // add page 63, expect 8 health
+   TUASSERTE(bool, true, uut.addData(pg63LNAVGPS, navOut));
+   TUASSERTE(size_t, 8, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 8, heaCount);
+   navOut.clear();
+      // add BAD page 63, expect nothing
+   TUASSERTE(bool, true, uut.addData(pg63Bad, navOut));
+   TUASSERTE(size_t, 0, navOut.size());
+   navOut.clear();
+      // check invalid only
+   uut.setValidityFilter(gpstk::NavValidityType::InvalidOnly);
+      // add page 63, expect nothing
+   TUASSERTE(bool, true, uut.addData(pg63LNAVGPS, navOut));
+   TUASSERTE(size_t, 0, navOut.size());
+   navOut.clear();
+      // add BAD page 63, expect 8 health.
+   TUASSERTE(bool, true, uut.addData(pg63Bad, navOut));
+   TUASSERTE(size_t, 8, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 8, heaCount);
    navOut.clear();
    TURETURN();
 }
@@ -885,6 +933,7 @@ int main()
    errorTotal += testClass.addDataHealthTest();
    errorTotal += testClass.addDataTimeTest();
    errorTotal += testClass.addDataEphHealthTest();
+   errorTotal += testClass.addDataValidityTest();
    errorTotal += testClass.processEphTest();
    errorTotal += testClass.processAlmOrbTest();
    errorTotal += testClass.processSVID51Test();

@@ -42,6 +42,7 @@
 #include "GPSLNavHealth.hpp"
 #include "GPSLNavTimeOffset.hpp"
 #include "TimeCorrection.hpp"
+#include "EngNav.hpp"
 
 using namespace std;
 
@@ -288,6 +289,33 @@ namespace gpstk
             */
          unsigned long sfid = navIn->asUnsignedLong(49,3,1);
          unsigned long svid = 0;
+         bool checkParity = false, expParity = false;
+         switch (navValidity)
+         {
+            case NavValidityType::ValidOnly:
+               checkParity = true;
+               expParity = true;
+               break;
+            case NavValidityType::InvalidOnly:
+               checkParity = true;
+               expParity = false;
+               break;
+         }
+         if (checkParity)
+         {
+               /// @todo maybe someday add a parity check to PackedNavBits
+               // Convert the PackedNavBits into 10 30-bit words so we
+               // can use EngNav::checkParity.
+            uint32_t sf[10];
+            for (unsigned i = 0, j = 0; i < 300; i += 30, j++)
+            {
+               sf[j] = navIn->asUnsignedLong(i, 30, 1);
+            }
+               /// @todo Are the nav subframes really known to be upright?
+            bool parity = EngNav::checkParity(sf);
+            if (parity != expParity)
+               return true;
+         }
          switch (sfid)
          {
             case 1:
