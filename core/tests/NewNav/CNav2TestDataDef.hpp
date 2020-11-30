@@ -68,6 +68,7 @@ sf2CNAV2GPS->addUnsignedLong(0xD8830057, 32, 1);
 sf2CNAV2GPS->addUnsignedLong(0x6003DA5F, 32, 1);
 sf2CNAV2GPS->addUnsignedLong(0xE5FFA004, 32, 1);
 sf2CNAV2GPS->addUnsignedLong(0x3E44C8, 24, 1);
+sf2CNAV2GPS->trimsize();
 
 sf3p1CNAV2GPSct = gpstk::GPSWeekSecond(2049,345600);
 sf3p1CNAV2GPS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2GPSsid,
@@ -83,6 +84,7 @@ sf3p1CNAV2GPS->addUnsignedLong(0xFDFDFF67, 32, 1);
 sf3p1CNAV2GPS->addUnsignedLong(0xC77CD7E6, 32, 1);
 sf3p1CNAV2GPS->addUnsignedLong(0xB000000F, 32, 1);
 sf3p1CNAV2GPS->addUnsignedLong(0xBA514000 >> 14, 18, 1);
+sf3p1CNAV2GPS->trimsize();
 
 sf3p2CNAV2GPSct = gpstk::GPSWeekSecond(2049,345618);
 sf3p2CNAV2GPS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2GPSsid,
@@ -98,6 +100,7 @@ sf3p2CNAV2GPS->addUnsignedLong(0x24BFEE0D, 32, 1);
 sf3p2CNAV2GPS->addUnsignedLong(0x48F6D230, 32, 1);
 sf3p2CNAV2GPS->addUnsignedLong(0x00000032, 32, 1);
 sf3p2CNAV2GPS->addUnsignedLong(0x16A84000 >> 14, 18, 1);
+sf3p2CNAV2GPS->trimsize();
 
 // faking some data since we don't have any data that contains real offsets
 sf3p2fakeCNAV2GPSct = gpstk::GPSWeekSecond(2049,345618);
@@ -122,6 +125,7 @@ sf3p2fakeCNAV2GPS->addUnsignedLong(0, 31, 1); // delta UTGPS
 sf3p2fakeCNAV2GPS->addUnsignedLong(0, 19, 1); // delta UTGPS dot
 sf3p2fakeCNAV2GPS->addUnsignedLong(0, 30, 1); // reserved
 sf3p2fakeCNAV2GPS->addUnsignedLong(0, 24, 1); // CRC
+sf3p2fakeCNAV2GPS->trimsize();
 
 sf3p4CNAV2GPSct = gpstk::GPSWeekSecond(2049,345636);
 sf3p4CNAV2GPS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2GPSsid,
@@ -137,3 +141,4 @@ sf3p4CNAV2GPS->addUnsignedLong(0xF8000000, 32, 1);
 sf3p4CNAV2GPS->addUnsignedLong(0x00000000, 32, 1);
 sf3p4CNAV2GPS->addUnsignedLong(0x0000001D, 32, 1);
 sf3p4CNAV2GPS->addUnsignedLong(0xB26C4000 >> 14, 18, 1);
+sf3p4CNAV2GPS->trimsize();
