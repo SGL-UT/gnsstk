@@ -49,6 +49,7 @@
 #include "TimeString.hpp"
 #include "CivilTime.hpp"
 #include "MJD.hpp"
+#include "RinexObsID.hpp"
 
 using namespace gpstk::StringUtils;
 using namespace std;
@@ -337,7 +338,7 @@ namespace gpstk
          s << " (Receiver)" << endl;
       else {
          if(PRN != -1 || SVN != -1) {
-           s << " (" << (type.substr(0,7) == string("GLONASS") ? "GLO" : "GPS");
+           s << " (" << RinexObsID::map1to3sys[string(1,systemChar)];
            if(PRN != -1) s << string(" PRN ") + asString(PRN);
            if(SVN != -1) s << string(" SVN ") + asString(SVN);
            s << ")";
