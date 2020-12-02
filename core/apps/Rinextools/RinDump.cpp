@@ -1104,6 +1104,68 @@ int Configuration::ProcessUserInput(int argc, char **argv)
          }
       }
       //return 1;
+
+      //// TEMP - table of wavelengths
+      //LOG(INFO) << "\nTable of freqs";
+      //for(size_t i=0; i<RinexObsID::validRinexSystems.size(); i++)
+      //{
+      //   char s(RinexObsID::validRinexSystems[i]);
+      //   string sys(RinexSatID(string(1,s)).systemString3());
+      //   RinexSatID sat(string(1,s));
+      //   SatelliteSystem satsys(sat.system);
+
+      //   vector<int> ifreq;
+      //   vector<double> wls;
+      //   vector<string> cbstr;
+      //   for(size_t j=0; j<RinexObsID::validRinexFrequencies.size(); j++) {
+      //      char f(RinexObsID::validRinexFrequencies[j]);
+      //      CarrierBand carBan(RinexObsID::char2cb[f]);
+      //      string tag(string(1,s)+string("C")+string(1,f) + "*");
+      //      RinexObsID obs(tag, useVersion);
+      //      string name(asString(obs));
+      //      if (name.find("Unknown") != string::npos ||
+      //          name.find("undefined") != string::npos ||
+      //          //name.find("Any") != string::npos ||
+      //          !isValidRinexObsID(tag)) continue;
+      //      int ifr(asInt(string(1,f)));
+      //      double wl(getWavelength(satsys,ifr));
+      //      if(wl == 0.0) continue;
+      //      //LOG(INFO) << sys << " " << asString(carBan)
+      //            //<< " " << fixed << setprecision(2) << 100*wl << " cm";
+      //      ifreq.push_back(ifr);
+      //      wls.push_back(wl*100);
+      //      cbstr.push_back(asString(carBan));
+      //   }
+
+      //   //LOGstrm << sys << " 1" << fixed << setprecision(2);
+      //   //for(size_t j=0; j<ifreq.size(); j++)
+      //   //   LOGstrm << " " << cbstr[j] << "(" << ifreq[j] << ") " << wls[j];
+      //   //LOGstrm << endl;
+
+      //   for(size_t j=0; j<ifreq.size(); j++) {
+      //      for(size_t jj,kk,k=j+1; k<ifreq.size(); k++) {
+      //         double beta(getBeta(satsys,ifreq[j],ifreq[k]));
+      //         if(beta < 1.0) {
+      //            jj=k; kk=j;
+      //            beta = getBeta(satsys,ifreq[jj],ifreq[kk]);
+      //         }
+      //         else { jj=j; kk=k; }
+      //         double alpha(getAlpha(satsys,ifreq[jj],ifreq[kk]));
+      //         double wlwl(wls[kk]*(beta+1.0)/alpha);          // WL wl4
+      //         double nlwl(1.0/(1.0/wls[jj] + 1.0/wls[kk]));   // NL wl6
+      //         string ss(cbstr[jj]+string(1,',')+cbstr[kk]+string(1,':'));
+
+      //         LOGstrm << sys << fixed << setprecision(2);
+      //         LOGstrm << " & " << setw(9) << ss;
+      //         LOGstrm << " & " << setw(5) << wls[jj]
+      //                  << " & " << setw(5) << wls[kk];
+      //         LOGstrm << " & " << setw(5) << wlwl << " & " << setw(5) << nlwl;
+      //         LOGstrm << setprecision(3)
+      //                  << " & " << setw(5) << beta << " & " << setw(5) << alpha
+      //                  << " \\\\ \\hline" << endl;
+      //      }
+      //   }
+      //}
    }  // end if typehelp
 
    // print above
