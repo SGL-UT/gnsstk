@@ -228,7 +228,6 @@ public:
        * @param Cov initial covariance/inv(cov)/ignored as return 1/-1/0
        * @param return 1 for state/cov, -1 for information, 0 for
        *   nothing provided
-       * @throw Exception
        */
    virtual int defineInitial(double& T0,
                              gpstk::Vector<double>& X,
@@ -254,7 +253,6 @@ public:
        *         SkipThenQuit (3) skip data and output, and quit
        *         QuitImmediately (4) quit immediately without
        *            processing or output
-       * @throw Exception
        */
    virtual KalmanReturn defineMeasurements(double& T,
                                            const gpstk::Vector<double>& X,
@@ -270,7 +268,6 @@ public:
        * @param[in] X current state
        * @param[in] C current covariance
        * @param[in] useFlag if false, State and Cov are singular - do not use
-       * @throw Exception
        */
    virtual void defineTimestep(const double T, const double DT,
                                const gpstk::Vector<double>& State,
@@ -284,7 +281,6 @@ public:
        * @param which = 1(before MU), 2(between MU and TU), 3(after TU),
        *   4(after SU)
        * @return -1 if this epoch is to be skipped, otherwise return >= 0.
-       * @throw Exception
        */
    virtual int defineInterim(int which, const double Time)
    { return -1; }
@@ -309,7 +305,7 @@ public:
 
       /// Reset or recreate filter - use this after the empty constructor
       /// @param NL Namelist of the filter states (determines Nstate)
-   void Reset(const gpstk::Namelist& NL) throw()
+   void Reset(const gpstk::Namelist& NL)
    { initialize(NL); }
 
       /// destructor
@@ -318,7 +314,6 @@ public:
       // -------------------------------------------------------------------------------
       /** 3. initialize the filter; this calls defineInitial() to get
        * the apriori state and covariance (or information)
-       * @throw Exception
        */
    virtual void initializeFilter(void)
    {
@@ -376,7 +371,6 @@ public:
        * MU, between MU and TU, and after TU.
        * @param finalT time at which to stop the filter
        * @param DT nominal timestep
-       * @throw Exception
        */
    virtual void ForwardFilter(const double finalT, const double DT)
    {
@@ -492,7 +486,6 @@ public:
        * NTU==M. Decrements time and NTU Calls defineInterim(4,time)
        * after each smoother update
        * @param M value of NTU at which to stop the smoother (usually 0)
-       * @throw Exception
        */
    virtual void BackwardFilter(int M)
    {
@@ -536,7 +529,7 @@ public:
       /// Output at each stage ... the user may override
       /// if singular is true, State and Cov may or may not be good
       /// @param N user-defined counter that is included on each line after the tag.
-   virtual void output(int N) throw()
+   virtual void output(int N)
    {
       if(!doOutput) return;
 
@@ -598,7 +591,6 @@ public:
       // -------------------------------------------------------------------------------
       /** Interim processing.
        * @return defineInterim(), if >0 output() is called, ignored after SU
-       * @throw Exception
        */
    virtual int KalmanInterim(int which, double Time)
    {
@@ -618,7 +610,6 @@ public:
        *         SkipThisEpoch, skip this data and output
        *         SkipThenQuit, skip this data and output, then quit
        *         QuitImmediately, quit now
-       * @throw Exception
        */
    virtual KalmanReturn KalmanMeasurementUpdate(double& T)
    {
@@ -651,7 +642,6 @@ public:
       /** the Kalman time update
        * @param[in] T current time
        * @param[in] DT current timestep
-       * @throw Exception
        */
    virtual void KalmanTimeUpdate(double T, double DT)
    {
@@ -701,9 +691,7 @@ public:
    }
 
       // -------------------------------------------------------------
-      /** the smoother update
-       * @throw Exception
-       */
+      /** the smoother update */
    virtual void KalmanSmootherUpdate(void)
    {
       try {
@@ -820,9 +808,7 @@ private:
    }
 
 
-      /** For internal use to invert the SRIF to get State and Covariance
-       * @throw Exception
-       */
+      /** For internal use to invert the SRIF to get State and Covariance */
    void Invert(const std::string& msg=std::string())
    {
       if(dryRun) {
