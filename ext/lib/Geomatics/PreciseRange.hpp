@@ -82,6 +82,7 @@ namespace gpstk
       /// @param SatID sat           satellite
       /// @param AntexData& antenna  satellite antenna data;
       /// @param string& freq1,freq2 ANTEX frequencies to evaluate PCO/Vs eg 'G01'
+      ///   if freq2 is zero e.g. 'G00', compute single freq (freq1) PCO/Vs
       /// @param SolarSystem& SolSys SolarSystem object, to get SatelliteAttitude()
       ///   if any of above 4 not valid, PCO/V correction is NOT done (silently)
       /// @param XvtStore Eph        Ephemeris store

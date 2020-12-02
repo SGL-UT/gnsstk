@@ -152,6 +152,9 @@ namespace gpstk
          double fact1((alpha+1.0)/alpha);
          double fact2(-1.0/alpha);
 
+         // if single frequency, freq2==alpha==0, fact's=nan
+         if(freq2==0) { fact1 = 1.0; fact2 = 0.0; }
+
          // rotation matrix from satellite attitude: Rot*[XYZ]=[body frame]
          Matrix<double> SVAtt;
 
@@ -167,9 +170,9 @@ namespace gpstk
          }
 
          // phase center offset vector in body frame
-         Triple pco1 = antenna.getPhaseCenterOffset(Freq1);
-         Triple pco2 = antenna.getPhaseCenterOffset(Freq2);
          Vector<double> PCO(3);
+         Triple pco2,pco1(antenna.getPhaseCenterOffset(Freq1));
+         if(freq2 != 0) pco2 = antenna.getPhaseCenterOffset(Freq2);
          for(i=0; i<3; i++)            // body frame, mm -> m, iono-free combo
             PCO(i) = (fact1*pco1[i]+fact2*pco2[i])/1000.0;
 
@@ -182,10 +185,11 @@ namespace gpstk
 
          // phase center variation TD should this should be subtracted from rawrange?
          // get the body frame azimuth and nadir angles
-         double nadir,az;
+         double nadir,az,pcv1,pcv2(0.0);
          SatelliteNadirAzimuthAngles(SatR, Rx, SVAtt, nadir, az);
-         satLOSPCV = 0.001*(fact1 * antenna.getPhaseCenterVariation(Freq1, az, nadir)
-                         + fact2 * antenna.getPhaseCenterVariation(Freq2, az, nadir));
+         pcv1 = antenna.getPhaseCenterVariation(Freq1, az, nadir);
+         if(freq2 != 0) pcv2 = antenna.getPhaseCenterVariation(Freq2, az, nadir);
+         satLOSPCV = 0.001*(fact1*pcv1 + fact2*pcv2);
       }
       else {
          satLOSPCO = satLOSPCV = 0.0;
