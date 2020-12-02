@@ -487,13 +487,6 @@ try {
          flag = SatPass::OK;
          for(i=0; i<jt->second.size(); i++) {
             int ind = jt->second[i];
-            //LOG(INFO) << " ind " << ind << " SPOT " << obsit->second[i]
-            //<< " R3OT " << (ind >= 0 ? wantedObsTypes[ind]:"NA")
-            //<< " sat " << sat
-            //<< " data " << fixed << setprecision(4)
-            //<< (ind >= 0 ? it->second[ind].data : 0.0) << "/"
-            //<< (ind >= 0 ? it->second[ind].ssi : 0) << "/"
-            //<< (ind >= 0 ? it->second[ind].lli : 0);
             if(ind < 0) {
                data[i] = 0.0;
                ssi[i] = lli[i] = 0;
@@ -507,6 +500,13 @@ try {
                // TD does loader keep epochs with no good data?
                if(::fabs(data[i]) < 1.e-8) flag = SatPass::BAD;
             }
+            //LOG(INFO) << " ind " << ind << " SPOT " << obsit->second[i]
+            //<< " R3OT " << (ind >= 0 ? wantedObsTypes[ind]:"NA")
+            //<< " sat " << sat
+            //<< " data " << fixed << setprecision(4)
+            //<< (ind >= 0 ? it->second[ind].data : 0.0) << "/"
+            //<< (ind >= 0 ? it->second[ind].ssi : 0) << "/"
+            //<< (ind >= 0 ? it->second[ind].lli : 0) << " flag " << flag;
          }
 
          // find the current SatPass for this sat
