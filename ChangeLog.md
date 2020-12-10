@@ -1,3 +1,26 @@
+# Version 9.0.0   Thursday December 10, 2020
+
+Modifications by Author
+-----------------------
+     Andrew Kuck <kuck@arlut.utexas.edu> (5):
+           Add protected word check.
+           Update comments.
+           Replace master with main in ci.
+           Update default branch references in lint_test.sh
+           Update readme.
+
+     Dave Rainwater <rain@arlut.utexas.edu> (4):
+           [ci-skip] Initial commit: TKS-190 boolean units selection in constructor.
+           Modify test w/ IonoModel constructor to use CarrierBand instead of
+           Fix docstrings.
+           Remove unused class attribute from .hpp.
+
+     David Barber <dbarber@arlut.utexas.edu> (2):
+           staging deprecated file(s)
+           removing staged deprecated file(s) ATTIC_DEPRECATION_FLAG
+
+
+
 # Version 8.0.0   Thursday November 19, 2020
 
 Modifications by Author

@@ -1,3 +1,15 @@
+gpstk (9.0.0-1) stable; urgency=low
+
+  * Updated to version 9.0.0
+  * Add CI stage to check files and history for sensitive words.
+  * Update the CI pipeline to reflect that the new default branch name.
+  * Modify IonoModel to accommodate Klo params in different units.
+  * Update readme.
+  * Update File_Hunter related files were deprecated and moved to
+    tks_legacy_archive repo
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 10 Dec 2020 08:31:21 -0600
+
 gpstk (8.0.0-1) stable; urgency=low
 
   * Updated to version 8.0.0
