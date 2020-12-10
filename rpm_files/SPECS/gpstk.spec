@@ -1,5 +1,5 @@
 %define name gpstk
-%define version 8.0.0
+%define version 9.0.0
 %define release 1
 
 Summary:        GPS Toolkit
@@ -53,6 +53,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 10 2020 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v9.0.0 release
+- Update File_Hunter related files were deprecated and moved to tks_legacy_archive repo
+- Update readme.
+- Modify IonoModel to accommodate Klo params in different units.
+- Update the CI pipeline to reflect that the new default branch name.
+- Add CI stage to check files and history for sensitive words.
 * Thu Nov 19 2020 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v8.0.0 release
 - Update IonoModel to include all modernized GPS bands.
