@@ -103,6 +103,8 @@ protected_term_lint:
     - git fetch origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
     - bash repo_utils/dw_search/modified_file_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
   dependencies: []
+  # This has the occasional false-positive, so it's advisory only.
+  allow_failure: true
 
 protected_history_lint:
   stage: check
@@ -121,6 +123,8 @@ protected_history_lint:
     - git fetch origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
     - bash repo_utils/dw_search/history_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
   dependencies: []
+  # This has the occasional false-positive, so it's advisory only.
+  allow_failure: true
 
 # Runs the documentation generation
 generate_documentation:
