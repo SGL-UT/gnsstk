@@ -66,7 +66,7 @@ namespace gpstk
    {
    }
 
-   Exception::Exception(const string& errorText,
+   Exception::Exception(const std::string& errorText,
                         const unsigned long& errId,
                         const Severity& sever)
    {

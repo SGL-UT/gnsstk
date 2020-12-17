@@ -48,6 +48,12 @@ namespace gpstk
       /// @ingroup TimeHandling
       //@{
 
+      /** \page APIguide
+       * - \subpage TimeHandlingGuide - Guidance for using time data.
+       * \page TimeHandlingGuide Time Handling
+       * @todo If I had the time, this would document it.
+       */
+
       /**
        * This is the common time format that all time formats convert to when
        * converting between themselves.  This allows the decoupling of
@@ -336,7 +342,7 @@ namespace gpstk
 
          /**
           * Add integer seconds to this CommonTime object.
-          * @param sec the number of seconds to add to this CommonTime
+          * @param seconds the number of seconds to add to this CommonTime
           * @return a reference to this CommonTime object
           * @throw InvalidRequest on over-/under-flow
           */

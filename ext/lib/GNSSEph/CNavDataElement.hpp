@@ -135,7 +135,6 @@ namespace gpstk
      
          /** Shortcut to SatMetaDataStore::getSVN() that obviates
           * having to check the pointer for null.
-          * @copydetails SatMetaDataStore::getSVN()
           * @param[in] sat The ID of the desired satellite.
           * @param[in] when The time of interest of the desired satellite.
           * @param[out] svn If found the satellite's vehicle number.

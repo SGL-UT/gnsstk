@@ -108,8 +108,8 @@ namespace gpstk
          /** Returns the effect of ocean tides loading (meters) at the given
           *  station and epoch, in the Up-East-North (UEN) reference frame.
           *
-          * @param name  Station name (case is NOT relevant).
-          * @param time  Epoch to look up
+          * @param[in] name  Station name (case is NOT relevant).
+          * @param[in] t     Epoch to look up
           *
           * @return a Triple with the ocean tidas loading effect, in meters
           * and in the UEN reference frame.

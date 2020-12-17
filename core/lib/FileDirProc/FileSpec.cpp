@@ -141,7 +141,7 @@ namespace gpstk
       }
    }
 
-   FileSpec::FileSpecType FileSpec::convertFileSpecType(const string& fst)
+   FileSpec::FileSpecType FileSpec::convertFileSpecType(const std::string& fst)
    {
       if (fst == string("n"))        return station;
       else if (fst == string("r"))   return receiver;

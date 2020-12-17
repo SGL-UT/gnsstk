@@ -72,17 +72,30 @@ namespace gpstk
          /**
           * Convert from a vector in ECEF XYZ to ECEF ENU using the
           * current rotation matrix.
-          * @param inV,inVec,in vector of interest in ECEF XYZ.
+          * @param[in] inV vector of interest in ECEF XYZ.
           * @return Same type as input but with the vector in ECEF ENU
           */
-         gpstk::Vector<double> convertToENU( const gpstk::Vector<double>& inV ) const;
+         gpstk::Vector<double> convertToENU( const gpstk::Vector<double>& inV )
+            const;
+         /**
+          * Convert from a vector in ECEF XYZ to ECEF ENU using the
+          * current rotation matrix.
+          * @param[in] inVec vector of interest in ECEF XYZ.
+          * @return Same type as input but with the vector in ECEF ENU
+          */
          gpstk::Triple         convertToENU( const gpstk::Triple& inVec ) const;
+         /**
+          * Convert from a vector in ECEF XYZ to ECEF ENU using the
+          * current rotation matrix.
+          * @param[in] in vector of interest in ECEF XYZ.
+          * @return Same type as input but with the vector in ECEF ENU
+          */
          gpstk::Xvt            convertToENU( const gpstk::Xvt& in ) const;
 
          /**
           * Update the rotation matrix to the new location without creating
           * a new object
-          * @param refGdLatRad geodetic latitude of point of interest (radians)
+          * @param refGDLatRad geodetic latitude of point of interest (radians)
           * @param refLonRad longitude of point of interest (radians).
           */
          void                  updatePosition( const double refGDLatRad,

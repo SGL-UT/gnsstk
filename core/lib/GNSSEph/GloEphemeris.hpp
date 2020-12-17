@@ -137,7 +137,7 @@ namespace gpstk
 
          /** Compute the satellite clock drift (sec/sec) at the given time
           *
-          * @param epoch   Epoch to compute satellite clock drift.
+          * @param t Epoch to compute satellite clock drift.
           *
           * @throw InvalidRequest if required data has not been stored.
           */

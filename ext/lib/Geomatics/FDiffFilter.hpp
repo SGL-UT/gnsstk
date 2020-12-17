@@ -228,7 +228,6 @@ public:
    void ComputeRobustSigmaLimit(int& N, T& new_siglim);
 
    /// analyze the output of the filter(), filling the results array with outliers
-   /// @param return vector of FilterHit
    /// @return the number of outliers
    int analysis(void);
 

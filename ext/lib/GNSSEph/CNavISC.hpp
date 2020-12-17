@@ -73,9 +73,7 @@ namespace gpstk
         
          /**
           * Store the contents of message type 30 in this object.
-          * @param osbIDArg the carrier and code from which the message was obtained.
-          * @param satIDArg the system and ID of the transmitting SV
-          * @param message30 - 300 bits of Message Type 30
+          * @param message30 300 bits of Message Type 30
           * @throw InvalidParameter if message data is invalid
           */
       void loadData(const PackedNavBits& message30);

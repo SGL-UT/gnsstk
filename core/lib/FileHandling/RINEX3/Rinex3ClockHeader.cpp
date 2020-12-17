@@ -427,11 +427,11 @@ namespace gpstk
             strm << line << endl;
             strm.lineNumber++;
 
-               //@TODO line += stationNameString;     // "STATION NAME / NUM"
+               //@todo line += stationNameString;     // "STATION NAME / NUM"
                //strm << line << endl;
                //strm.lineNumber++;
 
-               //@TODO line += stationClockRefString; // "STATION CLK REF"
+               //@todo line += stationClockRefString; // "STATION CLK REF"
                //strm << line << endl;
                //strm.lineNumber++;
 

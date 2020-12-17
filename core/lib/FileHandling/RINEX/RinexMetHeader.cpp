@@ -461,7 +461,7 @@ namespace gpstk
    }
 
    RinexMetHeader::RinexMetType
-   RinexMetHeader::convertObsType(const string& oneObs)
+   RinexMetHeader::convertObsType(const std::string& oneObs)
    {
       if      (oneObs == "PR") return PR;
       else if (oneObs == "TD") return TD;

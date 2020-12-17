@@ -290,7 +290,7 @@ public:
    }
 
    // -------------------------------------------------------------
-   /// Define the text after 'Usage: '; default is '<prgm> [options] ...'
+   /// Define the text after 'Usage: '; default is '\<prgm\> [options] ...'
    void DefineUsageString(std::string str) throw()
    {
       syntaxPage = "Usage: " + str;
@@ -332,7 +332,7 @@ private:
 
       /** Preprocess the arguments by pulling out debug, etc, replace
        * deprecated options, drop ignored options, open --file files,
-       * open list files (@file) and parse comma-separated values
+       * open list files and parse comma-separated values
        * @throw Exception */
    void PreProcessArgs(const char *arg, std::vector<std::string>& Args,
       std::string& Errors);

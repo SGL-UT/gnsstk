@@ -48,6 +48,9 @@ class FileSpecFind_T;
 
 namespace gpstk
 {
+      /// @ingroup FileDirProc
+      //@{
+
       /** Find existing files matching specified criteria.
        *
        *   \li FileSpecFind returns files matching [start, end).
@@ -185,6 +188,7 @@ namespace gpstk
 
       friend class ::FileSpecFind_T;
    };
+      //@}
 }
 
 #endif // FILESPECFIND_HPP

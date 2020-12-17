@@ -58,7 +58,7 @@
 
 namespace gpstk
 {
-   /** @defgroup ephemstore */
+   /** @defgroup GNSSEph */
    //@{
 
    /// Store GPS almanac information (i.e. like the data in subframes 4&5) and 

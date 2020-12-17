@@ -122,7 +122,7 @@ namespace gpstk
        *
        * @param n       Degrees of freedom
        *
-       * \warning "n" must be > 0.0, otherwise n = |n|.
+       * @warning "n" must be > 0.0, otherwise n = |n|.
        */
    StudentDistribution& StudentDistribution::setNDF(int n)
    {

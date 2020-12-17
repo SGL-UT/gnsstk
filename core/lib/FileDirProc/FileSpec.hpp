@@ -59,13 +59,13 @@ const char slash = '/';
 
 namespace gpstk
 {
-      /// @ingroup FileDirProc
-      //@{
-
       /// This exception is thrown when there is a problem with
       /// handling file specifications.
       /// @ingroup exceptiongroup
    NEW_EXCEPTION_CLASS(FileSpecException, gpstk::Exception);
+
+      /// @ingroup FileDirProc
+      //@{
 
       /**
        * A FileSpec is how file names are defined.  For instance,

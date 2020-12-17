@@ -36,6 +36,63 @@
 //
 //==============================================================================
 
+/** \page apps
+ * - \subpage rmwdiff - Difference the contents of two RINEX MET files
+ * \page rmwdiff
+ * \tableofcontents
+ *
+ * \section rmwdiff_name NAME
+ * rmwdiff - Difference the contents of two RINEX MET files
+ *
+ * \section rmwdiff_synopsis SYNOPSIS
+ * \b rmwdiff [\argarg{OPTION}] ... file1 file2
+ *
+ * \section rmwdiff_description DESCRIPTION
+ * Perform a simple difference between two RINEX MET files.
+ *
+ * \dictionary
+ * \dicterm{-d, \--debug}
+ * \dicdef{Increase debug level}
+ * \dicterm{-v, \--verbose}
+ * \dicdef{Increase verbosity}
+ * \dicterm{-h, \--help}
+ * \dicdef{Print help usage}
+ * \dicterm{-t, \--time=\argarg{TIME}}
+ * \dicdef{Start of time range to compare (default = "beginning of time")}
+ * \dicterm{-e, \--end-time=\argarg{TIME}}
+ * \dicdef{End of time range to compare (default = "end of time")}
+ * \enddictionary
+ *
+ * Time may be specified in one of three formats:
+ * - month/day/year
+ * - year day-of-year
+ * - year day-of-year seconds-of-day
+ *
+ * \note rmwdiff will load the entire contents of both files into
+ * memory before comparing.  This ignores any ordering differences.
+ *
+ * \section rmwdiff_examples EXAMPLES
+ *
+ * \cmdex{rmwdiff data/arlm2000.15m data/arlm2001.15m}
+ *
+ * Will show differences in individual records.  Records that appear
+ * in the first file will start with "<" and records that appear in the
+ * second file will start with ">".
+ *
+ * \todo Add an example or two using the time options.
+ *
+ * \section rmwdiff_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{1,A C++ exception occurred\, or differences were encountered}
+ * \dictentry{2,One or both of the input files does not exist}
+ * \enddictable
+ *
+ * \section rmwdiff_see_also SEE ALSO
+ * \ref rnwdiff, \ref rowdiff
+ */
+
 #include "FileFilterFrameWithHeader.hpp"
 
 #include "RinexMetData.hpp"

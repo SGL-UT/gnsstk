@@ -36,6 +36,54 @@
 //
 //==============================================================================
 
+/** \page apps
+ * - \subpage mergeRinMet - Merge the contents of two or more RINEX MET files
+ * \page mergeRinMet
+ * \tableofcontents
+ *
+ * \section mergeRinMet_name NAME
+ * mergeRinMet - Merge the contents of two or more RINEX MET files
+ *
+ * \section mergeRinMet_synopsis SYNOPSIS
+ * \b mergeRinMet [\argarg{OPTION}] ... \argarg{FILE} ...
+ *
+ * \section mergeRinMet_description DESCRIPTION
+ * Sorts and merges input RINEX Met files into a single file. The
+ * output will be sorted by time. This program assumes all the input
+ * files are from the same station.
+ *
+ * \dictionary
+ * \dicterm{-o, \--output}
+ * \dicdef{Name for the merged output RINEX Met file. Any existing file with that name will be overwritten.}
+ * \dicterm{-d, \--debug}
+ * \dicdef{Increase debug level}
+ * \dicterm{-v, \--verbose}
+ * \dicdef{Increase verbosity}
+ * \dicterm{-h, \--help}
+ * \dicdef{Print help usage}
+ * \enddictionary
+ *
+ * \note mergeRinMet will load the entire contents of all input files into
+ * memory before writing.
+ *
+ * \section mergeRinMet_examples EXAMPLES
+ *
+ * \cmdex{mergeRinMet -o merged.15m data/arlm2000.15m data/arlm2001.15m}
+ *
+ * Creates the file merged.15m containing the combined contents of
+ * data/arlm2000.15m and data/arlm2001.15m.
+ *
+ * \section mergeRinMet_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{1,A C++ exception occurred\, e.g. invalid input files}
+ * \enddictable
+ *
+ * \section mergeRinMet_see_also SEE ALSO
+ * \ref mergeRinObs, \ref mergeRinNav
+ */
+
 // mergeRinMet
 // Merge and sort rinex metrological files
 

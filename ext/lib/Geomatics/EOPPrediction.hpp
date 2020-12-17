@@ -132,7 +132,7 @@ namespace gpstk {
       /// Stream output for the EOPPrediction, in format of EOPP###.txt files.
       /// @param os stream to append formatted EOPPrediction to.
       /// @return reference to the input stream.
-      friend std::ostream& operator<<(std::ostream& s, const EOPPrediction&);
+      friend std::ostream& operator<<(std::ostream& os, const EOPPrediction& eopp);
 
    }; // end class EOPPrediction
 

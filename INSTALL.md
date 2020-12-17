@@ -1,3 +1,5 @@
+\page INSTALL INSTALL
+
 INSTALL
 -------
 
@@ -155,7 +157,7 @@ Linking Against the GPSTk Library:
 ----------------------------------
 
 If you are developing against your install of GPSTk, and have added
-the relevant GPSTk library #include statements in you implementation file,
+the relevant GPSTk library \#include statements in you implementation file,
 then the simplest example of building your application in a Bash script 
 would look like this:
 

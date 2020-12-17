@@ -552,8 +552,13 @@ namespace gpstk
    void CommandOptionHelpUsage::printHelp(std::ostream& out, bool pretty)
    {
       GPSTK_ASSERT(parser != NULL);
-      if (getCount())
+         // Secret option! Ask for help once, get the normal usage.
+         // Ask for help twice, get doxygen-formatted comments to
+         // insert into your code's documentation.
+      if (getCount() == 1)
          parser->displayUsage(out, pretty);
+      else if (getCount() > 1)
+         parser->displayUsageDoxygen(out);
    }
 
 } // namespace gpstk

@@ -103,7 +103,7 @@ namespace gpstk
        *
        * @param n       Degrees of freedom
        *
-       * \warning "n" must be > 0.0, otherwise n = |n|.
+       * @warning "n" must be > 0.0, otherwise n = |n|.
        */
    Chi2Distribution& Chi2Distribution::setNDF(int n)
    {

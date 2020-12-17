@@ -169,7 +169,7 @@ namespace gpstk
 
       // Method to open AND load DCB data file. It doesn't
       // clear data previously loaded.
-   void DCBDataReader::open(const string& fn)
+   void DCBDataReader::open(const std::string& fn)
    {
 
       // We need to be sure current data stream is closed
@@ -199,8 +199,8 @@ namespace gpstk
 
       // Get DCB data of aReceiver
       // it return P1-P2 
-   double DCBDataReader::getDCB(const string& station,
-      const SatelliteSystem& system)
+   double DCBDataReader::getDCB(const std::string& station,
+                                const SatelliteSystem& system)
    {
 
       if(system == SatelliteSystem::GPS)

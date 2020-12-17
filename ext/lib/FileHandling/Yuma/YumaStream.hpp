@@ -50,8 +50,8 @@
 
 namespace gpstk
 {
-   /// @ingroup Yuma 
-   //@{
+      /// @ingroup FileHandling
+      //@{
 
       /**
        * This class performs file i/o on a Yuma file for the 
@@ -95,7 +95,7 @@ namespace gpstk
 
    }; // class YumaStream
    
-   //@}
+      //@}
    
 } // namespace gpstk
 

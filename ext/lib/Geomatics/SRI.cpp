@@ -680,7 +680,7 @@ using namespace StringUtils;
    // param name string labeling the state in Namelist names
    // param value to which the state element is fixed
    // param sigma (1/information) assigned to the element
-   void SRI::stateFix(const string& name,
+   void SRI::stateFix(const std::string& name,
                       const double& value, const double& sigma, bool restore)
    {
       int index = names.index(name);

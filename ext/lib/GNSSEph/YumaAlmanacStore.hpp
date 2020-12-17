@@ -51,7 +51,7 @@
 
 namespace gpstk
 {
-   /// @ingroup ephemstore 
+   /// @ingroup GNSSEph 
    //@{
    class YumaAlmanacStore : public FileStore<YumaHeader>, 
                             public OrbAlmStore

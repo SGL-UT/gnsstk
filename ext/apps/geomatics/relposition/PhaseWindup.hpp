@@ -63,15 +63,15 @@ namespace gpstk {
 /// NB. This assumes the transmitter and receiver boresights (Z or 'up') lie in a
 /// plane; this is true as long as the SV points to Earth center; cf. Beyerle (2009)
 /// GPS Solutions 13, pp191-198; in practice differences are small (<1mm).
-/// @param double& prev         return value on previous call (zero initially) (input)
-/// @param CommonTime& tt          the epoch of interest (input)
-/// @param Position& SV         the satellite position (input)
-/// @param Position& Rx2Tx      unit vector from receiver to satellite (input)
-/// @param Position& YR         west unit vector at receiver (input)
-/// @param Position& XR         north unit vector at receiver (input)
-/// @param SolarSystem SSEph    Solar system ephemeris
-/// @param EarthOrientation EO  Earth orientation parameters appropriate for time
-/// @param double& shadow       fraction of sun visible at satellite (output)
+/// @param[in] prev    return value on previous call (zero initially)
+/// @param[in] tt      the epoch of interest
+/// @param[in] SV      the satellite position
+/// @param[in] Rx2Tx   unit vector from receiver to satellite
+/// @param[in] RxW     west unit vector at receiver
+/// @param[in] RxN     north unit vector at receiver
+/// @param SSEph       Solar system ephemeris
+/// @param EO          Earth orientation parameters appropriate for time
+/// @param[out] shadow fraction of sun visible at satellite
       /// @throw Exception
 double PhaseWindup(double& prev,
                    CommonTime& tt,

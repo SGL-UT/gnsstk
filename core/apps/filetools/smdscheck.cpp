@@ -42,13 +42,22 @@
 using namespace std;
 using namespace gpstk;
 
+/** Implement an application that checks a CSV file to make sure it is
+ * valid satellite metadata. */
 class SatMetaDataStoreCheck : public BasicFramework
 {
 public:
+      /** Initialize command-line options.
+       * @param[in] applName Application file name.
+       */
    SatMetaDataStoreCheck(const string& applName);
 
+      /** Load all specified input files.
+       * @copydetails BasicFramework::initialize()
+       */
    bool initialize(int argc, char* argv[], bool pretty=true) throw() override;
 
+      /// Print out a message if no errors were found.
    void shutDown() override;
 
       /// command option for specifying the location of the satellite metadata.

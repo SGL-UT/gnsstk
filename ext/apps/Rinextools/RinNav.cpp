@@ -36,6 +36,93 @@
 //
 //==============================================================================
 
+
+/** \page apps
+ * - \subpage RinNav - Merge RINEX NAV data files
+ * \page RinNav
+ * \tableofcontents
+ *
+ * \section RinNav_name NAME
+ * RinNav - RinNav - Merge RINEX NAV data files
+ *
+ * \section RinNav_synopsis SYNOPSIS
+ * \b RinNav [\argarg{OPTION}] ...
+ *
+ * \section RinNav_description DESCRIPTION
+ * This application reads one or more RINEX (v.2+) navigation files
+ * and writes the merged navigation data to one or more output (ver 2
+ * or 3) files. A summary of the ephemeris data may be written to the
+ * screen.
+ *
+ * Input via configuration file:
+ * \dictionary
+ * \dicterm{\--file \argarg{FN}}
+ * \dicdef{Name of file with more options [#->EOL = comment] [repeatable] ()}
+ * \enddictionary
+ *
+ * Required input [--nav is optional]
+ * \dictionary
+ * \dicterm{\--nav \argarg{FILE}}
+ * \dicdef{Input RINEX navigation file name [repeatable] ()}
+ * \dicterm{\--navpath \argarg{P}}
+ * \dicdef{Path of input RINEX navigation file(s) ().}
+ * \enddictionary
+ *
+ * Editing (t,f are strings: time t; format f defaults to wk,sow OR yr,mon,day,h,m,s)}
+ * \dictionary
+ * \dicterm{\--start \argarg{T[:F]}}
+ * \dicdef{Start processing data at this epoch ([Beginning of dataset])}
+ * \dicterm{\--stop \argarg{T[:F]}}
+ * \dicdef{Stop processing data at this epoch ([End of dataset])}
+ * \dicterm{\--exSat \argarg{SAT}}
+ * \dicdef{Exclude satellite [system] from output [e.g. G17,R] [repeatable] ()}
+ * \enddictionary
+ *
+ * Output [sys may be 1(G,R,E,S,C,J: R2 G,R only) or 3(GPS,...)-char]:
+ * \dictionary
+ * \dicterm{\--out \argarg{[SYS:]FN}}
+ * \dicdef{Output [system \argarg{SYS} only] to RINEX ver. 3 file fn [repeatable] ()}
+ * \dicterm{\--out2 \argarg{[SYS:]FN}}
+ * \dicdef{Version 2 output [system \argarg{SYS} only] to RINEX file fn [repeatable] ()}
+ * \dicterm{\--timefmt \argarg{FMT}}
+ * \dicdef{Format for time tags (see GPSTK::Epoch::printf) in output (%4F %10.3g)}
+ * \dicterm{\--ver2}
+ * \dicdef{Write out RINEX version 2 (don't)}
+ * \dicterm{\--verbose}
+ * \dicdef{Print extra output information (don't)}
+ * \dicterm{\--debug}
+ * \dicdef{Print debug output at level 0 [debug \argarg{N} for level n=1-7] (-1)}
+ * \dicterm{\--help}
+ * \dicdef{Print this syntax page, and quit (don't)}
+ * \dicterm{\--verbose}
+ * \dicdef{Print extended output, including cmdline summary (don't)}
+ * \dicterm{\--debug\argarg{N}}
+ * \dicdef{Print debug output at LOGlevel n [n=0-7] (-1)}
+ * \dicterm{\--help}
+ * \dicdef{Print this syntax page and quit (don't)}
+ * \enddictionary
+ *
+ * \section RinNav_examples EXAMPLES
+ *
+ * \cmdex{RinNav --out merged.15n data/arlm200a.15n data/arlm200b.15n}
+ *
+ * Creates the file merged.15n containing the combined set of nav data
+ * from the two source files, arlm200a.15n and alrm200b.15n.  The
+ * output is RINEX 3 NAV.
+ *
+ * \section RinNav_support SUPPORT
+ * RinNav is not part of the gpstk core and thus testing and support
+ * are limited to non-existent.
+ *
+ * \section RinNav_exit_status EXIT STATUS
+ *
+ * \todo Make the exit codes consistent with the rest of the toolkit
+ * and document it here.
+ *
+ * \section RinNav_see_also SEE ALSO
+ * \ref RinEdit, mergeRinNav, mergeRinObs, mergeRinMet
+ */
+
 /// @file RinNav.cpp
 /// Read RINEX navigation files (version 2 or 3) and write out as a single RINEX nav
 /// file; optionally write a summary of the contents to the screen.

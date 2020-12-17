@@ -53,8 +53,8 @@ namespace gpstk
    using namespace std;
 
 
-   BasicFramework :: BasicFramework( const string& applName,
-                                     const string& applDesc )
+   BasicFramework :: BasicFramework( const std::string& applName,
+                                     const std::string& applDesc )
       throw()
          : debugLevel(0),
            verboseLevel(0),

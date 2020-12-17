@@ -58,10 +58,7 @@ namespace gpstk
    const CommonTime
    CommonTime::END_OF_TIME(CommonTime::END_LIMIT_JDAY,0,0.0,TimeSystem::Any) ;
 
-   //@{
-   /// Default tolerance for time equality, applied to milliseconds.
    const double CommonTime::eps = 4.*std::numeric_limits<double>::epsilon();
-   //@}
 
 
    CommonTime::CommonTime( const CommonTime& right )
@@ -269,7 +266,8 @@ namespace gpstk
 
    double CommonTime::operator-( const CommonTime& right ) const
    {
-     /// Any (wildcard) type exception allowed, otherwise must be same time systems
+         // Any (wildcard) type exception allowed, otherwise must be
+         // same time systems
       if ( (m_timeSystem != TimeSystem::Any &&
                right.m_timeSystem != TimeSystem::Any) &&
                m_timeSystem != right.m_timeSystem )
@@ -352,7 +350,8 @@ namespace gpstk
 
    bool CommonTime::operator==( const CommonTime& right ) const
    {
-     /// Any (wildcard) type exception allowed, otherwise must be same time systems
+         // Any (wildcard) type exception allowed, otherwise must be
+         // same time systems
       if ((m_timeSystem != TimeSystem::Any &&
            right.m_timeSystem != TimeSystem::Any) &&
           m_timeSystem != right.m_timeSystem)
@@ -370,7 +369,8 @@ namespace gpstk
 
    bool CommonTime::operator<( const CommonTime& right ) const
    {
-     /// Any (wildcard) type exception allowed, otherwise must be same time systems
+         // Any (wildcard) type exception allowed, otherwise must be
+         // same time systems
       if ((m_timeSystem != TimeSystem::Any &&
            right.m_timeSystem != TimeSystem::Any) &&
           m_timeSystem != right.m_timeSystem)
@@ -425,7 +425,7 @@ namespace gpstk
       return oss.str();
    }
 
-      /// protected functions
+
    bool CommonTime::add( long days,
                          long msod,
                          double fsod )

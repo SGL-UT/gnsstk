@@ -36,7 +36,7 @@
 //
 //==============================================================================
 
-/// @file WNJfilter.cpp White noise jerk (and higher dimension) Kalman filter.
+/// @file WNJfilter.hpp White noise jerk (and higher dimension) Kalman filter.
 
 #ifndef WHITE_NOISE_JERK_KALMAN_FILTER
 #define WHITE_NOISE_JERK_KALMAN_FILTER

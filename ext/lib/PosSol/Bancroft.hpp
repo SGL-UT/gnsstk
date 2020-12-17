@@ -49,10 +49,7 @@
 
 namespace gpstk
 {
-      /** @defgroup GPSsolutions GPS solution algorithms and Tropospheric
-       *  models
-       */
-
+      /// @ingroup GPSsolutions
       //@{
        	
       /** This class defines an algebraic algorithm to get an initial guess of

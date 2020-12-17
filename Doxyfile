@@ -228,7 +228,41 @@ TAB_SIZE               = 8
 # "Side Effects:". You can put \n's in the value part of an alias to insert
 # newlines.
 
-ALIASES                =
+# These aliases are used for command-line option documentation in the
+# application guides.  Obviously only HTML is supported, but if for
+# some reason we wanted to support man pages or latex, we could add if
+# tests and what-not.
+# dictionary is bold (CSS) word followed by a definition on the next line.
+ALIASES                = dictionary="<dl class=\"tkdict\">"
+ALIASES               += enddictionary="</dl>"
+ALIASES               += dicterm{1}="<dt class=\"tkdict\"> \1 </dt>"
+ALIASES               += dicdef{1}="<dd class=\"tkdict\"> \1 </dd>"
+# dictable is a word followed by a definition starting on the same
+# line, with hanging indentation.
+# The reason dictentry takes two args while dicterm and dicdef above
+# are separate aliases is because dicterm/dicdef tend to have much
+# longer arguments.
+# new version using dictionary elements
+ALIASES               += dictable="<dl class=\"dictable\">"
+ALIASES               += enddictable="</dl>"
+ALIASES               += dictentry{2}="<dt class=\"dictable\"> \1 </dt> <dd class=\"dictable\"> \2 </dd>"
+# old version using tables
+#ALIASES               += dictable="<table class=\"dictable\">"
+#ALIASES               += enddictable="</table>"
+#ALIASES               += dictentry{2}="<tr><td> \1 </td><td> \2 </td></tr>"
+# This alias is supposed to be used to format arguments of command
+# line arguments, e.g. TIME in "--time=TIME", but for the moment
+# Doxygen doesn't support kind of formatting within the <dt> context.
+# We're leaving it defined this way to encourage the use of the
+# formatting in the event Doxygen eventually supports it.
+# Calling it argarg does two things: names it for the use case rather
+# than the results, and also eliminates the confusion between "ul"
+# (unordered list in html) and "u" (underline in html which Doxygen
+# doesn't support either).
+ALIASES               += argarg{1}="<i>\1</i>"
+ALIASES               += bold{1}="<b> \1 </b>"
+# command-line example
+ALIASES               += cmdex{1}="<span class=\"cmdexample\"> \1 </span>"
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"
@@ -281,7 +315,7 @@ OPTIMIZE_OUTPUT_VHDL   = NO
 # Note that for custom extensions you also need to set FILE_PATTERNS otherwise
 # the files are not read by doxygen.
 
-EXTENSION_MAPPING      =
+EXTENSION_MAPPING      = txt=md dox=md
 
 # If the MARKDOWN_SUPPORT tag is enabled then doxygen pre-processes all comments
 # according to the Markdown format, which allows for more readable
@@ -425,7 +459,7 @@ LOOKUP_CACHE_SIZE      = 0
 # normally produced when WARNINGS is set to YES.
 # The default value is: NO.
 
-EXTRACT_ALL            = YES
+EXTRACT_ALL            = NO
 
 # If the EXTRACT_PRIVATE tag is set to YES, all private members of a class will
 # be included in the documentation.
@@ -703,7 +737,7 @@ LAYOUT_FILE            =
 # LATEX_BIB_STYLE. To use this feature you need bibtex and perl available in the
 # search path. See also \cite for info how to create references.
 
-CITE_BIB_FILES         =
+CITE_BIB_FILES         = ref/usersguide/gpstk.bib
 
 #---------------------------------------------------------------------------
 # Configuration options related to warning and progress messages
@@ -730,7 +764,7 @@ WARNINGS               = YES
 # will automatically be disabled.
 # The default value is: YES.
 
-WARN_IF_UNDOCUMENTED   = NO
+WARN_IF_UNDOCUMENTED   = YES
 
 # If the WARN_IF_DOC_ERROR tag is set to YES, doxygen will generate warnings for
 # potential errors in the documentation, such as not documenting some parameters
@@ -746,7 +780,7 @@ WARN_IF_DOC_ERROR      = YES
 # parameter documentation, but not about the absence of documentation.
 # The default value is: NO.
 
-WARN_NO_PARAMDOC       = NO
+WARN_NO_PARAMDOC       = YES
 
 # If the WARN_AS_ERROR tag is set to YES then doxygen will immediately stop when
 # a warning is encountered.
@@ -768,7 +802,7 @@ WARN_FORMAT            = "$file:$line: $text"
 # messages should be written. If left blank the output is written to standard
 # error (stderr).
 
-WARN_LOGFILE           =
+WARN_LOGFILE           = doxygen.warnings
 
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
@@ -780,8 +814,16 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = core/lib \
-                         ext/lib
+INPUT                  = MAINPAGE.txt \
+                         README.md \
+                         INSTALL.md \
+                         INTRO.txt \
+                         HOWTO.txt \
+                         ref/doxygen/ \
+                         core/lib \
+                         core/apps \
+                         ext/lib \
+                         ext/apps
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -808,7 +850,8 @@ INPUT_ENCODING         = UTF-8
 
 FILE_PATTERNS          = *.hpp \
                          *.h \
-                         *.cpp
+                         *.cpp \
+                         *.dox
 
 # The RECURSIVE tag can be used to specify whether or not subdirectories should
 # be searched for input files as well.
@@ -839,7 +882,8 @@ EXCLUDE_SYMLINKS       = NO
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories for example use the pattern */test/*
 
-EXCLUDE_PATTERNS       = getopt.h
+EXCLUDE_PATTERNS       = getopt.h \
+                         */build/*
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
@@ -1142,7 +1186,7 @@ HTML_STYLESHEET        =
 # list). For an example see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_STYLESHEET  =
+HTML_EXTRA_STYLESHEET  = custom.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
@@ -2068,7 +2112,7 @@ EXPAND_AS_DEFINED      =
 # The default value is: YES.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-SKIP_FUNCTION_MACROS   = YES
+SKIP_FUNCTION_MACROS   = NO
 
 #---------------------------------------------------------------------------
 # Configuration options related to external references
@@ -2155,7 +2199,7 @@ DIA_PATH               =
 # and usage relations if the target is undocumented or is not a class.
 # The default value is: YES.
 
-HIDE_UNDOC_RELATIONS   = YES
+HIDE_UNDOC_RELATIONS   = NO
 
 # If you set the HAVE_DOT tag to YES then doxygen will assume the dot tool is
 # available from the path. This tool is part of Graphviz (see:

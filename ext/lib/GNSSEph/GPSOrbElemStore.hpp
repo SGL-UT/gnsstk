@@ -55,7 +55,7 @@
 
 namespace gpstk
 {
-   /// @ingroup ephemstore 
+   /// @ingroup GNSSEph 
    //@{
 
    /// Class for storing and accessing GPS SV's position, 

@@ -157,13 +157,13 @@ public:
    /// also fills the 'results' vector of one or more FilterHit.
    /// Uses a different algorithm - sliding window ave/sigma of fdiff on either side
    /// of, vs fdiff at, point of interest.
-   /// @param ratlim limit on |ratio fdiff to <sigmas>| (also fdiff > fdlimit for hit)
+   /// @param ratlim limit on |ratio fdiff to \<sigmas\>| (also fdiff > fdlimit for hit)
    /// @return the number of slips (size of results vector<FilterHit> - 1)
    int analyze2(const double ratlim, const double siglim)
       { std::string msg; return analyze2(ratlim, siglim, false, msg); }
 
    /// Overloaded version with analysis dump to string reference; cf. other versions
-   /// @param ratlim limit on |ratio fdiff to <sigmas>| (also fdiff > fdlimit for hit)
+   /// @param ratlim limit on |ratio fdiff to \<sigmas\>| (also fdiff > fdlimit for hit)
    /// @param dumpmsg string for analysis dump when bool dump is true
    int analyze2(const double ratlim, const double siglim, std::string& dumpmsg)
       { return analyze2(ratlim, siglim, true, dumpmsg); }
@@ -206,7 +206,7 @@ public:
 
 private:
    /// private version of analyze2 with all arguments, cf. overloaded versions' doc.
-   /// @param ratlim limit on |ratio fdiff to <sigmas>| (also fdiff > fdlimit for hit)
+   /// @param ratlim limit on |ratio fdiff to \<sigmas\>| (also fdiff > fdlimit for hit)
    /// @param dump bool if true dump analysis output to dumpmsg
    /// @param dumpmsg string for analysis dump when bool dump is true
    int analyze2(const double ratlim, const double siglim,

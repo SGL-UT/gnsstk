@@ -37,7 +37,7 @@
 //==============================================================================
 
 /// @file MathBase.hpp
-/// Basic math #defines (ABS, SQRT, etc)
+/// Basic math \#defines (ABS, SQRT, etc)
 
 #ifndef GPSTK_MATH_BASE_HPP
 #define GPSTK_MATH_BASE_HPP

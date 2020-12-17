@@ -112,7 +112,7 @@ namespace gpstk
          /** Return true if this object provides the correction
          * necessary to convert between the two given time
          * systems.
-         * @param ts1 and ts2  TimeSystems of interest
+         * @param ts1,ts2  TimeSystems of interest
          * @return true if this object will convert ts1 <=> ts2
          * @throw Exception if either TimeSystem is Unknown, or if
          *   they are identical. */
@@ -128,7 +128,7 @@ namespace gpstk
           *    ct(GPS) + Correction(ct) will yield ct(UTC), and
           *    ct(UTC) + Correction(ct) will yield ct(GPS).
           *    [That is, Correction(ct) in the two cases differ in sign]
-          * @param[in] CommonTime ct, the time at which to compute the
+          * @param[in] ct the time at which to compute the
           *   correction; the TimeSystem of ct will determine the sign
           *   of the correction.
           * @return the correction (sec) to be added to ct to change

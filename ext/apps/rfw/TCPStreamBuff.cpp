@@ -66,7 +66,7 @@ using namespace std;
 namespace gpstk
 {
 //------------------------------------------------------------------------
-   IPaddress::IPaddress(const string& host_name)
+   IPaddress::IPaddress(const std::string& host_name)
    {
       // If the address is in dotted quad notation, this will work.
       address = inet_addr(host_name.c_str());

@@ -61,8 +61,8 @@ using namespace std;
 
 namespace gpstk
 {
-   string printTime( const CommonTime& t,
-                          const string& fmt )
+   std::string printTime( const CommonTime& t,
+                          const std::string& fmt )
    {
       try
       {

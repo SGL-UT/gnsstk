@@ -37,7 +37,7 @@
 //==============================================================================
 
 /**
- * @file DCBReader.hpp
+ * @file DCBDataReader.hpp
  * Class to read DCB data from CODE.
  */
 

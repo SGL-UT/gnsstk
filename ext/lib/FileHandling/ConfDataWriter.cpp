@@ -105,10 +105,10 @@ namespace gpstk
       * @param varComment   variable comment 
       * @param valComment   value comment
       */
-	void ConfDataWriter::writeVariable(const string& var,
-                                      const string& val,
-                                      const string& varComment,
-                                      const string& valComment)
+   void ConfDataWriter::writeVariable(const std::string& var,
+                                      const std::string& val,
+                                      const std::string& varComment,
+                                      const std::string& valComment)
 	{
 		string line=var;
 
@@ -131,10 +131,10 @@ namespace gpstk
        * @param varComment   variable comment 
        * @param valComment   value comment
        */
-   void ConfDataWriter::writeVariable(const string& var,
-                      const double& val,
-                      const string& varComment,
-                      const string& valComment)
+   void ConfDataWriter::writeVariable(const std::string& var,
+                                      const double& val,
+                                      const std::string& varComment,
+                                      const std::string& valComment)
    { 
       writeVariable(var,StringUtils::asString(val,valuePrecison),
                                                          varComment,valComment);
@@ -150,11 +150,11 @@ namespace gpstk
        * @param varComment   variable comment 
        * @param valComment   value comment
        */
-	void ConfDataWriter::writeVariableList(const string& var,
-                                          const string  valList[],
+   void ConfDataWriter::writeVariableList(const std::string& var,
+                                          const std::string  valList[],
                                           const int&    n,
-                                          const string& varComment,
-                                          const string& valComment)
+                                          const std::string& varComment,
+                                          const std::string& valComment)
 	{
 		string line=var;
 
@@ -181,10 +181,10 @@ namespace gpstk
        * @param varComment   variable comment 
        * @param valComment   value comment
        */
-	void ConfDataWriter::writeVariableList(const string&         var,
-                                          vector<string> valList,
-                                          const string&         varComment,
-                                          const string&         valComment)
+   void ConfDataWriter::writeVariableList(const std::string&         var,
+                                          std::vector<std::string> valList,
+                                          const std::string&         varComment,
+                                          const std::string&         valComment)
 	{
 		string line=var;
 
@@ -217,11 +217,11 @@ namespace gpstk
        * @param varComment   variable comment 
        * @param valComment   value comment
        */
-	void ConfDataWriter::writeVariableList(const string& var,
+   void ConfDataWriter::writeVariableList(const std::string& var,
                                           const int     valList[],
                                           const int&    n,
-                                          const string& varComment,
-                                          const string& valComment )
+                                          const std::string& varComment,
+                                          const std::string& valComment )
 	{
 		vector<string> vals;
 		for(int i = 0; i < n; i++)
@@ -240,11 +240,11 @@ namespace gpstk
        * @param varComment   variable comment 
        * @param valComment   value comment
        */
-	void ConfDataWriter::writeVariableList(const string& var,
+   void ConfDataWriter::writeVariableList(const std::string& var,
                                           const double valList[],
                                           const int&    n,
-                                          const string& varComment,
-                                          const string& valComment)
+                                          const std::string& varComment,
+                                          const std::string& valComment)
 	{
 		vector<string> vals;
 		for(int i = 0; i < n; i++) 

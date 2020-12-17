@@ -48,7 +48,7 @@ namespace gpstk {
 
 // -------------------------------------------------------------------------------
 // only constructor
-SatPassIterator::SatPassIterator(vector<SatPass>& splist, bool rev, bool dbug)
+   SatPassIterator::SatPassIterator(std::vector<SatPass>& splist, bool rev, bool dbug)
       : SPList(splist), timeReverse(rev), debug(dbug)
 {
    if(SPList.size() == 0) {
@@ -156,7 +156,7 @@ void SatPassIterator::reset(bool rev, bool dbug) throw()
 //                  SatPassList[i].data(j) where indexMap[i] = j.
 // @return 1 for success, 0 at the end of the dataset.
 // @throw if time tags are out of order.
-int SatPassIterator::next(map<unsigned int, unsigned int>& indexMap)
+int SatPassIterator::next(std::map<unsigned int, unsigned int>& indexMap)
 {
    int i,j,k,numsvs;
    RinexSatID sat;

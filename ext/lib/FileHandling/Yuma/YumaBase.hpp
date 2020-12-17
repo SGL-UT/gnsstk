@@ -48,8 +48,8 @@
 
 namespace gpstk
 {
-   /** @defgroup Yuma Yuma almanac files */
-   //@{
+      /// @ingroup FileHandling
+      //@{
    
       /**
        * This is a base class for all Yuma-related classes.
@@ -64,7 +64,7 @@ namespace gpstk
       
    };
    
-   //@}
+      //@}
 }
 
 #endif

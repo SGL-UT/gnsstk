@@ -238,7 +238,7 @@ catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
 }  // end void SolarSystemEphemeris::readASCIIheader(string filename)
 
 //------------------------------------------------------------------------------------
-int SolarSystemEphemeris::readASCIIdata(vector<string>& filenames)
+int SolarSystemEphemeris::readASCIIdata(std::vector<std::string>& filenames)
 {
 try {
    int i,n;
@@ -288,7 +288,7 @@ catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
 }  // end int SolarSystemEphemeris::readASCIIdata(vector<string>& filenames)
 
 //------------------------------------------------------------------------------------
-int SolarSystemEphemeris::readASCIIdata(string filename)
+int SolarSystemEphemeris::readASCIIdata(std::string filename)
 {
 try {
    if(EphemerisNumber < 0) {
