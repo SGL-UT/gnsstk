@@ -37,8 +37,8 @@
 //==============================================================================
 
 /**
- * @file CnavText.cpp
- * CnavText data encapsulated in engineering terms
+ * @file CNavText.cpp
+ * CNavText data encapsulated in engineering terms
  */
 #include <iomanip>
 

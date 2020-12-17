@@ -36,6 +36,134 @@
 //
 //==============================================================================
 
+/** \page apps
+ * - \subpage timeconvert - Convert times between a variety of formats
+ * \page timeconvert
+ * \tableofcontents
+ *
+ * \section timeconvert_name NAME
+ * timeconvert - Display time stamps in a variety of formats
+ *
+ * \section timeconvert_synopsis SYNOPSIS
+ * \b timeconvert [\argarg{OPTION}] ...
+ *
+ * \section timeconvert_description DESCRIPTION
+ * This application allows the user to convert between time formats
+ * associated with GNSS. Time formats include, but are not limited to:
+ * civilian time, Julian day of year and year, GPS week and seconds of
+ * week, Z counts, and Modified Julian Date (MJD).
+ *
+ * \dictionary
+ * \dicterm{-d, \--debug}
+ * \dicdef{Increase debug level}
+ * \dicterm{-v, \--verbose}
+ * \dicdef{Increase verbosity}
+ * \dicterm{-h, \--help}
+ * \dicdef{Print help usage}
+ * \dicterm{-A, \--ansi=\argarg{TIME}}
+ * \dicdef{"ANSI-Second"}
+ * \dicterm{-c, \--civil=\argarg{TIME}}
+ * \dicdef{"Month(numeric) DayOfMonth Year Hour:Minute:Second"}
+ * \dicterm{-R, \--rinex-file=\argarg{TIME}}
+ * \dicdef{"Year(2-digit) Month(numeric) DayOfMonth Hour Minute Second"}
+ * \dicterm{-o, \--ews=\argarg{TIME}}
+ * \dicdef{"GPSEpoch 10bitGPSweek SecondOfWeek"}
+ * \dicterm{-f, \--ws=\argarg{TIME}}
+ * \dicdef{"FullGPSWeek SecondOfWeek"}
+ * \dicterm{-w, \--wz=\argarg{TIME}}
+ * \dicdef{"FullGPSWeek Zcount"}
+ * \dicterm{\--z29=\argarg{TIME}}
+ * \dicdef{"29bitZcount"}
+ * \dicterm{-Z, \--z32=\argarg{TIME}}
+ * \dicdef{"32bitZcount"}
+ * \dicterm{-j, \--julian=\argarg{TIME}}
+ * \dicdef{"JulianDate"}
+ * \dicterm{-m, \--mjd=\argarg{TIME}}
+ * \dicdef{"ModifiedJulianDate"}
+ * \dicterm{-u, \--unixtime=\argarg{TIME}}
+ * \dicdef{"UnixSeconds UnixMicroseconds"}
+ * \dicterm{-y, \--doy=\argarg{TIME}}
+ * \dicdef{"Year DayOfYear SecondsOfDay"}
+ * \dicterm{\--input-format=\argarg{ARG}}
+ * \dicdef{Time format to use on input}
+ * \dicterm{\--input-time=\argarg{ARG}}
+ * \dicdef{Time to be parsed by "input-format" option}
+ * \dicterm{-F, \--format=\argarg{ARG}}
+ * \dicdef{Time format to use on output}
+ * \dicterm{-a, \--add-offset=\argarg{NUM}}
+ * \dicdef{add \argarg{NUM} seconds to specified time}
+ * \dicterm{-s, \--sub-offset=\argarg{NUM}}
+ * \dicdef{subtract \argarg{NUM} seconds from specified time}
+ * \enddictionary
+ * \section timeconvert_examples EXAMPLES
+ * \subsection timeconvert_example_default Get the current system time in UTC.
+ * \code{.sh}
+ * > timeconvert  
+ * 
+ *         Month/Day/Year H:M:S            08/10/2020 17:00:04
+ *         Modified Julian Date            59071.708386331
+ *         GPSweek DayOfWeek SecOfWeek     70 1  147604.579029
+ *         FullGPSweek Zcount              2118  98403
+ *         Year DayOfYear SecondOfDay      2020 223  61204.579029
+ *         Unix: Second Microsecond        1597078804 579029
+ *         Zcount: 29-bit (32-bit)         36798563 (1110540387)
+ * \endcode
+ * \subsection timeconvert_example_rinex Convert RINEX file time.
+ * \code{.sh}
+ * > timeconvert -R "85 05 06 13 50 02"
+ *
+ *         Month/Day/Year H:M:S            05/06/1985 13:50:02
+ *         Modified Julian Date            46191.576412037
+ *         GPSweek DayOfWeek SecOfWeek     278 1  136202.000000
+ *         FullGPSweek Zcount              278  90801
+ *         Year DayOfYear SecondOfDay      1985 126  49802.000000
+ *         Unix: Second Microsecond        484235402      0
+ *         Zcount: 29-bit (32-bit)         145842865 (145842865)
+ * \endcode
+ * \subsection timeconvert_example_civil Convert civil time.
+ * \code{.sh}
+ * > timeconvert -c "5 6 1985 13:50:02"
+ *
+ *         Month/Day/Year H:M:S            05/06/1985 13:50:02
+ *         Modified Julian Date            46191.576412037
+ *         GPSweek DayOfWeek SecOfWeek     278 1  136202.000000
+ *         FullGPSweek Zcount              278  90801
+ *         Year DayOfYear SecondOfDay      1985 126  49802.000000
+ *         Unix: Second Microsecond        484235402      0
+ *         Zcount: 29-bit (32-bit)         145842865 (145842865)
+ * \endcode
+ * \subsection timeconvert_example_format Output only year, day of year and seconds of day.
+ * \code{.sh}
+ * > timeconvert  -F "%04Y %03j %05.0s"
+ * 2020 223 61347
+ * \endcode
+ * \subsection timeconvert_example_input_format Custom input format.
+ * \code{.sh}
+ * > timeconvert  --input-format="%Y %j %H:%M:%S" --input-time="1985 126 13:50:02"
+ *
+ *         Month/Day/Year H:M:S            05/06/1985 13:50:02
+ *         Modified Julian Date            46191.576412037
+ *         GPSweek DayOfWeek SecOfWeek     278 1  136202.000000
+ *         FullGPSweek Zcount              278  90801
+ *         Year DayOfYear SecondOfDay      1985 126  49802.000000
+ *         Unix: Second Microsecond        484235402      0
+ *         Zcount: 29-bit (32-bit)         145842865 (145842865)
+ * \endcode
+ * \subsection timeconvert_example_subtract Display beginning of yesterday.
+ * \code{.sh}
+ * > timeconvert -s 86400 -F "%4Y %03j 0"
+ * 2020 222 0
+ * \endcode
+ * \section timeconvert_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors occurred}
+ * \dictentry{1,A C++ exception occurred (typically invalid time format or value)}
+ * \enddictable
+ * \section timeconvert_see_also SEE ALSO
+ * printTime()
+ */
+
 #include "BasicFramework.hpp"
 
 #include "TimeString.hpp"
@@ -55,6 +183,7 @@
 
 using namespace std;
 using namespace gpstk;
+
 
 class TimCvt : public BasicFramework
 {

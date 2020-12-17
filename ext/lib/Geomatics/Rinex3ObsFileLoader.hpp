@@ -232,10 +232,10 @@ public:
    inline void nEpochsToRead(int n) { nepochsToRead = n; }
 
    /// set save data flag
-   /// @param b bool if true, then save the data, otherwise just the headers
+   /// @param b if true, then save the data, otherwise just the headers
    inline void saveTheData(bool b) { saveData = b; }
    /// access save data flag
-   /// @return bool if true, then save the data, otherwise just the headers
+   /// @return if true, then save the data, otherwise just the headers
    inline bool dataSaved(void) { return saveData; }
 
    /// set the start time
@@ -248,14 +248,14 @@ public:
    /// @param[in] dt decimate data to this time step (on even seconds-of-week)
    inline void setDecimation(double dt) { dtdec = dt; }
    /// set time format
-   /// @param[in] format (cf. gpstk::Epoch::printf) for time output in dumps
+   /// @param[in] fmt format (cf. gpstk::Epoch::printf) for time output in dumps
    inline void setTimeFormat(std::string fmt) { timefmt = fmt; }
 
    /// satellites to be excluded; this may be SatID = (-1, system);
    /// @param[in] sat satellite to be excluded [do not exclude system this way]
    inline void excludeSat(SatID sat) { exSats.push_back(sat); }
    /// vector of satellites to be excluded
-   /// @param[in] vector of specific satellites to exclude
+   /// @param[in] sats vector of specific satellites to exclude
    inline void excludeSats(std::vector<SatID> sats)
       { for(int i=0; i<sats.size(); i++) excludeSat(sats[i]); }
 
@@ -294,7 +294,7 @@ public:
 
    // TD check index and dim
    /// return a full Rinex3ObsHeader
-   /// @param[in] index in input filenames vector
+   /// @param[in] i index in input filenames vector
    /// @return Rinex3ObsHeader of corresponding file
    inline Rinex3ObsHeader getFullHeader(unsigned int i) const
       { return headers[i]; }
@@ -335,22 +335,22 @@ public:
                         std::vector<SatPass>& SPList);
 
    /// Dump the SatObsCount table
-   /// @param ostream s to which to write the table
+   /// @param s to which to write the table
    void dumpSatObsTable(std::ostream& s) const;
 
    /// Dump the stored data for one epoch - NB setTimeFormat()
-   /// @param ostream s to which to write the data
+   /// @param s to which to write the data
    void dumpStoreEpoch(std::ostream& s, const gpstk::Rinex3ObsData& rod) const;
 
    /// Dump the stored data - NB setTimeFormat()
-   /// @param ostream s to which to write the data
+   /// @param s to which to write the data
    void dumpStoreData(std::ostream& s) const;
 
 }; // end class Rinex3ObsFileLoader
 
 // TD where else to put this?
 /// Utility to dump a table of all valid RinexObsIDs for all systems and frequencies
-/// @param ostream s to which to write the data
+/// @param s to which to write the data
 void dumpAllRinex3ObsTypes(std::ostream& s);
 
 //@}

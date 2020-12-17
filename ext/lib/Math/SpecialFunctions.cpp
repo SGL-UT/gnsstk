@@ -57,7 +57,7 @@ namespace gpstk
        *
        * http://en.wikipedia.org/wiki/Lanczos_approximation
        *
-       * \warning Be aware that Gamma function is not defined for 0, -1, -2,...
+       * @warning Be aware that Gamma function is not defined for 0, -1, -2,...
        */
    double gamma(double val)
    {
@@ -115,7 +115,7 @@ namespace gpstk
       /* Computes the natural logarithm of Gamma function
        * using the Lanczos approximation.
        *
-       * \warning This version does not work for values <= 0.0
+       * @warning This version does not work for values <= 0.0
        */
    double lngamma(double val)
    {
@@ -720,7 +720,7 @@ namespace gpstk
 
       /* Beta function.
        *
-       * \warning This version may not work for values > 130.0
+       * @warning This version may not work for values > 130.0
        */
    double beta(const double x, const double y)
    {
@@ -733,7 +733,7 @@ namespace gpstk
 
       /* Computes the natural logarithm of Beta function
        *
-       * \warning This version does not work for values <= 0.0
+       * @warning This version does not work for values <= 0.0
        */
    double lnbeta(double x, double y)
    {

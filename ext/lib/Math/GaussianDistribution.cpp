@@ -68,7 +68,7 @@ namespace gpstk
        * @param mu      Mean
        * @param sig     Standard deviation
        *
-       * \warning If (sig <= 0.0), it will be set to 1.0.
+       * @warning If (sig <= 0.0), it will be set to 1.0.
        */
    GaussianDistribution::GaussianDistribution( double mu,
                                                double sig )
@@ -143,7 +143,7 @@ namespace gpstk
        *
        * @param sig     Standard deviation
        *
-       * \warning If (sig <= 0.0), it will be set to 1.0.
+       * @warning If (sig <= 0.0), it will be set to 1.0.
        */
    GaussianDistribution& GaussianDistribution::setSigma(double sig)
    {
@@ -168,7 +168,7 @@ namespace gpstk
        * @param mu      Mean
        * @param sig     Standard deviation
        *
-       * \warning If (sig <= 0.0), it will be set to 1.0.
+       * @warning If (sig <= 0.0), it will be set to 1.0.
        */
    GaussianDistribution& GaussianDistribution::setParameters( double mu,
                                                               double sig )

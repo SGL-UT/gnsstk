@@ -37,8 +37,8 @@
 //==============================================================================
 
 /**
- * @file CnavEOP.cpp
- * CnavEOP data encapsulated in engineering terms
+ * @file CNavEOP.cpp
+ * CNavEOP data encapsulated in engineering terms
  */
 #include <iomanip>
 #include <cmath>

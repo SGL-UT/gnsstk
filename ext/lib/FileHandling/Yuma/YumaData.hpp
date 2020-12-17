@@ -57,8 +57,8 @@
 
 namespace gpstk
 {
-   /// @ingroup Yuma 
-   //@{
+      /// @ingroup FileHandling
+      //@{
 
       /** 
        * This class stores, reads, and writes Yuma records. 
@@ -166,7 +166,7 @@ namespace gpstk
       
    }; // class YumaData
 
-   //@}
+      //@}
 
 } // namespace
 

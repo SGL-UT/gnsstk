@@ -49,8 +49,8 @@
 namespace gpstk
 {
 
-   /** @defgroup SEM SEM Almanac files */
-   //@{
+      /// @ingroup FileHandling
+      //@{
    
       /**
        * This is a base class for all SEM-related classes.
@@ -65,7 +65,7 @@ namespace gpstk
       
    };
    
-   //@}
+      //@}
 }
 
 #endif

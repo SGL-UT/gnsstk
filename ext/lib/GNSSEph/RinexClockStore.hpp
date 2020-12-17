@@ -56,7 +56,7 @@
 
 namespace gpstk
 {
-   /// @ingroup ephemstore 
+   /// @ingroup GNSSEph 
    //@{
 
    /// Store a table of data vs time for each of several satellites using data from

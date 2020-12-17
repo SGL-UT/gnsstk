@@ -36,8 +36,8 @@
 //
 //==============================================================================
 
-/** @file reads a stream and writes it to file(s) with names derived from
-    system time.
+/** @file rfw.cpp reads a stream and writes it to file(s) with names
+ * derived from system time.
  */
 
 #include <fstream>

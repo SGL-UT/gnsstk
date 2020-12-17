@@ -52,8 +52,8 @@
 
 namespace gpstk
 {
-   /** @addtogroup math */
-   //@{
+      /// @ingroup MathGroup
+      //@{
 
    /// Compute the median of a gpstk::Vector
    template <class T> inline T median(const Vector<T>& v)
@@ -1165,7 +1165,7 @@ namespace gpstk
       return s;
    }
 
-   //@}
+      //@}
 
 }  // namespace
 

@@ -57,70 +57,70 @@ namespace gpstk
        * the meaning for each:
        *
        * - ANSITime:
-       *   - K     integer seconds since Unix Epoch (00:00, Jan 1, 1970 UTC)
+       *   - \%K     integer seconds since Unix Epoch (00:00, Jan 1, 1970 UTC)
        *
        * - CivilTime:
-       *   - Y     integer 4-digit year
-       *   - y     integer 2-digit year
-       *   - m     integer month
-       *   - b     abbreviated month name string (e.g. "Jan")
-       *   - B     full month name string (e.g. "January")
-       *   - d     integer day-of-month
-       *   - H     integer hour-of-day
-       *   - M     integer minute-of-hour
-       *   - S     integer second-of-minute
-       *   - f     float second-of-minute
+       *   - \%Y     integer 4-digit year
+       *   - \%y     integer 2-digit year
+       *   - \%m     integer month
+       *   - \%b     abbreviated month name string (e.g. "Jan")
+       *   - \%B     full month name string (e.g. "January")
+       *   - \%d     integer day-of-month
+       *   - \%H     integer hour-of-day
+       *   - \%M     integer minute-of-hour
+       *   - \%S     integer second-of-minute
+       *   - \%f     float second-of-minute
        *
        * - Week (GPS/BDS/GAL/QZS):
-       *   - E     integer GPS Epoch
-       *   - F     integer full (13-bit) GPS Week
-       *   - G     integer mod (10-bit) GPS Week
-       *   - R     integer BDS Epoch
-       *   - D     integer full BDS Week
-       *   - e     integer mod BDS Week
-       *   - T     integer GAL Epoch
-       *   - L     integer full GAL Week
-       *   - l     integer mod GAL Week
-       *   - V     integer QZS Epoch
-       *   - h     integer full QZS Week
-       *   - i     integer mod QZS Week - same as I
-       *   - X     integer IRNSS Epoch
-       *   - O     integer IRNSS week
-       *   - o     integer mod INRSS Week 
+       *   - \%E     integer GPS Epoch
+       *   - \%F     integer full (13-bit) GPS Week
+       *   - \%G     integer mod (10-bit) GPS Week
+       *   - \%R     integer BDS Epoch
+       *   - \%D     integer full BDS Week
+       *   - \%e     integer mod BDS Week
+       *   - \%T     integer GAL Epoch
+       *   - \%L     integer full GAL Week
+       *   - \%l     integer mod GAL Week
+       *   - \%V     integer QZS Epoch
+       *   - \%h     integer full QZS Week
+       *   - \%i     integer mod QZS Week - same as I
+       *   - \%X     integer IRNSS Epoch
+       *   - \%O     integer IRNSS week
+       *   - \%o     integer mod INRSS Week 
        *
        * - WeekSecond (GPS/BDS/GAL/QZS):
-       *   - w     integer GPS day-of-week
-       *   - g     float GPS second-of-week
+       *   - \%w     integer GPS day-of-week
+       *   - \%g     float GPS second-of-week
        *
        * - GPSWeekZcount:
-       *   - w     integer GPS day-of-week
-       *   - z     integer GPS Z-count
-       *   - Z     integer GPS Z-count
-       *   - c     integer 29-bit Z-count
-       *   - C     integer 32-bit Z-count
+       *   - \%w     integer GPS day-of-week
+       *   - \%z     integer GPS Z-count
+       *   - \%Z     integer GPS Z-count
+       *   - \%c     integer 29-bit Z-count
+       *   - \%C     integer 32-bit Z-count
        *
        * - JulianDate:
-       *   - J     float Julian Date
+       *   - \%J     float Julian Date
        *
        * - MJD:
-       *   - Q     float Modified Julian Date
+       *   - \%Q     float Modified Julian Date
        *
        * - UnixTime:
-       *   - U     integer seconds since Unix Epoch (00:00, Jan 1, 1970 UTC)
-       *   - u     integer microseconds
+       *   - \%U     integer seconds since Unix Epoch (00:00, Jan 1, 1970 UTC)
+       *   - \%u     integer microseconds
        *
        * - PosixTime:
-       *   - W     integer seconds
-       *   - N     integer nanoseconds
+       *   - \%W     integer seconds
+       *   - \%N     integer nanoseconds
        *
        * - YDSTime:
-       *   - Y     integer 4-digit year
-       *   - y     integer 2-digit year
-       *   - j     integer day-of-year
-       *   - s     integer second-of-day
+       *   - \%Y     integer 4-digit year
+       *   - \%y     integer 2-digit year
+       *   - \%j     integer day-of-year
+       *   - \%s     integer second-of-day
        *
        * - Common Identifiers:
-       *   - P     string TimeSystem to compare with TimeSystem::Systems enum
+       *   - \%P     string TimeSystem to compare with TimeSystem::Systems enum
        */
    std::string printTime( const CommonTime& t,
                           const std::string& fmt );

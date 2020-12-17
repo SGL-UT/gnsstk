@@ -222,7 +222,7 @@ static void globfree(glob_t *pglob)
 namespace gpstk
 {
    list<string> FileSpecFind ::
-   find(const string& fileSpecString,
+   find(const std::string& fileSpecString,
         const gpstk::CommonTime& start,
         const gpstk::CommonTime& end,
         const gpstk::FileSpec::FSTStringMap& fsts)

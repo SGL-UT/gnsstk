@@ -245,7 +245,7 @@ namespace gpstk
    }  // End of method 'PlanetEphemeris::readASCIIheader()'
 
 
-   int PlanetEphemeris::readASCIIdata(vector<string>& filenames) 
+   int PlanetEphemeris::readASCIIdata(std::vector<std::string>& filenames) 
    {
       try 
       {
@@ -285,7 +285,7 @@ namespace gpstk
    }  // End of method 'PlanetEphemeris::readASCIIdata()'
 
 
-   int PlanetEphemeris::readASCIIdata(string filename) 
+   int PlanetEphemeris::readASCIIdata(std::string filename) 
    {
       try 
       {

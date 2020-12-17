@@ -113,7 +113,7 @@ namespace gpstk
          virtual void decodeBIN(std::string& str);
             /** Translate the ireg value to an SNR in dB*Hz.
              * @param[in] chipRate The chipping rate of the code.
-             * @param[in] mag The magnitude of the carrier estimate.
+             * @param[in] magnitude The magnitude of the carrier estimate.
              * @note The magnitude of the carrier estimate is a factor
              *   specified by Ashtech.  Currently this algorithm is
              *   designed for the Ashtech Z-12 receiver and will not

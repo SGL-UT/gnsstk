@@ -69,17 +69,17 @@ namespace gpstk
 
       /// Explicit constructor, from the 7 parameters.
       /// All the inputs are unchanged.
-      /// @param ReferenceFrame& from Transform takes "from" -> "to"
-      /// @param ReferenceFrame& to Transform takes "from" -> "to"
-      /// @param double& Rx X axis rotation angle in degrees
-      /// @param double& Ry Y axis rotation angle in degrees
-      /// @param double& Rz Z axis rotation angle in degrees
-      /// @param double& Tx X axis translation in meters
-      /// @param double& Ty Y axis translation in meters
-      /// @param double& Tz Z axis translation in meters
-      /// @param double& Scale scale factor (dimensionless)
-      /// @param std::string& Desc description of the transform, should include
-      /// @param CommonTime& epoch time when transform became applicable (default=BOT)
+      /// @param from Transform takes "from" -> "to"
+      /// @param to Transform takes "from" -> "to"
+      /// @param Rx X axis rotation angle in degrees
+      /// @param Ry Y axis rotation angle in degrees
+      /// @param Rz Z axis rotation angle in degrees
+      /// @param Tx X axis translation in meters
+      /// @param Ty Y axis translation in meters
+      /// @param Tz Z axis translation in meters
+      /// @param Scale scale factor (dimensionless)
+      /// @param Desc description of the transform, should include
+      /// @param epoch time when transform became applicable (default=BOT)
       /// reference frames and an indication of the source (e.g. literature citation).
       /// @throw InvalidRequest if the transform is invalid.
       HelmertTransform(const ReferenceFrame& from, const ReferenceFrame& to,
@@ -93,15 +93,15 @@ namespace gpstk
       std::string asString() const throw();
 
       /// Transform Position to another frame using this transform or its inverse.
-      /// @param Position& pos position to be transformed; unchanged on output.
-      /// @param Position& result position after transformation.
+      /// @param pos position to be transformed; unchanged on output.
+      /// @param result position after transformation.
       /// @throw InvalidRequest if transformation, or inverse, cannot act on ReferenceFrame of input.
       void transform(const Position& pos, Position& result);
 
       /// Transform a 3-vector, in the given frame, using this Helmert transformation.
-      /// @param Vector<double>& vec 3-vector of position coordinates in "from" frame.
-      /// @param ReferenceFrame& frame Transform takes "frame" -> "new-frame"
-      /// @param Vector<double>& result 3-vector in "new-frame" frame.
+      /// @param vec 3-vector of position coordinates in "from" frame.
+      /// @param frame Transform takes "frame" -> "new-frame"
+      /// @param result 3-vector in "new-frame" frame.
       /// @throw InvalidRequest if transformation, or inverse, cannot act on ReferenceFrame of input.
       void transform(const Vector<double>& vec, const ReferenceFrame& frame,
                      Vector<double>& result)
@@ -123,9 +123,9 @@ namespace gpstk
       }
 
       /// Transform a Triple using this Helmert transformation or its inverse.
-      /// @param Triple& vec containing position and frame to be transformed.
-      /// @param ReferenceFrame& frame Transform takes "frame" -> "new-frame"
-      /// @param Triple& result with position in new frame
+      /// @param vec containing position and frame to be transformed.
+      /// @param frame Transform takes "frame" -> "new-frame"
+      /// @param result with position in new frame
       /// @throw InvalidRequest if transformation, or inverse, cannot act on ReferenceFrame of input.
       void transform(const Triple& vec, const ReferenceFrame& frame, Triple& result)
       {
@@ -141,8 +141,8 @@ namespace gpstk
       }
 
       /// Transform an Xvt using this Helmert transformation or its inverse.
-      /// @param Xvt& vec containing position and frame to be transformed.
-      /// @param Xvt& result with position in new frame
+      /// @param xvt containing position and frame to be transformed.
+      /// @param result with position in new frame
       /// @throw InvalidRequest if transformation, or inverse, cannot act on ReferenceFrame of input.
       void transform(const Xvt& xvt, Xvt& result)
       {
@@ -159,9 +159,9 @@ namespace gpstk
       }
 
       /// Transform 3 doubles, in the given frame, using this Helmert transformation.
-      /// @param double& x,y,z 3-vector of position coordinates in "from" frame.
-      /// @param ReferenceFrame& frame Transform takes "frame" -> "new-frame"
-      /// @param double& rx,ry,rz result 3-vector in "new-frame" frame.
+      /// @param x,y,z 3-vector of position coordinates in "from" frame.
+      /// @param frame Transform takes "frame" -> "new-frame"
+      /// @param rx,ry,rz result 3-vector in "new-frame" frame.
       /// @throw InvalidRequest if transformation, or inverse, cannot act on ReferenceFrame of input.
       void transform(const double& x, const double& y, const double& z,
                      const ReferenceFrame& frame,

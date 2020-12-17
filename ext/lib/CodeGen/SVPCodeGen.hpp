@@ -49,8 +49,8 @@
 
 namespace gpstk 
 {
-/** @defgroup code    Code generator   */
-//@{
+      /** @defgroup CodeGen    Code Generator   */
+      //@{
    /**
     *     SV P-code Generator.
     *     Applied Research Laboratories, The University of Texas at Austin
@@ -145,6 +145,6 @@ namespace gpstk
       gpstk::CommonTime currentZTime;
       int PRNID;
    };
-   //@}
+      //@}
 }     // end of namespace
 #endif // SVPCODEGEN_HPP

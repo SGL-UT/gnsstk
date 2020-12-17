@@ -75,7 +75,12 @@ namespace gpstk
        * For information on how to use the frameworks, see \ref appbuilding.
        */
 
-      /** @page appbuilding Building Up Applications Using Frameworks
+      /** \page APIguide
+       * - \subpage appbuilding - Building Up Applications Using Frameworks
+       * \page appbuilding Application Building
+       *
+       * \todo Make sure this document is up to date and maybe add a
+       * sequence diagram.
        *
        * \tableofcontents
        *

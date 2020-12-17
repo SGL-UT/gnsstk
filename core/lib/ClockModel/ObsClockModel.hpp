@@ -83,10 +83,10 @@ namespace gpstk
          SIGMA      ///< ORD removed from computation because it was outlier
       };
 
-         /// defines a store for each SV's #SvMode
+         /// defines a store for each SV's SvMode
       typedef std::map<SatID, SvMode> SvModeMap;
 
-         /// defines a store for each SV's #SvStatus
+         /// defines a store for each SV's SvStatus
       typedef std::map<SatID, SvStatus> SvStatusMap;
 
       ObsClockModel(double sigma = 2, double elmask = 0, SvMode mode = ALWAYS)
@@ -105,15 +105,15 @@ namespace gpstk
 
          /**
           * set a SvMode for all SVs.
-          * @param right #SvModeMap
+          * @param right SvModeMap
           * @return a reference to this object
           */
       ObsClockModel& setSvModeMap(const SvModeMap& right) throw();
 
          /** 
           * set the SvMode for a particular SV.
-          * @param prn Sv number of the SV
-          * @param mode #SvMode for the SV
+          * @param svid Sv number of the SV
+          * @param mode SvMode for the SV
           * @return a reference to this object
           */
       ObsClockModel& setSvMode(const SatID& svid, const SvMode& mode) throw()
@@ -121,7 +121,7 @@ namespace gpstk
       
          /** 
           * set the SvMode for all SVs
-          * @param mode #SvMode for the SVs
+          * @param mode SvMode for the SVs
           * @return a reference to this object
           */
       ObsClockModel& setSvMode(const SvMode& mode) throw()
@@ -161,29 +161,29 @@ namespace gpstk
          /**
           * get the map indicating how each ORD was used in the bias
           * computation.
-          * @return a const reference to the #SvStatusMap
+          * @return a const reference to the SvStatusMap
           */
       const SvStatusMap& getSvStatusMap() const throw()
       { return status; };
 
          /**
           * get the status of a particular ORD in the bias computation.
-          * @param prn the PRN number indicating the ORD of interest
-          * @return #SvStatus
+          * @param svid the PRN number indicating the ORD of interest
+          * @return SvStatus
           * @throw ObjectNotFound an ORD for that SV is not in the map
           */
       SvStatus getSvStatus(const SatID& svid) const;
 
          /**
           * get the map indicating how to use each ORD in the bias computation.
-          * @return a const reference to the #SvModeMap
+          * @return a const reference to the SvModeMap
           */
       const SvModeMap& getSvModeMap() const throw() { return modes; }
 
          /**
           * get how a particular ORD is to be used in the bias computation.
-          * @param prn the Sv number indicating the mode of interest
-          * @return #SvMode
+          * @param svid the Sv number indicating the mode of interest
+          * @return SvMode
           * @throw ObjectNotFound a mode for that SV is not in the map
           */
       SvMode getSvMode(const SatID& svid) const;

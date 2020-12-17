@@ -58,8 +58,8 @@
 
 namespace gpstk
 {
-   /// @ingroup SEM 
-   //@{
+      /// @ingroup FileHandling
+      //@{
 
       /** 
        * This class stores, reads, and writes SEM records. 
@@ -150,7 +150,7 @@ namespace gpstk
       
    }; // class SEMData
 
-   //@}
+      //@}
 
 } // namespace
 

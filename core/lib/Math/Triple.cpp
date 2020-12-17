@@ -75,7 +75,7 @@ namespace gpstk
       return *this;
    }
 
-   Triple& Triple :: operator=(const valarray<double>& right)
+   Triple& Triple :: operator=(const std::valarray<double>& right)
    {
       if (right.size() != 3)
       {

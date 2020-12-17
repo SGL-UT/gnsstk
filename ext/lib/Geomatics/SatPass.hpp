@@ -365,7 +365,6 @@ public:
    /// get the userflag at one index
    /// NB SatPass does nothing w/ this member except setUserFlag() and getUserFlag();
    /// @param  i    index of the data of interest
-   /// @param  inflag flag meaning whatever the user wants it to
    /// @throw Exception
    unsigned int getUserFlag(unsigned int i) const;
 
@@ -676,7 +675,7 @@ public:
    /// Dump all the data in the pass, one line per timetag.
    /// @param os    output stream
    /// @param msg1  put message msg1 at beginning of each line,
-   /// @param msg2  put msg2 at the end of the first (#comment) line.
+   /// @param msg2  put msg2 at the end of the first (\#comment) line.
    void dump(std::ostream& os, std::string msg1, std::string msg2=std::string())
       throw();
 

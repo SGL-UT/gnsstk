@@ -827,7 +827,7 @@ namespace gpstk
 
 
    RinexObsType
-   RinexObsHeader::convertObsType(const string& oneObs)
+   RinexObsHeader::convertObsType(const std::string& oneObs)
    {
       RinexObsType ot(RegisteredRinexObsTypes[0]);   // Unknown type
       for(size_t i=0; i<RegisteredRinexObsTypes.size(); i++) {

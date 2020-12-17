@@ -133,7 +133,7 @@ namespace gpstk
       explicit RinexObsID(const std::string& strID, double version);
 
          /** Construct this object from the C-style string specifier.
-          * @param[in] strID The RINEX observation identifier to
+          * @param[in] id The RINEX observation identifier to
           *   decode.  This must be a RINEX 3 ID, three or four
           *   characters in length.  Three character obs codes are
           *   assumed to be from GPS.  Four character obs codes use

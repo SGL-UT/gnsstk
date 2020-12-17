@@ -75,7 +75,7 @@
 
 namespace gpstk
 {
-   /** @addtogroup almemstore */
+   /// @ingroup GNSSEph
    //@{
 
    /// Class for storing and accessing GPS SV's position,
@@ -99,7 +99,7 @@ namespace gpstk
 
       /// Returns the position, velocity, and clock offset of the indicated
       /// satellite in ECEF coordinates (meters) at the indicated time.
-      /// @param[in] sat the SV's SatID
+      /// @param[in] subjID the SV's SatID
       /// @param[in] t the time to look up
       /// @return the Xvt of the SV at time
       /// @throw InvalidRequest If the request can not be completed for any
@@ -200,7 +200,7 @@ namespace gpstk
       virtual bool validSatSystem(const SatID& subjID) const;
 
       /// Returns the health of an SV for a particular time.
-      /// @param sat the satellite's SatID
+      /// @param subjID the satellite's SatID
       /// @param t the time to look up
       /// @return the SV health bits
       /// @throw InvalidRequest no matching OrbElem found in the store

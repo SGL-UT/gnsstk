@@ -44,11 +44,16 @@
 
 namespace gpstk
 {
-   /* This class computes the power sums of a list of numbers and computes
-      various statistical values based upon these sums. This is a generalization
-      of the Stats class that supports the higher-order moments. See
-      http://mathworld.wolfram.com/PowerSum.html for a discussion of this approach.
-   */
+      /// @ingroup MathGroup
+      //@{
+
+      /** This class computes the power sums of a list of numbers and
+       * computes various statistical values based upon these
+       * sums. This is a generalization of the Stats class that
+       * supports the higher-order moments. See
+       * http://mathworld.wolfram.com/PowerSum.html for a discussion
+       * of this approach.
+       */
    class PowerSum
    {
    public:
@@ -111,6 +116,8 @@ namespace gpstk
   5.21, 5.04, 4.88, 4.59, 4.39, 3.98, 3.60, 3.41, 3.20, 3.00};
 */
    };
+
+      //@}
 
 }
 #endif

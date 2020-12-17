@@ -73,10 +73,10 @@ double IonosphereFreeRange(const std::vector<double>& frequencies,
 /// Given an ionosphere model, and locations of receiver and satellite,
 /// range correction due to ionospheric effects.
 /// @param ionoModel Class that encapsulates ionospheric models
-/// @params time The time of interest.
-/// @params frequency Frequency of interest - see note above.
-/// @param rx_loc The location of the receiver.
-/// @param sv_loc The location of the satellite at time of interest.
+/// @param time The time of interest.
+/// @param frequency Frequency of interest - see note above.
+/// @param rxLoc The location of the receiver.
+/// @param svXvt The location of the satellite at time of interest.
 /// @return Range correction (delta) in meters
 double IonosphereModelCorrection(const gpstk::IonoModelStore& ionoModel,
         const gpstk::CommonTime& time, CarrierBand band,
@@ -86,43 +86,43 @@ double IonosphereModelCorrection(const gpstk::IonoModelStore& ionoModel,
 /// satellite location/velocity in xvt instance. This is a relatively thin
 /// wrapper for XvtStore.getXvt() to bring the method into the same
 /// namespace as the other range calculations.
-/// @params sat_id Identifier for the satellite
-/// @params time The time of interest.
-/// @params ephemeris The ephemeris to query against.
+/// @param sat_id Identifier for the satellite
+/// @param time The time of interest.
+/// @param ephemeris The ephemeris to query against.
 /// @return Xvt instance containing satellite location/velocity
 gpstk::Xvt getSvXvt(const gpstk::SatID& sat_id, const gpstk::CommonTime& time,
         const gpstk::XvtStore<gpstk::SatID>& ephemeris);
 
 /// Calculate the raw range at RECEIVE time per RECEIVER clock.
-/// @params rx_loc The location of the receiver.
-/// @params sat_id Identifier for the satellite
-/// @params time The nominal receive time.
-/// @params ephemeris The ephemeris to query against.
-/// @params sv_xvt Final SV Position/Velocity returned here.
+/// @param rx_loc The location of the receiver.
+/// @param sat_id Identifier for the satellite
+/// @param time The nominal receive time.
+/// @param ephemeris The ephemeris to query against.
+/// @param sv_xvt Final SV Position/Velocity returned here.
 /// @return Range in meters
 double RawRange1(const gpstk::Position& rx_loc, const gpstk::SatID& sat_id,
         const gpstk::CommonTime& time,
         const gpstk::XvtStore<gpstk::SatID>& ephemeris, gpstk::Xvt& sv_xvt);
 
 /// Calculate the raw range at TRANSMIT time per the RECEIVER clock.
-/// @params pseudorange Pseudorange in meters to seed the calculation.
-/// @params rx_loc The location of the receiver.
-/// @params sat_id Identifier for the satellite
-/// @params time The nominal receive time.
-/// @params ephemeris The ephemeris to query against.
-/// @params sv_xvt Final SV Position/Velocity returned here.
+/// @param pseudorange Pseudorange in meters to seed the calculation.
+/// @param rx_loc The location of the receiver.
+/// @param sat_id Identifier for the satellite
+/// @param time The nominal receive time.
+/// @param ephemeris The ephemeris to query against.
+/// @param sv_xvt Final SV Position/Velocity returned here.
 /// @return Range in meters
 double RawRange2(double pseudorange, const gpstk::Position& rx_loc,
         const gpstk::SatID& sat_id, const gpstk::CommonTime& time,
         const gpstk::XvtStore<gpstk::SatID>& ephemeris, gpstk::Xvt& sv_xvt);
 
 /// Calculate the raw range at TRANSMIT time per the SATELLITE clock
-/// @params pseudorange Pseudorange in meters to seed the calculation.
-/// @params rx_loc The location of the receiver.
-/// @params sat_id Identifier for the satellite
-/// @params time The transmit time reported by satellite.
-/// @params ephemeris The ephemeris to query against.
-/// @params sv_xvt Final SV Position/Velocity returned here.
+/// @param pseudorange Pseudorange in meters to seed the calculation.
+/// @param rx_loc The location of the receiver.
+/// @param sat_id Identifier for the satellite
+/// @param time The transmit time reported by satellite.
+/// @param ephemeris The ephemeris to query against.
+/// @param sv_xvt Final SV Position/Velocity returned here.
 /// @return Range in meters
 double RawRange3(double pseudorange, const gpstk::Position& rx_loc,
         const gpstk::SatID& sat_id, const gpstk::CommonTime& time,
@@ -130,11 +130,11 @@ double RawRange3(double pseudorange, const gpstk::Position& rx_loc,
 
 /// Calculate the raw range at TRANSMIT time per RECEIVER clock, without
 /// seeding the pseudorange.
-/// @params rx_loc The location of the receiver.
-/// @params sat_id Identifier for the satellite
-/// @params time The nominal receive time.
-/// @params ephemeris The ephemeris to query against.
-/// @params sv_xvt Final SV Position/Velocity returned here.
+/// @param rx_loc The location of the receiver.
+/// @param sat_id Identifier for the satellite
+/// @param time The nominal receive time.
+/// @param ephemeris The ephemeris to query against.
+/// @param sv_xvt Final SV Position/Velocity returned here.
 /// @return Range in meters
 double RawRange4(const gpstk::Position& rx_loc, const gpstk::SatID& sat_id,
         const gpstk::CommonTime& time,
@@ -142,13 +142,13 @@ double RawRange4(const gpstk::Position& rx_loc, const gpstk::SatID& sat_id,
 
 /// Calculate the range delta due to clock bias.
 /// Note: Most of the work is actually done by the Xvt object.
-/// @params sv_xvt Satellite location/velocity
+/// @param svXvt Satellite location/velocity
 /// @returns Range correction (delta) in meters
 double SvClockBiasCorrection(const gpstk::Xvt& svXvt);
 
 // Calculate the range delta due to relativistic effects
 // Note: Most of the work is actually done by the Xvt object.
-/// @params sv_xvt Satellite location/velocity
+/// @param svXvt Satellite location/velocity
 /// @returns Range correction (delta) in meters
 double SvRelativityCorrection(gpstk::Xvt& svXvt);
 
@@ -156,7 +156,7 @@ double SvRelativityCorrection(gpstk::Xvt& svXvt);
 /// calculates tropospheric effects.
 /// @param trop_model Class that encapsulates troposphere models
 /// @param rx_loc The location of the receiver.
-/// @param sv_loc The location of the satellite at time of interest.
+/// @param sv_xvt The location of the satellite at time of interest.
 /// @return Range correction (delta) in meters
 double TroposphereCorrection(const gpstk::TropModel& trop_model,
         const gpstk::Position& rx_loc, const gpstk::Xvt& sv_xvt);
@@ -167,17 +167,17 @@ double TroposphereCorrection(const gpstk::TropModel& trop_model,
 /// E.g., if dual-band, there should be no additional ionosphere correction applied.
 /// Users should construct an ORD based on their data and use case.
 /// Parameters:
-/// @param[in] bands -- Signal bands (one or two enums, for single-band/dual-band).
-/// @param[in] pseudoranges -- Pseudorange values, corresponding to frequency array (one or two).
-/// @param[in] trop_model -- Class that encapsulates ionospheric models.
-/// @param[in] rx_loc -- The location of the receiver.
-/// @param[in] sat_id -- Identifier for the satellite.
-/// @param[in] transmit_time -- The transmit time reported by satellite.
-/// @param[in] receive_time -- The nominal receive time.
-/// @param[in] iono_model -- Class that encapsulates ionospheric models.
-/// @param[in] trop_model -- Class that encapsulates troposphere models.
-/// @param[in] ephemeris -- The ephemeris to query against.
-/// @param[in] range_method -- One of four raw range methods, depending on what data is available.
+/// @param[in] bands Signal bands (one or two enums, for single-band/dual-band).
+/// @param[in] pseudoranges Pseudorange values, corresponding to frequency array (one or two).
+/// @param[in] trop_model Class that encapsulates ionospheric models.
+/// @param[in] rx_loc The location of the receiver.
+/// @param[in] sat_id Identifier for the satellite.
+/// @param[in] transmit_time The transmit time reported by satellite.
+/// @param[in] receive_time The nominal receive time.
+/// @param[in] iono_model Class that encapsulates ionospheric models.
+/// @param[in] trop_model Class that encapsulates troposphere models.
+/// @param[in] ephemeris The ephemeris to query against.
+/// @param[in] range_method One of four raw range methods, depending on what data is available.
 /// @returns Observed range deviation from 1st pseudorange.
 /*
 double calculate_ord(const std::vector<CarrierBand>& bands,

@@ -1,0 +1,23 @@
+.exitstatus {
+    border: 0px;
+    border-spacing: 2em 0;
+}
+dt.tkdict {
+    font-weight: bold;
+}
+dt.dictable {
+    font-weight: normal;
+    clear: left;
+    float: left;
+}
+dd.dictable {
+    font-weight: normal;
+    clear: right;
+    padding: 0 0 10px 20px;
+}
+span.ul {
+    text-decoration: underline;
+}
+span.cmdexample {
+    font-weight: bold;
+}

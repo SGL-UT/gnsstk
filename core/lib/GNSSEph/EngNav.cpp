@@ -72,7 +72,7 @@ namespace gpstk
       short powPI;       ///< Power of PI scale factor
       double scale;      ///< Scalar scale factor
       short signq;       ///< 0 = unsigned, 1 = signed
-      DecodeBits fmt[2]; ///< start bit, #bits for up to 2 sections
+      DecodeBits fmt[2]; ///< start bit, number of bits for up to 2 sections
       DecodeQuant *nxtq; ///< Pointer to next structure in list
    };
 

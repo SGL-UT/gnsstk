@@ -50,7 +50,7 @@ namespace gpstk
 {
 
 
-      /** @defgroup IonosphereMaps IONEX format file I/O */
+      /// @ingroup FileHandling
       //@{
 
       /** This class does not served any purpose other than to make readable

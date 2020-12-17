@@ -105,10 +105,11 @@ namespace gpstk
 
          /**
           * Writes a T-object directly from the stream in binary form.
-          * @param[in] data the data to be written.
+          * @param[in] v the data to be written.
           * @throw FFStreamError when the size of the data written
           *   to this stream doesn't match the size of a T-object.
           */
+         //@{
       inline void writeData(uint8_t v);
       inline void writeData(uint16_t v);
       inline void writeData(uint32_t v);
@@ -119,6 +120,7 @@ namespace gpstk
       inline void writeData(int64_t v);
       inline void writeData(float v);
       inline void writeData(double v);
+         //@}
       void writeData(const char* buff, size_t length);
 
          /** Child classes must defined this method to determine how

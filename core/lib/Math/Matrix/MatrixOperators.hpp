@@ -377,7 +377,7 @@ namespace gpstk
 
       /**
        * returns the condition number of the matrix, doesnt require
-       * bigNum or smallNum..
+       * bigNum or smallNum.
        */
    template <class T, class BaseClass>
    inline T condNum(const ConstMatrixBase<T, BaseClass>& m) 

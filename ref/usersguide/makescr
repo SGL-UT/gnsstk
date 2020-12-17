@@ -1,6 +1,0 @@
-perl src/perltex --nosafe  gpstk-user-reference
-perl src/bibtexall
-makeindex gpstk-user-reference
-perl src/perltex --nosafe  gpstk-user-reference
-perl src/perltex --nosafe  gpstk-user-reference
-

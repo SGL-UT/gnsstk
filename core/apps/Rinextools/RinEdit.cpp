@@ -36,6 +36,191 @@
 //
 //==============================================================================
 
+/** \page apps
+ * - \subpage RinEdit - Manipulate RINEX OBS data files
+ * \page RinEdit
+ * \tableofcontents
+ *
+ * \section RinEdit_name NAME
+ * RinEdit - Manipulate RINEX OBS data files
+ *
+ * \section RinEdit_synopsis SYNOPSIS
+ * RinEdit [\argarg{OPTION}] ...
+ *
+ * \section RinEdit_description DESCRIPTION
+ * The application opens and reads RINEX observation files(s) (v2+),
+ * applies editing commands, and write out the modified RINEX data to
+ * RINEX v3 or v2 file(s).
+ *
+ * RINEX input and output files
+ * \dictionary
+ * \dicterm{\--IF \argarg{FN}}
+ * \dicdef{Input RINEX observation file name [repeatable] ()}
+ * \dicterm{\--ID \argarg{P}}
+ * \dicdef{Path of input RINEX observation file(s) ()}
+ * \dicterm{\--OF \argarg{FN}}
+ * \dicdef{Output RINEX obs files [also see --OF \argarg{F,T} below] [repeatable] ()}
+ * \dicterm{\--OD \argarg{P}}
+ * \dicdef{Path of output RINEX observation file(s) ()}
+ * \enddictionary
+ *
+ * Other file I/O
+ * \dictionary
+ * \dicterm{\--file \argarg{FN}}
+ * \dicdef{Name of file containing more options [#->EOL = comment] [repeatable] ()}
+ * \dicterm{\--log \argarg{FN}}
+ * \dicdef{Output log file name ()}
+ * \dicterm{\--ver2}
+ * \dicdef{Write out RINEX version 2 (don't)}
+ * \enddictionary
+ *
+ * Help
+ * \dictionary
+ * \dicterm{\--verbose}
+ * \dicdef{Print extra output information (don't)}
+ * \dicterm{\--debug}
+ * \dicdef{Print debug output at level 0 [debug\argarg{N} for level n=1-7] (-1)}
+ * \dicterm{\--help}
+ * \dicdef{Print this syntax page, and quit (don't)}
+ * \enddictionary
+ * 
+ * Editing commands
+ * RINEX header modifications (arguments with whitespace must be quoted)
+ * \dictionary
+ * \dicterm{\--HDp \argarg{P}}
+ * \dicdef{Set header 'PROGRAM' field to \argarg{P} ()}
+ * \dicterm{\--HDr \argarg{RB}}
+ * \dicdef{Set header 'RUN BY' field to \argarg{RB} ()}
+ * \dicterm{\--HDo \argarg{OBS}}
+ * \dicdef{Set header 'OBSERVER' field to \argarg{OBS} ()}
+ * \dicterm{\--HDa \argarg{A}}
+ * \dicdef{Set header 'AGENCY' field to \argarg{A} ()}
+ * \dicterm{\--HDx \argarg{X,Y,Z}}
+ * \dicdef{Set header 'POSITION' field to \argarg{X,Y,Z} (ECEF, m) ()}
+ * \dicterm{\--HDm \argarg{M}}
+ * \dicdef{Set header 'MARKER NAME' field to \argarg{M} ()}
+ * \dicterm{\--HDn \argarg{N}}
+ * \dicdef{Set header 'MARKER NUMBER' field to \argarg{N} ()}
+ * \dicterm{\--HDj \argarg{N}}
+ * \dicdef{Set header 'REC #' field to \argarg{N} ()}
+ * \dicterm{\--HDk \argarg{T}}
+ * \dicdef{Set header 'REC TYPE' field to \argarg{T} ()}
+ * \dicterm{\--HDl \argarg{V}}
+ * \dicdef{Set header 'REC VERS' field to \argarg{V} ()}
+ * \dicterm{\--HDs \argarg{N}}
+ * \dicdef{Set header 'ANT #' field to \argarg{N} ()}
+ * \dicterm{\--HDt \argarg{T}}
+ * \dicdef{Set header 'ANT TYPE' field to \argarg{T} ()}
+ * \dicterm{\--HDh \argarg{H,E,N}}
+ * \dicdef{Set header 'ANTENNA OFFSET' field to \argarg{H,E,N} (Ht,East,North) ()}
+ * \dicterm{\--HDc \argarg{C}}
+ * \dicdef{Add 'COMMENT' \argarg{C} to the output header [repeatable] ()}
+ * \dicterm{\--HDdc}
+ * \dicdef{Delete all comments [not --HDc] from input header (don't)}
+ * \dicterm{\--HDda}
+ * \dicdef{Delete all auxiliary header data (don't)}
+ * \enddictionary
+ *
+ * Time related [T,F are strings, time T conforms to format F;
+ * cf. gpstk::Epoch.]
+ *
+ * Default t(f) is 'week,sec-of-week'(%F,%g) OR 'y,m,d,h,m,s'(%Y,%m,%d,%H,%M,%S)
+ * \dictionary
+ * \dicterm{\--OF \argarg{F,T}}
+ * \dicdef{At RINEX time \argarg{T}, close output file and open another named \argarg{F} ()}
+ * \dicterm{\--TB \argarg{T[:F]}}
+ * \dicdef{Start time: Reject data before this time ([Beginning of dataset])}
+ * \dicterm{\--TE \argarg{T[:F]}}
+ * \dicdef{Stop  time: Reject data after this time ([End of dataset])}
+ * \dicterm{\--TT \argarg{DT}}
+ * \dicdef{Tolerance in comparing times, in seconds (0.00)}
+ * \dicterm{\--TN \argarg{DT}}
+ * \dicdef{If dt>0, decimate data to times = TB + N*dt [sec, w/in tol] (0.00)}
+ * \enddictionary
+ *
+ * In the following \argarg{SV} is a RINEX satellite identifier, e.g. G17
+ * R7 E22 R etc.  and \argarg{OT} is a 3- or 4-char RINEX observation code
+ * e.g. C1C GL2X S2N
+ *
+ * Delete cmds; for start(stop) cmds. stop(start) time defaults to
+ * end(begin) of data and 'deleting' data for a single OT means it is
+ * set to zero - as RINEX requires.
+ * \dictionary
+ * \dicterm{\--DA \argarg{T}}
+ * \dicdef{Delete all data at a single time \argarg{T} [repeatable] ()}
+ * \dicterm{\--DA+ \argarg{T}}
+ * \dicdef{Delete all data beginning at time \argarg{T} [repeatable] ()}
+ * \dicterm{\--DA- \argarg{T}}
+ * \dicdef{Stop deleting at time \argarg{T} [repeatable] ()}
+ * \dicterm{\--DO \argarg{OT}}
+ * \dicdef{Delete RINEX obs type \argarg{OT} entirely (incl. header) [repeatable] ()}
+ * \dicterm{\--DS \argarg{SV}}
+ * \dicdef{Delete all data for satellite \argarg{SV} [SV may be char]}
+ * \dicterm{\--DS \argarg{SV,T}}
+ * \dicdef{Delete all data for satellite \argarg{SV} at single time \argarg{T} [repeatable] ()}
+ * \dicterm{\--DS+ \argarg{SV,T}}
+ * \dicdef{Delete data for satellite \argarg{SV} beginning at time \argarg{T} [repeatable] ()}
+ * \dicterm{\--DS- \argarg{SV,T}}
+ * \dicdef{Stop deleting data for sat \argarg{SV} beginning at time \argarg{T} [repeatable] ()}
+ * \dicterm{\--DD \argarg{SV,OT,T}}
+ * \dicdef{Delete a single RINEX datum(SV,OT) at time \argarg{T} [repeatable] ()}
+ * \dicterm{\--DD+ \argarg{SV,OT,T}}
+ * \dicdef{Delete all RINEX data(SV,OT) starting at time \argarg{T} [repeatable] ()}
+ * \dicterm{\--DD- \argarg{SV,OT,T}}
+ * \dicdef{Stop deleting RINEX data(SV,OT) at time \argarg{T} [repeatable] ()}
+ * \dicterm{\--SD \argarg{SV,OT,T,D}}
+ * \dicdef{Set data(SV,OT) to value \argarg{D} at single time \argarg{T} [repeatable] ()}
+ * \dicterm{\--SS \argarg{SV,OT,T,S}}
+ * \dicdef{Set SSI(SV,OT) to value \argarg{S} at single time \argarg{T} [repeatable] ()}
+ * \dicterm{\--SL \argarg{SV,OT,T,L}}
+ * \dicdef{Set LLI(SV,OT) to value \argarg{L} at single time \argarg{T} [repeatable] ()}
+ * \dicterm{\--SL+ \argarg{SV,OT,T,L}}
+ * \dicdef{Set all LLI(SV,OT) to value \argarg{L} starting at time \argarg{T} [repeatable] ()}
+ * \dicterm{\--SL- \argarg{SV,OT,T,L}}
+ * \dicdef{Stop setting LLI(SV,OT) to value \argarg{L} at time \argarg{T} [repeatable] ()}
+ * \enddictionary
+ *
+ * Bias cmds: (BD cmds apply only when data is non-zero, unless --BZ)
+ * \dictionary
+ * \dicterm{\--BZ}
+ * \dicdef{Apply BD command even when data is zero (i.e. 'missing') (don't)}
+ * \dicterm{\--BS \argarg{SV,OT,T,S}}
+ * \dicdef{Add the value \argarg{S} to SSI(SV,OT) at single time \argarg{T} [repeatable] ()}
+ * \dicterm{\--BL \argarg{SV,OT,T,L}}
+ * \dicdef{Add the value \argarg{L} to LLI(SV,OT) at single time \argarg{T} [repeatable] ()}
+ * \dicterm{\--BD \argarg{SV,OT,T,D}}
+ * \dicdef{Add the value \argarg{D} to data(SV,OT) at single time \argarg{T} [repeatable] ()}
+ * \dicterm{\--BD+ \argarg{SV,OT,T,D}}
+ * \dicdef{Add the value \argarg{D} to data(SV,OT) beginning at time \argarg{T} [repeatable] ()}
+ * \dicterm{\--BD- \argarg{SV,OT,T,D}}
+ * \dicdef{Stop adding the value \argarg{D} to data(SV,OT) at time \argarg{T} [repeatable] ()}
+ * \dicterm{\--verbose}
+ * \dicdef{Print extended output, including cmdline summary (don't)}
+ * \dicterm{\--debug\argarg{N}}
+ * \dicdef{Print debug output at LOGlevel n [n=0-7] (-1)}
+ * \dicterm{\--help}
+ * \dicdef{Print this syntax page and quit (don't)}
+ * \enddictionary
+ *
+ * \section RinEdit_examples EXAMPLES
+ *
+ * \cmdex{RinEdit --IF data/arlm200a.15o --IF data/arlm200b.15o --OF merged.15o}
+ *
+ * Merges the data from arlm200a.15o and arlm200b.15o into a single
+ * output file, merged.15o.
+ *
+ * \todo Add more examples.
+ *
+ * \section RinEdit_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{2,An exception occurred (typically invalid time format or value)}
+ * \enddictable
+ * \section RinEdit_see_also SEE ALSO
+ * printTime()
+ */
+
 /// @file RinEdit.cpp
 /// Read Rinex observation files (version 2 or 3) and edit them, writing the edited
 /// data to a new RINEX file.

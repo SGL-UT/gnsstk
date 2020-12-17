@@ -434,7 +434,7 @@ namespace gpstk
        * @param variableList   Variable list name.
        * @param section        Section the variable list belongs to.
        *
-       * \warning This method will MODIFY the original content of
+       * @warning This method will MODIFY the original content of
        * 'variableList'.
        */
    string ConfDataReader::fetchListValue( string variableList,
@@ -481,7 +481,7 @@ namespace gpstk
        * @param variableList   Variable list name.
        * @param section        Section the variable list belongs to.
        *
-       * \warning This method will MODIFY the original content of
+       * @warning This method will MODIFY the original content of
        * 'variableList'.
        */
    bool ConfDataReader::fetchListValueAsBoolean( string variableList,
