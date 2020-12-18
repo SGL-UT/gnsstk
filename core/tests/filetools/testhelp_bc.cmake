@@ -16,7 +16,7 @@ execute_process(COMMAND ${TEST_PROG}
                 OUTPUT_QUIET
                 ERROR_QUIET
                 RESULT_VARIABLE HAD_ERROR)
-if(HAD_ERROR)
+if(HAD_ERROR EQUAL 0)
     message(FATAL_ERROR "Test failed - returned OK with no arguments")
 endif()
 

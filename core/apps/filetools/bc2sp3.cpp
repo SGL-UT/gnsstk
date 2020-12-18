@@ -45,31 +45,34 @@
  * bc2sp3 - Display time stamps in a variety of formats
  *
  * \section bc2sp3_synopsis SYNOPSIS
- * \b bc2sp3 [\argarg{OPTION}] ...
+ * <b>bc2sp3</b>  <b>-h</b> <br/>
+ * <b>bc2sp3</b> <b>[-d</b><b>]</b> <b>[-v</b><b>]</b> <b>[\--in</b>&nbsp;\argarg{ARG}<b>]</b> <b>[\--out</b>&nbsp;\argarg{ARG}<b>]</b> <b>[\--tb</b>&nbsp;\argarg{TIME}<b>]</b> <b>[\--te</b>&nbsp;\argarg{TIME}<b>]</b> <b>[\--cs</b>&nbsp;\argarg{NUM}<b>]</b> <b>[\--outputC</b><b>]</b> <b>[\--msg</b>&nbsp;\argarg{ARG}<b>]</b> <b>[</b>\argarg{ARG}<b>]</b> <b>[</b>...<b>]</b>
  *
  * \section bc2sp3_description DESCRIPTION
  * This application reads RINEX navigation file(s) and writes to SP3
  * (a or c) file(s).
  *
  * \dictionary
- * \dicterm{\--help}
- * \dicdef{Display argument list.}
- * \dicterm{Read the input file \argarg{FILE} (\--in is optional, repeatable)}
- * \dicdef{in \argarg{FILE} bar}
- * \dicterm{\--out \argarg{FILE}}
- * \dicdef{Name the output file \argarg{FILE} (sp3.out)}
- * \dicterm{\--tb \argarg{TIME}}
- * \dicdef{Output beginning epoch; \argarg{TIME} = week,sec-of-week (earliest in input)}
- * \dicterm{\--te \argarg{TIME}}
- * \dicdef{Output ending epoch; \argarg{TIME} = week,sec-of-week (latest in input)}
- * \dicterm{\--cs \argarg{SEC}}
- * \dicdef{Cadence of epochs in seconds (300s)}
+ * \dicterm{-d, \--debug}
+ * \dicdef{Increase debug level}
+ * \dicterm{-v, \--verbose}
+ * \dicdef{Increase verbosity}
+ * \dicterm{-h, \--help}
+ * \dicdef{Print help usage}
+ * \dicterm{\--in=\argarg{ARG}}
+ * \dicdef{Read the input file(s)}
+ * \dicterm{\--out=\argarg{ARG}}
+ * \dicdef{Name the output file (default=sp3.out)}
+ * \dicterm{\--tb=\argarg{TIME}}
+ * \dicdef{Output beginning epoch (week,sec-of-week)}
+ * \dicterm{\--te=\argarg{TIME}}
+ * \dicdef{Output ending epoch (week,sec-of-week)}
+ * \dicterm{\--cs=\argarg{NUM}}
+ * \dicdef{Cadence of epochs in seconds (default=300s)}
  * \dicterm{\--outputC}
- * \dicdef{Output version c (no correlation) (otherwise a)}
- * \dicterm{\--msg "..."}
- * \dicdef{Add ... as a comment to the output header (repeatable)}
- * \dicterm{\--verbose}
- * \dicdef{Output to screen: dump headers, data, etc}
+ * \dicdef{Output SP3 version c (no correlation, default=a)}
+ * \dicterm{\--msg=\argarg{ARG}}
+ * \dicdef{Add a comment to the output header}
  * \enddictionary
  *
  * \subsection bc2sp3_example_merge Merge and Convert
@@ -114,37 +117,62 @@
 #include "TimeString.hpp"
 #include "GPSWeekSecond.hpp"
 #include "BasicFramework.hpp"
+#include "CommandOptionWithCommonTimeArg.hpp"
 
 using namespace std;
 using namespace gpstk;
 
-int main(int argc, char *argv[])
+class BC2SP3 : public BasicFramework
 {
-   string Usage(
-      "Usage: bc2sp3 <RINEX nav file(s)> [options]\n"
-      " Read RINEX nav file(s) and write to SP3(a or c) file.\n"
-      " Options (defaults):\n"
-      "  --in <file>   Read the input file <file> (--in is optional, repeatable) ()\n"
-      "  --out <file>  Name the output file <file> (sp3.out)\n"
-      "  --tb <time>   Output beginning epoch; <time> = week,sec-of-week (earliest in input)\n"
-      "  --te <time>   Output ending epoch; <time> = week,sec-of-week (latest in input)\n"
-      "  --cs <sec>     Cadence of epochs in seconds (300s)\n"
-      "  --outputC     Output version c (no correlation) (otherwise a)\n"
-      "  --msg \"...\"   Add ... as a comment to the output header (repeatable)\n"
-      "  --verbose     Output to screen: dump headers, data, etc\n"
-      "  --help        Print this message and quit\n"
-   );
-   if(argc < 2)
-   {
-      cout << Usage;
-      return 0;
-   }
+public:
+   BC2SP3(const string& applName);
+   void process() override;
+   CommandOptionWithAnyArg inFileOpt;
+   CommandOptionWithAnyArg outFileOpt;
+   CommandOptionWithCommonTimeArg beginOpt;
+   CommandOptionWithCommonTimeArg endOpt;
+   CommandOptionWithNumberArg cadenceOpt;
+   CommandOptionNoArg sp3cOpt;
+   CommandOptionWithAnyArg msgOpt;
+      /** The original implementation allowed either --in or trailing
+       * arguments to indicate an input file name, so we do the
+       * same... */
+   CommandOptionRest inFile2Opt;
+      /// Make sure at least one of inFileOpt and/or inFile2Opt is used
+   CommandOptionOneOf inFileOneOf;
+};
 
+
+BC2SP3 ::
+BC2SP3(const string& applName)
+      : BasicFramework(applName, "Read RINEX nav file(s) and write to SP3(a or"
+                       " c) file."),
+        inFileOpt(0, "in", "Read the input file(s)"),
+        inFile2Opt("[RINEX nav file] ..."),
+        outFileOpt(0, "out", "Name the output file (default=sp3.out)"),
+        beginOpt(0, "tb", "%F,%g", "Output beginning epoch (week,sec-of-week)"),
+        endOpt(0, "te", "%F,%g", "Output ending epoch (week,sec-of-week)"),
+        cadenceOpt(0, "cs", "Cadence of epochs in seconds (default=300s)"),
+        sp3cOpt(0, "outputC", "Output SP3 version c (no correlation,"
+                " default=a)"),
+        msgOpt(0, "msg", "Add a comment to the output header")
+{
+   outFileOpt.setMaxCount(1);
+   beginOpt.setMaxCount(1);
+   endOpt.setMaxCount(1);
+   cadenceOpt.setMaxCount(1);
+   inFileOneOf.addOption(&inFileOpt);
+   inFileOneOf.addOption(&inFile2Opt);
+}
+
+
+void BC2SP3 ::
+process()
+{
    try
    {
-      bool verbose=false;
          //char version_out='a';
-      SP3Header::Version version_out(SP3Header::SP3a);
+      SP3Header::Version versionOut(SP3Header::SP3a);
       int i,j;
       size_t k,nfile;
       string fileout("sp3.out");
@@ -157,100 +185,74 @@ int main(int argc, char *argv[])
       GPSEphemerisStore BCEph;
       SP3Header sp3header;
       SP3Data sp3data;
-      double cadence = 300.0;        // Cadence of epochs.  Default to 5 minutes.
+      double cadence = 300.0;       // Cadence of epochs.  Default to 5 minutes.
 
-      for(i=1; i<argc; i++)
+      if (sp3cOpt)
       {
-
-         if(argv[i][0] == '-')
+         versionOut = SP3Header::SP3c;   //'c';
+         if (verboseLevel)
+            cout << " Output version c\n";
+      }
+      if (inFileOpt.getCount())
+      {
+         inputFiles = inFileOpt.getValue();
+      }
+      if (inFile2Opt.getCount())
+      {
+         const std::vector<std::string>& if2o(inFileOpt.getValue());
+         inputFiles.insert(inputFiles.end(), if2o.begin(), if2o.end());
+      }
+      if (verboseLevel)
+      {
+         for (unsigned i = 0; i < inputFiles.size(); i++)
          {
-            string arg(argv[i]);
-            if(arg == string("--outputC"))
-            {
-               version_out = SP3Header::SP3c;   //'c';
-               if(verbose)
-                  cout << " Output version c\n";
-            }
-            else if(arg == string("--in"))
-            {
-               inputFiles.push_back(string(argv[++i]));
-               if(verbose)
-                  cout << " Input file name "
-                       << inputFiles[inputFiles.size()-1] << endl;
-            }
-            else if(arg == string("--out"))
-            {
-               fileout = string(argv[++i]);
-               if(verbose)
-                  cout << " Output file name " << fileout << endl;
-            }
-            else if(arg == string("--tb"))
-            {
-               arg = string(argv[++i]);
-               int wk=StringUtils::asInt(StringUtils::stripFirstWord(arg,','));
-               double sow=StringUtils::asDouble(StringUtils::stripFirstWord(arg,','));
-               begTime=GPSWeekSecond(wk,sow);
-               begTime.setTimeSystem(TimeSystem::GPS);
-               if(verbose)
-                  cout << " Begin time "
-                       << printTime(begTime,"%Y/%02m/%02d %2H:%02M:%06.3f = %F/%10.3g")
-                       << endl;
-            }
-            else if(arg == string("--te"))
-            {
-               arg = string(argv[++i]);
-               int wk=StringUtils::asInt(StringUtils::stripFirstWord(arg,','));
-               double sow=StringUtils::asDouble(StringUtils::stripFirstWord(arg,','));
-               endTime=GPSWeekSecond(wk,sow);
-               endTime.setTimeSystem(TimeSystem::GPS);
-               if(verbose)
-                  cout << " End time   "
-                       << printTime(endTime,"%Y/%02m/%02d %2H:%02M:%06.3f = %F/%10.3g")
-                       << endl;
-            }
-            else if(arg == string("--cs"))
-            {
-               arg = string(argv[++i]);
-               cadence = StringUtils::asDouble(arg);
-               if (verbose)
-                  cout << " Cadence    " << cadence << "s " << endl;
-            }
-            else if(arg == string("--msg"))
-            {
-               comments.push_back(string(argv[++i]));
-               if(verbose)
-                  cout << " Add comment " << comments[comments.size()-1]
-                       << endl;
-            }
-            else if(arg == string("--help"))
-            {
-               cout << Usage;
-               return 0;
-            }
-            else if(arg == string("--verbose"))
-            {
-               verbose = true;
-               cout << "verbose now set to true." << endl;
-            }
-            else
-            {
-               cerr << "Unknown option: " << arg << endl;
-               return 1;
-            }
-         }
-         else
-         {
-            inputFiles.push_back(string(argv[i]));
-            if(verbose)
-               cout << " Input file name "
-                    << inputFiles[inputFiles.size()-1] << endl;
+            cout << " Input file name " << inputFiles[i] << endl;
          }
       }
-
-      if(inputFiles.size() == 0)
+      if (outFileOpt.getCount())
       {
-         cout << "Error - no input filename specified. Abort.\n";
-         return 1;
+         fileout = outFileOpt.getValue()[0];
+         if (verboseLevel)
+            cout << " Output file name " << fileout << endl;
+      }
+      if (beginOpt.getCount())
+      {
+         begTime = beginOpt.getTime()[0];
+         if (verboseLevel)
+         {
+            cout << " Begin time "
+                 << printTime(begTime,
+                              "%Y/%02m/%02d %2H:%02M:%06.3f = %F/%10.3g")
+                 << endl;
+         }
+      }
+      if (endOpt.getCount())
+      {
+         endTime = endOpt.getTime()[0];
+         if (verboseLevel)
+         {
+            cout << " End time   "
+                 << printTime(endTime,
+                              "%Y/%02m/%02d %2H:%02M:%06.3f = %F/%10.3g")
+                 << endl;
+         }
+      }
+      if (cadenceOpt.getCount())
+      {
+         cadence = StringUtils::asDouble(cadenceOpt.getValue()[0]);
+         if (verboseLevel)
+            cout << " Cadence    " << cadence << "s " << endl;
+      }
+      if (msgOpt.getCount())
+      {
+         comments = msgOpt.getValue();
+         if (verboseLevel)
+         {
+            for (unsigned i = 0; i < comments.size(); i++)
+            {
+               cout << " Add comment " << comments[i] << endl;
+            }
+         }
       }
 
       bool existPass = true;
@@ -259,20 +261,22 @@ int main(int argc, char *argv[])
          RinexNavStream rns(inputFiles[nfile].c_str());
          if (!rns)
          {
-            cerr << "File " << inputFiles[nfile] << " cannot be opened for input." << endl;
+            cerr << "File " << inputFiles[nfile]
+                 << " cannot be opened for input." << endl;
             existPass =false;
          }
       }
       if (!existPass)
       {
-         return 1;
+         exitCode = BasicFramework::EXIST_ERROR;
+         return;
       }
 
          // open the output SP3 file
       SP3Stream outstrm(fileout.c_str(),ios::out);
       outstrm.exceptions(ifstream::failbit);
 
-      for(nfile=0; nfile<inputFiles.size(); nfile++)
+      for (nfile=0; nfile<inputFiles.size(); nfile++)
       {
          RinexNavHeader rnh;
          RinexNavData rnd;
@@ -280,37 +284,44 @@ int main(int argc, char *argv[])
          RinexNavStream rns(inputFiles[nfile].c_str());
          rns.exceptions(ifstream::failbit);
 
-         if(verbose) cout << "Reading file " << inputFiles[nfile] << endl;
+         if (verboseLevel)
+            cout << "Reading file " << inputFiles[nfile] << endl;
 
          rns >> rnh;
-         if(verbose)
+         if (verboseLevel)
          {
             cout << "Input";
             rnh.dump(cout);
          }
 
-         while(rns >> rnd)
-            if(rnd.health == 0) BCEph.addEphemeris(rnd);
-
+         while (rns >> rnd)
+         {
+            if (rnd.health == 0)
+            {
+               BCEph.addEphemeris(rnd);
+            }
+         }
       }
 
-      if (verbose)
+      if (verboseLevel)
       {
-         cout << "Number of ephemerides loaded: " << BCEph.size() << endl;
-         cout << " Initial time: " << printTime(BCEph.getInitialTime(),
-                                                "%03j.%02H:%02M:%02S, %P") << endl;
-         cout << "   Final time: " << printTime(BCEph.getFinalTime(),
-                                                "%03j.%02H:%02M:%02S, %P") << endl;
+         cout << "Number of ephemerides loaded: " << BCEph.size() << endl
+              << " Initial time: " << printTime(BCEph.getInitialTime(),
+                                                "%03j.%02H:%02M:%02S, %P")
+              << endl
+              << "   Final time: " << printTime(BCEph.getFinalTime(),
+                                                "%03j.%02H:%02M:%02S, %P")
+              << endl;
       }
 
          // time limits, if not given by user
-      if(begTime == CommonTime::BEGINNING_OF_TIME)
+      if (begTime == CommonTime::BEGINNING_OF_TIME)
          begTime = BCEph.getInitialTime();
-      if(endTime == CommonTime::END_OF_TIME)
+      if (endTime == CommonTime::END_OF_TIME)
          endTime = BCEph.getFinalTime();
 
          // define the data version and the header info
-      if(version_out == SP3Header::SP3c)
+      if (versionOut == SP3Header::SP3c)
       {
             // data and header must have the correct version
             //sp3data.version =
@@ -342,10 +353,10 @@ int main(int argc, char *argv[])
          // this is a pain....
       sp3header.numberOfEpochs = 0;
       tt = begTime;
-      while(tt <= endTime)
+      while (tt <= endTime)
       {
          bool foundSome = false;
-         for(i=1; i<33; i++)              // for each PRN ...
+         for (i=1; i<33; i++)              // for each PRN ...
          {
             SatID sat(i,SatelliteSystem::GPS);
             try
@@ -357,17 +368,17 @@ int main(int argc, char *argv[])
                continue;
             }
 
-            if(sp3header.satList.find(sat) == sp3header.satList.end())
+            if (sp3header.satList.find(sat) == sp3header.satList.end())
             {
                sp3header.satList[sat] = 0;        // sat accuracy = ?
                IODEmap[sat] = -1;
             }
 
-            if(!foundSome)
+            if (!foundSome)
             {
                sp3header.numberOfEpochs++;
                foundSome = true;
-               if(tt < sp3header.time)
+               if (tt < sp3header.time)
                   sp3header.time = tt;
             }
          }
@@ -375,12 +386,12 @@ int main(int argc, char *argv[])
       }
 
          // add comments
-      if(comments.size() > 0)
+      if (comments.size() > 0)
       {
             // try to keep existing comments
-         for(k=0; k<comments.size(); k++)
+         for (k=0; k<comments.size(); k++)
          {
-            if(k > 3)
+            if (k > 3)
             {
                cout << "Warning - only 4 comments are allowed in SP3 header.\n";
                break;
@@ -390,23 +401,23 @@ int main(int argc, char *argv[])
       }
 
          // dump the SP3 header
-      if(verbose)
+      if (verboseLevel)
          sp3header.dump(cout);
 
          // write the header
       outstrm << sp3header;
 
          // sigmas to output (version c)
-      for(j=0; j<4; j++)
+      for (j=0; j<4; j++)
          sp3data.sig[j]=0;   // sigma = ?
 
       tt = begTime;
       tt.setTimeSystem(TimeSystem::Any);
-      while(tt <= endTime)
+      while (tt <= endTime)
       {
          bool epochOut=false;
 
-         for(i=1; i<33; i++)
+         for (i=1; i<33; i++)
          {
             long iode;
             SatID sat(i,SatelliteSystem::GPS);
@@ -426,46 +437,49 @@ int main(int argc, char *argv[])
             xvt = BCEph.getXvt(sat, tt);
 
                // epoch
-            if(!epochOut)
+            if (!epochOut)
             {
                sp3data.time = tt;
                sp3data.RecType = '*';
                outstrm << sp3data;
-               if(verbose) sp3data.dump(cout);
+               if (verboseLevel)
+                  sp3data.dump(cout);
                epochOut = true;
             }
 
                // Position
             sp3data.RecType = 'P';
-            for(j=0; j<3; j++)
+            for (j=0; j<3; j++)
                sp3data.x[j] = xvt.x[j]/1000.0;       // km
             sp3data.clk = xvt.clkbias * 1.0e6;    // microseconds
 
-               //if(version_out == 'c') for(j=0; j<4; j++) sp3data.sig[j]=...
+               //if (versionOut == 'c') for (j=0; j<4; j++) sp3data.sig[j]=...
             iode = ee.IODE;
-            if(IODEmap[sat] == -1)
+            if (IODEmap[sat] == -1)
                IODEmap[sat] = iode;
-            if(IODEmap[sat] != iode)
+            if (IODEmap[sat] != iode)
             {
                sp3data.orbitManeuverFlag = true;
                IODEmap[sat] = iode;
             }
             else
+            {
                sp3data.orbitManeuverFlag = false;
+            }
 
             outstrm << sp3data;
-            if(verbose)
+            if (verboseLevel)
                sp3data.dump(cout);
 
                // Velocity
             sp3data.RecType = 'V';
-            for(j=0; j<3; j++)
+            for (j=0; j<3; j++)
                sp3data.x[j] = xvt.v[j] * 10.0;         // dm/s
             sp3data.clk = xvt.clkdrift * 1.0e10;                  // 10**-4 us/s
-               //if(version_out == 'c') for(j=0; j<4; j++) sp3data.sig[j]=...
+               //if (versionOut == 'c') for (j=0; j<4; j++) sp3data.sig[j]=...
 
             outstrm << sp3data;
-            if(verbose)
+            if (verboseLevel)
                sp3data.dump(cout);
          }
 
@@ -476,19 +490,38 @@ int main(int argc, char *argv[])
 
       outstrm.close();
 
-      if(verbose)
+      if (verboseLevel)
          cout << "Wrote " << sp3header.numberOfEpochs << " records" << endl;
    }
    catch (Exception& e)
    {
-      cout << e;
-      return gpstk::BasicFramework::EXCEPTION_ERROR;
+      GPSTK_RETHROW(e);
    }
-   catch (...)
-   {
-      cout << "Caught an unknown exception" << endl;
-      return gpstk::BasicFramework::EXCEPTION_ERROR;
-   }
+}
 
-   return 0;
+
+int main(int argc, char* argv[])
+{
+   try
+   {
+      BC2SP3 app(argv[0]);
+      if (!app.initialize(argc, argv))
+         return app.exitCode;
+      app.run();
+      return app.exitCode;
+   }
+   catch(Exception& e)
+   {
+      cout << e << endl;
+   }
+   catch(std::exception& e)
+   {
+      cout << e.what() << endl;
+   }
+   catch(...)
+   {
+      cout << "unknown error" << endl;
+   }
+      // only reach this point if an exception was caught
+   return BasicFramework::EXCEPTION_ERROR;
 }
