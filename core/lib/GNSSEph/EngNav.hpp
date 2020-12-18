@@ -171,13 +171,18 @@ namespace gpstk
          /**
           * Given 10 words of a navigation message subframe (as
           * defined in ICD-GPS-200), convert to the "appropriate" 60
-          * FIC floating point values.
-          * @param input array of ten 30-bit words (stored in the 30
-          * least-significant bits of each long.
-          * @param gpsWeek full (>10 bits) GPS week number associated
-          * with almanac reference time.
-          * @param output 60 FIC floating point values as defined in
-          * the documentation for FIC blocks 9 and 62.
+          * floating point values.
+          * @param[in] input array of ten 30-bit words (stored in the 30
+          *   least-significant bits of each long.
+          * @param[in] gpsWeek full (>10 bits) GPS week number associated
+          *   with almanac reference time.
+          * @param[out] output 60 floating point values as defined in
+          *   the formats array in EngNav.cpp.
+          * @note While subframeConvert specifies an array of 60 doubles
+          *   for output, not all of these are always used.  The
+          *   actual number of data that are in output is dependent on
+          *   the input message format.  The indices are defined in
+          *   the formats array in EngNav.cpp.
           * @return true if successful.
           */
       static bool subframeConvert(const long input[10],
@@ -188,13 +193,18 @@ namespace gpstk
          /**
           * Given 10 words of a navigation message subframe (as
           * defined in ICD-GPS-200), convert to the "appropriate" 60
-          * FIC floating point values.
-          * @param input array of ten 30-bit words (stored in the 30
-          * least-significant bits of each long.
-          * @param gpsWeek full (>10 bits) GPS week number associated
-          * with almanac reference time.
-          * @param output 60 FIC floating point values as defined in
-          * the documentation for FIC blocks 9 and 62.
+          * floating point values.
+          * @param[in] input array of ten 30-bit words (stored in the 30
+          *   least-significant bits of each long.
+          * @param[in] gpsWeek full (>10 bits) GPS week number associated
+          *   with almanac reference time.
+          * @param[out] output 60 floating point values as defined in
+          *   the formats array in EngNav.cpp.
+          * @note While subframeConvert specifies an array of 60 doubles
+          *   for output, not all of these are always used.  The
+          *   actual number of data that are in output is dependent on
+          *   the input message format.  The indices are defined in
+          *   the formats array in EngNav.cpp.
           * @return true if successful.
           */
       static bool subframeConvert(const uint32_t input[10],
@@ -362,19 +372,20 @@ namespace gpstk
           * Given 10 words of a navigation message subframe, in, and a
           * structure, p, defining a particular conversion, perform
           * the conversion and store the results in the appropriate
-          * location in the FIC F array, out.
-          *
-          * @param input words of navigation message subframe.  Each
-          * nav message word is in the 30 lsbs of the corresponding
-          * input[i].
-          *
-          * @param output array of 60 double which correspond to the
-          * section of a FIC F array.  The converted output will be
-          * placed in the output array at the location specified in
-          * the conversion specification.
-          *
-          * @param p pointer to structure defining conversion to be
-          * performed.
+          * location in the output array.
+          * @param[in] input words of navigation message subframe.
+          *   Each nav message word is in the 30 lsbs of the
+          *   corresponding input[i].
+          * @param[out] output array of 60 doubles.  The converted
+          *   output will be placed in the output array at the
+          *   location specified in the conversion specification.
+          * @param[in] p pointer to structure defining conversion to be
+          *   performed.
+          * @note While convertQuant specifies an array of 60 doubles
+          *   for output, not all of these are always used.  The
+          *   actual number of data that are in output is dependent on
+          *   the input message format.  The indices are defined in
+          *   the formats array in EngNav.cpp.
           */
       static void convertQuant(const uint32_t input[10],
                                double output[60],

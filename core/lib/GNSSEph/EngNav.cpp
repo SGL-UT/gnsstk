@@ -83,6 +83,11 @@ namespace gpstk
       /// Table of powers of PI, initialized in EngNav().
    static double PItab[7] = {0,0,0,0,0,0,0};
 
+      /** This array defines how to decode GPS LNav messages for
+       * subframeConvert and convertQuant.
+       * @note This array corresponds to a proprietary file format and
+       *   should not be changed.
+       */
    static DecodeQuant formats[] = {
       { 0,   0,  0,  1.0L, 0,{ { 1, 8} , { 0, 0} },  0 },     /* Preamble */
       { 1,   0,  0,  1.0L, 0,{ { 9, 14}, { 0, 0} },  0 },     /* Message  */
@@ -399,7 +404,7 @@ namespace gpstk
       }
 
          // Almanac does not contain a reference week
-         // However we need to put one in the FIC version of the Almanac
+         // However we need to put one in the Almanac
       if (patId==4)
       {
          output[18]= static_cast<double>( gpsWeek );
