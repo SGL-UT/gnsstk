@@ -379,7 +379,7 @@ namespace gpstk
           * @param[out] output array of 60 doubles.  The converted
           *   output will be placed in the output array at the
           *   location specified in the conversion specification.
-          * @param[in] p pointer to structure defining conversion to be
+          * @param[in] dq structure defining conversion to be
           *   performed.
           * @note While convertQuant specifies an array of 60 doubles
           *   for output, not all of these are always used.  The
@@ -389,7 +389,7 @@ namespace gpstk
           */
       static void convertQuant(const uint32_t input[10],
                                double output[60],
-                               DecodeQuant *p)
+                               const DecodeQuant& dq)
          throw();
    }; // class EngNav
 
