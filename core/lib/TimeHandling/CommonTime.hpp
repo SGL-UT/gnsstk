@@ -42,6 +42,7 @@
 #include "Exception.hpp"
 #include "TimeConstants.hpp"
 #include "TimeSystem.hpp"
+#include "TimeSystemConverter.hpp"
 
 namespace gpstk
 {
@@ -191,6 +192,17 @@ namespace gpstk
           //METHOD SET FOR FUTURE DEPRECATION (PRIVATIZATION)
       CommonTime& setTimeSystem( TimeSystem timeSystem )
       { m_timeSystem = timeSystem; return *this; }
+
+         /** Modify both the time value and time system to reflect a
+          * change in time system.
+          * @param[in] timeSystem The time system to convert this time to.
+          * @param[in,out] conv The converter object to use to get the
+          *   offset between the current time system and the requested
+          *   time system.
+          * @return true if successful, false if unable to get/apply
+          *   the time system offset.
+          */
+      bool changeTimeSystem(TimeSystem timeSystem, TimeSystemConverter* conv);
 
          /**
           * Get method.  Obtain values in days, second of day and fractional
