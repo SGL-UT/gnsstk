@@ -28,7 +28,7 @@ usage()
     cat << EOF
 purpose:   This script automates and documents how to build, test, and install the GPSTk.
 
-usage:     $0 [opts] [-- cmake options...]
+usage:     $(basename $0) [opts] [-- cmake options...]
 
 examples:
    $ build.sh        # Just build software
@@ -88,7 +88,7 @@ EOF
 }
 
 
-while getopts "hb:cdepi:j:xnP:sutTgv" OPTION; do
+while getopts ":hb:cdepi:j:xnP:sutTgv" OPTION; do
     case $OPTION in
         h) usage
            exit 0
@@ -133,10 +133,13 @@ while getopts "hb:cdepi:j:xnP:sutTgv" OPTION; do
            ;;
         v) verbose+=1
            ;;
-        *) echo "Invalid option: -$OPTARG" >&2
+        \?) echo "Invalid option: -$OPTARG" >&2
            usage
            exit 2
            ;;
+        :) echo "Option -$OPTARG requires an argument" >&2
+           usage
+           exit 2
     esac
 done
 
