@@ -183,6 +183,20 @@ namespace gpstk
       return *this;
    }
 
+
+   bool CommonTime ::
+   changeTimeSystem(TimeSystem timeSystem, TimeSystemConverter* conv)
+   {
+      double offs;
+      bool rv = conv->getOffset(m_timeSystem, timeSystem, *this, offs);
+      if (rv)
+      {
+         operator+=(offs);
+      }
+      return rv;
+   }
+
+
    //METHOD SET FOR FUTURE DEPRECATION (PRIVATIZATION)
    void CommonTime::get( long& day,
                          long& sod,
