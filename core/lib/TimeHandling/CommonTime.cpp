@@ -192,6 +192,7 @@ namespace gpstk
       if (rv)
       {
          operator+=(offs);
+         m_timeSystem = timeSystem;
       }
       return rv;
    }
