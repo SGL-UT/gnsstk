@@ -46,8 +46,9 @@
 #include "RinexMetData.hpp"
 
 using namespace std;
-using namespace gpstk;
 
+namespace gpstk
+{
 
 // ---------------------------------------------------------------------
 // ---------------------------------------------------------------------
@@ -71,3 +72,5 @@ void MetReader::read(const std::string& fn)
       wx.insertObservation(wob);
    }
 } // end of read()
+
+}

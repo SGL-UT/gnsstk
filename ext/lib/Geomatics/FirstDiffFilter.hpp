@@ -90,6 +90,8 @@
 
 #include "StatsFilterHit.hpp"
 
+namespace gpstk
+{
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------
 /// This class computes the first difference of the input data array. It will read the
@@ -615,4 +617,5 @@ void FirstDiffFilter<T>::getStats(FilterHit<T>& fe)
 // end template <class T> class FirstDiffFilter
 
 //------------------------------------------------------------------------------------
+}
 #endif // define FIRST_DIFF_FILTER_INCLUDE

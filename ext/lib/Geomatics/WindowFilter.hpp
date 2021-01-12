@@ -36,6 +36,9 @@
 //
 //==============================================================================
 
+#ifndef GPSTK_WINDOWFILTER_HPP
+#define GPSTK_WINDOWFILTER_HPP
+
 /// @file WindowFilter.hpp
 
 ///    This class implements a statistical filter that uses 'windowed' averages. There
@@ -94,6 +97,8 @@
 
 #include "StatsFilterHit.hpp"
 
+namespace gpstk
+{
 /// A special subset of class FilterHit used for "almost slips" in WindowFilter
 template <class T> class FilterNearMiss
 {
@@ -1178,3 +1183,6 @@ void WindowFilter<T>::getStats(FilterHit<T>& sg, bool skip)
 
 // end template <class T> class WindowFilter
 
+}
+
+#endif // GPSTK_WINDOWFILTER_HPP
