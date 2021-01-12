@@ -343,7 +343,7 @@ namespace gpstk
                   double tc(R.getHeight());  // tc is a dummy here
                   // must test R for reasonableness to avoid corrupting TropModel
                   // Global model sets the upper limit
-                  if(R.elevation(S) < 0.0 || tc > 44247. || tc < -1000.0) {
+                  if(R.elevation(S) < 0.0 || tc > 44243. || tc < -1000.0) {
                      tc = 0.0;
                      TropFlag = true;        // true means failed to apply trop corr
                   }
