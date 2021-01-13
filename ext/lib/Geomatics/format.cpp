@@ -43,12 +43,16 @@
 #include "format.hpp"
 #include <iomanip>
 using namespace std;
+
+namespace gpstk
+{
 ostream& operator<<(ostream& os, const format& f)
 {
    if(f.form) os << (f.form==1 ? fixed : scientific);
    if(f.wide > 0) os << setw(f.wide);
    os << setprecision(f.prec);
    return os;
+}
 }
 
 //-----------------------------------------------------------------------------

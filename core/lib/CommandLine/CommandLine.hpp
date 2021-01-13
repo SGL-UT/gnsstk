@@ -57,6 +57,8 @@
 #include <vector>
 #include <map>
 
+namespace gpstk
+{
 /// list of Options
 class CommandLine {
 private:
@@ -351,5 +353,6 @@ private:
    void Postprocess(std::string& Errors, std::vector<std::string>& Unrecog);
 
 }; // end class CommandLine
+}
 
 #endif // COMMAND_LINE_INCLUDE

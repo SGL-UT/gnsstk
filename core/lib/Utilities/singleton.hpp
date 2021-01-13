@@ -41,6 +41,8 @@
 
 /** @file singleton.hpp  Singleton template. */
 
+namespace gpstk
+{
 template <class T> class Singleton {
 public:
    static T& Instance() {
@@ -54,6 +56,7 @@ private:
    Singleton(Singleton const&);              // copy c'tor prohibited
    Singleton& operator=(Singleton const&);   // operator= prohibited
 };
+}
 #endif   //SINGLETON_TEMPLATE_INCLUDE
 
 /* use this class like this:

@@ -42,6 +42,8 @@
 #ifndef GPSTK_GEOMATICS_RANDOM_INCLUDE
 #define GPSTK_GEOMATICS_RANDOM_INCLUDE
 
+namespace gpstk
+{
 /// Generate random numbers uniformly distributed from 0 to 1.
 double Rand(long seed=0);
 
@@ -64,5 +66,5 @@ double RandomWalk(double dt, double sigma, double xlast);
 /// Generate exponentially correlated random numbers, given sqrt variance sigma,
 /// time step dt, time constant T, and previous point xlast.
 double RandExpCor(double dt, double sigma, double T, double xlast);
-
+}
 #endif
