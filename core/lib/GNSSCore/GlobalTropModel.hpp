@@ -282,6 +282,10 @@ namespace gpstk
       /// @param rxPos Receiver position object.
       virtual void setParameters(const CommonTime& time, const Position& rxPos);
 
+      /// Get the height limit for this model, in meters
+      double getHeightLimit(void)
+      { return HeightLimit; }
+
    private:
       /// Define the time of interest; this is required before calling
       /// correction() or any of the zenith_delay routines.
@@ -315,6 +319,9 @@ namespace gpstk
       static const double BTempAmp[55];
 
       static const double Factorial[19];
+
+      /// Model is limited in height, at this value, in m
+      static const double HeightLimit;
 
       double height, latitude, longitude, dayfactor, undul;
       double P[10][10], aP[55], bP[55];

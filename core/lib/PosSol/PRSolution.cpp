@@ -43,6 +43,7 @@
 #include "MathBase.hpp"
 #include "PRSolution.hpp"
 #include "GPSEllipsoid.hpp"
+#include "GlobalTropModel.hpp"
 #include "Combinations.hpp"
 #include "TimeString.hpp"
 #include "logstream.hpp"
@@ -340,10 +341,14 @@ namespace gpstk
                   S.setECEF(SV.x[0],SV.x[1],SV.x[2]);
 
                   // trop
-                  double tc(R.getHeight());  // tc is a dummy here
                   // must test R for reasonableness to avoid corrupting TropModel
-                  // Global model sets the upper limit
-                  if(R.elevation(S) < 0.0 || tc > 44243. || tc < -1000.0) {
+                  double tc(R.getHeight());  // tc is a dummy here
+
+                  // Global model sets the upper limit - first test it
+                  GlobalTropModel* p = dynamic_cast<GlobalTropModel*>(pTropModel);
+                  bool bad(p && tc > p->getHeightLimit());
+
+                  if(bad || R.elevation(S) < 0.0 || tc < -1000.0) {
                      tc = 0.0;
                      TropFlag = true;        // true means failed to apply trop corr
                   }
