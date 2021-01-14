@@ -210,17 +210,15 @@ namespace gpstk
                << endl;
             TimeOrbitEphTable::const_iterator ei;
 
-            os << "      Sat  MM/DD/YY      Key     Begin       Toe       Toc       End"
+            os << "  Sat  MM/DD/YY      Key     Begin       Toe       Toc      End"
                << endl;
 
-            for(ei = table.begin(); ei != table.end(); ei++)
-            {
-               os << setw(9) << left << StringUtils::asString(it->first)
-                  << "  " << printTime(ei->first,tf1)
-                  << "  " << printTime(ei->second->beginValid,tf2)
-                  << "  " << printTime(ei->second->ctToe,tf2)
-                  << "  " << printTime(ei->second->ctToc,tf2)
-                  << "  " << printTime(ei->second->endValid,tf2) << endl;
+            for(ei = table.begin(); ei != table.end(); ei++) {
+               os << it->first << "  " << printTime(ei->first,tf1)
+                              << "  " << printTime(ei->second->beginValid,tf2)
+                              << "  " << printTime(ei->second->ctToe,tf2)
+                              << "  " << printTime(ei->second->ctToc,tf2)
+                              << "  " << printTime(ei->second->endValid,tf2) << endl;
             }
          }
       }

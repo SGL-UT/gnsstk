@@ -128,7 +128,7 @@ public:
 
       sat1.dump(outputStream1);
       outputString1 = outputStream1.str();
-      compareString1 = "GPS 5 0";
+      compareString1 = "GPS 5";
       TUASSERTE(std::string, compareString1, outputString1);
 
          //---------------------------------------------------------------------
@@ -140,7 +140,7 @@ public:
 
       sat2.dump(outputStream2);
       outputString2 = outputStream2.str();
-      compareString2 = "UserDefined 110 0";
+      compareString2 = "UserDefined 110";
       TUASSERTE(std::string, compareString2, outputString2);
 
          //---------------------------------------------------------------------
@@ -152,7 +152,7 @@ public:
 
       sat3.dump(outputStream3);
       outputString3 = outputStream3.str();
-      compareString3 = "??? -10 0";
+      compareString3 = "??? -10";
       TUASSERTE(std::string, compareString3, outputString3);
 
       TURETURN();
@@ -312,12 +312,6 @@ public:
          // we have to set wildcard flags explicitly for ws8
       ws8.makeWild();
       gpstk::SatID ws9(2); // wildcard system
-      gpstk::SatID ws10(3, gpstk::SatelliteSystem::Glonass, -2);
-      gpstk::SatID ws11(4, gpstk::SatelliteSystem::Glonass, -2);
-      gpstk::SatID ws12(5, gpstk::SatelliteSystem::Glonass, 0, 0);
-      gpstk::SatID ws13(3, gpstk::SatelliteSystem::Glonass, 0);
-      gpstk::SatID ws14(3, gpstk::SatelliteSystem::Glonass, 0, 0);
-      gpstk::SatID ws15(2, gpstk::SatelliteSystem::Glonass, 0, 0);
          // sanity checks
       TUASSERTE(bool, false, ws5.wildId);
       TUASSERTE(bool, true,  ws5.wildSys);
@@ -329,24 +323,6 @@ public:
       TUASSERTE(bool, true,  ws8.wildSys);
       TUASSERTE(bool, false, ws9.wildId);
       TUASSERTE(bool, true,  ws9.wildSys);
-      TUASSERTE(bool, false, ws10.wildId);
-      TUASSERTE(bool, false, ws10.wildSys);
-      TUASSERTE(int64_t, -1, ws10.extraMask);
-      TUASSERTE(bool, false, ws11.wildId);
-      TUASSERTE(bool, false, ws11.wildSys);
-      TUASSERTE(int64_t, -1, ws11.extraMask);
-      TUASSERTE(bool, false, ws12.wildId);
-      TUASSERTE(bool, false, ws12.wildSys);
-      TUASSERTE(int64_t, 0,  ws12.extraMask);
-      TUASSERTE(bool, false, ws13.wildId);
-      TUASSERTE(bool, false, ws13.wildSys);
-      TUASSERTE(int64_t, -1, ws13.extraMask);
-      TUASSERTE(bool, false, ws14.wildId);
-      TUASSERTE(bool, false, ws14.wildSys);
-      TUASSERTE(int64_t, 0,  ws14.extraMask);
-      TUASSERTE(bool, false, ws15.wildId);
-      TUASSERTE(bool, false, ws15.wildSys);
-      TUASSERTE(int64_t, 0,  ws15.extraMask);
          // actual tests
       TUASSERTE(bool, true,  ws1 == ws2);
       TUASSERTE(bool, false, ws1 == ws3);
@@ -356,13 +332,6 @@ public:
       TUASSERTE(bool, false, ws1 == ws7);
       TUASSERTE(bool, true,  ws1 == ws8);
       TUASSERTE(bool, false, ws1 == ws9);
-      TUASSERTE(bool, false, ws1 == ws10);
-      TUASSERTE(bool, false, ws1 == ws11);
-      TUASSERTE(bool, false, ws1 == ws12);
-      TUASSERTE(bool, false, ws1 == ws13);
-      TUASSERTE(bool, false, ws1 == ws14);
-      TUASSERTE(bool, false, ws1 == ws15);
-      TUASSERTE(bool, true,  ws9 == ws15);
 
       TUCSM("operator<<");
          //---------------------------------------------------------------------
@@ -373,7 +342,7 @@ public:
       std::stringstream outputStream;
       outputStream << redirected;
       outputString = outputStream.str();
-      compareString = "GPS 6 0";
+      compareString = "GPS 6";
 
       TUASSERTE(std::string, compareString, outputString);
 
@@ -395,11 +364,6 @@ public:
          // we have to set wildcard flags explicitly for ws8
       ws8.makeWild();
       gpstk::SatID ws9(2); // wildcard system
-      gpstk::SatID ws10(3, gpstk::SatelliteSystem::Glonass, -2);
-      gpstk::SatID ws11(4, gpstk::SatelliteSystem::Glonass, -2);
-      gpstk::SatID ws12(5, gpstk::SatelliteSystem::Glonass, 0, 0);
-      gpstk::SatID ws13(3, gpstk::SatelliteSystem::Glonass, 0);
-      gpstk::SatID ws14(3, gpstk::SatelliteSystem::Glonass, 0, 0);
          // sanity checks
       TUASSERTE(bool, false, ws5.wildId);
       TUASSERTE(bool, true,  ws5.wildSys);
@@ -411,21 +375,6 @@ public:
       TUASSERTE(bool, true,  ws8.wildSys);
       TUASSERTE(bool, false, ws9.wildId);
       TUASSERTE(bool, true,  ws9.wildSys);
-      TUASSERTE(bool, false, ws10.wildId);
-      TUASSERTE(bool, false, ws10.wildSys);
-      TUASSERTE(int64_t, -1, ws10.extraMask);
-      TUASSERTE(bool, false, ws11.wildId);
-      TUASSERTE(bool, false, ws11.wildSys);
-      TUASSERTE(int64_t, -1, ws11.extraMask);
-      TUASSERTE(bool, false, ws12.wildId);
-      TUASSERTE(bool, false, ws12.wildSys);
-      TUASSERTE(int64_t, 0, ws12.extraMask);
-      TUASSERTE(bool, false, ws13.wildId);
-      TUASSERTE(bool, false, ws13.wildSys);
-      TUASSERTE(int64_t, -1, ws13.extraMask);
-      TUASSERTE(bool, false, ws14.wildId);
-      TUASSERTE(bool, false, ws14.wildSys);
-      TUASSERTE(int64_t, 0,  ws14.extraMask);
          // actual tests
       TUASSERTE(bool, false, ws1 < ws2);
       TUASSERTE(bool, false, ws2 < ws1);
@@ -443,16 +392,6 @@ public:
       TUASSERTE(bool, false, ws8 < ws1);
       TUASSERTE(bool, true,  ws1 < ws9);
       TUASSERTE(bool, false, ws9 < ws1);
-      TUASSERTE(bool, true,  ws10 < ws11);
-      TUASSERTE(bool, false, ws11 < ws10);
-      TUASSERTE(bool, true,  ws10 < ws12);
-      TUASSERTE(bool, false, ws12 < ws10);
-      TUASSERTE(bool, true,  ws10 < ws13);
-      TUASSERTE(bool, false, ws13 < ws10);
-      TUASSERTE(bool, true,  ws3 < ws10);
-      TUASSERTE(bool, false, ws10 < ws3);
-      TUASSERTE(bool, false, ws10 < ws14); // 10 and 14 are equal due to 0 mask
-      TUASSERTE(bool, false, ws14 < ws10);
       TURETURN();
    }
 

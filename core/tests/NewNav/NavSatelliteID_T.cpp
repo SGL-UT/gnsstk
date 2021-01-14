@@ -150,7 +150,6 @@ constructorTest()
    TUASSERTE(gpstk::SatID, exps6a, nsid6.sat);
    TUASSERTE(bool, true, nsid6.xmitSat.wildId);
    TUASSERTE(bool, true, nsid6.xmitSat.wildSys);
-   TUASSERTE(int64_t, 0, nsid6.xmitSat.extraMask);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
              nsid6.system);
    TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::Any, nsid6.carrier);

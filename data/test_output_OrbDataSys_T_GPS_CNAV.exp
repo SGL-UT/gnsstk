@@ -30,7 +30,7 @@ HH:MM:SS  15  32
     GPS 32  33 01/01/2017 001 00:54:12  tot: 01/01/2017 001 00:30:08  A0:  1.7462298274E-10  A1:  2.2204460493E-15  A2:  0.0000000000E+00  dtLS:  18
 *********************************************************
  GPS CNAV System-level navigation message data.  UID: 30
- Transmitting SV : GPS 15 0
+ Transmitting SV : GPS 15
  Transmit Time   : 01/01/2017 DOY 001 00:00:24  1930     24
 
            GROUP DELAY CORRECTIONS
@@ -48,7 +48,7 @@ ISC(L5Q5)      N
   Alpha 3:   3.84468251E-09 sec/rad**3   Beta 3:   2.32500022E+04 sec/rad**3
 *********************************************************
  GPS CNAV System-level navigation message data.  UID: 30
- Transmitting SV : GPS 15 0
+ Transmitting SV : GPS 15
  Transmit Time   : 01/01/2017 DOY 001 00:39:36  1930   2376
 
            GROUP DELAY CORRECTIONS
@@ -66,7 +66,7 @@ ISC(L5Q5)      N
   Alpha 3:   3.84468251E-09 sec/rad**3   Beta 3:   1.47954559E+04 sec/rad**3
 *********************************************************
  GPS CNAV System-level navigation message data.  UID: 32
- Transmitting SV : GPS 15 0
+ Transmitting SV : GPS 15
  Transmit Time   : 01/01/2017 DOY 001 00:00:36  1930     36
 
            EOP PARAMETERS
@@ -81,7 +81,7 @@ delta_UT1     -4.0764749050E-01 sec
 delta_UT1_dot -1.2058913708E-03 sec/day
 *********************************************************
  GPS CNAV System-level navigation message data.  UID: 32
- Transmitting SV : GPS 15 0
+ Transmitting SV : GPS 15
  Transmit Time   : 01/01/2017 DOY 001 00:41:24  1930   2484
 
            EOP PARAMETERS
@@ -96,7 +96,7 @@ delta_UT1     5.9148496389E-01 sec
 delta_UT1_dot -1.3321638107E-03 sec/day
 *********************************************************
  GPS CNAV System-level navigation message data.  UID: 33
- Transmitting SV : GPS 15 0
+ Transmitting SV : GPS 15
  Transmit Time   : 01/01/2017 DOY 001 00:01:24  1930     84
 
            GPS UTC PARAMETERS
@@ -112,7 +112,7 @@ DN                         7 day (1-7)
 Epoch(lsf)        12/31/2016
 *********************************************************
  GPS CNAV System-level navigation message data.  UID: 33
- Transmitting SV : GPS 15 0
+ Transmitting SV : GPS 15
  Transmit Time   : 01/01/2017 DOY 001 00:40:36  1930   2436
 
            GPS UTC PARAMETERS
@@ -128,7 +128,7 @@ DN                         7 day (1-7)
 Epoch(lsf)        12/31/2016
 *********************************************************
  GPS CNAV System-level navigation message data.  UID: 30
- Transmitting SV : GPS 32 0
+ Transmitting SV : GPS 32
  Transmit Time   : 01/01/2017 DOY 001 00:00:24  1930     24
 
            GROUP DELAY CORRECTIONS
@@ -146,7 +146,7 @@ ISC(L5Q5)      Y         9.31322575E-09
   Alpha 3:   3.84468251E-09 sec/rad**3   Beta 3:   2.32500022E+04 sec/rad**3
 *********************************************************
  GPS CNAV System-level navigation message data.  UID: 30
- Transmitting SV : GPS 32 0
+ Transmitting SV : GPS 32
  Transmit Time   : 01/01/2017 DOY 001 00:54:00  1930   3240
 
            GROUP DELAY CORRECTIONS
@@ -164,7 +164,7 @@ ISC(L5Q5)      Y         9.31322575E-09
   Alpha 3:   3.84468251E-09 sec/rad**3   Beta 3:   1.47954559E+04 sec/rad**3
 *********************************************************
  GPS CNAV System-level navigation message data.  UID: 32
- Transmitting SV : GPS 32 0
+ Transmitting SV : GPS 32
  Transmit Time   : 01/01/2017 DOY 001 00:00:36  1930     36
 
            EOP PARAMETERS
@@ -179,7 +179,7 @@ delta_UT1     -4.0767258406E-01 sec
 delta_UT1_dot -1.2058913708E-03 sec/day
 *********************************************************
  GPS CNAV System-level navigation message data.  UID: 32
- Transmitting SV : GPS 32 0
+ Transmitting SV : GPS 32
  Transmit Time   : 01/01/2017 DOY 001 00:53:24  1930   3204
 
            EOP PARAMETERS
@@ -194,7 +194,7 @@ delta_UT1     5.9147107601E-01 sec
 delta_UT1_dot -1.3321638107E-03 sec/day
 *********************************************************
  GPS CNAV System-level navigation message data.  UID: 33
- Transmitting SV : GPS 32 0
+ Transmitting SV : GPS 32
  Transmit Time   : 01/01/2017 DOY 001 00:01:24  1930     84
 
            GPS UTC PARAMETERS
@@ -210,7 +210,7 @@ DN                         7 day (1-7)
 Epoch(lsf)        12/31/2016
 *********************************************************
  GPS CNAV System-level navigation message data.  UID: 33
- Transmitting SV : GPS 32 0
+ Transmitting SV : GPS 32
  Transmit Time   : 01/01/2017 DOY 001 00:54:12  1930   3252
 
            GPS UTC PARAMETERS
