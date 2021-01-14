@@ -44,6 +44,8 @@
 #include "CommandOption.hpp"
 #include "WxObsMap.hpp"
 
+namespace gpstk
+{
 class MetReader
 {
 public:
@@ -64,5 +66,5 @@ public:
    gpstk::WxObsData wx;
 
 };
-
+}
 #endif

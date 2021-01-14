@@ -47,6 +47,8 @@
 #ifndef STATISTICAL_FILTER_HIT_INCLUDE
 #define STATISTICAL_FILTER_HIT_INCLUDE
 
+namespace gpstk
+{
 //------------------------------------------------------------------------------------
 // TD NB pffrac is never used.
 // NB WindowFilter does not find outliers
@@ -158,4 +160,5 @@ public:
 
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------
+}
 #endif   // #define STATISTICAL_FILTER_HIT_INCLUDE

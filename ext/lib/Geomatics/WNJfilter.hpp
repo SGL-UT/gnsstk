@@ -55,6 +55,8 @@
 // geomatics
 #include "logstream.hpp"
 
+namespace gpstk
+{
 //------------------------------------------------------------------------------------
 class WNJfilter : public KalmanFilter {
 public:
@@ -250,13 +252,13 @@ public:
          if(ptrx) ptrx->push_back(State(0));
          if(ptrv) ptrv->push_back(State(1));
          if(ptra) ptra->push_back(State(2));
-         if(ptrs) ptrs->push_back(singular ? 0.0 : sqrt(Cov(0,0)));
+         if(ptrs) ptrs->push_back(singular ? 0.0 : ::sqrt(Cov(0,0)));
       }
       if(stage == SU) {          // NB count was decremented just above
          if(ptrx) (*ptrx)[count] = State(0);
          if(ptrv) (*ptrv)[count] = State(1);
          if(ptra) (*ptra)[count] = State(2);
-         if(ptrs) (*ptrs)[count] = (singular ? 0.0 : sqrt(Cov(0,0)));
+         if(ptrs) (*ptrs)[count] = (singular ? 0.0 : ::sqrt(Cov(0,0)));
       }
 
       if(!filterOutput) { if(stage == SU) count--; return; }
@@ -303,7 +305,7 @@ public:
       // output sqrt of diagonal covariance elements
       oss << std::scientific << std::setprecision(prec);
       for(i=0; i<State.size(); i++)
-         oss << " " << std::setw(width) << (singular ? 0.0 : sqrt(Cov(i,i)));
+         oss << " " << std::setw(width) << (singular ? 0.0 : ::sqrt(Cov(i,i)));
 
       // if MU, also output data, sol residual and PF residual
       if(stage == MU)
@@ -326,4 +328,5 @@ public:
 
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------
+}
 #endif // WHITE_NOISE_JERK_KALMAN_FILTER

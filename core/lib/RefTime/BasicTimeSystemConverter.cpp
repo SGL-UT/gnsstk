@@ -36,24 +36,65 @@
 //
 //==============================================================================
 
-/// @file format.cpp
-/// Simple class to encapsulate output format
-
-//-----------------------------------------------------------------------------
-#include "format.hpp"
-#include <iomanip>
-using namespace std;
+#include "BasicTimeSystemConverter.hpp"
+#include "CivilTime.hpp"
 
 namespace gpstk
 {
-ostream& operator<<(ostream& os, const format& f)
-{
-   if(f.form) os << (f.form==1 ? fixed : scientific);
-   if(f.wide > 0) os << setw(f.wide);
-   os << setprecision(f.prec);
-   return os;
-}
-}
+   bool BasicTimeSystemConverter ::
+   getOffset(TimeSystem fromSys, TimeSystem toSys,
+             const CommonTime& t, double& offs)
+   {
+      if (fromSys == toSys)
+      {
+            // nothing to do
+         offs = 0.;
+         return true;
+      }
+         // Make sure to do enum comparison first as that is much less
+         // expensive than time comparison.
+      if ((fromSys == fromSystem) && (toSys == toSystem) &&
+          (t >= fromTimeStamp) && (t <= toTimeStamp))
+      {
+         offs = toffs;
+         return true;
+      }
+      CivilTime civ(t);
+      try
+      {
+         offs = getTimeSystemCorrection(fromSys, toSys, civ.year, civ.month,
+                                        civ.day);
+      }
+      catch (gpstk::Exception& exc)
+      {
+         std::cerr << exc << std::endl;
+         return false;
+      }
+      return true;
+   }
 
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
+
+   bool BasicTimeSystemConverter ::
+   explore(TimeSystem fromSys, TimeSystem toSys,
+           const CommonTime& fromTime, const CommonTime& toTime)
+   {
+      double offs1, offs2;
+      if (getOffset(fromSys, toSys, fromTime, offs1) &&
+          getOffset(fromSys, toSys, toTime, offs2))
+      {
+         if (offs1 == offs2)
+         {
+            fromSystem = fromSys;
+            toSystem = toSys;
+            fromTimeStamp = fromTime;
+            toTimeStamp = toTime;
+            toffs = offs1;
+         }
+         return true;
+      }
+      else
+      {
+         return false;
+      }
+   }
+}

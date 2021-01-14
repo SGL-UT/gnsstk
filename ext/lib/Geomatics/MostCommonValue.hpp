@@ -43,6 +43,8 @@
 #ifndef GPSTK_MOST_COMMON_VALUE_INCLUDE
 #define GPSTK_MOST_COMMON_VALUE_INCLUDE
 
+namespace gpstk
+{
 //--------------------------------------------------------------------------------
 /// Simple class to find the most common value, within a given tolerance, in a given
 /// set of values. Used to find, e.g. the time interval of a RINEX obs file.
@@ -142,5 +144,5 @@ public:
    #undef DEFAULT_DIM
    #undef DEFAULT_TOL
 }; // end class MostCommonValue
-
+}
 #endif // GPSTK_MOST_COMMON_VALUE_INCLUDE

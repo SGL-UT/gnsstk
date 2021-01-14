@@ -36,24 +36,41 @@
 //
 //==============================================================================
 
-/// @file format.cpp
-/// Simple class to encapsulate output format
+#ifndef GPSTK_TIMESYSTEMCONVERTER_HPP
+#define GPSTK_TIMESYSTEMCONVERTER_HPP
 
-//-----------------------------------------------------------------------------
-#include "format.hpp"
-#include <iomanip>
-using namespace std;
+// forward declarations for CommonTime
+namespace gpstk
+{
+   class TimeSystemConverter;
+   class CommonTime;
+}
+
+#include "CommonTime.hpp"
 
 namespace gpstk
 {
-ostream& operator<<(ostream& os, const format& f)
-{
-   if(f.form) os << (f.form==1 ? fixed : scientific);
-   if(f.wide > 0) os << setw(f.wide);
-   os << setprecision(f.prec);
-   return os;
-}
+      /// @ingroup TimeHandling
+      //@{
+
+      /** Define an abstract base class for implementing conversions
+       * between time systems. */
+   class TimeSystemConverter
+   {
+   public:
+         /** Get the offset in seconds between fromSys and toSys.
+          * @param[in] fromSys The time system to convert from.
+          * @param[in] toSys The time system to convert to.
+          * @param[in] t The time at which the offset is being
+          *   requested (i.e. the time being converted).
+          * @param[out] offs The resulting offset, if available.
+          * @return true if successful, false if unavailable. */
+      virtual bool getOffset(TimeSystem fromSys, TimeSystem toSys,
+                             const CommonTime& t, double& offs) = 0;
+   };
+
+      //@}
+
 }
 
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
+#endif // GPSTK_TIMESYSTEMCONVERTER_HPP

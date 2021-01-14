@@ -52,6 +52,8 @@
 #include "SRIFilter.hpp"
 #include "logstream.hpp"
 
+namespace gpstk
+{
 // -----------------------------------------------------------------------------------
 // -----------------------------------------------------------------------------------
 /// A base class for implementing Kalman filter using SRIFilter. Define a class with
@@ -588,7 +590,7 @@ public:
          // output sqrt of diagonal covariance elements
       oss << std::scientific << std::setprecision(2);
       for(i=0; i<State.size(); i++)
-         oss << " " << std::setw(10) << (singular ? 0.0 : sqrt(Cov(i,i)));
+         oss << " " << std::setw(10) << (singular ? 0.0 : ::sqrt(Cov(i,i)));
 
       LOG(INFO) << oss.str();
    }
@@ -857,4 +859,5 @@ private:
 
 }; // end class KalmanFilter
 
+}
 #endif

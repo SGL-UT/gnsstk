@@ -49,6 +49,8 @@
 
 using namespace std;
 
+namespace gpstk
+{
 // -----------------------------------------------------------------------------
 // Generate random numbers uniformly distributed from 0.0 to 1.0.  Mbig and
 // Mseed are large but arbitrary, but Mbig > Mseed.  The 55 is not arbitrary.
@@ -178,3 +180,4 @@ double RandExpCor(double dt, double sigma, double T, double xlast)
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+}
