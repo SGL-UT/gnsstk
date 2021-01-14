@@ -171,21 +171,21 @@ public:
          //Output for GPS satellite and single digit ID
          //---------------------------------------------------------------------
       gpstk::SatID sat1(5, gpstk::SatelliteSystem (1));
-      compareString1 = "GPS 5 0";
+      compareString1 = "GPS 5";
       TUASSERTE(std::string, compareString1,gpstk::StringUtils::asString(sat1));
 
          //---------------------------------------------------------------------
          //Output for invalid UserDefined satellite and triple digit ID
          //---------------------------------------------------------------------
       gpstk::SatID sat2(110, gpstk::SatelliteSystem (11));
-      compareString2 = "UserDefined 110 0";
+      compareString2 = "UserDefined 110";
       TUASSERTE(std::string, compareString2,gpstk::StringUtils::asString(sat2));
 
          //---------------------------------------------------------------------
          //Output for invalid satellite and negative ID
          //---------------------------------------------------------------------
       gpstk::SatID sat3(-10, gpstk::SatelliteSystem (50));
-      compareString3 = "?? -10 0";
+      compareString3 = "??? -10";
       TUASSERTE(std::string, compareString3,gpstk::StringUtils::asString(sat3));
 
       TURETURN();
@@ -470,6 +470,7 @@ int main() //Main function to initialize and run all tests above
    errorTotal += testClass.lessThanTest();
    errorTotal += testClass.isValidTest();
    errorTotal += testClass.stringConvertTest();
+   errorTotal += testClass.asStringTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
