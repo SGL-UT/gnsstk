@@ -78,14 +78,29 @@ namespace gpstk
    {
    public:
          /// empty constructor, creates a wildcard object.
+         /// mcode and freqOffs are kept non-wild by default intentionally.
       ObsID()
             : type(ObservationType::Unknown), band(CarrierBand::Unknown),
-              code(TrackingCode::Unknown)
+              code(TrackingCode::Unknown), freqOffs(0), freqOffsWild(false),
+              mcode(0), mcodeMask(-1)
       {}
 
          /// Explicit constructor
+         /// mcode and freqOffs are kept non-wild by default intentionally.
       ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc)
-            : type(ot), band(cb), code(tc)
+            : type(ot), band(cb), code(tc), freqOffs(0), freqOffsWild(false),
+              mcode(0), mcodeMask(-1)
+      {}
+
+         /** Explicit constructor for GLONASS.
+          * @param[in] ot The observation type (range, phase,, etc.).
+          * @param[in] cb The carrier band (L1, L2, etc.).
+          * @param[in] tc The tracking code (CA, L2CM, etc.).
+          * @param[in] fo Thre frequency offset of the GLONASS signal. */
+      explicit ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc,
+                     int fo)
+            : type(ot), band(cb), code(tc), freqOffs(fo), freqOffsWild(false),
+              mcode(0), mcodeMask(-1)
       {}
 
          /// Equality requires all fields to be the same
@@ -121,10 +136,20 @@ namespace gpstk
       virtual ~ObsID()
       {}
 
+         /// Set all data to wildcard values.
+      void makeWild();
+
+         /// Return true if any of the data are wildcard values.
+      bool isWild() const;
+
          // Note that these are the only data members of objects of this class.
       ObservationType  type;
       CarrierBand      band;
       TrackingCode     code;
+      int freqOffs;       ///< GLONASS frequency offset.
+      bool freqOffsWild;  ///< True=Treat freqOffs as a wildcard when matching.
+      uint32_t mcode;     ///< Data to uniquely identify M-code signal.
+      uint32_t mcodeMask; ///< Bitmask for matching mcode. 
 
          /// SWIG accessor. Not overloaded, because SWIG.
       static std::string getDescTC(TrackingCode e)
