@@ -48,7 +48,7 @@
 
 namespace gpstk
 {
-/// @ingroup code   
+/// @ingroup CodeGen   
 //@{
       
       /*

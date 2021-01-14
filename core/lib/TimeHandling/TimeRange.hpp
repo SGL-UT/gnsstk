@@ -67,7 +67,7 @@ namespace gpstk
       TimeRange();
       
          /**
-          * @throw @TimeRangeException
+          * @throw TimeRangeException
           */
       TimeRange(const CommonTime& startDT, 
                 const CommonTime& endDT,
@@ -75,7 +75,7 @@ namespace gpstk
                 const bool endInclusive=true);
 
          /** To cover potential use with RiseSetTimeList               
-          * @throw @TimeRangeException
+          * @throw TimeRangeException
           */
       TimeRange(DTPair dtPair,
                 const bool startInclusive=true, 
@@ -91,7 +91,7 @@ namespace gpstk
       CommonTime getEnd() const { return end; }
 
          /**
-          * @throw @TimeRangeException
+          * @throw TimeRangeException
           */
       void set( const CommonTime& startDT, 
                 const CommonTime& endDT,

@@ -56,6 +56,8 @@ namespace gpstk
    class Rinex3ClockBase : public FFData
    {
    public:
+         /** Class used to read and write the formatted data in a
+          * RINEX clock file. */
       class RCDouble : public FormattedDouble
       {
       public:

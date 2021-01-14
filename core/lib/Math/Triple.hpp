@@ -57,7 +57,7 @@ namespace gpstk
       /// @ingroup exceptiongroup
    NEW_EXCEPTION_CLASS(GeometryException, gpstk::Exception);
 
-      /// @ingroup GNSSCore
+      /// @ingroup MathGroup
       //@{
 
       /**
@@ -223,15 +223,15 @@ namespace gpstk
 
          /**
           * Multiplication Operator.
-          * @param left the scale by which to multiply a Triple
+          * @param scale the scale by which to multiply a Triple
           * @param rhs   the Triple to scale 
           * @return a Triple containing the scaled result
           */
-      friend Triple operator*(double left, const Triple& rhs);
+      friend Triple operator*(double scale, const Triple& rhs);
 
          /// Multiplication by a scalar on the right
-         /// @param right the scale by which to multiply a Triple
          /// @param rhs   the Triple to scale 
+         /// @param left the scale by which to multiply a Triple
          /// @return a Triple containing the scaled result
       friend Triple operator*(const Triple& rhs, double left)
          { return operator*(left,rhs); }

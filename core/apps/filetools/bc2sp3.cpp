@@ -36,6 +36,59 @@
 //
 //==============================================================================
 
+/** \page apps
+ * - \subpage bc2sp3 - Generate a GPS calendar in text
+ * \page bc2sp3
+ * \tableofcontents
+ *
+ * \section bc2sp3_name NAME
+ * bc2sp3 - Display time stamps in a variety of formats
+ *
+ * \section bc2sp3_synopsis SYNOPSIS
+ * \b bc2sp3 [\argarg{OPTION}] ...
+ *
+ * \section bc2sp3_description DESCRIPTION
+ * This application reads RINEX navigation file(s) and writes to SP3
+ * (a or c) file(s).
+ *
+ * \dictionary
+ * \dicterm{\--help}
+ * \dicdef{Display argument list.}
+ * \dicterm{Read the input file \argarg{FILE} (\--in is optional, repeatable)}
+ * \dicdef{in \argarg{FILE} bar}
+ * \dicterm{\--out \argarg{FILE}}
+ * \dicdef{Name the output file \argarg{FILE} (sp3.out)}
+ * \dicterm{\--tb \argarg{TIME}}
+ * \dicdef{Output beginning epoch; \argarg{TIME} = week,sec-of-week (earliest in input)}
+ * \dicterm{\--te \argarg{TIME}}
+ * \dicdef{Output ending epoch; \argarg{TIME} = week,sec-of-week (latest in input)}
+ * \dicterm{\--cs \argarg{SEC}}
+ * \dicdef{Cadence of epochs in seconds (300s)}
+ * \dicterm{\--outputC}
+ * \dicdef{Output version c (no correlation) (otherwise a)}
+ * \dicterm{\--msg "..."}
+ * \dicdef{Add ... as a comment to the output header (repeatable)}
+ * \dicterm{\--verbose}
+ * \dicdef{Output to screen: dump headers, data, etc}
+ * \enddictionary
+ *
+ * \subsection bc2sp3_example_merge Merge and Convert
+ *
+ * \cmdex{bc2sp3 \--in s121001a.00n \--in s121002a.00n \--out bc2sp3.out}
+ *
+ * Generate an SP3a file in bc2sp3.out on a 5-minute interval for the
+ * satellites available in the two source files.  In this case, for
+ * the span from January 1, 2000 00:00:00 through January 3, 2000
+ * 02:00:00.
+ *
+ * \section bc2sp3_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{1,A C++ exception occurred}
+ * \enddictable
+ */
+
    /**
     * @file bc2sp3.cpp
     * Read RINEX format navigation file(s) and write the data out to an SP3 format file.
@@ -60,6 +113,7 @@
 #include "StringUtils.hpp"
 #include "TimeString.hpp"
 #include "GPSWeekSecond.hpp"
+#include "BasicFramework.hpp"
 
 using namespace std;
 using namespace gpstk;
@@ -428,12 +482,12 @@ int main(int argc, char *argv[])
    catch (Exception& e)
    {
       cout << e;
-      return 1;
+      return gpstk::BasicFramework::EXCEPTION_ERROR;
    }
    catch (...)
    {
       cout << "Caught an unknown exception" << endl;
-      return 1;
+      return gpstk::BasicFramework::EXCEPTION_ERROR;
    }
 
    return 0;

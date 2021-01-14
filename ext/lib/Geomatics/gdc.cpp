@@ -134,7 +134,7 @@ const map<unsigned, string> Arc::markStr = Arc::create_mark_string_map();
 //  NB BAD != SatPass::BAD, but ONLY SatPass::BAD on input produces flag = BAD
 //
 // convert SatPass to data arrays and call DC(arrays)
-int gdc::DiscontinuityCorrector(SatPass& SP, string& retMsg, vector<string>& cmds,
+int gdc::DiscontinuityCorrector(SatPass& SP, std::string& retMsg, std::vector<std::string>& cmds,
       int GLOn)
 {
    try {
@@ -216,11 +216,11 @@ int gdc::DiscontinuityCorrector(SatPass& SP, string& retMsg, vector<string>& cmd
 // Flags on input must be either 1(OK) or 0(BAD), as in SatPass
 int gdc::DiscontinuityCorrector(
       const RinexSatID& sat_in, const double& nominalDT, const Epoch& beginTime,
-      vector<double> dataL1, vector<double> dataL2,
-      vector<double> dataP1, vector<double> dataP2,
-      vector<double> dt_in, vector<int> flags_in,
-      string& retMsg, vector<string>& cmds,
-      int GLOn, string outfmt_in)
+      std::vector<double> dataL1, std::vector<double> dataL2,
+      std::vector<double> dataP1, std::vector<double> dataP2,
+      std::vector<double> dt_in, std::vector<int> flags_in,
+      std::string& retMsg, std::vector<std::string>& cmds,
+      int GLOn, std::string outfmt_in)
 {
    try {
       int iret;
@@ -1474,7 +1474,7 @@ catch(Exception& e) { GPSTK_RETHROW(e); }
 //------------------------------------------------------------------------------------
 // Set a parameter in the configuration; the input string 'cmd' is of the form
 // '[--DC]<id><s><value>' : separator s is one of ':=,'; leading --DC is optional.
-bool gdc::setParameter(string cmd)
+bool gdc::setParameter(std::string cmd)
 {
    try {
       if(cmd.empty()) return false;
@@ -1501,7 +1501,7 @@ bool gdc::setParameter(string cmd)
 //------------------------------------------------------------------------------------
 // Set a parameter in the configuration using the label and the value,
 // for booleans use (T,F)=(non-zero,zero).
-bool gdc::setParameter(string label, double value)
+bool gdc::setParameter(std::string label, double value)
 {
    if(CFG.find(label) == CFG.end())
       return false; // GPSTK_THROW(Exception("Unknown configuration label " + label));

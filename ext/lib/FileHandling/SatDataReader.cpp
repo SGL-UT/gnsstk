@@ -193,7 +193,7 @@ namespace gpstk
 
 
       // Method to open AND load satellite data file.
-   void SatDataReader::open(const string& fn)
+   void SatDataReader::open(const std::string& fn)
    {
 
          // We need to be sure current data stream is closed

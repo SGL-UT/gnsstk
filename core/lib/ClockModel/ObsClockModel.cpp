@@ -55,9 +55,6 @@ namespace gpstk
    using namespace std;
 
 
-      /**
-       * @throw ObjectNotFound
-       */
    ObsClockModel::SvStatus ObsClockModel::getSvStatus(const SatID& svid) const
    {
       SvStatusMap::const_iterator i = status.find(svid);
@@ -86,9 +83,6 @@ namespace gpstk
    }
 
 
-      /**
-       * @throw ObjectNotFound
-       */
    ObsClockModel::SvMode ObsClockModel::getSvMode(const SatID& svid) const
    {
       SvModeMap::const_iterator i = modes.find(svid);

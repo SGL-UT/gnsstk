@@ -59,7 +59,7 @@
 
 namespace gpstk
 {
-      /// @ingroup ephemcalc 
+      /// @ingroup GNSSEph
       //@{
 
    class PackedNavBits

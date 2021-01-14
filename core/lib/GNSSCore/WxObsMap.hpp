@@ -143,14 +143,14 @@ namespace gpstk
       void insertObservation(const WxObservation& obs) throw();
       
       /**
-       * Removes all stored #WxObservation objects older than time \a t.
-       * \param t remove #WxObservation objects older than this
+       * Removes all stored WxObservation objects older than time \a t.
+       * \param t remove WxObservation objects older than this
        */
       void flush(const CommonTime& t) throw();
 
       /**
-       * Find a #WxObservation object for time \a t.
-       * A #WxObservation object will be retured. If interpolation is used,
+       * Find a WxObservation object for time \a t.
+       * A WxObservation object will be retured. If interpolation is used,
        * the first object immediately before or at time \a t and the first
        * object immediately after time \a t will be linearly interpolated
        * between to return a data point at time \a t. If there is not enough
@@ -161,8 +161,8 @@ namespace gpstk
        * \param t the time of interest
        * \param interpolate true if interpolation between points is wanted
        * \param iv time interval (seconds, before and after) around \a t
-       * \return a #WxObservation object
-       * \exception ObjectNotFound a #WxObservation object not available
+       * \return a WxObservation object
+       * \exception ObjectNotFound a WxObservation object not available
        */
       WxObservation getWxObservation(const CommonTime& t,
                                      unsigned iv = 3600,

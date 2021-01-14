@@ -1,31 +1,30 @@
-GPSTk 8.0.0 Release Notes
+GPSTk 9.1.0 Release Notes
 ========================
 
- * This version addresses api change of 'PRSolution2' to 'PRSolutionLegacy' used by downstream dependency in sgltk.
- * It contains copyright updates to reflect year 2020.
- * Additionally, bug fixes and library changes were implemented.
+ * This version addresses minor library updates including improved documentation
+ * Additionally, it contains a CI update for advisory only protected word searches and a conda recipe fix.
 
-Updates since v7.0.0
+Updates since v9.0.0
 ---------------------
 **Build System and Test Suite**
-  * Update CI to verify proper copyright and license header.
-  * Update python 2.7 conda recipe to avoid using preprocessig-selector for enum34.
-  
-**Gitlab CI**
-  * Add Centos8 build/test/package/deploy jobs to the CI pieline.
-  * Update CODEOWNERS file.
-  * Refactor pipeline to use git https protocol instead of ssh  
-  
-**Library Changes**
-  * Update Nav reader code to properly assign being/end validity values for non-GPS GNSS data.
-  * Refactor `PRSolution2` to `PRSolutionLegacy`.
-  * Refactor calculate_ord method definition out of header file.
-  * Update SVNumXRef Add SVN77/PRN14  
-  * Update copyright language to reflect year 2020
-  * Update IonoModel to include all modernized GPS bands. 
+  * Update build.sh Allow better error reporting
 
-Fixes since v7.0.0
+**Gitlab CI**
+  * Update CI pipelines to make protected word searches advisory only.
+
+**Library Changes**
+  * Add accessors to the ObsID description maps for SWIG.
+  * Add to CommandOptionParser the ability to show program usage in a format that can be used in doxygen.
+  * Add TimeSystemConversion class to support generalized time system conversion.
+  * Add BasicTimeSystemConversion class to wrap existing second-precision TimeSystem conversion.
+  * Update across the library to improve documentation.
+  * Update SatMetaDataStore to improve documentation.
+  * Update EngNav decoding internals to use C++ instead of C storage
+  * Update TimeSystem to support conversion to/from QZSS
+  * Update CommonTime to implement changeTimeSystem method.
+  * Update CommonTime/TimeSystem Redesign
+  * Update various source files to add namespace context where it was missing  
+
+Fixes since v9.0.0
 --------------------
-  * Fix SP3EphemerisStore to properly handle correlation data from SP3c files.
-  * Fix EL8 RPM Generation to avoid including build-id files.
-  * Fix OrbSysGpsL_56 Correct iono parameter units
+  * Fix conda recipe to specify correct default branch for GPSTk.

@@ -46,6 +46,8 @@
 using namespace std;
 using namespace gpstk;
 
+namespace gpstk
+{
 void expand_filename(string& filename)
 {
 #ifndef _WIN32
@@ -116,4 +118,5 @@ bool expand_list_file(string& filename, vector<string>& values)
    infile.close();
 
    return true;
+}
 }

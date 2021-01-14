@@ -62,8 +62,8 @@ namespace gpstk
                                               const Position& Receiver,
                                               const SatID sat,
                                               const AntexData& antenna,
-                                              const string& Freq1,
-                                              const string& Freq2,
+                                              const std::string& Freq1,
+                                              const std::string& Freq2,
                                               SolarSystem& SolSys,
                                               const XvtStore<SatID>& Eph,
                                               const bool isCOM)

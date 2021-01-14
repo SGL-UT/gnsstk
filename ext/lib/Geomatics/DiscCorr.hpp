@@ -74,7 +74,7 @@ namespace gpstk {
       ~GDCconfiguration(void) { CFG.clear(); CFGdescription.clear(); }
 
          /// Set a parameter in the configuration; the input string 'cmd'
-         /// is of the form '[--DC]<id><s><value>' where the separator s is
+         /// is of the form '[--DC]\<id\>\<s\>\<value\>' where the separator s is
          /// one of (:=,) and leading '-','--', or '--DC' are optional.
          /// @throw Exception
       void setParameter(std::string cmd);

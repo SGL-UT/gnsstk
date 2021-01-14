@@ -117,7 +117,7 @@ namespace gpstk
 
          /** This method returns the RinexDatum of a given observation
           *
-          * @param sat     Satellite whose observation we want to fetch.
+          * @param svID    Satellite whose observation we want to fetch.
           * @param index   Index representing the observation type. It is
           *                obtained from corresponding RINEX Observation Header
           *                using method 'Rinex3ObsHeader::getObsIndex()'.
@@ -128,9 +128,9 @@ namespace gpstk
 
          /** This method returns the RinexDatum of a given observation
           *
-          * @param sat  Satellite whose observation we want to fetch.
-          * @param type String representing the observation type.
-          * @param hdr  Rinex3ObsHeader for current RINEX file.
+          * @param[in] svID Satellite whose observation we want to fetch.
+          * @param[in] obsID String representing the observation type.
+          * @param[in] hdr Rinex3ObsHeader for current RINEX file.
           * @throw InvalidRequest
           */
       virtual RinexDatum getObs( const RinexSatID& svID,

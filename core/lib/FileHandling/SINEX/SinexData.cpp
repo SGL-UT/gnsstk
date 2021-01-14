@@ -136,7 +136,7 @@ namespace Sinex
          const BlockBase  *block = *i;
          if (block)
          {
-            /// @TODO - Put block comment
+            /// @todo - Put block comment
             try
             {
                strm << BLOCK_START << block->getTitle() << endl;
@@ -265,7 +265,7 @@ namespace Sinex
             }
             case COMMENT_START:
             {
-               /// @TODO - Store
+               /// @todo - Store
                break;
             }
             default:

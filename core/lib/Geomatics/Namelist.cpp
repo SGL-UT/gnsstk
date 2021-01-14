@@ -80,7 +80,7 @@ catch(Exception& e) { GPSTK_RETHROW(e); }
 }
 
 // explicit constructor - only a unique subset of names will be included.
-Namelist::Namelist(const vector<string>& names)
+Namelist::Namelist(const std::vector<std::string>& names)
 {
 try {
    for(unsigned int i=0; i<names.size(); i++) {
@@ -95,7 +95,7 @@ catch(Exception& e) { GPSTK_RETHROW(e); }
 }
 
 // add a name to the Namelist; throw if the name is not unique.
-Namelist& Namelist::operator+=(const string& name)
+Namelist& Namelist::operator+=(const std::string& name)
 {
 try {
    if(contains(name))
@@ -107,7 +107,7 @@ catch(Exception& e) { GPSTK_RETHROW(e); }
 }
 
 // remove a name from the Namelist; does nothing if the name is not found.
-Namelist& Namelist::operator-=(const string& name)
+Namelist& Namelist::operator-=(const std::string& name)
 {
 try {
    vector<string>::iterator it;
@@ -194,7 +194,7 @@ catch(Exception& e) { GPSTK_RETHROW(e); }
 }
 
 // does the Namelist contain the input name?
-bool Namelist::contains(const string& name) const
+bool Namelist::contains(const std::string& name) const
 {
 try {
    for(unsigned int i=0; i<labels.size(); i++) {
@@ -331,7 +331,7 @@ catch(Exception& e) { GPSTK_RETHROW(e); }
 
 // access to a specific name, given its index.
 // returns 'out-of-range' if the index is out of range.
-string Namelist::getName(const unsigned int in) const
+std::string Namelist::getName(const unsigned int in) const
 {
 try {
    if(in >= labels.size()) return string("out-of-range");
@@ -343,7 +343,7 @@ catch(Exception& e) { GPSTK_RETHROW(e); }
 // assign a specific name, given its index;
 // no effect if the index is out of range or the name is not unique.
 // return true if successful
-bool Namelist::setName(const unsigned int in, const string& name)
+bool Namelist::setName(const unsigned int in, const std::string& name)
 {
 try {
    if(in >= labels.size()) return false;
@@ -356,7 +356,7 @@ catch(Exception& e) { GPSTK_RETHROW(e); }
 }
 
 // return the index of the name in the list that matches the input, -1 if not found.
-int Namelist::index(const string& name) const
+int Namelist::index(const std::string& name) const
 {
 try {
    for(unsigned int i=0; i<labels.size(); i++)
@@ -425,7 +425,7 @@ try {
 catch(Exception& e) { GPSTK_RETHROW(e); }
 }
 
-ostream& operator<<(ostream& os, const LabeledMatrix& LM)
+std::ostream& operator<<(std::ostream& os, const LabeledMatrix& LM)
 {
 try {
    int nspace;

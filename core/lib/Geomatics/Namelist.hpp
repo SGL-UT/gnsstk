@@ -190,11 +190,11 @@ public:
       /// construct the subset Namelist which is NOT common to two others (XOR)
    friend Namelist operator^(const Namelist&, const Namelist&);
       /// replace this with (this & input)
-   Namelist& operator&=(const Namelist&);
+   Namelist& operator&=(const Namelist& N);
       /// replace this with (this | input)
-   Namelist& operator|=(const Namelist&);
+   Namelist& operator|=(const Namelist& N);
       /// replace this with (this ^ input)
-   Namelist& operator^=(const Namelist&);
+   Namelist& operator^=(const Namelist& N);
 
       /// bind a Namelist to a Matrix<double> before sending it to an output
       /// stream, to get a 'labelled display' of the matrix.

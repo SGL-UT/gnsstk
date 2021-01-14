@@ -36,6 +36,46 @@
 //
 //==============================================================================
 
+/** \page apps
+ * - \subpage sp3version - Convert SP3 files between format versions
+ * \page sp3version
+ * \tableofcontents
+ * \section sp3version_name NAME
+ * sp3version - Convert SP3 files between format versions
+ * \section sp3version_description DESCRIPTION
+ * This application reads an SP3 file (either a or c format) and
+ * writes it to another file (also either in a or c format).
+ *
+ * \dictionary
+ * \dicterm{\--in \argarg{FILE}}
+ * \dicdef{Read the input file \argarg{FILE} ()}
+ * \dicterm{\--out \argarg{FILE}}
+ * \dicdef{Name the output file \argarg{FILE} (sp3.out)}
+ * \dicterm{\--outputC}
+ * \dicdef{Output version c (otherwise a). NB. for a->c, generate random correlations}
+ * \dicterm{\--msg "..."}
+ * \dicdef{Add ... as a comment to the output header}
+ * \dicterm{\--verbose}
+ * \dicdef{Output to screen: dump headers, data, etc}
+ * \enddictionary
+ *
+ * \section sp3version_examples EXAMPLES
+ * \cmdex{sp3version sp3version --in data/test_input_SP3ae.sp3}
+ * 
+ * Generates an SP3c version of data/test_input_SP3ae.sp3 in sp3.out.
+ *
+ * \section sp3version_support SUPPORT
+ * sp3version is not part of the gpstk core and thus testing and support
+ * are limited to non-existent.
+ *
+ * \section sp3version_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{1,A C++ exception occurred}
+ * \enddictable
+ */
+
 /**
  * @file sp3version.cpp
  * Read an SP3 format file (any version) and write the data out to another,
@@ -54,6 +94,7 @@
 #include "SP3Data.hpp"
 #include "CommonTime.hpp"
 #include "SatID.hpp"
+#include "BasicFramework.hpp"
 
 using namespace std;
 using namespace gpstk;
@@ -238,12 +279,12 @@ int main(int argc, char *argv[])
    catch (Exception& e)
    {
       cout << e;
-      return -1;
+      return gpstk::BasicFramework::EXCEPTION_ERROR;
    }
    catch (...)
    {
       cout << "Caught an unknown exception" << endl;
-      return -1;
+      return gpstk::BasicFramework::EXCEPTION_ERROR;
    }
 
    cout << "Done."  << endl;

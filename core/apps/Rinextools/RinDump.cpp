@@ -36,6 +36,152 @@
 //
 //==============================================================================
 
+/** \page apps
+ * - \subpage RinDump - Print requested data in a RINEX OBS file
+ * \page RinDump
+ * \tableofcontents
+ *
+ * \section RinDump_name NAME
+ * RinDump - Print requested data in a RINEX OBS file
+ *
+ * \section RinDump_synopsis SYNOPSIS
+ * \b RinDump [\argarg{OPTION}] ... \argarg{FILE} [\argarg{SAT}] ... \argarg{DATA} ...
+ *
+ * \section RinDump_description DESCRIPTION
+ * The application reads one or more RINEX (v.2+) observation files
+ * and dumps the given observation IDs, linear combinations,
+ * satellite-dependent information or other things, to the screen, as
+ * a table, with one time and one satellite per line.
+ *
+ * \dictable
+ * \dictentry{\argarg{FILE},is the input RINEX observation file}
+ * \dictentry{\argarg{SAT},is the satellite(s) to output (e.g. G17 or R9); optional\, default all}
+ * \dictentry{\argarg{DATA},is the quantity to be output\, either raw data\, satellite-dependent data or linear combinations\, as given by one of the following tags:}
+ * \enddictable
+ *
+ * \bold{Raw observation data:}
+ * \dictable
+ * \dictentry{\argarg{OI},Any RINEX observation ID (3-char)\, optionally with system (4-char)}
+ * \enddictable
+ *
+ * \bold{Satellite-dependent things [and their required input]:}
+ * \dictable
+ * \dictentry{RNG,Satellite range in m [--eph --ref]}
+ * \dictentry{TRP,Tropospheric correction  in m [--eph --ref --trop]}
+ * \dictentry{REL,Satellite relativity correction  in m [--eph]}
+ * \dictentry{SCL,Satellite clock  in m [--eph]}
+ * \dictentry{ELE,Elevation angle in deg [--eph --ref]}
+ * \dictentry{AZI,Azimuth angle in deg [--eph --ref]}
+ * \dictentry{LAT,Latitude of ionospheric intercept in deg [--eph --ref --ionoht]}
+ * \dictentry{LON,Longitude of ionospheric intercept in deg [--eph --ref --ionoht]}
+ * \dictentry{SVX,Satellite ECEF X coordinate in m [--eph]}
+ * \dictentry{SVY,Satellite ECEF Y coordinate in m [--eph]}
+ * \dictentry{SVZ,Satellite ECEF Z coordinate in m [--eph]}
+ * \dictentry{SVA,Satellite ECEF latitude in deg [--eph]}
+ * \dictentry{SVO,Satellite ECEF longitude in deg [--eph]}
+ * \dictentry{SVH,Satellite ECEF height in m [--eph]}
+ * \dictentry{POS,Receiver position solutions found in auxiliary comments (see PRSolve)}
+ * \dictentry{RCL,RINEX receiver clock offset in m}
+ * \enddictable
+ *
+ * \b Options:
+ * \dictionary
+ * \dicterm{\--file \argarg{FN}}
+ * \dicdef{Name of file with more options [#->EOL = comment] [repeatable] ()}
+ * \dicterm{\--obs \argarg{FILE}}
+ * \dicdef{Input RINEX observation file name [repeatable] ()}
+ * \dicterm{\--sat \argarg{SAT}}
+ * \dicdef{sat is a RINEX satellite id (see above) [repeatable] ()}
+ * \dicterm{\--dat \argarg{DATA}}
+ * \dicdef{data (raw,combination, or other) to dump (see above) [repeatable] ()}
+ * \dicterm{\--combo \argarg{SPEC}}
+ * \dicdef{custom linear combination; spec is co[co[co]]; see --combohelp [repeatable] ()}
+ * \dicterm{\--header}
+ * \dicdef{Dump RINEX header (don't)}
+ * \dicterm{\--sys \argarg{S}}
+ * \dicdef{System(s) (GNSSs) \argarg{S}=S[,S], where S=RINEX system [repeatable] (GPS,GLO). RINEX systems are GPS,GLO,GAL,GEO|SBAS,BDS,QZS}
+ * \dicterm{\--code \argarg{S:C}}
+ * \dicdef{System \argarg{S} allowed tracking codes \argarg{C}, in order [see --typehelp] [repeatable] (). Defaults: GPS:PYMNIQSLXWCN, GLO:PC, GAL:ABCIQXZ, GEO:CIQX, BDS:IQX, QZS:CSLXZ}
+ * \dicterm{\--freq \argarg{F}}
+ * \dicdef{Frequencies to use in solution [e.g. 1, 12, 5, 15] [repeatable] ()}
+ * \dicterm{\--eph \argarg{FN}}
+ * \dicdef{Input Ephemeris+clock (SP3 format) file name(s) [repeatable] ()}
+ * \dicterm{\--nav \argarg{FN}}
+ * \dicdef{Input RINEX nav file name(s) [GLO Nav includes freq channel] [repeatable] ()}
+ * \dicterm{\--obspath \argarg{P}}
+ * \dicdef{Path of input RINEX observation file(s) ()}
+ * \dicterm{\--ephpath \argarg{P}}
+ * \dicdef{Path of input ephemeris+clock file(s) ()}
+ * \dicterm{\--navpath \argarg{P}}
+ * \dicdef{Path of input RINEX navigation file(s) ()}
+ * \dicterm{\--start \argarg{T[:F]}}
+ * \dicdef{Start processing data at this epoch ([Beginning of dataset])}
+ * \dicterm{\--stop \argarg{T[:F]}}
+ * \dicdef{Stop processing data at this epoch ([End of dataset])}
+ * \dicterm{\--decimate \argarg{DT}}
+ * \dicdef{Decimate data to time interval dt (0: no decimation) (0.00)}
+ * \dicterm{\--debias \argarg{TYPE:LIM}}
+ * \dicdef{Debias jumps in data larger than limit (0: no debias) [repeatable] ()}
+ * \dicterm{\--debias0 \argarg{TYPE}}
+ * \dicdef{Toggle initial debias of data \argarg{TYPE} () [repeatable] ()}
+ * \dicterm{\--elevlim \argarg{LIM}}
+ * \dicdef{Limit output to data with elevation angle > lim degrees [ELE req'd] (0.00)}
+ * \dicterm{\--currentRinex}
+ * \dicdef{Process in current, not header, RINEX version (don't)}
+ * \dicterm{\--RinexVer \argarg{V}}
+ * \dicdef{Process in RINEX version V (default is header.version) (0.00)}
+ * \dicterm{\--ref \argarg{P[:F]}}
+ * \dicdef{Known position, default fmt f '%x,%y,%z', for resids, elev and ORDs ()}
+ * \dicterm{\--GLOfreq \argarg{SAT:N}}
+ * \dicdef{GLO satellite and frequency channel number, e.g. R09:-7 [repeatable] ()}
+ * \dicterm{\--Trop \argarg{M,T,P,H}}
+ * \dicdef{Trop model \argarg{M} [one of Zero,Black,Saas,NewB,Neill,GG,GGHt with optional weather T(C),P(mb),RH(%)] (NewB,20.0,1013.0,50.0)}
+ * \dicterm{\--ionoht \argarg{HT}}
+ * \dicdef{Ionospheric height in kilometers [for VI, LAT, LON] (400.00)}
+ * \dicterm{\--timefmt \argarg{FMT}}
+ * \dicdef{Format for time tags (see GPSTK::Epoch::printf) in output (%4F %10.3g)}
+ * \dicterm{\--headless}
+ * \dicdef{Turn off printing of headers and no-eph-warnings in output (don't)}
+ * \dicterm{\--TECU}
+ * \dicdef{Compute iono delay (SI,VI) in TEC units (else meters) (don't)}
+ * \dicterm{\--verbose}
+ * \dicdef{Print extra output information (don't)}
+ * \dicterm{\--debug}
+ * \dicdef{Print debug output at level 0 [debug\argarg{N} for level n=1-7] (-1)}
+ * \dicterm{\--help}
+ * \dicdef{Print this syntax page, and quit (don't)}
+ * \dicterm{\--typehelp}
+ * \dicdef{Print all valid RINEX obs IDs, and quit (don't)}
+ * \dicterm{\--combohelp}
+ * \dicdef{Print syntax for linear combination data tags, and quit (don't)}
+ * \dicterm{\--verbose}
+ * \dicdef{Print extended output, including cmdline summary (don't)}
+ * \dicterm{\--debug\argarg{N}}
+ * \dicdef{Print debug output at LOGlevel n [n=0-7] (-1)}
+ * \dicterm{\--help}
+ * \dicdef{Print this syntax page and quit (don't)}
+ * \enddictionary
+ *
+ * \section RinDump_examples EXAMPLES
+ *
+ * \cmdex{RinDump data/mixed211.05o G12 R21 C1W C1P}
+ *
+ * Prints a space-separated table of the C1W and C1P observables from
+ * GPS PRN 12 and GLONASS satellite 21.
+ *
+ * \todo Add more examples.
+ *
+ * \section RinDump_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{1,A C++ exception occurred (typically invalid time format or value)}
+ * \enddictable
+ *
+ * \section RinDump_see_also SEE ALSO
+ * \ref RinSum
+ */
+
 /// @file RinDump.cpp
 /// Read Rinex observation files (version 2 or 3) and dump data observations, linear
 /// combinations or other computed quantities in tabular form.
@@ -92,6 +238,7 @@
 #include "NeillTropModel.hpp"
 #include "EphemerisRange.hpp"
 #include "Position.hpp"
+#include "BasicFramework.hpp"
 
 //------------------------------------------------------------------------------------
 using namespace std;
@@ -351,7 +498,7 @@ try {
 catch(FFStreamError& e) { cerr << "FFStreamError: " << e.what(); }
 catch(Exception& e) { cerr << "Exception: " << e.what(); }
 catch (...) { cerr << "Unknown exception.  Abort." << endl; }
-   return 1;
+return gpstk::BasicFramework::EXCEPTION_ERROR;
 
 }  // end main()
 

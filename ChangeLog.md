@@ -1,3 +1,50 @@
+# Version 9.1.0   Thursday January 14, 2021
+
+Modifications by Author
+-----------------------
+     Andrew Kuck <kuck@arlut.utexas.edu> (3):
+           Update conda package to build from main
+           Relax protected word searches
+           Use main branch for SGLTk.
+
+     David Barber <dbarber@arlut.utexas.edu> (1):
+           Update build.sh for better error reporting and standardize across TKs.
+
+     John Knutson <johnk@arlut.utexas.edu> (8):
+           Add accessors to the ObsID description maps for SWIG
+           Resolve "improve documentation"
+           Clarify use of convertQuant and subframeConvert, and remove mentions of FIC which would be confusing to anyone outside SGL
+           Resolve "Add more details to SatMetaDataStore docs"
+           Change EngNav decoding internals to use C++ instead of C pointers and linked lists and eliminate the need for explicit initialization by the user
+           Add support of time system conversion to/from QZSS
+           Resolve "CommonTime/TimeSystem Redesign"
+           Minimal effort changes to put everything into the gpstk namespace
+
+
+
+# Version 9.0.0   Thursday December 10, 2020
+
+Modifications by Author
+-----------------------
+     Andrew Kuck <kuck@arlut.utexas.edu> (5):
+           Add protected word check.
+           Update comments.
+           Replace master with main in ci.
+           Update default branch references in lint_test.sh
+           Update readme.
+
+     Dave Rainwater <rain@arlut.utexas.edu> (4):
+           [ci-skip] Initial commit: TKS-190 boolean units selection in constructor.
+           Modify test w/ IonoModel constructor to use CarrierBand instead of
+           Fix docstrings.
+           Remove unused class attribute from .hpp.
+
+     David Barber <dbarber@arlut.utexas.edu> (2):
+           staging deprecated file(s)
+           removing staged deprecated file(s) ATTIC_DEPRECATION_FLAG
+
+
+
 # Version 8.0.0   Thursday November 19, 2020
 
 Modifications by Author

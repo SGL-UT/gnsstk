@@ -37,7 +37,7 @@
 //==============================================================================
 
 /**
- * @file AlanDeviation.hpp
+ * @file AllanDeviation.hpp
  * Computes the overlapping Allan variance of a pair of vectors.
  */
  
@@ -52,7 +52,7 @@
 
 namespace gpstk
 {
-   /// @ingroup math 
+   /// @ingroup MathGroup 
    //@{
 
    

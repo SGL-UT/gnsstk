@@ -36,6 +36,158 @@
 //
 //==============================================================================
 
+
+/** \page apps
+ * - \subpage DiscFix - Repair phase discontinuities in RINEX data
+ * \page DiscFix
+ * \tableofcontents
+ *
+ * \section DiscFix_name NAME
+ * DiscFix - Repair phase discontinuities in RINEX data
+ *
+ * \section DiscFix_synopsis SYNOPSIS
+ * \b DiscFix [\argarg{OPTION}] ...
+ *
+ * \section DiscFix_description DESCRIPTION
+ * This application reads a RINEX observation data file containing GPS
+ * dual-frequency pseudorange and carrier phase measurements, divides
+ * the data into 'satellite passes', and finds and fixes
+ * discontinuities in the phases for each pass.
+ *
+ * Output is a list of editing commands for use with program
+ * RinEdit.  DiscFix will (optionally) write the corrected
+ * pseudorange and phase data to a new RINEX observation file. Other
+ * options will also smooth the pseudorange and/or debias the
+ * corrected phase.
+ *
+ * File I/O:
+ * \dictionary
+ * \dicterm{\--obs \argarg{FILE}}
+ * \dicdef{Input RINEX obs file - may be repeated [repeatable] ()}
+ * \dicterm{\--file \argarg{NAME}}
+ * \dicdef{Name of file containing more options [#-EOL = comment] [repeatable] ()}
+ * \dicterm{\--obspath \argarg{PATH}}
+ * \dicdef{Path for input RINEX obs file(s) (.)}
+ * \enddictionary
+ *
+ * Times (time = "GPSweek,SOW" OR "YYYY,Mon,D,H,Min,S)":
+ * \dictionary
+ * \dicterm{\--start \argarg{TIME}}
+ * \dicdef{Start processing the input data at this time ([Beginning of dataset])}
+ * \dicterm{\--stop \argarg{TIME}}
+ * \dicdef{Stop processing the input data at this time ([End of dataset])}
+ * \enddictionary
+ *
+ * Data config:
+ * \dictionary
+ * \dicterm{\--decimate \argarg{DT}}
+ * \dicdef{Decimate data to time interval (sec) dt (0.00)}
+ * \dicterm{\--gap \argarg{T}}
+ * \dicdef{Minimum gap (sec) between passes [same as --DCMaxGap] (600) (600.00)}
+ * \dicterm{\--noCA1}
+ * \dicdef{Fail if L1 P-code is missing, even if L1 CA-code is present (don't)}
+ * \dicterm{\--noCA2}
+ * \dicdef{Fail if L2 P-code is missing, even if L2 CA-code is present (don't)}
+ * \dicterm{\--forceCA1}
+ * \dicdef{Use C/A L1 range, even if L1 P-code is present (don't)}
+ * \dicterm{\--forceCA2}
+ * \dicdef{Use C/A L2 range, even if L2 P-code is present (don't)}
+ * \dicterm{\--onlySat \argarg{SAT}}
+ * \dicdef{Process only satellite \argarg{SAT} (a SatID, e.g. G21 or R17) ()}
+ * \dicterm{\--exSat \argarg{SAT}}
+ * \dicdef{Exclude satellite(s) [e.g. --exSat G22,R] [repeatable] ()}
+ * \dicterm{\--doGLO}
+ * \dicdef{Process GLONASS satellites as well as GPS (don't)}
+ * \dicterm{\--GLOfreq \argarg{SAT:N}}
+ * \dicdef{GLO channel numbers for each sat [e.g. R17:-4] [repeatable] ()}
+ * \enddictionary
+ *
+ * Smoothing: [NB smoothed pseudorange and debiased phase are not identical.]
+ * \dictionary
+ * \dicterm{\--smoothPR}
+ * \dicdef{Smooth pseudorange and output in place of raw pseudorange (don't)}
+ * \dicterm{\--smoothPH}
+ * \dicdef{Debias phase and output in place of raw phase (don't)}
+ * \dicterm{\--smooth}
+ * \dicdef{Same as (--smoothPR AND --smoothPH) (don't)}
+ * \enddictionary
+ *
+ * Discontinuity Corrector (DC) - cycle slip fixer - configuration:
+ * \dictionary
+ * \dicterm{\--DC \argarg{PARAM=VALUE}}
+ * \dicdef{Set DC parameter \argarg{PARAM} to \argarg{VALUE} [repeatable] ()}
+ * \dicterm{\--DChelp}
+ * \dicdef{Print list of DC parameters (all if -v) and their defaults, then quit (don't)}
+ * \enddictionary
+ *
+ * Output:
+ * \dictionary
+ * \dicterm{\--log \argarg{FILE}}
+ * \dicdef{Output log file name (df.log) (df.log)}
+ * \dicterm{\--cmd \argarg{FILE}}
+ * \dicdef{Output file name (for editing commands) (df.out) (df.out)}
+ * \dicterm{\--format \argarg{FMT}}
+ * \dicdef{Output time format (cf. gpstk::Epoch) (%4F %10.3g) (%4F %10.3g)}
+ * \dicterm{\--round \argarg{N}}
+ * \dicdef{Round output time format (--format) to n digits (3)}
+ * \enddictionary
+ *
+ * RINEX output:
+ * \dictionary
+ * \dicterm{\--RinexFile \argarg{FILE}}
+ * \dicdef{RINEX (obs) file name for output of corrected data ()}
+ * \dicterm{\--Prgm \argarg{STR}}
+ * \dicdef{RINEX header 'PROGRAM' string for output (DiscFix v.6.3 )}
+ * \dicterm{\--RunBy \argarg{STR}}
+ * \dicdef{RINEX header 'RUNBY' string for output (ARL:UT/SGL/GPSTk)}
+ * \dicterm{\--Observer \argarg{STR}}
+ * \dicdef{RINEX header 'OBSERVER' string for output ()}
+ * \dicterm{\--Agency \argarg{STR}}
+ * \dicdef{RINEX header 'AGENCY' string for output ()}
+ * \dicterm{\--Marker \argarg{STR}}
+ * \dicdef{RINEX header 'MARKER' string for output ()}
+ * \dicterm{\--Number \argarg{STR}}
+ * \dicdef{RINEX header 'NUMBER' string for output ()}
+ * \enddictionary
+ *
+ * Help:
+ * \dictionary
+ * \dicterm{\--verbose}
+ * \dicdef{print extended output information (don't)}
+ * \dicterm{\--help}
+ * \dicdef{print this and quit (don't)}
+ * \dicterm{\--verbose}
+ * \dicdef{Print extended output, including cmdline summary (don't)}
+ * \dicterm{\--debug \argarg{N}}
+ * \dicdef{Print debug output at LOGlevel N [N=0-7] (-1)}
+ * \dicterm{\--help}
+ * \dicdef{Print this syntax page and quit (don't)}
+ * \enddictionary
+ *
+ * \section DiscFix_examples EXAMPLES
+ *
+ * \cmdex{DiscFix --obs arlm200a.15o}
+ *
+ * Creates two files, df.out which contains a set of \ref RinEdit
+ * options to remove phase discontinuities, and df.log, which contains
+ * a summary of the processing that was done.  The input file
+ * arlm200a.15o will be unchanged.
+ *
+ * \section DiscFix_support SUPPORT
+ * DiscFix is not part of the gpstk core and thus testing and support
+ * are limited to non-existent.
+ *
+ * \section DiscFix_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{1,A C++ exception occurred}
+ * \enddictable
+ *
+ * \section DiscFix_see_also SEE ALSO
+ * \ref RinEdit
+ */
+
 //------------------------------------------------------------------------------------
 // DiscFix.cpp Read a RINEX observation file containing dual frequency
 //    pseudorange and phase, separate the data into satellite passes, and then
@@ -83,8 +235,7 @@ using namespace std;
 using namespace gpstk;
 using namespace StringUtils;
 
-//------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------
+
 // prgm data
 static const string DiscFixVersion = string("6.3 2/4/16");
 static const string PrgmName("DiscFix");

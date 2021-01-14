@@ -68,9 +68,10 @@
 #include "CommandLine.hpp"
 
 using namespace std;
-using namespace gpstk;
-using namespace StringUtils;
+using namespace gpstk::StringUtils;
 
+namespace gpstk
+{
 // -----------------------------------------------------------------------------------
 // the main entry point
 /**
@@ -914,3 +915,4 @@ catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
 
 // -----------------------------------------------------------------------------------
 // -----------------------------------------------------------------------------------
+}

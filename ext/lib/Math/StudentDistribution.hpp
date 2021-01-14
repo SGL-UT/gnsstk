@@ -50,7 +50,7 @@
 namespace gpstk
 {
 
-      /// @ingroup math 
+      /// @ingroup MathGroup 
       //@{
 
       /** This class implements the t-Student distribution.
@@ -93,7 +93,7 @@ namespace gpstk
           *
           * @param n       Degrees of freedom
           *
-          * \warning "n" must be > 0, otherwise n = |n|.
+          * @warning "n" must be > 0, otherwise n = |n|.
           */
       StudentDistribution( int n )
       { setNDF(n); };
@@ -111,7 +111,7 @@ namespace gpstk
           * @param x       Value
           * @param n       Degrees of freedom
           *
-          * \warning "n" must be > 0, otherwise n = |n|.
+          * @warning "n" must be > 0, otherwise n = |n|.
           */
       virtual double pdf(double x, int n)
       { setNDF(n); return pdf(x); };
@@ -129,7 +129,7 @@ namespace gpstk
           * @param x       Value
           * @param n       Degrees of freedom
           *
-          * \warning "n" must be > 0, otherwise n = |n|.
+          * @warning "n" must be > 0, otherwise n = |n|.
           */
       virtual double cdf(double x, int n)
       { setNDF(n); return cdf(x); };
@@ -150,7 +150,7 @@ namespace gpstk
           * @param x       Value
           * @param n       Degrees of freedom
           *
-          * \warning "n" must be > 0, otherwise n = |n|.
+          * @warning "n" must be > 0, otherwise n = |n|.
           */
       virtual double Q(double x, int n)
       { return ( 1.0 - cdf(x,n) ); };
@@ -165,7 +165,7 @@ namespace gpstk
           *
           * @param n       Degrees of freedom
           *
-          * \warning "n" must be > 0, otherwise n = |n|.
+          * @warning "n" must be > 0, otherwise n = |n|.
           * @throw InvalidParameter if n == 0
           */
       virtual StudentDistribution& setNDF(int n);

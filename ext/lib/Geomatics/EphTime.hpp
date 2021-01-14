@@ -54,8 +54,10 @@
 
 namespace gpstk
 {
-   /// @defgroup timegroup GPStk Time Group
-   //@{
+      /// @ingroup TimeHandling
+      //@{
+
+      /// @todo Make this class inherit from TimeTag like all the others.
 
    /// Class implementing date+time, only in formats applicable solar system
    /// ephemeris and earth orientation, namely UTC, TT and TDB.
@@ -241,7 +243,7 @@ namespace gpstk
 
    }; // end class EphTime
 
-   //@}
+      //@}
 
 }  // end namespace
 

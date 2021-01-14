@@ -2236,7 +2236,7 @@ namespace gpstk
       }
    }  // end prepareVer2Write()
 
-   void Rinex3ObsHeader::dump(ostream& s, double dumpVersion) const
+   void Rinex3ObsHeader::dump(std::ostream& s, double dumpVersion) const
    {
       using gpstk::StringUtils::asString;
       size_t i;
@@ -2485,7 +2485,7 @@ namespace gpstk
        *
        * @param type String representing the observation type.
        */
-   size_t Rinex3ObsHeader::getObsIndex( const string& type ) const
+   size_t Rinex3ObsHeader::getObsIndex( const std::string& type ) const
    {
       string newType(type);
 
@@ -2528,7 +2528,7 @@ namespace gpstk
    }
 
    
-   size_t Rinex3ObsHeader::getObsIndex(const string& sys,
+   size_t Rinex3ObsHeader::getObsIndex(const std::string& sys,
                                        const RinexObsID& obsID ) const
    {
          /// typedef std::vector<RinexObsID> RinexObsVec;

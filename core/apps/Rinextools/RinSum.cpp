@@ -36,6 +36,85 @@
 //
 //==============================================================================
 
+/** \page apps
+ * - \subpage RinSum - Summarize the data in a RINEX OBS file
+ * \page RinSum
+ * \tableofcontents
+ *
+ * \section RinSum_name NAME
+ * RinSum - RinSum - Summarize the data in a RINEX OBS file
+ *
+ * \section RinSum_synopsis SYNOPSIS
+ * \b RinSum [\argarg{OPTION}] ...
+ *
+ * \section RinSum_description DESCRIPTION
+ * The application reads a RINEX file and summarizes its content.
+ *
+ * \dictionary
+ * \dicterm{\--file \argarg{FN}}
+ * \dicdef{Name of file with more options [#->EOL = comment] [repeatable] ()}
+ * \dicterm{\--obs \argarg{FILE}}
+ * \dicdef{Input RINEX observation file name [repeatable] ()}
+ * \dicterm{\--obspath \argarg{P}}
+ * \dicdef{Path of input RINEX observation file(s) ()}
+ * \dicterm{\--start \argarg{T[:F]}}
+ * \dicdef{Start processing data at this epoch ([Beginning of dataset])}
+ * \dicterm{\--stop \argarg{T[:F]}}
+ * \dicdef{Stop processing data at this epoch ([End of dataset])}
+ * \dicterm{\--exSat \argarg{SAT}}
+ * \dicdef{Exclude satellite (or system) \argarg{SAT} e.g. G24,R [repeatable] ()}
+ * \dicterm{\--onlySat \argarg{SAT}}
+ * \dicdef{Include ONLY satellites (or systems) \argarg{SAT} e.g. G,R [repeatable] ()}
+ * \dicterm{\--currentRinex}
+ * \dicdef{Output in current, not header, RINEX version (don't)}
+ * \dicterm{\--RinexVer \argarg{V}}
+ * \dicdef{Output in RINEX version V (default is header.version) (0.00)}
+ * \dicterm{\--timefmt \argarg{FMT}}
+ * \dicdef{Format for time tags (see GPSTK::Epoch::printf) in output (%4F %w %10.3g %P)}
+ * \dicterm{\--brief}
+ * \dicdef{Produce a brief output (don't)}
+ * \dicterm{\--nohead}
+ * \dicdef{Omit header from output (don't)}
+ * \dicterm{\--notable}
+ * \dicdef{Omit sat/obs table from output (don't)}
+ * \dicterm{\--dt \argarg{SEC}}
+ * \dicdef{Nominal time step of data (sec); required only for gaps and millisec (-1.00)}
+ * \dicterm{\--milli}
+ * \dicdef{Find millisecond clock adjusts; req's \--dt (don't)}
+ * \dicterm{\--gaps}
+ * \dicdef{Print a table of gaps in the data; req's \--dt (don't)}
+ * \dicterm{\--vis \argarg{N}}
+ * \dicdef{Print graphical visibility, resolution \argarg{N} [n~20 @ 30s; req's \--gaps] (0)}
+ * \dicterm{\--vtab}
+ * \dicdef{Print tabular visibility [req's \--gaps and \--vis] (don't)}
+ * \dicterm{\--ycode}
+ * \dicdef{Assume v2.11 P mean Y (don't)}
+ * \dicterm{\--quiet}
+ * \dicdef{Make output a little quieter (don't)}
+ * \dicterm{\--verbose}
+ * \dicdef{Print extended output, including cmdline summary (don't)}
+ * \dicterm{\--debug\argarg{N}}
+ * \dicdef{Print debug output at LOGlevel n [n=0-7] (-1)}
+ * \dicterm{\--help}
+ * \dicdef{Print this syntax page and quit (don't)}
+ * \enddictionary
+ *
+ * \section RinSum_examples EXAMPLES
+ *
+ * \cmdex{RinSum data/arlm200a.15o}
+ *
+ * Prints a summary of the header information as well as observable
+ * counts for data contained within the input file arlm200a.15o.
+ *
+ * \section RinSum_exit_status EXIT STATUS
+ *
+ * \todo Make the exit codes consistent with the rest of the toolkit
+ * and document it here.
+ *
+ * \section RinSum_see_also SEE ALSO
+ * \ref RinDump
+ */
+
 /// @file RinSum.cpp
 /// Read Rinex observation files (version 2 or 3) and output a summary of the content.
 

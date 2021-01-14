@@ -250,13 +250,6 @@ namespace gpstk
           * @return pointer to new OrbitEph if it successful, NULL otherwise */
       virtual OrbitEph* addEphemeris(const OrbitEph* eph);
 
-         /** Add an OrbitEph object to this collection, converting the
-          * given RINEX navigation data.
-          * @param rnd Rinex3NavData
-          * @return pointer to the new object, NULL if data could not be added.
-          */
-         //virtual OrbitEph* addEphemeris(const Rinex3NavData& rnd);
-
          /** Return true if OrbitEph with the same sat and time
           * already exists in table. */
       bool isPresent(const SatID& sat, const CommonTime& t) const

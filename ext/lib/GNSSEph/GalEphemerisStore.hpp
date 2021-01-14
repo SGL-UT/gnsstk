@@ -53,7 +53,7 @@
 
 namespace gpstk
 {
-   /// @ingroup ephemstore 
+   /// @ingroup GNSSEph 
    //@{
 
    /// Class for storing and accessing an objects position,

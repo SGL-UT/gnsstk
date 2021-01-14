@@ -85,7 +85,7 @@ namespace gpstk
        *  "Deformation Induced by Polar Motion", Journal of Geophysical
        *  Research, Vol. 90, No B11, p. 9363-9368.
        *
-       *  \warning Please take into account that pole tide equations in
+       *  @warning Please take into account that pole tide equations in
        *  IERS document use co-latitude instead of latitude.
        */
    class PoleTides

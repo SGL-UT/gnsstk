@@ -58,7 +58,7 @@
 namespace gpstk
 {
 
-      /// @ingroup IonosphereMaps 
+      /// @ingroup FileHandling
       //@{
 
       /** This class reads and stores Ionosphere maps.
@@ -328,7 +328,7 @@ namespace gpstk
          /** Find a DCB value
           *
           * @param sat     SatID of satellite of interest
-          * @param t       Time to search for DCB
+          * @param time    Time to search for DCB
           *
           * @return        DCB value found (nanoseconds).
           *

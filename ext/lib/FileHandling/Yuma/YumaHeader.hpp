@@ -55,8 +55,8 @@
 
 namespace gpstk
 {
-   /// @ingroup Yuma 
-   //@{
+      /// @ingroup FileHandling
+      //@{
 
    /** 
     * This class does not really do anything.  It is here to conform to the
@@ -101,7 +101,7 @@ namespace gpstk
       
    }; // class YumaHeader
 
-   //@}
+      //@}
 
 } // namespace
 

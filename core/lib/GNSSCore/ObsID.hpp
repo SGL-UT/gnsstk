@@ -126,6 +126,15 @@ namespace gpstk
       CarrierBand      band;
       TrackingCode     code;
 
+         /// SWIG accessor. Not overloaded, because SWIG.
+      static std::string getDescTC(TrackingCode e)
+      { return tcDesc[e]; }
+         /// SWIG accessor. Not overloaded, because SWIG.
+      static std::string getDescCB(CarrierBand e)
+      { return cbDesc[e]; }
+         /// SWIG accessor. Not overloaded, because SWIG.
+      static std::string getDescOT(ObservationType e)
+      { return otDesc[e]; }
          /// These strings are for forming a somewhat verbose description
       static std::map< TrackingCode,    std::string > tcDesc;
       static std::map< CarrierBand,     std::string > cbDesc;

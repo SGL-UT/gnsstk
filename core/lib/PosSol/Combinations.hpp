@@ -44,9 +44,10 @@
 #ifndef COMBINATIONS_INCLUDE
 #define COMBINATIONS_INCLUDE
 
+#include "Exception.hpp"
+
 namespace gpstk {
 
-#include "Exception.hpp"
 
 /// Class Combinations will compute C(n,k), all the combinations of n things
 /// taken k at a time (where k <= n).

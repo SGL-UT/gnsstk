@@ -44,7 +44,7 @@
 
 namespace gpstk
 {
-   /// @ingroup code 
+   /// @ingroup CodeGen 
    /**
     *  PCodeConst.hpp maintains a variety of "magic numbers" related
     *  to P-code generation and used throughout the P-code generator.

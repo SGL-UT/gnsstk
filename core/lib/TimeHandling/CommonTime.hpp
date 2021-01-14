@@ -42,11 +42,18 @@
 #include "Exception.hpp"
 #include "TimeConstants.hpp"
 #include "TimeSystem.hpp"
+#include "TimeSystemConverter.hpp"
 
 namespace gpstk
 {
       /// @ingroup TimeHandling
       //@{
+
+      /** \page APIguide
+       * - \subpage TimeHandlingGuide - Guidance for using time data.
+       * \page TimeHandlingGuide Time Handling
+       * @todo If I had the time, this would document it.
+       */
 
       /**
        * This is the common time format that all time formats convert to when
@@ -185,6 +192,17 @@ namespace gpstk
           //METHOD SET FOR FUTURE DEPRECATION (PRIVATIZATION)
       CommonTime& setTimeSystem( TimeSystem timeSystem )
       { m_timeSystem = timeSystem; return *this; }
+
+         /** Modify both the time value and time system to reflect a
+          * change in time system.
+          * @param[in] timeSystem The time system to convert this time to.
+          * @param[in,out] conv The converter object to use to get the
+          *   offset between the current time system and the requested
+          *   time system.
+          * @return true if successful, false if unable to get/apply
+          *   the time system offset.
+          */
+      bool changeTimeSystem(TimeSystem timeSystem, TimeSystemConverter* conv);
 
          /**
           * Get method.  Obtain values in days, second of day and fractional
@@ -336,7 +354,7 @@ namespace gpstk
 
          /**
           * Add integer seconds to this CommonTime object.
-          * @param sec the number of seconds to add to this CommonTime
+          * @param seconds the number of seconds to add to this CommonTime
           * @return a reference to this CommonTime object
           * @throw InvalidRequest on over-/under-flow
           */

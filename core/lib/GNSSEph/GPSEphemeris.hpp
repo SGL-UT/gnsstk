@@ -113,7 +113,7 @@ namespace gpstk
          /** Compute the fit duration in hours, and adjust the times
           * of validity, given the fit interval flag.
           * @pre IODC must be set
-          * @param fitint fit interval flag */
+          * @param[in] fitintFlag fit interval flag */
       void setFitIntervalFlag(const short fitintFlag)
       {
          fitDuration = getFitInterval(IODC, fitintFlag);

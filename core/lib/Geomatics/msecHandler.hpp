@@ -36,7 +36,7 @@
 //
 //==============================================================================
 
-/// @file millisecHandler.hpp  Detect and fix millisecond clock adjusts in data,
+/// @file msecHandler.hpp  Detect and fix millisecond clock adjusts in data,
 ///   including pseudoranges, phases and time tags.
 
 #ifndef GPSTK_MSHANDLER_INCLUDE

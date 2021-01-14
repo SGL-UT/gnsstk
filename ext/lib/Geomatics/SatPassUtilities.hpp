@@ -114,8 +114,8 @@ int SatPassToRinex3File(std::string filename,
 // -------------------------------------------------------------------------------
 /// Find millisecond adjusts of the time tag, pseudoranges C1 C2 P1 P2, phases L1 L2.
 /// User the handler to print messages, etc.
-/// @param  input SatPass list for analysis
-/// @param  return millisecond handler
+/// @param SPList input SatPass list for analysis
+/// @param msh millisecond handler
 /// @return number of ms adjusts found
       /// @throw Exception
    int FindMilliseconds(std::vector<SatPass>& SPList, msecHandler& msh);
@@ -124,8 +124,8 @@ int SatPassToRinex3File(std::string filename,
 /// remove millisecond adjusts of the time tags and pseudoranges (C1 C2 P1 P2)
 /// and phases (L1 L2), given handler passed to earlier call to FindMilliseconds().
 /// User the handler to print messages, etc.
-/// @param  input SatPass list for modification
-/// @param  message returned from FindMilliseconds()
+/// @param SPList input SatPass list for modification
+/// @param msh message returned from FindMilliseconds()
       /// @throw Exception
    void RemoveMilliseconds(std::vector<SatPass>& SPList, msecHandler& msh);
 

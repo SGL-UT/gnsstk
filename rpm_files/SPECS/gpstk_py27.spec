@@ -1,5 +1,5 @@
 %define name python-gpstk
-%define version 8.0.0
+%define version 9.1.0
 %define release 1
 
 Summary:        GPS Toolkit
@@ -61,6 +61,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 14 2021 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v9.1.0 release
+* Thu Dec 10 2020 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v9.0.0 release
 * Thu Nov 19 2020 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v8.0.0 release
 * Fri Sep 18 2020 Andrew Kuck <kuck@arlut.utexas.edu>

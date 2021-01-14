@@ -1,5 +1,5 @@
 %define name gpstk
-%define version 8.0.0
+%define version 9.1.0
 %define release 1
 
 Summary:        GPS Toolkit
@@ -53,6 +53,31 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 14 2021 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v9.1.0 release
+- Update various source files to add namespace context where it was missing.
+- Update CommonTime/TimeSystem Redesign
+- Update CommonTime to implement changeTimeSystem method.
+- Add BasicTimeSystemConversion class to wrap existing second-precision TimeSystem conversion.
+- Add TimeSystemConversion class to support generalized time system conversion.
+- Update TimeSystem to support conversion to/from QZSS
+- Update buil.sh Allow better error reporting
+- Update EngNav decoding internals to use C++ instead of C storage
+- Update SatMetaDataStore to improve documentation.
+- Update EngNav documentation for clarity.
+- Add to CommandOptionParser the ability to show program usage in a format that can be used in doxygen.
+- Remove latex documentation in favor of doxygen.
+- Update across the library to improve documentation.
+- Add accessors to the ObsID description maps for SWIG.
+- Update CI pipelines to make protected word searches advisory only.
+- Fix conda recipe to specify correct default branch for GPSTk.
+* Thu Dec 10 2020 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v9.0.0 release
+- Update File_Hunter related files were deprecated and moved to tks_legacy_archive repo
+- Update readme.
+- Modify IonoModel to accommodate Klo params in different units.
+- Update the CI pipeline to reflect that the new default branch name.
+- Add CI stage to check files and history for sensitive words.
 * Thu Nov 19 2020 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v8.0.0 release
 - Update IonoModel to include all modernized GPS bands.

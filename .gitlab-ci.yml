@@ -24,7 +24,6 @@ variables:
   #  GIT_CLEAN_FLAGS: none
   # This can be set to True by Gitlab UI to only build/test packages.
   RELEASE_ONLY: "False"
-  REPO_HOST: "repositories.arlut.utexas.edu"
 
 # Template for all normal jobs.
 .normal_job:
@@ -36,7 +35,7 @@ variables:
 .big_build:
   only:
     refs:
-      - master
+      - main
       - /^ci_.*$/
       - /^version_.*_prep$/
     variables:
@@ -46,7 +45,7 @@ variables:
 .package_build:
   only:
     refs:
-      - master
+      - main
       - /^ci_.*$/
       - /^version_.*_prep$/
       - tags
@@ -85,6 +84,46 @@ sgllint_lint:
     - python repo_utils/sgl_lint.py -v -R swig/apps
     - python repo_utils/sgl_lint.py -v -R swig/gpstk
   dependencies: []
+
+protected_term_lint:
+  stage: check
+  needs: []
+  extends: .normal_job
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/deb9_conda_py36:latest
+  script:
+    - '######'
+    - '# This job checks all files for protected terms in files modified since the branch split from default.'
+    - '######'
+    - conda activate py36
+    - git clone --depth 1 https://${CI_USER}:${CI_TOKEN}@${REPO_HOST}/sgl/repo_utils.git
+    # We pull the default branch because the CI doesn't normally have any branches other than the one being tested.
+    - git fetch origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
+    - bash repo_utils/dw_search/modified_file_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
+  dependencies: []
+  # This has the occasional false-positive, so it's advisory only.
+  allow_failure: true
+
+protected_history_lint:
+  stage: check
+  needs: []
+  extends: .normal_job
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/deb9_conda_py36:latest
+  script:
+    - '######'
+    - '# This job checks all files modified on this branch for sensitive terms.'
+    - '######'
+    - conda activate py36
+    - git clone --depth 1 https://${CI_USER}:${CI_TOKEN}@${REPO_HOST}/sgl/repo_utils.git
+    # We pull the default branch because the CI doesn't normally have any branches other than the one being tested.
+    - git fetch origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
+    - bash repo_utils/dw_search/history_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
+  dependencies: []
+  # This has the occasional false-positive, so it's advisory only.
+  allow_failure: true
 
 # Runs the documentation generation
 generate_documentation:

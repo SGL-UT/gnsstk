@@ -50,8 +50,8 @@
 
 namespace gpstk
 {
-   /// @ingroup SEM 
-   //@{
+      /// @ingroup FileHandling
+      //@{
 
       /**
        * This class performs file i/o on a SEM file for the 
@@ -100,7 +100,7 @@ namespace gpstk
 
    }; // class SEMStream
    
-   //@}
+      //@}
    
 } // namespace gpstk
 

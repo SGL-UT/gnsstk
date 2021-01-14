@@ -56,7 +56,7 @@ namespace gpstk {
                     const ReferenceFrame& from, const ReferenceFrame& to,
                     const double& Rx, const double& Ry, const double& Rz,
                     const double& Tx, const double& Ty, const double& Tz,
-                    const double& Sc, const string& Desc, CommonTime epoch)
+                    const double& Sc, const std::string& Desc, CommonTime epoch)
    {
       // copy input
       // NB input is in degrees, members in radians

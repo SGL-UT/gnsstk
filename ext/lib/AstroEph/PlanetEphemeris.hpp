@@ -60,7 +60,7 @@ namespace gpstk
 {
       /** This class Handle planet ephemeris from JPL.
        *
-       * @WARNING It's just a copy class of SolarSystem.
+       * @warning It's just a copy class of SolarSystem.
        */
    class PlanetEphemeris
    {
@@ -191,7 +191,7 @@ namespace gpstk
          ///                  psi dot, eps dot in units radians and radians/day.
          ///                  If target == Librations, PV contains 3 euler angles in radians
          ///                  and their rates in radians/day.
-         /// @param km     boolean: if true (default), units are km, km/day; else AU, AU/day
+         /// @param kilometers if true (default), units are km, km/day; else AU, AU/day
          ///                  (but not Nutations or Librations - see above).
          /// @return 0 success, or (same as seekToJD())
          ///        -1 given time is before the first record in the file,

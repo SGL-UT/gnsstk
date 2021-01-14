@@ -268,7 +268,7 @@ namespace gpstk
           * @param variableList   Variable list name.
           * @param section        Section the variable list belongs to.
           * @throw ConfigurationException
-          * \warning This method will MODIFY the original content of
+          * @warning This method will MODIFY the original content of
           * 'variableList'.
           */
       virtual std::string fetchListValue( std::string variableList,
@@ -285,7 +285,7 @@ namespace gpstk
           * @param variableList   Variable list name.
           * @param section        Section the variable list belongs to.
           * @throw ConfigurationException
-          * \warning This method will MODIFY the original content of
+          * @warning This method will MODIFY the original content of
           * 'variableList'.
           */
       virtual double fetchListValueAsDouble( std::string variableList,
@@ -306,7 +306,7 @@ namespace gpstk
           * @param variableList   Variable list name.
           * @param section        Section the variable list belongs to.
           * @throw ConfigurationException
-          * \warning This method will MODIFY the original content of
+          * @warning This method will MODIFY the original content of
           * 'variableList'.
           */
       virtual int fetchListValueAsInt( std::string variableList,
@@ -327,10 +327,10 @@ namespace gpstk
           * @param variableList   Variable list name.
           * @param section        Section the variable list belongs to.
           * @throw ConfigurationException
-          * \warning This method will MODIFY the original content of
+          * @warning This method will MODIFY the original content of
           * 'variableList'.
           *
-          * \warning If variable list is empty, it will return FALSE.
+          * @warning If variable list is empty, it will return FALSE.
           */
       virtual bool fetchListValueAsBoolean( std::string variableList,
                                             std::string section = "DEFAULT",

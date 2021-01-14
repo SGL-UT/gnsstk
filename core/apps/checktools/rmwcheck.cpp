@@ -36,6 +36,60 @@
 //
 //==============================================================================
 
+/** \page apps
+ * - \subpage rmwcheck - Determine if a file is valid RINEX MET
+ * \page rmwcheck
+ * \tableofcontents
+ *
+ * \section rmwcheck_name NAME
+ * rmwcheck - Determine if a file is valid RINEX MET
+ *
+ * \section rmwcheck_synopsis SYNOPSIS
+ * \b rmwcheck [\argarg{OPTION}] ... [\argarg{FILE}] ...
+ *
+ * \section rmwcheck_description DESCRIPTION
+ * Attempt to read files as RINEX MET data, to determine if they are
+ * correctly formatted.
+ *
+ * \dictionary
+ * \dicterm{-d, \--debug}
+ * \dicdef{Increase debug level}
+ * \dicterm{-v, \--verbose}
+ * \dicdef{Increase verbosity}
+ * \dicterm{-h, \--help}
+ * \dicdef{Print help usage}
+ * \dicterm{-1, \--quit-on-first-error}
+ * \dicdef{Quit on the first error encountered (default = no).}
+ * \dicterm{-t, \--time=\argarg{TIME}}
+ * \dicdef{Start of time range to compare (default = "beginning of time")}
+ * \dicterm{-e, \--end-time=\argarg{TIME}}
+ * \dicdef{End of time range to compare (default = "end of time")}
+ * \enddictionary
+ *
+ * Time may be specified in one of three formats:
+ * - month/day/year
+ * - year day-of-year
+ * - year day-of-year seconds-of-day
+ *
+ * \section rmwcheck_examples EXAMPLES
+ *
+ * \cmdex{rmwcheck data/arlm200a.15m data/arlm200z.15m}
+ *
+ * Will process the two files and return 0 on success.
+ *
+ * \todo Add an example or two using the time options.
+ *
+ * \section rmwcheck_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred\, input files are valid}
+ * \dictentry{1,A C++ exception occurred\, or one or more files were invalid}
+ * \enddictable
+ *
+ * \section rmwcheck_see_also SEE ALSO
+ * \ref rnwcheck, \ref rowcheck
+ */
+
 #include "CheckFrame.hpp"
 
 #include "RinexMetStream.hpp"

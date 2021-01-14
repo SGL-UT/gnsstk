@@ -49,8 +49,8 @@
 
 namespace gpstk
 {
-   /** @addtogroup math */
-   //@{
+      /// @ingroup MathGroup */
+      //@{
  
    /// Cubic spline interpolation.
    template <class T> class CubicSpline
@@ -306,7 +306,7 @@ namespace gpstk
 
    }; // end class CubicSpline
 
-   //@}
+      //@}
 
 }  // namespace
 

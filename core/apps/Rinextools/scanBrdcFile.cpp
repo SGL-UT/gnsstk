@@ -36,7 +36,7 @@
 //
 //==============================================================================
 
-/// @file scnBrdcFile.cpp
+/// @file scanBrdcFile.cpp
 /// Scan an IGS-generated brdc file in Rinex Nav format, fix various flaws, 
 /// and write the results to a new RINEX nav file.  Optionally provide
 /// a summary of what was fixed and the final state of the navigation

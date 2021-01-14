@@ -116,11 +116,11 @@ namespace gpstk
       /// after calling include...Satellites(), when the store is loaded using
       /// addANTEXfile(), a time tag should be passed as input; this will load only
       /// the satellites valid at that time tag - most likely exactly one per sys/PRN.
-      /// @param        char sys  System character for the satellite: G,R,E or M
-      /// @param           int n  PRN (or SVN) of the satellite
-      /// @param    string& name  Output antenna (ANTEX) name for the given satellite
-      /// @param AntexData& data  Output antenna data for the given satellite
-      /// @param   bool inputPRN  If false, parameter n is SVN not PRN (default true).
+      /// @param sys  System character for the satellite: G,R,E or M
+      /// @param n  PRN (or SVN) of the satellite
+      /// @param name  Output antenna (ANTEX) name for the given satellite
+      /// @param data  Output antenna data for the given satellite
+      /// @param inputPRN  If false, parameter n is SVN not PRN (default true).
       /// @return true if successful, false if satellite was not found in the store
       bool getSatelliteAntenna(const char sys, const int n,
                                std::string& name, AntexData& data,
@@ -179,9 +179,9 @@ namespace gpstk
       /// after calling include...Satellites(), when the store is loaded using
       /// addANTEXfile(), a time tag should be passed as input; this will load only
       /// the satellites valid at that time tag - most likely exactly one per sys/PRN.
-      /// @param        char sys  System character for the satellite: G,R,E or M
-      /// @param           int n  PRN (or SVN) of the satellite
-      /// @param   bool inputPRN  If false, parameter n is SVN not PRN (default true).
+      /// @param sys  System character for the satellite: G,R,E or M
+      /// @param n  PRN (or SVN) of the satellite
+      /// @param inputPRN  If false, parameter n is SVN not PRN (default true).
       /// @return vector (m) from COM to PC
       /// @throw InvalidRequest if no data available
       Triple ComToPcVector(const char sys, 

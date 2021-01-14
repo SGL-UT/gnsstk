@@ -74,7 +74,7 @@ const string GDCconfiguration::GDCVersion = string("6.3 12/15/2015");
 //------------------------------------------------------------------------------------
 // Set a parameter in the configuration; the input string 'cmd' is of the form
 // '[--DC]<id><s><value>' : separator s is one of ':=,' and leading --DC is optional.
-void GDCconfiguration::setParameter(string cmd)
+void GDCconfiguration::setParameter(std::string cmd)
 {
 try {
    if(cmd.empty()) return;
@@ -105,7 +105,7 @@ catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
 //------------------------------------------------------------------------------------
 // Set a parameter in the configuration using the label and the value,
 // for booleans use (T,F)=(non-zero,zero).
-void GDCconfiguration::setParameter(string label, double value)
+void GDCconfiguration::setParameter(std::string label, double value)
 {
 try {
    if(CFG.find(label) == CFG.end())
@@ -481,7 +481,7 @@ public:
 private:
 
    /// define this function so that invalid labels will throw, because
-   /// this fails silently #define cfg(a) CFG[#a]     // stringize
+   /// this fails silently \#define cfg(a) CFG[\#a]     // stringize
    /// @throw Exception
    double cfg_func(string a)
    {
@@ -589,8 +589,8 @@ const unsigned short GDCPass::FIX      =  24;  // = WLFIX | GFFIX
 // yes you need the gpstk::
 int gpstk::DiscontinuityCorrector(SatPass& svp,
                                   GDCconfiguration& gdc,
-                                  vector<string>& editCmds,
-                                  string& retMessage,
+                                  std::vector<std::string>& editCmds,
+                                  std::string& retMessage,
                                   int GLOn_in)
 {
 try {

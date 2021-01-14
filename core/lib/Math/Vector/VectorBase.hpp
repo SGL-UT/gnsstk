@@ -51,12 +51,13 @@
 
 namespace gpstk
 {
-      /// @ingroup MathGroup
-      //@{
  
       /// An exception thrown when there's a problem with a vector
       /// @ingroup exceptiongroup
    NEW_EXCEPTION_CLASS(VectorException, gpstk::Exception);
+
+      /// @ingroup MathGroup
+      //@{
 
       /*
        * There were two overriding philosophies to the vector and

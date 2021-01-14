@@ -36,6 +36,9 @@
 //
 //==============================================================================
 
+#ifndef GPSTK_WINDOWFILTER_HPP
+#define GPSTK_WINDOWFILTER_HPP
+
 /// @file WindowFilter.hpp
 
 ///    This class implements a statistical filter that uses 'windowed' averages. There
@@ -94,6 +97,8 @@
 
 #include "StatsFilterHit.hpp"
 
+namespace gpstk
+{
 /// A special subset of class FilterHit used for "almost slips" in WindowFilter
 template <class T> class FilterNearMiss
 {
@@ -282,17 +287,17 @@ public:
       T sigma;             ///< combined standard deviation: RSS(stddev(f),stddev(p))
       // past stats
       unsigned int pN;     ///< number of points in the past buffer
-      T pave;              ///< average of <width> points in past
-      T psig;              ///< standard deviation of <width> points in past
+      T pave;              ///< average of \a width points in past
+      T psig;              ///< standard deviation of \a width points in past
       // future stats
       unsigned int fN;     ///< number of points in the future buffer
-      T fave;              ///< average of <width> points in future
-      T fsig;              ///< standard deviation of <width> points in future
+      T fave;              ///< average of \a width points in future
+      T fsig;              ///< standard deviation of \a width points in future
       //T pslope;          ///< (twoSample only) slope (ave p,f) in units data/xdata
       //T fslope;          ///< (twoSample only) slope (ave p,f) in units data/xdata
       // results of analysis
       /// net result of analysis: -1,-2,-3,-4 (failure) or a percentage
-      /// -1 near end; -2 small step; -3 small ratio; -4 marginal step&ratio;
+      /// -1 near end; -2 small step; -3 small ratio; -4 marginal step & ratio;
       int score;
       std::string msg;     ///< readable description of what analysis found
 
@@ -1178,3 +1183,6 @@ void WindowFilter<T>::getStats(FilterHit<T>& sg, bool skip)
 
 // end template <class T> class WindowFilter
 
+}
+
+#endif // GPSTK_WINDOWFILTER_HPP

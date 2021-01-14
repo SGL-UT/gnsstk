@@ -78,7 +78,7 @@ namespace gpstk
        
          /**
           * Store the contents of message type 35 in this object.
-          * @param message30 - 300 bits of Message Type 35
+          * @param message35 300 bits of Message Type 35
           * @throw InvalidParameter if message data is invalid
           */
       void loadData(const PackedNavBits& message35);

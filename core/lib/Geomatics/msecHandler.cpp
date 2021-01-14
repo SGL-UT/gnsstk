@@ -36,7 +36,7 @@
 //
 //==============================================================================
 
-/// @file millisecHandler.cpp  Detect and fix millisecond clock adjusts in data,
+/// @file msecHandler.cpp  Detect and fix millisecond clock adjusts in data,
 ///   including pseudoranges, phases and time tags.
 
 #include <vector>

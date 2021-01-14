@@ -55,9 +55,12 @@ namespace gpstk
       /// @ingroup FileHandling
       //@{
 
+      /// Provide a base class for RinexClockData and RinexClockHeader.
    class RinexClockBase : public FFData
    {
    public:  
+         /** Class used to read and write the formatted data in a
+          * RINEX clock file. */
       class RCDouble : public FormattedDouble
       {
       public:

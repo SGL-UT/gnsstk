@@ -51,8 +51,8 @@
 
 namespace gpstk
 {
-   /// @ingroup Antex 
-   //@{
+      /// @ingroup FileHandling
+      //@{
 
       /// This class reads an Antex files.
       ///
@@ -87,7 +87,7 @@ namespace gpstk
       AntexHeader header;
    };
 
-   //@}
+      //@}
 
 } // namespace
 

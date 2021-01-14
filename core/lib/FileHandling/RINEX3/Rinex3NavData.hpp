@@ -180,8 +180,8 @@ namespace gpstk
          //@{
       RNDouble  TauN;      ///< SV clock bias (sec)
       RNDouble  GammaN;    ///< SV relative frequency bias
-      double  MFTraw;      ///< Message frame time (sec of UTC week) <double>
-      long    MFtime;      ///< Message frame time (sec of UTC week) <long>
+      double  MFTraw;      ///< Message frame time (sec of UTC week) as double
+      long    MFtime;      ///< Message frame time (sec of UTC week) as long
       short   freqNum;     ///< Frequency number (-7..+12)
       RNDouble  ageOfInfo; ///< Age of oper. information (days)
          //@}
@@ -254,9 +254,9 @@ namespace gpstk
 
 
          /**  Read and parse the nth record after the epoch record
-          *   @param int n record number (1-7), for nth record after
+          *   @param n record number (1-7), for nth record after
           *     the epoch line
-          *   @param Rinex3NavStream strm stream to read from
+          *   @param strm stream to read from
           * @throw StringUtils::StringException
           * @throw FFStreamError
           */
@@ -270,9 +270,10 @@ namespace gpstk
 
 
          /** Construct and write the nth record after the epoch record
-          *  @param int n                 Record number (1-7), for nth record
-          *                               after the epoch line.
-          *  @param Rinex3NavStream strm  Stream to read from.
+
+          * @param[in] n Record number (1-7), for nth record after
+          *   the epoch line.
+          * @param[out] strm  Stream to write to.
           * @throw StringUtils::StringException
           * @throw FFStreamError
           */

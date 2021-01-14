@@ -127,8 +127,8 @@ namespace gpstk
 
          /** Change the file system, keeping fileType, fileSys, and fileSysSat
           * consistent.
-          * @param[in] string str beginning with system character or
-          *   "M" for mixed
+          * @param[in] str beginning with system character or "M" for
+          *   mixed
           * @throw Exception */
       void setFileSystem(const std::string& str);
 
