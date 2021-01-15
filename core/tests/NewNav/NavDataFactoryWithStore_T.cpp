@@ -1456,6 +1456,9 @@ addData(gpstk::TestUtil& testFramework, TestClass& fact,
       dynamic_cast<gpstk::OrbitDataKepler*>(navOut.get())->health = hea;
       toe.sow -= fmod(toe.sow,7200);
       dynamic_cast<gpstk::OrbitDataKepler*>(navOut.get())->Toe = toe;
+      dynamic_cast<gpstk::OrbitDataKepler*>(navOut.get())->Toc = toe;
+      dynamic_cast<gpstk::OrbitDataKepler*>(navOut.get())->xmitTime = ct-3600;
+      dynamic_cast<gpstk::GPSLNavEph*>(navOut.get())->fixFit();
    }
    else if (nmt == gpstk::NavMessageType::Almanac)
    {
@@ -1463,6 +1466,8 @@ addData(gpstk::TestUtil& testFramework, TestClass& fact,
       dynamic_cast<gpstk::OrbitDataKepler*>(navOut.get())->health = hea;
       toe.sow = toe.sow - fmod(toe.sow,86400) + (xmitSat == 3 ? 61000 : 61056);
       dynamic_cast<gpstk::OrbitDataKepler*>(navOut.get())->Toe = toe;
+      dynamic_cast<gpstk::OrbitDataKepler*>(navOut.get())->xmitTime = ct;
+      dynamic_cast<gpstk::GPSLNavAlm*>(navOut.get())->fixFit();
    }
    else if (nmt == gpstk::NavMessageType::Health)
    {

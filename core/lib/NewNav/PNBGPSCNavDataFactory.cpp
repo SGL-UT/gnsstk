@@ -739,6 +739,9 @@ namespace gpstk
       eph->uraED = ephSF[esiURA]->asLong(esbURA,enbURA,escURA);
       eph->alert11 = ephSF[ephM11]->asBool(esbAlert);
       eph->alertClk = ephSF[ephMClk]->asBool(esbAlert);
+         /** @bug This needs to be fixed.  top exists in message type
+          * 10 without any corresponding wnop.  top and wnop appear
+          * together only in message type 30. */
       double top = ephSF[esitop]->asUnsignedLong(esbtop,enbtop,esctop);
       eph->top = GPSWeekSecond(wn,top);
       eph->xmit11 = ephSF[ephM11]->getTransmitTime();

@@ -82,6 +82,7 @@ namespace gpstk
           * @param[in,out] s The stream to write the data to. */
       void dumpSVStatus(std::ostream& s) const override;
 
+      uint8_t itow;       ///< Interval time of week.
          /// @note The health flags are true if unhealthy.
       bool healthL1C;     ///< L1C signal health.
       int8_t uraED;       ///< 5-bit URA index from message type 10.

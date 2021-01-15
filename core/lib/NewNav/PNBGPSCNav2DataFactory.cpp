@@ -57,8 +57,11 @@ using namespace std;
  */
 enum CNav2BitInfo
 {
+   nnbComplete = 883,     ///< Number of bits in a complete subframe 1/2/3 msg.
+   nnbSF1 = 9,            ///< Number of bits in subframe 1 message.
    nnbSF2 = 600,          ///< Number of bits in subframe 2 message.
    nnbSF3 = 274,          ///< Number of bits in subframe 3 message.
+   nnbCRC = 24,           ///< Number of bits in the CRC at the end of SF2/3.
 
    npgUTC = 1,            ///< UTC & Iono page number for subframe 3.
    npgGGTO = 2,           ///< GPS-GNSS time offset page number for subframe 3.
@@ -340,7 +343,6 @@ namespace gpstk
       }
       bool rv = true;
       bool isQZSS = navIn->getsatSys().system == SatelliteSystem::QZSS;
-      unsigned long pageNum = 0;
       try
       {
          switch (navIn->getNumBits())
@@ -349,25 +351,14 @@ namespace gpstk
                rv = processEph(navIn, navOut);
                break;
             case nnbSF3:
-               pageNum = navIn->asUnsignedLong(asbPage,anbPage,ascPage);
-               switch (pageNum)
-               {
-                  case npgUTC:
-                     rv = processUTCIono(navIn, navOut);
-                     break;
-                  case npgGGTO:
-                     rv = processGGTOEOP(navIn, navOut);
-                     break;
-                  case npgMAlm:
-                     rv = processAlmOrb(navIn, navOut);
-                     break;
-                  default:
-                        // Just ignore everything else.
-                     return true;
-               }
+               rv = processSF3(navIn, navOut);
+               break;
+            case nnbComplete:
+               rv = processEph(navIn, navOut, nnbSF1) &&
+                  processSF3(navIn, navOut, nnbSF1+nnbSF2+nnbCRC);
                break;
             default:
-               return false;
+               return true;
          }
       }
       catch (gpstk::Exception& exc)
@@ -390,7 +381,8 @@ namespace gpstk
 
 
    bool PNBGPSCNav2DataFactory ::
-   processEph(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   processEph(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
+              unsigned offset)
    {
       unsigned prn = navIn->getsatSys().id;
       if (processHea)
@@ -405,7 +397,7 @@ namespace gpstk
                            NavType::GPSCNAV2),
             NavMessageType::Health);
          dynamic_cast<GPSCNav2Health*>(p1.get())->health =
-            navIn->asBool(esbHeaL1C);
+            navIn->asBool(offset+esbHeaL1C);
          dynamic_cast<GPSCNav2Health*>(p1.get())->isEph = true;
          // cerr << "add CNAV2 eph health" << endl;
          navOut.push_back(p1);
@@ -428,52 +420,55 @@ namespace gpstk
       eph->xmitTime = eph->timeStamp;
          /** @todo apply 13-bit week rollover adjustment, not 10-bit.
           * Must be completed by January, 2137 :-) */
-      long wn = navIn->asUnsignedLong(esbWN,enbWN,escWN);
-      double toe = navIn->asUnsignedLong(esbtoe,enbtoe,esctoe);
-/// @todo figure out what to do with itow
-//      unsigned long itow = navIn->asUnsignedLong(esbITOW,enbITOW,escITOW);
+      long wn = navIn->asUnsignedLong(offset+esbWN,enbWN,escWN);
+      double toe = navIn->asUnsignedLong(offset+esbtoe,enbtoe,esctoe);
+      eph->itow = navIn->asUnsignedLong(offset+esbITOW,enbITOW,escITOW);
       eph->Toe = eph->Toc = GPSWeekSecond(wn,toe);
          // health is set below
-      eph->Cuc = navIn->asSignedDouble(esbCuc,enbCuc,escCuc);
-      eph->Cus = navIn->asSignedDouble(esbCus,enbCus,escCus);
-      eph->Crc = navIn->asSignedDouble(esbCrc,enbCrc,escCrc);
-      eph->Crs = navIn->asSignedDouble(esbCrs,enbCrs,escCrs);
-      eph->Cic = navIn->asSignedDouble(esbCic,enbCic,escCic);
-      eph->Cis = navIn->asSignedDouble(esbCis,enbCis,escCis);
-      eph->M0  = navIn->asDoubleSemiCircles(esbM0,enbM0,escM0);
-      eph->dn  = navIn->asDoubleSemiCircles(esbdn0,enbdn0,escdn0);
-      eph->dndot = navIn->asDoubleSemiCircles(esbdn0dot,enbdn0dot,escdn0dot);
-      eph->ecc = navIn->asUnsignedDouble(esbEcc,enbEcc,escEcc);
-      eph->deltaA = navIn->asSignedDouble(esbdA,enbdA,escdA);
+      eph->Cuc = navIn->asSignedDouble(offset+esbCuc,enbCuc,escCuc);
+      eph->Cus = navIn->asSignedDouble(offset+esbCus,enbCus,escCus);
+      eph->Crc = navIn->asSignedDouble(offset+esbCrc,enbCrc,escCrc);
+      eph->Crs = navIn->asSignedDouble(offset+esbCrs,enbCrs,escCrs);
+      eph->Cic = navIn->asSignedDouble(offset+esbCic,enbCic,escCic);
+      eph->Cis = navIn->asSignedDouble(offset+esbCis,enbCis,escCis);
+      eph->M0  = navIn->asDoubleSemiCircles(offset+esbM0,enbM0,escM0);
+      eph->dn  = navIn->asDoubleSemiCircles(offset+esbdn0,enbdn0,escdn0);
+      eph->dndot = navIn->asDoubleSemiCircles(offset+esbdn0dot,enbdn0dot,
+                                              escdn0dot);
+      eph->ecc = navIn->asUnsignedDouble(offset+esbEcc,enbEcc,escEcc);
+      eph->deltaA = navIn->asSignedDouble(offset+esbdA,enbdA,escdA);
          /// @todo does this need changing for QZSS?
       eph->A = eph->deltaA + GPSCNav2Eph::refAGPS;
       eph->Ahalf = ::sqrt(eph->A);
-      eph->Adot = navIn->asSignedDouble(esbAdot,enbAdot,escAdot);
-      eph->OMEGA0 = navIn->asDoubleSemiCircles(esbOMEGA0,enbOMEGA0,escOMEGA0);
-      eph->i0 = navIn->asDoubleSemiCircles(esbi0,enbi0,esci0);
-      eph->w = navIn->asDoubleSemiCircles(esbw,enbw,escw);
+      eph->Adot = navIn->asSignedDouble(offset+esbAdot,enbAdot,escAdot);
+      eph->OMEGA0 = navIn->asDoubleSemiCircles(offset+esbOMEGA0,enbOMEGA0,
+                                               escOMEGA0);
+      eph->i0 = navIn->asDoubleSemiCircles(offset+esbi0,enbi0,esci0);
+      eph->w = navIn->asDoubleSemiCircles(offset+esbw,enbw,escw);
       eph->dOMEGAdot = navIn->asDoubleSemiCircles(
-         esbdOMEGAdot,enbdOMEGAdot,escdOMEGAdot);
+         offset+esbdOMEGAdot,enbdOMEGAdot,escdOMEGAdot);
          /// @todo does this need changing for QZSS?
       eph->OMEGAdot = eph->dOMEGAdot + GPSCNav2Eph::refOMEGAdotGPS;
-      eph->idot = navIn->asDoubleSemiCircles(esbidot,enbidot,escidot);
-      eph->af0 = navIn->asSignedDouble(esbaf0,enbaf0,escaf0);
-      eph->af1 = navIn->asSignedDouble(esbaf1,enbaf1,escaf1);
-      eph->af2 = navIn->asSignedDouble(esbaf2,enbaf2,escaf2);
+      eph->idot = navIn->asDoubleSemiCircles(offset+esbidot,enbidot,escidot);
+      eph->af0 = navIn->asSignedDouble(offset+esbaf0,enbaf0,escaf0);
+      eph->af1 = navIn->asSignedDouble(offset+esbaf1,enbaf1,escaf1);
+      eph->af2 = navIn->asSignedDouble(offset+esbaf2,enbaf2,escaf2);
          // GPSCNav2Eph
-      eph->healthL1C = navIn->asBool(esbHeaL1C);
+      eph->healthL1C = navIn->asBool(offset+esbHeaL1C);
       eph->health = eph->healthL1C ? SVHealth::Unhealthy : SVHealth::Healthy;
-      eph->uraED = navIn->asLong(esbURA,enbURA,escURA);
-      unsigned wnop = navIn->asUnsignedLong(esbWNop,enbWNop,escWNop);
-      double top = navIn->asUnsignedLong(esbtop,enbtop,esctop);
+      eph->uraED = navIn->asLong(offset+esbURA,enbURA,escURA);
+      unsigned wnop = navIn->asUnsignedLong(offset+esbWNop,enbWNop,escWNop);
+      double top = navIn->asUnsignedLong(offset+esbtop,enbtop,esctop);
       wnop = timeAdjust8BitWeekRollover(wnop, wn);
       eph->top = GPSWeekSecond(wnop,top);
-      eph->uraNED0= navIn->asLong(esbURAned0,enbURAned0,escURAned0);
-      eph->uraNED1= navIn->asUnsignedLong(esbURAned1,enbURAned1,escURAned1);
-      eph->uraNED2= navIn->asUnsignedLong(esbURAned2,enbURAned2,escURAned2);
+      eph->uraNED0= navIn->asLong(offset+esbURAned0,enbURAned0,escURAned0);
+      eph->uraNED1= navIn->asUnsignedLong(offset+esbURAned1,enbURAned1,
+                                          escURAned1);
+      eph->uraNED2= navIn->asUnsignedLong(offset+esbURAned2,enbURAned2,
+                                          escURAned2);
          // We have to decode tgd twice unfortunately because a
          // special bit pattern is used to indicate tgd is invalid.
-      unsigned long tgdBits = navIn->asUnsignedLong(esbTGD,enbTGD,1);
+      unsigned long tgdBits = navIn->asUnsignedLong(offset+esbTGD,enbTGD,1);
       if (tgdBits == 0x1000)
       {
             // set to NaN because tgd is not available
@@ -481,11 +476,13 @@ namespace gpstk
       }
       else
       {
-         eph->tgd = navIn->asSignedDouble(esbTGD,enbTGD,escTGD);
+         eph->tgd = navIn->asSignedDouble(offset+esbTGD,enbTGD,escTGD);
       }
-      eph->iscL1CP = navIn->asSignedDouble(esbISCL1CP,enbISCL1CP,escISCL1CP);
-      eph->iscL1CD = navIn->asSignedDouble(esbISCL1CD,enbISCL1CD,escISCL1CD);
-      eph->integStat = navIn->asBool(esbISF);
+      eph->iscL1CP = navIn->asSignedDouble(offset+esbISCL1CP,enbISCL1CP,
+                                           escISCL1CP);
+      eph->iscL1CD = navIn->asSignedDouble(offset+esbISCL1CD,enbISCL1CD,
+                                           escISCL1CD);
+      eph->integStat = navIn->asBool(offset+esbISF);
       eph->fixFit();
       // cerr << "add CNAV2 eph" << endl;
       navOut.push_back(p0);
@@ -494,9 +491,35 @@ namespace gpstk
 
 
    bool PNBGPSCNav2DataFactory ::
-   processAlmOrb(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   processSF3(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
+              unsigned offset)
    {
-      unsigned long sprn = navIn->asUnsignedLong(asbPRNa,anbPRNa,ascPRNa);
+      unsigned long pageNum = navIn->asUnsignedLong(offset+asbPage,anbPage,
+                                                    ascPage);
+      switch (pageNum)
+      {
+         case npgUTC:
+            return processUTCIono(navIn, navOut, offset);
+            break;
+         case npgGGTO:
+            return processGGTOEOP(navIn, navOut, offset);
+            break;
+         case npgMAlm:
+            return processAlmOrb(navIn, navOut, offset);
+            break;
+         default:
+               // Just ignore everything else.
+            return true;
+      }
+   }
+
+
+   bool PNBGPSCNav2DataFactory ::
+   processAlmOrb(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
+                 unsigned offset)
+   {
+      unsigned long sprn = navIn->asUnsignedLong(offset+asbPRNa,anbPRNa,
+                                                 ascPRNa);
       SatID xmitSat(navIn->getsatSys());
       SatelliteSystem subjSys = xmitSat.system;
          /// @todo QZSS handling
@@ -534,11 +557,11 @@ namespace gpstk
                            NavID(NavType::GPSCNAVL5)),
             NavMessageType::Health);
          dynamic_cast<GPSCNav2Health*>(p1L1.get())->health =
-            navIn->asBool(asbHeaL1);
+            navIn->asBool(offset+asbHeaL1);
          dynamic_cast<GPSCNav2Health*>(p1L2.get())->health =
-            navIn->asBool(asbHeaL2);
+            navIn->asBool(offset+asbHeaL2);
          dynamic_cast<GPSCNav2Health*>(p1L5.get())->health =
-            navIn->asBool(asbHeaL5);
+            navIn->asBool(offset+asbHeaL5);
          dynamic_cast<GPSCNav2Health*>(p1L1.get())->isEph = false;
          dynamic_cast<GPSCNav2Health*>(p1L2.get())->isEph = false;
          dynamic_cast<GPSCNav2Health*>(p1L5.get())->isEph = false;
@@ -567,27 +590,28 @@ namespace gpstk
       alm->xmitTime = alm->timeStamp;
          /** @todo apply 13-bit week rollover adjustment, not 10-bit.
           * Must be completed by January, 2137 :-) */
-      alm->wna = navIn->asUnsignedLong(asbWNa,anbWNa,ascWNa);
-      alm->toa = navIn->asUnsignedDouble(asbtoa,anbtoa,asctoa);
+      alm->wna = navIn->asUnsignedLong(offset+asbWNa,anbWNa,ascWNa);
+      alm->toa = navIn->asUnsignedDouble(offset+asbtoa,anbtoa,asctoa);
       alm->Toc = alm->Toe = GPSWeekSecond(alm->wna,alm->toa);
-      alm->M0 = navIn->asDoubleSemiCircles(asbM0,anbM0,ascM0);
-      alm->ecc = navIn->asUnsignedDouble(asbEcc,anbEcc,ascEcc);
-      alm->Ahalf = navIn->asUnsignedDouble(asbAhalf,anbAhalf,ascAhalf);
+      alm->M0 = navIn->asDoubleSemiCircles(offset+asbM0,anbM0,ascM0);
+      alm->ecc = navIn->asUnsignedDouble(offset+asbEcc,anbEcc,ascEcc);
+      alm->Ahalf = navIn->asUnsignedDouble(offset+asbAhalf,anbAhalf,ascAhalf);
       alm->A = alm->Ahalf * alm->Ahalf;
-      alm->OMEGA0 = navIn->asDoubleSemiCircles(asbOMEGA0,anbOMEGA0,ascOMEGA0);
+      alm->OMEGA0 = navIn->asDoubleSemiCircles(offset+asbOMEGA0,anbOMEGA0,
+                                               ascOMEGA0);
          // i0 is set below
-      alm->w = navIn->asDoubleSemiCircles(asbw,anbw,ascw);
-      alm->OMEGAdot = navIn->asDoubleSemiCircles(asbOMEGAdot,anbOMEGAdot,
+      alm->w = navIn->asDoubleSemiCircles(offset+asbw,anbw,ascw);
+      alm->OMEGAdot = navIn->asDoubleSemiCircles(offset+asbOMEGAdot,anbOMEGAdot,
                                                  ascOMEGAdot);
-      alm->af0 = navIn->asSignedDouble(asbaf0,anbaf0,ascaf0);
-      alm->af1 = navIn->asSignedDouble(asbaf1,anbaf1,ascaf1);
+      alm->af0 = navIn->asSignedDouble(offset+asbaf0,anbaf0,ascaf0);
+      alm->af1 = navIn->asSignedDouble(offset+asbaf1,anbaf1,ascaf1);
          // GPSCNav2Alm
-      alm->healthL1 = navIn->asBool(asbHeaL1);
-      alm->healthL2 = navIn->asBool(asbHeaL2);
-      alm->healthL5 = navIn->asBool(asbHeaL5);
+      alm->healthL1 = navIn->asBool(offset+asbHeaL1);
+      alm->healthL2 = navIn->asBool(offset+asbHeaL2);
+      alm->healthL5 = navIn->asBool(offset+asbHeaL5);
       alm->health = ((alm->healthL1 == false) ? SVHealth::Healthy :
                      SVHealth::Unhealthy);
-      alm->deltai = navIn->asDoubleSemiCircles(asbdi,anbdi,ascdi);
+      alm->deltai = navIn->asDoubleSemiCircles(offset+asbdi,anbdi,ascdi);
          /// @todo should this be different for QZSS?
       alm->i0 = GPSCNav2Alm::refioffsetGPS + alm->deltai;
       alm->fixFit();
@@ -598,8 +622,8 @@ namespace gpstk
 
 
    bool PNBGPSCNav2DataFactory ::
-   processUTCIono(const PackedNavBitsPtr& navIn,
-                  NavDataPtrList& navOut)
+   processUTCIono(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
+                  unsigned offset)
    {
       if (!PNBNavDataFactory::processTim)
       {
@@ -615,22 +639,23 @@ namespace gpstk
       GPSCNav2TimeOffset *to =
          dynamic_cast<GPSCNav2TimeOffset*>(p0.get());
       to->tgt = TimeSystem::UTC; // by definition
-      to->a0 = navIn->asSignedDouble(csbA0,cnbA0,cscA0);
-      to->a1 = navIn->asSignedDouble(csbA1,cnbA1,cscA1);
-      to->a2 = navIn->asSignedDouble(csbA2,cnbA2,cscA2);
-      to->deltatLS = navIn->asLong(csbdtLS,cnbdtLS,cscdtLS);
-      to->tot = navIn->asUnsignedDouble(csbtot,cnbtot,csctot);
-      to->wnot = navIn->asUnsignedLong(csbWNot,cnbWNot,cscWNot);
-      to->wnLSF = navIn->asUnsignedLong(csbWNlsf,cnbWNlsf,cscWNlsf);
-      to->dn = navIn->asUnsignedLong(csbDN,cnbDN,cscDN);
-      to->deltatLSF = navIn->asLong(csbdtLSF,cnbdtLSF,cscdtLSF);
+      to->a0 = navIn->asSignedDouble(offset+csbA0,cnbA0,cscA0);
+      to->a1 = navIn->asSignedDouble(offset+csbA1,cnbA1,cscA1);
+      to->a2 = navIn->asSignedDouble(offset+csbA2,cnbA2,cscA2);
+      to->deltatLS = navIn->asLong(offset+csbdtLS,cnbdtLS,cscdtLS);
+      to->tot = navIn->asUnsignedDouble(offset+csbtot,cnbtot,csctot);
+      to->wnot = navIn->asUnsignedLong(offset+csbWNot,cnbWNot,cscWNot);
+      to->wnLSF = navIn->asUnsignedLong(offset+csbWNlsf,cnbWNlsf,cscWNlsf);
+      to->dn = navIn->asUnsignedLong(offset+csbDN,cnbDN,cscDN);
+      to->deltatLSF = navIn->asLong(offset+csbdtLSF,cnbdtLSF,cscdtLSF);
       navOut.push_back(p0);
       return true;
    }
 
 
    bool PNBGPSCNav2DataFactory ::
-   processGGTOEOP(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   processGGTOEOP(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
+                  unsigned offset)
    {
       if (!PNBNavDataFactory::processTim)
       {
@@ -645,7 +670,7 @@ namespace gpstk
          NavMessageType::TimeOffset);
       GPSCNav2TimeOffset *to =
          dynamic_cast<GPSCNav2TimeOffset*>(p0.get());
-      uint8_t gnssID = navIn->asUnsignedLong(gsbGNSS,gnbGNSS,gscGNSS);
+      uint8_t gnssID = navIn->asUnsignedLong(offset+gsbGNSS,gnbGNSS,gscGNSS);
       switch (gnssID)
       {
          case 0:
@@ -667,11 +692,11 @@ namespace gpstk
                // unknown/unsupported
             return false;
       }
-      to->tot = navIn->asUnsignedDouble(gsbt,gnbt,gsct);
-      to->wnot = navIn->asUnsignedLong(gsbWN,gnbWN,gscWN);
-      to->a0 = navIn->asSignedDouble(gsbA0,gnbA0,gscA0);
-      to->a1 = navIn->asSignedDouble(gsbA1,gnbA1,gscA1);
-      to->a2 = navIn->asSignedDouble(gsbA2,gnbA2,gscA2);
+      to->tot = navIn->asUnsignedDouble(offset+gsbt,gnbt,gsct);
+      to->wnot = navIn->asUnsignedLong(offset+gsbWN,gnbWN,gscWN);
+      to->a0 = navIn->asSignedDouble(offset+gsbA0,gnbA0,gscA0);
+      to->a1 = navIn->asSignedDouble(offset+gsbA1,gnbA1,gscA1);
+      to->a2 = navIn->asSignedDouble(offset+gsbA2,gnbA2,gscA2);
       navOut.push_back(p0);
       return true;
    }

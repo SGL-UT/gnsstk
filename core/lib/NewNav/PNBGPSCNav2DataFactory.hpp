@@ -72,31 +72,46 @@ namespace gpstk
          /** Process ephemeris messages.
           * @param[in] navIn The as-broadcast ephemeris message bits.
           * @param[out] navOut This will contain a GPSCNav2Eph object.
+          * @param[in] offset The bit offset for the start of the ephemeris.
           * @return false on error. */
-      bool processEph(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
+      bool processEph(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
+                      unsigned offset = 0);
+
+         /** Process subframe 3, any page.
+          * @param[in] navIn The PackedNavBits data containing the message.
+          * @param[out] navOut The GPSCNav2Alm, GPSCNav2Health and/or
+          *   GPSCNav2TimeOffset objects generated from navIn.
+          * @param[in] offset The bit offset for the start of subframe 3.
+          * @return true if successful (navOut may still be empty). */
+      bool processSF3(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
+                      unsigned offset = 0);
 
          /** Process subframe 3 page 4 (midi almanac).
           * @param[in] navIn The PackedNavBits data containing the message.
           * @param[out] navOut The GPSCNav2Alm and/or GPSCNav2Health
           *   objects generated from navIn.
+          * @param[in] offset The bit offset for the start of the almanac.
           * @return true if successful (navOut may still be empty). */
-      bool processAlmOrb(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
+      bool processAlmOrb(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
+                         unsigned offset = 0);
 
          /** Process subframe 3 page 1 (UTC & IONO).
           * @param[in] navIn The PackedNavBits data containing the message.
-          * @param[out] navOut The GPSCNav2Alm and/or GPSCNav2Health
-          *   objects generated from navIn.
+          * @param[out] navOut The GPSCNav2TimeOffset objects
+          *   generated from navIn.
+          * @param[in] offset The bit offset for the start of the time offset.
           * @return true if successful (navOut may still be empty). */
       bool processUTCIono(const PackedNavBitsPtr& navIn,
-                          NavDataPtrList& navOut);
+                          NavDataPtrList& navOut, unsigned offset = 0);
 
          /** Process subframe 3 page 2 (GGTO & EOP).
           * @param[in] navIn The PackedNavBits data containing the message.
-          * @param[out] navOut The GPSCNav2Alm and/or GPSCNav2Health
-          *   objects generated from navIn.
+          * @param[out] navOut The GPSCNav2TimeOffset objects
+          *   generated from navIn.
+          * @param[in] offset The bit offset for the start of the time offset.
           * @return true if successful (navOut may still be empty). */
       bool processGGTOEOP(const PackedNavBitsPtr& navIn,
-                          NavDataPtrList& navOut);
+                          NavDataPtrList& navOut, unsigned offset = 0);
 
          /// Not necessary for CNAV2, only necessary for C++ compilers.
       void resetState() override

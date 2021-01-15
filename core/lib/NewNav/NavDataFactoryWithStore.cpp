@@ -52,16 +52,35 @@ namespace gpstk
         NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
         NavSearchOrder order)
    {
+      bool rv = false;
       switch (order)
       {
          case NavSearchOrder::User:
-            return findUser(nmid, when, navData, xmitHealth, valid);
+            rv = findUser(nmid, when, navData, xmitHealth, valid);
+            break;
          case NavSearchOrder::Nearest:
-            return findNearest(nmid, when, navData, xmitHealth, valid);
+            rv = findNearest(nmid, when, navData, xmitHealth, valid);
+            break;
          default:
                // requested an invalid search order
             return false;
       }
+      if (rv)
+      {
+            // One last check for fit interval validity, but it only
+            // applies to OrbitDataKepler.
+         OrbitDataKepler *odk = dynamic_cast<OrbitDataKepler*>(navData.get());
+         if (odk != nullptr)
+         {
+            if ((when < odk->beginFit) || (when > odk->endFit))
+            {
+                  // not a valid match, so clear the results.
+               navData.reset();
+               rv = false;
+            }
+         }
+      }
+      return rv;
    }
 
 
@@ -376,7 +395,6 @@ namespace gpstk
              const CommonTime& when, NavDataPtr& offset,
              SVHealth xmitHealth, NavValidityType valid)
    {
-         /// @todo implement "Nearest" search
       // std::cerr << printTime(when,"looking for "+dts) << std::endl;
       bool rv = false;
          // Only search for forward key and let the TimeOffset classes
