@@ -98,8 +98,8 @@ constructorTest()
       // test default constructor first
    gpstk::NavSignalID def;
    TUASSERTE(gpstk::SatelliteSystem,gpstk::SatelliteSystem::Unknown,def.system);
-   TUASSERTE(gpstk::CarrierBand,gpstk::CarrierBand::Unknown,def.carrier);
-   TUASSERTE(gpstk::TrackingCode,gpstk::TrackingCode::Unknown,def.code);
+   TUASSERTE(gpstk::CarrierBand,gpstk::CarrierBand::Unknown,def.obs.band);
+   TUASSERTE(gpstk::TrackingCode,gpstk::TrackingCode::Unknown,def.obs.code);
    TUASSERTE(gpstk::NavType,gpstk::NavType::Unknown,def.nav);
       // test the fill-in-everything constructor
    gpstk::NavSignalID test2(gpstk::SatelliteSystem::GPS,
@@ -107,8 +107,8 @@ constructorTest()
                             gpstk::TrackingCode::Y,
                             gpstk::NavType::GPSLNAV);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS, test2.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, test2.carrier);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, test2.code);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, test2.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, test2.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, test2.nav);
    TURETURN();
 }

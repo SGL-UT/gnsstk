@@ -236,8 +236,8 @@ findExactTest()
    TUASSERTE(gpstk::SatID, expSat1, uut->signal.xmitSat);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
              uut->signal.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.carrier);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.code);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, uut->signal.nav);
       // OrbitData
       // OrbitDataSP3
@@ -274,8 +274,8 @@ findExactTest()
    TUASSERTE(gpstk::SatID, expSat2, uut->signal.xmitSat);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
              uut->signal.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.carrier);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.code);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, uut->signal.nav);
       // OrbitData
       // OrbitDataSP3
@@ -312,8 +312,8 @@ findExactTest()
    TUASSERTE(gpstk::SatID, expSat3, uut->signal.xmitSat);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
              uut->signal.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.carrier);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.code);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, uut->signal.nav);
       // OrbitData
       // OrbitDataSP3
@@ -357,8 +357,8 @@ findExactTest()
    TUASSERTE(gpstk::SatID, expSat4, uut->signal.xmitSat);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
              uut->signal.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.carrier);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.code);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, uut->signal.nav);
       // OrbitData
       // OrbitDataSP3
@@ -413,8 +413,8 @@ findInterpTest()
    TUASSERTE(gpstk::SatID, expSat1, uut->signal.xmitSat);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
              uut->signal.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.carrier);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.code);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, uut->signal.nav);
       // OrbitData
       // OrbitDataSP3

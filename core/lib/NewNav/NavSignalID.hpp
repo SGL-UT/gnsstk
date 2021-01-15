@@ -42,8 +42,7 @@
 #include <iostream>
 #include <set>
 #include "SatelliteSystem.hpp"
-#include "CarrierBand.hpp"
-#include "TrackingCode.hpp"
+#include "ObsID.hpp"
 #include "NavType.hpp"
 
 namespace gpstk
@@ -79,9 +78,13 @@ namespace gpstk
          /// return true if any of the fields are set to match wildcards.
       virtual bool isWild() const;
 
+         // Having the system here may seem redundant but if we're
+         // identifying signals across an entire system (i.e. without
+         // a specific PRN or other unique satellite ID as used in
+         // NavSatelliteID) we need to identify the system as well to
+         // differentiate e.g. between GPS L1 C/A and QZSS L1 C/A nav.
       SatelliteSystem system; ///< GNSS for this signal.
-      CarrierBand carrier;    ///< Carrier frequency for this signal.
-      TrackingCode code;      ///< Tracking/ranging code for this signal.
+      ObsID obs;              ///< Carrier, tracking code, etc.
       NavType nav;            ///< Navigation message structure of this signal.
 
    protected:
@@ -99,8 +102,8 @@ namespace gpstk
    inline std::ostream& operator<<(std::ostream& s, const NavSignalID& nsid)
    {
       s << StringUtils::asString(nsid.system) << " "
-        << StringUtils::asString(nsid.carrier) << " "
-        << StringUtils::asString(nsid.code) << " "
+        << StringUtils::asString(nsid.obs.band) << " "
+        << StringUtils::asString(nsid.obs.code) << " "
         << StringUtils::asString(nsid.nav);
       return s;
    }

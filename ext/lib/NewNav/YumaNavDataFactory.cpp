@@ -237,8 +237,8 @@ namespace gpstk
       navOut->signal.xmitSat = SatID(navIn.PRN,SatelliteSystem::GPS);
       navOut->signal.system = SatelliteSystem::GPS;
          // we can't obtain these from Yuma nav, so just assume L1 C/A
-      navOut->signal.carrier = CarrierBand::L1;
-      navOut->signal.code = TrackingCode::CA;
+      navOut->signal.obs.band = CarrierBand::L1;
+      navOut->signal.obs.code = TrackingCode::CA;
       navOut->signal.nav = NavType::GPSLNAV;
    }
 }

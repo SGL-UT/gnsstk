@@ -248,8 +248,8 @@ getOffsetTest()
    gpstk::GPSLNavTimeOffset *toptr = dynamic_cast<gpstk::GPSLNavTimeOffset*>(
       navOut.get());
    navOut->signal.system = gpstk::SatelliteSystem::GPS;
-   navOut->signal.carrier = gpstk::CarrierBand::L1;
-   navOut->signal.code = gpstk::TrackingCode::CA;
+   navOut->signal.obs.band = gpstk::CarrierBand::L1;
+   navOut->signal.obs.code = gpstk::TrackingCode::CA;
    navOut->signal.nav = gpstk::NavType::GPSLNAV;
    navOut->signal.sat = gpstk::SatID(23,gpstk::SatelliteSystem::GPS);
    navOut->signal.xmitSat = gpstk::SatID(32,gpstk::SatelliteSystem::GPS);

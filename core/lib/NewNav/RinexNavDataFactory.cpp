@@ -268,8 +268,8 @@ namespace gpstk
             navOut->signal.xmitSat = navIn.sat;
             navOut->signal.system = navIn.sat.system;
                // we can't obtain these from RINEX NAV, so just assume L1 C/A
-            navOut->signal.carrier = CarrierBand::L1;
-            navOut->signal.code = TrackingCode::CA;
+            navOut->signal.obs.band = CarrierBand::L1;
+            navOut->signal.obs.code = TrackingCode::CA;
                /// @todo Does RINEX support CNAV and if so how do we know?
             navOut->signal.nav = NavType::GPSLNAV;
             break;

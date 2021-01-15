@@ -404,8 +404,8 @@ namespace gpstk
             gps->signal.xmitSat = navIn.sat;
             gps->signal.system = navIn.sat.system;
                // we can't obtain these from SP3, can we? So just assume L1 C/A
-            navOut->signal.carrier = CarrierBand::L1;
-            navOut->signal.code = TrackingCode::CA;
+            navOut->signal.obs.band = CarrierBand::L1;
+            navOut->signal.obs.code = TrackingCode::CA;
                /// @todo determine what should really be here for SP3 data.
             navOut->signal.nav = NavType::GPSLNAV;
             break;
@@ -457,8 +457,8 @@ namespace gpstk
             gps->signal.xmitSat = navIn.sat;
             gps->signal.system = navIn.sat.system;
                // we can't obtain these from SP3, can we? So just assume L1 C/A
-            clkOut->signal.carrier = CarrierBand::L1;
-            clkOut->signal.code = TrackingCode::CA;
+            clkOut->signal.obs.band = CarrierBand::L1;
+            clkOut->signal.obs.code = TrackingCode::CA;
                /// @todo determine what should really be here for SP3 data.
             clkOut->signal.nav = NavType::GPSLNAV;
             break;

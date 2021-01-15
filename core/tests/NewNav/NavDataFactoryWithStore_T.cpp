@@ -197,8 +197,8 @@ addNavDataTest()
    navOut->signal.sat = subjID;
    navOut->signal.xmitSat = xmitID;
    navOut->signal.system = gpstk::SatelliteSystem::GPS;
-   navOut->signal.carrier = gpstk::CarrierBand::L1;
-   navOut->signal.code = gpstk::TrackingCode::CA;
+   navOut->signal.obs.band = gpstk::CarrierBand::L1;
+   navOut->signal.obs.code = gpstk::TrackingCode::CA;
    navOut->signal.nav = gpstk::NavType::GPSLNAV;
 
    TUASSERT(fact.addNavData(navOut));
@@ -212,16 +212,16 @@ addNavDataTest()
          TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
                    nsatmi.first.system);
          TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1,
-                   nsatmi.first.carrier);
+                   nsatmi.first.obs.band);
          TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA,
-                   nsatmi.first.code);
+                   nsatmi.first.obs.code);
          TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, nsatmi.first.nav);
          TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
                    nsatmi.first.system);
          TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1,
-                   nsatmi.first.carrier);
+                   nsatmi.first.obs.band);
          TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA,
-                   nsatmi.first.code);
+                   nsatmi.first.obs.code);
          TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV,
                    nsatmi.first.nav);
          TUASSERTE(gpstk::SatID, subjID, nsatmi.first.sat);
@@ -433,8 +433,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.carrier);
-   TUASSERTE(TC, TC::CA, result->signal.code);
+   TUASSERTE(CB, CB::L1, result->signal.obs.band);
+   TUASSERTE(TC, TC::CA, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // look for health data before and after the state transition
    TUASSERTE(bool, true,
@@ -473,8 +473,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.carrier);
-   TUASSERTE(TC, TC::CA, result->signal.code);
+   TUASSERTE(CB, CB::L1, result->signal.obs.band);
+   TUASSERTE(TC, TC::CA, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for healthy almanac data after the transition to
       // unhealthy with wildcards in the signal (band, code, nav).
@@ -493,8 +493,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.carrier);
-   TUASSERTE(TC, TC::CA, result->signal.code);
+   TUASSERTE(CB, CB::L1, result->signal.obs.band);
+   TUASSERTE(TC, TC::CA, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for almanac data after the transition to unhealthy where
       // we don't care about the health but we do specifically want
@@ -513,8 +513,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.carrier);
-   TUASSERTE(TC, TC::Y, result->signal.code);
+   TUASSERTE(CB, CB::L2, result->signal.obs.band);
+   TUASSERTE(TC, TC::Y, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for almanac data after the transition to unhealthy where
       // we do want healthy transmit satellites and do specifically
@@ -533,8 +533,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.carrier);
-   TUASSERTE(TC, TC::Y, result->signal.code);
+   TUASSERTE(CB, CB::L2, result->signal.obs.band);
+   TUASSERTE(TC, TC::Y, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for almanac data after the transition to unhealthy where
       // we want the most recent almanac transmitted by PRN 1 when it
@@ -554,8 +554,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.carrier);
-   TUASSERTE(TC, TC::Y, result->signal.code);
+   TUASSERTE(CB, CB::L2, result->signal.obs.band);
+   TUASSERTE(TC, TC::Y, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for almanac data after the transition to unhealthy where
       // we want the most recent almanac transmitted by PRN 1 when it
@@ -574,8 +574,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.carrier);
-   TUASSERTE(TC, TC::Y, result->signal.code);
+   TUASSERTE(CB, CB::L2, result->signal.obs.band);
+   TUASSERTE(TC, TC::Y, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for almanac data transmitted by PRN 3 when it was
       // UNhealthy, which it isn't, so we expect no results.
@@ -598,8 +598,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.carrier);
-   TUASSERTE(TC, TC::CA, result->signal.code);
+   TUASSERTE(CB, CB::L1, result->signal.obs.band);
+   TUASSERTE(TC, TC::CA, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 3 L1 CA (Healthy)
    TUASSERTE(bool, true,
@@ -616,8 +616,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.carrier);
-   TUASSERTE(TC, TC::CA, result->signal.code);
+   TUASSERTE(CB, CB::L1, result->signal.obs.band);
+   TUASSERTE(TC, TC::CA, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 3 any any (Healthy)
    TUASSERTE(bool, true,
@@ -634,8 +634,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.carrier);
-   TUASSERTE(TC, TC::CA, result->signal.code);
+   TUASSERTE(CB, CB::L1, result->signal.obs.band);
+   TUASSERTE(TC, TC::CA, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 1 L2 Y
    TUASSERTE(bool, true,
@@ -652,8 +652,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.carrier);
-   TUASSERTE(TC, TC::Y, result->signal.code);
+   TUASSERTE(CB, CB::L2, result->signal.obs.band);
+   TUASSERTE(TC, TC::Y, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 3 L2 Y (Healthy)
    TUASSERTE(bool, true,
@@ -670,8 +670,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.carrier);
-   TUASSERTE(TC, TC::Y, result->signal.code);
+   TUASSERTE(CB, CB::L2, result->signal.obs.band);
+   TUASSERTE(TC, TC::Y, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 1 L2 Y (Healthy)
    TUASSERTE(bool, true,
@@ -689,8 +689,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.carrier);
-   TUASSERTE(TC, TC::Y, result->signal.code);
+   TUASSERTE(CB, CB::L2, result->signal.obs.band);
+   TUASSERTE(TC, TC::Y, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 1 L2 Y (Unhealthy)
    TUASSERTE(bool, true,
@@ -707,8 +707,8 @@ find2Test()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.carrier);
-   TUASSERTE(TC, TC::Y, result->signal.code);
+   TUASSERTE(CB, CB::L2, result->signal.obs.band);
+   TUASSERTE(TC, TC::Y, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 3 L2 Y (Unhealthy)
    TUASSERTE(bool, false,
@@ -879,8 +879,8 @@ findNearestTest()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.carrier);
-   TUASSERTE(TC, TC::CA, result->signal.code);
+   TUASSERTE(CB, CB::L1, result->signal.obs.band);
+   TUASSERTE(TC, TC::CA, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 3 L1 CA (Healthy)
    TUASSERTE(bool, true,
@@ -897,8 +897,8 @@ findNearestTest()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.carrier);
-   TUASSERTE(TC, TC::CA, result->signal.code);
+   TUASSERTE(CB, CB::L1, result->signal.obs.band);
+   TUASSERTE(TC, TC::CA, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 3 any any (Healthy)
    TUASSERTE(bool, true,
@@ -915,8 +915,8 @@ findNearestTest()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.carrier);
-   TUASSERTE(TC, TC::CA, result->signal.code);
+   TUASSERTE(CB, CB::L1, result->signal.obs.band);
+   TUASSERTE(TC, TC::CA, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 1 L2 Y
    TUASSERTE(bool, true,
@@ -933,8 +933,8 @@ findNearestTest()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.carrier);
-   TUASSERTE(TC, TC::Y, result->signal.code);
+   TUASSERTE(CB, CB::L2, result->signal.obs.band);
+   TUASSERTE(TC, TC::Y, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 3 L2 Y (Healthy)
    TUASSERTE(bool, true,
@@ -951,8 +951,8 @@ findNearestTest()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.carrier);
-   TUASSERTE(TC, TC::Y, result->signal.code);
+   TUASSERTE(CB, CB::L2, result->signal.obs.band);
+   TUASSERTE(TC, TC::Y, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 1 L2 Y (Healthy)
    TUASSERTE(bool, true,
@@ -969,8 +969,8 @@ findNearestTest()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.carrier);
-   TUASSERTE(TC, TC::Y, result->signal.code);
+   TUASSERTE(CB, CB::L2, result->signal.obs.band);
+   TUASSERTE(TC, TC::Y, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 1 L2 Y (Healthy) at an earlier time
    TUASSERTE(bool, true,
@@ -988,8 +988,8 @@ findNearestTest()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.carrier);
-   TUASSERTE(TC, TC::Y, result->signal.code);
+   TUASSERTE(CB, CB::L2, result->signal.obs.band);
+   TUASSERTE(TC, TC::Y, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 1 L2 Y (Unhealthy)
    TUASSERTE(bool, true,
@@ -1008,8 +1008,8 @@ findNearestTest()
    TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
    TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
    TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.carrier);
-   TUASSERTE(TC, TC::Y, result->signal.code);
+   TUASSERTE(CB, CB::L2, result->signal.obs.band);
+   TUASSERTE(TC, TC::Y, result->signal.obs.code);
    TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
       // Look for ephemeris data from PRN 3 L2 Y (Unhealthy)
    TUASSERTE(bool, false,
@@ -1409,8 +1409,8 @@ clearTest()
    navOut->signal.sat = gpstk::SatID(23,gpstk::SatelliteSystem::GPS);
    navOut->signal.xmitSat = gpstk::SatID(32,gpstk::SatelliteSystem::GPS);
    navOut->signal.system = gpstk::SatelliteSystem::GPS;
-   navOut->signal.carrier = gpstk::CarrierBand::L1;
-   navOut->signal.code = gpstk::TrackingCode::CA;
+   navOut->signal.obs.band = gpstk::CarrierBand::L1;
+   navOut->signal.obs.code = gpstk::TrackingCode::CA;
    navOut->signal.nav = gpstk::NavType::GPSLNAV;
 
    TUASSERT(fact.addNavData(navOut));
@@ -1512,8 +1512,8 @@ fillSignal(gpstk::NavSignalID& signal, gpstk::SatelliteSystem sys,
            gpstk::CarrierBand car, gpstk::TrackingCode code, gpstk::NavType nav)
 {
    signal.system = sys;
-   signal.carrier = car;
-   signal.code = code;
+   signal.obs.band = car;
+   signal.obs.code = code;
    signal.nav = nav;
 }
 

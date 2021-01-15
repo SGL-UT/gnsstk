@@ -43,8 +43,6 @@ namespace gpstk
    NavSignalID ::
    NavSignalID()
          : system(SatelliteSystem::Unknown),
-           carrier(CarrierBand::Unknown),
-           code(TrackingCode::Unknown),
            nav(NavType::Unknown)
    {
    }
@@ -54,8 +52,7 @@ namespace gpstk
    NavSignalID(SatelliteSystem sys, CarrierBand car, TrackingCode track,
                NavType nmt)
          : system(sys),
-           carrier(car),
-           code(track),
+           obs(gpstk::ObservationType::NavMsg, car, track),
            nav(nmt)
    {
    }
@@ -66,15 +63,15 @@ namespace gpstk
    {
       if (system < right.system) return -1;
       if (system > right.system) return 1;
-      if ((carrier != CarrierBand::Any) && (right.carrier != CarrierBand::Any))
+      if ((obs.band != CarrierBand::Any) && (right.obs.band != CarrierBand::Any))
       {
-         if (carrier < right.carrier) return -1;
-         if (carrier > right.carrier) return 1;
+         if (obs.band < right.obs.band) return -1;
+         if (obs.band > right.obs.band) return 1;
       }
-      if ((code != TrackingCode::Any) && (right.code != TrackingCode::Any))
+      if ((obs.code != TrackingCode::Any) && (right.obs.code != TrackingCode::Any))
       {
-         if (code < right.code) return -1;
-         if (code > right.code) return 1;
+         if (obs.code < right.obs.code) return -1;
+         if (obs.code > right.obs.code) return 1;
       }
       if ((nav != NavType::Any) && (right.nav != NavType::Any))
       {
@@ -88,8 +85,6 @@ namespace gpstk
    bool NavSignalID ::
    isWild() const
    {
-      return ((carrier == CarrierBand::Any) ||
-              (code == TrackingCode::Any) ||
-              (nav == NavType::Any));
+      return (obs.isWild() || (nav == NavType::Any));
    }
 }

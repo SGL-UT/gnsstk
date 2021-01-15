@@ -104,8 +104,8 @@ constructorTest()
    TUASSERT(nsid2.xmitSat != expx2b);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::Transit,
              nsid2.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid2.carrier);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid2.code);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid2.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid2.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid2.nav);
       // test "subframe 5 page 25" constructor
    gpstk::SatID exps3a(17,gpstk::SatelliteSystem::GPS);
@@ -118,8 +118,8 @@ constructorTest()
    TUASSERTE(gpstk::SatID, exps3b, nsid3.xmitSat);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
              nsid3.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid3.carrier);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid3.code);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid3.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid3.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid3.nav);
       // test "QZSS CNAV" constructor
    gpstk::SatID exps4a(17,gpstk::SatelliteSystem::GPS);
@@ -129,8 +129,8 @@ constructorTest()
    TUASSERTE(gpstk::SatID, exps4b, nsid4.xmitSat);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::QZSS,
              nsid4.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid4.carrier);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid4.code);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid4.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid4.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid4.nav);
       // test yet another constructor
    gpstk::SatID exps5a(17,gpstk::SatelliteSystem::GPS);
@@ -141,8 +141,8 @@ constructorTest()
    TUASSERTE(gpstk::SatID, exps5b, nsid5.xmitSat);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
              nsid5.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid5.carrier);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid5.code);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid5.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid5.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid5.nav);
       // test the SatID constructor
    gpstk::SatID exps6a(17,gpstk::SatelliteSystem::GPS);
@@ -152,8 +152,8 @@ constructorTest()
    TUASSERTE(bool, true, nsid6.xmitSat.wildSys);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
              nsid6.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::Any, nsid6.carrier);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Any, nsid6.code);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::Any, nsid6.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Any, nsid6.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::Any, nsid6.nav);
    
    TURETURN();
