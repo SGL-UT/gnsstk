@@ -296,8 +296,8 @@ build_windows:
 # non-incremental builds
     - mkdir build_%CI_PIPELINE_ID%
     - cd build_%CI_PIPELINE_ID%
-    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" --trace ../
-    - cmake --build .
+    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
+    - cmake --build . --config Release
     - dir /s
   artifacts:
     paths:
