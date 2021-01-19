@@ -398,7 +398,7 @@ namespace gpstk
             NavMessageType::Health);
          dynamic_cast<GPSCNav2Health*>(p1.get())->health =
             navIn->asBool(offset+esbHeaL1C);
-         dynamic_cast<GPSCNav2Health*>(p1.get())->isEph = true;
+         dynamic_cast<GPSCNav2Health*>(p1.get())->setEph(true);
          // cerr << "add CNAV2 eph health" << endl;
          navOut.push_back(p1);
       }
@@ -562,9 +562,9 @@ namespace gpstk
             navIn->asBool(offset+asbHeaL2);
          dynamic_cast<GPSCNav2Health*>(p1L5.get())->health =
             navIn->asBool(offset+asbHeaL5);
-         dynamic_cast<GPSCNav2Health*>(p1L1.get())->isEph = false;
-         dynamic_cast<GPSCNav2Health*>(p1L2.get())->isEph = false;
-         dynamic_cast<GPSCNav2Health*>(p1L5.get())->isEph = false;
+         dynamic_cast<GPSCNav2Health*>(p1L1.get())->setEph(false);
+         dynamic_cast<GPSCNav2Health*>(p1L2.get())->setEph(false);
+         dynamic_cast<GPSCNav2Health*>(p1L5.get())->setEph(false);
          // cerr << "add CNAV2 alm health" << endl;
          navOut.push_back(p1L1);
          // cerr << "add CNAV2 alm health" << endl;

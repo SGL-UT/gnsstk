@@ -42,10 +42,11 @@ using namespace std;
 
 namespace gpstk
 {
-   CommonTime GPSCNav2Health ::
-   getUserTime() const
+   GPSCNav2Health ::
+   GPSCNav2Health()
+         : health(true)
    {
-      return timeStamp + (isEph ? 12.0 : 5.48);
+      msgLenSec = 5.48;
    }
 
 
@@ -59,5 +60,12 @@ namespace gpstk
       }
       s << "health = " << health << "  "
         << StringUtils::asString(getHealth()) << endl;
+   }
+
+
+   void GPSCNav2Health ::
+   setEph(bool e)
+   {
+      msgLenSec = e ? 12.0 : 5.48;
    }
 }

@@ -52,6 +52,7 @@ namespace gpstk
          : deltatLS(0.0), a0(0.0), a1(0.0), tot(0.0), wnt(0), wnLSF(0), dn(0),
            deltatLSF(0.0)
    {
+      msgLenSec = 6.0;
    }
 
 

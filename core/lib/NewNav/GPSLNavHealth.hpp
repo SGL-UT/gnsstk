@@ -52,9 +52,7 @@ namespace gpstk
    {
    public:
          /// Initialize to unhealthy using a value typically not seen in health.
-      GPSLNavHealth()
-            : svHealth(0x80)
-      {}
+      GPSLNavHealth();
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
@@ -62,18 +60,6 @@ namespace gpstk
           */
       bool validate() const override
       { return true; }
-
-         /** Returns the time when the navigation message would have
-          * first been available to the user equipment, i.e. the time
-          * at which the final bit of a given broadcast navigation
-          * message is received.  This is used by
-          * NavDataFactoryWithStore::find() in User mode.
-          * @return transmit time + 6s.  In all cases in LNav, the
-          *   health bits represented by this class are in a single
-          *   subframe.
-          */
-      CommonTime getUserTime() const override
-      { return timeStamp + 6.0; }
 
          /** Print the contents of this object in a human-readable
           * format.

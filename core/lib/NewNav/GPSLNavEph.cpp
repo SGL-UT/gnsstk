@@ -64,6 +64,7 @@ namespace gpstk
            L2Pdata(false)
    {
       signal.messageType = NavMessageType::Ephemeris;
+      msgLenSec = 18.0;
    }
 
 

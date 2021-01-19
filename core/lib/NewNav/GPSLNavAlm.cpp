@@ -47,6 +47,7 @@ namespace gpstk
          : healthBits(0xff)
    {
       signal.messageType = NavMessageType::Almanac;
+      msgLenSec = 6.0;
    }
 
 
@@ -54,13 +55,6 @@ namespace gpstk
    validate() const
    {
       return GPSLNavData::validate();
-   }
-
-
-   CommonTime GPSLNavAlm ::
-   getUserTime() const
-   {
-      return timeStamp + 6.0;
    }
 
 

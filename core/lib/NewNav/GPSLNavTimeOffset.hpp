@@ -62,16 +62,6 @@ namespace gpstk
           */
       bool validate() const override;
 
-         /** Returns the time when the navigation message would have
-          * first been available to the user equipment, i.e. the time
-          * at which the final bit of a given broadcast navigation
-          * message is received.  This is used by
-          * NavDataFactoryWithStore::find() in User mode.
-          * @return transmit time + 6s, which is the time required for sf1.
-          */
-      CommonTime getUserTime() const override
-      { return timeStamp + 6.0; }
-
          /** Print the contents of this object in a human-readable
           * format.
           * @param[in,out] s The stream to write the data to.

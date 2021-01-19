@@ -70,7 +70,6 @@ constructorTest()
    TUDEF("GPSCNav2Health", "GPSCNav2Health");
    gpstk::GPSCNav2Health uut;
    TUASSERTE(uint8_t, true, uut.health);
-   TUASSERTE(uint8_t, false, uut.isEph);
    TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Health,
              uut.signal.messageType);
    TURETURN();
@@ -86,9 +85,9 @@ getUserTimeTest()
       // eph = 12s, alm = 5.48s
    gpstk::CommonTime expEph = uut.timeStamp + 12.0;
    gpstk::CommonTime expAlm = uut.timeStamp + 5.48;
-   uut.isEph = true;
+   uut.setEph(true);
    TUASSERTE(gpstk::CommonTime, expEph, uut.getUserTime());
-   uut.isEph = false;
+   uut.setEph(false);
    TUASSERTE(gpstk::CommonTime, expAlm, uut.getUserTime());
    TURETURN();
 }

@@ -54,6 +54,7 @@ namespace gpstk
            toa(0)
    {
       signal.messageType = NavMessageType::Almanac;
+      msgLenSec = 5.48;
    }
 
 
@@ -62,13 +63,6 @@ namespace gpstk
    {
          /// @todo implement some checks.
       return true;
-   }
-
-
-   CommonTime GPSCNav2Alm ::
-   getUserTime() const
-   {
-      return timeStamp + 5.48;
    }
 
 

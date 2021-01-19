@@ -68,19 +68,6 @@ namespace gpstk
           */
       bool validate() const override
       { return true; }
-         /** Returns the time when the navigation message would have
-          * first been available to the user equipment, i.e. the time
-          * at which the final bit of a given broadcast navigation
-          * message is received.  This is used by
-          * NavDataFactoryWithStore::find() in User mode.  This being
-          * precise orbit data, the data is valid as of the
-          * timestamp. */
-      CommonTime getUserTime() const override
-      { return timeStamp; }
-         /** Returns the time for the data to be used when searching
-          * in "Nearest" mode. */
-      CommonTime getNearTime() const override
-      { return timeStamp; }
          /** Print the contents of this NavData object in a
           * human-readable format.  Brief detail includes P/V.  Full
           * detail includes P/V/A and sigma.

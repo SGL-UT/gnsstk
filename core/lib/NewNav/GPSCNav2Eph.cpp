@@ -63,6 +63,7 @@ namespace gpstk
            iscL1CD(0.0)
    {
       signal.messageType = NavMessageType::Ephemeris;
+      msgLenSec = 12.0;
    }
 
 
@@ -71,13 +72,6 @@ namespace gpstk
    {
          /// @todo implement some checks.
       return true;
-   }
-
-
-   CommonTime GPSCNav2Eph ::
-   getUserTime() const
-   {
-      return xmitTime + 12.0;
    }
 
 

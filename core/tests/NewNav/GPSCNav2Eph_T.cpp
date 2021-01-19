@@ -91,7 +91,11 @@ getUserTimeTest()
       // just using made-up numbers
    uut.timeStamp = gpstk::GPSWeekSecond(2100,135.0);
    uut.xmitTime = gpstk::GPSWeekSecond(2100,139.0);
-   gpstk::CommonTime exp(gpstk::GPSWeekSecond(2100,151.0));
+      // Note that the transmit time and timestamp are typically the
+      // same, but getUserTime() by default uses the timeStamp, which
+      // is present in NavData while xmitTime is not.  Therefore, the
+      // expected user time is timeStamp+12 and not xmitTime+12.
+   gpstk::CommonTime exp(gpstk::GPSWeekSecond(2100,147.0));
    uut.signal = gpstk::NavMessageID(
       gpstk::NavSatelliteID(1, 1, gpstk::SatelliteSystem::GPS,
                             gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,

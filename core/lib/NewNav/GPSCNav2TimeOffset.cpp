@@ -53,6 +53,7 @@ namespace gpstk
            wnLSF(0), dn(0), deltatLSF(0.0),
            tgt(TimeSystem::Unknown)
    {
+      msgLenSec = 5.48;
    }
 
 
@@ -64,13 +65,6 @@ namespace gpstk
          // the value 0 as valid because we won't always have anything
          // else.
       return ((dn <= maxDN) && (tot <= maxtot) && (tot >= mintot));
-   }
-
-
-   CommonTime GPSCNav2TimeOffset ::
-   getUserTime() const
-   {
-      return timeStamp + 5.48;
    }
 
 

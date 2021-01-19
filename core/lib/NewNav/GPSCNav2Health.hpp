@@ -51,9 +51,7 @@ namespace gpstk
    {
    public:
          /// Initialize to unhealthy.
-      GPSCNav2Health()
-            : health(true), isEph(false)
-      {}
+      GPSCNav2Health();
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
@@ -61,16 +59,6 @@ namespace gpstk
           */
       bool validate() const override
       { return true; }
-
-         /** Returns the time when the navigation message would have
-          * first been available to the user equipment, i.e. the time
-          * at which the final bit of a given broadcast navigation
-          * message is received.  This is used by
-          * NavDataFactoryWithStore::find() in User mode.
-          * @return transmit time + 12s or 5.48s, depending on whether
-          *   this is ephemeris or almanac health.
-          */
-      CommonTime getUserTime() const override;
 
          /** Print the contents of this object in a human-readable
           * format.
@@ -84,10 +72,15 @@ namespace gpstk
       SVHealth getHealth() const override
       { return (health ? SVHealth::Unhealthy : SVHealth::Healthy); }
 
+         /** Alter the message length depending on whether this health
+          * data as having originated from an ephemeris or almanac
+          * message.
+          * @param[in] e If true, this health was derived from ephemeris data.
+          */
+      void setEph(bool e);
+
          /// 1-bit health.
       bool health;
-         /// True if this health information came from an ephemeris.
-      bool isEph;
    };
 
       //@}

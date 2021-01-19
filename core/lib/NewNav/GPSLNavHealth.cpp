@@ -42,6 +42,14 @@ using namespace std;
 
 namespace gpstk
 {
+   GPSLNavHealth ::
+   GPSLNavHealth()
+         : svHealth(0x80)
+   {
+      msgLenSec = 6.0;
+   }
+
+
    void GPSLNavHealth ::
    dump(std::ostream& s, Detail dl) const
    {

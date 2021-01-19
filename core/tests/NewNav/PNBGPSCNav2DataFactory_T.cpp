@@ -364,7 +364,6 @@ processEphTest()
             // NavHealthData has no fields
             // GPSCNav2Health
          TUASSERTE(bool, true, hea->health);
-         TUASSERTE(bool, true, hea->isEph);
       }
       else if ((eph = dynamic_cast<gpstk::GPSCNav2Eph*>(i.get())) != nullptr)
       {
@@ -493,7 +492,6 @@ processAlmOrbTest()
             // NavHealthData has no fields
             // GPSCNav2Health
          TUASSERTE(bool, expHea, hea->health);
-         TUASSERTE(bool, false, hea->isEph);
       }
       else if ((alm = dynamic_cast<gpstk::GPSCNav2Alm*>(i.get())) != nullptr)
       {

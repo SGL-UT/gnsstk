@@ -64,6 +64,8 @@ namespace gpstk
          Brief,   ///< Limit output to <= 5 lines of minimal information.
          Full     ///< Include all detailed information.
       };
+         /// Initialize internal data fields.
+      NavData();
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
           * @return true if this message is valid according to ICD criteria.
@@ -74,11 +76,13 @@ namespace gpstk
           * at which the final bit of a given broadcast navigation
           * message is received.  This is used by
           * NavDataFactoryWithStore::find() in User mode. */
-      virtual CommonTime getUserTime() const = 0;
+      virtual CommonTime getUserTime() const
+      { return timeStamp + msgLenSec; }
          /** Returns the time for the data to be used when searching
           * in "Nearest" mode.  Example: toe for ephemeris data.  This
           * is used by NavDataFactoryWithStore::find(). */
-      virtual CommonTime getNearTime() const = 0;
+      virtual CommonTime getNearTime() const
+      { return timeStamp; }
          /** Print the contents of this NavData object in a
           * human-readable format.
           * @param[in,out] s The stream to write the data to.
@@ -90,6 +94,12 @@ namespace gpstk
       CommonTime timeStamp;
          /// Source signal identification for this navigation message data.
       NavMessageID signal;
+   protected:
+         /** Navigation message length in seconds.  This is used by
+          * getUserTime() by default, though it is possible to
+          * override getUserTime() to ignore this value (as in
+          * CNav). */
+      double msgLenSec;
    };
 
       /// Factories instantiate these in response to find() requests

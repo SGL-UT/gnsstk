@@ -65,15 +65,6 @@ namespace gpstk
           */
       bool validate() const override;
 
-         /** Returns the time when the navigation message would have
-          * first been available to the user equipment, i.e. the time
-          * at which the final bit of a given broadcast navigation
-          * message is received.  This is used by
-          * NavDataFactoryWithStore::find() in User mode.
-          * @return transmit time + 12s.
-          */
-      CommonTime getUserTime() const override;
-
          /** Fill the beginFit and endFit values for this object.
           * @pre xmitTime, xmit11, xmitClk, Toe must all be set. */
       void fixFit();
