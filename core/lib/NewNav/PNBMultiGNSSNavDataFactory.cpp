@@ -61,7 +61,8 @@ namespace gpstk
 
 
    bool PNBMultiGNSSNavDataFactory ::
-   addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
+           double cadence)
    {
       NavType navType = navIn->getNavID().navType;
       auto fi = factories.find(navType);
@@ -70,7 +71,7 @@ namespace gpstk
             // We don't have a factory for this navigation message type
          return false;
       }
-      return fi->second->addData(navIn, navOut);
+      return fi->second->addData(navIn, navOut, cadence);
    }
 
 

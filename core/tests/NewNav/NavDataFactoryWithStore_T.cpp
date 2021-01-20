@@ -197,8 +197,9 @@ addNavDataTest()
    navOut->signal.sat = subjID;
    navOut->signal.xmitSat = xmitID;
    navOut->signal.system = gpstk::SatelliteSystem::GPS;
-   navOut->signal.obs.band = gpstk::CarrierBand::L1;
-   navOut->signal.obs.code = gpstk::TrackingCode::CA;
+   navOut->signal.obs = gpstk::ObsID(gpstk::ObservationType::NavMsg,
+                                     gpstk::CarrierBand::L1,
+                                     gpstk::TrackingCode::CA);
    navOut->signal.nav = gpstk::NavType::GPSLNAV;
 
    TUASSERT(fact.addNavData(navOut));
@@ -1409,8 +1410,9 @@ clearTest()
    navOut->signal.sat = gpstk::SatID(23,gpstk::SatelliteSystem::GPS);
    navOut->signal.xmitSat = gpstk::SatID(32,gpstk::SatelliteSystem::GPS);
    navOut->signal.system = gpstk::SatelliteSystem::GPS;
-   navOut->signal.obs.band = gpstk::CarrierBand::L1;
-   navOut->signal.obs.code = gpstk::TrackingCode::CA;
+   navOut->signal.obs = gpstk::ObsID(gpstk::ObservationType::NavMsg,
+                                     gpstk::CarrierBand::L1,
+                                     gpstk::TrackingCode::CA);
    navOut->signal.nav = gpstk::NavType::GPSLNAV;
 
    TUASSERT(fact.addNavData(navOut));
@@ -1517,8 +1519,7 @@ fillSignal(gpstk::NavSignalID& signal, gpstk::SatelliteSystem sys,
            gpstk::CarrierBand car, gpstk::TrackingCode code, gpstk::NavType nav)
 {
    signal.system = sys;
-   signal.obs.band = car;
-   signal.obs.code = code;
+   signal.obs = gpstk::ObsID(gpstk::ObservationType::NavMsg,car,code);
    signal.nav = nav;
 }
 

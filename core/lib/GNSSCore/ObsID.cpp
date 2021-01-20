@@ -39,17 +39,28 @@
 /// @file ObsID.cpp
 /// gpstk::ObsID - Identifies types of observations
 
+#include <iomanip>
 #include <math.h>
 #include "ObsID.hpp"
 
 namespace gpstk
 {
+   bool ObsID::verbose = false;
+
    // Convenience output method
    std::ostream& ObsID::dump(std::ostream& s) const
    {
       s << ObsID::cbDesc[band] << " "
         << ObsID::tcDesc[code] << " "
         << ObsID::otDesc[type];
+      if (ObsID::verbose)
+      {
+         std::ios::fmtflags oldFlags = s.flags();
+         s << " "
+           << std::boolalpha << freqOffs << "/" << freqOffsWild << " "
+           << std::hex << mcode << "/" << mcodeMask;
+         s.flags(oldFlags);
+      }
       return s;
    } // ObsID::dump()
 
@@ -78,12 +89,22 @@ namespace gpstk
    // some other ordering, inherit and override this function.
    bool ObsID::operator<(const ObsID& right) const
    {
-      if (band < right.band) return true;
-      if (right.band < band) return false;
-      if (code < right.code) return true;
-      if (right.code < code) return false;
-      if (type < right.type) return true;
-      if (right.type < type) return false;
+      if ((band != CarrierBand::Any) && (right.band != CarrierBand::Any))
+      {
+         if (band < right.band) return true;
+         if (right.band < band) return false;
+      }
+      if ((code != TrackingCode::Any) && (right.code != TrackingCode::Any))
+      {
+         if (code < right.code) return true;
+         if (right.code < code) return false;
+      }
+      if ((type != ObservationType::Any) &&
+          (right.type != ObservationType::Any))
+      {
+         if (type < right.type) return true;
+         if (right.type < type) return false;
+      }
       if (!freqOffsWild && !right.freqOffsWild)
       {
          if (freqOffs < right.freqOffs) return true;

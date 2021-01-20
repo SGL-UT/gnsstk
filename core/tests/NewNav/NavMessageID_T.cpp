@@ -46,6 +46,12 @@ namespace gpstk
       s << StringUtils::asString(e);
       return s;
    }
+
+   std::ostream& operator<<(std::ostream& s, gpstk::SatelliteSystem e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
 }
 
 
@@ -60,10 +66,29 @@ unsigned NavMessageID_T ::
 constructorTest()
 {
    TUDEF("NavMessageID", "NavMessageID");
-      // only one thing to check
-   gpstk::NavMessageID obj;
+      // default constructor test
+   gpstk::NavMessageID uut1;
    TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Unknown,
-             obj.messageType);
+             uut1.messageType);
+      // constructor 2 test
+   gpstk::SatID satID(7,gpstk::SatelliteSystem::GPS);
+   gpstk::SatID satID3(3,gpstk::SatelliteSystem::GPS);
+   gpstk::NavID navID(gpstk::NavType::GPSLNAV);
+   gpstk::ObsID obsID(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::L1,
+                      gpstk::TrackingCode::CA);
+   obsID.freqOffs = -7;
+   obsID.freqOffsWild = false;
+   obsID.mcode = 0x12345678;
+   obsID.mcodeMask = 0xffffffff;
+   gpstk::NavSatelliteID sat(3, satID, obsID, navID);
+   gpstk::NavMessageID uut2(sat, gpstk::NavMessageType::Almanac);
+   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Almanac,
+             uut2.messageType);
+   TUASSERTE(gpstk::SatID, satID3, uut2.sat);
+   TUASSERTE(gpstk::SatID, satID, uut2.xmitSat);
+   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS, uut2.system);
+   TUASSERTE(gpstk::ObsID, obsID, uut2.obs);
+   TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, uut2.nav);
    TURETURN();
 }
 
@@ -73,6 +98,8 @@ int main()
    NavMessageID_T testClass;
    unsigned errorTotal = 0;
 
+      // make sure we can see the details in the event of miscompare
+   gpstk::ObsID::verbose = true;
    errorTotal += testClass.constructorTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal

@@ -65,6 +65,12 @@ namespace gpstk
       NavSignalID(SatelliteSystem sys, CarrierBand car, TrackingCode track,
                   NavType nmt);
 
+         /** Initialize all data to specified values.
+          * @param[in] sys The GNSS this signal originates from.
+          * @param[in] oid An ObsID describing the signal (band, code, etc.)
+          * @param[in] nmt The navigation message format of this signal. */
+      NavSignalID(SatelliteSystem sys, const ObsID& oid, NavType nmt);
+
          /// Sorting so we can use this class as a map key
       bool operator<(const NavSignalID& right) const
       { return (order(right) < 0); }
@@ -102,8 +108,7 @@ namespace gpstk
    inline std::ostream& operator<<(std::ostream& s, const NavSignalID& nsid)
    {
       s << StringUtils::asString(nsid.system) << " "
-        << StringUtils::asString(nsid.obs.band) << " "
-        << StringUtils::asString(nsid.obs.code) << " "
+        << nsid.obs << " "
         << StringUtils::asString(nsid.nav);
       return s;
    }

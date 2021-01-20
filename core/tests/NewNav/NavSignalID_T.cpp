@@ -76,6 +76,10 @@ public:
              gpstk::TrackingCode track, gpstk::NavType nmt)
          : NavSignalID(sys,car,track,nmt)
    {}
+   TestClass(gpstk::SatelliteSystem sys, const gpstk::ObsID& oid,
+             gpstk::NavType nmt)
+         : NavSignalID(sys,oid,nmt)
+   {}
    int order(const TestClass& right) const
    {
       return NavSignalID::order(right);
@@ -88,6 +92,7 @@ class NavSignalID_T
 public:
    unsigned constructorTest();
    unsigned orderTest();
+   unsigned orderTestFast();
 };
 
 
@@ -110,6 +115,20 @@ constructorTest()
    TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, test2.obs.band);
    TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, test2.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, test2.nav);
+      // test ObsID constructor
+   gpstk::ObsID oid(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::L1,
+                    gpstk::TrackingCode::Y);
+   oid.freqOffs = -7;
+   oid.freqOffsWild = false;
+   oid.mcode = 0x12345678;
+   oid.mcodeMask = 0xffffffff;
+   gpstk::NavSignalID uut3(gpstk::SatelliteSystem::GPS, oid,
+                           gpstk::NavType::GPSLNAV);
+   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS, uut3.system);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut3.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, uut3.obs.code);
+   TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, uut3.nav);
+   TUASSERTE(gpstk::ObsID, oid, uut3.obs);
    TURETURN();
 }
 
@@ -167,6 +186,41 @@ orderTest()
 }
 
 
+unsigned NavSignalID_T ::
+orderTestFast()
+{
+   TUDEF("NavSignalID", "order");
+      // test GLONASS metadata ordering
+   gpstk::ObsID oid1(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::G1,
+                     gpstk::TrackingCode::Standard, -3);
+   gpstk::ObsID oid2(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::G1,
+                     gpstk::TrackingCode::Standard, 7);
+   TestClass uut1(gpstk::SatelliteSystem::Glonass, oid1,
+                  gpstk::NavType::GloCivilF);
+   TestClass uut2(gpstk::SatelliteSystem::Glonass, oid2,
+                  gpstk::NavType::GloCivilF);
+   TestClass uut3(gpstk::SatelliteSystem::Glonass, oid1,
+                  gpstk::NavType::GloCivilF);
+   TUASSERTE(int, -1, uut1.order(uut2));
+   TUASSERTE(int, 1, uut2.order(uut1));
+   TUASSERTE(int, 0, uut1.order(uut3));
+      // test mcode metadata ordering
+   gpstk::ObsID oid4(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::L1,
+                     gpstk::TrackingCode::MDP);
+   gpstk::ObsID oid5(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::L1,
+                     gpstk::TrackingCode::MDP);
+   oid4.mcode = 0x12345678;
+   oid5.mcode = 0x87654321;
+   TestClass uut4(gpstk::SatelliteSystem::GPS, oid4, gpstk::NavType::GPSMNAV);
+   TestClass uut5(gpstk::SatelliteSystem::GPS, oid5, gpstk::NavType::GPSMNAV);
+   TestClass uut6(gpstk::SatelliteSystem::GPS, oid4, gpstk::NavType::GPSMNAV);
+   TUASSERTE(int, -1, uut4.order(uut5));
+   TUASSERTE(int, 1, uut5.order(uut4));
+   TUASSERTE(int, 0, uut4.order(uut6));
+   TURETURN();
+}
+
+
 int main()
 {
    NavSignalID_T testClass;
@@ -176,6 +230,7 @@ int main()
       // This test takes a long time, so don't run it as part of
       // automated testing.
       //errorTotal += testClass.orderTest();
+   errorTotal += testClass.orderTestFast();
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
 

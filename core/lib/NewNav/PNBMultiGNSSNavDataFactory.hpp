@@ -85,8 +85,13 @@ namespace gpstk
           * @param[out] navOut Any resulting NavData objects that were
           *   completed, usually as a result of adding navIn to the
           *   set of data.
+          * @param[in] cadence The data rate of the navigation
+          *   messages being processed.  If cadence < 0, The default
+          *   values of NavData::msgLenSec will be used. Values >= 0
+          *   will override the default.
           * @return false on error. */
-      bool addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+      bool addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
+                   double cadence = -1)
          override;
 
          /** Add a new factory to the support map.  The factory must

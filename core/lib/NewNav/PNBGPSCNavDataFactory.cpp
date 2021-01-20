@@ -439,7 +439,8 @@ enum CNavBitInfo
 namespace gpstk
 {
    bool PNBGPSCNavDataFactory ::
-   addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
+           double cadence)
    {
       if ((navIn->getNavID().navType != NavType::GPSCNAVL2) &&
           (navIn->getNavID().navType != NavType::GPSCNAVL5))

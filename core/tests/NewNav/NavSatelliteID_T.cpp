@@ -107,12 +107,32 @@ constructorTest()
    TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid2.obs.band);
    TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid2.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid2.nav);
+      // test constructor with wildcard transmit satellite
+   gpstk::NavSatelliteID nsid7(23, gpstk::SatelliteSystem::Transit,
+                               gpstk::CarrierBand::L5, gpstk::TrackingCode::Y,
+                               gpstk::NavType::GPSMNAV);
+   gpstk::SatID expx7a;
+   expx7a.makeWild();
+   TUASSERTE(gpstk::SatID, exps2a, nsid7.sat);
+   TUASSERTE(gpstk::SatID, expx7a, nsid7.xmitSat);
+   TUASSERT(nsid7.sat != exps2b);
+      // should match because wildcard.
+   TUASSERT(nsid7.xmitSat == expx2b);
+   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::Transit,
+             nsid7.system);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid7.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid7.obs.code);
+   TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid7.nav);
       // test "subframe 5 page 25" constructor
    gpstk::SatID exps3a(17,gpstk::SatelliteSystem::GPS);
    gpstk::SatID exps3b(23,gpstk::SatelliteSystem::GPS);
    gpstk::ObsID oid3a(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::L5,
                       gpstk::TrackingCode::Y);
    gpstk::NavID nid3a(gpstk::NavType::GPSMNAV);
+   oid3a.freqOffs = -7;
+   oid3a.freqOffsWild = false;
+   oid3a.mcode = 0x12345678;
+   oid3a.mcodeMask = 0xffffffff;
    gpstk::NavSatelliteID nsid3(17, exps3b, oid3a, nid3a);
    TUASSERTE(gpstk::SatID, exps3a, nsid3.sat);
    TUASSERTE(gpstk::SatID, exps3b, nsid3.xmitSat);
@@ -121,6 +141,7 @@ constructorTest()
    TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid3.obs.band);
    TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid3.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid3.nav);
+   TUASSERTE(gpstk::ObsID, oid3a, nsid3.obs);
       // test "QZSS CNAV" constructor
    gpstk::SatID exps4a(17,gpstk::SatelliteSystem::GPS);
    gpstk::SatID exps4b(23,gpstk::SatelliteSystem::QZSS);
@@ -132,6 +153,7 @@ constructorTest()
    TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid4.obs.band);
    TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid4.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid4.nav);
+   TUASSERTE(gpstk::ObsID, oid3a, nsid3.obs);
       // test yet another constructor
    gpstk::SatID exps5a(17,gpstk::SatelliteSystem::GPS);
    gpstk::SatID exps5b(23,gpstk::SatelliteSystem::GPS);

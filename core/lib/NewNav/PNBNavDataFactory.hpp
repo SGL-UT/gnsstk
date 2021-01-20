@@ -84,9 +84,14 @@ namespace gpstk
           * @param[out] navOut Any resulting NavData objects that were
           *   completed, usually as a result of adding navIn to the
           *   set of data.
+          * @param[in] cadence The data rate of the navigation
+          *   messages being processed.  If cadence < 0, The default
+          *   values of NavData::msgLenSec will be used. Values >= 0
+          *   will override the default.
           * @return false on error. */
       virtual bool addData(const PackedNavBitsPtr& navIn,
-                           NavDataPtrList& navOut) = 0;
+                           NavDataPtrList& navOut,
+                           double cadence = -1) = 0;
 
          /** Reset the state of the data accumulator.  Most
           * PNBNavDataFactory child classes will maintain some state

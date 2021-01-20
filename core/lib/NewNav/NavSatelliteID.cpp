@@ -78,7 +78,7 @@ namespace gpstk
    NavSatelliteID ::
    NavSatelliteID(unsigned long subj, const SatID& xmit, const ObsID& oid,
                   const NavID& navid)
-         : NavSignalID(xmit.system, oid.band, oid.code, navid.navType),
+         : NavSignalID(xmit.system, oid, navid.navType),
            sat(subj, xmit.system),
            xmitSat(xmit)
    {
@@ -88,7 +88,7 @@ namespace gpstk
    NavSatelliteID ::
    NavSatelliteID(const SatID& subj, const SatID& xmit, const ObsID& oid,
                   const NavID& navid)
-         : NavSignalID(xmit.system, oid.band, oid.code, navid.navType),
+         : NavSignalID(xmit.system, oid, navid.navType),
            sat(subj),
            xmitSat(xmit)
    {

@@ -55,7 +55,7 @@ class TestClass : public gpstk::PNBNavDataFactory
 private:
    friend class PNBNavDataFactory_T;
    bool addData(const gpstk::PackedNavBitsPtr& navIn,
-                gpstk::NavDataPtrList& navOut)
+                gpstk::NavDataPtrList& navOut, double cadence = -1)
       override
    { return false; }
    void resetState() override {}

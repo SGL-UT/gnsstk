@@ -70,7 +70,7 @@ class PNBTestFactory : public gpstk::PNBNavDataFactory
 {
 public:
    bool addData(const gpstk::PackedNavBitsPtr& navIn,
-                gpstk::NavDataPtrList& navOut) override
+                gpstk::NavDataPtrList& navOut, double cadence = -1) override
    { return false; }
    gpstk::NavValidityType getValidity() const { return navValidity; }
    bool getProcEph() const { return processEph; }

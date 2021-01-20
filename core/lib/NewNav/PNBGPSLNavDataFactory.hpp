@@ -75,8 +75,10 @@ namespace gpstk
           * @param[out] navOut Any resulting NavData objects that were
           *   completed, usually as a result of adding navIn to the
           *   set of data.
+          * @param[in] cadence This value is ignored in this class.
           * @return false on error. */
-      bool addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+      bool addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
+                   double cadence = -1)
          override;
 
          /** Process subframes 1-3.  When a complete ephemeris of

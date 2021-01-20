@@ -58,21 +58,22 @@ namespace gpstk
    }
 
 
+   NavSignalID ::
+   NavSignalID(SatelliteSystem sys, const ObsID& oid, NavType nmt)
+         : system(sys),
+           obs(oid),
+           nav(nmt)
+   {
+   }
+
+
    int NavSignalID ::
    order(const NavSignalID& right) const
    {
       if (system < right.system) return -1;
       if (system > right.system) return 1;
-      if ((obs.band != CarrierBand::Any) && (right.obs.band != CarrierBand::Any))
-      {
-         if (obs.band < right.obs.band) return -1;
-         if (obs.band > right.obs.band) return 1;
-      }
-      if ((obs.code != TrackingCode::Any) && (right.obs.code != TrackingCode::Any))
-      {
-         if (obs.code < right.obs.code) return -1;
-         if (obs.code > right.obs.code) return 1;
-      }
+      if (obs < right.obs) return -1;
+      if (right.obs < obs) return 1;
       if ((nav != NavType::Any) && (right.nav != NavType::Any))
       {
          if (nav < right.nav) return -1;
