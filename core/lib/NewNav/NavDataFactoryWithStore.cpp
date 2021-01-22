@@ -446,7 +446,7 @@ namespace gpstk
             {
                TimeOffsetData *todp = dynamic_cast<TimeOffsetData*>(
                   omi.second.get());
-               // std::cerr << "checking " << todp->signal << std::endl;
+               // std::cerr << "  checking " << todp->signal << std::endl;
                if (todp == nullptr)
                   continue; // shouldn't happen.
                switch (valid)
@@ -475,6 +475,9 @@ namespace gpstk
                      break;
                }
             }
+            // std::cerr << "  didn't find any acceptable data" << std::endl;
+            oemi = (oemi == odi->second.begin()
+                    ? odi->second.end() : std::prev(oemi));
          }
       }
       return rv;
@@ -859,6 +862,7 @@ namespace gpstk
          case SVHealth::Healthy:
          case SVHealth::Unhealthy:
          case SVHealth::Degraded:
+            // std::cerr << "  attempting to match " << gpstk::StringUtils::asString(xmitHealth) << std::endl;
                // make sure the health status is the desired state
             if (ndp->signal.sat == ndp->signal.xmitSat)
             {
@@ -878,6 +882,7 @@ namespace gpstk
             }
             if (!rvSet)
             {
+               // std::cerr << "  looking up health data" << std::endl;
                   // We were not able to obtain health status of the
                   // transmitting satellite so look it up.  We
                   // specifically use SVHealth::Any because we're
@@ -902,6 +907,7 @@ namespace gpstk
                          SVHealth::Any, NavValidityType::Any,
                          NavSearchOrder::User))
                {
+                  // std::cerr << "  couldn't find health" << std::endl;
                   return false;
                }
                hea = dynamic_cast<NavHealthData*>(heaPtr.get());
