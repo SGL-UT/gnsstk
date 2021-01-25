@@ -41,6 +41,7 @@
 
 #include "CommonTime.hpp"
 #include "TimeSystem.hpp"
+#include "TimeSystemConverter.hpp"
 #include "StringUtils.hpp"
 #include <map>
 
@@ -58,7 +59,7 @@ namespace gpstk
    {
    public:
 
-     // Default constructor
+         /// Default constructor
       TimeTag()
       {}
 
@@ -168,9 +169,29 @@ namespace gpstk
       TimeSystem getTimeSystem() const
       { return timeSystem ; }
 
+         /** Modify both the time value and time system to reflect a
+          * change in time system.
+          * @param[in] timeSystem The time system to convert this time to.
+          * @param[in,out] conv The converter object to use to get the
+          *   offset between the current time system and the requested
+          *   time system.
+          * @return true if successful, false if unable to get/apply
+          *   the time system offset.
+          */
+      bool changeTimeSystem(TimeSystem timeSys, TimeSystemConverter* conv);
+
+         /** Modify both the time value and time system to reflect a
+          * change in time system.
+          * @param[in] timeSystem The time system to convert this time to.
+          * @return true if successful, false if the static converter
+          *   CommonTime::tsConv has not been set or is unable to
+          *   get/apply the time system offset.
+          */
+      bool changeTimeSystem(TimeSystem timeSys);
+
    protected:
 
-      TimeSystem timeSystem; // time system (representation) of the data
+      TimeSystem timeSystem; ///< time system (representation) of the data
    };
 
       //@}

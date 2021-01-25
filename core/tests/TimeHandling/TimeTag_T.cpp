@@ -46,6 +46,7 @@
 #include "UnixTime.hpp"
 #include "YDSTime.hpp"
 #include "TestUtil.hpp"
+#include "BasicTimeSystemConverter.hpp"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -347,8 +348,87 @@ public:
 
       TURETURN();
    }
+
+   unsigned changeTimeSystemTest();
 };
 
+
+unsigned TimeTag_T ::
+changeTimeSystemTest()
+{
+   TUDEF("TimeTag", "changeTimeSystem");
+   std::shared_ptr<TimeSystemConverter> btscShared =
+      make_shared<gpstk::BasicTimeSystemConverter>();
+   gpstk::BasicTimeSystemConverter *btsc =
+      dynamic_cast<gpstk::BasicTimeSystemConverter *>(btscShared.get());
+      // can't use TimeTag directly as it's abstract, so use CivilTime instead
+   gpstk::CivilTime uut, exp;
+
+      //Check conversion from any given time system to UTC and back 
+   uut = gpstk::CivilTime(1990,11,6,0,0,0,gpstk::TimeSystem::UTC);
+   exp = gpstk::CivilTime(1990,11,6,0,0,6,gpstk::TimeSystem::GPS);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GPS,btsc));
+   TUASSERTE(gpstk::CommonTime, uut, exp);
+
+   uut = gpstk::CivilTime(2004,11,16,0,0,0,gpstk::TimeSystem::GPS);
+   exp = gpstk::CivilTime(2004,11,15,23,59,47,gpstk::TimeSystem::UTC);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::UTC,btsc));
+   TUASSERTE(gpstk::CommonTime, uut, exp);
+
+   uut = gpstk::CivilTime(1992,10,3,0,0,0,gpstk::TimeSystem::UTC);
+   exp = gpstk::CivilTime(1992,10,3,0,0,0,gpstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO,btsc));
+   TUASSERTE(gpstk::CommonTime, uut, exp);
+
+   uut = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
+   exp = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::UTC);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::UTC,btsc));
+   TUASSERTE(gpstk::CommonTime, uut, exp);
+
+   uut = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
+   exp = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO,btsc));
+   TUASSERTE(gpstk::CommonTime, uut, exp);
+
+   uut = gpstk::CivilTime(2020,1,1,0,0,0,gpstk::TimeSystem::GPS);
+   exp = gpstk::CivilTime(2019,12,31,23,59,42,gpstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO,btsc));
+   TUASSERTE(gpstk::CommonTime, uut, exp);
+
+      // conversion using static TimeSystemConverter
+   gpstk::CommonTime::tsConv = btscShared;
+   uut = gpstk::CivilTime(1990,11,6,0,0,0,gpstk::TimeSystem::UTC);
+   exp = gpstk::CivilTime(1990,11,6,0,0,6,gpstk::TimeSystem::GPS);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GPS));
+   TUASSERTE(gpstk::CommonTime, uut, exp);
+
+   uut = gpstk::CivilTime(2004,11,16,0,0,0,gpstk::TimeSystem::GPS);
+   exp = gpstk::CivilTime(2004,11,15,23,59,47,gpstk::TimeSystem::UTC);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::UTC));
+   TUASSERTE(gpstk::CommonTime, uut, exp);
+
+   uut = gpstk::CivilTime(1992,10,3,0,0,0,gpstk::TimeSystem::UTC);
+   exp = gpstk::CivilTime(1992,10,3,0,0,0,gpstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO));
+   TUASSERTE(gpstk::CommonTime, uut, exp);
+
+   uut = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
+   exp = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::UTC);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::UTC));
+   TUASSERTE(gpstk::CommonTime, uut, exp);
+
+   uut = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
+   exp = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO));
+   TUASSERTE(gpstk::CommonTime, uut, exp);
+
+   uut = gpstk::CivilTime(2020,1,1,0,0,0,gpstk::TimeSystem::GPS);
+   exp = gpstk::CivilTime(2019,12,31,23,59,42,gpstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO));
+   TUASSERTE(gpstk::CommonTime, uut, exp);
+
+   TURETURN();
+}
 
 
 int main() //Main function to initialize and run all tests above
@@ -364,6 +444,7 @@ int main() //Main function to initialize and run all tests above
    errorTotal += testClass.scanfMJD();
    errorTotal += testClass.scanfUnixTime();
    errorTotal += testClass.scanfYDSTime();
+   errorTotal += testClass.changeTimeSystemTest();
 	
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
