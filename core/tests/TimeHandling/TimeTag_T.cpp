@@ -55,303 +55,318 @@
 using namespace gpstk;
 using namespace std;
 
-//==========================================================================================================================
-//	This test file will contain a series of scanf checks for each of the directly tested TimeTag classes.
-//==========================================================================================================================
+// This test file will contain a series of scanf checks for each of
+// the directly tested TimeTag classes.
 
 class TimeTag_T
 {
-	public:
-	TimeTag_T() {}
-	~TimeTag_T() {}
+public:
+   TimeTag_T() {}
+   ~TimeTag_T() {}
 
-//==========================================================================================================================
 //	ANSITime scanf Test
-//==========================================================================================================================
-	int scanfANSITime( void )
-	{
-		TestUtil testFramework( "TimeTag", "scanf(ANSITime)", __FILE__, __LINE__ );
+   unsigned scanfANSITime()
+   {
+      TUDEF("TimeTag", "scanf(ANSITime)");
 
 
-		ANSITime hardCodedTime(13500000,TimeSystem(2));                //Set a hardcoded time
-		std::string formatString = "%08K %03P";                        //Provide a format string
-		std::string timeString = hardCodedTime.printf(formatString);   //Print the time using that format
-		ANSITime scannedTime;
+         //Set a hardcoded time
+      ANSITime hardCodedTime(13500000,TimeSystem(2));
+         //Provide a format string
+      std::string formatString = "%08K %03P";
+         //Print the time using that format
+      std::string timeString = hardCodedTime.printf(formatString);
+      ANSITime scannedTime;
 
-		scannedTime.scanf(timeString, formatString);                   //Read the formatted string back into a new
-		                                                               //time variable
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
 
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(ANSITime, hardCodedTime, scannedTime);
 
-		return testFramework.countFails();
-	}
+      TURETURN();
+   }
 
-//==========================================================================================================================
 //	CivilTime scanf Test
-//==========================================================================================================================
-	int scanfCivilTime( void )
-	{
-		TestUtil testFramework( "TimeTag", "scanf(CivilTime)", __FILE__, __LINE__ );
+   unsigned scanfCivilTime()
+   {
+      TUDEF("TimeTag", "scanf(CivilTime)");
 
 
-		CivilTime hardCodedTime(2008,8,21,13,30,15.,TimeSystem::UTC);      //Set a hardcoded time
-		std::string formatString = "%04Y %02m %02d %02H %02M %02S %03P";   //Provide a format string
-		std::string timeString = hardCodedTime.printf(formatString);       //Print the time using that format
-		CivilTime scannedTime;
+         //Set a hardcoded time
+      CivilTime hardCodedTime(2008,8,21,13,30,15.,TimeSystem::UTC);
+         //Provide a format string
+      std::string formatString = "%04Y %02m %02d %02H %02M %02S %03P";
+         //Print the time using that format
+      std::string timeString = hardCodedTime.printf(formatString);
+      CivilTime scannedTime;
 
-		scannedTime.scanf(timeString, formatString);                       //Read the formatted string back into a new
-		                                                                   //time variable
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
 
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(CivilTime, hardCodedTime, scannedTime);
 
-		scannedTime.reset();                                               //Reset the time for a new format to be scanned
-
-
-		formatString = "%02y %02m %02d %02H %02M %02S %03P";               //Provide a format string
-		timeString = hardCodedTime.printf(formatString);                   //Print the time using that format
-		scannedTime.scanf(timeString, formatString);                       //Read the formatted string back into a new
-		                                                                   //time variable
-
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
-
-		scannedTime.reset();                                               //Reset the time for a new format to be scanned
-
-		formatString = "%04Y %03b %02d %02H %02M %02S %03P";               //Provide a format string
-		timeString = hardCodedTime.printf(formatString);                   //Print the time using that format
-		scannedTime.scanf(timeString, formatString);                       //Read the formatted string back into a new
-		                                                                   //time variable
-
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
-
-		scannedTime.reset();                                               //Reset the time for a new format to be scanned
-
-		formatString = "%04Y %03b %02d %02H %02M %5.2f %03P";               //Provide a format string
-		timeString = hardCodedTime.printf(formatString);                   //Print the time using that format
-		scannedTime.scanf(timeString, formatString);                       //Read the formatted string back into a new
-		                                                                   //time variable
-
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
-
-		scannedTime.reset();                                               //Reset the time for a new format to be scanned
-
-		formatString = "%02y %03b %02d %02H %02M %5.2f %03P";               //Provide a format string
-		timeString = hardCodedTime.printf(formatString);                   //Print the time using that format
-		scannedTime.scanf(timeString, formatString);                       //Read the formatted string back into a new
-		                                                                   //time variable
-
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
-
-		scannedTime.reset();                                               //Reset the time for a new format to be scanned
-
-		return testFramework.countFails();
-	}
+         //Reset the time for a new format to be scanned
+      scannedTime.reset();
 
 
+         //Provide a format string
+      formatString = "%02y %02m %02d %02H %02M %02S %03P";
+         //Print the time using that format
+      timeString = hardCodedTime.printf(formatString);
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
 
-//==========================================================================================================================
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(CivilTime, hardCodedTime, scannedTime);
+
+         //Reset the time for a new format to be scanned
+      scannedTime.reset();
+
+         //Provide a format string
+      formatString = "%04Y %03b %02d %02H %02M %02S %03P";
+         //Print the time using that format
+      timeString = hardCodedTime.printf(formatString);
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
+
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(CivilTime, hardCodedTime, scannedTime);
+
+         //Reset the time for a new format to be scanned
+      scannedTime.reset();
+
+         //Provide a format string
+      formatString = "%04Y %03b %02d %02H %02M %5.2f %03P";
+         //Print the time using that format
+      timeString = hardCodedTime.printf(formatString);
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
+
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(CivilTime, hardCodedTime, scannedTime);
+
+         //Reset the time for a new format to be scanned
+      scannedTime.reset();
+
+         //Provide a format string
+      formatString = "%02y %03b %02d %02H %02M %5.2f %03P";
+         //Print the time using that format
+      timeString = hardCodedTime.printf(formatString);
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
+
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(CivilTime, hardCodedTime, scannedTime);
+
+         //Reset the time for a new format to be scanned
+      scannedTime.reset();
+
+      TURETURN();
+   }
+
+
+
 //	GPSWeekSecond scanf Test
-//==========================================================================================================================
-	int scanfGPSWeekSecond( void )
-	{
-		TestUtil testFramework( "TimeTag", "scanf(GPSWeekSecond)", __FILE__, __LINE__ );
+   unsigned scanfGPSWeekSecond()
+   {
+      TUDEF("TimeTag", "scanf(GPSWeekSecond)");
 
 
-  		GPSWeekSecond hardCodedTime(1300,13500.,TimeSystem::GPS);      //Set a hardcoded time
-		std::string formatString = "%04F %8.2g %03P";                   //Provide a format string
-		std::string timeString = hardCodedTime.printf(formatString);   //Print the time using that format
-		GPSWeekSecond scannedTime;
+         //Set a hardcoded time
+      GPSWeekSecond hardCodedTime(1300,13500.,TimeSystem::GPS);
+         //Provide a format string
+      std::string formatString = "%04F %8.2g %03P";
+         //Print the time using that format
+      std::string timeString = hardCodedTime.printf(formatString);
+      GPSWeekSecond scannedTime;
 
-		scannedTime.scanf(timeString, formatString);                   //Read the formatted string back into a new
-		                                                               //time variable
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
 
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(GPSWeekSecond, hardCodedTime, scannedTime);
 
-		return testFramework.countFails();
-	}
+      TURETURN();
+   }
 
-//==========================================================================================================================
 //	GPSWeekZcount scanf Test
-//==========================================================================================================================
-	int scanfGPSWeekZcount( void )
-	{
-		TestUtil testFramework( "TimeTag", "scanf(GPSWeekZcount)", __FILE__, __LINE__ );
+   unsigned scanfGPSWeekZcount()
+   {
+      TUDEF("TimeTag", "scanf(GPSWeekZcount)");
 
 
-  		GPSWeekZcount hardCodedTime(1300,13500.,TimeSystem(2));        //Set a hardcoded time
-		std::string formatString = "%04F %05z %03P";                   //Provide a format string
-		std::string timeString = hardCodedTime.printf(formatString);   //Print the time using that format
-		GPSWeekZcount scannedTime;
+         //Set a hardcoded time
+      GPSWeekZcount hardCodedTime(1300,13500.,TimeSystem(2));
+         //Provide a format string
+      std::string formatString = "%04F %05z %03P";
+         //Print the time using that format
+      std::string timeString = hardCodedTime.printf(formatString);
+      GPSWeekZcount scannedTime;
 
-		scannedTime.scanf(timeString, formatString);                   //Read the formatted string back into a new
-		                                                               //time variable
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
 
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(GPSWeekZcount, hardCodedTime, scannedTime);
 
-		scannedTime.reset();                                           //Reset the time for a new format to be scanned
-
-
-		formatString = "%04F %10C %03P";                               //Provide a format string
-		timeString = hardCodedTime.printf(formatString);               //Print the time using that format
-		scannedTime.scanf(timeString, formatString);                   //Read the formatted string back into a new
-		                                                               //time variable
-
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
-
-		scannedTime.reset();                                           //Reset the time for a new format to be scanned
+         //Reset the time for a new format to be scanned
+      scannedTime.reset();
 
 
-		formatString = "%04F %10c %03P";                               //Provide a format string
-		timeString = hardCodedTime.printf(formatString);               //Print the time using that format
-		scannedTime.scanf(timeString, formatString);                   //Read the formatted string back into a new
-		                                                               //time variable
+         //Provide a format string
+      formatString = "%04F %10C %03P";
+         //Print the time using that format
+      timeString = hardCodedTime.printf(formatString);
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
 
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(GPSWeekZcount, hardCodedTime, scannedTime);
 
-		return testFramework.countFails();
-	}
+         //Reset the time for a new format to be scanned
+      scannedTime.reset();
 
-//==========================================================================================================================
+
+         //Provide a format string
+      formatString = "%04F %10c %03P";
+         //Print the time using that format
+      timeString = hardCodedTime.printf(formatString);
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
+
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(GPSWeekZcount, hardCodedTime, scannedTime);
+
+      TURETURN();
+   }
+
 //	JulianDate scanf Test
-//==========================================================================================================================
-	int scanfJulianDate( void )
-	{
-		TestUtil testFramework( "TimeTag", "scanf(JulianDate)", __FILE__, __LINE__ );
+   unsigned scanfJulianDate()
+   {
+      TUDEF("TimeTag", "scanf(JulianDate)");
 
 
-  		JulianDate hardCodedTime(1234567,TimeSystem(2));                //Set a hardcoded time
-		std::string formatString = "%10.2J %03P";                        //Provide a format string
-		std::string timeString = hardCodedTime.printf(formatString);   //Print the time using that format
-		JulianDate scannedTime;
+         //Set a hardcoded time
+      JulianDate hardCodedTime(1234567,TimeSystem(2));
+         //Provide a format string
+      std::string formatString = "%10.2J %03P";
+         //Print the time using that format
+      std::string timeString = hardCodedTime.printf(formatString);
+      JulianDate scannedTime;
 
-		scannedTime.scanf(timeString, formatString);                   //Read the formatted string back into a new
-		                                                               //time variable
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
 
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(JulianDate, hardCodedTime, scannedTime);
 
-		return testFramework.countFails();
-	}
+      TURETURN();
+   }
 
-//==========================================================================================================================
 //	MJD scanf Test
-//==========================================================================================================================
-	int scanfMJD( void )
-	{
-		TestUtil testFramework( "TimeTag", "scanf(MJD)", __FILE__, __LINE__ );
+   unsigned scanfMJD()
+   {
+      TUDEF("TimeTag", "scanf(MJD)");
 
 
-  		MJD hardCodedTime(123456,TimeSystem(1));                       //Set a hardcoded time
-		std::string formatString = "%08Q %03P";                        //Provide a format string
-		std::string timeString = hardCodedTime.printf(formatString);   //Print the time using that format
-		MJD scannedTime;
+         //Set a hardcoded time
+      MJD hardCodedTime(123456,TimeSystem(1));
+         //Provide a format string
+      std::string formatString = "%08Q %03P";
+         //Print the time using that format
+      std::string timeString = hardCodedTime.printf(formatString);
+      MJD scannedTime;
 
-		scannedTime.scanf(timeString, formatString);                   //Read the formatted string back into a new
-		                                                               //time variable
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
 
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(MJD, hardCodedTime, scannedTime);
 
-		return testFramework.countFails();
-	}
+      TURETURN();
+   }
 
-//==========================================================================================================================
 //	UnixTime scanf Test
-//==========================================================================================================================
-	int scanfUnixTime( void )
-	{
-		TestUtil testFramework( "TimeTag", "scanf(UnixTime)", __FILE__, __LINE__ );
+   unsigned scanfUnixTime()
+   {
+      TUDEF("TimeTag", "scanf(UnixTime)");
 
 
-  		UnixTime hardCodedTime(1654321,10,TimeSystem(5));              //Set a hardcoded time
-		std::string formatString = "%07U %02u %03P";                   //Provide a format string
-		std::string timeString = hardCodedTime.printf(formatString);   //Print the time using that format
-		UnixTime scannedTime;
+         //Set a hardcoded time
+      UnixTime hardCodedTime(1654321,10,TimeSystem(5));
+         //Provide a format string
+      std::string formatString = "%07U %02u %03P";
+         //Print the time using that format
+      std::string timeString = hardCodedTime.printf(formatString);
+      UnixTime scannedTime;
 
-		scannedTime.scanf(timeString, formatString);                   //Read the formatted string back into a new
-		                                                               //time variable
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
 
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(UnixTime, hardCodedTime, scannedTime);
 
-		return testFramework.countFails();
-	}
+      TURETURN();
+   }
 
 
-//==========================================================================================================================
 //	YDSTime scanf Test
-//==========================================================================================================================
-	int scanfYDSTime( void )
-	{
-		TestUtil testFramework( "TimeTag", "scanf(YDSTime)", __FILE__, __LINE__ );
+   unsigned scanfYDSTime()
+   {
+      TUDEF("TimeTag", "scanf(YDSTime)");
 
 
-  		YDSTime hardCodedTime(2008,200,1000,TimeSystem::GPS);          //Set a hardcoded time
-		std::string formatString = "%04Y %03j %7.2s %03P";              //Provide a format string
-		std::string timeString = hardCodedTime.printf(formatString);   //Print the time using that format
-		YDSTime scannedTime;
+         //Set a hardcoded time
+      YDSTime hardCodedTime(2008,200,1000,TimeSystem::GPS);
+         //Provide a format string
+      std::string formatString = "%04Y %03j %7.2s %03P";
+         //Print the time using that format
+      std::string timeString = hardCodedTime.printf(formatString);
+      YDSTime scannedTime;
 
-		scannedTime.scanf(timeString, formatString);                   //Read the formatted string back into a new
-		                                                               //time variable
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
 
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
-		scannedTime.reset();                                           //Reset the time for a new format to be scanned
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(YDSTime, hardCodedTime, scannedTime);
+         //Reset the time for a new format to be scanned
+      scannedTime.reset();
 
 
-		formatString = "%02y %03j %7.2s %03P";                          //Provide a format string
-		timeString = hardCodedTime.printf(formatString);               //Print the time using that format
-		scannedTime.scanf(timeString, formatString);                   //Read the formatted string back into a new
-		                                                               //time variable
+         //Provide a format string
+      formatString = "%02y %03j %7.2s %03P";
+         //Print the time using that format
+      timeString = hardCodedTime.printf(formatString);
+         //Read the formatted string back into a new time variable
+      scannedTime.scanf(timeString, formatString);
 
-		//Verify the scanned time is the same as the hardcoded time
-		testFramework.assert(scannedTime == hardCodedTime, "scanf was unable to scan the time appropriately", __LINE__);
+         //Verify the scanned time is the same as the hardcoded time
+      TUASSERTE(YDSTime, hardCodedTime, scannedTime);
 
-		return testFramework.countFails();
-	}
+      TURETURN();
+   }
 };
 
 
 
 int main() //Main function to initialize and run all tests above
 {
-	int check, errorCounter = 0;
-	TimeTag_T testClass;
+   unsigned errorTotal = 0;
+   TimeTag_T testClass;
 
-	check = testClass.scanfANSITime();
-	errorCounter += check;
-
-	check = testClass.scanfCivilTime();
-	errorCounter += check;
-
-	check = testClass.scanfGPSWeekSecond();
-	errorCounter += check;
-
-	check = testClass.scanfGPSWeekZcount();
-	errorCounter += check;
-
-	check = testClass.scanfJulianDate();
-	errorCounter += check;
-
-	check = testClass.scanfMJD();
-	errorCounter += check;
-
-	check = testClass.scanfUnixTime();
-	errorCounter += check;
-
-	check = testClass.scanfYDSTime();
-	errorCounter += check;
+   errorTotal += testClass.scanfANSITime();
+   errorTotal += testClass.scanfCivilTime();
+   errorTotal += testClass.scanfGPSWeekSecond();
+   errorTotal += testClass.scanfGPSWeekZcount();
+   errorTotal += testClass.scanfJulianDate();
+   errorTotal += testClass.scanfMJD();
+   errorTotal += testClass.scanfUnixTime();
+   errorTotal += testClass.scanfYDSTime();
 	
-	std::cout << "Total Failures for " << __FILE__ << ": " << errorCounter << std::endl;
+   cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
-	return errorCounter; //Return the total number of errors
+      //Return the total number of errors
+   return errorTotal;
 }
