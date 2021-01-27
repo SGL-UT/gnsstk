@@ -137,6 +137,58 @@ namespace gpstk
       virtual void dump(std::ostream& s, NavData::Detail dl) const
       {}
 
+         /** Remove all data from the factory in the time span
+          * [fromTime,toTime).
+          * @param[in] fromTime The earliest time to be removed.
+          * @param[in] toTime The earliest time that will NOT be removed.
+          */
+      virtual void edit(const CommonTime& fromTime, const CommonTime& toTime)
+      {}
+
+         /** Remove data for a specific satellite signal from the
+          * factory in the time span [fromTime,toTime).
+          * @param[in] fromTime The earliest time to be removed.
+          * @param[in] toTime The earliest time that will NOT be removed.
+          * @param[in] satID The complete signal specification for the
+          *   data to be removed (subject satellite, transmit
+          *   satellite, system, carrier, code, nav).
+          */
+      virtual void edit(const CommonTime& fromTime, const CommonTime& toTime,
+                        const NavSatelliteID& satID)
+      {}
+
+         /** Remove data for all satellites matching a specific signal
+          * from the factory in the time span [fromTime,toTime).
+          * @param[in] fromTime The earliest time to be removed.
+          * @param[in] toTime The earliest time that will NOT be removed.
+          * @param[in] signal The signal for the data to be removed
+          *   (system, carrier, code, nav).
+          */
+      virtual void edit(const CommonTime& fromTime, const CommonTime& toTime,
+                        const NavSignalID& signal)
+      {}
+
+         /// Remove all data from the factory.
+      virtual void clear()
+      {}
+
+         /** Determine the earliest time for which this object can successfully 
+          * determine the Xvt for any object.
+          * @return The initial time, or CommonTime::END_OF_TIME if no
+          *   data is available. */
+      virtual CommonTime getInitialTime() const
+      { return CommonTime::END_OF_TIME; }
+
+         /** Determine the latest time for which this object can successfully 
+          * determine the Xvt for any object.
+          * @return The initial time, or CommonTime::BEGINNING_OF_TIME if no
+          *   data is available. */
+      virtual CommonTime getFinalTime() const
+      { return CommonTime::BEGINNING_OF_TIME; }
+
+         /// Return a comma-separated list of formats supported by this factory.
+      virtual std::string getFactoryFormats() const = 0;
+
          /** Define which signals this factory supports.  This will be
           * empty by default, which means that NavLibrary would not
           * use this factory, so it is up to the derived classes to

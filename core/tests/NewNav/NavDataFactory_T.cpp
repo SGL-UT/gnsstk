@@ -79,6 +79,8 @@ public:
    { return navValidity; }
    gpstk::NavMessageTypeSet getTypeFilter() const
    { return procNavTypes; }
+   std::string getFactoryFormats() const override
+   { return "BUNK"; }
 };
 
 

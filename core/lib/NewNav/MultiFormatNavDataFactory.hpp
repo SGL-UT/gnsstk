@@ -126,6 +126,9 @@ namespace gpstk
          /// Remove all data from the internal store.
       void clear() override;
 
+         /// Return a comma-separated list of formats supported by the factories
+      std::string getFactoryFormats() const;
+
          /// Return the number of nav messages in all factories.
       size_t size() const override;
          /// Return the number of distinct signals (ignoring PRN) in factories.

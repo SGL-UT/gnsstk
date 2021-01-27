@@ -213,6 +213,15 @@ namespace gpstk
          /// Returns a formatted string with the description of this option.
       std::string getDescription() const;
 
+         /** Set the command-line option's description after the
+          * constructor.  This differs in behavior from
+          * getDescription() in that getDescription() combines all of
+          * the long/short option, the actual description, and so on,
+          * where this only changes the description itself.
+          * @param[in] desc The new option description/documentation. */
+      void setDescription(const std::string& desc)
+      { description = desc; }
+
          /**
           * If you specified a format for the arguments (for example, digit or
           * string), this function checks them to see if they match.

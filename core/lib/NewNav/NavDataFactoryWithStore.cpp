@@ -47,6 +47,16 @@ static const std::string dts("%Y/%03j/%02H:%02M:%02S");
 
 namespace gpstk
 {
+   NavDataFactoryWithStore ::
+   NavDataFactoryWithStore()
+         : initialTime(CommonTime::END_OF_TIME),
+           finalTime(CommonTime::BEGINNING_OF_TIME)
+   {
+      initialTime.setTimeSystem(gpstk::TimeSystem::Any);
+      finalTime.setTimeSystem(gpstk::TimeSystem::Any);
+   }
+
+
    bool NavDataFactoryWithStore ::
    find(const NavMessageID& nmid, const CommonTime& when,
         NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
@@ -206,7 +216,7 @@ namespace gpstk
             }
             else if (((imi.it != imi.map->end()) &&
                       (imi.it->second->getUserTime() > when)) ||
-                     !validityCheck(imi.it,*imi.map,valid,xmitHealth))
+                     !validityCheck(imi.it,*imi.map,valid,xmitHealth,when))
             {
                // std::cerr << "  not end, not right time" << std::endl;
                imi.it = (imi.it == imi.map->begin()
@@ -355,7 +365,7 @@ namespace gpstk
                   // time for itGT is nearer to time of interest, try it first.
                for (auto& ndpli : imi.itGT->second)
                {
-                  if (validityCheck(ndpli, valid, xmitHealth))
+                  if (validityCheck(ndpli, valid, xmitHealth,when))
                   {
                         // got a match
                      navData = ndpli;
@@ -371,7 +381,7 @@ namespace gpstk
                   // time for itLT is nearer to time of interest, try it first.
                for (auto& ndpli : imi.itLT->second)
                {
-                  if (validityCheck(ndpli, valid, xmitHealth))
+                  if (validityCheck(ndpli, valid, xmitHealth,when))
                   {
                         // got a match
                      navData = ndpli;
@@ -690,9 +700,18 @@ namespace gpstk
    bool NavDataFactoryWithStore ::
    addNavData(const NavDataPtr& nd)
    {
+      OrbitDataKepler *odkp = nullptr;
       TimeOffsetData *todp = nullptr;
       // std::cerr << "addNavData user = " << nd->getUserTime() << "  nearest = "
       //           << nd->getNearTime() << std::endl;
+      if ((odkp = dynamic_cast<OrbitDataKepler*>(nd.get())) != nullptr)
+      {
+            /** @todo Figure out how to deal with the inevitable
+             * problems if/when time systems aren't consistent across
+             * all data. */
+         initialTime = std::min(initialTime, odkp->beginFit);
+         finalTime = std::max(finalTime, odkp->endFit);
+      }
       if ((todp = dynamic_cast<TimeOffsetData*>(nd.get())) == nullptr)
       {
             // everything BUT TimeOffsetData
@@ -794,7 +813,8 @@ namespace gpstk
    validityCheck(const NavMap::iterator& ti,
                  NavMap& nm,
                  NavValidityType valid,
-                 SVHealth xmitHealth)
+                 SVHealth xmitHealth,
+                 const CommonTime& when)
    {
          // We can't check the validity of an invalid iterator, BUT we
          // have to say it's valid because otherwise the while loop in
@@ -803,16 +823,27 @@ namespace gpstk
       {
          return true;
       }
-      return validityCheck(ti->second, valid, xmitHealth);
+      return validityCheck(ti->second, valid, xmitHealth, when);
    }
 
 
    bool NavDataFactoryWithStore ::
    validityCheck(const NavDataPtr& ndp,
                  NavValidityType valid,
-                 SVHealth xmitHealth)
+                 SVHealth xmitHealth,
+                 const CommonTime& when)
    {
       bool rv = true;
+         // One last check for fit interval validity, but it only
+         // applies to OrbitDataKepler.
+      OrbitDataKepler *odk = dynamic_cast<OrbitDataKepler*>(ndp.get());
+      if (odk != nullptr)
+      {
+         if ((when < odk->beginFit) || (when > odk->endFit))
+         {
+            return false;
+         }
+      }
       switch (valid)
       {
          case NavValidityType::ValidOnly:

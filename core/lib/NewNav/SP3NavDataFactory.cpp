@@ -73,6 +73,10 @@ namespace gpstk
       rv = findGeneric(NavMessageType::Ephemeris, nmid, when, navData);
       if (rv == false)
          return false;
+         /** @todo If someone attempts to use SP3 but sets the type
+          * filter to exclude clock, no clock data will be stored and
+          * this will end up returning false.  I'm not sure if this is
+          * valid behavior. */
       rv = findGeneric(NavMessageType::Clock, nmid, when, navData);
       if (rv == false)
          return false;

@@ -229,7 +229,8 @@ namespace gpstk
        * @todo Determine if OrbitDataKepler::beginFit and
        * OrbitDataKepler::endFit need to be moved up to OrbitData.
        * This mostly (if not exclusively) affects GLONASS orbits and
-       * OrbitDataSP3.
+       * OrbitDataSP3.  If so, NavDataLibraryWithStore needs to
+       * reflect this change.
        *
        * @todo Determine what, if anything, should be done in
        * NavLibrary::getXvt() with beginFit/endFit.
@@ -572,6 +573,53 @@ namespace gpstk
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
       void dump(std::ostream& s, NavData::Detail dl) const;
+
+         /** Remove all data from the library's factories in the time
+          * span [fromTime,toTime).
+          * @param[in] fromTime The earliest time to be removed.
+          * @param[in] toTime The earliest time that will NOT be removed.
+          */
+      void edit(const CommonTime& fromTime, const CommonTime& toTime);
+
+         /** Remove data for a specific satellite signal from the
+          * library's factories in the time span [fromTime,toTime).
+          * @param[in] fromTime The earliest time to be removed.
+          * @param[in] toTime The earliest time that will NOT be removed.
+          * @param[in] satID The complete signal specification for the
+          *   data to be removed (subject satellite, transmit
+          *   satellite, system, carrier, code, nav).
+          */
+      void edit(const CommonTime& fromTime, const CommonTime& toTime,
+                const NavSatelliteID& satID);
+
+         /** Remove data for all satellites matching a specific signal
+          * from the library's factories in the time span
+          * [fromTime,toTime).
+          * @param[in] fromTime The earliest time to be removed.
+          * @param[in] toTime The earliest time that will NOT be removed.
+          * @param[in] signal The signal for the data to be removed
+          *   (system, carrier, code, nav).
+          */
+      void edit(const CommonTime& fromTime, const CommonTime& toTime,
+                const NavSignalID& signal);
+
+         /// Remove all data from the library's factories.
+      virtual void clear();
+
+         /** Determine the earliest time for which this object can successfully 
+          * determine the Xvt for any object.
+          * @return The initial time, or CommonTime::END_OF_TIME if no
+          *   data is available. */
+      CommonTime getInitialTime() const;
+
+         /** Determine the latest time for which this object can successfully 
+          * determine the Xvt for any object.
+          * @return The initial time, or CommonTime::BEGINNING_OF_TIME if no
+          *   data is available. */
+      CommonTime getFinalTime() const;
+
+         /// Return a comma-separated list of formats supported by the factories
+      std::string getFactoryFormats() const;
 
    protected:
          /** Known nav data factories, organized by signal to make
