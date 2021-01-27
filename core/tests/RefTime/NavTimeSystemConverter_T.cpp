@@ -78,6 +78,8 @@ public:
    { return procNavTypes; }
    bool addDataSource(const std::string& source) override
    { return false; }
+   std::string getFactoryFormats() const override
+   { return "Test"; }
 };
 
 
