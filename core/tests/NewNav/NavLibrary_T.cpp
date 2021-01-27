@@ -112,6 +112,8 @@ public:
    { return procNavTypes; }
    bool addDataSource(const std::string& source) override
    { return false; }
+   std::string getFactoryFormats() const override
+   { return "BUNK"; }
 };
 
 class RinexTestFactory : public gpstk::RinexNavDataFactory

@@ -341,4 +341,26 @@ namespace gpstk
          }
       }
    }
+
+
+   std::string MultiFormatNavDataFactory ::
+   getFactoryFormats() const
+   {
+         // factories can have multiple copies of a given factory, so
+         // keep track of which ones we've checked already.
+      std::set<NavDataFactory*> ptrs;
+      std::string rv;
+      for (const auto& fi : factories)
+      {
+         NavDataFactory *ptr = fi.second.get();
+         if (ptrs.count(ptr) == 0)
+         {
+            ptrs.insert(ptr);
+            if (!rv.empty())
+               rv += ", ";
+            rv += ptr->getFactoryFormats();
+         }
+      }
+      return rv;
+   }
 }

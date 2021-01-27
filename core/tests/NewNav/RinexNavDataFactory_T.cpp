@@ -106,6 +106,12 @@ loadIntoMapTest()
       // this should implicitly load into the data map
    TUASSERT(f2.addDataSource(f2name));
    TUASSERTE(size_t, 336, f2.size());
+   gpstk::CommonTime expti2 = gpstk::CivilTime(2015,7,19,0,0,0,
+                                               gpstk::TimeSystem::GPS);
+   gpstk::CommonTime exptf2 = gpstk::CivilTime(2015,7,20,2,0,0,
+                                               gpstk::TimeSystem::GPS);
+   TUASSERTE(gpstk::CommonTime, expti2, f2.getInitialTime());
+   TUASSERTE(gpstk::CommonTime, exptf2, f2.getFinalTime());
 
    gpstk::RinexNavDataFactory f3;
    std::string f3name = gpstk::getPathData() + gpstk::getFileSep() +

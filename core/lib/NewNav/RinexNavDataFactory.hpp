@@ -70,6 +70,10 @@ namespace gpstk
       bool loadIntoMap(const std::string& filename,
                        NavMessageMap& navMap) override;
 
+         /// Return a comma-separated list of formats supported by this factory.
+      std::string getFactoryFormats() const override
+      { return "RINEX2, RINEX3"; }
+
          /** Convert RINEX nav data to a system/code-appropriate
           * OrbitData object.
           * @param[in] navIn The RINEX nav message data to convert.

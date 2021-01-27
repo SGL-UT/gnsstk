@@ -62,6 +62,9 @@ namespace gpstk
    class NavDataFactoryWithStore : public NavDataFactory
    {
    public:
+         /// Initialize internal data.
+      NavDataFactoryWithStore();
+
          /** Search the store to find the navigation message that meets
           * the specified criteria.
           * @note In order for xmitHealth matching to occur, one must
@@ -111,7 +114,7 @@ namespace gpstk
           * @param[in] fromTime The earliest time to be removed.
           * @param[in] toTime The earliest time that will NOT be removed.
           */
-      virtual void edit(const CommonTime& fromTime, const CommonTime& toTime);
+      void edit(const CommonTime& fromTime, const CommonTime& toTime) override;
 
          /** Remove data for a specific satellite signal from the
           * internal storage in the time span [fromTime,toTime).
@@ -121,8 +124,8 @@ namespace gpstk
           *   data to be removed (subject satellite, transmit
           *   satellite, system, carrier, code, nav).
           */
-      virtual void edit(const CommonTime& fromTime, const CommonTime& toTime,
-                        const NavSatelliteID& satID);
+      void edit(const CommonTime& fromTime, const CommonTime& toTime,
+                const NavSatelliteID& satID) override;
 
          /** Remove data for all satellites matching a specific signal
           * from the internal storage in the time span
@@ -132,16 +135,30 @@ namespace gpstk
           * @param[in] signal The signal for the data to be removed
           *   (system, carrier, code, nav).
           */
-      virtual void edit(const CommonTime& fromTime, const CommonTime& toTime,
-                        const NavSignalID& signal);
+      void edit(const CommonTime& fromTime, const CommonTime& toTime,
+                const NavSignalID& signal) override;
 
          /// Remove all data from the internal store.
-      virtual void clear();
+      void clear() override;
 
          /** Add a nav message to the internal store (data).
           * @param[in] nd The nav data to add.
           * @return true if successful. */
       bool addNavData(const NavDataPtr& nd);
+
+         /** Determine the earliest time for which this object can successfully 
+          * determine the Xvt for any object.
+          * @return The initial time, or CommonTime::END_OF_TIME if no
+          *   data is available. */
+      CommonTime getInitialTime() const override
+      { return initialTime; }
+
+         /** Determine the latest time for which this object can successfully 
+          * determine the Xvt for any object.
+          * @return The initial time, or CommonTime::BEGINNING_OF_TIME if no
+          *   data is available. */
+      CommonTime getFinalTime() const override
+      { return finalTime; }
 
          /// Return the number of nav messages in data.
       virtual size_t size() const;
@@ -214,7 +231,8 @@ namespace gpstk
       bool validityCheck(const NavMap::iterator& ti,
                          NavMap& nm,
                          NavValidityType valid,
-                         SVHealth xmitHealth);
+                         SVHealth xmitHealth,
+                         const CommonTime& when);
 
          /** Performs an appropriate validity check based on the
           * desired validity.
@@ -228,7 +246,8 @@ namespace gpstk
           *   transmitting satellite matches xmitHealth. */
       bool validityCheck(const NavDataPtr& ndp,
                          NavValidityType valid,
-                         SVHealth xmitHealth);
+                         SVHealth xmitHealth,
+                         const CommonTime& when);
 
          /** Check the SV health status of the transmitting satellite
           * of a navigation message.
@@ -255,6 +274,11 @@ namespace gpstk
          /** Store the time offset data separate from the other nav
           * data because searching is very different. */
       OffsetCvtMap offsetData;
+         /// Store the earliest applicable orbit time here, by addNavData
+      CommonTime initialTime;
+         /// Store the latest applicable orbit time here, by addNavData
+      CommonTime finalTime;
+
          /// Grant access to MultiFormatNavDataFactory for various functions.
       friend class MultiFormatNavDataFactory;
    };

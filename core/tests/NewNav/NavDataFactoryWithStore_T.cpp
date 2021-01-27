@@ -113,6 +113,8 @@ public:
       }
       return rv;
    }
+   std::string getFactoryFormats() const override
+   { return "BUNK"; }
 };
 
 

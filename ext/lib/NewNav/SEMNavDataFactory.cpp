@@ -237,8 +237,8 @@ namespace gpstk
       navOut->signal.sat = SatID(navIn.PRN,SatelliteSystem::GPS);
       navOut->signal.xmitSat = SatID(navIn.PRN,SatelliteSystem::GPS);
          // we can't obtain these from SEM nav, so just assume L1 C/A
-      navOut->signal.obs.band = CarrierBand::L1;
-      navOut->signal.obs.code = TrackingCode::CA;
+      navOut->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::L1,
+                                 TrackingCode::CA);
       navOut->signal.nav = NavType::GPSLNAV;
    }
 }

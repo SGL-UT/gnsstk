@@ -197,4 +197,92 @@ namespace gpstk
          }
       }
    }
+
+
+   void NavLibrary ::
+   edit(const CommonTime& fromTime, const CommonTime& toTime)
+   {
+      for (auto& fi : factories)
+      {
+         fi.second->edit(fromTime, toTime);
+      }
+   }
+
+
+   void NavLibrary ::
+   edit(const CommonTime& fromTime, const CommonTime& toTime,
+        const NavSatelliteID& satID)
+   {
+      for (auto& fi : factories)
+      {
+         fi.second->edit(fromTime, toTime, satID);
+      }
+   }
+
+
+   void NavLibrary ::
+   edit(const CommonTime& fromTime, const CommonTime& toTime,
+        const NavSignalID& signal)
+   {
+      for (auto& fi : factories)
+      {
+         fi.second->edit(fromTime, toTime, signal);
+      }
+   }
+
+
+   void NavLibrary ::
+   clear()
+   {
+      for (auto& fi : factories)
+      {
+         fi.second->clear();
+      }
+   }
+
+
+   CommonTime NavLibrary ::
+   getInitialTime() const
+   {
+      CommonTime rv = CommonTime::END_OF_TIME;
+      for (const auto& fi : factories)
+      {
+         rv = std::min(rv, fi.second->getInitialTime());
+      }
+      return rv;
+   }
+
+
+   CommonTime NavLibrary ::
+   getFinalTime() const
+   {
+      CommonTime rv = CommonTime::BEGINNING_OF_TIME;
+      for (const auto& fi : factories)
+      {
+         rv = std::max(rv, fi.second->getInitialTime());
+      }
+      return rv;
+   }
+
+
+   std::string NavLibrary ::
+   getFactoryFormats() const
+   {
+         // factories can have multiple copies of a given factory, so
+         // keep track of which ones we've checked already.
+      std::set<NavDataFactory*> ptrs;
+      std::string rv;
+      for (const auto& fi : factories)
+      {
+         NavDataFactory *ptr = fi.second.get();
+         if (ptrs.count(ptr) == 0)
+         {
+            ptrs.insert(ptr);
+            if (!rv.empty())
+               rv += ", ";
+            rv += ptr->getFactoryFormats();
+         }
+      }
+      return rv;
+   }
 }

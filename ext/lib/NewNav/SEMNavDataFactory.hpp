@@ -67,6 +67,10 @@ namespace gpstk
       bool loadIntoMap(const std::string& filename,
                        NavMessageMap& navMap) override;
 
+         /// Return a comma-separated list of formats supported by this factory.
+      std::string getFactoryFormats() const override
+      { return "SEM"; }
+
          /** Convert SEM nav data to a system/code-appropriate
           * OrbitData object.
           * @param[in] navIn The SEM nav message data to convert.
