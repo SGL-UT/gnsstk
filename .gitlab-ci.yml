@@ -474,7 +474,7 @@ test_windows:
   script:
     - set
     - cd build_%CI_PIPELINE_ID%
-    - cmake --build . --target RUN_TESTS
+    - cmake --build . --config Release --target RUN_TESTS
   artifacts:
     when: on_failure
     paths:
@@ -552,7 +552,7 @@ user_install_windows:
   script:
     - set
     - cd build_%CI_PIPELINE_ID%
-    - cmake --build . --target install
+    - cmake --build . --config Release --target install
   artifacts:
     paths:
       - build_%CI_PIPELINE_ID%
