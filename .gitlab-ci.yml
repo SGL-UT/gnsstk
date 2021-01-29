@@ -292,16 +292,16 @@ build_windows:
   script:
     - set
 # incremental builds
-#    - if not exist "build_%CI_PIPELINE_ID%" mkdir "build_%CI_PIPELINE_ID%"
+#    - if not exist "build" mkdir "build"
 # non-incremental builds
-    - mkdir build_%CI_PIPELINE_ID%
-    - cd build_%CI_PIPELINE_ID%
+    - mkdir build
+    - cd build
     - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
     - cmake --build . --config Release
     - dir /s
   artifacts:
     paths:
-    - build_%CI_PIPELINE_ID%/
+    - build/
 # used for incremental builds
 #  cache:
 #    paths:
@@ -473,13 +473,13 @@ test_windows:
     - win10
   script:
     - set
-    - cd build_%CI_PIPELINE_ID%
+    - cd build
     - cmake --build . --config Release --target RUN_TESTS
   artifacts:
     when: on_failure
     paths:
-    - build_%CI_PIPELINE_ID%/Testing/Temporary/
-    - build_%CI_PIPELINE_ID%/swig/
+    - build/Testing/Temporary/
+    - build/swig/
   dependencies:
     - build_windows
   allow_failure: true
@@ -551,11 +551,11 @@ user_install_windows:
     - win10
   script:
     - set
-    - cd build_%CI_PIPELINE_ID%
+    - cd build
     - cmake --build . --config Release --target install
   artifacts:
     paths:
-      - build_%CI_PIPELINE_ID%
+      - build
   dependencies:
     - build_windows
 # Temporarily allow failures as Windows Runner issues are resolved
@@ -920,18 +920,18 @@ sgltk_redhat:
 #     - set
 #     - cd
 #     - dir %CI_PROJECT_DIR%
-#     - dir %CI_PROJECT_DIR%\build_%CI_PIPELINE_ID%
-#     - dir %CI_PROJECT_DIR%\build_%CI_PIPELINE_ID%\install
-#     - cd build_%CI_PIPELINE_ID%
+#     - dir %CI_PROJECT_DIR%\build
+#     - dir %CI_PROJECT_DIR%\build\install
+#     - cd build
 #     - git clone -b %SGLTK_BRANCH% https://repositories.arlut.utexas.edu/sgl/sgltk.git
 #     - cd sgltk
-#     - mkdir build_%CI_PIPELINE_ID%
-#     - cd build_%CI_PIPELINE_ID%
-#     - cmake -DCMAKE_PREFIX_PATH=%CI_PROJECT_DIR%/build_%CI_PIPELINE_ID%/install -DCMAKE_INSTALL_PREFIX=install -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" --trace ../
+#     - mkdir build
+#     - cd build
+#     - cmake -DCMAKE_PREFIX_PATH=%CI_PROJECT_DIR%/build/install -DCMAKE_INSTALL_PREFIX=install -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" --trace ../
 #     - cmake --build .
 # #  artifacts:
 # #    paths:
-# #    - build_%CI_PIPELINE_ID%/
+# #    - build/
 #   timeout: 30m
 #   dependencies:
 #     - user_install_windows
