@@ -290,15 +290,13 @@ build_windows:
   tags:
     - win10
   script:
-    - set
 # incremental builds
-#    - if not exist "build" mkdir "build"
+#    - if not exist "%CI_PROJECT_DIR%/build/" mkdir "%CI_PROJECT_DIR%/build"
 # non-incremental builds
     - mkdir build
     - cd build
     - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
     - cmake --build . --config Release
-    - dir /s
   artifacts:
     paths:
     - build/
@@ -472,9 +470,8 @@ test_windows:
   tags:
     - win10
   script:
-    - set
     - cd build
-    - cmake --build . --config Release --target RUN_TESTS
+    - cmake --build . --target RUN_TESTS --config Release
   artifacts:
     when: on_failure
     paths:
@@ -550,12 +547,8 @@ user_install_windows:
   tags:
     - win10
   script:
-    - set
     - cd build
     - cmake --build . --config Release --target install
-  artifacts:
-    paths:
-      - build
   dependencies:
     - build_windows
 # Temporarily allow failures as Windows Runner issues are resolved
