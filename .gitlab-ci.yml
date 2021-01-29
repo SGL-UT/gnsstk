@@ -17,8 +17,8 @@ stages:
 variables:
   REPO_HOST: "repositories.arlut.utexas.edu"
   CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
-  # this is usually set to master, unless there are downstream dependencies
-  SGLTK_BRANCH: issue_341
+  # this is usually set to main, unless there are downstream dependencies
+  SGLTK_BRANCH: main
   DOCKER_REGISTRY: "modisdev:5000/sgl_ci"
   # this can be used for incremental builds
   #  GIT_CLEAN_FLAGS: none
@@ -910,28 +910,28 @@ sgltk_redhat:
   dependencies:
     - user_install_redhat
 
-sgltk_windows:
-  stage: downstream
-  needs: [user_install_windows]
-  extends: .normal_job
-  tags:
-    - win10
-  script:
-    - set
-    - cd
-    - dir %CI_PROJECT_DIR%
-    - dir %CI_PROJECT_DIR%\build_%CI_PIPELINE_ID%
-    - dir %CI_PROJECT_DIR%\build_%CI_PIPELINE_ID%\install
-    - cd build_%CI_PIPELINE_ID%
-    - git clone -b %SGLTK_BRANCH% https://repositories.arlut.utexas.edu/sgl/sgltk.git
-    - cd sgltk
-    - mkdir build_%CI_PIPELINE_ID%
-    - cd build_%CI_PIPELINE_ID%
-    - cmake -DCMAKE_PREFIX_PATH=%CI_PROJECT_DIR%/build_%CI_PIPELINE_ID%/install -DCMAKE_INSTALL_PREFIX=install -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" --trace ../
-    - cmake --build .
-#  artifacts:
-#    paths:
-#    - build_%CI_PIPELINE_ID%/
-  timeout: 30m
-  dependencies:
-    - user_install_windows
+# sgltk_windows:
+#   stage: downstream
+#   needs: [user_install_windows]
+#   extends: .normal_job
+#   tags:
+#     - win10
+#   script:
+#     - set
+#     - cd
+#     - dir %CI_PROJECT_DIR%
+#     - dir %CI_PROJECT_DIR%\build_%CI_PIPELINE_ID%
+#     - dir %CI_PROJECT_DIR%\build_%CI_PIPELINE_ID%\install
+#     - cd build_%CI_PIPELINE_ID%
+#     - git clone -b %SGLTK_BRANCH% https://repositories.arlut.utexas.edu/sgl/sgltk.git
+#     - cd sgltk
+#     - mkdir build_%CI_PIPELINE_ID%
+#     - cd build_%CI_PIPELINE_ID%
+#     - cmake -DCMAKE_PREFIX_PATH=%CI_PROJECT_DIR%/build_%CI_PIPELINE_ID%/install -DCMAKE_INSTALL_PREFIX=install -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" --trace ../
+#     - cmake --build .
+# #  artifacts:
+# #    paths:
+# #    - build_%CI_PIPELINE_ID%/
+#   timeout: 30m
+#   dependencies:
+#     - user_install_windows
