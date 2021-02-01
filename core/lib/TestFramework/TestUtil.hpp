@@ -593,7 +593,8 @@ namespace gpstk
       if (testMsg.empty())
       {
          std::ostringstream ostr;
-         ostr << "Expected:'" << expected << "' ,But got:'" << got << "'";
+         ostr << std::boolalpha << "Expected:'" << expected << "' ,But got:'"
+              << got << "'";
          mess = ostr.str();
       }
       assert(expected == got, mess, lineNumber);
@@ -617,7 +618,8 @@ namespace gpstk
       if (testMsg.empty())
       {
          std::ostringstream ostr;
-         ostr << "abs(" << expected << " - " << got << ") = " << err;
+         ostr << std::setprecision(20)
+              << "abs(" << expected << " - " << got << ") = " << err;
          if (good)
             ostr << " <= ";
          else

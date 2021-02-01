@@ -84,6 +84,32 @@ public:
                 gpstk::SatelliteSystem(-1),
                 compare3.system);
 
+      gpstk::SatID ws1;
+      TUASSERTE(bool, false, ws1.wildId);
+      TUASSERTE(bool, false, ws1.wildSys);
+      gpstk::SatID ws2(99);
+      TUASSERTE(int, 99, ws2.id);
+      TUASSERTE(bool, false, ws2.wildId);
+      TUASSERTE(bool, true, ws2.wildSys);
+      gpstk::SatID ws3(gpstk::SatelliteSystem::Mixed);
+      TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::Mixed,
+                ws3.system);
+      TUASSERTE(bool, true, ws3.wildId);
+      TUASSERTE(bool, false, ws3.wildSys);
+      gpstk::SatID ws4(-65, gpstk::SatelliteSystem::LEO);
+      TUASSERTE(int, -65, ws4.id);
+      TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::LEO,
+                ws4.system);
+      TUASSERTE(bool, false, ws4.wildId);
+      TUASSERTE(bool, false, ws4.wildSys);
+      gpstk::SatID foo(25, gpstk::SatelliteSystem::QZSS);
+      gpstk::SatID ws5(foo);
+      TUASSERTE(int, 25, ws5.id);
+      TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::QZSS,
+                ws5.system);
+      TUASSERTE(bool, false, ws5.wildId);
+      TUASSERTE(bool, false, ws5.wildSys);
+
       TURETURN();
    }
 
@@ -159,7 +185,7 @@ public:
          //Output for invalid satellite and negative ID
          //---------------------------------------------------------------------
       gpstk::SatID sat3(-10, gpstk::SatelliteSystem (50));
-      compareString3 = "?? -10";
+      compareString3 = "??? -10";
       TUASSERTE(std::string, compareString3,gpstk::StringUtils::asString(sat3));
 
       TURETURN();
@@ -274,6 +300,39 @@ public:
       TUASSERT((compare >= diffEvery2));
       TUASSERT(!(diffEvery2 >= compare));
 
+      TUCSM("operator==");
+      gpstk::SatID ws1(1, gpstk::SatelliteSystem::GPS);
+      gpstk::SatID ws2(1, gpstk::SatelliteSystem::GPS);
+      gpstk::SatID ws3(3, gpstk::SatelliteSystem::GPS);
+      gpstk::SatID ws4(1, gpstk::SatelliteSystem::QZSS);
+      gpstk::SatID ws5(1); // wildcard system
+      gpstk::SatID ws6(gpstk::SatelliteSystem::GPS); // wildcard satellite
+      gpstk::SatID ws7(gpstk::SatelliteSystem::QZSS); // wildcard satellite
+      gpstk::SatID ws8; // wildcard sat and sys
+         // we have to set wildcard flags explicitly for ws8
+      ws8.makeWild();
+      gpstk::SatID ws9(2); // wildcard system
+         // sanity checks
+      TUASSERTE(bool, false, ws5.wildId);
+      TUASSERTE(bool, true,  ws5.wildSys);
+      TUASSERTE(bool, true,  ws6.wildId);
+      TUASSERTE(bool, false, ws6.wildSys);
+      TUASSERTE(bool, true,  ws7.wildId);
+      TUASSERTE(bool, false, ws7.wildSys);
+      TUASSERTE(bool, true,  ws8.wildId);
+      TUASSERTE(bool, true,  ws8.wildSys);
+      TUASSERTE(bool, false, ws9.wildId);
+      TUASSERTE(bool, true,  ws9.wildSys);
+         // actual tests
+      TUASSERTE(bool, true,  ws1 == ws2);
+      TUASSERTE(bool, false, ws1 == ws3);
+      TUASSERTE(bool, false, ws1 == ws4);
+      TUASSERTE(bool, true,  ws1 == ws5);
+      TUASSERTE(bool, true,  ws1 == ws6);
+      TUASSERTE(bool, false, ws1 == ws7);
+      TUASSERTE(bool, true,  ws1 == ws8);
+      TUASSERTE(bool, false, ws1 == ws9);
+
       TUCSM("operator<<");
          //---------------------------------------------------------------------
          //Does the << Operator function?
@@ -287,6 +346,52 @@ public:
 
       TUASSERTE(std::string, compareString, outputString);
 
+      TURETURN();
+   }
+
+
+   unsigned lessThanTest()
+   {
+      TUDEF("SatID", "operator<");
+      gpstk::SatID ws1(1, gpstk::SatelliteSystem::GPS);
+      gpstk::SatID ws2(1, gpstk::SatelliteSystem::GPS);
+      gpstk::SatID ws3(3, gpstk::SatelliteSystem::GPS);
+      gpstk::SatID ws4(1, gpstk::SatelliteSystem::QZSS);
+      gpstk::SatID ws5(1); // wildcard system
+      gpstk::SatID ws6(gpstk::SatelliteSystem::GPS); // wildcard satellite
+      gpstk::SatID ws7(gpstk::SatelliteSystem::QZSS); // wildcard satellite
+      gpstk::SatID ws8; // wildcard sat and sys
+         // we have to set wildcard flags explicitly for ws8
+      ws8.makeWild();
+      gpstk::SatID ws9(2); // wildcard system
+         // sanity checks
+      TUASSERTE(bool, false, ws5.wildId);
+      TUASSERTE(bool, true,  ws5.wildSys);
+      TUASSERTE(bool, true,  ws6.wildId);
+      TUASSERTE(bool, false, ws6.wildSys);
+      TUASSERTE(bool, true,  ws7.wildId);
+      TUASSERTE(bool, false, ws7.wildSys);
+      TUASSERTE(bool, true,  ws8.wildId);
+      TUASSERTE(bool, true,  ws8.wildSys);
+      TUASSERTE(bool, false, ws9.wildId);
+      TUASSERTE(bool, true,  ws9.wildSys);
+         // actual tests
+      TUASSERTE(bool, false, ws1 < ws2);
+      TUASSERTE(bool, false, ws2 < ws1);
+      TUASSERTE(bool, true,  ws1 < ws3);
+      TUASSERTE(bool, false, ws3 < ws1);
+      TUASSERTE(bool, true,  ws1 < ws4);
+      TUASSERTE(bool, false, ws4 < ws1);
+      TUASSERTE(bool, false, ws1 < ws5);
+      TUASSERTE(bool, false, ws5 < ws1);
+      TUASSERTE(bool, false, ws1 < ws6);
+      TUASSERTE(bool, false, ws6 < ws1);
+      TUASSERTE(bool, true,  ws1 < ws7);
+      TUASSERTE(bool, false, ws7 < ws1);
+      TUASSERTE(bool, false, ws1 < ws8);
+      TUASSERTE(bool, false, ws8 < ws1);
+      TUASSERTE(bool, true,  ws1 < ws9);
+      TUASSERTE(bool, false, ws9 < ws1);
       TURETURN();
    }
 
@@ -362,8 +467,10 @@ int main() //Main function to initialize and run all tests above
    errorTotal += testClass.initializationTest();
    errorTotal += testClass.dumpTest();
    errorTotal += testClass.operatorTest();
+   errorTotal += testClass.lessThanTest();
    errorTotal += testClass.isValidTest();
    errorTotal += testClass.stringConvertTest();
+   errorTotal += testClass.asStringTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

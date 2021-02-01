@@ -17,7 +17,7 @@ stages:
 variables:
   REPO_HOST: "repositories.arlut.utexas.edu"
   CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
-  # this is usually set to master, unless there are downstream dependencies
+  # this is usually set to main, unless there are downstream dependencies
   SGLTK_BRANCH: main
   DOCKER_REGISTRY: "modisdev:5000/sgl_ci"
   # this can be used for incremental builds
@@ -146,7 +146,7 @@ generate_documentation:
 build_debian_7:
   stage: build
   needs: []
-  extends: .normal_job
+  extends: .big_build
   tags:
     - docker-executor
     # Not all docker runners support debian 7
@@ -200,7 +200,7 @@ build_debian_9:
 build_debian_10:
   stage: build
   needs: []
-  extends: .big_build
+  extends: .normal_job
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -314,7 +314,7 @@ build_windows:
 test_debian_7:
   stage: test
   needs: [build_debian_7]
-  extends: .normal_job
+  extends: .big_build
   tags:
     - docker-executor
     # Not all docker runners support debian 7
@@ -373,7 +373,7 @@ test_debian_9:
 test_debian_10:
   stage: test
   needs: [build_debian_10]
-  extends: .big_build
+  extends: .normal_job
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -902,3 +902,29 @@ sgltk_redhat:
     - make all -j 4
   dependencies:
     - user_install_redhat
+
+# sgltk_windows:
+#   stage: downstream
+#   needs: [user_install_windows]
+#   extends: .normal_job
+#   tags:
+#     - win10
+#   script:
+#     - set
+#     - cd
+#     - dir %CI_PROJECT_DIR%
+#     - dir %CI_PROJECT_DIR%\build
+#     - dir %CI_PROJECT_DIR%\build\install
+#     - cd build
+#     - git clone -b %SGLTK_BRANCH% https://repositories.arlut.utexas.edu/sgl/sgltk.git
+#     - cd sgltk
+#     - mkdir build
+#     - cd build
+#     - cmake -DCMAKE_PREFIX_PATH=%CI_PROJECT_DIR%/build/install -DCMAKE_INSTALL_PREFIX=install -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" --trace ../
+#     - cmake --build .
+# #  artifacts:
+# #    paths:
+# #    - build/
+#   timeout: 30m
+#   dependencies:
+#     - user_install_windows
