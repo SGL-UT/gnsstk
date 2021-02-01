@@ -65,8 +65,8 @@ class EnumConversion_test(unittest.TestCase):
         with self.assertRaises(TypeError):
             _ = gpstk.NavType()
             self.fail("No default constructor")
-        self.assertEqual(gpstk.NavType(4), gpstk.NavType.GPSMNAV, msg='int GPSMNAV')
-        self.assertEqual(gpstk.NavType(2), gpstk.NavType.GPSCNAVL5, msg='int GPS')
+        self.assertEqual(gpstk.NavType(6), gpstk.NavType.GPSMNAV, msg='int GPSMNAV')
+        self.assertEqual(gpstk.NavType(4), gpstk.NavType.GPSCNAVL5, msg='int GPS')
         self.assertEqual(gpstk.NavType(gpstk.NavType.GPSCNAVL5), gpstk.NavType.GPSCNAVL5, msg='gpstk enum GPSCNAVL5')
         self.assertEqual(gpstk.NavType(gpstk.NavType.GPSMNAV), gpstk.NavType.GPSMNAV, msg='gpstk enum GPSMNAV')
 
@@ -117,8 +117,8 @@ class SatID_test(unittest.TestCase):
         b = gpstk.SatID(1, gpstk.SatelliteSystem.LEO)
         self.assertEqual('LEO 1', str(b))
 
-        c = gpstk.SatID(4)  # optional arg should be SatelliteSystem.GPS
-        self.assertEqual('GPS 4', str(c))
+        c = gpstk.SatID(4)  # optional arg should result in a wildcard system
+        self.assertEqual('* 4', str(c))
 
 
 class Triple_test(unittest.TestCase):

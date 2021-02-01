@@ -59,45 +59,79 @@ namespace gpstk
       /// @ingroup GNSSEph
       //@{
 
-      /// Satellite identifier consisting of a satellite number (PRN, etc.)
-      /// and a satellite system. For GLONASS (systemGlonass), the identifier
-      /// is the slot number as per section 3.5 of the RINEX 3 spec.
-      /// For SBAS (systemGeosync), the id is the PRN-100.
+      /** Class used to uniquely identify the transmitter of a signal
+       * being broadcast, either by satellite or by ground station
+       * (sometimes referred to as a "pseudolite").  The meaning of
+       * the identifier \a id depends on the context of the system.
+       * The meanings are as follows:
+       *
+       * system  | id
+       * ------- | ------------
+       * GPS     | PRN ID
+       * Galileo | ?
+       * Glonass | Slot Number
+       * Geosync | PRN ID - 100
+       * LEO     | ?
+       * Transit | ?
+       * BeiDou  | ?
+       * QZSS    | PRN ID
+       * IRNSS   | ?
+       *
+       * For equality and ordering, any of the fields may be
+       * treated as a wildcard, which means that a wildcard value for
+       * a given field will match any other field value.  The system
+       * and id fields use boolean flags (wildSys and wildId,
+       * respectively).
+       *
+       * @todo Update the above table for the proper nomenclature for
+       * identification.
+       */
    class SatID
    {
    public:
-         /// empty constructor, creates an invalid object
-      SatID() { id=-1; system=SatelliteSystem::GPS; }
+         /// Initialize with invalid data with no wildcards.
+      SatID();
 
          /// explicit constructor, no defaults
          /// @note if s is given a default value here,
          /// some compilers will silently cast int to SatID.
-      SatID(int p, SatelliteSystem s) { id=p; system=s; }
+      SatID(int p, SatelliteSystem s);
+         /** Initialize with a set id number and a wild system (weird).
+          * @note explicit keyword to prevent assignment with
+          *   unexpected results.
+          * @param[in] p The satellite number to specifically match.
+          */
+      explicit SatID(int p);
+         /** Initialize with a set system and a wild satellite number.
+          * @note explicit keyword to prevent assignment with
+          *   unexpected results.
+          * @param[in] s The satellite system to specifically match.
+          */
+      explicit SatID(SatelliteSystem s);
+
+         /** Set all values to wildcard values, meaning that this
+          * SatID will equal any other SatID object.  This method
+          * attempts to obviate knowledge about the details of
+          * wildcard implementation. */
+      void makeWild();
+         /// return true if any of the fields are set to match wildcards.
+      bool isWild() const;
 
          // operator=, copy constructor and destructor built by compiler
 
 
          /// Convenience output method.
-      void dump(std::ostream& s) const
-      {
-         s << convertSatelliteSystemToString(system) << " " << id;
-      }
+      void dump(std::ostream& s) const;
 
          /// operator == for SatID
-      bool operator==(const SatID& right) const
-      { return ((system == right.system) && (id == right.id)); }
+      bool operator==(const SatID& right) const;
 
          /// operator != for SatID
       bool operator!=(const SatID& right) const
       { return !(operator==(right)); }
 
-         /// operator < for SatID : order by system, then number
-      bool operator<(const SatID& right) const
-      {
-         if (system==right.system)
-            return (id<right.id);
-         return (system<right.system);
-      }
+         /// operator < for SatID : order by system, id
+      bool operator<(const SatID& right) const;
 
          /// operator > for SatID
       bool operator>(const SatID& right) const
@@ -111,27 +145,16 @@ namespace gpstk
       bool operator>=(const SatID& right) const
       { return !(operator<(right)); }
 
-         /// return true if this is a valid SatID
-         /// @note assumes all id's are positive and less than 100;
-         ///     plus GPS id's are less than or equal to MAX_PRN (32).
-         /// @note this is not used internally in the gpstk library
-      bool isValid() const
-      {
-         switch(system)
-         {
-            case SatelliteSystem::GPS: return (id > 0 && id <= MAX_PRN);
-                  //case SatelliteSystem::Galileo:
-                  //case SatelliteSystem::Glonass:
-                  //case SatelliteSystem::Geosync:
-                  //case SatelliteSystem::LEO:
-                  //case SatelliteSystem::Transit:
-            default: return (id > 0 && id < 100);
-         }
-      }
+         /** return true if this is a valid SatID
+          * @note assumes all id's are positive and less than 100;
+          *     plus GPS id's are less than or equal to MAX_PRN (32).
+          * @note this is not used internally in the gpstk library */
+      bool isValid() const;
 
-      int id;                   ///< satellite identifier, e.g. PRN
-      SatelliteSystem system;   ///< system for this satellite
-
+      int id;                   ///< Satellite identifier, e.g. PRN
+      bool wildId;              ///< If true, any satellite matches.
+      SatelliteSystem system;   ///< System for this satellite
+      bool wildSys;             ///< If true, any system matches.
    }; // class SatID
 
       /// stream output for SatID

@@ -79,9 +79,9 @@ public:
 
    NavID testIDLNAV, testIDCNAVL2, testIDCNAVL5, testIDCNAV2, testIDMNAV,
       testIDBD1, testIDBD2, testIDGloF, testIDGloC, testIDGalOS, testIDGalOS_2,
-      testIDGalOS_F, testID_IRNSS_SPS, testIDUnkwn;
+      testIDGalOS_F, testID_IRNSS_SPS, testIDUnkwn, testIDAny;
    stringstream ln, l2, l5, cnav2, mn, d1, d2, gf, gc, ginv, ginv_2, gfnv, is,
-      un;
+      un, any;
 };
 
 
@@ -126,6 +126,7 @@ NavID_T()
         testID_IRNSS_SPS(SatID(2, SatelliteSystem::IRNSS),
                          ObsID(ObservationType::NavMsg, CarrierBand::L5,
                                TrackingCode::SPSL5)),
+        testIDAny(gpstk::NavType::Any),
         testIDUnkwn(SatID(1, SatelliteSystem::GPS),
                     ObsID(ObservationType::NavMsg, CarrierBand::L5,
                           TrackingCode::MDP))
@@ -179,6 +180,9 @@ constructorTest()
       //IRNSS L5 SPS
    TUASSERTE(gpstk::NavType, NavType::IRNSS_SPS, testID_IRNSS_SPS.navType);
    
+      //Any
+   TUASSERTE(gpstk::NavType, NavType::Any, testIDAny.navType);
+   
       //Unknown
    TUASSERTE(gpstk::NavType, NavType::Unknown, testIDUnkwn.navType);
 
@@ -230,6 +234,9 @@ streamOutputTest()
    is << testID_IRNSS_SPS;
    TUASSERTE(std::string, "IRNSS_SPS", is.str());
    
+   any << testIDAny;
+   TUASSERTE(std::string, "Any", any.str());
+   
    un << testIDUnkwn;
    TUASSERTE(std::string, "Unknown", un.str());
 
@@ -278,6 +285,9 @@ stringConstructorTest()
    NavID testID_IRNSS_SPS_String(is.str());
    TUASSERTE(gpstk::NavType,NavType::IRNSS_SPS,testID_IRNSS_SPS_String.navType);
    
+   NavID testIDAnyString(any.str());
+   TUASSERTE(gpstk::NavType, NavType::Any, testIDAnyString.navType);
+   
    NavID testIDUnkwnString(un.str());
    TUASSERTE(gpstk::NavType, NavType::Unknown, testIDUnkwnString.navType);
 
@@ -293,7 +303,6 @@ inequalityTest()
    set<NavID> testSet;
       //Insert NavTypes into set in backward order.
       // This implicitly tests operator<
-   testSet.insert(testIDUnkwn);
    testSet.insert(testID_IRNSS_SPS);
    testSet.insert(testIDGalOS);
    testSet.insert(testIDGalOS_F);
@@ -306,11 +315,12 @@ inequalityTest()
    testSet.insert(testIDCNAVL5);
    testSet.insert(testIDCNAVL2);
    testSet.insert(testIDLNAV);
+   testSet.insert(testIDAny);
+   testSet.insert(testIDUnkwn);
 
-      //Instantiate currTest as GPS_LNAV by 
-      //instantiating navType as ntGPSLNAV.
+      // Instantiate currTest to the first value in the enums
    NavID currTest;
-   currTest.navType = NavType::GPSLNAV;
+   currTest.navType = NavType::Unknown;
 
       //Set nid equal to dereferenced NavID set iterator; should
       //initially correspond to first location in set (@ value GPS_LNAV).
