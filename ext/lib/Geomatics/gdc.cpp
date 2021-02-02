@@ -384,7 +384,6 @@ int gdc::ProcessOneCombo(const unsigned which)
       // first look for gross slips using 1st differences, then compute stats,
       // look for gaps, and fix the slips (WLG GFG)
       iret = GrossProcessing(which);
-LOGstrm << "After Gross with iret " << iret << endl;
       if(iret < 0) return iret;
       nslips += iret;
 
@@ -444,7 +443,6 @@ int gdc::GrossProcessing(const unsigned which)
       // dump data (WLG GFG)
       label = LAB[which]+"G"; 
       if(cfg_func(label)) dumpData(LOGstrm,tag+" "+label);
-LOGstrm << "Leaving Gross" << endl;
       return nslips;
    }
    catch(Exception& e) { GPSTK_RETHROW(e); }
@@ -456,20 +454,16 @@ LOGstrm << "Leaving Gross" << endl;
 int gdc::FineProcessing(const unsigned which)
 {
    try {
-LOGstrm << "FineProcessing 0 " << which << endl;
       int i, nslips(0), iret;
       double limit;
       string label;
       //map<int, Arc>::const_iterator ait;
       vector< FilterHit<double> > filterResults;
-LOGstrm << "FineProcessing 1" << endl;
 
       // filter using the window filter
       label = LAB[which]+"W";                         // WLW or GFW
       limit = cfg_func(LAB[which]+"fineStep");
-LOGstrm << "FineProcessing before filterWindow" << endl;
       iret = filterWindow(which,label,limit,filterResults);
-LOGstrm << "FineProcessing after filterWindow with iret " << iret << endl;
       if(iret < 0) {
          // a segment is too small...
          //DumpArcs("#After FilterWindow ",label,2);
@@ -478,7 +472,6 @@ LOGstrm << "FineProcessing after filterWindow with iret " << iret << endl;
       nslips += iret;         // iret >= 1 -- counts BOD
    
       // dump filter hits
-LOGstrm << "FineProcessing before DumpHits" << endl;
       if(cfg_func("debug") > -1) DumpHits(filterResults,"#"+tag,label,2);
    
       // merge window filter results with Arcs
@@ -568,12 +561,10 @@ int gdc::filterWindow(const unsigned which, const string label,
       wf.setprecision(cfg(osprec));
       wf.setMinStep(limit);
       wf.setTwoSample(which==GF);
-wf.setDebug(true);            // TEMP
-LOGstrm << "Inside filterWindow " << endl;
+      //wf.setDebug(true);            // TEMP
 
       // run it
       int iret = wf.filter();
-LOGstrm << "return from filter with iret " << iret << endl;
       if(iret == -2) {
          LOG(ERROR) << " Call to GF window filter without time data!";
          GPSTK_THROW(Exception("Call to GF window filter without time data"));
@@ -583,21 +574,14 @@ LOGstrm << "return from filter with iret " << iret << endl;
       }
 
       // analyze results
-LOGstrm << "go to analyze" << endl;
       iret = wf.analyze();
-LOGstrm << "return from analyze with iret " << iret << endl;
 
       // compute stats on each segment, then get results to return
-LOGstrm << "go to getStats" << endl;
-      for(int i=0; i<wf.results.size(); i++) {
-LOGstrm << " Get stats for result " << i << " = " << wf.results[i].asString() << endl;
+      for(int i=0; i<wf.results.size(); i++)
          wf.getStats(wf.results[i]);
-      }
 
       // NB this must be after getStats()
-LOGstrm << "go to getResults" << endl;
       hits = wf.getResults();
-LOGstrm << "return from getResults with " << hits.size() << " hits" << endl;
 
       // dump filter results - will use stats from getStats()
       wf.setDumpAnalMsg(cfg(debug)>-1 || cfg(verbose)!=0);
