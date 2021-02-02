@@ -589,8 +589,10 @@ LOGstrm << "return from analyze with iret " << iret << endl;
 
       // compute stats on each segment, then get results to return
 LOGstrm << "go to getStats" << endl;
-      for(int i=0; i<wf.results.size(); i++)
+      for(int i=0; i<wf.results.size(); i++) {
+LOGstrm << " Get stats for result " << i << " = " << wf.results[i].asString() << endl;
          wf.getStats(wf.results[i]);
+      }
 
       // NB this must be after getStats()
 LOGstrm << "go to getResults" << endl;
