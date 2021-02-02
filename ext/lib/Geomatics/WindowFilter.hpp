@@ -1149,6 +1149,8 @@ void WindowFilter<T>::getStats(FilterHit<T>& sg, bool skip)
    unsigned int i,j;
    sg.min = sg.max = sg.med = sg.mad = T(0);
 
+   if(sg.type == FilterHit<T>::BOD) return;
+
    bool notfound(true);
    for(i=0; i<analvec.size(); i++)
       if(analvec[i].index == sg.index) { j=i; notfound=false; break; }
