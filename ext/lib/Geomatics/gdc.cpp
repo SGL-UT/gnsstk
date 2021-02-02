@@ -384,6 +384,7 @@ int gdc::ProcessOneCombo(const unsigned which)
       // first look for gross slips using 1st differences, then compute stats,
       // look for gaps, and fix the slips (WLG GFG)
       iret = GrossProcessing(which);
+LOGstrm << "After Gross with iret " << iret << endl;
       if(iret < 0) return iret;
       nslips += iret;
 
@@ -443,7 +444,7 @@ int gdc::GrossProcessing(const unsigned which)
       // dump data (WLG GFG)
       label = LAB[which]+"G"; 
       if(cfg_func(label)) dumpData(LOGstrm,tag+" "+label);
-   
+LOGstrm << "Leaving Gross" << endl;
       return nslips;
    }
    catch(Exception& e) { GPSTK_RETHROW(e); }
