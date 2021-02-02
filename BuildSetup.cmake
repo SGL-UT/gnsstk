@@ -7,11 +7,11 @@
 #----------------------------------------
 # Shared(Dynamic) vs. Static libraries
 #----------------------------------------
-if( UNIX )
-    set( STADYN "SHARED" )
-elseif( WIN32 )
+#BWT if( UNIX )
+#BWT     set( STADYN "SHARED" )
+#BWT elseif( WIN32 )
     set( STADYN "STATIC" )
-endif()
+#BWT endif()
 
 
 #----------------------------------------
