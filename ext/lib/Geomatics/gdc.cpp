@@ -456,16 +456,20 @@ LOGstrm << "Leaving Gross" << endl;
 int gdc::FineProcessing(const unsigned which)
 {
    try {
+LOGstrm << "FineProcessing 0 " << which << endl;
       int i, nslips(0), iret;
       double limit;
       string label;
       map<int, Arc>::const_iterator ait;
       vector< FilterHit<double> > filterResults;
+LOGstrm << "FineProcessing 1" << endl;
 
       // filter using the window filter
       label = LAB[which]+"W";                         // WLW or GFW
       limit = cfg_func(LAB[which]+"fineStep");
+LOGstrm << "FineProcessing before filerWindow" << endl;
       iret = filterWindow(which,label,limit,filterResults);
+LOGstrm << "FineProcessing after filerWindow with iret " << iret << endl;
       if(iret < 0) {
          // a segment is too small...
          //DumpArcs("#After FilterWindow ",label,2);
@@ -474,6 +478,7 @@ int gdc::FineProcessing(const unsigned which)
       nslips += iret;         // iret >= 1 -- counts BOD
    
       // dump filter hits
+LOGstrm << "FineProcessing before DumpHits" << endl;
       if(cfg_func("debug") > -1) DumpHits(filterResults,"#"+tag,label,2);
    
       // merge window filter results with Arcs
