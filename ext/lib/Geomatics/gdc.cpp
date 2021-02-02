@@ -460,16 +460,16 @@ LOGstrm << "FineProcessing 0 " << which << endl;
       int i, nslips(0), iret;
       double limit;
       string label;
-      map<int, Arc>::const_iterator ait;
+      //map<int, Arc>::const_iterator ait;
       vector< FilterHit<double> > filterResults;
 LOGstrm << "FineProcessing 1" << endl;
 
       // filter using the window filter
       label = LAB[which]+"W";                         // WLW or GFW
       limit = cfg_func(LAB[which]+"fineStep");
-LOGstrm << "FineProcessing before filerWindow" << endl;
+LOGstrm << "FineProcessing before filterWindow" << endl;
       iret = filterWindow(which,label,limit,filterResults);
-LOGstrm << "FineProcessing after filerWindow with iret " << iret << endl;
+LOGstrm << "FineProcessing after filterWindow with iret " << iret << endl;
       if(iret < 0) {
          // a segment is too small...
          //DumpArcs("#After FilterWindow ",label,2);
@@ -568,10 +568,12 @@ int gdc::filterWindow(const unsigned which, const string label,
       wf.setprecision(cfg(osprec));
       wf.setMinStep(limit);
       wf.setTwoSample(which==GF);
-      //wf.setDebug(true);            // TEMP
+wf.setDebug(true);            // TEMP
+LOGstrm << "Inside filterWindow " << endl;
 
       // run it
       int iret = wf.filter();
+LOGstrm << "return from filter with iret " << iret << endl;
       if(iret == -2) {
          LOG(ERROR) << " Call to GF window filter without time data!";
          GPSTK_THROW(Exception("Call to GF window filter without time data"));
@@ -581,14 +583,19 @@ int gdc::filterWindow(const unsigned which, const string label,
       }
 
       // analyze results
+LOGstrm << "go to analyze" << endl;
       iret = wf.analyze();
+LOGstrm << "return from analyze with iret " << iret << endl;
 
       // compute stats on each segment, then get results to return
+LOGstrm << "go to getStats" << endl;
       for(int i=0; i<wf.results.size(); i++)
          wf.getStats(wf.results[i]);
 
       // NB this must be after getStats()
+LOGstrm << "go to getResults" << endl;
       hits = wf.getResults();
+LOGstrm << "return from getResults with " << hits.size() << " hits" << endl;
 
       // dump filter results - will use stats from getStats()
       wf.setDumpAnalMsg(cfg(debug)>-1 || cfg(verbose)!=0);
