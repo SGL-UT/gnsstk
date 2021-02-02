@@ -19,3 +19,7 @@ add_test(RefTime_TimeSystemCorr TimeSystemCorr_T)
 add_executable(BasicTimeSystemConverter_T BasicTimeSystemConverter_T.cpp)
 target_link_libraries(BasicTimeSystemConverter_T gpstk)
 add_test(RefTime_BasicTimeSystemConverter BasicTimeSystemConverter_T)
+
+add_executable(NavTimeSystemConverter_T NavTimeSystemConverter_T.cpp)
+target_link_libraries(NavTimeSystemConverter_T gpstk)
+add_test(RefTime_NavTimeSystemConverter NavTimeSystemConverter_T)

@@ -45,6 +45,8 @@
 
 namespace gpstk
 {
+   std::shared_ptr<TimeSystemConverter> CommonTime::tsConv;
+
       // 'julian day' of earliest epoch expressible by CommonTime; 1/1/4713 B.C.
    const long CommonTime::BEGIN_LIMIT_JDAY = 0L;
       // 'julian day' of latest 'julian day' expressible by CommonTime,
@@ -195,6 +197,15 @@ namespace gpstk
          m_timeSystem = timeSystem;
       }
       return rv;
+   }
+
+
+   bool CommonTime ::
+   changeTimeSystem(TimeSystem timeSystem)
+   {
+      if (!tsConv)
+         return false;
+      return changeTimeSystem(timeSystem, tsConv.get());
    }
 
 
