@@ -457,7 +457,6 @@ int gdc::FineProcessing(const unsigned which)
       int i, nslips(0), iret;
       double limit;
       string label;
-      //map<int, Arc>::const_iterator ait;
       vector< FilterHit<double> > filterResults;
 
       // filter using the window filter
