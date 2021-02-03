@@ -43,7 +43,7 @@ namespace gpstk
    void PNBMultiGNSSNavDataFactory ::
    setValidityFilter(NavValidityType nvt)
    {
-      for (auto& fi : factories)
+      for (auto& fi : factories())
       {
          fi.second->setValidityFilter(nvt);
       }
@@ -53,7 +53,7 @@ namespace gpstk
    void PNBMultiGNSSNavDataFactory ::
    setTypeFilter(const NavMessageTypeSet& nmts)
    {
-      for (auto& fi : factories)
+      for (auto& fi : factories())
       {
          fi.second->setTypeFilter(nmts);
       }
@@ -65,8 +65,8 @@ namespace gpstk
            double cadence)
    {
       NavType navType = navIn->getNavID().navType;
-      auto fi = factories.find(navType);
-      if (fi == factories.end())
+      auto fi = factories().find(navType);
+      if (fi == factories().end())
       {
             // We don't have a factory for this navigation message type
          return false;
@@ -88,7 +88,7 @@ namespace gpstk
       {
          return false;
       }
-      factories[navType] = fact;
+      factories()[navType] = fact;
       return true;
    }
 
@@ -96,9 +96,17 @@ namespace gpstk
    void PNBMultiGNSSNavDataFactory ::
    resetState()
    {
-      for (auto& fi : factories)
+      for (auto& fi : factories())
       {
          fi.second->resetState();
       }
+   }
+
+
+   PNBNavDataFactoryMap& PNBMultiGNSSNavDataFactory ::
+   factories()
+   {
+      static PNBNavDataFactoryMap rv;
+      return rv;
    }
 }

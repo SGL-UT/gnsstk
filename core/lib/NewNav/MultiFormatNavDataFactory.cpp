@@ -46,7 +46,7 @@ namespace gpstk
    MultiFormatNavDataFactory()
    {
          // keys for factories are not unique but that doesn't really matter.
-      for (const auto& i : factories)
+      for (const auto& i : factories())
       {
          supportedSignals.insert(i.first);
       }
@@ -66,7 +66,7 @@ namespace gpstk
         NavSearchOrder order)
    {
          // search factories until we find what we want.
-      auto range = factories.equal_range(nmid);
+      auto range = factories().equal_range(nmid);
       for (auto fi = range.first; fi != range.second; ++fi)
       {
          if (fi->second->find(nmid, when, navData, xmitHealth, valid, order))
@@ -81,7 +81,7 @@ namespace gpstk
    {
          // use a set to make sure we only process a factory once
       std::set<NavDataFactory*> edited;
-      for (auto& i : factories)
+      for (auto& i : factories())
       {
          NavDataFactory *ndfp = i.second.get();
          if (edited.count(ndfp))
@@ -103,7 +103,7 @@ namespace gpstk
    {
          // use a set to make sure we only process a factory once
       std::set<NavDataFactory*> edited;
-      for (auto& i : factories)
+      for (auto& i : factories())
       {
          NavDataFactory *ndfp = i.second.get();
          if (edited.count(ndfp))
@@ -125,7 +125,7 @@ namespace gpstk
    {
          // use a set to make sure we only process a factory once
       std::set<NavDataFactory*> edited;
-      for (auto& i : factories)
+      for (auto& i : factories())
       {
          NavDataFactory *ndfp = i.second.get();
          if (edited.count(ndfp))
@@ -146,7 +146,7 @@ namespace gpstk
    {
          // use a set to make sure we only process a factory once
       std::set<NavDataFactory*> edited;
-      for (auto& i : factories)
+      for (auto& i : factories())
       {
          NavDataFactory *ndfp = i.second.get();
          if (edited.count(ndfp))
@@ -170,7 +170,7 @@ namespace gpstk
          // use a set to make sure we only process a factory once
       std::set<NavDataFactory*> uniqueFact;
       size_t rv = 0;
-      for (auto& i : factories)
+      for (auto& i : factories())
       {
          NavDataFactory *ndfp = i.second.get();
          if (uniqueFact.count(ndfp))
@@ -193,7 +193,7 @@ namespace gpstk
          // use a set to make sure we only process a factory once
       std::set<NavDataFactory*> uniqueFact;
       std::set<NavSignalID> uniqueSig;
-      for (auto& i : factories)
+      for (auto& i : factories())
       {
          NavDataFactory *ndfp = i.second.get();
          if (uniqueFact.count(ndfp))
@@ -222,7 +222,7 @@ namespace gpstk
          // use a set to make sure we only process a factory once
       std::set<NavDataFactory*> uniqueFact;
       std::set<NavSatelliteID> uniqueSat;
-      for (auto& i : factories)
+      for (auto& i : factories())
       {
          NavDataFactory *ndfp = i.second.get();
          if (uniqueFact.count(ndfp))
@@ -252,7 +252,7 @@ namespace gpstk
          // times for any factory that has multiple supported signals,
          // but the end result is the same whether we check for
          // duplicates or not.
-      for (auto& i : factories)
+      for (auto& i : factories())
       {
          i.second->setValidityFilter(nvt);
       }
@@ -266,7 +266,7 @@ namespace gpstk
          // for any factory that has multiple supported signals, but
          // the end result is the same whether we check for duplicates
          // or not.
-      for (auto& i : factories)
+      for (auto& i : factories())
       {
          i.second->setTypeFilter(nmts);
       }
@@ -291,7 +291,7 @@ namespace gpstk
          // the map, it's a convenience.
       for (const auto& si : fact->supportedSignals)
       {
-         factories.insert(NavDataFactoryMap::value_type(si,fact));
+         factories().insert(NavDataFactoryMap::value_type(si,fact));
       }
       return true;
    }
@@ -303,7 +303,7 @@ namespace gpstk
          // factories can have multiple copies of a given factory, so
          // keep track of which ones we've checked already.
       std::set<NavDataFactory*> ptrs;
-      for (auto& fi : factories)
+      for (auto& fi : factories())
       {
          NavDataFactory *ptr = fi.second.get();
          if (ptrs.count(ptr) == 0)
@@ -331,7 +331,7 @@ namespace gpstk
          // factories can have multiple copies of a given factory, so
          // keep track of which ones we've checked already.
       std::set<NavDataFactory*> ptrs;
-      for (auto& fi : factories)
+      for (auto& fi : factories())
       {
          NavDataFactory *ptr = fi.second.get();
          if (ptrs.count(ptr) == 0)
@@ -350,7 +350,7 @@ namespace gpstk
          // keep track of which ones we've checked already.
       std::set<NavDataFactory*> ptrs;
       std::string rv;
-      for (const auto& fi : factories)
+      for (const auto& fi : factories())
       {
          NavDataFactory *ptr = fi.second.get();
          if (ptrs.count(ptr) == 0)
@@ -361,6 +361,14 @@ namespace gpstk
             rv += ptr->getFactoryFormats();
          }
       }
+      return rv;
+   }
+
+
+   NavDataFactoryMap& MultiFormatNavDataFactory ::
+   factories()
+   {
+      static NavDataFactoryMap rv;
       return rv;
    }
 }

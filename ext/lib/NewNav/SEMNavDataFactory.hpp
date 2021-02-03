@@ -60,6 +60,11 @@ namespace gpstk
           */
       SEMNavDataFactory();
 
+         /// Clean up.
+      virtual ~SEMNavDataFactory()
+      {
+      }
+
          /** Load SEM nav data into a map.
           * @param[in] filename The path of the file to load.
           * @param[out] navMap The map to store the loaded data in.

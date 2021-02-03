@@ -66,6 +66,11 @@ namespace gpstk
               procNavTypes(allNavMessageTypes)
       {}
 
+         /// Clean up.
+      virtual ~NavDataFactory()
+      {
+      }
+
          /** Search the store as defined by each child class of
           * NavDataFactory to find the navigation message that meets
           * the specified criteria.

@@ -63,6 +63,11 @@ namespace gpstk
           */
       RinexNavDataFactory();
 
+         /// Clean up.
+      virtual ~RinexNavDataFactory()
+      {
+      }
+
          /** Load RINEX NAV data into a map.
           * @param[in] filename The path of the file to load.
           * @param[out] navMap The map to store the loaded data in.
