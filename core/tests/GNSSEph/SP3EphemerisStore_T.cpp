@@ -160,7 +160,7 @@ public:
       /// test loading of SP3c data
    unsigned sp3cTest()
    {
-      TUDEF("SP3EphemerisStore", "whatever");
+      TUDEF("SP3EphemerisStore", "loadFile");
       SP3EphemerisStore store;
       TUCATCH(store.loadFile(inputSP3cData));
       TUASSERTE(size_t, 750, store.size());
@@ -327,6 +327,138 @@ public:
          TUASSERTE(std::string, inputComparisonOutput1, outputStream1.str());
          TUASSERTE(std::string, inputComparisonOutput15, outputStream15.str());
          TUASSERTE(std::string, inputComparisonOutput31, outputStream31.str());
+
+            // interpolation test
+         CommonTime iTime = CivilTime(1997,4,6,6,17,36,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+         TUASSERTFE(-15643515.779275318608, rv.x[0]);
+         TUASSERTFE(17046376.009584486485, rv.x[1]);
+         TUASSERTFE(12835522.993916222826, rv.x[2]);
+         TUASSERTFE(411.87359147363480361, rv.v[0]);
+         TUASSERTFE(-1620.8344018608040642, rv.v[1]);
+         TUASSERTFE(2608.7591273316520528, rv.v[2]);
+         TUASSERTFE(0.00041155797411176868201, rv.clkbias);
+         TUASSERTFE(2.29094726634170796e-12, rv.clkdrift);
+         TUASSERTFE(1.307844316503671866e-08, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unused, rv.health);
+
+            // before the beginning
+         iTime = CivilTime(1997,4,5,23,59,58,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+            // all zero because computeXvt will have failed
+         TUASSERTFE(0.0, rv.x[0]);
+         TUASSERTFE(0.0, rv.x[1]);
+         TUASSERTFE(0.0, rv.x[2]);
+         TUASSERTFE(0.0, rv.v[0]);
+         TUASSERTFE(0.0, rv.v[1]);
+         TUASSERTFE(0.0, rv.v[2]);
+         TUASSERTFE(0.0, rv.clkbias);
+         TUASSERTFE(0.0, rv.clkdrift);
+         TUASSERTFE(0.0, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
+
+            // after the beginning
+         iTime = CivilTime(1997,4,6,0,0,2,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+            // all zero because computeXvt will have failed
+         TUASSERTFE(0.0, rv.x[0]);
+         TUASSERTFE(0.0, rv.x[1]);
+         TUASSERTFE(0.0, rv.x[2]);
+         TUASSERTFE(0.0, rv.v[0]);
+         TUASSERTFE(0.0, rv.v[1]);
+         TUASSERTFE(0.0, rv.v[2]);
+         TUASSERTFE(0.0, rv.clkbias);
+         TUASSERTFE(0.0, rv.clkdrift);
+         TUASSERTFE(0.0, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
+
+            // before the end
+         iTime = CivilTime(1997,4,6,23,44,58,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+            // all zero because computeXvt will have failed
+         TUASSERTFE(0.0, rv.x[0]);
+         TUASSERTFE(0.0, rv.x[1]);
+         TUASSERTFE(0.0, rv.x[2]);
+         TUASSERTFE(0.0, rv.v[0]);
+         TUASSERTFE(0.0, rv.v[1]);
+         TUASSERTFE(0.0, rv.v[2]);
+         TUASSERTFE(0.0, rv.clkbias);
+         TUASSERTFE(0.0, rv.clkdrift);
+         TUASSERTFE(0.0, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
+
+            // after the end
+         iTime = CivilTime(1997,4,6,23,45,2,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+            // all zero because computeXvt will have failed
+         TUASSERTFE(0.0, rv.x[0]);
+         TUASSERTFE(0.0, rv.x[1]);
+         TUASSERTFE(0.0, rv.x[2]);
+         TUASSERTFE(0.0, rv.v[0]);
+         TUASSERTFE(0.0, rv.v[1]);
+         TUASSERTFE(0.0, rv.v[2]);
+         TUASSERTFE(0.0, rv.clkbias);
+         TUASSERTFE(0.0, rv.clkdrift);
+         TUASSERTFE(0.0, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
+
+            // not enough records before the time stamp to interpolate
+         iTime = CivilTime(1997,4,6,0,45,2,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+            // all zero because computeXvt will have failed
+         TUASSERTFE(0.0, rv.x[0]);
+         TUASSERTFE(0.0, rv.x[1]);
+         TUASSERTFE(0.0, rv.x[2]);
+         TUASSERTFE(0.0, rv.v[0]);
+         TUASSERTFE(0.0, rv.v[1]);
+         TUASSERTFE(0.0, rv.v[2]);
+         TUASSERTFE(0.0, rv.clkbias);
+         TUASSERTFE(0.0, rv.clkdrift);
+         TUASSERTFE(0.0, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
+
+            // just enough records before the time stamp to interpolate
+         iTime = CivilTime(1997,4,6,1,0,2,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+         TUASSERTFE(11828403.294941648841, rv.x[0]);
+         TUASSERTFE(14928607.236480718479, rv.x[1]);
+         TUASSERTFE(-18724238.162472143769, rv.x[2]);
+         TUASSERTFE(-2311.0302779592852858, rv.v[0]);
+         TUASSERTFE(-303.02212568403155046, rv.v[1]);
+         TUASSERTFE(-1722.9910235891636603, rv.v[2]);
+         TUASSERTFE(0.00041148478608542081577, rv.clkbias);
+         TUASSERTFE(5.0414722912013812421e-12, rv.clkdrift);
+         TUASSERTFE(-8.9501086430793832778e-09, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unused, rv.health);
+
+            // not enough records after the time stamp to interpolate
+         iTime = CivilTime(1997,4,6,22,46,0,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+            // all zero because computeXvt will have failed
+         TUASSERTFE(0.0, rv.x[0]);
+         TUASSERTFE(0.0, rv.x[1]);
+         TUASSERTFE(0.0, rv.x[2]);
+         TUASSERTFE(0.0, rv.v[0]);
+         TUASSERTFE(0.0, rv.v[1]);
+         TUASSERTFE(0.0, rv.v[2]);
+         TUASSERTFE(0.0, rv.clkbias);
+         TUASSERTFE(0.0, rv.clkdrift);
+         TUASSERTFE(0.0, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
+
+            // just enough records after the time stamp to interpolate
+         iTime = CivilTime(1997,4,6,22,36,0,gpstk::TimeSystem::GPS);
+         TUCATCH(rv = store.computeXvt(sid15,iTime));
+         TUASSERTFE(20430985.199506752193, rv.x[0]);
+         TUASSERTFE(16242900.914267791435, rv.x[1]);
+         TUASSERTFE(4656311.2732107555494, rv.x[2]);
+         TUASSERTFE(276.24271915985104897, rv.v[0]);
+         TUASSERTFE(595.94367782008657741, rv.v[1]);
+         TUASSERTFE(-3144.2228858024636793, rv.v[2]);
+         TUASSERTFE(0.00041179613487123963673, rv.clkbias);
+         TUASSERTFE(5.137432195220640398e-12, rv.clkdrift);
+         TUASSERTFE(-1.5205131796925821461e-08, rv.relcorr);
+         TUASSERTE(Xvt::HealthStatus, Xvt::Unused, rv.health);
       }
       catch (...)
       {
@@ -696,6 +828,93 @@ public:
       TURETURN();
    }
 
+
+#if 0
+      /** As the name indicates, this is not a test.  It was
+       * implemented in order to assist in creating a consistent
+       * "truth" data for SP3NavDataFactory.  Also this method
+       * requires access to the internal data for SP3EphemerisStore
+       * which is normally private, so leaving this here for future
+       * use but #if'd out. */
+   void notATest()
+   {
+      try
+      {
+         SP3EphemerisStore store;
+         store.loadFile(inputSP3Data);
+         SatID sid15(1,SatelliteSystem::GPS);
+         CommonTime ttag = gpstk::CivilTime(1997,4,6,22,45,2,
+                                            gpstk::TimeSystem::GPS);
+         std::cerr << "starting this thing here" << std::endl;
+         PositionRecord prec = store.posStore.getValue(sid15, ttag);
+         ClockRecord crec = store.clkStore.getValue(sid15, ttag);
+         std::cerr << "finished this thing here" << std::endl;
+         cerr << setprecision(20) << "prec" << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Pos[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigPos[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Vel[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigVel[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Acc[i];
+         cerr << endl;
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigAcc[i];
+         cerr << endl;
+         cerr << "crec" << endl
+              << " " << crec.bias << " " << crec.sig_bias
+              << " " << crec.drift << " " << crec.sig_drift
+              << " " << crec.accel << " " << crec.sig_accel
+              << endl;
+      }
+      catch (gpstk::Exception& exc)
+      {
+         cerr << exc << endl;
+      }
+      try
+      {
+         std::string dataFilePath = gpstk::getPathData();
+         std::string fileSep = gpstk::getFileSep();
+
+         string data3c = dataFilePath + fileSep +
+            "test_input_SP3c_pos.sp3";
+         cerr << "loading " << data3c << endl;
+         SP3EphemerisStore store;
+         store.loadFile(data3c);
+         cerr << "size = " << store.size() << endl;
+         SatID sid15(15,SatelliteSystem::GPS);
+         CommonTime ttag = gpstk::CivilTime(2011,10,9,2,1,3,
+//         CommonTime ttag = gpstk::CivilTime(2011,10,9,3,0,0,
+                                            gpstk::TimeSystem::GPS);
+         PositionRecord prec = store.posStore.getValue(sid15, ttag);
+         ClockRecord crec = store.clkStore.getValue(sid15, ttag);
+         cerr << setprecision(20) << "prec" << endl
+              << "    Pos ";
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Pos[i];
+         cerr << endl << " sigPos ";
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigPos[i];
+         cerr << endl << "    Vel ";
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Vel[i];
+         cerr << endl << " sigVel ";
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigVel[i];
+         cerr << endl << "    Acc ";
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.Acc[i];
+         cerr << endl << " sigAcc ";
+         for (unsigned i = 0; i < 3; i++) cerr << " " << prec.sigAcc[i];
+         cerr << endl
+              << "crec" << endl
+              << " bias  " << crec.bias << " " << crec.sig_bias << endl
+              << " drift " << crec.drift << " " << crec.sig_drift << endl
+              << " accel " << crec.accel << " " << crec.sig_accel << endl;
+      }
+      catch (gpstk::Exception& exc)
+      {
+         cerr << exc << endl;
+      }
+   }
+#endif
+
 private:
    double epsilon; // Floating point error threshold
    std::string dataFilePath;
@@ -730,6 +949,7 @@ int main() // Main function to initialize and run all tests above
    errorTotal += testClass.getFinalTimeTest();
    errorTotal += testClass.getPositionTest();
    errorTotal += testClass.getVelocityTest();
+   // testClass.notATest();
 
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 

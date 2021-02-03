@@ -44,6 +44,7 @@
 #include "PositionSatStore.hpp"
 #include "MiscMath.hpp"
 #include <vector>
+#include <iterator>
 
 using namespace std;
 

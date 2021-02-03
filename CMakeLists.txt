@@ -10,7 +10,7 @@ cmake_minimum_required( VERSION 2.8.5 )
 
 project( GPSTK )
 set( GPSTK_VERSION_MAJOR "9" )
-set( GPSTK_VERSION_MINOR "0" )
+set( GPSTK_VERSION_MINOR "1" )
 set( GPSTK_VERSION_PATCH "0" )
 set( GPSTK_VERSION "${GPSTK_VERSION_MAJOR}.${GPSTK_VERSION_MINOR}.${GPSTK_VERSION_PATCH}" )
 
@@ -128,6 +128,7 @@ endif()
 #============================================================
 
 if( BUILD_EXT )
+  add_definitions(-DBUILD_EXT)
   file( GLOB_RECURSE EXT_SRC_FILES "ext/lib/*.cpp" "ext/lib/*.c" )
   file( GLOB_RECURSE EXT_INC_FILES "ext/lib/*.h" "ext/lib/*.hpp" )
 

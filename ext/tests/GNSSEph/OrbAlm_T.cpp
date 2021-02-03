@@ -185,9 +185,8 @@ createAndDump()
          sprintf(temp," %15.3lf  %18.3lf  %17.3lf  %22.3lf",
                         xMag, vMag, clockDiff * 1.0e9, driftDiff * 1.0e9);
          string temps(temp);
-         int begLen = 8;
-         if (pfd.subjID.id>9) begLen = 7;
-         out << setw(begLen) << pfd.subjID << "  " << printTime(alm->beginValid,tform) << "  "
+         out << setw(10) << StringUtils::asString(pfd.subjID) << "  "
+             << printTime(alm->beginValid,tform) << "  "
              << temps << endl; 
       }
    }

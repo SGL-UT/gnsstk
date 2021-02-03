@@ -176,6 +176,32 @@ namespace gpstk
       }
    }
 
+
+   bool TimeTag ::
+   changeTimeSystem(TimeSystem timeSys, TimeSystemConverter* conv)
+   {
+         // We have to add an offset and the only way to do that is to
+         // change to CommonTime and back.
+      CommonTime ct = convertToCommonTime();
+      bool rv = ct.changeTimeSystem(timeSys, conv);
+      if (rv)
+         convertFromCommonTime(ct);
+      return rv;
+   }
+
+
+   bool TimeTag ::
+   changeTimeSystem(TimeSystem timeSys)
+   {
+         // We have to add an offset and the only way to do that is to
+         // change to CommonTime and back.
+      CommonTime ct = convertToCommonTime();
+      bool rv = ct.changeTimeSystem(timeSys);
+      if (rv)
+         convertFromCommonTime(ct);
+      return rv;
+   }
+
 } // namespace
 
 std::ostream& operator<<( std::ostream& s,

@@ -39,6 +39,7 @@
 #ifndef GPSTK_COMMONTIME_HPP
 #define GPSTK_COMMONTIME_HPP
 
+#include <memory>
 #include "Exception.hpp"
 #include "TimeConstants.hpp"
 #include "TimeSystem.hpp"
@@ -203,6 +204,15 @@ namespace gpstk
           *   the time system offset.
           */
       bool changeTimeSystem(TimeSystem timeSystem, TimeSystemConverter* conv);
+
+         /** Modify both the time value and time system to reflect a
+          * change in time system.
+          * @param[in] timeSystem The time system to convert this time to.
+          * @return true if successful, false if the static converter
+          *   tsConv has not been set or is unable to get/apply the
+          *   time system offset.
+          */
+      bool changeTimeSystem(TimeSystem timeSystem);
 
          /**
           * Get method.  Obtain values in days, second of day and fractional
@@ -389,6 +399,10 @@ namespace gpstk
       { m_day = m_msod = 0; m_fsod = 0.0; m_timeSystem = TimeSystem::Unknown; }
 
       std::string asString() const;
+
+         /** If set, this object will provide the ability for
+          * changeTimeSystem(TimeSystem) to function. */
+      static std::shared_ptr<TimeSystemConverter> tsConv;
 
    protected:
 

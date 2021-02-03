@@ -1,3 +1,27 @@
+# Version 9.1.0   Thursday January 14, 2021
+
+Modifications by Author
+-----------------------
+     Andrew Kuck <kuck@arlut.utexas.edu> (3):
+           Update conda package to build from main
+           Relax protected word searches
+           Use main branch for SGLTk.
+
+     David Barber <dbarber@arlut.utexas.edu> (1):
+           Update build.sh for better error reporting and standardize across TKs.
+
+     John Knutson <johnk@arlut.utexas.edu> (8):
+           Add accessors to the ObsID description maps for SWIG
+           Resolve "improve documentation"
+           Clarify use of convertQuant and subframeConvert, and remove mentions of FIC which would be confusing to anyone outside SGL
+           Resolve "Add more details to SatMetaDataStore docs"
+           Change EngNav decoding internals to use C++ instead of C pointers and linked lists and eliminate the need for explicit initialization by the user
+           Add support of time system conversion to/from QZSS
+           Resolve "CommonTime/TimeSystem Redesign"
+           Minimal effort changes to put everything into the gpstk namespace
+
+
+
 # Version 9.0.0   Thursday December 10, 2020
 
 Modifications by Author

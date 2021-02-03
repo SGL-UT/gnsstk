@@ -1,24 +1,30 @@
-GPSTk 9.0.0 Release Notes
+GPSTk 9.1.0 Release Notes
 ========================
 
- * This version addresses api change due to deprecation of FileHunter module.
- * Additionally, it contains a bug fix and CI related updates.
+ * This version addresses minor library updates including improved documentation
+ * Additionally, it contains a CI update for advisory only protected word searches and a conda recipe fix.
 
-Updates since v8.0.0
+Updates since v9.0.0
 ---------------------
-  * Update readme.
-  * File_Hunter related files were deprecated and moved to tks_legacy_archive repo
+**Build System and Test Suite**
+  * Update build.sh Allow better error reporting
 
 **Gitlab CI**
-  * Add CI stage to check files and history for sensitive words.
-  * Update the CI pipeline to reflect that the new default branch name.
+  * Update CI pipelines to make protected word searches advisory only.
 
-Fixes since v8.0.0
+**Library Changes**
+  * Add accessors to the ObsID description maps for SWIG.
+  * Add to CommandOptionParser the ability to show program usage in a format that can be used in doxygen.
+  * Add TimeSystemConversion class to support generalized time system conversion.
+  * Add BasicTimeSystemConversion class to wrap existing second-precision TimeSystem conversion.
+  * Update across the library to improve documentation.
+  * Update SatMetaDataStore to improve documentation.
+  * Update EngNav decoding internals to use C++ instead of C storage
+  * Update TimeSystem to support conversion to/from QZSS
+  * Update CommonTime to implement changeTimeSystem method.
+  * Update CommonTime/TimeSystem Redesign
+  * Update various source files to add namespace context where it was missing  
+
+Fixes since v9.0.0
 --------------------
-  * Modify IonoModel to accommodate Klo params in different units.
-
-Removed Code due to Deprecation
--------------------------------
-    core/lib/FileDirProc/FileHunter.cpp
-    core/lib/FileDirProc/FileHunter.hpp
-    core/tests/FileDirProc/FileHunter_T.cpp
+  * Fix conda recipe to specify correct default branch for GPSTk.

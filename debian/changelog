@@ -1,3 +1,29 @@
+gpstk (9.1.0-1) stable; urgency=low
+
+  * Updated to version 9.1.0
+  * Fix conda recipe to specify correct default branch for GPSTk.
+  * Update CI pipelines to make protected word searches advisory only.
+  * Add accessors to the ObsID description maps for SWIG.
+  * Update across the library to improve documentation.
+  * Remove latex documentation in favor of doxygen.
+  * Add to CommandOptionParser the ability to show program usage in a
+    format that can be used in doxygen.
+  * Update EngNav documentation for clarity.
+  * Update SatMetaDataStore to improve documentation.
+  * Update EngNav decoding internals to use C++ instead of C storage
+  * Update buil.sh Allow better error reporting
+  * Update TimeSystem to support conversion to/from QZSS
+  * Add TimeSystemConversion class to support generalized time system
+    conversion.
+  * Add BasicTimeSystemConversion class to wrap existing second-
+    precision TimeSystem conversion.
+  * Update CommonTime to implement changeTimeSystem method.
+  * Update CommonTime/TimeSystem Redesign
+  * Update various source files to add namespace context where it was
+    missing.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 14 Jan 2021 08:12:55 -0600
+
 gpstk (9.0.0-1) stable; urgency=low
 
   * Updated to version 9.0.0

@@ -66,6 +66,21 @@ namespace gpstk
        *   week epoch (i.e. 512 weeks) of the reference time.
        */
    long timeAdjustWeekRollover(long toCorrectWeek, long& refWeek);
+
+      /** This function is the same as timeAdjustWeekRollover, except
+       * that it is designed for 8-bit weeks (e.g. WNa) as opposed to
+       * 10-bit weeks.
+       * @param[in] toCorrectWeek The suspect week from data that
+       *   might be off by 256 weeks.
+       * @param[in,out] refWeek The known full week that will be used
+       *   as a reference.  If this value is zero (the default), the
+       *   local system clock will be consulted to obtain a reference
+       *   week.
+       * @return The value of toCorrectWeek having been adjusted by as
+       *   many epochs as necessary to bring it to within 128 weeks of
+       *   the reference time.
+       */
+   long timeAdjust8BitWeekRollover(long toCorrectWeek, long& refWeek);
       //@}
 }
 
