@@ -360,11 +360,7 @@ namespace gpstk
                TimeSystemCorrection tc("GLGP");
                tc.A0 = jt->second.A0 - it->second.A0;
                tc.A1 = jt->second.A1 - it->second.A1; // probably zeros
-               tc.refYr = it->second.refYr;
-               tc.refMon = it->second.refMon;
-               tc.refDay = it->second.refDay;
-               tc.refWeek = jt->second.refWeek;
-               tc.refSOW = jt->second.refSOW;
+               tc.refTime = it->second.refTime;
                tc.geoProvider = jt->second.geoProvider;  // blank
                tc.geoUTCid = 0;                          // NA
                mapTimeCorr[tc.asString4()] = tc;
@@ -382,11 +378,7 @@ namespace gpstk
                TimeSystemCorrection tc("GPGA");
                tc.A0 = jt->second.A0 - it->second.A0;
                tc.A1 = jt->second.A1 - it->second.A1;
-               tc.refYr = it->second.refYr;           // take ref time from GAL
-               tc.refMon = it->second.refMon;
-               tc.refDay = it->second.refDay;
-               tc.refWeek = it->second.refWeek;
-               tc.refSOW = it->second.refSOW;
+               tc.refTime = it->second.refTime; // take ref time from GAL
                tc.geoProvider = it->second.geoProvider;  // blank
                tc.geoUTCid = 0;                          // NA
                mapTimeCorr[tc.asString4()] = tc;
@@ -404,13 +396,7 @@ namespace gpstk
                TimeSystemCorrection tc("BDGP");
                tc.A0 = jt->second.A0 - it->second.A0;
                tc.A1 = jt->second.A1 - it->second.A1;
-               tc.refYr = it->second.refYr;
-               tc.refMon = it->second.refMon;
-               tc.refDay = it->second.refDay;
-               BDSWeekSecond bws(jt->second.refWeek,jt->second.refSOW);
-               GPSWeekSecond gws(bws);
-               tc.refWeek = gws.week;
-               tc.refSOW = gws.sow;
+               tc.refTime = it->second.refTime;
                tc.geoProvider = jt->second.geoProvider;  // blank
                tc.geoUTCid = 7;
                mapTimeCorr[tc.asString4()] = tc;

@@ -287,8 +287,7 @@ namespace gpstk
       TimeSystemCorrection tsc("GPUT");
       tsc.A0 = A0;
       tsc.A1 = A1;
-      tsc.refSOW = static_cast<GPSWeekSecond>(ctEpoch).sow;
-      tsc.refWeek = static_cast<GPSWeekSecond>(ctEpoch).week;
+      tsc.refTime = ctEpoch;
       tsc.geoProvider = string ("    ");
       tsc.geoUTCid = 2;
       return tsc;
