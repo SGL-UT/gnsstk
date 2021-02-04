@@ -40,23 +40,33 @@
  * - \subpage sp3version - Convert SP3 files between format versions
  * \page sp3version
  * \tableofcontents
+ *
  * \section sp3version_name NAME
  * sp3version - Convert SP3 files between format versions
+ *
+ * \section sp3version_synopsis SYNOPSIS
+ * <b>sp3version</b>  <b>-h</b> <br/>
+ * <b>sp3version</b> <b>[-d</b><b>]</b> <b>[-v</b><b>]</b> <b>[\--in</b>&nbsp;\argarg{ARG}<b>]</b> <b>[\--out</b>&nbsp;\argarg{ARG}<b>]</b> <b>[\--outputC</b><b>]</b> <b>[\--msg</b>&nbsp;\argarg{ARG}<b>]</b> <b>[</b>\argarg{ARG}<b>]</b> <b>[</b>...<b>]</b>
+ *
  * \section sp3version_description DESCRIPTION
  * This application reads an SP3 file (either a or c format) and
  * writes it to another file (also either in a or c format).
  *
  * \dictionary
- * \dicterm{\--in \argarg{FILE}}
- * \dicdef{Read the input file \argarg{FILE} ()}
- * \dicterm{\--out \argarg{FILE}}
- * \dicdef{Name the output file \argarg{FILE} (sp3.out)}
+ * \dicterm{-d, \--debug}
+ * \dicdef{Increase debug level}
+ * \dicterm{-v, \--verbose}
+ * \dicdef{Increase verbosity}
+ * \dicterm{-h, \--help}
+ * \dicdef{Print help usage}
+ * \dicterm{\--in=\argarg{ARG}}
+ * \dicdef{Read the input file(s)}
+ * \dicterm{\--out=\argarg{ARG}}
+ * \dicdef{Name the output file (default=sp3.out)}
  * \dicterm{\--outputC}
- * \dicdef{Output version c (otherwise a). NB. for a->c, generate random correlations}
- * \dicterm{\--msg "..."}
- * \dicdef{Add ... as a comment to the output header}
- * \dicterm{\--verbose}
- * \dicdef{Output to screen: dump headers, data, etc}
+ * \dicdef{Output SP3 version c (default=a, random correlations are generated for a->c translation)}
+ * \dicterm{\--msg=\argarg{ARG}}
+ * \dicdef{Add a comment to the output header}
  * \enddictionary
  *
  * \section sp3version_examples EXAMPLES
@@ -78,10 +88,10 @@
 
 /**
  * @file sp3version.cpp
- * Read an SP3 format file (any version) and write the data out to another,
- * specifying the SP3 version. This code is intended for testing and as a pattern
- * for SP3 I/O and analysis programs; currently in converting SP3a to SP3c it
- * inserts random data.
+ * Read an SP3 format file (any version) and write the data out to
+ * another, specifying the SP3 version. This code is intended for
+ * testing and as a pattern for SP3 I/O and analysis programs;
+ * currently in converting SP3a to SP3c it inserts random data.
  */
 
 #include <iostream>
@@ -99,29 +109,50 @@
 using namespace std;
 using namespace gpstk;
 
-double unitrand(void) { return double(rand())/RAND_MAX; }
-
-int main(int argc, char *argv[])
+class SP3Version : public BasicFramework
 {
-   if(argc < 2)
-   {
-      cout << "Usage: sp3version <SP3 file> [options]\n";
-      cout << " Read an SP3 file (either a or c format) and write it to another\n";
-      cout << "    file, also in either a or c format.\n";
-      cout << " Options:\n";
-      cout << "    --in <file>   Read the input file <file> ()\n";
-      cout << "    --out <file>  Name the output file <file> (sp3.out)\n";
-      cout << "    --outputC     Output version c (otherwise a)\n";
-      cout << "                  NB. for a->c, generate random correlations\n";
-      cout << "    --msg \"...\"   Add ... as a comment to the output header\n";
-      cout << "    --verbose     Output to screen: dump headers, data, etc\n";
-      return -1;
-   }
+public:
+   SP3Version(const string& applName);
+   void process() override;
+   double unitrand();
+   CommandOptionWithAnyArg inFileOpt;
+   CommandOptionWithAnyArg outFileOpt;
+   CommandOptionNoArg sp3cOpt;
+   CommandOptionWithAnyArg msgOpt;
+      /** The original implementation allowed either --in or trailing
+       * arguments to indicate an input file name, so we do the
+       * same... */
+   CommandOptionRest inFile2Opt;
+      /// Make sure one and only one of inFileOpt and/or inFile2Opt is used
+   CommandOptionMutex inFileMutex;
+};
 
+
+SP3Version ::
+SP3Version(const string& applName)
+      : BasicFramework(applName, "Read an SP3 file (either a or c format) and"
+                       " write it to another"),
+        inFileOpt(0, "in", "Read the input file(s)"),
+        inFile2Opt("[SP3 file] ..."),
+        outFileOpt(0, "out", "Name the output file (default=sp3.out)"),
+        sp3cOpt(0, "outputC", "Output SP3 version c (default=a, random"
+                " correlations are generated for a->c translation)"),
+        msgOpt(0, "msg", "Add a comment to the output header"),
+        inFileMutex(true)
+{
+   inFileOpt.setMaxCount(1);
+   outFileOpt.setMaxCount(1);
+   inFileMutex.addOption(&inFileOpt);
+   inFileMutex.addOption(&inFile2Opt);
+}
+
+
+void SP3Version ::
+process()
+{
    try
    {
-      bool verbose=false;
-      SP3Header::Version version_in, version_out;
+      SP3Header::Version versionIn, versionOut;
       int i,n;
       string filein,fileout("sp3.out");
       CommonTime currentTime=CommonTime::BEGINNING_OF_TIME;
@@ -129,32 +160,29 @@ int main(int argc, char *argv[])
       SP3Data sp3data;
       vector<string> comments;
 
-      for(i=1; i<argc; i++) {
-         if(argv[i][0] == '-') {
-            string arg(argv[i]);
-            if(arg == string("--outputC"))
-               version_out = SP3Header::SP3c;   //'c';
-            else if(arg == string("--in"))
-               filein = string(argv[++i]);
-            else if(arg == string("--out"))
-               fileout = string(argv[++i]);
-            else if(arg == string("--msg"))
-               comments.push_back(string(argv[++i]));
-            else if(arg == string("--verbose"))
-               verbose = true;
-            else
-               cout << "Ignore unknown option: " << arg << endl;
-         }
-         else {
-            filein = string(argv[i]);
-         }
+      if (sp3cOpt)
+      {
+         versionOut = SP3Header::SP3c;   //'c';
+      }
+      if (inFileOpt.getCount())
+      {
+         filein = inFileOpt.getValue()[0];
+      }
+      else if (inFile2Opt.getCount())
+      {
+         filein = inFile2Opt.getValue()[0];
+      }
+      if (outFileOpt.getCount())
+      {
+         fileout = outFileOpt.getValue()[0];
+      }
+      if (msgOpt.getCount())
+      {
+         comments = msgOpt.getValue();
       }
 
-      if(filein.empty()) {
-         cout << "Error - no filename specified. Abort.\n";
-         return -1;
-      }
-      if(verbose) cout << "Reading file " << filein << endl;
+      if (verboseLevel)
+         cout << "Reading file " << filein << endl;
 
       SP3Stream instrm(filein.c_str());
       instrm.exceptions(ifstream::failbit);
@@ -162,131 +190,190 @@ int main(int argc, char *argv[])
       SP3Stream outstrm(fileout.c_str(),ios::out);
       outstrm.exceptions(ifstream::failbit);
 
-      // read the header
+         // read the header
       instrm >> sp3header;
-      if(verbose) {
+      if (verboseLevel)
+      {
          cout << "Input ";
          sp3header.dump(cout);
          cout << endl;
       }
-      version_in = sp3header.version;
+      versionIn = sp3header.version;
 
-      // add comments
-      if(comments.size() > 0) {
-         // try to keep existing comments
-         for(i=0; i<4-int(comments.size()); i++)
+         // add comments
+      if (comments.size() > 0)
+      {
+            // try to keep existing comments
+         for (i=0; i<4-int(comments.size()); i++)
             comments.push_back(sp3header.comments[i]);
          sp3header.comments.clear();
-         for(i=0; i<int(comments.size()); i++) {
+         for (i=0; i<int(comments.size()); i++)
+         {
             sp3header.comments.push_back(comments[i]);
          }
       }
 
-      // prepare to write the header
-      if(version_out == SP3Header::SP3c) {
+         // prepare to write the header
+      if (versionOut == SP3Header::SP3c)
+      {
          sp3header.version = SP3Header::SP3c; //'c';
          sp3header.system = SP3SatID();
          sp3header.timeSystem = TimeSystem::GPS;
-         sp3header.basePV = 1.25;     // make these up ... a real app would
-         sp3header.baseClk = 1.025;   // assign them based on what SP3Data will hold
+            // make these up ... a real app would
+         sp3header.basePV = 1.25;
+            // assign them based on what SP3Data will hold
+         sp3header.baseClk = 1.025;
       }
-      if(verbose) {
+      if (verboseLevel)
+      {
          cout << "Output ";
          sp3header.dump(cout);
          cout << endl;
       }
 
-      // write the header
+         // write the header
       outstrm << sp3header;
 
-      // for reading and writing, sp3data MUST have the version of the header;
-      // this is crucial for version 'c'
-      //sp3data.version = version_in;          // for input
+         // for reading and writing, sp3data MUST have the version of
+         // the header; this is crucial for version 'c'
+         //sp3data.version = versionIn;          // for input
 
       n = 0;     // count records
-      while(instrm >> sp3data) {
-         // data has now been read in
-         // ...handle the data
-         if(verbose) { cout << "Input:\n"; sp3data.dump(cout); }
-         // if correlationFlag has been set, there is new correlation data
-         if(sp3data.correlationFlag) {
+      while (instrm >> sp3data)
+      {
+            // data has now been read in
+            // ...handle the data
+         if (verboseLevel)
+         {
+            cout << "Input:\n";
+            sp3data.dump(cout);
+         }
+            // if correlationFlag has been set, there is new correlation data
+         if (sp3data.correlationFlag)
+         {
             cout << "Input sdev";
-            for(i=0; i<4; i++) cout << " " << sp3data.sdev[i];
+            for (i=0; i<4; i++)
+               cout << " " << sp3data.sdev[i];
             cout << endl;
             cout << "Input correl";
-            for(i=0; i<6; i++) cout << " " << sp3data.correlation[i];
+            for (i=0; i<6; i++)
+               cout << " " << sp3data.correlation[i];
             cout << endl;
          }
 
-         // output
-         // write the epoch record
-         if(sp3data.time > currentTime) {
+            // output
+            // write the epoch record
+         if (sp3data.time > currentTime)
+         {
             char saveRecType = sp3data.RecType;
             sp3data.RecType = '*';
-            //outstrm << sp3data;
+               //outstrm << sp3data;
             sp3data.RecType = saveRecType;
             currentTime = sp3data.time;
          }
 
             // make up some data...a real app would have this data
-         if(version_in == SP3Header::SP3a && version_out == SP3Header::SP3c) {
-            // sigmas on the P|V rec
-            for(i=0; i<4; i++) sp3data.sig[i] = int(99*unitrand());
-            // RecType on the P line
-            if(sp3data.RecType == 'P') {
+         if (versionIn == SP3Header::SP3a && versionOut == SP3Header::SP3c)
+         {
+               // sigmas on the P|V rec
+            for (i=0; i<4; i++)
+               sp3data.sig[i] = int(99*unitrand());
+               // RecType on the P line
+            if (sp3data.RecType == 'P')
+            {
                sp3data.clockEventFlag = (unitrand() > 0.5);
                sp3data.clockPredFlag = (unitrand() > 0.5);
                sp3data.orbitManeuverFlag = (unitrand() > 0.5);
                sp3data.orbitPredFlag = (unitrand() > 0.5);
             }
-            // write out the correlation records ... maybe
-            if(unitrand() > 0.5) {
-               // set the RecType for output
+               // write out the correlation records ... maybe
+            if (unitrand() > 0.5)
+            {
+                  // set the RecType for output
                sp3data.correlationFlag = true;
-               for(i=0; i<4; i++) sp3data.sdev[i] = int(9999*unitrand());
-               for(i=0; i<6; i++) sp3data.correlation[i] = int(99999999*unitrand());
+               for (i=0; i<4; i++)
+                  sp3data.sdev[i] = int(9999*unitrand());
+               for (i=0; i<6; i++)
+                  sp3data.correlation[i] = int(99999999*unitrand());
                cout << "Output sdev";
-               for(i=0; i<4; i++) cout << " " << sp3data.sdev[i];
+               for (i=0; i<4; i++)
+                  cout << " " << sp3data.sdev[i];
                cout << endl;
                cout << "Output correl";
-               for(i=0; i<6; i++) cout << " " << sp3data.correlation[i];
+               for (i=0; i<6; i++)
+                  cout << " " << sp3data.correlation[i];
                cout << endl;
             }
-            else sp3data.correlationFlag = false;
+            else
+            {
+               sp3data.correlationFlag = false;
+            }
          }
 
-         // write the data P|V record, and if correlationFlag, the EP|EV record
-         if(verbose) { cout << "Output:\n"; sp3data.dump(cout); }
+            // write the data P|V record, and if correlationFlag, the
+            // EP|EV record
+         if (verboseLevel)
+         {
+            cout << "Output:\n";
+            sp3data.dump(cout);
+         }
          outstrm << sp3data;
 
-         // count records
+            // count records
          n++;
 
-         // prepare for the next read
-         //sp3data.version = version_in;
-         // must reset before input, since same sp3data is for input and output
+            // prepare for the next read
+            //sp3data.version = versionIn;
+            // must reset before input, since same sp3data is for
+            // input and output
          sp3data.correlationFlag = false;
       }
 
-      // don't forget this
-      //outstrm << "EOF" << endl;
+         // don't forget this
+         //outstrm << "EOF" << endl;
 
       instrm.close();
       outstrm.close();
 
-      if(verbose) cout << "Read " << n << " records" << endl;
+      if (verboseLevel)
+         cout << "Read " << n << " records" << endl;
    }
    catch (Exception& e)
    {
-      cout << e;
-      return gpstk::BasicFramework::EXCEPTION_ERROR;
+      GPSTK_RETHROW(e);
    }
-   catch (...)
-   {
-      cout << "Caught an unknown exception" << endl;
-      return gpstk::BasicFramework::EXCEPTION_ERROR;
-   }
+}
 
-   cout << "Done."  << endl;
-   return 0;
+
+double SP3Version ::
+unitrand()
+{
+   return double(rand())/RAND_MAX;
+}
+
+
+int main(int argc, char *argv[])
+{
+   try
+   {
+      SP3Version app(argv[0]);
+      if (!app.initialize(argc, argv))
+         return app.exitCode;
+      app.run();
+      return app.exitCode;
+   }
+   catch(Exception& e)
+   {
+      cout << e << endl;
+   }
+   catch(std::exception& e)
+   {
+      cout << e.what() << endl;
+   }
+   catch(...)
+   {
+      cout << "unknown error" << endl;
+   }
+      // only reach this point if an exception was caught
+   return BasicFramework::EXCEPTION_ERROR;
 } 
