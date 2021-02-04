@@ -1151,13 +1151,16 @@ template<class T> void WindowFilter<T>::dump(std::ostream& os, std::string tag)
 template<class T>
 void WindowFilter<T>::getStats(FilterHit<T>& sg, bool skip)
 {
-   unsigned int i;
+   unsigned int i,j;
    sg.min = sg.max = sg.med = sg.mad = T(0);
+   sg.haveStats = false;
 
-   int j(-1);
+   if(sg.type == FilterHit<T>::BOD) return;
+
+   bool notfound(true);
    for(i=0; i<analvec.size(); i++)
-      if(analvec[i].index == sg.index) { j=i; break; }
-   if(j == -1) return;
+      if(analvec[i].index == sg.index) { j=i; notfound=false; break; }
+   if(notfound) return;
 
    // stats on sigma       // TD would like the same for step....how to implement
    bool first(true);
