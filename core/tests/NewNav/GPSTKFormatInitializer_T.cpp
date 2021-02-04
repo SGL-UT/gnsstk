@@ -45,7 +45,7 @@ class TestClass : public gpstk::MultiFormatNavDataFactory
 {
 public:
    static gpstk::NavDataFactoryMap& getFactories()
-   { return factories; }
+   { return factories(); }
 };
 
 

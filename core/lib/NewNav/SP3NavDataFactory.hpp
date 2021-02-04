@@ -67,6 +67,11 @@ namespace gpstk
           */
       SP3NavDataFactory();
 
+         /// Clean up.
+      virtual ~SP3NavDataFactory()
+      {
+      }
+
          /** Search the store to find the navigation message that
           * meets the specified criteria.  SP3 is only capable of
           * containing ephemeris data.  This implementation of the

@@ -178,7 +178,7 @@ namespace gpstk
          /** Known nav data factories, organized by signal to make
           * searches simpler and/or quicker.  Declared static so that
           * other libraries can transparently add factories. */
-      static NavDataFactoryMap factories;
+      static NavDataFactoryMap& factories();
 
    private:
          /** This method makes no sense in this context, because we

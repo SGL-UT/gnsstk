@@ -104,7 +104,7 @@ public:
    gpstk::NavMessageMap& getData()
    { return data; }
    static gpstk::NavDataFactoryMap& getFactories()
-   { return factories; }
+   { return factories(); }
 };
 
    /// Expose NavDataFactory protected members

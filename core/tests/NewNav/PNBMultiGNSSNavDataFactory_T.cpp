@@ -64,7 +64,7 @@ class TestClass : public gpstk::PNBMultiGNSSNavDataFactory
 {
 public:
    static gpstk::PNBNavDataFactoryMap& getFactories()
-   { return factories; }
+   { return factories(); }
 };
 class PNBTestFactory : public gpstk::PNBNavDataFactory
 {

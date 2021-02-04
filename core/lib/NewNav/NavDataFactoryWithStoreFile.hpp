@@ -50,6 +50,13 @@ namespace gpstk
    class NavDataFactoryWithStoreFile : public NavDataFactoryWithStore
    {
    public:
+      NavDataFactoryWithStoreFile()
+      {}
+
+         /// Clean up.
+      virtual ~NavDataFactoryWithStoreFile()
+      {
+      }
          /** Load a file into the default map, NavDataFactoryWithStore::data.
           * @param[in] source The path to the file to load.
           * @return true on success, false on failure. */

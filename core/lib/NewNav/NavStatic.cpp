@@ -64,18 +64,6 @@ namespace gpstk
                                                 NavMessageType::Health,
                                                 NavMessageType::Clock };
 
-      // Don't try and initialize this, you really need to use
-      // addFactory to do it properly.
-      /** @note This MUST be defined before the initializer otherwise
-       * you'll run into static initialization problems. */
-   NavDataFactoryMap MultiFormatNavDataFactory::factories;
-
-      // Don't try and initialize this, you really need to use
-      // addFactory to do it properly.
-      /** @note This MUST be defined before the initializer otherwise
-       * you'll run into static initialization problems. */
-   PNBNavDataFactoryMap PNBMultiGNSSNavDataFactory::factories;
-
       /** This class is not for public use.  It is used to create a
        * singleton object to add supported formats to
        * MultiFormatNavDataFactory.
@@ -83,10 +71,10 @@ namespace gpstk
    class GPSTKFormatInitializer
    {
    public:
-      static bool initialized;
          /// Add gpstk factories to MultiFormatNavDataFactory
       GPSTKFormatInitializer()
       {
+         static bool initialized = false;
          // std::cerr << "starting GPSTKFormatInitializer() " << this << std::endl;
          if (initialized)
             return;
@@ -130,6 +118,5 @@ namespace gpstk
       }
    };
 
-   bool GPSTKFormatInitializer::initialized = false;
    static GPSTKFormatInitializer gpstkMFNDFI;
 }

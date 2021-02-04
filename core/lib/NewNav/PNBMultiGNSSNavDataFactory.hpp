@@ -115,7 +115,7 @@ namespace gpstk
          /** Known PNB -> nav data factories, organized by navigation
           * message type.  Declared static so that the user doesn't
           * have to add all the factories themselves. */
-      static PNBNavDataFactoryMap factories;
+      static PNBNavDataFactoryMap& factories();
    }; // class PNBMultiGNSSNavDataFactory
 
       //@}

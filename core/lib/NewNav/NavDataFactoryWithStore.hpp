@@ -65,6 +65,11 @@ namespace gpstk
          /// Initialize internal data.
       NavDataFactoryWithStore();
 
+         /// Clean up.
+      virtual ~NavDataFactoryWithStore()
+      {
+      }
+
          /** Search the store to find the navigation message that meets
           * the specified criteria.
           * @note In order for xmitHealth matching to occur, one must
