@@ -91,11 +91,8 @@ initializationTest()
    TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::GPS, cIRGP.toTS);
    TUASSERTFE(0.0, cIRGP.A0);
    TUASSERTFE(0.0, cIRGP.A1);
-   TUASSERTE(long, 0, cIRGP.refWeek);
-   TUASSERTE(long, 0, cIRGP.refSOW);
-   TUASSERTE(long, 0, cIRGP.refYr);
-   TUASSERTE(long, 0, cIRGP.refMon);
-   TUASSERTE(long, 0, cIRGP.refDay);
+   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime::BEGINNING_OF_TIME,
+             cIRGP.refTime);
    TUASSERTE(int, 0, cIRGP.geoUTCid);
 
    TURETURN();
@@ -238,8 +235,7 @@ gpstk::TimeSystemCorrection TimeSystemCorr_T ::
 buildObject(const std::string& str)
 {
    gpstk::TimeSystemCorrection tsc(str);
-   tsc.refWeek = static_cast<gpstk::GPSWeekSecond>(tscRefTime).week;
-   tsc.refSOW = static_cast<gpstk::GPSWeekSecond>(tscRefTime).sow;
+   tsc.refTime = tscRefTime;
    tsc.A0 = A0;
    tsc.A1 = A1; 
 

@@ -70,7 +70,7 @@ namespace gpstk
          GLUT,    ///< GLO  to UTC using A0 = -TauC , A1 = 0
          GPGA,    ///< GPS  to GAL using A0 = A0G   , A1 = A1G
          GAGP,    ///< GPS  to GAL using A0 = A0G   , A1 = A1G
-         GLGP,    ///< GLO  to GPS using A0 = -TauGPS, A1 = 0
+         GLGP,    ///< GLO  to GPS using A0 = TauGPS, A1 = 0
          QZGP,    ///< QZS  to GPS using A0, A1
          QZUT,    ///< QZS  to UTC using A0, A1
          BDUT,    ///< BDT  to UTC using A0, A1
@@ -137,6 +137,10 @@ namespace gpstk
           *   system in this object. */
       double Correction(const CommonTime& ct) const;
 
+         /** Set the time system of refTime to the appropriate value
+          * based on type (CorrType). */
+      void fixTimeSystem();
+
          //// Member data
          ///  NOTE: User is responsible for setting the following parameters
          ///  after instantiation of a TimeSystemCorrection object and prior 
@@ -152,8 +156,7 @@ namespace gpstk
       CorrType type;
       TimeSystem frTS,toTS;
       double A0, A1;
-      long refWeek,refSOW;       ///< reference time for polynominal (week,sow) - MUST BE GPS TIME
-      long refYr,refMon,refDay;  ///< reference time (yr,mon,day) for RINEX ver 2 GLO
+      CommonTime refTime;        ///< reference time for polynominal
       std::string geoProvider;   ///< string 'EGNOS' 'WAAS' or 'MSAS'
       int geoUTCid;              ///< UTC Identifier [0 unknown, 1=UTC(NIST),
                                  ///<  2=UTC(USNO), 3=UTC(SU), 4=UTC(BIPM),
