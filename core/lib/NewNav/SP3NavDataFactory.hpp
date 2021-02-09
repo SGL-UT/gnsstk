@@ -100,8 +100,7 @@ namespace gpstk
       bool addDataSource(const std::string& source) override;
 
          /// Return a comma-separated list of formats supported by this factory.
-      std::string getFactoryFormats() const override
-      { return "SP3a, SP3c"; }
+      std::string getFactoryFormats() const override;
 
          /** Convert SP3 nav data to a OrbitDataSP3 object with
           * position and velocity data.

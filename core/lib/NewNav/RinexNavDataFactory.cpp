@@ -163,6 +163,19 @@ namespace gpstk
    }
 
 
+   std::string RinexNavDataFactory ::
+   getFactoryFormats() const
+   {
+      if (procNavTypes.empty() ||
+          (procNavTypes.count(NavMessageType::Ephemeris) > 0) ||
+          (procNavTypes.count(NavMessageType::Health) > 0))
+      {
+         return "RINEX2, RINEX3";
+      }
+      return "";
+   }
+
+
    bool RinexNavDataFactory ::
    convertToOrbit(const Rinex3NavData& navIn, NavDataPtr& navOut)
    {
