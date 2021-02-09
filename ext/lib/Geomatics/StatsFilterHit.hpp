@@ -132,7 +132,7 @@ public:
          case slip: oss << "SLIP"; break;
          default: case other: oss << "other"; break;
       }
-      oss << " ind=" << index << " npts=" << npts
+      oss << " ind=" << index << " npts=" << npts << " ngood=" << ngood
             << std::fixed << std::setprecision(osp)
             << " x_gap=" << dx;
       if(type == slip) oss << " step=" << step << " sig=" << sigma

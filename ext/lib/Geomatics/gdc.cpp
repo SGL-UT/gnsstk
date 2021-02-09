@@ -458,7 +458,6 @@ int gdc::FineProcessing(const unsigned which)
       double limit;
       string label;
       vector< FilterHit<double> > filterResults;
-
       // filter using the window filter
       label = LAB[which]+"W";                         // WLW or GFW
       limit = cfg_func(LAB[which]+"fineStep");
@@ -576,8 +575,9 @@ int gdc::filterWindow(const unsigned which, const string label,
       iret = wf.analyze();
 
       // compute stats on each segment, then get results to return
-      for(int i=0; i<wf.results.size(); i++)
+      for(int i=0; i<wf.results.size(); i++) {
          wf.getStats(wf.results[i]);
+      }
 
       // NB this must be after getStats()
       hits = wf.getResults();
@@ -586,18 +586,18 @@ int gdc::filterWindow(const unsigned which, const string label,
       wf.setDumpAnalMsg(cfg(debug)>-1 || cfg(verbose)!=0);
       if(cfg_func(label)) wf.dump(LOGstrm, tag + " " + label);
 
-      //LOG(INFO) << " There are " << wf.maybes.size() << " maybes";
-      for(i=0; i<wf.maybes.size(); i++) {
-         //if(wf.maybes[i].score < 66) continue;
-         if(wf.maybes[i].score < 85) continue;
-         LOG(INFO) << "#" << tag << " " << sat
-            << " poss(" << wf.maybes[i].score << "%)"
-            << " " << LAB[which] << " slip: step "
-            << fixed << setprecision(2) << setw(6) << wf.maybes[i].step << " wl"
-            //<< " indx " << wf.maybes[i].index
-            << " " << printTime(xtime(wf.maybes[i].index),outfmt)
-            << (cfg(debug)>-1 ? wf.maybes[i].msg : "");
-      }
+      ////LOG(INFO) << " There are " << wf.maybes.size() << " maybes";
+      //for(i=0; i<wf.maybes.size(); i++) {
+      //   //if(wf.maybes[i].score < 66) continue;
+      //   if(wf.maybes[i].score < 85) continue;
+      //   LOG(INFO) << "#" << tag << " " << sat
+      //      << " poss(" << wf.maybes[i].score << "%)"
+      //      << " " << LAB[which] << " slip: step "
+      //      << fixed << setprecision(2) << setw(6) << wf.maybes[i].step << " wl"
+      //      //<< " indx " << wf.maybes[i].index
+      //      << " " << printTime(xtime(wf.maybes[i].index),outfmt)
+      //      << (cfg(debug)>-1 ? wf.maybes[i].msg : "");
+      //}
 
       return iret;
    }
