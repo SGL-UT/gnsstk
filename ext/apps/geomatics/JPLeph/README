@@ -44,7 +44,7 @@ diff csse.header.asc csse.header.bin.asc
 diff csse.data.asc csse.data.bin.asc
 
 # after conversion the binary ephemeris file should be tested using this command.
-#
+# the test program testSSEph.cpp has moved to ext/tests/geomatics
 echo "Now run the test program"
 if [ ! -e JPL/testpo.$eph ]; then echo "Error JPL/testpo.$eph does not exist - cannot run test."; exit; fi
 if [ "$eph" == "403" ]; then
