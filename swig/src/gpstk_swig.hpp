@@ -186,7 +186,6 @@
 #include "SEMAlmanacStore.hpp"
 
 #include "Matrix.hpp"
-#include "Bancroft.hpp"
 #include "ValidType.hpp"
 #include "ObsEpochMap.hpp"
 #include "WxObsMap.hpp"
