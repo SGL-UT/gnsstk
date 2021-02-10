@@ -36,70 +36,74 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_TIMEOFFSETDATA_HPP
-#define GPSTK_TIMEOFFSETDATA_HPP
+#ifndef GPSTK_RINEXTIMEOFFSETDATA_HPP
+#define GPSTK_RINEXTIMEOFFSETDATA_HPP
 
-#include "NavData.hpp"
-#include "TimeSystem.hpp"
-#include "CommonTime.hpp"
+#include "TimeOffsetData.hpp"
+#include "TimeSystemCorr.hpp"
 
 namespace gpstk
 {
       /// @ingroup NavFactory
       //@{
 
-      /** Defines the interface for classes that provide the ability
-       * to convert between time systems, using data extracted from
-       * GNSS navigation messages. */
-   class TimeOffsetData : public NavData
+      /** Defines the class used to store time system offset
+       * information as stored in RINEX nav headers. */
+   class RinexTimeOffset : public TimeOffsetData, public TimeSystemCorrection
    {
    public:
-         /// Set the messageType
-      TimeOffsetData()
-      { signal.messageType = NavMessageType::TimeOffset; }
+         /// Initialize all data to 0.
+      RinexTimeOffset();
 
+         /// Construct from a pre-existing TimeSystemCorrection object.
+      RinexTimeOffset(const TimeSystemCorrection& right);
+      
          /// Obligatory virtual destructor.
-      virtual ~TimeOffsetData()
+      virtual ~RinexTimeOffset()
       {}
 
-         /** Returns the time for the data to be used when searching
-          * in "Nearest" mode. */
-      CommonTime getNearTime() const override
-      { return timeStamp; }
+         /** Checks the contents of the data against known validity
+          * rules.
+          * @return true if this message is valid according to criteria.
+          */
+      bool validate() const override;
+
+         /** Returns the time when the time offset data would have
+          * first been available to the user equipment, i.e. the time
+          * at which the final bit of a given broadcast navigation
+          * message is received.  This is used by
+          * NavDataFactoryWithStore::find() in User mode.
+          * @note This information is sketchy at best in RINEX.
+          * @return transmit time + 12s or 6s, depending on whether
+          *   this is CNAV on L5 or on L2.
+          */
+      CommonTime getUserTime() const override;
+
+         /** Print the contents of this object in a human-readable
+          * format.
+          * @param[in,out] s The stream to write the data to.
+          * @param[in] dl The level of detail the output should contain. */
+      void dump(std::ostream& s, Detail dl) const override;
 
          /** Get the offset, in seconds, to apply to times when
           * converting them from fromSys to toSys.
           * @param[in] fromSys The time system to convert from.
           * @param[in] toSys The time system to convert to.
-          * @param[in] when The time being converted, usually in the
-          *   time system appropriate for a given nav message source.
-          *   The details of what time system this should be in and
-          *   any other restrictions will be documented in each leaf
-          *   class, e.g. GPSLNavTimeOffset.
+          * @param[in] when The time being converted, in the GPS time
+          *   system.
           * @param[out] offset The offset in seconds where
           *   when(toSys)=when(fromSys)-offset.
           * @return true if an offset is available, false if not. */
-      virtual bool getOffset(TimeSystem fromSys, TimeSystem toSys,
-                             const CommonTime& when, double& offset) const = 0;
-
-         /** Define a pair of TimeSystems where first=convert from and
-          * second=convert to. */
-      using TimeCvtKey = std::pair<TimeSystem,TimeSystem>;
-         /// Define a unique set of time system conversions.
-      using TimeCvtSet = std::set<TimeCvtKey>;
+      bool getOffset(TimeSystem fromSys, TimeSystem toSys,
+                     const CommonTime& when, double& offset)
+         const override;
 
          /** The set of time system conversions this class is capable of making.
-          * @note This method should avoid returning bidirectional
-          *   conversions, e.g. either TimeCvtKey(GPS,UTC) or
-          *   TimeCvtKey(UTC,GPS) but not both.  The process of
-          *   reversing the conversion pair will be implemented in the
-          *   NavDataFactory.
           * @return a set of supported time system conversion to/from pairs. */
-      virtual TimeCvtSet getConversions() const = 0;
+      TimeCvtSet getConversions() const override;
    };
 
       //@}
+} // namespace gpstk
 
-}
-
-#endif // GPSTK_TIMEOFFSETDATA_HPP
+#endif // GPSTK_RINEXTIMEOFFSETDATA_HPP

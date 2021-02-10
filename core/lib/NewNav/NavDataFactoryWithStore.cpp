@@ -596,6 +596,46 @@ namespace gpstk
             ++mti;
          }
       }
+         // edit time offset storage
+         // iterate over TimeCvtKey
+      for (auto ocmi = offsetData.begin(); ocmi != offsetData.end();)
+      {
+            // iterate over CommonTimes
+         for (auto cti = ocmi->second.begin(); cti != ocmi->second.end();)
+         {
+               // iterate over NavSatelliteIDs
+            for (auto sati = cti->second.begin(); sati != cti->second.end();)
+            {
+               if ((sati->second->timeStamp < toTime) &&
+                   (sati->second->timeStamp >= fromTime))
+               {
+                  sati = cti->second.erase(sati);
+               }
+               else
+               {
+                  ++sati;
+               }
+            }
+               // clean out empty maps
+            if (cti->second.empty())
+            {
+               cti = ocmi->second.erase(cti);
+            }
+            else
+            {
+               ++cti;
+            }
+         }
+            // clean out empty maps
+         if (ocmi->second.empty())
+         {
+            ocmi = offsetData.erase(ocmi);
+         }
+         else
+         {
+            ++ocmi;
+         }
+      }
    }
 
 
@@ -697,6 +737,52 @@ namespace gpstk
             ++mti;
          }
       }
+         // edit time offset storage
+         // iterate over TimeCvtKey
+      for (auto ocmi = offsetData.begin(); ocmi != offsetData.end();)
+      {
+            // iterate over CommonTimes
+         for (auto cti = ocmi->second.begin(); cti != ocmi->second.end();)
+         {
+               // iterate over NavSatelliteIDs
+            for (auto sati = cti->second.begin(); sati != cti->second.end();)
+            {
+               if (sati->first != satID)
+               {
+                     // not a match
+                  ++sati;
+                  continue;
+               }
+               if ((sati->second->timeStamp < toTime) &&
+                   (sati->second->timeStamp >= fromTime))
+               {
+                  sati = cti->second.erase(sati);
+               }
+               else
+               {
+                  ++sati;
+               }
+            }
+               // clean out empty maps
+            if (cti->second.empty())
+            {
+               cti = ocmi->second.erase(cti);
+            }
+            else
+            {
+               ++cti;
+            }
+         }
+            // clean out empty maps
+         if (ocmi->second.empty())
+         {
+            ocmi = offsetData.erase(ocmi);
+         }
+         else
+         {
+            ++ocmi;
+         }
+      }
    }
 
 
@@ -714,6 +800,7 @@ namespace gpstk
    {
       data.clear();
       nearestData.clear();
+      offsetData.clear();
    }
 
 

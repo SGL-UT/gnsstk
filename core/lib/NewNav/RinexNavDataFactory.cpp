@@ -40,6 +40,7 @@
 #include "Rinex3NavStream.hpp"
 #include "Rinex3NavHeader.hpp"
 #include "GPSLNavHealth.hpp"
+#include "RinexTimeOffset.hpp"
 
 using namespace std;
 
@@ -61,6 +62,25 @@ namespace gpstk
       bool rv = true;
       bool processEph = (procNavTypes.count(NavMessageType::Ephemeris) > 0);
       bool processHea = (procNavTypes.count(NavMessageType::Health) > 0);
+      bool processTim = (procNavTypes.count(NavMessageType::TimeOffset) > 0);
+         // check the validity
+      bool check = false;
+      bool expect = false;
+      switch (navValidity)
+      {
+         case NavValidityType::ValidOnly:
+            check = true;
+            expect = true;
+            break;
+         case NavValidityType::InvalidOnly:
+            check = true;
+            expect = false;
+            break;
+               // Just treat everything else like All, which is to
+               // say, no checks.
+         default:
+            break;
+      }
       try
       {
          Rinex3NavStream is(filename.c_str(), ios::in);
@@ -69,6 +89,31 @@ namespace gpstk
          if (!is)
             return false;
          is >> head;
+         if (processTim)
+         {
+               // time offset information only exists in RINEX headers.
+            NavDataPtrList navOut;
+            if (!convertToOffset(head, navOut))
+            {
+               return false;
+            }
+            for (auto& i : navOut)
+            {
+               if (check)
+               {
+                  if (i->validate() == expect)
+                  {
+                     if (!addNavData(i))
+                        return false;
+                  }
+               }
+               else
+               {
+                  if (!addNavData(i))
+                     return false;
+               }
+            }
+         }
          if (!is)
             return false;
          while (is)
@@ -91,24 +136,6 @@ namespace gpstk
             {
                if (!convertToHealth(data, health))
                   return false;
-            }
-               // check the validity
-            bool check = false;
-            bool expect = false;
-            switch (navValidity)
-            {
-               case NavValidityType::ValidOnly:
-                  check = true;
-                  expect = true;
-                  break;
-               case NavValidityType::InvalidOnly:
-                  check = true;
-                  expect = false;
-                  break;
-                  // Just treat everything else like All, which is to
-                  // say, no checks.
-               default:
-                  break;
             }
             if (check)
             {
@@ -168,7 +195,8 @@ namespace gpstk
    {
       if (procNavTypes.empty() ||
           (procNavTypes.count(NavMessageType::Ephemeris) > 0) ||
-          (procNavTypes.count(NavMessageType::Health) > 0))
+          (procNavTypes.count(NavMessageType::Health) > 0) ||
+          (procNavTypes.count(NavMessageType::TimeOffset) > 0))
       {
          return "RINEX2, RINEX3";
       }
@@ -264,6 +292,27 @@ namespace gpstk
             break;
       }
       return rv;
+   }
+
+
+   bool RinexNavDataFactory ::
+   convertToOffset(const Rinex3NavHeader& navIn, NavDataPtrList& navOut)
+   {
+      for (const auto& mti : navIn.mapTimeCorr)
+      {
+         std::shared_ptr<RinexTimeOffset> rto =
+            std::make_shared<RinexTimeOffset>();
+            // We have no idea what the signal was, but that doesn't
+            // matter for TimeOffset.
+         *rto = mti.second;
+            // We use the reference time as our timeStamp because we
+            // have nothing else available.
+            /** @bug the time stamp is likely to cause problems for
+             * GLONASS which doesn't have a reference time. */
+         rto->timeStamp = mti.second.refTime;
+         navOut.push_back(rto);
+      }
+      return true;
    }
 
 

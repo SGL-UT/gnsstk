@@ -100,6 +100,15 @@ namespace gpstk
       static bool convertToHealth(const Rinex3NavData& navIn,
                                   NavDataPtr& healthOut);
 
+         /** Convert RINEX nav header data to a TimeOffsetData object.
+          * @param[in] navIn The RINEX nav header to convert.
+          * @param[out] navOut The GPSCNavTimeOffset object generated from
+          *   navIn.
+          * @return true if successful.
+          */
+      static bool convertToOffset(const Rinex3NavHeader& navIn,
+                                  NavDataPtrList& navOut);
+
          /** Fill the high level (NavData and above) data for an
           * object using information from a RINEX nav record.
           * @param[in] navIn The RINEX nav message data to convert.

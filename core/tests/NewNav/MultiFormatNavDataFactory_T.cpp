@@ -303,19 +303,19 @@ editTest()
    }
    TUCSM("loadIntoMap");
    TUASSERT(fact.addDataSource(dpath + "arlm2000.15n"));
-   TUASSERTE(size_t, 336, rinFact->size());
+   TUASSERTE(size_t, 337, rinFact->size());
    TUASSERT(fact.addDataSource(dpath + "test_input_SP3a.sp3"));
    TUASSERTE(size_t, 232, sp3Fact->size());
 
    TUCSM("edit");
       // remove nothing
    TUCATCH(fact.edit(gpstk::CommonTime::BEGINNING_OF_TIME, before));
-   TUASSERTE(size_t, 336, rinFact->size());
+   TUASSERTE(size_t, 337, rinFact->size());
    TUASSERTE(size_t, 232, sp3Fact->size());
       // remove a time span that covers all of the SP3 data but none
       // of the RINEX data.
    TUCATCH(fact.edit(before, between));
-   TUASSERTE(size_t, 336, rinFact->size());
+   TUASSERTE(size_t, 337, rinFact->size());
    TUASSERTE(size_t, 0, sp3Fact->size());
       // reload SP3 data for next test
    TUCSM("loadIntoMap");
@@ -330,25 +330,25 @@ editTest()
       // reload RINEX data for next test
    TUCSM("loadIntoMap");
    TUASSERT(fact.addDataSource(dpath + "arlm2000.15n"));
-   TUASSERTE(size_t, 336, rinFact->size());
+   TUASSERTE(size_t, 337, rinFact->size());
       // verify initial conditions
    TUCSM("numSatellites");
-   TUASSERTE(size_t, 31, rinFact->numSatellites());
+   TUASSERTE(size_t, 32, rinFact->numSatellites());
    TUASSERTE(size_t, 29, sp3Fact->numSatellites());
       // remove nothing - time
    TUCSM("edit");
    TUCATCH(fact.edit(gpstk::CommonTime::BEGINNING_OF_TIME, before, satID2a));
-   TUASSERTE(size_t, 336, rinFact->size());
+   TUASSERTE(size_t, 337, rinFact->size());
    TUASSERTE(size_t, 232, sp3Fact->size());
       // remove nothing, this time because the satellite ID isn't present
    TUCATCH(fact.edit(gpstk::CommonTime::BEGINNING_OF_TIME,
                      gpstk::CommonTime::END_OF_TIME, satID2b));
-   TUASSERTE(size_t, 336, rinFact->size());
+   TUASSERTE(size_t, 337, rinFact->size());
    TUASSERTE(size_t, 232, sp3Fact->size());
       // remove nothing, this time because the signal isn't present
    TUCATCH(fact.edit(gpstk::CommonTime::BEGINNING_OF_TIME,
                      gpstk::CommonTime::END_OF_TIME, satID2c));
-   TUASSERTE(size_t, 336, rinFact->size());
+   TUASSERTE(size_t, 337, rinFact->size());
    TUASSERTE(size_t, 232, sp3Fact->size());
    TURETURN();
 }
@@ -364,7 +364,7 @@ clearTest()
    TUASSERT(fact.addDataSource(dpath + "arlm2000.15n"));
    TUASSERT(fact.addDataSource(dpath + "test_input_SP3a.sp3"));
    TUCSM("size");
-   TUASSERTE(size_t, 336+232, fact.size());
+   TUASSERTE(size_t, 337+232, fact.size());
    TUCSM("clear");
    TUCATCH(fact.clear());
    TUASSERTE(size_t, 0, fact.size());
@@ -382,7 +382,7 @@ sizeTest()
    TUASSERT(fact.addDataSource(dpath + "arlm2000.15n"));
    TUASSERT(fact.addDataSource(dpath + "test_input_SP3a.sp3"));
    TUCSM("size");
-   TUASSERTE(size_t, 336+232, fact.size());
+   TUASSERTE(size_t, 337+232, fact.size());
    TURETURN();
 }
 
@@ -523,7 +523,7 @@ loadIntoMapTest()
       "arlm2000.15n";
       // this should implicitly load into the data map
    TUASSERT(fact.addDataSource(f2name));
-   TUASSERTE(size_t, 336, rinFact->size());
+   TUASSERTE(size_t, 337, rinFact->size());
 
       // test loading SP3 nav
    std::string f3name = gpstk::getPathData() + gpstk::getFileSep() +
