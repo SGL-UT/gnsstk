@@ -46,14 +46,14 @@ namespace gpstk
 {
    RinexTimeOffset ::
    RinexTimeOffset()
+         : deltatLS(0)
    {
-         // let the implicit parent constructors do their thing.
    }
 
 
    RinexTimeOffset ::
-   RinexTimeOffset(const TimeSystemCorrection& right)
-         : TimeSystemCorrection(right)
+   RinexTimeOffset(const TimeSystemCorrection& right, double leapSec)
+         : TimeSystemCorrection(right), deltatLS(leapSec)
    {
    }
 
@@ -87,7 +87,7 @@ namespace gpstk
          case Detail::Brief:
                // brief just shows the offset as of the reference time.
             s << StringUtils::asString(frTS) << "-"
-              << StringUtils::asString(toTS) << " offset = " << A0
+              << StringUtils::asString(toTS) << " offset = " << (deltatLS+A0)
               << endl;
             break;
          case Detail::Full:
@@ -96,6 +96,7 @@ namespace gpstk
               << "  tgt system = " << StringUtils::asString(toTS) << endl
               << "  A0         = " << A0 << endl
               << "  A1         = " << A1 << endl
+              << "  delta tLS  = " << deltatLS << endl
               << "  ref time   = "
               << printTime(refTime, "%Y/%02m/%02d %02H:%02M:%02S") << endl
               << "  provider   = " << geoProvider << endl
@@ -127,7 +128,7 @@ namespace gpstk
             // TimeSystemCorrection::Correction assumes the source
             // time system is defined in the refTime value and the
             // target is defined in "when".
-         offset = Correction(when);
+         offset = deltatLS + Correction(when);
          return true;
       }
       catch (gpstk::Exception& exc)

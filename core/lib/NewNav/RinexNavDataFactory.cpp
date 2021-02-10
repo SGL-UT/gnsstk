@@ -301,14 +301,15 @@ namespace gpstk
       for (const auto& mti : navIn.mapTimeCorr)
       {
          std::shared_ptr<RinexTimeOffset> rto =
-            std::make_shared<RinexTimeOffset>();
+            std::make_shared<RinexTimeOffset>(mti.second, navIn.leapSeconds);
             // We have no idea what the signal was, but that doesn't
             // matter for TimeOffset.
-         *rto = mti.second;
             // We use the reference time as our timeStamp because we
             // have nothing else available.
             /** @bug the time stamp is likely to cause problems for
              * GLONASS which doesn't have a reference time. */
+            /** @todo add support for delta t LSF in RINEX 3
+             * (leapDelta, leapWeek, leapDay in Rinex3NavHeader). */
          rto->timeStamp = mti.second.refTime;
          navOut.push_back(rto);
       }

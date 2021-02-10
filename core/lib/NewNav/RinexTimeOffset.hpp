@@ -55,8 +55,13 @@ namespace gpstk
          /// Initialize all data to 0.
       RinexTimeOffset();
 
-         /// Construct from a pre-existing TimeSystemCorrection object.
-      RinexTimeOffset(const TimeSystemCorrection& right);
+         /** Construct from a pre-existing TimeSystemCorrection object
+          * and leap seconds.
+          * @param[in] right The TimeSystemCorrection obtained from a
+          *   RINEX NAV header.
+          * @param[in] leapSec The number of leap seconds from the
+          *   same RINEX NAV header. */
+      RinexTimeOffset(const TimeSystemCorrection& right, double leapSec);
       
          /// Obligatory virtual destructor.
       virtual ~RinexTimeOffset()
@@ -101,6 +106,8 @@ namespace gpstk
          /** The set of time system conversions this class is capable of making.
           * @return a set of supported time system conversion to/from pairs. */
       TimeCvtSet getConversions() const override;
+
+      double deltatLS;  ///< Current or past leap second count (UTC only)
    };
 
       //@}
