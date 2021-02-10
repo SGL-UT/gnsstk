@@ -37,8 +37,7 @@
 //
 //==============================================================================
 #include "MultiFormatNavDataFactory.hpp"
-#include "RinexNavDataFactory.hpp"
-#include "SP3NavDataFactory.hpp"
+#include "BasicTimeSystemConverter.hpp"
 
 namespace gpstk
 {
@@ -71,6 +70,30 @@ namespace gpstk
       {
          if (fi->second->find(nmid, when, navData, xmitHealth, valid, order))
             return true;
+      }
+      return false;
+   }
+
+
+   bool MultiFormatNavDataFactory ::
+   getOffset(TimeSystem fromSys, TimeSystem toSys,
+             const CommonTime& when, NavDataPtr& offset,
+             SVHealth xmitHealth, NavValidityType valid)
+   {
+         // Search through factories until we get a match or run out
+         // of factories.  Use unique pointers to avoid double-searching.
+      std::set<NavDataFactory*> uniques;
+      for (auto fi = factories().begin(); fi != factories().end(); ++fi)
+      {
+         NavDataFactory *ndfp = dynamic_cast<NavDataFactory*>(fi->second.get());
+         if (uniques.count(ndfp))
+            continue; // already processed
+         uniques.insert(ndfp);
+         if (fi->second->getOffset(fromSys, toSys, when, offset, xmitHealth,
+                                   valid))
+         {
+            return true;
+         }
       }
       return false;
    }
@@ -159,6 +182,84 @@ namespace gpstk
             ndfs->clear();
          }
       }
+   }
+
+
+   CommonTime MultiFormatNavDataFactory ::
+   getInitialTime() const
+   {
+         // always use basic time system converter because
+         // 1) We don't need nanosecond precision for getInitialTime
+         // 2) We don't want to spend a lot of time searching nav data
+      BasicTimeSystemConverter btsc;
+      CommonTime rv = CommonTime::END_OF_TIME;
+      rv.setTimeSystem(TimeSystem::Any);
+         // use a set to make sure we only process a factory once
+      std::set<NavDataFactory*> used;
+      for (auto& i : factories())
+      {
+         NavDataFactory *ndfp = i.second.get();
+         if (used.count(ndfp))
+            continue; // already processed
+         used.insert(ndfp);
+         NavDataFactoryWithStore *ndfs =
+            dynamic_cast<NavDataFactoryWithStore*>(ndfp);
+         if (ndfs != nullptr)
+         {
+            CommonTime t = ndfs->getInitialTime();
+            if ((rv.getTimeSystem() == TimeSystem::Any) ||
+                (t.getTimeSystem() == rv.getTimeSystem()))
+            {
+               rv = std::min(rv,t);
+            }
+            else
+            {
+               t.changeTimeSystem(TimeSystem::UTC, &btsc);
+               rv.changeTimeSystem(TimeSystem::UTC, &btsc);
+               rv = std::min(rv,t);
+            }
+         }
+      }
+      return rv;
+   }
+
+
+   CommonTime MultiFormatNavDataFactory ::
+   getFinalTime() const
+   {
+         // always use basic time system converter because
+         // 1) We don't need nanosecond precision for getFinalTime
+         // 2) We don't want to spend a lot of time searching nav data
+      BasicTimeSystemConverter btsc;
+      CommonTime rv = CommonTime::BEGINNING_OF_TIME;
+      rv.setTimeSystem(TimeSystem::Any);
+         // use a set to make sure we only process a factory once
+      std::set<NavDataFactory*> used;
+      for (auto& i : factories())
+      {
+         NavDataFactory *ndfp = i.second.get();
+         if (used.count(ndfp))
+            continue; // already processed
+         used.insert(ndfp);
+         NavDataFactoryWithStore *ndfs =
+            dynamic_cast<NavDataFactoryWithStore*>(ndfp);
+         if (ndfs != nullptr)
+         {
+            CommonTime t = ndfs->getFinalTime();
+            if ((rv.getTimeSystem() == TimeSystem::Any) ||
+                (t.getTimeSystem() == rv.getTimeSystem()))
+            {
+               rv = std::max(rv,t);
+            }
+            else
+            {
+               t.changeTimeSystem(TimeSystem::UTC, &btsc);
+               rv.changeTimeSystem(TimeSystem::UTC, &btsc);
+               rv = std::max(rv,t);
+            }
+         }
+      }
+      return rv;
    }
 
 
@@ -356,9 +457,13 @@ namespace gpstk
          if (ptrs.count(ptr) == 0)
          {
             ptrs.insert(ptr);
-            if (!rv.empty())
-               rv += ", ";
-            rv += ptr->getFactoryFormats();
+            std::string ff(ptr->getFactoryFormats());
+            if (!ff.empty())
+            {
+               if (!rv.empty())
+                  rv += ", ";
+               rv += ff;
+            }
          }
       }
       return rv;

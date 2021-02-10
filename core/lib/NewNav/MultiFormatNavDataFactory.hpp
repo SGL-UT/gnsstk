@@ -94,6 +94,27 @@ namespace gpstk
                 NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
                 NavSearchOrder order) override;
 
+         /** Get the offset, in seconds, to apply to times when
+          * converting them from fromSys to toSys.
+          * @param[in] fromSys The time system to convert from.
+          * @param[in] toSys The time system to convert to.
+          * @param[in] when The time being converted, usually in the
+          *   time system appropriate for a given nav message source.
+          *   The details of what time system this should be in and
+          *   any other restrictions will be documented in each leaf
+          *   class, e.g. GPSLNavTimeOffset.
+          * @param[out] offset The offset when converting fromSys->toSys.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          * @return true if an offset is available, false if not. */
+      bool getOffset(TimeSystem fromSys, TimeSystem toSys,
+                     const CommonTime& when, NavDataPtr& offset,
+                     SVHealth xmitHealth = SVHealth::Any,
+                     NavValidityType valid = NavValidityType::ValidOnly)
+         override;
+
          /** Remove all data from the internal storage in the time
           * span [fromTime,toTime).
           * @param[in] fromTime The earliest time to be removed.
@@ -126,8 +147,24 @@ namespace gpstk
          /// Remove all data from the internal store.
       void clear() override;
 
+         /** Determine the earliest time for which this object can successfully 
+          * determine the Xvt for any object.
+          * @note In the case that data from multiple systems is
+          *   stored, the result may be in the UTC time system.
+          * @return The initial time, or CommonTime::END_OF_TIME if no
+          *   data is available. */
+      CommonTime getInitialTime() const override;
+
+         /** Determine the latest time for which this object can successfully 
+          * determine the Xvt for any object.
+          * @note In the case that data from multiple systems is
+          *   stored, the result may be in the UTC time system.
+          * @return The initial time, or CommonTime::BEGINNING_OF_TIME if no
+          *   data is available. */
+      CommonTime getFinalTime() const override;
+
          /// Return a comma-separated list of formats supported by the factories
-      std::string getFactoryFormats() const;
+      std::string getFactoryFormats() const override;
 
          /// Return the number of nav messages in all factories.
       size_t size() const override;

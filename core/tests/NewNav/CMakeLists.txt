@@ -137,3 +137,7 @@ add_test(PNBGPSCNavDataFactory_T PNBGPSCNavDataFactory_T)
 add_executable(PNBGPSCNav2DataFactory_T PNBGPSCNav2DataFactory_T.cpp)
 target_link_libraries(PNBGPSCNav2DataFactory_T gpstk)
 add_test(PNBGPSCNav2DataFactory_T PNBGPSCNav2DataFactory_T)
+
+add_executable(RinexTimeOffset_T RinexTimeOffset_T.cpp)
+target_link_libraries(RinexTimeOffset_T gpstk)
+add_test(RinexTimeOffset_T RinexTimeOffset_T)

@@ -159,6 +159,19 @@ namespace gpstk
    }
 
 
+   std::string YumaNavDataFactory ::
+   getFactoryFormats() const
+   {
+      if (procNavTypes.empty() ||
+          (procNavTypes.count(NavMessageType::Almanac) > 0) ||
+          (procNavTypes.count(NavMessageType::Health) > 0))
+      {
+         return "Yuma";
+      }
+      return "";
+   }
+
+
    bool YumaNavDataFactory ::
    convertToOrbit(const YumaData& navIn, NavDataPtr& navOut)
    {

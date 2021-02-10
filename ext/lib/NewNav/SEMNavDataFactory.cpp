@@ -163,6 +163,19 @@ namespace gpstk
    }
 
 
+   std::string SEMNavDataFactory ::
+   getFactoryFormats() const
+   {
+      if (procNavTypes.empty() ||
+          (procNavTypes.count(NavMessageType::Almanac) > 0) ||
+          (procNavTypes.count(NavMessageType::Health) > 0))
+      {
+         return "SEM";
+      }
+      return "";
+   }
+
+
    bool SEMNavDataFactory ::
    convertToOrbit(const SEMData& navIn, NavDataPtr& navOut)
    {

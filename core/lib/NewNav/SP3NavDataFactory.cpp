@@ -364,6 +364,19 @@ namespace gpstk
    }
 
 
+   std::string SP3NavDataFactory ::
+   getFactoryFormats() const
+   {
+      if (procNavTypes.empty() ||
+          (procNavTypes.count(NavMessageType::Ephemeris) > 0) ||
+          (procNavTypes.count(NavMessageType::Clock) > 0))
+      {
+         return "SP3a, SP3c";
+      }
+      return "";
+   }
+
+
    bool SP3NavDataFactory ::
    convertToOrbit(const SP3Header& head, const SP3Data& navIn, bool isC,
                   NavDataPtr& navOut)

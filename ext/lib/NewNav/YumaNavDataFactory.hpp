@@ -73,8 +73,7 @@ namespace gpstk
                        NavMessageMap& navMap) override;
 
          /// Return a comma-separated list of formats supported by this factory.
-      std::string getFactoryFormats() const override
-      { return "Yuma"; }
+      std::string getFactoryFormats() const override;
 
          /** Convert Yuma nav data to a system/code-appropriate
           * OrbitData object.

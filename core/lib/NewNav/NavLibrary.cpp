@@ -278,9 +278,13 @@ namespace gpstk
          if (ptrs.count(ptr) == 0)
          {
             ptrs.insert(ptr);
-            if (!rv.empty())
-               rv += ", ";
-            rv += ptr->getFactoryFormats();
+            std::string ff(ptr->getFactoryFormats());
+            if (!ff.empty())
+            {
+               if (!rv.empty())
+                  rv += ", ";
+               rv += ff;
+            }
          }
       }
       return rv;

@@ -40,6 +40,7 @@
 #include "TestUtil.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
+#include "RinexTimeOffset.hpp"
 
 namespace gpstk
 {
@@ -105,7 +106,7 @@ loadIntoMapTest()
       "arlm2000.15n";
       // this should implicitly load into the data map
    TUASSERT(f2.addDataSource(f2name));
-   TUASSERTE(size_t, 336, f2.size());
+   TUASSERTE(size_t, 337, f2.size());
    gpstk::CommonTime expti2 = gpstk::CivilTime(2015,7,19,0,0,0,
                                                gpstk::TimeSystem::GPS);
    gpstk::CommonTime exptf2 = gpstk::CivilTime(2015,7,20,2,0,0,
@@ -113,12 +114,35 @@ loadIntoMapTest()
    TUASSERTE(gpstk::CommonTime, expti2, f2.getInitialTime());
    TUASSERTE(gpstk::CommonTime, exptf2, f2.getFinalTime());
 
+   TUCSM("convertToOffset");
+   gpstk::NavDataPtr navPtr;
+   double offsVal = 666;
+   gpstk::CommonTime refTime = gpstk::GPSWeekSecond(1854,233472);
+   TUASSERTE(bool, true, f2.getOffset(gpstk::TimeSystem::GPS,
+                                      gpstk::TimeSystem::UTC, refTime, navPtr));
+   gpstk::RinexTimeOffset *rto = dynamic_cast<gpstk::RinexTimeOffset*>(
+      navPtr.get());
+   TUASSERTE(bool, true, rto->getOffset(gpstk::TimeSystem::GPS,
+                                        gpstk::TimeSystem::UTC, refTime,
+                                        offsVal));
+      //         123456789012345678
+      //                  931322575 (test 1 and test 2)
+      //                       3553 (test 2 only)
+   TUASSERTFE(17.000000000931322575, offsVal);
+      // add one second to ref time to force the A1 term to come into play
+   refTime += 1.0;
+   TUASSERTE(bool, true, rto->getOffset(gpstk::TimeSystem::GPS,
+                                        gpstk::TimeSystem::UTC, refTime,
+                                        offsVal));
+   TUASSERTFE(17.000000000931326128, offsVal);
+   TUCSM("loadIntoMap");
+
    gpstk::RinexNavDataFactory f3;
    std::string f3name = gpstk::getPathData() + gpstk::getFileSep() +
       "test_input_rinex3_76193040.14n";
       // this should implicitly load into the data map
    TUASSERT(f3.addDataSource(f3name));
-   TUASSERTE(size_t, 26, f3.size());
+   TUASSERTE(size_t, 27, f3.size());
 
    TestClass f4;
    std::string f4name = gpstk::getPathData() + gpstk::getFileSep() +

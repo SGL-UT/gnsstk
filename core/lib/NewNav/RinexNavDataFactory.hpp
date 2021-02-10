@@ -76,8 +76,7 @@ namespace gpstk
                        NavMessageMap& navMap) override;
 
          /// Return a comma-separated list of formats supported by this factory.
-      std::string getFactoryFormats() const override
-      { return "RINEX2, RINEX3"; }
+      std::string getFactoryFormats() const override;
 
          /** Convert RINEX nav data to a system/code-appropriate
           * OrbitData object.
@@ -100,6 +99,15 @@ namespace gpstk
           */
       static bool convertToHealth(const Rinex3NavData& navIn,
                                   NavDataPtr& healthOut);
+
+         /** Convert RINEX nav header data to a TimeOffsetData object.
+          * @param[in] navIn The RINEX nav header to convert.
+          * @param[out] navOut The GPSCNavTimeOffset object generated from
+          *   navIn.
+          * @return true if successful.
+          */
+      static bool convertToOffset(const Rinex3NavHeader& navIn,
+                                  NavDataPtrList& navOut);
 
          /** Fill the high level (NavData and above) data for an
           * object using information from a RINEX nav record.

@@ -43,7 +43,7 @@
 #include "NavHealthData.hpp"
 
 /// debug time string
-static const std::string dts("%Y/%03j/%02H:%02M:%02S");
+static const std::string dts("%Y/%03j/%02H:%02M:%02S %P");
 
 namespace gpstk
 {
@@ -413,16 +413,33 @@ namespace gpstk
          // First look in the offsetData map for the key matching the
          // offset translation in the forward direction (fromSys->toSys).
       auto odi = offsetData.find(fwdKey);
+      // std::cerr << "  fwdKey=<" << gpstk::StringUtils::asString(fwdKey.first)
+      //           << "," << gpstk::StringUtils::asString(fwdKey.second) << ">"
+      //           << std::endl;
       if (odi == offsetData.end())
       {
-            // std::cerr << "did not find key, giving up" << std::endl;
+         // std::cerr << "did not find key, giving up" << std::endl;
+         // std::cerr << "offsetData.size() = " << offsetData.size() << std::endl;
+         // for (const auto& x : offsetData)
+         // {
+         //    std::cerr << "  fwdKey=<"
+         //              << gpstk::StringUtils::asString(x.first.first)
+         //              << "," << gpstk::StringUtils::asString(x.first.second)
+         //              << ">" << std::endl;
+         // }
          return false; // no conversion available
       }
       // else
       // {
       //    std::cerr << "found forward key" << std::endl;
       // }
-      auto oemi = odi->second.lower_bound(when);
+         // Make a copy of "when" with a time system of Any so that we
+         // can search for offset data whether we're doing a "forward"
+         // conversion (e.g. GPS->UTC) or "backward" conversion
+         // (e.g. UTC->GPS).
+      CommonTime whenny(when);
+      whenny.setTimeSystem(TimeSystem::Any);
+      auto oemi = odi->second.lower_bound(whenny);
       if (oemi == odi->second.end())
       {
          // std::cerr << "got end right away, backing up one" << std::endl;
@@ -438,7 +455,7 @@ namespace gpstk
             // std::cerr << "giving up, reached the end" << std::endl;
             done = true;
          }
-         else if (oemi->first > when)
+         else if (oemi->first > whenny)
          {
                // time of data is after the requested time of interest
                // so back up if possible
@@ -579,6 +596,46 @@ namespace gpstk
             ++mti;
          }
       }
+         // edit time offset storage
+         // iterate over TimeCvtKey
+      for (auto ocmi = offsetData.begin(); ocmi != offsetData.end();)
+      {
+            // iterate over CommonTimes
+         for (auto cti = ocmi->second.begin(); cti != ocmi->second.end();)
+         {
+               // iterate over NavSatelliteIDs
+            for (auto sati = cti->second.begin(); sati != cti->second.end();)
+            {
+               if ((sati->second->timeStamp < toTime) &&
+                   (sati->second->timeStamp >= fromTime))
+               {
+                  sati = cti->second.erase(sati);
+               }
+               else
+               {
+                  ++sati;
+               }
+            }
+               // clean out empty maps
+            if (cti->second.empty())
+            {
+               cti = ocmi->second.erase(cti);
+            }
+            else
+            {
+               ++cti;
+            }
+         }
+            // clean out empty maps
+         if (ocmi->second.empty())
+         {
+            ocmi = offsetData.erase(ocmi);
+         }
+         else
+         {
+            ++ocmi;
+         }
+      }
    }
 
 
@@ -680,6 +737,52 @@ namespace gpstk
             ++mti;
          }
       }
+         // edit time offset storage
+         // iterate over TimeCvtKey
+      for (auto ocmi = offsetData.begin(); ocmi != offsetData.end();)
+      {
+            // iterate over CommonTimes
+         for (auto cti = ocmi->second.begin(); cti != ocmi->second.end();)
+         {
+               // iterate over NavSatelliteIDs
+            for (auto sati = cti->second.begin(); sati != cti->second.end();)
+            {
+               if (sati->first != satID)
+               {
+                     // not a match
+                  ++sati;
+                  continue;
+               }
+               if ((sati->second->timeStamp < toTime) &&
+                   (sati->second->timeStamp >= fromTime))
+               {
+                  sati = cti->second.erase(sati);
+               }
+               else
+               {
+                  ++sati;
+               }
+            }
+               // clean out empty maps
+            if (cti->second.empty())
+            {
+               cti = ocmi->second.erase(cti);
+            }
+            else
+            {
+               ++cti;
+            }
+         }
+            // clean out empty maps
+         if (ocmi->second.empty())
+         {
+            ocmi = offsetData.erase(ocmi);
+         }
+         else
+         {
+            ++ocmi;
+         }
+      }
    }
 
 
@@ -697,6 +800,7 @@ namespace gpstk
    {
       data.clear();
       nearestData.clear();
+      offsetData.clear();
    }
 
 
@@ -956,6 +1060,7 @@ namespace gpstk
    void NavDataFactoryWithStore ::
    dump(std::ostream& s, NavData::Detail dl) const
    {
+      // std::cerr << "data.size() = " << data.size() << std::endl;
       for (const auto& nmmi : data)
       {
          for (const auto& nsami : nmmi.second)
@@ -984,6 +1089,7 @@ namespace gpstk
             }
          }
       }
+      // std::cerr << "offsetData.size() = " << offsetData.size() << std::endl;
          // time offset data is a separate map, but still needs to be dumped.
       std::string label = StringUtils::asString(NavMessageType::TimeOffset);
       for (const auto& ocmi : offsetData)
