@@ -595,6 +595,14 @@ public:
          // This changes the string passed to the method
       resultString = removeWords(empty, 2);
       TUASSERTE(std::string, "", resultString);
+      TUASSERTE(std::string, "", removeWords(empty, 0));
+      TUASSERTE(std::string, "", removeWords(empty, 1));
+      TUASSERTE(std::string, "", removeWords(empty, 2));
+
+      std::string oneWord("foo");
+      TUASSERTE(std::string, "foo", removeWords(oneWord, 2));
+      TUASSERTE(std::string, "foo", removeWords(oneWord, 1));
+      TUASSERTE(std::string, "", removeWords(oneWord, 0));
 
       resultString = removeWords(originalString, 5);
       TUASSERTE(std::string, removedSixthWord, originalString);
@@ -606,6 +614,8 @@ public:
       TUASSERTE(std::string, "", resultString);
 
       TUCSM("words");
+      TUASSERTE(std::string, "", words("", 0));
+      TUASSERTE(std::string, "", words("", 1));
       resultString = words("", 2);
       TUASSERTE(std::string, std::string(), resultString);
       
@@ -614,6 +624,10 @@ public:
 
       resultString = words(originalString, 10);
       TUASSERTE(std::string, std::string(), resultString);
+
+      TUASSERTE(std::string, "foo", words("foo", 0));
+      TUASSERTE(std::string, "", words("foo", 1));
+      TUASSERTE(std::string, "", words("foo", 2));
 
       TURETURN();
    }
