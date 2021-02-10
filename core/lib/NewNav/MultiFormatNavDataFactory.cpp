@@ -231,7 +231,7 @@ namespace gpstk
          // 1) We don't need nanosecond precision for getFinalTime
          // 2) We don't want to spend a lot of time searching nav data
       BasicTimeSystemConverter btsc;
-      CommonTime rv = CommonTime::END_OF_TIME;
+      CommonTime rv = CommonTime::BEGINNING_OF_TIME;
       rv.setTimeSystem(TimeSystem::Any);
          // use a set to make sure we only process a factory once
       std::set<NavDataFactory*> used;
