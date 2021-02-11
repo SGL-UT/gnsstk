@@ -1,3 +1,58 @@
+gpstk (10.0.0-1) stable; urgency=low
+
+  * Updated to version 10.0.0
+  * Update TimeTag_T.cpp to follow proper style
+  * Update Doxyfile to generate graphs by default.
+  * Update CommandOption to allow changing the description post-
+    constructor.
+  * Add ObsID support for GLONASS frequency offset and mcode metadata.
+  * Add SatID wildcard support for system and ID.
+  * Add NavType wildcard value.
+  * Add PackedNavBits support for decoding more types.
+  * Add NewNav code tree to replace existing nav store classes (in
+    core/lib/NewNav and ext/lib/NewNav).
+  * Update TestUtil to print invalid boolean values as 'true' or 'false'
+    and increased precision when printing invalid floating point values.
+  * Update GPSWeekZcount to support printing day of week by name.
+  * Add TimeCorrection support for 8-bit week rollover correction.
+  * Fix OrbAlmGen to decode A**1/2 as unsigned rather than signed.
+  * Update SWIG to remove pseudo-mapping that conflicts with SatID
+    constructor changes.
+  * Fix NavDataFactoryWithStore infinite loop bug in find.
+  * Add NavTimeSystemConverter that uses a NavLibrary object to get nav-
+    sourced time offset data.
+  * Add CommonTime changeTimeSystem method that uses a static
+    TimeSystemConverter.
+  * Add TimeTag changeTimeSystem methods for both static and specified
+    TimeSystemConverter objects.
+  * Fix bug in WindowFilter due to uninitialized boolean.
+  * Fix NavDataFactory classes to enforce proper initialization and
+    destruction.
+  * Update bc2sp3 to use Frameworks for better command line option help.
+  * Update sp3version to use Frameworks for better command line option
+    help.
+  * Fix "implement proper command line option help where needed"
+  * Update TimeSystemCorr_T to use test macros and such for improved
+    readability.
+  * Update TimeSystemCorrection (RINEX3 NAV header) to store reference
+    time in CommonTime.
+  * Fix test binaries to be excluded from bin
+  * Update Removed obsolete files
+  * Update MultiFormatNavDataFactory to implement getOffset(),
+    getInitialTime() and getFinalTime()
+  * Fix NavDataFactoryWithStore::getOffset() so it doesn't fail when
+    reversing the offset look-up (e.g. GPS->UTC vs UTC->GPS).
+  * Fix NavDataFactoryWithStore::edit() and clear() to process time
+    offset data.
+  * Add RinexNavDataFactory support of time offset data in RINEX NAV
+    header.
+  * Update NavDataFactory::getFactoryFormats() methods to prevent
+    printing formats that don't support the desired message types.
+  * Update RINEX NAV test data files that had improperly formatted DELTA-
+    UTC records.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 11 Feb 2021 09:18:05 -0600
+
 gpstk (9.1.0-1) stable; urgency=low
 
   * Updated to version 9.1.0

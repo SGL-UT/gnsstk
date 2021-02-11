@@ -1,5 +1,5 @@
 %define name gpstk
-%define version 9.1.0
+%define version 10.0.0
 %define release 1
 
 Summary:        GPS Toolkit
@@ -53,6 +53,40 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 11 2021 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v10.0.0 release
+- Update RINEX NAV test data files that had improperly formatted DELTA-UTC records.
+- Update NavDataFactory::getFactoryFormats() methods to prevent printing formats that don't support the desired message types.
+- Add RinexNavDataFactory support of time offset data in RINEX NAV header.
+- Fix NavDataFactoryWithStore::edit() and clear() to process time offset data.
+- Fix NavDataFactoryWithStore::getOffset() so it doesn't fail when reversing the offset look-up (e.g. GPS->UTC vs UTC->GPS).
+- Update MultiFormatNavDataFactory to implement getOffset(), getInitialTime() and getFinalTime()
+- Update Removed obsolete files
+- Fix test binaries to be excluded from bin
+- Update TimeSystemCorrection (RINEX3 NAV header) to store reference time in CommonTime.
+- Update TimeSystemCorr_T to use test macros and such for improved readability.
+- Fix "implement proper command line option help where needed"
+- Update sp3version to use Frameworks for better command line option help.
+- Update bc2sp3 to use Frameworks for better command line option help.
+- Fix NavDataFactory classes to enforce proper initialization and destruction.
+- Fix bug in WindowFilter due to uninitialized boolean.
+- Add TimeTag changeTimeSystem methods for both static and specified TimeSystemConverter objects.
+- Add CommonTime changeTimeSystem method that uses a static TimeSystemConverter.
+- Add NavTimeSystemConverter that uses a NavLibrary object to get nav-sourced time offset data.
+- Fix NavDataFactoryWithStore infinite loop bug in find.
+- Update SWIG to remove pseudo-mapping that conflicts with SatID constructor changes.
+- Fix OrbAlmGen to decode A**1/2 as unsigned rather than signed.
+- Add TimeCorrection support for 8-bit week rollover correction.
+- Update GPSWeekZcount to support printing day of week by name.
+- Update TestUtil to print invalid boolean values as 'true' or 'false' and increased precision when printing invalid floating point values.
+- Add NewNav code tree to replace existing nav store classes (in core/lib/NewNav and ext/lib/NewNav).
+- Add PackedNavBits support for decoding more types.
+- Add NavType wildcard value.
+- Add SatID wildcard support for system and ID.
+- Add ObsID support for GLONASS frequency offset and mcode metadata.
+- Update CommandOption to allow changing the description post-constructor.
+- Update Doxyfile to generate graphs by default.
+- Update TimeTag_T.cpp to follow proper style
 * Thu Jan 14 2021 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v9.1.0 release
 - Update various source files to add namespace context where it was missing.
