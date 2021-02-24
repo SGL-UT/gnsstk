@@ -109,7 +109,6 @@
 #include "YumaData.hpp"
 #include "GPSAlmanacStore.hpp"
 #include "YumaAlmanacStore.hpp"
-#include "SVNumXRef.hpp"
 //#include "RinexSatID.hpp"
 #include "GPS_URA.hpp"
 #include "BrcClockCorrection.hpp"
