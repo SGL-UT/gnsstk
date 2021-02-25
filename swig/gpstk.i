@@ -256,7 +256,6 @@ namespace std { class fstream {}; }
 %template(FileStore_YumaHeader) gpstk::FileStore<gpstk::YumaHeader>;
 %include "YumaAlmanacStore.hpp"
 
-%include "SVNumXRef.hpp"
 //%include "RinexSatID.hpp"
 
 %ignore gpstk::SV_ACCURACY_GPS_MIN_INDEX;
