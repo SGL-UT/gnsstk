@@ -502,7 +502,7 @@ namespace gpstk
          }
          // cerr << "  results: " << navOut.size() << endl;
          // for (const auto& i : navOut)
-         //    i->dump(cerr,gpstk::NavData::Detail::Full);
+         //    i->dump(cerr,gpstk::DumpDetail::Full);
       }
       catch (gpstk::Exception& exc)
       {

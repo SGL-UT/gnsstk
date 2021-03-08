@@ -205,6 +205,21 @@ STR_DUMP_DETAIL_HELPER(GPSEphemerisStore)
 STR_DUMP_DETAIL_HELPER(Rinex3EphemerisStore)
 STR_DUMP_DETAIL_HELPER(SP3EphemerisStore)
 
+// Uses the dump method in the class to get string output
+// for dump methods that have a detail parameter
+%define STR_NNDUMP_DETAIL_HELPER(name)
+%extend gpstk:: ## name {
+   std::string __str__() {
+      std::ostringstream stream;
+      $self->dump(stream, gpstk::DumpDetail::Full);
+      return stream.str();
+   }
+}
+%enddef
+STR_NNDUMP_DETAIL_HELPER(NavLibrary)
+STR_NNDUMP_DETAIL_HELPER(NavDataFactory)
+STR_NNDUMP_DETAIL_HELPER(OrbitDataKepler)
+STR_NNDUMP_DETAIL_HELPER(NavData)
 
 
 // Uses the operator<< in the class to get string output
@@ -221,7 +236,9 @@ STR_STREAM_HELPER(GPSZcount)
 STR_STREAM_HELPER(Position)
 STR_STREAM_HELPER(SvObsEpoch)
 STR_STREAM_HELPER(ObsEpoch)
-
+STR_STREAM_HELPER(NavSignalID)
+STR_STREAM_HELPER(NavSatelliteID)
+STR_STREAM_HELPER(NavMessageID)
 
 // STR_STREAM_HELPER(Xvt)
 // Q: Why is this (below) here instead of the macro for Xvt?

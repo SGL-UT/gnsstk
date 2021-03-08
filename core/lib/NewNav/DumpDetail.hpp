@@ -36,30 +36,27 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "GPSCNavHealth.hpp"
+#ifndef GPSTK_DUMPDETAIL_HPP
+#define GPSTK_DUMPDETAIL_HPP
 
-using namespace std;
+#include <string>
+#include "EnumIterator.hpp"
 
 namespace gpstk
 {
-   CommonTime GPSCNavHealth ::
-   getUserTime() const
-   {
-      if (signal.nav == NavType::GPSCNAVL2)
-         return timeStamp + 12.0;
-      return timeStamp + 6.0;
-   }
+      /// @ingroup NavFactory
+      //@{
 
-
-   void GPSCNavHealth ::
-   dump(std::ostream& s, DumpDetail dl) const
+      /// Specify level of detail for dump output.
+   enum class DumpDetail
    {
-      NavData::dump(s,dl);
-      if (dl == DumpDetail::OneLine)
-      {
-         return;
-      }
-      s << "health = " << health << "  "
-        << StringUtils::asString(getHealth()) << endl;
-   }
+      OneLine, ///< Limit output to minimal information on a single line.
+      Brief,   ///< Limit output to <= 5 lines of minimal information.
+      Full     ///< Include all detailed information.
+   };
+
+      //@}
+
 }
+
+#endif // GPSTK_DUMPDETAIL_HPP

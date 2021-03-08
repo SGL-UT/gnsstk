@@ -1123,7 +1123,7 @@ countResults(const gpstk::NavDataPtrList& navOut)
       {
          otherCount++;
       }
-         //i->dump(cerr, gpstk::NavData::Detail::Full);
+         //i->dump(cerr, gpstk::DumpDetail::Full);
    }
 }
 

@@ -51,10 +51,10 @@ namespace gpstk
 
 
    void GPSLNavHealth ::
-   dump(std::ostream& s, Detail dl) const
+   dump(std::ostream& s, DumpDetail dl) const
    {
       NavData::dump(s,dl);
-      if (dl == Detail::OneLine)
+      if (dl == DumpDetail::OneLine)
       {
          return;
       }

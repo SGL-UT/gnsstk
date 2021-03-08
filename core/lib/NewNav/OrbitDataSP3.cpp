@@ -103,10 +103,10 @@ namespace gpstk
 
 
    void OrbitDataSP3 ::
-   dump(std::ostream& s, Detail dl) const
+   dump(std::ostream& s, DumpDetail dl) const
    {
       NavData::dump(s,dl);
-      if (dl == Detail::OneLine)
+      if (dl == DumpDetail::OneLine)
          return;
       const ios::fmtflags oldFlags = s.flags();
       s << fixed << setprecision(6) << "P: {";
@@ -117,7 +117,7 @@ namespace gpstk
       for (unsigned i = 0; i < vel.size(); i++)
          s << " " << vel[i];
       s << "} drift: " << clkDrift << endl;
-      if (dl == Detail::Brief)
+      if (dl == DumpDetail::Brief)
          return;
       s << "A: {";
       for (unsigned i = 0; i < acc.size(); i++)

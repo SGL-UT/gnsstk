@@ -360,7 +360,7 @@ namespace gpstk
          }
          // cerr << "  results: " << navOut.size() << endl;
          // for (const auto& i : navOut)
-         //    i->dump(cerr,NavData::Detail::Full);
+         //    i->dump(cerr,DumpDetail::Full);
       }
       catch (Exception& exc)
       {

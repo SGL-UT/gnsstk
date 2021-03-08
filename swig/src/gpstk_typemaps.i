@@ -112,3 +112,32 @@
       PyList_SetItem($result,i,o);
    }
 }
+
+// convert output gpstk::NavDataPtr references
+
+%typemap(in, numinputs=0) std::shared_ptr<gpstk::NavData> &navOut ()
+{
+   std::shared_ptr<gpstk::NavData> *smartresult = 
+      new std::shared_ptr<gpstk::NavData>();
+   $1 = smartresult;
+}
+
+%typemap(argout) std::shared_ptr<gpstk::NavData> &
+{
+   if (!PyList_Check(resultobj))
+   {
+      PyObject *temp = resultobj;
+      resultobj = PyList_New(1);
+      PyList_SetItem(resultobj, 0, temp);
+         // create shadow object (do not use SWIG_POINTER_NEW)
+         // stackoverflow says don't use SWIG_POINTER_NEW but since I
+         // have to combine the new method for the object in order to
+         // make the smart pointer, I'm not convinced that's correct.
+//                                SWIGTYPE_p_std__shared_ptrT_gpstk__NavData_t,
+      std::cerr << "type = " << (*$1)->getClassName() << std::endl;
+      temp = SWIG_NewPointerObj(SWIG_as_voidptr($1), $descriptor,
+                                SWIG_POINTER_OWN | 0);
+      PyList_Append(resultobj, temp);
+      Py_DECREF(temp);
+   }
+}

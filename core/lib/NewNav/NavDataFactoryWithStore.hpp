@@ -175,7 +175,7 @@ namespace gpstk
           * format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-       void dump(std::ostream& s, NavData::Detail dl) const override;
+       void dump(std::ostream& s, DumpDetail dl) const override;
 
    protected:
          /** Search the store to find the navigation message that meets

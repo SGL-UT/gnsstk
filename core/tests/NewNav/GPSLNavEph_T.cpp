@@ -62,7 +62,20 @@ public:
    unsigned getUserTimeTest();
    unsigned fixFitTest();
    unsigned validateTest();
+      /** This is actually implemented in NavData but needs to be in
+       * any one of the leaf classes to be tested properly. */
+   unsigned getClassNameTest();
 };
+
+
+unsigned GPSLNavEph_T ::
+getClassNameTest()
+{
+   TUDEF("NavData", "getClassName");
+   gpstk::GPSLNavEph uut;
+   TUASSERTE(std::string, "gpstk::GPSLNavEph", uut.getClassName());
+   TURETURN();
+}
 
 
 unsigned GPSLNavEph_T ::

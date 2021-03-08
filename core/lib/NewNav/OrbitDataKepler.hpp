@@ -70,7 +70,7 @@ namespace gpstk
           * human-readable format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-      void dump(std::ostream& s, Detail dl) const override;
+      void dump(std::ostream& s, DumpDetail dl) const override;
 
          /** Dump SV status information (e.g. health).  Nothing to do
           * at this level, all the work is in derived classes.

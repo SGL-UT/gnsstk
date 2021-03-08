@@ -86,22 +86,22 @@ namespace gpstk
 
 
    void GPSLNavTimeOffset ::
-   dump(std::ostream& s, Detail dl) const
+   dump(std::ostream& s, DumpDetail dl) const
    {
       const ios::fmtflags oldFlags = s.flags();
       NavData::dump(s,dl);
       double offset;
       switch (dl)
       {
-         case Detail::OneLine:
+         case DumpDetail::OneLine:
             break;
-         case Detail::Brief:
+         case DumpDetail::Brief:
                // brief just shows the offset as of the reference time.
             getOffset(TimeSystem::GPS, TimeSystem::UTC,
                       gpstk::GPSWeekSecond(wnt,tot), offset);
             s << "GPS-UTC offset = " << offset << endl;
             break;
-         case Detail::Full:
+         case DumpDetail::Full:
             getOffset(TimeSystem::GPS, TimeSystem::UTC,
                       gpstk::GPSWeekSecond(wnt,tot), offset);
             s << setprecision(16)

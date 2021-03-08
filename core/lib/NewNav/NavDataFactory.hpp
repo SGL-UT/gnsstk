@@ -139,7 +139,7 @@ namespace gpstk
           * format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-      virtual void dump(std::ostream& s, NavData::Detail dl) const
+      virtual void dump(std::ostream& s, DumpDetail dl) const
       {}
 
          /** Remove all data from the factory in the time span

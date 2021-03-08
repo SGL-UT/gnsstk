@@ -41,3 +41,45 @@ set_property(TEST swig_test_misc PROPERTY LABELS swig ObsID SatID)
 #  WORKING_DIRECTORY ${td}
 #  )
 #set_property(TEST swig_test_store PROPERTY LABELS swig )
+
+add_test(NAME swig_test_NewNav
+  COMMAND ${PYTHON_EXECUTABLE} test_NewNav.py
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_NewNav PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_NavLibrary
+  COMMAND ${PYTHON_EXECUTABLE} test_NavLibrary.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_NavLibrary PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_RinexNavDataFactory
+  COMMAND ${PYTHON_EXECUTABLE} test_RinexNavDataFactory.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_RinexNavDataFactory PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_SP3NavDataFactory
+  COMMAND ${PYTHON_EXECUTABLE} test_SP3NavDataFactory.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_SP3NavDataFactory PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_SEMNavDataFactory
+  COMMAND ${PYTHON_EXECUTABLE} test_SEMNavDataFactory.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_SEMNavDataFactory PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_YumaNavDataFactory
+  COMMAND ${PYTHON_EXECUTABLE} test_YumaNavDataFactory.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_YumaNavDataFactory PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_MultiFormatNavDataFactory
+  COMMAND ${PYTHON_EXECUTABLE} test_MultiFormatNavDataFactory.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_MultiFormatNavDataFactory PROPERTY LABELS swig NewNav)

@@ -21,6 +21,8 @@ using namespace gpstk;
 %include "std_set.i"
 %include "std_multimap.i"
 %include "stdint.i"
+%include "std_shared_ptr.i"
+%include "typemaps.i"
 
 // =============================================================
 //  Section 1b: Enumerations
@@ -42,6 +44,11 @@ using namespace gpstk;
 %include "NavType.hpp"
 %include "TimeSystem.hpp"
 %include "ReferenceFrame.hpp"
+%include "NavMessageType.hpp"
+%include "SVHealth.hpp"
+%include "NavSearchOrder.hpp"
+%include "NavValidityType.hpp"
+%include "DumpDetail.hpp"
 
 // This code allows us to turn C++ enums into Python enums while
 // maintaining compatibility in SWIG bindings.  We specifically use an
@@ -75,6 +82,11 @@ renameEnums('ObservationType')
 renameEnums('NavType')
 renameEnums('TimeSystem')
 renameEnums('ReferenceFrame')
+renameEnums('NavMessageType')
+renameEnums('SVHealth')
+renameEnums('NavSearchOrder')
+renameEnums('NavValidityType')
+renameEnums('DumpDetail')
 del renameEnums
 del IntEnum
 %}
@@ -413,6 +425,80 @@ namespace std { class fstream {}; }
 %include "OrbSysGpsL_Reserved.hpp"
 %include "PackedNavBits.hpp"
 %include "OrbDataSysFactory.hpp"
+
+ /* note: If you get this compiler error
+  *
+  * In function ‘PyObject* _wrap_delete_OrbitDataKepler(PyObject*, PyObject*)’:
+  * error: ‘smartarg1’ was not declared in this scope
+  *
+  * That means that you have a derived class from a base smart pointer
+  * that needs to be declared in the list below.  In this case,
+  * OrbitDataKepler needed to be added to the %shared_ptr declarations
+  * below.
+  */
+%shared_ptr(gpstk::NavData)
+%shared_ptr(gpstk::TimeOffsetData)
+%shared_ptr(gpstk::NavHealthData)
+%shared_ptr(gpstk::OrbitData)
+%shared_ptr(gpstk::OrbitDataKepler)
+%shared_ptr(gpstk::GPSLNavData)
+%shared_ptr(gpstk::GPSLNavEph)
+%shared_ptr(gpstk::GPSLNavAlm)
+%shared_ptr(gpstk::GPSLNavHealth)
+%shared_ptr(gpstk::GPSLNavTimeOffset)
+
+%shared_ptr(gpstk::NavDataFactory)
+%shared_ptr(gpstk::NavDataFactoryWithStore)
+%shared_ptr(gpstk::NavDataFactoryWithStoreFile)
+%shared_ptr(gpstk::RinexNavDataFactory)
+%shared_ptr(gpstk::SP3NavDataFactory)
+%shared_ptr(gpstk::SEMNavDataFactory)
+%shared_ptr(gpstk::YumaNavDataFactory)
+%shared_ptr(gpstk::MultiFormatNavDataFactory);
+/* %shared_ptr(gpstk::PNBNavDataFactory); */
+
+// NewNav store
+%include "NavSignalID.hpp"
+%include "NavSatelliteID.hpp"
+%include "NavMessageID.hpp"
+%include "NavData.hpp"
+%include "TimeOffsetData.hpp"
+%include "NavHealthData.hpp"
+%include "OrbitData.hpp"
+%include "OrbitDataKepler.hpp"
+%include "GPSLNavData.hpp"
+%include "GPSLNavEph.hpp"
+%include "GPSLNavAlm.hpp"
+%include "GPSLNavHealth.hpp"
+%include "GPSLNavTimeOffset.hpp"
+
+%include "NavDataFactory.hpp"
+%include "NavLibrary.hpp"
+%include "NavDataFactoryWithStore.hpp"
+%include "NavDataFactoryWithStoreFile.hpp"
+%include "RinexNavDataFactory.hpp"
+%include "SP3NavDataFactory.hpp"
+%include "SEMNavDataFactory.hpp"
+%include "YumaNavDataFactory.hpp"
+%include "MultiFormatNavDataFactory.hpp"
+
+/* %include "GPSCNavData.hpp" */
+/* %include "GPSCNav2Alm.hpp" */
+/* %include "GPSCNav2Eph.hpp" */
+/* %include "GPSCNav2Health.hpp" */
+/* %include "GPSCNav2TimeOffset.hpp" */
+/* %include "GPSCNavAlm.hpp" */
+/* %include "GPSCNavEph.hpp" */
+/* %include "GPSCNavHealth.hpp" */
+/* %include "GPSCNavRedAlm.hpp" */
+/* %include "GPSCNavTimeOffset.hpp" */
+/* %include "OrbitDataSP3.hpp" */
+/* %include "PNBNavDataFactory.hpp" */
+/* %include "PNBGPSCNav2DataFactory.hpp" */
+/* %include "PNBGPSCNavDataFactory.hpp" */
+/* %include "PNBGPSLNavDataFactory.hpp" */
+/* %include "PNBMultiGNSSNavDataFactory.hpp" */
+/* %include "RinexTimeOffset.hpp" */
 
 // v 2.0.12 required for KLOBUCHAR IONO MODEL
 #define KLOBUCHAR_SUPPORT (SWIG_VERSION >= 0x020012 ? True : False)

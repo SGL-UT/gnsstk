@@ -1058,7 +1058,7 @@ namespace gpstk
 
 
    void NavDataFactoryWithStore ::
-   dump(std::ostream& s, NavData::Detail dl) const
+   dump(std::ostream& s, DumpDetail dl) const
    {
       // std::cerr << "data.size() = " << data.size() << std::endl;
       for (const auto& nmmi : data)
@@ -1067,11 +1067,11 @@ namespace gpstk
          {
             switch (dl)
             {
-               case NavData::Detail::OneLine:
+               case DumpDetail::OneLine:
                   s << StringUtils::asString(nmmi.first) << " "
                     << StringUtils::asString(nsami.first) << std::endl;
                   break;
-               case NavData::Detail::Brief:
+               case DumpDetail::Brief:
                   for (const auto& cti : nsami.second)
                   {
                      s << StringUtils::asString(nmmi.first) << " "
@@ -1080,7 +1080,7 @@ namespace gpstk
                        << std::endl;
                   }
                   break;
-               case NavData::Detail::Full:
+               case DumpDetail::Full:
                   for (const auto& cti : nsami.second)
                   {
                      cti.second->dump(s,dl);
@@ -1096,11 +1096,11 @@ namespace gpstk
       {
          switch (dl)
          {
-            case NavData::Detail::OneLine:
+            case DumpDetail::OneLine:
                s << label << " " << ocmi.first.first << " -> "
                  << ocmi.first.second << std::endl;
                break;
-            case NavData::Detail::Brief:
+            case DumpDetail::Brief:
                for (const auto& oemi : ocmi.second)
                {
                   for (const auto& omi : oemi.second)
@@ -1112,7 +1112,7 @@ namespace gpstk
                   }
                }
                break;
-            case NavData::Detail::Full:
+            case DumpDetail::Full:
                for (const auto& oemi : ocmi.second)
                {
                   for (const auto& omi : oemi.second)

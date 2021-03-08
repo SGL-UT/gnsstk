@@ -45,6 +45,7 @@
 #include "CommonTime.hpp"
 #include "NavSignalID.hpp"
 #include "NavMessageID.hpp"
+#include "DumpDetail.hpp"
 
 namespace gpstk
 {
@@ -57,13 +58,6 @@ namespace gpstk
    class NavData
    {
    public:
-         /// Specify level of detail for dump output.
-      enum class Detail
-      {
-         OneLine, ///< Limit output to minimal information on a single line.
-         Brief,   ///< Limit output to <= 5 lines of minimal information.
-         Full     ///< Include all detailed information.
-      };
          /// Initialize internal data fields.
       NavData();
          /** Checks the contents of this message against known
@@ -71,6 +65,9 @@ namespace gpstk
           * @return true if this message is valid according to ICD criteria.
           */
       virtual bool validate() const = 0;
+         /** Returns the fully-qualified class name.  Required for
+          * SWIG, at least until a better solution is found. */
+      virtual std::string getClassName() const;
          /** Returns the time when the navigation message would have
           * first been available to the user equipment, i.e. the time
           * at which the final bit of a given broadcast navigation
@@ -87,7 +84,7 @@ namespace gpstk
           * human-readable format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-      virtual void dump(std::ostream& s, Detail dl) const;
+      virtual void dump(std::ostream& s, DumpDetail dl) const;
          /** Time stamp used to sort the data.  This should be the
           * appropriate time stamp used when attempting to find the
           * data, usually the transmit time. */

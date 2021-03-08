@@ -167,8 +167,8 @@ namespace gpstk
                OrbitDataSP3 *stored = dynamic_cast<OrbitDataSP3*>(
                   ti2->second.get());
                navData = std::make_shared<OrbitDataSP3>(*stored);
-               // ti2->second->dump(std::cerr, NavData::Detail::Full);
-               // navData->dump(std::cerr, NavData::Detail::Full);
+               // ti2->second->dump(std::cerr, DumpDetail::Full);
+               // navData->dump(std::cerr, DumpDetail::Full);
                   // If giveUp is not set, then we can do some
                   // interpolation to fill in any missing data.
                if (!giveUp)
@@ -213,8 +213,8 @@ namespace gpstk
                      interpolateClk(ti1, ti3, when, navData);
                   }
                }
-               // stored->dump(std::cerr, NavData::Detail::Full);
-               // navOut->dump(std::cerr, NavData::Detail::Full);
+               // stored->dump(std::cerr, DumpDetail::Full);
+               // navOut->dump(std::cerr, DumpDetail::Full);
                // cerr << "  found an exact match with existing data" << endl;
                return true;
             }
@@ -548,10 +548,10 @@ namespace gpstk
          // cerr << "  store resetting obj ptr, use_count=" << obj.use_count() << endl;
          NavData *ptr = obj.get();
          // cerr << "DUMP BEFORE:" << endl;
-         // ptr->dump(cerr, NavData::Detail::Full);
+         // ptr->dump(cerr, DumpDetail::Full);
          obj.reset();
          // cerr << "DUMP AFTER:" << endl;
-         // ptr->dump(cerr, NavData::Detail::Full);
+         // ptr->dump(cerr, DumpDetail::Full);
       }
       return true;
    }
@@ -596,7 +596,7 @@ namespace gpstk
          OrbitDataSP3 *nav = dynamic_cast<OrbitDataSP3*>(
             ti2->second.get());
          // cerr << "  nav=" << nav << endl;
-         // ti2->second->dump(cerr, NavData::Detail::Full);
+         // ti2->second->dump(cerr, DumpDetail::Full);
          for (unsigned i = 0; i < 3; i++)
          {
             // cerr << "  i=" << i << endl
@@ -739,7 +739,7 @@ namespace gpstk
          OrbitDataSP3 *nav = dynamic_cast<OrbitDataSP3*>(
             ti2->second.get());
          // cerr << "  nav=" << nav << endl;
-         // ti2->second->dump(cerr, NavData::Detail::Full);
+         // ti2->second->dump(cerr, DumpDetail::Full);
          biasData[idx] = nav->clkBias;
          driftData[idx] = nav->clkDrift;
          drRateData[idx] = nav->clkDrRate;

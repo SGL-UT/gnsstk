@@ -501,14 +501,14 @@ namespace gpstk
           *   The details of what time system this should be in and
           *   any other restrictions will be documented in each leaf
           *   class, e.g. GPSLNavTimeOffset.
-          * @param[out] offset The offset when converting fromSys->toSys.
+          * @param[out] navOut The offset when converting fromSys->toSys.
           * @param[in] xmitHealth The desired health status of the
           *   transmitting satellite.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @return true if an offset is available, false if not. */
       bool getOffset(TimeSystem fromSys, TimeSystem toSys,
-                     const CommonTime& when, NavDataPtr& offset,
+                     const CommonTime& when, NavDataPtr& navOut,
                      SVHealth xmitHealth = SVHealth::Any,
                      NavValidityType valid = NavValidityType::ValidOnly);
 
@@ -538,7 +538,7 @@ namespace gpstk
           * @param[in] nmid Specify the message type, satellite and
           *   codes to match.
           * @param[in] when The time of interest to search for data.
-          * @param[out] navData The resulting navigation message.
+          * @param[out] navOut The resulting navigation message.
           * @param[in] xmitHealth The desired health status of the
           *   transmitting satellite.
           * @param[in] valid Specify whether to search only for valid
@@ -547,7 +547,7 @@ namespace gpstk
           *   behavior or by nearest to when in time. 
           * @return true if successful.  If false, navData will be untouched. */
       bool find(const NavMessageID& nmid, const CommonTime& when,
-                NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
+                NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
                 NavSearchOrder order);
 
          /** Set the factories' handling of valid and invalid
@@ -572,7 +572,7 @@ namespace gpstk
           * format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-      void dump(std::ostream& s, NavData::Detail dl) const;
+      void dump(std::ostream& s, DumpDetail dl) const;
 
          /** Remove all data from the library's factories in the time
           * span [fromTime,toTime).

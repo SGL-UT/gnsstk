@@ -182,7 +182,7 @@ namespace gpstk
 
 
    void NavLibrary ::
-   dump(std::ostream& s, NavData::Detail dl) const
+   dump(std::ostream& s, DumpDetail dl) const
    {
          // factories can have multiple copies of a given factory, so
          // keep track of which ones we've checked already.

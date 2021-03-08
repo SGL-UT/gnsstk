@@ -443,7 +443,7 @@ find2Test()
    TUASSERTE(bool, true,
              uut.find(findNMID1h,gpstk::GPSWeekSecond(2101,1710),result,
                       SH::Any,VT::Any,SO::User));
-   result->dump(std::cerr, gpstk::NavData::Detail::Full);
+   result->dump(std::cerr, gpstk::DumpDetail::Full);
    if (result)
    {
       hea = dynamic_cast<gpstk::GPSLNavHealth*>(result.get());
@@ -452,7 +452,7 @@ find2Test()
    TUASSERTE(bool, true,
              uut.find(findNMID1h,gpstk::GPSWeekSecond(2101,1716),result,
                       SH::Any, VT::Any,SO::User));
-   result->dump(std::cerr, gpstk::NavData::Detail::Full);
+   result->dump(std::cerr, gpstk::DumpDetail::Full);
    if (result)
    {
       hea = dynamic_cast<gpstk::GPSLNavHealth*>(result.get());

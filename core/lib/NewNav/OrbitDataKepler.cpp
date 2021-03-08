@@ -59,9 +59,9 @@ namespace gpstk
 
 
    void OrbitDataKepler ::
-   dump(std::ostream& s, Detail dl) const
+   dump(std::ostream& s, DumpDetail dl) const
    {
-      if (dl == Detail::OneLine)
+      if (dl == DumpDetail::OneLine)
       {
          NavData::dump(s,dl);
          return;
@@ -83,7 +83,7 @@ namespace gpstk
       s << endl << endl;
 
          // the rest is full details, so just return if Full is not asked for.
-      if (dl != Detail::Full)
+      if (dl != DumpDetail::Full)
          return;
 
       const ios::fmtflags oldFlags = s.flags();

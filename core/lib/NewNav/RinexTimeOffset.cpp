@@ -75,22 +75,22 @@ namespace gpstk
 
 
    void RinexTimeOffset ::
-   dump(ostream& s, Detail dl) const
+   dump(ostream& s, DumpDetail dl) const
    {
       const ios::fmtflags oldFlags = s.flags();
       NavData::dump(s,dl);
       double offset;
       switch (dl)
       {
-         case Detail::OneLine:
+         case DumpDetail::OneLine:
             break;
-         case Detail::Brief:
+         case DumpDetail::Brief:
                // brief just shows the offset as of the reference time.
             s << StringUtils::asString(frTS) << "-"
               << StringUtils::asString(toTS) << " offset = " << (deltatLS+A0)
               << endl;
             break;
-         case Detail::Full:
+         case DumpDetail::Full:
             s << setprecision(16)
               << "  src system = " << StringUtils::asString(frTS) << endl
               << "  tgt system = " << StringUtils::asString(toTS) << endl

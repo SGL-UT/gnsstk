@@ -43,12 +43,6 @@
 
 namespace gpstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::GPSLNavEph::L2Codes e)
-   {
-      s << static_cast<long>(e);
-      return s;
-   }
-
    std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
    {
       s << StringUtils::asString(e);

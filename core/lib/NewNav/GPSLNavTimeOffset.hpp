@@ -66,7 +66,7 @@ namespace gpstk
           * format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-      void dump(std::ostream& s, Detail dl) const override;
+      void dump(std::ostream& s, DumpDetail dl) const override;
 
          /** Get the offset, in seconds, to apply to times when
           * converting them from fromSys to toSys.
