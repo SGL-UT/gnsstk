@@ -139,7 +139,7 @@ namespace gpstk
    }
 
 
-   TimeOffsetData::TimeCvtSet RinexTimeOffset ::
+   TimeCvtSet RinexTimeOffset ::
    getConversions() const
    {
       TimeCvtKey keyF(frTS,toTS);

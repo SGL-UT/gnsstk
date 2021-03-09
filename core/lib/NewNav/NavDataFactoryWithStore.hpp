@@ -275,7 +275,7 @@ namespace gpstk
           * collection of TimeOffsetData objects. */
       using OffsetEpochMap = std::map<CommonTime, OffsetMap>;
          /// Map from the time system conversion pair to the conversion objects.
-      using OffsetCvtMap = std::map<TimeOffsetData::TimeCvtKey, OffsetEpochMap>;
+      using OffsetCvtMap = std::map<TimeCvtKey, OffsetEpochMap>;
          /** Store the time offset data separate from the other nav
           * data because searching is very different. */
       OffsetCvtMap offsetData;

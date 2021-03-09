@@ -146,14 +146,14 @@ unsigned GPSCNav2TimeOffset_T ::
 getConversionsTest()
 {
    TUDEF("GPSCNav2TimeOffset", "getConversions");
-   gpstk::TimeOffsetData::TimeCvtSet convs;
+   gpstk::TimeCvtSet convs;
    gpstk::GPSCNav2TimeOffset offs;
       // This looks a bit weird, but basically getConversions is
       // expected to return a set containing one key pair for GPS to
       // the target time system, which by default is Unknown.
-   gpstk::TimeOffsetData::TimeCvtKey key1(gpstk::TimeSystem::GPS,
+   gpstk::TimeCvtKey key1(gpstk::TimeSystem::GPS,
                                           gpstk::TimeSystem::Unknown);
-   gpstk::TimeOffsetData::TimeCvtKey key2(gpstk::TimeSystem::Unknown,
+   gpstk::TimeCvtKey key2(gpstk::TimeSystem::Unknown,
                                           gpstk::TimeSystem::GPS);
    TUCATCH(convs = offs.getConversions());
    TUASSERTE(size_t, 2, convs.size());

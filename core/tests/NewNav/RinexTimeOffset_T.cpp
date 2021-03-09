@@ -137,13 +137,13 @@ unsigned RinexTimeOffset_T ::
 getConversionsTest()
 {
    TUDEF("RinexTimeOffset", "getConversions");
-   gpstk::TimeOffsetData::TimeCvtSet convs;
+   gpstk::TimeCvtSet convs;
    gpstk::RinexTimeOffset uut;
    uut.frTS = gpstk::TimeSystem::GPS;
    uut.toTS = gpstk::TimeSystem::Unknown;
-   gpstk::TimeOffsetData::TimeCvtKey key1(gpstk::TimeSystem::GPS,
+   gpstk::TimeCvtKey key1(gpstk::TimeSystem::GPS,
                                           gpstk::TimeSystem::Unknown);
-   gpstk::TimeOffsetData::TimeCvtKey key2(gpstk::TimeSystem::Unknown,
+   gpstk::TimeCvtKey key2(gpstk::TimeSystem::Unknown,
                                           gpstk::TimeSystem::GPS);
    TUCATCH(convs = uut.getConversions());
    TUASSERTE(size_t, 2, convs.size());

@@ -145,11 +145,11 @@ unsigned GPSLNavTimeOffset_T ::
 getConversionsTest()
 {
    TUDEF("GPSLNavTimeOffset", "getConversions");
-   gpstk::TimeOffsetData::TimeCvtSet convs;
+   gpstk::TimeCvtSet convs;
    gpstk::GPSLNavTimeOffset offs;
-   gpstk::TimeOffsetData::TimeCvtKey key1(gpstk::TimeSystem::GPS,
+   gpstk::TimeCvtKey key1(gpstk::TimeSystem::GPS,
                                           gpstk::TimeSystem::UTC);
-   gpstk::TimeOffsetData::TimeCvtKey key2(gpstk::TimeSystem::UTC,
+   gpstk::TimeCvtKey key2(gpstk::TimeSystem::UTC,
                                           gpstk::TimeSystem::GPS);
    TUCATCH(convs = offs.getConversions());
    TUASSERTE(size_t, 2, convs.size());

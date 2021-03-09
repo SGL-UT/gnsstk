@@ -409,7 +409,7 @@ namespace gpstk
       bool rv = false;
          // Only search for forward key and let the TimeOffset classes
          // and factories handle the reverse offset.
-      TimeOffsetData::TimeCvtKey fwdKey(fromSys,toSys);
+      TimeCvtKey fwdKey(fromSys,toSys);
          // First look in the offsetData map for the key matching the
          // offset translation in the forward direction (fromSys->toSys).
       auto odi = offsetData.find(fwdKey);
@@ -828,7 +828,7 @@ namespace gpstk
          return true;
       }
          // TimeOffsetData
-      TimeOffsetData::TimeCvtSet conversions = todp->getConversions();
+      TimeCvtSet conversions = todp->getConversions();
       for (const auto& ci : conversions)
       {
          offsetData[ci][nd->getUserTime()][nd->signal] = nd;

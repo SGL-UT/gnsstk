@@ -135,7 +135,7 @@ namespace gpstk
    }
 
 
-   TimeOffsetData::TimeCvtSet GPSCNavTimeOffset ::
+   TimeCvtSet GPSCNavTimeOffset ::
    getConversions() const
    {
       TimeCvtKey keyF(TimeSystem::GPS,tgt);
