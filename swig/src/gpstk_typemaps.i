@@ -148,7 +148,7 @@
             // e.g. gpstk::GPSLNavEph.  We add the shared_ptr
             // qualifiers in order for SWIG_TypeQuery to get the
             // correct python data type that we need to return.
-         std::string cn = "std::shared_ptr< " + (*$1)->getClassName() + "> *";
+         std::string cn = "std::shared_ptr< " + (*$1)->getClassName() + " > *";
          swig_type_info *desc = SWIG_TypeQuery(cn.c_str());
          if (desc != nullptr)
          {
@@ -166,7 +166,7 @@
             // so create a null shared_ptr<NavData> python object to
             // use as the return value.
             // This gets turned into "None" in python.
-         temp = SWIG_NewPointerObj(SWIG_as_voidptr(temp), $descriptor,
+         temp = SWIG_NewPointerObj(SWIG_as_voidptr($1), $descriptor,
                                    SWIG_POINTER_OWN);
       }
          // Add the derived shared_ptr<NavData> object to the return list

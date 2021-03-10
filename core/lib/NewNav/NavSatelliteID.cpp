@@ -132,6 +132,7 @@ namespace gpstk
    bool NavSatelliteID ::
    operator==(const NavSatelliteID& right) const
    {
+         // std::cerr << __PRETTY_FUNCTION__ << std::endl;
          // Use the order() method so we don't have to compare
          // everything in the parent class twice.
       return ((NavSignalID::order(right) == 0) && (sat == right.sat) &&

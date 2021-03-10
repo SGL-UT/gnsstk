@@ -64,20 +64,20 @@ namespace gpstk
 
    bool SP3NavDataFactory ::
    find(const NavMessageID& nmid, const CommonTime& when,
-        NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
+        NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
         NavSearchOrder order)
    {
       bool rv;
       if (nmid.messageType != NavMessageType::Ephemeris)
          return false;
-      rv = findGeneric(NavMessageType::Ephemeris, nmid, when, navData);
+      rv = findGeneric(NavMessageType::Ephemeris, nmid, when, navOut);
       if (rv == false)
          return false;
          /** @todo If someone attempts to use SP3 but sets the type
           * filter to exclude clock, no clock data will be stored and
           * this will end up returning false.  I'm not sure if this is
           * valid behavior. */
-      rv = findGeneric(NavMessageType::Clock, nmid, when, navData);
+      rv = findGeneric(NavMessageType::Clock, nmid, when, navOut);
       if (rv == false)
          return false;
       return true;

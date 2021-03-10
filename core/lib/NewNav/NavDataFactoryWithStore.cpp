@@ -59,17 +59,17 @@ namespace gpstk
 
    bool NavDataFactoryWithStore ::
    find(const NavMessageID& nmid, const CommonTime& when,
-        NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
+        NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
         NavSearchOrder order)
    {
       bool rv = false;
       switch (order)
       {
          case NavSearchOrder::User:
-            rv = findUser(nmid, when, navData, xmitHealth, valid);
+            rv = findUser(nmid, when, navOut, xmitHealth, valid);
             break;
          case NavSearchOrder::Nearest:
-            rv = findNearest(nmid, when, navData, xmitHealth, valid);
+            rv = findNearest(nmid, when, navOut, xmitHealth, valid);
             break;
          default:
                // requested an invalid search order
@@ -79,13 +79,13 @@ namespace gpstk
       {
             // One last check for fit interval validity, but it only
             // applies to OrbitDataKepler.
-         OrbitDataKepler *odk = dynamic_cast<OrbitDataKepler*>(navData.get());
+         OrbitDataKepler *odk = dynamic_cast<OrbitDataKepler*>(navOut.get());
          if (odk != nullptr)
          {
             if ((when < odk->beginFit) || (when > odk->endFit))
             {
                   // not a valid match, so clear the results.
-               navData.reset();
+               navOut.reset();
                rv = false;
             }
          }
@@ -141,7 +141,10 @@ namespace gpstk
               sati != dataIt->second.end(); sati++)
          {
             if (sati->first != nmid)
+            {
+               // std::cerr << "  " << sati->first << " != " << nmid << std::endl;
                continue; // skip non matches
+            }
             // std::cerr << "  matches " << sati->first << std::endl;
             NavMap::iterator nmi = sati->second.lower_bound(when);
             if (nmi == sati->second.end())

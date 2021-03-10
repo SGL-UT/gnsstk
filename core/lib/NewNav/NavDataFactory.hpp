@@ -79,14 +79,14 @@ namespace gpstk
           * @param[in] when The time of interest to search for data.
           * @param[in] xmitHealth The desired health status of the
           *   transmitting satellite.
-          * @param[out] navData The resulting navigation message.
+          * @param[out] navOut The resulting navigation message.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
           *   behavior or by nearest to when in time. 
           * @return true if successful.  If false, navData will be untouched. */
       virtual bool find(const NavMessageID& nmid, const CommonTime& when,
-                        NavDataPtr& navData, SVHealth xmitHealth,
+                        NavDataPtr& navOut, SVHealth xmitHealth,
                         NavValidityType valid, NavSearchOrder order) = 0;
 
          /** Get the offset, in seconds, to apply to times when

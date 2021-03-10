@@ -446,6 +446,18 @@ namespace std { class fstream {}; }
 %shared_ptr(gpstk::GPSLNavAlm)
 %shared_ptr(gpstk::GPSLNavHealth)
 %shared_ptr(gpstk::GPSLNavTimeOffset)
+%shared_ptr(gpstk::GPSCNavData)
+%shared_ptr(gpstk::GPSCNavEph)
+%shared_ptr(gpstk::GPSCNavAlm)
+%shared_ptr(gpstk::GPSCNavHealth)
+%shared_ptr(gpstk::GPSCNavTimeOffset)
+%shared_ptr(gpstk::GPSCNavRedAlm)
+%shared_ptr(gpstk::GPSCNav2Eph)
+%shared_ptr(gpstk::GPSCNav2Alm)
+%shared_ptr(gpstk::GPSCNav2Health)
+%shared_ptr(gpstk::GPSCNav2TimeOffset)
+%shared_ptr(gpstk::OrbitDataSP3)
+%shared_ptr(gpstk::RinexTimeOffset)
 
 %shared_ptr(gpstk::NavDataFactory)
 %shared_ptr(gpstk::NavDataFactoryWithStore)
@@ -455,7 +467,11 @@ namespace std { class fstream {}; }
 %shared_ptr(gpstk::SEMNavDataFactory)
 %shared_ptr(gpstk::YumaNavDataFactory)
 %shared_ptr(gpstk::MultiFormatNavDataFactory);
-/* %shared_ptr(gpstk::PNBNavDataFactory); */
+%shared_ptr(gpstk::PNBNavDataFactory)
+%shared_ptr(gpstk::PNBGPSLNavDataFactory)
+%shared_ptr(gpstk::PNBGPSCNavDataFactory)
+%shared_ptr(gpstk::PNBGPSCNav2DataFactory)
+%shared_ptr(gpstk::PNBMultiGNSSNavDataFactory)
 
 // NewNav store
 %include "NavSignalID.hpp"
@@ -471,6 +487,18 @@ namespace std { class fstream {}; }
 %include "GPSLNavAlm.hpp"
 %include "GPSLNavHealth.hpp"
 %include "GPSLNavTimeOffset.hpp"
+%include "GPSCNavData.hpp"
+%include "GPSCNavEph.hpp"
+%include "GPSCNavAlm.hpp"
+%include "GPSCNavHealth.hpp"
+%include "GPSCNavTimeOffset.hpp"
+%include "GPSCNavRedAlm.hpp"
+%include "GPSCNav2Eph.hpp"
+%include "GPSCNav2Alm.hpp"
+%include "GPSCNav2Health.hpp"
+%include "GPSCNav2TimeOffset.hpp"
+%include "OrbitDataSP3.hpp"
+%include "RinexTimeOffset.hpp"
 
 %include "NavDataFactory.hpp"
 %include "NavLibrary.hpp"
@@ -482,23 +510,11 @@ namespace std { class fstream {}; }
 %include "YumaNavDataFactory.hpp"
 %include "MultiFormatNavDataFactory.hpp"
 
-/* %include "GPSCNavData.hpp" */
-/* %include "GPSCNav2Alm.hpp" */
-/* %include "GPSCNav2Eph.hpp" */
-/* %include "GPSCNav2Health.hpp" */
-/* %include "GPSCNav2TimeOffset.hpp" */
-/* %include "GPSCNavAlm.hpp" */
-/* %include "GPSCNavEph.hpp" */
-/* %include "GPSCNavHealth.hpp" */
-/* %include "GPSCNavRedAlm.hpp" */
-/* %include "GPSCNavTimeOffset.hpp" */
-/* %include "OrbitDataSP3.hpp" */
-/* %include "PNBNavDataFactory.hpp" */
-/* %include "PNBGPSCNav2DataFactory.hpp" */
-/* %include "PNBGPSCNavDataFactory.hpp" */
-/* %include "PNBGPSLNavDataFactory.hpp" */
-/* %include "PNBMultiGNSSNavDataFactory.hpp" */
-/* %include "RinexTimeOffset.hpp" */
+%include "PNBNavDataFactory.hpp"
+%include "PNBGPSLNavDataFactory.hpp"
+%include "PNBGPSCNavDataFactory.hpp"
+%include "PNBGPSCNav2DataFactory.hpp"
+%include "PNBMultiGNSSNavDataFactory.hpp"
 
 // v 2.0.12 required for KLOBUCHAR IONO MODEL
 #define KLOBUCHAR_SUPPORT (SWIG_VERSION >= 0x020012 ? True : False)
