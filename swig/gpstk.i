@@ -472,6 +472,8 @@ namespace std { class fstream {}; }
 %shared_ptr(gpstk::PNBGPSCNavDataFactory)
 %shared_ptr(gpstk::PNBGPSCNav2DataFactory)
 %shared_ptr(gpstk::PNBMultiGNSSNavDataFactory)
+ // silence warnings from swig
+%shared_ptr(gpstk::TimeSystemCorrection)
 
 // NewNav store
 %include "NavSignalID.hpp"

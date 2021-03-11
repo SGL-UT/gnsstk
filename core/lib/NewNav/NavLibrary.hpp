@@ -477,7 +477,7 @@ namespace gpstk
          /** Get the health status of a satellite at a specific time.
           * @param[in] sat Satellite to get the health status for.
           * @param[in] when The time that the health should be retrieved.
-          * @param[out] health The health status at when.
+          * @param[out] healthOut The health status at when.
           * @param[in] xmitHealth The desired health status of the
           *   transmitting satellite.
           * @param[in] valid Specify whether to search only for valid
@@ -487,7 +487,7 @@ namespace gpstk
           * @return true if successful, false if no nav data was found
           *   containing health status. */
       bool getHealth(const NavSatelliteID& sat, const CommonTime& when,
-                     SVHealth& health, SVHealth xmitHealth = SVHealth::Any,
+                     SVHealth& healthOut, SVHealth xmitHealth = SVHealth::Any,
                      NavValidityType valid = NavValidityType::ValidOnly,
                      NavSearchOrder order = NavSearchOrder::User);
 

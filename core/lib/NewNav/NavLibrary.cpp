@@ -79,7 +79,7 @@ namespace gpstk
 
    bool NavLibrary ::
    getHealth(const NavSatelliteID& sat, const CommonTime& when,
-             SVHealth& health, SVHealth xmitHealth, NavValidityType valid,
+             SVHealth& healthOut, SVHealth xmitHealth, NavValidityType valid,
              NavSearchOrder order)
    {
       NavMessageID nmid(sat, NavMessageType::Health);
@@ -87,7 +87,7 @@ namespace gpstk
       if (!find(nmid, when, ndp, xmitHealth, valid, order))
          return false;
       NavHealthData *healthData = dynamic_cast<NavHealthData*>(ndp.get());
-      health = healthData->getHealth();
+      healthOut = healthData->getHealth();
       return true;
    }
 
@@ -259,7 +259,7 @@ namespace gpstk
       CommonTime rv = CommonTime::BEGINNING_OF_TIME;
       for (const auto& fi : factories)
       {
-         rv = std::max(rv, fi.second->getInitialTime());
+         rv = std::max(rv, fi.second->getFinalTime());
       }
       return rv;
    }

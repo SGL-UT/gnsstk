@@ -174,3 +174,36 @@
       Py_DECREF(temp);
    }
 }
+
+// convert output gpstk::SVHealth references
+
+%typemap(in, numinputs=0) gpstk::SVHealth &healthOut (gpstk::SVHealth temp)
+{
+      // healthOut typemap(in)
+   temp = gpstk::SVHealth::Unknown;
+   $1 = &temp;
+}
+
+%typemap(argout) gpstk::SVHealth&
+{
+      // healthOut typemap(argout)
+      // What this does is change the python interface to the C++
+      // method so that you get a list containing the original C++
+      // return value (typically a bool) and the resulting NavData
+      // object.
+      // The shared_ptr<NavData> object needs to be converted to the
+      // leaf class in order for python to be able to use it properly.
+   if (!PyList_Check(resultobj))
+   {
+         // Turn the return value into a list and add the original
+         // return value as the first member of the list.
+      PyObject *temp = resultobj;
+      resultobj = PyList_New(1);
+      PyList_SetItem(resultobj, 0, temp);
+      PyObject* sys_mod_dict = PyImport_GetModuleDict();
+      PyObject* gpstk_mod = PyMapping_GetItemString(sys_mod_dict, "gpstk");
+      PyObject* enum_instance = PyObject_CallMethod(gpstk_mod, "SVHealth", "i", (int)*$1);
+      Py_DECREF(gpstk_mod);
+      PyList_Append(resultobj, enum_instance);
+   }
+}

@@ -42,6 +42,7 @@
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
 #include "GPSLNavTimeOffset.hpp"
+#include "TimeString.hpp"
 
 namespace gpstk
 {
@@ -147,6 +148,8 @@ public:
       /** Make sure addFactory() puts the factory in each supported
        * signal in the factories map. */
    unsigned addFactoryTest();
+      /// Test getInitialTime() and getFinalTime()
+   unsigned getTimeTest();
 
    gpstk::CivilTime civ;
    gpstk::CommonTime ct;
@@ -429,6 +432,31 @@ addFactoryTest()
 }
 
 
+unsigned NavLibrary_T ::
+getTimeTest()
+{
+   TUDEF("NavLibrary", "getInitialTime");
+   gpstk::NavLibrary navLib;
+   gpstk::NavDataFactoryPtr
+      ndfp(std::make_shared<RinexTestFactory>());
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "arlm2000.15n";
+   TUCATCH(navLib.addFactory(ndfp));
+   RinexTestFactory *rndfp =
+      dynamic_cast<RinexTestFactory*>(ndfp.get());
+   TUASSERT(rndfp->addDataSource(fname));
+   TUASSERTE(gpstk::CommonTime,
+             gpstk::CivilTime(2015,7,19,0,0,0.0,
+                              gpstk::TimeSystem::GPS).convertToCommonTime(),
+             navLib.getInitialTime());
+   TUASSERTE(gpstk::CommonTime,
+             gpstk::CivilTime(2015,7,20,2,0,0.0,
+                              gpstk::TimeSystem::GPS).convertToCommonTime(),
+             navLib.getFinalTime());
+   TURETURN();
+}
+
+
 int main()
 {
    NavLibrary_T testClass;
@@ -441,6 +469,8 @@ int main()
    errorTotal += testClass.setValidityFilterTest();
    errorTotal += testClass.setTypeFilterTest();
    errorTotal += testClass.addFactoryTest();
+   errorTotal += testClass.getTimeTest();
+      /// @todo test edit(), clear()
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
 

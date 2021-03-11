@@ -31,18 +31,22 @@ set( CMAKE_SKIP_RPATH TRUE )
 # in the compiling of the swig bindings
 # @todo: see if -std=c++11 can be removed from all builds
 #----------------------------------------
+# -Wno-write-strings disables warnings that g++ generates by the
+# truckload because the Python C API uses char* instead of
+# const char*
 if( ${CMAKE_SYSTEM_NAME} MATCHES "SunOS" )
     set( CMAKE_CXX_FLAGS "-std=c++11" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -std=c++11" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
-    set( CMAKE_CXX_FLAGS "-std=c++11" )
+    set( CMAKE_CXX_FLAGS "-std=c++11 -Wno-write-strings" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
     set( CMAKE_CXX_FLAGS "-std=c++11" )
 endif()
 
 
-set_source_files_properties( gpstk.i PROPERTIES CPLUSPLUS ON )
+set_property(SOURCE gpstk.i PROPERTY CPLUSPLUS ON )
+set_property(SOURCE gpstk.i PROPERTY USE_SWIG_DEPENDENCIES TRUE)
 
 if( DEBUG_SWITCH )
     message( STATUS "SWIG_EXECUTABLE          = ${SWIG_EXECUTABLE}" )

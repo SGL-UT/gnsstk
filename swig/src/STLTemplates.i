@@ -1,10 +1,12 @@
 %{
 #include "SatID.hpp"
 #include "SatelliteSystem.hpp"
+#include "NavMessageType.hpp"
 %}
 
 %include "SatID.hpp"
 %include "SatelliteSystem.hpp"
+%include "NavMessageType.hpp"
 
 //////////////////////////////////////////////////
 //            std::vector wraps
@@ -96,3 +98,4 @@
 %template(set_int) std::set<int>;
 %template(set_double) std::set<double>;
 %template(set_string) std::set<std::string>;
+%template(NavMessageTypeSet) std::set<gpstk::NavMessageType>;
