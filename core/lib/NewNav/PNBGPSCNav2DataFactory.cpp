@@ -275,7 +275,7 @@ enum CNav2BitInfo
    gnbA2 = 7,             ///< A2-ggto number of bits
    gscA2 = -68,           ///< A2-ggto power factor
 
-      // these apply to message type 37 (midi almanac)
+      // these apply to subframe 3 page 4 (midi almanac)
 
    asbWNa = 14,           ///< WNa-n start bit
    anbWNa = 13,           ///< WNa-n number of bits
