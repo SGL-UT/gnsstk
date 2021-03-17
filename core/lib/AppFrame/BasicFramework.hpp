@@ -45,7 +45,8 @@
 #define GPSTK_BASICFRAMEWORK_HPP
 
 #include "CommandOptionParser.hpp"
-#include "MainAdapter.hpp"
+#include <iostream>
+#include "Exception.hpp"
 
 namespace gpstk
 {

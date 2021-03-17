@@ -87,7 +87,6 @@
 #include "DataStatus.hpp"
 
 // more specific almanac/ephemeris files:
-#include "AstronomicalFunctions.hpp"
 #include "XvtStore.hpp"
 #include "OrbAlmStore.hpp"
 #include "PZ90Ellipsoid.hpp"
@@ -210,10 +209,7 @@
 #include "AshtechPBEN.hpp"
 
 // Positioning/Tides
-#include "MoonPosition.hpp"
-#include "SunPosition.hpp"
 #include "PoleTides.hpp"
-#include "SolidTides.hpp"
 
 // PosSol
 #include "Combinations.hpp"
