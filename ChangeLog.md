@@ -1,3 +1,20 @@
+# Version 11.0.0   Thursday March 18, 2021
+
+Modifications by Author
+-----------------------
+     David Barber <dbarber@arlut.utexas.edu> (4):
+           restored deleted files
+           staging deprecated file(s)
+           Revert "Update Copyright start range to 2004"
+           Deprecate gpstk code containing external contributors
+
+     John Knutson <johnk@arlut.utexas.edu> (3):
+           Add tests for StringUtils::removeWords() and words() and fix an edge case bug
+           Deprecate SVNumXRef
+           Fix copypasta error in comment
+
+
+
 # Version 10.0.0   Thursday February 11, 2021
 
 Modifications by Author
