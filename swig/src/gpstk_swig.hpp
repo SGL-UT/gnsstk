@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the 
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -39,6 +39,7 @@
 
 // This file is used in building the swig bindings of the GPSTk and is
 // not really intended to be used by C++ code directly
+
 
 #include "Exception.hpp"
 #include "TimeConstants.hpp"
@@ -63,7 +64,7 @@
 #include "EllipsoidModel.hpp"
 #include "ReferenceFrame.hpp"
 #include "GNSSconstants.hpp"
-// #include "DeprecatedConsts.hpp"
+#include "DeprecatedConsts.hpp"
 #include "FreqConsts.hpp"
 #include "Xvt.hpp"
 #include "AlmOrbit.hpp"
@@ -85,7 +86,6 @@
 #include "AshtechPBEN.hpp"
 #include "FFBinaryStream.hpp"
 #include "AshtechStream.hpp"
-#include "AstronomicalFunctions.hpp"
 #include "MJD.hpp"
 #include "TimeConverters.hpp"
 #include "EphTime.hpp"
@@ -113,10 +113,10 @@
 #include "BLQDataReader.hpp"
 #include "SpecialFunctions.hpp"
 #include "BaseDistribution.hpp"
-// #include "CommandOption.hpp"
-// #include "CommandOptionParser.hpp"
-// #include "MainAdapter.hpp"
-// #include "BasicFramework.hpp"
+/* #include "CommandOption.hpp" */
+/* #include "CommandOptionParser.hpp" */
+/* #include "MainAdapter.hpp" */
+/* #include "BasicFramework.hpp" */
 #include "BasicTimeSystemConverter.hpp"
 #include "BinexData.hpp"
 #include "FileSpec.hpp"
@@ -149,36 +149,36 @@
 #include "SatMetaData.hpp"
 #include "SatMetaDataSort.hpp"
 #include "SatMetaDataStore.hpp"
-// #include "CNavDataElement.hpp"
-// #include "CNavDataElementStore.hpp"
-// #include "CNavEOP.hpp"
-#include "CNavEmptyFilter.hpp"
-// #include "CNavGGTO.hpp"
-// #include "CNavISC.hpp"
+/* #include "CNavDataElement.hpp" */
+/* #include "CNavDataElementStore.hpp" */
+/* #include "CNavEOP.hpp" */
+/* #include "CNavEmptyFilter.hpp" */
+/* #include "CNavGGTO.hpp" */
+/* #include "CNavISC.hpp" */
 #include "OrbData.hpp"
 #include "OrbDataSys.hpp"
 #include "CNavMidiAlm.hpp"
 #include "CNavParityFilter.hpp"
 #include "CNavReducedAlm.hpp"
 #include "CNavTOWFilter.hpp"
-// #include "CNavText.hpp"
-// #include "CNavUTC.hpp"
+/* #include "CNavText.hpp" */
+/* #include "CNavUTC.hpp" */
 #include "Chi2Distribution.hpp"
 #include "ClockModel.hpp"
 #include "TimeString.hpp"
-// #include "TabularSatStore.hpp"
-// #include "FileStore.hpp"
-// #include "ClockSatStore.hpp"
+/* #include "TabularSatStore.hpp" */
+#include "FileStore.hpp"
+/* #include "ClockSatStore.hpp" */
 #include "PCodeConst.hpp"
 #include "CodeBuffer.hpp"
 #include "Combinations.hpp"
-// #include "CommandLine.hpp"
-// #include "CommandOptionWithCommonTimeArg.hpp"
+/* #include "CommandLine.hpp" */
+/* #include "CommandOptionWithCommonTimeArg.hpp" */
 #include "Position.hpp"
-// #include "CommandOptionWithPositionArg.hpp"
-// #include "CommandOptionWithTimeArg.hpp"
+/* #include "CommandOptionWithPositionArg.hpp" */
+/* #include "CommandOptionWithTimeArg.hpp" */
 #include "ConfDataReader.hpp"
-#include "ConfDataWriter.hpp"
+ /* #include "ConfDataWriter.hpp" */ // error on typemaps for list of double
 #include "CubicSpline.hpp"
 #include "DCBDataReader.hpp"
 #include "DiffCorrBase.hpp"
@@ -192,7 +192,7 @@
 #include "GPSWeekZcount.hpp"
 #include "GALWeekSecond.hpp"
 #include "QZSWeekSecond.hpp"
-// #include "Epoch.hpp"
+/* #include "Epoch.hpp" */
 #include "RinexObsBase.hpp"
 #include "RinexObsHeader.hpp"
 #include "RinexDatum.hpp"
@@ -207,28 +207,29 @@
 #include "SP3SatID.hpp"
 #include "SP3Base.hpp"
 #include "SP3Data.hpp"
-// #include "PositionSatStore.hpp"
+/* #include "PositionSatStore.hpp" */
 #include "SP3Header.hpp"
 #include "Rinex3ClockBase.hpp"
 #include "RinexObsID.hpp"
 #include "Rinex3ClockHeader.hpp"
-// #include "SP3EphemerisStore.hpp"
+/* #include "SP3EphemerisStore.hpp" */
 #include "RinexUtilities.hpp"
-// #include "SatPass.hpp"
-// #include "DiscCorr.hpp"
+/* #include "SatPass.hpp" */
+/* #include "DiscCorr.hpp" */
 #include "DumpDetail.hpp"
 #include "ENUUtil.hpp"
 #include "EpochDataStore.hpp"
 #include "EOPDataStore.hpp"
 #include "IERSConvention.hpp"
-// #include "EarthOrientation.hpp"
-// #include "EOPPrediction.hpp"
-// #include "EOPStore.hpp"
+/* #include "EarthOrientation.hpp" */
+/* #include "EOPPrediction.hpp" */
+/* #include "EOPStore.hpp" */
 #include "EngAlmanac.hpp"
 #include "EphemerisRange.hpp"
 #include "IonoModel.hpp"
 #include "IonoModelStore.hpp"
 #include "ValidType.hpp"
+#include "SvObsEpoch.hpp"
 #include "ObsEpochMap.hpp"
 #include "WxObsMap.hpp"
 #include "TropModel.hpp"
@@ -301,12 +302,12 @@
 #include "GloEphemerisStore.hpp"
 #include "GlobalTropModel.hpp"
 #include "HelmertTransform.hpp"
-//#include "IERS1996NutationData.hpp"
-//#include "IERS1996UT1mUTCData.hpp"
-//#include "IERS2003NutationData.hpp"
-// #include "IERS2010CIOSeriesData.hpp"
-// #include "LoopedFramework.hpp"
-// #include "InOutFramework.hpp"
+ //#include "IERS1996NutationData.hpp"
+ //#include "IERS1996UT1mUTCData.hpp"
+ //#include "IERS2003NutationData.hpp"
+/* #include "IERS2010CIOSeriesData.hpp" */
+/* #include "LoopedFramework.hpp" */
+/* #include "InOutFramework.hpp" */
 #include "IonexBase.hpp"
 #include "IonexHeader.hpp"
 #include "IonexStream.hpp"
@@ -314,10 +315,10 @@
 #include "IonexStore.hpp"
 #include "Namelist.hpp"
 #include "SRIMatrix.hpp"
-#include "SparseVector.hpp"
-#include "SparseMatrix.hpp"
+#include "SparseVector.hpp" // too many warnings
+#include "SparseMatrix.hpp" // too many warnings
 #include "SRI.hpp"
-// #include "SRIFilter.hpp"
+/* #include "SRIFilter.hpp" */
 #include "logstream.hpp"
 #include "KalmanFilter.hpp"
 #include "LNavFilterData.hpp"
@@ -332,7 +333,6 @@
 #include "LinearClockModel.hpp"
 #include "MOPSTropModel.hpp"
 #include "MetReader.hpp"
-#include "MoonPosition.hpp"
 #include "MostCommonValue.hpp"
 #include "NavValidityType.hpp"
 #include "NavSearchOrder.hpp"
@@ -352,23 +352,23 @@
 #include "OceanLoadTides.hpp"
 #include "OceanLoading.hpp"
 #include "OrbElem.hpp"
-// #include "OrbAlm.hpp"
-// #include "OrbAlmFactory.hpp"
-// #include "OrbAlmGen.hpp"
-// #include "OrbAlmStore.hpp"
+/* #include "OrbAlm.hpp" */
+/* #include "OrbAlmFactory.hpp" */
+/* #include "OrbAlmGen.hpp" */
+/* #include "OrbAlmStore.hpp" */
 #include "OrbDataSysFactory.hpp"
 #include "OrbDataUTC.hpp"
 #include "OrbElemRinex.hpp"
 #include "OrbSysGpsC.hpp"
 #include "OrbSysGpsC_30.hpp"
 #include "OrbSysGpsC_33.hpp"
-// #include "OrbSysGpsC_32.hpp"
+/* #include "OrbSysGpsC_32.hpp" */
 #include "OrbSysGpsL.hpp"
-// #include "OrbSysGpsL_51.hpp"
+/* #include "OrbSysGpsL_51.hpp" */
 #include "OrbSysGpsL_52.hpp"
 #include "OrbSysGpsL_55.hpp"
 #include "OrbSysGpsL_56.hpp"
-// #include "OrbSysGpsL_63.hpp"
+/* #include "OrbSysGpsL_63.hpp" */
 #include "OrbSysGpsL_Reserved.hpp"
 #include "OrbSysStore.hpp"
 #include "OrbitDataSP3.hpp"
@@ -384,28 +384,28 @@
 #include "PoleTides.hpp"
 #include "PolyFit.hpp"
 #include "PosixTime.hpp"
-//#include "PowerSum.hpp"
+ //#include "PowerSum.hpp"
 #include "SolarSystemEphemeris.hpp"
 #include "SunEarthSatGeometry.hpp"
 #include "SolidEarthTides.hpp"
-// #include "SolarSystem.hpp"
-// #include "PreciseRange.hpp"
+/* #include "SolarSystem.hpp" */
+/* #include "PreciseRange.hpp" */
 #include "QZSEphemerisStore.hpp"
 #include "RACRotation.hpp"
-// #include "RTFileFrame.hpp"
+/* #include "RTFileFrame.hpp" */
 #include "RationalizeRinexNav.hpp"
 #include "Rinex3ClockData.hpp"
 #include "Rinex3ClockStream.hpp"
 #include "Rinex3EphemerisStore.hpp"
 #include "Rinex3NavFilterOperators.hpp"
-// #include "Rinex3ObsFileLoader.hpp"
+/* #include "Rinex3ObsFileLoader.hpp" */
 #include "Rinex3ObsFilterOperators.hpp"
 #include "Rinex3ObsStream.hpp"
 #include "RinexClockBase.hpp"
 #include "RinexClockData.hpp"
 #include "RinexClockHeader.hpp"
 #include "RinexClockStream.hpp"
-//#include "RinexClockStore.hpp"
+ //#include "RinexClockStore.hpp"
 #include "RinexNavHeader.hpp"
 #include "RinexNavStream.hpp"
 #include "RinexEphemerisStore.hpp"
@@ -433,20 +433,18 @@
 #include "SVPCodeGen.hpp"
 #include "SaasTropModel.hpp"
 #include "SatDataReader.hpp"
-// #include "SatPassIterator.hpp"
+/* #include "SatPassIterator.hpp" */
 #include "msecHandler.hpp"
-// #include "SatPassUtilities.hpp"
+/* #include "SatPassUtilities.hpp" */
 #include "SimpleTropModel.hpp"
-// #include "SinexBase.hpp"
-// #include "SinexHeader.hpp"
-// #include "SinexTypes.hpp"
-// #include "SinexBlock.hpp"
-// #include "SinexData.hpp"
-// #include "SinexStream.hpp"
+/* #include "SinexBase.hpp" */
+/* #include "SinexHeader.hpp" */
+/* #include "SinexTypes.hpp" */
+/* #include "SinexBlock.hpp" */
+/* #include "SinexData.hpp" */
+/* #include "SinexStream.hpp" */
 #include "SolarPosition.hpp"
-#include "SunPosition.hpp"
-#include "SolidTides.hpp"
-// #include "SpecialFuncs.hpp"
+/* #include "SpecialFuncs.hpp" */
 #include "StreamBuf.hpp"
 #include "StudentDistribution.hpp"
 #include "TimeCorrection.hpp"
@@ -463,7 +461,7 @@
 #include "convhelp.hpp"
 #include "expandtilde.hpp"
 #include "format.hpp"
-// #include "gdc.hpp"
+/* #include "gdc.hpp" */
 #include "ord.hpp"
 #include "random.hpp"
 #include "singleton.hpp"

@@ -376,39 +376,6 @@ class Xvt_test(unittest.TestCase):
                     'clk drift:0.05, relcorr:1.44645e-11')
         self.assertEqual(expected, str(data))
 
-
-class AstronomicalFunctions_test(unittest.TestCase):
-    def test_functions(self):
-        c = gpstk.CommonTime()
-        c.addSeconds(12345678)
-        self.assertAlmostEqual(10.934294925420545, gpstk.UTC2SID(c))
-
-    def test_constants(self):
-        self.assertAlmostEqual(1.49597870e11, gpstk.AU_CONST)
-        self.assertAlmostEqual(0.0174532925199432957692369, gpstk.D2R)
-        self.assertAlmostEqual(9.80665,  gpstk.EarthGrav)
-
-
-class Positioning_test(unittest.TestCase):
-    def test_moon(self):
-        t = gpstk.CivilTime(2000).toCommonTime()
-        # object way:
-        pos = gpstk.MoonPosition().getPosition(t)
-        self.assertAlmostEqual(-89651219.03579193, pos[0])
-        # functional way:
-        pos = gpstk.moonPosition(t)
-        self.assertAlmostEqual(-89651219.03579193, pos[0])
-
-    def test_sun(self):
-        t = gpstk.CivilTime(2000).toCommonTime()
-        # object way:
-        pos = gpstk.SunPosition().getPosition(t)
-        self.assertAlmostEqual(-136909966557.8461 , pos[0], places=3)
-        # functional way:
-        pos = gpstk.sunPosition(t)
-        self.assertAlmostEqual(-136909966557.8461 , pos[0], places=3)
-
-
 class Tides_test(unittest.TestCase):
     def test_pole_tides(self):
         t = gpstk.CivilTime(2000).toCommonTime()
@@ -417,13 +384,6 @@ class Tides_test(unittest.TestCase):
         y = 10.0
         trip = gpstk.poleTides(t, p, x, y)
         self.assertAlmostEqual(-0.03128457731297798, trip[0])
-
-    def test_solid_tides(self):
-        t = gpstk.CivilTime(2000).toCommonTime()
-        p = gpstk.Position(1000.0, 2000.0, 3000.0)
-        trip = gpstk.solidTides(t, p)
-        self.assertAlmostEqual(-2.2479508782610997e-15, trip[0])
-
 
 class Expression_test(unittest.TestCase):
     def test_class(self):

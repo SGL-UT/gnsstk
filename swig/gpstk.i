@@ -854,7 +854,12 @@ del IntEnum
 /* %include "PZ90Ellipsoid.hpp" */
 /* %include "WGS84Ellipsoid.hpp" */
 
+<<<<<<< HEAD
 /* %include "XvtStore.hpp" */
+=======
+%include "PZ90Ellipsoid.hpp"
+%include "WGS84Ellipsoid.hpp"
+>>>>>>> origin/main
 
 /* %include "gpstkplatform.h" */
 /* %include "FFStreamError.hpp" */
@@ -1003,9 +1008,13 @@ del IntEnum
 /* %include "PoleTides.hpp" */
 /* %include "SolidTides.hpp" */
 
+<<<<<<< HEAD
 /* // PosSol */
 /* %include "Combinations.hpp" */
 /* %include "PRSolution.hpp" */
+=======
+%include "PoleTides.hpp"
+>>>>>>> origin/main
 
 /* // Ionosphere Model */
 /* %include "IonoModel.hpp" */
