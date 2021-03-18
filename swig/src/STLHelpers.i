@@ -47,7 +47,7 @@ def dictToMap(dict, outtype=''):
         m = globals()[new_name]()  # constructs an object of class t
     except:
         if outtype == '':
-            raise TypeError('There is no map wrapper for ' + t)
+            raise TypeError('There is no map wrapper for ' + t_key + ' => ' + t_value)
         else:
             raise TypeError('The type ' + outtype + ' does not exist')
 

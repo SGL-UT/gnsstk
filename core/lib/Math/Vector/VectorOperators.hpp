@@ -44,6 +44,8 @@
 #ifndef GPSTK_VECTOR_OPERATORS_HPP
 #define GPSTK_VECTOR_OPERATORS_HPP
 
+#include "Vector.hpp"
+
 namespace gpstk
 {
 

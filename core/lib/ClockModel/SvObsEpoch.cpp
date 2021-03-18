@@ -36,29 +36,25 @@
 //
 //==============================================================================
 
-/**
- * @file ObsEpochMap.cpp
- * A class encapsulating observation data (roughly standard RINEX obs and met files).
- */
-
-#include "ObsEpochMap.hpp"
+#include "SvObsEpoch.hpp"
 
 using namespace std;
 using namespace gpstk;
 
 namespace gpstk
 {
-   // These are just to facilitate debugging. The format of the data output
-   // is quite ad-hoc and may change.
-
-   std::ostream& operator<<(std::ostream& s, const ObsEpoch& oe)
+      // These are just to facilitate debugging. The format of the data output
+      // is quite ad-hoc and may change.
+   std::ostream& operator<<(std::ostream& s, const SvObsEpoch& obs)
       throw()
    {
-      s << oe.time << ", rxClock: " << oe.rxClock << endl;
-      ObsEpoch::const_iterator i;
-      for (i=oe.begin(); i!=oe.end(); i++)
-         s << i->first << ": " << i->second << endl;
-
+      SvObsEpoch::const_iterator i;
+      for (i=obs.begin(); i != obs.end(); i++)
+      {
+         if (i != obs.begin())
+            s << ", ";
+         s << i->first << ": " << i->second;
+      }
       return s;
    }
 }  // namespace

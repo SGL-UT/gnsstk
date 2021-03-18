@@ -19,4 +19,3 @@
 %template(validtype_ulong) gpstk::ValidType<unsigned long>;
 
 // Matrix wraps
-%template(matrix_double) gpstk::Matrix<double>;

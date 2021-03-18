@@ -20,15 +20,19 @@
 { 
 
    // methods for the stream itself:
-   static gpstk:: ## FORMATNAME ## Stream* in ## FORMATNAME ## Stream(const std::string fileName)
+   static gpstk:: ## FORMATNAME ## Stream* in ## FORMATNAME ## Stream(
+      const std::string fileName)
    {
-      FORMATNAME ## Stream * s = new FORMATNAME ## Stream (fileName.c_str());
+      gpstk:: ## FORMATNAME ## Stream * s = new gpstk:: ## FORMATNAME ## Stream(
+         fileName.c_str());
       return s;
    }
 
-   static gpstk:: ## FORMATNAME ## Stream* out ## FORMATNAME ## Stream(const std::string fileName)
+   static gpstk:: ## FORMATNAME ## Stream* out ## FORMATNAME ## Stream(
+      const std::string fileName)
    {
-      FORMATNAME ## Stream * s = new FORMATNAME ## Stream (fileName.c_str(), std::ios::out|std::ios::trunc);
+      gpstk:: ## FORMATNAME ## Stream * s = new gpstk:: ## FORMATNAME ## Stream(
+         fileName.c_str(), std::ios::out|std::ios::trunc);
       return s;
    }
 
@@ -159,7 +163,7 @@ STREAM_HELPER(Yuma)
          // check if there is any sv entries at this epoch and create one if necessary
          if (rodarr[*it].obs.find(svid) == rodarr[*it].obs.end())
          {
-            std::map<std::string , std::vector<RinexObsID> >::const_iterator kt = roh.mapObsTypes.find(std::string(1, svid.systemChar()));
+            std::map<std::string , std::vector<gpstk::RinexObsID> >::const_iterator kt = roh.mapObsTypes.find(std::string(1, svid.systemChar()));
             if (kt == roh.mapObsTypes.end()) { return; }
             rodarr[*it].obs[svid] = gpstk::Rinex3ObsData::DataMap::mapped_type (kt->second.size());
             rodarr[*it].numSVs++;
@@ -179,13 +183,14 @@ STREAM_HELPER(Yuma)
    // methods for the stream itself:
    static gpstk::AshtechStream* inAshtechStream(const std::string fileName)
    {
-      AshtechStream *s = new AshtechStream (fileName.c_str());
+      gpstk::AshtechStream *s = new gpstk::AshtechStream (fileName.c_str());
       return s;
    }
    
    static gpstk::AshtechStream* outAshtechStream(const std::string fileName)
    {
-      AshtechStream *s = new AshtechStream (fileName.c_str(), std::ios::out|std::ios::trunc);
+      gpstk::AshtechStream *s = new gpstk::AshtechStream(
+         fileName.c_str(), std::ios::out|std::ios::trunc);
       return s;
    }
    

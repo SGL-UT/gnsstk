@@ -47,6 +47,7 @@
 #include <fstream> // for copyfmt
 #include <vector>
 #include <iomanip>
+#include "VectorBase.hpp"
 
 // to solve the conflict with windows.h
 #if defined(min)

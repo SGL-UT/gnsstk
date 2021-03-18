@@ -18,8 +18,9 @@ include( ${SWIG_USE_FILE} )
 #     384: operator-- ignored
 #     389: operator[] ignored
 #     503: can't wrap 'identifer' unless renamed to a valid identifier (e.g. operator<<)
+#     325: Nested class not currently supported
 
-set( CMAKE_SWIG_FLAGS "-w362,383,384,389,503 -builtin" )
+set( CMAKE_SWIG_FLAGS "-w362,383,384,389,503,325 -builtin" )
 
 #----------------------------------------
 # Don't set the RPATH for dependencies.

@@ -36,29 +36,32 @@
 //
 //==============================================================================
 
-/**
- * @file ObsEpochMap.cpp
- * A class encapsulating observation data (roughly standard RINEX obs and met files).
- */
+#ifndef GPSTK_SVOBSEPOCH_HPP
+#define GPSTK_SVOBSEPOCH_HPP
 
-#include "ObsEpochMap.hpp"
+#include <map>
+#include <iostream>
 
-using namespace std;
-using namespace gpstk;
+#include "SatID.hpp"
+#include "ObsID.hpp"
+#include "ValidType.hpp"
 
 namespace gpstk
 {
-   // These are just to facilitate debugging. The format of the data output
-   // is quite ad-hoc and may change.
+      /// @ingroup ClockModel
+      //@{
 
-   std::ostream& operator<<(std::ostream& s, const ObsEpoch& oe)
-      throw()
+      /// All the observations collected from a single SV at a single epoch
+   struct SvObsEpoch : public std::map<ObsID, double>
    {
-      s << oe.time << ", rxClock: " << oe.rxClock << endl;
-      ObsEpoch::const_iterator i;
-      for (i=oe.begin(); i!=oe.end(); i++)
-         s << i->first << ": " << i->second << endl;
+      gpstk::SatID svid;
+      vfloat azimuth, elevation;
+   };
 
-      return s;
-   }
-}  // namespace
+   std::ostream& operator<<(std::ostream& s, const SvObsEpoch& obs) throw();
+
+      //@}
+
+} // namespace 
+
+#endif 

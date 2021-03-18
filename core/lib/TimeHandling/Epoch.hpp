@@ -476,12 +476,6 @@ namespace gpstk
          /// @throw EpochException
       inline short doy() const;
 
-         /// Get object time as a (long double) modified Julian date.
-         /// @warning For some compilers, this result may have diminished
-         ///  accuracy.
-         /// @throw EpochException
-      inline long double getMJDasLongDouble() const;
-
          /// Get object time in UNIX timeval structure.
          /// @throw EpochException
       inline struct timeval unixTime() const;

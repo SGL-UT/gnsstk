@@ -57,7 +57,7 @@ namespace gpstk
    class PowerSum
    {
    public:
-      PowerSum() {clear();};
+      PowerSum() {clear();}
 
       const static int order = 5;
 

@@ -15,9 +15,9 @@
 
    gpstk::Triple scale(double scalar) {
       // since operator* can't be wrapped
-      return Triple(scalar * $self->theArray[0],
-                    scalar * $self->theArray[1],
-                    scalar * $self->theArray[2]);
+      return gpstk::Triple(scalar * $self->theArray[0],
+                           scalar * $self->theArray[1],
+                           scalar * $self->theArray[2]);
    }
    int __len__() {
       return 3;
