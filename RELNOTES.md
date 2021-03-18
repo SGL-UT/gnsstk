@@ -1,13 +1,12 @@
 Known Issues
 ------------
 
-The new navigation message storage code in gpstk/core/lib/NewNav is
-not available under Python if built under SWIG 3.0.10 due to errors in
-code generation in that version.  This is the version of SWIG that
-ships with Debian 9 (stretch).  The test_NavLibrary.py tests will fail
-in such circumstances.  If you need Python wrappers for this code,
-please use a different version of SWIG (2.0.12 and 3.0.12 have been
-tested successfully).
+SWIG 3.0.10 is not supported for generating Python bindings, due to
+errors in code generation in that version.  This is the version of
+SWIG that ships with Debian 9 (stretch).  Compilation will fail when
+using SWIG 3.0.10.  If you need Python wrappers for this code, please
+use a different version of SWIG (2.0.12 and 3.0.12 have been tested
+successfully).
 
 GPSTk 10.0.0 Release Notes
 ========================
