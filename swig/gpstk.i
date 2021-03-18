@@ -468,7 +468,7 @@ namespace std
 %include "FileSpecFind.hpp"
 %include "FileUtils.hpp"
 %include "FileFilterFrame.hpp"
-%include "Rinex3ObsHeader.hpp"
+%include "Rinex3ObsHeader.i"
 %template(unary_function_Rinex3ObsHeader) std::unary_function<gpstk::Rinex3ObsHeader, bool>;
 %include "Rinex3ObsData.hpp"
 %template(vector_Rinex3ObsData) std::vector<gpstk::Rinex3ObsData>;
@@ -755,7 +755,7 @@ del IntEnum
 %include "FileIO.i"
 %include "GPS_URA.i"
 %include "Position.i"
-%include "Rinex3ObsHeader.i"
+ //%include "Rinex3ObsHeader.i"
 %include "TimeString.i"
 
 // =============================================================
