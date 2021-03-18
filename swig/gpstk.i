@@ -454,6 +454,7 @@ namespace std
 %include "SvObsEpoch.hpp"
 %template(map_ObsEpoch) std::map<gpstk::SatID, gpstk::SvObsEpoch>;
 %include "ObsEpochMap.hpp"
+%template(ObsEpochMap) std::map<gpstk::CommonTime, gpstk::ObsEpoch>;
 %include "WxObsMap.hpp"
 %include "TropModel.hpp"
 %include "NBTropModel.hpp"
@@ -468,6 +469,8 @@ namespace std
 %include "FileSpecFind.hpp"
 %include "FileUtils.hpp"
 %include "FileFilterFrame.hpp"
+ // Use a special wrapper for the include file which resolves issues
+ // with the nested definitions
 %include "Rinex3ObsHeader.i"
 %template(unary_function_Rinex3ObsHeader) std::unary_function<gpstk::Rinex3ObsHeader, bool>;
 %include "Rinex3ObsData.hpp"

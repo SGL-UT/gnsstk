@@ -95,7 +95,7 @@ namespace gpstk
             }
 		
             sigma = sigma / (2.0*((double)N-(double)numGaps-0-2.0*(double)m)*tau*tau);
-            sigma = sqrt(sigma);
+            sigma = ::sqrt(sigma);
             deviation.push_back(sigma);
             time.push_back(tau);
          }
