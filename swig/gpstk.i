@@ -302,7 +302,6 @@ namespace std
 %include "AshtechPBEN.hpp"
 %include "FFBinaryStream.hpp"
 %include "AshtechStream.hpp"
-%include "AstronomicalFunctions.hpp"
 %include "MJD.hpp"
 %include "TimeConverters.hpp"
 %include "EphTime.hpp"
@@ -333,8 +332,6 @@ namespace std
 %include "MatrixFunctors.hpp"
 %include "MatrixOperators.hpp"
 %include "BLQDataReader.hpp"
-%include "SpecialFunctions.hpp"
-%include "BaseDistribution.hpp"
 /* %include "CommandOption.hpp" */
 /* %include "CommandOptionParser.hpp" */
 /* %include "MainAdapter.hpp" */
@@ -387,7 +384,6 @@ namespace std
 %include "CNavTOWFilter.hpp"
 /* %include "CNavText.hpp" */
 /* %include "CNavUTC.hpp" */
-%include "Chi2Distribution.hpp"
 %include "ClockModel.hpp"
 %include "TimeString.hpp"
 /* %include "TabularSatStore.hpp" */
@@ -446,8 +442,6 @@ namespace std
 /* %include "DiscCorr.hpp" */
 %include "DumpDetail.hpp"
 %include "ENUUtil.hpp"
-%include "EpochDataStore.hpp"
-%include "EOPDataStore.hpp"
 %include "IERSConvention.hpp"
 /* %include "EarthOrientation.hpp" */
 /* %include "EOPPrediction.hpp" */
@@ -471,8 +465,6 @@ namespace std
 %include "StatsFilterHit.hpp"
 %include "RobustStats.hpp"
 %include "FDiffFilter.hpp"
-%include "FilterBase.hpp"
-%include "FIRDifferentiator5thOrder.hpp"
 %include "FileSpecFind.hpp"
 %include "FileUtils.hpp"
 %include "FileFilterFrame.hpp"
@@ -531,7 +523,6 @@ namespace std
 %include "GSatID.hpp"
 %include "GalEphemerisStore.hpp"
 %include "GalileoEllipsoid.hpp"
-%include "GaussianDistribution.hpp"
 %include "GenXSequence.hpp"
 %include "GenericNavFilterData.hpp"
 %include "GloEphemerisStore.hpp"
@@ -569,7 +560,6 @@ namespace std
 %include "LinearClockModel.hpp"
 %include "MOPSTropModel.hpp"
 %include "MetReader.hpp"
-%include "MoonPosition.hpp"
 %include "MostCommonValue.hpp"
 %include "NavValidityType.hpp"
 %include "NavSearchOrder.hpp"
@@ -617,7 +607,6 @@ namespace std
 %include "stl_helpers.hpp"
 %include "PRSolution.hpp"
 %include "PRSolutionLegacy.hpp"
-%include "PlanetEphemeris.hpp"
 %include "PoleTides.hpp"
 %include "PolyFit.hpp"
 %include "PosixTime.hpp"
@@ -685,11 +674,8 @@ namespace std
 /* %include "SinexData.hpp" */
 /* %include "SinexStream.hpp" */
 %include "SolarPosition.hpp"
-%include "SunPosition.hpp"
-%include "SolidTides.hpp"
 /* %include "SpecialFuncs.hpp" */
 %include "StreamBuf.hpp"
-%include "StudentDistribution.hpp"
 %include "TimeCorrection.hpp"
 %include "TimeNamedFileStream.hpp"
 %include "TimeRange.hpp"
@@ -854,12 +840,6 @@ del IntEnum
 /* %include "PZ90Ellipsoid.hpp" */
 /* %include "WGS84Ellipsoid.hpp" */
 
-<<<<<<< HEAD
-/* %include "XvtStore.hpp" */
-=======
-%include "PZ90Ellipsoid.hpp"
-%include "WGS84Ellipsoid.hpp"
->>>>>>> origin/main
 
 /* %include "gpstkplatform.h" */
 /* %include "FFStreamError.hpp" */
@@ -1008,13 +988,6 @@ del IntEnum
 /* %include "PoleTides.hpp" */
 /* %include "SolidTides.hpp" */
 
-<<<<<<< HEAD
-/* // PosSol */
-/* %include "Combinations.hpp" */
-/* %include "PRSolution.hpp" */
-=======
-%include "PoleTides.hpp"
->>>>>>> origin/main
 
 /* // Ionosphere Model */
 /* %include "IonoModel.hpp" */

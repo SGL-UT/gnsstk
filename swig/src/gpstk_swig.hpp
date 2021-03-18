@@ -111,8 +111,6 @@
 #include "MatrixFunctors.hpp"
 #include "MatrixOperators.hpp"
 #include "BLQDataReader.hpp"
-#include "SpecialFunctions.hpp"
-#include "BaseDistribution.hpp"
 /* #include "CommandOption.hpp" */
 /* #include "CommandOptionParser.hpp" */
 /* #include "MainAdapter.hpp" */
@@ -163,7 +161,6 @@
 #include "CNavTOWFilter.hpp"
 /* #include "CNavText.hpp" */
 /* #include "CNavUTC.hpp" */
-#include "Chi2Distribution.hpp"
 #include "ClockModel.hpp"
 #include "TimeString.hpp"
 /* #include "TabularSatStore.hpp" */
@@ -218,8 +215,6 @@
 /* #include "DiscCorr.hpp" */
 #include "DumpDetail.hpp"
 #include "ENUUtil.hpp"
-#include "EpochDataStore.hpp"
-#include "EOPDataStore.hpp"
 #include "IERSConvention.hpp"
 /* #include "EarthOrientation.hpp" */
 /* #include "EOPPrediction.hpp" */
@@ -242,8 +237,6 @@
 #include "StatsFilterHit.hpp"
 #include "RobustStats.hpp"
 #include "FDiffFilter.hpp"
-#include "FilterBase.hpp"
-#include "FIRDifferentiator5thOrder.hpp"
 #include "FileSpecFind.hpp"
 #include "FileUtils.hpp"
 #include "FileFilterFrame.hpp"
@@ -296,7 +289,6 @@
 #include "GSatID.hpp"
 #include "GalEphemerisStore.hpp"
 #include "GalileoEllipsoid.hpp"
-#include "GaussianDistribution.hpp"
 #include "GenXSequence.hpp"
 #include "GenericNavFilterData.hpp"
 #include "GloEphemerisStore.hpp"
@@ -380,7 +372,6 @@
 #include "stl_helpers.hpp"
 #include "PRSolution.hpp"
 #include "PRSolutionLegacy.hpp"
-#include "PlanetEphemeris.hpp"
 #include "PoleTides.hpp"
 #include "PolyFit.hpp"
 #include "PosixTime.hpp"
@@ -446,7 +437,6 @@
 #include "SolarPosition.hpp"
 /* #include "SpecialFuncs.hpp" */
 #include "StreamBuf.hpp"
-#include "StudentDistribution.hpp"
 #include "TimeCorrection.hpp"
 #include "TimeNamedFileStream.hpp"
 #include "TimeRange.hpp"
