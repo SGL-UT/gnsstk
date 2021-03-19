@@ -185,7 +185,7 @@ namespace gpstk
          /// Clock configuration information
       using ClockConfigMap = std::map<SystemBlock, ClockVec>;
          /// Map SVN to launch time.
-      using LaunchMap = std::map<SVNID, LaunchConfig>;
+      typedef std::map<SVNID, LaunchConfig> LaunchMap;
          /// Map SVN to NORAD ID.
       using NORADMap = std::map<SVNID, unsigned long>;
 
