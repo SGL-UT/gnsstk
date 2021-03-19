@@ -67,9 +67,9 @@ namespace gpstk {
 class SRIleastSquares : public SRI {
 public:
       /// Function to fit.
-   using LSFFunc = void (*)(Vector<double>& X,
-                            Vector<double>& f,
-                            Matrix<double>& P);
+   typedef void (*)(Vector<double>& X,
+                    Vector<double>& f,
+                    Matrix<double>& P) LSFFunc;
 
    /// empty constructor
    SRIleastSquares(void) throw();
