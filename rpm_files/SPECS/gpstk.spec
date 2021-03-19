@@ -1,5 +1,5 @@
 %define name gpstk
-%define version 10.0.0
+%define version 11.0.0
 %define release 1
 
 Summary:        GPS Toolkit
@@ -53,6 +53,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Mar 18 2021 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v11.0.0 release
+- Deprecate external users contributed code and references.
+- Update source code files copyright header for year 2021
+- Fix PNBGPSCNav2DataFactory comment
+- Remove SVNumXref (deprecated code).
+- Fix StringUtils::words() for cases of empty strings or single words.
 * Thu Feb 11 2021 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v10.0.0 release
 - Update RINEX NAV test data files that had improperly formatted DELTA-UTC records.

@@ -1,3 +1,14 @@
+gpstk (11.0.0-1) stable; urgency=low
+
+  * Updated to version 11.0.0
+  * Fix StringUtils::words() for cases of empty strings or single words.
+  * Remove SVNumXref (deprecated code).
+  * Fix PNBGPSCNav2DataFactory comment
+  * Update source code files copyright header for year 2021
+  * Deprecate external users contributed code and references.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 18 Mar 2021 11:45:17 -0500
+
 gpstk (10.0.0-1) stable; urgency=low
 
   * Updated to version 10.0.0
