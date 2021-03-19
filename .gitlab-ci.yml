@@ -18,7 +18,7 @@ variables:
   REPO_HOST: "repositories.arlut.utexas.edu"
   CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
   # this is usually set to main, unless there are downstream dependencies
-  SGLTK_BRANCH: issue_359
+  SGLTK_BRANCH: main
   DOCKER_REGISTRY: "modisdev:5000/sgl_ci"
   # this can be used for incremental builds
   #  GIT_CLEAN_FLAGS: none

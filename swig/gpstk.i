@@ -153,6 +153,10 @@ namespace std
 %template(map_string_int)    std::map<std::string, int>;
 %template(map_string_double) std::map<std::string, double>;
 
+// =============================================================
+//  Section 7: typemaps that must be declared before the %includes
+// =============================================================
+
 // convert output gpstk::NavDataPtr references
 
 %typemap(in, numinputs=0) std::shared_ptr<gpstk::NavData> &navOut ()
@@ -251,7 +255,7 @@ namespace std
 %include "gpstk_typemaps.i"
 
 // =============================================================
-//  Section 6: C++ include files
+//  Section 8: C++ include files
 //  Include classes IN DEPENDENCY ORDER otherwise swig will fail.
 // =============================================================
 
@@ -700,7 +704,7 @@ namespace std
 %include "singleton.hpp"
 
 // =============================================================
-//  Section 7: Enumerations
+//  Section 9: Enumerations
 // =============================================================
 %include "gpstk_enum_typemaps.i"
 
@@ -746,7 +750,7 @@ del IntEnum
 %}
 
 // =============================================================
-//  Section 8: Explicit Python wrappers
+//  Section 10: Explicit Python wrappers
 // =============================================================
 
 %include "Triple.i"
@@ -762,7 +766,7 @@ del IntEnum
 %include "TimeString.i"
 
 // =============================================================
-//  Section 9: Template declarations
+//  Section 11: Template declarations
 // =============================================================
 
 /* %include "STLTemplates.i" */
