@@ -50,9 +50,9 @@ namespace gpstk
 
       /** Define a pair of TimeSystems where first=convert from and
        * second=convert to. */
-   using TimeCvtKey = std::pair<TimeSystem,TimeSystem>;
+   typedef std::pair<TimeSystem,TimeSystem> TimeCvtKey;
       /// Define a unique set of time system conversions.
-   using TimeCvtSet = std::set<TimeCvtKey>;
+   typedef std::set<TimeCvtKey> TimeCvtSet;
 
       /** Defines the interface for classes that provide the ability
        * to convert between time systems, using data extracted from

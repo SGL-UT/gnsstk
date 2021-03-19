@@ -573,7 +573,7 @@ namespace gpstk
    }; // class PackedNavBits
 
       /// Managed pointer for passing PackedNavBits around.
-   using PackedNavBitsPtr = std::shared_ptr<PackedNavBits>;
+   typedef std::shared_ptr<PackedNavBits> PackedNavBitsPtr;
 
       //@}
    std::ostream& operator<<(std::ostream& s, const PackedNavBits& pnb);

@@ -116,9 +116,9 @@ namespace gpstk
    }; // class PNBNavDataFactory
 
       /// Managed pointer to a PNBNavDataFactory.
-   using PNBNavDataFactoryPtr = std::shared_ptr<PNBNavDataFactory>;
+   typedef std::shared_ptr<PNBNavDataFactory> PNBNavDataFactoryPtr;
       /// Map the navigation message type to a factory for producing that type.
-   using PNBNavDataFactoryMap = std::map<NavType, PNBNavDataFactoryPtr>;
+   typedef std::map<NavType, PNBNavDataFactoryPtr> PNBNavDataFactoryMap;
 
       //@}
 

@@ -100,23 +100,23 @@ namespace gpstk
    };
 
       /// Factories instantiate these in response to find() requests
-   using NavDataPtr = std::shared_ptr<NavData>;
+   typedef std::shared_ptr<NavData> NavDataPtr;
       /// Map nav message transmit time to nav message.
-   using NavMap = std::map<CommonTime, NavDataPtr>;
+   typedef std::map<CommonTime, NavDataPtr> NavMap;
       /// Map satellite to nav data.
-   using NavSatMap = std::map<NavSatelliteID, NavMap>;
+   typedef std::map<NavSatelliteID, NavMap> NavSatMap;
       /// Map nav message type to the rest of the storage.
-   using NavMessageMap = std::map<NavMessageType, NavSatMap>;
+   typedef std::map<NavMessageType, NavSatMap> NavMessageMap;
       /** List of NavDataPtr, typically used when converting from
        * source data to NavDataPtr when multiple objects can be
        * created from a single input. */
-   using NavDataPtrList = std::list<NavDataPtr>;
+   typedef std::list<NavDataPtr> NavDataPtrList;
       /// Map from "nearest" time reference (e.g. toe) to list of NavDataPtr.
-   using NavNearMap = std::map<CommonTime, NavDataPtrList>;
+   typedef std::map<CommonTime, NavDataPtrList> NavNearMap;
       /// Map satellite to nearest map.
-   using NavNearSatMap = std::map<NavSatelliteID, NavNearMap>;
+   typedef std::map<NavSatelliteID, NavNearMap> NavNearSatMap;
       /// Map nav message type to the rest of the storage.
-   using NavNearMessageMap = std::map<NavMessageType, NavNearSatMap>;
+   typedef std::map<NavMessageType, NavNearSatMap> NavNearMessageMap;
 
       //@}
 

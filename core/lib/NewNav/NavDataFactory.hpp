@@ -214,9 +214,9 @@ namespace gpstk
    };
 
       /// Managed pointer to NavDataFactory.
-   using NavDataFactoryPtr = std::shared_ptr<NavDataFactory>;
+   typedef std::shared_ptr<NavDataFactory> NavDataFactoryPtr;
       /// Map signal to a factory.
-   using NavDataFactoryMap = std::multimap<NavSignalID, NavDataFactoryPtr>;
+   typedef std::multimap<NavSignalID, NavDataFactoryPtr> NavDataFactoryMap;
 
       //@}
 

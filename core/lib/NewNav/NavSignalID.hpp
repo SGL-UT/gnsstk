@@ -102,7 +102,7 @@ namespace gpstk
    };
 
       /// Set of nav data signal identifiers.
-   using NavSignalSet = std::set<NavSignalID>;
+   typedef std::set<NavSignalID> NavSignalSet;
 
 
    inline std::ostream& operator<<(std::ostream& s, const NavSignalID& nsid)
