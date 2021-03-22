@@ -101,7 +101,6 @@ add_custom_command( TARGET "_${SWIG_MODULE}"
 # copy them to the python module directory
 file(GLOB_RECURSE module_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/gpstk/*.py"
-#  "${CMAKE_CURRENT_SOURCE_DIR}/apps/*.py"
   "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.py"
   )
 make_copy_targets(module_files ${CMAKE_CURRENT_SOURCE_DIR} ${MODULE_PATH})

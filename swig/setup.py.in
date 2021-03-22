@@ -32,11 +32,11 @@ MODULE_DIR = os.path.split(__file__)[0]
 #----------------------------------------
 
 
-scripts_list = [
-    "apps/gpstk_timeconvert.py",
-    "apps/sem_plot.py",
-    "apps/position_difference.py",
-    ]
+#scripts_list = [
+#    "apps/gpstk_timeconvert.py",
+#    "apps/sem_plot.py",
+#    "apps/position_difference.py",
+#    ]
 
 # For package distribution channels
 classifiers_list = ['License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
@@ -77,7 +77,7 @@ setup(name              = "gpstk",
       packages          = ['gpstk'],
       package_data      = { 'gpstk': ['_gpstk.so', 'libgpstk.so*'], },
       data_files        = [('', ['README.md',]),],
-      scripts           = scripts_list,
+#      scripts           = scripts_list,
       zip_safe          = False,
       )
 
