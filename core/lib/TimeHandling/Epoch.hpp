@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -357,13 +357,13 @@ namespace gpstk
       TimeTagType get() const;
 
          /// Get Julian Date JD
-         /// @Warning For some compilers, this result may have diminished
+         /// @warning For some compilers, this result may have diminished
          ///  accuracy.
          /// @throw EpochException
       inline long double JD() const;
 
          /// Get Modified Julian Date MJD
-         /// @Warning For some compilers, this result may have diminished
+         /// @warning For some compilers, this result may have diminished
          ///  accuracy.
          /// @throw EpochException
       inline long double MJD() const;
@@ -477,7 +477,7 @@ namespace gpstk
       inline short doy() const;
 
          /// Get object time as a (long double) modified Julian date.
-         /// @Warning For some compilers, this result may have diminished
+         /// @warning For some compilers, this result may have diminished
          ///  accuracy.
          /// @throw EpochException
       inline long double getMJDasLongDouble() const;

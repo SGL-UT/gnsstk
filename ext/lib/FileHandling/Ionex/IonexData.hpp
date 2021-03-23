@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -58,7 +58,7 @@
 namespace gpstk
 {
 
-      /// @ingroup IonosphereMaps 
+      /// @ingroup FileHandling
       //@{
 
       /** This class models a IONEX Data Record.
@@ -168,18 +168,18 @@ namespace gpstk
 
          /** Get the position of a grid point based on input position
           *
-          * @param in     input lat, lon and height (Triple object)
-          * @param type   grid point to be returned
+          * @param[in] in input lat, lon and height
+          * @param[in] igp grid point to be returned
           *               (1) neareast grid point
           *               (2) lower left hand grid point
-          * @param out    output lat, lon and height (Triple object)
+          * @param[out] out lat, lon and height
           * @return       the index within the data
-          * @throw InvalidRequest
+          *
           * @warning Keep in mind the assumptions of IONEX grid (i.e., latitude
           *          between [87.5, -87.5], longitude between [-180, 180])
           *          when you construct a Triple object.
           */
-      int getIndex( const Triple& in, const int& type, Triple& out ) const;
+      int getIndex( const Triple& in, const int& igp, Triple& out ) const;
 
 
          /** Get IONEX TEC or RMS value as a function of the position
@@ -192,7 +192,7 @@ namespace gpstk
           *
           * http://igscb.jpl.nasa.gov/igscb/data/format/ionex1.pdf
           *
-          * @param pos             input position (Position object).
+          * @param[in] pos         input position (Position object).
           *
           * @return                Computed TEC or RMS value.
           * @throw InvalidRequest

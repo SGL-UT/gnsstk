@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -55,9 +55,6 @@ namespace gpstk
    using namespace std;
 
 
-      /**
-       * @throw ObjectNotFound
-       */
    ObsClockModel::SvStatus ObsClockModel::getSvStatus(const SatID& svid) const
    {
       SvStatusMap::const_iterator i = status.find(svid);
@@ -86,9 +83,6 @@ namespace gpstk
    }
 
 
-      /**
-       * @throw ObjectNotFound
-       */
    ObsClockModel::SvMode ObsClockModel::getSvMode(const SatID& svid) const
    {
       SvModeMap::const_iterator i = modes.find(svid);

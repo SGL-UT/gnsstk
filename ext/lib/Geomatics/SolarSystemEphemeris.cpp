@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -238,7 +238,7 @@ catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
 }  // end void SolarSystemEphemeris::readASCIIheader(string filename)
 
 //------------------------------------------------------------------------------------
-int SolarSystemEphemeris::readASCIIdata(vector<string>& filenames)
+int SolarSystemEphemeris::readASCIIdata(std::vector<std::string>& filenames)
 {
 try {
    int i,n;
@@ -288,7 +288,7 @@ catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
 }  // end int SolarSystemEphemeris::readASCIIdata(vector<string>& filenames)
 
 //------------------------------------------------------------------------------------
-int SolarSystemEphemeris::readASCIIdata(string filename)
+int SolarSystemEphemeris::readASCIIdata(std::string filename)
 {
 try {
    if(EphemerisNumber < 0) {

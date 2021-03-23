@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -76,17 +76,16 @@ namespace gpstk
       /// XvtStore, from receiver at position Rx with measured pseudorange pr and
       /// time tag nomRecTime, to the GPS satellite given by SatID sat,
       /// as well as all the CER quantities.
-      /// @param CommonTime nomRecTime  nominal receive time
-      /// @param double pr           measured pseudorange at this time
-      /// @param Position& Rx        receiver position
-      /// @param SatID sat           satellite
-      /// @param AntexData& antenna  satellite antenna data;
-      /// @param string& freq1,freq2 ANTEX frequencies to evaluate PCO/Vs eg 'G01'
-      ///   if freq2 is zero e.g. 'G00', compute single freq (freq1) PCO/Vs
-      /// @param SolarSystem& SolSys SolarSystem object, to get SatelliteAttitude()
+      /// @param nomRecTime  nominal receive time
+      /// @param pr          measured pseudorange at this time
+      /// @param Rx          receiver position
+      /// @param sat         satellite
+      /// @param antenna     satellite antenna data;
+      /// @param freq1,freq2 ANTEX frequencies to evaluate PCO/Vs eg 'G01'
+      /// @param SolSys      SolarSystem object, to get SatelliteAttitude()
       ///   if any of above 4 not valid, PCO/V correction is NOT done (silently)
-      /// @param XvtStore Eph        Ephemeris store
-      /// @param bool isCOM          if true, Eph is Center-of-mass,
+      /// @param Eph        Ephemeris store
+      /// @param isCOM          if true, Eph is Center-of-mass,
       ///                               else antenna-phase-center, default false.
       /// @return corrected raw range
       /// @throw Exception if ephemeris is not found

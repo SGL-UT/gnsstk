@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -593,7 +593,8 @@ namespace gpstk
       if (testMsg.empty())
       {
          std::ostringstream ostr;
-         ostr << "Expected:'" << expected << "' ,But got:'" << got << "'";
+         ostr << std::boolalpha << "Expected:'" << expected << "' ,But got:'"
+              << got << "'";
          mess = ostr.str();
       }
       assert(expected == got, mess, lineNumber);
@@ -617,7 +618,8 @@ namespace gpstk
       if (testMsg.empty())
       {
          std::ostringstream ostr;
-         ostr << "abs(" << expected << " - " << got << ") = " << err;
+         ostr << std::setprecision(20)
+              << "abs(" << expected << " - " << got << ") = " << err;
          if (good)
             ostr << " <= ";
          else

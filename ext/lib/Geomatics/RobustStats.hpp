@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -66,7 +66,7 @@ namespace gpstk {
 #define RobustTuningE (0.6745)      // so MAD of a std normal dist is StdDev
 
 //------------------------------------------------------------------------------------
-      /// @ingroup math 
+      /// @ingroup MathGroup
       //@{
 
       //--------------------------------------------------------------------------------
@@ -90,6 +90,7 @@ namespace gpstk {
       /// the default Qsort_compare().
       /// @param sa is the array of type T to be sorted.
       /// @param na length of the array to be sorted.
+      /// @param comp (optional) the comparison function to be used.
    template <typename T>
    void insert(T *sa,
                int na,
@@ -278,8 +279,8 @@ namespace gpstk {
        *   for 5% level test.
        * @param xd         array of data.
        * @param nd         length of array xd.
-       * @param mean       mean of the data.
-       * @param stddev     standard deviation of the data.
+       * @param m          mean of the data.
+       * @param s          standard deviation of the data.
        * @param save_flag if true (default) array xd will NOT be
        *                      changed, otherwise it will be sorted.
        * @throw Exception

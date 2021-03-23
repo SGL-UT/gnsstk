@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -39,14 +39,22 @@
 #ifndef GPSTK_COMMONTIME_HPP
 #define GPSTK_COMMONTIME_HPP
 
+#include <memory>
 #include "Exception.hpp"
 #include "TimeConstants.hpp"
 #include "TimeSystem.hpp"
+#include "TimeSystemConverter.hpp"
 
 namespace gpstk
 {
       /// @ingroup TimeHandling
       //@{
+
+      /** \page APIguide
+       * - \subpage TimeHandlingGuide - Guidance for using time data.
+       * \page TimeHandlingGuide Time Handling
+       * @todo If I had the time, this would document it.
+       */
 
       /**
        * This is the common time format that all time formats convert to when
@@ -185,6 +193,26 @@ namespace gpstk
           //METHOD SET FOR FUTURE DEPRECATION (PRIVATIZATION)
       CommonTime& setTimeSystem( TimeSystem timeSystem )
       { m_timeSystem = timeSystem; return *this; }
+
+         /** Modify both the time value and time system to reflect a
+          * change in time system.
+          * @param[in] timeSystem The time system to convert this time to.
+          * @param[in,out] conv The converter object to use to get the
+          *   offset between the current time system and the requested
+          *   time system.
+          * @return true if successful, false if unable to get/apply
+          *   the time system offset.
+          */
+      bool changeTimeSystem(TimeSystem timeSystem, TimeSystemConverter* conv);
+
+         /** Modify both the time value and time system to reflect a
+          * change in time system.
+          * @param[in] timeSystem The time system to convert this time to.
+          * @return true if successful, false if the static converter
+          *   tsConv has not been set or is unable to get/apply the
+          *   time system offset.
+          */
+      bool changeTimeSystem(TimeSystem timeSystem);
 
          /**
           * Get method.  Obtain values in days, second of day and fractional
@@ -336,7 +364,7 @@ namespace gpstk
 
          /**
           * Add integer seconds to this CommonTime object.
-          * @param sec the number of seconds to add to this CommonTime
+          * @param seconds the number of seconds to add to this CommonTime
           * @return a reference to this CommonTime object
           * @throw InvalidRequest on over-/under-flow
           */
@@ -371,6 +399,10 @@ namespace gpstk
       { m_day = m_msod = 0; m_fsod = 0.0; m_timeSystem = TimeSystem::Unknown; }
 
       std::string asString() const;
+
+         /** If set, this object will provide the ability for
+          * changeTimeSystem(TimeSystem) to function. */
+      static std::shared_ptr<TimeSystemConverter> tsConv;
 
    protected:
 

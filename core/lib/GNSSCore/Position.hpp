@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -710,8 +710,8 @@ namespace gpstk
          // ----------- Part 10: functions: fundamental conversions -----------
          // 
          /** Fundamental conversion from spherical to cartesian coordinates.
-          * @param trp (input): theta, phi (degrees), radius
-          * @param xyz (output): X,Y,Z in units of radius
+          * @param[in] tpr theta, phi (degrees), radius
+          * @param[out] xyz X,Y,Z in units of radius
           * Algorithm references: standard geometry.
           */
       static void convertSphericalToCartesian(const Triple& tpr,
@@ -720,8 +720,8 @@ namespace gpstk
 
          /** Fundamental routine to convert cartesian to spherical coordinates.
           * The zero vector is converted to (90,0,0).
-          * @param xyz (input): X,Y,Z
-          * @param trp (output): theta, phi (degrees), radius (units of input)
+          * @param[in] xyz X,Y,Z
+          * @param[out] tpr theta, phi (degrees), radius (units of input)
           * Algorithm references: standard geometry.
           */
       static void convertCartesianToSpherical(const Triple& xyz,
@@ -733,11 +733,11 @@ namespace gpstk
           * geodetic coordinates, (Ellipsoid specified by semi-major
           * axis and eccentricity squared).  The zero vector is
           * converted to (90,0,-R(earth)).
-          * @param xyz (input): X,Y,Z in meters
-          * @param llh (output): geodetic lat(deg N), lon(deg E),
+          * @param[in] xyz X,Y,Z in meters
+          * @param[out] llh geodetic lat(deg N), lon(deg E),
           *                             height above ellipsoid (meters)
-          * @param A (input) Earth semi-major axis
-          * @param eccSq (input) square of Earth eccentricity
+          * @param[in] A Earth semi-major axis
+          * @param[in] eccSq square of Earth eccentricity
           * Algorithm references: Leick, "GPS Satellite Surveying," 2nd edition.
           */
       static void convertCartesianToGeodetic(const Triple& xyz,
@@ -749,11 +749,11 @@ namespace gpstk
          /** Fundamental routine to convert geodetic to ECEF
           * (cartesian) coordinates, (Ellipsoid specified by
           * semi-major axis and eccentricity squared).
-          * @param llh (input): geodetic lat(deg N), lon(deg E),
+          * @param[in] llh geodetic lat(deg N), lon(deg E),
           *                             height above ellipsoid (meters)
-          * @param A (input) Earth semi-major axis
-          * @param xyz (output): X,Y,Z in meters
-          * @param eccSq (input) square of Earth eccentricity
+          * @param[in] A Earth semi-major axis
+          * @param[out] xyz: X,Y,Z in meters
+          * @param[in] eccSq square of Earth eccentricity
           * Algorithm references: Leick, "GPS Satellite Surveying," 2nd edition.
           */
       static void convertGeodeticToCartesian(const Triple& llh,
@@ -765,8 +765,8 @@ namespace gpstk
 
          /** Fundamental routine to convert cartesian (ECEF) to geocentric
           * The zero vector is converted to (0,0,0).
-          * @param xyz (input): X,Y,Z
-          * @param llr (output): geocentric lat(deg N), lon(deg E),
+          * @param[in] xyz X,Y,Z
+          * @param[out] llr geocentric lat(deg N), lon(deg E),
           *                              radius (units of input)
           */
       static void convertCartesianToGeocentric(const Triple& xyz,
@@ -774,8 +774,8 @@ namespace gpstk
          throw();
 
          /** Fundamental routine to convert geocentric to cartesian (ECEF)
-          * @param llr (input): geocentric lat(deg N),lon(deg E),radius
-          * @param xyz (output): X,Y,Z (units of radius)
+          * @param[in] llr geocentric lat(deg N),lon(deg E),radius
+          * @param[out] xyz X,Y,Z (units of radius)
           */
       static void convertGeocentricToCartesian(const Triple& llr,
                                                Triple& xyz)
@@ -783,11 +783,11 @@ namespace gpstk
 
 
          /** Fundamental routine to convert geocentric to geodetic
-          * @param llr (input): geocentric lat(deg N),lon(deg E),radius (meters)
-          * @param geodeticllh (output): geodetic latitude (deg N),
+          * @param[in] llr geocentric lat(deg N),lon(deg E),radius (meters)
+          * @param[out] geodeticllh geodetic latitude (deg N),
           *            longitude (deg E), and height above ellipsoid (meters)
-          * @param A (input) Earth semi-major axis
-          * @param eccSq (input) square of Earth eccentricity
+          * @param[in] A Earth semi-major axis
+          * @param[in] eccSq square of Earth eccentricity
           */
       static void convertGeocentricToGeodetic(const Triple& llr,
                                               Triple& geodeticllh,
@@ -796,11 +796,11 @@ namespace gpstk
          throw();
 
          /** Fundamental routine to convert geodetic to geocentric 
-          * @param geodeticllh (input): geodetic latitude (deg N),
+          * @param[in] geodeticllh geodetic latitude (deg N),
           *            longitude (deg E), and height above ellipsoid (meters)
-          * @param llr (output): geocentric lat (deg N),lon (deg E),radius (meters)
-          * @param A (input) Earth semi-major axis
-          * @param eccSq (input) square of Earth eccentricity
+          * @param[out] llr geocentric lat (deg N),lon (deg E),radius (meters)
+          * @param[in] A Earth semi-major axis
+          * @param[in] eccSq square of Earth eccentricity
           */
       static void convertGeodeticToGeocentric(const Triple& geodeticllh,
                                               Triple& llr,
@@ -813,7 +813,7 @@ namespace gpstk
          /**
           * Stream output for Position objects.
           * @param s stream to append formatted Position to.
-          * @param t Position to append to stream \c s.
+          * @param p Position to append to stream \c s.
           * @return reference to \c s.
           */
       friend std::ostream& operator<<(std::ostream& s,
@@ -942,7 +942,7 @@ namespace gpstk
           * @param b coordinate [ Y(m), or longitude (degrees E) ]
           * @param c coordinate [ Z, height above ellipsoid or radius, in m ]
           * @param s CoordinateSystem, defaults to Cartesian
-          * @param geiod pointer to a EllipsoidModel, default NULL (WGS84)
+          * @param ell pointer to a EllipsoidModel, default NULL (WGS84)
           * @throw GeometryException on invalid input.
           */
       void initialize(const double a,

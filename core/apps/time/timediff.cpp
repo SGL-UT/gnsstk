@@ -18,7 +18,7 @@
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -44,31 +44,48 @@
 using namespace std;
 using namespace gpstk;
 
+/** Implement an application that allows the user to compute the span
+ * between two time stamps. */
 class TimeDiff : public BasicFramework
 {
 public:
+      /** Initialize command-line options.
+       * @param[in] arg0 Application file name.
+       */
    TimeDiff(char* arg0);
 
 protected:
+      /** Decodes the times specified on the command-line, differences
+       * them and prints the results. */
    virtual void process();
 
 private:
+      /// Specify a time in ANSI format (integer sec since UNIX epoch)
    CommandOptionWithCommonTimeArg ANSITimeOption;
+      /// Specify a time in civil time format.
    CommandOptionWithCommonTimeArg CivilTimeOption;
+      /// Specify a time in RINEX format.
    CommandOptionWithCommonTimeArg RinexFileTimeOption;
+      /// Specify a time in GPS epoch-week-second format.
    CommandOptionWithCommonTimeArg GPSEWSOption;
+      /// Specify a time in GPS fullweek-second format.
    CommandOptionWithCommonTimeArg GPSWSOption;
+      /// Specify a time in GPS fullweek-zcount format.
    CommandOptionWithCommonTimeArg GPSWZOption;
+      /// Specify a time in GPS 29-bit full z-count format.
    CommandOptionWithCommonTimeArg GPSZ29Option;
+      /// Specify a time in GPS 32-bit full z-count format.
    CommandOptionWithCommonTimeArg GPSZ32Option;
+      /// Specify a Julian date.
    CommandOptionWithCommonTimeArg JDOption;
+      /// Specify a modified Julian date.
    CommandOptionWithCommonTimeArg MJDOption;
+      /// Specify a UNIX time.
    CommandOptionWithCommonTimeArg UnixTimeOption;
+      /// Specify a time in year day-of-year seconds-of-day format.
    CommandOptionWithCommonTimeArg YDSTimeOption;
+      /// Restrict the user to exactly two time stamps of any format.
    CommandOptionNOf allTimesOption;
-
-   string stringToParse;
-   string timeSpec;
 };
 
 TimeDiff::TimeDiff(char* arg0)
@@ -112,7 +129,6 @@ TimeDiff::TimeDiff(char* arg0)
 void TimeDiff::process()
 {
    CommonTime dt;
-      //dt.setToString(stringToParse, timeSpec);
    std::vector<CommandOption*> timeOpts = allTimesOption.which();
    std::map<unsigned, CommonTime> orderedTimes;
    std::map<unsigned, CommonTime>::iterator oti1, oti2;

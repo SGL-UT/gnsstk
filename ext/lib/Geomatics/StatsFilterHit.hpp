@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -47,6 +47,8 @@
 #ifndef STATISTICAL_FILTER_HIT_INCLUDE
 #define STATISTICAL_FILTER_HIT_INCLUDE
 
+namespace gpstk
+{
 //------------------------------------------------------------------------------------
 // TD NB pffrac is never used.
 // NB WindowFilter does not find outliers
@@ -158,4 +160,5 @@ public:
 
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------
+}
 #endif   // #define STATISTICAL_FILTER_HIT_INCLUDE

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -174,6 +174,32 @@ namespace gpstk
             exc("Failed to process time string");
          GPSTK_THROW(exc);
       }
+   }
+
+
+   bool TimeTag ::
+   changeTimeSystem(TimeSystem timeSys, TimeSystemConverter* conv)
+   {
+         // We have to add an offset and the only way to do that is to
+         // change to CommonTime and back.
+      CommonTime ct = convertToCommonTime();
+      bool rv = ct.changeTimeSystem(timeSys, conv);
+      if (rv)
+         convertFromCommonTime(ct);
+      return rv;
+   }
+
+
+   bool TimeTag ::
+   changeTimeSystem(TimeSystem timeSys)
+   {
+         // We have to add an offset and the only way to do that is to
+         // change to CommonTime and back.
+      CommonTime ct = convertToCommonTime();
+      bool rv = ct.changeTimeSystem(timeSys);
+      if (rv)
+         convertFromCommonTime(ct);
+      return rv;
    }
 
 } // namespace

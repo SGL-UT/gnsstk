@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -44,9 +44,10 @@
 #ifndef COMBINATIONS_INCLUDE
 #define COMBINATIONS_INCLUDE
 
+#include "Exception.hpp"
+
 namespace gpstk {
 
-#include "Exception.hpp"
 
 /// Class Combinations will compute C(n,k), all the combinations of n things
 /// taken k at a time (where k <= n).

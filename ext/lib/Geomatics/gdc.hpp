@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -268,7 +268,7 @@ public:
    ~gdc(void) { }
 
    /// Set a parameter in the configuration; the input string 'cmd'
-   /// is of the form '[--DC]<id><s><value>' where the separator s is
+   /// is of the form '[--DC]\<id\>\<s\>\<value\>' where the separator s is
    /// one of (:=,) and leading '-','--', or '--DC' are optional.
    /// @param cmd string version of assigning a parameter, e.g. 'debug=0'
    /// @return true if successful, otherwise label not valid, or parsing error
@@ -299,7 +299,7 @@ public:
                               bool advanced=false);
 
    /// define this function so that invalid labels will throw, because
-   /// this fails silently #define cfg(a) CFG[#a]     // stringize
+   /// this fails silently \#define cfg(a) CFG[\#a]     // stringize
    /// @throw Exception
    double cfg_func(std::string a)
    {
@@ -465,7 +465,7 @@ protected:
    //---------------------------------------------------------------------------
    /// unique number, counting passes or calls
    int unique;
-   std::string tag;     ///< begin each output line with 'GDC <unique>' ( <label>)
+   std::string tag;     ///< begin each output line with 'GDC \<unique\>' ( \<label\>)
    std::string SPSstr;  ///< SPS output of SatPass, or generated equivalent
 
    /// member data used internally
@@ -541,21 +541,21 @@ protected:
    int FineProcessing(const unsigned which);
 
    /// filter using first differences
-   /// @param which is either WL or GF
-   /// @param label string to be passed to dump e.g. "GFG"
-   /// @param limit pass to filter.setLimit()
-   /// @param return vector<FilterHit> hits containing all outliers and slips
-   /// @return return value of filter() if negative, otherwise number of slips found
+   /// @param[in] which is either WL or GF
+   /// @param[in] label string to be passed to dump e.g. "GFG"
+   /// @param[in] limit pass to filter.setLimit()
+   /// @param[out] hits containing all outliers and slips
+   /// @return value of filter() if negative, otherwise number of slips found
    /// @throw Exception
    int filterFirstDiff(const unsigned which, const std::string label,
       const double& limit, std::vector< FilterHit<double> >& hits);
 
    /// filter using window filter
-   /// @param which is either WL or GF
-   /// @param label string to be passed to dump e.g. "GFG"
-   /// @param limit pass to filter.setLimit()
-   /// @param return vector< FilterHit<T> > hits containing all outliers and slips
-   /// @return return value of filter() if negative, otherwise number of slips found
+   /// @param[in] which is either WL or GF
+   /// @param[in] label string to be passed to dump e.g. "GFG"
+   /// @param[in] limit pass to filter.setLimit()
+   /// @param[out] hits containing all outliers and slips
+   /// @return value of filter() if negative, otherwise number of slips found
    /// @throw Exception
    int filterWindow(const unsigned which, const std::string label,
       const double& limit, std::vector< FilterHit<double> >& hits);
@@ -620,8 +620,8 @@ protected:
 
    /// compute stats for 'which' data (WL or GF but not both) for the given Arc.
    /// NB this is sneaky and goes across fixed slips....
-   /// NB do not confuse this with *Filter::getStats()
-   /// @param iterator pointing to element of Arcs that contains the Arc
+   /// NB do not confuse this with WindowFilter::getStats()
+   /// @param ait iterator pointing to element of Arcs that contains the Arc
    /// @param which is either WL or GF
    /// @throw Exception
    void getArcStats(std::map<int,Arc>::iterator& ait, const unsigned which);

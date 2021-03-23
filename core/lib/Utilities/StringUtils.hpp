@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -2195,7 +2195,7 @@ namespace gpstk
                return "";
                
             std::string::size_type wordNum = 0;
-            std::string::size_type pos = 0, startPos = 0;
+            std::string::size_type pos = 0, startPos = std::string::npos;
 
             std::string toReturn;
 
@@ -2216,6 +2216,8 @@ namespace gpstk
                wordNum++;
             }
 
+            if (startPos == std::string::npos)
+               return ""; // never found the start of the word
             if (pos == std::string::npos)
                return ((wordNum >= firstWord) ? s.substr(startPos) : "");
                
@@ -2227,7 +2229,8 @@ namespace gpstk
          }
          catch(std::exception &e)
          {
-            StringException strexc("Exception thrown: " + std::string(e.what()));
+            StringException strexc("Exception thrown: " +
+                                   std::string(e.what()));
             GPSTK_THROW(strexc);
          }
       }

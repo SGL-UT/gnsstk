@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -427,11 +427,11 @@ namespace gpstk
             strm << line << endl;
             strm.lineNumber++;
 
-               //@TODO line += stationNameString;     // "STATION NAME / NUM"
+               //@todo line += stationNameString;     // "STATION NAME / NUM"
                //strm << line << endl;
                //strm.lineNumber++;
 
-               //@TODO line += stationClockRefString; // "STATION CLK REF"
+               //@todo line += stationClockRefString; // "STATION CLK REF"
                //strm << line << endl;
                //strm.lineNumber++;
 

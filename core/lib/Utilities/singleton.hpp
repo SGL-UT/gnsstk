@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -41,6 +41,8 @@
 
 /** @file singleton.hpp  Singleton template. */
 
+namespace gpstk
+{
 template <class T> class Singleton {
 public:
    static T& Instance() {
@@ -54,6 +56,7 @@ private:
    Singleton(Singleton const&);              // copy c'tor prohibited
    Singleton& operator=(Singleton const&);   // operator= prohibited
 };
+}
 #endif   //SINGLETON_TEMPLATE_INCLUDE
 
 /* use this class like this:

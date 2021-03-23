@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -44,6 +44,8 @@
 #ifndef GPSTK_PACKEDNAVBITS_HPP
 #define GPSTK_PACKEDNAVBITS_HPP
 
+#include <bitset>
+#include <memory>
 #include <vector>
 #include <cstddef>
 #include "gpstkplatform.h" //#include <stdint.h>
@@ -57,7 +59,7 @@
 
 namespace gpstk
 {
-      /// @ingroup ephemcalc 
+      /// @ingroup GNSSEph
       //@{
 
    class PackedNavBits
@@ -191,6 +193,22 @@ namespace gpstk
                                    const unsigned len,
                                    const int scale ) const;
 
+         /** Unpack an unsigned long integer split into two pieces.
+          * @warning Be careful about what order you specify the parameters in.
+          * @note This prototype obviates constructing an array before calling.
+          * @param[in] startBit1 The 0-indexed first bit of the MSBs.
+          * @param[in] numBits1 The number of MSBs.
+          * @param[in] startBit2 The 0-indexed first bit of the LSBs.
+          * @param[in] numBits2 The number of LSBs.
+          * @param[in] scale A number to multiply the bits by before returning.
+          * @return The decoded value.
+          */
+      unsigned long asUnsignedLong(const unsigned startBit1,
+                                   const unsigned numBits1,
+                                   const unsigned startBit2,
+                                   const unsigned numBits2,
+                                   const int scale ) const;
+
          /* Unpack a signed long integer */
       long asLong(const unsigned startBits[],
                   const unsigned numBits[],
@@ -203,17 +221,69 @@ namespace gpstk
                                const unsigned len,
                                const int power2) const;
 
+         /** Unpack a positive-only floating point number split into two pieces.
+          * @warning Be careful about what order you specify the parameters in.
+          * @note This prototype obviates constructing an array before calling.
+          * @param[in] startBit1 The 0-indexed first bit of the MSBs.
+          * @param[in] numBits1 The number of MSBs.
+          * @param[in] startBit2 The 0-indexed first bit of the LSBs.
+          * @param[in] numBits2 The number of LSBs.
+          * @param[in] power2 The result is multiplied by 2^(power2)
+          *   before returning.
+          * @return The decoded value.
+          */
+      double asUnsignedDouble(const unsigned startBit1,
+                              const unsigned numBits1,
+                              const unsigned startBit2,
+                              const unsigned numBits2,
+                              const int power2) const;
+
          /* Unpack a split signed double */
       double asSignedDouble( const unsigned startBits[],
                              const unsigned numBits[],
                              const unsigned len,
                              const int power2) const;
 
+         /** Unpack a floating point number split into two pieces.
+          * @warning Be careful about what order you specify the parameters in.
+          * @note This prototype obviates constructing an array before calling.
+          * @param[in] startBit1 The 0-indexed first bit of the MSBs.
+          * @param[in] numBits1 The number of MSBs.
+          * @param[in] startBit2 The 0-indexed first bit of the LSBs.
+          * @param[in] numBits2 The number of LSBs.
+          * @param[in] power2 The result is multiplied by 2^(power2)
+          *   before returning.
+          * @return The decoded value.
+          */
+      double asSignedDouble(const unsigned startBit1,
+                            const unsigned numBits1,
+                            const unsigned startBit2,
+                            const unsigned numBits2,
+                            const int power2) const;
+
          /* Unpack a split double with units of semicircles */
       double asDoubleSemiCircles( const unsigned startBits[],
                                   const unsigned numBits[],
                                   const unsigned len,
                                   const int power2) const;      
+
+         /** Unpack a floating point number split into two pieces,
+          * converting from semi-circles to radians.
+          * @warning Be careful about what order you specify the parameters in.
+          * @note This prototype obviates constructing an array before calling.
+          * @param[in] startBit1 The 0-indexed first bit of the MSBs.
+          * @param[in] numBits1 The number of MSBs.
+          * @param[in] startBit2 The 0-indexed first bit of the LSBs.
+          * @param[in] numBits2 The number of LSBs.
+          * @param[in] power2 The result is multiplied by 2^(power2)
+          *   before returning.
+          * @return The decoded value.
+          */
+      double asDoubleSemiCircles(const unsigned startBit1,
+                                 const unsigned numBits1,
+                                 const unsigned startBit2,
+                                 const unsigned numBits2,
+                                 const int power2) const;
 
       bool asBool( const unsigned bitNum) const;
 
@@ -266,6 +336,35 @@ namespace gpstk
           */
       void addString(const std::string String, 
                      const int numChars);
+
+         /**
+          * Pack a vector of bytes.
+          * @param[in] data The vector of bytes to append to the
+          *   packed nav bits.
+          * @param[in] numBits The actual number of bits to add.  Bits
+          *   are added starting with the MSB of data[0].
+          * @note The contents of data are assumed to be left-aligned
+          *   and right padded, meaning that if you have have a vector
+          *   of 8 bytes and you want to add 60 bits, data[7] is
+          *   expected to contain the bits in the 4 MSBs and not in
+          *   the 4 LSBs.
+          * @throw InvalidParameter if numBits is > 8*data.size().
+          */
+      void addDataVec(const std::vector<uint8_t>& data, unsigned numBits);
+
+         /** Pack a bitset.  This is done by converting it first to a
+          * string of 0 and 1 characters which are then treated as an
+          * array that is appended to the end of the bits vector.  Not
+          * entirely sure if this is faster than iterating.
+          * @param[in] newbits The bitset containing the data to
+          *   append to the PackedNavBits data. */
+      template <size_t N>
+      void addBitset(const std::bitset<N>& newbits)
+      {
+         std::string binbits(newbits.to_string((char)0,(char)1));
+         bits.insert(bits.end(), &binbits[0], &binbits[binbits.length()]);
+         bits_used += binbits.length();
+      }
       
          /**
           * @throw InvalidParameter
@@ -472,6 +571,9 @@ namespace gpstk
       double ScaleValue( const double value, const int power2) const;
 
    }; // class PackedNavBits
+
+      /// Managed pointer for passing PackedNavBits around.
+   using PackedNavBitsPtr = std::shared_ptr<PackedNavBits>;
 
       //@}
    std::ostream& operator<<(std::ostream& s, const PackedNavBits& pnb);

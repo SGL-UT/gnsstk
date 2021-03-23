@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -193,7 +193,7 @@ namespace gpstk
 
 
       // Method to open AND load satellite data file.
-   void SatDataReader::open(const string& fn)
+   void SatDataReader::open(const std::string& fn)
    {
 
          // We need to be sure current data stream is closed

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -204,20 +204,12 @@ namespace gpstk
           */
       virtual double dry_mapping_function(double elevation) const;
 
-      /// Compute and return the mapping function for wet component of
-      /// the troposphere, as well as the derivative of the mapping function.
-      /// @param elevation Elevation of satellite as seen at receiver, in degrees
-      /// @param deriv reference to double, on output derivative of mapping function.o
-      /// @param doderiv bool if false, do NOT compute the derivative (default true);
-      //double wet_mapping_function_with_derivative(double elevation,
-      //                                       double& deriv, bool doderiv=true) const
-      //   throw(InvalidTropModel);
-
-      /** Compute and return the mapping function for wet component of
-       * the troposphere.
-       * @param elevation Elevation of satellite as seen at receiver, in degrees
-       * @throw InvalidTropModel
-       */
+         /** Compute and return the mapping function for wet component of
+          * the troposphere.
+          * @param[in] elevation Elevation of satellite as seen at
+          *   receiver, in degrees
+          * @throw InvalidTropModel
+          */
       virtual double wet_mapping_function(double elevation) const;
 
          /** Compute the pressure and temperature at height, and the undulation,
@@ -264,7 +256,7 @@ namespace gpstk
 
       /// Define the receiver longitude; this is required before calling
       /// correction() or any of the zenith_delay routines.
-      /// @param lat  Longitude of receiver, in degrees East.
+      /// @param lon  Longitude of receiver, in degrees East.
       virtual void setReceiverLongitude(const double& lon);
 
       /// Define the receiver height; this is required before calling

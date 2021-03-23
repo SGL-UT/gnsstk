@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -35,6 +35,54 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+
+/** \page apps
+ * - \subpage mergeRinObs - Merge the contents of two or more RINEX OBS files
+ * \page mergeRinObs
+ * \tableofcontents
+ *
+ * \section mergeRinObs_name NAME
+ * mergeRinObs - Merge the contents of two or more RINEX OBS files
+ *
+ * \section mergeRinObs_synopsis SYNOPSIS
+ * \b mergeRinObs [\argarg{OPTION}] ... \argarg{FILE} ...
+ *
+ * \section mergeRinObs_description DESCRIPTION
+ * Sorts and merges input RINEX Obs files into a single file. The
+ * output will be sorted by time. This program assumes all the input
+ * files are from the same station.
+ *
+ * \dictionary
+ * \dicterm{-o, \--output}
+ * \dicdef{Name for the merged output RINEX Obs file. Any existing file with that name will be overwritten.}
+ * \dicterm{-d, \--debug}
+ * \dicdef{Increase debug level}
+ * \dicterm{-v, \--verbose}
+ * \dicdef{Increase verbosity}
+ * \dicterm{-h, \--help}
+ * \dicdef{Print help usage}
+ * \enddictionary
+ *
+ * \note mergeRinObs will load the entire contents of all input files into
+ * memory before writing.
+ *
+ * \section mergeRinObs_examples EXAMPLES
+ *
+ * \cmdex{mergeRinObs -o merged.15o data/arlm200a.15o data/arlm200b.15o}
+ *
+ * Creates the file merged.15o containing the combined contents of
+ * data/arlm200a.15o and data/arlm200b.15o.
+ *
+ * \section mergeRinObs_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{1,A C++ exception occurred\, e.g. invalid input files}
+ * \enddictable
+ *
+ * \section mergeRinObs_see_also SEE ALSO
+ * \ref RinEdit, \ref mergeRinNav, \ref mergeRinMet
+ */
 
 // mergeRinObs
 // Merge and sort rinex observation files

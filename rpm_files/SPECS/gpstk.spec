@@ -1,5 +1,5 @@
 %define name gpstk
-%define version 8.0.0
+%define version 11.0.0
 %define release 1
 
 Summary:        GPS Toolkit
@@ -53,6 +53,72 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Mar 18 2021 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v11.0.0 release
+- Deprecate external users contributed code and references.
+- Update source code files copyright header for year 2021
+- Fix PNBGPSCNav2DataFactory comment
+- Remove SVNumXref (deprecated code).
+- Fix StringUtils::words() for cases of empty strings or single words.
+* Thu Feb 11 2021 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v10.0.0 release
+- Update RINEX NAV test data files that had improperly formatted DELTA-UTC records.
+- Update NavDataFactory::getFactoryFormats() methods to prevent printing formats that don't support the desired message types.
+- Add RinexNavDataFactory support of time offset data in RINEX NAV header.
+- Fix NavDataFactoryWithStore::edit() and clear() to process time offset data.
+- Fix NavDataFactoryWithStore::getOffset() so it doesn't fail when reversing the offset look-up (e.g. GPS->UTC vs UTC->GPS).
+- Update MultiFormatNavDataFactory to implement getOffset(), getInitialTime() and getFinalTime()
+- Update Removed obsolete files
+- Fix test binaries to be excluded from bin
+- Update TimeSystemCorrection (RINEX3 NAV header) to store reference time in CommonTime.
+- Update TimeSystemCorr_T to use test macros and such for improved readability.
+- Fix "implement proper command line option help where needed"
+- Update sp3version to use Frameworks for better command line option help.
+- Update bc2sp3 to use Frameworks for better command line option help.
+- Fix NavDataFactory classes to enforce proper initialization and destruction.
+- Fix bug in WindowFilter due to uninitialized boolean.
+- Add TimeTag changeTimeSystem methods for both static and specified TimeSystemConverter objects.
+- Add CommonTime changeTimeSystem method that uses a static TimeSystemConverter.
+- Add NavTimeSystemConverter that uses a NavLibrary object to get nav-sourced time offset data.
+- Fix NavDataFactoryWithStore infinite loop bug in find.
+- Update SWIG to remove pseudo-mapping that conflicts with SatID constructor changes.
+- Fix OrbAlmGen to decode A**1/2 as unsigned rather than signed.
+- Add TimeCorrection support for 8-bit week rollover correction.
+- Update GPSWeekZcount to support printing day of week by name.
+- Update TestUtil to print invalid boolean values as 'true' or 'false' and increased precision when printing invalid floating point values.
+- Add NewNav code tree to replace existing nav store classes (in core/lib/NewNav and ext/lib/NewNav).
+- Add PackedNavBits support for decoding more types.
+- Add NavType wildcard value.
+- Add SatID wildcard support for system and ID.
+- Add ObsID support for GLONASS frequency offset and mcode metadata.
+- Update CommandOption to allow changing the description post-constructor.
+- Update Doxyfile to generate graphs by default.
+- Update TimeTag_T.cpp to follow proper style
+* Thu Jan 14 2021 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v9.1.0 release
+- Update various source files to add namespace context where it was missing.
+- Update CommonTime/TimeSystem Redesign
+- Update CommonTime to implement changeTimeSystem method.
+- Add BasicTimeSystemConversion class to wrap existing second-precision TimeSystem conversion.
+- Add TimeSystemConversion class to support generalized time system conversion.
+- Update TimeSystem to support conversion to/from QZSS
+- Update buil.sh Allow better error reporting
+- Update EngNav decoding internals to use C++ instead of C storage
+- Update SatMetaDataStore to improve documentation.
+- Update EngNav documentation for clarity.
+- Add to CommandOptionParser the ability to show program usage in a format that can be used in doxygen.
+- Remove latex documentation in favor of doxygen.
+- Update across the library to improve documentation.
+- Add accessors to the ObsID description maps for SWIG.
+- Update CI pipelines to make protected word searches advisory only.
+- Fix conda recipe to specify correct default branch for GPSTk.
+* Thu Dec 10 2020 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v9.0.0 release
+- Update File_Hunter related files were deprecated and moved to tks_legacy_archive repo
+- Update readme.
+- Modify IonoModel to accommodate Klo params in different units.
+- Update the CI pipeline to reflect that the new default branch name.
+- Add CI stage to check files and history for sensitive words.
 * Thu Nov 19 2020 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v8.0.0 release
 - Update IonoModel to include all modernized GPS bands.

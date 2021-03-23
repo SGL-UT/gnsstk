@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -432,6 +432,121 @@ namespace gpstk
             }
          }
       }
+
+      return out;
+   }
+
+
+   ostream& CommandOptionParser::displayUsageDoxygen(ostream& out)
+   {
+      CommandOptionVec::size_type index;
+      CommandOption *trailing = nullptr;
+
+         /** @todo add smarts to the synopsis section generation that
+          * handles the Mutex and other similar meta-options so the
+          * generated synopsis doesn't produce option sets that won't
+          * work */
+         // SYNOPSIS section
+         // print the help options one at a time first
+      for (index = 0; index < optionVec.size(); index++)
+      {
+            // Find our trailing type first so we can add it on the end
+            // of the non-help synopses.
+         if (optionVec[index]->optType == CommandOption::trailingType)
+            trailing = optionVec[index];
+         if (dynamic_cast<CommandOptionHelp*>(optionVec[index]) != nullptr)
+         {
+            out << " * <b>" << progName << "</b> ";
+            if (optionVec[index]->shortOpt)
+            {
+               out << " <b>-" << optionVec[index]->shortOpt;
+            }
+            else if (!optionVec[index]->longOpt.empty())
+               out << " <b>\\--" << optionVec[index]->longOpt;
+            out << "</b>";
+            if (optionVec[index]->optFlag == CommandOption::hasArgument)
+            {
+               out << "&nbsp;\\argarg{" << optionVec[index]->getArgString()
+                   << "}";
+            }
+            out << " <br/>" << endl;
+         }
+      }
+      out << " * <b>" << progName << "</b>";
+      for (int required = 1; required >= 0; required--)
+      {
+         for (index = 0; index < optionVec.size(); index++)
+         {
+            if (dynamic_cast<CommandOptionHelp*>(optionVec[index]) == nullptr)
+            {
+               if ((optionVec[index]->required == (required==1)) &&
+                   (optionVec[index]->optType == CommandOption::stdType))
+               {
+                  out << " <b>";
+                  if (required == 0)
+                     out << "[";
+                  if (optionVec[index]->shortOpt)
+                  {
+                     out << "-" << optionVec[index]->shortOpt;
+                  }
+                  else if (!optionVec[index]->longOpt.empty())
+                     out << "\\--" << optionVec[index]->longOpt;
+                  out << "</b>";
+                  if (optionVec[index]->optFlag == CommandOption::hasArgument)
+                  {
+                     out << "&nbsp;\\argarg{"
+                         << optionVec[index]->getArgString() << "}";
+                  }
+                  if (required == 0)
+                     out << "<b>]</b>";
+               }
+            }
+         }
+      }
+      if (trailing)
+      {
+         out << " ";
+         if (!trailing->required)
+            out << "<b>[</b>";
+         out << "\\argarg{" << trailing->getArgString() << "}";
+         if (!trailing->required)
+            out << "<b>]</b>";
+            /// @todo is this really correct in all cases? Probably not.
+         if (trailing->maxCount != 1)
+            out << " <b>[</b>...<b>]</b>";
+      }
+
+         // DESCRIPTION section
+      out << endl << endl << " * \\dictionary" << endl;
+      
+      for (int required = 1; required >= 0; required--)
+      {
+         for(index = 0; index < optionVec.size(); index++)
+         {
+            if ((optionVec[index]->required == (required==1)) &&
+                (optionVec[index]->optType == CommandOption::stdType))
+            {
+               out << " * \\dicterm{";
+               if (optionVec[index]->shortOpt)
+               {
+                  out << "-" << optionVec[index]->shortOpt;
+                  if (!optionVec[index]->longOpt.empty())
+                     out << ", ";
+               }
+               if (!optionVec[index]->longOpt.empty())
+                  out << "\\--" << optionVec[index]->longOpt;
+               if (optionVec[index]->optFlag == CommandOption::hasArgument)
+               {
+                  out << "=\\argarg{" << optionVec[index]->getArgString()
+                      << "}";
+               }
+               out << "}" << endl
+                   << " * \\dicdef{" << strip(optionVec[index]->description)
+                   << "}" << endl;
+            }
+         }
+      }
+      out << " * \\enddictionary" << endl;
 
       return out;
    }

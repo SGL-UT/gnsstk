@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -202,18 +202,6 @@ namespace gpstk
    }  // End of method 'IonexData::reallyPutRecord()'
 
 
-
-      /** This function obtains a IONEX Data record from
-       * the given FFStream.
-       *
-       * If there is an error reading the stream, it is reset
-       * to its original position and its fail-bit is set.
-       *
-       * @throw StringException when a StringUtils function fails
-       * @throw FFStreamError when exceptions(failbit) is set and
-       *   a read or formatting error occurs.  This also resets the
-       *   stream to its pre-read position.
-       */
    void IonexData::reallyGetRecord(FFStream& ffs)
    {
 
@@ -448,19 +436,6 @@ namespace gpstk
 
 
 
-      /** Get the position of a grid point based on input position
-       *
-       * @param in     input lat, lon and height (Triple object)
-       * @param type   grid point to be returned
-       *               (1) neareast grid point
-       *               (2) lower left hand grid point
-       * @param out    output lat, lon and height (Triple object)
-       * @return       the index within the data
-       *
-       * @warning Keep in mind the assumptions of IONEX grid (i.e., latitude
-       *          between [87.5, -87.5], longitude between [-180, 180])
-       *          when you construct a Triple object.
-       */
    int IonexData::getIndex( const Triple& in,
                             const int& igp,
                             Triple& ABC ) const
@@ -577,22 +552,6 @@ namespace gpstk
    }  // End of method 'IonexData::getIndex()'
 
 
-
-      /** Get IONEX TEC or RMS value as a function of the position
-       *  and nominal height.
-       *
-       * A simple 4-point formula is applied to interpolate between
-       * grid points.
-       *
-       * For more information see page 3 of IONEX manual:
-       *
-       * http://igscb.jpl.nasa.gov/igscb/data/format/ionex1.pdf
-       *
-       * @param pos             input position (Position object).
-       *
-       * @return                Computed TEC or RMS value.
-       *
-       */
    double IonexData::getValue( const Position& p ) const
    {
 
@@ -688,12 +647,6 @@ namespace gpstk
    }  // End of method 'IonexData::getValue()'
 
 
-
-      /** This function constructs a CommonTime object from the given
-       * parameters.
-       *
-       * @param line    Encoded time string found in the IONEX record.
-       */
    CommonTime IonexData::parseTime( const std::string& line ) const
    {
 
@@ -711,12 +664,6 @@ namespace gpstk
    }  // End of method 'IonexData::parseTime()'
 
 
-
-      /** Writes the CommonTime object into IONEX format. If it's a bad time,
-       * it will return blanks.
-       *
-       * @param dt    time to be written into a IONEX data record.
-       */
    string IonexData::writeTime(const CommonTime& dt) const
    {
 

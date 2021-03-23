@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -48,8 +48,8 @@
 
 namespace gpstk
 {
-   /** @defgroup Yuma Yuma almanac files */
-   //@{
+      /// @ingroup FileHandling
+      //@{
    
       /**
        * This is a base class for all Yuma-related classes.
@@ -64,7 +64,7 @@ namespace gpstk
       
    };
    
-   //@}
+      //@}
 }
 
 #endif

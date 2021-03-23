@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -35,6 +35,67 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+
+/** \page apps
+ * - \subpage rnwdiff - Difference the contents of two RINEX NAV files
+ * \page rnwdiff
+ * \tableofcontents
+ *
+ * \section rnwdiff_name NAME
+ * rnwdiff - Difference the contents of two RINEX NAV files
+ *
+ * \section rnwdiff_synopsis SYNOPSIS
+ * \b rnwdiff [\argarg{OPTION}] ... file1 file2
+ *
+ * \section rnwdiff_description DESCRIPTION
+ * Perform a simple difference between two RINEX NAV files.
+ *
+ * \dictionary
+ * \dicterm{-d, \--debug}
+ * \dicdef{Increase debug level}
+ * \dicterm{-v, \--verbose}
+ * \dicdef{Increase verbosity}
+ * \dicterm{-h, \--help}
+ * \dicdef{Print help usage}
+ * \dicterm{-t, \--time=\argarg{TIME}}
+ * \dicdef{Start of time range to compare (default = "beginning of time")}
+ * \dicterm{-e, \--end-time=\argarg{TIME}}
+ * \dicdef{End of time range to compare (default = "end of time")}
+ * \dicterm{-p, \--precision=\argarg{ARG}}
+ * \dicdef{Ignore diffs smaller than (data * (10 ^ -\argarg{ARG}). Default = 13}
+ * \enddictionary
+ *
+ * Time may be specified in one of three formats:
+ * - month/day/year
+ * - year day-of-year
+ * - year day-of-year seconds-of-day
+ *
+ * \note rnwdiff will load the entire contents of both files into
+ * memory before comparing.  This ignores any ordering differences.
+ *
+ * \section rnwdiff_examples EXAMPLES
+ *
+ * \cmdex{rnwdiff data/arlm200a.15n data/arlm200z.15n}
+ *
+ * Will show differences in individual records.  Records that appear
+ * in the first file will start with "<" and records that appear in
+ * the second file will start with ">".  Records with the same epoch
+ * and satellite ID will be printed with a timestamp followed by the
+ * differences between the two nav data records.
+ *
+ * \todo Add an example or two using the time options.
+ *
+ * \section rnwdiff_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{1,A C++ exception occurred\, or differences were encountered}
+ * \dictentry{2,One or both of the input files does not exist}
+ * \enddictable
+ *
+ * \section rnwdiff_see_also SEE ALSO
+ * \ref rmwdiff, \ref rowdiff
+ */
 
 #include <RINEX3/Rinex3ObsFilterOperators.hpp>
 #include "FileFilterFrameWithHeader.hpp"

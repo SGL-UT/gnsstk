@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -54,8 +54,10 @@
 
 namespace gpstk
 {
-   /// @defgroup timegroup GPStk Time Group
-   //@{
+      /// @ingroup TimeHandling
+      //@{
+
+      /// @todo Make this class inherit from TimeTag like all the others.
 
    /// Class implementing date+time, only in formats applicable solar system
    /// ephemeris and earth orientation, namely UTC, TT and TDB.
@@ -241,7 +243,7 @@ namespace gpstk
 
    }; // end class EphTime
 
-   //@}
+      //@}
 
 }  // end namespace
 

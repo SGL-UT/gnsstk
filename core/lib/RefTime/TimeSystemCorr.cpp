@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -37,6 +37,7 @@
 //==============================================================================
 
 #include "TimeSystemCorr.hpp"
+#include "BDSWeekSecond.hpp"
 
 namespace gpstk
 {
@@ -61,11 +62,7 @@ namespace gpstk
    {
       A0 = 0.0;
       A1 = 0.0;
-      refWeek = 0;
-      refSOW = 0;
-      refYr = 0;
-      refMon = 0;
-      refDay = 0;
+      refTime = CommonTime::BEGINNING_OF_TIME;
       geoProvider = "";
       geoUTCid = 0; 
    }
@@ -202,55 +199,70 @@ namespace gpstk
    {
       s << "Time system correction for " << asString4() << ": "
         << asString() << std::scientific << std::setprecision(12);
+      BDSWeekSecond bdt;
+      GPSWeekSecond gps;
+      CivilTime civ;
       switch(type) {
          case GPUT:
+            gps = refTime;
             s << ", A0 = " << A0 << ", A1 = " << A1
-              << ", RefTime = week/sow " << refWeek << "/" << refSOW;
+              << ", RefTime = week/sow " << gps.week << "/" << gps.sow;
             break;
          case GAUT:
+            gps = refTime;
             s << ", A0 = " << A0 << ", A1 = " << A1
-              << ", RefTime = week/sow " << refWeek << "/" << refSOW;
+              << ", RefTime = week/sow " << gps.week << "/" << gps.sow;
             break;
          case SBUT:
+            gps = refTime;
             s << ", A0 = " << A0 << ", A1 = " << A1
-              << ", RefTime = week/sow " << refWeek << "/" << refSOW
+              << ", RefTime = week/sow " << gps.week << "/" << gps.sow
               << ", provider " << geoProvider << ", UTC ID = " << geoUTCid;
             break;
          case GLUT:
+            gps = refTime;
             s << ", -TauC = " << A0
-              << ", RefTime = week/sow " << refWeek << "/" << refSOW;
+              << ", RefTime = week/sow " << gps.week << "/" << gps.sow;
             break;
          case GPGA:
+            gps = refTime;
             s << ", A0G = " << A0 << ", A1G = " << A1
-              << ", RefTime = week/sow " << refWeek << "/" << refSOW;
+              << ", RefTime = week/sow " << gps.week << "/" << gps.sow;
             break;
          case GLGP:
+            civ = refTime;
             s << ", TauGPS = " << A0 << " sec, RefTime = yr/mon/day "
-              << refYr << "/" << refMon << "/" << refDay;
+              << civ.year << "/" << civ.month << "/" << civ.day;
             break;
          case QZGP:
+            gps = refTime;
             s << ", A0 = " << A0 << ", A1 = " << A1
-              << ", RefTime = week/sow " << refWeek << "/" << refSOW;
+              << ", RefTime = week/sow " << gps.week << "/" << gps.sow;
             break;
          case QZUT:
+            gps = refTime;
             s << ", A0 = " << A0 << ", A1 = " << A1
-              << ", RefTime = week/sow " << refWeek << "/" << refSOW;
+              << ", RefTime = week/sow " << gps.week << "/" << gps.sow;
             break;
          case BDUT:
+            bdt = refTime;
             s << ", A0 = " << A0 << ", A1 = " << A1
-              << ", RefTime = week/sow " << refWeek << "/" << refSOW;
+              << ", RefTime = week/sow " << bdt.week << "/" << bdt.sow;
             break;
          case BDGP:
+            bdt = refTime;
             s << ", A0 = " << A0 << ", A1 = " << A1
-              << ", RefTime = week/sow " << refWeek << "/" << refSOW;
+              << ", RefTime = week/sow " << bdt.week << "/" << bdt.sow;
             break;
          case IRUT:
+            gps = refTime;
             s << ", A0 = " << A0 << ", A1 = " << A1
-              << ", RefTime = week/sow " << refWeek << "/" << refSOW;
+              << ", RefTime = week/sow " << gps.week << "/" << gps.sow;
             break;
          case IRGP:
+            gps = refTime;
             s << ", A0 = " << A0 << ", A1 = " << A1
-              << ", RefTime = week/sow " << refWeek << "/" << refSOW;
+              << ", RefTime = week/sow " << gps.week << "/" << gps.sow;
          default:
             break;
       }
@@ -284,10 +296,10 @@ namespace gpstk
    {
       double corr(0.0), dt;
       TimeSystem fromTS(ct.getTimeSystem());
-      GPSWeekSecond gpsws;
-      CommonTime refTime;
+      CommonTime rtc(refTime); // copy of ref time to allow time system change
       Exception e("Unable to compute correction - wrong TimeSystem");
       Exception eSBAS("TimeSystemCorrection SBAS <=> UTC has not been implemented");
+      rtc.setTimeSystem(fromTS);
 
       switch(type)
       {
@@ -298,10 +310,7 @@ namespace gpstk
             }
 
                // dt = fromTime - refTime
-            gpsws = GPSWeekSecond(refWeek,refSOW);
-            refTime = gpsws.convertToCommonTime();
-            refTime.setTimeSystem(fromTS);
-            dt = ct - refTime;
+            dt = ct - rtc;
 
             if(fromTS == TimeSystem::GPS)             // GPS => UTC
                corr = -A0-A1*dt;
@@ -312,13 +321,12 @@ namespace gpstk
 
          case GAUT:
             if(fromTS != TimeSystem::GAL && fromTS != TimeSystem::UTC)
-            { GPSTK_THROW(e); }
+            {
+               GPSTK_THROW(e);
+            }
 
-               // dt = fromTime - refTime
-            gpsws = GPSWeekSecond(refWeek,refSOW);
-            refTime = gpsws.convertToCommonTime();
-            refTime.setTimeSystem(fromTS);
-            dt = ct - refTime;
+               // dt = fromTime - rtc
+            dt = ct - rtc;
 
             if(fromTS == TimeSystem::GAL)             // GAL => UTC
                corr = -A0-A1*dt;
@@ -350,11 +358,8 @@ namespace gpstk
                GPSTK_THROW(e);
             }
 
-               // dt = fromTime - refTime
-            gpsws = GPSWeekSecond(refWeek,refSOW);
-            refTime = gpsws.convertToCommonTime();
-            refTime.setTimeSystem(fromTS);
-            dt = ct - refTime;
+               // dt = fromTime - rtc
+            dt = ct - rtc;
 
             if(fromTS == TimeSystem::GPS)             // GPS => GAL
                corr = A0+A1*dt;
@@ -395,11 +400,8 @@ namespace gpstk
                GPSTK_THROW(e);
             }
 
-               // dt = fromTime - refTime
-            gpsws = GPSWeekSecond(refWeek,refSOW);
-            refTime = gpsws.convertToCommonTime();
-            refTime.setTimeSystem(fromTS);
-            dt = ct - refTime;
+               // dt = fromTime - rtc
+            dt = ct - rtc;
 
             if(fromTS == TimeSystem::QZS)             // QZS => UTC
                corr = -A0-A1*dt;
@@ -414,11 +416,8 @@ namespace gpstk
                GPSTK_THROW(e);
             }
 
-               // dt = fromTime - refTime
-            gpsws = GPSWeekSecond(refWeek,refSOW);
-            refTime = gpsws.convertToCommonTime();
-            refTime.setTimeSystem(fromTS);
-            dt = ct - refTime;
+               // dt = fromTime - rtc
+            dt = ct - rtc;
 
             if(fromTS == TimeSystem::BDT)             // BDT => UTC
                corr = -A0-A1*dt;
@@ -433,11 +432,8 @@ namespace gpstk
                GPSTK_THROW(e);
             }
 
-               // dt = fromTime - refTime
-            gpsws = GPSWeekSecond(refWeek,refSOW);
-            refTime = gpsws.convertToCommonTime();
-            refTime.setTimeSystem(fromTS);
-            dt = ct - refTime;
+               // dt = fromTime - rtc
+            dt = ct - rtc;
 
             if(fromTS == TimeSystem::BDT)             // BDT => GPS
                corr = A0;
@@ -452,11 +448,8 @@ namespace gpstk
                GPSTK_THROW(e);
             }
 
-               // dt = fromTime - refTime
-            gpsws = GPSWeekSecond(refWeek,refSOW);
-            refTime = gpsws.convertToCommonTime();
-            refTime.setTimeSystem(fromTS);
-            dt = ct - refTime;
+               // dt = fromTime - rtc
+            dt = ct - rtc;
 
             if(fromTS == TimeSystem::IRN)             // GPS => UTC
                corr = -A0-A1*dt;
@@ -471,10 +464,7 @@ namespace gpstk
                GPSTK_THROW(e);
             }
 
-            gpsws = GPSWeekSecond(refWeek,refSOW);
-            refTime = gpsws.convertToCommonTime();
-            refTime.setTimeSystem(fromTS);
-            dt = ct - refTime;
+            dt = ct - rtc;
 
             if(fromTS == TimeSystem::IRN)             // IRN => GPS
                corr = -A0-A1*dt;
@@ -492,4 +482,55 @@ namespace gpstk
       return corr;
    }
 
+
+   void TimeSystemCorrection ::
+   fixTimeSystem()
+   {
+      switch (type)
+      {
+         case GPUT:    ///< GPS  to UTC using A0, A1
+            refTime.setTimeSystem(TimeSystem::GPS);
+            break;
+         case GLUT:    ///< GLO  to UTC using A0 = -TauC , A1 = 0
+            refTime.setTimeSystem(TimeSystem::GLO);
+            break;
+         case GAUT:    ///< GAL  to UTC using A0, A1
+            refTime.setTimeSystem(TimeSystem::GAL);
+            break;
+         case BDUT:    ///< BDT  to UTC using A0, A1
+            refTime.setTimeSystem(TimeSystem::BDT);
+            break;
+         case QZUT:    ///< QZS  to UTC using A0, A1
+            refTime.setTimeSystem(TimeSystem::QZS);
+            break;
+         case IRUT:    ///< IRN  to UTC using A0, A1
+            refTime.setTimeSystem(TimeSystem::IRN);
+            break;
+         case SBUT:    ///< SBAS to UTC using A0, A1, incl. provider and UTC ID
+            refTime.setTimeSystem(TimeSystem::Unknown);
+            break;
+         case GLGP:    ///< GLO  to GPS using A0 = TauGPS, A1 = 0
+            refTime.setTimeSystem(TimeSystem::GLO);
+            break;
+         case GAGP:    ///< GAL  to GPS using A0 = A0G   , A1 = A1G
+            refTime.setTimeSystem(TimeSystem::GAL);
+            break;
+         case QZGP:    ///< QZS  to GPS using A0, A1
+            refTime.setTimeSystem(TimeSystem::QZS);
+            break;
+         case IRGP:     ///< IRN  to GPS using A0, A1
+            refTime.setTimeSystem(TimeSystem::IRN);
+            break;
+         case GPGA:    ///< GPS  to GAL using A0 = A0G   , A1 = A1G, RINEX 3.03
+            refTime.setTimeSystem(TimeSystem::GPS);
+            break;
+         case BDGP:    ///< BDT  to GPS using A0, A1  !! not in RINEX
+            refTime.setTimeSystem(TimeSystem::BDT);
+            break;
+         default:
+            refTime.setTimeSystem(TimeSystem::Unknown);
+            break;
+      }
+   }
+   
 } // namespace gpstk

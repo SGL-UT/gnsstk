@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -43,6 +43,8 @@
 #ifndef GPSTK_MOST_COMMON_VALUE_INCLUDE
 #define GPSTK_MOST_COMMON_VALUE_INCLUDE
 
+namespace gpstk
+{
 //--------------------------------------------------------------------------------
 /// Simple class to find the most common value, within a given tolerance, in a given
 /// set of values. Used to find, e.g. the time interval of a RINEX obs file.
@@ -142,5 +144,5 @@ public:
    #undef DEFAULT_DIM
    #undef DEFAULT_TOL
 }; // end class MostCommonValue
-
+}
 #endif // GPSTK_MOST_COMMON_VALUE_INCLUDE

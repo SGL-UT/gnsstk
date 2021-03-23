@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -85,7 +85,7 @@ namespace gpstk
        *  "Deformation Induced by Polar Motion", Journal of Geophysical
        *  Research, Vol. 90, No B11, p. 9363-9368.
        *
-       *  \warning Please take into account that pole tide equations in
+       *  @warning Please take into account that pole tide equations in
        *  IERS document use co-latitude instead of latitude.
        */
    class PoleTides

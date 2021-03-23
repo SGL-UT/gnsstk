@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -353,8 +353,8 @@ namespace gpstk
    /// Compute inverse of upper triangular matrix, returning smallest and largest
    /// eigenvalues.
    /// @param UT upper triangular matrix to be inverted
-   /// @param ptrS pointer to <T> small, on output *ptrS contains smallest eigenvalue.
-   /// @param ptrB pointer to <T> small, on output *ptrB contains largest eigenvalue.
+   /// @param ptrSmall pointer to \<T\> small, on output *ptrSmall contains smallest eigenvalue.
+   /// @param ptrBig pointer to \<T\> big, on output *ptrBig contains largest eigenvalue.
    /// @return inverse of input matrix.
    /// @throw MatrixException if input is not square (assumed upper triangular also).
    /// @throw SingularMatrixException if input is singular.
@@ -460,8 +460,8 @@ namespace gpstk
    /// Compute inverse of lower triangular matrix, returning smallest and largest
    /// eigenvalues.
    /// @param LT lower triangular matrix to be inverted
-   /// @param ptrS pointer to <T> small, on output *ptrS contains smallest eigenvalue.
-   /// @param ptrB pointer to <T> small, on output *ptrB contains largest eigenvalue.
+   /// @param ptrSmall pointer to \<T\> small, on output *ptrSmall contains smallest eigenvalue.
+   /// @param ptrBig pointer to \<T\> big, on output *ptrBig contains largest eigenvalue.
    /// @return inverse of input matrix.
    /// @throw MatrixException if input is not square (assumed lower triangular also).
    /// @throw SingularMatrixException if input is singular.

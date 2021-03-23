@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -57,6 +57,8 @@
 #include <vector>
 #include <map>
 
+namespace gpstk
+{
 /// list of Options
 class CommandLine {
 private:
@@ -290,7 +292,7 @@ public:
    }
 
    // -------------------------------------------------------------
-   /// Define the text after 'Usage: '; default is '<prgm> [options] ...'
+   /// Define the text after 'Usage: '; default is '\<prgm\> [options] ...'
    void DefineUsageString(std::string str) throw()
    {
       syntaxPage = "Usage: " + str;
@@ -332,7 +334,7 @@ private:
 
       /** Preprocess the arguments by pulling out debug, etc, replace
        * deprecated options, drop ignored options, open --file files,
-       * open list files (@file) and parse comma-separated values
+       * open list files and parse comma-separated values
        * @throw Exception */
    void PreProcessArgs(const char *arg, std::vector<std::string>& Args,
       std::string& Errors);
@@ -351,5 +353,6 @@ private:
    void Postprocess(std::string& Errors, std::vector<std::string>& Unrecog);
 
 }; // end class CommandLine
+}
 
 #endif // COMMAND_LINE_INCLUDE

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -368,9 +368,9 @@ public:
    /// Return a Triple containing the site displacement in ECEF XYZ coordinates with
    /// units meters.
    /// Reference IERS Conventions (1996) found in IERS Technical Note 21, ch. 7 pg 67.
-   /// @param Position site  Nominal position of the site of interest.
-   /// @param EphTime tt     Time of interest.
-   /// @return Triple disp   Displacement vector, ECEF XYZ meters.
+   /// @param site  Nominal position of the site of interest.
+   /// @param tt     Time of interest.
+   /// @return Displacement vector, ECEF XYZ meters.
    /// @throw Exception
    Triple computePolarTides(const Position site, const EphTime tt)
    {

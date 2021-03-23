@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -50,7 +50,7 @@
 namespace gpstk
 {
 
-      /// @ingroup IonosphereMaps 
+      /// @ingroup FileHandling
       //@{
 
       /** This class provides access to IONEX files.

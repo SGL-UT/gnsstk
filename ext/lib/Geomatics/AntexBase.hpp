@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -46,12 +46,12 @@
 
 namespace gpstk
 {
-   /** @defgroup Antex files */
-   //@{
+      /// @ingroup FileHandling
+      //@{
 
-  /** This level isn't serving any purpose other than to make
-   * the class diagram look nice...
-   */
+      /** This level isn't serving any purpose other than to make
+       * the class diagram look nice...
+       */
    class AntexBase : public FFData
    {
    public:
@@ -59,7 +59,7 @@ namespace gpstk
       virtual ~AntexBase() {}
    };
 
-   //@}
+      //@}
 
 }  // namespace
 

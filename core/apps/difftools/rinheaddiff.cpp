@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -51,28 +51,44 @@
 using namespace std;
 using namespace gpstk;
 
+/** Implement an application that displays differences between the
+ * headers of two RINEX files (clock, met, nav, obs). */
 class RinexHeaderDiff : public BasicFramework
 {
 public:
-
-   enum FileType {
-      Unknown,
-      RinexClock,
-      RinexMet,
-      RinexNav,
-      RinexObs
+      /// What type of file is being processed
+   enum FileType
+   {
+      Unknown,    ///< Input file type is not known.
+      RinexClock, ///< Input file is a RINEX clock file.
+      RinexMet,   ///< Input file is a RINEX MET (weather) file.
+      RinexNav,   ///< Input file is a RINEX NAV file.
+      RinexObs    ///< Input file is a RINEX OBS file.
    };
 
+      /** Initialize command-line options.
+       * @param[in] applName Application file name.
+       */
    RinexHeaderDiff(const string& applName);
 
+      /** Identify a file.
+       * @param[in] fname The name of the file to identify.
+       * @param[out] hdr A pointer to the header record as read from the input.
+       * @return the type of data in fname. */
    static FileType identFile(const string& fname, FFData*& hdr);
 
 protected:
+      /// Do the work of reading the input files and comparing the headers.
    virtual void process();
+      /// Allow the user to specify header types to ignore.
    gpstk::CommandOptionWithAnyArg exclOption;
+      /// Allow the user to specify the only header types to compare.
    gpstk::CommandOptionWithAnyArg inclOption;
+      /// Allow the user to specify the two input files.
    gpstk::CommandOptionRest inputFileOption;
+      /// Force the user to specify exactly two files.
    gpstk::CommandOptionNOf filesRestr;
+      /// Make sure only one of exclOption or inclOption are used.
    gpstk::CommandOptionMutex incexc;
 };
 

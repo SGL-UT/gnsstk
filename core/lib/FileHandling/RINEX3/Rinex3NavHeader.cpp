@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -48,6 +48,7 @@
 #include "CivilTime.hpp"
 #include "GPSWeekSecond.hpp"
 #include "GALWeekSecond.hpp"
+#include "BDSWeekSecond.hpp"
 #include "TimeString.hpp"
 #include "Rinex3NavHeader.hpp"
 #include "Rinex3NavStream.hpp"
@@ -320,8 +321,9 @@ namespace gpstk
             TimeSystemCorrection tc("GPUT");
             tc.A0 = RNDouble(line.substr(3,19));
             tc.A1 = RNDouble(line.substr(22,19));
-            tc.refSOW = asInt(line.substr(41,9));
-            tc.refWeek = asInt(line.substr(50,9));
+            tc.refTime = GPSWeekSecond(asInt(line.substr(50,9)),
+                                       asDouble(line.substr(41,9)),
+                                       TimeSystem::GPS);
             tc.geoProvider = string("    ");
             tc.geoUTCid = 0;
 
@@ -333,17 +335,11 @@ namespace gpstk
          {
                // "CORR TO SYSTEM TIME"  R2.10 GLO
             TimeSystemCorrection tc("GLUT");
-            tc.refYr = asInt(line.substr(0,6));
-            tc.refMon = asInt(line.substr(6,6));
-            tc.refDay = asInt(line.substr(12,6));
+            tc.refTime = CivilTime(asInt(line.substr(0,6)),
+                                   asInt(line.substr(6,6)),
+                                   asInt(line.substr(12,6)), 0, 0, 0.0,
+                                   TimeSystem::GLO);
             tc.A0 = -RNDouble(line.substr(21,19));    // -TauC
-
-               // convert to week,sow
-            CivilTime ct(tc.refYr,tc.refMon,tc.refDay,0,0,0.0);
-            GPSWeekSecond gws(ct);
-            tc.refWeek = gws.week;
-            tc.refSOW = gws.sow;
-
             tc.A1 = 0.0;
             tc.geoProvider = string("    ");
             tc.geoUTCid = 3;                          // UTC(SU)
@@ -357,8 +353,9 @@ namespace gpstk
             TimeSystemCorrection tc("SBUT");
             tc.A0 = RNDouble(line.substr(0,19));
             tc.A1 = RNDouble(line.substr(19,19));
-            tc.refSOW = asInt(line.substr(38,7));
-            tc.refWeek = asInt(line.substr(45,5));
+            tc.refTime = GPSWeekSecond(asInt(line.substr(45,5)),
+                                       asDouble(line.substr(38,7)),
+                                       TimeSystem::GPS);
             tc.geoProvider = line.substr(51,5);
             tc.geoUTCid = asInt(line.substr(57,2));
 
@@ -381,45 +378,23 @@ namespace gpstk
 
             tc.A0 = RNDouble(line.substr(5,17));
             tc.A1 = RNDouble(line.substr(22,16));
-            tc.refSOW = asInt(line.substr(38,7));
-            tc.refWeek = asInt(line.substr(45,5));
+            if ((tc.type == TimeSystemCorrection::BDUT) ||
+                (tc.type == TimeSystemCorrection::BDGP))
+            {
+                  // BDT time stamps are actually referenced to BDT week epoch
+               tc.refTime = BDSWeekSecond(asInt(line.substr(45,5)),
+                                          asDouble(line.substr(38,7)));
+            }
+            else
+            {
+                  // Everything else (including Galileo, oddly) is
+                  // referenced to the GPS epoch.
+               tc.refTime = GPSWeekSecond(asInt(line.substr(45,5)),
+                                          asDouble(line.substr(38,7)));
+            }
             tc.geoProvider = strip(line.substr(51,6));
             tc.geoUTCid = asInt(line.substr(57,2));
-
-            if(tc.type == TimeSystemCorrection::GLGP ||
-               tc.type == TimeSystemCorrection::GLUT ||        // TD ?
-               tc.type == TimeSystemCorrection::BDUT ||        // TD ?
-               tc.type == TimeSystemCorrection::GPUT ||
-               tc.type == TimeSystemCorrection::GPGA ||
-               tc.type == TimeSystemCorrection::GAGP ||
-               tc.type == TimeSystemCorrection::QZGP ||
-               tc.type == TimeSystemCorrection::QZUT)
-
-            {
-               GPSWeekSecond gws(tc.refWeek,tc.refSOW);
-               CivilTime ct(gws);
-               tc.refYr = ct.year;
-               tc.refMon = ct.month;
-               tc.refDay = ct.day;
-            }
-
-            if(tc.type == TimeSystemCorrection::GAUT)
-            {
-               GALWeekSecond gws(tc.refWeek,tc.refSOW);
-               CivilTime ct(gws);
-               tc.refYr = ct.year;
-               tc.refMon = ct.month;
-               tc.refDay = ct.day;
-            }
-
-               //if(tc.type == TimeSystemCorrection::GLUT)
-               // {
-               //   tc.refYr =  1980;
-               //   tc.refMon = 1;
-               //   tc.refDay = 6;
-               //   tc.refWeek = 0;
-               //   tc.refSOW = 0;
-               //}
+            tc.fixTimeSystem();
 
             mapTimeCorr[tc.asString4()] = tc;
             valid |= validTimeSysCorr;
@@ -616,9 +591,24 @@ namespace gpstk
                                        StringUtils::FFAlign::Right)
                     << FormattedDouble(tc.A1, StringUtils::FFLead::Decimal, 9,
                                        2, 16, 'D', StringUtils::FFSign::NegOnly,
-                                       StringUtils::FFAlign::Right)
-                    << right << setw(7) << tc.refSOW
-                    << right << setw(5) << tc.refWeek;
+                                       StringUtils::FFAlign::Right);
+               if ((tc.type == TimeSystemCorrection::BDUT) ||
+                   (tc.type == TimeSystemCorrection::BDGP))
+               {
+                     // BDT time stamps are actually referenced to BDT
+                     // week epoch
+                  BDSWeekSecond ws(tc.refTime);
+                  strm << right << setw(7) << (unsigned)ws.sow
+                       << right << setw(5) << ws.week;
+               }
+               else
+               {
+                     // Everything else (including Galileo, oddly) is
+                     // referenced to the GPS epoch.
+                  GPSWeekSecond ws(tc.refTime);
+                  strm << right << setw(7) << (unsigned)ws.sow
+                       << right << setw(5) << ws.week;
+               }
                if(tc.type == TimeSystemCorrection::SBUT)
                {
                   strm << right << setw(6) << tc.geoProvider << " ";
@@ -635,26 +625,29 @@ namespace gpstk
                if(tc.asString4() == "GPUT")
                {
                      // "DELTA-UTC: A0,A1,T,W" R2.11 GPS
+                  GPSWeekSecond ws(tc.refTime);
                   strm << "   " << RNDouble(tc.A0) << RNDouble(tc.A1)
-                       << right << setw(9) << tc.refSOW
-                       << right << setw(9) << tc.refWeek << " "
+                       << right << setw(9) << (unsigned)ws.sow
+                       << right << setw(9) << ws.week << " "
                        << stringDeltaUTC;
                }
                else if(tc.asString4() == "GLGP")
                {
                      // "CORR TO SYSTEM TIME" R2.10 GLO
-                  strm << right << setw(6) << tc.refYr
-                       << right << setw(6) << tc.refMon
-                       << right << setw(6) << tc.refDay
+                  CivilTime civ(tc.refTime);
+                  strm << right << setw(6) << civ.year
+                       << right << setw(6) << civ.month
+                       << right << setw(6) << civ.day
                        << RNDouble(tc.A0) << setw(23) << ' '
                        << stringCorrSysTime;
                }
                else if(tc.asString4() == "SBUT")
                {
                      // "D-UTC A0,A1,T,W,S,U" R2.11 GEO
+                  GPSWeekSecond ws(tc.refTime);
                   strm << RNDouble(tc.A0) << RNDouble(tc.A1)
-                       << right << setw(7) << tc.refSOW
-                       << right << setw(5) << tc.refWeek
+                       << right << setw(7) << (unsigned)ws.sow
+                       << right << setw(5) << ws.week
                        << right << setw(6) << tc.geoProvider << " "
                        << right << setw(2) << tc.geoUTCid << " "
                        << stringDUTC;

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -36,7 +36,7 @@
 //
 //==============================================================================
 
-/// @file scnBrdcFile.cpp
+/// @file scanBrdcFile.cpp
 /// Scan an IGS-generated brdc file in Rinex Nav format, fix various flaws, 
 /// and write the results to a new RINEX nav file.  Optionally provide
 /// a summary of what was fixed and the final state of the navigation

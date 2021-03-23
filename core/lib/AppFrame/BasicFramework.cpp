@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -53,8 +53,8 @@ namespace gpstk
    using namespace std;
 
 
-   BasicFramework :: BasicFramework( const string& applName,
-                                     const string& applDesc )
+   BasicFramework :: BasicFramework( const std::string& applName,
+                                     const std::string& applDesc )
       throw()
          : debugLevel(0),
            verboseLevel(0),

@@ -45,10 +45,13 @@
 #include <iostream>
 #include <fstream>
 
+#include "ReferenceFrame.hpp"
 #include "SEMData.hpp"
 #include "SEMStream.hpp"
 #include "SEMHeader.hpp"
 #include "SEMBase.hpp"
+#include "Triple.hpp"
+#include "Xvt.hpp"
 
 #include "build_config.h"
 #include "TestUtil.hpp"
@@ -60,6 +63,7 @@ class SEM_T
 {
 public:
    unsigned roundTripTest();
+   unsigned validXvtTest();
 };
 
 unsigned SEM_T :: roundTripTest()
@@ -111,6 +115,90 @@ unsigned SEM_T :: roundTripTest()
    TURETURN();
 }
 
+unsigned SEM_T :: validXvtTest()
+{
+   TUDEF("SEMData", "operator<<");
+
+   // Use the test almanac start time as the test time.
+   const auto testTime = gpstk::GPSWeekSecond(1411, 589824).convertToCommonTime();
+
+   // x, v, and clkbias "truth" values for PRNs 1 and 2 dumped from a run of
+   // this test code with GPSTk 3.0.0, the last version to use an old backend for
+   // gpstk::SEMData (i.e. the last version to have independent values to compare
+   // current results against). That version did not set clkdrift, relcorr, or
+   // health, so those are untested here.
+   //
+   // All floating point constants are represented with 17 significant digits,
+   // the minimum number of decimal digits necessary to uniquely specify a
+   // given binary floating point representation.
+   gpstk::Xvt prn1Truth{};
+   prn1Truth.x = gpstk::Triple{-2.1686348646190856e5,  1.4659098042987783e7, -2.1942741735400379e7};
+   prn1Truth.v = gpstk::Triple{-2.7919297517587174e3,  4.5277122633266595e2,  3.2117936708783310e2};
+   prn1Truth.clkbias = 2.3570060729980000e-3;
+   prn1Truth.frame = gpstk::ReferenceFrame::WGS84;
+
+   gpstk::Xvt prn2Truth{};
+   prn2Truth.x = gpstk::Triple{-1.4508183990306815e7,  6.8755647450474072e6,  2.0886429030714110e7};
+   prn2Truth.v = gpstk::Triple{-1.8961933284170113e3, -1.9459202870291399e3, -6.9400626591158095e2};
+   prn2Truth.clkbias = 2.3303031921387000e-3;
+   prn2Truth.frame = gpstk::ReferenceFrame::WGS84;
+
+   // Define function to compare two Xvts for approximate equality
+   auto xvtsApproxEqual = [] (const gpstk::Xvt& a, const gpstk::Xvt& b) -> bool {
+      constexpr double maxRelError = 1e-12;
+      if (   ((a.x - b.x).mag() / a.x.mag()) <= maxRelError
+          && ((a.v - b.v).mag() / a.v.mag()) <= maxRelError
+          && (std::abs(a.clkbias - b.clkbias) / a.clkbias) <= maxRelError)
+      {
+         return true;
+      }
+      return false;
+   };
+
+   try
+   {
+      // Read in test SEM almanac, get Xvts for PRNs 1 and 2, and compare
+      // against truth data.
+      const std::string infn(getPathData() + getFileSep() + "test_input_sem387.txt");
+      gpstk::SEMStream instr(infn.c_str());
+      gpstk::SEMHeader hdr;
+      gpstk::SEMData data;
+      TUASSERT(static_cast<bool>(instr));
+      TUCATCH(instr >> hdr);
+
+      while(instr >> data)
+      {
+         switch (data.PRN)
+         {
+            case 1:
+               TUASSERT(xvtsApproxEqual(prn1Truth, OrbAlmGen(data).svXvt(testTime)));
+               break;
+            case 2:
+               TUASSERT(xvtsApproxEqual(prn2Truth, OrbAlmGen(data).svXvt(testTime)));
+               break;
+            default:
+               break;
+         }
+      }
+
+      instr.close();
+   }
+   catch (const gpstk::Exception& exc)
+   {
+      cerr << exc << endl;
+      TUFAIL("Unexpected exception");
+   }
+   catch (const std::exception& exc)
+   {
+      TUFAIL("Unexpected exception: " + string(exc.what()));
+   }
+   catch (...)
+   {
+      TUFAIL("Unknown exception");
+   }
+
+   TURETURN();
+}
 
 int main( int argc, char * argv[] )
 {
@@ -118,6 +206,7 @@ int main( int argc, char * argv[] )
    SEM_T testClass;
 
    errorTotal += testClass.roundTripTest();
+   errorTotal += testClass.validXvtTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -223,7 +223,7 @@ namespace gpstk
 
          /** Define the receiver longitude; this is required by some models
           * before calling correction() or any of the zenith_delay routines.
-          * @param lat  Longitude of receiver, in degrees East.
+          * @param lon  Longitude of receiver, in degrees East.
           */
       virtual void setReceiverLongitude(const double& lon) {}
 
@@ -248,9 +248,9 @@ namespace gpstk
           * Atmospheric Modeling Errors on Estimates of Baseline
           * Length, Radio Science, Vol. 20, No. 6, pp. 1593-1607,
           * 1985.
-          * @param press pressure in millibars
+          * @param pr pressure in millibars
           * @param lat  latitude in degrees
-          * @param height ellipsoid height in meters
+          * @param ht ellipsoid height in meters
           */
       double SaasDryDelay(const double pr, const double lat, const double ht)
          const

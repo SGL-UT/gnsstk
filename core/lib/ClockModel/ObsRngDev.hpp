@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -90,8 +90,6 @@ namespace gpstk
           * @param rxpos the earth-centered, earth-fixed receiver position
           * @param eph a store of either broadcast or precise ephemerides
           * @param em an EllipsoidModel for performing range calculations
-          * @param ion a store of nav based ionospheric models
-          * @param fq the GPS band (L1, L2, L5) from which the obs was made
           * @param svTime true if prange is in SV time, false for RX time.
           */ 
       ObsRngDev(const double prange,
@@ -106,7 +104,7 @@ namespace gpstk
           * Creates an ORD, applies a single-frequency nav-message based
           * ionospheric correction and a default trop correction.
           * @param prange the observed pseudorange
-          * @param prn the PRN number of the observed SV
+          * @param svid the PRN number of the observed SV
           * @param time the time of the observation
           * @param rxpos the earth-centered, earth-fixed receiver position
           * @param eph a store of either broadcast or precise ephemerides
@@ -129,14 +127,12 @@ namespace gpstk
           * Creates an ORD, applies no ionospheric correction and
           * a user-specified trop correction.
           * @param prange the observed pseudorange
-          * @param prn the PRN number of the observed SV
+          * @param svid the PRN number of the observed SV
           * @param time the time of the observation
           * @param rxpos the earth-centered, earth-fixed receiver position
           * @param eph a store of either broadcast or precise ephemerides
           * @param em an EllipsoidModel for performing range calculations
           * @param tm a TropModel for performing trop calculation
-          * @param ion a store of nav based ionospheric models
-          * @param fq the GPS band (L1, L2, L5) from which the obs was made
           * @param svTime true if prange is in SV time, false for RX time.
           */ 
       ObsRngDev(const double prange,
@@ -153,7 +149,7 @@ namespace gpstk
           * Creates an ORD, applies a single-frequency nav-message based
           * ionospheric correction and a user-specified trop correction.
           * @param prange the observed pseudorange
-          * @param prn the PRN number of the observed SV
+          * @param svid the PRN number of the observed SV
           * @param time the time of the observation
           * @param rxpos the earth-centered, earth-fixed receiver position
           * @param eph a store of either broadcast or precise ephemerides
@@ -178,13 +174,15 @@ namespace gpstk
           * constructor.
           * Creates an ORD, applies a dual-frequency ionospheric correction
           * and a default trop correction.
-          * @param prange the observed pseudorange
-          * @param prn the PRN number of the observed SV
+          * @param prange1 the observed pseudorange on the first carrier
+          * @param prange2 the observed pseudorange on the second carrier
+          * @param svid the PRN number of the observed SV
           * @param time the time of the observation
           * @param rxpos the earth-centered, earth-fixed receiver position
           * @param eph a store of either broadcast or precise ephemerides
           * @param em an EllipsoidModel for performing range calculations
           * @param svTime true if prange is in SV time, false for RX time.
+          * @param gamma The value of gamma: \f$\gamma_{12} = (f_{L1}/f_{L2})^2\f$
           */ 
       ObsRngDev(const double prange1,
                 const double prange2,
@@ -200,14 +198,16 @@ namespace gpstk
           * constructor.
           * Creates an ORD, applies a dual-frequency ionospheric correction
           * and a user-specified trop correction.
-          * @param prange the observed pseudorange
-          * @param prn the PRN number of the observed SV
+          * @param prange1 the observed pseudorange on the first carrier
+          * @param prange2 the observed pseudorange on the second carrier
+          * @param svid the PRN number of the observed SV
           * @param time the time of the observation
           * @param rxpos the earth-centered, earth-fixed receiver position
           * @param eph a store of either broadcast or precise ephemerides
           * @param em an EllipsoidModel for performing range calculations
           * @param tm a TropModel for performing trop calculations
           * @param svTime true if prange is in SV time, false for RX time.
+          * @param gamma The value of gamma: \f$\gamma_{12} = (f_{L1}/f_{L2})^2\f$
           */ 
       ObsRngDev(const double prange1,
                 const double prange2,

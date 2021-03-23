@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -35,6 +35,166 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+
+/** \page apps
+ * - \subpage PRSolve - Produce a pseudorange position solution from RINEX
+ * \page PRSolve
+ * \tableofcontents
+ *
+ * \section PRSolve_name NAME
+ * PRSolve - Produce a pseudorange position solution from RINEX
+ *
+ * \section PRSolve_synopsis SYNOPSIS
+ * \b PRSolve [\argarg{OPTION}] ...
+ *
+ * \section PRSolve_description DESCRIPTION
+ * The application reads one or more RINEX observation files, plus one
+ * or more navigation (ephemeris) files, and computes an autonomous
+ * pseudorange position solution, using a RAIM-like algorithm to
+ * eliminate outliers.  Output is to the log file, and also optionally
+ * to a RINEX observation file with the position solutions in
+ * auxiliary header blocks.
+ *
+ * \dictionary
+ * \dicterm{\--file \argarg{FN}}
+ * \dicdef{Name of file with more options [#->EOL = comment] [repeatable] ()}
+ * \dicterm{\--obs \argarg{FN}}
+ * \dicdef{RINEX observation file name(s) [repeatable] ()}
+ * \dicterm{\--sol \argarg{S:F:C}}
+ * \dicdef{Solution(s) to compute: Sys:Freqs:Codes (cf. \--SOLhelp) [repeatable] () (require \--eph OR \--nav, but NOT both)}
+ * \dicterm{\--eph \argarg{FN}}
+ * \dicdef{Ephemeris+clock (SP3 format) file name(s) [repeatable] ()}
+ * \dicterm{\--nav \argarg{FN}}
+ * \dicdef{RINEX nav file name(s) (also cf. \--BCEpast) [repeatable] ()}
+ * \dicterm{\--clk \argarg{FN}}
+ * \dicdef{Clock (RINEX format) file name(s) [repeatable] ()}
+ * \dicterm{\--met \argarg{FN}}
+ * \dicdef{RINEX meteorological file name(s) [repeatable] ()}
+ * \dicterm{\--dcb \argarg{FN}}
+ * \dicdef{Differential code bias (P1-C1) file name(s) [repeatable] ()}
+ * \dicterm{\--obspath \argarg{P}}
+ * \dicdef{Path of input RINEX observation file(s) ()}
+ * \dicterm{\--ephpath \argarg{P}}
+ * \dicdef{Path of input ephemeris+clock file(s) ()}
+ * \dicterm{\--navpath \argarg{P}}
+ * \dicdef{Path of input RINEX navigation file(s) ()}
+ * \dicterm{\--clkpath \argarg{P}}
+ * \dicdef{Path of input RINEX clock file(s) ()}
+ * \dicterm{\--metpath \argarg{P}}
+ * \dicdef{Path of input RINEX meteorological file(s) ()}
+ * \dicterm{\--dcbpath \argarg{P}}
+ * \dicdef{Path of input DCB (P1-C1) bias file(s) ()}
+ * \dicterm{\--start \argarg{T[:F]}}
+ * \dicdef{Start processing data at this epoch ([Beginning of dataset])}
+ * \dicterm{\--stop \argarg{T[:F]}}
+ * \dicdef{Stop processing data at this epoch ([End of dataset])}
+ * \dicterm{\--decimate \argarg{DT}}
+ * \dicdef{Decimate data to time interval dt (0: no decimation) (0.00)}
+ * \dicterm{\--elev \argarg{DEG}}
+ * \dicdef{Minimum elevation angle (deg) [\--ref or \--forceElev req'd]. (0.00)}
+ * \dicterm{\--forceElev}
+ * \dicdef{Apply elev mask (\--elev, w/o \--ref) using sol. at prev. time tag (don't)}
+ * \dicterm{\--exSat \argarg{SAT}}
+ * \dicdef{Exclude this satellite [eg. G24 | R | R23,G31] [repeatable] ()}
+ * \dicterm{\--BCEpast}
+ * \dicdef{Use 'User' find-ephemeris-algorithm (else nearest) (\--nav only) (don't)}
+ * \dicterm{\--PisY}
+ * \dicdef{P code data is actually Y code data (don't)}
+ * \dicterm{\--wt}
+ * \dicdef{Weight the measurements using elevation [\--ref req'd] (don't)}
+ * \dicterm{\--rms \argarg{LIM}}
+ * \dicdef{Upper limit on RMS post-fit residual (m) (6.50)}
+ * \dicterm{\--slope \argarg{LIM}}
+ * \dicdef{Upper limit on maximum RAIM 'slope' (1000.00)}
+ * \dicterm{\--nrej \argarg{N}}
+ * \dicdef{Maximum number of satellites to reject [-1 for no limit] (-1)}
+ * \dicterm{\--niter \argarg{LIM}}
+ * \dicdef{Maximum iteration count in linearized LS (10)}
+ * \dicterm{\--conv \argarg{LIM}}
+ * \dicdef{Maximum convergence criterion in estimation in meters (3.00e-07)}
+ * \dicterm{\--Trop \argarg{M,T,P,H}}
+ * \dicdef{Trop model \argarg{M}, one of Zero,Black,Saas,NewB,Neill,GG,GGHt,Global with optional weather T(C),P(mb),RH(%)] (NewB,20.0,1013.0,50.0)}
+ * \dicterm{\--log \argarg{FN}}
+ * \dicdef{Output log file name (prs.log)}
+ * \dicterm{\--out \argarg{FN}}
+ * \dicdef{Output RINEX observations (with position solution in comments) ()}
+ * \dicterm{\--ver2}
+ * \dicdef{In output RINEX (\--out), write RINEX version 2.11 [otherwise 3.01] (don't)}
+ * \dicterm{\--ref \argarg{P[:F]}}
+ * \dicdef{Known position p in fmt f (def. '%x,%y,%z'), for resids, elev and ORDs ()}
+ * \dicterm{\--SPSout}
+ * \dicdef{Output autonomous pseudorange solution [tag SPS, no RAIM] (don't)}
+ * \dicterm{\--ORDs \argarg{FN}}
+ * \dicdef{Write ORDs (Observed Range Deviations) to file \argarg{FN} [\--ref req'd] ()}
+ * \dicterm{\--timefmt \argarg{F}}
+ * \dicdef{Format for time tags in output (%4F %10.3g)}
+ * \dicterm{\--SOLhelp}
+ * \dicdef{Show more information and examples for \--sol \argarg{S:F:C} (don't)}
+ * \dicterm{\--verbose}
+ * \dicdef{Print extended output, including cmdline summary (don't)}
+ * \dicterm{\--debug\argarg{N}}
+ * \dicdef{Print debug output at LOGlevel n [n=0-7] (-1)}
+ * \dicterm{\--help}
+ * \dicdef{Print this syntax page and quit (don't)}
+ * \enddictionary
+ *
+ * \section PRSolve_examples EXAMPLES
+ *
+ * \cmdex{PRSolve \--nav data/arlm2000.15n \--obs data/arlm200a.15o \--sol GPS:12:WPC}
+ *
+ * Generates a dual-frequency position solution using GPS observations
+ * and navigation data, prioritizing codeless data first, then P-code,
+ * then C/A code, in the file prs.log.  See \ref PRSolve_format below.
+ *
+ * \todo Add more examples.
+ *
+ * \section PRSolve_format FORMAT
+ *
+ * The output from PRSolve consists of a header which includes all of
+ * the settings used in the execution, in particular the command-line
+ * options.
+ *
+ * This is followed by a listing of the contents of the ephemeris data.
+ *
+ * Which is in turn followed by a series of results, one epoch per line with the format:
+ * 
+ * \cmdex{TAG,Nrej week sow Nsat X Y Z T RMS slope nit conv sat sat .. (code) [N]V}
+ *
+ * \dictable
+ * \dictentry{TAG,denotes solution (X Y Z T) type:}
+ * \dictable
+ * \dictentry{RPF,Final RAIM ECEF XYZ solution}
+ * \dictentry{RPR,Final RAIM ECEF XYZ solution residuals [only if \--PosXYZ given]}
+ * \dictentry{RNE,Final RAIM North-East-Up solution residuals [only if \--PosXYZ]}
+ * \dictentry{APS,Autonomous ECEF XYZ solution [only if \--APSout given]}
+ * \dictentry{APR,Autonomous ECEF XYZ solution residuals [only if both \--APS \& \--Pos]}
+ * \dictentry{ANE,Autonomous North-East-Up solution residuals [only if \--APS \& \--Pos]}
+ * \enddictable
+ * \dictentry{Nrej,number of rejected sats}
+ * \dictentry{(week\,sow),GPS time tag}
+ * \dictentry{Nsat,\# sats used}
+ * \dictentry{XYZT,position+time solution(or residuals)}
+ * \dictentry{RMS,RMS residual of fit}
+ * \dictentry{slope,RAIM slope}
+ * \dictentry{nit,\# of iterations}
+ * \dictentry{conv,convergence factor}
+ * \dictentry{'sat sat ...', lists all sat. PRNs (- : rejected)}
+ * \dictentry{code,return value from PRSolution::RAIMCompute()}
+ * \dictentry{NV,means NOT valid}
+ * \enddictable
+ *
+ * Finally, the output contains the weighted average of the RAIM
+ * solution and the covariance matrix.
+ *
+ * \todo Add more detail to the format description.
+ *
+ * \section PRSolve_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{1,A C++ exception occurred}
+ * \enddictable
+ */
 
 /// @file PRSolve.cpp
 /// Read Rinex observation files (version 2 or 3) and ephemeris store, and compute a
@@ -105,6 +265,8 @@
 #include "HelmertTransform.hpp"
 
 #include "PRSolution.hpp"
+
+#include "BasicFramework.hpp"
 
 //------------------------------------------------------------------------------------
 using namespace std;
@@ -651,7 +813,7 @@ try {
 catch(FFStreamError& e) { cerr << "FFStreamError: " << e.what(); }
 catch(Exception& e) { cerr << "Exception: " << e.what(); }
 catch (...) { cerr << "Unknown exception.  Abort." << endl; }
-   return 1;
+return gpstk::BasicFramework::EXCEPTION_ERROR;
 
 }  // end main()
 

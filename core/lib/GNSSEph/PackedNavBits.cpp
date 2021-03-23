@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -369,6 +369,22 @@ namespace gpstk
       return( ulong ); 
    }
 
+
+   unsigned long PackedNavBits::asUnsignedLong(const unsigned startBit1,
+                                               const unsigned numBits1,
+                                               const unsigned startBit2,
+                                               const unsigned numBits2,
+                                               const int scale ) const
+   {
+      uint64_t temp1 = asUint64_t( startBit1, numBits1 );
+      uint64_t temp2 = asUint64_t( startBit2, numBits2 );
+      unsigned long ulong = (unsigned long) temp1;
+      ulong <<= numBits2;
+      ulong |= temp2;
+      ulong *= scale; 
+      return ulong;
+   }
+
       /* Unpack a split signed long integer */
    long PackedNavBits::asLong(const unsigned startBits[],
                               const unsigned numBits[],
@@ -420,6 +436,24 @@ namespace gpstk
       return( dval );
    }
 
+
+   double PackedNavBits::asUnsignedDouble(const unsigned startBit1,
+                                          const unsigned numBits1,
+                                          const unsigned startBit2,
+                                          const unsigned numBits2,
+                                          const int power2) const
+   {
+      uint64_t temp1 = asUint64_t( startBit1, numBits1 );
+      uint64_t temp2 = asUint64_t( startBit2, numBits2 );
+      unsigned long ulong = (unsigned long) temp1;
+      ulong <<= numBits2;
+      ulong |= temp2;
+         // Convert to double and scale
+      double dval = (double) ulong;
+      dval *= pow(static_cast<double>(2), power2);
+      return( dval );
+   }
+
       /* Unpack a split signed double */
    double PackedNavBits::asSignedDouble(const unsigned startBits[],
                                         const unsigned numBits[],
@@ -445,6 +479,24 @@ namespace gpstk
       return( dval );
    }
 
+
+   double PackedNavBits::asSignedDouble(const unsigned startBit1,
+                                        const unsigned numBits1,
+                                        const unsigned startBit2,
+                                        const unsigned numBits2,
+                                        const int power2) const
+   {
+      int64_t s = SignExtend( startBit1, numBits1);
+      uint64_t temp2 = asUint64_t( startBit2, numBits2 );
+      s <<= numBits2;
+      s |= temp2;
+
+         // Convert to double and scale
+      double dval = (double) s;
+      dval *= pow(static_cast<double>(2), power2);
+      return( dval );
+   }
+
       /* Unpack a split double with units of semicircles */
    double PackedNavBits::asDoubleSemiCircles(const unsigned startBits[],
                                              const unsigned numBits[],
@@ -454,6 +506,18 @@ namespace gpstk
       double drad = asSignedDouble( startBits, numBits, len, power2);
       return (drad*PI);
    }      
+
+
+   double PackedNavBits::asDoubleSemiCircles(const unsigned startBit1,
+                                             const unsigned numBits1,
+                                             const unsigned startBit2,
+                                             const unsigned numBits2,
+                                             const int power2) const
+   {
+      return PI * asSignedDouble(startBit1, numBits1, startBit2, numBits2,
+                                 power2);
+   }
+
 
    bool PackedNavBits::asBool( const unsigned bitNum) const
    {
@@ -587,6 +651,38 @@ namespace gpstk
       for (i = 0; i < numPadBlanks; ++i)
          addUint64_t(space, 8);
    }  
+
+   
+   void PackedNavBits::addDataVec(const std::vector<uint8_t>& data,
+                                  unsigned numBits)
+   {
+      if (numBits > data.size()*8)
+      {
+         gpstk::InvalidParameter exc("Requested more bits than are available");
+         GPSTK_THROW(exc);
+      }
+      unsigned numBytes = numBits >> 3;
+      unsigned rem = numBits % 8;
+      if (rem > 0)
+         numBytes++;
+      for (unsigned long i = 0; i < numBytes; i++)
+      {
+            // Add 8 bits at a time (at most) so we don't have to
+            // worry about byte swapping.  We also have to shift the
+            // final byte to the right if the bits are not
+            // byte-aligned, as addUint64_t adds the n LSBs, not the n
+            // MSBs.
+         unsigned bitsToAdd = 8;
+         unsigned shiftRight = 0;
+         if ((i+1)*8 >= numBits)
+         {
+            bitsToAdd = rem;
+            shiftRight = 8-rem;
+         }
+         addUint64_t(data[i] >> shiftRight, bitsToAdd);
+      }
+   }  
+
 
    void PackedNavBits::addPackedNavBits(const PackedNavBits& right)
    {

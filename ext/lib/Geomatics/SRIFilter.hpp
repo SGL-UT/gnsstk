@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -234,7 +234,7 @@ public:
    void timeUpdate(Matrix<double>& PhiInv,
                    Matrix<double>& Rw,
                    Matrix<double>& G,
-                   Vector<double>& zw,
+                   Vector<double>& Zw,
                    Matrix<double>& Rwx);
 
       /// SRIF (Kalman) smoother update
@@ -254,12 +254,12 @@ public:
       ///        state to the noise variables.  The process noise covariance is
       ///        G*Q*transpose(G) where inverse(Q) is transpose(Rw)*Rw,
       ///        also input to the time update. G is destroyed on output.
-      /// @param zw Vector<double>
+      /// @param Zw Vector<double>
       ///        A priori 'state' associated with the process noise,
       ///        a vector with Ns elements, output of the time update.
       /// @param Rwx Matrix<double> An Ns by N matrix, output of the time update.
       ///
-      /// The inputs Rw,zw,Rwx are the output of the SRIF time update, and these and
+      /// The inputs Rw,Zw,Rwx are the output of the SRIF time update, and these and
       /// Phi and G are associated with the same timestep. All the inputs are trashed
       /// on output.
       /// 
@@ -291,7 +291,7 @@ public:
       /// [dimensions are shown in ()]:
       /// 
       ///      _  (Ns)     (N)      (1) _          _                  _
-      /// (Ns) |  Rw+Rwx*G  Rwx*Phi  zw   |   ==>  |   Rw   Rwx   zw    |
+      /// (Ns) |  Rw+Rwx*G  Rwx*Phi  Zw   |   ==>  |   Rw   Rwx   Zw    |
       /// (N)  |  R*G       R*Phi    z    |   ==>  |   0     R    z     | .
       ///      -                        -          -                  -
       /// The SRI matricies R and Rw remain upper triangular.
@@ -301,7 +301,7 @@ public:
    void smootherUpdate(Matrix<double>& Phi,
                        Matrix<double>& Rw,
                        Matrix<double>& G,
-                       Vector<double>& zw,
+                       Vector<double>& Zw,
                        Matrix<double>& Rwx);
 
       /// Covariance/State version of the Kalman smoother update (Dyer-McReynolds).

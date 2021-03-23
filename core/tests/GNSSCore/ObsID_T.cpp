@@ -18,7 +18,7 @@
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -108,7 +108,7 @@ public:
                            gpstk::TrackingCode::Y);
 
       std::string outputString, referenceString;
-      std::stringstream outputStream;
+      std::stringstream outputStream, os2;
 
       compare.dump(outputStream);
       outputString = outputStream.str();
@@ -117,6 +117,11 @@ public:
 
       TUASSERTE(std::string, referenceString, outputString);
 
+      gpstk::ObsID::verbose = true;
+      compare.dump(os2);
+      TUASSERTE(std::string, "L2 GPSY doppler 0/false 0/ffffffff", os2.str());
+         // make sure to turn it back off for other tests.
+      gpstk::ObsID::verbose = false;
       TURETURN();
    }
 

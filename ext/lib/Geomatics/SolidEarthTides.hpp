@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -74,17 +74,17 @@ namespace gpstk
    /// NB. Currently only the largest terms are implemented, yielding a result
    /// accurate to the millimeter level. Specifically, TN21 pg 61 eq 8 and
    /// TN21 pg 65 eq 17.
-   /// @param Position site  Nominal position of the site of interest.
-   /// @param EphTime time   Time of interest.
-   /// @param Position Sun   Position of the Sun at time
-   /// @param Position Moon  Position of the Moon at time
-   /// @param double EMRAT   Earth-to-Moon mass ratio (default to DE405 value)
-   /// @param double SERAT   Sun-to-Earth mass ratio (default to DE405 value)
-   /// @param IERSConvention IERS convention to use (default IERS2010)
-   /// @return Triple        Displacement vector, ECEF XYZ in meters.
+   /// @param site  Nominal position of the site of interest.
+   /// @param ttag   Time of interest.
+   /// @param Sun   Position of the Sun at time
+   /// @param Moon  Position of the Moon at time
+   /// @param EMRAT   Earth-to-Moon mass ratio (default to DE405 value)
+   /// @param SERAT   Sun-to-Earth mass ratio (default to DE405 value)
+   /// @param iers IERS convention to use (default IERS2010)
+   /// @return Displacement vector, ECEF XYZ in meters.
    /// @throw Exception
    Triple computeSolidEarthTides(const Position site,
-                                 const EphTime time,
+                                 const EphTime ttag,
                                  const Position Sun,
                                  const Position Moon,
                                  const double EMRAT=81.30056,
@@ -98,13 +98,13 @@ namespace gpstk
    /// convention to use. Return a Triple containing the site displacement in
    /// ECEF XYZ coordinates with units meters.
    /// Reference IERS Conventions (1996) found in IERS Technical Note 21, ch. 7 pg 67.
-   /// @param Position site  Nominal position of the site of interest.
-   /// @param EphTime time   Time of interest.
-   /// @param double xp,yp   Polar motion angles in arcsec (cf. EarthOrientation)
-   /// @param IERSConvention IERS convention to use (default IERS2010)
-   /// @return Triple disp   Displacement vector, ECEF XYZ in meters.
+   /// @param site  Nominal position of the site of interest.
+   /// @param ttag   Time of interest.
+   /// @param xp,yp   Polar motion angles in arcsec (cf. EarthOrientation)
+   /// @param iers IERS convention to use (default IERS2010)
+   /// @return Displacement vector, ECEF XYZ in meters.
    /// @throw Exception
-   Triple computePolarTides(const Position site, const EphTime time,
+   Triple computePolarTides(const Position site, const EphTime ttag,
                             const double xp, const double yp,
                             const IERSConvention iers=IERSConvention::IERS2010);
 

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -86,12 +86,12 @@ SatPass::SatPass(RinexSatID insat, double indt) throw()
    init(insat, indt, defaultObsTypes);
 }
 
-SatPass::SatPass(RinexSatID insat, double indt, vector<string> obstypes) throw()
+SatPass::SatPass(RinexSatID insat, double indt, std::vector<std::string> obstypes) throw()
 {
    init(insat, indt, obstypes);
 }
 
-void SatPass::init(RinexSatID insat, double indt, vector<string> obstypes) throw()
+void SatPass::init(RinexSatID insat, double indt, std::vector<std::string> obstypes) throw()
 {
    sat = insat;
    dt = indt;
@@ -125,7 +125,7 @@ SatPass& SatPass::operator=(const SatPass& right) throw()
    return *this;
 }
 
-int SatPass::addData(const Epoch tt, vector<string>& ots, vector<double>& data)
+int SatPass::addData(const Epoch tt, std::vector<std::string>& ots, std::vector<double>& data)
 {
    vector<unsigned short> lli(data.size(),0),ssi(data.size(),0);
    try { return addData(tt, ots, data, lli, ssi); }
@@ -136,10 +136,10 @@ int SatPass::addData(const Epoch tt, vector<string>& ots, vector<double>& data)
 //        -1 gap is larger than MaxGap, data not added
 //       >=0 (success) index of the added data
 int SatPass::addData(const Epoch tt,
-                     const vector<string>& obstypes,
-                     const vector<double>& data,
-                     const vector<unsigned short>& lli,
-                     const vector<unsigned short>& ssi,
+                     const std::vector<std::string>& obstypes,
+                     const std::vector<double>& data,
+                     const std::vector<unsigned short>& lli,
+                     const std::vector<unsigned short>& ssi,
                      const unsigned short flag)
 {
    // check that data, lli and ssi have the same length - throw
@@ -252,7 +252,7 @@ catch(Exception& e) { GPSTK_RETHROW(e); }
 // return true if successful, false if failed; also return string msg, which is
 // FINAL sat n week sow(beg) week sow(end) npts stddev slope sl/std stddev(slope) [??]
 // NB if "??" appears at end of msg, result is questionable (stddev(slope) is high)
-bool SatPass::getGLOchannel(int& n, string& msg)
+bool SatPass::getGLOchannel(int& n, std::string& msg)
 {
 try {
    if(sat.system != SatelliteSystem::Glonass) return false;
@@ -447,7 +447,7 @@ catch(Exception& e) { GPSTK_RETHROW(e); }
 // input flag is 'true'; use real bias for pseudorange, integer (cycles) for phase.
 // Single frequency version: requires obs types Lf C/Pf
 // Call this ONLY after cycleslips have been removed.
-void SatPass::smoothSF(const bool smoothPR, const bool debiasPH, string& msg,
+void SatPass::smoothSF(const bool smoothPR, const bool debiasPH, std::string& msg,
                        const int freq, const double wl)
 {
 try {
@@ -557,7 +557,7 @@ catch(Exception& e) { GPSTK_RETHROW(e); }
 // Smooth pseudorange and debias phase; replace the data only if the corresponding
 // input flag is 'true'; use real bias for pseudorange, integer (cycles) for phase.
 // Call this ONLY after cycleslips have been removed.
-void SatPass::smooth(const bool smoothPR, const bool debiasPH, string& msg,
+void SatPass::smooth(const bool smoothPR, const bool debiasPH, std::string& msg,
                      const double& wl1, const double& wl2)
 {
 try {
@@ -695,7 +695,7 @@ catch(Exception& e) { GPSTK_RETHROW(e); }
 
 // -------------------------- get and set routines ----------------------------
 // NB may be used as rvalue or lvalue
-double& SatPass::data(unsigned int i, string type)
+double& SatPass::data(unsigned int i, std::string type)
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in data() " + asString(i));
@@ -718,7 +718,7 @@ double& SatPass::timeoffset(unsigned int i)
    return spdvector[i].toffset;
 }
 
-unsigned short& SatPass::LLI(unsigned int i, string type)
+unsigned short& SatPass::LLI(unsigned int i, std::string type)
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in LLI() " + asString(i));
@@ -732,7 +732,7 @@ unsigned short& SatPass::LLI(unsigned int i, string type)
    return spdvector[i].lli[it->second];
 }
 
-unsigned short& SatPass::SSI(unsigned int i, string type)
+unsigned short& SatPass::SSI(unsigned int i, std::string type)
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in SSI() " + asString(i));
@@ -810,7 +810,7 @@ Epoch SatPass::getFirstTime(void) const throw() { return time(0); }
 Epoch SatPass::getLastTime(void) const throw() { return time(spdvector.size()-1); }
 
 // these allow you to get e.g. P1 or C1. NB return double not double& as above: rvalue
-double SatPass::data(unsigned int i, string type1, string type2) const
+double SatPass::data(unsigned int i, std::string type1, std::string type2) const
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in data() " + asString(i));
@@ -827,7 +827,7 @@ double SatPass::data(unsigned int i, string type1, string type2) const
    }
 }
 
-unsigned short SatPass::LLI(unsigned int i, string type1, string type2)
+unsigned short SatPass::LLI(unsigned int i, std::string type1, std::string type2)
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in LLI() " + asString(i));
@@ -844,7 +844,7 @@ unsigned short SatPass::LLI(unsigned int i, string type1, string type2)
    }
 }
 
-unsigned short SatPass::SSI(unsigned int i, string type1, string type2)
+unsigned short SatPass::SSI(unsigned int i, std::string type1, std::string type2)
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in SSI() " + asString(i));
@@ -972,7 +972,7 @@ catch(Exception& e) { GPSTK_RETHROW(e); }
 
 // dump all the data in the pass, one line per timetag;
 // put message msg at beginning of each line.
-void SatPass::dump(ostream& os, string msg1, string msg2) throw()
+void SatPass::dump(ostream& os, std::string msg1, std::string msg2) throw()
 {
    int i,j,last;
    Epoch tt;
@@ -1006,7 +1006,7 @@ void SatPass::dump(ostream& os, string msg1, string msg2) throw()
 }
 
 // output SatPass to ostream
-ostream& operator<<(ostream& os, SatPass& sp )
+std::ostream& operator<<(std::ostream& os, SatPass& sp )
 {
    os << setw(4) << sp.spdvector.size()
       << " " << sp.sat

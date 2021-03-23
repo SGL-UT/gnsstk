@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -302,8 +302,8 @@ namespace gpstk {
       /// Compute Greenwich Mean Sidereal Time, or the Greenwich hour angle of
       /// the mean vernal equinox (radians), given the coordinate time of interest,
       /// using this->UT1mUTC (sec), which comes from the IERS bulletin.
-      /// @param t EphTime epoch of the rotation.
-      /// @param reduced, bool true when UT1mUTC is 'reduced', meaning assumes
+      /// @param t epoch of the rotation.
+      /// @param reduced true when UT1mUTC is 'reduced', meaning assumes
       ///                 'no tides', as is the case with the NGA EOPs (default=F).
       /// @return GMST in radians
       /// @throw Exception if the TimeSystem conversion fails (if TimeSystem is Unknown)
@@ -314,8 +314,8 @@ namespace gpstk {
       /// Compute Greenwich Apparent Sidereal Time, or the Greenwich hour angle of
       /// the true vernal equinox (radians), given the coordinate time of interest,
       /// and this object's UT1-UTC (sec), which comes from the IERS bulletin.
-      /// @param t EphTime epoch of the rotation.
-      /// @param reduced, bool true when UT1mUTC is 'reduced', meaning assumes
+      /// @param t epoch of the rotation.
+      /// @param reduced true when UT1mUTC is 'reduced', meaning assumes
       ///                 'no tides', as is the case with the NGA EOPs (default=F).
       /// @return GAST in radians
       /// @throw Exception if the TimeSystem conversion fails (if TimeSystem is Unknown)
@@ -338,9 +338,9 @@ namespace gpstk {
 
       //------------------------------------------------------------------------------
       ///// Nutation of the obliquity (deps) and of the longitude (dpsi)
-      ///// @param T,    the coordinate transformation time at the time of interest
-      ///// @param deps, nutation of the obliquity (output) in radians
-      ///// @param dpsi, nutation of the longitude (output) in radians
+      ///// @param T    the coordinate transformation time at the time of interest
+      ///// @param deps nutation of the obliquity (output) in radians
+      ///// @param dpsi nutation of the longitude (output) in radians
       ///// @throw Exception if convention is not defined
       //void NutationAngles(double T, double& deps, double& dpsi)
 
@@ -365,8 +365,8 @@ namespace gpstk {
       /// frame to the conventional inertial frame. Input is the time of interest;
       /// use this object's EOPs - the polar motion angles xp and yp (arcseconds),
       /// and UT1-UTC (seconds) (xp,yp and UT1-UTC are as found in the IERS bulletin).
-      /// @param t EphTime epoch of the rotation.
-      /// @param reduced, bool true when UT1mUTC is 'reduced', meaning assumes
+      /// @param t epoch of the rotation.
+      /// @param reduced true when UT1mUTC is 'reduced', meaning assumes
       ///                 'no tides', as is the case with the NGA EOPs (default=F).
       /// @return 3x3 rotation matrix
       /// @throw Exception if the TimeSystem conversion fails (if TimeSystem is Unknown)
@@ -390,10 +390,10 @@ namespace gpstk {
       /// P03 precession (IERS2010).
       /// Derived in part from SOFA routine s00.c for IERS2003 and s06.c for IERS2010.
       /// Used for both IERS2003 and IERS2010, but not for IERS1996
-      /// @param T, the coordinate transformation time at the time of interest
-      /// @param X, the X coordinate of the CIP (input)
-      /// @param Y, the Y coordinate of the CIP (input)
-      /// @param which, the IERS convention to be used (input)
+      /// @param T the coordinate transformation time at the time of interest
+      /// @param X the X coordinate of the CIP (input)
+      /// @param Y the Y coordinate of the CIP (input)
+      /// @param which the IERS convention to be used (input)
       /// @return S, the parameter that positions the CIO on the CIP equator.
       static double S(double T, double& X, double& Y,
                                       IERSConvention which=IERSConvention::IERS2003)
@@ -417,9 +417,9 @@ namespace gpstk {
       /// a series based on IAU 2006 precession and IAU 2000A nutation (IERS 2010).
       /// The coordinates form a unit vector that points towards the CIO; they include
       /// the effects of frame bias, precession and nutation. cf. sofa xy06
-      /// @param T, the coordinate transformation time at the time of interest
-      /// @param X, x coordinate of CIO
-      /// @param Y, y coordinate of CIO
+      /// @param T the coordinate transformation time at the time of interest
+      /// @param X x coordinate of CIO
+      /// @param Y y coordinate of CIO
       static void XYCIO(double& T, double& X, double& Y)
          throw();
 
@@ -445,10 +445,10 @@ namespace gpstk {
       //------------------------------------------------------------------------------
       /// Zonal tide terms for corrections of UT1mUTC when that quantity does not
       /// include tides (e.g. NGA EOP), ref. IERS 1996 Ch. 8, table 8.1 pg 74.
-      /// @param T,    the coordinate transformation time at the time of interest
-      /// @param UT1mUT1R, the correction to UT1mUTC (seconds)
-      /// @param dlodR, the correction to the length of day (seconds)
-      /// @param domegaR, the correction to the Earth rotation rate, rad/second.
+      /// @param T    the coordinate transformation time at the time of interest
+      /// @param UT1mUTR the correction to UT1mUTC (seconds)
+      /// @param dlodR the correction to the length of day (seconds)
+      /// @param domegaR the correction to the Earth rotation rate, rad/second.
       static void UT1mUTCTidalCorrections(double T, double& UT1mUTR,
                                           double& dlodR, double& domegaR)
          throw();
@@ -472,8 +472,8 @@ namespace gpstk {
       /// the mean vernal equinox (radians), given the coordinate time of interest,
       /// and UT1-UTC (sec), which comes from the IERS bulletin. For IERS1996,03
       /// @param t EphTime epoch of the rotation.
-      /// @param UT1mUTC, UT1-UTC in seconds, as found in the IERS bulletin.
-      /// @param reduced, bool true when UT1mUTC is 'reduced', meaning assumes
+      /// @param UT1mUTC UT1-UTC in seconds, as found in the IERS bulletin.
+      /// @param reduced true when UT1mUTC is 'reduced', meaning assumes
       ///                 'no tides', as is the case with the NGA EOPs (default=F).
       /// @return GMST in radians
       /// @throw Exception if the TimeSystem conversion fails (if TimeSystem is Unknown)
@@ -484,7 +484,7 @@ namespace gpstk {
       /// the mean vernal equinox (radians), given the coordinate time of interest,
       /// and UT1-UTC (sec), which comes from the IERS bulletin. For IERS2003
       /// @param t EphTime epoch of the rotation.
-      /// @param UT1mUTC, UT1-UTC in seconds, as found in the IERS bulletin.
+      /// @param UT1mUTC UT1-UTC in seconds, as found in the IERS bulletin.
       /// @return GMST in radians
       /// @throw Exception if the TimeSystem conversion fails (if TimeSystem is Unknown)
       static double GMST2003(EphTime t, double UT1mUTC);
@@ -494,7 +494,7 @@ namespace gpstk {
       /// the mean vernal equinox (radians), given the coordinate time of interest,
       /// and UT1-UTC (sec), which comes from the IERS bulletin. For IERS2010
       /// @param t EphTime epoch of the rotation.
-      /// @param UT1mUTC, UT1-UTC in seconds, as found in the IERS bulletin.
+      /// @param UT1mUTC UT1-UTC in seconds, as found in the IERS bulletin.
       /// @return GMST in radians
       /// @throw Exception if the TimeSystem conversion fails (if TimeSystem is Unknown)
       static double GMST2010(EphTime t, double UT1mUTC);
@@ -528,11 +528,11 @@ namespace gpstk {
       ///      = 6h 41m (50.54841+8640184.812866*T'+0.093104*T'^2-6.2E-6*T'^3)s
       ///
       /// @param t EphTime time of interest.
-      /// @param om, Omega(T), mean longitude of lunar ascending node, in radians,
-      /// @param eps, Obliquity(T), the obliquity of the ecliptic, in radians,
-      /// @param dpsi, nutation in longitude (counted in the ecliptic),
+      /// @param om Omega(T), mean longitude of lunar ascending node, in radians,
+      /// @param eps Obliquity(T), the obliquity of the ecliptic, in radians,
+      /// @param dpsi nutation in longitude (counted in the ecliptic),
       ///                       in seconds of arc
-      /// @param UT1mUTC,  UT1-UTC in seconds, as found in the IERS bulletin.
+      /// @param UT1mUTC  UT1-UTC in seconds, as found in the IERS bulletin.
       /// @return gast in radians
       /// @throw Exception
       static double gast1996(EphTime t, double om, double eps, double dpsi,
@@ -543,7 +543,7 @@ namespace gpstk {
       /// the true vernal equinox (radians), given the coordinate time of interest,
       /// and UT1-UTC (sec), which comes from the IERS bulletin.
       /// @param t EphTime epoch of the rotation.
-      /// @param UT1mUTC, UT1-UTC in seconds, as found in the IERS bulletin.
+      /// @param UT1mUTC UT1-UTC in seconds, as found in the IERS bulletin.
       /// @return GAST in radians
       /// @throw Exception if the TimeSystem conversion fails (if TimeSystem is Unknown)
       static double GAST1996(EphTime t, double UT1mUTC, bool reduced=false);
@@ -553,7 +553,7 @@ namespace gpstk {
       /// the true vernal equinox (radians), given the coordinate time of interest,
       /// and UT1-UTC (sec), which comes from the IERS bulletin.
       /// @param t EphTime epoch of the rotation.
-      /// @param UT1mUTC, UT1-UTC in seconds, as found in the IERS bulletin.
+      /// @param UT1mUTC UT1-UTC in seconds, as found in the IERS bulletin.
       /// @return GAST in radians
       /// @throw Exception if the TimeSystem conversion fails (if TimeSystem is Unknown)
       static double GAST2003(EphTime t, double UT1mUTC);
@@ -563,7 +563,7 @@ namespace gpstk {
       /// the true vernal equinox (radians), given the coordinate time of interest,
       /// and UT1-UTC (sec), which comes from the IERS bulletin.
       /// @param t EphTime epoch of the rotation
-      /// @param UT1mUTC, UT1-UTC in seconds, as found in the IERS bulletin
+      /// @param UT1mUTC UT1-UTC in seconds, as found in the IERS bulletin
       /// @return GAST in radians
       /// @throw Exception if the TimeSystem conversion fails (if TimeSystem is Unknown)
       static double GAST2010(EphTime t, double UT1mUTC);
@@ -571,8 +571,8 @@ namespace gpstk {
       //------------------------------------------------------------------------------
       /// Generate transformation matrix (3X3 rotation) due to the polar motion
       /// angles xp and yp (arcseconds), as found in the IERS bulletin;
-      /// @param xp, Earth wobble in arcseconds, as found in the IERS bulletin.
-      /// @param yp, Earth wobble in arcseconds, as found in the IERS bulletin.
+      /// @param xp Earth wobble in arcseconds, as found in the IERS bulletin.
+      /// @param yp Earth wobble in arcseconds, as found in the IERS bulletin.
       /// @return Matrix<double>(3,3) rotation matrix
       static Matrix<double> PolarMotionMatrix1996(double xp, double yp)
          throw();
@@ -583,8 +583,8 @@ namespace gpstk {
       /// The returned matrix R transforms the CIP into TRS:  V(TRS) = R * V(CIP).
       /// see sofa pom00. Also valid for IERS2010.
       /// @param t EphTime epoch of the rotation.
-      /// @param xp, Earth wobble in arcseconds, as found in the IERS bulletin.
-      /// @param yp, Earth wobble in arcseconds, as found in the IERS bulletin.
+      /// @param xp Earth wobble in arcseconds, as found in the IERS bulletin.
+      /// @param yp Earth wobble in arcseconds, as found in the IERS bulletin.
       /// @return Matrix<double>(3,3) rotation matrix CIP -> TRS
       static Matrix<double> PolarMotionMatrix2003(EphTime t, double xp, double yp)
          throw();
@@ -623,41 +623,41 @@ namespace gpstk {
       //------------------------------------------------------------------------------
       /// Nutation of the obliquity (deps) and of the longitude (dpsi), IERS 1996
       /// model (ref pg 26), given
-      /// @param T,    the coordinate transformation time at the time of interest
-      /// @param deps, nutation of the obliquity (output) in radians
-      /// @param dpsi, nutation of the longitude (output) in radians
-      /// @param om, longitude mean ascending node of lunar orbit, from mean equinox
+      /// @param T    the coordinate transformation time at the time of interest
+      /// @param deps nutation of the obliquity (output) in radians
+      /// @param dpsi nutation of the longitude (output) in radians
+      /// @param om longitude mean ascending node of lunar orbit, from mean equinox
       static void NutationAngles1996(double T, double& deps, double& dpsi, double& om)
          throw();
 
       //------------------------------------------------------------------------------
       /// Nutation of the obliquity (deps) and of the longitude (dpsi), IERS 2003
-      /// @param T,    the coordinate transformation time at the time of interest
-      /// @param deps, nutation of the obliquity (output) in radians
-      /// @param dpsi, nutation of the longitude (output) in radians
+      /// @param T    the coordinate transformation time at the time of interest
+      /// @param deps nutation of the obliquity (output) in radians
+      /// @param dpsi nutation of the longitude (output) in radians
       static void NutationAngles2003(double T, double& deps, double& dpsi)
          throw();
 
       //------------------------------------------------------------------------------
       /// Nutation of the obliquity (deps) and of the longitude (dpsi), IERS 2010
-      /// @param T,    the coordinate transformation time at the time of interest
-      /// @param deps, nutation of the obliquity (output) in radians
-      /// @param dpsi, nutation of the longitude (output) in radians
+      /// @param T    the coordinate transformation time at the time of interest
+      /// @param deps nutation of the obliquity (output) in radians
+      /// @param dpsi nutation of the longitude (output) in radians
       static void NutationAngles2010(double T, double& deps, double& dpsi)
          throw();
 
       //------------------------------------------------------------------------------
       /// nutation matrix, a 3x3 rotation matrix, given
-      /// @param eps, Obliquity(T), the obliquity of the ecliptic, in radians,
-      /// @param dpsi, the nutation in longitude (counted in the ecliptic) in radians.
-      /// @param deps, the nutation in obliquity, in radians.
+      /// @param eps Obliquity(T), the obliquity of the ecliptic, in radians,
+      /// @param dpsi the nutation in longitude (counted in the ecliptic) in radians.
+      /// @param deps the nutation in obliquity, in radians.
       /// @return nutation matrix Matrix<double>(3,3)
       static Matrix<double> NutationMatrix(double eps, double dpsi, double deps)
          throw();
 
       //------------------------------------------------------------------------------
       /// IERS1996 nutation matrix, a 3x3 rotation matrix, given
-      /// @param T, the coordinate transformation time at the time of interest
+      /// @param T the coordinate transformation time at the time of interest
       /// @return nutation matrix Matrix<double>(3,3)
       static Matrix<double> NutationMatrix1996(double T)
          throw();
@@ -665,14 +665,14 @@ namespace gpstk {
       //------------------------------------------------------------------------------
       /// IERS2003 nutation matrix, a 3x3 rotation matrix
       /// (including the frame bias matrix), given
-      /// @param T, the coordinate transformation time at the time of interest
+      /// @param T the coordinate transformation time at the time of interest
       /// @return nutation matrix Matrix<double>(3,3)
       static Matrix<double> NutationMatrix2003(double T)
          throw();
 
       //------------------------------------------------------------------------------
       /// IERS2010 nutation matrix, a 3x3 rotation matrix, given
-      /// @param T, the coordinate transformation time at the time of interest;
+      /// @param T the coordinate transformation time at the time of interest;
       /// cf. FukushimaWilliams().
       /// @return nutation matrix Matrix<double>(3,3)
       static Matrix<double> NutationMatrix2010(double T)
@@ -680,7 +680,7 @@ namespace gpstk {
 
       //------------------------------------------------------------------------------
       /// IERS1996 precession matrix, a 3x3 rotation matrix, given
-      /// @param T, the coordinate transformation time at the time of interest
+      /// @param T the coordinate transformation time at the time of interest
       /// @return precession matrix Matrix<double>(3,3)
       static Matrix<double> PrecessionMatrix1996(double T)
          throw();
@@ -688,14 +688,14 @@ namespace gpstk {
       //------------------------------------------------------------------------------
       /// IERS2003 precession matrix, a 3x3 rotation matrix
       /// (including the frame bias matrix), given
-      /// @param T, the coordinate transformation time at the time of interest
+      /// @param T the coordinate transformation time at the time of interest
       /// @return precession matrix Matrix<double>(3,3)
       static Matrix<double> PrecessionMatrix2003(double T)
          throw();
 
       //------------------------------------------------------------------------------
       /// IERS2003 precession and obliquity rate corrections, IAU 2000
-      /// @param T, the coordinate transformation time at the time of interest
+      /// @param T the coordinate transformation time at the time of interest
       /// @return precession, obliquity corrections in radians
       static void PrecessionRateCorrections2003(double T, double& dpsi, double& deps)
          throw();
@@ -708,7 +708,7 @@ namespace gpstk {
 
       //------------------------------------------------------------------------------
       /// IERS2010 precession matrix, a 3x3 rotation matrix, given
-      /// @param T, the coordinate transformation time at the time of interest
+      /// @param T the coordinate transformation time at the time of interest
       /// Does not include the frame bias matrix; cf. FukushimaWilliams().
       /// @return precession matrix Matrix<double>(3,3)
       static Matrix<double> PrecessionMatrix2010(double T)
@@ -738,10 +738,10 @@ namespace gpstk {
       /// Input is the time of interest, the polar motion angles xp and yp (arcsecs),
       /// and UT1-UTC (sec) (xp,yp and UT1-UTC are just as found in the IERS bulletin)
       /// @param t EphTime epoch of the rotation.
-      /// @param xp, Earth wobble in arcseconds, as found in the IERS bulletin.
-      /// @param yp, Earth wobble in arcseconds, as found in the IERS bulletin.
-      /// @param UT1mUTC, UT1-UTC in seconds, as found in the IERS bulletin.
-      /// @param reduced, bool true when UT1mUTC is 'reduced', meaning assumes
+      /// @param xp Earth wobble in arcseconds, as found in the IERS bulletin.
+      /// @param yp Earth wobble in arcseconds, as found in the IERS bulletin.
+      /// @param UT1mUTC UT1-UTC in seconds, as found in the IERS bulletin.
+      /// @param reduced bool true when UT1mUTC is 'reduced', meaning assumes
       ///                 'no tides', as is the case with the NGA EOPs (default=F).
       /// @return 3x3 rotation matrix
       /// @throw Exception if the TimeSystem conversion fails (if TimeSystem is Unknown)
@@ -754,9 +754,9 @@ namespace gpstk {
       /// Input is the time of interest, the polar motion angles xp and yp (arcsecs),
       /// and UT1-UTC (sec) (xp,yp and UT1-UTC are just as found in the IERS bulletin)
       /// @param t EphTime epoch of the rotation.
-      /// @param xp, Earth wobble in arcseconds, as found in the IERS bulletin.
-      /// @param yp, Earth wobble in arcseconds, as found in the IERS bulletin.
-      /// @param UT1mUTC, UT1-UTC in seconds, as found in the IERS bulletin.
+      /// @param xp Earth wobble in arcseconds, as found in the IERS bulletin.
+      /// @param yp Earth wobble in arcseconds, as found in the IERS bulletin.
+      /// @param UT1mUTC UT1-UTC in seconds, as found in the IERS bulletin.
       /// @return 3x3 rotation matrix
       /// @throw Exception if the TimeSystem conversion fails (if TimeSystem is Unknown)
       Matrix<double> ECEFtoInertial2003(EphTime t,double xp,double yp,double UT1mUTC);
@@ -767,11 +767,9 @@ namespace gpstk {
       /// Input is the time of interest, the polar motion angles xp and yp (arcsecs),
       /// and UT1-UTC (sec) (xp,yp and UT1-UTC are just as found in the IERS bulletin)
       /// @param t EphTime epoch of the rotation.
-      /// @param xp, Earth wobble in arcseconds, as found in the IERS bulletin.
-      /// @param yp, Earth wobble in arcseconds, as found in the IERS bulletin.
-      /// @param UT1mUTC, UT1-UTC in seconds, as found in the IERS bulletin.
-      /// @param reduced, bool true when UT1mUTC is 'reduced', meaning assumes
-      ///                 'no tides', as is the case with the NGA EOPs (default=F).
+      /// @param xp Earth wobble in arcseconds, as found in the IERS bulletin.
+      /// @param yp Earth wobble in arcseconds, as found in the IERS bulletin.
+      /// @param UT1mUTC UT1-UTC in seconds, as found in the IERS bulletin.
       /// @return 3x3 rotation matrix
       /// @throw Exception if the TimeSystem conversion fails (if TimeSystem is Unknown)
       Matrix<double> ECEFtoInertial2010(EphTime t,double xp,double yp,double UT1mUTC);

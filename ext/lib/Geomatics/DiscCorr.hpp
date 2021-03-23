@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -74,7 +74,7 @@ namespace gpstk {
       ~GDCconfiguration(void) { CFG.clear(); CFGdescription.clear(); }
 
          /// Set a parameter in the configuration; the input string 'cmd'
-         /// is of the form '[--DC]<id><s><value>' where the separator s is
+         /// is of the form '[--DC]\<id\>\<s\>\<value\>' where the separator s is
          /// one of (:=,) and leading '-','--', or '--DC' are optional.
          /// @throw Exception
       void setParameter(std::string cmd);

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -133,7 +133,7 @@ namespace gpstk
       explicit RinexObsID(const std::string& strID, double version);
 
          /** Construct this object from the C-style string specifier.
-          * @param[in] strID The RINEX observation identifier to
+          * @param[in] id The RINEX observation identifier to
           *   decode.  This must be a RINEX 3 ID, three or four
           *   characters in length.  Three character obs codes are
           *   assumed to be from GPS.  Four character obs codes use

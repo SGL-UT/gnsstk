@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -45,7 +45,8 @@
 #define GPSTK_BASICFRAMEWORK_HPP
 
 #include "CommandOptionParser.hpp"
-#include "MainAdapter.hpp"
+#include <iostream>
+#include "Exception.hpp"
 
 namespace gpstk
 {
@@ -75,7 +76,12 @@ namespace gpstk
        * For information on how to use the frameworks, see \ref appbuilding.
        */
 
-      /** @page appbuilding Building Up Applications Using Frameworks
+      /** \page APIguide
+       * - \subpage appbuilding - Building Up Applications Using Frameworks
+       * \page appbuilding Application Building
+       *
+       * \todo Make sure this document is up to date and maybe add a
+       * sequence diagram.
        *
        * \tableofcontents
        *

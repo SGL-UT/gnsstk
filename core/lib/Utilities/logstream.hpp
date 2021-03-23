@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -48,6 +48,8 @@
 #include <string>
 #include <iostream>
 
+namespace gpstk
+{
 /// levels that the user may give the log stream output in the output statement,
 /// e.g. LOG(ERROR) << "This is an error message"; DEBUGn levels appear indented
 /// by 2*n spaces in the log stream. Default level is INFO.
@@ -346,7 +348,7 @@ template<> bool Log<ConfigureLOGstream>::dumpLevels = false;
 /// unless global optimization is turned off. Use kludge (above) rather than do this.
 //#pragma optimize("g",off)      // turn off global optimization
 //#pragma optimize("",on)        // turn on optimizations turned on by compiler switch
-
+}
 #endif //LOGSTREAMINCLUDE --- end of the include file. Test code follows in comments.
 
 /* Example:

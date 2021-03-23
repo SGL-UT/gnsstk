@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -132,7 +132,7 @@ namespace gpstk {
       /// Stream output for the EOPPrediction, in format of EOPP###.txt files.
       /// @param os stream to append formatted EOPPrediction to.
       /// @return reference to the input stream.
-      friend std::ostream& operator<<(std::ostream& s, const EOPPrediction&);
+      friend std::ostream& operator<<(std::ostream& os, const EOPPrediction& eopp);
 
    }; // end class EOPPrediction
 

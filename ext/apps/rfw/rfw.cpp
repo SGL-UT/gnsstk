@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -36,8 +36,8 @@
 //
 //==============================================================================
 
-/** @file reads a stream and writes it to file(s) with names derived from
-    system time.
+/** @file rfw.cpp reads a stream and writes it to file(s) with names
+ * derived from system time.
  */
 
 #include <fstream>

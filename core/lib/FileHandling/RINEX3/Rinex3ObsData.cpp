@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -813,7 +813,7 @@ namespace gpstk
       return writeTime(time);
    }
 
-   void Rinex3ObsData::dump(ostream& s) const
+   void Rinex3ObsData::dump(std::ostream& s) const
    {
       if(obs.empty())
          return;
@@ -846,7 +846,7 @@ namespace gpstk
    }  // end dump
 
 
-   void Rinex3ObsData::dump(ostream& os, Rinex3ObsHeader& head) const
+   void Rinex3ObsData::dump(std::ostream& os, Rinex3ObsHeader& head) const
    {
       os << "Dump of Rinex3ObsData: "
          << printTime(time,"%4F/%w/%10.3g = %04Y/%02m/%02d %02H:%02M:%02S")

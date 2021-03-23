@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -186,7 +186,7 @@ namespace gpstk
           * from network byte order to host byte order.
           * @param[in] str the string from which to obtain data.
           * @param[in] pos offset into the string from which to pull the data.
-          * @warn This function does not check for appropriate string length.
+          * @warning This function does not check for appropriate string length.
           */
       template <class T>
       inline T decodeVar( const std::string& str,
@@ -197,7 +197,7 @@ namespace gpstk
           * from little-endian byte order to host byte order.
           * @param[in] str the string from which to obtain data.
           * @param[in] pos offset into the string from which to pull the data.
-          * @warn This function does not check for appropriate string length.
+          * @warning This function does not check for appropriate string length.
           */
       template <class T>
       inline T decodeVarLE( const std::string& str,
@@ -207,7 +207,7 @@ namespace gpstk
           * Decode and remove the item specified from the head of the string
           * and convert it from network byte order to host byte order.
           * @param[in,out] str the string from which to obtain data.
-          * @warn This function does not check for appropriate string length.
+          * @warning This function does not check for appropriate string length.
           */
       template <class T>
       inline T decodeVar( std::string& str );
@@ -216,7 +216,7 @@ namespace gpstk
           * Decode and remove the item specified from the head of the string
           * and convert it from little-endian byte order to host byte order.
           * @param[in,out] str the string from which to obtain data.
-          * @warn This function does not check for appropriate string length.
+          * @warning This function does not check for appropriate string length.
           */
       template <class T>
       inline T decodeVarLE( std::string& str );

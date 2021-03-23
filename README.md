@@ -1,3 +1,5 @@
+\page README README
+
 README
 ------
 

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -35,6 +35,64 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+
+/** \page apps
+ * - \subpage rowdiff - Difference the contents of two RINEX OBS files
+ * \page rowdiff
+ * \tableofcontents
+ *
+ * \section rowdiff_name NAME
+ * rowdiff - Difference the contents of two RINEX OBS files
+ *
+ * \section rowdiff_synopsis SYNOPSIS
+ * \b rowdiff [\argarg{OPTION}] ... file1 file2
+ *
+ * \section rowdiff_description DESCRIPTION
+ * Perform a simple difference between two RINEX OBS files.
+ *
+ * \dictionary
+ * \dicterm{-d, \--debug}
+ * \dicdef{Increase debug level}
+ * \dicterm{-v, \--verbose}
+ * \dicdef{Increase verbosity}
+ * \dicterm{-h, \--help}
+ * \dicdef{Print help usage}
+ * \dicterm{-t, \--time=\argarg{TIME}}
+ * \dicdef{Start of time range to compare (default = "beginning of time")}
+ * \dicterm{-e, \--end-time=\argarg{TIME}}
+ * \dicdef{End of time range to compare (default = "end of time")}
+ * \dicterm{-p, \--precision=\argarg{ARG}}
+ * \dicdef{Limit data comparison to \argarg{ARL} decimal places. Default = 5}
+ * \enddictionary
+ *
+ * Time may be specified in one of three formats:
+ * - month/day/year
+ * - year day-of-year
+ * - year day-of-year seconds-of-day
+ *
+ * \section rowdiff_examples EXAMPLES
+ *
+ * \cmdex{rowdiff data/arlm200a.15o data/arlm200z.15o}
+ *
+ * Will show differences in individual records.  Records that appear
+ * in the first file will start with "<" and records that appear in
+ * the second file will start with ">".  Records with the same epoch
+ * and satellite ID will be printed with a timestamp followed by the
+ * differences between the two obs data records.
+ *
+ * \todo Add an example or two using the time options.
+ *
+ * \section rowdiff_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{1,A C++ exception occurred\, or differences were encountered}
+ * \dictentry{2,One or both of the input files does not exist}
+ * \enddictable
+ *
+ * \section rowdiff_see_also SEE ALSO
+ * \ref rnwdiff, \ref rmwdiff
+ */
 
 /// This utility assumes that epochs are in ascending time order
 

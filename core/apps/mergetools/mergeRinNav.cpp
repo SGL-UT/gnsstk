@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -35,6 +35,54 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+
+/** \page apps
+ * - \subpage mergeRinNav - Merge the contents of two or more RINEX NAV files
+ * \page mergeRinNav
+ * \tableofcontents
+ *
+ * \section mergeRinNav_name NAME
+ * mergeRinNav - Merge the contents of two or more RINEX NAV files
+ *
+ * \section mergeRinNav_synopsis SYNOPSIS
+ * \b mergeRinNav [\argarg{OPTION}] ... \argarg{FILE} ...
+ *
+ * \section mergeRinNav_description DESCRIPTION
+ * Sorts and merges input RINEX Nav files into a single file. The
+ * output will be sorted by time. This program assumes all the input
+ * files are from the same station.
+ *
+ * \dictionary
+ * \dicterm{-o, \--output}
+ * \dicdef{Name for the merged output RINEX Nav file. Any existing file with that name will be overwritten.}
+ * \dicterm{-d, \--debug}
+ * \dicdef{Increase debug level}
+ * \dicterm{-v, \--verbose}
+ * \dicdef{Increase verbosity}
+ * \dicterm{-h, \--help}
+ * \dicdef{Print help usage}
+ * \enddictionary
+ *
+ * \note mergeRinNav will load the entire contents of all input files into
+ * memory before writing.
+ *
+ * \section mergeRinNav_examples EXAMPLES
+ *
+ * \cmdex{mergeRinNav -o merged.15n data/arlm2000.15n data/arlm2001.15n}
+ *
+ * Creates the file merged.15n containing the combined contents of
+ * data/arlm2000.15n and data/arlm2001.15n.
+ *
+ * \section mergeRinNav_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{1,A C++ exception occurred\, e.g. invalid input files}
+ * \enddictable
+ *
+ * \section mergeRinNav_see_also SEE ALSO
+ * \ref mergeRinObs, \ref mergeRinMet
+ */
 
 #include "Rinex3NavStream.hpp"
 #include "Rinex3NavHeader.hpp"

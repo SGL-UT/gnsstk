@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -133,7 +133,7 @@ namespace gpstk
       virtual bool isHeader() const { return true; }
      
          /** Dump information about the header to an ostream.
-          * @param[in] os ostream to receive the output; defaults to std::cout
+          * @param[in] s ostream to receive the output; defaults to std::cout
           * @param[in] detail integer level of detail to provide;
           *   allowed values are:
           *    0: all the header string except stations and satellites, but

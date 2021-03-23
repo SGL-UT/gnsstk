@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -321,10 +321,18 @@ namespace gpstk
       typedef std::vector<ExtraWaveFact> FactorVector;
       typedef std::set<Field> FieldSet;
 
+         /** This class encapsulates a collection of RINEX 3 OBS
+          * header field flags.  It is only used to keep track of the
+          * presence of a field, but not the field values themselves,
+          * which are contained within Rinex3ObsHeader. */
       class Fields
       {
       public:
+            /// Only implicit constructors to do.
          Fields() = default;
+            /** Construct a Fields class from a set of Field.
+             * @param[in] fields The set of fields to populate this object with.
+             */
          Fields(const FieldSet& fields)
                : fieldsSet(fields)
          {}

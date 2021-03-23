@@ -18,7 +18,7 @@
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -48,6 +48,9 @@ class FileSpecFind_T;
 
 namespace gpstk
 {
+      /// @ingroup FileDirProc
+      //@{
+
       /** Find existing files matching specified criteria.
        *
        *   \li FileSpecFind returns files matching [start, end).
@@ -185,6 +188,7 @@ namespace gpstk
 
       friend class ::FileSpecFind_T;
    };
+      //@}
 }
 
 #endif // FILESPECFIND_HPP

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -118,7 +118,7 @@ namespace gpstk
       bool helpRequested() { return !helpOptions.empty(); }
          /** Print the requested help information.
           * @param[in] out The stream to which the help text will be printed.
-          * @param[in] pretty If true, use "pretty print" as
+          * @param[in] doPretty If true, use "pretty print" as
           *   appropriate (dependent on child class implementation as
           *   to how it's used).
           * @param[in] firstOnly If true, only print the help for the
@@ -133,6 +133,14 @@ namespace gpstk
           * @param doPretty if true (the default), 'pretty print' descriptions
           */
       std::ostream& displayUsage(std::ostream& out, bool doPretty=true);
+
+         /** Writes the arguments to the output stream in a format
+          * that can by copied and pasted into doxygen comments for
+          * the application so that the application documentation
+          * matches the code.
+          * @param out ostream on which to write
+          */
+      std::ostream& displayUsageDoxygen(std::ostream& out);
 
    private:
          /// changes the size of the option array for getopt_long.

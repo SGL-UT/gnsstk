@@ -2,7 +2,6 @@
 
 add_subdirectory (filetools)
 add_subdirectory (geomatics)
-add_subdirectory (misc)
 
 # If on UNIX, do these
 if (UNIX)

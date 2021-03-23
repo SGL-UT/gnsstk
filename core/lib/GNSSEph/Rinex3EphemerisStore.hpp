@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -234,34 +234,34 @@ namespace gpstk
          /** Determine the earliest time for which this object can
           * successfully determine the Xvt for this satellite or system
           * (sat.id == -1).
-          * @param SatID sat satellite, or system if sat.id==-1
+          * @param sat satellite, or system if sat.id==-1
           * @return the earliest time in the table
           * @throw InvalidRequest if the object has no data. */
       virtual CommonTime getInitialTime(const SatID& sat) const;
 
          /** Determine the latest time for which this object can successfully 
           * determine the Xvt for this satellite or system (sat.id == -1).
-          * @param SatID sat satellite, or system if sat.id==-1
+          * @param sat satellite, or system if sat.id==-1
           * @return the latest time in the table
           * @throw InvalidRequest if the object has no data. */
       virtual CommonTime getFinalTime(const SatID& sat) const;
 
          /** add a Rinex3NavData to the store
-          * @param Rinex3NavData Rdata data to be added
+          * @param Rdata data to be added
           * @return true if data was added, false otherwise */
       bool addEphemeris(const Rinex3NavData& Rdata);
 
          /** add filename and header to FileStore
-          * @param string filename file name to be added
-          * @param Rinex3NavHeader head header to be added */
+          * @param filename file name to be added
+          * @param head header to be added */
       void addFile(const std::string& filename, Rinex3NavHeader& head)
       { NavFiles.addFile(filename,head); }
 
          /** load a RINEX navigation file
-          * @param string filename name of the RINEX navigation file to read
-          * @param bool dump if true, dump header and nav data as
+          * @param filename name of the RINEX navigation file to read
+          * @param dump if true, dump header and nav data as
           *   read, default false
-          * @param ostream stream to which dump is written, default cout
+          * @param s to which dump is written, default cout
           * @return -1 failed to open file,
           *         -2 failed to read header (this->Rhead),
           *         -3 failed to read data (this->Rdata),
@@ -281,7 +281,7 @@ namespace gpstk
          /** get the number of records or ephemerides for the given
           * satellite; an overload size(SatelliteSystem) gives
           * the total per system.
-          * @param SatID sat satellite
+          * @param sat satellite
           * @return the number of records or ephemerides */
       int size(const SatID sat) const
       {
@@ -304,7 +304,7 @@ namespace gpstk
 
          /** get the number of records by system; default is systemMixed,
           * which returns the overall total
-          * @param SatelliteSystem GNSS of interest
+          * @param sys GNSS of interest
           * @return the number of records or ephemerides in this system */
       int size(const SatelliteSystem sys = SatelliteSystem::Mixed) const
       { return size(SatID(-1,sys)); }
@@ -324,7 +324,7 @@ namespace gpstk
       }
 
          /** Delete from the map of time system corrections.
-          * @param type of TimeSystemCorrection, as a string,
+          * @param typestr type of TimeSystemCorrection, as a string,
           *                   i.e. TimeSystemCorrection::asString4()
           * @return true if an existing correction was deleted. */
       bool delTimeCorr(const std::string& typestr)
@@ -360,11 +360,7 @@ namespace gpstk
                TimeSystemCorrection tc("GLGP");
                tc.A0 = jt->second.A0 - it->second.A0;
                tc.A1 = jt->second.A1 - it->second.A1; // probably zeros
-               tc.refYr = it->second.refYr;
-               tc.refMon = it->second.refMon;
-               tc.refDay = it->second.refDay;
-               tc.refWeek = jt->second.refWeek;
-               tc.refSOW = jt->second.refSOW;
+               tc.refTime = it->second.refTime;
                tc.geoProvider = jt->second.geoProvider;  // blank
                tc.geoUTCid = 0;                          // NA
                mapTimeCorr[tc.asString4()] = tc;
@@ -382,11 +378,7 @@ namespace gpstk
                TimeSystemCorrection tc("GPGA");
                tc.A0 = jt->second.A0 - it->second.A0;
                tc.A1 = jt->second.A1 - it->second.A1;
-               tc.refYr = it->second.refYr;           // take ref time from GAL
-               tc.refMon = it->second.refMon;
-               tc.refDay = it->second.refDay;
-               tc.refWeek = it->second.refWeek;
-               tc.refSOW = it->second.refSOW;
+               tc.refTime = it->second.refTime; // take ref time from GAL
                tc.geoProvider = it->second.geoProvider;  // blank
                tc.geoUTCid = 0;                          // NA
                mapTimeCorr[tc.asString4()] = tc;
@@ -404,13 +396,7 @@ namespace gpstk
                TimeSystemCorrection tc("BDGP");
                tc.A0 = jt->second.A0 - it->second.A0;
                tc.A1 = jt->second.A1 - it->second.A1;
-               tc.refYr = it->second.refYr;
-               tc.refMon = it->second.refMon;
-               tc.refDay = it->second.refDay;
-               BDSWeekSecond bws(jt->second.refWeek,jt->second.refSOW);
-               GPSWeekSecond gws(bws);
-               tc.refWeek = gws.week;
-               tc.refSOW = gws.sow;
+               tc.refTime = it->second.refTime;
                tc.geoProvider = jt->second.geoProvider;  // blank
                tc.geoUTCid = 7;
                mapTimeCorr[tc.asString4()] = tc;

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -552,8 +552,13 @@ namespace gpstk
    void CommandOptionHelpUsage::printHelp(std::ostream& out, bool pretty)
    {
       GPSTK_ASSERT(parser != NULL);
-      if (getCount())
+         // Secret option! Ask for help once, get the normal usage.
+         // Ask for help twice, get doxygen-formatted comments to
+         // insert into your code's documentation.
+      if (getCount() == 1)
          parser->displayUsage(out, pretty);
+      else if (getCount() > 1)
+         parser->displayUsageDoxygen(out);
    }
 
 } // namespace gpstk

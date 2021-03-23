@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -135,7 +135,6 @@ namespace gpstk
      
          /** Shortcut to SatMetaDataStore::getSVN() that obviates
           * having to check the pointer for null.
-          * @copydetails SatMetaDataStore::getSVN()
           * @param[in] sat The ID of the desired satellite.
           * @param[in] when The time of interest of the desired satellite.
           * @param[out] svn If found the satellite's vehicle number.

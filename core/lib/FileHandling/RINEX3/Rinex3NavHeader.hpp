@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -127,8 +127,8 @@ namespace gpstk
 
          /** Change the file system, keeping fileType, fileSys, and fileSysSat
           * consistent.
-          * @param[in] string str beginning with system character or
-          *   "M" for mixed
+          * @param[in] str beginning with system character or "M" for
+          *   mixed
           * @throw Exception */
       void setFileSystem(const std::string& str);
 

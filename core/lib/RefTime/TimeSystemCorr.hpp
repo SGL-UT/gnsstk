@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -70,7 +70,7 @@ namespace gpstk
          GLUT,    ///< GLO  to UTC using A0 = -TauC , A1 = 0
          GPGA,    ///< GPS  to GAL using A0 = A0G   , A1 = A1G
          GAGP,    ///< GPS  to GAL using A0 = A0G   , A1 = A1G
-         GLGP,    ///< GLO  to GPS using A0 = -TauGPS, A1 = 0
+         GLGP,    ///< GLO  to GPS using A0 = TauGPS, A1 = 0
          QZGP,    ///< QZS  to GPS using A0, A1
          QZUT,    ///< QZS  to UTC using A0, A1
          BDUT,    ///< BDT  to UTC using A0, A1
@@ -112,7 +112,7 @@ namespace gpstk
          /** Return true if this object provides the correction
          * necessary to convert between the two given time
          * systems.
-         * @param ts1 and ts2  TimeSystems of interest
+         * @param ts1,ts2  TimeSystems of interest
          * @return true if this object will convert ts1 <=> ts2
          * @throw Exception if either TimeSystem is Unknown, or if
          *   they are identical. */
@@ -128,7 +128,7 @@ namespace gpstk
           *    ct(GPS) + Correction(ct) will yield ct(UTC), and
           *    ct(UTC) + Correction(ct) will yield ct(GPS).
           *    [That is, Correction(ct) in the two cases differ in sign]
-          * @param[in] CommonTime ct, the time at which to compute the
+          * @param[in] ct the time at which to compute the
           *   correction; the TimeSystem of ct will determine the sign
           *   of the correction.
           * @return the correction (sec) to be added to ct to change
@@ -136,6 +136,10 @@ namespace gpstk
           * @throw Exception if the input TimeSystem matches neither
           *   system in this object. */
       double Correction(const CommonTime& ct) const;
+
+         /** Set the time system of refTime to the appropriate value
+          * based on type (CorrType). */
+      void fixTimeSystem();
 
          //// Member data
          ///  NOTE: User is responsible for setting the following parameters
@@ -152,8 +156,7 @@ namespace gpstk
       CorrType type;
       TimeSystem frTS,toTS;
       double A0, A1;
-      long refWeek,refSOW;       ///< reference time for polynominal (week,sow) - MUST BE GPS TIME
-      long refYr,refMon,refDay;  ///< reference time (yr,mon,day) for RINEX ver 2 GLO
+      CommonTime refTime;        ///< reference time for polynominal
       std::string geoProvider;   ///< string 'EGNOS' 'WAAS' or 'MSAS'
       int geoUTCid;              ///< UTC Identifier [0 unknown, 1=UTC(NIST),
                                  ///<  2=UTC(USNO), 3=UTC(SU), 4=UTC(BIPM),

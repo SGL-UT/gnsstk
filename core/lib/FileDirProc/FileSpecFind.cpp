@@ -18,7 +18,7 @@
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -222,7 +222,7 @@ static void globfree(glob_t *pglob)
 namespace gpstk
 {
    list<string> FileSpecFind ::
-   find(const string& fileSpecString,
+   find(const std::string& fileSpecString,
         const gpstk::CommonTime& start,
         const gpstk::CommonTime& end,
         const gpstk::FileSpec::FSTStringMap& fsts)

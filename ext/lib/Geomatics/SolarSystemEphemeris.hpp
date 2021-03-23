@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -224,7 +224,7 @@ public:
    ///                  psi dot, eps dot in units radians and radians/day.
    ///                  If target == Librations, PV contains 3 euler angles in radians
    ///                  and their rates in radians/day.
-   /// @param km     boolean: if true (default), units are km, km/day; else AU, AU/day
+   /// @param kilometers     boolean: if true (default), units are km, km/day; else AU, AU/day
    ///                  (but not Nutations or Librations - see above).
    /// @throw Exception if given time is before the first record in the file,
    /// the given time is after the last record, or in a gap between records,

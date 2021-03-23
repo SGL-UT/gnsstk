@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -78,14 +78,29 @@ namespace gpstk
    {
    public:
          /// empty constructor, creates a wildcard object.
+         /// mcode and freqOffs are kept non-wild by default intentionally.
       ObsID()
             : type(ObservationType::Unknown), band(CarrierBand::Unknown),
-              code(TrackingCode::Unknown)
+              code(TrackingCode::Unknown), freqOffs(0), freqOffsWild(false),
+              mcode(0), mcodeMask(-1)
       {}
 
          /// Explicit constructor
+         /// mcode and freqOffs are kept non-wild by default intentionally.
       ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc)
-            : type(ot), band(cb), code(tc)
+            : type(ot), band(cb), code(tc), freqOffs(0), freqOffsWild(false),
+              mcode(0), mcodeMask(-1)
+      {}
+
+         /** Explicit constructor for GLONASS.
+          * @param[in] ot The observation type (range, phase,, etc.).
+          * @param[in] cb The carrier band (L1, L2, etc.).
+          * @param[in] tc The tracking code (CA, L2CM, etc.).
+          * @param[in] fo Thre frequency offset of the GLONASS signal. */
+      explicit ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc,
+                     int fo)
+            : type(ot), band(cb), code(tc), freqOffs(fo), freqOffsWild(false),
+              mcode(0), mcodeMask(-1)
       {}
 
          /// Equality requires all fields to be the same
@@ -121,15 +136,39 @@ namespace gpstk
       virtual ~ObsID()
       {}
 
+         /// Set all data to wildcard values.
+      void makeWild();
+
+         /// Return true if any of the data are wildcard values.
+      bool isWild() const;
+
          // Note that these are the only data members of objects of this class.
       ObservationType  type;
       CarrierBand      band;
       TrackingCode     code;
+      int freqOffs;       ///< GLONASS frequency offset.
+      bool freqOffsWild;  ///< True=Treat freqOffs as a wildcard when matching.
+      uint32_t mcode;     ///< Data to uniquely identify M-code signal.
+      uint32_t mcodeMask; ///< Bitmask for matching mcode. 
 
+         /// SWIG accessor. Not overloaded, because SWIG.
+      static std::string getDescTC(TrackingCode e)
+      { return tcDesc[e]; }
+         /// SWIG accessor. Not overloaded, because SWIG.
+      static std::string getDescCB(CarrierBand e)
+      { return cbDesc[e]; }
+         /// SWIG accessor. Not overloaded, because SWIG.
+      static std::string getDescOT(ObservationType e)
+      { return otDesc[e]; }
          /// These strings are for forming a somewhat verbose description
       static std::map< TrackingCode,    std::string > tcDesc;
       static std::map< CarrierBand,     std::string > cbDesc;
       static std::map< ObservationType, std::string > otDesc;
+         /** If true, dump and operator<< will include the values of
+          * freqOffs, freqOffsWild, mcode, and mcodeMask.  These are
+          * flags that were added more recently, so this also
+          * preserves traditional output. */
+      static bool verbose;
    }; // class ObsID
 
 

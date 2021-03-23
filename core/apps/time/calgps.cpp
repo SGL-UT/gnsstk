@@ -18,7 +18,7 @@
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -36,6 +36,43 @@
 //
 //==============================================================================
 
+/** \page apps
+ * - \subpage calgps - Generate a GPS calendar in text
+ * \page calgps
+ * \tableofcontents
+ *
+ * \section calgps_name NAME
+ * calgps - Display time stamps in a variety of formats
+ *
+ * \section calgps_synopsis SYNOPSIS
+ * \b calgps [\argarg{OPTION}] ...
+ *
+ * \section calgps_description DESCRIPTION
+ * This application generates a dual GPS and Julian calendar to
+ * stdout. The arguments and format are inspired by the UNIX `cal`
+ * utility. With no arguments, the current month is printed. The
+ * last and next month can also be printed. Also, the current or any
+ * given year can be printed.
+ *
+ * \dictionary
+ * \dicterm{-h, \--help}
+ * \dicdef{Display argument list.}
+ * \dicterm{-3, \--three-months}
+ * \dicdef{Display last, this and next months.}
+ * \dicterm{-y, \--year}
+ * \dicdef{Display all months for the current year}
+ * \dicterm{-Y, \--specific-year=\argarg{NUM}}
+ * \dicdef{Display all months for a given year}
+ * \enddictionary
+ *
+ * \section calgps_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{1,A C++ exception occurred}
+ * \enddictable
+ */
+
 #include <iostream>
 #include <iomanip>
 #include "CommonTime.hpp"
@@ -47,9 +84,11 @@
 #include "SystemTime.hpp"
 #include "CommandOptionParser.hpp"
 #include "StringUtils.hpp"
+#include "BasicFramework.hpp"
 
 using namespace std;
 using namespace gpstk;
+
 
 void printMonth(short month, short year)
 {
@@ -85,7 +124,6 @@ int main(int argc, char* argv[])
       CommandOptionNoArg threeOption('3',"three-months","Display last, this and next months.",false);
       CommandOptionNoArg thisYearOption('y',"year","Display all months for the current year");
       CommandOptionWithNumberArg givenYearOption('Y',"specific-year","Display all months for a given year");
-      CommandOptionNoArg blurbOption('n',"no-blurb","Suppress GPSTk reference in graphic output.");
       
       CommandOptionParser cop("GPSTk GPS Calendar Generator");
       cop.parseOptions(argc, argv);
@@ -157,20 +195,17 @@ int main(int argc, char* argv[])
          }
          
           printMonth(m, y);
-
-
-         
       }
   
       cout << endl;
       
       
    }
-   catch( Exception error)
+   catch (Exception& error)
    {
       cout << error << endl;
-      exit(-1);
+      return gpstk::BasicFramework::EXCEPTION_ERROR;
    }
 
-   exit(0);
+   return 0;
 }

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -78,7 +78,7 @@ namespace gpstk
        
          /**
           * Store the contents of message type 35 in this object.
-          * @param message30 - 300 bits of Message Type 35
+          * @param message35 300 bits of Message Type 35
           * @throw InvalidParameter if message data is invalid
           */
       void loadData(const PackedNavBits& message35);

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -113,8 +113,10 @@ namespace gpstk
          allValidMS = 0x080000093
       };
 
+         /// Encapsulates a single clock specified in a ANALYSIS CLK REF header.
       struct RefClk
       {
+            /// Initialize the clock constraint to 0.
          RefClk()
                : clkConstraint(0)
          {}
@@ -129,19 +131,24 @@ namespace gpstk
       };
       
 
+         /** Encapsulates the aggregate list of RefClk objects
+          * specified in an ANALYSIS CLK REF header. */
       struct RefClkRecord
       {
             /// number of analysis clock references (satellite or reciever
             /// clocks) listed under "ANALYSIS CLK REF"
          int numClkRef;
-            /// Start/Stop epochs (in GPS time) 
+            /// Start epoch (in GPS time) 
          CivilTime startEpoch;
+            /// Stop epoch (in GPS time) 
          CivilTime stopEpoch;
             /// List of RefClks to appear as "ANALYSIS CLK REF"
          std::list<RefClk> clocks;
       };
       
       
+         /** Clock solution participating station identifier as
+          * specified in a SOLN STA NAME / NUM header record. */
       struct SolnSta
       {
             /// 4-character station/reciever name
@@ -151,9 +158,11 @@ namespace gpstk
          std::string number;
             /// Geocentric XYZ station coordinates corresponding to the 
             /// analysis clock values reported (in millimeters!)
+            //@{
          int64_t posX;
          int64_t posY;
          int64_t posZ;
+            //@}
       };
 
          /// Format version (2.00)

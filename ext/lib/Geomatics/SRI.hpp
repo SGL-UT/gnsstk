@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -259,11 +259,11 @@ public:
    SRI& operator+=(const SRI& S);
 
       /// merge two SRIs to produce a third. ? should this be operator&() ?
-      /// @param S1 first SRI to be merged
-      /// @param S2 second SRI to be merged
+      /// @param Sleft first SRI to be merged
+      /// @param Sright second SRI to be merged
       /// @throw MatrixException
       /// @throw VectorException
-   friend SRI operator+(const SRI& S1, const SRI& S2);
+   friend SRI operator+(const SRI& Sleft, const SRI& Sright);
 
       /// append an SRI onto this SRI. Similar to opertor+= but simpler; input SRI is
       /// simply appended, first using operator+=(Namelist), then filling the new
@@ -294,11 +294,6 @@ public:
       throw()
    { Z = 0.0; }
 
-      /// Reset the SRI, meaning zero it and optionally change the dimension to n.
-      /// @param n Dimension of the new object (optional).
-   //void reset(int n=0)
-   //   throw();
-
       /// Shift the state vector by a constant vector X0; does not change information
       /// i.e. let R * X = Z => R' * (X-X0) = Z'
       /// @param X0 vector by which to shift the state
@@ -323,8 +318,8 @@ public:
       /// matrix (e.g. by transform()). Given RR and ZZ, apply HH transforms to 
       /// retriangularize, and store as R,Z.
       /// NB caller must modify names, if necessary
-      /// @param R Matrix<double> input the modified (non-UT) R
-      /// @param Z Vector<double> input the (potentially) modified Z
+      /// @param[in] RR the modified (non-UT) R
+      /// @param[in] ZZ the (potentially) modified Z
       /// @throw MatrixException if dimensions are wrong.
    void retriangularize(Matrix<double> RR, Vector<double> ZZ);
 

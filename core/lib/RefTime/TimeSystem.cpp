@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -225,6 +225,7 @@ namespace gpstk
          // TAI = TT - 32.184s
       if (inTS == TimeSystem::GPS ||       // GPS -> TAI
           inTS == TimeSystem::GAL ||       // GAL -> TAI
+          inTS == TimeSystem::QZS ||       // QZS -> TAI
           inTS == TimeSystem::IRN )        // IRN -> TAI
       {
          dt = TAI_minus_GPSGAL_EPOCH;
@@ -262,6 +263,7 @@ namespace gpstk
          // TT = TAI + 32.184s
       if (outTS == TimeSystem::GPS ||      // TAI -> GPS
           outTS == TimeSystem::GAL ||      // TAI -> GAL
+          outTS == TimeSystem::QZS ||      // TAI -> QZS
           outTS == TimeSystem::IRN )       // TAI -> IRN
       {
          dt -= TAI_minus_GPSGAL_EPOCH;

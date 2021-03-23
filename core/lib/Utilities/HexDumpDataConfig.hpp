@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -102,8 +102,6 @@ namespace gpstk
             /** Return the number of bytes on a line of hexDumpData
              * output without the ASCII representation length.  This
              * is used to line up the ASCII dump.
-             * @param[in] indent The length of the "tag" argument to
-             *   hexDumpData.
              * @param[in] bytesOnLine The number of bytes on the line
              *   of output (which may be different from bytesPerLine
              *   when this function is used for the last line of

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -59,13 +59,13 @@ const char slash = '/';
 
 namespace gpstk
 {
-      /// @ingroup FileDirProc
-      //@{
-
       /// This exception is thrown when there is a problem with
       /// handling file specifications.
       /// @ingroup exceptiongroup
    NEW_EXCEPTION_CLASS(FileSpecException, gpstk::Exception);
+
+      /// @ingroup FileDirProc
+      //@{
 
       /**
        * A FileSpec is how file names are defined.  For instance,

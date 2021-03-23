@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -47,8 +47,8 @@
 
 namespace gpstk
 {
-/// @ingroup code    
-//@{
+      /// @ingroup CodeGen    
+      //@{
       /** P(Y)-code Buffer class.
        *  Applied Research Laboratories, The University of Texas at Austin
        *  August 2003
@@ -114,7 +114,7 @@ namespace gpstk
          
             /** Given a bit number between 0 and (NUM_6SEC_WORDS * MAX_BIT) - 1,
              * return the value of the bit as a right justified unsigned 
-             * long word (0x00000000 or 0x00000001)..
+             * long word (0x00000000 or 0x00000001).
              */
          unsigned long getBit( const long i ) const;
          
@@ -162,6 +162,6 @@ namespace gpstk
    
       return iret;
    }
-   //@}
+      //@}
 }     // end of namespace
 #endif // CODEBUFFER_HPP

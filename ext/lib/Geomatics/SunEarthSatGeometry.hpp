@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -166,8 +166,8 @@ namespace gpstk
    /// Thus this rotation matrix R transforms an ECEF XYZ vector into the body frame
    /// of the satellite, so R * (ECEF XYZ vector) = components in body frame.
    /// Also, R.transpose() * (sat. body. frame vector) = ECEF XYZ components.
-   /// @param Position P           Satellite position
-   /// @param Position V           Satellite velocity
+   /// @param P           Satellite position
+   /// @param V           Satellite velocity
    /// @return Matrix<double>(3,3) Rotation matrix from XYZ to Satellite body frame.
    /// @throw Exception
    Matrix<double> OrbitNormalAttitude(const Position& P, const Position& V);

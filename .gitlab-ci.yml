@@ -17,14 +17,13 @@ stages:
 variables:
   REPO_HOST: "repositories.arlut.utexas.edu"
   CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
-  # this is usually set to master, unless there are downstream dependencies
-  SGLTK_BRANCH: master
+  # this is usually set to main, unless there are downstream dependencies
+  SGLTK_BRANCH: main
   DOCKER_REGISTRY: "modisdev:5000/sgl_ci"
   # this can be used for incremental builds
   #  GIT_CLEAN_FLAGS: none
   # This can be set to True by Gitlab UI to only build/test packages.
   RELEASE_ONLY: "False"
-  REPO_HOST: "repositories.arlut.utexas.edu"
 
 # Template for all normal jobs.
 .normal_job:
@@ -103,6 +102,8 @@ protected_term_lint:
     - git fetch origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
     - bash repo_utils/dw_search/modified_file_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
   dependencies: []
+  # This has the occasional false-positive, so it's advisory only.
+  allow_failure: true
 
 protected_history_lint:
   stage: check
@@ -121,6 +122,8 @@ protected_history_lint:
     - git fetch origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
     - bash repo_utils/dw_search/history_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
   dependencies: []
+  # This has the occasional false-positive, so it's advisory only.
+  allow_failure: true
 
 # Runs the documentation generation
 generate_documentation:
@@ -143,7 +146,7 @@ generate_documentation:
 build_debian_7:
   stage: build
   needs: []
-  extends: .normal_job
+  extends: .big_build
   tags:
     - docker-executor
     # Not all docker runners support debian 7
@@ -197,7 +200,7 @@ build_debian_9:
 build_debian_10:
   stage: build
   needs: []
-  extends: .big_build
+  extends: .normal_job
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -311,7 +314,7 @@ build_windows:
 test_debian_7:
   stage: test
   needs: [build_debian_7]
-  extends: .normal_job
+  extends: .big_build
   tags:
     - docker-executor
     # Not all docker runners support debian 7
@@ -370,7 +373,7 @@ test_debian_9:
 test_debian_10:
   stage: test
   needs: [build_debian_10]
-  extends: .big_build
+  extends: .normal_job
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -899,3 +902,29 @@ sgltk_redhat:
     - make all -j 4
   dependencies:
     - user_install_redhat
+
+# sgltk_windows:
+#   stage: downstream
+#   needs: [user_install_windows]
+#   extends: .normal_job
+#   tags:
+#     - win10
+#   script:
+#     - set
+#     - cd
+#     - dir %CI_PROJECT_DIR%
+#     - dir %CI_PROJECT_DIR%\build
+#     - dir %CI_PROJECT_DIR%\build\install
+#     - cd build
+#     - git clone -b %SGLTK_BRANCH% https://repositories.arlut.utexas.edu/sgl/sgltk.git
+#     - cd sgltk
+#     - mkdir build
+#     - cd build
+#     - cmake -DCMAKE_PREFIX_PATH=%CI_PROJECT_DIR%/build/install -DCMAKE_INSTALL_PREFIX=install -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" --trace ../
+#     - cmake --build .
+# #  artifacts:
+# #    paths:
+# #    - build/
+#   timeout: 30m
+#   dependencies:
+#     - user_install_windows

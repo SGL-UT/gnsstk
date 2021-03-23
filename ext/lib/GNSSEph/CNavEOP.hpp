@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -37,7 +37,7 @@
 //==============================================================================
 
 /**
- * @file CnavEOP.hpp
+ * @file CNavEOP.hpp
  * Designed to support loading CNAV EOP data
  * (Message Type 32)
  */
@@ -73,8 +73,8 @@ namespace gpstk
       virtual bool isSameData(const CNavDataElement* right) const;      
         
          /**
-          * Store the contents of message type 33 in this object.
-          * @param message30 - 300 bits of Message Type 33
+          * Store the contents of message type 32 in this object.
+          * @param message32 300 bits of Message Type 32
           * @throw InvalidParameter if message data is invalid
           */
       void loadData(const PackedNavBits& message32);

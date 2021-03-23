@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -56,6 +56,8 @@ namespace gpstk
    class Rinex3ClockBase : public FFData
    {
    public:
+         /** Class used to read and write the formatted data in a
+          * RINEX clock file. */
       class RCDouble : public FormattedDouble
       {
       public:

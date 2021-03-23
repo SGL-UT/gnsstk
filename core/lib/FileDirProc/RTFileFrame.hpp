@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -241,8 +241,8 @@ namespace gpstk
       RTFileFrame(const gpstk::FileSpec& fnFormat,
                   const gpstk::CommonTime& beginning = gpstk::CommonTime::BEGINNING_OF_TIME,
                   const gpstk::CommonTime& ending = gpstk::CommonTime::END_OF_TIME, 
-                  const FileReadingMode frm = AppendedData,
-                  const GetRecordMode grm = Dumb);
+                  const RTFileFrameHelper::FileReadingMode frm = AppendedData,
+                  const RTFileFrameHelper::GetRecordMode grm = Dumb);
       
          /// destructor
       ~RTFileFrame();

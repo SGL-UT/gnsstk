@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -45,6 +45,19 @@
 
 namespace gpstk
 {
+      // Not really keen on having the day of week names in
+      // GPSWeekZcount but this is where the %w translation takes
+      // place.
+   static const char *weekdayAbbr[] =
+   {
+      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+   };
+   static const char *weekday[] =
+   {
+      "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+      "Saturday"
+   };
+
    GPSWeekZcount& GPSWeekZcount::operator=( const GPSWeekZcount& right )
    {
       GPSWeek::operator=(right);
@@ -106,6 +119,10 @@ namespace gpstk
 
          std::string rv = GPSWeek::printf( fmt );
 
+         rv = formattedPrint( rv, getFormatPrefixInt() + "a",
+                              "as", weekdayAbbr[getDayOfWeek()] );
+         rv = formattedPrint( rv, getFormatPrefixInt() + "A",
+                              "As", weekday[getDayOfWeek()] );
          rv = formattedPrint( rv, getFormatPrefixInt() + "w",
                               "wu", getDayOfWeek() );
          rv = formattedPrint( rv, getFormatPrefixInt() + "z",

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -213,13 +213,20 @@ namespace gpstk
          /// Returns a formatted string with the description of this option.
       std::string getDescription() const;
 
+         /** Set the command-line option's description after the
+          * constructor.  This differs in behavior from
+          * getDescription() in that getDescription() combines all of
+          * the long/short option, the actual description, and so on,
+          * where this only changes the description itself.
+          * @param[in] desc The new option description/documentation. */
+      void setDescription(const std::string& desc)
+      { description = desc; }
+
          /**
           * If you specified a format for the arguments (for example, digit or
           * string), this function checks them to see if they match.
           * If they don't, an error string is returned.  If they do, an
           * empty string is returned.
-          * @param optVec complete set of processed command line options
-          *   being processed (used by some option types).
           */
       virtual std::string checkArguments();
 
@@ -372,7 +379,7 @@ namespace gpstk
 
          /// Returns a string with the argument format. 
       virtual std::string getArgString() const
-      { return "<alpha>"; }
+      { return "ALPHA"; }
 
    protected:
          /// Default Constructor
@@ -485,7 +492,7 @@ namespace gpstk
        * this grouping, and N=2, the user can specify xx or yy or zz
        * or xy or xz and so on.
        *
-       * \warning There's nothing to prevent you from, say, adding
+       * @warning There's nothing to prevent you from, say, adding
        * another meta-option to the list of mutually exclusive options
        * contained in a CommandOptionNOf instance (or even itself),
        * but the behavior if you try this is undefined.
@@ -524,7 +531,7 @@ namespace gpstk
        * This is a special "command option" which is really a
        * meta-option to make sure at least one of a set of real
        * options has been used.
-       * \warning There's nothing to prevent you from, say, adding
+       * @warning There's nothing to prevent you from, say, adding
        * another meta-option to the list of mutually exclusive options
        * contained in a CommandOptionOneOf instance (or even itself),
        * but the behavior if you try this is undefined.
@@ -559,7 +566,7 @@ namespace gpstk
        * This is a special "command option" which is really a
        * meta-option to make sure that if one of a set of real options
        * has been used, all of the set are used.
-       * \warning There's nothing to prevent you from, say, adding
+       * @warning There's nothing to prevent you from, say, adding
        * another meta-option to the list of mutually exclusive options
        * contained in a CommandOptionAllOf instance (or even itself),
        * but the behavior if you try this is undefined.
@@ -591,7 +598,7 @@ namespace gpstk
        * This is a special "command option" which is really a
        * meta-option to enforce mutual exclusion between a set of real
        * options.
-       * \warning There's nothing to prevent you from, say, adding
+       * @warning There's nothing to prevent you from, say, adding
        * another mutex to the list of mutually exclusive options
        * contained in a CommandOptionMutex instance (or even itself),
        * but the behavior if you try this is undefined.
@@ -626,7 +633,7 @@ namespace gpstk
        * meta-option to make sure that a required option is set where
        * the requirement is based on another option (that is, if you
        * specify one, you must have specified another).
-       * \warning There's nothing to prevent you from using other meta
+       * @warning There's nothing to prevent you from using other meta
        * options as requirements, but the behavior if you try this is
        * undefined.
        */
@@ -762,10 +769,6 @@ namespace gpstk
    {
    public:
          /** Constructor.
-          * @param[in] of Specify whether this help option should have
-          *   arguments or not.  Most will not, but allowing arguments
-          *   allows for things like "--whatis thisthing" to get
-          *   detailed help on "thisthing".
           * @param[in] shOpt The one character command line option.
           *   Set to 0 if unused.
           * @param[in] loOpt The long command option.  Set to
@@ -798,10 +801,6 @@ namespace gpstk
    {
    public:
          /** Constructor.
-          * @param[in] of Specify whether this help option should have
-          *   arguments or not.  Most will not, but allowing arguments
-          *   allows for things like "--whatis thisthing" to get
-          *   detailed help on "thisthing".
           * @param[in] shOpt The one character command line option.
           *   Set to 0 if unused.
           * @param[in] loOpt The long command option.  Set to

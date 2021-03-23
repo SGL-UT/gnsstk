@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -39,17 +39,28 @@
 /// @file ObsID.cpp
 /// gpstk::ObsID - Identifies types of observations
 
+#include <iomanip>
 #include <math.h>
 #include "ObsID.hpp"
 
 namespace gpstk
 {
+   bool ObsID::verbose = false;
+
    // Convenience output method
    std::ostream& ObsID::dump(std::ostream& s) const
    {
       s << ObsID::cbDesc[band] << " "
         << ObsID::tcDesc[code] << " "
         << ObsID::otDesc[type];
+      if (ObsID::verbose)
+      {
+         std::ios::fmtflags oldFlags = s.flags();
+         s << " "
+           << std::boolalpha << freqOffs << "/" << freqOffsWild << " "
+           << std::hex << mcode << "/" << mcodeMask;
+         s.flags(oldFlags);
+      }
       return s;
    } // ObsID::dump()
 
@@ -58,14 +69,18 @@ namespace gpstk
    // Equality requires all fields to be the same unless the field is unknown
    bool ObsID::operator==(const ObsID& right) const
    {
-         // Version comparison is intentionally left out.
-      bool ot = type == ObservationType::Any ||
-         right.type == ObservationType::Any || type == right.type;
-      bool cb = band == CarrierBand::Any || right.band == CarrierBand::Any ||
-         band == right.band;
-      bool tc = code == TrackingCode::Any || right.code == TrackingCode::Any ||
-         code == right.code;
-      return ot && cb && tc;
+         // combined mask, which basically means that a 0 in either
+         // mask is a wildcard.
+      uint32_t cmask = mcodeMask & right.mcodeMask;
+      return ((type == ObservationType::Any ||
+               right.type == ObservationType::Any || type == right.type) &&
+              (band == CarrierBand::Any || right.band == CarrierBand::Any ||
+               band == right.band) &&
+              (code == TrackingCode::Any || right.code == TrackingCode::Any ||
+               code == right.code) &&
+              (freqOffsWild == true || right.freqOffsWild == true ||
+               freqOffs == right.freqOffs) &&
+              ((mcode & mcodeMask) == (right.mcode & cmask)));
    }
 
 
@@ -74,16 +89,53 @@ namespace gpstk
    // some other ordering, inherit and override this function.
    bool ObsID::operator<(const ObsID& right) const
    {
-      if (band == right.band)
-         if (code == right.code)
-            return type < right.type;
-         else
-            return code < right.code;
-      else
-         return band < right.band;
+      if ((band != CarrierBand::Any) && (right.band != CarrierBand::Any))
+      {
+         if (band < right.band) return true;
+         if (right.band < band) return false;
+      }
+      if ((code != TrackingCode::Any) && (right.code != TrackingCode::Any))
+      {
+         if (code < right.code) return true;
+         if (right.code < code) return false;
+      }
+      if ((type != ObservationType::Any) &&
+          (right.type != ObservationType::Any))
+      {
+         if (type < right.type) return true;
+         if (right.type < type) return false;
+      }
+      if (!freqOffsWild && !right.freqOffsWild)
+      {
+         if (freqOffs < right.freqOffs) return true;
+         if (right.freqOffs < freqOffs) return false;
+      }
+         // combined mask, which basically means that a 0 in either
+         // mask is a wildcard.
+      int64_t cmask = mcodeMask & right.mcodeMask;
+      return ((mcode & cmask) < (right.mcode & cmask));
+   }
 
-      // This should never be reached...
-      return false;
+
+   void ObsID ::
+   makeWild()
+   {
+      type = ObservationType::Any;
+      band = CarrierBand::Any;
+      code = TrackingCode::Any;
+      freqOffsWild = true;
+      mcodeMask = 0;
+   }
+
+
+   bool ObsID ::
+   isWild() const
+   {
+      return ((type == ObservationType::Any) ||
+              (band == CarrierBand::Any) ||
+              (code == TrackingCode::Any) ||
+              (mcodeMask != -1) ||
+              freqOffsWild);
    }
 
 

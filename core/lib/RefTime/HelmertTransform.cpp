@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -56,7 +56,7 @@ namespace gpstk {
                     const ReferenceFrame& from, const ReferenceFrame& to,
                     const double& Rx, const double& Ry, const double& Rz,
                     const double& Tx, const double& Ty, const double& Tz,
-                    const double& Sc, const string& Desc, CommonTime epoch)
+                    const double& Sc, const std::string& Desc, CommonTime epoch)
    {
       // copy input
       // NB input is in degrees, members in radians

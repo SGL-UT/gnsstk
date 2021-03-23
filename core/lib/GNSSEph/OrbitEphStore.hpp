@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -249,13 +249,6 @@ namespace gpstk
           * @param eph pointer to the OrbitEph to add
           * @return pointer to new OrbitEph if it successful, NULL otherwise */
       virtual OrbitEph* addEphemeris(const OrbitEph* eph);
-
-         /** Add an OrbitEph object to this collection, converting the
-          * given RINEX navigation data.
-          * @param rnd Rinex3NavData
-          * @return pointer to the new object, NULL if data could not be added.
-          */
-         //virtual OrbitEph* addEphemeris(const Rinex3NavData& rnd);
 
          /** Return true if OrbitEph with the same sat and time
           * already exists in table. */

@@ -296,6 +296,9 @@ set_property(TEST DDBase_CmdOpt_eopfile_invalid PROPERTY LABELS DDBase)
 ###############################################################################
 # Test EarthOrientation against SOFA example code
 ###############################################################################
+add_executable(test_EO_SOFA test_EO_SOFA.cpp)
+target_link_libraries(test_EO_SOFA gpstk)
+
 add_test(NAME EarthOrientation_SOFA
          COMMAND ${CMAKE_COMMAND}
          -DTEST_PROG=$<TARGET_FILE:test_EO_SOFA>
@@ -311,6 +314,9 @@ set_property(TEST EarthOrientation_SOFA PROPERTY LABELS Geomatics)
 ###############################################################################
 # Test SolidEarth and OceanLoad Tides vs IERS software (cf OceanLoadTides.cpp)
 ###############################################################################
+add_executable(test_tides test_tides.cpp)
+target_link_libraries(test_tides gpstk)
+
 add_test(NAME EarthTides_IERS
          COMMAND ${CMAKE_COMMAND}
          -DTEST_PROG=$<TARGET_FILE:test_tides>
@@ -344,6 +350,9 @@ set_property(TEST JPL_403eph_conversion PROPERTY LABELS Geomatics)
 ###############################################################################
 # Test JPL ephemeris 403 accuracy
 ###############################################################################
+add_executable(testSSEph testSSEph.cpp)
+target_link_libraries(testSSEph gpstk)
+
 add_test(NAME JPL_403eph_accuracy
          COMMAND ${CMAKE_COMMAND}
          -DTEST_PROG=$<TARGET_FILE:testSSEph>
@@ -460,6 +469,9 @@ set_property(TEST test_dfix_job4131 PROPERTY LABELS Geomatics)
 ################################################################################
 # Test Rinex3ObsFileLoader RINEX3.03 input
 ###############################################################################
+add_executable(Rinex3ObsLoader_T Rinex3ObsLoader_T.cpp)
+target_link_libraries(Rinex3ObsLoader_T gpstk)
+
 add_test(NAME Rinex3ObsLoader_R303
          COMMAND ${CMAKE_COMMAND}
          -DTEST_PROG=$<TARGET_FILE:Rinex3ObsLoader_T>

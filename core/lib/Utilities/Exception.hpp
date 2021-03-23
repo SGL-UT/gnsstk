@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -108,12 +108,12 @@ namespace gpstk
       std::string what() const;
 
          /**
-          * Output stream operator for ::ExceptionLocation.
+          * Output stream operator for ExceptionLocation.
           * This is intended just to dump all the data in the
-          * ::ExceptionLocation to the indicated stream.  \warning Warning: It
-          * will _not_ preserve the state of the stream.
-          * @param[in,out] s stream to send ::ExceptionLocation information to.
-          * @param[in] e ::ExceptionLocation to "dump".
+          * ExceptionLocation to the indicated stream.
+          * @warning It will _not_ preserve the state of the stream.
+          * @param[in,out] s stream to send ExceptionLocation information to.
+          * @param[in] e ExceptionLocation to "dump".
           * @return a reference to the stream \c s.
           */
       friend std::ostream& operator<<( std::ostream& s,
@@ -297,12 +297,12 @@ namespace gpstk
       std::string what() const;
 
          /**
-          * Output stream operator for ::Exception.
-          * This is intended just to dump all the data in the ::Exception to
-          * the indicated stream.  \warning Warning:  It will _not_ preserve
-          * the state of the stream.
-          * @param[in,out] s stream to send ::Exception information to.
-          * @param[in] e ::Exception to "dump".
+          * Output stream operator for Exception.
+          * This is intended just to dump all the data in the Exception to
+          * the indicated stream.
+          * @warning It will _not_ preserve the state of the stream.
+          * @param[in,out] s stream to send Exception information to.
+          * @param[in] e Exception to "dump".
           * @return a reference to the stream \c s.  */
       friend std::ostream& operator<<( std::ostream& s,
                                        const Exception& e );

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -190,11 +190,11 @@ public:
       /// construct the subset Namelist which is NOT common to two others (XOR)
    friend Namelist operator^(const Namelist&, const Namelist&);
       /// replace this with (this & input)
-   Namelist& operator&=(const Namelist&);
+   Namelist& operator&=(const Namelist& N);
       /// replace this with (this | input)
-   Namelist& operator|=(const Namelist&);
+   Namelist& operator|=(const Namelist& N);
       /// replace this with (this ^ input)
-   Namelist& operator^=(const Namelist&);
+   Namelist& operator^=(const Namelist& N);
 
       /// bind a Namelist to a Matrix<double> before sending it to an output
       /// stream, to get a 'labelled display' of the matrix.

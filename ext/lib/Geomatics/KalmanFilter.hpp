@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -52,6 +52,8 @@
 #include "SRIFilter.hpp"
 #include "logstream.hpp"
 
+namespace gpstk
+{
 // -----------------------------------------------------------------------------------
 // -----------------------------------------------------------------------------------
 /// A base class for implementing Kalman filter using SRIFilter. Define a class with
@@ -226,7 +228,7 @@ public:
        * @param T0 initial time
        * @param X initial state/inv(cov)*state/ignored as return 1/-1/0
        * @param Cov initial covariance/inv(cov)/ignored as return 1/-1/0
-       * @param return 1 for state/cov, -1 for information, 0 for
+       * @return 1 for state/cov, -1 for information, 0 for
        *   nothing provided
        */
    virtual int defineInitial(double& T0,
@@ -265,8 +267,8 @@ public:
        * should NOT be used ... may be singular
        * @param[in] T current time
        * @param[in] DT current timestep
-       * @param[in] X current state
-       * @param[in] C current covariance
+       * @param[in] State current state
+       * @param[in] Cov current covariance
        * @param[in] useFlag if false, State and Cov are singular - do not use
        */
    virtual void defineTimestep(const double T, const double DT,
@@ -581,7 +583,7 @@ public:
          // output sqrt of diagonal covariance elements
       oss << std::scientific << std::setprecision(2);
       for(i=0; i<State.size(); i++)
-         oss << " " << std::setw(10) << (singular ? 0.0 : sqrt(Cov(i,i)));
+         oss << " " << std::setw(10) << (singular ? 0.0 : ::sqrt(Cov(i,i)));
 
       LOG(INFO) << oss.str();
    }
@@ -843,4 +845,5 @@ private:
 
 }; // end class KalmanFilter
 
+}
 #endif

@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -57,7 +57,7 @@
 
 namespace gpstk
 {
-   /// @ingroup math 
+   /// @ingroup MathGroup 
    //@{
  
       /**
@@ -102,7 +102,8 @@ namespace gpstk
 
          /**
           * Copy constructor.
-          * @param expr Expression to be copied. Note that variable values are not copied. 
+          * @param rhs Expression to be copied.
+          * @note variable values are not copied. 
           */
       Expression(const Expression& rhs);
 
@@ -156,13 +157,6 @@ namespace gpstk
           */  
       bool setRinexObs(const RinexObsData::RinexObsTypeMap& rotm);
       
-         /**
-          * Sets multiple variables in the expression using values stored
-          * in a RinexObsType stucture. This structure is nested within the
-          * RinexObsData class.
-          * @param rotm Map of RinexObsType to RinexObsDatum
-          * @return True if an obs variable was found.
-          */  
       bool setSvObsEpoch(const SvObsEpoch& soe);
 
          /**

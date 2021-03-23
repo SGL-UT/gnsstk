@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -61,7 +61,7 @@ namespace gpstk
           * Given a location as a (geodetic) latitude and longitude  
           * the constructor creates the appropriate rotation matrix 
           * from XYZ to NED and retains it for later use.
-          * @param refGeodeticLatRad geodetic latitude of point of interest (radians)
+          * @param refGdLatRad geodetic latitude of point of interest (radians)
           * @param refLonRad longitude of point of interest (radians).
           */
         NEDUtil( const double refGdLatRad,
@@ -71,17 +71,30 @@ namespace gpstk
          /**
           * Convert from a vector in ECEF XYZ to ECEF NED using the
           * current rotation matrix.
-          * @param inV,inVec,in vector of interest in ECEF XYZ.
+          * @param[in] inV vector of interest in ECEF XYZ.
           * @return Same type as input but with the vector in ECEF NED
           */
-         gpstk::Vector<double> convertToNED( const gpstk::Vector<double>& inV ) const;
+         gpstk::Vector<double> convertToNED( const gpstk::Vector<double>& inV )
+            const;
+         /**
+          * Convert from a vector in ECEF XYZ to ECEF NED using the
+          * current rotation matrix.
+          * @param[in] inVec vector of interest in ECEF XYZ.
+          * @return Same type as input but with the vector in ECEF NED
+          */
          gpstk::Triple         convertToNED( const gpstk::Triple& inVec ) const;
+         /**
+          * Convert from a vector in ECEF XYZ to ECEF NED using the
+          * current rotation matrix.
+          * @param[in] in vector of interest in ECEF XYZ.
+          * @return Same type as input but with the vector in ECEF NED
+          */
          gpstk::Xvt            convertToNED( const gpstk::Xvt& in ) const;
          
          /**
           * Update the rotation matrix to the new location without creating
           * a new object
-          * @param refGdLatRad geodetic latitude of point of interest (radians)
+          * @param refLatRad geodetic latitude of point of interest (radians)
           * @param refLonRad longitude of point of interest (radians).
           */
          void                  updatePosition( const double refLatRad,

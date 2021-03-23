@@ -1,3 +1,186 @@
+# Version 11.0.0   Thursday March 18, 2021
+
+Modifications by Author
+-----------------------
+     David Barber <dbarber@arlut.utexas.edu> (4):
+           restored deleted files
+           staging deprecated file(s)
+           Revert "Update Copyright start range to 2004"
+           Deprecate gpstk code containing external contributors
+
+     John Knutson <johnk@arlut.utexas.edu> (3):
+           Add tests for StringUtils::removeWords() and words() and fix an edge case bug
+           Deprecate SVNumXRef
+           Fix copypasta error in comment
+
+
+
+# Version 10.0.0   Thursday February 11, 2021
+
+Modifications by Author
+-----------------------
+     Brian Tolman <btolman@arlut.utexas.edu> (1):
+           Do not compute stats on empty segments
+
+     David Barber <dbarber@arlut.utexas.edu> (2):
+           Obsolete due to re-implemented elsewhere by ARL
+           Ci glissue 451 test refactor
+
+     John Knutson <johnk@arlut.utexas.edu> (110):
+           Reorder NavType enums so that iterator works and add "Any" value.
+           Current checkpoint of new nav store code
+           Add a dump method at the NavLibrary level
+           Implement and test GPSLNavAlm::fixFit
+           Update comments here and there
+           implement OrbitDataSP3::getXvt
+           Eliminate one layer of mapping in the internally stored nav data (signal, which was largely redundant with the satellite key)
+           Further enhancements to TimeOffsetData
+           debug to see what's going on with windows
+           Temporary change to make CI process not need what I'm in the middle of working on
+           more windows debugging
+           add a test for computeXvt that requires interpolation
+           Checkpoint SP3NavDataFactory work
+           Remove some debugging output
+           MultiFormatNavDataFactory now calls clear in destructor
+           WildSatID operator== tests
+           Exploring possibilities for windows failures
+           Tweaking to try to get windows downstream project build working
+           more windows tweaking for downstream project build
+           More tests for NavSatelliteID and WildSatID
+           fix NavSignalID::order
+           Fix hard-coded numeric enum conversion tests in swig
+           Fill in a reasonable test method in the sp3cTest
+           Add more detail to OrbitDataSP3::dump
+           Remove test that fails under windows and add ext build back into windows CI for now
+           looking for ways to avoid build collisions under windows
+           yaml syntax fix
+           switching syntax from powershell to cmd
+           Fix gpstk directory path when building downstream project under windows
+           Add decoder methods to PackedNavBits that allow split data decoding without requiring declaring an array
+           Debugging PNBGPSLNavDataFactory
+           test PNBMultiGNSSNavDataFactory
+           Make dump methods const
+           CNav checkpoint to see if the compilers all support initializer lists
+           Add support for the clock data when constructing CNav ephemerides
+           Comment clean-up
+           more cnav tests
+           Test CNAV almanac using L5 QZSS
+           Add support for CNav message type 35 (GPS-GNSS time offset)
+           Make sure PNBGPSCNavDataFactory::addData processes message type 35
+           Add CNAV reduced almanac support
+           Add CNav to PNBMultiGNSSNavDataFactory
+           change brief style dump to make it easier to count specific message types
+           Add method to PackedNavBits to add a bitset (for NovAtel)
+           add PackedNavBits::addDataVec method for vector<uint8_t>
+           Add support for resetting the PNB factory state
+           Added commented-out debugging to the PNB CNAV/LNAV factories
+           Add comparison for sorting by NavMessageID
+           Merge WildSatID capability into SatID and add extra data for GLONASS
+           Add a reminder to finish SatID documentation
+           Change SatID::extraMask usage in comparison to behave more like the wildcard flags
+           Resolve some doxygen issues
+           Change OrbitDataKepler::healthy (bool) to OrbitDataKepler::health (SVHealth)
+           Change SatID extraMask default to -1 (all bits count)
+           Add user documentation for the new nav store
+           deb10 into normal_job, deb7 into big_build
+           Add class for finding, checking CI in case this is unsupported syntax
+           Change use of map in find() to use a list for readability and reproducability
+           Add support for Nearest searches
+           Change TimeOffset handling per prior speculation, so that offset reversal happens in the TimeOffset classes themselves, and the getOffset methods yield the object rather than the offset as a double
+           Removing search order from getOffset as nearest doesn't make sense
+           Add missing copyright notices
+           Trying to get windows downstream project build to work
+           Working on windows issues
+           Fix wrong directory/variable for incremental windows build
+           Trying to get windows to not optimize things out that it shouldn't
+           pipeline ID build directory is incompatible with incremental builds.
+           Commenting out code causing seg faults under windows to see if it's just doing things in an odd order
+           Try to enforce initialization order by putting the ext initialization in the same file with the core
+           Remove debugging and restore AppFrame tests
+           add cmake trace to downstream project windows stage
+           more windows debugging
+           Fix GPSCNavEph initialization
+           different approach to NaN
+           remove debug output
+           Perform parity checking on LNav data when validity filter is enabled
+           Make test data objects trim to the right size
+           Modify bc2sp3 and sp3version to use BasicFramework for command-line option consistency
+           Undo some premature changes
+           Run a test that wasn't being executed
+           Add GLONASS and M-Code specifics to ObsID
+           Modify NavSignalID to use ObsID instead of direct enums, to implicitly add support for mnav
+           Restoring lost changes
+           Back to the original behavior for SatID
+           try to figure out why the windows build is so large
+           Reorganize NewNav code so that a message size value is used rather than overriding getUserTime in every case.
+           Add ObsID verbose output for testing to avoid breaking existing tests
+           Fix a bug in NavDataFactoryWithStore causing an endless loop if health is unavailable
+           Clean up the train wreck that was TimeTag_T.cpp
+           Add support for static TimeSystemConverter object to CommonTime
+           Add CommandOption::setDescription to change description post-constructor
+           Add implementation for newly added abstract method in NavTimeSystemConverter_T
+           Maybe fix some windows build issues
+           Undo some changes I'd made to circumvent problems on the windows pipeline
+           Update comments here and there
+           Wrap factories with accessor to enforce proper initialization order
+           Reformat for readability
+           Change RINEX 3 TimeSystemCorrection object to store reference time as CommonTime
+           Add missing implementation of virtual methods to MultiFormatNavDataFactory
+           Change implementation of getFactoryFormats to avoid indicating support for formats that don't support the desired nav message type
+           Add handling for time offset data in NavDataFactoryWithStore::erase() and clear().
+           Fix improperly formatted DELTA-UTC rinex nav header records in test data
+           Correct use of leap seconds in RinexTimeOffset/RinexNavDataFactory
+           Correct initial/default value for MultiFormatNavDataFactory::getFinalTime()
+
+
+
+# Version 9.1.0   Thursday January 14, 2021
+
+Modifications by Author
+-----------------------
+     Andrew Kuck <kuck@arlut.utexas.edu> (3):
+           Update conda package to build from main
+           Relax protected word searches
+           Use main branch for SGLTk.
+
+     David Barber <dbarber@arlut.utexas.edu> (1):
+           Update build.sh for better error reporting and standardize across TKs.
+
+     John Knutson <johnk@arlut.utexas.edu> (8):
+           Add accessors to the ObsID description maps for SWIG
+           Resolve "improve documentation"
+           Clarify use of convertQuant and subframeConvert, and remove mentions of FIC which would be confusing to anyone outside SGL
+           Resolve "Add more details to SatMetaDataStore docs"
+           Change EngNav decoding internals to use C++ instead of C pointers and linked lists and eliminate the need for explicit initialization by the user
+           Add support of time system conversion to/from QZSS
+           Resolve "CommonTime/TimeSystem Redesign"
+           Minimal effort changes to put everything into the gpstk namespace
+
+
+
+# Version 9.0.0   Thursday December 10, 2020
+
+Modifications by Author
+-----------------------
+     Andrew Kuck <kuck@arlut.utexas.edu> (5):
+           Add protected word check.
+           Update comments.
+           Replace master with main in ci.
+           Update default branch references in lint_test.sh
+           Update readme.
+
+     Dave Rainwater <rain@arlut.utexas.edu> (4):
+           [ci-skip] Initial commit: TKS-190 boolean units selection in constructor.
+           Modify test w/ IonoModel constructor to use CarrierBand instead of
+           Fix docstrings.
+           Remove unused class attribute from .hpp.
+
+     David Barber <dbarber@arlut.utexas.edu> (2):
+           staging deprecated file(s)
+           removing staged deprecated file(s) ATTIC_DEPRECATION_FLAG
+
+
+
 # Version 8.0.0   Thursday November 19, 2020
 
 Modifications by Author

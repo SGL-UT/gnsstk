@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -67,7 +67,7 @@ using namespace StringUtils;
 inline long Stem(double x, double& scale) { return (long(x/scale)); }
 
 //------------------------------------------------------------------------------------
-void Robust::StemLeafPlot(ostream& os, double *xd, long nd, string msg)
+void Robust::StemLeafPlot(std::ostream& os, double *xd, long nd, std::string msg)
 {
    long stem, l, nout=0, s, sM, sQ1, sQ3, sOH, sOL;
    int i, sign, pos, k, leaf;

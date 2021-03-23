@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -95,6 +95,8 @@
 
 #include <vector>
 
+namespace gpstk
+{
 //------------------------------------------------------------------------------------
 // TODO
 // ?make first result BOD?
@@ -228,7 +230,6 @@ public:
    void ComputeRobustSigmaLimit(int& N, T& new_siglim);
 
    /// analyze the output of the filter(), filling the results array with outliers
-   /// @param return vector of FilterHit
    /// @return the number of outliers
    int analysis(void);
 
@@ -910,4 +911,5 @@ template <class T> int IterativeFDiffFilter<T>::editArrays(
 
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------
+}
 #endif // #define FDIFF_FILTER_INCLUDE

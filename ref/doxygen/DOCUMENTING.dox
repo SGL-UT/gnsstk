@@ -1,0 +1,47 @@
+\page HOWTO
+\subpage DoxygenGuide Documenting Your Code
+
+\page DoxygenGuide Documenting Your Code
+\todo Flesh out this document.
+
+\section doctips Tips for Documenting
+
+- When defining functions, make sure that the prototype is identical between the .cpp and .hpp file, including both the namespaces and the parameter names.  If, for example, you have std::string as the return type in the .hpp file and string as the return type in the .cpp file, Doxygen may get confused and autolink to the .cpp version with no documentation.  If you don't use the same parameter names between the .cpp and .hpp files, that will also confuse Doxygen.
+
+- Don't put type information in \@return or \@param documentation.  It doesn't really add anything and will often cause Doxygen to complain and not produce the documentation. <br> NO: <code>* \@param CommonTime& tt          the epoch of interest (input)</code> <br/> NO: <code>* \@return double yaw    Satellite yaw angle in radians</code> <br/> YES: <code>* \@param[in] tt the epoch of interest</code> <br/> YES: <code>* \@return Satellite yaw angle in radians</code>
+
+- Don't use "NB", use "@note"
+
+- Do not put a comma after a \@param name unless you mean to document multiple parameters. <br/> NO: <code>* \@param strm, the output stream.</code> <br/> YES: <code>* \@param[out] strm the output stream.</code> <br/> YES: <code>* \@param[in] x,y,z the ECEF position of the antenna</code>
+
+- Don't put your Doxygen documentation for shared functions/methods in the .cpp file, put it in the .hpp file (exception: in-line bug, todo, note and similar special-purpose Doxygen commands).
+
+- If you want to use one comment to document multiple items, group them together, like so: <pre>            /// Geocentric XYZ station coordinates corresponding to the 
+            /// analysis clock values reported (in millimeters!)
+            //\@{
+         int64_t posX;
+         int64_t posY;
+         int64_t posZ;
+            //\@}</pre>
+
+\subsection doxywarn Doxygen Warning Messages
+
+- \bold{explicit link request to '...' could not be resolved} <br/> This usually means a \# symbol or \:: was inserted in front of text that is not a defined symbol.  Either define the symbol, escape the \# with a backslash (\\) or remove the \# altogether.
+
+- \bold{argument '...' of command \@param is not found in the argument list of ...} <br/> You have a mismatch between the argument name used with \@param, the function declaration in the .hpp file, or the .cpp file.  \see \ref doctips.
+
+- \bold{no uniquely matching class member found for ...} <br/> You have defined a function in a .cpp file with namespace scope defined with a `using namespace` statement (typically a standard C++ class e.g. string).  Or, you have overloaded a function in a way that Doxygen doesn't understand as being distinct (which may be a Doxygen bug).
+
+- \bold{Unexpected html tag ... found within ... context} <br/> Typically this is due to an unterminated alias e.g. `\\dicdef{...` which is missing the closing curly brace.
+
+- \bold{End of list marker found without any preceding list items} <br/> Excess periods (".") in the documentation text, e.g. `* bigNum or smallNum..`
+
+\subsection doxyfail Doxygen Shortcomings
+
+- Doxygen doesn't understand function pointers as parameters to functions and will mark them undocumented
+
+- Doxygen doesn't pay attention to `using namespace` statements and thus doesn't resolve the scope of identifiers in the way a compiler would.
+
+\section docapps Documenting your Application
+
+- When providing examples in the documentation, it is preferred that any input files in the example commands come from the data directory in the repository.  This allows users to reproduce the example commands without having to go digging for input data files.

@@ -19,7 +19,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -136,7 +136,7 @@ namespace Sinex
          const BlockBase  *block = *i;
          if (block)
          {
-            /// @TODO - Put block comment
+            /// @todo - Put block comment
             try
             {
                strm << BLOCK_START << block->getTitle() << endl;
@@ -265,7 +265,7 @@ namespace Sinex
             }
             case COMMENT_START:
             {
-               /// @TODO - Store
+               /// @todo - Store
                break;
             }
             default:

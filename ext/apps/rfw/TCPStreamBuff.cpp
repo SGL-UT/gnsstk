@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -66,7 +66,7 @@ using namespace std;
 namespace gpstk
 {
 //------------------------------------------------------------------------
-   IPaddress::IPaddress(const string& host_name)
+   IPaddress::IPaddress(const std::string& host_name)
    {
       // If the address is in dotted quad notation, this will work.
       address = inet_addr(host_name.c_str());

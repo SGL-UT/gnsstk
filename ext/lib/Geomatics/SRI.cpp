@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -680,7 +680,7 @@ using namespace StringUtils;
    // param name string labeling the state in Namelist names
    // param value to which the state element is fixed
    // param sigma (1/information) assigned to the element
-   void SRI::stateFix(const string& name,
+   void SRI::stateFix(const std::string& name,
                       const double& value, const double& sigma, bool restore)
    {
       int index = names.index(name);

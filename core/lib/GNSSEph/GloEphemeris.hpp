@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -137,7 +137,7 @@ namespace gpstk
 
          /** Compute the satellite clock drift (sec/sec) at the given time
           *
-          * @param epoch   Epoch to compute satellite clock drift.
+          * @param t Epoch to compute satellite clock drift.
           *
           * @throw InvalidRequest if required data has not been stored.
           */

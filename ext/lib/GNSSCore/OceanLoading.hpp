@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -108,8 +108,8 @@ namespace gpstk
          /** Returns the effect of ocean tides loading (meters) at the given
           *  station and epoch, in the Up-East-North (UEN) reference frame.
           *
-          * @param name  Station name (case is NOT relevant).
-          * @param time  Epoch to look up
+          * @param[in] name  Station name (case is NOT relevant).
+          * @param[in] t     Epoch to look up
           *
           * @return a Triple with the ocean tidas loading effect, in meters
           * and in the UEN reference frame.

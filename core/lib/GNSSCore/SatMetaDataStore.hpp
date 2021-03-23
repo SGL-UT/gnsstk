@@ -18,7 +18,7 @@
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -47,9 +47,93 @@
 
 namespace gpstk
 {
-      /** Provide a class for reading satellite metadata from a CSV
-       * file and provide methods for looking up information in that
-       * file.
+      /** Provide a class for reading satellite metadata from a
+       * comma-separated values (CSV) file and provide methods for
+       * looking up information in that file.
+       *
+       * There are five different record formats, each starting with a
+       * string literal that is one of "SAT", "NORAD", "LAUNCH",
+       * "CLOCK" or "SIG".
+       *
+       * Satellite status record:
+       *   \li SAT (literal)
+       *   \li GNSS name (see below)
+       *   \li svn (string containing system-defined unique satellite ID)
+       *   \li prn (0 if n/a)
+       *   \li FDMA channel (0 if n/a)
+       *   \li FDMA slot ID (0 if n/a)
+       *   \li start time: year
+       *   \li start time: day of year
+       *   \li start time: seconds of day
+       *   \li end time: year
+       *   \li end time: day of year
+       *   \li end time: seconds of day
+       *   \li orbital plane (empty string if not applicable or unknown)
+       *   \li orbital slot (empty string if not applicable or unknown)
+       *   \li signal set name (see the SIG record below)
+       *   \li satellite status (see below)
+       *   \li active clock number (255 = unknown)
+       *
+       * satellite status may be one of the following case sensitive options
+       *   \li Operational
+       *   \li Decommissioned
+       *   \li Test
+       *   \li Unknown
+       *
+       * Mapping system satellite number to NORAD identifier:
+       *   \li NORAD (literal)
+       *   \li GNSS name (see below)
+       *   \li svn (string containing system-defined unique satellite ID)
+       *   \li NORAD ID
+       *
+       * Satellite launch time:
+       *   \li LAUNCH (literal)
+       *   \li GNSS name (see below)
+       *   \li svn (string containing system-defined unique satellite ID)
+       *   \li launch time: year
+       *   \li launch time: day of year
+       *   \li launch time: seconds of day
+       *   \li satellite block/type (arbitrary system-defined string)
+       *   \li mission number (arbitrary system-defined string)
+       *
+       * Clock configuration (optional record, defaults to all unknown):
+       *   \li CLOCK (literal)
+       *   \li GNSS name (see below)
+       *   \li satellite block/type (arbitrary system-defined string)
+       *   \li clock type 1
+       *   \li clock type 2
+       *   \li clock type 3
+       *   \li clock type 4
+       *
+       * clock type may be one of the following case sensitive options
+       *   \li Crystal
+       *   \li Cesium
+       *   \li Rubidium
+       *   \li Hydrogen
+       *   \li USNO
+       *   \li Unknown (which doubles as "no clock")
+       *
+       * Signal sets are defined using multiple SIG records as follows
+       *   \li SIG (literal)
+       *   \li signal set name (unique arbitrary string)
+       *   \li carrier band name (see gpstk::CarrierBand)
+       *   \li tracking code name (see gpstk::TrackingCode)
+       *   \li navigation code name (see gpstk::NavType)
+       *
+       * GNSS name may be one of the following case sensitive options
+       *   \li GPS
+       *   \li Galileo
+       *   \li GLONASS
+       *   \li Geostationary
+       *   \li LEO
+       *   \li Transit
+       *   \li BeiDou
+       *   \li QZSS
+       *   \li IRNSS
+       *   \li Mixed (technically not useful in this context)
+       *   \li UserDefined (technically not useful in this context)
+       *   \li Unknown
+       *
        */
    class SatMetaDataStore
    {
@@ -58,8 +142,8 @@ namespace gpstk
       struct Signal
       {
          CarrierBand carrier; ///< Carrier frequency.
-         gpstk::TrackingCode code;   ///< Tracking code.
-         gpstk::NavType nav;         ///< Navigation code.
+         TrackingCode code;   ///< Tracking code.
+         NavType nav;         ///< Navigation code.
       };
          /// Key of GNSS and satellite block
       class SystemBlock
@@ -109,57 +193,6 @@ namespace gpstk
       SatMetaDataStore() = default;
 
          /** Attempt to load satellite metadata from the store.
-          * The format of the input file is CSV, the values being
-          *   \li SAT (literal)
-          *   \li GNSS name
-          *   \li svn
-          *   \li prn
-          *   \li FDMA channel (0 if n/a)
-          *   \li FDMA slot ID (0 if n/a)
-          *   \li start time year
-          *   \li start time day of year
-          *   \li start time seconds of day
-          *   \li end time year
-          *   \li end time day of year
-          *   \li end time seconds of day
-          *   \li orbital plane
-          *   \li orbital slot
-          *   \li signal set name
-          *   \li satellite status
-          *   \li active clock number
-          *
-          * Mapping system satellite number to NORAD identifier:
-          *   \li NORAD (literal)
-          *   \li GNSS name
-          *   \li svn
-          *   \li NORAD ID
-          *
-          * Satellite launch time:
-          *   \li LAUNCH (literal)
-          *   \li GNSS name
-          *   \li svn
-          *   \li launch time year
-          *   \li launch time day of year
-          *   \li launch time seconds of day
-          *   \li satellite block/type
-          *   \li mission number
-          *
-          * Clock configuration:
-          *   \li CLOCK (literal)
-          *   \li GNSS name
-          *   \li satellite type/block
-          *   \li clock type 1
-          *   \li clock type 2
-          *   \li clock type 3
-          *   \li clock type 4
-          *
-          * Signal sets are defined using multiple SIG records as follows
-          *   \li SIG (literal)
-          *   \li signal set name
-          *   \li carrier band name
-          *   \li tracking code name
-          *   \li navigation code name
-          *
           * @param[in] sourceName The path to the input CSV-format file.
           * @return true if successful, false on error.
           */
@@ -243,9 +276,9 @@ namespace gpstk
           * @return true if the requested satellite mapping was found.
           */
       bool findSatBySlotFdma(uint32_t slotID,
-                              int32_t channel,
-                        const gpstk::CommonTime& when,
-                        SatMetaData& sat)
+                             int32_t channel,
+                             const gpstk::CommonTime& when,
+                             SatMetaData& sat)
          const;
 
          /** Get the pseudo-random number of a satellite in the map by

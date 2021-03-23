@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -49,6 +49,8 @@
 
 using namespace std;
 
+namespace gpstk
+{
 // -----------------------------------------------------------------------------
 // Generate random numbers uniformly distributed from 0.0 to 1.0.  Mbig and
 // Mseed are large but arbitrary, but Mbig > Mseed.  The 55 is not arbitrary.
@@ -178,3 +180,4 @@ double RandExpCor(double dt, double sigma, double T, double xlast)
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+}

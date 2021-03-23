@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -43,12 +43,16 @@
 #include "format.hpp"
 #include <iomanip>
 using namespace std;
+
+namespace gpstk
+{
 ostream& operator<<(ostream& os, const format& f)
 {
    if(f.form) os << (f.form==1 ? fixed : scientific);
    if(f.wide > 0) os << setw(f.wide);
    os << setprecision(f.prec);
    return os;
+}
 }
 
 //-----------------------------------------------------------------------------

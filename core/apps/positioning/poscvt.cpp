@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -35,6 +35,62 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+
+/** \page apps
+ * - \subpage poscvt - Convert between coordinate systems
+ * \page poscvt
+ * \tableofcontents
+ *
+ * \section poscvt_name NAME
+ * poscvt - Convert between coordinate systems
+ *
+ * \section poscvt_synopsis SYNOPSIS
+ * \b poscvt [\argarg{OPTION}] ...
+ *
+ * \section poscvt_description DESCRIPTION
+ * This application allows the user to convert among different
+ * coordinate systems on the command line. Coordinate systems handled
+ * include Cartesian, geocentric, and geodetic.
+ *
+ * \dictionary
+ * \dicterm{-d, --debug}
+ * \dicdef{Increase debug level}
+ * \dicterm{-v, --verbose}
+ * \dicdef{Increase verbosity}
+ * \dicterm{-h, --help}
+ * \dicdef{Print help usage}
+ * \dicterm{\--ecef=\argarg{POSITION}}
+ * \dicdef{ECEF "X Y Z" in meters}
+ * \dicterm{\--geodetic=\argarg{POSITION}}
+ * \dicdef{Geodetic "lat lon alt" in deg, deg, meters}
+ * \dicterm{\--geocentric=\argarg{POSITION}}
+ * \dicdef{Geocentric "lat lon radius" in deg, deg, meters}
+ * \dicterm{\--spherical=\argarg{POSITION}}
+ * \dicdef{Spherical "theta, phi, radius" in deg, deg, meters}
+ * \dicterm{-l, --list-formats}
+ * \dicdef{List the available format codes for use by the input and output format options.}
+ * \dicterm{-F, --output-format=\argarg{ARG}}
+ * \dicdef{Write the position with the given format.}
+ * \enddictionary
+ *
+ * \section poscvt_examples EXAMPLES
+ * \code{.sh}
+ * > poscvt --ecef="4345070.59253 45619878.26297 803.598856837"
+ * 
+ *     ECEF (x,y,z) in meters              4345070.5925 45619878.2630 803.5989
+ *     Geodetic (llh) in deg, deg, m       0.00100566 84.55926933 39448197.4795
+ *     Geocentric (llr) in deg, deg, m     0.00100472 84.55926933 45826334.4795
+ *     Spherical (tpr) in deg, deg, m      89.99899528 84.55926933 45826334.4795
+ * 
+ * \endcode
+ *
+ * \section poscvt_exit_status EXIT STATUS
+ * The following exit values are returned:
+ * \dictable
+ * \dictentry{0,No errors ocurred}
+ * \dictentry{1,A C++ exception occurred}
+ * \enddictable
+ */
 
 #include "BasicFramework.hpp"
 #include "Position.hpp"

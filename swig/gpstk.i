@@ -222,7 +222,6 @@ del IntEnum
 %rename (toGloEphemeris) *::operator GloEphemeris() const;
 %rename (toAlmOrbit) *::operator AlmOrbit() const;
 
-%include "AstronomicalFunctions.hpp"
 %include "PZ90Ellipsoid.hpp"
 %include "WGS84Ellipsoid.hpp"
 
@@ -256,7 +255,6 @@ namespace std { class fstream {}; }
 %template(FileStore_YumaHeader) gpstk::FileStore<gpstk::YumaHeader>;
 %include "YumaAlmanacStore.hpp"
 
-%include "SVNumXRef.hpp"
 //%include "RinexSatID.hpp"
 
 %ignore gpstk::SV_ACCURACY_GPS_MIN_INDEX;
@@ -380,10 +378,7 @@ namespace std { class fstream {}; }
 %include "AshtechMBEN.hpp"
 %include "AshtechPBEN.hpp"
 
-%include "MoonPosition.hpp"
-%include "SunPosition.hpp"
 %include "PoleTides.hpp"
-%include "SolidTides.hpp"
 
 // PosSol
 %include "Combinations.hpp"
