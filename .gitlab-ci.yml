@@ -549,6 +549,9 @@ user_install_windows:
   script:
     - cd build
     - cmake --build . --config Release --target install
+  artifacts:
+    paths:
+      - build/install
   dependencies:
     - build_windows
 # Temporarily allow failures as Windows Runner issues are resolved
@@ -850,15 +853,20 @@ deploy_redhat_py36:
     - package_redhat_8
 
 
-# package_windows:
-#   stage: package
-#   tags:
-#     - win10
-#   script:
-#     - cd build
-#     - cpack -C Release
-#   dependencies:
-#     - build_windows
+package_windows:
+  stage: package
+  needs: [build_windows]
+  extends: .package_build
+  tags:
+    - win10
+  script:
+    - cd build
+    - cpack -C Release
+  dependencies:
+    - build_windows
+  artifacts:
+    paths:
+      - build/
 
 # Temporarily allow failures as Windows Runner issues are resolved
 
