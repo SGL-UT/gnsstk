@@ -853,20 +853,22 @@ deploy_redhat_py36:
     - package_redhat_8
 
 
-package_windows:
-  stage: package
-  needs: [build_windows]
-  extends: .package_build
-  tags:
-    - win10
-  script:
-    - cd build
-    - cpack -C Release
-  dependencies:
-    - build_windows
-  artifacts:
-    paths:
-      - build/
+# This requires a third-party package called NSIS.  We don't have it
+# installed and don't have the resources to make it work right now.
+# package_windows:
+#   stage: package
+#   needs: [build_windows]
+#   extends: .package_build
+#   tags:
+#     - win10
+#   script:
+#     - cd build
+#     - cpack -C Release
+#   dependencies:
+#     - build_windows
+#   artifacts:
+#     paths:
+#       - build/
 
 # Temporarily allow failures as Windows Runner issues are resolved
 
