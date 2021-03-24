@@ -382,7 +382,7 @@ test_debian_10:
     - ctest -j 4
     - touch $CI_PROJECT_DIR/success
   artifacts:
-    when: on_failure
+    when: always
     paths:
     - build/Testing/Temporary/
     - build/swig/
@@ -440,7 +440,7 @@ test_redhat:
     - cd build
     - ctest -j 4
   artifacts:
-    when: on_failure
+    when: always
     paths:
     - build/Testing/Temporary/
   dependencies:
