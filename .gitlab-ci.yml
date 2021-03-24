@@ -21,7 +21,7 @@ variables:
   SGLTK_BRANCH: main
   DOCKER_REGISTRY: "modisdev:5000/sgl_ci"
   # this can be used for incremental builds
-  GIT_CLEAN_FLAGS: none
+  # GIT_CLEAN_FLAGS: none
   # This can be set to True by Gitlab UI to only build/test packages.
   RELEASE_ONLY: "False"
 
