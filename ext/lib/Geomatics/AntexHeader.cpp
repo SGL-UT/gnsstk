@@ -60,7 +60,7 @@ namespace gpstk
       strm.header = *this;
       
       unsigned long allValid;
-      if (version == 1.3)        allValid = allValid13;
+      if (version == 1.3 || version == 1.4) allValid = allValid13;
       else {
          FFStreamError err("Unknown Antex version: " + asString(version,2));
          err.addText("Make sure to set the version correctly.");
