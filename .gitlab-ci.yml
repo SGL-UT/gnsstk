@@ -610,6 +610,31 @@ system_install_redhat_8:
 
 # Package Stage
 # Tests packaging of GPSTk on all platforms
+package_debian_7:
+  stage: package
+  needs: []
+  extends: .package_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/debian7_fai_ish
+  script:
+    - rm -rf ../*.deb
+    # Mark the debian log so that this package is a backport.
+    # Use the most recent Maintainer as current maintainer.
+    - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
+    - dch --bpo "No Changes"
+    - dpkg-buildpackage -us -uc -d --changes-option="-DDistribution=jessie-sgl"
+    - mkdir debs
+    - mv ../*.deb debs
+    - mv ../*.changes debs
+    - mv ../*.dsc debs
+    - mv ../*.git debs
+  artifacts:
+    paths:
+    - debs/
+  dependencies:
+    - build_debian_7
+
 package_debian_8:
   stage: package
   needs: []
