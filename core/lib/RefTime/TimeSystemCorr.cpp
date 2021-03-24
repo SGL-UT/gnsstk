@@ -199,33 +199,35 @@ namespace gpstk
    {
       s << "Time system correction for " << asString4() << ": "
         << asString() << std::scientific << std::setprecision(12);
-      GPSWeekSecond gps(refTime);
-      std::ostringstream oss;
-      oss << ", RefTime = week/sow " << gps.week << "/"
-         << std::fixed << std::setprecision(0) << gps.sow;
-      std::string refstr(oss.str());
-      BDSWeekSecond bdt(refTime);
-      oss.str("");
-      oss << ", RefTime = week/sow " << bdt.week << "/"
-         << std::fixed << std::setprecision(0) << bdt.sow;
-      std::string brefstr(oss.str());
+      BDSWeekSecond bdt;
+      GPSWeekSecond gps;
       CivilTime civ;
       switch(type) {
          case GPUT:
-            s << ", A0 = " << A0 << ", A1 = " << A1 << refstr;
+            gps = refTime;
+            s << ", A0 = " << A0 << ", A1 = " << A1
+              << ", RefTime = week/sow " << gps.week << "/" << int(gps.sow);
             break;
          case GAUT:
-            s << ", A0 = " << A0 << ", A1 = " << A1 << refstr;
+            gps = refTime;
+            s << ", A0 = " << A0 << ", A1 = " << A1
+              << ", RefTime = week/sow " << gps.week << "/" << int(gps.sow);
             break;
          case SBUT:
-            s << ", A0 = " << A0 << ", A1 = " << A1 << refstr
+            gps = refTime;
+            s << ", A0 = " << A0 << ", A1 = " << A1
+              << ", RefTime = week/sow " << gps.week << "/" << int(gps.sow)
               << ", provider " << geoProvider << ", UTC ID = " << geoUTCid;
             break;
          case GLUT:
-            s << ", -TauC = " << A0 << refstr;
+            gps = refTime;
+            s << ", -TauC = " << A0
+              << ", RefTime = week/sow " << gps.week << "/" << int(gps.sow);
             break;
          case GPGA:
-            s << ", A0G = " << A0 << ", A1G = " << A1 << refstr;
+            gps = refTime;
+            s << ", A0G = " << A0 << ", A1G = " << A1
+              << ", RefTime = week/sow " << gps.week << "/" << int(gps.sow);
             break;
          case GLGP:
             civ = refTime;
@@ -233,22 +235,34 @@ namespace gpstk
               << civ.year << "/" << civ.month << "/" << civ.day;
             break;
          case QZGP:
-            s << ", A0 = " << A0 << ", A1 = " << A1 << refstr;
+            gps = refTime;
+            s << ", A0 = " << A0 << ", A1 = " << A1
+              << ", RefTime = week/sow " << gps.week << "/" << int(gps.sow);
             break;
          case QZUT:
-            s << ", A0 = " << A0 << ", A1 = " << A1 << refstr;
+            gps = refTime;
+            s << ", A0 = " << A0 << ", A1 = " << A1
+              << ", RefTime = week/sow " << gps.week << "/" << int(gps.sow);
             break;
          case BDUT:
-            s << ", A0 = " << A0 << ", A1 = " << A1 << brefstr;
+            bdt = refTime;
+            s << ", A0 = " << A0 << ", A1 = " << A1
+              << ", RefTime = week/sow " << bdt.week << "/" << int(bdt.sow);
             break;
          case BDGP:
-            s << ", A0 = " << A0 << ", A1 = " << A1 << brefstr;
+            bdt = refTime;
+            s << ", A0 = " << A0 << ", A1 = " << A1
+              << ", RefTime = week/sow " << bdt.week << "/" << int(bdt.sow);
             break;
          case IRUT:
-            s << ", A0 = " << A0 << ", A1 = " << A1 << refstr;
+            gps = refTime;
+            s << ", A0 = " << A0 << ", A1 = " << A1
+              << ", RefTime = week/sow " << gps.week << "/" << int(gps.sow);
             break;
          case IRGP:
-            s << ", A0 = " << A0 << ", A1 = " << A1 << refstr;
+            gps = refTime;
+            s << ", A0 = " << A0 << ", A1 = " << A1
+              << ", RefTime = week/sow " << gps.week << "/" << int(gps.sow);
          default:
             break;
       }
