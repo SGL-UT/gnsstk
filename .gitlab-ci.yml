@@ -551,7 +551,7 @@ user_install_windows:
     - cmake --build . --config Release --target install
   artifacts:
     paths:
-      - build/install
+      - build/
   dependencies:
     - build_windows
 # Temporarily allow failures as Windows Runner issues are resolved
