@@ -16,7 +16,7 @@ add_test(NAME PRSolve_Required
     -DTESTBASE=PRSolve_Required
     -DTESTNAME=PRSolve_Required
     -DARGS=${ARGS1}
-    -DDIFF_ARGS=-l54\ -z1\ -e1.
+    -DDIFF_ARGS=-l54\ -z1\ -e15.
     -DOWNOUTPUT=1
     -P ${CMAKE_CURRENT_SOURCE_DIR}/../testsuccexp.cmake)
 
