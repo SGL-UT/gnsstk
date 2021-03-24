@@ -625,6 +625,11 @@ package_debian_7:
     # dpkg-parsechangelog doesn't support -S under debian 7, so hard code it.
     - export DEBEMAIL="No One <nobody@arlut.utexas.edu>"
     - dch --bpo "No Changes"
+    # make dpkg-source stop complaining about manual tweaking
+    - echo 'extend-diff-ignore="debian/source/options"' >>debian/source/options
+    - echo 'extend-diff-ignore="debian/control"' >>debian/source/options
+    # manually tweak control file for deb7 compatibility
+    - sed -i -e 's/ *<pkg_python>//g' -e '/Build-Profiles:/d' debian/control
     - dpkg-buildpackage -us -uc -d --changes-option="-DDistribution=wheezy-sgl"
     - mkdir debs
     - mv ../*.deb debs
