@@ -616,6 +616,8 @@ package_debian_7:
   extends: .package_build
   tags:
     - docker-executor
+    # Not all docker runners support debian 7
+    - deb7-support
   image: $DOCKER_REGISTRY/debian7_fai_ish
   script:
     - rm -rf ../*.deb
