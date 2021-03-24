@@ -21,7 +21,7 @@ variables:
   SGLTK_BRANCH: main
   DOCKER_REGISTRY: "modisdev:5000/sgl_ci"
   # this can be used for incremental builds
-  #  GIT_CLEAN_FLAGS: none
+  GIT_CLEAN_FLAGS: none
   # This can be set to True by Gitlab UI to only build/test packages.
   RELEASE_ONLY: "False"
 
@@ -291,9 +291,9 @@ build_windows:
     - win10
   script:
 # incremental builds
-#    - if not exist "%CI_PROJECT_DIR%/build/" mkdir "%CI_PROJECT_DIR%/build"
+    - if not exist "%CI_PROJECT_DIR%/build/" mkdir "%CI_PROJECT_DIR%/build"
 # non-incremental builds
-    - mkdir build
+#    - mkdir build
     - cd build
     - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
     - cmake --build . --config Release
@@ -301,9 +301,9 @@ build_windows:
     paths:
     - build/
 # used for incremental builds
-#  cache:
-#    paths:
-#    - build/
+  cache:
+    paths:
+    - build/
   timeout: 30m
 # Temporarily allow failures as Windows Runner issues are resolved
   allow_failure: true
@@ -551,7 +551,7 @@ user_install_windows:
     - cmake --build . --config Release --target install
   artifacts:
     paths:
-      - build/
+      - build/install/
   dependencies:
     - build_windows
 # Temporarily allow failures as Windows Runner issues are resolved
