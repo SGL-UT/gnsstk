@@ -622,8 +622,8 @@ package_debian_7:
   script:
     - rm -rf ../*.deb
     # Mark the debian log so that this package is a backport.
-    # Use the most recent Maintainer as current maintainer.
-    - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
+    # dpkg-parsechangelog doesn't support -S under debian 7, so hard code it.
+    - export DEBEMAIL="No One <nobody@arlut.utexas.edu>"
     - dch --bpo "No Changes"
     - dpkg-buildpackage -us -uc -d --changes-option="-DDistribution=wheezy-sgl"
     - mkdir debs
