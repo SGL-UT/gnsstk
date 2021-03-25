@@ -5,6 +5,8 @@ target_link_libraries(FileFilter_T gpstk)
 add_test(FileDirProc_FileFilter FileFilter_T)
 
 if ( $ENV{USER} MATCHES "root" )
+  message(WARNING "Will not execute FileSpecFind_T test as root")
+else ( $ENV{USER} MATCHES "root" )
   add_executable(FileSpecFind_T FileSpecFind_T.cpp)
   if( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
     target_link_libraries(FileSpecFind_T gpstk shlwapi)
@@ -14,8 +16,6 @@ if ( $ENV{USER} MATCHES "root" )
   add_test(NAME FileDirProc_FileSpecFind
     COMMAND FileSpecFind_T
     WORKING_DIRECTORY ${GPSTK_TEST_DATA_DIR})
-else ( $ENV{USER} MATCHES "root" )
-  message(WARNING "Will not execute FileSpecFind_T test as root")
 endif ( $ENV{USER} MATCHES "root" )
 
 add_executable(FileSpec_T FileSpec_T.cpp)
