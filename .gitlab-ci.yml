@@ -163,7 +163,6 @@ build_debian_7:
   artifacts:
     paths:
       - build/
-  allow_failure: true
 
 build_debian_8:
   stage: build
@@ -307,8 +306,6 @@ build_windows:
     paths:
     - build/
   timeout: 30m
-# Temporarily allow failures as Windows Runner issues are resolved
-  allow_failure: true
 
 
 # Test Stage
@@ -332,8 +329,6 @@ test_debian_7:
     - build/Testing/Temporary/
   dependencies:
     - build_debian_7
-  # Allowing failure since this is unlikely to be fixed before we deprecate debian-7
-  allow_failure: true
 
 test_debian_8:
   stage: test
@@ -481,7 +476,6 @@ test_windows:
     - build/swig/
   dependencies:
     - build_windows
-  allow_failure: true
   timeout: 5m
 
 # User_Install Stage
@@ -579,8 +573,6 @@ user_install_windows:
       - build/install/
   dependencies:
     - build_windows
-# Temporarily allow failures as Windows Runner issues are resolved
-  allow_failure: true
   timeout: 10m
 
 # System Stage
