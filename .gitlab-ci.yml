@@ -143,6 +143,8 @@ generate_documentation:
     paths:
       - docs/
 
+# Note: debian 7 can't build the swig bindings out of the box because
+# SWIG 2.0.7 doesn't understand enum classes.
 build_debian_7:
   stage: build
   needs: []
@@ -484,6 +486,28 @@ test_windows:
 
 # User_Install Stage
 # Tests user install of GPSTk on each platform, saves artifacts for downstream builds.
+
+# Note: debian 7 can't build the swig bindings out of the box because
+# SWIG 2.0.7 doesn't understand enum classes.
+user_install_debian_7:
+  stage: install
+  needs: [build_debian_7]
+  extends: .normal_job
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/debian7_fai_ish
+  script:
+    - cd build
+    - export gpstk=`pwd`/install
+    - cmake -DCMAKE_INSTALL_PREFIX=$gpstk ../
+    - make install -j 4
+    - $gpstk/bin/df_diff -h
+  artifacts:
+    paths:
+      - build/install
+  dependencies:
+    - build_debian_7
+
 user_install_debian_9:
   stage: install
   needs: [build_debian_9]
@@ -610,37 +634,42 @@ system_install_redhat_8:
 
 # Package Stage
 # Tests packaging of GPSTk on all platforms
-package_debian_7:
-  stage: package
-  needs: []
-  extends: .package_build
-  tags:
-    - docker-executor
-    # Not all docker runners support debian 7
-    - deb7-support
-  image: $DOCKER_REGISTRY/debian7_fai_ish
-  script:
-    - rm -rf ../*.deb
-    # Mark the debian log so that this package is a backport.
-    # dpkg-parsechangelog doesn't support -S under debian 7, so hard code it.
-    - export DEBEMAIL="No One <nobody@arlut.utexas.edu>"
-    - dch --bpo "No Changes"
-    # make dpkg-source stop complaining about manual tweaking
-    - echo 'extend-diff-ignore="debian/source/options"' >>debian/source/options
-    - echo 'extend-diff-ignore="debian/control"' >>debian/source/options
-    # manually tweak control file for deb7 compatibility
-    - sed -i -e 's/ *<pkg_python>//g' -e '/Build-Profiles:/d' debian/control
-    - dpkg-buildpackage -us -uc -d --changes-option="-DDistribution=wheezy-sgl"
-    - mkdir debs
-    - mv ../*.deb debs
-    - mv ../*.changes debs
-    - mv ../*.dsc debs
-    - mv ../*.git debs
-  artifacts:
-    paths:
-    - debs/
-  dependencies:
-    - build_debian_7
+
+# Note: debian 7 can't build the swig bindings out of the box because
+# SWIG 2.0.7 doesn't understand enum classes.
+# This makes packaging difficult at best since the package config
+# assumes swig bindings were built.
+# package_debian_7:
+#   stage: package
+#   needs: []
+#   extends: .package_build
+#   tags:
+#     - docker-executor
+#     # Not all docker runners support debian 7
+#     - deb7-support
+#   image: $DOCKER_REGISTRY/debian7_fai_ish
+#   script:
+#     - rm -rf ../*.deb
+#     # Mark the debian log so that this package is a backport.
+#     # dpkg-parsechangelog doesn't support -S under debian 7, so hard code it.
+#     - export DEBEMAIL="No One <nobody@arlut.utexas.edu>"
+#     - dch --bpo "No Changes"
+#     # make dpkg-source stop complaining about manual tweaking
+#     - echo 'extend-diff-ignore="debian/source/options"' >>debian/source/options
+#     - echo 'extend-diff-ignore="debian/control"' >>debian/source/options
+#     # manually tweak control file for deb7 compatibility
+#     - sed -i -e 's/ *<pkg_python>//g' -e '/Build-Profiles:/d' debian/control
+#     - dpkg-buildpackage -us -uc -d --changes-option="-DDistribution=wheezy-sgl"
+#     - mkdir debs
+#     - mv ../*.deb debs
+#     - mv ../*.changes debs
+#     - mv ../*.dsc debs
+#     - mv ../*.git debs
+#   artifacts:
+#     paths:
+#     - debs/
+#   dependencies:
+#     - build_debian_7
 
 package_debian_8:
   stage: package
