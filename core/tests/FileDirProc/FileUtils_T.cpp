@@ -292,7 +292,7 @@ int FileUtils_T :: testFileAccessCheck()
       {
          ofs.flush();
          ofs.close();
-         #ifdef WIN32
+#ifdef WIN32
          if (0 != _chmod(filename.c_str(), _S_IREAD ))
          {
             tester.assert ( false, "test setup error (chmod)", __LINE__ );
@@ -304,7 +304,7 @@ int FileUtils_T :: testFileAccessCheck()
             tester.assert( FileUtils::fileAccessCheck(filename, ios::in),   "mode test failed",           __LINE__ );
             tester.assert( !FileUtils::fileAccessCheck(filename, ios::out), "expected mode test failure", __LINE__ );
          }
-         #else
+#else
          if (0 != chmod(filename.c_str(), 0444) )
          {
             tester.assert ( false, "test setup error (chmod)", __LINE__ );
@@ -318,9 +318,12 @@ int FileUtils_T :: testFileAccessCheck()
                 * to have a bug in the OS/system calls that
                 * erroneously allow opening read-only files with write
                 * access.  There's nothing we can do about this. */
-            tester.assert( !FileUtils::fileAccessCheck(filename, ios::out), "expected mode test failure", __LINE__ );
+            if ((getuid() != 0) && (geteuid() != 0))
+            {
+               tester.assert( !FileUtils::fileAccessCheck(filename, ios::out), "expected mode test failure", __LINE__ );
+            }
          }
-         #endif
+#endif
 
       }
    }
