@@ -501,6 +501,7 @@ user_install_debian_7:
     - export gpstk=`pwd`/install
     - cmake -DCMAKE_INSTALL_PREFIX=$gpstk ../
     - make install -j 4
+    - export LD_LIBRARY_PATH=$gpstk/lib:$gpstk/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
     - $gpstk/bin/df_diff -h
   artifacts:
     paths:
