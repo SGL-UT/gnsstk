@@ -4,7 +4,7 @@ add_executable(FileFilter_T FileFilter_T.cpp)
 target_link_libraries(FileFilter_T gpstk)
 add_test(FileDirProc_FileFilter FileFilter_T)
 
-if ( $ENV{USER} MATCHES "root" )
+if ( $ENV{EUID} MATCHES "0" )
   message(WARNING "Will not execute FileSpecFind_T test as root")
 else ( $ENV{USER} MATCHES "root" )
   add_executable(FileSpecFind_T FileSpecFind_T.cpp)
