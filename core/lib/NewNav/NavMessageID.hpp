@@ -98,6 +98,8 @@ namespace gpstk
    };
 
 
+   typedef std::set<NavMessageID> NavMessageIDSet;
+
    inline std::ostream& operator<<(std::ostream& s, const NavMessageID& nmid)
    {
       s << StringUtils::asString(nmid.messageType) << " "

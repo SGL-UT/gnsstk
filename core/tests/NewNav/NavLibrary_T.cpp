@@ -150,6 +150,8 @@ public:
    unsigned addFactoryTest();
       /// Test getInitialTime() and getFinalTime()
    unsigned getTimeTest();
+   unsigned getAvailableSatsTest();
+   unsigned isPresentTest();
 
    gpstk::CivilTime civ;
    gpstk::CommonTime ct;
@@ -457,6 +459,70 @@ getTimeTest()
 }
 
 
+unsigned NavLibrary_T ::
+getAvailableSatsTest()
+{
+   TUDEF("NavLibrary", "getAvailableSats");
+   gpstk::NavLibrary uut;
+   gpstk::NavDataFactoryPtr
+      ndfp(std::make_shared<RinexTestFactory>());
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "arlm2000.15n";
+   gpstk::NavSatelliteIDSet satset;
+   TUCATCH(uut.addFactory(ndfp));
+   RinexTestFactory *rndfp = dynamic_cast<RinexTestFactory*>(ndfp.get());
+   TUASSERT(rndfp->addDataSource(fname));
+      // really basic tests, the real tests are in NavDataFactoryWithStore_T etc
+   TUCATCH(satset = uut.getAvailableSats(
+              gpstk::CommonTime::BEGINNING_OF_TIME,
+              gpstk::CommonTime::END_OF_TIME));
+   TUASSERTE(gpstk::NavSatelliteIDSet::size_type, 31, satset.size());
+   TUCATCH(satset = uut.getAvailableSats(
+              gpstk::CivilTime(2020,4,12,0,56,0,gpstk::TimeSystem::GPS),
+              gpstk::CivilTime(2020,4,12,0,57,0,gpstk::TimeSystem::GPS)));
+   TUASSERTE(bool, true, satset.empty());
+   TURETURN();
+}
+
+
+unsigned NavLibrary_T ::
+isPresentTest()
+{
+   TUDEF("NavLibrary", "isPresent");
+   gpstk::NavLibrary uut;
+   gpstk::NavDataFactoryPtr
+      ndfp(std::make_shared<RinexTestFactory>());
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "arlm2000.15n";
+      // really basic tests, the real tests are in NavDataFactoryWithStore_T etc
+   TUCATCH(uut.addFactory(ndfp));
+   RinexTestFactory *rndfp = dynamic_cast<RinexTestFactory*>(ndfp.get());
+   TUASSERT(rndfp->addDataSource(fname));
+   gpstk::NavSatelliteID sat1(gpstk::SatID(23,gpstk::SatelliteSystem::GPS));
+   gpstk::NavMessageID nmid1e(sat1, gpstk::NavMessageType::Ephemeris),
+      nmid1a(sat1, gpstk::NavMessageType::Almanac);
+   TUASSERTE(bool, true, uut.isPresent(sat1,
+                                       gpstk::CommonTime::BEGINNING_OF_TIME,
+                                       gpstk::CommonTime::END_OF_TIME));
+   TUASSERTE(bool, true, uut.isPresent(nmid1e,
+                                       gpstk::CommonTime::BEGINNING_OF_TIME,
+                                       gpstk::CommonTime::END_OF_TIME));
+   TUASSERTE(bool, false, uut.isPresent(nmid1a,
+                                       gpstk::CommonTime::BEGINNING_OF_TIME,
+                                       gpstk::CommonTime::END_OF_TIME));
+   TUCSM("isTypePresent");
+   TUASSERTE(bool, true, uut.isTypePresent(
+                gpstk::NavMessageType::Ephemeris, sat1,
+                gpstk::CommonTime::BEGINNING_OF_TIME,
+                gpstk::CommonTime::END_OF_TIME));
+   TUASSERTE(bool, false, uut.isTypePresent(
+                gpstk::NavMessageType::Almanac, sat1,
+                gpstk::CommonTime::BEGINNING_OF_TIME,
+                gpstk::CommonTime::END_OF_TIME));
+   TURETURN();
+}
+
+
 int main()
 {
    NavLibrary_T testClass;
@@ -470,6 +536,8 @@ int main()
    errorTotal += testClass.setTypeFilterTest();
    errorTotal += testClass.addFactoryTest();
    errorTotal += testClass.getTimeTest();
+   errorTotal += testClass.getAvailableSatsTest();
+   errorTotal += testClass.isPresentTest();
       /// @todo test edit(), clear()
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

@@ -165,6 +165,88 @@ namespace gpstk
       CommonTime getFinalTime() const override
       { return finalTime; }
 
+         /** Obtain a set of satellites for which we have data in the
+          * given time span.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of satellites for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      NavSatelliteIDSet getAvailableSats(const CommonTime& fromTime,
+                                         const CommonTime& toTime)
+         const override;
+
+         /** Obtain a set of satellites for which we have data of a
+          * specific message type in the given time span.
+          * @param[in] nmt The navigation message type you're looking for.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of satellites for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      NavSatelliteIDSet getAvailableSats(NavMessageType nmt,
+                                         const CommonTime& fromTime,
+                                         const CommonTime& toTime)
+         const override;
+
+         /** Obtain a set of satellites+message types for which we
+          * have data in the given time span.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of NavMessageID objects for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      NavMessageIDSet getAvailableMsgs(const CommonTime& fromTime,
+                                       const CommonTime& toTime) const override;
+
+         /** Determine if a given satellite/signal is available in the factory.
+          * @param[in] satID The satellite/signal to search for.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return true if the given satellite/signal is has data in
+          *   the given time span.
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      bool isPresent(const NavSatelliteID& satID,
+                     const CommonTime& fromTime,
+                     const CommonTime& toTime) const override;
+
+         /** Determine if a given message/satellite/signal is
+          * available in the factory.
+          * @param[in] nmid The message/satellite/signal to search for.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return true if the given satellite/signal is has data in
+          *   the given time span.
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      bool isPresent(const NavMessageID& nmid,
+                     const CommonTime& fromTime,
+                     const CommonTime& toTime) const override;
+
          /// Return the number of nav messages in data.
       virtual size_t size() const;
          /// Return the number of distinct signals (ignoring PRN) in the data.

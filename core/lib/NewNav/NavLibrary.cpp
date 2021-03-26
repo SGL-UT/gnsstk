@@ -265,6 +265,90 @@ namespace gpstk
    }
 
 
+   NavSatelliteIDSet NavLibrary ::
+   getAvailableSats(const CommonTime& fromTime, const CommonTime& toTime)
+      const
+   {
+      NavSatelliteIDSet rv, tmp;
+      for (const auto& fi : factories)
+      {
+         tmp = fi.second->getAvailableSats(fromTime, toTime);
+         for (const auto& i : tmp)
+         {
+            rv.insert(i);
+         }
+      }
+      return rv;
+   }
+
+
+   NavSatelliteIDSet NavLibrary ::
+   getAvailableSats(NavMessageType nmt,
+                    const CommonTime& fromTime,
+                    const CommonTime& toTime)
+      const
+   {
+      NavSatelliteIDSet rv, tmp;
+      for (const auto& fi : factories)
+      {
+         tmp = fi.second->getAvailableSats(nmt, fromTime, toTime);
+         for (const auto& i : tmp)
+         {
+            rv.insert(i);
+         }
+      }
+      return rv;
+   }
+
+
+   NavMessageIDSet NavLibrary ::
+   getAvailableMsgs(const CommonTime& fromTime,
+                    const CommonTime& toTime)
+      const
+   {
+      NavMessageIDSet rv, tmp;
+      for (const auto& fi : factories)
+      {
+         tmp = fi.second->getAvailableMsgs(fromTime, toTime);
+         for (const auto& i : tmp)
+         {
+            rv.insert(i);
+         }
+      }
+      return rv;
+   }
+
+
+   bool NavLibrary ::
+   isPresent(const NavSatelliteID& satID,
+             const CommonTime& fromTime,
+             const CommonTime& toTime)
+      const
+   {
+      for (const auto& fi : factories)
+      {
+         if (fi.second->isPresent(satID, fromTime, toTime))
+            return true;
+      }
+      return false;
+   }
+
+
+   bool NavLibrary ::
+   isPresent(const NavMessageID& nmid,
+             const CommonTime& fromTime,
+             const CommonTime& toTime)
+      const
+   {
+      for (const auto& fi : factories)
+      {
+         if (fi.second->isPresent(nmid, fromTime, toTime))
+            return true;
+      }
+      return false;
+   }
+
+
    std::string NavLibrary ::
    getFactoryFormats() const
    {

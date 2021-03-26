@@ -1,3 +1,8 @@
+//
+// WARNING: This file is currently unused.  If a definition is needed
+// from here, please add it to the appropriate section of gpstk.i
+//
+
 %{
 #include "SatID.hpp"
 #include "SatelliteSystem.hpp"

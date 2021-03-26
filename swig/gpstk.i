@@ -772,6 +772,8 @@ del IntEnum
 /* %include "STLTemplates.i" */
 %include "STLHelpers.i"
 /* %include "gpstk_templates.i" */
+%template(NavSatelliteIDSet) std::set<gpstk::NavSatelliteID>;
+%template(NavMessageIDSet) std::set<gpstk::NavMessageID>;
 
 /* %rename(__str__) gpstk::Exception::what() const; */
 

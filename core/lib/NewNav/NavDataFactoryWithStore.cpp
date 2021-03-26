@@ -1060,6 +1060,109 @@ namespace gpstk
    }
 
 
+   NavSatelliteIDSet NavDataFactoryWithStore :: getAvailableSats(
+      const CommonTime& fromTime, const CommonTime& toTime)
+      const
+   {
+      NavSatelliteIDSet rv;
+      NavMessageIDSet tmp = getAvailableMsgs(fromTime, toTime);
+         // copy the NavMessageID objects into the return value which
+         // will cast the NavMessageID to NavSatelliteID.
+      for (const auto& i : tmp)
+         rv.insert(i);
+      return rv;
+   }
+
+
+   NavSatelliteIDSet NavDataFactoryWithStore :: getAvailableSats(
+      NavMessageType nmt, const CommonTime& fromTime, const CommonTime& toTime)
+      const
+   {
+      NavSatelliteIDSet rv;
+      auto nmmi = data.find(nmt);
+      for (const auto& nsmi : nmmi->second)
+      {
+         auto ti1 = nsmi.second.lower_bound(fromTime);
+         if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
+         {
+            rv.insert(nsmi.first);
+         }
+      }
+      return rv;
+   }
+
+
+   NavMessageIDSet NavDataFactoryWithStore :: getAvailableMsgs(
+      const CommonTime& fromTime, const CommonTime& toTime)
+      const
+   {
+      NavMessageIDSet rv;
+      for (const auto& nmmi : data)
+      {
+         for (const auto& nsmi : nmmi.second)
+         {
+            auto ti1 = nsmi.second.lower_bound(fromTime);
+            if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
+            {
+               rv.insert(NavMessageID(nsmi.first, nmmi.first));
+            }
+         }
+      }
+      return rv;
+   }
+
+
+   bool NavDataFactoryWithStore :: isPresent(const NavSatelliteID& satID,
+                                             const CommonTime& fromTime,
+                                             const CommonTime& toTime)
+      const
+   {
+      for (const auto& nmmi : data)
+      {
+            // satID can be a wildcard so we have to iterate over the
+            // satellites to check for matches instead of using find.
+         for (const auto& nsmi : nmmi.second)
+         {
+            if (nsmi.first == satID)
+            {
+               auto ti1 = nsmi.second.lower_bound(fromTime);
+               if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
+               {
+                  return true;
+               }
+            }
+         }
+      }
+      return false;
+   }
+
+
+   bool NavDataFactoryWithStore :: isPresent(const NavMessageID& nmid,
+                                             const CommonTime& fromTime,
+                                             const CommonTime& toTime)
+      const
+   {
+      auto nmmi = data.find(nmid.messageType);
+      if (nmmi != data.end())
+      {
+            // satID can be a wildcard so we have to iterate over the
+            // satellites to check for matches instead of using find.
+         for (const auto& nsmi : nmmi->second)
+         {
+            if (nsmi.first == nmid)
+            {
+               auto ti1 = nsmi.second.lower_bound(fromTime);
+               if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
+               {
+                  return true;
+               }
+            }
+         }
+      }
+      return false;
+   }
+
+
    void NavDataFactoryWithStore ::
    dump(std::ostream& s, DumpDetail dl) const
    {

@@ -145,6 +145,8 @@ namespace gpstk
    };
 
 
+   typedef std::set<NavSatelliteID> NavSatelliteIDSet;
+
    inline std::ostream& operator<<(std::ostream& s, const NavSatelliteID& nsid)
    {
       s << "subj:" << nsid.sat << " xmit:" << nsid.xmitSat << " "

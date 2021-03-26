@@ -198,5 +198,55 @@ class TestNavLibrary(unittest.TestCase):
                     gpstk.GPSWeekSecond(1854,28700).toCommonTime(), sig)
         self.assertEqual(229, ndf.size())
 
+    def test_getAvailableSats(self):
+        navLib = gpstk.NavLibrary()
+        ndf = gpstk.RinexNavDataFactory()
+        navLib.addFactory(ndf)
+        ndf.addDataSource(args.input_dir+'/arlm2000.15n')
+        satid = gpstk.SatID(23,gpstk.SatelliteSystem.GPS)
+        sat1 = gpstk.NavSatelliteID(satid)
+        satset = navLib.getAvailableSats(gpstk.CommonTime.BEGINNING_OF_TIME,
+                                         gpstk.CommonTime.END_OF_TIME)
+        self.assertEqual(31, satset.size())
+        t1 = gpstk.CivilTime(2020,4,12,0,56,0,gpstk.TimeSystem.GPS).toCommonTime()
+        t2 = gpstk.CivilTime(2020,4,12,0,57,0,gpstk.TimeSystem.GPS).toCommonTime()
+        satset = navLib.getAvailableSats(t1, t2)
+        self.assertEqual(0, satset.size())
+
+    def test_isPresent(self):
+        navLib = gpstk.NavLibrary()
+        ndf = gpstk.RinexNavDataFactory()
+        navLib.addFactory(ndf)
+        ndf.addDataSource(args.input_dir+'/arlm2000.15n')
+        satid = gpstk.SatID(23,gpstk.SatelliteSystem.GPS)
+        sat1 = gpstk.NavSatelliteID(satid)
+        nmid1e = gpstk.NavMessageID(sat1, gpstk.NavMessageType.Ephemeris)
+        nmid1a = gpstk.NavMessageID(sat1, gpstk.NavMessageType.Almanac)
+        rv = navLib.isPresent(sat1, gpstk.CommonTime.BEGINNING_OF_TIME,
+                              gpstk.CommonTime.END_OF_TIME)
+        self.assertEqual(True, rv)
+        rv = navLib.isPresent(nmid1e, gpstk.CommonTime.BEGINNING_OF_TIME,
+                              gpstk.CommonTime.END_OF_TIME)
+        self.assertEqual(True, rv)
+        rv = navLib.isPresent(nmid1a, gpstk.CommonTime.BEGINNING_OF_TIME,
+                              gpstk.CommonTime.END_OF_TIME)
+        self.assertEqual(False, rv)
+
+    def test_isTypePresent(self):
+        navLib = gpstk.NavLibrary()
+        ndf = gpstk.RinexNavDataFactory()
+        navLib.addFactory(ndf)
+        ndf.addDataSource(args.input_dir+'/arlm2000.15n')
+        satid = gpstk.SatID(23,gpstk.SatelliteSystem.GPS)
+        sat1 = gpstk.NavSatelliteID(satid)
+        rv = navLib.isTypePresent(gpstk.NavMessageType.Ephemeris, sat1,
+                                  gpstk.CommonTime.BEGINNING_OF_TIME,
+                                  gpstk.CommonTime.END_OF_TIME)
+        self.assertEqual(True, rv)
+        rv = navLib.isTypePresent(gpstk.NavMessageType.Almanac, sat1,
+                                  gpstk.CommonTime.BEGINNING_OF_TIME,
+                                  gpstk.CommonTime.END_OF_TIME)
+        self.assertEqual(False, rv)
+
 if __name__ == '__main__':
     run_unit_tests()

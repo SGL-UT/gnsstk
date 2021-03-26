@@ -81,6 +81,40 @@ public:
    { return procNavTypes; }
    std::string getFactoryFormats() const override
    { return "BUNK"; }
+   gpstk::NavSatelliteIDSet getAvailableSats(const gpstk::CommonTime& fromTime,
+                                             const gpstk::CommonTime& toTime)
+      const override
+   {
+      gpstk::NavSatelliteIDSet rv;
+      return rv;
+   }
+   gpstk::NavSatelliteIDSet getAvailableSats(gpstk::NavMessageType nmt,
+                                             const gpstk::CommonTime& fromTime,
+                                             const gpstk::CommonTime& toTime)
+      const override
+   {
+      gpstk::NavSatelliteIDSet rv;
+      return rv;
+   }
+   gpstk::NavMessageIDSet getAvailableMsgs(const gpstk::CommonTime& fromTime,
+                                           const gpstk::CommonTime& toTime)
+      const override
+   {
+      gpstk::NavMessageIDSet rv;
+      return rv;
+   }
+   bool isPresent(const gpstk::NavSatelliteID& satID,
+                  const gpstk::CommonTime& fromTime,
+                  const gpstk::CommonTime& toTime) const override
+   {
+      return false;
+   }
+   bool isPresent(const gpstk::NavMessageID& nmid,
+                  const gpstk::CommonTime& fromTime,
+                  const gpstk::CommonTime& toTime) const override
+   {
+      return false;
+   }
 };
 
 
