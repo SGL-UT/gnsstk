@@ -1080,12 +1080,15 @@ namespace gpstk
    {
       NavSatelliteIDSet rv;
       auto nmmi = data.find(nmt);
-      for (const auto& nsmi : nmmi->second)
+      if (nmmi != data.end())
       {
-         auto ti1 = nsmi.second.lower_bound(fromTime);
-         if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
+         for (const auto& nsmi : nmmi->second)
          {
-            rv.insert(nsmi.first);
+            auto ti1 = nsmi.second.lower_bound(fromTime);
+            if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
+            {
+               rv.insert(nsmi.first);
+            }
          }
       }
       return rv;
