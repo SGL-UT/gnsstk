@@ -19,6 +19,8 @@ variables:
   CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
   # this is usually set to main, unless there are downstream dependencies
   SGLTK_BRANCH: main
+  APPS_BRANCH: ci_issue_1
+  APPS_PROJID: 4195
   DOCKER_REGISTRY: "modisdev:5000/sgl_ci"
   # this can be used for incremental builds
   # GIT_CLEAN_FLAGS: none
@@ -966,6 +968,11 @@ sgltk_redhat:
     - make all -j 4
   dependencies:
     - user_install_redhat
+
+apps_trigger:
+  stage: deploy
+  script:
+    - 'curl --request POST --form token=$CI_APPS_TOKEN --form ref=$APPS_BRANCH "https://$REPO_HOST/api/v4/projects/$APPS_PROJID/trigger/pipeline"'
 
 # sgltk_windows:
 #   stage: downstream
