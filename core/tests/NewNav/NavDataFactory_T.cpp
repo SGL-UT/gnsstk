@@ -103,15 +103,9 @@ public:
       gpstk::NavMessageIDSet rv;
       return rv;
    }
-   bool isPresent(const gpstk::NavSatelliteID& satID,
-                  const gpstk::CommonTime& fromTime,
-                  const gpstk::CommonTime& toTime) const override
-   {
-      return false;
-   }
    bool isPresent(const gpstk::NavMessageID& nmid,
                   const gpstk::CommonTime& fromTime,
-                  const gpstk::CommonTime& toTime) const override
+                  const gpstk::CommonTime& toTime) override
    {
       return false;
    }

@@ -501,24 +501,16 @@ isPresentTest()
    gpstk::NavSatelliteID sat1(gpstk::SatID(23,gpstk::SatelliteSystem::GPS));
    gpstk::NavMessageID nmid1e(sat1, gpstk::NavMessageType::Ephemeris),
       nmid1a(sat1, gpstk::NavMessageType::Almanac);
-   TUASSERTE(bool, true, uut.isPresent(sat1,
-                                       gpstk::CommonTime::BEGINNING_OF_TIME,
-                                       gpstk::CommonTime::END_OF_TIME));
-   TUASSERTE(bool, true, uut.isPresent(nmid1e,
-                                       gpstk::CommonTime::BEGINNING_OF_TIME,
-                                       gpstk::CommonTime::END_OF_TIME));
-   TUASSERTE(bool, false, uut.isPresent(nmid1a,
-                                       gpstk::CommonTime::BEGINNING_OF_TIME,
-                                       gpstk::CommonTime::END_OF_TIME));
+   gpstk::CivilTime t1(2015,7,19,10,0,0,gpstk::TimeSystem::GPS);
+   gpstk::CivilTime t2(2015,7,19,11,0,0,gpstk::TimeSystem::GPS);
+   // uut.dump(std::cerr, gpstk::DumpDetail::Brief);
+   TUASSERTE(bool, true, uut.isPresent(nmid1e, t1, t2));
+   TUASSERTE(bool, false, uut.isPresent(nmid1a, t1, t2));
    TUCSM("isTypePresent");
    TUASSERTE(bool, true, uut.isTypePresent(
-                gpstk::NavMessageType::Ephemeris, sat1,
-                gpstk::CommonTime::BEGINNING_OF_TIME,
-                gpstk::CommonTime::END_OF_TIME));
+                gpstk::NavMessageType::Ephemeris, sat1, t1, t2));
    TUASSERTE(bool, false, uut.isTypePresent(
-                gpstk::NavMessageType::Almanac, sat1,
-                gpstk::CommonTime::BEGINNING_OF_TIME,
-                gpstk::CommonTime::END_OF_TIME));
+                gpstk::NavMessageType::Almanac, sat1, t1, t2));
    TURETURN();
 }
 

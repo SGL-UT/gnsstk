@@ -665,22 +665,6 @@ namespace gpstk
       NavMessageIDSet getAvailableMsgs(const CommonTime& fromTime,
                                        const CommonTime& toTime) const;
 
-         /** Determine if a given satellite/signal is available in the factory.
-          * @param[in] satID The satellite/signal to search for.
-          * @param[in] fromTime The earliest time for which any
-          *   messages should be available.
-          * @param[in] toTime The earliest time for which any
-          *   messages should be NOT available.
-          * @return true if the given satellite/signal is has data in
-          *   the given time span.
-          * @note We specifically require the time range parameters to
-          *   try to avoid making assumptions about the size of the
-          *   data set (i.e. assuming the data is going to be a day's
-          *   worth when it's actually several years. */
-      bool isPresent(const NavSatelliteID& satID,
-                     const CommonTime& fromTime,
-                     const CommonTime& toTime) const;
-
          /** Determine if a given message/satellite/signal is
           * available in the factory.
           * @param[in] nmid The message/satellite/signal to search for.
@@ -696,7 +680,7 @@ namespace gpstk
           *   worth when it's actually several years. */
       bool isPresent(const NavMessageID& nmid,
                      const CommonTime& fromTime,
-                     const CommonTime& toTime) const;
+                     const CommonTime& toTime);
 
          /** Determine if a given satellite/signal is available in the factory.
           * @param[in] nmt The navigation message type of interest.
@@ -714,7 +698,7 @@ namespace gpstk
       bool isTypePresent(NavMessageType nmt,
                          const NavSatelliteID& satID,
                          const CommonTime& fromTime,
-                         const CommonTime& toTime) const
+                         const CommonTime& toTime)
       { return isPresent(NavMessageID(satID,nmt),fromTime,toTime); }
 
          /// Return a comma-separated list of formats supported by the factories

@@ -117,7 +117,9 @@ namespace gpstk
       };
       using MatchList = std::list<FindMatches>;
 
-      // std::cerr << __PRETTY_FUNCTION__ << std::endl;
+      // std::cerr << __PRETTY_FUNCTION__ << std::endl
+      //           << "  nmid=" << nmid << std::endl
+      //           << "  when=" << gpstk::printTime(when,dts) << std::endl;
          // dig through the maps of maps, matching keys with nmid along the way
       auto dataIt = data.find(nmid.messageType);
       if (dataIt == data.end())
@@ -151,16 +153,34 @@ namespace gpstk
             {
                nmi = std::prev(nmi);
             }
+            // std::cerr << "  user time : "
+            //           << gpstk::printTime(nmi->second->getUserTime(),dts)
+            //           << std::endl
+            //           << "  (nmi != sati->second.end()) = "
+            //           << (nmi != sati->second.end()) << std::endl
+            //           << "  (nmi->second->getUserTime() > when) = "
+            //           << (nmi->second->getUserTime() > when) << std::endl;
             while ((nmi != sati->second.end()) &&
                    (nmi->second->getUserTime() > when))
             {
+               // std::cerr << "  backing up (maybe)" << std::endl;
                nmi = (nmi == sati->second.begin() ? sati->second.end()
                       : std::prev(nmi));
+               // if (nmi != sati->second.end())
+               // {
+               //    std::cerr << "  user time : "
+               //              << gpstk::printTime(nmi->second->getUserTime(),dts)
+               //              << std::endl;
+               // }
             }
             if (nmi != sati->second.end())
             {
                itList.push_back(FindMatches(&(sati->second), nmi));
             }
+            // else
+            // {
+            //    std::cerr << "  did not add match" << std::endl;
+            // }
          }
       }
       else
@@ -175,16 +195,29 @@ namespace gpstk
             {
                nmi = std::prev(nmi);
             }
+            // std::cerr << "  user time : "
+            //           << gpstk::printTime(nmi->second->getUserTime(),dts)
+            //           << std::endl;
             while ((nmi != sati->second.end()) &&
                    (nmi->second->getUserTime() > when))
             {
                nmi = (nmi == sati->second.begin() ? sati->second.end()
                       : std::prev(nmi));
+               // if (nmi != sati->second.end())
+               // {
+               //    std::cerr << "  user time : "
+               //              << gpstk::printTime(nmi->second->getUserTime(),dts)
+               //              << std::endl;
+               // }
             }
             if (nmi != sati->second.end())
             {
                itList.push_back(FindMatches(&(sati->second), nmi));
             }
+            // else
+            // {
+            //    std::cerr << "  did not add match" << std::endl;
+            // }
          }
          // else
          // {
@@ -235,8 +268,7 @@ namespace gpstk
             else
             {
                // std::cerr << "Found something good at "
-               //           << printTime(imi.it->first,
-               //                        dts)
+               //           << printTime(imi.it->first, dts)
                //           << std::endl;
                if (imi.it->second->getUserTime() > mostRecent)
                {
@@ -1112,57 +1144,6 @@ namespace gpstk
          }
       }
       return rv;
-   }
-
-
-   bool NavDataFactoryWithStore :: isPresent(const NavSatelliteID& satID,
-                                             const CommonTime& fromTime,
-                                             const CommonTime& toTime)
-      const
-   {
-      for (const auto& nmmi : data)
-      {
-            // satID can be a wildcard so we have to iterate over the
-            // satellites to check for matches instead of using find.
-         for (const auto& nsmi : nmmi.second)
-         {
-            if (nsmi.first == satID)
-            {
-               auto ti1 = nsmi.second.lower_bound(fromTime);
-               if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
-               {
-                  return true;
-               }
-            }
-         }
-      }
-      return false;
-   }
-
-
-   bool NavDataFactoryWithStore :: isPresent(const NavMessageID& nmid,
-                                             const CommonTime& fromTime,
-                                             const CommonTime& toTime)
-      const
-   {
-      auto nmmi = data.find(nmid.messageType);
-      if (nmmi != data.end())
-      {
-            // satID can be a wildcard so we have to iterate over the
-            // satellites to check for matches instead of using find.
-         for (const auto& nsmi : nmmi->second)
-         {
-            if (nsmi.first == nmid)
-            {
-               auto ti1 = nsmi.second.lower_bound(fromTime);
-               if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
-               {
-                  return true;
-               }
-            }
-         }
-      }
-      return false;
    }
 
 

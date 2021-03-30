@@ -320,25 +320,9 @@ namespace gpstk
 
 
    bool NavLibrary ::
-   isPresent(const NavSatelliteID& satID,
-             const CommonTime& fromTime,
-             const CommonTime& toTime)
-      const
-   {
-      for (const auto& fi : factories)
-      {
-         if (fi.second->isPresent(satID, fromTime, toTime))
-            return true;
-      }
-      return false;
-   }
-
-
-   bool NavLibrary ::
    isPresent(const NavMessageID& nmid,
              const CommonTime& fromTime,
              const CommonTime& toTime)
-      const
    {
       for (const auto& fi : factories)
       {

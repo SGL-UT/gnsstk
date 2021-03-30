@@ -222,14 +222,11 @@ class TestNavLibrary(unittest.TestCase):
         sat1 = gpstk.NavSatelliteID(satid)
         nmid1e = gpstk.NavMessageID(sat1, gpstk.NavMessageType.Ephemeris)
         nmid1a = gpstk.NavMessageID(sat1, gpstk.NavMessageType.Almanac)
-        rv = navLib.isPresent(sat1, gpstk.CommonTime.BEGINNING_OF_TIME,
-                              gpstk.CommonTime.END_OF_TIME)
+        t1 = gpstk.CivilTime(2015,7,19,10,0,0,gpstk.TimeSystem.GPS).toCommonTime()
+        t2 = gpstk.CivilTime(2015,7,19,11,0,0,gpstk.TimeSystem.GPS).toCommonTime()
+        rv = navLib.isPresent(nmid1e, t1, t2)
         self.assertEqual(True, rv)
-        rv = navLib.isPresent(nmid1e, gpstk.CommonTime.BEGINNING_OF_TIME,
-                              gpstk.CommonTime.END_OF_TIME)
-        self.assertEqual(True, rv)
-        rv = navLib.isPresent(nmid1a, gpstk.CommonTime.BEGINNING_OF_TIME,
-                              gpstk.CommonTime.END_OF_TIME)
+        rv = navLib.isPresent(nmid1a, t1, t2)
         self.assertEqual(False, rv)
 
     def test_isTypePresent(self):
@@ -239,13 +236,11 @@ class TestNavLibrary(unittest.TestCase):
         ndf.addDataSource(args.input_dir+'/arlm2000.15n')
         satid = gpstk.SatID(23,gpstk.SatelliteSystem.GPS)
         sat1 = gpstk.NavSatelliteID(satid)
-        rv = navLib.isTypePresent(gpstk.NavMessageType.Ephemeris, sat1,
-                                  gpstk.CommonTime.BEGINNING_OF_TIME,
-                                  gpstk.CommonTime.END_OF_TIME)
+        t1 = gpstk.CivilTime(2015,7,19,10,0,0,gpstk.TimeSystem.GPS).toCommonTime()
+        t2 = gpstk.CivilTime(2015,7,19,11,0,0,gpstk.TimeSystem.GPS).toCommonTime()
+        rv = navLib.isTypePresent(gpstk.NavMessageType.Ephemeris, sat1, t1, t2)
         self.assertEqual(True, rv)
-        rv = navLib.isTypePresent(gpstk.NavMessageType.Almanac, sat1,
-                                  gpstk.CommonTime.BEGINNING_OF_TIME,
-                                  gpstk.CommonTime.END_OF_TIME)
+        rv = navLib.isTypePresent(gpstk.NavMessageType.Almanac, sat1, t1, t2)
         self.assertEqual(False, rv)
 
 if __name__ == '__main__':
