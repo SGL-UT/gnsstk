@@ -981,6 +981,8 @@ apps_trigger:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
   script:
+    - echo $DS1_PROJ_BRANCH
+    - echo $DS1_PROJ_NAME
     - 'curl --request POST --form token=$CI_APPS_TOKEN --form ref=$APPS_BRANCH "https://$REPO_HOST/api/v4/projects/$APPS_PROJID/trigger/pipeline"'
   dependencies:
     - package_debian_8
@@ -991,11 +993,11 @@ apps_trigger:
 
 ds1_trigger:
    stage: deploy
-   extends: .dont_build
+   extends: .big_build
    needs: []
    trigger:
-     project: sgl-tks/gpstk-apps
-     branch: ci_issue_1
+     project: $DS1_PROJ_NAME
+     branch: $DS1_PROJ_BRANCH
      strategy: depend
 
 # sgltk_windows:
