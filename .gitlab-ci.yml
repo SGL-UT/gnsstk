@@ -977,6 +977,7 @@ sgltk_redhat:
 
 apps_trigger:
   stage: deploy
+  extends: .dont_build
   needs: []
   tags:
     - docker-executor
@@ -988,8 +989,9 @@ ds1_trigger:
    stage: deploy
    needs: []
    trigger:
-     project: $DS1_PROJ_NAME
-     branch: $DS1_PROJ_BRANCH
+     project: sgl-tks/gpstk-apps
+     branch: ci_issue_1
+     strategy: depend
 
 # sgltk_windows:
 #   stage: downstream
