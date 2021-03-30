@@ -53,6 +53,12 @@ variables:
       - tags
       - /^tag_.*$/
 
+# Template for disabling stages
+.dont_build:
+  only:
+    refs:
+      - /^do_not_build.*$/
+
 # Check Stage
 # Runs static analysis on code.
 static_analysis:
@@ -150,7 +156,7 @@ generate_documentation:
 build_debian_7:
   stage: build
   needs: []
-  extends: .big_build
+  extends: .dont_build
   tags:
     - docker-executor
     # Not all docker runners support debian 7
@@ -289,7 +295,7 @@ build_redhat_8:
 build_windows:
   stage: build
   needs: []
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - win10
   script:
@@ -315,7 +321,7 @@ build_windows:
 test_debian_7:
   stage: test
   needs: [build_debian_7]
-  extends: .big_build
+  extends: .dont_build
   tags:
     - docker-executor
     # Not all docker runners support debian 7
@@ -465,7 +471,7 @@ test_redhat_8:
 test_windows:
   stage: test
   needs: [build_windows]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - win10
   script:
@@ -488,7 +494,7 @@ test_windows:
 user_install_debian_7:
   stage: install
   needs: [build_debian_7]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian7_fai_ish
@@ -564,7 +570,7 @@ user_install_redhat_8:
 user_install_windows:
   stage: install
   needs: [build_windows]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - win10
   script:
