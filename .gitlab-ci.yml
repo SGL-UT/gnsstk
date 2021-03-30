@@ -19,8 +19,6 @@ variables:
   CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
   # this is usually set to main, unless there are downstream dependencies
   SGLTK_BRANCH: main
-  APPS_BRANCH: ci_issue_1
-  APPS_PROJID: 4195
   DOCKER_REGISTRY: "modisdev:5000/sgl_ci"
   # this can be used for incremental builds
   # GIT_CLEAN_FLAGS: none
@@ -977,16 +975,23 @@ sgltk_redhat:
 
 apps_trigger:
   stage: deploy
-  extends: .dont_build
+  extends: .big_build
   needs: []
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
   script:
     - 'curl --request POST --form token=$CI_APPS_TOKEN --form ref=$APPS_BRANCH "https://$REPO_HOST/api/v4/projects/$APPS_PROJID/trigger/pipeline"'
+  dependencies:
+    - package_debian_8
+    - package_debian_9
+    - package_debian_10
+    - package_redhat
+    - package_redhat_8
 
 ds1_trigger:
    stage: deploy
+   extends: .dont_build
    needs: []
    trigger:
      project: sgl-tks/gpstk-apps
