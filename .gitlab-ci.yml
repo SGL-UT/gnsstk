@@ -154,7 +154,7 @@ generate_documentation:
 build_debian_7:
   stage: build
   needs: []
-  extends: .dont_build
+  extends: .big_build
   tags:
     - docker-executor
     # Not all docker runners support debian 7
@@ -293,7 +293,7 @@ build_redhat_8:
 build_windows:
   stage: build
   needs: []
-  extends: .dont_build
+  extends: .normal_job
   tags:
     - win10
   script:
@@ -319,7 +319,7 @@ build_windows:
 test_debian_7:
   stage: test
   needs: [build_debian_7]
-  extends: .dont_build
+  extends: .big_build
   tags:
     - docker-executor
     # Not all docker runners support debian 7
@@ -469,7 +469,7 @@ test_redhat_8:
 test_windows:
   stage: test
   needs: [build_windows]
-  extends: .dont_build
+  extends: .normal_job
   tags:
     - win10
   script:
@@ -492,9 +492,11 @@ test_windows:
 user_install_debian_7:
   stage: install
   needs: [build_debian_7]
-  extends: .dont_build
+  extends: .big_build
   tags:
     - docker-executor
+    # Not all docker runners support debian 7
+    - deb7-support
   image: $DOCKER_REGISTRY/debian7_fai_ish
   script:
     - cd build
@@ -568,7 +570,7 @@ user_install_redhat_8:
 user_install_windows:
   stage: install
   needs: [build_windows]
-  extends: .dont_build
+  extends: .normal_job
   tags:
     - win10
   script:
@@ -975,7 +977,7 @@ sgltk_redhat:
 
 apps_trigger:
   stage: deploy
-  extends: .big_build
+  extends: .dont_build
   needs: []
   tags:
     - docker-executor
@@ -994,10 +996,9 @@ apps_trigger:
 ds1_trigger:
    stage: deploy
    extends: .big_build
-   needs: []
    trigger:
-     project: $DS1_PROJ_NAME
-     branch: $DS1_PROJ_BRANCH
+     project: sgl-tks/gpstk-apps
+     branch: ci_issue_1
      strategy: depend
 
 # sgltk_windows:
