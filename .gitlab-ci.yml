@@ -971,11 +971,19 @@ sgltk_redhat:
 
 apps_trigger:
   stage: deploy
+  needs: []
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
   script:
     - 'curl --request POST --form token=$CI_APPS_TOKEN --form ref=$APPS_BRANCH "https://$REPO_HOST/api/v4/projects/$APPS_PROJID/trigger/pipeline"'
+
+ds1_trigger:
+   stage: deploy
+   needs: []
+   trigger:
+     project: $DS1_PROJ_NAME
+     branch: $DS1_PROJ_BRANCH
 
 # sgltk_windows:
 #   stage: downstream
