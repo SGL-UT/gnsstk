@@ -293,7 +293,7 @@ build_redhat_8:
 build_windows:
   stage: build
   needs: []
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - win10
   script:
@@ -469,7 +469,7 @@ test_redhat_8:
 test_windows:
   stage: test
   needs: [build_windows]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - win10
   script:
@@ -570,7 +570,7 @@ user_install_redhat_8:
 user_install_windows:
   stage: install
   needs: [build_windows]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - win10
   script:
@@ -748,7 +748,7 @@ package_debian_10:
 package_conda:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py36
