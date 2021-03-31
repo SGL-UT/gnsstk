@@ -62,11 +62,11 @@ namespace gpstk
    public:
 
          /// Default and only constructor.
-      AntexHeader() : valid(false), version(1.3) {}
+      AntexHeader() : valid(false), version(1.4) {}
          /// Clear (empty out) header
       inline void clear()
       {
-         version = 1.3;
+         version = 1.4;
          valid = false;
          commentList.clear();
       }
