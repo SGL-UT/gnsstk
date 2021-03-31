@@ -978,14 +978,23 @@ sgltk_redhat:
   dependencies:
     - user_install_redhat
 
-apps_trigger:
+apps_trigger_graph:
+  stage: deploy
+  extends: .dont_build
+  tags:
+   - docker-executor
+  image: $DOCKER_REGISTRY/debian10_fai_ish
+  script:
+    - 'curl --request POST --form token=$CI_JOB_TOKEN --form ref=$APPS_BRANCH "$CI_API_V4_URL/projects/$APPS_PROJID/trigger/pipeline"'
+
+apps_trigger_simple:
   stage: deploy
   extends: .big_build
   tags:
    - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
   script:
-    - 'curl --request POST --form token=$CI_JOB_TOKEN --form ref=ci_pipeline_test "$CI_API_V4_URL/projects/7/trigger/pipeline"'
+    - 'curl --request POST --form token=$CI_API_TOKEN --form ref=$APPS_BRANCH "$CI_API_V4_URL/projects/$APPS_PROJID/trigger/pipeline"'
 
 ds1_trigger:
    stage: deploy
