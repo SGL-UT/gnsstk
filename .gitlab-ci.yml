@@ -24,8 +24,6 @@ variables:
   # GIT_CLEAN_FLAGS: none
   # This can be set to True by Gitlab UI to only build/test packages.
   RELEASE_ONLY: "False"
-  DS1_PROJ_NAME: "sgl/sgltk"
-  DS1_PROJ_BRANCH: "ci_pipeline_test"
 
 # Template for all normal jobs.
 .normal_job:
@@ -1002,8 +1000,8 @@ ds1_trigger:
    stage: deploy
    extends: .big_build
    trigger:
-     project: $DS1_PROJ_NAME
-     branch: $DS1_PROJ_BRANCH
+     project: sgl/sgltk
+     branch: ci_pipeline_test
      strategy: depend
 
 # sgltk_windows:
