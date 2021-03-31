@@ -74,7 +74,7 @@ static_analysis:
 sgllint_lint:
   stage: check
   needs: []
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_conda_py27:latest
@@ -94,7 +94,7 @@ sgllint_lint:
 protected_term_lint:
   stage: check
   needs: []
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py36:latest
@@ -114,7 +114,7 @@ protected_term_lint:
 protected_history_lint:
   stage: check
   needs: []
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py36:latest
@@ -173,7 +173,7 @@ build_debian_7:
 build_debian_8:
   stage: build
   needs: []
-  extends: .big_build
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -190,7 +190,7 @@ build_debian_8:
 build_debian_9:
   stage: build
   needs: []
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -207,7 +207,7 @@ build_debian_9:
 build_debian_10:
   stage: build
   needs: []
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -224,7 +224,7 @@ build_debian_10:
 build_conda_py27:
   stage: build
   needs: []
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py27
@@ -242,7 +242,7 @@ build_conda_py27:
 build_conda_py36:
   stage: build
   needs: []
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py36
@@ -260,7 +260,7 @@ build_conda_py36:
 build_redhat:
   stage: build
   needs: []
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -339,7 +339,7 @@ test_debian_7:
 test_debian_8:
   stage: test
   needs: [build_debian_8]
-  extends: .big_build
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -357,7 +357,7 @@ test_debian_8:
 test_debian_9:
   stage: test
   needs: [build_debian_9]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -376,7 +376,7 @@ test_debian_9:
 test_debian_10:
   stage: test
   needs: [build_debian_10]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -395,7 +395,7 @@ test_debian_10:
 test_conda_py27:
   stage: test
   needs: [build_conda_py27]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py27
@@ -415,7 +415,7 @@ test_conda_py27:
 test_conda_py36:
   stage: test
   needs: [build_conda_py36]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py36
@@ -435,7 +435,7 @@ test_conda_py36:
 test_redhat:
   stage: test
   needs: [build_redhat]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -452,7 +452,7 @@ test_redhat:
 test_redhat_8:
   stage: test
   needs: [build_redhat_8]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -514,7 +514,7 @@ user_install_debian_7:
 user_install_debian_9:
   stage: install
   needs: [build_debian_9]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -534,7 +534,7 @@ user_install_debian_9:
 user_install_redhat:
   stage: install
   needs: [build_redhat]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -552,7 +552,7 @@ user_install_redhat:
 user_install_redhat_8:
   stage: install
   needs: [build_redhat_8]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -588,7 +588,7 @@ user_install_windows:
 system_install_debian_9:
   stage: install
   needs: [build_debian_9]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -605,7 +605,7 @@ system_install_debian_9:
 system_install_redhat:
   stage: install
   needs: [build_redhat]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -620,7 +620,7 @@ system_install_redhat:
 system_install_redhat_8:
   stage: install
   needs: [build_redhat_8]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -842,7 +842,7 @@ deploy_debian_8:
 deploy_debian_9:
   stage: deploy
   needs: [package_debian_9]
-  extends: .big_build
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -857,7 +857,7 @@ deploy_debian_9:
 deploy_debian_10:
   stage: deploy
   needs: [package_debian_10]
-  extends: .big_build
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -872,7 +872,7 @@ deploy_debian_10:
 deploy_redhat:
   stage: deploy
   needs: [package_redhat]
-  extends: .big_build
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -886,7 +886,7 @@ deploy_redhat:
 deploy_redhat_8:
   stage: deploy
   needs: [package_redhat_8]
-  extends: .big_build
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -938,7 +938,7 @@ deploy_redhat_py36:
 sgltk_debian:
   stage: downstream
   needs: [user_install_debian_9]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -958,7 +958,7 @@ sgltk_debian:
 sgltk_redhat:
   stage: downstream
   needs: [user_install_redhat]
-  extends: .normal_job
+  extends: .dont_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
