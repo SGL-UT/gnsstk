@@ -981,9 +981,9 @@ sgltk_redhat:
 apps_trigger:
   stage: deploy
   extends: .big_build
-  #tags:
-  #  - docker-executor
-  #image: $DOCKER_REGISTRY/debian10_fai_ish
+  tags:
+   - docker-executor
+  image: $DOCKER_REGISTRY/debian10_fai_ish
   script:
     - 'curl --request POST --form token=$CI_JOB_TOKEN --form ref=ci_pipeline_test "$CI_API_V4_URL/projects/7/trigger/pipeline"'
 
