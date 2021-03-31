@@ -980,25 +980,16 @@ sgltk_redhat:
 
 apps_trigger:
   stage: deploy
-  extends: .dont_build
-  needs: []
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/debian10_fai_ish
+  extends: .big_build
+  #tags:
+  #  - docker-executor
+  #image: $DOCKER_REGISTRY/debian10_fai_ish
   script:
-    - echo $DS1_PROJ_BRANCH
-    - echo $DS1_PROJ_NAME
-    - 'curl --request POST --form token=$CI_APPS_TOKEN --form ref=$APPS_BRANCH "https://$REPO_HOST/api/v4/projects/$APPS_PROJID/trigger/pipeline"'
-  dependencies:
-    - package_debian_8
-    - package_debian_9
-    - package_debian_10
-    - package_redhat
-    - package_redhat_8
+    - 'curl --request POST --form token=$CI_JOB_TOKEN --form ref=ci_pipeline_test "$CI_API_V4_URL/projects/7/trigger/pipeline"'
 
 ds1_trigger:
    stage: deploy
-   extends: .big_build
+   extends: .dont_build
    trigger:
      project: sgl/sgltk
      branch: ci_pipeline_test
