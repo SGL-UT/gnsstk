@@ -994,10 +994,11 @@ apps_trigger_simple:
    - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
   script:
+    - set
     - 'echo curl --request POST --form token=$CI_APPS_TOKEN --form ref=$APPS_BRANCH "$CI_API_V4_URL/projects/$APPS_PROJID/trigger/pipeline"'
     - 'curl --request POST --form token=$CI_APPS_TOKEN --form ref=$APPS_BRANCH "$CI_API_V4_URL/projects/$APPS_PROJID/trigger/pipeline"'
-    - 'echo curl --request POST --form token=$CI_API_TOKEN --form ref=$DS_BRANCH "$CI_API_V4_URL/projects/$DS_PROJID/trigger/pipeline"'
-    - 'curl --request POST --form token=$CI_API_TOKEN --form ref=$DS_BRANCH "$CI_API_V4_URL/projects/$DS_PROJID/trigger/pipeline"'
+    - 'echo curl --request POST --form token=$API_TOKEN --form ref=$DS_BRANCH "$CI_API_V4_URL/projects/$DS_PROJID/trigger/pipeline"'
+    - 'curl --request POST --form token=$API_TOKEN --form ref=$DS_BRANCH "$CI_API_V4_URL/projects/$DS_PROJID/trigger/pipeline"'
 
 ds1_trigger:
    stage: deploy
