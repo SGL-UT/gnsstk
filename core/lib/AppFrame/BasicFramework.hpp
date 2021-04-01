@@ -504,9 +504,6 @@ namespace gpstk
       virtual void shutDown()
       {}
 
-      void dummyTest(const std::string& blah)
-      {}
-
    private:
 
 
