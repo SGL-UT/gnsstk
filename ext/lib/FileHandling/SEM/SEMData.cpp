@@ -146,12 +146,15 @@ namespace gpstk
       end = line.find_first_of(whitespace,front);
       length = end - front;
       i_offset = line.substr(front,length);
-      i_total = i_offset + 54.0 * (gpstk::PI / 180.0);
+      // Per ICD-GPS-240, i_offset is given relative to a fixed 0.3 semicircle offset.
+      i_total = i_offset + 0.3;
 
       front = line.find_first_not_of(whitespace,end);
       length = line.length() - front;
       OMEGAdot = line.substr(front,length);
+      // Convert from semicircles to radians.
       i_offset *= gpstk::PI;
+      i_total *= gpstk::PI;
       OMEGAdot *= gpstk::PI;
 
       // Sixth line - Sqrt of A, Omega0, and Arg of Perigee
