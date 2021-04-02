@@ -26,7 +26,7 @@ variables:
   RELEASE_ONLY: "False"
 
 # Template for all normal jobs.
-.normal_job:
+.normal_build:
   only:
     variables:
       - $RELEASE_ONLY != "True"
@@ -62,7 +62,7 @@ variables:
 static_analysis:
   stage: check
   needs: []
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -75,7 +75,7 @@ static_analysis:
 sgllint_lint:
   stage: check
   needs: []
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_conda_py27:latest
@@ -95,7 +95,7 @@ sgllint_lint:
 protected_term_lint:
   stage: check
   needs: []
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py36:latest
@@ -115,7 +115,7 @@ protected_term_lint:
 protected_history_lint:
   stage: check
   needs: []
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py36:latest
@@ -136,7 +136,7 @@ protected_history_lint:
 generate_documentation:
   stage: check
   needs: []
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -175,7 +175,7 @@ build_debian_7:
 build_debian_8:
   stage: build
   needs: []
-  extends: .dont_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -192,7 +192,7 @@ build_debian_8:
 build_debian_9:
   stage: build
   needs: []
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -209,7 +209,7 @@ build_debian_9:
 build_debian_10:
   stage: build
   needs: []
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -226,7 +226,7 @@ build_debian_10:
 build_conda_py27:
   stage: build
   needs: []
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py27
@@ -244,7 +244,7 @@ build_conda_py27:
 build_conda_py36:
   stage: build
   needs: []
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py36
@@ -262,7 +262,7 @@ build_conda_py36:
 build_redhat:
   stage: build
   needs: []
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -279,7 +279,7 @@ build_redhat:
 build_redhat_8:
   stage: build
   needs: []
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -296,7 +296,7 @@ build_redhat_8:
 build_windows:
   stage: build
   needs: []
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - win10
   script:
@@ -342,7 +342,7 @@ test_debian_7:
 test_debian_8:
   stage: test
   needs: [build_debian_8]
-  extends: .dont_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -360,7 +360,7 @@ test_debian_8:
 test_debian_9:
   stage: test
   needs: [build_debian_9]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -379,7 +379,7 @@ test_debian_9:
 test_debian_10:
   stage: test
   needs: [build_debian_10]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -398,7 +398,7 @@ test_debian_10:
 test_conda_py27:
   stage: test
   needs: [build_conda_py27]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py27
@@ -418,7 +418,7 @@ test_conda_py27:
 test_conda_py36:
   stage: test
   needs: [build_conda_py36]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py36
@@ -438,7 +438,7 @@ test_conda_py36:
 test_redhat:
   stage: test
   needs: [build_redhat]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -455,7 +455,7 @@ test_redhat:
 test_redhat_8:
   stage: test
   needs: [build_redhat_8]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -472,7 +472,7 @@ test_redhat_8:
 test_windows:
   stage: test
   needs: [build_windows]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - win10
   script:
@@ -517,7 +517,7 @@ user_install_debian_7:
 user_install_debian_9:
   stage: install
   needs: [build_debian_9]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -537,7 +537,7 @@ user_install_debian_9:
 user_install_redhat:
   stage: install
   needs: [build_redhat]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -555,7 +555,7 @@ user_install_redhat:
 user_install_redhat_8:
   stage: install
   needs: [build_redhat_8]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -573,7 +573,7 @@ user_install_redhat_8:
 user_install_windows:
   stage: install
   needs: [build_windows]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - win10
   script:
@@ -591,7 +591,7 @@ user_install_windows:
 system_install_debian_9:
   stage: install
   needs: [build_debian_9]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -608,7 +608,7 @@ system_install_debian_9:
 system_install_redhat:
   stage: install
   needs: [build_redhat]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -623,7 +623,7 @@ system_install_redhat:
 system_install_redhat_8:
   stage: install
   needs: [build_redhat_8]
-  extends: .dont_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -678,7 +678,7 @@ system_install_redhat_8:
 package_debian_8:
   stage: package
   needs: []
-  extends: .dont_build
+  extends: .package_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -703,7 +703,7 @@ package_debian_8:
 package_debian_9:
   stage: package
   needs: []
-  extends: .dont_build
+  extends: .package_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -725,7 +725,7 @@ package_debian_9:
 package_debian_10:
   stage: package
   needs: []
-  extends: .dont_build
+  extends: .package_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -751,7 +751,7 @@ package_debian_10:
 package_conda:
   stage: package
   needs: []
-  extends: .dont_build
+  extends: .package_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py36
@@ -775,7 +775,7 @@ package_conda:
 package_redhat:
   stage: package
   needs: []
-  extends: .dont_build
+  extends: .package_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -793,7 +793,7 @@ package_redhat:
 package_redhat_8:
   stage: package
   needs: []
-  extends: .dont_build
+  extends: .package_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -811,7 +811,7 @@ package_redhat_8:
 package_redhat_8_py36:
   stage: package
   needs: []
-  extends: .dont_build
+  extends: .package_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -831,7 +831,7 @@ package_redhat_8_py36:
 deploy_debian_8:
   stage: deploy
   needs: [package_debian_8]
-  extends: .dont_build
+  extends: .package_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -845,7 +845,7 @@ deploy_debian_8:
 deploy_debian_9:
   stage: deploy
   needs: [package_debian_9]
-  extends: .dont_build
+  extends: .package_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -860,7 +860,7 @@ deploy_debian_9:
 deploy_debian_10:
   stage: deploy
   needs: [package_debian_10]
-  extends: .dont_build
+  extends: .package_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -875,7 +875,7 @@ deploy_debian_10:
 deploy_redhat:
   stage: deploy
   needs: [package_redhat]
-  extends: .dont_build
+  extends: .package_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -889,7 +889,7 @@ deploy_redhat:
 deploy_redhat_8:
   stage: deploy
   needs: [package_redhat_8]
-  extends: .dont_build
+  extends: .package_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -903,7 +903,7 @@ deploy_redhat_8:
 deploy_redhat_py36:
   stage: deploy
   needs: [package_redhat_8, package_redhat_8_py36]
-  extends: .dont_build
+  extends: .package_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -978,6 +978,9 @@ sgltk_redhat:
   dependencies:
     - user_install_redhat
 
+# This approach allows the use of variables, and results in a linked
+# graph in the CI/CD pipeline status view.  But at this time the
+# downstream pipeline can't access this build's artifacts.
 apps_trigger_graph:
   stage: deploy
   extends: .dont_build
@@ -987,9 +990,13 @@ apps_trigger_graph:
   script:
     - 'curl --request POST --form token=$CI_JOB_TOKEN --form ref=$APPS_BRANCH "$CI_API_V4_URL/projects/$APPS_PROJID/trigger/pipeline"'
 
+# This approach allows the use of variables, but does not result in a
+# linked graph in the CI/CD pipeline status view, nor does this task
+# wait for the results from the downstream build process.  OTOH, the
+# downstream pipeline is able to access this build's artifacts.
 apps_trigger_simple:
   stage: deploy
-  extends: .big_build
+  extends: .normal_build
   tags:
    - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -1000,6 +1007,10 @@ apps_trigger_simple:
     - 'echo curl --request POST --form token=$DS_TRIG_TOKEN --form ref=$DS_BRANCH --form "variables[GPSTK_COMMIT]=$CI_COMMIT_BRANCH" "$CI_API_V4_URL/projects/$DS_PROJID/trigger/pipeline"'
     - 'curl --request POST --form token=$DS_TRIG_TOKEN --form ref=$DS_BRANCH --form "variables[GPSTK_COMMIT]=$CI_COMMIT_BRANCH" "$CI_API_V4_URL/projects/$DS_PROJID/trigger/pipeline"'
 
+# This approach allows the use of variables for specifying the branch
+# (but not the project), and results in a linked graph in the CI/CD
+# pipeline status view.  But at this time the downstream pipeline
+# can't access this build's artifacts.
 ds1_trigger:
    stage: deploy
    extends: .dont_build
@@ -1011,7 +1022,7 @@ ds1_trigger:
 # sgltk_windows:
 #   stage: downstream
 #   needs: [user_install_windows]
-#   extends: .normal_job
+#   extends: .normal_build
 #   tags:
 #     - win10
 #   script:
