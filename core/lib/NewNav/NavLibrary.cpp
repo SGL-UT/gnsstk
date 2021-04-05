@@ -40,6 +40,8 @@
 #include "OrbitData.hpp"
 #include "NavHealthData.hpp"
 #include "TimeOffsetData.hpp"
+#include "NDFUniqConstIterator.hpp"
+#include "NDFUniqIterator.hpp"
 
 namespace gpstk
 {
@@ -112,17 +114,10 @@ namespace gpstk
              const CommonTime& when, NavDataPtr& offset, SVHealth xmitHealth,
              NavValidityType valid)
    {
-         // Search through factories until we get a match or run out
-         // of factories.  Use unique pointers to avoid double-searching.
-      std::set<NavDataFactory*> uniques;
-      for (auto fi = factories.begin(); fi != factories.end(); ++fi)
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
-         NavDataFactory *ndfp = dynamic_cast<NavDataFactory*>(fi->second.get());
-         if (uniques.count(ndfp))
-            continue; // already processed
-         uniques.insert(ndfp);
-         if (fi->second->getOffset(fromSys, toSys, when, offset, xmitHealth,
-                                   valid))
+         if (fi.second->getOffset(fromSys, toSys, when, offset, xmitHealth,
+                                  valid))
          {
             return true;
          }
@@ -152,7 +147,7 @@ namespace gpstk
    void NavLibrary ::
    setValidityFilter(NavValidityType nvt)
    {
-      for (auto& i : factories)
+      for (auto& i : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          i.second->setValidityFilter(nvt);
       }
@@ -162,7 +157,7 @@ namespace gpstk
    void NavLibrary ::
    setTypeFilter(const NavMessageTypeSet& nmts)
    {
-      for (auto& i : factories)
+      for (auto& i : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          i.second->setTypeFilter(nmts);
       }
@@ -184,17 +179,10 @@ namespace gpstk
    void NavLibrary ::
    dump(std::ostream& s, DumpDetail dl) const
    {
-         // factories can have multiple copies of a given factory, so
-         // keep track of which ones we've checked already.
-      std::set<NavDataFactory*> ptrs;
-      for (auto& fi : factories)
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
          NavDataFactory *ptr = fi.second.get();
-         if (ptrs.count(ptr) == 0)
-         {
-            ptrs.insert(ptr);
-            ptr->dump(s,dl);
-         }
+         ptr->dump(s,dl);
       }
    }
 
@@ -202,7 +190,7 @@ namespace gpstk
    void NavLibrary ::
    edit(const CommonTime& fromTime, const CommonTime& toTime)
    {
-      for (auto& fi : factories)
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          fi.second->edit(fromTime, toTime);
       }
@@ -213,7 +201,7 @@ namespace gpstk
    edit(const CommonTime& fromTime, const CommonTime& toTime,
         const NavSatelliteID& satID)
    {
-      for (auto& fi : factories)
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          fi.second->edit(fromTime, toTime, satID);
       }
@@ -224,7 +212,7 @@ namespace gpstk
    edit(const CommonTime& fromTime, const CommonTime& toTime,
         const NavSignalID& signal)
    {
-      for (auto& fi : factories)
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          fi.second->edit(fromTime, toTime, signal);
       }
@@ -234,7 +222,7 @@ namespace gpstk
    void NavLibrary ::
    clear()
    {
-      for (auto& fi : factories)
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          fi.second->clear();
       }
@@ -245,7 +233,7 @@ namespace gpstk
    getInitialTime() const
    {
       CommonTime rv = CommonTime::END_OF_TIME;
-      for (const auto& fi : factories)
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
          rv = std::min(rv, fi.second->getInitialTime());
       }
@@ -257,7 +245,7 @@ namespace gpstk
    getFinalTime() const
    {
       CommonTime rv = CommonTime::BEGINNING_OF_TIME;
-      for (const auto& fi : factories)
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
          rv = std::max(rv, fi.second->getFinalTime());
       }
@@ -270,7 +258,7 @@ namespace gpstk
       const
    {
       NavSatelliteIDSet rv, tmp;
-      for (const auto& fi : factories)
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
          tmp = fi.second->getAvailableSats(fromTime, toTime);
          for (const auto& i : tmp)
@@ -289,7 +277,7 @@ namespace gpstk
       const
    {
       NavSatelliteIDSet rv, tmp;
-      for (const auto& fi : factories)
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
          tmp = fi.second->getAvailableSats(nmt, fromTime, toTime);
          for (const auto& i : tmp)
@@ -307,7 +295,7 @@ namespace gpstk
       const
    {
       NavMessageIDSet rv, tmp;
-      for (const auto& fi : factories)
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
          tmp = fi.second->getAvailableMsgs(fromTime, toTime);
          for (const auto& i : tmp)
@@ -324,7 +312,7 @@ namespace gpstk
              const CommonTime& fromTime,
              const CommonTime& toTime)
    {
-      for (const auto& fi : factories)
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
          if (fi.second->isPresent(nmid, fromTime, toTime))
             return true;
@@ -336,23 +324,16 @@ namespace gpstk
    std::string NavLibrary ::
    getFactoryFormats() const
    {
-         // factories can have multiple copies of a given factory, so
-         // keep track of which ones we've checked already.
-      std::set<NavDataFactory*> ptrs;
       std::string rv;
-      for (const auto& fi : factories)
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
          NavDataFactory *ptr = fi.second.get();
-         if (ptrs.count(ptr) == 0)
+         std::string ff(ptr->getFactoryFormats());
+         if (!ff.empty())
          {
-            ptrs.insert(ptr);
-            std::string ff(ptr->getFactoryFormats());
-            if (!ff.empty())
-            {
-               if (!rv.empty())
-                  rv += ", ";
-               rv += ff;
-            }
+            if (!rv.empty())
+               rv += ", ";
+            rv += ff;
          }
       }
       return rv;
