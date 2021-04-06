@@ -149,6 +149,7 @@ namespace gpstk
       {
          CommonTime t = fi.second->getInitialTime();
          if ((rv.getTimeSystem() == TimeSystem::Any) ||
+             (t.getTimeSystem() == TimeSystem::Any) ||
              (t.getTimeSystem() == rv.getTimeSystem()))
          {
             rv = std::min(rv,t);
@@ -177,6 +178,7 @@ namespace gpstk
       {
          CommonTime t = fi.second->getFinalTime();
          if ((rv.getTimeSystem() == TimeSystem::Any) ||
+             (t.getTimeSystem() == TimeSystem::Any) ||
              (t.getTimeSystem() == rv.getTimeSystem()))
          {
             rv = std::max(rv,t);

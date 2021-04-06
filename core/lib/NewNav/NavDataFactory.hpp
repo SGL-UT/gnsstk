@@ -63,7 +63,8 @@ namespace gpstk
           * known message types. */
       NavDataFactory()
             : navValidity(NavValidityType::Any),
-              procNavTypes(allNavMessageTypes)
+              procNavTypes(allNavMessageTypes),
+              debugLevel(0)
       {}
 
          /// Clean up.
@@ -297,6 +298,9 @@ namespace gpstk
           * use this factory, so it is up to the derived classes to
           * fill out the signals as appropriate. */
       NavSignalSet supportedSignals;
+
+         /// Debug output when processing.
+      unsigned debugLevel;
 
    protected:
          /** Determines how the factory should load nav data from the store.
