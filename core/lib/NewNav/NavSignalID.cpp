@@ -50,11 +50,13 @@ namespace gpstk
 
    NavSignalID ::
    NavSignalID(SatelliteSystem sys, CarrierBand car, TrackingCode track,
-               NavType nmt)
+               NavType nmt, uint32_t mcode, uint32_t mcodeMask)
          : system(sys),
            obs(gpstk::ObservationType::NavMsg, car, track),
            nav(nmt)
    {
+      obs.mcode = mcode;
+      obs.mcodeMask = mcodeMask;
    }
 
 

@@ -130,15 +130,23 @@ namespace gpstk
    find(const NavMessageID& nmid, const CommonTime& when, NavDataPtr& navOut,
         SVHealth xmitHealth, NavValidityType valid, NavSearchOrder order)
    {
-         // search factories until we find what we want.
-         /** @bug I'm worried this might not work as expected in the
-          * context of factories that produce multiple signals and
-          * wildcards are used. */
-      auto range = factories.equal_range(nmid);
-      for (auto fi = range.first; fi != range.second; ++fi)
+         // Don't use factories.equal_range(nmid), as it can result in
+         // range.first and range.second being the same iterator, in
+         // which case the loop won't process anything at all.
+         // Also don't use the unique iterator as it will result in
+         // skipping over valid factories, e.g. looking for CNAV but
+         // LNAV is first in the map, the signals don't match and the
+         // factory won't be looked at again.
+      std::set<NavDataFactory*> uniques;
+      for (auto& fi : factories)
       {
-         if (fi->second->find(nmid, when, navOut, xmitHealth, valid, order))
-            return true;
+         // std::cerr << "fi.first = " << fi.first << "   nmid = " << nmid << std::endl;
+         if ((fi.first == nmid) && (uniques.count(fi.second.get()) == 0))
+         {
+            if (fi.second->find(nmid, when, navOut, xmitHealth, valid, order))
+               return true;
+            uniques.insert(fi.second.get());
+         }
       }
       return false;
    }

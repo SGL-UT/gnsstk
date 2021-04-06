@@ -120,6 +120,9 @@ namespace gpstk
          /** Indicate what nav message types the factories should be
           * loading.  This should be called before the factories
           * acquire any data.
+          * @warning In order to properly support SP3, if you want to
+          *   include Ephemeris data, you should also include Clock
+          *   data in the filter.
           * @param[in] nmts The set of nav message types to be
           *   processed by the factories. */
       virtual void setTypeFilter(const NavMessageTypeSet& nmts)
