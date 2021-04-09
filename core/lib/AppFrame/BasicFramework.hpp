@@ -504,7 +504,6 @@ namespace gpstk
       virtual void shutDown()
       {}
 
-
    private:
 
 
