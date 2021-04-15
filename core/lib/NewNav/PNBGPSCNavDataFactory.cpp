@@ -1119,6 +1119,7 @@ namespace gpstk
       to->tot = navIn->asUnsignedDouble(csbtot,cnbtot,csctot);
       to->wnot = navIn->asUnsignedLong(csbWNot,cnbWNot,cscWNot);
       to->wnLSF = navIn->asUnsignedLong(csbWNlsf,cnbWNlsf,cscWNlsf);
+      to->refTime = gpstk::GPSWeekSecond(to->wnot, to->tot);
       to->dn = navIn->asUnsignedLong(csbDN,cnbDN,cscDN);
       to->deltatLSF = navIn->asLong(csbdtLSF,cnbdtLSF,cscdtLSF);
       // cerr << "add CNAV time offset" << endl;
@@ -1168,6 +1169,7 @@ namespace gpstk
       }
       to->tot = navIn->asUnsignedDouble(gsbt,gnbt,gsct);
       to->wnot = navIn->asUnsignedLong(gsbWN,gnbWN,gscWN);
+      to->refTime = gpstk::GPSWeekSecond(to->wnot, to->tot);
       to->a0 = navIn->asSignedDouble(gsbA0,gnbA0,gscA0);
       to->a1 = navIn->asSignedDouble(gsbA1,gnbA1,gscA1);
       to->a2 = navIn->asSignedDouble(gsbA2,gnbA2,gscA2);

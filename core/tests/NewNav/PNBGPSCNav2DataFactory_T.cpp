@@ -582,6 +582,9 @@ processUTCIonoTest()
          TUASSERTFE(503808, to->tot);
          TUASSERTE(unsigned, 2049, to->wnot);
          TUASSERTE(unsigned, 1929, to->wnLSF);
+         TUASSERTE(gpstk::CommonTime,
+                   gpstk::GPSWeekSecond(2049,503808).convertToCommonTime(),
+                   to->refTime);
          TUASSERTE(unsigned, 7, to->dn);
          TUASSERTFE(18, to->deltatLSF);
       }
@@ -632,6 +635,9 @@ processGGTOEOPTest()
          TUASSERTFE(3456, to->tot);
          TUASSERTE(unsigned, 2044, to->wnot);
          TUASSERTE(unsigned, 0, to->wnLSF);
+         TUASSERTE(gpstk::CommonTime,
+                   gpstk::GPSWeekSecond(2044,3456).convertToCommonTime(),
+                   to->refTime);
          TUASSERTE(unsigned, 0, to->dn);
          TUASSERTFE(0, to->deltatLSF);
       }

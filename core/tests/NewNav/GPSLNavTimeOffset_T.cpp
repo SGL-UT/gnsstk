@@ -67,12 +67,15 @@ constructorTest()
 {
    TUDEF("GPSLNavTimeOffset", "GPSLNavTimeOffset");
    gpstk::GPSLNavTimeOffset obj;
-   TUASSERTFE(0.0, obj.deltatLS);
+   TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::GPS, obj.src);
+   TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::UTC, obj.tgt);
    TUASSERTFE(0.0, obj.a0);
    TUASSERTFE(0.0, obj.a1);
+   TUASSERTFE(0.0, obj.a2);
+   TUASSERTFE(0.0, obj.deltatLS);
+   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime(), obj.refTime);
    TUASSERTFE(0.0, obj.tot);
-//   TUASSERTE(unsigned, 0, obj.wn);
-   TUASSERTE(unsigned, 0, obj.wnt);
+   TUASSERTE(unsigned, 0, obj.wnot);
    TUASSERTE(unsigned, 0, obj.wnLSF);
    TUASSERTE(unsigned, 0, obj.dn);
    TUASSERTFE(0.0, obj.deltatLSF);
@@ -128,7 +131,8 @@ getOffsetTest()
    obj.a0 = -2.79396772E-09;
    obj.a1 = -7.10542736E-15;
    obj.tot = 405504.0;
-   obj.wnt = 2092;
+   obj.wnot = 2092;
+   obj.refTime = gpstk::GPSWeekSecond(obj.wnot, obj.tot);
    double offset;
       /// @todo Truth values here need to be verified.
    TUASSERT(obj.getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC, ws1,

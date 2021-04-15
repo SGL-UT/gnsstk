@@ -1055,6 +1055,9 @@ process33Test()
    TUASSERTFE(21600, to->tot);
    TUASSERTE(unsigned, 2060, to->wnot);
    TUASSERTE(unsigned, 1929, to->wnLSF);
+   TUASSERTE(gpstk::CommonTime,
+             gpstk::GPSWeekSecond(2060,21600).convertToCommonTime(),
+             to->refTime);
    TUASSERTE(unsigned, 7, to->dn);
    TUASSERTFE(18, to->deltatLSF);
    TURETURN();
@@ -1091,6 +1094,9 @@ process35Test()
    TUASSERTFE(356400, to->tot);
    TUASSERTE(unsigned, 2097, to->wnot);
    TUASSERTE(unsigned, 0, to->wnLSF);
+   TUASSERTE(gpstk::CommonTime,
+             gpstk::GPSWeekSecond(2097,356400).convertToCommonTime(),
+             to->refTime);
    TUASSERTE(unsigned, 0, to->dn);
    TUASSERTFE(0, to->deltatLSF);
    TURETURN();

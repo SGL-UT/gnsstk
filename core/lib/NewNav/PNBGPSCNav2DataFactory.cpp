@@ -646,6 +646,7 @@ namespace gpstk
       to->deltatLS = navIn->asLong(offset+csbdtLS,cnbdtLS,cscdtLS);
       to->tot = navIn->asUnsignedDouble(offset+csbtot,cnbtot,csctot);
       to->wnot = navIn->asUnsignedLong(offset+csbWNot,cnbWNot,cscWNot);
+      to->refTime = gpstk::GPSWeekSecond(to->wnot, to->tot);
       to->wnLSF = navIn->asUnsignedLong(offset+csbWNlsf,cnbWNlsf,cscWNlsf);
       to->dn = navIn->asUnsignedLong(offset+csbDN,cnbDN,cscDN);
       to->deltatLSF = navIn->asLong(offset+csbdtLSF,cnbdtLSF,cscdtLSF);
@@ -695,6 +696,7 @@ namespace gpstk
       }
       to->tot = navIn->asUnsignedDouble(offset+gsbt,gnbt,gsct);
       to->wnot = navIn->asUnsignedLong(offset+gsbWN,gnbWN,gscWN);
+      to->refTime = gpstk::GPSWeekSecond(to->wnot, to->tot);
       to->a0 = navIn->asSignedDouble(offset+gsbA0,gnbA0,gscA0);
       to->a1 = navIn->asSignedDouble(offset+gsbA1,gnbA1,gscA1);
       to->a2 = navIn->asSignedDouble(offset+gsbA2,gnbA2,gscA2);

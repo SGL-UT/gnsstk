@@ -822,15 +822,16 @@ namespace gpstk
       to->a0 = navIn->asSignedDouble(a0start,a0num,2,-30);
       to->a1 = navIn->asSignedDouble(150,24,-50);
       to->tot = navIn->asUnsignedDouble(218,8,12);
-      to->wnt = navIn->asUnsignedLong(226,8,1);
+      to->wnot = navIn->asUnsignedLong(226,8,1);
       to->wnLSF = navIn->asUnsignedLong(248,8,1);
       to->dn = navIn->asUnsignedLong(256,8,1);
       to->deltatLSF = navIn->asLong(270,8,1);
          // adjust week numbers to full week
       GPSWeekSecond ws(p0->timeStamp);
       long refWeek = ws.week;
-      to->wnt = timeAdjust8BitWeekRollover(to->wnt, refWeek);
+      to->wnot = timeAdjust8BitWeekRollover(to->wnot, refWeek);
       to->wnLSF = timeAdjust8BitWeekRollover(to->wnLSF, refWeek);
+      to->refTime = GPSWeekSecond(to->wnot, to->tot);
          // return results.
       // cerr << "add LNAV page 56 time offset" << endl;
       navOut.push_back(p0);

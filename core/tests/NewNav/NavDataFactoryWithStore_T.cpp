@@ -1037,6 +1037,7 @@ getOffsetTest()
       navOut.get());
    fillSat(navOut->signal, 23, 23);
    toptr->deltatLS = 23; // set a simple, easy to verify value.
+   toptr->refTime = ct;
    TUASSERT(fact1.addNavData(navOut));
    gpstk::TimeOffsetData *top;
    gpstk::NavDataPtr result;
@@ -1053,12 +1054,14 @@ getOffsetTest()
                             ct+35, result, gpstk::SVHealth::Any,
                             gpstk::NavValidityType::Any));
    top = dynamic_cast<gpstk::TimeOffsetData*>(result.get());
+   gpstk::CommonTime utc35(ct+35);
+   utc35.setTimeSystem(gpstk::TimeSystem::UTC);
    TUASSERT(top->getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::GPS,
-                           ct+35, offset));
+                           utc35, offset));
    TUASSERTFE(-23.0, offset);
       // expect this to not work
    TUASSERT(!fact1.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::BDT,
-                             ct+35, result, gpstk::SVHealth::Any,
+                             utc35, result, gpstk::SVHealth::Any,
                              gpstk::NavValidityType::Any));
    TURETURN();
 }
@@ -1511,6 +1514,7 @@ addData(gpstk::TestUtil& testFramework, TestClass& fact,
          // to->wnLSF = 0;
          // to->dn = 0;
          // to->deltatLSF = 0.0;
+      to->refTime = gpstk::GPSWeekSecond(0,0);
    }
    navOut->timeStamp = ct;
    navOut->signal.messageType = nmt;

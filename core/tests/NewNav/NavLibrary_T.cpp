@@ -261,6 +261,7 @@ getOffsetTest()
    navOut->signal.sat = gpstk::SatID(23,gpstk::SatelliteSystem::GPS);
    navOut->signal.xmitSat = gpstk::SatID(32,gpstk::SatelliteSystem::GPS);
    toptr->deltatLS = 23; // set a simple, easy to verify value.
+   toptr->refTime = ct;
    TUASSERT(fact1->addNavData(navOut));
    TUCATCH(navLib.addFactory(ndfp));
    double result;
@@ -269,13 +270,15 @@ getOffsetTest()
                              gpstk::NavValidityType::Any));
    TUASSERTFE(23.0, result);
       // reverse the conversion and expect negative.
+   gpstk::CommonTime utc35(ct+35);
+   utc35.setTimeSystem(gpstk::TimeSystem::UTC);
    TUASSERT(navLib.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::GPS,
-                             ct+35, result, gpstk::SVHealth::Any,
+                             utc35, result, gpstk::SVHealth::Any,
                              gpstk::NavValidityType::Any));
    TUASSERTFE(-23.0, result);
       // expect this to not work
    TUASSERT(!navLib.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::BDT,
-                              ct+35, result, gpstk::SVHealth::Any,
+                              utc35, result, gpstk::SVHealth::Any,
                               gpstk::NavValidityType::Any));
    TURETURN();
 }

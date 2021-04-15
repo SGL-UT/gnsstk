@@ -884,8 +884,11 @@ processSVID56Test()
    TUASSERTFE(4.65661287E-09, to->a0);
    TUASSERTFE(1.42108547E-14, to->a1);
    TUASSERTFE(147456, to->tot);
-   TUASSERTE(unsigned, 1869, to->wnt);
+   TUASSERTE(unsigned, 1869, to->wnot);
    TUASSERTE(unsigned, 1851, to->wnLSF);
+   TUASSERTE(gpstk::CommonTime,
+             gpstk::GPSWeekSecond(1869,147456).convertToCommonTime(),
+             to->refTime);
    TUASSERTE(unsigned, 3, to->dn);
    TUASSERTFE(17, to->deltatLSF);
    TURETURN();
