@@ -89,16 +89,24 @@ namespace gpstk
       static bool convertToOrbit(const Rinex3NavData& navIn,
                                  NavDataPtr& navOut);
 
+         /** Copy common elements from Rinex3NavData to OrbitDataKepler.
+          * @param[in] navIn The RINEX nav message data to convert.
+          * @param[in,out] navOut The pre-allocated OrbitDataKepler
+          *   object to be updated from the RINEX nav data.
+          */
+      static void convertToOrbitDataKepler(const Rinex3NavData& navIn,
+                                           OrbitDataKepler* navOut);
+
          /** Convert RINEX nav data to a system/code-appropriate
           * NavHealthData object.
           * @param[in] navIn The RINEX nav message data to convert.
-          * @param[out] healthOut The NavHealthData object to be added
+          * @param[out] healthOut The NavHealthData object(s) to be added
           *   to the factory data map.
           * @return true if the conversion is valid, false if the
           *   input data is unsupported.
           */
       static bool convertToHealth(const Rinex3NavData& navIn,
-                                  NavDataPtr& healthOut);
+                                  std::list<gpstk::NavDataPtr>& healthOut);
 
          /** Convert RINEX nav header data to a TimeOffsetData object.
           * @param[in] navIn The RINEX nav header to convert.
@@ -126,6 +134,21 @@ namespace gpstk
           * @param[in,out] navOut The GPSLNavEph object whose time
           *   stamps are to be set. */
       static void fixTimeGPS(const Rinex3NavData& navIn, GPSLNavEph& navOut);
+
+         /** Set the xmitTime field in navOut according to the
+          * appropriate data in navIn.
+          * @param[in] navIn A Galileo I/Nav or F/Nav record in RINEX format.
+          * @param[in,out] navOut The GalINavEph or GalFNavEph object whose time
+          *   stamps are to be set. */
+      static void fixTimeGalileo(const Rinex3NavData& navIn,
+                                 OrbitDataKepler& navOut);
+
+         /** Convert accuracy in meters into a Galileo Signal In Space
+          * Accuracy index.
+          * @note This uses RINEX conventions (naturally) of using -1
+          *   to mean No Accuracy Predicition Available.
+          * @param[in] accuracy The signal accuracy in meters. */
+      static uint8_t decodeSISA(double accuracy);
    };
 
       //@}

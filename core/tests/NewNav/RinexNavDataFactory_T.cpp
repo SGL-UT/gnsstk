@@ -90,7 +90,22 @@ constructorTest()
                             gpstk::CarrierBand::L1,
                             gpstk::TrackingCode::CA,
                             gpstk::NavType::GPSLNAV);
+   gpstk::NavSignalID nsid2(gpstk::SatelliteSystem::Galileo,
+                            gpstk::CarrierBand::L1,
+                            gpstk::TrackingCode::E1B,
+                            gpstk::NavType::GalINAV);
+   gpstk::NavSignalID nsid3(gpstk::SatelliteSystem::Galileo,
+                            gpstk::CarrierBand::E5b,
+                            gpstk::TrackingCode::E5bI,
+                            gpstk::NavType::GalINAV);
+   gpstk::NavSignalID nsid4(gpstk::SatelliteSystem::Galileo,
+                            gpstk::CarrierBand::L5,
+                            gpstk::TrackingCode::E5aI,
+                            gpstk::NavType::GalFNAV);
    TUASSERT(fact.supportedSignals.count(nsid1));
+   TUASSERT(fact.supportedSignals.count(nsid2));
+   TUASSERT(fact.supportedSignals.count(nsid3));
+   TUASSERT(fact.supportedSignals.count(nsid4));
    TURETURN();
 }
 
@@ -194,6 +209,18 @@ loadIntoMapTest()
    TUASSERT(!f7.addDataSource(f7name));
    TUASSERTE(size_t, 0, f7.size());
 
+      // test RINEX 3 Galileo
+   TestClass f8;
+   std::string f8name = gpstk::getPathData() + gpstk::getFileSep() +
+      "test_input_rinex3_nav_gal.20n";
+      // this should implicitly load into the data map
+   TUASSERT(f8.addDataSource(f8name));
+      // x 4 time offset
+      // x 1 GPS ephemeris
+      // x 1 GPS health
+      // x 39 Galileo ephemerides
+      // x 3*39 Galileo health
+   TUASSERTE(size_t, 162, f8.size());
    TURETURN();
 }
 
