@@ -120,6 +120,23 @@ getOffsetTest()
    TUASSERT(uut.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::GPS, utc2,
                           offset));
    TUASSERTFE(-18.000000009443297699, offset);
+   gpstk::CommonTime failTime(utc2);
+   failTime.setTimeSystem(gpstk::TimeSystem::GLO);
+   try
+   {
+      uut.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::GPS, failTime,
+                    offset);
+      TUFAIL("Did not throw an exception when expected");
+   }
+   catch (gpstk::AssertionFailure)
+   {
+      TUPASS("");
+   }
+   catch (gpstk::Exception& exc)
+   {
+      std::cerr << exc << std::endl;
+      TUFAIL("Not the expected exception");
+   }
    TURETURN();
 }
 

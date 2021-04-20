@@ -74,6 +74,7 @@ namespace gpstk
           *   system as fromSys.
           * @param[out] offset The offset in seconds where
           *   when(toSys)=when(fromSys)-offset.
+          * @throw AssertionFailure if when's time system is not fromSys.
           * @return true if an offset is available, false if not. */
       bool getOffset(TimeSystem fromSys, TimeSystem toSys,
                      const CommonTime& when, double& offset)
@@ -82,6 +83,15 @@ namespace gpstk
          /** The set of time system conversions this class is capable of making.
           * @return a set of supported time system conversion to/from pairs. */
       TimeCvtSet getConversions() const override;
+
+         // These terms are referenced in the ICDs for multiple
+         // systems, but you can find their definition in places like
+         // IS-GPS-200 30.3.3.6.2.  They occasionally have different
+         // names like wnot, t0t, wn0t, etc., but the terms originate
+         // from the nav message, though some may be zero (unused).
+         // They are meant to be set by the NavDataFactory classes,
+         // but are made available for the user to read.  The user
+         // generally should not be changing these values.
 
       TimeSystem src;     ///< Source time system.
       TimeSystem tgt;     ///< Target time system.

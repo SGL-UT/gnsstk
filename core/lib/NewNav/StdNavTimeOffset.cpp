@@ -60,6 +60,7 @@ namespace gpstk
       if (((fromSys == src) && (toSys == tgt)) ||
           ((fromSys == tgt) && (toSys == src)))
       {
+         GPSTK_ASSERT(when.getTimeSystem()  == fromSys);
             // Change the reference time system to the source time
             // system (fromSys) to allow for reverse conversions
             // (e.g. UTC->GPS vs GPS->UTC).
