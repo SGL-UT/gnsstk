@@ -623,7 +623,7 @@ namespace std
 %include "PNBGPSCNav2DataFactory.hpp"
 %include "PNBGPSCNavDataFactory.hpp"
 %include "PNBGPSLNavDataFactory.hpp"
-#include "PNBGalINavDataFactory.hpp"
+%include "PNBGalINavDataFactory.hpp"
 %include "PNBMultiGNSSNavDataFactory.hpp"
 %include "stl_helpers.hpp"
 %include "PRSolution.hpp"
