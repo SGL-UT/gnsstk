@@ -616,8 +616,8 @@ namespace gpstk
       if ((wordType == 5) && ephWord[wt3] && PNBNavDataFactory::processHea)
       {
             // Add health bits from word type 5.
-         NavDataPtr p1 = std::make_shared<GalNavHealth>();
-         GalNavHealth *hp1 = dynamic_cast<GalNavHealth*>(p1.get());
+         NavDataPtr p1 = std::make_shared<GalINavHealth>();
+         GalINavHealth *hp1 = dynamic_cast<GalINavHealth*>(p1.get());
          hp1->timeStamp = navIn->getTransmitTime();
          hp1->signal = NavMessageID(key, NavMessageType::Health);
          hp1->signal.obs.band = CarrierBand::E5b;
@@ -628,8 +628,8 @@ namespace gpstk
             ephWord[isiE5bdvs]->asUnsignedLong(isbE5bdvs,inbE5bdvs,iscE5bdvs));
          hp1->sisaIndex = ephWord[esiSISA]->asUnsignedLong(esbSISA,enbSISA,
                                                           escSISA);
-         NavDataPtr p2 = std::make_shared<GalNavHealth>();
-         GalNavHealth *hp2 = dynamic_cast<GalNavHealth*>(p2.get());
+         NavDataPtr p2 = std::make_shared<GalINavHealth>();
+         GalINavHealth *hp2 = dynamic_cast<GalINavHealth*>(p2.get());
          *hp2 = *hp1; // copy data
          hp2->signal.obs.band = CarrierBand::L1;
          hp2->signal.obs.code = TrackingCode::E1B;
@@ -752,17 +752,17 @@ namespace gpstk
       eph->dvsE1B = static_cast<GalDataValid>(
          ephWord[isiE1Bdvs]->asUnsignedLong(isbE1Bdvs,inbE1Bdvs,iscE1Bdvs));
          // set health using the Galileo algorithms.
-      GalNavHealth tmpHea;
+      GalINavHealth tmpHea;
       if (eph->signal.obs.band == gpstk::CarrierBand::L1)
       {
             // E1B
-         eph->health = GalNavHealth::galHealth(eph->hsE1B,eph->dvsE1B,
+         eph->health = GalINavHealth::galHealth(eph->hsE1B,eph->dvsE1B,
                                                eph->sisaIndex);
       }
       else
       {
             // E5b
-         eph->health = GalNavHealth::galHealth(eph->hsE5b,eph->dvsE5b,
+         eph->health = GalINavHealth::galHealth(eph->hsE5b,eph->dvsE5b,
                                                eph->sisaIndex);
       }
       eph->fixFit();
@@ -858,11 +858,11 @@ namespace gpstk
       }
          // SVID1
       NavDataPtr p0 = std::make_shared<GalINavAlm>();
-      NavDataPtr p1 = std::make_shared<GalNavHealth>();
-      NavDataPtr p2 = std::make_shared<GalNavHealth>();
+      NavDataPtr p1 = std::make_shared<GalINavHealth>();
+      NavDataPtr p2 = std::make_shared<GalINavHealth>();
       GalINavAlm *alm = dynamic_cast<GalINavAlm*>(p0.get());
-      GalNavHealth *hp1 = dynamic_cast<GalNavHealth*>(p1.get());
-      GalNavHealth *hp2 = dynamic_cast<GalNavHealth*>(p2.get());
+      GalINavHealth *hp1 = dynamic_cast<GalINavHealth*>(p1.get());
+      GalINavHealth *hp2 = dynamic_cast<GalINavHealth*>(p2.get());
       if (processAlmOrb(almWord, alm, hp1, hp2, wt7, wt8, asiWNa_A, asit0a_A,
                         asiSVID_1, asbSVID_1, asidAhalf_1, asbdAhalf_1,
                         asiEcc_1, asbEcc_1, asiw_1, asbw_1, asidi_1, asbdi_1,
@@ -886,11 +886,11 @@ namespace gpstk
       }
          // SVID2
       p0 = std::make_shared<GalINavAlm>();
-      p1 = std::make_shared<GalNavHealth>();
-      p2 = std::make_shared<GalNavHealth>();
+      p1 = std::make_shared<GalINavHealth>();
+      p2 = std::make_shared<GalINavHealth>();
       alm = dynamic_cast<GalINavAlm*>(p0.get());
-      hp1 = dynamic_cast<GalNavHealth*>(p1.get());
-      hp2 = dynamic_cast<GalNavHealth*>(p2.get());
+      hp1 = dynamic_cast<GalINavHealth*>(p1.get());
+      hp2 = dynamic_cast<GalINavHealth*>(p2.get());
       if (processAlmOrb(almWord, alm, hp1, hp2, wt8, wt9, asiWNa_B, asit0a_B,
                         asiSVID_2, asbSVID_2, asidAhalf_2, asbdAhalf_2,
                         asiEcc_2, asbEcc_2, asiw_2, asbw_2, asidi_2, asbdi_2,
@@ -914,11 +914,11 @@ namespace gpstk
       }
          // SVID3
       p0 = std::make_shared<GalINavAlm>();
-      p1 = std::make_shared<GalNavHealth>();
-      p2 = std::make_shared<GalNavHealth>();
+      p1 = std::make_shared<GalINavHealth>();
+      p2 = std::make_shared<GalINavHealth>();
       alm = dynamic_cast<GalINavAlm*>(p0.get());
-      hp1 = dynamic_cast<GalNavHealth*>(p1.get());
-      hp2 = dynamic_cast<GalNavHealth*>(p2.get());
+      hp1 = dynamic_cast<GalINavHealth*>(p1.get());
+      hp2 = dynamic_cast<GalINavHealth*>(p2.get());
       if (processAlmOrb(almWord, alm, hp1, hp2, wt9, wt10, asiWNa_B, asit0a_B,
                         asiSVID_3, asbSVID_3, asidAhalf_3, asbdAhalf_3,
                         asiEcc_3, asbEcc_3, asiw_3, asbw_3, asidi_3, asbdi_3,
@@ -948,7 +948,7 @@ namespace gpstk
 
    bool PNBGalINavDataFactory ::
    processAlmOrb(const std::vector<PackedNavBitsPtr>& almWord,
-                 GalINavAlm *alm, GalNavHealth *hp1, GalNavHealth *hp2,
+                 GalINavAlm *alm, GalINavHealth *hp1, GalINavHealth *hp2,
                  int wtA, int wtB,
                  int asiWNa, int asit0a,
                  int asiSVID, int asbSVID,

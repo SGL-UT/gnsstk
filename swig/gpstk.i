@@ -48,6 +48,7 @@
   */
 %shared_ptr(gpstk::NavData)
 %shared_ptr(gpstk::TimeOffsetData)
+%shared_ptr(gpstk::StdNavTimeOffset)
 %shared_ptr(gpstk::NavHealthData)
 %shared_ptr(gpstk::OrbitData)
 %shared_ptr(gpstk::OrbitDataKepler)
@@ -68,6 +69,11 @@
 %shared_ptr(gpstk::GPSCNav2TimeOffset)
 %shared_ptr(gpstk::OrbitDataSP3)
 %shared_ptr(gpstk::RinexTimeOffset)
+%shared_ptr(gpstk::GalINavEph)
+%shared_ptr(gpstk::GalINavAlm)
+%shared_ptr(gpstk::GalINavHealth)
+%shared_ptr(gpstk::GalINavTimeOffset)
+%shared_ptr(gpstk::GalFnavEph)
 
 %shared_ptr(gpstk::NavDataFactory)
 %shared_ptr(gpstk::NavDataFactoryWithStore)
@@ -82,6 +88,7 @@
 %shared_ptr(gpstk::PNBGPSCNavDataFactory)
 %shared_ptr(gpstk::PNBGPSCNav2DataFactory)
 %shared_ptr(gpstk::PNBMultiGNSSNavDataFactory)
+%shared_ptr(gpstk::PNBGalINavDataFactory)
  // silence warnings from swig
 %shared_ptr(gpstk::TimeSystemCorrection)
 
@@ -396,11 +403,6 @@ namespace std
 %include "PCodeConst.hpp"
 %include "CodeBuffer.hpp"
 %include "Combinations.hpp"
-/* %include "CommandLine.hpp" */
-/* %include "CommandOptionWithCommonTimeArg.hpp" */
-%include "Position.hpp"
-/* %include "CommandOptionWithPositionArg.hpp" */
-/* %include "CommandOptionWithTimeArg.hpp" */
 %include "ConfDataReader.hpp"
  /* %include "ConfDataWriter.hpp" */ // error on typemaps for list of double
 %include "CubicSpline.hpp"
@@ -447,6 +449,7 @@ namespace std
 %include "DumpDetail.hpp"
 %include "ENUUtil.hpp"
 %include "IERSConvention.hpp"
+%include "Position.hpp"
 /* %include "EarthOrientation.hpp" */
 /* %include "EOPPrediction.hpp" */
 /* %include "EOPStore.hpp" */
@@ -514,6 +517,7 @@ namespace std
 %include "NavHealthData.hpp"
 %include "GPSCNav2Health.hpp"
 %include "TimeOffsetData.hpp"
+%include "StdNavTimeOffset.hpp"
 %include "GPSCNav2TimeOffset.hpp"
 %include "GPSCNavData.hpp"
 %include "GPSCNavAlm.hpp"
@@ -528,7 +532,14 @@ namespace std
 %include "GPSLNavTimeOffset.hpp"
 %include "GPSOrbElemStore.hpp"
 %include "GSatID.hpp"
+%include "GalDataValid.hpp"
 %include "GalEphemerisStore.hpp"
+%include "GalFNavEph.hpp"
+%include "GalHealthStatus.hpp"
+%include "GalINavAlm.hpp"
+%include "GalINavEph.hpp"
+%include "GalINavHealth.hpp"
+%include "GalINavTimeOffset.hpp"
 %include "GalileoEllipsoid.hpp"
 %include "GenXSequence.hpp"
 %include "GenericNavFilterData.hpp"
@@ -574,6 +585,8 @@ namespace std
 %include "NavDataFactoryWithStore.hpp"
 %include "NavDataFactoryWithStoreFile.hpp"
 %include "MultiFormatNavDataFactory.hpp"
+%include "NDFUniqConstIterator.hpp"
+%include "NDFUniqIterator.hpp"
 %include "NEDUtil.hpp"
 %include "NavLibrary.hpp"
 %include "NavMsgData.hpp"
@@ -610,6 +623,7 @@ namespace std
 %include "PNBGPSCNav2DataFactory.hpp"
 %include "PNBGPSCNavDataFactory.hpp"
 %include "PNBGPSLNavDataFactory.hpp"
+#include "PNBGalINavDataFactory.hpp"
 %include "PNBMultiGNSSNavDataFactory.hpp"
 %include "stl_helpers.hpp"
 %include "PRSolution.hpp"

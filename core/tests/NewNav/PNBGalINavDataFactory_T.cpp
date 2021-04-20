@@ -39,7 +39,7 @@
 #include "PNBGalINavDataFactory.hpp"
 #include "TestUtil.hpp"
 #include "GalINavTimeOffset.hpp"
-#include "GalNavHealth.hpp"
+#include "GalINavHealth.hpp"
 #include "GalINavEph.hpp"
 #include "GalINavAlm.hpp"
 #include "GALWeekSecond.hpp"
@@ -474,7 +474,7 @@ processEphTest()
    gpstk::CommonTime endExp = toeExp + (4.0 * 3600.0);
    gpstk::NavDataPtrList navOut;
    gpstk::GalINavEph *eph;
-   gpstk::GalNavHealth *hea;
+   gpstk::GalINavHealth *hea;
    TUASSERTE(bool, true, uut.processEph(1, ephINAVGalWT1, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
@@ -550,7 +550,7 @@ processEphTest()
          TUASSERTE(gpstk::GalDataValid, gpstk::GalDataValid::Valid,
                    eph->dvsE1B);
       }
-      else if ((hea = dynamic_cast<gpstk::GalNavHealth*>(i.get())) != nullptr)
+      else if ((hea = dynamic_cast<gpstk::GalINavHealth*>(i.get())) != nullptr)
       {
          heaCount++;
             // NavData fields
@@ -565,7 +565,7 @@ processEphTest()
             TUASSERTE(gpstk::NavMessageID, nmidExpE5b, hea->signal);
          }
             // NavHealthData has no fields
-            // GalNavHealth
+            // GalINavHealth
             /** @todo while our assertions are the same for both
              * signals, that's not a guarantee, operationally.
              * Probably should add a test where the health status is
@@ -610,7 +610,7 @@ processAlmTest()
    gpstk::CommonTime expRefTime = gpstk::GALWeekSecond(1014,518400);
    gpstk::NavDataPtrList navOut;
    gpstk::GalINavAlm *alm;
-   gpstk::GalNavHealth *hea;
+   gpstk::GalINavHealth *hea;
    gpstk::GalINavTimeOffset *tim;
    TUASSERTE(bool, true, uut.processAlm(7, navINAVGalWT7, navOut));
    TUASSERTE(size_t, 0, navOut.size());
@@ -702,7 +702,7 @@ processAlmTest()
          TUASSERTE(gpstk::GalHealthStatus, gpstk::GalHealthStatus::OK,
                    alm->hsE1B);
       }
-      else if ((hea = dynamic_cast<gpstk::GalNavHealth*>(i.get())) != nullptr)
+      else if ((hea = dynamic_cast<gpstk::GalINavHealth*>(i.get())) != nullptr)
       {
          heaCount++;
          gpstk::NavMessageID nmid;
@@ -804,7 +804,7 @@ countResults(const gpstk::NavDataPtrList& navOut)
       {
          toCount++;
       }
-      else if (dynamic_cast<gpstk::GalNavHealth*>(i.get()) != nullptr)
+      else if (dynamic_cast<gpstk::GalINavHealth*>(i.get()) != nullptr)
       {
          heaCount++;
       }
