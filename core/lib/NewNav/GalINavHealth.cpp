@@ -36,14 +36,14 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "GalNavHealth.hpp"
+#include "GalINavHealth.hpp"
 
 using namespace std;
 
 namespace gpstk
 {
-   GalNavHealth ::
-   GalNavHealth()
+   GalINavHealth ::
+   GalINavHealth()
          : sigHealthStatus(GalHealthStatus::Unknown),
            dataValidityStatus(GalDataValid::Unknown),
            sisaIndex(255)
@@ -56,7 +56,7 @@ namespace gpstk
    }
 
 
-   void GalNavHealth ::
+   void GalINavHealth ::
    dump(std::ostream& s, DumpDetail dl) const
    {
       NavData::dump(s,dl);
@@ -74,14 +74,14 @@ namespace gpstk
    }
 
 
-   SVHealth GalNavHealth ::
+   SVHealth GalINavHealth ::
    getHealth() const
    {
       return galHealth(sigHealthStatus, dataValidityStatus, sisaIndex);
    }
 
 
-   SVHealth GalNavHealth ::
+   SVHealth GalINavHealth ::
    galHealth(GalHealthStatus shs, GalDataValid dvs, uint8_t sisa)
    {
       switch (shs)

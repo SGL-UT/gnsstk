@@ -42,7 +42,7 @@
 #include "GPSLNavHealth.hpp"
 #include "GalINavEph.hpp"
 #include "GalFNavEph.hpp"
-#include "GalNavHealth.hpp"
+#include "GalINavHealth.hpp"
 #include "RinexTimeOffset.hpp"
 #include "TimeString.hpp"
 
@@ -362,7 +362,7 @@ namespace gpstk
       bool rv = true;
       gpstk::NavDataPtr health;
       GPSLNavHealth *gps;
-      GalNavHealth *galNav;
+      GalINavHealth *galNav;
       unsigned healthBits = 0;
       switch (navIn.sat.system)
       {
@@ -379,11 +379,11 @@ namespace gpstk
                // construct three health objects, one for each signal
                // in the RINEX record.
                // E1-B first
-            health = std::make_shared<GalNavHealth>();
-            galNav = dynamic_cast<GalNavHealth*>(health.get());
+            health = std::make_shared<GalINavHealth>();
+            galNav = dynamic_cast<GalINavHealth*>(health.get());
                // NavData
             fillNavData(navIn, health);
-               // GalNavHealth
+               // GalINavHealth
                // start with original health bits from RINEX, decode and shift.
             healthBits = navIn.health;
             galNav->dataValidityStatus = static_cast<GalDataValid>(
@@ -396,11 +396,11 @@ namespace gpstk
             galNav->signal.obs.code = TrackingCode::E1B;
             healthOut.push_back(health);
                // Now decode E5a
-            health = std::make_shared<GalNavHealth>();
-            galNav = dynamic_cast<GalNavHealth*>(health.get());
+            health = std::make_shared<GalINavHealth>();
+            galNav = dynamic_cast<GalINavHealth*>(health.get());
                // NavData
             fillNavData(navIn, health);
-               // GalNavHealth
+               // GalINavHealth
             galNav->dataValidityStatus = static_cast<GalDataValid>(
                healthBits & 0x01);
             healthBits >>= 1;
@@ -418,11 +418,11 @@ namespace gpstk
             }
             healthOut.push_back(health);
                // Finally, decode E5b
-            health = std::make_shared<GalNavHealth>();
-            galNav = dynamic_cast<GalNavHealth*>(health.get());
+            health = std::make_shared<GalINavHealth>();
+            galNav = dynamic_cast<GalINavHealth*>(health.get());
                // NavData
             fillNavData(navIn, health);
-               // GalNavHealth
+               // GalINavHealth
             galNav->dataValidityStatus = static_cast<GalDataValid>(
                healthBits & 0x01);
             healthBits >>= 1;

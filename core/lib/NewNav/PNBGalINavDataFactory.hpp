@@ -41,7 +41,7 @@
 
 #include "PNBNavDataFactory.hpp"
 #include "GalINavAlm.hpp"
-#include "GalNavHealth.hpp"
+#include "GalINavHealth.hpp"
 
 namespace gpstk
 {
@@ -52,7 +52,7 @@ namespace gpstk
        * data containing Galileo I/NAV data as defined in Galileo
        * OS-SIS-ICD.  The results of the addData method (in the navOut
        * argument) may contain any number of GalINavAlm, GalINavEph,
-       * GalNavHealth or GalINavTimeOffset objects, according to what
+       * GalINavHealth or GalINavTimeOffset objects, according to what
        * data is fed to the method and what data is requested via the
        * validity and type filters (see PNBNavDataFactory).
        * @note Currently validity is not checked in any way in this class.
@@ -169,7 +169,7 @@ namespace gpstk
           *   specified almanac contained a zero SVID.
           */
       bool processAlmOrb(const std::vector<PackedNavBitsPtr>& almWord,
-                         GalINavAlm *alm, GalNavHealth *hp1, GalNavHealth *hp2,
+                         GalINavAlm *alm, GalINavHealth *hp1, GalINavHealth *hp2,
                          int wtA, int wtB,
                          int asiWNa, int asit0a,
                          int asiSVID, int asbSVID,

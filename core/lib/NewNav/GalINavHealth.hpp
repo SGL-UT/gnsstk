@@ -50,11 +50,11 @@ namespace gpstk
 
       /** Wrapper for the combined Signal Health Status (SHS) and Data
        * Validity Status (DVS) associated with Galileo satellites. */
-   class GalNavHealth : public NavHealthData
+   class GalINavHealth : public NavHealthData
    {
    public:
          /// Initialize to unhealthy using a value typically not seen in health.
-      GalNavHealth();
+      GalINavHealth();
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
