@@ -41,7 +41,7 @@
 
 #include "PNBNavDataFactory.hpp"
 #include "GalFNavAlm.hpp"
-#include "GalNavHealth.hpp"
+#include "GalFNavHealth.hpp"
 
 namespace gpstk
 {
@@ -52,7 +52,7 @@ namespace gpstk
        * data containing Galileo F/NAV data as defined in Galileo
        * OS-SIS-ICD.  The results of the addData method (in the navOut
        * argument) may contain any number of GalFNavAlm, GalFNavEph,
-       * GalNavHealth or GalFNavTimeOffset objects, according to what
+       * GalFNavHealth or GalFNavTimeOffset objects, according to what
        * data is fed to the method and what data is requested via the
        * validity and type filters (see PNBNavDataFactory).
        * @note Currently validity is not checked in any way in this class.
@@ -84,7 +84,7 @@ namespace gpstk
           * @param[out] navOut If an ephemeris is completed, this will
           *   contain a GalFNavEph object.  If navIn contains page
           *   type 1 and health data is requested, navOut will contain
-          *   a GalNavHealth object.  If navIn contains page type 4
+          *   a GalFNavHealth object.  If navIn contains page type 4
           *   and time offset data is requested, navOut will contain
           *   two GalFNavTimeOffset objects.
           * @return false on error. */
@@ -100,7 +100,7 @@ namespace gpstk
           * @param[out] navOut If an almanac is completed and the data
           *   is requested, this will contain a GalFNavAlm object,
           *   and/or if health data is requested, this will contain a
-          *   GalNavHealth object
+          *   GalFNavHealth object
           * @return false on error. */
       bool processAlm(unsigned pageType, const PackedNavBitsPtr& navIn,
                       NavDataPtrList& navOut);
@@ -176,7 +176,7 @@ namespace gpstk
           *   specified almanac contained a zero SVID.
           */
       bool processAlmOrb(const std::vector<PackedNavBitsPtr>& almPage,
-                         GalFNavAlm *alm, GalNavHealth *hp1,
+                         GalFNavAlm *alm, GalFNavHealth *hp1,
                          int ptA, int ptB,
                          int asiSVID, int asbSVID,
                          int asidAhalf, int asbdAhalf,

@@ -39,7 +39,7 @@
 #include "PNBGalFNavDataFactory.hpp"
 #include "TestUtil.hpp"
 #include "GalFNavTimeOffset.hpp"
-#include "GalNavHealth.hpp"
+#include "GalFNavHealth.hpp"
 #include "GalFNavEph.hpp"
 #include "GalFNavAlm.hpp"
 #include "GALWeekSecond.hpp"
@@ -377,13 +377,13 @@ processEphTest()
    gpstk::NavDataPtrList navOut;
    gpstk::GalFNavEph *eph;
    gpstk::GalFNavTimeOffset *to;
-   gpstk::GalNavHealth *hea;
+   gpstk::GalFNavHealth *hea;
    TUASSERTE(bool, true, uut.processEph(1, navFNAVGalPT1, navOut));
    TUASSERTE(size_t, 1, navOut.size());
    almCount = ephCount = toCount = heaCount = otherCount = 0;
    for (const auto& i : navOut)
    {
-      if ((hea = dynamic_cast<gpstk::GalNavHealth*>(i.get())) != nullptr)
+      if ((hea = dynamic_cast<gpstk::GalFNavHealth*>(i.get())) != nullptr)
       {
          heaCount++;
             // NavData fields
@@ -391,7 +391,7 @@ processEphTest()
          nmidExpE5a.messageType = gpstk::NavMessageType::Health;
          TUASSERTE(gpstk::NavMessageID, nmidExpE5a, hea->signal);
             // NavHealthData has no fields
-            // GalNavHealth
+            // GalFNavHealth
          TUASSERTE(gpstk::GalHealthStatus, gpstk::GalHealthStatus::OK,
                    hea->sigHealthStatus);
          TUASSERTE(gpstk::GalDataValid, gpstk::GalDataValid::Valid,
@@ -503,7 +503,7 @@ processAlmTest()
    gpstk::CommonTime expRefTime = gpstk::GALWeekSecond(1014,518400);
    gpstk::NavDataPtrList navOut;
    gpstk::GalFNavAlm *alm;
-   gpstk::GalNavHealth *hea;
+   gpstk::GalFNavHealth *hea;
    gpstk::GalFNavTimeOffset *tim;
    TUASSERTE(bool, true, uut.processAlm(5, navFNAVGalPT5, navOut));
    TUASSERTE(size_t, 0, navOut.size());
@@ -613,7 +613,7 @@ processAlmTest()
          TUASSERTE(gpstk::GalHealthStatus, gpstk::GalHealthStatus::OK,
                    alm->hsE5a);
       }
-      else if ((hea = dynamic_cast<gpstk::GalNavHealth*>(i.get())) != nullptr)
+      else if ((hea = dynamic_cast<gpstk::GalFNavHealth*>(i.get())) != nullptr)
       {
          heaCount++;
          gpstk::NavMessageID nmid(nmidExpE5a);
@@ -675,7 +675,7 @@ countResults(const gpstk::NavDataPtrList& navOut)
       {
          toCount++;
       }
-      else if (dynamic_cast<gpstk::GalNavHealth*>(i.get()) != nullptr)
+      else if (dynamic_cast<gpstk::GalFNavHealth*>(i.get()) != nullptr)
       {
          heaCount++;
       }

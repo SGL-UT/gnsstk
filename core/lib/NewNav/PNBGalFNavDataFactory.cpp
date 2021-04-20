@@ -39,6 +39,7 @@
 #include "PNBGalFNavDataFactory.hpp"
 #include "GalFNavEph.hpp"
 #include "GalFNavTimeOffset.hpp"
+#include "GalINavHealth.hpp"
 #include "GALWeekSecond.hpp"
 #include "TimeCorrection.hpp"
 #include "EngNav.hpp"
@@ -619,8 +620,8 @@ namespace gpstk
       if ((pageType == 1) && PNBNavDataFactory::processHea)
       {
             // Add health bits from page type 1.
-         NavDataPtr p1 = std::make_shared<GalNavHealth>();
-         GalNavHealth *hp1 = dynamic_cast<GalNavHealth*>(p1.get());
+         NavDataPtr p1 = std::make_shared<GalFNavHealth>();
+         GalFNavHealth *hp1 = dynamic_cast<GalFNavHealth*>(p1.get());
          hp1->timeStamp = navIn->getTransmitTime();
          hp1->signal = NavMessageID(key, NavMessageType::Health);
          hp1->signal.obs.band = CarrierBand::L5;
@@ -782,8 +783,8 @@ namespace gpstk
       eph->dvsE5a = static_cast<GalDataValid>(
          ephPage[esiE5advs]->asUnsignedLong(esbE5advs,enbE5advs,escE5advs));
          // set health using the Galileo algorithms.
-      eph->health = GalNavHealth::galHealth(eph->hsE5a,eph->dvsE5a,
-                                            eph->sisaIndex);
+      eph->health = GalINavHealth::galHealth(eph->hsE5a,eph->dvsE5a,
+                                             eph->sisaIndex);
       eph->wn1 = wn_1;
       eph->tow1 = tow_1;
       eph->wn2 = ephPage[esiWN_2]->asUnsignedLong(esbWN_2,enbWN_2,escWN_2);
@@ -853,9 +854,9 @@ namespace gpstk
          // we process it separately.
          // SVID1
       NavDataPtr p0 = std::make_shared<GalFNavAlm>();
-      NavDataPtr p1 = std::make_shared<GalNavHealth>();
+      NavDataPtr p1 = std::make_shared<GalFNavHealth>();
       GalFNavAlm *alm = dynamic_cast<GalFNavAlm*>(p0.get());
-      GalNavHealth *hp1 = dynamic_cast<GalNavHealth*>(p1.get());
+      GalFNavHealth *hp1 = dynamic_cast<GalFNavHealth*>(p1.get());
       if (processAlmOrb(almPage, alm, hp1,  pt5, pt5, asiSVID_1, asbSVID_1,
                         asidAhalf_1, asbdAhalf_1,
                         asiEcc_1, asbEcc_1, asiw_1, asbw_1, asidi_1, asbdi_1,
@@ -865,7 +866,7 @@ namespace gpstk
       {
          if (PNBNavDataFactory::processAlm)
          {
-            // cerr << "add F/NAV alm SVID1" << endl;
+               // cerr << "add F/NAV alm SVID1" << endl;
             alm->ioda5 = ioda5;
             alm->ioda6 = ioda6;
             alm->OMEGA0 = almPage[asiOMEGA0_1]->asDoubleSemiCircles(
@@ -879,9 +880,9 @@ namespace gpstk
       }
          // SVID2
       p0 = std::make_shared<GalFNavAlm>();
-      p1 = std::make_shared<GalNavHealth>();
+      p1 = std::make_shared<GalFNavHealth>();
       alm = dynamic_cast<GalFNavAlm*>(p0.get());
-      hp1 = dynamic_cast<GalNavHealth*>(p1.get());
+      hp1 = dynamic_cast<GalFNavHealth*>(p1.get());
       if (processAlmOrb(almPage, alm, hp1,  pt5, pt6, asiSVID_2, asbSVID_2,
                         asidAhalf_2, asbdAhalf_2,
                         asiEcc_2, asbEcc_2, asiw_2, asbw_2, asidi_2, asbdi_2,
@@ -891,7 +892,7 @@ namespace gpstk
       {
          if (PNBNavDataFactory::processAlm)
          {
-            // cerr << "add F/NAV alm SVID1" << endl;
+               // cerr << "add F/NAV alm SVID1" << endl;
             alm->ioda5 = ioda5;
             alm->ioda6 = ioda6;
                // OMEGA0 for SVID2 is split across page type 5 and 6,
@@ -918,9 +919,9 @@ namespace gpstk
       }
          // SVID3
       p0 = std::make_shared<GalFNavAlm>();
-      p1 = std::make_shared<GalNavHealth>();
+      p1 = std::make_shared<GalFNavHealth>();
       alm = dynamic_cast<GalFNavAlm*>(p0.get());
-      hp1 = dynamic_cast<GalNavHealth*>(p1.get());
+      hp1 = dynamic_cast<GalFNavHealth*>(p1.get());
       if (processAlmOrb(almPage, alm, hp1,  pt6, pt6, asiSVID_3, asbSVID_3,
                         asidAhalf_3, asbdAhalf_3,
                         asiEcc_3, asbEcc_3, asiw_3, asbw_3, asidi_3, asbdi_3,
@@ -930,7 +931,7 @@ namespace gpstk
       {
          if (PNBNavDataFactory::processAlm)
          {
-            // cerr << "add F/NAV alm SVID1" << endl;
+               // cerr << "add F/NAV alm SVID1" << endl;
             alm->ioda5 = ioda5;
             alm->ioda6 = ioda6;
             alm->OMEGA0 = almPage[asiOMEGA0_3]->asDoubleSemiCircles(
@@ -950,7 +951,7 @@ namespace gpstk
 
    bool PNBGalFNavDataFactory ::
    processAlmOrb(const std::vector<PackedNavBitsPtr>& almPage,
-                 GalFNavAlm *alm, GalNavHealth *hp1,
+                 GalFNavAlm *alm, GalFNavHealth *hp1,
                  int ptA, int ptB,
                  int asiSVID, int asbSVID,
                  int asidAhalf, int asbdAhalf,
