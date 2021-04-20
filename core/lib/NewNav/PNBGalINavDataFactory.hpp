@@ -52,7 +52,7 @@ namespace gpstk
        * data containing Galileo I/NAV data as defined in Galileo
        * OS-SIS-ICD.  The results of the addData method (in the navOut
        * argument) may contain any number of GalINavAlm, GalINavEph,
-       * GalINavHealth or GalINavTimeOffset objects, according to what
+       * GalNavHealth or GalINavTimeOffset objects, according to what
        * data is fed to the method and what data is requested via the
        * validity and type filters (see PNBNavDataFactory).
        * @note Currently validity is not checked in any way in this class.
@@ -92,13 +92,82 @@ namespace gpstk
           * almAcc, that almanac is placed in navOut, along with a
           * GST-GPS time offset object, if such processing is enabled.
           * @param[in] wordType The word type (7-10) pertaining to navIn.
-          * @param[in] navIn The as-broadcast ephemeris bits.
-          * @param[out] navOut If an ephemeris is completed, this will
-          *   contain a GalINavEph object.
+          * @param[in] navIn The as-broadcast almanac bits.
+          * @param[out] navOut If an almanac is completed and the data
+          *   is requested, this will contain a GalINavAlm object.
           * @return false on error. */
       bool processAlm(unsigned wordType, const PackedNavBitsPtr& navIn,
                       NavDataPtrList& navOut);
 
+         /** Decode an almanac and/or health from a vector of Galileo
+          * almanac words.
+          * @param[in] almWord An vector of size 4 of Galileo word types 7-10.
+          * @param[in,out] alm The pre-allocated almanac object to store
+          *   the decoded data in.
+          * @param[in,out] hp1 The pre-allocated health object to
+          *   store E5b health status data in.
+          * @param[in,out] hp2 The pre-allocated health object to
+          *   store E1B health status data in.
+          * @param[in] wtA The index into almWord of the first word
+          *   type of the pair of word types being decoded to make an
+          *   almanac.
+          * @param[in] wtB The index into almWord of the second word
+          *   type of the pair of word types being decoded to make an
+          *   almanac.
+          * @param[in] asiWNa The index into almWord of the word type
+          *   that contains the WNa value.
+          * @param[in] asit0a The index into almWord of the word type
+          *   that contains the t0a value.
+          * @param[in] asidAhalf The index into almWord of the word
+          *   type that contains the delta A**1/2 value.
+          * @param[in] asbdAhalf The first bit of the word type that
+          *   contains the delta A**1/2 value.
+          * @param[in] asiEcc The index into almWord of the word
+          *   type that contains the eccentricity value.
+          * @param[in] asbEcc The first bit of the word type that
+          *   contains the eccentricity value.
+          * @param[in] asiw The index into almWord of the word
+          *   type that contains the argument of perigee.
+          * @param[in] asbw The first bit of the word type that
+          *   contains the argument of perigee.
+          * @param[in] asidi The index into almWord of the word
+          *   type that contains the delta inclination.
+          * @param[in] asbdi The first bit of the word type that
+          *   contains the delta inclination value.
+          * @param[in] asiOMEGA0 The index into almWord of the word
+          *   type that contains the right ascension reference value.
+          * @param[in] asbOMEGA0 The first bit of the word type that
+          *   contains the right ascension reference value.
+          * @param[in] asiOMEGAdot The index into almWord of the word
+          *   type that contains the rate of right ascension value.
+          * @param[in] asbOMEGAdot The first bit of the word type that
+          *   contains the rate of right ascension value.
+          * @param[in] asiM0 The index into almWord of the word
+          *   type that contains the mean anomaly reference value.
+          * @param[in] asbM0 The first bit of the word type that
+          *   contains the mean anomaly reference value.
+          * @param[in] asiaf0 The index into almWord of the word
+          *   type that contains the clock bias value.
+          * @param[in] asbaf0 The first bit of the word type that
+          *   contains the clock bias value.
+          * @param[in] asiaf1 The index into almWord of the word
+          *   type that contains the clock drift value.
+          * @param[in] asbaf1 The first bit of the word type that
+          *   contains the clock drift value.
+          * @param[in] asiE5bhs The index into almWord of the word
+          *   type that contains the E5b health status value.
+          * @param[in] asbE5bhs The first bit of the word type that
+          *   contains the E5b health status value.
+          * @param[in] asiE1Bhs The index into almWord of the word
+          *   type that contains the E1B health status value.
+          * @param[in] asbE1Bhs The first bit of the word type that
+          *   contains the E1B health status value.
+          * @note alm, hp1 and hp2 need only have been created,
+          *   typically using std::make_shared, prior to calling this
+          *   method.
+          * @return true if an almanac was decoded, false if the
+          *   specified almanac contained a zero SVID.
+          */
       bool processAlmOrb(const std::vector<PackedNavBitsPtr>& almWord,
                          GalINavAlm *alm, GalNavHealth *hp1, GalNavHealth *hp2,
                          int wtA, int wtB,

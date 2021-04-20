@@ -1007,7 +1007,7 @@ namespace gpstk
          asbOMEGAdot,anbOMEGAdot,ascOMEGAdot);
       alm->af0 = almWord[asiaf0]->asSignedDouble(asbaf0,anbaf0,ascaf0);
       alm->af1 = almWord[asiaf1]->asSignedDouble(asbaf1,anbaf1,ascaf1);
-         // GalINavData
+         // GalINavAlm
       alm->hsE5b = static_cast<GalHealthStatus>(
          almWord[asiE5bhs]->asUnsignedLong(asbE5bhs,anbE5bhs,ascE5bhs));
       alm->hsE1B = static_cast<GalHealthStatus>(

@@ -47,8 +47,7 @@ namespace gpstk
    GalINavTimeOffset()
          : tow(0.0)
    {
-         /// @todo set msgLenSec correctly
-      msgLenSec = 6.0;
+      msgLenSec = 2.0;
       src = TimeSystem::GAL;
    }
 

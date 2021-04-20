@@ -48,17 +48,8 @@ namespace gpstk
       //@{
 
       /** Defines the class that provide the ability to convert
-       * between GPS and a supported time system (UTC, GLONASS,
-       * Galileo), using data extracted from GPS civil navigation
-       * messages.
-       * @note This class is used to encapsulate the data from message
-       *   types 33 and 35.  Message type 33 is for UTC conversion and
-       *   has additional factors not present in message type 35 (see
-       *   the data fields).  Additionally, the parameter subscripts
-       *   are different between the two, e.g. A<sub>0-n</sub> in
-       *   message type 33 vs A<sub>0GGTO</sub> in message type 35,
-       *   however mathematically they are identical terms and generic
-       *   names are used in this class to represent the data. */
+       * between Galileo and a supported time system (UTC, GPS), using
+       * data extracted from Galileo I/NAV messages. */
    class GalINavTimeOffset : public StdNavTimeOffset
    {
    public:
