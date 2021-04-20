@@ -48,11 +48,10 @@ namespace gpstk
            dataValidityStatus(GalDataValid::Unknown),
            sisaIndex(255)
    {
-         /// @todo set msgLenSec correctly
          /** @todo Figure out a way to initialize sisaIndex such that
           * not having the value doesn't result in the health status
           * being tagged as Degraded. */
-      msgLenSec = 6.0;
+      msgLenSec = 2.0;
    }
 
 
