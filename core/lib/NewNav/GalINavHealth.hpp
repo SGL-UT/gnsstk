@@ -36,8 +36,8 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_GALNAVHEALTH_HPP
-#define GPSTK_GALNAVHEALTH_HPP
+#ifndef GPSTK_GALINAVHEALTH_HPP
+#define GPSTK_GALINAVHEALTH_HPP
 
 #include "NavHealthData.hpp"
 #include "GalHealthStatus.hpp"
@@ -94,4 +94,4 @@ namespace gpstk
 
 }
 
-#endif // GPSTK_GALNAVHEALTH_HPP
+#endif // GPSTK_GALINAVHEALTH_HPP
