@@ -1,3 +1,12 @@
+# Version 11.0.1   Wednesday April 21, 2021
+
+Modifications by Author
+-----------------------
+     Benjamin Glass <bglass@arlut.utexas.edu> (1):
+           SEM reader tests: Add svXvt validation test
+
+
+
 # Version 11.0.0   Thursday March 18, 2021
 
 Modifications by Author
