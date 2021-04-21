@@ -1,3 +1,11 @@
+gpstk (11.0.1-1) stable; urgency=low
+
+  * Updated to version 11.0.1
+  * Fix ext/lib/FileHandling/SEM/SEMData.cpp: correct faulty unit
+    conversion.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Wed, 21 Apr 2021 14:59:06 -0500
+
 gpstk (11.0.0-1) stable; urgency=low
 
   * Updated to version 11.0.0
