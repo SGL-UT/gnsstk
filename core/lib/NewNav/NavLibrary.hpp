@@ -49,6 +49,9 @@ namespace gpstk
        * Classes for providing an generalized (GNSS-agnostic)
        * interface to navigation data.
        *
+       * @todo Move this into the user guide section.
+       * @todo Explain wildcards, how and where they are used.
+       *
        * @note Please make an effort to keep this documentation in
        * order of difficulty/usefulness, from simplest to hardest/most
        * esoteric.
