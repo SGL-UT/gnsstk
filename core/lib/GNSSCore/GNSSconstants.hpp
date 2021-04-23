@@ -197,15 +197,21 @@ namespace gpstk
    const long MAX_PRN_COM     = 30;
 
       // ---------------- QZSS ----------------------------------
-      // PRN range defined in QZSS ICD 5.1.1.11.1
+      // PRN range defined in QZSS IS Table 3.2.2-2
       // PRN 198-202 reserved for maint./test, not to be used 
       // by users. 
       // These need to be defined in order to differentiate
       // QZSS from GPS in cases where QZSS is broadcasting 
       // GPS-similar signals and navigation messages.
+      // Note that 203-206 are "alternate" PRNs for satellites, see
+      // Table 3.2.1-1
       // Defined as int to be compatible with gpstk::SatID.id member.
-   const int MIN_PRN_QZS = 193;    
-   const int MAX_PRN_QZS = 202; 
+      /// First assigned PRN in QZSS
+   const int MIN_PRN_QZS = 193;
+      /// Last assigned PRN in QZSS (all signals)
+   const int MAX_PRN_QZS = 206;
+      /// Last assigned PRN in QZSS (LNAV only)
+   const int MAX_PRN_QZS_LNAV = 202;
 
       //@}
    

@@ -72,6 +72,10 @@ namespace gpstk
          /// Fill the beginFit and endFit values for this object.
       void fixFit();
 
+         /** Dump SV status information (e.g. health).
+          * @param[in,out] s The stream to write the data to. */
+      void dumpSVStatus(std::ostream& s) const override;
+
       uint8_t healthBits; ///< 8 SV health bits.
       double deltai;      ///< Inclination in rad relative to 0.3*pi rad.
       double toa;         ///< Convenience storage of unqualified toa.

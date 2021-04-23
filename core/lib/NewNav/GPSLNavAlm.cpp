@@ -37,6 +37,7 @@
 //
 //==============================================================================
 #include "GPSLNavAlm.hpp"
+#include "TimeString.hpp"
 
 using namespace std;
 
@@ -65,5 +66,25 @@ namespace gpstk
          // is an estimate based on IS-GPS-200 Table 20-XIII.
       beginFit = Toe - (70.0 * 3600.0);
       endFit   = Toe + (74.0 * 3600.0);
+   }
+
+
+   void GPSLNavAlm ::
+   dumpSVStatus(std::ostream& s) const
+   {
+      const ios::fmtflags oldFlags = s.flags();
+      s.setf(ios::scientific, ios::floatfield);
+      s << "           PAGE OVERHEAD" << endl
+        << endl
+        << "                SOW    DOW:HH:MM:SS" << endl
+        << printTime(xmitTime,"Transmit   : %6.0g  %3a-%1w:%02H:%02M:%02S")
+        << endl
+        << endl
+        << "           SV STATUS" << endl
+        << endl
+        << "Health              : " << setw(9)
+        << static_cast<unsigned>(healthBits)
+        << " (" << gpstk::StringUtils::asString(health) << ")" << endl;
+      s.flags(oldFlags);
    }
 }
