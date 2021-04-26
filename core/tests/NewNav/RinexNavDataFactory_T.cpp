@@ -222,7 +222,6 @@ loadIntoMapQZSSTest()
                             gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
                             gpstk::NavType::GPSLNAV),
       gpstk::NavMessageType::Health);
-      /// @todo should these be in QZSS time? They come out of RINEX as GPS.
    gpstk::CommonTime expTS = gpstk::CivilTime(2014,5,13,7,15,0,
                                               gpstk::TimeSystem::QZS);
    gpstk::CommonTime expXT = gpstk::CivilTime(2014,5,13,7,15,0,

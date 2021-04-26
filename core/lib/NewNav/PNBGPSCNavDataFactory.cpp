@@ -452,19 +452,10 @@ namespace gpstk
       bool isQZSS = navIn->getsatSys().system == SatelliteSystem::QZSS;
       try
       {
-            /*
-         cerr << "preamble:  " << hex << navIn->asUnsignedLong(0,8,1) << dec
-              << endl
-              << "  tlm msg: " << hex << navIn->asUnsignedLong(8,14,1) << dec
-              << endl
-              << "  integ:   " << navIn->asUnsignedLong(22,1,1) << endl
-              << "  reserved:" << navIn->asUnsignedLong(23,1,1) << endl
-              << "  parity:  " << hex << navIn->asUnsignedLong(24,6,1) << endl
-              << "  tow:     " << navIn->asUnsignedLong(30,17,1) << endl
-              << "  alert:   " << navIn->asUnsignedLong(47,1,1) << endl
-              << "  A/S:     " << navIn->asUnsignedLong(48,1,1) << endl
-              << "  sfid:    " << navIn->asUnsignedLong(49,3,1) << endl;
-            */
+         // cerr << "preamble:  " << hex << navIn->asUnsignedLong(0,8,1) << dec
+         //      << endl;
+         // unsigned long prn = navIn->asUnsignedLong(8, 6, 1);
+         // cerr << "prn = " << prn << endl;
          unsigned long msgType = navIn->asUnsignedLong(esbMsgType,enbMsgType,
                                                        escMsgType);
          // cerr << "msgType = " << msgType << endl;
@@ -766,6 +757,12 @@ namespace gpstk
                  NavDataPtrList& navOut)
    {
       unsigned long sprn = navIn->asUnsignedLong(asbPRNa,anbPRNa,ascPRNa);
+      if (sprn == 0)
+      {
+            // clock data is probably valid but we don't use it.
+            // PRN = 0 so don't attempt to process the almanac.
+         return true;
+      }
       SatID xmitSat(navIn->getsatSys());
       SatelliteSystem subjSys = xmitSat.system;
          // special handling for QZSS per IS-QZSS 1.8E Table 5.5.2-8
@@ -779,7 +776,7 @@ namespace gpstk
                // .. so we do a bitwise OR to get the QZS PRN.
             sprn |= 0xc0;
          }
-         else if (msgType == 52)
+         else if (msgType == 53)
          {
                // When the message type number is 53, it indicates
                // that this value is the PRN value for a GPS satellite
