@@ -240,6 +240,24 @@ STR_STREAM_HELPER(NavSignalID)
 STR_STREAM_HELPER(NavSatelliteID)
 STR_STREAM_HELPER(NavMessageID)
 
+%define STR_STREAM_VEC_HELPER(name)
+%extend name
+{
+   std::string __str__()
+   {
+      std::ostringstream ss;
+      size_t i;
+      for(i = 0; i < $self->size() - 1; i++)
+         ss << (*($self))[i] << ", ";
+      ss << (*($self))[i];
+      return ss.str();
+   }
+}
+%enddef
+STR_STREAM_VEC_HELPER(std::vector<int>)
+STR_STREAM_VEC_HELPER(std::vector<double>)
+STR_STREAM_VEC_HELPER(std::vector<std::string>)
+
 // STR_STREAM_HELPER(Xvt)
 // Q: Why is this (below) here instead of the macro for Xvt?
 // A: There is an ambiguity issue for the operator<< for Xvt,

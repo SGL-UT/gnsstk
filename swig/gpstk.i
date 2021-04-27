@@ -145,6 +145,8 @@ namespace std
 //  Section 6: C++ container template instances using only atomic types
 // =============================================================
 
+// see pythonfunctions.i for stream output
+
 %template(vector_int)        std::vector<int>;
 %template(vector_double)     std::vector<double>;
 %template(vector_string)     std::vector<std::string>;
@@ -764,6 +766,7 @@ del IntEnum
 %include "Position.i"
  //%include "Rinex3ObsHeader.i"
 %include "TimeString.i"
+%include "Vector.i"
 
 // =============================================================
 //  Section 11: Template declarations
