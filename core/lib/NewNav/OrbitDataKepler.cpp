@@ -357,6 +357,7 @@ namespace gpstk
       double amm    = (sqrtgm / (A*Ahalf)) + dn;
       double meana,F,G,delea;
 
+      double Ak = A + Adot*elapte;
       meana = M0 + elapte * amm;
       meana = fmod(meana, twoPI);
       double ea = meana + ecc * ::sin(meana);
@@ -369,7 +370,7 @@ namespace gpstk
          ea    = ea + delea;
          loop_cnt++;
       } while ( (ABS(delea) > 1.0e-11 ) && (loop_cnt <= 20) );
-      double dtr = REL_CONST * ecc * Ahalf * ::sin(ea);
+      double dtr = REL_CONST * ecc * SQRT(Ak) * ::sin(ea);
       return dtr;
    }
 
