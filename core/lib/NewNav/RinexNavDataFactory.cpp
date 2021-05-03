@@ -283,11 +283,41 @@ namespace gpstk
                   // really a Galileo week number.
                galINav->Toe = GPSWeekSecond(navIn.weeknum, navIn.Toe);
                   //galINav->Toe.setTimeSystem(TimeSystem::GAL);
-                  // @todo set sv health correctly
-                  // galINav->health = ((navIn.health == 0) ? SVHealth::Healthy :
-                  //                SVHealth::Unhealthy);
                convertToOrbitDataKepler(navIn, galINav);
-                  /// @todo add IOD Nav, SISA, BGD, data source
+               galINav->bgdE5aE1 = navIn.Tgd;
+               galINav->bgdE5bE1 = navIn.Tgd2;
+               galINav->sisaIndex = decodeSISA(navIn.accuracy);
+               galINav->svid = navIn.sat.id;
+               galINav->xmit2 = galINav->xmitTime + galINav->msgLenSec;
+               galINav->xmit3 = galINav->xmit2 + galINav->msgLenSec;
+               galINav->xmit4 = galINav->xmit3 + galINav->msgLenSec;
+               galINav->xmit5 = galINav->xmit4 + galINav->msgLenSec;
+               galINav->iodnav1 = galINav->iodnav2 = galINav->iodnav3 =
+                  galINav->iodnav4 = navIn.IODnav;
+               galINav->dvsE1B = static_cast<GalDataValid>(
+                  navIn.health & 0x01);
+               galINav->hsE1B = static_cast<GalHealthStatus>(
+                  (navIn.health >> 1) & 0x03);
+                  /** @note rinex includes health information for
+                   * three signals, but I/NAV ephemerides will only
+                   * include health for E5b and E1B, while F/NAV only
+                   * includes health for E1a */
+               galINav->dvsE5b = static_cast<GalDataValid>(
+                  (navIn.health >> 6) & 0x01);
+               galINav->hsE5b = static_cast<GalHealthStatus>(
+                  (navIn.health >> 7) & 0x03);
+                  /** @note rinex can combine I/NAV ephemerides, but
+                   * we just assume one or the other. */
+               if ((navIn.datasources & 0x01) == 0x01)
+               {
+                  galINav->health = GalINavHealth::galHealth(
+                     galINav->hsE1B, galINav->dvsE1B, galINav->sisaIndex);
+               }
+               else
+               {
+                  galINav->health = GalINavHealth::galHealth(
+                     galINav->hsE5b, galINav->dvsE5b, galINav->sisaIndex);
+               }
                galINav->fixFit();
             }
             else if (navIn.datasources & 0x02)
@@ -379,6 +409,12 @@ namespace gpstk
                // construct three health objects, one for each signal
                // in the RINEX record.
                // E1-B first
+               /** @todo This probably should be split to produce
+                * I/NAV health when the data source is I/NAV and F/NAV
+                * health when the data source is F/NAV, and include
+                * only the health status for those codes.  The Galileo
+                * ephemeris doesn't include health status for the
+                * "other" nav code. */
             health = std::make_shared<GalINavHealth>();
             galNav = dynamic_cast<GalINavHealth*>(health.get());
                // NavData
@@ -486,7 +522,6 @@ namespace gpstk
                // we can't obtain these from RINEX NAV, so just assume L1 C/A
             navOut->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::L1,
                                        TrackingCode::CA);
-               /// @todo Does RINEX support CNAV and if so how do we know?
             navOut->signal.nav = NavType::GPSLNAV;
             break;
          case SatelliteSystem::Galileo:
