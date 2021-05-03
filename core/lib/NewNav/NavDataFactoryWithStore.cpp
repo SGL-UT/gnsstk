@@ -41,6 +41,7 @@
 #include "TimeString.hpp"
 #include "OrbitDataKepler.hpp"
 #include "NavHealthData.hpp"
+#include "BasicTimeSystemConverter.hpp"
 
 #if !defined(__PRETTY_FUNCTION__)
 #ifdef __FUNCSIG__
@@ -57,11 +58,14 @@ namespace gpstk
 {
    NavDataFactoryWithStore ::
    NavDataFactoryWithStore()
-         : initialTime(CommonTime::END_OF_TIME),
-           finalTime(CommonTime::BEGINNING_OF_TIME)
    {
-      initialTime.setTimeSystem(gpstk::TimeSystem::Any);
-      finalTime.setTimeSystem(gpstk::TimeSystem::Any);
+         // We are NOT using END_OF_TIME or BEGINNING_OF_TIME here
+         // because of issues with static initialization order.  As
+         // such we're essentially forced to use magic numbers here,
+         // because we can't guarantee that any static data (outside
+         // this class) will be initialized prior to this constructor.
+      initialTime.set(3442448L,0,0.0,TimeSystem::Any);
+      finalTime.set(0,0,0.0,TimeSystem::Any);
    }
 
 
@@ -956,11 +960,47 @@ namespace gpstk
       }
       if ((odkp = dynamic_cast<OrbitDataKepler*>(nd.get())) != nullptr)
       {
-            /** @todo Figure out how to deal with the inevitable
-             * problems if/when time systems aren't consistent across
-             * all data. */
-         initialTime = std::min(initialTime, odkp->beginFit);
-         finalTime = std::max(finalTime, odkp->endFit);
+         if (((initialTime.getTimeSystem() != odkp->beginFit.getTimeSystem()) &&
+              (initialTime.getTimeSystem() != TimeSystem::Any)) ||
+             ((finalTime.getTimeSystem() != odkp->endFit.getTimeSystem()) &&
+              (finalTime.getTimeSystem() != TimeSystem::Any)))
+         {
+               // different time systems, convert to UTC first.
+            CommonTime t0(initialTime), t1(finalTime), f0(odkp->beginFit),
+               f1(odkp->endFit);
+            BasicTimeSystemConverter btsc;
+            if ((t0.getTimeSystem() != TimeSystem::Any) &&
+                !t0.changeTimeSystem(TimeSystem::UTC, &btsc))
+            {
+               return false;
+            }
+            if ((t1.getTimeSystem() != TimeSystem::Any) &&
+                !t1.changeTimeSystem(TimeSystem::UTC, &btsc))
+            {
+               return false;
+            }
+            if ((f0.getTimeSystem() != TimeSystem::Any) &&
+                !f0.changeTimeSystem(TimeSystem::UTC, &btsc))
+            {
+               return false;
+            }
+            if ((f1.getTimeSystem() != TimeSystem::Any) &&
+                !f1.changeTimeSystem(TimeSystem::UTC, &btsc))
+            {
+               return false;
+            }
+               // Compare UTC times, but set initialTime/finalTime to
+               // original time system
+            if (f0 < t0)
+               initialTime = odkp->beginFit;
+            if (f1 < t1)
+               finalTime = odkp->endFit;
+         }
+         else
+         {
+            initialTime = std::min(initialTime, odkp->beginFit);
+            finalTime = std::max(finalTime, odkp->endFit);
+         }
       }
       if ((todp = dynamic_cast<TimeOffsetData*>(nd.get())) == nullptr)
       {

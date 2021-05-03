@@ -579,7 +579,7 @@ namespace gpstk
       alm->alert = navIn->asBool(esbAlert);
       alm->asFlag = navIn->asBool(esbAS);
       alm->xmitTime = navIn->getTransmitTime();
-      alm->ecc = navIn->asSignedDouble(68,16,-21);
+      alm->ecc = navIn->asUnsignedDouble(68,16,-21);
       alm->toa = navIn->asUnsignedDouble(90,8,12);
       GPSWeekSecond ws(alm->xmitTime);
       // cerr << "page " << prn << " WNa = ??  toa = " << alm->toa

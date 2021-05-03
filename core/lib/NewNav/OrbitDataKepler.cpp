@@ -15,8 +15,8 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
@@ -25,14 +25,14 @@
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -189,38 +189,37 @@ namespace gpstk
    {
       GPSWeekSecond gpsws = (Toe);
       double ToeSOW = gpsws.sow;
-      double ea;              // eccentric anomaly //
-      double delea;           // delta eccentric anomaly during iteration */
-      double elapte;          // elapsed time since Toe 
-         //double elaptc;          // elapsed time since Toc 
+      double ea;              // eccentric anomaly
+      double delea;           // delta eccentric anomaly during iteration
+      double elapte;          // elapsed time since Toe
       double q,sinea,cosea;
       double GSTA,GCTA;
       double amm;
-      double meana;           // mean anomaly 
-      double F,G;             // temporary real variables 
+      double meana;           // mean anomaly
+      double F,G;             // temporary real variables
       double alat,talat,c2al,s2al,du,dr,di,U,R,truea,AINC;
       double ANLON,cosu,sinu,xip,yip,can,san,cinc,sinc;
       double xef,yef,zef,dek,dlk,div,domk,duv,drv;
       double dxp,dyp,vxef,vyef,vzef;
 
       double sqrtgm = SQRT(ell.gm());
-
-         // Check for ground transmitter
       double twoPI = 2.0e0 * PI;
-      double lecc;               // eccentricity
-      double tdrinc;            // dt inclination
+      double lecc;            // eccentricity
+      double tdrinc;          // dt inclination
 
       lecc = ecc;
       tdrinc = idot;
 
          // Compute time since ephemeris & clock epochs
       elapte = when - Toe;
-         //CommonTime orbEp = getOrbitEpoch();
-         //elapte = t - orbEp;
+
+         // Compute A at time of interest
+      double Ak = A + Adot * elapte;
 
          // Compute mean motion
-      amm  = (sqrtgm / (A*Ahalf)) + dn;
-
+      double dnA = dn + 0.5 * dndot * elapte;
+         // NOT Ak because this equation specifies A0, not Ak.
+      amm  = (sqrtgm / (A*Ahalf)) + dnA;
 
          // In-plane angles
          //     meana - Mean anomaly
@@ -229,7 +228,7 @@ namespace gpstk
 
       meana = M0 + elapte * amm;
       meana = fmod(meana, twoPI);
-   
+
       ea = meana + lecc * ::sin(meana);
 
       int loop_cnt = 1;
@@ -247,13 +246,13 @@ namespace gpstk
       xvt.clkdrift = svClockDrift(when);
          // This appears to be only a string for naming
       xvt.frame = ReferenceFrame::WGS84;
-   
+
          // Compute true anomaly
       q     = SQRT( 1.0e0 - lecc*lecc);
       sinea = ::sin(ea);
       cosea = ::cos(ea);
       G     = 1.0e0 - lecc * cosea;
-   
+
          //  G*SIN(TA) AND G*COS(TA)
       GSTA  = q * sinea;
       GCTA  = cosea - lecc;
@@ -273,7 +272,7 @@ namespace gpstk
 
          // U = updated argument of lat, R = radius, AINC = inclination
       U    = alat + du;
-      R    = A*G  + dr;
+      R    = Ak*G + dr;
       AINC = i0 + tdrinc * elapte  +  di;
 
          //  Longitude of ascending node (ANLON)
@@ -292,7 +291,7 @@ namespace gpstk
       san  = ::sin( ANLON );
       cinc = ::cos( AINC  );
       sinc = ::sin( AINC  );
- 
+
          // Earth fixed - meters
       xef  =  xip*can  -  yip*cinc*san;
       yef  =  xip*san  +  yip*cinc*can;
@@ -309,7 +308,7 @@ namespace gpstk
          ( Cic  * s2al - Cis * c2al );
       domk = OMEGAdot - ell.angVelocity();
       duv = dlk*(1.e0+ 2.e0 * (Cus*c2al - Cuc*s2al) );
-      drv = A * lecc * dek * sinea - 2.e0 * dlk *
+      drv = Ak * lecc * dek * sinea - 2.e0 * dlk *
          ( Crc * s2al - Crs * c2al ) + Adot * G;
 
       dxp = drv*cosu - R*sinu*duv;
@@ -357,8 +356,9 @@ namespace gpstk
       double elapte = when - Toe;
       double amm    = (sqrtgm / (A*Ahalf)) + dn;
       double meana,F,G,delea;
-      
-      meana = M0 + elapte * amm; 
+
+      double Ak = A + Adot*elapte;
+      meana = M0 + elapte * amm;
       meana = fmod(meana, twoPI);
       double ea = meana + ecc * ::sin(meana);
 
@@ -370,7 +370,7 @@ namespace gpstk
          ea    = ea + delea;
          loop_cnt++;
       } while ( (ABS(delea) > 1.0e-11 ) && (loop_cnt <= 20) );
-      double dtr = REL_CONST * ecc * Ahalf * ::sin(ea);
+      double dtr = REL_CONST * ecc * SQRT(Ak) * ::sin(ea);
       return dtr;
    }
 
