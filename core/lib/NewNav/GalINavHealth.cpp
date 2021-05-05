@@ -83,6 +83,11 @@ namespace gpstk
    SVHealth GalINavHealth ::
    galHealth(GalHealthStatus shs, GalDataValid dvs, uint8_t sisa)
    {
+         // This logic corresponds to Table 6 and Figure 4 of Galileo
+         // Open Signal System Description Document (Galileo-OS-SDD
+         // v1.1).
+         // Note that what the OS-SDD refers to as "marginal", our
+         // enumeration name is "Degraded".
       switch (shs)
       {
          case GalHealthStatus::OutOfService:

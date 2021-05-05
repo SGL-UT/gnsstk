@@ -93,6 +93,7 @@ public:
    unsigned constructorTest();
       /// Exercise loadIntoMap by loading data with different options in place.
    unsigned loadIntoMapTest();
+   unsigned decodeSISATest();
       /** Use dynamic_cast to verify that the contents of nmm are the
        * right class.
        * @param[in] testFramework The test framework created by TUDEF,
@@ -502,6 +503,42 @@ loadIntoMapTest()
 }
 
 
+unsigned RinexNavDataFactory_T ::
+decodeSISATest()
+{
+   TUDEF("RinexNavDataFactory", "decodeSISA");
+   TUASSERTE(unsigned, 255,
+             gpstk::RinexNavDataFactory::decodeSISA(-1.0));
+      // test all SISA indices for which there's a SISA value in meters
+   for (unsigned index = 0; index < 50; index++)
+   {
+      double accuracy = index / 100.0;
+      TUASSERTE(unsigned, index,
+                gpstk::RinexNavDataFactory::decodeSISA(accuracy));
+   }
+   for (unsigned index = 50; index < 75; index++)
+   {
+      double accuracy = 0.5 + ((index-50) * 0.02);
+      TUASSERTE(unsigned, index,
+                gpstk::RinexNavDataFactory::decodeSISA(accuracy));
+   }
+   for (unsigned index = 75; index < 100; index++)
+   {
+      double accuracy = 1.0 + ((index-75) * 0.04);
+      TUASSERTE(unsigned, index,
+                gpstk::RinexNavDataFactory::decodeSISA(accuracy));
+   }
+   for (unsigned index = 100; index < 126; index++)
+   {
+      double accuracy = 2.0 + ((index-100) * 0.16);
+      std::cerr /*<< std::setprecision(20)*/ << "index=" << index << "  accuracy=" << accuracy << std::endl;
+      TUASSERTE(unsigned, index,
+                gpstk::RinexNavDataFactory::decodeSISA(accuracy));
+   }
+   TURETURN();
+}
+
+
 template <class NavClass>
 void RinexNavDataFactory_T ::
 verifyDataType(gpstk::TestUtil& testFramework,
@@ -527,6 +564,7 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.loadIntoMapTest();
+   errorTotal += testClass.decodeSISATest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

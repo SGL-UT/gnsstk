@@ -632,21 +632,24 @@ namespace gpstk
    uint8_t RinexNavDataFactory ::
    decodeSISA(double accuracy)
    {
+         // Implementation of Galileo-OS-SIS-ICD section 5.1.11
+         // (Signal-In-Space Accuracy (SISA))
          // accuracy = -1 (or less than zero anyway)
+         // Adding 0.5 to resolve IEE-754 floating point representation issues.
       if (accuracy < 0)
          return 255;
          // 0-0.49m => 0-49
       if (accuracy < 0.5)
-         return (uint8_t)(accuracy*100);
+         return (uint8_t)(accuracy*100.0+0.5);
          // .5m-.98m => 50-74
-      if (accuracy < 0.75)
-         return (uint8_t)((accuracy+0.5)*50);
+      if (accuracy < 1)
+         return (uint8_t)(((accuracy+0.5)*50)+0.5);
          // 1m-1.96m => 75-99
       if (accuracy < 2)
-         return (uint8_t)((accuracy+2)*25);
+         return (uint8_t)(((accuracy+2)*25)+0.5);
          // 2m-5.84m => 100-125
-      if (accuracy < 6)
-         return (uint8_t)(100+6.51046666666666*(accuracy-2));
+      if (accuracy <= 6)
+         return (uint8_t)((100+(accuracy-2)/0.16)+0.5);
       return 255;
    }
 }

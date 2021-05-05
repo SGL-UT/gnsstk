@@ -169,7 +169,8 @@ namespace gpstk
           *   specified almanac contained a zero SVID.
           */
       bool processAlmOrb(const std::vector<PackedNavBitsPtr>& almWord,
-                         GalINavAlm *alm, GalINavHealth *hp1, GalINavHealth *hp2,
+                         GalINavAlm *alm,
+                         GalINavHealth *hp1, GalINavHealth *hp2,
                          int wtA, int wtB,
                          int asiWNa, int asit0a,
                          int asiSVID, int asbSVID,

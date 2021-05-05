@@ -77,7 +77,7 @@ namespace gpstk
    CommonTime GalINavEph ::
    getUserTime() const
    {
-      gpstk::CommonTime unset;
+      const gpstk::CommonTime unset;
       gpstk::CommonTime rv = xmitTime;
          // If any xmit time is unset, make a best guess at what it
          // should be by adding 2 seconds (the transmit time of an
