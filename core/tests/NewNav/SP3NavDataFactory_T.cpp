@@ -102,6 +102,8 @@ public:
    unsigned sp3cPVTest();
       /// Test find with an SP3c file which contains P/EP records (no V)
    unsigned sp3cPTest();
+      /// Exercise loadIntoMap by loading mixed source data.
+   unsigned loadIntoMapFGNSSTest();
       /** Use dynamic_cast to verify that the contents of nmm are the
        * right class.
        * @param[in] testFramework The test framework created by TUDEF,
@@ -206,8 +208,13 @@ findExactTest()
                                 gpstk::CarrierBand::L1,
                                 gpstk::TrackingCode::CA,
                                 gpstk::NavType::GPSLNAV);
+   gpstk::NavSatelliteID satID1b(7, 7, gpstk::SatelliteSystem::GPS,
+                                 gpstk::CarrierBand::L2,
+                                 gpstk::TrackingCode::Y,
+                                 gpstk::NavType::GPSLNAV);
    gpstk::SatID expSat1(7, gpstk::SatelliteSystem::GPS);
    gpstk::NavMessageID nmid1(satID1, gpstk::NavMessageType::Ephemeris);
+   gpstk::NavMessageID nmid1b(satID1b, gpstk::NavMessageType::Ephemeris);
    fname = gpstk::getPathData() + gpstk::getFileSep() +
       "test_input_SP3a.sp3";
    TUASSERT(fact.addDataSource(fname));
@@ -230,6 +237,36 @@ findExactTest()
    TUASSERTE(gpstk::SatID, expSat1, uut->signal.xmitSat);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
              uut->signal.system);
+   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.obs.band);
+   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.obs.code);
+   TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, uut->signal.nav);
+      // OrbitData
+      // OrbitDataSP3
+      // Epsilon specified because of rounding errors and because of
+      // what precision is available in the source data.
+   TUASSERTFEPS(-18707.084879, uut->pos[0], 0.000001);
+   TUASSERTFEPS( 16766.780691, uut->pos[1], 0.000001);
+   TUASSERTFEPS(  8582.072924, uut->pos[2], 0.000001);
+   TUASSERTFEPS(468.885781, uut->clkBias, 0.000001);
+   TUASSERTFEPS(-10775.825536, uut->vel[0], 0.000001);
+   TUASSERTFEPS(  2077.583886, uut->vel[1], 0.000001);
+   TUASSERTFEPS(-28974.934472, uut->vel[2], 0.000001);
+   TUASSERTFEPS(-2.52832e-5, uut->clkDrift, 0.0000000001);
+
+      // test find with a different carrier/ranging code
+   TUASSERT(fact.find(nmid1b, ct1, nd1, gpstk::SVHealth::Any,
+                      gpstk::NavValidityType::ValidOnly,
+                      gpstk::NavSearchOrder::User));
+   uut = dynamic_cast<gpstk::OrbitDataSP3*>(nd1.get());
+      // NavData
+   TUASSERTE(gpstk::CommonTime, ct1, uut->timeStamp);
+   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Ephemeris,
+             uut->signal.messageType);
+   TUASSERTE(gpstk::SatID, expSat1, uut->signal.sat);
+   TUASSERTE(gpstk::SatID, expSat1, uut->signal.xmitSat);
+   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
+             uut->signal.system);
+      // note that we do NOT change the code/carrier on output.
    TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L1, uut->signal.obs.band);
    TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::CA, uut->signal.obs.code);
    TUASSERTE(gpstk::NavType, gpstk::NavType::GPSLNAV, uut->signal.nav);
@@ -913,6 +950,128 @@ sp3cPTest()
 }
 
 
+unsigned SP3NavDataFactory_T ::
+loadIntoMapFGNSSTest()
+{
+   using namespace gpstk;
+   TUDEF("SP3NavDataFactory", "loadIntoMap");
+
+      // test loading SP3c with mixed systems nav
+   TestClass uut;
+   ObsID
+      expOidGPS(ObservationType::NavMsg,CarrierBand::L1,TrackingCode::CA),
+      expOidGal(ObservationType::NavMsg,CarrierBand::L5,TrackingCode::E5aI),
+      expOidQZS(ObservationType::NavMsg,CarrierBand::L1,TrackingCode::CA),
+      expOidGLO(ObservationType::NavMsg,CarrierBand::G1,TrackingCode::Standard),
+      expOidBei(ObservationType::NavMsg,CarrierBand::B1,TrackingCode::B1I),
+      expOidOth(ObservationType::NavMsg, CarrierBand::Unknown,
+                TrackingCode::Unknown);
+   NavType
+      expNTGPS(NavType::GPSLNAV),
+      expNTGal(NavType::GalFNAV),
+      expNTQZS(NavType::GPSLNAV),
+      expNTGLO(NavType::GloCivilF),
+      expNTBei(NavType::BeiDou_D1),
+      expNTOth(NavType::Unknown);
+      
+   std::string fname = getPathData() + getFileSep() +
+      "test_input_SP3c_mgex1.sp3";
+      // this should implicitly load into the data map
+   TUASSERT(uut.addDataSource(fname));
+      // 400 ephemeris, 400 clock
+   TUASSERTE(size_t, 800, uut.size());
+   unsigned gps = 0, gal = 0, qzs = 0, glo = 0, irn = 0, bei = 0, leo = 0,
+      other = 0;
+   for (auto& nmti : uut.getData())
+   {
+      for (auto& sati : nmti.second)
+      {
+         for (auto& ti : sati.second)
+         {
+            OrbitDataSP3 *od = dynamic_cast<OrbitDataSP3*>(
+               ti.second.get());
+            TUASSERTE(SatID, od->signal.sat, od->signal.xmitSat);
+            TUASSERTE(SatelliteSystem, od->signal.sat.system,
+                      od->signal.system);
+            switch (od->signal.sat.system)
+            {
+               case SatelliteSystem::GPS:
+                  gps++;
+                  TUASSERTE(ObsID, expOidGPS, od->signal.obs);
+                  TUASSERTE(NavType, expNTGPS, od->signal.nav);
+                  break;
+               case SatelliteSystem::Galileo:
+                  gal++;
+                  TUASSERTE(ObsID, expOidGal, od->signal.obs);
+                  TUASSERTE(NavType, expNTGal, od->signal.nav);
+                  break;
+               case SatelliteSystem::Glonass:
+                  glo++;
+                  TUASSERTE(ObsID, expOidGLO, od->signal.obs);
+                  TUASSERTE(NavType, expNTGLO, od->signal.nav);
+                  break;
+               case SatelliteSystem::BeiDou:
+                  bei++;
+                  TUASSERTE(ObsID, expOidBei, od->signal.obs);
+                  TUASSERTE(NavType, expNTBei, od->signal.nav);
+                  break;
+               case SatelliteSystem::QZSS:
+                  qzs++;
+                  TUASSERTE(ObsID, expOidQZS, od->signal.obs);
+                  TUASSERTE(NavType, expNTQZS, od->signal.nav);
+                  break;
+               case SatelliteSystem::IRNSS:
+                  irn++;
+                  TUASSERTE(ObsID, expOidOth, od->signal.obs);
+                  TUASSERTE(NavType, expNTOth, od->signal.nav);
+                  break;
+               case SatelliteSystem::LEO:
+                  leo++;
+                  TUASSERTE(ObsID, expOidOth, od->signal.obs);
+                  TUASSERTE(NavType, expNTOth, od->signal.nav);
+                  break;
+               default:
+                  other++;
+                  TUASSERTE(ObsID, expOidOth, od->signal.obs);
+                  TUASSERTE(NavType, expNTOth, od->signal.nav);
+                  break;
+            }
+         }
+      }
+   }
+   TUASSERTE(unsigned, 320, gps);
+   TUASSERTE(unsigned, 110, gal);
+   TUASSERTE(unsigned, 230, glo);
+   TUASSERTE(unsigned,  80, bei);
+   TUASSERTE(unsigned,  10, qzs);
+   TUASSERTE(unsigned,   0, irn);
+   TUASSERTE(unsigned,  50, leo);
+   TUASSERTE(unsigned,   0, other);
+      // make sure we can find data
+   gpstk::NavSatelliteID satID1(193, 193, gpstk::SatelliteSystem::QZSS,
+                                gpstk::CarrierBand::L2,
+                                gpstk::TrackingCode::L2CML,
+                                gpstk::NavType::GPSCNAVL2);
+   gpstk::NavMessageID nmid1(satID1, gpstk::NavMessageType::Ephemeris);
+   gpstk::CivilTime civ1(2016, 5, 1, 0, 15, 0, gpstk::TimeSystem::TAI);
+   gpstk::CommonTime ct1(civ1);
+   gpstk::NavDataPtr nd1;
+   TUASSERT(uut.find(nmid1, ct1, nd1, gpstk::SVHealth::Any,
+                     gpstk::NavValidityType::ValidOnly,
+                     gpstk::NavSearchOrder::User));
+
+   gpstk::NavSatelliteID satID2(8, 8, gpstk::SatelliteSystem::Galileo,
+                                gpstk::CarrierBand::L5,
+                                gpstk::TrackingCode::E5aI,
+                                gpstk::NavType::GalFNAV);
+   gpstk::NavMessageID nmid2(satID2, gpstk::NavMessageType::Ephemeris);
+   TUASSERT(uut.find(nmid2, ct1, nd1, gpstk::SVHealth::Any,
+                     gpstk::NavValidityType::ValidOnly,
+                     gpstk::NavSearchOrder::User));
+TURETURN();
+}
+
+
 template <class NavClass>
 void SP3NavDataFactory_T ::
 verifyDataType(gpstk::TestUtil& testFramework,
@@ -943,6 +1102,7 @@ int main()
    errorTotal += testClass.findEdgeTest();
    errorTotal += testClass.sp3cPVTest();
    errorTotal += testClass.sp3cPTest();
+   errorTotal += testClass.loadIntoMapFGNSSTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
