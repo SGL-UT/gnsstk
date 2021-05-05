@@ -50,8 +50,12 @@ namespace gpstk
    class GPSCNav2Alm : public OrbitDataKepler
    {
    public:
-         /// inclination offset, this + delta i = i0, defined in IS-GPS-800.
-      static const double refioffsetGPS;
+         /** Midi almanac inclination offset, this + delta i = i0,
+          * defined in IS-GPS-800. */
+      static const double refi0GPS;
+         /** Midi almanac inclination offset, this + delta i = i0,
+          * defined in IS-QZSS-PNT-004. */
+      static const double refi0QZSS;
 
          /// Sets the nav message type.
       GPSCNav2Alm();

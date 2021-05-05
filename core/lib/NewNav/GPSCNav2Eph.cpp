@@ -46,6 +46,8 @@ namespace gpstk
 {
    const double GPSCNav2Eph::refAGPS = 26559710;
    const double GPSCNav2Eph::refOMEGAdotGPS = -2.6e-9 * PI;
+   const double GPSCNav2Eph::refAQZSS = 42164200;
+   const double GPSCNav2Eph::refOMEGAdotQZSS = -2.6e-9 * PI;
 
    GPSCNav2Eph ::
    GPSCNav2Eph()
