@@ -178,7 +178,7 @@ namespace gpstk
       e        = pnb.asUnsignedDouble(46+offsetBits,11,-16);
       di       = pnb.asDoubleSemiCircles(57+offsetBits,11,-14);
       OMEGAdot = pnb.asDoubleSemiCircles(68+offsetBits,11,-33);
-      sqrtA    = pnb.asSignedDouble(79+offsetBits,17,-4);
+      sqrtA    = pnb.asUnsignedDouble(79+offsetBits,17,-4);
       OMEGA0   = pnb.asDoubleSemiCircles(96+offsetBits,16,-15);
       w        = pnb.asDoubleSemiCircles(112+offsetBits,16,-15);
       M0       = pnb.asDoubleSemiCircles(128+offsetBits,16,-15);
