@@ -40,9 +40,15 @@
 #include "Rinex3NavStream.hpp"
 #include "Rinex3NavHeader.hpp"
 #include "GPSLNavHealth.hpp"
+#include "GalINavEph.hpp"
+#include "GalFNavEph.hpp"
+#include "GalINavHealth.hpp"
 #include "RinexTimeOffset.hpp"
+#include "TimeString.hpp"
 
 using namespace std;
+
+static const std::string dts("%Y/%03j/%02H:%02M:%02S %P");
 
 namespace gpstk
 {
@@ -53,6 +59,18 @@ namespace gpstk
                                           CarrierBand::L1,
                                           TrackingCode::CA,
                                           NavType::GPSLNAV));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::Galileo,
+                                          CarrierBand::L1,
+                                          TrackingCode::E1B,
+                                          NavType::GalINAV));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::Galileo,
+                                          CarrierBand::E5b,
+                                          TrackingCode::E5bI,
+                                          NavType::GalINAV));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::Galileo,
+                                          CarrierBand::L5,
+                                          TrackingCode::E5aI,
+                                          NavType::GalFNAV));
    }
 
 
@@ -92,6 +110,7 @@ namespace gpstk
          if (processTim)
          {
                // time offset information only exists in RINEX headers.
+               /// @todo what about embedded RINEX headers?
             NavDataPtrList navOut;
             if (!convertToOffset(head, navOut))
             {
@@ -126,7 +145,8 @@ namespace gpstk
                else
                   return false; // some other error
             }
-            NavDataPtr eph, health;
+            NavDataPtr eph;
+            std::list<gpstk::NavDataPtr> health;
             if (processEph)
             {
                if (!convertToOrbit(data, eph))
@@ -149,10 +169,13 @@ namespace gpstk
                }
                if (processHea)
                {
-                  if (health->validate() == expect)
+                  for (const auto& hp : health)
                   {
-                     if (!addNavData(health))
-                        return false;
+                     if (hp->validate() == expect)
+                     {
+                        if (!addNavData(hp))
+                           return false;
+                     }
                   }
                }
             }
@@ -165,8 +188,11 @@ namespace gpstk
                }
                if (processHea)
                {
-                  if (!addNavData(health))
-                     return false;
+                  for (const auto& hp : health)
+                  {
+                     if (!addNavData(hp))
+                        return false;
+                  }
                }
             }
          }
@@ -209,6 +235,8 @@ namespace gpstk
    {
       bool rv = true;
       GPSLNavEph *gps;
+      GalINavEph *galINav;
+      GalFnavEph *galFnav;
       switch (navIn.sat.system)
       {
          case SatelliteSystem::GPS:
@@ -218,31 +246,9 @@ namespace gpstk
             fillNavData(navIn, navOut);
                // OrbitDataKepler
             fixTimeGPS(navIn, *gps);
-
-            gps->Toc = navIn.time;
             gps->health = ((navIn.health == 0) ? SVHealth::Healthy :
                            SVHealth::Unhealthy);
-            gps->Cuc = navIn.Cuc;
-            gps->Cus = navIn.Cus;
-            gps->Crc = navIn.Crc;
-            gps->Crs = navIn.Crs;
-            gps->Cic = navIn.Cic;
-            gps->Cis = navIn.Cis;
-            gps->M0 = navIn.M0;
-            gps->dn = navIn.dn;
-               // no dndot in RINEX 3 or in GPS LNav
-            gps->ecc = navIn.ecc;
-            gps->Ahalf = navIn.Ahalf;
-            gps->A = navIn.Ahalf * navIn.Ahalf;
-               // no Adot in RINEX 3 or in GPS LNav
-            gps->OMEGA0 = navIn.OMEGA0;
-            gps->i0 = navIn.i0;
-            gps->w = navIn.w;
-            gps->OMEGAdot = navIn.OMEGAdot;
-            gps->idot = navIn.idot;
-            gps->af0 = navIn.af0;
-            gps->af1 = navIn.af1;
-            gps->af2 = navIn.af2;
+            convertToOrbitDataKepler(navIn, gps);
                // tlm not available in RINEX NAV
                // GPSLNavEph
             gps->iodc = navIn.IODC;
@@ -262,6 +268,84 @@ namespace gpstk
             gps->L2Pdata = (navIn.L2Pdata > 0);
             gps->fixFit();
             break;
+         case SatelliteSystem::Galileo:
+            if (((navIn.datasources & 0x01) == 0x01) ||
+                ((navIn.datasources & 0x04) == 0x04))
+            {
+               navOut = std::make_shared<GalINavEph>();
+               galINav = dynamic_cast<GalINavEph*>(navOut.get());
+                  // NavData
+               fillNavData(navIn, navOut);
+                  // OrbitDataKepler
+               fixTimeGalileo(navIn, *galINav);
+                  // RINEX 3.04 Table A8 note 4 says the GAL week number
+                  // is identical to the GPS week number.  ergo, it's not
+                  // really a Galileo week number.
+               galINav->Toe = GPSWeekSecond(navIn.weeknum, navIn.Toe);
+                  //galINav->Toe.setTimeSystem(TimeSystem::GAL);
+               convertToOrbitDataKepler(navIn, galINav);
+               galINav->bgdE5aE1 = navIn.Tgd;
+               galINav->bgdE5bE1 = navIn.Tgd2;
+               galINav->sisaIndex = decodeSISA(navIn.accuracy);
+               galINav->svid = navIn.sat.id;
+               galINav->xmit2 = galINav->xmitTime + galINav->msgLenSec;
+               galINav->xmit3 = galINav->xmit2 + galINav->msgLenSec;
+               galINav->xmit4 = galINav->xmit3 + galINav->msgLenSec;
+               galINav->xmit5 = galINav->xmit4 + galINav->msgLenSec;
+               galINav->iodnav1 = galINav->iodnav2 = galINav->iodnav3 =
+                  galINav->iodnav4 = navIn.IODnav;
+               galINav->dvsE1B = static_cast<GalDataValid>(
+                  navIn.health & 0x01);
+               galINav->hsE1B = static_cast<GalHealthStatus>(
+                  (navIn.health >> 1) & 0x03);
+                  /** @note rinex includes health information for
+                   * three signals, but I/NAV ephemerides will only
+                   * include health for E5b and E1B, while F/NAV only
+                   * includes health for E1a */
+               galINav->dvsE5b = static_cast<GalDataValid>(
+                  (navIn.health >> 6) & 0x01);
+               galINav->hsE5b = static_cast<GalHealthStatus>(
+                  (navIn.health >> 7) & 0x03);
+                  /** @note rinex can combine I/NAV ephemerides, but
+                   * we just assume one or the other. */
+               if ((navIn.datasources & 0x01) == 0x01)
+               {
+                  galINav->health = GalINavHealth::galHealth(
+                     galINav->hsE1B, galINav->dvsE1B, galINav->sisaIndex);
+               }
+               else
+               {
+                  galINav->health = GalINavHealth::galHealth(
+                     galINav->hsE5b, galINav->dvsE5b, galINav->sisaIndex);
+               }
+               galINav->fixFit();
+            }
+            else if (navIn.datasources & 0x02)
+            {
+               navOut = std::make_shared<GalFnavEph>();
+               galFnav = dynamic_cast<GalFnavEph*>(navOut.get());
+                  // NavData
+               fillNavData(navIn, navOut);
+                  // OrbitDataKepler
+               fixTimeGalileo(navIn, *galFnav);
+                  // RINEX 3.04 Table A8 note 4 says the GAL week number
+                  // is identical to the GPS week number.  ergo, it's not
+                  // really a Galileo week number.
+               galFnav->Toe = GPSWeekSecond(navIn.weeknum, navIn.Toe);
+                  //galFnav->Toe.setTimeSystem(TimeSystem::GAL);
+                  // @todo set sv health correctly
+                  // galFnav->health = ((navIn.health == 0) ? SVHealth::Healthy :
+                  //                SVHealth::Unhealthy);
+               convertToOrbitDataKepler(navIn, galFnav);
+                  /// @todo add IOD Nav, SISA, BGD, data source
+               galFnav->fixFit();
+            }
+            else
+            {
+                  // don't know what to do with this.
+               rv = false;
+            }
+            break;
          default:
                /// @todo add other GNSSes
             rv = false;
@@ -271,20 +355,126 @@ namespace gpstk
    }
 
 
+   void RinexNavDataFactory ::
+   convertToOrbitDataKepler(const Rinex3NavData& navIn, OrbitDataKepler* navOut)
+   {
+         // OrbitDataKepler
+      navOut->Toc = navIn.time;
+         // navOut->health is signal-specific
+      navOut->Cuc = navIn.Cuc;
+      navOut->Cus = navIn.Cus;
+      navOut->Crc = navIn.Crc;
+      navOut->Crs = navIn.Crs;
+      navOut->Cic = navIn.Cic;
+      navOut->Cis = navIn.Cis;
+      navOut->M0 = navIn.M0;
+      navOut->dn = navIn.dn;
+         // no dndot in RINEX 3
+      navOut->ecc = navIn.ecc;
+      navOut->Ahalf = navIn.Ahalf;
+      navOut->A = navIn.Ahalf * navIn.Ahalf;
+         // no Adot in RINEX 3
+      navOut->OMEGA0 = navIn.OMEGA0;
+      navOut->i0 = navIn.i0;
+      navOut->w = navIn.w;
+      navOut->OMEGAdot = navIn.OMEGAdot;
+      navOut->idot = navIn.idot;
+      navOut->af0 = navIn.af0;
+      navOut->af1 = navIn.af1;
+      navOut->af2 = navIn.af2;
+   }
+
+
    bool RinexNavDataFactory ::
-   convertToHealth(const Rinex3NavData& navIn, NavDataPtr& healthOut)
+   convertToHealth(const Rinex3NavData& navIn,
+                   std::list<gpstk::NavDataPtr>& healthOut)
    {
       bool rv = true;
+      gpstk::NavDataPtr health;
       GPSLNavHealth *gps;
+      GalINavHealth *galNav;
+      unsigned healthBits = 0;
       switch (navIn.sat.system)
       {
          case SatelliteSystem::GPS:
-            healthOut = std::make_shared<GPSLNavHealth>();
-            gps = dynamic_cast<GPSLNavHealth*>(healthOut.get());
+            health = std::make_shared<GPSLNavHealth>();
+            gps = dynamic_cast<GPSLNavHealth*>(health.get());
                // NavData
-            fillNavData(navIn, healthOut);
+            fillNavData(navIn, health);
                // GPSLNavHealth
             gps->svHealth = navIn.health;
+            healthOut.push_back(health);
+            break;
+         case SatelliteSystem::Galileo:
+               // construct three health objects, one for each signal
+               // in the RINEX record.
+               // E1-B first
+               /** @todo This probably should be split to produce
+                * I/NAV health when the data source is I/NAV and F/NAV
+                * health when the data source is F/NAV, and include
+                * only the health status for those codes.  The Galileo
+                * ephemeris doesn't include health status for the
+                * "other" nav code. */
+            health = std::make_shared<GalINavHealth>();
+            galNav = dynamic_cast<GalINavHealth*>(health.get());
+               // NavData
+            fillNavData(navIn, health);
+               // GalINavHealth
+               // start with original health bits from RINEX, decode and shift.
+            healthBits = navIn.health;
+            galNav->dataValidityStatus = static_cast<GalDataValid>(
+               healthBits & 0x01);
+            healthBits >>= 1;
+            galNav->sigHealthStatus = static_cast<GalHealthStatus>(
+               navIn.health & 0x3);
+            healthBits >>= 2;
+            galNav->signal.obs.band = CarrierBand::L1;
+            galNav->signal.obs.code = TrackingCode::E1B;
+            healthOut.push_back(health);
+               // Now decode E5a
+            health = std::make_shared<GalINavHealth>();
+            galNav = dynamic_cast<GalINavHealth*>(health.get());
+               // NavData
+            fillNavData(navIn, health);
+               // GalINavHealth
+            galNav->dataValidityStatus = static_cast<GalDataValid>(
+               healthBits & 0x01);
+            healthBits >>= 1;
+            galNav->sigHealthStatus = static_cast<GalHealthStatus>(
+               navIn.health & 0x3);
+            healthBits >>= 2;
+            galNav->signal.obs.band = CarrierBand::L5;
+            galNav->signal.obs.code = TrackingCode::E5aI;
+            if (navIn.datasources & 0x0100)
+            {
+                  // The current implementation of Rinex3NavData
+                  // doesn't do detailed conversion from accuracy to
+                  // SISA index.
+               galNav->sisaIndex = decodeSISA(navIn.accuracy);
+            }
+            healthOut.push_back(health);
+               // Finally, decode E5b
+            health = std::make_shared<GalINavHealth>();
+            galNav = dynamic_cast<GalINavHealth*>(health.get());
+               // NavData
+            fillNavData(navIn, health);
+               // GalINavHealth
+            galNav->dataValidityStatus = static_cast<GalDataValid>(
+               healthBits & 0x01);
+            healthBits >>= 1;
+            galNav->sigHealthStatus = static_cast<GalHealthStatus>(
+               navIn.health & 0x3);
+            healthBits >>= 2;
+            galNav->signal.obs.band = CarrierBand::L5;
+            galNav->signal.obs.code = TrackingCode::E5bI;
+            if (navIn.datasources & 0x0200)
+            {
+                  // The current implementation of Rinex3NavData
+                  // doesn't do detailed conversion from accuracy to
+                  // SISA index.
+               galNav->sisaIndex = decodeSISA(navIn.accuracy);
+            }
+            healthOut.push_back(health);
             break;
          default:
                /// @todo add other GNSSes
@@ -324,8 +514,7 @@ namespace gpstk
       {
          case SatelliteSystem::GPS:
                // NavData
-            navOut->timeStamp =
-               gpstk::GPSWeekSecond(navIn.weeknum,navIn.xmitTime);
+            navOut->timeStamp = GPSWeekSecond(navIn.weeknum,navIn.xmitTime);
                // sat and xmitSat are always the same for ephemeris
             navOut->signal.sat = navIn.sat;
             navOut->signal.xmitSat = navIn.sat;
@@ -333,8 +522,44 @@ namespace gpstk
                // we can't obtain these from RINEX NAV, so just assume L1 C/A
             navOut->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::L1,
                                        TrackingCode::CA);
-               /// @todo Does RINEX support CNAV and if so how do we know?
             navOut->signal.nav = NavType::GPSLNAV;
+            break;
+         case SatelliteSystem::Galileo:
+               // NavData
+               // RINEX 3.04 Table A8 note 4 says the GAL week number
+               // is identical to the GPS week number.  ergo, it's not
+               // really a Galileo week number.
+            navOut->timeStamp = GPSWeekSecond(navIn.weeknum, navIn.xmitTime);
+               //navOut->timeStamp.setTimeSystem(TimeSystem::GAL);
+               // sat and xmitSat are always the same for ephemeris
+            navOut->signal.sat = navIn.sat;
+            navOut->signal.xmitSat = navIn.sat;
+            navOut->signal.system = navIn.sat.system;
+               // The magic numbers here are defined in the RINEX 3
+               // standard, table A8.
+               /** @todo figure out how to handle the case where Bit 0
+                * and 2 are both set (see table A8). */
+            if (navIn.datasources & 0x01)
+            {
+               navOut->signal.obs = ObsID(ObservationType::NavMsg,
+                                          CarrierBand::L1,
+                                          TrackingCode::E1B);
+               navOut->signal.nav = NavType::GalINAV;
+            }
+            else if (navIn.datasources & 0x02)
+            {
+               navOut->signal.obs = ObsID(ObservationType::NavMsg,
+                                          CarrierBand::L5,
+                                          TrackingCode::E5aI);
+               navOut->signal.nav = NavType::GalFNAV;
+            }
+            else if (navIn.datasources & 0x04)
+            {
+               navOut->signal.obs = ObsID(ObservationType::NavMsg,
+                                          CarrierBand::E5b,
+                                          TrackingCode::E5bI);
+               navOut->signal.nav = NavType::GalINAV;
+            }
             break;
          default:
                /// @todo add other GNSSes
@@ -389,5 +614,42 @@ namespace gpstk
 
       navOut.Toc = GPSWeekSecond(epochWeek, navIn.Toc, TimeSystem::GPS);
       navOut.Toe = GPSWeekSecond(epochWeek, navIn.Toe, TimeSystem::GPS);
+   }
+
+
+   void RinexNavDataFactory ::
+   fixTimeGalileo(const Rinex3NavData& navIn, OrbitDataKepler& navOut)
+   {
+         /// @todo Probably need to do half week tests on the transmit time
+         // RINEX 3.04 Table A8 note 4 says the GAL week number
+         // is identical to the GPS week number.  ergo, it's not
+         // really a Galileo week number.
+      navOut.xmitTime = GPSWeekSecond(navIn.weeknum, navIn.xmitTime);
+         //navOut.xmitTime.setTimeSystem(TimeSystem::GAL);
+   }
+
+
+   uint8_t RinexNavDataFactory ::
+   decodeSISA(double accuracy)
+   {
+         // Implementation of Galileo-OS-SIS-ICD section 5.1.11
+         // (Signal-In-Space Accuracy (SISA))
+         // accuracy = -1 (or less than zero anyway)
+         // Adding 0.5 to resolve IEE-754 floating point representation issues.
+      if (accuracy < 0)
+         return 255;
+         // 0-0.49m => 0-49
+      if (accuracy < 0.5)
+         return (uint8_t)(accuracy*100.0+0.5);
+         // .5m-.98m => 50-74
+      if (accuracy < 1)
+         return (uint8_t)(((accuracy+0.5)*50)+0.5);
+         // 1m-1.96m => 75-99
+      if (accuracy < 2)
+         return (uint8_t)(((accuracy+2)*25)+0.5);
+         // 2m-5.84m => 100-125
+      if (accuracy <= 6)
+         return (uint8_t)((100+(accuracy-2)/0.16)+0.5);
+      return 255;
    }
 }
