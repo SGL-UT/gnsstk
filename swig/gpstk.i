@@ -759,6 +759,8 @@ renameEnums('SVHealth')
 renameEnums('NavSearchOrder')
 renameEnums('NavValidityType')
 renameEnums('DumpDetail')
+renameEnums('GalHealthStatus')
+renameEnums('GalDataValid')
 del renameEnums
 del IntEnum
 %}

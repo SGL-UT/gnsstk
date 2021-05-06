@@ -42,6 +42,12 @@
 
 namespace gpstk
 {
+   std::ostream& operator<<(std::ostream& s, gpstk::SVHealth e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
+
    std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
@@ -62,6 +68,7 @@ public:
    unsigned constructorTest();
    unsigned getUserTimeTest();
    unsigned fixFitTest();
+   unsigned fixHealthTest();
 };
 
 
@@ -121,6 +128,55 @@ fixFitTest()
 }
 
 
+unsigned GalINavAlm_T ::
+fixHealthTest()
+{
+   TUDEF("GalINavAlm", "fixHealth");
+   gpstk::GalINavAlm uut;
+      // both OK
+   uut.hsE5b = uut.hsE1B = gpstk::GalHealthStatus::OK;
+   uut.fixHealth();
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, uut.health);
+      // OK + OOS
+   uut.hsE1B = gpstk::GalHealthStatus::OutOfService;
+   uut.fixHealth();
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+      // OK + will be OOS
+   uut.hsE1B = gpstk::GalHealthStatus::WillBeOOS;
+   uut.fixHealth();
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+      // OK + in test
+   uut.hsE1B = gpstk::GalHealthStatus::InTest;
+   uut.fixHealth();
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+      // both OOS
+   uut.hsE5b = uut.hsE1B = gpstk::GalHealthStatus::OutOfService;
+   uut.fixHealth();
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, uut.health);
+      // OOS + will be OOS
+   uut.hsE1B = gpstk::GalHealthStatus::WillBeOOS;
+   uut.fixHealth();
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+      // OOS + in test
+   uut.hsE1B = gpstk::GalHealthStatus::InTest;
+   uut.fixHealth();
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+      // both will be OOS
+   uut.hsE5b = uut.hsE1B = gpstk::GalHealthStatus::WillBeOOS;
+   uut.fixHealth();
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+      // will be OOS + in test
+   uut.hsE1B = gpstk::GalHealthStatus::InTest;
+   uut.fixHealth();
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+      // both in test
+   uut.hsE5b = uut.hsE1B = gpstk::GalHealthStatus::InTest;
+   uut.fixHealth();
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+   TURETURN();
+}
+
+
 int main()
 {
    GalINavAlm_T testClass;
@@ -129,6 +185,7 @@ int main()
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.fixFitTest();
+   errorTotal += testClass.fixHealthTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
