@@ -97,6 +97,8 @@ namespace gpstk
           * override getUserTime() to ignore this value (as in
           * CNav). */
       double msgLenSec;
+         /// Allow RinexNavDataFactory access to msgLenSec
+      friend class RinexNavDataFactory;
    };
 
       /// Factories instantiate these in response to find() requests

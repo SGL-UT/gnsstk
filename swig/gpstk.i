@@ -263,6 +263,9 @@ namespace std
    }
 }
 
+// time offset is an output
+%apply double &OUTPUT { double &offset };
+
 %include "gpstk_typemaps.i"
 
 // =============================================================
@@ -767,6 +770,8 @@ renameEnums('SVHealth')
 renameEnums('NavSearchOrder')
 renameEnums('NavValidityType')
 renameEnums('DumpDetail')
+renameEnums('GalHealthStatus')
+renameEnums('GalDataValid')
 del renameEnums
 del IntEnum
 %}

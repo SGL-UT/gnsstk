@@ -82,7 +82,7 @@ namespace gpstk
       double bgdE5aE1;   ///< Group delay in seconds between E5a and E1.
       double bgdE5bE1;   ///< Group delay in seconds between E5b and E1.
       uint8_t sisaIndex; ///< Signal in space accuracy index (OS-SIS-ICD tbl 76)
-      uint8_t svid;
+      uint8_t svid;      ///< SVID field from page type 1 (or PRN if not avail)
       CommonTime xmit2;  ///< Transmit time for word type 2.
       CommonTime xmit3;  ///< Transmit time for word type 3.
       CommonTime xmit4;  ///< Transmit time for word type 4.

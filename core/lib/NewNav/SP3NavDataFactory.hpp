@@ -51,15 +51,19 @@ namespace gpstk
       //@{
 
       /** Factory class for loading SP3 data.
-       * @note While in theory Y code and P code LNav are supported,
-       *   SP3 does not support the identification of the codes
-       *   contained in the files.  As such, this factory only
-       *   "produces" L1 C/A tagged data for LNav.
+       * @note In order to use SP3 data, both ephemeris and clock must
+       *   be selected via setTypeFilter (by default all data is
+       *   selected).
        * @note SP3 does not contain health information.
        */
    class SP3NavDataFactory : public NavDataFactoryWithStoreFile
    {
    public:
+         /// Generic ObsIDs for each GNSS.
+      static const ObsID oidGPS, oidGalileo, oidQZSS, oidGLONASS, oidBeiDou;
+         /// Generic NavTypes for each GNSS.
+      static const NavType ntGPS, ntGalileo, ntQZSS, ntGLONASS, ntBeiDou;
+
          /** Fill supportedSignals.
           * @note Only GPS nav is supported so only that
           *   will be added to supportedSignals.
@@ -127,6 +131,20 @@ namespace gpstk
       static bool convertToClock(const SP3Header& head, const SP3Data& navIn,
                                  bool isC, NavDataPtr& clkOut);
 
+         /** Because SP3 files don't identify signals (the data is
+          * computed, not broadcast). we use this function to
+          * translate from arbitrary NavMessageID objects into ones
+          * that will match the internally stored data.  This is used
+          * by find() but is public in case someone finds a use for
+          * it. 
+          * @note The system used for making the generic NavMessageID
+          *   comes from the subject satellite.
+          * @param[in] nmidIn The NavMessageID to translate to generic form.
+          * @param[out] nmidOut The generic form of the NavMessageID.
+          * @return true if successful, false if the system is unsupported. */
+      static bool transNavMsgID(const NavMessageID& nmidIn,
+                                NavMessageID& nmidOut);
+
          /** Half of the interpolation order.  When interpolating SP3
           * records, 2x this number of records are used, centered on
           * the time of interest. */
@@ -180,6 +198,14 @@ namespace gpstk
       bool loadIntoMap(const std::string& filename,
                        NavMessageMap& navMap) override
       { return false; }
+
+         /** Set the obs and nav identification for the given NavMessageID
+          * object, using a satellite system only.  This is really
+          * just a "best guess" for a given system. 
+          * @param[in] sat The satellite identifier (incl GNSS) for the data.
+          * @param[in,out] signal The NavMessageID object to update.
+          * @return true if successful, false if the system is unsupported. */
+      static bool setSignal(const SatID& sat, NavMessageID& signal);
 
          /** Used to make sure that we don't load SP3 data with
           * inconsistent time systems. */

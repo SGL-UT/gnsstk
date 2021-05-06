@@ -71,6 +71,8 @@ namespace gpstk
 
          /** Defines the status of NavData::signal, specifically sat
           * (not xmitSat).
+          * @note Galileo-OS-SDD refers to a SIS status as "Marginal",
+          *   where we use the SVHealth enumeration name "Degraded".
           * @return Rolled-up health status based on internal data. */
       SVHealth getHealth() const override;
 
@@ -78,6 +80,8 @@ namespace gpstk
           * @param[in] shs The Signal Health Status of a given signal.
           * @param[in] dvs The Data Validity Status of a given signal.
           * @param[in] sisa The Signal In Space Accuracy Index of a given signal
+          * @note Galileo-OS-SDD refers to a SIS status as "Marginal",
+          *   where we use the SVHealth enumeration name "Degraded".
           * @return Rolled-up health status based on internal data. */
       static SVHealth galHealth(GalHealthStatus shs, GalDataValid dvs,
                                 uint8_t sisa);

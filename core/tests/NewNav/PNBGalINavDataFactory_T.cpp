@@ -766,6 +766,7 @@ processAlmTest()
    }
    TUASSERTE(unsigned, 2, almCount);
    TUASSERTE(unsigned, 4, heaCount);
+   TUASSERTE(unsigned, 1, toCount);
    TUASSERTE(unsigned, 0, otherCount);
    navOut.clear();
    TURETURN();
@@ -781,7 +782,45 @@ processOffsetTest()
       gpstk::NavSatelliteID(1, 1, gpstk::SatelliteSystem::Galileo,
                             gpstk::CarrierBand::L1, gpstk::TrackingCode::E1B,
                             gpstk::NavType::GalINAV),
-      gpstk::NavMessageType::Health);
+      gpstk::NavMessageType::TimeOffset);
+   gpstk::NavDataPtrList navOut;
+   gpstk::GalINavTimeOffset *tim;
+   gpstk::CommonTime expRefTime(gpstk::GALWeekSecond(1014,432000));
+   TUASSERTE(bool, true, uut.processOffset(navINAVGalWT6, navOut));
+   TUASSERTE(size_t, 1, navOut.size());
+   almCount = ephCount = toCount = heaCount = otherCount = 0;
+   for (const auto& i : navOut)
+   {
+      if ((tim = dynamic_cast<gpstk::GalINavTimeOffset*>(i.get()))
+               != nullptr)
+      {
+         toCount++;
+         TUASSERTE(gpstk::CommonTime, navINAVGalWT6ct, tim->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExpE1B, tim->signal);
+            // StdNavTimeOffset
+         TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::GAL, tim->src);
+         TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::UTC, tim->tgt);
+         TUASSERTFE(-9.31322575E-10, tim->a0);
+         TUASSERTFE( 8.88178420E-16, tim->a1);
+         TUASSERTFE( 0.00000000E+00, tim->a2);
+         TUASSERTFE(18, tim->deltatLS);
+         TUASSERTE(gpstk::CommonTime, expRefTime, tim->refTime);
+         TUASSERTFE(432000, tim->tot);
+         TUASSERTE(unsigned, 1014, tim->wnot);
+         TUASSERTE(unsigned, 905, tim->wnLSF);
+         TUASSERTE(unsigned, 7, tim->dn);
+         TUASSERTFE(18, tim->deltatLSF);
+               // GalINavTimeOffset
+         TUASSERTFE(518405, tim->tow);
+      }
+      else
+      {
+         otherCount++;
+      }
+   }
+   TUASSERTE(unsigned, 1, toCount);
+   TUASSERTE(unsigned, 0, otherCount);
+   navOut.clear();
    TURETURN();
 }
 
