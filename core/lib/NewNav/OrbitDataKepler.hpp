@@ -169,6 +169,12 @@ namespace gpstk
 
       CommonTime beginFit; ///< Time at beginning of fit interval
       CommonTime endFit;   ///< Time at end of fit interval
+
+         /** Format string for printing week in dump().  This defaults
+          * to "%4F(%4G)" which is the GPS full and short week, and
+          * other GNSSes should use the same width, but different
+          * format tokens (see TimeString.hpp). */
+      std::string weekFmt;
    };
 
       //@}

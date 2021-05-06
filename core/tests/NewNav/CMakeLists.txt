@@ -145,3 +145,31 @@ add_test(RinexTimeOffset_T RinexTimeOffset_T)
 add_executable(StdNavTimeOffset_T StdNavTimeOffset_T.cpp)
 target_link_libraries(StdNavTimeOffset_T gpstk)
 add_test(StdNavTimeOffset_T StdNavTimeOffset_T)
+
+add_executable(GalDataValid_T GalDataValid_T.cpp)
+target_link_libraries(GalDataValid_T gpstk)
+add_test(GalDataValid_T GalDataValid_T)
+
+add_executable(GalHealthStatus_T GalHealthStatus_T.cpp)
+target_link_libraries(GalHealthStatus_T gpstk)
+add_test(GalHealthStatus_T GalHealthStatus_T)
+
+add_executable(GalINavTimeOffset_T GalINavTimeOffset_T.cpp)
+target_link_libraries(GalINavTimeOffset_T gpstk)
+add_test(GalINavTimeOffset_T GalINavTimeOffset_T)
+
+add_executable(GalINavAlm_T GalINavAlm_T.cpp)
+target_link_libraries(GalINavAlm_T gpstk)
+add_test(GalINavAlm_T GalINavAlm_T)
+
+add_executable(GalINavHealth_T GalINavHealth_T.cpp)
+target_link_libraries(GalINavHealth_T gpstk)
+add_test(GalINavHealth_T GalINavHealth_T)
+
+add_executable(GalINavEph_T GalINavEph_T.cpp)
+target_link_libraries(GalINavEph_T gpstk)
+add_test(GalINavEph_T GalINavEph_T)
+
+add_executable(PNBGalINavDataFactory_T PNBGalINavDataFactory_T.cpp)
+target_link_libraries(PNBGalINavDataFactory_T gpstk)
+add_test(PNBGalINavDataFactory_T PNBGalINavDataFactory_T)

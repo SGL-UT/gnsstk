@@ -243,7 +243,8 @@ namespace gpstk
       CommonTime rv = CommonTime::END_OF_TIME;
       for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
-         rv = std::min(rv, fi.second->getInitialTime());
+         gpstk::CommonTime t(fi.second->getInitialTime());
+         rv = std::min(rv, t);
       }
       return rv;
    }

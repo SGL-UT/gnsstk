@@ -83,3 +83,27 @@ add_test(NAME swig_test_MultiFormatNavDataFactory
   WORKING_DIRECTORY ${td}
   )
 set_property(TEST swig_test_MultiFormatNavDataFactory PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GalINavAlm
+  COMMAND ${PYTHON_EXECUTABLE} test_GalINavAlm.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GalINavAlm PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GalINavEph
+  COMMAND ${PYTHON_EXECUTABLE} test_GalINavEph.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GalINavEph PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GalINavHealth
+  COMMAND ${PYTHON_EXECUTABLE} test_GalINavHealth.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GalINavHealth PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GalINavTimeOffset
+  COMMAND ${PYTHON_EXECUTABLE} test_GalINavTimeOffset.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GalINavTimeOffset PROPERTY LABELS swig NewNav)
