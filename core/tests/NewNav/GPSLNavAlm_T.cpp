@@ -67,6 +67,8 @@ constructorTest()
    TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Almanac,
              uut.signal.messageType);
    TUASSERTE(uint8_t, 0xff, uut.healthBits);
+   TUASSERTFE(0.0, uut.deltai);
+   TUASSERTFE(0.0, uut.toa);
    TURETURN();
 }
 

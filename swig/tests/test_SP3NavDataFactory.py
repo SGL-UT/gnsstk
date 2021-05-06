@@ -11,7 +11,7 @@ class TestSP3NavDataFactory(unittest.TestCase):
         ndf = gpstk.SP3NavDataFactory()
         ndf.addDataSource(args.input_dir+'/test_input_SP3c.sp3')
         self.assertEqual(1500, ndf.size())
-        ndf.clear();
+        ndf.clear()
         self.assertEqual(0, ndf.size())
 
 if __name__ == '__main__':

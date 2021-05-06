@@ -61,7 +61,7 @@ namespace gpstk
       bool validate() const override;
 
          /** This is just a method for making the dump output say
-          * "almanac" vs "ephemeris" when appropriate. */
+          * "Almanac" vs "Ephemeris" when appropriate. */
       std::string getDataType() const override
       { return "Almanac"; }
          /** Override dumpHarmonics to hide them in output since GPS

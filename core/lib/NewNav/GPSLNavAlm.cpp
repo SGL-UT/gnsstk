@@ -45,7 +45,9 @@ namespace gpstk
 {
    GPSLNavAlm ::
    GPSLNavAlm()
-         : healthBits(0xff)
+         : healthBits(0xff),
+           deltai(0.0),
+           toa(0.0)
    {
       signal.messageType = NavMessageType::Almanac;
       msgLenSec = 6.0;

@@ -11,7 +11,7 @@ class TestSEMNavDataFactory(unittest.TestCase):
         ndf = gpstk.SEMNavDataFactory()
         ndf.addDataSource(args.input_dir+'/test_input_sem387.txt')
         self.assertEqual(60, ndf.size())
-        ndf.clear();
+        ndf.clear()
         self.assertEqual(0, ndf.size())
 
 if __name__ == '__main__':

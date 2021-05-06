@@ -24,18 +24,18 @@ class TestGalINavTimeOffset(unittest.TestCase):
 
     def test_validate(self):
         uut = gpstk.GalINavTimeOffset()
-        self.assertEqual(True, uut.validate());
-        uut.tot = 604784.0;
-        self.assertEqual(True, uut.validate());
-        uut.dn = 7;
-        self.assertEqual(True, uut.validate());
-        uut.dn = 8;
-        self.assertEqual(True, uut.validate());
-        uut.dn = 7;
-        uut.tot = -0.001;
-        self.assertEqual(True, uut.validate());
-        uut.tot = 604784.1;
-        self.assertEqual(True, uut.validate());
+        self.assertEqual(True, uut.validate())
+        uut.tot = 604784.0
+        self.assertEqual(True, uut.validate())
+        uut.dn = 7
+        self.assertEqual(True, uut.validate())
+        uut.dn = 8
+        self.assertEqual(True, uut.validate())
+        uut.dn = 7
+        uut.tot = -0.001
+        self.assertEqual(True, uut.validate())
+        uut.tot = 604784.1
+        self.assertEqual(True, uut.validate())
 
     def test_getOffset(self):
         uut = gpstk.GalINavTimeOffset()
