@@ -48,7 +48,7 @@ namespace gpstk
       /// @ingroup NavFactory
       //@{
 
-      /// Class containing data elements unique to GPS LNav ephemerides.
+      /// Class containing data elements unique to Galileo F/NAV ephemerides.
    class GalFNavEph : public OrbitDataKepler
    {
    public:
@@ -72,7 +72,7 @@ namespace gpstk
       CommonTime getUserTime() const override;
 
          /** Fill the beginFit and endFit values for this object.
-          * @pre Toe, iodc, fitIntFlag and xmitTime must all be set. */
+          * @pre Toe and xmitTime must be set. */
       void fixFit();
 
          /** Dump SV status information (e.g. health).

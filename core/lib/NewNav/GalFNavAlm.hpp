@@ -47,7 +47,7 @@ namespace gpstk
       /// @ingroup NavFactory
       //@{
 
-      /// Class containing data elements unique to Galileo I/NAV almanacs.
+      /// Class containing data elements unique to Galileo F/NAV almanacs.
    class GalFNavAlm : public OrbitDataKepler
    {
    public:
@@ -71,17 +71,17 @@ namespace gpstk
           * at which the final bit of a given broadcast navigation
           * message is received.  This is used by
           * NavDataFactoryWithStore::find() in User mode.
-          * @return transmit time of most recent message type of the pair + 2s.
+          * @return transmit time of most recent message type of the pair + 10s.
           */
       CommonTime getUserTime() const override;
 
          /** This is just a method for making the dump output say
-          * "almanac" vs "ephemeris" when appropriate. */
+          * "Almanac" vs "Ephemeris" when appropriate. */
       std::string getDataType() const override
       { return "Almanac"; }
 
          /** Override dumpHarmonics to hide them in output since
-          * Galileo I/NAV almanacs don't contain this data. */
+          * Galileo F/NAV almanacs don't contain this data. */
       void dumpHarmonics(std::ostream& s) const override
       {}
 
@@ -89,7 +89,7 @@ namespace gpstk
       void fixFit();
 
          /** Set the SVHealth value "health" according to the health
-          * status variables hsE5b and hsE1B */
+          * status variable hsE5a. */
       void fixHealth();
 
          /** Dump SV status information (e.g. health).

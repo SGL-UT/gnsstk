@@ -36,9 +36,9 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "GalFNavAlm.hpp"
+#include "GalFNavHealth.hpp"
 #include "TestUtil.hpp"
-#include "GALWeekSecond.hpp"
+#include "GPSWeekSecond.hpp"
 
 namespace gpstk
 {
@@ -47,116 +47,103 @@ namespace gpstk
       s << StringUtils::asString(e);
       return s;
    }
-
-   std::ostream& operator<<(std::ostream& s, gpstk::GalHealthStatus e)
-   {
-      s << StringUtils::asString(e);
-      return s;
-   }
-
    std::ostream& operator<<(std::ostream& s, gpstk::SVHealth e)
    {
       s << StringUtils::asString(e);
       return s;
    }
+   std::ostream& operator<<(std::ostream& s, gpstk::GalHealthStatus e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
+   std::ostream& operator<<(std::ostream& s, gpstk::GalDataValid e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
 }
 
-class GalFNavAlm_T
+class GalFNavHealth_T
 {
 public:
       /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
    unsigned getUserTimeTest();
-   unsigned fixFitTest();
-   unsigned fixHealthTest();
+      /// explicitly test getHealth, implicitly test galHealth
+   unsigned getHealthTest();
 };
 
 
-unsigned GalFNavAlm_T ::
+unsigned GalFNavHealth_T ::
 constructorTest()
 {
-   TUDEF("GalFNavAlm", "GalFNavAlm");
-   gpstk::GalFNavAlm uut;
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Almanac,
+   TUDEF("GalFNavHealth", "GalFNavHealth");
+   gpstk::GalFNavHealth uut;
+   TUASSERTE(gpstk::GalHealthStatus, gpstk::GalHealthStatus::Unknown,
+             uut.sigHealthStatus);
+   TUASSERTE(gpstk::GalDataValid, gpstk::GalDataValid::Unknown,
+             uut.dataValidityStatus);
+   TUASSERTE(unsigned, 255, uut.sisaIndex);
+   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Health,
              uut.signal.messageType);
-   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime(), uut.xmit2);
-   TUASSERTFE(0.0, uut.dAhalf);
-   TUASSERTFE(0.0, uut.deltai);
-   TUASSERTE(unsigned, 0, uut.wna);
-   TUASSERTFE(0.0, uut.t0a);
-   TUASSERTE(unsigned, 0, uut.ioda5);
-   TUASSERTE(unsigned, 0, uut.ioda6);
-   TUASSERTE(gpstk::GalHealthStatus,gpstk::GalHealthStatus::Unknown,uut.hsE5a);
    TURETURN();
 }
 
 
-unsigned GalFNavAlm_T ::
+unsigned GalFNavHealth_T ::
 getUserTimeTest()
 {
-   TUDEF("GalFNavAlm", "getUserTime");
-   gpstk::GalFNavAlm uut;
-   uut.xmitTime = gpstk::GALWeekSecond(2100,141.0);
-   uut.xmit2 = gpstk::GALWeekSecond(2100,135.0);
-   gpstk::CommonTime exp(uut.xmitTime + 10);
-   uut.signal = gpstk::NavMessageID(
-      gpstk::NavSatelliteID(1, 1, gpstk::SatelliteSystem::Galileo,
-                            gpstk::CarrierBand::L5, gpstk::TrackingCode::E5aI,
-                            gpstk::NavType::GalFNAV),
-      gpstk::NavMessageType::Almanac);
+   TUDEF("GalFNavHealth", "getUserTime");
+   gpstk::GalFNavHealth uut;
+   uut.timeStamp = gpstk::GPSWeekSecond(2100,135.0);
+   gpstk::CommonTime exp(gpstk::GPSWeekSecond(2100,135.0));
+   exp = exp + 10.0;
    TUASSERTE(gpstk::CommonTime, exp, uut.getUserTime());
    TURETURN();
 }
 
 
-unsigned GalFNavAlm_T ::
-fixFitTest()
+unsigned GalFNavHealth_T ::
+getHealthTest()
 {
-   TUDEF("GalFNavAlm", "fixFit");
-   gpstk::CommonTime toa = gpstk::GALWeekSecond(2100,135.0);
-   gpstk::CommonTime xmit = gpstk::GALWeekSecond(2099,604000.0);
-   gpstk::CommonTime expBegin = xmit;
-   gpstk::CommonTime expEnd   = toa + (74.0 * 3600.0);
-   gpstk::GalFNavAlm uut;
-   uut.Toe = toa;
-   uut.xmitTime = xmit;
-   TUCATCH(uut.fixFit());
-   TUASSERTE(gpstk::CommonTime, expBegin, uut.beginFit);
-   TUASSERTE(gpstk::CommonTime, expEnd, uut.endFit);
-   TURETURN();
-}
-
-
-unsigned GalFNavAlm_T ::
-fixHealthTest()
-{
-   TUDEF("GalFNavAlm", "fixHealth");
-   gpstk::GalFNavAlm uut;
-   uut.hsE5a = gpstk::GalHealthStatus::OK;
-   uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, uut.health);
-   uut.hsE5a = gpstk::GalHealthStatus::OutOfService;
-   uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, uut.health);
-   uut.hsE5a = gpstk::GalHealthStatus::WillBeOOS;
-   uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
-   uut.hsE5a = gpstk::GalHealthStatus::InTest;
-   uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, uut.health);
+   TUDEF("GalFNavHealth", "getHealth");
+   gpstk::GalFNavHealth uut;
+      // default should be unknown
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unknown, uut.getHealth());
+   uut.sigHealthStatus = gpstk::GalHealthStatus::OutOfService;
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, uut.getHealth());
+   uut.sigHealthStatus = gpstk::GalHealthStatus::Unknown;
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unknown, uut.getHealth());
+   uut.sigHealthStatus = gpstk::GalHealthStatus::InTest;
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, uut.getHealth());
+   uut.sigHealthStatus = gpstk::GalHealthStatus::WillBeOOS;
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.getHealth());
+   uut.sigHealthStatus = gpstk::GalHealthStatus::OK;
+   uut.dataValidityStatus = gpstk::GalDataValid::NoGuarantee;
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.getHealth());
+   uut.dataValidityStatus = gpstk::GalDataValid::Valid;
+   uut.sisaIndex = 255;
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.getHealth());
+   uut.sisaIndex = 254;
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, uut.getHealth());
+   uut.sisaIndex = 0;
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, uut.getHealth());
+   uut.dataValidityStatus = gpstk::GalDataValid::Unknown;
+   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unknown, uut.getHealth());
+   
    TURETURN();
 }
 
 
 int main()
 {
-   GalFNavAlm_T testClass;
+   GalFNavHealth_T testClass;
    unsigned errorTotal = 0;
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getUserTimeTest();
-   errorTotal += testClass.fixFitTest();
-   errorTotal += testClass.fixHealthTest();
+   errorTotal += testClass.getHealthTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

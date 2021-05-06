@@ -182,6 +182,10 @@ add_executable(GalFNavAlm_T GalFNavAlm_T.cpp)
 target_link_libraries(GalFNavAlm_T gpstk)
 add_test(GalFNavAlm_T GalFNavAlm_T)
 
+add_executable(GalFNavHealth_T GalFNavHealth_T.cpp)
+target_link_libraries(GalFNavHealth_T gpstk)
+add_test(GalFNavHealth_T GalFNavHealth_T)
+
 add_executable(GalFNavEph_T GalFNavEph_T.cpp)
 target_link_libraries(GalFNavEph_T gpstk)
 add_test(GalFNavEph_T GalFNavEph_T)
