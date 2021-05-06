@@ -58,11 +58,6 @@ namespace gpstk
       s << StringUtils::asString(e);
       return s;
    }
-   std::ostream& operator<<(std::ostream& s, GPSLNavEph::L2Codes e)
-   {
-      s << static_cast<int>(e);
-      return s;
-   }
    std::ostream& operator<<(std::ostream& s, SVHealth h)
    {
       s << StringUtils::asString(h);

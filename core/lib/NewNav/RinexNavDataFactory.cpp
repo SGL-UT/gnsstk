@@ -410,8 +410,8 @@ namespace gpstk
       {
          case SatelliteSystem::GPS:
          case SatelliteSystem::QZSS:
-            healthOut = std::make_shared<GPSLNavHealth>();
-            gps = dynamic_cast<GPSLNavHealth*>(healthOut.get());
+            health = std::make_shared<GPSLNavHealth>();
+            gps = dynamic_cast<GPSLNavHealth*>(health.get());
                // NavData
             fillNavData(navIn, health);
                // GPSLNavHealth
