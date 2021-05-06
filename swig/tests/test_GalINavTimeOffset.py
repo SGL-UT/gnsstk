@@ -49,12 +49,10 @@ class TestGalINavTimeOffset(unittest.TestCase):
         uut.tot = 21600.0
         uut.wnot = 2060
         uut.refTime = gpstk.GALWeekSecond(uut.wnot,uut.tot).toCommonTime()
-        rv = uut.getOffset(gpstk.TimeSystem.GAL, gpstk.TimeSystem.UTC, ws1,
-                           offset)
+        rv,offset = uut.getOffset(gpstk.TimeSystem.GAL,gpstk.TimeSystem.UTC,ws1)
         self.assertEqual(True, rv)
         self.assertEqual(18.000000004877350079, offset)
-        rv = uut.getOffset(gpstk.TimeSystem.GAL, gpstk.TimeSystem.UTC, ws2,
-                           offset))
+        rv,offset = uut.getOffset(gpstk.TimeSystem.GAL,gpstk.TimeSystem.UTC,ws2)
         self.assertEqual(True, rv)
         self.assertEqual(18.000000009443297699, offset)
 

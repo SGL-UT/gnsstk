@@ -259,6 +259,9 @@ namespace std
    }
 }
 
+// time offset is an output
+%apply double &OUTPUT { double &offset };
+
 %include "gpstk_typemaps.i"
 
 // =============================================================
