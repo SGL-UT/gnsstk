@@ -775,11 +775,11 @@ del IntEnum
 //  Section 11: Template declarations
 // =============================================================
 
-/* %include "STLTemplates.i" */
 %include "STLHelpers.i"
 /* %include "gpstk_templates.i" */
 %template(NavSatelliteIDSet) std::set<gpstk::NavSatelliteID>;
 %template(NavMessageIDSet) std::set<gpstk::NavMessageID>;
+%template(NavMessageTypeSet) std::set<gpstk::NavMessageType>;
 
 /* %rename(__str__) gpstk::Exception::what() const; */
 
@@ -849,6 +849,26 @@ del IntEnum
 /* %ignore gpstk::RefVectorBaseHelper::operator() (size_t i); */
 /* %ignore gpstk::RefVectorBaseHelper::zeroize(); */
 /* %include "Vector.i" */
+
+%pythoncode %{
+    import sys
+    if sys.version_info[0] < 3:
+        from collections import Iterable
+    else:
+        from collections.abc import Iterable
+    enum_vec_classes = [vector_GNSS]
+    for cls in enum_vec_classes:
+        orig_constructor = cls.__init__
+        def new_constructor(self, *args):
+            # We assume that the argument is not exhaustible
+            if len(args) == 1 and isinstance(args[0], Iterable) and all(isinstance(x, int) for x in args[0]):
+                orig_constructor(self)
+                for x in args[0]:
+                    self.append(x)
+            else:
+                orig_constructor(self, *args)
+        cls.__init__ = new_constructor
+%}
 
 
 /* // ============================================================= */
