@@ -1121,33 +1121,34 @@ del IntEnum
 /* %include "PNBGPSCNav2DataFactory.hpp" */
 /* %include "PNBMultiGNSSNavDataFactory.hpp" */
 
-/* // v 2.0.12 required for KLOBUCHAR IONO MODEL */
-/* #define KLOBUCHAR_SUPPORT (SWIG_VERSION >= 0x020012 ? True : False) */
-/* #if SWIG_VERSION >= 0x020012 */
-/* %inline %{ */
-/*   gpstk::OrbSysGpsC_30* cast_to_OrbSysGpsC_30(gpstk::OrbDataSys* ods) { */
-/*     return static_cast<gpstk::OrbSysGpsC_30*>(ods); */
-/*   } */
-/*   gpstk::OrbSysGpsL_56* cast_to_OrbSysGpsL_56(gpstk::OrbDataSys* ods) { */
-/*     return static_cast<gpstk::OrbSysGpsL_56*>(ods); */
-/*   } */
-/* %} */
-/* // Include to generate swig::trait::typename() */
-/* %{ */
-/*   namespace swig { */
-/*     template <> struct traits<gpstk::OrbDataSys> { */
-/*         typedef pointer_category category; */
-/*         static const char* type_name() {return "gpstk::OrbDataSys";} */
-/*     }; */
-/*   } */
-/* %} */
+// v 2.0.12 required for KLOBUCHAR IONO MODEL
+// We need to provide methods that allow casting objects to their instance types.
+#define KLOBUCHAR_SUPPORT (SWIG_VERSION >= 0x020012 ? True : False)
+#if SWIG_VERSION >= 0x020012
+%inline %{
+  gpstk::OrbSysGpsC_30* cast_to_OrbSysGpsC_30(gpstk::OrbDataSys* ods) {
+    return static_cast<gpstk::OrbSysGpsC_30*>(ods);
+  }
+  gpstk::OrbSysGpsL_56* cast_to_OrbSysGpsL_56(gpstk::OrbDataSys* ods) {
+    return static_cast<gpstk::OrbSysGpsL_56*>(ods);
+  }
+%}
+// Include to generate swig::trait::typename()
+%{
+  namespace swig {
+    template <> struct traits<gpstk::OrbDataSys> {
+        typedef pointer_category category;
+        static const char* type_name() {return "gpstk::OrbDataSys";}
+    };
+  }
+%}
 
-/* // SWIG out the msgMap in gpstk::OrbSysStore */
-/* %template (TimeMsgMap) std::map<gpstk::CommonTime, gpstk::OrbDataSys* >; */
-/* %template (UIDMsgMap) std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > >; */
-/* %template (NavIDMsgMap) std::map<gpstk::NavID, std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > > >; */
-/* %template (SatIDMsgMap) std::map<gpstk::SatID, std::map<gpstk::NavID, std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > > > >; */
-/* #endif */
+// SWIG out the msgMap in gpstk::OrbSysStore
+%template (TimeMsgMap) std::map<gpstk::CommonTime, gpstk::OrbDataSys* >;
+%template (UIDMsgMap) std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > >;
+%template (NavIDMsgMap) std::map<gpstk::NavID, std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > > >;
+%template (SatIDMsgMap) std::map<gpstk::SatID, std::map<gpstk::NavID, std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > > > >;
+#endif
 
 
 /* // Note that the path functions really don't make sense outside of the build */
