@@ -841,6 +841,14 @@ del IntEnum
 %template(map_CarrierBand_char) std::map<enum gpstk::CarrierBand,char>;
 %template(map_TrackingCode_char) std::map<enum gpstk::TrackingCode,char>;
 
+// These are needed to properly interpret an RinexObsID instance
+%template(vector_RinexObsType) std::vector<gpstk::RinexObsType>;
+%template(map_RinexObsType_RinexDatum) std::map<gpstk::RinexObsType, gpstk::RinexDatum>;
+%template(map_RinexSatID_RinexObsTypeMap) std::map<gpstk::SatID, std::map<gpstk::RinexObsType, gpstk::RinexDatum> >;
+%template(map_string_vector_RinexObsID) std::map<std::string, std::vector<gpstk::RinexObsID> >;
+%template(map_RinexSatID_vector_RinexDatum) std::map<gpstk::RinexSatID, std::vector<gpstk::RinexDatum> >;
+
+
 
 /* %ignore gpstk::VectorBase::operator[] (size_t i) const; */
 /* %ignore gpstk::VectorBase::operator() (size_t i) const; */
