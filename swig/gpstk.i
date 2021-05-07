@@ -254,7 +254,12 @@ namespace std
    }
 }
 
+// =============================================================
+// These typemaps must occur before the headers are included.
+// =============================================================
+
 %include "gpstk_typemaps.i"
+%include "gpstk_enum_typemaps.i"
 
 // =============================================================
 //  Section 8: C++ include files
@@ -708,7 +713,6 @@ namespace std
 // =============================================================
 //  Section 9: Enumerations
 // =============================================================
-%include "gpstk_enum_typemaps.i"
 
 // This code allows us to turn C++ enums into Python enums while
 // maintaining compatibility in SWIG bindings.  We specifically use an
