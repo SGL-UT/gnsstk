@@ -768,7 +768,6 @@ del IntEnum
 %include "FileIO.i"
 %include "GPS_URA.i"
 %include "Position.i"
- //%include "Rinex3ObsHeader.i"
 %include "TimeString.i"
 %include "Vector.i"
 
@@ -830,7 +829,6 @@ del IntEnum
 %include "ObsID.i"
 %include "NavID.i"
 /* %ignore gpstk::SV_ACCURACY_GLO_INDEX;  // wrapper added in GPS_URA.i */
-%include "Triple.i"
 
 /* %ignore gpstk::VectorBase::operator[] (size_t i) const; */
 /* %ignore gpstk::VectorBase::operator() (size_t i) const; */
