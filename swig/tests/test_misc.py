@@ -101,6 +101,7 @@ class EnumConversion_test(unittest.TestCase):
         # TODO: Odd that enum -> str -> enum doesn't work.
         #self.assertEqual(gpstk.asReferenceFrame(str(gpstk.ReferenceFrame.WGS84G730)), gpstk.ReferenceFrame.WGS84G730, msg='str WGS84G730')
 
+
 class SatID_test(unittest.TestCase):
     def test_validity(self):
         s = gpstk.SatID(1, gpstk.SatelliteSystem.GPS)
@@ -120,6 +121,13 @@ class SatID_test(unittest.TestCase):
         c = gpstk.SatID(4)  # optional arg should result in a wildcard system
         self.assertEqual('* 4', str(c))
 
+    def test_hashability(self):
+        # Can we use SatID as a dict-key or in a set.
+        a = gpstk.SatID(3, gpstk.SatelliteSystem.Glonass)
+        b = gpstk.SatID(1, gpstk.SatelliteSystem.LEO)
+        s = {a, b}
+        self.assertIn(a, s)
+        self.assertIn(a, s)
 
 class Triple_test(unittest.TestCase):
     def test_copy_constructor(self):
