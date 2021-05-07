@@ -69,7 +69,7 @@ constructorTest()
 {
    TUDEF("GPSCNavHealth", "GPSCNavHealth");
    gpstk::GPSCNavHealth uut;
-   TUASSERTE(uint8_t, true, uut.health);
+   TUASSERTE(bool, true, uut.health);
    TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Health,
              uut.signal.messageType);
    TURETURN();

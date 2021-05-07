@@ -6,9 +6,9 @@ from gpstk.test_utils import args,run_unit_tests
 
 import gpstk
 
-class TestGPSCNavTimeOffset(unittest.TestCase):
+class TestGPSCNav2TimeOffset(unittest.TestCase):
     def test_constructor(self):
-        uut = gpstk.GPSCNavTimeOffset()
+        uut = gpstk.GPSCNav2TimeOffset()
         ct = gpstk.CommonTime()
         self.assertEqual(gpstk.TimeSystem.Unknown, uut.tgt)
         self.assertEqual(0.0, uut.a0)
@@ -23,7 +23,7 @@ class TestGPSCNavTimeOffset(unittest.TestCase):
         self.assertEqual(0.0, uut.deltatLSF)
 
     def test_validate(self):
-        uut = gpstk.GPSCNavTimeOffset()
+        uut = gpstk.GPSCNav2TimeOffset()
         self.assertEqual(True, uut.validate())
         uut.tot = 604784.0
         self.assertEqual(True, uut.validate())
@@ -38,25 +38,13 @@ class TestGPSCNavTimeOffset(unittest.TestCase):
         self.assertEqual(False, uut.validate())
 
     def test_getUserTime(self):
-        uut = gpstk.GPSCNavTimeOffset()
-        expL2 = gpstk.GPSWeekSecond(2100,147.0).toCommonTime()
-        expL5 = gpstk.GPSWeekSecond(2100,141.0).toCommonTime()
+        uut = gpstk.GPSCNav2TimeOffset()
         uut.timeStamp = gpstk.GPSWeekSecond(2100,135.0).toCommonTime()
-        uut.signal = gpstk.NavMessageID(
-            gpstk.NavSatelliteID(1, 1, gpstk.SatelliteSystem.GPS,
-                                 gpstk.CarrierBand.L5, gpstk.TrackingCode.L5I,
-                                 gpstk.NavType.GPSCNAVL5),
-            gpstk.NavMessageType.TimeOffset)
-        self.assertEqual(expL5, uut.getUserTime())
-        uut.signal = gpstk.NavMessageID(
-            gpstk.NavSatelliteID(1, 1, gpstk.SatelliteSystem.GPS,
-                                 gpstk.CarrierBand.L2, gpstk.TrackingCode.L2CM,
-                                 gpstk.NavType.GPSCNAVL2),
-            gpstk.NavMessageType.TimeOffset)
-        self.assertEqual(expL2, uut.getUserTime())
+        exp = uut.timeStamp + 5.48
+        self.assertEqual(exp, uut.getUserTime())
 
     def test_getOffset(self):
-        uut = gpstk.GPSCNavTimeOffset()
+        uut = gpstk.GPSCNav2TimeOffset()
         ws1 = gpstk.GPSWeekSecond(2060, 405504.0).toCommonTime()
         ws2 = gpstk.GPSWeekSecond(2061, 405504.0).toCommonTime()
         uut.tgt = gpstk.TimeSystem.UTC

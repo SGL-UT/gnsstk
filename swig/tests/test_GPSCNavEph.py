@@ -6,52 +6,71 @@ from gpstk.test_utils import args,run_unit_tests
 
 import gpstk
 
-class TestGPSLNavEph(unittest.TestCase):
+class TestGPSCNavEph(unittest.TestCase):
     def test_constructor(self):
-        uut = gpstk.GPSLNavEph()
-        self.assertEqual(0, uut.pre2)
-        self.assertEqual(0, uut.pre3)
-        self.assertEqual(0, uut.tlm2)
-        self.assertEqual(0, uut.tlm3)
-        self.assertEqual(0, uut.iodc)
-        self.assertEqual(0, uut.iode)
-        self.assertEqual( 0, uut.fitIntFlag)
-        self.assertEqual(0xff, uut.healthBits)
-        self.assertEqual(0, uut.uraIndex)
-        self.assertEqual(0.0, uut.tgd)
-        self.assertEqual(False, uut.asFlag2)
-        self.assertEqual(False, uut.asFlag3)
-        self.assertEqual(False, uut.alert2)
-        self.assertEqual(False, uut.alert3)
-        self.assertEqual(False, uut.L2Pdata)
+        uut = gpstk.GPSCNavEph()
+        self.assertEqual(0, uut.pre11)
+        self.assertEqual(0, uut.preClk)
+        self.assertEqual(True, uut.healthL1)
+        self.assertEqual(True, uut.healthL2)
+        self.assertEqual(True, uut.healthL5)
+        self.assertEqual(-16, uut.uraED)
+        self.assertEqual(-16, uut.uraNED0)
+        self.assertEqual(0, uut.uraNED1)
+        self.assertEqual(0, uut.uraNED2)
+        self.assertEqual(False, uut.alert11)
+        self.assertEqual(False, uut.alertClk)
+        self.assertEqual(False, uut.integStat)
+        self.assertEqual(False, uut.phasingL2C)
+        self.assertEqual(0, uut.deltaA)
+        self.assertEqual(0, uut.dOMEGAdot)
+        self.assertEqual(gpstk.CommonTime.BEGINNING_OF_TIME, uut.top)
+        self.assertEqual(gpstk.CommonTime.BEGINNING_OF_TIME, uut.xmit11)
+        self.assertEqual(gpstk.CommonTime.BEGINNING_OF_TIME, uut.xmitClk)
 
     def test_validate(self):
-        uut = gpstk.GPSLNavEph()
-        self.assertEqual(True, uut.validate())
+        uut = gpstk.GPSCNavEph()
         self.assertEqual(True, uut.validate())
         uut.pre = 0x22c
         self.assertEqual(False, uut.validate())
         uut.pre = 0x8b
-        uut.pre2 = 0x22c
+        uut.pre11 = 0x22c
         self.assertEqual(False, uut.validate())
-        uut.pre2 = 0x8b
-        uut.pre3 = 0x22c
+        uut.pre11 = 0x8b
+        uut.preClk = 0x22c
         self.assertEqual(False, uut.validate())
-        uut.pre3 = 0x8b
+        uut.preClk = 0x8b
         self.assertEqual(True, uut.validate())
 
     def test_getUserTime(self):
-        uut = gpstk.GPSLNavEph()
+        uut = gpstk.GPSCNavEph()
         uut.timeStamp = gpstk.GPSWeekSecond(2100,135.0).toCommonTime()
-        exp = gpstk.GPSWeekSecond(2100,153.0).toCommonTime()
-        self.assertEqual(exp, uut.getUserTime())
+        uut.xmitTime = gpstk.GPSWeekSecond(2100,139.0).toCommonTime()
+        uut.xmit11 = gpstk.GPSWeekSecond(2100,200.0).toCommonTime()
+        uut.xmitClk = gpstk.GPSWeekSecond(2100,1.0).toCommonTime()
+        expL2 = gpstk.GPSWeekSecond(2100,212.0).toCommonTime()
+        expL5 = gpstk.GPSWeekSecond(2100,206.0).toCommonTime()
+        uut.signal = gpstk.NavMessageID(
+            gpstk.NavSatelliteID(1, 1, gpstk.SatelliteSystem.GPS,
+                                 gpstk.CarrierBand.L5, gpstk.TrackingCode.L5I,
+                                 gpstk.NavType.GPSCNAVL5),
+            gpstk.NavMessageType.Ephemeris)
+        self.assertEqual(expL5, uut.getUserTime())
+        uut.signal = gpstk.NavMessageID(
+            gpstk.NavSatelliteID(1, 1, gpstk.SatelliteSystem.GPS,
+                                 gpstk.CarrierBand.L2, gpstk.TrackingCode.L2CM,
+                                 gpstk.NavType.GPSCNAVL2),
+            gpstk.NavMessageType.Ephemeris)
+        self.assertEqual(expL2, uut.getUserTime())
 
     def test_fixFit(self):
-        uut = gpstk.GPSLNavEph()
-        beginExp2 = gpstk.GPSWeekSecond(2121, 603360).toCommonTime()
-        endExp2 = gpstk.GPSWeekSecond(2122, 7200).toCommonTime()
-        uut.Toe = gpstk.GPSWeekSecond(2122, 0).toCommonTime()
-        uut.xmitTime = gpstk.GPSWeekSecond(2121,603360).toCommonTime()
+        uut = gpstk.GPSCNavEph()
+        beginExp2 = gpstk.GPSWeekSecond(2059, 597600).toCommonTime()
+        endExp2 = gpstk.GPSWeekSecond(2060, 3600).toCommonTime()
+        uut.Toe = gpstk.GPSWeekSecond(2059, 603000).toCommonTime()
+        uut.xmitTime = gpstk.GPSWeekSecond(2059,597600).toCommonTime()
+        uut.xmit11 = gpstk.GPSWeekSecond(2059,597612).toCommonTime()
+        uut.xmitClk = gpstk.GPSWeekSecond(2059,597624).toCommonTime()
         uut.fixFit()
         self.assertEqual(beginExp2, uut.beginFit)
         self.assertEqual(endExp2, uut.endFit)
