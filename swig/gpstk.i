@@ -826,13 +826,11 @@ del IntEnum
 /* //  Section 3: General/Utils classes */
 /* // ============================================================= */
 /* // Utils stuff */
-/* %include "SatID.i" */
-/* %include "ObsID.i" */
-/* %include "NavID.i" */
+%include "SatID.i"
+%include "ObsID.i"
+%include "NavID.i"
 /* %ignore gpstk::SV_ACCURACY_GLO_INDEX;  // wrapper added in GPS_URA.i */
-/* %include "Triple.i" */
-
-
+%include "Triple.i"
 
 /* %ignore gpstk::VectorBase::operator[] (size_t i) const; */
 /* %ignore gpstk::VectorBase::operator() (size_t i) const; */
@@ -907,8 +905,8 @@ del IntEnum
 /* // RINEX format: */
 /* %include "RinexSatID.hpp" */
 /* %include "RinexObsID.hpp" */
-/* %include "RinexSatID.i" */
-/* %include "RinexObsID.i" */
+%include "RinexSatID.i"
+%include "RinexObsID.i"
 /* // RINEX obs: */
 /* %include "RinexObsBase.hpp" */
 /* %include "RinexObsHeader.hpp" */
