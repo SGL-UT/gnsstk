@@ -830,6 +830,18 @@ del IntEnum
 %include "NavID.i"
 /* %ignore gpstk::SV_ACCURACY_GLO_INDEX;  // wrapper added in GPS_URA.i */
 
+// These are needed to properly interpret an ObsID instance
+%template(map_ObservationType_string) std::map<enum gpstk::ObservationType, std::string>;
+%template(map_CarrierBand_string) std::map<enum gpstk::CarrierBand, std::string>;
+%template(map_TrackingCode_string) std::map<enum gpstk::TrackingCode, std::string>;
+%template(map_char_ObservationType) std::map<char, enum gpstk::ObservationType>;
+%template(map_char_CarrierBand) std::map<char, enum gpstk::CarrierBand>;
+%template(map_char_TrackingCode) std::map<char, enum gpstk::TrackingCode>;
+%template(map_ObservationType_char) std::map<enum gpstk::ObservationType,char>;
+%template(map_CarrierBand_char) std::map<enum gpstk::CarrierBand,char>;
+%template(map_TrackingCode_char) std::map<enum gpstk::TrackingCode,char>;
+
+
 /* %ignore gpstk::VectorBase::operator[] (size_t i) const; */
 /* %ignore gpstk::VectorBase::operator() (size_t i) const; */
 /* %ignore gpstk::RefVectorBaseHelper::zeroTolerance; */
