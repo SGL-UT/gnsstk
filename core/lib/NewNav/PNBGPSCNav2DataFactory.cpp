@@ -391,7 +391,6 @@ namespace gpstk
             // Add ephemeris health bit
          NavDataPtr p1 = std::make_shared<GPSCNav2Health>();
          p1->timeStamp = navIn->getTransmitTime();
-            /// @todo will this work for QZSS? Probably not.
          p1->signal = NavMessageID(
             NavSatelliteID(prn, prn, navIn->getsatSys().system,
                            CarrierBand::L1, TrackingCode::L1CD,
@@ -438,18 +437,24 @@ namespace gpstk
                                               escdn0dot);
       eph->ecc = navIn->asUnsignedDouble(offset+esbEcc,enbEcc,escEcc);
       eph->deltaA = navIn->asSignedDouble(offset+esbdA,enbdA,escdA);
-         /// @todo does this need changing for QZSS?
-      eph->A = eph->deltaA + GPSCNav2Eph::refAGPS;
+      eph->dOMEGAdot = navIn->asDoubleSemiCircles(
+         offset+esbdOMEGAdot,enbdOMEGAdot,escdOMEGAdot);
+      if (eph->signal.sat.system == SatelliteSystem::QZSS)
+      {
+         eph->A = eph->deltaA + GPSCNav2Eph::refAQZSS;
+         eph->OMEGAdot = eph->dOMEGAdot + GPSCNav2Eph::refOMEGAdotQZSS;
+      }
+      else
+      {
+         eph->A = eph->deltaA + GPSCNav2Eph::refAGPS;
+         eph->OMEGAdot = eph->dOMEGAdot + GPSCNav2Eph::refOMEGAdotGPS;
+      }
       eph->Ahalf = ::sqrt(eph->A);
       eph->Adot = navIn->asSignedDouble(offset+esbAdot,enbAdot,escAdot);
       eph->OMEGA0 = navIn->asDoubleSemiCircles(offset+esbOMEGA0,enbOMEGA0,
                                                escOMEGA0);
       eph->i0 = navIn->asDoubleSemiCircles(offset+esbi0,enbi0,esci0);
       eph->w = navIn->asDoubleSemiCircles(offset+esbw,enbw,escw);
-      eph->dOMEGAdot = navIn->asDoubleSemiCircles(
-         offset+esbdOMEGAdot,enbdOMEGAdot,escdOMEGAdot);
-         /// @todo does this need changing for QZSS?
-      eph->OMEGAdot = eph->dOMEGAdot + GPSCNav2Eph::refOMEGAdotGPS;
       eph->idot = navIn->asDoubleSemiCircles(offset+esbidot,enbidot,escidot);
       eph->af0 = navIn->asSignedDouble(offset+esbaf0,enbaf0,escaf0);
       eph->af1 = navIn->asSignedDouble(offset+esbaf1,enbaf1,escaf1);
@@ -523,7 +528,6 @@ namespace gpstk
                                                  ascPRNa);
       SatID xmitSat(navIn->getsatSys());
       SatelliteSystem subjSys = xmitSat.system;
-         /// @todo QZSS handling
       SatID subjSat(sprn, subjSys);
          // No checks for correct svid, just assume that the input
          // data has already been checked (it will have been by
@@ -613,8 +617,17 @@ namespace gpstk
       alm->health = ((alm->healthL1 == false) ? SVHealth::Healthy :
                      SVHealth::Unhealthy);
       alm->deltai = navIn->asDoubleSemiCircles(offset+asbdi,anbdi,ascdi);
-         /// @todo should this be different for QZSS?
-      alm->i0 = GPSCNav2Alm::refioffsetGPS + alm->deltai;
+      if (alm->signal.sat.system == SatelliteSystem::QZSS)
+      {
+            /** @todo GEO QZSS satellites use a different i0
+             * reference, but I have yet to figure out how to
+             * determine if a QZSS satellite is GEO or QZO */
+         alm->i0 = GPSCNav2Alm::refi0QZSS + alm->deltai;
+      }
+      else
+      {
+         alm->i0 = GPSCNav2Alm::refi0GPS + alm->deltai;
+      }
       alm->fixFit();
       // cerr << "add CNAV2 alm" << endl;
       navOut.push_back(p0);

@@ -42,7 +42,8 @@ using namespace std;
 
 namespace gpstk
 {
-   const double GPSCNav2Alm::refioffsetGPS = 0.3 * PI;
+   const double GPSCNav2Alm::refi0GPS = 0.3 * PI;
+   const double GPSCNav2Alm::refi0QZSS = 0.25 * PI;
 
    GPSCNav2Alm ::
    GPSCNav2Alm()

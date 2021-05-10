@@ -15,7 +15,7 @@ class TestMultiFormatNavDataFactory(unittest.TestCase):
         ndf.addDataSource(args.input_dir+'/test_input_SP3c.sp3')
         ndf.addDataSource(args.input_dir+'/test_input_sem387.txt')
         self.assertEqual(1625, ndf.size())
-        ndf.clear();
+        ndf.clear()
         self.assertEqual(0, ndf.size())
 
 if __name__ == '__main__':

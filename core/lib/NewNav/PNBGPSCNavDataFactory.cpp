@@ -74,7 +74,6 @@ enum SFIndex
 enum CNavBitInfo
 {
       // every message has a preamble so no index here.
-      /// @todo Make sure all the scale factors are correct.
    esbPre = 0,            ///< Preamble start bit
    enbPre = 8,            ///< Preamble number of bits
    escPre = 1,            ///< Preamble scale factor
@@ -452,19 +451,10 @@ namespace gpstk
       bool isQZSS = navIn->getsatSys().system == SatelliteSystem::QZSS;
       try
       {
-            /*
-         cerr << "preamble:  " << hex << navIn->asUnsignedLong(0,8,1) << dec
-              << endl
-              << "  tlm msg: " << hex << navIn->asUnsignedLong(8,14,1) << dec
-              << endl
-              << "  integ:   " << navIn->asUnsignedLong(22,1,1) << endl
-              << "  reserved:" << navIn->asUnsignedLong(23,1,1) << endl
-              << "  parity:  " << hex << navIn->asUnsignedLong(24,6,1) << endl
-              << "  tow:     " << navIn->asUnsignedLong(30,17,1) << endl
-              << "  alert:   " << navIn->asUnsignedLong(47,1,1) << endl
-              << "  A/S:     " << navIn->asUnsignedLong(48,1,1) << endl
-              << "  sfid:    " << navIn->asUnsignedLong(49,3,1) << endl;
-            */
+         // cerr << "preamble:  " << hex << navIn->asUnsignedLong(0,8,1) << dec
+         //      << endl;
+         // unsigned long prn = navIn->asUnsignedLong(8, 6, 1);
+         // cerr << "prn = " << prn << endl;
          unsigned long msgType = navIn->asUnsignedLong(esbMsgType,enbMsgType,
                                                        escMsgType);
          // cerr << "msgType = " << msgType << endl;
@@ -698,18 +688,27 @@ namespace gpstk
                                                          escdn0dot);
       eph->ecc = ephSF[esiEcc]->asUnsignedDouble(esbEcc,enbEcc,escEcc);
       eph->deltaA = ephSF[esidA]->asSignedDouble(esbdA,enbdA,escdA);
-         /// @todo does this need changing for QZSS?
-      eph->A = eph->deltaA + GPSCNavData::refAGPS;
+      eph->dOMEGAdot = ephSF[esidOMEGAdot]->asDoubleSemiCircles(
+         esbdOMEGAdot,enbdOMEGAdot,escdOMEGAdot);
+      if (eph->signal.sat.system == SatelliteSystem::QZSS)
+      {
+         eph->A = eph->deltaA + GPSCNavData::refAQZSS;
+            /** @todo GEO QZSS satellites use a different OMEGAdot
+             * reference, but I have yet to figure out how to
+             * determine if a QZSS satellite is GEO or QZO */
+         eph->OMEGAdot = eph->dOMEGAdot + GPSCNavData::refOMEGAdotEphQZSS;
+      }
+      else
+      {
+         eph->A = eph->deltaA + GPSCNavData::refAGPS;
+         eph->OMEGAdot = eph->dOMEGAdot + GPSCNavData::refOMEGAdotEphGPS;
+      }
       eph->Ahalf = ::sqrt(eph->A);
       eph->Adot = ephSF[esiAdot]->asSignedDouble(esbAdot,enbAdot,escAdot);
       eph->OMEGA0 = ephSF[esiOMEGA0]->asDoubleSemiCircles(esbOMEGA0,enbOMEGA0,
                                                           escOMEGA0);
       eph->i0 = ephSF[esii0]->asDoubleSemiCircles(esbi0,enbi0,esci0);
       eph->w = ephSF[esiw]->asDoubleSemiCircles(esbw,enbw,escw);
-      eph->dOMEGAdot = ephSF[esidOMEGAdot]->asDoubleSemiCircles(
-         esbdOMEGAdot,enbdOMEGAdot,escdOMEGAdot);
-         /// @todo does this need changing for QZSS?
-      eph->OMEGAdot = eph->dOMEGAdot + GPSCNavData::refOMEGAdotGPS;
       eph->idot = ephSF[esiidot]->asDoubleSemiCircles(esbidot,enbidot,escidot);
       eph->af0 = ephSF[csiaf0]->asSignedDouble(csbaf0,cnbaf0,cscaf0);
       eph->af1 = ephSF[csiaf1]->asSignedDouble(csbaf1,cnbaf1,cscaf1);
@@ -766,6 +765,12 @@ namespace gpstk
                  NavDataPtrList& navOut)
    {
       unsigned long sprn = navIn->asUnsignedLong(asbPRNa,anbPRNa,ascPRNa);
+      if (sprn == 0)
+      {
+            // clock data is probably valid but we don't use it.
+            // PRN = 0 so don't attempt to process the almanac.
+         return true;
+      }
       SatID xmitSat(navIn->getsatSys());
       SatelliteSystem subjSys = xmitSat.system;
          // special handling for QZSS per IS-QZSS 1.8E Table 5.5.2-8
@@ -779,7 +784,7 @@ namespace gpstk
                // .. so we do a bitwise OR to get the QZS PRN.
             sprn |= 0xc0;
          }
-         else if (msgType == 52)
+         else if (msgType == 53)
          {
                // When the message type number is 53, it indicates
                // that this value is the PRN value for a GPS satellite
@@ -903,8 +908,14 @@ namespace gpstk
             return false;
       }
       alm->deltai = navIn->asDoubleSemiCircles(asbdi,anbdi,ascdi);
-         /// @todo should this be different for QZSS?
-      alm->i0 = GPSCNavData::refioffsetGPS + alm->deltai;
+      if (alm->signal.sat.system == SatelliteSystem::QZSS)
+      {
+         alm->i0 = GPSCNavData::refi0QZSS + alm->deltai;
+      }
+      else
+      {
+         alm->i0 = GPSCNavData::refi0GPS + alm->deltai;
+      }
       alm->fixFit();
       // cerr << "add CNAV alm" << endl;
       navOut.push_back(p0);

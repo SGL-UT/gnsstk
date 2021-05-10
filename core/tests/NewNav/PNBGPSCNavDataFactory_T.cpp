@@ -658,7 +658,7 @@ processAlmOrbTest()
          TUASSERTFE(6.49281250E+03*6.49281250E+03, alm->A);
          TUASSERTFE(0, alm->Adot);
          TUASSERTFE(-0.4903944831271909166, alm->OMEGA0);
-         TUASSERTFE(-0.059633503129054299396 + 0.3*gpstk::PI, alm->i0);
+         TUASSERTFE(-0.059633503129054299396 + 0.25*gpstk::PI, alm->i0);
          TUASSERTFE(-1.5729055503782394254, alm->w);
          TUASSERTFE(-2.19437712E-09, alm->OMEGAdot);
          TUASSERTFE(0, alm->idot);
@@ -790,9 +790,9 @@ process31Test()
    TUASSERTFE(4.21560080E+07, alm->A);
    TUASSERTFE(0, alm->Adot);
    TUASSERTFE(-0.49087385212340517437, alm->OMEGA0);
-   TUASSERTFE(0.7505264849426015461, alm->i0);
+   TUASSERTFE((0.25+0.0056)*gpstk::PI, alm->i0);
    TUASSERTFE(4.712388980384689674, alm->w);
-   TUASSERTFE(-8.16814090E-09, alm->OMEGAdot);
+   TUASSERTFE(-8.7e-10*gpstk::PI, alm->OMEGAdot);
    TUASSERTFE(0, alm->idot);
    TUASSERTFE(0, alm->af0);
    TUASSERTFE(0, alm->af1);
@@ -804,7 +804,7 @@ process31Test()
    TUASSERTE(bool, false, alm->healthL1);
    TUASSERTE(bool, false, alm->healthL2);
    TUASSERTE(bool, false, alm->healthL5);
-   TUASSERTFE(-0.034871678454846705142, alm->deltai);
+   TUASSERTFE(0.0056*gpstk::PI, alm->deltai);
    TUASSERTE(unsigned, 2097, alm->wna);
    TUASSERTFE(3937, alm->toa);
    TUASSERTFE(-8192, alm->deltaA);
@@ -860,9 +860,9 @@ process31Test()
    TUASSERTFE(4.21657360E+07, alm->A);
    TUASSERTFE(0, alm->Adot);
    TUASSERTFE(1.8162332528565992007, alm->OMEGA0);
-   TUASSERTFE(0.7505264849426015461, alm->i0);
+   TUASSERTFE((0.25+0.0056)*gpstk::PI, alm->i0);
    TUASSERTFE(4.712388980384689674, alm->w);
-   TUASSERTFE(-8.16814090E-09, alm->OMEGAdot);
+   TUASSERTFE(-8.7e-10*gpstk::PI, alm->OMEGAdot);
    TUASSERTFE(0, alm->idot);
    TUASSERTFE(0, alm->af0);
    TUASSERTFE(0, alm->af1);
@@ -874,7 +874,7 @@ process31Test()
    TUASSERTE(bool, false, alm->healthL1);
    TUASSERTE(bool, false, alm->healthL2);
    TUASSERTE(bool, false, alm->healthL5);
-   TUASSERTFE(-0.034871678454846705142, alm->deltai);
+   TUASSERTFE(0.0056*gpstk::PI, alm->deltai);
    TUASSERTE(unsigned, 2097, alm->wna);
    TUASSERTFE(3937, alm->toa);
    TUASSERTFE(1536, alm->deltaA);
@@ -930,9 +930,9 @@ process31Test()
    TUASSERTFE(4.21642000E+07, alm->A);
    TUASSERTFE(0, alm->Adot);
    TUASSERTFE(0, alm->OMEGA0);
-   TUASSERTFE(0.7505264849426015461, alm->i0);
+   TUASSERTFE((0.25+0.0056)*gpstk::PI, alm->i0);
    TUASSERTFE(4.712388980384689674, alm->w);
-   TUASSERTFE(-8.16814090E-09, alm->OMEGAdot);
+   TUASSERTFE(-8.7e-10*gpstk::PI, alm->OMEGAdot);
    TUASSERTFE(0, alm->idot);
    TUASSERTFE(0, alm->af0);
    TUASSERTFE(0, alm->af1);
@@ -944,7 +944,7 @@ process31Test()
    TUASSERTE(bool, false, alm->healthL1);
    TUASSERTE(bool, false, alm->healthL2);
    TUASSERTE(bool, false, alm->healthL5);
-   TUASSERTFE(-0.034871678454846705142, alm->deltai);
+   TUASSERTFE(0.0056*gpstk::PI, alm->deltai);
    TUASSERTE(unsigned, 2097, alm->wna);
    TUASSERTFE(3937, alm->toa);
    TUASSERTFE(0, alm->deltaA);
@@ -1000,9 +1000,9 @@ process31Test()
    TUASSERTFE(42161128, alm->A);
    TUASSERTFE(0, alm->Adot);
    TUASSERTFE(-2.7979809571034093274, alm->OMEGA0);
-   TUASSERTFE(0.7505264849426015461, alm->i0);
+   TUASSERTFE((0.25+0.0056)*gpstk::PI, alm->i0);
    TUASSERTFE(4.712388980384689674, alm->w);
-   TUASSERTFE(-8.16814090E-09, alm->OMEGAdot);
+   TUASSERTFE(-8.7e-10*gpstk::PI, alm->OMEGAdot);
    TUASSERTFE(0, alm->idot);
    TUASSERTFE(0, alm->af0);
    TUASSERTFE(0, alm->af1);
@@ -1014,7 +1014,7 @@ process31Test()
    TUASSERTE(bool, false, alm->healthL1);
    TUASSERTE(bool, false, alm->healthL2);
    TUASSERTE(bool, false, alm->healthL5);
-   TUASSERTFE(-0.034871678454846705142, alm->deltai);
+   TUASSERTFE(0.0056*gpstk::PI, alm->deltai);
    TUASSERTE(unsigned, 2097, alm->wna);
    TUASSERTFE(3937, alm->toa);
    TUASSERTFE(-3072, alm->deltaA);

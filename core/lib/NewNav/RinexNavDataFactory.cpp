@@ -59,6 +59,10 @@ namespace gpstk
                                           CarrierBand::L1,
                                           TrackingCode::CA,
                                           NavType::GPSLNAV));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::QZSS,
+                                          CarrierBand::L1,
+                                          TrackingCode::CA,
+                                          NavType::GPSLNAV));
       supportedSignals.insert(NavSignalID(SatelliteSystem::Galileo,
                                           CarrierBand::L1,
                                           TrackingCode::E1B,
@@ -240,6 +244,7 @@ namespace gpstk
       switch (navIn.sat.system)
       {
          case SatelliteSystem::GPS:
+         case SatelliteSystem::QZSS:
             navOut = std::make_shared<GPSLNavEph>();
             gps = dynamic_cast<GPSLNavEph*>(navOut.get());
                // NavData
@@ -258,11 +263,18 @@ namespace gpstk
             gps->uraIndex = accuracy2ura(navIn.accuracy);
             gps->tgd = navIn.Tgd;
                // We don't have the A-S flag in rinex nav, so just
-               // assume it's on, as it more than likely is.  Also
-               // assume alert is off.  Maybe at some future point the
-               // data and dump method will be changed to know that
-               // the data is an unknown value.
-            gps->asFlag = gps->asFlag2 = gps->asFlag3 = true;
+               // assume it's on for GPS and off for QZSS, as it more
+               // than likely is.  Also assume alert is off.  Maybe at
+               // some future point the data and dump method will be
+               // changed to know that the data is an unknown value.
+            if (navIn.sat.system == SatelliteSystem::GPS)
+            {
+               gps->asFlag = gps->asFlag2 = gps->asFlag3 = true;
+            }
+            else
+            {
+               gps->asFlag = gps->asFlag2 = gps->asFlag3 = false;
+            }
             gps->alert = gps->alert2 = gps->alert3 = false;
             gps->codesL2 = (GPSLNavEph::L2Codes)navIn.codeflgs;
             gps->L2Pdata = (navIn.L2Pdata > 0);
@@ -397,6 +409,7 @@ namespace gpstk
       switch (navIn.sat.system)
       {
          case SatelliteSystem::GPS:
+         case SatelliteSystem::QZSS:
             health = std::make_shared<GPSLNavHealth>();
             gps = dynamic_cast<GPSLNavHealth*>(health.get());
                // NavData
@@ -513,8 +526,12 @@ namespace gpstk
       switch (navIn.sat.system)
       {
          case SatelliteSystem::GPS:
+         case SatelliteSystem::QZSS:
                // NavData
-            navOut->timeStamp = GPSWeekSecond(navIn.weeknum,navIn.xmitTime);
+            navOut->timeStamp =
+               gpstk::GPSWeekSecond(navIn.weeknum,navIn.xmitTime);
+            if (navIn.sat.system == SatelliteSystem::QZSS)
+               navOut->timeStamp.setTimeSystem(TimeSystem::QZS);
                // sat and xmitSat are always the same for ephemeris
             navOut->signal.sat = navIn.sat;
             navOut->signal.xmitSat = navIn.sat;
@@ -573,6 +590,9 @@ namespace gpstk
    {
       long longToc = (long) navIn.Toc;
       long fullXmitWeekNum = navIn.weeknum;
+      TimeSystem ts = (navIn.sat.system == SatelliteSystem::QZSS)
+         ? TimeSystem::QZS
+         : TimeSystem::GPS;
 
          // Case 3 check
       long adjHOWtime = navIn.xmitTime;
@@ -593,8 +613,7 @@ namespace gpstk
          // SF 1/2/3 sample was collected
       long xmit = adjHOWtime - (adjHOWtime % 30);
       double xmitSOW = (double) xmit;
-      navOut.xmitTime = GPSWeekSecond(fullXmitWeekNum, (double)xmit,
-                                      TimeSystem::GPS);
+      navOut.xmitTime = GPSWeekSecond(fullXmitWeekNum, (double)xmit, ts);
 
          // Fully qualified Toe and Toc
          // As broadcast, Toe and Toc are in GPS SOW and do not include
@@ -612,8 +631,8 @@ namespace gpstk
          epochWeek--;
       }
 
-      navOut.Toc = GPSWeekSecond(epochWeek, navIn.Toc, TimeSystem::GPS);
-      navOut.Toe = GPSWeekSecond(epochWeek, navIn.Toe, TimeSystem::GPS);
+      navOut.Toc = GPSWeekSecond(epochWeek, navIn.Toc, ts);
+      navOut.Toe = GPSWeekSecond(epochWeek, navIn.Toe, ts);
    }
 
 

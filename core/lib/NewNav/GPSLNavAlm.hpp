@@ -61,7 +61,7 @@ namespace gpstk
       bool validate() const override;
 
          /** This is just a method for making the dump output say
-          * "almanac" vs "ephemeris" when appropriate. */
+          * "Almanac" vs "Ephemeris" when appropriate. */
       std::string getDataType() const override
       { return "Almanac"; }
          /** Override dumpHarmonics to hide them in output since GPS
@@ -71,6 +71,10 @@ namespace gpstk
 
          /// Fill the beginFit and endFit values for this object.
       void fixFit();
+
+         /** Dump SV status information (e.g. health).
+          * @param[in,out] s The stream to write the data to. */
+      void dumpSVStatus(std::ostream& s) const override;
 
       uint8_t healthBits; ///< 8 SV health bits.
       double deltai;      ///< Inclination in rad relative to 0.3*pi rad.

@@ -55,6 +55,18 @@ namespace gpstk
    class GPSLNavData : public OrbitDataKepler
    {
    public:
+         /// inclination offset, this + delta i = i0, defined in IS-GPS-200.
+      static const double refioffsetGPS;
+
+         /** @todo figure out when to use QZO iref and when to use
+          * GEO.  According to table 3.2.1-1 the PRN assignments are
+          * mostly defined, but PRN 198 and 202 are in satellite
+          * category "QZO/GEO" so it's not 100% clear. */
+         /// inclination offset, this + delta i = i0, defined in IS-QZSS.
+      static const double refioffsetQZSS;
+         /// Reference eccentricity for reduced almanac in IS-QZSS-200.
+      static const double refEccQZSS;
+
          /// Initialize data members.
       GPSLNavData();
 

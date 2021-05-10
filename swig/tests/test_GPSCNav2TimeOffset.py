@@ -6,9 +6,9 @@ from gpstk.test_utils import args,run_unit_tests
 
 import gpstk
 
-class TestGalINavTimeOffset(unittest.TestCase):
+class TestGPSCNav2TimeOffset(unittest.TestCase):
     def test_constructor(self):
-        uut = gpstk.GalINavTimeOffset()
+        uut = gpstk.GPSCNav2TimeOffset()
         ct = gpstk.CommonTime()
         self.assertEqual(gpstk.TimeSystem.Unknown, uut.tgt)
         self.assertEqual(0.0, uut.a0)
@@ -23,24 +23,30 @@ class TestGalINavTimeOffset(unittest.TestCase):
         self.assertEqual(0.0, uut.deltatLSF)
 
     def test_validate(self):
-        uut = gpstk.GalINavTimeOffset()
+        uut = gpstk.GPSCNav2TimeOffset()
         self.assertEqual(True, uut.validate())
         uut.tot = 604784.0
         self.assertEqual(True, uut.validate())
         uut.dn = 7
         self.assertEqual(True, uut.validate())
         uut.dn = 8
-        self.assertEqual(True, uut.validate())
+        self.assertEqual(False, uut.validate())
         uut.dn = 7
         uut.tot = -0.001
-        self.assertEqual(True, uut.validate())
+        self.assertEqual(False, uut.validate())
         uut.tot = 604784.1
-        self.assertEqual(True, uut.validate())
+        self.assertEqual(False, uut.validate())
+
+    def test_getUserTime(self):
+        uut = gpstk.GPSCNav2TimeOffset()
+        uut.timeStamp = gpstk.GPSWeekSecond(2100,135.0).toCommonTime()
+        exp = uut.timeStamp + 5.48
+        self.assertEqual(exp, uut.getUserTime())
 
     def test_getOffset(self):
-        uut = gpstk.GalINavTimeOffset()
-        ws1 = gpstk.GALWeekSecond(2060, 405504.0).toCommonTime()
-        ws2 = gpstk.GALWeekSecond(2061, 405504.0).toCommonTime()
+        uut = gpstk.GPSCNav2TimeOffset()
+        ws1 = gpstk.GPSWeekSecond(2060, 405504.0).toCommonTime()
+        ws2 = gpstk.GPSWeekSecond(2061, 405504.0).toCommonTime()
         uut.tgt = gpstk.TimeSystem.UTC
         uut.a0 = 1.9790604711E-09
         uut.a1 = 7.5495165675E-15
@@ -48,11 +54,11 @@ class TestGalINavTimeOffset(unittest.TestCase):
         uut.deltatLS = 18.0
         uut.tot = 21600.0
         uut.wnot = 2060
-        uut.refTime = gpstk.GALWeekSecond(uut.wnot,uut.tot).toCommonTime()
-        rv,offset = uut.getOffset(gpstk.TimeSystem.GAL,gpstk.TimeSystem.UTC,ws1)
+        uut.refTime = gpstk.GPSWeekSecond(uut.wnot,uut.tot).toCommonTime()
+        rv,offset = uut.getOffset(gpstk.TimeSystem.GPS,gpstk.TimeSystem.UTC,ws1)
         self.assertEqual(True, rv)
         self.assertEqual(18.000000004877350079, offset)
-        rv,offset = uut.getOffset(gpstk.TimeSystem.GAL,gpstk.TimeSystem.UTC,ws2)
+        rv,offset = uut.getOffset(gpstk.TimeSystem.GPS,gpstk.TimeSystem.UTC,ws2)
         self.assertEqual(True, rv)
         self.assertEqual(18.000000009443297699, offset)
 
