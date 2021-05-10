@@ -40,6 +40,10 @@
 
 namespace gpstk
 {
+   const double GPSLNavData::refioffsetGPS = 0.3 * PI;
+   const double GPSLNavData::refioffsetQZSS = 0.25 * PI;
+   const double GPSLNavData::refEccQZSS = 0.06;
+
    GPSLNavData ::
    GPSLNavData()
          : pre(0),

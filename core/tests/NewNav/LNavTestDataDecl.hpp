@@ -37,9 +37,19 @@
 //
 //==============================================================================
 /** @file LNavTestDataDecl.hpp This file contains data declarations
- * for testing GPS LNav processing in the NavFactory code. */
+ * for testing GPS and QZSS LNav processing in the NavFactory code. */
 
 gpstk::ObsID oidLNAVGPS;
-gpstk::PackedNavBitsPtr ephLNAVGPSSF1, ephLNAVGPSSF2, ephLNAVGPSSF3, almLNAVGPS25, almLNAVGPS26, pg51LNAVGPS, pg56LNAVGPS, pg63LNAVGPS;
-gpstk::CommonTime ephLNAVGPSSF1ct, ephLNAVGPSSF2ct, ephLNAVGPSSF3ct, almLNAVGPS25ct, almLNAVGPS26ct, pg51LNAVGPSct, pg56LNAVGPSct, pg63LNAVGPSct;
+gpstk::PackedNavBitsPtr ephLNAVGPSSF1, ephLNAVGPSSF2, ephLNAVGPSSF3,
+   almLNAVGPS25, almLNAVGPS26, pg51LNAVGPS, pg56LNAVGPS, pg63LNAVGPS;
+gpstk::CommonTime ephLNAVGPSSF1ct, ephLNAVGPSSF2ct, ephLNAVGPSSF3ct,
+   almLNAVGPS25ct, almLNAVGPS26ct, pg51LNAVGPSct, pg56LNAVGPSct, pg63LNAVGPSct;
 gpstk::SatID ephLNAVGPSSid, almLNAVGPSSid;
+
+gpstk::ObsID oidLNAVQZSS;
+gpstk::PackedNavBitsPtr ephLNAVQZSSSF1, ephLNAVQZSSSF2, ephLNAVQZSSSF3,
+   almLNAVQZSS1, almLNAVQZSS2, pg51LNAVQZSS, pg56LNAVQZSS, pg61LNAVQZSS;
+gpstk::CommonTime ephLNAVQZSSSF1ct, ephLNAVQZSSSF2ct, ephLNAVQZSSSF3ct,
+   almLNAVQZSS1ct, almLNAVQZSS2ct, pg51LNAVQZSSct, pg56LNAVQZSSct,
+   pg61LNAVQZSSct;
+gpstk::SatID ephLNAVQZSSSid, almLNAVQZSSSid;

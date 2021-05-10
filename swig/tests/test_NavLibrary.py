@@ -21,29 +21,29 @@ class TestNavLibrary(unittest.TestCase):
         xvt = gpstk.Xvt()
         rv = navLib.getXvt(sat, ct, xvt, False)
         self.assertEqual(True, rv)
-        self.assertEqual(  9345531.5274733770639, xvt.x[0]);
-        self.assertEqual(-12408177.088141856715,  xvt.x[1]);
-        self.assertEqual( 21486320.848036296666,  xvt.x[2]);
-        self.assertEqual(2081.276961058104007,    xvt.v[0]);
-        self.assertEqual(1792.4445008638492709,   xvt.v[1]);
-        self.assertEqual( 148.29209115082824155,  xvt.v[2]);
-        self.assertEqual(-0.00021641018042870913346, xvt.clkbias);
-        self.assertEqual(4.3200998334200003381e-12, xvt.clkdrift);
-        self.assertEqual(-8.8197758101551758427e-09, xvt.relcorr);
+        self.assertEqual(  9345531.5274733770639, xvt.x[0])
+        self.assertEqual(-12408177.088141856715,  xvt.x[1])
+        self.assertEqual( 21486320.848036296666,  xvt.x[2])
+        self.assertEqual(2081.276961058104007,    xvt.v[0])
+        self.assertEqual(1792.4445008638492709,   xvt.v[1])
+        self.assertEqual( 148.29209115082824155,  xvt.v[2])
+        self.assertEqual(-0.00021641018042870913346, xvt.clkbias)
+        self.assertEqual(4.3200998334200003381e-12, xvt.clkdrift)
+        self.assertEqual(-8.8197758101551758427e-09, xvt.relcorr)
         self.assertEqual(gpstk.Xvt.Healthy, xvt.health)
         # test getXvt (second signature)
         xvt2 = gpstk.Xvt()
         rv = navLib.getXvt(sat, ct, xvt2, gpstk.SVHealth.Any)
         self.assertEqual(True, rv)
-        self.assertEqual(  9345531.5274733770639, xvt.x[0]);
-        self.assertEqual(-12408177.088141856715,  xvt.x[1]);
-        self.assertEqual( 21486320.848036296666,  xvt.x[2]);
-        self.assertEqual(2081.276961058104007,    xvt.v[0]);
-        self.assertEqual(1792.4445008638492709,   xvt.v[1]);
-        self.assertEqual( 148.29209115082824155,  xvt.v[2]);
-        self.assertEqual(-0.00021641018042870913346, xvt.clkbias);
-        self.assertEqual(4.3200998334200003381e-12, xvt.clkdrift);
-        self.assertEqual(-8.8197758101551758427e-09, xvt.relcorr);
+        self.assertEqual(  9345531.5274733770639, xvt.x[0])
+        self.assertEqual(-12408177.088141856715,  xvt.x[1])
+        self.assertEqual( 21486320.848036296666,  xvt.x[2])
+        self.assertEqual(2081.276961058104007,    xvt.v[0])
+        self.assertEqual(1792.4445008638492709,   xvt.v[1])
+        self.assertEqual( 148.29209115082824155,  xvt.v[2])
+        self.assertEqual(-0.00021641018042870913346, xvt.clkbias)
+        self.assertEqual(4.3200998334200003381e-12, xvt.clkdrift)
+        self.assertEqual(-8.8197758101551758427e-09, xvt.relcorr)
         self.assertEqual(gpstk.Xvt.Healthy, xvt.health)
 
     def test_getHealth(self):
@@ -56,15 +56,15 @@ class TestNavLibrary(unittest.TestCase):
                                    gpstk.TrackingCode.CA, gpstk.NavType.GPSLNAV)
         ct = gpstk.CivilTime(2015,7,19,2,0,35,
                              gpstk.TimeSystem.GPS).toCommonTime()
-        rv,health = navLib.getHealth(sat, ct, gpstk.SVHealth.Any);
+        rv,health = navLib.getHealth(sat, ct, gpstk.SVHealth.Any)
         self.assertEqual(False, rv)
         ct = gpstk.CivilTime(2015,7,19,12,35,35,
                              gpstk.TimeSystem.GPS).toCommonTime()
-        rv,health = navLib.getHealth(sat, ct, gpstk.SVHealth.Any);
+        rv,health = navLib.getHealth(sat, ct, gpstk.SVHealth.Any)
         self.assertEqual(False, rv)
         ct = gpstk.CivilTime(2015,7,19,12,35,36,
                              gpstk.TimeSystem.GPS).toCommonTime()
-        rv,health = navLib.getHealth(sat, ct, gpstk.SVHealth.Any);
+        rv,health = navLib.getHealth(sat, ct, gpstk.SVHealth.Any)
         self.assertEqual(True, rv)
         self.assertEqual(gpstk.SVHealth.Unhealthy, health)
         sat = gpstk.NavSatelliteID(2, 2, gpstk.SatelliteSystem.GPS,
@@ -72,7 +72,7 @@ class TestNavLibrary(unittest.TestCase):
                                    gpstk.TrackingCode.CA, gpstk.NavType.GPSLNAV)
         ct = gpstk.CivilTime(2015,7,19,2,0,0,
                              gpstk.TimeSystem.GPS).toCommonTime()
-        rv,health = navLib.getHealth(sat, ct, gpstk.SVHealth.Any);
+        rv,health = navLib.getHealth(sat, ct, gpstk.SVHealth.Any)
         self.assertEqual(True, rv)
         self.assertEqual(gpstk.SVHealth.Healthy, health)
 

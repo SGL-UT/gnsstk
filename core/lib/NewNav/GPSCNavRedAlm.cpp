@@ -68,8 +68,8 @@ namespace gpstk
          A = refAQZSS + deltaA;
          Ahalf = ::sqrt(A);
          deltai = refdeltaiQZSS;
-         i0 = refioffsetQZSS + deltai;
-         OMEGAdot = refOMEGAdotQZSS;
+         i0 = refi0QZSS + deltai;
+         OMEGAdot = refOMEGAdotRedAlmQZSS;
       }
       else
       {
@@ -87,8 +87,8 @@ namespace gpstk
          A = refAGPS + deltaA;
          Ahalf = ::sqrt(A);
          deltai = refdeltaiGPS;
-         i0 = refioffsetGPS + deltai;
-         OMEGAdot = refOMEGAdotGPS;
+         i0 = refi0GPS + deltai;
+         OMEGAdot = refOMEGAdotRedAlmGPS;
       }
    }
 }

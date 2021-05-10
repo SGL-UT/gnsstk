@@ -93,6 +93,8 @@ public:
    unsigned constructorTest();
       /// Exercise loadIntoMap by loading data with different options in place.
    unsigned loadIntoMapTest();
+      /// Exercise loadIntoMap with QZSS data.
+   unsigned loadIntoMapQZSSTest();
    unsigned decodeSISATest();
       /** Use dynamic_cast to verify that the contents of nmm are the
        * right class.
@@ -539,6 +541,129 @@ decodeSISATest()
 }
 
 
+unsigned RinexNavDataFactory_T ::
+loadIntoMapQZSSTest()
+{
+   TUDEF("RinexNavDataFactory", "loadIntoMap(QZSS)");
+   TestClass uut;
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "qzsssampl_U_20141330729_01D_RN.rnx";
+   gpstk::NavMessageID nmidExp(
+      gpstk::NavSatelliteID(193, 193, gpstk::SatelliteSystem::QZSS,
+                            gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
+                            gpstk::NavType::GPSLNAV),
+      gpstk::NavMessageType::Health);
+   gpstk::CommonTime expTS = gpstk::CivilTime(2014,5,13,7,15,0,
+                                              gpstk::TimeSystem::QZS);
+   gpstk::CommonTime expXT = gpstk::CivilTime(2014,5,13,7,15,0,
+                                               gpstk::TimeSystem::QZS);
+   gpstk::CommonTime expti2 = gpstk::CivilTime(2014,5,13,7,15,0,
+                                               gpstk::TimeSystem::QZS);
+   gpstk::CommonTime exptf2 = gpstk::CivilTime(2014,5,13,10,30,0,
+                                               gpstk::TimeSystem::QZS);
+   gpstk::CommonTime toeExp = gpstk::GPSWeekSecond(1792,202512,
+                                                   gpstk::TimeSystem::QZS);
+   gpstk::CommonTime beginExp = gpstk::GPSWeekSecond(1792, 198900,
+                                                     gpstk::TimeSystem::QZS);
+   gpstk::CommonTime endExp = gpstk::GPSWeekSecond(1792, 210600,
+                                                   gpstk::TimeSystem::QZS);
+   TUASSERT(uut.addDataSource(fname));
+   TUASSERTE(size_t, 2, uut.size());
+   gpstk::NavMessageMap &nmm(uut.getData());
+   uut.dump(std::cerr, gpstk::DumpDetail::Full);
+   TUASSERTE(gpstk::CommonTime, expti2, uut.getInitialTime());
+   TUASSERTE(gpstk::CommonTime, exptf2, uut.getFinalTime());
+   gpstk::GPSLNavEph *eph;
+   gpstk::GPSLNavHealth *hea;
+   unsigned heaCount = 0, ephCount = 0, otherCount = 0;
+   for (const auto& nmti : nmm)
+   {
+      for (const auto& sati : nmti.second)
+      {
+         for (const auto& ti : sati.second)
+         {
+            if ((eph = dynamic_cast<gpstk::GPSLNavEph*>(ti.second.get()))
+                != nullptr)
+            {
+               ephCount++;
+               nmidExp.messageType = gpstk::NavMessageType::Ephemeris;
+                  // NavData fields
+               TUASSERTE(gpstk::CommonTime, expTS, eph->timeStamp);
+               TUASSERTE(gpstk::NavMessageID, nmidExp, eph->signal);
+                  // OrbitData has no fields
+                  // OrbitDataKepler fields
+               TUASSERTE(gpstk::CommonTime, expXT, eph->xmitTime);
+               TUASSERTE(gpstk::CommonTime, toeExp, eph->Toe);
+                  // same value as toe
+               TUASSERTE(gpstk::CommonTime, toeExp, eph->Toc);
+               TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy,
+                         eph->health);
+               TUASSERTFE(-1.654587686062e-05, eph->Cuc);
+               TUASSERTFE( 1.197867095470e-05, eph->Cus);
+               TUASSERTFE(-1.558437500000e+02, eph->Crc);
+               TUASSERTFE(-4.927812500000e+02, eph->Crs);
+               TUASSERTFE(-2.041459083557e-06, eph->Cis);
+               TUASSERTFE(-8.381903171539e-07, eph->Cic);
+               TUASSERTFE( 7.641996743610e-01, eph->M0);
+               TUASSERTFE( 2.222949737636e-09, eph->dn);
+               TUASSERTFE(0, eph->dndot);
+               TUASSERTFE( 7.542252133135e-02, eph->ecc);
+               TUASSERTFE( 6.492895933151e+03, eph->Ahalf);
+               TUASSERTFE( 6.492895933151e+03 *  6.492895933151e+03, eph->A);
+               TUASSERTFE(0, eph->Adot);
+               TUASSERTFE(-9.211997910060e-01, eph->OMEGA0);
+               TUASSERTFE( 7.082252892260e-01, eph->i0);
+               TUASSERTFE(-1.575843337115e+00, eph->w);
+               TUASSERTFE(-2.349740733276e-09, eph->OMEGAdot);
+               TUASSERTFE(-6.793140104410e-10, eph->idot);
+               TUASSERTFE( 3.323303535581e-04, eph->af0);
+               TUASSERTFE(-1.818989403546e-11, eph->af1);
+               TUASSERTFE(0, eph->af2);
+               TUASSERTE(gpstk::CommonTime, beginExp, eph->beginFit);
+               TUASSERTE(gpstk::CommonTime, endExp, eph->endFit);
+                  // GPSLNavData fields
+               TUASSERTE(uint32_t, 0, eph->pre);
+               TUASSERTE(uint32_t, 0, eph->tlm);
+               TUASSERTE(bool, false, eph->alert);
+               TUASSERTE(bool, false, eph->asFlag);
+                  // GPSLNavEph fields
+               TUASSERTE(uint32_t, 0, eph->pre2);
+               TUASSERTE(uint32_t, 0, eph->tlm2);
+               TUASSERTE(uint32_t, 0, eph->pre3);
+               TUASSERTE(uint32_t, 0, eph->tlm3);
+               TUASSERTE(uint16_t, 69, eph->iodc);
+               TUASSERTE(uint16_t, 69, eph->iode);
+               TUASSERTE(unsigned, 0, eph->fitIntFlag);
+               TUASSERTE(unsigned, 1, eph->healthBits);
+               TUASSERTE(unsigned, 0, eph->uraIndex);
+               TUASSERTFE(-4.656612873077e-09, eph->tgd);
+               TUASSERTE(bool, false, eph->alert2);
+               TUASSERTE(bool, false, eph->alert3);
+               TUASSERTE(bool, false, eph->asFlag2);
+               TUASSERTE(bool, false, eph->asFlag3);
+               TUASSERTE(gpstk::GPSLNavEph::L2Codes,
+                         gpstk::GPSLNavEph::L2Codes::CAcode, eph->codesL2);
+               TUASSERTE(bool, true, eph->L2Pdata);
+            }
+            else if ((hea=dynamic_cast<gpstk::GPSLNavHealth*>(ti.second.get()))
+                     != nullptr)
+            {
+               heaCount++;
+            }
+            else
+            {
+               otherCount++;
+            }
+         }
+      }
+   }
+   TUASSERTE(unsigned, 1, ephCount);
+   TUASSERTE(unsigned, 1, heaCount);
+   TUASSERTE(unsigned, 0, otherCount);
+   TURETURN();
+}
+
+
 template <class NavClass>
 void RinexNavDataFactory_T ::
 verifyDataType(gpstk::TestUtil& testFramework,
@@ -564,6 +689,7 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.loadIntoMapTest();
+   errorTotal += testClass.loadIntoMapQZSSTest();
    errorTotal += testClass.decodeSISATest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
