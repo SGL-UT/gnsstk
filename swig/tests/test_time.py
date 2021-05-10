@@ -2,10 +2,10 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
+from gpstk.test_utils import args, run_unit_tests
 
 import time
-from gpstk import CommonTime,SystemTime,CivilTime,BDSWeekSecond,GPSWeekSecond,GPSWeekZcount,TimeSystem
+from gpstk import CommonTime, SystemTime, CivilTime, BDSWeekSecond, GPSWeekSecond, GPSWeekZcount, TimeSystem
 from gpstk import JulianDate, MJD, UnixTime, YDSTime
 import gpstk
 
@@ -94,12 +94,16 @@ class CommonTime_Tests(unittest.TestCase):
         self.assertAlmostEqual(1234.0014282407408, b.getDays())
         self.assertEqual('0001234 00123400 0.000000000000000 UNK', str(b))
         self.assertAlmostEqual(123.4, c)
+        self.assertEqual(gpstk.TimeSystem.Unknown, b.getTimeSystem())
+        self.assertEqual(str(b.getTimeSystem()), 'Unknown', msg='default time system should be Unknown')
 
     def test_exception(self):
         # subtracting 2 CommonTimes throws an InvalidRequest
         a = gpstk.CommonTime(gpstk.TimeSystem.GPS)
         b = gpstk.CommonTime(gpstk.TimeSystem.GLO)
         self.assertRaises(gpstk.InvalidRequest, a.__sub__, b)
+        self.assertEqual(str(a.getTimeSystem()), 'GPS', msg='TimeSystem enum should properly cast to string.')
+        self.assertEqual(str(b.getTimeSystem()), 'GLO', msg='TimeSystem enum should properly cast to string')
 
     def test_times_gen(self):
         start = gpstk.CommonTime()
