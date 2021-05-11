@@ -133,6 +133,9 @@
 %ignore gpstk::CivilTime::MonthNames;
 %ignore gpstk::CivilTime::MonthAbbrevNames;
 
+%ignore gpstk::Matrix< double >::operator()(size_t, size_t);
+%ignore gpstk::Vector< double >::operator()(size_t);
+
 // This is to silence warning about not knowing about the fstream base class
 namespace std
 {
@@ -369,12 +372,15 @@ namespace std
 %include "BrcKeplerOrbit.hpp"
 %include "CGCS2000Ellipsoid.hpp"
 %include "NavFilterKey.hpp"
+%template(binary_function_NavFilterKey) std::binary_function<gpstk::NavFilterKey *, gpstk::NavFilterKey *, bool >;
 %include "NavFilter.hpp"
 %include "CNav2SanityFilter.hpp"
 %include "NavType.hpp"
 %include "NavID.hpp"
 %include "PackedNavBits.hpp"
+%template(binary_function_CNavFilterData) std::binary_function< gpstk::CNavFilterData,gpstk::CNavFilterData,bool >;
 %include "CNavFilterData.hpp"
+%template(binary_function_CNavFilterDataPtr) std::binary_function< gpstk::CNavFilterData *, gpstk::CNavFilterData *, bool >;
 %include "CNavCookFilter.hpp"
 %include "NavFilterMgr.hpp"
 %include "CNavCrossSourceFilter.hpp"
@@ -562,6 +568,7 @@ namespace std
 /* %include "SRIFilter.hpp" */
 %include "logstream.hpp"
 %include "KalmanFilter.hpp"
+%template(binary_function_LNavFilterData) std::binary_function< gpstk::LNavFilterData *, gpstk::LNavFilterData *, bool >;
 %include "LNavFilterData.hpp"
 %include "LNavAlmValFilter.hpp"
 %include "LNavCookFilter.hpp"

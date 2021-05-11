@@ -198,12 +198,12 @@ STR_PRINT_HELPER(Expression)
    }
 }
 %enddef
-STR_DUMP_DETAIL_HELPER(ClockSatStore)
+//STR_DUMP_DETAIL_HELPER(ClockSatStore)
 STR_DUMP_DETAIL_HELPER(GalEphemerisStore)
 STR_DUMP_DETAIL_HELPER(GloEphemerisStore)
 STR_DUMP_DETAIL_HELPER(GPSEphemerisStore)
 STR_DUMP_DETAIL_HELPER(Rinex3EphemerisStore)
-STR_DUMP_DETAIL_HELPER(SP3EphemerisStore)
+//STR_DUMP_DETAIL_HELPER(SP3EphemerisStore)
 
 // Uses the dump method in the class to get string output
 // for dump methods that have a detail parameter
