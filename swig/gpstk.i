@@ -858,6 +858,8 @@ del IntEnum
 /* %ignore gpstk::RefVectorBaseHelper::zeroize(); */
 /* %include "Vector.i" */
 
+// Wrap the constructor for some vector classes to optionally accept an iterable
+// as a parameter to initialize the list.
 %pythoncode %{
     import sys
     if sys.version_info[0] < 3:

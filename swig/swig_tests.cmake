@@ -24,6 +24,12 @@ add_test(NAME swig_test_rinex3
   )
 set_property(TEST swig_test_rinex3 PROPERTY LABELS swig RINEX3)
 
+add_test(NAME swig_test_prsolve
+        COMMAND ${PYTHON_EXECUTABLE} test_prsolve.py -i ${GPSTK_TEST_DATA_DIR} -o ${GPSTK_TEST_OUTPUT_DIR}
+        WORKING_DIRECTORY ${td}
+        )
+set_property(TEST swig_test_prsolve PROPERTY LABELS swig PRSOLVE)
+
 add_test(NAME swig_test_time
   COMMAND ${PYTHON_EXECUTABLE} test_time.py -i ${GPSTK_TEST_DATA_DIR} -o ${GPSTK_TEST_OUTPUT_DIR}
   WORKING_DIRECTORY ${td}
