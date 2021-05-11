@@ -42,6 +42,8 @@ OPTIONS:
 
    -h                   Display this help message.
 
+   -a                   Enable DEBUGTRACE output for debugging.
+
    -b <build_path>      Specify the cmake build directory to use.
 
    -i <install_prefix>  Install the build to the given path.
@@ -88,10 +90,12 @@ EOF
 }
 
 
-while getopts ":hb:cdepi:j:xnP:sutTgv" OPTION; do
+while getopts ":hab:cdepi:j:xnP:sutTgv" OPTION; do
     case $OPTION in
         h) usage
            exit 0
+           ;;
+        a) enable_trace=1
            ;;
         b) build_root=$(abspath ${OPTARG})
            ;;
@@ -166,6 +170,7 @@ if ((verbose>0)); then
     log "============================================================"
     log "GPSTk build config ..."
     log "repo                 = $repo"
+    log "enable_trace         = $(ptof $enable_trace)"
     log "build_root           = $build_root"
     log "install              = $(ptof $install)"
     log "install_prefix       = $install_prefix"
@@ -238,6 +243,7 @@ args+=${verbose:+" -DDEBUG_SWITCH=ON"}
 args+=${user_install:+" -DPYTHON_USER_INSTALL=ON"}
 args+=${test_switch:+" -DTEST_SWITCH=ON"}
 args+=${coverage_switch:+" -DCOVERAGE_SWITCH=ON"}
+args+=${enable_trace:+" -DDEBUGTRACE=ON"}
 args+=${build_docs:+" --graphviz=$build_root/doc/graphviz/gpstk_graphviz.dot"}
 if [ $no_address_sanitizer ]; then
     args+=" -DADDRESS_SANITIZER=OFF"
