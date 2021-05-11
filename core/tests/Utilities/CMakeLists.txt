@@ -28,3 +28,6 @@ add_executable(FormattedDouble_T FormattedDouble_T.cpp)
 target_link_libraries(FormattedDouble_T gpstk)
 add_test(Utilities_FormattedDouble FormattedDouble_T)
 
+add_executable(DebugTrace_T DebugTrace_T.cpp)
+target_link_libraries(DebugTrace_T gpstk)
+add_test(Utilities_DebugTrace DebugTrace_T)
