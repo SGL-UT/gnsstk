@@ -558,22 +558,22 @@ namespace gpstk
             case 2:
             case 3:
             case 4:
-               cerr << "pageType " << pageType << " = ephemeris" << endl;
+               // cerr << "pageType " << pageType << " = ephemeris" << endl;
                rv = processEph(pageType, navIn, navOut);
                break;
             case 5:
             case 6:
-               cerr << "pageType " << pageType << " = almanac" << endl;
+               // cerr << "pageType " << pageType << " = almanac" << endl;
                rv = processAlm(pageType, navIn, navOut);
                break;
             default:
-               cerr << "pageType " << pageType << " = unhandled" << endl;
+               // cerr << "pageType " << pageType << " = unhandled" << endl;
                rv = true;
                break;
          }
-         cerr << "  results: " << navOut.size() << endl;
-         for (const auto& i : navOut)
-            i->dump(cerr,DumpDetail::Full);
+         // cerr << "  results: " << navOut.size() << endl;
+         // for (const auto& i : navOut)
+         //    i->dump(cerr,DumpDetail::Full);
       }
       catch (Exception& exc)
       {
@@ -609,7 +609,7 @@ namespace gpstk
       }
       if (ephAcc.find(key) == ephAcc.end())
       {
-         cerr << "ephAcc is empty for signal " << key << endl;
+         // cerr << "ephAcc is empty for signal " << key << endl;
             // set up a new ephemeris
          ephAcc[key].resize(numEphPTs);
          ephAcc[key][pageType-1] = navIn;
@@ -659,7 +659,7 @@ namespace gpstk
          to->wnot = timeAdjust8BitWeekRollover(to->wnot, refWeek);
          to->wnLSF = timeAdjust8BitWeekRollover(to->wnLSF, refWeek);
          to->refTime = GALWeekSecond(to->wnot, to->tot);
-         cerr << "gws.week=" << gws.week << "  gws.sow=" << gws.sow << "  refTime=" << to->refTime << endl;
+         // cerr << "gws.week=" << gws.week << "  gws.sow=" << gws.sow << "  refTime=" << to->refTime << endl;
          navOut.push_back(p3);
             // GST-GPS offset
          p3 = std::make_shared<GalFNavTimeOffset>();
@@ -678,7 +678,7 @@ namespace gpstk
             // WN0G is 6 bits...
          to->wnot = (gws.week & ~0x3f) | to->wnot;
          to->refTime = GALWeekSecond(to->wnot, to->tot);
-         cerr << "gws.week=" << gws.week << "  gws.sow=" << gws.sow << "  refTime=" << to->refTime << endl;
+         // cerr << "gws.week=" << gws.week << "  gws.sow=" << gws.sow << "  refTime=" << to->refTime << endl;
          navOut.push_back(p3);
       }
       if (!PNBNavDataFactory::processEph)
@@ -694,15 +694,15 @@ namespace gpstk
           (ephPage[pt3]->getNumBits() != 244) ||
           (ephPage[pt4]->getNumBits() != 244))
       {
-         cerr << "Not ready for full F/NAV eph processing" << endl
-              << "  pt1: " << (bool)ephPage[pt1] << " "
-              << (ephPage[pt1] ? ephPage[pt1]->getNumBits() : -1) << endl
-              << "  pt2: " << (bool)ephPage[pt2] << " "
-              << (ephPage[pt2] ? ephPage[pt2]->getNumBits() : -1) << endl
-              << "  pt3: " << (bool)ephPage[pt3] << " "
-              << (ephPage[pt3] ? ephPage[pt3]->getNumBits() : -1) << endl
-              << "  pt4: " << (bool)ephPage[pt4] << " "
-              << (ephPage[pt4] ? ephPage[pt4]->getNumBits() : -1) << endl;
+         // cerr << "Not ready for full F/NAV eph processing" << endl
+         //      << "  pt1: " << (bool)ephPage[pt1] << " "
+         //      << (ephPage[pt1] ? ephPage[pt1]->getNumBits() : -1) << endl
+         //      << "  pt2: " << (bool)ephPage[pt2] << " "
+         //      << (ephPage[pt2] ? ephPage[pt2]->getNumBits() : -1) << endl
+         //      << "  pt3: " << (bool)ephPage[pt3] << " "
+         //      << (ephPage[pt3] ? ephPage[pt3]->getNumBits() : -1) << endl
+         //      << "  pt4: " << (bool)ephPage[pt4] << " "
+         //      << (ephPage[pt4] ? ephPage[pt4]->getNumBits() : -1) << endl;
          return true;
       }
          // Stop processing if we don't have matching IODnav in each
@@ -714,7 +714,7 @@ namespace gpstk
       iod4 = ephPage[esiIOD_4]->asUnsignedLong(esbIOD_4,enbIOD_4,escIOD_4);
       if ((iod1 != iod2) || (iod1 != iod3) || (iod1 != iod4))
       {
-         cerr << "IODnav mismatch, not processing" << endl;
+         // cerr << "IODnav mismatch, not processing" << endl;
             // Even though the mismatch might be considered an error,
             // we don't really want to mark it as such and rather
             // consider it as a "valid" but unprocessable data set.
@@ -725,7 +725,7 @@ namespace gpstk
          // NavData
       eph->timeStamp = ephPage[pt1]->getTransmitTime();
       eph->signal = NavMessageID(key, NavMessageType::Ephemeris);
-      cerr << "Ready for full F/NAV eph processing for " << (NavSignalID)key << endl;
+      // cerr << "Ready for full F/NAV eph processing for " << (NavSignalID)key << endl;
          // OrbitData = empty
          // OrbitDataKepler
       eph->xmitTime = eph->timeStamp;
@@ -737,7 +737,7 @@ namespace gpstk
       unsigned wn_3 = ephPage[esiWN_3]->asUnsignedLong(esbWN_3,enbWN_3,escWN_3);
       unsigned tow_3 = ephPage[esiTOW_3]->asUnsignedLong(esbTOW_3,enbTOW_3,
                                                          escTOW_3);
-      cerr << "  wn_1=" << wn_1 << "  tow_1=" << tow_1 << "  wn_3=" << wn_3 << "  tow_3=" << tow_3 << "  t0e=" << t0e << "  t0c=" << t0c << endl;
+      // cerr << "  wn_1=" << wn_1 << "  tow_1=" << tow_1 << "  wn_3=" << wn_3 << "  tow_3=" << tow_3 << "  t0e=" << t0e << "  t0c=" << t0c << endl;
       eph->Toe = GALWeekSecond(wn_3,t0e);
       eph->Toc = GALWeekSecond(wn_1,t0c);
          // health is set below
@@ -793,7 +793,7 @@ namespace gpstk
       eph->tow3 = tow_3;
       eph->tow4 = ephPage[esiTOW_4]->asUnsignedLong(esbTOW_4,enbTOW_4,escTOW_4);
       eph->fixFit();
-      cerr << "add F/NAV eph" << endl;
+      // cerr << "add F/NAV eph" << endl;
       navOut.push_back(p0);
          // Clear out the broadcast ephemeris that's been processed.
       ephAcc.erase(key);
@@ -815,7 +815,7 @@ namespace gpstk
       }
       if (almAcc.find(key) == almAcc.end())
       {
-         cerr << "almAcc is empty for signal " << key << endl;
+         // cerr << "almAcc is empty for signal " << key << endl;
             // set up a new almanac
          almAcc[key].resize(numAlmPTs);
          almAcc[key][pageType-5] = navIn;
@@ -830,11 +830,11 @@ namespace gpstk
           (almPage[pt5]->getNumBits() != 244) ||
           (almPage[pt6]->getNumBits() != 244))
       {
-         cerr << "Not ready for full F/NAV alm processing" << endl
-              << "  pt5: " << (bool)almPage[pt5] << " "
-              << (almPage[pt5] ? almPage[pt5]->getNumBits() : -1) << endl
-              << "  pt6: " << (bool)almPage[pt6] << " "
-              << (almPage[pt6] ? almPage[pt6]->getNumBits() : -1) << endl;
+         // cerr << "Not ready for full F/NAV alm processing" << endl
+         //      << "  pt5: " << (bool)almPage[pt5] << " "
+         //      << (almPage[pt5] ? almPage[pt5]->getNumBits() : -1) << endl
+         //      << "  pt6: " << (bool)almPage[pt6] << " "
+         //      << (almPage[pt6] ? almPage[pt6]->getNumBits() : -1) << endl;
          return true;
       }
          // Stop processing if we don't have matching IODa in each of
@@ -844,7 +844,7 @@ namespace gpstk
       ioda6 = almPage[pt6]->asUnsignedLong(asbIODa,anbIODa,ascIODa);
       if (ioda5 != ioda6)
       {
-         cerr << "IODa mismatch, not processing: " << ioda5 << " " << ioda6 << endl;
+         // cerr << "IODa mismatch, not processing: " << ioda5 << " " << ioda6 << endl;
             // Even though the mismatch might be considered an error,
             // we don't really want to mark it as such and rather
             // consider it as a "valid" but unprocessable data set.
@@ -908,8 +908,8 @@ namespace gpstk
             long iomega = (msb << anbOMEGA0l_2) | lsb;
                // scale
             alm->OMEGA0 = ldexp((double)iomega, ascOMEGA0) * PI;
-            cerr << "msb=" << hex << msb << "  lsb=" << lsb << "  iomega="
-                 << iomega << "  OMEGA0=" << alm->OMEGA0 << endl;
+            // cerr << "msb=" << hex << msb << "  lsb=" << lsb << "  iomega="
+            //      << iomega << "  OMEGA0=" << alm->OMEGA0 << endl;
             navOut.push_back(p0);
          }
          if (PNBNavDataFactory::processHea)
