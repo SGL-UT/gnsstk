@@ -524,7 +524,8 @@ namespace gpstk
    addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
            double cadence)
    {
-      if (navIn->getNavID().navType != NavType::GalINAV)
+      if ((navIn->getNavID().navType != NavType::GalINAV) ||
+          (navIn->getNumBits() != 128))
       {
             // This class only processes Galileo I/NAV.
          return false;

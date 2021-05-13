@@ -178,14 +178,14 @@ pg56LNAVGPS->trimsize();
 oidLNAVQZSS = gpstk::ObsID(gpstk::ObservationType::NavMsg,
                            gpstk::CarrierBand::L1,
                            gpstk::TrackingCode::CA);
-ephLNAVQZSSSF1ct = gpstk::GPSWeekSecond(2118,518400);
-ephLNAVQZSSSF2ct = gpstk::GPSWeekSecond(2118,518406);
-ephLNAVQZSSSF3ct = gpstk::GPSWeekSecond(2118,518412);
-almLNAVQZSS1ct = gpstk::GPSWeekSecond(2118,518424);
-almLNAVQZSS2ct = gpstk::GPSWeekSecond(2118,518484);
-pg51LNAVQZSSct = gpstk::GPSWeekSecond(2118,518538);
-pg56LNAVQZSSct = gpstk::GPSWeekSecond(2118,518514);
-pg61LNAVQZSSct = gpstk::GPSWeekSecond(2118,518454);
+ephLNAVQZSSSF1ct = gpstk::GPSWeekSecond(2118,518400,gpstk::TimeSystem::QZS);
+ephLNAVQZSSSF2ct = gpstk::GPSWeekSecond(2118,518406,gpstk::TimeSystem::QZS);
+ephLNAVQZSSSF3ct = gpstk::GPSWeekSecond(2118,518412,gpstk::TimeSystem::QZS);
+almLNAVQZSS1ct = gpstk::GPSWeekSecond(2118,518424,gpstk::TimeSystem::QZS);
+almLNAVQZSS2ct = gpstk::GPSWeekSecond(2118,518484,gpstk::TimeSystem::QZS);
+pg51LNAVQZSSct = gpstk::GPSWeekSecond(2118,518538,gpstk::TimeSystem::QZS);
+pg56LNAVQZSSct = gpstk::GPSWeekSecond(2118,518514,gpstk::TimeSystem::QZS);
+pg61LNAVQZSSct = gpstk::GPSWeekSecond(2118,518454,gpstk::TimeSystem::QZS);
 ephLNAVQZSSSid = gpstk::SatID(193,gpstk::SatelliteSystem::QZSS);
 almLNAVQZSSSid = gpstk::SatID(193,gpstk::SatelliteSystem::QZSS);
 
