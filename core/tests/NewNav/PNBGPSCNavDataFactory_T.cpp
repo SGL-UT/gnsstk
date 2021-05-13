@@ -594,8 +594,10 @@ processAlmOrbTest()
                             gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
                             gpstk::NavType::GPSCNAVL5),
       gpstk::NavMessageType::Almanac);
-   gpstk::CommonTime toaExp = gpstk::GPSWeekSecond(2097, 520192.0);
-   gpstk::CommonTime beginExp = gpstk::GPSWeekSecond(2097, 345642.0);
+   gpstk::CommonTime toaExp = gpstk::GPSWeekSecond(2097, 520192.0,
+                                                   gpstk::TimeSystem::QZS);
+   gpstk::CommonTime beginExp = gpstk::GPSWeekSecond(2097, 345642.0,
+                                                     gpstk::TimeSystem::QZS);
    gpstk::CommonTime endExp = gpstk::CommonTime::END_OF_TIME;
    gpstk::NavDataPtrList navOut;
    TUASSERTE(bool, true, uut.processAlmOrb(37, msg37CNAVQZSSL5, navOut));
@@ -732,7 +734,8 @@ process31Test()
                             gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
                             gpstk::NavType::GPSCNAVL5),
       gpstk::NavMessageType::Almanac);
-   gpstk::CommonTime toaExp = gpstk::GPSWeekSecond(2097, 3937.0);
+   gpstk::CommonTime toaExp = gpstk::GPSWeekSecond(2097, 3937.0,
+                                                   gpstk::TimeSystem::QZS);
    gpstk::CommonTime beginExp = msg31CNAVQZSSL5ct;
    gpstk::CommonTime endExp = gpstk::CommonTime::END_OF_TIME;
    gpstk::NavDataPtrList navOut;
@@ -1095,7 +1098,8 @@ process35Test()
    TUASSERTE(unsigned, 2097, to->wnot);
    TUASSERTE(unsigned, 0, to->wnLSF);
    TUASSERTE(gpstk::CommonTime,
-             gpstk::GPSWeekSecond(2097,356400).convertToCommonTime(),
+             gpstk::GPSWeekSecond(
+                2097,356400,gpstk::TimeSystem::QZS).convertToCommonTime(),
              to->refTime);
    TUASSERTE(unsigned, 0, to->dn);
    TUASSERTFE(0, to->deltatLSF);

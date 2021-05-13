@@ -510,6 +510,11 @@ namespace gpstk
          // Now we can set the Toe/Toc properly
       eph->Toe = GPSWeekSecond(wn,toe);
       eph->Toc = GPSWeekSecond(wn,toc);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         eph->Toe.setTimeSystem(gpstk::TimeSystem::QZS);
+         eph->Toc.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
          // health is set below
       eph->Cuc = ephSF[esiCuc]->asSignedDouble(esbCuc,enbCuc,escCuc);
       eph->Cus = ephSF[esiCus]->asSignedDouble(esbCus,enbCus,escCus);
@@ -638,6 +643,7 @@ namespace gpstk
       {
          alm->i0 = GPSLNavData::refioffsetQZSS + alm->deltai;
          alm->ecc += GPSLNavData::refEccQZSS;
+         ws.setTimeSystem(gpstk::TimeSystem::QZS);
       }
       else
       {

@@ -700,10 +700,14 @@ processEphQZSSTest()
                             gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
                             gpstk::NavType::GPSCNAV2),
       gpstk::NavMessageType::Ephemeris);
-   gpstk::CommonTime toeExp = gpstk::GPSWeekSecond(2155,327600);
-   gpstk::CommonTime topExp = gpstk::GPSWeekSecond(2155,327600);
-   gpstk::CommonTime beginExp = gpstk::GPSWeekSecond(2155,324504);
-   gpstk::CommonTime endExp = gpstk::GPSWeekSecond(2155,333300);
+   gpstk::CommonTime toeExp = gpstk::GPSWeekSecond(2155,327600,
+                                                   gpstk::TimeSystem::QZS);
+   gpstk::CommonTime topExp = gpstk::GPSWeekSecond(2155,327600,
+                                                   gpstk::TimeSystem::QZS);
+   gpstk::CommonTime beginExp = gpstk::GPSWeekSecond(2155,324504,
+                                                     gpstk::TimeSystem::QZS);
+   gpstk::CommonTime endExp = gpstk::GPSWeekSecond(2155,333300,
+                                                   gpstk::TimeSystem::QZS);
    gpstk::NavDataPtrList navOut;
    gpstk::GPSCNav2Health *hea;
    gpstk::GPSCNav2Eph *eph;
@@ -810,13 +814,14 @@ processAlmOrbQZSSTest()
                             gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
                             gpstk::NavType::GPSCNAV2),
       gpstk::NavMessageType::Almanac);
-   gpstk::CommonTime toeExp = gpstk::GPSWeekSecond(2155,520192);
+   gpstk::CommonTime toeExp = gpstk::GPSWeekSecond(2155,520192,
+                                                   gpstk::TimeSystem::QZS);
    gpstk::CommonTime beginExp = sf3p4CNAV2QZSSct;
    gpstk::CommonTime endExp = gpstk::CommonTime::END_OF_TIME;
    gpstk::NavDataPtrList navOut;
    gpstk::GPSCNav2Health *hea;
    gpstk::GPSCNav2Alm *alm;
-   endExp.setTimeSystem(gpstk::TimeSystem::GPS);
+   endExp.setTimeSystem(gpstk::TimeSystem::QZS);
       // success, health and almanac
    TUASSERTE(bool, true, uut.processAlmOrb(sf3p4CNAV2QZSS, navOut));
    TUASSERTE(size_t, 4, navOut.size());
@@ -939,7 +944,8 @@ processUTCIonoQZSSTest()
          TUASSERTE(unsigned, 2155, to->wnot);
          TUASSERTE(unsigned, 1929, to->wnLSF);
          TUASSERTE(gpstk::CommonTime,
-                   gpstk::GPSWeekSecond(2155,529200).convertToCommonTime(),
+                   gpstk::GPSWeekSecond(
+                      2155,529200,gpstk::TimeSystem::QZS).convertToCommonTime(),
                    to->refTime);
          TUASSERTE(unsigned, 7, to->dn);
          TUASSERTFE(18, to->deltatLSF);
@@ -993,7 +999,8 @@ processGGTOEOPQZSSTest()
          TUASSERTE(unsigned, 2155, to->wnot);
          TUASSERTE(unsigned, 0, to->wnLSF);
          TUASSERTE(gpstk::CommonTime,
-                   gpstk::GPSWeekSecond(2155,356400).convertToCommonTime(),
+                   gpstk::GPSWeekSecond(
+                      2155,356400,gpstk::TimeSystem::QZS).convertToCommonTime(),
                    to->refTime);
          TUASSERTE(unsigned, 0, to->dn);
          TUASSERTFE(0, to->deltatLSF);

@@ -116,7 +116,7 @@ namespace gpstk
          // cutover.  So this means the SECOND data set will NOT be
          // coerced to the top of the even hour start time if it
          // wasn't collected at the top of the hour.
-      beginFit = GPSWeekSecond(xmitWeek, xmitSOW, TimeSystem::GPS);
+      beginFit = GPSWeekSecond(xmitWeek, xmitSOW, xws.getTimeSystem());
          // If an upload cutover, need some adjustment.
       if (!isNominalToe)
       {

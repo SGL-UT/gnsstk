@@ -424,6 +424,11 @@ namespace gpstk
       double toe = navIn->asUnsignedLong(offset+esbtoe,enbtoe,esctoe);
       eph->itow = navIn->asUnsignedLong(offset+esbITOW,enbITOW,escITOW);
       eph->Toe = eph->Toc = GPSWeekSecond(wn,toe);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         eph->Toe.setTimeSystem(gpstk::TimeSystem::QZS);
+         eph->Toc.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
          // health is set below
       eph->Cuc = navIn->asSignedDouble(offset+esbCuc,enbCuc,escCuc);
       eph->Cus = navIn->asSignedDouble(offset+esbCus,enbCus,escCus);
@@ -467,6 +472,10 @@ namespace gpstk
       double top = navIn->asUnsignedLong(offset+esbtop,enbtop,esctop);
       wnop = timeAdjust8BitWeekRollover(wnop, wn);
       eph->top = GPSWeekSecond(wnop,top);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         eph->top.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
       eph->uraNED0= navIn->asLong(offset+esbURAned0,enbURAned0,escURAned0);
       eph->uraNED1= navIn->asUnsignedLong(offset+esbURAned1,enbURAned1,
                                           escURAned1);
@@ -598,6 +607,11 @@ namespace gpstk
       alm->wna = navIn->asUnsignedLong(offset+asbWNa,anbWNa,ascWNa);
       alm->toa = navIn->asUnsignedDouble(offset+asbtoa,anbtoa,asctoa);
       alm->Toc = alm->Toe = GPSWeekSecond(alm->wna,alm->toa);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         alm->Toe.setTimeSystem(gpstk::TimeSystem::QZS);
+         alm->Toc.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
       alm->M0 = navIn->asDoubleSemiCircles(offset+asbM0,anbM0,ascM0);
       alm->ecc = navIn->asUnsignedDouble(offset+asbEcc,anbEcc,ascEcc);
       alm->Ahalf = navIn->asUnsignedDouble(offset+asbAhalf,anbAhalf,ascAhalf);
@@ -660,6 +674,11 @@ namespace gpstk
       to->tot = navIn->asUnsignedDouble(offset+csbtot,cnbtot,csctot);
       to->wnot = navIn->asUnsignedLong(offset+csbWNot,cnbWNot,cscWNot);
       to->refTime = gpstk::GPSWeekSecond(to->wnot, to->tot);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         to->src = gpstk::TimeSystem::QZS;
+         to->refTime.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
       to->wnLSF = navIn->asUnsignedLong(offset+csbWNlsf,cnbWNlsf,cscWNlsf);
       to->dn = navIn->asUnsignedLong(offset+csbDN,cnbDN,cscDN);
       to->deltatLSF = navIn->asLong(offset+csbdtLSF,cnbdtLSF,cscdtLSF);
@@ -710,6 +729,12 @@ namespace gpstk
       to->tot = navIn->asUnsignedDouble(offset+gsbt,gnbt,gsct);
       to->wnot = navIn->asUnsignedLong(offset+gsbWN,gnbWN,gscWN);
       to->refTime = gpstk::GPSWeekSecond(to->wnot, to->tot);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+            // source time system is supposed to be GPS even for QZSS,
+            // so don't set to->src
+         to->refTime.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
       to->a0 = navIn->asSignedDouble(offset+gsbA0,gnbA0,gscA0);
       to->a1 = navIn->asSignedDouble(offset+gsbA1,gnbA1,gscA1);
       to->a2 = navIn->asSignedDouble(offset+gsbA2,gnbA2,gscA2);

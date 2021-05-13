@@ -152,7 +152,7 @@ oidCNAVQZSSL5 = gpstk::ObsID(gpstk::ObservationType::NavMsg,
                              gpstk::TrackingCode::L5I);
 ephCNAVQZSSL5sid = gpstk::SatID(193, gpstk::SatelliteSystem::QZSS);
 
-msg10CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345600);
+msg10CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345600,gpstk::TimeSystem::QZS);
 msg10CNAVQZSSL5 = std::make_shared<gpstk::PackedNavBits>(ephCNAVQZSSL5sid,
                                                          oidCNAVQZSSL5,
                                                          msg10CNAVQZSSL5ct);
@@ -169,7 +169,7 @@ msg10CNAVQZSSL5->addUnsignedLong(0x6D4809A0, 32, 1);
 msg10CNAVQZSSL5->addUnsignedLong(0xC8B, 12, 1);
 msg10CNAVQZSSL5->trimsize();
 
-msg11CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345606);
+msg11CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345606,gpstk::TimeSystem::QZS);
 msg11CNAVQZSSL5 = std::make_shared<gpstk::PackedNavBits>(ephCNAVQZSSL5sid,
                                                          oidCNAVQZSSL5,
                                                          msg11CNAVQZSSL5ct);
@@ -186,7 +186,7 @@ msg11CNAVQZSSL5->addUnsignedLong(0x27400CE7, 32, 1);
 msg11CNAVQZSSL5->addUnsignedLong(0x909, 12, 1);
 msg11CNAVQZSSL5->trimsize();
 
-msg12CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345666);
+msg12CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345666,gpstk::TimeSystem::QZS);
 msg12CNAVQZSSL5 = std::make_shared<gpstk::PackedNavBits>(ephCNAVQZSSL5sid,
                                                          oidCNAVQZSSL5,
                                                          msg12CNAVQZSSL5ct);
@@ -203,7 +203,7 @@ msg12CNAVQZSSL5->addUnsignedLong(0x55555C04, 32, 1);
 msg12CNAVQZSSL5->addUnsignedLong(0xF72, 12, 1);
 msg12CNAVQZSSL5->trimsize();
 
-msg30CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345612);
+msg30CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345612,gpstk::TimeSystem::QZS);
 msg30CNAVQZSSL5 = std::make_shared<gpstk::PackedNavBits>(ephCNAVQZSSL5sid,
                                                          oidCNAVQZSSL5,
                                                          msg30CNAVQZSSL5ct);
@@ -220,7 +220,7 @@ msg30CNAVQZSSL5->addUnsignedLong(0x31000F9C, 32, 1);
 msg30CNAVQZSSL5->addUnsignedLong(0x964, 12, 1);
 msg30CNAVQZSSL5->trimsize();
 
-msg31CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345660);
+msg31CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345660,gpstk::TimeSystem::QZS);
 msg31CNAVQZSSL5 = std::make_shared<gpstk::PackedNavBits>(ephCNAVQZSSL5sid,
                                                          oidCNAVQZSSL5,
                                                          msg31CNAVQZSSL5ct);
@@ -237,7 +237,7 @@ msg31CNAVQZSSL5->addUnsignedLong(0x1F780567, 32, 1);
 msg31CNAVQZSSL5->addUnsignedLong(0x88D, 12, 1);
 msg31CNAVQZSSL5->trimsize();
 
-msg32CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345636);
+msg32CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345636,gpstk::TimeSystem::QZS);
 msg32CNAVQZSSL5 = std::make_shared<gpstk::PackedNavBits>(ephCNAVQZSSL5sid,
                                                          oidCNAVQZSSL5,
                                                          msg32CNAVQZSSL5ct);
@@ -254,7 +254,7 @@ msg32CNAVQZSSL5->addUnsignedLong(0xD7000F86, 32, 1);
 msg32CNAVQZSSL5->addUnsignedLong(0xF96, 12, 1);
 msg32CNAVQZSSL5->trimsize();
 
-msg35CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345738);
+msg35CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345738,gpstk::TimeSystem::QZS);
 msg35CNAVQZSSL5 = std::make_shared<gpstk::PackedNavBits>(ephCNAVQZSSL5sid,
                                                          oidCNAVQZSSL5,
                                                          msg35CNAVQZSSL5ct);
@@ -271,7 +271,7 @@ msg35CNAVQZSSL5->addUnsignedLong(0x000001B2, 32, 1);
 msg35CNAVQZSSL5->addUnsignedLong(0x05C, 12, 1);
 msg35CNAVQZSSL5->trimsize();
 
-msg37CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345642);
+msg37CNAVQZSSL5ct = gpstk::GPSWeekSecond(2097,345642,gpstk::TimeSystem::QZS);
 msg37CNAVQZSSL5 = std::make_shared<gpstk::PackedNavBits>(ephCNAVQZSSL5sid,
                                                          oidCNAVQZSSL5,
                                                          msg37CNAVQZSSL5ct);
