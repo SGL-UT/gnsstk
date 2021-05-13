@@ -153,7 +153,7 @@ namespace gpstk
         << setw(16) << setprecision(8) << scientific << setfill(' ') << iscL1CP
         << " sec" << endl
         << "ISC L1CD                       :"
-        << setw(16) << setprecision(8) << scientific << setfill(' ') << iscL1CP
+        << setw(16) << setprecision(8) << scientific << setfill(' ') << iscL1CD
         << " sec" << endl
         << "delta A                        :"
         << setw(16) << setprecision(8) << scientific << setfill(' ') << deltaA
