@@ -1007,9 +1007,12 @@ processEphQZSSTest()
                             gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
                             gpstk::NavType::GPSLNAV),
       gpstk::NavMessageType::Health);
-   gpstk::CommonTime toeExp = gpstk::GPSWeekSecond(2118,522000);
-   gpstk::CommonTime beginExp = gpstk::GPSWeekSecond(2118,518400);
-   gpstk::CommonTime endExp = gpstk::GPSWeekSecond(2118,530100);
+   gpstk::CommonTime toeExp = gpstk::GPSWeekSecond(2118,522000,
+                                                   gpstk::TimeSystem::QZS);
+   gpstk::CommonTime beginExp = gpstk::GPSWeekSecond(2118,518400,
+                                                     gpstk::TimeSystem::QZS);
+   gpstk::CommonTime endExp = gpstk::GPSWeekSecond(2118,530100,
+                                                   gpstk::TimeSystem::QZS);
    gpstk::NavDataPtrList navOut;
    gpstk::GPSLNavHealth *hea;
    gpstk::GPSLNavEph *eph;

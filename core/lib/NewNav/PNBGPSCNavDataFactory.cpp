@@ -675,6 +675,11 @@ namespace gpstk
          // set of data, and we've already enforced they're the same
          // above.
       eph->Toe = eph->Toc = GPSWeekSecond(wn,toe10);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         eph->Toe.setTimeSystem(gpstk::TimeSystem::QZS);
+         eph->Toc.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
          // health is set below
       eph->Cuc = ephSF[esiCuc]->asSignedDouble(esbCuc,enbCuc,escCuc);
       eph->Cus = ephSF[esiCus]->asSignedDouble(esbCus,enbCus,escCus);
@@ -744,6 +749,10 @@ namespace gpstk
           * together only in message type 30. */
       double top = ephSF[esitop]->asUnsignedLong(esbtop,enbtop,esctop);
       eph->top = GPSWeekSecond(wn,top);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         eph->top.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
       eph->xmit11 = ephSF[ephM11]->getTransmitTime();
       eph->xmitClk = ephSF[ephMClk]->getTransmitTime();
       eph->uraNED0= ephSF[csiURAned0]->asLong(csbURAned0,cnbURAned0,cscURAned0);
@@ -875,6 +884,11 @@ namespace gpstk
       alm->wna = navIn->asUnsignedLong(asbWNa,anbWNa,ascWNa);
       alm->toa = navIn->asUnsignedDouble(asbtoa,anbtoa,asctoa);
       alm->Toc = alm->Toe = GPSWeekSecond(alm->wna,alm->toa);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         alm->Toe.setTimeSystem(gpstk::TimeSystem::QZS);
+         alm->Toc.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
       alm->M0 = navIn->asDoubleSemiCircles(asbM0,anbM0,ascM0);
       alm->ecc = navIn->asUnsignedDouble(asbEcc,anbEcc,ascEcc);
       alm->Ahalf = navIn->asUnsignedDouble(asbAhalf,anbAhalf,ascAhalf);
@@ -1070,6 +1084,11 @@ namespace gpstk
          /** @todo apply 13-bit week rollover adjustment, not 10-bit.
           * Must be completed by January, 2137 :-) */
       alm->Toc = alm->Toe = GPSWeekSecond(wna,toa);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         alm->Toe.setTimeSystem(gpstk::TimeSystem::QZS);
+         alm->Toc.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
       alm->OMEGA0 = navIn->asDoubleSemiCircles(offset+rsbOMEGA0,rnbOMEGA0,
                                                rscOMEGA0);
          // GPSCNavData
@@ -1131,6 +1150,11 @@ namespace gpstk
       to->wnot = navIn->asUnsignedLong(csbWNot,cnbWNot,cscWNot);
       to->wnLSF = navIn->asUnsignedLong(csbWNlsf,cnbWNlsf,cscWNlsf);
       to->refTime = gpstk::GPSWeekSecond(to->wnot, to->tot);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         to->src = gpstk::TimeSystem::QZS;
+         to->refTime.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
       to->dn = navIn->asUnsignedLong(csbDN,cnbDN,cscDN);
       to->deltatLSF = navIn->asLong(csbdtLSF,cnbdtLSF,cscdtLSF);
       // cerr << "add CNAV time offset" << endl;
@@ -1181,6 +1205,11 @@ namespace gpstk
       to->tot = navIn->asUnsignedDouble(gsbt,gnbt,gsct);
       to->wnot = navIn->asUnsignedLong(gsbWN,gnbWN,gscWN);
       to->refTime = gpstk::GPSWeekSecond(to->wnot, to->tot);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         to->src = gpstk::TimeSystem::QZS;
+         to->refTime.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
       to->a0 = navIn->asSignedDouble(gsbA0,gnbA0,gscA0);
       to->a1 = navIn->asSignedDouble(gsbA1,gnbA1,gscA1);
       to->a2 = navIn->asSignedDouble(gsbA2,gnbA2,gscA2);
