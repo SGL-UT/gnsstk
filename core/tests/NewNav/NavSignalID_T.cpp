@@ -120,8 +120,7 @@ constructorTest()
                     gpstk::TrackingCode::Y);
    oid.freqOffs = -7;
    oid.freqOffsWild = false;
-   oid.mcode = 0x12345678;
-   oid.mcodeMask = 0xffffffff;
+   oid.setMcodeBits(0x12345678, 0xffffffff);
    gpstk::NavSignalID uut3(gpstk::SatelliteSystem::GPS, oid,
                            gpstk::NavType::GPSLNAV);
    TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS, uut3.system);
@@ -209,8 +208,8 @@ orderTestFast()
                      gpstk::TrackingCode::MDP);
    gpstk::ObsID oid5(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::L1,
                      gpstk::TrackingCode::MDP);
-   oid4.mcode = 0x12345678;
-   oid5.mcode = 0x87654321;
+   oid4.setMcodeBits(0x12345678);
+   oid5.setMcodeBits(0x87654321);
    TestClass uut4(gpstk::SatelliteSystem::GPS, oid4, gpstk::NavType::GPSMNAV);
    TestClass uut5(gpstk::SatelliteSystem::GPS, oid5, gpstk::NavType::GPSMNAV);
    TestClass uut6(gpstk::SatelliteSystem::GPS, oid4, gpstk::NavType::GPSMNAV);

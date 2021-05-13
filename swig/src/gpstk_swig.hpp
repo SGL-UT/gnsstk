@@ -53,6 +53,7 @@
 #include "AllanDeviation.hpp"
 #include "gps_constants.hpp"
 #include "EnumIterator.hpp"
+#include "XmitAnt.hpp"
 #include "SatelliteSystem.hpp"
 #include "SatID.hpp"
 #include "MathBase.hpp"

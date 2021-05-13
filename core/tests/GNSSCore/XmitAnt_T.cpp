@@ -36,69 +36,55 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "NavSignalID.hpp"
+#include "XmitAnt.hpp"
+#include "TestUtil.hpp"
 
 namespace gpstk
 {
-   NavSignalID ::
-   NavSignalID()
-         : system(SatelliteSystem::Unknown),
-           nav(NavType::Unknown)
+   std::ostream& operator<<(std::ostream& s, gpstk::XmitAnt e)
    {
+      s << StringUtils::asString(e);
+      return s;
    }
+}
 
 
-   NavSignalID ::
-   NavSignalID(SatelliteSystem sys, CarrierBand car, TrackingCode track,
-               NavType nmt, uint32_t mcode, uint32_t mcodeMask)
-         : system(sys),
-           obs(gpstk::ObservationType::NavMsg, car, track),
-           nav(nmt)
+class XmitAnt_T
+{
+public:
+   unsigned convertTest();
+};
+
+
+unsigned XmitAnt_T ::
+convertTest()
+{
+   TUDEF("XmitAnt", "asString");
+      // This effectively tests XmitAntIterator, asString and
+      // asXmitAnt all at once.
+   for (gpstk::XmitAnt e : gpstk::XmitAntIterator())
    {
-      obs.setMcodeBits(mcode, mcodeMask);
+      TUCSM("asString");
+      std::string s(gpstk::StringUtils::asString(e));
+      TUASSERT(!s.empty());
+      TUASSERT(s != "???");
+      TUCSM("asXmitAnt");
+      gpstk::XmitAnt e2 = gpstk::StringUtils::asXmitAnt(s);
+      TUASSERTE(gpstk::XmitAnt, e, e2);
    }
+   TURETURN();
+}
 
 
-   NavSignalID ::
-   NavSignalID(SatelliteSystem sys, const ObsID& oid, NavType nmt)
-         : system(sys),
-           obs(oid),
-           nav(nmt)
-   {
-   }
+int main()
+{
+   XmitAnt_T testClass;
+   unsigned errorTotal = 0;
 
+   errorTotal += testClass.convertTest();
 
-// Use this macro in operator<< to figure out why things fail
-#if 0
-#define ORDERRET(RV) {                                                  \
-      std::cerr << "order() returning " << RV << " @ " << __LINE__      \
-                << std::endl;                                           \
-      return RV;                                                        \
-   }
-#else
-#define ORDERRET(RV) return RV;
-#endif
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+             << std::endl;
 
-   int NavSignalID ::
-   order(const NavSignalID& right) const
-   {
-      // std::cerr << __PRETTY_FUNCTION__ << std::endl;
-      if (system < right.system) ORDERRET(-1);
-      if (system > right.system) ORDERRET(1);
-      if (obs < right.obs) ORDERRET(-1);
-      if (right.obs < obs) ORDERRET(1);
-      if ((nav != NavType::Any) && (right.nav != NavType::Any))
-      {
-         if (nav < right.nav) ORDERRET(-1);
-         if (nav > right.nav) ORDERRET(1);
-      }
-      ORDERRET(0);
-   }
-
-
-   bool NavSignalID ::
-   isWild() const
-   {
-      return (obs.isWild() || (nav == NavType::Any));
-   }
+   return errorTotal;
 }

@@ -59,6 +59,10 @@
 #include "ObservationType.hpp"
 #include "CarrierBand.hpp"
 #include "TrackingCode.hpp"
+#include "XmitAnt.hpp"
+
+// forward declaration of test class
+class ObsID_T;
 
 namespace gpstk
 {
@@ -81,15 +85,16 @@ namespace gpstk
          /// mcode and freqOffs are kept non-wild by default intentionally.
       ObsID()
             : type(ObservationType::Unknown), band(CarrierBand::Unknown),
-              code(TrackingCode::Unknown), freqOffs(0), freqOffsWild(false),
-              mcode(0), mcodeMask(-1)
+              code(TrackingCode::Unknown), freqOffs(0), freqOffsWild(true),
+              mcode(0), mcodeMask(0), xmitAnt(XmitAnt::Any)
       {}
 
          /// Explicit constructor
          /// mcode and freqOffs are kept non-wild by default intentionally.
-      ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc)
-            : type(ot), band(cb), code(tc), freqOffs(0), freqOffsWild(false),
-              mcode(0), mcodeMask(-1)
+      ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc,
+            XmitAnt transmitter = XmitAnt::Any)
+            : type(ot), band(cb), code(tc), freqOffs(0), freqOffsWild(true),
+              mcode(0), mcodeMask(0), xmitAnt(transmitter)
       {}
 
          /** Explicit constructor for GLONASS.
@@ -98,9 +103,9 @@ namespace gpstk
           * @param[in] tc The tracking code (CA, L2CM, etc.).
           * @param[in] fo Thre frequency offset of the GLONASS signal. */
       explicit ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc,
-                     int fo)
+                     int fo, XmitAnt transmitter = XmitAnt::Any)
             : type(ot), band(cb), code(tc), freqOffs(fo), freqOffsWild(false),
-              mcode(0), mcodeMask(-1)
+              mcode(0), mcodeMask(0), xmitAnt(transmitter)
       {}
 
          /// Equality requires all fields to be the same
@@ -142,14 +147,42 @@ namespace gpstk
          /// Return true if any of the data are wildcard values.
       bool isWild() const;
 
+         /// Set the value of mcode while simultaneously setting the mask.
+      void setMcodeBits(uint32_t newval, uint32_t newmask = -1)
+      { mcode = newval; mcodeMask = newmask; }
+         /** Alter the value of mcode by replacing only the masked
+          * bits in newmask with the value in newval.
+          * @param[in] newval The data to be inserted into the mcode bitflag.
+          * @param[in] newmask Only bits set in newmask will be set in
+          *   mcode, and mcodeMask will be updated to include set bits
+          *   in newmask.
+          * @post mcode = (mcode & ~newmask) | (newval & newmask)
+          * @post mcodeMask |= newmask */
+      void maskMcodeBits(uint32_t newval, uint32_t newmask)
+      {
+         mcode = (mcode & ~newmask) | (newval & newmask);
+         mcodeMask |= newmask;
+      }
+         /// Return the value of mcode
+      uint32_t getMcodeBits() const
+      { return mcode; }
+         /// Set the value of mcodeMask on its own.
+      void setMcodeMask(uint32_t newmask = -1)
+      { mcodeMask = newmask; }
+         /// Clear bits in mcodeMask that are set in clearmask.
+      void clearMcodeMask(uint32_t clearmask)
+      { mcodeMask = mcodeMask & ~clearmask; }
+         /// Return the value of mcodeMask
+      uint32_t getMcodeMask() const
+      { return mcodeMask; }
+
          // Note that these are the only data members of objects of this class.
       ObservationType  type;
       CarrierBand      band;
       TrackingCode     code;
+      XmitAnt xmitAnt;    ///< Identify the transmitting antenna.
       int freqOffs;       ///< GLONASS frequency offset.
       bool freqOffsWild;  ///< True=Treat freqOffs as a wildcard when matching.
-      uint32_t mcode;     ///< Data to uniquely identify M-code signal.
-      uint32_t mcodeMask; ///< Bitmask for matching mcode. 
 
          /// SWIG accessor. Not overloaded, because SWIG.
       static std::string getDescTC(TrackingCode e)
@@ -169,6 +202,11 @@ namespace gpstk
           * flags that were added more recently, so this also
           * preserves traditional output. */
       static bool verbose;
+
+   private:
+      uint32_t mcode;     ///< Data to uniquely identify M-code signal.
+      uint32_t mcodeMask; ///< Bitmask for matching mcode.
+      friend class ::ObsID_T;
    }; // class ObsID
 
 

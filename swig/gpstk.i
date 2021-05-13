@@ -281,6 +281,7 @@ namespace std
 %include "AllanDeviation.hpp"
 %include "gps_constants.hpp"
 %include "EnumIterator.hpp"
+%include "XmitAnt.hpp"
 %include "SatelliteSystem.hpp"
 %template(vector_GNSS)       std::vector<gpstk::SatelliteSystem>;
 %include "SatID.hpp"

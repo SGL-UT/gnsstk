@@ -53,6 +53,7 @@
 #include "Rinex3ObsBase.hpp"
 #include "Rinex3ObsHeader.hpp"
 #include "RinexDatum.hpp"
+#include "XmitAnt.hpp"
 
 namespace gpstk
 {
@@ -114,6 +115,7 @@ namespace gpstk
 
       Rinex3ObsHeader auxHeader; ///< auxiliary header records (epochFlag 2-5)
 
+      XmitAnt xmitAnt;           ///< Non-standard, transmitter ID.
 
          /** This method returns the RinexDatum of a given observation
           *

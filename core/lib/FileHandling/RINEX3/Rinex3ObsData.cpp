@@ -216,7 +216,8 @@ namespace gpstk
          : time(gpstk::CommonTime::BEGINNING_OF_TIME),
            epochFlag(-1),
            numSVs(-1),
-           clockOffset(0.L)
+           clockOffset(0.L),
+           xmitAnt(XmitAnt::Standard)
    {}
 
 
@@ -587,6 +588,7 @@ namespace gpstk
             }
          }
       }
+      rod.xmitAnt = strm.header.xmitAnt;
    }  // end void reallyGetRecordVer2(Rinex3ObsStream& strm, Rinex3ObsData& rod)
 
 
@@ -722,6 +724,7 @@ namespace gpstk
          }
       }
 
+      xmitAnt = strm.header.xmitAnt;
       return;
 
    } // end of reallyGetRecord()

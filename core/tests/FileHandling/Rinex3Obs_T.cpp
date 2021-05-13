@@ -51,6 +51,15 @@
 using namespace std;
 using namespace gpstk;
 
+namespace gpstk
+{
+   std::ostream& operator<<(std::ostream& s, XmitAnt e)
+   {
+      s << gpstk::StringUtils::asString(e);
+      return s;
+   }
+}
+
 //============================================================
 // Class decalarations
 //============================================================
@@ -80,6 +89,7 @@ public:
    void toConversionTest( void );
    int version2ToVersion3Test( void );
    int version3ToVersion2Test( void );
+   int transmitAntennaTest();
 
    int embeddedHeadersTest();
 
@@ -1102,6 +1112,69 @@ A 9080                                                      MARKER NAME
    TURETURN();
 }
 
+
+int Rinex3Obs_T :: transmitAntennaTest()
+{
+   TUDEF("Rinex3Obs", "operator>>");
+   cout << "Running tests for transmit antenna enhancement" << endl;
+   int rv = 0;
+      // set everything to empty string that we're not using because
+      // clunky tests is clunky.
+   dataIncompleteHeader = dataInvalidLineLength = dataInvalidNumPRNWaveFact =
+      dataNotObs = dataSystemGeosync = dataSystemGlonass = dataSystemMixed =
+      dataSystemTransit = dataUnSupVersion  = dataRinexContData =
+      dataHeaderTest = dataBadEpochLine = dataBadEpochFlag = dataBadLineSize =
+      dataInvalidTimeFormat = dataFilterTest1 = dataFilterTest2 =
+      dataFilterTest3 = dataFilterTest4 = dataTestOutput = dataTestOutput2 =
+      dataTestOutput3 = dataTestOutputObsDump = dataTestOutputDataException =
+      dataTestFilterOutput = dataInputRinex3ObsFile = dataInputRinex2ObsFile =
+      dataOutputRinex3ObsFile = dataOutputRinex2ObsFile = "";
+
+   dataRinexObsFile            = dataFilePath + file_sep +
+      "test_input_rinex3_obs_RinexObsFile_xmitStd.15o";
+   dataTestOutput4             = tempFilePath + file_sep +
+      "test_output_rinex3_obs_TestOutput4_xmitStd.15o";
+   rv += roundTripTest();
+   gpstk::Rinex3ObsHeader header;
+   gpstk::Rinex3ObsData data;
+   gpstk::Rinex3ObsStream strm(dataRinexObsFile);
+   TUASSERTE(bool, true, static_cast<bool>(strm));
+      // default to Standard
+   TUASSERTE(gpstk::XmitAnt, gpstk::XmitAnt::Standard, header.xmitAnt);
+   strm >> header;
+   TUASSERTE(bool, true, static_cast<bool>(strm));
+   TUASSERTE(gpstk::XmitAnt, gpstk::XmitAnt::Standard, header.xmitAnt);
+   while (strm)
+   {
+      strm >> data;
+      TUASSERTE(gpstk::XmitAnt, gpstk::XmitAnt::Standard, data.xmitAnt);
+   }
+   strm.close();
+
+   dataRinexObsFile            = dataFilePath + file_sep +
+      "test_input_rinex3_obs_RinexObsFile_xmitReg.15o";
+   dataTestOutput4             = tempFilePath + file_sep +
+      "test_output_rinex3_obs_TestOutput4_xmitReg.15o";
+   rv += roundTripTest();
+   gpstk::Rinex3ObsStream strm2(dataRinexObsFile);
+   TUASSERTE(bool, true, static_cast<bool>(strm2));
+   strm2 >> header;
+   TUASSERTE(bool, true, static_cast<bool>(strm2));
+   TUASSERTE(gpstk::XmitAnt, gpstk::XmitAnt::Regional, header.xmitAnt);
+   while (strm2)
+   {
+      strm2 >> data;
+      if (strm2)
+      {
+         TUASSERTE(gpstk::XmitAnt, gpstk::XmitAnt::Regional, data.xmitAnt);
+      }
+   }
+   strm2.close();
+
+   return testFramework.countFails() + rv;
+}
+
+
 int main()
 {
    int errorTotal = 0;
@@ -1124,6 +1197,9 @@ int main()
 
    testClass.toConversionTest();
    errorTotal += testClass.roundTripTest();
+
+      // Tests with transmit antenna stuff
+   errorTotal += testClass.transmitAntennaTest();
 
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
