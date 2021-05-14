@@ -10,7 +10,7 @@ cmake_minimum_required( VERSION 2.8.5 )
 
 project( GPSTK )
 set( GPSTK_VERSION_MAJOR "11" )
-set( GPSTK_VERSION_MINOR "0" )
+set( GPSTK_VERSION_MINOR "1" )
 set( GPSTK_VERSION_PATCH "0" )
 set( GPSTK_VERSION "${GPSTK_VERSION_MAJOR}.${GPSTK_VERSION_MINOR}.${GPSTK_VERSION_PATCH}" )
 
@@ -171,10 +171,8 @@ install( FILES ${GPSTK_INC_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 # GPSTK Library parameters
 #============================================================
 
-# GPSTk doesn't yet follow semantic versioning. Binary compatibility is only within a specific MAJOR.MINOR version, so
-#   SOVERSION has both MAJOR and MINOR for now.
 set_target_properties(gpstk PROPERTIES VERSION "${GPSTK_VERSION_MAJOR}.${GPSTK_VERSION_MINOR}.${GPSTK_VERSION_PATCH}"
-                                       SOVERSION "${GPSTK_VERSION_MAJOR}.${GPSTK_VERSION_MINOR}")
+                                       SOVERSION "${GPSTK_VERSION_MAJOR}")
 
 
 #============================================================
