@@ -993,7 +993,7 @@ namespace gpstk
                // original time system
             if (f0 < t0)
                initialTime = odkp->beginFit;
-            if (f1 < t1)
+            if (f1 > t1)
                finalTime = odkp->endFit;
          }
          else

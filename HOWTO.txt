@@ -42,6 +42,22 @@
 \li Decode as-broadcast navigation messages...
     1. Refer to the classes in the \ref GNSSEph module for reference documentation.
 
+\li Use trace debugging...
+    1. When writing code, include the file DebugTrace.hpp.
+    2. Use the DEBUGTRACE_FUNCTION() macro at the start of methods you wish to trace.
+    3. Use the DEBUGTRACE_ENABLE() macro to enable tracing in a particular application (recommended to enable when the -d/--debug command-line option is used).
+    4. Use the DEBUGTRACE() macro to output debugging information.  The argument is a stream output statement, e.g. <br/> <tt>DEBUGTRACE("foo = " << foo);</tt>
+    5. Trace debugging is disabled by default.  To enable it, either use the -a option with build.sh, or specify -DDEBUGTRACE=ON if running cmake manually.  This is done to minimize the performance impact of having trace code available for development on deployed binaries.
+
+Note: switching between DEBUGTRACE=ON and OFF will likely require both
+a clean build and removing CMakeCache.txt from the build output
+directory before the change will take effect.
+
+Additional details can be found in the documentation for the gpstk::DebugTrace
+class.
+
+Refer to core/tests/Utilities/DebugTrace_T.cpp for example use.
+
 \subsection HOWTOContribute Contribute Code
 
 \li Contribute code...

@@ -39,11 +39,14 @@
 #include "NavDataFactoryWithStore.hpp"
 #include "GPSWeekSecond.hpp"
 #include "CivilTime.hpp"
+#include "GALWeekSecond.hpp"
+#include "BDSWeekSecond.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavAlm.hpp"
 #include "GPSLNavHealth.hpp"
 #include "GPSLNavTimeOffset.hpp"
 #include "TestUtil.hpp"
+// #include "BasicTimeSystemConverter.hpp"
 
 namespace gpstk
 {
@@ -77,6 +80,17 @@ namespace gpstk
       return s;
    }
 }
+
+
+/// Used to test the proper setting of initialTime/finalTime.
+class FakeODK : public gpstk::OrbitDataKepler
+{
+public:
+   FakeODK()
+   {}
+   bool validate() const override
+   { return true; }
+};
 
    /** Implement a test class to expose protected members rather than
     * using friends. */
@@ -126,6 +140,7 @@ public:
    NavDataFactoryWithStore_T();
 
    unsigned addNavDataTest();
+   unsigned addNavDataTimeTest();
    unsigned findTest();
    unsigned find2Test();
    unsigned findNearestTest();
@@ -238,6 +253,115 @@ addNavDataTest()
          }
       }
    }
+
+   TURETURN();
+}
+
+
+unsigned NavDataFactoryWithStore_T ::
+addNavDataTimeTest()
+{
+   TUDEF("NavDataFactoryWithStore", "addNavData");
+
+   TestClass fact;
+      // test ordering with multiple time systems
+   // gpstk::BasicTimeSystemConverter btsc;
+   gpstk::CommonTime
+      bt0(gpstk::GPSWeekSecond(2020, 54321)),
+      bt1(gpstk::GPSWeekSecond(2020, 54327)),
+      bt2(gpstk::GALWeekSecond(996, 54329)),
+      bt3(gpstk::BDSWeekSecond(664, 54328)),
+      bt4(gpstk::GPSWeekSecond(2020, 60480)),
+      et0(bt0 + 7200),
+      et1(bt1 + 7200),
+      et2(bt2 + 3600),
+      et3(bt3 + 14400),
+      et4(bt4 + 7200);
+
+   // std::cout << bt0 << " " << et0 << std::endl << bt1 << " " << et1 << std::endl << bt2 << " " << et2 << std::endl << bt3 << " " << et3 << std::endl << bt4 << " " << et4 << std::endl;
+   // bt0.changeTimeSystem(gpstk::TimeSystem::UTC, &btsc);
+   // bt1.changeTimeSystem(gpstk::TimeSystem::UTC, &btsc);
+   // bt2.changeTimeSystem(gpstk::TimeSystem::UTC, &btsc);
+   // bt3.changeTimeSystem(gpstk::TimeSystem::UTC, &btsc);
+   // bt4.changeTimeSystem(gpstk::TimeSystem::UTC, &btsc);
+   // et0.changeTimeSystem(gpstk::TimeSystem::UTC, &btsc);
+   // et1.changeTimeSystem(gpstk::TimeSystem::UTC, &btsc);
+   // et2.changeTimeSystem(gpstk::TimeSystem::UTC, &btsc);
+   // et3.changeTimeSystem(gpstk::TimeSystem::UTC, &btsc);
+   // et4.changeTimeSystem(gpstk::TimeSystem::UTC, &btsc);
+   // std::cout << bt0 << " " << et0 << std::endl << bt1 << " " << et1 << std::endl << bt2 << " " << et2 << std::endl << bt3 << " " << et3 << std::endl << bt4 << " " << et4 << std::endl;
+
+      // add 5 NavDataPtr objects not in time order
+      // #1
+   gpstk::SatID subjID(23,gpstk::SatelliteSystem::GPS);
+   gpstk::SatID xmitID(32,gpstk::SatelliteSystem::GPS);
+   gpstk::NavDataPtr navOut = std::make_shared<FakeODK>();
+   dynamic_cast<FakeODK*>(navOut.get())->beginFit = bt3;
+   dynamic_cast<FakeODK*>(navOut.get())->endFit = et3;
+   navOut->signal.messageType = gpstk::NavMessageType::Ephemeris;
+   navOut->signal.sat = subjID;
+   navOut->signal.xmitSat = xmitID;
+   navOut->signal.system = gpstk::SatelliteSystem::GPS;
+   navOut->signal.obs = gpstk::ObsID(gpstk::ObservationType::NavMsg,
+                                     gpstk::CarrierBand::L1,
+                                     gpstk::TrackingCode::CA);
+   navOut->signal.nav = gpstk::NavType::GPSLNAV;
+   TUASSERT(fact.addNavData(navOut));
+      // #2
+   navOut = std::make_shared<FakeODK>();
+   dynamic_cast<FakeODK*>(navOut.get())->beginFit = bt2;
+   dynamic_cast<FakeODK*>(navOut.get())->endFit = et2;
+   navOut->signal.messageType = gpstk::NavMessageType::Ephemeris;
+   navOut->signal.sat = subjID;
+   navOut->signal.xmitSat = xmitID;
+   navOut->signal.system = gpstk::SatelliteSystem::GPS;
+   navOut->signal.obs = gpstk::ObsID(gpstk::ObservationType::NavMsg,
+                                     gpstk::CarrierBand::L1,
+                                     gpstk::TrackingCode::CA);
+   navOut->signal.nav = gpstk::NavType::GPSLNAV;
+   TUASSERT(fact.addNavData(navOut));
+      // #3
+   navOut = std::make_shared<FakeODK>();
+   dynamic_cast<FakeODK*>(navOut.get())->beginFit = bt4;
+   dynamic_cast<FakeODK*>(navOut.get())->endFit = et4;
+   navOut->signal.messageType = gpstk::NavMessageType::Ephemeris;
+   navOut->signal.sat = subjID;
+   navOut->signal.xmitSat = xmitID;
+   navOut->signal.system = gpstk::SatelliteSystem::GPS;
+   navOut->signal.obs = gpstk::ObsID(gpstk::ObservationType::NavMsg,
+                                     gpstk::CarrierBand::L1,
+                                     gpstk::TrackingCode::CA);
+   navOut->signal.nav = gpstk::NavType::GPSLNAV;
+   TUASSERT(fact.addNavData(navOut));
+      // #4
+   navOut = std::make_shared<FakeODK>();
+   dynamic_cast<FakeODK*>(navOut.get())->beginFit = bt0;
+   dynamic_cast<FakeODK*>(navOut.get())->endFit = et0;
+   navOut->signal.messageType = gpstk::NavMessageType::Ephemeris;
+   navOut->signal.sat = subjID;
+   navOut->signal.xmitSat = xmitID;
+   navOut->signal.system = gpstk::SatelliteSystem::GPS;
+   navOut->signal.obs = gpstk::ObsID(gpstk::ObservationType::NavMsg,
+                                     gpstk::CarrierBand::L1,
+                                     gpstk::TrackingCode::CA);
+   navOut->signal.nav = gpstk::NavType::GPSLNAV;
+   TUASSERT(fact.addNavData(navOut));
+      // #5
+   navOut = std::make_shared<FakeODK>();
+   dynamic_cast<FakeODK*>(navOut.get())->beginFit = bt1;
+   dynamic_cast<FakeODK*>(navOut.get())->endFit = et1;
+   navOut->signal.messageType = gpstk::NavMessageType::Ephemeris;
+   navOut->signal.sat = subjID;
+   navOut->signal.xmitSat = xmitID;
+   navOut->signal.system = gpstk::SatelliteSystem::GPS;
+   navOut->signal.obs = gpstk::ObsID(gpstk::ObservationType::NavMsg,
+                                     gpstk::CarrierBand::L1,
+                                     gpstk::TrackingCode::CA);
+   navOut->signal.nav = gpstk::NavType::GPSLNAV;
+   TUASSERT(fact.addNavData(navOut));
+
+   TUASSERTE(gpstk::CommonTime, bt0, fact.getInitialTime());
+   TUASSERTE(gpstk::CommonTime, et3, fact.getFinalTime());
 
    TURETURN();
 }
@@ -1816,6 +1940,7 @@ int main()
    unsigned errorTotal = 0;
 
    errorTotal += testClass.addNavDataTest();
+   errorTotal += testClass.addNavDataTimeTest();
    errorTotal += testClass.editTest();
    errorTotal += testClass.clearTest();
    errorTotal += testClass.findTest();

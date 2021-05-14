@@ -13,6 +13,13 @@ elseif( WIN32 )
     set( STADYN "STATIC" )
 endif()
 
+if( ${DEBUGTRACE} )
+  message(STATUS "Tracing is enabled")
+else()
+  message(STATUS "Tracing is disabled")
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG_NO_TRACE" )
+endif()
+
 
 #----------------------------------------
 # Platform-dependent Compiler flags
