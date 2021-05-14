@@ -1,8 +1,14 @@
 #!/usr/bin/env python
 
 import unittest, sys, os
+try:
+    from collections.abc import Hashable
+except ImportError:
+    # Python2 has Hashable in a different location.
+    from collections import Hashable
+
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
+from gpstk.test_utils import args, run_unit_tests
 import gpstk
 
 class EnumConversion_test(unittest.TestCase):
@@ -122,12 +128,19 @@ class SatID_test(unittest.TestCase):
         self.assertEqual('* 4', str(c))
 
     def test_hashability(self):
-        # Can we use SatID as a dict-key or in a set.
+        # Can we use SatID, etc as a dict-key or in a set.
+        # Verifies that the SWIG python glue is correct.
         a = gpstk.SatID(3, gpstk.SatelliteSystem.Glonass)
-        b = gpstk.SatID(1, gpstk.SatelliteSystem.LEO)
-        s = {a, b}
-        self.assertIn(a, s)
-        self.assertIn(a, s)
+        b = gpstk.ObsID()
+        c = gpstk.NavID()
+        d = gpstk.RinexSatID()
+        e = gpstk.RinexObsID()
+        self.assertTrue(isinstance(a, Hashable))
+        self.assertTrue(isinstance(b, Hashable))
+        self.assertTrue(isinstance(c, Hashable))
+        self.assertTrue(isinstance(d, Hashable))
+        self.assertTrue(isinstance(e, Hashable))
+
 
 class Triple_test(unittest.TestCase):
     def test_copy_constructor(self):
