@@ -58,7 +58,8 @@ namespace gpstk
          std::ios::fmtflags oldFlags = s.flags();
          s << " "
            << std::boolalpha << freqOffs << "/" << freqOffsWild << " "
-           << std::hex << mcode << "/" << mcodeMask;
+           << std::hex << mcode << "/" << mcodeMask
+           << " " << gpstk::StringUtils::asString(xmitAnt);
          s.flags(oldFlags);
       }
       return s;
@@ -79,9 +80,11 @@ namespace gpstk
                band == right.band) &&
               (code == TrackingCode::Any || right.code == TrackingCode::Any ||
                code == right.code) &&
+              (xmitAnt == XmitAnt::Any || right.xmitAnt == XmitAnt::Any ||
+               xmitAnt == right.xmitAnt) &&
               (freqOffsWild == true || right.freqOffsWild == true ||
                freqOffs == right.freqOffs) &&
-              ((mcode & mcodeMask) == (right.mcode & cmask)));
+              ((mcode & cmask) == (right.mcode & cmask)));
    }
 
 
@@ -118,6 +121,11 @@ namespace gpstk
          if (type < right.type) ORDERRET(true);
          if (right.type < type) ORDERRET(false);
       }
+      if ((xmitAnt != XmitAnt::Any) && (right.xmitAnt != XmitAnt::Any))
+      {
+         if (xmitAnt < right.xmitAnt) ORDERRET(true);
+         if (right.xmitAnt < xmitAnt) ORDERRET(false);
+      }
       if (!freqOffsWild && !right.freqOffsWild)
       {
          if (freqOffs < right.freqOffs) ORDERRET(true);
@@ -141,6 +149,7 @@ namespace gpstk
       type = ObservationType::Any;
       band = CarrierBand::Any;
       code = TrackingCode::Any;
+      xmitAnt = XmitAnt::Any;
       freqOffsWild = true;
       mcodeMask = 0;
    }
@@ -152,6 +161,7 @@ namespace gpstk
       return ((type == ObservationType::Any) ||
               (band == CarrierBand::Any) ||
               (code == TrackingCode::Any) ||
+              (xmitAnt == XmitAnt::Any) ||
               (mcodeMask != -1) ||
               freqOffsWild);
    }

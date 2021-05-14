@@ -131,8 +131,7 @@ constructorTest()
    gpstk::NavID nid3a(gpstk::NavType::GPSMNAV);
    oid3a.freqOffs = -7;
    oid3a.freqOffsWild = false;
-   oid3a.mcode = 0x12345678;
-   oid3a.mcodeMask = 0xffffffff;
+   oid3a.setMcodeBits(0x12345678, 0xffffffff);
    gpstk::NavSatelliteID nsid3(17, exps3b, oid3a, nid3a);
    TUASSERTE(gpstk::SatID, exps3a, nsid3.sat);
    TUASSERTE(gpstk::SatID, exps3b, nsid3.xmitSat);

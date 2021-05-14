@@ -78,8 +78,7 @@ constructorTest()
                       gpstk::TrackingCode::CA);
    obsID.freqOffs = -7;
    obsID.freqOffsWild = false;
-   obsID.mcode = 0x12345678;
-   obsID.mcodeMask = 0xffffffff;
+   obsID.setMcodeBits(0x12345678, 0xffffffff);
    gpstk::NavSatelliteID sat(3, satID, obsID, navID);
    gpstk::NavMessageID uut2(sat, gpstk::NavMessageType::Almanac);
    TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Almanac,
