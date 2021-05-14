@@ -2,7 +2,7 @@ GPSTk 11.1.0 Release Notes
 ========================
 
  * This version address bug fixes for the new nav store.
- * Additionally, it adds MDHTRACE debugging feature. 
+ * Additionally, it adds `DebugTrace` debugging feature. 
 
 Updates since v11.0.1
 ---------------------
