@@ -66,6 +66,28 @@ namespace gpstk
 
 
    NavSatelliteID ::
+   NavSatelliteID(unsigned long subj, SatelliteSystem sys, CarrierBand car,
+                  TrackingCode track, XmitAnt ant, int freqOffs,
+                  bool freqOffsWild, NavType nmt)
+         : NavSignalID(sys,ObsID(ObservationType::NavMsg,car,track,freqOffs,
+                                 ant,freqOffsWild),nmt),
+           sat(subj,sys)
+   {
+      xmitSat.makeWild();
+   }
+
+
+   NavSatelliteID ::
+   NavSatelliteID(unsigned long subj, SatelliteSystem sys, const ObsID& oid,
+                  NavType nmt)
+         : NavSignalID(sys,oid,nmt),
+           sat(subj,sys)
+   {
+      xmitSat.makeWild();
+   }
+
+
+   NavSatelliteID ::
    NavSatelliteID(unsigned long subj,
                   SatelliteSystem sys, CarrierBand car, TrackingCode track,
                   NavType nmt)
