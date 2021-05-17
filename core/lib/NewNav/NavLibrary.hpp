@@ -547,10 +547,18 @@ namespace gpstk
        *     set NavSignalID::nav to NavType::Any if you don't care
        *     whether the orbit data came from LNAV or CNAV or CNAV2.
        *
-       * \li Get satellite XVT/health/time offset from arbitrary input...
+       * \li Get ionospheric correction data...
+       *   * Sadly, this is not available in an abstract fashion at this
+       *     time, and if this data is needed, one will have to
+       *     process the system-specific data.
+       *
+       * \li Get satellite XVT/health/time offset (aka clock
+       *     correction) from arbitrary input...
        *   * Use the NavLibrary::getXvt(), NavLibrary::getHealth() or
        *     NavLibrary::getOffset() method, as appropriate.  Refer to
-       *     the NavLibrary class and example.
+       *     the NavLibrary class and examples in \ref NavFactoryExampleCode.
+       *   * If only the clock correction is desired, you may still want to use
+       *     getXvt() but only look at the clock bias/clock drift data.
        *
        * \li Get Ephemeris/Almanac/Health at a given time...
        *   * Use the NavLibrary::find() method.  The results will
