@@ -58,9 +58,8 @@ namespace gpstk
    {
       signal.messageType = NavMessageType::Almanac;
       weekFmt = "%4L(%4l)";
-         // Not recommended for use - getUserTime() should be used
-         // instead as there is no guarantee that the two page types
-         // making up this almanac are consecutive.
+         // Galileo F/NAV nominal page transmit time is 10 seconds per
+         // OS-SIS-ICD figure 14.
       msgLenSec = 10.0;
    }
 
@@ -75,9 +74,7 @@ namespace gpstk
    CommonTime GalFNavAlm ::
    getUserTime() const
    {
-         // Galileo F/NAV nominal page transmit time is 10 seconds per
-         // OS-SIS-ICD figure 14.
-      return std::max(xmitTime, xmit2) + 10.0;
+      return std::max(xmitTime, xmit2) + msgLenSec;
    }
 
 
