@@ -25,6 +25,13 @@
     -# Refer to the guidance in \ref navlibrary for a detailed guide of how to use the NavLibrary classes.  Matching reference documentation can be found in the \ref NavFactory module documentation.
     -# Refer to the classes in the \ref GNSSEph module for reference documentation.
 
+* Get satellite position/velocity/clock offset or health...
+    -# Refer to the guidance in \ref navlibrary for a detailed guide of how to use the NavLibrary classes.  Matching reference documentation can be found in the \ref NavFactory module documentation.
+
+* Get offsets between time systems...
+    -# For getting a precise offset (usually in milliseconds or better) between time systems the information may be extracted from navigation message data.  Refer to the guidance in \ref navlibrary for a detailed guide of how to use the NavLibrary classes.  Matching reference documentation can be found in the \ref NavFactory module documentation.
+    -# Refer to CommonTime::changeTimeSystem(), TimeSystemConverter, BasicTimeSystemConverter (for second-resolution offsets), and/or NavTimeSystemConverter (for ms-resolution offsets).
+
 * Use trace debugging...
     -# When writing code, include the file DebugTrace.hpp.
     -# Use the DEBUGTRACE_FUNCTION() macro at the start of methods you wish to trace.
