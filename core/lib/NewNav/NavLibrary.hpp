@@ -303,17 +303,8 @@ namespace gpstk
        *    return false;
        * }
        *    // Search the NavLibrary
-       * gpstk::ObsID oid;
-       * if (freqOffsSpec)
-       * {
-       *    oid = gpstk::ObsID(gpstk::ObservationType::NavMsg, band, code,
-       *                       freqOffs, xmitAnt);
-       * }
-       * else
-       * {
-       *    oid = gpstk::ObsID(gpstk::ObservationType::NavMsg, band, code,
-       *                       xmitAnt);
-       * }
+       * gpstk::ObsID oid(gpstk::ObservationType::NavMsg, band, code,
+       *                  freqOffs, xmitAnt, !freqOffsSpec);
        * gpstk::SatID subjSat(subjID, subjSys);
        * gpstk::SatID xmitSat(xmitID, xmitSys);
        * gpstk::NavSatelliteID sat(subjSat, xmitSat, oid, nav);
