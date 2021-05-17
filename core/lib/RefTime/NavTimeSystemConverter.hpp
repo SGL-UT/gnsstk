@@ -48,7 +48,42 @@ namespace gpstk
       //@{
 
       /** Define a class for doing time system conversions using
-       * navigation messages provided by a NavLibrary object. */
+       * navigation messages provided by a NavLibrary object.
+       *
+       * Example use:
+       *
+       * \code
+       *    // Some time to convert
+       * gpstk::CommonTime ct(gpstk::GPSWeekSecond(2020,2021));
+       *    // Construct the time system converter
+       * gpstk::CommonTime::tsConv =
+       *    make_shared<gpstk::NavTimeSystemConverter>();
+       *    // Get a pointer to the NavTimeSystemConverter
+       * NavTimeSystemConverter *ntsc = dynamic_cast<NavTimeSystemConverter*>(
+       *    CommonTime::tsConv.get());
+       *    // Construct a NavLibrary object.
+       * ntsc->navLib = make_shared<gpstk::NavLibrary>();
+       *    // Construct a NavDataFactory object
+       * gpstk::NavDataFactoryPtr ndfp(
+       *    std::make_shared<gpstk::MultiFormatNavDataFactory>());
+       *    // Add the NavDataFactory to the NavLibrary
+       * ntsc->navLib->addFactory(ndfp);
+       *    // Add input data (files) to the NavDataFactory
+       * if (!ndfp->addDataSource(inputFileName))
+       * {
+       *    cerr << "Unable to load \"" << inputFileName << "\"" << endl;
+       *    return false;
+       * }
+       *   // Convert the time to UTC
+       * if (!ct.changeTimeSystem(gpstk::TimeSystem::UTC))
+       * {
+       *    cerr << "Unable to change time system to UTC" << endl;
+       *    return false;
+       * }
+       * cout << "Time is "
+       *      << gpstk::printTime("%Y/%02m/%02d %02H:%02M:%02S %P") << endl;
+       * \endcode
+       */
    class NavTimeSystemConverter : public TimeSystemConverter
    {
    public:

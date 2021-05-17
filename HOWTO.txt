@@ -30,7 +30,7 @@
 
 * Get offsets between time systems...
     -# For getting a precise offset (usually in milliseconds or better) between time systems the information may be extracted from navigation message data.  Refer to the guidance in \ref navlibrary for a detailed guide of how to use the NavLibrary classes.  Matching reference documentation can be found in the \ref NavFactory module documentation.
-    -# Refer to CommonTime::changeTimeSystem(), TimeSystemConverter, BasicTimeSystemConverter (for second-resolution offsets), and/or NavTimeSystemConverter (for ms-resolution offsets).
+    -# Refer to gpstk::CommonTime::changeTimeSystem(), gpstk::TimeSystemConverter, gpstk::BasicTimeSystemConverter (for second-resolution offsets), and/or gpstk::NavTimeSystemConverter (for ms-resolution offsets).
 
 * Use trace debugging...
     -# When writing code, include the file DebugTrace.hpp.
