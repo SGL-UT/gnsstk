@@ -36,51 +36,55 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_NAVMESSAGETYPE_HPP
-#define GPSTK_NAVMESSAGETYPE_HPP
+#ifndef GPSTK_GPSLNAVIONO_HPP
+#define GPSTK_GPSLNAVIONO_HPP
 
-#include <string>
-#include <set>
-#include "EnumIterator.hpp"
+#include "IonoData.hpp"
 
 namespace gpstk
 {
       /// @ingroup NavFactory
       //@{
 
-      /// Identify different types of navigation message data.
-   enum class NavMessageType
+      /// Class containing data elements unique to GPS LNav ionospheric data.
+   class GPSLNavIono : public IonoData
    {
-      Unknown,    ///< Message type is not known or is uninitialized.
-      Almanac,    ///< Low-precision orbits for other than the transmitting SV.
-      Ephemeris,  ///< Precision orbits for the transmitting SV.
-      TimeOffset, ///< Message containing information about time system offsets
-      Health,     ///< SV health status information message.
-      Clock,      ///< SV Clock offset data.  Currently only used by SP3.
-      Iono,       ///< Ionospheric correction data.
-      Last        ///< Used to create an iterator.
+   public:
+         /// Sets the nav message type.
+      GPSLNavIono();
+
+         /** Checks the contents of this message against known
+          * validity rules as defined in the appropriate ICD.
+          * @todo implement some checking.
+          * @return true if this message is valid according to ICD criteria.
+          */
+      bool validate() const override
+      { return true; }
+
+         /** Get the ionospheric correction in meters.
+          * @param[in] when The time of the observation to correct.
+          * @param[in] rxgeo The receiver's geodetic position.
+          * @param[in] svgeo The observed satellite's geodetic position.
+          * @param[in] band The carrier band of the signal being corrected.
+          * @return The ionospheric delay, in meters, on band. */
+      double getCorrection(const CommonTime& when,
+                           const Position& rxgeo,
+                           const Position& svgeo,
+                           CarrierBand band) const override;
+
+      uint32_t pre;    ///< The TLM preamble from word 1 of the subframe.
+      uint32_t tlm;    ///< The TLM message from word 1 of the subframe.
+      bool alert;      ///< Alert flag from HOW.
+      bool asFlag;     ///< Anti-spoof flag from HOW.
+         // alpha/Beta terms are seconds, seconds/semi-circle,
+         // seconds/semi-circle**2, seconds/semi-circle**3.  Refer to
+         // IS-GPS-200 Table 20-X.
+      double alpha[4]; ///< Alpha terms of Klobuchar model, as-broadcast units.
+      double beta[4];  ///< Beta terms of Klobuchar model, as-broadcast units.
    };
-
-      /** Define an iterator so C++11 can do things like
-       * for (NavMessageType i : NavMessageTypeIterator()) */
-   typedef EnumIterator<NavMessageType, NavMessageType::Unknown, NavMessageType::Last> NavMessageTypeIterator;
-      /// Set of message types, used by NavLibrary and NavDataFactory.
-   typedef std::set<NavMessageType> NavMessageTypeSet;
-
-      /** Convenient set of all valid (non-meta) message types.
-       * @note This is defined in NavStatic.cpp */
-   extern const NavMessageTypeSet allNavMessageTypes;
-
-   namespace StringUtils
-   {
-         /// Convert a NavMessageType to a whitespace-free string name.
-      std::string asString(NavMessageType e) throw();
-         /// Convert a string name to an NavMessageType
-      NavMessageType asNavMessageType(const std::string& s) throw();
-   }
 
       //@}
 
 }
 
-#endif // GPSTK_NAVMESSAGETYPE_HPP
+#endif // GPSTK_GPSLNAVIONO_HPP

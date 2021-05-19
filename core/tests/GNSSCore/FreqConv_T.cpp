@@ -16,19 +16,18 @@
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
-//  This software was developed by Applied Research Laboratories at the 
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
-
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
 //  Pursuant to DoD Directive 523024 
 //
@@ -36,30 +35,44 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "PNBNavDataFactory.hpp"
 
-using namespace std;
+#include "FreqConv.hpp"
+#include "TestUtil.hpp"
 
-namespace gpstk
+class FreqConv_T
 {
-   PNBNavDataFactory ::
-   PNBNavDataFactory()
-         : navValidity(NavValidityType::Any)
+public:
+   unsigned getFrequencyTest();
+};
+
+
+unsigned FreqConv_T ::
+getFrequencyTest()
+{
+   TUDEF("no class", "getFrequency");
+   for (gpstk::CarrierBand i : gpstk::CarrierBandIterator())
    {
-      setTypeFilter(allNavMessageTypes);
+      if ((i != gpstk::CarrierBand::Unknown) &&
+          (i != gpstk::CarrierBand::Any) &&
+          (i != gpstk::CarrierBand::L1L2) &&
+          (i != gpstk::CarrierBand::Undefined))
+      {
+         TUASSERT(gpstk::getFrequency(i) != 0.0);
+      }
    }
+   TURETURN();
+}
 
 
-   void PNBNavDataFactory ::
-   setTypeFilter(const NavMessageTypeSet& nmts)
-   {
-         // We use boolean values instead of a set so that we're not
-         // checking a set every time a new subframe is added.
-      processEph = (nmts.count(gpstk::NavMessageType::Ephemeris) > 0);
-      processAlm = (nmts.count(gpstk::NavMessageType::Almanac) > 0);
-      processHea = (nmts.count(gpstk::NavMessageType::Health) > 0);
-      processTim = (nmts.count(gpstk::NavMessageType::TimeOffset) > 0);
-      processIono= (nmts.count(gpstk::NavMessageType::Iono) > 0);
-   }
+int main()
+{
+   FreqConv_T testClass;
+   unsigned errorTotal = 0;
 
+   errorTotal += testClass.getFrequencyTest();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+             << std::endl;
+
+   return errorTotal;
 }

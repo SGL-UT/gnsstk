@@ -34,6 +34,10 @@ add_executable(GPSLNavTimeOffset_T GPSLNavTimeOffset_T.cpp)
 target_link_libraries(GPSLNavTimeOffset_T gpstk)
 add_test(GPSLNavTimeOffset_T GPSLNavTimeOffset_T)
 
+add_executable(GPSLNavIono_T GPSLNavIono_T.cpp)
+target_link_libraries(GPSLNavIono_T gpstk)
+add_test(GPSLNavIono_T GPSLNavIono_T)
+
 add_executable(GPSCNavData_T GPSCNavData_T.cpp)
 target_link_libraries(GPSCNavData_T gpstk)
 add_test(GPSCNavData_T GPSCNavData_T)

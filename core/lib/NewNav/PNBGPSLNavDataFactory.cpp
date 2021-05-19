@@ -41,6 +41,7 @@
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
 #include "GPSLNavTimeOffset.hpp"
+#include "GPSLNavIono.hpp"
 #include "TimeCorrection.hpp"
 #include "EngNav.hpp"
 
@@ -289,6 +290,56 @@ enum AlmBitInfo
    asbDataID = 60,
    anbDataID = 2,
    ascDataID = 1,
+
+   asbPageID = asbDataID + anbDataID,
+   anbPageID = 6,
+   ascPageID = 1,
+
+      // ionospheric parameters (sf4 p18)
+
+   asbAlpha0 = asbPageID + anbPageID,
+   anbAlpha0 = 8,
+   ascAlpha0 = -30,
+
+   asbAlpha1 = asbAlpha0 + anbAlpha0,
+   anbAlpha1 = 8,
+   ascAlpha1 = -27,
+
+   asbParity3 = asbAlpha1 + anbAlpha1,
+   anbParity3 = 6,
+   ascParity3 = 1,
+
+   asbAlpha2 = asbParity3 + anbParity3,
+   anbAlpha2 = 8,
+   ascAlpha2 = -24,
+
+   asbAlpha3 = asbAlpha2 + anbAlpha2,
+   anbAlpha3 = 8,
+   ascAlpha3 = -24,
+
+   asbBeta0 = asbAlpha3 + anbAlpha3,
+   anbBeta0 = 8,
+   ascBeta0 = 11,
+
+   asbParity4 = asbBeta0 + anbBeta0,
+   anbParity4 = 6,
+   ascParity4 = 1,
+
+   asbBeta1 = asbParity4 + anbParity4,
+   anbBeta1 = 8,
+   ascBeta1 = 14,
+
+   asbBeta2 = asbBeta1 + anbBeta1,
+   anbBeta2 = 8,
+   ascBeta2 = 16,
+
+   asbBeta3 = asbBeta2 + anbBeta2,
+   anbBeta3 = 8,
+   ascBeta3 = 16,
+
+   asbParity5 = asbBeta3 + anbBeta3,
+   anbParity5 = 6,
+   ascParity5 = 1,
 };
 
 namespace gpstk
@@ -359,7 +410,7 @@ namespace gpstk
                break;
             case 4:
             case 5:
-               svid = navIn->asUnsignedLong(62,6,1);
+               svid = navIn->asUnsignedLong(asbPageID,anbPageID,ascPageID);
                dataID = navIn->asUnsignedLong(asbDataID,anbDataID,ascDataID);
                useQZSS =
                   ((navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)&&
@@ -883,6 +934,30 @@ namespace gpstk
          // data has already been checked (it will have been by
          // addData).
          // svid 56 = sf 4 page 18.
+      if (PNBNavDataFactory::processIono)
+      {
+         NavDataPtr p1 = std::make_shared<GPSLNavIono>();
+         p1->timeStamp = navIn->getTransmitTime();
+         p1->signal = NavMessageID(
+            NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
+                           navIn->getobsID(), navIn->getNavID()),
+            NavMessageType::Iono);
+         GPSLNavIono *iono = dynamic_cast<GPSLNavIono*>(p1.get());
+            // GPSLNavIono
+         iono->pre = navIn->asUnsignedLong(fsbPre,fnbPre,fscPre);
+         iono->tlm = navIn->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
+         iono->alert = navIn->asBool(fsbAlert);
+         iono->asFlag = navIn->asBool(fsbAS);
+         iono->alpha[0] = navIn->asSignedDouble(asbAlpha0,anbAlpha0,ascAlpha0);
+         iono->alpha[1] = navIn->asSignedDouble(asbAlpha1,anbAlpha1,ascAlpha1);
+         iono->alpha[2] = navIn->asSignedDouble(asbAlpha2,anbAlpha2,ascAlpha2);
+         iono->alpha[3] = navIn->asSignedDouble(asbAlpha3,anbAlpha3,ascAlpha3);
+         iono->beta[0] = navIn->asSignedDouble(asbBeta0,anbBeta0,ascBeta0);
+         iono->beta[1] = navIn->asSignedDouble(asbBeta1,anbBeta1,ascBeta1);
+         iono->beta[2] = navIn->asSignedDouble(asbBeta2,anbBeta2,ascBeta2);
+         iono->beta[3] = navIn->asSignedDouble(asbBeta3,anbBeta3,ascBeta3);
+         navOut.push_back(p1);
+      }
       if (!PNBNavDataFactory::processTim)
       {
             // User doesn't want time offset data so don't do any processing.

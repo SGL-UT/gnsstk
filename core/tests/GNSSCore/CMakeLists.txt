@@ -177,5 +177,9 @@ add_executable(XmitAnt_T XmitAnt_T.cpp)
 target_link_libraries(XmitAnt_T gpstk)
 add_test(GNSSCore_XmitAnt XmitAnt_T)
 
+add_executable(FreqConv_T FreqConv_T.cpp)
+target_link_libraries(FreqConv_T gpstk)
+add_test(GNSSCore_FreqConv FreqConv_T)
+
 ###############################################################################
 ###############################################################################

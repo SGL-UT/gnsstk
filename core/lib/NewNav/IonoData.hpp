@@ -36,45 +36,45 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "NavMessageType.hpp"
+#ifndef GPSTK_IONODATA_HPP
+#define GPSTK_IONODATA_HPP
+
+#include "NavData.hpp"
+#include "Position.hpp"
 
 namespace gpstk
 {
-   namespace StringUtils
+      /// @ingroup NavFactory
+      //@{
+
+      /** Defines the interface for classes that provide the ability
+       * to compute ionospheric delay, using data extracted from GNSS
+       * navigation messages. */
+   class IonoData : public NavData
    {
-      std::string asString(NavMessageType e) throw()
-      {
-         switch (e)
-         {
-            case NavMessageType::Unknown:    return "Unknown";
-            case NavMessageType::Almanac:    return "Almanac";
-            case NavMessageType::Ephemeris:  return "Ephemeris";
-            case NavMessageType::TimeOffset: return "TimeOffset";
-            case NavMessageType::Health:     return "Health";
-            case NavMessageType::Clock:      return "Clock";
-            case NavMessageType::Iono:       return "Iono";
-            default:                         return "???";
-         } // switch (e)
-      } // asString(NavMessageType)
+   public:
+         /// Set the messageType
+      IonoData()
+      { signal.messageType = NavMessageType::Iono; }
 
+         /// Obligatory virtual destructor.
+      virtual ~IonoData()
+      {}
 
-      NavMessageType asNavMessageType(const std::string& s) throw()
-      {
-         if (s == "Unknown")
-            return NavMessageType::Unknown;
-         if (s == "Almanac")
-            return NavMessageType::Almanac;
-         if (s == "Ephemeris")
-            return NavMessageType::Ephemeris;
-         if (s == "TimeOffset")
-            return NavMessageType::TimeOffset;
-         if (s == "Health")
-            return NavMessageType::Health;
-         if (s == "Clock")
-            return NavMessageType::Clock;
-         if (s == "Iono")
-            return NavMessageType::Iono;
-         return NavMessageType::Unknown;
-      } // asNavMessageType(string)
-   } // namespace StringUtils
-} // namespace gpstk
+         /** Get the ionospheric correction in meters.
+          * @param[in] when The time of the observation to correct.
+          * @param[in] rxgeo The receiver's geodetic position.
+          * @param[in] svgeo The observed satellite's geodetic position.
+          * @param[in] band The carrier band of the signal being corrected.
+          * @return The ionospheric delay, in meters, on band. */
+      virtual double getCorrection(const CommonTime& when,
+                                   const Position& rxgeo,
+                                   const Position& svgeo,
+                                   CarrierBand band) const = 0;
+   };
+
+      //@}
+
+}
+
+#endif // GPSTK_IONODATA_HPP
