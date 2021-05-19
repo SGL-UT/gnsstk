@@ -51,6 +51,7 @@
 #include "GPSCNavEph.hpp"
 #include "GPSCNavAlm.hpp"
 #include "GPSCNavRedAlm.hpp"
+#include "GPSCNavIono.hpp"
 
 namespace gpstk
 {
@@ -342,9 +343,10 @@ addDataTest()
    navOut.clear();
       // clock data completes the ephemeris
    TUASSERTE(bool, true, uut.addData(msg30CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, ephCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
       // nothing in message type 32 that we care about (not completing
       // an ephemeris)
@@ -372,9 +374,10 @@ addDataTest()
    navOut.clear();
       // clock data completes the ephemeris
    TUASSERTE(bool, true, uut.addData(msg30CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, ephCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
       // nothing in message type 32 that we care about (not completing
       // an ephemeris)
@@ -451,6 +454,10 @@ countResults(const gpstk::NavDataPtrList& navOut)
       else if (dynamic_cast<gpstk::GPSCNavHealth*>(i.get()) != nullptr)
       {
          heaCount++;
+      }
+      else if (dynamic_cast<gpstk::GPSCNavIono*>(i.get()) != nullptr)
+      {
+         ionoCount++;
       }
       else
       {

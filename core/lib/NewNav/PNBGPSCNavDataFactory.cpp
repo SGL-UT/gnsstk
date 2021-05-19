@@ -43,6 +43,7 @@
 #include "GPSCNavEph.hpp"
 #include "GPSCNavHealth.hpp"
 #include "GPSCNavTimeOffset.hpp"
+#include "GPSCNavIono.hpp"
 #include "TimeCorrection.hpp"
 
 using namespace std;
@@ -432,6 +433,95 @@ enum CNavBitInfo
    rsbHeaL2 = 29,         ///< L2 Signal health bit
    rsbHeaL5 = 30,         ///< L5 Signal health bit
    
+      /// @note these apply to message type 35 (clock & GGTO)
+
+   isbtop = esbAlert + enbAlert,
+   inbtop = 11,
+   isctop = 300,
+
+   isbURAned0 = isbtop + inbtop,
+   inbURAned0 = 5,
+   iscURAned0 = 1,
+
+   isbURAned1 = isbURAned0 + inbURAned0,
+   inbURAned1 = 3,
+   iscURAned1 = 1,
+
+   isbURAned2 = isbURAned1 + inbURAned1,
+   inbURAned2 = 3,
+   iscURAned2 = 1,
+
+   isbtoc = isbURAned2 + inbURAned2,
+   inbtoc = 11,
+   isctoc = 300,
+
+   isbaf0 = isbtoc + inbtoc,
+   inbaf0 = 26,
+   iscaf0 = -35,
+
+   isbaf1 = isbaf0 + inbaf0,
+   inbaf1 = 20,
+   iscaf1 = -48,
+
+   isbaf2 = isbaf1 + inbaf1,
+   inbaf2 = 10,
+   iscaf2 = -60,
+
+   isbTgd = isbaf2 + inbaf2,
+   inbTgd = 13,
+   iscTgd = -35,
+
+   isbISCL1CA = isbTgd + inbTgd,
+   inbISCL1CA = 13,
+   iscISCL1CA = -35,
+
+   isbISCL2C = isbISCL1CA + inbISCL1CA,
+   inbISCL2C = 13,
+   iscISCL2C = -35,
+
+   isbISCL5I5 = isbISCL2C + inbISCL2C,
+   inbISCL5I5 = 13,
+   iscISCL5I5 = -35,
+
+   isbISCL5Q5 = isbISCL5I5 + inbISCL5I5,
+   inbISCL5Q5 = 13,
+   iscISCL5Q5 = -35,
+
+   isbAlpha0 = isbISCL5Q5 + inbISCL5Q5,
+   inbAlpha0 = 8,
+   iscAlpha0 = -30,
+
+   isbAlpha1 = isbAlpha0 + inbAlpha0,
+   inbAlpha1 = 8,
+   iscAlpha1 = -27,
+
+   isbAlpha2 = isbAlpha1 + inbAlpha1,
+   inbAlpha2 = 8,
+   iscAlpha2 = -24,
+
+   isbAlpha3 = isbAlpha2 + inbAlpha2,
+   inbAlpha3 = 8,
+   iscAlpha3 = -24,
+
+   isbBeta0 = isbAlpha3 + inbAlpha3,
+   inbBeta0 = 8,
+   iscBeta0 = 11,
+
+   isbBeta1 = isbBeta0 + inbBeta0,
+   inbBeta1 = 8,
+   iscBeta1 = 14,
+
+   isbBeta2 = isbBeta1 + inbBeta1,
+   inbBeta2 = 8,
+   iscBeta2 = 16,
+
+   isbBeta3 = isbBeta2 + inbBeta2,
+   inbBeta3 = 8,
+   iscBeta3 = 16,
+
+   isbWNOP = isbBeta3 + inbBeta3,
+   inbWNOP = 8,
+   iscWNOP = 0
 };
 
 
@@ -466,13 +556,17 @@ namespace gpstk
              ((msgType >= 30) && (msgType <= 37)) ||
              (isQZSS && ((msgType == 46) || (msgType == 47) ||
                          (msgType == 49) || (msgType == 51) ||
-                         (msgType == 53))))
+                         (msgType == 53) || (msgType == 61))))
          {
             rv = rv && processEph(msgType, navIn, navOut);
          }
          if ((msgType == 31) || (isQZSS && (msgType == 47)))
          {
             rv = rv && process31(msgType, navIn, navOut);
+         }
+         else if ((msgType == 30) || (isQZSS && (msgType == 61)))
+         {
+            rv = rv && process30(navIn, navOut);
          }
          else if ((msgType == 12) || (isQZSS && (msgType == 28)))
          {
@@ -547,6 +641,7 @@ namespace gpstk
          case 49: // QZSS rebroadcast of GPS MT 33
          case 51: // QZSS rebroadcast of GPS MT 35
          case 53: // QZSS rebroadcast of GPS MT 37
+         case 61: // QZSS "Japan area" ionospheric parameters
             vecIdx = ephMClk;
             break;
          default:
@@ -953,6 +1048,39 @@ namespace gpstk
          processRedAlmOrb(msgType,rsb12p5,pre,alert,wna,toa,navIn,navOut) &&
          processRedAlmOrb(msgType,rsb12p6,pre,alert,wna,toa,navIn,navOut) &&
          processRedAlmOrb(msgType,rsb12p7,pre,alert,wna,toa,navIn,navOut);
+   }
+
+
+   bool PNBGPSCNavDataFactory ::
+   process30(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   {
+      if (!PNBNavDataFactory::processIono)
+      {
+            // User doesn't want ionospheric data so don't do any processing.
+         return true;
+      }
+      NavDataPtr p0 = std::make_shared<GPSCNavIono>();
+      GPSCNavIono *iono = dynamic_cast<GPSCNavIono*>(p0.get());
+         // NavData
+      p0->timeStamp = navIn->getTransmitTime();
+      p0->signal = NavMessageID(
+         NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
+                               navIn->getobsID(), navIn->getNavID()),
+         NavMessageType::Iono);
+         // KlobucharIonoData
+      iono->alpha[0] = navIn->asSignedDouble(isbAlpha0,inbAlpha0,iscAlpha0);
+      iono->alpha[1] = navIn->asSignedDouble(isbAlpha1,inbAlpha1,iscAlpha1);
+      iono->alpha[2] = navIn->asSignedDouble(isbAlpha2,inbAlpha2,iscAlpha2);
+      iono->alpha[3] = navIn->asSignedDouble(isbAlpha3,inbAlpha3,iscAlpha3);
+      iono->beta[0] = navIn->asSignedDouble(isbBeta0,inbBeta0,iscBeta0);
+      iono->beta[1] = navIn->asSignedDouble(isbBeta1,inbBeta1,iscBeta1);
+      iono->beta[2] = navIn->asSignedDouble(isbBeta2,inbBeta2,iscBeta2);
+      iono->beta[3] = navIn->asSignedDouble(isbBeta3,inbBeta3,iscBeta3);
+         // GPSCNavIono
+      iono->pre = navIn->asUnsignedLong(esbPre,enbPre,escPre);
+      iono->alert = navIn->asBool(esbAlert);
+      navOut.push_back(p0);
+      return true;
    }
 
 

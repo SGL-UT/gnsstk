@@ -36,7 +36,7 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "GPSLNavIono.hpp"
+#include "KlobucharIonoData.hpp"
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
 
@@ -49,50 +49,39 @@ namespace gpstk
    }
 }
 
-class GPSLNavIono_T
+class KlobucharIonoData_T
 {
 public:
       /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
-   unsigned getUserTimeTest();
    unsigned getCorrectionTest();
 };
 
 
-unsigned GPSLNavIono_T ::
+unsigned KlobucharIonoData_T ::
 constructorTest()
 {
-   TUDEF("GPSLNavIono", "GPSLNavIono");
-   gpstk::GPSLNavIono uut;
+   TUDEF("KlobucharIonoData", "KlobucharIonoData");
+   gpstk::KlobucharIonoData uut;
    TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Iono,
              uut.signal.messageType);
-   TUASSERTE(uint32_t, 0, uut.pre);
-   TUASSERTE(uint32_t, 0, uut.tlm);
-   TUASSERTE(bool, false, uut.alert);
-   TUASSERTE(bool, false, uut.asFlag);
+   TUASSERTFE(0.0, uut.alpha[0]);
+   TUASSERTFE(0.0, uut.alpha[1]);
+   TUASSERTFE(0.0, uut.alpha[2]);
+   TUASSERTFE(0.0, uut.alpha[3]);
+   TUASSERTFE(0.0, uut.beta[0]);
+   TUASSERTFE(0.0, uut.beta[1]);
+   TUASSERTFE(0.0, uut.beta[2]);
+   TUASSERTFE(0.0, uut.beta[3]);
    TURETURN();
 }
 
 
-unsigned GPSLNavIono_T ::
-getUserTimeTest()
-{
-   TUDEF("GPSLNavIono", "getUserTime");
-   gpstk::GPSLNavIono uut;
-   uut.timeStamp = gpstk::GPSWeekSecond(2100,135.0);
-   gpstk::CommonTime exp(gpstk::GPSWeekSecond(2100,135.0));
-      // iono = 1 subframes * 6 seconds
-   exp = exp + 6.0;
-   TUASSERTE(gpstk::CommonTime, exp, uut.getUserTime());
-   TURETURN();
-}
-
-
-unsigned GPSLNavIono_T ::
+unsigned KlobucharIonoData_T ::
 getCorrectionTest()
 {
-   TUDEF("GPSLNavIono", "getCorrection");
-   gpstk::GPSLNavIono uut;
+   TUDEF("KlobucharIonoData", "getCorrection");
+   gpstk::KlobucharIonoData uut;
    gpstk::CommonTime when = gpstk::GPSWeekSecond(2100,135.0);
    gpstk::Position rx, sv;
    rx.setECEF(-1575232.0141,-4707872.2332, 3993198.4383);
@@ -115,11 +104,10 @@ getCorrectionTest()
 
 int main()
 {
-   GPSLNavIono_T testClass;
+   KlobucharIonoData_T testClass;
    unsigned errorTotal = 0;
 
    errorTotal += testClass.constructorTest();
-   errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getCorrectionTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal

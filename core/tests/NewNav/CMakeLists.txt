@@ -14,6 +14,10 @@ add_executable(MultiFormatNavDataFactory_T MultiFormatNavDataFactory_T.cpp)
 target_link_libraries(MultiFormatNavDataFactory_T gpstk)
 add_test(MultiFormatNavDataFactory_T MultiFormatNavDataFactory_T)
 
+add_executable(KlobucharIonoData_T KlobucharIonoData_T.cpp)
+target_link_libraries(KlobucharIonoData_T gpstk)
+add_test(KlobucharIonoData_T KlobucharIonoData_T)
+
 add_executable(GPSLNavData_T GPSLNavData_T.cpp)
 target_link_libraries(GPSLNavData_T gpstk)
 add_test(GPSLNavData_T GPSLNavData_T)
@@ -73,6 +77,10 @@ add_test(GPSCNav2Health_T GPSCNav2Health_T)
 add_executable(GPSCNav2TimeOffset_T GPSCNav2TimeOffset_T.cpp)
 target_link_libraries(GPSCNav2TimeOffset_T gpstk)
 add_test(GPSCNav2TimeOffset_T GPSCNav2TimeOffset_T)
+
+add_executable(GPSCNavIono_T GPSCNavIono_T.cpp)
+target_link_libraries(GPSCNavIono_T gpstk)
+add_test(GPSCNavIono_T GPSCNavIono_T)
 
 add_executable(NavDataFactory_T NavDataFactory_T.cpp)
 target_link_libraries(NavDataFactory_T gpstk)

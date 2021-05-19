@@ -36,37 +36,35 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_GPSLNAVIONO_HPP
-#define GPSTK_GPSLNAVIONO_HPP
+#include "GPSCNavIono.hpp"
+#include "TimeString.hpp"
+#include "YDSTime.hpp"
+#include "FreqConv.hpp"
 
-#include "KlobucharIonoData.hpp"
+using namespace std;
 
 namespace gpstk
 {
-      /// @ingroup NavFactory
-      //@{
-
-      /// Class containing data elements unique to GPS LNav ionospheric data.
-   class GPSLNavIono : public KlobucharIonoData
+   GPSCNavIono ::
+   GPSCNavIono()
+         : pre(0),
+           alert(false)
    {
-   public:
-         /// Sets the nav message type.
-      GPSLNavIono();
+   }
 
-         /** Checks the contents of this message against known
-          * validity rules as defined in the appropriate ICD.
-          * @return true if this message is valid according to ICD criteria.
-          */
-      bool validate() const override;
 
-      uint32_t pre;    ///< The TLM preamble from word 1 of the subframe.
-      uint32_t tlm;    ///< The TLM message from word 1 of the subframe.
-      bool alert;      ///< Alert flag from HOW.
-      bool asFlag;     ///< Anti-spoof flag from HOW.
-   };
+   bool GPSCNavIono ::
+   validate() const
+   {
+      return (KlobucharIonoData::validate() && ((pre == 0) || (pre == 0x8b)));
+   }
 
-      //@}
 
+   CommonTime GPSCNavIono ::
+   getUserTime() const
+   {
+      if (signal.nav == NavType::GPSCNAVL2)
+         return timeStamp + 12.0;
+      return timeStamp + 6.0;
+   }
 }
-
-#endif // GPSTK_GPSLNAVIONO_HPP

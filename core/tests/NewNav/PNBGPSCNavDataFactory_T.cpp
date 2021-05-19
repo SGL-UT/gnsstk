@@ -43,6 +43,7 @@
 #include "GPSCNavEph.hpp"
 #include "GPSCNavAlm.hpp"
 #include "GPSCNavRedAlm.hpp"
+#include "GPSCNavIono.hpp"
 #include "TimeString.hpp"
 
 using namespace std;
@@ -79,6 +80,7 @@ public:
    unsigned processAlmOrbTest();
    unsigned processRedAlmOrbTest();
    unsigned process12Test();
+   unsigned process30Test();
       /** Test decoding of message type 31 - clock & reduced almanac.
        * @note The truth data for the almanacs in this test have not
        *   been vetted. */
@@ -91,15 +93,17 @@ public:
       /// Count the various types of messages present in navOut.
    void countResults(const gpstk::NavDataPtrList& navOut);
 
+   void resetCount()
+   { almCount = ephCount = toCount = heaCount = ionoCount = otherCount = 0; }
       /// Counts of messages, set by countResults.
-   unsigned almCount, ephCount, toCount, heaCount, otherCount;
+   unsigned almCount, ephCount, toCount, heaCount, ionoCount, otherCount;
 };
 
 
 PNBGPSCNavDataFactory_T ::
 PNBGPSCNavDataFactory_T()
-      : almCount(0), ephCount(0), toCount(0), heaCount(0), otherCount(0)
 {
+   resetCount();
 #include "CNavTestDataDef.hpp"
 }
 
@@ -133,9 +137,10 @@ addDataAllTest()
    navOut.clear();
       // clock data completes the ephemeris
    TUASSERTE(bool, true, uut.addData(msg30CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, ephCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
       // nothing in message type 32 that we care about (not completing
       // an ephemeris)
@@ -163,9 +168,10 @@ addDataAllTest()
    navOut.clear();
       // clock data completes the ephemeris
    TUASSERTE(bool, true, uut.addData(msg30CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, ephCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
       // nothing in message type 32 that we care about (not completing
       // an ephemeris)
@@ -453,7 +459,7 @@ processEphTest()
       // success, health data only
    TUASSERTE(bool, true, uut.processEph(10, msg10CNAVGPSL2, navOut));
    TUASSERTE(size_t, 3, navOut.size());
-   heaCount = 0, ephCount = 0, otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i.get())) != nullptr)
@@ -491,7 +497,7 @@ processEphTest()
    TUASSERTE(unsigned, 3, heaCount);
    TUASSERTE(unsigned, 0, otherCount);
    navOut.clear();
-   heaCount = otherCount = 0;
+   resetCount();
    TUASSERTE(bool, true, uut.processEph(11, msg11CNAVGPSL2, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
@@ -602,7 +608,7 @@ processAlmOrbTest()
    gpstk::NavDataPtrList navOut;
    TUASSERTE(bool, true, uut.processAlmOrb(37, msg37CNAVQZSSL5, navOut));
    TUASSERTE(size_t, 4, navOut.size());
-   heaCount = almCount = otherCount = 0;
+   resetCount();
    gpstk::GPSCNavHealth *hea;
    gpstk::GPSCNavAlm *alm;
    for (const auto& i : navOut)
@@ -708,6 +714,36 @@ process12Test()
    TURETURN();
 }
 
+
+unsigned PNBGPSCNavDataFactory_T ::
+process30Test()
+{
+   TUDEF("PNBGPSCNavDataFactory", "process30");
+   gpstk::PNBGPSCNavDataFactory uut;
+   gpstk::NavMessageID nmidExp(
+      gpstk::NavSatelliteID(ephCNAVGPSL2sid, ephCNAVGPSL2sid, oidCNAVGPSL2,
+                            gpstk::NavType::GPSCNAVL2),
+      gpstk::NavMessageType::Iono);
+   gpstk::NavDataPtrList navOut;
+   gpstk::GPSCNavIono *iono = nullptr;
+   TUASSERTE(bool, true, uut.process30(msg30CNAVGPSL2, navOut));
+   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERT((iono = dynamic_cast<gpstk::GPSCNavIono*>(navOut.begin()->get()))
+            != nullptr);
+   TUASSERTE(gpstk::CommonTime, msg30CNAVGPSL2ct, iono->timeStamp);
+   TUASSERTE(gpstk::NavMessageID, nmidExp, iono->signal);
+   TUASSERTFE( 4.656612870e-09, iono->alpha[0]);
+   TUASSERTFE( 1.490116118e-08, iono->alpha[1]);
+   TUASSERTFE(-5.960464478e-08, iono->alpha[2]);
+   TUASSERTFE(-1.192092897e-07, iono->alpha[3]);
+   TUASSERTFE( 8.192000000e+04, iono->beta[0]);
+   TUASSERTFE( 8.192000000e+04, iono->beta[1]);
+   TUASSERTFE(-6.553600000e+04, iono->beta[2]);
+   TUASSERTFE(-5.242880000e+05, iono->beta[3]);
+   TUASSERTE(uint32_t, 0x8b, iono->pre);
+   TUASSERTE(bool, false, iono->alert);
+   TURETURN();
+}
 
 unsigned PNBGPSCNavDataFactory_T ::
 process31Test()
@@ -1110,7 +1146,7 @@ process35Test()
 void PNBGPSCNavDataFactory_T ::
 countResults(const gpstk::NavDataPtrList& navOut)
 {
-   almCount = ephCount = toCount = heaCount = otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if (dynamic_cast<gpstk::GPSCNavAlm*>(i.get()) != nullptr)
@@ -1128,6 +1164,10 @@ countResults(const gpstk::NavDataPtrList& navOut)
       else if (dynamic_cast<gpstk::GPSCNavHealth*>(i.get()) != nullptr)
       {
          heaCount++;
+      }
+      else if (dynamic_cast<gpstk::GPSCNavIono*>(i.get()) != nullptr)
+      {
+         ionoCount++;
       }
       else
       {
@@ -1154,6 +1194,7 @@ int main()
    errorTotal += testClass.processAlmOrbTest();
    errorTotal += testClass.processRedAlmOrbTest();
    errorTotal += testClass.process12Test();
+   errorTotal += testClass.process30Test();
    errorTotal += testClass.process31Test();
    errorTotal += testClass.process33Test();
    errorTotal += testClass.process35Test();

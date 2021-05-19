@@ -47,54 +47,18 @@ namespace gpstk
 {
    GPSLNavIono ::
    GPSLNavIono()
-         : alpha{0,0,0,0},
-           beta{0,0,0,0}
+         : pre(0),
+           tlm(0),
+           alert(false),
+           asFlag(false)
    {
-      signal.messageType = NavMessageType::Iono;
       msgLenSec = 6.0;
    }
 
 
-   double GPSLNavIono ::
-   getCorrection(const CommonTime& when,
-                 const Position& rxgeo,
-                 const Position& svgeo,
-                 CarrierBand band) const
+   bool GPSLNavIono ::
+   validate() const
    {
-         // style guide strongly discourages using underscores, but
-         // I'm using them here to denote subscripts, latex style.
-      double el = rxgeo.elevationGeodetic(svgeo) / 180.0;
-      double az = rxgeo.azimuthGeodetic(svgeo) / 180.0;
-      double phi_u = rxgeo.getGeodeticLatitude() / 180.0;
-      double lambda_u = rxgeo.getLongitude() / 180.0;
-         // constant values defined in Figure 20-4, IS-GPS-200
-      double psi = (0.0137 / (el+0.11)) - 0.022;
-      double phi_i = phi_u + psi * ::cos(az * PI);
-      if (phi_i > 0.416)
-         phi_i = 0.416;
-      if (phi_i < -0.416)
-         phi_i = -0.416;
-      double lambda_i = lambda_u + (psi * ::sin(az * PI) / ::cos(phi_i * PI));
-      double t = 43200 * lambda_i + YDSTime(when).sod;
-      double phi_m = phi_i + 0.064 * ::cos((lambda_i-1.617) * PI);
-      double iAMP = alpha[0]+phi_m*(alpha[1]+phi_m*(alpha[2]+phi_m*alpha[3]));
-      double iPER =  beta[0]+phi_m*( beta[1]+phi_m*( beta[2]+phi_m* beta[3]));
-      if (iAMP < 0.0)
-         iAMP = 0.0;
-      if (iPER < 72000.0)
-         iPER = 72000.0;
-      double x = TWO_PI * (t - 50400.0) / iPER;
-      double iF = 1.0 + 16.0 * (0.53 - el)*(0.53 - el)*(0.53 - el);
-      double t_iono = 0.0;
-      if (fabs(x) < 1.57)
-         t_iono = iF * (5.0e-9 + iAMP * (1 + x*x * (-0.5 + x*x/24.0)));
-      else
-         t_iono = iF * 5.0e-9;
-      if (band != gpstk::CarrierBand::L1)
-      {
-         double f2 = getFrequency(band);
-         t_iono *= (FREQ_GPS_L1/f2)*(FREQ_GPS_L1/f2);
-      }
-      return t_iono * C_MPS;
+      return (KlobucharIonoData::validate() && ((pre == 0) || (pre == 0x8b)));
    }
 }

@@ -36,10 +36,10 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_GPSLNAVIONO_HPP
-#define GPSTK_GPSLNAVIONO_HPP
+#ifndef GPSTK_KLOBUCHARIONODATA_HPP
+#define GPSTK_KLOBUCHARIONODATA_HPP
 
-#include "KlobucharIonoData.hpp"
+#include "IonoData.hpp"
 
 namespace gpstk
 {
@@ -47,26 +47,40 @@ namespace gpstk
       //@{
 
       /// Class containing data elements unique to GPS LNav ionospheric data.
-   class GPSLNavIono : public KlobucharIonoData
+   class KlobucharIonoData : public IonoData
    {
    public:
          /// Sets the nav message type.
-      GPSLNavIono();
+      KlobucharIonoData();
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
+          * @todo implement some checking.
           * @return true if this message is valid according to ICD criteria.
           */
-      bool validate() const override;
+      bool validate() const override
+      { return true; }
 
-      uint32_t pre;    ///< The TLM preamble from word 1 of the subframe.
-      uint32_t tlm;    ///< The TLM message from word 1 of the subframe.
-      bool alert;      ///< Alert flag from HOW.
-      bool asFlag;     ///< Anti-spoof flag from HOW.
+         /** Get the ionospheric correction in meters.
+          * @param[in] when The time of the observation to correct.
+          * @param[in] rxgeo The receiver's geodetic position.
+          * @param[in] svgeo The observed satellite's geodetic position.
+          * @param[in] band The carrier band of the signal being corrected.
+          * @return The ionospheric delay, in meters, on band. */
+      double getCorrection(const CommonTime& when,
+                           const Position& rxgeo,
+                           const Position& svgeo,
+                           CarrierBand band) const override;
+
+         // alpha/Beta terms are seconds, seconds/semi-circle,
+         // seconds/semi-circle**2, seconds/semi-circle**3.  Refer to
+         // IS-GPS-200 Table 20-X.
+      double alpha[4]; ///< Alpha terms of Klobuchar model, using semi-circles.
+      double beta[4];  ///< Beta terms of Klobuchar model, using semi-circles.
    };
 
       //@}
 
 }
 
-#endif // GPSTK_GPSLNAVIONO_HPP
+#endif // GPSTK_KLOBUCHARIONODATA_HPP

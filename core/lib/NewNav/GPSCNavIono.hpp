@@ -36,8 +36,8 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_GPSLNAVIONO_HPP
-#define GPSTK_GPSLNAVIONO_HPP
+#ifndef GPSTK_GPSCNAVIONO_HPP
+#define GPSTK_GPSCNAVIONO_HPP
 
 #include "KlobucharIonoData.hpp"
 
@@ -46,12 +46,12 @@ namespace gpstk
       /// @ingroup NavFactory
       //@{
 
-      /// Class containing data elements unique to GPS LNav ionospheric data.
-   class GPSLNavIono : public KlobucharIonoData
+      /// Class containing data elements unique to GPS CNav ionospheric data.
+   class GPSCNavIono : public KlobucharIonoData
    {
    public:
          /// Sets the nav message type.
-      GPSLNavIono();
+      GPSCNavIono();
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
@@ -59,14 +59,22 @@ namespace gpstk
           */
       bool validate() const override;
 
-      uint32_t pre;    ///< The TLM preamble from word 1 of the subframe.
-      uint32_t tlm;    ///< The TLM message from word 1 of the subframe.
-      bool alert;      ///< Alert flag from HOW.
-      bool asFlag;     ///< Anti-spoof flag from HOW.
+         /** Returns the time when the navigation message would have
+          * first been available to the user equipment, i.e. the time
+          * at which the final bit of a given broadcast navigation
+          * message is received.  This is used by
+          * NavDataFactoryWithStore::find() in User mode.
+          * @return transmit time + 12s or 6s, depending on whether
+          *   this is CNAV on L5 or on L2.
+          */
+      CommonTime getUserTime() const override;
+
+      uint32_t pre; ///< The preamble from the start of the subframe.
+      bool alert;   ///< Alert flag
    };
 
       //@}
 
 }
 
-#endif // GPSTK_GPSLNAVIONO_HPP
+#endif // GPSTK_GPSCNAVIONO_HPP
