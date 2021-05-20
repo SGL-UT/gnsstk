@@ -43,6 +43,7 @@
 #include "GPSCNav2Eph.hpp"
 #include "GPSCNav2Alm.hpp"
 //#include "GPSCNav2RedAlm.hpp"
+#include "GPSCNav2Iono.hpp"
 #include "TimeString.hpp"
 
 using namespace std;
@@ -89,15 +90,17 @@ public:
       /// Count the various types of messages present in navOut.
    void countResults(const gpstk::NavDataPtrList& navOut);
 
+   void resetCount()
+   { almCount = ephCount = toCount = heaCount = ionoCount = otherCount = 0; }
       /// Counts of messages, set by countResults.
-   unsigned almCount, ephCount, toCount, heaCount, otherCount;
+   unsigned almCount, ephCount, toCount, heaCount, ionoCount, otherCount;
 };
 
 
 PNBGPSCNav2DataFactory_T ::
 PNBGPSCNav2DataFactory_T()
-      : almCount(0), ephCount(0), toCount(0), heaCount(0), otherCount(0)
 {
+   resetCount();
 #include "CNav2TestDataDef.hpp"
 }
 
@@ -127,9 +130,10 @@ addDataAllTest()
    navOut.clear();
       // get 1 time offset from subframe 3 page 1
    TUASSERTE(bool, true, uut.addData(sf3p1CNAV2GPS, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, toCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
       // get 0 time offsets from subframe 3 page 2 (because no data available)
    TUASSERTE(bool, true, uut.addData(sf3p2CNAV2GPS, navOut));
@@ -154,9 +158,10 @@ addDataAllTest()
    navOut.clear();
       // get 1 time offset from subframe 3 page 1
    TUASSERTE(bool, true, uut.addData(sf3p1CNAV2QZSS, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, toCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
       // get 1 time offset from subframe 3 page 2
    TUASSERTE(bool, true, uut.addData(sf3p2CNAV2QZSS, navOut));
@@ -384,7 +389,7 @@ processEphTest()
       // success, health and ephemeris
    TUASSERTE(bool, true, uut.processEph(sf2CNAV2GPS, navOut));
    TUASSERTE(size_t, 2, navOut.size());
-   heaCount = 0, ephCount = 0, otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((hea = dynamic_cast<gpstk::GPSCNav2Health*>(i.get())) != nullptr)
@@ -494,7 +499,7 @@ processAlmOrbTest()
       // success, health and almanac
    TUASSERTE(bool, true, uut.processAlmOrb(sf3p4CNAV2GPS, navOut));
    TUASSERTE(size_t, 4, navOut.size());
-   heaCount = 0, almCount = 0, otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((hea = dynamic_cast<gpstk::GPSCNav2Health*>(i.get())) != nullptr)
@@ -593,15 +598,17 @@ processUTCIonoTest()
       gpstk::NavMessageType::TimeOffset);
    gpstk::NavDataPtrList navOut;
    gpstk::GPSCNav2TimeOffset *to;
+   gpstk::GPSCNav2Iono *iono;
       // success, time offset only
    TUASSERTE(bool, true, uut.processUTCIono(sf3p1CNAV2GPS, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   toCount = 0, otherCount = 0;
+   TUASSERTE(size_t, 2, navOut.size());
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((to = dynamic_cast<gpstk::GPSCNav2TimeOffset*>(i.get())) != nullptr)
       {
          toCount++;
+         nmidExp.messageType = gpstk::NavMessageType::TimeOffset;
             // NavData fields
          TUASSERTE(gpstk::CommonTime, sf3p1CNAV2GPSct, to->timeStamp);
          TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
@@ -621,12 +628,29 @@ processUTCIonoTest()
          TUASSERTE(unsigned, 7, to->dn);
          TUASSERTFE(18, to->deltatLSF);
       }
+      else if ((iono = dynamic_cast<gpstk::GPSCNav2Iono*>(i.get())) != nullptr)
+      {
+         ionoCount++;
+         nmidExp.messageType = gpstk::NavMessageType::Iono;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, sf3p1CNAV2GPSct, iono->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, iono->signal);
+         TUASSERTFE( 1.024454830e-08, iono->alpha[0]);
+         TUASSERTFE( 1.490116118e-08, iono->alpha[1]);
+         TUASSERTFE(-5.960464478e-08, iono->alpha[2]);
+         TUASSERTFE(-1.192092897e-07, iono->alpha[3]);
+         TUASSERTFE( 8.806400000e+04, iono->beta[0]);
+         TUASSERTFE( 3.276800000e+04, iono->beta[1]);
+         TUASSERTFE(-1.966080000e+05, iono->beta[2]);
+         TUASSERTFE(-1.966080000e+05, iono->beta[3]);
+      }
       else
       {
          otherCount++;
       }
    }
    TUASSERTE(unsigned, 1, toCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    TUASSERTE(unsigned, 0, otherCount);
    TURETURN();
 }
@@ -649,7 +673,7 @@ processGGTOEOPTest()
       // success, time offset only
    TUASSERTE(bool, true, uut.processGGTOEOP(sf3p2fakeCNAV2GPS, navOut));
    TUASSERTE(size_t, 1, navOut.size());
-   toCount = 0, otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((to = dynamic_cast<gpstk::GPSCNav2TimeOffset*>(i.get())) != nullptr)
@@ -714,7 +738,7 @@ processEphQZSSTest()
       // success, health and ephemeris
    TUASSERTE(bool, true, uut.processEph(sf2CNAV2QZSS, navOut));
    TUASSERTE(size_t, 2, navOut.size());
-   heaCount = 0, ephCount = 0, otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((hea = dynamic_cast<gpstk::GPSCNav2Health*>(i.get())) != nullptr)
@@ -825,7 +849,7 @@ processAlmOrbQZSSTest()
       // success, health and almanac
    TUASSERTE(bool, true, uut.processAlmOrb(sf3p4CNAV2QZSS, navOut));
    TUASSERTE(size_t, 4, navOut.size());
-   heaCount = 0, almCount = 0, otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((hea = dynamic_cast<gpstk::GPSCNav2Health*>(i.get())) != nullptr)
@@ -921,15 +945,17 @@ processUTCIonoQZSSTest()
       gpstk::NavMessageType::TimeOffset);
    gpstk::NavDataPtrList navOut;
    gpstk::GPSCNav2TimeOffset *to;
-      // success, time offset only
+   gpstk::GPSCNav2Iono *iono;
+      // success, time offset and iono
    TUASSERTE(bool, true, uut.processUTCIono(sf3p1CNAV2QZSS, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   toCount = 0, otherCount = 0;
+   TUASSERTE(size_t, 2, navOut.size());
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((to = dynamic_cast<gpstk::GPSCNav2TimeOffset*>(i.get())) != nullptr)
       {
          toCount++;
+         nmidExp.messageType = gpstk::NavMessageType::TimeOffset;
             // NavData fields
          TUASSERTE(gpstk::CommonTime, sf3p1CNAV2QZSSct, to->timeStamp);
          TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
@@ -950,12 +976,29 @@ processUTCIonoQZSSTest()
          TUASSERTE(unsigned, 7, to->dn);
          TUASSERTFE(18, to->deltatLSF);
       }
+      else if ((iono = dynamic_cast<gpstk::GPSCNav2Iono*>(i.get())) != nullptr)
+      {
+         ionoCount++;
+         nmidExp.messageType = gpstk::NavMessageType::Iono;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, sf3p1CNAV2QZSSct, iono->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, iono->signal);
+         TUASSERTFE( 1.303851600e-08, iono->alpha[0]);
+         TUASSERTFE( 0.000000000e+00, iono->alpha[1]);
+         TUASSERTFE(-4.172325133e-07, iono->alpha[2]);
+         TUASSERTFE(-6.556510925e-07, iono->alpha[3]);
+         TUASSERTFE( 1.044480000e+05, iono->beta[0]);
+         TUASSERTFE(-2.293760000e+05, iono->beta[1]);
+         TUASSERTFE(-3.538944000e+06, iono->beta[2]);
+         TUASSERTFE( 8.323072000e+06, iono->beta[3]);
+      }
       else
       {
          otherCount++;
       }
    }
    TUASSERTE(unsigned, 1, toCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    TUASSERTE(unsigned, 0, otherCount);
    TURETURN();
 }
@@ -978,7 +1021,7 @@ processGGTOEOPQZSSTest()
       // success, time offset only
    TUASSERTE(bool, true, uut.processGGTOEOP(sf3p2CNAV2QZSS, navOut));
    TUASSERTE(size_t, 1, navOut.size());
-   toCount = 0, otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((to = dynamic_cast<gpstk::GPSCNav2TimeOffset*>(i.get())) != nullptr)
@@ -1019,7 +1062,7 @@ processGGTOEOPQZSSTest()
 void PNBGPSCNav2DataFactory_T ::
 countResults(const gpstk::NavDataPtrList& navOut)
 {
-   almCount = ephCount = toCount = heaCount = otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if (dynamic_cast<gpstk::GPSCNav2Alm*>(i.get()) != nullptr)
@@ -1037,6 +1080,10 @@ countResults(const gpstk::NavDataPtrList& navOut)
       else if (dynamic_cast<gpstk::GPSCNav2Health*>(i.get()) != nullptr)
       {
          heaCount++;
+      }
+      else if (dynamic_cast<gpstk::GPSCNav2Iono*>(i.get()) != nullptr)
+      {
+         ionoCount++;
       }
       else
       {

@@ -43,6 +43,7 @@
 #include "GPSCNav2Eph.hpp"
 #include "GPSCNav2Health.hpp"
 #include "GPSCNav2TimeOffset.hpp"
+#include "GPSCNav2Iono.hpp"
 #include "TimeCorrection.hpp"
 
 using namespace std;
@@ -248,6 +249,38 @@ enum CNav2BitInfo
    csbdtLSF = 104,        ///< dtLSF start bit
    cnbdtLSF = 8,          ///< dtLSF number of bits
    cscdtLSF = 1,          ///< dtLSF scale factor
+
+   csbAlpha0 = csbdtLSF + cnbdtLSF,
+   cnbAlpha0 = 8,
+   cscAlpha0 = -30,
+
+   csbAlpha1 = csbAlpha0 + cnbAlpha0,
+   cnbAlpha1 = 8,
+   cscAlpha1 = -27,
+
+   csbAlpha2 = csbAlpha1 + cnbAlpha1,
+   cnbAlpha2 = 8,
+   cscAlpha2 = -24,
+
+   csbAlpha3 = csbAlpha2 + cnbAlpha2,
+   cnbAlpha3 = 8,
+   cscAlpha3 = -24,
+
+   csbBeta0 = csbAlpha3 + cnbAlpha3,
+   cnbBeta0 = 8,
+   cscBeta0 = 11,
+
+   csbBeta1 = csbBeta0 + cnbBeta0,
+   cnbBeta1 = 8,
+   cscBeta1 = 14,
+
+   csbBeta2 = csbBeta1 + cnbBeta1,
+   cnbBeta2 = 8,
+   cscBeta2 = 16,
+
+   csbBeta3 = csbBeta2 + cnbBeta2,
+   cnbBeta3 = 8,
+   cscBeta3 = 16,
 
       // these apply to subframe 3 page 2 (GGTO & EOP)
 
@@ -653,6 +686,28 @@ namespace gpstk
    processUTCIono(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
                   unsigned offset)
    {
+      if (PNBNavDataFactory::processIono)
+      {
+         NavDataPtr p1 = std::make_shared<GPSCNav2Iono>();
+         GPSCNav2Iono *iono = dynamic_cast<GPSCNav2Iono*>(p1.get());
+            // NavData
+         p1->timeStamp = navIn->getTransmitTime();
+         p1->signal = NavMessageID(
+            NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
+                           navIn->getobsID(), navIn->getNavID()),
+            NavMessageType::Iono);
+            // KlobucharIonoData
+         iono->alpha[0] = navIn->asSignedDouble(csbAlpha0,cnbAlpha0,cscAlpha0);
+         iono->alpha[1] = navIn->asSignedDouble(csbAlpha1,cnbAlpha1,cscAlpha1);
+         iono->alpha[2] = navIn->asSignedDouble(csbAlpha2,cnbAlpha2,cscAlpha2);
+         iono->alpha[3] = navIn->asSignedDouble(csbAlpha3,cnbAlpha3,cscAlpha3);
+         iono->beta[0] = navIn->asSignedDouble(csbBeta0,cnbBeta0,cscBeta0);
+         iono->beta[1] = navIn->asSignedDouble(csbBeta1,cnbBeta1,cscBeta1);
+         iono->beta[2] = navIn->asSignedDouble(csbBeta2,cnbBeta2,cscBeta2);
+         iono->beta[3] = navIn->asSignedDouble(csbBeta3,cnbBeta3,cscBeta3);
+            // GPSCNav2Iono
+         navOut.push_back(p1);
+      }
       if (!PNBNavDataFactory::processTim)
       {
             // User doesn't want time offset data so don't do any processing.

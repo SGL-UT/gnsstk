@@ -36,7 +36,7 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "GPSCNavIono.hpp"
+#include "GPSCNav2Iono.hpp"
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
 
@@ -49,103 +49,45 @@ namespace gpstk
    }
 }
 
-class GPSCNavIono_T
+class GPSCNav2Iono_T
 {
 public:
       /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
-   unsigned validateTest();
    unsigned getUserTimeTest();
-   unsigned getCorrectionTest();
 };
 
 
-unsigned GPSCNavIono_T ::
+unsigned GPSCNav2Iono_T ::
 constructorTest()
 {
-   TUDEF("GPSCNavIono", "GPSCNavIono");
-   gpstk::GPSCNavIono uut;
+   TUDEF("GPSCNav2Iono", "GPSCNav2Iono");
+   gpstk::GPSCNav2Iono uut;
    TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Iono,
              uut.signal.messageType);
-   TUASSERTE(uint32_t, 0, uut.pre);
-   TUASSERTE(bool, false, uut.alert);
    TURETURN();
 }
 
 
-unsigned GPSCNavIono_T ::
-validateTest()
-{
-   TUDEF("GPSCNavIono", "validate");
-   gpstk::GPSCNavIono uut;
-   TUASSERTE(bool, true, uut.validate());
-   uut.pre = 0x8b;
-   TUASSERTE(bool, true, uut.validate());
-   uut.pre = 0x8c;
-   TUASSERTE(bool, false, uut.validate());
-   TURETURN();
-}
-
-
-unsigned GPSCNavIono_T ::
+unsigned GPSCNav2Iono_T ::
 getUserTimeTest()
 {
-   TUDEF("GPSCNavIono", "getUserTime");
-   gpstk::GPSCNavIono uut;
-      // L2 has a 12s cadence, L5 has a 6s cadence
-   gpstk::CommonTime expL2(gpstk::GPSWeekSecond(2100,147.0));
-   gpstk::CommonTime expL5(gpstk::GPSWeekSecond(2100,141.0));
+   TUDEF("GPSCNav2Iono", "getUserTime");
+   gpstk::GPSCNav2Iono uut;
    uut.timeStamp = gpstk::GPSWeekSecond(2100,135.0);
-   uut.signal = gpstk::NavMessageID(
-      gpstk::NavSatelliteID(1, 1, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
-                            gpstk::NavType::GPSCNAVL5),
-      gpstk::NavMessageType::Iono);
-   TUASSERTE(gpstk::CommonTime, expL5, uut.getUserTime());
-   uut.signal = gpstk::NavMessageID(
-      gpstk::NavSatelliteID(1, 1, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L2, gpstk::TrackingCode::L2CM,
-                            gpstk::NavType::GPSCNAVL2),
-      gpstk::NavMessageType::Iono);
-   TUASSERTE(gpstk::CommonTime, expL2, uut.getUserTime());
-   TURETURN();
-}
-
-
-unsigned GPSCNavIono_T ::
-getCorrectionTest()
-{
-   TUDEF("GPSCNavIono", "getCorrection");
-   gpstk::GPSCNavIono uut;
-   gpstk::CommonTime when = gpstk::GPSWeekSecond(2100,135.0);
-   gpstk::Position rx, sv;
-   rx.setECEF(-1575232.0141,-4707872.2332, 3993198.4383);
-   sv.setECEF(18217581.007, -14220522.580,  12707796.859);
-   uut.alpha[0] =  1.11758709E-08;
-   uut.alpha[1] = -2.37159346E-09;
-   uut.alpha[2] = -6.03921316E-09;
-   uut.alpha[3] =  3.84468251E-09;
-   uut.beta[0]  =  1.16736000E+05;
-   uut.beta[1]  = -7.30126485E+04;
-   uut.beta[2]  = -1.32803702E+04;
-   uut.beta[3]  =  3.38181850E+04;
-   TUASSERTFE(13.174577965354167475,
-              uut.getCorrection(when, rx, sv, gpstk::CarrierBand::L2));
-   TUASSERTFE(7.9994064218713107906,
-              uut.getCorrection(when, rx, sv, gpstk::CarrierBand::L1));
+   gpstk::CommonTime exp = uut.timeStamp + 5.48;
+   TUASSERTE(gpstk::CommonTime, exp, uut.getUserTime());
    TURETURN();
 }
 
 
 int main()
 {
-   GPSCNavIono_T testClass;
+   GPSCNav2Iono_T testClass;
    unsigned errorTotal = 0;
 
    errorTotal += testClass.constructorTest();
-   errorTotal += testClass.validateTest();
    errorTotal += testClass.getUserTimeTest();
-   errorTotal += testClass.getCorrectionTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
