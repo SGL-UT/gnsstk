@@ -99,7 +99,7 @@ protected_term_lint:
     - conda activate py36
     - git clone --depth 1 https://${CI_USER}:${CI_TOKEN}@${REPO_HOST}/sgl/repo_utils.git
     # We pull the default branch because the CI doesn't normally have any branches other than the one being tested.
-    - git fetch origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
+    - git fetch -uf origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
     - bash repo_utils/dw_search/modified_file_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
   dependencies: []
   # This has the occasional false-positive, so it's advisory only.
@@ -119,11 +119,9 @@ protected_history_lint:
     - conda activate py36
     - git clone --depth 1 https://${CI_USER}:${CI_TOKEN}@${REPO_HOST}/sgl/repo_utils.git
     # We pull the default branch because the CI doesn't normally have any branches other than the one being tested.
-    - git fetch origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
+    - git fetch -uf origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
     - bash repo_utils/dw_search/history_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
   dependencies: []
-  # This has the occasional false-positive, so it's advisory only.
-  allow_failure: true
 
 # Runs the documentation generation
 generate_documentation:
