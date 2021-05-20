@@ -53,6 +53,73 @@ namespace gpstk
    }
 
 
+   void KlobucharIonoData ::
+   dump(std::ostream& s, DumpDetail dl) const
+   {
+      if (dl == DumpDetail::OneLine)
+      {
+         NavData::dump(s,dl);
+         return;
+      }
+         // "header"
+      s << "****************************************************************"
+        << "************" << endl
+        << " Ionospheric correction data"
+        << endl
+        << endl
+        << "PRN : " << setw(2) << signal.sat << " / "
+        << "SVN : " << setw(2);
+         // std::string svn;
+         // if (getSVN(satID, ctToe, svn))
+         // {
+         //    s << svn;
+         // }
+      s << endl << endl;
+
+         // the rest is full details, so just return if Full is not asked for.
+      if (dl != DumpDetail::Full)
+         return;
+
+      const ios::fmtflags oldFlags = s.flags();
+
+      s.setf(ios::fixed, ios::floatfield);
+      s.setf(ios::right, ios::adjustfield);
+      s.setf(ios::uppercase);
+      s.precision(0);
+      s.fill(' ');
+
+      std::string timeFmt = weekFmt+dumpTimeFmt;
+      s << endl
+        << "           TIMES OF INTEREST"
+        << endl << endl
+        << "              Week(10bt)     SOW     DOW   UTD     SOD"
+        << "   MM/DD/YYYY   HH:MM:SS\n"
+        << "Transmit:     " << printTime(timeStamp, timeFmt) << endl;
+
+      s.setf(ios::scientific, ios::floatfield);
+      s.precision(8);
+      s.fill(' ');
+
+      s << endl
+        << "           KLOBUCHAR IONO PARAMETERS" << endl
+        << "Parameter              Value" << endl
+        << "alpha[0]     " << setw(16) << alpha[0] << " sec" << endl
+        << "alpha[1]     " << setw(16) << alpha[1] << " sec/semi-circle" << endl
+        << "alpha[2]     " << setw(16) << alpha[2] << " sec/semi-circle**2"
+        << endl
+        << "alpha[3]     " << setw(16) << alpha[3] << " sec/semi-circle**3"
+        << endl
+        << "beta[0]      " << setw(16) << beta[0] << " sec" << endl
+        << "beta[1]      " << setw(16) << beta[1] << " sec/semi-circle" << endl
+        << "beta[2]      " << setw(16) << beta[2] << " sec/semi-circle**2"
+        << endl
+        << "beta[3]      " << setw(16) << beta[3] << " sec/semi-circle**3"
+        << endl;
+
+      s.flags(oldFlags);
+   }
+
+
    double KlobucharIonoData ::
    getCorrection(const CommonTime& when,
                  const Position& rxgeo,

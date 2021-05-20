@@ -58,6 +58,8 @@ namespace gpstk
    class NavData
    {
    public:
+         /// Time format used for the dump method.
+      static const std::string dumpTimeFmt;
          /// Initialize internal data fields.
       NavData();
          /** Checks the contents of this message against known
@@ -91,6 +93,12 @@ namespace gpstk
       CommonTime timeStamp;
          /// Source signal identification for this navigation message data.
       NavMessageID signal;
+
+         /** Format string for printing week in dump().  This defaults
+          * to "%4F(%4G)" which is the GPS full and short week, and
+          * other GNSSes should use the same width, but different
+          * format tokens (see TimeString.hpp). */
+      std::string weekFmt;
    protected:
          /** Navigation message length in seconds.  This is used by
           * getUserTime() by default, though it is possible to

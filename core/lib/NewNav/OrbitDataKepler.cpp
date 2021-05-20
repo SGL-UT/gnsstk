@@ -46,15 +46,12 @@ using namespace std;
 
 namespace gpstk
 {
-   const std::string OrbitDataKepler :: dumpTimeFmt("  %6.0g   %3a-%w   %3j   %5.0s   %02m/%02d/%04Y   %02H:%02M:%02S");
-
    OrbitDataKepler ::
    OrbitDataKepler()
          : Cuc(0.0), Cus(0.0), Crc(0.0), Crs(0.0), Cic(0.0), Cis(0.0), M0(0.0),
            dn(0.0), dndot(0.0), ecc(0.0), A(0.0), Ahalf(0.0), Adot(0.0),
            OMEGA0(0.0), i0(0.0), w(0.0), OMEGAdot(0.0), idot(0.0), af0(0.0),
-           af1(0.0), af2(0.0), health(SVHealth::Unknown),
-           weekFmt("%4F(%4G)")
+           af1(0.0), af2(0.0), health(SVHealth::Unknown)
    {
    }
 

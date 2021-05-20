@@ -61,6 +61,12 @@ namespace gpstk
       bool validate() const override
       { return true; }
 
+         /** Print the contents of this KlobucharIonoData object in a
+          * human-readable format.
+          * @param[in,out] s The stream to write the data to.
+          * @param[in] dl The level of detail the output should contain. */
+      void dump(std::ostream& s, DumpDetail dl) const override;
+
          /** Get the ionospheric correction in meters.
           * @param[in] when The time of the observation to correct.
           * @param[in] rxgeo The receiver's geodetic position.
