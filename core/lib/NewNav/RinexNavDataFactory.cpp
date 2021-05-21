@@ -40,6 +40,7 @@
 #include "Rinex3NavStream.hpp"
 #include "Rinex3NavHeader.hpp"
 #include "GPSLNavHealth.hpp"
+#include "GPSLNavIono.hpp"
 #include "GalINavEph.hpp"
 #include "GalFNavEph.hpp"
 #include "GalINavHealth.hpp"
@@ -85,6 +86,8 @@ namespace gpstk
       bool processEph = (procNavTypes.count(NavMessageType::Ephemeris) > 0);
       bool processHea = (procNavTypes.count(NavMessageType::Health) > 0);
       bool processTim = (procNavTypes.count(NavMessageType::TimeOffset) > 0);
+      bool processIono = (procNavTypes.count(NavMessageType::Iono) > 0);
+      bool ionoProcessed = false;
          // check the validity
       bool check = false;
       bool expect = false;
@@ -142,6 +145,37 @@ namespace gpstk
          while (is)
          {
             is >> data;
+            if (processIono && !ionoProcessed)
+            {
+                  // We have to delay processing of iono data until we
+                  // get a data record with a timestamp so we can have
+                  // some sort of reasonable time stamp on the iono
+                  // data.
+               ionoProcessed = true;
+               NavDataPtrList ionoList;
+                  // iono correction information only exists in RINEX headers.
+                  /// @todo what about embedded RINEX headers?
+               if (!convertToIono(data.time, head, ionoList))
+               {
+                  return false;
+               }
+               for (auto& i : ionoList)
+               {
+                  if (check)
+                  {
+                     if (i->validate() == expect)
+                     {
+                        if (!addNavData(i))
+                           return false;
+                     }
+                  }
+                  else
+                  {
+                     if (!addNavData(i))
+                        return false;
+                  }
+               }
+            }
             if (!is)
             {
                if (is.eof())
@@ -226,6 +260,7 @@ namespace gpstk
       if (procNavTypes.empty() ||
           (procNavTypes.count(NavMessageType::Ephemeris) > 0) ||
           (procNavTypes.count(NavMessageType::Health) > 0) ||
+          (procNavTypes.count(NavMessageType::Iono) > 0) ||
           (procNavTypes.count(NavMessageType::TimeOffset) > 0))
       {
          return "RINEX2, RINEX3";
@@ -515,6 +550,69 @@ namespace gpstk
              * (leapDelta, leapWeek, leapDay in Rinex3NavHeader). */
          rto->timeStamp = mti.second.refTime;
          navOut.push_back(rto);
+      }
+      return true;
+   }
+
+
+   bool RinexNavDataFactory ::
+   convertToIono(const CommonTime& when, const Rinex3NavHeader& navIn,
+                 NavDataPtrList& navOut)
+   {
+      std::map<std::string,IonoCorr>::const_iterator ai, bi;
+      if (((ai = navIn.mapIonoCorr.find("GPSA")) != navIn.mapIonoCorr.end()) &&
+          ((bi = navIn.mapIonoCorr.find("GPSB")) != navIn.mapIonoCorr.end()))
+      {
+            // we have the GPS alpha and beta terms.
+         std::shared_ptr<GPSLNavIono> iono(std::make_shared<GPSLNavIono>());
+         iono->timeStamp = when;
+            // We don't know the satellite ID from which the iono data
+            // came from so just set it to 0.  If someone is using the
+            // NavLibrary interface for looking up iono data, this
+            // will be irrelevant anyway.
+         iono->signal.sat.id = 0;
+         iono->signal.sat.system = SatelliteSystem::GPS;
+         iono->signal.xmitSat.id = 0;
+         iono->signal.xmitSat.system = SatelliteSystem::GPS;
+         iono->signal.system = SatelliteSystem::GPS;
+            // we can't obtain these from RINEX NAV, so just assume L1 C/A
+         iono->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::L1,
+                                  TrackingCode::CA);
+         iono->signal.nav = NavType::GPSLNAV;
+         for (unsigned i = 0; i < 4; i++)
+         {
+            iono->alpha[i] = ai->second.param[i];
+            iono->beta[i]  = bi->second.param[i];
+         }
+         navOut.push_back(iono);
+            // THIS IS A KLUDGE
+            // RINEX doesn't identify the source of the ionospheric
+            // data in the header, and as such we set the satellite ID
+            // to 0 as noted above.  This presents additional problems
+            // as the NavLibrary::getIonoCorr method specifically
+            // looks for iono data from healthy satellites, so we have
+            // to make the invalid assumption that the iono data in
+            // the RINEX header came from a healthy satellite, and
+            // stuff a fake satellite 0 health record in the data.
+         std::shared_ptr<GPSLNavHealth> health(
+            std::make_shared<GPSLNavHealth>());
+            // NavData
+            // further kludge to set fake health time stamp to beginning of day
+         YDSTime bod(when);
+         bod.sod = 0;
+         health->timeStamp = bod;
+         health->signal.sat.id = 0;
+         health->signal.sat.system = SatelliteSystem::GPS;
+         health->signal.xmitSat.id = 0;
+         health->signal.xmitSat.system = SatelliteSystem::GPS;
+         health->signal.system = SatelliteSystem::GPS;
+            // we can't obtain these from RINEX NAV, so just assume L1 C/A
+         health->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::L1,
+                                    TrackingCode::CA);
+         health->signal.nav = NavType::GPSLNAV;
+            // GPSLNavHealth
+         health->svHealth = 0; // force "PRN 0" to be healthy
+         navOut.push_back(health);
       }
       return true;
    }

@@ -261,6 +261,8 @@ namespace std
 
 // time offset is an output
 %apply double &OUTPUT { double &offset };
+// ionospheric correction is an output
+%apply double &OUTPUT { double &corrOut };
 
 %include "gpstk_typemaps.i"
 

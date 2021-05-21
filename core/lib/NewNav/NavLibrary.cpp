@@ -42,6 +42,7 @@
 #include "TimeOffsetData.hpp"
 #include "NDFUniqConstIterator.hpp"
 #include "NDFUniqIterator.hpp"
+#include "IonoData.hpp"
 
 namespace gpstk
 {
@@ -123,6 +124,67 @@ namespace gpstk
          }
       }
       return false;
+   }
+
+
+   bool NavLibrary ::
+   getIonoCorr(SatelliteSystem sys, const CommonTime& when,
+               const Position& rxgeo, const Position& svgeo,
+               CarrierBand band, double& corrOut, NavType nt)
+   {
+      SatID sysOnly(sys);
+      NavMessageID nmid(
+         NavSatelliteID(
+            sysOnly, sysOnly,
+            ObsID(ObservationType::NavMsg,
+                  CarrierBand::Any,
+                  TrackingCode::Any,
+                  XmitAnt::Any),
+            nt),
+         NavMessageType::Iono);
+      NavDataPtr navOut;
+      if (!find(nmid, when, navOut, SVHealth::Healthy,
+                NavValidityType::ValidOnly, NavSearchOrder::Nearest))
+      {
+         return false;
+      }
+      IonoData *iono = dynamic_cast<IonoData*>(navOut.get());
+      corrOut = iono->getCorrection(when, rxgeo, svgeo, band);
+      return true;
+   }
+
+
+   bool NavLibrary ::
+   getIonoCorr(const SatID& sat, const CommonTime& when,
+               const Position& rxgeo,
+               CarrierBand band, double& corrOut, NavType nt, int freqOffs,
+               bool freqOffsWild)
+   {
+      if (sat.isWild())
+      {
+            // wildcards in sat are not allowed, we need a specific
+            // satellite's position
+         return false;
+      }
+      Xvt xvt;
+      SatID wildSat;
+      wildSat.makeWild();
+         /// @todo Update the ObsID constructor to include freqOffs data
+      NavSatelliteID nsid(sat, wildSat,
+                          ObsID(ObservationType::NavMsg,
+                                CarrierBand::Any,
+                                TrackingCode::Any,
+                                XmitAnt::Any),
+                          nt);
+      if (!getXvt(nsid, when, xvt, SVHealth::Any, NavValidityType::ValidOnly,
+                  NavSearchOrder::User))
+      {
+            // can't get a satellite position
+         return false;
+      }
+      Position svgeo(xvt.x);
+      svgeo.transformTo(Position::Geodetic);
+      return getIonoCorr(sat.system, when, rxgeo, svgeo, band, corrOut, nt);
    }
 
 

@@ -148,7 +148,7 @@ loadIntoMapTest()
       "arlm2000.15n";
       // this should implicitly load into the data map
    TUASSERT(f2.addDataSource(f2name));
-   TUASSERTE(size_t, 337, f2.size());
+   TUASSERTE(size_t, 338, f2.size());
    gpstk::CommonTime expti2 = gpstk::CivilTime(2015,7,19,0,0,0,
                                                gpstk::TimeSystem::GPS);
    gpstk::CommonTime exptf2 = gpstk::CivilTime(2015,7,20,2,0,0,
@@ -184,7 +184,7 @@ loadIntoMapTest()
       "test_input_rinex3_76193040.14n";
       // this should implicitly load into the data map
    TUASSERT(f3.addDataSource(f3name));
-   TUASSERTE(size_t, 27, f3.size());
+   TUASSERTE(size_t, 28, f3.size());
 
    TestClass f4;
    std::string f4name = gpstk::getPathData() + gpstk::getFileSep() +

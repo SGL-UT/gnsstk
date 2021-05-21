@@ -117,6 +117,21 @@ namespace gpstk
       static bool convertToOffset(const Rinex3NavHeader& navIn,
                                   NavDataPtrList& navOut);
 
+         /** Convert RINEX nav header data into a IonoData object.
+          * @param[in] when A timestamp to use for the IonoData, since
+          *   the RINEX nav header doesn't include time information on
+          *   its own (usually a timestamp pulled from the data).
+          * @param[in] navIn The RINEX nav header to convert.
+          * @param[out] navOut A list (possibly empty) of the
+          *   resulting converted data.  This may include
+          *   NavHealthData which is necessary due to the minimalist
+          *   storage used by RINEX vs the implementation of
+          *   NavLibrary::getIonoCorr().
+          * @return true if successful. */
+      static bool convertToIono(const CommonTime& when,
+                                const Rinex3NavHeader& navIn,
+                                NavDataPtrList& navOut);
+
          /** Fill the high level (NavData and above) data for an
           * object using information from a RINEX nav record.
           * @param[in] navIn The RINEX nav message data to convert.
