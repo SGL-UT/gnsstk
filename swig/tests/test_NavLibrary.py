@@ -82,7 +82,7 @@ class TestNavLibrary(unittest.TestCase):
         navLib.addFactory(ndf)
         ndf.addDataSource(args.input_dir+
                            '/test_input_rinex_nav_RinexNavExample.99n')
-        self.assertEqual(6, ndf.size())
+        self.assertEqual(7, ndf.size())
         ct = gpstk.GPSWeekSecond(1025, 410500).toCommonTime()
         # test getOffset with NavDataPtr
         rv,nd = navLib.getOffset(gpstk.TimeSystem.GPS, gpstk.TimeSystem.UTC, ct)
@@ -165,11 +165,11 @@ class TestNavLibrary(unittest.TestCase):
         ndf = gpstk.RinexNavDataFactory()
         navLib.addFactory(ndf)
         ndf.addDataSource(args.input_dir+'/arlm2000.15n')
-        self.assertEqual(338, ndf.size())
+        self.assertEqual(339, ndf.size())
         navLib.clear()
         self.assertEqual(0, ndf.size())
         ndf.addDataSource(args.input_dir+'/arlm2000.15n')
-        self.assertEqual(338, ndf.size())
+        self.assertEqual(339, ndf.size())
         navLib.edit(gpstk.GPSWeekSecond(0,0).toCommonTime(),
                     gpstk.GPSWeekSecond(1854,28700).toCommonTime())
         self.assertEqual(229, ndf.size())
@@ -179,19 +179,19 @@ class TestNavLibrary(unittest.TestCase):
         navLib.clear()
         self.assertEqual(0, ndf.size())
         ndf.addDataSource(args.input_dir+'/arlm2000.15n')
-        self.assertEqual(338, ndf.size())
+        self.assertEqual(339, ndf.size())
         navLib.edit(gpstk.GPSWeekSecond(0,0).toCommonTime(),
                     gpstk.GPSWeekSecond(1854,28700).toCommonTime(), sat)
-        self.assertEqual(336, ndf.size())
+        self.assertEqual(337, ndf.size())
         navLib.clear()
         self.assertEqual(0, ndf.size())
         ndf.addDataSource(args.input_dir+'/arlm2000.15n')
-        self.assertEqual(338, ndf.size())
+        self.assertEqual(339, ndf.size())
         sig = gpstk.NavSignalID(gpstk.SatelliteSystem.GPS, gpstk.CarrierBand.L1,
                                 gpstk.TrackingCode.Y, gpstk.NavType.GPSLNAV)
         navLib.edit(gpstk.GPSWeekSecond(0,0).toCommonTime(),
                     gpstk.GPSWeekSecond(1854,28700).toCommonTime(), sig)
-        self.assertEqual(338, ndf.size())
+        self.assertEqual(339, ndf.size())
         sig = gpstk.NavSignalID(gpstk.SatelliteSystem.GPS, gpstk.CarrierBand.L1,
                                 gpstk.TrackingCode.CA, gpstk.NavType.GPSLNAV)
         navLib.edit(gpstk.GPSWeekSecond(0,0).toCommonTime(),
