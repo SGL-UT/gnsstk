@@ -634,7 +634,7 @@ namespace gpstk
                                                            escSISA);
          navOut.push_back(p1);
       }
-      if ((pageType == 4) && PNBNavDataFactory::processTim)
+      else if ((pageType == 4) && PNBNavDataFactory::processTim)
       {
             // GST-UTC offset
          NavDataPtr p3 = std::make_shared<GalFNavTimeOffset>();
