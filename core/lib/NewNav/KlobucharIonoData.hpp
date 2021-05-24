@@ -78,11 +78,11 @@ namespace gpstk
                            const Position& svgeo,
                            CarrierBand band) const override;
 
-         // alpha/Beta terms are seconds, seconds/semi-circle,
+         // alpha/beta terms are seconds, seconds/semi-circle,
          // seconds/semi-circle**2, seconds/semi-circle**3.  Refer to
          // IS-GPS-200 Table 20-X.
-      double alpha[4]; ///< Alpha terms of Klobuchar model, using semi-circles.
-      double beta[4];  ///< Beta terms of Klobuchar model, using semi-circles.
+      double alpha[4]; ///< alpha terms of Klobuchar model, using semi-circles.
+      double beta[4];  ///< beta terms of Klobuchar model, using semi-circles.
    };
 
       //@}
