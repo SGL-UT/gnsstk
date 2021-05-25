@@ -46,7 +46,7 @@ namespace gpstk
       /// @ingroup NavFactory
       //@{
 
-      /// Class containing data elements unique to GPS LNav ionospheric data.
+      /// Class containing data elements unique to the Klobuchar iono model.
    class KlobucharIonoData : public IonoData
    {
    public:
