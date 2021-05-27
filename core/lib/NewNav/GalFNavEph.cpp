@@ -102,7 +102,7 @@ namespace gpstk
    fixFit()
    {
       beginFit = xmitTime;
-      endFit = Toe + (3600*4); // four hours
+      endFit = Toe + 14400; // four hours
    }
 
 
