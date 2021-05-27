@@ -294,6 +294,7 @@ namespace gpstk
 
          // -----------------------------------------------------------
          // iteration loop
+         vector<RinexSatID> RSats;
          do {
             TropFlag = false;       // true means the trop corr was NOT applied
 
@@ -304,6 +305,8 @@ namespace gpstk
             for(n=0,i=0; i<Sats.size(); i++) {
                // ignore marked satellites
                if(Sats[i].id <= 0) continue;
+               RinexSatID rs(Sats[i].id, Sats[i].system);
+               RSats.push_back(rs);
 
                // ------------ ephemeris
                // rho is time of flight (sec)
@@ -432,6 +435,18 @@ namespace gpstk
             converge = norm(dX);
             if(n_iterate > 1 && converge < convLimit) {              // success: quit
                iret = 0;
+
+               //// dump the linearized problem
+               //for(n=0; n<P.rows(); n++)
+               //   LOG(INFO) << "LPRSP " << fixed << setprecision(6)
+               //      << " " << printTime(T,gpsfmt)
+               //      << " " << setw(2) << n << " " << RSats[n]
+               //      << " " << setw(9) << P(n,0)
+               //      << " " << setw(9) << P(n,1)
+               //      << " " << setw(9) << P(n,2)
+               //      << " " << setw(13) << Resids(n)
+               //      << " " << setw(13) << CRange(n);
+
                break;
             }
             if(n_iterate >= niter_limit || converge > 1.e10) {       // failure: quit
