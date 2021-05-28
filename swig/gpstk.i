@@ -73,7 +73,10 @@
 %shared_ptr(gpstk::GalINavAlm)
 %shared_ptr(gpstk::GalINavHealth)
 %shared_ptr(gpstk::GalINavTimeOffset)
-%shared_ptr(gpstk::GalFnavEph)
+%shared_ptr(gpstk::GalFNavEph)
+%shared_ptr(gpstk::GalFNavAlm)
+%shared_ptr(gpstk::GalFNavHealth)
+%shared_ptr(gpstk::GalFNavTimeOffset)
 
 %shared_ptr(gpstk::NavDataFactory)
 %shared_ptr(gpstk::NavDataFactoryWithStore)
@@ -89,6 +92,7 @@
 %shared_ptr(gpstk::PNBGPSCNav2DataFactory)
 %shared_ptr(gpstk::PNBMultiGNSSNavDataFactory)
 %shared_ptr(gpstk::PNBGalINavDataFactory)
+%shared_ptr(gpstk::PNBGalFNavDataFactory)
  // silence warnings from swig
 %shared_ptr(gpstk::TimeSystemCorrection)
 
@@ -553,8 +557,11 @@ namespace std
 %include "GSatID.hpp"
 %include "GalDataValid.hpp"
 %include "GalEphemerisStore.hpp"
-%include "GalFNavEph.hpp"
 %include "GalHealthStatus.hpp"
+%include "GalFNavAlm.hpp"
+%include "GalFNavEph.hpp"
+%include "GalFNavHealth.hpp"
+%include "GalFNavTimeOffset.hpp"
 %include "GalINavAlm.hpp"
 %include "GalINavEph.hpp"
 %include "GalINavHealth.hpp"
@@ -643,6 +650,7 @@ namespace std
 %include "PNBGPSCNav2DataFactory.hpp"
 %include "PNBGPSCNavDataFactory.hpp"
 %include "PNBGPSLNavDataFactory.hpp"
+%include "PNBGalFNavDataFactory.hpp"
 %include "PNBGalINavDataFactory.hpp"
 %include "PNBMultiGNSSNavDataFactory.hpp"
 %include "stl_helpers.hpp"

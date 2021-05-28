@@ -36,24 +36,28 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_GALFNAVEPH_HPP
-#define GPSTK_GALFNAVEPH_HPP
+#ifndef GPSTK_GALFNAVALM_HPP
+#define GPSTK_GALFNAVALM_HPP
 
 #include "OrbitDataKepler.hpp"
 #include "GalHealthStatus.hpp"
-#include "GalDataValid.hpp"
 
 namespace gpstk
 {
       /// @ingroup NavFactory
       //@{
 
-      /// Class containing data elements unique to Galileo F/NAV ephemerides.
-   class GalFNavEph : public OrbitDataKepler
+      /// Class containing data elements unique to Galileo F/NAV almanacs.
+   class GalFNavAlm : public OrbitDataKepler
    {
    public:
-         /// Sets the nav message type and all other data members to 0.
-      GalFNavEph();
+         /// A ref value defined in OS-SIS-ICD Table 75 (meters).
+      static const double refA;
+         /// inclination offset, refioffset + delta i = i0, defined in OS-SIS-ICD.
+      static const double refioffset;
+
+         /// Sets the nav message type.
+      GalFNavAlm();
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
@@ -67,41 +71,51 @@ namespace gpstk
           * at which the final bit of a given broadcast navigation
           * message is received.  This is used by
           * NavDataFactoryWithStore::find() in User mode.
-          * @return transmit time of most recent page + 10s.
+          * @return transmit time of most recent message type of the pair + 10s.
           */
       CommonTime getUserTime() const override;
 
-         /** Fill the beginFit and endFit values for this object.
-          * @pre Toe and xmitTime must be set. */
+         /** This is just a method for making the dump output say
+          * "Almanac" vs "Ephemeris" when appropriate. */
+      std::string getDataType() const override
+      { return "Almanac"; }
+
+         /** Override dumpHarmonics to hide them in output since
+          * Galileo F/NAV almanacs don't contain this data. */
+      void dumpHarmonics(std::ostream& s) const override
+      {}
+
+         /// Fill the beginFit and endFit values for this object.
       void fixFit();
+
+         /** Set the SVHealth value "health" according to the health
+          * status variable hsE5a. */
+      void fixHealth();
 
          /** Dump SV status information (e.g. health).
           * @param[in,out] s The stream to write the data to. */
       void dumpSVStatus(std::ostream& s) const override;
 
-      double bgdE5aE1;   ///< Group delay in seconds between E5a and E1.
-      uint8_t sisaIndex; ///< Signal in space accuracy index (OS-SIS-ICD tbl 76)
-      uint8_t svid;
-      CommonTime xmit2;  ///< Transmit time for page type 2.
-      CommonTime xmit3;  ///< Transmit time for page type 3.
-      CommonTime xmit4;  ///< Transmit time for page type 4.
-      uint16_t iodnav1;  ///< IODnav for page type 1.
-      uint16_t iodnav2;  ///< IODnav for page type 2.
-      uint16_t iodnav3;  ///< IODnav for page type 3.
-      uint16_t iodnav4;  ///< IODnav for page type 4.
+         /** Transmit time of the second page type used in constructing
+          * the almanac, or the same as xmitTime if not split.  That is:
+          * SVID | xmitTime page type | xmit2 page type
+          * ---- | ------------------ | ---------------
+          * 1    | 5                  | 5
+          * 2    | 5                  | 6
+          * 3    | 6                  | 6
+          */
+      CommonTime xmit2;
+      double dAhalf;         ///< delta sqrt(A)
+      double deltai;         ///< Inclination in rad relative to 0.3*pi rad.
+      unsigned wna;          ///< Reference week for t0a.
+      double t0a;            ///< Convenience storage of unqualified t0a.
+      uint8_t ioda5;         ///< IODa for page type 5.
+      uint8_t ioda6;         ///< IODa for page type 6.
       GalHealthStatus hsE5a; ///< Health status for E5a.
-      GalDataValid dvsE5a;   ///< Data validity status for E5a.
-      uint16_t wn1;      ///< GST WN (week number) for page type 1.
-      uint32_t tow1;     ///< GST TOW (time of week) for page type 1.
-      uint16_t wn2;      ///< GST WN (week number) for page type 2.
-      uint32_t tow2;     ///< GST TOW (time of week) for page type 2.
-      uint16_t wn3;      ///< GST WN (week number) for page type 3.
-      uint32_t tow3;     ///< GST TOW (time of week) for page type 3.
-      uint32_t tow4;     ///< GST TOW (time of week) for page type 4.
    };
 
       //@}
 
 }
 
-#endif // GPSTK_GALFNAVEPH_HPP
+#endif // GPSTK_GALFNAVALM_HPP

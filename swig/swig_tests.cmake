@@ -179,3 +179,27 @@ add_test(NAME swig_test_GalINavTimeOffset
   WORKING_DIRECTORY ${td}
   )
 set_property(TEST swig_test_GalINavTimeOffset PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GalFNavAlm
+  COMMAND ${PYTHON_EXECUTABLE} test_GalFNavAlm.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GalFNavAlm PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GalFNavEph
+  COMMAND ${PYTHON_EXECUTABLE} test_GalFNavEph.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GalFNavEph PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GalFNavHealth
+  COMMAND ${PYTHON_EXECUTABLE} test_GalFNavHealth.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GalFNavHealth PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GalFNavTimeOffset
+  COMMAND ${PYTHON_EXECUTABLE} test_GalFNavTimeOffset.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GalFNavTimeOffset PROPERTY LABELS swig NewNav)

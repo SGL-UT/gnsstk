@@ -275,7 +275,7 @@ namespace gpstk
       bool rv = true;
       GPSLNavEph *gps;
       GalINavEph *galINav;
-      GalFnavEph *galFnav;
+      GalFNavEph *galFNav;
       switch (navIn.sat.system)
       {
          case SatelliteSystem::GPS:
@@ -369,23 +369,23 @@ namespace gpstk
             }
             else if (navIn.datasources & 0x02)
             {
-               navOut = std::make_shared<GalFnavEph>();
-               galFnav = dynamic_cast<GalFnavEph*>(navOut.get());
+               navOut = std::make_shared<GalFNavEph>();
+               galFNav = dynamic_cast<GalFNavEph*>(navOut.get());
                   // NavData
                fillNavData(navIn, navOut);
                   // OrbitDataKepler
-               fixTimeGalileo(navIn, *galFnav);
+               fixTimeGalileo(navIn, *galFNav);
                   // RINEX 3.04 Table A8 note 4 says the GAL week number
                   // is identical to the GPS week number.  ergo, it's not
                   // really a Galileo week number.
-               galFnav->Toe = GPSWeekSecond(navIn.weeknum, navIn.Toe);
-                  //galFnav->Toe.setTimeSystem(TimeSystem::GAL);
+               galFNav->Toe = GPSWeekSecond(navIn.weeknum, navIn.Toe);
+                  //galFNav->Toe.setTimeSystem(TimeSystem::GAL);
                   // @todo set sv health correctly
-                  // galFnav->health = ((navIn.health == 0) ? SVHealth::Healthy :
+                  // galFNav->health = ((navIn.health == 0) ? SVHealth::Healthy :
                   //                SVHealth::Unhealthy);
-               convertToOrbitDataKepler(navIn, galFnav);
+               convertToOrbitDataKepler(navIn, galFNav);
                   /// @todo add IOD Nav, SISA, BGD, data source
-               galFnav->fixFit();
+               galFNav->fixFit();
             }
             else
             {

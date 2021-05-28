@@ -64,9 +64,9 @@
 #include "Triple.hpp"
 #include "EllipsoidModel.hpp"
 #include "ReferenceFrame.hpp"
-#include "GNSSconstants.hpp"
 #include "DeprecatedConsts.hpp"
 #include "FreqConsts.hpp"
+#include "GNSSconstants.hpp"
 #include "Xvt.hpp"
 #include "AlmOrbit.hpp"
 #include "FFStreamError.hpp"
@@ -167,7 +167,7 @@
 #include "CodeBuffer.hpp"
 #include "Combinations.hpp"
 #include "ConfDataReader.hpp"
- /* #include "ConfDataWriter.hpp" */ // error on typemaps for list of double
+/* #include "ConfDataWriter.hpp" */
 #include "CubicSpline.hpp"
 #include "DCBDataReader.hpp"
 #include "DiffCorrBase.hpp"
@@ -283,8 +283,11 @@
 #include "GSatID.hpp"
 #include "GalDataValid.hpp"
 #include "GalEphemerisStore.hpp"
-#include "GalFNavEph.hpp"
 #include "GalHealthStatus.hpp"
+#include "GalFNavAlm.hpp"
+#include "GalFNavEph.hpp"
+#include "GalFNavHealth.hpp"
+#include "GalFNavTimeOffset.hpp"
 #include "GalINavAlm.hpp"
 #include "GalINavEph.hpp"
 #include "GalINavHealth.hpp"
@@ -302,8 +305,8 @@
 #include "IonexStore.hpp"
 #include "Namelist.hpp"
 #include "SRIMatrix.hpp"
-#include "SparseVector.hpp" // too many warnings
-#include "SparseMatrix.hpp" // too many warnings
+#include "SparseVector.hpp"
+#include "SparseMatrix.hpp"
 #include "SRI.hpp"
 /* #include "SRIFilter.hpp" */
 #include "logstream.hpp"
@@ -365,6 +368,7 @@
 #include "PNBGPSCNav2DataFactory.hpp"
 #include "PNBGPSCNavDataFactory.hpp"
 #include "PNBGPSLNavDataFactory.hpp"
+#include "PNBGalFNavDataFactory.hpp"
 #include "PNBGalINavDataFactory.hpp"
 #include "PNBMultiGNSSNavDataFactory.hpp"
 #include "stl_helpers.hpp"
