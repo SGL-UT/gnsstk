@@ -73,7 +73,10 @@
 %shared_ptr(gpstk::GalINavAlm)
 %shared_ptr(gpstk::GalINavHealth)
 %shared_ptr(gpstk::GalINavTimeOffset)
-%shared_ptr(gpstk::GalFnavEph)
+%shared_ptr(gpstk::GalFNavEph)
+%shared_ptr(gpstk::GalFNavAlm)
+%shared_ptr(gpstk::GalFNavHealth)
+%shared_ptr(gpstk::GalFNavTimeOffset)
 
 %shared_ptr(gpstk::NavDataFactory)
 %shared_ptr(gpstk::NavDataFactoryWithStore)
@@ -89,6 +92,7 @@
 %shared_ptr(gpstk::PNBGPSCNav2DataFactory)
 %shared_ptr(gpstk::PNBMultiGNSSNavDataFactory)
 %shared_ptr(gpstk::PNBGalINavDataFactory)
+%shared_ptr(gpstk::PNBGalFNavDataFactory)
  // silence warnings from swig
 %shared_ptr(gpstk::TimeSystemCorrection)
 
@@ -140,6 +144,9 @@
 %ignore gpstk::CivilTime::MonthNames;
 %ignore gpstk::CivilTime::MonthAbbrevNames;
 
+%ignore gpstk::Matrix< double >::operator()(size_t, size_t);
+%ignore gpstk::Vector< double >::operator()(size_t);
+
 // This is to silence warning about not knowing about the fstream base class
 namespace std
 {
@@ -151,6 +158,8 @@ namespace std
 // =============================================================
 //  Section 6: C++ container template instances using only atomic types
 // =============================================================
+
+// see pythonfunctions.i for stream output
 
 %template(vector_int)        std::vector<int>;
 %template(vector_double)     std::vector<double>;
@@ -259,12 +268,17 @@ namespace std
    }
 }
 
+// =============================================================
+// These typemaps must occur before the headers are included.
+// =============================================================
+
 // time offset is an output
 %apply double &OUTPUT { double &offset };
 // ionospheric correction is an output
 %apply double &OUTPUT { double &corrOut };
 
 %include "gpstk_typemaps.i"
+%include "gpstk_enum_typemaps.i"
 
 // =============================================================
 //  Section 8: C++ include files
@@ -375,12 +389,15 @@ namespace std
 %include "BrcKeplerOrbit.hpp"
 %include "CGCS2000Ellipsoid.hpp"
 %include "NavFilterKey.hpp"
+%template(binary_function_NavFilterKey) std::binary_function<gpstk::NavFilterKey *, gpstk::NavFilterKey *, bool >;
 %include "NavFilter.hpp"
 %include "CNav2SanityFilter.hpp"
 %include "NavType.hpp"
 %include "NavID.hpp"
 %include "PackedNavBits.hpp"
+%template(binary_function_CNavFilterData) std::binary_function< gpstk::CNavFilterData,gpstk::CNavFilterData,bool >;
 %include "CNavFilterData.hpp"
+%template(binary_function_CNavFilterDataPtr) std::binary_function< gpstk::CNavFilterData *, gpstk::CNavFilterData *, bool >;
 %include "CNavCookFilter.hpp"
 %include "NavFilterMgr.hpp"
 %include "CNavCrossSourceFilter.hpp"
@@ -540,8 +557,11 @@ namespace std
 %include "GSatID.hpp"
 %include "GalDataValid.hpp"
 %include "GalEphemerisStore.hpp"
-%include "GalFNavEph.hpp"
 %include "GalHealthStatus.hpp"
+%include "GalFNavAlm.hpp"
+%include "GalFNavEph.hpp"
+%include "GalFNavHealth.hpp"
+%include "GalFNavTimeOffset.hpp"
 %include "GalINavAlm.hpp"
 %include "GalINavEph.hpp"
 %include "GalINavHealth.hpp"
@@ -572,6 +592,7 @@ namespace std
 /* %include "SRIFilter.hpp" */
 %include "logstream.hpp"
 %include "KalmanFilter.hpp"
+%template(binary_function_LNavFilterData) std::binary_function< gpstk::LNavFilterData *, gpstk::LNavFilterData *, bool >;
 %include "LNavFilterData.hpp"
 %include "LNavAlmValFilter.hpp"
 %include "LNavCookFilter.hpp"
@@ -629,6 +650,7 @@ namespace std
 %include "PNBGPSCNav2DataFactory.hpp"
 %include "PNBGPSCNavDataFactory.hpp"
 %include "PNBGPSLNavDataFactory.hpp"
+%include "PNBGalFNavDataFactory.hpp"
 %include "PNBGalINavDataFactory.hpp"
 %include "PNBMultiGNSSNavDataFactory.hpp"
 %include "stl_helpers.hpp"
@@ -726,7 +748,6 @@ namespace std
 // =============================================================
 //  Section 9: Enumerations
 // =============================================================
-%include "gpstk_enum_typemaps.i"
 
 // This code allows us to turn C++ enums into Python enums while
 // maintaining compatibility in SWIG bindings.  We specifically use an
@@ -784,406 +805,84 @@ del IntEnum
 %include "FileIO.i"
 %include "GPS_URA.i"
 %include "Position.i"
- //%include "Rinex3ObsHeader.i"
 %include "TimeString.i"
+%include "Vector.i"
+%include "SatID.i"
+%include "ObsID.i"
+%include "NavID.i"
+%include "RinexSatID.i"
+%include "RinexObsID.i"
+%include "RinexMetData.i"
+%include "Geomatics.i"
 
 // =============================================================
 //  Section 11: Template declarations
 // =============================================================
 
-/* %include "STLTemplates.i" */
 %include "STLHelpers.i"
-/* %include "gpstk_templates.i" */
 %template(NavSatelliteIDSet) std::set<gpstk::NavSatelliteID>;
 %template(NavMessageIDSet) std::set<gpstk::NavMessageID>;
+%template(NavMessageTypeSet) std::set<gpstk::NavMessageType>;
 
 /* %rename(__str__) gpstk::Exception::what() const; */
 
+// These are needed to properly interpret an ObsID instance
+%template(map_ObservationType_string) std::map<enum gpstk::ObservationType, std::string>;
+%template(map_CarrierBand_string) std::map<enum gpstk::CarrierBand, std::string>;
+%template(map_TrackingCode_string) std::map<enum gpstk::TrackingCode, std::string>;
+%template(map_char_ObservationType) std::map<char, enum gpstk::ObservationType>;
+%template(map_char_CarrierBand) std::map<char, enum gpstk::CarrierBand>;
+%template(map_char_TrackingCode) std::map<char, enum gpstk::TrackingCode>;
+%template(map_ObservationType_char) std::map<enum gpstk::ObservationType,char>;
+%template(map_CarrierBand_char) std::map<enum gpstk::CarrierBand,char>;
+%template(map_TrackingCode_char) std::map<enum gpstk::TrackingCode,char>;
 
-/* // ============================================================= */
-/* //  Section 2: Time classes */
-/* // ============================================================= */
-/* %rename (toString) *::operator std::string() const; */
-/* %ignore *::operator CommonTime() const; */
+// These are needed to properly interpret an RinexObsID instance
+%template(vector_RinexObsType) std::vector<gpstk::RinexObsType>;
+%template(map_RinexObsType_RinexDatum) std::map<gpstk::RinexObsType, gpstk::RinexDatum>;
+%template(map_RinexSatID_RinexObsTypeMap) std::map<gpstk::SatID, std::map<gpstk::RinexObsType, gpstk::RinexDatum> >;
+%template(map_string_vector_RinexObsID) std::map<std::string, std::vector<gpstk::RinexObsID> >;
+%template(map_RinexSatID_vector_RinexDatum) std::map<gpstk::RinexSatID, std::vector<gpstk::RinexDatum> >;
 
+// v 2.0.12 required for KLOBUCHAR IONO MODEL
+// We need to provide methods that allow casting objects to their instance types.
+#define KLOBUCHAR_SUPPORT (SWIG_VERSION >= 0x020012 ? True : False)
+#if SWIG_VERSION >= 0x020012
+%inline %{
+  gpstk::OrbSysGpsC_30* cast_to_OrbSysGpsC_30(gpstk::OrbDataSys* ods) {
+    return static_cast<gpstk::OrbSysGpsC_30*>(ods);
+  }
+  gpstk::OrbSysGpsL_56* cast_to_OrbSysGpsL_56(gpstk::OrbDataSys* ods) {
+    return static_cast<gpstk::OrbSysGpsL_56*>(ods);
+  }
+%}
+// Include to generate swig::trait::typename()
+%{
+  namespace swig {
+    template <> struct traits<gpstk::OrbDataSys> {
+        typedef pointer_category category;
+        static const char* type_name() {return "gpstk::OrbDataSys";}
+    };
+  }
+%}
 
+// SWIG out the msgMap in gpstk::OrbSysStore
+%template (TimeMsgMap) std::map<gpstk::CommonTime, gpstk::OrbDataSys* >;
+%template (UIDMsgMap) std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > >;
+%template (NavIDMsgMap) std::map<gpstk::NavID, std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > > >;
+%template (SatIDMsgMap) std::map<gpstk::SatID, std::map<gpstk::NavID, std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > > > >;
+#endif
 
-/* %ignore gpstk::CommonTime::get;  // takes non-const values as parameters for output */
-/* %feature("notabstract") UnixTime; */
-/* %feature("notabstract") SystemTime; */
-/* %feature("notabstract") ANSITime; */
-/* %feature("notabstract") CivilTime; */
-/* %include "CivilTime.hpp" */
-/* %include "GPSZcount.hpp" */
-/* %include "GPSWeek.hpp" */
-/* %feature("notabstract") GPSWeekSecond; */
-/* %include "GPSWeekSecond.hpp" */
-/* %feature("notabstract") GPSWeekZcount; */
-/* %include "GPSWeekZcount.hpp" */
-/* %feature("notabstract") JulianDate; */
-/* %include "JulianDate.hpp" */
-/* %feature("notabstract") BDSWeekSecond; */
-/* %include "BDSWeekSecond.hpp" */
-/* %feature("notabstract") GALWeekSecond; */
-/* %include "GALWeekSecond.hpp" */
-/* %feature("notabstract") QZSWeekSecond; */
-/* %include "QZSWeekSecond.hpp" */
-/* %feature("notabstract") MJD; */
-/* %include "MJD.hpp" */
-/* %feature("notabstract") YDSTime; */
-/* %include "YDSTime.hpp" */
-
-/* %include "TimeString.hpp" */
-/* %include "TimeSystemCorr.hpp" */
-
-
-/* // ============================================================= */
-/* //  Section 3: General/Utils classes */
-/* // ============================================================= */
-/* // Utils stuff */
-/* %include "SatID.i" */
-/* %include "ObsID.i" */
-/* %include "NavID.i" */
-/* %ignore gpstk::SV_ACCURACY_GLO_INDEX;  // wrapper added in GPS_URA.i */
-/* %include "Triple.i" */
-
-
-
-/* %ignore gpstk::VectorBase::operator[] (size_t i) const; */
-/* %ignore gpstk::VectorBase::operator() (size_t i) const; */
-/* %ignore gpstk::RefVectorBaseHelper::zeroTolerance; */
-/* %ignore gpstk::RefVectorBaseHelper::perator[] (size_t i); */
-/* %ignore gpstk::RefVectorBaseHelper::operator() (size_t i); */
-/* %ignore gpstk::RefVectorBaseHelper::zeroize(); */
-/* %include "Vector.i" */
-
-
-/* // ============================================================= */
-/* //  Section 4: "XvtStore and friends" */
-/* // ============================================================= */
-/* // Renames on a few commonly used operators */
-/* %rename (toEngEphemeris) *::operator EngEphemeris() const; */
-/* %rename (toGalEphemeris) *::operator GalEphemeris() const; */
-/* %rename (toGloEphemeris) *::operator GloEphemeris() const; */
-/* %rename (toAlmOrbit) *::operator AlmOrbit() const; */
-
-/* %include "AstronomicalFunctions.hpp" */
-/* %include "PZ90Ellipsoid.hpp" */
-/* %include "WGS84Ellipsoid.hpp" */
-
-
-/* %include "gpstkplatform.h" */
-/* %include "FFStreamError.hpp" */
-/* %include "FileStore.hpp" */
-/* %include "FFData.hpp" */
-/* %include "EngNav.hpp" */
-/* %include "YumaBase.hpp" */
-/* %include "FFStream.hpp" */
-/* %include "FFTextStream.hpp" */
-/* %include "AlmOrbit.hpp" */
-/* %include "YumaHeader.hpp" */
-/* %ignore gpstk::EngAlmanac::getUTC; */
-/* %include "EngAlmanac.hpp" */
-
-/* %include "OrbAlmStore.hpp" */
-/* %include "OrbElemBase.hpp" */
-/* %include "OrbElem.hpp" */
-/* %include "OrbElemStore.hpp" */
-/* %include "AlmOrbit.hpp" */
-/* %include "YumaStream.hpp" */
-/* %include "YumaData.hpp" */
-/* %include "GPSAlmanacStore.hpp" */
-/* %include "YumaAlmanacStore.hpp" */
-
-/* //%include "RinexSatID.hpp" */
-
-/* %ignore gpstk::SV_ACCURACY_GPS_MIN_INDEX; */
-/* %ignore gpstk::SV_ACCURACY_GPS_NOMINAL_INDEX; */
-/* %ignore gpstk::SV_ACCURACY_GPS_MAX_INDEX; */
-/* %ignore gpstk::SV_CNAV_ACCURACY_GPS_MIN_INDEX; */
-/* %ignore gpstk::SV_CNAV_ACCURACY_GPS_NOM_INDEX; */
-/* %ignore gpstk::SV_CNAV_ACCURACY_GPS_MAX_INDEX; */
-/* %include "GPS_URA.hpp" */
-
-/* %include "BrcClockCorrection.hpp" */
-/* %include "BrcKeplerOrbit.hpp" */
-/* %include "EphemerisRange.hpp" */
-/* // %include "EphReader.hpp" */
-
-/* // Ephemeris: */
-/* %include "OrbitEph.hpp" */
-/* %include "BDSEphemeris.hpp" */
-/* %include "EngEphemeris.hpp" */
-/* %include "GalEphemeris.hpp" */
-/* %include "GloEphemeris.hpp" */
-/* %include "GPSEphemeris.hpp" */
-/* %include "QZSEphemeris.hpp" */
-
-/* // RINEX format: */
-/* %include "RinexSatID.hpp" */
-/* %include "RinexObsID.hpp" */
-/* %include "RinexSatID.i" */
-/* %include "RinexObsID.i" */
-/* // RINEX obs: */
-/* %include "RinexObsBase.hpp" */
-/* %include "RinexObsHeader.hpp" */
-/* %include "RinexObsData.hpp" */
-/* %include "RinexObsStream.hpp" */
-/* // RINEX nav: */
-/* %include "RinexNavBase.hpp" */
-/* %include "RinexNavHeader.hpp" */
-/* %include "RinexNavStream.hpp" */
-/* %include "RinexNavData.hpp" */
-/* // RINEX meteorological: */
-/* %include "RinexMetBase.hpp" */
-/* %include "RinexMetHeader.hpp" */
-/* %include "RinexMetStream.hpp" */
-
-/* %ignore gpstk::RinexMetData::data; */
-/* %include "RinexMetData.hpp" */
-/* %include "RinexMetData.i" */
-
-/*  // RINEX 3 nav: */
-/* %include "Rinex3NavBase.hpp" */
-/* %include "Rinex3NavHeader.hpp" */
-/* %include "Rinex3NavStream.hpp" */
-/* %include "Rinex3NavData.hpp" */
-/* %include "OrbElemRinex.hpp" */
-
-/* // RINEX 3 clock/obs: */
-/* %include "RinexDatum.hpp" */
-/* %include "Rinex3ClockBase.hpp" */
-/* %include "Rinex3ObsBase.hpp" */
-
-
-/* %include "Rinex3ObsData.hpp" */
-/* %include "Rinex3ObsStream.hpp" */
-/* %include "Rinex3ClockHeader.hpp" */
-/* %include "Rinex3ClockData.hpp" */
-/* %include "Rinex3ClockStream.hpp" */
-/* %include "Rinex3EphemerisStore.hpp" */
-
-/* // Ephemeris stores: */
-/* %include "OrbitEphStore.hpp" */
-/* %include "BDSEphemerisStore.hpp" */
-/* %include "GalEphemerisStore.hpp" */
-/* %include "GloEphemerisStore.hpp" */
-/* %include "GPSEphemerisStore.hpp" */
-/* %include "QZSEphemerisStore.hpp" */
-/* %include "RinexEphemerisStore.hpp" */
-
-/* // SP3 format: */
-/* %include "TabularSatStore.hpp" */
-/* %include "ClockSatStore.hpp" */
-/* %include "SP3Base.hpp" */
-/* %include "SP3SatID.hpp" */
-/* %include "SP3Header.hpp" */
-/* %include "SP3Data.hpp" */
-/* %include "SP3Stream.hpp" */
-/* %include "PositionSatStore.hpp" */
-/* %include "SP3EphemerisStore.hpp" */
-/* %include "RinexUtilities.hpp" */
-
-/* // SEM format: */
-/* %include "SEMBase.hpp" */
-/* %include "SEMHeader.hpp" */
-/* %include "SEMStream.hpp" */
-/* %include "SEMData.hpp" */
-/* %include "SEMAlmanacStore.hpp" */
-
-/* %include "ObsEpochMap.hpp" */
-/* %include "WxObsMap.hpp" */
-/* %include "TropModel.hpp" */
-/* %include "GCATTropModel.hpp" */
-/* %include "GGHeightTropModel.hpp" */
-/* %include "GGTropModel.hpp" */
-/* %include "MOPSTropModel.hpp" */
-/* %include "NBTropModel.hpp" */
-/* %include "NeillTropModel.hpp" */
-/* %include "SaasTropModel.hpp" */
-/* %include "SimpleTropModel.hpp" */
-/* %include "PRSolutionLegacy.hpp" */
-/* %ignore gpstk::Expression::print(std::ostream& ostr) const; */
-/* %include "Expression.hpp" */
-
-/* %include "FFBinaryStream.hpp" */
-/* %include "AshtechStream.hpp" */
-/* %include "AshtechData.hpp" */
-/* %include "AshtechALB.hpp" */
-/* %include "AshtechEPB.hpp" */
-/* %include "AshtechMBEN.hpp" */
-/* %include "AshtechPBEN.hpp" */
-
-/* %include "MoonPosition.hpp" */
-/* %include "SunPosition.hpp" */
-/* %include "PoleTides.hpp" */
-/* %include "SolidTides.hpp" */
-
-
-/* // Ionosphere Model */
-/* %include "IonoModel.hpp" */
-
-/* // Geomatics: */
-/* %include "Geomatics.i" */
-/* %include "SunEarthSatGeometry.hpp" */
-
-/* // OrbSysGPS */
-/* %include "OrbSysStore.hpp" */
-/* %include "OrbData.hpp" */
-/* %include "OrbDataSys.hpp" */
-/* %include "OrbSysGpsC.hpp" */
-/* %include "OrbSysGpsC_30.hpp" */
-/* // %include "OrbSysGpsC_32.hpp" */
-/* // %include "OrbSysGpsC_33.hpp" */
-/* %include "OrbSysGpsL.hpp" */
-/* // %include "OrbSysGpsL_51.hpp" */
-/* // %include "OrbSysGpsL_52.hpp" */
-/* // %include "OrbSysGpsL_55.hpp" */
-/* %include "OrbDataUTC.hpp" */
-/* %include "OrbSysGpsL_56.hpp" */
-/* // %include "OrbSysGpsL_63.hpp" */
-/* %include "OrbSysGpsL_Reserved.hpp" */
-/* %include "PackedNavBits.hpp" */
-/* %include "OrbDataSysFactory.hpp" */
-
-/*  /\* note: If you get this compiler error */
-/*   * */
-/*   * In function ‘PyObject* _wrap_delete_OrbitDataKepler(PyObject*, PyObject*)’: */
-/*   * error: ‘smartarg1’ was not declared in this scope */
-/*   * */
-/*   * That means that you have a derived class from a base smart pointer */
-/*   * that needs to be declared in the list below.  In this case, */
-/*   * OrbitDataKepler needed to be added to the %shared_ptr declarations */
-/*   * below. */
-/*   *\/ */
-/* %shared_ptr(gpstk::NavData) */
-/* %shared_ptr(gpstk::TimeOffsetData) */
-/* %shared_ptr(gpstk::NavHealthData) */
-/* %shared_ptr(gpstk::OrbitData) */
-/* %shared_ptr(gpstk::OrbitDataKepler) */
-/* %shared_ptr(gpstk::GPSLNavData) */
-/* %shared_ptr(gpstk::GPSLNavEph) */
-/* %shared_ptr(gpstk::GPSLNavAlm) */
-/* %shared_ptr(gpstk::GPSLNavHealth) */
-/* %shared_ptr(gpstk::GPSLNavTimeOffset) */
-/* %shared_ptr(gpstk::GPSCNavData) */
-/* %shared_ptr(gpstk::GPSCNavEph) */
-/* %shared_ptr(gpstk::GPSCNavAlm) */
-/* %shared_ptr(gpstk::GPSCNavHealth) */
-/* %shared_ptr(gpstk::GPSCNavTimeOffset) */
-/* %shared_ptr(gpstk::GPSCNavRedAlm) */
-/* %shared_ptr(gpstk::GPSCNav2Eph) */
-/* %shared_ptr(gpstk::GPSCNav2Alm) */
-/* %shared_ptr(gpstk::GPSCNav2Health) */
-/* %shared_ptr(gpstk::GPSCNav2TimeOffset) */
-/* %shared_ptr(gpstk::OrbitDataSP3) */
-/* %shared_ptr(gpstk::RinexTimeOffset) */
-
-/* %shared_ptr(gpstk::NavDataFactory) */
-/* %shared_ptr(gpstk::NavDataFactoryWithStore) */
-/* %shared_ptr(gpstk::NavDataFactoryWithStoreFile) */
-/* %shared_ptr(gpstk::RinexNavDataFactory) */
-/* %shared_ptr(gpstk::SP3NavDataFactory) */
-/* %shared_ptr(gpstk::SEMNavDataFactory) */
-/* %shared_ptr(gpstk::YumaNavDataFactory) */
-/* %shared_ptr(gpstk::MultiFormatNavDataFactory); */
-/* %shared_ptr(gpstk::PNBNavDataFactory) */
-/* %shared_ptr(gpstk::PNBGPSLNavDataFactory) */
-/* %shared_ptr(gpstk::PNBGPSCNavDataFactory) */
-/* %shared_ptr(gpstk::PNBGPSCNav2DataFactory) */
-/* %shared_ptr(gpstk::PNBMultiGNSSNavDataFactory) */
-/*  // silence warnings from swig */
-/* %shared_ptr(gpstk::TimeSystemCorrection) */
-
-/* // NewNav store */
-/* %include "NavSignalID.hpp" */
-/* %include "NavSatelliteID.hpp" */
-/* %include "NavMessageID.hpp" */
-/* %include "NavData.hpp" */
-/* %include "TimeOffsetData.hpp" */
-/* %include "NavHealthData.hpp" */
-/* %include "OrbitData.hpp" */
-/* %include "OrbitDataKepler.hpp" */
-/* %include "GPSLNavData.hpp" */
-/* %include "GPSLNavEph.hpp" */
-/* %include "GPSLNavAlm.hpp" */
-/* %include "GPSLNavHealth.hpp" */
-/* %include "GPSLNavTimeOffset.hpp" */
-/* %include "GPSCNavData.hpp" */
-/* %include "GPSCNavEph.hpp" */
-/* %include "GPSCNavAlm.hpp" */
-/* %include "GPSCNavHealth.hpp" */
-/* %include "GPSCNavTimeOffset.hpp" */
-/* %include "GPSCNavRedAlm.hpp" */
-/* %include "GPSCNav2Eph.hpp" */
-/* %include "GPSCNav2Alm.hpp" */
-/* %include "GPSCNav2Health.hpp" */
-/* %include "GPSCNav2TimeOffset.hpp" */
-/* %include "OrbitDataSP3.hpp" */
-/* %include "RinexTimeOffset.hpp" */
-
-/* %include "NavDataFactory.hpp" */
-/* %include "NavLibrary.hpp" */
-/* %include "NavDataFactoryWithStore.hpp" */
-/* %include "NavDataFactoryWithStoreFile.hpp" */
-/* %include "RinexNavDataFactory.hpp" */
-/* %include "SP3NavDataFactory.hpp" */
-/* %include "SEMNavDataFactory.hpp" */
-/* %include "YumaNavDataFactory.hpp" */
-/* %include "MultiFormatNavDataFactory.hpp" */
-
-/* %include "PNBNavDataFactory.hpp" */
-/* %include "PNBGPSLNavDataFactory.hpp" */
-/* %include "PNBGPSCNavDataFactory.hpp" */
-/* %include "PNBGPSCNav2DataFactory.hpp" */
-/* %include "PNBMultiGNSSNavDataFactory.hpp" */
-
-/* // v 2.0.12 required for KLOBUCHAR IONO MODEL */
-/* #define KLOBUCHAR_SUPPORT (SWIG_VERSION >= 0x020012 ? True : False) */
-/* #if SWIG_VERSION >= 0x020012 */
-/* %inline %{ */
-/*   gpstk::OrbSysGpsC_30* cast_to_OrbSysGpsC_30(gpstk::OrbDataSys* ods) { */
-/*     return static_cast<gpstk::OrbSysGpsC_30*>(ods); */
-/*   } */
-/*   gpstk::OrbSysGpsL_56* cast_to_OrbSysGpsL_56(gpstk::OrbDataSys* ods) { */
-/*     return static_cast<gpstk::OrbSysGpsL_56*>(ods); */
-/*   } */
-/* %} */
-/* // Include to generate swig::trait::typename() */
-/* %{ */
-/*   namespace swig { */
-/*     template <> struct traits<gpstk::OrbDataSys> { */
-/*         typedef pointer_category category; */
-/*         static const char* type_name() {return "gpstk::OrbDataSys";} */
-/*     }; */
-/*   } */
-/* %} */
-
-/* // SWIG out the msgMap in gpstk::OrbSysStore */
-/* %template (TimeMsgMap) std::map<gpstk::CommonTime, gpstk::OrbDataSys* >; */
-/* %template (UIDMsgMap) std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > >; */
-/* %template (NavIDMsgMap) std::map<gpstk::NavID, std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > > >; */
-/* %template (SatIDMsgMap) std::map<gpstk::SatID, std::map<gpstk::NavID, std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > > > >; */
-/* #endif */
-
-
-/* // Note that the path functions really don't make sense outside of the build */
-/* // environment */
-/* %include "build_config.h" */
-
-/* %include "ord.i" */
-
-
-/* %pythoncode %{ */
-/*         # clean-up the dir listing by removing *_swigregister. */
-/*         import gpstk */
-/*         stuff=None */
-/*         to_remove=[] */
-/*         for stuff in locals(): */
-/*             if stuff.endswith('_swigregister'): */
-/*                 to_remove.append(stuff) */
-/*         for stuff in to_remove: */
-/*             del locals()[stuff] */
-/*         del locals()['stuff'] */
-/*         del locals()['to_remove'] */
-/*     %} */
+%pythoncode %{
+        # clean-up the dir listing by removing *_swigregister.
+        import gpstk
+        stuff=None
+        to_remove=[]
+        for stuff in locals():
+            if stuff.endswith('_swigregister'):
+                to_remove.append(stuff)
+        for stuff in to_remove:
+            del locals()[stuff]
+        del locals()['stuff']
+        del locals()['to_remove']
+    %}

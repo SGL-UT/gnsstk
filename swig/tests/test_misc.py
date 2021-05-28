@@ -1,8 +1,14 @@
 #!/usr/bin/env python
 
 import unittest, sys, os
+try:
+    from collections.abc import Hashable
+except ImportError:
+    # Python2 has Hashable in a different location.
+    from collections import Hashable
+
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
+from gpstk.test_utils import args, run_unit_tests
 import gpstk
 
 class EnumConversion_test(unittest.TestCase):
@@ -101,6 +107,7 @@ class EnumConversion_test(unittest.TestCase):
         # TODO: Odd that enum -> str -> enum doesn't work.
         #self.assertEqual(gpstk.asReferenceFrame(str(gpstk.ReferenceFrame.WGS84G730)), gpstk.ReferenceFrame.WGS84G730, msg='str WGS84G730')
 
+
 class SatID_test(unittest.TestCase):
     def test_validity(self):
         s = gpstk.SatID(1, gpstk.SatelliteSystem.GPS)
@@ -119,6 +126,20 @@ class SatID_test(unittest.TestCase):
 
         c = gpstk.SatID(4)  # optional arg should result in a wildcard system
         self.assertEqual('* 4', str(c))
+
+    def test_hashability(self):
+        # Can we use SatID, etc as a dict-key or in a set.
+        # Verifies that the SWIG python glue is correct.
+        a = gpstk.SatID(3, gpstk.SatelliteSystem.Glonass)
+        b = gpstk.ObsID()
+        c = gpstk.NavID()
+        d = gpstk.RinexSatID()
+        e = gpstk.RinexObsID()
+        self.assertTrue(isinstance(a, Hashable))
+        self.assertTrue(isinstance(b, Hashable))
+        self.assertTrue(isinstance(c, Hashable))
+        self.assertTrue(isinstance(d, Hashable))
+        self.assertTrue(isinstance(e, Hashable))
 
 
 class Triple_test(unittest.TestCase):

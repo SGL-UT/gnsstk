@@ -259,7 +259,7 @@ loadIntoMapTest()
          {
                // Count each data type and spot check the first one of each.
             gpstk::GalINavEph *ephI;
-            gpstk::GalFnavEph *ephF;
+            gpstk::GalFNavEph *ephF;
             gpstk::GalINavHealth *heaI;
             gpstk::GPSLNavHealth *heaL;
             gpstk::GPSLNavEph *ephL;
@@ -345,7 +345,7 @@ loadIntoMapTest()
                }
                ephICount++;
             }
-            else if ((ephF = dynamic_cast<gpstk::GalFnavEph*>(ti.second.get()))
+            else if ((ephF = dynamic_cast<gpstk::GalFNavEph*>(ti.second.get()))
                 != nullptr)
             {
                ephFCount++;

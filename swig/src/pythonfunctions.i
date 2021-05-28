@@ -198,12 +198,12 @@ STR_PRINT_HELPER(Expression)
    }
 }
 %enddef
-STR_DUMP_DETAIL_HELPER(ClockSatStore)
+//STR_DUMP_DETAIL_HELPER(ClockSatStore)
 STR_DUMP_DETAIL_HELPER(GalEphemerisStore)
 STR_DUMP_DETAIL_HELPER(GloEphemerisStore)
 STR_DUMP_DETAIL_HELPER(GPSEphemerisStore)
 STR_DUMP_DETAIL_HELPER(Rinex3EphemerisStore)
-STR_DUMP_DETAIL_HELPER(SP3EphemerisStore)
+//STR_DUMP_DETAIL_HELPER(SP3EphemerisStore)
 
 // Uses the dump method in the class to get string output
 // for dump methods that have a detail parameter
@@ -239,6 +239,24 @@ STR_STREAM_HELPER(ObsEpoch)
 STR_STREAM_HELPER(NavSignalID)
 STR_STREAM_HELPER(NavSatelliteID)
 STR_STREAM_HELPER(NavMessageID)
+
+%define STR_STREAM_VEC_HELPER(name)
+%extend name
+{
+   std::string __str__()
+   {
+      std::ostringstream ss;
+      size_t i;
+      for(i = 0; i < $self->size() - 1; i++)
+         ss << (*($self))[i] << ", ";
+      ss << (*($self))[i];
+      return ss.str();
+   }
+}
+%enddef
+STR_STREAM_VEC_HELPER(std::vector<int>)
+STR_STREAM_VEC_HELPER(std::vector<double>)
+STR_STREAM_VEC_HELPER(std::vector<std::string>)
 
 // STR_STREAM_HELPER(Xvt)
 // Q: Why is this (below) here instead of the macro for Xvt?
