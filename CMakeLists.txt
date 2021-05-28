@@ -175,13 +175,6 @@ set_target_properties(gpstk PROPERTIES VERSION "${GPSTK_VERSION_MAJOR}.${GPSTK_V
                                        SOVERSION "${GPSTK_VERSION_MAJOR}")
 
 #============================================================
-# Sub-library
-#============================================================
-add_subdirectory(gnssdata)
-include_directories(gnssdata)
-target_link_libraries(gpstk gnssdata)
-
-#============================================================
 # Testing
 #============================================================
 

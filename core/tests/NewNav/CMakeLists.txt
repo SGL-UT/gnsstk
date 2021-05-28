@@ -18,6 +18,10 @@ add_executable(KlobucharIonoData_T KlobucharIonoData_T.cpp)
 target_link_libraries(KlobucharIonoData_T gpstk)
 add_test(KlobucharIonoData_T KlobucharIonoData_T)
 
+add_executable(MODIP_T MODIP_T.cpp)
+target_link_libraries(MODIP_T gpstk)
+add_test(MODIP_T MODIP_T)
+
 add_executable(GPSLNavData_T GPSLNavData_T.cpp)
 target_link_libraries(GPSLNavData_T gpstk)
 add_test(GPSLNavData_T GPSLNavData_T)

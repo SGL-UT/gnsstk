@@ -38,9 +38,16 @@
 //==============================================================================
 #include "NeQuickIonoData.hpp"
 #include "TimeString.hpp"
-#include "modip.hpp"
+#include "MODIP.hpp"
+#include "FreqConv.hpp"
 
 using namespace std;
+
+/// Threshold for solar flux coefficients to consider them zero and unavailable.
+constexpr double COEFF_THRESH = 1e-7;
+/// Ref Eq.17 of Galileo Ionospheric Model
+constexpr double DEFAULT_IONO_LEVEL = 63.7;
+constexpr double ABOVE_ELEV_EPSILON = 1e-5;
 
 namespace gpstk
 {
@@ -122,6 +129,14 @@ namespace gpstk
                  const Position& svgeo,
                  CarrierBand band) const
    {
+         // throw an exception to prevent the use of this method,
+         // which requires the implementation of a TEC integrator.
+      GPSTK_THROW(Exception("NeQuickIonoData::getCorrection is incomplete"));
+      if ((fabs(ai[0]) < COEFF_THRESH) && (fabs(ai[1]) < COEFF_THRESH) &&
+          (fabs(ai[2]) < COEFF_THRESH))
+      {
+         return DEFAULT_IONO_LEVEL;
+      }
          // Obtain estimates of receiver position, satellite position, and time
       double phi1 = rxgeo.getGeodeticLatitude();
       double lambda1 = rxgeo.longitude();
@@ -130,78 +145,29 @@ namespace gpstk
       double lambda2 = svgeo.longitude();
       double h2 = svgeo.height();
          // Obtain receiver MODIP_u
-      double modip = getMODIP(phi1,lambda1);
-         // Obtain Effective Ionisation Level Azu
-      double azu = ai[0] + ai[1]*modip + ai[2]*modip*modip;           // eq.2
-         // Call NeQuick G STEC integration routine for path
-      double stec = getSTEC();
+      MODIP modip;
+      double modip_u = modip.stModip(phi1,lambda1);
+         // Obtain Effective Ionisation Level Azu (also eq.18)
+      double azu = ai[0] + ai[1]*modip_u + ai[2]*modip_u*modip_u;       // eq.2
+      double tec = 0;
+         // The ESA code differences lat and long to determine if a
+         // satellite is directly above the receiver, but I think it's
+         // better to look at the elevation.
+      double elev = rxgeo.elevation(svgeo);
+      if (fabs(elev - 90.0) < ABOVE_ELEV_EPSILON)
+      {
+            // Call NeQuick G VTEC integration routine for path
+         tec = getVTEC();
+      }
+      else
+      {
+            // Call NeQuick G STEC integration routine for path
+         tec = getSTEC();
+      }
          // Obtain correction by converting STEC to code delay
-      double d1gr = 40.3;                                     // eq.1
+      double f = getFrequency(band);
+      double d1gr = tec * 40.3/(f*f);                                   // eq.1
       return 0;
-   }
-
-
-   int NeQuickIonoData ::
-   getl(double lambda)
-   {
-         // yes, this is supposed to be int, see eq 6, Galileo Ionospheric Model
-      int rv = ((lambda + 180) / 10) - 2;  // eq.6
-      if (rv < 0)
-         rv += 36; // eq.7
-      if (rv > 33)
-         rv -= 36; // eq.8
-      return rv;
-   }
-
-
-   double NeQuickIonoData ::
-   getMODIP(double phi, double lambda)
-   {
-         // Because Galileo's documentation brilliantly uses the z
-         // term in one instance as a matrix and in another as a
-         // vector, we call the matrix "zM" and the vector "zV".
-      double zM[4][4];
-      int l = getl(lambda);
-      double a = ((phi+90.0)/5.0)+1.0;                                // eq.9
-      double x = a - int(a);                                          // eq.10
-      int i = int(a) - 2;                                             // eq.11
-      for (int k = 1; k <= 4; k++)
-      {
-         for (int j = 1; j <= 4; j++)
-         {
-            zM[j-1][k-1] = gnssdata::stModip(i+j, l+k);               // eq.12
-         }
-      }
-      double zV[4];
-      for (int k = 0; k < 4; k++)
-      {
-         zV[k] = interpolate(zM[0][k],zM[1][k],zM[2][k],zM[3][k],x);  // eq.13
-      }
-      double b = (lambda + 180.0) / 10.0;                             // eq.14
-      double y = b - int(b);                                          // eq.15
-      return interpolate(zV[0], zV[1], zV[2], zV[3], y);              // eq.16
-   }
-
-
-   double NeQuickIonoData ::
-   interpolate(double z1, double z2, double z3, double z4, double x)
-   {
-      if (fabs(2*x) < 1e-10)
-      {
-            // if x is really close to zero, just return the point at 0.
-         return z2;                             // eq.128
-      }
-      double sigma = 2*x - 1;                   // eq.129
-      double g1 = z3 + z2;                      // eq.130
-      double g2 = z3 - z2;                      // eq.131
-      double g3 = z4 + z1;                      // eq.132
-      double g4 = (z4 - z1) / 3.0;              // eq.133
-      double a0 = 9.0*g1 - g3;                  // eq.134
-      double a1 = 9.0*g2 - g4;                  // eq.135
-      double a2 = g3 - g1;                      // eq.136
-      double a3 = g4 - g2;                      // eq.137
-         // eq.138
-      return (a0 + a1*sigma + a2*sigma*sigma + a3*sigma*sigma*sigma) / 16.0;
    }
 
 
@@ -211,6 +177,16 @@ namespace gpstk
          // for each integration point in the path, call NeQuick
          // routine to obtain electron density
          // Integrate STEC for all points in the path.
+      return 0;
+   }
+
+
+   double NeQuickIonoData ::
+   getVTEC()
+   {
+         // for each integration point in the path, call NeQuick
+         // routine to obtain electron density
+         // Integrate VTEC for all points in the path.
       return 0;
    }
 }

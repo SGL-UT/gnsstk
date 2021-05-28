@@ -36,68 +36,33 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_NEQUICKIONODATA_HPP
-#define GPSTK_NEQUICKIONODATA_HPP
+#ifndef GPSTK_GALFNAVIONO_HPP
+#define GPSTK_GALFNAVIONO_HPP
 
-#include "IonoData.hpp"
+#include "NeQuickIonoData.hpp"
 
 namespace gpstk
 {
       /// @ingroup NavFactory
       //@{
 
-      /// Class containing data elements unique to NeQuick ionospheric model.
-   class NeQuickIonoData : public IonoData
+      /// Class containing data elements unique to Galileo I/NAV iono data.
+   class GalFNavIono : public NeQuickIonoData
    {
    public:
-         /// Initialize internal data.
-      NeQuickIonoData();
+         /// Sets the nav message type.
+      GalFNavIono();
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
           * @todo implement some checking.
           * @return true if this message is valid according to ICD criteria.
           */
-      bool validate() const override
-      { return true; }
-
-         /** Print the contents of this NeQuickIonoData object in a
-          * human-readable format.
-          * @param[in,out] s The stream to write the data to.
-          * @param[in] dl The level of detail the output should contain. */
-      void dump(std::ostream& s, DumpDetail dl) const override;
-
-         /** Get the ionospheric correction in meters.
-          * @param[in] when The time of the observation to correct.
-          * @param[in] rxgeo The receiver's geodetic position.
-          * @param[in] svgeo The observed satellite's geodetic position.
-          * @param[in] band The carrier band of the signal being corrected.
-          * @return The ionospheric delay, in meters, on band. */
-      double getCorrection(const CommonTime& when,
-                           const Position& rxgeo,
-                           const Position& svgeo,
-                           CarrierBand band) const override;
-
-         // ai terms are solar flux units, solar flux units/degree,
-         // solar flux units/degree**2.  Refer to Galileo-OS-SIS-ICD.
-      double ai[3]; ///< a_i terms of NeQuick model in solar flux units.
-         // These are technically Galileo-specific terms, and they
-         // seem to be as yet unused according to the ICD (section
-         // 5.1.6, "reserved for future use"), however until such time
-         // as we have a situation where we use an NeQuick model that
-         // does NOT use this data, I'm leaving it here so it only
-         // needs to be defined once.
-      bool idf[5]; ///< Ionospheric disturbance flag for regions 1-5 (0-4).
-
-   protected:
-         /// get slant total electron content
-      static double getSTEC();
-         /// get vertical total electron content
-      static double getVTEC();
+      bool validate() const override;
    };
 
       //@}
 
 }
 
-#endif // GPSTK_NEQUICKIONODATA_HPP
+#endif // GPSTK_GALFNAVIONO_HPP
