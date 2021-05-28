@@ -42,6 +42,7 @@
 #include "GPSLNavHealth.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavAlm.hpp"
+#include "GPSLNavIono.hpp"
 #include "TimeString.hpp"
 #include "CivilTime.hpp"
 
@@ -104,15 +105,17 @@ public:
 
 #include "LNavTestDataDecl.hpp"
 
+   void resetCount()
+   { almCount = ephCount = toCount = heaCount = ionoCount = otherCount = 0; }
       /// Counts of messages, set by countResults.
-   unsigned almCount, ephCount, toCount, heaCount, otherCount;
+   unsigned almCount, ephCount, toCount, heaCount, ionoCount, otherCount;
 };
 
 
 PNBGPSLNavDataFactory_T ::
 PNBGPSLNavDataFactory_T()
-      : almCount(0), ephCount(0), toCount(0), heaCount(0), otherCount(0)
 {
+   resetCount();
 #include "LNavTestDataDef.hpp"
 }
 
@@ -163,11 +166,12 @@ addDataAllTest()
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
-      // add page 56, expect time offset
+      // add page 56, expect time offset and iono data
    TUASSERTE(bool, true, uut.addData(pg56LNAVGPS, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, toCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
       // add page 63, expect 8 health
    TUASSERTE(bool, true, uut.addData(pg63LNAVGPS, navOut));
@@ -446,7 +450,6 @@ addDataValidityTest()
    gpstk::PackedNavBitsPtr pg63Bad = std::make_shared<gpstk::PackedNavBits>(
       *pg63LNAVGPS);
    pg63Bad->insertUnsignedLong(0, 29, 1);
-   cerr << *pg63Bad << endl << *pg63LNAVGPS << endl;
       // default = all validity
       // add page 63, expect 8 health
    TUASSERTE(bool, true, uut.addData(pg63LNAVGPS, navOut));
@@ -501,7 +504,7 @@ processEphTest()
       // success, health data only
    TUASSERTE(bool, true, uut.processEph(1, ephLNAVGPSSF1, navOut));
    TUASSERTE(size_t, 1, navOut.size());
-   heaCount = 0, ephCount = 0, otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((hea = dynamic_cast<gpstk::GPSLNavHealth*>(i.get())) != nullptr)
@@ -525,7 +528,7 @@ processEphTest()
    TUASSERTE(unsigned, 1, heaCount);
    TUASSERTE(unsigned, 0, otherCount);
    navOut.clear();
-   heaCount = otherCount = 0;
+   resetCount();
    TUASSERTE(bool, true, uut.processEph(2, ephLNAVGPSSF2, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
@@ -636,7 +639,7 @@ processAlmOrbTest()
    TUASSERTE(bool, true, uut.processSVID51(pg51LNAVGPS, navOut));
       // 1 GPSLNavAlm and 24 GPSLNavHealth.
    TUASSERTE(size_t, 25, navOut.size());
-   heaCount = 0, almCount = 0;
+   resetCount();
       // sv/page ID 51 contains health information for 24 satellites,
       // starting with PRN 1.
    unsigned subjPRN = 1;
@@ -723,7 +726,7 @@ processAlmOrbTest()
    TUASSERTE(bool, true, uut.processAlmOrb(26, almLNAVGPS26, navOut));
    TUASSERTE(size_t, 2, navOut.size());
    nmidExp.sat.id = 26;
-   heaCount = 0, almCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((hea = dynamic_cast<gpstk::GPSLNavHealth*>(i.get())) != nullptr)
@@ -884,28 +887,57 @@ processSVID56Test()
                             gpstk::NavType::GPSLNAV),
       gpstk::NavMessageType::TimeOffset);
    gpstk::NavDataPtrList navOut;
+   gpstk::GPSLNavTimeOffset *to;
+   gpstk::GPSLNavIono *iono;
    TUASSERTE(bool, true, uut.processSVID56(pg56LNAVGPS, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-      // Yes this code can cause seg faults on failure, but that's ok.
-   gpstk::GPSLNavTimeOffset *to =
-      dynamic_cast<gpstk::GPSLNavTimeOffset*>(navOut.begin()->get());
-   TUASSERT(to != nullptr);
-      // NavData fields
-   TUASSERTE(gpstk::CommonTime, pg56LNAVGPSct, to->timeStamp);
-   TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
-      // TimeOffsetData has no fields
-      // GPSLNavTimeOffset fields
-   TUASSERTFE(17, to->deltatLS);
-   TUASSERTFE(4.65661287E-09, to->a0);
-   TUASSERTFE(1.42108547E-14, to->a1);
-   TUASSERTFE(147456, to->tot);
-   TUASSERTE(unsigned, 1869, to->wnot);
-   TUASSERTE(unsigned, 1851, to->wnLSF);
-   TUASSERTE(gpstk::CommonTime,
-             gpstk::GPSWeekSecond(1869,147456).convertToCommonTime(),
-             to->refTime);
-   TUASSERTE(unsigned, 3, to->dn);
-   TUASSERTFE(17, to->deltatLSF);
+   TUASSERTE(size_t, 2, navOut.size());
+   resetCount();
+   for (const auto& i : navOut)
+   {
+      if ((to = dynamic_cast<gpstk::GPSLNavTimeOffset*>(i.get())) != nullptr)
+      {
+         toCount++;
+         nmidExp.messageType = gpstk::NavMessageType::TimeOffset;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, pg56LNAVGPSct, to->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
+            // TimeOffsetData has no fields
+            // GPSLNavTimeOffset fields
+         TUASSERTFE(17, to->deltatLS);
+         TUASSERTFE(4.65661287E-09, to->a0);
+         TUASSERTFE(1.42108547E-14, to->a1);
+         TUASSERTFE(147456, to->tot);
+         TUASSERTE(unsigned, 1869, to->wnot);
+         TUASSERTE(unsigned, 1851, to->wnLSF);
+         TUASSERTE(gpstk::CommonTime,
+                   gpstk::GPSWeekSecond(1869,147456).convertToCommonTime(),
+                   to->refTime);
+         TUASSERTE(unsigned, 3, to->dn);
+         TUASSERTFE(17, to->deltatLSF);
+      }
+      else if ((iono = dynamic_cast<gpstk::GPSLNavIono*>(i.get())) != nullptr)
+      {
+         ionoCount++;
+         nmidExp.messageType = gpstk::NavMessageType::Iono;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, pg56LNAVGPSct, iono->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, iono->signal);
+         TUASSERTE(uint32_t, 0x8b, iono->pre);
+         TUASSERTE(uint32_t, 845, iono->tlm);
+         TUASSERTE(bool, false, iono->alert);
+         TUASSERTE(bool, true, iono->asFlag);
+         TUASSERTFE( 2.142041922e-08, iono->alpha[0]);
+         TUASSERTFE(-7.450580597e-09, iono->alpha[1]);
+         TUASSERTFE(-1.192092896e-07, iono->alpha[2]);
+         TUASSERTFE( 1.192092896e-07, iono->alpha[3]);
+         TUASSERTFE( 1.290240000e+05, iono->beta[0]);
+         TUASSERTFE(-4.915200000e+04, iono->beta[1]);
+         TUASSERTFE(-1.966080000e+05, iono->beta[2]);
+         TUASSERTFE( 6.553600000e+04, iono->beta[3]);
+      }
+   }
+   TUASSERTE(unsigned, 1, toCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    TURETURN();
 }
 
@@ -913,7 +945,7 @@ processSVID56Test()
 void PNBGPSLNavDataFactory_T ::
 countResults(const gpstk::NavDataPtrList& navOut)
 {
-   almCount = ephCount = toCount = heaCount = otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if (dynamic_cast<gpstk::GPSLNavAlm*>(i.get()) != nullptr)
@@ -931,6 +963,10 @@ countResults(const gpstk::NavDataPtrList& navOut)
       else if (dynamic_cast<gpstk::GPSLNavHealth*>(i.get()) != nullptr)
       {
          heaCount++;
+      }
+      else if (dynamic_cast<gpstk::GPSLNavIono*>(i.get()) != nullptr)
+      {
+         ionoCount++;
       }
       else
       {
@@ -976,9 +1012,10 @@ addDataAllQZSSTest()
    navOut.clear();
       // add page 56, expect time offset
    TUASSERTE(bool, true, uut.addData(pg56LNAVQZSS, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, toCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
       // add page 51, expect 10 health and 2 almanacs
    TUASSERTE(bool, true, uut.addData(pg51LNAVQZSS, navOut));
@@ -989,9 +1026,10 @@ addDataAllQZSSTest()
    navOut.clear();
       // add page 61, expect time offset
    TUASSERTE(bool, true, uut.addData(pg61LNAVQZSS, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, toCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
    TURETURN();
 }
@@ -1019,7 +1057,7 @@ processEphQZSSTest()
       // success, health data only
    TUASSERTE(bool, true, uut.processEph(1, ephLNAVQZSSSF1, navOut));
    TUASSERTE(size_t, 1, navOut.size());
-   heaCount = 0, ephCount = 0, otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((hea = dynamic_cast<gpstk::GPSLNavHealth*>(i.get())) != nullptr)
@@ -1043,7 +1081,7 @@ processEphQZSSTest()
    TUASSERTE(unsigned, 1, heaCount);
    TUASSERTE(unsigned, 0, otherCount);
    navOut.clear();
-   heaCount = otherCount = 0;
+   resetCount();
    TUASSERTE(bool, true, uut.processEph(2, ephLNAVQZSSSF2, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
@@ -1154,7 +1192,7 @@ processAlmOrbQZSSTest()
    TUASSERTE(bool, true, uut.processSVID51(pg51LNAVQZSS, navOut));
       // 1 GPSLNavAlm and 10 GPSLNavHealth.
    TUASSERTE(size_t, 11, navOut.size());
-   heaCount = 0, almCount = 0;
+   resetCount();
       // sv/page ID 51 contains health information for 5 satellites,
       // starting with PRN 193.
    unsigned subjPRN = 193;
@@ -1259,7 +1297,7 @@ processAlmOrbQZSSTest()
    TUASSERTE(bool, true, uut.processAlmOrb(194, almLNAVQZSS2, navOut));
    TUASSERTE(size_t, 2, navOut.size());
    nmidExp.sat.id = 194;
-   heaCount = 0, almCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((hea = dynamic_cast<gpstk::GPSLNavHealth*>(i.get())) != nullptr)
@@ -1402,54 +1440,111 @@ processSVID56QZSSTest()
    gpstk::CommonTime expRef = gpstk::CivilTime(2020,8,17,2,10,8,
                                                gpstk::TimeSystem::QZS);
    gpstk::NavDataPtrList navOut;
+   gpstk::GPSLNavTimeOffset *to;
+   gpstk::GPSLNavIono *iono;
       // using page 56
    TUASSERTE(bool, true, uut.processSVID56(pg56LNAVQZSS, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-      // Yes this code can cause seg faults on failure, but that's ok.
-   gpstk::GPSLNavTimeOffset *to =
-      dynamic_cast<gpstk::GPSLNavTimeOffset*>(navOut.begin()->get());
-   TUASSERT(to != nullptr);
-      // NavData fields
-   TUASSERTE(gpstk::CommonTime, pg56LNAVQZSSct, to->timeStamp);
-   TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
-      // TimeOffsetData has no fields
-      // StdNavTimeOffset fields
-   TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::QZS, to->src);
-   TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::UTC, to->tgt);
-   TUASSERTFE(2.79396772E-09, to->a0);
-   TUASSERTFE(0.00000000E+00, to->a1);
-   TUASSERTFE(0.00000000E+00, to->a2);
-   TUASSERTFE(18, to->deltatLS);
-   TUASSERTE(gpstk::CommonTime, expRef, to->refTime);
-   TUASSERTFE(94208, to->tot);
-   TUASSERTE(unsigned, 2119, to->wnot);
-   TUASSERTE(unsigned, 2185, to->wnLSF);
-   TUASSERTE(unsigned, 7, to->dn);
-   TUASSERTFE(18, to->deltatLSF);
+   TUASSERTE(size_t, 2, navOut.size());
+   resetCount();
+   for (const auto& i : navOut)
+   {
+      if ((to = dynamic_cast<gpstk::GPSLNavTimeOffset*>(i.get())) != nullptr)
+      {
+         toCount++;
+         nmidExp.messageType = gpstk::NavMessageType::TimeOffset;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, pg56LNAVQZSSct, to->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
+            // TimeOffsetData has no fields
+            // StdNavTimeOffset fields
+         TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::QZS, to->src);
+         TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::UTC, to->tgt);
+         TUASSERTFE(2.79396772E-09, to->a0);
+         TUASSERTFE(0.00000000E+00, to->a1);
+         TUASSERTFE(0.00000000E+00, to->a2);
+         TUASSERTFE(18, to->deltatLS);
+         TUASSERTE(gpstk::CommonTime, expRef, to->refTime);
+         TUASSERTFE(94208, to->tot);
+         TUASSERTE(unsigned, 2119, to->wnot);
+         TUASSERTE(unsigned, 2185, to->wnLSF);
+         TUASSERTE(unsigned, 7, to->dn);
+         TUASSERTFE(18, to->deltatLSF);
+      }
+      else if ((iono = dynamic_cast<gpstk::GPSLNavIono*>(i.get())) != nullptr)
+      {
+         ionoCount++;
+         nmidExp.messageType = gpstk::NavMessageType::Iono;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, pg56LNAVQZSSct, iono->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, iono->signal);
+         TUASSERTE(uint32_t, 0x8b, iono->pre);
+         TUASSERTE(uint32_t, 170, iono->tlm);
+         TUASSERTE(bool, false, iono->alert);
+         TUASSERTE(bool, false, iono->asFlag);
+         TUASSERTFE( 5.587935448e-09, iono->alpha[0]);
+         TUASSERTFE(-7.450580597e-09, iono->alpha[1]);
+         TUASSERTFE(-4.768371582e-07, iono->alpha[2]);
+         TUASSERTFE(-5.364418030e-07, iono->alpha[3]);
+         TUASSERTFE( 6.963200000e+04, iono->beta[0]);
+         TUASSERTFE(-5.242880000e+05, iono->beta[1]);
+         TUASSERTFE(-6.094848000e+06, iono->beta[2]);
+         TUASSERTFE( 8.323072000e+06, iono->beta[3]);
+      }
+   }
+   TUASSERTE(unsigned, 1, toCount);
+   TUASSERTE(unsigned, 1, ionoCount);
       // using page 61
    navOut.clear();
    TUASSERTE(bool, true, uut.processSVID56(pg61LNAVQZSS, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-      // Yes this code can cause seg faults on failure, but that's ok.
-   to = dynamic_cast<gpstk::GPSLNavTimeOffset*>(navOut.begin()->get());
-   TUASSERT(to != nullptr);
-      // NavData fields
-   TUASSERTE(gpstk::CommonTime, pg61LNAVQZSSct, to->timeStamp);
-   TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
-      // TimeOffsetData has no fields
-      // StdNavTimeOffset fields
-   TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::QZS, to->src);
-   TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::UTC, to->tgt);
-   TUASSERTFE(2.79396772E-09, to->a0);
-   TUASSERTFE(0.00000000E+00, to->a1);
-   TUASSERTFE(0.00000000E+00, to->a2);
-   TUASSERTFE(18, to->deltatLS);
-   TUASSERTE(gpstk::CommonTime, expRef, to->refTime);
-   TUASSERTFE(94208, to->tot);
-   TUASSERTE(unsigned, 2119, to->wnot);
-   TUASSERTE(unsigned, 2185, to->wnLSF);
-   TUASSERTE(unsigned, 7, to->dn);
-   TUASSERTFE(18, to->deltatLSF);
+   TUASSERTE(size_t, 2, navOut.size());
+   resetCount();
+   for (const auto& i : navOut)
+   {
+      if ((to = dynamic_cast<gpstk::GPSLNavTimeOffset*>(i.get())) != nullptr)
+      {
+         toCount++;
+         nmidExp.messageType = gpstk::NavMessageType::TimeOffset;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, pg61LNAVQZSSct, to->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
+            // TimeOffsetData has no fields
+            // StdNavTimeOffset fields
+         TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::QZS, to->src);
+         TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::UTC, to->tgt);
+         TUASSERTFE(2.79396772E-09, to->a0);
+         TUASSERTFE(0.00000000E+00, to->a1);
+         TUASSERTFE(0.00000000E+00, to->a2);
+         TUASSERTFE(18, to->deltatLS);
+         TUASSERTE(gpstk::CommonTime, expRef, to->refTime);
+         TUASSERTFE(94208, to->tot);
+         TUASSERTE(unsigned, 2119, to->wnot);
+         TUASSERTE(unsigned, 2185, to->wnLSF);
+         TUASSERTE(unsigned, 7, to->dn);
+         TUASSERTFE(18, to->deltatLSF);
+      }
+      else if ((iono = dynamic_cast<gpstk::GPSLNavIono*>(i.get())) != nullptr)
+      {
+         ionoCount++;
+         nmidExp.messageType = gpstk::NavMessageType::Iono;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, pg61LNAVQZSSct, iono->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, iono->signal);
+         TUASSERTE(uint32_t, 0x8b, iono->pre);
+         TUASSERTE(uint32_t, 170, iono->tlm);
+         TUASSERTE(bool, false, iono->alert);
+         TUASSERTE(bool, false, iono->asFlag);
+         TUASSERTFE( 1.024454832e-08, iono->alpha[0]);
+         TUASSERTFE(-5.960464478e-08, iono->alpha[1]);
+         TUASSERTFE(-2.980232239e-07, iono->alpha[2]);
+         TUASSERTFE( 0.000000000e+00, iono->alpha[3]);
+         TUASSERTFE( 7.782400000e+04, iono->beta[0]);
+         TUASSERTFE( 3.112960000e+05, iono->beta[1]);
+         TUASSERTFE(-8.257536000e+06, iono->beta[2]);
+         TUASSERTFE( 8.323072000e+06, iono->beta[3]);
+      }
+   }
+   TUASSERTE(unsigned, 1, toCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    TURETURN();
 }
 

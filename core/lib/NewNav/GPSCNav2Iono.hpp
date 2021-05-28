@@ -36,45 +36,31 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "NavMessageType.hpp"
+#ifndef GPSTK_GPSCNAV2IONO_HPP
+#define GPSTK_GPSCNAV2IONO_HPP
+
+#include "KlobucharIonoData.hpp"
+#include "TimeSystem.hpp"
 
 namespace gpstk
 {
-   namespace StringUtils
+      /// @ingroup NavFactory
+      //@{
+
+      /** Class containing data elements unique to GPS CNav ionospheric data.
+       * Nothing beyond the basic Klobuchar model, i.e. no extra metadata. */
+   class GPSCNav2Iono : public KlobucharIonoData
    {
-      std::string asString(NavMessageType e) throw()
+   public:
+         /// Initialize all data (which is in parent classes).
+      GPSCNav2Iono()
       {
-         switch (e)
-         {
-            case NavMessageType::Unknown:    return "Unknown";
-            case NavMessageType::Almanac:    return "Almanac";
-            case NavMessageType::Ephemeris:  return "Ephemeris";
-            case NavMessageType::TimeOffset: return "TimeOffset";
-            case NavMessageType::Health:     return "Health";
-            case NavMessageType::Clock:      return "Clock";
-            case NavMessageType::Iono:       return "Iono";
-            default:                         return "???";
-         } // switch (e)
-      } // asString(NavMessageType)
+         msgLenSec = 5.48;
+      }
+   };
 
+      //@}
 
-      NavMessageType asNavMessageType(const std::string& s) throw()
-      {
-         if (s == "Unknown")
-            return NavMessageType::Unknown;
-         if (s == "Almanac")
-            return NavMessageType::Almanac;
-         if (s == "Ephemeris")
-            return NavMessageType::Ephemeris;
-         if (s == "TimeOffset")
-            return NavMessageType::TimeOffset;
-         if (s == "Health")
-            return NavMessageType::Health;
-         if (s == "Clock")
-            return NavMessageType::Clock;
-         if (s == "Iono")
-            return NavMessageType::Iono;
-         return NavMessageType::Unknown;
-      } // asNavMessageType(string)
-   } // namespace StringUtils
-} // namespace gpstk
+}
+
+#endif // GPSTK_GPSCNAV2UTCIONO_HPP

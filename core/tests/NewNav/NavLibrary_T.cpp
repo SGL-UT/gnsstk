@@ -152,6 +152,7 @@ public:
    unsigned getTimeTest();
    unsigned getAvailableSatsTest();
    unsigned isPresentTest();
+   unsigned getIonoCorrTest();
 
    gpstk::CivilTime civ;
    gpstk::CommonTime ct;
@@ -479,7 +480,7 @@ getAvailableSatsTest()
    TUCATCH(satset = uut.getAvailableSats(
               gpstk::CommonTime::BEGINNING_OF_TIME,
               gpstk::CommonTime::END_OF_TIME));
-   TUASSERTE(gpstk::NavSatelliteIDSet::size_type, 31, satset.size());
+   TUASSERTE(gpstk::NavSatelliteIDSet::size_type, 32, satset.size());
    TUCATCH(satset = uut.getAvailableSats(
               gpstk::CivilTime(2020,4,12,0,56,0,gpstk::TimeSystem::GPS),
               gpstk::CivilTime(2020,4,12,0,57,0,gpstk::TimeSystem::GPS)));
@@ -518,6 +519,42 @@ isPresentTest()
 }
 
 
+unsigned NavLibrary_T ::
+getIonoCorrTest()
+{
+   TUDEF("NavLibrary", "getIonoCorr");
+   gpstk::NavLibrary uut;
+   gpstk::NavDataFactoryPtr
+      ndfp(std::make_shared<RinexTestFactory>());
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "arlm2000.15n";
+   gpstk::CommonTime when = gpstk::CivilTime(2015,7,19,10,0,0,
+                                             gpstk::TimeSystem::GPS);
+   gpstk::Position rx, sv;
+   static const double expCorr = 2.3429392704808575942;
+   static const double corrEps = 1e-12; // 1 picometer ought to be adequate.
+   double corr = 0.0;
+   rx.setECEF( -1575232.0141, -4707872.2332,  3993198.4383);
+   sv.setECEF(-22188225.701295968145, -12374229.731898581609,
+              8029748.4487511720508);
+   TUCATCH(uut.addFactory(ndfp));
+   RinexTestFactory *rndfp = dynamic_cast<RinexTestFactory*>(ndfp.get());
+   TUASSERT(rndfp->addDataSource(fname));
+      // test both entry points and make sure they yield the same
+      // (w/in 1 picometer) results.
+   TUASSERTE(bool, true, uut.getIonoCorr(
+                gpstk::SatID(1, gpstk::SatelliteSystem::GPS), when, rx,
+                gpstk::CarrierBand::L1, corr, gpstk::NavType::GPSLNAV));
+   TUASSERTFEPS(expCorr, corr, corrEps);
+   corr = 0.0;
+   TUASSERTE(bool, true, uut.getIonoCorr(
+                gpstk::SatelliteSystem::GPS, when, rx, sv,
+                gpstk::CarrierBand::L1, corr, gpstk::NavType::GPSLNAV));
+   TUASSERTFEPS(expCorr, corr, corrEps);
+   TURETURN();
+}
+
+
 int main()
 {
    NavLibrary_T testClass;
@@ -533,6 +570,7 @@ int main()
    errorTotal += testClass.getTimeTest();
    errorTotal += testClass.getAvailableSatsTest();
    errorTotal += testClass.isPresentTest();
+   errorTotal += testClass.getIonoCorrTest();
       /// @todo test edit(), clear()
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

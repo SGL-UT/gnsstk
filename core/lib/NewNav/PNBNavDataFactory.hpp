@@ -113,6 +113,8 @@ namespace gpstk
       bool processHea;
          /// If true, time offset data will be output by addData.
       bool processTim;
+         /// If true, ionospheric data will be output by addData.
+      bool processIono;
    }; // class PNBNavDataFactory
 
       /// Managed pointer to a PNBNavDataFactory.

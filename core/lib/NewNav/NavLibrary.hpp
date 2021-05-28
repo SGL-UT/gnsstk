@@ -42,6 +42,7 @@
 #include "NavDataFactory.hpp"
 #include "Xvt.hpp"
 #include "SVHealth.hpp"
+#include "Position.hpp"
 
 namespace gpstk
 {
@@ -534,6 +535,78 @@ namespace gpstk
                      const CommonTime& when, double& offset,
                      SVHealth xmitHealth = SVHealth::Any,
                      NavValidityType valid = NavValidityType::ValidOnly);
+
+         /** Get ionospheric corrections to be applied for in a
+          * single-frequency situation (i.e. when processing
+          * observation data from only one carrier frequency).
+          * @param[in] sys The satellite system to be corrected.  This
+          *   also ensures that the correction data comes from this
+          *   system.
+          * @param[in] when The time of the observation being
+          *   corrected.  This time is also used to look up
+          *   ionospheric correction data.
+          * @param[in] rxgeo The receiver's geodetic position.
+          * @param[in] svgeo The observed satellite's geodetic position.
+          * @param[in] band The carrier band of the signal being
+          *   corrected (must be a valid CarrierBand, i.e. not "Any"
+          *   or "Unknown", etc.)
+          * @param[out] corrOut The ionospheric delay, in meters, on band.
+          * @param[in] nt The navigation message format, e.g. GPSLNAV.
+          *   This may be specified in order to make sure the
+          *   ionospheric correction data comes from a specific
+          *   message structure, otherwise Any is used to indicate
+          *   that you don't care where it comes from (as long as sys
+          *   matches).
+          * @return true if ionospheric corrections are available from
+          *   a known healthy satellite, false if no ionospheric data
+          *   is available matching the search parameters, or if no
+          *   health information is available for any matching
+          *   ionospheric data. */
+      bool getIonoCorr(SatelliteSystem sys, const CommonTime& when,
+                       const Position& rxgeo, const Position& svgeo,
+                       CarrierBand band, double& corrOut,
+                       NavType nt = NavType::Any);
+
+         /** Get ionospheric corrections to be applied for in a
+          * single-frequency situation (i.e. when processing
+          * observation data from only one carrier frequency).  Use
+          * this if you haven't already looked up the satellite's
+          * position/Xvt or ephemeris for other purposes.  This method
+          * will look-up the ephemeris or almanac for the specified
+          * satellite and generate the Xvt, incurring additional
+          * overhead.
+          * @param[in] sat The satellite to be corrected.  This
+          *   also ensures that the correction data comes from the
+          *   same system as this satellite.
+          * @param[in] when The time of the observation being
+          *   corrected.  This time is also used to look up
+          *   ionospheric correction data.
+          * @param[in] rxgeo The receiver's geodetic position.
+          * @param[in] band The carrier band of the signal being
+          *   corrected (must be a valid CarrierBand, i.e. not "Any"
+          *   or "Unknown", etc.)
+          * @param[out] corrOut The ionospheric delay, in meters, on band.
+          * @param[in] nt The navigation message format, e.g. GPSLNAV.
+          *   This may be specified in order to make sure the
+          *   ionospheric correction data comes from a specific
+          *   message structure, otherwise Any is used to indicate
+          *   that you don't care where it comes from (as long as sys
+          *   matches).
+          * @param[in] freqOffs When using GLONASS FDMA satellites,
+          *   specify the frequency offset for the channel.
+          * @param[in] freqOffsWild If false, sat is a GLONASS FDMA satellite.
+          * @return true if ionospheric corrections are available from
+          *   a known healthy satellite, and a position is available
+          *   for the specified satellite, false if no ionospheric
+          *   data is available matching the search parameters, or if
+          *   no health information is available for any matching
+          *   ionospheric data, or if no position can be computed for
+          *   the specified satellite. */
+      bool getIonoCorr(const SatID& sat, const CommonTime& when,
+                       const Position& rxgeo,
+                       CarrierBand band, double& corrOut,
+                       NavType nt = NavType::Any, int freqOffs = 0,
+                       bool freqOffsWild = true);
 
          /** Search factories to find the navigation message that meets
           * the specified criteria.

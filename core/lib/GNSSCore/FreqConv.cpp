@@ -16,19 +16,18 @@
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
-//  This software was developed by Applied Research Laboratories at the 
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
-
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
 //  Pursuant to DoD Directive 523024 
 //
@@ -36,30 +35,31 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "PNBNavDataFactory.hpp"
 
-using namespace std;
+#include "FreqConv.hpp"
 
 namespace gpstk
 {
-   PNBNavDataFactory ::
-   PNBNavDataFactory()
-         : navValidity(NavValidityType::Any)
+   double getFrequency(CarrierBand band)
    {
-      setTypeFilter(allNavMessageTypes);
+      switch (band)
+      {
+         case CarrierBand::L1:    return FREQ_GPS_L1;
+         case CarrierBand::L2:    return FREQ_GPS_L2;
+         case CarrierBand::L5:    return FREQ_GPS_L5;
+         case CarrierBand::G1:    return FREQ_GLONASS_G1;
+         case CarrierBand::G1a:   return FREQ_GLONASS_G1a;
+         case CarrierBand::G2a:   return FREQ_GLONASS_G2a;
+         case CarrierBand::G2:    return FREQ_GLONASS_G2;
+         case CarrierBand::G3:    return FREQ_GLONASS_G3;
+         case CarrierBand::E5b:   return FREQ_GALILEO_E5b;
+         case CarrierBand::E5ab:  return FREQ_GALILEO_E5;
+         case CarrierBand::E6:    return FREQ_GALILEO_E6;
+         case CarrierBand::B1:    return FREQ_BEIDOU_B1;
+         case CarrierBand::B2:    return FREQ_BEIDOU_B2b;
+         case CarrierBand::B3:    return FREQ_BEIDOU_B3;
+         case CarrierBand::I9:    return FREQ_NAVIC_S;
+         default:                 return 0.0;
+      }
    }
-
-
-   void PNBNavDataFactory ::
-   setTypeFilter(const NavMessageTypeSet& nmts)
-   {
-         // We use boolean values instead of a set so that we're not
-         // checking a set every time a new subframe is added.
-      processEph = (nmts.count(gpstk::NavMessageType::Ephemeris) > 0);
-      processAlm = (nmts.count(gpstk::NavMessageType::Almanac) > 0);
-      processHea = (nmts.count(gpstk::NavMessageType::Health) > 0);
-      processTim = (nmts.count(gpstk::NavMessageType::TimeOffset) > 0);
-      processIono= (nmts.count(gpstk::NavMessageType::Iono) > 0);
-   }
-
-}
+} // namespace gpstk

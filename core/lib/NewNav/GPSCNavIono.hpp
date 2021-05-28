@@ -36,45 +36,45 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "NavMessageType.hpp"
+#ifndef GPSTK_GPSCNAVIONO_HPP
+#define GPSTK_GPSCNAVIONO_HPP
+
+#include "KlobucharIonoData.hpp"
 
 namespace gpstk
 {
-   namespace StringUtils
+      /// @ingroup NavFactory
+      //@{
+
+      /// Class containing data elements unique to GPS CNav ionospheric data.
+   class GPSCNavIono : public KlobucharIonoData
    {
-      std::string asString(NavMessageType e) throw()
-      {
-         switch (e)
-         {
-            case NavMessageType::Unknown:    return "Unknown";
-            case NavMessageType::Almanac:    return "Almanac";
-            case NavMessageType::Ephemeris:  return "Ephemeris";
-            case NavMessageType::TimeOffset: return "TimeOffset";
-            case NavMessageType::Health:     return "Health";
-            case NavMessageType::Clock:      return "Clock";
-            case NavMessageType::Iono:       return "Iono";
-            default:                         return "???";
-         } // switch (e)
-      } // asString(NavMessageType)
+   public:
+         /// Sets the nav message type.
+      GPSCNavIono();
 
+         /** Checks the contents of this message against known
+          * validity rules as defined in the appropriate ICD.
+          * @return true if this message is valid according to ICD criteria.
+          */
+      bool validate() const override;
 
-      NavMessageType asNavMessageType(const std::string& s) throw()
-      {
-         if (s == "Unknown")
-            return NavMessageType::Unknown;
-         if (s == "Almanac")
-            return NavMessageType::Almanac;
-         if (s == "Ephemeris")
-            return NavMessageType::Ephemeris;
-         if (s == "TimeOffset")
-            return NavMessageType::TimeOffset;
-         if (s == "Health")
-            return NavMessageType::Health;
-         if (s == "Clock")
-            return NavMessageType::Clock;
-         if (s == "Iono")
-            return NavMessageType::Iono;
-         return NavMessageType::Unknown;
-      } // asNavMessageType(string)
-   } // namespace StringUtils
-} // namespace gpstk
+         /** Returns the time when the navigation message would have
+          * first been available to the user equipment, i.e. the time
+          * at which the final bit of a given broadcast navigation
+          * message is received.  This is used by
+          * NavDataFactoryWithStore::find() in User mode.
+          * @return transmit time + 12s or 6s, depending on whether
+          *   this is CNAV on L5 or on L2.
+          */
+      CommonTime getUserTime() const override;
+
+      uint32_t pre; ///< The preamble from the start of the subframe.
+      bool alert;   ///< Alert flag
+   };
+
+      //@}
+
+}
+
+#endif // GPSTK_GPSCNAVIONO_HPP

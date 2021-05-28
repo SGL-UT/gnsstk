@@ -36,45 +36,61 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "NavMessageType.hpp"
+#include "GPSCNav2Iono.hpp"
+#include "TestUtil.hpp"
+#include "GPSWeekSecond.hpp"
 
 namespace gpstk
 {
-   namespace StringUtils
+   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
    {
-      std::string asString(NavMessageType e) throw()
-      {
-         switch (e)
-         {
-            case NavMessageType::Unknown:    return "Unknown";
-            case NavMessageType::Almanac:    return "Almanac";
-            case NavMessageType::Ephemeris:  return "Ephemeris";
-            case NavMessageType::TimeOffset: return "TimeOffset";
-            case NavMessageType::Health:     return "Health";
-            case NavMessageType::Clock:      return "Clock";
-            case NavMessageType::Iono:       return "Iono";
-            default:                         return "???";
-         } // switch (e)
-      } // asString(NavMessageType)
+      s << StringUtils::asString(e);
+      return s;
+   }
+}
+
+class GPSCNav2Iono_T
+{
+public:
+      /// Make sure constructor initializes data members correctly.
+   unsigned constructorTest();
+   unsigned getUserTimeTest();
+};
 
 
-      NavMessageType asNavMessageType(const std::string& s) throw()
-      {
-         if (s == "Unknown")
-            return NavMessageType::Unknown;
-         if (s == "Almanac")
-            return NavMessageType::Almanac;
-         if (s == "Ephemeris")
-            return NavMessageType::Ephemeris;
-         if (s == "TimeOffset")
-            return NavMessageType::TimeOffset;
-         if (s == "Health")
-            return NavMessageType::Health;
-         if (s == "Clock")
-            return NavMessageType::Clock;
-         if (s == "Iono")
-            return NavMessageType::Iono;
-         return NavMessageType::Unknown;
-      } // asNavMessageType(string)
-   } // namespace StringUtils
-} // namespace gpstk
+unsigned GPSCNav2Iono_T ::
+constructorTest()
+{
+   TUDEF("GPSCNav2Iono", "GPSCNav2Iono");
+   gpstk::GPSCNav2Iono uut;
+   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Iono,
+             uut.signal.messageType);
+   TURETURN();
+}
+
+
+unsigned GPSCNav2Iono_T ::
+getUserTimeTest()
+{
+   TUDEF("GPSCNav2Iono", "getUserTime");
+   gpstk::GPSCNav2Iono uut;
+   uut.timeStamp = gpstk::GPSWeekSecond(2100,135.0);
+   gpstk::CommonTime exp = uut.timeStamp + 5.48;
+   TUASSERTE(gpstk::CommonTime, exp, uut.getUserTime());
+   TURETURN();
+}
+
+
+int main()
+{
+   GPSCNav2Iono_T testClass;
+   unsigned errorTotal = 0;
+
+   errorTotal += testClass.constructorTest();
+   errorTotal += testClass.getUserTimeTest();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+             << std::endl;
+
+   return errorTotal;
+}

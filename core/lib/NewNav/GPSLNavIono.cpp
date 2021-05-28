@@ -36,45 +36,29 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "NavMessageType.hpp"
+#include "GPSLNavIono.hpp"
+#include "TimeString.hpp"
+#include "YDSTime.hpp"
+#include "FreqConv.hpp"
+
+using namespace std;
 
 namespace gpstk
 {
-   namespace StringUtils
+   GPSLNavIono ::
+   GPSLNavIono()
+         : pre(0),
+           tlm(0),
+           alert(false),
+           asFlag(false)
    {
-      std::string asString(NavMessageType e) throw()
-      {
-         switch (e)
-         {
-            case NavMessageType::Unknown:    return "Unknown";
-            case NavMessageType::Almanac:    return "Almanac";
-            case NavMessageType::Ephemeris:  return "Ephemeris";
-            case NavMessageType::TimeOffset: return "TimeOffset";
-            case NavMessageType::Health:     return "Health";
-            case NavMessageType::Clock:      return "Clock";
-            case NavMessageType::Iono:       return "Iono";
-            default:                         return "???";
-         } // switch (e)
-      } // asString(NavMessageType)
+      msgLenSec = 6.0;
+   }
 
 
-      NavMessageType asNavMessageType(const std::string& s) throw()
-      {
-         if (s == "Unknown")
-            return NavMessageType::Unknown;
-         if (s == "Almanac")
-            return NavMessageType::Almanac;
-         if (s == "Ephemeris")
-            return NavMessageType::Ephemeris;
-         if (s == "TimeOffset")
-            return NavMessageType::TimeOffset;
-         if (s == "Health")
-            return NavMessageType::Health;
-         if (s == "Clock")
-            return NavMessageType::Clock;
-         if (s == "Iono")
-            return NavMessageType::Iono;
-         return NavMessageType::Unknown;
-      } // asNavMessageType(string)
-   } // namespace StringUtils
-} // namespace gpstk
+   bool GPSLNavIono ::
+   validate() const
+   {
+      return (KlobucharIonoData::validate() && ((pre == 0) || (pre == 0x8b)));
+   }
+}

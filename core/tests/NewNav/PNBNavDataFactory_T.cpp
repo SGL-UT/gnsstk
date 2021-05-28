@@ -81,6 +81,7 @@ constructorTest()
    TUASSERTE(bool, true, uut.processAlm);
    TUASSERTE(bool, true, uut.processHea);
    TUASSERTE(bool, true, uut.processTim);
+   TUASSERTE(bool, true, uut.processIono);
    TURETURN();
 }
 
@@ -110,28 +111,39 @@ setTypeFilterTest()
    TUASSERTE(bool, true,  uut.processAlm);
    TUASSERTE(bool, true,  uut.processHea);
    TUASSERTE(bool, true,  uut.processTim);
+   TUASSERTE(bool, true,  uut.processIono);
    uut.setTypeFilter({gpstk::NavMessageType::Almanac});
    TUASSERTE(bool, false, uut.processEph);
    TUASSERTE(bool, true,  uut.processAlm);
    TUASSERTE(bool, false, uut.processHea);
    TUASSERTE(bool, false, uut.processTim);
+   TUASSERTE(bool, false, uut.processIono);
    uut.setTypeFilter({gpstk::NavMessageType::Ephemeris,
                       gpstk::NavMessageType::TimeOffset});
    TUASSERTE(bool, true,  uut.processEph);
    TUASSERTE(bool, false, uut.processAlm);
    TUASSERTE(bool, false, uut.processHea);
    TUASSERTE(bool, true,  uut.processTim);
+   TUASSERTE(bool, false, uut.processIono);
    uut.setTypeFilter({gpstk::NavMessageType::Health,
                       gpstk::NavMessageType::Clock});
    TUASSERTE(bool, false, uut.processEph);
    TUASSERTE(bool, false, uut.processAlm);
    TUASSERTE(bool, true,  uut.processHea);
    TUASSERTE(bool, false, uut.processTim);
+   TUASSERTE(bool, false, uut.processIono);
    uut.setTypeFilter({gpstk::NavMessageType::Clock});
    TUASSERTE(bool, false, uut.processEph);
    TUASSERTE(bool, false, uut.processAlm);
    TUASSERTE(bool, false, uut.processHea);
    TUASSERTE(bool, false, uut.processTim);
+   TUASSERTE(bool, false, uut.processIono);
+   uut.setTypeFilter({gpstk::NavMessageType::Iono});
+   TUASSERTE(bool, false, uut.processEph);
+   TUASSERTE(bool, false, uut.processAlm);
+   TUASSERTE(bool, false, uut.processHea);
+   TUASSERTE(bool, false, uut.processTim);
+   TUASSERTE(bool, true,  uut.processIono);
    TURETURN();
 }
 

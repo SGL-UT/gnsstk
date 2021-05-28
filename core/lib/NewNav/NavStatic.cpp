@@ -63,7 +63,8 @@ namespace gpstk
                                                 NavMessageType::Ephemeris,
                                                 NavMessageType::TimeOffset,
                                                 NavMessageType::Health,
-                                                NavMessageType::Clock };
+                                                NavMessageType::Clock,
+                                                NavMessageType::Iono };
 
       /** This class is not for public use.  It is used to create a
        * singleton object to add supported formats to
