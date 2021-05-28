@@ -57,6 +57,7 @@
 #include "Triple.hpp"
 #include "RinexSatID.hpp"
 #include "RinexObsID.hpp"
+#include "XmitAnt.hpp"
 
 
 namespace gpstk
@@ -198,6 +199,8 @@ namespace gpstk
       static const std::string hsNumSats;           ///< # OF SATELLITES
       static const std::string hsPrnObs;            ///< PRN / # OF OBS
       static const std::string hsEoH;               ///< END OF HEADER
+      static const std::string hsAntennaStandard;   ///< Fixed comment xmit ant
+      static const std::string hsAntennaRegional;   ///< Fixed comment xmit ant
          ///@}
 
          /** Validity bits for the RINEX Observation Header - please
@@ -492,6 +495,7 @@ namespace gpstk
       short numSVs;                    ///< # OF SATELLITES
       PRNNumObsMap numObsForSat;       ///< PRN / # OF OBS
 
+      XmitAnt xmitAnt;                 ///< Non-standard, transmitter ID.
 
          /// number & types of observations R2 only
          ///@bug  this is being used but is not actually being filled

@@ -73,9 +73,9 @@ class GloEphemerisTest(unittest.TestCase):
 class SP3Test(unittest.TestCase):
     def test_ephem_store(self):
         ephem = gpstk.SP3EphemerisStore()
-        ephem.rejectBadPositions(True);
-        ephem.rejectBadClocks(True);
-        ephem.loadFile( gpstk.data.full_path("sp3_data.txt") );
+        ephem.rejectBadPositions(True)
+        ephem.rejectBadClocks(True)
+        ephem.loadFile( gpstk.data.full_path("sp3_data.txt") )
         t = ephem.getInitialTime()
         t.addSeconds(60*120) # 2 hours into data
         s = gpstk.SatID(1)

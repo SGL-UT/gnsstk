@@ -37,7 +37,7 @@
 //
 //==============================================================================
 /** @file LNavTestDataDef.hpp This file contains data definitions
- * for testing GPS LNav processing in the NavFactory code. */
+ * for testing GPS and QZSS LNav processing in the NavFactory code. */
 
 oidLNAVGPS = gpstk::ObsID(gpstk::ObservationType::NavMsg,
                           gpstk::CarrierBand::L1,
@@ -172,3 +172,147 @@ pg56LNAVGPS->addUnsignedLong(0x01491376,30,1);
 pg56LNAVGPS->addUnsignedLong(0x044EC0EB,30,1);
 pg56LNAVGPS->addUnsignedLong(0x044000D8,30,1);
 pg56LNAVGPS->trimsize();
+
+// QZSS
+
+oidLNAVQZSS = gpstk::ObsID(gpstk::ObservationType::NavMsg,
+                           gpstk::CarrierBand::L1,
+                           gpstk::TrackingCode::CA);
+ephLNAVQZSSSF1ct = gpstk::GPSWeekSecond(2118,518400,gpstk::TimeSystem::QZS);
+ephLNAVQZSSSF2ct = gpstk::GPSWeekSecond(2118,518406,gpstk::TimeSystem::QZS);
+ephLNAVQZSSSF3ct = gpstk::GPSWeekSecond(2118,518412,gpstk::TimeSystem::QZS);
+almLNAVQZSS1ct = gpstk::GPSWeekSecond(2118,518424,gpstk::TimeSystem::QZS);
+almLNAVQZSS2ct = gpstk::GPSWeekSecond(2118,518484,gpstk::TimeSystem::QZS);
+pg51LNAVQZSSct = gpstk::GPSWeekSecond(2118,518538,gpstk::TimeSystem::QZS);
+pg56LNAVQZSSct = gpstk::GPSWeekSecond(2118,518514,gpstk::TimeSystem::QZS);
+pg61LNAVQZSSct = gpstk::GPSWeekSecond(2118,518454,gpstk::TimeSystem::QZS);
+ephLNAVQZSSSid = gpstk::SatID(193,gpstk::SatelliteSystem::QZSS);
+almLNAVQZSSSid = gpstk::SatID(193,gpstk::SatelliteSystem::QZSS);
+
+ephLNAVQZSSSF1 = std::make_shared<gpstk::PackedNavBits>(ephLNAVQZSSSid,
+                                                        oidLNAVQZSS,
+                                                        ephLNAVQZSSSF1ct);
+ephLNAVQZSSSF1->setNavID(gpstk::NavType::GPSLNAV);
+ephLNAVQZSSSF1->addUnsignedLong(0x22C0AA24,30,1);
+ephLNAVQZSSSF1->addUnsignedLong(0x2A302164,30,1);
+ephLNAVQZSSSF1->addUnsignedLong(0x046840DF,30,1);
+ephLNAVQZSSSF1->addUnsignedLong(0x20000015,30,1);
+ephLNAVQZSSSF1->addUnsignedLong(0x00000016,30,1);
+ephLNAVQZSSSF1->addUnsignedLong(0x00000029,30,1);
+ephLNAVQZSSSF1->addUnsignedLong(0x00003D3C,30,1);
+ephLNAVQZSSSF1->addUnsignedLong(0x205FDC4B,30,1);
+ephLNAVQZSSSF1->addUnsignedLong(0x0000092D,30,1);
+ephLNAVQZSSSF1->addUnsignedLong(0x39CF43FC,30,1);
+ephLNAVQZSSSF1->trimsize();
+
+ephLNAVQZSSSF2 = std::make_shared<gpstk::PackedNavBits>(ephLNAVQZSSSid,
+                                                        oidLNAVQZSS,
+                                                        ephLNAVQZSSSF2ct);
+ephLNAVQZSSSF2->setNavID(gpstk::NavType::GPSLNAV);
+ephLNAVQZSSSF2->addUnsignedLong(0x22C0AA24,30,1);
+ephLNAVQZSSSF2->addUnsignedLong(0x2A3042F4,30,1);
+ephLNAVQZSSSF2->addUnsignedLong(0x207F0CCA,30,1);
+ephLNAVQZSSSF2->addUnsignedLong(0x06A60B06,30,1);
+ephLNAVQZSSSF2->addUnsignedLong(0x3C48F93B,30,1);
+ephLNAVQZSSSF2->addUnsignedLong(0x3FD449AB,30,1);
+ephLNAVQZSSSF2->addUnsignedLong(0x36CFD9C8,30,1);
+ephLNAVQZSSSF2->addUnsignedLong(0x074DF288,30,1);
+ephLNAVQZSSSF2->addUnsignedLong(0x3B724294,30,1);
+ephLNAVQZSSSF2->addUnsignedLong(0x1FDC5FD4,30,1);
+ephLNAVQZSSSF2->trimsize();
+
+ephLNAVQZSSSF3 = std::make_shared<gpstk::PackedNavBits>(ephLNAVQZSSSid,
+                                                        oidLNAVQZSS,
+                                                        ephLNAVQZSSSF3ct);
+ephLNAVQZSSSF3->setNavID(gpstk::NavType::GPSLNAV);
+ephLNAVQZSSSF3->addUnsignedLong(0x22C0AA24,30,1);
+ephLNAVQZSSSF3->addUnsignedLong(0x2A30637C,30,1);
+ephLNAVQZSSSF3->addUnsignedLong(0x3FF3E0D0,30,1);
+ephLNAVQZSSSF3->addUnsignedLong(0x1EC816E4,30,1);
+ephLNAVQZSSSF3->addUnsignedLong(0x3FB8074C,30,1);
+ephLNAVQZSSSF3->addUnsignedLong(0x2AABCE23,30,1);
+ephLNAVQZSSSF3->addUnsignedLong(0x38897015,30,1);
+ephLNAVQZSSSF3->addUnsignedLong(0x2AD457DF,30,1);
+ephLNAVQZSSSF3->addUnsignedLong(0x3FF8CC38,30,1);
+ephLNAVQZSSSF3->addUnsignedLong(0x204A5D8C,30,1);
+ephLNAVQZSSSF3->trimsize();
+
+almLNAVQZSS1 = std::make_shared<gpstk::PackedNavBits>(almLNAVQZSSSid,
+                                                      oidLNAVQZSS,
+                                                      almLNAVQZSS1ct);
+almLNAVQZSS1->setNavID(gpstk::NavType::GPSLNAV);
+almLNAVQZSS1->addUnsignedLong(0x22C0AA24,30,1);
+almLNAVQZSS1->addUnsignedLong(0x2A30A504,30,1);
+almLNAVQZSS1->addUnsignedLong(0x30607FD0,30,1);
+almLNAVQZSS1->addUnsignedLong(0x0576B107,30,1);
+almLNAVQZSS1->addUnsignedLong(0x3FD08035,30,1);
+almLNAVQZSS1->addUnsignedLong(0x32BB681A,30,1);
+almLNAVQZSS1->addUnsignedLong(0x1FA3DD84,30,1);
+almLNAVQZSS1->addUnsignedLong(0x3029E6BE,30,1);
+almLNAVQZSS1->addUnsignedLong(0x089CE67C,30,1);
+almLNAVQZSS1->addUnsignedLong(0x39C00BA4,30,1);
+almLNAVQZSS1->trimsize();
+
+almLNAVQZSS2 = std::make_shared<gpstk::PackedNavBits>(almLNAVQZSSSid,
+                                                      oidLNAVQZSS,
+                                                      almLNAVQZSS2ct);
+almLNAVQZSS2->setNavID(gpstk::NavType::GPSLNAV);
+almLNAVQZSS2->addUnsignedLong(0x22C0AA24,30,1);
+almLNAVQZSS2->addUnsignedLong(0x2A31E534,30,1);
+almLNAVQZSS2->addUnsignedLong(0x309F071C,30,1);
+almLNAVQZSS2->addUnsignedLong(0x0579F2BB,30,1);
+almLNAVQZSS2->addUnsignedLong(0x3FC98019,30,1);
+almLNAVQZSS2->addUnsignedLong(0x32BAB677,30,1);
+almLNAVQZSS2->addUnsignedLong(0x36E8A57E,30,1);
+almLNAVQZSS2->addUnsignedLong(0x2FEC8EBC,30,1);
+almLNAVQZSS2->addUnsignedLong(0x322A7E03,30,1);
+almLNAVQZSS2->addUnsignedLong(0x3FC005D8,30,1);
+almLNAVQZSS2->trimsize();
+
+pg56LNAVQZSS = std::make_shared<gpstk::PackedNavBits>(almLNAVQZSSSid,
+                                                      oidLNAVQZSS,
+                                                      pg56LNAVQZSSct);
+pg56LNAVQZSS->setNavID(gpstk::NavType::GPSLNAV);
+pg56LNAVQZSS->addUnsignedLong(0x22C0AA24,30,1);
+pg56LNAVQZSS->addUnsignedLong(0x2A326470,30,1);
+pg56LNAVQZSS->addUnsignedLong(0x3E01BFFD,30,1);
+pg56LNAVQZSS->addUnsignedLong(0x3E3DC8BE,30,1);
+pg56LNAVQZSS->addUnsignedLong(0x3828DFC7,30,1);
+pg56LNAVQZSS->addUnsignedLong(0x0000003F,30,1);
+pg56LNAVQZSS->addUnsignedLong(0x0000003F,30,1);
+pg56LNAVQZSS->addUnsignedLong(0x00C5D1F0,30,1);
+pg56LNAVQZSS->addUnsignedLong(0x04A241CF,30,1);
+pg56LNAVQZSS->addUnsignedLong(0x0480009C,30,1);
+pg56LNAVQZSS->trimsize();
+
+pg51LNAVQZSS = std::make_shared<gpstk::PackedNavBits>(almLNAVQZSSSid,
+                                                      oidLNAVQZSS,
+                                                      pg51LNAVQZSSct);
+pg51LNAVQZSS->setNavID(gpstk::NavType::GPSLNAV);
+pg51LNAVQZSS->addUnsignedLong(0x22C0AA24,30,1);
+pg51LNAVQZSS->addUnsignedLong(0x2A330490,30,1);
+pg51LNAVQZSS->addUnsignedLong(0x3CC551E9,30,1);
+pg51LNAVQZSS->addUnsignedLong(0x00000F9B,30,1);
+pg51LNAVQZSS->addUnsignedLong(0x3EF80FA6,30,1);
+pg51LNAVQZSS->addUnsignedLong(0x3EF8003D,30,1);
+pg51LNAVQZSS->addUnsignedLong(0x00000016,30,1);
+pg51LNAVQZSS->addUnsignedLong(0x00000029,30,1);
+pg51LNAVQZSS->addUnsignedLong(0x00000016,30,1);
+pg51LNAVQZSS->addUnsignedLong(0x0000008C,30,1);
+pg51LNAVQZSS->trimsize();
+
+pg61LNAVQZSS = std::make_shared<gpstk::PackedNavBits>(almLNAVQZSSSid,
+                                                      oidLNAVQZSS,
+                                                      pg61LNAVQZSSct);
+pg61LNAVQZSS->setNavID(gpstk::NavType::GPSLNAV);
+pg61LNAVQZSS->addUnsignedLong(0x22C0AA24,30,1);
+pg61LNAVQZSS->addUnsignedLong(0x2A3145A8,30,1);
+pg61LNAVQZSS->addUnsignedLong(0x3F42FE37,30,1);
+pg61LNAVQZSS->addUnsignedLong(0x3EC00989,30,1);
+pg61LNAVQZSS->addUnsignedLong(0x04E09FE9,30,1);
+pg61LNAVQZSS->addUnsignedLong(0x00000016,30,1);
+pg61LNAVQZSS->addUnsignedLong(0x00000029,30,1);
+pg61LNAVQZSS->addUnsignedLong(0x00C5D1D9,30,1);
+pg61LNAVQZSS->addUnsignedLong(0x04A241D9,30,1);
+pg61LNAVQZSS->addUnsignedLong(0x04800010,30,1);
+pg61LNAVQZSS->trimsize();

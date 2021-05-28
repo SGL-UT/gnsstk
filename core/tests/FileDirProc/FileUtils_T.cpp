@@ -292,7 +292,7 @@ int FileUtils_T :: testFileAccessCheck()
       {
          ofs.flush();
          ofs.close();
-         #ifdef WIN32
+#ifdef WIN32
          if (0 != _chmod(filename.c_str(), _S_IREAD ))
          {
             tester.assert ( false, "test setup error (chmod)", __LINE__ );
@@ -304,7 +304,7 @@ int FileUtils_T :: testFileAccessCheck()
             tester.assert( FileUtils::fileAccessCheck(filename, ios::in),   "mode test failed",           __LINE__ );
             tester.assert( !FileUtils::fileAccessCheck(filename, ios::out), "expected mode test failure", __LINE__ );
          }
-         #else
+#else
          if (0 != chmod(filename.c_str(), 0444) )
          {
             tester.assert ( false, "test setup error (chmod)", __LINE__ );
@@ -314,13 +314,14 @@ int FileUtils_T :: testFileAccessCheck()
             filesToRemove.push_back(filename);
             tester.assert( FileUtils::fileAccessCheck(filename),            "read access failed",         __LINE__ );
             tester.assert( FileUtils::fileAccessCheck(filename, ios::in),   "mode test failed",           __LINE__ );
-               /** @note This test fails under Debian 7, which seems
-                * to have a bug in the OS/system calls that
-                * erroneously allow opening read-only files with write
-                * access.  There's nothing we can do about this. */
-            tester.assert( !FileUtils::fileAccessCheck(filename, ios::out), "expected mode test failure", __LINE__ );
+               /** @note This test fails when run as root, so don't
+                * make the assertion if we're root. */
+            if ((getuid() != 0) && (geteuid() != 0))
+            {
+               tester.assert( !FileUtils::fileAccessCheck(filename, ios::out), "expected mode test failure", __LINE__ );
+            }
          }
-         #endif
+#endif
 
       }
    }

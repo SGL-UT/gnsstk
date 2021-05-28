@@ -37,6 +37,7 @@
 //==============================================================================
 
 #include "RinexSatID.hpp"
+#include "GNSSconstants.hpp"
 
 /**
  * @file RinexSatID.cpp
@@ -183,7 +184,7 @@ namespace gpstk
                if (id < 83)
                {
                      // PRN codes in the range of 193-197
-                  id += 192;
+                  id += MIN_PRN_QZS-1;
                }
                else
                {
@@ -213,10 +214,10 @@ namespace gpstk
                rinexID -= 100;
                break;
             case SatelliteSystem::QZSS:
-               if (rinexID >= 193)
+               if (rinexID >= MIN_PRN_QZS)
                {
                      // PRN codes in the range of 193-197
-                  rinexID -= 192;
+                  rinexID -= MIN_PRN_QZS-1;
                }
                else
                {

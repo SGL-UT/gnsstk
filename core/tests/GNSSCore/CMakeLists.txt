@@ -173,5 +173,9 @@ add_executable(SatID_T SatID_T.cpp)
 target_link_libraries(SatID_T gpstk)
 add_test(GNSSCore_SatID SatID_T)
 
+add_executable(XmitAnt_T XmitAnt_T.cpp)
+target_link_libraries(XmitAnt_T gpstk)
+add_test(GNSSCore_XmitAnt XmitAnt_T)
+
 ###############################################################################
 ###############################################################################

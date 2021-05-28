@@ -46,6 +46,8 @@ namespace gpstk
 {
    const double GPSCNav2Eph::refAGPS = 26559710;
    const double GPSCNav2Eph::refOMEGAdotGPS = -2.6e-9 * PI;
+   const double GPSCNav2Eph::refAQZSS = 42164200;
+   const double GPSCNav2Eph::refOMEGAdotQZSS = -2.6e-9 * PI;
 
    GPSCNav2Eph ::
    GPSCNav2Eph()
@@ -103,7 +105,7 @@ namespace gpstk
          // cutover.  So this means the SECOND data set will NOT be
          // coerced to the top of the even hour start time if it
          // wasn't collected at the top of the hour.
-      beginFit = GPSWeekSecond(xmitWeek, xmitSOW, TimeSystem::GPS);
+      beginFit = GPSWeekSecond(xmitWeek, xmitSOW, xws.getTimeSystem());
          // If an upload cutover, need some adjustment.
       if (!isNominalToe)
       {
@@ -115,13 +117,13 @@ namespace gpstk
    void GPSCNav2Eph ::
    dumpSVStatus(std::ostream& s) const
    {
-         /// @todo add the remaining class-specific data
       const ios::fmtflags oldFlags = s.flags();
       s.setf(ios::fixed, ios::floatfield);
       s.setf(ios::right, ios::adjustfield);
       s.setf(ios::uppercase);
       s.precision(0);
       s.fill(' ');
+      std::string timeFmt = weekFmt+dumpTimeFmt;
       s << "           ACCURACY PARAMETERS"
         << endl
         << endl
@@ -137,18 +139,33 @@ namespace gpstk
         << endl << endl << endl
         << "              Week(10bt)     SOW     DOW   UTD     SOD"
         << "   MM/DD/YYYY   HH:MM:SS" << endl
-        << "Predict    :  " << printTime(top, dumpTimeFmt) << endl
+        << "Predict    :  " << printTime(top, timeFmt) << endl
         << endl
         << "           SV STATUS"
         << endl
         << endl
         << "Health L1C                     :     " << setfill('0') << setw(1)
-        << healthL1C
-        << endl << endl << endl
+        << healthL1C << endl
+        << "Tgd                            :"
+        << setw(16) << setprecision(8) << scientific << setfill(' ') << tgd
+        << " sec" << endl
+        << "ISC L1CP                       :"
+        << setw(16) << setprecision(8) << scientific << setfill(' ') << iscL1CP
+        << " sec" << endl
+        << "ISC L1CD                       :"
+        << setw(16) << setprecision(8) << scientific << setfill(' ') << iscL1CD
+        << " sec" << endl
+        << "delta A                        :"
+        << setw(16) << setprecision(8) << scientific << setfill(' ') << deltaA
+        << " m" << endl
+        << "delta OMEGA dot                :"
+        << setw(16) << setprecision(8) << scientific << setfill(' ')
+        << dOMEGAdot << " rad" << endl
+        << endl
         << "           TRANSMIT TIMES" << endl << endl
         << "              Week(10bt)     SOW     DOW   UTD     SOD"
         << "   MM/DD/YYYY   HH:MM:SS" << endl
-        << "Subframe 2:   " << printTime(xmitTime, dumpTimeFmt) << endl;
+        << "Subframe 2:   " << printTime(xmitTime, timeFmt) << endl;
       s.flags(oldFlags);
    }
 }

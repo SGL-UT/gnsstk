@@ -72,6 +72,7 @@ constructorTest()
    TUASSERTFE(0.0, uut.a1);
    TUASSERTFE(0.0, uut.a2);
    TUASSERTFE(0.0, uut.deltatLS);
+   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime(), uut.refTime);
    TUASSERTFE(0.0, uut.tot);
    TUASSERTE(unsigned, 0, uut.wnot);
    TUASSERTE(unsigned, 0, uut.wnLSF);
@@ -130,6 +131,7 @@ getOffsetTest()
    uut.deltatLS = 18.0;
    uut.tot = 21600.0;
    uut.wnot = 2060;
+   uut.refTime = gpstk::GPSWeekSecond(uut.wnot,uut.tot);
    double offset;
       /// @todo Truth values here need to be verified.
    TUASSERT(uut.getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC, ws1,

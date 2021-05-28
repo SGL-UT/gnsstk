@@ -54,6 +54,10 @@ namespace gpstk
       static const double refAGPS;
          /// OMEGA dot reference value defined in IS-GPS-800 (radians).
       static const double refOMEGAdotGPS;
+         /// Aref value defined in IS-QZSS-PNT-004 (meters).
+      static const double refAQZSS;
+         /// OMEGA dot reference value defined in IS-QZSS-PNT-004 (radians).
+      static const double refOMEGAdotQZSS;
 
          /// Sets the nav message type and all other data members to 0.
       GPSCNav2Eph();

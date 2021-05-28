@@ -83,3 +83,99 @@ add_test(NAME swig_test_MultiFormatNavDataFactory
   WORKING_DIRECTORY ${td}
   )
 set_property(TEST swig_test_MultiFormatNavDataFactory PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GPSLNavAlm
+  COMMAND ${PYTHON_EXECUTABLE} test_GPSLNavAlm.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GPSLNavAlm PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GPSLNavEph
+  COMMAND ${PYTHON_EXECUTABLE} test_GPSLNavEph.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GPSLNavEph PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GPSLNavHealth
+  COMMAND ${PYTHON_EXECUTABLE} test_GPSLNavHealth.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GPSLNavHealth PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GPSLNavTimeOffset
+  COMMAND ${PYTHON_EXECUTABLE} test_GPSLNavTimeOffset.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GPSLNavTimeOffset PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GPSCNavAlm
+  COMMAND ${PYTHON_EXECUTABLE} test_GPSCNavAlm.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GPSCNavAlm PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GPSCNavEph
+  COMMAND ${PYTHON_EXECUTABLE} test_GPSCNavEph.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GPSCNavEph PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GPSCNavHealth
+  COMMAND ${PYTHON_EXECUTABLE} test_GPSCNavHealth.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GPSCNavHealth PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GPSCNavTimeOffset
+  COMMAND ${PYTHON_EXECUTABLE} test_GPSCNavTimeOffset.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GPSCNavTimeOffset PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GPSCNav2Alm
+  COMMAND ${PYTHON_EXECUTABLE} test_GPSCNav2Alm.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GPSCNav2Alm PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GPSCNav2Eph
+  COMMAND ${PYTHON_EXECUTABLE} test_GPSCNav2Eph.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GPSCNav2Eph PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GPSCNav2Health
+  COMMAND ${PYTHON_EXECUTABLE} test_GPSCNav2Health.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GPSCNav2Health PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GPSCNav2TimeOffset
+  COMMAND ${PYTHON_EXECUTABLE} test_GPSCNav2TimeOffset.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GPSCNav2TimeOffset PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GalINavAlm
+  COMMAND ${PYTHON_EXECUTABLE} test_GalINavAlm.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GalINavAlm PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GalINavEph
+  COMMAND ${PYTHON_EXECUTABLE} test_GalINavEph.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GalINavEph PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GalINavHealth
+  COMMAND ${PYTHON_EXECUTABLE} test_GalINavHealth.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GalINavHealth PROPERTY LABELS swig NewNav)
+
+add_test(NAME swig_test_GalINavTimeOffset
+  COMMAND ${PYTHON_EXECUTABLE} test_GalINavTimeOffset.py -i ${GPSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+set_property(TEST swig_test_GalINavTimeOffset PROPERTY LABELS swig NewNav)

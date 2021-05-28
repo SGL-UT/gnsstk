@@ -55,8 +55,7 @@ namespace gpstk
            obs(gpstk::ObservationType::NavMsg, car, track),
            nav(nmt)
    {
-      obs.mcode = mcode;
-      obs.mcodeMask = mcodeMask;
+      obs.setMcodeBits(mcode, mcodeMask);
    }
 
 

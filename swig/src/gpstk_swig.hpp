@@ -53,6 +53,7 @@
 #include "AllanDeviation.hpp"
 #include "gps_constants.hpp"
 #include "EnumIterator.hpp"
+#include "XmitAnt.hpp"
 #include "SatelliteSystem.hpp"
 #include "SatID.hpp"
 #include "MathBase.hpp"
@@ -111,10 +112,6 @@
 #include "MatrixFunctors.hpp"
 #include "MatrixOperators.hpp"
 #include "BLQDataReader.hpp"
-/* #include "CommandOption.hpp" */
-/* #include "CommandOptionParser.hpp" */
-/* #include "MainAdapter.hpp" */
-/* #include "BasicFramework.hpp" */
 #include "BasicTimeSystemConverter.hpp"
 #include "BinexData.hpp"
 #include "FileSpec.hpp"
@@ -169,11 +166,6 @@
 #include "PCodeConst.hpp"
 #include "CodeBuffer.hpp"
 #include "Combinations.hpp"
-/* #include "CommandLine.hpp" */
-/* #include "CommandOptionWithCommonTimeArg.hpp" */
-#include "Position.hpp"
-/* #include "CommandOptionWithPositionArg.hpp" */
-/* #include "CommandOptionWithTimeArg.hpp" */
 #include "ConfDataReader.hpp"
  /* #include "ConfDataWriter.hpp" */ // error on typemaps for list of double
 #include "CubicSpline.hpp"
@@ -216,6 +208,7 @@
 #include "DumpDetail.hpp"
 #include "ENUUtil.hpp"
 #include "IERSConvention.hpp"
+#include "Position.hpp"
 /* #include "EarthOrientation.hpp" */
 /* #include "EOPPrediction.hpp" */
 /* #include "EOPStore.hpp" */
@@ -273,6 +266,7 @@
 #include "NavHealthData.hpp"
 #include "GPSCNav2Health.hpp"
 #include "TimeOffsetData.hpp"
+#include "StdNavTimeOffset.hpp"
 #include "GPSCNav2TimeOffset.hpp"
 #include "GPSCNavData.hpp"
 #include "GPSCNavAlm.hpp"
@@ -287,19 +281,20 @@
 #include "GPSLNavTimeOffset.hpp"
 #include "GPSOrbElemStore.hpp"
 #include "GSatID.hpp"
+#include "GalDataValid.hpp"
 #include "GalEphemerisStore.hpp"
+#include "GalFNavEph.hpp"
+#include "GalHealthStatus.hpp"
+#include "GalINavAlm.hpp"
+#include "GalINavEph.hpp"
+#include "GalINavHealth.hpp"
+#include "GalINavTimeOffset.hpp"
 #include "GalileoEllipsoid.hpp"
 #include "GenXSequence.hpp"
 #include "GenericNavFilterData.hpp"
 #include "GloEphemerisStore.hpp"
 #include "GlobalTropModel.hpp"
 #include "HelmertTransform.hpp"
- //#include "IERS1996NutationData.hpp"
- //#include "IERS1996UT1mUTCData.hpp"
- //#include "IERS2003NutationData.hpp"
-/* #include "IERS2010CIOSeriesData.hpp" */
-/* #include "LoopedFramework.hpp" */
-/* #include "InOutFramework.hpp" */
 #include "IonexBase.hpp"
 #include "IonexHeader.hpp"
 #include "IonexStream.hpp"
@@ -332,6 +327,8 @@
 #include "NavDataFactoryWithStore.hpp"
 #include "NavDataFactoryWithStoreFile.hpp"
 #include "MultiFormatNavDataFactory.hpp"
+#include "NDFUniqConstIterator.hpp"
+#include "NDFUniqIterator.hpp"
 #include "NEDUtil.hpp"
 #include "NavLibrary.hpp"
 #include "NavMsgData.hpp"
@@ -368,6 +365,7 @@
 #include "PNBGPSCNav2DataFactory.hpp"
 #include "PNBGPSCNavDataFactory.hpp"
 #include "PNBGPSLNavDataFactory.hpp"
+#include "PNBGalINavDataFactory.hpp"
 #include "PNBMultiGNSSNavDataFactory.hpp"
 #include "stl_helpers.hpp"
 #include "PRSolution.hpp"
@@ -375,7 +373,6 @@
 #include "PoleTides.hpp"
 #include "PolyFit.hpp"
 #include "PosixTime.hpp"
- //#include "PowerSum.hpp"
 #include "SolarSystemEphemeris.hpp"
 #include "SunEarthSatGeometry.hpp"
 #include "SolidEarthTides.hpp"
@@ -396,7 +393,6 @@
 #include "RinexClockData.hpp"
 #include "RinexClockHeader.hpp"
 #include "RinexClockStream.hpp"
- //#include "RinexClockStore.hpp"
 #include "RinexNavHeader.hpp"
 #include "RinexNavStream.hpp"
 #include "RinexEphemerisStore.hpp"
@@ -428,14 +424,7 @@
 #include "msecHandler.hpp"
 /* #include "SatPassUtilities.hpp" */
 #include "SimpleTropModel.hpp"
-/* #include "SinexBase.hpp" */
-/* #include "SinexHeader.hpp" */
-/* #include "SinexTypes.hpp" */
-/* #include "SinexBlock.hpp" */
-/* #include "SinexData.hpp" */
-/* #include "SinexStream.hpp" */
 #include "SolarPosition.hpp"
-/* #include "SpecialFuncs.hpp" */
 #include "StreamBuf.hpp"
 #include "TimeCorrection.hpp"
 #include "TimeNamedFileStream.hpp"
