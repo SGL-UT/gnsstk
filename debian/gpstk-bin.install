@@ -1,1 +1,3 @@
-usr/bin/*
+#!/bin/bash
+# Prevent gpstk-config from being included in gpstk-bin, even though it's installed to the bin directory.
+find debian/tmp/usr/bin -type f \! -name "gpstk-config"

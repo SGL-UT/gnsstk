@@ -1,4 +1,4 @@
-usr/include/gpstk/*.h
-usr/include/gpstk/*.hpp
+usr/include/gpstk*/gpstk/*.h usr/include/gpstk/
+usr/include/gpstk*/gpstk/*.hpp usr/include/gpstk/
 usr/share/cmake/GPSTK/*
 usr/lib/*/lib*.so
