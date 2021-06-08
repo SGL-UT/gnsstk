@@ -275,9 +275,8 @@ public:
          Position c,s;
          c.setECEF(-1575232.0141,-4707872.2332, 3993198.4383);
          s.setECEF(3*6371110.62767,0,0);
-         ;
-         testFramework.assert(fabs(c.elevation(s) - c.elvAngle(s)) < eps, failMesg, __LINE__);
-         testFramework.assert(fabs(c.azimuth(s) - c.azAngle(s)) < eps, failMesg, __LINE__);
+         TUASSERTFEPS(c.elvAngle(s), c.elevation(s), eps);
+         TUASSERTFEPS(c.azAngle(s), c.azimuth(s), eps);
       }
       catch(...)
       {
