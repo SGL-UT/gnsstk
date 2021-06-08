@@ -869,6 +869,7 @@ deploy_debian_10:
     - sudo apt-get -y install ./*.deb
     - python -c "import gpstk"
     - df_diff -h
+    - gpstk-config --includedir
   dependencies:
     - package_debian_10
 
@@ -883,6 +884,7 @@ deploy_redhat:
     - cd rpm_files/RPMS/x86_64/
     - sudo yum install gpstk-*.rpm -y
     - df_diff -h
+    - gpstk-config --includedir
   dependencies:
     - package_redhat
 
@@ -897,6 +899,7 @@ deploy_redhat_8:
     - cd rpm_files/RPMS/x86_64/
     - sudo yum install gpstk-*.rpm -y
     - df_diff -h
+    - gpstk-config --includedir
   dependencies:
     - package_redhat_8
 

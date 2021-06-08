@@ -167,6 +167,12 @@ configure_file( "${PROJECT_SOURCE_DIR}/build_config.h.in" "${PROJECT_BINARY_DIR}
 include_directories( "${PROJECT_BINARY_DIR}/generated/" ) 
 install( FILES "${PROJECT_BINARY_DIR}/generated/build_config.h" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" )
 
+#----------------------------------------
+# Create file with install-information for down-stream pacakges.
+#----------------------------------------
+configure_file( "${PROJECT_SOURCE_DIR}/gpstk-config.in" "${PROJECT_BINARY_DIR}/generated/gpstk-config" )
+install( PROGRAMS "${PROJECT_BINARY_DIR}/generated/gpstk-config"
+         DESTINATION "${CMAKE_INSTALL_BINDIR}" )
 
 #----------------------------------------
 if( ${CMAKE_SYSTEM_NAME} MATCHES "SunOS" )

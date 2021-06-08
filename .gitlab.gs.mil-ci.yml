@@ -1,0 +1,42 @@
+#.yml file for Gitlab-CI support
+
+# Note that the following tokens must be supplied via the Gitlab Repository Settings:
+# - TF_API_KEY:  token used for fortify threadfix uploads
+# - TF_APP_ID:  id of project in threadfix mapped to fortify scans
+
+include:
+  - project: 'IPF/sgl/ci-templates'
+    file: 'docker/build.yml'
+  - project: 'IPF/sgl/ci-templates'
+    file: 'docker/s3.yml'
+  - project: 'IPF/sgl/ci-templates'
+    file: 'python/wheel.yml'
+  - project: 'IPF/sgl/ci-templates'
+    file: 'pcf/deploy.yml'
+  - project: 'IPF/sgl/ci-templates'
+    file: 'scanning/fortify.yml'
+  - project: 'IPF/sgl/ci-templates'
+    file: 'scanning/container.yml'
+  - project: 'IPF/sgl/ci-templates'
+    file: 'scanning/dast.yml'
+  - template: SAST.gitlab-ci.yml
+
+stages:
+  - Scan
+
+Fortify:
+  extends: .fortify_scanning
+  stage: Scan
+  variables:
+    SCAN_PATH: "."
+    SCAN_ARGS: ''
+  only:
+    - main
+
+sast:
+  stage: Scan
+  tags:
+    - standard
+  variables:
+    SAST_ANALYZER_IMAGE_PREFIX: "${CI_REGISTRY_IMAGE}/analyzers"
+    SAST_DISABLE_DIND: "true"
