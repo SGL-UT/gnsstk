@@ -48,7 +48,8 @@ public:
 
    MODIP_T();
 
-   unsigned constructorTest();
+      /// Test stModip() and implicitly, interpolate().
+   unsigned stModipTest();
 };
 
 
@@ -63,7 +64,7 @@ MODIP_T()
 
 
 unsigned MODIP_T ::
-constructorTest()
+stModipTest()
 {
    TUDEF("MODIP", "MODIP()");
    gpstk::MODIP uut;
@@ -87,7 +88,7 @@ int main(int argc, char *argv[])
    MODIP_T testClass;
    unsigned errorTotal = 0;
 
-   errorTotal += testClass.constructorTest();
+   errorTotal += testClass.stModipTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
