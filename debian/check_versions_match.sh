@@ -50,17 +50,17 @@ fi
 
 ### Verify that package name matches SOVERSION
 
-# Extract major.minor for shared library SONAME, matches algorithm in CMakelists.txt (grep for SOVERSION)
-SOVERSION=`echo $SOURCE_VER | sed -ne "s/\([[:digit:]]\+\.[[:digit:]]\+\)\.[[:digit:]]\+/\1/p"  `
+# Extract major for shared library SONAME, matches algorithm in CMakelists.txt (grep for SOVERSION)
+SOVERSION=`echo $SOURCE_VER | sed -ne "s/\([[:digit:]]\+\)\.[[:digit:]]\+\.[[:digit:]]\+/\1/p"  `
 EXPECTEDLIBPKGNAME=libgpstk${SOVERSION}
 
 [ -z "$SOVERSION" ] && {  echo "ERROR: Could't compute SOVERSION from source version ($SOURCE_VER)"; exit 1; }
 
-NON_MATCHING_MENTIONS=`grep -o "libgpstk[0-9.]\+" debian/control | grep -xv "$EXPECTEDLIBPKGNAME" | tr "\n" " "`
+NON_MATCHING_MENTIONS=`grep -o "libgpstk[0-9]\+" debian/control | grep -xv "$EXPECTEDLIBPKGNAME" | tr "\n" " "`
 
 if [ ! -z "$NON_MATCHING_MENTIONS" ]
 then
-   fixcmd "sed -i -e \"s/\(libgpstk\)[0-9.]\+/\\\1${SOVERSION}/\" debian/control" \
+   fixcmd "sed -i -e \"s/\(libgpstk\)[0-9]\+/\\\1${SOVERSION}/\" debian/control" \
           "debian/control has mentions library package names ($NON_MATCHING_MENTIONS) other than expected $EXPECTEDLIBPKGNAME"
    EXIT_CODE=1
 fi

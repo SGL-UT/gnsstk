@@ -46,7 +46,7 @@
 
 #include "Vector.hpp"
 
-namespace gpstk
+namespace std
 {
 
       ///@ingroup MathGroup
@@ -55,7 +55,7 @@ namespace gpstk
 #define VecBaseNewUnaryOperator(func)                                   \
    /** performs func on each element of x, returning a new vector */    \
    template <class T, class BaseClass>                                  \
-   Vector<T> func(const ConstVectorBase<T, BaseClass>& x)               \
+   gpstk::Vector<T> func(const gpstk::ConstVectorBase<T, BaseClass>& x) \
    {                                                                    \
       BaseClass toReturn(x.size());                                     \
       size_t i; for (i=0; i < x.size(); i++) toReturn[i] = func(x[i]);  \
@@ -77,6 +77,10 @@ namespace gpstk
    VecBaseNewUnaryOperator(sqrt)
    VecBaseNewUnaryOperator(tan)
    VecBaseNewUnaryOperator(tanh)
+}
+
+namespace gpstk
+{
 
 #define VecBaseNewBinaryOperator(func, retval)                          \
    /** returns a retval with each element the result of l[i] func r[i] */ \
@@ -132,8 +136,8 @@ namespace gpstk
 #define VecBaseNewBinaryTranscendentalOperator(func, retval)            \
    /** performs func between each element of l and r, returning a retval */ \
    template <class T, class BaseClass, class BaseClass2>                \
-   retval func(const ConstVectorBase<T, BaseClass>& l,                  \
-               const ConstVectorBase<T, BaseClass2>& r)                 \
+   retval func(const gpstk::ConstVectorBase<T, BaseClass>& l,           \
+               const gpstk::ConstVectorBase<T, BaseClass2>& r)          \
    {                                                                    \
       retval toReturn(l.size());                                        \
       size_t i;                                                         \
@@ -142,7 +146,7 @@ namespace gpstk
    }                                                                    \
    /** performs func between each element of l and (scalar)r, returning a retval */ \
    template <class T, class BaseClass>                                  \
-   retval func(const ConstVectorBase<T, BaseClass>& l, const T r)       \
+   retval func(const gpstk::ConstVectorBase<T, BaseClass>& l, const T r) \
    {                                                                    \
       retval toReturn(l.size());                                        \
       size_t i;                                                         \
@@ -151,16 +155,13 @@ namespace gpstk
    }                                                                    \
    /** performs func between (scalar)l and each element of r, returning a retval */ \
    template <class T, class BaseClass>                                  \
-   retval func(const T l, const ConstVectorBase<T, BaseClass>& r)       \
+   retval func(const T l, const gpstk::ConstVectorBase<T, BaseClass>& r) \
    {                                                                    \
       retval toReturn(r.size());                                        \
       size_t i;                                                         \
       for (i=0; i < r.size(); i++) toReturn[i] = func(l, r[i]);         \
       return toReturn;                                                  \
    } 
-
-   VecBaseNewBinaryTranscendentalOperator(atan, Vector<T>)
-   VecBaseNewBinaryTranscendentalOperator(pow, Vector<T>)
 
    /** finds the cross product between l and r
     * @throw VectorException
@@ -199,5 +200,11 @@ namespace gpstk
       //@}
  
 }  // namespace
+
+namespace std
+{
+   VecBaseNewBinaryTranscendentalOperator(atan, gpstk::Vector<T>)
+   VecBaseNewBinaryTranscendentalOperator(pow, gpstk::Vector<T>)
+}
 
 #endif
