@@ -50,6 +50,7 @@
 #include "GNSSconstants.hpp"    // for TWO_PI, etc
 #include "GNSSconstants.hpp"             // for RAD_TO_DEG, etc
 #include "MiscMath.hpp"             // for RSS, SQRT
+#include "Angle.hpp"
 
 namespace gpstk
 {
@@ -1516,6 +1517,87 @@ namespace gpstk
         return AEarth/SQRT(1.0-eccSquared*slat*slat);
         
     }
+
+
+   double Position::getZenithAngle(const Position& target, AngleReduced& delta)
+      const
+   {
+      Position p1(*this), p2(target);
+      p1.transformTo(Geodetic);
+      p2.transformTo(Geodetic);
+      Angle phi1(p1.geodeticLatitude(), Angle::Deg);
+      Angle lambda1(p1.longitude(), Angle::Deg);
+      Angle phi2(p2.geodeticLatitude(), Angle::Deg);
+      Angle lambda2(p2.longitude(), Angle::Deg);
+         // radius requires spherical coordinates, so get them from
+         // the original Position objects in the off-chance they were
+         // already in the spherical system (we can be guaranteed p1
+         // and p2 will not be).
+      double r1 = radius();
+      double r2 = target.radius();
+      return getZenithAngle(phi1, lambda1, phi2, lambda2, r1, r2, delta);
+   }
+
+
+   double Position ::
+   getZenithAngle(const Angle& phi1, const Angle& lambda1,
+                  const Angle& phi2, const Angle& lambda2,
+                  double r1, double r2,
+                  AngleReduced& delta)
+   {
+         // reference \cite galileo:iono though probably not exclusively
+      delta.setValue(sin(phi1)*sin(phi2) +                              //eq.153
+                     cos(phi1)*cos(phi2)*cos(lambda2-lambda1),
+                     AngleReduced::Cos);
+      double zeta = atan2(sin(delta),cos(delta) - (r1/r2));             //eq.155
+      return zeta;
+   }
+
+
+   Position Position::getRayPerigee(const Position& target) const
+   {
+      Position p1(*this), p2(target);
+      p1.transformTo(Geodetic);
+      p2.transformTo(Geodetic);
+      Angle phi1(p1.geodeticLatitude(), Angle::Deg);
+      Angle lambda1(p1.longitude(), Angle::Deg);
+      Angle phi2(p2.geodeticLatitude(), Angle::Deg);
+      Angle lambda2(p2.longitude(), Angle::Deg);
+         // radius requires spherical coordinates, so get them from
+         // the original Position objects in the off-chance they were
+         // already in the spherical system (we can be guaranteed p1
+         // and p2 will not be).
+         // Also convert from m to km for the formulae below.
+      double r1 = radius() / 1000.0;
+      double r2 = target.radius() / 1000.0;
+      AngleReduced delta;
+      double zeta = getZenithAngle(phi1,lambda1,phi2,lambda2,r1,r2,delta);
+      double rp = r1 * sin(zeta);                                       //eq.156
+      Angle phiP, lambdaP;
+      if (fabs(fabs(phi1.deg())-90) < 1e-10)
+      {
+         phiP.setValue((phi1.deg() > 0) ? zeta : -zeta, Angle::Rad);    //eq.157
+         lambdaP.setValue((zeta >= 0) ? lambda2.rad() + PI :            //eq.164
+                          lambda2.rad(), Angle::Rad);
+      }
+      else
+      {
+         AngleReduced sigma(
+            (sin(lambda2-lambda1) * cos(phi2)) / sin(delta),            //eq.158
+            ((sin(phi2) - (cos(delta)*sin(phi1))) /                     //eq.159
+             (sin(delta) * cos(phi1))));
+         Angle deltaP(PI/2.0 - zeta, Angle::Rad);                       //eq.160
+         phiP.setValue(sin(phi1)*cos(deltaP) -                          //eq.161
+                       cos(phi1)*sin(deltaP)*cos(sigma), Angle::Sin);
+         Angle dLambda(-(sin(sigma)*sin(deltaP))/cos(phiP),             //eq.165
+                       ((cos(deltaP)-sin(phi1)*sin(phiP)) /             //eq.166
+                        (cos(phi1)*cos(phiP))));
+         lambdaP = dLambda + lambda1;                                   //eq.167
+      }
+      Position rv(phiP.deg(), lambdaP.deg(), 0, Geodetic);
+      return rv;
+   }
+
 
    // ----------- Part 12: private functions and member data -----------------
    //

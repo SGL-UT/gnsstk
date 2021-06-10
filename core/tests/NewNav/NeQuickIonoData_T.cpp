@@ -79,19 +79,18 @@ public:
       /// Test NeQuickIonoData::ModelParameters::thickness
    unsigned thicknessTest();
 
-      /// Hold truth/input data for legendreTest
+      /// Hold input/truth data for legendreTest
    class TestData
    {
    public:
       TestData(double hour, int month, double iazr, double lon, double lat,
                double cf, double tf)
-            : tAzr(iazr), tLongitude(lon), tLatitude(lat), criticalFreq(cf),
-              transFactor(tf), ct(convertTime(hour, month))
+            : tAzr(iazr), tPos(lat,lon,0,gpstk::Position::Geodetic),
+              criticalFreq(cf), transFactor(tf), ct(convertTime(hour, month))
       {}
       gpstk::CivilTime ct;
       double tAzr;
-      double tLongitude;
-      double tLatitude;
+      gpstk::Position tPos;
       double criticalFreq;
       double transFactor;
    };
@@ -166,11 +165,10 @@ public:
    public:
       TestDataSolar(double lon, double lat, double hour, int month,
                     double expect)
-            : longitude(lon), latitude(lat), ct(convertTime(hour,month)),
-              expAngle(expect)
+            : pos(lat,lon,0,gpstk::Position::Geodetic),
+              ct(convertTime(hour,month)), expAngle(expect)
       {}
-      double longitude;
-      double latitude;
+      gpstk::Position pos;
       gpstk::CivilTime ct;
       double expAngle;
    };
@@ -181,13 +179,12 @@ public:
    public:
       TestDataCritFreqE(double az, double lon, double lat, double hour,
                         int month, double expect)
-            : tAz(az), longitude(lon), latitude(lat),
+            : tAz(az), pos(lat,lon,0,gpstk::Position::Geodetic),
               ct(convertTime(hour,month)), expFreq(expect)
       {
       }
       double tAz;
-      double longitude;
-      double latitude;
+      gpstk::Position pos;
       gpstk::CivilTime ct;
       double expFreq;
    };
@@ -233,27 +230,27 @@ public:
    };
 
       /// Input/truth data for legendreTest
-   static TestData testData[];
+   static const TestData testData[];
       /// Input/truth data for heightTest
-   static TestDataHeight testDataHeight[];
+   static const TestDataHeight testDataHeight[];
       /// Input/truth data for exosphereAdjustTest
-   static TestDataExosphere testDataExosphere[];
+   static const TestDataExosphere testDataExosphere[];
       /// Input/truth data for peakAmplitudesTest
-   static TestDataAmplitude testDataAmplitude[];
+   static const TestDataAmplitude testDataAmplitude[];
       /// Input/truth data for effSolarZenithAngleTest
-   static TestDataSolar testDataSolar[];
+   static const TestDataSolar testDataSolar[];
       /// Input/truth data for constructor2Test
-   static TestDataCritFreqE testDataCFE[];
+   static const TestDataCritFreqE testDataCFE[];
       /// Solar flux coefficients for high solar activity.
-   static std::vector<double> highSolarCoeff;
+   static const std::vector<double> highSolarCoeff;
       /// Solar flux coefficients for medium solar activity.
-   static std::vector<double> mediumSolarCoeff;
+   static const std::vector<double> mediumSolarCoeff;
       /// Solar flux coefficients for low solar activity.
-   static std::vector<double> lowSolarCoeff;
+   static const std::vector<double> lowSolarCoeff;
       /// Input/truth data for getEffIonoLevelTest
-   static TestDataAz testDataAz[];
+   static const TestDataAz testDataAz[];
       /// Input/truth data for thicknessTest
-   static TestDataThickness testDataThickness[];
+   static const TestDataThickness testDataThickness[];
       /// Tool for computing modified dip latitude.
    gpstk::MODIP modip;
       /// Tool for looking up iono model data.
@@ -285,7 +282,7 @@ const double NeQuickIonoData_T::solarEps = 1e-5;
 const double NeQuickIonoData_T::azEps = 1e-6;
 const double NeQuickIonoData_T::thicknessEps = 1e-5;
 
-NeQuickIonoData_T::TestData NeQuickIonoData_T::testData[] =
+const NeQuickIonoData_T::TestData NeQuickIonoData_T::testData[] =
 {
    {
       0.0, 4,
@@ -314,7 +311,7 @@ NeQuickIonoData_T::TestData NeQuickIonoData_T::testData[] =
 };
 
 
-NeQuickIonoData_T::TestDataHeight NeQuickIonoData_T::testDataHeight[] =
+const NeQuickIonoData_T::TestDataHeight NeQuickIonoData_T::testDataHeight[] =
 {
    {
       2.366982653,
@@ -325,7 +322,8 @@ NeQuickIonoData_T::TestDataHeight NeQuickIonoData_T::testDataHeight[] =
 };
 
 
-NeQuickIonoData_T::TestDataExosphere NeQuickIonoData_T::testDataExosphere[] =
+const NeQuickIonoData_T::TestDataExosphere
+NeQuickIonoData_T::testDataExosphere[] =
 {
    {
       5.361596779,
@@ -338,7 +336,8 @@ NeQuickIonoData_T::TestDataExosphere NeQuickIonoData_T::testDataExosphere[] =
 };
 
 
-NeQuickIonoData_T::TestDataAmplitude NeQuickIonoData_T::testDataAmplitude[] =
+const NeQuickIonoData_T::TestDataAmplitude
+NeQuickIonoData_T::testDataAmplitude[] =
 {
    {
       5.361596779,
@@ -381,7 +380,7 @@ NeQuickIonoData_T::TestDataAmplitude NeQuickIonoData_T::testDataAmplitude[] =
 
 /** @note I've discarded the extraneous (unused, set to zero) data
  * that was present in the EU test code */
-NeQuickIonoData_T::TestDataSolar NeQuickIonoData_T::testDataSolar[] =
+const NeQuickIonoData_T::TestDataSolar NeQuickIonoData_T::testDataSolar[] =
 {
    {
       297.438315, 82.481346,
@@ -413,7 +412,7 @@ NeQuickIonoData_T::TestDataSolar NeQuickIonoData_T::testDataSolar[] =
 
 /** @note I've discarded the extraneous (unused, set to zero) data
  * that was present in the EU test code */
-NeQuickIonoData_T::TestDataCritFreqE NeQuickIonoData_T::testDataCFE[] =
+const NeQuickIonoData_T::TestDataCritFreqE NeQuickIonoData_T::testDataCFE[] =
 {
    {
       230.245562,
@@ -436,17 +435,17 @@ NeQuickIonoData_T::TestDataCritFreqE NeQuickIonoData_T::testDataCFE[] =
 };
 
 
-std::vector<double> NeQuickIonoData_T::highSolarCoeff
+const std::vector<double> NeQuickIonoData_T::highSolarCoeff
 {236.831641, -0.39362878, 0.00402826613};
 
-std::vector<double> NeQuickIonoData_T::mediumSolarCoeff
+const std::vector<double> NeQuickIonoData_T::mediumSolarCoeff
 {121.129893, 0.351254133, 0.0134635348};
 
-std::vector<double> NeQuickIonoData_T::lowSolarCoeff
+const std::vector<double> NeQuickIonoData_T::lowSolarCoeff
 {2.580271, 0.127628236, 0.0252748384};
 
 
-NeQuickIonoData_T::TestDataAz NeQuickIonoData_T::testDataAz[] =
+const NeQuickIonoData_T::TestDataAz NeQuickIonoData_T::testDataAz[] =
 {
    { highSolarCoeff, 76.284073, 230.245562 },
    { mediumSolarCoeff, 76.284073, 226.272795 },
@@ -475,7 +474,8 @@ NeQuickIonoData_T::TestDataAz NeQuickIonoData_T::testDataAz[] =
 };
 
 
-NeQuickIonoData_T::TestDataThickness NeQuickIonoData_T::testDataThickness[] =
+const NeQuickIonoData_T::TestDataThickness
+NeQuickIonoData_T::testDataThickness[] =
 {
    {
       2.366982653,
@@ -538,7 +538,7 @@ constructor2Test()
    {
       const TestDataCritFreqE& td(testDataCFE[testNum]);
       gpstk::NeQuickIonoData::ModelParameters uut(
-         0, td.latitude, td.longitude, td.tAz, ccir, td.ct);
+         0, td.pos, td.tAz, ccir, td.ct);
       TUASSERTFEPS(td.expFreq, uut.ffoE, criticalFreqEps);
    }
    TURETURN();
@@ -553,9 +553,9 @@ legendreTest()
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestData& td(testData[testNum]);
-      double modip_u = modip.stModip(td.tLatitude,td.tLongitude);
+      double modip_u = modip.stModip(td.tPos);
       gpstk::NeQuickIonoData::ModelParameters uut(
-         modip_u, td.tLatitude, td.tLongitude, td.tAzr, ccir, td.ct);
+         modip_u, td.tPos, td.tAzr, ccir, td.ct);
       TUASSERTFEPS(td.criticalFreq, uut.ffoF2, criticalFreqEps);
       TUASSERTFEPS(td.transFactor, uut.fM3000F2, transFactorEps);
    }
@@ -639,7 +639,7 @@ effSolarZenithAngleTest()
       const TestDataSolar& td(testDataSolar[testNum]);
       gpstk::NeQuickIonoData::ModelParameters uut(ccir);
       TUASSERTFEPS(td.expAngle,
-                   uut.effSolarZenithAngle(td.latitude, td.longitude, td.ct),
+                   uut.effSolarZenithAngle(td.pos, td.ct),
                    solarEps);
    }
    TURETURN();

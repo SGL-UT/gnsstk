@@ -50,11 +50,65 @@ public:
 
       /// Test stModip() and implicitly, interpolate().
    unsigned stModipTest();
+
+      /// Hold input/truth data for stModipTest
+   class TestData
+   {
+   public:
+         /// dc* are don't-care values copied from EU test code.
+      TestData(double longitude, double dc1, double dc2, double dc3,
+               double latitude, double dc4, double dc5, double dc6,
+               double dc7, int dc8, double dc9, double dc10, double expect)
+            : pos(latitude,longitude,0,gpstk::Position::Geodetic),
+              expMODIP(expect)
+      {}
+      gpstk::Position pos;
+      double expMODIP;
+   };
+      /// Input/truth data for stModipTest
+   static const TestData testData[];
 };
 
 
-/// Copied value from NeQuickG_JRC_MODIP_test.c
+// Copied value from NeQuickG_JRC_MODIP_test.c
 const double MODIP_T::MODIP_EPSILON = 1e-5;
+
+// Copied data from NeQuickG_JRC_MODIP_test.c
+const MODIP_T::TestData MODIP_T::testData[] =
+{
+   {
+      297.65954, 0.0, 0.0, 0.0, 82.49429, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0,
+      76.28407
+   },
+   {
+      307.19404, 0.0, 0.0, 0.0, 5.25218, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0,
+      19.52877
+   },
+   {
+      355.75034, 0.0, 0.0, 0.0, 40.42916, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0,
+      47.85769
+   },
+   {
+      40.19439, 0.0, 0.0, 0.0, -2.99591, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0,
+      -23.31631
+   },
+   {
+      166.66933, 0.0, 0.0, 0.0, -77.83835, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0,
+      -71.81130
+   },
+   {
+      141.13283, 0.0, 0.0, 0.0, 39.13517, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0,
+      46.48742
+   },
+   {
+      204.54366, 0.0, 0.0, 0.0, 19.80135, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0,
+      33.05457
+   },
+   {
+      115.88525, 0.0, 0.0, 0.0, -31.80197, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0,
+      -51.37982
+   }
+};
 
 
 MODIP_T ::
@@ -68,16 +122,12 @@ stModipTest()
 {
    TUDEF("MODIP", "MODIP()");
    gpstk::MODIP uut;
-   DEBUGTRACE_ENABLE();
-      /// @note These data came from the ESA code, NeQuickG_JRC_MODIP_test.c
-   TUASSERTFEPS(76.28407, uut.stModip(82.49429, 297.65954), MODIP_EPSILON);
-   TUASSERTFEPS(19.52877, uut.stModip(5.25218, 307.19404), MODIP_EPSILON);
-   TUASSERTFEPS(47.85769, uut.stModip(40.42916, 355.75034), MODIP_EPSILON);
-   TUASSERTFEPS(-23.31631, uut.stModip(-2.99591, 40.19439), MODIP_EPSILON);
-   TUASSERTFEPS(-71.81130, uut.stModip(-77.83835, 166.66933), MODIP_EPSILON);
-   TUASSERTFEPS(46.48742, uut.stModip(39.13517, 141.13283), MODIP_EPSILON);
-   TUASSERTFEPS(33.05457, uut.stModip(19.80135, 204.54366), MODIP_EPSILON);
-   TUASSERTFEPS(-51.37982, uut.stModip(-31.80197, 115.88525), MODIP_EPSILON);
+   unsigned numTests = sizeof(testData)/sizeof(testData[0]);
+   for (unsigned testNum = 0; testNum < numTests; testNum++)
+   {
+      const TestData& td(testData[testNum]);
+      TUASSERTFEPS(td.expMODIP, uut.stModip(td.pos), MODIP_EPSILON);
+   }
    TURETURN();
 }
 

@@ -175,16 +175,9 @@ namespace gpstk
       GPSTK_THROW(Exception("NeQuickIonoData::getCorrection is incomplete"));
          // Get the time in civil units for later math
       CivilTime civ(when);
-         // Obtain estimates of receiver position, satellite position, and time
-      double phi1 = rxgeo.getGeodeticLatitude();
-      double lambda1 = rxgeo.longitude();
-      double h1 = rxgeo.height();
-      double phi2 = svgeo.getGeodeticLatitude();
-      double lambda2 = svgeo.longitude();
-      double h2 = svgeo.height();
-         // Obtain receiver MODIP_u
+         // Obtain receiver modified dip latitude
       MODIP modip;
-      double modip_u = modip.stModip(phi1,lambda1);
+      double modip_u = modip.stModip(rxgeo);
       double azu = getEffIonoLevel(modip_u);
       double tec = 0;
          // The ESA code differences lat and long to determine if a
@@ -192,7 +185,7 @@ namespace gpstk
          // better to look at the elevation.
       double elev = rxgeo.elevation(svgeo);
       CCIR ccir;
-      ModelParameters modelParam(modip_u, phi1, lambda1, azu, ccir, civ);
+      ModelParameters modelParam(modip_u, rxgeo, azu, ccir, civ);
       if (fabs(elev - 90.0) < ABOVE_ELEV_EPSILON)
       {
             // Call NeQuick G VTEC integration routine for path
@@ -252,9 +245,9 @@ namespace gpstk
 
 
    NeQuickIonoData::ModelParameters ::
-   ModelParameters(double modip_u, double phi, double lambda, double az,
+   ModelParameters(double modip_u, const Position& pos, double az,
                    CCIR& ccirData, const CivilTime& when)
-         : fXeff(effSolarZenithAngle(phi,lambda,when)),
+         : fXeff(effSolarZenithAngle(pos,when)),
            ffoF1(0.0), // default to 0, see eq.37
            ccir(ccirData)
    {
@@ -285,6 +278,8 @@ namespace gpstk
             GPSTK_THROW(Exception("Invalid month"));
             break;
       }
+      double phi = pos.geodeticLatitude();
+      double lambda = pos.longitude();
       double ee = exp(0.3 * phi);                                       //eq.33
       double seasp = seas * (ee-1)/(ee+1);                              //eq.34
       double term1 = (1.112-0.019*seasp);
@@ -311,7 +306,7 @@ namespace gpstk
       }
          // Compute the fourier time series for foF2 and M(3000)F2
       ccir.fourier(when, az);
-      legendre(modip_u, phi, lambda);
+      legendre(modip_u, pos);
       fNmF2 = FREQ2NE_D * ffoF2 * ffoF2;                                //eq.77
          // Compute peak electron density height for each layer
       height();
@@ -366,9 +361,10 @@ namespace gpstk
 
 
    double NeQuickIonoData::ModelParameters ::
-   solarZenithAngle(double phi, double lambda, const CivilTime& when)
+   solarZenithAngle(const Position& pos, const CivilTime& when)
    {
-      double phiRad = phi * DEG2RAD;
+      double phiRad = pos.geodeticLatitude() * DEG2RAD;
+      double lambda = pos.longitude();
       double sdsin, sdcos;
       solarDeclination(when, sdsin, sdcos);
          // leave the UTC check up to solarDeclination
@@ -382,11 +378,11 @@ namespace gpstk
 
 
    double NeQuickIonoData::ModelParameters ::
-   effSolarZenithAngle(double phi, double lambda, const CivilTime& when)
+   effSolarZenithAngle(const Position& pos, const CivilTime& when)
    {
          // x is really chi.
       static const double x0 = 86.23292796211615;                       //eq.28
-      double x = solarZenithAngle(phi, lambda, when);
+      double x = solarZenithAngle(pos, when);
       double exp2 = exp(12*(x-x0));                                     //eq.29
       double rv = (x+(90-0.24*exp(20-0.2*x))*exp2) / (1+exp2);
       return rv;
@@ -394,7 +390,7 @@ namespace gpstk
 
 
    void NeQuickIonoData::ModelParameters ::
-   legendre(double modip_u, double phi, double lambda)
+   legendre(double modip_u, const Position& pos)
    {
          // sine modified dip latitude coefficients
       double M[F2LayerMODIPCoeffCount];                                 //eq.52
@@ -410,21 +406,21 @@ namespace gpstk
          // Legendre grades for F2 transmission factor M(3000)F2
       const unsigned R[] {7,8,6,3,2,1,1};                               //eq.71
       const int H[] {-7,7,23,35,41,45,47};                              //eq.74
-      double modip_u_rad = modip_u * DEG2RAD;
-      double phi_rad = phi * DEG2RAD;
-      double lambda_rad = lambda * DEG2RAD;
+      double modip_uRad = modip_u * DEG2RAD;
+      double phiRad = pos.geodeticLatitude() * DEG2RAD;
+      double lambdaRad = pos.longitude() * DEG2RAD;
          // compute sine modififed dip latitude coefficients
       for (unsigned k = 1; k<F2LayerMODIPCoeffCount; k++)
       {
-         M[k] = M[k-1] * sin(modip_u_rad);                              //eq.57
+         M[k] = M[k-1] * sin(modip_uRad);                               //eq.57
       }
       P[0] = 1.0; // not used except for initialization convenience
          // compute cos lat, sin long, cos long coefficients
       for (unsigned n = 1; n < F2LayerLongCoeffCount; n++)
       {
-         P[n] = P[n-1] * cos(phi_rad);                                  //eq.58
-         S[n] = sin(n * lambda_rad);                                    //eq.59
-         C[n] = cos(n * lambda_rad);                                    //eq.60
+         P[n] = P[n-1] * cos(phiRad);                                   //eq.58
+         S[n] = sin(n * lambdaRad);                                     //eq.59
+         C[n] = cos(n * lambdaRad);                                     //eq.60
       }
          // initialize higher order terms to zero before summation
       ffoF2 = 0;

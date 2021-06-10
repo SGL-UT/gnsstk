@@ -40,6 +40,8 @@
 #ifndef GPSTK_MODIP_HPP
 #define GPSTK_MODIP_HPP
 
+#include "Position.hpp"
+
 namespace gpstk
 {
       /** Wrap the MODIP (Modified Dip Latitude) data used by the
@@ -55,10 +57,9 @@ namespace gpstk
       MODIP();
 
          /** Get the MODIP value at a lat and lon in degrees.
-          * @param[in] phi The original geodetic latitude in degrees.
-          * @param[in] lambda The geodetic longitude in degrees.
+          * @param[in] pos The observer geodetic position.
           * @return The modeled latitude. */
-      double stModip(double phi, double lambda);
+      double stModip(const Position& pos);
 
          /** Perform third-order interpolation across a set of data points.
           * @param[in] z An array of 4 points to perform interpolation over.

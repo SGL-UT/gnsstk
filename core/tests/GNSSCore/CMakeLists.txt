@@ -181,5 +181,13 @@ add_executable(FreqConv_T FreqConv_T.cpp)
 target_link_libraries(FreqConv_T gpstk)
 add_test(GNSSCore_FreqConv FreqConv_T)
 
+add_executable(AngleReduced_T AngleReduced_T.cpp)
+target_link_libraries(AngleReduced_T gpstk)
+add_test(GNSSCore_AngleReduced AngleReduced_T)
+
+add_executable(Angle_T Angle_T.cpp)
+target_link_libraries(Angle_T gpstk)
+add_test(GNSSCore_Angle Angle_T)
+
 ###############################################################################
 ###############################################################################

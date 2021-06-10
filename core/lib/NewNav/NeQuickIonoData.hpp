@@ -137,15 +137,14 @@ namespace gpstk
       public:
             /** Compute the various NeQuickG model parameters.
              * @param[in] modip_u Modified dip latitude in degrees.
-             * @param[in] phi The geodetic latitude in degrees of the observer.
-             * @param[in] lambda The longitude in degrees of the observer.
+             * @param[in] pos The geodetic position of the observer.
              * @param[in] az The effective ionization level in solar flux units
              *   (NOT azimuth).
              * @param[in] ccirData A CCIR object to be used for looking up
              *   ionospheric model data.
              * @param[in] when The time of the observation being
              *   modeled (month and hour of day are used). */
-         ModelParameters(double modip_u, double phi, double lambda, double az,
+         ModelParameters(double modip_u, const Position& pos, double az,
                          CCIR& ccirData, const CivilTime& when);
 
             /** Compute the sine and cosine of the solar
@@ -158,26 +157,23 @@ namespace gpstk
                                       double& sdcos);
 
             /** Compute the solar zenith angle IN DEGREES.
-             * @param[in] phi The geodetic latitude in degrees of the observer.
-             * @param[in] lambda The longitude in degrees of the observer.
+             * @param[in] pos The geodetic position of the observer.
              * @param[in] when The time at which to compute the solar zenith. */
-         static double solarZenithAngle(double phi, double lambda,
+         static double solarZenithAngle(const Position& pos,
                                         const CivilTime& when);
 
             /** Compute the effective solar zenith angle IN DEGREES.
-             * @param[in] phi The geodetic latitude in degrees of the observer.
-             * @param[in] lambda The longitude in degrees of the observer.
+             * @param[in] pos The geodetic position of the observer.
              * @param[in] when The time at which to compute the solar zenith. */
-         static double effSolarZenithAngle(double phi, double lambda,
+         static double effSolarZenithAngle(const Position& pos,
                                            const CivilTime& when);
 
             /** Compute foF2 and M(3000)F2 by Legendre calculation.
              * @param[in] modip_u Modified dip latitude in degrees.
-             * @param[in] phi The geodetic latitude in degrees of the observer.
-             * @param[in] lambda The longitude in degrees of the observer.
+             * @param[in] pos The geodetic position of the observer.
              * @post ffoF2, fM3000F2 are set.
              */
-         void legendre(double modip_u, double phi, double lambda);
+         void legendre(double modip_u, const Position& pos);
 
             /** Compute hmF2 and hmF1 (maximum density height).
              * @pre ffoE, ffoF2, fM3000F2 must be set.

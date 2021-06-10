@@ -67,7 +67,7 @@ namespace gpstk
 
 
    double MODIP ::
-   stModip(double phi, double lambda)
+   stModip(const Position& pos)
    {
       DEBUGTRACE_FUNCTION();
          // awk script for generating this from
@@ -294,6 +294,8 @@ namespace gpstk
           * intentional as at one point the tweaking of longGridIdx
           * cause the attempts to compute the fractional portions led
           * to incorrect results. */
+      double phi = pos.geodeticLatitude();
+      double lambda = pos.longitude();
          // Compute the grid longitude position
       double longGridPos = (lambda + LongMax) / LongStep;               // eq.14
          // Truncate the grid longitude position to get the array index
