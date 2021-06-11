@@ -473,9 +473,9 @@ namespace gpstk
       MOPSTime = (int)(static_cast<YDSTime>(time)).doy;
       validTime = true;
       MOPSLat = rxPos.getGeodeticLatitude();
-      validHeight = true;
-      MOPSLat = rxPos.getHeight();
       validLat = true;
+      MOPSHeight = rxPos.getHeight();
+      validHeight = true;
 
          // Change the value of field "valid" if everything is already set
       valid = validHeight && validLat && validTime;
