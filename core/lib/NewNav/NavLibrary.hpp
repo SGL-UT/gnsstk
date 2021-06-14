@@ -49,9 +49,11 @@ namespace gpstk
       /** @defgroup NavFactory Navigation Message Decoding and Finding
        * Classes for providing an generalized (GNSS-agnostic)
        * interface to navigation data.
-       *
-       * @todo Move this into the user guide section.
-       * @todo Explain wildcards, how and where they are used.
+       */
+
+      /** \page APIguide
+       * - \subpage navlibrary Navigation Message Library
+       * \page navlibrary Navigation Message Library
        *
        * @note Please make an effort to keep this documentation in
        * order of difficulty/usefulness, from simplest to hardest/most
@@ -78,6 +80,433 @@ namespace gpstk
        * documentation for a simple example of its use.  The
        * NavLibrary class also provides an interface for retrieving
        * health status information and time offset information.
+       *
+       * @section NavFactoryEntryPoints Entry Points
+       *
+       * The NavLibrary class, which provides the highest-level
+       * interface, has four primary entry points for looking up
+       * navigation message data:
+       *   \li NavLibrary::getXvt() to get a satellite's position
+       *       (referenced to antenna phase center in most cases, see
+       *       below), velocity and clock offset.
+       *   \li NavLibrary::getHealth() to get a satellite's health status.
+       *   \li NavLibrary::getOffset() to get TimeSystem conversion information.
+       *   \li NavLibrary::find() to get arbitrary navigation message
+       *       data (excluding TimeOffset information).
+       *
+       * Regarding NavLibrary::getXvt() and antenna phase center
+       * (APC), one exception to this rule is when using SP3 files as
+       * input.  The data in an SP3 file can be referenced to the
+       * center-of-mass, or to the antenna phase center.  There is no
+       * programattic way to distinguish between the two, so it's
+       * entirely up to the user in this case to know what they're
+       * doing.
+       *
+       * @section NavFactoryUseCase Use Cases
+       *
+       * The table below describes what search parameters are expected
+       * to be specified vs. may be wildcards ("Any") in that
+       * situation.  In each case, the use of wildcards is given as an
+       * option, i.e. specific values may still be specified if
+       * desired.
+       *
+       * The following generalized use cases are defined:
+       * \dictionary
+       * \dicterm{Low-Precision}
+       * \dicdef{Only a rough estimate of the satellite position is
+       *         needed.  Typically used for applications where only
+       *         azimuth and elevation measurements are needed to
+       *         precision of maybe a 10th of a degree.  Almanac or
+       *         Ephemeris data may be used in such cases.  Examples:
+       *         visibility plots or any other plot against elevation
+       *         and/or azimuth is used.}
+       * \dicterm{High-Precision}
+       * \dicdef{When a more precise satellite position is required.
+       *         In this case you would use ephemeris data, but not
+       *         almanac data.  Examples: observed range deviation
+       *         (ORD) analysis, inter-signal correction estimation.}
+       * \dicterm{Known-Source}
+       * \dicdef{This situation is typically when you're analyzing
+       *    signal health and you need to know the exact signal a
+       *    given navigation message came from.  You might be looking
+       *    at any given nav message type in this case, even almanac
+       *    data.}
+       * \enddictionary
+       *
+       * Parameter          | Low-Precision | High-Precision | Known-Source
+       * ------------------ | ------------- | -------------- | ------------
+       * sat.sat.id         | specified     | specified      | specified
+       * sat.sat.system     | specified     | specified      | specified
+       * sat.xmitSat.id     | wild          | wild           | specified
+       * sat.xmitSat.system | wild          | wild           | specified
+       * sat.system         | specified     | specified      | specified
+       * sat.obs.type       | wild          | wild           | wild
+       * sat.obs.band       | wild          | specified      | specified
+       * sat.obs.code       | wild          | specified      | specified
+       * sat.obs.xmitAnt    | wild          | specified      | specified
+       * sat.obs.freqOffs   | GLONASS       | GLONASS        | GLONASS
+       * sat.obs.mcode      | wild          | wild           | wild
+       * sat.nav            | wild          | specified      | specified
+       *
+       * \note nmid is used the same as "sat" in the above table as it
+       * extends the class with the additional messageType parameter.
+       * This parameter is only used in the find() method.  The
+       * nmid.messageType field must always be specified as there is
+       * no wildcard value.
+       *
+       * \note sat.obs.type may be specified to either "Any" or
+       * "NavMsg".  No other values will yield any results.
+       *
+       * \note sat.obs.freqOffset should be specified when supporting
+       * GLONASS (Is this always true, even for low-precision?)
+       *
+       * @subsection NavFactoryExampleCode Code Examples
+       *
+       * In most cases, you'll want to use NavLibrary in conjunction
+       * with MultiFormatNavDataFactory to access navigation messages.
+       * This provides a relatively simple interface while
+       * simultaneously supporting multiple input formats, with the
+       * expansion of that set of supported input formats happening
+       * without the need for additional code changes.
+       *
+       * The process for using NavLibrary in this fashion involves the
+       * following steps:
+       * -# Construct a NavLibrary object.
+       * -# Construct a NavDataFactory object (typically
+       *    MultiFormatNavDataFactory).
+       * -# Add the NavDataFactory to the NavLibrary using addFactory().
+       * -# Add input data (files) to the NavDataFactory using addDataSource().
+       * -# Search the NavLibrary.
+       *
+       * @subsubsection NavDataFactoryLowPrecEx Low-Precision Example
+       *
+       * Here is an example code snippet of how one might use
+       * NavLibrary for a low-precision use case.  The getXvt() call
+       * in this example allows derivation of XVT data from either an
+       * almanac or ephemeris message:
+       *
+       * \todo Update the ObsID stuff to match the decision about
+       * using freqOffset in the table above.
+       *
+       * \code
+       *    // Parameters used to construct sat will have been
+       *    // specified on the command-line or via some other means.
+       * gpstk::CommonTime when;
+       * unsigned long subjID;
+       * gpstk::SatelliteSystem sys;
+       * int freqOffs;
+       * bool freqOffsSpec; // true if specified
+       *    // Output of search
+       * gpstk::Xvt xvt;
+       *    // Construct a NavLibrary object.
+       * gpstk::NavLibrary navLib;
+       *    // Construct a NavDataFactory object
+       * gpstk::NavDataFactoryPtr ndfp(
+       *    std::make_shared<gpstk::MultiFormatNavDataFactory>());
+       *    // Add the NavDataFactory to the NavLibrary
+       * navLib.addFactory(ndfp);
+       *    // Add input data (files) to the NavDataFactory
+       * if (!ndfp->addDataSource(inputFileName))
+       * {
+       *    cerr << "Unable to load \"" << inputFileName << "\"" << endl;
+       *    return false;
+       * }
+       *    // Search the NavLibrary
+       * gpstk::NavSatelliteID sat(subjID, system, gpstk::CarrierBand::Any,
+       *                           gpstk::TrackingCode::Any,
+       *                           gpstk::XmitAnt::Any, freqOffs,
+       *                           !freqOffsSpec);
+       * if (!navLib.getXvt(sat, when, xvt))
+       * {
+       *    cerr << "Unable to find XVT for " << sat << " @ " << when << endl;
+       *    return false;
+       * }
+       * \endcode
+       *
+       * @subsubsection NavDataFactoryHighPrecEx High-Precision Example
+       *
+       * Here is a reduced example code snippet of how one might use
+       * NavLibrary for a high-precision use case.  In this example,
+       * the getXvt method that enforces the use of either almanac or
+       * ephemeris is used, and is forced to use only ephemeris data.
+       *
+       * \code
+       *    // Parameters used to construct sat will have been
+       *    // specified on the command-line or via some other means.
+       * gpstk::CommonTime when;
+       * unsigned long subjID;
+       * gpstk::SatelliteSystem sys;
+       * gpstk::CarrierBand band;
+       * gpstk::TrackingCode code;
+       * gpstk::XmitAnt xmitAnt;
+       * gpstk::NavType nav; // e.g. GPSLNAV
+       * int freqOffs;
+       * bool freqOffsSpec; // true if specified
+       *    // Output of search
+       * gpstk::Xvt xvt;
+       *    // Construct a NavLibrary object.
+       * gpstk::NavLibrary navLib;
+       *    // Construct a NavDataFactory object
+       * gpstk::NavDataFactoryPtr ndfp(
+       *    std::make_shared<gpstk::MultiFormatNavDataFactory>());
+       *    // Add the NavDataFactory to the NavLibrary
+       * navLib.addFactory(ndfp);
+       *    // Add input data (files) to the NavDataFactory
+       * if (!ndfp->addDataSource(inputFileName))
+       * {
+       *    cerr << "Unable to load \"" << inputFileName << "\"" << endl;
+       *    return false;
+       * }
+       *    // Search the NavLibrary
+       * gpstk::NavSatelliteID sat(subjID, system, band, code, xmitAnt,
+       *                           freqOffs, !freqOffsSpec, nav);
+       * if (!navLib.getXvt(sat, when, xvt, false))
+       * {
+       *    cerr << "Unable to find XVT for " << sat << " @ " << when << endl;
+       *    return false;
+       * }
+       * \endcode
+       *
+       * @subsubsection NavDataFactoryKnownSrcEx Known-Source Example
+       *
+       * Here is a reduced example code snippet of how one might use
+       * NavLibrary for a known-source use case.  This is much the
+       * same as the high-precision case, but with more details
+       * specified for matching.
+       *
+       * \code
+       *    // Parameters used to construct sat will have been
+       *    // specified on the command-line or via some other means.
+       * gpstk::CommonTime when;
+       * unsigned long subjID;
+       * gpstk::SatelliteSystem subjSys;
+       * unsigned long xmitID;
+       * gpstk::SatelliteSystem xmitSys;
+       * gpstk::CarrierBand band;
+       * gpstk::TrackingCode code;
+       * gpstk::XmitAnt xmitAnt;
+       * gpstk::NavType nav; // e.g. GPSLNAV
+       * int freqOffs;
+       * bool freqOffsSpec; // true if specified
+       *    // Output of search
+       * gpstk::Xvt xvt;
+       *    // Construct a NavLibrary object.
+       * gpstk::NavLibrary navLib;
+       *    // Construct a NavDataFactory object
+       * gpstk::NavDataFactoryPtr ndfp(
+       *    std::make_shared<gpstk::MultiFormatNavDataFactory>());
+       *    // Add the NavDataFactory to the NavLibrary
+       * navLib.addFactory(ndfp);
+       *    // Add input data (files) to the NavDataFactory
+       * if (!ndfp->addDataSource(inputFileName))
+       * {
+       *    cerr << "Unable to load \"" << inputFileName << "\"" << endl;
+       *    return false;
+       * }
+       *    // Search the NavLibrary
+       * gpstk::ObsID oid(gpstk::ObservationType::NavMsg, band, code,
+       *                  freqOffs, xmitAnt, !freqOffsSpec);
+       * gpstk::SatID subjSat(subjID, subjSys);
+       * gpstk::SatID xmitSat(xmitID, xmitSys);
+       * gpstk::NavSatelliteID sat(subjSat, xmitSat, oid, nav);
+       * if (!navLib.getXvt(sat, when, xvt, false))
+       * {
+       *    cerr << "Unable to find XVT for " << sat << " @ " << when << endl;
+       *    return false;
+       * }
+       * \endcode
+       *
+       * @section NavFactorySearchParams Search Parameters
+       *
+       * The NavLibrary entry points have a common set of parameters
+       * that are specified when searching for data.  With the
+       * exception of the find() method, defaults are used for these
+       * parameters that were deemed the most likely values across
+       * typical use cases and these are typically safe values to use
+       * in a given situation.  Changing from the defaults is only
+       * likely in the event of implementing an atypical use case.
+       *
+       * The common parameters are:
+       * \dictionary
+       * \dicterm{sat/nmid}
+       * \dicdef{The full signal/message specification to search for.}
+       * \dicterm{when}
+       * \dicdef{The time you're interested in getting the health, time
+       *         offset, Xvt, etc.}
+       * \dicterm{xmitHealth}
+       * \dicdef{Allows you to specify the desired health state of
+       *         the satellite that transmitted a given nav message
+       *         at the time of interest.  DEFAULT=Any}
+       * \dicterm{valid}
+       * \dicdef{Allows you to specify whether you want navigation
+       *         messages that passed or failed validity checks.
+       *         DEFAULT=ValidOnly}
+       * \dicterm{order}
+       * \dicdef{Allows you to specify whether you want the data that
+       *         would have appeared in a near-real-time situation or
+       *         if you want the data with the closest time stamp.
+       *         DEFAULT=User}
+       * \enddictionary
+       *
+       * Most of these parameters have a wildcard (aka "don't care",
+       * aka "Any") value, meaning that any value for that parameter
+       * will match.  The \b when and \b order parameters are
+       * exceptions to this - they must always be specified as a
+       * fixed, single value.
+       *
+       * @subsection NavFactorySatParam Parameter sat/nmid
+       *
+       * The \b sat and \b nmid parameters specify a great deal of
+       * detail about the data you're interested in, and this is where
+       * most of the use-case-specific tweaking will be done.
+       *
+       * The \b sat parameter is a NavSatelliteID object, while \b
+       * nmid is a NavMessageID object.  NavMessageID inherits from
+       * NavSatelliteID (click for class/inheritance diagram), and
+       * adds the messageType parameter.
+       *
+       * The classes contain the following data:
+       *
+       * \dictionary
+       * \dicterm{messageType}
+       * \dicdef{(nmid/NavMessageID only) Specifies what type of navigation
+       *         message is being stored or searched for,
+       *         e.g. NavMessageType::Almanac,
+       *         NavMessageType::Ephemeris, etc.}
+       * \dicterm{sat}
+       * \dicdef{The subject satellite ID (SatID).  This is the
+       *         satellite to which the data applies.  This may be
+       *         different from \b xmitSat, and typically is in the
+       *         case of almanac data.  This is the satellite whose
+       *         health or position you want.}
+       * \dicterm{xmitSat}
+       * \dicdef{The ID of the satellite that transmitted the
+       *         navigation message.  In most cases is the same as
+       *         sat, but may be different for almanac data.  Can be a
+       *         wildcard value if, for example, you want almanac data
+       *         but don't care what the transmitting satellite was.
+       *         Ephemerides will have the same \b sat and \b xmitSat
+       *         values and can be specified this way when searching.}
+       * \dicterm{system}
+       * \dicdef{This specifies the SatelliteSystem whose data is
+       *         identified or being searched for.  This is distinct
+       *         from the system in \b sat and \b xmitSat for two
+       *         reasons, one is that some systems have been known to
+       *         broadcast data about other systems (QZSS test
+       *         broadcasting GPS navigation messages for example).
+       *         Another is that the NavSignalID class that contains
+       *         the information does not contain the satellite data,
+       *         but is in some cases used independently of the
+       *         satellite ID.}
+       * \dicterm{obs}
+       * \dicdef{This specifies the CarrierBand and TrackingCode and
+       *         other relevant information describing a signal.
+       *         These can be set to wildcard values as well when
+       *         searching.}
+       * \dicdef{nav}
+       * \dicdef{This specifies the navigation message structure from
+       *         which the data was derived, e.g. gpstk::NavType::GPSLNAV.
+       *         This too can be specified as a wildcard using
+       *         gpstk::NavType::Any.}
+       * \enddictionary
+       *
+       * @todo try to fix the NavType links above.
+       *
+       * @subsubsection NavDataFactorySatID Details on SatID
+       *
+       * SatID data is used in two ways in the NavSatelliteID class.
+       * One is to identify the transmitting satellite, and the other
+       * is to identify the subject satellite.  These are distinct for
+       * the case of almanac data, where each satellite in a given
+       * constellation broadcasts low precision orbital elements
+       * ("almanacs") for every satellite in the constellation.
+       *
+       * In most situations, the transmit satellite may be set to
+       * wildcard values in the search parameters.
+       *
+       * The satellite is identified using a combination of the
+       * satellite system and the system-specific identifier (e.g. PRN
+       * for GPS).
+       *
+       * A SatID may be made into a wildcard by one of two ways,
+       * either by calling the SatID::makeWild() method, or by setting
+       * SatID::wildId and/or SatID::wildSys individually (the former
+       * is recommended if the SatID is meant to match anything, as it
+       * should be kept up-to-date with any internal data changes).
+       *
+       * @subsubsection NavDataFactoryObsID Details on ObsID
+       *
+       * The ObsID class identifies an observation of a signal from a
+       * satellite.  This includes the observation type (in this case,
+       * always navigation messages), the carrier band, tracking code,
+       * transmitting antenna, and, in the case of GLONASS, the
+       * frequency offset for the FDMA constellation.  Depending on
+       * your use case (see \ref NavFactoryUseCase above), you may
+       * wish to specify this data or not.
+       *
+       * Bit fields for M-Code data are also present in the ObsID
+       * class for matching, but use cases for anything but wildcard
+       * matches will be extremely rare.
+       *
+       * @subsection NavFactoryWhenParam Parameter when
+       *
+       * The \b when parameter specifies a time of interest.  There
+       * aren't too many restrictions on this, except that the time
+       * system should match the satellite system of interest (or time
+       * system, when getting time offset information), or otherwise
+       * be set to TimeSystem::Any.
+       *
+       * @subsection NavFactoryXmitHealthParam Parameter xmitHealth
+       *
+       * The \b xmitHealth parameter allows you to specify whether you
+       * want your data to come from a satellite that is healthy, or
+       * unhealthy, or if you don't care.
+       *
+       * If a default value is set in the method prototype at all, the
+       * default is SVHealth::Any, which means you don't care whether
+       * the transmitting satellite is healthy or not.
+       *
+       * If you only want data transmitted by healthy satellites, then
+       * specify SVHealth::Healthy.
+       *
+       * If for some reason you only want data from unhealthy
+       * satellites, then specify SVHealth::Unhealthy.
+       *
+       * One last option for health is SVHealth::Degraded, however
+       * this is a very limited use case as currently it is only
+       * utilized by the Galileo implementation.
+       *
+       * @subsection NavFactoryValidParam Parameter valid
+       *
+       * The \b valid parameter allows you to specify whether or not
+       * you want to do validity checks on the navigation data before
+       * using it.  When methods have a default for this parameter, it
+       * is to perform validity checks.
+       *
+       * The validity checks are performed was the data is added to
+       * the NavDataFactory.  The validity checks are all specific to
+       * each navigation message, and usually consists of range checks
+       * on decoded values.
+       *
+       * Other values are NavValidityType::InvalidOnly, which runs
+       * validity checks and only accepts data that fails.  Finally is
+       * the ubiquitous NavValidityType::Any value which skips the
+       * validity checks altogether and doesn't reject any data.
+       *
+       * @subsection NavFactoryOrderParam Parameter order
+       *
+       * The \b order parameter has two possible values,
+       * NavSearchOrder::User, which most closely resembles the
+       * behavior a user would see when using a receiver in near
+       * real-time, and NavSearchOrder::Nearest which looks for data
+       * with the timestamp closest to \b when, forward or backward in
+       * time.
+       *
+       * Most use cases will want to use NavSearchOrder::User, and
+       * this is the default when one is specified.
+       * NavSearchOrder::Nearest is only used in vary specific cases
+       * that you probably already know if you're going to use it at
+       * all.
        *
        * @section NavFactoryHowTo NavFactory HOW-TO
        *
@@ -110,10 +539,18 @@ namespace gpstk
        *     set NavSignalID::nav to NavType::Any if you don't care
        *     whether the orbit data came from LNAV or CNAV or CNAV2.
        *
-       * \li Get satellite XVT/health/time offset from arbitrary input...
+       * \li Get ionospheric correction data...
+       *   * Sadly, this is not available in an abstract fashion at this
+       *     time, and if this data is needed, one will have to
+       *     process the system-specific data.
+       *
+       * \li Get satellite XVT/health/time offset (aka clock
+       *     correction) from arbitrary input...
        *   * Use the NavLibrary::getXvt(), NavLibrary::getHealth() or
        *     NavLibrary::getOffset() method, as appropriate.  Refer to
-       *     the NavLibrary class and example.
+       *     the NavLibrary class and examples in \ref NavFactoryExampleCode.
+       *   * If only the clock correction is desired, you may still want to use
+       *     getXvt() but only look at the clock bias/clock drift data.
        *
        * \li Get Ephemeris/Almanac/Health at a given time...
        *   * Use the NavLibrary::find() method.  The results will
@@ -235,9 +672,6 @@ namespace gpstk
        * This mostly (if not exclusively) affects GLONASS orbits and
        * OrbitDataSP3.  If so, NavDataLibraryWithStore needs to
        * reflect this change.
-       *
-       * @todo Determine what, if anything, should be done in
-       * NavLibrary::getXvt() with beginFit/endFit.
        *
        * @todo Determine if a URA in meters should be added to
        * OrbitDataKepler or OrbitData.
