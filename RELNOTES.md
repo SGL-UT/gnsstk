@@ -11,7 +11,6 @@ Updates since v11.1.0
   * Add fortify pipeline yaml file
 
 **Library Changes**
-  * Add DebugTrace code for execution tracing.
   * Change header-file installation for debian to use versioned path names.  
 
 Fixes since v11.1.0
