@@ -30,7 +30,7 @@ The primary goals of the GPSTk project are to:
 %build
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_EXT=ON -DUSE_RPATH=OFF -DBUILD_FOR_PACKAGE_SWITCH=ON ../
+cmake -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_EXT=ON -DUSE_RPATH=OFF -DBUILD_FOR_PACKAGE_SWITCH=ON -DVERSIONED_HEADER_INSTALL=ON ../
 make all -j 4
 
 # Install bin/lib/include folders in RPM BUILDROOT for packaging
@@ -38,6 +38,9 @@ make all -j 4
 cd build
 make install -j 4 DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT/usr/README.md
+mkdir -p $RPM_BUILD_ROOT/usr/include/gpstk
+cp $RPM_BUILD_ROOT/usr/include/gpstk*/gpstk/*.h $RPM_BUILD_ROOT/usr/include/gpstk
+cp $RPM_BUILD_ROOT/usr/include/gpstk*/gpstk/*.hpp $RPM_BUILD_ROOT/usr/include/gpstk
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -46,6 +49,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %doc README.md COPYING.md RELNOTES.md
+/usr/include/gpstk*/gpstk
 /usr/include/gpstk
 /usr/bin/*
 /usr/lib64/*
