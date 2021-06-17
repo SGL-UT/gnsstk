@@ -1,3 +1,26 @@
+gpstk (11.2.0-1) stable; urgency=low
+
+  * Updated to version 11.2.0
+  * Add DebugTrace code for execution tracing.
+  * Fix MultiFormatNavDataFactory time system handling in
+    getInitialTime() and getFinalTime().
+  * Fix NavDataFactoryWithStore static initialization problem.
+  * Fix NavDataFactoryWithStore::addNavData to handle multiple time
+    systems.
+  * Fix OrbitDataKepler to properly handle Adot and dndot terms.
+  * Fix PNBGPSLNavDataFactory to use unsigned eccentricity in almanac.
+  * Remove extraneous space in data/test_input_rinex3_nav_gal.20n
+  * Fix CNavMidiAlm to use unsigned sqrtA.
+  * Fix pipeline yaml for protected jobs.
+  * Change header-file installation for debian to use versioned path
+    names.
+  * Fix VectorOperators.hpp to put math functions in std namespace.
+  * Add fortify pipeline yaml file
+  * Fix typo bugs in two trop models.
+  * Reformat Position tests (Position_T.cpp) to follow style.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 17 Jun 2021 09:27:17 -0500
+
 gpstk (11.1.0-1) stable; urgency=low
 
   * Updated to version 11.1.0

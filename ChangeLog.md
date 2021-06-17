@@ -1,3 +1,27 @@
+# Version 11.2.0   Thursday June 17, 2021
+
+Modifications by Author
+-----------------------
+     Andrew Kuck <kuck@arlut.utexas.edu> (1):
+           Change debian install to use versioned header paths.
+
+     Dave Rainwater <rain@arlut.utexas.edu> (1):
+           Fix trop model typos.
+
+     David Barber <dbarber@arlut.utexas.edu> (4):
+           Release v11.1.0
+           Release v11.1.0
+           fix protected jobs to allow fetch from working main branch when using remote main branch and turn off allowed to fail for job protected_history_lint
+           Add fortify pipeline
+
+     John Knutson <johnk@arlut.utexas.edu> (4):
+           Resolve "Copy MDHTRACE into gpstk"
+           MultiFormatNavDataFactory: fix time system checking in getInitialTime/getFinalTime
+           Resolve "Math overloading in VectorOperations"
+           Resolve "clean up Position_T"
+
+
+
 # Version 11.1.0   Thursday May 13, 2021
 
 Modifications by Author
