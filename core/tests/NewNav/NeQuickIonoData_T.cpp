@@ -93,9 +93,16 @@ public:
                double cf, double tf)
             : tAzr(iazr), tPos(lat,lon,0,gpstk::Position::Geodetic, &galEll),
               criticalFreq(cf), transFactor(tf), ct(convertTime(hour, month))
-      {}
+      {
+            // Test data supplies Azr (effective sunspot count), but
+            // ModelParameters takes Az (effective ionization level)
+            // so convert for use.
+         tAz = tAzr + 408.99;
+         tAz = (((tAz * tAz) - 167273)/1123.6) + 63.7;
+      }
       gpstk::CivilTime ct;
       double tAzr;
+      double tAz;
       gpstk::Position tPos;
       double criticalFreq;
       double transFactor;
@@ -301,6 +308,8 @@ public:
    static const double thicknessEps;
       /// Epsilon for testing TEC computation using galileo:iono test data
    static const double docEps;
+      /// Epsilon for comparing derived Azr against stated Azr
+   static const double ionoSpotsEps;
 };
 
 
@@ -318,6 +327,7 @@ const double NeQuickIonoData_T::thicknessEps = 1e-5;
 // precision is not great, but this is the level of precision that is
 // supplied in the truth table in Annex E.1
 const double NeQuickIonoData_T::docEps = 1e-2;
+const double NeQuickIonoData_T::ionoSpotsEps = 1e-13;
 
 const NeQuickIonoData_T::TestData NeQuickIonoData_T::testData[] =
 {
@@ -707,7 +717,9 @@ legendreTest()
       const TestData& td(testData[testNum]);
       double modip_u = modip.stModip(td.tPos);
       gpstk::NeQuickIonoData::ModelParameters uut(
-         modip_u, td.tPos, td.tAzr, ccir, td.ct);
+         modip_u, td.tPos, td.tAz, ccir, td.ct);
+         // sanity check
+      TUASSERTFEPS(td.tAzr, uut.fAzr, ionoSpotsEps);
       TUASSERTFEPS(td.criticalFreq, uut.ffoF2, criticalFreqEps);
       TUASSERTFEPS(td.transFactor, uut.fM3000F2, transFactorEps);
    }
@@ -834,7 +846,7 @@ getTECTest()
       /// E layer maximum density height in km.
    constexpr double hmE = 120.0;                                        //eq.78
    DEBUGTRACE_ENABLE();
-   for (unsigned testNum = 27; testNum < numTests; testNum++)
+   for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataTEC& td(testDataTEC[testNum]);
       uut.ai[0] = td.coefficients[0];
@@ -854,7 +866,7 @@ getTECTest()
       TUASSERTFEPS(td.expTEC, uut.getTEC(td.ct, td.station, td.satellite,
                                          gpstk::CarrierBand::L1),
                    docEps);
-      break;
+      // break;
    }
    TURETURN();
 }
@@ -865,15 +877,15 @@ int main(int argc, char *argv[])
    NeQuickIonoData_T testClass;
    unsigned errorTotal = 0;
 
-   // errorTotal += testClass.constructorTest();
-   // errorTotal += testClass.getEffIonoLevelTest();
-   // errorTotal += testClass.constructor2Test();
-   // errorTotal += testClass.legendreTest();
-   // errorTotal += testClass.heightTest();
-   // errorTotal += testClass.exosphereAdjustTest();
-   // errorTotal += testClass.peakAmplitudesTest();
-   // errorTotal += testClass.effSolarZenithAngleTest();
-   // errorTotal += testClass.thicknessTest();
+   errorTotal += testClass.constructorTest();
+   errorTotal += testClass.getEffIonoLevelTest();
+   errorTotal += testClass.constructor2Test();
+   errorTotal += testClass.legendreTest();
+   errorTotal += testClass.heightTest();
+   errorTotal += testClass.exosphereAdjustTest();
+   errorTotal += testClass.peakAmplitudesTest();
+   errorTotal += testClass.effSolarZenithAngleTest();
+   errorTotal += testClass.thicknessTest();
    errorTotal += testClass.getTECTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
