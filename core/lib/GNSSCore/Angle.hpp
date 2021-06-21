@@ -80,6 +80,11 @@ namespace gpstk
           * @return The resulting angle when differenced with this one. */
       Angle operator-(const Angle& right) const;
 
+         /** Numeric negation of angle. Changes radians to -radians
+          * then recomputes the rest. */
+      Angle operator-() const
+      { return Angle(-radians, Rad); }
+
          /** Basic addition.
           * @param[in] right The angle to add to this one.
           * @return The resulting angle when added to this one. */
@@ -93,7 +98,8 @@ namespace gpstk
       inline double deg() const
       { return degrees; }
 
-         /// Return a string containing the data separated by commas (rad,deg,sin,cos).
+         /** Return a string containing the data separated by commas
+          * (rad,deg,sin,cos). */
       std::string asString() const;
 
    protected:

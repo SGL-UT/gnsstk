@@ -122,7 +122,7 @@ namespace gpstk
 #define DEBUGTRACE(EXPR)                                \
    {                                                    \
       std::ostringstream os;                            \
-      os << "* " << std::fixed << std::setprecision(6)  \
+      os << "* " << std::fixed << std::setprecision(15) \
          << EXPR << std::endl;                          \
       gpstk::DebugTrace::trace(os.str());               \
    }

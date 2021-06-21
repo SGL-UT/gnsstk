@@ -68,6 +68,7 @@ namespace gpstk
 
    double MODIP ::
    stModip(const Position& pos)
+      const
    {
       DEBUGTRACE_FUNCTION();
          // awk script for generating this from
@@ -300,8 +301,10 @@ namespace gpstk
       double longGridPos = (lambda + LongMax) / LongStep;               // eq.14
          // Truncate the grid longitude position to get the array index
       int longGridIdx = longGridPos;                                    // eq.6
+      GPSTK_ASSERT((longGridPos - longGridIdx) < 1);
          // Compute the longitude fractional offset from the array index
       double longGridOffs = longGridPos - int(longGridPos);             // eq.15
+      GPSTK_ASSERT(longGridOffs < 1);
       DEBUGTRACE("longitude index before adjust " << longGridIdx);
          // check if index indicates lambda was < -180 degrees
          // longitude and adjust
@@ -330,6 +333,8 @@ namespace gpstk
       double latGridOffs = latGridPos - int(latGridPos);                // eq.10
          // Truncate the grid latitude position to get the array index
       int latGridIdx = int(latGridPos);                                 // eq.11
+      GPSTK_ASSERT(latGridOffs < 1);
+      GPSTK_ASSERT((latGridPos - latGridIdx) < 1);
       double z1[InterpCount], z[InterpCount];
       DEBUGTRACE("longitude " << lambda << " idx " << longGridIdx << " offset "
                  << longGridOffs);
@@ -351,6 +356,7 @@ namespace gpstk
 
    double MODIP ::
    interpolate(double z[4], double x)
+      const
    {
       if (fabs(2*x) < 1e-10)
       {

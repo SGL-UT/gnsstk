@@ -74,8 +74,8 @@ namespace gpstk
          /// Initialize all data to NaN.
       AngleReduced();
 
-         /** Initialize using the sine value.  The cosine value will
-          * be derived from the sine value using the Pythagorean
+         /** Initialize using an angular value.  The sine and cosine
+          * will be derived from each other using the Pythagorean
           * identity sin**2+cos**2=1.
           * @param[in] s The sine value of the angle being represented.
           * @post sin and cos are set. */

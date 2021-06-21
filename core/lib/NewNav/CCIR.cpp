@@ -209,26 +209,28 @@ namespace gpstk
    interpolateFm3(const CommonTime& when, double effSunSpots)
    {
       DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("effSunSpots=" << effSunSpots);
                                                                         //eq.46
       double effSunSpotCount = effSunSpots / 100.0;
       for (unsigned degree = 0; degree < FM3MaxDegree; degree++)
       {
          for (unsigned order = 0; order < FM3MaxOrder; order++)
          {
-            DEBUGTRACE("month=" << cacheMonth << " degree=" << degree
-                       << " order=" << order << " idx="
-                       << (degree*FM3MaxOrder+order) << " low="
-                       << ccirFm3(cacheMonth, LowSolarActIdx, degree, order)
-                       << " high="
-                       << ccirFm3(cacheMonth, HighSolarActIdx, degree, order));
                // cacheFm3 is a vector so we translate 2D addressing to 1D.
                // cacheHour/cacheMonth/cacheSunSpots are assumed to
-               // ahve been updated by validateCache prior to calling.
+               // have been updated by validateCache prior to calling.
             cacheFM3[degree*FM3MaxOrder+order] =
                ccirFm3(cacheMonth, LowSolarActIdx, degree, order) *
                (1.0 - effSunSpotCount) +
                ccirFm3(cacheMonth, HighSolarActIdx, degree, order) *
                effSunSpotCount;
+            DEBUGTRACE("month=" << cacheMonth << " degree=" << degree
+                       << " order=" << order << " idx="
+                       << (degree*FM3MaxOrder+order) << " low="
+                       << ccirFm3(cacheMonth, LowSolarActIdx, degree, order)
+                       << " high="
+                       << ccirFm3(cacheMonth, HighSolarActIdx, degree, order)
+                       << " cacheFM3=" << cacheFM3[degree*FM3MaxOrder+order]);
          }
       }
    }

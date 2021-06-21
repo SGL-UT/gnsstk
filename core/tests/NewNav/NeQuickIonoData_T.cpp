@@ -40,6 +40,7 @@
 #include "TestUtil.hpp"
 #include "NeQuickIonoData.hpp"
 #include "MODIP.hpp"
+#include "GalileoIonoEllipsoid.hpp"
 #include "DebugTrace.hpp"
 
 /// convert test data time stamps that EU used to CivilTime object
@@ -54,6 +55,9 @@ gpstk::CivilTime convertTime(double hour, int month)
    GPSTK_ASSERT(fabs(ct.getUTHour()-hour) < 1e-7);
    return ct;
 }
+
+/// Use this "ellipsoid" (sphere) for all testing
+gpstk::GalileoIonoEllipsoid galEll;
 
 class NeQuickIonoData_T
 {
@@ -78,6 +82,8 @@ public:
    unsigned effSolarZenithAngleTest();
       /// Test NeQuickIonoData::ModelParameters::thickness
    unsigned thicknessTest();
+      // Test NeQuickIonoData::getTEC (implicitly getSTEC, getVTEC).
+   unsigned getTECTest();
 
       /// Hold input/truth data for legendreTest
    class TestData
@@ -85,7 +91,7 @@ public:
    public:
       TestData(double hour, int month, double iazr, double lon, double lat,
                double cf, double tf)
-            : tAzr(iazr), tPos(lat,lon,0,gpstk::Position::Geodetic),
+            : tAzr(iazr), tPos(lat,lon,0,gpstk::Position::Geodetic, &galEll),
               criticalFreq(cf), transFactor(tf), ct(convertTime(hour, month))
       {}
       gpstk::CivilTime ct;
@@ -165,7 +171,7 @@ public:
    public:
       TestDataSolar(double lon, double lat, double hour, int month,
                     double expect)
-            : pos(lat,lon,0,gpstk::Position::Geodetic),
+            : pos(lat,lon,0,gpstk::Position::Geodetic, &galEll),
               ct(convertTime(hour,month)), expAngle(expect)
       {}
       gpstk::Position pos;
@@ -179,7 +185,7 @@ public:
    public:
       TestDataCritFreqE(double az, double lon, double lat, double hour,
                         int month, double expect)
-            : tAz(az), pos(lat,lon,0,gpstk::Position::Geodetic),
+            : tAz(az), pos(lat,lon,0,gpstk::Position::Geodetic, &galEll),
               ct(convertTime(hour,month)), expFreq(expect)
       {
       }
@@ -229,6 +235,30 @@ public:
       double peakThickBotE; // EU test data specifies this but it's a constant.
    };
 
+      /// Hold input/truth data for foobarbaz
+      /// @todo figure out what's being tested, duh
+   class TestDataTEC
+   {
+   public:
+      TestDataTEC(const std::vector<double>& coeff,
+                  int month, double hour,
+                  double stalon, double stalat, double stah,
+                  double satlon, double satlat, double sath,
+                  double expect)
+            : coefficients(coeff),
+              ct(convertTime(hour,month)),
+              station(stalat, stalon, stah, gpstk::Position::Geodetic, &galEll),
+              satellite(satlat, satlon, sath, gpstk::Position::Geodetic,
+                        &galEll),
+              expTEC(expect)
+      {}
+      std::vector<double> coefficients;
+      gpstk::CivilTime ct;
+      gpstk::Position station;
+      gpstk::Position satellite;
+      double expTEC;
+   };
+
       /// Input/truth data for legendreTest
    static const TestData testData[];
       /// Input/truth data for heightTest
@@ -251,6 +281,8 @@ public:
    static const TestDataAz testDataAz[];
       /// Input/truth data for thicknessTest
    static const TestDataThickness testDataThickness[];
+      /// Input/truth data for @todo
+   static const TestDataTEC testDataTEC[];
       /// Tool for computing modified dip latitude.
    gpstk::MODIP modip;
       /// Tool for looking up iono model data.
@@ -267,6 +299,8 @@ public:
    static const double azEps;
       /// Epsilon for peak thickness checks
    static const double thicknessEps;
+      /// Epsilon for testing TEC computation using galileo:iono test data
+   static const double docEps;
 };
 
 
@@ -281,6 +315,9 @@ const double NeQuickIonoData_T::amplitudeEps = 1e-5;
 const double NeQuickIonoData_T::solarEps = 1e-5;
 const double NeQuickIonoData_T::azEps = 1e-6;
 const double NeQuickIonoData_T::thicknessEps = 1e-5;
+// precision is not great, but this is the level of precision that is
+// supplied in the truth table in Annex E.1
+const double NeQuickIonoData_T::docEps = 1e-2;
 
 const NeQuickIonoData_T::TestData NeQuickIonoData_T::testData[] =
 {
@@ -489,6 +526,121 @@ NeQuickIonoData_T::testDataThickness[] =
 };
 
 
+// pulled from Annex E of galileo:iono
+const NeQuickIonoData_T::TestDataTEC
+NeQuickIonoData_T::testDataTEC[] =
+{
+   { highSolarCoeff, 4, 0, 297.66, 82.49, 78.11, 8.23, 54.29, 20281546.18, 20.40 },
+   { highSolarCoeff, 4, 0, 297.66, 82.49, 78.11, -158.03, 24.05, 20275295.43, 53.45 },
+   { highSolarCoeff, 4, 0, 297.66, 82.49, 78.11, -30.86, 41.04, 19953770.93, 25.91 },
+   { highSolarCoeff, 4, 4, 297.66, 82.49, 78.11, -85.72, 53.69, 20544786.65, 18.78 },
+   { highSolarCoeff, 4, 4, 297.66, 82.49, 78.11, -130.77, 54.40, 20121312.46, 20.00 },
+   { highSolarCoeff, 4, 4, 297.66, 82.49, 78.11, 140.68, 35.85, 19953735.00, 37.81 },
+   { highSolarCoeff, 4, 8, 297.66, 82.49, 78.11, -126.28, 51.26, 20513440.10, 21.31 },
+   { highSolarCoeff, 4, 8, 297.66, 82.49, 78.11, 84.26, 54.68, 20305726.79, 27.72 },
+   { highSolarCoeff, 4, 8, 297.66, 82.49, 78.11, -96.21, 37.33, 19956072.48, 24.13 },
+   { highSolarCoeff, 4, 12, 297.66, 82.49, 78.11, 81.09, 35.20, 20278071.03, 49.30 },
+   { highSolarCoeff, 4, 12, 297.66, 82.49, 78.11, 175.57, 51.89, 19995445.72, 26.61 },
+   { highSolarCoeff, 4, 12, 297.66, 82.49, 78.11, 4.25, 53.43, 20107681.66, 29.21 },
+   { highSolarCoeff, 4, 16, 297.66, 82.49, 78.11, 14.89, 32.88, 20636367.33, 37.95 },
+   { highSolarCoeff, 4, 16, 297.66, 82.49, 78.11, -70.26, 50.63, 20043030.82, 23.93 },
+   { highSolarCoeff, 4, 16, 297.66, 82.49, 78.11, -130.60, 49.21, 20288021.34, 26.97 },
+   { highSolarCoeff, 4, 20, 297.66, 82.49, 78.11, -52.46, 24.28, 19831557.96, 48.45 },
+   { highSolarCoeff, 4, 20, 297.66, 82.49, 78.11, -165.78, 35.06, 20196268.24, 41.71 },
+   { highSolarCoeff, 4, 20, 297.66, 82.49, 78.11, 168.73, 52.58, 20288372.95, 27.79 },
+   { highSolarCoeff, 4, 0, 307.19, 5.25, -25.76, -89.48, -29.05, 20081457.33, 240.59 },
+   { highSolarCoeff, 4, 0, 307.19, 5.25, -25.76, -46.73, -24.08, 19975517.42, 152.19 },
+   { highSolarCoeff, 4, 0, 307.19, 5.25, -25.76, -99.26, 34.47, 20275286.46, 204.92 },
+   { highSolarCoeff, 4, 4, 307.19, 5.25, -25.76, -46.61, 54.84, 20258938.89, 124.39 },
+   { highSolarCoeff, 4, 4, 307.19, 5.25, -25.76, -85.72, 53.68, 20544786.61, 140.16 },
+   { highSolarCoeff, 4, 4, 307.19, 5.25, -25.76, -18.13, 14.17, 20267783.18, 95.52 },
+   { highSolarCoeff, 4, 8, 307.19, 5.25, -25.76, 7.14, -19.55, 20226657.45, 26.47 },
+   { highSolarCoeff, 4, 8, 307.19, 5.25, -25.76, -48.38, -31.04, 20069586.93, 21.34 },
+   { highSolarCoeff, 4, 8, 307.19, 5.25, -25.76, -58.59, 21.93, 20008556.82, 21.68 },
+   { highSolarCoeff, 4, 12, 307.19, 5.25, -25.76, -102.83, -40.74, 20153844.84, 169.86 },
+   { highSolarCoeff, 4, 12, 307.19, 5.25, -25.76, -0.60, 10.75, 20272829.17, 178.43 },
+   { highSolarCoeff, 4, 12, 307.19, 5.25, -25.76, -120.35, 11.00, 20283503.35, 146.95 },
+   { highSolarCoeff, 4, 16, 307.19, 5.25, -25.76, -70.26, 50.63, 20043030.72, 198.43 },
+   { highSolarCoeff, 4, 16, 307.19, 5.25, -25.76, -72.73, -9.78, 19936049.27, 149.02 },
+   { highSolarCoeff, 4, 16, 307.19, 5.25, -25.76, -66.77, 2.37, 19986966.89, 133.16 },
+   { highSolarCoeff, 4, 20, 307.19, 5.25, -25.76, -1.57, -7.90, 20373709.74, 255.31 },
+   { highSolarCoeff, 4, 20, 307.19, 5.25, -25.76, 0.44, 50.83, 19975412.45, 292.41 },
+   { highSolarCoeff, 4, 20, 307.19, 5.25, -25.76, 10.94, 44.72, 20450566.19, 336.74 },
+   { mediumSolarCoeff, 4, 0, 40.19, -3.00, -23.32, 76.65, -41.43, 20157673.93, 18.26 },
+   { mediumSolarCoeff, 4, 0, 40.19, -3.00, -23.32, -13.11, -4.67, 20194168.22, 35.84 },
+   { mediumSolarCoeff, 4, 0, 40.19, -3.00, -23.32, 26.31, -39.04, 20671871.64, 17.18 },
+   { mediumSolarCoeff, 4, 4, 40.19, -3.00, -23.32, 79.33, -55.34, 20679595.44, 36.00 },
+   { mediumSolarCoeff, 4, 4, 40.19, -3.00, -23.32, 107.19, -10.65, 19943686.06, 76.77 },
+   { mediumSolarCoeff, 4, 4, 40.19, -3.00, -23.32, 56.35, 47.54, 20322471.38, 38.01 },
+   { mediumSolarCoeff, 4, 8, 40.19, -3.00, -23.32, 7.14, -19.55, 20226657.34, 69.17 },
+   { mediumSolarCoeff, 4, 8, 40.19, -3.00, -23.32, 51.96, -1.90, 20218595.37, 59.53 },
+   { mediumSolarCoeff, 4, 8, 40.19, -3.00, -23.32, 89.22, -40.56, 20055109.63, 101.26 },
+   { mediumSolarCoeff, 4, 12, 40.19, -3.00, -23.32, 90.78, -28.26, 20081398.25, 127.83 },
+   { mediumSolarCoeff, 4, 12, 40.19, -3.00, -23.32, 35.75, -14.88, 20010521.91, 81.34 },
+   { mediumSolarCoeff, 4, 12, 40.19, -3.00, -23.32, 81.09, 35.20, 20278071.09, 113.92 },
+   { mediumSolarCoeff, 4, 16, 40.19, -3.00, -23.32, 14.89, 32.88, 20636367.52, 91.07 },
+   { mediumSolarCoeff, 4, 16, 40.19, -3.00, -23.32, 2.04, 11.23, 20394926.95, 96.70 },
+   { mediumSolarCoeff, 4, 16, 40.19, -3.00, -23.32, 22.79, -35.87, 20125991.19, 71.45 },
+   { mediumSolarCoeff, 4, 20, 40.19, -3.00, -23.32, 54.11, 3.15, 20251696.28, 48.06 },
+   { mediumSolarCoeff, 4, 20, 40.19, -3.00, -23.32, 95.06, 17.94, 20246498.07, 77.64 },
+   { mediumSolarCoeff, 4, 20, 40.19, -3.00, -23.32, -1.81, -52.00, 20332764.38, 50.10 },
+   { mediumSolarCoeff, 4, 0, 115.89, -31.80, 12.78, 119.90, -8.76, 19941513.27, 24.84 },
+   { mediumSolarCoeff, 4, 0, 115.89, -31.80, 12.78, 165.14, -13.93, 20181976.57, 43.94 },
+   { mediumSolarCoeff, 4, 0, 115.89, -31.80, 12.78, 76.65, -41.43, 20157673.77, 19.90 },
+   { mediumSolarCoeff, 4, 4, 115.89, -31.80, 12.78, 107.19, -10.65, 19943685.24, 46.25 },
+   { mediumSolarCoeff, 4, 4, 115.89, -31.80, 12.78, 79.33, -55.34, 20679595.29, 46.10 },
+   { mediumSolarCoeff, 4, 4, 115.89, -31.80, 12.78, 64.90, -17.58, 20177185.06, 64.59 },
+   { mediumSolarCoeff, 4, 8, 115.89, -31.80, 12.78, 127.35, 23.46, 19837695.71, 88.58 },
+   { mediumSolarCoeff, 4, 8, 115.89, -31.80, 12.78, 89.22, -40.56, 20055109.56, 40.62 },
+   { mediumSolarCoeff, 4, 8, 115.89, -31.80, 12.78, 148.31, -29.93, 20109263.99, 40.82 },
+   { mediumSolarCoeff, 4, 12, 115.89, -31.80, 12.78, 90.78, -28.26, 20081398.25, 14.48 },
+   { mediumSolarCoeff, 4, 12, 115.89, -31.80, 12.78, 133.47, -24.87, 19975574.41, 13.63 },
+   { mediumSolarCoeff, 4, 12, 115.89, -31.80, 12.78, 166.97, -3.87, 20196778.56, 27.69 },
+   { mediumSolarCoeff, 4, 16, 115.89, -31.80, 12.78, 124.09, -14.31, 20100697.90, 6.96 },
+   { mediumSolarCoeff, 4, 16, 115.89, -31.80, 12.78, 154.31, -45.19, 20116286.17, 7.48 },
+   { mediumSolarCoeff, 4, 16, 115.89, -31.80, 12.78, -167.50, -43.24, 20095343.13, 13.87 },
+   { mediumSolarCoeff, 4, 20, 115.89, -31.80, 12.78, 131.65, -31.56, 20066111.12, 4.36 },
+   { mediumSolarCoeff, 4, 20, 115.89, -31.80, 12.78, 115.68, -52.78, 20231909.06, 4.35 },
+   { mediumSolarCoeff, 4, 20, 115.89, -31.80, 12.78, 50.87, -50.69, 20186511.77, 6.97 },
+   { lowSolarCoeff, 4, 0, 141.13, 39.14, 117.00, 165.14, -13.93, 20181976.50, 36.44 },
+   { lowSolarCoeff, 4, 0, 141.13, 39.14, 117.00, 85.59, 36.64, 20015444.79, 14.24 },
+   { lowSolarCoeff, 4, 0, 141.13, 39.14, 117.00, 119.90, -8.76, 19941513.27, 23.54 },
+   { lowSolarCoeff, 4, 4, 141.13, 39.14, 117.00, 107.19, -10.65, 19943685.88, 77.49 },
+   { lowSolarCoeff, 4, 4, 141.13, 39.14, 117.00, 38.39, 51.98, 20457198.52, 29.28 },
+   { lowSolarCoeff, 4, 4, 141.13, 39.14, 117.00, -130.77, 54.40, 20121312.41, 23.02 },
+   { lowSolarCoeff, 4, 8, 141.13, 39.14, 117.00, 179.50, 51.35, 19967933.94, 13.62 },
+   { lowSolarCoeff, 4, 8, 141.13, 39.14, 117.00, 97.28, 21.46, 19941941.52, 24.28 },
+   { lowSolarCoeff, 4, 8, 141.13, 39.14, 117.00, 84.26, 54.68, 20305726.98, 15.90 },
+   { lowSolarCoeff, 4, 12, 141.13, 39.14, 117.00, 62.65, 54.77, 20370905.24, 16.33 },
+   { lowSolarCoeff, 4, 12, 141.13, 39.14, 117.00, 115.63, -1.28, 20165065.92, 11.05 },
+   { lowSolarCoeff, 4, 12, 141.13, 39.14, 117.00, 81.09, 35.20, 20278071.22, 14.25 },
+   { lowSolarCoeff, 4, 16, 141.13, 39.14, 117.00, 124.09, -14.31, 20100698.19, 8.12 },
+   { lowSolarCoeff, 4, 16, 141.13, 39.14, 117.00, -130.60, 49.21, 20288020.98, 6.45 },
+   { lowSolarCoeff, 4, 16, 141.13, 39.14, 117.00, 161.97, 13.35, 20265041.53, 4.69 },
+   { lowSolarCoeff, 4, 20, 141.13, 39.14, 117.00, 84.18, 36.59, 19953853.27, 6.06 },
+   { lowSolarCoeff, 4, 20, 141.13, 39.14, 117.00, 54.67, 51.65, 20511861.27, 8.28 },
+   { lowSolarCoeff, 4, 20, 141.13, 39.14, 117.00, -136.92, 46.53, 20309713.36, 10.78 },
+   { lowSolarCoeff, 4, 0, 204.54, 19.80, 3754.69, 165.14, -13.93, 20181976.58, 94.98 },
+   { lowSolarCoeff, 4, 0, 204.54, 19.80, 3754.69, 179.32, 9.92, 20274303.54, 60.87 },
+   { lowSolarCoeff, 4, 0, 204.54, 19.80, 3754.69, -144.16, -15.44, 20007317.84, 72.83 },
+   { lowSolarCoeff, 4, 4, 204.54, 19.80, 3754.69, -130.77, 54.40, 20121312.45, 30.77 },
+   { lowSolarCoeff, 4, 4, 204.54, 19.80, 3754.69, -99.26, 37.44, 20066769.88, 36.18 },
+   { lowSolarCoeff, 4, 4, 204.54, 19.80, 3754.69, -85.72, 53.69, 20544786.60, 37.25 },
+   { lowSolarCoeff, 4, 8, 204.54, 19.80, 3754.69, 178.35, -7.05, 20372509.81, 1.62 },
+   { lowSolarCoeff, 4, 8, 204.54, 19.80, 3754.69, -125.97, 2.30, 20251559.90, 0.12 },
+   { lowSolarCoeff, 4, 8, 204.54, 19.80, 3754.69, 179.50, 51.35, 19967934.29, 0.56 },
+   { lowSolarCoeff, 4, 12, 204.54, 19.80, 3754.69, 158.88, -12.61, 20145417.20, 1.77 },
+   { lowSolarCoeff, 4, 12, 204.54, 19.80, 3754.69, -146.53, 22.03, 20069033.97, 0.64 },
+   { lowSolarCoeff, 4, 12, 204.54, 19.80, 3754.69, -153.30, -39.75, 20672066.87, 2.99 },
+   { lowSolarCoeff, 4, 16, 204.54, 19.80, 3754.69, -140.58, 51.70, 20455387.61, 2.16 },
+   { lowSolarCoeff, 4, 16, 204.54, 19.80, 3754.69, -167.50, -43.24, 20095343.11, 3.11 },
+   { lowSolarCoeff, 4, 16, 204.54, 19.80, 3754.69, -164.50, 27.08, 20494802.61, 1.22 },
+   { lowSolarCoeff, 4, 20, 204.54, 19.80, 3754.69, -172.71, -20.37, 20225145.06, 24.53 },
+   { lowSolarCoeff, 4, 20, 204.54, 19.80, 3754.69, -136.92, 46.53, 20309713.37, 13.14 },
+   { lowSolarCoeff, 4, 20, 204.54, 19.80, 3754.69, -82.52, 20.64, 19937791.48, 38.20 },
+};
+
+
 NeQuickIonoData_T ::
 NeQuickIonoData_T()
 {
@@ -621,9 +773,9 @@ peakAmplitudesTest()
       uut.fhmF2 = td.peakHeightF2;
       uut.fB2bot = td.peakThickBotF2;
       TUCATCH(uut.peakAmplitudes());
-      TUASSERTFEPS(td.expA1, uut.fA1, amplitudeEps);
-      TUASSERTFEPS(td.expA2, uut.fA2, amplitudeEps);
-      TUASSERTFEPS(td.expA3, uut.fA3, amplitudeEps);
+      TUASSERTFEPS(td.expA1, uut.fA[0], amplitudeEps);
+      TUASSERTFEPS(td.expA2, uut.fA[1], amplitudeEps);
+      TUASSERTFEPS(td.expA3, uut.fA[2], amplitudeEps);
    }
    TURETURN();
 }
@@ -638,9 +790,8 @@ effSolarZenithAngleTest()
    {
       const TestDataSolar& td(testDataSolar[testNum]);
       gpstk::NeQuickIonoData::ModelParameters uut(ccir);
-      TUASSERTFEPS(td.expAngle,
-                   uut.effSolarZenithAngle(td.pos, td.ct),
-                   solarEps);
+      gpstk::Angle rv = uut.effSolarZenithAngle(td.pos, td.ct);
+      TUASSERTFEPS(td.expAngle, rv.deg(), solarEps);
    }
    TURETURN();
 }
@@ -673,20 +824,57 @@ thicknessTest()
 }
 
 
+unsigned NeQuickIonoData_T ::
+getTECTest()
+{
+   using namespace std;
+   TUDEF("NeQuickIonoData::ModelParameters", "getTEC");
+   unsigned numTests = sizeof(testDataTEC)/sizeof(testDataTEC[0]);
+   gpstk::NeQuickIonoData uut;
+      /// E layer maximum density height in km.
+   constexpr double hmE = 120.0;                                        //eq.78
+   DEBUGTRACE_ENABLE();
+   for (unsigned testNum = 27; testNum < numTests; testNum++)
+   {
+      const TestDataTEC& td(testDataTEC[testNum]);
+      uut.ai[0] = td.coefficients[0];
+      uut.ai[1] = td.coefficients[1];
+      uut.ai[2] = td.coefficients[2];
+      cerr << "getTEC #" << testNum << " for "
+           << fixed << setprecision(6) << uut.ai[0] << " "
+           << setprecision(8) << uut.ai[1] << " "
+           << setprecision(11) << uut.ai[2] << " "
+           << td.ct.month << " " << setprecision(0) << td.ct.getUTHour() << " "
+           << setprecision(2) << td.station.longitude() << " "
+           << td.station.geodeticLatitude() << " "
+           << td.station.height() << " "
+           << td.satellite.longitude() << " "
+           << td.satellite.geodeticLatitude() << " "
+           << td.satellite.height() << endl;
+      TUASSERTFEPS(td.expTEC, uut.getTEC(td.ct, td.station, td.satellite,
+                                         gpstk::CarrierBand::L1),
+                   docEps);
+      break;
+   }
+   TURETURN();
+}
+
+
 int main(int argc, char *argv[])
 {
    NeQuickIonoData_T testClass;
    unsigned errorTotal = 0;
 
-   errorTotal += testClass.constructorTest();
-   errorTotal += testClass.getEffIonoLevelTest();
-   errorTotal += testClass.constructor2Test();
-   errorTotal += testClass.legendreTest();
-   errorTotal += testClass.heightTest();
-   errorTotal += testClass.exosphereAdjustTest();
-   errorTotal += testClass.peakAmplitudesTest();
-   errorTotal += testClass.effSolarZenithAngleTest();
-   errorTotal += testClass.thicknessTest();
+   // errorTotal += testClass.constructorTest();
+   // errorTotal += testClass.getEffIonoLevelTest();
+   // errorTotal += testClass.constructor2Test();
+   // errorTotal += testClass.legendreTest();
+   // errorTotal += testClass.heightTest();
+   // errorTotal += testClass.exosphereAdjustTest();
+   // errorTotal += testClass.peakAmplitudesTest();
+   // errorTotal += testClass.effSolarZenithAngleTest();
+   // errorTotal += testClass.thicknessTest();
+   errorTotal += testClass.getTECTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

@@ -57,6 +57,9 @@
 #include "Xvt.hpp"
 #include "Angle.hpp"
 
+// test class forward declaration
+class Position_T;
+
 namespace gpstk
 {
       /// @ingroup Geodetic
@@ -953,9 +956,9 @@ namespace gpstk
           *   coordinates.
           * @param[in] target The orbital satellite position.
           * @param[out] delta The angle between CP1 and CP2.
-          * @return the zenith angle between this and target in radians.
+          * @return the zenith angle between this and target.
           */
-      double getZenithAngle(const Position& target, AngleReduced& delta) const;
+      Angle getZenithAngle(const Position& target, AngleReduced& delta) const;
 
          /** Compute the zenith angle &zeta; between
           * P1=(phi1,lambda1,r1) and P2=(phi2,lambda2,r2).  With the
@@ -971,12 +974,12 @@ namespace gpstk
           *   surface observer (units must be consistent with r2).
           * @param[in] r2 The distance from Earth center of the
           *   surface observer (units must be consistent with r1).
-          * @return the zenith angle between this and target in radians.
+          * @return the zenith angle between this and target.
           */
-      static double getZenithAngle(const Angle& phi1, const Angle& lambda1,
-                                   const Angle& phi2, const Angle& lambda2,
-                                   double r1, double r2,
-                                   AngleReduced& delta);
+      static Angle getZenithAngle(const Angle& phi1, const Angle& lambda1,
+                                  const Angle& phi2, const Angle& lambda2,
+                                  double r1, double r2,
+                                  AngleReduced& delta);
 
          /** Compute the ray-perigee position for the ray between this
           * position and another.
@@ -997,6 +1000,34 @@ namespace gpstk
           * @return the ray-perigee geodetic position on the ellipsoid surface.
           */
       Position getRayPerigee(const Position& target) const;
+
+         /** Compute the coordinates at a given distance along a path
+          * between two positions.
+          * @param[in] dist The distance in METERS along the path
+          *   between this and target.
+          * @param[in] target The target position of the ray (e.g. ray
+          *   perigee coordinates).
+          * @return The position along the ray.
+          */
+      Position getRayPosition(double dist, const Position& target) const;
+
+         /** This is a bit of a kludge to deal with the fact that
+          * Position doesn't store the actual ellipsoid model but
+          * rather a couple of terms from it.  It works by copying
+          * those terms from another object into this one. 
+          * @param[in] src The Position object from which to copy
+          *   ellipsoid model parameters.
+          * @post AEarth=src.AEarth and eccSquared=src.eccSquared. */
+      void copyEllipsoidModelFrom(const Position& src)
+      {
+         AEarth = src.AEarth;
+         eccSquared = src.eccSquared;
+      }
+
+         /** Return the Earth semi-major axis (in meters) currently
+          * used for coordinate conversion */
+      double getAEarth() const
+      { return AEarth; }
 
          // ----------- Part 12: private functions and member data ------------
          //
@@ -1043,6 +1074,8 @@ namespace gpstk
       double tolerance;
       
       ReferenceFrame refFrame;
+
+      friend class ::Position_T;
 
    };   // end class Position
 
