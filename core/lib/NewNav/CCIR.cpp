@@ -50,61 +50,6 @@ constexpr double UTHourEpsilon = 1.0e-20;
 /// Epsilon for effective ionisation level comparison
 constexpr double AZEpsilon = 1.0e-10;
 
-/*
-ITU_F2_layer_coefficients_fourier_test
-   F2_layer_fourier_coefficients_init
-   F2_layer_fourier_coefficients_get
-      F2_layer_fourier_coefficients_interpolate
-         set_parameters <- appears to validate a cache.
-            solar_activity_is_effective_ionisation_level_equal
-            NeQuickG_time_utc_is_equal
-         interpolate_F2
-         interpolate_Fm3
-      F2_layer_fourier_coefficients_get_impl
-
-get_TEC
-   get_total_electron_content (NeQuickG_JRC)
-      check_handle
-      get_solar_activity
-         get_modip_impl
-            input_data_to_km
-            modip_get
-         solar_activity_get
-            solar_activity_get_effective_ionisation_level_in_sfu
-               Az_calc
-               check_boundaries
-            NeQuickG_Az_solar_activity_get_sun_spot_effective_count
-      ray_get
-      NeQuickG_integrate
-
-      ray_slant_get_electron_density
-         get_current_position
-         iono_profile_get
-            modip_get
-            iono_profile_get_critical_freqs
-               E_layer_get_critical_freq_MHz
-               F2_layer_get_critical_freq_MHz
-               F1_layer_get_critical_freq_MHz
-            iono_profile_get_peaks
-               iono_profile_get_peak_heights
-               iono_profile_get_peak_thicknesses
-               iono_profile_get_peak_amplitudes
-            iono_profile_get_exosphere_contribution
-               F2_layer_exosphere_adjust
-         electron_density_get
-            top_side (OR)
-               NeQuickG_exp
-               NeQuickG_square
-            bottom_side (OR)
-               bottom_side_get_B_params
-               bottom_side_get_exp_params
-               bottom_side_low
-                  get_ds_param
-                  NeQuickG_exp
-               bottom_side_high
-               bottom_side_get_s_params
- */
-
 namespace gpstk
 {
    CCIR ::
