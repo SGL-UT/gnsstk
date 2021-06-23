@@ -220,7 +220,7 @@ namespace gpstk
                const double& b,
                const double& c,
                CoordinateSystem s = Cartesian,
-               EllipsoidModel *ell = NULL,
+               const EllipsoidModel *ell = nullptr,
                ReferenceFrame frame = ReferenceFrame::Unknown);
 
          /**
@@ -235,7 +235,7 @@ namespace gpstk
           */
       Position(const double ABC[3],
                CoordinateSystem s = Cartesian,
-               EllipsoidModel *ell = NULL,
+               const EllipsoidModel *ell = nullptr,
                ReferenceFrame frame = ReferenceFrame::Unknown);
 
          /**
@@ -250,7 +250,7 @@ namespace gpstk
           */
       Position(const Triple& ABC,
                CoordinateSystem s = Cartesian,
-               EllipsoidModel *ell = NULL,
+               const EllipsoidModel *ell = nullptr,
                ReferenceFrame frame = ReferenceFrame::Unknown);
 
          /**
@@ -546,7 +546,7 @@ namespace gpstk
       Position& setGeodetic(const double lat,
                             const double lon,
                             const double ht,
-                            const EllipsoidModel *ell = NULL);
+                            const EllipsoidModel *ell = nullptr);
 
          /**
           * Set the Position given geocentric coordinates; system is
@@ -1045,7 +1045,7 @@ namespace gpstk
                       const double b,
                       const double c,
                       CoordinateSystem s = Cartesian,
-                      EllipsoidModel *ell = NULL,
+                      const EllipsoidModel *ell = nullptr,
                       ReferenceFrame frame = ReferenceFrame::Unknown);
 
          /* Values of the coordinates, defined for each system as follows;

@@ -193,18 +193,19 @@ namespace gpstk
                  CarrierBand band) const
    {
       DEBUGTRACE_FUNCTION();
-         // throw an exception to prevent the use of this method,
-         // which requires the implementation of a TEC integrator.
-      GPSTK_THROW(Exception("NeQuickIonoData::getCorrection is incomplete"));
-      return 0;
+      double tec = getTEC(when, rxgeo, svgeo);
+         // Obtain correction by converting STEC to code delay
+      double f = getFrequency(band);
+      double d1gr = tec * 40.3/(f*f);                                   // eq.1
+      return d1gr;
    }
 
 
    double NeQuickIonoData ::
    getTEC(const CommonTime& when,
           const Position& rxgeo,
-          const Position& svgeo,
-          CarrierBand band) const
+          const Position& svgeo)
+      const
    {
       DEBUGTRACE_FUNCTION();
          // Get the time in civil units for later math
@@ -212,10 +213,6 @@ namespace gpstk
          // Obtain receiver modified dip latitude
       MODIP modip;
       CCIR ccir;
-//      double tec = getTEC(when, rxgeo, svgeo);
-         // Obtain correction by converting STEC to code delay
-//      double f = getFrequency(band);
-//      double d1gr = tec * 40.3/(f*f);                                   // eq.1
          // pre-determine in a somewhat clumsy, but probably faster
          // method than elevation() if the satellite is directly above
          // the station.
@@ -224,7 +221,7 @@ namespace gpstk
            ABOVE_ELEV_EPSILON) &&
           (fabs(svgeo.longitude()-rxgeo.longitude()) < ABOVE_ELEV_EPSILON));
       Position Pp(rxgeo.getRayPerigee(svgeo));
-      IntegrationParameters ip(rxgeo, svgeo, Pp);
+      IntegrationParameters ip(rxgeo, svgeo, Pp, vertical);
       DEBUGTRACE("computing azu");
       double modip_u = modip.stModip(rxgeo);
       double azu = getEffIonoLevel(modip_u);
@@ -247,17 +244,20 @@ namespace gpstk
       DEBUGTRACE("pPosition->longitude.cos=" << scientific << debugAngle.cos());
       DEBUGTRACE("pPosition->height()=" << scientific << (rxgeo.height() / 1000.0));
       DEBUGTRACE("pPosition->radius_km()=" << scientific << (rxgeo.radius() / 1000.0));
+      DEBUGTRACE("# pContext->modip_degree=" << scientific << modip_u);
+      DEBUGTRACE("# a_sfu[0]=" << scientific << ai[0]);
+      DEBUGTRACE("# a_sfu[1]=" << scientific << ai[1]);
+      DEBUGTRACE("# a_sfu[2]=" << scientific << ai[2]);
       double rv = 0;
          // must have at least two slant heights to make an interval...
-      if (ip.slantHeights.size() > 1)
+      if (ip.integHeights.size() > 1)
       {
-         for (unsigned i = 1; i < ip.slantHeights.size(); i++)
+         for (unsigned i = 1; i < ip.integHeights.size(); i++)
          {
-            rv += integrateGaussKronrod(ip.slantHeights[i-1],
-                                        ip.slantHeights[i],
-                                        rxgeo, svgeo, modip, ccir, civ, azu,
-                                        ip.intThresh[i-1],
-                                        vertical);
+            rv += integrateGaussKronrod(ip.integHeights[i-1],
+                                        ip.integHeights[i],
+                                        rxgeo, svgeo, modip, modip_u, ccir, civ,
+                                        azu, ip.intThresh[i-1], vertical);
          }
       }
          // scale as per eq.151 and eq.202
@@ -271,10 +271,6 @@ namespace gpstk
       const
    {
       DEBUGTRACE_FUNCTION();
-      DEBUGTRACE("modip_degree=" << modip_u);
-      DEBUGTRACE("a_sfu[0]=" << ai[0]);
-      DEBUGTRACE("a_sfu[1]=" << ai[1]);
-      DEBUGTRACE("a_sfu[2]=" << ai[2]);
          // Obtain Effective Ionisation Level Azu (also eq.2)
       double azu = ai[0] + ai[1]*modip_u + ai[2]*modip_u*modip_u;       // eq.18
       if ((fabs(ai[0]) < COEFF_THRESH) &&                               // eq.17
@@ -293,70 +289,39 @@ namespace gpstk
 
 
    double NeQuickIonoData ::
-   getSTEC(double dist, const Position& rxgeo, const Position& svgeo,
-           const MODIP& modip, CCIR& ccirData, const CivilTime& when,
-           double azu)
+   getSED(double dist, const Position& rxgeo, const Position& svgeo,
+          const MODIP& modip, CCIR& ccirData, const CivilTime& when,
+          double azu)
       const
    {
       DEBUGTRACE_FUNCTION();
       DEBUGTRACE("height_km=" << setprecision(15) << dist);
       Position current(rxgeo.getRayPosition(dist * 1000.0, svgeo));
       double modip_u = modip.stModip(current);
-         // I was under the impression that this needed to be
-         // recomputed at each integration step, but that's not what
-         // the EU code does.
-//      double azu = getEffIonoLevel(modip_u);
+      DEBUGTRACE("constructing SED iono");
       ModelParameters iono(modip_u, current, azu, ccirData, when);
-      // DEBUGTRACE("fAzr=" << setprecision(15) << scientific << iono.fAzr);
-      // DEBUGTRACE("ffoE=" << setprecision(15) << scientific << iono.ffoE);
-      // DEBUGTRACE("fNmE=" << setprecision(15) << scientific << iono.fNmE);
-      // DEBUGTRACE("fBEtop=" << setprecision(15) << scientific << iono.fBEtop);
-      // DEBUGTRACE("fA[0]=" << setprecision(15) << scientific << iono.fA[0]);
-      // DEBUGTRACE("fA[1]=" << setprecision(15) << scientific << iono.fA[1]);
-      // DEBUGTRACE("fA[2]=" << setprecision(15) << scientific << iono.fA[2]);
-      // DEBUGTRACE("ffoF1=" << setprecision(15) << scientific << iono.ffoF1);
-      // DEBUGTRACE("fNmF1=" << setprecision(15) << scientific << iono.fNmF1);
-      // DEBUGTRACE("fhmF1=" << setprecision(15) << scientific << iono.fhmF1);
-      // DEBUGTRACE("fB1top=" << setprecision(15) << scientific << iono.fB1top);
-      // DEBUGTRACE("fB1bot=" << setprecision(15) << scientific << iono.fB1bot);
-      // DEBUGTRACE("ffoF2=" << setprecision(15) << scientific << iono.ffoF2);
-      // DEBUGTRACE("fNmF2=" << setprecision(15) << scientific << iono.fNmF2);
-      // DEBUGTRACE("fhmF2=" << setprecision(15) << scientific << iono.fhmF2);
-      // DEBUGTRACE("fB2bot=" << setprecision(15) << scientific << iono.fB2bot);
-      // DEBUGTRACE("fM3000F2=" << setprecision(15) << scientific << iono.fM3000F2);
-      // DEBUGTRACE("fH0=" << setprecision(15) << scientific << iono.fH0);
-      // DEBUGTRACE("fXeff.rad=" << setprecision(15) << scientific << iono.fXeff.rad());
-      // DEBUGTRACE("fXeff.degree=" << setprecision(15) << scientific << iono.fXeff.deg());
-      // DEBUGTRACE("fXeff.sin=" << setprecision(15) << scientific << iono.fXeff.sin());
-      // DEBUGTRACE("fXeff.cos=" << setprecision(15) << scientific << iono.fXeff.cos());
       double electronDensity = iono.electronDensity(current);
-      DEBUGTRACE("current_position.radius_km=" << setprecision(15) << fixed << current.radius()/1000.0);
-      DEBUGTRACE("current_position.height=" << setprecision(15) << fixed << current.height()/1000.0);
-      Angle latitude(current.geodeticLatitude(),Angle::Deg);
-      Angle longitude(current.longitude(),Angle::Deg);
-      DEBUGTRACE("current_position.latitude.rad=" << setprecision(15) << fixed << latitude.rad());
-      DEBUGTRACE("current_position.latitude.degree=" << setprecision(15) << fixed << latitude.deg());
-      DEBUGTRACE("current_position.latitude.sin=" << setprecision(15) << fixed << latitude.sin());
-      DEBUGTRACE("current_position.latitude.cos=" << setprecision(15) << fixed << latitude.cos());
-      DEBUGTRACE("current_position.longitude.rad=" << setprecision(15) << fixed << longitude.rad());
-      DEBUGTRACE("current_position.longitude.degree=" << setprecision(15) << fixed << longitude.deg());
-      DEBUGTRACE("current_position.longitude.sin=" << setprecision(15) << fixed << longitude.sin());
-      DEBUGTRACE("current_position.longitude.cos=" << setprecision(15) << fixed << longitude.cos());
-      DEBUGTRACE("pContext->modip_degree=" << setprecision(15) << fixed << modip_u);
-      DEBUGTRACE("electron density=" << setprecision(15) << scientific << electronDensity);
+      DEBUGTRACE("electron density=" << setprecision(15) << scientific
+                 << electronDensity);
       return electronDensity;
    }
 
 
    double NeQuickIonoData ::
-   getVTEC()
+   getVED(double dist, const Position& rxgeo, const Position& svgeo,
+          double modip_u, CCIR& ccirData, const CivilTime& when,
+          double azu)
       const
    {
       DEBUGTRACE_FUNCTION();
-         // for each integration point in the path, call NeQuick
-         // routine to obtain electron density
-         // Integrate VTEC for all points in the path.
-      return 0;
+      DEBUGTRACE("height_km=" << setprecision(15) << dist);
+         // remember that dist is a height for VED, and that it's in km
+      Position current(rxgeo.geocentricLatitude(), rxgeo.longitude(), dist*1000,
+                       Position::Geodetic, &elModel);
+      DEBUGTRACE("constructing VED iono");
+      ModelParameters iono(modip_u, current, azu, ccirData, when);
+      double electronDensity = iono.electronDensity(current);
+      return electronDensity;
    }
 
 
@@ -384,9 +349,8 @@ namespace gpstk
    {
       DEBUGTRACE_FUNCTION();
       int seas;
+      DEBUGTRACE("pos = " << pos);
       DEBUGTRACE("solar_12_month_running_mean_of_2800_MHZ_noise_flux=" << az);
-         /** @todo maybe pass Azr instead of Az, if Az/Azr are constant
-          * throughout the integration */
          // get the effective sunspot number
       fAzr = sqrt(167273+(az-DEFAULT_IONO_LEVEL)*1123.6)-408.99;        // eq.19
       switch (when.month)
@@ -416,7 +380,8 @@ namespace gpstk
       double phi = pos.geodeticLatitude();
       double lambda = pos.longitude();
       DEBUGTRACE("power=" << (0.3 * phi));
-      DEBUGTRACE("pSolar_activity->effective_ionisation_level_sfu=" << az);
+      DEBUGTRACE("# pSolar_activity->effective_ionisation_level_sfu="
+                 << scientific << az);
       double ee = neExp(0.3 * phi);                                     //eq.33
       double seasp = (seas * (ee-1))/(ee+1);                            //eq.34
       double term1 = (1.112-0.019*seasp);
@@ -433,7 +398,7 @@ namespace gpstk
       {
          ffoF1 = 1.4 * ffoE;
       }
-         /// @todo figure out what is meant by "too close to foF2"
+         /// @todo figure out what is meant by "too close to foF2" in eq.37
       if (ffoF1 < CRIT_FREQ_THRESH)
       {
          ffoF1 = 0.0;
@@ -452,7 +417,7 @@ namespace gpstk
       DEBUGTRACE("seasp=" << seasp);
          // Compute the fourier time series for foF2 and M(3000)F2
       ccir.fourier(when, fAzr);
-      legendre(modip_u, when, pos);
+      legendre(modip_u, pos);
       fNmF2 = FREQ2NE_D * ffoF2 * ffoF2;                                //eq.77
          // Compute peak electron density height for each layer
       height();
@@ -471,8 +436,8 @@ namespace gpstk
            fNmE(std::numeric_limits<double>::quiet_NaN()),
            fBEtop(std::numeric_limits<double>::quiet_NaN()),
            fA{std::numeric_limits<double>::quiet_NaN(),
-              std::numeric_limits<double>::quiet_NaN(),
-              std::numeric_limits<double>::quiet_NaN()},
+         std::numeric_limits<double>::quiet_NaN(),
+         std::numeric_limits<double>::quiet_NaN()},
            ffoF1(std::numeric_limits<double>::quiet_NaN()),
            fNmF1(std::numeric_limits<double>::quiet_NaN()),
            fhmF1(std::numeric_limits<double>::quiet_NaN()),
@@ -537,7 +502,7 @@ namespace gpstk
 
 
    void NeQuickIonoData::ModelParameters ::
-   legendre(double modip_u, const CivilTime& when, const Position& pos)
+   legendre(double modip_u, const Position& pos)
    {
       DEBUGTRACE_FUNCTION();
          // sine modified dip latitude coefficients
@@ -557,6 +522,10 @@ namespace gpstk
       double modip_uRad = modip_u * DEG2RAD;
       double phiRad = pos.geodeticLatitude() * DEG2RAD;
       double lambdaRad = pos.longitude() * DEG2RAD;
+      DEBUGTRACE("lambdaRad = " << scientific << lambdaRad);
+      DEBUGTRACE("lat.rad = " << scientific << phiRad);
+      DEBUGTRACE("lat.deg = " << scientific << pos.geodeticLatitude());
+      DEBUGTRACE("cos_lat = " << scientific << cos(phiRad));
          // compute sine modififed dip latitude coefficients
       for (unsigned k = 1; k<F2LayerMODIPCoeffCount; k++)
       {
@@ -569,7 +538,7 @@ namespace gpstk
          P[n] = P[n-1] * cos(phiRad);                                   //eq.58
          S[n-1] = sin(n * lambdaRad);                                   //eq.59
          C[n-1] = cos(n * lambdaRad);                                   //eq.60
-         DEBUGTRACE("lambda[" << n << "]=" << scientific << ((n+1)*lambdaRad));
+         DEBUGTRACE("lambda[" << n << "]=" << scientific << (n*lambdaRad));
          DEBUGTRACE("S[" << n << "]=" << scientific << S[n]);
          DEBUGTRACE("C[" << n << "]=" << scientific << C[n]);
       }
@@ -589,12 +558,15 @@ namespace gpstk
          {
             ffoF2 += (ccir.getCF2(K[n]+2*k) * C[n-1] +                  //eq.67
                       ccir.getCF2(K[n]+2*k+1) * S[n-1]) * M[k] * P[n];
-            DEBUGTRACE("M[" << k << "]=" << scientific << M[k] << "  lambda="
-                       << P[n] << "  CF2[" << (K[n]+2*k) << "]="
-                       << ccir.getCF2(K[n]+2*k) << "  C[" << (n-1) << "]="
-                       << C[n-1] << "  CF2[" << (K[n]+2*k+1) << "]="
-                       << ccir.getCF2(K[n]+2*k+1) << "  S[" << (n-1) << "]="
-                       << S[n-1] << "  parameter=" << ffoF2);
+            DEBUGTRACE("M[" << k << "]=" << scientific << M[k]
+                       << "  lat_coeff=" << P[n]
+                       << "  Fourier_coeff[" << (K[n]+2*k) << "]="
+                       << ccir.getCF2(K[n]+2*k)
+                       << "  C[" << (n-1) << "]=" << C[n-1]
+                       << "  Fourier_coeff[" << (K[n]+2*k+1) << "]="
+                       << ccir.getCF2(K[n]+2*k+1)
+                       << "  S[" << (n-1) << "]=" << S[n-1]
+                       << "  parameter=" << ffoF2);
          }
       }
          // initialize higher order terms to zero before summation
@@ -615,6 +587,15 @@ namespace gpstk
          {
             fM3000F2 += (ccir.getCM3(H[n]+2*k) * C[n-1] +               //eq.75
                          ccir.getCM3(H[n]+2*k+1) * S[n-1]) * M[k] * P[n];
+            DEBUGTRACE("M[" << k << "]=" << scientific << M[k]
+                       << "  lat_coeff=" << P[n]
+                       << "  Fourier_coeff[" << (H[n]+2*k) << "]="
+                       << ccir.getCM3(H[n]+2*k)
+                       << "  C[" << (n-1) << "]=" << C[n-1]
+                       << "  Fourier_coeff[" << (H[n]+2*k+1) << "]="
+                       << ccir.getCM3(H[n]+2*k+1)
+                       << "  S[" << (n-1) << "]=" << S[n-1]
+                       << "  parameter=" << fM3000F2);
          }
       }
    }
@@ -660,7 +641,7 @@ namespace gpstk
       double k = 0;
       double ka = 0;
       DEBUGTRACE("pTime->month=" << month);
-      DEBUGTRACE("pSolar_activity->effective_sun_spot_count=" << fAzr);
+      DEBUGTRACE("# pSolar_activity->effective_sun_spot_count=" << scientific << fAzr);
       switch (month)
       {
          case 4:
@@ -837,95 +818,103 @@ namespace gpstk
 
    NeQuickIonoData::IntegrationParameters ::
    IntegrationParameters(const Position& rx, const Position& sv,
-                         const Position& Pp)
+                         const Position& Pp, bool vertical)
    {
       DEBUGTRACE_FUNCTION();
       GalileoIonoEllipsoid elModel;
-      double rp = Pp.radius() / 1000.0; // ray perigee radius in km
-      ip1 = elModel.a_km() + INTEGRATION_FIRST_POINT;
-      ip2 = elModel.a_km() + INTEGRATION_SECOND_POINT;
-         // minimum radius of the station must be the surface of the "ellipsoid"
-         // radius is converted from m to km
-      double r1 = std::max(elModel.a_km(), rx.radius() / 1000.0);
-         // same as above, but for satellite, which we assume isn't underground
-      double r2 = sv.radius() / 1000.0;
-      s1 = sqrt(fabs(r1*r1 - rp*rp));
-      sa = sqrt(fabs(ip1*ip1 - rp*rp));                                 //eq.188
-      sb = sqrt(fabs(ip2*ip2 - rp*rp));                                 //eq.189
-      s2 = sqrt(fabs(r2*r2 - rp*rp));
-         // populate the vector with all the slant heights that will
-         // be used as integration intervals.
-      slantHeights.push_back(s1);
-      if ((sa > s1) && (sa < s2))
+      if (vertical)
       {
-         slantHeights.push_back(sa);
-         intThresh.push_back(INTEG_EPSILON_S1_SA);
-      }
-      if ((sb > s1) && (sb < s2))
-      {
-         slantHeights.push_back(sb);
-         intThresh.push_back(INTEG_EPSILON_SA_S2);
-      }
-      slantHeights.push_back(s2);
-         // If intThresh is empty at this point, we know s1 and s2 are
-         // both below sa, so use the higher-precision epsilon.
-         // Otherwise, the s1 to s2 ray crosses one or both of sa,sb,
-         // so use the lower-precision epsilon.
-      if (intThresh.empty())
-      {
-         intThresh.push_back(INTEG_EPSILON_S1_SA);
+            // minimum height of station is 0.
+         double h1 = std::max(0.0, rx.height() / 1000.0);
+         double ha = INTEGRATION_FIRST_POINT;
+         double hb = INTEGRATION_SECOND_POINT;
+         double h2 = sv.height() / 1000.0;
+            // populate the vector with all the heights that will be
+            // used as integration intervals.
+         integHeights.push_back(h1);
+         if ((ha > h1) && (ha < h2))
+         {
+            integHeights.push_back(ha);
+            intThresh.push_back(INTEG_EPSILON_S1_SA);
+         }
+         if ((hb > h1) && (hb < h2))
+         {
+            integHeights.push_back(hb);
+            intThresh.push_back(INTEG_EPSILON_SA_S2);
+         }
+         integHeights.push_back(h2);
+            // If intThresh is empty at this point, we know h1 and h2 are
+            // both below ha, so use the higher-precision epsilon.
+            // Otherwise, the h1 to h2 ray crosses one or both of ha,hb,
+            // so use the lower-precision epsilon.
+         if (intThresh.empty())
+         {
+            intThresh.push_back(INTEG_EPSILON_S1_SA);
+         }
+         else
+         {
+            intThresh.push_back(INTEG_EPSILON_SA_S2);
+         }         
+         DEBUGTRACE("h1 = " << h1);
+         DEBUGTRACE("ha = " << ha);
+         DEBUGTRACE("hb = " << hb);
+         DEBUGTRACE("h2 = " << h2);
       }
       else
       {
-         intThresh.push_back(INTEG_EPSILON_SA_S2);
-      }         
-      DEBUGTRACE("s1 = " << s1);
-      DEBUGTRACE("sa = " << sa);
-      DEBUGTRACE("sb = " << sb);
-      DEBUGTRACE("s2 = " << s2);
-      DEBUGTRACE("slantHeights.size() = " << slantHeights.size());
-      DEBUGTRACE("intThresh.size() = " << intThresh.size());
-   }
-
-
-   double NeQuickIonoData ::
-   integrateGauss(double g1, double g2)
-   {
-      DEBUGTRACE_FUNCTION();
-      double gn1 = 0.0, gn2 = 0.0;
-         // Integrate TEC for all points in the path using the Gauss
-         // algorithm as described in section 2.5.8.2.8 of Galileo
-         // Ionospheric Model.
-      int n = 8;                                                        //eq.194
-      bool done = false;
-      while (!done)
-      {
-         double dn = (g2 - g1) / n;                                     //eq.195
-         double g = tan30 * dn;                                         //eq.196
-         double y = g1 + ((dn - g) / 2.0);                              //eq.197
-         gn2 = 0.0;
-         for (unsigned i = 0; i < n; i++)                               //eq.198
+         double rp = Pp.radius() / 1000.0; // ray perigee radius in km
+         double ip1 = elModel.a_km() + INTEGRATION_FIRST_POINT;
+         double ip2 = elModel.a_km() + INTEGRATION_SECOND_POINT;
+            // minimum radius of the station must be the surface of
+            // the "ellipsoid" radius is converted from m to km
+         double r1 = std::max(elModel.a_km(), rx.radius() / 1000.0);
+            // same as above, but for satellite, which we assume isn't
+            // underground
+         double r2 = sv.radius() / 1000.0;
+         double s1 = sqrt(fabs(r1*r1 - rp*rp));
+         double sa = sqrt(fabs(ip1*ip1 - rp*rp));                       //eq.188
+         double sb = sqrt(fabs(ip2*ip2 - rp*rp));                       //eq.189
+         double s2 = sqrt(fabs(r2*r2 - rp*rp));
+            // populate the vector with all the slant heights that will
+            // be used as integration intervals.
+         integHeights.push_back(s1);
+         if ((sa > s1) && (sa < s2))
          {
-               /// @todo change sqrt below to the actual function
-            gn2 += sqrt(y + i*dn) + sqrt(y + i*dn + g);
+            integHeights.push_back(sa);
+            intThresh.push_back(INTEG_EPSILON_S1_SA);
          }
-         gn2 *= (dn/2.0);
-         if (fabs(gn1-gn2) > (INTEG_EPSILON * fabs(gn1)))               //eq.201
+         if ((sb > s1) && (sb < s2))
          {
-            n *= 2.0;                                                   //eq.199
-            gn1 = gn2;                                                  //eq.200
+            integHeights.push_back(sb);
+            intThresh.push_back(INTEG_EPSILON_SA_S2);
          }
+         integHeights.push_back(s2);
+            // If intThresh is empty at this point, we know s1 and s2 are
+            // both below sa, so use the higher-precision epsilon.
+            // Otherwise, the s1 to s2 ray crosses one or both of sa,sb,
+            // so use the lower-precision epsilon.
+         if (intThresh.empty())
+         {
+            intThresh.push_back(INTEG_EPSILON_S1_SA);
+         }
+         else
+         {
+            intThresh.push_back(INTEG_EPSILON_SA_S2);
+         }
+         DEBUGTRACE("s1 = " << s1);
+         DEBUGTRACE("sa = " << sa);
+         DEBUGTRACE("sb = " << sb);
+         DEBUGTRACE("s2 = " << s2);
       }
-      double rv = (gn2 + ((gn2-gn1)/15)) * 1e-13;                       //eq.202
-      DEBUGTRACE("rv=" << rv);
-      return rv;
+      DEBUGTRACE("integHeights.size() = " << integHeights.size());
+      DEBUGTRACE("intThresh.size() = " << intThresh.size());
    }
 
 
    double NeQuickIonoData ::
    integrateGaussKronrod(double heightPt1, double heightPt2,
                          const Position& rxgeo, const Position& svgeo,
-                         const MODIP& modip, CCIR& ccirData,
+                         const MODIP& modip, double modipSta, CCIR& ccirData,
                          const CivilTime& when, double azu, double tolerance,
                          bool vertical, unsigned recursionLevel)
       const
@@ -1004,13 +993,13 @@ namespace gpstk
          DEBUGTRACE("i=" << i << "  x=" << x);
          if (vertical)
          {
-            y = getVTEC();
+            y = getVED(x, rxgeo, svgeo, modipSta, ccirData, when, azu);
          }
          else
          {
-            y = getSTEC(x, rxgeo, svgeo, modip, ccirData, when, azu);
+            y = getSED(x, rxgeo, svgeo, modip, ccirData, when, azu);
          }
-         DEBUGTRACE("GKI TEC = " << scientific << y);
+         DEBUGTRACE("GKI ED = " << scientific << y);
             // Accumulate on to the k15 total
          intk += y * wi[i];
          if (i % 2)
@@ -1040,11 +1029,11 @@ namespace gpstk
             // Result is not within tolerance.  Split portion into
             // equal halves and recurse.
          rv = integrateGaussKronrod(heightPt1, heightPt1 + h2, rxgeo, svgeo,
-                                    modip, ccirData, when, azu,
+                                    modip, modipSta, ccirData, when, azu,
                                     tolerance, vertical, recursionLevel+1);
          DEBUGTRACE("pResult(4) = " << scientific << rv);
          rv += integrateGaussKronrod(heightPt1 + h2, heightPt2, rxgeo, svgeo,
-                                     modip, ccirData, when, azu,
+                                     modip, modipSta, ccirData, when, azu,
                                      tolerance, vertical, recursionLevel+1);
          DEBUGTRACE("pResult(5) = " << scientific << rv);
       }

@@ -109,7 +109,7 @@ namespace gpstk
                       const double& b,
                       const double& c,
                       Position::CoordinateSystem s,
-                      EllipsoidModel *ell,
+                      const EllipsoidModel *ell,
                       ReferenceFrame frame)
    {
       try {
@@ -122,7 +122,7 @@ namespace gpstk
 
    Position::Position(const double ABC[3],
                       CoordinateSystem s,
-                      EllipsoidModel *ell,
+                      const EllipsoidModel *ell,
                       ReferenceFrame frame)
    {
       double a=ABC[0];
@@ -138,7 +138,7 @@ namespace gpstk
 
    Position::Position(const Triple& ABC,
                       CoordinateSystem s,
-                      EllipsoidModel *ell,
+                      const EllipsoidModel *ell,
                       ReferenceFrame frame)
    {
       double a=ABC[0];
@@ -1551,8 +1551,8 @@ namespace gpstk
       delta.setValue(sin(phi1)*sin(phi2) +                              //eq.153
                      cos(phi1)*cos(phi2)*cos(lambda2-lambda1),
                      AngleReduced::Cos);
-      DEBUGTRACE("delta.sin=" << delta.sin());
-      DEBUGTRACE("delta.cos=" << delta.cos());
+      DEBUGTRACE("delta.sin=" << scientific << delta.sin());
+      DEBUGTRACE("delta.cos=" << scientific << delta.cos());
       return Angle(atan2(sin(delta),cos(delta) - (r1/r2)),              //eq.155
                    AngleReduced::Rad);
    }
@@ -1579,9 +1579,9 @@ namespace gpstk
       AngleReduced delta;
       Angle zeta = getZenithAngle(phi1,lambda1,phi2,lambda2,r1,r2,delta);
       double rp = r1 * sin(zeta);                                       //eq.156
-      DEBUGTRACE(setprecision(20) << "pStation_position->radius_km=" << r1);
-      DEBUGTRACE("pZenith_angle->sin=" << sin(zeta));
-      DEBUGTRACE("pRay->slant.perigee_radius_km=" << rp);
+      DEBUGTRACE(setprecision(20) << "pStation_position->radius_km=" << scientific << r1);
+      DEBUGTRACE("pZenith_angle->sin=" << scientific << sin(zeta));
+      DEBUGTRACE("pRay->slant.perigee_radius_km=" << scientific << rp);
       Angle phiP, lambdaP;
       if (fabs(fabs(phi1.deg())-90) < 1e-10)
       {
@@ -1624,22 +1624,22 @@ namespace gpstk
       Angle dLambda(lambda2 - lambdap);
       AngleReduced psi; ///< Great circle angle from ray-perigee to satellite
       AngleReduced sigmap; ///< azimuth of satellite as seen from ray-perigee pp
-      DEBUGTRACE("pRay->latitude.rad=" << phip.rad());
-      DEBUGTRACE("pRay->latitude.degree=" << phip.deg());
-      DEBUGTRACE("pRay->latitude.sin=" << phip.sin());
-      DEBUGTRACE("pRay->latitude.cos=" << phip.cos());
-      DEBUGTRACE("pRay->longitude.rad=" << lambdap.rad());
-      DEBUGTRACE("pRay->longitude.degree=" << lambdap.deg());
-      DEBUGTRACE("pRay->longitude.sin=" << lambdap.sin());
-      DEBUGTRACE("pRay->longitude.cos=" << lambdap.cos());
-      DEBUGTRACE("pRay->satellite_position.latitude.rad=" << phi2.rad());
-      DEBUGTRACE("pRay->satellite_position.latitude.degree=" << phi2.deg());
-      DEBUGTRACE("pRay->satellite_position.latitude.sin=" << phi2.sin());
-      DEBUGTRACE("pRay->satellite_position.latitude.cos=" << phi2.cos());
-      DEBUGTRACE("pRay->satellite_position.longitude.rad=" << lambda2.rad());
-      DEBUGTRACE("pRay->satellite_position.longitude.degree=" << lambda2.deg());
-      DEBUGTRACE("pRay->satellite_position.longitude.sin=" << lambda2.sin());
-      DEBUGTRACE("pRay->satellite_position.longitude.cos=" << lambda2.cos());
+      DEBUGTRACE("# pRay->latitude.rad=" << scientific << phip.rad());
+      DEBUGTRACE("# pRay->latitude.degree=" << scientific << phip.deg());
+      DEBUGTRACE("# pRay->latitude.sin=" << scientific << phip.sin());
+      DEBUGTRACE("# pRay->latitude.cos=" << scientific << phip.cos());
+      DEBUGTRACE("# pRay->longitude.rad=" << scientific << lambdap.rad());
+      DEBUGTRACE("# pRay->longitude.degree=" << scientific << lambdap.deg());
+      DEBUGTRACE("pRay->longitude.sin=" << scientific << lambdap.sin());
+      DEBUGTRACE("pRay->longitude.cos=" << scientific << lambdap.cos());
+      DEBUGTRACE("# pRay->satellite_position.latitude.rad=" << scientific << phi2.rad());
+      DEBUGTRACE("# pRay->satellite_position.latitude.degree=" << scientific << phi2.deg());
+      DEBUGTRACE("# pRay->satellite_position.latitude.sin=" << scientific << phi2.sin());
+      DEBUGTRACE("# pRay->satellite_position.latitude.cos=" << scientific << phi2.cos());
+      DEBUGTRACE("# pRay->satellite_position.longitude.rad=" << scientific << lambda2.rad());
+      DEBUGTRACE("# pRay->satellite_position.longitude.degree=" << scientific << lambda2.deg());
+      DEBUGTRACE("# pRay->satellite_position.longitude.sin=" << scientific << lambda2.sin());
+      DEBUGTRACE("# pRay->satellite_position.longitude.cos=" << scientific << lambda2.cos());
       if (fabs(fabs(phip.deg())-90.0) < 1e-10)
       {
          psi.setValue(fabs(p2.geodeticLatitude()-pp.geodeticLatitude()),//eq.168
@@ -1664,10 +1664,10 @@ namespace gpstk
                                (sin(phi2)-sin(phip)*cos(psi)) /         //eq.175
                                (cos(phip)*sin(psi)));
       }
-      DEBUGTRACE("psi_angle.sin=" << psi.sin());
-      DEBUGTRACE("psi_angle.cos=" << psi.cos());
-      DEBUGTRACE("pRay->slant.azimuth.sin=" << sigmap.sin());
-      DEBUGTRACE("pRay->slant.azimuth.cos=" << sigmap.cos());
+      DEBUGTRACE("# psi_angle.sin=" << scientific << psi.sin());
+      DEBUGTRACE("# psi_angle.cos=" << scientific << psi.cos());
+      DEBUGTRACE("# pRay->slant.azimuth.sin=" << scientific << sigmap.sin());
+      DEBUGTRACE("# pRay->slant.azimuth.cos=" << scientific << sigmap.cos());
       double rp = pp.radius(); // radius in m
          // rs is also in meters now rather than km per the equation,
          // because the Position class prefers meters.  Also computing
@@ -1687,13 +1687,13 @@ namespace gpstk
          // coordinate system conversions done by the user don't give
          // unexpected results
       rv.copyEllipsoidModelFrom(*this);
-      DEBUGTRACE("current_position.radius_km=" << (rs / 1000.0));
-      DEBUGTRACE("current_position.height=" << (rv.height() / 1000.0));
-      DEBUGTRACE("current_position.latitude.rad=" << phis.rad());
-      DEBUGTRACE("current_position.latitude.degree=" << phis.deg());
-      DEBUGTRACE("current_position.latitude.sin=" << phis.sin());
-      DEBUGTRACE("current_position.latitude.cos=" << phis.cos());
-      DEBUGTRACE("current_position.longitude.degree=" << lambdas);
+      DEBUGTRACE("current_position.radius_km=" << scientific << (rs / 1000.0));
+      DEBUGTRACE("current_position.height=" << scientific << (rv.height() / 1000.0));
+      DEBUGTRACE("current_position.latitude.rad=" << scientific << phis.rad());
+      DEBUGTRACE("current_position.latitude.degree=" << scientific << phis.deg());
+      DEBUGTRACE("current_position.latitude.sin=" << scientific << phis.sin());
+      DEBUGTRACE("current_position.latitude.cos=" << scientific << phis.cos());
+      DEBUGTRACE("current_position.longitude.degree=" << scientific << lambdas);
       return rv;
    }
 
@@ -1711,7 +1711,7 @@ namespace gpstk
                   const double b,
                   const double c,
                   Position::CoordinateSystem s,
-                  EllipsoidModel *ell,
+                  const EllipsoidModel *ell,
                   ReferenceFrame frame)
    {
       double bb(b);

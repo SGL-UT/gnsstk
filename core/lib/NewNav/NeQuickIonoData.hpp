@@ -112,10 +112,15 @@ namespace gpstk
                            const Position& svgeo,
                            CarrierBand band) const override;
 
+         /** Get the total electron content between rxgeo and svgeo at
+          * the given time.
+          * @param[in] when The time when the RF signal was received.
+          * @param[in] rxgeo The position of the GNSS receiver's antenna.
+          * @param[in] svgeo The position of the transmitting satellite.
+          * @return The total electron content in TEC units. */
       double getTEC(const CommonTime& when,
                     const Position& rxgeo,
-                    const Position& svgeo,
-                    CarrierBand band) const;
+                    const Position& svgeo) const;
 
          /** a<sub>i</sub> terms of NeQuick model in solar flux units,
           * solar flux units/degree, solar flux
@@ -132,7 +137,7 @@ namespace gpstk
          /** Similar to standard exp() function, but with the exponent
           * clipped to +/- 80, per F2.1.2.3 \cite galileo:iono 
           * @param[in] x The exponent to raise e to.
-          * @param[in] e^x. */
+          * @return e^x. */
       static double neExp(double x);
 
    protected:
@@ -174,23 +179,23 @@ namespace gpstk
 
             /** Compute the solar zenith angle.
              * @param[in] pos The geodetic position of the observer.
-             * @param[in] when The time at which to compute the solar zenith. */
+             * @param[in] when The time at which to compute the solar zenith. 
+             * @return The solar zenith angle. */
          static Angle solarZenithAngle(const Position& pos,
                                        const CivilTime& when);
 
             /** Compute the effective solar zenith angle.
              * @param[in] pos The geodetic position of the observer.
-             * @param[in] when The time at which to compute the solar zenith. */
+             * @param[in] when The time at which to compute the solar zenith.
+             * @return The effective solar zenith angle. */
          static Angle effSolarZenithAngle(const Position& pos,
                                           const CivilTime& when);
 
             /** Compute foF2 and M(3000)F2 by Legendre calculation.
              * @param[in] modip_u Modified dip latitude in degrees.
              * @param[in] pos The geodetic position of the observer.
-             * @post ffoF2, fM3000F2 are set.
-             */
-         void legendre(double modip_u, const CivilTime& when,
-                       const Position& pos);
+             * @post ffoF2, fM3000F2 are set. */
+         void legendre(double modip_u, const Position& pos);
 
             /** Compute hmF2 and hmF1 (maximum density height).
              * @pre ffoE, ffoF2, fM3000F2 must be set.
@@ -238,11 +243,23 @@ namespace gpstk
          static inline double solarGetLongitude(const CivilTime& when);
 
             /** Compute electron density.
-             * @pre fhmF2, fhmF1, fB2bot, fB1top, fB1bot, fBEtop must be set.
-             */
+             * @pre fhmF2, fH0, fNmF2, fBEtop, fhmF1, fB1top, fB1bot,
+             *   fB2bot, fA must be set.
+             * @param[in] pos The position at which to compute electron density.
+             * @return The electron density in TECU. */
          double electronDensity(const Position& pos);
+
+            /** Compute the topside electron density.
+             * @pre fhmF2, fH0, fNmF2 must be set.
+             * @param[in] pos The position at which to compute electron density.
+             * @return The electron density in TECU. */
          double electronDensityTop(const Position& pos);
-            /** @pre fA must be set. */
+
+            /** Compute the bottomside electron density.
+             * @pre fBEtop, fhmF1, fB1top, fB1bot, fhmF2, fB2bot, fA
+             *   must be set.
+             * @param[in] pos The position at which to compute electron density.
+             * @return The electron density in TECU. */
          double electronDensityBottom(const Position& pos);
 
          CCIR &ccir;      ///< Reference to iono model data.
@@ -276,42 +293,95 @@ namespace gpstk
       class IntegrationParameters
       {
       public:
+            /** Compute the integration ranges and thresholds.
+             * @param[in] rx The position of the receiving antenna.
+             * @param[in] sv The position of the transmitting satellite.
+             * @param[in] Pp The ray perigee for the ray from rx to sv.
+             * @param[in] vertical If true, the formula for computing
+             *   heights for integrating over a vertical ray are used.
+             *   If false, the more complicated equations for
+             *   computing integration points for a slant ray are
+             *   used.
+             * @post integHeights and intThresh are filled with values
+             *   to use for integration intervals. */
          IntegrationParameters(const Position& rx, const Position& sv,
-                               const Position& Pp);
-         double ip1; ///< Radius in km at first integration point.
-         double ip2; ///< Radius in km at second integration point.
-         double s1;  ///< Slant height in km of station.
-         double sa;  ///< Slant height in km of first integration point.
-         double sb;  ///< Slant height in km of second integration point.
-         double s2;  ///< Slant height in km of satellite.
+                               const Position& Pp, bool vertical);
             /** A vector containing the set of relevant integration
-             * intervals, which is essentially s1, s2, and sa, sb if
-             * they're in between s1 and s2.  Put another way: the
-             * subset of (s1,s2,sa,sb) that are >= s1 and <= s2.  This
-             * gives us a set of intervals to use for integration that
-             * obviates having functions for each different
-             * condition. */
-         std::vector<double> slantHeights;
-            /** Integration thresholds used for slantHeights.
-             * @note the size of intThresh will be slantHeights.size()-1. */
+             * intervals, which for slant rays is essentially s1, s2,
+             * and sa, sb if they're in between s1 and s2.  Put
+             * another way: the subset of (s1,s2,sa,sb) that are >= s1
+             * and <= s2.  This gives us a set of intervals to use for
+             * integration that obviates having functions for each
+             * different condition. */
+         std::vector<double> integHeights;
+            /** Integration thresholds used for integHeights.
+             * @note the size of intThresh will be integHeights.size()-1. */
          std::vector<double> intThresh;
       };
 
-         /// get slant total electron content
-      double getSTEC(double dist, const Position& rxgeo, const Position& svgeo,
-                     const MODIP& modip, CCIR& ccirData, const CivilTime& when,
-                     double azu)
-         const;
-         /// get vertical total electron content
-      double getVTEC()
+         /** Get the electron density at a distance along a path where
+          * svgeo is not directly overhead rxgeo.
+          * @param[in] dist The height above the ellipsoid in km at
+          *   which to get the electron density.
+          * @param[in] rxgeo The position of the GNSS receiver's antenna.
+          * @param[in] svgeo The position of the transmitting satellite.
+          * @param[in] modip A pre-constructed MODIP object to use.
+          * @param[in] ccirData A pre-constructed CCIR object to use.
+          * @param[in] when The time when the RF signal was received.
+          * @param[in] azu Effective ionization level, in solar flux
+          *   units, at the modified dip latitude of the receiver.
+          * @return The electron density in TECU.
+          */
+      double getSED(double dist, const Position& rxgeo, const Position& svgeo,
+                    const MODIP& modip, CCIR& ccirData, const CivilTime& when,
+                    double azu)
          const;
 
-      static double integrateGauss(double g1, double g2);
+         /** Get the electron density at a distance along a path where
+          * svgeo is directly overhead rxgeo.
+          * @param[in] dist The height above the ellipsoid in km at
+          *   which to get the electron density.
+          * @param[in] rxgeo The position of the GNSS receiver's antenna.
+          * @param[in] svgeo The position of the transmitting satellite.
+          * @param[in] modip_u The modified dip latitude in degrees for rxgeo.
+          * @param[in] ccirData A pre-constructed CCIR object to use.
+          * @param[in] when The time when the RF signal was received.
+          * @param[in] azu Effective ionization level, in solar flux
+          *   units, at the modified dip latitude of the receiver.
+          * @return The electron density in TECU.
+          */
+      double getVED(double dist, const Position& rxgeo, const Position& svgeo,
+                    double modip_u, CCIR& ccirData, const CivilTime& when,
+                    double azu)
+         const;
 
-         /// @todo I think rxgeo/svgeo can be replaced by using Pp directly.
+         /** Perform Gauss-Kronrod integration of the TEC along the
+          * ray between rxgeo and svgeo from heightPt1 to heightPt2.
+          * @param[in] heightPt1 The height above the ellipsoid at
+          *   which integration should start.
+          * @param[in] heightPt2 The height above the ellipsoid at
+          *   which integration should end.
+          * @param[in] rxgeo The position of the GNSS receiver's antenna.
+          * @param[in] svgeo The position of the transmitting satellite.
+          * @param[in] modip A pre-constructed MODIP object to use.
+          * @param[in] modipSta The modified dip latitude in degrees for rxgeo.
+          * @param[in] ccirData A pre-constructed CCIR object to use.
+          * @param[in] when The time when the RF signal was received.
+          * @param[in] azu Effective ionization level, in solar flux
+          *   units, at the modified dip latitude of the receiver.
+          * @param[in] tolerance If the delta between K15 and G7
+          *   integration results is less than this number,
+          *   integration will complete.
+          * @param[in] vertical If true, svgeo is directly overhead
+          *   rxgeo and integration is simplified.
+          * @param[in] recursionLevel integrateGaussKronrod will
+          *   recurse if the results are not within tolerance, up to
+          *   RecursionMax (defined in cpp file) times.
+          * @return The integrated TEC. */
       double integrateGaussKronrod(double heightPt1, double heightPt2,
                                    const Position& rxgeo, const Position& svgeo,
-                                   const MODIP& modip, CCIR& ccirData,
+                                   const MODIP& modip, double modipSta,
+                                   CCIR& ccirData,
                                    const CivilTime& when, double azu,
                                    double tolerance, bool vertical,
                                    unsigned recursionLevel = 0)
