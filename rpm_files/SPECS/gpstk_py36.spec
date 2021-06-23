@@ -1,5 +1,5 @@
 %define name python3-gpstk
-%define version 11.1.0
+%define version 11.2.0
 %define release 1
 
 Summary:        GPS Toolkit
@@ -33,7 +33,7 @@ The primary goals of the GPSTk project are to:
 %build
 mkdir build
 cd build
-cmake -DPYTHON_INSTALL_PREFIX=$RPM_BUILD_ROOT/ -DCMAKE_INSTALL_PREFIX=$RPM_BUILD_ROOT/usr -DBUILD_EXT=ON -DBUILD_PYTHON=ON -DBUILD_FOR_PACKAGE_SWITCH=ON -DPYTHON_EXECUTABLE=/usr/bin/python3.6 ../
+cmake -DPYTHON_INSTALL_PREFIX=$RPM_BUILD_ROOT/ -DCMAKE_INSTALL_PREFIX=$RPM_BUILD_ROOT/usr -DBUILD_EXT=ON -DBUILD_PYTHON=ON -DBUILD_FOR_PACKAGE_SWITCH=ON -DVERSIONED_HEADER_INSTALL=ON -DPYTHON_EXECUTABLE=/usr/bin/python3.6 ../
 make all -j 4
 
 # Install bin/lib/include folders in RPM BUILDROOT for packaging
@@ -42,10 +42,13 @@ cd build
 make install -j 4
 # Currently the CMAKE installer cannot install python only, so we need to delete the non-python files.
 rm -rf $RPM_BUILD_ROOT/usr/README.md
-find $RPM_BUILD_ROOT/usr/include/gpstk ! -name "*.i" ! -name "gpstk_swig.hpp" -type f -exec rm {} +
+find $RPM_BUILD_ROOT/usr/include/gpstk*/gpstk ! -name "*.i" ! -name "gpstk_swig.hpp" -type f -exec rm {} +
 rm -rf $RPM_BUILD_ROOT/usr/bin/*
 rm -rf $RPM_BUILD_ROOT/usr/lib64/*
 rm -rf $RPM_BUILD_ROOT/usr/share/cmake/GPSTK
+mkdir -p $RPM_BUILD_ROOT/usr/include/gpstk
+cp $RPM_BUILD_ROOT/usr/include/gpstk*/gpstk/*.i $RPM_BUILD_ROOT/usr/include/gpstk
+cp $RPM_BUILD_ROOT/usr/include/gpstk*/gpstk/gpstk_swig.hpp $RPM_BUILD_ROOT/usr/include/gpstk
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -54,12 +57,15 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %doc RELNOTES.md PYTHON.md
+/usr/include/gpstk*/gpstk
 /usr/include/gpstk
 /usr/lib/python3.6/site-packages/gpstk
 /usr/lib/python3.6/site-packages/gpstk-%{version}-py3.6.egg-info
 
 
 %changelog
+* Thu Jun 17 2021 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v11.2.0 release
 * Thu May 13 2021 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v11.1.0 release
 * Wed Apr 21 2021 David Barber <dbarber@arlut.utexas.edu>

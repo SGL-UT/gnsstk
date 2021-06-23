@@ -101,10 +101,13 @@ namespace gpstk
           * @param[in] ot The observation type (range, phase,, etc.).
           * @param[in] cb The carrier band (L1, L2, etc.).
           * @param[in] tc The tracking code (CA, L2CM, etc.).
-          * @param[in] fo Thre frequency offset of the GLONASS signal. */
+          * @param[in] fo The frequency offset of the GLONASS signal.
+          * @param[in] fw If true, fo is ignored and freqOffs will
+          *   match any value. */
       explicit ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc,
-                     int fo, XmitAnt transmitter = XmitAnt::Any)
-            : type(ot), band(cb), code(tc), freqOffs(fo), freqOffsWild(false),
+                     int fo, XmitAnt transmitter = XmitAnt::Any,
+                     bool fw = false)
+            : type(ot), band(cb), code(tc), freqOffs(fo), freqOffsWild(fw),
               mcode(0), mcodeMask(0), xmitAnt(transmitter)
       {}
 

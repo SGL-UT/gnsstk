@@ -141,7 +141,6 @@ public:
    unsigned printfTest()
    {
       TUDEF("Position", "printf");
-      std::string failMesg;
 
       try
       {
@@ -223,7 +222,6 @@ public:
    unsigned scanTest()
    {
       TUDEF("Position", "scan");
-      std::string failMesg;
 
       try
       {
@@ -268,7 +266,6 @@ public:
    unsigned elevationAzimuthTest()
    {
       TUDEF("Position", "elevationAzimuth");
-      std::string failMesg;           
       try
       {
          Position c,s;
@@ -291,7 +288,6 @@ public:
    unsigned poleTransformTest()
    {
       TUDEF("Position", "poleTransform");
-      std::string failMesg;   
       try
       {
          Position c,t;
@@ -348,7 +344,6 @@ public:
    unsigned rangeTest()
    {
       TUDEF("Position", "range()");
-      std::string failMesg;
       try
       {
          Position c,t;
