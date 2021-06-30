@@ -60,6 +60,10 @@ namespace gpstk
       // ---------------- independent of GNSS ----------------------
       /// GPS value of PI; also specified by GAL
    const double PI        = 3.141592653589793238462643383280;
+      /// Multiply degrees by DEG2RAD to get radians.
+   const double DEG2RAD   = PI / 180.0;
+      /// Multiply radians by RAD2DEG to get degrees.
+   const double RAD2DEG   = 180.0 / PI;
       /// GPS value of PI*2
    const double TWO_PI    = 6.283185307179586476925286766559;
       /// GPS value of PI**0.5

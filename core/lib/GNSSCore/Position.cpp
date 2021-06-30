@@ -50,6 +50,8 @@
 #include "GNSSconstants.hpp"    // for TWO_PI, etc
 #include "GNSSconstants.hpp"             // for RAD_TO_DEG, etc
 #include "MiscMath.hpp"             // for RSS, SQRT
+#include "Angle.hpp"
+#include "DebugTrace.hpp"
 
 namespace gpstk
 {
@@ -107,7 +109,7 @@ namespace gpstk
                       const double& b,
                       const double& c,
                       Position::CoordinateSystem s,
-                      EllipsoidModel *ell,
+                      const EllipsoidModel *ell,
                       ReferenceFrame frame)
    {
       try {
@@ -120,7 +122,7 @@ namespace gpstk
 
    Position::Position(const double ABC[3],
                       CoordinateSystem s,
-                      EllipsoidModel *ell,
+                      const EllipsoidModel *ell,
                       ReferenceFrame frame)
    {
       double a=ABC[0];
@@ -136,7 +138,7 @@ namespace gpstk
 
    Position::Position(const Triple& ABC,
                       CoordinateSystem s,
-                      EllipsoidModel *ell,
+                      const EllipsoidModel *ell,
                       ReferenceFrame frame)
    {
       double a=ABC[0];
@@ -1517,6 +1519,185 @@ namespace gpstk
         
     }
 
+
+   Angle Position::getZenithAngle(const Position& target, AngleReduced& delta)
+      const
+   {
+      Position p1(*this), p2(target);
+      p1.transformTo(Geodetic);
+      p2.transformTo(Geodetic);
+      Angle phi1(p1.geodeticLatitude(), Angle::Deg);
+      Angle lambda1(p1.longitude(), Angle::Deg);
+      Angle phi2(p2.geodeticLatitude(), Angle::Deg);
+      Angle lambda2(p2.longitude(), Angle::Deg);
+         // radius requires spherical coordinates, so get them from
+         // the original Position objects in the off-chance they were
+         // already in the spherical system (we can be guaranteed p1
+         // and p2 will not be).
+      double r1 = radius();
+      double r2 = target.radius();
+      return getZenithAngle(phi1, lambda1, phi2, lambda2, r1, r2, delta);
+   }
+
+
+   Angle Position ::
+   getZenithAngle(const Angle& phi1, const Angle& lambda1,
+                  const Angle& phi2, const Angle& lambda2,
+                  double r1, double r2,
+                  AngleReduced& delta)
+   {
+      DEBUGTRACE_FUNCTION();
+         // reference \cite galileo:iono though probably not exclusively
+      delta.setValue(sin(phi1)*sin(phi2) +                              //eq.153
+                     cos(phi1)*cos(phi2)*cos(lambda2-lambda1),
+                     AngleReduced::Cos);
+      DEBUGTRACE("delta.sin=" << scientific << delta.sin());
+      DEBUGTRACE("delta.cos=" << scientific << delta.cos());
+      return Angle(atan2(sin(delta),cos(delta) - (r1/r2)),              //eq.155
+                   AngleReduced::Rad);
+   }
+
+
+   Position Position::getRayPerigee(const Position& target) const
+   {
+      DEBUGTRACE_FUNCTION();
+         // reference \cite galileo:iono though probably not exclusively
+      Position p1(*this), p2(target);
+      p1.transformTo(Geodetic);
+      p2.transformTo(Geodetic);
+      Angle phi1(p1.geodeticLatitude(), Angle::Deg);
+      Angle lambda1(p1.longitude(), Angle::Deg);
+      Angle phi2(p2.geodeticLatitude(), Angle::Deg);
+      Angle lambda2(p2.longitude(), Angle::Deg);
+         // radius requires spherical coordinates, so get them from
+         // the original Position objects in the off-chance they were
+         // already in the spherical system (we can be guaranteed p1
+         // and p2 will not be).
+         // Also convert from m to km for the formulae below.
+      double r1 = radius() / 1000.0;
+      double r2 = target.radius() / 1000.0;
+      AngleReduced delta;
+      Angle zeta = getZenithAngle(phi1,lambda1,phi2,lambda2,r1,r2,delta);
+      double rp = r1 * sin(zeta);                                       //eq.156
+      DEBUGTRACE(setprecision(20) << "pStation_position->radius_km=" << scientific << r1);
+      DEBUGTRACE("pZenith_angle->sin=" << scientific << sin(zeta));
+      DEBUGTRACE("pRay->slant.perigee_radius_km=" << scientific << rp);
+      Angle phiP, lambdaP;
+      if (fabs(fabs(phi1.deg())-90) < 1e-10)
+      {
+         phiP = (phi1.deg() > 0) ? zeta : -zeta;                        //eq.157
+         lambdaP.setValue((zeta.rad() >= 0) ? lambda2.rad() + PI :      //eq.164
+                          lambda2.rad(), Angle::Rad);
+      }
+      else
+      {
+         AngleReduced sigma(
+            (sin(lambda2-lambda1) * cos(phi2)) / sin(delta),            //eq.158
+            ((sin(phi2) - (cos(delta)*sin(phi1))) /                     //eq.159
+             (sin(delta) * cos(phi1))));
+         Angle deltaP(PI/2.0 - zeta.rad(), Angle::Rad);                 //eq.160
+         phiP.setValue(sin(phi1)*cos(deltaP) -                          //eq.161
+                       cos(phi1)*sin(deltaP)*cos(sigma), Angle::Sin);
+         Angle dLambda(-(sin(sigma)*sin(deltaP))/cos(phiP),             //eq.165
+                       ((cos(deltaP)-sin(phi1)*sin(phiP)) /             //eq.166
+                        (cos(phi1)*cos(phiP))));
+         lambdaP = dLambda + lambda1;                                   //eq.167
+      }
+         // rp is in km, convert to meters for Position
+      Position rv(phiP.deg(), lambdaP.deg(), rp*1000.0, Geocentric);
+      rv.copyEllipsoidModelFrom(*this);
+      return rv;
+   }
+
+
+   Position Position::getRayPosition(double dist, const Position& target) const
+   {
+      DEBUGTRACE_FUNCTION();
+         // reference \cite galileo:iono though probably not exclusively
+      Position p2(target);
+      p2.transformTo(Geodetic);
+      Position pp(getRayPerigee(target));
+      Angle phi2(p2.geodeticLatitude(), Angle::Deg);
+      Angle lambda2(p2.longitude(), Angle::Deg);
+      Angle phip(pp.geodeticLatitude(), Angle::Deg);
+      Angle lambdap(pp.longitude(), Angle::Deg);
+      Angle dLambda(lambda2 - lambdap);
+      AngleReduced psi; ///< Great circle angle from ray-perigee to satellite
+      AngleReduced sigmap; ///< azimuth of satellite as seen from ray-perigee pp
+      DEBUGTRACE("# pRay->latitude.rad=" << scientific << phip.rad());
+      DEBUGTRACE("# pRay->latitude.degree=" << scientific << phip.deg());
+      DEBUGTRACE("# pRay->latitude.sin=" << scientific << phip.sin());
+      DEBUGTRACE("# pRay->latitude.cos=" << scientific << phip.cos());
+      DEBUGTRACE("# pRay->longitude.rad=" << scientific << lambdap.rad());
+      DEBUGTRACE("# pRay->longitude.degree=" << scientific << lambdap.deg());
+      DEBUGTRACE("pRay->longitude.sin=" << scientific << lambdap.sin());
+      DEBUGTRACE("pRay->longitude.cos=" << scientific << lambdap.cos());
+      DEBUGTRACE("# pRay->satellite_position.latitude.rad=" << scientific << phi2.rad());
+      DEBUGTRACE("# pRay->satellite_position.latitude.degree=" << scientific << phi2.deg());
+      DEBUGTRACE("# pRay->satellite_position.latitude.sin=" << scientific << phi2.sin());
+      DEBUGTRACE("# pRay->satellite_position.latitude.cos=" << scientific << phi2.cos());
+      DEBUGTRACE("# pRay->satellite_position.longitude.rad=" << scientific << lambda2.rad());
+      DEBUGTRACE("# pRay->satellite_position.longitude.degree=" << scientific << lambda2.deg());
+      DEBUGTRACE("# pRay->satellite_position.longitude.sin=" << scientific << lambda2.sin());
+      DEBUGTRACE("# pRay->satellite_position.longitude.cos=" << scientific << lambda2.cos());
+      if (fabs(fabs(phip.deg())-90.0) < 1e-10)
+      {
+         psi.setValue(fabs(p2.geodeticLatitude()-pp.geodeticLatitude()),//eq.168
+                      Angle::Deg);
+         if (phip.deg() > 0)
+         {
+            sigmap = Angle(0, -1);                                      //eq.173
+         }
+         else
+         {
+               // note that the equation says >0 or <0 but not ==0,
+               // but the EU code does it this way as well (see
+               // NeQuickG_JRC_ray.c, get_azimuth())
+            sigmap = Angle(0, 1);                                       //eq.173
+         }
+      }
+      else
+      {
+         psi = AngleReduced(sin(phip)*sin(phi2) +                       //eq.169
+                            cos(phip)*cos(phi2)*cos(dLambda), Angle::Cos);
+         sigmap = AngleReduced(cos(phi2)*sin(dLambda)/sin(psi),         //eq.174
+                               (sin(phi2)-sin(phip)*cos(psi)) /         //eq.175
+                               (cos(phip)*sin(psi)));
+      }
+      DEBUGTRACE("# psi_angle.sin=" << scientific << psi.sin());
+      DEBUGTRACE("# psi_angle.cos=" << scientific << psi.cos());
+      DEBUGTRACE("# pRay->slant.azimuth.sin=" << scientific << sigmap.sin());
+      DEBUGTRACE("# pRay->slant.azimuth.cos=" << scientific << sigmap.cos());
+      double rp = pp.radius(); // radius in m
+         // rs is also in meters now rather than km per the equation,
+         // because the Position class prefers meters.  Also computing
+         // as a geocentric radius so as to avoid dealing with
+         // EllipsoidModels.
+      double rs = sqrt(dist*dist + rp*rp);                              //eq.178
+      double tanDeltas = dist / rp;                                     //eq.179
+      double cosDeltas = 1/sqrt(1+tanDeltas*tanDeltas);                 //eq.180
+      double sinDeltas = tanDeltas * cosDeltas;                         //eq.181
+      Angle phis(sin(phip)*cosDeltas + cos(phip)*sinDeltas*cos(sigmap), //eq.182
+                 Angle::Sin);
+      Angle dlambda(sinDeltas*sin(sigmap)*cos(phip),                    //eq.185
+                    cosDeltas-sin(phip)*sin(phis));                     //eq.186
+      double lambdas = dlambda.deg() + lambdap.deg();                   //eq.187
+      Position rv(phis.deg(), lambdas, rs, Geocentric);
+         // Still need to copy the ellipsoid model so that any
+         // coordinate system conversions done by the user don't give
+         // unexpected results
+      rv.copyEllipsoidModelFrom(*this);
+      DEBUGTRACE("current_position.radius_km=" << scientific << (rs / 1000.0));
+      DEBUGTRACE("current_position.height=" << scientific << (rv.height() / 1000.0));
+      DEBUGTRACE("current_position.latitude.rad=" << scientific << phis.rad());
+      DEBUGTRACE("current_position.latitude.degree=" << scientific << phis.deg());
+      DEBUGTRACE("current_position.latitude.sin=" << scientific << phis.sin());
+      DEBUGTRACE("current_position.latitude.cos=" << scientific << phis.cos());
+      DEBUGTRACE("current_position.longitude.degree=" << scientific << lambdas);
+      return rv;
+   }
+
+
    // ----------- Part 12: private functions and member data -----------------
    //
       // Initialization function, used by the constructors.
@@ -1530,7 +1711,7 @@ namespace gpstk
                   const double b,
                   const double c,
                   Position::CoordinateSystem s,
-                  EllipsoidModel *ell,
+                  const EllipsoidModel *ell,
                   ReferenceFrame frame)
    {
       double bb(b);

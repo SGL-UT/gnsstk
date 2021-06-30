@@ -52,31 +52,39 @@
 %shared_ptr(gpstk::NavHealthData)
 %shared_ptr(gpstk::OrbitData)
 %shared_ptr(gpstk::OrbitDataKepler)
+%shared_ptr(gpstk::IonoData)
+%shared_ptr(gpstk::KlobucharIonoData)
+%shared_ptr(gpstk::NeQuickIonoData)
 %shared_ptr(gpstk::GPSLNavData)
 %shared_ptr(gpstk::GPSLNavEph)
 %shared_ptr(gpstk::GPSLNavAlm)
 %shared_ptr(gpstk::GPSLNavHealth)
 %shared_ptr(gpstk::GPSLNavTimeOffset)
+%shared_ptr(gpstk::GPSLNavIono)
 %shared_ptr(gpstk::GPSCNavData)
 %shared_ptr(gpstk::GPSCNavEph)
 %shared_ptr(gpstk::GPSCNavAlm)
 %shared_ptr(gpstk::GPSCNavHealth)
 %shared_ptr(gpstk::GPSCNavTimeOffset)
 %shared_ptr(gpstk::GPSCNavRedAlm)
+%shared_ptr(gpstk::GPSCNavIono)
 %shared_ptr(gpstk::GPSCNav2Eph)
 %shared_ptr(gpstk::GPSCNav2Alm)
 %shared_ptr(gpstk::GPSCNav2Health)
 %shared_ptr(gpstk::GPSCNav2TimeOffset)
+%shared_ptr(gpstk::GPSCNav2Iono)
 %shared_ptr(gpstk::OrbitDataSP3)
 %shared_ptr(gpstk::RinexTimeOffset)
 %shared_ptr(gpstk::GalINavEph)
 %shared_ptr(gpstk::GalINavAlm)
 %shared_ptr(gpstk::GalINavHealth)
 %shared_ptr(gpstk::GalINavTimeOffset)
+%shared_ptr(gpstk::GalINavIono)
 %shared_ptr(gpstk::GalFNavEph)
 %shared_ptr(gpstk::GalFNavAlm)
 %shared_ptr(gpstk::GalFNavHealth)
 %shared_ptr(gpstk::GalFNavTimeOffset)
+%shared_ptr(gpstk::GalFNavIono)
 
 %shared_ptr(gpstk::NavDataFactory)
 %shared_ptr(gpstk::NavDataFactoryWithStore)
@@ -291,13 +299,12 @@ namespace std
 %include "TimeSystemConverter.hpp"
 %include "CommonTime.hpp"
 %include "HexDumpDataConfig.hpp"
-// %include "StringUtils.hpp"
+ //%include "StringUtils.hpp"
 %include "TimeTag.hpp"
 %include "ANSITime.hpp"
 %include "AllanDeviation.hpp"
 %include "gps_constants.hpp"
 %include "EnumIterator.hpp"
-%include "XmitAnt.hpp"
 %include "SatelliteSystem.hpp"
 %template(vector_GNSS)       std::vector<gpstk::SatelliteSystem>;
 %include "SatID.hpp"
@@ -306,15 +313,16 @@ namespace std
 %include "VectorBase.hpp"
 %include "VectorBaseOperators.hpp"
 %include "Vector.hpp"
-%include "VectorOperators.hpp"
 %include "Triple.hpp"
 %include "EllipsoidModel.hpp"
 %include "ReferenceFrame.hpp"
-%include "GNSSconstants.hpp"
 %include "DeprecatedConsts.hpp"
 %include "FreqConsts.hpp"
+%include "GNSSconstants.hpp"
 %include "Xvt.hpp"
 %include "AlmOrbit.hpp"
+%include "AngleReduced.hpp"
+%include "Angle.hpp"
 %include "FFStreamError.hpp"
 %include "FFData.hpp"
 %include "AntexBase.hpp"
@@ -341,6 +349,7 @@ namespace std
 %include "ObservationType.hpp"
 %include "CarrierBand.hpp"
 %include "TrackingCode.hpp"
+%include "XmitAnt.hpp"
 %include "ObsID.hpp"
 %template(vector_ObsID)      std::vector<gpstk::ObsID>;
 %template(map_SvObsEpoch) std::map< gpstk::ObsID, double >;
@@ -358,14 +367,9 @@ namespace std
 %include "MatrixBaseOperators.hpp"
 %include "Matrix.hpp"
 %template(matrix_double) gpstk::Matrix<double>;
-%include "MatrixImplementation.hpp"
-%include "MiscMath.hpp"
-%include "MatrixFunctors.hpp"
-%include "MatrixOperators.hpp"
 %include "BLQDataReader.hpp"
 /* %include "CommandOption.hpp" */
 /* %include "CommandOptionParser.hpp" */
-/* %include "MainAdapter.hpp" */
 /* %include "BasicFramework.hpp" */
 %include "BasicTimeSystemConverter.hpp"
 %include "BinexData.hpp"
@@ -374,6 +378,7 @@ namespace std
 %include "FileFilter.hpp"
 %include "BinexFilterOperators.hpp"
 %include "BinexStream.hpp"
+%include "MiscMath.hpp"
 %include "Stats.hpp"
 %include "BivarStats.hpp"
 %include "GPSWeekSecond.hpp"
@@ -387,6 +392,7 @@ namespace std
 %template(vector_RinexSatID) std::vector<gpstk::RinexSatID>;
 %include "GPS_URA.hpp"
 %include "BrcKeplerOrbit.hpp"
+%include "CCIR.hpp"
 %include "CGCS2000Ellipsoid.hpp"
 %include "NavFilterKey.hpp"
 %template(binary_function_NavFilterKey) std::binary_function<gpstk::NavFilterKey *, gpstk::NavFilterKey *, bool >;
@@ -426,10 +432,16 @@ namespace std
 %include "PCodeConst.hpp"
 %include "CodeBuffer.hpp"
 %include "Combinations.hpp"
+/* %include "CommandLine.hpp" */
+/* %include "CommandOptionWithCommonTimeArg.hpp" */
+%include "Position.hpp"
+/* %include "CommandOptionWithPositionArg.hpp" */
+/* %include "CommandOptionWithTimeArg.hpp" */
 %include "ConfDataReader.hpp"
  /* %include "ConfDataWriter.hpp" */ // error on typemaps for list of double
 %include "CubicSpline.hpp"
 %include "DCBDataReader.hpp"
+/* %include "DebugTrace.hpp" */
 %include "DiffCorrBase.hpp"
 %include "DiffCorrClk.hpp"
 %include "DiffCorrEph.hpp"
@@ -472,7 +484,6 @@ namespace std
 %include "DumpDetail.hpp"
 %include "ENUUtil.hpp"
 %include "IERSConvention.hpp"
-%include "Position.hpp"
 /* %include "EarthOrientation.hpp" */
 /* %include "EOPPrediction.hpp" */
 /* %include "EOPStore.hpp" */
@@ -508,6 +519,7 @@ namespace std
 %template(binary_function_Rinex3ObsData) std::binary_function<gpstk::Rinex3ObsData,gpstk::Rinex3ObsData,bool>;
 %include "FileFilterFrameWithHeader.hpp"
 %include "FirstDiffFilter.hpp"
+%include "FreqConv.hpp"
 %include "GCATTropModel.hpp"
 %include "GGHeightTropModel.hpp"
 %include "GGTropModel.hpp"
@@ -539,6 +551,9 @@ namespace std
 %include "GPSCNav2Eph.hpp"
 %include "NavHealthData.hpp"
 %include "GPSCNav2Health.hpp"
+%include "IonoData.hpp"
+%include "KlobucharIonoData.hpp"
+%include "GPSCNav2Iono.hpp"
 %include "TimeOffsetData.hpp"
 %include "StdNavTimeOffset.hpp"
 %include "GPSCNav2TimeOffset.hpp"
@@ -546,12 +561,14 @@ namespace std
 %include "GPSCNavAlm.hpp"
 %include "GPSCNavEph.hpp"
 %include "GPSCNavHealth.hpp"
+%include "GPSCNavIono.hpp"
 %include "GPSCNavRedAlm.hpp"
 %include "GPSCNavTimeOffset.hpp"
 %include "GPSLNavData.hpp"
 %include "GPSLNavAlm.hpp"
 %include "GPSLNavEph.hpp"
 %include "GPSLNavHealth.hpp"
+%include "GPSLNavIono.hpp"
 %include "GPSLNavTimeOffset.hpp"
 %include "GPSOrbElemStore.hpp"
 %include "GSatID.hpp"
@@ -561,12 +578,16 @@ namespace std
 %include "GalFNavAlm.hpp"
 %include "GalFNavEph.hpp"
 %include "GalFNavHealth.hpp"
+%include "NeQuickIonoData.hpp"
+%include "GalFNavIono.hpp"
 %include "GalFNavTimeOffset.hpp"
 %include "GalINavAlm.hpp"
 %include "GalINavEph.hpp"
 %include "GalINavHealth.hpp"
+%include "GalINavIono.hpp"
 %include "GalINavTimeOffset.hpp"
 %include "GalileoEllipsoid.hpp"
+%include "GalileoIonoEllipsoid.hpp"
 %include "GenXSequence.hpp"
 %include "GenericNavFilterData.hpp"
 %include "GloEphemerisStore.hpp"
@@ -585,12 +606,12 @@ namespace std
 %include "IonexData.hpp"
 %include "IonexStore.hpp"
 %include "Namelist.hpp"
-%include "SRIMatrix.hpp"
-%include "SparseVector.hpp" // too many warnings
-%include "SparseMatrix.hpp" // too many warnings
-%include "SRI.hpp"
+/* %include "SRIMatrix.hpp" */
+/* %include "SparseVector.hpp" */
+/* %include "SparseMatrix.hpp" */
+/* %include "SRI.hpp" */
 /* %include "SRIFilter.hpp" */
-%include "logstream.hpp"
+/* %include "logstream.hpp" */
 %include "KalmanFilter.hpp"
 %template(binary_function_LNavFilterData) std::binary_function< gpstk::LNavFilterData *, gpstk::LNavFilterData *, bool >;
 %include "LNavFilterData.hpp"
@@ -603,7 +624,11 @@ namespace std
 %include "LNavParityFilter.hpp"
 %include "LNavTLMHOWFilter.hpp"
 %include "LinearClockModel.hpp"
+%include "MODIP.hpp"
 %include "MOPSTropModel.hpp"
+%include "MatrixImplementation.hpp"
+%include "MatrixFunctors.hpp"
+%include "MatrixOperators.hpp"
 %include "MetReader.hpp"
 %include "MostCommonValue.hpp"
 %include "NavValidityType.hpp"
@@ -706,7 +731,7 @@ namespace std
 %include "SEMNavDataFactory.hpp"
 %include "SP3NavDataFactory.hpp"
 %include "SP3Stream.hpp"
-%include "SRIleastSquares.hpp"
+/* %include "SRIleastSquares.hpp" */
 %include "X1Sequence.hpp"
 %include "X2Sequence.hpp"
 %include "SVPCodeGen.hpp"
@@ -728,6 +753,7 @@ namespace std
 %include "TimeCorrection.hpp"
 %include "TimeNamedFileStream.hpp"
 %include "TimeRange.hpp"
+%include "VectorOperators.hpp"
 %include "WNJfilter.hpp"
 %include "WindowFilter.hpp"
 %include "YumaBase.hpp"

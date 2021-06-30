@@ -39,6 +39,7 @@
 #include "PNBGalINavDataFactory.hpp"
 #include "GalINavEph.hpp"
 #include "GalINavTimeOffset.hpp"
+#include "GalINavIono.hpp"
 #include "GALWeekSecond.hpp"
 #include "TimeCorrection.hpp"
 #include "EngNav.hpp"
@@ -614,33 +615,55 @@ namespace gpstk
       ephWord[wordType-1] = navIn;
          // Health information is in word type 5, but we also need
          // word type 3 for SISA.
-      if ((wordType == 5) && ephWord[wt3] && PNBNavDataFactory::processHea)
+      if ((wordType == 5) && ephWord[wt3])
       {
-            // Add health bits from word type 5.
-         NavDataPtr p1 = std::make_shared<GalINavHealth>();
-         GalINavHealth *hp1 = dynamic_cast<GalINavHealth*>(p1.get());
-         hp1->timeStamp = navIn->getTransmitTime();
-         hp1->signal = NavMessageID(key, NavMessageType::Health);
-         hp1->signal.obs.band = CarrierBand::E5b;
-         hp1->signal.obs.code = TrackingCode::E5bI;
-         hp1->sigHealthStatus = static_cast<GalHealthStatus>(
-            ephWord[isiE5bhs]->asUnsignedLong(isbE5bhs,inbE5bhs,iscE5bhs));
-         hp1->dataValidityStatus = static_cast<GalDataValid>(
-            ephWord[isiE5bdvs]->asUnsignedLong(isbE5bdvs,inbE5bdvs,iscE5bdvs));
-         hp1->sisaIndex = ephWord[esiSISA]->asUnsignedLong(esbSISA,enbSISA,
-                                                          escSISA);
-         NavDataPtr p2 = std::make_shared<GalINavHealth>();
-         GalINavHealth *hp2 = dynamic_cast<GalINavHealth*>(p2.get());
-         *hp2 = *hp1; // copy data
-         hp2->signal.obs.band = CarrierBand::L1;
-         hp2->signal.obs.code = TrackingCode::E1B;
-         hp2->sigHealthStatus = static_cast<GalHealthStatus>(
-            ephWord[isiE1Bhs]->asUnsignedLong(isbE1Bhs,inbE1Bhs,iscE1Bhs));
-         hp2->dataValidityStatus = static_cast<GalDataValid>(
-            ephWord[isiE1Bdvs]->asUnsignedLong(isbE1Bdvs,inbE1Bdvs,iscE1Bdvs));
-            // reset is the same as p1 and already copied
-         navOut.push_back(p1);
-         navOut.push_back(p2);
+         if (PNBNavDataFactory::processIono)
+         {
+               // Add iono data from word type 5
+            NavDataPtr p3 = std::make_shared<GalINavIono>();
+            GalINavIono *ip3 = dynamic_cast<GalINavIono*>(p3.get());
+            ip3->timeStamp = navIn->getTransmitTime();
+            ip3->signal = NavMessageID(key, NavMessageType::Iono);
+            ip3->ai[0] = navIn->asUnsignedDouble(isbai0,inbai0,iscai0);
+            ip3->ai[1] = navIn->asSignedDouble(isbai1,inbai1,iscai1);
+            ip3->ai[2] = navIn->asSignedDouble(isbai2,inbai2,iscai2);
+            ip3->idf[0] = navIn->asBool(isbIDFR1);
+            ip3->idf[1] = navIn->asBool(isbIDFR2);
+            ip3->idf[2] = navIn->asBool(isbIDFR3);
+            ip3->idf[3] = navIn->asBool(isbIDFR4);
+            ip3->idf[4] = navIn->asBool(isbIDFR5);
+            navOut.push_back(p3);
+         }
+         if (PNBNavDataFactory::processHea)
+         {
+               // Add health bits from word type 5.
+            NavDataPtr p1 = std::make_shared<GalINavHealth>();
+            GalINavHealth *hp1 = dynamic_cast<GalINavHealth*>(p1.get());
+            hp1->timeStamp = navIn->getTransmitTime();
+            hp1->signal = NavMessageID(key, NavMessageType::Health);
+            hp1->signal.obs.band = CarrierBand::E5b;
+            hp1->signal.obs.code = TrackingCode::E5bI;
+            hp1->sigHealthStatus = static_cast<GalHealthStatus>(
+               ephWord[isiE5bhs]->asUnsignedLong(isbE5bhs,inbE5bhs,iscE5bhs));
+            hp1->dataValidityStatus = static_cast<GalDataValid>(
+               ephWord[isiE5bdvs]->asUnsignedLong(
+                  isbE5bdvs,inbE5bdvs,iscE5bdvs));
+            hp1->sisaIndex = ephWord[esiSISA]->asUnsignedLong(esbSISA,enbSISA,
+                                                              escSISA);
+            NavDataPtr p2 = std::make_shared<GalINavHealth>();
+            GalINavHealth *hp2 = dynamic_cast<GalINavHealth*>(p2.get());
+            *hp2 = *hp1; // copy data
+            hp2->signal.obs.band = CarrierBand::L1;
+            hp2->signal.obs.code = TrackingCode::E1B;
+            hp2->sigHealthStatus = static_cast<GalHealthStatus>(
+               ephWord[isiE1Bhs]->asUnsignedLong(isbE1Bhs,inbE1Bhs,iscE1Bhs));
+            hp2->dataValidityStatus = static_cast<GalDataValid>(
+               ephWord[isiE1Bdvs]->asUnsignedLong(
+                  isbE1Bdvs,inbE1Bdvs,iscE1Bdvs));
+               // reset is the same as p1 and already copied
+            navOut.push_back(p1);
+            navOut.push_back(p2);
+         }
       }
       if (!PNBNavDataFactory::processEph)
       {
