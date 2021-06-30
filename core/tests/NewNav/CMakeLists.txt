@@ -217,3 +217,7 @@ add_test(InterSigCorr_T InterSigCorr_T)
 add_executable(GPSLNavISC_T GPSLNavISC_T.cpp)
 target_link_libraries(GPSLNavISC_T gpstk)
 add_test(GPSLNavISC_T GPSLNavISC_T)
+
+add_executable(GPSCNavISC_T GPSCNavISC_T.cpp)
+target_link_libraries(GPSCNavISC_T gpstk)
+add_test(GPSCNavISC_T GPSCNavISC_T)
