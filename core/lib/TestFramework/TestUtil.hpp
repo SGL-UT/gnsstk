@@ -36,6 +36,9 @@
 //
 //==============================================================================
 
+#ifndef GPSTK_TESTUTIL_HPP
+#define GPSTK_TESTUTIL_HPP
+
 #include <typeinfo>
 #include <iostream>
 #include <fstream>
@@ -994,3 +997,5 @@ namespace gpstk
       next();
    }
 }
+
+#endif // GPSTK_TESTUTIL_HPP

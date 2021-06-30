@@ -36,31 +36,38 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "PNBNavDataFactory.hpp"
+#include "GPSLNavISC.hpp"
+#include "TimeString.hpp"
+#include "YDSTime.hpp"
+#include "FreqConv.hpp"
 
 using namespace std;
 
 namespace gpstk
 {
-   PNBNavDataFactory ::
-   PNBNavDataFactory()
-         : navValidity(NavValidityType::Any)
+   GPSLNavISC ::
+   GPSLNavISC()
+         : pre(0),
+           tlm(0),
+           alert(false),
+           asFlag(false)
    {
-      setTypeFilter(allNavMessageTypes);
+      msgLenSec = 6.0;
+      refOids = {ObsID(ObservationType::Unknown,
+                       gpstk::CarrierBand::L1,
+                       gpstk::TrackingCode::CA),
+                 ObsID(gpstk::ObservationType::Unknown,
+                       gpstk::CarrierBand::L1,
+                       gpstk::TrackingCode::Y)};
+      validOids = {ObsID(ObservationType::Unknown,
+                         gpstk::CarrierBand::L2,
+                         gpstk::TrackingCode::Y)};
    }
 
 
-   void PNBNavDataFactory ::
-   setTypeFilter(const NavMessageTypeSet& nmts)
+   bool GPSLNavISC ::
+   validate() const
    {
-         // We use boolean values instead of a set so that we're not
-         // checking a set every time a new subframe is added.
-      processEph = (nmts.count(gpstk::NavMessageType::Ephemeris) > 0);
-      processAlm = (nmts.count(gpstk::NavMessageType::Almanac) > 0);
-      processHea = (nmts.count(gpstk::NavMessageType::Health) > 0);
-      processTim = (nmts.count(gpstk::NavMessageType::TimeOffset) > 0);
-      processIono= (nmts.count(gpstk::NavMessageType::Iono) > 0);
-      processISC = (nmts.count(gpstk::NavMessageType::ISC) > 0);
+      return ((pre == 0) || (pre == 0x8b));
    }
-
 }

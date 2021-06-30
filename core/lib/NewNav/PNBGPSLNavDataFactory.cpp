@@ -42,6 +42,7 @@
 #include "GPSLNavHealth.hpp"
 #include "GPSLNavTimeOffset.hpp"
 #include "GPSLNavIono.hpp"
+#include "GPSLNavISC.hpp"
 #include "TimeCorrection.hpp"
 #include "EngNav.hpp"
 
@@ -484,16 +485,34 @@ namespace gpstk
    {
       NavSatelliteID key(navIn->getsatSys().id, navIn->getsatSys(),
                          navIn->getobsID(), navIn->getNavID());
-      if ((sfid == 1) && processHea)
+      if (sfid == 1)
       {
-            // Add ephemeris health bits from subframe 1.
-         NavDataPtr p1 = std::make_shared<GPSLNavHealth>();
-         p1->timeStamp = navIn->getTransmitTime();
-         p1->signal = NavMessageID(key, NavMessageType::Health);
-         dynamic_cast<GPSLNavHealth*>(p1.get())->svHealth =
-            navIn->asUnsignedLong(esbHea,enbHea,escHea);
-         // cerr << "add LNAV eph health" << endl;
-         navOut.push_back(p1);
+         if (processHea)
+         {
+               // Add ephemeris health bits from subframe 1.
+            NavDataPtr p1 = std::make_shared<GPSLNavHealth>();
+            p1->timeStamp = navIn->getTransmitTime();
+            p1->signal = NavMessageID(key, NavMessageType::Health);
+            dynamic_cast<GPSLNavHealth*>(p1.get())->svHealth =
+               navIn->asUnsignedLong(esbHea,enbHea,escHea);
+               // cerr << "add LNAV eph health" << endl;
+            navOut.push_back(p1);
+         }
+         if (processISC)
+         {
+               // Add ephemeris Tgd bits from subframe 1.
+            NavDataPtr p2 = std::make_shared<GPSLNavISC>();
+            GPSLNavISC *isc = dynamic_cast<GPSLNavISC*>(p2.get());
+            isc->timeStamp = navIn->getTransmitTime();
+            isc->signal = NavMessageID(key, NavMessageType::ISC);
+            isc->pre = navIn->asUnsignedLong(fsbPre,fnbPre,fscPre);
+            isc->tlm = navIn->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
+            isc->alert = navIn->asBool(fsbAlert);
+            isc->asFlag = navIn->asBool(fsbAS);
+            isc->isc = navIn->asSignedDouble(esbTGD,enbTGD,escTGD);
+               // cerr << "add LNAV eph Tgd" << endl;
+            navOut.push_back(p2);
+         }
       }
       if (!PNBNavDataFactory::processEph)
       {

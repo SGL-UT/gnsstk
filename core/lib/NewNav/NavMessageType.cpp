@@ -53,6 +53,7 @@ namespace gpstk
             case NavMessageType::Health:     return "Health";
             case NavMessageType::Clock:      return "Clock";
             case NavMessageType::Iono:       return "Iono";
+            case NavMessageType::ISC:        return "ISC";
             default:                         return "???";
          } // switch (e)
       } // asString(NavMessageType)
@@ -74,6 +75,8 @@ namespace gpstk
             return NavMessageType::Clock;
          if (s == "Iono")
             return NavMessageType::Iono;
+         if (s == "ISC")
+            return NavMessageType::ISC;
          return NavMessageType::Unknown;
       } // asNavMessageType(string)
    } // namespace StringUtils

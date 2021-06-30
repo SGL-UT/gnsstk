@@ -58,6 +58,7 @@ namespace gpstk
       Health,     ///< SV health status information message.
       Clock,      ///< SV Clock offset data.  Currently only used by SP3.
       Iono,       ///< Ionospheric correction data.
+      ISC,        ///< Inter-signal corrections.
       Last        ///< Used to create an iterator.
    };
 

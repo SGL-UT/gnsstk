@@ -36,31 +36,38 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "PNBNavDataFactory.hpp"
+#ifndef GPSTK_GPSLNAVISC_HPP
+#define GPSTK_GPSLNAVISC_HPP
 
-using namespace std;
+#include "InterSigCorr.hpp"
 
 namespace gpstk
 {
-   PNBNavDataFactory ::
-   PNBNavDataFactory()
-         : navValidity(NavValidityType::Any)
-   {
-      setTypeFilter(allNavMessageTypes);
-   }
+      /// @ingroup NavFactory
+      //@{
 
-
-   void PNBNavDataFactory ::
-   setTypeFilter(const NavMessageTypeSet& nmts)
+      /** Class containing data elements unique to GPS LNAV ISC
+       * (T<sub>GD</sub>). */
+   class GPSLNavISC : public InterSigCorr
    {
-         // We use boolean values instead of a set so that we're not
-         // checking a set every time a new subframe is added.
-      processEph = (nmts.count(gpstk::NavMessageType::Ephemeris) > 0);
-      processAlm = (nmts.count(gpstk::NavMessageType::Almanac) > 0);
-      processHea = (nmts.count(gpstk::NavMessageType::Health) > 0);
-      processTim = (nmts.count(gpstk::NavMessageType::TimeOffset) > 0);
-      processIono= (nmts.count(gpstk::NavMessageType::Iono) > 0);
-      processISC = (nmts.count(gpstk::NavMessageType::ISC) > 0);
-   }
+   public:
+         /// Initialize data members.
+      GPSLNavISC();
+
+         /** Checks the contents of this message against known
+          * validity rules as defined in the appropriate ICD.
+          * @return true if this message is valid according to ICD criteria.
+          */
+      bool validate() const override;
+
+      uint32_t pre;    ///< The TLM preamble from word 1 of the subframe.
+      uint32_t tlm;    ///< The TLM message from word 1 of the subframe.
+      bool alert;      ///< Alert flag from HOW.
+      bool asFlag;     ///< Anti-spoof flag from HOW.
+   };
+
+      //@}
 
 }
+
+#endif // GPSTK_GPSLNAVISC_HPP

@@ -36,31 +36,58 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "PNBNavDataFactory.hpp"
+#include <math.h>
+#include "InterSigCorr.hpp"
+#include "FreqConv.hpp"
 
 using namespace std;
 
 namespace gpstk
 {
-   PNBNavDataFactory ::
-   PNBNavDataFactory()
-         : navValidity(NavValidityType::Any)
+   InterSigCorr ::
+   InterSigCorr()
+         : isc(std::numeric_limits<double>::quiet_NaN())
    {
-      setTypeFilter(allNavMessageTypes);
+      signal.messageType = NavMessageType::ISC;
    }
 
 
-   void PNBNavDataFactory ::
-   setTypeFilter(const NavMessageTypeSet& nmts)
+   bool InterSigCorr ::
+   getISC(const ObsID& oid, double& corr)
+      const
    {
-         // We use boolean values instead of a set so that we're not
-         // checking a set every time a new subframe is added.
-      processEph = (nmts.count(gpstk::NavMessageType::Ephemeris) > 0);
-      processAlm = (nmts.count(gpstk::NavMessageType::Almanac) > 0);
-      processHea = (nmts.count(gpstk::NavMessageType::Health) > 0);
-      processTim = (nmts.count(gpstk::NavMessageType::TimeOffset) > 0);
-      processIono= (nmts.count(gpstk::NavMessageType::Iono) > 0);
-      processISC = (nmts.count(gpstk::NavMessageType::ISC) > 0);
+      ObsID oidU(oid);
+      oidU.type = ObservationType::Unknown;
+         // it's possible to have an empty validOids and still be
+         // useful, but it is not possible to have an empty refOids or
+         // isc=NaN and still be useful.
+      if (isnan(isc) || refOids.empty())
+         return false;
+      if (refOids.count(oidU))
+      {
+         corr = isc;
+      }
+      else if (validOids.count(oidU))
+      {
+         double freq1 = getFrequency(refOids.begin()->band);
+         double freq2 = getFrequency(oidU.band);
+         double gamma = freq1/freq2;
+         gamma *= gamma;
+         corr = gamma * isc;
+      }
+      else
+      {
+         return false;
+      }
+      return true;
    }
 
+
+   bool InterSigCorr ::
+   getISC(const ObsID& oid1, const ObsID& oid2, double& corr)
+      const
+   {
+      corr = 0;
+      return true;
+   }
 }
