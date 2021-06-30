@@ -47,7 +47,9 @@ namespace gpstk
       //@{
 
       /** Class containing data elements unique to GPS LNAV ISC
-       * (T<sub>GD</sub>). */
+       * (T<sub>GD</sub> - group delay differential).
+       * @note The getISC() methods are inherited unchanged from
+       *   InterSigCorr. */
    class GPSLNavISC : public InterSigCorr
    {
    public:

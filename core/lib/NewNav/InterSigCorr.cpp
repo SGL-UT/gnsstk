@@ -65,15 +65,11 @@ namespace gpstk
          return false;
       if (refOids.count(oidU))
       {
-         corr = isc;
+         corr = -isc;
       }
       else if (validOids.count(oidU))
       {
-         double freq1 = getFrequency(refOids.begin()->band);
-         double freq2 = getFrequency(oidU.band);
-         double gamma = freq1/freq2;
-         gamma *= gamma;
-         corr = gamma * isc;
+         corr = -(getGamma(refOids.begin()->band, oidU.band) * isc);
       }
       else
       {

@@ -137,8 +137,8 @@ getISCSFTest()
       // isc should be nan
    double corr = 0.123456;
    double expCorr1 = 0.123456;
-   double expCorr2 = -6.519258E-09;
-   double expCorr3 = -1.0736855745e-08;
+   double expCorr2 = 6.519258E-09;
+   double expCorr3 = 1.0736855745e-08;
    TUASSERTE(bool, false, uut.getISC(oid1, corr));
    TUASSERTFE(expCorr1, corr); // corr should not change.
       // set isc
