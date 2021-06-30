@@ -81,9 +81,6 @@ namespace gpstk
    class NeQuickIonoData : public IonoData
    {
    public:
-         /// Number of degrees longitude per hour.
-      static constexpr double DEGREE_PER_HOUR = 15.0;
-
          /// Initialize internal data.
       NeQuickIonoData();
 
@@ -395,6 +392,10 @@ namespace gpstk
           *   fact.  Any attempts to use non-spherical models will
           *   result in incorrect results. */
       GalileoIonoEllipsoid elModel;
+
+   private:
+         /// Number of degrees longitude per hour.
+      static constexpr double DEGREE_PER_HOUR = 15.0;
 
       friend class ::NeQuickIonoData_T;
    };

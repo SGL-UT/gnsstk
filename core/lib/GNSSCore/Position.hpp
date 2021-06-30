@@ -57,9 +57,6 @@
 #include "Xvt.hpp"
 #include "Angle.hpp"
 
-// test class forward declaration
-class Position_T;
-
 namespace gpstk
 {
       /// @ingroup Geodetic
@@ -974,6 +971,12 @@ namespace gpstk
           *   surface observer (units must be consistent with r2).
           * @param[in] r2 The distance from Earth center of the
           *   surface observer (units must be consistent with r1).
+          * @param[out] delta The computed delta angle, being the
+          *   Earth angle on the great circle connecting receiver
+          *   antenna P1 and the satellite P2.  This is used to
+          *   compute the zenith angle, but is also used to compute
+          *   the ray perigee, so it is output as an extra variable
+          *   here.
           * @return the zenith angle between this and target.
           */
       static Angle getZenithAngle(const Angle& phi1, const Angle& lambda1,
@@ -1015,6 +1018,9 @@ namespace gpstk
           * Position doesn't store the actual ellipsoid model but
           * rather a couple of terms from it.  It works by copying
           * those terms from another object into this one. 
+          * @todo Modify Position to store a
+          *   shared_ptr<EllipsoidModel> instead of AEarth, eccSquared
+          *   etc.
           * @param[in] src The Position object from which to copy
           *   ellipsoid model parameters.
           * @post AEarth=src.AEarth and eccSquared=src.eccSquared. */
@@ -1074,8 +1080,6 @@ namespace gpstk
       double tolerance;
       
       ReferenceFrame refFrame;
-
-      friend class ::Position_T;
 
    };   // end class Position
 

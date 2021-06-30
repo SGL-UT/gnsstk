@@ -77,7 +77,8 @@ namespace gpstk
          /** Initialize using an angular value.  The sine and cosine
           * will be derived from each other using the Pythagorean
           * identity sin**2+cos**2=1.
-          * @param[in] s The sine value of the angle being represented.
+          * @param[in] v The value to set.
+          * @param[in] t The type of datum contained in v.
           * @post sin and cos are set. */
       AngleReduced(double v, Type t)
       { setValue(v, t); }
