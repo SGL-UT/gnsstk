@@ -42,6 +42,7 @@
 #include "GPSLNavHealth.hpp"
 #include "GPSLNavIono.hpp"
 #include "GalINavEph.hpp"
+#include "GalINavIono.hpp"
 #include "GalFNavEph.hpp"
 #include "GalINavHealth.hpp"
 #include "RinexTimeOffset.hpp"
@@ -384,7 +385,24 @@ namespace gpstk
                   // galFNav->health = ((navIn.health == 0) ? SVHealth::Healthy :
                   //                SVHealth::Unhealthy);
                convertToOrbitDataKepler(navIn, galFNav);
-                  /// @todo add IOD Nav, SISA, BGD, data source
+               galFNav->bgdE5aE1 = navIn.Tgd;
+               galFNav->sisaIndex = decodeSISA(navIn.accuracy);
+               galFNav->svid = navIn.sat.id;
+               galFNav->xmit2 = galFNav->xmitTime + galFNav->msgLenSec;
+               galFNav->xmit3 = galFNav->xmit2 + galFNav->msgLenSec;
+               galFNav->xmit4 = galFNav->xmit3 + galFNav->msgLenSec;
+               galFNav->iodnav1 = galFNav->iodnav2 = galFNav->iodnav3 =
+                  galFNav->iodnav4 = navIn.IODnav;
+                  /** @note rinex includes health information for
+                   * three signals, but I/NAV ephemerides will only
+                   * include health for E5b and E1B, while F/NAV only
+                   * includes health for E1a */
+               galFNav->dvsE5a = static_cast<GalDataValid>(
+                  (navIn.health >> 3) & 0x01);
+               galFNav->hsE5a = static_cast<GalHealthStatus>(
+                  (navIn.health >> 4) & 0x03);
+               galFNav->health = GalINavHealth::galHealth(
+                  galFNav->hsE5a, galFNav->dvsE5a, galFNav->sisaIndex);
                galFNav->fixFit();
             }
             else
@@ -612,6 +630,58 @@ namespace gpstk
          health->signal.nav = NavType::GPSLNAV;
             // GPSLNavHealth
          health->svHealth = 0; // force "PRN 0" to be healthy
+         navOut.push_back(health);
+      }
+      if ((ai = navIn.mapIonoCorr.find("GAL")) != navIn.mapIonoCorr.end())
+      {
+            // we have the Galileo (NeQuickG) ai terms.
+            /** @todo We don't know whether the iono data came from
+             * I/NAV or F/NAV so I just arbitrarily chose to store it
+             * as I/NAV.  Probably the best thing to do would be to
+             * update the find() method in the future so that it hides
+             * all of these assumptions from the user. */
+         std::shared_ptr<GalINavIono> iono(std::make_shared<GalINavIono>());
+         iono->timeStamp = when;
+            // We don't know the satellite ID from which the iono data
+            // came from so just set it to 0.  If someone is using the
+            // NavLibrary interface for looking up iono data, this
+            // will be irrelevant anyway.
+         iono->signal.sat.id = 0;
+         iono->signal.sat.system = SatelliteSystem::Galileo;
+         iono->signal.xmitSat.id = 0;
+         iono->signal.xmitSat.system = SatelliteSystem::Galileo;
+         iono->signal.system = SatelliteSystem::Galileo;
+            // we can't obtain these from RINEX NAV, so just assume L1 E1B
+         iono->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::L1,
+                                  TrackingCode::E1B);
+         iono->signal.nav = NavType::GalINAV;
+         for (unsigned i = 0; i < 3; i++)
+         {
+            iono->ai[i] = ai->second.param[i];
+         }
+         navOut.push_back(iono);
+            // THIS IS A KLUDGE, see full explanation in GPS section
+         std::shared_ptr<GalINavHealth> health(
+            std::make_shared<GalINavHealth>());
+            // NavData
+            // further kludge to set fake health time stamp to beginning of day
+         YDSTime bod(when);
+         bod.sod = 0;
+         health->timeStamp = bod;
+         health->signal.sat.id = 0;
+         health->signal.sat.system = SatelliteSystem::Galileo;
+         health->signal.xmitSat.id = 0;
+         health->signal.xmitSat.system = SatelliteSystem::Galileo;
+         health->signal.system = SatelliteSystem::Galileo;
+            // we can't obtain these from RINEX NAV, so just assume L1 E1B
+         health->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::L1,
+                                    TrackingCode::E1B);
+         health->signal.nav = NavType::GalINAV;
+            // GalINavHealth
+            // force "PRN 0" to be healthy
+         health->sigHealthStatus = GalHealthStatus::OK;
+         health->dataValidityStatus = GalDataValid::Valid;
+         health->sisaIndex = 0;
          navOut.push_back(health);
       }
       return true;

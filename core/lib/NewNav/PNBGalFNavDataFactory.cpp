@@ -39,6 +39,7 @@
 #include "PNBGalFNavDataFactory.hpp"
 #include "GalFNavEph.hpp"
 #include "GalFNavTimeOffset.hpp"
+#include "GalFNavIono.hpp"
 #include "GalINavHealth.hpp"
 #include "GALWeekSecond.hpp"
 #include "TimeCorrection.hpp"
@@ -616,23 +617,44 @@ namespace gpstk
       }
       std::vector<PackedNavBitsPtr> &ephPage(ephAcc[key]);
       ephPage[pageType-1] = navIn;
-         // Health information is in page type 1.
-      if ((pageType == 1) && PNBNavDataFactory::processHea)
+         // Health and ionospheric correction information is in page type 1.
+      if (pageType == 1)
       {
-            // Add health bits from page type 1.
-         NavDataPtr p1 = std::make_shared<GalFNavHealth>();
-         GalFNavHealth *hp1 = dynamic_cast<GalFNavHealth*>(p1.get());
-         hp1->timeStamp = navIn->getTransmitTime();
-         hp1->signal = NavMessageID(key, NavMessageType::Health);
-         hp1->signal.obs.band = CarrierBand::L5;
-         hp1->signal.obs.code = TrackingCode::E5aI;
-         hp1->sigHealthStatus = static_cast<GalHealthStatus>(
-            ephPage[esiE5ahs]->asUnsignedLong(esbE5ahs,enbE5ahs,escE5ahs));
-         hp1->dataValidityStatus = static_cast<GalDataValid>(
-            ephPage[esiE5advs]->asUnsignedLong(esbE5advs,enbE5advs,escE5advs));
-         hp1->sisaIndex = ephPage[esiSISA]->asUnsignedLong(esbSISA,enbSISA,
-                                                           escSISA);
-         navOut.push_back(p1);
+         if (PNBNavDataFactory::processIono)
+         {
+               // Add iono data from word type 5
+            NavDataPtr p2 = std::make_shared<GalFNavIono>();
+            GalFNavIono *ip2 = dynamic_cast<GalFNavIono*>(p2.get());
+            ip2->timeStamp = navIn->getTransmitTime();
+            ip2->signal = NavMessageID(key, NavMessageType::Iono);
+            ip2->ai[0] = navIn->asUnsignedDouble(esbai0,enbai0,escai0);
+            ip2->ai[1] = navIn->asSignedDouble(esbai1,enbai1,escai1);
+            ip2->ai[2] = navIn->asSignedDouble(esbai2,enbai2,escai2);
+            ip2->idf[0] = navIn->asBool(esbIDFR1);
+            ip2->idf[1] = navIn->asBool(esbIDFR2);
+            ip2->idf[2] = navIn->asBool(esbIDFR3);
+            ip2->idf[3] = navIn->asBool(esbIDFR4);
+            ip2->idf[4] = navIn->asBool(esbIDFR5);
+            navOut.push_back(p2);
+         }
+         if (PNBNavDataFactory::processHea)
+         {
+               // Add health bits from page type 1.
+            NavDataPtr p1 = std::make_shared<GalFNavHealth>();
+            GalFNavHealth *hp1 = dynamic_cast<GalFNavHealth*>(p1.get());
+            hp1->timeStamp = navIn->getTransmitTime();
+            hp1->signal = NavMessageID(key, NavMessageType::Health);
+            hp1->signal.obs.band = CarrierBand::L5;
+            hp1->signal.obs.code = TrackingCode::E5aI;
+            hp1->sigHealthStatus = static_cast<GalHealthStatus>(
+               ephPage[esiE5ahs]->asUnsignedLong(esbE5ahs,enbE5ahs,escE5ahs));
+            hp1->dataValidityStatus = static_cast<GalDataValid>(
+               ephPage[esiE5advs]->asUnsignedLong(
+                  esbE5advs,enbE5advs,escE5advs));
+            hp1->sisaIndex = ephPage[esiSISA]->asUnsignedLong(esbSISA,enbSISA,
+                                                              escSISA);
+            navOut.push_back(p1);
+         }
       }
       else if ((pageType == 4) && PNBNavDataFactory::processTim)
       {

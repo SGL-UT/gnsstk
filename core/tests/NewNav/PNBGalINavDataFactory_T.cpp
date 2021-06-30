@@ -42,6 +42,7 @@
 #include "GalINavHealth.hpp"
 #include "GalINavEph.hpp"
 #include "GalINavAlm.hpp"
+#include "GalINavIono.hpp"
 #include "GALWeekSecond.hpp"
 #include "TimeString.hpp"
 
@@ -97,14 +98,16 @@ public:
       /// Count the various types of messages present in navOut.
    void countResults(const gpstk::NavDataPtrList& navOut);
 
+   void resetCount()
+   { almCount = ephCount = toCount = heaCount = ionoCount = otherCount = 0; }
       /// Counts of messages, set by countResults.
-   unsigned almCount, ephCount, toCount, heaCount, otherCount;
+   unsigned almCount, ephCount, toCount, heaCount, ionoCount, otherCount;
 };
 
 PNBGalINavDataFactory_T ::
 PNBGalINavDataFactory_T()
-      : almCount(0), ephCount(0), toCount(0), heaCount(0), otherCount(0)
 {
+   resetCount();
 #include "GalINavTestDataDef.hpp"
 }
 
@@ -153,10 +156,11 @@ addDataAllTest()
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
    TUASSERTE(bool, true, uut.addData(ephINAVGalWT5, navOut));
-   TUASSERTE(size_t, 3, navOut.size());
+   TUASSERTE(size_t, 4, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, ephCount);
    TUASSERTE(unsigned, 2, heaCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
    TUASSERTE(bool, true, uut.addData(navINAVGalWT9, navOut));
    TUASSERTE(size_t, 0, navOut.size());
@@ -475,6 +479,7 @@ processEphTest()
    gpstk::NavDataPtrList navOut;
    gpstk::GalINavEph *eph;
    gpstk::GalINavHealth *hea;
+   gpstk::GalINavIono *iono;
    TUASSERTE(bool, true, uut.processEph(1, ephINAVGalWT1, navOut));
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
@@ -488,8 +493,8 @@ processEphTest()
    TUASSERTE(size_t, 0, navOut.size());
    navOut.clear();
    TUASSERTE(bool, true, uut.processEph(5, ephINAVGalWT5, navOut));
-   TUASSERTE(size_t, 3, navOut.size());
-   almCount = ephCount = toCount = heaCount = otherCount = 0;
+   TUASSERTE(size_t, 4, navOut.size());
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((eph = dynamic_cast<gpstk::GalINavEph*>(i.get())) != nullptr)
@@ -576,6 +581,24 @@ processEphTest()
                    hea->dataValidityStatus);
          TUASSERTE(unsigned, 107, hea->sisaIndex);
       }
+      else if ((iono = dynamic_cast<gpstk::GalINavIono*>(i.get())) != nullptr)
+      {
+         ionoCount++;
+         nmidExpE1B.messageType = gpstk::NavMessageType::Iono;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, ephINAVGalWT5ct, iono->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExpE1B, iono->signal);
+            // NeQuickIonoData fields
+            // values confirmed by hand.
+         TUASSERTFE(45.75, iono->ai[0]);
+         TUASSERTFE(0.1640625, iono->ai[1]);
+         TUASSERTFE(0.00067138671875, iono->ai[2]);
+         TUASSERTE(bool, false, iono->idf[0]);
+         TUASSERTE(bool, false, iono->idf[1]);
+         TUASSERTE(bool, false, iono->idf[2]);
+         TUASSERTE(bool, false, iono->idf[3]);
+         TUASSERTE(bool, false, iono->idf[4]);
+      }
       else
       {
          otherCount++;
@@ -583,6 +606,7 @@ processEphTest()
    }
    TUASSERTE(unsigned, 1, ephCount);
    TUASSERTE(unsigned, 2, heaCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    TUASSERTE(unsigned, 0, otherCount);
    navOut.clear();
    TURETURN();
@@ -623,7 +647,7 @@ processAlmTest()
    navOut.clear();
    TUASSERTE(bool, true, uut.processAlm(10, navINAVGalWT10, navOut));
    TUASSERTE(size_t, 7, navOut.size());
-   almCount = ephCount = toCount = heaCount = otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((alm = dynamic_cast<gpstk::GalINavAlm*>(i.get())) != nullptr)
@@ -788,7 +812,7 @@ processOffsetTest()
    gpstk::CommonTime expRefTime(gpstk::GALWeekSecond(1014,432000));
    TUASSERTE(bool, true, uut.processOffset(navINAVGalWT6, navOut));
    TUASSERTE(size_t, 1, navOut.size());
-   almCount = ephCount = toCount = heaCount = otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((tim = dynamic_cast<gpstk::GalINavTimeOffset*>(i.get()))
@@ -828,7 +852,7 @@ processOffsetTest()
 void PNBGalINavDataFactory_T ::
 countResults(const gpstk::NavDataPtrList& navOut)
 {
-   almCount = ephCount = toCount = heaCount = otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if (dynamic_cast<gpstk::GalINavAlm*>(i.get()) != nullptr)
@@ -846,6 +870,10 @@ countResults(const gpstk::NavDataPtrList& navOut)
       else if (dynamic_cast<gpstk::GalINavHealth*>(i.get()) != nullptr)
       {
          heaCount++;
+      }
+      else if (dynamic_cast<gpstk::GalINavIono*>(i.get()) != nullptr)
+      {
+         ionoCount++;
       }
       else
       {

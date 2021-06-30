@@ -47,20 +47,18 @@
 #include "TimeSystemConverter.hpp"
 #include "CommonTime.hpp"
 #include "HexDumpDataConfig.hpp"
-// #include "StringUtils.hpp"
+ //#include "StringUtils.hpp"
 #include "TimeTag.hpp"
 #include "ANSITime.hpp"
 #include "AllanDeviation.hpp"
 #include "gps_constants.hpp"
 #include "EnumIterator.hpp"
-#include "XmitAnt.hpp"
 #include "SatelliteSystem.hpp"
 #include "SatID.hpp"
 #include "MathBase.hpp"
 #include "VectorBase.hpp"
 #include "VectorBaseOperators.hpp"
 #include "Vector.hpp"
-#include "VectorOperators.hpp"
 #include "Triple.hpp"
 #include "EllipsoidModel.hpp"
 #include "ReferenceFrame.hpp"
@@ -69,6 +67,8 @@
 #include "GNSSconstants.hpp"
 #include "Xvt.hpp"
 #include "AlmOrbit.hpp"
+#include "AngleReduced.hpp"
+#include "Angle.hpp"
 #include "FFStreamError.hpp"
 #include "FFData.hpp"
 #include "AntexBase.hpp"
@@ -95,6 +95,7 @@
 #include "ObservationType.hpp"
 #include "CarrierBand.hpp"
 #include "TrackingCode.hpp"
+#include "XmitAnt.hpp"
 #include "ObsID.hpp"
 #include "OrbitEph.hpp"
 #include "BDSEphemeris.hpp"
@@ -107,17 +108,17 @@
 #include "MatrixBase.hpp"
 #include "MatrixBaseOperators.hpp"
 #include "Matrix.hpp"
-#include "MatrixImplementation.hpp"
-#include "MiscMath.hpp"
-#include "MatrixFunctors.hpp"
-#include "MatrixOperators.hpp"
 #include "BLQDataReader.hpp"
+/* #include "CommandOption.hpp" */
+/* #include "CommandOptionParser.hpp" */
+/* #include "BasicFramework.hpp" */
 #include "BasicTimeSystemConverter.hpp"
 #include "BinexData.hpp"
 #include "FileSpec.hpp"
 #include "FileFilter.hpp"
 #include "BinexFilterOperators.hpp"
 #include "BinexStream.hpp"
+#include "MiscMath.hpp"
 #include "Stats.hpp"
 #include "BivarStats.hpp"
 #include "GPSWeekSecond.hpp"
@@ -130,6 +131,7 @@
 #include "RinexSatID.hpp"
 #include "GPS_URA.hpp"
 #include "BrcKeplerOrbit.hpp"
+#include "CCIR.hpp"
 #include "CGCS2000Ellipsoid.hpp"
 #include "NavFilterKey.hpp"
 #include "NavFilter.hpp"
@@ -166,10 +168,16 @@
 #include "PCodeConst.hpp"
 #include "CodeBuffer.hpp"
 #include "Combinations.hpp"
+/* #include "CommandLine.hpp" */
+/* #include "CommandOptionWithCommonTimeArg.hpp" */
+#include "Position.hpp"
+/* #include "CommandOptionWithPositionArg.hpp" */
+/* #include "CommandOptionWithTimeArg.hpp" */
 #include "ConfDataReader.hpp"
-/* #include "ConfDataWriter.hpp" */
+ /* #include "ConfDataWriter.hpp" */ // error on typemaps for list of double
 #include "CubicSpline.hpp"
 #include "DCBDataReader.hpp"
+/* #include "DebugTrace.hpp" */
 #include "DiffCorrBase.hpp"
 #include "DiffCorrClk.hpp"
 #include "DiffCorrEph.hpp"
@@ -208,7 +216,6 @@
 #include "DumpDetail.hpp"
 #include "ENUUtil.hpp"
 #include "IERSConvention.hpp"
-#include "Position.hpp"
 /* #include "EarthOrientation.hpp" */
 /* #include "EOPPrediction.hpp" */
 /* #include "EOPStore.hpp" */
@@ -237,6 +244,7 @@
 #include "Rinex3ObsData.hpp"
 #include "FileFilterFrameWithHeader.hpp"
 #include "FirstDiffFilter.hpp"
+#include "FreqConv.hpp"
 #include "GCATTropModel.hpp"
 #include "GGHeightTropModel.hpp"
 #include "GGTropModel.hpp"
@@ -265,6 +273,9 @@
 #include "GPSCNav2Eph.hpp"
 #include "NavHealthData.hpp"
 #include "GPSCNav2Health.hpp"
+#include "IonoData.hpp"
+#include "KlobucharIonoData.hpp"
+#include "GPSCNav2Iono.hpp"
 #include "TimeOffsetData.hpp"
 #include "StdNavTimeOffset.hpp"
 #include "GPSCNav2TimeOffset.hpp"
@@ -272,12 +283,14 @@
 #include "GPSCNavAlm.hpp"
 #include "GPSCNavEph.hpp"
 #include "GPSCNavHealth.hpp"
+#include "GPSCNavIono.hpp"
 #include "GPSCNavRedAlm.hpp"
 #include "GPSCNavTimeOffset.hpp"
 #include "GPSLNavData.hpp"
 #include "GPSLNavAlm.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
+#include "GPSLNavIono.hpp"
 #include "GPSLNavTimeOffset.hpp"
 #include "GPSOrbElemStore.hpp"
 #include "GSatID.hpp"
@@ -287,29 +300,39 @@
 #include "GalFNavAlm.hpp"
 #include "GalFNavEph.hpp"
 #include "GalFNavHealth.hpp"
+#include "NeQuickIonoData.hpp"
+#include "GalFNavIono.hpp"
 #include "GalFNavTimeOffset.hpp"
 #include "GalINavAlm.hpp"
 #include "GalINavEph.hpp"
 #include "GalINavHealth.hpp"
+#include "GalINavIono.hpp"
 #include "GalINavTimeOffset.hpp"
 #include "GalileoEllipsoid.hpp"
+#include "GalileoIonoEllipsoid.hpp"
 #include "GenXSequence.hpp"
 #include "GenericNavFilterData.hpp"
 #include "GloEphemerisStore.hpp"
 #include "GlobalTropModel.hpp"
 #include "HelmertTransform.hpp"
+ //#include "IERS1996NutationData.hpp"
+ //#include "IERS1996UT1mUTCData.hpp"
+ //#include "IERS2003NutationData.hpp"
+/* #include "IERS2010CIOSeriesData.hpp" */
+/* #include "LoopedFramework.hpp" */
+/* #include "InOutFramework.hpp" */
 #include "IonexBase.hpp"
 #include "IonexHeader.hpp"
 #include "IonexStream.hpp"
 #include "IonexData.hpp"
 #include "IonexStore.hpp"
 #include "Namelist.hpp"
-#include "SRIMatrix.hpp"
-#include "SparseVector.hpp"
-#include "SparseMatrix.hpp"
-#include "SRI.hpp"
+/* #include "SRIMatrix.hpp" */
+/* #include "SparseVector.hpp" */
+/* #include "SparseMatrix.hpp" */
+/* #include "SRI.hpp" */
 /* #include "SRIFilter.hpp" */
-#include "logstream.hpp"
+/* #include "logstream.hpp" */
 #include "KalmanFilter.hpp"
 #include "LNavFilterData.hpp"
 #include "LNavAlmValFilter.hpp"
@@ -321,7 +344,11 @@
 #include "LNavParityFilter.hpp"
 #include "LNavTLMHOWFilter.hpp"
 #include "LinearClockModel.hpp"
+#include "MODIP.hpp"
 #include "MOPSTropModel.hpp"
+#include "MatrixImplementation.hpp"
+#include "MatrixFunctors.hpp"
+#include "MatrixOperators.hpp"
 #include "MetReader.hpp"
 #include "MostCommonValue.hpp"
 #include "NavValidityType.hpp"
@@ -377,6 +404,7 @@
 #include "PoleTides.hpp"
 #include "PolyFit.hpp"
 #include "PosixTime.hpp"
+ //#include "PowerSum.hpp"
 #include "SolarSystemEphemeris.hpp"
 #include "SunEarthSatGeometry.hpp"
 #include "SolidEarthTides.hpp"
@@ -397,6 +425,7 @@
 #include "RinexClockData.hpp"
 #include "RinexClockHeader.hpp"
 #include "RinexClockStream.hpp"
+ //#include "RinexClockStore.hpp"
 #include "RinexNavHeader.hpp"
 #include "RinexNavStream.hpp"
 #include "RinexEphemerisStore.hpp"
@@ -418,7 +447,7 @@
 #include "SEMNavDataFactory.hpp"
 #include "SP3NavDataFactory.hpp"
 #include "SP3Stream.hpp"
-#include "SRIleastSquares.hpp"
+/* #include "SRIleastSquares.hpp" */
 #include "X1Sequence.hpp"
 #include "X2Sequence.hpp"
 #include "SVPCodeGen.hpp"
@@ -428,11 +457,19 @@
 #include "msecHandler.hpp"
 /* #include "SatPassUtilities.hpp" */
 #include "SimpleTropModel.hpp"
+/* #include "SinexBase.hpp" */
+/* #include "SinexHeader.hpp" */
+/* #include "SinexTypes.hpp" */
+/* #include "SinexBlock.hpp" */
+/* #include "SinexData.hpp" */
+/* #include "SinexStream.hpp" */
 #include "SolarPosition.hpp"
+/* #include "SpecialFuncs.hpp" */
 #include "StreamBuf.hpp"
 #include "TimeCorrection.hpp"
 #include "TimeNamedFileStream.hpp"
 #include "TimeRange.hpp"
+#include "VectorOperators.hpp"
 #include "WNJfilter.hpp"
 #include "WindowFilter.hpp"
 #include "YumaBase.hpp"

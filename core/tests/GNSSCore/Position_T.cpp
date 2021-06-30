@@ -40,6 +40,7 @@
 #include "TestUtil.hpp"
 #include <iostream>
 #include <iomanip>
+#include "GalileoIonoEllipsoid.hpp"
 
 using namespace std;
 using namespace gpstk;
@@ -364,6 +365,53 @@ public:
       }
       TURETURN();
    }
+
+
+   unsigned getZenithAngleTest()
+   {
+      TUDEF("Position", "getZenithAngle");
+         // test data originated from EU Galileo iono model
+         // NeQuickG_JRC_ray_test.c (km converted to meters)
+      gpstk::Position p1(82.494293510, 297.659539798, 78.107446,
+                         gpstk::Position::Geodetic);
+      gpstk::Position p2(54.445029416, 241.529931024, 20370730.845002,
+                         gpstk::Position::Geodetic);
+      double expected = 0.713414;
+      gpstk::AngleReduced delta, expectedDelta(0.52852299785161971357,
+                                               0.84891898361500717218);
+      gpstk::GalileoIonoEllipsoid ell;
+      p1.setEllipsoidModel(&ell);
+      p2.setEllipsoidModel(&ell);
+      gpstk::Angle zeta = p1.getZenithAngle(p2, delta);
+      TUASSERTFEPS(expected, zeta.rad(), 1e-6);
+      TUASSERTFEPS(expectedDelta.sin(), delta.sin(), 1e-6);
+      TUASSERTFEPS(expectedDelta.cos(), delta.cos(), 1e-6);
+      TURETURN();
+   }
+
+
+   unsigned getRayPerigeeTest()
+   {
+      TUDEF("Position", "getRayPerigee");
+         // test data originated from EU Galileo iono model
+         // NeQuickG_JRC_ray_test.c (km converted to meters)
+      gpstk::GalileoIonoEllipsoid ell;
+      gpstk::Position p1(82.494293510, 297.659539798, 78.107446,
+                         gpstk::Position::Geodetic, &ell);
+      gpstk::Position p2(54.445029416, 241.529931024, 20370730.845002,
+                         gpstk::Position::Geodetic, &ell);
+         // 405 degrees longitude?  Ok, Galileo.
+      gpstk::Position expected(43.550617197, 405.289045373, 4169486.317342,
+                               gpstk::Position::Geocentric, &ell);
+      TUASSERTE(gpstk::Position, expected, p1.getRayPerigee(p2));
+      gpstk::Position f1(82.49, 297.66, 78.11, gpstk::Position::Geodetic, &ell);
+      gpstk::Position f2(54.29, 8.23, 20281546.18, gpstk::Position::Geodetic,
+                         &ell);
+      gpstk::Position foo = f1.getRayPosition(1000, f2);
+      cerr << "radius=" << foo.radius() << " m" << endl;
+//      p1.getRayPosition do something here check against NeQuickG_JRC_ray and test for consistency in sigmap value
+      TURETURN();
+   }
 };
 
 int main() //Main function to initialize and run all tests above
@@ -377,6 +425,8 @@ int main() //Main function to initialize and run all tests above
    errorTotal += testClass.scanTest();
    errorTotal += testClass.elevationAzimuthTest();
    errorTotal += testClass.poleTransformTest();
+   errorTotal += testClass.getZenithAngleTest();
+   errorTotal += testClass.getRayPerigeeTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

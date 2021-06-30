@@ -174,7 +174,6 @@ install( FILES ${GPSTK_INC_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 set_target_properties(gpstk PROPERTIES VERSION "${GPSTK_VERSION_MAJOR}.${GPSTK_VERSION_MINOR}.${GPSTK_VERSION_PATCH}"
                                        SOVERSION "${GPSTK_VERSION_MAJOR}")
 
-
 #============================================================
 # Testing
 #============================================================

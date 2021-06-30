@@ -191,6 +191,10 @@ namespace gpstk
       bool operator>=( const CivilTime& right ) const;
          //@}
 
+         /// Get the "universal time"-esque fractional hour of day.
+      double getUTHour() const
+      { return (double)hour + (((minute*60.0)+second)/3600.0); }
+
       int year;
       int month;
       int day;
