@@ -41,6 +41,7 @@
 
 #include <atomic>
 #include <sstream>
+#include <iomanip>
 
 namespace gpstk
 {
@@ -118,12 +119,12 @@ namespace gpstk
    }
 #define DEBUGTRACE_FUNCTION()                                   \
    gpstk::DebugTrace gpstkTraceObject(__PRETTY_FUNCTION__)
-#define DEBUGTRACE(EXPR)                        \
-   {                                            \
-      std::ostringstream os;                    \
-      os << "* "                                \
-         << EXPR << std::endl;                  \
-      gpstk::DebugTrace::trace(os.str());       \
+#define DEBUGTRACE(EXPR)                                \
+   {                                                    \
+      std::ostringstream os;                            \
+      os << "* " << std::fixed << std::setprecision(15) \
+         << EXPR << std::endl;                          \
+      gpstk::DebugTrace::trace(os.str());               \
    }
 #endif
 

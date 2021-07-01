@@ -41,6 +41,7 @@
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
 #include "GalINavEph.hpp"
+#include "GalINavIono.hpp"
 #include "GalFNavEph.hpp"
 #include "GalINavHealth.hpp"
 #include "RinexTimeOffset.hpp"
@@ -184,7 +185,7 @@ loadIntoMapTest()
       "test_input_rinex3_76193040.14n";
       // this should implicitly load into the data map
    TUASSERT(f3.addDataSource(f3name));
-   TUASSERTE(size_t, 29, f3.size());
+   TUASSERTE(size_t, 31, f3.size());
 
    TestClass f4;
    std::string f4name = gpstk::getPathData() + gpstk::getFileSep() +
@@ -247,10 +248,12 @@ loadIntoMapTest()
       // x 1 GPS health
       // x 39 Galileo ephemerides
       // x 3*39 Galileo health
-   TUASSERTE(size_t, 162, f8.size());
+      // x 1 Galileo kludge health for iono corrections
+      // x 1 Galileo iono correction
+   TUASSERTE(size_t, 164, f8.size());
       // count INAV, FNAV, and LNAV data
    unsigned ephICount = 0, ephFCount = 0, ephLCount = 0, heaICount = 0,
-      heaLCount = 0, otherCount = 0;
+      heaLCount = 0, ionoCount = 0, otherCount = 0;
    for (auto& nmti : f8.getData())
    {
       for (auto& sati : nmti.second)
@@ -261,6 +264,7 @@ loadIntoMapTest()
             gpstk::GalINavEph *ephI;
             gpstk::GalFNavEph *ephF;
             gpstk::GalINavHealth *heaI;
+            gpstk::GalINavIono *iono;
             gpstk::GPSLNavHealth *heaL;
             gpstk::GPSLNavEph *ephL;
             if ((ephI = dynamic_cast<gpstk::GalINavEph*>(ti.second.get()))
@@ -348,9 +352,77 @@ loadIntoMapTest()
             else if ((ephF = dynamic_cast<gpstk::GalFNavEph*>(ti.second.get()))
                 != nullptr)
             {
+               if (ephFCount == 0)
+               {
+                  static const gpstk::CommonTime expToc =
+                     gpstk::CivilTime(2020,5,29,0,10,0,gpstk::TimeSystem::GAL);
+                     // yes, these are supposed to be GPS, see
+                     // RinexNavDataFactory::fixTimeGalileo.
+                  static const gpstk::CommonTime expToe =
+                     gpstk::GPSWeekSecond(2107,432600);
+                  static const gpstk::CommonTime expXmit1 =
+                     gpstk::GPSWeekSecond(2107,433264);
+                  static const gpstk::CommonTime expXmit2 = expXmit1+10.0;
+                  static const gpstk::CommonTime expXmit3 = expXmit2+10.0;
+                  static const gpstk::CommonTime expXmit4 = expXmit3+10.0;
+                  static const gpstk::CommonTime expEnd = expToe + (3600.0*4.0);
+                  static const gpstk::NavMessageID expNMID(
+                     gpstk::NavSatelliteID(10, 10,
+                                           gpstk::SatelliteSystem::Galileo,
+                                           gpstk::CarrierBand::L5,
+                                           gpstk::TrackingCode::E5aI,
+                                           gpstk::NavType::GalFNAV),
+                     gpstk::NavMessageType::Ephemeris);
+                     // NavData
+                  TUASSERTE(gpstk::CommonTime, expXmit1, ephF->timeStamp);
+                  TUASSERTE(gpstk::NavMessageID, expNMID, ephF->signal);
+                     // OrbitData doesn't actually have data.
+                     // OrbitDataKepler
+                  TUASSERTE(gpstk::CommonTime, expXmit1, ephF->xmitTime);
+                  TUASSERTE(gpstk::CommonTime, expToe, ephF->Toe);
+                  TUASSERTE(gpstk::CommonTime, expToc, ephF->Toc);
+                  TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy,
+                            ephF->health);
+                  TUASSERTFE(-4.507601261139e-07, ephF->Cuc);
+                  TUASSERTFE( 2.101063728333e-06, ephF->Cus);
+                  TUASSERTFE( 3.041875000000e+02, ephF->Crc);
+                  TUASSERTFE(-5.968750000000e+00, ephF->Crs);
+                  TUASSERTFE( 6.519258022308e-08, ephF->Cic);
+                  TUASSERTFE( 5.774199962616e-08, ephF->Cis);
+                  TUASSERTFE(-2.375150555491e+00, ephF->M0);
+                  TUASSERTFE( 2.890120385115e-09, ephF->dn);
+                  TUASSERTFE(0, ephF->dndot);
+                  TUASSERTFE( 4.586749710143e-04, ephF->ecc);
+                  TUASSERTFE( 5.440611391068e+03*5.440611391068e+03, ephF->A);
+                  TUASSERTFE( 5.440611391068e+03, ephF->Ahalf);
+                  TUASSERTFE(0, ephF->Adot);
+                  TUASSERTFE( 2.789971923884e+00, ephF->OMEGA0);
+                  TUASSERTFE( 9.883643686117e-01, ephF->i0);
+                  TUASSERTFE( 5.035283685377e-01, ephF->w);
+                  TUASSERTFE(-5.772026142343e-09, ephF->OMEGAdot);
+                  TUASSERTFE( 2.103659054415e-10, ephF->idot);
+                  TUASSERTFE( 3.116308012977e-03, ephF->af0);
+                  TUASSERTFE( 2.346354222027e-10, ephF->af1);
+                  TUASSERTFE( 3.469446951954e-18, ephF->af2);
+                  TUASSERTE(gpstk::CommonTime, expXmit1, ephF->beginFit);
+                  TUASSERTE(gpstk::CommonTime, expEnd, ephF->endFit);
+                     // GalFNavEph
+                  TUASSERTFE(-1.559965312481e-08, ephF->bgdE5aE1);
+                  TUASSERTE(unsigned, 107, ephF->sisaIndex);
+                  TUASSERTE(unsigned, 10, ephF->svid);
+                  TUASSERTE(gpstk::CommonTime, expXmit2, ephF->xmit2);
+                  TUASSERTE(gpstk::CommonTime, expXmit3, ephF->xmit3);
+                  TUASSERTE(gpstk::CommonTime, expXmit4, ephF->xmit4);
+                  TUASSERTE(uint16_t, 81, ephF->iodnav1);
+                  TUASSERTE(uint16_t, 81, ephF->iodnav2);
+                  TUASSERTE(uint16_t, 81, ephF->iodnav3);
+                  TUASSERTE(uint16_t, 81, ephF->iodnav4);
+                  TUASSERTE(gpstk::GalHealthStatus,
+                            gpstk::GalHealthStatus::OK, ephF->hsE5a);
+                  TUASSERTE(gpstk::GalDataValid, gpstk::GalDataValid::Valid,
+                            ephF->dvsE5a);
+               }
                ephFCount++;
-                  /** @todo check these data when we have a fuller
-                   * F/NAV implementation */
             }
             else if ((ephL = dynamic_cast<gpstk::GPSLNavEph*>(ti.second.get()))
                 != nullptr)
@@ -435,7 +507,7 @@ loadIntoMapTest()
             else if ((heaI=dynamic_cast<gpstk::GalINavHealth*>(ti.second.get()))
                 != nullptr)
             {
-               if (heaICount == 0)
+               if (heaICount == 1)
                {
                   static const gpstk::CommonTime expXmit1 =
                      gpstk::GPSWeekSecond(2107,433714);
@@ -487,6 +559,35 @@ loadIntoMapTest()
                }
                heaLCount++;
             }
+            else if ((iono=dynamic_cast<gpstk::GalINavIono*>(ti.second.get()))
+                     != nullptr)
+            {
+               if (ionoCount == 0)
+               {
+                  static const gpstk::CommonTime expTS =
+                     gpstk::GPSWeekSecond(2107,439200);
+                  static const gpstk::NavMessageID expNMID(
+                     gpstk::NavSatelliteID(0, 0,
+                                           gpstk::SatelliteSystem::Galileo,
+                                           gpstk::CarrierBand::L1,
+                                           gpstk::TrackingCode::E1B,
+                                           gpstk::NavType::GalINAV),
+                     gpstk::NavMessageType::Iono);
+                     // NavData
+                  TUASSERTE(gpstk::CommonTime, expTS, iono->timeStamp);
+                  TUASSERTE(gpstk::NavMessageID, expNMID, iono->signal);
+                     // GalINavIono
+                  TUASSERTFE(0.4575e+02, iono->ai[0]);
+                  TUASSERTFE(0.1641e+00, iono->ai[1]);
+                  TUASSERTFE(0.6714e-03, iono->ai[2]);
+                  TUASSERTE(bool, false, iono->idf[0]);
+                  TUASSERTE(bool, false, iono->idf[1]);
+                  TUASSERTE(bool, false, iono->idf[2]);
+                  TUASSERTE(bool, false, iono->idf[3]);
+                  TUASSERTE(bool, false, iono->idf[4]);
+               }
+               ionoCount++;
+            }
             else
             {
                otherCount++;
@@ -498,8 +599,9 @@ loadIntoMapTest()
    TUASSERTE(unsigned, 3, ephFCount);
    TUASSERTE(unsigned, 1, ephLCount);
       /// @bug are we producing "I/NAV" health containing data from F/NAV?
-   TUASSERTE(unsigned, 39*3, heaICount);
+   TUASSERTE(unsigned, 39*3+1, heaICount);
    TUASSERTE(unsigned, 1, heaLCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    TUASSERTE(unsigned, 0, otherCount);
    TURETURN();
 }
@@ -533,7 +635,7 @@ decodeSISATest()
    for (unsigned index = 100; index < 126; index++)
    {
       double accuracy = 2.0 + ((index-100) * 0.16);
-      std::cerr /*<< std::setprecision(20)*/ << "index=" << index << "  accuracy=" << accuracy << std::endl;
+      // std::cerr /*<< std::setprecision(20)*/ << "index=" << index << "  accuracy=" << accuracy << std::endl;
       TUASSERTE(unsigned, index,
                 gpstk::RinexNavDataFactory::decodeSISA(accuracy));
    }

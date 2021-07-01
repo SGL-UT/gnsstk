@@ -42,6 +42,7 @@
 #include "GalFNavHealth.hpp"
 #include "GalFNavEph.hpp"
 #include "GalFNavAlm.hpp"
+#include "GalFNavIono.hpp"
 #include "GALWeekSecond.hpp"
 #include "TimeString.hpp"
 
@@ -95,14 +96,16 @@ public:
       /// Count the various types of messages present in navOut.
    void countResults(const gpstk::NavDataPtrList& navOut);
 
+   void resetCount()
+   { almCount = ephCount = toCount = heaCount = ionoCount = otherCount = 0; }
       /// Counts of messages, set by countResults.
-   unsigned almCount, ephCount, toCount, heaCount, otherCount;
+   unsigned almCount, ephCount, toCount, heaCount, ionoCount, otherCount;
 };
 
 PNBGalFNavDataFactory_T ::
 PNBGalFNavDataFactory_T()
-      : almCount(0), ephCount(0), toCount(0), heaCount(0), otherCount(0)
 {
+   resetCount();
 #include "GalFNavTestDataDef.hpp"
 }
 
@@ -128,9 +131,10 @@ addDataAllTest()
       // tests.
       // Add nav pages in time order
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT1, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT2, navOut));
    TUASSERTE(size_t, 0, navOut.size());
@@ -378,9 +382,10 @@ processEphTest()
    gpstk::GalFNavEph *eph;
    gpstk::GalFNavTimeOffset *to;
    gpstk::GalFNavHealth *hea;
+   gpstk::GalFNavIono *iono;
    TUASSERTE(bool, true, uut.processEph(1, navFNAVGalPT1, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   almCount = ephCount = toCount = heaCount = otherCount = 0;
+   TUASSERTE(size_t, 2, navOut.size());
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((hea = dynamic_cast<gpstk::GalFNavHealth*>(i.get())) != nullptr)
@@ -398,6 +403,24 @@ processEphTest()
                    hea->dataValidityStatus);
          TUASSERTE(unsigned, 107, hea->sisaIndex);
       }
+      else if ((iono = dynamic_cast<gpstk::GalFNavIono*>(i.get())) != nullptr)
+      {
+         ionoCount++;
+         nmidExpE5a.messageType = gpstk::NavMessageType::Iono;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, navFNAVGalPT1ct, iono->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExpE5a, iono->signal);
+            // NeQuickIonoData fields
+            // values confirmed by hand.
+         TUASSERTFE(45.75, iono->ai[0]);
+         TUASSERTFE(0.1640625, iono->ai[1]);
+         TUASSERTFE(0.00067138671875, iono->ai[2]);
+         TUASSERTE(bool, false, iono->idf[0]);
+         TUASSERTE(bool, false, iono->idf[1]);
+         TUASSERTE(bool, false, iono->idf[2]);
+         TUASSERTE(bool, false, iono->idf[3]);
+         TUASSERTE(bool, false, iono->idf[4]);
+      }
       else
       {
          otherCount++;
@@ -414,7 +437,7 @@ processEphTest()
    navOut.clear();
    TUASSERTE(bool, true, uut.processEph(4, navFNAVGalPT4, navOut));
    TUASSERTE(size_t, 3, navOut.size());
-   almCount = ephCount = toCount = heaCount = otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((eph = dynamic_cast<gpstk::GalFNavEph*>(i.get())) != nullptr)
@@ -510,7 +533,7 @@ processAlmTest()
    navOut.clear();
    TUASSERTE(bool, true, uut.processAlm(6, navFNAVGalPT6, navOut));
    TUASSERTE(size_t, 6, navOut.size());
-   almCount = ephCount = toCount = heaCount = otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if ((alm = dynamic_cast<gpstk::GalFNavAlm*>(i.get())) != nullptr)
@@ -660,7 +683,7 @@ processAlmTest()
 void PNBGalFNavDataFactory_T ::
 countResults(const gpstk::NavDataPtrList& navOut)
 {
-   almCount = ephCount = toCount = heaCount = otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if (dynamic_cast<gpstk::GalFNavAlm*>(i.get()) != nullptr)
@@ -678,6 +701,10 @@ countResults(const gpstk::NavDataPtrList& navOut)
       else if (dynamic_cast<gpstk::GalFNavHealth*>(i.get()) != nullptr)
       {
          heaCount++;
+      }
+      else if (dynamic_cast<gpstk::GalFNavIono*>(i.get()) != nullptr)
+      {
+         ionoCount++;
       }
       else
       {
