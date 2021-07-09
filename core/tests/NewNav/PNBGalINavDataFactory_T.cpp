@@ -52,6 +52,7 @@ using namespace std;
 
 // avoid having to type out template params over and over.
 using GalFactoryCounter = FactoryCounter<gpstk::GalINavAlm,gpstk::GalINavEph,gpstk::GalINavTimeOffset,gpstk::GalINavHealth,gpstk::GalINavIono,gpstk::GalINavISC>;
+
 namespace gpstk
 {
    std::ostream& operator<<(std::ostream& s, SVHealth h)

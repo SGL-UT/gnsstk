@@ -36,6 +36,7 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#include "FactoryCounter.hpp"
 #include "PNBGalFNavDataFactory.hpp"
 #include "TestUtil.hpp"
 #include "GalFNavTimeOffset.hpp"
@@ -43,10 +44,14 @@
 #include "GalFNavEph.hpp"
 #include "GalFNavAlm.hpp"
 #include "GalFNavIono.hpp"
+#include "GalFNavISC.hpp"
 #include "GALWeekSecond.hpp"
 #include "TimeString.hpp"
 
 using namespace std;
+
+// avoid having to type out template params over and over.
+using GalFactoryCounter = FactoryCounter<gpstk::GalFNavAlm,gpstk::GalFNavEph,gpstk::GalFNavTimeOffset,gpstk::GalFNavHealth,gpstk::GalFNavIono,gpstk::GalFNavISC>;
 
 namespace gpstk
 {
@@ -92,20 +97,11 @@ public:
    unsigned processAlmTest();
 
 #include "GalFNavTestDataDecl.hpp"
-
-      /// Count the various types of messages present in navOut.
-   void countResults(const gpstk::NavDataPtrList& navOut);
-
-   void resetCount()
-   { almCount = ephCount = toCount = heaCount = ionoCount = otherCount = 0; }
-      /// Counts of messages, set by countResults.
-   unsigned almCount, ephCount, toCount, heaCount, ionoCount, otherCount;
 };
 
 PNBGalFNavDataFactory_T ::
 PNBGalFNavDataFactory_T()
 {
-   resetCount();
 #include "GalFNavTestDataDef.hpp"
 }
 
@@ -114,6 +110,7 @@ unsigned PNBGalFNavDataFactory_T ::
 addDataAllTest()
 {
    TUDEF("PNBGalFNavDataFactory", "addData");
+   GalFactoryCounter fc(testFramework);
    gpstk::PNBGalFNavDataFactory uut;
    gpstk::SatID gloSid(1,gpstk::SatelliteSystem::Glonass);
    gpstk::ObsID gloid(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::G1,
@@ -125,38 +122,24 @@ addDataAllTest()
    gpstk::NavDataPtrList navOut;
       // should refuse non-GPS data
    TUASSERTE(bool, false, uut.addData(nonGPS, navOut));
+   fc.validateResults(navOut, __LINE__);
       // The rest is checking that we're processing the good data
       // appropriately, but I'm not bothering to check the detailed
       // contents as that is assumed to be tested in the process*
       // tests.
       // Add nav pages in time order
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT1, navOut));
-   TUASSERTE(size_t, 2, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, heaCount);
-   TUASSERTE(unsigned, 1, ionoCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 0, 0, 0, 1, 1, 1);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT3, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT4, navOut));
-   TUASSERTE(size_t, 3, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, ephCount);
-   TUASSERTE(unsigned, 2, toCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 0, 1, 2);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT6, navOut));
-   TUASSERTE(size_t, 6, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 3, almCount);
-   TUASSERTE(unsigned, 3, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 6, 3, 0, 0, 3);
    TURETURN();
 }
 
@@ -165,30 +148,23 @@ unsigned PNBGalFNavDataFactory_T ::
 addDataEphemerisTest()
 {
    TUDEF("PNBGalFNavDataFactory", "addData");
+   GalFactoryCounter fc(testFramework);
    gpstk::PNBGalFNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Ephemeris}));
       // Add nav pages in time order
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT1, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT3, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT4, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, ephCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 1, 0, 1);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT6, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TURETURN();
 }
 
@@ -197,30 +173,23 @@ unsigned PNBGalFNavDataFactory_T ::
 addDataAlmanacTest()
 {
    TUDEF("PNBGalFNavDataFactory", "addData");
+   GalFactoryCounter fc(testFramework);
    gpstk::PNBGalFNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Almanac}));
       // Add nav pages in time order
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT1, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT3, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT4, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT6, navOut));
-   TUASSERTE(size_t, 3, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 3, almCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 3);
    TURETURN();
 }
 
@@ -229,32 +198,23 @@ unsigned PNBGalFNavDataFactory_T ::
 addDataHealthTest()
 {
    TUDEF("PNBGalFNavDataFactory", "addData");
+   GalFactoryCounter fc(testFramework);
    gpstk::PNBGalFNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Health}));
       // Add nav pages in time order
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT1, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 1, 0, 0, 0, 1);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT3, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT4, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT6, navOut));
-   TUASSERTE(size_t, 3, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 3, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 0, 0, 0, 3);
    TURETURN();
 }
 
@@ -263,30 +223,23 @@ unsigned PNBGalFNavDataFactory_T ::
 addDataTimeTest()
 {
    TUDEF("PNBGalFNavDataFactory", "addData");
+   GalFactoryCounter fc(testFramework);
    gpstk::PNBGalFNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::TimeOffset}));
       // Add nav pages in time order
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT1, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT3, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT4, navOut));
-   TUASSERTE(size_t, 2, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 2, toCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 2, 0, 0, 2);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT6, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TURETURN();
 }
 
@@ -295,35 +248,24 @@ unsigned PNBGalFNavDataFactory_T ::
 addDataEphHealthTest()
 {
    TUDEF("PNBGalFNavDataFactory", "addData");
+   GalFactoryCounter fc(testFramework);
    gpstk::PNBGalFNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Health,
                               gpstk::NavMessageType::Ephemeris}));
       // Add nav pages in time order
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT1, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 1, 0, 0, 0, 1);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT3, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT4, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, ephCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 1, 0, 1);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT6, navOut));
-   TUASSERTE(size_t, 3, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 3, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 0, 0, 0, 3);
    TURETURN();
 }
 
@@ -332,34 +274,24 @@ unsigned PNBGalFNavDataFactory_T ::
 addDataAlmHealthTest()
 {
    TUDEF("PNBGalFNavDataFactory", "addData");
+   GalFactoryCounter fc(testFramework);
    gpstk::PNBGalFNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Health,
                               gpstk::NavMessageType::Almanac}));
       // Add nav pages in time order
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT1, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 1, 0, 0, 0, 1);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT3, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT4, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.addData(navFNAVGalPT6, navOut));
-   TUASSERTE(size_t, 6, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 3, almCount);
-   TUASSERTE(unsigned, 3, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 6, 3, 0, 0, 3);
    TURETURN();
 }
 
@@ -368,6 +300,7 @@ unsigned PNBGalFNavDataFactory_T ::
 processEphTest()
 {
    TUDEF("PNBGalFNavDataFactory", "processEph");
+   GalFactoryCounter fc(testFramework);
    gpstk::PNBGalFNavDataFactory uut;
    gpstk::NavMessageID nmidExpE5a(
       gpstk::NavSatelliteID(1, 1, gpstk::SatelliteSystem::Galileo,
@@ -383,14 +316,12 @@ processEphTest()
    gpstk::GalFNavTimeOffset *to;
    gpstk::GalFNavHealth *hea;
    gpstk::GalFNavIono *iono;
+   gpstk::GalFNavISC *isc;
    TUASSERTE(bool, true, uut.processEph(1, navFNAVGalPT1, navOut));
-   TUASSERTE(size_t, 2, navOut.size());
-   resetCount();
    for (const auto& i : navOut)
    {
       if ((hea = dynamic_cast<gpstk::GalFNavHealth*>(i.get())) != nullptr)
       {
-         heaCount++;
             // NavData fields
          TUASSERTE(gpstk::CommonTime, navFNAVGalPT1ct, hea->timeStamp);
          nmidExpE5a.messageType = gpstk::NavMessageType::Health;
@@ -405,7 +336,6 @@ processEphTest()
       }
       else if ((iono = dynamic_cast<gpstk::GalFNavIono*>(i.get())) != nullptr)
       {
-         ionoCount++;
          nmidExpE5a.messageType = gpstk::NavMessageType::Iono;
             // NavData fields
          TUASSERTE(gpstk::CommonTime, navFNAVGalPT1ct, iono->timeStamp);
@@ -421,28 +351,25 @@ processEphTest()
          TUASSERTE(bool, false, iono->idf[3]);
          TUASSERTE(bool, false, iono->idf[4]);
       }
-      else
+      else if ((isc = dynamic_cast<gpstk::GalFNavISC*>(i.get())) != nullptr)
       {
-         otherCount++;
+         nmidExpE5a.messageType = gpstk::NavMessageType::ISC;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, navFNAVGalPT1ct, isc->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExpE5a, isc->signal);
+         TUASSERTFE(-4.656613e-09, isc->isc);
       }
    }
-   TUASSERTE(unsigned, 1, heaCount);
-   TUASSERTE(unsigned, 0, otherCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 0, 0, 0, 1, 1, 1);
    TUASSERTE(bool, true, uut.processEph(2, navFNAVGalPT2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.processEph(3, navFNAVGalPT3, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.processEph(4, navFNAVGalPT4, navOut));
-   TUASSERTE(size_t, 3, navOut.size());
-   resetCount();
    for (const auto& i : navOut)
    {
       if ((eph = dynamic_cast<gpstk::GalFNavEph*>(i.get())) != nullptr)
       {
-         ephCount++;
          nmidExpE5a.messageType = gpstk::NavMessageType::Ephemeris;
             // NavData fields
          TUASSERTE(gpstk::CommonTime, navFNAVGalPT1ct, eph->timeStamp);
@@ -492,20 +419,8 @@ processEphTest()
          TUASSERTE(gpstk::GalDataValid, gpstk::GalDataValid::Valid,
                    eph->dvsE5a);
       }
-      else if ((to = dynamic_cast<gpstk::GalFNavTimeOffset*>(i.get()))
-               != nullptr)
-      {
-         toCount++;
-      }
-      else
-      {
-         otherCount++;
-      }
    }
-   TUASSERTE(unsigned, 1, ephCount);
-   TUASSERTE(unsigned, 2, toCount);
-   TUASSERTE(unsigned, 0, otherCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 0, 1, 2);
    TURETURN();
 }
 
@@ -514,6 +429,7 @@ unsigned PNBGalFNavDataFactory_T ::
 processAlmTest()
 {
    TUDEF("PNBGalFNavDataFactory", "processAlm");
+   GalFactoryCounter fc(testFramework);
    gpstk::PNBGalFNavDataFactory uut;
    gpstk::NavMessageID nmidExpE5a(
       gpstk::NavSatelliteID(1, 1, gpstk::SatelliteSystem::Galileo,
@@ -529,16 +445,12 @@ processAlmTest()
    gpstk::GalFNavHealth *hea;
    gpstk::GalFNavTimeOffset *tim;
    TUASSERTE(bool, true, uut.processAlm(5, navFNAVGalPT5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.processAlm(6, navFNAVGalPT6, navOut));
-   TUASSERTE(size_t, 6, navOut.size());
-   resetCount();
    for (const auto& i : navOut)
    {
       if ((alm = dynamic_cast<gpstk::GalFNavAlm*>(i.get())) != nullptr)
       {
-         almCount++;
          gpstk::NavMessageID nmid(nmidExpE5a);
          if (alm->signal.sat.id == 1)
          {
@@ -638,7 +550,6 @@ processAlmTest()
       }
       else if ((hea = dynamic_cast<gpstk::GalFNavHealth*>(i.get())) != nullptr)
       {
-         heaCount++;
          gpstk::NavMessageID nmid(nmidExpE5a);
          nmid.messageType = gpstk::NavMessageType::Health;
          if (hea->signal.sat.id == 1)
@@ -667,51 +578,9 @@ processAlmTest()
                    hea->dataValidityStatus);
          TUASSERTE(unsigned, 255, hea->sisaIndex);
       }
-      else
-      {
-         otherCount++;
-      }
    }
-   TUASSERTE(unsigned, 3, almCount);
-   TUASSERTE(unsigned, 3, heaCount);
-   TUASSERTE(unsigned, 0, otherCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 6, 3, 0, 0, 3);
    TURETURN();
-}
-
-
-void PNBGalFNavDataFactory_T ::
-countResults(const gpstk::NavDataPtrList& navOut)
-{
-   resetCount();
-   for (const auto& i : navOut)
-   {
-      if (dynamic_cast<gpstk::GalFNavAlm*>(i.get()) != nullptr)
-      {
-         almCount++;
-      }
-      else if (dynamic_cast<gpstk::GalFNavEph*>(i.get()) != nullptr)
-      {
-         ephCount++;
-      }
-      else if (dynamic_cast<gpstk::GalFNavTimeOffset*>(i.get()) != nullptr)
-      {
-         toCount++;
-      }
-      else if (dynamic_cast<gpstk::GalFNavHealth*>(i.get()) != nullptr)
-      {
-         heaCount++;
-      }
-      else if (dynamic_cast<gpstk::GalFNavIono*>(i.get()) != nullptr)
-      {
-         ionoCount++;
-      }
-      else
-      {
-         otherCount++;
-      }
-         //i->dump(cerr, gpstk::DumpDetail::Full);
-   }
 }
 
 

@@ -742,6 +742,10 @@ namespace gpstk
             gps->alert = false;
             break;
          case SatelliteSystem::Galileo:
+               /** @note The I/NAV ISC data contains what's in the
+                * F/NAV data, i.e. BGD(E1,E5a), so there's no reason
+                * to output a separate GalFNavISC object from RINEX
+                * NAV data. */
             navOut = std::make_shared<GalINavISC>();
             galI = dynamic_cast<GalINavISC*>(navOut.get());
                // NavData
