@@ -43,6 +43,7 @@
 #include "GPSLNavISC.hpp"
 #include "GalINavEph.hpp"
 #include "GalINavIono.hpp"
+#include "GalINavISC.hpp"
 #include "GalFNavEph.hpp"
 #include "GalINavHealth.hpp"
 #include "RinexTimeOffset.hpp"
@@ -249,13 +250,15 @@ loadIntoMapTest()
       // x 1 GPS health
       // x 1 GPS ISC
       // x 39 Galileo ephemerides
+      // x 39 Galileo ISC
       // x 3*39 Galileo health
       // x 1 Galileo kludge health for iono corrections
       // x 1 Galileo iono correction
-   TUASSERTE(size_t, 165, f8.size());
+   TUASSERTE(size_t, 204, f8.size());
       // count INAV, FNAV, and LNAV data
    unsigned ephICount = 0, ephFCount = 0, ephLCount = 0, heaICount = 0,
-      heaLCount = 0, ionoCount = 0, iscCount = 0, otherCount = 0;
+      heaLCount = 0, ionoCount = 0, iscLCount = 0, iscICount = 0,
+      otherCount = 0;
    for (auto& nmti : f8.getData())
    {
       for (auto& sati : nmti.second)
@@ -267,6 +270,7 @@ loadIntoMapTest()
             gpstk::GalFNavEph *ephF;
             gpstk::GalINavHealth *heaI;
             gpstk::GalINavIono *iono;
+            gpstk::GalINavISC *iscI;
             gpstk::GPSLNavHealth *heaL;
             gpstk::GPSLNavEph *ephL;
             gpstk::GPSLNavISC *iscL;
@@ -613,7 +617,32 @@ loadIntoMapTest()
                TUASSERTE(uint32_t, 0, iscL->tlm);
                TUASSERTE(bool, false, iscL->alert);
                TUASSERTE(bool, true, iscL->asFlag);
-               iscCount++;
+               iscLCount++;
+            }
+            else if ((iscI = dynamic_cast<gpstk::GalINavISC*>(ti.second.get()))
+                     != nullptr)
+            {
+               if (iscICount == 0)
+               {
+                  static const gpstk::CommonTime expTS =
+                     gpstk::GPSWeekSecond(2107,433714);
+                  static const gpstk::NavMessageID expNMID(
+                     gpstk::NavSatelliteID(1, 1,
+                                           gpstk::SatelliteSystem::Galileo,
+                                           gpstk::CarrierBand::E5b,
+                                           gpstk::TrackingCode::E5bI,
+                                           gpstk::NavType::GalINAV),
+                     gpstk::NavMessageType::ISC);
+                     // NavData
+                  TUASSERTE(gpstk::CommonTime, expTS, iscI->timeStamp);
+                  TUASSERTE(gpstk::NavMessageID, expNMID, iscI->signal);
+                     // InterSigCorr fields
+                  TUASSERTE(bool, true, std::isnan(iscI->isc));
+                     // GalINavISC fields
+                  TUASSERTFE(-1.862645149231e-09, iscI->bgdE1E5a);
+                  TUASSERTFE(-2.095475792885e-09, iscI->bgdE1E5b);
+               }
+               iscICount++;
             }
             else
             {
@@ -627,9 +656,10 @@ loadIntoMapTest()
    TUASSERTE(unsigned, 1, ephLCount);
       /// @bug are we producing "I/NAV" health containing data from F/NAV?
    TUASSERTE(unsigned, 39*3+1, heaICount);
+   TUASSERTE(unsigned, 39, iscICount);
    TUASSERTE(unsigned, 1, heaLCount);
    TUASSERTE(unsigned, 1, ionoCount);
-   TUASSERTE(unsigned, 1, iscCount);
+   TUASSERTE(unsigned, 1, iscLCount);
    TUASSERTE(unsigned, 0, otherCount);
    TURETURN();
 }
