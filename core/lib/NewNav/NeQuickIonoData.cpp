@@ -42,6 +42,7 @@
 #include "TimeString.hpp"
 #include "MODIP.hpp"
 #include "FreqConv.hpp"
+#include "BasicTimeSystemConverter.hpp"
 #include "DebugTrace.hpp"
 
 using namespace std;
@@ -459,11 +460,16 @@ namespace gpstk
    solarDeclination(const CivilTime& when)
    {
       DEBUGTRACE_FUNCTION();
-      GPSTK_ASSERT(when.getTimeSystem() == gpstk::TimeSystem::UTC);
+      gpstk::BasicTimeSystemConverter btsc;
+      CivilTime whenUTC(when);
+      if (whenUTC.getTimeSystem() != gpstk::TimeSystem::UTC)
+      {
+         GPSTK_ASSERT(whenUTC.changeTimeSystem(gpstk::TimeSystem::UTC,&btsc));
+      }
          // compute day of year at the middle of the month
-      double dy = 30.5 * when.month - 15;                               //eq.20
+      double dy = 30.5 * whenUTC.month - 15;                            //eq.20
          // compute time in days
-      double t = dy + (18.0-when.getUTHour())/24.0;                     //eq.21
+      double t = dy + (18.0-whenUTC.getUTHour())/24.0;                  //eq.21
          // compute the argument
       double am = (0.9856 * t - 3.289) * DEG2RAD;                       //eq.22
       double al = am + (1.916*sin(am) + 0.020*sin(2*am) + 282.634) *    //eq.23
