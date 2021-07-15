@@ -76,6 +76,8 @@ constexpr double INTEG_EPSILON = 1e-3;
 constexpr double ELEC_DEN_SCALING = 1.0e11;
 /// Scalar from integral to TEC per eq.151 and eq.202
 constexpr double TEC_SCALE_FACTOR = 1.0e-13;
+/// Scalar from TEC Units to electrons per square meter.
+constexpr double TECU_SCALE_FACTOR = 1.0e16;
 /// Topside electron density approximation epsilon per eq.127
 constexpr double TOP_APPROX_EPSILON = 1.0e11;
 /// TEC numerical integration first point in km point per 2.5.8.2.7
@@ -197,7 +199,7 @@ namespace gpstk
       double tec = getTEC(when, rxgeo, svgeo);
          // Obtain correction by converting STEC to code delay
       double f = getFrequency(band);
-      double d1gr = tec * 40.3/(f*f);                                   // eq.1
+      double d1gr = tec * TECU_SCALE_FACTOR * 40.3/(f*f);               // eq.1
       return d1gr;
    }
 
