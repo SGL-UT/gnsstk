@@ -42,6 +42,7 @@
 #include "Exception.hpp"
 #include "CivilTime.hpp"
 #include "GNSSconstants.hpp"
+#include "BasicTimeSystemConverter.hpp"
 #include "DebugTrace.hpp"
 #include "TimeString.hpp"
 
@@ -82,9 +83,15 @@ namespace gpstk
       DEBUGTRACE_FUNCTION();
       DEBUGTRACE("when=" << gpstk::printTime(when, "%4Y/%02m/%02d %02H:%02M:%02S"));
       DEBUGTRACE("effSunSpots=" << effSunSpots);
+      gpstk::BasicTimeSystemConverter btsc;
+      CivilTime whenUTC(when);
+      if (whenUTC.getTimeSystem() != gpstk::TimeSystem::UTC)
+      {
+         GPSTK_ASSERT(whenUTC.changeTimeSystem(gpstk::TimeSystem::UTC,&btsc));
+      }
          // Compute the interpolated ITU-R coefficients AF2, Am3
          // (cacheF2 and cacheFM3)
-      interpolate(when, effSunSpots);
+      interpolate(whenUTC, effSunSpots);
          // interpolate should have called validateCache so we have a
          // valid cacheFourierGood setting.  validateCache will also
          // have set cacheHour to the value corresponding to when, so

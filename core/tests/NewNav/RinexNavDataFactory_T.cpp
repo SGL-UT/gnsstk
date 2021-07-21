@@ -40,6 +40,7 @@
 #include "TestUtil.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
+#include "GPSLNavISC.hpp"
 #include "GalINavEph.hpp"
 #include "GalINavIono.hpp"
 #include "GalFNavEph.hpp"
@@ -149,7 +150,7 @@ loadIntoMapTest()
       "arlm2000.15n";
       // this should implicitly load into the data map
    TUASSERT(f2.addDataSource(f2name));
-   TUASSERTE(size_t, 339, f2.size());
+   TUASSERTE(size_t, 507, f2.size());
    gpstk::CommonTime expti2 = gpstk::CivilTime(2015,7,19,0,0,0,
                                                gpstk::TimeSystem::GPS);
    gpstk::CommonTime exptf2 = gpstk::CivilTime(2015,7,20,2,0,0,
@@ -185,7 +186,7 @@ loadIntoMapTest()
       "test_input_rinex3_76193040.14n";
       // this should implicitly load into the data map
    TUASSERT(f3.addDataSource(f3name));
-   TUASSERTE(size_t, 31, f3.size());
+   TUASSERTE(size_t, 44, f3.size());
 
    TestClass f4;
    std::string f4name = gpstk::getPathData() + gpstk::getFileSep() +
@@ -246,14 +247,15 @@ loadIntoMapTest()
       // x 4 time offset
       // x 1 GPS ephemeris
       // x 1 GPS health
+      // x 1 GPS ISC
       // x 39 Galileo ephemerides
       // x 3*39 Galileo health
       // x 1 Galileo kludge health for iono corrections
       // x 1 Galileo iono correction
-   TUASSERTE(size_t, 164, f8.size());
+   TUASSERTE(size_t, 165, f8.size());
       // count INAV, FNAV, and LNAV data
    unsigned ephICount = 0, ephFCount = 0, ephLCount = 0, heaICount = 0,
-      heaLCount = 0, ionoCount = 0, otherCount = 0;
+      heaLCount = 0, ionoCount = 0, iscCount = 0, otherCount = 0;
    for (auto& nmti : f8.getData())
    {
       for (auto& sati : nmti.second)
@@ -267,6 +269,7 @@ loadIntoMapTest()
             gpstk::GalINavIono *iono;
             gpstk::GPSLNavHealth *heaL;
             gpstk::GPSLNavEph *ephL;
+            gpstk::GPSLNavISC *iscL;
             if ((ephI = dynamic_cast<gpstk::GalINavEph*>(ti.second.get()))
                 != nullptr)
             {
@@ -588,6 +591,30 @@ loadIntoMapTest()
                }
                ionoCount++;
             }
+            else if ((iscL = dynamic_cast<gpstk::GPSLNavISC*>(ti.second.get()))
+                     != nullptr)
+            {
+               static const gpstk::CommonTime expTS =
+                  gpstk::GPSWeekSecond(2107,4.320180000000e+05);
+               static const gpstk::NavMessageID expNMID(
+                  gpstk::NavSatelliteID(1, 1,
+                                        gpstk::SatelliteSystem::GPS,
+                                        gpstk::CarrierBand::L1,
+                                        gpstk::TrackingCode::CA,
+                                        gpstk::NavType::GPSLNAV),
+                  gpstk::NavMessageType::ISC);
+                  // NavData
+               TUASSERTE(gpstk::CommonTime, expTS, iscL->timeStamp);
+               TUASSERTE(gpstk::NavMessageID, expNMID, iscL->signal);
+                  // InterSigCorr fields
+               TUASSERTFE(5.122274160385e-09, iscL->isc);
+                  // GPSLNavISC fields
+               TUASSERTE(uint32_t, 0, iscL->pre);
+               TUASSERTE(uint32_t, 0, iscL->tlm);
+               TUASSERTE(bool, false, iscL->alert);
+               TUASSERTE(bool, true, iscL->asFlag);
+               iscCount++;
+            }
             else
             {
                otherCount++;
@@ -602,6 +629,7 @@ loadIntoMapTest()
    TUASSERTE(unsigned, 39*3+1, heaICount);
    TUASSERTE(unsigned, 1, heaLCount);
    TUASSERTE(unsigned, 1, ionoCount);
+   TUASSERTE(unsigned, 1, iscCount);
    TUASSERTE(unsigned, 0, otherCount);
    TURETURN();
 }
@@ -670,14 +698,15 @@ loadIntoMapQZSSTest()
    gpstk::CommonTime endExp = gpstk::GPSWeekSecond(1792, 210600,
                                                    gpstk::TimeSystem::QZS);
    TUASSERT(uut.addDataSource(fname));
-   TUASSERTE(size_t, 2, uut.size());
+   TUASSERTE(size_t, 3, uut.size());
    gpstk::NavMessageMap &nmm(uut.getData());
-   uut.dump(std::cerr, gpstk::DumpDetail::Full);
+   // uut.dump(std::cerr, gpstk::DumpDetail::Full);
    TUASSERTE(gpstk::CommonTime, expti2, uut.getInitialTime());
    TUASSERTE(gpstk::CommonTime, exptf2, uut.getFinalTime());
    gpstk::GPSLNavEph *eph;
    gpstk::GPSLNavHealth *hea;
-   unsigned heaCount = 0, ephCount = 0, otherCount = 0;
+   gpstk::GPSLNavISC *isc;
+   unsigned heaCount = 0, ephCount = 0, iscCount = 0, otherCount = 0;
    for (const auto& nmti : nmm)
    {
       for (const auto& sati : nmti.second)
@@ -752,6 +781,22 @@ loadIntoMapQZSSTest()
             {
                heaCount++;
             }
+            else if ((isc = dynamic_cast<gpstk::GPSLNavISC*>(ti.second.get()))
+                != nullptr)
+            {
+               iscCount++;
+               nmidExp.messageType = gpstk::NavMessageType::ISC;
+                  // NavData fields
+               TUASSERTE(gpstk::CommonTime, expTS, isc->timeStamp);
+               TUASSERTE(gpstk::NavMessageID, nmidExp, isc->signal);
+                  // InterSigCorr fields
+               TUASSERTFE(-4.656612873077e-09, isc->isc);
+                  // GPSLNavISC fields
+               TUASSERTE(uint32_t, 0, isc->pre);
+               TUASSERTE(uint32_t, 0, isc->tlm);
+               TUASSERTE(bool, false, isc->alert);
+               TUASSERTE(bool, false, isc->asFlag);
+            }
             else
             {
                otherCount++;
@@ -761,6 +806,7 @@ loadIntoMapQZSSTest()
    }
    TUASSERTE(unsigned, 1, ephCount);
    TUASSERTE(unsigned, 1, heaCount);
+   TUASSERTE(unsigned, 1, iscCount);
    TUASSERTE(unsigned, 0, otherCount);
    TURETURN();
 }

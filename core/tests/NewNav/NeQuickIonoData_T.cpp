@@ -906,13 +906,13 @@ getCorrectionTest()
       uut.ai[2] = td.coefficients[2];
          // test L1
       band = gpstk::CarrierBand::L1;
-      expCorr = td.expTEC * factorL1;
+      expCorr = td.expTEC * factorL1 * 1e16;
       TUASSERTFEPS(expCorr, uut.getCorrection(td.ct, td.station, td.satellite,
                                               band),
                    docEps);
          // test L5
       band = gpstk::CarrierBand::L5;
-      expCorr = td.expTEC * factorL5;
+      expCorr = td.expTEC * factorL5 * 1e16;
       TUASSERTFEPS(expCorr, uut.getCorrection(td.ct, td.station, td.satellite,
                                               band),
                    docEps);

@@ -14,7 +14,7 @@ class TestMultiFormatNavDataFactory(unittest.TestCase):
                           '/test_input_rinex_nav_RinexNavExample.99n')
         ndf.addDataSource(args.input_dir+'/test_input_SP3c.sp3')
         ndf.addDataSource(args.input_dir+'/test_input_sem387.txt')
-        self.assertEqual(1627, ndf.size())
+        self.assertEqual(1629, ndf.size())
         ndf.clear()
         self.assertEqual(0, ndf.size())
 

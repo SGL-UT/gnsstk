@@ -53,7 +53,7 @@ namespace gpstk
 
 
    bool InterSigCorr ::
-   getISC(const ObsID& oid, double& corr)
+   getISC(const ObsID& oid, double& corrOut)
       const
    {
       ObsID oidU(oid);
@@ -65,11 +65,11 @@ namespace gpstk
          return false;
       if (refOids.count(oidU))
       {
-         corr = -isc;
+         corrOut = -isc;
       }
       else if (validOids.count(oidU))
       {
-         corr = -(getGamma(refOids.begin()->band, oidU.band) * isc);
+         corrOut = -(getGamma(refOids.begin()->band, oidU.band) * isc);
       }
       else
       {
@@ -80,10 +80,10 @@ namespace gpstk
 
 
    bool InterSigCorr ::
-   getISC(const ObsID& oid1, const ObsID& oid2, double& corr)
+   getISC(const ObsID& oid1, const ObsID& oid2, double& corrOut)
       const
    {
-      corr = 0;
+      corrOut = 0;
       return true;
    }
 }

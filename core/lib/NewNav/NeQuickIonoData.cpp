@@ -42,6 +42,7 @@
 #include "TimeString.hpp"
 #include "MODIP.hpp"
 #include "FreqConv.hpp"
+#include "BasicTimeSystemConverter.hpp"
 #include "DebugTrace.hpp"
 
 using namespace std;
@@ -75,6 +76,8 @@ constexpr double INTEG_EPSILON = 1e-3;
 constexpr double ELEC_DEN_SCALING = 1.0e11;
 /// Scalar from integral to TEC per eq.151 and eq.202
 constexpr double TEC_SCALE_FACTOR = 1.0e-13;
+/// Scalar from TEC Units to electrons per square meter.
+constexpr double TECU_SCALE_FACTOR = 1.0e16;
 /// Topside electron density approximation epsilon per eq.127
 constexpr double TOP_APPROX_EPSILON = 1.0e11;
 /// TEC numerical integration first point in km point per 2.5.8.2.7
@@ -196,7 +199,7 @@ namespace gpstk
       double tec = getTEC(when, rxgeo, svgeo);
          // Obtain correction by converting STEC to code delay
       double f = getFrequency(band);
-      double d1gr = tec * 40.3/(f*f);                                   // eq.1
+      double d1gr = tec * TECU_SCALE_FACTOR * 40.3/(f*f);               // eq.1
       return d1gr;
    }
 
@@ -459,11 +462,16 @@ namespace gpstk
    solarDeclination(const CivilTime& when)
    {
       DEBUGTRACE_FUNCTION();
-      GPSTK_ASSERT(when.getTimeSystem() == gpstk::TimeSystem::UTC);
+      gpstk::BasicTimeSystemConverter btsc;
+      CivilTime whenUTC(when);
+      if (whenUTC.getTimeSystem() != gpstk::TimeSystem::UTC)
+      {
+         GPSTK_ASSERT(whenUTC.changeTimeSystem(gpstk::TimeSystem::UTC,&btsc));
+      }
          // compute day of year at the middle of the month
-      double dy = 30.5 * when.month - 15;                               //eq.20
+      double dy = 30.5 * whenUTC.month - 15;                            //eq.20
          // compute time in days
-      double t = dy + (18.0-when.getUTHour())/24.0;                     //eq.21
+      double t = dy + (18.0-whenUTC.getUTHour())/24.0;                  //eq.21
          // compute the argument
       double am = (0.9856 * t - 3.289) * DEG2RAD;                       //eq.22
       double al = am + (1.916*sin(am) + 0.020*sin(2*am) + 282.634) *    //eq.23

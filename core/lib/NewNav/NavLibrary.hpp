@@ -1042,6 +1042,55 @@ namespace gpstk
                        NavType nt = NavType::Any, int freqOffs = 0,
                        bool freqOffsWild = true);
 
+         /** Get inter-signal corrections for the single-frequency user.
+          * @param[in] oid The carrier band and tracking code of the
+          *   signal to get the correction for.
+          * @param[in] when The time of the observation being
+          *   corrected.  This time is also used to look up ISC data.
+          * @param[out] corrOut The correction in seconds for the
+          *   given band/code.
+          * @return true If band/code are valid for this object and
+          *   corrOut was set according to available data. */
+      bool getISC(const ObsID& oid, const CommonTime& when, double& corrOut);
+
+         /** Get inter-signal corrections for the dual-frequency user.
+          * @param[in] oid1 The carrier band/tracking code of the
+          *   primary signal that was used to create a dual-frequency,
+          *   iono-free combined pseudorange.
+          * @param[in] oid2 The carrier band/tracking code of the
+          *   secondary signal to get the correction for.
+          * @param[in] when The time of the observation being
+          *   corrected.  This time is also used to look up ISC data.
+          * @param[out] corrOut The correction in seconds for the given
+          *   band/code pair.
+          * @return true If bands/codes are valid for this object and
+          *   corrOut was set according to available data. */
+      bool getISC(const ObsID& oid1, const ObsID& oid2, const CommonTime& when,
+                  double& corrOut);
+
+         /** Get an appropriate NavMessageID to use to perform a
+          * search for ISC data for a given ObsID in a
+          * single-frequency user case.
+          * @param[in] oid The ObsID for which ISCs are desired.
+          * @return A list of appropriate NavMessageID objects to use
+          *   for searching.  This list will be empty if oid is not a
+          *   signal for which ISC data sources are known. */
+      static std::list<NavMessageID> getISCNMID(const ObsID& oid);
+
+         /** Get an appropriate NavMessageID to use to perform a
+          * search for ISC data for a given pair of ObsID in a
+          * dual-frequency user case.
+          * @param[in] oid1 The carrier band/tracking code of the
+          *   primary signal that was used to create a dual-frequency,
+          *   iono-free combined pseudorange.
+          * @param[in] oid2 The carrier band/tracking code of the
+          *   secondary signal to get the correction for.
+          * @return A list of appropriate NavMessageID objects to use
+          *   for searching.  This list will be empty if oid is not a
+          *   signal for which ISC data sources are known. */
+      static std::list<NavMessageID> getISCNMID(const ObsID& oid1,
+                                                const ObsID& oid2);
+
          /** Search factories to find the navigation message that meets
           * the specified criteria.
           * @note returns the first successful match from factories.
