@@ -11,7 +11,7 @@ class TestRinexNavDataFactory(unittest.TestCase):
         ndf = gpstk.RinexNavDataFactory()
         ndf.addDataSource(args.input_dir+
                           '/test_input_rinex_nav_RinexNavExample.99n')
-        self.assertEqual(7, ndf.size())
+        self.assertEqual(9, ndf.size())
 
 if __name__ == '__main__':
     run_unit_tests()

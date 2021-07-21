@@ -280,9 +280,10 @@ addDataTest()
       //
       // Start with some GPS LNAV data.
       //
-      // Add subframe 1, expect only health initially.
+      // Add subframe 1, expect 1 health and 1 ISC.
+      /// @todo Switch this test to use FactoryCounter and check for 1 ISC
    TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF1, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();

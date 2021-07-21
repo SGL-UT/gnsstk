@@ -221,3 +221,11 @@ add_test(GalFNavEph_T GalFNavEph_T)
 add_executable(PNBGalFNavDataFactory_T PNBGalFNavDataFactory_T.cpp)
 target_link_libraries(PNBGalFNavDataFactory_T gpstk)
 add_test(PNBGalFNavDataFactory_T PNBGalFNavDataFactory_T)
+
+add_executable(InterSigCorr_T InterSigCorr_T.cpp)
+target_link_libraries(InterSigCorr_T gpstk)
+add_test(InterSigCorr_T InterSigCorr_T)
+
+add_executable(GPSLNavISC_T GPSLNavISC_T.cpp)
+target_link_libraries(GPSLNavISC_T gpstk)
+add_test(GPSLNavISC_T GPSLNavISC_T)

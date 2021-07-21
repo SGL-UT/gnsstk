@@ -62,4 +62,13 @@ namespace gpstk
          default:                 return 0.0;
       }
    }
+
+
+   double getGamma(CarrierBand band1, CarrierBand band2)
+   {
+      double freq1 = getFrequency(band1);
+      double freq2 = getFrequency(band2);
+      double gammaRoot = freq1/freq2;
+      return gammaRoot * gammaRoot;
+   }
 } // namespace gpstk

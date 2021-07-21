@@ -115,6 +115,8 @@ namespace gpstk
       bool processTim;
          /// If true, ionospheric data will be output by addData.
       bool processIono;
+         /// If true, inter-signal correction data will be output by addData.
+      bool processISC;
    }; // class PNBNavDataFactory
 
       /// Managed pointer to a PNBNavDataFactory.

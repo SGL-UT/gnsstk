@@ -153,6 +153,7 @@ public:
    unsigned getAvailableSatsTest();
    unsigned isPresentTest();
    unsigned getIonoCorrTest();
+   unsigned getISCTest();
 
    gpstk::CivilTime civ;
    gpstk::CommonTime ct;
@@ -555,6 +556,73 @@ getIonoCorrTest()
 }
 
 
+unsigned NavLibrary_T ::
+getISCTest()
+{
+   TUDEF("NavLibrary", "getISC");
+   gpstk::NavLibrary uut;
+   gpstk::NavDataFactoryPtr
+      ndfp(std::make_shared<RinexTestFactory>());
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "arlm2000.15n";
+   const gpstk::CommonTime when = gpstk::CivilTime(2015,7,19,10,0,0,
+                                                   gpstk::TimeSystem::GPS);
+   const gpstk::ObsID oid(gpstk::ObservationType::Phase, gpstk::CarrierBand::L2,
+                          gpstk::TrackingCode::Y);
+   const gpstk::ObsID woid1(gpstk::ObservationType::Phase,
+                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L2CL);
+   const gpstk::ObsID woid2(gpstk::ObservationType::Phase,
+                            gpstk::CarrierBand::L2, gpstk::TrackingCode::L1CP);
+   static const double expCorr = -8.4361009713756425465e-09;
+   double corr = 0.0;
+   TUCATCH(uut.addFactory(ndfp));
+   RinexTestFactory *rndfp = dynamic_cast<RinexTestFactory*>(ndfp.get());
+   TUASSERT(rndfp->addDataSource(fname));
+   TUASSERTE(bool, true, uut.getISC(oid, when, corr));
+   TUASSERTFE(expCorr, corr);
+      // check all the combos that are supposed to have 0 corrections
+   std::list<gpstk::ObsID> oid1s({
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+                      gpstk::TrackingCode::CA),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+                      gpstk::TrackingCode::P),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+                      gpstk::TrackingCode::Y),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+                      gpstk::TrackingCode::Ztracking),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+                      gpstk::TrackingCode::YCodeless),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+                      gpstk::TrackingCode::Semicodeless)
+      });
+   std::list<gpstk::ObsID> oid2s({
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L2,
+                      gpstk::TrackingCode::P),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L2,
+                      gpstk::TrackingCode::Y),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L2,
+                      gpstk::TrackingCode::Ztracking),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L2,
+                      gpstk::TrackingCode::YCodeless),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L2,
+                      gpstk::TrackingCode::Semicodeless)
+      });
+   for (const auto& i1 : oid1s)
+   {
+      for (const auto& i2 : oid2s)
+      {
+         corr = 1.2345;
+         TUASSERTE(bool, true, uut.getISC(i1, i2, when, corr));
+         TUASSERTFE(0.0, corr);
+      }
+   }
+      // check wonky obs ID
+   TUASSERTE(bool, false, uut.getISC(woid1, when, corr));
+   TUASSERTE(bool, false, uut.getISC(woid1, woid2, when, corr));
+   TURETURN();
+}
+
+
 int main()
 {
    NavLibrary_T testClass;
@@ -571,6 +639,7 @@ int main()
    errorTotal += testClass.getAvailableSatsTest();
    errorTotal += testClass.isPresentTest();
    errorTotal += testClass.getIonoCorrTest();
+   errorTotal += testClass.getISCTest();
       /// @todo test edit(), clear()
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

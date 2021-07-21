@@ -106,7 +106,7 @@ namespace gpstk
           *   input data is unsupported.
           */
       static bool convertToHealth(const Rinex3NavData& navIn,
-                                  std::list<gpstk::NavDataPtr>& healthOut);
+                                  NavDataPtrList& healthOut);
 
          /** Convert RINEX nav header data to a TimeOffsetData object.
           * @param[in] navIn The RINEX nav header to convert.
@@ -131,6 +131,15 @@ namespace gpstk
       static bool convertToIono(const CommonTime& when,
                                 const Rinex3NavHeader& navIn,
                                 NavDataPtrList& navOut);
+
+         /** Convert RINEX nav data to a InterSigCorr object.
+          * @param[in] navIn The RINEX nav message data to convert.
+          * @param[out] navOut The OrbitData object to be added to the
+          *   factory data map.
+          * @return true if the conversion is valid, false if the
+          *   input data is unsupported. */
+      static bool convertToISC(const Rinex3NavData& navIn,
+                               NavDataPtr& navOut);
 
          /** Fill the high level (NavData and above) data for an
           * object using information from a RINEX nav record.
