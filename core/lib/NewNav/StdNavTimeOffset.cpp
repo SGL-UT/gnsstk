@@ -60,15 +60,33 @@ namespace gpstk
       if (((fromSys == src) && (toSys == tgt)) ||
           ((fromSys == tgt) && (toSys == src)))
       {
-         GPSTK_ASSERT(when.getTimeSystem()  == fromSys);
+         GPSTK_ASSERT(when.getTimeSystem() == fromSys);
             // Change the reference time system to the source time
             // system (fromSys) to allow for reverse conversions
             // (e.g. UTC->GPS vs GPS->UTC).
          CommonTime t0(refTime);
          t0.setTimeSystem(fromSys);
+            // difference between tE and tot (using GPS terms)
          double dt = when - t0;
             // delta tLS should be 0 for anything other than UTC.
          offset = deltatLS + a0 + a1*dt + a2*dt*dt;
+            // UTC conversion includes leap seconds and everyone
+            // copied what GPS was doing, more or less, including the
+            // ICD/IS.
+         if ((fromSys == TimeSystem::UTC) || (toSys == TimeSystem::UTC))
+         {
+            CommonTime effBlank(effTime);
+            effBlank.setTimeSystem(fromSys);
+            if ((((effBlank - when) <= effStart()) &&
+                 ((effBlank - when) >= 0)) ||
+                (((when - effBlank) <= effEnd()) &&
+                 ((when - effBlank) >= 0)))
+            {
+                  // use deltatLSF instead
+               dt = when - effBlank;
+               offset = deltatLSF + a0 + a1*dt + a2*dt*dt;
+            }
+         }
          if (fromSys == tgt)
             offset = -offset;
          return true;
@@ -104,6 +122,8 @@ namespace gpstk
               << "  delta tLS  = " << deltatLS << endl
               << "  refTime    = "
               << printTime(refTime,"%Y/%02m/%02d %02H:%02M:%02S") << endl
+              << "  effTime    = "
+              << printTime(effTime,"%Y/%02m/%02d %02H:%02M:%02S") << endl
               << "  tot        = " << tot << endl
               << "  WNot       = " << wnot << endl
               << "  WN(LSF)    = " << wnLSF << endl

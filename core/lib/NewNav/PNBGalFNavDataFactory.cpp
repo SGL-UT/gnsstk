@@ -681,6 +681,7 @@ namespace gpstk
          to->wnot = timeAdjust8BitWeekRollover(to->wnot, refWeek);
          to->wnLSF = timeAdjust8BitWeekRollover(to->wnLSF, refWeek);
          to->refTime = GALWeekSecond(to->wnot, to->tot);
+         to->effTime = GALWeekSecond(to->wnLSF, (to->dn-1)*86400);
          // cerr << "gws.week=" << gws.week << "  gws.sow=" << gws.sow << "  refTime=" << to->refTime << endl;
          navOut.push_back(p3);
             // GST-GPS offset
@@ -700,6 +701,7 @@ namespace gpstk
             // WN0G is 6 bits...
          to->wnot = (gws.week & ~0x3f) | to->wnot;
          to->refTime = GALWeekSecond(to->wnot, to->tot);
+         to->effTime = GALWeekSecond(to->wnLSF, (to->dn-1)*86400);
          // cerr << "gws.week=" << gws.week << "  gws.sow=" << gws.sow << "  refTime=" << to->refTime << endl;
          navOut.push_back(p3);
       }

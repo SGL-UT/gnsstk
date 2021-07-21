@@ -1098,6 +1098,7 @@ namespace gpstk
       to->wnot = timeAdjust8BitWeekRollover(to->wnot, refWeek);
       to->wnLSF = timeAdjust8BitWeekRollover(to->wnLSF, refWeek);
       to->refTime = GALWeekSecond(to->wnot, to->tot);
+      to->effTime = GALWeekSecond(to->wnLSF, (to->dn-1)*86400);
          // return results.
       // cerr << "add I/NAV word type 6 time offset" << endl;
       navOut.push_back(p0);

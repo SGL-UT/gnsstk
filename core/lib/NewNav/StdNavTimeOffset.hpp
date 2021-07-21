@@ -84,6 +84,15 @@ namespace gpstk
           * @return a set of supported time system conversion to/from pairs. */
       TimeCvtSet getConversions() const override;
 
+         /** Return the number of seconds prior to the effectivity
+          * time during which the standard delta t formula is used. */
+      virtual double effStart() const
+      { return 6 * 3600; }
+         /** Return the number of seconds after the effectivity
+          * time during which the standard delta t formula is used. */
+      virtual double effEnd() const
+      { return 6 * 3600; }
+
          // These terms are referenced in the ICDs for multiple
          // systems, but you can find their definition in places like
          // IS-GPS-200 30.3.3.6.2.  They occasionally have different
@@ -100,6 +109,7 @@ namespace gpstk
       double a2;          ///< Drift rate coefficient of source time scale.
       double deltatLS;    ///< Current or past leap second count (UTC only).
       CommonTime refTime; ///< Reference time for computation.
+      CommonTime effTime; ///< Effectivity time (wnLSF,dn).
       double tot;         ///< Time data reference time of week (storage only).
       unsigned wnot;      ///< Time data reference week number (storage only).
          // These terms are not used in computing an offset, they're

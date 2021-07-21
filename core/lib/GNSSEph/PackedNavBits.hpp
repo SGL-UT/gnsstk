@@ -96,6 +96,15 @@ namespace gpstk
                     const std::string rxString,
                     const CommonTime& transmitTimeArg);
 
+         /// explicit constructor
+      PackedNavBits(const SatID& satSysArg, 
+                    const ObsID& obsIDArg,
+                    const NavID& navIDArg,
+                    const std::string rxString,
+                    const CommonTime& transmitTimeArg,
+                    unsigned numBits,
+                    bool fillValue);
+
       PackedNavBits(const PackedNavBits& right);             // Copy constructor
          //PackedNavBits& operator=(const PackedNavBits& right); // Copy assignment
 

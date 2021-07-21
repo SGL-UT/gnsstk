@@ -115,6 +115,27 @@ namespace gpstk
       xMitCoerced = false;
    }
 
+
+   PackedNavBits::PackedNavBits(const SatID& satSysArg, 
+                                const ObsID& obsIDArg,
+                                const NavID& navIDArg,
+                                const std::string rxString,
+                                const CommonTime& transmitTimeArg,
+                                unsigned numBits,
+                                bool fillValue)
+         : parityStatus(psUnknown),
+           satSys(satSysArg),
+           obsID(obsIDArg),
+           navID(navIDArg),
+           rxID(rxString),
+           transmitTime(transmitTimeArg),
+           bits(numBits, fillValue),
+           bits_used(numBits),
+           xMitCoerced(false)
+   {
+   }
+
+
       // Copy constructor
    PackedNavBits::PackedNavBits(const PackedNavBits& right)
    {
