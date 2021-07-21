@@ -41,6 +41,7 @@
 #include "Rinex3NavHeader.hpp"
 #include "GPSLNavHealth.hpp"
 #include "GPSLNavIono.hpp"
+#include "GPSLNavISC.hpp"
 #include "GalINavEph.hpp"
 #include "GalINavIono.hpp"
 #include "GalFNavEph.hpp"
@@ -88,6 +89,7 @@ namespace gpstk
       bool processHea = (procNavTypes.count(NavMessageType::Health) > 0);
       bool processTim = (procNavTypes.count(NavMessageType::TimeOffset) > 0);
       bool processIono = (procNavTypes.count(NavMessageType::Iono) > 0);
+      bool processISC = (procNavTypes.count(NavMessageType::ISC) > 0);
       bool ionoProcessed = false;
          // check the validity
       bool check = false;
@@ -184,8 +186,8 @@ namespace gpstk
                else
                   return false; // some other error
             }
-            NavDataPtr eph;
-            std::list<gpstk::NavDataPtr> health;
+            NavDataPtr eph, isc;
+            NavDataPtrList health;
             if (processEph)
             {
                if (!convertToOrbit(data, eph))
@@ -194,6 +196,11 @@ namespace gpstk
             if (processHea)
             {
                if (!convertToHealth(data, health))
+                  return false;
+            }
+            if (processISC)
+            {
+               if (!convertToISC(data, isc))
                   return false;
             }
             if (check)
@@ -217,6 +224,14 @@ namespace gpstk
                      }
                   }
                }
+               if (processISC && (isc != nullptr))
+               {
+                  if (isc->validate() == expect)
+                  {
+                     if (!addNavData(isc))
+                        return false;
+                  }
+               }
             }
             else
             {
@@ -232,6 +247,11 @@ namespace gpstk
                      if (!addNavData(hp))
                         return false;
                   }
+               }
+               if (processISC && (isc != nullptr))
+               {
+                  if (!addNavData(isc))
+                     return false;
                }
             }
          }
@@ -452,7 +472,7 @@ namespace gpstk
 
    bool RinexNavDataFactory ::
    convertToHealth(const Rinex3NavData& navIn,
-                   std::list<gpstk::NavDataPtr>& healthOut)
+                   NavDataPtrList& healthOut)
    {
       bool rv = true;
       gpstk::NavDataPtr health;
@@ -685,6 +705,46 @@ namespace gpstk
          navOut.push_back(health);
       }
       return true;
+   }
+
+
+   bool RinexNavDataFactory ::
+   convertToISC(const Rinex3NavData& navIn, NavDataPtr& navOut)
+   {
+      bool rv = true;
+      GPSLNavISC *gps;
+      switch (navIn.sat.system)
+      {
+         case SatelliteSystem::GPS:
+         case SatelliteSystem::QZSS:
+            navOut = std::make_shared<GPSLNavISC>();
+            gps = dynamic_cast<GPSLNavISC*>(navOut.get());
+               // NavData
+            fillNavData(navIn, navOut);
+               // GPSLNavISC
+            gps->isc = navIn.Tgd;
+               // We don't have the A-S flag in rinex nav, so just
+               // assume it's on for GPS and off for QZSS, as it more
+               // than likely is.  Also assume alert is off.  Maybe at
+               // some future point the data and dump method will be
+               // changed to know that the data is an unknown value.
+            if (navIn.sat.system == SatelliteSystem::GPS)
+            {
+               gps->asFlag = true;
+            }
+            else
+            {
+               gps->asFlag = false;
+            }
+            gps->alert = false;
+            break;
+         default:
+               // Return true to ignore unsupported/unknown codes
+               // rather than returing false to indicate an error.
+            rv = true;
+            break;
+      }
+      return rv;
    }
 
 

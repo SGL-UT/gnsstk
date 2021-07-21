@@ -63,10 +63,11 @@ namespace gpstk
          /** Get inter-signal corrections for the single-frequency user.
           * @param[in] oid The carrier band and tracking code of the
           *   signal to get the correction for.
-          * @param[out] corr The correction in seconds for the given band/code.
+          * @param[out] corrOut The correction in seconds for the
+          *   given band/code.
           * @return true If band/code are valid for this object and
-          *   corr was set according to available data. */
-      virtual bool getISC(const ObsID& oid, double& corr)
+          *   corrOut was set according to available data. */
+      virtual bool getISC(const ObsID& oid, double& corrOut)
          const;
 
          /** Get inter-signal corrections for the dual-frequency user.
@@ -75,11 +76,11 @@ namespace gpstk
           *   iono-free combined pseudorange.
           * @param[in] oid2 The carrier band/tracking code of the
           *   secondary signal to get the correction for.
-          * @param[out] corr The correction in seconds for the given
+          * @param[out] corrOut The correction in seconds for the given
           *   band/code pair.
           * @return true If bands/codes are valid for this object and
-          *   corr was set according to available data. */
-      virtual bool getISC(const ObsID& oid1, const ObsID& oid2, double& corr)
+          *   corrOut was set according to available data. */
+      virtual bool getISC(const ObsID& oid1, const ObsID& oid2, double& corrOut)
          const;
 
          /** Decode a GPS ISC/Tgd value, setting the result to NaN if
