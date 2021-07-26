@@ -842,6 +842,19 @@ namespace gpstk
        * recommended that if you chose to implement an addition to the
        * PNBMultiGNSSNavDataFactory you also implement a test in your
        * code to make sure it actually is adding the factory properly.
+       *
+       * @section KnownIssues Known Issues
+       *
+       * @subsection BeiDouKnownIssues BeiDou Known Issues
+       *
+       * \li The lack of a reference time for the time system
+       *     conversion data in D1 Nav means we've had to make our
+       *     best guess at how the time offset is really derived.
+       * \li The B1I ICD does not appear to explicitly tie the D1
+       *     almanac pages to subframe 5, page 8 which contains the
+       *     WNa.  Nevertheless, we assume that the toa should match
+       *     between these pages and discard any almanac pages which
+       *     do not.
        */
 
       /// @ingroup NavFactory

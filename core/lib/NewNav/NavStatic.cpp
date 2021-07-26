@@ -50,6 +50,7 @@
 #include "PNBGPSCNav2DataFactory.hpp"
 #include "PNBGalINavDataFactory.hpp"
 #include "PNBGalFNavDataFactory.hpp"
+#include "PNBBDSD1NavDataFactory.hpp"
 #ifdef BUILD_EXT
 // Support for Ext factories must be added here to enforce initialization order
 #include "YumaNavDataFactory.hpp"
@@ -127,6 +128,10 @@ namespace gpstk
          gpstk::PNBNavDataFactoryPtr
             galf(std::make_shared<gpstk::PNBGalFNavDataFactory>());
          PNBMultiGNSSNavDataFactory::addFactory(NavType::GalFNAV,galf);
+
+         gpstk::PNBNavDataFactoryPtr
+            bd1(std::make_shared<gpstk::PNBBDSD1NavDataFactory>());
+         PNBMultiGNSSNavDataFactory::addFactory(NavType::BeiDou_D1,bd1);
       }
    };
 

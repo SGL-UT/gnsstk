@@ -1,10 +1,12 @@
 add_executable(YumaNavDataFactory_T YumaNavDataFactory_T.cpp)
 target_link_libraries(YumaNavDataFactory_T gpstk)
 add_test(YumaNavDataFactory_T YumaNavDataFactory_T)
+set_property(TEST YumaNavDataFactory_T PROPERTY LABELS NewNav)
 
 add_executable(SEMNavDataFactory_T SEMNavDataFactory_T.cpp)
 target_link_libraries(SEMNavDataFactory_T gpstk)
 add_test(SEMNavDataFactory_T SEMNavDataFactory_T)
+set_property(TEST SEMNavDataFactory_T PROPERTY LABELS NewNav)
 
 add_executable(ExtFactoryInitializer_T ExtFactoryInitializer_T.cpp)
 if( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
@@ -13,3 +15,4 @@ if( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
 endif()
 target_link_libraries(ExtFactoryInitializer_T gpstk)
 add_test(ExtFactoryInitializer_T ExtFactoryInitializer_T)
+set_property(TEST ExtFactoryInitializer_T PROPERTY LABELS NewNav)
