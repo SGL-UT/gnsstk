@@ -46,7 +46,7 @@ namespace gpstk
       /// @ingroup NavFactory
       //@{
 
-      /** Class containing data elements unique to Galileo I/NAV ISC
+      /** Class containing data elements unique to Galileo F/NAV ISC
        * (BGD - broadcast group delay). */
    class GalFNavISC : public InterSigCorr
    {
@@ -86,7 +86,10 @@ namespace gpstk
           *   corrOut was set according to available data. */
       bool getISC(const ObsID& oid1, const ObsID& oid2, double& corrOut)
          const override
-      { return InterSigCorr::getISC(oid1, oid2, corrOut); }
+      {
+         corrOut = 0;
+         return true;
+      }
    };
 
       //@}

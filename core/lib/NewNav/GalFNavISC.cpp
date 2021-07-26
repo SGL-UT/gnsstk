@@ -69,15 +69,11 @@ namespace gpstk
       {
          return false;
       }
-         /** @note Single-frequency E1 corrections can potentially be
-          * confusing based on Eq.15 of the SIS-ICD, but it's my
-          * understanding (correct or not) that F/NAV is on E5/E5a and
-          * I/NAV is on E1/E1B and E5b/E5bI.  So the E1
-          * single-frequency correction should come from BGD(E1,E5b)
-          * because the clock corrections will come from the same
-          * source.  IOW, the clock corrections must come from the
-          * same source as the single-frequency correction, and thus
-          * I/NAV and BGD(E1,E5b). */
+         /** @note Single-frequency E1 corrections cannot be obtained
+          * from F/NAV, only Single-frequency E5a corrections.  This
+          * is because F/NAV does not transmit on nor provide clock
+          * corrections for E1.  I/NAV must be used to get E1
+          * corrections.  See GalINavISC for more. */
       if ((oid.band == CarrierBand::L5) && // same as E5a
           ((oid.code == TrackingCode::E5aI) ||
            (oid.code == TrackingCode::E5aQ)))
