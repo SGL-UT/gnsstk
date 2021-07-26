@@ -39,12 +39,126 @@
 /** @file CNav2TestDataDef.hpp This file contains data definitions
  * for testing GPS CNav2 processing in the NavFactory code. */
 
+/** @note Conversion from GPSWeekSecond to CommonTime with a
+ * fractional second of week results in "noise" in CommonTime::m_fsod,
+ * so I add the appropriate offset after-the-fact so the truth data
+ * matches. */
+
 oidCNAV2GPS = gpstk::ObsID(gpstk::ObservationType::NavMsg,
                             gpstk::CarrierBand::L1,
                             gpstk::TrackingCode::L1CD);
 ephCNAV2GPSsid = gpstk::SatID(4, gpstk::SatelliteSystem::GPS);
 
+sf123p1CNAV2GPSct = gpstk::GPSWeekSecond(2049,345600);
+sf123p1CNAV2GPS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2GPSsid,
+                                                         oidCNAV2GPS,
+                                                         sf123p1CNAV2GPSct);
+sf123p1CNAV2GPS->setNavID(gpstk::NavType::GPSCNAV2);
+sf123p1CNAV2GPS->addUnsignedLong(0, 9, 1);           // subframe 1
+sf123p1CNAV2GPS->addUnsignedLong(0x4009842F, 32, 1); // subframe 2
+sf123p1CNAV2GPS->addUnsignedLong(0xF64901C9, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0x8940061F, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0x72D8B7FE, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0xB8B4F053, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0x0C30018B, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0xBC5AF86B, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0x78E9F71F, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0x2D6A2721, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0x415081C7, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0xFF46800A, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0x0011000F, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0x9080290D, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0x81008800, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0xCCFC5C4E, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0xD8830057, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0x6003DA5F, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0xE5FFA004, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0x3E44C8, 24, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0x04040380, 32, 1); // subframe 3 page 1
+sf123p1CNAV2GPS->addUnsignedLong(0x0440049E, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0xC0100278, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0x97120B02, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0xFFFE2B02, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0xFDFDFF67, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0xC77CD7E6, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0xB000000F, 32, 1);
+sf123p1CNAV2GPS->addUnsignedLong(0xBA514000 >> 14, 18, 1);
+sf123p1CNAV2GPS->trimsize();
+
+sf123p2CNAV2GPSct = gpstk::GPSWeekSecond(2049,345618);
+sf123p2CNAV2GPS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2GPSsid,
+                                                         oidCNAV2GPS,
+                                                         sf123p2CNAV2GPSct);
+sf123p2CNAV2GPS->setNavID(gpstk::NavType::GPSCNAV2);
+sf123p2CNAV2GPS->addUnsignedLong(0, 9, 1);           // subframe 1
+sf123p2CNAV2GPS->addUnsignedLong(0x4009842F, 32, 1); // subframe 2
+sf123p2CNAV2GPS->addUnsignedLong(0xF64901C9, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x8940061F, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x72D8B7FE, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0xB8B4F053, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x0C30018B, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0xBC5AF86B, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x78E9F71F, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x2D6A2721, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x415081C7, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0xFF46800A, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x0011000F, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x9080290D, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x81008800, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0xCCFC5C4E, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0xD8830057, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x6003DA5F, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0xE5FFA004, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x3E44C8, 24, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x04080000, 32, 1); // subframe 3 page 2
+sf123p2CNAV2GPS->addUnsignedLong(0x00000000, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x00001EC0, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x01E2C61E, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0xBCCF10A2, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x24BFEE0D, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x48F6D230, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x00000032, 32, 1);
+sf123p2CNAV2GPS->addUnsignedLong(0x16A84000 >> 14, 18, 1);
+sf123p2CNAV2GPS->trimsize();
+
+sf123p4CNAV2GPSct = gpstk::GPSWeekSecond(2049,345636);
+sf123p4CNAV2GPS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2GPSsid,
+                                                         oidCNAV2GPS,
+                                                         sf123p4CNAV2GPSct);
+sf123p4CNAV2GPS->setNavID(gpstk::NavType::GPSCNAV2);
+sf123p4CNAV2GPS->addUnsignedLong(0, 9, 1);           // subframe 1
+sf123p4CNAV2GPS->addUnsignedLong(0x4009842F, 32, 1); // subframe 2
+sf123p4CNAV2GPS->addUnsignedLong(0xF64901C9, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x8940061F, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x72D8B7FE, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0xB8B4F053, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x0C30018B, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0xBC5AF86B, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x78E9F71F, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x2D6A2721, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x415081C7, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0xFF46800A, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x0011000F, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x9080290D, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x81008800, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0xCCFC5C4E, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0xD8830057, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x6003DA5F, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0xE5FFA004, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x3E44C8, 24, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x0411002F, 32, 1); // subframe 3 page 4
+sf123p4CNAV2GPS->addUnsignedLong(0x60466B83, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0xDFD5421A, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0xA25EB8C6, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x044FE6DF, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0xF8000000, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x00000000, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0x0000001D, 32, 1);
+sf123p4CNAV2GPS->addUnsignedLong(0xB26C4000 >> 14, 18, 1);
+sf123p4CNAV2GPS->trimsize();
+
 sf2CNAV2GPSct = gpstk::GPSWeekSecond(2049,345600);
+sf2CNAV2GPSct += 0.52;
 sf2CNAV2GPS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2GPSsid,
                                                      oidCNAV2GPS,
                                                      sf2CNAV2GPSct);
@@ -70,7 +184,35 @@ sf2CNAV2GPS->addUnsignedLong(0xE5FFA004, 32, 1);
 sf2CNAV2GPS->addUnsignedLong(0x3E44C8, 24, 1);
 sf2CNAV2GPS->trimsize();
 
+sf2CNAV2GPS2ct = gpstk::GPSWeekSecond(2049,352800);
+sf2CNAV2GPS2ct += 0.52;
+sf2CNAV2GPS2 = std::make_shared<gpstk::PackedNavBits>(ephCNAV2GPSsid,
+                                                      oidCNAV2GPS,
+                                                      sf2CNAV2GPS2ct);
+sf2CNAV2GPS2->setNavID(gpstk::NavType::GPSCNAV2);
+sf2CNAV2GPS2->addUnsignedLong(0x40098C2F, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0xF65501CB, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0x629FF8B7, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0xB2D4A001, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0x9547900C, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0x1E480191, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0x1AB6FBA0, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0x848DF71E, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0x02162721, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0x401281FF, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0xFEC90013, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0xFFF28014, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0x0A0037AC, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0x80E7D401, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0x05FC5C4E, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0xDD4F0057, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0x4003DA5F, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0xE5FFA004, 32, 1);
+sf2CNAV2GPS2->addUnsignedLong(0xA5AAC5, 24, 1);
+sf2CNAV2GPS2->trimsize();
+
 sf3p1CNAV2GPSct = gpstk::GPSWeekSecond(2049,345600);
+sf3p1CNAV2GPSct += 12.52;
 sf3p1CNAV2GPS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2GPSsid,
                                                        oidCNAV2GPS,
                                                        sf3p1CNAV2GPSct);
@@ -87,6 +229,7 @@ sf3p1CNAV2GPS->addUnsignedLong(0xBA514000 >> 14, 18, 1);
 sf3p1CNAV2GPS->trimsize();
 
 sf3p2CNAV2GPSct = gpstk::GPSWeekSecond(2049,345618);
+sf3p2CNAV2GPSct += 12.52;
 sf3p2CNAV2GPS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2GPSsid,
                                                        oidCNAV2GPS,
                                                        sf3p2CNAV2GPSct);
@@ -104,6 +247,7 @@ sf3p2CNAV2GPS->trimsize();
 
 // faking some data since we don't have any data that contains real offsets
 sf3p2fakeCNAV2GPSct = gpstk::GPSWeekSecond(2049,345618);
+sf3p2fakeCNAV2GPSct += 12.52;
 sf3p2fakeCNAV2GPS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2GPSsid,
                                                            oidCNAV2GPS,
                                                            sf3p2fakeCNAV2GPSct);
@@ -128,6 +272,7 @@ sf3p2fakeCNAV2GPS->addUnsignedLong(0, 24, 1); // CRC
 sf3p2fakeCNAV2GPS->trimsize();
 
 sf3p4CNAV2GPSct = gpstk::GPSWeekSecond(2049,345636);
+sf3p4CNAV2GPSct += 12.52;
 sf3p4CNAV2GPS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2GPSsid,
                                                        oidCNAV2GPS,
                                                        sf3p4CNAV2GPSct);
@@ -151,6 +296,7 @@ oidCNAV2QZSS = gpstk::ObsID(gpstk::ObservationType::NavMsg,
 ephCNAV2QZSSsid = gpstk::SatID(193, gpstk::SatelliteSystem::QZSS);
 
 sf2CNAV2QZSSct = gpstk::GPSWeekSecond(2155,324504,gpstk::TimeSystem::QZS);
+sf2CNAV2QZSSct += 0.52;
 sf2CNAV2QZSS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2QZSSsid,
                                                       oidCNAV2QZSS,
                                                       sf2CNAV2QZSSct);
@@ -177,6 +323,7 @@ sf2CNAV2QZSS->addUnsignedLong(0x710206, 24, 1);
 sf2CNAV2QZSS->trimsize();
 
 sf3p1CNAV2QZSSct = gpstk::GPSWeekSecond(2155,324576,gpstk::TimeSystem::QZS);
+sf3p1CNAV2QZSSct += 12.52;
 sf3p1CNAV2QZSS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2QZSSsid,
                                                         oidCNAV2QZSS,
                                                         sf3p1CNAV2QZSSct);
@@ -194,6 +341,7 @@ sf3p1CNAV2QZSS->trimsize();
 
 
 sf3p2CNAV2QZSSct = gpstk::GPSWeekSecond(2155,324612,gpstk::TimeSystem::QZS);
+sf3p2CNAV2QZSSct += 12.52;
 sf3p2CNAV2QZSS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2QZSSsid,
                                                         oidCNAV2QZSS,
                                                         sf3p2CNAV2QZSSct);
@@ -210,6 +358,7 @@ sf3p2CNAV2QZSS->addUnsignedLong(0xA6E50000 >> 14, 18, 1);
 sf3p2CNAV2QZSS->trimsize();
 
 sf3p4CNAV2QZSSct = gpstk::GPSWeekSecond(2155,324522,gpstk::TimeSystem::QZS);
+sf3p4CNAV2QZSSct += 12.52;
 sf3p4CNAV2QZSS = std::make_shared<gpstk::PackedNavBits>(ephCNAV2QZSSsid,
                                                         oidCNAV2QZSS,
                                                         sf3p4CNAV2QZSSct);

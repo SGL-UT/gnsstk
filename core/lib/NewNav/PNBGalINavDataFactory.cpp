@@ -40,6 +40,7 @@
 #include "GalINavEph.hpp"
 #include "GalINavTimeOffset.hpp"
 #include "GalINavIono.hpp"
+#include "GalINavISC.hpp"
 #include "GALWeekSecond.hpp"
 #include "TimeCorrection.hpp"
 #include "EngNav.hpp"
@@ -613,9 +614,7 @@ namespace gpstk
       }
       std::vector<PackedNavBitsPtr> &ephWord(ephAcc[key]);
       ephWord[wordType-1] = navIn;
-         // Health information is in word type 5, but we also need
-         // word type 3 for SISA.
-      if ((wordType == 5) && ephWord[wt3])
+      if (wordType == 5)
       {
          if (PNBNavDataFactory::processIono)
          {
@@ -634,7 +633,21 @@ namespace gpstk
             ip3->idf[4] = navIn->asBool(isbIDFR5);
             navOut.push_back(p3);
          }
-         if (PNBNavDataFactory::processHea)
+         if (PNBNavDataFactory::processISC)
+         {
+               // Add ISC data from word type 5
+            NavDataPtr p4 = std::make_shared<GalINavISC>();
+            GalINavISC *ip4 = dynamic_cast<GalINavISC*>(p4.get());
+            ip4->timeStamp = navIn->getTransmitTime();
+            ip4->signal = NavMessageID(key, NavMessageType::ISC);
+            ip4->isc = std::numeric_limits<double>::quiet_NaN();
+            ip4->bgdE1E5a = navIn->asSignedDouble(isbBGDa,inbBGDa,iscBGDa);
+            ip4->bgdE1E5b = navIn->asSignedDouble(isbBGDb,inbBGDb,iscBGDb);
+            navOut.push_back(p4);
+         }
+            // Health information is in word type 5, but we also need
+            // word type 3 for SISA.
+         if (PNBNavDataFactory::processHea && ephWord[wt3])
          {
                // Add health bits from word type 5.
             NavDataPtr p1 = std::make_shared<GalINavHealth>();

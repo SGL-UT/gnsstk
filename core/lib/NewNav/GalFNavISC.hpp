@@ -36,29 +36,30 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_INTERSIGCORR_HPP
-#define GPSTK_INTERSIGCORR_HPP
+#ifndef GPSTK_GALFNAVISC_HPP
+#define GPSTK_GALFNAVISC_HPP
 
-#include "NavData.hpp"
-#include "PackedNavBits.hpp"
+#include "InterSigCorr.hpp"
 
 namespace gpstk
 {
       /// @ingroup NavFactory
       //@{
 
-      /** Class representing SV-based inter-signal bias correction information.
-       * @note All ObsIDs added to refOids or validOids should change
-       *   the "type" field to "Unknown", and all derived classes that
-       *   override the getISC methods should also make copies of the
-       *   input ObsID parameters and set the type to unknown in order
-       *   to consistently match.
-       * @todo Document in detail how this is meant to be used. */
-   class InterSigCorr : public NavData
+      /** Class containing data elements unique to Galileo F/NAV ISC
+       * (BGD - broadcast group delay). */
+   class GalFNavISC : public InterSigCorr
    {
    public:
-         /// Set message type to ISC.
-      InterSigCorr();
+         /// Initialize data members.
+      GalFNavISC();
+
+         /** Checks the contents of this message against known
+          * validity rules as defined in the appropriate ICD.
+          * @todo implement some checks.
+          * @return true if this message is valid according to ICD criteria.
+          */
+      bool validate() const override;
 
          /** Get inter-signal corrections for the single-frequency user.
           * @param[in] oid The carrier band and tracking code of the
@@ -67,10 +68,13 @@ namespace gpstk
           *   given band/code.
           * @return true If band/code are valid for this object and
           *   corrOut was set according to available data. */
-      virtual bool getISC(const ObsID& oid, double& corrOut)
-         const;
+      bool getISC(const ObsID& oid, double& corrOut)
+         const override;
 
          /** Get inter-signal corrections for the dual-frequency user.
+          * @note Galileo has no ISCs for the dual frequency user (per
+          *   section 5.1.5 of the SIS-ICD), so this just returns true
+          *   with corrOut set to 0.
           * @param[in] oid1 The carrier band/tracking code of the
           *   primary signal that was used to create a dual-frequency,
           *   iono-free combined pseudorange.
@@ -80,34 +84,16 @@ namespace gpstk
           *   band/code pair.
           * @return true If bands/codes are valid for this object and
           *   corrOut was set according to available data. */
-      virtual bool getISC(const ObsID& oid1, const ObsID& oid2, double& corrOut)
-         const;
-
-         /** Decode a GPS ISC/Tgd value, setting the result to NaN if
-          * the bits match the pattern b1_0000_0000_0000, which indicates
-          * not available. 
-          * @note Value is expected to be 13 bits with a scale factor of 2^-35.
-          * @param[in] navIn The PackedNavBits data to process.
-          * @param[in] startBit The first bit in navIn containing the Tgd/ISC.
-          * @return The ISC value, which may be NaN. */
-      static double getGPSISC(const PackedNavBitsPtr& navIn, unsigned startBit);
-      
-         /** The inter-signal correction value from the navigation
-          * data (sometimes known as T<sub>GD</sub> or BGD). */
-      double isc;
-
-   protected:
-         /** The reference signals to which this ISC applies.  These
-          * must be all on the same band, though there are no explicit
-          * sanity checks for this. */
-      std::set<ObsID> refOids;
-         /** The set of band/code combinations to which this ISC can
-          * be referenced. */
-      std::set<ObsID> validOids;
-   }; // class InterSigCorr
+      bool getISC(const ObsID& oid1, const ObsID& oid2, double& corrOut)
+         const override
+      {
+         corrOut = 0;
+         return true;
+      }
+   };
 
       //@}
 
-} // namespace gpstk
+}
 
-#endif // GPSTK_INTERSIGCORR_HPP
+#endif // GPSTK_GALFNAVISC_HPP

@@ -36,39 +36,46 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_INTERSIGCORR_HPP
-#define GPSTK_INTERSIGCORR_HPP
+#ifndef GPSTK_GPSCNAV2ISC_HPP
+#define GPSTK_GPSCNAV2ISC_HPP
 
-#include "NavData.hpp"
-#include "PackedNavBits.hpp"
+#include "InterSigCorr.hpp"
 
 namespace gpstk
 {
       /// @ingroup NavFactory
       //@{
 
-      /** Class representing SV-based inter-signal bias correction information.
-       * @note All ObsIDs added to refOids or validOids should change
-       *   the "type" field to "Unknown", and all derived classes that
-       *   override the getISC methods should also make copies of the
-       *   input ObsID parameters and set the type to unknown in order
-       *   to consistently match.
-       * @todo Document in detail how this is meant to be used. */
-   class InterSigCorr : public NavData
+      /// Class containing data elements unique to GPS CNAV2 ISC data.
+   class GPSCNav2ISC : public InterSigCorr
    {
    public:
-         /// Set message type to ISC.
-      InterSigCorr();
+         /// Sets the internal data members.
+      GPSCNav2ISC();
+
+         /** Checks the contents of this message against known
+          * validity rules as defined in the appropriate ICD.
+          * @return true if this message is valid according to ICD criteria.
+          */
+      bool validate() const override;
+
+         /** Returns the time when the navigation message would have
+          * first been available to the user equipment, i.e. the time
+          * at which the final bit of a given broadcast navigation
+          * message is received.  This is used by
+          * NavDataFactoryWithStore::find() in User mode.
+          * @return transmit time of subframe 2 + 12s or transmit time
+          *   of subframe 3 + 5.48s, whichever is more recent.
+          */
+      CommonTime getUserTime() const override;
 
          /** Get inter-signal corrections for the single-frequency user.
           * @param[in] oid The carrier band and tracking code of the
           *   signal to get the correction for.
-          * @param[out] corrOut The correction in seconds for the
-          *   given band/code.
+          * @param[out] corr The correction in seconds for the given band/code.
           * @return true If band/code are valid for this object and
-          *   corrOut was set according to available data. */
-      virtual bool getISC(const ObsID& oid, double& corrOut)
-         const;
+          *   corr was set according to available data. */
+      bool getISC(const ObsID& oid, double& corr) const override;
 
          /** Get inter-signal corrections for the dual-frequency user.
           * @param[in] oid1 The carrier band/tracking code of the
@@ -76,38 +83,30 @@ namespace gpstk
           *   iono-free combined pseudorange.
           * @param[in] oid2 The carrier band/tracking code of the
           *   secondary signal to get the correction for.
-          * @param[out] corrOut The correction in seconds for the given
+          * @param[out] corr The correction in seconds for the given
           *   band/code pair.
           * @return true If bands/codes are valid for this object and
-          *   corrOut was set according to available data. */
-      virtual bool getISC(const ObsID& oid1, const ObsID& oid2, double& corrOut)
-         const;
+          *   corr was set according to available data. */
+      bool getISC(const ObsID& oid1, const ObsID& oid2, double& corr)
+         const override;
 
-         /** Decode a GPS ISC/Tgd value, setting the result to NaN if
-          * the bits match the pattern b1_0000_0000_0000, which indicates
-          * not available. 
-          * @note Value is expected to be 13 bits with a scale factor of 2^-35.
-          * @param[in] navIn The PackedNavBits data to process.
-          * @param[in] startBit The first bit in navIn containing the Tgd/ISC.
-          * @return The ISC value, which may be NaN. */
-      static double getGPSISC(const PackedNavBitsPtr& navIn, unsigned startBit);
-      
-         /** The inter-signal correction value from the navigation
-          * data (sometimes known as T<sub>GD</sub> or BGD). */
-      double isc;
+         /** @todo deal with the fact that there are two subframes in
+          * this, i.e. implement a proper getUserTime() method */
 
-   protected:
-         /** The reference signals to which this ISC applies.  These
-          * must be all on the same band, though there are no explicit
-          * sanity checks for this. */
-      std::set<ObsID> refOids;
-         /** The set of band/code combinations to which this ISC can
-          * be referenced. */
-      std::set<ObsID> validOids;
-   }; // class InterSigCorr
+      bool haveSF2;     ///< True if iscL1CP and iscL1CD are set.
+      bool haveSF3;     ///< True if iscL1CA,iscL2C,iscL5I5,iscL5Q5 are set.
+      CommonTime xmit2; ///< Transmit time of subframe 2.
+      CommonTime xmit3; ///< Transmit time of subframe 3.
+      double iscL1CP;   ///< Intersignal corrections for L1 CP.
+      double iscL1CD;   ///< Intersignal corrections for L1 CD.
+      double iscL1CA;   ///< Intersignal corrections for L1 C/A.
+      double iscL2C;    ///< Intersignal corrections for L2C.
+      double iscL5I5;   ///< Intersignal corrections for L5 in-phase.
+      double iscL5Q5;   ///< Intersignal corrections for L5 quadrature.
+   };
 
       //@}
 
-} // namespace gpstk
+}
 
-#endif // GPSTK_INTERSIGCORR_HPP
+#endif // GPSTK_GPSCNAV2ISC_HPP

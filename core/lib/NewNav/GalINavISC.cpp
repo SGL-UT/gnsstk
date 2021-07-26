@@ -36,74 +36,70 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include <math.h>
-#include "InterSigCorr.hpp"
+#include <cmath>
+#include "GalINavISC.hpp"
 #include "FreqConv.hpp"
 
 using namespace std;
 
 namespace gpstk
 {
-   InterSigCorr ::
-   InterSigCorr()
-         : isc(std::numeric_limits<double>::quiet_NaN())
+   GalINavISC ::
+   GalINavISC()
+         : bgdE1E5a(std::numeric_limits<double>::quiet_NaN()),
+           bgdE1E5b(std::numeric_limits<double>::quiet_NaN())
    {
-      signal.messageType = NavMessageType::ISC;
+      msgLenSec = 2.0;
    }
 
 
-   bool InterSigCorr ::
+   bool GalINavISC ::
+   validate() const
+   {
+      return !(std::isnan(bgdE1E5a) || std::isnan(bgdE1E5b));
+   }
+
+
+   bool GalINavISC ::
    getISC(const ObsID& oid, double& corrOut)
       const
    {
-      ObsID oidU(oid);
-      oidU.type = ObservationType::Unknown;
-         // it's possible to have an empty validOids and still be
-         // useful, but it is not possible to have an empty refOids or
-         // isc=NaN and still be useful.
-      if (isnan(isc) || refOids.empty())
-         return false;
-      if (refOids.count(oidU))
+      if ((oid.band == CarrierBand::L1) && // same as E1
+          ((oid.code == TrackingCode::E1B) ||
+           (oid.code == TrackingCode::E1C)))
       {
-         corrOut = -isc;
+            /** @note Single-frequency E1 corrections can potentially
+             * be confusing based on Eq.15 of the SIS-ICD, but it's my
+             * understanding (correct or not) that F/NAV is on E5/E5a
+             * and I/NAV is on E1/E1B and E5b/E5bI.  So the E1
+             * single-frequency correction should come from
+             * BGD(E1,E5b) because the clock corrections will come
+             * from the same source.  IOW, the clock corrections must
+             * come from the same source as the single-frequency
+             * correction, and thus I/NAV and BGD(E1,E5b). */
+         if (std::isnan(bgdE1E5b))
+            return false;
+         corrOut = -bgdE1E5b;
+         return true;
       }
-      else if (validOids.count(oidU))
+      else if ((oid.band == CarrierBand::L5) && // same as E5a
+               ((oid.code == TrackingCode::E5aI) ||
+                (oid.code == TrackingCode::E5aQ)))
       {
-         corrOut = -(getGamma(refOids.begin()->band, oidU.band) * isc);
+         if (std::isnan(bgdE1E5a))
+            return false;
+         corrOut = -(getGamma(CarrierBand::L1,oid.band) * bgdE1E5a);
+         return true;
       }
-      else
+      else if ((oid.band == CarrierBand::E5b) &&
+               ((oid.code == TrackingCode::E5bI) ||
+                (oid.code == TrackingCode::E5bQ)))
       {
-         return false;
+         if (std::isnan(bgdE1E5b))
+            return false;
+         corrOut = -(getGamma(CarrierBand::L1,oid.band) * bgdE1E5b);
+         return true;
       }
-      return true;
-   }
-
-
-   bool InterSigCorr ::
-   getISC(const ObsID& oid1, const ObsID& oid2, double& corrOut)
-      const
-   {
-      corrOut = 0;
-      return true;
-   }
-
-
-   double InterSigCorr ::
-   getGPSISC(const PackedNavBitsPtr& navIn, unsigned startBit)
-   {
-      double rv = 0;
-         // GPS ISC/Tgd are always 13 bits x 2^-35
-         // but we scale tgdBits by 1 to match the bit pattern.
-      unsigned long tgdBits = navIn->asUnsignedLong(startBit, 13, 1);
-      if (tgdBits == 0x1000)
-      {
-            // set to NaN because tgd is not available
-         rv = std::numeric_limits<float>::quiet_NaN();
-      }
-      else
-      {
-         rv = navIn->asSignedDouble(startBit, 13, -35);
-      }
-      return rv;
+      return false;
    }
 }

@@ -36,15 +36,51 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-/** @file CNav2TestDataDecl.hpp This file contains data declarations
- * for testing GPS and QZSS CNAV2 processing in the NavFactory code. */
+#include <cmath>
+#include "GalFNavISC.hpp"
+#include "FreqConv.hpp"
 
-gpstk::ObsID oidCNAV2GPS;
-gpstk::SatID ephCNAV2GPSsid;
-gpstk::CommonTime sf123p1CNAV2GPSct,  sf123p2CNAV2GPSct,  sf123p4CNAV2GPSct, sf2CNAV2GPSct, sf2CNAV2GPS2ct, sf3p1CNAV2GPSct, sf3p2CNAV2GPSct, sf3p2fakeCNAV2GPSct, sf3p4CNAV2GPSct;
-gpstk::PackedNavBitsPtr sf123p1CNAV2GPS,  sf123p2CNAV2GPS,  sf123p4CNAV2GPS, sf2CNAV2GPS, sf2CNAV2GPS2, sf3p1CNAV2GPS, sf3p2CNAV2GPS, sf3p2fakeCNAV2GPS, sf3p4CNAV2GPS;
+using namespace std;
 
-gpstk::ObsID oidCNAV2QZSS;
-gpstk::SatID ephCNAV2QZSSsid;
-gpstk::CommonTime sf2CNAV2QZSSct, sf3p1CNAV2QZSSct, sf3p2CNAV2QZSSct, sf3p4CNAV2QZSSct;
-gpstk::PackedNavBitsPtr sf2CNAV2QZSS, sf3p1CNAV2QZSS, sf3p2CNAV2QZSS, sf3p4CNAV2QZSS;
+namespace gpstk
+{
+   GalFNavISC ::
+   GalFNavISC()
+   {
+         // Galileo F/NAV nominal page transmit time is 10 seconds per
+         // OS-SIS-ICD figure 14.
+      msgLenSec = 10.0;
+   }
+
+
+   bool GalFNavISC ::
+   validate() const
+   {
+      return !std::isnan(isc);
+   }
+
+
+   bool GalFNavISC ::
+   getISC(const ObsID& oid, double& corrOut)
+      const
+   {
+         // if isc is NaN, we definitely can't return anything.
+      if (std::isnan(isc))
+      {
+         return false;
+      }
+         /** @note Single-frequency E1 corrections cannot be obtained
+          * from F/NAV, only Single-frequency E5a corrections.  This
+          * is because F/NAV does not transmit on nor provide clock
+          * corrections for E1.  I/NAV must be used to get E1
+          * corrections.  See GalINavISC for more. */
+      if ((oid.band == CarrierBand::L5) && // same as E5a
+          ((oid.code == TrackingCode::E5aI) ||
+           (oid.code == TrackingCode::E5aQ)))
+      {
+         corrOut = -(getGamma(CarrierBand::L1,oid.band) * isc);
+         return true;
+      }
+      return false;
+   }
+}

@@ -344,7 +344,8 @@ addDataTest()
    navOut.clear();
       // clock data completes the ephemeris
    TUASSERTE(bool, true, uut.addData(msg30CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 2, navOut.size());
+      /// @todo Switch this test to use FactoryCounter and check for 1 ISC
+   TUASSERTE(size_t, 3, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, ephCount);
    TUASSERTE(unsigned, 1, ionoCount);
@@ -375,7 +376,8 @@ addDataTest()
    navOut.clear();
       // clock data completes the ephemeris
    TUASSERTE(bool, true, uut.addData(msg30CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 2, navOut.size());
+      /// @todo Switch this test to use FactoryCounter and check for 1 ISC
+   TUASSERTE(size_t, 3, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, ephCount);
    TUASSERTE(unsigned, 1, ionoCount);

@@ -44,6 +44,7 @@
 #include "GPSCNavHealth.hpp"
 #include "GPSCNavTimeOffset.hpp"
 #include "GPSCNavIono.hpp"
+#include "GPSCNavISC.hpp"
 #include "TimeCorrection.hpp"
 
 using namespace std;
@@ -1054,32 +1055,51 @@ namespace gpstk
    bool PNBGPSCNavDataFactory ::
    process30(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
    {
-      if (!PNBNavDataFactory::processIono)
+      if (PNBNavDataFactory::processIono)
       {
-            // User doesn't want ionospheric data so don't do any processing.
-         return true;
+         NavDataPtr p0 = std::make_shared<GPSCNavIono>();
+         GPSCNavIono *iono = dynamic_cast<GPSCNavIono*>(p0.get());
+            // NavData
+         p0->timeStamp = navIn->getTransmitTime();
+         p0->signal = NavMessageID(
+            NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
+                           navIn->getobsID(), navIn->getNavID()),
+            NavMessageType::Iono);
+            // KlobucharIonoData
+         iono->alpha[0] = navIn->asSignedDouble(isbAlpha0,inbAlpha0,iscAlpha0);
+         iono->alpha[1] = navIn->asSignedDouble(isbAlpha1,inbAlpha1,iscAlpha1);
+         iono->alpha[2] = navIn->asSignedDouble(isbAlpha2,inbAlpha2,iscAlpha2);
+         iono->alpha[3] = navIn->asSignedDouble(isbAlpha3,inbAlpha3,iscAlpha3);
+         iono->beta[0] = navIn->asSignedDouble(isbBeta0,inbBeta0,iscBeta0);
+         iono->beta[1] = navIn->asSignedDouble(isbBeta1,inbBeta1,iscBeta1);
+         iono->beta[2] = navIn->asSignedDouble(isbBeta2,inbBeta2,iscBeta2);
+         iono->beta[3] = navIn->asSignedDouble(isbBeta3,inbBeta3,iscBeta3);
+            // GPSCNavIono
+         iono->pre = navIn->asUnsignedLong(esbPre,enbPre,escPre);
+         iono->alert = navIn->asBool(esbAlert);
+         navOut.push_back(p0);
       }
-      NavDataPtr p0 = std::make_shared<GPSCNavIono>();
-      GPSCNavIono *iono = dynamic_cast<GPSCNavIono*>(p0.get());
-         // NavData
-      p0->timeStamp = navIn->getTransmitTime();
-      p0->signal = NavMessageID(
-         NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
-                               navIn->getobsID(), navIn->getNavID()),
-         NavMessageType::Iono);
-         // KlobucharIonoData
-      iono->alpha[0] = navIn->asSignedDouble(isbAlpha0,inbAlpha0,iscAlpha0);
-      iono->alpha[1] = navIn->asSignedDouble(isbAlpha1,inbAlpha1,iscAlpha1);
-      iono->alpha[2] = navIn->asSignedDouble(isbAlpha2,inbAlpha2,iscAlpha2);
-      iono->alpha[3] = navIn->asSignedDouble(isbAlpha3,inbAlpha3,iscAlpha3);
-      iono->beta[0] = navIn->asSignedDouble(isbBeta0,inbBeta0,iscBeta0);
-      iono->beta[1] = navIn->asSignedDouble(isbBeta1,inbBeta1,iscBeta1);
-      iono->beta[2] = navIn->asSignedDouble(isbBeta2,inbBeta2,iscBeta2);
-      iono->beta[3] = navIn->asSignedDouble(isbBeta3,inbBeta3,iscBeta3);
-         // GPSCNavIono
-      iono->pre = navIn->asUnsignedLong(esbPre,enbPre,escPre);
-      iono->alert = navIn->asBool(esbAlert);
-      navOut.push_back(p0);
+      if (PNBNavDataFactory::processISC)
+      {
+         NavDataPtr p1 = std::make_shared<GPSCNavISC>();
+         GPSCNavISC *isc = dynamic_cast<GPSCNavISC*>(p1.get());
+            // NavData
+         p1->timeStamp = navIn->getTransmitTime();
+         p1->signal = NavMessageID(
+            NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
+                           navIn->getobsID(), navIn->getNavID()),
+            NavMessageType::ISC);
+            // InterSigCorr
+         isc->isc = navIn->asSignedDouble(isbTgd,inbTgd,iscTgd);
+            // GPSCNavISC
+         isc->pre = navIn->asUnsignedLong(esbPre,enbPre,escPre);
+         isc->alert = navIn->asBool(esbAlert);
+         isc->iscL1CA = navIn->asSignedDouble(isbISCL1CA,inbISCL1CA,iscISCL1CA);
+         isc->iscL2C = navIn->asSignedDouble(isbISCL2C,inbISCL2C,iscISCL2C);
+         isc->iscL5I5 = navIn->asSignedDouble(isbISCL5I5,inbISCL5I5,iscISCL5I5);
+         isc->iscL5Q5 = navIn->asSignedDouble(isbISCL5Q5,inbISCL5Q5,iscISCL5Q5);
+         navOut.push_back(p1);
+      }
       return true;
    }
 
