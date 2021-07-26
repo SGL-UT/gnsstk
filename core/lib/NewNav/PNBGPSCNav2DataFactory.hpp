@@ -41,6 +41,7 @@
 
 #include "PNBNavDataFactory.hpp"
 #include "GPSWeekSecond.hpp"
+#include "GPSCNav2ISC.hpp"
 
 namespace gpstk
 {
@@ -115,9 +116,41 @@ namespace gpstk
       bool processGGTOEOP(const PackedNavBitsPtr& navIn,
                           NavDataPtrList& navOut, unsigned offset = 0);
 
-         /// Not necessary for CNAV2, only necessary for C++ compilers.
+         /**
+          * @note If processISC is given a sequence of nothing but
+          * subframe 2, the last subframe 2 won't produce an ISC
+          * object. */
+      bool processISC(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
+
+         /// Reset the state of the data accumulator (for ISCs).
       void resetState() override
-      {}
+      { iscAcc.clear(); }
+
+         /** Adjust a timestamp so it matches the transmit time of
+          * subframe 2, which is going to be offset by 0.52 seconds */
+      static CommonTime getSF2Time(const CommonTime& timestamp);
+
+         /** Adjust a timestamp so it matches the transmit time of
+          * subframe 3, which is going to be offset by 12.52 seconds */
+      static CommonTime getSF3Time(const CommonTime& timestamp);
+
+   protected:
+         /// Quick alias for a shared_ptr to GPSCNav2ISC.
+      using GPSCNav2ISCPtr = std::shared_ptr<GPSCNav2ISC>;
+
+         /// Map signal to ISC for accumulating data between SF2 and SF3.
+      std::map<NavSatelliteID, GPSCNav2ISCPtr> iscAcc;
+
+         /** Retrieve an existing GPSCNav2ISCPtr from iscAsc or create
+          * and return a new one.
+          * @param[in] navIn The PackedNavBits being used to construct
+          *   the ISC data (for setting the time stamp). 
+          * @param[in] nsid The satellite/signal identifier for the
+          *   data contained within navIn.
+          * @return A GPSCNav2ISCPtr object corresponding to the
+          *   specified signal. */
+      GPSCNav2ISCPtr getISCObj(const PackedNavBitsPtr& navIn,
+                               const NavSatelliteID& nsid);
    };
 
       //@}

@@ -86,4 +86,24 @@ namespace gpstk
       corrOut = 0;
       return true;
    }
+
+
+   double InterSigCorr ::
+   getGPSISC(const PackedNavBitsPtr& navIn, unsigned startBit)
+   {
+      double rv = 0;
+         // GPS ISC/Tgd are always 13 bits x 2^-35
+         // but we scale tgdBits by 1 to match the bit pattern.
+      unsigned long tgdBits = navIn->asUnsignedLong(startBit, 13, 1);
+      if (tgdBits == 0x1000)
+      {
+            // set to NaN because tgd is not available
+         rv = std::numeric_limits<float>::quiet_NaN();
+      }
+      else
+      {
+         rv = navIn->asSignedDouble(startBit, 13, -35);
+      }
+      return rv;
+   }
 }
