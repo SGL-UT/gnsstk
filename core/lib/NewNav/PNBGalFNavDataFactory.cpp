@@ -40,6 +40,7 @@
 #include "GalFNavEph.hpp"
 #include "GalFNavTimeOffset.hpp"
 #include "GalFNavIono.hpp"
+#include "GalFNavISC.hpp"
 #include "GalINavHealth.hpp"
 #include "GALWeekSecond.hpp"
 #include "TimeCorrection.hpp"
@@ -654,6 +655,19 @@ namespace gpstk
             hp1->sisaIndex = ephPage[esiSISA]->asUnsignedLong(esbSISA,enbSISA,
                                                               escSISA);
             navOut.push_back(p1);
+         }
+         if (PNBNavDataFactory::processISC)
+         {
+               // Add ISC data from page type 1.
+            NavDataPtr p4 = std::make_shared<GalFNavISC>();
+            p4->timeStamp = navIn->getTransmitTime();
+            p4->signal = NavMessageID(
+               NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
+                              navIn->getobsID(), navIn->getNavID()),
+               NavMessageType::ISC);
+            GalFNavISC *isc = dynamic_cast<GalFNavISC*>(p4.get());
+            isc->isc = navIn->asSignedDouble(esbBGDa,enbBGDa,escBGDa);
+            navOut.push_back(p4);
          }
       }
       else if ((pageType == 4) && PNBNavDataFactory::processTim)

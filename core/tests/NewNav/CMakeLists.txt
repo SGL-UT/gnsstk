@@ -198,6 +198,10 @@ add_executable(GalINavEph_T GalINavEph_T.cpp)
 target_link_libraries(GalINavEph_T gpstk)
 add_test(GalINavEph_T GalINavEph_T)
 
+add_executable(GalINavISC_T GalINavISC_T.cpp)
+target_link_libraries(GalINavISC_T gpstk)
+add_test(GalINavISC_T GalINavISC_T)
+
 add_executable(PNBGalINavDataFactory_T PNBGalINavDataFactory_T.cpp)
 target_link_libraries(PNBGalINavDataFactory_T gpstk)
 add_test(PNBGalINavDataFactory_T PNBGalINavDataFactory_T)

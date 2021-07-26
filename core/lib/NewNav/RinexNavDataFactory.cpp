@@ -44,6 +44,7 @@
 #include "GPSLNavISC.hpp"
 #include "GalINavEph.hpp"
 #include "GalINavIono.hpp"
+#include "GalINavISC.hpp"
 #include "GalFNavEph.hpp"
 #include "GalINavHealth.hpp"
 #include "RinexTimeOffset.hpp"
@@ -713,6 +714,7 @@ namespace gpstk
    {
       bool rv = true;
       GPSLNavISC *gps;
+      GalINavISC *galI;
       switch (navIn.sat.system)
       {
          case SatelliteSystem::GPS:
@@ -721,8 +723,9 @@ namespace gpstk
             gps = dynamic_cast<GPSLNavISC*>(navOut.get());
                // NavData
             fillNavData(navIn, navOut);
-               // GPSLNavISC
+               // InterSigCorr
             gps->isc = navIn.Tgd;
+               // GPSLNavISC
                // We don't have the A-S flag in rinex nav, so just
                // assume it's on for GPS and off for QZSS, as it more
                // than likely is.  Also assume alert is off.  Maybe at
@@ -737,6 +740,20 @@ namespace gpstk
                gps->asFlag = false;
             }
             gps->alert = false;
+            break;
+         case SatelliteSystem::Galileo:
+               /** @note The I/NAV ISC data contains what's in the
+                * F/NAV data, i.e. BGD(E1,E5a), so there's no reason
+                * to output a separate GalFNavISC object from RINEX
+                * NAV data. */
+            navOut = std::make_shared<GalINavISC>();
+            galI = dynamic_cast<GalINavISC*>(navOut.get());
+               // NavData
+            fillNavData(navIn, navOut);
+               // InterSigCorr - we don't use this data for Galileo
+               // GalINavISC
+            galI->bgdE1E5a = navIn.Tgd;
+            galI->bgdE1E5b = navIn.Tgd2;
             break;
          default:
                // Return true to ignore unsupported/unknown codes
