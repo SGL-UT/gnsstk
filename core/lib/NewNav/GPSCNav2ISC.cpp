@@ -41,8 +41,6 @@
 #include "YDSTime.hpp"
 #include "FreqConv.hpp"
 
-using namespace std;
-
 namespace gpstk
 {
    GPSCNav2ISC ::

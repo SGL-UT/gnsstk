@@ -84,7 +84,7 @@ namespace gpstk
          const;
 
          /** Decode a GPS ISC/Tgd value, setting the result to NaN if
-          * the bits match the pattern b1000000000000, which indicates
+          * the bits match the pattern b1_0000_0000_0000, which indicates
           * not available. 
           * @note Value is expected to be 13 bits with a scale factor of 2^-35.
           * @param[in] navIn The PackedNavBits data to process.

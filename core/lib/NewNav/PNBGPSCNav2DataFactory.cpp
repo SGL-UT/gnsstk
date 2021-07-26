@@ -50,6 +50,15 @@
 
 using namespace std;
 
+/// Epsilon value for checking timestamps of nav data (in seconds).
+constexpr double TIME_EPSILON = 1e-9;
+/// CNAV2 frame length in seconds.
+constexpr double CNAV2_FRAME_LEN = 18.0;
+/// Offset in seconds of SF2 from start of CNAV2 frame.
+constexpr double CNAV2_SF2_OFFS = 0.52;
+/// Offset in seconds of SF3 from start of CNAV2 frame.
+constexpr double CNAV2_SF3_OFFS = 12.52;
+
 /** Constants collection: start bits, bit counts and scale factor (*n
  * for integer quantities, *2^n for floating point quantities) for
  * each of the nav message fields.
@@ -928,10 +937,10 @@ namespace gpstk
          // evenly divisible by 18 seconds, the period of a CNAV-2
          // frame.
       YDSTime yds(timestamp);
-      if (fmod(yds.sod,18.0) < 1e-9)
+      if (fabs(remainder(yds.sod,CNAV2_FRAME_LEN)) < TIME_EPSILON)
       {
             // given time stamp is for subframe 1, add the offset for sf2
-         return timestamp + 0.52;
+         return timestamp + CNAV2_SF2_OFFS;
       }
       return timestamp;
    }
@@ -944,10 +953,10 @@ namespace gpstk
          // evenly divisible by 18 seconds, the period of a CNAV-2
          // frame.
       YDSTime yds(timestamp);
-      if (fmod(yds.sod,18.0) < 1e-9)
+      if (fabs(remainder(yds.sod,CNAV2_FRAME_LEN)) < TIME_EPSILON)
       {
             // given time stamp is for subframe 1, add the offset for sf3
-         return timestamp + 12.52;
+         return timestamp + CNAV2_SF3_OFFS;
       }
       return timestamp;
    }
