@@ -68,6 +68,7 @@ namespace gpstk
    {
       beginFit = xmitTime;
       endFit   = CommonTime::END_OF_TIME;
+      endFit.setTimeSystem(TimeSystem::BDT);
    }
 
 

@@ -353,7 +353,7 @@ almD1NAVSF4p8B->trimsize();
 
 almD1NAVSF5p8Bct = gpstk::BDSWeekSecond(810,345848);
 almD1NAVSF5p8B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
-                                                         almD1NAVSF5p8Bct);
+                                                        almD1NAVSF5p8Bct);
 almD1NAVSF5p8B->setNavID(gpstk::NavType::BeiDou_D1);
 almD1NAVSF5p8B->addUnsignedLong(0x38905548,30,1);
 almD1NAVSF5p8B->addUnsignedLong(0x1BA8205A,30,1);
@@ -400,3 +400,154 @@ almD1NAVSF5p11B->addUnsignedLong(0x3FCA2154,30,1);
 almD1NAVSF5p11B->addUnsignedLong(0x21B581CB,30,1);
 almD1NAVSF5p11B->addUnsignedLong(0x28328DC7,30,1);
 almD1NAVSF5p11B->trimsize();
+
+
+almD1NAVSF4p12Bct = gpstk::BDSWeekSecond(810,345962);
+almD1NAVSF4p12B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+                                                         almD1NAVSF4p12Bct);
+almD1NAVSF4p12B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p12B->addUnsignedLong(0x38904547,30,1);
+almD1NAVSF4p12B->addUnsignedLong(0x1D703279,30,1);
+almD1NAVSF4p12B->addUnsignedLong(0x25148DB3,30,1);
+almD1NAVSF4p12B->addUnsignedLong(0x3FEB569A,30,1);
+almD1NAVSF4p12B->addUnsignedLong(0x0D56B065,30,1);
+almD1NAVSF4p12B->addUnsignedLong(0x303E00D4,30,1);
+almD1NAVSF4p12B->addUnsignedLong(0x3C962966,30,1);
+almD1NAVSF4p12B->addUnsignedLong(0x3F6FAAC2,30,1);
+almD1NAVSF4p12B->addUnsignedLong(0x1C9A5ECE,30,1);
+almD1NAVSF4p12B->addUnsignedLong(0x14DA0B83,30,1);
+almD1NAVSF4p12B->trimsize();
+
+
+almD1NAVSF5p12Bct = gpstk::BDSWeekSecond(810,345968);
+almD1NAVSF5p12B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+                                                         almD1NAVSF5p12Bct);
+almD1NAVSF5p12B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p12B->addUnsignedLong(0x38905548,30,1);
+almD1NAVSF5p12B->addUnsignedLong(0x1D883209,30,1);
+almD1NAVSF5p12B->addUnsignedLong(0x251498B9,30,1);
+almD1NAVSF5p12B->addUnsignedLong(0x0004370F,30,1);
+almD1NAVSF5p12B->addUnsignedLong(0x226F86AF,30,1);
+almD1NAVSF5p12B->addUnsignedLong(0x20226050,30,1);
+almD1NAVSF5p12B->addUnsignedLong(0x1E0629B6,30,1);
+almD1NAVSF5p12B->addUnsignedLong(0x3F69F6C3,30,1);
+almD1NAVSF5p12B->addUnsignedLong(0x023C1FEE,30,1);
+almD1NAVSF5p12B->addUnsignedLong(0x089FD9FF,30,1);
+almD1NAVSF5p12B->trimsize();
+
+
+almD1NAVSF4p7Bct = gpstk::BDSWeekSecond(810,345812);
+almD1NAVSF4p7B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+                                                        almD1NAVSF4p7Bct);
+almD1NAVSF4p7B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p7B->addUnsignedLong(0x38904547,30,1);
+almD1NAVSF4p7B->addUnsignedLong(0x1B181FA7,30,1);
+almD1NAVSF4p7B->addUnsignedLong(0x0AEFC59D,30,1);
+almD1NAVSF4p7B->addUnsignedLong(0x3FA88B20,30,1);
+almD1NAVSF4p7B->addUnsignedLong(0x00D17B89,30,1);
+almD1NAVSF4p7B->addUnsignedLong(0x1238AE35,30,1);
+almD1NAVSF4p7B->addUnsignedLong(0x385A2352,30,1);
+almD1NAVSF4p7B->addUnsignedLong(0x3FD3E60B,30,1);
+almD1NAVSF4p7B->addUnsignedLong(0x0DB2684B,30,1);
+almD1NAVSF4p7B->addUnsignedLong(0x12966B97,30,1);
+almD1NAVSF4p7B->trimsize();
+
+
+almD1NAVSF5p7Bct = gpstk::BDSWeekSecond(810,345818);
+almD1NAVSF5p7B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+                                                        almD1NAVSF5p7Bct);
+almD1NAVSF5p7B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p7B->addUnsignedLong(0x38905548,30,1);
+almD1NAVSF5p7B->addUnsignedLong(0x1B301C52,30,1);
+almD1NAVSF5p7B->addUnsignedLong(0x00000000,30,1);
+almD1NAVSF5p7B->addUnsignedLong(0x00000000,30,1);
+almD1NAVSF5p7B->addUnsignedLong(0x002000C0,30,1);
+almD1NAVSF5p7B->addUnsignedLong(0x00000000,30,1);
+almD1NAVSF5p7B->addUnsignedLong(0x00000000,30,1);
+almD1NAVSF5p7B->addUnsignedLong(0x0000800E,30,1);
+almD1NAVSF5p7B->addUnsignedLong(0x00080739,30,1);
+almD1NAVSF5p7B->addUnsignedLong(0x3E2C00D9,30,1);
+almD1NAVSF5p7B->trimsize();
+
+
+almD1NAVSF4p24B2ct = gpstk::BDSWeekSecond(810,346322);
+almD1NAVSF4p24B2 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+                                                          almD1NAVSF4p24B2ct);
+almD1NAVSF4p24B2->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p24B2->addUnsignedLong(0x38904547,30,1);
+almD1NAVSF4p24B2->addUnsignedLong(0x2310622B,30,1);
+almD1NAVSF4p24B2->addUnsignedLong(0x251474BD,30,1);
+almD1NAVSF4p24B2->addUnsignedLong(0x3FDC2C34,30,1);
+almD1NAVSF4p24B2->addUnsignedLong(0x37F05F30,30,1);
+almD1NAVSF4p24B2->addUnsignedLong(0x30194813,30,1);
+almD1NAVSF4p24B2->addUnsignedLong(0x08A2296F,30,1);
+almD1NAVSF4p24B2->addUnsignedLong(0x3F64FFFD,30,1);
+almD1NAVSF4p24B2->addUnsignedLong(0x10176DB2,30,1);
+almD1NAVSF4p24B2->addUnsignedLong(0x260DB332,30,1);
+almD1NAVSF4p24B2->trimsize();
+
+
+almD1NAVSF5p24B2ct = gpstk::BDSWeekSecond(810,346328);
+almD1NAVSF5p24B2 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+                                                          almD1NAVSF5p24B2ct);
+almD1NAVSF5p24B2->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p24B2->addUnsignedLong(0x38905548,30,1);
+almD1NAVSF5p24B2->addUnsignedLong(0x232860BD,30,1);
+almD1NAVSF5p24B2->addUnsignedLong(0x2C160BEA,30,1);
+almD1NAVSF5p24B2->addUnsignedLong(0x0160B0D1,30,1);
+almD1NAVSF5p24B2->addUnsignedLong(0x160B057D,30,1);
+almD1NAVSF5p24B2->addUnsignedLong(0x20B05869,30,1);
+almD1NAVSF5p24B2->addUnsignedLong(0x0B05822E,30,1);
+almD1NAVSF5p24B2->addUnsignedLong(0x30800010,30,1);
+almD1NAVSF5p24B2->addUnsignedLong(0x00000000,30,1);
+almD1NAVSF5p24B2->addUnsignedLong(0x00000000,30,1);
+almD1NAVSF5p24B2->trimsize();
+
+
+almD1Default123ct = gpstk::BDSWeekSecond(810,346328);
+almD1Default1 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+                                                       almD1Default123ct);
+almD1Default1->setNavID(gpstk::NavType::BeiDou_D1);
+almD1Default1->addUnsignedLong(0x38905548,30,1);
+almD1Default1->addUnsignedLong(0x232860BD,30,1);
+almD1Default1->addUnsignedLong(0x2C160BEA,30,1);
+almD1Default1->addUnsignedLong(0x00000000,30,1);
+almD1Default1->addUnsignedLong(0x00000000,30,1);
+almD1Default1->addUnsignedLong(0x00000000,30,1);
+almD1Default1->addUnsignedLong(0x00000000,30,1);
+almD1Default1->addUnsignedLong(0x00000000,30,1);
+almD1Default1->addUnsignedLong(0x00000000,30,1);
+almD1Default1->addUnsignedLong(0x000003ff,30,1);
+almD1Default1->trimsize();
+
+
+almD1Default2 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+                                                       almD1Default123ct);
+almD1Default2->setNavID(gpstk::NavType::BeiDou_D1);
+almD1Default2->addUnsignedLong(0x38905548,30,1);
+almD1Default2->addUnsignedLong(0x232860BD,30,1);
+almD1Default2->addUnsignedLong(0x2C160BEA,30,1);
+almD1Default2->addUnsignedLong(0x20000000,30,1);
+almD1Default2->addUnsignedLong(0x00000000,30,1);
+almD1Default2->addUnsignedLong(0x00000000,30,1);
+almD1Default2->addUnsignedLong(0x00000000,30,1);
+almD1Default2->addUnsignedLong(0x00000000,30,1);
+almD1Default2->addUnsignedLong(0x00000000,30,1);
+almD1Default2->addUnsignedLong(0x000003ff,30,1);
+almD1Default2->trimsize();
+
+
+almD1Default3 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+                                                       almD1Default123ct);
+almD1Default3->setNavID(gpstk::NavType::BeiDou_D1);
+almD1Default3->addUnsignedLong(0x38905548,30,1);
+almD1Default3->addUnsignedLong(0x232860BD,30,1);
+almD1Default3->addUnsignedLong(0x2C160BEA,30,1);
+almD1Default3->addUnsignedLong(0x00000000,30,1);
+almD1Default3->addUnsignedLong(0x00000000,30,1);
+almD1Default3->addUnsignedLong(0x00000000,30,1);
+almD1Default3->addUnsignedLong(0x00000000,30,1);
+almD1Default3->addUnsignedLong(0x00000000,30,1);
+almD1Default3->addUnsignedLong(0x00000000,30,1);
+almD1Default3->addUnsignedLong(0x000007ff,30,1);
+almD1Default3->trimsize();

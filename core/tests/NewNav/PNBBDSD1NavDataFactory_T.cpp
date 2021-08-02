@@ -36,6 +36,9 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#include <iostream>
+#include <sstream>
+#include <iterator>
 #include "FactoryCounter.hpp"
 #include "PNBBDSD1NavDataFactory.hpp"
 #include "TestUtil.hpp"
@@ -62,16 +65,38 @@ namespace gpstk
    }
 }
 
+string asString(const gpstk::NavMessageTypeSet& nmts)
+{
+   string rv;
+   for (const auto& i : nmts)
+   {
+      rv = rv + " " + gpstk::StringUtils::asString(i);
+   }
+   return rv;
+}
+   
+
 
 class PNBBDSD1NavDataFactory_T
 {
 public:
    PNBBDSD1NavDataFactory_T();
-      // addData tests for a variety of filter states
-      /// Test addData with all message types enabled
-   unsigned addDataAllTest();
-
-   void bunk();
+      /// Test that BDS doesn't process GLONASS data
+   unsigned foreignTest();
+      /// The meat of all the filter state tests.
+   unsigned filterTest(const gpstk::NavMessageTypeSet& nmts);
+      /// addData tests for a variety of filter states
+   unsigned filterTests();
+      /// Test validity checking.
+   unsigned addDataValidityTest();
+   unsigned processAlmTest();
+   unsigned processEphTest();
+   unsigned processSF5Pg7Test();
+   unsigned processSF5Pg8Test();
+   unsigned processSF5Pg9Test();
+   unsigned processSF5Pg10Test();
+   unsigned processSF5Pg24Test();
+   unsigned isAlmDefaultTest();
 
 #include "D1NavTestDataDecl.hpp"
 };
@@ -85,7 +110,7 @@ PNBBDSD1NavDataFactory_T()
 
 
 unsigned PNBBDSD1NavDataFactory_T ::
-addDataAllTest()
+foreignTest()
 {
    TUDEF("PNBBDSD1NavDataFactory", "addData");
    BDSFactoryCounter fc(testFramework);
@@ -99,10 +124,19 @@ addDataAllTest()
    gpstk::NavDataPtrList navOut;
       // should refuse non-BDS data
    TUASSERTE(bool, false, uut.addData(nonBDS, navOut));
-      // The rest is checking that we're processing the good data
-      // appropriately, but I'm not bothering to check the detailed
-      // contents as that is assumed to be tested in the process*
-      // tests.
+   TURETURN();
+}
+
+
+unsigned PNBBDSD1NavDataFactory_T ::
+filterTest(const gpstk::NavMessageTypeSet& nmts)
+{
+   TUDEF("PNBBDSD1NavDataFactory", "addData("+asString(nmts)+")");
+   BDSFactoryCounter fc(testFramework);
+   gpstk::PNBBDSD1NavDataFactory uut;
+   gpstk::NavDataPtrList navOut;
+   TUCATCH(uut.setTypeFilter(nmts));
+   fc.setInc(nmts);
       // Add subframe 1, expect 1 health, 1 ISC and 1 Iono.
    TUASSERTE(bool, true, uut.addData(ephD1NAVSF1, navOut));
    fc.validateResults(navOut, __LINE__, 3, 0, 0, 0, 1, 1, 1);
@@ -170,14 +204,593 @@ addDataAllTest()
       // no health and toa mismatch.
    TUASSERTE(bool, true, uut.addData(almD1NAVSF5p11B, navOut));
    fc.validateResults(navOut, __LINE__);
+      // add a different subframe 4, page 12, expect nothing because no health
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF4p12B, navOut));
+   fc.validateResults(navOut, __LINE__);
+      // add a different subframe 5, page 12, expect nothing because no health
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF5p12B, navOut));
+   fc.validateResults(navOut, __LINE__);
+      // add a different subframe 4, page 7, expect nothing because no
+      // health and toa mismatch
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF4p7B, navOut));
+   fc.validateResults(navOut, __LINE__);
+      // add a different subframe 5, page 7, expect 19 health and 3 alm
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF5p7B, navOut));
+   fc.validateResults(navOut, __LINE__, 22, 3, 0, 0, 19);
+      // add a different subframe 4, page 24, expect 1 alm
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF4p24B2, navOut));
+   fc.validateResults(navOut, __LINE__, 1, 1);
+      // add a different subframe 5, page 24, expect 13 health and 1 alm
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF5p24B2, navOut));
+   fc.validateResults(navOut, __LINE__, 14, 1, 0, 0, 13);
    TURETURN();
 }
 
-void PNBBDSD1NavDataFactory_T ::
-bunk()
+
+unsigned PNBBDSD1NavDataFactory_T ::
+addDataValidityTest()
 {
+   TUDEF("PNBBDSD1NavDataFactory", "addData");
+      /// @todo implement some tests after we have parity checking and such.
+   TURETURN();
+}
+
+
+unsigned PNBBDSD1NavDataFactory_T ::
+processAlmTest()
+{
+   TUDEF("PNBBDSD1NavDataFactory", "processAlm");
+   BDSFactoryCounter fc(testFramework);
    gpstk::PNBBDSD1NavDataFactory uut;
-   uut.bunk();
+   gpstk::NavMessageID nmidExp(
+      gpstk::NavSatelliteID(32, 19, gpstk::SatelliteSystem::BeiDou,
+                            gpstk::CarrierBand::B1, gpstk::TrackingCode::B1I,
+                            gpstk::NavType::BeiDou_D1),
+      gpstk::NavMessageType::Almanac);
+   gpstk::CommonTime toeExp = gpstk::BDSWeekSecond(810,81920.0);
+   gpstk::CommonTime beginExp = almD1NAVSF5p12Bct;
+   gpstk::CommonTime endExp = gpstk::CommonTime::END_OF_TIME;
+   gpstk::NavDataPtrList navOut;
+   gpstk::BDSD1NavAlm *alm;
+   endExp.setTimeSystem(gpstk::TimeSystem::BDT);
+      // First store the subframes with the extra necessary data.
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF4p8B, navOut));
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF5p8B, navOut));   // WNa
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF4p12B, navOut));
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF4p24B2, navOut)); // health
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF5p24B2, navOut));
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF4p12B, navOut));  // AmEpID
+   navOut.clear();
+      // success, almanac data only
+      /// @warning data values not vetted
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF5p12B, navOut));
+   for (const auto& i : navOut)
+   {
+      if ((alm = dynamic_cast<gpstk::BDSD1NavAlm*>(i.get())) != nullptr)
+      {
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, almD1NAVSF5p12Bct, alm->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, alm->signal);
+            // OrbitData has no fields
+            // OrbitDataKepler fields
+         TUASSERTE(gpstk::CommonTime, almD1NAVSF5p12Bct, alm->xmitTime);
+         TUASSERTE(gpstk::CommonTime, toeExp, alm->Toe);
+         TUASSERTE(gpstk::CommonTime, toeExp, alm->Toc); // same value as toe
+         TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, alm->health);
+         TUASSERTFE(0, alm->Cus);
+         TUASSERTFE(0, alm->Cuc);
+         TUASSERTFE(0, alm->Crc);
+         TUASSERTFE(0, alm->Crs);
+         TUASSERTFE(0, alm->Cic);
+         TUASSERTFE(0, alm->Cis);
+         TUASSERTFE(-0.10815548896789550781, alm->M0);
+         TUASSERTFE(0, alm->dn);
+         TUASSERTFE(0, alm->dndot);
+         TUASSERTFE(0.0005245208740234375, alm->ecc);
+         TUASSERTFE(5282.57421875, alm->Ahalf);
+         TUASSERTFE(27905590.376602172852, alm->A);
+         TUASSERTFE(0, alm->Adot);
+         TUASSERTFE(-0.92388606071472167969, alm->OMEGA0);
+         TUASSERTFE(0.3073299407958984264, alm->i0);
+         TUASSERTFE(-0.31140887737274169922, alm->w);
+         TUASSERTFE(-2.1864252630621194839e-09, alm->OMEGAdot);
+         TUASSERTFE(0, alm->idot);
+         TUASSERTFE(-0.00092411041259765625, alm->af0);
+         TUASSERTFE(0, alm->af1);
+         TUASSERTFE(0, alm->af2);
+         TUASSERTE(gpstk::CommonTime, beginExp, alm->beginFit);
+         TUASSERTE(gpstk::CommonTime, endExp, alm->endFit);
+            // BDSD1NavData fields
+         TUASSERTE(uint32_t, 0x712, alm->pre);
+         TUASSERTE(uint32_t, 0, alm->rev);
+         TUASSERTE(unsigned, 5, alm->fraID);
+         TUASSERTE(uint32_t, 345954, alm->sow);
+            // BDSD1NavAlm fields
+         TUASSERTE(unsigned, 12, alm->pnum);
+         TUASSERTFE(0.0073299407958984375, alm->deltai);
+         TUASSERTFE(81920, alm->toa);
+         TUASSERTE(uint16_t, 88, alm->healthBits);
+         TUASSERTE(bool, false, alm->isDefault);
+      }
+   }
+   fc.validateResults(navOut, __LINE__, 1, 1);
+   TURETURN();
+}
+
+
+unsigned PNBBDSD1NavDataFactory_T ::
+processEphTest()
+{
+   TUDEF("PNBBDSD1NavDataFactory", "processEph");
+   BDSFactoryCounter fc(testFramework);
+   gpstk::PNBBDSD1NavDataFactory uut;
+   gpstk::NavMessageID nmidExp(
+      gpstk::NavSatelliteID(6, 6, gpstk::SatelliteSystem::BeiDou,
+                            gpstk::CarrierBand::B1, gpstk::TrackingCode::B1I,
+                            gpstk::NavType::BeiDou_D1),
+      gpstk::NavMessageType::Health);
+   gpstk::CommonTime toeExp = gpstk::BDSWeekSecond(810,345600.0);
+   gpstk::CommonTime beginExp = gpstk::BDSWeekSecond(810,345614.0);
+   gpstk::CommonTime endExp = gpstk::BDSWeekSecond(810,352800.0);
+   gpstk::NavDataPtrList navOut;
+   gpstk::BDSD1NavHealth *hea;
+   gpstk::BDSD1NavEph *eph;
+   gpstk::BDSD1NavIono *iono;
+   gpstk::BDSD1NavISC *isc;
+      // success, health, ISC and iono data only
+   TUASSERTE(bool, true, uut.processEph(1, ephD1NAVSF1, navOut));
+   for (const auto& i : navOut)
+   {
+      if ((hea = dynamic_cast<gpstk::BDSD1NavHealth*>(i.get())) != nullptr)
+      {
+         nmidExp.messageType = gpstk::NavMessageType::Health;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, ephD1NAVSF1ct, hea->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, hea->signal);
+            // NavHealthData has no fields
+            // BDSD1NavHealth
+         TUASSERTE(bool, false, hea->isAlmHealth);
+         TUASSERTE(bool, false, hea->satH1);
+         TUASSERTE(uint16_t, 255, hea->svHealth);
+      }
+      else if ((iono = dynamic_cast<gpstk::BDSD1NavIono*>(i.get())) != nullptr)
+      {
+         nmidExp.messageType = gpstk::NavMessageType::Iono;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, ephD1NAVSF1ct, iono->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, iono->signal);
+            // KlobucharIonoData
+         TUASSERTFE( 6.519258E-09, iono->alpha[0]);
+         TUASSERTFE( 2.98023223876953125e-08, iono->alpha[1]);
+         TUASSERTFE(-2.98023223876953125e-07, iono->alpha[2]);
+         TUASSERTFE( 4.17232513427734375e-07, iono->alpha[3]);
+         TUASSERTFE( 112640, iono->beta[0]);
+         TUASSERTFE( 180224, iono->beta[1]);
+         TUASSERTFE(-524288, iono->beta[2]);
+         TUASSERTFE( 458752, iono->beta[3]);
+            // BDSD1NavIono
+         TUASSERTE(uint32_t, 0x712, iono->pre);
+         TUASSERTE(uint32_t, 0, iono->rev);
+         TUASSERTE(unsigned, 1, iono->fraID);
+         TUASSERTE(uint32_t, 345600, iono->sow);
+      }
+      else if ((isc = dynamic_cast<gpstk::BDSD1NavISC*>(i.get())) != nullptr)
+      {
+         nmidExp.messageType = gpstk::NavMessageType::ISC;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, ephD1NAVSF1ct, isc->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, isc->signal);
+            // InterSigCorr
+         TUASSERTE(bool, true, std::isnan(isc->isc));
+            // BDSD1NavISC
+         TUASSERTE(uint32_t, 0x712, isc->pre);
+         TUASSERTE(uint32_t, 0, isc->rev);
+         TUASSERTE(unsigned, 1, isc->fraID);
+         TUASSERTE(uint32_t, 345600, isc->sow);
+         TUASSERTFE(8.2e-9, isc->tgd1);
+         TUASSERTFE(-1.9e-9, isc->tgd2);
+      }
+   }
+   fc.validateResults(navOut, __LINE__, 3, 0, 0, 0, 1, 1, 1);
+      // success but no additional data
+   TUASSERTE(bool, true, uut.processEph(2, ephD1NAVSF2, navOut));
+   fc.validateResults(navOut, __LINE__);
+      // success and we have an ephemeris.
+   TUASSERTE(bool, true, uut.processEph(3, ephD1NAVSF3, navOut));
+   for (const auto& i : navOut)
+   {
+      if ((eph = dynamic_cast<gpstk::BDSD1NavEph*>(i.get())) != nullptr)
+      {
+         nmidExp.messageType = gpstk::NavMessageType::Ephemeris;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, ephD1NAVSF1ct, eph->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, eph->signal);
+            // OrbitData has no fields
+            // OrbitDataKepler fields
+         TUASSERTE(gpstk::CommonTime, ephD1NAVSF1ct, eph->xmitTime);
+         TUASSERTE(gpstk::CommonTime, toeExp, eph->Toe);
+         TUASSERTE(gpstk::CommonTime, toeExp, eph->Toc); // same value as toe
+         TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, eph->health);
+         TUASSERTFE( 2.102460712194442749E-05, eph->Cus);
+         TUASSERTFE(-4.5062042772769927979E-06, eph->Cuc);
+         TUASSERTFE(-4.04640625E+02, eph->Crc);
+         TUASSERTFE(-1.43203125E+02, eph->Crs);
+         TUASSERTFE( 7.91624188E-08, eph->Cic);
+         TUASSERTFE(-3.39932740E-08, eph->Cis);
+         TUASSERTFE(-8.5672685685526606125E-02, eph->M0);
+         TUASSERTFE( 1.20183578E-09, eph->dn);
+         TUASSERTFE(0, eph->dndot);
+         TUASSERTFE( 1.1284291860647499561E-02, eph->ecc);
+         TUASSERTFE(sqrt(4.2170134522822760046E+07), eph->Ahalf);
+         TUASSERTFE( 4.2170134522822760046E+07, eph->A);
+         TUASSERTFE(0, eph->Adot);
+         TUASSERTFE(-1.9160860634641034839E+00, eph->OMEGA0);
+         TUASSERTFE(9.450732988963341796E-01, eph->i0);
+         TUASSERTFE(-2.1772769963262814663E+00, eph->w);
+         TUASSERTFE(-1.78078846E-09, eph->OMEGAdot);
+         TUASSERTFE( 4.37518224E-10, eph->idot);
+         TUASSERTFE( 6.2543887179344892502E-04, eph->af0);
+         TUASSERTFE( 4.82804907E-11, eph->af1);
+         TUASSERTFE( 0.00000000E+00, eph->af2);
+         TUASSERTE(gpstk::CommonTime, beginExp, eph->beginFit);
+         TUASSERTE(gpstk::CommonTime, endExp, eph->endFit);
+            // BDSD1NavData fields
+         TUASSERTE(uint32_t, 0x712, eph->pre);
+         TUASSERTE(uint32_t, 0, eph->rev);
+         TUASSERTE(unsigned, 1, eph->fraID);
+         TUASSERTE(uint32_t, 345600, eph->sow);
+            // BDSD1NavEph fields
+         TUASSERTE(uint32_t, 0x712, eph->pre2);
+         TUASSERTE(uint32_t, 0x712, eph->pre3);
+         TUASSERTE(uint32_t, 0, eph->rev2);
+         TUASSERTE(uint32_t, 0, eph->rev3);
+         TUASSERTE(uint32_t, 345606, eph->sow2);
+         TUASSERTE(uint32_t, 345612, eph->sow3);
+         TUASSERTE(bool, false, eph->satH1);
+         TUASSERTE(unsigned, 0, eph->aodc);
+         TUASSERTE(unsigned, 1, eph->aode);
+         TUASSERTE(unsigned, 0, eph->uraIndex);
+         TUASSERTE(gpstk::CommonTime, ephD1NAVSF2ct, eph->xmit2);
+         TUASSERTE(gpstk::CommonTime, ephD1NAVSF3ct, eph->xmit3);
+         TUASSERTFE(8.2e-9, eph->tgd1);
+         TUASSERTFE(-1.9e-9, eph->tgd2);
+      }
+   }
+   fc.validateResults(navOut, __LINE__, 1, 0, 1);
+   TURETURN();
+}
+
+
+unsigned PNBBDSD1NavDataFactory_T ::
+processSF5Pg7Test()
+{
+   TUDEF("PNBBDSD1NavDataFactory", "processSF5Pg7");
+   BDSFactoryCounter fc(testFramework);
+   gpstk::PNBBDSD1NavDataFactory uut;
+   gpstk::NavMessageID nmidExp(
+      gpstk::NavSatelliteID(1, 6, gpstk::SatelliteSystem::BeiDou,
+                            gpstk::CarrierBand::B1, gpstk::TrackingCode::B1I,
+                            gpstk::NavType::BeiDou_D1),
+      gpstk::NavMessageType::Health);
+   gpstk::NavDataPtrList navOut;
+   gpstk::BDSD1NavHealth *hea;
+   uint16_t expHea;
+      // success, health data only
+   TUASSERTE(bool, true, uut.processSF5Pg7(almD1NAVSF5p7, navOut));
+   for (const auto& i : navOut)
+   {
+      if ((hea = dynamic_cast<gpstk::BDSD1NavHealth*>(i.get())) != nullptr)
+      {
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, almD1NAVSF5p7ct, hea->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, hea->signal);
+            // NavHealthData has no fields
+            // BDSD1NavHealth
+         TUASSERTE(bool, true, hea->isAlmHealth);
+         TUASSERTE(bool, true, hea->satH1);
+         if ((nmidExp.sat.id == 7) || (nmidExp.sat.id == 17))
+            expHea = 256;
+         else if ((nmidExp.sat.id == 15) || (nmidExp.sat.id == 18))
+            expHea = 510;
+         else if (nmidExp.sat.id >= 19)
+            expHea = 88;
+         else
+            expHea = 0;
+         TUASSERTE(uint16_t, expHea, hea->svHealth);
+            // While it's not strictly necessary that the results come
+            // in PRN order, they do currently and this statement
+            // addresses that fact.
+         nmidExp.sat.id++;
+      }
+   }
+   fc.validateResults(navOut, __LINE__, 19, 0, 0, 0, 19);
+   TURETURN();
+}
+
+
+unsigned PNBBDSD1NavDataFactory_T ::
+processSF5Pg8Test()
+{
+   TUDEF("PNBBDSD1NavDataFactory", "processSF5Pg8");
+   BDSFactoryCounter fc(testFramework);
+   gpstk::PNBBDSD1NavDataFactory uut;
+   gpstk::NavMessageID nmidExp(
+      gpstk::NavSatelliteID(20, 6, gpstk::SatelliteSystem::BeiDou,
+                            gpstk::CarrierBand::B1, gpstk::TrackingCode::B1I,
+                            gpstk::NavType::BeiDou_D1),
+      gpstk::NavMessageType::Health);
+   gpstk::CommonTime toeExp = gpstk::BDSWeekSecond(810,81920.0);
+   gpstk::CommonTime beginExp = almD1NAVSF5p1ct;
+   gpstk::CommonTime endExp = gpstk::CommonTime::END_OF_TIME;
+   gpstk::NavDataPtrList navOut;
+   gpstk::BDSD1NavAlm *alm;
+   gpstk::BDSD1NavHealth *hea;
+   uint16_t expHea = 88;
+      // First store the subframes with almanacs that shouldn't be
+      // immediately returned.
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF4p1, navOut));
+   fc.validateResults(navOut, __LINE__);
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF5p1, navOut));
+   fc.validateResults(navOut, __LINE__);
+      // should work the same whether SF4 pg8 was processed or not.
+   TUASSERTE(bool, true, uut.processSF5Pg8(almD1NAVSF5p8, navOut));
+   for (const auto& i : navOut)
+   {
+      if ((alm = dynamic_cast<gpstk::BDSD1NavAlm*>(i.get())) != nullptr)
+      {
+            /// @warning data values not vetted
+         nmidExp.messageType = gpstk::NavMessageType::Almanac;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, almD1NAVSF5p1ct, alm->timeStamp);
+         gpstk::SatID tmpSat = nmidExp.sat;
+         nmidExp.sat.id = 25;
+         TUASSERTE(gpstk::NavMessageID, nmidExp, alm->signal);
+         nmidExp.sat = tmpSat;
+            // OrbitData has no fields
+            // OrbitDataKepler fields
+         TUASSERTE(gpstk::CommonTime, almD1NAVSF5p1ct, alm->xmitTime);
+         TUASSERTE(gpstk::CommonTime, toeExp, alm->Toe);
+         TUASSERTE(gpstk::CommonTime, toeExp, alm->Toc); // same value as toe
+         TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, alm->health);
+         TUASSERTFE(0, alm->Cus);
+         TUASSERTFE(0, alm->Cuc);
+         TUASSERTFE(0, alm->Crc);
+         TUASSERTFE(0, alm->Crs);
+         TUASSERTFE(0, alm->Cic);
+         TUASSERTFE(0, alm->Cis);
+         TUASSERTFE(-0.60474646091461181641, alm->M0);
+         TUASSERTFE(0, alm->dn);
+         TUASSERTFE(0, alm->dndot);
+         TUASSERTFE(0.0003604888916015625, alm->ecc);
+         TUASSERTFE(5282.56201171875, alm->Ahalf);
+         TUASSERTFE(27905461.407654047012, alm->A);
+         TUASSERTFE(0, alm->Adot);
+         TUASSERTFE(-0.25995099544525146484, alm->OMEGA0);
+         TUASSERTFE(0.3025119781494140514, alm->i0);
+         TUASSERTFE(0.017611861228942871094, alm->w);
+         TUASSERTFE(-2.25554686039686203e-09, alm->OMEGAdot);
+         TUASSERTFE(0, alm->idot);
+         TUASSERTFE(-0.0008869171142578125, alm->af0);
+         TUASSERTFE(7.2759576141834259033e-12, alm->af1);
+         TUASSERTFE(0, alm->af2);
+         TUASSERTE(gpstk::CommonTime, beginExp, alm->beginFit);
+         TUASSERTE(gpstk::CommonTime, endExp, alm->endFit);
+            // BDSD1NavData fields
+         TUASSERTE(uint32_t, 0x712, alm->pre);
+         TUASSERTE(uint32_t, 0, alm->rev);
+         TUASSERTE(unsigned, 5, alm->fraID);
+         TUASSERTE(uint32_t, 345624, alm->sow);
+            // BDSD1NavAlm fields
+         TUASSERTE(unsigned, 1, alm->pnum);
+         TUASSERTFE(0.0025119781494140625, alm->deltai);
+         TUASSERTFE(81920, alm->toa);
+         TUASSERTE(uint16_t, 88, alm->healthBits);
+         TUASSERTE(bool, false, alm->isDefault);
+      }
+      else if ((hea = dynamic_cast<gpstk::BDSD1NavHealth*>(i.get())) != nullptr)
+      {
+         nmidExp.messageType = gpstk::NavMessageType::Health;
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, almD1NAVSF5p8ct, hea->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, hea->signal);
+            // NavHealthData has no fields
+            // BDSD1NavHealth
+         TUASSERTE(bool, true, hea->isAlmHealth);
+         TUASSERTE(bool, true, hea->satH1);
+         TUASSERTE(uint16_t, expHea, hea->svHealth);
+            // While it's not strictly necessary that the results come
+            // in PRN order, they do currently and this statement
+            // addresses that fact.
+         nmidExp.sat.id++;
+      }
+   }
+      // Note that sf4 pg1 is going to be the almanac for PRN 1 which
+      // we won't have health for when processSF5Pg8 is called so it
+      // won't show up.  SF5 pg1 OTOH is PRN 25 whose health is
+      // present in pg 8.
+   fc.validateResults(navOut, __LINE__, 12, 1, 0, 0, 11);
+   TURETURN();
+}
+
+
+unsigned PNBBDSD1NavDataFactory_T ::
+processSF5Pg9Test()
+{
+   TUDEF("PNBBDSD1NavDataFactory", "processSF5Pg9");
+   BDSFactoryCounter fc(testFramework);
+   gpstk::PNBBDSD1NavDataFactory uut;
+   gpstk::NavMessageID nmidExp(
+      gpstk::NavSatelliteID(6, 6, gpstk::SatelliteSystem::BeiDou,
+                            gpstk::CarrierBand::B1, gpstk::TrackingCode::B1I,
+                            gpstk::NavType::BeiDou_D1),
+      gpstk::NavMessageType::TimeOffset);
+   gpstk::CommonTime refTimeExp = gpstk::BDSWeekSecond(810,0);
+   gpstk::CommonTime effTimeExp;
+   gpstk::NavDataPtrList navOut;
+   gpstk::BDSD1NavTimeOffset *to;
+   uint16_t expHea;
+      // success, time offset data only
+   TUASSERTE(bool, true, uut.processSF5Pg9(almD1NAVSF5p9, navOut));
+      // Time systems are processed in the order they appear in the
+      // nav message. Doesn't need to be enforced, but doing so
+      // simplifies the validation of the output.
+   gpstk::TimeSystem expTS = gpstk::TimeSystem::GPS;
+   for (const auto& i : navOut)
+   {
+      if ((to = dynamic_cast<gpstk::BDSD1NavTimeOffset*>(i.get())) != nullptr)
+      {
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, almD1NAVSF5p9ct, to->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
+            // TimeOffsetData has no fields
+            // StdNavTimeOffset
+         TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::BDT, to->src);
+         TUASSERTE(gpstk::TimeSystem, expTS, to->tgt);
+         TUASSERTFE(0.0, to->a0);
+         TUASSERTFE(0.0, to->a1);
+         TUASSERTFE(0.0, to->a2);
+         TUASSERTFE(0.0, to->deltatLS);
+         TUASSERTE(gpstk::CommonTime, refTimeExp, to->refTime);
+         TUASSERTE(gpstk::CommonTime, effTimeExp, to->effTime);
+         TUASSERTFE(0.0, to->tot);
+         TUASSERTE(unsigned, 0, to->wnot);
+         TUASSERTE(unsigned, 0, to->wnLSF);
+         TUASSERTE(unsigned, 0, to->dn);
+         TUASSERTFE(0.0, to->deltatLSF);
+            // BDSD1NavTimeOffset has no fields, but we check validate here
+         TUCSM("validate");
+         TUASSERTE(bool, false, to->validate());
+         if (expTS == gpstk::TimeSystem::GPS)
+            expTS = gpstk::TimeSystem::GAL;
+         else if (expTS == gpstk::TimeSystem::GAL)
+            expTS = gpstk::TimeSystem::GLO;
+         TUCSM("processSF5Pg9");
+      }
+   }
+   fc.validateResults(navOut, __LINE__, 3, 0, 0, 3);
+   TURETURN();
+}
+
+
+unsigned PNBBDSD1NavDataFactory_T ::
+processSF5Pg10Test()
+{
+   TUDEF("PNBBDSD1NavDataFactory", "processSF5Pg10");
+   BDSFactoryCounter fc(testFramework);
+   gpstk::PNBBDSD1NavDataFactory uut;
+   gpstk::NavMessageID nmidExp(
+      gpstk::NavSatelliteID(6, 6, gpstk::SatelliteSystem::BeiDou,
+                            gpstk::CarrierBand::B1, gpstk::TrackingCode::B1I,
+                            gpstk::NavType::BeiDou_D1),
+      gpstk::NavMessageType::TimeOffset);
+   gpstk::CommonTime refTimeExp = gpstk::BDSWeekSecond(810,0);
+      // Seems strange that this would be in the future rather than the past.
+   gpstk::CommonTime effTimeExp = gpstk::BDSWeekSecond(829,518400);
+   gpstk::NavDataPtrList navOut;
+   gpstk::BDSD1NavTimeOffset *to;
+   uint16_t expHea;
+      // success, time offset data only
+   TUASSERTE(bool, true, uut.processSF5Pg10(almD1NAVSF5p10, navOut));
+   for (const auto& i : navOut)
+   {
+      if ((to = dynamic_cast<gpstk::BDSD1NavTimeOffset*>(i.get())) != nullptr)
+      {
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, almD1NAVSF5p10ct, to->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
+            // TimeOffsetData has no fields
+            // StdNavTimeOffset
+         TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::BDT, to->src);
+         TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::UTC, to->tgt);
+         TUASSERTFE(-6.519258e-09, to->a0);
+         TUASSERTFE(0.0, to->a1);
+         TUASSERTFE(0.0, to->a2);
+         TUASSERTFE(4.0, to->deltatLS);
+         TUASSERTE(gpstk::CommonTime, refTimeExp, to->refTime);
+         TUASSERTE(gpstk::CommonTime, effTimeExp, to->effTime);
+         TUASSERTFE(0.0, to->tot);
+         TUASSERTE(unsigned, 0, to->wnot);
+         TUASSERTE(unsigned, 829, to->wnLSF);
+         TUASSERTE(unsigned, 6, to->dn);
+         TUASSERTFE(4.0, to->deltatLSF);
+            // BDSD1NavTimeOffset has no fields, but we check validate here
+         TUCSM("validate");
+         TUASSERTE(bool, false, to->validate());
+         TUCSM("processSF5Pg10");
+      }
+   }
+   fc.validateResults(navOut, __LINE__, 1, 0, 0, 1);
+   TURETURN();
+}
+
+
+unsigned PNBBDSD1NavDataFactory_T ::
+processSF5Pg24Test()
+{
+   TUDEF("PNBBDSD1NavDataFactory", "processSF5Pg24");
+   BDSFactoryCounter fc(testFramework);
+   gpstk::PNBBDSD1NavDataFactory uut;
+   gpstk::NavMessageID nmidExp(
+      gpstk::NavSatelliteID(31, 19, gpstk::SatelliteSystem::BeiDou,
+                            gpstk::CarrierBand::B1, gpstk::TrackingCode::B1I,
+                            gpstk::NavType::BeiDou_D1),
+      gpstk::NavMessageType::Health);
+   gpstk::NavDataPtrList navOut;
+   gpstk::BDSD1NavHealth *hea;
+   uint16_t expHea = 88;
+      // No need to check amID=0 as that's already tested in filterTest.
+      // Test with AmID=b01
+   TUASSERTE(bool, true, uut.addData(almD1NAVSF4p24B2, navOut));
+      // success, health data only
+   TUASSERTE(bool, true, uut.processSF5Pg24(almD1NAVSF5p24B2, navOut));
+   for (const auto& i : navOut)
+   {
+      if ((hea = dynamic_cast<gpstk::BDSD1NavHealth*>(i.get())) != nullptr)
+      {
+            // NavData fields
+         TUASSERTE(gpstk::CommonTime, almD1NAVSF5p24B2ct, hea->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, hea->signal);
+            // NavHealthData has no fields
+            // BDSD1NavHealth
+         TUASSERTE(bool, true, hea->isAlmHealth);
+         TUASSERTE(bool, true, hea->satH1);
+         TUASSERTE(uint16_t, expHea, hea->svHealth);
+            // While it's not strictly necessary that the results come
+            // in PRN order, they do currently and this statement
+            // addresses that fact.
+         nmidExp.sat.id++;
+      }
+   }
+      /// @todo test with AmID=b10 and b11
+   fc.validateResults(navOut, __LINE__, 13, 0, 0, 0, 13);
+   TURETURN();
+}
+
+
+unsigned PNBBDSD1NavDataFactory_T ::
+isAlmDefaultTest()
+{
+   TUDEF("PNBBDSD1NavDataFactory", "isAlmDefault");
+   gpstk::PNBBDSD1NavDataFactory uut;
+   TUASSERTE(bool, true, uut.isAlmDefault(almD1Default1));
+   TUASSERTE(bool, false, uut.isAlmDefault(almD1Default2));
+   TUASSERTE(bool, false, uut.isAlmDefault(almD1Default3));
+   TURETURN();
+}
+
+
+unsigned PNBBDSD1NavDataFactory_T ::
+filterTests()
+{
+   return filterTest(gpstk::allNavMessageTypes) +
+      filterTest({gpstk::NavMessageType::Almanac}) +
+      filterTest({gpstk::NavMessageType::Ephemeris}) +
+      filterTest({gpstk::NavMessageType::Health}) +
+      filterTest({gpstk::NavMessageType::TimeOffset}) +
+      filterTest({gpstk::NavMessageType::Iono}) +
+      filterTest({gpstk::NavMessageType::ISC}) +
+      filterTest({gpstk::NavMessageType::Ephemeris,
+                  gpstk::NavMessageType::Health});
 }
 
 
@@ -186,24 +799,17 @@ int main()
    PNBBDSD1NavDataFactory_T testClass;
    unsigned errorTotal = 0;
 
-   testClass.bunk();
-   errorTotal += testClass.addDataAllTest();
-   // errorTotal += testClass.addDataAlmanacTest();
-   // errorTotal += testClass.addDataEphemerisTest();
-   // errorTotal += testClass.addDataHealthTest();
-   // errorTotal += testClass.addDataTimeTest();
-   // errorTotal += testClass.addDataEphHealthTest();
-   // errorTotal += testClass.addDataValidityTest();
-   // errorTotal += testClass.processEphTest();
-   // errorTotal += testClass.processAlmOrbTest();
-   // errorTotal += testClass.processSVID51Test();
-   // errorTotal += testClass.processSVID63Test();
-   // errorTotal += testClass.processSVID56Test();
-   // errorTotal += testClass.addDataAllQZSSTest();
-   // errorTotal += testClass.processEphQZSSTest();
-   // errorTotal += testClass.processAlmOrbQZSSTest();
-   // errorTotal += testClass.processSVID51QZSSTest();
-   // errorTotal += testClass.processSVID56QZSSTest();
+   errorTotal += testClass.foreignTest();
+   errorTotal += testClass.filterTests();
+   errorTotal += testClass.addDataValidityTest();
+   errorTotal += testClass.processAlmTest();
+   errorTotal += testClass.processEphTest();
+   errorTotal += testClass.processSF5Pg7Test();
+   errorTotal += testClass.processSF5Pg8Test();
+   errorTotal += testClass.processSF5Pg9Test();
+   errorTotal += testClass.processSF5Pg10Test();
+   errorTotal += testClass.processSF5Pg24Test();
+   errorTotal += testClass.isAlmDefaultTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

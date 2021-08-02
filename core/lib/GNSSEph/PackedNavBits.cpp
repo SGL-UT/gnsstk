@@ -429,6 +429,22 @@ namespace gpstk
       return( (long) (s * scale ) );
    }
 
+      /* Unpack a split signed long integer */
+   long PackedNavBits::asLong(const unsigned startBits1,
+                              const unsigned numBits1,
+                              const unsigned startBits2,
+                              const unsigned numBits2,
+                              const int scale ) const
+   {
+      int64_t s = SignExtend(startBits1, numBits1);
+      uint64_t temp;
+      temp = asUint64_t(startBits2, numBits2);
+      s <<= numBits2;
+      s |= temp;
+      
+      return( (long) (s * scale ) );
+   }
+
       /* Unpack a split unsigned double */
    double PackedNavBits::asUnsignedDouble(const unsigned startBits[],
                                           const unsigned numBits[],

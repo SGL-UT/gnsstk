@@ -1022,7 +1022,7 @@ enum TimeOffsetBitInfo
 
    csbdtLSF = csbdtLSl+cnbdtLSl,             ///< dtLSF
    cnbdtLSF = 8,
-   cscdtLSF = 0,                             ///< x*2^0 = x*1
+   cscdtLSF = 1,
 
    csbWNlsf = csbdtLSF+cnbdtLSF,             ///< WNlsf
    cnbWNlsf = 8,
@@ -1070,7 +1070,6 @@ namespace gpstk
          return false;
       }
       bool rv = true;
-      bunk2(); // remove be before submitting
       try
       {
          unsigned long sfid = navIn->asUnsignedLong(
@@ -1184,11 +1183,11 @@ namespace gpstk
             amEpIDMap[key].t = navIn->getTransmitTime();
             amEpIDMap[key].amEpID = navIn->asUnsignedLong(asbAmEpID,anbAmEpID,
                                                           ascAmEpID);
-            cerr << printTime(amEpIDMap[key].t,
-                              "  SET t:%04Y/%02m/%02d-%02H:%02M:%02S")
-                 << "  key:" << key << "  expanded:"
-                 << amEpIDMap[key].isExpanded() << "("
-                 << (unsigned)amEpIDMap[key].amEpID << ")";
+            // cerr << printTime(amEpIDMap[key].t,
+            //                   "  SET t:%04Y/%02m/%02d-%02H:%02M:%02S %D/%06g")
+            //      << "  key:" << key << "  expanded:"
+            //      << amEpIDMap[key].isExpanded() << "("
+            //      << (unsigned)amEpIDMap[key].amEpID << ")";
          }
       }
       if (!PNBNavDataFactory::processAlm)
@@ -1203,9 +1202,10 @@ namespace gpstk
             // as the subframe 5 (6 seconds between subframes), and
             // that the AmEpID indicates an expanded subframe.
          // cerr << printTime(navIn->getTransmitTime(),
-         //                   "  xmit:%04Y/%02m/%02d-%02H:%02M:%02S")
+         //                   "  xmit:%04Y/%02m/%02d-%02H:%02M:%02S %D/%06g")
          //      << printTime(amEpIDMap[key].t,
-         //                   "  t:%04Y/%02m/%02d-%02H:%02M:%02S")
+         //                   "  t:%04Y/%02m/%02d-%02H:%02M:%02S %D/%06g")
+         //      << "  diff:" << (navIn->getTransmitTime() - amEpIDMap[key].t)
          //      << "  key:" << key << "  expanded:"
          //      << amEpIDMap[key].isExpanded();
          if (((navIn->getTransmitTime() - amEpIDMap[key].t) != 6.0) ||
@@ -1231,7 +1231,7 @@ namespace gpstk
                // AmID is in the same position as AmEpID, it's just a
                // different subframe/page.
             uint8_t amID = navIn->asUnsignedLong(asbAmEpID,anbAmEpID,ascAmEpID);
-            cerr << "  AmID = " << (unsigned)amID << endl;
+            // cerr << "  AmID = " << (unsigned)amID << endl;
                // see Table 5-13 in ICD-B1I
             switch (amID)
             {
@@ -1286,13 +1286,18 @@ namespace gpstk
                                             ascOMEGAdot);
       alm->af0 = navIn->asSignedDouble(asbA0,anbA0,ascA0);
       alm->af1 = navIn->asSignedDouble(asbA1,anbA1,ascA1);
+         // BDSD1NavData
+      alm->pre = navIn->asUnsignedLong(fsbPre,fnbPre,fscPre);
+      alm->rev = navIn->asUnsignedLong(fsbRev,fnbRev,fscRev);
+      alm->fraID = sfid;
+      alm->sow = navIn->asSignedDouble(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,fscSOW);
          // BDSD1NavAlm
       alm->pnum = pnum;
       alm->toa = navIn->asUnsignedDouble(asbtoa,anbtoa,asctoa);
       unsigned long toaab = navIn->asUnsignedLong(asbtoa,anbtoa,1);
-      cerr << "sfid=" << sfid << "  pnum=" << pnum << "  xmit=" << xmitSat.id
-           << "  subj=" << sat.sat.id << "  toa=" << alm->toa << "=" << toaab
-           << endl;
+      // cerr << "sfid=" << sfid << "  pnum=" << pnum << "  xmit=" << xmitSat.id
+      //      << "  subj=" << sat.sat.id << "  toa=" << alm->toa << "=" << toaab
+      //      << endl;
       alm->deltai = navIn->asSignedDouble(asbdim,anbdim,asbdil,anbdil,ascdi);
       if ((sat.sat.id > 5) && (sat.sat.id < 59))
       {
@@ -1448,7 +1453,14 @@ namespace gpstk
          // health is set below
       eph->Cuc = ephSF[esiCucm]->asSignedDouble(esbCucm,enbCucm,esbCucl,enbCucl,
                                                 escCuc);
+      // cout << "Cuc bits: " << hex
+      //      << ephSF[esiCucm]->asUnsignedLong(esbCucm,enbCucm,esbCucl,enbCucl,
+      //                                        escCuc)
+      //      << dec << " " << eph->Cuc << endl;
       eph->Cus = ephSF[esiCus]->asSignedDouble(esbCus,enbCus,escCus);
+      // cout << "Cus bits: " << hex
+      //      << ephSF[esiCus]->asUnsignedLong(esbCus,enbCus,escCus)
+      //      << dec << " " << eph->Cus << endl;
       eph->Crc = ephSF[esiCrcm]->asSignedDouble(esbCrcm,enbCrcm,
                                                 esbCrcl,enbCrcl,escCrc);
       eph->Crs = ephSF[esiCrsm]->asSignedDouble(esbCrsm,enbCrsm,
@@ -1602,11 +1614,11 @@ namespace gpstk
          long refWeek = ws.week;
          unsigned fullWNa = timeAdjust8BitWeekRollover(shortWNa, refWeek);
          fullWNaMap[xmitSat.id] = BDSWeekSecond(fullWNa, toa);
-         cerr << "sfid=5  pnum=8  xmit=" << xmitSat.id << "  toa=" << toa
-              << "=" << toaab << "  toa-msb=" << toamsb << " ("
-              << std::bitset<h2nbtoam>(toamsb) << ")  toa-lsb=" << toalsb
-              << " (" << std::bitset<h2nbtoal>(toalsb) << ")  fullWNa="
-              << fullWNa << endl;
+         // cerr << "sfid=5  pnum=8  xmit=" << xmitSat.id << "  toa=" << toa
+         //      << "=" << toaab << "  toa-msb=" << toamsb << " ("
+         //      << std::bitset<h2nbtoam>(toamsb) << ")  toa-lsb=" << toalsb
+         //      << " (" << std::bitset<h2nbtoal>(toalsb) << ")  fullWNa="
+         //      << fullWNa << endl;
          // cerr << "  wna = " << fullWNa << " (" << shortWNa << ")  refWeek = "
          //      << refWeek << "  toa = " << toa << "  key = " << key;
          finishAlm(true, key, navOut);
@@ -1697,21 +1709,24 @@ namespace gpstk
                                         cscA0UTC);
          to->a1 = navIn->asSignedDouble(csbA1UTCm,cnbA1UTCm,csbA1UTCl,cnbA1UTCl,
                                         cscA1UTC);
-         to->deltatLS = navIn->asSignedDouble(csbdtLSm,cnbdtLSm,csbdtLSl,
-                                              cnbdtLSl,cscdtLS);
+         to->deltatLS = navIn->asLong(csbdtLSm,cnbdtLSm,csbdtLSl,cnbdtLSl,
+                                      cscdtLS);
             // BDS D1 doesn't use tot or wnot
          to->wnLSF = navIn->asUnsignedLong(csbWNlsf,cnbWNlsf,cscWNlsf);
          to->dn = navIn->asUnsignedLong(csbDN,cnbDN,cscDN);
+            // adjust week numbers to full week
+         BDSWeekSecond ref(to->timeStamp);
+         long refWeek = ref.week;
+         to->wnLSF = timeAdjust8BitWeekRollover(to->wnLSF, refWeek);
             // This is my best guess at what is an appropriate
             // reference time.  The documentation is unclear.
-         BDSWeekSecond ref(to->timeStamp);
          ref.sow = 0;
          to->refTime = ref;
             // DN appears to be intended to be in the range of 0-6,
             // but that's just a guess as dumping the data over a
             // couple of weeks in 2020 and 2021, it was always 6.
          to->effTime = BDSWeekSecond(to->wnLSF,to->dn * 86400);
-         cerr << "dn = " << to->dn << "  refTime=" << to->refTime << endl;
+         // cerr << "wnLSF="  << to->wnLSF << "  dn=" << to->dn << "  refTime=" << to->refTime << endl;
          to->deltatLSF = navIn->asLong(csbdtLSF,cnbdtLSF,cscdtLSF);
             // cerr << "add D1NAV time offset" << endl;
          navOut.push_back(to);
@@ -1727,6 +1742,7 @@ namespace gpstk
       {
          unsigned o = 0;
          uint8_t amID = navIn->asUnsignedLong(h3sbAmID,h3nbAmID,h3scAmID);
+         // cerr << "  AmID = " << (unsigned)amID << endl;
          switch (amID)
          {
             case 0x00:
@@ -1756,16 +1772,17 @@ namespace gpstk
                     h3nbHea36l);
          makeHealth(navIn,navOut,o+37,h3sbHea37,h3nbHea37);
             // AmID b11 only uses 31-37
-         if (amID == 0x03)
-            return true;
-         makeHealth(navIn,navOut,o+38,h3sbHea38m,h3nbHea38m,h3sbHea38l,
-                    h3nbHea38l);
-         makeHealth(navIn,navOut,o+39,h3sbHea39,h3nbHea39);
-         makeHealth(navIn,navOut,o+40,h3sbHea40,h3nbHea40);
-         makeHealth(navIn,navOut,o+41,h3sbHea41,h3nbHea41);
-         makeHealth(navIn,navOut,o+42,h3sbHea42,h3nbHea42);
-         makeHealth(navIn,navOut,o+43,h3sbHea43m,h3nbHea43m,h3sbHea43l,
-                    h3nbHea43l);
+         if (amID != 0x03)
+         {
+            makeHealth(navIn,navOut,o+38,h3sbHea38m,h3nbHea38m,h3sbHea38l,
+                       h3nbHea38l);
+            makeHealth(navIn,navOut,o+39,h3sbHea39,h3nbHea39);
+            makeHealth(navIn,navOut,o+40,h3sbHea40,h3nbHea40);
+            makeHealth(navIn,navOut,o+41,h3sbHea41,h3nbHea41);
+            makeHealth(navIn,navOut,o+42,h3sbHea42,h3nbHea42);
+            makeHealth(navIn,navOut,o+43,h3sbHea43m,h3nbHea43m,h3sbHea43l,
+                       h3nbHea43l);
+         }
          SatID xmitSat(navIn->getsatSys());
          NavSatelliteID key(0, xmitSat, navIn->getobsID(), navIn->getNavID());
          finishAlm(false, key, navOut);
@@ -1816,9 +1833,9 @@ namespace gpstk
                             navIn->getTransmitTime(), navIn->getNumBits(),
                             false);
          // Start match at bit 90 which is the first bit of word 3,
-         // and end at bit 290 which excludes the AmEpID bits and
+         // and end at bit 289 which excludes the AmEpID bits and
          // parity in word 10.
-      return defPage.matchBits(*navIn, 90, 290);
+      return defPage.matchBits(*navIn, 90, 289);
    }
 
 
@@ -1866,7 +1883,7 @@ namespace gpstk
             alm->health = ((alm->healthBits == 0) ? SVHealth::Healthy :
                            SVHealth::Unhealthy);
             alm->fixFit();
-            cerr << "add D1NAV alm (2a) " << alm->signal << " toa=" << alm->toa << endl;
+            // cerr << "add D1NAV alm (2a) " << alm->signal << " toa=" << alm->toa << endl;
             navOut.push_back(alm);
          }
             // Always return true so that the default data will be
@@ -1885,7 +1902,7 @@ namespace gpstk
          alm->health = ((alm->healthBits == 0) ? SVHealth::Healthy :
                         SVHealth::Unhealthy);
          alm->fixFit();
-         cerr << "add D1NAV alm (2b) " << alm->signal << " toa=" << alm->toa << endl;
+         // cerr << "add D1NAV alm (2b) " << alm->signal << " toa=" << alm->toa << endl;
          navOut.push_back(alm);
          return true;
       }
@@ -1898,21 +1915,21 @@ namespace gpstk
             // causing an exception to be thrown in CommonTime.
             // Always return true so that the default data will be
             // handled as if it were produced, even though it wasn't.
-         cerr << "discard D1NAV alm (2c) " << alm->signal << " toa=" << alm->toa << endl;
+         // cerr << "discard D1NAV alm (2c) " << alm->signal << " toa=" << alm->toa << endl;
          return true;
       }
       else
       {
-         if (alm->isDefault)
-            cerr << "default alm" << endl;
-         if (fromWNa)
-            cerr << "updating from SF5p8" << endl;
-         if (fullWNaMap.find(key.xmitSat.id) == fullWNaMap.end())
-            cerr << "alm missing WNa for " << key.xmitSat.id << endl;
-         else if (fullWNaMap[key.xmitSat.id].sow != alm->toa)
-            cerr << "alm toa mismatch " << fullWNaMap[key.xmitSat.id].sow << " != " << alm->toa << endl;
-         if (heaAcc.find(alm->signal) == heaAcc.end())
-            cerr << "alm missing health" << endl;
+         // if (alm->isDefault)
+         //    cerr << "default alm" << endl;
+         // if (fromWNa)
+         //    cerr << "updating from SF5p8" << endl;
+         // if (fullWNaMap.find(key.xmitSat.id) == fullWNaMap.end())
+         //    cerr << "alm missing WNa for " << key.xmitSat.id << endl;
+         // else if (fullWNaMap[key.xmitSat.id].sow != alm->toa)
+         //    cerr << "alm toa mismatch " << fullWNaMap[key.xmitSat.id].sow << " != " << alm->toa << endl;
+         // if (heaAcc.find(alm->signal) == heaAcc.end())
+         //    cerr << "alm missing health" << endl;
          return false;
       }
    }
@@ -1951,230 +1968,6 @@ namespace gpstk
             s << endl;
          }
       }
-   }
-
-
-   void PNBBDSD1NavDataFactory ::
-   bunk()
-   {
-      cerr << "FullBitInfo" << endl
-           << "Pre " << fsbPre << " " << fnbPre << " " << fscPre << endl
-           << "Rev " << fsbRev << " " << fnbRev << " " << fscRev  << endl
-           << "FraID " << fsbFraID << " " << fnbFraID << " " << fscFraID  << endl
-           << "SOWm " << fsbSOWm << " " << fnbSOWm << " " << fscSOW   << endl
-           << "Parity1 " << fsbParity1 << " " << fnbParity1 << " " << fscParity1  << endl
-           << "SOWl " << fsbSOWl << " " << fnbSOWl  << endl
-           << "Rev2 " << fsbRev2 << " " << fnbRev2 << " " << fscRev2  << endl
-           << "Pnum " << fsbPnum << " " << fnbPnum << " " << fscPnum << endl
-           << "AlmBitInfo" << endl
-           << "Ahalfm " << asbAhalfm << " "  << anbAhalfm << " "  << ascAhalf  << endl
-           << "Parity2 " << asbParity2 << " "  << anbParity2 << " "  << ascParity2  << endl
-           << "Ahalfl " << asbAhalfl << " "  << anbAhalfl  << endl
-           << "Parity3 " << asbParity3 << " "  << anbParity3 << " "  << ascParity3  << endl
-           << "A1 " << asbA1 << " "  << anbA1 << " "  << ascA1  << endl
-           << "A0 " << asbA0 << " "  << anbA0 << " "  << ascA0  << endl
-           << "Parity4 " << asbParity4 << " "  << anbParity4 << " "  << ascParity4  << endl
-           << "OMEGA0m " << asbOMEGA0m << " "  << anbOMEGA0m << " "  << ascOMEGA0  << endl
-           << "Parity5 " << asbParity5 << " "  << anbParity5 << " "  << ascParity5  << endl
-           << "OMEGA0l " << asbOMEGA0l << " "  << anbOMEGA0l  << endl
-           << "Ecc " << asbEcc << " "  << anbEcc << " "  << ascEcc  << endl
-           << "dim " << asbdim << " "  << anbdim << " "  << ascdi  << endl
-           << "Parity6 " << asbParity6 << " "  << anbParity6 << " "  << ascParity6  << endl
-           << "dil " << asbdil << " "  << anbdil  << endl
-           << "toa " << asbtoa << " "  << anbtoa << " "  << asctoa  << endl
-           << "OMEGAdotm " << asbOMEGAdotm << " "  << anbOMEGAdotm << " "  << ascOMEGAdot  << endl
-           << "Parity7 " << asbParity7 << " "  << anbParity7 << " "  << ascParity7  << endl
-           << "OMEGAdotl " << asbOMEGAdotl << " "  << anbOMEGAdotl  << endl
-           << "wm " << asbwm << " "  << anbwm << " "  << ascw  << endl
-           << "Parity8 " << asbParity8 << " "  << anbParity8 << " "  << ascParity8  << endl
-           << "wl " << asbwl << " "  << anbwl  << endl
-           << "M0m " << asbM0m << " "  << anbM0m << " "  << ascM0  << endl
-           << "Parity9 " << asbParity9 << " "  << anbParity9 << " "  << ascParity9  << endl
-           << "M0l " << asbM0l << " "  << anbM0l  << endl
-           << "AmEpID " << asbAmEpID << " " << anbAmEpID << " " << ascAmEpID << endl
-           << "SF5Pg8BitInfo" << endl
-           << "Hea20m " << h2sbHea20m << " "  << h2nbHea20m << " "  << h2scHea20  << endl
-           << "Parity2 " << h2sbParity2 << " "  << h2nbParity2 << " "  << h2scParity2  << endl
-           << "Hea20l " << h2sbHea20l << " "  << h2nbHea20l  << endl
-           << "Hea21 " << h2sbHea21 << " "  << h2nbHea21 << " "  << h2scHea21  << endl
-           << "Hea22m " << h2sbHea22m << " "  << h2nbHea22m << " "  << h2scHea22  << endl
-           << "Parity3 " << h2sbParity3 << " "  << h2nbParity3 << " "  << h2scParity3  << endl
-           << "Hea22l " << h2sbHea22l << " "  << h2nbHea22l  << endl
-           << "Hea23 " << h2sbHea23 << " "  << h2nbHea23 << " "  << h2scHea23  << endl
-           << "Hea24 " << h2sbHea24 << " "  << h2nbHea24 << " "  << h2scHea24  << endl
-           << "Hea25m " << h2sbHea25m << " "  << h2nbHea25m << " "  << h2scHea25  << endl
-           << "Parity4 " << h2sbParity4 << " "  << h2nbParity4 << " "  << h2scParity4  << endl
-           << "Hea25l " << h2sbHea25l << " "  << h2nbHea25l  << endl
-           << "Hea26 " << h2sbHea26 << " "  << h2nbHea26 << " "  << h2scHea26  << endl
-           << "Hea27m " << h2sbHea27m << " "  << h2nbHea27m << " "  << h2scHea27  << endl
-           << "Parity5 " << h2sbParity5 << " "  << h2nbParity5 << " "  << h2scParity5  << endl
-           << "Hea27l " << h2sbHea27l << " "  << h2nbHea27l  << endl
-           << "Hea28 " << h2sbHea28 << " "  << h2nbHea28 << " "  << h2scHea28  << endl
-           << "Hea29 " << h2sbHea29 << " "  << h2nbHea29 << " "  << h2scHea29  << endl
-           << "Parity6 " << h2sbParity6 << " "  << h2nbParity6 << " "  << h2scParity6  << endl
-           << "Hea30 " << h2sbHea30 << " "  << h2nbHea30 << " "  << h2scHea30  << endl
-           << "WNa " << h2sbWNa << " "  << h2nbWNa << " "  << h2scWNa  << endl
-           << "toam " << h2sbtoam << " "  << h2nbtoam << " "  << h2sctoa  << endl
-           << "Parity7 " << h2sbParity7 << " "  << h2nbParity7 << " "  << h2scParity7  << endl
-           << "toal " << h2sbtoal << " "  << h2nbtoal  << endl;
-      cerr << "SF5Pg7BitInfo" << endl;
-      cerr << "Hea1m " << h1sbHea1m << " " << h1nbHea1m << " " << h1scHea1 << endl;
-      cerr << "Parity2 " << h1sbParity2 << " " << h1nbParity2 << " " << h1scParity2 << endl;
-      cerr << "Hea1l " << h1sbHea1l << " " << h1nbHea1l << endl;
-      cerr << "Hea2 " << h1sbHea2 << " " << h1nbHea2 << " " << h1scHea2 << endl;
-      cerr << "Hea3m " << h1sbHea3m << " " << h1nbHea3m << " " << h1scHea3 << endl;
-      cerr << "Parity3 " << h1sbParity3 << " " << h1nbParity3 << " " << h1scParity3 << endl;
-      cerr << "Hea3l " << h1sbHea3l << " " << h1nbHea3l << endl;
-      cerr << "Hea4 " << h1sbHea4 << " " << h1nbHea4 << " " << h1scHea4 << endl;
-      cerr << "Hea5 " << h1sbHea5 << " " << h1nbHea5 << " " << h1scHea5 << endl;
-      cerr << "Hea6m " << h1sbHea6m << " " << h1nbHea6m << " " << h1scHea6 << endl;
-      cerr << "Parity4 " << h1sbParity4 << " " << h1nbParity4 << " " << h1scParity4 << endl;
-      cerr << "Hea6l " << h1sbHea6l << " " << h1nbHea6l << endl;
-      cerr << "Hea7 " << h1sbHea7 << " " << h1nbHea7 << " " << h1scHea7 << endl;
-      cerr << "Hea8m " << h1sbHea8m << " " << h1nbHea8m << " " << h1scHea8 << endl;
-      cerr << "Parity5 " << h1sbParity5 << " " << h1nbParity5 << " " << h1scParity5 << endl;
-      cerr << "Hea8l " << h1sbHea8l << " " << h1nbHea8l << endl;
-      cerr << "Hea9 " << h1sbHea9 << " " << h1nbHea9 << " " << h1scHea9 << endl;
-      cerr << "Hea10 " << h1sbHea10 << " " << h1nbHea10 << " " << h1scHea10 << endl;
-      cerr << "Parity6 " << h1sbParity6 << " " << h1nbParity6 << " " << h1scParity6 << endl;
-      cerr << "Hea11 " << h1sbHea11 << " " << h1nbHea11 << " " << h1scHea11 << endl;
-      cerr << "Hea12 " << h1sbHea12 << " " << h1nbHea12 << " " << h1scHea12 << endl;
-      cerr << "Hea13m " << h1sbHea13m << " " << h1nbHea13m << " " << h1scHea13 << endl;
-      cerr << "Parity7 " << h1sbParity7 << " " << h1nbParity7 << " " << h1scParity7 << endl;
-      cerr << "Hea13l " << h1sbHea13l << " " << h1nbHea13l << endl;
-      cerr << "Hea14 " << h1sbHea14 << " " << h1nbHea14 << " " << h1scHea14 << endl;
-      cerr << "Hea15m " << h1sbHea15m << " " << h1nbHea15m << " " << h1scHea15 << endl;
-      cerr << "Parity8 " << h1sbParity8 << " " << h1nbParity8 << " " << h1scParity8 << endl;
-      cerr << "Hea15l " << h1sbHea15l << " " << h1nbHea15l << endl;
-      cerr << "Hea16 " << h1sbHea16 << " " << h1nbHea16 << " " << h1scHea16 << endl;
-      cerr << "Hea17 " << h1sbHea17 << " " << h1nbHea17 << " " << h1scHea17 << endl;
-      cerr << "Hea18m " << h1sbHea18m << " " << h1nbHea18m << " " << h1scHea18 << endl;
-      cerr << "Parity9 " << h1sbParity9 << " " << h1nbParity9 << " " << h1scParity9 << endl;
-      cerr << "Hea18l " << h1sbHea18l << " " << h1nbHea18l << endl;
-      cerr << "Hea19 " << h1sbHea19 << " " << h1nbHea19 << " " << h1scHea19 << endl;
-      cerr << "TimeOffsetBitInfo" << endl;
-      cerr << "Rev3 " << csbRev3 << " " << cnbRev3 << " " << cscRev3 << endl;      cerr << "Parity2 " << csbParity2 << " " << cnbParity2 << " " << cscParity2 << endl;
-      cerr << "Rev4 " << csbRev4 << " " << cnbRev4 << " " << cscRev4 << endl;
-      cerr << "Parity3 " << csbParity3 << " " << cnbParity3 << " " << cscParity3 << endl;
-      cerr << "Rev5 " << csbRev5 << " " << cnbRev5 << " " << cscRev5 << endl;
-      cerr << "A0GPS " << csbA0GPS << " " << cnbA0GPS << " " << cscA0GPS << endl;
-      cerr << "A1GPSm " << csbA1GPSm << " " << cnbA1GPSm << " " << cscA1GPS << endl;
-      cerr << "Parity4 " << csbParity4 << " " << cnbParity4 << " " << cscParity4 << endl;
-      cerr << "A1GPSl " << csbA1GPSl << " " << cnbA1GPSl << " " << endl;
-      cerr << "A0GALm " << csbA0GALm << " " << cnbA0GALm << " " << cscA0GAL << endl;
-      cerr << "Parity5 " << csbParity5 << " " << cnbParity5 << " " << cscParity5 << endl;
-      cerr << "A0GALl " << csbA0GALl << " " << cnbA0GALl << " " << endl;
-      cerr << "A1GAL " << csbA1GAL << " " << cnbA1GAL << " " << cscA1GAL << endl;
-      cerr << "Parity6 " << csbParity6 << " " << cnbParity6 << " " << cscParity6 << endl;
-      cerr << "A0GLO " << csbA0GLO << " " << cnbA0GLO << " " << cscA0GLO << endl;
-      cerr << "A1GLOm " << csbA1GLOm << " " << cnbA1GLOm << " " << cscA1GLO << endl;
-      cerr << "Parity7 " << csbParity7 << " " << cnbParity7 << " " << cscParity7 << endl;
-      cerr << "A1GLOl " << csbA1GLOl << " " << cnbA1GLOl << " " << endl;
-
-
-      cerr << "dtLSm " << csbdtLSm << " " << cnbdtLSm << " " << cscdtLS << endl;
-      cerr << "dtLSl " << csbdtLSl << " " << cnbdtLSl << endl;
-      cerr << "dtLSF " << csbdtLSF << " " << cnbdtLSF << " " << cscdtLS << endl;
-      cerr << "WNlsf " << csbWNlsf << " " << cnbWNlsf << " " << cscWNlsf << endl;
-      cerr << "A0UTCm " << csbA0UTCm << " " << cnbA0UTCm << " " << cscA0UTC << endl;
-      cerr << "A0UTCl " << csbA0UTCl << " " << cnbA0UTCl << endl;
-      cerr << "A1UTCm " << csbA1UTCm << " " << cnbA1UTCm << " " << cscA1UTC << endl;
-      cerr << "A1UTCl " << csbA1UTCl << " " << csbA1UTCl << endl;
-      cerr << "DN " << csbDN << " " << cnbDN << " " << cscDN << endl;
-
-      cerr << "EphBitInfo" << endl;
-      cerr << "SatH1 " << esbSatH1 << " " << enbSatH1 << " " << escSatH1 << endl;
-      cerr << "AODC " << esbAODC << " " << enbAODC << " " << escAODC << endl;
-      cerr << "URAI " << esbURAI << " " << enbURAI << " " << escURAI << endl;
-      cerr << "Parity12 " << esbParity12 << " " << enbParity12 << " " << escParity12 << endl;
-      cerr << "WN " << esbWN << " " << enbWN << " " << escWN << endl;
-      cerr << "tocm " << esbtocm << " " << enbtocm << " " << esctoc << endl;
-      cerr << "Parity13 " << esbParity13 << " " << enbParity13 << " " << escParity13 << endl;
-      cerr << "tocl " << esbtocl << " " << enbtocl << endl;
-      cerr << "TGD1 " << esbTGD1 << " " << enbTGD1 << " " << escTGD1 << endl;
-      cerr << "TGD2m " << esbTGD2m << " " << enbTGD2m << " " << escTGD2 << endl;
-      cerr << "Parity14 " << esbParity14 << " " << enbParity14 << " " << escParity14 << endl;
-      cerr << "TGD2l " << esbTGD2l << " " << enbTGD2l << endl;
-      cerr << "Alpha0 " << esbAlpha0 << " " << enbAlpha0 << " " << escAlpha0 << endl;
-      cerr << "Alpha1 " << esbAlpha1 << " " << enbAlpha1 << " " << escAlpha1 << endl;
-      cerr << "Parity15 " << esbParity15 << " " << enbParity15 << " " << escParity15 << endl;
-      cerr << "Alpha2 " << esbAlpha2 << " " << enbAlpha2 << " " << escAlpha2 << endl;
-      cerr << "Alpha3 " << esbAlpha3 << " " << enbAlpha3 << " " << escAlpha3 << endl;
-      cerr << "Beta0m " << esbBeta0m << " " << enbBeta0m << " " << escBeta0 << endl;
-      cerr << "Parity16 " << esbParity16 << " " << enbParity16 << " " << escParity16 << endl;
-      cerr << "Beta0l " << esbBeta0l << " " << enbBeta0l << endl;
-      cerr << "Beta1 " << esbBeta1 << " " << enbBeta1 << " " << escBeta1 << endl;
-      cerr << "Beta2 " << esbBeta2 << " " << enbBeta2 << " " << escBeta2 << endl;
-      cerr << "Beta3m " << esbBeta3m << " " << enbBeta3m << " " << escBeta3 << endl;
-      cerr << "Parity17 " << esbParity17 << " " << enbParity17 << " " << escParity17 << endl;
-      cerr << "Beta3l " << esbBeta3l << " " << enbBeta3l << endl;
-      cerr << "a2 " << esba2 << " " << enba2 << " " << esca2 << endl;
-      cerr << "a0m " << esba0m << " " << enba0m << " " << esca0 << endl;
-      cerr << "Parity18 " << esbParity18 << " " << enbParity18 << " " << escParity18 << endl;
-      cerr << "a0l " << esba0l << " " << enba0l << endl;
-      cerr << "a1m " << esba1m << " " << enba1m << " " << esca1 << endl;
-      cerr << "Parity19 " << esbParity19 << " " << enbParity19 << " " << escParity19 << endl;
-      cerr << "a1l " << esba1l << " " << enba1l << endl;
-      cerr << "AODE " << esbAODE << " " << enbAODE << " " << escAODE << endl;
-      cerr << "dnm " << esbdnm << " " << enbdnm << " " << escdn << endl;
-      cerr << "Parity22 " << esbParity22 << " " << enbParity22 << " " << escParity22 << endl;
-      cerr << "dnl " << esbdnl << " " << enbdnl << endl;
-      cerr << "Cucm " << esbCucm << " " << enbCucm << " " << escCuc << endl;
-      cerr << "Parity23 " << esbParity23 << " " << enbParity23 << " " << escParity23 << endl;
-      cerr << "Cucl " << esbCucl << " " << enbCucl << endl;
-      cerr << "M0m " << esbM0m << " " << enbM0m << " " << escM0 << endl;
-      cerr << "Parity24 " << esbParity24 << " " << enbParity24 << " " << escParity24 << endl;
-      cerr << "M0l " << esbM0l << " " << enbM0l << endl;
-      cerr << "Eccm " << esbEccm << " " << enbEccm << " " << escEcc << endl;
-      cerr << "Parity25 " << esbParity25 << " " << enbParity25 << " " << escParity25 << endl;
-      cerr << "Eccl " << esbEccl << " " << enbEccl << endl;
-      cerr << "Parity26 " << esbParity26 << " " << enbParity26 << " " << escParity26 << endl;
-      cerr << "Cus " << esbCus << " " << enbCus << " " << escCus << endl;
-      cerr << "Crcm " << esbCrcm << " " << enbCrcm << " " << escCrc << endl;
-      cerr << "Parity27 " << esbParity27 << " " << enbParity27 << " " << escParity27 << endl;
-      cerr << "Crcl " << esbCrcl << " " << enbCrcl << endl;
-      cerr << "Crsm " << esbCrsm << " " << enbCrsm << " " << escCrs << endl;
-      cerr << "Parity28 " << esbParity28 << " " << enbParity28 << " " << escParity28 << endl;
-      cerr << "Crsl " << esbCrsl << " " << enbCrsl << endl;
-      cerr << "Ahalfm " << esbAhalfm << " " << enbAhalfm << " " << escAhalf << endl;
-      cerr << "Parity29 " << esbParity29 << " " << enbParity29 << " " << escParity29 << endl;
-      cerr << "Ahalfl " << esbAhalfl << " " << enbAhalfl << endl;
-      cerr << "toeh " << esbtoeh << " " << enbtoeh << " " << esctoe << endl;
-      cerr << "toem " << esbtoem << " " << enbtoem << endl;
-      cerr << "Parity32 " << esbParity32 << " " << enbParity32 << " " << escParity32 << endl;
-      cerr << "toel " << esbtoel << " " << enbtoel << endl;
-      cerr << "i0m " << esbi0m << " " << enbi0m << " " << esci0 << endl;
-      cerr << "Parity33 " << esbParity33 << " " << enbParity33 << " " << escParity33 << endl;
-      cerr << "i0l " << esbi0l << " " << enbi0l << endl;
-      cerr << "Cicm " << esbCicm << " " << enbCicm << " " << escCic << endl;
-      cerr << "Parity34 " << esbParity34 << " " << enbParity34 << " " << escParity34 << endl;
-      cerr << "Cicl " << esbCicl << " " << enbCicl << endl;
-      cerr << "OMEGAdotm " << esbOMEGAdotm << " " << enbOMEGAdotm << " " << escOMEGAdot << endl;
-      cerr << "Parity35 " << esbParity35 << " " << enbParity35 << " " << escParity35 << endl;
-      cerr << "OMEGAdotl " << esbOMEGAdotl << " " << enbOMEGAdotl << endl;
-      cerr << "Cism " << esbCism << " " << enbCism << " " << escCis << endl;
-      cerr << "Parity36 " << esbParity36 << " " << enbParity36 << " " << escParity36 << endl;
-      cerr << "Cisl " << esbCisl << " " << enbCisl << endl;
-      cerr << "idotm " << esbidotm << " " << enbidotm << " " << escidot << endl;
-      cerr << "Parity37 " << esbParity37 << " " << enbParity37 << " " << escParity37 << endl;
-      cerr << "idotl " << esbidotl << " " << enbidotl << endl;
-      cerr << "OMEGA0m " << esbOMEGA0m << " " << enbOMEGA0m << " " << escOMEGA0 << endl;
-      cerr << "Parity38 " << esbParity38 << " " << enbParity38 << " " << escParity38 << endl;
-      cerr << "OMEGA0l " << esbOMEGA0l << " " << enbOMEGA0l << endl;
-      cerr << "wm " << esbwm << " " << enbwm << " " << escw << endl;
-      cerr << "Parity39 " << esbParity39 << " " << enbParity39 << " " << escParity39 << endl;
-      cerr << "wl " << esbwl << " " << enbwl << endl;
-   }
-
-   void PNBBDSD1NavDataFactory ::
-   bunk2()
-   {
-      unsigned long total = 0;
-      for (const auto& i : almAcc)
-      {
-         total += i.second.size();
-      }
-      cerr << "almAcc total size = " << total << endl;
    }
 
 } // namespace gpstk

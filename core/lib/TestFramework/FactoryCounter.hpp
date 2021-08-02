@@ -41,6 +41,7 @@
 #define GPSTK_TEST_FACTORYCOUNTER_HPP
 
 #include "NavData.hpp"
+#include "NavMessageType.hpp"
 #include "TestUtil.hpp"
 
 // similar to TUASSERTE except requires a source line and counted data
@@ -75,7 +76,8 @@ class FactoryCounter
 {
 public:
    FactoryCounter(gpstk::TestUtil& tf)
-         : testFramework(tf)
+         : testFramework(tf), almInc(true), ephInc(true), toInc(true),
+           heaInc(true), ionoInc(true), iscInc(true)
    { resetCount(); }
 
 
@@ -88,6 +90,17 @@ public:
       ionoCount = 0;
       iscCount = 0;
       otherCount = 0;
+   }
+
+
+   void setInc(const gpstk::NavMessageTypeSet& nmts)
+   {
+      almInc = (nmts.count(gpstk::NavMessageType::Almanac) > 0);
+      ephInc = (nmts.count(gpstk::NavMessageType::Ephemeris) > 0);
+      toInc = (nmts.count(gpstk::NavMessageType::TimeOffset) > 0);
+      heaInc = (nmts.count(gpstk::NavMessageType::Health) > 0);
+      ionoInc = (nmts.count(gpstk::NavMessageType::Iono) > 0);
+      iscInc = (nmts.count(gpstk::NavMessageType::ISC) > 0);
    }
 
 
@@ -140,16 +153,22 @@ public:
                         unsigned otherExp = 0)
    {
       countResults(navOut);
-      FCASSERTE(size_t, "total", totalExp, navOut.size(), lineNo);
-      FCASSERTE(unsigned, "almCount", almExp, almCount, lineNo);
-      FCASSERTE(unsigned, "ephCount", ephExp, ephCount, lineNo);
-      FCASSERTE(unsigned, "toCount", toExp, toCount, lineNo);
-      FCASSERTE(unsigned, "heaCount", heaExp, heaCount, lineNo);
-      FCASSERTE(unsigned, "ionoCount", ionoExp, ionoCount, lineNo);
-      FCASSERTE(unsigned, "iscCount", iscExp, iscCount, lineNo);
-      FCASSERTE(unsigned, "otherCount", otherExp, otherCount, lineNo);
+         // sanity check.
       FCASSERTE(unsigned, "summed total", totalExp,
                 almExp+ephExp+toExp+heaExp+ionoExp+iscExp+otherExp, lineNo);
+         // Get an expected total based on what's included and what isn't.
+      totalExp = ((almInc ? almExp : 0) + (ephInc ? ephExp : 0) +
+                  (toInc ? toExp : 0) + (heaInc ? heaExp : 0) +
+                  (ionoInc ? ionoExp : 0) + (iscInc ? iscExp : 0) + otherExp);
+      FCASSERTE(size_t, "total", totalExp, navOut.size(), lineNo);
+      FCASSERTE(unsigned, "almCount", (almInc ? almExp : 0), almCount, lineNo);
+      FCASSERTE(unsigned, "ephCount", (ephInc ? ephExp : 0), ephCount, lineNo);
+      FCASSERTE(unsigned, "toCount", (toInc ? toExp : 0), toCount, lineNo);
+      FCASSERTE(unsigned, "heaCount", (heaInc ? heaExp : 0), heaCount, lineNo);
+      FCASSERTE(unsigned, "ionoCount", (ionoInc ? ionoExp : 0), ionoCount,
+                lineNo);
+      FCASSERTE(unsigned, "iscCount", (iscInc ? iscExp : 0), iscCount, lineNo);
+      FCASSERTE(unsigned, "otherCount", otherExp, otherCount, lineNo);
       navOut.clear();
    }
 
@@ -158,6 +177,11 @@ public:
       /// Counts of messages, set by countResults.
    unsigned almCount, ephCount, toCount, heaCount, ionoCount, iscCount,
       otherCount;
+      /** Include (or ignore) specific counts passed to
+       * validateResults (used so the same test code can be used with
+       * different type filters).  When false, the given count will be
+       * expected to be zero. */
+   bool almInc, ephInc, toInc, heaInc, ionoInc, iscInc;
 };
 
 #endif // GPSTK_TEST_FACTORYCOUNTER_HPP

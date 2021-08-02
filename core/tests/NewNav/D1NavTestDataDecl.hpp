@@ -49,7 +49,11 @@ gpstk::PackedNavBitsPtr ephD1NAVSF1, ephD1NAVSF2, ephD1NAVSF3,
    almD1NAVSF4p11, almD1NAVSF5p11,
    almD1NAVSF4p24B, almD1NAVSF5p24B,
    almD1NAVSF4p8B, almD1NAVSF5p8B,
-   almD1NAVSF4p11B, almD1NAVSF5p11B;
+   almD1NAVSF4p11B, almD1NAVSF5p11B,
+   almD1NAVSF4p12B, almD1NAVSF5p12B,
+   almD1NAVSF4p7B, almD1NAVSF5p7B,
+   almD1NAVSF4p24B2, almD1NAVSF5p24B2,
+   almD1Default1, almD1Default2, almD1Default3;
 gpstk::CommonTime ephD1NAVSF1ct, ephD1NAVSF2ct, ephD1NAVSF3ct,
    almD1NAVSF4p1ct, almD1NAVSF5p1ct,
    almD1NAVSF4p7ct, almD1NAVSF5p7ct,
@@ -59,5 +63,9 @@ gpstk::CommonTime ephD1NAVSF1ct, ephD1NAVSF2ct, ephD1NAVSF3ct,
    almD1NAVSF4p11ct, almD1NAVSF5p11ct,
    almD1NAVSF4p24Bct, almD1NAVSF5p24Bct,
    almD1NAVSF4p8Bct, almD1NAVSF5p8Bct,
-   almD1NAVSF4p11Bct, almD1NAVSF5p11Bct;
+   almD1NAVSF4p11Bct, almD1NAVSF5p11Bct,
+   almD1NAVSF4p12Bct, almD1NAVSF5p12Bct,
+   almD1NAVSF4p7Bct, almD1NAVSF5p7Bct,
+   almD1NAVSF4p24B2ct, almD1NAVSF5p24B2ct,
+   almD1Default123ct;
 gpstk::SatID ephD1NAVSid, almD1NAVSid, almD1NAVSidB;

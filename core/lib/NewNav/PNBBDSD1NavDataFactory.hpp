@@ -118,13 +118,63 @@ namespace gpstk
       bool processEph(unsigned long sfid,
                       const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
+         /** Process subframe 5 page 7 which contains health data.
+          * @param[in] navIn The as-broadcast bits.
+          * @param[out] navOut If an almanac is completed and the data
+          *   is requested, this will contain one or more BDSD1NavAlm objects.
+          *   If health data is requested, this will contain multiple
+          *   health objects.
+          * @return false on error. */
       bool processSF5Pg7(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
+
+         /** Process subframe 5 page 8 which contains health data as
+          * well as the WNa for almanacs.
+          * @param[in] navIn The as-broadcast bits.
+          * @param[out] navOut If an almanac is completed and the data
+          *   is requested, this will contain one or more BDSD1NavAlm objects.
+          *   If health data is requested, this will contain multiple
+          *   health objects.
+          * @return false on error. */
       bool processSF5Pg8(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
+
+         /** Process subframe 5 page 9 which contains time offsets
+          * between BeiDou and other GNSSes.
+          * @note The ICD indicates this is currently unused.  As
+          *   such, the returned data will be marked invalid until
+          *   real (non-zero) data is broadcast by BeiDou.
+          * @param[in] navIn The as-broadcast bits.
+          * @param[out] navOut If time offset data is requested, this
+          *   will contain multiple time offset objects.
+          * @return false on error. */
       bool processSF5Pg9(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
+
+         /** Process subframe 5 page 10 which contains the time offset
+          * between BeiDou and UTC.
+          * @param[in] navIn The as-broadcast bits.
+          * @param[out] navOut If time offset data is requested, this
+          *   will contain a single time offset object.
+          * @return false on error. */
       bool processSF5Pg10(const PackedNavBitsPtr& navIn,NavDataPtrList& navOut);
+
+         /** Process subframe 5 page 24 which *may* contain health
+          * data for the extended constellation.  This data is only
+          * present when the subframe 4 broadcast immediately prior to
+          * this subframe 5 has the AmEpID bits set to 3 and the AmID
+          * bits in this subframe 5 are non-zero.
+          * @param[in] navIn The as-broadcast bits.
+          * @param[out] navOut If an almanac is completed and the data
+          *   is requested, this will contain one or more BDSD1NavAlm objects.
+          *   If health data is requested, this will contain multiple
+          *   health objects.
+          * @return false on error. */
       bool processSF5Pg24(const PackedNavBitsPtr& navIn,NavDataPtrList& navOut);
 
-      bool isAlmDefault(const PackedNavBitsPtr& navIn);
+         /** Determine if a given page contains default data.
+          * @note This method does *not* check to see if navIn is an
+          *   almanac page, only if bits are unset.
+          * @param[in] navIn The as-broadcast bits.
+          * @return true if bits 90-289 are unset. */
+      static bool isAlmDefault(const PackedNavBitsPtr& navIn);
 
          /** Reset the state of the data accumulator.  Most
           * PNBNavDataFactory child classes will maintain some state
@@ -138,10 +188,6 @@ namespace gpstk
           * @param[in,out] s The stream to write the debug output to. */
       void dumpState(std::ostream& s) const;
 
-         // test code, remove me before submitting.
-      void bunk();
-         // other test code, remove me before submitting.
-      void bunk2();
 
    protected:
          /// Store transmit time and corresponding AmEpID for amEpIDMap.
@@ -158,7 +204,9 @@ namespace gpstk
          CommonTime t;   ///< Transmit time of subframe containing AmEpID.
          uint8_t amEpID; ///< The two-bit AmEpID value.
       };
+         /// Alias for almanac objects.
       using AlmPtr = std::shared_ptr<BDSD1NavAlm>;
+         /// Alias for list of almanac objects.
       using AlmPtrList = std::list<AlmPtr>;
          /** Map transmit PRN to fully qualified week/second
           * (WNa/toa).  This is set by sf 5 pg 8. */
@@ -182,13 +230,52 @@ namespace gpstk
           * store the most recent health bits and use them. */
       std::map<NavSatelliteID, uint16_t> heaAcc;
 
+         /** Create a BDSD1NavHealth object from the 9 bits of almanac
+          * health data.  This method can be used for consecutive bits
+          * by specifying startBit2=0 and numBits2=0.  Otherwise, if
+          * the health bits are split into to pieces, startBit1/2 and
+          * numBits1/2 are both used.
+          * @param[in] navIn The as-broadcast bits.
+          * @param[out] navOut A BDSD1NavAlm object is added to this
+          *   list (no checking is done at this level to see if health
+          *   objects are desired).
+          * @param[in] subjID The PRN ID of the satellite to which
+          *   these health bits pertain.
+          * @param[in] startBit1 The first bit in navIn containing the
+          *   MSBs of the health information.
+          * @param[in] numBits1 The number of bits in the MSB portion
+          *   of the health bits.
+          * @param[in] startBit2 The first bit in navIn containing the
+          *   LSBs of the health information.
+          * @param[in] numBits2 The number of bits in the LSB portion
+          *   of the health bits. */
       void makeHealth(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
                       unsigned long subjID,
                       unsigned startBit1, unsigned numBits1,
                       unsigned startBit2=0, unsigned numBits2=0);
 
+         /** Search through the internal store of almanac data for
+          * almanacs that can be completed.
+          * @param[in] fromWNa If true, this function is being called
+          *   after processing subframe 5 page 8, which contains the
+          *   WNa, which results in special processing.
+          * @param[in] key The key used to look up the WNa for the
+          *   almanac (the NavSatelliteID with the subject sat set to
+          *   0).
+          * @param[out] navOut Any completed almanacs will be stored in here. */
       void finishAlm(bool fromWNa, const NavSatelliteID& key,
                      NavDataPtrList& navOut);
+
+         /** Attempt to complete a single almanac object.
+          * @param[in] fromWNa If true, this function is being called
+          *   after processing subframe 5 page 8, which contains the
+          *   WNa, which results in special processing.
+          * @param[in] key The key used to look up the WNa for the
+          *   almanac (the NavSatelliteID with the subject sat set to
+          *   0).
+          * @param[out] navOut Any completed almanacs will be stored in here. 
+          * @return true if the given alm was completed or should be
+          *   treated as such. */
       bool finishAlm(AlmPtr& alm, bool fromWNa, const NavSatelliteID& key,
                      NavDataPtrList& navOut);
    }; // class PNBBDSD1NavDataFactory
