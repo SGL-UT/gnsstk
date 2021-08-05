@@ -1299,7 +1299,7 @@ namespace gpstk
       //      << "  subj=" << sat.sat.id << "  toa=" << alm->toa << "=" << toaab
       //      << endl;
       alm->deltai = navIn->asSignedDouble(asbdim,anbdim,asbdil,anbdil,ascdi);
-      if ((sat.sat.id > 5) && (sat.sat.id < 59))
+      if ((sat.sat.id >= MIN_MEO_BDS) && (sat.sat.id <= MAX_MEO_BDS))
       {
             // MEO/IGSO satellite.  GEO satellites have 0 inclination offset.
          alm->i0 = BDSD1NavData::refioffset + alm->deltai;
