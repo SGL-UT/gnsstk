@@ -1140,19 +1140,20 @@ enum EphBitInfo
 
 namespace gpstk
 {
+      // subframe 5:
       //   from    to      what
       // - 1       13      iono
       // - 14      34      reserved
-      // E 35              health
-      // E 36              health + wna
-      // E 37      60      alm
+      // I 35              health
+      // I 36              health + wna
+      // I 37      60      alm
       // - 61      73      iono
       // - 74      94      reserved
-      // E 95      100     alm
-      //   101             gnss time offset
-      //   102             utc time offset
-      // E 103     115     alm (alt reserved)
-      // E 116             health (alt reserved)
+      // I 95      100     alm
+      // I 101             gnss time offset
+      // I 102             utc time offset
+      // I 103     115     alm (alt reserved)
+      // I 116             health (alt reserved)
       // - 117     120     reserved
 
    bool PNBBDSD2NavDataFactory ::
