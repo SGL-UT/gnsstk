@@ -62,6 +62,11 @@ namespace gpstk
       /// @ingroup GNSSEph
       //@{
 
+      // forward declaration
+   class PackedNavBits;
+      /// Managed pointer for passing PackedNavBits around.
+   typedef std::shared_ptr<PackedNavBits> PackedNavBitsPtr;
+
    class PackedNavBits
    {
    public:
@@ -268,6 +273,60 @@ namespace gpstk
                              const unsigned numBits[],
                              const unsigned len,
                              const int power2) const;
+
+         /** Unpack a floating point number split into an arbitrary
+          * number of pieces.  The startBits, numBits and whichSF
+          * parameters must all have the same size, however in the
+          * interest of performance, no checking is done to make sure
+          * that is the case.  Additionally, the values in whichSF
+          * must refer to valid indices of the bits vector, which also
+          * is not validated.  The elements of startBits, numBits and
+          * whichSF must correspond to the same segment for a given
+          * vector index, and must be in order of MSB to LSB.
+          * @note This prototype is intended to be used when the
+          *   encoded value spans multiple subframes and thus multiple
+          *   PackedNavBits objects.
+          * @param[in] startBits The 0-indexed first bit of each segment.
+          * @param[in] numBits The number of bits for each segment.
+          * @param[in] whichSF The index into bits that pertains to the segment.
+          * @param[in] bits The set of PackedNavBits objects used to
+          *   construct the value being decoded.
+          * @param[in] power2 The result is multiplied by 2^(power2)
+          *   before returning.
+          * @return The decoded value.
+          */
+      static double asUnsignedDouble(const std::vector<unsigned>& startBits,
+                                     const std::vector<unsigned>& numBits,
+                                     const std::vector<unsigned>& whichSF,
+                                     const std::vector<PackedNavBitsPtr>& bits,
+                                     const int power2);
+
+         /** Unpack a floating point number split into an arbitrary
+          * number of pieces.  The startBits, numBits and whichSF
+          * parameters must all have the same size, however in the
+          * interest of performance, no checking is done to make sure
+          * that is the case.  Additionally, the values in whichSF
+          * must refer to valid indices of the bits vector, which also
+          * is not validated.  The elements of startBits, numBits and
+          * whichSF must correspond to the same segment for a given
+          * vector index, and must be in order of MSB to LSB.
+          * @note This prototype is intended to be used when the
+          *   encoded value spans multiple subframes and thus multiple
+          *   PackedNavBits objects.
+          * @param[in] startBits The 0-indexed first bit of each segment.
+          * @param[in] numBits The number of bits for each segment.
+          * @param[in] whichSF The index into bits that pertains to the segment.
+          * @param[in] bits The set of PackedNavBits objects used to
+          *   construct the value being decoded.
+          * @param[in] power2 The result is multiplied by 2^(power2)
+          *   before returning.
+          * @return The decoded value.
+          */
+      static double asSignedDouble(const std::vector<unsigned>& startBits,
+                                   const std::vector<unsigned>& numBits,
+                                   const std::vector<unsigned>& whichSF,
+                                   const std::vector<PackedNavBitsPtr>& bits,
+                                   const int power2);
 
          /** Unpack a floating point number split into two pieces.
           * @warning Be careful about what order you specify the parameters in.
@@ -596,9 +655,6 @@ namespace gpstk
       double ScaleValue( const double value, const int power2) const;
 
    }; // class PackedNavBits
-
-      /// Managed pointer for passing PackedNavBits around.
-   typedef std::shared_ptr<PackedNavBits> PackedNavBitsPtr;
 
       //@}
    std::ostream& operator<<(std::ostream& s, const PackedNavBits& pnb);
