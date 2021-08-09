@@ -39,7 +39,8 @@
 #include "StdNavTimeOffset.hpp"
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
-
+#include "TimeString.hpp"
+using namespace std;
 namespace gpstk
 {
    std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
@@ -137,6 +138,38 @@ getOffsetTest()
       std::cerr << exc << std::endl;
       TUFAIL("Not the expected exception");
    }
+      // Test using real data and exercise the scheduled leap second
+   TestClass uut2;
+   uut2.src = gpstk::TimeSystem::GPS;
+   uut2.tgt = gpstk::TimeSystem::UTC;
+   uut2.a0 = -3.72529030E-09;
+   uut2.a1 = -9.76996262E-15;
+   uut2.a2 = 0;
+   uut2.deltatLS = 17.0;
+   uut2.tot = 147456.0;
+   uut2.wnot = 1929;
+   uut2.refTime = gpstk::GPSWeekSecond(uut2.wnot,uut2.tot);
+   uut2.wnLSF = 1929;
+   uut2.dn = 7;
+   uut2.deltatLSF = 18.0;
+   uut2.effTime = gpstk::GPSWeekSecond(uut2.wnLSF, (uut2.dn-1)*86400);
+      // WNLSF/DN is not in the past relative to user time and not
+      // within 6 hours
+   gpstk::CommonTime test2time1(gpstk::GPSWeekSecond(1929,496799));
+   TUASSERTE(bool, true, uut2.getOffset(uut2.src,uut2.tgt,test2time1,offset));
+      // verified by hand
+   TUASSERTFE(16.99999999286164253931, offset);
+      // WNLSF/DN is within 6 hours
+   gpstk::CommonTime test2time2(gpstk::GPSWeekSecond(1929,496800));
+   TUASSERTE(bool, true, uut2.getOffset(uut2.src,uut2.tgt,test2time2,offset));
+      // tE == WNLSF/DN
+   gpstk::CommonTime test2time3(gpstk::GPSWeekSecond(1929,518400));
+   TUASSERTE(bool, true, uut2.getOffset(uut2.src,uut2.tgt,test2time3,offset));
+      // verified by hand
+   TUASSERTFE(17.99999999265060068865, offset);
+      // Not testing uut2 with a time > 6 hours after the effectivity
+      // time because it would yield invalid results (offset of ~17
+      // seconds).
    TURETURN();
 }
 

@@ -53,7 +53,22 @@ namespace gpstk
        * The algorithm and parameters are largely the same across
        * systems, so this is basically the TimeOffset equivalent of
        * OrbitDataKepler, in that it contains data and algorithms to
-       * use it. */
+       * use it.
+       *
+       * Section 20.3.3.5.2.4, paragraph b of IS-GPS-200 goes into
+       * details about how the future leap seconds
+       * (&Delta;t<sub>LSF</sub>) are handled.  This text makes
+       * assumptions about the tying of time representation (seconds
+       * of day) and the time system (UTC) which are not true for
+       * gpstk.  Specifically, the IS allows for the leap second to be
+       * represented as 86400+ seconds of day, which the gpstk
+       * currently rejects as an error.  These leap seconds are
+       * currently not representable in the gpstk, but the offset can
+       * still be used the rest of the time.  This means that an
+       * attempt to display UTC time during the period of a leap
+       * second will be incorrect, but for now we're chosing to ignore
+       * this inconsistency rather than completely refactor the time
+       * classes again for 1 second every few years in UTC only. */
    class StdNavTimeOffset : public TimeOffsetData
    {
    public:

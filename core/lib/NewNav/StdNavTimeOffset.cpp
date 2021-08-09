@@ -77,13 +77,10 @@ namespace gpstk
          {
             CommonTime effBlank(effTime);
             effBlank.setTimeSystem(fromSys);
-            if ((((effBlank - when) <= effStart()) &&
-                 ((effBlank - when) >= 0)) ||
-                (((when - effBlank) <= effEnd()) &&
-                 ((when - effBlank) >= 0)))
+            if ((when >= effBlank) && ((when - effBlank) <= effEnd()))
             {
-                  // use deltatLSF instead
-               dt = when - effBlank;
+                  // use deltatLSF from effectivity time to
+                  // effectivity time + effEnd()
                offset = deltatLSF + a0 + a1*dt + a2*dt*dt;
             }
          }
