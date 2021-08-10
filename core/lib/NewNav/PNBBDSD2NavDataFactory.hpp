@@ -283,6 +283,9 @@ namespace gpstk
                      NavDataPtrList& navOut);
 
          /** Attempt to complete a single almanac object.
+          * @param[in,out] alm A single almanac to potentially
+          *   complete (set the "Toe"/"Toc" which are really the toa,
+          *   health and fit interval).
           * @param[in] fromWNa If true, this function is being called
           *   after processing subframe 5 page 8, which contains the
           *   WNa, which results in special processing.

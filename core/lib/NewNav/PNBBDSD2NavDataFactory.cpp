@@ -1227,6 +1227,7 @@ namespace gpstk
                }
                break;
             default:
+                  // quietly ignore other subframe IDs, which we don't process.
                rv = true;
                break;
          }
