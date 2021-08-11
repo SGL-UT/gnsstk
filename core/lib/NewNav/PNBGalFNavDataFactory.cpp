@@ -715,7 +715,9 @@ namespace gpstk
             // WN0G is 6 bits...
          to->wnot = (gws.week & ~0x3f) | to->wnot;
          to->refTime = GALWeekSecond(to->wnot, to->tot);
-         to->effTime = GALWeekSecond(to->wnLSF, (to->dn-1)*86400);
+            // Do not attempt to set the effectivity time for
+            // converting from Galileo to GPS time.  effTime only
+            // applies to UTC.
          // cerr << "gws.week=" << gws.week << "  gws.sow=" << gws.sow << "  refTime=" << to->refTime << endl;
          navOut.push_back(p3);
       }
