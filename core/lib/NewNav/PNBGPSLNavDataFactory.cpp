@@ -1013,10 +1013,12 @@ namespace gpstk
       to->wnot = timeAdjust8BitWeekRollover(to->wnot, refWeek);
       to->wnLSF = timeAdjust8BitWeekRollover(to->wnLSF, refWeek);
       to->refTime = GPSWeekSecond(to->wnot, to->tot);
+      to->effTime = GPSWeekSecond(to->wnLSF, (to->dn-1)*86400);
       if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
       {
          to->src = gpstk::TimeSystem::QZS;
          to->refTime.setTimeSystem(gpstk::TimeSystem::QZS);
+         to->effTime.setTimeSystem(gpstk::TimeSystem::QZS);
       }
          // return results.
       // cerr << "add LNAV page 56 time offset" << endl;

@@ -753,14 +753,16 @@ namespace gpstk
       to->deltatLS = navIn->asLong(offset+csbdtLS,cnbdtLS,cscdtLS);
       to->tot = navIn->asUnsignedDouble(offset+csbtot,cnbtot,csctot);
       to->wnot = navIn->asUnsignedLong(offset+csbWNot,cnbWNot,cscWNot);
-      to->refTime = gpstk::GPSWeekSecond(to->wnot, to->tot);
+      to->refTime = GPSWeekSecond(to->wnot, to->tot);
+      to->wnLSF = navIn->asUnsignedLong(offset+csbWNlsf,cnbWNlsf,cscWNlsf);
+      to->dn = navIn->asUnsignedLong(offset+csbDN,cnbDN,cscDN);
+      to->effTime = GPSWeekSecond(to->wnLSF, (to->dn-1)*86400);
       if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
       {
          to->src = gpstk::TimeSystem::QZS;
          to->refTime.setTimeSystem(gpstk::TimeSystem::QZS);
+         to->effTime.setTimeSystem(gpstk::TimeSystem::QZS);
       }
-      to->wnLSF = navIn->asUnsignedLong(offset+csbWNlsf,cnbWNlsf,cscWNlsf);
-      to->dn = navIn->asUnsignedLong(offset+csbDN,cnbDN,cscDN);
       to->deltatLSF = navIn->asLong(offset+csbdtLSF,cnbdtLSF,cscdtLSF);
       navOut.push_back(p0);
       return true;

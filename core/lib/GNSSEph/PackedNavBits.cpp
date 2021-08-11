@@ -115,6 +115,27 @@ namespace gpstk
       xMitCoerced = false;
    }
 
+
+   PackedNavBits::PackedNavBits(const SatID& satSysArg, 
+                                const ObsID& obsIDArg,
+                                const NavID& navIDArg,
+                                const std::string rxString,
+                                const CommonTime& transmitTimeArg,
+                                unsigned numBits,
+                                bool fillValue)
+         : parityStatus(psUnknown),
+           satSys(satSysArg),
+           obsID(obsIDArg),
+           navID(navIDArg),
+           rxID(rxString),
+           transmitTime(transmitTimeArg),
+           bits(numBits, fillValue),
+           bits_used(numBits),
+           xMitCoerced(false)
+   {
+   }
+
+
       // Copy constructor
    PackedNavBits::PackedNavBits(const PackedNavBits& right)
    {
@@ -404,6 +425,22 @@ namespace gpstk
       //uint64_t temp2 = asUint64_t( startBit2, numBits2 );
       //s <<= numBits2;
       //s |= temp2;
+      
+      return( (long) (s * scale ) );
+   }
+
+      /* Unpack a split signed long integer */
+   long PackedNavBits::asLong(const unsigned startBits1,
+                              const unsigned numBits1,
+                              const unsigned startBits2,
+                              const unsigned numBits2,
+                              const int scale ) const
+   {
+      int64_t s = SignExtend(startBits1, numBits1);
+      uint64_t temp;
+      temp = asUint64_t(startBits2, numBits2);
+      s <<= numBits2;
+      s |= temp;
       
       return( (long) (s * scale ) );
    }

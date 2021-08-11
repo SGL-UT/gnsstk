@@ -169,12 +169,6 @@ addDataAlmanacTest()
    TUDEF("PNBGPSLNavDataFactory", "addData");
    GPSFactoryCounter fc(testFramework);
    gpstk::PNBGPSLNavDataFactory uut;
-   gpstk::SatID gloSid(1,gpstk::SatelliteSystem::Glonass);
-   gpstk::ObsID gloid(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::G1,
-                      gpstk::TrackingCode::Standard);
-   gpstk::NavID gloNav(gpstk::NavType::GloCivilF);
-   gpstk::PackedNavBitsPtr nonGPS = std::make_shared<gpstk::PackedNavBits>(
-      gloSid, gloid, gloNav, "XX", almLNAVGPS26ct);
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Almanac}));
       // Add subframe 1, expect nothing.

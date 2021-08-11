@@ -1297,13 +1297,15 @@ namespace gpstk
       to->tot = navIn->asUnsignedDouble(csbtot,cnbtot,csctot);
       to->wnot = navIn->asUnsignedLong(csbWNot,cnbWNot,cscWNot);
       to->wnLSF = navIn->asUnsignedLong(csbWNlsf,cnbWNlsf,cscWNlsf);
-      to->refTime = gpstk::GPSWeekSecond(to->wnot, to->tot);
+      to->dn = navIn->asUnsignedLong(csbDN,cnbDN,cscDN);
+      to->refTime = GPSWeekSecond(to->wnot, to->tot);
+      to->effTime = GPSWeekSecond(to->wnLSF, (to->dn-1)*86400);
       if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
       {
          to->src = gpstk::TimeSystem::QZS;
          to->refTime.setTimeSystem(gpstk::TimeSystem::QZS);
+         to->effTime.setTimeSystem(gpstk::TimeSystem::QZS);
       }
-      to->dn = navIn->asUnsignedLong(csbDN,cnbDN,cscDN);
       to->deltatLSF = navIn->asLong(csbdtLSF,cnbdtLSF,cscdtLSF);
       // cerr << "add CNAV time offset" << endl;
       navOut.push_back(p0);

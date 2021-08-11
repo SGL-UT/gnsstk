@@ -198,7 +198,11 @@ namespace gpstk
 
       // ---------------- BeiDou ----------------------------------
       /// The maximum number of active satellites in the Compass constellation.
-   const long MAX_PRN_COM     = 30;
+   const long MAX_PRN_COM     = 63;
+      /// The first ranging code number for BeiDou MEO/IGSO satellites
+   const long MIN_MEO_BDS     = 6;
+      /// The last ranging code number for BeiDou MEO/IGSO satellites
+   const long MAX_MEO_BDS     = 58;
 
       // ---------------- QZSS ----------------------------------
       // PRN range defined in QZSS IS Table 3.2.2-2

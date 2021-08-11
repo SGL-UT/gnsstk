@@ -96,6 +96,15 @@ namespace gpstk
                     const std::string rxString,
                     const CommonTime& transmitTimeArg);
 
+         /// explicit constructor
+      PackedNavBits(const SatID& satSysArg, 
+                    const ObsID& obsIDArg,
+                    const NavID& navIDArg,
+                    const std::string rxString,
+                    const CommonTime& transmitTimeArg,
+                    unsigned numBits,
+                    bool fillValue);
+
       PackedNavBits(const PackedNavBits& right);             // Copy constructor
          //PackedNavBits& operator=(const PackedNavBits& right); // Copy assignment
 
@@ -213,6 +222,22 @@ namespace gpstk
       long asLong(const unsigned startBits[],
                   const unsigned numBits[],
                   const unsigned len, 
+                  const int scale ) const;
+
+         /** Unpack an signed long integer split into two pieces.
+          * @warning Be careful about what order you specify the parameters in.
+          * @note This prototype obviates constructing an array before calling.
+          * @param[in] startBit1 The 0-indexed first bit of the MSBs.
+          * @param[in] numBits1 The number of MSBs.
+          * @param[in] startBit2 The 0-indexed first bit of the LSBs.
+          * @param[in] numBits2 The number of LSBs.
+          * @param[in] scale A number to multiply the bits by before returning.
+          * @return The decoded value.
+          */
+      long asLong(const unsigned startBit1,
+                  const unsigned numBits1,
+                  const unsigned startBit2,
+                  const unsigned numBits2,
                   const int scale ) const;
 
          /* Unpack a split unsigned double */
