@@ -1828,10 +1828,10 @@ namespace gpstk
          // Create a PNB with the same metadata, but all 0s, which is
          // how the BeiDou default pages appear (except words 1-2
          // which we ignore).
-      PackedNavBits defPage(navIn->getsatSys(), navIn->getobsID(),
-                            navIn->getNavID(), navIn->getRxID(),
-                            navIn->getTransmitTime(), navIn->getNumBits(),
-                            false);
+      static const PackedNavBits defPage(navIn->getsatSys(), navIn->getobsID(),
+                                         navIn->getNavID(), navIn->getRxID(),
+                                         navIn->getTransmitTime(),
+                                         navIn->getNumBits(), false);
          // Start match at bit 90 which is the first bit of word 3,
          // and end at bit 289 which excludes the AmEpID bits and
          // parity in word 10.
