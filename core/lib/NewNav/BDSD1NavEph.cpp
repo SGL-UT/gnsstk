@@ -40,6 +40,7 @@
 #include "BDSWeekSecond.hpp"
 #include "TimeString.hpp"
 #include "GPS_URA.hpp"
+#include "BDSconsts.hpp"
 
 using namespace std;
 
@@ -69,8 +70,9 @@ namespace gpstk
    bool BDSD1NavEph ::
    validate() const
    {
-      return BDSD1NavData::validate() && ((pre2 == 0) || (pre2 == 0x712)) &&
-         ((pre2 == 0) || (pre3 == 0x712));
+      return BDSD1NavData::validate() &&
+         ((pre2 == 0) || (pre2 == bds::Preamble)) &&
+         ((pre2 == 0) || (pre3 == bds::Preamble));
    }
 
 

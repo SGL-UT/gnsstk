@@ -36,33 +36,24 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "BDSD1NavIono.hpp"
-#include "TimeString.hpp"
-#include "YDSTime.hpp"
-#include "FreqConv.hpp"
-#include "BDSconsts.hpp"
 
-using namespace std;
+/** @file BDSconsts.hpp Define constants that are specific to BDS but
+ * are not specific to one message type (ephemeris, etc). */
 
 namespace gpstk
 {
-   BDSD1NavIono ::
-   BDSD1NavIono()
-         : pre(0),
-           rev(0),
-           fraID(0),
-           sow(0)
+   namespace bds
    {
-      weekFmt = "%4D(%4e)";
-      msgLenSec = 6.0;
-   }
+         // use enum for integral constants and constexpr for floating
+         // point to avoid having the linker allocate storage for the
+         // data.
 
-
-   bool BDSD1NavIono ::
-   validate() const
-   {
-      return (KlobucharIonoData::validate() &&
-              ((pre == 0) || (pre == bds::Preamble)) &&
-              (fraID == 1));
+         /// Integer constants for BDS.
+      enum BDSIntConsts
+      {
+         Preamble = 0x712,      ///< Nav message preamble value
+         D1MinSF = 1,           ///< Minimum D1 subframe ID
+         D1MaxSF = 5            ///< Maximum D1 subframe ID
+      };
    }
 }

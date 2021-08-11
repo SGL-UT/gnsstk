@@ -37,6 +37,7 @@
 //
 //==============================================================================
 #include "BDSD1NavData.hpp"
+#include "BDSconsts.hpp"
 
 namespace gpstk
 {
@@ -57,7 +58,7 @@ namespace gpstk
          // Section 5.2.4.2 indicates a subframe ID of 0 is not
          // valid. Values of 6 and 7 are reserved, but we don't have
          // any reason to consider them valid in this context.
-      return (((pre == 0) || (pre == 0x712)) &&
-              (fraID >= 1) && (fraID <= 5));
+      return (((pre == 0) || (pre == bds::Preamble)) &&
+              (fraID >= bds::D1MinSF) && (fraID <= bds::D1MaxSF));
    }
 }

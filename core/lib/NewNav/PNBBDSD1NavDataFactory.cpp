@@ -1257,7 +1257,7 @@ namespace gpstk
          }
          else
          {
-            gpstk::Exception exc("Reached unreachable code");
+            gpstk::Exception exc("Invalid pnum " + StringUtils::asString(pnum));
             GPSTK_THROW(exc);
          }
       }

@@ -39,6 +39,7 @@
 #include <cmath>
 #include "BDSD1NavISC.hpp"
 #include "FreqConv.hpp"
+#include "BDSconsts.hpp"
 
 using namespace std;
 
@@ -62,7 +63,7 @@ namespace gpstk
    validate() const
    {
       return (!(std::isnan(tgd1) || std::isnan(tgd2)) &&
-              ((pre == 0) || (pre == 0x712)) &&
+              ((pre == 0) || (pre == bds::Preamble)) &&
               (fraID == 1));
    }
 
