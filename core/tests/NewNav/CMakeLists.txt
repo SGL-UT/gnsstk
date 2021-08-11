@@ -223,6 +223,11 @@ target_link_libraries(PNBBDSD1NavDataFactory_T gpstk)
 add_test(PNBBDSD1NavDataFactory_T PNBBDSD1NavDataFactory_T)
 set_property(TEST PNBBDSD1NavDataFactory_T PROPERTY LABELS NewNav)
 
+add_executable(PNBBDSD2NavDataFactory_T PNBBDSD2NavDataFactory_T.cpp)
+target_link_libraries(PNBBDSD2NavDataFactory_T gpstk)
+add_test(PNBBDSD2NavDataFactory_T PNBBDSD2NavDataFactory_T)
+set_property(TEST PNBBDSD2NavDataFactory_T PROPERTY LABELS NewNav)
+
 add_executable(RinexTimeOffset_T RinexTimeOffset_T.cpp)
 target_link_libraries(RinexTimeOffset_T gpstk)
 add_test(RinexTimeOffset_T RinexTimeOffset_T)

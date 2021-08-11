@@ -517,6 +517,48 @@ namespace gpstk
    }
 
 
+   double PackedNavBits ::
+   asSignedDouble(const std::vector<unsigned>& startBits,
+                  const std::vector<unsigned>& numBits,
+                  const std::vector<unsigned>& whichSF,
+                  const std::vector<PackedNavBitsPtr>& bits,
+                  const int power2)
+   {
+      int64_t s = bits[whichSF[0]]->SignExtend(startBits[0], numBits[0]);
+      uint64_t temp;
+      for (unsigned int i = 1; i < startBits.size(); i++)
+      {
+         temp = bits[whichSF[i]]->asUint64_t(startBits[i], numBits[i]);
+         s <<= numBits[i];
+         s |= temp;
+      }
+
+         // Convert to double and scale
+      return ldexp((double)s, power2);
+   }
+
+
+   double PackedNavBits ::
+   asUnsignedDouble(const std::vector<unsigned>& startBits,
+                    const std::vector<unsigned>& numBits,
+                    const std::vector<unsigned>& whichSF,
+                    const std::vector<PackedNavBitsPtr>& bits,
+                    const int power2)
+   {
+      uint64_t ulong = bits[whichSF[0]]->asUint64_t(startBits[0], numBits[0]);
+      uint64_t temp;
+      for (unsigned int i = 1; i < startBits.size(); i++)
+      {
+         temp = bits[whichSF[i]]->asUint64_t(startBits[i], numBits[i]);
+         ulong <<= numBits[i];
+         ulong |= temp;
+      }
+
+         // Convert to double and scale
+      return ldexp((double)ulong, power2);
+   }
+
+
    double PackedNavBits::asSignedDouble(const unsigned startBit1,
                                         const unsigned numBits1,
                                         const unsigned startBit2,
