@@ -49,14 +49,14 @@
 
 namespace gpstk
 {
-   IonoModel::IonoModel(const double a[4], const double b[4], const bool semicircle_units) throw()
+   IonoModel::IonoModel(const double a[4], const double b[4],
+                        const bool semicircle_units) throw()
    {
         setModel(a, b, semicircle_units);
    }
 
 
-   IonoModel::IonoModel(const EngAlmanac& engalm)
-      throw()
+   IonoModel::IonoModel(const EngAlmanac& engalm) throw()
    {
       try
       {
@@ -70,7 +70,8 @@ namespace gpstk
    }
 
 
-   void IonoModel::setModel(const double a[4], const double b[4], const bool semicircle_units) throw()
+   void IonoModel::setModel(const double a[4], const double b[4],
+                            const bool semicircle_units) throw()
    {
       for (int n = 0; n < 4; n++)
       {
@@ -172,8 +173,8 @@ namespace gpstk
       return correction;
    }
 
-   bool IonoModel::operator==(const IonoModel& right) const
-      throw()
+
+   bool IonoModel::operator==(const IonoModel& right) const throw()
    {
       for (int n = 0; n < 4; n++)
       {
@@ -183,9 +184,34 @@ namespace gpstk
       return true;
    }
 
-   bool IonoModel::operator!=(const IonoModel&right) const
-      throw()
+
+   bool IonoModel::operator!=(const IonoModel&right) const throw()
    {
       return !(operator==(right));
    }
+
+
+   bool IonoModel::getModel(double a[4], double b[4]) const throw()
+   {
+      if (valid)
+      {
+         for (int n = 0; n < 4; n++)
+         {
+            a[n] = alpha[n];
+            b[n] = beta[n];
+         }
+         return true;
+      }
+      return false;
+   }
+
+
+   void IonoModel::dump(std::ostream& s) const
+   {
+      s << "a = { " << alpha[0] << " , " << alpha[1] << " , "
+                    << alpha[2] << " , " << alpha[3] << " }  ";
+      s << "b = { " << beta[0] << " , " << beta[1] << " , "
+                    << beta[2] << " , " << beta[3] << " }" << std::endl;
+   }
+
 }
