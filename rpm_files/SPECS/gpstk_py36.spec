@@ -1,5 +1,5 @@
 %define name python3-gpstk
-%define version 11.2.0
+%define version 12.0.0
 %define release 1
 
 Summary:        GPS Toolkit
@@ -64,6 +64,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 19 2021 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v12.0.0 release
+- Add GPSCNavISC class for inter-signal corrections
+- Add GPSCNav2ISC class for inter-signal corrections
+- Add GalINavISC and related classes.
+* Thu Jul 22 2021 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v11.2.1 release
 * Thu Jun 17 2021 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v11.2.0 release
 * Thu May 13 2021 David Barber <dbarber@arlut.utexas.edu>
