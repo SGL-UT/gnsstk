@@ -154,7 +154,7 @@ generate_documentation:
 build_debian_8:
   stage: build
   needs: []
-  extends: .big_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -301,7 +301,7 @@ build_windows:
 test_debian_8:
   stage: test
   needs: [build_debian_8]
-  extends: .big_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -614,7 +614,7 @@ system_install_redhat_8:
 package_debian_8:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -639,7 +639,7 @@ package_debian_8:
 package_debian_9:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -661,7 +661,7 @@ package_debian_9:
 package_debian_10:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -687,7 +687,7 @@ package_debian_10:
 package_conda:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py36
@@ -711,7 +711,7 @@ package_conda:
 package_redhat:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -729,7 +729,7 @@ package_redhat:
 package_redhat_8:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -747,7 +747,7 @@ package_redhat_8:
 package_redhat_8_py36:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
