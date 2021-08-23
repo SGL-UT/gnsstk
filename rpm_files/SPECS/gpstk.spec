@@ -1,5 +1,5 @@
 %define name gpstk
-%define version 11.2.0
+%define version 11.2.1
 %define release 1
 
 Summary:        GPS Toolkit
@@ -57,6 +57,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 22 2021 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v11.2.1 release
+- Updated git url ref to new sgl-git
 * Thu Jun 17 2021 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v11.2.0 release
 - Reformat Position tests (Position_T.cpp) to follow style.
