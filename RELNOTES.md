@@ -13,4 +13,4 @@ Known Issues since v11.1.0
 -------------------------
  * Due to code fixes for the new nav store in v11.1.0 release, downstream dependencies
  will need to be updated to latest versions to resolve errors in unittests that compare computational results. 
-These tests may fail due to a change in reference data and not a breaking API change.
+ These tests may fail due to a change in reference data and not a breaking API change.
