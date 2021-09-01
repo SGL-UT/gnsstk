@@ -9,6 +9,25 @@ from gpstk import CommonTime, SystemTime, CivilTime, BDSWeekSecond, GPSWeekSecon
 from gpstk import JulianDate, MJD, UnixTime, YDSTime
 import gpstk
 
+class TestTimeHandling(unittest.TestCase):
+
+    def test_TimeConstants(self):
+        a = gpstk.MJD_TO_JD
+        b = gpstk.FULLWEEK
+        c = gpstk.SEC_PER_DAY
+        self.assertIsNotNone(a)
+        self.assertIsNotNone(b)
+        self.assertIsNotNone(c)
+
+    def test_CommonTime(self):
+        a = gpstk.CommonTime(gpstk.TimeSystem.GPS)
+        self.assertIsInstance(a, gpstk.CommonTime)
+        self.assertTrue(str(a.getTimeSystem()) == "GPS")
+
+    def test_ANSITime(self):
+        a = gpstk.ANSITime()
+        self.assertIsInstance(a, gpstk.ANSITime)
+
 class TestSystemTime(unittest.TestCase):
     def test_SystemTime(self):
         t0 = SystemTime()

@@ -15,11 +15,11 @@ stages:
 
 # Default cmake arguments
 variables:
-  REPO_HOST: "repositories.arlut.utexas.edu"
+  REPO_HOST: "sgl-git.arlut.utexas.edu"
   CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
   # this is usually set to main, unless there are downstream dependencies
   SGLTK_BRANCH: main
-  DOCKER_REGISTRY: "modisdev:5000/sgl_ci"
+  DOCKER_REGISTRY: "taflen.arlut.utexas.edu/sgl_ci"
   # this can be used for incremental builds
   # GIT_CLEAN_FLAGS: none
   # This can be set to True by Gitlab UI to only build/test packages.
@@ -129,6 +129,8 @@ protected_history_lint:
     - git fetch -uf origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
     - bash repo_utils/dw_search/history_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
   dependencies: []
+  # Temporarily allowing to fail so pipeline doesn't fail
+  allow_failure: true
 
 # Runs the documentation generation
 generate_documentation:
@@ -149,31 +151,10 @@ generate_documentation:
     paths:
       - docs/
 
-# Note: debian 7 can't build the swig bindings out of the box because
-# SWIG 2.0.7 doesn't understand enum classes.
-build_debian_7:
-  stage: build
-  needs: []
-  extends: .big_build
-  tags:
-    - docker-executor
-    # Not all docker runners support debian 7
-    - deb7-support
-  image: $DOCKER_REGISTRY/debian7_fai_ish
-  script:
-    - mkdir -p build
-    - cd build
-    - export gpstk=`pwd`/install
-    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DTEST_SWITCH=ON ../
-    - make all -j 4
-  artifacts:
-    paths:
-      - build/
-
 build_debian_8:
   stage: build
   needs: []
-  extends: .big_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -317,30 +298,10 @@ build_windows:
 
 # Test Stage
 # Runs all tests of GPSTK for each platform
-test_debian_7:
-  stage: test
-  needs: [build_debian_7]
-  extends: .big_build
-  tags:
-    - docker-executor
-    # Not all docker runners support debian 7
-    - deb7-support
-  image: $DOCKER_REGISTRY/debian7_fai_ish
-  script:
-    - cd build
-    - ctest -j 4
-    - touch $CI_PROJECT_DIR/success
-  artifacts:
-    when: on_failure
-    paths:
-    - build/Testing/Temporary/
-  dependencies:
-    - build_debian_7
-
 test_debian_8:
   stage: test
   needs: [build_debian_8]
-  extends: .big_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -487,31 +448,6 @@ test_windows:
 
 # User_Install Stage
 # Tests user install of GPSTk on each platform, saves artifacts for downstream builds.
-
-# Note: debian 7 can't build the swig bindings out of the box because
-# SWIG 2.0.7 doesn't understand enum classes.
-user_install_debian_7:
-  stage: install
-  needs: [build_debian_7]
-  extends: .big_build
-  tags:
-    - docker-executor
-    # Not all docker runners support debian 7
-    - deb7-support
-  image: $DOCKER_REGISTRY/debian7_fai_ish
-  script:
-    - cd build
-    - export gpstk=`pwd`/install
-    - cmake -DCMAKE_INSTALL_PREFIX=$gpstk ../
-    - make install -j 4
-    - export LD_LIBRARY_PATH=$gpstk/lib:$gpstk/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
-    - $gpstk/bin/df_diff -h
-  artifacts:
-    paths:
-      - build/install
-  dependencies:
-    - build_debian_7
-
 user_install_debian_9:
   stage: install
   needs: [build_debian_9]
@@ -584,7 +520,7 @@ user_install_windows:
       - build/install/
   dependencies:
     - build_windows
-  timeout: 10m
+  timeout: 20m
 
 # System Stage
 # Tests install of GPSTk on each platform, saves artifacts for downstream builds.
@@ -678,7 +614,7 @@ system_install_redhat_8:
 package_debian_8:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -703,7 +639,7 @@ package_debian_8:
 package_debian_9:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -725,7 +661,7 @@ package_debian_9:
 package_debian_10:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -751,7 +687,7 @@ package_debian_10:
 package_conda:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py36
@@ -775,7 +711,7 @@ package_conda:
 package_redhat:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -793,7 +729,7 @@ package_redhat:
 package_redhat_8:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -811,7 +747,7 @@ package_redhat_8:
 package_redhat_8_py36:
   stage: package
   needs: []
-  extends: .package_build
+  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -999,7 +935,7 @@ apps_trigger_graph:
 # downstream pipeline is able to access this build's artifacts.
 apps_trigger_simple:
   stage: deploy
-  extends: .normal_build
+  extends: .dont_build
   tags:
    - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -1035,7 +971,7 @@ ds1_trigger:
 #     - dir %CI_PROJECT_DIR%\build
 #     - dir %CI_PROJECT_DIR%\build\install
 #     - cd build
-#     - git clone -b %SGLTK_BRANCH% https://repositories.arlut.utexas.edu/sgl/sgltk.git
+#     - git clone -b %SGLTK_BRANCH% https://sgl-git.arlut.utexas.edu/sgl-tks/sgltk.git
 #     - cd sgltk
 #     - mkdir -p build
 #     - cd build

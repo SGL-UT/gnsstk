@@ -207,11 +207,11 @@ class TestNavLibrary(unittest.TestCase):
         sat1 = gpstk.NavSatelliteID(satid)
         satset = navLib.getAvailableSats(gpstk.CommonTime.BEGINNING_OF_TIME,
                                          gpstk.CommonTime.END_OF_TIME)
-        self.assertEqual(32, satset.size())
+        self.assertEqual(32, len(satset))
         t1 = gpstk.CivilTime(2020,4,12,0,56,0,gpstk.TimeSystem.GPS).toCommonTime()
         t2 = gpstk.CivilTime(2020,4,12,0,57,0,gpstk.TimeSystem.GPS).toCommonTime()
         satset = navLib.getAvailableSats(t1, t2)
-        self.assertEqual(0, satset.size())
+        self.assertEqual(0, len(satset))
 
     def test_isPresent(self):
         navLib = gpstk.NavLibrary()

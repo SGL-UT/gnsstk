@@ -19,3 +19,6 @@ gpstk.egg-info/
 
 # Coverage file results
 gcovr
+
+# GPSTK Python wrappers
+new_swig/gpstk_python/

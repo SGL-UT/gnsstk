@@ -288,6 +288,43 @@ namespace gpstk
       static std::map< CarrierBand, char > cb2char;
       static std::map< TrackingCode, char> tc2char;
 
+         /** Return a string containing all the keys of char2ot.
+          * Intended for use by SWIG/Python where the mappings of
+          * enums are a bit sketchy when used in container
+          * templates. */
+      static std::string getOTChars();
+         /** Return a string containing the description of a given
+          * RINEX 3 character tracking code.
+          * Intended for use by SWIG/Python where the mappings of
+          * enums are a bit sketchy when used in container
+          * templates. */
+      static std::string getOTDescFromChar(char c)
+      { return otDesc[char2ot[c]]; }
+         /** Return a string containing all the keys of char2cb.
+          * Intended for use by SWIG/Python where the mappings of
+          * enums are a bit sketchy when used in container
+          * templates. */
+      static std::string getCBChars();
+         /** Return a string containing the description of a given
+          * RINEX 3 character tracking code.
+          * Intended for use by SWIG/Python where the mappings of
+          * enums are a bit sketchy when used in container
+          * templates. */
+      static std::string getCBDescFromChar(char c)
+      { return cbDesc[char2cb[c]]; }
+         /** Return a string containing all the keys of char2tc.
+          * Intended for use by SWIG/Python where the mappings of
+          * enums are a bit sketchy when used in container
+          * templates. */
+      static std::string getTCChars();
+         /** Return a string containing the description of a given
+          * RINEX 3 character tracking code.
+          * Intended for use by SWIG/Python where the mappings of
+          * enums are a bit sketchy when used in container
+          * templates. */
+      static std::string getTCDescFromChar(char c)
+      { return tcDesc[char2tc[c]]; }
+
    private:
       static RinexObsID idCreator(const std::string& id,
                                   const std::string& desc="");

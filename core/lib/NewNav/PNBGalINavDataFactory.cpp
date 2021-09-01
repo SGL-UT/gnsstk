@@ -827,7 +827,7 @@ namespace gpstk
           * for almAcc look-ups.  Probably can't take the time to dig
           * into it right now, but wanted to leave a reference to the
           * comment here.
-          * https://repositories.arlut.utexas.edu/sgl/gpstk/-/merge_requests/523#note_524670
+          * https://sgl-git.arlut.utexas.edu/sgl-tks/gpstk/-/merge_requests/523#note_524670
           */
       if (almAcc.find(key) == almAcc.end())
       {

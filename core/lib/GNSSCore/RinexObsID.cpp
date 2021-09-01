@@ -432,4 +432,41 @@ namespace gpstk
  
       return RinexObsID(type, band, code);
    }
+
+
+   std::string RinexObsID ::
+   getOTChars()
+   {
+      std::string rv;
+      for (const auto i : char2ot)
+      {
+         rv += i.first;
+      }
+      return rv;
+   }
+
+
+   std::string RinexObsID ::
+   getCBChars()
+   {
+      std::string rv;
+      for (const auto i : char2cb)
+      {
+         rv += i.first;
+      }
+      return rv;
+   }
+
+
+   std::string RinexObsID ::
+   getTCChars()
+   {
+      std::string rv;
+      for (const auto i : char2tc)
+      {
+         rv += i.first;
+      }
+      return rv;
+   }
+
 }  // end namespace

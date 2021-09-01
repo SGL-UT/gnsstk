@@ -103,12 +103,12 @@ namespace gpstk
       RinexSatID sat;         ///< Satellite ID        (if AS)
       std::string site;       ///< Site label (4-char) (if AR)
       CommonTime time;        ///< Time of epoch for this record
-      RCDouble bias;          ///< Clock bias in seconds
-      RCDouble sig_bias;      ///< Clock bias sigma in seconds
-      RCDouble drift;         ///< Clock drift in sec/sec
-      RCDouble sig_drift;     ///< Clock drift sigma in sec/sec
-      RCDouble accel;         ///< Clock acceleration in 1/sec
-      RCDouble sig_accel;     ///< Clock acceleration sigma in 1/sec
+      R3CDouble bias;         ///< Clock bias in seconds
+      R3CDouble sig_bias;     ///< Clock bias sigma in seconds
+      R3CDouble drift;        ///< Clock drift in sec/sec
+      R3CDouble sig_drift;    ///< Clock drift sigma in sec/sec
+      R3CDouble accel;        ///< Clock acceleration in 1/sec
+      R3CDouble sig_accel;    ///< Clock acceleration sigma in 1/sec
       
    protected:
 

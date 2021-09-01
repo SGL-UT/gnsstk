@@ -39,8 +39,8 @@
 /// @file Rinex3NavData.hpp
 /// Encapsulates RINEX ver 3.02 Navigation data
 
-#ifndef GPSTK_RINEXNAVDATA_HPP
-#define GPSTK_RINEXNAVDATA_HPP
+#ifndef GPSTK_RINEX3NAVDATA_HPP
+#define GPSTK_RINEX3NAVDATA_HPP
 
 #include <list>
 #include <string>
@@ -314,4 +314,4 @@ namespace gpstk
 
 }  // End of namespace gpstk
 
-#endif   // GPSTK_RINEXNAVDATA_HPP
+#endif   // GPSTK_RINEX3NAVDATA_HPP

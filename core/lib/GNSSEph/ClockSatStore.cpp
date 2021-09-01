@@ -47,19 +47,6 @@ using namespace std;
 
 namespace gpstk
 {
-   // Output stream operator is used by dump() in TabularSatStore
-   ostream& operator<<(ostream& os, const ClockRecord& rec) throw()
-   {
-      os << scientific << setprecision(12) << setw(19) << rec.bias
-         << " " << setw(19) << rec.sig_bias
-         << " " << setw(19) << rec.drift
-         << " " << setw(19) << rec.sig_drift
-         //<< " " << setw(19) << rec.accel
-         //<< " " << setw(19) << rec.sig_accel
-         ;
-      return os;
-   }
-
    // Return value for the given satellite at the given time (usually via
    // interpolation of the data table). This interface from TabularSatStore.
    // @param[in] sat the SatID of the satellite of interest
