@@ -58,18 +58,18 @@ namespace gpstk
    public:
          /** Class used to read and write the formatted data in a
           * RINEX clock file. */
-      class RCDouble : public FormattedDouble
+      class R3CDouble : public FormattedDouble
       {
       public:
             /// Constructor for a value, with all defaults for format.
-         RCDouble(double d)
+         R3CDouble(double d)
                : FormattedDouble(d, StringUtils::FFLead::Zero, 13, 2, 19, 'E',
                                  StringUtils::FFSign::NegOnly,
                                  StringUtils::FFAlign::Right)
          {}
 
             /// Assign a value by decoding a string using existing formatting.
-         RCDouble& operator=(const std::string& s)
+         R3CDouble& operator=(const std::string& s)
          { FormattedDouble::operator=(s); return *this; }
       };
 

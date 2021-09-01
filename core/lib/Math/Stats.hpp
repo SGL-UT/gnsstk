@@ -683,14 +683,14 @@ namespace gpstk
       inline void Add(Vector<T>& X, Vector<T>& W)     // WtdStats
       {
          for(size_t i=0; i<(X.size()>W.size() ? W.size():X.size()); i++)
-            Add(X(i),W(i));
+            Add(X[i],W[i]);
       }
 
       /// add a std::vector<T> of samples, with weights
       inline void Add(std::vector<T>& X, std::vector<T>& W)    // WtdStats
       {
          for(size_t i=0; i<(X.size()>W.size() ? W.size():X.size()); i++)
-            Add(X(i),W(i));
+            Add(X[i],W[i]);
       }
 
       /// remove a gpstk::Vector<T> of samples, with weights
@@ -700,7 +700,7 @@ namespace gpstk
       inline void Subtract(Vector<T>& X, Vector<T>& W)      // WtdStats
       {
          size_t i, nn(X.size() > W.size() ? W.size() : X.size());
-         for(i=0; i<nn; i++) Subtract(X(i),W(i));
+         for(i=0; i<nn; i++) Subtract(X[i],W[i]);
       }
 
       /// remove a std::vector<T> of samples, with weights
@@ -710,7 +710,7 @@ namespace gpstk
       inline void Subtract(std::vector<T>& X, std::vector<T>& W)     // WtdStats
       {
          size_t i, nn(X.size() > W.size() ? W.size() : X.size());
-         for(i=0; i<nn; i++) Subtract(X(i),W(i));
+         for(i=0; i<nn; i++) Subtract(X[i],W[i]);
       }
 
       // combine two objects -------------------------------------------
@@ -890,7 +890,7 @@ namespace gpstk
       void Add(const Vector<T>& X, const Vector<T>& Y)      // TwoSampleStats
       {
          for(size_t i=0; i<(X.size()<Y.size() ? X.size():Y.size()); i++)
-            Add(X(i),Y(i));
+            Add(X[i],Y[i]);
       }
 
       /// Add two std::vectors of data to the statistics
@@ -904,7 +904,7 @@ namespace gpstk
       void Subtract(const Vector<T>& X, const Vector<T>& Y)    // TwoSampleStats
       {
          for(size_t i=0; i<(X.size()<Y.size() ? X.size():Y.size()); i++)
-            Subtract(X(i),Y(i));
+            Subtract(X[i],Y[i]);
       }
 
       /// Subtract two std::vectors of data from the statistics

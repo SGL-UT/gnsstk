@@ -54,31 +54,12 @@
 #include "CommonTime.hpp"
 #include "TabularSatStore.hpp"
 #include "FileStore.hpp"
+#include "ClockRecord.hpp"
 
 namespace gpstk
 {
       /// @ingroup GNSSEph
       //@{
-
-      /** Data record for storing clock data. See note on units in
-       * class ClockSatStore. */
-   typedef struct ClockDataRecord
-   {
-      double bias, sig_bias;     ///< clock bias and sigma
-      double drift, sig_drift;   ///< clock drift and sigma
-      double accel, sig_accel;   ///< clock acceleration and sigma
-   } ClockRecord;
-
-      /// Output stream operator is used by dump() in TabularSatStore
-   std::ostream& operator<<(std::ostream& os, const ClockRecord& rec) throw();
-
-      // This is a helper for SWIG processing - it needs a template
-      // instation of the base type of ClockSatStore before it is
-      // used, so this statement must be between the ClockDataRecord
-      // and ClockSatStore declarations.
-#ifdef SWIG
-   %template(TabularSatStore_ClockRecord) gpstk::TabularSatStore<gpstk::ClockRecord>;
-#endif
 
       /** Store a table of data vs time for each of several
        * satellites.  The data are stored as ClockRecords, one for

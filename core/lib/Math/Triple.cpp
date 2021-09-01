@@ -99,7 +99,7 @@ namespace gpstk
    std::vector<double> Triple::toStdVector()
    {
       std::vector<double> toReturn;
-      //for(int i=0;i<3;i++) toReturn.push_back(theArray[i]);
+      for(int i=0;i<3;i++) toReturn.push_back(theArray[i]);
       return toReturn;
    }
 
