@@ -255,8 +255,8 @@ namespace gpstk
          BaseClass& me = static_cast<BaseClass&>(*this);
          size_t j;
          for (j=0; j < me.cols(); j++)
-            if (ABS(me(r,j)) < RefVectorBaseHelper::zeroTolerance)
-               me(r,j) = T(0);
+             if (ABS(me(r, j)) < RefVectorBaseHelper::zeroTolerance)
+                 me(r, j) = T(0);
          return me;
       }
          /// any value in column c with absolute value below 

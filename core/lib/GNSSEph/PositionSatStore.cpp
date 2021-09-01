@@ -53,37 +53,6 @@ namespace gpstk
    /** @addtogroup ephemstore */
    //@{
 
-   // Output stream operator is used by dump() in TabularSatStore
-   ostream& operator<<(ostream& os, const PositionRecord& rec) throw()
-   {
-      os << "Pos" << fixed << setprecision(6)
-         << " " << setw(13) << rec.Pos[0]
-         << " " << setw(13) << rec.Pos[1]
-         << " " << setw(13) << rec.Pos[2]
-         << " sigP" << scientific << setprecision(2)
-         << " " << setw(9) << rec.sigPos[0]
-         << " " << setw(9) << rec.sigPos[1]
-         << " " << setw(9) << rec.sigPos[2]
-         << " Vel" << fixed << setprecision(6)
-         << " " << setw(13) << rec.Vel[0]
-         << " " << setw(13) << rec.Vel[1]
-         << " " << setw(13) << rec.Vel[2]
-         << " sigV" << scientific << setprecision(2)
-         << " " << setw(9) << rec.sigVel[0]
-         << " " << setw(9) << rec.sigVel[1]
-         << " " << setw(9) << rec.sigVel[2]
-         //<< " Acc" << fixed << setprecision(6)
-         //<< " " << setw(13) << rec.Acc[0]
-         //<< " " << setw(13) << rec.Acc[1]
-         //<< " " << setw(13) << rec.Acc[2]
-         //<< " sigA" << scientific << setprecision(2)
-         //<< " " << setw(9) << rec.sigAcc[0]
-         //<< " " << setw(9) << rec.sigAcc[1]
-         //<< " " << setw(9) << rec.sigAcc[2]
-         ;
-      return os;
-   }
-
    // Return value for the given satellite at the given time (usually via
    // interpolation of the data table). This interface from TabularSatStore.
    // @param[in] sat the SatID of the satellite of interest
