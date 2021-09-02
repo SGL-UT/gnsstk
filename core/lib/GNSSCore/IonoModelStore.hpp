@@ -55,8 +55,7 @@ namespace gpstk
       /// @ingroup GPSsolutions
       //@{
 
-      /**
-       * This class defines an interface to hide how we determine
+      /** This class defines an interface to hide how we determine
        * the ionospheric delay as determined from GPS navigation message
        * based models at some point in time
        */
@@ -64,29 +63,25 @@ namespace gpstk
    {
    public:
 
-
-         /**
-          * Thrown when attempting to get a model that isn't stored.
+         /** Thrown when attempting to get a model that isn't stored.
           * @ingroup exceptiongroup
           */
       NEW_EXCEPTION_CLASS(NoIonoModelFound, gpstk::Exception);
 
 
-         /// constructor
+         /// Constructor
       IonoModelStore() {}
 
-
-         /// destructor
+         /// Destructor
       virtual ~IonoModelStore() {}
-
 
          /** Get the ionospheric correction value.
           *
-          * @param time the time of the observation
-          * @param rxgeo the WGS84 geodetic position of the receiver
-          * @param svel the elevation angle between the rx and SV (degrees)
-          * @param svaz the azimuth angle between the rx and SV (degrees)
-          * @param freq the GPS band the observation was made from
+          * @param[in] time Time of the observation
+          * @param[in] rxgeo WGS84 geodetic position of the receiver
+          * @param[in] svel Elevation angle between the rx and SV (degrees)
+          * @param[in] svaz Azimuth angle between the rx and SV (degrees)
+          * @param[in] freq GPS band the observation was made from
           * @return the ionospheric correction (meters)
           * @throw NoIonoModelFound
           */
@@ -94,27 +89,58 @@ namespace gpstk
                                    const Position& rxgeo,
                                    double svel,
                                    double svaz,
-                                   CarrierBand band = CarrierBand::L1)
-         const;
-
+                                   CarrierBand band = CarrierBand::L1) const;
 
          /** Add an IonoModel to this collection
           *
-          * @param mt the time the model is valid from
-          * @param im the IonoModel to add
+          * @param[in] mt Time the model is valid from
+          * @param[in] im IonoModel to add
           * @return true if the model was added, false otherwise
           */
-      bool addIonoModel( const CommonTime& mt,
-                         const IonoModel& im )
-         throw();
+      bool addIonoModel(const CommonTime& mt,
+                        const IonoModel& im) throw();
 
          /** Edit the dataset, removing data outside the indicated time interval
           *
-          * @param tmin defines the beginning of the time interval
-          * @param tmax defines the end of the time interval
+          * @param[in] tmin Defines the beginning of the time interval (inclusive)
+          * @param[in] tmax Defines the end of the time interval (inclusive)
           */
       void edit(const CommonTime& tmin, 
                 const CommonTime& tmax = CommonTime::END_OF_TIME);
+
+         /** Remove all data from the store
+          */ 
+      void clear()
+      { ims.clear(); }
+
+         /** Return the earliest time in the store, or return
+          * CommonTime::END_OF_TIME if the store is empty.
+          * @return The store initial time
+          */
+      virtual CommonTime getInitialTime() const;
+
+         /** Return the latest time in the store, or return
+          * CommonTime::BEGINNING_OF_TIME if the store is empty.
+          * @return The store final time
+          */
+      virtual CommonTime getFinalTime() const;
+
+         /** Return the number of models in the store.
+          * @return Store size
+          */
+      virtual unsigned size() const
+      { return ims.size(); }
+
+         /** Return whether the store is empty.
+          * @return Whether to store is empty
+          */
+      virtual bool empty() const
+      { return ims.empty(); }
+
+         /** Dump to contents of the store in human-readable form.
+          * @param[in,out] s Stream to receive the output; defaults to cout
+          */
+      virtual void dump(std::ostream& s=std::cout) const;
 
    private:
 
@@ -130,4 +156,4 @@ namespace gpstk
 
 }  // End of namespace gpstk
 
-#endif   // GPSTK_IONOMODELSTORE_HPP
+#endif  // GPSTK_IONOMODELSTORE_HPP
