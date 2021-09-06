@@ -46,6 +46,7 @@
 #ifndef GPSTK_FREQCONSTS_HPP
 #define GPSTK_FREQCONSTS_HPP
 
+#include "GNSSconstants.hpp"
 #include "SatID.hpp"
 
 namespace gpstk

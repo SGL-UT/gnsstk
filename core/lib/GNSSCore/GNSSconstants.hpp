@@ -60,6 +60,10 @@ namespace gpstk
       // ---------------- independent of GNSS ----------------------
       /// GPS value of PI; also specified by GAL
    const double PI        = 3.141592653589793238462643383280;
+      /// Multiply degrees by DEG2RAD to get radians.
+   const double DEG2RAD   = PI / 180.0;
+      /// Multiply radians by RAD2DEG to get degrees.
+   const double RAD2DEG   = 180.0 / PI;
       /// GPS value of PI*2
    const double TWO_PI    = 6.283185307179586476925286766559;
       /// GPS value of PI**0.5
@@ -194,18 +198,28 @@ namespace gpstk
 
       // ---------------- BeiDou ----------------------------------
       /// The maximum number of active satellites in the Compass constellation.
-   const long MAX_PRN_COM     = 30;
+   const long MAX_PRN_COM     = 63;
+      /// The first ranging code number for BeiDou MEO/IGSO satellites
+   const long MIN_MEO_BDS     = 6;
+      /// The last ranging code number for BeiDou MEO/IGSO satellites
+   const long MAX_MEO_BDS     = 58;
 
       // ---------------- QZSS ----------------------------------
-      // PRN range defined in QZSS ICD 5.1.1.11.1
+      // PRN range defined in QZSS IS Table 3.2.2-2
       // PRN 198-202 reserved for maint./test, not to be used 
       // by users. 
       // These need to be defined in order to differentiate
       // QZSS from GPS in cases where QZSS is broadcasting 
       // GPS-similar signals and navigation messages.
+      // Note that 203-206 are "alternate" PRNs for satellites, see
+      // Table 3.2.1-1
       // Defined as int to be compatible with gpstk::SatID.id member.
-   const int MIN_PRN_QZS = 193;    
-   const int MAX_PRN_QZS = 202; 
+      /// First assigned PRN in QZSS
+   const int MIN_PRN_QZS = 193;
+      /// Last assigned PRN in QZSS (all signals)
+   const int MAX_PRN_QZS = 206;
+      /// Last assigned PRN in QZSS (LNAV only)
+   const int MAX_PRN_QZS_LNAV = 202;
 
       //@}
    

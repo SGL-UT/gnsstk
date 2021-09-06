@@ -4,50 +4,40 @@
 
 \subsection HOWTOGettingStarted Getting Started
 
-\li See the detailed documentation...
-    1. Make sure Doxygen is installed on your build system by running "doxygen -v"
-    2. In the top level directory of the toolkit (where the Doxyfile resides), run doxygen.
-    3. In a web browser, open $TKROOT/gpstk_doc_dir/html/index.html
+* See the detailed documentation...
+    -# Make sure Doxygen is installed on your build system by running "doxygen -v"
+    -# In the top level directory of the toolkit (where the Doxyfile resides), run doxygen.
+    -# In a web browser, open $TKROOT/gpstk_doc_dir/html/index.html
 
-\li Build the toolkit...
-    1. Refer to \ref INSTALL
-
-\subsection HOWTOApps Applications
-
-\li Convert time between different formats...
-    1. Use the \ref timeconvert application.  Running timeconvert without command-line arguments will show the current time (UTC) in a variety of formats.
-    2. Use \ref timeconvert with one of the myriad command-line arguments to specify a time in one of the supported formats (ANSI, civil, RINEX, etc.)
-    3. Use \ref timeconvert with the -F command-line argument to use a specific output format.  Refer to printTime() for documentation on the supported format tokens.  Example: <br/><tt> timeconvert -F "%4Y-%02m-%02dT%02H:%02M:%02SZ" </tt><br/> will display the current UTC time in ISO-8601 format.
-    4. Use \ref timeconvert with the \c --input-format and \c --input-time arguments to specify a time in a format not explicitly supported by the existing options.  Refer to printTime() for documentation on the supported format tokens.  Example: <br/><tt> timeconvert --input-format="%Y %j %H:%M:%S" --input-time="2020 20 20:20:20" </tt><br/> processes time from a "Year day-of-year hour:minute:second" format.
-    
-\li Manipulate RINEX files...
-    1. Use the RinEdit application to perform a wide variety of tweaks to RINEX OBS data files.
-    2. Use the RinDump application to generate a space-separated table of data from a RINEX input file.
-    3. Use the RinSum application to generate a table of counts of observables from a RINEX OBS file.
-
-\li See a GPS calendar with week number and day of year
-    1. \ref calgps with no arguments will show a calendar for the current month and year.
-    2. \ref calgps with the \c -y argument will produce a calendar for the current year.
-    3. \ref calgps with the \c -Y \c YEAR argument will produce a calendar for YEAR.
+* Build the toolkit...
+    -# Refer to \ref INSTALL
 
 \subsection HOWTOCode Library Use
 
-\li Use time data in my code...
-    1. Refer to \ref TimeHandlingGuide for guidance.
-    2. Refer to the classes in the \ref TimeHandling module for reference documentation.
+* Use time data in my code...
+    -# Refer to \ref TimeHandlingGuide for guidance.
+    -# Refer to the classes in the \ref TimeHandling module for reference documentation.
 
-\li Generate correlation codes...
-    1. Refer to the \ref CodeGen module for reference documentation.
+* Generate correlation codes...
+    -# Refer to the \ref CodeGen module for reference documentation.
 
-\li Decode as-broadcast navigation messages...
-    1. Refer to the classes in the \ref GNSSEph module for reference documentation.
+* Decode as-broadcast navigation messages...
+    -# Refer to the guidance in \ref navlibrary for a detailed guide of how to use the NavLibrary classes.  Matching reference documentation can be found in the \ref NavFactory module documentation.
+    -# Refer to the classes in the \ref GNSSEph module for reference documentation.
 
-\li Use trace debugging...
-    1. When writing code, include the file DebugTrace.hpp.
-    2. Use the DEBUGTRACE_FUNCTION() macro at the start of methods you wish to trace.
-    3. Use the DEBUGTRACE_ENABLE() macro to enable tracing in a particular application (recommended to enable when the -d/--debug command-line option is used).
-    4. Use the DEBUGTRACE() macro to output debugging information.  The argument is a stream output statement, e.g. <br/> <tt>DEBUGTRACE("foo = " << foo);</tt>
-    5. Trace debugging is disabled by default.  To enable it, either use the -a option with build.sh, or specify -DDEBUGTRACE=ON if running cmake manually.  This is done to minimize the performance impact of having trace code available for development on deployed binaries.
+* Get satellite position/velocity/clock offset or health...
+    -# Refer to the guidance in \ref navlibrary for a detailed guide of how to use the NavLibrary classes.  Matching reference documentation can be found in the \ref NavFactory module documentation.
+
+* Get offsets between time systems...
+    -# For getting a precise offset (usually in milliseconds or better) between time systems the information may be extracted from navigation message data.  Refer to the guidance in \ref navlibrary for a detailed guide of how to use the NavLibrary classes.  Matching reference documentation can be found in the \ref NavFactory module documentation.
+    -# Refer to gpstk::CommonTime::changeTimeSystem(), gpstk::TimeSystemConverter, gpstk::BasicTimeSystemConverter (for second-resolution offsets), and/or gpstk::NavTimeSystemConverter (for ms-resolution offsets).
+
+* Use trace debugging...
+    -# When writing code, include the file DebugTrace.hpp.
+    -# Use the DEBUGTRACE_FUNCTION() macro at the start of methods you wish to trace.
+    -# Use the DEBUGTRACE_ENABLE() macro to enable tracing in a particular application (recommended to enable when the -d/--debug command-line option is used).
+    -# Use the DEBUGTRACE() macro to output debugging information.  The argument is a stream output statement, e.g. <br/> <tt>DEBUGTRACE("foo = " << foo);</tt>
+    -# Trace debugging is disabled by default.  To enable it, either use the -a option with build.sh, or specify -DDEBUGTRACE=ON if running cmake manually.  This is done to minimize the performance impact of having trace code available for development on deployed binaries.
 
 Note: switching between DEBUGTRACE=ON and OFF will likely require both
 a clean build and removing CMakeCache.txt from the build output
@@ -60,9 +50,9 @@ Refer to core/tests/Utilities/DebugTrace_T.cpp for example use.
 
 \subsection HOWTOContribute Contribute Code
 
-\li Contribute code...
-   1. Follow the style guide, if we ever add it from the wiki to the code base.
-   2. Document your code using doxygen as described in \ref DoxygenGuide
+* Contribute code...
+   -# Follow the style guide, if we ever add it from the wiki to the code base.
+   -# Document your code using doxygen as described in \ref DoxygenGuide
 
 \internal
 Defining some pages here so that they will appear after all of the

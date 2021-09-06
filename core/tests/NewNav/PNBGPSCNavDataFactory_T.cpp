@@ -36,6 +36,7 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#include "FactoryCounter.hpp"
 #include "PNBGPSCNavDataFactory.hpp"
 #include "TestUtil.hpp"
 #include "GPSCNavTimeOffset.hpp"
@@ -43,9 +44,14 @@
 #include "GPSCNavEph.hpp"
 #include "GPSCNavAlm.hpp"
 #include "GPSCNavRedAlm.hpp"
+#include "GPSCNavIono.hpp"
+#include "GPSCNavISC.hpp"
 #include "TimeString.hpp"
 
 using namespace std;
+
+// avoid having to type out template params over and over.
+using GPSFactoryCounter = FactoryCounter<gpstk::GPSCNavAlm,gpstk::GPSCNavEph,gpstk::GPSCNavTimeOffset,gpstk::GPSCNavHealth,gpstk::GPSCNavIono,gpstk::GPSCNavISC>;
 
 namespace gpstk
 {
@@ -79,6 +85,7 @@ public:
    unsigned processAlmOrbTest();
    unsigned processRedAlmOrbTest();
    unsigned process12Test();
+   unsigned process30Test();
       /** Test decoding of message type 31 - clock & reduced almanac.
        * @note The truth data for the almanacs in this test have not
        *   been vetted. */
@@ -87,18 +94,11 @@ public:
    unsigned process35Test();
 
 #include "CNavTestDataDecl.hpp"
-
-      /// Count the various types of messages present in navOut.
-   void countResults(const gpstk::NavDataPtrList& navOut);
-
-      /// Counts of messages, set by countResults.
-   unsigned almCount, ephCount, toCount, heaCount, otherCount;
 };
 
 
 PNBGPSCNavDataFactory_T ::
 PNBGPSCNavDataFactory_T()
-      : almCount(0), ephCount(0), toCount(0), heaCount(0), otherCount(0)
 {
 #include "CNavTestDataDef.hpp"
 }
@@ -108,6 +108,7 @@ unsigned PNBGPSCNavDataFactory_T ::
 addDataAllTest()
 {
    TUDEF("PNBGPSCNavDataFactory", "addData");
+   GPSFactoryCounter fc(testFramework);
    gpstk::PNBGPSCNavDataFactory uut;
    gpstk::SatID gloSid(1,gpstk::SatelliteSystem::Glonass);
    gpstk::ObsID gloid(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::G1,
@@ -119,83 +120,52 @@ addDataAllTest()
    gpstk::NavDataPtrList navOut;
       // should refuse non-GPS data
    TUASSERTE(bool, false, uut.addData(nonGPS, navOut));
-   countResults(navOut);
+   fc.validateResults(navOut, __LINE__);
       /// @todo check that it also rejects GPS LNAV
       // get 3 health from ephemeris 1
    TUASSERTE(bool, true, uut.addData(msg10CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 3, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 3, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 0, 0, 0, 3);
       // nothing from ephemeris 2 (incomplete ephemeris)
    TUASSERTE(bool, true, uut.addData(msg11CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // clock data completes the ephemeris
    TUASSERTE(bool, true, uut.addData(msg30CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, ephCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 0, 1, 0, 0, 1, 1);
       // nothing in message type 32 that we care about (not completing
       // an ephemeris)
    TUASSERTE(bool, true, uut.addData(msg32CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // expecting a time offset record from 33
    TUASSERTE(bool, true, uut.addData(msg33CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, toCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 1, 0, 0, 1);
       //
       // QZSS CNav data (L5)
       //
       // get 3 health from ephemeris 1
    TUASSERTE(bool, true, uut.addData(msg10CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 3, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 3, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 0, 0, 0, 3);
       // nothing from ephemeris 2 (incomplete ephemeris)
    TUASSERTE(bool, true, uut.addData(msg11CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // clock data completes the ephemeris
    TUASSERTE(bool, true, uut.addData(msg30CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, ephCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 0, 1, 0, 0, 1, 1);
       // nothing in message type 32 that we care about (not completing
       // an ephemeris)
    TUASSERTE(bool, true, uut.addData(msg32CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // expecting an almanac and 3 health from message type 37
    TUASSERTE(bool, true, uut.addData(msg37CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 4, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, almCount);
-   TUASSERTE(unsigned, 3, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 4, 1, 0, 0, 3);
       // expecting 4 almanacs and 12 health from message type 31
    TUASSERTE(bool, true, uut.addData(msg31CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 16, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 4, almCount);
-   TUASSERTE(unsigned, 12, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 16, 4, 0, 0, 12);
       // expecting nothing from message type 12 because it's empty.
    TUASSERTE(bool, true, uut.addData(msg12CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // expecting a time offset record from 35
    TUASSERTE(bool, true, uut.addData(msg35CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, toCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 1, 0, 0, 1);
    TURETURN();
 }
 
@@ -204,32 +174,26 @@ unsigned PNBGPSCNavDataFactory_T ::
 addDataEphemerisTest()
 {
    TUDEF("PNBGPSCNavDataFactory", "addData");
+   GPSFactoryCounter fc(testFramework);
    gpstk::PNBGPSCNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Ephemeris}));
       // add ephemeris 1, expect nothing.
    TUASSERTE(bool, true, uut.addData(msg10CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // nothing from ephemeris 2 (incomplete ephemeris)
    TUASSERTE(bool, true, uut.addData(msg11CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // clock data completes the ephemeris
    TUASSERTE(bool, true, uut.addData(msg30CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, ephCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 1, 0, 1);
       // nothing in message type 32 that we care about (not completing
       // an ephemeris)
    TUASSERTE(bool, true, uut.addData(msg32CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // message type 33, expect nothing
    TUASSERTE(bool, true, uut.addData(msg33CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TURETURN();
 }
 
@@ -238,32 +202,26 @@ unsigned PNBGPSCNavDataFactory_T ::
 addDataAlmanacTest()
 {
    TUDEF("PNBGPSCNavDataFactory", "addData");
+   GPSFactoryCounter fc(testFramework);
    gpstk::PNBGPSCNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Almanac}));
       /// @note We have no GPS CNav almanac data to test with so use QZSS
       // add ephemeris 1, expect nothing.
    TUASSERTE(bool, true, uut.addData(msg10CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // add ephemeris 2, expect nothing.
    TUASSERTE(bool, true, uut.addData(msg11CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // clock data completes the ephemeris
    TUASSERTE(bool, true, uut.addData(msg30CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // nothing in message type 32 that we care about
    TUASSERTE(bool, true, uut.addData(msg32CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // message type 37, expect one almanac
    TUASSERTE(bool, true, uut.addData(msg37CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, almCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 1, 1);
    TURETURN();
 }
 
@@ -272,31 +230,25 @@ unsigned PNBGPSCNavDataFactory_T ::
 addDataHealthTest()
 {
    TUDEF("PNBGPSCNavDataFactory", "addData");
+   GPSFactoryCounter fc(testFramework);
    gpstk::PNBGPSCNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Health}));
       // add ephemeris 1, expect 3 health objects.
    TUASSERTE(bool, true, uut.addData(msg10CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 3, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 3, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 0, 0, 0, 3);
       // nothing from ephemeris 2 (incomplete ephemeris)
    TUASSERTE(bool, true, uut.addData(msg11CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // clock data completes the ephemeris, but expect nothing
    TUASSERTE(bool, true, uut.addData(msg30CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // nothing in message type 32 that we care about
    TUASSERTE(bool, true, uut.addData(msg32CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // message type 33, expect nothing
    TUASSERTE(bool, true, uut.addData(msg33CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TURETURN();
 }
 
@@ -305,37 +257,28 @@ unsigned PNBGPSCNavDataFactory_T ::
 addDataTimeTest()
 {
    TUDEF("PNBGPSCNavDataFactory", "addData");
+   GPSFactoryCounter fc(testFramework);
    gpstk::PNBGPSCNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::TimeOffset}));
       // add ephemeris 1, expect nothing.
    TUASSERTE(bool, true, uut.addData(msg10CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // nothing from ephemeris 2 (incomplete ephemeris)
    TUASSERTE(bool, true, uut.addData(msg11CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // clock data completes the ephemeris, but expect nothing
    TUASSERTE(bool, true, uut.addData(msg30CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // nothing in message type 32 that we care about
    TUASSERTE(bool, true, uut.addData(msg32CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // message type 33, expect 1 time offset message
    TUASSERTE(bool, true, uut.addData(msg33CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, toCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 1, 0, 0, 1);
       // message type 35, expect 1 time offset message
    TUASSERTE(bool, true, uut.addData(msg35CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, toCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 1, 0, 0, 1);
    TURETURN();
 }
 
@@ -344,35 +287,27 @@ unsigned PNBGPSCNavDataFactory_T ::
 addDataEphHealthTest()
 {
    TUDEF("PNBGPSCNavDataFactory", "addData");
+   GPSFactoryCounter fc(testFramework);
    gpstk::PNBGPSCNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Ephemeris,
                               gpstk::NavMessageType::Health}));
       // add ephemeris 1, expect 3 health objects.
    TUASSERTE(bool, true, uut.addData(msg10CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 3, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 3, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 0, 0, 0, 3);
       // nothing from ephemeris 2 (incomplete ephemeris)
    TUASSERTE(bool, true, uut.addData(msg11CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // clock data completes the ephemeris
    TUASSERTE(bool, true, uut.addData(msg30CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 1, ephCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 1, 0, 1);
       // nothing in message type 32 that we care about (not completing
       // an ephemeris)
    TUASSERTE(bool, true, uut.addData(msg32CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // message type 33, expect nothing
    TUASSERTE(bool, true, uut.addData(msg33CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
    TURETURN();
 }
 
@@ -381,35 +316,26 @@ unsigned PNBGPSCNavDataFactory_T ::
 addDataAlmHealthTest()
 {
    TUDEF("PNBGPSCNavDataFactory", "addData");
+   GPSFactoryCounter fc(testFramework);
    gpstk::PNBGPSCNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Almanac,
                               gpstk::NavMessageType::Health}));
       // add ephemeris 1, expect 3 health objects.
    TUASSERTE(bool, true, uut.addData(msg10CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 3, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 3, heaCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 3, 0, 0, 0, 3);
       // add ephemeris 2, expect nothing.
    TUASSERTE(bool, true, uut.addData(msg11CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // add clock data, expect nothing.
    TUASSERTE(bool, true, uut.addData(msg30CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // add message type 32, expect nothing.
    TUASSERTE(bool, true, uut.addData(msg32CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // add message type 37, expect 3 health objects and 1 almanac.
    TUASSERTE(bool, true, uut.addData(msg37CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 4, navOut.size());
-   countResults(navOut);
-   TUASSERTE(unsigned, 3, heaCount);
-   TUASSERTE(unsigned, 1, almCount);
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__, 4, 1, 0, 0, 3);
    TURETURN();
 }
 
@@ -418,6 +344,7 @@ unsigned PNBGPSCNavDataFactory_T ::
 processEphTest()
 {
    TUDEF("PNBGPSCNavDataFactory", "processEph");
+   GPSFactoryCounter fc(testFramework);
    gpstk::PNBGPSCNavDataFactory uut;
    gpstk::NavMessageID nmidExpL1(
       gpstk::NavSatelliteID(1, 1, gpstk::SatelliteSystem::GPS,
@@ -452,13 +379,10 @@ processEphTest()
    TUASSERTE(bool, false, uut.processEph(13, msg10CNAVGPSL2, navOut));
       // success, health data only
    TUASSERTE(bool, true, uut.processEph(10, msg10CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 3, navOut.size());
-   heaCount = 0, ephCount = 0, otherCount = 0;
    for (const auto& i : navOut)
    {
       if ((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i.get())) != nullptr)
       {
-         heaCount++;
             // NavData fields
          TUASSERTE(gpstk::CommonTime, msg10CNAVGPSL2ct, hea->timeStamp);
          bool expHealth = false;
@@ -485,24 +409,18 @@ processEphTest()
       }
       else
       {
-         otherCount++;
+         TUFAIL("What is this?");
       }
    }
-   TUASSERTE(unsigned, 3, heaCount);
-   TUASSERTE(unsigned, 0, otherCount);
-   navOut.clear();
-   heaCount = otherCount = 0;
+   fc.validateResults(navOut, __LINE__, 3, 0, 0, 0, 3);
    TUASSERTE(bool, true, uut.processEph(11, msg11CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 0, navOut.size());
-   navOut.clear();
+   fc.validateResults(navOut, __LINE__);
       // success, and we have an ephemeris.
    TUASSERTE(bool, true, uut.processEph(30, msg30CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
    for (const auto& i : navOut)
    {
       if ((eph = dynamic_cast<gpstk::GPSCNavEph*>(i.get())) != nullptr)
       {
-         ephCount++;
             // NavData fields
          TUASSERTE(gpstk::CommonTime, msg10CNAVGPSL2ct, eph->timeStamp);
          TUASSERTE(gpstk::NavMessageID, nmidExp, eph->signal);
@@ -560,11 +478,10 @@ processEphTest()
       }
       else
       {
-         otherCount++;
+         TUFAIL("What is this?");
       }
    }
-   TUASSERTE(unsigned, 1, ephCount);
-   TUASSERTE(unsigned, 0, otherCount);
+   fc.validateResults(navOut, __LINE__, 1, 0, 1);
    TURETURN();
 }
 
@@ -573,6 +490,7 @@ unsigned PNBGPSCNavDataFactory_T ::
 processAlmOrbTest()
 {
    TUDEF("PNBGPSCNavDataFactory", "processAlmOrb");
+   GPSFactoryCounter fc(testFramework);
    gpstk::PNBGPSCNavDataFactory uut;
    gpstk::NavMessageID nmidExpL1(
       gpstk::NavSatelliteID(193, 193, gpstk::SatelliteSystem::QZSS,
@@ -594,20 +512,19 @@ processAlmOrbTest()
                             gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
                             gpstk::NavType::GPSCNAVL5),
       gpstk::NavMessageType::Almanac);
-   gpstk::CommonTime toaExp = gpstk::GPSWeekSecond(2097, 520192.0);
-   gpstk::CommonTime beginExp = gpstk::GPSWeekSecond(2097, 345642.0);
+   gpstk::CommonTime toaExp = gpstk::GPSWeekSecond(2097, 520192.0,
+                                                   gpstk::TimeSystem::QZS);
+   gpstk::CommonTime beginExp = gpstk::GPSWeekSecond(2097, 345642.0,
+                                                     gpstk::TimeSystem::QZS);
    gpstk::CommonTime endExp = gpstk::CommonTime::END_OF_TIME;
    gpstk::NavDataPtrList navOut;
    TUASSERTE(bool, true, uut.processAlmOrb(37, msg37CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 4, navOut.size());
-   heaCount = almCount = otherCount = 0;
    gpstk::GPSCNavHealth *hea;
    gpstk::GPSCNavAlm *alm;
    for (const auto& i : navOut)
    {
       if ((hea = dynamic_cast<gpstk::GPSCNavHealth*>(i.get())) != nullptr)
       {
-         heaCount++;
          nmidExp.messageType = gpstk::NavMessageType::Health;
             // NavData fields
          TUASSERTE(gpstk::CommonTime, msg37CNAVQZSSL5ct, hea->timeStamp);
@@ -633,7 +550,6 @@ processAlmOrbTest()
       }
       else if ((alm = dynamic_cast<gpstk::GPSCNavAlm*>(i.get())) != nullptr)
       {
-         almCount++;
          nmidExp.messageType = gpstk::NavMessageType::Almanac;
             // NavData fields
          TUASSERTE(gpstk::CommonTime, msg37CNAVQZSSL5ct, alm->timeStamp);
@@ -658,7 +574,7 @@ processAlmOrbTest()
          TUASSERTFE(6.49281250E+03*6.49281250E+03, alm->A);
          TUASSERTFE(0, alm->Adot);
          TUASSERTFE(-0.4903944831271909166, alm->OMEGA0);
-         TUASSERTFE(-0.059633503129054299396 + 0.3*gpstk::PI, alm->i0);
+         TUASSERTFE(-0.059633503129054299396 + 0.25*gpstk::PI, alm->i0);
          TUASSERTFE(-1.5729055503782394254, alm->w);
          TUASSERTFE(-2.19437712E-09, alm->OMEGAdot);
          TUASSERTFE(0, alm->idot);
@@ -678,7 +594,12 @@ processAlmOrbTest()
          TUASSERTE(unsigned, 2097, alm->wna);
          TUASSERTFE(520192, alm->toa);
       }
+      else
+      {
+         TUFAIL("What is this?");
+      }
    }
+   fc.validateResults(navOut, __LINE__, 4, 1, 0, 0, 3);
    TURETURN();
 }
 
@@ -698,11 +619,67 @@ unsigned PNBGPSCNavDataFactory_T ::
 process12Test()
 {
    TUDEF("PNBGPSCNavDataFactory", "process12");
+   GPSFactoryCounter fc(testFramework);
    gpstk::PNBGPSCNavDataFactory uut;
    gpstk::NavDataPtrList navOut;
    TUASSERTE(bool, true, uut.process12(12, msg12CNAVQZSSL5, navOut));
       // easy test, the data is all empty
-   TUASSERTE(size_t, 0, navOut.size());
+   fc.validateResults(navOut, __LINE__);
+   TURETURN();
+}
+
+
+unsigned PNBGPSCNavDataFactory_T ::
+process30Test()
+{
+   TUDEF("PNBGPSCNavDataFactory", "process30");
+   GPSFactoryCounter fc(testFramework);
+   gpstk::PNBGPSCNavDataFactory uut;
+   gpstk::NavMessageID nmidExp(
+      gpstk::NavSatelliteID(ephCNAVGPSL2sid, ephCNAVGPSL2sid, oidCNAVGPSL2,
+                            gpstk::NavType::GPSCNAVL2),
+      gpstk::NavMessageType::Iono);
+   gpstk::NavDataPtrList navOut;
+   gpstk::GPSCNavIono *iono = nullptr;
+   gpstk::GPSCNavISC *isc = nullptr;
+   TUASSERTE(bool, true, uut.process30(msg30CNAVGPSL2, navOut));
+   for (const auto& i : navOut)
+   {
+      if ((iono = dynamic_cast<gpstk::GPSCNavIono*>(i.get())) != nullptr)
+      {
+         nmidExp.messageType = gpstk::NavMessageType::Iono;
+         TUASSERTE(gpstk::CommonTime, msg30CNAVGPSL2ct, iono->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, iono->signal);
+         TUASSERTFE( 4.656612870e-09, iono->alpha[0]);
+         TUASSERTFE( 1.490116118e-08, iono->alpha[1]);
+         TUASSERTFE(-5.960464478e-08, iono->alpha[2]);
+         TUASSERTFE(-1.192092897e-07, iono->alpha[3]);
+         TUASSERTFE( 8.192000000e+04, iono->beta[0]);
+         TUASSERTFE( 8.192000000e+04, iono->beta[1]);
+         TUASSERTFE(-6.553600000e+04, iono->beta[2]);
+         TUASSERTFE(-5.242880000e+05, iono->beta[3]);
+         TUASSERTE(uint32_t, 0x8b, iono->pre);
+         TUASSERTE(bool, false, iono->alert);
+      }
+      else if ((isc = dynamic_cast<gpstk::GPSCNavISC*>(i.get())) != nullptr)
+      {
+         nmidExp.messageType = gpstk::NavMessageType::ISC;
+         TUASSERTE(gpstk::CommonTime, msg30CNAVGPSL2ct, isc->timeStamp);
+         TUASSERTE(gpstk::NavMessageID, nmidExp, isc->signal);
+         TUASSERTFE(5.58793545E-09, isc->isc);
+         TUASSERTE(uint32_t, 0x8b, isc->pre);
+         TUASSERTE(bool, false, isc->alert);
+         TUASSERTFE(-3.49245965E-10, isc->iscL1CA);
+         TUASSERTFE(-3.14321369E-09, isc->iscL2C);
+         TUASSERTFE(6.43194653E-09, isc->iscL5I5);
+         TUASSERTFE(6.54836185E-09, isc->iscL5Q5);
+      }
+      else
+      {
+         TUFAIL("What is this?");
+      }
+   }
+   fc.validateResults(navOut, __LINE__, 2, 0, 0, 0, 0, 1, 1);
    TURETURN();
 }
 
@@ -732,7 +709,8 @@ process31Test()
                             gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
                             gpstk::NavType::GPSCNAVL5),
       gpstk::NavMessageType::Almanac);
-   gpstk::CommonTime toaExp = gpstk::GPSWeekSecond(2097, 3937.0);
+   gpstk::CommonTime toaExp = gpstk::GPSWeekSecond(2097, 3937.0,
+                                                   gpstk::TimeSystem::QZS);
    gpstk::CommonTime beginExp = msg31CNAVQZSSL5ct;
    gpstk::CommonTime endExp = gpstk::CommonTime::END_OF_TIME;
    gpstk::NavDataPtrList navOut;
@@ -790,9 +768,9 @@ process31Test()
    TUASSERTFE(4.21560080E+07, alm->A);
    TUASSERTFE(0, alm->Adot);
    TUASSERTFE(-0.49087385212340517437, alm->OMEGA0);
-   TUASSERTFE(0.7505264849426015461, alm->i0);
+   TUASSERTFE((0.25+0.0056)*gpstk::PI, alm->i0);
    TUASSERTFE(4.712388980384689674, alm->w);
-   TUASSERTFE(-8.16814090E-09, alm->OMEGAdot);
+   TUASSERTFE(-8.7e-10*gpstk::PI, alm->OMEGAdot);
    TUASSERTFE(0, alm->idot);
    TUASSERTFE(0, alm->af0);
    TUASSERTFE(0, alm->af1);
@@ -804,7 +782,7 @@ process31Test()
    TUASSERTE(bool, false, alm->healthL1);
    TUASSERTE(bool, false, alm->healthL2);
    TUASSERTE(bool, false, alm->healthL5);
-   TUASSERTFE(-0.034871678454846705142, alm->deltai);
+   TUASSERTFE(0.0056*gpstk::PI, alm->deltai);
    TUASSERTE(unsigned, 2097, alm->wna);
    TUASSERTFE(3937, alm->toa);
    TUASSERTFE(-8192, alm->deltaA);
@@ -860,9 +838,9 @@ process31Test()
    TUASSERTFE(4.21657360E+07, alm->A);
    TUASSERTFE(0, alm->Adot);
    TUASSERTFE(1.8162332528565992007, alm->OMEGA0);
-   TUASSERTFE(0.7505264849426015461, alm->i0);
+   TUASSERTFE((0.25+0.0056)*gpstk::PI, alm->i0);
    TUASSERTFE(4.712388980384689674, alm->w);
-   TUASSERTFE(-8.16814090E-09, alm->OMEGAdot);
+   TUASSERTFE(-8.7e-10*gpstk::PI, alm->OMEGAdot);
    TUASSERTFE(0, alm->idot);
    TUASSERTFE(0, alm->af0);
    TUASSERTFE(0, alm->af1);
@@ -874,7 +852,7 @@ process31Test()
    TUASSERTE(bool, false, alm->healthL1);
    TUASSERTE(bool, false, alm->healthL2);
    TUASSERTE(bool, false, alm->healthL5);
-   TUASSERTFE(-0.034871678454846705142, alm->deltai);
+   TUASSERTFE(0.0056*gpstk::PI, alm->deltai);
    TUASSERTE(unsigned, 2097, alm->wna);
    TUASSERTFE(3937, alm->toa);
    TUASSERTFE(1536, alm->deltaA);
@@ -930,9 +908,9 @@ process31Test()
    TUASSERTFE(4.21642000E+07, alm->A);
    TUASSERTFE(0, alm->Adot);
    TUASSERTFE(0, alm->OMEGA0);
-   TUASSERTFE(0.7505264849426015461, alm->i0);
+   TUASSERTFE((0.25+0.0056)*gpstk::PI, alm->i0);
    TUASSERTFE(4.712388980384689674, alm->w);
-   TUASSERTFE(-8.16814090E-09, alm->OMEGAdot);
+   TUASSERTFE(-8.7e-10*gpstk::PI, alm->OMEGAdot);
    TUASSERTFE(0, alm->idot);
    TUASSERTFE(0, alm->af0);
    TUASSERTFE(0, alm->af1);
@@ -944,7 +922,7 @@ process31Test()
    TUASSERTE(bool, false, alm->healthL1);
    TUASSERTE(bool, false, alm->healthL2);
    TUASSERTE(bool, false, alm->healthL5);
-   TUASSERTFE(-0.034871678454846705142, alm->deltai);
+   TUASSERTFE(0.0056*gpstk::PI, alm->deltai);
    TUASSERTE(unsigned, 2097, alm->wna);
    TUASSERTFE(3937, alm->toa);
    TUASSERTFE(0, alm->deltaA);
@@ -1000,9 +978,9 @@ process31Test()
    TUASSERTFE(42161128, alm->A);
    TUASSERTFE(0, alm->Adot);
    TUASSERTFE(-2.7979809571034093274, alm->OMEGA0);
-   TUASSERTFE(0.7505264849426015461, alm->i0);
+   TUASSERTFE((0.25+0.0056)*gpstk::PI, alm->i0);
    TUASSERTFE(4.712388980384689674, alm->w);
-   TUASSERTFE(-8.16814090E-09, alm->OMEGAdot);
+   TUASSERTFE(-8.7e-10*gpstk::PI, alm->OMEGAdot);
    TUASSERTFE(0, alm->idot);
    TUASSERTFE(0, alm->af0);
    TUASSERTFE(0, alm->af1);
@@ -1014,7 +992,7 @@ process31Test()
    TUASSERTE(bool, false, alm->healthL1);
    TUASSERTE(bool, false, alm->healthL2);
    TUASSERTE(bool, false, alm->healthL5);
-   TUASSERTFE(-0.034871678454846705142, alm->deltai);
+   TUASSERTFE(0.0056*gpstk::PI, alm->deltai);
    TUASSERTE(unsigned, 2097, alm->wna);
    TUASSERTFE(3937, alm->toa);
    TUASSERTFE(-3072, alm->deltaA);
@@ -1055,6 +1033,9 @@ process33Test()
    TUASSERTFE(21600, to->tot);
    TUASSERTE(unsigned, 2060, to->wnot);
    TUASSERTE(unsigned, 1929, to->wnLSF);
+   TUASSERTE(gpstk::CommonTime,
+             gpstk::GPSWeekSecond(2060,21600).convertToCommonTime(),
+             to->refTime);
    TUASSERTE(unsigned, 7, to->dn);
    TUASSERTFE(18, to->deltatLSF);
    TURETURN();
@@ -1091,40 +1072,13 @@ process35Test()
    TUASSERTFE(356400, to->tot);
    TUASSERTE(unsigned, 2097, to->wnot);
    TUASSERTE(unsigned, 0, to->wnLSF);
+   TUASSERTE(gpstk::CommonTime,
+             gpstk::GPSWeekSecond(
+                2097,356400,gpstk::TimeSystem::QZS).convertToCommonTime(),
+             to->refTime);
    TUASSERTE(unsigned, 0, to->dn);
    TUASSERTFE(0, to->deltatLSF);
    TURETURN();
-}
-
-
-void PNBGPSCNavDataFactory_T ::
-countResults(const gpstk::NavDataPtrList& navOut)
-{
-   almCount = ephCount = toCount = heaCount = otherCount = 0;
-   for (const auto& i : navOut)
-   {
-      if (dynamic_cast<gpstk::GPSCNavAlm*>(i.get()) != nullptr)
-      {
-         almCount++;
-      }
-      else if (dynamic_cast<gpstk::GPSCNavEph*>(i.get()) != nullptr)
-      {
-         ephCount++;
-      }
-      else if (dynamic_cast<gpstk::GPSCNavTimeOffset*>(i.get()) != nullptr)
-      {
-         toCount++;
-      }
-      else if (dynamic_cast<gpstk::GPSCNavHealth*>(i.get()) != nullptr)
-      {
-         heaCount++;
-      }
-      else
-      {
-         otherCount++;
-      }
-         //i->dump(cerr, gpstk::NavData::Detail::Full);
-   }
 }
 
 
@@ -1144,6 +1098,7 @@ int main()
    errorTotal += testClass.processAlmOrbTest();
    errorTotal += testClass.processRedAlmOrbTest();
    errorTotal += testClass.process12Test();
+   errorTotal += testClass.process30Test();
    errorTotal += testClass.process31Test();
    errorTotal += testClass.process33Test();
    errorTotal += testClass.process35Test();

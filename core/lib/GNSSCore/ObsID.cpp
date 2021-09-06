@@ -58,7 +58,8 @@ namespace gpstk
          std::ios::fmtflags oldFlags = s.flags();
          s << " "
            << std::boolalpha << freqOffs << "/" << freqOffsWild << " "
-           << std::hex << mcode << "/" << mcodeMask;
+           << std::hex << mcode << "/" << mcodeMask
+           << " " << gpstk::StringUtils::asString(xmitAnt);
          s.flags(oldFlags);
       }
       return s;
@@ -69,6 +70,7 @@ namespace gpstk
    // Equality requires all fields to be the same unless the field is unknown
    bool ObsID::operator==(const ObsID& right) const
    {
+         // std::cerr << __PRETTY_FUNCTION__ << std::endl;
          // combined mask, which basically means that a 0 in either
          // mask is a wildcard.
       uint32_t cmask = mcodeMask & right.mcodeMask;
@@ -78,42 +80,66 @@ namespace gpstk
                band == right.band) &&
               (code == TrackingCode::Any || right.code == TrackingCode::Any ||
                code == right.code) &&
+              (xmitAnt == XmitAnt::Any || right.xmitAnt == XmitAnt::Any ||
+               xmitAnt == right.xmitAnt) &&
               (freqOffsWild == true || right.freqOffsWild == true ||
                freqOffs == right.freqOffs) &&
-              ((mcode & mcodeMask) == (right.mcode & cmask)));
+              ((mcode & cmask) == (right.mcode & cmask)));
    }
 
+
+// Use this macro in operator<< to figure out why things fail
+#if 0
+#define ORDERRET(RV) {                                                  \
+      std::cerr << "operator<() returning " << RV << " @ " << __LINE__  \
+                << std::endl;                                           \
+      return RV;                                                        \
+   }
+#else
+#define ORDERRET(RV) return RV;
+#endif
 
    // This ordering is somewhat arbitrary but is required to be able
    // to use an ObsID as an index to a std::map. If an application needs
    // some other ordering, inherit and override this function.
    bool ObsID::operator<(const ObsID& right) const
    {
+         //std::cerr << __PRETTY_FUNCTION__ << std::endl;
       if ((band != CarrierBand::Any) && (right.band != CarrierBand::Any))
       {
-         if (band < right.band) return true;
-         if (right.band < band) return false;
+         if (band < right.band) ORDERRET(true);
+         if (right.band < band) ORDERRET(false);
       }
       if ((code != TrackingCode::Any) && (right.code != TrackingCode::Any))
       {
-         if (code < right.code) return true;
-         if (right.code < code) return false;
+         if (code < right.code) ORDERRET(true);
+         if (right.code < code) ORDERRET(false);
       }
       if ((type != ObservationType::Any) &&
           (right.type != ObservationType::Any))
       {
-         if (type < right.type) return true;
-         if (right.type < type) return false;
+         if (type < right.type) ORDERRET(true);
+         if (right.type < type) ORDERRET(false);
+      }
+      if ((xmitAnt != XmitAnt::Any) && (right.xmitAnt != XmitAnt::Any))
+      {
+         if (xmitAnt < right.xmitAnt) ORDERRET(true);
+         if (right.xmitAnt < xmitAnt) ORDERRET(false);
       }
       if (!freqOffsWild && !right.freqOffsWild)
       {
-         if (freqOffs < right.freqOffs) return true;
-         if (right.freqOffs < freqOffs) return false;
+         if (freqOffs < right.freqOffs) ORDERRET(true);
+         if (right.freqOffs < freqOffs) ORDERRET(false);
       }
          // combined mask, which basically means that a 0 in either
          // mask is a wildcard.
       int64_t cmask = mcodeMask & right.mcodeMask;
-      return ((mcode & cmask) < (right.mcode & cmask));
+      // std::cerr << "cmask=" << std::hex << cmask << "  mcodeMask="
+      //           << mcodeMask << "  right.mcodeMask=" << right.mcodeMask
+      //           << std::endl
+      //           << "  mcode=" << mcode << "  right.mcode=" << right.mcode
+      //           << std::dec << std::endl;
+      ORDERRET(((mcode & cmask) < (right.mcode & cmask)));
    }
 
 
@@ -123,6 +149,7 @@ namespace gpstk
       type = ObservationType::Any;
       band = CarrierBand::Any;
       code = TrackingCode::Any;
+      xmitAnt = XmitAnt::Any;
       freqOffsWild = true;
       mcodeMask = 0;
    }
@@ -134,6 +161,7 @@ namespace gpstk
       return ((type == ObservationType::Any) ||
               (band == CarrierBand::Any) ||
               (code == TrackingCode::Any) ||
+              (xmitAnt == XmitAnt::Any) ||
               (mcodeMask != -1) ||
               freqOffsWild);
    }

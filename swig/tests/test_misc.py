@@ -1,8 +1,14 @@
 #!/usr/bin/env python
 
 import unittest, sys, os
+try:
+    from collections.abc import Hashable
+except ImportError:
+    # Python2 has Hashable in a different location.
+    from collections import Hashable
+
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
+from gpstk.test_utils import args, run_unit_tests
 import gpstk
 
 class EnumConversion_test(unittest.TestCase):
@@ -101,6 +107,7 @@ class EnumConversion_test(unittest.TestCase):
         # TODO: Odd that enum -> str -> enum doesn't work.
         #self.assertEqual(gpstk.asReferenceFrame(str(gpstk.ReferenceFrame.WGS84G730)), gpstk.ReferenceFrame.WGS84G730, msg='str WGS84G730')
 
+
 class SatID_test(unittest.TestCase):
     def test_validity(self):
         s = gpstk.SatID(1, gpstk.SatelliteSystem.GPS)
@@ -119,6 +126,20 @@ class SatID_test(unittest.TestCase):
 
         c = gpstk.SatID(4)  # optional arg should result in a wildcard system
         self.assertEqual('* 4', str(c))
+
+    def test_hashability(self):
+        # Can we use SatID, etc as a dict-key or in a set.
+        # Verifies that the SWIG python glue is correct.
+        a = gpstk.SatID(3, gpstk.SatelliteSystem.Glonass)
+        b = gpstk.ObsID()
+        c = gpstk.NavID()
+        d = gpstk.RinexSatID()
+        e = gpstk.RinexObsID()
+        self.assertTrue(isinstance(a, Hashable))
+        self.assertTrue(isinstance(b, Hashable))
+        self.assertTrue(isinstance(c, Hashable))
+        self.assertTrue(isinstance(d, Hashable))
+        self.assertTrue(isinstance(e, Hashable))
 
 
 class Triple_test(unittest.TestCase):
@@ -245,14 +266,14 @@ class ObsID_test(unittest.TestCase):
 
 class std_template_test(unittest.TestCase):
     def test_vector(self):
-        v = gpstk.vector_int()
+        v = gpstk.std_vector_int()
         v.push_back(5)
         v.push_back(3)
         v.push_back(10)
         self.assertEqual(5, v[0])
         self.assertEqual(3, v[1])
         self.assertEqual(10, v[2])
-        v = gpstk.vector_double()
+        v = gpstk.std_vector_double()
         v.push_back(1.5)
         v.push_back(2.5)
         self.assertEqual(1.5, v[0])
@@ -260,7 +281,7 @@ class std_template_test(unittest.TestCase):
         self.assertEqual(2, len(v))
 
     def test_vector_iter(self):
-        v = gpstk.vector_int()
+        v = gpstk.std_vector_int()
         v.push_back(5)
         v.push_back(3)
         v.push_back(10)
@@ -277,20 +298,20 @@ class std_template_test(unittest.TestCase):
 
         list = [1.1, 2.2, 3.3]
         v = gpstk.seqToVector(list)
-        self.assertIsInstance(v, gpstk.vector_double)
+        self.assertIsInstance(v, gpstk.std_vector_double)
         same_seq(list, v)
 
         list = [1.1, 2.2, 3.3]
-        v = gpstk.seqToVector(list, outtype='vector_double')
-        self.assertIsInstance(v, gpstk.vector_double)
+        v = gpstk.seqToVector(list, outtype='std_vector_double')
+        self.assertIsInstance(v, gpstk.std_vector_double)
         same_seq(list, v)
 
         list = ['bar!', 'foo?']
         v = gpstk.seqToVector(list)
-        self.assertIsInstance(v, gpstk.vector_string)
+        self.assertIsInstance(v, gpstk.std_vector_string)
         same_seq(list, v)
 
-        v = gpstk.vector_int()
+        v = gpstk.std_vector_int()
         v.push_back(3)
         v.push_back(5)
         list = gpstk.vectorToSeq(v)
@@ -303,19 +324,19 @@ class std_template_test(unittest.TestCase):
         self.assertRaises(TypeError, gpstk.seqToVector, list)
 
     def test_map(self):
-        map = gpstk.map_int_char()
+        map = gpstk.std_map_int_char()
         map[1] = 'A'
         map[100] = 'z'
         self.assertEqual('A', map[1])
         self.assertEqual('z', map[100])
-        map = gpstk.map_string_int()
+        map = gpstk.std_map_string_int()
         map['key1'] = 123
         map['key2'] = 321
         self.assertEqual(123, map['key1'])
         self.assertEqual(321, map['key2'])
 
     def test_map_iter(self):
-        map = gpstk.map_int_string()
+        map = gpstk.std_map_int_string()
         map[5] = 'five'
         map[6] = 'six'
         list = []
@@ -324,7 +345,7 @@ class std_template_test(unittest.TestCase):
         self.assertEqual([5,6], sorted(list))
 
     def test_map_len(self):
-        map = gpstk.map_int_string()
+        map = gpstk.std_map_int_string()
         map[5] = 'five'
         map[6] = 'six'
         self.assertEqual(2, len(map))
@@ -338,13 +359,13 @@ class std_template_test(unittest.TestCase):
         d = {1: 'A', 2: 'B', 3: 'C'}
         m = gpstk.dictToMap(d)
         same(d, m)
-        self.assertIsInstance(m, gpstk.map_int_string)
+        self.assertIsInstance(m, gpstk.std_map_int_string)
         same(d, gpstk.mapToDict(m))
 
         d = {'A': 1.1, 'B': 2.2, 'C': 3.3}
         m = gpstk.dictToMap(d)
         same(d, m)
-        self.assertIsInstance(m, gpstk.map_string_double)
+        self.assertIsInstance(m, gpstk.std_map_string_double)
         same(d, gpstk.mapToDict(m))
 
         d = {'A': 1, 'B': 1.1}

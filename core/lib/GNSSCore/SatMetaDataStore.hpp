@@ -173,21 +173,21 @@ namespace gpstk
          std::string mission;          ///< Mission number.
       };
          /// Set of signals that may be transmitted by a satellite.
-      using SignalSet = std::set<Signal>;
+      typedef std::set<Signal> SignalSet;
          /// Map of signal set name to signal set.
-      using SignalMap = std::map<std::string, SignalSet>;
+      typedef std::map<std::string, SignalSet> SignalMap;
          /// Set of satellites ordered by PRN or channel/slotID.
-      using SatSet = std::multiset<SatMetaData, SatMetaDataSort>;
+      typedef std::multiset<SatMetaData, SatMetaDataSort> SatSet;
          /// Satellites grouped by system.
-      using SatMetaMap = std::map<SatelliteSystem, SatSet>;
+      typedef std::map<SatelliteSystem, SatSet> SatMetaMap;
          /// Types of clocks on a satellite (hardware-specific positional idx).
-      using ClockVec = std::vector<SatMetaData::ClockType>;
+      typedef std::vector<SatMetaData::ClockType> ClockVec;
          /// Clock configuration information
-      using ClockConfigMap = std::map<SystemBlock, ClockVec>;
+      typedef std::map<SystemBlock, ClockVec> ClockConfigMap;
          /// Map SVN to launch time.
-      using LaunchMap = std::map<SVNID, LaunchConfig>;
+      typedef std::map<SVNID, LaunchConfig> LaunchMap;
          /// Map SVN to NORAD ID.
-      using NORADMap = std::map<SVNID, unsigned long>;
+      typedef std::map<SVNID, unsigned long> NORADMap;
 
          /// Nothin doin.
       SatMetaDataStore() = default;

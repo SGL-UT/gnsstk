@@ -48,6 +48,9 @@
 #include "PNBGPSLNavDataFactory.hpp"
 #include "PNBGPSCNavDataFactory.hpp"
 #include "PNBGPSCNav2DataFactory.hpp"
+#include "PNBGalINavDataFactory.hpp"
+#include "PNBGalFNavDataFactory.hpp"
+#include "PNBBDSD1NavDataFactory.hpp"
 #ifdef BUILD_EXT
 // Support for Ext factories must be added here to enforce initialization order
 #include "YumaNavDataFactory.hpp"
@@ -62,7 +65,9 @@ namespace gpstk
                                                 NavMessageType::Ephemeris,
                                                 NavMessageType::TimeOffset,
                                                 NavMessageType::Health,
-                                                NavMessageType::Clock };
+                                                NavMessageType::Clock,
+                                                NavMessageType::Iono,
+                                                NavMessageType::ISC };
 
       /** This class is not for public use.  It is used to create a
        * singleton object to add supported formats to
@@ -115,6 +120,18 @@ namespace gpstk
          gpstk::PNBNavDataFactoryPtr
             cnav2(std::make_shared<gpstk::PNBGPSCNav2DataFactory>());
          PNBMultiGNSSNavDataFactory::addFactory(NavType::GPSCNAV2,cnav2);
+
+         gpstk::PNBNavDataFactoryPtr
+            gali(std::make_shared<gpstk::PNBGalINavDataFactory>());
+         PNBMultiGNSSNavDataFactory::addFactory(NavType::GalINAV,gali);
+
+         gpstk::PNBNavDataFactoryPtr
+            galf(std::make_shared<gpstk::PNBGalFNavDataFactory>());
+         PNBMultiGNSSNavDataFactory::addFactory(NavType::GalFNAV,galf);
+
+         gpstk::PNBNavDataFactoryPtr
+            bd1(std::make_shared<gpstk::PNBBDSD1NavDataFactory>());
+         PNBMultiGNSSNavDataFactory::addFactory(NavType::BeiDou_D1,bd1);
       }
    };
 

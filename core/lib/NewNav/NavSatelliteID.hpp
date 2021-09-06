@@ -77,6 +77,29 @@ namespace gpstk
                      SatelliteSystem sys, CarrierBand car, TrackingCode track,
                      NavType nmt);
 
+         /** Initialize all data to specific values.
+          * @param[in] subj The ID of the satellite that nav data pertains to.
+          * @param[in] xmit The ID of the satellite that transmitted
+          *   the nav data.
+          * @param[in] sys The GNSS this signal originates from.
+          * @param[in] car The carrier band of this signal.
+          * @param[in] track The tracking code of this signal.
+          * @param[in] nmt The navigation message format of this signal. */
+      NavSatelliteID(unsigned long subj, SatelliteSystem sys, CarrierBand car,
+                     TrackingCode track, XmitAnt ant, int freqOffs,
+                     bool freqOffsWild, NavType nmt = NavType::Any);
+
+         /** Initialize all data to specific values.
+          * @param[in] subj The ID of the satellite that nav data pertains to.
+          * @param[in] xmit The ID of the satellite that transmitted
+          *   the nav data.
+          * @param[in] sys The GNSS this signal originates from.
+          * @param[in] car The carrier band of this signal.
+          * @param[in] track The tracking code of this signal.
+          * @param[in] nmt The navigation message format of this signal. */
+      NavSatelliteID(unsigned long subj, SatelliteSystem sys, const ObsID& oid,
+                     NavType nmt = NavType::Any);
+
          /** Initialize transmit satellite to a wildcard and all other
           * data to specific values.  Intended to be used for
           * searching.
@@ -144,6 +167,8 @@ namespace gpstk
       SatID xmitSat; ///< ID of the satellite transmitting the nav data.
    };
 
+
+   typedef std::set<NavSatelliteID> NavSatelliteIDSet;
 
    inline std::ostream& operator<<(std::ostream& s, const NavSatelliteID& nsid)
    {

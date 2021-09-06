@@ -9,9 +9,9 @@
 cmake_minimum_required( VERSION 2.8.5 )
 
 project( GPSTK )
-set( GPSTK_VERSION_MAJOR "11" )
-set( GPSTK_VERSION_MINOR "2" )
-set( GPSTK_VERSION_PATCH "1" )
+set( GPSTK_VERSION_MAJOR "12" )
+set( GPSTK_VERSION_MINOR "0" )
+set( GPSTK_VERSION_PATCH "0" )
 set( GPSTK_VERSION "${GPSTK_VERSION_MAJOR}.${GPSTK_VERSION_MINOR}.${GPSTK_VERSION_PATCH}" )
 
 # Test data file source directory
@@ -173,7 +173,6 @@ install( FILES ${GPSTK_INC_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 
 set_target_properties(gpstk PROPERTIES VERSION "${GPSTK_VERSION_MAJOR}.${GPSTK_VERSION_MINOR}.${GPSTK_VERSION_PATCH}"
                                        SOVERSION "${GPSTK_VERSION_MAJOR}")
-
 
 #============================================================
 # Testing

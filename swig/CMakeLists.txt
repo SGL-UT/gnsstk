@@ -10,6 +10,9 @@ include( PythonSetup.cmake )
 find_package( SWIG REQUIRED )
 include( ${SWIG_USE_FILE} )
 
+# These warnings have been restored by commenting out the SWIG flags
+# as it's better to resolve the warnings using %ignore, %rename or
+# some other SWIG directive.
 #----------------------------------------
 # Compiler warning disables
 #----------------------------------------
@@ -18,8 +21,9 @@ include( ${SWIG_USE_FILE} )
 #     384: operator-- ignored
 #     389: operator[] ignored
 #     503: can't wrap 'identifer' unless renamed to a valid identifier (e.g. operator<<)
+#     325: Nested class not currently supported
 
-set( CMAKE_SWIG_FLAGS "-w362,383,384,389,503 -builtin" )
+#set( CMAKE_SWIG_FLAGS "-w362,383,384,389,503,325;-builtin;-debug-classes;-debug-symtabs;-debug-symbols;-debug-csymbols;-debug-lsymbols;-debug-tags;-debug-template;-debug-typedef;-debug-tmsearch;-debug-tmused;-MF;swigdeps.txt" )
 
 #----------------------------------------
 # Don't set the RPATH for dependencies.
@@ -31,18 +35,22 @@ set( CMAKE_SKIP_RPATH TRUE )
 # in the compiling of the swig bindings
 # @todo: see if -std=c++11 can be removed from all builds
 #----------------------------------------
+# -Wno-write-strings disables warnings that g++ generates by the
+# truckload because the Python C API uses char* instead of
+# const char*
 if( ${CMAKE_SYSTEM_NAME} MATCHES "SunOS" )
     set( CMAKE_CXX_FLAGS "-std=c++11" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -std=c++11" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
-    set( CMAKE_CXX_FLAGS "-std=c++11" )
+    set( CMAKE_CXX_FLAGS "-std=c++11 -Wno-write-strings" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
     set( CMAKE_CXX_FLAGS "-std=c++11" )
 endif()
 
 
-set_source_files_properties( gpstk.i PROPERTIES CPLUSPLUS ON )
+set_property(SOURCE gpstk.i PROPERTY CPLUSPLUS ON )
+set_property(SOURCE gpstk.i PROPERTY USE_SWIG_DEPENDENCIES TRUE)
 
 if( DEBUG_SWITCH )
     message( STATUS "SWIG_EXECUTABLE          = ${SWIG_EXECUTABLE}" )
@@ -67,10 +75,23 @@ set( SWIG_MODULE "gpstk" )
 include_directories( ${PYTHON_INCLUDE_DIRS} )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/src )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/FileHandling )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/FileHandling/Binex )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/FileHandling/RINEX )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/FileHandling/RINEX3 )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/Geomatics )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/GNSSCore )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/GNSSEph )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/Math )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/NavFilter )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/NewNav )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/SWIGHelpers )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/TimeHandling )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/Utilities )
 
-swig_add_module( ${SWIG_MODULE} python gpstk.i ) # why not also list all the other files.i here?!
+swig_add_module( ${SWIG_MODULE} python gpstk.i )
 swig_link_libraries( ${SWIG_MODULE} gpstk )
-swig_link_libraries( ${SWIG_MODULE} ${PYTHON_LIBRARIES} )
+#swig_link_libraries( ${SWIG_MODULE} ${PYTHON_LIBRARIES} )
 
 # Install the gpstk module into the package file tree
 set( MODULE_PATH ${CMAKE_CURRENT_BINARY_DIR}/module )
@@ -157,8 +178,9 @@ endif()
 # required to make a swig module that depends upon these bindings
 #------------------------------------------------------------
 
-file( GLOB swig_includes ${CMAKE_CURRENT_SOURCE_DIR}/src/* )
-install( FILES ${swig_includes} ${CMAKE_CURRENT_SOURCE_DIR}/gpstk.i DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" )
+file( GLOB_RECURSE swig_includes
+  ${CMAKE_CURRENT_SOURCE_DIR}/*.i )
+install( FILES ${swig_includes} ${CMAKE_CURRENT_SOURCE_DIR}/gpstk_swig.hpp DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" )
 
 
-include(swig_tests.cmake)
+add_subdirectory(tests)

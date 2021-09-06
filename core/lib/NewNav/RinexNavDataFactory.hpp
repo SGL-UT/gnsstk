@@ -89,16 +89,24 @@ namespace gpstk
       static bool convertToOrbit(const Rinex3NavData& navIn,
                                  NavDataPtr& navOut);
 
+         /** Copy common elements from Rinex3NavData to OrbitDataKepler.
+          * @param[in] navIn The RINEX nav message data to convert.
+          * @param[in,out] navOut The pre-allocated OrbitDataKepler
+          *   object to be updated from the RINEX nav data.
+          */
+      static void convertToOrbitDataKepler(const Rinex3NavData& navIn,
+                                           OrbitDataKepler* navOut);
+
          /** Convert RINEX nav data to a system/code-appropriate
           * NavHealthData object.
           * @param[in] navIn The RINEX nav message data to convert.
-          * @param[out] healthOut The NavHealthData object to be added
+          * @param[out] healthOut The NavHealthData object(s) to be added
           *   to the factory data map.
           * @return true if the conversion is valid, false if the
           *   input data is unsupported.
           */
       static bool convertToHealth(const Rinex3NavData& navIn,
-                                  NavDataPtr& healthOut);
+                                  NavDataPtrList& healthOut);
 
          /** Convert RINEX nav header data to a TimeOffsetData object.
           * @param[in] navIn The RINEX nav header to convert.
@@ -108,6 +116,30 @@ namespace gpstk
           */
       static bool convertToOffset(const Rinex3NavHeader& navIn,
                                   NavDataPtrList& navOut);
+
+         /** Convert RINEX nav header data into a IonoData object.
+          * @param[in] when A timestamp to use for the IonoData, since
+          *   the RINEX nav header doesn't include time information on
+          *   its own (usually a timestamp pulled from the data).
+          * @param[in] navIn The RINEX nav header to convert.
+          * @param[out] navOut A list (possibly empty) of the
+          *   resulting converted data.  This may include
+          *   NavHealthData which is necessary due to the minimalist
+          *   storage used by RINEX vs the implementation of
+          *   NavLibrary::getIonoCorr().
+          * @return true if successful. */
+      static bool convertToIono(const CommonTime& when,
+                                const Rinex3NavHeader& navIn,
+                                NavDataPtrList& navOut);
+
+         /** Convert RINEX nav data to a InterSigCorr object.
+          * @param[in] navIn The RINEX nav message data to convert.
+          * @param[out] navOut The OrbitData object to be added to the
+          *   factory data map.
+          * @return true if the conversion is valid, false if the
+          *   input data is unsupported. */
+      static bool convertToISC(const Rinex3NavData& navIn,
+                               NavDataPtr& navOut);
 
          /** Fill the high level (NavData and above) data for an
           * object using information from a RINEX nav record.
@@ -126,6 +158,21 @@ namespace gpstk
           * @param[in,out] navOut The GPSLNavEph object whose time
           *   stamps are to be set. */
       static void fixTimeGPS(const Rinex3NavData& navIn, GPSLNavEph& navOut);
+
+         /** Set the xmitTime field in navOut according to the
+          * appropriate data in navIn.
+          * @param[in] navIn A Galileo I/Nav or F/Nav record in RINEX format.
+          * @param[in,out] navOut The GalINavEph or GalFNavEph object whose time
+          *   stamps are to be set. */
+      static void fixTimeGalileo(const Rinex3NavData& navIn,
+                                 OrbitDataKepler& navOut);
+
+         /** Convert accuracy in meters into a Galileo Signal In Space
+          * Accuracy index.
+          * @note This uses RINEX conventions (naturally) of using -1
+          *   to mean No Accuracy Predicition Available.
+          * @param[in] accuracy The signal accuracy in meters. */
+      static uint8_t decodeSISA(double accuracy);
    };
 
       //@}

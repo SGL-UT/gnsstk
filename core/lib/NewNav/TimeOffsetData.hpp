@@ -48,6 +48,12 @@ namespace gpstk
       /// @ingroup NavFactory
       //@{
 
+      /** Define a pair of TimeSystems where first=convert from and
+       * second=convert to. */
+   typedef std::pair<TimeSystem,TimeSystem> TimeCvtKey;
+      /// Define a unique set of time system conversions.
+   typedef std::set<TimeCvtKey> TimeCvtSet;
+
       /** Defines the interface for classes that provide the ability
        * to convert between time systems, using data extracted from
        * GNSS navigation messages. */
@@ -81,12 +87,6 @@ namespace gpstk
           * @return true if an offset is available, false if not. */
       virtual bool getOffset(TimeSystem fromSys, TimeSystem toSys,
                              const CommonTime& when, double& offset) const = 0;
-
-         /** Define a pair of TimeSystems where first=convert from and
-          * second=convert to. */
-      using TimeCvtKey = std::pair<TimeSystem,TimeSystem>;
-         /// Define a unique set of time system conversions.
-      using TimeCvtSet = std::set<TimeCvtKey>;
 
          /** The set of time system conversions this class is capable of making.
           * @note This method should avoid returning bidirectional

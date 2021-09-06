@@ -83,14 +83,14 @@ namespace gpstk
           * @param[in] when The time of interest to search for data.
           * @param[in] xmitHealth The desired health status of the
           *   transmitting satellite.
-          * @param[out] navData The resulting navigation message.
+          * @param[out] navOut The resulting navigation message.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
           *   behavior or by nearest to when in time. 
           * @return true if successful.  If false, navData will be untouched. */
       bool find(const NavMessageID& nmid, const CommonTime& when,
-                NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
+                NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
                 NavSearchOrder order) override;
 
          /** Get the offset, in seconds, to apply to times when
@@ -165,6 +165,55 @@ namespace gpstk
       CommonTime getFinalTime() const override
       { return finalTime; }
 
+         /** Obtain a set of satellites for which we have data in the
+          * given time span.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of satellites for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      NavSatelliteIDSet getAvailableSats(const CommonTime& fromTime,
+                                         const CommonTime& toTime)
+         const override;
+
+         /** Obtain a set of satellites for which we have data of a
+          * specific message type in the given time span.
+          * @param[in] nmt The navigation message type you're looking for.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of satellites for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      NavSatelliteIDSet getAvailableSats(NavMessageType nmt,
+                                         const CommonTime& fromTime,
+                                         const CommonTime& toTime)
+         const override;
+
+         /** Obtain a set of satellites+message types for which we
+          * have data in the given time span.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of NavMessageID objects for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      NavMessageIDSet getAvailableMsgs(const CommonTime& fromTime,
+                                       const CommonTime& toTime) const override;
+
          /// Return the number of nav messages in data.
       virtual size_t size() const;
          /// Return the number of distinct signals (ignoring PRN) in the data.
@@ -175,7 +224,7 @@ namespace gpstk
           * format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-       void dump(std::ostream& s, NavData::Detail dl) const override;
+       void dump(std::ostream& s, DumpDetail dl) const override;
 
    protected:
          /** Search the store to find the navigation message that meets
@@ -275,7 +324,7 @@ namespace gpstk
           * collection of TimeOffsetData objects. */
       using OffsetEpochMap = std::map<CommonTime, OffsetMap>;
          /// Map from the time system conversion pair to the conversion objects.
-      using OffsetCvtMap = std::map<TimeOffsetData::TimeCvtKey, OffsetEpochMap>;
+      using OffsetCvtMap = std::map<TimeCvtKey, OffsetEpochMap>;
          /** Store the time offset data separate from the other nav
           * data because searching is very different. */
       OffsetCvtMap offsetData;

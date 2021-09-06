@@ -93,6 +93,10 @@ namespace gpstk
    const string Rinex3ObsHeader::hsPrnObs            = "PRN / # OF OBS";
    const string Rinex3ObsHeader::hsEoH               = "END OF HEADER";
 
+      // Text to look for in COMMENT headers that isn't RINEX-defined.
+   const string Rinex3ObsHeader::hsAntennaStandard   = "TRANSMITTER STANDARD";
+   const string Rinex3ObsHeader::hsAntennaRegional   = "TRANSMITTER REGIONAL";
+
    int Rinex3ObsHeader::debug = 0;
 
   const Rinex3ObsHeader::Fields Rinex3ObsHeader::allValid2({
@@ -238,6 +242,7 @@ namespace gpstk
       lastPRN = RinexSatID();
       factor = 0;
       factorPrev = 0;
+      xmitAnt = XmitAnt::Standard;
    }
 
 
@@ -1095,7 +1100,16 @@ namespace gpstk
       }
       else if(label == hsComment)
       {
-         commentList.push_back(strip(line.substr(0,60)));
+         std::string comment = strip(line.substr(0,60));
+         if (comment == hsAntennaStandard)
+         {
+            xmitAnt = XmitAnt::Standard;
+         }
+         else if (comment == hsAntennaRegional)
+         {
+            xmitAnt = XmitAnt::Regional;
+         }
+         commentList.push_back(comment);
          valid |= validComment;
       }
       else if(label == hsMarkerName)

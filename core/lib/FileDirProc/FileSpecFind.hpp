@@ -84,7 +84,7 @@ namespace gpstk
    {
    public:
          /// Data type for storing desired FileSpec values.
-      using Filter = std::multimap<FileSpec::FileSpecType, std::string>;
+      typedef std::multimap<FileSpec::FileSpecType, std::string> Filter;
 
          /** Search for existing files matching a given file spec and
           * time range.  May be used for file spec strings that

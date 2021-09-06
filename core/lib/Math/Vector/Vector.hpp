@@ -287,10 +287,10 @@ namespace gpstk
          // convert the gpstk vector to std vector
       std::vector<T> toStdVector()
       {
-         std::vector<T> v;
+         std::vector<T> std_vec;
          for(size_t i = 0; i < s; i++)
-            v.push_back(v[i] );
-         return v;
+            std_vec.push_back(v[i] );
+         return std_vec;
       }
 
       inline Vector& operator<<(const Vector& b)
@@ -395,7 +395,7 @@ namespace gpstk
          /// Makes a slice of the vector with the given std::slice.
       VectorSlice(Vector<T>& vv, const std::slice& ss)
             : v(&vv), s(ss)
-      { vecSliceCheck(vv.size()); }
+      { this->vecSliceCheck(vv.size()); }
 
          /// Assign the elements of this slice from another vector.
       template <class V>

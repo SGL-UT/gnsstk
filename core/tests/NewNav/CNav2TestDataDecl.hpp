@@ -37,9 +37,14 @@
 //
 //==============================================================================
 /** @file CNav2TestDataDecl.hpp This file contains data declarations
- * for testing GPS CNav2 processing in the NavFactory code. */
+ * for testing GPS and QZSS CNAV2 processing in the NavFactory code. */
 
 gpstk::ObsID oidCNAV2GPS;
 gpstk::SatID ephCNAV2GPSsid;
-gpstk::CommonTime sf2CNAV2GPSct, sf3p1CNAV2GPSct, sf3p2CNAV2GPSct, sf3p2fakeCNAV2GPSct, sf3p4CNAV2GPSct;
-gpstk::PackedNavBitsPtr sf2CNAV2GPS, sf3p1CNAV2GPS, sf3p2CNAV2GPS, sf3p2fakeCNAV2GPS, sf3p4CNAV2GPS;
+gpstk::CommonTime sf123p1CNAV2GPSct,  sf123p2CNAV2GPSct,  sf123p4CNAV2GPSct, sf2CNAV2GPSct, sf2CNAV2GPS2ct, sf3p1CNAV2GPSct, sf3p2CNAV2GPSct, sf3p2fakeCNAV2GPSct, sf3p4CNAV2GPSct;
+gpstk::PackedNavBitsPtr sf123p1CNAV2GPS,  sf123p2CNAV2GPS,  sf123p4CNAV2GPS, sf2CNAV2GPS, sf2CNAV2GPS2, sf3p1CNAV2GPS, sf3p2CNAV2GPS, sf3p2fakeCNAV2GPS, sf3p4CNAV2GPS;
+
+gpstk::ObsID oidCNAV2QZSS;
+gpstk::SatID ephCNAV2QZSSsid;
+gpstk::CommonTime sf2CNAV2QZSSct, sf3p1CNAV2QZSSct, sf3p2CNAV2QZSSct, sf3p4CNAV2QZSSct;
+gpstk::PackedNavBitsPtr sf2CNAV2QZSS, sf3p1CNAV2QZSS, sf3p2CNAV2QZSS, sf3p4CNAV2QZSS;

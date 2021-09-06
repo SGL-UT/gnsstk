@@ -62,6 +62,11 @@ namespace gpstk
       /// @ingroup GNSSEph
       //@{
 
+      // forward declaration
+   class PackedNavBits;
+      /// Managed pointer for passing PackedNavBits around.
+   typedef std::shared_ptr<PackedNavBits> PackedNavBitsPtr;
+
    class PackedNavBits
    {
    public:
@@ -95,6 +100,15 @@ namespace gpstk
                     const NavID& navIDArg,
                     const std::string rxString,
                     const CommonTime& transmitTimeArg);
+
+         /// explicit constructor
+      PackedNavBits(const SatID& satSysArg, 
+                    const ObsID& obsIDArg,
+                    const NavID& navIDArg,
+                    const std::string rxString,
+                    const CommonTime& transmitTimeArg,
+                    unsigned numBits,
+                    bool fillValue);
 
       PackedNavBits(const PackedNavBits& right);             // Copy constructor
          //PackedNavBits& operator=(const PackedNavBits& right); // Copy assignment
@@ -215,6 +229,22 @@ namespace gpstk
                   const unsigned len, 
                   const int scale ) const;
 
+         /** Unpack an signed long integer split into two pieces.
+          * @warning Be careful about what order you specify the parameters in.
+          * @note This prototype obviates constructing an array before calling.
+          * @param[in] startBit1 The 0-indexed first bit of the MSBs.
+          * @param[in] numBits1 The number of MSBs.
+          * @param[in] startBit2 The 0-indexed first bit of the LSBs.
+          * @param[in] numBits2 The number of LSBs.
+          * @param[in] scale A number to multiply the bits by before returning.
+          * @return The decoded value.
+          */
+      long asLong(const unsigned startBit1,
+                  const unsigned numBits1,
+                  const unsigned startBit2,
+                  const unsigned numBits2,
+                  const int scale ) const;
+
          /* Unpack a split unsigned double */
       double asUnsignedDouble( const unsigned startBits[],
                                const unsigned numBits[],
@@ -243,6 +273,60 @@ namespace gpstk
                              const unsigned numBits[],
                              const unsigned len,
                              const int power2) const;
+
+         /** Unpack a floating point number split into an arbitrary
+          * number of pieces.  The startBits, numBits and whichSF
+          * parameters must all have the same size, however in the
+          * interest of performance, no checking is done to make sure
+          * that is the case.  Additionally, the values in whichSF
+          * must refer to valid indices of the bits vector, which also
+          * is not validated.  The elements of startBits, numBits and
+          * whichSF must correspond to the same segment for a given
+          * vector index, and must be in order of MSB to LSB.
+          * @note This prototype is intended to be used when the
+          *   encoded value spans multiple subframes and thus multiple
+          *   PackedNavBits objects.
+          * @param[in] startBits The 0-indexed first bit of each segment.
+          * @param[in] numBits The number of bits for each segment.
+          * @param[in] whichSF The index into bits that pertains to the segment.
+          * @param[in] bits The set of PackedNavBits objects used to
+          *   construct the value being decoded.
+          * @param[in] power2 The result is multiplied by 2^(power2)
+          *   before returning.
+          * @return The decoded value.
+          */
+      static double asUnsignedDouble(const std::vector<unsigned>& startBits,
+                                     const std::vector<unsigned>& numBits,
+                                     const std::vector<unsigned>& whichSF,
+                                     const std::vector<PackedNavBitsPtr>& bits,
+                                     const int power2);
+
+         /** Unpack a floating point number split into an arbitrary
+          * number of pieces.  The startBits, numBits and whichSF
+          * parameters must all have the same size, however in the
+          * interest of performance, no checking is done to make sure
+          * that is the case.  Additionally, the values in whichSF
+          * must refer to valid indices of the bits vector, which also
+          * is not validated.  The elements of startBits, numBits and
+          * whichSF must correspond to the same segment for a given
+          * vector index, and must be in order of MSB to LSB.
+          * @note This prototype is intended to be used when the
+          *   encoded value spans multiple subframes and thus multiple
+          *   PackedNavBits objects.
+          * @param[in] startBits The 0-indexed first bit of each segment.
+          * @param[in] numBits The number of bits for each segment.
+          * @param[in] whichSF The index into bits that pertains to the segment.
+          * @param[in] bits The set of PackedNavBits objects used to
+          *   construct the value being decoded.
+          * @param[in] power2 The result is multiplied by 2^(power2)
+          *   before returning.
+          * @return The decoded value.
+          */
+      static double asSignedDouble(const std::vector<unsigned>& startBits,
+                                   const std::vector<unsigned>& numBits,
+                                   const std::vector<unsigned>& whichSF,
+                                   const std::vector<PackedNavBitsPtr>& bits,
+                                   const int power2);
 
          /** Unpack a floating point number split into two pieces.
           * @warning Be careful about what order you specify the parameters in.
@@ -571,9 +655,6 @@ namespace gpstk
       double ScaleValue( const double value, const int power2) const;
 
    }; // class PackedNavBits
-
-      /// Managed pointer for passing PackedNavBits around.
-   using PackedNavBitsPtr = std::shared_ptr<PackedNavBits>;
 
       //@}
    std::ostream& operator<<(std::ostream& s, const PackedNavBits& pnb);

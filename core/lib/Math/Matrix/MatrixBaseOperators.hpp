@@ -45,6 +45,7 @@
 
 #include <fstream> // for copyfmt
 #include <iomanip>
+#include "MatrixBase.hpp"
 
 namespace gpstk
 {

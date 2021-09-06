@@ -564,7 +564,7 @@ namespace gpstk
                                 const std::string& inputString,
                                 const std::string& outputString,
                                 std::string::size_type startPos = 0,
-                                unsigned numChanges = (std::numeric_limits<unsigned>::max)());
+                                unsigned numChanges = (std::numeric_limits<unsigned>().max()));
 
          /**
           * Changes occurrences of a specified pattern to a specified

@@ -50,18 +50,6 @@ namespace gpstk
 {
    // These are just to facilitate debugging. The format of the data output
    // is quite ad-hoc and may change.
-   std::ostream& operator<<(std::ostream& s, const SvObsEpoch& obs)
-      throw()
-   {
-      SvObsEpoch::const_iterator i;
-      for (i=obs.begin(); i != obs.end(); i++)
-      {
-         if (i != obs.begin())
-            s << ", ";
-         s << i->first << ": " << i->second;
-      }
-      return s;
-   }
 
    std::ostream& operator<<(std::ostream& s, const ObsEpoch& oe)
       throw()

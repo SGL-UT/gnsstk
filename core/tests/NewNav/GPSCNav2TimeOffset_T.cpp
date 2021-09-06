@@ -72,6 +72,7 @@ constructorTest()
    TUASSERTFE(0.0, uut.a1);
    TUASSERTFE(0.0, uut.a2);
    TUASSERTFE(0.0, uut.deltatLS);
+   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime(), uut.refTime);
    TUASSERTFE(0.0, uut.tot);
    TUASSERTE(unsigned, 0, uut.wnot);
    TUASSERTE(unsigned, 0, uut.wnLSF);
@@ -130,6 +131,7 @@ getOffsetTest()
    uut.deltatLS = 18.0;
    uut.tot = 21600.0;
    uut.wnot = 2060;
+   uut.refTime = gpstk::GPSWeekSecond(uut.wnot,uut.tot);
    double offset;
       /// @todo Truth values here need to be verified.
    TUASSERT(uut.getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC, ws1,
@@ -146,14 +148,14 @@ unsigned GPSCNav2TimeOffset_T ::
 getConversionsTest()
 {
    TUDEF("GPSCNav2TimeOffset", "getConversions");
-   gpstk::TimeOffsetData::TimeCvtSet convs;
+   gpstk::TimeCvtSet convs;
    gpstk::GPSCNav2TimeOffset offs;
       // This looks a bit weird, but basically getConversions is
       // expected to return a set containing one key pair for GPS to
       // the target time system, which by default is Unknown.
-   gpstk::TimeOffsetData::TimeCvtKey key1(gpstk::TimeSystem::GPS,
+   gpstk::TimeCvtKey key1(gpstk::TimeSystem::GPS,
                                           gpstk::TimeSystem::Unknown);
-   gpstk::TimeOffsetData::TimeCvtKey key2(gpstk::TimeSystem::Unknown,
+   gpstk::TimeCvtKey key2(gpstk::TimeSystem::Unknown,
                                           gpstk::TimeSystem::GPS);
    TUCATCH(convs = offs.getConversions());
    TUASSERTE(size_t, 2, convs.size());

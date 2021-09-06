@@ -41,10 +41,43 @@
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
 #include "GPSLNavTimeOffset.hpp"
+#include "GPSLNavIono.hpp"
+#include "GPSLNavISC.hpp"
 #include "TimeCorrection.hpp"
 #include "EngNav.hpp"
 
 using namespace std;
+
+/** Start bits, bit counts and scale factor (*n for integer
+ * quantities, *2^n for floating point quantities) for fields that
+ * apply to all messages. */
+enum FullBitInfo
+{
+   fsbPre = 0, ///< Preamble start bit
+   fnbPre = 8, ///< Preamble number of bits
+   fscPre = 1, ///< Preamble scale factor
+
+   fsbTLM = 8,  ///< Telemetry Message start bit
+   fnbTLM = 14, ///< Telemetry Message number of bits
+   fscTLM = 1,  ///< Telemetry Message scale factor
+
+   fsbAlert = 47, ///< Alert flag start bit
+   fnbAlert = 1,  ///< Alert flag number of bits
+   fscAlert = 1,  ///< Alert flag scale factor
+
+   fsbAS = 48, ///< Anti-spoof flag start bit
+   fnbAS = 1,  ///< Anti-spoof flag number of bits
+   fscAS = 1,  ///< Anti-spoof flag scale factor
+};
+
+// Miscellaneous constants.  Using enums instead of constants because it
+// doesn't use any memory that way.
+enum MiscConst
+{
+   dataIDGPSonQZSS = 0, ///< Neither GPS nor QZSS use this any longer.
+   dataIDGPS = 1,       ///< Standard GPS data ID.
+   dataIDQZSS = 3,      ///< QZSS almanacs for QZSS satellites.
+};
 
 // This enum is only used here and it's being used to avoid confusion
 // on vector indices.  Using enums instead of constants because it
@@ -63,27 +96,10 @@ enum SFIndex
  * the ephemeris fields.
  * Bit positions/sizes from IS-GPS-200 Figure 20-1, sheet 1-3.
  * Scale factors taken from Tables 20-I and 20-III.
- * @todo Add enumerations for almanac data bits.
  */
 enum EphBitInfo
 {
       // every subframe has a preamble and tlm so no subframe index here.
-   esbPre = 0, ///< Preamble start bit
-   enbPre = 8, ///< Preamble number of bits
-   escPre = 1, ///< Preamble scale factor
-
-   esbTLM = 8,  ///< Telemetry Message start bit
-   enbTLM = 14, ///< Telemetry Message number of bits
-   escTLM = 1,  ///< Telemetry Message scale factor
-
-   esbAlert = 47, ///< Alert flag start bit
-   enbAlert = 1,  ///< Alert flag number of bits
-   escAlert = 1,  ///< Alert flag scale factor
-
-   esbAS = 48, ///< Anti-spoof flag start bit
-   enbAS = 1,  ///< Anti-spoof flag number of bits
-   escAS = 1,  ///< Anti-spoof flag scale factor
-
    esiWN = sf1, ///< WN subframe index
    esbWN = 60,  ///< WN start bit
    enbWN = 10,  ///< WN number of bits
@@ -261,6 +277,72 @@ enum EphBitInfo
    escidot = -43, ///< idot scale factor
 };
 
+/** Subframe index, start bits, bit counts and scale factor (*n for
+ * integer quantities, *2^n for floating point quantities) for each of
+ * the almanac fields.
+ * Bit positions/sizes from IS-GPS-200 Figure 20-1, sheet 1-3.
+ * Scale factors taken from Tables 20-I and 20-III.
+ * @todo Add enumerations for almanac data bits.
+ */
+enum AlmBitInfo
+{
+      // orbital elements, SVID 1-32 (sf5 p1-24, sf4, p 2,3,4,5,7,8,9,10)
+
+   asbDataID = 60,
+   anbDataID = 2,
+   ascDataID = 1,
+
+   asbPageID = asbDataID + anbDataID,
+   anbPageID = 6,
+   ascPageID = 1,
+
+      // ionospheric parameters (sf4 p18)
+
+   asbAlpha0 = asbPageID + anbPageID,
+   anbAlpha0 = 8,
+   ascAlpha0 = -30,
+
+   asbAlpha1 = asbAlpha0 + anbAlpha0,
+   anbAlpha1 = 8,
+   ascAlpha1 = -27,
+
+   asbParity3 = asbAlpha1 + anbAlpha1,
+   anbParity3 = 6,
+   ascParity3 = 1,
+
+   asbAlpha2 = asbParity3 + anbParity3,
+   anbAlpha2 = 8,
+   ascAlpha2 = -24,
+
+   asbAlpha3 = asbAlpha2 + anbAlpha2,
+   anbAlpha3 = 8,
+   ascAlpha3 = -24,
+
+   asbBeta0 = asbAlpha3 + anbAlpha3,
+   anbBeta0 = 8,
+   ascBeta0 = 11,
+
+   asbParity4 = asbBeta0 + anbBeta0,
+   anbParity4 = 6,
+   ascParity4 = 1,
+
+   asbBeta1 = asbParity4 + anbParity4,
+   anbBeta1 = 8,
+   ascBeta1 = 14,
+
+   asbBeta2 = asbBeta1 + anbBeta1,
+   anbBeta2 = 8,
+   ascBeta2 = 16,
+
+   asbBeta3 = asbBeta2 + anbBeta2,
+   anbBeta3 = 8,
+   ascBeta3 = 16,
+
+   asbParity5 = asbBeta3 + anbBeta3,
+   anbParity5 = 6,
+   ascParity5 = 1,
+};
+
 namespace gpstk
 {
    bool PNBGPSLNavDataFactory ::
@@ -273,6 +355,7 @@ namespace gpstk
          return false;
       }
       bool rv = true;
+      bool useQZSS = false;
       try
       {
             /*
@@ -290,6 +373,7 @@ namespace gpstk
             */
          unsigned long sfid = navIn->asUnsignedLong(49,3,1);
          unsigned long svid = 0;
+         unsigned dataID = -1;
          bool checkParity = false, expParity = false;
          switch (navValidity)
          {
@@ -327,10 +411,24 @@ namespace gpstk
                break;
             case 4:
             case 5:
-               svid = navIn->asUnsignedLong(62,6,1);
-                  //cerr << "sfid " << sfid << " = almanac, svid " << svid << endl;
+               svid = navIn->asUnsignedLong(asbPageID,anbPageID,ascPageID);
+               dataID = navIn->asUnsignedLong(asbDataID,anbDataID,ascDataID);
+               useQZSS =
+                  ((navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)&&
+                   (dataID == dataIDQZSS));
                if ((svid <= MAX_PRN_GPS) && (svid >= 1))
                {
+                  if (useQZSS)
+                  {
+                        // IS-QZSS 1.8 section 5.2.2.2.5.2
+                        // When the Data-ID is "11" (B) , the content
+                        // is QZS Almanac data and Almanac health, and
+                        // the eight bits of "data ID (2 bits) + SV ID
+                        // (6 bits)" indicates the PRN number of the
+                        // QZS.
+                     svid = svid | (dataID << 6);
+                  }
+                     /// @todo support GPS PRNs 33+ (IS-GPS-200 40.1, appendix IV)
                      // process orbit and health
                   rv = processAlmOrb(svid, navIn, navOut);
                }
@@ -344,7 +442,7 @@ namespace gpstk
                      // process health
                   rv = processSVID63(navIn, navOut);
                }
-               else if (svid == 56)
+               else if ((svid == 56) || (useQZSS && (svid == 61)))
                {
                      // process time offset
                   rv = processSVID56(navIn, navOut);
@@ -360,7 +458,7 @@ namespace gpstk
          }
          // cerr << "  results: " << navOut.size() << endl;
          // for (const auto& i : navOut)
-         //    i->dump(cerr,NavData::Detail::Full);
+         //    i->dump(cerr,DumpDetail::Full);
       }
       catch (Exception& exc)
       {
@@ -387,16 +485,34 @@ namespace gpstk
    {
       NavSatelliteID key(navIn->getsatSys().id, navIn->getsatSys(),
                          navIn->getobsID(), navIn->getNavID());
-      if ((sfid == 1) && processHea)
+      if (sfid == 1)
       {
-            // Add ephemeris health bits from subframe 1.
-         NavDataPtr p1 = std::make_shared<GPSLNavHealth>();
-         p1->timeStamp = navIn->getTransmitTime();
-         p1->signal = NavMessageID(key, NavMessageType::Health);
-         dynamic_cast<GPSLNavHealth*>(p1.get())->svHealth =
-            navIn->asUnsignedLong(esbHea,enbHea,escHea);
-         // cerr << "add LNAV eph health" << endl;
-         navOut.push_back(p1);
+         if (processHea)
+         {
+               // Add ephemeris health bits from subframe 1.
+            NavDataPtr p1 = std::make_shared<GPSLNavHealth>();
+            p1->timeStamp = navIn->getTransmitTime();
+            p1->signal = NavMessageID(key, NavMessageType::Health);
+            dynamic_cast<GPSLNavHealth*>(p1.get())->svHealth =
+               navIn->asUnsignedLong(esbHea,enbHea,escHea);
+               // cerr << "add LNAV eph health" << endl;
+            navOut.push_back(p1);
+         }
+         if (processISC)
+         {
+               // Add ephemeris Tgd bits from subframe 1.
+            NavDataPtr p2 = std::make_shared<GPSLNavISC>();
+            GPSLNavISC *isc = dynamic_cast<GPSLNavISC*>(p2.get());
+            isc->timeStamp = navIn->getTransmitTime();
+            isc->signal = NavMessageID(key, NavMessageType::ISC);
+            isc->pre = navIn->asUnsignedLong(fsbPre,fnbPre,fscPre);
+            isc->tlm = navIn->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
+            isc->alert = navIn->asBool(fsbAlert);
+            isc->asFlag = navIn->asBool(fsbAS);
+            isc->isc = navIn->asSignedDouble(esbTGD,enbTGD,escTGD);
+               // cerr << "add LNAV eph Tgd" << endl;
+            navOut.push_back(p2);
+         }
       }
       if (!PNBNavDataFactory::processEph)
       {
@@ -464,6 +580,11 @@ namespace gpstk
          // Now we can set the Toe/Toc properly
       eph->Toe = GPSWeekSecond(wn,toe);
       eph->Toc = GPSWeekSecond(wn,toc);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         eph->Toe.setTimeSystem(gpstk::TimeSystem::QZS);
+         eph->Toc.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
          // health is set below
       eph->Cuc = ephSF[esiCuc]->asSignedDouble(esbCuc,enbCuc,escCuc);
       eph->Cus = ephSF[esiCus]->asSignedDouble(esbCus,enbCus,escCus);
@@ -495,15 +616,15 @@ namespace gpstk
       eph->af1 = ephSF[esiaf1]->asSignedDouble(esbaf1,enbaf1,escaf1);
       eph->af2 = ephSF[esiaf2]->asSignedDouble(esbaf2,enbaf2,escaf2);
          // GPSLNavData
-      eph->pre = ephSF[sf1]->asUnsignedLong(esbPre,enbPre,escPre);
-      eph->tlm = ephSF[sf1]->asUnsignedLong(esbTLM,enbTLM,escTLM);
-      eph->alert = ephSF[sf1]->asBool(esbAlert);
-      eph->asFlag = ephSF[sf1]->asBool(esbAS);
+      eph->pre = ephSF[sf1]->asUnsignedLong(fsbPre,fnbPre,fscPre);
+      eph->tlm = ephSF[sf1]->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
+      eph->alert = ephSF[sf1]->asBool(fsbAlert);
+      eph->asFlag = ephSF[sf1]->asBool(fsbAS);
          // GPSLNavEph
-      eph->pre2 = ephSF[sf2]->asUnsignedLong(esbPre,enbPre,escPre);
-      eph->pre3 = ephSF[sf3]->asUnsignedLong(esbPre,enbPre,escPre);
-      eph->tlm2 = ephSF[sf2]->asUnsignedLong(esbTLM,enbTLM,escTLM);
-      eph->tlm3 = ephSF[sf3]->asUnsignedLong(esbTLM,enbTLM,escTLM);
+      eph->pre2 = ephSF[sf2]->asUnsignedLong(fsbPre,fnbPre,fscPre);
+      eph->pre3 = ephSF[sf3]->asUnsignedLong(fsbPre,fnbPre,fscPre);
+      eph->tlm2 = ephSF[sf2]->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
+      eph->tlm3 = ephSF[sf3]->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
          // 2 = size of iodcStart/iodcNum arrays
       eph->iodc = ephSF[esiIODC]->asUnsignedLong(esbIODCm,enbIODCm,esbIODCl,
                                                  enbIODCl,escIODC);
@@ -515,10 +636,10 @@ namespace gpstk
                      SVHealth::Unhealthy); // actually in OrbitDataKepler
       eph->uraIndex = ephSF[esiURA]->asUnsignedLong(esbURA,enbURA,escURA);
       eph->tgd = ephSF[esiTGD]->asSignedDouble(esbTGD,enbTGD,escTGD);
-      eph->alert2 = ephSF[sf2]->asBool(esbAlert);
-      eph->alert3 = ephSF[sf3]->asBool(esbAlert);
-      eph->asFlag2 = ephSF[sf2]->asBool(esbAS);
-      eph->asFlag3 = ephSF[sf3]->asBool(esbAS);
+      eph->alert2 = ephSF[sf2]->asBool(fsbAlert);
+      eph->alert3 = ephSF[sf3]->asBool(fsbAlert);
+      eph->asFlag2 = ephSF[sf2]->asBool(fsbAS);
+      eph->asFlag3 = ephSF[sf3]->asBool(fsbAS);
       eph->codesL2 = static_cast<GPSLNavEph::L2Codes>(
          ephSF[esiL2]->asUnsignedLong(esbL2,enbL2,escL2));
       eph->L2Pdata = ephSF[esiL2P]->asUnsignedLong(esbL2P,enbL2P,escL2P);
@@ -574,10 +695,10 @@ namespace gpstk
          // Sinusoidal corrections and other unset parameters are not
          // used by almanac data and are initialized to 0 by
          // constructor
-      alm->pre = navIn->asUnsignedLong(esbPre,enbPre,escPre);
-      alm->tlm = navIn->asUnsignedLong(esbTLM,enbTLM,escTLM);
-      alm->alert = navIn->asBool(esbAlert);
-      alm->asFlag = navIn->asBool(esbAS);
+      alm->pre = navIn->asUnsignedLong(fsbPre,fnbPre,fscPre);
+      alm->tlm = navIn->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
+      alm->alert = navIn->asBool(fsbAlert);
+      alm->asFlag = navIn->asBool(fsbAS);
       alm->xmitTime = navIn->getTransmitTime();
       alm->ecc = navIn->asUnsignedDouble(68,16,-21);
       alm->toa = navIn->asUnsignedDouble(90,8,12);
@@ -585,7 +706,19 @@ namespace gpstk
       // cerr << "page " << prn << " WNa = ??  toa = " << alm->toa
       //      << "  WNx = " << (ws.week & 0x0ff) << "  tox = " << ws.sow << endl;
       alm->deltai = navIn->asDoubleSemiCircles(98,16,-19);
-      alm->i0 = (0.3 * PI) + alm->deltai;
+         /** @todo determine if this offset applies only when the
+          * subject satellite is QZSS or if it is used whenever the
+          * transmitting satellite is QZSS. */
+      if (alm->signal.sat.system == SatelliteSystem::QZSS)
+      {
+         alm->i0 = GPSLNavData::refioffsetQZSS + alm->deltai;
+         alm->ecc += GPSLNavData::refEccQZSS;
+         ws.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
+      else
+      {
+         alm->i0 = GPSLNavData::refioffsetGPS + alm->deltai;
+      }
       alm->OMEGAdot = navIn->asDoubleSemiCircles(120,16,-38);
       alm->healthBits = navIn->asUnsignedLong(136,8,1);
       alm->health = (alm->healthBits == 0 ? SVHealth::Healthy :
@@ -665,13 +798,31 @@ namespace gpstk
          }
       }
          // svid 51 = sf 5 page 25. The format has 24 SVs in it,
-         // grouped 4 per word.
+         // grouped 4 per word for GPS.  For QZSS, it varies - see
+         // IS-QZSS-PNT-004 Table 4.1.2-12.
+         /** @todo Should we be generating health objects for both PRN
+          * 196 and 203, for example?  It's not entirely clear from
+          * the table if the PRN should be 196 for L1 C/A and 203 for
+          * L1 C/B, or if the health status applies to both at the
+          * same time. */
       if (!PNBNavDataFactory::processHea)
       {
             // User doesn't want health so don't do any processing.
          return true;
       }
-      for (unsigned prn = 1, bit = 90; prn <= 24; prn += 4, bit += 30)
+         // use GPS defaults.
+      unsigned startPRN = 1, endPRN = 24;
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         unsigned dataID = navIn->asUnsignedLong(asbDataID,anbDataID,ascDataID);
+         if (dataID == dataIDQZSS)
+         {
+            startPRN = MIN_PRN_QZS;
+            endPRN = MAX_PRN_QZS_LNAV;
+         }
+      }
+      for (unsigned prn = startPRN, bit = 90; prn <= endPRN;
+           prn += 4, bit += 30)
       {
          NavDataPtr p1 = std::make_shared<GPSLNavHealth>();
          NavDataPtr p2 = std::make_shared<GPSLNavHealth>();
@@ -685,6 +836,8 @@ namespace gpstk
             navIn->asUnsignedLong(bit+0, 6, 1);
          // cerr << "add LNAV page 51 health" << endl;
          navOut.push_back(p1);
+         if ((prn+1) > endPRN)
+            break;
          p2->timeStamp = navIn->getTransmitTime();
          p2->signal = NavMessageID(
             NavSatelliteID(prn+1, xmitSat, oid, navid),
@@ -693,6 +846,8 @@ namespace gpstk
             navIn->asUnsignedLong(bit+6, 6, 1);
          // cerr << "add LNAV page 51 health" << endl;
          navOut.push_back(p2);
+         if ((prn+2) > endPRN)
+            break;
          p3->timeStamp = navIn->getTransmitTime();
          p3->signal = NavMessageID(
             NavSatelliteID(prn+2, xmitSat, oid, navid),
@@ -701,6 +856,8 @@ namespace gpstk
             navIn->asUnsignedLong(bit+12, 6, 1);
          // cerr << "add LNAV page 51 health" << endl;
          navOut.push_back(p3);
+         if ((prn+3) > endPRN)
+            break;
          p4->timeStamp = navIn->getTransmitTime();
          p4->signal = NavMessageID(
             NavSatelliteID(prn+3, xmitSat, oid, navid),
@@ -796,6 +953,30 @@ namespace gpstk
          // data has already been checked (it will have been by
          // addData).
          // svid 56 = sf 4 page 18.
+      if (PNBNavDataFactory::processIono)
+      {
+         NavDataPtr p1 = std::make_shared<GPSLNavIono>();
+         p1->timeStamp = navIn->getTransmitTime();
+         p1->signal = NavMessageID(
+            NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
+                           navIn->getobsID(), navIn->getNavID()),
+            NavMessageType::Iono);
+         GPSLNavIono *iono = dynamic_cast<GPSLNavIono*>(p1.get());
+            // GPSLNavIono
+         iono->pre = navIn->asUnsignedLong(fsbPre,fnbPre,fscPre);
+         iono->tlm = navIn->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
+         iono->alert = navIn->asBool(fsbAlert);
+         iono->asFlag = navIn->asBool(fsbAS);
+         iono->alpha[0] = navIn->asSignedDouble(asbAlpha0,anbAlpha0,ascAlpha0);
+         iono->alpha[1] = navIn->asSignedDouble(asbAlpha1,anbAlpha1,ascAlpha1);
+         iono->alpha[2] = navIn->asSignedDouble(asbAlpha2,anbAlpha2,ascAlpha2);
+         iono->alpha[3] = navIn->asSignedDouble(asbAlpha3,anbAlpha3,ascAlpha3);
+         iono->beta[0] = navIn->asSignedDouble(asbBeta0,anbBeta0,ascBeta0);
+         iono->beta[1] = navIn->asSignedDouble(asbBeta1,anbBeta1,ascBeta1);
+         iono->beta[2] = navIn->asSignedDouble(asbBeta2,anbBeta2,ascBeta2);
+         iono->beta[3] = navIn->asSignedDouble(asbBeta3,anbBeta3,ascBeta3);
+         navOut.push_back(p1);
+      }
       if (!PNBNavDataFactory::processTim)
       {
             // User doesn't want time offset data so don't do any processing.
@@ -822,15 +1003,23 @@ namespace gpstk
       to->a0 = navIn->asSignedDouble(a0start,a0num,2,-30);
       to->a1 = navIn->asSignedDouble(150,24,-50);
       to->tot = navIn->asUnsignedDouble(218,8,12);
-      to->wnt = navIn->asUnsignedLong(226,8,1);
+      to->wnot = navIn->asUnsignedLong(226,8,1);
       to->wnLSF = navIn->asUnsignedLong(248,8,1);
       to->dn = navIn->asUnsignedLong(256,8,1);
       to->deltatLSF = navIn->asLong(270,8,1);
          // adjust week numbers to full week
       GPSWeekSecond ws(p0->timeStamp);
       long refWeek = ws.week;
-      to->wnt = timeAdjust8BitWeekRollover(to->wnt, refWeek);
+      to->wnot = timeAdjust8BitWeekRollover(to->wnot, refWeek);
       to->wnLSF = timeAdjust8BitWeekRollover(to->wnLSF, refWeek);
+      to->refTime = GPSWeekSecond(to->wnot, to->tot);
+      to->effTime = GPSWeekSecond(to->wnLSF, (to->dn-1)*86400);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         to->src = gpstk::TimeSystem::QZS;
+         to->refTime.setTimeSystem(gpstk::TimeSystem::QZS);
+         to->effTime.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
          // return results.
       // cerr << "add LNAV page 56 time offset" << endl;
       navOut.push_back(p0);

@@ -41,8 +41,8 @@
  * Operators for FileFilter using Rinex navigation data
  */
 
-#ifndef GPSTK_RINEXNAVFILTEROPERATORS_HPP
-#define GPSTK_RINEXNAVFILTEROPERATORS_HPP
+#ifndef GPSTK_RINEX3NAVFILTEROPERATORS_HPP
+#define GPSTK_RINEX3NAVFILTEROPERATORS_HPP
 
 #include <set>
 #include <list>
@@ -235,4 +235,4 @@ namespace gpstk
 
 }
 
-#endif // GPSTK_RINEXNAVFILTEROPERATORS_HPP
+#endif // GPSTK_RINEX3NAVFILTEROPERATORS_HPP

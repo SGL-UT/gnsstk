@@ -82,6 +82,7 @@ namespace gpstk
          /// Comparison operator, obv.
       bool operator==(const NavMessageID& right) const
       {
+         // std::cerr << __PRETTY_FUNCTION__ << std::endl;
          return ((messageType == right.messageType) &&
                  NavSatelliteID::operator==(right));
       }
@@ -96,6 +97,8 @@ namespace gpstk
       NavMessageType messageType;
    };
 
+
+   typedef std::set<NavMessageID> NavMessageIDSet;
 
    inline std::ostream& operator<<(std::ostream& s, const NavMessageID& nmid)
    {

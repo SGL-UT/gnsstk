@@ -1,6 +1,0 @@
-usr/include/gpstk*/gpstk/*.h
-usr/include/gpstk*/gpstk/*.hpp
-# Add this once we move to version 12 and remove libgpstk-dev
-#usr/share/cmake/GPSTK/*
-#usr/lib/*/lib*.so
-usr/bin/gpstk-config

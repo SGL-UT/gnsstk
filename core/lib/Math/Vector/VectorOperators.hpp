@@ -203,7 +203,7 @@ namespace gpstk
 
 namespace std
 {
-   VecBaseNewBinaryTranscendentalOperator(atan, gpstk::Vector<T>)
+   VecBaseNewBinaryTranscendentalOperator(atan2, gpstk::Vector<T>)
    VecBaseNewBinaryTranscendentalOperator(pow, gpstk::Vector<T>)
 }
 

@@ -63,7 +63,8 @@ namespace gpstk
           * known message types. */
       NavDataFactory()
             : navValidity(NavValidityType::Any),
-              procNavTypes(allNavMessageTypes)
+              procNavTypes(allNavMessageTypes),
+              debugLevel(0)
       {}
 
          /// Clean up.
@@ -79,14 +80,14 @@ namespace gpstk
           * @param[in] when The time of interest to search for data.
           * @param[in] xmitHealth The desired health status of the
           *   transmitting satellite.
-          * @param[out] navData The resulting navigation message.
+          * @param[out] navOut The resulting navigation message.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
           *   behavior or by nearest to when in time. 
           * @return true if successful.  If false, navData will be untouched. */
       virtual bool find(const NavMessageID& nmid, const CommonTime& when,
-                        NavDataPtr& navData, SVHealth xmitHealth,
+                        NavDataPtr& navOut, SVHealth xmitHealth,
                         NavValidityType valid, NavSearchOrder order) = 0;
 
          /** Get the offset, in seconds, to apply to times when
@@ -119,6 +120,9 @@ namespace gpstk
          /** Indicate what nav message types the factories should be
           * loading.  This should be called before the factories
           * acquire any data.
+          * @warning In order to properly support SP3, if you want to
+          *   include Ephemeris data, you should also include Clock
+          *   data in the filter.
           * @param[in] nmts The set of nav message types to be
           *   processed by the factories. */
       virtual void setTypeFilter(const NavMessageTypeSet& nmts)
@@ -139,7 +143,7 @@ namespace gpstk
           * format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-      virtual void dump(std::ostream& s, NavData::Detail dl) const
+      virtual void dump(std::ostream& s, DumpDetail dl) const
       {}
 
          /** Remove all data from the factory in the time span
@@ -191,6 +195,104 @@ namespace gpstk
       virtual CommonTime getFinalTime() const
       { return CommonTime::BEGINNING_OF_TIME; }
 
+         /** Obtain a set of satellites for which we have data in the
+          * given time span.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of satellites for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      virtual NavSatelliteIDSet getAvailableSats(const CommonTime& fromTime,
+                                                 const CommonTime& toTime)
+         const = 0;
+
+         /** Obtain a set of satellites for which we have data of a
+          * specific message type in the given time span.
+          * @param[in] nmt The navigation message type you're looking for.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of satellites for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      virtual NavSatelliteIDSet getAvailableSats(NavMessageType nmt,
+                                                 const CommonTime& fromTime,
+                                                 const CommonTime& toTime)
+         const = 0;
+
+         /** Obtain a set of satellites+message types for which we
+          * have data in the given time span.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of NavMessageID objects for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      virtual NavMessageIDSet getAvailableMsgs(const CommonTime& fromTime,
+                                               const CommonTime& toTime)
+         const = 0;
+
+         /** Determine if a given message/satellite/signal is
+          * available in the factory.
+          * @param[in] nmid The message/satellite/signal to search for.
+          * @param[in] fromTime The earliest time for which a matching
+          *   message should be available.
+          * @param[in] toTime The latest time for which a matching
+          *   message should be available.
+          * @return true if the given satellite/signal is has data in
+          *   the given time span.
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years).
+          * @note This method iterates over the given time span until
+          *   it finds a match.  As such, it is strongly recommended
+          *   that you not use BEGINNING_OF_TIME or END_OF_TIME, as it
+          *   takes several minutes to iterate over that time span. */
+      virtual bool isPresent(const NavMessageID& nmid,
+                             const CommonTime& fromTime,
+                             const CommonTime& toTime);
+
+         /** Determine if a given satellite/signal is available in the factory.
+          * @param[in] nmt The navigation message type of interest.
+          * @param[in] satID The satellite/signal to search for.
+          * @param[in] fromTime The earliest time for which a matching
+          *   message should be available.
+          * @param[in] toTime The latest time for which a matching
+          *   message should be available.
+          * @return true if the given satellite/signal is has data in
+          *   the given time span.
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years). 
+          * @note This method iterates over the given time span until
+          *   it finds a match.  As such, it is strongly recommended
+          *   that you not use BEGINNING_OF_TIME or END_OF_TIME, as it
+          *   takes several minutes to iterate over that time span.
+          * @note Named isTypePresent instead of overloading isPresent
+          *   because of peculiarities of C++ overloading,
+          *   i.e. derived classes would have to override both,
+          *   defeating the purposed of having this short-cut. */
+      virtual bool isTypePresent(NavMessageType nmt,
+                                 const NavSatelliteID& satID,
+                                 const CommonTime& fromTime,
+                                 const CommonTime& toTime)
+      { return isPresent(NavMessageID(satID,nmt),fromTime,toTime); }
+
          /// Return a comma-separated list of formats supported by this factory.
       virtual std::string getFactoryFormats() const = 0;
 
@@ -199,6 +301,9 @@ namespace gpstk
           * use this factory, so it is up to the derived classes to
           * fill out the signals as appropriate. */
       NavSignalSet supportedSignals;
+
+         /// Debug output when processing.
+      unsigned debugLevel;
 
    protected:
          /** Determines how the factory should load nav data from the store.
@@ -214,9 +319,9 @@ namespace gpstk
    };
 
       /// Managed pointer to NavDataFactory.
-   using NavDataFactoryPtr = std::shared_ptr<NavDataFactory>;
+   typedef std::shared_ptr<NavDataFactory> NavDataFactoryPtr;
       /// Map signal to a factory.
-   using NavDataFactoryMap = std::multimap<NavSignalID, NavDataFactoryPtr>;
+   typedef std::multimap<NavSignalID, NavDataFactoryPtr> NavDataFactoryMap;
 
       //@}
 

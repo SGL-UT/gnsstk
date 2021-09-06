@@ -42,6 +42,7 @@
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
 #include "GPSLNavTimeOffset.hpp"
+#include "TimeString.hpp"
 
 namespace gpstk
 {
@@ -147,6 +148,12 @@ public:
       /** Make sure addFactory() puts the factory in each supported
        * signal in the factories map. */
    unsigned addFactoryTest();
+      /// Test getInitialTime() and getFinalTime()
+   unsigned getTimeTest();
+   unsigned getAvailableSatsTest();
+   unsigned isPresentTest();
+   unsigned getIonoCorrTest();
+   unsigned getISCTest();
 
    gpstk::CivilTime civ;
    gpstk::CommonTime ct;
@@ -256,6 +263,7 @@ getOffsetTest()
    navOut->signal.sat = gpstk::SatID(23,gpstk::SatelliteSystem::GPS);
    navOut->signal.xmitSat = gpstk::SatID(32,gpstk::SatelliteSystem::GPS);
    toptr->deltatLS = 23; // set a simple, easy to verify value.
+   toptr->refTime = ct;
    TUASSERT(fact1->addNavData(navOut));
    TUCATCH(navLib.addFactory(ndfp));
    double result;
@@ -264,13 +272,15 @@ getOffsetTest()
                              gpstk::NavValidityType::Any));
    TUASSERTFE(23.0, result);
       // reverse the conversion and expect negative.
+   gpstk::CommonTime utc35(ct+35);
+   utc35.setTimeSystem(gpstk::TimeSystem::UTC);
    TUASSERT(navLib.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::GPS,
-                             ct+35, result, gpstk::SVHealth::Any,
+                             utc35, result, gpstk::SVHealth::Any,
                              gpstk::NavValidityType::Any));
    TUASSERTFE(-23.0, result);
       // expect this to not work
    TUASSERT(!navLib.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::BDT,
-                              ct+35, result, gpstk::SVHealth::Any,
+                              utc35, result, gpstk::SVHealth::Any,
                               gpstk::NavValidityType::Any));
    TURETURN();
 }
@@ -429,6 +439,190 @@ addFactoryTest()
 }
 
 
+unsigned NavLibrary_T ::
+getTimeTest()
+{
+   TUDEF("NavLibrary", "getInitialTime");
+   gpstk::NavLibrary navLib;
+   gpstk::NavDataFactoryPtr
+      ndfp(std::make_shared<RinexTestFactory>());
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "arlm2000.15n";
+   TUCATCH(navLib.addFactory(ndfp));
+   RinexTestFactory *rndfp =
+      dynamic_cast<RinexTestFactory*>(ndfp.get());
+   TUASSERT(rndfp->addDataSource(fname));
+   TUASSERTE(gpstk::CommonTime,
+             gpstk::CivilTime(2015,7,19,0,0,0.0,
+                              gpstk::TimeSystem::GPS).convertToCommonTime(),
+             navLib.getInitialTime());
+   TUASSERTE(gpstk::CommonTime,
+             gpstk::CivilTime(2015,7,20,2,0,0.0,
+                              gpstk::TimeSystem::GPS).convertToCommonTime(),
+             navLib.getFinalTime());
+   TURETURN();
+}
+
+
+unsigned NavLibrary_T ::
+getAvailableSatsTest()
+{
+   TUDEF("NavLibrary", "getAvailableSats");
+   gpstk::NavLibrary uut;
+   gpstk::NavDataFactoryPtr
+      ndfp(std::make_shared<RinexTestFactory>());
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "arlm2000.15n";
+   gpstk::NavSatelliteIDSet satset;
+   TUCATCH(uut.addFactory(ndfp));
+   RinexTestFactory *rndfp = dynamic_cast<RinexTestFactory*>(ndfp.get());
+   TUASSERT(rndfp->addDataSource(fname));
+      // really basic tests, the real tests are in NavDataFactoryWithStore_T etc
+   TUCATCH(satset = uut.getAvailableSats(
+              gpstk::CommonTime::BEGINNING_OF_TIME,
+              gpstk::CommonTime::END_OF_TIME));
+   TUASSERTE(gpstk::NavSatelliteIDSet::size_type, 32, satset.size());
+   TUCATCH(satset = uut.getAvailableSats(
+              gpstk::CivilTime(2020,4,12,0,56,0,gpstk::TimeSystem::GPS),
+              gpstk::CivilTime(2020,4,12,0,57,0,gpstk::TimeSystem::GPS)));
+   TUASSERTE(bool, true, satset.empty());
+   TURETURN();
+}
+
+
+unsigned NavLibrary_T ::
+isPresentTest()
+{
+   TUDEF("NavLibrary", "isPresent");
+   gpstk::NavLibrary uut;
+   gpstk::NavDataFactoryPtr
+      ndfp(std::make_shared<RinexTestFactory>());
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "arlm2000.15n";
+      // really basic tests, the real tests are in NavDataFactoryWithStore_T etc
+   TUCATCH(uut.addFactory(ndfp));
+   RinexTestFactory *rndfp = dynamic_cast<RinexTestFactory*>(ndfp.get());
+   TUASSERT(rndfp->addDataSource(fname));
+   gpstk::NavSatelliteID sat1(gpstk::SatID(23,gpstk::SatelliteSystem::GPS));
+   gpstk::NavMessageID nmid1e(sat1, gpstk::NavMessageType::Ephemeris),
+      nmid1a(sat1, gpstk::NavMessageType::Almanac);
+   gpstk::CivilTime t1(2015,7,19,10,0,0,gpstk::TimeSystem::GPS);
+   gpstk::CivilTime t2(2015,7,19,11,0,0,gpstk::TimeSystem::GPS);
+   // uut.dump(std::cerr, gpstk::DumpDetail::Brief);
+   TUASSERTE(bool, true, uut.isPresent(nmid1e, t1, t2));
+   TUASSERTE(bool, false, uut.isPresent(nmid1a, t1, t2));
+   TUCSM("isTypePresent");
+   TUASSERTE(bool, true, uut.isTypePresent(
+                gpstk::NavMessageType::Ephemeris, sat1, t1, t2));
+   TUASSERTE(bool, false, uut.isTypePresent(
+                gpstk::NavMessageType::Almanac, sat1, t1, t2));
+   TURETURN();
+}
+
+
+unsigned NavLibrary_T ::
+getIonoCorrTest()
+{
+   TUDEF("NavLibrary", "getIonoCorr");
+   gpstk::NavLibrary uut;
+   gpstk::NavDataFactoryPtr
+      ndfp(std::make_shared<RinexTestFactory>());
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "arlm2000.15n";
+   gpstk::CommonTime when = gpstk::CivilTime(2015,7,19,10,0,0,
+                                             gpstk::TimeSystem::GPS);
+   gpstk::Position rx, sv;
+   static const double expCorr = 2.3429392704808575942;
+   static const double corrEps = 1e-12; // 1 picometer ought to be adequate.
+   double corr = 0.0;
+   rx.setECEF( -1575232.0141, -4707872.2332,  3993198.4383);
+   sv.setECEF(-22188225.701295968145, -12374229.731898581609,
+              8029748.4487511720508);
+   TUCATCH(uut.addFactory(ndfp));
+   RinexTestFactory *rndfp = dynamic_cast<RinexTestFactory*>(ndfp.get());
+   TUASSERT(rndfp->addDataSource(fname));
+      // test both entry points and make sure they yield the same
+      // (w/in 1 picometer) results.
+   TUASSERTE(bool, true, uut.getIonoCorr(
+                gpstk::SatID(1, gpstk::SatelliteSystem::GPS), when, rx,
+                gpstk::CarrierBand::L1, corr, gpstk::NavType::GPSLNAV));
+   TUASSERTFEPS(expCorr, corr, corrEps);
+   corr = 0.0;
+   TUASSERTE(bool, true, uut.getIonoCorr(
+                gpstk::SatelliteSystem::GPS, when, rx, sv,
+                gpstk::CarrierBand::L1, corr, gpstk::NavType::GPSLNAV));
+   TUASSERTFEPS(expCorr, corr, corrEps);
+   TURETURN();
+}
+
+
+unsigned NavLibrary_T ::
+getISCTest()
+{
+   TUDEF("NavLibrary", "getISC");
+   gpstk::NavLibrary uut;
+   gpstk::NavDataFactoryPtr
+      ndfp(std::make_shared<RinexTestFactory>());
+   std::string fname = gpstk::getPathData() + gpstk::getFileSep() +
+      "arlm2000.15n";
+   const gpstk::CommonTime when = gpstk::CivilTime(2015,7,19,10,0,0,
+                                                   gpstk::TimeSystem::GPS);
+   const gpstk::ObsID oid(gpstk::ObservationType::Phase, gpstk::CarrierBand::L2,
+                          gpstk::TrackingCode::Y);
+   const gpstk::ObsID woid1(gpstk::ObservationType::Phase,
+                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L2CL);
+   const gpstk::ObsID woid2(gpstk::ObservationType::Phase,
+                            gpstk::CarrierBand::L2, gpstk::TrackingCode::L1CP);
+   static const double expCorr = -8.4361009713756425465e-09;
+   double corr = 0.0;
+   TUCATCH(uut.addFactory(ndfp));
+   RinexTestFactory *rndfp = dynamic_cast<RinexTestFactory*>(ndfp.get());
+   TUASSERT(rndfp->addDataSource(fname));
+   TUASSERTE(bool, true, uut.getISC(oid, when, corr));
+   TUASSERTFE(expCorr, corr);
+      // check all the combos that are supposed to have 0 corrections
+   std::list<gpstk::ObsID> oid1s({
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+                      gpstk::TrackingCode::CA),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+                      gpstk::TrackingCode::P),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+                      gpstk::TrackingCode::Y),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+                      gpstk::TrackingCode::Ztracking),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+                      gpstk::TrackingCode::YCodeless),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+                      gpstk::TrackingCode::Semicodeless)
+      });
+   std::list<gpstk::ObsID> oid2s({
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L2,
+                      gpstk::TrackingCode::P),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L2,
+                      gpstk::TrackingCode::Y),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L2,
+                      gpstk::TrackingCode::Ztracking),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L2,
+                      gpstk::TrackingCode::YCodeless),
+         gpstk::ObsID(gpstk::ObservationType::Range, gpstk::CarrierBand::L2,
+                      gpstk::TrackingCode::Semicodeless)
+      });
+   for (const auto& i1 : oid1s)
+   {
+      for (const auto& i2 : oid2s)
+      {
+         corr = 1.2345;
+         TUASSERTE(bool, true, uut.getISC(i1, i2, when, corr));
+         TUASSERTFE(0.0, corr);
+      }
+   }
+      // check wonky obs ID
+   TUASSERTE(bool, false, uut.getISC(woid1, when, corr));
+   TUASSERTE(bool, false, uut.getISC(woid1, woid2, when, corr));
+   TURETURN();
+}
+
+
 int main()
 {
    NavLibrary_T testClass;
@@ -441,6 +635,12 @@ int main()
    errorTotal += testClass.setValidityFilterTest();
    errorTotal += testClass.setTypeFilterTest();
    errorTotal += testClass.addFactoryTest();
+   errorTotal += testClass.getTimeTest();
+   errorTotal += testClass.getAvailableSatsTest();
+   errorTotal += testClass.isPresentTest();
+   errorTotal += testClass.getIonoCorrTest();
+   errorTotal += testClass.getISCTest();
+      /// @todo test edit(), clear()
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
 

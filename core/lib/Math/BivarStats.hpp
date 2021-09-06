@@ -312,7 +312,7 @@ namespace gpstk
    void BivarStats<T>::subtract(const std::vector< std::pair<T, T> >& d)
    {
       size_t max( d.size() );
-      for (size_t i=0; i<max; d++)
+      for (size_t i=0; i<max; i++)
          subtract(d[i].first, d[i].second);
    }
 

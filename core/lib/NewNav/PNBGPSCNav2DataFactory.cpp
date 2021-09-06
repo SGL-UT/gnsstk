@@ -37,15 +37,27 @@
 //
 //==============================================================================
 #include <math.h>
+#include <memory>
 #include "PNBGPSCNav2DataFactory.hpp"
 #include "GPSCNav2Alm.hpp"
 // #include "GPSCNav2RedAlm.hpp"
 #include "GPSCNav2Eph.hpp"
 #include "GPSCNav2Health.hpp"
 #include "GPSCNav2TimeOffset.hpp"
+#include "GPSCNav2Iono.hpp"
 #include "TimeCorrection.hpp"
+#include "YDSTime.hpp"
 
 using namespace std;
+
+/// Epsilon value for checking timestamps of nav data (in seconds).
+constexpr double TIME_EPSILON = 1e-9;
+/// CNAV2 frame length in seconds.
+constexpr double CNAV2_FRAME_LEN = 18.0;
+/// Offset in seconds of SF2 from start of CNAV2 frame.
+constexpr double CNAV2_SF2_OFFS = 0.52;
+/// Offset in seconds of SF3 from start of CNAV2 frame.
+constexpr double CNAV2_SF3_OFFS = 12.52;
 
 /** Constants collection: start bits, bit counts and scale factor (*n
  * for integer quantities, *2^n for floating point quantities) for
@@ -249,6 +261,54 @@ enum CNav2BitInfo
    cnbdtLSF = 8,          ///< dtLSF number of bits
    cscdtLSF = 1,          ///< dtLSF scale factor
 
+   csbAlpha0 = csbdtLSF + cnbdtLSF,
+   cnbAlpha0 = 8,
+   cscAlpha0 = -30,
+
+   csbAlpha1 = csbAlpha0 + cnbAlpha0,
+   cnbAlpha1 = 8,
+   cscAlpha1 = -27,
+
+   csbAlpha2 = csbAlpha1 + cnbAlpha1,
+   cnbAlpha2 = 8,
+   cscAlpha2 = -24,
+
+   csbAlpha3 = csbAlpha2 + cnbAlpha2,
+   cnbAlpha3 = 8,
+   cscAlpha3 = -24,
+
+   csbBeta0 = csbAlpha3 + cnbAlpha3,
+   cnbBeta0 = 8,
+   cscBeta0 = 11,
+
+   csbBeta1 = csbBeta0 + cnbBeta0,
+   cnbBeta1 = 8,
+   cscBeta1 = 14,
+
+   csbBeta2 = csbBeta1 + cnbBeta1,
+   cnbBeta2 = 8,
+   cscBeta2 = 16,
+
+   csbBeta3 = csbBeta2 + cnbBeta2,
+   cnbBeta3 = 8,
+   cscBeta3 = 16,
+
+   csbISCL1CA = csbBeta3 + cnbBeta3,
+   cnbISCL1CA = 13,
+   cscISCL1CA = -35,
+
+   csbISCL2C = csbISCL1CA + cnbISCL1CA,
+   cnbISCL2C = 13,
+   cscISCL2C = -35,
+
+   csbISCL5I5 = csbISCL2C + cnbISCL2C,
+   cnbISCL5I5 = 13,
+   cscISCL5I5 = -35,
+
+   csbISCL5Q5 = csbISCL5I5 + cnbISCL5I5,
+   cnbISCL5Q5 = 13,
+   cscISCL5Q5 = -35,
+
       // these apply to subframe 3 page 2 (GGTO & EOP)
 
    gsbGNSS = 14,          ///< GNSS ID start bit
@@ -349,14 +409,15 @@ namespace gpstk
          switch (navIn->getNumBits())
          {
             case nnbSF2:
-               rv = processEph(navIn, navOut);
+               rv = processEph(navIn, navOut) && processISC(navIn, navOut);
                break;
             case nnbSF3:
-               rv = processSF3(navIn, navOut);
+               rv = processSF3(navIn, navOut) && processISC(navIn, navOut);
                break;
             case nnbComplete:
                rv = processEph(navIn, navOut, nnbSF1) &&
-                  processSF3(navIn, navOut, nnbSF1+nnbSF2+nnbCRC);
+                  processSF3(navIn, navOut, nnbSF1+nnbSF2) &&
+                  processISC(navIn, navOut);
                break;
             default:
                return true;
@@ -390,8 +451,7 @@ namespace gpstk
       {
             // Add ephemeris health bit
          NavDataPtr p1 = std::make_shared<GPSCNav2Health>();
-         p1->timeStamp = navIn->getTransmitTime();
-            /// @todo will this work for QZSS? Probably not.
+         p1->timeStamp = getSF2Time(navIn->getTransmitTime());
          p1->signal = NavMessageID(
             NavSatelliteID(prn, prn, navIn->getsatSys().system,
                            CarrierBand::L1, TrackingCode::L1CD,
@@ -411,20 +471,25 @@ namespace gpstk
       NavDataPtr p0 = std::make_shared<GPSCNav2Eph>();
       GPSCNav2Eph *eph = dynamic_cast<GPSCNav2Eph*>(p0.get());
          // NavData
-      eph->timeStamp = navIn->getTransmitTime();
+      eph->timeStamp = getSF2Time(navIn->getTransmitTime());
       eph->signal = NavMessageID(
          NavSatelliteID(prn, navIn->getsatSys(), navIn->getobsID(),
                         navIn->getNavID()),
          NavMessageType::Ephemeris);
          // OrbitData = empty
          // OrbitDataKepler
-      eph->xmitTime = eph->timeStamp;
+      eph->xmitTime = getSF2Time(eph->timeStamp);
          /** @todo apply 13-bit week rollover adjustment, not 10-bit.
           * Must be completed by January, 2137 :-) */
       long wn = navIn->asUnsignedLong(offset+esbWN,enbWN,escWN);
       double toe = navIn->asUnsignedLong(offset+esbtoe,enbtoe,esctoe);
       eph->itow = navIn->asUnsignedLong(offset+esbITOW,enbITOW,escITOW);
       eph->Toe = eph->Toc = GPSWeekSecond(wn,toe);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         eph->Toe.setTimeSystem(gpstk::TimeSystem::QZS);
+         eph->Toc.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
          // health is set below
       eph->Cuc = navIn->asSignedDouble(offset+esbCuc,enbCuc,escCuc);
       eph->Cus = navIn->asSignedDouble(offset+esbCus,enbCus,escCus);
@@ -438,18 +503,24 @@ namespace gpstk
                                               escdn0dot);
       eph->ecc = navIn->asUnsignedDouble(offset+esbEcc,enbEcc,escEcc);
       eph->deltaA = navIn->asSignedDouble(offset+esbdA,enbdA,escdA);
-         /// @todo does this need changing for QZSS?
-      eph->A = eph->deltaA + GPSCNav2Eph::refAGPS;
+      eph->dOMEGAdot = navIn->asDoubleSemiCircles(
+         offset+esbdOMEGAdot,enbdOMEGAdot,escdOMEGAdot);
+      if (eph->signal.sat.system == SatelliteSystem::QZSS)
+      {
+         eph->A = eph->deltaA + GPSCNav2Eph::refAQZSS;
+         eph->OMEGAdot = eph->dOMEGAdot + GPSCNav2Eph::refOMEGAdotQZSS;
+      }
+      else
+      {
+         eph->A = eph->deltaA + GPSCNav2Eph::refAGPS;
+         eph->OMEGAdot = eph->dOMEGAdot + GPSCNav2Eph::refOMEGAdotGPS;
+      }
       eph->Ahalf = ::sqrt(eph->A);
       eph->Adot = navIn->asSignedDouble(offset+esbAdot,enbAdot,escAdot);
       eph->OMEGA0 = navIn->asDoubleSemiCircles(offset+esbOMEGA0,enbOMEGA0,
                                                escOMEGA0);
       eph->i0 = navIn->asDoubleSemiCircles(offset+esbi0,enbi0,esci0);
       eph->w = navIn->asDoubleSemiCircles(offset+esbw,enbw,escw);
-      eph->dOMEGAdot = navIn->asDoubleSemiCircles(
-         offset+esbdOMEGAdot,enbdOMEGAdot,escdOMEGAdot);
-         /// @todo does this need changing for QZSS?
-      eph->OMEGAdot = eph->dOMEGAdot + GPSCNav2Eph::refOMEGAdotGPS;
       eph->idot = navIn->asDoubleSemiCircles(offset+esbidot,enbidot,escidot);
       eph->af0 = navIn->asSignedDouble(offset+esbaf0,enbaf0,escaf0);
       eph->af1 = navIn->asSignedDouble(offset+esbaf1,enbaf1,escaf1);
@@ -462,23 +533,16 @@ namespace gpstk
       double top = navIn->asUnsignedLong(offset+esbtop,enbtop,esctop);
       wnop = timeAdjust8BitWeekRollover(wnop, wn);
       eph->top = GPSWeekSecond(wnop,top);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         eph->top.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
       eph->uraNED0= navIn->asLong(offset+esbURAned0,enbURAned0,escURAned0);
       eph->uraNED1= navIn->asUnsignedLong(offset+esbURAned1,enbURAned1,
                                           escURAned1);
       eph->uraNED2= navIn->asUnsignedLong(offset+esbURAned2,enbURAned2,
                                           escURAned2);
-         // We have to decode tgd twice unfortunately because a
-         // special bit pattern is used to indicate tgd is invalid.
-      unsigned long tgdBits = navIn->asUnsignedLong(offset+esbTGD,enbTGD,1);
-      if (tgdBits == 0x1000)
-      {
-            // set to NaN because tgd is not available
-         eph->tgd = std::numeric_limits<float>::quiet_NaN();
-      }
-      else
-      {
-         eph->tgd = navIn->asSignedDouble(offset+esbTGD,enbTGD,escTGD);
-      }
+      eph->tgd = InterSigCorr::getGPSISC(navIn, offset+esbTGD);
       eph->iscL1CP = navIn->asSignedDouble(offset+esbISCL1CP,enbISCL1CP,
                                            escISCL1CP);
       eph->iscL1CD = navIn->asSignedDouble(offset+esbISCL1CD,enbISCL1CD,
@@ -523,7 +587,6 @@ namespace gpstk
                                                  ascPRNa);
       SatID xmitSat(navIn->getsatSys());
       SatelliteSystem subjSys = xmitSat.system;
-         /// @todo QZSS handling
       SatID subjSat(sprn, subjSys);
          // No checks for correct svid, just assume that the input
          // data has already been checked (it will have been by
@@ -534,9 +597,9 @@ namespace gpstk
          NavDataPtr p1L1 = std::make_shared<GPSCNav2Health>();
          NavDataPtr p1L2 = std::make_shared<GPSCNav2Health>();
          NavDataPtr p1L5 = std::make_shared<GPSCNav2Health>();
-         p1L1->timeStamp = navIn->getTransmitTime();
-         p1L2->timeStamp = navIn->getTransmitTime();
-         p1L5->timeStamp = navIn->getTransmitTime();
+         p1L1->timeStamp =
+            p1L2->timeStamp = 
+            p1L5->timeStamp = getSF3Time(navIn->getTransmitTime());
             /** @todo I'm not entirely sure what's appropriate here.
              * The source signal is actually L1C CNAV2 but it's
              * broadcasting signal status for L2 signals that don't
@@ -581,19 +644,24 @@ namespace gpstk
       NavDataPtr p0 = std::make_shared<GPSCNav2Alm>();
       GPSCNav2Alm *alm = dynamic_cast<GPSCNav2Alm*>(p0.get());
          // NavData
-      alm->timeStamp = navIn->getTransmitTime();
+      alm->timeStamp = getSF3Time(navIn->getTransmitTime());
       alm->signal = NavMessageID(
          NavSatelliteID(subjSat, xmitSat, navIn->getobsID(),
                         navIn->getNavID()),
          NavMessageType::Almanac);
          // OrbitData = empty
          // OrbitDataKepler
-      alm->xmitTime = alm->timeStamp;
+      alm->xmitTime = getSF3Time(alm->timeStamp);
          /** @todo apply 13-bit week rollover adjustment, not 10-bit.
           * Must be completed by January, 2137 :-) */
       alm->wna = navIn->asUnsignedLong(offset+asbWNa,anbWNa,ascWNa);
       alm->toa = navIn->asUnsignedDouble(offset+asbtoa,anbtoa,asctoa);
       alm->Toc = alm->Toe = GPSWeekSecond(alm->wna,alm->toa);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         alm->Toe.setTimeSystem(gpstk::TimeSystem::QZS);
+         alm->Toc.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
       alm->M0 = navIn->asDoubleSemiCircles(offset+asbM0,anbM0,ascM0);
       alm->ecc = navIn->asUnsignedDouble(offset+asbEcc,anbEcc,ascEcc);
       alm->Ahalf = navIn->asUnsignedDouble(offset+asbAhalf,anbAhalf,ascAhalf);
@@ -613,8 +681,17 @@ namespace gpstk
       alm->health = ((alm->healthL1 == false) ? SVHealth::Healthy :
                      SVHealth::Unhealthy);
       alm->deltai = navIn->asDoubleSemiCircles(offset+asbdi,anbdi,ascdi);
-         /// @todo should this be different for QZSS?
-      alm->i0 = GPSCNav2Alm::refioffsetGPS + alm->deltai;
+      if (alm->signal.sat.system == SatelliteSystem::QZSS)
+      {
+            /** @todo GEO QZSS satellites use a different i0
+             * reference, but I have yet to figure out how to
+             * determine if a QZSS satellite is GEO or QZO */
+         alm->i0 = GPSCNav2Alm::refi0QZSS + alm->deltai;
+      }
+      else
+      {
+         alm->i0 = GPSCNav2Alm::refi0GPS + alm->deltai;
+      }
       alm->fixFit();
       // cerr << "add CNAV2 alm" << endl;
       navOut.push_back(p0);
@@ -626,13 +703,43 @@ namespace gpstk
    processUTCIono(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
                   unsigned offset)
    {
+      if (PNBNavDataFactory::processIono)
+      {
+         NavDataPtr p1 = std::make_shared<GPSCNav2Iono>();
+         GPSCNav2Iono *iono = dynamic_cast<GPSCNav2Iono*>(p1.get());
+            // NavData
+         p1->timeStamp = getSF3Time(navIn->getTransmitTime());
+         p1->signal = NavMessageID(
+            NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
+                           navIn->getobsID(), navIn->getNavID()),
+            NavMessageType::Iono);
+            // KlobucharIonoData
+         iono->alpha[0] = navIn->asSignedDouble(offset+csbAlpha0,cnbAlpha0,
+                                                cscAlpha0);
+         iono->alpha[1] = navIn->asSignedDouble(offset+csbAlpha1,cnbAlpha1,
+                                                cscAlpha1);
+         iono->alpha[2] = navIn->asSignedDouble(offset+csbAlpha2,cnbAlpha2,
+                                                cscAlpha2);
+         iono->alpha[3] = navIn->asSignedDouble(offset+csbAlpha3,cnbAlpha3,
+                                                cscAlpha3);
+         iono->beta[0] = navIn->asSignedDouble(offset+csbBeta0,cnbBeta0,
+                                               cscBeta0);
+         iono->beta[1] = navIn->asSignedDouble(offset+csbBeta1,cnbBeta1,
+                                               cscBeta1);
+         iono->beta[2] = navIn->asSignedDouble(offset+csbBeta2,cnbBeta2,
+                                               cscBeta2);
+         iono->beta[3] = navIn->asSignedDouble(offset+csbBeta3,cnbBeta3,
+                                               cscBeta3);
+            // GPSCNav2Iono
+         navOut.push_back(p1);
+      }
       if (!PNBNavDataFactory::processTim)
       {
             // User doesn't want time offset data so don't do any processing.
          return true;
       }
       NavDataPtr p0 = std::make_shared<GPSCNav2TimeOffset>();
-      p0->timeStamp = navIn->getTransmitTime();
+      p0->timeStamp = getSF3Time(navIn->getTransmitTime());
       p0->signal = NavMessageID(
          NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
                                navIn->getobsID(), navIn->getNavID()),
@@ -646,8 +753,16 @@ namespace gpstk
       to->deltatLS = navIn->asLong(offset+csbdtLS,cnbdtLS,cscdtLS);
       to->tot = navIn->asUnsignedDouble(offset+csbtot,cnbtot,csctot);
       to->wnot = navIn->asUnsignedLong(offset+csbWNot,cnbWNot,cscWNot);
+      to->refTime = GPSWeekSecond(to->wnot, to->tot);
       to->wnLSF = navIn->asUnsignedLong(offset+csbWNlsf,cnbWNlsf,cscWNlsf);
       to->dn = navIn->asUnsignedLong(offset+csbDN,cnbDN,cscDN);
+      to->effTime = GPSWeekSecond(to->wnLSF, (to->dn-1)*86400);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+         to->src = gpstk::TimeSystem::QZS;
+         to->refTime.setTimeSystem(gpstk::TimeSystem::QZS);
+         to->effTime.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
       to->deltatLSF = navIn->asLong(offset+csbdtLSF,cnbdtLSF,cscdtLSF);
       navOut.push_back(p0);
       return true;
@@ -664,10 +779,10 @@ namespace gpstk
          return true;
       }
       NavDataPtr p0 = std::make_shared<GPSCNav2TimeOffset>();
-      p0->timeStamp = navIn->getTransmitTime();
+      p0->timeStamp = getSF3Time(navIn->getTransmitTime());
       p0->signal = NavMessageID(
          NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
-                               navIn->getobsID(), navIn->getNavID()),
+                        navIn->getobsID(), navIn->getNavID()),
          NavMessageType::TimeOffset);
       GPSCNav2TimeOffset *to =
          dynamic_cast<GPSCNav2TimeOffset*>(p0.get());
@@ -695,11 +810,157 @@ namespace gpstk
       }
       to->tot = navIn->asUnsignedDouble(offset+gsbt,gnbt,gsct);
       to->wnot = navIn->asUnsignedLong(offset+gsbWN,gnbWN,gscWN);
+      to->refTime = gpstk::GPSWeekSecond(to->wnot, to->tot);
+      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      {
+            // source time system is supposed to be GPS even for QZSS,
+            // so don't set to->src
+         to->refTime.setTimeSystem(gpstk::TimeSystem::QZS);
+      }
       to->a0 = navIn->asSignedDouble(offset+gsbA0,gnbA0,gscA0);
       to->a1 = navIn->asSignedDouble(offset+gsbA1,gnbA1,gscA1);
       to->a2 = navIn->asSignedDouble(offset+gsbA2,gnbA2,gscA2);
       navOut.push_back(p0);
       return true;
+   }
+
+
+   bool PNBGPSCNav2DataFactory ::
+   processISC(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   {
+      if (!PNBNavDataFactory::processISC)
+         return true;
+      NavSatelliteID nsid(navIn->getsatSys().id, navIn->getsatSys(),
+                          navIn->getobsID(), navIn->getNavID());
+      GPSCNav2ISCPtr isc = getISCObj(navIn, nsid);
+         // offset for subframe 3
+      const unsigned offs = nnbSF1+nnbSF2;
+      switch (navIn->getNumBits())
+      {
+         case nnbSF2:
+            if (isc->haveSF2 && !isc->haveSF3)
+            {
+                  // Two sequential subframe 2 with no subframe 3,
+                  // publish the previous subframe 2 data.
+               navOut.push_back(std::make_shared<GPSCNav2ISC>(*isc));
+            }
+            isc->timeStamp = isc->xmit2 = getSF2Time(navIn->getTransmitTime());
+            isc->haveSF2 = true;
+            isc->isc = InterSigCorr::getGPSISC(navIn, esbTGD);
+            isc->iscL1CP = InterSigCorr::getGPSISC(navIn, esbISCL1CP);
+            isc->iscL1CD = InterSigCorr::getGPSISC(navIn, esbISCL1CD);
+            if (isc->haveSF3)
+            {
+                  // We have a complete set of ISCs, so immediately
+                  // add it to the output
+               navOut.push_back(std::make_shared<GPSCNav2ISC>(*isc));
+            }
+            break;
+         case nnbSF3:
+               // It's theoretically possible to process multiple
+               // sequential subframe 3, page 1, but I don't think
+               // it's useful without the Tgd in subframe 2.
+
+               // only process page 1 of subframe 3
+            if (navIn->asUnsignedLong(asbPage,anbPage,ascPage) != 1)
+               break;
+            isc->timeStamp = isc->xmit3 = getSF3Time(navIn->getTransmitTime());
+            isc->haveSF3 = true;
+            isc->iscL1CA = InterSigCorr::getGPSISC(navIn, csbISCL1CA);
+            isc->iscL2C = InterSigCorr::getGPSISC(navIn, csbISCL2C);
+            isc->iscL5I5 = InterSigCorr::getGPSISC(navIn, csbISCL5I5);
+            isc->iscL5Q5 = InterSigCorr::getGPSISC(navIn, csbISCL5Q5);
+            if (isc->haveSF2)
+            {
+                  // We have a complete set of ISCs, so immediately
+                  // add it to the output
+               navOut.push_back(std::make_shared<GPSCNav2ISC>(*isc));
+            }
+            break;
+         case nnbComplete:
+            if (isc->haveSF2 && !isc->haveSF3)
+            {
+                  // Two sequential subframe 2 with no subframe 3,
+                  // publish the previous subframe 2 data.
+               navOut.push_back(std::make_shared<GPSCNav2ISC>(*isc));
+            }
+            isc->timeStamp = getSF3Time(navIn->getTransmitTime());
+            isc->xmit2 = getSF2Time(navIn->getTransmitTime());
+            isc->xmit3 = isc->timeStamp;
+            isc->haveSF2 = true;
+            isc->isc = InterSigCorr::getGPSISC(navIn, nnbSF1+esbTGD);
+            isc->iscL1CP = InterSigCorr::getGPSISC(navIn, nnbSF1+esbISCL1CP);
+            isc->iscL1CD = InterSigCorr::getGPSISC(navIn, nnbSF1+esbISCL1CD);
+            if (isc->haveSF3 &&
+                (navIn->asUnsignedLong(asbPage,anbPage,ascPage) != 1))
+            {
+                  // We have a complete set of ISCs and the subframe 3
+                  // page for the complete message isn't page 1, so
+                  // immediately add it to the output
+               navOut.push_back(std::make_shared<GPSCNav2ISC>(*isc));
+            }
+            else if (navIn->asUnsignedLong(offs+asbPage,anbPage,ascPage) == 1)
+            {
+                  // Got a subframe 3 page 1, so decode it, store it,
+                  // and output it.
+               isc->timeStamp = getSF3Time(navIn->getTransmitTime());
+               isc->haveSF3 = true;
+               isc->iscL1CA = InterSigCorr::getGPSISC(navIn, offs+csbISCL1CA);
+               isc->iscL2C = InterSigCorr::getGPSISC(navIn, offs+csbISCL2C);
+               isc->iscL5I5 = InterSigCorr::getGPSISC(navIn, offs+csbISCL5I5);
+               isc->iscL5Q5 = InterSigCorr::getGPSISC(navIn, offs+csbISCL5Q5);
+               navOut.push_back(std::make_shared<GPSCNav2ISC>(*isc));
+            }
+            break;
+         default:
+            return true;
+      }
+      return true;
+   }
+
+
+   PNBGPSCNav2DataFactory::GPSCNav2ISCPtr PNBGPSCNav2DataFactory ::
+   getISCObj(const PackedNavBitsPtr& navIn, const NavSatelliteID& nsid)
+   {
+      if (iscAcc.find(nsid) == iscAcc.end())
+      {
+         iscAcc[nsid] = std::make_shared<GPSCNav2ISC>();
+         GPSCNav2ISCPtr &isc(iscAcc[nsid]);
+         isc->signal = NavMessageID(nsid, NavMessageType::ISC);
+      }
+      return iscAcc[nsid];
+   }
+
+
+   CommonTime PNBGPSCNav2DataFactory ::
+   getSF2Time(const CommonTime& timestamp)
+   {
+         // Convert to YDS which is easier to manipulate since it's
+         // evenly divisible by 18 seconds, the period of a CNAV-2
+         // frame.
+      YDSTime yds(timestamp);
+      if (fabs(remainder(yds.sod,CNAV2_FRAME_LEN)) < TIME_EPSILON)
+      {
+            // given time stamp is for subframe 1, add the offset for sf2
+         return timestamp + CNAV2_SF2_OFFS;
+      }
+      return timestamp;
+   }
+
+
+   CommonTime PNBGPSCNav2DataFactory ::
+   getSF3Time(const CommonTime& timestamp)
+   {
+         // Convert to YDS which is easier to manipulate since it's
+         // evenly divisible by 18 seconds, the period of a CNAV-2
+         // frame.
+      YDSTime yds(timestamp);
+      if (fabs(remainder(yds.sod,CNAV2_FRAME_LEN)) < TIME_EPSILON)
+      {
+            // given time stamp is for subframe 1, add the offset for sf3
+         return timestamp + CNAV2_SF3_OFFS;
+      }
+      return timestamp;
    }
 
 } // namespace gpstk

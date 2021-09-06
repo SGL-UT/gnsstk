@@ -36,24 +36,53 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#ifdef __GNUG__
+#include <cxxabi.h>
+#endif
 #include "NavData.hpp"
 #include "TimeString.hpp"
 
+// required to demangle G++ class names
+static std::string demangle(const char* name)
+{
+      // yanked from stackoverflow.com/questions/281818/unmangling-the-result-of-stdtype-infoname
+#ifdef __GNUG__
+   int status = -4;
+   std::unique_ptr<char, void(*)(void*)> res {
+      abi::__cxa_demangle(name, NULL, NULL, &status),
+      std::free
+   };
+   return (status == 0) ? res.get() : name;
+#else
+      // do nothing if not G++
+   return name;
+#endif
+}
+
 namespace gpstk
 {
-   static const std::string timeFmt("%4Y/%02m/%02d %03j %02H:%02M:%02S");
+   const std::string NavData :: dumpTimeFmt("  %6.0g   %3a-%w   %3j   %5.0s   %02m/%02d/%04Y   %02H:%02M:%02S");
 
    NavData ::
    NavData()
-         : msgLenSec(0)
+         : msgLenSec(0),
+           weekFmt("%4F(%4G)")
    {
    }
 
 
    void NavData ::
-   dump(std::ostream& s, Detail dl) const
+   dump(std::ostream& s, DumpDetail dl) const
    {
+      static const std::string timeFmt("%4Y/%02m/%02d %03j %02H:%02M:%02S");
       s << printTime(timeStamp, timeFmt) << " " << signal << std::endl;
+   }
+
+
+   std::string NavData ::
+   getClassName() const
+   {
+      return demangle(typeid(*this).name());
    }
 }
 

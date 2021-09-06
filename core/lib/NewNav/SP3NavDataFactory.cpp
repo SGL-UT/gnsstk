@@ -49,38 +49,187 @@ using namespace std;
 
 namespace gpstk
 {
+   const ObsID SP3NavDataFactory::oidGPS(ObservationType::NavMsg,
+                                         CarrierBand::L1,TrackingCode::CA);
+   const ObsID SP3NavDataFactory::oidGalileo(ObservationType::NavMsg,
+                                             CarrierBand::L5,
+                                             TrackingCode::E5aI);
+   const ObsID SP3NavDataFactory::oidQZSS(ObservationType::NavMsg,
+                                          CarrierBand::L1,TrackingCode::CA);
+   const ObsID SP3NavDataFactory::oidGLONASS(ObservationType::NavMsg,
+                                             CarrierBand::G1,
+                                             TrackingCode::Standard);
+   const ObsID SP3NavDataFactory::oidBeiDou(ObservationType::NavMsg,
+                                            CarrierBand::B1,TrackingCode::B1I);
+   const NavType SP3NavDataFactory::ntGPS(NavType::GPSLNAV);
+   const NavType SP3NavDataFactory::ntGalileo(NavType::GalFNAV);
+   const NavType SP3NavDataFactory::ntQZSS(NavType::GPSLNAV);
+   const NavType SP3NavDataFactory::ntGLONASS(NavType::GloCivilF);
+   const NavType SP3NavDataFactory::ntBeiDou(NavType::BeiDou_D1);
+
    SP3NavDataFactory ::
    SP3NavDataFactory()
          : storeTimeSystem(TimeSystem::Any),
            halfOrder(5)
    {
-         /// @todo add foreign signals supported by SP3 (c?)
+      supportedSignals.insert(NavSignalID(SatelliteSystem::BeiDou,
+                                          CarrierBand::B1,
+                                          TrackingCode::B1I,
+                                          NavType::BeiDou_D1));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::BeiDou,
+                                          CarrierBand::B1,
+                                          TrackingCode::B1I,
+                                          NavType::BeiDou_D2));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::BeiDou,
+                                          CarrierBand::B3,
+                                          TrackingCode::B3I,
+                                          NavType::BeiDou_D1));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::BeiDou,
+                                          CarrierBand::B3,
+                                          TrackingCode::B3I,
+                                          NavType::BeiDou_D2));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::BeiDou,
+                                          CarrierBand::B2,
+                                          TrackingCode::B2I,
+                                          NavType::BeiDou_D1));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::BeiDou,
+                                          CarrierBand::B2,
+                                          TrackingCode::B2I,
+                                          NavType::BeiDou_D2));
       supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
                                           CarrierBand::L1,
                                           TrackingCode::CA,
                                           NavType::GPSLNAV));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L1,
+                                          TrackingCode::L1CD,
+                                          NavType::GPSCNAV2));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L1,
+                                          TrackingCode::NSCA,
+                                          NavType::GPSLNAV));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L1,
+                                          TrackingCode::Y,
+                                          NavType::GPSLNAV));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L2,
+                                          TrackingCode::L2CML,
+                                          NavType::GPSCNAVL2));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L2,
+                                          TrackingCode::L2CM,
+                                          NavType::GPSCNAVL2));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L2,
+                                          TrackingCode::Y,
+                                          NavType::GPSLNAV));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L5,
+                                          TrackingCode::L5I,
+                                          NavType::GPSCNAVL5));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L1,
+                                          TrackingCode::MD,
+                                          NavType::GPSMNAV, 0, 0));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L1,
+                                          TrackingCode::MDP,
+                                          NavType::GPSMNAV, 0, 0));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L1,
+                                          TrackingCode::MPA,
+                                          NavType::GPSMNAV, 0, 0));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L1,
+                                          TrackingCode::Mprime,
+                                          NavType::GPSMNAV, 0, 0));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L1,
+                                          TrackingCode::MprimePA,
+                                          NavType::GPSMNAV, 0, 0));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L2,
+                                          TrackingCode::MD,
+                                          NavType::GPSMNAV, 0, 0));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L2,
+                                          TrackingCode::MDP,
+                                          NavType::GPSMNAV, 0, 0));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L2,
+                                          TrackingCode::MPA,
+                                          NavType::GPSMNAV, 0, 0));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L2,
+                                          TrackingCode::Mprime,
+                                          NavType::GPSMNAV, 0, 0));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::GPS,
+                                          CarrierBand::L2,
+                                          TrackingCode::MprimePA,
+                                          NavType::GPSMNAV, 0, 0));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::Galileo,
+                                          CarrierBand::L5,
+                                          TrackingCode::E5aI,
+                                          NavType::GalFNAV));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::Galileo,
+                                          CarrierBand::E5b,
+                                          TrackingCode::E5bI,
+                                          NavType::GalINAV));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::Galileo,
+                                          CarrierBand::L1,
+                                          TrackingCode::E1B,
+                                          NavType::GalINAV));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::Glonass,
+                                          CarrierBand::G1,
+                                          TrackingCode::Standard,
+                                          NavType::GloCivilF));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::Glonass,
+                                          CarrierBand::G2,
+                                          TrackingCode::Standard,
+                                          NavType::GloCivilF));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::Glonass,
+                                          CarrierBand::G3,
+                                          TrackingCode::G3TestData,
+                                          NavType::GloCivilC));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::Glonass,
+                                          CarrierBand::G3,
+                                          TrackingCode::L3OCD,
+                                          NavType::GloCivilC));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::QZSS,
+                                          CarrierBand::L1,
+                                          TrackingCode::CA,
+                                          NavType::GPSLNAV));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::QZSS,
+                                          CarrierBand::L5,
+                                          TrackingCode::L5I,
+                                          NavType::GPSCNAVL5));
    }
 
 
    bool SP3NavDataFactory ::
    find(const NavMessageID& nmid, const CommonTime& when,
-        NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
+        NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
         NavSearchOrder order)
    {
       bool rv;
+      NavMessageID genericID;
       if (nmid.messageType != NavMessageType::Ephemeris)
+      {
          return false;
-      rv = findGeneric(NavMessageType::Ephemeris, nmid, when, navData);
+      }
+         // ignore the return code of transNavMsgID, find might still work.
+      transNavMsgID(nmid, genericID);
+      rv = findGeneric(NavMessageType::Ephemeris, genericID, when, navOut);
       if (rv == false)
+      {
          return false;
+      }
          /** @todo If someone attempts to use SP3 but sets the type
           * filter to exclude clock, no clock data will be stored and
           * this will end up returning false.  I'm not sure if this is
           * valid behavior. */
-      rv = findGeneric(NavMessageType::Clock, nmid, when, navData);
-      if (rv == false)
-         return false;
-      return true;
+      return findGeneric(NavMessageType::Clock, genericID, when, navOut);
    }
 
 
@@ -167,8 +316,8 @@ namespace gpstk
                OrbitDataSP3 *stored = dynamic_cast<OrbitDataSP3*>(
                   ti2->second.get());
                navData = std::make_shared<OrbitDataSP3>(*stored);
-               // ti2->second->dump(std::cerr, NavData::Detail::Full);
-               // navData->dump(std::cerr, NavData::Detail::Full);
+               // ti2->second->dump(std::cerr, DumpDetail::Full);
+               // navData->dump(std::cerr, DumpDetail::Full);
                   // If giveUp is not set, then we can do some
                   // interpolation to fill in any missing data.
                if (!giveUp)
@@ -213,8 +362,8 @@ namespace gpstk
                      interpolateClk(ti1, ti3, when, navData);
                   }
                }
-               // stored->dump(std::cerr, NavData::Detail::Full);
-               // navOut->dump(std::cerr, NavData::Detail::Full);
+               // stored->dump(std::cerr, DumpDetail::Full);
+               // navOut->dump(std::cerr, DumpDetail::Full);
                // cerr << "  found an exact match with existing data" << endl;
                return true;
             }
@@ -417,14 +566,7 @@ namespace gpstk
                   // cerr << "pow(head.basePV,navIn.sig[" << i << "] = " << gps->posSig[i] << endl;
                }
             }
-            gps->signal.sat = navIn.sat;
-            gps->signal.xmitSat = navIn.sat;
-            gps->signal.system = navIn.sat.system;
-               // we can't obtain these from SP3, can we? So just assume L1 C/A
-            navOut->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::L1,
-                                       TrackingCode::CA);
-               /// @todo determine what should really be here for SP3 data.
-            navOut->signal.nav = NavType::GPSLNAV;
+            setSignal(navIn.sat, navOut->signal);
             break;
          case 'V':
             gps->timeStamp = navIn.time;
@@ -470,14 +612,7 @@ namespace gpstk
                gps->biasSig = navIn.sdev[3] * 1e-6;
             else if (isC && (navIn.sig[3] >= 0))
                gps->biasSig = ::pow(head.baseClk, navIn.sig[3]) * 1e-6;
-            gps->signal.sat = navIn.sat;
-            gps->signal.xmitSat = navIn.sat;
-            gps->signal.system = navIn.sat.system;
-               // we can't obtain these from SP3, can we? So just assume L1 C/A
-            clkOut->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::L1,
-                                       TrackingCode::CA);
-               /// @todo determine what should really be here for SP3 data.
-            clkOut->signal.nav = NavType::GPSLNAV;
+            setSignal(navIn.sat, clkOut->signal);
             break;
          case 'V':
             gps->timeStamp = navIn.time;
@@ -548,10 +683,10 @@ namespace gpstk
          // cerr << "  store resetting obj ptr, use_count=" << obj.use_count() << endl;
          NavData *ptr = obj.get();
          // cerr << "DUMP BEFORE:" << endl;
-         // ptr->dump(cerr, NavData::Detail::Full);
+         // ptr->dump(cerr, DumpDetail::Full);
          obj.reset();
          // cerr << "DUMP AFTER:" << endl;
-         // ptr->dump(cerr, NavData::Detail::Full);
+         // ptr->dump(cerr, DumpDetail::Full);
       }
       return true;
    }
@@ -596,7 +731,7 @@ namespace gpstk
          OrbitDataSP3 *nav = dynamic_cast<OrbitDataSP3*>(
             ti2->second.get());
          // cerr << "  nav=" << nav << endl;
-         // ti2->second->dump(cerr, NavData::Detail::Full);
+         // ti2->second->dump(cerr, DumpDetail::Full);
          for (unsigned i = 0; i < 3; i++)
          {
             // cerr << "  i=" << i << endl
@@ -739,7 +874,7 @@ namespace gpstk
          OrbitDataSP3 *nav = dynamic_cast<OrbitDataSP3*>(
             ti2->second.get());
          // cerr << "  nav=" << nav << endl;
-         // ti2->second->dump(cerr, NavData::Detail::Full);
+         // ti2->second->dump(cerr, DumpDetail::Full);
          biasData[idx] = nav->clkBias;
          driftData[idx] = nav->clkDrift;
          drRateData[idx] = nav->clkDrRate;
@@ -812,4 +947,56 @@ namespace gpstk
             (tdata[halfOrder]-tdata[halfOrder-1]);
       }
    }
+
+
+   bool SP3NavDataFactory ::
+   setSignal(const SatID& sat, NavMessageID& signal)
+   {
+      bool rv = true;
+      signal.sat = sat;
+      signal.xmitSat = sat;
+      signal.system = sat.system;
+         // make our best guess.
+      switch (sat.system)
+      {
+         case SatelliteSystem::GPS:
+            signal.obs = oidGPS;
+            signal.nav = ntGPS;
+            break;
+         case SatelliteSystem::Galileo:
+            signal.obs = oidGalileo;
+            signal.nav = ntGalileo;
+            break;
+         case SatelliteSystem::QZSS:
+            signal.obs = oidQZSS;
+            signal.nav = ntQZSS;
+            break;
+         case SatelliteSystem::Glonass:
+            signal.obs = oidGLONASS;
+            signal.nav = ntGLONASS;
+            break;
+         case SatelliteSystem::BeiDou:
+            signal.obs = oidBeiDou;
+            signal.nav = ntBeiDou;
+            break;
+         default:
+               /// @todo add more systems as needed.
+            signal.obs = ObsID(ObservationType::NavMsg,
+                                       CarrierBand::Unknown,
+                                       TrackingCode::Unknown);
+            signal.nav = NavType::Unknown;
+            rv = false;
+            break;
+      }
+      return rv;
+   }
+
+
+   bool SP3NavDataFactory ::
+   transNavMsgID(const NavMessageID& nmidIn, NavMessageID& nmidOut)
+   {
+      nmidOut = nmidIn; // copy all the original data first.
+      return setSignal(nmidIn.sat, nmidOut);
+   }
+
 } // namespace gpstk

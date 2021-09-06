@@ -59,6 +59,8 @@ namespace gpstk
       processAlm = (nmts.count(gpstk::NavMessageType::Almanac) > 0);
       processHea = (nmts.count(gpstk::NavMessageType::Health) > 0);
       processTim = (nmts.count(gpstk::NavMessageType::TimeOffset) > 0);
+      processIono= (nmts.count(gpstk::NavMessageType::Iono) > 0);
+      processISC = (nmts.count(gpstk::NavMessageType::ISC) > 0);
    }
 
 }

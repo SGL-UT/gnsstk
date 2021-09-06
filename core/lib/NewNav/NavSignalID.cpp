@@ -50,11 +50,12 @@ namespace gpstk
 
    NavSignalID ::
    NavSignalID(SatelliteSystem sys, CarrierBand car, TrackingCode track,
-               NavType nmt)
+               NavType nmt, uint32_t mcode, uint32_t mcodeMask)
          : system(sys),
            obs(gpstk::ObservationType::NavMsg, car, track),
            nav(nmt)
    {
+      obs.setMcodeBits(mcode, mcodeMask);
    }
 
 
@@ -67,19 +68,31 @@ namespace gpstk
    }
 
 
+// Use this macro in operator<< to figure out why things fail
+#if 0
+#define ORDERRET(RV) {                                                  \
+      std::cerr << "order() returning " << RV << " @ " << __LINE__      \
+                << std::endl;                                           \
+      return RV;                                                        \
+   }
+#else
+#define ORDERRET(RV) return RV;
+#endif
+
    int NavSignalID ::
    order(const NavSignalID& right) const
    {
-      if (system < right.system) return -1;
-      if (system > right.system) return 1;
-      if (obs < right.obs) return -1;
-      if (right.obs < obs) return 1;
+      // std::cerr << __PRETTY_FUNCTION__ << std::endl;
+      if (system < right.system) ORDERRET(-1);
+      if (system > right.system) ORDERRET(1);
+      if (obs < right.obs) ORDERRET(-1);
+      if (right.obs < obs) ORDERRET(1);
       if ((nav != NavType::Any) && (right.nav != NavType::Any))
       {
-         if (nav < right.nav) return -1;
-         if (nav > right.nav) return 1;
+         if (nav < right.nav) ORDERRET(-1);
+         if (nav > right.nav) ORDERRET(1);
       }
-      return 0;
+      ORDERRET(0);
    }
 
 

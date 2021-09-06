@@ -61,9 +61,11 @@ namespace gpstk
           * @param[in] sys The GNSS this signal originates from.
           * @param[in] car The carrier band of this signal.
           * @param[in] track The tracking code of this signal.
-          * @param[in] nmt The navigation message format of this signal. */
+          * @param[in] nmt The navigation message format of this signal. 
+          * @param[in] mcode Data to uniquely identify M-code signal.
+          * @param[in] mcodeMask Bitmask for matching mcode. */
       NavSignalID(SatelliteSystem sys, CarrierBand car, TrackingCode track,
-                  NavType nmt);
+                  NavType nmt, uint32_t mcode = 0, uint32_t mcodeMask = -1);
 
          /** Initialize all data to specified values.
           * @param[in] sys The GNSS this signal originates from.
@@ -102,7 +104,7 @@ namespace gpstk
    };
 
       /// Set of nav data signal identifiers.
-   using NavSignalSet = std::set<NavSignalID>;
+   typedef std::set<NavSignalID> NavSignalSet;
 
 
    inline std::ostream& operator<<(std::ostream& s, const NavSignalID& nsid)

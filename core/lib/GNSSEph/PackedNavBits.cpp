@@ -115,6 +115,27 @@ namespace gpstk
       xMitCoerced = false;
    }
 
+
+   PackedNavBits::PackedNavBits(const SatID& satSysArg, 
+                                const ObsID& obsIDArg,
+                                const NavID& navIDArg,
+                                const std::string rxString,
+                                const CommonTime& transmitTimeArg,
+                                unsigned numBits,
+                                bool fillValue)
+         : parityStatus(psUnknown),
+           satSys(satSysArg),
+           obsID(obsIDArg),
+           navID(navIDArg),
+           rxID(rxString),
+           transmitTime(transmitTimeArg),
+           bits(numBits, fillValue),
+           bits_used(numBits),
+           xMitCoerced(false)
+   {
+   }
+
+
       // Copy constructor
    PackedNavBits::PackedNavBits(const PackedNavBits& right)
    {
@@ -408,6 +429,22 @@ namespace gpstk
       return( (long) (s * scale ) );
    }
 
+      /* Unpack a split signed long integer */
+   long PackedNavBits::asLong(const unsigned startBits1,
+                              const unsigned numBits1,
+                              const unsigned startBits2,
+                              const unsigned numBits2,
+                              const int scale ) const
+   {
+      int64_t s = SignExtend(startBits1, numBits1);
+      uint64_t temp;
+      temp = asUint64_t(startBits2, numBits2);
+      s <<= numBits2;
+      s |= temp;
+      
+      return( (long) (s * scale ) );
+   }
+
       /* Unpack a split unsigned double */
    double PackedNavBits::asUnsignedDouble(const unsigned startBits[],
                                           const unsigned numBits[],
@@ -477,6 +514,48 @@ namespace gpstk
       double dval = (double) s;
       dval *= pow(static_cast<double>(2), power2);
       return( dval );
+   }
+
+
+   double PackedNavBits ::
+   asSignedDouble(const std::vector<unsigned>& startBits,
+                  const std::vector<unsigned>& numBits,
+                  const std::vector<unsigned>& whichSF,
+                  const std::vector<PackedNavBitsPtr>& bits,
+                  const int power2)
+   {
+      int64_t s = bits[whichSF[0]]->SignExtend(startBits[0], numBits[0]);
+      uint64_t temp;
+      for (unsigned int i = 1; i < startBits.size(); i++)
+      {
+         temp = bits[whichSF[i]]->asUint64_t(startBits[i], numBits[i]);
+         s <<= numBits[i];
+         s |= temp;
+      }
+
+         // Convert to double and scale
+      return ldexp((double)s, power2);
+   }
+
+
+   double PackedNavBits ::
+   asUnsignedDouble(const std::vector<unsigned>& startBits,
+                    const std::vector<unsigned>& numBits,
+                    const std::vector<unsigned>& whichSF,
+                    const std::vector<PackedNavBitsPtr>& bits,
+                    const int power2)
+   {
+      uint64_t ulong = bits[whichSF[0]]->asUint64_t(startBits[0], numBits[0]);
+      uint64_t temp;
+      for (unsigned int i = 1; i < startBits.size(); i++)
+      {
+         temp = bits[whichSF[i]]->asUint64_t(startBits[i], numBits[i]);
+         ulong <<= numBits[i];
+         ulong |= temp;
+      }
+
+         // Convert to double and scale
+      return ldexp((double)ulong, power2);
    }
 
 

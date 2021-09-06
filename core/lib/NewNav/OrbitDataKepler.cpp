@@ -46,8 +46,6 @@ using namespace std;
 
 namespace gpstk
 {
-   const std::string OrbitDataKepler :: dumpTimeFmt("%4F(%4G)  %6.0g   %3a-%w   %3j   %5.0s   %02m/%02d/%04Y   %02H:%02M:%02S");
-
    OrbitDataKepler ::
    OrbitDataKepler()
          : Cuc(0.0), Cus(0.0), Crc(0.0), Crs(0.0), Cic(0.0), Cis(0.0), M0(0.0),
@@ -59,9 +57,9 @@ namespace gpstk
 
 
    void OrbitDataKepler ::
-   dump(std::ostream& s, Detail dl) const
+   dump(std::ostream& s, DumpDetail dl) const
    {
-      if (dl == Detail::OneLine)
+      if (dl == DumpDetail::OneLine)
       {
          NavData::dump(s,dl);
          return;
@@ -83,7 +81,7 @@ namespace gpstk
       s << endl << endl;
 
          // the rest is full details, so just return if Full is not asked for.
-      if (dl != Detail::Full)
+      if (dl != DumpDetail::Full)
          return;
 
       const ios::fmtflags oldFlags = s.flags();
@@ -96,15 +94,16 @@ namespace gpstk
 
       dumpSVStatus(s);
 
+      std::string timeFmt = weekFmt+dumpTimeFmt;
       s << endl
         << "           TIMES OF INTEREST"
         << endl << endl
         << "              Week(10bt)     SOW     DOW   UTD     SOD"
         << "   MM/DD/YYYY   HH:MM:SS\n"
-        << "Begin Valid:  " << printTime(beginFit, dumpTimeFmt) << endl
-        << "Clock Epoch:  " << printTime(Toc, dumpTimeFmt) << endl
-        << "Eph Epoch:    " << printTime(Toe, dumpTimeFmt) << endl
-        << "End Valid:    " << printTime(endFit, dumpTimeFmt) << endl;
+        << "Begin Valid:  " << printTime(beginFit, timeFmt) << endl
+        << "Clock Epoch:  " << printTime(Toc, timeFmt) << endl
+        << "Eph Epoch:    " << printTime(Toe, timeFmt) << endl
+        << "End Valid:    " << printTime(endFit, timeFmt) << endl;
 
       s.setf(ios::scientific, ios::floatfield);
       s.precision(precision);

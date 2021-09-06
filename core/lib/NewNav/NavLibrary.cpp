@@ -40,6 +40,10 @@
 #include "OrbitData.hpp"
 #include "NavHealthData.hpp"
 #include "TimeOffsetData.hpp"
+#include "NDFUniqConstIterator.hpp"
+#include "NDFUniqIterator.hpp"
+#include "IonoData.hpp"
+#include "InterSigCorr.hpp"
 
 namespace gpstk
 {
@@ -79,7 +83,7 @@ namespace gpstk
 
    bool NavLibrary ::
    getHealth(const NavSatelliteID& sat, const CommonTime& when,
-             SVHealth& health, SVHealth xmitHealth, NavValidityType valid,
+             SVHealth& healthOut, SVHealth xmitHealth, NavValidityType valid,
              NavSearchOrder order)
    {
       NavMessageID nmid(sat, NavMessageType::Health);
@@ -87,7 +91,7 @@ namespace gpstk
       if (!find(nmid, when, ndp, xmitHealth, valid, order))
          return false;
       NavHealthData *healthData = dynamic_cast<NavHealthData*>(ndp.get());
-      health = healthData->getHealth();
+      healthOut = healthData->getHealth();
       return true;
    }
 
@@ -112,17 +116,10 @@ namespace gpstk
              const CommonTime& when, NavDataPtr& offset, SVHealth xmitHealth,
              NavValidityType valid)
    {
-         // Search through factories until we get a match or run out
-         // of factories.  Use unique pointers to avoid double-searching.
-      std::set<NavDataFactory*> uniques;
-      for (auto fi = factories.begin(); fi != factories.end(); ++fi)
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
-         NavDataFactory *ndfp = dynamic_cast<NavDataFactory*>(fi->second.get());
-         if (uniques.count(ndfp))
-            continue; // already processed
-         uniques.insert(ndfp);
-         if (fi->second->getOffset(fromSys, toSys, when, offset, xmitHealth,
-                                   valid))
+         if (fi.second->getOffset(fromSys, toSys, when, offset, xmitHealth,
+                                  valid))
          {
             return true;
          }
@@ -132,18 +129,371 @@ namespace gpstk
 
 
    bool NavLibrary ::
-   find(const NavMessageID& nmid, const CommonTime& when, NavDataPtr& navData,
+   getIonoCorr(SatelliteSystem sys, const CommonTime& when,
+               const Position& rxgeo, const Position& svgeo,
+               CarrierBand band, double& corrOut, NavType nt)
+   {
+      SatID sysOnly(sys);
+      NavMessageID nmid(
+         NavSatelliteID(
+            sysOnly, sysOnly,
+            ObsID(ObservationType::NavMsg,
+                  CarrierBand::Any,
+                  TrackingCode::Any,
+                  XmitAnt::Any),
+            nt),
+         NavMessageType::Iono);
+      NavDataPtr navOut;
+      if (!find(nmid, when, navOut, SVHealth::Healthy,
+                NavValidityType::ValidOnly, NavSearchOrder::Nearest))
+      {
+         return false;
+      }
+      IonoData *iono = dynamic_cast<IonoData*>(navOut.get());
+      corrOut = iono->getCorrection(when, rxgeo, svgeo, band);
+      return true;
+   }
+
+
+   bool NavLibrary ::
+   getIonoCorr(const SatID& sat, const CommonTime& when,
+               const Position& rxgeo,
+               CarrierBand band, double& corrOut, NavType nt, int freqOffs,
+               bool freqOffsWild)
+   {
+      if (sat.isWild())
+      {
+            // wildcards in sat are not allowed, we need a specific
+            // satellite's position
+         return false;
+      }
+      Xvt xvt;
+      SatID wildSat;
+      wildSat.makeWild();
+         /// @todo Update the ObsID constructor to include freqOffs data
+      NavSatelliteID nsid(sat, wildSat,
+                          ObsID(ObservationType::NavMsg,
+                                CarrierBand::Any,
+                                TrackingCode::Any,
+                                XmitAnt::Any),
+                          nt);
+      if (!getXvt(nsid, when, xvt, SVHealth::Any, NavValidityType::ValidOnly,
+                  NavSearchOrder::User))
+      {
+            // can't get a satellite position
+         return false;
+      }
+      Position svgeo(xvt.x);
+      svgeo.transformTo(Position::Geodetic);
+      return getIonoCorr(sat.system, when, rxgeo, svgeo, band, corrOut, nt);
+   }
+
+
+   bool NavLibrary ::
+   getISC(const ObsID& oid, const CommonTime& when, double& corrOut)
+   {
+      std::list<NavMessageID> msgIDs(getISCNMID(oid));
+      if (msgIDs.empty())
+         return false;
+      NavDataPtr navOut;
+      for (const auto& nmid : msgIDs)
+      {
+         if (find(nmid, when, navOut, SVHealth::Healthy,
+                  NavValidityType::ValidOnly, NavSearchOrder::Nearest))
+         {
+            InterSigCorr *isc = dynamic_cast<InterSigCorr*>(navOut.get());
+               // This if test allows getISC to fail and the loop to
+               // continue and attempt to find another match.
+            if (isc->getISC(oid, corrOut))
+               return true;
+         }
+      }
+      return false;
+   }
+
+
+   bool NavLibrary ::
+   getISC(const ObsID& oid1, const ObsID& oid2, const CommonTime& when,
+          double& corrOut)
+   {
+         // This ugly mess is a special case as GPS LNAV does not have
+         // ISCs that apply to the iono-free combined pseudorange.
+      if ((oid1.band == CarrierBand::L1) && (oid2.band == CarrierBand::L2) &&
+          ((oid1.code == TrackingCode::CA) ||
+           (oid1.code == TrackingCode::P) ||
+           (oid1.code == TrackingCode::Y) ||
+           (oid1.code == TrackingCode::Ztracking) ||
+           (oid1.code == TrackingCode::YCodeless) ||
+           (oid1.code == TrackingCode::Semicodeless)) &&
+          ((oid2.code == TrackingCode::P) ||
+           (oid2.code == TrackingCode::Y) ||
+           (oid2.code == TrackingCode::Ztracking) ||
+           (oid2.code == TrackingCode::YCodeless) ||
+           (oid2.code == TrackingCode::Semicodeless)))
+      {
+         corrOut = 0.0;
+         return true;
+      }
+      std::list<NavMessageID> msgIDs(getISCNMID(oid1,oid2));
+      if (msgIDs.empty())
+         return false;
+      NavDataPtr navOut;
+      for (const auto& nmid : msgIDs)
+      {
+         if (find(nmid, when, navOut, SVHealth::Healthy,
+                  NavValidityType::ValidOnly, NavSearchOrder::Nearest))
+         {
+            InterSigCorr *isc = dynamic_cast<InterSigCorr*>(navOut.get());
+               // This if test allows getISC to fail and the loop to
+               // continue and attempt to find another match.
+            if (isc->getISC(oid1, oid2, corrOut))
+               return true;
+         }
+      }
+      return false;
+   }
+
+
+   std::list<NavMessageID> NavLibrary ::
+   getISCNMID(const ObsID& oid)
+   {
+      std::list<NavMessageID> rv;
+      const SatID gpsAnySat(SatelliteSystem::GPS);
+      const ObsID anyObs(ObservationType::NavMsg,
+                         CarrierBand::Any,
+                         TrackingCode::Any,
+                         XmitAnt::Any);
+      NavMessageID nmid(
+         NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                        NavType::Unknown),
+         NavMessageType::ISC);
+      switch (oid.code)
+      {
+         case TrackingCode::CA:
+            if (oid.band == CarrierBand::L1)
+            {
+               nmid.nav = NavType::GPSLNAV;
+               rv.push_back(nmid);
+               rv.push_back(
+                  NavMessageID(
+                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                                    NavType::GPSCNAVL2),
+                     NavMessageType::ISC));
+               rv.push_back(
+                  NavMessageID(
+                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                                    NavType::GPSCNAVL5),
+                     NavMessageType::ISC));
+               rv.push_back(
+                  NavMessageID(
+                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                                    NavType::GPSCNAV2),
+                     NavMessageType::ISC));
+            }
+            break;
+         case TrackingCode::P:
+         case TrackingCode::Y:
+         case TrackingCode::Ztracking:
+         case TrackingCode::YCodeless:
+         case TrackingCode::Semicodeless:
+            switch (oid.band)
+            {
+               case CarrierBand::L1:
+               case CarrierBand::L2:
+                  rv.push_back(
+                     NavMessageID(
+                        NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                                       NavType::GPSLNAV),
+                        NavMessageType::ISC));
+                  break;
+            }
+            break;
+         case TrackingCode::MD:
+         case TrackingCode::MDP:
+         case TrackingCode::MP:
+         case TrackingCode::MPA:
+         case TrackingCode::MARLD:
+         case TrackingCode::MARLP:
+         case TrackingCode::Mprime:
+         case TrackingCode::MprimePA:
+            switch (oid.band)
+            {
+               case CarrierBand::L1:
+               case CarrierBand::L2:
+                  rv.push_back(
+                     NavMessageID(
+                        NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                                       NavType::GPSMNAV),
+                        NavMessageType::ISC));
+                  break;
+            }
+            break;
+         case TrackingCode::L2CM:
+         case TrackingCode::L2CL:
+         case TrackingCode::L2CML:
+            if (oid.band == CarrierBand::L2)
+            {
+               rv.push_back(
+                  NavMessageID(
+                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                                    NavType::GPSCNAVL2),
+                     NavMessageType::ISC));
+               rv.push_back(
+                  NavMessageID(
+                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                                    NavType::GPSCNAVL5),
+                     NavMessageType::ISC));
+               rv.push_back(
+                  NavMessageID(
+                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                                    NavType::GPSCNAV2),
+                     NavMessageType::ISC));
+            }
+            break;
+         case TrackingCode::L5I:
+         case TrackingCode::L5Q:
+         case TrackingCode::L5IQ:
+            if (oid.band == CarrierBand::L5)
+            {
+               rv.push_back(
+                  NavMessageID(
+                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                                    NavType::GPSCNAVL5),
+                     NavMessageType::ISC));
+               rv.push_back(
+                  NavMessageID(
+                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                                    NavType::GPSCNAVL2),
+                     NavMessageType::ISC));
+               rv.push_back(
+                  NavMessageID(
+                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                                    NavType::GPSCNAV2),
+                     NavMessageType::ISC));
+            }
+            break;
+         case TrackingCode::L1CP:
+         case TrackingCode::L1CD:
+         case TrackingCode::L1CDP:
+            if (oid.band == CarrierBand::L1)
+            {
+               rv.push_back(
+                  NavMessageID(
+                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                                    NavType::GPSCNAV2),
+                     NavMessageType::ISC));
+            }
+            break;
+      }
+      return rv;
+   }
+
+
+   std::list<NavMessageID> NavLibrary ::
+   getISCNMID(const ObsID& oid1, const ObsID& oid2)
+   {
+      std::list<NavMessageID> rv;
+      const SatID gpsAnySat(SatelliteSystem::GPS);
+      const ObsID anyObs(ObservationType::NavMsg,
+                         CarrierBand::Any,
+                         TrackingCode::Any,
+                         XmitAnt::Any);
+      if ((oid1.band == CarrierBand::L1) &&
+          (oid1.code == TrackingCode::CA) &&
+          (((oid2.band == CarrierBand::L5) &&
+            ((oid2.code == TrackingCode::L5I) ||
+             (oid2.code == TrackingCode::L5Q))) ||
+           ((oid2.band == CarrierBand::L2) &&
+            ((oid2.code == TrackingCode::L2CM) ||
+             (oid2.code == TrackingCode::L2CL) ||
+             (oid2.code == TrackingCode::L2CML)))))
+      {
+         rv.push_back(
+            NavMessageID(
+               NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                              NavType::GPSCNAVL2),
+               NavMessageType::ISC));
+         NavMessageID l5(
+            NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                           NavType::GPSCNAVL5),
+            NavMessageType::ISC);
+            // Push the codes so they're in order preferring the same
+            // band, mostly because it's expected that if you're
+            // processing L2 you'll have L2 nav data, etc.
+         if (oid2.band == CarrierBand::L5)
+            rv.push_front(l5);
+         else
+            rv.push_back(l5);
+         rv.push_back(
+            NavMessageID(
+               NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                              NavType::GPSCNAV2),
+               NavMessageType::ISC));
+      }
+      else if ((oid1.band == CarrierBand::L1) &&
+               ((oid1.code == TrackingCode::L1CP) ||
+                (oid1.code == TrackingCode::L1CD)) &&
+               (oid2.band == CarrierBand::L2) &&
+               ((oid2.code == TrackingCode::L2CM) ||
+                (oid2.code == TrackingCode::L2CL) ||
+                (oid2.code == TrackingCode::L2CML)))
+      {
+         rv.push_back(
+            NavMessageID(
+               NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                              NavType::GPSCNAV2),
+               NavMessageType::ISC));
+      }
+      else if ((oid1.band == CarrierBand::L1) &&
+               (oid2.band == CarrierBand::L2) &&
+               ((oid1.code == TrackingCode::MD) ||
+                (oid1.code == TrackingCode::MDP) ||
+                (oid1.code == TrackingCode::MP) ||
+                (oid1.code == TrackingCode::MPA) ||
+                (oid1.code == TrackingCode::MARLD) ||
+                (oid1.code == TrackingCode::MARLP) ||
+                (oid1.code == TrackingCode::Mprime) ||
+                (oid1.code == TrackingCode::MprimePA)) &&
+               ((oid2.code == TrackingCode::MD) ||
+                (oid2.code == TrackingCode::MDP) ||
+                (oid2.code == TrackingCode::MP) ||
+                (oid2.code == TrackingCode::MPA) ||
+                (oid2.code == TrackingCode::MARLD) ||
+                (oid2.code == TrackingCode::MARLP) ||
+                (oid2.code == TrackingCode::Mprime) ||
+                (oid2.code == TrackingCode::MprimePA)))
+      {
+         rv.push_back(
+            NavMessageID(
+               NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
+                              NavType::GPSMNAV),
+               NavMessageType::ISC));
+      }
+      return rv;
+   }
+
+
+   bool NavLibrary ::
+   find(const NavMessageID& nmid, const CommonTime& when, NavDataPtr& navOut,
         SVHealth xmitHealth, NavValidityType valid, NavSearchOrder order)
    {
-         // search factories until we find what we want.
-         /** @bug I'm worried this might not work as expected in the
-          * context of factories that produce multiple signals and
-          * wildcards are used. */
-      auto range = factories.equal_range(nmid);
-      for (auto fi = range.first; fi != range.second; ++fi)
+         // Don't use factories.equal_range(nmid), as it can result in
+         // range.first and range.second being the same iterator, in
+         // which case the loop won't process anything at all.
+         // Also don't use the unique iterator as it will result in
+         // skipping over valid factories, e.g. looking for CNAV but
+         // LNAV is first in the map, the signals don't match and the
+         // factory won't be looked at again.
+      std::set<NavDataFactory*> uniques;
+      for (auto& fi : factories)
       {
-         if (fi->second->find(nmid, when, navData, xmitHealth, valid, order))
-            return true;
+         // std::cerr << "fi.first = " << fi.first << "   nmid = " << nmid << std::endl;
+         if ((fi.first == nmid) && (uniques.count(fi.second.get()) == 0))
+         {
+            if (fi.second->find(nmid, when, navOut, xmitHealth, valid, order))
+               return true;
+            uniques.insert(fi.second.get());
+         }
       }
       return false;
    }
@@ -152,7 +502,7 @@ namespace gpstk
    void NavLibrary ::
    setValidityFilter(NavValidityType nvt)
    {
-      for (auto& i : factories)
+      for (auto& i : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          i.second->setValidityFilter(nvt);
       }
@@ -162,7 +512,7 @@ namespace gpstk
    void NavLibrary ::
    setTypeFilter(const NavMessageTypeSet& nmts)
    {
-      for (auto& i : factories)
+      for (auto& i : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          i.second->setTypeFilter(nmts);
       }
@@ -182,19 +532,12 @@ namespace gpstk
 
 
    void NavLibrary ::
-   dump(std::ostream& s, NavData::Detail dl) const
+   dump(std::ostream& s, DumpDetail dl) const
    {
-         // factories can have multiple copies of a given factory, so
-         // keep track of which ones we've checked already.
-      std::set<NavDataFactory*> ptrs;
-      for (auto& fi : factories)
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
          NavDataFactory *ptr = fi.second.get();
-         if (ptrs.count(ptr) == 0)
-         {
-            ptrs.insert(ptr);
-            ptr->dump(s,dl);
-         }
+         ptr->dump(s,dl);
       }
    }
 
@@ -202,7 +545,7 @@ namespace gpstk
    void NavLibrary ::
    edit(const CommonTime& fromTime, const CommonTime& toTime)
    {
-      for (auto& fi : factories)
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          fi.second->edit(fromTime, toTime);
       }
@@ -213,7 +556,7 @@ namespace gpstk
    edit(const CommonTime& fromTime, const CommonTime& toTime,
         const NavSatelliteID& satID)
    {
-      for (auto& fi : factories)
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          fi.second->edit(fromTime, toTime, satID);
       }
@@ -224,7 +567,7 @@ namespace gpstk
    edit(const CommonTime& fromTime, const CommonTime& toTime,
         const NavSignalID& signal)
    {
-      for (auto& fi : factories)
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          fi.second->edit(fromTime, toTime, signal);
       }
@@ -234,7 +577,7 @@ namespace gpstk
    void NavLibrary ::
    clear()
    {
-      for (auto& fi : factories)
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          fi.second->clear();
       }
@@ -245,9 +588,10 @@ namespace gpstk
    getInitialTime() const
    {
       CommonTime rv = CommonTime::END_OF_TIME;
-      for (const auto& fi : factories)
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
-         rv = std::min(rv, fi.second->getInitialTime());
+         gpstk::CommonTime t(fi.second->getInitialTime());
+         rv = std::min(rv, t);
       }
       return rv;
    }
@@ -257,34 +601,95 @@ namespace gpstk
    getFinalTime() const
    {
       CommonTime rv = CommonTime::BEGINNING_OF_TIME;
-      for (const auto& fi : factories)
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
-         rv = std::max(rv, fi.second->getInitialTime());
+         rv = std::max(rv, fi.second->getFinalTime());
       }
       return rv;
+   }
+
+
+   NavSatelliteIDSet NavLibrary ::
+   getAvailableSats(const CommonTime& fromTime, const CommonTime& toTime)
+      const
+   {
+      NavSatelliteIDSet rv, tmp;
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
+      {
+         tmp = fi.second->getAvailableSats(fromTime, toTime);
+         for (const auto& i : tmp)
+         {
+            rv.insert(i);
+         }
+      }
+      return rv;
+   }
+
+
+   NavSatelliteIDSet NavLibrary ::
+   getAvailableSats(NavMessageType nmt,
+                    const CommonTime& fromTime,
+                    const CommonTime& toTime)
+      const
+   {
+      NavSatelliteIDSet rv, tmp;
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
+      {
+         tmp = fi.second->getAvailableSats(nmt, fromTime, toTime);
+         for (const auto& i : tmp)
+         {
+            rv.insert(i);
+         }
+      }
+      return rv;
+   }
+
+
+   NavMessageIDSet NavLibrary ::
+   getAvailableMsgs(const CommonTime& fromTime,
+                    const CommonTime& toTime)
+      const
+   {
+      NavMessageIDSet rv, tmp;
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
+      {
+         tmp = fi.second->getAvailableMsgs(fromTime, toTime);
+         for (const auto& i : tmp)
+         {
+            rv.insert(i);
+         }
+      }
+      return rv;
+   }
+
+
+   bool NavLibrary ::
+   isPresent(const NavMessageID& nmid,
+             const CommonTime& fromTime,
+             const CommonTime& toTime)
+   {
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
+      {
+         if (fi.second->isPresent(nmid, fromTime, toTime))
+            return true;
+      }
+      return false;
    }
 
 
    std::string NavLibrary ::
    getFactoryFormats() const
    {
-         // factories can have multiple copies of a given factory, so
-         // keep track of which ones we've checked already.
-      std::set<NavDataFactory*> ptrs;
       std::string rv;
-      for (const auto& fi : factories)
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
          NavDataFactory *ptr = fi.second.get();
-         if (ptrs.count(ptr) == 0)
+         std::string ff(ptr->getFactoryFormats());
+         if (!ff.empty())
          {
-            ptrs.insert(ptr);
-            std::string ff(ptr->getFactoryFormats());
-            if (!ff.empty())
-            {
-               if (!rv.empty())
-                  rv += ", ";
-               rv += ff;
-            }
+            if (!rv.empty())
+               rv += ", ";
+            rv += ff;
          }
       }
       return rv;

@@ -43,6 +43,14 @@
 #include "NavHealthData.hpp"
 #include "BasicTimeSystemConverter.hpp"
 
+#if !defined(__PRETTY_FUNCTION__)
+#ifdef __FUNCSIG__
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#else
+#define __PRETTY_FUNCTION__ __FUNCTION__
+#endif
+#endif
+
 /// debug time string
 static const std::string dts("%Y/%03j/%02H:%02M:%02S %P");
 
@@ -63,17 +71,17 @@ namespace gpstk
 
    bool NavDataFactoryWithStore ::
    find(const NavMessageID& nmid, const CommonTime& when,
-        NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
+        NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
         NavSearchOrder order)
    {
       bool rv = false;
       switch (order)
       {
          case NavSearchOrder::User:
-            rv = findUser(nmid, when, navData, xmitHealth, valid);
+            rv = findUser(nmid, when, navOut, xmitHealth, valid);
             break;
          case NavSearchOrder::Nearest:
-            rv = findNearest(nmid, when, navData, xmitHealth, valid);
+            rv = findNearest(nmid, when, navOut, xmitHealth, valid);
             break;
          default:
                // requested an invalid search order
@@ -83,13 +91,13 @@ namespace gpstk
       {
             // One last check for fit interval validity, but it only
             // applies to OrbitDataKepler.
-         OrbitDataKepler *odk = dynamic_cast<OrbitDataKepler*>(navData.get());
+         OrbitDataKepler *odk = dynamic_cast<OrbitDataKepler*>(navOut.get());
          if (odk != nullptr)
          {
             if ((when < odk->beginFit) || (when > odk->endFit))
             {
                   // not a valid match, so clear the results.
-               navData.reset();
+               navOut.reset();
                rv = false;
             }
          }
@@ -121,12 +129,20 @@ namespace gpstk
       };
       using MatchList = std::list<FindMatches>;
 
-      // std::cerr << __PRETTY_FUNCTION__ << std::endl;
+      if (debugLevel)
+      {
+         std::cerr << __PRETTY_FUNCTION__ << std::endl
+                   << "  nmid=" << nmid << std::endl
+                   << "  when=" << gpstk::printTime(when,dts) << std::endl;
+      }
          // dig through the maps of maps, matching keys with nmid along the way
       auto dataIt = data.find(nmid.messageType);
       if (dataIt == data.end())
       {
-         // std::cerr << " false = not found 1" << std::endl;
+         if (debugLevel)
+         {
+            std::cerr << " false = not found 1" << std::endl;
+         }
          return false; // not found.
       }
          // Make a collection of the NavMap iterators that match the
@@ -140,59 +156,121 @@ namespace gpstk
       MatchList itList;
       if (nmid.isWild())
       {
-         // std::cerr << "wildcard search: " << nmid << std::endl;
+         if (debugLevel)
+         {
+            std::cerr << "wildcard search: " << nmid << std::endl;
+         }
          for (NavSatMap::iterator sati = dataIt->second.begin();
               sati != dataIt->second.end(); sati++)
          {
             if (sati->first != nmid)
+            {
+               if (debugLevel)
+               {
+                  std::cerr << "  " << sati->first << " != " << nmid
+                            << std::endl;
+               }
                continue; // skip non matches
-            // std::cerr << "  matches " << sati->first << std::endl;
+            }
+            if (debugLevel)
+            {
+               std::cerr << "  matches " << sati->first << std::endl;
+            }
             NavMap::iterator nmi = sati->second.lower_bound(when);
             if (nmi == sati->second.end())
             {
                nmi = std::prev(nmi);
             }
+            if (debugLevel)
+            {
+               std::cerr << "  user time : "
+                         << gpstk::printTime(nmi->second->getUserTime(),dts)
+                         << std::endl
+                         << "  (nmi != sati->second.end()) = "
+                         << (nmi != sati->second.end()) << std::endl
+                         << "  (nmi->second->getUserTime() > when) = "
+                         << (nmi->second->getUserTime() > when) << std::endl;
+            }
             while ((nmi != sati->second.end()) &&
                    (nmi->second->getUserTime() > when))
             {
+               if (debugLevel)
+               {
+                  std::cerr << "  backing up (maybe)" << std::endl;
+               }
                nmi = (nmi == sati->second.begin() ? sati->second.end()
                       : std::prev(nmi));
+               if ((debugLevel > 0) && (nmi != sati->second.end()))
+               {
+                  std::cerr << "  user time : "
+                            << gpstk::printTime(nmi->second->getUserTime(),dts)
+                            << std::endl;
+               }
             }
             if (nmi != sati->second.end())
             {
                itList.push_back(FindMatches(&(sati->second), nmi));
+            }
+            else if (debugLevel)
+            {
+               std::cerr << "  did not add match" << std::endl;
             }
          }
       }
       else
       {
-         // std::cerr << "non-wildcard search: " << nmid << std::endl;
+         if (debugLevel)
+         {
+            std::cerr << "non-wildcard search: " << nmid << std::endl;
+         }
          auto sati = dataIt->second.find(nmid);
          if (sati != dataIt->second.end())
          {
-            // std::cerr << "  found" << std::endl;
+            if (debugLevel)
+            {
+               std::cerr << "  found" << std::endl;
+            }
             NavMap::iterator nmi = sati->second.lower_bound(when);
             if (nmi == sati->second.end())
             {
                nmi = std::prev(nmi);
+            }
+            if (debugLevel)
+            {
+               std::cerr << "  user time : "
+                         << gpstk::printTime(nmi->second->getUserTime(),dts)
+                         << std::endl;
             }
             while ((nmi != sati->second.end()) &&
                    (nmi->second->getUserTime() > when))
             {
                nmi = (nmi == sati->second.begin() ? sati->second.end()
                       : std::prev(nmi));
+               if ((debugLevel > 0) && (nmi != sati->second.end()))
+               {
+                  std::cerr << "  user time : "
+                            << gpstk::printTime(nmi->second->getUserTime(),dts)
+                            << std::endl;
+               }
             }
             if (nmi != sati->second.end())
             {
                itList.push_back(FindMatches(&(sati->second), nmi));
             }
+            else if (debugLevel)
+            {
+               std::cerr << "  did not add match" << std::endl;
+            }
          }
-         // else
-         // {
-         //    std::cerr << "  not found" << std::endl;
-         // }
+         else if (debugLevel)
+         {
+            std::cerr << "  not found" << std::endl;
+         }
       }
-      // std::cerr << "itList.size() = " << itList.size() << std::endl;
+      if (debugLevel)
+      {
+         std::cerr << "itList.size() = " << itList.size() << std::endl;
+      }
       gpstk::CommonTime mostRecent = gpstk::CommonTime::BEGINNING_OF_TIME;
       mostRecent.setTimeSystem(gpstk::TimeSystem::Any);
       bool done = itList.empty();
@@ -201,10 +279,6 @@ namespace gpstk
       {
          for (auto& imi : itList)
          {
-            // if (imi.second.second != imi.first->end())
-            //    std::cerr << "examining " << imi.second.second->second->signal << std::endl;
-            // else
-            //    std::cerr << "examining end iterator" << std::endl;
             done = true; // default to being done.  Gets reset to false below.
             if (imi.finished)
             {
@@ -222,7 +296,10 @@ namespace gpstk
                       (imi.it->second->getUserTime() > when)) ||
                      !validityCheck(imi.it,*imi.map,valid,xmitHealth,when))
             {
-               // std::cerr << "  not end, not right time" << std::endl;
+               if (debugLevel)
+               {
+                  std::cerr << "  not end, not right time" << std::endl;
+               }
                imi.it = (imi.it == imi.map->begin()
                          ? imi.map->end()
                          : std::prev(imi.it));
@@ -235,24 +312,33 @@ namespace gpstk
             }
             else
             {
-               // std::cerr << "Found something good at "
-               //           << printTime(imi.it->first,
-               //                        dts)
-               //           << std::endl;
+               if (debugLevel)
+               {
+                  std::cerr << "Found something good at "
+                            << printTime(imi.it->first, dts)
+                            << std::endl;
+               }
                if (imi.it->second->getUserTime() > mostRecent)
                {
                   mostRecent = imi.it->second->getUserTime();
                   navData = imi.it->second;
-                  // std::cerr << "result is now " << navData->signal << std::endl;
+                  if (debugLevel)
+                  {
+                     std::cerr << "result is now " << navData->signal
+                               << std::endl;
+                  }
                }
                imi.finished = true;
                rv = true;
             }
          }
       }
-      // std::cerr << "Most recent = "
-      //           << printTime(mostRecent, dts)
-      //           << std::endl;
+      if (debugLevel)
+      {
+         std::cerr << "Most recent = "
+                   << printTime(mostRecent, dts)
+                   << std::endl;
+      }
       return rv;
    }
 
@@ -295,12 +381,18 @@ namespace gpstk
       };
       using MatchList = std::list<FindMatches>;
 
-      // std::cerr << __PRETTY_FUNCTION__ << std::endl;
+      if (debugLevel)
+      {
+         std::cerr << __PRETTY_FUNCTION__ << std::endl;
+      }
          // dig through the maps of maps, matching keys with nmid along the way
       auto dataIt = nearestData.find(nmid.messageType);
       if (dataIt == nearestData.end())
       {
-         // std::cerr << " false = not found 1" << std::endl;
+         if (debugLevel)
+         {
+            std::cerr << " false = not found 1" << std::endl;
+         }
          return false; // not found.
       }
          // Make a collection of the NavMap iterators that match the
@@ -314,32 +406,45 @@ namespace gpstk
       MatchList itList;
       if (nmid.isWild())
       {
-         // std::cerr << "wildcard search: " << nmid << std::endl;
+         if (debugLevel)
+         {
+            std::cerr << "wildcard search: " << nmid << std::endl;
+         }
          for (NavNearSatMap::iterator sati = dataIt->second.begin();
               sati != dataIt->second.end(); sati++)
          {
             if (sati->first != nmid)
                continue; // skip non matches
-            // std::cerr << "  matches " << sati->first << std::endl
-            //           << "  when = " << gpstk::printTime(when,dts) << std::endl;
+            if (debugLevel)
+            {
+               std::cerr << "  matches " << sati->first << std::endl
+                         << "  when = " << gpstk::printTime(when,dts)
+                         << std::endl;
+            }
             NavNearMap::iterator nmi = sati->second.lower_bound(when);
             itList.push_back(FindMatches(&(sati->second), nmi, when));
          }
       }
       else
       {
-         // std::cerr << "non-wildcard search: " << nmid << std::endl;
+         if (debugLevel)
+         {
+            std::cerr << "non-wildcard search: " << nmid << std::endl;
+         }
          auto sati = dataIt->second.find(nmid);
          if (sati != dataIt->second.end())
          {
-            // std::cerr << "  found" << std::endl;
+            if (debugLevel)
+            {
+               std::cerr << "  found" << std::endl;
+            }
             NavNearMap::iterator nmi = sati->second.lower_bound(when);
             itList.push_back(FindMatches(&(sati->second), nmi, when));
          }
-         // else
-         // {
-         //    std::cerr << "  not found" << std::endl;
-         // }
+         else if (debugLevel)
+         {
+            std::cerr << "  not found" << std::endl;
+         }
       }
       bool done = itList.empty();
       bool rv = false;
@@ -409,34 +514,44 @@ namespace gpstk
              const CommonTime& when, NavDataPtr& offset,
              SVHealth xmitHealth, NavValidityType valid)
    {
-      // std::cerr << printTime(when,"looking for "+dts) << std::endl;
+      if (debugLevel)
+      {
+         std::cerr << printTime(when,"looking for "+dts) << std::endl;
+      }
       bool rv = false;
          // Only search for forward key and let the TimeOffset classes
          // and factories handle the reverse offset.
-      TimeOffsetData::TimeCvtKey fwdKey(fromSys,toSys);
+      TimeCvtKey fwdKey(fromSys,toSys);
          // First look in the offsetData map for the key matching the
          // offset translation in the forward direction (fromSys->toSys).
       auto odi = offsetData.find(fwdKey);
-      // std::cerr << "  fwdKey=<" << gpstk::StringUtils::asString(fwdKey.first)
-      //           << "," << gpstk::StringUtils::asString(fwdKey.second) << ">"
-      //           << std::endl;
+      if (debugLevel)
+      {
+         std::cerr << "  fwdKey=<" << gpstk::StringUtils::asString(fwdKey.first)
+                   << "," << gpstk::StringUtils::asString(fwdKey.second) << ">"
+                   << std::endl;
+      }
       if (odi == offsetData.end())
       {
-         // std::cerr << "did not find key, giving up" << std::endl;
-         // std::cerr << "offsetData.size() = " << offsetData.size() << std::endl;
-         // for (const auto& x : offsetData)
-         // {
-         //    std::cerr << "  fwdKey=<"
-         //              << gpstk::StringUtils::asString(x.first.first)
-         //              << "," << gpstk::StringUtils::asString(x.first.second)
-         //              << ">" << std::endl;
-         // }
+         if (debugLevel)
+         {
+            std::cerr << "did not find key, giving up" << std::endl;
+            std::cerr << "offsetData.size() = " << offsetData.size()
+                      << std::endl;
+            for (const auto& x : offsetData)
+            {
+               std::cerr << "  fwdKey=<"
+                         << gpstk::StringUtils::asString(x.first.first)
+                         << "," << gpstk::StringUtils::asString(x.first.second)
+                         << ">" << std::endl;
+            }
+         }
          return false; // no conversion available
       }
-      // else
-      // {
-      //    std::cerr << "found forward key" << std::endl;
-      // }
+      else if (debugLevel)
+      {
+         std::cerr << "found forward key" << std::endl;
+      }
          // Make a copy of "when" with a time system of Any so that we
          // can search for offset data whether we're doing a "forward"
          // conversion (e.g. GPS->UTC) or "backward" conversion
@@ -446,17 +561,26 @@ namespace gpstk
       auto oemi = odi->second.lower_bound(whenny);
       if (oemi == odi->second.end())
       {
-         // std::cerr << "got end right away, backing up one" << std::endl;
+         if (debugLevel)
+         {
+            std::cerr << "got end right away, backing up one" << std::endl;
+         }
          oemi = std::prev(oemi);
       }
-      // std::cerr << printTime(oemi->first,"found "+dts) << std::endl;
+      if (debugLevel)
+      {
+         std::cerr << printTime(oemi->first,"found "+dts) << std::endl;
+      }
       bool done = false;
       while (!done)
       {
          if (oemi == odi->second.end())
          {
                // give up, couldn't find any valid matches.
-            // std::cerr << "giving up, reached the end" << std::endl;
+            if (debugLevel)
+            {
+               std::cerr << "giving up, reached the end" << std::endl;
+            }
             done = true;
          }
          else if (oemi->first > whenny)
@@ -465,11 +589,21 @@ namespace gpstk
                // so back up if possible
             oemi = (oemi == odi->second.begin()
                     ? odi->second.end() : std::prev(oemi));
-            // std::cerr << printTime(oemi->first,"backed up to "+dts) << std::endl;
+            if (debugLevel)
+            {
+               std::cerr << printTime(oemi->first,"backed up to "+dts)
+                         << std::endl;
+            }
          }
          else
          {
-            // std::cerr << "looking for acceptable data " << gpstk::StringUtils::asString(valid) << " " << gpstk::StringUtils::asString(xmitHealth) << std::endl;
+            if (debugLevel)
+            {
+               std::cerr << "looking for acceptable data "
+                         << gpstk::StringUtils::asString(valid) << " "
+                         << gpstk::StringUtils::asString(xmitHealth)
+                         << std::endl;
+            }
                // Message time is valid, so iterate through the
                // per-signal data for a usable record (matching
                // validity and transmit satellite health)
@@ -477,7 +611,10 @@ namespace gpstk
             {
                TimeOffsetData *todp = dynamic_cast<TimeOffsetData*>(
                   omi.second.get());
-               // std::cerr << "  checking " << todp->signal << std::endl;
+               if (debugLevel)
+               {
+                  std::cerr << "  checking " << todp->signal << std::endl;
+               }
                if (todp == nullptr)
                   continue; // shouldn't happen.
                switch (valid)
@@ -506,7 +643,10 @@ namespace gpstk
                      break;
                }
             }
-            // std::cerr << "  didn't find any acceptable data" << std::endl;
+            if (debugLevel)
+            {
+               std::cerr << "  didn't find any acceptable data" << std::endl;
+            }
             oemi = (oemi == odi->second.begin()
                     ? odi->second.end() : std::prev(oemi));
          }
@@ -813,8 +953,11 @@ namespace gpstk
    {
       OrbitDataKepler *odkp = nullptr;
       TimeOffsetData *todp = nullptr;
-      // std::cerr << "addNavData user = " << nd->getUserTime() << "  nearest = "
-      //           << nd->getNearTime() << std::endl;
+      if (debugLevel)
+      {
+         std::cerr << "addNavData user = " << nd->getUserTime()
+                   << "  nearest = " << nd->getNearTime() << std::endl;
+      }
       if ((odkp = dynamic_cast<OrbitDataKepler*>(nd.get())) != nullptr)
       {
          if (((initialTime.getTimeSystem() != odkp->beginFit.getTimeSystem()) &&
@@ -868,7 +1011,7 @@ namespace gpstk
          return true;
       }
          // TimeOffsetData
-      TimeOffsetData::TimeCvtSet conversions = todp->getConversions();
+      TimeCvtSet conversions = todp->getConversions();
       for (const auto& ci : conversions)
       {
          offsetData[ci][nd->getUserTime()][nd->signal] = nd;
@@ -1037,7 +1180,12 @@ namespace gpstk
          case SVHealth::Healthy:
          case SVHealth::Unhealthy:
          case SVHealth::Degraded:
-            // std::cerr << "  attempting to match " << gpstk::StringUtils::asString(xmitHealth) << std::endl;
+            if (debugLevel)
+            {
+               std::cerr << "  attempting to match "
+                         << gpstk::StringUtils::asString(xmitHealth)
+                         << std::endl;
+            }
                // make sure the health status is the desired state
             if (ndp->signal.sat == ndp->signal.xmitSat)
             {
@@ -1057,7 +1205,10 @@ namespace gpstk
             }
             if (!rvSet)
             {
-               // std::cerr << "  looking up health data" << std::endl;
+               if (debugLevel)
+               {
+                  std::cerr << "  looking up health data" << std::endl;
+               }
                   // We were not able to obtain health status of the
                   // transmitting satellite so look it up.  We
                   // specifically use SVHealth::Any because we're
@@ -1082,7 +1233,10 @@ namespace gpstk
                          SVHealth::Any, NavValidityType::Any,
                          NavSearchOrder::User))
                {
-                  // std::cerr << "  couldn't find health" << std::endl;
+                  if (debugLevel)
+                  {
+                     std::cerr << "  couldn't find health" << std::endl;
+                  }
                   return false;
                }
                hea = dynamic_cast<NavHealthData*>(heaPtr.get());
@@ -1097,21 +1251,79 @@ namespace gpstk
    }
 
 
-   void NavDataFactoryWithStore ::
-   dump(std::ostream& s, NavData::Detail dl) const
+   NavSatelliteIDSet NavDataFactoryWithStore :: getAvailableSats(
+      const CommonTime& fromTime, const CommonTime& toTime)
+      const
    {
-      // std::cerr << "data.size() = " << data.size() << std::endl;
+      NavSatelliteIDSet rv;
+      NavMessageIDSet tmp = getAvailableMsgs(fromTime, toTime);
+         // copy the NavMessageID objects into the return value which
+         // will cast the NavMessageID to NavSatelliteID.
+      for (const auto& i : tmp)
+         rv.insert(i);
+      return rv;
+   }
+
+
+   NavSatelliteIDSet NavDataFactoryWithStore :: getAvailableSats(
+      NavMessageType nmt, const CommonTime& fromTime, const CommonTime& toTime)
+      const
+   {
+      NavSatelliteIDSet rv;
+      auto nmmi = data.find(nmt);
+      if (nmmi != data.end())
+      {
+         for (const auto& nsmi : nmmi->second)
+         {
+            auto ti1 = nsmi.second.lower_bound(fromTime);
+            if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
+            {
+               rv.insert(nsmi.first);
+            }
+         }
+      }
+      return rv;
+   }
+
+
+   NavMessageIDSet NavDataFactoryWithStore :: getAvailableMsgs(
+      const CommonTime& fromTime, const CommonTime& toTime)
+      const
+   {
+      NavMessageIDSet rv;
+      for (const auto& nmmi : data)
+      {
+         for (const auto& nsmi : nmmi.second)
+         {
+            auto ti1 = nsmi.second.lower_bound(fromTime);
+            if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
+            {
+               rv.insert(NavMessageID(nsmi.first, nmmi.first));
+            }
+         }
+      }
+      return rv;
+   }
+
+
+   void NavDataFactoryWithStore ::
+   dump(std::ostream& s, DumpDetail dl) const
+   {
+      if (debugLevel)
+      {
+         std::cerr << "data.size() = " << data.size() << std::endl;
+      }
       for (const auto& nmmi : data)
       {
          for (const auto& nsami : nmmi.second)
          {
             switch (dl)
             {
-               case NavData::Detail::OneLine:
+               case DumpDetail::OneLine:
                   s << StringUtils::asString(nmmi.first) << " "
                     << StringUtils::asString(nsami.first) << std::endl;
                   break;
-               case NavData::Detail::Brief:
+               case DumpDetail::Brief:
                   for (const auto& cti : nsami.second)
                   {
                      s << StringUtils::asString(nmmi.first) << " "
@@ -1120,7 +1332,7 @@ namespace gpstk
                        << std::endl;
                   }
                   break;
-               case NavData::Detail::Full:
+               case DumpDetail::Full:
                   for (const auto& cti : nsami.second)
                   {
                      cti.second->dump(s,dl);
@@ -1129,18 +1341,21 @@ namespace gpstk
             }
          }
       }
-      // std::cerr << "offsetData.size() = " << offsetData.size() << std::endl;
+      if (debugLevel)
+      {
+         std::cerr << "offsetData.size() = " << offsetData.size() << std::endl;
+      }
          // time offset data is a separate map, but still needs to be dumped.
       std::string label = StringUtils::asString(NavMessageType::TimeOffset);
       for (const auto& ocmi : offsetData)
       {
          switch (dl)
          {
-            case NavData::Detail::OneLine:
+            case DumpDetail::OneLine:
                s << label << " " << ocmi.first.first << " -> "
                  << ocmi.first.second << std::endl;
                break;
-            case NavData::Detail::Brief:
+            case DumpDetail::Brief:
                for (const auto& oemi : ocmi.second)
                {
                   for (const auto& omi : oemi.second)
@@ -1152,7 +1367,7 @@ namespace gpstk
                   }
                }
                break;
-            case NavData::Detail::Full:
+            case DumpDetail::Full:
                for (const auto& oemi : ocmi.second)
                {
                   for (const auto& omi : oemi.second)

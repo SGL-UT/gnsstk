@@ -113,12 +113,16 @@ namespace gpstk
       bool processHea;
          /// If true, time offset data will be output by addData.
       bool processTim;
+         /// If true, ionospheric data will be output by addData.
+      bool processIono;
+         /// If true, inter-signal correction data will be output by addData.
+      bool processISC;
    }; // class PNBNavDataFactory
 
       /// Managed pointer to a PNBNavDataFactory.
-   using PNBNavDataFactoryPtr = std::shared_ptr<PNBNavDataFactory>;
+   typedef std::shared_ptr<PNBNavDataFactory> PNBNavDataFactoryPtr;
       /// Map the navigation message type to a factory for producing that type.
-   using PNBNavDataFactoryMap = std::map<NavType, PNBNavDataFactoryPtr>;
+   typedef std::map<NavType, PNBNavDataFactoryPtr> PNBNavDataFactoryMap;
 
       //@}
 

@@ -48,21 +48,12 @@
 #include <iostream>
 
 #include "CommonTime.hpp"
-#include "SatID.hpp"
-#include "ObsID.hpp"
-#include "ValidType.hpp"
+#include "SvObsEpoch.hpp"
 
 namespace gpstk
 {
       /// @ingroup ClockModel
       //@{
-
-      /// All the observations collected from a single SV at a single epoch
-   struct SvObsEpoch : public std::map<ObsID, double>
-   {
-      gpstk::SatID svid;
-      vfloat azimuth, elevation;
-   };
 
       /** All the observations collected from a single receiver at a
        * single epoch */
@@ -75,7 +66,6 @@ namespace gpstk
       /// A time history of the observations collected from a single receiver.
    typedef std::map<CommonTime, ObsEpoch> ObsEpochMap;
 
-   std::ostream& operator<<(std::ostream& s, const SvObsEpoch& obs) throw();
    std::ostream& operator<<(std::ostream& s, const ObsEpoch& oe) throw();
 
       //@}

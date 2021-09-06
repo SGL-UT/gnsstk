@@ -63,6 +63,11 @@ namespace gpstk
       s << (long)e << " (" << StringUtils::asString(e) << ")";
       return s;
    }
+   std::ostream& operator<<(std::ostream& s, gpstk::XmitAnt e)
+   {
+      s << (long)e << " (" << StringUtils::asString(e) << ")";
+      return s;
+   }
 }
 
 #define CBDESCTEST(EXP, CARRIERBAND) TUASSERTE(std::string, EXP, gpstk::ObsID::cbDesc[CARRIERBAND])
@@ -85,9 +90,16 @@ public:
                 gpstk::CarrierBand::Unknown, empty.band);
       TUASSERTE(gpstk::TrackingCode,
                 gpstk::TrackingCode::Unknown, empty.code);
+      TUASSERTE(gpstk::XmitAnt,
+                gpstk::XmitAnt::Any, empty.xmitAnt);
+      TUASSERTE(int, 0, empty.freqOffs);
+      TUASSERTE(bool, true, empty.freqOffsWild);
+      TUASSERTE(uint32_t, 0, empty.mcode);
+      TUASSERTE(uint32_t, 0, empty.mcodeMask);
 
       TUCSM("ObsID(ObservationType,CarrierBand,TrackingCode)");
-      gpstk::ObsID compare(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+      gpstk::ObsID compare(gpstk::ObservationType::Range,
+                           gpstk::CarrierBand::L1,
                            gpstk::TrackingCode::CA);
       TUASSERTE(gpstk::ObservationType,
                 gpstk::ObservationType::Range, compare.type);
@@ -95,6 +107,67 @@ public:
                 gpstk::CarrierBand::L1, compare.band);
       TUASSERTE(gpstk::TrackingCode,
                 gpstk::TrackingCode::CA, compare.code);
+      TUASSERTE(gpstk::XmitAnt,
+                gpstk::XmitAnt::Any, compare.xmitAnt);
+      TUASSERTE(int, 0, compare.freqOffs);
+      TUASSERTE(bool, true, compare.freqOffsWild);
+      TUASSERTE(uint32_t, 0, compare.mcode);
+      TUASSERTE(uint32_t, 0, compare.mcodeMask);
+
+      TUCSM("ObsID(ObservationType,CarrierBand,TrackingCode,XmitAnt)");
+      gpstk::ObsID uut3(gpstk::ObservationType::Range,
+                        gpstk::CarrierBand::L1,
+                        gpstk::TrackingCode::CA,
+                        gpstk::XmitAnt::Standard);
+      TUASSERTE(gpstk::ObservationType,
+                gpstk::ObservationType::Range, uut3.type);
+      TUASSERTE(gpstk::CarrierBand,
+                gpstk::CarrierBand::L1, uut3.band);
+      TUASSERTE(gpstk::TrackingCode,
+                gpstk::TrackingCode::CA, uut3.code);
+      TUASSERTE(gpstk::XmitAnt,
+                gpstk::XmitAnt::Standard, uut3.xmitAnt);
+      TUASSERTE(int, 0, uut3.freqOffs);
+      TUASSERTE(bool, true, uut3.freqOffsWild);
+      TUASSERTE(uint32_t, 0, uut3.mcode);
+      TUASSERTE(uint32_t, 0, uut3.mcodeMask);
+
+      TUCSM("ObsID(ObservationType,CarrierBand,TrackingCode,int)");
+      gpstk::ObsID uut4(gpstk::ObservationType::Phase,
+                        gpstk::CarrierBand::G1,
+                        gpstk::TrackingCode::Standard,
+                        -1);
+      TUASSERTE(gpstk::ObservationType,
+                gpstk::ObservationType::Phase, uut4.type);
+      TUASSERTE(gpstk::CarrierBand,
+                gpstk::CarrierBand::G1, uut4.band);
+      TUASSERTE(gpstk::TrackingCode,
+                gpstk::TrackingCode::Standard, uut4.code);
+      TUASSERTE(gpstk::XmitAnt,
+                gpstk::XmitAnt::Any, uut4.xmitAnt);
+      TUASSERTE(int, -1, uut4.freqOffs);
+      TUASSERTE(bool, false, uut4.freqOffsWild);
+      TUASSERTE(uint32_t, 0, uut4.mcode);
+      TUASSERTE(uint32_t, 0, uut4.mcodeMask);
+
+      TUCSM("ObsID(ObservationType,CarrierBand,TrackingCode,int,XmitAnt)");
+      gpstk::ObsID uut5(gpstk::ObservationType::Phase,
+                        gpstk::CarrierBand::G1,
+                        gpstk::TrackingCode::Standard,
+                        -1,
+                        gpstk::XmitAnt::Standard);
+      TUASSERTE(gpstk::ObservationType,
+                gpstk::ObservationType::Phase, uut5.type);
+      TUASSERTE(gpstk::CarrierBand,
+                gpstk::CarrierBand::G1, uut5.band);
+      TUASSERTE(gpstk::TrackingCode,
+                gpstk::TrackingCode::Standard, uut5.code);
+      TUASSERTE(gpstk::XmitAnt,
+                gpstk::XmitAnt::Standard, uut5.xmitAnt);
+      TUASSERTE(int, -1, uut5.freqOffs);
+      TUASSERTE(bool, false, uut5.freqOffsWild);
+      TUASSERTE(uint32_t, 0, uut5.mcode);
+      TUASSERTE(uint32_t, 0, uut5.mcodeMask);
 
       TURETURN();
    }
@@ -104,7 +177,8 @@ public:
    {
       TUDEF("ObsID", "dump");
       std::string failMesg;
-      gpstk::ObsID compare(gpstk::ObservationType::Doppler, gpstk::CarrierBand::L2,
+      gpstk::ObsID compare(gpstk::ObservationType::Doppler,
+                           gpstk::CarrierBand::L2,
                            gpstk::TrackingCode::Y);
 
       std::string outputString, referenceString;
@@ -119,7 +193,7 @@ public:
 
       gpstk::ObsID::verbose = true;
       compare.dump(os2);
-      TUASSERTE(std::string, "L2 GPSY doppler 0/false 0/ffffffff", os2.str());
+      TUASSERTE(std::string, "L2 GPSY doppler 0/true 0/0 Any", os2.str());
          // make sure to turn it back off for other tests.
       gpstk::ObsID::verbose = false;
       TURETURN();
@@ -130,7 +204,8 @@ public:
    {
       TUDEF("ObsID", "asString");
       std::string failMesg;
-      gpstk::ObsID compare(gpstk::ObservationType::Phase, gpstk::CarrierBand::E5b,
+      gpstk::ObsID compare(gpstk::ObservationType::Phase,
+                           gpstk::CarrierBand::E5b,
                            gpstk::TrackingCode::E5abI);
 
       std::string outputString, referenceString;
@@ -192,18 +267,70 @@ public:
       TUDEF("ObsID", "operator==");
       std::string failMesg;
 
-      gpstk::ObsID compare1(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+      gpstk::ObsID compare1(gpstk::ObservationType::Range,
+                            gpstk::CarrierBand::L1,
                             gpstk::TrackingCode::CA);
-      gpstk::ObsID compare2(gpstk::ObservationType::Range, gpstk::CarrierBand::L1,
+      gpstk::ObsID compare2(gpstk::ObservationType::Range,
+                            gpstk::CarrierBand::L1,
                             gpstk::TrackingCode::CA);
-      gpstk::ObsID compare3(gpstk::ObservationType::Doppler, gpstk::CarrierBand::L1,
+      gpstk::ObsID compare3(gpstk::ObservationType::Doppler,
+                            gpstk::CarrierBand::L1,
                             gpstk::TrackingCode::CA);
+      gpstk::ObsID compare4(gpstk::ObservationType::Doppler,
+                            gpstk::CarrierBand::L1,
+                            gpstk::TrackingCode::CA, 0);
+      gpstk::ObsID compare5(gpstk::ObservationType::Doppler,
+                            gpstk::CarrierBand::L1,
+                            gpstk::TrackingCode::CA, 1);
+      gpstk::ObsID compare6(gpstk::ObservationType::Doppler,
+                            gpstk::CarrierBand::L1,
+                            gpstk::TrackingCode::CA,
+                            gpstk::XmitAnt::Standard);
+      gpstk::ObsID compare7(gpstk::ObservationType::Doppler,
+                            gpstk::CarrierBand::L1,
+                            gpstk::TrackingCode::CA,
+                            gpstk::XmitAnt::Regional);
+      gpstk::ObsID compare8(gpstk::ObservationType::Doppler,
+                            gpstk::CarrierBand::L1,
+                            gpstk::TrackingCode::CA);
+      gpstk::ObsID compare9(gpstk::ObservationType::Doppler,
+                            gpstk::CarrierBand::L1,
+                            gpstk::TrackingCode::CA);
+      gpstk::ObsID compare10(gpstk::ObservationType::Doppler,
+                             gpstk::CarrierBand::L1,
+                             gpstk::TrackingCode::CA);
+
+      gpstk::ObsID::verbose = true;
+      compare8.setMcodeBits(0x81234765, 0xffffffff);
+      compare9.setMcodeBits(0x8123476a, 0xffffffff);
+      compare10.setMcodeBits(0x81234765, 0xfffffff0);
 
       TUASSERTE(gpstk::ObsID, compare1, compare2);
       TUASSERT(!(compare1 == compare3));
+      TUASSERTE(gpstk::ObsID, compare3, compare4);
+      TUASSERT(!(compare4 == compare5));
+      TUASSERT(compare3 == compare6);
+      TUASSERT(compare3 == compare7);
+      TUASSERT(!(compare6 == compare7));
+      TUASSERTE(gpstk::ObsID, compare3, compare8);
+      TUASSERTE(gpstk::ObsID, compare3, compare9);
+      TUASSERT(!(compare8 == compare9));
+      TUASSERTE(gpstk::ObsID, compare3, compare10);
+      TUASSERTE(gpstk::ObsID, compare9, compare10);
       TUCSM("operator!=");
-      TUASSERT(compare1 != compare3);
       TUASSERT(!(compare1 != compare2));
+      TUASSERT(compare1 != compare3);
+      TUASSERT(!(compare3 != compare4));
+      TUASSERT(compare4 != compare5);
+      TUASSERT(!(compare3 != compare6));
+      TUASSERT(!(compare3 != compare7));
+      TUASSERT(compare6 != compare7);
+      TUASSERT(!(compare3 != compare8));
+      TUASSERT(!(compare3 != compare9));
+      TUASSERT(compare8 != compare9);
+      TUASSERT(!(compare3 != compare10));
+      TUASSERT(!(compare9 != compare10));
+      gpstk::ObsID::verbose = false;
       TURETURN();
    }
 

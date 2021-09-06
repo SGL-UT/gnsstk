@@ -43,6 +43,7 @@
 #include "GPSLNavHealth.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavAlm.hpp"
+#include "GPSLNavIono.hpp"
 #include "PNBGPSCNavDataFactory.hpp"
 #include "PNBGPSCNav2DataFactory.hpp"
 #include "GPSCNavTimeOffset.hpp"
@@ -50,6 +51,7 @@
 #include "GPSCNavEph.hpp"
 #include "GPSCNavAlm.hpp"
 #include "GPSCNavRedAlm.hpp"
+#include "GPSCNavIono.hpp"
 
 namespace gpstk
 {
@@ -101,15 +103,17 @@ public:
 #include "LNavTestDataDecl.hpp"
 #include "CNavTestDataDecl.hpp"
 
+   void resetCount()
+   { almCount = ephCount = toCount = heaCount = ionoCount = otherCount = 0; }
       /// Counts of messages, set by countResults.
-   unsigned almCount, ephCount, toCount, heaCount, otherCount;
+   unsigned almCount, ephCount, toCount, heaCount, ionoCount, otherCount;
 };
 
 
 PNBMultiGNSSNavDataFactory_T ::
 PNBMultiGNSSNavDataFactory_T()
-      : almCount(0), ephCount(0), toCount(0), heaCount(0), otherCount(0)
 {
+   resetCount();
 #include "LNavTestDataDef.hpp"
 #include "CNavTestDataDef.hpp"
 }
@@ -276,9 +280,10 @@ addDataTest()
       //
       // Start with some GPS LNAV data.
       //
-      // Add subframe 1, expect only health initially.
+      // Add subframe 1, expect 1 health and 1 ISC.
+      /// @todo Switch this test to use FactoryCounter and check for 1 ISC
    TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF1, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, heaCount);
    navOut.clear();
@@ -306,9 +311,10 @@ addDataTest()
    navOut.clear();
       // add page 56, expect time offset
    TUASSERTE(bool, true, uut.addData(pg56LNAVGPS, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+   TUASSERTE(size_t, 2, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, toCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
       // add page 63, expect 8 health
    TUASSERTE(bool, true, uut.addData(pg63LNAVGPS, navOut));
@@ -338,9 +344,11 @@ addDataTest()
    navOut.clear();
       // clock data completes the ephemeris
    TUASSERTE(bool, true, uut.addData(msg30CNAVGPSL2, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+      /// @todo Switch this test to use FactoryCounter and check for 1 ISC
+   TUASSERTE(size_t, 3, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, ephCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
       // nothing in message type 32 that we care about (not completing
       // an ephemeris)
@@ -368,9 +376,11 @@ addDataTest()
    navOut.clear();
       // clock data completes the ephemeris
    TUASSERTE(bool, true, uut.addData(msg30CNAVQZSSL5, navOut));
-   TUASSERTE(size_t, 1, navOut.size());
+      /// @todo Switch this test to use FactoryCounter and check for 1 ISC
+   TUASSERTE(size_t, 3, navOut.size());
    countResults(navOut);
    TUASSERTE(unsigned, 1, ephCount);
+   TUASSERTE(unsigned, 1, ionoCount);
    navOut.clear();
       // nothing in message type 32 that we care about (not completing
       // an ephemeris)
@@ -409,7 +419,7 @@ addDataTest()
 void PNBMultiGNSSNavDataFactory_T ::
 countResults(const gpstk::NavDataPtrList& navOut)
 {
-   almCount = ephCount = toCount = heaCount = otherCount = 0;
+   resetCount();
    for (const auto& i : navOut)
    {
       if (dynamic_cast<gpstk::GPSLNavAlm*>(i.get()) != nullptr)
@@ -428,6 +438,10 @@ countResults(const gpstk::NavDataPtrList& navOut)
       {
          heaCount++;
       }
+      else if (dynamic_cast<gpstk::GPSLNavIono*>(i.get()) != nullptr)
+      {
+         ionoCount++;
+      }
       else if (dynamic_cast<gpstk::GPSCNavAlm*>(i.get()) != nullptr)
       {
          almCount++;
@@ -443,6 +457,10 @@ countResults(const gpstk::NavDataPtrList& navOut)
       else if (dynamic_cast<gpstk::GPSCNavHealth*>(i.get()) != nullptr)
       {
          heaCount++;
+      }
+      else if (dynamic_cast<gpstk::GPSCNavIono*>(i.get()) != nullptr)
+      {
+         ionoCount++;
       }
       else
       {

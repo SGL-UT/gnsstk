@@ -45,6 +45,7 @@
 #include "CommonTime.hpp"
 #include "NavSignalID.hpp"
 #include "NavMessageID.hpp"
+#include "DumpDetail.hpp"
 
 namespace gpstk
 {
@@ -57,13 +58,8 @@ namespace gpstk
    class NavData
    {
    public:
-         /// Specify level of detail for dump output.
-      enum class Detail
-      {
-         OneLine, ///< Limit output to minimal information on a single line.
-         Brief,   ///< Limit output to <= 5 lines of minimal information.
-         Full     ///< Include all detailed information.
-      };
+         /// Time format used for the dump method.
+      static const std::string dumpTimeFmt;
          /// Initialize internal data fields.
       NavData();
          /** Checks the contents of this message against known
@@ -71,6 +67,9 @@ namespace gpstk
           * @return true if this message is valid according to ICD criteria.
           */
       virtual bool validate() const = 0;
+         /** Returns the fully-qualified class name.  Required for
+          * SWIG, at least until a better solution is found. */
+      virtual std::string getClassName() const;
          /** Returns the time when the navigation message would have
           * first been available to the user equipment, i.e. the time
           * at which the final bit of a given broadcast navigation
@@ -87,39 +86,47 @@ namespace gpstk
           * human-readable format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-      virtual void dump(std::ostream& s, Detail dl) const;
+      virtual void dump(std::ostream& s, DumpDetail dl) const;
          /** Time stamp used to sort the data.  This should be the
           * appropriate time stamp used when attempting to find the
           * data, usually the transmit time. */
       CommonTime timeStamp;
          /// Source signal identification for this navigation message data.
       NavMessageID signal;
+
+         /** Format string for printing week in dump().  This defaults
+          * to "%4F(%4G)" which is the GPS full and short week, and
+          * other GNSSes should use the same width, but different
+          * format tokens (see TimeString.hpp). */
+      std::string weekFmt;
    protected:
          /** Navigation message length in seconds.  This is used by
           * getUserTime() by default, though it is possible to
           * override getUserTime() to ignore this value (as in
           * CNav). */
       double msgLenSec;
+         /// Allow RinexNavDataFactory access to msgLenSec
+      friend class RinexNavDataFactory;
    };
 
       /// Factories instantiate these in response to find() requests
-   using NavDataPtr = std::shared_ptr<NavData>;
+   typedef std::shared_ptr<NavData> NavDataPtr;
       /// Map nav message transmit time to nav message.
-   using NavMap = std::map<CommonTime, NavDataPtr>;
+   typedef std::map<CommonTime, NavDataPtr> NavMap;
       /// Map satellite to nav data.
-   using NavSatMap = std::map<NavSatelliteID, NavMap>;
+   typedef std::map<NavSatelliteID, NavMap> NavSatMap;
       /// Map nav message type to the rest of the storage.
-   using NavMessageMap = std::map<NavMessageType, NavSatMap>;
+   typedef std::map<NavMessageType, NavSatMap> NavMessageMap;
       /** List of NavDataPtr, typically used when converting from
        * source data to NavDataPtr when multiple objects can be
        * created from a single input. */
-   using NavDataPtrList = std::list<NavDataPtr>;
+   typedef std::list<NavDataPtr> NavDataPtrList;
       /// Map from "nearest" time reference (e.g. toe) to list of NavDataPtr.
-   using NavNearMap = std::map<CommonTime, NavDataPtrList>;
+   typedef std::map<CommonTime, NavDataPtrList> NavNearMap;
       /// Map satellite to nearest map.
-   using NavNearSatMap = std::map<NavSatelliteID, NavNearMap>;
+   typedef std::map<NavSatelliteID, NavNearMap> NavNearSatMap;
       /// Map nav message type to the rest of the storage.
-   using NavNearMessageMap = std::map<NavMessageType, NavNearSatMap>;
+   typedef std::map<NavMessageType, NavNearSatMap> NavNearMessageMap;
 
       //@}
 
