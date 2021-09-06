@@ -22,7 +22,6 @@ stages:
 - downstream_stack
 
 variables:
-
   # Default cmake arguments
   CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
   # this can be used for incremental builds
@@ -32,9 +31,6 @@ variables:
   GPSTK_APPS_COMMIT:
     value: "main"
     description: "Downstream branch of dependent gpstk_apps repo. Defaults to main."
-  TRIGGER_DOWNSTRM_STACK_CHAIN:
-    value: "False"
-    description: "When set to True, it will trigger entire downstream TKS chained stack pipelines with their default branches"
   NO_BIGBUILD_CI:
     value: "False"
     description: "If True then no big build jobs are executed on main/ci_xxx/version_xxx_prep branches. Defaults to False"
@@ -678,7 +674,6 @@ package_debian_10:
     - mv ../*.dsc debs
     - mv ../*.git debs
     - mv ../*.buildinfo debs
-    - echo "Pipeline id is $CI_PIPELINE_ID" > debs/pipeline.txt
   artifacts:
     paths:
       - debs/
