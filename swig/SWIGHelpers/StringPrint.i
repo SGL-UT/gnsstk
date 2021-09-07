@@ -81,7 +81,7 @@ STR_STREAM_HELPER(Matrix)
 STR_STREAM_VEC_HELPER(std::vector<int>)
 STR_STREAM_VEC_HELPER(std::vector<double>)
 STR_STREAM_VEC_HELPER(std::vector<std::string>)
-STR_STREAM_VEC_HELPER(gpstk::Triple)
+STR_STREAM_VEC_HELPER(gnsstk::Triple)
 
 STR_FILTER_HELPER(CNavParityFilter)
 STR_FILTER_HELPER(CNavCookFilter)
@@ -110,7 +110,7 @@ AS_STRING_HELPER2(RinexObsID)
 // A: There is an ambiguity issue for the operator<< for Xvt,
 // see the end of TabularSatStore.hpp for a conflicting defintion
 // of the Xvt out stream operator and Xvt.hpp+Xvt.cpp.
-%extend gpstk::Xvt {
+%extend gnsstk::Xvt {
    std::string __str__() {
       std::ostringstream os;
          os << "x:" << $self->x

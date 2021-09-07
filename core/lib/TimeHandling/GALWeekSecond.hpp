@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -39,12 +39,12 @@
 /// @file GALWeekSecond.hpp Define GAL week and seconds-of-week;
 /// inherits WeekSecond
 
-#ifndef GPSTK_GALWEEKSECOND_HPP
-#define GPSTK_GALWEEKSECOND_HPP
+#ifndef GNSSTK_GALWEEKSECOND_HPP
+#define GNSSTK_GALWEEKSECOND_HPP
 
 #include "WeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup TimeHandling
       //@{
@@ -113,7 +113,7 @@ namespace gpstk
       virtual std::string printf(const std::string& fmt) const
       {
          try {
-            using gpstk::StringUtils::formattedPrint;
+            using gnsstk::StringUtils::formattedPrint;
 
             std::string rv = fmt;
             rv = formattedPrint( rv, getFormatPrefixInt() + "T",
@@ -130,8 +130,8 @@ namespace gpstk
                                  "Ps", StringUtils::asString(timeSystem).c_str() );
             return rv;
          }
-         catch(gpstk::StringUtils::StringException& e)
-         { GPSTK_RETHROW(e); }
+         catch(gnsstk::StringUtils::StringException& e)
+         { GNSSTK_RETHROW(e); }
       }
 
          /// This function works similarly to printf.  Instead of filling
@@ -139,7 +139,7 @@ namespace gpstk
       virtual std::string printError(const std::string& fmt) const
       {
          try {
-            using gpstk::StringUtils::formattedPrint;
+            using gnsstk::StringUtils::formattedPrint;
             std::string rv = fmt;
 
             rv = formattedPrint( rv, getFormatPrefixInt() + "T",
@@ -156,8 +156,8 @@ namespace gpstk
                                  "Ps", "BadGALsys");
             return rv;
          }
-         catch(gpstk::StringUtils::StringException& e)
-         { GPSTK_RETHROW(e); }
+         catch(gnsstk::StringUtils::StringException& e)
+         { GNSSTK_RETHROW(e); }
       }
 
          /** Set this object using the information provided in \a info.
@@ -174,22 +174,22 @@ namespace gpstk
             switch ( i->first )
             {
                case 'T':
-                  setEpoch( gpstk::StringUtils::asInt( i->second ) );
+                  setEpoch( gnsstk::StringUtils::asInt( i->second ) );
                   break;
                case 'L':
-                  week = gpstk::StringUtils::asInt( i->second );
+                  week = gnsstk::StringUtils::asInt( i->second );
                   break;
                case 'l':
-                  setModWeek( gpstk::StringUtils::asInt( i->second ) );
+                  setModWeek( gnsstk::StringUtils::asInt( i->second ) );
                   break;
                case 'w':
-                  sow = static_cast<double>(gpstk::StringUtils::asInt(i->second))*SEC_PER_DAY;
+                  sow = static_cast<double>(gnsstk::StringUtils::asInt(i->second))*SEC_PER_DAY;
                   break;
                case 'g':
-                  sow = gpstk::StringUtils::asDouble( i->second );
+                  sow = gnsstk::StringUtils::asDouble( i->second );
                   break;
                case 'P':
-                  timeSystem = gpstk::StringUtils::asTimeSystem(i->second);
+                  timeSystem = gnsstk::StringUtils::asTimeSystem(i->second);
                   break;
                default:
                      // do nothing
@@ -207,4 +207,4 @@ namespace gpstk
 
 } // namespace
 
-#endif // GPSTK_GALWEEKSECOND_HPP
+#endif // GNSSTK_GALWEEKSECOND_HPP

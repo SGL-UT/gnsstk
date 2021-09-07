@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -57,7 +57,7 @@
 #include "TimeSystemCorr.hpp"    // For class TimeSystemCorrection
 
 
-namespace gpstk
+namespace gnsstk
 {
    class OrbSysGpsC_33 : public OrbSysGpsC, public OrbDataUTC
    {
@@ -140,18 +140,18 @@ namespace gpstk
       //double A0;
       //double A1;
       //double A2;
-      //gpstk::CommonTime ctEpoch;
+      //gnsstk::CommonTime ctEpoch;
 
       short dtLS;
       short dtLSF;
       unsigned short WN_LSF;
       unsigned short DN;
 
-      gpstk::CommonTime ctLSF;
+      gnsstk::CommonTime ctLSF;
 
    }; // end class ORBSYSGPSC_33
 
-} // end namespace gpstk
+} // end namespace gnsstk
 
 #endif
 

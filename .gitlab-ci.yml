@@ -8,7 +8,7 @@
 
 include:
   - project: sgl-tks/ci-control
-    file: /gpstk/ci_downstrm_chain.yml
+    file: /gnsstk/ci_downstrm_chain.yml
     ref: main
 
 stages:
@@ -28,9 +28,9 @@ variables:
   # GIT_CLEAN_FLAGS: none
   # This can be set to True by Gitlab UI to only build/test packages.
   RELEASE_ONLY: "False"
-  GPSTK_APPS_COMMIT:
+  GNSSTK_APPS_COMMIT:
     value: "main"
-    description: "Downstream branch of dependent gpstk_apps repo. Defaults to main."
+    description: "Downstream branch of dependent gnsstk_apps repo. Defaults to main."
   NO_BIGBUILD_CI:
     value: "False"
     description: "If True then no big build jobs are executed on main/ci_xxx/version_xxx_prep branches. Defaults to False"
@@ -89,7 +89,7 @@ sgllint_lint:
     - python repo_utils/sgl_lint.py -v -R core
     - python repo_utils/sgl_lint.py -v -R ext
     - python repo_utils/sgl_lint.py -v -R swig/apps
-    - python repo_utils/sgl_lint.py -v -R swig/gpstk
+    - python repo_utils/sgl_lint.py -v -R swig/gnsstk
   dependencies: []
 
 protected_term_lint:
@@ -161,7 +161,7 @@ build_debian_8:
   script:
     - mkdir -p build
     - cd build
-    - export gpstk=`pwd`/install
+    - export gnsstk=`pwd`/install
     - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DTEST_SWITCH=ON ../
     - make all -j 4
   artifacts:
@@ -178,8 +178,8 @@ build_debian_9:
   script:
     - mkdir -p build
     - cd build
-    - export gpstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gpstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
     - make all -j 4
   artifacts:
     paths:
@@ -195,8 +195,8 @@ build_debian_10:
   script:
     - mkdir -p build
     - cd build
-    - export gpstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gpstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
     - make all -j 4
   artifacts:
     paths:
@@ -213,8 +213,8 @@ build_conda_py27:
     - conda activate py27
     - mkdir -p build
     - cd build
-    - export gpstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gpstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
     - make all -j 4
   artifacts:
     paths:
@@ -231,8 +231,8 @@ build_conda_py36:
     - conda activate py36
     - mkdir -p build
     - cd build
-    - export gpstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gpstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
     - make all -j 4
   artifacts:
     paths:
@@ -248,7 +248,7 @@ build_redhat:
   script:
     - mkdir -p build
     - cd build
-    - export gpstk=`pwd`/install
+    - export gnsstk=`pwd`/install
     - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DTEST_SWITCH=ON ../
     - make all -j 4
   artifacts:
@@ -265,8 +265,8 @@ build_redhat_8:
   script:
     - mkdir -p build
     - cd build
-    - export gpstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gpstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
     - make all -j 4
   artifacts:
     paths:
@@ -297,7 +297,7 @@ build_windows:
 
 
 # Test Stage
-# Runs all tests of GPSTK for each platform
+# Runs all tests of GNSSTK for each platform
 test_debian_8:
   stage: test
   needs: [build_debian_8]
@@ -447,7 +447,7 @@ test_windows:
   timeout: 5m
 
 # User_Install Stage
-# Tests user install of GPSTk on each platform, saves artifacts for downstream builds.
+# Tests user install of Gnsstk on each platform, saves artifacts for downstream builds.
 user_install_debian_9:
   stage: install
   needs: [build_debian_9]
@@ -457,11 +457,11 @@ user_install_debian_9:
   image: $DOCKER_REGISTRY/debian9_fai_ish
   script:
     - cd build
-    - export gpstk=`pwd`/install
-    - export PYTHONPATH=$gpstk/lib/python2.7/site-packages
-    - cmake -DPYTHON_INSTALL_PREFIX=$gpstk -DCMAKE_INSTALL_PREFIX=$gpstk ../
+    - export gnsstk=`pwd`/install
+    - export PYTHONPATH=$gnsstk/lib/python2.7/site-packages
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk ../
     - make install -j 4
-    - python -c "import gpstk"
+    - python -c "import gnsstk"
   artifacts:
     paths:
       - build/install
@@ -477,8 +477,8 @@ user_install_redhat:
   image: $DOCKER_REGISTRY/centos7_sgl
   script:
     - cd build
-    - export gpstk=`pwd`/install
-    - cmake -DCMAKE_INSTALL_PREFIX=$gpstk ../
+    - export gnsstk=`pwd`/install
+    - cmake -DCMAKE_INSTALL_PREFIX=$gnsstk ../
     - make install -j 4
   artifacts:
     paths:
@@ -495,8 +495,8 @@ user_install_redhat_8:
   image: $DOCKER_REGISTRY/centos8_sgl
   script:
     - cd build
-    - export gpstk=`pwd`/install
-    - cmake -DCMAKE_INSTALL_PREFIX=$gpstk ../
+    - export gnsstk=`pwd`/install
+    - cmake -DCMAKE_INSTALL_PREFIX=$gnsstk ../
     - make install -j 4
   artifacts:
     paths:
@@ -523,7 +523,7 @@ user_install_windows:
   timeout: 20m
 
 # System Stage
-# Tests install of GPSTk on each platform, saves artifacts for downstream builds.
+# Tests install of Gnsstk on each platform, saves artifacts for downstream builds.
 system_install_debian_9:
   stage: install
   needs: [build_debian_9]
@@ -533,11 +533,11 @@ system_install_debian_9:
   image: $DOCKER_REGISTRY/debian9_fai_ish
   script:
     - cd build
-    - export gpstk=/usr/local
-    - export PYTHONPATH=$gpstk/lib/python2.7/site-packages
-    - cmake -DPYTHON_INSTALL_PREFIX=$gpstk -DCMAKE_INSTALL_PREFIX=$gpstk ../
+    - export gnsstk=/usr/local
+    - export PYTHONPATH=$gnsstk/lib/python2.7/site-packages
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk ../
     - sudo make install -j 4
-    - python -c "import gpstk"
+    - python -c "import gnsstk"
   dependencies:
     - build_debian_9
 
@@ -550,8 +550,8 @@ system_install_redhat:
   image: $DOCKER_REGISTRY/centos7_sgl
   script:
     - cd build
-    - export gpstk=/usr/local
-    - cmake -DCMAKE_INSTALL_PREFIX=$gpstk ../
+    - export gnsstk=/usr/local
+    - cmake -DCMAKE_INSTALL_PREFIX=$gnsstk ../
     - sudo make install -j 4
   dependencies:
     - build_redhat
@@ -565,14 +565,14 @@ system_install_redhat_8:
   image: $DOCKER_REGISTRY/centos8_sgl
   script:
     - cd build
-    - export gpstk=/usr/local
-    - cmake -DCMAKE_INSTALL_PREFIX=$gpstk ../
+    - export gnsstk=/usr/local
+    - cmake -DCMAKE_INSTALL_PREFIX=$gnsstk ../
     - sudo make install -j 4
   dependencies:
     - build_redhat_8
 
 # Package Stage
-# Tests packaging of GPSTk on all platforms
+# Tests packaging of Gnsstk on all platforms
 
 # Note: debian 7 can't build the swig bindings out of the box because
 # SWIG 2.0.7 doesn't understand enum classes.
@@ -711,13 +711,13 @@ package_redhat:
   image: $DOCKER_REGISTRY/centos7_sgl
   script:
     - bash rpm_files/setup_dirs.sh
-    - git archive --prefix gpstk-master/ -o rpm_files/SOURCES/gpstk-master.tar.gz HEAD
+    - git archive --prefix gnsstk-master/ -o rpm_files/SOURCES/gnsstk-master.tar.gz HEAD
     - pushd rpm_files
-    - rpmbuild --define "_topdir ${PWD}" --define "debug_package %{nil}" -ba SPECS/gpstk.spec
+    - rpmbuild --define "_topdir ${PWD}" --define "debug_package %{nil}" -ba SPECS/gnsstk.spec
   artifacts:
     paths:
-      - rpm_files/RPMS/x86_64/gpstk-*
-      - rpm_files/SRPMS/gpstk-*
+      - rpm_files/RPMS/x86_64/gnsstk-*
+      - rpm_files/SRPMS/gnsstk-*
   dependencies: []
 
 package_redhat_8:
@@ -728,13 +728,13 @@ package_redhat_8:
   image: $DOCKER_REGISTRY/centos8_sgl
   script:
     - bash rpm_files/setup_dirs.sh
-    - git archive --prefix gpstk-master/ -o rpm_files/SOURCES/gpstk-master.tar.gz HEAD
+    - git archive --prefix gnsstk-master/ -o rpm_files/SOURCES/gnsstk-master.tar.gz HEAD
     - pushd rpm_files
-    - rpmbuild --define "_topdir ${PWD}" --define "debug_package %{nil}" --define "_build_id_links none" -ba SPECS/gpstk.spec
+    - rpmbuild --define "_topdir ${PWD}" --define "debug_package %{nil}" --define "_build_id_links none" -ba SPECS/gnsstk.spec
   artifacts:
     paths:
-      - rpm_files/RPMS/x86_64/gpstk-*
-      - rpm_files/SRPMS/gpstk-*
+      - rpm_files/RPMS/x86_64/gnsstk-*
+      - rpm_files/SRPMS/gnsstk-*
   dependencies: []
 
 package_redhat_8_py36:
@@ -745,17 +745,17 @@ package_redhat_8_py36:
   image: $DOCKER_REGISTRY/centos8_sgl
   script:
     - bash rpm_files/setup_dirs.sh
-    - git archive --prefix python3-gpstk-master/ -o rpm_files/SOURCES/python3-gpstk-master.tar.gz HEAD
+    - git archive --prefix python3-gnsstk-master/ -o rpm_files/SOURCES/python3-gnsstk-master.tar.gz HEAD
     - pushd rpm_files
-    - rpmbuild --define "_topdir ${PWD}" --define "debug_package %{nil}" --define "_build_id_links none" -ba SPECS/gpstk_py36.spec
+    - rpmbuild --define "_topdir ${PWD}" --define "debug_package %{nil}" --define "_build_id_links none" -ba SPECS/gnsstk_py36.spec
   artifacts:
     paths:
-      - rpm_files/RPMS/x86_64/python3-gpstk-*
-      - rpm_files/SRPMS/python3-gpstk-*
+      - rpm_files/RPMS/x86_64/python3-gnsstk-*
+      - rpm_files/SRPMS/python3-gnsstk-*
   dependencies: []
 
 # Deploy Stage
-# Tests install of GPSTk package on each platform, saves artifacts for downstream builds.
+# Tests install of Gnsstk package on each platform, saves artifacts for downstream builds.
 deploy_debian_8:
   stage: deploy
   needs: [package_debian_8]
@@ -780,7 +780,7 @@ deploy_debian_9:
   script:
     - cd debs
     - sudo apt-get -y install ./*.deb
-    - python -c "import gpstk"
+    - python -c "import gnsstk"
     - df_diff -h
   dependencies:
     - package_debian_9
@@ -795,9 +795,9 @@ deploy_debian_10:
   script:
     - cd debs
     - sudo apt-get -y install ./*.deb
-    - python -c "import gpstk"
+    - python -c "import gnsstk"
     - df_diff -h
-    - gpstk-config --includedir
+    - gnsstk-config --includedir
   dependencies:
     - package_debian_10
 
@@ -810,9 +810,9 @@ deploy_redhat:
   image: $DOCKER_REGISTRY/centos7_sgl
   script:
     - cd rpm_files/RPMS/x86_64/
-    - sudo yum install gpstk-*.rpm -y
+    - sudo yum install gnsstk-*.rpm -y
     - df_diff -h
-    - gpstk-config --includedir
+    - gnsstk-config --includedir
   dependencies:
     - package_redhat
 
@@ -825,9 +825,9 @@ deploy_redhat_8:
   image: $DOCKER_REGISTRY/centos8_sgl
   script:
     - cd rpm_files/RPMS/x86_64/
-    - sudo yum install gpstk-*.rpm -y
+    - sudo yum install gnsstk-*.rpm -y
     - df_diff -h
-    - gpstk-config --includedir
+    - gnsstk-config --includedir
   dependencies:
     - package_redhat_8
 
@@ -840,9 +840,9 @@ deploy_redhat_py36:
   image: $DOCKER_REGISTRY/centos8_sgl
   script:
     - cd rpm_files/RPMS/x86_64/
-    - sudo yum install gpstk-*.rpm -y
-    - sudo yum install python3-gpstk-*.rpm -y
-    - python3 -c "import gpstk"
+    - sudo yum install gnsstk-*.rpm -y
+    - sudo yum install python3-gnsstk-*.rpm -y
+    - python3 -c "import gnsstk"
     - df_diff -h
   dependencies:
     - package_redhat_8_py36

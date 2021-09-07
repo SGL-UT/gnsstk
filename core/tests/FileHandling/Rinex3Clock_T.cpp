@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -85,13 +85,13 @@ private:
 // Initialize data file names
 void Rinex3Clock_T::init(void)
 {
-   gpstk::TestUtil testFramework;
-   dataFilePath = gpstk::getPathData();
-   tempFilePath = gpstk::getPathTestTemp();
+   gnsstk::TestUtil testFramework;
+   dataFilePath = gnsstk::getPathData();
+   tempFilePath = gnsstk::getPathTestTemp();
 
    std::cout<<"Running tests for Rinex v.2 files"<<std::endl;
 
-   std::string file_sep = gpstk::getFileSep();
+   std::string file_sep = gnsstk::getFileSep();
 
    dataBadEpochLine             = dataFilePath + file_sep +
                                   "test_input_rinex2_clock_BadEpochLine.96c";
@@ -120,7 +120,7 @@ void Rinex3Clock_T::toRinex3(void)
 {
    std::cout<<"Running tests for Rinex v.3 files"<<std::endl;
 
-   std::string file_sep = gpstk::getFileSep();
+   std::string file_sep = gnsstk::getFileSep();
 
    dataBadEpochLine             = dataFilePath + file_sep +
                                   "test_input_rinex3_clock_BadEpochLine.96c";
@@ -143,20 +143,20 @@ int Rinex3Clock_T::headerExceptionTest(void)
    TUDEF("Rinex3ClockStream", "HeaderExceptions");
 
    std::string msg_desc                 = "";
-   std::string msg_expect               = ", should throw gpstk::Exception";
+   std::string msg_expect               = ", should throw gnsstk::Exception";
    std::string msg_falsePass    = " but threw no exception.";
    std::string msg_trueFail     = " but instead threw an unknown exception";
 
    try
    {
-         // gpstk::Rinex3ClockStream BadEpochLine(dataBadEpochLine.c_str());
-      gpstk::Rinex3ClockStream IncompleteHeader(dataIncompleteHeader.c_str());
-      gpstk::Rinex3ClockStream InvalidLineLength(dataInvalidLineLength.c_str());
-      gpstk::Rinex3ClockStream NotAClockFile(dataNotAClockFile.c_str());
-      gpstk::Rinex3ClockStream RinexClockFile(dataRinexClockFile.c_str());
-      gpstk::Rinex3ClockStream UnknownHeaderLabel(dataUnknownHeaderLabel.c_str());
+         // gnsstk::Rinex3ClockStream BadEpochLine(dataBadEpochLine.c_str());
+      gnsstk::Rinex3ClockStream IncompleteHeader(dataIncompleteHeader.c_str());
+      gnsstk::Rinex3ClockStream InvalidLineLength(dataInvalidLineLength.c_str());
+      gnsstk::Rinex3ClockStream NotAClockFile(dataNotAClockFile.c_str());
+      gnsstk::Rinex3ClockStream RinexClockFile(dataRinexClockFile.c_str());
+      gnsstk::Rinex3ClockStream UnknownHeaderLabel(dataUnknownHeaderLabel.c_str());
 
-      gpstk::Rinex3ClockHeader ch;
+      gnsstk::Rinex3ClockHeader ch;
 
          // BadEpochLine.exceptions(std::fstream::failbit);
       IncompleteHeader.exceptions(std::fstream::failbit);
@@ -172,7 +172,7 @@ int Rinex3Clock_T::headerExceptionTest(void)
             BadEpochLine >> ch;
             TUFAIL(msg_desc + msg_expect + msg_falsePass);
             }
-            catch(gpstk::Exception e)
+            catch(gnsstk::Exception e)
             {
             TUPASS(msg_desc + msg_expect);
             }
@@ -190,7 +190,7 @@ int Rinex3Clock_T::headerExceptionTest(void)
          IncompleteHeader >> ch; //Not valid but doesn't throw errors
          TUFAIL(msg_desc + msg_expect + msg_falsePass);
       }
-      catch(gpstk::Exception e)
+      catch(gnsstk::Exception e)
       {
          TUPASS(msg_desc + msg_expect);
       }
@@ -208,7 +208,7 @@ int Rinex3Clock_T::headerExceptionTest(void)
          InvalidLineLength >> ch;
          TUFAIL(msg_desc + msg_expect + msg_falsePass);
       }
-      catch(gpstk::Exception e)
+      catch(gnsstk::Exception e)
       {
          TUPASS(msg_desc + msg_expect);
       }
@@ -225,7 +225,7 @@ int Rinex3Clock_T::headerExceptionTest(void)
          NotAClockFile >> ch;
          TUFAIL(msg_desc + msg_expect + msg_falsePass);
       }
-      catch(gpstk::Exception e)
+      catch(gnsstk::Exception e)
       {
          TUPASS(msg_desc + msg_expect);
       }
@@ -242,7 +242,7 @@ int Rinex3Clock_T::headerExceptionTest(void)
          UnknownHeaderLabel >> ch;
          TUFAIL(msg_desc + msg_expect + msg_falsePass);
       }
-      catch(gpstk::Exception e)
+      catch(gnsstk::Exception e)
       {
          TUPASS(msg_desc + msg_expect);
       }
@@ -253,7 +253,7 @@ int Rinex3Clock_T::headerExceptionTest(void)
 
 
    }
-   catch(gpstk::Exception e)
+   catch(gnsstk::Exception e)
    {
       TUFAIL("Error thrown when running headerExceptionTest: "+e.what());
    }
@@ -270,15 +270,15 @@ int Rinex3Clock_T::dataExceptionTest(void)
    TUDEF("Rinex3ClockStream", "DataExceptions");
 
    std::string msg_desc                 = "";
-   std::string msg_expect               = ", should throw gpstk::Exception";
+   std::string msg_expect               = ", should throw gnsstk::Exception";
    std::string msg_falsePass    = " but threw no exception.";
    std::string msg_trueFail     = " but instead threw an unknown exception";
 
    try
    {
-      gpstk::Rinex3ClockStream BadEpochLine(dataBadEpochLine.c_str());
+      gnsstk::Rinex3ClockStream BadEpochLine(dataBadEpochLine.c_str());
 
-      gpstk::Rinex3ClockData cd;
+      gnsstk::Rinex3ClockData cd;
 
       msg_desc = "BadEpochLine test";
       try
@@ -286,7 +286,7 @@ int Rinex3Clock_T::dataExceptionTest(void)
          while (BadEpochLine >> cd);
          TUFAIL(msg_desc + msg_expect + msg_falsePass);
       }
-      catch(gpstk::Exception e)
+      catch(gnsstk::Exception e)
       {
          TUPASS(msg_desc + msg_expect);
       }
@@ -296,7 +296,7 @@ int Rinex3Clock_T::dataExceptionTest(void)
       }
 
    }
-   catch(gpstk::Exception e)
+   catch(gnsstk::Exception e)
    {
       TUFAIL("Error thrown when running dataExceptionTest: "+e.what());
    }
@@ -313,15 +313,15 @@ int Rinex3Clock_T::hardCodeTest(void)
 {
    TUDEF("Rinex3ClockStream", "Read & write to file");
 
-   gpstk::Rinex3ClockHeader ch;
-   gpstk::Rinex3ClockData cd;
+   gnsstk::Rinex3ClockHeader ch;
+   gnsstk::Rinex3ClockData cd;
 
    try
    {
-      gpstk::Rinex3ClockStream inputStream(dataRinexClockFile.c_str());
+      gnsstk::Rinex3ClockStream inputStream(dataRinexClockFile.c_str());
       TUPASS(testMesg);
    }
-   catch (gpstk::Exception e)
+   catch (gnsstk::Exception e)
    {
       testMesg = "Input stream failed to open: " + e.what();
       TUFAIL(testMesg);
@@ -329,17 +329,17 @@ int Rinex3Clock_T::hardCodeTest(void)
 
    try
    {
-      gpstk::Rinex3ClockStream outputStream(dataTestOutput.c_str());
+      gnsstk::Rinex3ClockStream outputStream(dataTestOutput.c_str());
       TUPASS(testMesg);
    }
-   catch (gpstk::Exception e)
+   catch (gnsstk::Exception e)
    {
       testMesg = "Output stream failed to open: " + e.what();
       TUFAIL(testMesg);
    }
 
-   gpstk::Rinex3ClockStream inputStream;
-   gpstk::Rinex3ClockStream outputStream;
+   gnsstk::Rinex3ClockStream inputStream;
+   gnsstk::Rinex3ClockStream outputStream;
 
    try
    {
@@ -356,7 +356,7 @@ int Rinex3Clock_T::hardCodeTest(void)
 
       TUPASS(testMesg);
    }
-   catch (gpstk::Exception e)
+   catch (gnsstk::Exception e)
    {
       testMesg = "Unable to read/write to file stream: " + e.what();
       TUFAIL(testMesg);
@@ -380,10 +380,10 @@ int Rinex3Clock_T::rinex3HeaderFormat(void)
 {
    TUDEF("Rinex3ClockStream", "write to R3 file");
 
-   gpstk::Rinex3ClockHeader ch;
+   gnsstk::Rinex3ClockHeader ch;
 
-   gpstk::Rinex3ClockStream inputStream;
-   gpstk::Rinex3ClockStream outputStream;
+   gnsstk::Rinex3ClockStream inputStream;
+   gnsstk::Rinex3ClockStream outputStream;
 
    try
    {
@@ -394,7 +394,7 @@ int Rinex3Clock_T::rinex3HeaderFormat(void)
 
       TUPASS(testMesg);
    }
-   catch (gpstk::Exception e)
+   catch (gnsstk::Exception e)
    {
       testMesg = "Unable to read/write to file stream: " + e.what();
       TUFAIL(testMesg);

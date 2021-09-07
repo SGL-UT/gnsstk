@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -50,9 +50,9 @@
 #include "YDSTime.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
-namespace gpstk
+namespace gnsstk
 {
    const double OrbSysGpsC_33::SIX_HOURS = 6.0 * 3600.0;
 
@@ -109,7 +109,7 @@ namespace gpstk
          std::string msgString("Expected GPS CNAV MT 33.  Found unique ID ");
          msgString += StringUtils::asString(UID);
          InvalidParameter exc(msgString);
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       obsID        = msg.getobsID();
       satID        = msg.getsatSys();
@@ -135,7 +135,7 @@ namespace gpstk
       ctEpoch = GPSWeekSecond(WNt, tot, TimeSystem::GPS);
 
          // Note that DN parameter is 1-7
-      double SOW = (DN-1) * gpstk::SEC_PER_DAY;
+      double SOW = (DN-1) * gnsstk::SEC_PER_DAY;
       ctLSF   = GPSWeekSecond(WN_LSF, SOW, TimeSystem::GPS);
 
       dataLoadedFlag = true;
@@ -285,12 +285,12 @@ namespace gpstk
    } // end of getUtcOffsetModLeapSec()
 
 
-   gpstk::TimeSystemCorrection OrbSysGpsC_33::getTSC() const
+   gnsstk::TimeSystemCorrection OrbSysGpsC_33::getTSC() const
    {
       if (!dataLoadedFlag)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       TimeSystemCorrection tsc("GPUT");
       tsc.A0 = A0;
@@ -306,7 +306,7 @@ namespace gpstk
       if (!dataLoadedFlag)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       string ssys = convertSatelliteSystemToString(satID.system);
@@ -336,7 +336,7 @@ namespace gpstk
       if (!dataLoadedFlag)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       s << endl
@@ -368,4 +368,4 @@ namespace gpstk
 
    } // end of dumpBody()
 
-} // end namespace gpstk
+} // end namespace gnsstk

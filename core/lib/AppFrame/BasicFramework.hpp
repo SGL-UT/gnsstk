@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,14 +41,14 @@
  * Basic framework for programs in the GPS toolkit
  */
 
-#ifndef GPSTK_BASICFRAMEWORK_HPP
-#define GPSTK_BASICFRAMEWORK_HPP
+#ifndef GNSSTK_BASICFRAMEWORK_HPP
+#define GNSSTK_BASICFRAMEWORK_HPP
 
 #include "CommandOptionParser.hpp"
 #include <iostream>
 #include "Exception.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 
       /** @defgroup AppFrame Frameworks for Applications
@@ -85,7 +85,7 @@ namespace gpstk
        *
        * \tableofcontents
        *
-       * While not GNSS-related, the gpstk provides a set of
+       * While not GNSS-related, the gnsstk provides a set of
        * frameworks to reduce the amount of effort required when
        * writing applications.
        *
@@ -111,7 +111,7 @@ namespace gpstk
        * the following formula:
        *
        * @code{.cpp}
-       * class MyApp : public gpstk::BasicFramework
+       * class MyApp : public gnsstk::BasicFramework
        * {
        * public:
        *    MyApp(const std::string& appName);
@@ -130,7 +130,7 @@ namespace gpstk
        *       }
        *       return app.exitCode;
        *    }
-       *    catch (gpstk::Exception& e)
+       *    catch (gnsstk::Exception& e)
        *    {
        *       cerr << e << endl;
        *    }
@@ -142,7 +142,7 @@ namespace gpstk
        *    {
        *       cerr << "Caught unknown exception" << endl;
        *    }
-       *    return gpstk::BasicFramework::EXCEPTION_ERROR;
+       *    return gnsstk::BasicFramework::EXCEPTION_ERROR;
        * }
        * @endcode
        *
@@ -514,5 +514,5 @@ namespace gpstk
 
       //@}
 
-}  // End of namespace gpstk
-#endif   // GPSTK_BASICFRAMEWORK_HPP
+}  // End of namespace gnsstk
+#endif   // GNSSTK_BASICFRAMEWORK_HPP

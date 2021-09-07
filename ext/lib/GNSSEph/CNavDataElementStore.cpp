@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -48,9 +48,9 @@
 #include "TimeString.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
-namespace gpstk
+namespace gnsstk
 {
    CNavDataElementStore::CNavDataElementStore(bool keepOnlyUnique):
       initialTime(CommonTime::BEGINNING_OF_TIME),
@@ -73,8 +73,8 @@ namespace gpstk
          }
       } 
      deMap.clear();
-     initialTime = gpstk::CommonTime::END_OF_TIME;
-     finalTime = gpstk::CommonTime::BEGINNING_OF_TIME;
+     initialTime = gnsstk::CommonTime::END_OF_TIME;
+     finalTime = gnsstk::CommonTime::BEGINNING_OF_TIME;
      initialTime.setTimeSystem(TimeSystem::GPS);
      finalTime.setTimeSystem(TimeSystem::GPS); 
    }
@@ -189,8 +189,8 @@ namespace gpstk
       if (cit==deMap.end())
       {
          InvalidRequest e("No CNAV data elements for satellite "+
-                           gpstk::StringUtils::asString(satID));
-         GPSTK_THROW(e);
+                           gnsstk::StringUtils::asString(satID));
+         GNSSTK_THROW(e);
       }
       return(cit->second);
    }

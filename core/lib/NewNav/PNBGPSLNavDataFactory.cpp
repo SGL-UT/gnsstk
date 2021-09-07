@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -343,7 +343,7 @@ enum AlmBitInfo
    ascParity5 = 1,
 };
 
-namespace gpstk
+namespace gnsstk
 {
    bool PNBGPSLNavDataFactory ::
    addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
@@ -414,7 +414,7 @@ namespace gpstk
                svid = navIn->asUnsignedLong(asbPageID,anbPageID,ascPageID);
                dataID = navIn->asUnsignedLong(asbDataID,anbDataID,ascDataID);
                useQZSS =
-                  ((navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)&&
+                  ((navIn->getsatSys().system == gnsstk::SatelliteSystem::QZSS)&&
                    (dataID == dataIDQZSS));
                if ((svid <= MAX_PRN_GPS) && (svid >= 1))
                {
@@ -580,10 +580,10 @@ namespace gpstk
          // Now we can set the Toe/Toc properly
       eph->Toe = GPSWeekSecond(wn,toe);
       eph->Toc = GPSWeekSecond(wn,toc);
-      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      if (navIn->getsatSys().system == gnsstk::SatelliteSystem::QZSS)
       {
-         eph->Toe.setTimeSystem(gpstk::TimeSystem::QZS);
-         eph->Toc.setTimeSystem(gpstk::TimeSystem::QZS);
+         eph->Toe.setTimeSystem(gnsstk::TimeSystem::QZS);
+         eph->Toc.setTimeSystem(gnsstk::TimeSystem::QZS);
       }
          // health is set below
       eph->Cuc = ephSF[esiCuc]->asSignedDouble(esbCuc,enbCuc,escCuc);
@@ -713,7 +713,7 @@ namespace gpstk
       {
          alm->i0 = GPSLNavData::refioffsetQZSS + alm->deltai;
          alm->ecc += GPSLNavData::refEccQZSS;
-         ws.setTimeSystem(gpstk::TimeSystem::QZS);
+         ws.setTimeSystem(gnsstk::TimeSystem::QZS);
       }
       else
       {
@@ -812,7 +812,7 @@ namespace gpstk
       }
          // use GPS defaults.
       unsigned startPRN = 1, endPRN = 24;
-      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      if (navIn->getsatSys().system == gnsstk::SatelliteSystem::QZSS)
       {
          unsigned dataID = navIn->asUnsignedLong(asbDataID,anbDataID,ascDataID);
          if (dataID == dataIDQZSS)
@@ -1014,11 +1014,11 @@ namespace gpstk
       to->wnLSF = timeAdjust8BitWeekRollover(to->wnLSF, refWeek);
       to->refTime = GPSWeekSecond(to->wnot, to->tot);
       to->effTime = GPSWeekSecond(to->wnLSF, (to->dn-1)*86400);
-      if (navIn->getsatSys().system == gpstk::SatelliteSystem::QZSS)
+      if (navIn->getsatSys().system == gnsstk::SatelliteSystem::QZSS)
       {
-         to->src = gpstk::TimeSystem::QZS;
-         to->refTime.setTimeSystem(gpstk::TimeSystem::QZS);
-         to->effTime.setTimeSystem(gpstk::TimeSystem::QZS);
+         to->src = gnsstk::TimeSystem::QZS;
+         to->refTime.setTimeSystem(gnsstk::TimeSystem::QZS);
+         to->effTime.setTimeSystem(gnsstk::TimeSystem::QZS);
       }
          // return results.
       // cerr << "add LNAV page 56 time offset" << endl;
@@ -1064,4 +1064,4 @@ namespace gpstk
       ephAcc.clear();
    }
 
-} // namespace gpstk
+} // namespace gnsstk

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -39,7 +39,7 @@
 #include "SatMetaData.hpp"
 #include "TimeString.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    SatMetaData ::
    SatMetaData()
@@ -49,9 +49,9 @@ namespace gpstk
            chl(0),
            slotID(0),
            sys(SatelliteSystem::Unknown),
-           launchTime(gpstk::CommonTime::END_OF_TIME),
-           startTime(gpstk::CommonTime::END_OF_TIME),
-           endTime(gpstk::CommonTime::END_OF_TIME),
+           launchTime(gnsstk::CommonTime::END_OF_TIME),
+           startTime(gnsstk::CommonTime::END_OF_TIME),
+           endTime(gnsstk::CommonTime::END_OF_TIME),
            plane(""),
            slot(""),
            type(""),
@@ -146,9 +146,9 @@ namespace gpstk
         << smd.chl << ","
         << smd.slotID << ","
         << static_cast<int>(smd.sys) << ","
-        << gpstk::printTime(smd.launchTime, "%Y,%j,%s,")
-        << gpstk::printTime(smd.startTime, "%Y,%j,%s,")
-        << gpstk::printTime(smd.endTime, "%Y,%j,%s,")
+        << gnsstk::printTime(smd.launchTime, "%Y,%j,%s,")
+        << gnsstk::printTime(smd.startTime, "%Y,%j,%s,")
+        << gnsstk::printTime(smd.endTime, "%Y,%j,%s,")
         << smd.plane << ","
         << smd.slot << ","
         << smd.type << ","

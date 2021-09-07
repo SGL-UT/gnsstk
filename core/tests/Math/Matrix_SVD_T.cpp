@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -47,27 +47,27 @@ using namespace std;
 template<typename T>
 void SVDTest(size_t r, size_t c,
                   T xA[], T xB[], T xBSref[],
-                  gpstk::TestUtil& testFramework)
+                  gnsstk::TestUtil& testFramework)
 {
    ostringstream oss;
    oss << r << "x" << c;
    testFramework.changeSourceMethod(oss.str());
    T eps=100*std::numeric_limits<T>::epsilon();
-   gpstk::Matrix<T> A(r,c);
+   gnsstk::Matrix<T> A(r,c);
    A = xA;
-   gpstk::SVD<T> svd;
+   gnsstk::SVD<T> svd;
    svd(A);
-   gpstk::Matrix<T> S(r, c, 0.0);
+   gnsstk::Matrix<T> S(r, c, 0.0);
    for (int i=0; i < min(r,c); i++)
       S(i,i) = svd.S(i);
    TUASSERTFEPS( A, svd.U * S * transpose(svd.V), eps);
    
-   TUASSERTFEPS( gpstk::ident<T>(r), svd.U * transpose(svd.U), eps);
-   TUASSERTFEPS( gpstk::ident<T>(c), svd.V * transpose(svd.V), eps);
+   TUASSERTFEPS( gnsstk::ident<T>(r), svd.U * transpose(svd.U), eps);
+   TUASSERTFEPS( gnsstk::ident<T>(c), svd.V * transpose(svd.V), eps);
 
    if (r == c)
    {
-      gpstk::Vector<T> B(r), BSref(r);
+      gnsstk::Vector<T> B(r), BSref(r);
       B = xB;
       BSref = xBSref;
       svd.backSub(B);
@@ -79,7 +79,7 @@ void SVDTest(size_t r, size_t c,
 template<typename T>
 unsigned multipass()
 {
-   gpstk::TestUtil testFramework("Matrix SVD<"+gpstk::typeString<T>()+">", "--", __FILE__, __LINE__);
+   gnsstk::TestUtil testFramework("Matrix SVD<"+gnsstk::typeString<T>()+">", "--", __FILE__, __LINE__);
    T a22[] = {2,1,1,2};
    T b2[] = {1,2};
    T bs2[] = {0,1};

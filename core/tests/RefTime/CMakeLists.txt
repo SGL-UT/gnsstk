@@ -1,25 +1,25 @@
 #Tests for RefTime Classes
 
 #add_executable(HelmertTransform_T HelmertTransform_T.cpp ftest.cpp)
-#target_link_libraries(HelmertTransform_T gpstk)
+#target_link_libraries(HelmertTransform_T gnsstk)
 #add_test(RefTime_HelmertTransform HelmertTransform_T)
 
 add_executable(ReferenceFrame_T ReferenceFrame_T.cpp)
-target_link_libraries(ReferenceFrame_T gpstk)
+target_link_libraries(ReferenceFrame_T gnsstk)
 add_test(RefTime_ReferenceFrame ReferenceFrame_T)
 
 add_executable(TimeSystem_T TimeSystem_T.cpp)
-target_link_libraries(TimeSystem_T gpstk)
+target_link_libraries(TimeSystem_T gnsstk)
 add_test(RefTime_TimeSystem TimeSystem_T)
 
 add_executable(TimeSystemCorr_T TimeSystemCorr_T.cpp)
-target_link_libraries(TimeSystemCorr_T gpstk)
+target_link_libraries(TimeSystemCorr_T gnsstk)
 add_test(RefTime_TimeSystemCorr TimeSystemCorr_T)
 
 add_executable(BasicTimeSystemConverter_T BasicTimeSystemConverter_T.cpp)
-target_link_libraries(BasicTimeSystemConverter_T gpstk)
+target_link_libraries(BasicTimeSystemConverter_T gnsstk)
 add_test(RefTime_BasicTimeSystemConverter BasicTimeSystemConverter_T)
 
 add_executable(NavTimeSystemConverter_T NavTimeSystemConverter_T.cpp)
-target_link_libraries(NavTimeSystemConverter_T gpstk)
+target_link_libraries(NavTimeSystemConverter_T gnsstk)
 add_test(RefTime_NavTimeSystemConverter NavTimeSystemConverter_T)

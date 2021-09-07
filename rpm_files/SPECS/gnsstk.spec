@@ -1,14 +1,14 @@
-%define name gpstk
+%define name gnsstk
 %define version 12.0.0
 %define release 1
 
-Summary:        GPS Toolkit
+Summary:        GNSS Toolkit
 Name:           %{name}
 Version:        %{version}
 Release:        %{release}%{?dist}
 License:        LGPL
 Source:         %{name}-master.tar.gz
-URL:            https://github.com/SGL-UT/GPSTk
+URL:            https://github.com/SGL-UT/GNSSTk
 Group:          Development/Libraries
 BuildRequires: cmake
 BuildRequires: gcc
@@ -16,17 +16,17 @@ BuildRequires: gcc-c++
 BuildRequires: ncurses-devel
 
 %description
-The GPS Toolkit (GPSTk) is an open-source (LGPL) project sponsored by
+The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by
 the Space and Geophysics Laboratory (SGL), part of the Applied Research
 Laboratories (ARL) at The University of Texas at Austin.
-The primary goals of the GPSTk project are to:
+The primary goals of the GNSSTk project are to:
 * provide applications for use by the GNSS and satellite navigation community.
 * provide a core library to facilitate the development of GNSS applications.
 
 %prep
 %setup -n %{name}-master
 
-# Setup and build GPSTk utilizing CMake
+# Setup and build GNSSTk utilizing CMake
 %build
 mkdir build
 cd build
@@ -38,9 +38,9 @@ make all -j 4
 cd build
 make install -j 4 DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT/usr/README.md
-mkdir -p $RPM_BUILD_ROOT/usr/include/gpstk
-cp $RPM_BUILD_ROOT/usr/include/gpstk*/gpstk/*.h $RPM_BUILD_ROOT/usr/include/gpstk
-cp $RPM_BUILD_ROOT/usr/include/gpstk*/gpstk/*.hpp $RPM_BUILD_ROOT/usr/include/gpstk
+mkdir -p $RPM_BUILD_ROOT/usr/include/gnsstk
+cp $RPM_BUILD_ROOT/usr/include/gnsstk*/gnsstk/*.h $RPM_BUILD_ROOT/usr/include/gnsstk
+cp $RPM_BUILD_ROOT/usr/include/gnsstk*/gnsstk/*.hpp $RPM_BUILD_ROOT/usr/include/gnsstk
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -49,11 +49,11 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %doc README.md COPYING.md RELNOTES.md
-/usr/include/gpstk*/gpstk
-/usr/include/gpstk
+/usr/include/gnsstk*/gnsstk
+/usr/include/gnsstk
 /usr/bin/*
 /usr/lib64/*
-/usr/share/cmake/GPSTK
+/usr/share/cmake/GNSSTK
 
 
 %changelog
@@ -153,7 +153,7 @@ rm -rf $RPM_BUILD_ROOT
 - Update across the library to improve documentation.
 - Add accessors to the ObsID description maps for SWIG.
 - Update CI pipelines to make protected word searches advisory only.
-- Fix conda recipe to specify correct default branch for GPSTk.
+- Fix conda recipe to specify correct default branch for GNSSTk.
 * Thu Dec 10 2020 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v9.0.0 release
 - Update File_Hunter related files were deprecated and moved to tks_legacy_archive repo
@@ -188,14 +188,14 @@ rm -rf $RPM_BUILD_ROOT
 - Dropping Python Swig binding support for RHEL7/DEB7
 - Refactor ObsID and RinexObsID initialization of containers (tcDesc, etc.) to use C++11 syntax and eliminate the use of a singleton initializer.
 - Move RINEX-isms (such as the string constructor for decoding RINEX obs IDs) in ObsID into RinexObsID where they belong.
-- Refactor swig bindings for enums to use similar naming conventions between C++ and python (e.g. gpstk::TrackingCode::CA in C++ and gpstk.TrackingCode.CA in python)
+- Refactor swig bindings for enums to use similar naming conventions between C++ and python (e.g. gnsstk::TrackingCode::CA in C++ and gnsstk.TrackingCode.CA in python)
 - Add EnumIterator class to provide the ability to iterate over the above enum classes.
 - Rename TrackingCode enumerations to better support codes that RINEX does not by using names based on the ICDs rather than what RINEX uses.
 - Refactor enumerations in TimeSystem, ReferenceFrame, IERSConvention, SatID, NavID and ObsID (SatelliteSystem, NavType, ObservationType, CarrierBand, TrackingCode) to use strongly typed enumerations and move them outside the scope of those classes.
 - Add SatMetaDataStore findSatByFdmaSlot
 - Add Documentation Artifact to CI Pipeline
 - Refactor Yuma/SEM file support back into ext
-- Fix core/lib include statements to search GPSTk include directory.
+- Fix core/lib include statements to search GNSSTk include directory.
 - Fix OrbSysGpsL_55 Restore output of text message
 - Fix various pieces of code to resolve warning messages on various platforms.
 - Add CODEOWNERS file.
@@ -208,14 +208,14 @@ rm -rf $RPM_BUILD_ROOT
 - Dropping Python Swig binding support for RHEL7/DEB7
 - Refactor ObsID and RinexObsID initialization of containers (tcDesc, etc.) to use C++11 syntax and eliminate the use of a singleton initializer.
 - Move RINEX-isms (such as the string constructor for decoding RINEX obs IDs) in ObsID into RinexObsID where they belong.
-- Refactor swig bindings for enums to use similar naming conventions between C++ and python (e.g. gpstk::TrackingCode::CA in C++ and gpstk.TrackingCode.CA in python)
+- Refactor swig bindings for enums to use similar naming conventions between C++ and python (e.g. gnsstk::TrackingCode::CA in C++ and gnsstk.TrackingCode.CA in python)
 - Add EnumIterator class to provide the ability to iterate over the above enum classes.
 - Rename TrackingCode enumerations to better support codes that RINEX does not by using names based on the ICDs rather than what RINEX uses.
 - Refactor enumerations in TimeSystem, ReferenceFrame, IERSConvention, SatID, NavID and ObsID (SatelliteSystem, NavType, ObservationType, CarrierBand, TrackingCode) to use strongly typed enumerations and move them outside the scope of those classes.
 - Add SatMetaDataStore findSatByFdmaSlot
 - Add Documentation Artifact to CI Pipeline
 - Refactor Yuma/SEM file support back into ext
-- Fix core/lib include statements to search GPSTk include directory.
+- Fix core/lib include statements to search GNSSTk include directory.
 - Fix OrbSysGpsL_55 Restore output of text message
 - Fix various pieces of code to resolve warning messages on various platforms.
 - Add CODEOWNERS file.
@@ -321,7 +321,7 @@ rm -rf $RPM_BUILD_ROOT
 - Update OrbitEphStore to have more information when a potentially corrupt ephemeris is added.
 - Add NavID Add methods to convert between enumeration and string and test them.
 - Add ObsID Add methods to convert between enumeration and string and test them.
-- Update SWIG files so that gpstk::Exception is treated as a Python Exception
+- Update SWIG files so that gnsstk::Exception is treated as a Python Exception
 - Add tests for computeXvt and getSVHealth with unhealthy satellites
 * Mon Mar 30 2020 Andrew Kuck <kuck@arlut.utexas.edu>
 - Updated for v4.0.0 release

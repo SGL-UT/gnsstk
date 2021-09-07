@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -56,10 +56,10 @@
 #include "TimeString.hpp"
 
 using namespace std;
-using gpstk::StringUtils::asString;
+using gnsstk::StringUtils::asString;
 
 
-namespace gpstk
+namespace gnsstk
 {
 
 //--------------------------------------------------------------------------
@@ -90,14 +90,14 @@ namespace gpstk
          {
             InvalidRequest exc( std::string("SV is transmitting unhealthy navigation ")
                 + std::string("message at time of interest.") );
-            GPSTK_THROW( exc );
+            GNSSTK_THROW( exc );
          }
          Xvt sv = eph->svXvt(t);
          return sv;
       }
       catch(InvalidRequest& ir)
       {
-         GPSTK_RETHROW(ir);
+         GNSSTK_RETHROW(ir);
       }
    }
 
@@ -166,7 +166,7 @@ namespace gpstk
          }
          
          InvalidRequest ir(ess.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
    }
 
@@ -255,7 +255,7 @@ namespace gpstk
         ess << sid;
         ess << " and that satellite system is not contained in this store.";
         InvalidParameter ip(ess.str());
-        GPSTK_THROW(ip);
+        GNSSTK_THROW(ip);
      }
 
        // if map is empty, load object and return
@@ -297,7 +297,7 @@ namespace gpstk
            if (dbg)
              cout << str << endl; 
            InvalidParameter exc( str );
-           GPSTK_THROW(exc); 
+           GNSSTK_THROW(exc); 
         }
      }
         // Did not already find match to
@@ -374,7 +374,7 @@ namespace gpstk
    }
    catch(Exception& e)
    {
-      GPSTK_RETHROW(e)
+      GNSSTK_RETHROW(e)
    }
  }
     
@@ -448,7 +448,7 @@ namespace gpstk
       if (prn_i == ube.end())
       {
          InvalidRequest e("No orbital elements for satellite " + asString(sat));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // Define reference to the relevant map of orbital elements
@@ -456,7 +456,7 @@ namespace gpstk
       if (em.empty())
       {
          InvalidRequest e("No orbital elements for satellite " + asString(sat));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // The map is ordered by beginning times of validity, which
@@ -491,7 +491,7 @@ namespace gpstk
          string mess = "All orbital elements found for satellite " + asString(sat) + " are too early for time "
             + (static_cast<CivilTime>(t)).printf("%02m/%02d/%04Y %02H:%02M:%02S %P");
          InvalidRequest e(mess);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // Since lower_bound( ) was called, "it" points to the element
@@ -505,7 +505,7 @@ namespace gpstk
          string mess = "All orbital elements found for satellite " + asString(sat) + " are too late for time "
             + (static_cast<CivilTime>(t)).printf("%02m/%02d/%04Y %02H:%02M:%02S %P");
          InvalidRequest e(mess);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
 	    // The iterator should be a valid iterator and set one beyond
@@ -522,7 +522,7 @@ namespace gpstk
          string mess = "No orbital elements found for satellite " + asString(sat) + " at "
             + (static_cast<CivilTime>(t)).printf("%02m/%02d/%04Y %02H:%02M:%02S %P");
          InvalidRequest e(mess);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return(it->second);
    } 
@@ -538,7 +538,7 @@ namespace gpstk
       if (prn_i == ube.end())
       {
          InvalidRequest e("No OrbElem for satellite " + asString(sat));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // Define reference to the relevant map of orbital elements
@@ -546,7 +546,7 @@ namespace gpstk
       if (em.empty())
       {
          InvalidRequest e("No orbital elements for satellite " + asString(sat));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    
          // FIRST, try to find the elements that were
@@ -615,7 +615,7 @@ namespace gpstk
          ss << timeSysForStore << ", Time system of argument: ";
          ss << t.getTimeSystem();
          InvalidRequest e(ss.str());
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    
          // Check for any OrbElem for this SV            
@@ -623,7 +623,7 @@ namespace gpstk
       if (prn_i == ube.end())
       {
          InvalidRequest e("No OrbElem for satellite " + asString(sat));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // Create a reference to map for this satellite
@@ -645,7 +645,7 @@ namespace gpstk
       ss << "No match found for SV " << sat;
       ss << " with Toe " << printTime(t,"%02m/%02d/%04Y %02H:%02M:%02S");
       InvalidRequest e(ss.str());
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
 
          // Keep the compiler happy.
       OrbElemBase* dummy = 0;    
@@ -688,8 +688,8 @@ namespace gpstk
          }
       } 
      ube.clear();
-     initialTime = gpstk::CommonTime::END_OF_TIME;
-     finalTime = gpstk::CommonTime::BEGINNING_OF_TIME;
+     initialTime = gnsstk::CommonTime::END_OF_TIME;
+     finalTime = gnsstk::CommonTime::BEGINNING_OF_TIME;
      initialTime.setTimeSystem(timeSysForStore);
      finalTime.setTimeSystem(timeSysForStore); 
    }
@@ -705,16 +705,16 @@ namespace gpstk
       if (prn_i == ube.end())
       {
          InvalidRequest e("No OrbElemBase for satellite " + asString(sat));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return(prn_i->second);
    }
    
 //-----------------------------------------------------------------------------
 
-   list<gpstk::SatID> OrbElemStore::getSatIDList() const
+   list<gnsstk::SatID> OrbElemStore::getSatIDList() const
    {
-      list<gpstk::SatID> retList;
+      list<gnsstk::SatID> retList;
       for( UBEMap::const_iterator ui = ube.begin(); ui != ube.end(); ui++)
       {
          SatID sid = ui->first;
@@ -803,7 +803,7 @@ namespace gpstk
       {
           cout << "GPS system not used, exiting OrbElemStore::rationalize" << endl;
           InvalidRequest e("GPS system not used, exiting OrbElemStore::rationalize");
-          GPSTK_THROW(e);
+          GNSSTK_THROW(e);
       }
 
       UBEMap::iterator it;

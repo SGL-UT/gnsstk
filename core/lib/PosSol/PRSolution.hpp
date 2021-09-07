@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -55,7 +55,7 @@
 #include "XvtStore.hpp"
 #include "TropModel.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    /** @defgroup GPSsolutions GPS solution algorithms and Tropospheric models */
    //@{
@@ -138,7 +138,7 @@ namespace gpstk
             sumInfoState += Info * Sol3;
             ++N;
          }
-         catch(Exception& e) { GPSTK_RETHROW(e); }
+         catch(Exception& e) { GNSSTK_RETHROW(e); }
       }
 
       // dump statistics and weighted average
@@ -177,7 +177,7 @@ namespace gpstk
             }
             else os << " No data!";
          }
-         catch(Exception& e) { GPSTK_RETHROW(e); }
+         catch(Exception& e) { GNSSTK_RETHROW(e); }
       }
 
       friend std::ostream& operator<<(std::ostream& s, const WtdAveStats& as);
@@ -372,8 +372,8 @@ namespace gpstk
       ///                     which there is no ephemeris.
       /// @param Pseudorange input std::vector<double> of raw pseudoranges (parallel
       ///                     to Sats), in meters
-      /// @param pEph        input pointer to gpstk::XvtStore<SatID> to be used
-      /// @param SVP         output gpstk::Matrix<double> of dimension (N,4), N is
+      /// @param pEph        input pointer to gnsstk::XvtStore<SatID> to be used
+      /// @param SVP         output gnsstk::Matrix<double> of dimension (N,4), N is
       ///                     the number of satellites in Sats[] (marked or not),
       ///                     on output this contains the satellite positions at
       ///                     transmit time (cols 0-2), the corrected pseudorange (1).
@@ -399,11 +399,11 @@ namespace gpstk
       ///                     On output member SatelliteIDs set to this.
       /// @param SVP         const Matrix<double> of dimension (N,5) contains sat.
       ///                     direction cosines and corrected pseudorange data.
-      /// @param invMC       const gpstk::Matrix<double> NXN measurement covariance
+      /// @param invMC       const gnsstk::Matrix<double> NXN measurement covariance
       ///                     matrix inverse (meter^-2) of the pseudorange data (for N
       ///                     see Sats). If this matrix has dimension 0, no weighting
       ///                     of the data is done.
-      /// @param pTropModel  pointer to a gpstk::TropModel for trop correction.
+      /// @param pTropModel  pointer to a gnsstk::TropModel for trop correction.
       ///
       /// Input and output:
       /// @param niterLimit  integer limit on the number of iterations. On output,
@@ -412,10 +412,10 @@ namespace gpstk
       ///                     in meters. On output, member Convergence = final value.
       ///
       /// Output:  (these will be resized within the function)
-      /// @param Resids      gpstk::Vector<double> post-fit range residuals for each
+      /// @param Resids      gnsstk::Vector<double> post-fit range residuals for each
       ///                     satellite (m), the length of this Vector is the number
       ///                     of satellites actually used (see Sats).
-      /// @param Slopes      gpstk::Vector<double> slope value used in RAIM for each
+      /// @param Slopes      gnsstk::Vector<double> slope value used in RAIM for each
       ///                     good satellite, length m.
       ///
       /// @return Return values:
@@ -451,12 +451,12 @@ namespace gpstk
       ///                    Also systems not in allowedGNSS are ignored.
       /// @param Pseudorange std::vector<double> of raw pseudoranges (parallel to
       ///                    Satellite), in meters.
-      /// @param invMC       gpstk::Matrix<double> NXN measurement covariance matrix
+      /// @param invMC       gnsstk::Matrix<double> NXN measurement covariance matrix
       ///                    inverse (meter^-2) of the pseudorange data (for N
       ///                    see Sats). If this matrix has dimension 0, no weighting
       ///                    of the data is done.
-      /// @param pEph        pointer to gpstk::XvtStore to be used in the algorithm.
-      /// @param pTropModel  pointer to gpstk::TropModel for trop correction.
+      /// @param pEph        pointer to gnsstk::XvtStore to be used in the algorithm.
+      /// @param pTropModel  pointer to gnsstk::TropModel for trop correction.
       ///
       /// @return Return values:
       ///  1  solution is ok, but may be degraded; check TropFlag, RMSFlag, SlopeFlag
@@ -560,7 +560,7 @@ namespace gpstk
             }
             else os << " Not enough data for covariance.\n";
          }
-         catch(Exception& e) { GPSTK_RETHROW(e); }
+         catch(Exception& e) { GNSSTK_RETHROW(e); }
       }
 
       /// update apriori solution with a known solution; this is done at the end of
@@ -622,7 +622,7 @@ namespace gpstk
          }
          catch(Exception& e) {
             e.addText("APV failed.");
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 
@@ -644,6 +644,6 @@ namespace gpstk
 
    //@}
 
-} // namespace gpstk
+} // namespace gnsstk
 
 #endif

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -44,10 +44,10 @@
 #include "BrcKeplerOrbit.hpp"
 #include <cmath>
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace std;
-   using namespace gpstk;
+   using namespace gnsstk;
 
    BrcKeplerOrbit::BrcKeplerOrbit()
       throw()
@@ -197,7 +197,7 @@ namespace gpstk
       if (!subframeConvert(subframe1, fullweeknum, ficked))
       {
          InvalidParameter exc("Subframe 1 not valid.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       short weeknum = static_cast<short>( ficked[5] );
@@ -213,7 +213,7 @@ namespace gpstk
       if (!subframeConvert(subframe2, fullweeknum, ficked))
       {
          InvalidParameter exc("Subframe 2 not valid.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       Crs    = ficked[6];
@@ -257,7 +257,7 @@ namespace gpstk
       if (!subframeConvert(subframe3, fullweeknum, ficked))
       {
          InvalidParameter exc("Subframe3 not valid.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       Cic      = ficked[5];
@@ -286,7 +286,7 @@ namespace gpstk
       if (!dataLoaded)
       {   
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return(healthy);
    }
@@ -296,7 +296,7 @@ namespace gpstk
       if (!dataLoaded)
       {   
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       if (ct >= beginFit && ct <= endFit) return(true);    
       return(false);
@@ -484,7 +484,7 @@ namespace gpstk
       if (!dataLoaded)
       {   
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return beginFit;
    }
@@ -494,7 +494,7 @@ namespace gpstk
       if (!dataLoaded)
       {   
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return endFit;
    }
@@ -504,7 +504,7 @@ namespace gpstk
       if(!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return PRNID;
    }   
@@ -514,7 +514,7 @@ namespace gpstk
       if(!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return obsID;
    }
@@ -524,7 +524,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       GPSWeekSecond gpsws(Toe);
       return (gpsws.week);
@@ -535,7 +535,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       double accuracy = ura2CNAVaccuracy(URAoe);
       return accuracy;
@@ -546,7 +546,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       URAoe = accuracy2ura(acc);
    }
@@ -556,7 +556,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return URAoe;
    }
@@ -566,7 +566,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Cus;
    }
@@ -576,7 +576,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Crs;
    }
@@ -586,7 +586,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Cis;
    }
@@ -596,7 +596,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Crc;
    }
@@ -606,7 +606,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Cuc;
    }
@@ -616,7 +616,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Cic;
    }
@@ -626,7 +626,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       GPSWeekSecond gpsws(Toe);
       return gpsws.sow;
@@ -637,7 +637,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return M0;
    }
@@ -647,7 +647,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return dn;
    }
@@ -657,7 +657,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return ecc;
    }
@@ -667,7 +667,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return A;
    }
@@ -677,7 +677,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Ahalf;
    }
@@ -687,7 +687,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Adot;
    }
@@ -697,7 +697,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return dndot;
    }
@@ -707,7 +707,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return OMEGA0;
    }
@@ -717,7 +717,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return i0;
    }
@@ -727,7 +727,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return w;
    }
@@ -737,7 +737,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return OMEGAdot;
    }
@@ -747,7 +747,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return idot;
    }

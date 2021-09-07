@@ -2,13 +2,13 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
+from gnsstk.test_utils import args,run_unit_tests
 
-import gpstk
+import gnsstk
 
 class TestGPSCNavAlm(unittest.TestCase):
     def test_constructor(self):
-        uut = gpstk.GPSCNavAlm()
+        uut = gnsstk.GPSCNavAlm()
         self.assertEqual(True, uut.healthL1)
         self.assertEqual(True, uut.healthL2)
         self.assertEqual(True, uut.healthL5)
@@ -17,33 +17,33 @@ class TestGPSCNavAlm(unittest.TestCase):
         self.assertEqual(0, uut.toa)
 
     def test_validate(self):
-        uut = gpstk.GPSCNavAlm()
+        uut = gnsstk.GPSCNavAlm()
         self.assertEqual(True, uut.validate())
 
     def test_getUserTime(self):
-        uut = gpstk.GPSCNavAlm()
-        expL2 = gpstk.GPSWeekSecond(2100,147.0).toCommonTime()
-        expL5 = gpstk.GPSWeekSecond(2100,141.0).toCommonTime()
-        uut.timeStamp = gpstk.GPSWeekSecond(2100,135.0).toCommonTime()
-        uut.signal = gpstk.NavMessageID(
-            gpstk.NavSatelliteID(1, 1, gpstk.SatelliteSystem.GPS,
-                                 gpstk.CarrierBand.L5, gpstk.TrackingCode.L5I,
-                                 gpstk.NavType.GPSCNAVL5),
-            gpstk.NavMessageType.Almanac)
+        uut = gnsstk.GPSCNavAlm()
+        expL2 = gnsstk.GPSWeekSecond(2100,147.0).toCommonTime()
+        expL5 = gnsstk.GPSWeekSecond(2100,141.0).toCommonTime()
+        uut.timeStamp = gnsstk.GPSWeekSecond(2100,135.0).toCommonTime()
+        uut.signal = gnsstk.NavMessageID(
+            gnsstk.NavSatelliteID(1, 1, gnsstk.SatelliteSystem.GPS,
+                                 gnsstk.CarrierBand.L5, gnsstk.TrackingCode.L5I,
+                                 gnsstk.NavType.GPSCNAVL5),
+            gnsstk.NavMessageType.Almanac)
         self.assertEqual(expL5, uut.getUserTime())
-        uut.signal = gpstk.NavMessageID(
-            gpstk.NavSatelliteID(1, 1, gpstk.SatelliteSystem.GPS,
-                                 gpstk.CarrierBand.L2, gpstk.TrackingCode.L2CM,
-                                 gpstk.NavType.GPSCNAVL2),
-            gpstk.NavMessageType.Almanac)
+        uut.signal = gnsstk.NavMessageID(
+            gnsstk.NavSatelliteID(1, 1, gnsstk.SatelliteSystem.GPS,
+                                 gnsstk.CarrierBand.L2, gnsstk.TrackingCode.L2CM,
+                                 gnsstk.NavType.GPSCNAVL2),
+            gnsstk.NavMessageType.Almanac)
         self.assertEqual(expL2, uut.getUserTime())
 
     def test_fixFit(self):
-        uut = gpstk.GPSCNavAlm()
-        toa = gpstk.GPSWeekSecond(2100,135.0).toCommonTime()
-        xmit = gpstk.GPSWeekSecond(2099,604000.0).toCommonTime()
+        uut = gnsstk.GPSCNavAlm()
+        toa = gnsstk.GPSWeekSecond(2100,135.0).toCommonTime()
+        xmit = gnsstk.GPSWeekSecond(2099,604000.0).toCommonTime()
         expBegin = xmit
-        expEnd   = gpstk.CommonTime.END_OF_TIME
+        expEnd   = gnsstk.CommonTime.END_OF_TIME
         uut.Toe = toa
         uut.xmitTime = xmit
         uut.fixFit()

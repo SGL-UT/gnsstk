@@ -2,50 +2,50 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
+from gnsstk.test_utils import args,run_unit_tests
 
-import gpstk
+import gnsstk
 
 class TestGalFNavHealth(unittest.TestCase):
     def test_constructor(self):
-        uut = gpstk.GalFNavHealth()
-        self.assertEqual(gpstk.GalHealthStatus.Unknown, uut.sigHealthStatus)
-        self.assertEqual(gpstk.GalDataValid.Unknown, uut.dataValidityStatus)
+        uut = gnsstk.GalFNavHealth()
+        self.assertEqual(gnsstk.GalHealthStatus.Unknown, uut.sigHealthStatus)
+        self.assertEqual(gnsstk.GalDataValid.Unknown, uut.dataValidityStatus)
         self.assertEqual(255, uut.sisaIndex)
 
     def test_validate(self):
-        uut = gpstk.GalFNavHealth()
+        uut = gnsstk.GalFNavHealth()
         self.assertEqual(True, uut.validate())
 
     def test_getUserTime(self):
-        uut = gpstk.GalFNavHealth()
-        uut.timeStamp = gpstk.GALWeekSecond(2100,135.0).toCommonTime()
-        exp = gpstk.GALWeekSecond(2100,145.0).toCommonTime()
+        uut = gnsstk.GalFNavHealth()
+        uut.timeStamp = gnsstk.GALWeekSecond(2100,135.0).toCommonTime()
+        exp = gnsstk.GALWeekSecond(2100,145.0).toCommonTime()
         self.assertEqual(exp, uut.getUserTime())
 
     def test_getHealth(self):
-        uut = gpstk.GalFNavHealth()
-        self.assertEqual(gpstk.SVHealth.Unknown, uut.getHealth())
-        uut.sigHealthStatus = gpstk.GalHealthStatus.OutOfService
-        self.assertEqual(gpstk.SVHealth.Unhealthy, uut.getHealth())
-        uut.sigHealthStatus = gpstk.GalHealthStatus.Unknown
-        self.assertEqual(gpstk.SVHealth.Unknown, uut.getHealth())
-        uut.sigHealthStatus = gpstk.GalHealthStatus.InTest
-        self.assertEqual(gpstk.SVHealth.Unhealthy, uut.getHealth())
-        uut.sigHealthStatus = gpstk.GalHealthStatus.WillBeOOS
-        self.assertEqual(gpstk.SVHealth.Degraded, uut.getHealth())
-        uut.sigHealthStatus = gpstk.GalHealthStatus.OK
-        uut.dataValidityStatus = gpstk.GalDataValid.NoGuarantee
-        self.assertEqual(gpstk.SVHealth.Degraded, uut.getHealth())
-        uut.dataValidityStatus = gpstk.GalDataValid.Valid
+        uut = gnsstk.GalFNavHealth()
+        self.assertEqual(gnsstk.SVHealth.Unknown, uut.getHealth())
+        uut.sigHealthStatus = gnsstk.GalHealthStatus.OutOfService
+        self.assertEqual(gnsstk.SVHealth.Unhealthy, uut.getHealth())
+        uut.sigHealthStatus = gnsstk.GalHealthStatus.Unknown
+        self.assertEqual(gnsstk.SVHealth.Unknown, uut.getHealth())
+        uut.sigHealthStatus = gnsstk.GalHealthStatus.InTest
+        self.assertEqual(gnsstk.SVHealth.Unhealthy, uut.getHealth())
+        uut.sigHealthStatus = gnsstk.GalHealthStatus.WillBeOOS
+        self.assertEqual(gnsstk.SVHealth.Degraded, uut.getHealth())
+        uut.sigHealthStatus = gnsstk.GalHealthStatus.OK
+        uut.dataValidityStatus = gnsstk.GalDataValid.NoGuarantee
+        self.assertEqual(gnsstk.SVHealth.Degraded, uut.getHealth())
+        uut.dataValidityStatus = gnsstk.GalDataValid.Valid
         uut.sisaIndex = 255
-        self.assertEqual(gpstk.SVHealth.Degraded, uut.getHealth())
+        self.assertEqual(gnsstk.SVHealth.Degraded, uut.getHealth())
         uut.sisaIndex = 254
-        self.assertEqual(gpstk.SVHealth.Healthy, uut.getHealth())
+        self.assertEqual(gnsstk.SVHealth.Healthy, uut.getHealth())
         uut.sisaIndex = 0
-        self.assertEqual(gpstk.SVHealth.Healthy, uut.getHealth())
-        uut.dataValidityStatus = gpstk.GalDataValid.Unknown
-        self.assertEqual(gpstk.SVHealth.Unknown, uut.getHealth())
+        self.assertEqual(gnsstk.SVHealth.Healthy, uut.getHealth())
+        uut.dataValidityStatus = gnsstk.GalDataValid.Unknown
+        self.assertEqual(gnsstk.SVHealth.Unknown, uut.getHealth())
 
 if __name__ == '__main__':
     run_unit_tests()

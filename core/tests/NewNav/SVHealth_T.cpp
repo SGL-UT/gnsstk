@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -39,9 +39,9 @@
 #include "SVHealth.hpp"
 #include "TestUtil.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::SVHealth e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::SVHealth e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -62,15 +62,15 @@ convertTest()
    TUDEF("SVHealth", "asString");
       // This effectively tests SVHealthIterator, asString and
       // asSVHealth all at once.
-   for (gpstk::SVHealth e : gpstk::SVHealthIterator())
+   for (gnsstk::SVHealth e : gnsstk::SVHealthIterator())
    {
       TUCSM("asString");
-      std::string s(gpstk::StringUtils::asString(e));
+      std::string s(gnsstk::StringUtils::asString(e));
       TUASSERT(!s.empty());
       TUASSERT(s != "???");
       TUCSM("asSVHealth");
-      gpstk::SVHealth e2 = gpstk::StringUtils::asSVHealth(s);
-      TUASSERTE(gpstk::SVHealth, e, e2);
+      gnsstk::SVHealth e2 = gnsstk::StringUtils::asSVHealth(s);
+      TUASSERTE(gnsstk::SVHealth, e, e2);
    }
    TURETURN();
 }

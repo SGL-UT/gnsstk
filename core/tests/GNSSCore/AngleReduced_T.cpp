@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -52,13 +52,13 @@ public:
    class TestData
    {
    public:
-      TestData(double val, gpstk::AngleReduced::Type type, double radians,
+      TestData(double val, gnsstk::AngleReduced::Type type, double radians,
                double degrees, double sine, double cosine)
             : v(val), t(type), rad(radians), deg(degrees), sin(sine),
               cos(cosine)
       {}
       double v;
-      gpstk::AngleReduced::Type t;
+      gnsstk::AngleReduced::Type t;
       double rad;
       double deg;
       double sin;
@@ -84,27 +84,27 @@ constructorTest()
    const double sine = ::sin(radians);
    const double cosine = ::cos(radians);
       // test default constructor
-   gpstk::AngleReduced uut1;
+   gnsstk::AngleReduced uut1;
    TUASSERTE(bool, true, isnan(uut1.sin()));
    TUASSERTE(bool, true, isnan(uut1.cos()));
       // test radians constructor
-   gpstk::AngleReduced uut2(radians, gpstk::AngleReduced::Rad);
+   gnsstk::AngleReduced uut2(radians, gnsstk::AngleReduced::Rad);
    TUASSERTFEPS(sine,    uut2.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut2.cos(), epsilon);
       // test degrees constructor
-   gpstk::AngleReduced uut3(degrees, gpstk::AngleReduced::Deg);
+   gnsstk::AngleReduced uut3(degrees, gnsstk::AngleReduced::Deg);
    TUASSERTFEPS(sine,    uut3.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut3.cos(), epsilon);
       // test sin constructor
-   gpstk::AngleReduced uut4(sine, gpstk::AngleReduced::Sin);
+   gnsstk::AngleReduced uut4(sine, gnsstk::AngleReduced::Sin);
    TUASSERTFEPS(sine,    uut4.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut4.cos(), epsilon);
       // test cos constructor
-   gpstk::AngleReduced uut5(cosine, gpstk::AngleReduced::Cos);
+   gnsstk::AngleReduced uut5(cosine, gnsstk::AngleReduced::Cos);
    TUASSERTFEPS(sine,    uut5.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut5.cos(), epsilon);
       // test sin/cos constructor
-   gpstk::AngleReduced uut6(sine, cosine);
+   gnsstk::AngleReduced uut6(sine, cosine);
    TUASSERTFEPS(sine,    uut6.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut6.cos(), epsilon);
    TURETURN();
@@ -115,23 +115,23 @@ unsigned AngleReduced_T ::
 setValueTest()
 {
    TUDEF("AngleReduced", "setValue");
-   using gpstk::DEG2RAD;
-   using gpstk::RAD2DEG;
+   using gnsstk::DEG2RAD;
+   using gnsstk::RAD2DEG;
    static const TestData testData[] =
       {
-         { 0.0,  gpstk::AngleReduced::Rad, 0.0, 0.0, 0.0,  1.0 },
-         { 1.0,  gpstk::AngleReduced::Deg, 1.0*DEG2RAD, 1.0, ::sin(1.0*DEG2RAD),
+         { 0.0,  gnsstk::AngleReduced::Rad, 0.0, 0.0, 0.0,  1.0 },
+         { 1.0,  gnsstk::AngleReduced::Deg, 1.0*DEG2RAD, 1.0, ::sin(1.0*DEG2RAD),
            ::cos(1.0*DEG2RAD) },
-         { 0.34, gpstk::AngleReduced::Sin, ::asin(0.34), ::asin(0.34)*RAD2DEG,
+         { 0.34, gnsstk::AngleReduced::Sin, ::asin(0.34), ::asin(0.34)*RAD2DEG,
            0.34, ::cos(::asin(0.34)) },
-         { 0.78, gpstk::AngleReduced::Cos, ::acos(0.78), ::acos(0.78)*RAD2DEG,
+         { 0.78, gnsstk::AngleReduced::Cos, ::acos(0.78), ::acos(0.78)*RAD2DEG,
            ::sin(::acos(0.78)),  0.78 },
       };
    unsigned numTests = sizeof(testData) / sizeof(testData[0]);
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestData& td(testData[testNum]);
-      gpstk::AngleReduced uut;
+      gnsstk::AngleReduced uut;
       uut.setValue(td.v, td.t);
       TUASSERTFEPS(td.sin, uut.sin(), epsilon);
       TUASSERTFEPS(td.cos, uut.cos(), epsilon);

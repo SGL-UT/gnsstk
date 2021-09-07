@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -42,7 +42,7 @@
 #include "TimeString.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 /** Threshold for how much different our velocities can be between
  * being computed directly via svXvt and computed via differencing
@@ -316,10 +316,10 @@ svXvtTest()
    TUDEF("BrcKeplerOrbit", "svXvt");
    BrcKeplerOrbit orbit;
    ObsID oi(ObservationType::NavMsg, CarrierBand::L1, TrackingCode::Y);
-   gpstk::CommonTime toc = gpstk::CivilTime(2015,7,19,1,59,28.0,
-                                            gpstk::TimeSystem::GPS);
+   gnsstk::CommonTime toc = gnsstk::CivilTime(2015,7,19,1,59,28.0,
+                                            gnsstk::TimeSystem::GPS);
    orbit.loadData("GPS", oi, 2, toc, toc+7200,
-                  gpstk::GPSWeekSecond(1854,.716800000000e+04), 0, true,
+                  gnsstk::GPSWeekSecond(1854,.716800000000e+04), 0, true,
                   -.324845314026e-05, .101532787085e-04, .168968750000e+03,
                   -.646250000000e+02, .320374965668e-06, .117346644402e-06,
                   -.136404614938e+01, .489591822036e-08, 0,
@@ -333,13 +333,13 @@ svXvtTest()
    {
          // first compute Xvt
       static const unsigned SECONDS = 7200;
-      gpstk::Xvt zeroth_array[SECONDS];
+      gnsstk::Xvt zeroth_array[SECONDS];
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
          zeroth_array[ii] = orbit.svXvt(orbit.getOrbitEpoch() + ii);
       }
          // then compute first derivative of position, i.e. velocity
-      gpstk::Triple deriv[SECONDS];
+      gnsstk::Triple deriv[SECONDS];
       double h = 1; // time step size in seconds
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
@@ -395,7 +395,7 @@ svXvtTest()
          TUPASS("velocity check");
       }
    }
-   catch (gpstk::Exception& exc)
+   catch (gnsstk::Exception& exc)
    {
       cerr << exc;
       TUFAIL("Exception");

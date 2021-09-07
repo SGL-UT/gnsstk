@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -36,8 +36,8 @@
 //
 //==============================================================================
 
-#ifndef GPSTK_MATRIX_T_HPP
-#define GPSTK_MATRIX_T_HPP
+#ifndef GNSSTK_MATRIX_T_HPP
+#define GNSSTK_MATRIX_T_HPP
 
 #include "Matrix.hpp"
 #include "Vector.hpp"
@@ -70,17 +70,17 @@ public:
 
       //Temp values needed b/c can't assign matrix size to public members at initialization
       //The temps can give the matrices the sizes (and values) needed
-      gpstk::Matrix<double> A1augTemp(2,3), A2augTemp(3,4), A3augTemp(4,5), A4augTemp(4,6);
+      gnsstk::Matrix<double> A1augTemp(2,3), A2augTemp(3,4), A3augTemp(4,5), A4augTemp(4,6);
 
       A1augTemp = dat1;
       A2augTemp = dat2;
       A3augTemp = dat3;
       A4augTemp = dat4;
 
-      gpstk::Matrix<double> A1Temp(A1augTemp, 0, 0, 2, 2);
-      gpstk::Matrix<double> A2Temp(A2augTemp, 0, 0, 3, 3);
-      gpstk::Matrix<double> A3Temp(A3augTemp, 0, 0, 4, 4);
-      gpstk::Matrix<double> A4Temp(A4augTemp, 0, 0, 4, 5);
+      gnsstk::Matrix<double> A1Temp(A1augTemp, 0, 0, 2, 2);
+      gnsstk::Matrix<double> A2Temp(A2augTemp, 0, 0, 3, 3);
+      gnsstk::Matrix<double> A3Temp(A3augTemp, 0, 0, 4, 4);
+      gnsstk::Matrix<double> A4Temp(A4augTemp, 0, 0, 4, 5);
 
       A1aug = A1augTemp;
       A2aug = A2augTemp;
@@ -92,9 +92,9 @@ public:
       A3 = A3Temp;
       A4 = A4Temp;
 
-      gpstk::Vector<double> B1Temp(A1aug.colCopy(2));
-      gpstk::Vector<double> B2Temp(A2aug.colCopy(3));
-      gpstk::Vector<double> B3Temp(A3aug.colCopy(4));
+      gnsstk::Vector<double> B1Temp(A1aug.colCopy(2));
+      gnsstk::Vector<double> B2Temp(A2aug.colCopy(3));
+      gnsstk::Vector<double> B3Temp(A3aug.colCopy(4));
 
       B1 = B1Temp;
       B2 = B2Temp;
@@ -107,8 +107,8 @@ public:
    } 
 
    double eps;
-   gpstk::Matrix<double> A1aug, A2aug, A3aug, A4aug, A1, A2, A3, A4;
-   gpstk::Vector<double> B1, B2, B3;
+   gnsstk::Matrix<double> A1aug, A2aug, A3aug, A4aug, A1, A2, A3, A4;
+   gnsstk::Vector<double> B1, B2, B3;
 
    //Functions in Matrix_Initialization_T.cpp
    int initializeConstantsTest(void);

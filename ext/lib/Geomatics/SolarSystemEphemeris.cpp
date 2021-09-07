@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -47,7 +47,7 @@
 
 //------------------------------------------------------------------------------------
 #include "SolarSystemEphemeris.hpp"
-// GPSTk
+// GNSSTk
 #include "StringUtils.hpp"
 #include "TimeConverters.hpp"
 #include "logstream.hpp"
@@ -55,10 +55,10 @@
 
 //------------------------------------------------------------------------------------
 using namespace std;
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 
 
-namespace gpstk
+namespace gnsstk
 {
       /// Class for the format used in this code.
    class SSEDouble : public FormattedDouble
@@ -91,7 +91,7 @@ try {
    strm.open(filename.c_str());
    if(!strm.is_open()) {
       Exception e("Failed to open input file " + filename + ". Abort.");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 
    // clear existing data
@@ -134,14 +134,14 @@ try {
          }
          else {
             Exception e("Confused on the first line - 3rd word is not NCOEFF=");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
       // GROUP 1010
       else if(group == 1010) {
          if(n > 2) {                         // this should not happen
             Exception e("Too many labels under GROUP 1010");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          else {
             stripTrailing(line," ");
@@ -185,7 +185,7 @@ try {
                if(Nconst != asInt(word)) {
                   Exception e("Nconst does not match N in GROUP 1041 : " +
                               asString(Nconst) + " != " + word);
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                LOG(DEBUG) << "Nconst matches: " << Nconst << " = " << word;
             }
@@ -209,7 +209,7 @@ try {
          }
          else {
             Exception e("Confused about GROUP : " + asString(group));
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }  // end loop over words
 
@@ -223,7 +223,7 @@ try {
    // test that we got a full header
    if(group != 1070) {
       Exception e("Premature end of header");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 
    // EphemerisNumber != -1 means the header is complete
@@ -232,9 +232,9 @@ try {
    // clear the data arrays
    store.clear();
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }  // end void SolarSystemEphemeris::readASCIIheader(string filename)
 
 //------------------------------------------------------------------------------------
@@ -282,9 +282,9 @@ try {
 
    return 0;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }  // end int SolarSystemEphemeris::readASCIIdata(vector<string>& filenames)
 
 //------------------------------------------------------------------------------------
@@ -293,7 +293,7 @@ int SolarSystemEphemeris::readASCIIdata(std::string filename)
 try {
    if(EphemerisNumber < 0) {
       Exception e("readASCIIdata called before header read");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 
    int iret=0;
@@ -304,7 +304,7 @@ try {
    strm.open(filename.c_str());
    if(!strm.is_open()) {
       Exception e("Could not open file " + filename);
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 
    // expect this many lines per record
@@ -334,7 +334,7 @@ try {
             Exception e("readASCIIdata finds conflicting sizes in header ("
                   + asString(Ncoeff) + ") and data (" + asString(ncc) + ") in file "
                   + filename + " at line #" + asString(ntot));
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          nc = 0;
       }
@@ -364,9 +364,9 @@ try {
 
    return iret;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }  // end int SolarSystemEphemeris::readASCIIdata(string filename)
 
 //------------------------------------------------------------------------------------
@@ -457,9 +457,9 @@ try {
 
    return 0;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -500,9 +500,9 @@ try {
 
    return 0;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -519,7 +519,7 @@ try {
    strm.open(filename.c_str(),ios::out | ios::binary);
    if(!strm.is_open()) {
       Exception e("Failed to open output file " + filename + ". Abort.");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 
    // write the header records: two of them, both of length Ncoeff*sizeof(double)
@@ -624,9 +624,9 @@ try {
 
    return 0;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -642,9 +642,9 @@ try {
 
    return iret;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -669,9 +669,9 @@ try {
 
    return iret;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -702,19 +702,19 @@ try {
          Exception e(string("Requested time is ")
                   + (iret==-1 ? string("before") : string("after"))
                   + string(" the range spanned by the ephemeris."));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       else if(iret == -3) {
          Exception e(string("Stream error on ephemeris binary file"));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       else if(iret == -4) {
          Exception e(string("Ephemeris not initialized"));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       else {
          Exception e(string("Unknown error on ephemeris binary file"));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -777,9 +777,9 @@ try {
       for(i=0; i<6; i++) pv[i] /= AU;
    }
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -791,12 +791,12 @@ try {
    strm.write(ptr,size);
    if(!strm.good()) {
       Exception e("Stream error");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -807,12 +807,12 @@ try {
    istrm.read(ptr,size);
    if(istrm.eof() || !istrm.good()) {
       Exception e("Stream error or premature EOF");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -829,7 +829,7 @@ try {
    istrm.open(filename.c_str(), ios::in | ios::binary);
    if(!istrm.is_open()) {
       Exception e("Failed to open input binary file " + filename + ". Abort.");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 
    // initialize
@@ -957,9 +957,9 @@ try {
          << constants["DENUM"] << ")";
    }
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -997,7 +997,7 @@ try {
          oss << "ERROR: found gap in data at " << nrec << fixed << setprecision(6)
             << " : prev end = " << prev << " != new beg = " << data_vector[0];
          Exception e(oss.str());
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       // remember the end time for next record
@@ -1011,9 +1011,9 @@ try {
 
    return iret;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -1041,9 +1041,9 @@ try {
 
    return 0;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -1082,9 +1082,9 @@ try {
                                     // JD is in a gap between records
    return 0;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -1148,10 +1148,10 @@ try {
       PV[i+ncomp] *= 2*double(c_nsets[which])/Tspan0;
    }
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
-}  // end namespace gpstk
+}  // end namespace gnsstk

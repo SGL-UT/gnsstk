@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -54,7 +54,7 @@
  * This is a abstract base class for a clock model
  */
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup ClockModel
       //@{
@@ -64,9 +64,9 @@ namespace gpstk
    public:
       ClockModel() throw() {};
 
-      virtual double getOffset(const gpstk::CommonTime& t) const = 0;
+      virtual double getOffset(const gnsstk::CommonTime& t) const = 0;
 
-      virtual bool isOffsetValid(const gpstk::CommonTime& t) const = 0;
+      virtual bool isOffsetValid(const gnsstk::CommonTime& t) const = 0;
 
    };
 

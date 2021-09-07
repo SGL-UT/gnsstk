@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -57,8 +57,8 @@
 *     subjectSV - The SatID of the satellite ot which the almanac applies. 
 *
 */
-#ifndef GPSTK_ORBALMSTORE_HPP
-#define GPSTK_ORBALMSTORE_HPP
+#ifndef GNSSTK_ORBALMSTORE_HPP
+#define GNSSTK_ORBALMSTORE_HPP
 
 #include <iostream>
 #include <list>
@@ -73,7 +73,7 @@
 #include "XvtStore.hpp"
 #include "TimeSystem.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    /// @ingroup GNSSEph
    //@{
@@ -81,7 +81,7 @@ namespace gpstk
    /// Class for storing and accessing GPS SV's position,
    /// velocity, and clock data. Also defines a simple interface to remove
    /// data that has been added.
-   class OrbAlmStore : public gpstk::XvtStore<SatID>
+   class OrbAlmStore : public gnsstk::XvtStore<SatID>
    {
    public:
 
@@ -189,8 +189,8 @@ namespace gpstk
          return false;
       }
 
-      virtual std::list<gpstk::SatID> getSatIDList() const;
-      virtual std::set<gpstk::SatID> getIndexSet() const;
+      virtual std::list<gnsstk::SatID> getSatIDList() const;
+      virtual std::set<gnsstk::SatID> getIndexSet() const;
 
       //---------------------------------------------------------------
       // Below are interfaces that are unique to this class (i.e. not

@@ -3,8 +3,8 @@
 
 execute_process(COMMAND
     ${TEST_PROG}
-    -1 ${GPSTK_TEST_DATA_DIR}/arlm200b.15o
-    -2 ${GPSTK_TEST_DATA_DIR}/df_diff.in
+    -1 ${GNSSTK_TEST_DATA_DIR}/arlm200b.15o
+    -2 ${GNSSTK_TEST_DATA_DIR}/df_diff.in
     -vvv
     RESULT_VARIABLE HAD_ERROR)
 

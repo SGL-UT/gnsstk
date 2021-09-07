@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -38,8 +38,8 @@
 
 /// @file Epoch.hpp
 
-#ifndef GPSTK_EPOCH_HPP
-#define GPSTK_EPOCH_HPP
+#ifndef GNSSTK_EPOCH_HPP
+#define GNSSTK_EPOCH_HPP
 
 #include "MathBase.hpp"
 #include "Exception.hpp"
@@ -60,7 +60,7 @@
 #include "GALWeekSecond.hpp"
 #include "QZSWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /** @defgroup TimeHandling Time Representation */
       //@{
@@ -78,7 +78,7 @@ namespace gpstk
        *
        * In addition, the representation includes a tolerance value which is
        * used in CommonTime comparisons. It defaults to the value of the static 
-       * gpstk::Epoch::EPOCH_TOLERANCE, but this can be modified with the 
+       * gnsstk::Epoch::EPOCH_TOLERANCE, but this can be modified with the 
        * static method setEpochTolerance().  Several different default 
        * tolerances have been defined and are in the Epoch-Specific 
        * Definitions section. The tolerance can also be changed on a per-object
@@ -129,13 +129,13 @@ namespace gpstk
           * @todo Do we need this, or can we get by with InvaildRequest
           * and/or InvalidParameter?
           */
-      NEW_EXCEPTION_CLASS(EpochException, gpstk::Exception);
+      NEW_EXCEPTION_CLASS(EpochException, gnsstk::Exception);
       
          /**
           * @ingroup exceptionclass
           * Epoch formatting ("printing") error exception class.
           */
-      NEW_EXCEPTION_CLASS(FormatException, gpstk::Exception);
+      NEW_EXCEPTION_CLASS(FormatException, gnsstk::Exception);
       
          /**
           * @name Epoch-Specific Definitions
@@ -722,7 +722,7 @@ namespace gpstk
       catch( Exception& e)
       {
          EpochException ee(e);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -739,7 +739,7 @@ namespace gpstk
       /// accuracy.
    long double Epoch::MJD() const
    {
-      return get<gpstk::MJD>().mjd;    // gpstk to distinguish from Epoch::MJD
+      return get<gnsstk::MJD>().mjd;    // gnsstk to distinguish from Epoch::MJD
    }
    
       /// Get year.
@@ -908,6 +908,6 @@ namespace gpstk
       return get<UnixTime>().tv;
    }
    
-}  // namespace gpstk
+}  // namespace gnsstk
 
-#endif   // GPSTK_EPOCH_HPP
+#endif   // GNSSTK_EPOCH_HPP

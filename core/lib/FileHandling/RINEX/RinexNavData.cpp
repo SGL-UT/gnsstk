@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -52,20 +52,20 @@
 #include "GNSSconstants.hpp"
 #include "TimeString.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   using namespace gpstk::StringUtils;
+   using namespace gnsstk::StringUtils;
    using namespace std;
 
    RinexNavData::RinexNavData()
-         : time(gpstk::CommonTime::BEGINNING_OF_TIME), PRNID(-1),
+         : time(gnsstk::CommonTime::BEGINNING_OF_TIME), PRNID(-1),
            sf1XmitTime(0), toeWeek(0), codeflgs(0), accuracy(0),
            health(0), L2Pdata(0), IODC(0), IODE(0), af0(0), af1(0), af2(0),
            Tgd(0), Cuc(0), Cus(0), Crc(0), Crs(0), Cic(0), Cis(0), Toe(0),
            M0(0), dn(0), ecc(0), Ahalf(0), OMEGA0(0), i0(0), w(0), OMEGAdot(0),
            idot(0), fitint(4)
    {
-      time.setTimeSystem(gpstk::TimeSystem::GPS);
+      time.setTimeSystem(gnsstk::TimeSystem::GPS);
    }
 
    RinexNavData::RinexNavData(const EngEphemeris& ee)
@@ -248,7 +248,7 @@ namespace gpstk
       }
       catch(Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       return gpse;
    }
@@ -325,7 +325,7 @@ namespace gpstk
             ds=sec;
             sec=0.0;
          }
-         time = CivilTime(yr,mo,day,hr,min,sec,gpstk::TimeSystem::GPS).convertToCommonTime();
+         time = CivilTime(yr,mo,day,hr,min,sec,gnsstk::TimeSystem::GPS).convertToCommonTime();
          if(ds != 0) time += ds;
 
          af0 = currentLine.substr(22,19);
@@ -336,7 +336,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -353,7 +353,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -370,7 +370,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -387,7 +387,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -404,7 +404,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -427,7 +427,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -449,7 +449,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -472,7 +472,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 

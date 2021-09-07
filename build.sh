@@ -1,10 +1,10 @@
 #!/bin/bash
 #----------------------------------------
 #
-# Purpose: GPSTk build and install script
+# Purpose: GNSSTk build and install script
 #
 #     Automate the use of CMake, SWIG, Doxygen, Sphinx, and distutils
-#     to build and install the GPSTK C++ Library, C++ Applications,
+#     to build and install the GNSSTK C++ Library, C++ Applications,
 #     Python bindings, and documentation.
 #
 # Help:
@@ -17,23 +17,23 @@
 
 source $(dirname "$BASH_SOURCE")/build_setup.sh
 
-# or set gpstk=~/.local/gpstk
-#user_install_prefix+="/gpstk"
-user_install_prefix+="/gpstk"
+# or set gnsstk=~/.local/gnsstk
+#user_install_prefix+="/gnsstk"
+user_install_prefix+="/gnsstk"
 
-system_install_prefix+="/gpstk"
+system_install_prefix+="/gnsstk"
 
 usage()
 {
     cat << EOF
-purpose:   This script automates and documents how to build, test, and install the GPSTk.
+purpose:   This script automates and documents how to build, test, and install the GNSSTk.
 
 usage:     $(basename $0) [opts] [-- cmake options...]
 
 examples:
    $ build.sh        # Just build software
    $ sudo build.sh -s -b /tmp/qwe    # Build and install core to $system_install_prefix
-   $ build.sh -tue     # Build, test and install core, external, and python bindings to $gpstk
+   $ build.sh -tue     # Build, test and install core, external, and python bindings to $gnsstk
    $ build.sh -vt  -- -DCMAKE_BUILD_TYPE=debug   # build for running debugger
    $ build.sh -vt  -- -DCMAKE_BUILD_TYPE=release # build for release
    # MUST choose release to get -O3 optimization on linux
@@ -56,12 +56,12 @@ OPTIONS:
    -d                   Build documentation, including generate dependency graphs
                         using GraphViz (.DOT and .PDF files).
 
-   -e                   GPSTk has several parts: core, ext, and python/swig bindings.
+   -e                   GNSSTk has several parts: core, ext, and python/swig bindings.
                         See README.txt for details.
                         Default (without -e) will build only core
                         Optional (with -e) will build core, ext, and swig
 
-   -u                   Install the build to the path in the \$gpstk environment variable.
+   -u                   Install the build to the path in the \$gnsstk environment variable.
                         If this variable is not set, it will be installed to
                         $user_install_prefix.
 
@@ -121,7 +121,7 @@ while getopts ":hab:cdepi:j:xnP:sutTgv" OPTION; do
         P) python_exe=$OPTARG
            ;;
         u) install=1
-           install_prefix=${gpstk:-$user_install_prefix}
+           install_prefix=${gnsstk:-$user_install_prefix}
            python_install=$user_python_install
            user_install=1
            ;;
@@ -168,7 +168,7 @@ fi
 
 if ((verbose>0)); then
     log "============================================================"
-    log "GPSTk build config ..."
+    log "GNSSTk build config ..."
     log "repo                 = $repo"
     log "enable_trace         = $(ptof $enable_trace)"
     log "build_root           = $build_root"
@@ -216,9 +216,9 @@ if [ $build_docs ]; then
         sources+=" $repo/ext/lib"
     fi
     log "Generating Doxygen files from C/C++ source ..."
-    sed -e "s#^INPUT *=.*#INPUT = $sources#" -e "s#gpstk_sources#$sources#g" -e "s#gpstk_doc_dir#$build_root/doc#g" $repo/Doxyfile >$repo/doxyfoo
-    sed -e "s#^INPUT *=.*#INPUT = $sources#" -e "s#gpstk_sources#$sources#g" -e "s#gpstk_doc_dir#$build_root/doc#g" $repo/Doxyfile | doxygen - >"$build_root"/Doxygen.log
-    tar -czf gpstk_doc_cpp.tgz -C "$build_root"/doc/html .
+    sed -e "s#^INPUT *=.*#INPUT = $sources#" -e "s#gnsstk_sources#$sources#g" -e "s#gnsstk_doc_dir#$build_root/doc#g" $repo/Doxyfile >$repo/doxyfoo
+    sed -e "s#^INPUT *=.*#INPUT = $sources#" -e "s#gnsstk_sources#$sources#g" -e "s#gnsstk_doc_dir#$build_root/doc#g" $repo/Doxyfile | doxygen - >"$build_root"/Doxygen.log
+    tar -czf gnsstk_doc_cpp.tgz -C "$build_root"/doc/html .
 
     if [[ -z $exclude_python && $build_ext ]] ; then
         log "Generating swig/python doc files from Doxygen output ..."
@@ -244,7 +244,7 @@ args+=${user_install:+" -DPYTHON_USER_INSTALL=ON"}
 args+=${test_switch:+" -DTEST_SWITCH=ON"}
 args+=${coverage_switch:+" -DCOVERAGE_SWITCH=ON"}
 args+=${enable_trace:+" -DDEBUGTRACE=ON"}
-args+=${build_docs:+" --graphviz=$build_root/doc/graphviz/gpstk_graphviz.dot"}
+args+=${build_docs:+" --graphviz=$build_root/doc/graphviz/gnsstk_graphviz.dot"}
 if [ $no_address_sanitizer ]; then
     args+=" -DADDRESS_SANITIZER=OFF"
 else
@@ -307,11 +307,11 @@ if [ $build_docs ]; then
 #        log "Building RST documentation with Sphinx ..."
 #        cd $repo/swig/sphinx
 #        make html
-#        tar -czf $build_root/gpstk_doc_python.tgz -C $repo/swig/sphinx/_build/html/ .
+#        tar -czf $build_root/gnsstk_doc_python.tgz -C $repo/swig/sphinx/_build/html/ .
 #    fi
 
     log "Generating GraphViz output PDF ..."
-    dot -Tpdf "$build_root"/doc/graphviz/gpstk_graphviz.dot -o "$build_root"/doc/graphviz/gpstk_graphviz.pdf
+    dot -Tpdf "$build_root"/doc/graphviz/gnsstk_graphviz.dot -o "$build_root"/doc/graphviz/gnsstk_graphviz.pdf
 fi
 
 if [ $build_packages ]; then
@@ -345,5 +345,5 @@ fi
 log "See $build_root/Testing/Temporary/LastTest.log for detailed test log"
 log "See $LOG for detailed build log"
 log
-log "GPSTk build done. :-)"
+log "GNSSTk build done. :-)"
 log `date`

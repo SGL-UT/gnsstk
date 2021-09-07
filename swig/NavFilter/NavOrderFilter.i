@@ -1,8 +1,8 @@
    // Wrap () operator of NavTimeSort
-%extend gpstk::NavTimeSort
+%extend gnsstk::NavTimeSort
 {
-   bool __call__(const gpstk::NavFilterKey*const& l,
-                 const gpstk::NavFilterKey*const& r)
+   bool __call__(const gnsstk::NavFilterKey*const& l,
+                 const gnsstk::NavFilterKey*const& r)
    {
       return (*($self))(l, r);
    }

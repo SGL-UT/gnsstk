@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -42,7 +42,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    GalFNavEph ::
    GalFNavEph()
@@ -73,8 +73,8 @@ namespace gpstk
    CommonTime GalFNavEph ::
    getUserTime() const
    {
-      gpstk::CommonTime unset;
-      gpstk::CommonTime rv = xmitTime;
+      gnsstk::CommonTime unset;
+      gnsstk::CommonTime rv = xmitTime;
          // If any xmit time is unset, make a best guess at what it
          // should be by adding 10 seconds (the transmit time of an
          // F/NAV page) to the return value.
@@ -134,9 +134,9 @@ namespace gpstk
         << "           SV STATUS" << endl
         << endl
         << "E5a_DVS             : " << setw(9) << static_cast<int>(dvsE5a)
-        << " (" << gpstk::StringUtils::asString(dvsE5a) << ")" << endl
+        << " (" << gnsstk::StringUtils::asString(dvsE5a) << ")" << endl
         << "E5a_HS              : " << setw(9) << static_cast<int>(hsE5a)
-        << " (" << gpstk::StringUtils::asString(hsE5a) << ")" << endl
+        << " (" << gnsstk::StringUtils::asString(hsE5a) << ")" << endl
         << "SISA                : " << setw(9) << (unsigned)sisaIndex << endl
         << setprecision(6)
         << "Bgd(E1-E5a)         : " << setw(13) << bgdE5aE1 << " sec" << endl;

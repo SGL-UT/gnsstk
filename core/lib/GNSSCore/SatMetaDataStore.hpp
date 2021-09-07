@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -36,8 +36,8 @@
 //
 //==============================================================================
 
-#ifndef GPSTK_SATMETADATASTORE_HPP
-#define GPSTK_SATMETADATASTORE_HPP
+#ifndef GNSSTK_SATMETADATASTORE_HPP
+#define GNSSTK_SATMETADATASTORE_HPP
 
 #include <map>
 #include <set>
@@ -45,7 +45,7 @@
 #include "SatMetaDataSort.hpp"
 #include "NavID.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /** Provide a class for reading satellite metadata from a
        * comma-separated values (CSV) file and provide methods for
@@ -116,9 +116,9 @@ namespace gpstk
        * Signal sets are defined using multiple SIG records as follows
        *   \li SIG (literal)
        *   \li signal set name (unique arbitrary string)
-       *   \li carrier band name (see gpstk::CarrierBand)
-       *   \li tracking code name (see gpstk::TrackingCode)
-       *   \li navigation code name (see gpstk::NavType)
+       *   \li carrier band name (see gnsstk::CarrierBand)
+       *   \li tracking code name (see gnsstk::TrackingCode)
+       *   \li navigation code name (see gnsstk::NavType)
        *
        * GNSS name may be one of the following case sensitive options
        *   \li GPS
@@ -168,7 +168,7 @@ namespace gpstk
       {
       public:
          SVNID svn;
-         gpstk::CommonTime launchTime;
+         gnsstk::CommonTime launchTime;
          std::string type;             ///< Typically block number.
          std::string mission;          ///< Mission number.
       };
@@ -207,7 +207,7 @@ namespace gpstk
           * @return true if the requested satellite mapping was found.
           */
       bool findSat(SatelliteSystem sys, uint32_t prn,
-                   const gpstk::CommonTime& when,
+                   const gnsstk::CommonTime& when,
                    SatMetaData& sat)
          const;
 
@@ -219,7 +219,7 @@ namespace gpstk
           * @return true if the requested satellite mapping was found.
           */
       bool findSat(const SatID& prn,
-                   const gpstk::CommonTime& when,
+                   const gnsstk::CommonTime& when,
                    SatMetaData& sat)
          const
       { return findSat(prn.system, prn.id, when, sat); }
@@ -234,7 +234,7 @@ namespace gpstk
           * @return true if the requested satellite mapping was found.
           */
       bool getSVN(SatelliteSystem sys, uint32_t prn,
-                  const gpstk::CommonTime& when,
+                  const gnsstk::CommonTime& when,
                   std::string& svn)
          const;
 
@@ -245,7 +245,7 @@ namespace gpstk
           * @param[out] svn If found the satellite's vehicle number.
           * @return true if the requested satellite mapping was found.
           */
-      bool getSVN(const SatID& sat, const gpstk::CommonTime& when,
+      bool getSVN(const SatID& sat, const gnsstk::CommonTime& when,
                   std::string& svn)
          const
       { return getSVN(sat.system, sat.id, when, svn); }
@@ -259,7 +259,7 @@ namespace gpstk
           * @return true if the requested satellite mapping was found.
           */
       bool findSatBySVN(SatelliteSystem sys, const std::string& svn,
-                        const gpstk::CommonTime& when,
+                        const gnsstk::CommonTime& when,
                         SatMetaData& sat)
          const;
 
@@ -277,7 +277,7 @@ namespace gpstk
           */
       bool findSatBySlotFdma(uint32_t slotID,
                              int32_t channel,
-                             const gpstk::CommonTime& when,
+                             const gnsstk::CommonTime& when,
                              SatMetaData& sat)
          const;
 
@@ -291,7 +291,7 @@ namespace gpstk
           * @return true if the requested satellite mapping was found.
           */
       bool getPRN(SatelliteSystem sys, const std::string& svn,
-                  const gpstk::CommonTime& when,
+                  const gnsstk::CommonTime& when,
                   uint32_t& prn)
          const;
 
@@ -357,7 +357,7 @@ namespace gpstk
    inline std::ostream& operator<<(std::ostream& s,
                                    const SatMetaDataStore::SystemBlock& sblk)
    {
-      s << gpstk::StringUtils::asString(sblk.sys) << " " << sblk.blk;
+      s << gnsstk::StringUtils::asString(sblk.sys) << " " << sblk.blk;
       return s;
    }
 
@@ -365,10 +365,10 @@ namespace gpstk
    inline std::ostream& operator<<(std::ostream& s,
                                    const SatMetaDataStore::SVNID& svn)
    {
-      s << gpstk::StringUtils::asString(svn.system) << " " << svn.id;
+      s << gnsstk::StringUtils::asString(svn.system) << " " << svn.id;
       return s;
    }
 
-} // namespace gpstk
+} // namespace gnsstk
 
-#endif // GPSTK_SATMETADATASTORE_HPP
+#endif // GNSSTK_SATMETADATASTORE_HPP

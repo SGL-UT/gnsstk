@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,14 +41,14 @@
  * Base constants, types, and functions for SINEX files
  */
 
-#ifndef GPSTK_SINEXBASE_HPP
-#define GPSTK_SINEXBASE_HPP
+#ifndef GNSSTK_SINEXBASE_HPP
+#define GNSSTK_SINEXBASE_HPP
 
 #include "CommonTime.hpp"
 #include "Exception.hpp"
 #include <stdint.h>
 
-namespace gpstk
+namespace gnsstk
 {
    namespace Sinex
    {
@@ -162,16 +162,16 @@ namespace gpstk
       {
             /// Constructors
          Time() : year(0), doy(0), sod(0) {};
-         Time(const gpstk::CommonTime& other) { *this = other; };
+         Time(const gnsstk::CommonTime& other) { *this = other; };
          Time(const std::string& str) { *this = str; };
 
             /// Destructor
          virtual ~Time() {};
 
             /// Converters
-         operator gpstk::CommonTime() const;
+         operator gnsstk::CommonTime() const;
          operator std::string() const;
-         void operator=(const gpstk::CommonTime& other);
+         void operator=(const gnsstk::CommonTime& other);
          void operator=(const std::string& other);
 
          uint8_t   year;  /// YY <= 50 implies 21st century, YY > 50 implies 20th
@@ -183,6 +183,6 @@ namespace gpstk
 
    }  // namespace Sinex
 
-}  // namespace gpstk
+}  // namespace gnsstk
 
-#endif // GPSTK_SINEXBASE_HPP
+#endif // GNSSTK_SINEXBASE_HPP

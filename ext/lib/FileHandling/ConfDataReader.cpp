@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -45,7 +45,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 
       // Method to store conf data in this class' data map
@@ -73,7 +73,7 @@ namespace gpstk
                ConfigurationException e(
                                     "Line too long in configuration file '" +
                                     filename + "'." );
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
               // Skip the blank line
             if(line.size()<1) continue;
@@ -141,7 +141,7 @@ namespace gpstk
                                           filename +
                                           "' does not comply with rules.");
 
-                     GPSTK_THROW(e);
+                     GNSSTK_THROW(e);
                   }
 
                      // If this was a section line, continue with next line
@@ -158,7 +158,7 @@ namespace gpstk
                                        filename +
                                        "' was improperly closed" );
 
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
 
             }
@@ -209,7 +209,7 @@ namespace gpstk
                                        filename +
                                        "' does not comply with rules.");
 
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
 
                   // Now work on 'value'
@@ -235,7 +235,7 @@ namespace gpstk
          }  // End of try block
          catch (ConfigurationException& e)
          {
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          catch (EndOfFile& e)
          {
@@ -340,7 +340,7 @@ namespace gpstk
       catch (ConfigurationException& e)
       {
 
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
 
       }  // End of 'try-catch' block
 
@@ -409,7 +409,7 @@ namespace gpstk
                                     filename +
                                     "' is neither TRUE nor FALSE.");
 
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
 
             }  // End of 'if( result == "FALSE" )'
 
@@ -418,7 +418,7 @@ namespace gpstk
       }
       catch (ConfigurationException& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
    }  // End of method 'ConfDataReader::getValueAsBoolean()'
@@ -465,7 +465,7 @@ namespace gpstk
       }
       catch (ConfigurationException& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
    }  // End of method 'ConfDataReader::fetchListValue()'
@@ -529,7 +529,7 @@ namespace gpstk
                                     "' have a value that is neither TRUE " +
                                     "nor FALSE.");
 
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
 
             }  // End of 'if( result == "FALSE" )'
 
@@ -538,7 +538,7 @@ namespace gpstk
       }  // End of 'try' block
       catch (ConfigurationException& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
    }  // End of method 'ConfDataReader::fetchListValueAsBoolean()'
@@ -623,7 +623,7 @@ namespace gpstk
       }
       catch (ConfigurationException& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
    }  // End of method 'ConfDataReader::getVariableDescription()'
@@ -708,7 +708,7 @@ namespace gpstk
       }
       catch (ConfigurationException& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
    }  // End of method 'ConfDataReader::getValueDescription()'
@@ -756,7 +756,7 @@ namespace gpstk
                                     + "' of configuration file '" + filename
                                     + "' does not exist.");
 
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
 
             }
             else
@@ -787,7 +787,7 @@ namespace gpstk
                                     + filename + "' exist?. Do you have "
                                     + "permission to read it?." );
 
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
 
             }
             else
@@ -799,7 +799,7 @@ namespace gpstk
                                     + "' in configuration file '" + filename
                                     + "' does not exist.");
 
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
 
             }  // End of 'if ( section == "DEFAULT" )'
 
@@ -897,4 +897,4 @@ namespace gpstk
 
 
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk

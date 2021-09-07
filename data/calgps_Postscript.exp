@@ -33,12 +33,12 @@ newpath
 0 0 0 setrgbcolor 
 newpath
 306 43.418 moveto
-(Generated using the GPS Toolkit) center show
+(Generated using the GNSS Toolkit) center show
 % Text
 0 0 0 setrgbcolor 
 newpath
 306 28.018 moveto
-(http://www.gpstk.org/) center show
+(http://www.gnsstk.org/) center show
 % Text
 /Helvetica-Bold findfont
 14.103 scalefont setfont

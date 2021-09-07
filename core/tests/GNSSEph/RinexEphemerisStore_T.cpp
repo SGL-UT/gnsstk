@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -57,7 +57,7 @@
 
 
 
-using namespace gpstk;
+using namespace gnsstk;
 using namespace std;
 
 
@@ -144,7 +144,7 @@ public:
          // Verify that once a clear() has been performed the repeated
          // filename can be opened.
          //--------------------------------------------------------------------
-      rinEphStore.gpstk::FileStore<RinexNavHeader>::clear();
+      rinEphStore.gnsstk::FileStore<RinexNavHeader>::clear();
       try
       {
          rinEphStore.loadFile(inputRinexNavData.c_str());
@@ -1099,7 +1099,7 @@ public:
 
          // Wipe everything, return size (should be zero)
          gpsEphStore.wiper(CommonTime::END_OF_TIME);
-         unsigned int Num = gpsEphStore.gpstk::OrbitEphStore::size(); // Get the size of the GPSEphemerisStore
+         unsigned int Num = gpsEphStore.gnsstk::OrbitEphStore::size(); // Get the size of the GPSEphemerisStore
 
       //--------------RinexEphemerisStore_wiperTest_3 - Verify that the store is empty (total wipe)
       testFramework.assert((unsigned int) 0 == Num);
@@ -1157,11 +1157,11 @@ public:
       try
       {
             //-----------------------------------------------------------
-            // Verify the gpstk::OrbitEphStore::clear() method runs
+            // Verify the gnsstk::OrbitEphStore::clear() method runs
             //-----------------------------------------------------------
          try
          {
-            rinEphStore.gpstk::OrbitEphStore::clear();
+            rinEphStore.gnsstk::OrbitEphStore::clear();
             TUPASS("sedIdentifier");
          }
          catch (...)
@@ -1507,23 +1507,23 @@ public:
             // Assert that the number of added members equals the size
             // of Store (all members added)
             //-----------------------------------------------------------
-         testFramework.assert(rinEphStore.gpstk::OrbitEphStore::size() ==
-                              gpsEphStore.gpstk::OrbitEphStore::size(),
+         testFramework.assert(rinEphStore.gnsstk::OrbitEphStore::size() ==
+                              gpsEphStore.gnsstk::OrbitEphStore::size(),
                               "The added entries are not reflected in the GPSEphemerisStore", __LINE__);
 
-         testFramework.assert(rinEphStore.gpstk::OrbitEphStore::size() ==
+         testFramework.assert(rinEphStore.gnsstk::OrbitEphStore::size() ==
                               numberOfEntries, "The total number of entries is not what is expected",
                               __LINE__);
 
-         testFramework.assert(rinEphStore.gpstk::OrbitEphStore::size(
+         testFramework.assert(rinEphStore.gnsstk::OrbitEphStore::size(
                                  sid1) == numberOfEntries1,
                               "The total number of entries for SatID 1 is not what is expected", __LINE__);
 
-         testFramework.assert(rinEphStore.gpstk::OrbitEphStore::size(
+         testFramework.assert(rinEphStore.gnsstk::OrbitEphStore::size(
                                  sid15) == numberOfEntries15,
                               "The total number of entries for SatID 15 is not what is expected", __LINE__);
 
-         testFramework.assert(rinEphStore.gpstk::OrbitEphStore::size(
+         testFramework.assert(rinEphStore.gnsstk::OrbitEphStore::size(
                                  sid32) == numberOfEntries32,
                               "The total number of entries for SatID 32 is not what is expected", __LINE__);
       }
@@ -1540,8 +1540,8 @@ public:
 
    void init()
    {
-      std::string dataFilePath = gpstk::getPathData();
-      std::string tempFilePath = gpstk::getPathTestTemp();
+      std::string dataFilePath = gnsstk::getPathData();
+      std::string tempFilePath = gnsstk::getPathTestTemp();
       std::string file_sep = "/";
 
       inputRinexNavData             = dataFilePath + file_sep +

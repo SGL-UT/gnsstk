@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -48,7 +48,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    /** @addtogroup ephemstore */
    //@{
@@ -154,7 +154,7 @@ namespace gpstk
          }
          return rec;
       }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
    }
 
    // Return the position for the given satellite at the given time
@@ -199,7 +199,7 @@ namespace gpstk
 
          return pos;
       }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
    }
 
    // Return the velocity for the given satellite at the given time
@@ -252,7 +252,7 @@ namespace gpstk
 
          return Vel;
       }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
    }
 
    // Return the acceleration for the given satellite at the given time
@@ -269,7 +269,7 @@ namespace gpstk
    {
       if(!haveVelocity && !haveAcceleration) {
          InvalidRequest e("Neither velocity nor acceleration data are present");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       try {
@@ -311,7 +311,7 @@ namespace gpstk
 
          return Acc;
       }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
    }
 
    // Add a PositionRecord to the store.
@@ -342,7 +342,7 @@ namespace gpstk
             tables[sat][ttag] = rec;
          }
       }
-      catch(InvalidRequest& ir) { GPSTK_RETHROW(ir); }
+      catch(InvalidRequest& ir) { GNSSTK_RETHROW(ir); }
    }
 
    // Add position data (only) to the store
@@ -368,7 +368,7 @@ namespace gpstk
             tables[sat][ttag] = rec;
          }
       }
-      catch(InvalidRequest& ir) { GPSTK_RETHROW(ir); }
+      catch(InvalidRequest& ir) { GNSSTK_RETHROW(ir); }
    }
 
    // Add velocity data (only) to the store
@@ -396,7 +396,7 @@ namespace gpstk
             tables[sat][ttag] = rec;
          }
       }
-      catch(InvalidRequest& ir) { GPSTK_RETHROW(ir); }
+      catch(InvalidRequest& ir) { GNSSTK_RETHROW(ir); }
    }
 
    // Add acceleration data (only) to the store
@@ -424,9 +424,9 @@ namespace gpstk
             tables[sat][ttag] = rec;
          }
       }
-      catch(InvalidRequest& ir) { GPSTK_RETHROW(ir); }
+      catch(InvalidRequest& ir) { GNSSTK_RETHROW(ir); }
    }
 
    //@}
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk

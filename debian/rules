@@ -31,7 +31,7 @@ ifneq ($(filter pkg_python,$(DEB_BUILD_PROFILES)), )
     PYTHON_FLAG="ON"
     BUILD_FOR_PACKAGE_SWITCH_FLAG="ON"
     PYTHON_EXE_PARAM="-DPYTHON_EXECUTABLE=/usr/bin/python"
-    PYTHON_INSTALL_PREFIX_PARAM="-DPYTHON_INSTALL_PREFIX=$(CURDIR)/debian/python-gpstk"
+    PYTHON_INSTALL_PREFIX_PARAM="-DPYTHON_INSTALL_PREFIX=$(CURDIR)/debian/python-gnsstk"
 endif
 
 gen_control:
@@ -63,7 +63,7 @@ override_dh_usrlocal:
 
 .PHONY: override_dh_strip
 override_dh_strip:
-	dh_strip --dbg-package=$(shell grep -o "Package: libgpstk[0-9.]\+-dbg" debian/control | cut -d " " -f 2)
+	dh_strip --dbg-package=$(shell grep -o "Package: libgnsstk[0-9.]\+-dbg" debian/control | cut -d " " -f 2)
 
 override_dh_shlibdeps:
 	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info

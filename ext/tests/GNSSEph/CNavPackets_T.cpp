@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -39,10 +39,10 @@
  /*********************************************************************
 *
 *  Test program for 
-*     gpstk/ext/lib/GNSSEph/CNavReducedAlm
-*     gpstk/ext/lib/GNSSEph/DiffCorrBase
-*     gpstk/ext/lib/GNSSEph/DiffCorrClk
-*     gpstk/ext/lib/GNSSEph/DiffCorrEph
+*     gnsstk/ext/lib/GNSSEph/CNavReducedAlm
+*     gnsstk/ext/lib/GNSSEph/DiffCorrBase
+*     gnsstk/ext/lib/GNSSEph/DiffCorrClk
+*     gnsstk/ext/lib/GNSSEph/DiffCorrEph
 *
 *
 *********************************************************************/
@@ -67,7 +67,7 @@
 #include "TestUtil.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 class CNavPackets_T
 {
@@ -82,7 +82,7 @@ public:
 
 //-------------------------------------------------------------------
    void setUpCNAV();
-   gpstk::PackedNavBits getPnbCNav(const gpstk::ObsID& oidr,
+   gnsstk::PackedNavBits getPnbCNav(const gnsstk::ObsID& oidr,
                                    const std::string& str);
 
       // Methods above exist to set up the following
@@ -137,7 +137,7 @@ createStore()
                               << " sf, SV ID: " << sf << ", " << svid << endl;
          */
       }
-      catch(gpstk::InvalidRequest ir)
+      catch(gnsstk::InvalidRequest ir)
       {
          loadFail = true;
          cout << ir << endl;
@@ -162,9 +162,9 @@ setUpCNAV()
    init();
 
       // Define state variables for writing an CNAV data
-   gpstk::ObsID currObsID(gpstk::ObservationType::NavMsg, 
-                    gpstk::CarrierBand::L1, 
-                    gpstk::TrackingCode::L1CD);
+   gnsstk::ObsID currObsID(gnsstk::ObservationType::NavMsg, 
+                    gnsstk::CarrierBand::L1, 
+                    gnsstk::TrackingCode::L1CD);
    typeDesc = "GPS_CNAV2";
    initialCT = CivilTime(2017,1,1,00,00,24,TimeSystem::GPS);
    finalCT   = CivilTime(2017,1,1,00,54,12,TimeSystem::GPS);
@@ -184,7 +184,7 @@ setUpCNAV()
    };
 
       // Convert the CNAV strings to PNB
-   gpstk::PackedNavBits msg;
+   gnsstk::PackedNavBits msg;
    for (unsigned short i=0; i<CNavExCount; i++)
    {
       msg = getPnbCNav(currObsID, CNavEx[i]);
@@ -194,9 +194,9 @@ setUpCNAV()
 }
  
 //-------------------------------------------------------------------
-   gpstk::PackedNavBits 
+   gnsstk::PackedNavBits 
    CNavPackets_T::
-   getPnbCNav(const gpstk::ObsID& oidr, const std::string& str)
+   getPnbCNav(const gnsstk::ObsID& oidr, const std::string& str)
    {
       try
       {
@@ -210,12 +210,12 @@ setUpCNAV()
             ss << "Line format problem. ";
             ss << "  Should be at least 17 items.";
             InvalidParameter ip(ss.str());
-            GPSTK_THROW(ip);
+            GNSSTK_THROW(ip);
          }
 
             // Convert the time information into a CommonTime
-         int week = gpstk::StringUtils::asInt(words[3]);
-         double sow = gpstk::StringUtils::asDouble(words[4]);
+         int week = gnsstk::StringUtils::asInt(words[3]);
+         double sow = gnsstk::StringUtils::asDouble(words[4]);
          CommonTime ct = GPSWeekSecond(week,sow,TimeSystem::GPS);
          
             // Convert the PRN to a SatID
@@ -255,7 +255,7 @@ setUpCNAV()
          stringstream ss;
          ss << "String conversion error:'" << str << "'.";
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }  
    }
 

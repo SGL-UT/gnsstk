@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -39,8 +39,8 @@
 /// @file Stats.hpp
 /// Conventional, sequential and weighted one-sample, and two-sample statistics
 
-#ifndef INCLUDE_GPSTK_STATS_INCLUDE
-#define INCLUDE_GPSTK_STATS_INCLUDE
+#ifndef INCLUDE_GNSSTK_STATS_INCLUDE
+#define INCLUDE_GNSSTK_STATS_INCLUDE
 
 #include <string>
 #include <sstream>
@@ -50,12 +50,12 @@
 #include "MiscMath.hpp"
 #include "Vector.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup MathGroup
       //@{
 
-   /// Compute the median of a gpstk::Vector
+   /// Compute the median of a gnsstk::Vector
    template <class T> inline T median(const Vector<T>& v)
    {
       const int n(v.size());
@@ -81,17 +81,17 @@ namespace gpstk
 
    }  // end median(Vector)
 
-   /// median absolute deviation of a gpstk::Vector
-   template <class T> inline T mad(const gpstk::Vector<T>& v)
+   /// median absolute deviation of a gnsstk::Vector
+   template <class T> inline T mad(const gnsstk::Vector<T>& v)
    {
       if (v.size() < 2) return T();
       
-      double med = gpstk::median(v);
-      gpstk::Vector<T> w(v);
+      double med = gnsstk::median(v);
+      gnsstk::Vector<T> w(v);
       for(size_t i=0; i < w.size(); i++)
          w[i] = std::abs(w[i]- med);
 
-      return gpstk::median(w);
+      return gnsstk::median(w);
    }  // end mad(Vector)
 
    /// Compute the median of a std::vector
@@ -112,12 +112,12 @@ namespace gpstk
    {
       if (v.size() < 2) return T();
       
-      double med = gpstk::median(v);
+      double med = gnsstk::median(v);
       std::vector<T> w(v);
       for(size_t i=0; i < w.size(); i++)
          w[i] = std::abs(w[i]- med);
 
-      return gpstk::median(w);
+      return gnsstk::median(w);
    }  // end mad(vector)
 
    //---------------------------------------------------------------------------
@@ -185,7 +185,7 @@ namespace gpstk
          n--;
       }
 
-      /// Add gpstk::Vector<T> of data to the statistics
+      /// Add gnsstk::Vector<T> of data to the statistics
       void Add(const Vector<T>& X)                 // Stats
       {
          for(size_t i=0; i < X.size(); i++) Add(X(i));
@@ -197,7 +197,7 @@ namespace gpstk
          for(size_t i=0; i<X.size(); i++) Add(X[i]);
       }
 
-      /// Subtract gpstk::Vector<T> of data to the statistics
+      /// Subtract gnsstk::Vector<T> of data to the statistics
       /// NB. Assumes that these samples were previously added.
       /// NB. Minimum() and Maximum() may no longer be valid.
       void Subtract(const Vector<T>& X)            // Stats
@@ -394,7 +394,7 @@ namespace gpstk
       /// reset, i.e. ignore earlier data and restart sampling
       inline void Reset(void) { n=0; }
 
-      /// constructor given a gpstk::Vector<T> of data
+      /// constructor given a gnsstk::Vector<T> of data
       SeqStats(Vector<T>& X) { n = 0; Add(X); }
 
       // add and subtract ---------------------------------------------------
@@ -433,7 +433,7 @@ namespace gpstk
          n--;
       }
 
-      /// add a gpstk::Vector<T> of samples to the computation of statistics
+      /// add a gnsstk::Vector<T> of samples to the computation of statistics
       inline void Add(Vector<T>& X)                // SeqStats
       {
          for(size_t i=0; i<X.size(); i++) Add(X(i));
@@ -445,7 +445,7 @@ namespace gpstk
          for(size_t i=0; i<X.size(); i++) Add(X[i]);
       }
 
-      /// remove a gpstk::Vector<T> of samples to the computation of statistics
+      /// remove a gnsstk::Vector<T> of samples to the computation of statistics
       /// NB. Assumes that these samples were previously added.
       /// NB. Minimum() and Maximum() may no longer be valid.
       inline void Subtract(Vector<T>& X)                 // SeqStats
@@ -623,7 +623,7 @@ namespace gpstk
       /// constructor
       WtdStats() { }
 
-      /// constructor given a gpstk::Vector<T> of data, with weights
+      /// constructor given a gnsstk::Vector<T> of data, with weights
       WtdStats(Vector<T>& X, Vector<T>& W)
       {
          SeqStats<T>::n = 0;
@@ -679,7 +679,7 @@ namespace gpstk
          SeqStats<T>::n--;
       }
 
-      /// add a gpstk::Vector<T> of samples, with weights
+      /// add a gnsstk::Vector<T> of samples, with weights
       inline void Add(Vector<T>& X, Vector<T>& W)     // WtdStats
       {
          for(size_t i=0; i<(X.size()>W.size() ? W.size():X.size()); i++)
@@ -693,7 +693,7 @@ namespace gpstk
             Add(X[i],W[i]);
       }
 
-      /// remove a gpstk::Vector<T> of samples, with weights
+      /// remove a gnsstk::Vector<T> of samples, with weights
       /// NB input of zero weight causes the sample x to be ignored.
       /// NB. Assumes that this sample was previously added.
       /// NB. Minimum() and Maximum() may no longer be valid.
@@ -855,7 +855,7 @@ namespace gpstk
       /// reset, i.e. ignore earlier data and restart sampling
       inline void Reset(void) { n=0; SX.Reset(); SY.Reset(); sumxy = T(0); }
 
-      /// constructor given two gpstk::Vector<T>s of data - must be parallel
+      /// constructor given two gnsstk::Vector<T>s of data - must be parallel
       TwoSampleStats(Vector<T>& X, Vector<T>& Y)
       {
          Reset();
@@ -886,7 +886,7 @@ namespace gpstk
          n--;
       }
 
-      /// Add two gpstk::Vector<T>s of data to the statistics
+      /// Add two gnsstk::Vector<T>s of data to the statistics
       void Add(const Vector<T>& X, const Vector<T>& Y)      // TwoSampleStats
       {
          for(size_t i=0; i<(X.size()<Y.size() ? X.size():Y.size()); i++)
@@ -900,7 +900,7 @@ namespace gpstk
             Add(X[i],Y[i]);
       }
 
-      /// Subtract two gpstk::Vector<T>s of data from the statistics
+      /// Subtract two gnsstk::Vector<T>s of data from the statistics
       void Subtract(const Vector<T>& X, const Vector<T>& Y)    // TwoSampleStats
       {
          for(size_t i=0; i<(X.size()<Y.size() ? X.size():Y.size()); i++)
@@ -1169,4 +1169,4 @@ namespace gpstk
 
 }  // namespace
 
-#endif   // INCLUDE_GPSTK_STATS_INCLUDE
+#endif   // INCLUDE_GNSSTK_STATS_INCLUDE

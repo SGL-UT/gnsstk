@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -44,7 +44,7 @@
 #include "Exception.hpp"
 #include "StringUtils.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    RinexDatum ::
    RinexDatum()
@@ -66,7 +66,7 @@ namespace gpstk
    fromString(const std::string& str)
    {
       std::string tmpStr;
-      GPSTK_ASSERT(str.length() == 16);
+      GNSSTK_ASSERT(str.length() == 16);
       tmpStr = str.substr(0, 14);
       if (tmpStr.find_last_not_of(" ") == std::string::npos)
       {
@@ -107,12 +107,12 @@ namespace gpstk
    asString() const
    {
       std::string rv;
-      using gpstk::StringUtils::rightJustify;
+      using gnsstk::StringUtils::rightJustify;
 
       if (!dataBlank)
       {
             // double 14.3
-         rv += rightJustify(gpstk::StringUtils::asString(data, 3), 14);
+         rv += rightJustify(gnsstk::StringUtils::asString(data, 3), 14);
       }
       else
       {
@@ -120,7 +120,7 @@ namespace gpstk
       }
       if ((lli != 0) || !lliBlank)
       {
-         rv += rightJustify(gpstk::StringUtils::asString<short>(lli),1);
+         rv += rightJustify(gnsstk::StringUtils::asString<short>(lli),1);
       }
       else
       {
@@ -128,7 +128,7 @@ namespace gpstk
       }
       if ((ssi != 0) || !ssiBlank)
       {
-         rv += rightJustify(gpstk::StringUtils::asString<short>(ssi),1);
+         rv += rightJustify(gnsstk::StringUtils::asString<short>(ssi),1);
       }
       else
       {
@@ -137,4 +137,4 @@ namespace gpstk
       return rv;
    } // asString() const
 
-} // namespace gpstk
+} // namespace gnsstk

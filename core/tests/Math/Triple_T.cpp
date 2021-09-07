@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,7 +41,7 @@
 #include <iostream>
 #include <cmath>
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 class TripleTest
 {
         public: 
@@ -244,12 +244,12 @@ class TripleTest
    This next test is to ensure that the error is indeed thrown when it should. */ 
 
 			test2[0] = 0; test2[1] = 0; test2[2] = 0;
-			failMesg = "[testing] Triple.azAngle() at origin, [expected] exception gpstk::Exception, [actual] threw no exception";	
+			failMesg = "[testing] Triple.azAngle() at origin, [expected] exception gnsstk::Exception, [actual] threw no exception";	
 			try {test.azAngle(test2); testFramework.assert(false, failMesg, __LINE__);}
 			catch (Exception& e) {testFramework.assert(true, failMesg, __LINE__);}
 			catch (...)
 			{
-				failMesg = "[testing] Triple.azAngle() at origin, [expected] exception gpstk::Exception, [actual] threw different exception";
+				failMesg = "[testing] Triple.azAngle() at origin, [expected] exception gnsstk::Exception, [actual] threw different exception";
 				testFramework.assert(false, failMesg, __LINE__);
 			}
 
@@ -258,12 +258,12 @@ class TripleTest
 
 			test[0] = 0; test[1] = 0; test[2] = -1;
 			test2[0] = 1; test2[1] = 1; test2[2] = 1;
-			failMesg = "[testing] Triple.azAngle() at origin and due south, [expected] exception gpstk::Exception, [actual] threw no exception";
+			failMesg = "[testing] Triple.azAngle() at origin and due south, [expected] exception gnsstk::Exception, [actual] threw no exception";
 			try {test.azAngle(test2); testFramework.assert(false, failMesg, __LINE__);}
 			catch (Exception& e) {testFramework.assert(true, failMesg, __LINE__);}
 			catch (...) 
 			{
-				failMesg = "[testing] Triple.azAngle() at origin and due south, [expected] exception gpstk::Exception, [actual] threw no exception";
+				failMesg = "[testing] Triple.azAngle() at origin and due south, [expected] exception gnsstk::Exception, [actual] threw no exception";
 				testFramework.assert(false, failMesg, __LINE__);
 			}
 

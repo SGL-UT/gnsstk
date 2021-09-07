@@ -9,17 +9,17 @@
 // Notes:
 //     If you need these CMake variables for pure C code,
 //     then use the #define variables, otherwise, use the
-//     get methods defined in the gpstk namespace.
+//     get methods defined in the gnsstk namespace.
 //------------------------------------------------------------
 
 #include <string>
 
-namespace gpstk
+namespace gnsstk
 {
 
   //----------------------------------------
   // Purpose: get path separator character, e.g. ":" or ";"
-  // Usage:   std::string file_sep = gpstk::getPathSep()
+  // Usage:   std::string file_sep = gnsstk::getPathSep()
   //----------------------------------------
   inline std::string getPathSep( void )
   {
@@ -34,7 +34,7 @@ namespace gpstk
 
   //----------------------------------------
   // Purpose: get file system file separator character, e.g. "/" or "\"
-  // Usage:   std::string file_sep = gpstk::getFileSep()
+  // Usage:   std::string file_sep = gnsstk::getFileSep()
   //----------------------------------------
   inline std::string getFileSep( void )
   {
@@ -48,7 +48,7 @@ namespace gpstk
 
   //----------------------------------------
   // Purpose: get file system path to top level of source tree
-  // Usage:   std::string src_path = gpstk::getPathSrc()
+  // Usage:   std::string src_path = gnsstk::getPathSrc()
   //----------------------------------------
   inline std::string getPathSrc( void )
   {
@@ -57,7 +57,7 @@ namespace gpstk
 
   //----------------------------------------
   // Purpose: get file system path to the CMake build dir
-  // Usage:   std::string build_path = gpstk::getPathBuild()
+  // Usage:   std::string build_path = gnsstk::getPathBuild()
   //----------------------------------------
   inline std::string getPathBuild( void )
   {
@@ -65,21 +65,21 @@ namespace gpstk
   }
 
   //----------------------------------------
-  // Purpose: get file system path to location of gpstk data files
-  // Usage:   std::string data_path = gpstk::getPathData()
+  // Purpose: get file system path to location of gnsstk data files
+  // Usage:   std::string data_path = gnsstk::getPathData()
   //----------------------------------------
   inline std::string getPathData( void )
   {
-    return( "@GPSTK_TEST_DATA_DIR@" );
+    return( "@GNSSTK_TEST_DATA_DIR@" );
   }
 
   //----------------------------------------
   // Purpose: get file system path to location to write temp test output
-  // Usage:   std::string temp_path = gpstk::getPathTestTemp()
+  // Usage:   std::string temp_path = gnsstk::getPathTestTemp()
   //----------------------------------------
   inline std::string getPathTestTemp( void )
   {
-     return( "@GPSTK_TEST_OUTPUT_DIR@" );
+     return( "@GNSSTK_TEST_OUTPUT_DIR@" );
   }
 
 

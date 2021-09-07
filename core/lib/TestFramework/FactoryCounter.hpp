@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -37,8 +37,8 @@
 //
 //==============================================================================
 
-#ifndef GPSTK_TEST_FACTORYCOUNTER_HPP
-#define GPSTK_TEST_FACTORYCOUNTER_HPP
+#ifndef GNSSTK_TEST_FACTORYCOUNTER_HPP
+#define GNSSTK_TEST_FACTORYCOUNTER_HPP
 
 #include "NavData.hpp"
 #include "NavMessageType.hpp"
@@ -54,7 +54,7 @@
            << ", but got " << COUNTER << "=" << GOT;                    \
       testFramework.assert_equals<TYPE>(EXP, GOT, LINE, ostr.str());    \
    }                                                                    \
-   catch (gpstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                        \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false,                                       \
@@ -75,7 +75,7 @@ template <class Alm, class Eph, class TimeOffs, class Health, class Iono,
 class FactoryCounter
 {
 public:
-   FactoryCounter(gpstk::TestUtil& tf)
+   FactoryCounter(gnsstk::TestUtil& tf)
          : testFramework(tf), almInc(true), ephInc(true), toInc(true),
            heaInc(true), ionoInc(true), iscInc(true)
    { resetCount(); }
@@ -93,18 +93,18 @@ public:
    }
 
 
-   void setInc(const gpstk::NavMessageTypeSet& nmts)
+   void setInc(const gnsstk::NavMessageTypeSet& nmts)
    {
-      almInc = (nmts.count(gpstk::NavMessageType::Almanac) > 0);
-      ephInc = (nmts.count(gpstk::NavMessageType::Ephemeris) > 0);
-      toInc = (nmts.count(gpstk::NavMessageType::TimeOffset) > 0);
-      heaInc = (nmts.count(gpstk::NavMessageType::Health) > 0);
-      ionoInc = (nmts.count(gpstk::NavMessageType::Iono) > 0);
-      iscInc = (nmts.count(gpstk::NavMessageType::ISC) > 0);
+      almInc = (nmts.count(gnsstk::NavMessageType::Almanac) > 0);
+      ephInc = (nmts.count(gnsstk::NavMessageType::Ephemeris) > 0);
+      toInc = (nmts.count(gnsstk::NavMessageType::TimeOffset) > 0);
+      heaInc = (nmts.count(gnsstk::NavMessageType::Health) > 0);
+      ionoInc = (nmts.count(gnsstk::NavMessageType::Iono) > 0);
+      iscInc = (nmts.count(gnsstk::NavMessageType::ISC) > 0);
    }
 
 
-   void countResults(const gpstk::NavDataPtrList& navOut)
+   void countResults(const gnsstk::NavDataPtrList& navOut)
    {
       resetCount();
       for (const auto& i : navOut)
@@ -141,7 +141,7 @@ public:
    }
 
 
-   void validateResults(gpstk::NavDataPtrList& navOut,
+   void validateResults(gnsstk::NavDataPtrList& navOut,
                         unsigned lineNo,
                         size_t totalExp = 0,
                         unsigned almExp = 0,
@@ -173,7 +173,7 @@ public:
    }
 
       /// TestUtil object to use when assertions are integrated.
-   gpstk::TestUtil& testFramework;
+   gnsstk::TestUtil& testFramework;
       /// Counts of messages, set by countResults.
    unsigned almCount, ephCount, toCount, heaCount, ionoCount, iscCount,
       otherCount;
@@ -184,4 +184,4 @@ public:
    bool almInc, ephInc, toInc, heaInc, ionoInc, iscInc;
 };
 
-#endif // GPSTK_TEST_FACTORYCOUNTER_HPP
+#endif // GNSSTK_TEST_FACTORYCOUNTER_HPP

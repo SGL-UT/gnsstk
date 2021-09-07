@@ -5,7 +5,7 @@ Contents:
 ---------
 
 * Introduction
-* Building and Installing the Python GPSTk
+* Building and Installing the Python GNSSTk
 * About the Python Bindings
 * A Note on Python Versions
 * Package Organization
@@ -18,10 +18,10 @@ Introduction:
 -------------
 
 This documentation describes the architecture and design of the Python bindings of the 
-GPS ToolKit (GPSTk), produced by the Space and Geophysics Laboratory (SGL) of Applied 
+GPS ToolKit (GNSSTk), produced by the Space and Geophysics Laboratory (SGL) of Applied 
 Research Laboratories, The University of Texas at Austin (ARL:UT).
 
-Building and Installing the Python GPSTk:
+Building and Installing the Python GNSSTk:
 -----------------------------------------
 
 See the INSTALL.txt for details.
@@ -32,12 +32,12 @@ About the Python Bindings:
 
 Though effort has been taken to reduce the C++-feeling when using these Python classes, it is 
 impossible to completely purify the library without creating severe maintenance problems. Thus, 
-the user must be aware that the GPSTk is primarily a C++ library and some things may require 
+the user must be aware that the GNSSTk is primarily a C++ library and some things may require 
 unusual semantics. It is recommended that you avoid using some of these unusual classes, such as 
-gpstk.cpp.vector_double (std::vector<double>) as much as a possible. A much better replacement would 
+gnsstk.cpp.vector_double (std::vector<double>) as much as a possible. A much better replacement would 
 be a numpy array.
 
-Example of how C++ GPSTk reads and prints a Rinex3Obs file:
+Example of how C++ GNSSTk reads and prints a Rinex3Obs file:
 
 	|  // Create the input file stream
 	| Rinex3ObsStream rin("rinex3obs_data.txt");
@@ -54,7 +54,7 @@ Example of how C++ GPSTk reads and prints a Rinex3Obs file:
 	|    std::cout << data << std::endl;
 	| }
 
-Compare to the simpler Python GPSTk read process:
+Compare to the simpler Python GNSSTk read process:
 
 	| # read in the header and data
 	| header, data = readRinex3Obs('rinex3obs_data.txt')
@@ -76,14 +76,14 @@ API heavily.
 Package Organization:
 ---------------------
 
-Most classes and functions are in the gpstk namespace, but there are some exceptions.
+Most classes and functions are in the gnsstk namespace, but there are some exceptions.
 
-	1. Constant values not inside a class are placed in the gpstk.constants submodule.
+	1. Constant values not inside a class are placed in the gnsstk.constants submodule.
 
-	2. GPSTk Exceptions are placed in the gpstk.exceptions submodule.
+	2. GNSSTk Exceptions are placed in the gnsstk.exceptions submodule.
 
 	3. Wrappers of C++ library structures (std::vector and std::map, which should only be used when necessary) 
-		are placed in the gpstk.cpp submodule.
+		are placed in the gnsstk.cpp submodule.
 
 
 How to Use This Documentation:
@@ -95,14 +95,14 @@ in the form of docstrings. This means you can use ipython to easily find out abo
 Changes and additions to the C++ core are noted in this documentation, as well as in the docstrings themselves.
 
 A good first step is to browse the things available in the Quick Reference section. If you are coming from 
-writing C++ GPSTk programs, you should be sure to read the section on how C++ structures have been changed 
+writing C++ GNSSTk programs, you should be sure to read the section on how C++ structures have been changed 
 for python.
 
 
 Scope:
 ------
 
-The GPSTk C++ library is the product of a large number of people over a sparse time period; as a result, the 
+The GNSSTk C++ library is the product of a large number of people over a sparse time period; as a result, the 
 focus of the library has been somewhat lost. There are many non-GPS related utilities implemented that have 
 been implemented more efficiently, robustly, and accurately by others. These bindings attempt to expose as little 
 as needed to the programmer.
@@ -131,12 +131,12 @@ could not duplicate code.
 
 Namespaces:
 
-	These don’t exist in python, so they are simply discarded. The GPSTk largely only uses the gpstk namespace, 
-	which is roughly the gpstk package now. Exceptions include the submodules created for exceptions and constants.
+	These don’t exist in python, so they are simply discarded. The GNSSTk largely only uses the gnsstk namespace, 
+	which is roughly the gnsstk package now. Exceptions include the submodules created for exceptions and constants.
 
-	Note that SWIG is actually set to create a module called gpstk_pylib. To clean up the namespace and provide 
-	more organization, there are __init__.py files that divide up the namespace (into gpstk, gpstk.constants, etc.) 
-	and remove unwanted members. You can still access the raw wrapping through gpstk.gpstk_pylib, however. It is 
+	Note that SWIG is actually set to create a module called gnsstk_pylib. To clean up the namespace and provide 
+	more organization, there are __init__.py files that divide up the namespace (into gnsstk, gnsstk.constants, etc.) 
+	and remove unwanted members. You can still access the raw wrapping through gnsstk.gnsstk_pylib, however. It is 
 	strongly recommended you ignore the hidden components; they were hidden for a reason!
 
 Enumerations:
@@ -147,25 +147,25 @@ Enumerations:
 
 Templates:
 
-	Templates in the GPSTk were largely for 3 purposes:
+	Templates in the GNSSTk were largely for 3 purposes:
 
 		1. standard library containers (std::vector<T>, std::map<K,V>)
 
-		2. accepting any numeric type (gpstk::Vector<T>)
+		2. accepting any numeric type (gnsstk::Vector<T>)
 
 		3. creating specialized class for use in inheritance 
 			(such as how YumaAlmanacStore is a subclass of FileStore<YumaHeader>)
 
 	Using the standard library containers of C++ is discouraged, so only a few were created for use.
 
-	The only class that uses the numeric template type that is wrapped in gpstk::Vector, which only accepts floating 
+	The only class that uses the numeric template type that is wrapped in gnsstk::Vector, which only accepts floating 
 	point numbers now.
 
 	The templates in inheritance are not needed as they are not visible to the end-user.
 
 Streams:
 
-	Streams were used all over the GPSTk for input and output. Many classes had a dump or operator<< function that 
+	Streams were used all over the GNSSTk for input and output. Many classes had a dump or operator<< function that 
 	could be used for string output, these have been replaced with the __str__ method.
 
 	Streams were also used heavily for reading in Almanac and Ephemeris data from files. A more pythonic interface 
@@ -174,7 +174,7 @@ Streams:
 Inner Classes:
 
 	SWIG cannot wrap nested classes/structs (as of v2.0.7), so many of the inner classes and exceptions were simply 
-	pulled into the gpstk namespace.
+	pulled into the gnsstk namespace.
 
 Standard Library Classes:
 
@@ -189,21 +189,21 @@ Standard Library Classes:
 	list->std::vector conversion) are defined in the cpp submodule.
 
 	Warning: Reading documentation can get difficult in dealing with heavily-templated wrapped C++ code. Use these structures 
-	as little as possible. If containers are small it might be wise to use the provided functions in gpstk.cpp to convert the 
+	as little as possible. If containers are small it might be wise to use the provided functions in gnsstk.cpp to convert the 
 	containers to native python lists/dicts.
 
 Exceptions:
 
-	Exceptions were tricky to get right. In general, most exceptions thrown by calling GPSTk routines should be caught in the 
+	Exceptions were tricky to get right. In general, most exceptions thrown by calling GNSSTk routines should be caught in the 
 	standard way in Python.
 
 		| try:
-		|     a = gpstk.someFunction()
-		| except gpstk.exceptions.InvalidRequest:  # the most used exception in the GPSTk
+		|     a = gnsstk.someFunction()
+		| except gnsstk.exceptions.InvalidRequest:  # the most used exception in the GNSSTk
 		|     print 'Could not process data.'
 
 	When an exception is thrown by the C++ code, it is propagated to the SWIG system which has code (written in Exception.i) 
-	that either wraps the exception to one of the classes in gpstk.exceptions.
+	that either wraps the exception to one of the classes in gnsstk.exceptions.
 
 Arrays:
 
@@ -224,9 +224,9 @@ Functions that modify a parameter that is passed by reference:
 
 	Which behaves as expected when used in Python:
 
-		>>> import gpstk
-		>>> u = gpstk.Position(100, 200, 300)
-		>>> v = gpstk.Position.convertCartesianToGeocentric(u)
+		>>> import gnsstk
+		>>> u = gnsstk.Position(100, 200, 300)
+		>>> v = gnsstk.Position.convertCartesianToGeocentric(u)
 		>>> print v
 		(53.30077479951032, 63.434948822921655, 374.16573867739413)
 
@@ -238,24 +238,24 @@ Time Functions:
 
 	These are largely helper functions that make some functionality a little easier or more succinct.
 
-	gpstk.now([timeSystem=TimeSystem('UTC')])
+	gnsstk.now([timeSystem=TimeSystem('UTC')])
 	
 		Returns the current time in the given TimeSystem. The default is in the UTC time system since the time is 
 		derived from calling SystemTime().
 
-		>>> print gpstk.now()
+		>>> print gnsstk.now()
 		2456490 72040524 0.000665000000000 UTC
 
-	gpstk.times(starttime, endtime[, seconds=0.0, days=0])
+	gnsstk.times(starttime, endtime[, seconds=0.0, days=0])
 
 		This returns a generator of CommonTime objects that starts at starttime and advances by the seconds and days 
 		parameter each time. Special cases (no timestep parameters, negative parameters) are documented in the function’s 
 		docstring and the quick reference section.
 
-		>>> start = gpstk.now()
+		>>> start = gnsstk.now()
 		>>> # wait a few seconds...
-		>>> end = gpstk.now()
-		>>> times = list(gpstk.times(start, end, seconds=1.0))
+		>>> end = gnsstk.now()
+		>>> times = list(gnsstk.times(start, end, seconds=1.0))
 		>>> for t in times:
 		...     print t
 
@@ -273,48 +273,48 @@ Position Functions:
 
 	Some helpful functions for creating Position objects more easily (with keyword arguments) were also added:
 
-	gpstk.cartesian([x=0.0, y=0.0, z=0.0, model=None, frame=ReferenceFrame('Unknown)'])
+	gnsstk.cartesian([x=0.0, y=0.0, z=0.0, model=None, frame=ReferenceFrame('Unknown)'])
 
-		>>> print gpstk.spherical(radius=5, theta=45, phi=45)
+		>>> print gnsstk.spherical(radius=5, theta=45, phi=45)
 		45.00000000 deg 45.00000000 deg 5.0000 m
 
-	gpstk.spherical([theta=0.0, phi=0.0, radius=0.0, model=None, frame=ReferenceFrame('Unknown')])
+	gnsstk.spherical([theta=0.0, phi=0.0, radius=0.0, model=None, frame=ReferenceFrame('Unknown')])
 
 		Returns a Position in the Spherical coordinate system.
 
-	gpstk.geodetic([latitude=0.0, longitude=0.0, height=0.0, model=None, frame=ReferenceFrame('Unknown')])
+	gnsstk.geodetic([latitude=0.0, longitude=0.0, height=0.0, model=None, frame=ReferenceFrame('Unknown')])
 
 		Returns a Position in the Geodetic coordinate system.
 
-	gpstk.geocentric([latitude=0.0, longitude=0.0, radius=0.0, model=None, frame=ReferenceFrame('Unknown')])
+	gnsstk.geocentric([latitude=0.0, longitude=0.0, radius=0.0, model=None, frame=ReferenceFrame('Unknown')])
 
 		Returns a Position in the Geocentric coordinate system.
 
 	The next four functions are simply light wrappers over some relatively simple classes. The use of a entire class 
 	objects was warranted in C++, but they are not neccessary for typical python usage.
 
-	gpstk.moonPosition(time)
+	gnsstk.moonPosition(time)
 		
-		Returns the current position (A gpstk.Triple) of the moon. This is a functional wrapper on the moonPosition class.
+		Returns the current position (A gnsstk.Triple) of the moon. This is a functional wrapper on the moonPosition class.
 
-		>>> print gpstk.moonPosition(gpstk.now())
+		>>> print gnsstk.moonPosition(gnsstk.now())
 		(62424169.398472935, -365987646.51255625, -83100797.60563189)
 
-	gpstk.sunPosition(time)
+	gnsstk.sunPosition(time)
 	
-		Returns the current position (A gpstk.Triple) of the moon. This is a functional wrapper on the MoonPosition class.
+		Returns the current position (A gnsstk.Triple) of the moon. This is a functional wrapper on the MoonPosition class.
 
-	gpstk.poleTides(time, position, x, y)
+	gnsstk.poleTides(time, position, x, y)
 
-		Returns the effect (a gpstk.Triple) of pole tides (meters) on the given position, in the Up-East-North (UEN) 
+		Returns the effect (a gnsstk.Triple) of pole tides (meters) on the given position, in the Up-East-North (UEN) 
 		reference frame. This is a functional wrapper on the (hidden) PoleTides class.
 
-	gpstk.solidTides(time, position)
+	gnsstk.solidTides(time, position)
 		
-		Returns the effect (a gpstk.Triple) of solid Earth tides (meters) at the given position and epoch, in the 
+		Returns the effect (a gnsstk.Triple) of solid Earth tides (meters) at the given position and epoch, in the 
 		Up-East-North (UEN) reference frame. This is a functional wrapper on the (hidden) SolidTides class.
 
-		>>> print gpstk.solidTides(gpstk.now(), gpstk.geodetic(latitude=29, longitude=95, height=0))
+		>>> print gnsstk.solidTides(gnsstk.now(), gnsstk.geodetic(latitude=29, longitude=95, height=0))
 		(0.1601640329929359, -0.0031534542100034955, -0.03016846270875466)
 
 File I/O Functions:
@@ -326,11 +326,11 @@ File I/O Functions:
 
 	As an example, to read a SP3 file:
 
-		>>> header, data = gpstk.readSP3('sp3_data.txt')
+		>>> header, data = gnsstk.readSP3('sp3_data.txt')
 	
 	And to write an SP3 file...
 
-		>>> gpstk.writeSP3('sp3_data.txt.new', header, data)
+		>>> gnsstk.writeSP3('sp3_data.txt.new', header, data)
 
 	In this case, header is a SP3Header. Data is a list of SP3Data objects.
 
@@ -342,7 +342,7 @@ File I/O Functions:
 	A common paradigm is to loop over all elements in the data and process them. As an example, to print all the data sets in a 
 	RINEX 3 Nav file:
 
-		| header, data = gpstk.readRinex3Nav('rinex3nav_data.txt')
+		| header, data = gnsstk.readRinex3Nav('rinex3nav_data.txt')
 		| for d in data:
     	|   print d
 
@@ -353,7 +353,7 @@ File I/O Functions:
 
 		>>> isPRN3 = (lambda x: x.PRNID == 3)
 
-		>>> header, data = gpstk.readRinex3Nav('rinex3nav_data.txt', filterfunction=isPRN3)
+		>>> header, data = gnsstk.readRinex3Nav('rinex3nav_data.txt', filterfunction=isPRN3)
 
 		>>> print data.next()
 		Sat: G03 TOE: 1274 367200.000 TOC: 1274 367200.000 codeflags:   1 L2Pflag:   0 IODC:  902 IODE:  134 HOWtime: 362376 FitInt:  4.000

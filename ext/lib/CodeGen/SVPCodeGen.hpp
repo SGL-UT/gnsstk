@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -47,7 +47,7 @@
 #include "X2Sequence.hpp"
 #include "GPSZcount.hpp"
 
-namespace gpstk 
+namespace gnsstk 
 {
       /** @defgroup CodeGen    Code Generator   */
       //@{
@@ -103,7 +103,7 @@ namespace gpstk
        *  location in the X2 sequence and set it up.  Set the current 
        *  time. 
        */
-      SVPCodeGen( const int SVPRNID, const gpstk::CommonTime& dt );
+      SVPCodeGen( const int SVPRNID, const gnsstk::CommonTime& dt );
       ~SVPCodeGen( ) {};
          
       /**
@@ -131,18 +131,18 @@ namespace gpstk
       /**
        * Returns the current time to the calling method.  
        */
-      const gpstk::CommonTime& getCurrentZCount() const {return currentZTime;}
+      const gnsstk::CommonTime& getCurrentZCount() const {return currentZTime;}
 
       /** Allows the user to set the current time. While a any time may
           be specified, this routine will take the Z % 4 for the actuall 
           time.
       **/
-      void setCurrentZCount(const gpstk::GPSZcount& z);
+      void setCurrentZCount(const gnsstk::GPSZcount& z);
      
    private:
-      gpstk::X1Sequence X1Seq;
-      gpstk::X2Sequence X2Seq;
-      gpstk::CommonTime currentZTime;
+      gnsstk::X1Sequence X1Seq;
+      gnsstk::X2Sequence X2Seq;
+      gnsstk::CommonTime currentZTime;
       int PRNID;
    };
       //@}

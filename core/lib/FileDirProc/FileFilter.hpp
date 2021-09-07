@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,8 +41,8 @@
  * A framework for sorting and filtering file data.
  */
  
-#ifndef GPSTK_FILEFILTER_HPP
-#define GPSTK_FILEFILTER_HPP
+#ifndef GNSSTK_FILEFILTER_HPP
+#define GNSSTK_FILEFILTER_HPP
 
 #include <functional>
 #include <algorithm>
@@ -51,7 +51,7 @@
 #include "FFData.hpp"
 #include "FileSpec.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /** @defgroup FileDirProc File and Directory Processing Utilities
        * Tools for locating and processing files in a directory
@@ -330,25 +330,25 @@ namespace gpstk
 
       FileData& front()
       {
-         GPSTK_ASSERT(!empty());
+         GNSSTK_ASSERT(!empty());
          return dataVec.front();
       }
 
       const FileData& front() const
       {
-         GPSTK_ASSERT(!empty());
+         GNSSTK_ASSERT(!empty());
          return dataVec.front();
       }
 
       FileData& back()
       {
-         GPSTK_ASSERT(!empty());
+         GNSSTK_ASSERT(!empty());
          return dataVec.back();
       }
 
       const FileData& back() const
       {
-         GPSTK_ASSERT(!empty());
+         GNSSTK_ASSERT(!empty());
          return dataVec.back();
       }
 
@@ -429,6 +429,6 @@ namespace gpstk
       return *this;
    }
 
-} // namespace gpstk
+} // namespace gnsstk
 
-#endif // GPSTK_FILEFILTER_HPP
+#endif // GNSSTK_FILEFILTER_HPP

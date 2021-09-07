@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -36,16 +36,16 @@
 //
 //==============================================================================
 
-#ifndef GPSTK_WINDOWFILTER_HPP
-#define GPSTK_WINDOWFILTER_HPP
+#ifndef GNSSTK_WINDOWFILTER_HPP
+#define GNSSTK_WINDOWFILTER_HPP
 
 /// @file WindowFilter.hpp
 
 ///    This class implements a statistical filter that uses 'windowed' averages. There
 /// are several statistical filters implemented as classes. These classes are
 /// templates; the template parameter should be a float (probably double);
-/// it is used to construct gpstk::Stats<T>, gpstk::TwoSampleStats<T> and
-/// gpstk::SeqStats<T>, which are fundamental to these algorithms.
+/// it is used to construct gnsstk::Stats<T>, gnsstk::TwoSampleStats<T> and
+/// gnsstk::SeqStats<T>, which are fundamental to these algorithms.
 ///    All the filters look for outliers and discontinuities (slips) in a timeseries.
 /// The first difference filter analyses the simple first difference of the data.
 /// The window filter uses a 2-pane sliding window centered on the data point in
@@ -97,7 +97,7 @@
 
 #include "StatsFilterHit.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 /// A special subset of class FilterHit used for "almost slips" in WindowFilter
 template <class T> class FilterNearMiss
@@ -206,7 +206,7 @@ public:
    std::string asString(void) const { return S.asString(); }
 
 private:
-   gpstk::Stats<T> S;
+   gnsstk::Stats<T> S;
 
 }; // end class OneSampleStatsFilter
 
@@ -257,7 +257,7 @@ public:
    std::string asString(void) const { return TSS.asString(); }
 
 private:
-   gpstk::TwoSampleStats<T> TSS;
+   gnsstk::TwoSampleStats<T> TSS;
 
 }; // end class TwoSampleStatsFilter
 
@@ -635,7 +635,7 @@ template<class T> int WindowFilter<T>::filter(const size_t i0, int dsize)
 
       //Dump the TSS, build the TSS manually, and print that
       //TEMPtestTSS {
-      //TEMPtestTSS gpstk::TwoSampleStats<T> pTSS,fTSS;
+      //TEMPtestTSS gnsstk::TwoSampleStats<T> pTSS,fTSS;
       //TEMPtestTSS unsigned int k;
       //TEMPtestTSS std::string str;
 
@@ -648,12 +648,12 @@ template<class T> int WindowFilter<T>::filter(const size_t i0, int dsize)
       //TEMPtestTSS std::cout << std::endl;
 
       //TEMPtestTSS str = pTSS.asString();
-      //TEMPtestTSS gpstk::StringUtils::change(str,"\n"," ");
+      //TEMPtestTSS gnsstk::StringUtils::change(str,"\n"," ");
       //TEMPtestTSS std::cout << std::fixed << std::setprecision(3) << xvec(i)
       //TEMPtestTSS           << " pman " << str << std::endl;
 
       //TEMPtestTSS str = ptrPast->asString();
-      //TEMPtestTSS gpstk::StringUtils::change(str,"\n"," ");
+      //TEMPtestTSS gnsstk::StringUtils::change(str,"\n"," ");
       //TEMPtestTSS std::cout << std::fixed << std::setprecision(3) << xvec(i)
       //TEMPtestTSS           << " past " << str << " eval " << A.pave << std::endl;
 
@@ -668,12 +668,12 @@ template<class T> int WindowFilter<T>::filter(const size_t i0, int dsize)
       //TEMPtestTSS std::cout << std::endl;
 
       //TEMPtestTSS str = fTSS.asString();
-      //TEMPtestTSS gpstk::StringUtils::change(str,"\n"," ");
+      //TEMPtestTSS gnsstk::StringUtils::change(str,"\n"," ");
       //TEMPtestTSS std::cout << std::fixed << std::setprecision(3) << xvec(i)
       //TEMPtestTSS           << " fman " << str << std::endl;
 
       //TEMPtestTSS str = ptrFuture->asString();
-      //TEMPtestTSS gpstk::StringUtils::change(str,"\n"," ");
+      //TEMPtestTSS gnsstk::StringUtils::change(str,"\n"," ");
       //TEMPtestTSS std::cout << std::fixed << std::setprecision(3) << xvec(i)
       //TEMPtestTSS           << " futu " << str << " eval " << A.fave
       //TEMPtestTSS           << std::endl << std::endl;
@@ -1179,7 +1179,7 @@ void WindowFilter<T>::getStats(FilterHit<T>& sg, bool skip)
 
    i = sdv.size();
    if(i < 2) return;       // else MAD throws
-   sg.mad = gpstk::Robust::MedianAbsoluteDeviation<T>(&sdv[0], i, sg.med, false);
+   sg.mad = gnsstk::Robust::MedianAbsoluteDeviation<T>(&sdv[0], i, sg.med, false);
    sg.min = sg.max = 0.0;        // TD get min and max
    sg.haveStats = true;
 }
@@ -1188,4 +1188,4 @@ void WindowFilter<T>::getStats(FilterHit<T>& sg, bool skip)
 
 }
 
-#endif // GPSTK_WINDOWFILTER_HPP
+#endif // GNSSTK_WINDOWFILTER_HPP

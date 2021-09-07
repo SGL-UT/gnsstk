@@ -1,16 +1,16 @@
-%define name python3-gpstk
+%define name python3-gnsstk
 %define version 12.0.0
 %define release 1
 
-Summary:        GPS Toolkit
+Summary:        GNSS Toolkit
 Name:           %{name}
 Version:        %{version}
 Release:        %{release}%{?dist}
 License:        LGPL
 Source:         %{name}-master.tar.gz
-URL:            https://github.com/SGL-UT/GPSTk
+URL:            https://github.com/SGL-UT/GNSSTk
 Group:          Development/Libraries
-Requires:       gpstk >= %{version}
+Requires:       gnsstk >= %{version}
 Requires:       python3-pip
 BuildRequires:  cmake
 BuildRequires:  swig
@@ -19,17 +19,17 @@ BuildRequires:  gcc-c++
 BuildRequires:  ncurses-devel
 
 %description
-The GPS Toolkit (GPSTk) is an open-source (LGPL) project sponsored by
+The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by
 the Space and Geophysics Laboratory (SGL), part of the Applied Research
 Laboratories (ARL) at The University of Texas at Austin.
-The primary goals of the GPSTk project are to:
+The primary goals of the GNSSTk project are to:
 * provide applications for use by the GNSS and satellite navigation community.
 * provide a core library to facilitate the development of GNSS applications.
 
 %prep
 %setup -n %{name}-master
 
-# Setup and build GPSTk utilizing CMake
+# Setup and build GNSSTk utilizing CMake
 %build
 mkdir build
 cd build
@@ -42,13 +42,13 @@ cd build
 make install -j 4
 # Currently the CMAKE installer cannot install python only, so we need to delete the non-python files.
 rm -rf $RPM_BUILD_ROOT/usr/README.md
-find $RPM_BUILD_ROOT/usr/include/gpstk*/gpstk ! -name "*.i" ! -name "gpstk_swig.hpp" -type f -exec rm {} +
+find $RPM_BUILD_ROOT/usr/include/gnsstk*/gnsstk ! -name "*.i" ! -name "gnsstk_swig.hpp" -type f -exec rm {} +
 rm -rf $RPM_BUILD_ROOT/usr/bin/*
 rm -rf $RPM_BUILD_ROOT/usr/lib64/*
-rm -rf $RPM_BUILD_ROOT/usr/share/cmake/GPSTK
-mkdir -p $RPM_BUILD_ROOT/usr/include/gpstk
-cp $RPM_BUILD_ROOT/usr/include/gpstk*/gpstk/*.i $RPM_BUILD_ROOT/usr/include/gpstk
-cp $RPM_BUILD_ROOT/usr/include/gpstk*/gpstk/gpstk_swig.hpp $RPM_BUILD_ROOT/usr/include/gpstk
+rm -rf $RPM_BUILD_ROOT/usr/share/cmake/GNSSTK
+mkdir -p $RPM_BUILD_ROOT/usr/include/gnsstk
+cp $RPM_BUILD_ROOT/usr/include/gnsstk*/gnsstk/*.i $RPM_BUILD_ROOT/usr/include/gnsstk
+cp $RPM_BUILD_ROOT/usr/include/gnsstk*/gnsstk/gnsstk_swig.hpp $RPM_BUILD_ROOT/usr/include/gnsstk
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -57,10 +57,10 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %doc RELNOTES.md PYTHON.md
-/usr/include/gpstk*/gpstk
-/usr/include/gpstk
-/usr/lib/python3.6/site-packages/gpstk
-/usr/lib/python3.6/site-packages/gpstk-%{version}-py3.6.egg-info
+/usr/include/gnsstk*/gnsstk
+/usr/include/gnsstk
+/usr/lib/python3.6/site-packages/gnsstk
+/usr/lib/python3.6/site-packages/gnsstk-%{version}-py3.6.egg-info
 
 
 %changelog

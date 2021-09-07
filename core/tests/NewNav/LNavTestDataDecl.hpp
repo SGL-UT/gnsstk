@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -39,17 +39,17 @@
 /** @file LNavTestDataDecl.hpp This file contains data declarations
  * for testing GPS and QZSS LNav processing in the NavFactory code. */
 
-gpstk::ObsID oidLNAVGPS;
-gpstk::PackedNavBitsPtr ephLNAVGPSSF1, ephLNAVGPSSF2, ephLNAVGPSSF3,
+gnsstk::ObsID oidLNAVGPS;
+gnsstk::PackedNavBitsPtr ephLNAVGPSSF1, ephLNAVGPSSF2, ephLNAVGPSSF3,
    almLNAVGPS25, almLNAVGPS26, pg51LNAVGPS, pg56LNAVGPS, pg63LNAVGPS;
-gpstk::CommonTime ephLNAVGPSSF1ct, ephLNAVGPSSF2ct, ephLNAVGPSSF3ct,
+gnsstk::CommonTime ephLNAVGPSSF1ct, ephLNAVGPSSF2ct, ephLNAVGPSSF3ct,
    almLNAVGPS25ct, almLNAVGPS26ct, pg51LNAVGPSct, pg56LNAVGPSct, pg63LNAVGPSct;
-gpstk::SatID ephLNAVGPSSid, almLNAVGPSSid;
+gnsstk::SatID ephLNAVGPSSid, almLNAVGPSSid;
 
-gpstk::ObsID oidLNAVQZSS;
-gpstk::PackedNavBitsPtr ephLNAVQZSSSF1, ephLNAVQZSSSF2, ephLNAVQZSSSF3,
+gnsstk::ObsID oidLNAVQZSS;
+gnsstk::PackedNavBitsPtr ephLNAVQZSSSF1, ephLNAVQZSSSF2, ephLNAVQZSSSF3,
    almLNAVQZSS1, almLNAVQZSS2, pg51LNAVQZSS, pg56LNAVQZSS, pg61LNAVQZSS;
-gpstk::CommonTime ephLNAVQZSSSF1ct, ephLNAVQZSSSF2ct, ephLNAVQZSSSF3ct,
+gnsstk::CommonTime ephLNAVQZSSSF1ct, ephLNAVQZSSSF2ct, ephLNAVQZSSSF3ct,
    almLNAVQZSS1ct, almLNAVQZSS2ct, pg51LNAVQZSSct, pg56LNAVQZSSct,
    pg61LNAVQZSSct;
-gpstk::SatID ephLNAVQZSSSid, almLNAVQZSSSid;
+gnsstk::SatID ephLNAVQZSSSid, almLNAVQZSSSid;

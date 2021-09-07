@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -45,9 +45,9 @@
          if(!validRxLatitude)  e.addText("Invalid trop model: validRxLatitude"); \
          if(!validRxHeight)   e.addText("Invalid trop model: validRxHeight"); \
          if(!validDOY)   e.addText("Invalid trop model: day of year");  \
-         GPSTK_THROW(e);}}
+         GNSSTK_THROW(e);}}
 
-namespace gpstk
+namespace gnsstk
 {
    // ------------------------------------------------------------------------
    // Tropospheric model developed by University of New Brunswick and described in
@@ -404,7 +404,7 @@ namespace gpstk
       catch(InvalidParameter& e)
       {
          valid = validWeather = false;
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -418,13 +418,13 @@ namespace gpstk
       {
          valid = validWeather = false;
          InvalidTropModel e("NBTropModel must have Rx latitude before interpolating weather");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       if(!validDOY)
       {
          valid = validWeather = false;
          InvalidTropModel e("NBTropModel must have day of year before interpolating weather ");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       temp = NB_Interpolate(latitude,doy,ZT);
       press = NB_Interpolate(latitude,doy,ZP);

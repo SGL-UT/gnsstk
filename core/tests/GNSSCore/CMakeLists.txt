@@ -1,51 +1,51 @@
 #Tests for GNSSCore Classes
 
 add_executable(Convhelp_T Convhelp_T.cpp)
-target_link_libraries(Convhelp_T gpstk)
+target_link_libraries(Convhelp_T gnsstk)
 add_test(GNSSCore_Convhelp Convhelp_T)
 
 add_executable(IonoModel_T IonoModel_T.cpp)
-target_link_libraries(IonoModel_T gpstk)
+target_link_libraries(IonoModel_T gnsstk)
 add_test(GNSSCore_IonoModel IonoModel_T)
 
 add_executable(IonoModelStore_T IonoModelStore_T.cpp)
-target_link_libraries(IonoModelStore_T gpstk)
+target_link_libraries(IonoModelStore_T gnsstk)
 add_test(GNSSCore_IonoModelStore IonoModelStore_T)
 
 add_executable(ObsID_T ObsID_T.cpp)
-target_link_libraries(ObsID_T gpstk)
+target_link_libraries(ObsID_T gnsstk)
 add_test(GNSSCore_ObsID ObsID_T)
 
 add_executable(ObsIDInitializer_T ObsIDInitializer_T.cpp)
-target_link_libraries(ObsIDInitializer_T gpstk)
+target_link_libraries(ObsIDInitializer_T gnsstk)
 add_test(GNSSCore_ObsIDInitializer ObsIDInitializer_T)
 
 add_executable(Position_T Position_T.cpp)
-target_link_libraries(Position_T gpstk)
+target_link_libraries(Position_T gnsstk)
 add_test(GNSSCore_Position Position_T)
 
 add_executable(TropModel_T TropModel_T.cpp)
-target_link_libraries(TropModel_T gpstk)
+target_link_libraries(TropModel_T gnsstk)
 add_test(GNSSCore_TropModel TropModel_T)
 
 add_executable(WxObsMap_T WxObsMap_T.cpp)
-target_link_libraries(WxObsMap_T gpstk)
+target_link_libraries(WxObsMap_T gnsstk)
 add_test(GNSSCore_WxObsMap WxObsMap_T)
 
 add_executable(Xvt_T Xvt_T.cpp)
-target_link_libraries(Xvt_T gpstk)
+target_link_libraries(Xvt_T gnsstk)
 add_test(GNSSCore_Xvt Xvt_T)
 
 ###############################################################################
 add_executable(Tropdump Tropdump.cpp)
-target_link_libraries(Tropdump gpstk)
+target_link_libraries(Tropdump gnsstk)
 
 add_test(NAME TropModel_Global
          COMMAND ${CMAKE_COMMAND}
          -DTEST_PROG=$<TARGET_FILE:Tropdump>
          -DDIFF_PROG=$<TARGET_FILE:df_diff>
-         -DSOURCEDIR=${GPSTK_TEST_DATA_DIR}
-         -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
          -DTESTBASE=TropModel_Global
          -DTESTNAME=TropModel_Global
          -DARGS=--trop\ Global
@@ -57,8 +57,8 @@ add_test(NAME TropModel_Saas
          COMMAND ${CMAKE_COMMAND}
          -DTEST_PROG=$<TARGET_FILE:Tropdump>
          -DDIFF_PROG=$<TARGET_FILE:df_diff>
-         -DSOURCEDIR=${GPSTK_TEST_DATA_DIR}
-         -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
          -DTESTBASE=TropModel_Saas
          -DTESTNAME=TropModel_Saas
          -DARGS=--trop\ Saas
@@ -70,8 +70,8 @@ add_test(NAME TropModel_GCAT
          COMMAND ${CMAKE_COMMAND}
          -DTEST_PROG=$<TARGET_FILE:Tropdump>
          -DDIFF_PROG=$<TARGET_FILE:df_diff>
-         -DSOURCEDIR=${GPSTK_TEST_DATA_DIR}
-         -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
          -DTESTBASE=TropModel_GCAT
          -DTESTNAME=TropModel_GCAT
          -DARGS=--trop\ GCAT
@@ -83,8 +83,8 @@ add_test(NAME TropModel_GG
          COMMAND ${CMAKE_COMMAND}
          -DTEST_PROG=$<TARGET_FILE:Tropdump>
          -DDIFF_PROG=$<TARGET_FILE:df_diff>
-         -DSOURCEDIR=${GPSTK_TEST_DATA_DIR}
-         -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
          -DTESTBASE=TropModel_GG
          -DTESTNAME=TropModel_GG
          -DARGS=--trop\ GG
@@ -96,8 +96,8 @@ add_test(NAME TropModel_GGHeight
          COMMAND ${CMAKE_COMMAND}
          -DTEST_PROG=$<TARGET_FILE:Tropdump>
          -DDIFF_PROG=$<TARGET_FILE:df_diff>
-         -DSOURCEDIR=${GPSTK_TEST_DATA_DIR}
-         -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
          -DTESTBASE=TropModel_GGHeight
          -DTESTNAME=TropModel_GGHeight
          -DARGS=--trop\ GGHeight
@@ -109,8 +109,8 @@ add_test(NAME TropModel_MOPS
          COMMAND ${CMAKE_COMMAND}
          -DTEST_PROG=$<TARGET_FILE:Tropdump>
          -DDIFF_PROG=$<TARGET_FILE:df_diff>
-         -DSOURCEDIR=${GPSTK_TEST_DATA_DIR}
-         -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
          -DTESTBASE=TropModel_MOPS
          -DTESTNAME=TropModel_MOPS
          -DARGS=--trop\ MOPS
@@ -122,8 +122,8 @@ add_test(NAME TropModel_NB
          COMMAND ${CMAKE_COMMAND}
          -DTEST_PROG=$<TARGET_FILE:Tropdump>
          -DDIFF_PROG=$<TARGET_FILE:df_diff>
-         -DSOURCEDIR=${GPSTK_TEST_DATA_DIR}
-         -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
          -DTESTBASE=TropModel_NB
          -DTESTNAME=TropModel_NB
          -DARGS=--trop\ NB
@@ -135,8 +135,8 @@ add_test(NAME TropModel_Simple
          COMMAND ${CMAKE_COMMAND}
          -DTEST_PROG=$<TARGET_FILE:Tropdump>
          -DDIFF_PROG=$<TARGET_FILE:df_diff>
-         -DSOURCEDIR=${GPSTK_TEST_DATA_DIR}
-         -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
          -DTESTBASE=TropModel_Simple
          -DTESTNAME=TropModel_Simple
          -DARGS=--trop\ Simple
@@ -148,8 +148,8 @@ add_test(NAME TropModel_Zero
          COMMAND ${CMAKE_COMMAND}
          -DTEST_PROG=$<TARGET_FILE:Tropdump>
          -DDIFF_PROG=$<TARGET_FILE:df_diff>
-         -DSOURCEDIR=${GPSTK_TEST_DATA_DIR}
-         -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
          -DTESTBASE=TropModel_Zero
          -DTESTNAME=TropModel_Zero
          -DARGS=--trop\ Zero
@@ -158,35 +158,35 @@ add_test(NAME TropModel_Zero
 set_property(TEST TropModel_Zero PROPERTY LABELS Tropmodel)
 
 add_executable(SatMetaDataStore_T SatMetaDataStore_T.cpp)
-target_link_libraries(SatMetaDataStore_T gpstk)
+target_link_libraries(SatMetaDataStore_T gnsstk)
 add_test(GNSSCore_SatMetaDataStore SatMetaDataStore_T)
 
 add_executable(RinexObsID_T RinexObsID_T.cpp)
-target_link_libraries(RinexObsID_T gpstk)
+target_link_libraries(RinexObsID_T gnsstk)
 add_test(GNSSCore_RinexObsID RinexObsID_T)
 
 add_executable(RinexSatID_T RinexSatID_T.cpp)
-target_link_libraries(RinexSatID_T gpstk)
+target_link_libraries(RinexSatID_T gnsstk)
 add_test(GNSSCore_RinexSatID RinexSatID_T)
 
 add_executable(SatID_T SatID_T.cpp)
-target_link_libraries(SatID_T gpstk)
+target_link_libraries(SatID_T gnsstk)
 add_test(GNSSCore_SatID SatID_T)
 
 add_executable(XmitAnt_T XmitAnt_T.cpp)
-target_link_libraries(XmitAnt_T gpstk)
+target_link_libraries(XmitAnt_T gnsstk)
 add_test(GNSSCore_XmitAnt XmitAnt_T)
 
 add_executable(FreqConv_T FreqConv_T.cpp)
-target_link_libraries(FreqConv_T gpstk)
+target_link_libraries(FreqConv_T gnsstk)
 add_test(GNSSCore_FreqConv FreqConv_T)
 
 add_executable(AngleReduced_T AngleReduced_T.cpp)
-target_link_libraries(AngleReduced_T gpstk)
+target_link_libraries(AngleReduced_T gnsstk)
 add_test(GNSSCore_AngleReduced AngleReduced_T)
 
 add_executable(Angle_T Angle_T.cpp)
-target_link_libraries(Angle_T gpstk)
+target_link_libraries(Angle_T gnsstk)
 add_test(GNSSCore_Angle Angle_T)
 
 ###############################################################################

@@ -1,4 +1,4 @@
-namespace gpstk
+namespace gnsstk
 {
       // Wraps overloaded () operator
    %extend BinexDataOperatorEquals

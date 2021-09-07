@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -46,35 +46,35 @@
 #include <cmath>
 
 /// Fake factory used for testing addFactory
-class TestFactory : public gpstk::NavDataFactoryWithStore
+class TestFactory : public gnsstk::NavDataFactoryWithStore
 {
 public:
    TestFactory()
    {
-      supportedSignals.insert(gpstk::NavSignalID(gpstk::SatelliteSystem::GPS,
-                                                 gpstk::CarrierBand::L1,
-                                                 gpstk::TrackingCode::CA,
-                                                 gpstk::NavType::GPSLNAV));
-      supportedSignals.insert(gpstk::NavSignalID(gpstk::SatelliteSystem::GPS,
-                                                 gpstk::CarrierBand::L1,
-                                                 gpstk::TrackingCode::P,
-                                                 gpstk::NavType::GPSLNAV));
-      supportedSignals.insert(gpstk::NavSignalID(gpstk::SatelliteSystem::GPS,
-                                                 gpstk::CarrierBand::L1,
-                                                 gpstk::TrackingCode::Y,
-                                                 gpstk::NavType::GPSLNAV));
-      supportedSignals.insert(gpstk::NavSignalID(gpstk::SatelliteSystem::GPS,
-                                                 gpstk::CarrierBand::L2,
-                                                 gpstk::TrackingCode::P,
-                                                 gpstk::NavType::GPSLNAV));
-      supportedSignals.insert(gpstk::NavSignalID(gpstk::SatelliteSystem::GPS,
-                                                 gpstk::CarrierBand::L2,
-                                                 gpstk::TrackingCode::Y,
-                                                 gpstk::NavType::GPSLNAV));
+      supportedSignals.insert(gnsstk::NavSignalID(gnsstk::SatelliteSystem::GPS,
+                                                 gnsstk::CarrierBand::L1,
+                                                 gnsstk::TrackingCode::CA,
+                                                 gnsstk::NavType::GPSLNAV));
+      supportedSignals.insert(gnsstk::NavSignalID(gnsstk::SatelliteSystem::GPS,
+                                                 gnsstk::CarrierBand::L1,
+                                                 gnsstk::TrackingCode::P,
+                                                 gnsstk::NavType::GPSLNAV));
+      supportedSignals.insert(gnsstk::NavSignalID(gnsstk::SatelliteSystem::GPS,
+                                                 gnsstk::CarrierBand::L1,
+                                                 gnsstk::TrackingCode::Y,
+                                                 gnsstk::NavType::GPSLNAV));
+      supportedSignals.insert(gnsstk::NavSignalID(gnsstk::SatelliteSystem::GPS,
+                                                 gnsstk::CarrierBand::L2,
+                                                 gnsstk::TrackingCode::P,
+                                                 gnsstk::NavType::GPSLNAV));
+      supportedSignals.insert(gnsstk::NavSignalID(gnsstk::SatelliteSystem::GPS,
+                                                 gnsstk::CarrierBand::L2,
+                                                 gnsstk::TrackingCode::Y,
+                                                 gnsstk::NavType::GPSLNAV));
    }
-   gpstk::NavValidityType getValidityFilter() const
+   gnsstk::NavValidityType getValidityFilter() const
    { return navValidity; }
-   gpstk::NavMessageTypeSet getTypeFilter() const
+   gnsstk::NavMessageTypeSet getTypeFilter() const
    { return procNavTypes; }
    bool addDataSource(const std::string& source) override
    { return false; }
@@ -90,14 +90,14 @@ public:
 
    unsigned getOffsetTest();
 
-   gpstk::CivilTime civ;
-   gpstk::CommonTime ct;
+   gnsstk::CivilTime civ;
+   gnsstk::CommonTime ct;
 };
 
 
 NavTimeSystemConverter_T ::
 NavTimeSystemConverter_T()
-      : civ(2015,7,19,2,0,0.0,gpstk::TimeSystem::GPS),
+      : civ(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS),
         ct(civ)
 {
 }
@@ -107,39 +107,39 @@ unsigned NavTimeSystemConverter_T ::
 getOffsetTest()
 {
    TUDEF("NavTimeSystemConverter", "getOffset");
-   std::shared_ptr<gpstk::NavLibrary> navLib =
-      std::make_shared<gpstk::NavLibrary>();
-   gpstk::NavDataFactoryPtr ndfp(std::make_shared<TestFactory>());
+   std::shared_ptr<gnsstk::NavLibrary> navLib =
+      std::make_shared<gnsstk::NavLibrary>();
+   gnsstk::NavDataFactoryPtr ndfp(std::make_shared<TestFactory>());
    TestFactory *fact1 = dynamic_cast<TestFactory*>(ndfp.get());
-   gpstk::NavDataPtr navOut = std::make_shared<gpstk::GPSLNavTimeOffset>();
+   gnsstk::NavDataPtr navOut = std::make_shared<gnsstk::GPSLNavTimeOffset>();
    navOut->timeStamp = ct;
-   navOut->signal.messageType = gpstk::NavMessageType::TimeOffset;
-   gpstk::GPSLNavTimeOffset *toptr = dynamic_cast<gpstk::GPSLNavTimeOffset*>(
+   navOut->signal.messageType = gnsstk::NavMessageType::TimeOffset;
+   gnsstk::GPSLNavTimeOffset *toptr = dynamic_cast<gnsstk::GPSLNavTimeOffset*>(
       navOut.get());
-   navOut->signal.system = gpstk::SatelliteSystem::GPS;
-   navOut->signal.obs.band = gpstk::CarrierBand::L1;
-   navOut->signal.obs.code = gpstk::TrackingCode::CA;
-   navOut->signal.nav = gpstk::NavType::GPSLNAV;
-   navOut->signal.sat = gpstk::SatID(23,gpstk::SatelliteSystem::GPS);
-   navOut->signal.xmitSat = gpstk::SatID(32,gpstk::SatelliteSystem::GPS);
+   navOut->signal.system = gnsstk::SatelliteSystem::GPS;
+   navOut->signal.obs.band = gnsstk::CarrierBand::L1;
+   navOut->signal.obs.code = gnsstk::TrackingCode::CA;
+   navOut->signal.nav = gnsstk::NavType::GPSLNAV;
+   navOut->signal.sat = gnsstk::SatID(23,gnsstk::SatelliteSystem::GPS);
+   navOut->signal.xmitSat = gnsstk::SatID(32,gnsstk::SatelliteSystem::GPS);
    toptr->deltatLS = 23; // set a simple, easy to verify value.
    toptr->refTime = ct;
    TUASSERT(fact1->addNavData(navOut));
    TUCATCH(navLib->addFactory(ndfp));
-   gpstk::NavTimeSystemConverter uut;
+   gnsstk::NavTimeSystemConverter uut;
    uut.navLib = navLib;
    double result = 0;
-   TUASSERT(uut.getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC,
+   TUASSERT(uut.getOffset(gnsstk::TimeSystem::GPS, gnsstk::TimeSystem::UTC,
                           ct+35, result));
    TUASSERTFE(23.0, result);
       // reverse the conversion and expect negative.
-   gpstk::CommonTime utc35(ct+35);
-   utc35.setTimeSystem(gpstk::TimeSystem::UTC);
-   TUASSERT(uut.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::GPS,
+   gnsstk::CommonTime utc35(ct+35);
+   utc35.setTimeSystem(gnsstk::TimeSystem::UTC);
+   TUASSERT(uut.getOffset(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::GPS,
                           utc35, result));
    TUASSERTFE(-23.0, result);
       // expect this to not work
-   TUASSERT(!uut.getOffset(gpstk::TimeSystem::UTC, gpstk::TimeSystem::BDT,
+   TUASSERT(!uut.getOffset(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::BDT,
                            utc35, result));
    TURETURN();
 }

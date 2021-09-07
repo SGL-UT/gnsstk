@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -76,7 +76,7 @@
 #include <vector>
 #include <map>
 
-// GPSTk
+// GNSSTk
 #include "Exception.hpp"
 #include "EphTime.hpp"
 #include "Position.hpp"
@@ -91,7 +91,7 @@
 #include "SolidEarthTides.hpp"
 #include "logstream.hpp"
 
-namespace gpstk {
+namespace gnsstk {
 
 //------------------------------------------------------------------------------------
 /// Class SolarSystem provides the functionality of SolarSytemEphemeris in the
@@ -248,7 +248,7 @@ public:
    Position SolarPosition(const EphTime tt)
    {
       try { return ECEFPosition(SolarSystemEphemeris::idSun, tt); }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    /// Convenience routine to get the ECEF position of the Moon
@@ -258,7 +258,7 @@ public:
    Position LunarPosition(const EphTime tt)
    {
       try { return ECEFPosition(SolarSystemEphemeris::idMoon, tt); }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    /// Convenience routine to get the ECEF position and velocity of the Sun
@@ -271,7 +271,7 @@ public:
       try {
          return ECEFPositionVelocity(SolarSystemEphemeris::idSun, tt, Pos, Vel);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    /// Convenience routine to get the ECEF position and velocity of the Moon
@@ -284,7 +284,7 @@ public:
       try {
          return ECEFPositionVelocity(SolarSystemEphemeris::idMoon, tt, Pos, Vel);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    /// Compute the satellite attitude, given the time and the satellite position SV
@@ -305,9 +305,9 @@ public:
    {
       try {
          Position Sun = SolarSystem::SolarPosition(tt);
-         return gpstk::SatelliteAttitude(SV, Sun);
+         return gnsstk::SatelliteAttitude(SV, Sun);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    /// Compute the angle between the Sun and the plane of the orbit of the satellite,
@@ -330,14 +330,14 @@ public:
    {
       try {
          Position Sun = SolarSystem::SolarPosition(tt);
-         gpstk::SunOrbitAngles(Pos, Vel, Sun, beta, phi);
+         gnsstk::SunOrbitAngles(Pos, Vel, Sun, beta, phi);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    /// Compute the site displacement due to solid Earth tides for the given Position
    /// (assumed to be fixed to the solid Earth) at the given time, given the position
-   /// of the site of interest; cf. gpstk::computeSolidEarthTides().
+   /// of the site of interest; cf. gnsstk::computeSolidEarthTides().
    /// Return a Triple containing the site displacement in ECEF XYZ coordinates with
    /// units meters.
    /// Reference IERS Conventions (1996) found in IERS Technical Note 21
@@ -358,9 +358,9 @@ public:
          const double EMRAT = SolarSystem::EarthToMoonMassRatio();
          const double SERAT = SolarSystem::SunToEarthMassRatio();
          return
-            gpstk::computeSolidEarthTides(site, tt, Sun, Moon, EMRAT, SERAT,iersconv);
+            gnsstk::computeSolidEarthTides(site, tt, Sun, Moon, EMRAT, SERAT,iersconv);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    /// Compute the site displacement due to rotational deformation due to polar motion
@@ -378,9 +378,9 @@ public:
          EphTime ttag(tt);
          ttag.convertSystemTo(TimeSystem::UTC);
          const EarthOrientation eo=EOPStore::getEOP(ttag.dMJD(), iersconv);
-         return gpstk::computePolarTides(site, tt, eo.xp, eo.yp, iersconv);
+         return gnsstk::computePolarTides(site, tt, eo.xp, eo.yp, iersconv);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
 private:
@@ -408,7 +408,7 @@ private:
 
 }; // end class SolarSystem
 
-}  // end namespace gpstk
+}  // end namespace gnsstk
 
 #endif // SOLAR_SYSTEM_INCLUDE
 // nothing below this

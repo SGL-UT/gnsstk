@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -51,9 +51,9 @@
 #include "Rinex3ObsData.hpp"
 
 using namespace std;
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 
-namespace gpstk {
+namespace gnsstk {
 
 // ---------------------------- read and write SatPass lists ---------------------
 // -------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ void Dump(vector<SatPass>& SatPassList, ostream& os, bool rev, bool dbug)
       }  // end while loop over SPit.next()
       os << "SPL End Dump of SatPass list" << endl;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end Dump()
 
 // -------------------------------------------------------------------------------
@@ -158,7 +158,7 @@ try {
 
    return msh.getNMS();
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end FindMilliseconds()
 
 // -------------------------------------------------------------------------------
@@ -209,7 +209,7 @@ try {
 
    //LOG(INFO) << msh.getFixMessage(verbose);
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end RemoveMilliseconds()
 
 // -------------------------------------------------------------------------------
@@ -306,7 +306,7 @@ try {
          try { RinFile >> obsdata; }
          catch(Exception& e) {
             LOG(ERROR) << "Reading RINEX obs threw exception " << e.what();
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
 
          if(RinFile.eof() || !RinFile.good()) break;
@@ -344,7 +344,7 @@ try {
                      continue;
                   }
                   else
-                     GPSTK_THROW(Exception(string("Invalid time step: expected ")
+                     GNSSTK_THROW(Exception(string("Invalid time step: expected ")
                         + asString<double>(dtin) + string(" seconds but found ")
                         + asString<double>(dt) + string(" at time ")
                         + printTime(obsdata.time,timfmt)));
@@ -372,7 +372,7 @@ try {
                   nOrder[nOrder.size()-1]++;
                   continue;
                }
-               else GPSTK_THROW(Exception(string("Invalid time step: expected ")
+               else GNSSTK_THROW(Exception(string("Invalid time step: expected ")
                   + asString<double>(dtin) + string(" seconds but found ")
                   + asString<double>(dt) + string(" at time ")
                   + printTime(obsdata.time,"%4F %10.3g")));
@@ -437,7 +437,7 @@ try {
                   Exception e("Timetags out of order in RINEX file " + filename
                      + " at time " + printTime(obsdata.time,timfmt)
                      + (lenient ? " - Error, this should not happen!" : ""));
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
 
                //else if(i == -3) {   // sat not found (RinexObsData form only)
@@ -455,7 +455,7 @@ try {
                   << " are out of time order";
             LOG(ERROR) << "ERROR - too many 'short timestep' warnings - "
                << "decimate the data file first.";
-            GPSTK_THROW(Exception("Too many short timesteps - decimate instead"));
+            GNSSTK_THROW(Exception("Too many short timesteps - decimate instead"));
          }
 
       } // end loop over obs data in file
@@ -470,7 +470,7 @@ try {
 
    // is there disagreement? throw if there is; SatPass must have correct dt
    if(::fabs(dt-dtin) > esttol)
-      GPSTK_THROW(Exception("Input time step (" + asString(dtin,2)
+      GNSSTK_THROW(Exception("Input time step (" + asString(dtin,2)
                 + ") does not match computed (" + asString(dt,2) + ")"));
 
    string msg = oss.str();
@@ -494,7 +494,7 @@ try {
 
    return nfiles;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // -------------------------------------------------------------------------------
@@ -602,7 +602,7 @@ int SatPassToRinex2File(string filename,
 
       rstrm.close();
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 
    return 0;
 }
@@ -729,7 +729,7 @@ int SatPassToRinex3File(string filename,
 
       rstrm.close();
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 
    return 0;
 }

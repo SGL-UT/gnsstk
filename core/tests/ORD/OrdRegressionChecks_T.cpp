@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -53,10 +53,10 @@
 
 #include "OrdMockClasses.hpp"
 
-using gpstk::CorrectedEphemerisRange;
-using gpstk::GAMMA_GPS;
-using gpstk::L1_FREQ_GPS;
-using gpstk::L2_FREQ_GPS;
+using gnsstk::CorrectedEphemerisRange;
+using gnsstk::GAMMA_GPS;
+using gnsstk::L1_FREQ_GPS;
+using gnsstk::L2_FREQ_GPS;
 
 using ::testing::Return;
 using ::testing::Invoke;
@@ -74,7 +74,7 @@ TEST(OrdTestRegression, TestIonoFreeRange) {
         std::cout << "PR[" << i << "] is: " << pseudoranges[i] << std::endl;
     }
 
-    double range = gpstk::ord::IonosphereFreeRange(frequencies, pseudoranges);
+    double range = gnsstk::ord::IonosphereFreeRange(frequencies, pseudoranges);
 
     // Old calculation in ObsRngDev.cpp
     // for dual frequency see IS-GPS-200, section 20.3.3.3.3.3
@@ -91,12 +91,12 @@ TEST(OrdTestRegression, TestIonoFreeRange) {
 
 TEST(OrdTestRegression, TestRawRange1) {
     MockXvtStore foo;
-    gpstk::Position rxLocation(10, 10, 0);
-    gpstk::SatID satId(10, gpstk::SatelliteSystem::UserDefined);
-    gpstk::CommonTime time(gpstk::CommonTime::BEGINNING_OF_TIME);
-    gpstk::Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(10, 0, 0);
+    gnsstk::Position rxLocation(10, 10, 0);
+    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
+    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
+    gnsstk::Xvt fakeXvt;
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(10, 0, 0);
     fakeXvt.clkbias = 10;
     fakeXvt.clkdrift = 10;
     fakeXvt.relcorr = 10;
@@ -104,10 +104,10 @@ TEST(OrdTestRegression, TestRawRange1) {
 
     EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
 
-    double resultRange = gpstk::ord::RawRange1(rxLocation, satId, time, foo,
+    double resultRange = gnsstk::ord::RawRange1(rxLocation, satId, time, foo,
             returnedXvt);
-    resultRange += gpstk::ord::SvClockBiasCorrection(returnedXvt);
-    resultRange += gpstk::ord::SvRelativityCorrection(returnedXvt);
+    resultRange += gnsstk::ord::SvClockBiasCorrection(returnedXvt);
+    resultRange += gnsstk::ord::SvRelativityCorrection(returnedXvt);
 
     CorrectedEphemerisRange cer;
 
@@ -120,12 +120,12 @@ TEST(OrdTestRegression, TestRawRange1) {
 
 TEST(OrdTestRegression, TestRawRange2) {
     MockXvtStore foo;
-    gpstk::Position rxLocation(10, 10, 0);
-    gpstk::SatID satId(10, gpstk::SatelliteSystem::UserDefined);
-    gpstk::CommonTime time(gpstk::CommonTime::BEGINNING_OF_TIME);
-    gpstk::Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(10, 0, 0);
+    gnsstk::Position rxLocation(10, 10, 0);
+    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
+    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
+    gnsstk::Xvt fakeXvt;
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(10, 0, 0);
     fakeXvt.clkbias = 10;
     fakeXvt.clkdrift = 10;
     fakeXvt.relcorr = 10;
@@ -133,10 +133,10 @@ TEST(OrdTestRegression, TestRawRange2) {
 
     EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
 
-    double resultRange = gpstk::ord::RawRange2(0, rxLocation, satId, time, foo,
+    double resultRange = gnsstk::ord::RawRange2(0, rxLocation, satId, time, foo,
             returnedXvt);
-    resultRange += gpstk::ord::SvClockBiasCorrection(returnedXvt);
-    resultRange += gpstk::ord::SvRelativityCorrection(returnedXvt);
+    resultRange += gnsstk::ord::SvClockBiasCorrection(returnedXvt);
+    resultRange += gnsstk::ord::SvRelativityCorrection(returnedXvt);
 
     CorrectedEphemerisRange cer;
 
@@ -149,12 +149,12 @@ TEST(OrdTestRegression, TestRawRange2) {
 
 TEST(OrdTestRegression, TestRawRange3) {
     MockXvtStore foo;
-    gpstk::Position rxLocation(10, 10, 0);
-    gpstk::SatID satId(10, gpstk::SatelliteSystem::UserDefined);
-    gpstk::CommonTime time(gpstk::CommonTime::BEGINNING_OF_TIME);
-    gpstk::Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(10, 0, 0);
+    gnsstk::Position rxLocation(10, 10, 0);
+    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
+    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
+    gnsstk::Xvt fakeXvt;
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(10, 0, 0);
     fakeXvt.clkbias = 10;
     fakeXvt.clkdrift = 10;
     fakeXvt.relcorr = 10;
@@ -162,10 +162,10 @@ TEST(OrdTestRegression, TestRawRange3) {
 
     EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
 
-    double resultRange = gpstk::ord::RawRange3(0, rxLocation, satId, time, foo,
+    double resultRange = gnsstk::ord::RawRange3(0, rxLocation, satId, time, foo,
             returnedXvt);
-    resultRange += gpstk::ord::SvClockBiasCorrection(returnedXvt);
-    resultRange += gpstk::ord::SvRelativityCorrection(returnedXvt);
+    resultRange += gnsstk::ord::SvClockBiasCorrection(returnedXvt);
+    resultRange += gnsstk::ord::SvRelativityCorrection(returnedXvt);
 
     CorrectedEphemerisRange cer;
 
@@ -178,12 +178,12 @@ TEST(OrdTestRegression, TestRawRange3) {
 
 TEST(OrdTestRegression, TestRawRange4) {
     MockXvtStore foo;
-    gpstk::Position rxLocation(10, 10, 0);
-    gpstk::SatID satId(10, gpstk::SatelliteSystem::UserDefined);
-    gpstk::CommonTime time(gpstk::CommonTime::BEGINNING_OF_TIME);
-    gpstk::Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(10, 0, 0);
+    gnsstk::Position rxLocation(10, 10, 0);
+    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
+    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
+    gnsstk::Xvt fakeXvt;
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(10, 0, 0);
     fakeXvt.clkbias = 10;
     fakeXvt.clkdrift = 10;
     fakeXvt.relcorr = 10;
@@ -191,10 +191,10 @@ TEST(OrdTestRegression, TestRawRange4) {
 
     EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
 
-    double resultRange = gpstk::ord::RawRange4(rxLocation, satId, time, foo,
+    double resultRange = gnsstk::ord::RawRange4(rxLocation, satId, time, foo,
             returnedXvt);
-    resultRange += gpstk::ord::SvClockBiasCorrection(returnedXvt);
-    resultRange += gpstk::ord::SvRelativityCorrection(returnedXvt);
+    resultRange += gnsstk::ord::SvClockBiasCorrection(returnedXvt);
+    resultRange += gnsstk::ord::SvRelativityCorrection(returnedXvt);
 
     CorrectedEphemerisRange cer;
 

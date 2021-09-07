@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -48,10 +48,10 @@
 #include "SEMStream.hpp"
 
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    SEMData::SEMData()
          : ecc(0, FFLead::Zero, 15, 4, 0, 'E', FFSign::NegSpace),
@@ -86,15 +86,15 @@ namespace gpstk
       strm << asString<short>(URAnum) << endl;
 
       //Ecc, i_offset, OMEGAdot
-      strm << ecc << " " << (i_offset / gpstk::PI) << " "
-           << (OMEGAdot / gpstk::PI) << endl;
+      strm << ecc << " " << (i_offset / gnsstk::PI) << " "
+           << (OMEGAdot / gnsstk::PI) << endl;
 
       //Ahalf, OMEGA0, w
-      strm << Ahalf << " " << (OMEGA0/gpstk::PI) << " " << (w/gpstk::PI)
+      strm << Ahalf << " " << (OMEGA0/gnsstk::PI) << " " << (w/gnsstk::PI)
            << endl;
 
       //M0, AF0, AF1
-      strm << (M0/gpstk::PI) << " " << AF0 << " " << AF1 << endl;
+      strm << (M0/gnsstk::PI) << " " << AF0 << " " << AF1 << endl;
 
       //SV_health
       strm << asString<short>(SV_health) << endl;
@@ -153,9 +153,9 @@ namespace gpstk
       length = line.length() - front;
       OMEGAdot = line.substr(front,length);
       // Convert from semicircles to radians.
-      i_offset *= gpstk::PI;
-      i_total *= gpstk::PI;
-      OMEGAdot *= gpstk::PI;
+      i_offset *= gnsstk::PI;
+      i_total *= gnsstk::PI;
+      OMEGAdot *= gnsstk::PI;
 
       // Sixth line - Sqrt of A, Omega0, and Arg of Perigee
       strm.formattedGetLine(line, true);
@@ -172,9 +172,9 @@ namespace gpstk
 
       front = line.find_first_not_of(whitespace,end);
       length = line.length() - front;
-      OMEGA0 *= gpstk::PI;
+      OMEGA0 *= gnsstk::PI;
       w = line.substr(front,length);
-      w *= gpstk::PI;
+      w *= gnsstk::PI;
 
       // Seventh Line - M0, AF0, AF1
       strm.formattedGetLine(line, true);
@@ -183,7 +183,7 @@ namespace gpstk
       end = line.find_first_of(whitespace,front);
       length = end - front;
       M0 = line.substr(front,length);
-      M0 *= gpstk::PI;
+      M0 *= gnsstk::PI;
 
       front = line.find_first_not_of(whitespace,end);
       end = line.find_first_of(whitespace,front);

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -48,9 +48,9 @@
 #include "logstream.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
-namespace gpstk
+namespace gnsstk
 {
    const string PRSolution::calfmt = string("%04Y/%02m/%02d %02H:%02M:%02S %P");
    const string PRSolution::gpsfmt = string("%4F %10.3g");
@@ -78,7 +78,7 @@ namespace gpstk
       // catch undefined allowedGNSS
       if(allowedGNSS.size() == 0) {
          Exception e("Must define systems vector allowedGNSS before processing");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       // must ignore and mark satellites if system is not found in allowedGNSS
@@ -185,7 +185,7 @@ namespace gpstk
    {
       if(!pTropModel) {
          Exception e("Undefined tropospheric model");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       if(Sats.size() != SVP.rows() ||
          (invMC.rows() > 0 && invMC.rows() != Sats.size())) {
@@ -193,11 +193,11 @@ namespace gpstk
          LOG(ERROR) << "SVP has dimension " << SVP.rows() << "x" << SVP.cols();
          LOG(ERROR) << "invMC has dimension " << invMC.rows() << "x" << invMC.cols();
          Exception e("Invalid dimensions");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       if(allowedGNSS.size() == 0) {
          Exception e("Must define systems vector allowedGNSS before processing");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       int iret(0),k,n;
@@ -381,7 +381,7 @@ namespace gpstk
 
             if(n != Nsvs) {
                Exception e("Counting error after satellite loop");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             LOG(DEBUG) << "Partials (" << P.rows() << "x" << P.cols() << ")\n"
@@ -478,7 +478,7 @@ namespace gpstk
 
          return iret;
       
-      } catch(Exception& e) { GPSTK_RETHROW(e); }
+      } catch(Exception& e) { GNSSTK_RETHROW(e); }
 
    } // end PRSolution::SimplePRSolution
 
@@ -496,7 +496,7 @@ namespace gpstk
          return (RAIMCompute(Tr, Sats, Pseudorange, invMC, pEph, pTropModel));
       }
       catch(Exception& e) {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }  // end PRSolution::RAIMComputeUnweighted()
 
@@ -797,7 +797,7 @@ namespace gpstk
          return iret;
       }
       catch(Exception& e) {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }  // end PRSolution::RAIMCompute()
 
@@ -815,7 +815,7 @@ namespace gpstk
          GDOP = RSS(PDOP,TDOP);
          return 0;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    // -------------------------------------------------------------------------
@@ -1037,4 +1037,4 @@ namespace gpstk
 
    const Vector<double> PRSolution::PRSNullVector;
 
-} // namespace gpstk
+} // namespace gnsstk

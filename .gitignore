@@ -9,7 +9,7 @@
 # build directories
 build*/
 cmake-build-debug/
-gpstk.egg-info/
+gnsstk.egg-info/
 
 # OS/X File system droppings
 *.DS_Store
@@ -19,6 +19,3 @@ gpstk.egg-info/
 
 # Coverage file results
 gcovr
-
-# GPSTK Python wrappers
-new_swig/gpstk_python/

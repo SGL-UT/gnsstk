@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -59,7 +59,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    const unsigned long OrbAlmGen::ALMANAC_PERIOD_LNAV = 720;     // 12.5 minutes for GPS LNAV
    const unsigned long OrbAlmGen::FRAME_PERIOD_LNAV   =  30;     //  30 seconds for GPS LNAV
@@ -120,13 +120,13 @@ namespace gpstk
             stringstream ss;
             ss << "Inappropriate navigation message type: " << nid;
             InvalidParameter ip(ss.str());
-            GPSTK_THROW(ip);
+            GNSSTK_THROW(ip);
          }
       }   // end switch
       }   // end try
       catch(InvalidParameter ip)
       {
-         GPSTK_RETHROW(ip);
+         GNSSTK_RETHROW(ip);
       }
 
          // After all this is done, declare that data has been loaded
@@ -191,12 +191,12 @@ namespace gpstk
    //  terms that are asseumed to be zero (0.0) for almanac messages
    //  have been removed. 
    //
-   double OrbAlmGen::svClockBias(const gpstk::CommonTime& t) const
+   double OrbAlmGen::svClockBias(const gnsstk::CommonTime& t) const
    {
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       double dtc,elaptc;
       elaptc = t - ctToe;
@@ -205,36 +205,36 @@ namespace gpstk
       return dtc;      
    }
 
-   double OrbAlmGen::svClockBiasM(const gpstk::CommonTime& t) const
+   double OrbAlmGen::svClockBiasM(const gnsstk::CommonTime& t) const
    {
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       double ret = svClockBias(t);
       ret = ret*C_MPS;
       return (ret);
    }
 
-   double OrbAlmGen::svClockDrift(const gpstk::CommonTime& t) const 
+   double OrbAlmGen::svClockDrift(const gnsstk::CommonTime& t) const 
    {
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       double drift;
       drift = af1;
       return drift;
    }
 
-   gpstk::Xvt OrbAlmGen::svXvt(const gpstk::CommonTime& t) const
+   gnsstk::Xvt OrbAlmGen::svXvt(const gnsstk::CommonTime& t) const
    {
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       Xvt sv;
 
@@ -407,12 +407,12 @@ namespace gpstk
       return sv;
    }
 
-   double OrbAlmGen::svRelativity(const gpstk::CommonTime& t) const
+   double OrbAlmGen::svRelativity(const gnsstk::CommonTime& t) const
    {
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       GPSEllipsoid ell;
@@ -602,7 +602,7 @@ namespace gpstk
       if (!dataLoaded())
       {
          InvalidRequest exc("No data in the object");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       string tform2("%02m/%02d/%4Y %03j %02H:%02M:%02S");
       stringstream ss; 
@@ -636,7 +636,7 @@ namespace gpstk
 
    } // end of dump()
 
-   void OrbAlmGen::loadDataGpsLNAV(const gpstk::PackedNavBits& msg)
+   void OrbAlmGen::loadDataGpsLNAV(const gnsstk::PackedNavBits& msg)
    {
       unsigned short subframe = (unsigned short) msg.asUnsignedLong(49, 3, 1);
       unsigned short SVID = (unsigned short) msg.asUnsignedLong(62,6,1);
@@ -646,7 +646,7 @@ namespace gpstk
          stringstream ss;
          ss << "Expected GPS LNAV subframe 4/5.  Found subframe " << subframe;
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip); 
+         GNSSTK_THROW(ip); 
       }
       if (SVID>32)
       {
@@ -654,7 +654,7 @@ namespace gpstk
          ss << "Expected GPS LNAV almanac with SV ID 1-32.  Found SV ID ";
          ss << SVID;
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip); 
+         GNSSTK_THROW(ip); 
       }
 
          // If the almanac time parameters are not yet set, estimate 
@@ -689,7 +689,7 @@ namespace gpstk
          ss << "Found dummy almanac data from " << satID << " for subframe " << subframe
             << " page " << pageInCycle; 
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip); 
+         GNSSTK_THROW(ip); 
       }
 
          // Crack the bits into engineering units. 
@@ -739,7 +739,7 @@ namespace gpstk
       endValid.setTimeSystem(TimeSystem::GPS);
    }
 
-   void OrbAlmGen::loadDataGpsCNAV(const gpstk::PackedNavBits& msg)
+   void OrbAlmGen::loadDataGpsCNAV(const gnsstk::PackedNavBits& msg)
    {
       unsigned short msgType = (unsigned short) msg.asUnsignedLong(14, 6, 1);
       unsigned short SVID = (unsigned short) msg.asUnsignedLong(148,6,1);
@@ -749,7 +749,7 @@ namespace gpstk
          stringstream ss;
          ss << "Expected GPS CNAV message 37.  Found message " << msgType;
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip); 
+         GNSSTK_THROW(ip); 
       }
 
          // Store the transmitting SV
@@ -806,9 +806,9 @@ namespace gpstk
       {
          eph.dump(s);
       }
-      catch(gpstk::Exception& ex)
+      catch(gnsstk::Exception& ex)
       {
-         GPSTK_RETHROW(ex);
+         GNSSTK_RETHROW(ex);
       }
       return s;
 

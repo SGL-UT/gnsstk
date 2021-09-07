@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -43,7 +43,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-// GPSTk
+// GNSSTk
 #include "StringUtils.hpp"
 #include "MiscMath.hpp"
 #include "GNSSconstants.hpp"
@@ -55,7 +55,7 @@
 
 using namespace std;
 
-namespace gpstk {
+namespace gnsstk {
 
    using namespace StringUtils;
 
@@ -90,7 +90,7 @@ namespace gpstk {
       ifstream infile(filename.c_str());
       if(!infile || !infile.is_open()) {
          Exception e("File " + filename + " could not be opened.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       n = 0;         // number of successes
@@ -156,7 +156,7 @@ namespace gpstk {
                if(numWords(line) != 11) {
                   Exception e("File " + filename + " is corrupted for site " + site
                         + " - offending line follows\n" + line);
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                //LOG(VERBOSE) << "Push back line " << line;
                for(i=0; i<11; i++)
@@ -201,9 +201,9 @@ namespace gpstk {
 
       return n;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
-   catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-   catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
+   catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+   catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
 
    //---------------------------------------------------------------------------------
@@ -221,7 +221,7 @@ namespace gpstk {
    try {
       if(!isValid(site)) {
          Exception e("Site " + site + " has not been initialized.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       // get the coefficients for this site
@@ -316,12 +316,12 @@ namespace gpstk {
 
       return dc;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
    catch(exception& e) {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
-   catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+   catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
 
    //---------------------------------------------------------------------------------
@@ -343,7 +343,7 @@ namespace gpstk {
 
          if(!isValid(site)) {
             Exception e("Site " + site + " has not been initialized.");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          // get the coefficients for this site
@@ -370,7 +370,7 @@ namespace gpstk {
          // NB there must be 11 std tides in SchInd[]
          if((int)(sizeof(SchInd) / sizeof(NVector)) != NSTD) {
             Exception e("Static SchInd array is corrupted");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          // compute time argument
@@ -537,12 +537,12 @@ namespace gpstk {
 
          return dc;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
       catch(exception& e) {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
-      catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+      catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 
    }  // end Triple OceanLoadTides::computeDisplacement
 
@@ -728,7 +728,7 @@ namespace gpstk {
       if((int)(sizeof(DerAmp) / sizeof(double)) != NDER
             || (int)(sizeof(DerInd) / sizeof(NVector)) != NDER) {
          Exception e("Static arrays are corrupted");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    
       int i,j,k,kk;
@@ -895,6 +895,6 @@ namespace gpstk {
 
    }  // end int OceanLoadTides::deriveTides()
 
-}  // end namespace gpstk
+}  // end namespace gnsstk
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------

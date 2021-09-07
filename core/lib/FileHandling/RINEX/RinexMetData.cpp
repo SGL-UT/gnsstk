@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -47,10 +47,10 @@
 #include "RinexMetData.hpp"
 #include "RinexMetStream.hpp"
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    const int RinexMetData::maxObsPerLine = 8;
    const int RinexMetData::maxObsPerContinuationLine = 10;
@@ -73,7 +73,7 @@ namespace gpstk
          {
             FFStreamError err("Couldn't find data for " + 
                               RinexMetHeader::convertObsType(strm.header.obsTypeList[i]));
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
          line += rightJustify(asString((*itr).second,1),7);
       }
@@ -98,7 +98,7 @@ namespace gpstk
             {
                FFStreamError err("Couldn't find data for " + 
                                  RinexMetHeader::convertObsType(strm.header.obsTypeList[i]));
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
             line += rightJustify(asString((*itr).second,1),7);
          }
@@ -143,7 +143,7 @@ namespace gpstk
       if (data.size() != hdr.obsTypeList.size())
       {
          FFStreamError e("Incorrect number of records");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    } 
 
@@ -169,7 +169,7 @@ namespace gpstk
       catch (std::exception &e)
       {
          FFStreamError err("std::exception: " + string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -191,7 +191,7 @@ namespace gpstk
       catch (std::exception &e)
       {
          FFStreamError err("std::exception: " + string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -220,7 +220,7 @@ namespace gpstk
               (line[15+addYrLen] != ' '))
          {
             FFStreamError e("Invalid time format");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          int year, month, day, hour, min;
@@ -248,7 +248,7 @@ namespace gpstk
       catch (std::exception &e)
       {
          FFStreamError err("std::exception: " + string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 

@@ -1,35 +1,35 @@
    // Wrap () operators for NavDataOperators
-%extend gpstk::RinexNavDataOperatorLessThanFull
+%extend gnsstk::RinexNavDataOperatorLessThanFull
 {
-   bool __call__(const gpstk::RinexNavData& l, const gpstk::RinexNavData& r)
+   bool __call__(const gnsstk::RinexNavData& l, const gnsstk::RinexNavData& r)
    {
       return (*($self))(l, r);
    }
 }
-%extend gpstk::RinexNavDataOperatorEqualsFull
+%extend gnsstk::RinexNavDataOperatorEqualsFull
 {
-   bool __call__(const gpstk::RinexNavData& l, const gpstk::RinexNavData& r)
+   bool __call__(const gnsstk::RinexNavData& l, const gnsstk::RinexNavData& r)
    {
       return (*($self))(l, r);
    }
 }
-%extend gpstk::RinexNavDataOperatorLessThanSimple
+%extend gnsstk::RinexNavDataOperatorLessThanSimple
 {
-   bool __call__(const gpstk::RinexNavData& l, const gpstk::RinexNavData& r)
+   bool __call__(const gnsstk::RinexNavData& l, const gnsstk::RinexNavData& r)
    {
       return (*($self))(l, r);
    }
 }
-%extend gpstk::RinexNavHeaderTouchHeaderMerge
+%extend gnsstk::RinexNavHeaderTouchHeaderMerge
 {
-   bool __call__(const gpstk::RinexNavHeader& l)
+   bool __call__(const gnsstk::RinexNavHeader& l)
    {
       return (*($self))(l);
    }
 }
-%extend gpstk::RinexNavDataFilterPRN
+%extend gnsstk::RinexNavDataFilterPRN
 {
-   bool __call__(const gpstk::RinexNavData& l)
+   bool __call__(const gnsstk::RinexNavData& l)
    {
       return (*($self))(l);
    }

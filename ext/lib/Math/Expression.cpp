@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -54,7 +54,7 @@
 #include "StringUtils.hpp"
 #include "Expression.hpp"
 
-namespace gpstk 
+namespace gnsstk 
 {
    
    double Expression::BinOpNode::getValue() 
@@ -71,7 +71,7 @@ namespace gpstk
       if (op=="/") return leftVal / rightVal;
 
       // else THROW exception
-      GPSTK_THROW(ExpressionException());
+      GNSSTK_THROW(ExpressionException());
 
    }
 
@@ -93,7 +93,7 @@ namespace gpstk
       if (op=="log10") return ::log10(rightVal);
 
       // else THROW exception
-      GPSTK_THROW(ExpressionException());
+      GNSSTK_THROW(ExpressionException());
    }
 
    std::ostream& Expression::FuncOpNode::print(std::ostream& ostr) {
@@ -124,7 +124,7 @@ namespace gpstk
       if (!hasValue) 
       { 
          ExpressionException ee("Variable " + name + " undefined."); 
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
       
       return value;
@@ -349,7 +349,7 @@ namespace gpstk
       // Sort the breaks into a list
       // Please note that sorting a linked list is expensive compared to
       // sorting a vector or map, as the search cost is high (lists are not sorted).
-      // This should be revisited IF large expressions are handled by the GPSTk.
+      // This should be revisited IF large expressions are handled by the GNSSTk.
       breaks.sort();
 
       list<string> tokens;
@@ -679,4 +679,4 @@ namespace gpstk
       return gotSet;
    }
       
-} // end namespace gpstk
+} // end namespace gnsstk

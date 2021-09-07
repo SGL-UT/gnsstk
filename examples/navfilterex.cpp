@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -47,7 +47,7 @@
 #include "StringUtils.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 int main()
 {
@@ -76,25 +76,25 @@ int main()
          continue; // comment line
       if (line.length() == 0)
          continue; // blank line
-      timeString = gpstk::StringUtils::firstWord(line, ',');
+      timeString = gnsstk::StringUtils::firstWord(line, ',');
       scanTime(recTime, timeString, "%4Y %3j %02H:%02M:%04.1f");
 
          // copy the subframe words into subframe
       unsigned subframeIdx = 0;
       for (unsigned strWord = 6; strWord <= 15; strWord++)
       {
-         wordStr = gpstk::StringUtils::word(line, strWord, ',');
-         subframe[subframeIdx++] = gpstk::StringUtils::x2uint(wordStr);
+         wordStr = gnsstk::StringUtils::word(line, strWord, ',');
+         subframe[subframeIdx++] = gnsstk::StringUtils::x2uint(wordStr);
       }
-      navFiltData.prn = gpstk::StringUtils::asUnsigned(
-         gpstk::StringUtils::word(line, 2, ','));
+      navFiltData.prn = gnsstk::StringUtils::asUnsigned(
+         gnsstk::StringUtils::word(line, 2, ','));
          // note that the test file contents use enums that probably
          // don't match ObsID's enums but that's really not important
          // for this example.
-      navFiltData.carrier = (CarrierBand)gpstk::StringUtils::asInt(
-         gpstk::StringUtils::word(line, 3, ','));
-      navFiltData.code = (gpstk::TrackingCode)gpstk::StringUtils::asInt(
-         gpstk::StringUtils::word(line, 4, ','));
+      navFiltData.carrier = (CarrierBand)gnsstk::StringUtils::asInt(
+         gnsstk::StringUtils::word(line, 3, ','));
+      navFiltData.code = (gnsstk::TrackingCode)gnsstk::StringUtils::asInt(
+         gnsstk::StringUtils::word(line, 4, ','));
 
          // validate the subframe
       NavFilter::NavMsgList l = mgr.validate(&navFiltData);

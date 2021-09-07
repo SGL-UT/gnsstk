@@ -1,5 +1,5 @@
-usr/include/gpstk*/gpstk/*.h
-usr/include/gpstk*/gpstk/*.hpp
-usr/share/cmake/GPSTK/*
+usr/include/gnsstk*/gnsstk/*.h
+usr/include/gnsstk*/gnsstk/*.hpp
+usr/share/cmake/GNSSTK/*
 usr/lib/*/lib*.so
-usr/bin/gpstk-config
+usr/bin/gnsstk-config

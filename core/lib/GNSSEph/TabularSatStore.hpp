@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,8 +41,8 @@
  * from an SP3 file) for several satellites, and compute values at any
  * timetag from this table. */
 
-#ifndef GPSTK_TABULAR_SAT_STORE_INCLUDE
-#define GPSTK_TABULAR_SAT_STORE_INCLUDE
+#ifndef GNSSTK_TABULAR_SAT_STORE_INCLUDE
+#define GNSSTK_TABULAR_SAT_STORE_INCLUDE
 
 #include <map>
 #include <iostream>
@@ -56,7 +56,7 @@
 #include "CivilTime.hpp"
 //#include "logstream.hpp"      // TEMP
 
-namespace gpstk
+namespace gnsstk
 {
 
       /// @ingroup GNSSEph
@@ -228,9 +228,9 @@ namespace gpstk
             if(satit == tables.end())
             {
                InvalidRequest
-                  e("Satellite " + gpstk::StringUtils::asString(sat) +
+                  e("Satellite " + gnsstk::StringUtils::asString(sat) +
                     " not found.");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // this is the data table for the sat
@@ -240,9 +240,9 @@ namespace gpstk
             if(dtable.size() < 2)
             {
                InvalidRequest e("Inadequate data (size < 2) for satellite " +
-                                gpstk::StringUtils::asString(sat) +
+                                gnsstk::StringUtils::asString(sat) +
                                 printTime(ttag,fmt));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // find the timetag in this table
@@ -264,9 +264,9 @@ namespace gpstk
             if (it1 == dtable.end())
             {
                InvalidRequest e("No data in time range for satellite " +
-                                gpstk::StringUtils::asString(sat) +
+                                gnsstk::StringUtils::asString(sat) +
                                 printTime(ttag,fmt));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // ttag is <= first time in table
@@ -281,9 +281,9 @@ namespace gpstk
                }
                InvalidRequest e("Inadequate data before(1) requested time for"
                                 " satellite " +
-                                gpstk::StringUtils::asString(sat) +
+                                gnsstk::StringUtils::asString(sat) +
                                 printTime(ttag,fmt));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // move it1 down by one
@@ -297,9 +297,9 @@ namespace gpstk
                }
                InvalidRequest e("Inadequate data before(2) requested time for"
                                 " satellite " +
-                                gpstk::StringUtils::asString(sat) +
+                                gnsstk::StringUtils::asString(sat) +
                                 printTime(ttag,fmt));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                //LOG(INFO) << "OK, have interval " << printTime(it1->first,"%F/%g") <<
@@ -311,9 +311,9 @@ namespace gpstk
             if(checkDataGap && (it2->first-it1->first) > gapInterval)
             {
                InvalidRequest e("Gap at interpolation time for satellite " +
-                                gpstk::StringUtils::asString(sat) +
+                                gnsstk::StringUtils::asString(sat) +
                                 printTime(ttag,fmt));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // now expand the interval to include 2*nhalf timesteps
@@ -326,9 +326,9 @@ namespace gpstk
                {
                   InvalidRequest
                      e("Inadequate data before(3) requested time for"
-                       " satellite " + gpstk::StringUtils::asString(sat) +
+                       " satellite " + gnsstk::StringUtils::asString(sat) +
                        printTime(ttag,fmt));
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                   //LOG(INFO) << k << " expand left " << printTime(it1->first,"%F/%g");
 
@@ -347,9 +347,9 @@ namespace gpstk
                   {
                      InvalidRequest
                         e("Inadequate data after(2) requested time for"
-                          " satellite " + gpstk::StringUtils::asString(sat) +
+                          " satellite " + gnsstk::StringUtils::asString(sat) +
                           printTime(ttag,fmt));
-                     GPSTK_THROW(e);
+                     GNSSTK_THROW(e);
                   }
                }
                   //LOG(INFO) << k << " expand right " << printTime(it2->first,"%F/%g");
@@ -360,16 +360,16 @@ namespace gpstk
             {
                InvalidRequest e("Interpolation interval too large for"
                                 " satellite " +
-                                gpstk::StringUtils::asString(sat) +
+                                gnsstk::StringUtils::asString(sat) +
                                 printTime(ttag,fmt));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             return exactMatch;
          }
          catch(InvalidRequest& ir)
          {
-            GPSTK_RETHROW(ir);
+            GNSSTK_RETHROW(ir);
          }
       }
 
@@ -431,9 +431,9 @@ namespace gpstk
             if(satit == tables.end())
             {
                InvalidRequest ir("Satellite " +
-                                 gpstk::StringUtils::asString(sat) +
+                                 gnsstk::StringUtils::asString(sat) +
                                  " not found.");
-               GPSTK_THROW(ir);
+               GNSSTK_THROW(ir);
             }
 
                // this is the data table for the sat
@@ -460,17 +460,17 @@ namespace gpstk
             if(it1 == dtable.end())
             {
                InvalidRequest ir("No data for the requested time of satellite "
-                                 + gpstk::StringUtils::asString(sat)
+                                 + gnsstk::StringUtils::asString(sat)
                                  + printTime(ttag,fmt));
-               GPSTK_THROW(ir);
+               GNSSTK_THROW(ir);
             }
 
             if(int(dtable.size()) < 2*nhalf)
             {
                InvalidRequest ir("Inadequate data for satellite " +
-                                 gpstk::StringUtils::asString(sat) +
+                                 gnsstk::StringUtils::asString(sat) +
                                  printTime(ttag,fmt));
-               GPSTK_THROW(ir);
+               GNSSTK_THROW(ir);
             }
 
                // check for gap only when exactMatch==false
@@ -486,9 +486,9 @@ namespace gpstk
                   {
                      InvalidRequest ir(
                         "Gap at interpolation time for satellite " +
-                        gpstk::StringUtils::asString(sat) +
+                        gnsstk::StringUtils::asString(sat) +
                         printTime(ttag,fmt));
-                     GPSTK_THROW(ir);
+                     GNSSTK_THROW(ir);
                   }
                }
                else
@@ -497,9 +497,9 @@ namespace gpstk
                   {
                      InvalidRequest ir(
                         "Gap may produce bad interpolation precision for"
-                        " satellite " + gpstk::StringUtils::asString(sat) +
+                        " satellite " + gnsstk::StringUtils::asString(sat) +
                         printTime(ttag,fmt));
-                     GPSTK_THROW(ir);
+                     GNSSTK_THROW(ir);
                   }
                }
             }
@@ -542,7 +542,7 @@ namespace gpstk
             if(ileft2 > 0)
             {
                InvalidRequest ir("This should never happen");
-               GPSTK_THROW(ir);
+               GNSSTK_THROW(ir);
             }
 
                // check that the interval is not too large
@@ -550,16 +550,16 @@ namespace gpstk
             {
                InvalidRequest ir("Interpolation interval too large for"
                                  " satellite " +
-                                 gpstk::StringUtils::asString(sat) +
+                                 gnsstk::StringUtils::asString(sat) +
                                  printTime(ttag,fmt));
-               GPSTK_THROW(ir);
+               GNSSTK_THROW(ir);
             }
 
             return exactMatch;
          }
          catch(InvalidRequest& ir)
          {
-            GPSTK_RETHROW(ir);
+            GNSSTK_RETHROW(ir);
          }
       }
 
@@ -635,7 +635,7 @@ namespace gpstk
                   for(jt=it->second.begin(); jt!=it->second.end(); jt++)
                   {
                      os << " " << printTime(jt->first,fmt)
-                        << " " << gpstk::StringUtils::asString(it->first)
+                        << " " << gnsstk::StringUtils::asString(it->first)
                         << " " << jt->second /// @note requires operator<<(DataRecord)
                         << std::endl;
                   }
@@ -700,9 +700,9 @@ namespace gpstk
             && ts != storeTimeSystem)
          {
             InvalidRequest ir("Conflicting time systems: " +
-                              gpstk::StringUtils::asString(ts) + " - " +
-                              gpstk::StringUtils::asString(storeTimeSystem));
-            GPSTK_THROW(ir);
+                              gnsstk::StringUtils::asString(ts) + " - " +
+                              gnsstk::StringUtils::asString(storeTimeSystem));
+            GNSSTK_THROW(ir);
          }
       }
 
@@ -978,6 +978,6 @@ namespace gpstk
 
       //@}
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk
 
-#endif // GPSTK_TABULAR_SAT_STORE_INCLUDE
+#endif // GNSSTK_TABULAR_SAT_STORE_INCLUDE

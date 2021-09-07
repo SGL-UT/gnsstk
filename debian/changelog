@@ -131,7 +131,7 @@ gpstk (10.0.0-1) stable; urgency=low
 gpstk (9.1.0-1) stable; urgency=low
 
   * Updated to version 9.1.0
-  * Fix conda recipe to specify correct default branch for GPSTk.
+  * Fix conda recipe to specify correct default branch for GNSSTk.
   * Update CI pipelines to make protected word searches advisory only.
   * Add accessors to the ObsID description maps for SWIG.
   * Update across the library to improve documentation.
@@ -196,7 +196,7 @@ gpstk (7.0.0-1) stable; urgency=low
   * Fix various pieces of code to resolve warning messages on various
     platforms.
   * Fix OrbSysGpsL_55 Restore output of text message
-  * Fix core/lib include statements to search GPSTk include directory.
+  * Fix core/lib include statements to search GNSSTk include directory.
   * Refactor Yuma/SEM file support back into ext
   * Add Documentation Artifact to CI Pipeline
   * Add SatMetaDataStore findSatByFdmaSlot
@@ -210,8 +210,8 @@ gpstk (7.0.0-1) stable; urgency=low
   * Add EnumIterator class to provide the ability to iterate over the
     above enum classes.
   * Refactor swig bindings for enums to use similar naming conventions
-    between C++ and python (e.g. gpstk::TrackingCode::CA in C++ and
-    gpstk.TrackingCode.CA in python)
+    between C++ and python (e.g. gnsstk::TrackingCode::CA in C++ and
+    gnsstk.TrackingCode.CA in python)
   * Move RINEX-isms (such as the string constructor for decoding RINEX
     obs IDs) in ObsID into RinexObsID where they belong.
   * Refactor ObsID and RinexObsID initialization of containers (tcDesc,
@@ -312,7 +312,7 @@ gpstk (5.0.0-1) stable; urgency=low
 
   * Updated to version 5.0.0
   * Add tests for computeXvt and getSVHealth with unhealthy satellites
-  * Update SWIG files so that gpstk::Exception is treated as a Python
+  * Update SWIG files so that gnsstk::Exception is treated as a Python
     Exception
   * Add ObsID Add methods to convert between enumeration and string and
     test them.

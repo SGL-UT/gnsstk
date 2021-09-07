@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -54,8 +54,8 @@ public:
             // make sure that getPrnXvt is getting the correct
             // ephemeris.  Implicitly checks the findUserEphemeris
             // method
-         gpstk::GPSEphemerisStore store;
-         gpstk::GPSEphemeris eph1, eph2, eph3;
+         gnsstk::GPSEphemerisStore store;
+         gnsstk::GPSEphemeris eph1, eph2, eph3;
 /* GPSEphemeris has no bit conversion.  Fantastic.
          uint32_t eph1A[] =
             {
@@ -98,12 +98,12 @@ public:
          eph3.addSubframe(&eph3A[20], 1919, 11, 1);
 */
 
-         gpstk::SatID sat(11, gpstk::SatelliteSystem::GPS);
-         gpstk::ObsID obsID(gpstk::ObservationType::NavMsg,
-                            gpstk::CarrierBand::L1,
-                            gpstk::TrackingCode::CA);
+         gnsstk::SatID sat(11, gnsstk::SatelliteSystem::GPS);
+         gnsstk::ObsID obsID(gnsstk::ObservationType::NavMsg,
+                            gnsstk::CarrierBand::L1,
+                            gnsstk::TrackingCode::CA);
 
-         eph1.transmitTime = gpstk::GPSWeekSecond(1917, 568800);
+         eph1.transmitTime = gnsstk::GPSWeekSecond(1917, 568800);
          eph1.HOWtime = 568806;
          eph1.IODE = eph1.IODC = 84;
          eph1.health = 0;
@@ -118,8 +118,8 @@ public:
          eph1.dataLoadedFlag = true;
          eph1.satID = sat;
          eph1.obsID = obsID;
-         eph1.ctToe = gpstk::GPSWeekSecond(1917, 576000);
-         eph1.ctToc = gpstk::GPSWeekSecond(1917, 576000);
+         eph1.ctToe = gnsstk::GPSWeekSecond(1917, 576000);
+         eph1.ctToc = gnsstk::GPSWeekSecond(1917, 576000);
          eph1.af0 = -6.66419510E-04;
          eph1.af1 = -1.13686838E-12;
          eph1.af2 = 0.00000000E+00;
@@ -143,7 +143,7 @@ public:
          eph1.adjustValidity();
 
          eph2.IODE = eph2.IODC = 18;
-         eph2.transmitTime   = gpstk::GPSWeekSecond(1917, 570630);
+         eph2.transmitTime   = gnsstk::GPSWeekSecond(1917, 570630);
          eph2.HOWtime        = 570606; //570636;
          eph2.health         = 0;
          eph2.accuracyFlag   = 0;
@@ -157,8 +157,8 @@ public:
          eph2.dataLoadedFlag = true;
          eph2.satID          = sat;
          eph2.obsID          = obsID;
-         eph2.ctToe          = gpstk::GPSWeekSecond(1917, 575984);
-         eph2.ctToc          = gpstk::GPSWeekSecond(1917, 575984);
+         eph2.ctToe          = gnsstk::GPSWeekSecond(1917, 575984);
+         eph2.ctToc          = gnsstk::GPSWeekSecond(1917, 575984);
          eph2.af0            = -6.66412525E-04;
          eph2.af1            = -1.02318154E-12;
          eph2.af2            = 0.00000000E+00;
@@ -182,7 +182,7 @@ public:
          eph2.adjustValidity();
 
          eph3.IODE = eph3.IODC = 20;
-         eph3.transmitTime   = gpstk::GPSWeekSecond(1917, 576000);
+         eph3.transmitTime   = gnsstk::GPSWeekSecond(1917, 576000);
          eph3.HOWtime        = 576006;
          eph3.health         = 0;
          eph3.accuracyFlag   = 0;
@@ -196,8 +196,8 @@ public:
          eph3.dataLoadedFlag = true;
          eph3.satID          = sat;
          eph3.obsID          = obsID;
-         eph3.ctToe          = gpstk::GPSWeekSecond(1917, 583184);
-         eph3.ctToc          = gpstk::GPSWeekSecond(1917, 583184);
+         eph3.ctToe          = gnsstk::GPSWeekSecond(1917, 583184);
+         eph3.ctToc          = gnsstk::GPSWeekSecond(1917, 583184);
          eph3.af0            = -6.66419510E-04;
          eph3.af1            = -1.02318154E-12;
          eph3.af2            = 0.00000000E+00;
@@ -224,14 +224,14 @@ public:
          store.addEphemeris(eph2);
          store.addEphemeris(eph3);
 
-         gpstk::CommonTime start = gpstk::CivilTime(2016, 10, 8, 13, 50, 0);
-         start.setTimeSystem(gpstk::TimeSystem::Any);
+         gnsstk::CommonTime start = gnsstk::CivilTime(2016, 10, 8, 13, 50, 0);
+         start.setTimeSystem(gnsstk::TimeSystem::Any);
             // test from 13:50:00 to 18:10:00 at 5min increments
             // 2 + 1400H + 1500H + 1600H + 1700H + 3
             // 5 + 4xH = 5 + 4*12 = 53
          for (unsigned long epCount = 0; epCount < 53; epCount++)
          {
-            gpstk::CommonTime what(start + (epCount * 300));
+            gnsstk::CommonTime what(start + (epCount * 300));
             short iodc, expected;
                // this will change if "start" changes
             if (epCount < 2)
@@ -244,23 +244,23 @@ public:
                expected = 20;
             try
             {
-                  //gpstk::Xvt meh = store.getXvt(11, what, iodc);
-               gpstk::GPSEphemeris eph = store.findEphemeris(sat, what);
+                  //gnsstk::Xvt meh = store.getXvt(11, what, iodc);
+               gnsstk::GPSEphemeris eph = store.findEphemeris(sat, what);
                iodc = eph.IODC;
             }
-            catch (gpstk::InvalidRequest &exc)
+            catch (gnsstk::InvalidRequest &exc)
             {
                iodc = -666;
             }
             TUASSERTE(short, expected, iodc);
                /*
             cout << setw(2) << epCount << " "
-                 << gpstk::printTime(what, "%Y/%02m/%02d %02H:%02M:%02S")
+                 << gnsstk::printTime(what, "%Y/%02m/%02d %02H:%02M:%02S")
                  << " " << iodc << " expect " << expected << endl;
                */
          }
       }
-      catch (gpstk::Exception &exc)
+      catch (gnsstk::Exception &exc)
       {
          cerr << exc << endl;
          TUFAIL("Unexpected exception");

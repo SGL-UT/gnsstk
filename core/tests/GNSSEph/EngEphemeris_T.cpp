@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,7 +41,7 @@
 #include "GPSWeekZcount.hpp"
 #include <iostream>
 #include <sstream>
-using namespace gpstk;
+using namespace gnsstk;
 
 #ifdef _MSC_VER
 #define LDEXP(x,y) ldexp(x,y)
@@ -138,9 +138,9 @@ public:
        * subframes.  Necessary for addSubframe and
        * addSubframeNoParity.  Makes it seem like it has 3 valid
        * subframes. */
-   gpstk::EngEphemeris fakeEphemerisInit(void)
+   gnsstk::EngEphemeris fakeEphemerisInit(void)
    {
-      gpstk::EngEphemeris fakeEphemeris;
+      gnsstk::EngEphemeris fakeEphemeris;
 
          // array 30 bit words all set to one, an invalid
          // subframe. Word 2 is different, contains SF id
@@ -174,8 +174,8 @@ public:
 // Doesn't test any of the data stored in the orbit or clock objects
 //=======================================================================
 
-   void subframe1Check(gpstk::EngEphemeris dataStore,
-                       gpstk::TestUtil& testFramework,
+   void subframe1Check(gnsstk::EngEphemeris dataStore,
+                       gnsstk::TestUtil& testFramework,
                        bool skipASAlert = false)
    {
       TUASSERT(dataStore.haveSubframe[0]);
@@ -200,8 +200,8 @@ public:
    }
 
 
-   void subframe2Check(gpstk::EngEphemeris dataStore,
-                       gpstk::TestUtil& testFramework,
+   void subframe2Check(gnsstk::EngEphemeris dataStore,
+                       gnsstk::TestUtil& testFramework,
                        bool skipASAlert = false)
    {
       TUASSERT(dataStore.haveSubframe[1]);
@@ -221,8 +221,8 @@ public:
    }
 
 
-   void subframe3Check(gpstk::EngEphemeris dataStore,
-                       gpstk::TestUtil& testFramework,
+   void subframe3Check(gnsstk::EngEphemeris dataStore,
+                       gnsstk::TestUtil& testFramework,
                        bool skipASAlert = false)
    {
       TUASSERT(dataStore.haveSubframe[2]);
@@ -244,7 +244,7 @@ public:
       TUDEF("EngEphemeris", "Default Constructor");
       unsigned badCount = 0;
 
-      gpstk::EngEphemeris empty;
+      gnsstk::EngEphemeris empty;
 
       TUASSERTE(short, 0, empty.PRNID);
       TUASSERTE(short, 0, empty.tracker);
@@ -297,7 +297,7 @@ public:
    {
       TUDEF("EngEphemeris", "addSubframe");
 
-      gpstk::EngEphemeris dataStore;
+      gnsstk::EngEphemeris dataStore;
 
          // Same values as for addSubframeNoParityTest below, just
          // added correct parity.  Parity was calculated using the
@@ -333,7 +333,7 @@ public:
    {
       TUDEF("EngEphemeris", "addSubframeNoParity");
 
-      gpstk::EngEphemeris dataStore;
+      gnsstk::EngEphemeris dataStore;
       dataStore = fakeEphemerisInit();
 
          /*
@@ -543,7 +543,7 @@ IODE (91)      IDOT*2^43 (.307155651409E-9*2^43/pi) parity comp
    }
 
 
-   unsigned setSF1Test(gpstk::EngEphemeris& dataStore)
+   unsigned setSF1Test(gnsstk::EngEphemeris& dataStore)
    {
       TUDEF("EngEphemeris", "setSF1");
 
@@ -587,7 +587,7 @@ IODE (91)      IDOT*2^43 (.307155651409E-9*2^43/pi) parity comp
    }
 
 
-   unsigned setSF2Test(gpstk::EngEphemeris& dataStore)
+   unsigned setSF2Test(gnsstk::EngEphemeris& dataStore)
    {
       TUDEF("EngEphemeris", "setSF2");
 
@@ -627,7 +627,7 @@ IODE (91)      IDOT*2^43 (.307155651409E-9*2^43/pi) parity comp
    }
 
 
-   unsigned setSF3Test(gpstk::EngEphemeris& dataStore)
+   unsigned setSF3Test(gnsstk::EngEphemeris& dataStore)
    {
       TUDEF("EngEphemeris", "setSF3");
 
@@ -665,7 +665,7 @@ IODE (91)      IDOT*2^43 (.307155651409E-9*2^43/pi) parity comp
    }
 
 
-   unsigned getTest(gpstk::EngEphemeris& dataStore)
+   unsigned getTest(gnsstk::EngEphemeris& dataStore)
    {
       TUDEF("EngEphemeris", "Get Methods");
 
@@ -716,7 +716,7 @@ IODE (91)      IDOT*2^43 (.307155651409E-9*2^43/pi) parity comp
    {
       TUDEF("EngEphemeris", "loadData");
 
-      gpstk::EngEphemeris dataStore;
+      gnsstk::EngEphemeris dataStore;
 
       unsigned short tlm[3] = {0,0,0};
       const long how[3] = {409902, 409908, 409914};
@@ -771,7 +771,7 @@ IODE (91)      IDOT*2^43 (.307155651409E-9*2^43/pi) parity comp
    {
       TUDEF("EngEphemeris", "addIncomplete");
 
-      gpstk::EngEphemeris dataStore;
+      gnsstk::EngEphemeris dataStore;
 
       const uint32_t subframe1P[8] =
          { 0x00180012, 0x1fffffc0, 0x3fffffc3, 0x3ffffffc,
@@ -992,7 +992,7 @@ int main() //Main function to initialize and run all tests above
 
       // Used to have a running ephemeris for functions that only set
       // part of it
-   gpstk::EngEphemeris dataStore;
+   gnsstk::EngEphemeris dataStore;
 
    errorTotal += testClass.initializationTest();
 

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -48,11 +48,11 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
-   ostream& operator<<(ostream& s, const gpstk::SatelliteSystem sys)
+   ostream& operator<<(ostream& s, const gnsstk::SatelliteSystem sys)
    {
-      s << gpstk::StringUtils::asString(sys);
+      s << gnsstk::StringUtils::asString(sys);
       return s;
    }
 }
@@ -64,9 +64,9 @@ public:
 
    OrbElemStore_T()
    {
-      std::string dataFilePath = gpstk::getPathData();
-      std::string tempFilePath = gpstk::getPathTestTemp();
-      std::string fileSep = gpstk::getFileSep();
+      std::string dataFilePath = gnsstk::getPathData();
+      std::string tempFilePath = gnsstk::getPathTestTemp();
+      std::string fileSep = gnsstk::getFileSep();
 
       inputRN3Data = dataFilePath + fileSep + "mixed.06n";
    }
@@ -81,12 +81,12 @@ public:
       TUDEF("OrbElemStore","Empty Store Tests");
       try
       {
-         gpstk::GloEphemerisStore store;
-         gpstk::Rinex3NavData nd = loadNav(store, testFramework, true);
-         TUASSERTE(gpstk::SatelliteSystem,
-                   gpstk::SatelliteSystem::Glonass, nd.sat.system);
-         gpstk::CommonTime searchTime(nd.time);
-         gpstk::SatID sat(nd.sat);
+         gnsstk::GloEphemerisStore store;
+         gnsstk::Rinex3NavData nd = loadNav(store, testFramework, true);
+         TUASSERTE(gnsstk::SatelliteSystem,
+                   gnsstk::SatelliteSystem::Glonass, nd.sat.system);
+         gnsstk::CommonTime searchTime(nd.time);
+         gnsstk::SatID sat(nd.sat);
 
             // make sure the ephemeris is in the store
          TUCSM("size");
@@ -111,12 +111,12 @@ public:
          TUCSM("findNearEphemeris");
          try 
          {
-            const gpstk::GloEphemeris& ge =
+            const gnsstk::GloEphemeris& ge =
                store.findNearEphemeris(sat, searchTime); 
             TUFAIL("Called findNearEphemeris for empty store and FAILED to"
                    " throw InvalidRequest");
          }
-         catch (gpstk::InvalidRequest)
+         catch (gnsstk::InvalidRequest)
          {
             TUPASS("Called findNearEphemeris for empty store and received"
                    " InvalidRequest as expected.");
@@ -125,18 +125,18 @@ public:
          TUCSM("findEphemeris");
          try 
          {
-            const gpstk::GloEphemeris& ge =
+            const gnsstk::GloEphemeris& ge =
                store.findEphemeris(sat, searchTime); 
             TUFAIL("Called findEphemeris for empty store and FAILED to"
                    " throw InvalidRequest");
          }
-         catch (gpstk::InvalidRequest)
+         catch (gnsstk::InvalidRequest)
          {
             TUPASS("Called findEphemeris for empty store and received"
                    " InvalidRequest as expected.");
          }
       }
-      catch (gpstk::Exception &exc)
+      catch (gnsstk::Exception &exc)
       {
          cerr << exc << endl;
          TUFAIL("Unexpected exception");
@@ -154,16 +154,16 @@ public:
       TUDEF("GloEphemerisStore", "computeXvt");
       try
       {
-         gpstk::GloEphemerisStore store;
-         gpstk::Rinex3NavData nd = loadNav(store, testFramework, false);
-         gpstk::Xvt rv;
-         gpstk::SatID fake(933, gpstk::SatelliteSystem::Glonass);
+         gnsstk::GloEphemerisStore store;
+         gnsstk::Rinex3NavData nd = loadNav(store, testFramework, false);
+         gnsstk::Xvt rv;
+         gnsstk::SatID fake(933, gnsstk::SatelliteSystem::Glonass);
          TUCATCH(rv = store.computeXvt(nd.sat, nd.time));
-         TUASSERTE(gpstk::Xvt::HealthStatus,
-                   gpstk::Xvt::HealthStatus::Healthy, rv.health);
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
+                   gnsstk::Xvt::HealthStatus::Healthy, rv.health);
          TUCATCH(rv = store.computeXvt(fake, nd.time));
-         TUASSERTE(gpstk::Xvt::HealthStatus,
-                   gpstk::Xvt::HealthStatus::Unavailable, rv.health);
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
+                   gnsstk::Xvt::HealthStatus::Unavailable, rv.health);
       }
       catch (...)
       {
@@ -178,16 +178,16 @@ public:
       TUDEF("GloEphemerisStore", "getSVHealth");
       try
       {
-         gpstk::GloEphemerisStore store;
-         gpstk::Rinex3NavData nd = loadNav(store, testFramework, false);
-         gpstk::Xvt::HealthStatus rv;
-         gpstk::SatID fake(933, gpstk::SatelliteSystem::Glonass);
+         gnsstk::GloEphemerisStore store;
+         gnsstk::Rinex3NavData nd = loadNav(store, testFramework, false);
+         gnsstk::Xvt::HealthStatus rv;
+         gnsstk::SatID fake(933, gnsstk::SatelliteSystem::Glonass);
          TUCATCH(rv = store.getSVHealth(nd.sat, nd.time));
-         TUASSERTE(gpstk::Xvt::HealthStatus,
-                   gpstk::Xvt::HealthStatus::Healthy, rv);
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
+                   gnsstk::Xvt::HealthStatus::Healthy, rv);
          TUCATCH(rv = store.getSVHealth(fake, nd.time));
-         TUASSERTE(gpstk::Xvt::HealthStatus,
-                   gpstk::Xvt::HealthStatus::Unavailable, rv);
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
+                   gnsstk::Xvt::HealthStatus::Unavailable, rv);
       }
       catch (...)
       {
@@ -197,24 +197,24 @@ public:
    }
 
 
-   gpstk::Rinex3NavData loadNav(gpstk::GloEphemerisStore& store,
-                                gpstk::TestUtil& testFramework,
+   gnsstk::Rinex3NavData loadNav(gnsstk::GloEphemerisStore& store,
+                                gnsstk::TestUtil& testFramework,
                                 bool firstOnly)
    {
-      gpstk::Rinex3NavStream ns(inputRN3Data.c_str());
-      gpstk::Rinex3NavHeader nh;
-      gpstk::Rinex3NavData nd;
+      gnsstk::Rinex3NavStream ns(inputRN3Data.c_str());
+      gnsstk::Rinex3NavHeader nh;
+      gnsstk::Rinex3NavData nd;
       TUASSERT(ns.good());
       ns >> nh;
       TUASSERT(ns.good());
       ns >> nd;
       if (firstOnly)
       {
-         while ((nd.sat.system != gpstk::SatelliteSystem::Glonass) && ns)
+         while ((nd.sat.system != gnsstk::SatelliteSystem::Glonass) && ns)
          {
             ns >> nd;
          }
-         if (nd.sat.system != gpstk::SatelliteSystem::Glonass)
+         if (nd.sat.system != gnsstk::SatelliteSystem::Glonass)
          {
                // somehow got through the source file without any GLONASS data
             TUFAIL("input file did not contain GLONASS data");
@@ -227,7 +227,7 @@ public:
          while (ns)
          {
             ns >> nd;
-            if (nd.sat.system == gpstk::SatelliteSystem::Glonass)
+            if (nd.sat.system == gnsstk::SatelliteSystem::Glonass)
             {
                TUASSERT(store.addEphemeris(nd));
             }

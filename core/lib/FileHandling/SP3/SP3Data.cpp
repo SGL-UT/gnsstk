@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -46,10 +46,10 @@
 #include "CivilTime.hpp"
 #include "GPSWeekSecond.hpp"
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    void SP3Data::reallyGetRecord(FFStream& ffs)
    {
@@ -77,7 +77,7 @@ namespace gpstk
 
       // TimeSystem for this stream
       TimeSystem timeSystem;
-      timeSystem = gpstk::StringUtils::asTimeSystem(strm.header.timeSystemString());
+      timeSystem = gnsstk::StringUtils::asTimeSystem(strm.header.timeSystemString());
 
       // loop until an error occurs, or until the entire record (which may consist
       // of two lines) is read.
@@ -103,7 +103,7 @@ namespace gpstk
             // if an epoch record was processed this call, that's an error
             if(status == 1) {
                FFStreamError ffse("EOF was found immediately after epoch line");
-               GPSTK_THROW(ffse);
+               GNSSTK_THROW(ffse);
             }
 
             // some other record was processed this call, so quit
@@ -120,7 +120,7 @@ namespace gpstk
 
             // the GetLine succeeded, so this is an error
             FFStreamError err("EOF text found, followed by: " + strm.lastLine);
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
 
          // Epoch line read
@@ -132,7 +132,7 @@ namespace gpstk
             // epoch lines. Why would we not just ignore the epoch with no data?
             if(status == 1) {
                FFStreamError ffse("Consecutive epoch records found");
-               GPSTK_THROW(ffse);
+               GNSSTK_THROW(ffse);
             }
 
             // if another record has been process during this call, quit now
@@ -153,7 +153,7 @@ namespace gpstk
             if(strm.lastLine.size() <= 26) { // some igs files cut seconds short 30)
                FFStreamError err("Invalid line length "
                                 + asString(strm.lastLine.size()));
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
 
             // parse the epoch line
@@ -168,9 +168,9 @@ namespace gpstk
             try {
                t = CivilTime(year, month, dom, hour, minute, second, timeSystem);
             }
-            catch (gpstk::Exception& e) {
+            catch (gnsstk::Exception& e) {
                FFStreamError fe("Invalid time in:" + strm.lastLine);
-               GPSTK_THROW(fe);
+               GNSSTK_THROW(fe);
             }
             time = strm.currentEpoch = static_cast<CommonTime>(t);
          }
@@ -196,7 +196,7 @@ namespace gpstk
                FFStreamError err("Invalid line length ("
                                   + asString(strm.lastLine.size())
                                   + ") for line:\n" + strm.lastLine);
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
 
             // parse the line
@@ -242,7 +242,7 @@ namespace gpstk
             // throw if correlation record did not follow corresponding P|V record
             if(status != 2 || strm.lastLine[1] != RecType) {
                Exception e("correlation EP|V record mismatched with previous record");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             // process EP|V record
@@ -253,7 +253,7 @@ namespace gpstk
                FFStreamError err("Invalid SP3c correlation line length ("
                                   + asString(strm.lastLine.size())
                                   + ") for line:\n" + strm.lastLine);
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
 
             // parse the line
@@ -274,7 +274,7 @@ namespace gpstk
 
          else {                              // Unknown record
             FFStreamError err("Unknown record label " + strm.lastLine.substr(0,2));
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
 
          // be tolerant of files without EOF -- IGS!
@@ -308,7 +308,7 @@ namespace gpstk
                   else                         status = 0;  // go back and process it
                }
                else
-                  GPSTK_RETHROW(err);
+                  GNSSTK_RETHROW(err);
             }
          }
 
@@ -346,7 +346,7 @@ namespace gpstk
          if (isVerA) {
             if(sat.system != SatelliteSystem::GPS) {
                FFStreamError fse("Cannot output non-GPS to SP3a");
-               GPSTK_THROW(fse);
+               GNSSTK_THROW(fse);
             }
             line += rightJustify(asString(sat.id),3);
          }

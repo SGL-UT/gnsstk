@@ -2,9 +2,9 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args, run_unit_tests
+from gnsstk.test_utils import args, run_unit_tests
 
-import gpstk
+import gnsstk
 import math
 
 # Tests for vector
@@ -14,26 +14,26 @@ def test_vector():
     test_num = 1
 
     # Vector Constructor Tests
-    a = gpstk.Vector_int(5) # Initial size
+    a = gnsstk.Vector_int(5) # Initial size
     actual = len(a)
     expected = 5
     check_test(actual, expected, "Construct Vector with initial size", test_num)
     test_num += 1
 
-    a = gpstk.Vector_int(6, 89) # Initial size and default value
+    a = gnsstk.Vector_int(6, 89) # Initial size and default value
     actual = (len(a), [i for i in a])
     expected = (6, [89, 89, 89, 89, 89, 89])
     check_test(actual, expected, "Construct vector with initial size and default value", test_num)
     test_num += 1
 
-    b = gpstk.Vector_int(a) # Copy Constructor
+    b = gnsstk.Vector_int(a) # Copy Constructor
     actual = [i for i in b]
     expected = [i for i in a]
     check_test(actual, expected, "Construct vector from an other vector", test_num)
     test_num += 1
 
     # Resizing tests
-    a = gpstk.Vector_int(6, 23)
+    a = gnsstk.Vector_int(6, 23)
     a.resize(3)
     actual = [i for i in a] + [a[0], a[1], a[2]]
     expected = [23, 23, 23, 23, 23, 23]
@@ -41,7 +41,7 @@ def test_vector():
     test_num += 1
 
     # Append Test
-    a = gpstk.Vector_int()
+    a = gnsstk.Vector_int()
     for i in range(0, 10):
         a = a.append(i)
     expected = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -50,16 +50,16 @@ def test_vector():
     test_num += 1
 
     # Extend Test
-    a = gpstk.Vector_int(10, 1)
-    b = gpstk.Vector_int(10, 2)
-    c = gpstk.Vector_int(10, 3)
+    a = gnsstk.Vector_int(10, 1)
+    b = gnsstk.Vector_int(10, 2)
+    c = gnsstk.Vector_int(10, 3)
     expected = 10 * [1] + 10 * [2] + 10 * [3]
     actual = list(a.extend(b).extend(c))
     check_test(actual, expected, "Extend", test_num)
     test_num += 1
 
     # Iterator test
-    a = gpstk.Vector_int(10, 0)
+    a = gnsstk.Vector_int(10, 0)
     for i in range(0, len(a)):
         a[i] =  2*i
     actual = []
@@ -70,7 +70,7 @@ def test_vector():
     test_num += 1
 
     # Convert to std vector test
-    a = gpstk.Vector_int(10, 3)
+    a = gnsstk.Vector_int(10, 3)
     b = a.toStdVector()
     actual = tuple(b)
     expected = (3, 3, 3, 3, 3, 3, 3, 3, 3, 3)
@@ -78,76 +78,76 @@ def test_vector():
     test_num += 1
 
     # Single Vector Operation Tests
-    a = gpstk.Vector_double(5, 2.0)
-    a = a.extend(gpstk.Vector_double(3, 4.5))
+    a = gnsstk.Vector_double(5, 2.0)
+    a = a.extend(gnsstk.Vector_double(3, 4.5))
     expected = 23.5
-    actual = gpstk.Vector_sum_double(a) # Sum of vector elements
+    actual = gnsstk.Vector_sum_double(a) # Sum of vector elements
     check_test(actual, expected, "Vector Sum", test_num)
     test_num += 1
 
-    a = gpstk.Vector_int()
+    a = gnsstk.Vector_int()
     for i in [-1, -2, 56, -6, -89, -45]:
         a = a.append(i)
     # maxabs removed see below
     # expected = (-1, -89, -89, 56)
     expected = (-1, -89, 56)
-    actual = (gpstk.Vector_minabs_int(a), gpstk.Vector_min_int(a), gpstk.Vector_max_int(a))
+    actual = (gnsstk.Vector_minabs_int(a), gnsstk.Vector_min_int(a), gnsstk.Vector_max_int(a))
     check_test(actual, expected, "Vector MinAbs, Min, and Max", test_num) # Min Abs, Min, Max Abs, and Max Value
     # maxabs causes build to fail, see TemplateMacros.i
-    # actual = (gpstk.Vector_minabs_int(a), gpstk.Vector_min_int(a), gpstk.Vector_maxabs_int(a), gpstk.Vector_max_int(a))
+    # actual = (gnsstk.Vector_minabs_int(a), gnsstk.Vector_min_int(a), gnsstk.Vector_maxabs_int(a), gnsstk.Vector_max_int(a))
     # check_test(actual, expected, "Vector MinAbs, Min, MaxAbs, and Max", test_num) # Min Abs, Min, Max Abs, and Max Value
     test_num += 1
 
-    a = gpstk.Vector_double(3, 4)
-    a = a.extend(gpstk.Vector_double(3, 2))
-    a = a.extend(gpstk.Vector_double(3, -2.5))
-    actual = round(gpstk.Vector_norm_double(a), 4)
+    a = gnsstk.Vector_double(3, 4)
+    a = a.extend(gnsstk.Vector_double(3, 2))
+    a = a.extend(gnsstk.Vector_double(3, -2.5))
+    actual = round(gnsstk.Vector_norm_double(a), 4)
     expected = 8.8741
     check_test(actual, expected, "Vector Norm", test_num) # L2 Norm
     test_num += 1
 
-    a = gpstk.Vector_int(3, 2)
-    a = a.extend(gpstk.Vector_int(3, 23))
-    a = a.extend(gpstk.Vector_int(3, -5))
-    actual = (gpstk.Vector_dotscalar_int(a, 4), gpstk.Vector_dotscalar_int(5, a))
+    a = gnsstk.Vector_int(3, 2)
+    a = a.extend(gnsstk.Vector_int(3, 23))
+    a = a.extend(gnsstk.Vector_int(3, -5))
+    actual = (gnsstk.Vector_dotscalar_int(a, 4), gnsstk.Vector_dotscalar_int(5, a))
     expected = (240, 300)
     check_test(actual, expected, "Vector Dot Product with Scalar", test_num) # Vector-Scalar Dot Product
     test_num += 1
 
-    a = gpstk.Vector_double(9, -34)
-    a = a.extend(gpstk.Vector_double(9, -78))
-    a = a.extend(gpstk.Vector_double(9, -74))
-    actual = [round(x, 3) for x in list(gpstk.Vector_normalize_double(a))]
+    a = gnsstk.Vector_double(9, -34)
+    a = a.extend(gnsstk.Vector_double(9, -78))
+    a = a.extend(gnsstk.Vector_double(9, -74))
+    actual = [round(x, 3) for x in list(gnsstk.Vector_normalize_double(a))]
     expected = [-0.101] * 9 + [-0.231] * 9 + [-0.219] * 9
     check_test(actual, expected, "Vector Normalize", test_num) # Vector Normalization
     test_num += 1 # Vector Normalization
 
-    a = gpstk.Vector_double(3, -7)
-    a = a.extend(gpstk.Vector_double(3, 4.5))
-    a = a.extend(gpstk.Vector_double(3, 20))
-    actual = (round(gpstk.Vector_RSS_double(a), 3), round(gpstk.Vector_RMS_double(a), 3))
+    a = gnsstk.Vector_double(3, -7)
+    a = a.extend(gnsstk.Vector_double(3, 4.5))
+    a = a.extend(gnsstk.Vector_double(3, 20))
+    actual = (round(gnsstk.Vector_RSS_double(a), 3), round(gnsstk.Vector_RMS_double(a), 3))
     expected = (37.520, 12.507)
     check_test(actual, expected, "Vector Root-Mean and Root-Sum Sqaure", test_num) # Vector Root-Mean and Root-Sum Square
     test_num += 1 # Vector Root-Sum Square and Root-Mean Square
 
     # STD Unary Vector Operations
-    a = gpstk.Vector_double(3, 0.45)
-    a = a.extend(gpstk.Vector_double(3, 0.23))
-    a = a.extend(gpstk.Vector_double(3, 0.1))
-    actual = [gpstk.Vector_abs_double(a),
-              gpstk.Vector_acos_double(a),
-              gpstk.Vector_asin_double(a),
-              gpstk.Vector_atan_double(a),
-              gpstk.Vector_cos_double(a),
-              gpstk.Vector_cosh_double(a),
-              gpstk.Vector_exp_double(a),
-              gpstk.Vector_log_double(a),
-              gpstk.Vector_log10_double(a),
-              gpstk.Vector_sinh_double(a),
-              gpstk.Vector_sin_double(a),
-              gpstk.Vector_sqrt_double(a),
-              gpstk.Vector_tan_double(a),
-              gpstk.Vector_tanh_double(a)]
+    a = gnsstk.Vector_double(3, 0.45)
+    a = a.extend(gnsstk.Vector_double(3, 0.23))
+    a = a.extend(gnsstk.Vector_double(3, 0.1))
+    actual = [gnsstk.Vector_abs_double(a),
+              gnsstk.Vector_acos_double(a),
+              gnsstk.Vector_asin_double(a),
+              gnsstk.Vector_atan_double(a),
+              gnsstk.Vector_cos_double(a),
+              gnsstk.Vector_cosh_double(a),
+              gnsstk.Vector_exp_double(a),
+              gnsstk.Vector_log_double(a),
+              gnsstk.Vector_log10_double(a),
+              gnsstk.Vector_sinh_double(a),
+              gnsstk.Vector_sin_double(a),
+              gnsstk.Vector_sqrt_double(a),
+              gnsstk.Vector_tan_double(a),
+              gnsstk.Vector_tanh_double(a)]
     actual = map(list, actual)
     actual = [round_list(lst) for lst in actual]
     b = list(a)

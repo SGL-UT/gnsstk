@@ -2,18 +2,18 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
+from gnsstk.test_utils import args,run_unit_tests
 
-import gpstk
+import gnsstk
 
 class TestGPSCNav2Health(unittest.TestCase):
     def test_constructor(self):
-        uut = gpstk.GPSCNav2Health()
+        uut = gnsstk.GPSCNav2Health()
         self.assertEqual(True, uut.health)
 
     def test_getUserTime(self):
-        uut = gpstk.GPSCNav2Health()
-        uut.timeStamp = gpstk.GPSWeekSecond(2100,135.0).toCommonTime()
+        uut = gnsstk.GPSCNav2Health()
+        uut.timeStamp = gnsstk.GPSWeekSecond(2100,135.0).toCommonTime()
         expEph = uut.timeStamp + 12.0
         expAlm = uut.timeStamp + 5.48
         uut.setEph(True)
@@ -22,10 +22,10 @@ class TestGPSCNav2Health(unittest.TestCase):
         self.assertEqual(expAlm, uut.getUserTime())
 
     def test_getHealth(self):
-        uut = gpstk.GPSCNav2Health()
-        self.assertEqual(gpstk.SVHealth.Unhealthy, uut.getHealth())
+        uut = gnsstk.GPSCNav2Health()
+        self.assertEqual(gnsstk.SVHealth.Unhealthy, uut.getHealth())
         uut.health = False
-        self.assertEqual(gpstk.SVHealth.Healthy, uut.getHealth())
+        self.assertEqual(gnsstk.SVHealth.Healthy, uut.getHealth())
 
 if __name__ == '__main__':
     run_unit_tests()

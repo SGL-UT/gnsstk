@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -42,7 +42,7 @@
 
 // system includes
 #include <sstream>               // for ostringstream
-// GPSTk includes
+// GNSSTk includes
 #include "MiscMath.hpp"
 #include "GPSEllipsoid.hpp"
 #include "GNSSconstants.hpp"
@@ -55,7 +55,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    double PreciseRange::ComputeAtTransmitTime(const CommonTime& nomRecTime,
                                               const double pr,
@@ -85,7 +85,7 @@ namespace gpstk
          SatR.setECEF(svPosVel.x[0],svPosVel.x[1],svPosVel.x[2]);
       }
       // this should be a 'no ephemeris' exception
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
 
       // update the transmit time for sat clk bias + relativity
       transmit -= svPosVel.clkbias + svPosVel.relcorr;
@@ -101,7 +101,7 @@ namespace gpstk
       // compute other delays -- very small
       // 2GM/c^2 = 0.00887005608 m^3/s^2 * s^2/m^2 = m
       double rx = Rx.radius();
-      if(::fabs(rx) < 1.e-8) GPSTK_THROW(Exception("Rx at origin!"));
+      if(::fabs(rx) < 1.e-8) GNSSTK_THROW(Exception("Rx at origin!"));
       double rs = SatR.radius();
       double dr = range(SatR,Rx);
       relativity2 = -0.00887005608 * ::log((rx+rs+dr)/(rx+rs-dr));
@@ -114,7 +114,7 @@ namespace gpstk
          SatR.setECEF(svPosVel.x[0],svPosVel.x[1],svPosVel.x[2]);
          SatV.setECEF(svPosVel.v[0],svPosVel.v[1],svPosVel.v[2]);
       }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
 
       // ----------------------------------------------------------
       // save relativity and satellite clock
@@ -206,8 +206,8 @@ namespace gpstk
       return (rawrange-satclkbias-relativity-relativity2-satLOSPCO+satLOSPCV);
 
    }  // end try
-   catch(gpstk::Exception& e) { GPSTK_RETHROW(e); }
+   catch(gnsstk::Exception& e) { GNSSTK_RETHROW(e); }
 
    }  // end PreciseRange::ComputeAtTransmitTime
    
-}  // namespace gpstk
+}  // namespace gnsstk

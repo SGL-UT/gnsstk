@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -45,7 +45,7 @@
 #include "MJD.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 int main(int argc, char* argv[])
 {
@@ -53,18 +53,18 @@ int main(int argc, char* argv[])
    try
    {
 
-         // In the GPSTk there are multiple classes to manage time, depending
+         // In the GNSSTk there are multiple classes to manage time, depending
          // on the specific operation that we want to carry out. This modular
          // approach eases handling the many different time systems used in the
          // modern Global Navigation Satellite Systems.
 
-         // Note, however, that in the GPSTk the unifying class to do time
+         // Note, however, that in the GNSSTk the unifying class to do time
          // computations is the 'CommonTime' class.
 
          // Read current time from system clock
       SystemTime systime;
 
-         // Convert to 'CommonTime', the standard way to handle time at GPSTk
+         // Convert to 'CommonTime', the standard way to handle time at GNSSTk
          // Please note that declaration, initialization and conversion are
          // done in the same line.
       CommonTime comtime( systime );

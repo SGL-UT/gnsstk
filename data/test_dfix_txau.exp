@@ -1,15 +1,15 @@
 dfix ver 2.0 5/20/17, Run 2017/06/14 at 15:20:58
 
 Load the RINEX files using Rinex3ObsFileLoader -------
- Add obs type GC1C =~ GC1* from /local/Code/gpstk/data/test_dfix_txau047.ed.12o
- Add obs type GC1W =~ GC1* from /local/Code/gpstk/data/test_dfix_txau047.ed.12o
- Add obs type GC2W =~ GC2* from /local/Code/gpstk/data/test_dfix_txau047.ed.12o
- Add obs type GL1C =~ GL1* from /local/Code/gpstk/data/test_dfix_txau047.ed.12o
- Add obs type GL2W =~ GL2* from /local/Code/gpstk/data/test_dfix_txau047.ed.12o
+ Add obs type GC1C =~ GC1* from /local/Code/gnsstk/data/test_dfix_txau047.ed.12o
+ Add obs type GC1W =~ GC1* from /local/Code/gnsstk/data/test_dfix_txau047.ed.12o
+ Add obs type GC2W =~ GC2* from /local/Code/gnsstk/data/test_dfix_txau047.ed.12o
+ Add obs type GL1C =~ GL1* from /local/Code/gnsstk/data/test_dfix_txau047.ed.12o
+ Add obs type GL2W =~ GL2* from /local/Code/gnsstk/data/test_dfix_txau047.ed.12o
 Loader read 1 file successfully 
 
 Summary of input RINEX obs data files (1):
- RINEX obs file: /local/Code/gpstk/data/test_dfix_txau047.ed.12o
+ RINEX obs file: /local/Code/gnsstk/data/test_dfix_txau047.ed.12o
  Interval 5.00sec, obs types GC1C GC1W GC2W GL1C GL2W, store size 973
  Time limits: begin  2012/02/16 07:22:15 1675 372135.000
                 end  2012/02/16 08:43:20 1675 377000.000
@@ -19,7 +19,7 @@ Table of Sat/Obs counts
  TOT   973     0   969   966   962 total 973 epochs
 End of summary
 
-Header for file /local/Code/gpstk/data/test_dfix_txau047.ed.12o
+Header for file /local/Code/gnsstk/data/test_dfix_txau047.ed.12o
 ---------------------------------- REQUIRED ----------------------------------
 Rinex Version  2.10,  File type OBSERVATION DATA,  System MIXED.
 Prgm: RinEdit,  Run: 06/14/2017 16:28:43,  By: 
@@ -85,7 +85,7 @@ Searched for millisecond adjusts on obs types: L1 L2 C1 C2 P1 P2
 Millisecond adjusts: 0 total adjusts found, 0 invalid
 
 # GDC configuration:
-#GPSTk Discontinuity Corrector (GDC) v.9.0 5/20/17 configuration:
+#GNSSTk Discontinuity Corrector (GDC) v.9.0 5/20/17 configuration:
 # MaxGap=50          : maximum allowed gap within a segment (points)
 # MinPts=50          : minimum number of good points in phase segment (points)
 # WLgrossStep=6      : WL gross slip detection threshold (WLwl)

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,14 +41,14 @@
  * Matrix operators (arithmetic, transpose(), inverse(), etc)
  */
 
-#ifndef GPSTK_MATRIX_OPERATORS_HPP
-#define GPSTK_MATRIX_OPERATORS_HPP
+#ifndef GNSSTK_MATRIX_OPERATORS_HPP
+#define GNSSTK_MATRIX_OPERATORS_HPP
 
 #include <limits>
 #include "MiscMath.hpp"
 #include "MatrixFunctors.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup MathGroup
       //@{
@@ -65,7 +65,7 @@ namespace gpstk
       if (l.cols() != r.cols())
       {
          MatrixException e("Incompatible dimensions for Matrix && Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = l.rows() + r.rows();
@@ -95,7 +95,7 @@ namespace gpstk
       if (t.cols() != b.size())
       {
          MatrixException e("Incompatible dimensions for Matrix && Vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = t.rows() + 1;
@@ -124,7 +124,7 @@ namespace gpstk
       if (t.size() != b.cols())
       {
          MatrixException e("Incompatible dimensions for Vector && Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = 1 + b.rows();
@@ -153,7 +153,7 @@ namespace gpstk
       if (l.rows() != r.rows())
       {
          MatrixException e("Incompatible dimensions for Matrix || Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = l.rows();
@@ -183,7 +183,7 @@ namespace gpstk
       if (l.rows() != r.size())
       {
          MatrixException e("Incompatible dimensions for Matrix || Vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = l.rows();
@@ -212,7 +212,7 @@ namespace gpstk
       if (l.size() != r.rows())
       {
          MatrixException e("Incompatible dimensions for Vector || Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = r.rows();
@@ -241,7 +241,7 @@ namespace gpstk
       if (l.size() != r.size())
       {
          MatrixException e("Incompatible dimensions for Vector || Vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = r.size();
@@ -269,7 +269,7 @@ namespace gpstk
       if ((row >= l.rows()) || (col >= l.cols()))
       {
          MatrixException e("Invalid row or column for minorMatrix()");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
          // handle special cases
       if (row == 0)
@@ -353,7 +353,7 @@ namespace gpstk
       catch(MatrixException& e)
       {
          e.addText("in det()");
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -397,7 +397,7 @@ namespace gpstk
       if (dim == 0)
       {
          MatrixException e("Invalid (0) dimension for ident()");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       Matrix<T> toReturn(dim, dim, T(0));
       size_t i;
@@ -416,7 +416,7 @@ namespace gpstk
       if ( (m.rows() != m.cols()) || (m.cols() < 1) )
       {
          MatrixException e("invalid matrix dimensions for m");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       const size_t dim = m.rows();
@@ -440,7 +440,7 @@ namespace gpstk
            (m2.rows() != m2.cols()) || (m2.cols() < 1) )
       {
          MatrixException e("Invalid matrix dimensions of input.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       const size_t dim1 = m1.rows();
@@ -497,7 +497,7 @@ namespace gpstk
       if (axis < 1 || axis > 3)
       {
          MatrixException e("Invalid axis (must be 1,2, or 3)");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       Matrix<T> toReturn(3,3,T(0));
       int i1 = axis-1;
@@ -521,7 +521,7 @@ namespace gpstk
       if ((m.rows() != m.cols()) || (m.cols() == 0))
       {
          MatrixException e("inverse() requires non-trivial square matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       Matrix<T> toReturn(m.rows(), m.cols() * 2);
@@ -554,7 +554,7 @@ namespace gpstk
             if (t == m.rows())
             {
                SingularMatrixException e("Singular matrix");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             for (j = r; j < toReturn.cols(); j++)
@@ -592,7 +592,7 @@ namespace gpstk
    {
       if ((m.rows() != m.cols()) || (m.cols() == 0)) {
          MatrixException e("inverseLUD() requires non-trivial square matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t i,j,N=m.rows();
@@ -621,7 +621,7 @@ namespace gpstk
    {
       if ((m.rows() != m.cols()) || (m.cols() == 0)) {
          MatrixException e("inverseLUD() requires non-trivial square matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t i,j,N=m.rows();
@@ -654,7 +654,7 @@ namespace gpstk
    {
       if ((m.rows() != m.cols()) || (m.cols() == 0)) {
          MatrixException e("inverseSVD() requires non-trivial square matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t i,j,N=m.rows();
@@ -665,7 +665,7 @@ namespace gpstk
       svd.sort(true);
       if(svd.S(0) == T(0)) {
          MatrixException e("Input is the zero matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
          // edit singular values TD input tolerance, output edited SVs
       for(i=1; i<N; i++) if(svd.S(i) < tol*svd.S(0)) svd.S(i)=T(0);
@@ -693,7 +693,7 @@ namespace gpstk
    {
       if ((m.rows() != m.cols()) || (m.cols() == 0)) {
          MatrixException e("inverseSVD() requires non-trivial square matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t i,j,N=m.rows();
@@ -704,7 +704,7 @@ namespace gpstk
       svd.sort(true);
       if(svd.S(0) == T(0)) {
          MatrixException e("Input is the zero matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // compute condition number = bigNum/smallNum
@@ -738,7 +738,7 @@ namespace gpstk
    {
       if ((m.rows() != m.cols()) || (m.cols() == 0)) {
          MatrixException e("inverseSVD() requires non-trivial square matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t i,j,N=m.rows();
@@ -749,7 +749,7 @@ namespace gpstk
       svd.sort(true);
       if(svd.S(0) == T(0)) {
          MatrixException e("Input is the zero matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // save the singular values
@@ -786,7 +786,7 @@ namespace gpstk
       Matrix<T> LI(N,N, 0.0);      // Here we will first store L^-1, and later m^-1
 
          // Let's call CholeskyCrout class to decompose matrix "m" in L*LT
-      gpstk::CholeskyCrout<double> CC;
+      gnsstk::CholeskyCrout<double> CC;
       CC(m);
 
          // Let's find the inverse of L (the LI from above)
@@ -817,7 +817,7 @@ namespace gpstk
       if (l.cols() != r.rows())
       {
          MatrixException e("Incompatible dimensions for Matrix * Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    
       Matrix<T> toReturn(l.rows(), r.cols(), T(0));
@@ -840,8 +840,8 @@ namespace gpstk
    {
       if (v.size() != m.cols())
       {
-         gpstk::MatrixException e("Incompatible dimensions for Vector * Matrix");
-         GPSTK_THROW(e);
+         gnsstk::MatrixException e("Incompatible dimensions for Vector * Matrix");
+         GNSSTK_THROW(e);
       }
    
       Vector<T> toReturn(m.rows());
@@ -864,8 +864,8 @@ namespace gpstk
    {
       if (v.size() != m.rows())
       {
-         gpstk::MatrixException e("Incompatible dimensions for Vector * Matrix");
-         GPSTK_THROW(e);
+         gnsstk::MatrixException e("Incompatible dimensions for Vector * Matrix");
+         GNSSTK_THROW(e);
       }
    
       Vector<T> toReturn(m.cols());
@@ -890,7 +890,7 @@ namespace gpstk
       if (l.cols() != r.cols() || l.rows() != r.rows())
       {
          MatrixException e("Incompatible dimensions for Matrix + Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       Matrix<T> toReturn(l.rows(), r.cols(), T(0));
@@ -913,7 +913,7 @@ namespace gpstk
       if (l.cols() != r.cols() || l.rows() != r.rows())
       {
          MatrixException e("Incompatible dimensions for Matrix - Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       Matrix<T> toReturn(l.rows(), r.cols(), T(0));
@@ -935,7 +935,7 @@ namespace gpstk
    {
       if(v.size()*w.size() == 0) {
          MatrixException e("Zero length vector(s)");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       Matrix<T> M(v.size(),w.size(),T(0));
       for(size_t i=0; i<v.size(); i++)

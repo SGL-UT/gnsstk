@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -48,10 +48,10 @@
 #include "YumaStream.hpp"
 
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    short YumaData::nearFullWeek = 0;
 
@@ -157,12 +157,12 @@ namespace gpstk
 
       // Gotta have a colon or the format is wrong
       if (i == (int)string::npos)
-         GPSTK_THROW(FFStreamError("Format error in YumaData"));
+         GNSSTK_THROW(FFStreamError("Format error in YumaData"));
 
       // Only compare the first five characters since some files differ after that
       const int w = std::min(5, std::min(i, (int)s.size()));
       if (line.substr(0,w) != s.substr(0,w))
-         GPSTK_THROW(FFStreamError("Format error in YumaData"));
+         GNSSTK_THROW(FFStreamError("Format error in YumaData"));
 
       return stripLeading(line.substr(i+1), " ");
    }
@@ -189,7 +189,7 @@ namespace gpstk
           if (!found && lineCount>14)
           {
              FFStreamError exc("Could not find Yuma record.");
-             GPSTK_THROW(exc);
+             GNSSTK_THROW(exc);
           }  
       }
 
@@ -212,7 +212,7 @@ namespace gpstk
       //Sixth Line - Orbital Inclination
       strm.formattedGetLine(line, true);
       i_total = asDouble(lineParser(line, sOrbI));
-      i_offset = i_total - 54.0 * (gpstk::PI / 180.0);
+      i_offset = i_total - 54.0 * (gnsstk::PI / 180.0);
 
       //Seventh Line - Rate of Right Ascen
       strm.formattedGetLine(line, true);

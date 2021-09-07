@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -39,7 +39,7 @@
 /**
  * @file Namelist.hpp
  * Include file defining class Namelist.
- * class gpstk::Namelist encapsulates a list of labels for use with classes Matrix,
+ * class gnsstk::Namelist encapsulates a list of labels for use with classes Matrix,
  * Vector and SRI.
  */
 
@@ -54,10 +54,10 @@
 #include <iomanip>
 #include <ostream>
 #include <sstream>
-// GPSTk
+// GNSSTk
 #include "Matrix.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 
 //------------------------------------------------------------------------------------
@@ -153,7 +153,7 @@ public:
       try {
          for(unsigned int i=0; i<right.size(); i++)
             this->operator+=(right.getName(i));
-      } catch(gpstk::Exception& e) { GPSTK_RETHROW(e); }
+      } catch(gnsstk::Exception& e) { GNSSTK_RETHROW(e); }
       return *this;
    }
       /// remove a name from the Namelist; does nothing if the name is not found.
@@ -239,6 +239,6 @@ public:
 //private:
 }; // end class Namelist
 
-} // end of namespace gpstk
+} // end of namespace gnsstk
 
 #endif

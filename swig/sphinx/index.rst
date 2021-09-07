@@ -1,6 +1,6 @@
-.. GPS Toolkit documentation master file
+.. GNSS Toolkit documentation master file
 
-Welcome to The GPS Toolkit's documentation!
+Welcome to The GNSS Toolkit's documentation!
 ===========================================
 
 Contents:

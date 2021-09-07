@@ -1,10 +1,10 @@
-# RinDump, part of the GPS Toolkit, Ver 2.3 8/26/15, Run 2015/11/13 14:42:41
+# RinDump, part of the GNSS Toolkit, Ver 2.3 8/26/15, Run 2015/11/13 14:42:41
 # Allow systems GPS GLO
-# Input file(s) /home/bparsons/git/gpstk/data/test_input_rinex3_obs_RinexObsFile.15o
+# Input file(s) /home/bparsons/git/gnsstk/data/test_input_rinex3_obs_RinexObsFile.15o
 # Satellites All
 # Data C1C
 # RINEX version: file 3.02 / output 3.02
-# RinDump output for file /home/bparsons/git/gpstk/data/test_input_rinex3_obs_RinexObsFile.15o
+# RinDump output for file /home/bparsons/git/gnsstk/data/test_input_rinex3_obs_RinexObsFile.15o
 # wk secs-of-wk sat      C1C     
 1816 505680.000 G05  23448820.047
 1816 505680.000 G15  20678535.828

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -38,7 +38,7 @@
 
 /**
  * @file AshtechData.hpp
- * gpstk::AshtechData - base cass for Ashtech formatted data.
+ * gnsstk::AshtechData - base cass for Ashtech formatted data.
  */
 
 #ifndef ASHTECHDATA_HPP
@@ -55,7 +55,7 @@
 #include "FFStream.hpp"
 #include "DataStatus.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 
    class AshtechStream;
@@ -111,8 +111,8 @@ namespace gpstk
           */
       virtual void reallyPutRecord(FFStream& ffs) const
       {
-         gpstk::FFStreamError e("Writing of AshtecData is not supported.");
-         GPSTK_THROW(e);
+         gnsstk::FFStreamError e("Writing of AshtecData is not supported.");
+         GNSSTK_THROW(e);
       }
 
          /**
@@ -135,6 +135,6 @@ namespace gpstk
       virtual void readBody(AshtechStream& stream);
       
    }; // class AshtechData
-} // namespace gpstk
+} // namespace gnsstk
 
 #endif

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -38,7 +38,7 @@
 
    /*********************************************************************
     *
-    *  Test program for gpstk/ext/lib/GNSSEph/OrbAlmStore
+    *  Test program for gnsstk/ext/lib/GNSSEph/OrbAlmStore
     *
     *********************************************************************/
 #include <iostream>
@@ -59,7 +59,7 @@
 #include "TestUtil.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 
 class OrbAlmStore_T
@@ -181,9 +181,9 @@ public:
 
    void setUpLNAV();
    void setUpCNAV();
-   gpstk::PackedNavBits getPnbLNav(const gpstk::ObsID& oidr,
+   gnsstk::PackedNavBits getPnbLNav(const gnsstk::ObsID& oidr,
                                    const std::string& str);
-   gpstk::PackedNavBits getPnbCNav(const gpstk::ObsID& oidr,
+   gnsstk::PackedNavBits getPnbCNav(const gnsstk::ObsID& oidr,
                                    const std::string& str);
 
       // The setUpXXX() methods above exist to set up the following
@@ -246,14 +246,14 @@ findEmptyTest()
          oas.find(s, ct, true);
          TUFAIL("Expected an InvalidRequest exception to be thrown");
       }
-      catch (gpstk::InvalidRequest &exc)
+      catch (gnsstk::InvalidRequest &exc)
       {
          TUPASS("Expected exception");
       }
-      catch (gpstk::Exception &exc)
+      catch (gnsstk::Exception &exc)
       {
          cerr << exc;
-         TUFAIL("Unexpected gpstk exception");
+         TUFAIL("Unexpected gnsstk exception");
       }
       catch (std::exception &exc)
       {
@@ -266,14 +266,14 @@ findEmptyTest()
          oas.find(s, ct, false);
          TUFAIL("Expected an InvalidRequest exception to be thrown");
       }
-      catch (gpstk::InvalidRequest &exc)
+      catch (gnsstk::InvalidRequest &exc)
       {
          TUPASS("Expected exception");
       }
-      catch (gpstk::Exception &exc)
+      catch (gnsstk::Exception &exc)
       {
          cerr << exc;
-         TUFAIL("Unexpected gpstk exception");
+         TUFAIL("Unexpected gnsstk exception");
       }
       catch (std::exception &exc)
       {
@@ -336,7 +336,7 @@ createAndDump()
             addSuccess++;
          }
       }
-      catch(gpstk::InvalidParameter ir)
+      catch(gnsstk::InvalidParameter ir)
       {
             // Dummy almanacs are not considered errors.
          std::stringstream serror;
@@ -663,7 +663,7 @@ createAndDump()
          foo = oas.find(sidee, ct);
          TUFAIL("find should throw an exception");
       }
-      catch (gpstk::InvalidRequest)
+      catch (gnsstk::InvalidRequest)
       {
          TUPASS("find should throw an exception");
       }
@@ -954,10 +954,10 @@ setUpLNAV()
    {
       std::cout << "Building PNB from strings" << std::endl;
    }
-   gpstk::ObsID currObsID(gpstk::ObservationType::NavMsg,
-                          gpstk::CarrierBand::L1,
-                          gpstk::TrackingCode::CA);
-   gpstk::PackedNavBits msg;
+   gnsstk::ObsID currObsID(gnsstk::ObservationType::NavMsg,
+                          gnsstk::CarrierBand::L1,
+                          gnsstk::TrackingCode::CA);
+   gnsstk::PackedNavBits msg;
    for (unsigned short i=0; i<LNavExCount; i++)
    {
       msg = getPnbLNav(currObsID,LNavEx[i]);
@@ -1104,9 +1104,9 @@ setUpCNAV()
    init();
 
       // Define state variables for writing an CNAV data
-   gpstk::ObsID currObsID(gpstk::ObservationType::NavMsg,
-                          gpstk::CarrierBand::L2,
-                          gpstk::TrackingCode::L2CML);
+   gnsstk::ObsID currObsID(gnsstk::ObservationType::NavMsg,
+                          gnsstk::CarrierBand::L2,
+                          gnsstk::TrackingCode::L2CML);
    typeDesc = "GPS_CNAV";
 
       // Literals for CNAV test data
@@ -1124,7 +1124,7 @@ setUpCNAV()
       };
 
       // Convert the CNAV strings to PNB
-   gpstk::PackedNavBits msg;
+   gnsstk::PackedNavBits msg;
    for (unsigned short i=0; i<CNavExCount; i++)
    {
       msg = getPnbCNav(currObsID, CNavEx[i]);
@@ -1134,9 +1134,9 @@ setUpCNAV()
 }
 
    //---------------------------------------------------------------
-gpstk::PackedNavBits
+gnsstk::PackedNavBits
 OrbAlmStore_T::
-getPnbLNav(const gpstk::ObsID& oidr, const std::string& str)
+getPnbLNav(const gnsstk::ObsID& oidr, const std::string& str)
 {
    try
    {
@@ -1155,12 +1155,12 @@ getPnbLNav(const gpstk::ObsID& oidr, const std::string& str)
          ss << "Line format problem. ";
          ss << "  Should be at least 18 items.";
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
 
          // Convert the time information into a CommonTime
-      int week = gpstk::StringUtils::asInt(words[3]);
-      double sow = gpstk::StringUtils::asDouble(words[4]);
+      int week = gnsstk::StringUtils::asInt(words[3]);
+      double sow = gnsstk::StringUtils::asDouble(words[4]);
       CommonTime ct = GPSWeekSecond(week,sow,TimeSystem::GPS);
 
          // Convert the PRN to a SatID
@@ -1191,15 +1191,15 @@ getPnbLNav(const gpstk::ObsID& oidr, const std::string& str)
       stringstream ss;
       ss << "String conversion error:'" << str << "'.";
       InvalidParameter ip(ss.str());
-      GPSTK_THROW(ip);
+      GNSSTK_THROW(ip);
    }
 }
 
 
    //-------------------------------------------------
-gpstk::PackedNavBits
+gnsstk::PackedNavBits
 OrbAlmStore_T::
-getPnbCNav(const gpstk::ObsID& oidr, const std::string& str)
+getPnbCNav(const gnsstk::ObsID& oidr, const std::string& str)
 {
    try
    {
@@ -1213,12 +1213,12 @@ getPnbCNav(const gpstk::ObsID& oidr, const std::string& str)
          ss << "Line format problem. ";
          ss << "  Should be at least 18 items.";
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
 
          // Convert the time information into a CommonTime
-      int week = gpstk::StringUtils::asInt(words[3]);
-      double sow = gpstk::StringUtils::asDouble(words[4]);
+      int week = gnsstk::StringUtils::asInt(words[3]);
+      double sow = gnsstk::StringUtils::asDouble(words[4]);
       CommonTime ct = GPSWeekSecond(week,sow,TimeSystem::GPS);
 
          // Convert the PRN to a SatID
@@ -1261,7 +1261,7 @@ getPnbCNav(const gpstk::ObsID& oidr, const std::string& str)
       stringstream ss;
       ss << "String conversion error:'" << str << "'.";
       InvalidParameter ip(ss.str());
-      GPSTK_THROW(ip);
+      GNSSTK_THROW(ip);
    }
 }
 
@@ -1271,7 +1271,7 @@ testComputeXvt(const PassFailData& pfd,
                OrbAlmStore& oas,
                TestUtil& testFramework)
 {
-   gpstk::Xvt rv;
+   gnsstk::Xvt rv;
    TUCATCH(rv = oas.computeXvt(pfd.subjID, pfd.testTime));
    TUASSERTE(Xvt::HealthStatus, Xvt::HealthStatus::Healthy, rv.health);
 }
@@ -1281,7 +1281,7 @@ void OrbAlmStore_T ::
 testComputeXvt(OrbAlmStore& oas,
                TestUtil& testFramework)
 {
-   gpstk::Xvt rv;
+   gnsstk::Xvt rv;
    SatID sidXvt(33, SatelliteSystem::GPS);
    CommonTime test2 = CivilTime(2015,12,31,12,00,00,TimeSystem::GPS);
    TUCATCH(rv = oas.computeXvt(sidXvt, test2));
@@ -1294,7 +1294,7 @@ testGetSVHealth(const PassFailData& pfd,
                 OrbAlmStore& oas,
                 TestUtil& testFramework)
 {
-   gpstk::Xvt::HealthStatus rv;
+   gnsstk::Xvt::HealthStatus rv;
    TUCATCH(rv = oas.getSVHealth(pfd.subjID, pfd.testTime));
    TUASSERTE(Xvt::HealthStatus, Xvt::HealthStatus::Healthy, rv);
 }
@@ -1304,7 +1304,7 @@ void OrbAlmStore_T ::
 testGetSVHealth(OrbAlmStore& oas,
                 TestUtil& testFramework)
 {
-   gpstk::Xvt::HealthStatus rv;
+   gnsstk::Xvt::HealthStatus rv;
    SatID sidXvt(33, SatelliteSystem::GPS);
    CommonTime test2 = CivilTime(2015,12,31,12,00,00,TimeSystem::GPS);
    TUCATCH(rv = oas.getSVHealth(sidXvt, test2));
@@ -1316,12 +1316,12 @@ unsigned OrbAlmStore_T ::
 testUnhealthyLNav()
 {
    TUDEF("OrbAlmStore", "getSVHealth");
-   gpstk::ObsID currObsID(gpstk::ObservationType::NavMsg,
-                          gpstk::CarrierBand::L1,
-                          gpstk::TrackingCode::CA);
+   gnsstk::ObsID currObsID(gnsstk::ObservationType::NavMsg,
+                          gnsstk::CarrierBand::L1,
+                          gnsstk::TrackingCode::CA);
    OrbAlmStore oas;
    list<PackedNavBits> unhealthyDataList;
-   gpstk::PackedNavBits msg = getPnbLNav(
+   gnsstk::PackedNavBits msg = getPnbLNav(
       currObsID,
       "352,12/18/2015,00:10:54,1875,432654,32,23,522, 0x22C35330, 0x2335CD6C,"
       " 0x158F56AC, 0x243CB9F4, 0x3F4D3FD1, 0x28461AC4, 0x11AA7811, 0x2B52BC32,"
@@ -1339,7 +1339,7 @@ testUnhealthyLNav()
    TUCSM("size(2)");
    TUASSERTE(unsigned, 1, oas.size(2));
 
-   gpstk::Xvt rv;
+   gnsstk::Xvt rv;
    SatID sidXvt(22, SatelliteSystem::GPS);
    CommonTime test2 = CivilTime(2015,12,18,00,15,00,TimeSystem::GPS);
       // The test almanac page has a toa of 2016/01/02 19:50:24 and an
@@ -1389,11 +1389,11 @@ testUnhealthyLNav()
       rv = oas.getXvt_WithinValidity(sidXvt, test3);
       TUFAIL("No exception thrown");
    }
-   catch (gpstk::InvalidRequest& exc)
+   catch (gnsstk::InvalidRequest& exc)
    {
       TUPASS("Expected exception");
    }
-   catch (gpstk::Exception& exc)
+   catch (gnsstk::Exception& exc)
    {
       cerr << exc;
       TUFAIL("Unexpected exception");

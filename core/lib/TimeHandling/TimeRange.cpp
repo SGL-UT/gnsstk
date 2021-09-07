@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -40,10 +40,10 @@
 #include "TimeString.hpp"
 
 using namespace std;
-using namespace gpstk; 
+using namespace gnsstk; 
 
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace std;
 
@@ -67,7 +67,7 @@ namespace gpstk
       catch (TimeRangeException tre)
       {
          tre.addText("Initializing from two CommonTime values.\n");
-         GPSTK_RETHROW(tre);
+         GNSSTK_RETHROW(tre);
       }
    }
    
@@ -85,7 +85,7 @@ namespace gpstk
       catch (TimeRangeException tre)
       {
          tre.addText("Initializing from a CommonTime pair.\n");
-         GPSTK_RETHROW(tre);
+         GNSSTK_RETHROW(tre);
       }
    }
 
@@ -108,7 +108,7 @@ namespace gpstk
          ts += printTime(endDT,tform); 
          ts += "\n";
          tre.addText(ts); 
-         GPSTK_THROW(tre);
+         GNSSTK_THROW(tre);
       }
       
       start = startDT;
@@ -129,7 +129,7 @@ namespace gpstk
       catch (TimeRangeException tre)
       {
          tre.addText("Called from TimeRange::set().\n");
-         GPSTK_RETHROW(tre);
+         GNSSTK_RETHROW(tre);
       }
    }
 
@@ -283,7 +283,7 @@ namespace gpstk
       {
          TimeRangeException tre;
          tre.addText("TimeRange:Failure finding first non-whitespace character");
-         GPSTK_THROW(tre);
+         GNSSTK_THROW(tre);
       }
       includeStartTime = true;    // default case
       string leadChar = str.substr(n,1);
@@ -314,13 +314,13 @@ namespace gpstk
       {
          TimeRangeException tre(exc);
          tre.addText("TimeRange:Failure converting first time");
-         GPSTK_THROW(tre);
+         GNSSTK_THROW(tre);
       }
       catch(std::exception& exc)
       {
          TimeRangeException tre(exc.what());
          tre.addText("TimeRange:Failure converting first time");
-         GPSTK_THROW(tre);
+         GNSSTK_THROW(tre);
       }
 
 //      std::cout << "Finished first time convert:"
@@ -352,13 +352,13 @@ namespace gpstk
       {
          TimeRangeException tre(exc);
          tre.addText("TimeRange:Failure converting second time");
-         GPSTK_THROW(tre);
+         GNSSTK_THROW(tre);
       }
       catch(std::exception& exc)
       {
          TimeRangeException tre(exc.what());
          tre.addText("TimeRange:Failure converting second time");
-         GPSTK_THROW(tre);
+         GNSSTK_THROW(tre);
       }
 
          // The end time must be greater than the start time.  
@@ -366,7 +366,7 @@ namespace gpstk
       {
          TimeRangeException tre("Ending time is prior to beginning time");
 
-         GPSTK_THROW(tre);
+         GNSSTK_THROW(tre);
       }
 
       return *this; 

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -49,7 +49,7 @@
 #include <string>
 #include <vector>
 
-namespace gpstk
+namespace gnsstk
 {
       /** @defgroup CommandLine Command-Line Option Processing
        * Provides classes for parsing application command-line options.
@@ -66,7 +66,7 @@ namespace gpstk
    typedef std::vector<CommandOption*> CommandOptionVec;
 
       /// The default command option list used by CommandOption and
-      /// gpstk::CommandOptionParser
+      /// gnsstk::CommandOptionParser
    extern CommandOptionVec defaultCommandOptionList;
 
       /**
@@ -85,15 +85,15 @@ namespace gpstk
        *
        * When a CommandOption is created (not using the default
        * constructor), it automatically adds itself to a list that will
-       * be used by gpstk::CommandOptionParser. If you want to manage your
-       * own list, pass in your own std::vector<gpstk::CommandOptionParser> 
+       * be used by gnsstk::CommandOptionParser. If you want to manage your
+       * own list, pass in your own std::vector<gnsstk::CommandOptionParser> 
        * with the CommandOption constructor. After parsing the command
        * line, you can use the getValue() and 
        * getCount() methods to see what arguments 
        * the options had and how many times the option was listed on
        * the command line.
        *
-       * This class is strongly connected to gpstk::CommandOptionParser, so
+       * This class is strongly connected to gnsstk::CommandOptionParser, so
        * if you change anything here, make sure you don't side affect 
        * the other.
        *
@@ -832,5 +832,5 @@ namespace gpstk
 
       //@}
    
-} // namespace gpstk
+} // namespace gnsstk
 #endif

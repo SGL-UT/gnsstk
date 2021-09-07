@@ -1,4 +1,4 @@
-namespace gpstk
+namespace gnsstk
 {
    %extend FormattedDouble
    {

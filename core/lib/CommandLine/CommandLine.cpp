@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -57,7 +57,7 @@
 // system
 #include <fstream>
 #include <cmath>
-// gpstk
+// gnsstk
 #include "Exception.hpp"
 #include "StringUtils.hpp"
 #include "stl_helpers.hpp"
@@ -68,9 +68,9 @@
 #include "CommandLine.hpp"
 
 using namespace std;
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 
-namespace gpstk
+namespace gnsstk
 {
 // -----------------------------------------------------------------------------------
 // the main entry point
@@ -165,11 +165,11 @@ try {
    return 0;
 
 }  // end try
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 catch(std::exception& e) {
-   Exception E("std except: "+string(e.what())); GPSTK_THROW(E);
+   Exception E("std except: "+string(e.what())); GNSSTK_THROW(E);
 }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 // -----------------------------------------------------------------------------------
@@ -279,11 +279,11 @@ try {
             << (help?"true":"false") << endl;
 
 }  // end try
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 catch(std::exception& e) {
-   Exception E("std except: "+string(e.what())); GPSTK_THROW(E);
+   Exception E("std except: "+string(e.what())); GNSSTK_THROW(E);
 }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 // the rest are private
@@ -367,11 +367,11 @@ try {
    return isValid;
 
 }  // end try
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 catch(std::exception& e) {
-   Exception E("std except: "+string(e.what())); GPSTK_THROW(E);
+   Exception E("std except: "+string(e.what())); GNSSTK_THROW(E);
 }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 // -----------------------------------------------------------------------------------
@@ -468,11 +468,11 @@ try {
    }
 
 }  // end try
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 catch(std::exception& e) {
-   Exception E("std except: "+string(e.what())); GPSTK_THROW(E);
+   Exception E("std except: "+string(e.what())); GNSSTK_THROW(E);
 }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 // -----------------------------------------------------------------------------------
@@ -625,11 +625,11 @@ try {
       Args.push_back(sarg);
    }
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 catch(std::exception& e) {
-   Exception E("std except: "+string(e.what())); GPSTK_THROW(E);
+   Exception E("std except: "+string(e.what())); GNSSTK_THROW(E);
 }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 // -----------------------------------------------------------------------------------
@@ -664,11 +664,11 @@ try {
       }  // end while
    }  // end for
 }  // end try
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 catch(std::exception& e) {
-   Exception E("std except: "+string(e.what())); GPSTK_THROW(E);
+   Exception E("std except: "+string(e.what())); GNSSTK_THROW(E);
 }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 // -----------------------------------------------------------------------------------
@@ -755,11 +755,11 @@ try {
    }
    
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 catch(std::exception& e) {
-   Exception E("std except: "+string(e.what())); GPSTK_THROW(E);
+   Exception E("std except: "+string(e.what())); GNSSTK_THROW(E);
 }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 // -----------------------------------------------------------------------------------
@@ -789,11 +789,11 @@ try {
 
    return syntaxPage;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 catch(std::exception& e) {
-   Exception E("std except: "+string(e.what())); GPSTK_THROW(E);
+   Exception E("std except: "+string(e.what())); GNSSTK_THROW(E);
 }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 // -----------------------------------------------------------------------------------
@@ -906,11 +906,11 @@ try {
    Errors += oss.str();
 
 }  // end try
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 catch(std::exception& e) {
-   Exception E("std except: "+string(e.what())); GPSTK_THROW(E);
+   Exception E("std except: "+string(e.what())); GNSSTK_THROW(E);
 }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 // -----------------------------------------------------------------------------------

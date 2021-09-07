@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -52,7 +52,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace StringUtils;
 
@@ -98,7 +98,7 @@ namespace gpstk
          if(line.length() == 0) continue;
          else if(line.length() < 60 || line.length() > 80) {
             FFStreamError e("Invalid line length");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // parse the line
@@ -108,7 +108,7 @@ namespace gpstk
                version = asDouble(line.substr(0,9));
                if(line[20] != 'C') {
                   FFStreamError e("Invalid file type: " + line.substr(20,1));
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                fileSys = strip(line.substr(35,20));
                valid |= versionValid;
@@ -143,13 +143,13 @@ namespace gpstk
                catch(InvalidParameter& ip)
                {
                   FFStreamError fse("InvalidParameter: "+ip.what());
-                  GPSTK_THROW(fse);
+                  GNSSTK_THROW(fse);
                }
                valid |= sysValid;
             }
             else if(label == timeSystemString) {
                string ts(upperCase(line.substr(3,3)));
-               timeSystem = gpstk::StringUtils::asTimeSystem(ts);
+               timeSystem = gnsstk::StringUtils::asTimeSystem(ts);
                valid |= timeSystemValid;
             }
             else if(label == leapSecondsString) {
@@ -170,7 +170,7 @@ namespace gpstk
                {
                   FFStreamError e(exc);
                   e.addText("Invalid dcbs system : " + line.substr(0,1));
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                valid |= sysDCBValid;
             }
@@ -188,7 +188,7 @@ namespace gpstk
                {
                   FFStreamError e(exc);
                   e.addText("Invalid pcvs system : " + line.substr(0,1));
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                valid |= sysPCVValid;
             }
@@ -250,7 +250,7 @@ namespace gpstk
                   {
                      FFStreamError e(exc);
                      e.addText("Invalid sat (PRN LIST): /" + label + "/");
-                     GPSTK_THROW(e);
+                     GNSSTK_THROW(e);
                   }
                }
                   /// @todo how to check numSolnSatsValid == satList.size() ?
@@ -261,13 +261,13 @@ namespace gpstk
             }
             else {
                FFStreamError e("Invalid line label: " + label);
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             if(debug) cout << "Valid is " << hex << valid << fixed << endl;
 
          }  // end parsing the line
-         catch(FFStreamError& e) { GPSTK_RETHROW(e); }
+         catch(FFStreamError& e) { GNSSTK_RETHROW(e); }
 
       }  // end while end-of-header not found
 
@@ -279,7 +279,7 @@ namespace gpstk
               << dec << ").\n";
          dumpValid(cout);
          FFStreamError e("Invalid header");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       strm.headerRead  = true;
@@ -295,7 +295,7 @@ namespace gpstk
             // is this header valid?
          if( (valid & allRequiredValid) != allRequiredValid) {
             FFStreamError e("Invalid header");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          size_t i;
@@ -372,7 +372,7 @@ namespace gpstk
 
             if(valid & timeSystemValid && version >= 3) {
                line = string(3,' ');
-               line += leftJustify(gpstk::StringUtils::asString(timeSystem),57);
+               line += leftJustify(gnsstk::StringUtils::asString(timeSystem),57);
                line += timeSystemString;      // "TIME SYSTEM ID"
                strm << line << endl;
                strm.lineNumber++;
@@ -506,12 +506,12 @@ namespace gpstk
             strm << line << endl;
             strm.lineNumber++;
          }
-         catch(FFStreamError& e) { GPSTK_RETHROW(e); }
-         catch(StringException& e) { GPSTK_RETHROW(e); }
+         catch(FFStreamError& e) { GNSSTK_RETHROW(e); }
+         catch(StringException& e) { GNSSTK_RETHROW(e); }
 
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
-      catch(exception& e) { Exception g(e.what()); GPSTK_THROW(g); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
+      catch(exception& e) { Exception g(e.what()); GNSSTK_THROW(g); }
    }
 
 

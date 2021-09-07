@@ -61,7 +61,7 @@ def dictToMap(dict, outtype=''):
     return m
 
 def mapToDict(map):
-    """Translates a std::map backed type (from gpstk.cpp) to a python dict.
+    """Translates a std::map backed type (from gnsstk.cpp) to a python dict.
     Note that this recopies the contents of the map and is a linear time operation.
     """
     dict = {}
@@ -120,7 +120,7 @@ def seqToVector(seq, outtype=''):
     return v
 
 def vectorToSeq(vector):
-    """Translates a std::vector backed type (from gpstk.cpp) to a python list.
+    """Translates a std::vector backed type (from gnsstk.cpp) to a python list.
 
     Note that this recopies the contents of the vector and is a linear time operation.
     """

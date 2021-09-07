@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -39,18 +39,18 @@
 /** @file D1NavTestDataDef.hpp This file contains data definitions
  * for testing BeiDou D1Nav processing in the NavFactory code. */
 
-oidD1NAV = gpstk::ObsID(gpstk::ObservationType::NavMsg,
-                        gpstk::CarrierBand::B1,
-                        gpstk::TrackingCode::B1I);
+oidD1NAV = gnsstk::ObsID(gnsstk::ObservationType::NavMsg,
+                        gnsstk::CarrierBand::B1,
+                        gnsstk::TrackingCode::B1I);
 
-ephD1NAVSid = gpstk::SatID(6,gpstk::SatelliteSystem::BeiDou);
-almD1NAVSid = gpstk::SatID(6,gpstk::SatelliteSystem::BeiDou);
-almD1NAVSidB = gpstk::SatID(19,gpstk::SatelliteSystem::BeiDou);
+ephD1NAVSid = gnsstk::SatID(6,gnsstk::SatelliteSystem::BeiDou);
+almD1NAVSid = gnsstk::SatID(6,gnsstk::SatelliteSystem::BeiDou);
+almD1NAVSidB = gnsstk::SatID(19,gnsstk::SatelliteSystem::BeiDou);
 
-ephD1NAVSF1ct = gpstk::BDSWeekSecond(810,345614);
-ephD1NAVSF1 = std::make_shared<gpstk::PackedNavBits>(ephD1NAVSid,oidD1NAV,
+ephD1NAVSF1ct = gnsstk::BDSWeekSecond(810,345614);
+ephD1NAVSF1 = std::make_shared<gnsstk::PackedNavBits>(ephD1NAVSid,oidD1NAV,
                                                      ephD1NAVSF1ct);
-ephD1NAVSF1->setNavID(gpstk::NavType::BeiDou_D1);
+ephD1NAVSF1->setNavID(gnsstk::NavType::BeiDou_D1);
 ephD1NAVSF1->addUnsignedLong(0x38901541,30,1);
 ephD1NAVSF1->addUnsignedLong(0x18000020,30,1);
 ephD1NAVSF1->addUnsignedLong(0x0654A846,30,1);
@@ -64,10 +64,10 @@ ephD1NAVSF1->addUnsignedLong(0x1A8AE13D,30,1);
 ephD1NAVSF1->trimsize();
 
 
-ephD1NAVSF2ct = gpstk::BDSWeekSecond(810,345620);
-ephD1NAVSF2 = std::make_shared<gpstk::PackedNavBits>(ephD1NAVSid,oidD1NAV,
+ephD1NAVSF2ct = gnsstk::BDSWeekSecond(810,345620);
+ephD1NAVSF2 = std::make_shared<gnsstk::PackedNavBits>(ephD1NAVSid,oidD1NAV,
                                                      ephD1NAVSF2ct);
-ephD1NAVSF2->setNavID(gpstk::NavType::BeiDou_D1);
+ephD1NAVSF2->setNavID(gnsstk::NavType::BeiDou_D1);
 ephD1NAVSF2->addUnsignedLong(0x38902543,30,1);
 ephD1NAVSF2->addUnsignedLong(0x18183473,30,1);
 ephD1NAVSF2->addUnsignedLong(0x25F68C9D,30,1);
@@ -81,10 +81,10 @@ ephD1NAVSF2->addUnsignedLong(0x3B50A9BC,30,1);
 ephD1NAVSF2->trimsize();
 
 
-ephD1NAVSF3ct = gpstk::BDSWeekSecond(810,345626);
-ephD1NAVSF3 = std::make_shared<gpstk::PackedNavBits>(ephD1NAVSid,oidD1NAV,
+ephD1NAVSF3ct = gnsstk::BDSWeekSecond(810,345626);
+ephD1NAVSF3 = std::make_shared<gnsstk::PackedNavBits>(ephD1NAVSid,oidD1NAV,
                                                      ephD1NAVSF3ct);
-ephD1NAVSF3->setNavID(gpstk::NavType::BeiDou_D1);
+ephD1NAVSF3->setNavID(gnsstk::NavType::BeiDou_D1);
 ephD1NAVSF3->addUnsignedLong(0x3890354C,30,1);
 ephD1NAVSF3->addUnsignedLong(0x18314682,30,1);
 ephD1NAVSF3->addUnsignedLong(0x004D0280,30,1);
@@ -98,10 +98,10 @@ ephD1NAVSF3->addUnsignedLong(0x145AB4D0,30,1);
 ephD1NAVSF3->trimsize();
 
 
-almD1NAVSF4p1ct = gpstk::BDSWeekSecond(810,345632);
-almD1NAVSF4p1 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+almD1NAVSF4p1ct = gnsstk::BDSWeekSecond(810,345632);
+almD1NAVSF4p1 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
                                                        almD1NAVSF4p1ct);
-almD1NAVSF4p1->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p1->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF4p1->addUnsignedLong(0x38904547,30,1);
 almD1NAVSF4p1->addUnsignedLong(0x184807A9,30,1);
 almD1NAVSF4p1->addUnsignedLong(0x0AEB5395,30,1);
@@ -115,10 +115,10 @@ almD1NAVSF4p1->addUnsignedLong(0x0A09A1B8,30,1);
 almD1NAVSF4p1->trimsize();
 
 
-almD1NAVSF5p1ct = gpstk::BDSWeekSecond(810,345638);
-almD1NAVSF5p1 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+almD1NAVSF5p1ct = gnsstk::BDSWeekSecond(810,345638);
+almD1NAVSF5p1 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
                                                        almD1NAVSF5p1ct);
-almD1NAVSF5p1->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p1->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF5p1->addUnsignedLong(0x38905548,30,1);
 almD1NAVSF5p1->addUnsignedLong(0x1860065A,30,1);
 almD1NAVSF5p1->addUnsignedLong(0x25147FB3,30,1);
@@ -132,10 +132,10 @@ almD1NAVSF5p1->addUnsignedLong(0x0A5EAD64,30,1);
 almD1NAVSF5p1->trimsize();
 
 
-almD1NAVSF4p7ct = gpstk::BDSWeekSecond(810,345812);
-almD1NAVSF4p7 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+almD1NAVSF4p7ct = gnsstk::BDSWeekSecond(810,345812);
+almD1NAVSF4p7 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
                                                        almD1NAVSF4p7ct);
-almD1NAVSF4p7->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p7->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF4p7->addUnsignedLong(0x38904547,30,1);
 almD1NAVSF4p7->addUnsignedLong(0x1B181FA7,30,1);
 almD1NAVSF4p7->addUnsignedLong(0x0AEFC59D,30,1);
@@ -149,10 +149,10 @@ almD1NAVSF4p7->addUnsignedLong(0x12966991,30,1);
 almD1NAVSF4p7->trimsize();
 
 
-almD1NAVSF5p7ct = gpstk::BDSWeekSecond(810,345818);
-almD1NAVSF5p7 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+almD1NAVSF5p7ct = gnsstk::BDSWeekSecond(810,345818);
+almD1NAVSF5p7 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
                                                        almD1NAVSF5p7ct);
-almD1NAVSF5p7->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p7->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF5p7->addUnsignedLong(0x38905548,30,1);
 almD1NAVSF5p7->addUnsignedLong(0x1B301C52,30,1);
 almD1NAVSF5p7->addUnsignedLong(0x00000000,30,1);
@@ -166,10 +166,10 @@ almD1NAVSF5p7->addUnsignedLong(0x3E2C2ADE,30,1);
 almD1NAVSF5p7->trimsize();
 
 
-almD1NAVSF4p8ct = gpstk::BDSWeekSecond(810,345842);
-almD1NAVSF4p8 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+almD1NAVSF4p8ct = gnsstk::BDSWeekSecond(810,345842);
+almD1NAVSF4p8 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
                                                        almD1NAVSF4p8ct);
-almD1NAVSF4p8->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p8->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF4p8->addUnsignedLong(0x38904547,30,1);
 almD1NAVSF4p8->addUnsignedLong(0x1B9023CF,30,1);
 almD1NAVSF4p8->addUnsignedLong(0x0AE68AA7,30,1);
@@ -183,10 +183,10 @@ almD1NAVSF4p8->addUnsignedLong(0x206101EC,30,1);
 almD1NAVSF4p8->trimsize();
 
 
-almD1NAVSF5p8ct = gpstk::BDSWeekSecond(810,345848);
-almD1NAVSF5p8 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+almD1NAVSF5p8ct = gnsstk::BDSWeekSecond(810,345848);
+almD1NAVSF5p8 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
                                                        almD1NAVSF5p8ct);
-almD1NAVSF5p8->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p8->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF5p8->addUnsignedLong(0x38905548,30,1);
 almD1NAVSF5p8->addUnsignedLong(0x1BA8205A,30,1);
 almD1NAVSF5p8->addUnsignedLong(0x2C160BEA,30,1);
@@ -200,10 +200,10 @@ almD1NAVSF5p8->addUnsignedLong(0x2AAAAAB4,30,1);
 almD1NAVSF5p8->trimsize();
 
 
-almD1NAVSF4p9ct = gpstk::BDSWeekSecond(810,345872);
-almD1NAVSF4p9 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+almD1NAVSF4p9ct = gnsstk::BDSWeekSecond(810,345872);
+almD1NAVSF4p9 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
                                                        almD1NAVSF4p9ct);
-almD1NAVSF4p9->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p9->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF4p9->addUnsignedLong(0x38904547,30,1);
 almD1NAVSF4p9->addUnsignedLong(0x1C0827F3,30,1);
 almD1NAVSF4p9->addUnsignedLong(0x0AED4A9C,30,1);
@@ -216,10 +216,10 @@ almD1NAVSF4p9->addUnsignedLong(0x0F17FEAC,30,1);
 almD1NAVSF4p9->addUnsignedLong(0x075245E5,30,1);
 almD1NAVSF4p9->trimsize();
 
-almD1NAVSF5p9ct = gpstk::BDSWeekSecond(810,345878);
-almD1NAVSF5p9 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+almD1NAVSF5p9ct = gnsstk::BDSWeekSecond(810,345878);
+almD1NAVSF5p9 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
                                                        almD1NAVSF5p9ct);
-almD1NAVSF5p9->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p9->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF5p9->addUnsignedLong(0x38905548,30,1);
 almD1NAVSF5p9->addUnsignedLong(0x1C202406,30,1);
 almD1NAVSF5p9->addUnsignedLong(0x00000000,30,1);
@@ -233,10 +233,10 @@ almD1NAVSF5p9->addUnsignedLong(0x1555554B,30,1);
 almD1NAVSF5p9->trimsize();
 
 
-almD1NAVSF4p10ct = gpstk::BDSWeekSecond(810,345902);
-almD1NAVSF4p10 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+almD1NAVSF4p10ct = gnsstk::BDSWeekSecond(810,345902);
+almD1NAVSF4p10 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
                                                         almD1NAVSF4p10ct);
-almD1NAVSF4p10->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p10->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF4p10->addUnsignedLong(0x38904547,30,1);
 almD1NAVSF4p10->addUnsignedLong(0x1C802B94,30,1);
 almD1NAVSF4p10->addUnsignedLong(0x0AE86A90,30,1);
@@ -249,10 +249,10 @@ almD1NAVSF4p10->addUnsignedLong(0x06FA09E5,30,1);
 almD1NAVSF4p10->addUnsignedLong(0x2E05E9FD,30,1);
 almD1NAVSF4p10->trimsize();
 
-almD1NAVSF5p10ct = gpstk::BDSWeekSecond(810,345908);
-almD1NAVSF5p10 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+almD1NAVSF5p10ct = gnsstk::BDSWeekSecond(810,345908);
+almD1NAVSF5p10 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
                                                         almD1NAVSF5p10ct);
-almD1NAVSF5p10->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p10->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF5p10->addUnsignedLong(0x38905548,30,1);
 almD1NAVSF5p10->addUnsignedLong(0x1C9828C1,30,1);
 almD1NAVSF5p10->addUnsignedLong(0x04043DE2,30,1);
@@ -266,10 +266,10 @@ almD1NAVSF5p10->addUnsignedLong(0x1555554B,30,1);
 almD1NAVSF5p10->trimsize();
 
 
-almD1NAVSF4p11ct = gpstk::BDSWeekSecond(810,345932);
-almD1NAVSF4p11 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+almD1NAVSF4p11ct = gnsstk::BDSWeekSecond(810,345932);
+almD1NAVSF4p11 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
                                                         almD1NAVSF4p11ct);
-almD1NAVSF4p11->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p11->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF4p11->addUnsignedLong(0x38904547,30,1);
 almD1NAVSF4p11->addUnsignedLong(0x1CF82EBB,30,1);
 almD1NAVSF4p11->addUnsignedLong(0x251489BF,30,1);
@@ -283,10 +283,10 @@ almD1NAVSF4p11->addUnsignedLong(0x0E4E1DE5,30,1);
 almD1NAVSF4p11->trimsize();
 
 
-almD1NAVSF5p11ct = gpstk::BDSWeekSecond(810,345938);
-almD1NAVSF5p11 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+almD1NAVSF5p11ct = gnsstk::BDSWeekSecond(810,345938);
+almD1NAVSF5p11 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
                                                         almD1NAVSF5p11ct);
-almD1NAVSF5p11->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p11->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF5p11->addUnsignedLong(0x38905548,30,1);
 almD1NAVSF5p11->addUnsignedLong(0x1D102C0D,30,1);
 almD1NAVSF5p11->addUnsignedLong(0x00000000,30,1);
@@ -300,10 +300,10 @@ almD1NAVSF5p11->addUnsignedLong(0x00000000,30,1);
 almD1NAVSF5p11->trimsize();
 
 
-almD1NAVSF4p24Bct = gpstk::BDSWeekSecond(810,345602);
-almD1NAVSF4p24B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1NAVSF4p24Bct = gnsstk::BDSWeekSecond(810,345602);
+almD1NAVSF4p24B = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                          almD1NAVSF4p24Bct);
-almD1NAVSF4p24B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p24B->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF4p24B->addUnsignedLong(0x38904547,30,1);
 almD1NAVSF4p24B->addUnsignedLong(0x17D0626B,30,1);
 almD1NAVSF4p24B->addUnsignedLong(0x251474BD,30,1);
@@ -317,10 +317,10 @@ almD1NAVSF4p24B->addUnsignedLong(0x2628CBF7,30,1);
 almD1NAVSF4p24B->trimsize();
 
 
-almD1NAVSF5p24Bct = gpstk::BDSWeekSecond(810,345608);
-almD1NAVSF5p24B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1NAVSF5p24Bct = gnsstk::BDSWeekSecond(810,345608);
+almD1NAVSF5p24B = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                          almD1NAVSF5p24Bct);
-almD1NAVSF5p24B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p24B->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF5p24B->addUnsignedLong(0x38905548,30,1);
 almD1NAVSF5p24B->addUnsignedLong(0x17E861FE,30,1);
 almD1NAVSF5p24B->addUnsignedLong(0x1555554B,30,1);
@@ -334,10 +334,10 @@ almD1NAVSF5p24B->addUnsignedLong(0x1555554B,30,1);
 almD1NAVSF5p24B->trimsize();
 
 
-almD1NAVSF4p8Bct = gpstk::BDSWeekSecond(810,345848);
-almD1NAVSF4p8B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1NAVSF4p8Bct = gnsstk::BDSWeekSecond(810,345848);
+almD1NAVSF4p8B = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                         almD1NAVSF4p8Bct);
-almD1NAVSF4p8B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p8B->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF4p8B->addUnsignedLong(0x38904547,30,1);
 almD1NAVSF4p8B->addUnsignedLong(0x1B9023CF,30,1);
 almD1NAVSF4p8B->addUnsignedLong(0x0AE68AA7,30,1);
@@ -351,10 +351,10 @@ almD1NAVSF4p8B->addUnsignedLong(0x206103EA,30,1);
 almD1NAVSF4p8B->trimsize();
 
 
-almD1NAVSF5p8Bct = gpstk::BDSWeekSecond(810,345848);
-almD1NAVSF5p8B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1NAVSF5p8Bct = gnsstk::BDSWeekSecond(810,345848);
+almD1NAVSF5p8B = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                         almD1NAVSF5p8Bct);
-almD1NAVSF5p8B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p8B->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF5p8B->addUnsignedLong(0x38905548,30,1);
 almD1NAVSF5p8B->addUnsignedLong(0x1BA8205A,30,1);
 almD1NAVSF5p8B->addUnsignedLong(0x2C160BEA,30,1);
@@ -368,10 +368,10 @@ almD1NAVSF5p8B->addUnsignedLong(0x00000000,30,1);
 almD1NAVSF5p8B->trimsize();
 
 
-almD1NAVSF4p11Bct = gpstk::BDSWeekSecond(810,345932);
-almD1NAVSF4p11B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1NAVSF4p11Bct = gnsstk::BDSWeekSecond(810,345932);
+almD1NAVSF4p11B = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                          almD1NAVSF4p11Bct);
-almD1NAVSF4p11B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p11B->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF4p11B->addUnsignedLong(0x38904547,30,1);
 almD1NAVSF4p11B->addUnsignedLong(0x1CF82EBB,30,1);
 almD1NAVSF4p11B->addUnsignedLong(0x251489BF,30,1);
@@ -385,10 +385,10 @@ almD1NAVSF4p11B->addUnsignedLong(0x0E4E1FE3,30,1);
 almD1NAVSF4p11B->trimsize();
 
 
-almD1NAVSF5p11Bct = gpstk::BDSWeekSecond(810,345938);
-almD1NAVSF5p11B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1NAVSF5p11Bct = gnsstk::BDSWeekSecond(810,345938);
+almD1NAVSF5p11B = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                          almD1NAVSF5p11Bct);
-almD1NAVSF5p11B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p11B->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF5p11B->addUnsignedLong(0x38905548,30,1);
 almD1NAVSF5p11B->addUnsignedLong(0x1D102F08,30,1);
 almD1NAVSF5p11B->addUnsignedLong(0x0AE644AF,30,1);
@@ -402,10 +402,10 @@ almD1NAVSF5p11B->addUnsignedLong(0x28328DC7,30,1);
 almD1NAVSF5p11B->trimsize();
 
 
-almD1NAVSF4p12Bct = gpstk::BDSWeekSecond(810,345962);
-almD1NAVSF4p12B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1NAVSF4p12Bct = gnsstk::BDSWeekSecond(810,345962);
+almD1NAVSF4p12B = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                          almD1NAVSF4p12Bct);
-almD1NAVSF4p12B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p12B->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF4p12B->addUnsignedLong(0x38904547,30,1);
 almD1NAVSF4p12B->addUnsignedLong(0x1D703279,30,1);
 almD1NAVSF4p12B->addUnsignedLong(0x25148DB3,30,1);
@@ -419,10 +419,10 @@ almD1NAVSF4p12B->addUnsignedLong(0x14DA0B83,30,1);
 almD1NAVSF4p12B->trimsize();
 
 
-almD1NAVSF5p12Bct = gpstk::BDSWeekSecond(810,345968);
-almD1NAVSF5p12B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1NAVSF5p12Bct = gnsstk::BDSWeekSecond(810,345968);
+almD1NAVSF5p12B = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                          almD1NAVSF5p12Bct);
-almD1NAVSF5p12B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p12B->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF5p12B->addUnsignedLong(0x38905548,30,1);
 almD1NAVSF5p12B->addUnsignedLong(0x1D883209,30,1);
 almD1NAVSF5p12B->addUnsignedLong(0x251498B9,30,1);
@@ -436,10 +436,10 @@ almD1NAVSF5p12B->addUnsignedLong(0x089FD9FF,30,1);
 almD1NAVSF5p12B->trimsize();
 
 
-almD1NAVSF4p7Bct = gpstk::BDSWeekSecond(810,345812);
-almD1NAVSF4p7B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1NAVSF4p7Bct = gnsstk::BDSWeekSecond(810,345812);
+almD1NAVSF4p7B = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                         almD1NAVSF4p7Bct);
-almD1NAVSF4p7B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p7B->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF4p7B->addUnsignedLong(0x38904547,30,1);
 almD1NAVSF4p7B->addUnsignedLong(0x1B181FA7,30,1);
 almD1NAVSF4p7B->addUnsignedLong(0x0AEFC59D,30,1);
@@ -453,10 +453,10 @@ almD1NAVSF4p7B->addUnsignedLong(0x12966B97,30,1);
 almD1NAVSF4p7B->trimsize();
 
 
-almD1NAVSF5p7Bct = gpstk::BDSWeekSecond(810,345818);
-almD1NAVSF5p7B = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1NAVSF5p7Bct = gnsstk::BDSWeekSecond(810,345818);
+almD1NAVSF5p7B = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                         almD1NAVSF5p7Bct);
-almD1NAVSF5p7B->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p7B->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF5p7B->addUnsignedLong(0x38905548,30,1);
 almD1NAVSF5p7B->addUnsignedLong(0x1B301C52,30,1);
 almD1NAVSF5p7B->addUnsignedLong(0x00000000,30,1);
@@ -470,10 +470,10 @@ almD1NAVSF5p7B->addUnsignedLong(0x3E2C00D9,30,1);
 almD1NAVSF5p7B->trimsize();
 
 
-almD1NAVSF4p24B2ct = gpstk::BDSWeekSecond(810,346322);
-almD1NAVSF4p24B2 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1NAVSF4p24B2ct = gnsstk::BDSWeekSecond(810,346322);
+almD1NAVSF4p24B2 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                           almD1NAVSF4p24B2ct);
-almD1NAVSF4p24B2->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF4p24B2->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF4p24B2->addUnsignedLong(0x38904547,30,1);
 almD1NAVSF4p24B2->addUnsignedLong(0x2310622B,30,1);
 almD1NAVSF4p24B2->addUnsignedLong(0x251474BD,30,1);
@@ -487,10 +487,10 @@ almD1NAVSF4p24B2->addUnsignedLong(0x260DB332,30,1);
 almD1NAVSF4p24B2->trimsize();
 
 
-almD1NAVSF5p24B2ct = gpstk::BDSWeekSecond(810,346328);
-almD1NAVSF5p24B2 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1NAVSF5p24B2ct = gnsstk::BDSWeekSecond(810,346328);
+almD1NAVSF5p24B2 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                           almD1NAVSF5p24B2ct);
-almD1NAVSF5p24B2->setNavID(gpstk::NavType::BeiDou_D1);
+almD1NAVSF5p24B2->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1NAVSF5p24B2->addUnsignedLong(0x38905548,30,1);
 almD1NAVSF5p24B2->addUnsignedLong(0x232860BD,30,1);
 almD1NAVSF5p24B2->addUnsignedLong(0x2C160BEA,30,1);
@@ -504,10 +504,10 @@ almD1NAVSF5p24B2->addUnsignedLong(0x00000000,30,1);
 almD1NAVSF5p24B2->trimsize();
 
 
-almD1Default123ct = gpstk::BDSWeekSecond(810,346328);
-almD1Default1 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1Default123ct = gnsstk::BDSWeekSecond(810,346328);
+almD1Default1 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                        almD1Default123ct);
-almD1Default1->setNavID(gpstk::NavType::BeiDou_D1);
+almD1Default1->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1Default1->addUnsignedLong(0x38905548,30,1);
 almD1Default1->addUnsignedLong(0x232860BD,30,1);
 almD1Default1->addUnsignedLong(0x2C160BEA,30,1);
@@ -521,9 +521,9 @@ almD1Default1->addUnsignedLong(0x000003ff,30,1);
 almD1Default1->trimsize();
 
 
-almD1Default2 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1Default2 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                        almD1Default123ct);
-almD1Default2->setNavID(gpstk::NavType::BeiDou_D1);
+almD1Default2->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1Default2->addUnsignedLong(0x38905548,30,1);
 almD1Default2->addUnsignedLong(0x232860BD,30,1);
 almD1Default2->addUnsignedLong(0x2C160BEA,30,1);
@@ -537,9 +537,9 @@ almD1Default2->addUnsignedLong(0x000003ff,30,1);
 almD1Default2->trimsize();
 
 
-almD1Default3 = std::make_shared<gpstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
+almD1Default3 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSidB,oidD1NAV,
                                                        almD1Default123ct);
-almD1Default3->setNavID(gpstk::NavType::BeiDou_D1);
+almD1Default3->setNavID(gnsstk::NavType::BeiDou_D1);
 almD1Default3->addUnsignedLong(0x38905548,30,1);
 almD1Default3->addUnsignedLong(0x232860BD,30,1);
 almD1Default3->addUnsignedLong(0x2C160BEA,30,1);

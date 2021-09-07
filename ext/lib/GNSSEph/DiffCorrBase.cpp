@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -51,7 +51,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    //----------------------------------------------------------------
    DiffCorrBase::DiffCorrBase()
@@ -70,7 +70,7 @@ namespace gpstk
       }
       catch (InvalidParameter ip)
       {
-         GPSTK_RETHROW(ip); 
+         GNSSTK_RETHROW(ip); 
       }
    }
 
@@ -118,7 +118,7 @@ namespace gpstk
          stringstream ss; 
          ss << "DiffCorrBase.loadData().  Invalid message length: " << numBits;
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip); 
+         GNSSTK_THROW(ip); 
       }
 
          // Obtain the times in terms of continuous GPS time
@@ -178,7 +178,7 @@ namespace gpstk
       if (!dataLoadedFlag)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       s << endl

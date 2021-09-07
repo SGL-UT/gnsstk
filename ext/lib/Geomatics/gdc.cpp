@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -36,7 +36,7 @@
 //
 //==============================================================================
 
-/// @file gdc.cpp GPSTk Discontinuity Corrector
+/// @file gdc.cpp GNSSTk Discontinuity Corrector
 /// GPS phase discontinuity correction. Given a SatPass object containing
 /// dual-frequency pseudorange and phase for an entire satellite pass,
 /// detect discontinuities in the phase and, if possible, estimate their size and fix.
@@ -49,12 +49,12 @@
 
 using namespace std;
 
-namespace gpstk {
+namespace gnsstk {
 
 //------------------------------------------------------------------------------------
 // static data
 //------------------------------------------------------------------------------------
-// class gdc: string giving version of gpstk Discontinuity Corrector
+// class gdc: string giving version of gnsstk Discontinuity Corrector
 const string gdc::GDCVersion = string("9.0 5/20/17");
 
 // ----------------------- flags and bitmaps
@@ -208,7 +208,7 @@ int gdc::DiscontinuityCorrector(SatPass& SP, std::string& retMsg, std::vector<st
 
       return 0;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end int gdc::DiscontinuityCorrector(SatPass& SP, string& retMsg, int GLOn)
 
 //------------------------------------------------------------------------------------
@@ -370,7 +370,7 @@ int gdc::DiscontinuityCorrector(
 
       return 0;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end int gdc::DiscontinuityCorrector(dataL1, dataL2,...)
 
 //------------------------------------------------------------------------------------
@@ -396,7 +396,7 @@ int gdc::ProcessOneCombo(const unsigned which)
 
       return nslips;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end ProcessOneCombo()
 
 //------------------------------------------------------------------------------------
@@ -446,7 +446,7 @@ int gdc::GrossProcessing(const unsigned which)
    
       return nslips;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end GrossProcessing()
 
 //------------------------------------------------------------------------------------
@@ -498,7 +498,7 @@ int gdc::FineProcessing(const unsigned which)
    
       return nslips;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end FineProcessing()
 
 //------------------------------------------------------------------------------------
@@ -538,7 +538,7 @@ int gdc::filterFirstDiff(const unsigned which, const string label,
 
       return iret;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end gdc::filterFirstDiff()
 
 //------------------------------------------------------------------------------------
@@ -567,7 +567,7 @@ int gdc::filterWindow(const unsigned which, const string label,
       int iret = wf.filter();
       if(iret == -2) {
          LOG(ERROR) << " Call to GF window filter without time data!";
-         GPSTK_THROW(Exception("Call to GF window filter without time data"));
+         GNSSTK_THROW(Exception("Call to GF window filter without time data"));
       }
       else if(iret == -1 || iret == -3) {    // segment is too small
          return iret;
@@ -604,9 +604,9 @@ int gdc::filterWindow(const unsigned which, const string label,
    }
    catch(std::exception& e) {
       LOG(ERROR) << "std exception " << e.what();
-      GPSTK_THROW(Exception(string("std exception")+e.what()));
+      GNSSTK_THROW(Exception(string("std exception")+e.what()));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end int gdc::filterWindow()
 
 //------------------------------------------------------------------------------------
@@ -622,8 +622,8 @@ int gdc::mergeFilterResultsIntoArcs(vector< FilterHit<double> >& hits,
 {
    try {
       // is this necessary? ever used?
-      if(Arcs.size() == 0) GPSTK_THROW(Exception("No Arcs found"));
-      if(hits.size() == 0) GPSTK_THROW(Exception("No Filter results found"));
+      if(Arcs.size() == 0) GNSSTK_THROW(Exception("No Arcs found"));
+      if(hits.size() == 0) GNSSTK_THROW(Exception("No Filter results found"));
 
       bool fixup(false);
       int i, narcs(0);
@@ -678,7 +678,7 @@ int gdc::mergeFilterResultsIntoArcs(vector< FilterHit<double> >& hits,
                      // just remove the fix mark...
                      ait->second.mark ^= FIX[which];
                   }
-                  else GPSTK_THROW(                   // marked SLIP but not fixed
+                  else GNSSTK_THROW(                   // marked SLIP but not fixed
                      Exception("Already marked but unfixed should not happen"));
                }
                else                                   // no slip(which) here
@@ -714,7 +714,7 @@ int gdc::mergeFilterResultsIntoArcs(vector< FilterHit<double> >& hits,
 
       return narcs;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end int gdc::mergeFilterResultsIntoArcs()
 
 //------------------------------------------------------------------------------------
@@ -789,7 +789,7 @@ void gdc::fixUpArcs(void)
          Arcs[ait->second.index] = ait->second;
 
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end void gdc::fixUpArcs()
 
 //------------------------------------------------------------------------------------
@@ -813,7 +813,7 @@ void gdc::recomputeArcs(void)
          //LOG(INFO) << "GDC recomputeArcs " << ait->second.asString();
       }
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -866,7 +866,7 @@ void gdc::getArcStats(map<int,Arc>::iterator& ait, const unsigned which)
    catch(Exception& e)
    {
       delete ptrStats;
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    delete ptrStats;
 }  // end void gdc::getArcStats()
@@ -919,7 +919,7 @@ void gdc::findLargeGaps(void)
       if(fixup) fixUpArcs();              // recompute points for all Arcs
 
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end void gdc::findLargeGaps()
 
 //------------------------------------------------------------------------------------
@@ -949,7 +949,7 @@ map<int,int> gdc::findGaps(const Arc& arc)
 
       return gaps;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end map<int,int> gdc::findGaps(const Arc& arc) throw(Exception)
 
 //------------------------------------------------------------------------------------
@@ -1017,7 +1017,7 @@ int gdc::fixSlips(const unsigned which)
 
       return nslips;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end int gdc::fixSlips(const unsigned which) throw(Exception)
 
 // do a final check on the pass. Look for isolated good points (< MinPts good
@@ -1102,7 +1102,7 @@ int gdc::FinalCheck(void)
 
       return iret;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // end of processing routines
@@ -1332,7 +1332,7 @@ try {
       }
    }  // end loop over data in SP
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -1465,7 +1465,7 @@ try {
    }  // end loop over Arcs
 
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -1494,7 +1494,7 @@ bool gdc::setParameter(std::string cmd)
 
       return setParameter(label, StringUtils::asDouble(value));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end bool gdc::setParameter(string cmd) throw(Exception)
 
 //------------------------------------------------------------------------------------
@@ -1503,7 +1503,7 @@ bool gdc::setParameter(std::string cmd)
 bool gdc::setParameter(std::string label, double value)
 {
    if(CFG.find(label) == CFG.end())
-      return false; // GPSTK_THROW(Exception("Unknown configuration label " + label));
+      return false; // GNSSTK_THROW(Exception("Unknown configuration label " + label));
 
    CFG[label] = value;
 
@@ -1558,7 +1558,7 @@ void gdc::DisplayParameterUsage(ostream& os, string tag, bool advanced)
 {
    try {
       static const unsigned name_val_width(18),adv_name_val_width(18);
-      os << tag << "GPSTk Discontinuity Corrector (GDC) v." << GDCVersion
+      os << tag << "GNSSTk Discontinuity Corrector (GDC) v." << GDCVersion
          << " configuration:" << endl;
 
       string name;
@@ -1591,7 +1591,7 @@ void gdc::DisplayParameterUsage(ostream& os, string tag, bool advanced)
          }
       }
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end void gdc::DisplayParameterUsage(ostream& os, bool advanced)
 
 //------------------------------------------------------------------------------------
@@ -1647,11 +1647,11 @@ void gdc::init(void)
       // when rejecting data, set SatPass UserFlag using this value
       setcfg(UserFlag, 0, "* call SatPass::setUserFlag(value) for rejects");
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end void gdc::init(void)
 
 //------------------------------------------------------------------------------------
 #undef setcfg
 #undef cfg
 
-}  // end namespace gpstk
+}  // end namespace gnsstk

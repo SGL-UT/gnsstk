@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,14 +41,14 @@
  * Classes for Vector, both constant and modifiable
  */
 
-#ifndef GPSTK_VECTOR_HPP
-#define GPSTK_VECTOR_HPP
+#ifndef GNSSTK_VECTOR_HPP
+#define GNSSTK_VECTOR_HPP
 
 #include <limits>
 #include <vector>
 #include "VectorBase.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup MathGroup
       //@{
@@ -89,7 +89,7 @@ namespace gpstk
             v = new T[siz];
             if(!v) {
                VectorException e("Vector(size_t) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
          }
       }
@@ -104,7 +104,7 @@ namespace gpstk
             v = new T[siz];
             if(!v) {
                VectorException e("Vector<T>(size_t, const T) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             this->assignFrom(defaultValue);
          }
@@ -120,7 +120,7 @@ namespace gpstk
             v = new T[r.size()];
             if(!v) {
                VectorException e("Vector<T>(ConstVectorBase) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             this->assignFrom(r);
          }
@@ -135,7 +135,7 @@ namespace gpstk
             v = new T[r.s];
             if(!v) {
                VectorException e("Vector(Vector) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             this->assignFrom(r);
          }
@@ -150,7 +150,7 @@ namespace gpstk
             v = new T[r.size()];
             if(!v) {
                VectorException e("Vector(valarray) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             this->assignFrom(r);
          }
@@ -167,14 +167,14 @@ namespace gpstk
               top + num > vec.size())
          {
             VectorException e("Invalid dimensions or size for Vector(VectorBase)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          if (num>0)
          {
             v = new T[num];
             if(!v) {
                VectorException e("Vector(subvector) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             size_t i;
             for(i = 0; i < num; i++)
@@ -268,7 +268,7 @@ namespace gpstk
             v = new T[index];
             if(!v) {
                VectorException e("Vector.resize(size_t) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
          }
          s = index;
@@ -284,7 +284,7 @@ namespace gpstk
          return *this;
       }
 
-         // convert the gpstk vector to std vector
+         // convert the gnsstk vector to std vector
       std::vector<T> toStdVector()
       {
          std::vector<T> std_vec;

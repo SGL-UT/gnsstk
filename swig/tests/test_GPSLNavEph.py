@@ -2,13 +2,13 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
+from gnsstk.test_utils import args,run_unit_tests
 
-import gpstk
+import gnsstk
 
 class TestGPSLNavEph(unittest.TestCase):
     def test_constructor(self):
-        uut = gpstk.GPSLNavEph()
+        uut = gnsstk.GPSLNavEph()
         self.assertEqual(0, uut.pre2)
         self.assertEqual(0, uut.pre3)
         self.assertEqual(0, uut.tlm2)
@@ -26,7 +26,7 @@ class TestGPSLNavEph(unittest.TestCase):
         self.assertEqual(False, uut.L2Pdata)
 
     def test_validate(self):
-        uut = gpstk.GPSLNavEph()
+        uut = gnsstk.GPSLNavEph()
         self.assertEqual(True, uut.validate())
         self.assertEqual(True, uut.validate())
         uut.pre = 0x22c
@@ -41,17 +41,17 @@ class TestGPSLNavEph(unittest.TestCase):
         self.assertEqual(True, uut.validate())
 
     def test_getUserTime(self):
-        uut = gpstk.GPSLNavEph()
-        uut.timeStamp = gpstk.GPSWeekSecond(2100,135.0).toCommonTime()
-        exp = gpstk.GPSWeekSecond(2100,153.0).toCommonTime()
+        uut = gnsstk.GPSLNavEph()
+        uut.timeStamp = gnsstk.GPSWeekSecond(2100,135.0).toCommonTime()
+        exp = gnsstk.GPSWeekSecond(2100,153.0).toCommonTime()
         self.assertEqual(exp, uut.getUserTime())
 
     def test_fixFit(self):
-        uut = gpstk.GPSLNavEph()
-        beginExp2 = gpstk.GPSWeekSecond(2121, 603360).toCommonTime()
-        endExp2 = gpstk.GPSWeekSecond(2122, 7200).toCommonTime()
-        uut.Toe = gpstk.GPSWeekSecond(2122, 0).toCommonTime()
-        uut.xmitTime = gpstk.GPSWeekSecond(2121,603360).toCommonTime()
+        uut = gnsstk.GPSLNavEph()
+        beginExp2 = gnsstk.GPSWeekSecond(2121, 603360).toCommonTime()
+        endExp2 = gnsstk.GPSWeekSecond(2122, 7200).toCommonTime()
+        uut.Toe = gnsstk.GPSWeekSecond(2122, 0).toCommonTime()
+        uut.xmitTime = gnsstk.GPSWeekSecond(2121,603360).toCommonTime()
         uut.fixFit()
         self.assertEqual(beginExp2, uut.beginFit)
         self.assertEqual(endExp2, uut.endFit)

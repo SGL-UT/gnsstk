@@ -1,1 +1,1 @@
-./build.sh -eux -i ~/.local/gpstkDiffProc
+./build.sh -eux -i ~/.local/gnsstkDiffProc

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -59,22 +59,22 @@ public:
       TUDEF("OrbElemStore","Empty Store Tests");
       try
       {
-         gpstk::OrbElemStore store;
+         gnsstk::OrbElemStore store;
             // this eph will be removed by edit()
-         gpstk::OrbElemRinex baleted;             // Picked OrbElemRinex as minimum concrete class derived from OrbElemBase
-         gpstk::SatID sat(11, gpstk::SatelliteSystem::GPS);
-         gpstk::ObsID obsID(gpstk::ObservationType::NavMsg,
-                            gpstk::CarrierBand::L1,
-                            gpstk::TrackingCode::CA);
+         gnsstk::OrbElemRinex baleted;             // Picked OrbElemRinex as minimum concrete class derived from OrbElemBase
+         gnsstk::SatID sat(11, gnsstk::SatelliteSystem::GPS);
+         gnsstk::ObsID obsID(gnsstk::ObservationType::NavMsg,
+                            gnsstk::CarrierBand::L1,
+                            gnsstk::TrackingCode::CA);
          baleted.dataLoadedFlag = true;
          baleted.satID = sat;
          baleted.obsID = obsID;
-         baleted.ctToe = gpstk::GPSWeekSecond(1917, 576000);
-         baleted.ctToc = gpstk::GPSWeekSecond(1917, 576000);
+         baleted.ctToe = gnsstk::GPSWeekSecond(1917, 576000);
+         baleted.ctToc = gnsstk::GPSWeekSecond(1917, 576000);
          baleted.beginValid = baleted.ctToe - 3600;
          baleted.endValid = baleted.ctToe + 3600;
 
-         gpstk::CommonTime searchTime(baleted.ctToe);
+         gnsstk::CommonTime searchTime(baleted.ctToe);
 
          TUCSM("addOrbElem");
          store.addOrbElem(&baleted);
@@ -102,10 +102,10 @@ public:
          TUCSM("findNearOrbElem");
          try 
          {
-            const gpstk::OrbElemBase* oeb = store.findNearOrbElem(sat, searchTime); 
+            const gnsstk::OrbElemBase* oeb = store.findNearOrbElem(sat, searchTime); 
             TUFAIL("Called findNearOrbElem for empty store and FAILED to throw InvalidRequest");
          }
-         catch (gpstk::InvalidRequest)
+         catch (gnsstk::InvalidRequest)
          {
             TUPASS("Called findNearOrbElem for empty store and received InvalidRequest as expected.");
          }
@@ -113,16 +113,16 @@ public:
          TUCSM("findOrbElem");
          try 
          {
-            const gpstk::OrbElemBase* oeb = store.findOrbElem(sat, searchTime); 
+            const gnsstk::OrbElemBase* oeb = store.findOrbElem(sat, searchTime); 
             TUFAIL("Called findOrbElem for empty store and FAILED to throw InvalidRequest");
          }
-         catch (gpstk::InvalidRequest)
+         catch (gnsstk::InvalidRequest)
          {
             TUPASS("Called findOrbElem for empty store and received InvalidRequest as expected.");
          }
 
       }
-      catch (gpstk::Exception &exc)
+      catch (gnsstk::Exception &exc)
       {
          cerr << exc << endl;
          TUFAIL("Unexpected exception");
@@ -140,42 +140,42 @@ public:
       TUDEF("OrbElemStore","Basic Access Tests");
       try
       {
-         gpstk::OrbElemStore store;
+         gnsstk::OrbElemStore store;
 
             // Create a small number of OrbElemBase object with
             // specific characteristics.
 
              // Picked OrbElemRinex as minimum concrete class derived
              // from OrbElemBase
-         gpstk::OrbElemRinex to1;
-         gpstk::SatID sat1(1, gpstk::SatelliteSystem::GPS);
-         gpstk::ObsID obsID(gpstk::ObservationType::NavMsg,
-                            gpstk::CarrierBand::L1,
-                            gpstk::TrackingCode::CA);
+         gnsstk::OrbElemRinex to1;
+         gnsstk::SatID sat1(1, gnsstk::SatelliteSystem::GPS);
+         gnsstk::ObsID obsID(gnsstk::ObservationType::NavMsg,
+                            gnsstk::CarrierBand::L1,
+                            gnsstk::TrackingCode::CA);
          to1.dataLoadedFlag = true;
          to1.satID = sat1;
          to1.obsID = obsID;
-         to1.ctToe = gpstk::GPSWeekSecond(2000, 7200);   // 0200
+         to1.ctToe = gnsstk::GPSWeekSecond(2000, 7200);   // 0200
          to1.beginValid = to1.ctToe - 7200;
          to1.endValid = to1.ctToe + 7200;
          to1.setHealth(0);
 
-         gpstk::OrbElemRinex to2;
-         gpstk::SatID sat2(32, gpstk::SatelliteSystem::GPS);
+         gnsstk::OrbElemRinex to2;
+         gnsstk::SatID sat2(32, gnsstk::SatelliteSystem::GPS);
          to2.dataLoadedFlag = true;
          to2.satID = sat2;
          to2.obsID = obsID;
-         to2.ctToe = gpstk::GPSWeekSecond(2000, 79200);    // 2200
+         to2.ctToe = gnsstk::GPSWeekSecond(2000, 79200);    // 2200
          to2.beginValid = to2.ctToe - 7200;
          to2.endValid = to2.ctToe + 7200;
          to2.setHealth(1);
 
-         gpstk::OrbElemRinex to3;
-         gpstk::SatID sat3(16, gpstk::SatelliteSystem::GPS);
+         gnsstk::OrbElemRinex to3;
+         gnsstk::SatID sat3(16, gnsstk::SatelliteSystem::GPS);
          to3.dataLoadedFlag = true;
          to3.satID = sat3;
          to3.obsID = obsID;
-         to3.ctToe = gpstk::GPSWeekSecond(2000, 43200);    // 1200
+         to3.ctToe = gnsstk::GPSWeekSecond(2000, 43200);    // 1200
          to3.beginValid = to3.ctToe - 7200;
          to3.endValid = to3.ctToe + 7200;
          to3.setHealth(666);
@@ -189,7 +189,7 @@ public:
          TUASSERTE(unsigned, 3, store.size());
 
          TUCSM("getIndexSet");
-         set<gpstk::SatID> testSet = store.getIndexSet(); 
+         set<gnsstk::SatID> testSet = store.getIndexSet(); 
          if (testSet.find(sat1)==testSet.end())
          {
             stringstream ss;
@@ -216,43 +216,43 @@ public:
          }
 
          TUCSM("computeXvt");
-         gpstk::Xvt xvt;
+         gnsstk::Xvt xvt;
          TUCATCH(xvt = store.computeXvt(to1.satID, to1.ctToe));
-         TUASSERTE(gpstk::Xvt::HealthStatus,
-                   gpstk::Xvt::HealthStatus::Healthy, xvt.health);
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
+                   gnsstk::Xvt::HealthStatus::Healthy, xvt.health);
          TUCATCH(xvt = store.computeXvt(to2.satID, to2.ctToe));
-         TUASSERTE(gpstk::Xvt::HealthStatus,
-                   gpstk::Xvt::HealthStatus::Unhealthy, xvt.health);
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
+                   gnsstk::Xvt::HealthStatus::Unhealthy, xvt.health);
          TUCATCH(xvt = store.computeXvt(to3.satID, to3.ctToe));
-         TUASSERTE(gpstk::Xvt::HealthStatus,
-                   gpstk::Xvt::HealthStatus::Unhealthy, xvt.health);
-         gpstk::SatID bogus(33, gpstk::SatelliteSystem::GPS);
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
+                   gnsstk::Xvt::HealthStatus::Unhealthy, xvt.health);
+         gnsstk::SatID bogus(33, gnsstk::SatelliteSystem::GPS);
          TUCATCH(xvt = store.computeXvt(bogus, to3.ctToe));
-         TUASSERTE(gpstk::Xvt::HealthStatus,
-                   gpstk::Xvt::HealthStatus::Unavailable, xvt.health);
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
+                   gnsstk::Xvt::HealthStatus::Unavailable, xvt.health);
 
          TUCSM("getSVHealth");
-         gpstk::Xvt::HealthStatus health;
+         gnsstk::Xvt::HealthStatus health;
          TUCATCH(health = store.getSVHealth(to1.satID, to1.ctToe));
-         TUASSERTE(gpstk::Xvt::HealthStatus,
-                   gpstk::Xvt::HealthStatus::Healthy, health);
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
+                   gnsstk::Xvt::HealthStatus::Healthy, health);
          TUCATCH(health = store.getSVHealth(to2.satID, to2.ctToe));
-         TUASSERTE(gpstk::Xvt::HealthStatus,
-                   gpstk::Xvt::HealthStatus::Unhealthy, health);
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
+                   gnsstk::Xvt::HealthStatus::Unhealthy, health);
          TUCATCH(health = store.getSVHealth(to3.satID, to3.ctToe));
-         TUASSERTE(gpstk::Xvt::HealthStatus,
-                   gpstk::Xvt::HealthStatus::Unhealthy, health);
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
+                   gnsstk::Xvt::HealthStatus::Unhealthy, health);
          TUCATCH(health = store.getSVHealth(bogus, to3.ctToe));
-         TUASSERTE(gpstk::Xvt::HealthStatus,
-                   gpstk::Xvt::HealthStatus::Unavailable, health);
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
+                   gnsstk::Xvt::HealthStatus::Unavailable, health);
 
          TUCSM("getInitialTime");
-         TUASSERTE(gpstk::CommonTime, to1.beginValid, store.getInitialTime());
+         TUASSERTE(gnsstk::CommonTime, to1.beginValid, store.getInitialTime());
 
          TUCSM("getFinalTime");
-         TUASSERTE(gpstk::CommonTime, to2.endValid, store.getFinalTime());
+         TUASSERTE(gnsstk::CommonTime, to2.endValid, store.getFinalTime());
       }
-      catch (gpstk::Exception &exc)
+      catch (gnsstk::Exception &exc)
       {
          cerr << exc << endl;
          TUFAIL("Unexpected exception");

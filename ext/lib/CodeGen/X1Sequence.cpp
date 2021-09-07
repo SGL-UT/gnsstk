@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -49,7 +49,7 @@
 #include "X1Sequence.hpp"
 #include "GenXSequence.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       //   Static Variable Definition
    bool X1Sequence::isInit = false;
@@ -59,9 +59,9 @@ namespace gpstk
    {
       if (isInit!=true)
       {
-         gpstk::Exception e(
+         gnsstk::Exception e(
             "Must call X1Sequence::allocateMemory() before instantiating a X1Sequence object.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
    
@@ -77,20 +77,20 @@ namespace gpstk
    
       if (isInit==true)
       {
-         gpstk::Exception e ("X1Sequence::allocateMemory() called multiple times");
-         GPSTK_THROW(e);
+         gnsstk::Exception e ("X1Sequence::allocateMemory() called multiple times");
+         GNSSTK_THROW(e);
       }
       
       X1Bits = new uint32_t[NUM_6SEC_WORDS];
       if (X1Bits==0) 
       {
-         gpstk::Exception e ("X1Sequence::allocateMemory() - allocation failed.");
-         GPSTK_THROW(e);
+         gnsstk::Exception e ("X1Sequence::allocateMemory() - allocation failed.");
+         GNSSTK_THROW(e);
       }
    
          // Generate the X1A and X1B sequences.
-      gpstk::GenXSequence X1A( X1A_INIT, X1A_TAPS, XA_COUNT, XA_EPOCH_DELAY);
-      gpstk::GenXSequence X1B( X1B_INIT, X1B_TAPS, XB_COUNT, XB_EPOCH_DELAY);
+      gnsstk::GenXSequence X1A( X1A_INIT, X1A_TAPS, XA_COUNT, XA_EPOCH_DELAY);
+      gnsstk::GenXSequence X1B( X1B_INIT, X1B_TAPS, XB_COUNT, XB_EPOCH_DELAY);
    
          // Combination will be performed for four X1 epochs.
          // This will generate six seconds of X1 bits sequence
@@ -145,8 +145,8 @@ namespace gpstk
    {
       if (isInit!=true || X1Bits==0)
       {
-         gpstk::Exception e("X1Sequence::deAllocateMemory() called when no memory allocated.");
-         GPSTK_THROW(e);
+         gnsstk::Exception e("X1Sequence::deAllocateMemory() called when no memory allocated.");
+         GNSSTK_THROW(e);
       }
       delete [] X1Bits;
       isInit = false;
