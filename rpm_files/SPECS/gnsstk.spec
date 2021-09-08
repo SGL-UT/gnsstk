@@ -153,7 +153,7 @@ rm -rf $RPM_BUILD_ROOT
 - Update across the library to improve documentation.
 - Add accessors to the ObsID description maps for SWIG.
 - Update CI pipelines to make protected word searches advisory only.
-- Fix conda recipe to specify correct default branch for GNSSTk.
+- Fix conda recipe to specify correct default branch for GPSTk.
 * Thu Dec 10 2020 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v9.0.0 release
 - Update File_Hunter related files were deprecated and moved to tks_legacy_archive repo
@@ -188,14 +188,14 @@ rm -rf $RPM_BUILD_ROOT
 - Dropping Python Swig binding support for RHEL7/DEB7
 - Refactor ObsID and RinexObsID initialization of containers (tcDesc, etc.) to use C++11 syntax and eliminate the use of a singleton initializer.
 - Move RINEX-isms (such as the string constructor for decoding RINEX obs IDs) in ObsID into RinexObsID where they belong.
-- Refactor swig bindings for enums to use similar naming conventions between C++ and python (e.g. gnsstk::TrackingCode::CA in C++ and gnsstk.TrackingCode.CA in python)
+- Refactor swig bindings for enums to use similar naming conventions between C++ and python (e.g. gpstk::TrackingCode::CA in C++ and gpstk.TrackingCode.CA in python)
 - Add EnumIterator class to provide the ability to iterate over the above enum classes.
 - Rename TrackingCode enumerations to better support codes that RINEX does not by using names based on the ICDs rather than what RINEX uses.
 - Refactor enumerations in TimeSystem, ReferenceFrame, IERSConvention, SatID, NavID and ObsID (SatelliteSystem, NavType, ObservationType, CarrierBand, TrackingCode) to use strongly typed enumerations and move them outside the scope of those classes.
 - Add SatMetaDataStore findSatByFdmaSlot
 - Add Documentation Artifact to CI Pipeline
 - Refactor Yuma/SEM file support back into ext
-- Fix core/lib include statements to search GNSSTk include directory.
+- Fix core/lib include statements to search GPSTk include directory.
 - Fix OrbSysGpsL_55 Restore output of text message
 - Fix various pieces of code to resolve warning messages on various platforms.
 - Add CODEOWNERS file.
@@ -208,14 +208,14 @@ rm -rf $RPM_BUILD_ROOT
 - Dropping Python Swig binding support for RHEL7/DEB7
 - Refactor ObsID and RinexObsID initialization of containers (tcDesc, etc.) to use C++11 syntax and eliminate the use of a singleton initializer.
 - Move RINEX-isms (such as the string constructor for decoding RINEX obs IDs) in ObsID into RinexObsID where they belong.
-- Refactor swig bindings for enums to use similar naming conventions between C++ and python (e.g. gnsstk::TrackingCode::CA in C++ and gnsstk.TrackingCode.CA in python)
+- Refactor swig bindings for enums to use similar naming conventions between C++ and python (e.g. gpstk::TrackingCode::CA in C++ and gpstk.TrackingCode.CA in python)
 - Add EnumIterator class to provide the ability to iterate over the above enum classes.
 - Rename TrackingCode enumerations to better support codes that RINEX does not by using names based on the ICDs rather than what RINEX uses.
 - Refactor enumerations in TimeSystem, ReferenceFrame, IERSConvention, SatID, NavID and ObsID (SatelliteSystem, NavType, ObservationType, CarrierBand, TrackingCode) to use strongly typed enumerations and move them outside the scope of those classes.
 - Add SatMetaDataStore findSatByFdmaSlot
 - Add Documentation Artifact to CI Pipeline
 - Refactor Yuma/SEM file support back into ext
-- Fix core/lib include statements to search GNSSTk include directory.
+- Fix core/lib include statements to search GPSTk include directory.
 - Fix OrbSysGpsL_55 Restore output of text message
 - Fix various pieces of code to resolve warning messages on various platforms.
 - Add CODEOWNERS file.
@@ -321,7 +321,7 @@ rm -rf $RPM_BUILD_ROOT
 - Update OrbitEphStore to have more information when a potentially corrupt ephemeris is added.
 - Add NavID Add methods to convert between enumeration and string and test them.
 - Add ObsID Add methods to convert between enumeration and string and test them.
-- Update SWIG files so that gnsstk::Exception is treated as a Python Exception
+- Update SWIG files so that gpstk::Exception is treated as a Python Exception
 - Add tests for computeXvt and getSVHealth with unhealthy satellites
 * Mon Mar 30 2020 Andrew Kuck <kuck@arlut.utexas.edu>
 - Updated for v4.0.0 release
