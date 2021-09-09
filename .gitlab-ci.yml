@@ -445,6 +445,8 @@ test_windows:
   dependencies:
     - build_windows
   timeout: 5m
+  # Allow failures here to prevent blocking the rest of the pipeline.
+  allow_failure: true
 
 # User_Install Stage
 # Tests user install of GPSTk on each platform, saves artifacts for downstream builds.
@@ -521,6 +523,8 @@ user_install_windows:
   dependencies:
     - build_windows
   timeout: 20m
+  # Allow failures here to prevent blocking the rest of the pipeline.
+  allow_failure: true
 
 # System Stage
 # Tests install of GPSTk on each platform, saves artifacts for downstream builds.
@@ -689,8 +693,6 @@ package_conda:
   script:
     - conda activate conda_builder
     - export GIT_COMMIT=$CI_COMMIT_REF_NAME
-    # Build Conda Py36 package
-    - conda-build conda_recipe_py36
     # Build Conda Py27 package
     - conda-build conda_recipe
     # Copy files to local directory for archiving.
