@@ -16,12 +16,12 @@ requirements:
     - {{ compiler('cxx') }}
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
   host:
-    - python=2.7
+    - python {{python}}
     - setuptools
-    - numpy {{ numpy }}
+    - numpy==1.12.1
     - enum34
   run:
-    - python=2.7
+    - python
     - {{ pin_compatible('numpy') }}
     - enum34
 
