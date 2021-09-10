@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -44,9 +44,9 @@
 #include "AntexStream.hpp"
 
 using namespace std;
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 
-namespace gpstk
+namespace gnsstk
 {
    const string AntexHeader::versionString =       "ANTEX VERSION / SYST";
    const string AntexHeader::pcvTypeString =       "PCV TYPE / REFANT";
@@ -64,20 +64,20 @@ namespace gpstk
       else {
          FFStreamError err("Unknown Antex version: " + asString(version,2));
          err.addText("Make sure to set the version correctly.");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       
       if ((valid & allValid) != allValid) {
          FFStreamError err("Incomplete or invalid header.");
          err.addText("Set all header valid bits for all of the available data.");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       
       try {
          WriteHeaderRecords(strm);
       }
-      catch(FFStreamError& e) { GPSTK_RETHROW(e); }
-      catch(StringException& e) { GPSTK_RETHROW(e); }
+      catch(FFStreamError& e) { GNSSTK_RETHROW(e); }
+      catch(StringException& e) { GNSSTK_RETHROW(e); }
 
    }  // end AntexHeader::reallyPutRecord
       
@@ -139,7 +139,7 @@ namespace gpstk
             stringstream os;
 			os >> system;
 			FFStreamError e("Satellite system is invalid: " + os.str());
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          valid |= versionValid;
          valid |= systemValid;
@@ -150,7 +150,7 @@ namespace gpstk
 		    stringstream os;
 			os >> pcvType;
             FFStreamError e("PCV type is invalid: " + os.str());
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          refAntType = line.substr(20,20);
          refAntSerNum = line.substr(40,20);
@@ -165,7 +165,7 @@ namespace gpstk
       }
       else {
          FFStreamError e("Unidentified label: " + label);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }   // end of AntexHeader::ParseHeaderRecord(string& line)
 
@@ -197,11 +197,11 @@ namespace gpstk
             continue;
          else if(line.length()<60 || line.length()>80) {
             FFStreamError e("Invalid line length");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          try { ParseHeaderRecord(line); }
-         catch(FFStreamError& e) { GPSTK_RETHROW(e); }
+         catch(FFStreamError& e) { GNSSTK_RETHROW(e); }
          
       }   // end while(not end of header)
 
@@ -210,12 +210,12 @@ namespace gpstk
          allValid = allValid13;
       else {
          FFStreamError e("Unknown or unsupported Antex version " + asString(version));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
             
       if((allValid & valid) != allValid) {
          FFStreamError e("Incomplete or invalid header");
-         GPSTK_THROW(e);               
+         GNSSTK_THROW(e);               
       }
             
          // If we get here, we should have reached the end of header line
@@ -240,4 +240,4 @@ namespace gpstk
       s << "End of AntexHeader dump" << endl;
    }
 
-} // namespace gpstk
+} // namespace gnsstk

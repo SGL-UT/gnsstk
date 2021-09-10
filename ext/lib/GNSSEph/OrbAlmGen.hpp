@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -47,15 +47,15 @@
   *  to zero by convention. 
   */ 
 
-#ifndef GPSTK_ORBALMGEN_HPP
-#define GPSTK_ORBALMGEN_HPP
+#ifndef GNSSTK_ORBALMGEN_HPP
+#define GNSSTK_ORBALMGEN_HPP
 
 #include <string>
 #include <iostream>
 
 #include "OrbAlm.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    class OrbAlmGen : public OrbAlm
    {
@@ -81,7 +81,7 @@ namespace gpstk
            *  and the health in the msg will be used.   However, 
            *  this is the only source of health information
            *  for BDS.    */ 
-      void loadData(const gpstk::PackedNavBits& msg,
+      void loadData(const gnsstk::PackedNavBits& msg,
                     const unsigned short hArg = 0);
 
        //------------------------------------------------------------
@@ -107,28 +107,28 @@ namespace gpstk
         /** Compute the satellite clock bias (sec) at the given time
           *  @throw InvalidRequest if the required data has not been stored.
           */
-      virtual double svClockBias(const gpstk::CommonTime& t) const;
+      virtual double svClockBias(const gnsstk::CommonTime& t) const;
 
          /** Compute the satellite clock bias (meters) at the given time
           *  @throw InvalidRequest if the required data has not been stored.
           */
-      virtual double svClockBiasM(const gpstk::CommonTime& t) const;
+      virtual double svClockBiasM(const gnsstk::CommonTime& t) const;
 
          /** Compute the satellite clock drift (sec/sec) at the given time
           *  @throw InvalidRequest if the required data has not been stored.
           */
-      virtual double svClockDrift(const gpstk::CommonTime& t) const;
+      virtual double svClockDrift(const gnsstk::CommonTime& t) const;
 
          /** Compute satellite position at the given time
           * using this orbit data.
           * @throw InvalidRequest if the required data has not been stored.
           */
-      virtual gpstk::Xvt svXvt(const gpstk::CommonTime& t) const;
+      virtual gnsstk::Xvt svXvt(const gnsstk::CommonTime& t) const;
 
          /** Compute satellite relativity correction (sec) at the given time
           *  @throw InvalidRequest if the required data has not been stored.
           */
-      virtual double svRelativity(const gpstk::CommonTime& t) const;
+      virtual double svRelativity(const gnsstk::CommonTime& t) const;
 
       virtual bool isSameData(const OrbElemBase* right) const;      
 
@@ -192,11 +192,11 @@ namespace gpstk
          /**
           * @throw InvalidParameter
           */
-      void loadDataGpsLNAV(const gpstk::PackedNavBits& msg);
+      void loadDataGpsLNAV(const gnsstk::PackedNavBits& msg);
          /**
           * @throw InvalidParameter
           */
-      void loadDataGpsCNAV(const gpstk::PackedNavBits& msg);
+      void loadDataGpsCNAV(const gnsstk::PackedNavBits& msg);
          // Used internally during startup if WNa has not been received
          // prior to first almanac data page.         
       void estimateWeekNumber(const CommonTime& currTime);
@@ -209,4 +209,4 @@ namespace gpstk
 
 } // end namespace 
 
-#endif // GPSTK_ORBALMGEN_HPP
+#endif // GNSSTK_ORBALMGEN_HPP

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -42,8 +42,8 @@
 /// initial and final times and search methods. GPSEphemeris inherits OrbitEph and
 /// adds health and accuracy information, which this class makes use of.
 
-#ifndef GPSTK_GPSORBITEPHSTORE_HPP
-#define GPSTK_GPSORBITEPHSTORE_HPP
+#ifndef GNSSTK_GPSORBITEPHSTORE_HPP
+#define GNSSTK_GPSORBITEPHSTORE_HPP
 
 #include "OrbitEphStore.hpp"
 #include "GPSEphemeris.hpp"
@@ -52,7 +52,7 @@
 #include "CommonTime.hpp"
 #include "RinexNavData.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup GNSSEph
       //@{
@@ -112,7 +112,7 @@ namespace gpstk
             oeptr = OrbitEphStore::addEphemeris(oeptr);
             return dynamic_cast<GPSEphemeris*>(oeptr);
          }
-         catch(Exception& e) { GPSTK_RETHROW(e); }
+         catch(Exception& e) { GNSSTK_RETHROW(e); }
       }
 #pragma clang diagnostic pop
          /// Find a GPSEphemeris for the indicated satellite at time t, using the
@@ -126,13 +126,13 @@ namespace gpstk
       {
          if(sat.system != SatelliteSystem::GPS) {
             InvalidRequest e("Invalid satellite system");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          const OrbitEph *eph = findOrbitEph(sat,t);
          if(!eph) {
             InvalidRequest e("Ephemeris not found");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // gynmastics...
@@ -156,4 +156,4 @@ namespace gpstk
 
 } // namespace
 
-#endif // GPSTK_GPSORBITEPHSTORE_HPP
+#endif // GNSSTK_GPSORBITEPHSTORE_HPP

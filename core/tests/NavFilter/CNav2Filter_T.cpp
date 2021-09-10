@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -49,7 +49,7 @@
 #include "TimeSystem.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 
 class CNav2Filter_T
@@ -184,7 +184,7 @@ noFilterTest()
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
-      gpstk::NavFilter::NavMsgList l = mgr.validate(&fd);
+      gnsstk::NavFilter::NavMsgList l = mgr.validate(&fd);
          // We could do an assert for each record but that would be
          // stupid. Just compare the final counts.
       count += l.size();
@@ -212,8 +212,8 @@ testCNav2Sanity()
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
-      gpstk::NavFilter::NavMsgList l = mgr.validate(&fd);
-      gpstk::NavFilter::NavMsgList::const_iterator nmli;
+      gnsstk::NavFilter::NavMsgList l = mgr.validate(&fd);
+      gnsstk::NavFilter::NavMsgList::const_iterator nmli;
 
       acceptCount += l.size();
       rejectCount += filtSanity.rejected.size();
@@ -235,7 +235,7 @@ testCNav2Sanity()
    unsigned long wordBad = 0x0000003F;
    pnb->insertUnsignedLong(wordBad,22,8); 
    CNavFilterData fd(pnb);
-   gpstk::NavFilter::NavMsgList l = mgr.validate(&fd);
+   gnsstk::NavFilter::NavMsgList l = mgr.validate(&fd);
    acceptCount = l.size();
    rejectCount = filtSanity.rejected.size();
    TUASSERTE(unsigned long, 0, acceptCount);
@@ -249,7 +249,7 @@ testCNav2Sanity()
    wordBad = 0x000001FF;
    pnb2->insertUnsignedLong(wordBad,0,9); 
    CNavFilterData fd2(pnb2);
-   gpstk::NavFilter::NavMsgList l2 = mgr.validate(&fd2);
+   gnsstk::NavFilter::NavMsgList l2 = mgr.validate(&fd2);
    acceptCount = l2.size();
    rejectCount = filtSanity.rejected.size();
    TUASSERTE(unsigned long, 0, acceptCount);
@@ -263,7 +263,7 @@ testCNav2Sanity()
    wordBad = 0x000007CF;
    pnb3->insertUnsignedLong(wordBad,9,13); 
    CNavFilterData fd3(pnb3);
-   gpstk::NavFilter::NavMsgList l3 = mgr.validate(&fd3);
+   gnsstk::NavFilter::NavMsgList l3 = mgr.validate(&fd3);
    acceptCount = l3.size();
    rejectCount = filtSanity.rejected.size();
    TUASSERTE(unsigned long, 0, acceptCount);
@@ -276,7 +276,7 @@ testCNav2Sanity()
    unsigned long bitOffset = 609;
    pnb4->insertUnsignedLong(wordBad,bitOffset,8); 
    CNavFilterData fd4(pnb4);
-   gpstk::NavFilter::NavMsgList l4 = mgr.validate(&fd4);
+   gnsstk::NavFilter::NavMsgList l4 = mgr.validate(&fd4);
    acceptCount = l4.size();
    rejectCount = filtSanity.rejected.size();
    TUASSERTE(unsigned long, 0, acceptCount);
@@ -288,7 +288,7 @@ testCNav2Sanity()
    bitOffset = 609 + 8;
    pnb5->insertUnsignedLong(wordBad,bitOffset,6); 
    CNavFilterData fd5(pnb5);
-   gpstk::NavFilter::NavMsgList l5 = mgr.validate(&fd5);
+   gnsstk::NavFilter::NavMsgList l5 = mgr.validate(&fd5);
    acceptCount = l5.size();
    rejectCount = filtSanity.rejected.size();
    TUASSERTE(unsigned long, 0, acceptCount);
@@ -316,7 +316,7 @@ testCNavTOW()
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
-      gpstk::NavFilter::NavMsgList l = mgr.validate(&fd);
+      gnsstk::NavFilter::NavMsgList l = mgr.validate(&fd);
       rejectCount += filtTOW.rejected.size();
       acceptCount += l.size();
    }
@@ -346,7 +346,7 @@ testCNavTOW()
    acceptCount = 0; 
    rejectCount = 0; 
    CNavFilterData fdBadTOW(pnbBadTOWMsg);
-   gpstk::NavFilter::NavMsgList l = mgr.validate(&fdBadTOW);
+   gnsstk::NavFilter::NavMsgList l = mgr.validate(&fdBadTOW);
    rejectCount += filtTOW.rejected.size();
    acceptCount += l.size();
    
@@ -392,7 +392,7 @@ testCNav2Combined()
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
-      gpstk::NavFilter::NavMsgList l = mgr.validate(&fd);
+      gnsstk::NavFilter::NavMsgList l = mgr.validate(&fd);
          // if l is empty, the subframe was rejected. 
       rejectCount += l.empty();
    }

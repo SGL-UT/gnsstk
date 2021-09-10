@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -52,7 +52,7 @@
 #include "SpecialFuncs.hpp"
 //#include "logstream.hpp"   // TEMP
 
-namespace gpstk
+namespace gnsstk
 {
 
 // Natural log of the gamma function for positive argument.
@@ -68,7 +68,7 @@ double lnGamma(const double& x)
          -1.231739572450155, 1.208650973866179e-3, -5.395239384953e-6,
          1.000000000190015, 2.5066282746310005 };
 
-      if(x <= 0) GPSTK_THROW(Exception("Non-positive argument"));
+      if(x <= 0) GNSSTK_THROW(Exception("Non-positive argument"));
 
       double y(x);
       double t(x+5.5);
@@ -78,7 +78,7 @@ double lnGamma(const double& x)
 
       return (-t + ::log(con[7]*s/x));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Gamma(x) the gamma function for positive argument.
@@ -91,7 +91,7 @@ double Gamma(const double& x)
    try {
       return ::exp(lnGamma(double(x)));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Factorial of an integer, returned as a double.
@@ -101,7 +101,7 @@ double Gamma(const double& x)
 double factorial(const int& n)
 {
    try {
-      if(n < 0) GPSTK_THROW(Exception("Negative argument"));
+      if(n < 0) GNSSTK_THROW(Exception("Negative argument"));
 
       if(n > 32) return ::exp(lnGamma(double(n+1)));
 
@@ -116,7 +116,7 @@ double factorial(const int& n)
       return store[n];
 
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // ln of Factorial of an integer, returned as a double.
@@ -126,11 +126,11 @@ double factorial(const int& n)
 double lnFactorial(const int& n)
 {
    try {
-      if(n < 0) GPSTK_THROW(Exception("Negative argument"));
+      if(n < 0) GNSSTK_THROW(Exception("Negative argument"));
       if(n <= 1) return 0.0;
       return lnGamma(double(n+1));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Binomial coefficient (n k) = n!/[k!(n-k)!], 0 <= k <= n.
@@ -144,13 +144,13 @@ double lnFactorial(const int& n)
 double binomialCoeff(const int& n, const int& k)
 {
    try {
-      if(n < 0 || k > n) GPSTK_THROW(Exception("Invalid arguments"));
+      if(n < 0 || k > n) GNSSTK_THROW(Exception("Invalid arguments"));
 
       if(n <= 32) return (factorial(n) / (factorial(k)*factorial(n-k)));
 
       return floor(0.5 + ::exp(lnFactorial(n)-lnFactorial(k)-lnFactorial(n-k)));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Beta function. Beta(x,y)=Beta(y,x)=integral(0 to 1) {t^(x-1)*(1-t)^(y-1) dt}.
@@ -164,7 +164,7 @@ double beta(const double& x, const double& y)
    try {
       return ::exp(lnGamma(x) + lnGamma(y) - lnGamma(x+y));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Incomplete gamma function P(a,x), evaluated using series representation.
@@ -176,8 +176,8 @@ double beta(const double& x, const double& y)
 double seriesIncompGamma(const double& a, const double& x)
 {
    try {
-      if(x < 0) GPSTK_THROW(Exception("Negative first argument"));
-      if(a <= 0) GPSTK_THROW(Exception("Non-positive second argument"));
+      if(x < 0) GNSSTK_THROW(Exception("Negative first argument"));
+      if(a <= 0) GNSSTK_THROW(Exception("Non-positive second argument"));
 
       static const int imax(1000);
       static const double eps(10*std::numeric_limits<double>().epsilon());
@@ -193,9 +193,9 @@ double seriesIncompGamma(const double& a, const double& x)
          if(::fabs(del) < ::fabs(sum)*eps)
             return (sum * ::exp(-x + a * ::log(x) - lngamma));
       }
-      GPSTK_THROW(Exception("Overflow; first arg too big"));
+      GNSSTK_THROW(Exception("Overflow; first arg too big"));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 
    return 0.0;
 }
@@ -209,8 +209,8 @@ double seriesIncompGamma(const double& a, const double& x)
 double contfracIncompGamma(const double& a, const double& x)
 {
    try {
-      if(x < 0) GPSTK_THROW(Exception("Negative first argument"));
-      if(a <= 0) GPSTK_THROW(Exception("Non-positive second argument"));
+      if(x < 0) GNSSTK_THROW(Exception("Negative first argument"));
+      if(a <= 0) GNSSTK_THROW(Exception("Non-positive second argument"));
 
       static const int imax(1000);
       static const double eps(10*std::numeric_limits<double>().epsilon());
@@ -235,11 +235,11 @@ double contfracIncompGamma(const double& a, const double& x)
          if(::fabs(del-1.0) < eps) break;
       }
 
-      if(i > imax) GPSTK_THROW(Exception("Overflow; first arg too big"));
+      if(i > imax) GNSSTK_THROW(Exception("Overflow; first arg too big"));
 
       return (::exp(-x + a * ::log(x) - lngamma) * h);
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Incomplete gamma function P(a,x), a,x > 0.
@@ -251,15 +251,15 @@ double contfracIncompGamma(const double& a, const double& x)
 double incompGamma(const double& a, const double& x)
 {
    try {
-      if(x < 0) GPSTK_THROW(Exception("Negative first argument"));
-      if(a <= 0) GPSTK_THROW(Exception("Non-positive second argument"));
+      if(x < 0) GNSSTK_THROW(Exception("Negative first argument"));
+      if(a <= 0) GNSSTK_THROW(Exception("Non-positive second argument"));
 
       if(x < a+1.0)
          return seriesIncompGamma(a,x);
       else
          return (1.0 - contfracIncompGamma(a,x));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Complement of incomplete gamma function Q(a,x), a > 0, x >= 0.
@@ -271,15 +271,15 @@ double incompGamma(const double& a, const double& x)
 double compIncompGamma(const double& a, const double& x)
 {
    try {
-      if(x < 0) GPSTK_THROW(Exception("Negative first argument"));
-      if(a <= 0) GPSTK_THROW(Exception("Non-positive second argument"));
+      if(x < 0) GNSSTK_THROW(Exception("Negative first argument"));
+      if(a <= 0) GNSSTK_THROW(Exception("Non-positive second argument"));
 
       if(x < a+1.0)
          return (1.0 - seriesIncompGamma(a,x));
       else
          return contfracIncompGamma(a,x);
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Error function erf(x). erf(x) = 2/sqrt(pi) * integral (0 to x) { exp(-t^2) dt }
@@ -287,11 +287,11 @@ double compIncompGamma(const double& a, const double& x)
 // return          erf(x)
 double errorFunc(const double& x)
 {
-   if(x < 0) GPSTK_THROW(Exception("Negative first argument"));
+   if(x < 0) GNSSTK_THROW(Exception("Negative first argument"));
    try {
       return (x < 0.0 ? -incompGamma(0.5,x*x) : incompGamma(0.5,x*x));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Complementary error function erfc(x). erfc(x) = 1-erf(x)
@@ -299,11 +299,11 @@ double errorFunc(const double& x)
 // return          erfc(x)
 double compErrorFunc(const double& x)
 {
-   if(x < 0) GPSTK_THROW(Exception("Negative first argument"));
+   if(x < 0) GNSSTK_THROW(Exception("Negative first argument"));
    try {
       return (x < 0.0 ? 1.0+incompGamma(0.5,x*x) : compIncompGamma(0.5,x*x));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Compute continued fractions portion of incomplete beta function I_x(a,b)
@@ -341,7 +341,7 @@ double cfIBeta(const double& x, const double& a, const double& b)
       if(::fabs(del-1.0) < eps) break;
    }
    if(i > imax)
-      GPSTK_THROW(Exception("Overflow; a or b too big"));
+      GNSSTK_THROW(Exception("Overflow; a or b too big"));
 
    return h;
 }
@@ -354,8 +354,8 @@ double cfIBeta(const double& x, const double& a, const double& b)
 // return          Incomplete beta function I_x(a,b)
 double incompleteBeta(const double& x, const double& a, const double& b)
 {
-   if(x < 0 || x > 1) GPSTK_THROW(Exception("Invalid x argument"));
-   if(a <= 0 || b <= 0) GPSTK_THROW(Exception("Non-positive argument"));
+   if(x < 0 || x > 1) GNSSTK_THROW(Exception("Invalid x argument"));
+   if(a <= 0 || b <= 0) GNSSTK_THROW(Exception("Non-positive argument"));
 
    if(x == 0) return 0.0;
    if(x == 1) return 1.0;
@@ -368,7 +368,7 @@ double incompleteBeta(const double& x, const double& a, const double& b)
       else
          return 1.0-factor*cfIBeta(1.0-x,b,a)/b;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // ----------------- probability distributions -----------------------
@@ -407,7 +407,7 @@ double NormalPDF(const double& x, const double& mu, const double& sig)
    try {
       return (::exp(-(x-mu)*(x-mu)/(2.0*sig*sig)));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Cumulative distribution function (CDF) of the Normal-distribution.
@@ -418,7 +418,7 @@ double NormalPDF(const double& x, const double& mu, const double& sig)
 // return           Normal distribution probability
 double NormalCDF(const double& x, const double& mu, const double& sig)
 {
-   if(sig <= 0.0) GPSTK_THROW(Exception("Non-positive sigma"));
+   if(sig <= 0.0) GNSSTK_THROW(Exception("Non-positive sigma"));
 
    try {
       static const double sqrt2(::sqrt(2.0));
@@ -426,7 +426,7 @@ double NormalCDF(const double& x, const double& mu, const double& sig)
       double erf = errorFunc(::fabs(arg)/(sqrt2*sig));
       return (0.5 * (1.0 + (arg < 0.0 ? -erf : erf)));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Normal-distribution percent point function, or inverse of the Normal CDF.
@@ -440,15 +440,15 @@ double invNormalCDF(double prob, const double& mu, const double& sig)
 {
    try {
       if(prob < 0 || prob >= 1)
-         GPSTK_THROW(Exception("Invalid probability argument"));
-      if(sig <= 0.0) GPSTK_THROW(Exception("Non-positive sigma"));
+         GNSSTK_THROW(Exception("Invalid probability argument"));
+      if(sig <= 0.0) GNSSTK_THROW(Exception("Non-positive sigma"));
 
       static const double eps(1000000*std::numeric_limits<double>().epsilon());
 
       if(prob < eps)
          return 0.0;
       if(1.0-prob < eps)
-         GPSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
+         GNSSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
 
       // find X such that prob == NormalCDF(X,mu,sig); use bracket method
       // we know 0.5 = NormalCDF(muwhen prob = 0.5, X = mu
@@ -476,12 +476,12 @@ double invNormalCDF(double prob, const double& mu, const double& sig)
          //<< " fabs(a-alpha)-eps " << ::fabs(alpha-a)-eps;
          if(::fabs(alpha-a) < eps) break;
          if(a > alpha) { X1 = X; } else { X0 = X; }
-         if(++niter > 1000) GPSTK_THROW(Exception("Failed to converge"));
+         if(++niter > 1000) GNSSTK_THROW(Exception("Failed to converge"));
       }
 
       return (swap ? 2.0*mu-X : X);
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Probability density function (PDF) of the Chi-square distribution.
@@ -519,15 +519,15 @@ double invNormalCDF(double prob, const double& mu, const double& sig)
 // return         probability Chi-square probability (xsq,n)
 double ChisqPDF(const double& x, const int& n)
 {
-   if(x < 0) GPSTK_THROW(Exception("Negative statistic"));
+   if(x < 0) GNSSTK_THROW(Exception("Negative statistic"));
    if(n <= 0)
-      GPSTK_THROW(Exception("Non-positive degrees of freedom"));
+      GNSSTK_THROW(Exception("Non-positive degrees of freedom"));
 
    try {
       double dn(double(n)/2.0);
       return ( ::exp(-x/2.0) * ::pow(x,dn-1.0) / (::pow(2.0,dn) * Gamma(dn)) );
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Cumulative distribution function (CDF) of the Chi-square-distribution.
@@ -537,15 +537,15 @@ double ChisqPDF(const double& x, const int& n)
 // return          probability that the sample variance is less than X.
 double ChisqCDF(const double& x, const int& n)
 {
-   if(x < 0) GPSTK_THROW(Exception("Negative statistic"));
+   if(x < 0) GNSSTK_THROW(Exception("Negative statistic"));
    if(n <= 0)
-      GPSTK_THROW(Exception("Non-positive degrees of freedom"));
+      GNSSTK_THROW(Exception("Non-positive degrees of freedom"));
 
    try {
       // NB this incompGamma(n/2,x/2) == NIST's incompGamma(n/2,x/2)/Gamma(n/2)
       return incompGamma(double(n)/2.0,x/2.0);
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Chi-square-distribution percent point function, or inverse of the Chisq CDF.
@@ -558,15 +558,15 @@ double invChisqCDF(double alpha, int n)
 {
    try {
       if(alpha < 0 || alpha >= 1)
-         GPSTK_THROW(Exception("Invalid probability argument"));
+         GNSSTK_THROW(Exception("Invalid probability argument"));
       if(n <= 0)
-         GPSTK_THROW(Exception("Non-positive degree of freedom"));
+         GNSSTK_THROW(Exception("Non-positive degree of freedom"));
 
       static const double eps(1000000*std::numeric_limits<double>().epsilon());
       if(alpha < eps)
          return 0.0;
       if(1.0-alpha < eps)
-         GPSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
+         GNSSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
 
       // find X such that alpha == ChisqCDF(X,n); use bracket method
       // we know a0 = ChisqCDF(F0,n) where a0=F0=0
@@ -587,12 +587,12 @@ double invChisqCDF(double alpha, int n)
          //<< " fabs(a-alpha)-eps " << ::fabs(alpha-a)-eps;
          if(::fabs(alpha-a) < eps) break;
          if(a > alpha) { X1 = X; } else { X0 = X; }
-         if(++niter > 1000) GPSTK_THROW(Exception("Failed to converge"));
+         if(++niter > 1000) GNSSTK_THROW(Exception("Failed to converge"));
       }
 
       return X;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Probability density function (PDF) of the Student t distribution.
@@ -626,13 +626,13 @@ double invChisqCDF(double alpha, int n)
 double StudentsPDF(const double& X, const int& n)
 {
    if(n <= 0)
-      GPSTK_THROW(Exception("Non-positive degrees of freedom"));
+      GNSSTK_THROW(Exception("Non-positive degrees of freedom"));
 
    try {
       double dn(n);
       return (::pow(1.0 + X*X/dn, -(dn+1)/2.0) / (::sqrt(dn) * beta(0.5,0.5*dn)));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Cumulative Distribution Function CDF() for Student-t-distribution CDF.
@@ -649,7 +649,7 @@ double StudentsPDF(const double& X, const int& n)
 // return          probability that the sample is less than X.
 double StudentsCDF(const double& t, const int& n)
 {
-   if(n <= 0) GPSTK_THROW(Exception("Non-positive degree of freedom"));
+   if(n <= 0) GNSSTK_THROW(Exception("Non-positive degree of freedom"));
 
    try {
       // NB StudentsCDF(-t,n) = 1.0-StudentsCDF(t,n);
@@ -657,7 +657,7 @@ double StudentsCDF(const double& t, const int& n)
       if(t >= 0.0) return (1.0 - x);
       return (x);
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Students-t-distribution percent point function, or inverse of the Student CDF.
@@ -670,15 +670,15 @@ double invStudentsCDF(double prob, int n)
 {
    try {
       if(prob < 0 || prob >= 1)
-         GPSTK_THROW(Exception("Invalid probability argument"));
+         GNSSTK_THROW(Exception("Invalid probability argument"));
       if(n <= 0)
-         GPSTK_THROW(Exception("Non-positive degree of freedom"));
+         GNSSTK_THROW(Exception("Non-positive degree of freedom"));
 
       static const double eps(1000000*std::numeric_limits<double>().epsilon());
       if(prob < eps)
          return 0.0;
       if(1.0-prob < eps)
-         GPSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
+         GNSSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
 
       // find X such that prob == StudentsCDF(X,n); use bracket method
 
@@ -705,12 +705,12 @@ double invStudentsCDF(double prob, int n)
          //<< " fabs(a-alpha)-eps " << ::fabs(alpha-a)-eps;
          if(::fabs(alpha-a) < eps) break;
          if(a > alpha) { t1 = t; } else { t0 = t; }
-         if(++niter > 1000) GPSTK_THROW(Exception("Failed to converge"));
+         if(++niter > 1000) GNSSTK_THROW(Exception("Failed to converge"));
       }
 
       return (swap ? -t : t);
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // F-distribution cumulative distribution function FDistCDF(F,n1,n2) F>=0 n1,n2>0.
@@ -732,14 +732,14 @@ double invStudentsCDF(double prob, int n)
 // return          probability that the sample is less than F.
 double FDistCDF(const double& F, const int& n1, const int& n2)
 {
-   if(F < 0) GPSTK_THROW(Exception("Negative statistic"));
-   if(n1 <= 0 || n2 <= 0) GPSTK_THROW(Exception("Non-positive degree of freedom"));
+   if(F < 0) GNSSTK_THROW(Exception("Negative statistic"));
+   if(n1 <= 0 || n2 <= 0) GNSSTK_THROW(Exception("Non-positive degree of freedom"));
 
    try {
       return (1.0 - incompleteBeta(double(n2)/(double(n2)+double(n1)*F),
                                    double(n2)/2.0,double(n1)/2.0));
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Probability density function for F distribution
@@ -780,7 +780,7 @@ double FDistPDF(double x, int n1, int n2)
       F /= ::pow(1.0+x*dn1/dn2,(dn1+dn2)/2.0);
       return F;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // F-distribution percent point function, or inverse of the F-dist CDF.
@@ -794,15 +794,15 @@ double invFDistCDF(double prob, int n1, int n2)
 {
    try {
       if(prob < 0 || prob >= 1)
-         GPSTK_THROW(Exception("Invalid probability argument"));
+         GNSSTK_THROW(Exception("Invalid probability argument"));
       if(n1 <= 0 || n2 <= 0)
-         GPSTK_THROW(Exception("Non-positive degree of freedom"));
+         GNSSTK_THROW(Exception("Non-positive degree of freedom"));
 
       static const double eps(100000*std::numeric_limits<double>().epsilon());
       if(prob < eps)
          return 0.0;
       if(1.0-prob < eps)
-         GPSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
+         GNSSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
 
       // find F such that prob == FDistCDF(F,n1,n2); use bracket method
 
@@ -831,12 +831,12 @@ double invFDistCDF(double prob, int n1, int n2)
          if(::fabs(alpha-a) < eps) break;
          if(a > alpha) { F1 = F; } else { F0 = F; }
          n++;
-         if(n > 1000) GPSTK_THROW(Exception("Failed to converge"));
+         if(n > 1000) GNSSTK_THROW(Exception("Failed to converge"));
       }
 
       return (swap ? 1.0/F : F);
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 }  // end namespace

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -55,7 +55,7 @@
 #include "GPS_URA.hpp"
 #include "TimeString.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace std;
 
@@ -98,7 +98,7 @@ namespace gpstk
    }
 
 
-   bool EngEphemeris::operator==(const gpstk::EngEphemeris& right) const throw()
+   bool EngEphemeris::operator==(const gnsstk::EngEphemeris& right) const throw()
    {
          // ignored as not important for eng eph comparison
          //haveSubframe
@@ -156,7 +156,7 @@ namespace gpstk
       if (sfID<1 || sfID>3)
       {
          InvalidParameter exc("Invalid SF ID: "+StringUtils::asString(sfID));
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
          // Store the subframe in the appropriate location
@@ -399,7 +399,7 @@ namespace gpstk
       {
          InvalidRequest exc("Subframe "+StringUtils::asString(subframe)+
                             " is not a valid ephemeris subframe.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       return haveSubframe[subframe-1];
@@ -420,7 +420,7 @@ namespace gpstk
       {
          InvalidParameter exc("SV Accuracy of " + StringUtils::asString(acc) +
                               " meters is invalid.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       orbit.setAccuracy(acc);
    }
@@ -560,7 +560,7 @@ namespace gpstk
       {
          InvalidRequest exc("Subframe "+StringUtils::asString(subframe)+
                             " not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return tlm_message[subframe-1];
    }
@@ -575,12 +575,12 @@ namespace gpstk
       }
       catch (InvalidRequest& ire)
       {
-         GPSTK_RETHROW(ire);
+         GNSSTK_RETHROW(ire);
       }
       catch (Exception& exc)
       {
          InvalidRequest ire(exc);
-         GPSTK_THROW(ire);
+         GNSSTK_THROW(ire);
       }
       return toReturn;
    }
@@ -600,7 +600,7 @@ namespace gpstk
       if(!orbit.hasData())
       {
          InvalidRequest exc("getOrbit(): Required Orbit data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return (orbit);
    }
@@ -611,7 +611,7 @@ namespace gpstk
       {
          InvalidRequest exc("getClock(): Required Clock Correction data not"
                             " stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return (bcClock);
    }
@@ -621,7 +621,7 @@ namespace gpstk
       if(!haveSubframe[0])
       {
          InvalidRequest exc("getPRNID(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return PRNID;
    }
@@ -631,7 +631,7 @@ namespace gpstk
       if(!haveSubframe[0])
       {
          InvalidRequest exc("getTracker(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return tracker;
    }
@@ -642,7 +642,7 @@ namespace gpstk
       {
          InvalidRequest exc("getHOWTime(): Subframe "
                             +StringUtils::asString(subframe)+" not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
          // This return as a double is necessary for sets into CommonTime
          // to not get confused.  Ints are Zcounts whereas doubles are seconds.
@@ -657,7 +657,7 @@ namespace gpstk
       {
          InvalidRequest exc("getASAlert(): Subframe "
                             +StringUtils::asString(subframe)+" not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return ASalert[subframe-1];
    }
@@ -667,7 +667,7 @@ namespace gpstk
       if (!haveSubframe[0])
       {
          InvalidRequest exc("getFullWeek(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return weeknum;
    }
@@ -677,7 +677,7 @@ namespace gpstk
       if (!haveSubframe[0])
       {
          InvalidRequest exc("getCodeFlags(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return codeflags;
    }
@@ -687,7 +687,7 @@ namespace gpstk
       if (!haveSubframe[0])
       {
          InvalidRequest exc("getAccuracy(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getAccuracy();
    }
@@ -697,7 +697,7 @@ namespace gpstk
       if (!haveSubframe[0])
       {
          InvalidRequest exc("getAccFlag(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getURAoe();
    }
@@ -707,7 +707,7 @@ namespace gpstk
       if (!haveSubframe[0])
       {
          InvalidRequest exc("getHealth(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return health;
    }
@@ -717,7 +717,7 @@ namespace gpstk
       if (!haveSubframe[0])
       {
          InvalidRequest exc("getL2Pdata(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return L2Pdata;
    }
@@ -727,7 +727,7 @@ namespace gpstk
       if (!haveSubframe[0])
       {
          InvalidRequest exc("getIODC(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return static_cast<short>(IODC);
    }
@@ -737,7 +737,7 @@ namespace gpstk
       if (!haveSubframe[1])
       {
          InvalidRequest exc("getIODE(): Required subframe 2 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return static_cast<short>(IODE);
    }
@@ -747,7 +747,7 @@ namespace gpstk
       if (!haveSubframe[1])
       {
          InvalidRequest exc("getAODO(): Required subframe 2 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return AODO;
    }
@@ -757,7 +757,7 @@ namespace gpstk
       if (!haveSubframe[0])
       {
          InvalidRequest exc("getToc(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return bcClock.getToc();
    }
@@ -767,7 +767,7 @@ namespace gpstk
       if (!haveSubframe[0])
       {
          InvalidRequest exc("getAf0(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return bcClock.getAf0();
    }
@@ -777,7 +777,7 @@ namespace gpstk
       if (!haveSubframe[0])
       {
          InvalidRequest exc("getAf1(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return bcClock.getAf1();
    }
@@ -787,7 +787,7 @@ namespace gpstk
       if (!haveSubframe[0])
       {
          InvalidRequest exc("getAf1(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return bcClock.getAf2();
    }
@@ -797,7 +797,7 @@ namespace gpstk
       if (!haveSubframe[0])
       {
          InvalidRequest exc("getTgd(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Tgd;
    }
@@ -807,7 +807,7 @@ namespace gpstk
       if (!haveSubframe[1])
       {
          InvalidRequest exc("getCus(): Required subframe 2 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getCus();
    }
@@ -817,7 +817,7 @@ namespace gpstk
       if (!haveSubframe[1])
       {
          InvalidRequest exc("getCrs(): Required subframe 2 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getCrs();
    }
@@ -827,7 +827,7 @@ namespace gpstk
       if (!haveSubframe[2])
       {
          InvalidRequest exc("getCis(): Required subframe 3 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getCis();
    }
@@ -837,7 +837,7 @@ namespace gpstk
       if (!haveSubframe[2])
       {
          InvalidRequest exc("getCrc(): Required subframe 3 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getCrc();
    }
@@ -847,7 +847,7 @@ namespace gpstk
       if (!haveSubframe[1])
       {
          InvalidRequest exc("getCuc(): Required subframe 2 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getCuc();
    }
@@ -857,7 +857,7 @@ namespace gpstk
       if (!haveSubframe[2])
       {
          InvalidRequest exc("getCic(): Required subframe 3 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getCic();
    }
@@ -867,7 +867,7 @@ namespace gpstk
       if (!haveSubframe[1])
       {
          InvalidRequest exc("getToe(): Required subframe 2 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getToe();
    }
@@ -877,7 +877,7 @@ namespace gpstk
       if (!haveSubframe[1])
       {
          InvalidRequest exc("getM0(): Required subframe 2 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getM0();
    }
@@ -887,7 +887,7 @@ namespace gpstk
       if (!haveSubframe[1])
       {
          InvalidRequest exc("getDn(): Required subframe 2 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getDn();
    }
@@ -897,7 +897,7 @@ namespace gpstk
       if (!haveSubframe[1])
       {
          InvalidRequest exc("getEcc(): Required subframe 2 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getEcc();
    }
@@ -907,7 +907,7 @@ namespace gpstk
       if (!haveSubframe[1])
       {
          InvalidRequest exc("getAhalf(): Required subframe 2 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getAhalf();
    }
@@ -917,7 +917,7 @@ namespace gpstk
       if (!haveSubframe[1])
       {
          InvalidRequest exc("getA(): Required subframe 2 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getA();
    }
@@ -927,7 +927,7 @@ namespace gpstk
       if (!haveSubframe[2])
       {
          InvalidRequest exc("getOmega0(): Required subframe 3 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getOmega0();
    }
@@ -937,7 +937,7 @@ namespace gpstk
       if (!haveSubframe[2])
       {
          InvalidRequest exc("getI0(): Required subframe 3 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getI0();
    }
@@ -947,7 +947,7 @@ namespace gpstk
       if (!haveSubframe[2])
       {
          InvalidRequest exc("getW(): Required subframe 3 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getW();
    }
@@ -957,7 +957,7 @@ namespace gpstk
       if (!haveSubframe[2])
       {
          InvalidRequest exc("getOmegaDot(): Required subframe 3 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getOmegaDot();
    }
@@ -967,7 +967,7 @@ namespace gpstk
       if (!haveSubframe[2])
       {
          InvalidRequest exc("getIDot(): Required subframe 3 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return orbit.getIDot();
    }
@@ -977,7 +977,7 @@ namespace gpstk
       if (!haveSubframe[1])
       {
          InvalidRequest exc("getFitInt(): Required subframe 2 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return fitint;
    }
@@ -987,17 +987,17 @@ namespace gpstk
       if(!haveSubframe[0])
       {
          InvalidRequest exc("getTot(): Required subframe 1 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       if(!haveSubframe[1])
       {
          InvalidRequest exc("getTot(): Required subframe 2 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       if(!haveSubframe[2])
       {
          InvalidRequest exc("getTot(): Required subframe 3 not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
          // MSVC
@@ -1042,7 +1042,7 @@ namespace gpstk
       weeknum   = fullweek;
       codeflags = cflags;
       short accFlag = acc;
-         //double accuracy = gpstk::ura2accuracy(accFlag);
+         //double accuracy = gnsstk::ura2accuracy(accFlag);
       health    = svhealth;
       L2Pdata   = l2pdata;
       IODC      = iodc;
@@ -1100,7 +1100,7 @@ namespace gpstk
       catch (Exception& exc)
       {
          InvalidRequest ire(exc);
-         GPSTK_THROW(ire);
+         GNSSTK_THROW(ire);
       }
       return *this;
    }
@@ -1153,7 +1153,7 @@ namespace gpstk
       {
          haveSubframe[0] = false;
          InvalidRequest ire(exc);
-         GPSTK_THROW(ire);
+         GNSSTK_THROW(ire);
       }
       return *this;
    }
@@ -1173,7 +1173,7 @@ namespace gpstk
       if (!haveSubframe[0])
       {
          InvalidRequest exc("Need to load subframe 1 before subframe 2");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       bool healthy = false;
       if (health == 0)
@@ -1239,7 +1239,7 @@ namespace gpstk
       {
          haveSubframe[1] = false;
          InvalidRequest ire(exc);
-         GPSTK_THROW(ire);
+         GNSSTK_THROW(ire);
       }
       return *this;
    }
@@ -1256,7 +1256,7 @@ namespace gpstk
       if (!haveSubframe[1])
       {
          InvalidRequest exc("Need to load subframe 2 before subframe 3");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       bool healthy = false;
       if (health == 0)
@@ -1403,7 +1403,7 @@ namespace gpstk
       if (!haveSubframe[0] || !haveSubframe[1] || !haveSubframe[2])
       {
          InvalidRequest exc("Need to load subframes 1,2 and 3");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       ios::fmtflags oldFlags = s.flags();
@@ -1444,7 +1444,7 @@ namespace gpstk
       if (!haveSubframe[0] || !haveSubframe[1] || !haveSubframe[2])
       {
          InvalidRequest exc("Need to load subframes 1,2 and 3");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       ios::fmtflags oldFlags = s.flags();
@@ -1638,10 +1638,10 @@ namespace gpstk
       {
          eph.dump(s);
       }
-      catch(gpstk::Exception& ex)
+      catch(gnsstk::Exception& ex)
       {
          ex.addLocation(FILE_LOCATION);
-         GPSTK_RETHROW(ex);
+         GNSSTK_RETHROW(ex);
       }
       return s;
 

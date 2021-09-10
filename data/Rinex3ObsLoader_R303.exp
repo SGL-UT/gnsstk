@@ -1,4 +1,4 @@
-Load file /home/johnk/src/git/toolkit-work/gpstk/data/Rinex3ObsLoader303.obs
+Load file /home/johnk/src/git/toolkit-work/gnsstk/data/Rinex3ObsLoader303.obs
 Store size is 3600
 ---------------------------------- REQUIRED ----------------------------------
 Rinex Version  3.03,  File type OBSERVATION DATA,  System MIXED.

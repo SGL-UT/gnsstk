@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -54,7 +54,7 @@
 #include "Vector.hpp"
 #include "Matrix.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    /// forward declarations
    template <class T> class SparseVector;
@@ -368,7 +368,7 @@ namespace gpstk
       const SVecProxy<T> operator[](unsigned int in) const
       {
       #ifdef RANGECHECK
-         if(in >= len) GPSTK_THROW(Exception("index out of range"));
+         if(in >= len) GNSSTK_THROW(Exception("index out of range"));
       #endif
          return SVecProxy<T>(const_cast<SparseVector&>(*this), in);
       }
@@ -377,7 +377,7 @@ namespace gpstk
       SVecProxy<T> operator[](unsigned int in)
       {
       #ifdef RANGECHECK
-         if(in >= len) GPSTK_THROW(Exception("index out of range"));
+         if(in >= len) GNSSTK_THROW(Exception("index out of range"));
       #endif
          return SVecProxy<T>(*this, in);
       }
@@ -517,7 +517,7 @@ namespace gpstk
                                  const unsigned int& ind, const unsigned int& n)
    {
       if(ind+n > SV.len)
-         GPSTK_THROW(Exception("Invalid input subvector c'tor - out of range"));
+         GNSSTK_THROW(Exception("Invalid input subvector c'tor - out of range"));
       if(n == 0) return;
 
       len = n;
@@ -610,11 +610,11 @@ namespace gpstk
       T cv;
       // try in case RANGECHECK is set
       try { cv = S1.dot(S2); }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
 
       T norm1(norm(S1)), norm2(norm(S2));
       if(norm1 == T(0) || norm2 == T(0))
-         GPSTK_THROW(Exception("zero norm"));
+         GNSSTK_THROW(Exception("zero norm"));
 
       return ((cv/norm1)/norm2);
    }
@@ -624,11 +624,11 @@ namespace gpstk
       T cv;
       // try in case RANGECHECK is set
       try { cv = SV.dot(V); }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
 
       T norm1(norm(SV)), norm2(norm(V));
       if(norm1 == T(0) || norm2 == T(0))
-         GPSTK_THROW(Exception("zero norm"));
+         GNSSTK_THROW(Exception("zero norm"));
 
       return ((cv/norm1)/norm2);
    }
@@ -641,7 +641,7 @@ namespace gpstk
    /// dot (SparseVector, SparseVector)
    template <class T> T dot(const SparseVector<T>& SL, const SparseVector<T>& SR)
    {
-      if(SL.size() != SR.size()) GPSTK_THROW(Exception("length mismatch"));
+      if(SL.size() != SR.size()) GNSSTK_THROW(Exception("length mismatch"));
       T value(0);
       typename std::map<unsigned int, T>::const_iterator it = SL.vecMap.begin();
       typename std::map<unsigned int, T>::const_iterator jt = SR.vecMap.begin();
@@ -663,7 +663,7 @@ namespace gpstk
    template <class T> T dot_lim(const SparseVector<T>& SL, const SparseVector<T>& SR,
                                 const unsigned int kb, const unsigned int ke)
    {
-      if(SL.size() != SR.size()) GPSTK_THROW(Exception("length mismatch"));
+      if(SL.size() != SR.size()) GNSSTK_THROW(Exception("length mismatch"));
       T value(0);
       typename std::map<unsigned int, T>::const_iterator it = SL.vecMap.begin();
       typename std::map<unsigned int, T>::const_iterator jt = SR.vecMap.begin();
@@ -685,7 +685,7 @@ namespace gpstk
    /// dot (SparseVector, Vector)
    template <class T> T dot(const SparseVector<T>& SL, const Vector<T>& R)
    {
-      if(SL.size() != R.size()) GPSTK_THROW(Exception("length mismatch"));
+      if(SL.size() != R.size()) GNSSTK_THROW(Exception("length mismatch"));
       T value(0);
       typename std::map<unsigned int, T>::const_iterator it;
       for(it = SL.vecMap.begin(); it != SL.vecMap.end(); ++it) {
@@ -748,7 +748,7 @@ namespace gpstk
    SparseVector<T>& SparseVector<T>::operator-=(const SparseVector<T>& R)
    {
       if(len != R.size())
-         GPSTK_THROW(Exception("Incompatible dimensions op-=(SV)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-=(SV)"));
 
       typename std::map<unsigned int, T>::const_iterator Rit;
       for(Rit = R.vecMap.begin(); Rit != R.vecMap.end(); ++Rit) {
@@ -767,7 +767,7 @@ namespace gpstk
    SparseVector<T>& SparseVector<T>::operator-=(const Vector<T>& R)
    {
       if(len != R.size())
-         GPSTK_THROW(Exception("Incompatible dimensions op-=(V)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-=(V)"));
 
       for(unsigned int i=0; i<R.size(); i++) {
          if(R[i] == T(0)) continue;
@@ -787,7 +787,7 @@ namespace gpstk
    SparseVector<T>& SparseVector<T>::operator+=(const SparseVector<T>& R)
    {
       if(len != R.size())
-         GPSTK_THROW(Exception("Incompatible dimensions op+=(SV)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+=(SV)"));
 
       typename std::map<unsigned int, T>::const_iterator Rit;
       for(Rit = R.vecMap.begin(); Rit != R.vecMap.end(); ++Rit) {
@@ -806,7 +806,7 @@ namespace gpstk
    SparseVector<T>& SparseVector<T>::operator+=(const Vector<T>& R)
    {
       if(len != R.size())
-         GPSTK_THROW(Exception("Incompatible dimensions op+=(V)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+=(V)"));
       //std::cout << " op+=(V)" << std::endl;
 
       for(unsigned int i=0; i<R.size(); i++) {
@@ -828,7 +828,7 @@ namespace gpstk
    {
       if(a == T(0)) return;
       if(len != R.size())
-         GPSTK_THROW(Exception("Incompatible dimensions addScaledSparseVector()"));
+         GNSSTK_THROW(Exception("Incompatible dimensions addScaledSparseVector()"));
 
       for(unsigned int i=0; i<R.size(); i++) {
          if(R[i] == T(0)) continue;
@@ -862,7 +862,7 @@ namespace gpstk
    template <class T>
    SparseVector<T>& SparseVector<T>::operator/=(const T& value)
    {
-      if(value == T(0)) GPSTK_THROW(Exception("Divide by zero"));
+      if(value == T(0)) GNSSTK_THROW(Exception("Divide by zero"));
 
       typename std::map<unsigned int, T>::iterator it;
       for(it=vecMap.begin(); it != vecMap.end(); ++it) {
@@ -877,7 +877,7 @@ namespace gpstk
                                                 const SparseVector<T>& R)
    {
       if(L.size() != R.size())
-         GPSTK_THROW(Exception("Incompatible dimensions op-(SV,SV)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-(SV,SV)"));
 
       //std::cout << "Call copy ctor from op-(SV,SV)" << std::endl;
       SparseVector<T> retSV(L);
@@ -891,7 +891,7 @@ namespace gpstk
                                                 const Vector<T>& R)
    {
       if(L.size() != R.size())
-         GPSTK_THROW(Exception("Incompatible dimensions op-(SV,V)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-(SV,V)"));
       //std::cout << "Call copy ctor from op-(SV,V)" << std::endl;
 
       SparseVector<T> retSV(L);
@@ -905,7 +905,7 @@ namespace gpstk
                                                 const SparseVector<T>& R)
    {
       if(L.size() != R.size())
-         GPSTK_THROW(Exception("Incompatible dimensions op-(V,SV)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-(V,SV)"));
       //std::cout << "Call copy ctor from op-(V,SV)" << std::endl;
 
       SparseVector<T> retSV(R);
@@ -920,7 +920,7 @@ namespace gpstk
                                                 const SparseVector<T>& R)
    {
       if(L.size() != R.size())
-         GPSTK_THROW(Exception("Incompatible dimensions op+(SV,SV)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+(SV,SV)"));
       //std::cout << "Call copy ctor from op+(SV,SV)" << std::endl;
 
       SparseVector<T> retSV(R);
@@ -934,7 +934,7 @@ namespace gpstk
                                                 const Vector<T>& R)
    {
       if(L.size() != R.size())
-         GPSTK_THROW(Exception("Incompatible dimensions op+(SV,V)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+(SV,V)"));
       //std::cout << "Call copy ctor from op+(SV,V)" << std::endl;
 
       SparseVector<T> retSV(L);
@@ -948,7 +948,7 @@ namespace gpstk
                                                 const SparseVector<T>& R)
    {
       if(L.size() != R.size())
-         GPSTK_THROW(Exception("Incompatible dimensions op+(V,SV)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+(V,SV)"));
       //std::cout << "Call copy ctor from op+(V,SV)" << std::endl;
 
       SparseVector<T> retSV(R);

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -37,23 +37,23 @@
 //==============================================================================
 
 /// @file Epoch.cpp
-/// gpstk::Epoch - encapsulates date and time-of-day
+/// gnsstk::Epoch - encapsulates date and time-of-day
 
 #include <iostream>
 #include <iomanip>
 #include <string>
 #include <ctime>
 
-#include "gpstkplatform.h"
+#include "gnsstkplatform.h"
 #include "Epoch.hpp"
 
 #include "TimeConstants.hpp"
 #include "TimeString.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace std;
-   using namespace gpstk::StringUtils;
+   using namespace gnsstk::StringUtils;
 
       // One nanosecond tolerance.
    const double Epoch::ONE_NSEC_TOLERANCE = 1e-9;
@@ -130,10 +130,10 @@ namespace gpstk
          GPSWeekZcount wz = get<GPSWeekZcount>();
          return GPSZcount(wz.week, wz.zcount);
       }
-      catch (gpstk::InvalidParameter& ip)
+      catch (gnsstk::InvalidParameter& ip)
       {
          Epoch::EpochException ee(ip);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -204,7 +204,7 @@ namespace gpstk
       catch( InvalidRequest& ir )
       {
          Epoch::EpochException ee(ir);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -220,7 +220,7 @@ namespace gpstk
       catch( InvalidRequest& ir )
       {
          Epoch::EpochException ee(ir);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -236,7 +236,7 @@ namespace gpstk
       catch( InvalidRequest& ir )
       {
          Epoch::EpochException ee(ir);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -256,7 +256,7 @@ namespace gpstk
       catch( InvalidRequest& ir )
       {
          Epoch::EpochException ee(ir);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -322,7 +322,7 @@ namespace gpstk
       catch(InvalidParameter& ip)
       {
          EpochException ee(ip);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -360,7 +360,7 @@ namespace gpstk
       catch(Exception& exc)
       {
          EpochException ee(exc);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -378,7 +378,7 @@ namespace gpstk
       catch(InvalidParameter& ip)
       {
          EpochException ee(ip);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
    
@@ -396,7 +396,7 @@ namespace gpstk
       catch(InvalidParameter& ip)
       {
          EpochException ee(ip);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
    
@@ -425,7 +425,7 @@ namespace gpstk
       }
       catch (StringException& se)
       {
-         GPSTK_RETHROW(se);
+         GNSSTK_RETHROW(se);
       }
    }
 
@@ -438,7 +438,7 @@ namespace gpstk
       }
       catch (StringException& se)
       {
-         GPSTK_RETHROW(se);
+         GNSSTK_RETHROW(se);
       }
    }
 
@@ -453,4 +453,4 @@ namespace gpstk
       return s;
    }
 
-}   // end namespace gpstk
+}   // end namespace gnsstk

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -40,9 +40,9 @@
 #include "TestUtil.hpp"
 #include "BDSWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -63,8 +63,8 @@ unsigned BDSD1NavIono_T ::
 constructorTest()
 {
    TUDEF("BDSD1NavIono", "BDSD1NavIono");
-   gpstk::BDSD1NavIono uut;
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Iono,
+   gnsstk::BDSD1NavIono uut;
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Iono,
              uut.signal.messageType);
    TUASSERTE(uint32_t, 0, uut.pre);
    TUASSERTE(uint32_t, 0, uut.rev);
@@ -78,12 +78,12 @@ unsigned BDSD1NavIono_T ::
 getUserTimeTest()
 {
    TUDEF("BDSD1NavIono", "getUserTime");
-   gpstk::BDSD1NavIono uut;
-   uut.timeStamp = gpstk::BDSWeekSecond(2100,135.0);
-   gpstk::CommonTime exp(gpstk::BDSWeekSecond(2100,135.0));
+   gnsstk::BDSD1NavIono uut;
+   uut.timeStamp = gnsstk::BDSWeekSecond(2100,135.0);
+   gnsstk::CommonTime exp(gnsstk::BDSWeekSecond(2100,135.0));
       // iono = 1 subframes * 6 seconds
    exp = exp + 6.0;
-   TUASSERTE(gpstk::CommonTime, exp, uut.getUserTime());
+   TUASSERTE(gnsstk::CommonTime, exp, uut.getUserTime());
    TURETURN();
 }
 
@@ -92,9 +92,9 @@ unsigned BDSD1NavIono_T ::
 getCorrectionTest()
 {
    TUDEF("BDSD1NavIono", "getCorrection");
-   gpstk::BDSD1NavIono uut;
-   gpstk::CommonTime when = gpstk::BDSWeekSecond(2100,135.0);
-   gpstk::Position rx, sv;
+   gnsstk::BDSD1NavIono uut;
+   gnsstk::CommonTime when = gnsstk::BDSWeekSecond(2100,135.0);
+   gnsstk::Position rx, sv;
    rx.setECEF(-1575232.0141,-4707872.2332, 3993198.4383);
    sv.setECEF(18217581.007, -14220522.580,  12707796.859);
    uut.alpha[0] =  1.11758709E-08;
@@ -107,15 +107,15 @@ getCorrectionTest()
    uut.beta[3]  =  3.38181850E+04;
       // probably wouldn't use L1 or L2 for BDS D1 but this is a sanity check
    TUASSERTFE(13.174577965354167475,
-              uut.getCorrection(when, rx, sv, gpstk::CarrierBand::L2));
+              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::L2));
    TUASSERTFE(7.9994064218713107906,
-              uut.getCorrection(when, rx, sv, gpstk::CarrierBand::L1));
+              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::L1));
    TUASSERTFE(8.1468578153895165883,
-              uut.getCorrection(when, rx, sv, gpstk::CarrierBand::B1));
+              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::B1));
    TUASSERTFE(13.624958539291872839,
-              uut.getCorrection(when, rx, sv, gpstk::CarrierBand::B2));
+              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::B2));
    TUASSERTFE(12.338314431653227388,
-              uut.getCorrection(when, rx, sv, gpstk::CarrierBand::B3));
+              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::B3));
    TURETURN();
 }
 

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -50,7 +50,7 @@
 #include <sstream>
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 SVNumXRef::SVNumXRef( )
 {
@@ -551,7 +551,7 @@ SVNumXRef::SVNumXRef( )
       //Iterates through Navstar by PRN map for each relationship building the corresponding map
    for (itate=NtoPMap.begin(); itate != NtoPMap.end(); itate++)
    {
-      std::pair<const int, gpstk::XRefNode> values = *itate;
+      std::pair<const int, gnsstk::XRefNode> values = *itate;
          //Grabs the values to then insert into PtoN
       int navNum = values.first;
       int prnNum = values.second.getPRNNum();
@@ -562,7 +562,7 @@ SVNumXRef::SVNumXRef( )
 
 }
 
-int SVNumXRef::getNAVSTAR( const int PRNID, const gpstk::CommonTime dt ) const
+int SVNumXRef::getNAVSTAR( const int PRNID, const gnsstk::CommonTime dt ) const
 {
    SVNumXRefPair p = PtoNMap.equal_range( PRNID );
    for (SVNumXRefListCI ci=p.first; ci != p.second; ++ci )
@@ -577,11 +577,11 @@ int SVNumXRef::getNAVSTAR( const int PRNID, const gpstk::CommonTime dt ) const
             PRNID,printTime(dt,"%02m/%02d/%04Y").c_str() ); 
    std::string sout = textOut;
    NoNAVSTARNumberFound noFound( sout );
-   GPSTK_THROW(noFound); 
+   GNSSTK_THROW(noFound); 
    return 0;
 }
 
-bool SVNumXRef::NAVSTARIDAvailable( const int PRNID, const gpstk::CommonTime dt ) const
+bool SVNumXRef::NAVSTARIDAvailable( const int PRNID, const gnsstk::CommonTime dt ) const
 {
    SVNumXRefPair p = PtoNMap.equal_range( PRNID );
    for (SVNumXRefListCI ci=p.first; ci != p.second; ++ci )
@@ -591,7 +591,7 @@ bool SVNumXRef::NAVSTARIDAvailable( const int PRNID, const gpstk::CommonTime dt 
    return false; 
 }
 
-bool SVNumXRef::NAVSTARIDActive( const int NAVSTARID, const gpstk::CommonTime dt ) const
+bool SVNumXRef::NAVSTARIDActive( const int NAVSTARID, const gnsstk::CommonTime dt ) const
 {
   return PRNIDAvailable ( NAVSTARID, dt) ; 
 }
@@ -609,7 +609,7 @@ SVNumXRef::BlockType SVNumXRef::getBlockType( const int NAVSTARID ) const
             NAVSTARID);
    std::string sout = textOut;
    NoNAVSTARNumberFound noFound( sout );
-   GPSTK_THROW(noFound); 
+   GNSSTK_THROW(noFound); 
    return SVNumXRef::BlockType();
 }
 
@@ -634,7 +634,7 @@ std::string SVNumXRef::getBlockTypeString( const int NAVSTARID ) const
    return "unknown";
 }
 
-int SVNumXRef::getPRNID( const int NAVSTARID, const gpstk::CommonTime dt ) const
+int SVNumXRef::getPRNID( const int NAVSTARID, const gnsstk::CommonTime dt ) const
 {
    NAVNumXRefPair p = NtoPMap.equal_range( NAVSTARID );
    for (NAVNumXRefCI ci=p.first; ci != p.second; ++ci )
@@ -649,11 +649,11 @@ int SVNumXRef::getPRNID( const int NAVSTARID, const gpstk::CommonTime dt ) const
             NAVSTARID,printTime(dt,"%02m/%02d/%04Y").c_str() ); 
    std::string sout = textOut;
    NoNAVSTARNumberFound noFound( sout );
-   GPSTK_THROW(noFound);
+   GNSSTK_THROW(noFound);
    return 0;
 }
 
-bool SVNumXRef::PRNIDAvailable( const int NAVSTARID, const gpstk::CommonTime dt ) const
+bool SVNumXRef::PRNIDAvailable( const int NAVSTARID, const gnsstk::CommonTime dt ) const
 {
    NAVNumXRefPair p = NtoPMap.equal_range( NAVSTARID );
    for (NAVNumXRefCI ci=p.first; ci != p.second; ++ci )
@@ -688,7 +688,7 @@ void SVNumXRef::dump(std::ostream& out) const
       //Iterates through Navstar by PRN
    for (it=NtoPMap.begin(); it != NtoPMap.end(); it++)
    {
-      std::pair<const int, gpstk::XRefNode> mm = *it;
+      std::pair<const int, gnsstk::XRefNode> mm = *it;
       out << "     " << setw(2) << mm.first 
           << "       " << mm.second.toString() << endl;
    }
@@ -704,7 +704,7 @@ void SVNumXRef::dump(std::ostream& out) const
       //Iterates through PRN by Navstar
    for (iter = PtoNMap.begin(); iter != PtoNMap.end(); iter++)
    {
-      std::pair<const int, gpstk::XRefNode> pp = *iter;
+      std::pair<const int, gnsstk::XRefNode> pp = *iter;
       out << "    " << setw(2) << pp.first 
           << "        " << pp.second.toString() <<endl;
    }
@@ -712,21 +712,21 @@ void SVNumXRef::dump(std::ostream& out) const
 
 //-------------- Methods for XRefNode -----------------
 XRefNode::XRefNode( const int NumArg,
-			     const gpstk::TimeRange tr )
+			     const gnsstk::TimeRange tr )
 {	
 	Num = NumArg;
 	valid = tr;
 }
 								
 XRefNode::XRefNode( const int NumArg,
-                             const gpstk::CommonTime begDT,
-                             const gpstk::CommonTime endDT )
+                             const gnsstk::CommonTime begDT,
+                             const gnsstk::CommonTime endDT )
 {
    Num = NumArg;
    valid = TimeRange( begDT, endDT );
 }
 
-bool XRefNode::isApplicable( gpstk::CommonTime dt ) const
+bool XRefNode::isApplicable( gnsstk::CommonTime dt ) const
 {
    if (valid.inRange(dt)) return true;
    return false;

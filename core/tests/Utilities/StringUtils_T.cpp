@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -43,7 +43,7 @@
 #include "StringUtils.hpp"
 #include "TestUtil.hpp"
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
 namespace std
@@ -151,7 +151,7 @@ public:
       static const int BUF_SIZ = 512;
       ifstream s(fileName.c_str());
       std::string rv;
-      GPSTK_ASSERT(s);
+      GNSSTK_ASSERT(s);
       char *buffer = new char[BUF_SIZ];
       while (s)
       {
@@ -924,10 +924,10 @@ public:
       stringstream printableMessageStream;
 
          // Correct format for hexDumpData
-      string refPath = gpstk::getPathData() +
-         gpstk::getFileSep() +
+      string refPath = gnsstk::getPathData() +
+         gnsstk::getFileSep() +
          "StringUtils" +
-         gpstk::getFileSep() +
+         gnsstk::getFileSep() +
          "hexToAsciiTest_";
       correctHexDump = getFileContents(refPath + "hexDump.exp");
 
@@ -975,10 +975,10 @@ public:
       stringstream printableMessageStream;
 
          // Correct format for hexDumpData
-      string refPath = gpstk::getPathData() +
-         gpstk::getFileSep() +
+      string refPath = gnsstk::getPathData() +
+         gnsstk::getFileSep() +
          "StringUtils" +
-         gpstk::getFileSep() +
+         gnsstk::getFileSep() +
          "hexDumpDataTest_";
       correctHexDump = getFileContents(refPath + "hexDump.exp");
 
@@ -1020,10 +1020,10 @@ public:
       string correctHexDump;
 
          // Correct format for hexDumpData
-      string refPath = gpstk::getPathData() +
-         gpstk::getFileSep() +
+      string refPath = gnsstk::getPathData() +
+         gnsstk::getFileSep() +
          "StringUtils" +
-         gpstk::getFileSep() +
+         gnsstk::getFileSep() +
          "hexDumpDataStreamFlagTest_";
 
       correctHexDump = getFileContents(refPath + "hexDump.exp");
@@ -1052,10 +1052,10 @@ public:
       string hexDumpString;
 
          // Correct format for hexDumpData
-      string refPath = gpstk::getPathData() +
-         gpstk::getFileSep() +
+      string refPath = gnsstk::getPathData() +
+         gnsstk::getFileSep() +
          "StringUtils" +
-         gpstk::getFileSep() +
+         gnsstk::getFileSep() +
          "hexDumpDataConfigTest_";
 
          // no index

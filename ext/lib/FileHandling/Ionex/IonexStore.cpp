@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -46,11 +46,11 @@
 
 #include "IonexStore.hpp"
 
-using namespace gpstk::StringUtils;
-using namespace gpstk;
+using namespace gnsstk::StringUtils;
+using namespace gnsstk;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 
       // coefficient. See more in Seeber G.(2003), Satellite Geodesy
@@ -73,7 +73,7 @@ namespace gpstk
 
             FileMissingException e( "File " + filename +
                                     " could not be opened.");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
 
          }
 
@@ -87,7 +87,7 @@ namespace gpstk
             FileMissingException e( "File " + filename +
                                     " could not be opened. Check again " +
                                     "the path or the name provided!");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
 
          }
 
@@ -105,9 +105,9 @@ namespace gpstk
          }
 
       }
-      catch (gpstk::Exception& e)
+      catch (gnsstk::Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
    }  // End of method 'IonexStore::loadFile()'
@@ -289,13 +289,13 @@ namespace gpstk
       if (t < getInitialTime())
       {
          InvalidRequest e("Inadequate data before requested time");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       if (t > getFinalTime() )
       {
          InvalidRequest e("Inadequate data after requested time");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // this never should happen but just in case
@@ -305,7 +305,7 @@ namespace gpstk
 
          InvalidRequest e("Position object is not in GEOCENTRIC coordinates");
 
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
 
       }
 
@@ -318,7 +318,7 @@ namespace gpstk
       else
       {
          InvalidRequest e("Invalid interpolation stategy");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // let's look for valid Ionex maps
@@ -353,7 +353,7 @@ namespace gpstk
       catch (...)
       {
          InvalidRequest e("IonexStore::getIonexValue() ... Invalid time!");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
 
@@ -462,14 +462,14 @@ namespace gpstk
       if (tecval < 0)
       {
          InvalidParameter e("Invalid TEC parameter.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       if( ionoMapType != "NONE" && ionoMapType != "SLM" && 
           ionoMapType != "MSLM" && ionoMapType != "ESM" )
       {
          InvalidParameter e("Invalid ionosphere mapping function.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       if (elevation < 0.0)
@@ -508,14 +508,14 @@ namespace gpstk
       if (tecval < 0)
       {
          InvalidParameter e("Invalid TEC parameter.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       if( ionoMapType != "NONE" && ionoMapType != "SLM" && 
           ionoMapType != "MSLM" && ionoMapType != "ESM" )
       {
          InvalidParameter e("Invalid ionosphere mapping function.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       if (elevation < 0.0)
@@ -626,13 +626,13 @@ namespace gpstk
       if ( time < getInitialTime() )
       {
          InvalidRequest e("Inadequate data before requested time");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       if ( time > getFinalTime() )
       {
          InvalidRequest e("Inadequate data after requested time");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       double dt(0.0);
@@ -651,7 +651,7 @@ namespace gpstk
 
             InvalidRequest e( "Inadequate data after requested time: " +
                               time.asString() );
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
 
          }  // works fine for consecutive files, otherwise last epoch is thrown
          else
@@ -669,7 +669,7 @@ namespace gpstk
 
                   InvalidRequest e( "There is no DCB value for satellite " +
                                     asString(sat) );
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
 
                }
                else     // ... otherwise, fetch the value
@@ -698,4 +698,4 @@ namespace gpstk
    }  // End of method 'IonexStore::findDCB()'
 
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -98,7 +98,7 @@ class GalEphemeris_T
 {
 public:
    
-  gpstk::OrbitEphStore store; 
+  gnsstk::OrbitEphStore store; 
 
       /** This loads the test file into an OrbitEphStore. 
         * OrbitEphStore is tested elsewhere
@@ -107,11 +107,11 @@ public:
    {
       TUDEF("GalEphemeris_T","Load Rinex Nav Data");
 
-      std::string dataFilePath = gpstk::getPathData();
+      std::string dataFilePath = gnsstk::getPathData();
       std::string file_sep = "/";
       string fn = dataFilePath + file_sep + "test_input_rinex3_nav_gal.20n"; 
        
-      gpstk::Rinex3NavStream strm;
+      gnsstk::Rinex3NavStream strm;
       strm.open(fn.c_str(),ios::in);
       if (!strm.is_open())
       {
@@ -123,10 +123,10 @@ public:
 
       try
       {
-         gpstk::Rinex3NavHeader Rhead;
+         gnsstk::Rinex3NavHeader Rhead;
          strm >> Rhead;
       }
-      catch (gpstk::Exception e)
+      catch (gnsstk::Exception e)
       {
          stringstream ss;
          ss << "Failed to read header from " << fn << ".";
@@ -134,7 +134,7 @@ public:
          TURETURN();
       }
 
-      gpstk::Rinex3NavData  Rdata;
+      gnsstk::Rinex3NavData  Rdata;
       bool done = false;
       while (!done)
       {
@@ -144,8 +144,8 @@ public:
             {
                if (Rdata.satSys=="E")
                {
-                  gpstk::GalEphemeris eph(Rdata);
-                  store.addEphemeris(dynamic_cast<gpstk::OrbitEph*>(&eph));
+                  gnsstk::GalEphemeris eph(Rdata);
+                  store.addEphemeris(dynamic_cast<gnsstk::OrbitEph*>(&eph));
                }
             }
             else
@@ -153,7 +153,7 @@ public:
                done = true;
             }
          }
-         catch (gpstk::Exception e)
+         catch (gnsstk::Exception e)
          {
             TUFAIL("Caught exception attempting to load test_input");
             done = true; 
@@ -173,52 +173,52 @@ public:
       {
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14
       };
-      const gpstk::Xvt::HealthStatus fullHealth[] =
+      const gnsstk::Xvt::HealthStatus fullHealth[] =
       {
-         gpstk::Xvt::Healthy,
-         gpstk::Xvt::Unhealthy,
-         gpstk::Xvt::Degraded,
-         gpstk::Xvt::Unhealthy,
-         gpstk::Xvt::Degraded,
-         gpstk::Xvt::Degraded,
-         gpstk::Xvt::Healthy,
-         gpstk::Xvt::Unhealthy,
-         gpstk::Xvt::Degraded,
-         gpstk::Xvt::Healthy,
-         gpstk::Xvt::Unhealthy,
-         gpstk::Xvt::Degraded,
-         gpstk::Xvt::Unhealthy
+         gnsstk::Xvt::Healthy,
+         gnsstk::Xvt::Unhealthy,
+         gnsstk::Xvt::Degraded,
+         gnsstk::Xvt::Unhealthy,
+         gnsstk::Xvt::Degraded,
+         gnsstk::Xvt::Degraded,
+         gnsstk::Xvt::Healthy,
+         gnsstk::Xvt::Unhealthy,
+         gnsstk::Xvt::Degraded,
+         gnsstk::Xvt::Healthy,
+         gnsstk::Xvt::Unhealthy,
+         gnsstk::Xvt::Degraded,
+         gnsstk::Xvt::Unhealthy
       };
-      const gpstk::Xvt::HealthStatus binaryNealth[] =
+      const gnsstk::Xvt::HealthStatus binaryNealth[] =
       {
-         gpstk::Xvt::Healthy,
-         gpstk::Xvt::Unhealthy,
-         gpstk::Xvt::Unhealthy,
-         gpstk::Xvt::Unhealthy,
-         gpstk::Xvt::Unhealthy,
-         gpstk::Xvt::Unhealthy,
-         gpstk::Xvt::Healthy,
-         gpstk::Xvt::Unhealthy,
-         gpstk::Xvt::Unhealthy,
-         gpstk::Xvt::Healthy,
-         gpstk::Xvt::Unhealthy,
-         gpstk::Xvt::Unhealthy,
-         gpstk::Xvt::Unhealthy
+         gnsstk::Xvt::Healthy,
+         gnsstk::Xvt::Unhealthy,
+         gnsstk::Xvt::Unhealthy,
+         gnsstk::Xvt::Unhealthy,
+         gnsstk::Xvt::Unhealthy,
+         gnsstk::Xvt::Unhealthy,
+         gnsstk::Xvt::Healthy,
+         gnsstk::Xvt::Unhealthy,
+         gnsstk::Xvt::Unhealthy,
+         gnsstk::Xvt::Healthy,
+         gnsstk::Xvt::Unhealthy,
+         gnsstk::Xvt::Unhealthy,
+         gnsstk::Xvt::Unhealthy
       };
 
       int CASE_COUNT = 13;
 
-      gpstk::CommonTime ctTest = gpstk::CivilTime(2020, 5, 29, 0, 30, 0.0, gpstk::TimeSystem::GAL); 
+      gnsstk::CommonTime ctTest = gnsstk::CivilTime(2020, 5, 29, 0, 30, 0.0, gnsstk::TimeSystem::GAL); 
       for (int i=0; i<CASE_COUNT; i++)
       {
-         gpstk::SatID sid(prnId[i],gpstk::SatelliteSystem::Galileo); 
-         gpstk::Xvt::HealthStatus health;
+         gnsstk::SatID sid(prnId[i],gnsstk::SatelliteSystem::Galileo); 
+         gnsstk::Xvt::HealthStatus health;
          TUCATCH(health = store.getSVHealth(sid, ctTest));
-         TUASSERTE(gpstk::Xvt::HealthStatus,
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
                    binaryNealth[i], health);
-         const gpstk::OrbitEph* eph = store.findOrbitEph(sid,ctTest);
-         const gpstk::GalEphemeris* geph = dynamic_cast<const gpstk::GalEphemeris*>(eph);
-         TUASSERTE(gpstk::Xvt::HealthStatus,
+         const gnsstk::OrbitEph* eph = store.findOrbitEph(sid,ctTest);
+         const gnsstk::GalEphemeris* geph = dynamic_cast<const gnsstk::GalEphemeris*>(eph);
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
                    fullHealth[i], geph->health);
       }
       TURETURN();

@@ -7,11 +7,11 @@
       class VectorIterator
    {
    public:
-      typename gpstk::Vector<T>::iterator cur;
-      typename gpstk::Vector<T>::iterator end;
+      typename gnsstk::Vector<T>::iterator cur;
+      typename gnsstk::Vector<T>::iterator end;
          
-      VectorIterator(typename gpstk::Vector<T>::iterator cur,
-                     typename gpstk::Vector<T>::iterator end)
+      VectorIterator(typename gnsstk::Vector<T>::iterator cur,
+                     typename gnsstk::Vector<T>::iterator end)
          : cur(cur), end(end)
       {}
 
@@ -29,7 +29,7 @@
       {
          return *($self->cur++);
       }
-      throw gpstk::StopIterator();
+      throw gnsstk::StopIterator();
    }
 
    T next()
@@ -38,11 +38,11 @@
       {
          return *($self->cur++);
       }
-      throw gpstk::StopIterator();
+      throw gnsstk::StopIterator();
    }
 }
 
-namespace gpstk{
+namespace gnsstk{
     %extend Vector{
         //Implements Python __getitem__ to get an element at an index
         T __getitem__(size_t i) {

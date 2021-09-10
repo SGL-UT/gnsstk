@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -84,9 +84,9 @@ public:
       {
          init(N,K);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
    
@@ -194,8 +194,8 @@ void Combinations::init(int N, int K)
 {
    if (K > N || N < 0 || K < 0)
    {
-      gpstk::Exception e("Combinations(n,k) must have k <= n, with n,k >= 0");
-      GPSTK_THROW(e);
+      gnsstk::Exception e("Combinations(n,k) must have k <= n, with n,k >= 0");
+      GNSSTK_THROW(e);
    }
    
    if (K > 0)
@@ -203,8 +203,8 @@ void Combinations::init(int N, int K)
       Index = new int[K];
       if (!Index)
       {
-         gpstk::Exception e("Could not allocate");
-         GPSTK_THROW(e);
+         gnsstk::Exception e("Could not allocate");
+         GNSSTK_THROW(e);
       }
    }
    else
@@ -222,9 +222,9 @@ void Combinations::init(int N, int K)
 // ----------------------------------------------------------------------------
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
-namespace gpstk
+namespace gnsstk
 {
    int PRSolutionLegacy::RAIMCompute(const CommonTime& Tr,
                                      vector<SatID>& Satellite,
@@ -501,7 +501,7 @@ namespace gpstk
       }
       catch(Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }  // end PRSolutionLegacy::RAIMCompute()
 
@@ -668,7 +668,7 @@ namespace gpstk
       }
       catch(Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }  // end PRSolutionLegacy::AlgebraicSolution
 
@@ -693,7 +693,7 @@ namespace gpstk
       if (!pTropModel)
       {
          Exception e("Undefined tropospheric model");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       
       int size;
@@ -925,11 +925,11 @@ namespace gpstk
       } 
       catch(Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end PRSolutionLegacy::AutonomousPRSolution
 
 ///-------------------------------------------------------------------------///
 ///-------------------------------------------------------------------------///
 
-} // namespace gpstk
+} // namespace gnsstk

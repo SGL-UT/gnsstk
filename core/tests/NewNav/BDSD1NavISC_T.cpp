@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -41,9 +41,9 @@
 #include "TestUtil.hpp"
 #include "BDSWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -55,18 +55,18 @@ class BDSD1NavISC_T
 {
 public:
    BDSD1NavISC_T()
-         : oid1(gpstk::ObservationType::Unknown,
-                gpstk::CarrierBand::B1,
-                gpstk::TrackingCode::B1I),
-           oid2(gpstk::ObservationType::Unknown,
-                gpstk::CarrierBand::B2,
-                gpstk::TrackingCode::B2I),
-           oid3(gpstk::ObservationType::Unknown,
-                gpstk::CarrierBand::B3,
-                gpstk::TrackingCode::B3I),
-           oid4(gpstk::ObservationType::SNR,
-                gpstk::CarrierBand::B2,
-                gpstk::TrackingCode::B2I)
+         : oid1(gnsstk::ObservationType::Unknown,
+                gnsstk::CarrierBand::B1,
+                gnsstk::TrackingCode::B1I),
+           oid2(gnsstk::ObservationType::Unknown,
+                gnsstk::CarrierBand::B2,
+                gnsstk::TrackingCode::B2I),
+           oid3(gnsstk::ObservationType::Unknown,
+                gnsstk::CarrierBand::B3,
+                gnsstk::TrackingCode::B3I),
+           oid4(gnsstk::ObservationType::SNR,
+                gnsstk::CarrierBand::B2,
+                gnsstk::TrackingCode::B2I)
    {}
       /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
@@ -79,7 +79,7 @@ public:
       /// Dual frequency ISC test
    unsigned getISCDFTest();
 
-   gpstk::ObsID oid1, oid2, oid3, oid4;
+   gnsstk::ObsID oid1, oid2, oid3, oid4;
 };
 
 
@@ -87,8 +87,8 @@ unsigned BDSD1NavISC_T ::
 constructorTest()
 {
    TUDEF("BDSD1NavISC", "BDSD1NavISC");
-   gpstk::BDSD1NavISC uut;
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::ISC,
+   gnsstk::BDSD1NavISC uut;
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::ISC,
              uut.signal.messageType);
    TUASSERTE(uint32_t, 0, uut.pre);
    TUASSERTE(uint32_t, 0, uut.rev);
@@ -104,7 +104,7 @@ unsigned BDSD1NavISC_T ::
 validateTest()
 {
    TUDEF("BDSD1NavISC", "validate");
-   gpstk::BDSD1NavISC uut;
+   gnsstk::BDSD1NavISC uut;
    uut.fraID = 1;
    uut.tgd1 = uut.tgd2 = 0;
    TUASSERTE(bool, true, uut.validate());
@@ -124,11 +124,11 @@ unsigned BDSD1NavISC_T ::
 getUserTimeTest()
 {
    TUDEF("BDSD1NavISC", "getUserTime");
-   gpstk::BDSD1NavISC uut;
-   uut.timeStamp = gpstk::BDSWeekSecond(2100,135.0);
-   gpstk::CommonTime exp(gpstk::BDSWeekSecond(2100,135.0));
+   gnsstk::BDSD1NavISC uut;
+   uut.timeStamp = gnsstk::BDSWeekSecond(2100,135.0);
+   gnsstk::CommonTime exp(gnsstk::BDSWeekSecond(2100,135.0));
    exp = exp + 6.0;
-   TUASSERTE(gpstk::CommonTime, exp, uut.getUserTime());
+   TUASSERTE(gnsstk::CommonTime, exp, uut.getUserTime());
    TURETURN();
 }
 
@@ -137,7 +137,7 @@ unsigned BDSD1NavISC_T ::
 getISCSFTest()
 {
    TUDEF("BDSD1NavISC", "getISC(single-frequency)");
-   gpstk::BDSD1NavISC uut;
+   gnsstk::BDSD1NavISC uut;
       // isc should be nan
    double corr = 0.123456;
    double expCorr1 = 0.123456;
@@ -170,7 +170,7 @@ unsigned BDSD1NavISC_T ::
 getISCDFTest()
 {
    TUDEF("BDSD1NavISC", "getISC(dual-frequency)");
-   gpstk::BDSD1NavISC uut;
+   gnsstk::BDSD1NavISC uut;
    double corr = 0.123456;
    uut.tgd1 = -6.519258E-09;
    TUASSERTE(bool, true, uut.getISC(oid1, oid3, corr));

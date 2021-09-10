@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,7 +41,7 @@
 #include "TestUtil.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 class ReferenceFrame_T
 {
@@ -55,13 +55,13 @@ public:
       string unk("Unknown");
 
       ReferenceFrame rf1(ReferenceFrame::PZ90);
-      TUASSERTE(std::string, pz, gpstk::StringUtils::asString(rf1));
+      TUASSERTE(std::string, pz, gnsstk::StringUtils::asString(rf1));
 
       ReferenceFrame rf2(ReferenceFrame::WGS84);
-      TUASSERTE(std::string, wgs, gpstk::StringUtils::asString(rf2));
+      TUASSERTE(std::string, wgs, gnsstk::StringUtils::asString(rf2));
 
       ReferenceFrame rf3(ReferenceFrame::Unknown);
-      TUASSERTE(std::string, unk, gpstk::StringUtils::asString(rf3));
+      TUASSERTE(std::string, unk, gnsstk::StringUtils::asString(rf3));
 
       TURETURN();
    }
@@ -74,9 +74,9 @@ public:
       ReferenceFrame rf1(ReferenceFrame::PZ90);
       ReferenceFrame rf2(ReferenceFrame::WGS84);
       ReferenceFrame rf3(ReferenceFrame::Unknown);
-      ReferenceFrame rf4 = gpstk::StringUtils::asReferenceFrame("PZ90");
-      ReferenceFrame rf5 = gpstk::StringUtils::asReferenceFrame("WGS84");
-      ReferenceFrame rf6 = gpstk::StringUtils::asReferenceFrame("Junk");
+      ReferenceFrame rf4 = gnsstk::StringUtils::asReferenceFrame("PZ90");
+      ReferenceFrame rf5 = gnsstk::StringUtils::asReferenceFrame("WGS84");
+      ReferenceFrame rf6 = gnsstk::StringUtils::asReferenceFrame("Junk");
 
          //PZ90 Enum with...
       TUASSERT( rf1 == rf1);
@@ -113,9 +113,9 @@ public:
       ReferenceFrame rf1(ReferenceFrame::PZ90);
       ReferenceFrame rf2(ReferenceFrame::WGS84);
       ReferenceFrame rf3(ReferenceFrame::Unknown);
-      ReferenceFrame rf4 = gpstk::StringUtils::asReferenceFrame("PZ90");
-      ReferenceFrame rf5 = gpstk::StringUtils::asReferenceFrame("WGS84");
-      ReferenceFrame rf6 = gpstk::StringUtils::asReferenceFrame("Junk");
+      ReferenceFrame rf4 = gnsstk::StringUtils::asReferenceFrame("PZ90");
+      ReferenceFrame rf5 = gnsstk::StringUtils::asReferenceFrame("WGS84");
+      ReferenceFrame rf6 = gnsstk::StringUtils::asReferenceFrame("Junk");
 
          //PZ90 Enum with...
       TUASSERT( !(rf1 != rf1) );
@@ -152,9 +152,9 @@ public:
       ReferenceFrame rf1(ReferenceFrame::Unknown);
       ReferenceFrame rf2(ReferenceFrame::WGS84);
       ReferenceFrame rf3(ReferenceFrame::PZ90);
-      ReferenceFrame rf4 = gpstk::StringUtils::asReferenceFrame("Junk");
-      ReferenceFrame rf5 = gpstk::StringUtils::asReferenceFrame("WGS84");
-      ReferenceFrame rf6 = gpstk::StringUtils::asReferenceFrame("PZ90");
+      ReferenceFrame rf4 = gnsstk::StringUtils::asReferenceFrame("Junk");
+      ReferenceFrame rf5 = gnsstk::StringUtils::asReferenceFrame("WGS84");
+      ReferenceFrame rf6 = gnsstk::StringUtils::asReferenceFrame("PZ90");
 
       TUASSERT( !(rf1 > rf1) );
       TUASSERT( !(rf1 > rf2) );
@@ -188,9 +188,9 @@ public:
       ReferenceFrame rf1(ReferenceFrame::Unknown);
       ReferenceFrame rf2(ReferenceFrame::WGS84);
       ReferenceFrame rf3(ReferenceFrame::PZ90);
-      ReferenceFrame rf6 = gpstk::StringUtils::asReferenceFrame("PZ90");
-      ReferenceFrame rf5 = gpstk::StringUtils::asReferenceFrame("WGS84");
-      ReferenceFrame rf4 = gpstk::StringUtils::asReferenceFrame("Junk");
+      ReferenceFrame rf6 = gnsstk::StringUtils::asReferenceFrame("PZ90");
+      ReferenceFrame rf5 = gnsstk::StringUtils::asReferenceFrame("WGS84");
+      ReferenceFrame rf4 = gnsstk::StringUtils::asReferenceFrame("Junk");
 
       TUASSERT( !(rf1 < rf1) );
       TUASSERT( rf1 < rf2 );
@@ -224,9 +224,9 @@ public:
       ReferenceFrame rf1(ReferenceFrame::Unknown);
       ReferenceFrame rf2(ReferenceFrame::WGS84);
       ReferenceFrame rf3(ReferenceFrame::PZ90);
-      ReferenceFrame rf6 = gpstk::StringUtils::asReferenceFrame("PZ90");
-      ReferenceFrame rf5 = gpstk::StringUtils::asReferenceFrame("WGS84");
-      ReferenceFrame rf4 = gpstk::StringUtils::asReferenceFrame("Junk");
+      ReferenceFrame rf6 = gnsstk::StringUtils::asReferenceFrame("PZ90");
+      ReferenceFrame rf5 = gnsstk::StringUtils::asReferenceFrame("WGS84");
+      ReferenceFrame rf4 = gnsstk::StringUtils::asReferenceFrame("Junk");
 
          //Unknown with...
       TUASSERT( rf1 >= rf1 );
@@ -261,9 +261,9 @@ public:
       ReferenceFrame rf1(ReferenceFrame::Unknown);
       ReferenceFrame rf2(ReferenceFrame::WGS84);
       ReferenceFrame rf3(ReferenceFrame::PZ90);
-      ReferenceFrame rf6 = gpstk::StringUtils::asReferenceFrame("PZ90");
-      ReferenceFrame rf5 = gpstk::StringUtils::asReferenceFrame("WGS84");
-      ReferenceFrame rf4 = gpstk::StringUtils::asReferenceFrame("Junk");
+      ReferenceFrame rf6 = gnsstk::StringUtils::asReferenceFrame("PZ90");
+      ReferenceFrame rf5 = gnsstk::StringUtils::asReferenceFrame("WGS84");
+      ReferenceFrame rf4 = gnsstk::StringUtils::asReferenceFrame("Junk");
 
       TUASSERT( rf1 <= rf1 );
       TUASSERT( rf1 <= rf2 );
@@ -308,12 +308,12 @@ public:
       TUASSERT(frame != rf2);
       TUASSERT(frame != rf3);
 
-      frame = gpstk::StringUtils::asReferenceFrame("Unknown");
+      frame = gnsstk::StringUtils::asReferenceFrame("Unknown");
       TUASSERT(frame == rf1);
       TUASSERT(frame != rf2);
       TUASSERT(frame != rf3);
 
-      frame = gpstk::StringUtils::asReferenceFrame("Junk");
+      frame = gnsstk::StringUtils::asReferenceFrame("Junk");
       TUASSERT(frame == rf1);
       TUASSERT(frame != rf2);
       TUASSERT(frame != rf3);
@@ -328,7 +328,7 @@ public:
       TUASSERT(frame == rf2);
       TUASSERT(frame != rf3);
 
-      frame = gpstk::StringUtils::asReferenceFrame("WGS84");
+      frame = gnsstk::StringUtils::asReferenceFrame("WGS84");
       TUASSERT(frame != rf1);
       TUASSERT(frame == rf2);
       TUASSERT(frame != rf3);
@@ -343,7 +343,7 @@ public:
       TUASSERT(frame != rf2);
       TUASSERT(frame == rf3);
 
-      frame = gpstk::StringUtils::asReferenceFrame("PZ90");
+      frame = gnsstk::StringUtils::asReferenceFrame("PZ90");
       TUASSERT(frame != rf1);
       TUASSERT(frame != rf2);
       TUASSERT(frame == rf3);

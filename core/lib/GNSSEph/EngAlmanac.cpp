@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -46,7 +46,7 @@
 #include "EngAlmanac.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 // This is a macro in order to retain useful location information in the exc
 #define CHECK_SV_HERE(itty, prn) \
@@ -55,10 +55,10 @@ if (itty == almPRN.end()) \
    SVNotPresentException \
       exc("Attempt to get data from EngAlmanac from a SV that is not" \
           " present."); \
-   GPSTK_THROW(exc); \
+   GNSSTK_THROW(exc); \
 }
 
-namespace gpstk
+namespace gnsstk
 {
    EngAlmanac :: EngAlmanac()
       throw()
@@ -106,7 +106,7 @@ namespace gpstk
       {
          InvalidParameter
             exc("EngAlmanac::addSubframe: Not a valid almanac page.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
          //short svid = (subframe[3] >> 22) & 0x3F;
@@ -122,7 +122,7 @@ namespace gpstk
             {
                InvalidParameter exc("EngAlmanac::addSubframe, PRN out of range "
                                     + StringUtils::asString(ficked[19]));
-               GPSTK_THROW(exc);
+               GNSSTK_THROW(exc);
             }
             {
                int prn = static_cast<short>( ficked[19] );
@@ -230,7 +230,7 @@ namespace gpstk
       {
          SVNotPresentException svnpe("SV health not present for PRN " +
                                      StringUtils::asString(sat.id));
-         GPSTK_THROW(svnpe);
+         GNSSTK_THROW(svnpe);
       }
 
       return i->second;
@@ -252,7 +252,7 @@ namespace gpstk
       {
          SVNotPresentException svnpe("SV Configuration not present for PRN " +
                                      StringUtils::asString(sat.id));
-         GPSTK_THROW(svnpe);
+         GNSSTK_THROW(svnpe);
       }
 
       return i->second;
@@ -363,7 +363,7 @@ namespace gpstk
       {
          InvalidRequest
             exc("UTC offset (subframe 4, page 18) is not present.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       for (int n = 0; n < 4; n++)
       {
@@ -380,7 +380,7 @@ namespace gpstk
       {
          InvalidRequest
             exc("UTC offset (subframe 4, page 18) is not present.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       a0 = A0;
       a1 = A1;
@@ -447,7 +447,7 @@ namespace gpstk
       {
          try
          {
-            double svToa = getToa(gpstk::SatID(prn, SatelliteSystem::GPS));
+            double svToa = getToa(gnsstk::SatID(prn, SatelliteSystem::GPS));
             if (svToa != p51Toa)
             {
                s << "Toa mis-match on prn " << prn

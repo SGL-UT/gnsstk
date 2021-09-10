@@ -39,7 +39,7 @@ fixcmd() {
 
 
 CHANGELOG_UPSTREAM_VER=`dpkg-parsechangelog  | sed -ne "s/Version: \([[:digit:]]\+:\)\?\(.\+\)\(-.\+\)/\2/p"`
-SOURCE_VER=$(get_cmake_var GPSTK_VERSION_MAJOR).$(get_cmake_var GPSTK_VERSION_MINOR).$(get_cmake_var GPSTK_VERSION_PATCH)
+SOURCE_VER=$(get_cmake_var GNSSTK_VERSION_MAJOR).$(get_cmake_var GNSSTK_VERSION_MINOR).$(get_cmake_var GNSSTK_VERSION_PATCH)
 
 if [ ! $CHANGELOG_UPSTREAM_VER = $SOURCE_VER ]
 then
@@ -52,15 +52,15 @@ fi
 
 # Extract major for shared library SONAME, matches algorithm in CMakelists.txt (grep for SOVERSION)
 SOVERSION=`echo $SOURCE_VER | sed -ne "s/\([[:digit:]]\+\)\.[[:digit:]]\+\.[[:digit:]]\+/\1/p"  `
-EXPECTEDLIBPKGNAME=libgpstk${SOVERSION}
+EXPECTEDLIBPKGNAME=libgnsstk${SOVERSION}
 
 [ -z "$SOVERSION" ] && {  echo "ERROR: Could't compute SOVERSION from source version ($SOURCE_VER)"; exit 1; }
 
-NON_MATCHING_MENTIONS=`grep -o "libgpstk[0-9]\+" debian/control | grep -xv "$EXPECTEDLIBPKGNAME" | tr "\n" " "`
+NON_MATCHING_MENTIONS=`grep -o "libgnsstk[0-9]\+" debian/control | grep -xv "$EXPECTEDLIBPKGNAME" | tr "\n" " "`
 
 if [ ! -z "$NON_MATCHING_MENTIONS" ]
 then
-   fixcmd "sed -i -e \"s/\(libgpstk\)[0-9]\+/\\\1${SOVERSION}/\" debian/control" \
+   fixcmd "sed -i -e \"s/\(libgnsstk\)[0-9]\+/\\\1${SOVERSION}/\" debian/control" \
           "debian/control has mentions library package names ($NON_MATCHING_MENTIONS) other than expected $EXPECTEDLIBPKGNAME"
    EXIT_CODE=1
 fi

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -37,7 +37,7 @@
 //==============================================================================
 
 /// @file EphTime.hpp
-/// gpstk::EphTime - encapsulates date and time-of-day, but only in formats applicable
+/// gnsstk::EphTime - encapsulates date and time-of-day, but only in formats applicable
 /// to SolarSystemEphemeris, EarthOrientation and EOPStore, namely UTC, TT and TDB.
 /// Conversion to and from CommonTime should be automatic.
 
@@ -52,7 +52,7 @@
 #include "CivilTime.hpp"
 #include "TimeConverters.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup TimeHandling
       //@{
@@ -94,12 +94,12 @@ namespace gpstk
             convertJDtoCalendar(jday,yy,mm,dd);
             double dt, days = dd + dSOD/SEC_PER_DAY;
             // correct time
-            dt = gpstk::getTimeSystemCorrection(system, ts, yy, mm, days);
+            dt = gnsstk::getTimeSystemCorrection(system, ts, yy, mm, days);
             *this += dt;
             // set new system
             this->setTimeSystem(ts);
          }
-         catch(Exception& e) { GPSTK_RETHROW(e); }
+         catch(Exception& e) { GNSSTK_RETHROW(e); }
       }
 
       /// add seconds to this EphTime
@@ -120,7 +120,7 @@ namespace gpstk
          if(sys != TimeSystem::UTC &&
             sys != TimeSystem::TT &&
             sys != TimeSystem::TDB)
-               GPSTK_THROW(Exception("Time system not allowed"));
+               GNSSTK_THROW(Exception("Time system not allowed"));
          system = sys;
       }
 
@@ -179,7 +179,7 @@ namespace gpstk
          {
             CivilTime civt;
             civt.convertFromCommonTime(ct);
-            double dt = gpstk::getTimeSystemCorrection(sys, TimeSystem::UTC,
+            double dt = gnsstk::getTimeSystemCorrection(sys, TimeSystem::UTC,
                                     civt.year, civt.month, civt.day);
             ct += dt;
          }
@@ -190,7 +190,7 @@ namespace gpstk
          dSOD = (ctmjd.mjd - static_cast<long double>(iMJD)) * SEC_PER_DAY;
          system = ctmjd.getTimeSystem();
          }
-         catch(Exception& e) { GPSTK_RETHROW(e); }
+         catch(Exception& e) { GNSSTK_RETHROW(e); }
       }
 
       /// const cast EphTime to CommonTime

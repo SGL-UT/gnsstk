@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -52,10 +52,10 @@
 #include "MathBase.hpp"
 
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace std;
-   using namespace gpstk;
+   using namespace gnsstk;
    OrbElem::OrbElem()
          : Cuc(0.0), Cus(0.0), Crc(0.0), Crs(0.0), Cic(0.0), Cis(0.0), M0(0.0),
            dn(0.0), dndot(0.0), ecc(0.0), A(0.0), Adot(0.0), OMEGA0(0.0),
@@ -72,7 +72,7 @@ namespace gpstk
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       if (ct >= beginValid && ct <= endValid) return(true);
       return(false);
@@ -138,7 +138,7 @@ namespace gpstk
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       double dtc,elaptc;
       elaptc = t - ctToc;
@@ -151,7 +151,7 @@ namespace gpstk
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       double ret = svClockBias(t);
       ret = ret*C_MPS;
@@ -163,7 +163,7 @@ namespace gpstk
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       double drift,elaptc;
       elaptc = t - ctToc;
@@ -186,7 +186,7 @@ namespace gpstk
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       Xvt sv;
 
@@ -349,7 +349,7 @@ namespace gpstk
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
          // Several GNSSs use this algorithm.  In some cases the physical
@@ -456,7 +456,7 @@ namespace gpstk
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       const ios::fmtflags oldFlags = s.flags();
       size_t precision = 8; 

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -40,7 +40,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    const double GPSCNav2Alm::refi0GPS = 0.3 * PI;
    const double GPSCNav2Alm::refi0QZSS = 0.25 * PI;
@@ -73,7 +73,7 @@ namespace gpstk
          /** @todo Determine a more reasonable set of values.  This
           * was copied from OrbAlmExt. */
       beginFit = xmitTime;
-      endFit   = gpstk::CommonTime::END_OF_TIME;
+      endFit   = gnsstk::CommonTime::END_OF_TIME;
       endFit.setTimeSystem(beginFit.getTimeSystem());
    }
 }

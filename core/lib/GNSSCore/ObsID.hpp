@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -37,7 +37,7 @@
 //==============================================================================
 
 /// @file ObsID.hpp
-/// gpstk::ObsID - navigation system, receiver, and file specification
+/// gnsstk::ObsID - navigation system, receiver, and file specification
 /// independent representation of the types of observation data that can
 /// be collected.  This class is analogous to the RinexObsType class that
 /// is used to represent the observation codes in a RINEX file. It is
@@ -64,7 +64,7 @@
 // forward declaration of test class
 class ObsID_T;
 
-namespace gpstk
+namespace gnsstk
 {
    class ObsID;
    namespace StringUtils
@@ -213,5 +213,5 @@ namespace gpstk
    }; // class ObsID
 
 
-} // namespace gpstk
+} // namespace gnsstk
 #endif   // OBSID_HPP

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -51,7 +51,7 @@
 #include "YDSTime.hpp"
 
 
-namespace gpstk
+namespace gnsstk
 {
       // for temperature conversion from Celcius to Kelvin
    const double TropModel::CELSIUS_TO_KELVIN = 273.15;
@@ -93,7 +93,7 @@ namespace gpstk
       }
       catch(InvalidTropModel& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       return c;
    }  // end TropModel::correction(RX,SV,TT)
@@ -114,19 +114,19 @@ namespace gpstk
       {
          valid = false;
          InvalidParameter e("Invalid temperature.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       if (press < 0.0)
       {
          valid = false;
          InvalidParameter e("Invalid pressure.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       if (humid < 0.0 || humid > 105.0)
       {
          valid = false;
          InvalidParameter e("Invalid humidity.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
          // truncates humidity to 100 if between 105 and 100.
          // models cannot handle supersaturation.
@@ -151,14 +151,14 @@ namespace gpstk
          catch(InvalidParameter& e)
          {
             valid = false;
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
       else
       {
          valid = false;
          InvalidParameter e("Invalid weather data.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
       /// get weather data by a standard atmosphere model

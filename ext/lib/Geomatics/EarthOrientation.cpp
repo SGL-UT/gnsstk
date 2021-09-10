@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -45,7 +45,7 @@
 //------------------------------------------------------------------------------------
 // system includes
 #include <fstream>
-// GPSTk
+// GNSSTk
 #include "MiscMath.hpp"
 #include "logstream.hpp"
 
@@ -54,7 +54,7 @@
 //------------------------------------------------------------------------------------
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    //---------------------------------------------------------------------------------
    // constants
@@ -788,7 +788,7 @@ namespace gpstk
          if(frac > 1.0) frac -= 1.0;
          return (double(in)/36525.0 + frac/36525.0);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //---------------------------------------------------------------------------------
@@ -998,7 +998,7 @@ namespace gpstk
          return Obliquity2010(T);
       else {
          Exception e("IERS convention is not defined");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -1021,10 +1021,10 @@ namespace gpstk
             return GMST2010(t,UT1mUTC);
          else {
             Exception e("IERS convention is not defined");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //---------------------------------------------------------------------------------
@@ -1046,10 +1046,10 @@ namespace gpstk
             return GAST2010(t,UT1mUTC);
          else {
             Exception e("IERS convention is not defined");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //---------------------------------------------------------------------------------
@@ -1068,7 +1068,7 @@ namespace gpstk
          return PolarMotionMatrix2003(t,xp,yp);      // valid also for 2010
       else {
          Exception e("IERS convention is not defined");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -1087,7 +1087,7 @@ namespace gpstk
          return PrecessionMatrix2010(T);
       else {
          Exception e("IERS convention is not defined");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -1110,7 +1110,7 @@ namespace gpstk
    //      NutationAngles2010(T,deps,dpsi);
    //   else {
    //      Exception e("IERS convention is not defined");
-   //      GPSTK_THROW(e);
+   //      GNSSTK_THROW(e);
    //   }
    //}
 
@@ -1128,10 +1128,10 @@ namespace gpstk
             return NutationMatrix2010(T);
          else {
             Exception e("IERS convention is not defined");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //------------------------------------------------------------------------------
@@ -1151,7 +1151,7 @@ namespace gpstk
          return PreciseEarthRotation2010(CoordTransTime(t));
       else {
          Exception e("IERS convention is not defined");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -1172,10 +1172,10 @@ namespace gpstk
             return ECEFtoInertial2010(t,xp,yp,UT1mUTC);
          else {
             Exception e("IERS convention is not defined");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //------------------------------------------------------------------------------
@@ -1189,7 +1189,7 @@ namespace gpstk
    //   try {
    //      if(convention != IERSConvention::IERS2010) {
    //         Exception e("ECEFtoJ2000 implemented only for IERS2010");
-   //         GPSTK_THROW(e);
+   //         GNSSTK_THROW(e);
    //      }
 
    //      // get the frame bias matrix
@@ -1208,7 +1208,7 @@ namespace gpstk
 
    //      return (FB*T2C);
    //   }
-   //   catch(Exception& e) { GPSTK_RETHROW(e); }
+   //   catch(Exception& e) { GNSSTK_RETHROW(e); }
    //}
 
    //------------------------------------------------------------------------------
@@ -1588,7 +1588,7 @@ namespace gpstk
 
          return era;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //------------------------------------------------------------------------------
@@ -1709,7 +1709,7 @@ namespace gpstk
 
          return ee;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //------------------------------------------------------------------------------
@@ -1826,7 +1826,7 @@ namespace gpstk
 
          return G;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //------------------------------------------------------------------------------
@@ -1846,7 +1846,7 @@ namespace gpstk
 
          return G;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //------------------------------------------------------------------------------
@@ -1871,7 +1871,7 @@ namespace gpstk
                                  + T*(-0.000029956
                                  + T*(-0.0000000368)))))) * ARCSEC_TO_RAD);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //---------------------------------------------------------------------------------
@@ -1899,7 +1899,7 @@ namespace gpstk
 
          return (G+ee);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //------------------------------------------------------------------------------
@@ -1949,7 +1949,7 @@ namespace gpstk
 
          return G;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //------------------------------------------------------------------------------
@@ -1985,7 +1985,7 @@ namespace gpstk
 
          return G;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //------------------------------------------------------------------------------
@@ -2025,7 +2025,7 @@ namespace gpstk
          //return G;
          return ::fmod(era-eo, TWOPI);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //---------------------------------------------------------------------------------
@@ -2561,7 +2561,7 @@ namespace gpstk
 
          return (N*P);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //------------------------------------------------------------------------------
@@ -2585,7 +2585,7 @@ namespace gpstk
          // construct nutation x precession x frame bias matrix
          return FukushimaWilliams(gamb,phib,psib+dpsi,epsa+deps);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //---------------------------------------------------------------------------------
@@ -2647,7 +2647,7 @@ namespace gpstk
 
          return transpose(W*S*N*P);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //---------------------------------------------------------------------------------
@@ -2718,7 +2718,7 @@ namespace gpstk
 
          return transpose(W*R*N*P);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //---------------------------------------------------------------------------------
@@ -2780,10 +2780,10 @@ namespace gpstk
          // invert to get ITRS-to-GCRS or ECEFtoInertial
          return (transpose(GCRStoITRS));
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
-} // end namespace gpstk
+} // end namespace gnsstk
 
 /*=============================================================================
 ** SOME of these routines, as noted, are based on, but not simply copied from, SOFA;

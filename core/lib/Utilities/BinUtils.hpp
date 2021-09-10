@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -46,7 +46,7 @@
 
 #include <cstring>
 #include <algorithm>
-#include "gpstkplatform.h"
+#include "gnsstkplatform.h"
 
 #ifdef __sun
 #include <arpa/nameser_compat.h>
@@ -69,7 +69,7 @@
 
 /** @defgroup binutilsgroup Binary Data Manipulation Tools */
 
-namespace gpstk
+namespace gnsstk
 {
       /**
        * Binary data utilities.
@@ -97,19 +97,19 @@ namespace gpstk
           * @param[in] pos an optional offset (bytes) into p to decode from.
           */
       inline void buitohs  (const void* p, uint16_t& v, unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buitohs
+         /// @copydoc gnsstk::BinUtils::buitohs
       inline void buitohl  (const void* p, uint32_t& v, unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buitohs
+         /// @copydoc gnsstk::BinUtils::buitohs
       inline void buitohll (const void* p, uint64_t& v, unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buitohs
+         /// @copydoc gnsstk::BinUtils::buitohs
       inline void buitohss (const void* p, int16_t& v,  unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buitohs
+         /// @copydoc gnsstk::BinUtils::buitohs
       inline void buitohsl (const void* p, int32_t& v,  unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buitohs
+         /// @copydoc gnsstk::BinUtils::buitohs
       inline void buitohsll(const void* p, int64_t& v,  unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buitohs
+         /// @copydoc gnsstk::BinUtils::buitohs
       inline void buitohf  (const void* p, float& v,    unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buitohs
+         /// @copydoc gnsstk::BinUtils::buitohs
       inline void buitohd  (const void* p, double& v,   unsigned pos = 0);
       
          /** Converts Network (big-endian) to host byte order.
@@ -119,19 +119,19 @@ namespace gpstk
           * @param[in] pos an optional offset (bytes) into p to decode from.
           */
       inline void buntohs  (const void* p, uint16_t& v, unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buntohs
+         /// @copydoc gnsstk::BinUtils::buntohs
       inline void buntohl  (const void* p, uint32_t& v, unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buntohs
+         /// @copydoc gnsstk::BinUtils::buntohs
       inline void buntohll (const void* p, uint64_t& v, unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buntohs
+         /// @copydoc gnsstk::BinUtils::buntohs
       inline void buntohss (const void* p, int16_t& v,  unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buntohs
+         /// @copydoc gnsstk::BinUtils::buntohs
       inline void buntohsl (const void* p, int32_t& v,  unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buntohs
+         /// @copydoc gnsstk::BinUtils::buntohs
       inline void buntohsll(const void* p, int64_t& v,  unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buntohs
+         /// @copydoc gnsstk::BinUtils::buntohs
       inline void buntohf  (const void* p, float& v,    unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buntohs
+         /// @copydoc gnsstk::BinUtils::buntohs
       inline void buntohd  (const void* p, double& v,   unsigned pos = 0);
 
 
@@ -143,19 +143,19 @@ namespace gpstk
           *   the encoded value.
           */
       inline void buhtois  (void* p, uint16_t v,  unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtois
+         /// @copydoc gnsstk::BinUtils::buhtois
       inline void buhtoil  (void* p, uint32_t v,  unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtois
+         /// @copydoc gnsstk::BinUtils::buhtois
       inline void buhtoill (void* p, uint64_t v,  unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtois
+         /// @copydoc gnsstk::BinUtils::buhtois
       inline void buhtoiss (void* p, int16_t v,   unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtois
+         /// @copydoc gnsstk::BinUtils::buhtois
       inline void buhtoisl (void* p, int32_t v,   unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtois
+         /// @copydoc gnsstk::BinUtils::buhtois
       inline void buhtoisll(void* p, int64_t v,   unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtois
+         /// @copydoc gnsstk::BinUtils::buhtois
       inline void buhtoif  (void* p, float v,     unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtois
+         /// @copydoc gnsstk::BinUtils::buhtois
       inline void buhtoid  (void* p, double v,    unsigned pos = 0);
       
          /** Converts host byte order to Network byte order (big-endian).
@@ -166,19 +166,19 @@ namespace gpstk
           *   the encoded value.
           */
       inline void buhtons  (void* p, uint16_t v,  unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtons
+         /// @copydoc gnsstk::BinUtils::buhtons
       inline void buhtonl  (void* p, uint32_t v,  unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtons
+         /// @copydoc gnsstk::BinUtils::buhtons
       inline void buhtonll (void* p, uint64_t v,  unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtons
+         /// @copydoc gnsstk::BinUtils::buhtons
       inline void buhtonss (void* p, int16_t v,   unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtons
+         /// @copydoc gnsstk::BinUtils::buhtons
       inline void buhtonsl (void* p, int32_t v,   unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtons
+         /// @copydoc gnsstk::BinUtils::buhtons
       inline void buhtonsll(void* p, int64_t v,   unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtons
+         /// @copydoc gnsstk::BinUtils::buhtons
       inline void buhtonf  (void* p, float v,     unsigned pos = 0);
-         /// @copydoc gpstk::BinUtils::buhtons
+         /// @copydoc gnsstk::BinUtils::buhtons
       inline void buhtond  (void* p, double v,    unsigned pos = 0);
 
          /**
@@ -329,7 +329,7 @@ namespace gpstk
           *   evenly divisible by wordSize.
           * @param[in] wordSize The size of the checksum in bytes.
           * @return the calculated checksum in the same byte order as \a str.
-          * @throw gpstk::InvalidParameter if there is a partial word at 
+          * @throw gnsstk::InvalidParameter if there is a partial word at 
           *  the end of \a str.
           */
       inline std::string xorChecksum(const std::string& str, unsigned wordSize);
@@ -394,7 +394,7 @@ namespace gpstk
       template <class T>
       inline T decodeVar( std::string& str )
       {
-         T t = gpstk::BinUtils::decodeVar<T>(str, 0);
+         T t = gnsstk::BinUtils::decodeVar<T>(str, 0);
          str.erase( 0, sizeof(T) );
          return t;
       }
@@ -402,7 +402,7 @@ namespace gpstk
       template <class T>
       inline T decodeVarLE( std::string& str )
       {
-         T t = gpstk::BinUtils::decodeVarLE<T>(str, 0);
+         T t = gnsstk::BinUtils::decodeVarLE<T>(str, 0);
          str.erase( 0, sizeof(T) );
          return t;
       }
@@ -552,8 +552,8 @@ namespace gpstk
          
          if (strSize % wordSize != 0)
          {
-            gpstk::InvalidParameter ip("Incomplete word in string.");
-            GPSTK_THROW(ip);
+            gnsstk::InvalidParameter ip("Incomplete word in string.");
+            GNSSTK_THROW(ip);
          }
          
          for (size_t i = 0; (i + wordSize - 1) < strSize; i += wordSize)
@@ -1095,6 +1095,6 @@ namespace gpstk
       }
 
    } // end namespace BinUtils
-} // end namespace gpstk
+} // end namespace gnsstk
 
 #endif

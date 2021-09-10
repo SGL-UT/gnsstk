@@ -1,7 +1,7 @@
     // Add lookup method to look up data given an integer form of an enum
-%extend gpstk::RinexMetData {
+%extend gnsstk::RinexMetData {
    double _lookup_data(int x) {
-      return $self->data[static_cast<gpstk::RinexMetHeader::RinexMetType>(x)];
+      return $self->data[static_cast<gnsstk::RinexMetHeader::RinexMetType>(x)];
    }
 }
 
@@ -12,7 +12,7 @@ def _RinexMetData_getData(self):
     The ints are drawn from an enum defined in RinexMetHeader.
     For example, to get the pressure you would use:
         d = myMetData.getData()
-        print d[gpstk.RinexMetHeader.PR]
+        print d[gnsstk.RinexMetHeader.PR]
     """
     data = {}
     for i in xrange(RinexMetHeader.HI + 1):

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -40,21 +40,21 @@
 #include "TestUtil.hpp"
 #include "GALWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::SVHealth e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::SVHealth e)
    {
       s << StringUtils::asString(e);
       return s;
    }
 
-   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
       return s;
    }
 
-   std::ostream& operator<<(std::ostream& s, gpstk::GalHealthStatus e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::GalHealthStatus e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -76,18 +76,18 @@ unsigned GalINavAlm_T ::
 constructorTest()
 {
    TUDEF("GalINavAlm", "GalINavAlm");
-   gpstk::GalINavAlm uut;
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Almanac,
+   gnsstk::GalINavAlm uut;
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Almanac,
              uut.signal.messageType);
-   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime(), uut.xmit2);
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime(), uut.xmit2);
    TUASSERTFE(0.0, uut.dAhalf);
    TUASSERTFE(0.0, uut.deltai);
    TUASSERTE(unsigned, 0, uut.wna);
    TUASSERTFE(0.0, uut.t0a);
    TUASSERTE(unsigned, 0, uut.ioda1);
    TUASSERTE(unsigned, 0, uut.ioda2);
-   TUASSERTE(gpstk::GalHealthStatus,gpstk::GalHealthStatus::Unknown,uut.hsE5b);
-   TUASSERTE(gpstk::GalHealthStatus,gpstk::GalHealthStatus::Unknown,uut.hsE1B);
+   TUASSERTE(gnsstk::GalHealthStatus,gnsstk::GalHealthStatus::Unknown,uut.hsE5b);
+   TUASSERTE(gnsstk::GalHealthStatus,gnsstk::GalHealthStatus::Unknown,uut.hsE1B);
    TURETURN();
 }
 
@@ -96,16 +96,16 @@ unsigned GalINavAlm_T ::
 getUserTimeTest()
 {
    TUDEF("GalINavAlm", "getUserTime");
-   gpstk::GalINavAlm uut;
-   uut.xmitTime = gpstk::GALWeekSecond(2100,141.0);
-   uut.xmit2 = gpstk::GALWeekSecond(2100,135.0);
-   gpstk::CommonTime exp(uut.xmitTime + 2);
-   uut.signal = gpstk::NavMessageID(
-      gpstk::NavSatelliteID(1, 1, gpstk::SatelliteSystem::Galileo,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GalINAV),
-      gpstk::NavMessageType::Almanac);
-   TUASSERTE(gpstk::CommonTime, exp, uut.getUserTime());
+   gnsstk::GalINavAlm uut;
+   uut.xmitTime = gnsstk::GALWeekSecond(2100,141.0);
+   uut.xmit2 = gnsstk::GALWeekSecond(2100,135.0);
+   gnsstk::CommonTime exp(uut.xmitTime + 2);
+   uut.signal = gnsstk::NavMessageID(
+      gnsstk::NavSatelliteID(1, 1, gnsstk::SatelliteSystem::Galileo,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GalINAV),
+      gnsstk::NavMessageType::Almanac);
+   TUASSERTE(gnsstk::CommonTime, exp, uut.getUserTime());
    TURETURN();
 }
 
@@ -114,16 +114,16 @@ unsigned GalINavAlm_T ::
 fixFitTest()
 {
    TUDEF("GalINavAlm", "fixFit");
-   gpstk::CommonTime toa = gpstk::GALWeekSecond(2100,135.0);
-   gpstk::CommonTime xmit = gpstk::GALWeekSecond(2099,604000.0);
-   gpstk::CommonTime expBegin = xmit;
-   gpstk::CommonTime expEnd   = toa + (74.0 * 3600.0);
-   gpstk::GalINavAlm uut;
+   gnsstk::CommonTime toa = gnsstk::GALWeekSecond(2100,135.0);
+   gnsstk::CommonTime xmit = gnsstk::GALWeekSecond(2099,604000.0);
+   gnsstk::CommonTime expBegin = xmit;
+   gnsstk::CommonTime expEnd   = toa + (74.0 * 3600.0);
+   gnsstk::GalINavAlm uut;
    uut.Toe = toa;
    uut.xmitTime = xmit;
    TUCATCH(uut.fixFit());
-   TUASSERTE(gpstk::CommonTime, expBegin, uut.beginFit);
-   TUASSERTE(gpstk::CommonTime, expEnd, uut.endFit);
+   TUASSERTE(gnsstk::CommonTime, expBegin, uut.beginFit);
+   TUASSERTE(gnsstk::CommonTime, expEnd, uut.endFit);
    TURETURN();
 }
 
@@ -132,47 +132,47 @@ unsigned GalINavAlm_T ::
 fixHealthTest()
 {
    TUDEF("GalINavAlm", "fixHealth");
-   gpstk::GalINavAlm uut;
+   gnsstk::GalINavAlm uut;
       // both OK
-   uut.hsE5b = uut.hsE1B = gpstk::GalHealthStatus::OK;
+   uut.hsE5b = uut.hsE1B = gnsstk::GalHealthStatus::OK;
    uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, uut.health);
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Healthy, uut.health);
       // OK + OOS
-   uut.hsE1B = gpstk::GalHealthStatus::OutOfService;
+   uut.hsE1B = gnsstk::GalHealthStatus::OutOfService;
    uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Degraded, uut.health);
       // OK + will be OOS
-   uut.hsE1B = gpstk::GalHealthStatus::WillBeOOS;
+   uut.hsE1B = gnsstk::GalHealthStatus::WillBeOOS;
    uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Degraded, uut.health);
       // OK + in test
-   uut.hsE1B = gpstk::GalHealthStatus::InTest;
+   uut.hsE1B = gnsstk::GalHealthStatus::InTest;
    uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Degraded, uut.health);
       // both OOS
-   uut.hsE5b = uut.hsE1B = gpstk::GalHealthStatus::OutOfService;
+   uut.hsE5b = uut.hsE1B = gnsstk::GalHealthStatus::OutOfService;
    uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, uut.health);
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Unhealthy, uut.health);
       // OOS + will be OOS
-   uut.hsE1B = gpstk::GalHealthStatus::WillBeOOS;
+   uut.hsE1B = gnsstk::GalHealthStatus::WillBeOOS;
    uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Degraded, uut.health);
       // OOS + in test
-   uut.hsE1B = gpstk::GalHealthStatus::InTest;
+   uut.hsE1B = gnsstk::GalHealthStatus::InTest;
    uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Degraded, uut.health);
       // both will be OOS
-   uut.hsE5b = uut.hsE1B = gpstk::GalHealthStatus::WillBeOOS;
+   uut.hsE5b = uut.hsE1B = gnsstk::GalHealthStatus::WillBeOOS;
    uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Degraded, uut.health);
       // will be OOS + in test
-   uut.hsE1B = gpstk::GalHealthStatus::InTest;
+   uut.hsE1B = gnsstk::GalHealthStatus::InTest;
    uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Degraded, uut.health);
       // both in test
-   uut.hsE5b = uut.hsE1B = gpstk::GalHealthStatus::InTest;
+   uut.hsE5b = uut.hsE1B = gnsstk::GalHealthStatus::InTest;
    uut.fixHealth();
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.health);
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Degraded, uut.health);
    TURETURN();
 }
 

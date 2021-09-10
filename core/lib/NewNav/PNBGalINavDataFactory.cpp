@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -520,7 +520,7 @@ enum AlmBitInfo
    ascWN0G = 1,
 };
 
-namespace gpstk
+namespace gnsstk
 {
    bool PNBGalINavDataFactory ::
    addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
@@ -789,7 +789,7 @@ namespace gpstk
       eph->dvsE1B = static_cast<GalDataValid>(
          ephWord[isiE1Bdvs]->asUnsignedLong(isbE1Bdvs,inbE1Bdvs,iscE1Bdvs));
          // set health using the Galileo algorithms.
-      if (eph->signal.obs.band == gpstk::CarrierBand::L1)
+      if (eph->signal.obs.band == gnsstk::CarrierBand::L1)
       {
             // E1B
          eph->health = GalINavHealth::galHealth(eph->hsE1B,eph->dvsE1B,
@@ -1156,4 +1156,4 @@ namespace gpstk
       almAcc.clear();
       ephAcc.clear();
    }
-} // namespace gpstk
+} // namespace gnsstk

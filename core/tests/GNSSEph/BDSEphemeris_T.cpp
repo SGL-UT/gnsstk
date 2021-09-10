@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -62,7 +62,7 @@ public:
        * velocity vector as computed by svXvt and the magnitude of the
        * position derivative as computed by this function.  For
        * plotting. */
-   // void writeVel(const gpstk::BDSEphemeris& oe);
+   // void writeVel(const gnsstk::BDSEphemeris& oe);
 };
 
 
@@ -72,7 +72,7 @@ testSvXvtMEO()
    TUDEF("BDSEphemeris", "svXvt");
       // Hard code orbital parameters mostly so we can copy and paste
       // the data into other similar tests with minimal changes.
-   gpstk::BDSEphemeris oe;
+   gnsstk::BDSEphemeris oe;
    oe.Cuc    = -.324845314026e-05;
    oe.Cus    =  .101532787085e-04;
    oe.Crc    =  .168968750000e+03;
@@ -90,13 +90,13 @@ testSvXvtMEO()
    oe.w      = -.224753761329e+01;
    oe.OMEGAdot = -.804390648956e-08;
    oe.idot     =  .789318592573e-10;
-   oe.ctToc    = gpstk::CivilTime(2015,7,19,1,59,28.0,gpstk::TimeSystem::BDT);
+   oe.ctToc    = gnsstk::CivilTime(2015,7,19,1,59,28.0,gnsstk::TimeSystem::BDT);
    oe.af0      =  .579084269702e-03;
    oe.af1      =  .227373675443e-11;
    oe.af2      =  .000000000000e+00;
    oe.dataLoadedFlag = true;
-   oe.satID = gpstk::SatID(2, gpstk::SatelliteSystem::BeiDou);
-   oe.ctToe    = gpstk::BDSWeekSecond(498,.716800000000e+04);
+   oe.satID = gnsstk::SatID(2, gnsstk::SatelliteSystem::BeiDou);
+   oe.ctToe    = gnsstk::BDSWeekSecond(498,.716800000000e+04);
       // iode .700000000000e+01
       // codes on L2 .100000000000e+01
       // L2 P data .000000000000e+00
@@ -111,13 +111,13 @@ testSvXvtMEO()
    {
          // first compute Xvt
       static const unsigned SECONDS = 7200;
-      gpstk::Xvt zeroth_array[SECONDS];
+      gnsstk::Xvt zeroth_array[SECONDS];
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
          zeroth_array[ii] = oe.svXvt(oe.ctToc + ii);
       }
          // then compute first derivative of position, i.e. velocity
-      gpstk::Triple deriv[SECONDS];
+      gnsstk::Triple deriv[SECONDS];
       double h = 1; // time step size in seconds
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
@@ -173,7 +173,7 @@ testSvXvtMEO()
          TUPASS("velocity check");
       }
    }
-   catch (gpstk::Exception& exc)
+   catch (gnsstk::Exception& exc)
    {
       cerr << exc;
       TUFAIL("Exception");
@@ -192,7 +192,7 @@ testSvXvtGEO()
    TUDEF("BDSEphemeris", "svXvt");
       // Hard code orbital parameters mostly so we can copy and paste
       // the data into other similar tests with minimal changes.
-   gpstk::BDSEphemeris oe;
+   gnsstk::BDSEphemeris oe;
    oe.Cuc      = -1.08121894E-05;
    oe.Cus      = -1.25728548E-06;
    oe.Crc      =  3.97031250E+01;
@@ -210,25 +210,25 @@ testSvXvtGEO()
    oe.w        =  2.63078773E+00;
    oe.OMEGAdot =  2.13687472E-09;
    oe.idot     =  1.45363198E-10;
-   oe.ctToc    = gpstk::CivilTime(2019,3,1,0,0,0,gpstk::TimeSystem::BDT);
+   oe.ctToc    = gnsstk::CivilTime(2019,3,1,0,0,0,gnsstk::TimeSystem::BDT);
    oe.af0      =  2.59640510E-04;
    oe.af1      =  4.48929782E-11;
    oe.af2      =  0.00000000E+00;
    oe.dataLoadedFlag = true;
-   oe.satID = gpstk::SatID(1, gpstk::SatelliteSystem::BeiDou);
+   oe.satID = gnsstk::SatID(1, gnsstk::SatelliteSystem::BeiDou);
    oe.ctToe    = oe.ctToc;
    bool testFailed = false;
    try
    {
          // first compute Xvt
       static const unsigned SECONDS = 7200;
-      gpstk::Xvt zeroth_array[SECONDS];
+      gnsstk::Xvt zeroth_array[SECONDS];
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
          zeroth_array[ii] = oe.svXvt(oe.ctToc + ii);
       }
          // then compute first derivative of position, i.e. velocity
-      gpstk::Triple deriv[SECONDS];
+      gnsstk::Triple deriv[SECONDS];
       double h = 1; // time step size in seconds
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
@@ -284,7 +284,7 @@ testSvXvtGEO()
          TUPASS("velocity check");
       }
    }
-   catch (gpstk::Exception& exc)
+   catch (gnsstk::Exception& exc)
    {
       cerr << exc;
       TUFAIL("Exception");
@@ -306,7 +306,7 @@ wut()
 {
    try
    {
-      gpstk::BDSEphemeris oe;
+      gnsstk::BDSEphemeris oe;
       oe.Cuc      = -1.08121894E-05;
       oe.Cus      = -1.25728548E-06;
       oe.Crc      = 3.97031250E+01;
@@ -324,13 +324,13 @@ wut()
       oe.w        = 2.63078773E+00;
       oe.OMEGAdot = 2.13687472E-09;
       oe.idot     = 1.45363198E-10;
-      oe.ctToc    = gpstk::CivilTime(2020,3,1,0,0,0,gpstk::TimeSystem::BDT);
+      oe.ctToc    = gnsstk::CivilTime(2020,3,1,0,0,0,gnsstk::TimeSystem::BDT);
       oe.af0      = 2.59640510E-04;
       oe.af1      = 4.48929782E-11;
       oe.af2      = 0.00000000E+00;
       oe.dataLoadedFlag = true;
-      oe.satID = gpstk::SatID(1, gpstk::SatelliteSystem::BeiDou);
-      oe.ctToe    = gpstk::CivilTime(2020,3,1,0,0,0,gpstk::TimeSystem::BDT);
+      oe.satID = gnsstk::SatID(1, gnsstk::SatelliteSystem::BeiDou);
+      oe.ctToe    = gnsstk::CivilTime(2020,3,1,0,0,0,gnsstk::TimeSystem::BDT);
       writeVel(oe);
    }
    catch(...)
@@ -341,23 +341,23 @@ wut()
 
 
 void BDSEphemeris_T ::
-writeVel(const gpstk::BDSEphemeris& oe)
+writeVel(const gnsstk::BDSEphemeris& oe)
 {
    ostringstream ss;
    ss << setw(2) << setfill('0') << oe.satID.id << "_"
-      << gpstk::printTime(oe.ctToc, "%04Y%02m%02d_%02H%02M%02S.dat");
+      << gnsstk::printTime(oe.ctToc, "%04Y%02m%02d_%02H%02M%02S.dat");
    ofstream s(ss.str().c_str());
    try
    {
          // first compute Xvt
       static const unsigned SECONDS = 7200;
-      gpstk::Xvt zeroth_array[SECONDS];
+      gnsstk::Xvt zeroth_array[SECONDS];
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
          zeroth_array[ii] = oe.svXvt(oe.ctToc + ii);
       }
          // then compute first derivative of position, i.e. velocity
-      gpstk::Triple deriv[SECONDS];
+      gnsstk::Triple deriv[SECONDS];
       double h = 1; // time step size in seconds
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
@@ -394,7 +394,7 @@ writeVel(const gpstk::BDSEphemeris& oe)
          s << ii << " " << (computedMag - derivedMag) << endl;
       }
    }
-   catch (gpstk::Exception& exc)
+   catch (gnsstk::Exception& exc)
    {
       cerr << exc;
    }

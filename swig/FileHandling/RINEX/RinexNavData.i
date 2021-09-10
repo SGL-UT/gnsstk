@@ -1,16 +1,16 @@
    // Allows cast from RinexNavData and Rinex3NavData to EngEphemeris
-%extend gpstk::EngEphemeris
+%extend gnsstk::EngEphemeris
 {
-   EngEphemeris(const gpstk::RinexNavData& d)
+   EngEphemeris(const gnsstk::RinexNavData& d)
    {
-      return new gpstk::EngEphemeris(d);
+      return new gnsstk::EngEphemeris(d);
    }
 }
    // Allows cast from RinexNavData and Rinex3NavData to GPSEphemeris
-%extend gpstk::GPSEphemeris
+%extend gnsstk::GPSEphemeris
 {
-   GPSEphemeris(const gpstk::RinexNavData& d)
+   GPSEphemeris(const gnsstk::RinexNavData& d)
    {
-      return new gpstk::GPSEphemeris(d);
+      return new gnsstk::GPSEphemeris(d);
    }
 }

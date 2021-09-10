@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -36,8 +36,8 @@
 //
 //==============================================================================
 
-#ifndef GPSTK_TESTUTIL_HPP
-#define GPSTK_TESTUTIL_HPP
+#ifndef GNSSTK_TESTUTIL_HPP
+#define GNSSTK_TESTUTIL_HPP
 
 #include <typeinfo>
 #include <iostream>
@@ -53,7 +53,7 @@
 #include "Matrix.hpp"
 
 // Define a TestUtil object named testFramework
-#define TUDEF(CLASS,METHOD) gpstk::TestUtil testFramework(CLASS, METHOD, __FILE__, __LINE__)
+#define TUDEF(CLASS,METHOD) gnsstk::TestUtil testFramework(CLASS, METHOD, __FILE__, __LINE__)
 
 // Macro to make test code look nice...
 #define TUCSM(METHOD) testFramework.changeSourceMethod(METHOD)
@@ -65,7 +65,7 @@
    {                                                                    \
       testFramework.assert(EXPR, "Assertion failure: "#EXPR, __LINE__); \
    }                                                                    \
-   catch (gpstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                        \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false, "Exception during "#EXPR, __LINE__);  \
@@ -83,7 +83,7 @@
    {                                                                    \
       testFramework.assert_equals<TYPE>(EXP, GOT, __LINE__);            \
    }                                                                    \
-   catch (gpstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                        \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false,                                       \
@@ -105,7 +105,7 @@
    {                                                                    \
       testFramework.assert_equals(EXP, GOT, __LINE__);                  \
    }                                                                    \
-   catch (gpstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                        \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false,                                       \
@@ -128,7 +128,7 @@
    {                                                                    \
       testFramework.assert_equals(EXP, GOT, __LINE__, "", EPS);         \
    }                                                                    \
-   catch (gpstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                        \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false,                                       \
@@ -150,7 +150,7 @@
                                        "File mismatch: "+F1+" "+F2,     \
                                        SKIP);                           \
    }                                                                    \
-   catch (gpstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                        \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false,                                       \
@@ -172,7 +172,7 @@
       STATEMENT;                                \
       TUPASS(#STATEMENT);                       \
    }                                            \
-   catch (gpstk::Exception &exc)                \
+   catch (gnsstk::Exception &exc)                \
    {                                            \
       std::cerr << exc << std::endl;            \
       TUFAIL("Exception");                      \
@@ -190,7 +190,7 @@
       STATEMENT;                                \
       TUFAIL("Did not throw Exception");        \
    }                                            \
-   catch (gpstk::Exception &exc)                \
+   catch (gnsstk::Exception &exc)                \
    {                                            \
       TUPASS(#STATEMENT);                       \
    }                                            \
@@ -207,7 +207,7 @@
 // Usual return from a test function
 #define TURETURN() return testFramework.countFails()
 
-namespace gpstk
+namespace gnsstk
 {
       /// @return a string with the name of the type
    template<typename T>
@@ -226,7 +226,7 @@ namespace gpstk
       //============================================================
       // class:   TestUtil
       // purpose: TestUtil is a utility class (not parent class)
-      //          for use with test classes and test methods in GPSTk.
+      //          for use with test classes and test methods in GNSSTk.
       // Example: Source usage for a test method with 4 sub-tests:
       //
       //     TUDEF("SomeClass", "SomeMethod");
@@ -345,14 +345,14 @@ namespace gpstk
           *   less than zero, the type's epsilon is used.
           */
       template<typename T>
-      void assert_equals( const gpstk::Matrix<T>& expected,
-                          const gpstk::Matrix<T>& got,
+      void assert_equals( const gnsstk::Matrix<T>& expected,
+                          const gnsstk::Matrix<T>& got,
                           int lineNumber,
                           const std::string& testMsg = std::string(),
                           T epsilon = -1);
       template<typename T>
-      void assert_equals( const gpstk::Vector<T>& expected,
-                          const gpstk::Vector<T>& got,
+      void assert_equals( const gnsstk::Vector<T>& expected,
+                          const gnsstk::Vector<T>& got,
                           int lineNumber,
                           const std::string& testMsg = std::string(),
                           T epsilon = -1);
@@ -540,7 +540,7 @@ namespace gpstk
              const std::string& testFileInput,
              const         int& testLineInput,
              const         int& verbosityInput )
-      : outputKeyword( "GPSTkTest" ),
+      : outputKeyword( "GNSSTkTest" ),
         sourceClass( sourceClassInput  ),
         sourceMethod( sourceMethodInput ),
         testFileName( testFileInput ),
@@ -557,7 +557,7 @@ namespace gpstk
 
          // strip off the path from the full-path filename
          // so that "/home/user/test.txt" becomes "test.txt"
-      std::string file_sep = gpstk::getFileSep();
+      std::string file_sep = gnsstk::getFileSep();
       testFileName = testFileName.substr(
          testFileName.find_last_of( file_sep ) + 1 );
    }
@@ -636,8 +636,8 @@ namespace gpstk
 
    template<typename T>
    void TestUtil ::
-   assert_equals( const gpstk::Matrix<T>& expected,
-                  const gpstk::Matrix<T>& got,
+   assert_equals( const gnsstk::Matrix<T>& expected,
+                  const gnsstk::Matrix<T>& got,
                   int lineNumber,
                   const std::string& testMsg,
                   T epsilon )
@@ -659,8 +659,8 @@ namespace gpstk
 
    template<typename T>
    void TestUtil ::
-   assert_equals( const gpstk::Vector<T>& expected,
-                  const gpstk::Vector<T>& got,
+   assert_equals( const gnsstk::Vector<T>& expected,
+                  const gnsstk::Vector<T>& got,
                   int lineNumber,
                   const std::string& testMsg,
                   T epsilon )
@@ -820,7 +820,7 @@ namespace gpstk
             bool ignore = false;
             for (int i = 0; i < ignoreRegex.size(); i++)
             {
-               if (gpstk::StringUtils::isLike(refLine, ignoreRegex[i]))
+               if (gnsstk::StringUtils::isLike(refLine, ignoreRegex[i]))
                {
                   ignore = true;
                   break;
@@ -998,4 +998,4 @@ namespace gpstk
    }
 }
 
-#endif // GPSTK_TESTUTIL_HPP
+#endif // GNSSTK_TESTUTIL_HPP

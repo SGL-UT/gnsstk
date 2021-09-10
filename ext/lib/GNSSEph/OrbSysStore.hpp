@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -42,8 +42,8 @@
  * are NOT related to orbit determination.
  */
 
-#ifndef GPSTK_ORBSYSSTORE_HPP
-#define GPSTK_ORBSYSSTORE_HPP
+#ifndef GNSSTK_ORBSYSSTORE_HPP
+#define GNSSTK_ORBSYSSTORE_HPP
 
 #include <iostream>
 #include <list>
@@ -58,7 +58,7 @@
 #include "SatID.hpp"
 #include "TimeSystem.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    class OrbSysStore
    {
@@ -112,10 +112,10 @@ namespace gpstk
          const throw();
 
       virtual void dumpContents(std::ostream& s = std::cout,
-                                const gpstk::SatID& sidr =
-                                      gpstk::SatID(0,gpstk::SatelliteSystem::Unknown),
-                                const gpstk::NavID& navtype =
-                                      gpstk::NavID(gpstk::NavType::Unknown),
+                                const gnsstk::SatID& sidr =
+                                      gnsstk::SatID(0,gnsstk::SatelliteSystem::Unknown),
+                                const gnsstk::NavID& navtype =
+                                      gnsstk::NavID(gnsstk::NavType::Unknown),
                                 const unsigned long UID = 0)
          const throw();
 
@@ -233,26 +233,26 @@ namespace gpstk
       /// Return a list of SatID objects representing the satellites that
       /// are contained in the store.
       /// @return list of SatID objects
-      std::list<gpstk::SatID> getSatIDList() const;
+      std::list<gnsstk::SatID> getSatIDList() const;
 
       /// Return a list of NavID objects representing the satellites that
       /// are contained in the store.
       /// @return list of SatID objects
-      std::list<gpstk::NavID> getNavIDList() const;
+      std::list<gnsstk::NavID> getNavIDList() const;
 
       /// Return a list of SatelliteSystem enums representing the satellite
       /// systems that
       /// are contained in the store.
       /// @return list of SatelliteSystem items
-      const std::list<gpstk::SatelliteSystem>& getSatSysList() const;
+      const std::list<gnsstk::SatelliteSystem>& getSatSysList() const;
 
       /// Following methods retrieve particular data types
       /// (e.g. SV config or UTC offset information) based
       /// on system and signal type.
       /// @throw InvalidRequest
-      bool hasSignal(const gpstk::SatID& sidr,
-                     const gpstk::CommonTime& ct,
-                     const gpstk::ObsID& oidr) const;
+      bool hasSignal(const gnsstk::SatID& sidr,
+                     const gnsstk::CommonTime& ct,
+                     const gnsstk::ObsID& oidr) const;
 
       unsigned int setDebugLevel(const unsigned int newLevel)
          { debugLevel = newLevel; return debugLevel; }
@@ -270,10 +270,10 @@ namespace gpstk
       ///  navigation message type,              NAV_UID_MSG_MAP
       ///                satellite,              SAT_NM_UID_MSG_MAP
       ///
-      typedef std::map<gpstk::CommonTime, gpstk::OrbDataSys*> MSG_MAP;
+      typedef std::map<gnsstk::CommonTime, gnsstk::OrbDataSys*> MSG_MAP;
       typedef std::map<uint16_t, MSG_MAP> UID_MSG_MAP;
-      typedef std::map<gpstk::NavID, UID_MSG_MAP> NM_UID_MSG_MAP;
-      typedef std::map<gpstk::SatID,NM_UID_MSG_MAP> SAT_NM_UID_MSG_MAP;
+      typedef std::map<gnsstk::NavID, UID_MSG_MAP> NM_UID_MSG_MAP;
+      typedef std::map<gnsstk::SatID,NM_UID_MSG_MAP> SAT_NM_UID_MSG_MAP;
 
       const SAT_NM_UID_MSG_MAP& getMsgMap() const {return msgMap;}
 

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -63,7 +63,7 @@ testSvXvt()
    TUDEF("OrbitEph", "svXvt");
       // Hard code orbital parameters mostly so we can copy and paste
       // the data into other similar tests with minimal changes.
-   gpstk::OrbitEph oe;
+   gnsstk::OrbitEph oe;
    oe.Cuc    = -.324845314026e-05;
    oe.Cus    =  .101532787085e-04;
    oe.Crc    =  .168968750000e+03;
@@ -81,13 +81,13 @@ testSvXvt()
    oe.w      = -.224753761329e+01;
    oe.OMEGAdot = -.804390648956e-08;
    oe.idot     =  .789318592573e-10;
-   oe.ctToc    = gpstk::CivilTime(2015,7,19,1,59,28.0,gpstk::TimeSystem::GPS);
+   oe.ctToc    = gnsstk::CivilTime(2015,7,19,1,59,28.0,gnsstk::TimeSystem::GPS);
    oe.af0      =  .579084269702e-03;
    oe.af1      =  .227373675443e-11;
    oe.af2      =  .000000000000e+00;
    oe.dataLoadedFlag = true;
-   oe.satID = gpstk::SatID(2, gpstk::SatelliteSystem::GPS);
-   oe.ctToe    = gpstk::GPSWeekSecond(1854,.716800000000e+04);
+   oe.satID = gnsstk::SatID(2, gnsstk::SatelliteSystem::GPS);
+   oe.ctToe    = gnsstk::GPSWeekSecond(1854,.716800000000e+04);
       // iode .700000000000e+01
       // codes on L2 .100000000000e+01
       // L2 P data .000000000000e+00
@@ -102,13 +102,13 @@ testSvXvt()
    {
          // first compute Xvt
       static const unsigned SECONDS = 7200;
-      gpstk::Xvt zeroth_array[SECONDS];
+      gnsstk::Xvt zeroth_array[SECONDS];
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
          zeroth_array[ii] = oe.svXvt(oe.ctToc + ii);
       }
          // then compute first derivative of position, i.e. velocity
-      gpstk::Triple deriv[SECONDS];
+      gnsstk::Triple deriv[SECONDS];
       double h = 1; // time step size in seconds
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
@@ -164,7 +164,7 @@ testSvXvt()
          TUPASS("velocity check");
       }
    }
-   catch (gpstk::Exception& exc)
+   catch (gnsstk::Exception& exc)
    {
       cerr << exc;
       TUFAIL("Exception");

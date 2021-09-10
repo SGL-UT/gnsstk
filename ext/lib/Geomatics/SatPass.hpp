@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -39,8 +39,8 @@
 /// @file SatPass.hpp
 /// Data for one complete satellite pass.
 
-#ifndef GPSTK_SATELLITE_PASS_INCLUDE
-#define GPSTK_SATELLITE_PASS_INCLUDE
+#ifndef GNSSTK_SATELLITE_PASS_INCLUDE
+#define GNSSTK_SATELLITE_PASS_INCLUDE
 
 #include <string>
 #include <vector>
@@ -55,11 +55,11 @@
 #include "RinexUtilities.hpp"
 #include "Exception.hpp"
 
-namespace gpstk {
+namespace gnsstk {
 
 /// class SatPass holds all range and phase data for a full satellite pass.
 /// Constructed and filled by the calling program, it is used to pass data into
-/// and out of the GPSTK discontinuity corrector.
+/// and out of the GNSSTK discontinuity corrector.
 /// NB. if objects of this class are combined together, e.g. in STL containers
 /// such as list or vector, they MUST be consistently defined, namely the number
 /// of observation types must be the same, otherwise a nasty segmentation fault
@@ -193,7 +193,7 @@ public:
    /// @param endTime   reject data after this time (END_OF TIME)
    /// @return -1 if the filenames list is empty, otherwise return the number of
    ///                files successfully read (may be less than the number input).
-   /// @throw gpstk::Exception if there are exceptions while reading, if the data
+   /// @throw gnsstk::Exception if there are exceptions while reading, if the data
    ///              in the file is out of time order.
    /// @deprecated in favor of RinexObsFilesLoader version
    friend int SatPassFromRinexFiles(std::vector<std::string>& filenames,
@@ -321,13 +321,13 @@ public:
 
    /// set timetag output format
    /// @param fmt  The format of time tags in the output
-   ///             (cf. gpstk Epoch::printTime() for syntax)
+   ///             (cf. gnsstk Epoch::printTime() for syntax)
    void setOutputFormat(std::string fmt, int round=3)
       { outFormat = fmt; outRound=round; }
 
    /// get the timetag output format
    /// @return The format of time tags in the output
-   ///         (cf. gpstk Epoch::printTime() for syntax)
+   ///         (cf. gnsstk Epoch::printTime() for syntax)
    std::string getOutputFormat(void) { return outFormat; }
 
    /// set the flag at one index to flag - use the SatPass constants OK, etc.
@@ -731,9 +731,9 @@ protected:
 /// @param os output stream to write to
 /// @param sp SatPass to write
 /// @return reference to os.
-std::ostream& operator<<(std::ostream& os, gpstk::SatPass& sp);
+std::ostream& operator<<(std::ostream& os, gnsstk::SatPass& sp);
 
-}  // end namespace gpstk
+}  // end namespace gnsstk
 
 // -----------------------------------------------------------------------------------
-#endif // GPSTK_SATELLITE_PASS_INCLUDE
+#endif // GNSSTK_SATELLITE_PASS_INCLUDE

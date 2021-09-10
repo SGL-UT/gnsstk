@@ -1,10 +1,10 @@
-ENUM_MAPPER(gpstk::SatelliteSystem, SatelliteSystem)
-ENUM_MAPPER(gpstk::CarrierBand, CarrierBand)
-ENUM_MAPPER(gpstk::TrackingCode, TrackingCode)
-ENUM_MAPPER(gpstk::ObservationType, ObservationType)
-ENUM_MAPPER(gpstk::NavType, NavType)
-ENUM_MAPPER(gpstk::TimeSystem, TimeSystem)
-ENUM_MAPPER(gpstk::ReferenceFrame, ReferenceFrame)
+ENUM_MAPPER(gnsstk::SatelliteSystem, SatelliteSystem)
+ENUM_MAPPER(gnsstk::CarrierBand, CarrierBand)
+ENUM_MAPPER(gnsstk::TrackingCode, TrackingCode)
+ENUM_MAPPER(gnsstk::ObservationType, ObservationType)
+ENUM_MAPPER(gnsstk::NavType, NavType)
+ENUM_MAPPER(gnsstk::TimeSystem, TimeSystem)
+ENUM_MAPPER(gnsstk::ReferenceFrame, ReferenceFrame)
 
 %include "SatelliteSystem.hpp"
 %include "CarrierBand.hpp"
@@ -46,7 +46,7 @@ def renameEnums(prefix):
     tmpD = {k[len(prefix)+1:]:v for k,v in tmpD.items()}
     globals()[prefix] = IntEnum(prefix,tmpD)
     globals()[prefix].__str__ = lambda x: str(x.name)
-# Turn the gpstk.SatelliteSystem_* constants into a Python enum
+# Turn the gnsstk.SatelliteSystem_* constants into a Python enum
 renameEnums('SatelliteSystem')
 renameEnums('CarrierBand')
 renameEnums('TrackingCode')

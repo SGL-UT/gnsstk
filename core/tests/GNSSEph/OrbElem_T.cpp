@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -48,18 +48,18 @@ using namespace std;
 double velDiffThresh = 0.0008;
 
 // we have to make a class that isn't abstract to test with.
-class OrbElemNonAbstract : public gpstk::OrbElem
+class OrbElemNonAbstract : public gnsstk::OrbElem
 {
 public:
    OrbElemNonAbstract() = default;
-   gpstk::OrbElem* clone() const override
+   gnsstk::OrbElem* clone() const override
    { return nullptr; }
    std::string getName() const override
    { return "foo"; }
    std::string getNameLong() const override
    { return "bar"; }
    void adjustBeginningValidity() override
-   { GPSTK_ASSERT(false); } // don't call this.
+   { GNSSTK_ASSERT(false); } // don't call this.
    void dumpTerse(std::ostream& s = std::cout) const
       override
    { s << "terse" << endl; }
@@ -97,13 +97,13 @@ testSvXvt()
    oe.w      = -.224753761329e+01;
    oe.OMEGAdot = -.804390648956e-08;
    oe.idot     =  .789318592573e-10;
-   oe.ctToc    = gpstk::CivilTime(2015,7,19,1,59,28.0,gpstk::TimeSystem::GPS);
+   oe.ctToc    = gnsstk::CivilTime(2015,7,19,1,59,28.0,gnsstk::TimeSystem::GPS);
    oe.af0      =  .579084269702e-03;
    oe.af1      =  .227373675443e-11;
    oe.af2      =  .000000000000e+00;
    oe.dataLoadedFlag = true;
-   oe.satID = gpstk::SatID(2, gpstk::SatelliteSystem::GPS);
-   oe.ctToe    = gpstk::GPSWeekSecond(1854,.716800000000e+04);
+   oe.satID = gnsstk::SatID(2, gnsstk::SatelliteSystem::GPS);
+   oe.ctToe    = gnsstk::GPSWeekSecond(1854,.716800000000e+04);
    oe.setHealthy(true);
       // iode .700000000000e+01
       // codes on L2 .100000000000e+01
@@ -119,13 +119,13 @@ testSvXvt()
    {
          // first compute Xvt
       static const unsigned SECONDS = 7200;
-      gpstk::Xvt zeroth_array[SECONDS];
+      gnsstk::Xvt zeroth_array[SECONDS];
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
          zeroth_array[ii] = oe.svXvt(oe.ctToc + ii);
       }
          // then compute first derivative of position, i.e. velocity
-      gpstk::Triple deriv[SECONDS];
+      gnsstk::Triple deriv[SECONDS];
       double h = 1; // time step size in seconds
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
@@ -181,7 +181,7 @@ testSvXvt()
          TUPASS("velocity check");
       }
    }
-   catch (gpstk::Exception& exc)
+   catch (gnsstk::Exception& exc)
    {
       cerr << exc;
       TUFAIL("Exception");

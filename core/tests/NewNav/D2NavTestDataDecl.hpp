@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -39,8 +39,8 @@
 /** @file D2NavTestDataDecl.hpp This file contains data declarations
  * for testing BeiDou D2Nav processing in the NavFactory code. */
 
-gpstk::ObsID oidD2NAV;
-gpstk::PackedNavBitsPtr navD2SF1p001, navD2SF2p001, navD2SF3p001,
+gnsstk::ObsID oidD2NAV;
+gnsstk::PackedNavBitsPtr navD2SF1p001, navD2SF2p001, navD2SF3p001,
    navD2SF4p001, navD2SF5p001, navD2SF1p002, navD2SF2p002,
    navD2SF3p002, navD2SF4p002, navD2SF5p002, navD2SF1p003,
    navD2SF2p003, navD2SF3p003, navD2SF4p003, navD2SF5p003,
@@ -78,7 +78,7 @@ gpstk::PackedNavBitsPtr navD2SF1p001, navD2SF2p001, navD2SF3p001,
    navD2SF5p112, navD2SF5p113, navD2SF5p114, navD2SF5p115,
    navD2SF5p116, navD2SF5p117, navD2SF5p118, navD2SF5p119,
    navD2SF5p120;
-gpstk::CommonTime navD2SF1p001ct, navD2SF2p001ct, navD2SF3p001ct,
+gnsstk::CommonTime navD2SF1p001ct, navD2SF2p001ct, navD2SF3p001ct,
    navD2SF4p001ct, navD2SF5p001ct, navD2SF1p002ct, navD2SF2p002ct,
    navD2SF3p002ct, navD2SF4p002ct, navD2SF5p002ct, navD2SF1p003ct,
    navD2SF2p003ct, navD2SF3p003ct, navD2SF4p003ct, navD2SF5p003ct,
@@ -116,4 +116,4 @@ gpstk::CommonTime navD2SF1p001ct, navD2SF2p001ct, navD2SF3p001ct,
    navD2SF5p112ct, navD2SF5p113ct, navD2SF5p114ct, navD2SF5p115ct,
    navD2SF5p116ct, navD2SF5p117ct, navD2SF5p118ct, navD2SF5p119ct,
    navD2SF5p120ct;
-gpstk::SatID navD2Sid;
+gnsstk::SatID navD2Sid;

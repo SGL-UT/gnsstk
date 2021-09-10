@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -40,24 +40,24 @@
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
       return s;
    }
-   std::ostream& operator<<(std::ostream& s, gpstk::SVHealth e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::SVHealth e)
    {
       s << StringUtils::asString(e);
       return s;
    }
-   std::ostream& operator<<(std::ostream& s, gpstk::GalHealthStatus e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::GalHealthStatus e)
    {
       s << StringUtils::asString(e);
       return s;
    }
-   std::ostream& operator<<(std::ostream& s, gpstk::GalDataValid e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::GalDataValid e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -79,13 +79,13 @@ unsigned GalINavHealth_T ::
 constructorTest()
 {
    TUDEF("GalINavHealth", "GalINavHealth");
-   gpstk::GalINavHealth uut;
-   TUASSERTE(gpstk::GalHealthStatus, gpstk::GalHealthStatus::Unknown,
+   gnsstk::GalINavHealth uut;
+   TUASSERTE(gnsstk::GalHealthStatus, gnsstk::GalHealthStatus::Unknown,
              uut.sigHealthStatus);
-   TUASSERTE(gpstk::GalDataValid, gpstk::GalDataValid::Unknown,
+   TUASSERTE(gnsstk::GalDataValid, gnsstk::GalDataValid::Unknown,
              uut.dataValidityStatus);
    TUASSERTE(unsigned, 255, uut.sisaIndex);
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Health,
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Health,
              uut.signal.messageType);
    TURETURN();
 }
@@ -95,11 +95,11 @@ unsigned GalINavHealth_T ::
 getUserTimeTest()
 {
    TUDEF("GalINavHealth", "getUserTime");
-   gpstk::GalINavHealth uut;
-   uut.timeStamp = gpstk::GPSWeekSecond(2100,135.0);
-   gpstk::CommonTime exp(gpstk::GPSWeekSecond(2100,135.0));
+   gnsstk::GalINavHealth uut;
+   uut.timeStamp = gnsstk::GPSWeekSecond(2100,135.0);
+   gnsstk::CommonTime exp(gnsstk::GPSWeekSecond(2100,135.0));
    exp = exp + 2.0;
-   TUASSERTE(gpstk::CommonTime, exp, uut.getUserTime());
+   TUASSERTE(gnsstk::CommonTime, exp, uut.getUserTime());
    TURETURN();
 }
 
@@ -108,29 +108,29 @@ unsigned GalINavHealth_T ::
 getHealthTest()
 {
    TUDEF("GalINavHealth", "getHealth");
-   gpstk::GalINavHealth uut;
+   gnsstk::GalINavHealth uut;
       // default should be unknown
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unknown, uut.getHealth());
-   uut.sigHealthStatus = gpstk::GalHealthStatus::OutOfService;
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, uut.getHealth());
-   uut.sigHealthStatus = gpstk::GalHealthStatus::Unknown;
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unknown, uut.getHealth());
-   uut.sigHealthStatus = gpstk::GalHealthStatus::InTest;
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, uut.getHealth());
-   uut.sigHealthStatus = gpstk::GalHealthStatus::WillBeOOS;
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.getHealth());
-   uut.sigHealthStatus = gpstk::GalHealthStatus::OK;
-   uut.dataValidityStatus = gpstk::GalDataValid::NoGuarantee;
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.getHealth());
-   uut.dataValidityStatus = gpstk::GalDataValid::Valid;
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Unknown, uut.getHealth());
+   uut.sigHealthStatus = gnsstk::GalHealthStatus::OutOfService;
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Unhealthy, uut.getHealth());
+   uut.sigHealthStatus = gnsstk::GalHealthStatus::Unknown;
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Unknown, uut.getHealth());
+   uut.sigHealthStatus = gnsstk::GalHealthStatus::InTest;
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Unhealthy, uut.getHealth());
+   uut.sigHealthStatus = gnsstk::GalHealthStatus::WillBeOOS;
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Degraded, uut.getHealth());
+   uut.sigHealthStatus = gnsstk::GalHealthStatus::OK;
+   uut.dataValidityStatus = gnsstk::GalDataValid::NoGuarantee;
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Degraded, uut.getHealth());
+   uut.dataValidityStatus = gnsstk::GalDataValid::Valid;
    uut.sisaIndex = 255;
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Degraded, uut.getHealth());
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Degraded, uut.getHealth());
    uut.sisaIndex = 254;
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, uut.getHealth());
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Healthy, uut.getHealth());
    uut.sisaIndex = 0;
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, uut.getHealth());
-   uut.dataValidityStatus = gpstk::GalDataValid::Unknown;
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unknown, uut.getHealth());
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Healthy, uut.getHealth());
+   uut.dataValidityStatus = gnsstk::GalDataValid::Unknown;
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Unknown, uut.getHealth());
    
    TURETURN();
 }

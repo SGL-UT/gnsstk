@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -57,10 +57,10 @@
 #include <set>
 #include <cmath>
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    const string Rinex3NavHeader::stringVersion     = "RINEX VERSION / TYPE";
    const string Rinex3NavHeader::stringRunBy       = "PGM / RUN BY / DATE";
@@ -138,7 +138,7 @@ namespace gpstk
    void IonoCorr ::
    fromString(const std::string str)
    {
-      std::string STR(gpstk::StringUtils::upperCase(str));
+      std::string STR(gnsstk::StringUtils::upperCase(str));
       if (STR == std::string("GAL"))
          type = GAL;
       else if (STR == std::string("GPSA"))
@@ -148,7 +148,7 @@ namespace gpstk
       else
       {
          Exception e("Unknown IonoCorr type: " + str);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -206,7 +206,7 @@ namespace gpstk
          else if(line.length() < 60 || line.length() > 80) 
          {
             FFStreamError e("Invalid line length");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          string thisLabel(line, 60, 20);
@@ -223,7 +223,7 @@ namespace gpstk
                if(fileType[0] != 'N' && fileType[0] != 'n') 
                {
                   FFStreamError e("File type is not NAVIGATION: " + fileType);
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                fileSys = strip(line.substr(40,20));   // not in ver 2
                setFileSystem(fileSys);
@@ -241,7 +241,7 @@ namespace gpstk
                {
                   FFStreamError e("Version 2 file type is invalid: " +
                                   fileType);
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                fileType = "N: GPS NAV DATA";
             }
@@ -293,7 +293,7 @@ namespace gpstk
             catch(Exception& e)
             {
                FFStreamError fse(e.what());
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             for(i=0; i < 4; i++)
                ic.param[i] = line.substr(5 + 12*i, 12);
@@ -373,7 +373,7 @@ namespace gpstk
             catch(Exception& e)
             {
                FFStreamError fse(e.what());
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             tc.A0 = RNDouble(line.substr(5,17));
@@ -415,7 +415,7 @@ namespace gpstk
          }
          else
          {
-            GPSTK_THROW(FFStreamError("Unknown header label >" + thisLabel +
+            GNSSTK_THROW(FFStreamError("Unknown header label >" + thisLabel +
                                       "< at line " +
                                       asString<size_t>(strm.lineNumber)));
          }
@@ -430,13 +430,13 @@ namespace gpstk
       {
          FFStreamError e("Unknown or unsupported RINEX version "+
                          asString(version,2));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       if((allValid & valid) != allValid)
       {
          FFStreamError e("Incomplete or invalid header");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       strm.header = *this;
@@ -460,13 +460,13 @@ namespace gpstk
       else
       {
          FFStreamError err("Unknown RINEX version: " + asString(version,4));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       if((valid & allValid) != allValid)
       {
          FFStreamError err("Incomplete or invalid header.");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       if(valid & validVersion)
@@ -569,7 +569,7 @@ namespace gpstk
                default:
                   FFStreamError err("Unknown IonoCorr type " +
                                     asString(it->second.type));
-                  GPSTK_THROW(err);
+                  GNSSTK_THROW(err);
                   break;
             }
             strm << endlpp;
@@ -748,7 +748,7 @@ namespace gpstk
             default:
                FFStreamError err("Unknown IonoCorr type " +
                                  asString(icit->second.type));
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
                break;
          }
          s << endl;
@@ -786,7 +786,7 @@ namespace gpstk
             if(version < 3)
             {
                Exception e("RINEX version 2 'Mixed' Nav files do not exist");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             fileType = "N: GNSS NAV DATA";
             fileSys = "MIXED";
@@ -816,14 +816,14 @@ namespace gpstk
                   Exception e( std::string("RINEX version 2 ") +
                                sat.systemString3() +
                                std::string(" Nav files do not exist") );
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
             }
          }
       }
       catch(Exception& e) 
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 

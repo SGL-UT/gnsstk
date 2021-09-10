@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -51,7 +51,7 @@
 //#include "YDSTime.hpp"
 #include "GNSSconstants.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace std;
    PackedNavBits::PackedNavBits()
@@ -252,7 +252,7 @@ namespace gpstk
       if (stop>bits.size())
       {
          InvalidParameter exc("Requested bits not present.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       for (size_t i=startBit; i<stop; ++i)
       {
@@ -616,7 +616,7 @@ namespace gpstk
       if ( out > test )
       {
          InvalidParameter exc("Scaled value too large for specifed bit length");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       addUint64_t( out, numBits ); 
    }  
@@ -635,7 +635,7 @@ namespace gpstk
       if ( ( out > test ) || ( out < -( test + 1 ) ) )
       {
          InvalidParameter exc("Scaled value too large for specifed bit length");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       addUint64_t( u_out, numBits ); 
    } 
@@ -648,7 +648,7 @@ namespace gpstk
       if ( out > test )
       {
          InvalidParameter exc("Scaled value too large for specifed bit length");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       addUint64_t( out, numBits ); 
@@ -667,7 +667,7 @@ namespace gpstk
       if ( ( out > test ) || ( out < -( test + 1 ) ) )
       {
          InvalidParameter exc("Scaled value too large for specifed bit length");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       addUint64_t( u_out, numBits ); 
    }
@@ -686,7 +686,7 @@ namespace gpstk
       if ( ( out > test ) || ( out < -( test + 1 ) ) )
       {
          InvalidParameter exc("Scaled value too large for specifed bit length");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       addUint64_t( u_out, numBits );
    }
@@ -721,7 +721,7 @@ namespace gpstk
          if (!valid)
          {
             InvalidParameter exc("Invalid character '<< ch <<' in text string. ");
-            GPSTK_THROW(exc);
+            GNSSTK_THROW(exc);
          }
          uint64_t out = (uint64_t) ch;
          addUint64_t(out, 8);
@@ -737,8 +737,8 @@ namespace gpstk
    {
       if (numBits > data.size()*8)
       {
-         gpstk::InvalidParameter exc("Requested more bits than are available");
-         GPSTK_THROW(exc);
+         gnsstk::InvalidParameter exc("Requested more bits than are available");
+         GNSSTK_THROW(exc);
       }
       unsigned numBytes = numBits >> 3;
       unsigned rem = numBits % 8;
@@ -866,7 +866,7 @@ namespace gpstk
          ss << "PackedNavBits::copyBits( ) may only be called on two";
          ss << " objects with the same number of packed bits.";
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip); 
+         GNSSTK_THROW(ip); 
       }
 
       short finalBit = endBit;
@@ -891,7 +891,7 @@ namespace gpstk
          stringstream ss;
          ss << "insertUnsignedLong called with startBit+numBits > bits_used.";
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
 
       uint64_t out = (uint64_t) value;
@@ -901,7 +901,7 @@ namespace gpstk
       if ( out > test )
       {
          InvalidParameter exc("Scaled value too large for specifed bit length");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       size_t ndx = startBit;
@@ -1148,13 +1148,13 @@ namespace gpstk
       if (begin==string::npos)
       {
          InvalidParameter exc("Did not find #bits at beginning of input string.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       string::size_type end = inString.find_first_of(whiteSpace,begin);
       if (end==string::npos)
       {
          InvalidParameter exc("Did not find space after #bits at beginning of input string.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       string textBitCount = inString.substr(begin,end);
       int bitsExpected = StringUtils::asInt(textBitCount); 
@@ -1176,7 +1176,7 @@ namespace gpstk
          if (begin==string::npos)
          {
             InvalidParameter exc("Did not find expected number of hex words.");
-            GPSTK_THROW(exc);
+            GNSSTK_THROW(exc);
          }
          end = inString.find_first_of(whiteSpace,begin);
          string::size_type length = end - begin; 
@@ -1187,7 +1187,7 @@ namespace gpstk
              hexWord.substr(0,2)!="0X" )
          {
             InvalidParameter exc("Expected hex data did not being with '0x'");
-            GPSTK_THROW(exc); 
+            GNSSTK_THROW(exc); 
          }
             
          unsigned long dataWord = StringUtils::x2uint(hexWord);

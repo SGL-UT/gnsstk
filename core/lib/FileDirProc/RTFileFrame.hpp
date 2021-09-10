@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,8 +41,8 @@
  * Realtime file frame
  */
 
-#ifndef GPSTK_RTFILEFRAME_HPP
-#define GPSTK_RTFILEFRAME_HPP
+#ifndef GNSSTK_RTFILEFRAME_HPP
+#define GNSSTK_RTFILEFRAME_HPP
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -50,7 +50,7 @@
 #include "FileSpec.hpp"
 #include "FileFilter.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileDirProc
       //@{
@@ -170,13 +170,13 @@ namespace gpstk
       { rtff->getRecord(); }
 
    private:
-         /// constructor for use by gpstk::RTFileFrame<FileStream, FileData>.
-      RTFileFrameIterator(gpstk::RTFileFrame<FileStream, FileData>& r)
+         /// constructor for use by gnsstk::RTFileFrame<FileStream, FileData>.
+      RTFileFrameIterator(gnsstk::RTFileFrame<FileStream, FileData>& r)
             : rtff(&r)
       { rtff->getRecord(); }
 
          /// gives access to the RTFileFrame being used
-      gpstk::RTFileFrame<FileStream, FileData>* rtff;
+      gnsstk::RTFileFrame<FileStream, FileData>* rtff;
    };
 
       /**
@@ -238,9 +238,9 @@ namespace gpstk
           * @param grm mode used when end of file is reached (new data or all)
           * @throw Exception an error ocurred
           */
-      RTFileFrame(const gpstk::FileSpec& fnFormat,
-                  const gpstk::CommonTime& beginning = gpstk::CommonTime::BEGINNING_OF_TIME,
-                  const gpstk::CommonTime& ending = gpstk::CommonTime::END_OF_TIME, 
+      RTFileFrame(const gnsstk::FileSpec& fnFormat,
+                  const gnsstk::CommonTime& beginning = gnsstk::CommonTime::BEGINNING_OF_TIME,
+                  const gnsstk::CommonTime& ending = gnsstk::CommonTime::END_OF_TIME, 
                   const RTFileFrameHelper::FileReadingMode frm = AppendedData,
                   const RTFileFrameHelper::GetRecordMode grm = Dumb);
       
@@ -303,7 +303,7 @@ namespace gpstk
       std::string getCurrentFile() const {return currentFileName;}
 
          /// returns the current time used for finding files
-      gpstk::CommonTime getCurrentTime() const {return currentTime;}
+      gnsstk::CommonTime getCurrentTime() const {return currentTime;}
 
          /// let the iterator see this class's insides
       friend class RTFileFrameIterator<FileStream, FileData>;
@@ -324,9 +324,9 @@ namespace gpstk
          /// the last file to be read
       std::string currentFileName;
          /// the file spec for determining file names
-      gpstk::FileSpec fs;
+      gnsstk::FileSpec fs;
       
-      gpstk::CommonTime startTime, ///< start time for file searching
+      gnsstk::CommonTime startTime, ///< start time for file searching
          currentTime,            ///< time last used for finding a file
          endTime;                ///< end time for file searching
          /// the FileReadingMode for the reader
@@ -345,9 +345,9 @@ namespace gpstk
 
    template <class FileStream, class FileData>
    RTFileFrame<FileStream, FileData>::
-   RTFileFrame<FileStream, FileData>(const gpstk::FileSpec& fnFormat,
-                                     const gpstk::CommonTime& beginning,
-                                     const gpstk::CommonTime& ending, 
+   RTFileFrame<FileStream, FileData>(const gnsstk::FileSpec& fnFormat,
+                                     const gnsstk::CommonTime& beginning,
+                                     const gnsstk::CommonTime& ending, 
                                      const RTFileFrameHelper::FileReadingMode frm,
                                      const RTFileFrameHelper::GetRecordMode grm)
       : fileStream(NULL), fs(fnFormat), startTime(beginning), 
@@ -483,7 +483,7 @@ namespace gpstk
             if (!endOfDataSet())
             {
                   // still before today?
-               gpstk::CommonTime today;
+               gnsstk::CommonTime today;
                today.setYDoySod(today.year(), today.DOY(), 0);
                
                if (currentTime < today)
@@ -518,7 +518,7 @@ namespace gpstk
    RTFileFrame<FileStream, FileData>::openNextDay()
    {
          // open a new file for another day, if any.
-      currentTime += gpstk::CommonTime::SEC_DAY;
+      currentTime += gnsstk::CommonTime::SEC_DAY;
       if (!endOfDataSet())
          openCurrentFile();
    }
@@ -587,6 +587,6 @@ namespace gpstk
       isOK = false;
    }
 
-} // namespace gpstk
+} // namespace gnsstk
 
-#endif  // GPSTK_RTFILEFRAME_HPP
+#endif  // GNSSTK_RTFILEFRAME_HPP

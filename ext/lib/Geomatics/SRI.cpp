@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -55,12 +55,12 @@
 // geomatics
 #include "SRI.hpp"
 #include "Namelist.hpp"
-// GPSTk
+// GNSSTk
 #include "StringUtils.hpp"
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 using namespace StringUtils;
 
@@ -102,7 +102,7 @@ using namespace StringUtils;
                + asString<int>(r.cols()) + ", Z has length "
                + asString<int>(z.size()) + " and NL has length "
                + asString<int>(nl.size()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       if(r.rows() <= 0) return;
       R = r;
@@ -121,7 +121,7 @@ using namespace StringUtils;
               " Cov is " + asString<int>(Cov.rows()) + "x" + asString<int>(Cov.cols())
             + ", State has length " + asString<int>(State.size())
             + " and NL has length " + asString<int>(NL.size()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       R = inverseUT(upperCholesky(Cov));
       Z = R * State;
@@ -159,7 +159,7 @@ using namespace StringUtils;
       if(identical(names,nl)) return;
       if(names != nl) {
          MatrixException me("Invalid input: Namelists must be == to w/in permute");
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       try {
@@ -177,10 +177,10 @@ using namespace StringUtils;
          names = nl;
       }
       catch(MatrixException& me) {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch(VectorException& ve) {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -254,7 +254,7 @@ using namespace StringUtils;
          m = names.size();
          if(n >= m) {
             MatrixException me("split: Input Namelist must be a subset of this one");
-            GPSTK_THROW(me);
+            GNSSTK_THROW(me);
          }
 
          unsigned int i,j;
@@ -269,7 +269,7 @@ using namespace StringUtils;
             }
             if(j > m) {
                MatrixException me("split: Input Namelist is not non-trivial subset");
-               GPSTK_THROW(me);
+               GNSSTK_THROW(me);
             }
          }
 
@@ -287,10 +287,10 @@ using namespace StringUtils;
          *this = S1;
       }
       catch(MatrixException& me) {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch(VectorException& ve) {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -316,10 +316,10 @@ using namespace StringUtils;
          return *this;
       }
       catch(MatrixException& me) {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch(VectorException& ve) {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -348,10 +348,10 @@ using namespace StringUtils;
          this->permute(NL);         // permute it to match NL
       }
       catch(MatrixException& me) {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch(VectorException& ve) {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -366,7 +366,7 @@ using namespace StringUtils;
          // do not allow duplicates
          if((names & S.names).size() > 0) {
             Exception e("Cannot append duplicate names");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          // append to names at the end, and to R Z, zero filling
@@ -376,7 +376,7 @@ using namespace StringUtils;
          // just in case...to avoid overflow in loop below
          if(I+S.names.size() != names.size()) {
             Exception e("Append failed");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          // loop over new names, copying data from input into the new SRI
@@ -389,10 +389,10 @@ using namespace StringUtils;
          return *this;
       }
       catch(MatrixException& me) {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch(VectorException& ve) {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -423,7 +423,7 @@ using namespace StringUtils;
             int k = all.index(names.labels[j]);
             if(k == -1) {
                MatrixException me("Algorithm error 1");
-               GPSTK_THROW(me);
+               GNSSTK_THROW(me);
             }
 
                // copy this col of R into A (R is UT)
@@ -437,7 +437,7 @@ using namespace StringUtils;
             int k = all.index(S.names.labels[j]);
             if(k == -1) {
                MatrixException me("Algorithm error 2");
-               GPSTK_THROW(me);
+               GNSSTK_THROW(me);
             }
             for(i=0; i<=j; i++) A(m+i,k) = S.R(i,j);
             A(m+j,n) = S.Z(j);
@@ -456,10 +456,10 @@ using namespace StringUtils;
          return *this;
       }
       catch(MatrixException& me) {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch(VectorException& ve) {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -474,10 +474,10 @@ using namespace StringUtils;
          return S;
       }
       catch(MatrixException& me) {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch(VectorException& ve) {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -529,7 +529,7 @@ using namespace StringUtils;
                + asString<int>(R.rows()) + " while input has length "
                + asString<int>(X0.size())
                );
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       Z = Z - R * X0;
    }
@@ -545,7 +545,7 @@ using namespace StringUtils;
                + asString<int>(R.rows()) + " while input has length "
                + asString<int>(Z0.size())
                );
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       Z = Z - Z0;
    }
@@ -563,7 +563,7 @@ using namespace StringUtils;
          MatrixException me("Invalid input dimension: SRI has dimension "
             + asString<int>(n) + " while input has dimension "
             + asString<int>(A.rows()) + "x" + asString<int>(A.cols()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       Householder<double> HA;
@@ -588,7 +588,7 @@ using namespace StringUtils;
             + asString<int>(n) + " while input has dimension "
             + asString<int>(RR.rows()) + "x" + asString<int>(RR.cols())
             + " and " + asString<int>(ZZ.size()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       
       Matrix<double> A(RR || ZZ);
@@ -612,7 +612,7 @@ using namespace StringUtils;
             + asString<int>(n) + " while invT has dimension "
             + asString<int>(invT.rows()) + "x"
             + asString<int>(invT.cols()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       R = R*invT;
@@ -666,10 +666,10 @@ using namespace StringUtils;
          Z = Vector<double>(T,ns,n);
       }
       catch(MatrixException& me) {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch(VectorException& ve) {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -698,7 +698,7 @@ using namespace StringUtils;
    void SRI::stateFix(const unsigned int& index,
                       const double& value, const double& sigma, bool restore)
    {
-      if(index >= names.size()) GPSTK_THROW(Exception("Index out of range"));
+      if(index >= names.size()) GNSSTK_THROW(Exception("Index out of range"));
       const unsigned int N(names.size());
 
       // make a namelist with the desired element last
@@ -749,8 +749,8 @@ using namespace StringUtils;
          Z = Znew;
          names -= names.labels[in];
       }
-      catch(MatrixException& me) { GPSTK_RETHROW(me); }
-      catch(VectorException& ve) { GPSTK_RETHROW(ve); }
+      catch(MatrixException& me) { GNSSTK_RETHROW(me); }
+      catch(VectorException& ve) { GNSSTK_RETHROW(ve); }
    }
 
    // --------------------------------------------------------------------------------
@@ -760,7 +760,7 @@ using namespace StringUtils;
       try {
          if(dropNL.size() != values_in.size()) {
             VectorException e("Input has inconsistent lengths");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 /*
          // build a vector of indexes to keep
@@ -774,7 +774,7 @@ using namespace StringUtils;
          const int n=indexes.size();         // new dimension
          if(n == 0) {
             Exception e("Cannot drop all states");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          Vector<double> X,newX(n);
@@ -852,8 +852,8 @@ using namespace StringUtils;
             names -= name;
          }
       }
-      catch(MatrixException& me) { GPSTK_RETHROW(me); }
-      catch(VectorException& ve) { GPSTK_RETHROW(ve); }
+      catch(MatrixException& me) { GNSSTK_RETHROW(me); }
+      catch(VectorException& ve) { GNSSTK_RETHROW(ve); }
    }
 
    //---------------------------------------------------------------------------------
@@ -867,7 +867,7 @@ using namespace StringUtils;
             + asString<int>(Cov.rows()) + "x"
             + asString<int>(Cov.cols()) + ") and X("
             + asString<int>(X.size()) + ").");
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       try {
@@ -875,7 +875,7 @@ using namespace StringUtils;
          addAPrioriInformation(InvCov, X);
       }
       catch(MatrixException& me) {
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
    }
 
@@ -891,7 +891,7 @@ using namespace StringUtils;
             + asString<int>(InvCov.cols()) + ") and X("
             + asString<int>(X.size()) + ")."
             );
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       try {
@@ -901,7 +901,7 @@ using namespace StringUtils;
          SrifMU(R, Z, apR, apZ);
       }
       catch(MatrixException& me) {
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
    }
 
@@ -920,7 +920,7 @@ using namespace StringUtils;
       }
       catch(MatrixException& me) {
          me.addText("Called by getConditionNumber");
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
 
@@ -940,7 +940,7 @@ using namespace StringUtils;
             if(ptr) *ptr = i;
             MatrixException me("Singular matrix; zero diagonal element at index "
                + asString<int>(i));
-            GPSTK_THROW(me);
+            GNSSTK_THROW(me);
          }
          double sum=Z(i);
          for(j=i+1; j<n; j++)             // sum over columns to right of diagonal
@@ -972,17 +972,17 @@ using namespace StringUtils;
          if(small <= 10*numeric_limits<double>::epsilon()) {
             MatrixException me("Singular matrix: condition number is "
                   + asString<double>(big) + " / " + asString<double>(small));
-            GPSTK_THROW(me);
+            GNSSTK_THROW(me);
          }
 
          C = UTtimesTranspose(invR);
          X = invR * Z;
       }
       catch(MatrixException& me) {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch(VectorException& ve) {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -1010,7 +1010,7 @@ using namespace StringUtils;
       return os;
    }
 
-} // end namespace gpstk
+} // end namespace gnsstk
 
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------

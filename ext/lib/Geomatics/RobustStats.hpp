@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -44,18 +44,18 @@
 /// Reference: Mason, Gunst and Hess, "Statistical Design and
 ///            Analysis of Experiments," Wiley, New York, 1989.
  
-#ifndef GPSTK_ROBUSTSTATS_HPP
-#define GPSTK_ROBUSTSTATS_HPP
+#ifndef GNSSTK_ROBUSTSTATS_HPP
+#define GNSSTK_ROBUSTSTATS_HPP
 
 //------------------------------------------------------------------------------------
 // system includes
 #include <string>
 #include <cmath>
 
-// GPSTk
+// GNSSTk
 #include "Exception.hpp"
 
-namespace gpstk {
+namespace gnsstk {
 //------------------------------------------------------------------------------------
 #define ABSOLUTE(x) ((x) < T() ? -(x) : (x))
 /// tuning constant used in M-estimate and Robust least squares (SRIFilter.cpp)
@@ -94,7 +94,7 @@ namespace gpstk {
    template <typename T>
    void insert(T *sa,
                int na,
-               int (*comp)(const T&, const T&) = gpstk::Qsort_compare)
+               int (*comp)(const T&, const T&) = gnsstk::Qsort_compare)
    {
       int i,j;
       T stemp;
@@ -119,7 +119,7 @@ namespace gpstk {
    template <typename T>
    void QSort(T *sa,
               int na,
-              int (*comp)(const T&, const T&) = gpstk::Qsort_compare)
+              int (*comp)(const T&, const T&) = gnsstk::Qsort_compare)
    {
       int i,j,nr;
       T stemp, spart;
@@ -168,7 +168,7 @@ namespace gpstk {
    void insert(T *sa,
                S *pa,
                int na,
-               int (*comp)(const T&, const T&) = gpstk::Qsort_compare)
+               int (*comp)(const T&, const T&) = gnsstk::Qsort_compare)
    {
       int i,j;
       T stemp;
@@ -197,7 +197,7 @@ namespace gpstk {
    void QSort(T *sa,
               S *pa,
               int na,
-              int (*comp)(const T&, const T&) = gpstk::Qsort_compare)
+              int (*comp)(const T&, const T&) = gnsstk::Qsort_compare)
    {
       int i,j,nr;
       T stemp, spart;
@@ -306,7 +306,7 @@ namespace gpstk {
       {
          if(!xd || nd < 2) {
             Exception e("Invalid input");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          try {
@@ -317,7 +317,7 @@ namespace gpstk {
                save = new T[nd];
                if(!save) {
                   Exception e("Could not allocate temporary array");
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                for(i=0; i<nd; i++) save[i]=xd[i];
             }
@@ -337,7 +337,7 @@ namespace gpstk {
 
             return med;
          }
-         catch(Exception& e) { GPSTK_RETHROW(e); }
+         catch(Exception& e) { GNSSTK_RETHROW(e); }
 
       }  // end Median
 
@@ -356,7 +356,7 @@ namespace gpstk {
       {
          if(!xd || nd < 2) {
             Exception e("Invalid input");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          int q;
@@ -392,7 +392,7 @@ namespace gpstk {
 
          if(!xd || nd < 2) {
             Exception e("Invalid input");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // store data in a temporary array
@@ -400,7 +400,7 @@ namespace gpstk {
             save = new T[nd];
             if(!save) {
                Exception e("Could not allocate temporary array");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             for(i=0; i<nd; i++) save[i]=xd[i];
          }
@@ -460,7 +460,7 @@ namespace gpstk {
 
             if(!xd || nd < 2) {
                Exception e("Invalid input");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             tv = T(RobustTuningT)*MAD;
@@ -485,7 +485,7 @@ namespace gpstk {
 
             return m;
          }
-         catch(Exception& e) { GPSTK_RETHROW(e); }
+         catch(Exception& e) { GNSSTK_RETHROW(e); }
 
       }  // end MEstimate
 
@@ -548,7 +548,7 @@ namespace gpstk {
 
       //@}
 
-}  // end namespace gpstk
+}  // end namespace gnsstk
 
 #undef ABSOLUTE
 

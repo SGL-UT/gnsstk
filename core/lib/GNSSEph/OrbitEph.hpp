@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -47,8 +47,8 @@
  * the base class for broadcast ephemerides for GPS, QZSS, Galileo,
  * and BeiDou, with RINEX Navigation input, among others. */
 
-#ifndef GPSTK_ORBITEPH_HPP
-#define GPSTK_ORBITEPH_HPP
+#ifndef GNSSTK_ORBITEPH_HPP
+#define GNSSTK_ORBITEPH_HPP
 
 #include <string>
 #include "Exception.hpp"
@@ -58,7 +58,7 @@
 #include "Xvt.hpp"
 //#include "Rinex3NavData.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /** @defgroup GNSSEph GNSS Ephemeris Processing
        * Tools for processing and computing GNSS SV positions */
@@ -102,7 +102,7 @@ namespace gpstk
       virtual bool isHealthy(void) const
       {
          if(!dataLoadedFlag)
-            GPSTK_THROW(InvalidRequest("Data not loaded"));
+            GNSSTK_THROW(InvalidRequest("Data not loaded"));
          return true;
       }
 
@@ -117,7 +117,7 @@ namespace gpstk
          /** Compute satellite position at the given time.
           * This implements equations of motion as defined in IS-GPS-200.
           * (This code has its origins in 1980's FORTRAN code that has
-          * been ported to C, then C++, then became part of the gpstk.
+          * been ported to C, then C++, then became part of the gnsstk.
           * The original code was based on IS-GPS-200 Table 20-IV.
           * In July 2013, the code was modified to conform to Table 30-II
           * which includes additional time-dependent terms (A(dot) 
@@ -139,7 +139,7 @@ namespace gpstk
           * @throw Invalid Request if the required data has not been stored. */
       virtual void adjustValidity(void)
       {
-         if(!dataLoadedFlag) GPSTK_THROW(InvalidRequest("Data not loaded"));
+         if(!dataLoadedFlag) GNSSTK_THROW(InvalidRequest("Data not loaded"));
          if (satID.system == SatelliteSystem::GPS)
             beginValid = ctToe - 7200.0;
          endValid = ctToe + 7200.0;
@@ -232,4 +232,4 @@ namespace gpstk
 
 } // end namespace
 
-#endif // GPSTK_ORBITEPH_HPP
+#endif // GNSSTK_ORBITEPH_HPP

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -48,10 +48,10 @@
 #include "Rinex3ObsStream.hpp"
 #include "Rinex3ObsData.hpp"
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    void reallyPutRecordVer2( Rinex3ObsStream& strm,
                              const Rinex3ObsData& rod )
@@ -138,11 +138,11 @@ namespace gpstk
          }
          catch(FFStreamError& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(StringException& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }  // write out data
       else if( rod.epochFlag == 0 || rod.epochFlag == 1 || rod.epochFlag == 6 )
@@ -213,7 +213,7 @@ namespace gpstk
 
 
    Rinex3ObsData::Rinex3ObsData()
-         : time(gpstk::CommonTime::BEGINNING_OF_TIME),
+         : time(gnsstk::CommonTime::BEGINNING_OF_TIME),
            epochFlag(-1),
            numSVs(-1),
            clockOffset(0.L),
@@ -227,12 +227,12 @@ namespace gpstk
       if (i == obs.end())
       {
          InvalidRequest ir( svID.toString() + " is not available.");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
       if (index >= i->second.size())
       {
          InvalidRequest ir( svID.toString() + " index " + StringUtils::asString(index) + " is not available.");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
       
       return i->second[index];
@@ -316,7 +316,7 @@ namespace gpstk
          }
          catch(Exception& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          return;
       }
@@ -367,11 +367,11 @@ namespace gpstk
          }
          catch(FFStreamError& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(StringException& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 
@@ -391,7 +391,7 @@ namespace gpstk
       if(line.size()>80 || line[0] != ' ' || line[3] != ' ' || line[6] != ' ')
       {
          FFStreamError e("Bad epoch line: >" + line + "<");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // process the epoch line, including SV list and clock bias
@@ -399,7 +399,7 @@ namespace gpstk
       if((rod.epochFlag < 0) || (rod.epochFlag > 6))
       {
          FFStreamError e("Invalid epoch flag: " + asString(rod.epochFlag));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // Not all epoch flags are required to have a time.
@@ -414,7 +414,7 @@ namespace gpstk
                          rod.epochFlag==5 || rod.epochFlag==6 ))
       {
          FFStreamError e("Required epoch time missing: " + line);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       else if(noEpochTime)
          rod.time = previousTime;
@@ -428,7 +428,7 @@ namespace gpstk
                (line[9] != ' ') || (line[12] != ' ') || (line[15] != ' '))
             {
                FFStreamError e("Invalid time format");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // if there's no time, just use a bad time
@@ -468,12 +468,12 @@ namespace gpstk
          catch(std::exception &e)
          {
             FFStreamError err("std::exception: " + string(e.what()));
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
          catch(Exception& e)
          {
             FFStreamError err(e);
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
             // end rod.time = parseTime(line, strm.header);
 
@@ -509,7 +509,7 @@ namespace gpstk
                {
                   FFStreamError err("Invalid line size:" +
                                     asString(line.size()));
-                  GPSTK_THROW(err);
+                  GNSSTK_THROW(err);
                }
             }
 
@@ -522,7 +522,7 @@ namespace gpstk
             catch (Exception& e)
             {
                FFStreamError ffse(e);
-               GPSTK_THROW(ffse);
+               GNSSTK_THROW(ffse);
             }
          }  // end loop over numSVs
 
@@ -548,7 +548,7 @@ namespace gpstk
                   {
                      FFStreamError err("Invalid line size:" +
                                        asString(line.size()));
-                     GPSTK_THROW(err);
+                     GNSSTK_THROW(err);
                   }
                }
 
@@ -580,11 +580,11 @@ namespace gpstk
             }
             catch(FFStreamError& e)
             {
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
             catch(StringException& e)
             {
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
          }
       }
@@ -613,7 +613,7 @@ namespace gpstk
          }
          catch(Exception& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          return;
       }
@@ -629,14 +629,14 @@ namespace gpstk
       if(line[0] != '>' || line[1] != ' ')
       {
          FFStreamError e("Bad epoch line: >" + line + "<");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       epochFlag = asInt(line.substr(31,1));
       if(epochFlag < 0 || epochFlag > 6)
       {
          FFStreamError e("Invalid epoch flag: " + asString(epochFlag));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       time = parseTime(line, strm.header, strm.timesystem);
@@ -667,7 +667,7 @@ namespace gpstk
             catch (Exception& e)
             {
                FFStreamError ffse(e);
-               GPSTK_THROW(ffse);
+               GNSSTK_THROW(ffse);
             }
 
                // get the # data items (# entries in ObsType map of
@@ -711,15 +711,15 @@ namespace gpstk
             }
             catch(FFStreamError& e)
             {
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
             catch(StringException& e)
             {
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
             catch (Exception& e)
             {
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
          }
       }
@@ -743,7 +743,7 @@ namespace gpstk
              (line[29] != ' ') || (line[30] != ' '))
          {
             FFStreamError e("Invalid time format");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // if there's no time, just return a bad time
@@ -779,12 +779,12 @@ namespace gpstk
       catch (std::exception &e)
       {
          FFStreamError err("std::exception: " + string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
-      catch (gpstk::Exception& e)
+      catch (gnsstk::Exception& e)
       {
          FFStreamError err(e);
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }  // end parseTime
 

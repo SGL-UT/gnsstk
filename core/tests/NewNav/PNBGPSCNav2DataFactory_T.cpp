@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -51,9 +51,9 @@
 using namespace std;
 
 // avoid having to type out template params over and over.
-using GPSFactoryCounter = FactoryCounter<gpstk::GPSCNav2Alm,gpstk::GPSCNav2Eph,gpstk::GPSCNav2TimeOffset,gpstk::GPSCNav2Health,gpstk::GPSCNav2Iono,gpstk::GPSCNav2ISC>;
+using GPSFactoryCounter = FactoryCounter<gnsstk::GPSCNav2Alm,gnsstk::GPSCNav2Eph,gnsstk::GPSCNav2TimeOffset,gnsstk::GPSCNav2Health,gnsstk::GPSCNav2Iono,gnsstk::GPSCNav2ISC>;
 
-namespace gpstk
+namespace gnsstk
 {
    std::ostream& operator<<(std::ostream& s, SVHealth h)
    {
@@ -93,24 +93,24 @@ public:
    unsigned processGGTOEOPQZSSTest();
    unsigned processISCTest();
 
-   void validateAlmGPS(gpstk::TestUtil& testFramework,
-                       const gpstk::GPSCNav2Alm* alm,
-                       const gpstk::CommonTime& expTime);
-   void validateEphGPS(gpstk::TestUtil& testFramework,
-                       const gpstk::GPSCNav2Eph* eph,
-                       const gpstk::CommonTime& expTime);
-   void validateTOGPS(gpstk::TestUtil& testFramework,
-                      const gpstk::GPSCNav2TimeOffset* to);
-   void validateEphHealthGPS(gpstk::TestUtil& testFramework,
-                             const gpstk::GPSCNav2Health* hea,
-                             const gpstk::CommonTime& expTime);
-   void validateAlmHealthGPS(gpstk::TestUtil& testFramework,
-                             const gpstk::GPSCNav2Health* hea,
-                             const gpstk::CommonTime& expTime);
-   void validateIonoGPS(gpstk::TestUtil& testFramework,
-                        const gpstk::GPSCNav2Iono* iono);
-   void validateISCGPS(gpstk::TestUtil& testFramework,
-                       const gpstk::GPSCNav2ISC* isc);
+   void validateAlmGPS(gnsstk::TestUtil& testFramework,
+                       const gnsstk::GPSCNav2Alm* alm,
+                       const gnsstk::CommonTime& expTime);
+   void validateEphGPS(gnsstk::TestUtil& testFramework,
+                       const gnsstk::GPSCNav2Eph* eph,
+                       const gnsstk::CommonTime& expTime);
+   void validateTOGPS(gnsstk::TestUtil& testFramework,
+                      const gnsstk::GPSCNav2TimeOffset* to);
+   void validateEphHealthGPS(gnsstk::TestUtil& testFramework,
+                             const gnsstk::GPSCNav2Health* hea,
+                             const gnsstk::CommonTime& expTime);
+   void validateAlmHealthGPS(gnsstk::TestUtil& testFramework,
+                             const gnsstk::GPSCNav2Health* hea,
+                             const gnsstk::CommonTime& expTime);
+   void validateIonoGPS(gnsstk::TestUtil& testFramework,
+                        const gnsstk::GPSCNav2Iono* iono);
+   void validateISCGPS(gnsstk::TestUtil& testFramework,
+                       const gnsstk::GPSCNav2ISC* isc);
 };
 
 
@@ -126,21 +126,21 @@ addDataAllTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "addData");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::SatID gloSid(1,gpstk::SatelliteSystem::Glonass);
-   gpstk::ObsID gloid(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::G1,
-                      gpstk::TrackingCode::Standard);
-   gpstk::NavID gloNav(gpstk::NavType::GloCivilF);
-   gpstk::PackedNavBitsPtr nonGPS =
-      std::make_shared<gpstk::PackedNavBits>(gloSid,gloid,gloNav,"XX",
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::SatID gloSid(1,gnsstk::SatelliteSystem::Glonass);
+   gnsstk::ObsID gloid(gnsstk::ObservationType::NavMsg, gnsstk::CarrierBand::G1,
+                      gnsstk::TrackingCode::Standard);
+   gnsstk::NavID gloNav(gnsstk::NavType::GloCivilF);
+   gnsstk::PackedNavBitsPtr nonGPS =
+      std::make_shared<gnsstk::PackedNavBits>(gloSid,gloid,gloNav,"XX",
                                              sf2CNAV2GPSct);
-   gpstk::NavDataPtrList navOut;
-   gpstk::GPSCNav2Alm *alm;
-   gpstk::GPSCNav2Eph *eph;
-   gpstk::GPSCNav2TimeOffset *to;
-   gpstk::GPSCNav2Health *hea;
-   gpstk::GPSCNav2Iono *iono;
-   gpstk::GPSCNav2ISC *isc;
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GPSCNav2Alm *alm;
+   gnsstk::GPSCNav2Eph *eph;
+   gnsstk::GPSCNav2TimeOffset *to;
+   gnsstk::GPSCNav2Health *hea;
+   gnsstk::GPSCNav2Iono *iono;
+   gnsstk::GPSCNav2ISC *isc;
       // should refuse non-GPS data
    TUASSERTE(bool, false, uut.addData(nonGPS, navOut));
    fc.validateResults(navOut, __LINE__);
@@ -178,24 +178,24 @@ addDataAllTest()
    TUASSERTE(bool, true, uut.addData(sf123p1CNAV2GPS, navOut));
    for (const auto& i : navOut)
    {
-      if ((eph = dynamic_cast<gpstk::GPSCNav2Eph*>(i.get())) != nullptr)
+      if ((eph = dynamic_cast<gnsstk::GPSCNav2Eph*>(i.get())) != nullptr)
       {
          validateEphGPS(testFramework, eph, sf123p1CNAV2GPSct + 0.52);
       }
-      else if ((to = dynamic_cast<gpstk::GPSCNav2TimeOffset*>(i.get()))
+      else if ((to = dynamic_cast<gnsstk::GPSCNav2TimeOffset*>(i.get()))
                != nullptr)
       {
          validateTOGPS(testFramework, to);
       }
-      else if ((hea = dynamic_cast<gpstk::GPSCNav2Health*>(i.get())) != nullptr)
+      else if ((hea = dynamic_cast<gnsstk::GPSCNav2Health*>(i.get())) != nullptr)
       {
          validateEphHealthGPS(testFramework, hea, sf123p1CNAV2GPSct + 0.52);
       }
-      else if ((iono = dynamic_cast<gpstk::GPSCNav2Iono*>(i.get())) != nullptr)
+      else if ((iono = dynamic_cast<gnsstk::GPSCNav2Iono*>(i.get())) != nullptr)
       {
          validateIonoGPS(testFramework, iono);
       }
-      else if ((isc = dynamic_cast<gpstk::GPSCNav2ISC*>(i.get())) != nullptr)
+      else if ((isc = dynamic_cast<gnsstk::GPSCNav2ISC*>(i.get())) != nullptr)
       {
          validateISCGPS(testFramework, isc);
       }
@@ -214,11 +214,11 @@ addDataAllTest()
    TUASSERTE(bool, true, uut.addData(sf123p2CNAV2GPS, navOut));
    for (const auto& i : navOut)
    {
-      if ((eph = dynamic_cast<gpstk::GPSCNav2Eph*>(i.get())) != nullptr)
+      if ((eph = dynamic_cast<gnsstk::GPSCNav2Eph*>(i.get())) != nullptr)
       {
          validateEphGPS(testFramework, eph, sf123p2CNAV2GPSct + 0.52);
       }
-      else if ((hea = dynamic_cast<gpstk::GPSCNav2Health*>(i.get())) != nullptr)
+      else if ((hea = dynamic_cast<gnsstk::GPSCNav2Health*>(i.get())) != nullptr)
       {
          validateEphHealthGPS(testFramework, hea, sf123p2CNAV2GPSct + 0.52);
       }
@@ -237,15 +237,15 @@ addDataAllTest()
    TUASSERTE(bool, true, uut.addData(sf123p4CNAV2GPS, navOut));
    for (const auto& i : navOut)
    {
-      if ((alm = dynamic_cast<gpstk::GPSCNav2Alm*>(i.get())) != nullptr)
+      if ((alm = dynamic_cast<gnsstk::GPSCNav2Alm*>(i.get())) != nullptr)
       {
          validateAlmGPS(testFramework, alm, sf123p4CNAV2GPSct + 12.52);
       }
-      else if ((eph = dynamic_cast<gpstk::GPSCNav2Eph*>(i.get())) != nullptr)
+      else if ((eph = dynamic_cast<gnsstk::GPSCNav2Eph*>(i.get())) != nullptr)
       {
          validateEphGPS(testFramework, eph, sf123p4CNAV2GPSct + 0.52);
       }
-      else if ((hea = dynamic_cast<gpstk::GPSCNav2Health*>(i.get())) != nullptr)
+      else if ((hea = dynamic_cast<gnsstk::GPSCNav2Health*>(i.get())) != nullptr)
       {
          if (hea->signal.sat.id == 4)
          {
@@ -273,9 +273,9 @@ addDataEphemerisTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "addData");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavDataPtrList navOut;
-   TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Ephemeris}));
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavDataPtrList navOut;
+   TUCATCH(uut.setTypeFilter({gnsstk::NavMessageType::Ephemeris}));
       // get 1 ephemeris from subframe 2
    TUASSERTE(bool, true, uut.addData(sf2CNAV2GPS, navOut));
    fc.validateResults(navOut, __LINE__, 1, 0, 1);
@@ -297,9 +297,9 @@ addDataAlmanacTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "addData");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavDataPtrList navOut;
-   TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Almanac}));
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavDataPtrList navOut;
+   TUCATCH(uut.setTypeFilter({gnsstk::NavMessageType::Almanac}));
       // get nothing from subframe 2
    TUASSERTE(bool, true, uut.addData(sf2CNAV2GPS, navOut));
    fc.validateResults(navOut, __LINE__);
@@ -321,9 +321,9 @@ addDataHealthTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "addData");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavDataPtrList navOut;
-   TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Health}));
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavDataPtrList navOut;
+   TUCATCH(uut.setTypeFilter({gnsstk::NavMessageType::Health}));
       // get 1 health from subframe 2
    TUASSERTE(bool, true, uut.addData(sf2CNAV2GPS, navOut));
    fc.validateResults(navOut, __LINE__, 1, 0, 0, 0, 1);
@@ -345,9 +345,9 @@ addDataTimeTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "addData");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavDataPtrList navOut;
-   TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::TimeOffset}));
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavDataPtrList navOut;
+   TUCATCH(uut.setTypeFilter({gnsstk::NavMessageType::TimeOffset}));
       // get nothing from subframe 2
    TUASSERTE(bool, true, uut.addData(sf2CNAV2GPS, navOut));
    fc.validateResults(navOut, __LINE__);
@@ -369,10 +369,10 @@ addDataEphHealthTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "addData");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavDataPtrList navOut;
-   TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Ephemeris,
-                              gpstk::NavMessageType::Health}));
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavDataPtrList navOut;
+   TUCATCH(uut.setTypeFilter({gnsstk::NavMessageType::Ephemeris,
+                              gnsstk::NavMessageType::Health}));
       // get 1 ephemeris, 1 health from subframe 2
    TUASSERTE(bool, true, uut.addData(sf2CNAV2GPS, navOut));
    fc.validateResults(navOut, __LINE__, 2, 0, 1, 0, 1);
@@ -394,10 +394,10 @@ addDataAlmHealthTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "addData");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavDataPtrList navOut;
-   TUCATCH(uut.setTypeFilter({gpstk::NavMessageType::Almanac,
-                              gpstk::NavMessageType::Health}));
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavDataPtrList navOut;
+   TUCATCH(uut.setTypeFilter({gnsstk::NavMessageType::Almanac,
+                              gnsstk::NavMessageType::Health}));
       // get 1 health from subframe 2
    TUASSERTE(bool, true, uut.addData(sf2CNAV2GPS, navOut));
    fc.validateResults(navOut, __LINE__, 1, 0, 0, 0, 1);
@@ -419,24 +419,24 @@ processEphTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "processEph");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavMessageID nmidExpHea(
-      gpstk::NavSatelliteID(4, 4, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::Health);
-   gpstk::NavDataPtrList navOut;
-   gpstk::GPSCNav2Health *hea;
-   gpstk::GPSCNav2Eph *eph;
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavMessageID nmidExpHea(
+      gnsstk::NavSatelliteID(4, 4, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::Health);
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GPSCNav2Health *hea;
+   gnsstk::GPSCNav2Eph *eph;
       // success, health and ephemeris
    TUASSERTE(bool, true, uut.processEph(sf2CNAV2GPS, navOut));
    for (const auto& i : navOut)
    {
-      if ((hea = dynamic_cast<gpstk::GPSCNav2Health*>(i.get())) != nullptr)
+      if ((hea = dynamic_cast<gnsstk::GPSCNav2Health*>(i.get())) != nullptr)
       {
          validateEphHealthGPS(testFramework, hea, sf2CNAV2GPSct);
       }
-      else if ((eph = dynamic_cast<gpstk::GPSCNav2Eph*>(i.get())) != nullptr)
+      else if ((eph = dynamic_cast<gnsstk::GPSCNav2Eph*>(i.get())) != nullptr)
       {
          validateEphGPS(testFramework, eph, sf2CNAV2GPSct);
       }
@@ -451,19 +451,19 @@ processAlmOrbTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "processAlmOrb");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavDataPtrList navOut;
-   gpstk::GPSCNav2Health *hea;
-   gpstk::GPSCNav2Alm *alm;
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GPSCNav2Health *hea;
+   gnsstk::GPSCNav2Alm *alm;
       // success, health and almanac
    TUASSERTE(bool, true, uut.processAlmOrb(sf3p4CNAV2GPS, navOut));
    for (const auto& i : navOut)
    {
-      if ((hea = dynamic_cast<gpstk::GPSCNav2Health*>(i.get())) != nullptr)
+      if ((hea = dynamic_cast<gnsstk::GPSCNav2Health*>(i.get())) != nullptr)
       {
          validateAlmHealthGPS(testFramework, hea, sf3p4CNAV2GPSct);
       }
-      else if ((alm = dynamic_cast<gpstk::GPSCNav2Alm*>(i.get())) != nullptr)
+      else if ((alm = dynamic_cast<gnsstk::GPSCNav2Alm*>(i.get())) != nullptr)
       {
          validateAlmGPS(testFramework, alm, sf3p4CNAV2GPSct);
       }
@@ -478,19 +478,19 @@ processUTCIonoTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "processUTCIono");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavDataPtrList navOut;
-   gpstk::GPSCNav2TimeOffset *to;
-   gpstk::GPSCNav2Iono *iono;
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GPSCNav2TimeOffset *to;
+   gnsstk::GPSCNav2Iono *iono;
       // success, time offset only
    TUASSERTE(bool, true, uut.processUTCIono(sf3p1CNAV2GPS, navOut));
    for (const auto& i : navOut)
    {
-      if ((to = dynamic_cast<gpstk::GPSCNav2TimeOffset*>(i.get())) != nullptr)
+      if ((to = dynamic_cast<gnsstk::GPSCNav2TimeOffset*>(i.get())) != nullptr)
       {
          validateTOGPS(testFramework, to);
       }
-      else if ((iono = dynamic_cast<gpstk::GPSCNav2Iono*>(i.get())) != nullptr)
+      else if ((iono = dynamic_cast<gnsstk::GPSCNav2Iono*>(i.get())) != nullptr)
       {
          validateIonoGPS(testFramework, iono);
       }
@@ -505,28 +505,28 @@ processGGTOEOPTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "processGGTOEOP");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavMessageID nmidExp(
-      gpstk::NavSatelliteID(4, 4, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::TimeOffset);
-   gpstk::NavDataPtrList navOut;
-   gpstk::GPSCNav2TimeOffset *to;
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavMessageID nmidExp(
+      gnsstk::NavSatelliteID(4, 4, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::TimeOffset);
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GPSCNav2TimeOffset *to;
       // make sure we have at least the right number of bits
    TUASSERTE(size_t, 274, sf3p2fakeCNAV2GPS->getNumBits());
       // success, time offset only
    TUASSERTE(bool, true, uut.processGGTOEOP(sf3p2fakeCNAV2GPS, navOut));
    for (const auto& i : navOut)
    {
-      if ((to = dynamic_cast<gpstk::GPSCNav2TimeOffset*>(i.get())) != nullptr)
+      if ((to = dynamic_cast<gnsstk::GPSCNav2TimeOffset*>(i.get())) != nullptr)
       {
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, sf3p2fakeCNAV2GPSct, to->timeStamp);
-         TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
+         TUASSERTE(gnsstk::CommonTime, sf3p2fakeCNAV2GPSct, to->timeStamp);
+         TUASSERTE(gnsstk::NavMessageID, nmidExp, to->signal);
             // TimeOffsetData has no fields
             // GPSCNav2TimeOffset
-         TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::GLO, to->tgt);
+         TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GLO, to->tgt);
          TUASSERTFE(6.5192580223e-09, to->a0);
          TUASSERTFE(1.5099033135e-14, to->a1);
          TUASSERTFE(0, to->a2);
@@ -534,8 +534,8 @@ processGGTOEOPTest()
          TUASSERTFE(3456, to->tot);
          TUASSERTE(unsigned, 2044, to->wnot);
          TUASSERTE(unsigned, 0, to->wnLSF);
-         TUASSERTE(gpstk::CommonTime,
-                   gpstk::GPSWeekSecond(2044,3456).convertToCommonTime(),
+         TUASSERTE(gnsstk::CommonTime,
+                   gnsstk::GPSWeekSecond(2044,3456).convertToCommonTime(),
                    to->refTime);
          TUASSERTE(unsigned, 0, to->dn);
          TUASSERTFE(0, to->deltatLSF);
@@ -551,53 +551,53 @@ processEphQZSSTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "processEph(QZSS)");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavMessageID nmidExpHea(
-      gpstk::NavSatelliteID(193, 193, gpstk::SatelliteSystem::QZSS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::Health);
-   gpstk::NavMessageID nmidExpEph(
-      gpstk::NavSatelliteID(193, 193, gpstk::SatelliteSystem::QZSS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::Ephemeris);
-   gpstk::CommonTime toeExp = gpstk::GPSWeekSecond(2155,327600,
-                                                   gpstk::TimeSystem::QZS);
-   gpstk::CommonTime topExp = gpstk::GPSWeekSecond(2155,327600,
-                                                   gpstk::TimeSystem::QZS);
-   gpstk::CommonTime beginExp = gpstk::GPSWeekSecond(2155,324504,
-                                                     gpstk::TimeSystem::QZS);
-   gpstk::CommonTime endExp = gpstk::GPSWeekSecond(2155,333300,
-                                                   gpstk::TimeSystem::QZS);
-   gpstk::NavDataPtrList navOut;
-   gpstk::GPSCNav2Health *hea;
-   gpstk::GPSCNav2Eph *eph;
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavMessageID nmidExpHea(
+      gnsstk::NavSatelliteID(193, 193, gnsstk::SatelliteSystem::QZSS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::Health);
+   gnsstk::NavMessageID nmidExpEph(
+      gnsstk::NavSatelliteID(193, 193, gnsstk::SatelliteSystem::QZSS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::Ephemeris);
+   gnsstk::CommonTime toeExp = gnsstk::GPSWeekSecond(2155,327600,
+                                                   gnsstk::TimeSystem::QZS);
+   gnsstk::CommonTime topExp = gnsstk::GPSWeekSecond(2155,327600,
+                                                   gnsstk::TimeSystem::QZS);
+   gnsstk::CommonTime beginExp = gnsstk::GPSWeekSecond(2155,324504,
+                                                     gnsstk::TimeSystem::QZS);
+   gnsstk::CommonTime endExp = gnsstk::GPSWeekSecond(2155,333300,
+                                                   gnsstk::TimeSystem::QZS);
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GPSCNav2Health *hea;
+   gnsstk::GPSCNav2Eph *eph;
       // success, health and ephemeris
    TUASSERTE(bool, true, uut.processEph(sf2CNAV2QZSS, navOut));
    for (const auto& i : navOut)
    {
-      if ((hea = dynamic_cast<gpstk::GPSCNav2Health*>(i.get())) != nullptr)
+      if ((hea = dynamic_cast<gnsstk::GPSCNav2Health*>(i.get())) != nullptr)
       {
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, sf2CNAV2QZSSct, hea->timeStamp);
-         TUASSERTE(gpstk::NavType, gpstk::NavType::GPSCNAV2, hea->signal.nav);
-         TUASSERTE(gpstk::NavMessageID, nmidExpHea, hea->signal);
+         TUASSERTE(gnsstk::CommonTime, sf2CNAV2QZSSct, hea->timeStamp);
+         TUASSERTE(gnsstk::NavType, gnsstk::NavType::GPSCNAV2, hea->signal.nav);
+         TUASSERTE(gnsstk::NavMessageID, nmidExpHea, hea->signal);
             // NavHealthData has no fields
             // GPSCNav2Health
          TUASSERTE(bool, false, hea->health);
       }
-      else if ((eph = dynamic_cast<gpstk::GPSCNav2Eph*>(i.get())) != nullptr)
+      else if ((eph = dynamic_cast<gnsstk::GPSCNav2Eph*>(i.get())) != nullptr)
       {
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, sf2CNAV2QZSSct, eph->timeStamp);
-         TUASSERTE(gpstk::NavMessageID, nmidExpEph, eph->signal);
+         TUASSERTE(gnsstk::CommonTime, sf2CNAV2QZSSct, eph->timeStamp);
+         TUASSERTE(gnsstk::NavMessageID, nmidExpEph, eph->signal);
             // OrbitData has no fields
             // OrbitDataKepler fields
-         TUASSERTE(gpstk::CommonTime, sf2CNAV2QZSSct, eph->xmitTime);
-         TUASSERTE(gpstk::CommonTime, toeExp, eph->Toe);
-         TUASSERTE(gpstk::CommonTime, toeExp, eph->Toc); // same value as toe
-         TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, eph->health);
+         TUASSERTE(gnsstk::CommonTime, sf2CNAV2QZSSct, eph->xmitTime);
+         TUASSERTE(gnsstk::CommonTime, toeExp, eph->Toe);
+         TUASSERTE(gnsstk::CommonTime, toeExp, eph->Toc); // same value as toe
+         TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Healthy, eph->health);
          TUASSERTFE( 8.66129994E-08, eph->Cuc);
          TUASSERTFE(-8.9611858129501342773E-06, eph->Cus);
          TUASSERTFE( 4.5444921875E+02, eph->Crc);
@@ -619,8 +619,8 @@ processEphQZSSTest()
          TUASSERTFE(-3.7147360853850841522E-04, eph->af0);
          TUASSERTFE(-5.06616971E-12, eph->af1);
          TUASSERTFE( 0.00000000E+00, eph->af2);
-         TUASSERTE(gpstk::CommonTime, beginExp, eph->beginFit);
-         TUASSERTE(gpstk::CommonTime, endExp, eph->endFit);
+         TUASSERTE(gnsstk::CommonTime, beginExp, eph->beginFit);
+         TUASSERTE(gnsstk::CommonTime, endExp, eph->endFit);
             // GPSCNavEph fields
          TUASSERTE(bool, false, eph->healthL1C);
          TUASSERTE(int, -8, eph->uraED);
@@ -630,7 +630,7 @@ processEphQZSSTest()
          TUASSERTE(bool, false, eph->integStat);
          TUASSERTFE(-2493.421875, eph->deltaA);
          TUASSERTFE(4.3125010615506153166e-09, eph->dOMEGAdot);
-         TUASSERTE(gpstk::CommonTime, topExp, eph->top);
+         TUASSERTE(gnsstk::CommonTime, topExp, eph->top);
          TUASSERTFE(-5.4715201258659362793e-09, eph->tgd);
          TUASSERTFE( 2.91038305E-10, eph->iscL1CP);
          TUASSERTFE( 4.36557457E-10, eph->iscL1CD);
@@ -646,75 +646,75 @@ processAlmOrbQZSSTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "processAlmOrb");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavMessageID nmidExpHeaL1(
-      gpstk::NavSatelliteID(195, 193, gpstk::SatelliteSystem::QZSS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::Health);
-   gpstk::NavMessageID nmidExpHeaL2(
-      gpstk::NavSatelliteID(195, 193, gpstk::SatelliteSystem::QZSS,
-                            gpstk::CarrierBand::L2, gpstk::TrackingCode::L2CM,
-                            gpstk::NavType::GPSCNAVL2),
-      gpstk::NavMessageType::Health);
-   gpstk::NavMessageID nmidExpHeaL5(
-      gpstk::NavSatelliteID(195, 193, gpstk::SatelliteSystem::QZSS,
-                            gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
-                            gpstk::NavType::GPSCNAVL5),
-      gpstk::NavMessageType::Health);
-   gpstk::NavMessageID nmidExpAlm(
-      gpstk::NavSatelliteID(195, 193, gpstk::SatelliteSystem::QZSS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::Almanac);
-   gpstk::CommonTime toeExp = gpstk::GPSWeekSecond(2155,520192,
-                                                   gpstk::TimeSystem::QZS);
-   gpstk::CommonTime beginExp = sf3p4CNAV2QZSSct;
-   gpstk::CommonTime endExp = gpstk::CommonTime::END_OF_TIME;
-   gpstk::NavDataPtrList navOut;
-   gpstk::GPSCNav2Health *hea;
-   gpstk::GPSCNav2Alm *alm;
-   endExp.setTimeSystem(gpstk::TimeSystem::QZS);
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavMessageID nmidExpHeaL1(
+      gnsstk::NavSatelliteID(195, 193, gnsstk::SatelliteSystem::QZSS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::Health);
+   gnsstk::NavMessageID nmidExpHeaL2(
+      gnsstk::NavSatelliteID(195, 193, gnsstk::SatelliteSystem::QZSS,
+                            gnsstk::CarrierBand::L2, gnsstk::TrackingCode::L2CM,
+                            gnsstk::NavType::GPSCNAVL2),
+      gnsstk::NavMessageType::Health);
+   gnsstk::NavMessageID nmidExpHeaL5(
+      gnsstk::NavSatelliteID(195, 193, gnsstk::SatelliteSystem::QZSS,
+                            gnsstk::CarrierBand::L5, gnsstk::TrackingCode::L5I,
+                            gnsstk::NavType::GPSCNAVL5),
+      gnsstk::NavMessageType::Health);
+   gnsstk::NavMessageID nmidExpAlm(
+      gnsstk::NavSatelliteID(195, 193, gnsstk::SatelliteSystem::QZSS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::Almanac);
+   gnsstk::CommonTime toeExp = gnsstk::GPSWeekSecond(2155,520192,
+                                                   gnsstk::TimeSystem::QZS);
+   gnsstk::CommonTime beginExp = sf3p4CNAV2QZSSct;
+   gnsstk::CommonTime endExp = gnsstk::CommonTime::END_OF_TIME;
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GPSCNav2Health *hea;
+   gnsstk::GPSCNav2Alm *alm;
+   endExp.setTimeSystem(gnsstk::TimeSystem::QZS);
       // success, health and almanac
    TUASSERTE(bool, true, uut.processAlmOrb(sf3p4CNAV2QZSS, navOut));
    for (const auto& i : navOut)
    {
-      if ((hea = dynamic_cast<gpstk::GPSCNav2Health*>(i.get())) != nullptr)
+      if ((hea = dynamic_cast<gnsstk::GPSCNav2Health*>(i.get())) != nullptr)
       {
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, sf3p4CNAV2QZSSct, hea->timeStamp);
+         TUASSERTE(gnsstk::CommonTime, sf3p4CNAV2QZSSct, hea->timeStamp);
          bool expHea = false;
          switch (hea->signal.nav)
          {
-            case gpstk::NavType::GPSCNAV2:
-               TUASSERTE(gpstk::NavMessageID, nmidExpHeaL1, hea->signal);
+            case gnsstk::NavType::GPSCNAV2:
+               TUASSERTE(gnsstk::NavMessageID, nmidExpHeaL1, hea->signal);
                break;
-            case gpstk::NavType::GPSCNAVL2:
-               TUASSERTE(gpstk::NavMessageID, nmidExpHeaL2, hea->signal);
+            case gnsstk::NavType::GPSCNAVL2:
+               TUASSERTE(gnsstk::NavMessageID, nmidExpHeaL2, hea->signal);
                break;
-            case gpstk::NavType::GPSCNAVL5:
-               TUASSERTE(gpstk::NavMessageID, nmidExpHeaL5, hea->signal);
+            case gnsstk::NavType::GPSCNAVL5:
+               TUASSERTE(gnsstk::NavMessageID, nmidExpHeaL5, hea->signal);
                break;
             default:
                TUFAIL("Unexpected nav type: " +
-                      gpstk::StringUtils::asString(hea->signal.nav));
+                      gnsstk::StringUtils::asString(hea->signal.nav));
                break;
          }
             // NavHealthData has no fields
             // GPSCNav2Health
          TUASSERTE(bool, expHea, hea->health);
       }
-      else if ((alm = dynamic_cast<gpstk::GPSCNav2Alm*>(i.get())) != nullptr)
+      else if ((alm = dynamic_cast<gnsstk::GPSCNav2Alm*>(i.get())) != nullptr)
       {
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, sf3p4CNAV2QZSSct, alm->timeStamp);
-         TUASSERTE(gpstk::NavMessageID, nmidExpAlm, alm->signal);
+         TUASSERTE(gnsstk::CommonTime, sf3p4CNAV2QZSSct, alm->timeStamp);
+         TUASSERTE(gnsstk::NavMessageID, nmidExpAlm, alm->signal);
             // OrbitData has no fields
             // OrbitDataKepler fields
-         TUASSERTE(gpstk::CommonTime, sf3p4CNAV2QZSSct, alm->xmitTime);
-         TUASSERTE(gpstk::CommonTime, toeExp, alm->Toe);
-         TUASSERTE(gpstk::CommonTime, toeExp, alm->Toc); // same value as toe
-         TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, alm->health);
+         TUASSERTE(gnsstk::CommonTime, sf3p4CNAV2QZSSct, alm->xmitTime);
+         TUASSERTE(gnsstk::CommonTime, toeExp, alm->Toe);
+         TUASSERTE(gnsstk::CommonTime, toeExp, alm->Toc); // same value as toe
+         TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Healthy, alm->health);
          TUASSERTFE(0, alm->Cuc);
          TUASSERTFE(0, alm->Cus);
          TUASSERTFE(0, alm->Crc);
@@ -729,15 +729,15 @@ processAlmOrbQZSSTest()
          TUASSERTFE( 6.4934375000E+03*6.4934375000E+03, alm->A);
          TUASSERTFE(0, alm->Adot);
          TUASSERTFE( 2.6930950207317287948E+00, alm->OMEGA0);
-         TUASSERTFE((0.25*gpstk::PI)-7.2672339826082246739E-02, alm->i0);
+         TUASSERTFE((0.25*gnsstk::PI)-7.2672339826082246739E-02, alm->i0);
          TUASSERTFE(-1.5638934132494111129E+00, alm->w);
          TUASSERTFE(-2.5601066387E-09, alm->OMEGAdot);
          TUASSERTFE(0, alm->idot);
          TUASSERTFE(-4.7683715820E-06, alm->af0);
          TUASSERTFE( 0.0000000000E+00, alm->af1);
          TUASSERTFE(0, alm->af2);
-         TUASSERTE(gpstk::CommonTime, beginExp, alm->beginFit);
-         TUASSERTE(gpstk::CommonTime, endExp, alm->endFit);
+         TUASSERTE(gnsstk::CommonTime, beginExp, alm->beginFit);
+         TUASSERTE(gnsstk::CommonTime, endExp, alm->endFit);
             // GPSCNavAlm fields
          TUASSERTE(bool, false, alm->healthL1);
          TUASSERTE(bool, false, alm->healthL2);
@@ -757,28 +757,28 @@ processUTCIonoQZSSTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "processUTCIono");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavMessageID nmidExp(
-      gpstk::NavSatelliteID(193, 193, gpstk::SatelliteSystem::QZSS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::TimeOffset);
-   gpstk::NavDataPtrList navOut;
-   gpstk::GPSCNav2TimeOffset *to;
-   gpstk::GPSCNav2Iono *iono;
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavMessageID nmidExp(
+      gnsstk::NavSatelliteID(193, 193, gnsstk::SatelliteSystem::QZSS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::TimeOffset);
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GPSCNav2TimeOffset *to;
+   gnsstk::GPSCNav2Iono *iono;
       // success, time offset and iono
    TUASSERTE(bool, true, uut.processUTCIono(sf3p1CNAV2QZSS, navOut));
    for (const auto& i : navOut)
    {
-      if ((to = dynamic_cast<gpstk::GPSCNav2TimeOffset*>(i.get())) != nullptr)
+      if ((to = dynamic_cast<gnsstk::GPSCNav2TimeOffset*>(i.get())) != nullptr)
       {
-         nmidExp.messageType = gpstk::NavMessageType::TimeOffset;
+         nmidExp.messageType = gnsstk::NavMessageType::TimeOffset;
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, sf3p1CNAV2QZSSct, to->timeStamp);
-         TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
+         TUASSERTE(gnsstk::CommonTime, sf3p1CNAV2QZSSct, to->timeStamp);
+         TUASSERTE(gnsstk::NavMessageID, nmidExp, to->signal);
             // TimeOffsetData has no fields
             // GPSCNav2TimeOffset
-         TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::UTC, to->tgt);
+         TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::UTC, to->tgt);
          TUASSERTFE(-1.0390067473e-08, to->a0);
          TUASSERTFE( 0.0000000000e+00, to->a1);
          TUASSERTFE( 0.0000000000e+00, to->a2);
@@ -786,19 +786,19 @@ processUTCIonoQZSSTest()
          TUASSERTFE(529200, to->tot);
          TUASSERTE(unsigned, 2155, to->wnot);
          TUASSERTE(unsigned, 1929, to->wnLSF);
-         TUASSERTE(gpstk::CommonTime,
-                   gpstk::GPSWeekSecond(
-                      2155,529200,gpstk::TimeSystem::QZS).convertToCommonTime(),
+         TUASSERTE(gnsstk::CommonTime,
+                   gnsstk::GPSWeekSecond(
+                      2155,529200,gnsstk::TimeSystem::QZS).convertToCommonTime(),
                    to->refTime);
          TUASSERTE(unsigned, 7, to->dn);
          TUASSERTFE(18, to->deltatLSF);
       }
-      else if ((iono = dynamic_cast<gpstk::GPSCNav2Iono*>(i.get())) != nullptr)
+      else if ((iono = dynamic_cast<gnsstk::GPSCNav2Iono*>(i.get())) != nullptr)
       {
-         nmidExp.messageType = gpstk::NavMessageType::Iono;
+         nmidExp.messageType = gnsstk::NavMessageType::Iono;
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, sf3p1CNAV2QZSSct, iono->timeStamp);
-         TUASSERTE(gpstk::NavMessageID, nmidExp, iono->signal);
+         TUASSERTE(gnsstk::CommonTime, sf3p1CNAV2QZSSct, iono->timeStamp);
+         TUASSERTE(gnsstk::NavMessageID, nmidExp, iono->signal);
          TUASSERTFE( 1.303851600e-08, iono->alpha[0]);
          TUASSERTFE( 0.000000000e+00, iono->alpha[1]);
          TUASSERTFE(-4.172325133e-07, iono->alpha[2]);
@@ -819,29 +819,29 @@ processGGTOEOPQZSSTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "processGGTOEOP");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavMessageID nmidExp(
-      gpstk::NavSatelliteID(193, 193, gpstk::SatelliteSystem::QZSS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::TimeOffset);
-   gpstk::NavDataPtrList navOut;
-   gpstk::GPSCNav2TimeOffset *to;
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavMessageID nmidExp(
+      gnsstk::NavSatelliteID(193, 193, gnsstk::SatelliteSystem::QZSS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::TimeOffset);
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GPSCNav2TimeOffset *to;
       // make sure we have at least the right number of bits
    TUASSERTE(size_t, 274, sf3p2CNAV2QZSS->getNumBits());
       // success, time offset only
    TUASSERTE(bool, true, uut.processGGTOEOP(sf3p2CNAV2QZSS, navOut));
    for (const auto& i : navOut)
    {
-      if ((to = dynamic_cast<gpstk::GPSCNav2TimeOffset*>(i.get())) != nullptr)
+      if ((to = dynamic_cast<gnsstk::GPSCNav2TimeOffset*>(i.get())) != nullptr)
       {
             // NavData fields
-         TUASSERTE(gpstk::CommonTime, sf3p2CNAV2QZSSct, to->timeStamp);
-         TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
+         TUASSERTE(gnsstk::CommonTime, sf3p2CNAV2QZSSct, to->timeStamp);
+         TUASSERTE(gnsstk::NavMessageID, nmidExp, to->signal);
             // TimeOffsetData has no fields
             // GPSCNav2TimeOffset
-         TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::QZS, to->tgt);
-         TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::GPS, to->src);
+         TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::QZS, to->tgt);
+         TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GPS, to->src);
          TUASSERTFE(0, to->a0);
          TUASSERTFE(0, to->a1);
          TUASSERTFE(0, to->a2);
@@ -849,9 +849,9 @@ processGGTOEOPQZSSTest()
          TUASSERTFE(356400, to->tot);
          TUASSERTE(unsigned, 2155, to->wnot);
          TUASSERTE(unsigned, 0, to->wnLSF);
-         TUASSERTE(gpstk::CommonTime,
-                   gpstk::GPSWeekSecond(
-                      2155,356400,gpstk::TimeSystem::QZS).convertToCommonTime(),
+         TUASSERTE(gnsstk::CommonTime,
+                   gnsstk::GPSWeekSecond(
+                      2155,356400,gnsstk::TimeSystem::QZS).convertToCommonTime(),
                    to->refTime);
          TUASSERTE(unsigned, 0, to->dn);
          TUASSERTFE(0, to->deltatLSF);
@@ -867,14 +867,14 @@ processISCTest()
 {
    TUDEF("PNBGPSCNav2DataFactory", "processISC");
    GPSFactoryCounter fc(testFramework);
-   gpstk::PNBGPSCNav2DataFactory uut;
-   gpstk::NavMessageID nmidExp(
-      gpstk::NavSatelliteID(4, 4, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::ISC);
-   gpstk::NavDataPtrList navOut;
-   gpstk::GPSCNav2ISC *isc;
+   gnsstk::PNBGPSCNav2DataFactory uut;
+   gnsstk::NavMessageID nmidExp(
+      gnsstk::NavSatelliteID(4, 4, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::ISC);
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GPSCNav2ISC *isc;
       // test sequences:
       // SF2, SF2
       // SF2, SF3 (pg2), SF3 (pg1)
@@ -884,11 +884,11 @@ processISCTest()
    TUASSERTE(bool, true, uut.processISC(sf2CNAV2GPS, navOut));
    fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.processISC(sf2CNAV2GPS2, navOut));
-   if ((isc = dynamic_cast<gpstk::GPSCNav2ISC*>(navOut.begin()->get()))
+   if ((isc = dynamic_cast<gnsstk::GPSCNav2ISC*>(navOut.begin()->get()))
        != nullptr)
    {
-      TUASSERTE(gpstk::CommonTime, sf2CNAV2GPSct, isc->timeStamp);
-      TUASSERTE(gpstk::NavMessageID, nmidExp, isc->signal);
+      TUASSERTE(gnsstk::CommonTime, sf2CNAV2GPSct, isc->timeStamp);
+      TUASSERTE(gnsstk::NavMessageID, nmidExp, isc->signal);
       TUASSERTE(bool, true, isc->haveSF2);
       TUASSERTE(bool, false, isc->haveSF3);
       TUASSERTFE(-8.78935679793358e-09, isc->isc);
@@ -905,11 +905,11 @@ processISCTest()
    fc.validateResults(navOut, __LINE__);
       // Add a subframe 3 page 1
    TUASSERTE(bool, true, uut.processISC(sf3p1CNAV2GPS, navOut));
-   if ((isc = dynamic_cast<gpstk::GPSCNav2ISC*>(navOut.begin()->get()))
+   if ((isc = dynamic_cast<gnsstk::GPSCNav2ISC*>(navOut.begin()->get()))
        != nullptr)
    {
-      TUASSERTE(gpstk::CommonTime, sf3p1CNAV2GPSct, isc->timeStamp);
-      TUASSERTE(gpstk::NavMessageID, nmidExp, isc->signal);
+      TUASSERTE(gnsstk::CommonTime, sf3p1CNAV2GPSct, isc->timeStamp);
+      TUASSERTE(gnsstk::NavMessageID, nmidExp, isc->signal);
       TUASSERTE(bool, true, isc->haveSF2);
       TUASSERTE(bool, true, isc->haveSF3);
       TUASSERTFE(-8.78935679793358e-09, isc->isc);
@@ -926,11 +926,11 @@ processISCTest()
    TUASSERTE(bool, true, uut.processISC(sf3p1CNAV2GPS, navOut));
    fc.validateResults(navOut, __LINE__);
    TUASSERTE(bool, true, uut.processISC(sf2CNAV2GPS2, navOut));
-   if ((isc = dynamic_cast<gpstk::GPSCNav2ISC*>(navOut.begin()->get()))
+   if ((isc = dynamic_cast<gnsstk::GPSCNav2ISC*>(navOut.begin()->get()))
        != nullptr)
    {
-      TUASSERTE(gpstk::CommonTime, sf2CNAV2GPS2ct, isc->timeStamp);
-      TUASSERTE(gpstk::NavMessageID, nmidExp, isc->signal);
+      TUASSERTE(gnsstk::CommonTime, sf2CNAV2GPS2ct, isc->timeStamp);
+      TUASSERTE(gnsstk::NavMessageID, nmidExp, isc->signal);
       TUASSERTE(bool, true, isc->haveSF2);
       TUASSERTE(bool, true, isc->haveSF3);
       TUASSERTFE(-8.78935679793358e-09, isc->isc);
@@ -945,7 +945,7 @@ processISCTest()
       // SF123
    uut.resetState();
    TUASSERTE(bool, true, uut.processISC(sf123p1CNAV2GPS, navOut));
-   if ((isc = dynamic_cast<gpstk::GPSCNav2ISC*>(navOut.begin()->get()))
+   if ((isc = dynamic_cast<gnsstk::GPSCNav2ISC*>(navOut.begin()->get()))
        != nullptr)
    {
       validateISCGPS(testFramework, isc);
@@ -956,28 +956,28 @@ processISCTest()
 
 
 void PNBGPSCNav2DataFactory_T ::
-validateEphGPS(gpstk::TestUtil& testFramework,
-               const gpstk::GPSCNav2Eph* eph,
-               const gpstk::CommonTime& expTime)
+validateEphGPS(gnsstk::TestUtil& testFramework,
+               const gnsstk::GPSCNav2Eph* eph,
+               const gnsstk::CommonTime& expTime)
 {
-   gpstk::NavMessageID nmidExpEph(
-      gpstk::NavSatelliteID(4, 4, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::Ephemeris);
-   gpstk::CommonTime toeExp = gpstk::GPSWeekSecond(2049,351000.0);
-   gpstk::CommonTime topExp = gpstk::GPSWeekSecond(2049,321300.0);
-   gpstk::CommonTime beginExp = gpstk::GPSWeekSecond(2049,345600.0);
-   gpstk::CommonTime endExp = gpstk::GPSWeekSecond(2049,356400.0);
+   gnsstk::NavMessageID nmidExpEph(
+      gnsstk::NavSatelliteID(4, 4, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::Ephemeris);
+   gnsstk::CommonTime toeExp = gnsstk::GPSWeekSecond(2049,351000.0);
+   gnsstk::CommonTime topExp = gnsstk::GPSWeekSecond(2049,321300.0);
+   gnsstk::CommonTime beginExp = gnsstk::GPSWeekSecond(2049,345600.0);
+   gnsstk::CommonTime endExp = gnsstk::GPSWeekSecond(2049,356400.0);
       // NavData fields
-   TUASSERTE(gpstk::CommonTime, expTime, eph->timeStamp);
-   TUASSERTE(gpstk::NavMessageID, nmidExpEph, eph->signal);
+   TUASSERTE(gnsstk::CommonTime, expTime, eph->timeStamp);
+   TUASSERTE(gnsstk::NavMessageID, nmidExpEph, eph->signal);
       // OrbitData has no fields
       // OrbitDataKepler fields
-   TUASSERTE(gpstk::CommonTime, expTime, eph->xmitTime);
-   TUASSERTE(gpstk::CommonTime, toeExp, eph->Toe);
-   TUASSERTE(gpstk::CommonTime, toeExp, eph->Toc); // same value as toe
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, eph->health);
+   TUASSERTE(gnsstk::CommonTime, expTime, eph->xmitTime);
+   TUASSERTE(gnsstk::CommonTime, toeExp, eph->Toe);
+   TUASSERTE(gnsstk::CommonTime, toeExp, eph->Toc); // same value as toe
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Unhealthy, eph->health);
    TUASSERTFE(1.52643770E-06, eph->Cuc);
    TUASSERTFE(1.529045403003692627E-05, eph->Cus);
    TUASSERTFE(8.210546875E+01, eph->Crc);
@@ -999,8 +999,8 @@ validateEphGPS(gpstk::TestUtil& testFramework,
    TUASSERTFE(1.5038633137010037899E-04, eph->af0);
    TUASSERTFE(4.96669372E-12, eph->af1);
    TUASSERTFE(0, eph->af2);
-   TUASSERTE(gpstk::CommonTime, beginExp, eph->beginFit);
-   TUASSERTE(gpstk::CommonTime, endExp, eph->endFit);
+   TUASSERTE(gnsstk::CommonTime, beginExp, eph->beginFit);
+   TUASSERTE(gnsstk::CommonTime, endExp, eph->endFit);
       // GPSCNavEph fields
    TUASSERTE(bool, true, eph->healthL1C);
    TUASSERTE(int, -3, eph->uraED);
@@ -1010,7 +1010,7 @@ validateEphGPS(gpstk::TestUtil& testFramework,
    TUASSERTE(bool, false, eph->integStat);
    TUASSERTFE(1830.14453125, eph->deltaA);
    TUASSERTFE(3.2554927471973048162e-10, eph->dOMEGAdot);
-   TUASSERTE(gpstk::CommonTime, topExp, eph->top);
+   TUASSERTE(gnsstk::CommonTime, topExp, eph->top);
    TUASSERTFE(-8.7893567979335784912e-09, eph->tgd);
    TUASSERTFE(-7.85803422E-10, eph->iscL1CP);
    TUASSERTFE(-3.49245965E-10, eph->iscL1CD);
@@ -1018,20 +1018,20 @@ validateEphGPS(gpstk::TestUtil& testFramework,
 
 
 void PNBGPSCNav2DataFactory_T ::
-validateTOGPS(gpstk::TestUtil& testFramework,
-              const gpstk::GPSCNav2TimeOffset* to)
+validateTOGPS(gnsstk::TestUtil& testFramework,
+              const gnsstk::GPSCNav2TimeOffset* to)
 {
-   gpstk::NavMessageID nmidExp(
-      gpstk::NavSatelliteID(4, 4, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::TimeOffset);
+   gnsstk::NavMessageID nmidExp(
+      gnsstk::NavSatelliteID(4, 4, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::TimeOffset);
       // NavData fields
-   TUASSERTE(gpstk::CommonTime, sf3p1CNAV2GPSct, to->timeStamp);
-   TUASSERTE(gpstk::NavMessageID, nmidExp, to->signal);
+   TUASSERTE(gnsstk::CommonTime, sf3p1CNAV2GPSct, to->timeStamp);
+   TUASSERTE(gnsstk::NavMessageID, nmidExp, to->signal);
       // TimeOffsetData has no fields
       // GPSCNav2TimeOffset
-   TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::UTC, to->tgt);
+   TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::UTC, to->tgt);
    TUASSERTFE(6.5192580223e-09, to->a0);
    TUASSERTFE(1.5099033135e-14, to->a1);
    TUASSERTFE(0, to->a2);
@@ -1039,8 +1039,8 @@ validateTOGPS(gpstk::TestUtil& testFramework,
    TUASSERTFE(503808, to->tot);
    TUASSERTE(unsigned, 2049, to->wnot);
    TUASSERTE(unsigned, 1929, to->wnLSF);
-   TUASSERTE(gpstk::CommonTime,
-             gpstk::GPSWeekSecond(2049,503808).convertToCommonTime(),
+   TUASSERTE(gnsstk::CommonTime,
+             gnsstk::GPSWeekSecond(2049,503808).convertToCommonTime(),
              to->refTime);
    TUASSERTE(unsigned, 7, to->dn);
    TUASSERTFE(18, to->deltatLSF);
@@ -1048,19 +1048,19 @@ validateTOGPS(gpstk::TestUtil& testFramework,
 
 
 void PNBGPSCNav2DataFactory_T ::
-validateEphHealthGPS(gpstk::TestUtil& testFramework,
-                     const gpstk::GPSCNav2Health* hea,
-                     const gpstk::CommonTime& expTime)
+validateEphHealthGPS(gnsstk::TestUtil& testFramework,
+                     const gnsstk::GPSCNav2Health* hea,
+                     const gnsstk::CommonTime& expTime)
 {
-   gpstk::NavMessageID nmidExp(
-      gpstk::NavSatelliteID(4, 4, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::Health);
+   gnsstk::NavMessageID nmidExp(
+      gnsstk::NavSatelliteID(4, 4, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::Health);
       // NavData fields
-   TUASSERTE(gpstk::CommonTime, expTime, hea->timeStamp);
-   TUASSERTE(gpstk::NavType, gpstk::NavType::GPSCNAV2, hea->signal.nav);
-   TUASSERTE(gpstk::NavMessageID, nmidExp, hea->signal);
+   TUASSERTE(gnsstk::CommonTime, expTime, hea->timeStamp);
+   TUASSERTE(gnsstk::NavType, gnsstk::NavType::GPSCNAV2, hea->signal.nav);
+   TUASSERTE(gnsstk::NavMessageID, nmidExp, hea->signal);
       // NavHealthData has no fields
       // GPSCNav2Health
    TUASSERTE(bool, true, hea->health);
@@ -1068,45 +1068,45 @@ validateEphHealthGPS(gpstk::TestUtil& testFramework,
 
 
 void PNBGPSCNav2DataFactory_T ::
-validateAlmHealthGPS(gpstk::TestUtil& testFramework,
-                     const gpstk::GPSCNav2Health* hea,
-                     const gpstk::CommonTime& expTime)
+validateAlmHealthGPS(gnsstk::TestUtil& testFramework,
+                     const gnsstk::GPSCNav2Health* hea,
+                     const gnsstk::CommonTime& expTime)
 {
       // NavData fields
-   TUASSERTE(gpstk::CommonTime, expTime, hea->timeStamp);
-   gpstk::NavMessageID nmidExpHeaL1(
-      gpstk::NavSatelliteID(2, 4, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::Health);
-   gpstk::NavMessageID nmidExpHeaL2(
-      gpstk::NavSatelliteID(2, 4, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L2, gpstk::TrackingCode::L2CM,
-                            gpstk::NavType::GPSCNAVL2),
-      gpstk::NavMessageType::Health);
-   gpstk::NavMessageID nmidExpHeaL5(
-      gpstk::NavSatelliteID(2, 4, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
-                            gpstk::NavType::GPSCNAVL5),
-      gpstk::NavMessageType::Health);
+   TUASSERTE(gnsstk::CommonTime, expTime, hea->timeStamp);
+   gnsstk::NavMessageID nmidExpHeaL1(
+      gnsstk::NavSatelliteID(2, 4, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::Health);
+   gnsstk::NavMessageID nmidExpHeaL2(
+      gnsstk::NavSatelliteID(2, 4, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L2, gnsstk::TrackingCode::L2CM,
+                            gnsstk::NavType::GPSCNAVL2),
+      gnsstk::NavMessageType::Health);
+   gnsstk::NavMessageID nmidExpHeaL5(
+      gnsstk::NavSatelliteID(2, 4, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L5, gnsstk::TrackingCode::L5I,
+                            gnsstk::NavType::GPSCNAVL5),
+      gnsstk::NavMessageType::Health);
    bool expHea;
    switch (hea->signal.nav)
    {
-      case gpstk::NavType::GPSCNAV2:
-         TUASSERTE(gpstk::NavMessageID, nmidExpHeaL1, hea->signal);
+      case gnsstk::NavType::GPSCNAV2:
+         TUASSERTE(gnsstk::NavMessageID, nmidExpHeaL1, hea->signal);
          expHea = false;
          break;
-      case gpstk::NavType::GPSCNAVL2:
-         TUASSERTE(gpstk::NavMessageID, nmidExpHeaL2, hea->signal);
+      case gnsstk::NavType::GPSCNAVL2:
+         TUASSERTE(gnsstk::NavMessageID, nmidExpHeaL2, hea->signal);
          expHea = false;
          break;
-      case gpstk::NavType::GPSCNAVL5:
-         TUASSERTE(gpstk::NavMessageID, nmidExpHeaL5, hea->signal);
+      case gnsstk::NavType::GPSCNAVL5:
+         TUASSERTE(gnsstk::NavMessageID, nmidExpHeaL5, hea->signal);
          expHea = true;
          break;
       default:
          TUFAIL("Unexpected nav type: " +
-                gpstk::StringUtils::asString(hea->signal.nav));
+                gnsstk::StringUtils::asString(hea->signal.nav));
          break;
    }
       // NavHealthData has no fields
@@ -1116,18 +1116,18 @@ validateAlmHealthGPS(gpstk::TestUtil& testFramework,
 
 
 void PNBGPSCNav2DataFactory_T ::
-validateIonoGPS(gpstk::TestUtil& testFramework,
-                const gpstk::GPSCNav2Iono* iono)
+validateIonoGPS(gnsstk::TestUtil& testFramework,
+                const gnsstk::GPSCNav2Iono* iono)
 {
-   gpstk::NavMessageID nmidExp(
-      gpstk::NavSatelliteID(4, 4, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::Iono);
-   nmidExp.messageType = gpstk::NavMessageType::Iono;
+   gnsstk::NavMessageID nmidExp(
+      gnsstk::NavSatelliteID(4, 4, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::Iono);
+   nmidExp.messageType = gnsstk::NavMessageType::Iono;
       // NavData fields
-   TUASSERTE(gpstk::CommonTime, sf3p1CNAV2GPSct, iono->timeStamp);
-   TUASSERTE(gpstk::NavMessageID, nmidExp, iono->signal);
+   TUASSERTE(gnsstk::CommonTime, sf3p1CNAV2GPSct, iono->timeStamp);
+   TUASSERTE(gnsstk::NavMessageID, nmidExp, iono->signal);
    TUASSERTFE( 1.024454830e-08, iono->alpha[0]);
    TUASSERTFE( 1.490116118e-08, iono->alpha[1]);
    TUASSERTFE(-5.960464478e-08, iono->alpha[2]);
@@ -1140,18 +1140,18 @@ validateIonoGPS(gpstk::TestUtil& testFramework,
 
 
 void PNBGPSCNav2DataFactory_T ::
-validateISCGPS(gpstk::TestUtil& testFramework,
-               const gpstk::GPSCNav2ISC* isc)
+validateISCGPS(gnsstk::TestUtil& testFramework,
+               const gnsstk::GPSCNav2ISC* isc)
 {
-   gpstk::NavMessageID nmidExp(
-      gpstk::NavSatelliteID(4, 4, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::ISC);
-   TUASSERTE(gpstk::CommonTime, sf123p1CNAV2GPSct+12.52, isc->timeStamp);
-   TUASSERTE(gpstk::CommonTime, sf123p1CNAV2GPSct+0.52, isc->xmit2);
-   TUASSERTE(gpstk::CommonTime, sf123p1CNAV2GPSct+12.52, isc->xmit3);
-   TUASSERTE(gpstk::NavMessageID, nmidExp, isc->signal);
+   gnsstk::NavMessageID nmidExp(
+      gnsstk::NavSatelliteID(4, 4, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::ISC);
+   TUASSERTE(gnsstk::CommonTime, sf123p1CNAV2GPSct+12.52, isc->timeStamp);
+   TUASSERTE(gnsstk::CommonTime, sf123p1CNAV2GPSct+0.52, isc->xmit2);
+   TUASSERTE(gnsstk::CommonTime, sf123p1CNAV2GPSct+12.52, isc->xmit3);
+   TUASSERTE(gnsstk::NavMessageID, nmidExp, isc->signal);
    TUASSERTE(bool, true, isc->haveSF2);
    TUASSERTE(bool, true, isc->haveSF3);
    TUASSERTFE(-8.78935679793358e-09, isc->isc);
@@ -1165,28 +1165,28 @@ validateISCGPS(gpstk::TestUtil& testFramework,
 
 
 void PNBGPSCNav2DataFactory_T ::
-validateAlmGPS(gpstk::TestUtil& testFramework,
-               const gpstk::GPSCNav2Alm* alm,
-               const gpstk::CommonTime& expTime)
+validateAlmGPS(gnsstk::TestUtil& testFramework,
+               const gnsstk::GPSCNav2Alm* alm,
+               const gnsstk::CommonTime& expTime)
 {
-   gpstk::NavMessageID nmidExpAlm(
-      gpstk::NavSatelliteID(2, 4, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L1, gpstk::TrackingCode::L1CD,
-                            gpstk::NavType::GPSCNAV2),
-      gpstk::NavMessageType::Almanac);
-   gpstk::CommonTime toeExp = gpstk::GPSWeekSecond(2049,503808.0);
-   gpstk::CommonTime beginExp = expTime;
-   gpstk::CommonTime endExp = gpstk::CommonTime::END_OF_TIME;
-   endExp.setTimeSystem(gpstk::TimeSystem::GPS);
+   gnsstk::NavMessageID nmidExpAlm(
+      gnsstk::NavSatelliteID(2, 4, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
+                            gnsstk::NavType::GPSCNAV2),
+      gnsstk::NavMessageType::Almanac);
+   gnsstk::CommonTime toeExp = gnsstk::GPSWeekSecond(2049,503808.0);
+   gnsstk::CommonTime beginExp = expTime;
+   gnsstk::CommonTime endExp = gnsstk::CommonTime::END_OF_TIME;
+   endExp.setTimeSystem(gnsstk::TimeSystem::GPS);
       // NavData fields
-   TUASSERTE(gpstk::CommonTime, expTime, alm->timeStamp);
-   TUASSERTE(gpstk::NavMessageID, nmidExpAlm, alm->signal);
+   TUASSERTE(gnsstk::CommonTime, expTime, alm->timeStamp);
+   TUASSERTE(gnsstk::NavMessageID, nmidExpAlm, alm->signal);
       // OrbitData has no fields
       // OrbitDataKepler fields
-   TUASSERTE(gpstk::CommonTime, expTime, alm->xmitTime);
-   TUASSERTE(gpstk::CommonTime, toeExp, alm->Toe);
-   TUASSERTE(gpstk::CommonTime, toeExp, alm->Toc); // same value as toe
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, alm->health);
+   TUASSERTE(gnsstk::CommonTime, expTime, alm->xmitTime);
+   TUASSERTE(gnsstk::CommonTime, toeExp, alm->Toe);
+   TUASSERTE(gnsstk::CommonTime, toeExp, alm->Toc); // same value as toe
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Healthy, alm->health);
    TUASSERTFE(0, alm->Cuc);
    TUASSERTFE(0, alm->Cus);
    TUASSERTFE(0, alm->Crc);
@@ -1208,8 +1208,8 @@ validateAlmGPS(gpstk::TestUtil& testFramework,
    TUASSERTFE(-1.926422119140625E-04, alm->af0);
    TUASSERTFE(-7.2759576142E-12, alm->af1);
    TUASSERTFE(0, alm->af2);
-   TUASSERTE(gpstk::CommonTime, beginExp, alm->beginFit);
-   TUASSERTE(gpstk::CommonTime, endExp, alm->endFit);
+   TUASSERTE(gnsstk::CommonTime, beginExp, alm->beginFit);
+   TUASSERTE(gnsstk::CommonTime, endExp, alm->endFit);
       // GPSCNavAlm fields
    TUASSERTE(bool, false, alm->healthL1);
    TUASSERTE(bool, false, alm->healthL2);

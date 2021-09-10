@@ -1,10 +1,10 @@
-# RinDump, part of the GPS Toolkit, Ver 2.3 8/26/15, Run 2016/09/16 11:40:55
+# RinDump, part of the GNSS Toolkit, Ver 2.3 8/26/15, Run 2016/09/16 11:40:55
 # Allow systems GPS GLO
-# Input file(s) /home/littlej/git/gpstk/data/inputs/igs/faa1170b00.16o
+# Input file(s) /home/littlej/git/gnsstk/data/inputs/igs/faa1170b00.16o
 # Satellites All
 # Data SC5X EC1B RC1C GC1C
 # RINEX version: file 2.11 / output 2.11
-# RinDump output for file /home/littlej/git/gpstk/data/inputs/igs/faa1170b00.16o
+# RinDump output for file /home/littlej/git/gnsstk/data/inputs/igs/faa1170b00.16o
 # wk secs-of-wk sat      SC5X          EC1B          RC1C          GC1C    
 1901 522000.000 G05         0.000         0.000         0.000  24386338.634
 1901 522000.000 G10         0.000         0.000         0.000  24193715.219

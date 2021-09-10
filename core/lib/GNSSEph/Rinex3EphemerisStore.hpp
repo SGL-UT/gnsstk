@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -40,8 +40,8 @@
  * navigation message (Rinex3Nav) data, following the RINEX 3.02
  * spec. Support for GNSS GPS, GAL, GLO, BDS, QZS (GEO TBD). */
 
-#ifndef GPSTK_RINEX3EPHEMERISSTORE_HPP
-#define GPSTK_RINEX3EPHEMERISSTORE_HPP
+#ifndef GNSSTK_RINEX3EPHEMERISSTORE_HPP
+#define GNSSTK_RINEX3EPHEMERISSTORE_HPP
 
 #include <iostream>
 #include <string>
@@ -66,7 +66,7 @@
 #include "GloEphemerisStore.hpp"
 //#include "GeoEphemerisStore.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup GNSSEph
       //@{
@@ -457,16 +457,16 @@ namespace gpstk
          ORBstore.SearchUser();
       }
 
-      virtual std::set<gpstk::SatID> getIndexSet() const
+      virtual std::set<gnsstk::SatID> getIndexSet() const
       {
-         std::set<gpstk::SatID> retSet;
+         std::set<gnsstk::SatID> retSet;
          retSet = ORBstore.getIndexSet();
-         std::set<gpstk::SatID> set2;
+         std::set<gnsstk::SatID> set2;
          set2 = GLOstore.getIndexSet();
-         std::set<gpstk::SatID>::const_iterator cit;
+         std::set<gnsstk::SatID>::const_iterator cit;
          for (cit=set2.begin();cit!=set2.end();cit++)
          {
-            const gpstk::SatID sidr = *cit;
+            const gnsstk::SatID sidr = *cit;
             retSet.insert(sidr);
          }
          return retSet;
@@ -478,4 +478,4 @@ namespace gpstk
 
 }  // namespace
 
-#endif // GPSTK_RINEX3EPHEMERISSTORE_HPP
+#endif // GNSSTK_RINEX3EPHEMERISSTORE_HPP

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -46,12 +46,12 @@
 
 //------------------------------------------------------------------------------------
 // system includes
-// GPSTk
+// GNSSTk
 #include "Vector.hpp"
 #include "Matrix.hpp"
 // geomatics
 
-namespace gpstk
+namespace gnsstk
 {
 
    //---------------------------------------------------------------------------------
@@ -134,7 +134,7 @@ namespace gpstk
                << R.rows() << "x" << R.cols() << ",\n  Z has length "
                << Z.size() << ",\n  and A has dimension "
                << A.rows() << "x" << A.cols();
-            GPSTK_THROW(MatrixException(oss.str()));
+            GNSSTK_THROW(MatrixException(oss.str()));
          }
       }
    
@@ -213,7 +213,7 @@ namespace gpstk
          // copy residuals out of A into D
          D = Vector<T>(A.colCopy(A.cols()-1));
       }
-      catch(MatrixException& me) { GPSTK_RETHROW(me); }
+      catch(MatrixException& me) { GNSSTK_RETHROW(me); }
    }
    
 
@@ -247,7 +247,7 @@ namespace gpstk
       if(A.rows() != A.cols() || A.rows() == 0) {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
-         GPSTK_THROW(MatrixException(oss.str()));
+         GNSSTK_THROW(MatrixException(oss.str()));
       }
    
       const unsigned int n=A.rows();
@@ -261,7 +261,7 @@ namespace gpstk
             std::ostringstream oss;
             oss << "Non-positive eigenvalue " << std::scientific << d << " at col "
                << j << ": lowerCholesky() requires positive-definite input";
-            GPSTK_THROW(SingularMatrixException(oss.str()));
+            GNSSTK_THROW(SingularMatrixException(oss.str()));
          }
          L(j,j) = ::sqrt(d);
          for(i=j+1; i<n; i++) {        // loop over rows below diagonal
@@ -288,7 +288,7 @@ namespace gpstk
       if(A.rows() != A.cols() || A.rows() == 0) {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
-         GPSTK_THROW(MatrixException(oss.str()));
+         GNSSTK_THROW(MatrixException(oss.str()));
       }
    
       const unsigned int n=A.cols();
@@ -303,7 +303,7 @@ namespace gpstk
             std::ostringstream oss;
             oss << "Non-positive eigenvalue " << std::scientific << d << " at col "
                << j << ": upperCholesky() requires positive-definite input";
-            GPSTK_THROW(SingularMatrixException(oss.str()));
+            GNSSTK_THROW(SingularMatrixException(oss.str()));
          }
          U(j,j) = ::sqrt(d);
          d = T(1)/U(j,j);
@@ -339,7 +339,7 @@ namespace gpstk
       }
       catch(MatrixException& me) {
          me.addText("Called by inverseCholesky()");
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
 
@@ -364,7 +364,7 @@ namespace gpstk
       if(UT.rows() != UT.cols() || UT.rows() == 0) {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << UT.rows() << "x" << UT.cols();
-         GPSTK_THROW(MatrixException(oss.str()));
+         GNSSTK_THROW(MatrixException(oss.str()));
       }
    
       unsigned int i,j,k,n=UT.rows();
@@ -374,7 +374,7 @@ namespace gpstk
          // start at the last row,col
       dum = UT(n-1,n-1);
       if(dum == T(0)) {
-         GPSTK_THROW(SingularMatrixException("Singular matrix at element 0"));
+         GNSSTK_THROW(SingularMatrixException("Singular matrix at element 0"));
       }
    
       big = small = fabs(dum);
@@ -389,7 +389,7 @@ namespace gpstk
             if(UT(i,i) == T(0)) {
                std::ostringstream oss;
                oss << "Singular matrix at element " << i;
-               GPSTK_THROW(MatrixException(oss.str()));
+               GNSSTK_THROW(MatrixException(oss.str()));
             }
    
             if(fabs(UT(i,i)) > big) big = fabs(UT(i,i));
@@ -431,7 +431,7 @@ namespace gpstk
       if(n == 0 || UT.cols() != n) {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << UT.rows() << "x" << UT.cols();
-         GPSTK_THROW(MatrixException(oss.str()));
+         GNSSTK_THROW(MatrixException(oss.str()));
       }
    
       unsigned int i,j,k;
@@ -471,7 +471,7 @@ namespace gpstk
       if(LT.rows() != LT.cols() || LT.rows() == 0) {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << LT.rows() << "x" << LT.cols();
-         GPSTK_THROW(MatrixException(oss.str()));
+         GNSSTK_THROW(MatrixException(oss.str()));
       }
    
       unsigned int i,j,k,n=LT.rows();
@@ -482,7 +482,7 @@ namespace gpstk
       dum = LT(0,0);
       if(dum == T(0)) {
          SingularMatrixException e("Singular matrix at element 0");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    
       big = small = fabs(dum);
@@ -493,7 +493,7 @@ namespace gpstk
          // now move to rows i = 1 to n-1
       for(i=1; i<n; i++) {
          if(LT(i,i) == T(0)) {
-            GPSTK_THROW(SingularMatrixException("Singular matrix at element 0"));
+            GNSSTK_THROW(SingularMatrixException("Singular matrix at element 0"));
          }
    
          if(fabs(LT(i,i)) > big) big = fabs(LT(i,i));
@@ -533,7 +533,7 @@ namespace gpstk
          if(A.rows() != A.cols() || A.rows() == 0) {
             std::ostringstream oss;
             oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
-            GPSTK_THROW(MatrixException(oss.str()));
+            GNSSTK_THROW(MatrixException(oss.str()));
          }
    
          const unsigned int N(A.rows());
@@ -543,7 +543,7 @@ namespace gpstk
          }
          catch(MatrixException& me) {
             me.addText("lowerCholesky failed");
-            GPSTK_RETHROW(me);
+            GNSSTK_RETHROW(me);
          }
 
          D = L.diagCopy();          // have to square these later
@@ -563,7 +563,7 @@ namespace gpstk
       }
       catch(MatrixException& me) {
          me.addText("Called by LDL()");
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
    
@@ -583,7 +583,7 @@ namespace gpstk
          if(A.rows() != A.cols() || A.rows() == 0) {
             std::ostringstream oss;
             oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
-            GPSTK_THROW(MatrixException(oss.str()));
+            GNSSTK_THROW(MatrixException(oss.str()));
          }
    
          const unsigned int N(A.rows());
@@ -593,7 +593,7 @@ namespace gpstk
          }
          catch(MatrixException& me) {
             me.addText("upperCholesky failed");
-            GPSTK_RETHROW(me);
+            GNSSTK_RETHROW(me);
          }
 
          D = U.diagCopy();          // have to square these later
@@ -613,10 +613,10 @@ namespace gpstk
       }
       catch(MatrixException& me) {
          me.addText("Called by UDU()");
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
    
-} // end namespace gpstk
+} // end namespace gnsstk
    
 #endif // SQUAREROOTINFORMATION_MATRICIES_INCLUDE

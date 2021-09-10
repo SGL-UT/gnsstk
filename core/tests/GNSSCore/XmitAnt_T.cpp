@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -39,9 +39,9 @@
 #include "XmitAnt.hpp"
 #include "TestUtil.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::XmitAnt e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::XmitAnt e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -62,15 +62,15 @@ convertTest()
    TUDEF("XmitAnt", "asString");
       // This effectively tests XmitAntIterator, asString and
       // asXmitAnt all at once.
-   for (gpstk::XmitAnt e : gpstk::XmitAntIterator())
+   for (gnsstk::XmitAnt e : gnsstk::XmitAntIterator())
    {
       TUCSM("asString");
-      std::string s(gpstk::StringUtils::asString(e));
+      std::string s(gnsstk::StringUtils::asString(e));
       TUASSERT(!s.empty());
       TUASSERT(s != "???");
       TUCSM("asXmitAnt");
-      gpstk::XmitAnt e2 = gpstk::StringUtils::asXmitAnt(s);
-      TUASSERTE(gpstk::XmitAnt, e, e2);
+      gnsstk::XmitAnt e2 = gnsstk::StringUtils::asXmitAnt(s);
+      TUASSERTE(gnsstk::XmitAnt, e, e2);
    }
    TURETURN();
 }

@@ -1,16 +1,16 @@
 dfix ver 2.0 5/20/17, Run 2018/04/02 at 11:25:59
 
 Load the RINEX files using Rinex3ObsFileLoader -------
- Add obs type GL1C =~ GL1* from /local/Code/gpstk/data/test_dfix_tower239.ed.15o
- Add obs type GL2W =~ GL2* from /local/Code/gpstk/data/test_dfix_tower239.ed.15o
- Add obs type GC1W =~ GC1* from /local/Code/gpstk/data/test_dfix_tower239.ed.15o
- Add obs type GC2W =~ GC2* from /local/Code/gpstk/data/test_dfix_tower239.ed.15o
- Add obs type GC1C =~ GC1* from /local/Code/gpstk/data/test_dfix_tower239.ed.15o
- Add obs type GC2X =~ GC2* from /local/Code/gpstk/data/test_dfix_tower239.ed.15o
+ Add obs type GL1C =~ GL1* from /local/Code/gnsstk/data/test_dfix_tower239.ed.15o
+ Add obs type GL2W =~ GL2* from /local/Code/gnsstk/data/test_dfix_tower239.ed.15o
+ Add obs type GC1W =~ GC1* from /local/Code/gnsstk/data/test_dfix_tower239.ed.15o
+ Add obs type GC2W =~ GC2* from /local/Code/gnsstk/data/test_dfix_tower239.ed.15o
+ Add obs type GC1C =~ GC1* from /local/Code/gnsstk/data/test_dfix_tower239.ed.15o
+ Add obs type GC2X =~ GC2* from /local/Code/gnsstk/data/test_dfix_tower239.ed.15o
 Loader read 1 file successfully 
 
 Summary of input RINEX obs data files (1):
- RINEX obs file: /local/Code/gpstk/data/test_dfix_tower239.ed.15o
+ RINEX obs file: /local/Code/gnsstk/data/test_dfix_tower239.ed.15o
  Interval 1.50sec, obs types GL1C GL2W GC1W GC2W GC1C GC2X, store size 1333
  Time limits: begin  2015/08/27 04:58:21 1859 363501.000
                 end  2015/08/27 05:31:39 1859 365499.000
@@ -20,7 +20,7 @@ Table of Sat/Obs counts
  TOT  1333  1333  1333  1333  1333     0 total 1333 epochs
 End of summary
 
-Header for file /local/Code/gpstk/data/test_dfix_tower239.ed.15o
+Header for file /local/Code/gnsstk/data/test_dfix_tower239.ed.15o
 ---------------------------------- REQUIRED ----------------------------------
 Rinex Version  2.10,  File type OBSERVATION DATA,  System G (GPS).
 Prgm: RinEdit,  Run: 06/14/2017 16:15:05,  By: 
@@ -62,7 +62,7 @@ Searched for millisecond adjusts on obs types: L1 L2 C1 C2 P1 P2
 Millisecond adjusts: 0 total adjusts found, 0 invalid
 
 # GDC configuration:
-#GPSTk Discontinuity Corrector (GDC) v.9.0 5/20/17 configuration:
+#GNSSTk Discontinuity Corrector (GDC) v.9.0 5/20/17 configuration:
 # MaxGap=100         : maximum allowed gap within a segment (points)
 # MinPts=100         : minimum number of good points in phase segment (points)
 # WLgrossStep=6      : WL gross slip detection threshold (WLwl)

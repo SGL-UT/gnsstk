@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -50,12 +50,12 @@
 
 using namespace std;
 
-class DFDiff : public gpstk::BasicFramework
+class DFDiff : public gnsstk::BasicFramework
 {
 public:
    DFDiff(const string& applName)
       throw()
-      : gpstk::BasicFramework(
+      : gnsstk::BasicFramework(
          applName,
          "Differences two input files while allowing small differences"
          "in floating point values."),
@@ -79,7 +79,7 @@ public:
 
    bool initialize(int argc, char *argv[]) throw()
    {
-      gpstk::CommandOptionWithAnyArg
+      gnsstk::CommandOptionWithAnyArg
          input1Option('1', "input1", "First file to take the input from.", true),
          input2Option('2', "input2", "Second file to take the input from.", true),
          lineSkipOption('l', "lines", "Number of lines to skip at beginning of file."),
@@ -120,7 +120,7 @@ public:
 
          // Determine how many lines to ignore at the end of the file
       if (lastLineOption.getCount())
-         lastlineValue = gpstk::StringUtils::asInt(lastLineOption.getValue()[0]);
+         lastlineValue = gnsstk::StringUtils::asInt(lastLineOption.getValue()[0]);
 
       totalLines = totalLines - lastlineValue;
 
@@ -151,10 +151,10 @@ public:
       }
 
       if (epsilonOption.getCount())
-         epsilon = gpstk::StringUtils::asDouble(epsilonOption.getValue()[0]);
+         epsilon = gnsstk::StringUtils::asDouble(epsilonOption.getValue()[0]);
 
       if (lineSkipOption.getCount())
-         linesToSkip = gpstk::StringUtils::asInt(lineSkipOption.getValue()[0]);
+         linesToSkip = gnsstk::StringUtils::asInt(lineSkipOption.getValue()[0]);
      
       if (debugLevel)
          output << "First file " << input1Fn << endl

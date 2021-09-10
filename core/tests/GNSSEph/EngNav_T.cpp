@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -74,9 +74,9 @@ public:
            0x1c8deb5e, 0x0a34d52d, 0x14a5013e, 0x3fee8c2f, 0x16c35c80 };
 
       testMesg = "Subframe Pattern obtained was incorrect";
-      TUASSERTE(short,1,gpstk::EngNav::getSubframePattern(subframe1P));
-      TUASSERTE(short,2,gpstk::EngNav::getSubframePattern(subframe2P));
-      TUASSERTE(short,3,gpstk::EngNav::getSubframePattern(subframe3P));
+      TUASSERTE(short,1,gnsstk::EngNav::getSubframePattern(subframe1P));
+      TUASSERTE(short,2,gnsstk::EngNav::getSubframePattern(subframe2P));
+      TUASSERTE(short,3,gnsstk::EngNav::getSubframePattern(subframe3P));
 
       TURETURN();
    }
@@ -98,20 +98,20 @@ public:
       uint32_t data4 = 0x15E67180;
 
       testMesg = "Parity computed was incorrect";
-      TUASSERTE(uint32_t, 0x24, gpstk::EngNav::computeParity(data1, zero));
+      TUASSERTE(uint32_t, 0x24, gnsstk::EngNav::computeParity(data1, zero));
 
       data1 |= 0x24;
 
-      TUASSERTE(uint32_t, 0x22, gpstk::EngNav::computeParity(data2, data1));
+      TUASSERTE(uint32_t, 0x22, gnsstk::EngNav::computeParity(data2, data1));
 
       data2 |= 0x22;
 
-      TUASSERTE(uint32_t, 0x1b, gpstk::EngNav::computeParity(data3, data2));
+      TUASSERTE(uint32_t, 0x1b, gnsstk::EngNav::computeParity(data3, data2));
 
       data3 |= 0x1B;
 
       TUASSERTE(uint32_t, 0x02,
-                gpstk::EngNav::computeParity(data4, data3, false));
+                gnsstk::EngNav::computeParity(data4, data3, false));
 
       TURETURN();
    }
@@ -139,15 +139,15 @@ public:
          // parity computation bits(word 2 & 10))
       testMesg = "Parity computed is incorrect";
       TUASSERTE(uint32_t, CompareData1,
-                gpstk::EngNav::fixParity(data1, 0, false));
+                gnsstk::EngNav::fixParity(data1, 0, false));
       TUASSERTE(uint32_t, CompareData2,
-                gpstk::EngNav::fixParity(data2, CompareData1, false));
+                gnsstk::EngNav::fixParity(data2, CompareData1, false));
       TUASSERTE(uint32_t, CompareData3,
-                gpstk::EngNav::fixParity(data3, CompareData2, false));
+                gnsstk::EngNav::fixParity(data3, CompareData2, false));
       TUASSERTE(uint32_t, CompareData4,
-                gpstk::EngNav::fixParity(data4, CompareData3, false, false));
+                gnsstk::EngNav::fixParity(data4, CompareData3, false, false));
       TUASSERTE(uint32_t, CompareData5,
-                gpstk::EngNav::fixParity(data5, 0, true));
+                gnsstk::EngNav::fixParity(data5, 0, true));
 
       TURETURN();
    }
@@ -171,11 +171,11 @@ public:
            0x1c8deb4b, 0x0a34d530, 0x14a50138, 0x3fee8c2f, 0x16c35c83 };
 
       testMesg = "Parity computed is incorrect";
-      testFramework.assert(gpstk::EngNav::checkParity(subframe1P, false),
+      testFramework.assert(gnsstk::EngNav::checkParity(subframe1P, false),
                            testMesg, __LINE__);
-      testFramework.assert(gpstk::EngNav::checkParity(subframe2P, false),
+      testFramework.assert(gnsstk::EngNav::checkParity(subframe2P, false),
                            testMesg, __LINE__);
-      testFramework.assert(gpstk::EngNav::checkParity(subframe3P, false),
+      testFramework.assert(gnsstk::EngNav::checkParity(subframe3P, false),
                            testMesg, __LINE__);
 
       TURETURN();
@@ -193,9 +193,9 @@ public:
       uint32_t how3 = 0x215be378;
 
       testMesg = "Returned TOW time from the HOW is incorrect";
-      TUASSERTE(unsigned long, 409902, gpstk::EngNav::getHOWTime(how1));
-      TUASSERTE(unsigned long, 409908, gpstk::EngNav::getHOWTime(how2));
-      TUASSERTE(unsigned long, 409914, gpstk::EngNav::getHOWTime(how3));
+      TUASSERTE(unsigned long, 409902, gnsstk::EngNav::getHOWTime(how1));
+      TUASSERTE(unsigned long, 409908, gnsstk::EngNav::getHOWTime(how2));
+      TUASSERTE(unsigned long, 409914, gnsstk::EngNav::getHOWTime(how3));
 
       TURETURN();
    }
@@ -211,9 +211,9 @@ public:
       uint32_t how3 = 0x215be378;
 
       testMesg = "Returned subframe ID was incorrect";
-      TUASSERTE(short, 1, gpstk::EngNav::getSFID(how1));
-      TUASSERTE(short, 2, gpstk::EngNav::getSFID(how2));
-      TUASSERTE(short, 3, gpstk::EngNav::getSFID(how3));
+      TUASSERTE(short, 1, gnsstk::EngNav::getSFID(how1));
+      TUASSERTE(short, 2, gnsstk::EngNav::getSFID(how2));
+      TUASSERTE(short, 3, gnsstk::EngNav::getSFID(how3));
 
       TURETURN();
    }
@@ -234,7 +234,7 @@ public:
       const uint32_t subframe3P[10] =
          { 0x22c000e4, 0x215be378, 0x3ffcc344, 0x1a8441f1, 0x3ff80b76,
            0x1c8deb5e, 0x0a34d52d, 0x14a5013e, 0x3fee8c2f, 0x16c35c80 };
-      gpstk::EngNav EngNavThing;
+      gnsstk::EngNav EngNavThing;
 
       testMesg = "Subframe Convert function failed";
       testFramework.assert(
@@ -369,22 +369,22 @@ public:
        * makes sure everything matches up. */
    unsigned nmctValidityTest()
    {
-      using gpstk::StringUtils::x2uint;
-      using gpstk::StringUtils::word;
-      using gpstk::StringUtils::numWords;
-      using gpstk::StringUtils::asUnsigned;
-      using gpstk::StringUtils::asDouble;
+      using gnsstk::StringUtils::x2uint;
+      using gnsstk::StringUtils::word;
+      using gnsstk::StringUtils::numWords;
+      using gnsstk::StringUtils::asUnsigned;
+      using gnsstk::StringUtils::asDouble;
       TUDEF("EngNav", "getNMCTValidity");
          // Here's the input file to look at for the actual test data
-      string infilename = gpstk::getPathData() +
-         gpstk::getFileSep() + "test_getNMCTValidity.txt";
+      string infilename = gnsstk::getPathData() +
+         gnsstk::getFileSep() + "test_getNMCTValidity.txt";
       ifstream infile(infilename.c_str());
       string line;
       uint32_t sf2[10];
       unsigned lineNo = 0;
       unsigned howWeek;
       uint32_t aodoExp, aodoGot;
-      gpstk::CommonTime tnmctExp, tnmctGot, toeExp, toeGot, totGot;
+      gnsstk::CommonTime tnmctExp, tnmctGot, toeExp, toeGot, totGot;
       bool gotData = false; // make sure something was processed
          // tmp values for reading from file
       unsigned tmpU;
@@ -407,29 +407,29 @@ public:
          aodoExp  = asUnsigned(word(line, 11));
          tmpU     = asUnsigned(word(line, 12));
          tmpD     = asDouble(word(line, 13));
-         tnmctExp = gpstk::GPSWeekSecond(tmpU, tmpD);
+         tnmctExp = gnsstk::GPSWeekSecond(tmpU, tmpD);
          tmpU     = asUnsigned(word(line, 14));
          tmpD     = asDouble(word(line, 15));
-         toeExp   = gpstk::GPSWeekSecond(tmpU, tmpD);
+         toeExp   = gnsstk::GPSWeekSecond(tmpU, tmpD);
             // Compare the truth data with the results from the function
          if (aodoExp == 27900)
          {
             testFramework.assert(
-               !gpstk::EngNav::getNMCTValidity(
+               !gnsstk::EngNav::getNMCTValidity(
                   sf2, howWeek, aodoGot, tnmctGot, toeGot, totGot),
                "Unexpected return value", __LINE__);
             TUASSERTE(uint32_t, aodoExp, aodoGot);
-            TUASSERTE(gpstk::CommonTime, toeExp, toeGot);
+            TUASSERTE(gnsstk::CommonTime, toeExp, toeGot);
          }
          else
          {
             testFramework.assert(
-               gpstk::EngNav::getNMCTValidity(
+               gnsstk::EngNav::getNMCTValidity(
                   sf2, howWeek, aodoGot, tnmctGot, toeGot, totGot),
                "Unexpected return value", __LINE__);
             TUASSERTE(uint32_t, aodoExp, aodoGot);
-            TUASSERTE(gpstk::CommonTime, tnmctExp, tnmctGot);
-            TUASSERTE(gpstk::CommonTime, toeExp, toeGot);
+            TUASSERTE(gnsstk::CommonTime, tnmctExp, tnmctGot);
+            TUASSERTE(gnsstk::CommonTime, toeExp, toeGot);
          }
       }
       testFramework.assert(gotData, "Did not test any NMCT data", __LINE__);

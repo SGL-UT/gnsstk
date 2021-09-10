@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -48,9 +48,9 @@
 #include "TimeString.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
-namespace gpstk
+namespace gnsstk
 {
    const unsigned short cBit[] =
    {
@@ -92,13 +92,13 @@ namespace gpstk
    bool OrbSysGpsL_63::hasSignal(const SatID& sidr,
                                  const CommonTime& ct,
                                  const CarrierBand cb,
-                                 const gpstk::TrackingCode tc) const
+                                 const gnsstk::TrackingCode tc) const
    {
       // Verify that the object has been loaded with data.
        if (!dataLoadedFlag)
        {
            InvalidRequest exc("Required data not stored.");
-           GPSTK_THROW(exc);
+           GNSSTK_THROW(exc);
        }
 
       // Check for a valid satelilte ID
@@ -108,7 +108,7 @@ namespace gpstk
            stringstream ss;
            ss << sidr << " is not a valid GPS satellite.";
            InvalidRequest ir(ss.str());
-           GPSTK_THROW(ir);
+           GNSSTK_THROW(ir);
        }
 
       // Determine if the requested signal combination is valid.
@@ -157,7 +157,7 @@ namespace gpstk
                << StringUtils::asString(tc)
                << " is not a valid combination for a GPS SV.";
             InvalidRequest ir(ss.str());
-            GPSTK_THROW(ir);
+            GNSSTK_THROW(ir);
         }
 
           // Obtain configuration bits for this SV and mask off the A-S bit
@@ -183,7 +183,7 @@ namespace gpstk
        }
        catch (InvalidRequest ir)
        {
-          GPSTK_RETHROW(ir);
+          GNSSTK_RETHROW(ir);
        }
        return retVal;
     }
@@ -219,7 +219,7 @@ namespace gpstk
          ss << "Expected GPS Subframe 4, Page 25, SVID 63 (425).  Found unique ID ";
          ss << StringUtils::asString(UID);
          InvalidParameter exc(ss.str());
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
          // Clear any existing data
@@ -247,7 +247,7 @@ namespace gpstk
       if (!dataLoadedFlag)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       string ssys = convertSatelliteSystemToString(satID.system);
@@ -320,7 +320,7 @@ namespace gpstk
       if (!dataLoadedFlag)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       s.setf(ios::fixed, ios::floatfield);
@@ -361,4 +361,4 @@ namespace gpstk
       }
    } // end of dumpBody()
 
-} // end namespace gpstk
+} // end namespace gnsstk

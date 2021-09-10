@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -36,13 +36,13 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_STDNAVTIMEOFFSET_HPP
-#define GPSTK_STDNAVTIMEOFFSET_HPP
+#ifndef GNSSTK_STDNAVTIMEOFFSET_HPP
+#define GNSSTK_STDNAVTIMEOFFSET_HPP
 
 #include "TimeOffsetData.hpp"
 #include "TimeSystem.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup NavFactory
       //@{
@@ -60,10 +60,10 @@ namespace gpstk
        * (&Delta;t<sub>LSF</sub>) are handled.  This text makes
        * assumptions about the tying of time representation (seconds
        * of day) and the time system (UTC) which are not true for
-       * gpstk.  Specifically, the IS allows for the leap second to be
-       * represented as 86400+ seconds of day, which the gpstk
+       * gnsstk.  Specifically, the IS allows for the leap second to be
+       * represented as 86400+ seconds of day, which the gnsstk
        * currently rejects as an error.  These leap seconds are
-       * currently not representable in the gpstk, but the offset can
+       * currently not representable in the gnsstk, but the offset can
        * still be used the rest of the time.  This means that an
        * attempt to display UTC time during the period of a leap
        * second will be incorrect, but for now we're chosing to ignore
@@ -139,4 +139,4 @@ namespace gpstk
 
 }
 
-#endif // GPSTK_STDNAVTIMEOFFSET_HPP
+#endif // GNSSTK_STDNAVTIMEOFFSET_HPP

@@ -1,13 +1,13 @@
-%extend gpstk::RinexSatID
+%extend gnsstk::RinexSatID
 {
    std::string __str__()
    {
-      return gpstk::StringUtils::asString(*$self);
+      return gnsstk::StringUtils::asString(*$self);
    }
 
    std::string __repr__()
    {
-      return "<" + gpstk::StringUtils::asString(*$self) +">";
+      return "<" + gnsstk::StringUtils::asString(*$self) +">";
    }
 };
 

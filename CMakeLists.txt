@@ -1,29 +1,29 @@
 #============================================================
-# Name    = $GPSTK/CMakeLists.txt
-# Purpose = Generator of build framework (e.g. Makefiles) for GPSTk
+# Name    = $GNSSTK/CMakeLists.txt
+# Purpose = Generator of build framework (e.g. Makefiles) for GNSSTk
 # Notes   = This is the top-level CMake input file
-#           Depends on $GPSTK/BuildSetup.cmake
-#           Is dependend on by $GPSTK/build.sh
+#           Depends on $GNSSTK/BuildSetup.cmake
+#           Is dependend on by $GNSSTK/build.sh
 #============================================================
 
 cmake_minimum_required( VERSION 2.8.5 )
 
-project( GPSTK )
-set( GPSTK_VERSION_MAJOR "12" )
-set( GPSTK_VERSION_MINOR "0" )
-set( GPSTK_VERSION_PATCH "0" )
-set( GPSTK_VERSION "${GPSTK_VERSION_MAJOR}.${GPSTK_VERSION_MINOR}.${GPSTK_VERSION_PATCH}" )
+project( GNSSTK )
+set( GNSSTK_VERSION_MAJOR "12" )
+set( GNSSTK_VERSION_MINOR "0" )
+set( GNSSTK_VERSION_PATCH "0" )
+set( GNSSTK_VERSION "${GNSSTK_VERSION_MAJOR}.${GNSSTK_VERSION_MINOR}.${GNSSTK_VERSION_PATCH}" )
 
 # Test data file source directory
-set( GPSTK_TEST_DATA_DIR ${PROJECT_SOURCE_DIR}/data )
+set( GNSSTK_TEST_DATA_DIR ${PROJECT_SOURCE_DIR}/data )
 # Test output directory
-set( GPSTK_TEST_OUTPUT_DIR ${PROJECT_BINARY_DIR}/Testing/Temporary )
+set( GNSSTK_TEST_OUTPUT_DIR ${PROJECT_BINARY_DIR}/Testing/Temporary )
 
 # This sets up variables contining GNU standard installation locations.
 include( GNUInstallDirs )
 
 # Set a filename for collecting exported targets.
-set( EXPORT_TARGETS_FILENAME "GPSTKTargets" )
+set( EXPORT_TARGETS_FILENAME "GNSSTKTargets" )
 
 
 option( DEBUG_SWITCH "HELP: DEBUG_SWITCH: Default = OFF, print some CMake variable values to stdout." OFF )
@@ -57,21 +57,21 @@ if( BUILD_FOR_PACKAGE_SWITCH AND !BUILD_PYTHON )
 endif()
 
 if( BUILD_PYTHON AND !BUILD_EXT )
-    message( WARNING "Combination of BUILD_PYTHON=ON and BUILD_EXT=OFF is not allowed. Python swig bindings depend on gpstk/ext." )
+    message( WARNING "Combination of BUILD_PYTHON=ON and BUILD_EXT=OFF is not allowed. Python swig bindings depend on gnsstk/ext." )
     message( WARNING "Setting BUILD_EXT = TRUE" )
     set( BUILD_EXT TRUE )
 endif()
 
-# GPSTk header file install target (whether it is version dependent changes based on user flag)
+# GNSSTk header file install target (whether it is version dependent changes based on user flag)
 if( VERSIONED_HEADER_INSTALL )
-    set( GPSTK_INCLUDE_WRAPPER_DIR "gpstk${GPSTK_VERSION_MAJOR}" )
-    set( GPSTK_INCLUDE_TGT "${GPSTK_INCLUDE_WRAPPER_DIR}/gpstk" )
-    set( GPSTK_INCLUDE_PARENT "${CMAKE_INSTALL_INCLUDEDIR}/${GPSTK_INCLUDE_WRAPPER_DIR}" )
-    set( CMAKE_INSTALL_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/${GPSTK_INCLUDE_TGT}" )
-    message( WARNING "Setting GPSTK_INCLUDE_TGT_DIR = ${CMAKE_INSTALL_INCLUDEDIR}" )
+    set( GNSSTK_INCLUDE_WRAPPER_DIR "gnsstk${GNSSTK_VERSION_MAJOR}" )
+    set( GNSSTK_INCLUDE_TGT "${GNSSTK_INCLUDE_WRAPPER_DIR}/gnsstk" )
+    set( GNSSTK_INCLUDE_PARENT "${CMAKE_INSTALL_INCLUDEDIR}/${GNSSTK_INCLUDE_WRAPPER_DIR}" )
+    set( CMAKE_INSTALL_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/${GNSSTK_INCLUDE_TGT}" )
+    message( WARNING "Setting GNSSTK_INCLUDE_TGT_DIR = ${CMAKE_INSTALL_INCLUDEDIR}" )
 else()
-    set( GPSTK_INCLUDE_PARENT "${CMAKE_INSTALL_INCLUDEDIR}" )
-    set( CMAKE_INSTALL_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/gpstk" )
+    set( GNSSTK_INCLUDE_PARENT "${CMAKE_INSTALL_INCLUDEDIR}" )
+    set( CMAKE_INSTALL_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/gnsstk" )
 endif()
 
 
@@ -83,7 +83,7 @@ include( BuildSetup.cmake )
 #============================================================
 
 #----------------------------------------
-# Define $GPSTK/core/ library source files
+# Define $GNSSTK/core/ library source files
 #----------------------------------------
 
 file( GLOB_RECURSE CORE_SRC_FILES "core/lib/*.cpp" "core/lib/*.c" )
@@ -104,27 +104,27 @@ endforeach()
 list( REMOVE_DUPLICATES CORE_INC_DIRS )
 
 # Add every directory containing a header file
-# to the project(gpstk) include_directories
+# to the project(gnsstk) include_directories
 include_directories( ${CORE_INC_DIRS} )
 
 # define src and include files needed to build library target
-set( GPSTK_SRC_FILES "" )
-set( GPSTK_INC_FILES "" )
-list( APPEND GPSTK_SRC_FILES ${CORE_SRC_FILES} )
-list( APPEND GPSTK_INC_FILES ${CORE_INC_FILES} )
+set( GNSSTK_SRC_FILES "" )
+set( GNSSTK_INC_FILES "" )
+list( APPEND GNSSTK_SRC_FILES ${CORE_SRC_FILES} )
+list( APPEND GNSSTK_INC_FILES ${CORE_INC_FILES} )
 
 # Remove getopt.h from non-Windows installs
 if( NOT WIN32 )
-  foreach( _headerFile ${GPSTK_INC_FILES} )
+  foreach( _headerFile ${GNSSTK_INC_FILES} )
     get_filename_component( _name ${_headerFile} NAME )
     if( ${_name} MATCHES "getopt.h" )
-      list( REMOVE_ITEM GPSTK_INC_FILES ${_headerFile} )
+      list( REMOVE_ITEM GNSSTK_INC_FILES ${_headerFile} )
     endif()
   endforeach()
 endif()
 
 #============================================================
-# Define $GPSTK/ext/ additions to Library Target Files
+# Define $GNSSTK/ext/ additions to Library Target Files
 #============================================================
 
 if( BUILD_EXT )
@@ -144,35 +144,35 @@ if( BUILD_EXT )
   list( REMOVE_DUPLICATES EXT_INC_DIRS )
 
   # Add every directory containing a header file
-  # to the project(gpstk) include_directories
+  # to the project(gnsstk) include_directories
   include_directories( ${EXT_INC_DIRS} )
 
   # append ext include files needed to build library target
-  list( APPEND GPSTK_SRC_FILES ${EXT_SRC_FILES} )
-  list( APPEND GPSTK_INC_FILES ${EXT_INC_FILES} )
+  list( APPEND GNSSTK_SRC_FILES ${EXT_SRC_FILES} )
+  list( APPEND GNSSTK_INC_FILES ${EXT_INC_FILES} )
 
 endif()
 
 #============================================================
-# GPSTK Library, Build and Install Targets
+# GNSSTK Library, Build and Install Targets
 #============================================================
 
-# GPSTk shared-object library (e.g. libgpstk.so) build target
-add_library( gpstk ${STADYN} ${GPSTK_SRC_FILES} ${GPSTK_INC_FILES} )
+# Gnsstk shared-object library (e.g. libgnsstk.so) build target
+add_library( gnsstk ${STADYN} ${GNSSTK_SRC_FILES} ${GNSSTK_INC_FILES} )
 
-# GPSTk library install target
-install( TARGETS gpstk DESTINATION "${CMAKE_INSTALL_LIBDIR}" EXPORT "${EXPORT_TARGETS_FILENAME}" )
+# GNSSTk library install target
+install( TARGETS gnsstk DESTINATION "${CMAKE_INSTALL_LIBDIR}" EXPORT "${EXPORT_TARGETS_FILENAME}" )
 
-# GPSTk header file install target (whether it is version dependent changes based on user flag)
-install( FILES ${GPSTK_INC_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+# GNSSTk header file install target (whether it is version dependent changes based on user flag)
+install( FILES ${GNSSTK_INC_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 
 
 #============================================================
-# GPSTK Library parameters
+# GNSSTK Library parameters
 #============================================================
 
-set_target_properties(gpstk PROPERTIES VERSION "${GPSTK_VERSION_MAJOR}.${GPSTK_VERSION_MINOR}.${GPSTK_VERSION_PATCH}"
-                                       SOVERSION "${GPSTK_VERSION_MAJOR}")
+set_target_properties(gnsstk PROPERTIES VERSION "${GNSSTK_VERSION_MAJOR}.${GNSSTK_VERSION_MINOR}.${GNSSTK_VERSION_PATCH}"
+                                       SOVERSION "${GNSSTK_VERSION_MAJOR}")
 
 #============================================================
 # Testing
@@ -214,17 +214,17 @@ endif()
 # Export the project import cmake files.
 #----------------------------------------
 include( CMakePackageConfigHelpers )
-set( INSTALL_CONFIG_DIR ${CMAKE_INSTALL_DATADIR}/cmake/GPSTK)
-configure_package_config_file( ${CMAKE_CURRENT_SOURCE_DIR}/GPSTKConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/GPSTKConfig.cmake
+set( INSTALL_CONFIG_DIR ${CMAKE_INSTALL_DATADIR}/cmake/GNSSTK)
+configure_package_config_file( ${CMAKE_CURRENT_SOURCE_DIR}/GNSSTKConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/GNSSTKConfig.cmake
     INSTALL_DESTINATION ${INSTALL_CONFIG_DIR}
     PATH_VARS CMAKE_INSTALL_LIBDIR CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_BINDIR CMAKE_INSTALL_PREFIX INSTALL_CONFIG_DIR )
-write_basic_package_version_file( ${CMAKE_CURRENT_BINARY_DIR}/GPSTKConfigVersion.cmake
-    VERSION ${GPSTK_VERSION}
+write_basic_package_version_file( ${CMAKE_CURRENT_BINARY_DIR}/GNSSTKConfigVersion.cmake
+    VERSION ${GNSSTK_VERSION}
     COMPATIBILITY ExactVersion )
 install( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/GPSTKConfig.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/GPSTKConfigVersion.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/GNSSTKConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/GNSSTKConfigVersion.cmake
     DESTINATION
     ${INSTALL_CONFIG_DIR} )
 

@@ -1,4 +1,4 @@
-GPSTk 11.2.1 Release Notes
+GNSSTk 11.2.1 Release Notes
 ========================
 
  * This release introduces Gitlab CI updates to use new sgl git location.

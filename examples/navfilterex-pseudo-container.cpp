@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -68,13 +68,13 @@ void readNavEpoch(NavSubframeList& nsl)
 void filterEX()
 {
       // Filter manager, where the work is done
-   gpstk::NavFilterMgr mgr;
+   gnsstk::NavFilterMgr mgr;
       // Individual filters being applied
-   gpstk::LNavCookFilter filtCook;
-   gpstk::LNavParityFilter filtParity;
+   gnsstk::LNavCookFilter filtCook;
+   gnsstk::LNavParityFilter filtParity;
       // Data being passed to the filter
-   gpstk::LNavFilterData navFiltData;
-   gpstk::NavFilter::NavMsgList::const_iterator nmli;
+   gnsstk::LNavFilterData navFiltData;
+   gnsstk::NavFilter::NavMsgList::const_iterator nmli;
       // application's nav storage
    NavSubframeList nsl;
    NavSubframeList::iterator nsli;
@@ -95,13 +95,13 @@ void filterEX()
          navFiltData.sf = &nsf->subframe[1];
 
             // validate the subframe
-         gpstk::NavFilter::NavMsgList l = mgr.validate(&navFiltData);
+         gnsstk::NavFilter::NavMsgList l = mgr.validate(&navFiltData);
 
             // process the results
          for (nmli = l.begin(); nmli != l.end(); nmli++)
          {
-            gpstk::LNavFilterData *fd =
-               dynamic_cast<gpstk::LNavFilterData*>(*nmli);
+            gnsstk::LNavFilterData *fd =
+               dynamic_cast<gnsstk::LNavFilterData*>(*nmli);
                // do something with fd (nav message that passed the filters)
          }
             // Because the filters are depth 1, we can immediately
@@ -118,13 +118,13 @@ void filterEX()
 
       // Finalize the filters.  Probably not necessary when using only
       // depth 1 filters, but good practice in any case.
-   gpstk::NavFilter::NavMsgList l = mgr.finalize();
+   gnsstk::NavFilter::NavMsgList l = mgr.finalize();
 
       // process the results
    for (nmli = l.begin(); nmli != l.end(); nmli++)
    {
-      gpstk::LNavFilterData *fd =
-         dynamic_cast<gpstk::LNavFilterData*>(*nmli);
+      gnsstk::LNavFilterData *fd =
+         dynamic_cast<gnsstk::LNavFilterData*>(*nmli);
          // do something with fd (nav message that passed the filters)
    }
 }

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,15 +41,15 @@
  * Encapsulate SP3 file data, versions a,b,c,d including I/O
  */
 
-#ifndef GPSTK_SP3DATA_HPP
-#define GPSTK_SP3DATA_HPP
+#ifndef GNSSTK_SP3DATA_HPP
+#define GNSSTK_SP3DATA_HPP
 
 #include "SP3SatID.hpp"
 #include "SP3Base.hpp"
 #include "CommonTime.hpp"
 #include <iomanip>
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
@@ -90,7 +90,7 @@ namespace gpstk
        * }
        * @endcode
        *
-       * @sa gpstk::SP3Header and gpstk::SP3Stream for more information.
+       * @sa gnsstk::SP3Header and gnsstk::SP3Stream for more information.
        * @sa petest.cpp for an example.
        */
    class SP3Data : public SP3Base

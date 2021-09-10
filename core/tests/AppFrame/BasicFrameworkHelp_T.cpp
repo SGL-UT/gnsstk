@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -43,7 +43,7 @@
  * functions of the help command-line options. */
 
 /// Specialized help-like command-line option.
-class CommandOptionHelpTest : public gpstk::CommandOptionHelp
+class CommandOptionHelpTest : public gnsstk::CommandOptionHelp
 {
 public:
    CommandOptionHelpTest()
@@ -57,7 +57,7 @@ public:
 };
 
 /// Specialized help-like option that takes an argument.
-class CommandOptionHelpTestArg : public gpstk::CommandOptionHelp
+class CommandOptionHelpTestArg : public gnsstk::CommandOptionHelp
 {
 public:
    CommandOptionHelpTestArg()
@@ -74,7 +74,7 @@ public:
 };
 
 
-class BasicFrameworkHelp_T : public gpstk::BasicFramework
+class BasicFrameworkHelp_T : public gnsstk::BasicFramework
 {
 public:
    BasicFrameworkHelp_T(const std::string& applName) throw();
@@ -83,8 +83,8 @@ public:
    { delete reqOpt; }
    CommandOptionHelpTest xOpt;
    CommandOptionHelpTestArg yOpt;
-   gpstk::CommandOptionHelpSimple sOpt;
-   gpstk::CommandOptionNoArg *reqOpt;
+   gnsstk::CommandOptionHelpSimple sOpt;
+   gnsstk::CommandOptionNoArg *reqOpt;
    std::string execName;
 };
 
@@ -129,7 +129,7 @@ initialize(int argc, char *argv[], bool pretty)
    {
          // Add a required option to make sure behavior is appropriate
          // in that case
-      reqOpt = new gpstk::CommandOptionNoArg('z', "zreq", "Random required opt",
+      reqOpt = new gnsstk::CommandOptionNoArg('z', "zreq", "Random required opt",
                                              true);
    }
    else
@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
       app.run();
       return app.exitCode;
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
       std::cerr << exc << std::endl;
    }
@@ -171,5 +171,5 @@ int main(int argc, char *argv[])
       std::cerr << std::endl;
    }
 
-   return gpstk::BasicFramework::EXCEPTION_ERROR;
+   return gnsstk::BasicFramework::EXCEPTION_ERROR;
 }

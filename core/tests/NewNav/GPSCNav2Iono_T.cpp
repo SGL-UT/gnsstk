@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -40,9 +40,9 @@
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -62,8 +62,8 @@ unsigned GPSCNav2Iono_T ::
 constructorTest()
 {
    TUDEF("GPSCNav2Iono", "GPSCNav2Iono");
-   gpstk::GPSCNav2Iono uut;
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Iono,
+   gnsstk::GPSCNav2Iono uut;
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Iono,
              uut.signal.messageType);
    TURETURN();
 }
@@ -73,10 +73,10 @@ unsigned GPSCNav2Iono_T ::
 getUserTimeTest()
 {
    TUDEF("GPSCNav2Iono", "getUserTime");
-   gpstk::GPSCNav2Iono uut;
-   uut.timeStamp = gpstk::GPSWeekSecond(2100,135.0);
-   gpstk::CommonTime exp = uut.timeStamp + 5.48;
-   TUASSERTE(gpstk::CommonTime, exp, uut.getUserTime());
+   gnsstk::GPSCNav2Iono uut;
+   uut.timeStamp = gnsstk::GPSWeekSecond(2100,135.0);
+   gnsstk::CommonTime exp = uut.timeStamp + 5.48;
+   TUASSERTE(gnsstk::CommonTime, exp, uut.getUserTime());
    TURETURN();
 }
 

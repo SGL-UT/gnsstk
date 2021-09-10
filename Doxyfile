@@ -44,7 +44,7 @@ PROJECT_NUMBER         = 12.0.0
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "Documentation for the GPS Toolkit"
+PROJECT_BRIEF          = "Documentation for the GNSS Toolkit"
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
@@ -737,7 +737,7 @@ LAYOUT_FILE            =
 # LATEX_BIB_STYLE. To use this feature you need bibtex and perl available in the
 # search path. See also \cite for info how to create references.
 
-CITE_BIB_FILES         = ref/usersguide/gpstk.bib
+CITE_BIB_FILES         = ref/usersguide/gnsstk.bib
 
 #---------------------------------------------------------------------------
 # Configuration options related to warning and progress messages

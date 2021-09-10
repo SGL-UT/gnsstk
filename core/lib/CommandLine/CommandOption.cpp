@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -48,9 +48,9 @@
 #include <sstream>
 
 using namespace std;
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 
-namespace gpstk
+namespace gnsstk
 {
    CommandOptionVec defaultCommandOptionList;
 
@@ -71,13 +71,13 @@ namespace gpstk
          if ( (shOpt == 0) && (loOpt.size() == 0) )
          {
             InvalidParameter  exc("A short or long command option must be specified");
-            GPSTK_THROW(exc);
+            GNSSTK_THROW(exc);
          }
             // if short option is specified, allow only printable, non-space characters
          if ( (shOpt != 0) && !isgraph(shOpt) )
          {
             InvalidParameter  exc("Invalid short command option character");
-            GPSTK_THROW(exc);
+            GNSSTK_THROW(exc);
          }
             // if long option is specified, allow only printable, non-space characters
          for ( size_t i = longOpt.size(); i > 0; --i )
@@ -85,7 +85,7 @@ namespace gpstk
             if ( !isgraph(longOpt[i - 1]) )
             {
                InvalidParameter  exc("Invalid long command option character");
-               GPSTK_THROW(exc);
+               GNSSTK_THROW(exc);
             }
          }
       }
@@ -345,7 +345,7 @@ namespace gpstk
       if (NULL == opt)
       {
          InvalidParameter  exc("Invalid option address");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       optionVec.push_back(opt);
    }
@@ -398,7 +398,7 @@ namespace gpstk
       if (NULL == opt)
       {
          InvalidParameter  exc("Invalid option address");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       optionVec.push_back(opt);
    }
@@ -483,12 +483,12 @@ namespace gpstk
       if (NULL == parent)
       {
          InvalidParameter  exc("Invalid parent address");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       if (NULL == child)
       {
          InvalidParameter  exc("Invalid child address");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       requiree = parent;
       requirer = child;
@@ -551,7 +551,7 @@ namespace gpstk
 
    void CommandOptionHelpUsage::printHelp(std::ostream& out, bool pretty)
    {
-      GPSTK_ASSERT(parser != NULL);
+      GNSSTK_ASSERT(parser != NULL);
          // Secret option! Ask for help once, get the normal usage.
          // Ask for help twice, get doxygen-formatted comments to
          // insert into your code's documentation.
@@ -561,4 +561,4 @@ namespace gpstk
          parser->displayUsageDoxygen(out);
    }
 
-} // namespace gpstk
+} // namespace gnsstk

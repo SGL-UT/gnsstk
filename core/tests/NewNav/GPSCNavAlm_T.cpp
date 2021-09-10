@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -40,9 +40,9 @@
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -63,8 +63,8 @@ unsigned GPSCNavAlm_T ::
 constructorTest()
 {
    TUDEF("GPSCNavAlm", "GPSCNavAlm");
-   gpstk::GPSCNavAlm uut;
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Almanac,
+   gnsstk::GPSCNavAlm uut;
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Almanac,
              uut.signal.messageType);
    TUASSERTE(bool, true, uut.healthL1);
    TUASSERTE(bool, true, uut.healthL2);
@@ -80,23 +80,23 @@ unsigned GPSCNavAlm_T ::
 getUserTimeTest()
 {
    TUDEF("GPSCNavAlm", "getUserTime");
-   gpstk::GPSCNavAlm uut;
+   gnsstk::GPSCNavAlm uut;
       // L2 has a 12s cadence, L5 has a 6s cadence
-   gpstk::CommonTime expL2(gpstk::GPSWeekSecond(2100,147.0));
-   gpstk::CommonTime expL5(gpstk::GPSWeekSecond(2100,141.0));
-   uut.timeStamp = gpstk::GPSWeekSecond(2100,135.0);
-   uut.signal = gpstk::NavMessageID(
-      gpstk::NavSatelliteID(1, 1, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L5, gpstk::TrackingCode::L5I,
-                            gpstk::NavType::GPSCNAVL5),
-      gpstk::NavMessageType::Almanac);
-   TUASSERTE(gpstk::CommonTime, expL5, uut.getUserTime());
-   uut.signal = gpstk::NavMessageID(
-      gpstk::NavSatelliteID(1, 1, gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L2, gpstk::TrackingCode::L2CM,
-                            gpstk::NavType::GPSCNAVL2),
-      gpstk::NavMessageType::Almanac);
-   TUASSERTE(gpstk::CommonTime, expL2, uut.getUserTime());
+   gnsstk::CommonTime expL2(gnsstk::GPSWeekSecond(2100,147.0));
+   gnsstk::CommonTime expL5(gnsstk::GPSWeekSecond(2100,141.0));
+   uut.timeStamp = gnsstk::GPSWeekSecond(2100,135.0);
+   uut.signal = gnsstk::NavMessageID(
+      gnsstk::NavSatelliteID(1, 1, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L5, gnsstk::TrackingCode::L5I,
+                            gnsstk::NavType::GPSCNAVL5),
+      gnsstk::NavMessageType::Almanac);
+   TUASSERTE(gnsstk::CommonTime, expL5, uut.getUserTime());
+   uut.signal = gnsstk::NavMessageID(
+      gnsstk::NavSatelliteID(1, 1, gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L2, gnsstk::TrackingCode::L2CM,
+                            gnsstk::NavType::GPSCNAVL2),
+      gnsstk::NavMessageType::Almanac);
+   TUASSERTE(gnsstk::CommonTime, expL2, uut.getUserTime());
    TURETURN();
 }
 
@@ -105,16 +105,16 @@ unsigned GPSCNavAlm_T ::
 fixFitTest()
 {
    TUDEF("GPSCNavAlm", "fixFit");
-   gpstk::CommonTime toa = gpstk::GPSWeekSecond(2100,135.0);
-   gpstk::CommonTime xmit = gpstk::GPSWeekSecond(2099,604000.0);
-   gpstk::CommonTime expBegin = xmit;
-   gpstk::CommonTime expEnd   = gpstk::CommonTime::END_OF_TIME;
-   gpstk::GPSCNavAlm uut;
+   gnsstk::CommonTime toa = gnsstk::GPSWeekSecond(2100,135.0);
+   gnsstk::CommonTime xmit = gnsstk::GPSWeekSecond(2099,604000.0);
+   gnsstk::CommonTime expBegin = xmit;
+   gnsstk::CommonTime expEnd   = gnsstk::CommonTime::END_OF_TIME;
+   gnsstk::GPSCNavAlm uut;
    uut.Toe = toa;
    uut.xmitTime = xmit;
    TUCATCH(uut.fixFit());
-   TUASSERTE(gpstk::CommonTime, expBegin, uut.beginFit);
-   TUASSERTE(gpstk::CommonTime, expEnd, uut.endFit);
+   TUASSERTE(gnsstk::CommonTime, expBegin, uut.beginFit);
+   TUASSERTE(gnsstk::CommonTime, expEnd, uut.endFit);
    TURETURN();
 }
 

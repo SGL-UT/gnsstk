@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -61,15 +61,15 @@ public:
 
 protected:
 
-   const gpstk::YDSTime t1;
-   const gpstk::YDSTime t2;
-   const gpstk::YDSTime t3;
-   const gpstk::YDSTime t4;
+   const gnsstk::YDSTime t1;
+   const gnsstk::YDSTime t2;
+   const gnsstk::YDSTime t3;
+   const gnsstk::YDSTime t4;
 
    const double a[4] = {1.,2.,3.,4.};
    const double b[4] = {5.,6.,7.,8.};
 
-   gpstk::IonoModelStore *store = nullptr;
+   gnsstk::IonoModelStore *store = nullptr;
 };
 
 
@@ -86,7 +86,7 @@ int IonoModelStoreTest :: testConstructDestruct()
 {
    TUDEF( "IonoModelStore", "constructor/destructor" );
 
-   TUCATCH( store = new gpstk::IonoModelStore() );
+   TUCATCH( store = new gnsstk::IonoModelStore() );
 
    TUASSERTE( size_t, 0, store->size() );
    TUASSERT( true == store->empty() );
@@ -101,17 +101,17 @@ int IonoModelStoreTest :: testAdd()
 {
    TUDEF( "IonoModelStore", "addIonoModel" );
 
-   store = new gpstk::IonoModelStore();
+   store = new gnsstk::IonoModelStore();
 
-   const gpstk::IonoModel emptyModel;
-   const gpstk::IonoModel validModel1(a, b);
-   const gpstk::IonoModel validModel2(b, a);
+   const gnsstk::IonoModel emptyModel;
+   const gnsstk::IonoModel validModel1(a, b);
+   const gnsstk::IonoModel validModel2(b, a);
 
       // Attempt to add an invalid IonoModel - should fail
    TUASSERT( false == store->addIonoModel(t1, emptyModel) );
    TUASSERTE( size_t, 0, store->size() );
-   TUASSERT( gpstk::CommonTime::END_OF_TIME == store->getInitialTime() );
-   TUASSERT( gpstk::CommonTime::BEGINNING_OF_TIME == store->getFinalTime() );
+   TUASSERT( gnsstk::CommonTime::END_OF_TIME == store->getInitialTime() );
+   TUASSERT( gnsstk::CommonTime::BEGINNING_OF_TIME == store->getFinalTime() );
       // Post: { }
 
       // Add an initial, valid IonoModel - should succeed
@@ -185,14 +185,14 @@ int IonoModelStoreTest :: testGet()
       //
       // Pre: { (t1,m1), (t2,m2), (t3,m2), (t4,m1) }
 
-   const gpstk::Position pos(-740290.0, -5457071.7, 3207245.6);
+   const gnsstk::Position pos(-740290.0, -5457071.7, 3207245.6);
 
    double az = 123.0;
    double el = 45.0;
 
    double correction;
 
-   gpstk::CommonTime t = t1;
+   gnsstk::CommonTime t = t1;
 
       // Attempt to get a correction before any data exists - should throw.
    t -= 900.0;
@@ -237,8 +237,8 @@ int IonoModelStoreTest :: testEdit()
       //
       // Pre: { (t1,m1), (t2,m2), (t3,m2), (t4,m1) }
 
-   gpstk::CommonTime first = t1;
-   gpstk::CommonTime last  = t4;
+   gnsstk::CommonTime first = t1;
+   gnsstk::CommonTime last  = t4;
 
       // Call edit with a range encompassing all data - nothing should be removed.
    first -= 900.0;
@@ -296,8 +296,8 @@ int IonoModelStoreTest :: testClear()
    TUCATCH( store->clear() );
    TUASSERTE( size_t, 0, store->size() );
    TUASSERT( true == store->empty() );
-   TUASSERT( gpstk::CommonTime::END_OF_TIME == store->getInitialTime() );
-   TUASSERT( gpstk::CommonTime::BEGINNING_OF_TIME == store->getFinalTime() );
+   TUASSERT( gnsstk::CommonTime::END_OF_TIME == store->getInitialTime() );
+   TUASSERT( gnsstk::CommonTime::BEGINNING_OF_TIME == store->getFinalTime() );
       // Post: { }
 
    TURETURN( );

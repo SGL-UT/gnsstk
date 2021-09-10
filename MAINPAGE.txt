@@ -1,8 +1,8 @@
-\mainpage GPS Toolkit Software Library Documentation
+\mainpage GNSS Toolkit Software Library Documentation
 
-The goal of the GPSTk project is to provide a world class, open source
+The goal of the GNSSTk project is to provide a world class, open source
 computing suite to the satellite navigation community. It is our hope
-that the GPSTk will empower its users to perform new research and to
+that the GNSSTk will empower its users to perform new research and to
 create new applications.
 
 * If you haven't already, have a look at the \ref README which is linked
@@ -11,5 +11,5 @@ create new applications.
 * Installation instructions for the toolkit are available in the
   \ref INSTALL document, also linked on the menu on the left.
 
-* For a description of how to perform common tasks using the gpstk,
+* For a description of how to perform common tasks using the gnsstk,
   refer to the \ref HOWTO document.

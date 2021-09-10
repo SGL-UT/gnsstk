@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -37,7 +37,7 @@
 //==============================================================================
 
 /// @file EOPStore.hpp
-/// class gpstk::EOPStore encapsulates input, storage and retreval of
+/// class gnsstk::EOPStore encapsulates input, storage and retreval of
 /// Earth Orientation Parameters (EOPs - cf. class EarthOrientation).
 
 #ifndef CLASS_EARTHORIENTSTORE_INCLUDE
@@ -49,14 +49,14 @@
 #include <iomanip>
 #include <string>
 #include <map>
-// GPSTk
+// GNSSTk
 #include "Exception.hpp"
 #include "IERSConvention.hpp"
 #include "EOPPrediction.hpp"
 #include "EarthOrientation.hpp"
 
 //------------------------------------------------------------------------------------
-namespace gpstk {
+namespace gnsstk {
 
    /// Earth orientation parameter store. Store EarthOrientation objects in a map
    /// with key = integer MJD at which the EOPs are computed. Access the store
@@ -148,6 +148,6 @@ namespace gpstk {
 
    };    // end class EOPStore
 
-}  // end namespace gpstk
+}  // end namespace gnsstk
 
 #endif   // CLASS_EARTHORIENTSTORE_INCLUDE

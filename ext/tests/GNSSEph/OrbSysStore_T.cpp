@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -38,7 +38,7 @@
 
  /*********************************************************************
 *
-*  Test program for gpstk/ext/lib/GNSSEph/OrbDataSys* and /OrbSysStore*
+*  Test program for gnsstk/ext/lib/GNSSEph/OrbDataSys* and /OrbSysStore*
 *
 *********************************************************************/
 #include <iostream>
@@ -59,7 +59,7 @@
 #include "TestUtil.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 class OrbSysStore_T
 {
@@ -76,11 +76,11 @@ public:
    void setUpGLO();
       /**
        * @throw InvalidParameter */
-   gpstk::PackedNavBits getPnbLNav(const gpstk::ObsID& oidr,
+   gnsstk::PackedNavBits getPnbLNav(const gnsstk::ObsID& oidr,
                                    const std::string& str);
       /**
        * @throw InvalidParameter */
-   gpstk::PackedNavBits getPnbCNav(const gpstk::ObsID& oidr,
+   gnsstk::PackedNavBits getPnbCNav(const gnsstk::ObsID& oidr,
                                    const std::string& str);
 
       // Methods above exist to set up the following
@@ -139,7 +139,7 @@ createAndDump_LNAV()
          bool retval = oss.addMessage(pnbr);
          if (retval) addSuccess++;
       }
-      catch(gpstk::InvalidRequest ir)
+      catch(gnsstk::InvalidRequest ir)
       {
          passed = false;
          std::stringstream ss;
@@ -704,7 +704,7 @@ createAndDump_CNAV()
          bool retval = oss.addMessage(pnbr);
          if (retval) addSuccess++;
       }
-      catch(gpstk::InvalidRequest ir)
+      catch(gnsstk::InvalidRequest ir)
       {
          passed = false;
          std::stringstream ss;
@@ -860,10 +860,10 @@ setUpLNAV()
 
       // Convert the LNAV strings to PNB
    if (debugLevel) std::cout << "Building PNB from strings" << std::endl;
-   gpstk::ObsID currObsID(gpstk::ObservationType::NavMsg,
-                          gpstk::CarrierBand::L1,
-                          gpstk::TrackingCode::CA);
-   gpstk::PackedNavBits msg;
+   gnsstk::ObsID currObsID(gnsstk::ObservationType::NavMsg,
+                          gnsstk::CarrierBand::L1,
+                          gnsstk::TrackingCode::CA);
+   gnsstk::PackedNavBits msg;
    for (unsigned short i=0; i<LNavExCount; i++)
    {
       msg = getPnbLNav(currObsID,LNavEx[i]);
@@ -878,12 +878,12 @@ setUpCNAV()
    init();
 
       // Define state variables for writing an CNAV data
-   gpstk::ObsID L2ObsID(gpstk::ObservationType::NavMsg,
-                    gpstk::CarrierBand::L2,
-                    gpstk::TrackingCode::L2CML);
-   gpstk::ObsID L5ObsID(gpstk::ObservationType::NavMsg,
-                    gpstk::CarrierBand::L5,
-                    gpstk::TrackingCode::L5I);
+   gnsstk::ObsID L2ObsID(gnsstk::ObservationType::NavMsg,
+                    gnsstk::CarrierBand::L2,
+                    gnsstk::TrackingCode::L2CML);
+   gnsstk::ObsID L5ObsID(gnsstk::ObservationType::NavMsg,
+                    gnsstk::CarrierBand::L5,
+                    gnsstk::TrackingCode::L5I);
    msgsExpectedToBeAdded = 4;
    typeDesc = "GPS_CNAV";
 
@@ -902,7 +902,7 @@ setUpCNAV()
    };
 
       // Convert the CNAV strings to PNB
-   gpstk::PackedNavBits msg;
+   gnsstk::PackedNavBits msg;
    for (unsigned short i=0; i<CNavExCount; i++)
    {
       msg = getPnbCNav(L2ObsID, CNavEx[i]);
@@ -926,9 +926,9 @@ setUpGLO()
 }
 
    //---------------------------------------------------------------
-   gpstk::PackedNavBits
+   gnsstk::PackedNavBits
    OrbSysStore_T::
-   getPnbLNav(const gpstk::ObsID& oidr, const std::string& str)
+   getPnbLNav(const gnsstk::ObsID& oidr, const std::string& str)
    {
       try
       {
@@ -947,12 +947,12 @@ setUpGLO()
             ss << "Line format problem. ";
             ss << "  Should be at least 18 items.";
             InvalidParameter ip(ss.str());
-            GPSTK_THROW(ip);
+            GNSSTK_THROW(ip);
          }
 
             // Convert the time information into a CommonTime
-         int week = gpstk::StringUtils::asInt(words[3]);
-         double sow = gpstk::StringUtils::asDouble(words[4]);
+         int week = gnsstk::StringUtils::asInt(words[3]);
+         double sow = gnsstk::StringUtils::asDouble(words[4]);
          CommonTime ct = GPSWeekSecond(week,sow,TimeSystem::GPS);
 
             // Convert the PRN to a SatID
@@ -983,15 +983,15 @@ setUpGLO()
          stringstream ss;
          ss << "String conversion error:'" << str << "'.";
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
    }
 
 
    //-------------------------------------------------
-   gpstk::PackedNavBits
+   gnsstk::PackedNavBits
    OrbSysStore_T::
-   getPnbCNav(const gpstk::ObsID& oidr, const std::string& str)
+   getPnbCNav(const gnsstk::ObsID& oidr, const std::string& str)
    {
       try
       {
@@ -1005,12 +1005,12 @@ setUpGLO()
             ss << "Line format problem. ";
             ss << "  Should be at least 18 items.";
             InvalidParameter ip(ss.str());
-            GPSTK_THROW(ip);
+            GNSSTK_THROW(ip);
          }
 
             // Convert the time information into a CommonTime
-         int week = gpstk::StringUtils::asInt(words[3]);
-         double sow = gpstk::StringUtils::asDouble(words[4]);
+         int week = gnsstk::StringUtils::asInt(words[3]);
+         double sow = gnsstk::StringUtils::asDouble(words[4]);
          CommonTime ct = GPSWeekSecond(week,sow,TimeSystem::GPS);
 
             // Convert the PRN to a SatID
@@ -1050,7 +1050,7 @@ setUpGLO()
          stringstream ss;
          ss << "String conversion error:'" << str << "'.";
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
    }
 

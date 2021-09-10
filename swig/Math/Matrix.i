@@ -3,31 +3,31 @@
 %include "TemplateMacros.i"
 
 %inline %{
-   namespace gpstk
+   namespace gnsstk
    {
          //Matrix version of maxabs
          //This is necessary since the vector version has the same name and SWIG
          //automatically tries to wrap the vector version with matrix arguments
       template <class T, class BaseClass>
-      T matrixmaxabs(const gpstk::ConstMatrixBase<T, BaseClass>& a)
+      T matrixmaxabs(const gnsstk::ConstMatrixBase<T, BaseClass>& a)
       {
          return maxabs(a);
       }
    }
    %}
 
-%extend gpstk::Matrix
+%extend gnsstk::Matrix
 {
       // Creates a function to call matrix version of assignFrom because the
       // template is not wrapping correctly
-   gpstk::Matrix& assignFromMatrix(const gpstk::Matrix& mat)
+   gnsstk::Matrix& assignFromMatrix(const gnsstk::Matrix& mat)
    {
       return $self->operator=(mat);
    }
 
       // Creates a function to call vector version of assignFrom because the
       // template is not wrapping correctly
-   gpstk::Matrix& assignFromVector(const gpstk::Vector<T>& x)
+   gnsstk::Matrix& assignFromVector(const gnsstk::Vector<T>& x)
    {
       return $self->assignFrom(x);
    }
@@ -44,7 +44,7 @@
 
       // Python Special Functions
       // Implements Python __getitem__ to get a row slice at a given index
-   gpstk::MatrixRowSlice<T> __getitem__(size_t i)
+   gnsstk::MatrixRowSlice<T> __getitem__(size_t i)
    {
          // Throw an exception if the index is out of the bounds
       CHECK_INDEX(i, 0, $self->rows());
@@ -53,136 +53,136 @@
    }
 
       // Implements Python __add__ for + operation with another matrix
-   gpstk::Matrix<T> __add__(const gpstk::Matrix& mat)
+   gnsstk::Matrix<T> __add__(const gnsstk::Matrix& mat)
    {
       return *($self) + mat;
    }
 
       // Implements Python __add__ for + operation with a value
-   gpstk::Matrix<T> __add__(const T d)
+   gnsstk::Matrix<T> __add__(const T d)
    {
       return *($self) + d;
    }
 
       // Implements Python __iadd__ for += operation with another matrix
-   gpstk::Matrix<T> __iadd__(const gpstk::Matrix& mat)
+   gnsstk::Matrix<T> __iadd__(const gnsstk::Matrix& mat)
    {
       return *($self) += mat;
    }
 
       // Implements Python __iadd__ for += operation with a vector
-   gpstk::Matrix<T> __iadd__(const gpstk::Vector<T>& vec)
+   gnsstk::Matrix<T> __iadd__(const gnsstk::Vector<T>& vec)
    {
       return *($self) += vec;
    }
 
       // Implements Python __iadd__ for += operation with pointer array
-   gpstk::Matrix<T> __iadd__(const T* x)
+   gnsstk::Matrix<T> __iadd__(const T* x)
    {
       return *($self) += x;
    }
 
       // Implements Python __iadd__ for += operation with value
-   gpstk::Matrix<T> __iadd__(T x)
+   gnsstk::Matrix<T> __iadd__(T x)
    {
       return *($self) += x;
    }
 
       // Implements Python __sub__ for - operation with a matrix
-   gpstk::Matrix<T> __sub__(const gpstk::Matrix& mat)
+   gnsstk::Matrix<T> __sub__(const gnsstk::Matrix& mat)
    {
       return *($self) - mat;
    }
 
       // Implements Python __sub__ for - operation with a value
-   gpstk::Matrix<T> __sub__(const T d)
+   gnsstk::Matrix<T> __sub__(const T d)
    {
       return *($self) - d;
    }
 
       // Implements Python __isub__ for -= operation with another matrix
-   gpstk::Matrix<T> __isub__(const gpstk::Matrix& mat)
+   gnsstk::Matrix<T> __isub__(const gnsstk::Matrix& mat)
    {
       return *($self) -= mat;
    }
 
       // Implements Python __isub__ for -= operation with a vector
-   gpstk::Matrix<T> __isub__(const gpstk::Vector<T>& vec)
+   gnsstk::Matrix<T> __isub__(const gnsstk::Vector<T>& vec)
    {
       return *($self) -= vec;
    }
 
       // Implements Python __isub__ for -= operation with pointer array
-   gpstk::Matrix<T> __isub__(const T* x)
+   gnsstk::Matrix<T> __isub__(const T* x)
    {
       return *($self) -= x;
    }
 
       // Implements Python __isub__ for -= operation with value
-   gpstk::Matrix<T> __isub__(T x)
+   gnsstk::Matrix<T> __isub__(T x)
    {
       return *($self) -= x;
    }
 
       // Implements Python __mul__ for elementwise matrix multiplication by a value
-   gpstk::Matrix<T> __mul__(const T d)
+   gnsstk::Matrix<T> __mul__(const T d)
    {
       return *($self) * d;
    }
 
       // Implements Python __mul__ for matrix-matrix multiplication
-   gpstk::Matrix<T> __mul__(const gpstk::Matrix& mat)
+   gnsstk::Matrix<T> __mul__(const gnsstk::Matrix& mat)
    {
       return *($self) * mat;
    }
 
       // Implements Python __mul__ for matrix-vector multiplication
-   gpstk::Vector<T> __mul__(const gpstk::Vector<T>& vec)
+   gnsstk::Vector<T> __mul__(const gnsstk::Vector<T>& vec)
    {
       return *($self) * vec;
    }
 
       // Implements Python __imul__ for *= operation with value
-   gpstk::Matrix<T> __imul__(const T x)
+   gnsstk::Matrix<T> __imul__(const T x)
    {
       return *($self) *= x;
    }
 
       // Implements Python __itruediv__ for /= operation with value
-   gpstk::Matrix<T> __itruediv__(const T x)
+   gnsstk::Matrix<T> __itruediv__(const T x)
    {
       return *($self) /= x;
    }
 
 //        // Implements Python __truediv__ for elementwise / operation by a value
-   gpstk::Matrix<T> __truediv__(const T d)
+   gnsstk::Matrix<T> __truediv__(const T d)
    {
       return *($self) / d;
    }
 
       // Implements top bottom concatenation with another matrix
-   gpstk::Matrix<T> stack(const gpstk::ConstMatrixBase<T, gpstk::Matrix<T>>& b)
+   gnsstk::Matrix<T> stack(const gnsstk::ConstMatrixBase<T, gnsstk::Matrix<T>>& b)
 
    {
       return *($self) && b;
    }
 
       // Implements top bottom concatenation with another vector
-   gpstk::Matrix<T> stack(const gpstk::ConstVectorBase<T, gpstk::Vector<T>>& b)
+   gnsstk::Matrix<T> stack(const gnsstk::ConstVectorBase<T, gnsstk::Vector<T>>& b)
 
    {
       return *($self) && b;
    }
 
       // Implements left to right concatenation with another matrix
-   gpstk::Matrix<T> concatenate(const gpstk::ConstMatrixBase<T, gpstk::Matrix<T>>& r)
+   gnsstk::Matrix<T> concatenate(const gnsstk::ConstMatrixBase<T, gnsstk::Matrix<T>>& r)
 
    {
       return *($self) || r;
    }
 
       // Implements left to right concatenation with another vector
-   gpstk::Matrix<T> concatenate(const gpstk::ConstVectorBase<T, gpstk::Vector<T>>& r)
+   gnsstk::Matrix<T> concatenate(const gnsstk::ConstVectorBase<T, gnsstk::Vector<T>>& r)
 
    {
       return *($self) || r;
@@ -190,35 +190,35 @@
 }
 
    // Add functions to implement vector functions that use matrices or return matrices
-%extend gpstk::Vector
+%extend gnsstk::Vector
 {
       // Implements top bottom concatenation with another matrix
-   gpstk::Matrix<T> stack(const gpstk::ConstMatrixBase<T, gpstk::Matrix<T>>& b)
+   gnsstk::Matrix<T> stack(const gnsstk::ConstMatrixBase<T, gnsstk::Matrix<T>>& b)
 
    {
       return *($self) && b;
    }
       // Implements left to right concatenation with another matrix
-   gpstk::Matrix<T> concatenate(const gpstk::ConstMatrixBase<T, gpstk::Matrix<T>>& r)
+   gnsstk::Matrix<T> concatenate(const gnsstk::ConstMatrixBase<T, gnsstk::Matrix<T>>& r)
 
    {
       return *($self) || r;
    }
       // Implements left to right concatenation with another matrix
-   gpstk::Matrix<T> concatenate(const gpstk::ConstVectorBase<T, gpstk::Vector<T>>& r)
+   gnsstk::Matrix<T> concatenate(const gnsstk::ConstVectorBase<T, gnsstk::Vector<T>>& r)
 
    {
       return *($self) || r;
    }
 
       // Implements Python __mul__ for matrix-vector multiplication
-   gpstk::Vector<T> __mul__(const gpstk::Matrix<T>& mat)
+   gnsstk::Vector<T> __mul__(const gnsstk::Matrix<T>& mat)
    {
       return *($self) * mat;
    }
 }
 
-%extend gpstk::MatrixColSlice
+%extend gnsstk::MatrixColSlice
 {
       //Implements Python __getitem__ to get an element at a given index
    T __getitem__(size_t i)
@@ -240,7 +240,7 @@
    }
 }
 
-%extend gpstk::MatrixRowSlice
+%extend gnsstk::MatrixRowSlice
 {
       //Implements Python __getitem__ to get an element at a given index
    T __getitem__(size_t i)
@@ -263,48 +263,48 @@
 }
 
    // Add Python implementations of the __call__ and backSub methods for all Matrix Functor classes
-%extend gpstk::SVD
+%extend gnsstk::SVD
 {
-   bool __call__(const gpstk::ConstMatrixBase<T, gpstk::Matrix<T>>& mat)
+   bool __call__(const gnsstk::ConstMatrixBase<T, gnsstk::Matrix<T>>& mat)
    {
       return (*($self))(mat);
    }
 
-   void backSub(gpstk::RefVectorBase<T, gpstk::Vector<T>>& b)
+   void backSub(gnsstk::RefVectorBase<T, gnsstk::Vector<T>>& b)
    {
       (*($self)).backSub(b);
    }
 }
 
-%extend gpstk::LUDecomp
+%extend gnsstk::LUDecomp
 {
-   void __call__(const gpstk::ConstMatrixBase<T, gpstk::Matrix<T>>& mat)
+   void __call__(const gnsstk::ConstMatrixBase<T, gnsstk::Matrix<T>>& mat)
    {
       (*($self))(mat);
    }
 
-   void backSub(gpstk::RefVectorBase<T, gpstk::Vector<T>>& b)
+   void backSub(gnsstk::RefVectorBase<T, gnsstk::Vector<T>>& b)
    {
       (*($self)).backSub(b);
    }
 }
 
-%extend gpstk::Cholesky
+%extend gnsstk::Cholesky
 {
-   void __call__(const gpstk::ConstMatrixBase<T, gpstk::Matrix<T>>& mat)
+   void __call__(const gnsstk::ConstMatrixBase<T, gnsstk::Matrix<T>>& mat)
    {
       (*($self))(mat);
    }
 
-   void backSub(gpstk::RefVectorBase<T, gpstk::Vector<T>>& b)
+   void backSub(gnsstk::RefVectorBase<T, gnsstk::Vector<T>>& b)
    {
       (*($self)).backSub(b);
    }
 }
 
-%extend gpstk::Householder
+%extend gnsstk::Householder
 {
-   void __call__(const gpstk::ConstMatrixBase<T, gpstk::Matrix<T>>& mat)
+   void __call__(const gnsstk::ConstMatrixBase<T, gnsstk::Matrix<T>>& mat)
    {
       (*($self))(mat);
    }

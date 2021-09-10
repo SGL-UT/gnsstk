@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -55,7 +55,7 @@
 #include "XvtStore.hpp"
 #include "TropModel.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    /** @defgroup GPSsolutions GPS solution algorithms and Tropospheric models */
    //@{
@@ -86,7 +86,7 @@ namespace gpstk
        *                    are marked by a negative 'prn' member.
        * @param Pseudorange std::vector<double> of raw pseudoranges (parallel to
        *                    Satellite), in meters.
-       * @param Eph         gpstk::EphemerisStore to be used in the algorithm.
+       * @param Eph         gnsstk::EphemerisStore to be used in the algorithm.
        *
        * @return Return values:
        *  2  solution is found, but it is not good (RMS residual exceed limits)
@@ -200,8 +200,8 @@ namespace gpstk
        *                    negative 'prn' member.
        * @param Pseudorange std::vector<double> of raw pseudoranges (parallel to
        *                    Satellite), in meters
-       * @param Eph         gpstk::XvtStore<SatID> to be used in the algorithm.
-       * @param SVP         gpstk::Matrix<double> of dimension (N,4), N is the number
+       * @param Eph         gnsstk::XvtStore<SatID> to be used in the algorithm.
+       * @param SVP         gnsstk::Matrix<double> of dimension (N,4), N is the number
        *                    of unmarked satellites in Sats[], on output this
        *                    contains the satellite positions at transmit time, and
        *                    the corrected pseudorange.
@@ -228,7 +228,7 @@ namespace gpstk
        *                    been computed by calling PrepareAutonomousPRSolution().
        * @param Algebraic   bool flag indicating algorithm to use : algebraic (true)
        *                    or linearized least squares (false).
-       * @param pTropModel  pointer to a gpstk::TropModel for use within the algorithm
+       * @param pTropModel  pointer to a gnsstk::TropModel for use within the algorithm
        *
        *   Weight matrix TD...
        *
@@ -239,13 +239,13 @@ namespace gpstk
        *                    in meters. On output, it is the the final value.
        *
        * Output:  (these will be resized within the function)
-       * @param Sol         gpstk::Vector<double> solution (ECEF + time components;
+       * @param Sol         gnsstk::Vector<double> solution (ECEF + time components;
        *                    all in meters)
-       * @param Cov         gpstk::Matrix<double> 4X4 covariance matrix (meter*meter)
-       * @param Resid       gpstk::Vector<double> post-fit range residuals for each
+       * @param Cov         gnsstk::Matrix<double> 4X4 covariance matrix (meter*meter)
+       * @param Resid       gnsstk::Vector<double> post-fit range residuals for each
        *                    satellite (m), the length of this Vector is the number of
        *                    satellites actually used (see Use).
-       * @param Slope       gpstk::Vector<double> slope value used in RAIM for each
+       * @param Slope       gnsstk::Vector<double> slope value used in RAIM for each
        *                    good satellite, length N
        * @param pDebug      pointer to an ostream for debug output, NULL (the default)
        *                    for no debug output.
@@ -292,6 +292,6 @@ namespace gpstk
 
    //@}
 
-} // namespace gpstk
+} // namespace gnsstk
 
 #endif

@@ -1,13 +1,13 @@
-// convert output gpstk::NavDataPtr references
+// convert output gnsstk::NavDataPtr references
 
-%typemap(in, numinputs=0) std::shared_ptr<gpstk::NavData> &navOut ()
+%typemap(in, numinputs=0) std::shared_ptr<gnsstk::NavData> &navOut ()
 {
-   std::shared_ptr<gpstk::NavData> *smartresult =
-      new std::shared_ptr<gpstk::NavData>();
+   std::shared_ptr<gnsstk::NavData> *smartresult =
+      new std::shared_ptr<gnsstk::NavData>();
    $1 = smartresult;
 }
 
-%typemap(argout) std::shared_ptr<gpstk::NavData> &
+%typemap(argout) std::shared_ptr<gnsstk::NavData> &
 {
       // What this does is change the python interface to the C++
       // method so that you get a list containing the original C++
@@ -30,7 +30,7 @@
       {
             // The NavData tree has a getClassName() method that
             // returns the qualified class name,
-            // e.g. gpstk::GPSLNavEph.  We add the shared_ptr
+            // e.g. gnsstk::GPSLNavEph.  We add the shared_ptr
             // qualifiers in order for SWIG_TypeQuery to get the
             // correct python data type that we need to return.
          std::string cn = "std::shared_ptr< " + (*$1)->getClassName() + " > *";
@@ -60,16 +60,16 @@
    }
 }
 
-// convert output gpstk::SVHealth references
+// convert output gnsstk::SVHealth references
 
-%typemap(in, numinputs=0) gpstk::SVHealth &healthOut (gpstk::SVHealth temp)
+%typemap(in, numinputs=0) gnsstk::SVHealth &healthOut (gnsstk::SVHealth temp)
 {
       // healthOut typemap(in)
-   temp = gpstk::SVHealth::Unknown;
+   temp = gnsstk::SVHealth::Unknown;
    $1 = &temp;
 }
 
-%typemap(argout) gpstk::SVHealth&
+%typemap(argout) gnsstk::SVHealth&
 {
       // healthOut typemap(argout)
       // What this does is change the python interface to the C++
@@ -86,9 +86,9 @@
       resultobj = PyList_New(1);
       PyList_SetItem(resultobj, 0, temp);
       PyObject* sys_mod_dict = PyImport_GetModuleDict();
-      PyObject* gpstk_mod = PyMapping_GetItemString(sys_mod_dict, "gpstk");
-      PyObject* enum_instance = PyObject_CallMethod(gpstk_mod, "SVHealth", "i", (int)*$1);
-      Py_DECREF(gpstk_mod);
+      PyObject* gnsstk_mod = PyMapping_GetItemString(sys_mod_dict, "gnsstk");
+      PyObject* enum_instance = PyObject_CallMethod(gnsstk_mod, "SVHealth", "i", (int)*$1);
+      Py_DECREF(gnsstk_mod);
       PyList_Append(resultobj, enum_instance);
    }
 }

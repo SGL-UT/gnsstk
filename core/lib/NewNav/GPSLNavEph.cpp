@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -42,7 +42,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    GPSLNavEph ::
    GPSLNavEph()
@@ -132,17 +132,17 @@ namespace gpstk
       s << "           SUBFRAME OVERHEAD" << endl << endl
         << "               SOW    DOW:HH:MM:SS     IOD    ALERT   A-S" << endl
         << "SF1 HOW:   "
-        << gpstk::printTime(xmitTime+6, "%7.0g  %3a-%1w:%02H:%02M:%02S")
+        << gnsstk::printTime(xmitTime+6, "%7.0g  %3a-%1w:%02H:%02M:%02S")
         << "   0x" << hex << setw(3) << internal << setfill('0')
         << nouppercase << iodc << dec << setfill(' ') << "      "
         << noboolalpha << alert << "     " << (asFlag ? " on" : "off") << endl
         << "SF2 HOW:   "
-        << gpstk::printTime(xmitTime+12, "%7.0g  %3a-%1w:%02H:%02M:%02S")
+        << gnsstk::printTime(xmitTime+12, "%7.0g  %3a-%1w:%02H:%02M:%02S")
         << "    0x" << hex << setw(2) << internal << setfill('0')
         << nouppercase << iode << dec << setfill(' ') << "      "
         << alert2 << "     " << (asFlag2 ? " on" : "off") << endl
         << "SF3 HOW:   "
-        << gpstk::printTime(xmitTime+18, "%7.0g  %3a-%1w:%02H:%02M:%02S")
+        << gnsstk::printTime(xmitTime+18, "%7.0g  %3a-%1w:%02H:%02M:%02S")
         << "    0x" << hex << setw(2) << internal << setfill('0')
         << nouppercase << iode << dec << setfill(' ') << "      "
         << alert3 << "     " << (asFlag3 ? " on" : "off") << endl

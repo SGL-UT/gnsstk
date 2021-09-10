@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -39,15 +39,15 @@
 /// @file Rinex3ObsFileLoader.hpp  Read a RINEX3 file, selecting, counting and saving
 /// obs data, then allow caller to access that data easily.
 
-#ifndef GPSTK_RINEX3_FILE_LOADER_INCLUDE
-#define GPSTK_RINEX3_FILE_LOADER_INCLUDE
+#ifndef GNSSTK_RINEX3_FILE_LOADER_INCLUDE
+#define GNSSTK_RINEX3_FILE_LOADER_INCLUDE
 
 //------------------------------------------------------------------------------------
 // system includes
 #include <string>
 #include <vector>
 
-// GPSTk
+// GNSSTk
 #include "Exception.hpp"
 #include "CommonTime.hpp"
 #include "stl_helpers.hpp"          // vectorindex
@@ -55,10 +55,10 @@
 #include "Rinex3ObsHeader.hpp"
 #include "Rinex3ObsData.hpp"
 
-// gpstk-geomatics
+// gnsstk-geomatics
 #include "SatPass.hpp"
 
-namespace gpstk {
+namespace gnsstk {
 
 //--------------------------------------------------------------------------------
 /// Class to determine fundamental information about a RINEX obs file, from both
@@ -248,7 +248,7 @@ public:
    /// @param[in] dt decimate data to this time step (on even seconds-of-week)
    inline void setDecimation(double dt) { dtdec = dt; }
    /// set time format
-   /// @param[in] fmt format (cf. gpstk::Epoch::printf) for time output in dumps
+   /// @param[in] fmt format (cf. gnsstk::Epoch::printf) for time output in dumps
    inline void setTimeFormat(std::string fmt) { timefmt = fmt; }
 
    /// satellites to be excluded; this may be SatID = (-1, system);
@@ -340,7 +340,7 @@ public:
 
    /// Dump the stored data for one epoch - NB setTimeFormat()
    /// @param s to which to write the data
-   void dumpStoreEpoch(std::ostream& s, const gpstk::Rinex3ObsData& rod) const;
+   void dumpStoreEpoch(std::ostream& s, const gnsstk::Rinex3ObsData& rod) const;
 
    /// Dump the stored data - NB setTimeFormat()
    /// @param s to which to write the data
@@ -355,6 +355,6 @@ void dumpAllRinex3ObsTypes(std::ostream& s);
 
 //@}
 
-} // end namespace gpstk
+} // end namespace gnsstk
 
-#endif      // GPSTK_RINEX3_FILE_LOADER_INCLUDE
+#endif      // GNSSTK_RINEX3_FILE_LOADER_INCLUDE

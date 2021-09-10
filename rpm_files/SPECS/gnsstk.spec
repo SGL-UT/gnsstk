@@ -1,14 +1,14 @@
-%define name gpstk
+%define name gnsstk
 %define version 12.0.0
 %define release 1
 
-Summary:        GPS Toolkit
+Summary:        GNSS Toolkit
 Name:           %{name}
 Version:        %{version}
 Release:        %{release}%{?dist}
 License:        LGPL
 Source:         %{name}-master.tar.gz
-URL:            https://github.com/SGL-UT/GPSTk
+URL:            https://github.com/SGL-UT/GNSSTk
 Group:          Development/Libraries
 BuildRequires: cmake
 BuildRequires: gcc
@@ -16,17 +16,17 @@ BuildRequires: gcc-c++
 BuildRequires: ncurses-devel
 
 %description
-The GPS Toolkit (GPSTk) is an open-source (LGPL) project sponsored by
+The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by
 the Space and Geophysics Laboratory (SGL), part of the Applied Research
 Laboratories (ARL) at The University of Texas at Austin.
-The primary goals of the GPSTk project are to:
+The primary goals of the GNSSTk project are to:
 * provide applications for use by the GNSS and satellite navigation community.
 * provide a core library to facilitate the development of GNSS applications.
 
 %prep
 %setup -n %{name}-master
 
-# Setup and build GPSTk utilizing CMake
+# Setup and build GNSSTk utilizing CMake
 %build
 mkdir build
 cd build
@@ -38,9 +38,9 @@ make all -j 4
 cd build
 make install -j 4 DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT/usr/README.md
-mkdir -p $RPM_BUILD_ROOT/usr/include/gpstk
-cp $RPM_BUILD_ROOT/usr/include/gpstk*/gpstk/*.h $RPM_BUILD_ROOT/usr/include/gpstk
-cp $RPM_BUILD_ROOT/usr/include/gpstk*/gpstk/*.hpp $RPM_BUILD_ROOT/usr/include/gpstk
+mkdir -p $RPM_BUILD_ROOT/usr/include/gnsstk
+cp $RPM_BUILD_ROOT/usr/include/gnsstk*/gnsstk/*.h $RPM_BUILD_ROOT/usr/include/gnsstk
+cp $RPM_BUILD_ROOT/usr/include/gnsstk*/gnsstk/*.hpp $RPM_BUILD_ROOT/usr/include/gnsstk
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -49,11 +49,11 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %doc README.md COPYING.md RELNOTES.md
-/usr/include/gpstk*/gpstk
-/usr/include/gpstk
+/usr/include/gnsstk*/gnsstk
+/usr/include/gnsstk
 /usr/bin/*
 /usr/lib64/*
-/usr/share/cmake/GPSTK
+/usr/share/cmake/GNSSTK
 
 
 %changelog

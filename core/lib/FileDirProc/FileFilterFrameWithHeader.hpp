@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -38,18 +38,18 @@
 
 /**
  * @file FileFilterFrameWithHeader.hpp
- * Wrapper for gpstk::FileSpecFind and gpstk::FileFilter that also
+ * Wrapper for gnsstk::FileSpecFind and gnsstk::FileFilter that also
  * handles header data
  */
 
-#ifndef GPSTK_FILEFILTERFRAMEWITHHEADER_HPP
-#define GPSTK_FILEFILTERFRAMEWITHHEADER_HPP
+#ifndef GNSSTK_FILEFILTERFRAMEWITHHEADER_HPP
+#define GNSSTK_FILEFILTERFRAMEWITHHEADER_HPP
 
 #include "Rinex3ObsData.hpp"
 #include "FileFilterFrame.hpp"
 #include <math.h>
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileDirProc
       //@{
@@ -77,20 +77,20 @@ namespace gpstk
    public:
          /** Default constructor
           * @throw Exception */
-      FileFilterFrameWithHeader(const gpstk::CommonTime& start = 
-                                gpstk::CommonTime::BEGINNING_OF_TIME,
-                                const gpstk::CommonTime& end = 
-                                gpstk::CommonTime::END_OF_TIME)
+      FileFilterFrameWithHeader(const gnsstk::CommonTime& start = 
+                                gnsstk::CommonTime::BEGINNING_OF_TIME,
+                                const gnsstk::CommonTime& end = 
+                                gnsstk::CommonTime::END_OF_TIME)
             : FileFilterFrame<FileStream, FileData>(start, end)
       {}
 
          /** Takes a list of files to open in lieu of day times
           * @throw Exception */
       FileFilterFrameWithHeader(const std::vector<std::string>& fileList,
-                                const gpstk::CommonTime& start = 
-                                gpstk::CommonTime::BEGINNING_OF_TIME,
-                                const gpstk::CommonTime& end = 
-                                gpstk::CommonTime::END_OF_TIME)
+                                const gnsstk::CommonTime& start = 
+                                gnsstk::CommonTime::BEGINNING_OF_TIME,
+                                const gnsstk::CommonTime& end = 
+                                gnsstk::CommonTime::END_OF_TIME)
             : FileFilterFrame<FileStream, FileData>(fileList, start, end)
       {
          std::vector<std::string>::const_iterator itr = fileList.begin();
@@ -105,10 +105,10 @@ namespace gpstk
          /** Takes a file name for a single file filter.
           * @throw Exception when there's a file error. */
       FileFilterFrameWithHeader(const std::string& filename, 
-                                const gpstk::CommonTime& start = 
-                                gpstk::CommonTime::BEGINNING_OF_TIME,
-                                const gpstk::CommonTime& end = 
-                                gpstk::CommonTime::END_OF_TIME)
+                                const gnsstk::CommonTime& start = 
+                                gnsstk::CommonTime::BEGINNING_OF_TIME,
+                                const gnsstk::CommonTime& end = 
+                                gnsstk::CommonTime::END_OF_TIME)
             : FileFilterFrame<FileStream, FileData>(filename, start, end)
       {init();}
 
@@ -116,10 +116,10 @@ namespace gpstk
           * in FileSpecFind, to filter FOR stations, receivers, etc.
           * @throw Exception when there's a file error. */
       FileFilterFrameWithHeader(const FileSpec& spec, 
-                                const gpstk::CommonTime& start = 
-                                gpstk::CommonTime::BEGINNING_OF_TIME,
-                                const gpstk::CommonTime& end = 
-                                gpstk::CommonTime::END_OF_TIME,
+                                const gnsstk::CommonTime& start = 
+                                gnsstk::CommonTime::BEGINNING_OF_TIME,
+                                const gnsstk::CommonTime& end = 
+                                gnsstk::CommonTime::END_OF_TIME,
                                 const FileSpecFind::Filter& filter =
                                 FileSpecFind::Filter())
             : FileFilterFrame<FileStream, FileData>(spec, start, end, filter)
@@ -131,10 +131,10 @@ namespace gpstk
           * @throw Exception */
       FileFilterFrameWithHeader& 
       newSource(const FileSpec& filespec, 
-                const gpstk::CommonTime& start = 
-                gpstk::CommonTime::BEGINNING_OF_TIME,
-                const gpstk::CommonTime& end = 
-                gpstk::CommonTime::END_OF_TIME,
+                const gnsstk::CommonTime& start = 
+                gnsstk::CommonTime::BEGINNING_OF_TIME,
+                const gnsstk::CommonTime& end = 
+                gnsstk::CommonTime::END_OF_TIME,
                 const FileSpecFind::Filter& filter =
                 FileSpecFind::Filter())
       {
@@ -148,10 +148,10 @@ namespace gpstk
           * @throw Exception */
       FileFilterFrameWithHeader& 
       newSource(const std::string& filename, 
-                const gpstk::CommonTime& start = 
-                gpstk::CommonTime::BEGINNING_OF_TIME,
-                const gpstk::CommonTime& end = 
-                gpstk::CommonTime::END_OF_TIME)
+                const gnsstk::CommonTime& start = 
+                gnsstk::CommonTime::BEGINNING_OF_TIME,
+                const gnsstk::CommonTime& end = 
+                gnsstk::CommonTime::END_OF_TIME)
       {
          FileFilterFrame<FileStream, FileData>::newSource(filename, start,
                                                           end);
@@ -163,10 +163,10 @@ namespace gpstk
           * @throw Exception */
       FileFilterFrameWithHeader& 
       newSource(const std::vector<std::string>& fileList, 
-                const gpstk::CommonTime& start = 
-                gpstk::CommonTime::BEGINNING_OF_TIME,
-                const gpstk::CommonTime& end = 
-                gpstk::CommonTime::END_OF_TIME)
+                const gnsstk::CommonTime& start = 
+                gnsstk::CommonTime::BEGINNING_OF_TIME,
+                const gnsstk::CommonTime& end = 
+                gnsstk::CommonTime::END_OF_TIME)
       {
          FileFilterFrame<FileStream, FileData>::newSource(fileList, start,
                                                           end);
@@ -309,11 +309,11 @@ namespace gpstk
           * @throw InvalidRequest if headerList is empty */
       inline void chl(const std::string& req)
       {
-         gpstk::InvalidRequest exc("Header list is empty attempting to"
+         gnsstk::InvalidRequest exc("Header list is empty attempting to"
                                    " satisfy "+req+" request.");
          if (headerList.empty())
          {
-            GPSTK_THROW(exc);
+            GNSSTK_THROW(exc);
          }
       }
 
@@ -332,7 +332,7 @@ namespace gpstk
       std::string::size_type pos = outputFile.rfind('/');
 
       if (pos != std::string::npos)
-         gpstk::FileUtils::makeDir(outputFile.substr(0,pos).c_str(), 0755);
+         gnsstk::FileUtils::makeDir(outputFile.substr(0,pos).c_str(), 0755);
       
       FileStream stream(outputFile.c_str(), std::ios::out|std::ios::trunc);
       stream.exceptions(std::ios::failbit);
@@ -351,8 +351,8 @@ namespace gpstk
       const
    {
       try { chl("beginHeader"); }
-      catch(gpstk::InvalidRequest exc)
-      { GPSTK_RETHROW(exc); }
+      catch(gnsstk::InvalidRequest exc)
+      { GNSSTK_RETHROW(exc); }
       return headerList.begin();
    }
 
@@ -362,8 +362,8 @@ namespace gpstk
       const
    {
       try { chl("endHeader"); }
-      catch(gpstk::InvalidRequest exc)
-      { GPSTK_RETHROW(exc); }
+      catch(gnsstk::InvalidRequest exc)
+      { GNSSTK_RETHROW(exc); }
       return headerList.end();
    }
 
@@ -372,8 +372,8 @@ namespace gpstk
    FileFilterFrameWithHeader<FileStream,FileData,FileHeader>::beginHeader()
    {
       try { chl("beginHeader"); }
-      catch(gpstk::InvalidRequest exc)
-      { GPSTK_RETHROW(exc); }
+      catch(gnsstk::InvalidRequest exc)
+      { GNSSTK_RETHROW(exc); }
       return headerList.begin();
    }
 
@@ -383,8 +383,8 @@ namespace gpstk
    FileFilterFrameWithHeader<FileStream,FileData,FileHeader>::endHeader()
    {
       try { chl("endHeader"); }
-      catch(gpstk::InvalidRequest exc)
-      { GPSTK_RETHROW(exc); }
+      catch(gnsstk::InvalidRequest exc)
+      { GNSSTK_RETHROW(exc); }
       return headerList.end();
    }
 
@@ -393,8 +393,8 @@ namespace gpstk
    FileFilterFrameWithHeader<FileStream,FileData,FileHeader>::frontHeader()
    {
       try { chl("frontHeader"); }
-      catch(gpstk::InvalidRequest exc)
-      { GPSTK_RETHROW(exc); }
+      catch(gnsstk::InvalidRequest exc)
+      { GNSSTK_RETHROW(exc); }
       return headerList.front();
    }
 
@@ -405,8 +405,8 @@ namespace gpstk
       const
    {
       try { chl("frontHeader"); }
-      catch(gpstk::InvalidRequest exc)
-      { GPSTK_RETHROW(exc); }
+      catch(gnsstk::InvalidRequest exc)
+      { GNSSTK_RETHROW(exc); }
       return headerList.front();
    }
 
@@ -416,8 +416,8 @@ namespace gpstk
    FileFilterFrameWithHeader<FileStream,FileData,FileHeader>::backHeader()
    {
       try { chl("backHeader"); }
-      catch(gpstk::InvalidRequest exc)
-      { GPSTK_RETHROW(exc); }
+      catch(gnsstk::InvalidRequest exc)
+      { GNSSTK_RETHROW(exc); }
       return headerList.back();
    }
 
@@ -428,8 +428,8 @@ namespace gpstk
       const
    {
       try { chl("backHeader"); }
-      catch(gpstk::InvalidRequest exc)
-      { GPSTK_RETHROW(exc); }
+      catch(gnsstk::InvalidRequest exc)
+      { GNSSTK_RETHROW(exc); }
       return headerList.back();
    }
 
@@ -458,6 +458,6 @@ namespace gpstk
       }
    }
 
-} // namespace gpstk
+} // namespace gnsstk
 
-#endif //GPSTK_FILEFILTERFRAMEWITHHEADER_HPP
+#endif //GNSSTK_FILEFILTERFRAMEWITHHEADER_HPP

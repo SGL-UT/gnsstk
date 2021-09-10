@@ -27,7 +27,7 @@ def times(starttime, endtime, seconds=0.0, days=0):
     You may specify a timestep in seconds (floating/integral type)
     and/or days (integral type). Not specifying a timestep will
     return a generator that yields the starttime and endtime parameters.
-    The timestep must be positive, or a gpstk.exceptions.InvalidRequest
+    The timestep must be positive, or a gnsstk.exceptions.InvalidRequest
     will be raised.
     """
     if (seconds < 0.0) or (days < 0):
@@ -56,7 +56,7 @@ def klobuchar_correction(iono, com_time, rx_pos, elev, azim, band=CarrierBand.L1
 
 def moonPosition(time):
     """
-    Returns the current position (A gpstk.Triple) of the moon.
+    Returns the current position (A gnsstk.Triple) of the moon.
     This is a functional wrapper on the moonPosition class.
     """
     return MoonPosition().getPosition(time)
@@ -64,7 +64,7 @@ def moonPosition(time):
 
 def sunPosition(time):
     """
-    Returns the current position (A gpstk.Triple) of the moon.
+    Returns the current position (A gnsstk.Triple) of the moon.
     This is a functional wrapper on the MoonPosition class.
     """
     return SunPosition().getPosition(time)
@@ -72,7 +72,7 @@ def sunPosition(time):
 
 def poleTides(time, position, x, y):
     """
-    Returns the effect (a gpstk.Triple) of pole tides (meters)
+    Returns the effect (a gnsstk.Triple) of pole tides (meters)
     on the given position, in the Up-East-North (UEN) reference frame.
     This is a functional wrapper on the (hidden) PoleTides class.
     """
@@ -81,7 +81,7 @@ def poleTides(time, position, x, y):
 
 def solidTides(time, position):
     """
-    Returns the effect (a gpstk.Triple) of solid Earth tides (meters)
+    Returns the effect (a gnsstk.Triple) of solid Earth tides (meters)
     at the given position and epoch, in the Up-East-North (UEN) reference frame.
     This is a functional wrapper on the (hidden) SolidTides class.
     """

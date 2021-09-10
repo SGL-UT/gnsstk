@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -48,10 +48,10 @@
 #include "StringUtils.hpp"
 
 using namespace std;
-using namespace gpstk;
-using namespace gpstk::StringUtils;
+using namespace gnsstk;
+using namespace gnsstk::StringUtils;
 
-namespace gpstk
+namespace gnsstk
 {
       // operator-- for FileSpecType
    FileSpec::FileSpecType& operator-- (FileSpec::FileSpecType& fst, int)
@@ -137,7 +137,7 @@ namespace gpstk
       else
       {
          FileSpecException fse("Unknown FileSpecType: " + asString(fst));
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
    }
 
@@ -176,7 +176,7 @@ namespace gpstk
       else
       {
          FileSpecException fse("Unknown FileSpecType: " + fst);
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
    }
 
@@ -194,7 +194,7 @@ namespace gpstk
          {
             FileSpecException fse("Unknown FileSpecType: " + 
                                   asString((*itr).type));
-            GPSTK_THROW(fse);
+            GNSSTK_THROW(fse);
          }
             // just add the fixed fields
          else if ((*itr).type == fixed)
@@ -221,7 +221,7 @@ namespace gpstk
       {
          FileSpecException fse("Unknown FileSpecType: " + 
                                convertFileSpecType(fst));
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
 
          // check the FileSpec for this type of FST
@@ -240,7 +240,7 @@ namespace gpstk
          // oops - didn't find it.
       FileSpecException fse("Couldn't find specified FileSpecType: " +
                             convertFileSpecType(fst));
-      GPSTK_THROW(fse);
+      GNSSTK_THROW(fse);
    }
 
 
@@ -258,24 +258,24 @@ namespace gpstk
             // too ambiguous - throw an exception
          FileSpecException fse(exc);
          fse.addText("Can't generate a CommonTime for this FileSpec");
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
       catch(std::exception& exc)
       {
          FileSpecException fse("std::exception: " + string(exc.what()));
          fse.addText("Can't generate a CommonTime for this FileSpec");
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
       catch(...)
       {
          FileSpecException fse("unknown exception");
          fse.addText("Can't generate a CommonTime for this FileSpec");
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
       
    }
 
-   std::string FileSpec::toString(const gpstk::CommonTime& dt,
+   std::string FileSpec::toString(const gnsstk::CommonTime& dt,
                                   const FSTStringMap& fstsMap) const
    {
       string toReturn;
@@ -496,24 +496,24 @@ namespace gpstk
       catch(FileSpecException& e)
       {
          e.addText("Check your file spec for errors: " + fileSpec);
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       catch(StringException& e)
       {
          FileSpecException fse(e);
          fse.addText("String exception: Check the file spec for errors: " + fileSpec);
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
       catch(std::exception& e)
       {
          FileSpecException fse("std::exception: " + string(e.what()));
          fse.addText("Check the file spec for errors: " + fileSpec);
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
       catch(...)
       {
          FileSpecException fse("Unknown exception: Check the file spec for errors: " + fileSpec);
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
    }
 

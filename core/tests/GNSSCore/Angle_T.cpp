@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -52,13 +52,13 @@ public:
    class TestData
    {
    public:
-      TestData(double val, gpstk::Angle::Type type, double radians,
+      TestData(double val, gnsstk::Angle::Type type, double radians,
                double degrees, double sine, double cosine)
             : v(val), t(type), rad(radians), deg(degrees), sin(sine),
               cos(cosine)
       {}
       double v;
-      gpstk::Angle::Type t;
+      gnsstk::Angle::Type t;
       double rad;
       double deg;
       double sin;
@@ -84,37 +84,37 @@ constructorTest()
    const double sine = ::sin(radians);
    const double cosine = ::cos(radians);
       // test default constructor
-   gpstk::Angle uut1;
+   gnsstk::Angle uut1;
    TUASSERTE(bool, true, isnan(uut1.rad()));
    TUASSERTE(bool, true, isnan(uut1.deg()));
    TUASSERTE(bool, true, isnan(uut1.sin()));
    TUASSERTE(bool, true, isnan(uut1.cos()));
       // test radians constructor
-   gpstk::Angle uut2(radians, gpstk::Angle::Rad);
+   gnsstk::Angle uut2(radians, gnsstk::Angle::Rad);
    TUASSERTFEPS(radians, uut2.rad(), epsilon);
    TUASSERTFEPS(degrees, uut2.deg(), epsilon);
    TUASSERTFEPS(sine,    uut2.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut2.cos(), epsilon);
       // test degrees constructor
-   gpstk::Angle uut3(degrees, gpstk::Angle::Deg);
+   gnsstk::Angle uut3(degrees, gnsstk::Angle::Deg);
    TUASSERTFEPS(radians, uut3.rad(), epsilon);
    TUASSERTFEPS(degrees, uut3.deg(), epsilon);
    TUASSERTFEPS(sine,    uut3.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut3.cos(), epsilon);
       // test sin constructor
-   gpstk::Angle uut4(sine, gpstk::Angle::Sin);
+   gnsstk::Angle uut4(sine, gnsstk::Angle::Sin);
    TUASSERTFEPS(radians, uut4.rad(), epsilon);
    TUASSERTFEPS(degrees, uut4.deg(), epsilon);
    TUASSERTFEPS(sine,    uut4.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut4.cos(), epsilon);
       // test cos constructor
-   gpstk::Angle uut5(cosine, gpstk::Angle::Cos);
+   gnsstk::Angle uut5(cosine, gnsstk::Angle::Cos);
    TUASSERTFEPS(radians, uut5.rad(), epsilon);
    TUASSERTFEPS(degrees, uut5.deg(), epsilon);
    TUASSERTFEPS(sine,    uut5.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut5.cos(), epsilon);
       // test sin/cos constructor
-   gpstk::Angle uut6(sine, cosine);
+   gnsstk::Angle uut6(sine, cosine);
    TUASSERTFEPS(radians, uut6.rad(), epsilon);
    TUASSERTFEPS(degrees, uut6.deg(), epsilon);
    TUASSERTFEPS(sine,    uut6.sin(), epsilon);
@@ -127,23 +127,23 @@ unsigned Angle_T ::
 setValueTest()
 {
    TUDEF("Angle", "setValue");
-   using gpstk::DEG2RAD;
-   using gpstk::RAD2DEG;
+   using gnsstk::DEG2RAD;
+   using gnsstk::RAD2DEG;
    static const TestData testData[] =
       {
-         { 0.0,  gpstk::Angle::Rad, 0.0, 0.0, 0.0,  1.0 },
-         { 1.0,  gpstk::Angle::Deg, 1.0*DEG2RAD, 1.0, ::sin(1.0*DEG2RAD),
+         { 0.0,  gnsstk::Angle::Rad, 0.0, 0.0, 0.0,  1.0 },
+         { 1.0,  gnsstk::Angle::Deg, 1.0*DEG2RAD, 1.0, ::sin(1.0*DEG2RAD),
            ::cos(1.0*DEG2RAD) },
-         { 0.34, gpstk::Angle::Sin, ::asin(0.34), ::asin(0.34)*RAD2DEG,
+         { 0.34, gnsstk::Angle::Sin, ::asin(0.34), ::asin(0.34)*RAD2DEG,
            0.34, ::cos(::asin(0.34)) },
-         { 0.78, gpstk::Angle::Cos, ::acos(0.78), ::acos(0.78)*RAD2DEG,
+         { 0.78, gnsstk::Angle::Cos, ::acos(0.78), ::acos(0.78)*RAD2DEG,
            ::sin(::acos(0.78)),  0.78 },
       };
    unsigned numTests = sizeof(testData) / sizeof(testData[0]);
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestData& td(testData[testNum]);
-      gpstk::Angle uut;
+      gnsstk::Angle uut;
       uut.setValue(td.v, td.t);
       TUASSERTFEPS(td.rad, uut.rad(), epsilon);
       TUASSERTFEPS(td.deg, uut.deg(), epsilon);

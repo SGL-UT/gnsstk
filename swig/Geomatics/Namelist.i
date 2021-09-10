@@ -2,7 +2,7 @@
 %include "msecHandler.hpp"
 %include "Namelist.hpp"
 
-namespace gpstk{
+namespace gnsstk{
     %extend Namelist{
         //This checks if two name lists are equal (Overloads the == operator in C++ and Python)
         bool __eq__(const Namelist& n) {

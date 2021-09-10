@@ -1,8 +1,8 @@
    // Wrap () operator overloads
-%extend gpstk::LNavEphMakerSort
+%extend gnsstk::LNavEphMakerSort
 {
-   bool __call__(const gpstk::LNavFilterData*const &l,
-                 const gpstk::LNavFilterData*const &r)
+   bool __call__(const gnsstk::LNavFilterData*const &l,
+                 const gnsstk::LNavFilterData*const &r)
    {
       return (*($self))(l, r);
    }

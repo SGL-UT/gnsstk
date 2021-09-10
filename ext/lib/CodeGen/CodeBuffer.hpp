@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -45,7 +45,7 @@
    // Project headers
 #include "PCodeConst.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup CodeGen    
       //@{
@@ -88,7 +88,7 @@ namespace gpstk
              * Update the time associated with the buffer and the designation
              * of the data contained in the buffer as P-code or Y-code.
              */
-         void updateBufferStatus( const gpstk::CommonTime& dt, 
+         void updateBufferStatus( const gnsstk::CommonTime& dt, 
                                   const codeType PYFlag );
 
             /**
@@ -100,7 +100,7 @@ namespace gpstk
          void updateBufferStatus( const codeType PYFlag ) { POrYCode = PYFlag; }
          
             /// Accessor returning the current time.
-         const gpstk::CommonTime& getCurrentTime( ) { return(currentTime); }
+         const gnsstk::CommonTime& getCurrentTime( ) { return(currentTime); }
          
             /// Accessor returning the type of code in the buffer (P or Y)
          codeType getPYFlag( ) { return(POrYCode); } 
@@ -127,7 +127,7 @@ namespace gpstk
          CodeBuffer( const CodeBuffer& c );
          unsigned long * buffer;
          int PRNID;
-         gpstk::CommonTime currentTime;
+         gnsstk::CommonTime currentTime;
          codeType POrYCode;
    };
 

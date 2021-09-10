@@ -1,15 +1,15 @@
 dfix ver 2.0 5/20/17, Run 2017/07/13 at 10:45:28
 
 Load the RINEX files using Rinex3ObsFileLoader -------
- Add obs type GL1C =~ GL1* from /local/Code/gpstk/data/test_dfix_karr0880.ed.10o
- Add obs type GL2W =~ GL2* from /local/Code/gpstk/data/test_dfix_karr0880.ed.10o
- Add obs type GC1C =~ GC1* from /local/Code/gpstk/data/test_dfix_karr0880.ed.10o
- Add obs type GC2W =~ GC2* from /local/Code/gpstk/data/test_dfix_karr0880.ed.10o
- Add obs type GC1W =~ GC1* from /local/Code/gpstk/data/test_dfix_karr0880.ed.10o
+ Add obs type GL1C =~ GL1* from /local/Code/gnsstk/data/test_dfix_karr0880.ed.10o
+ Add obs type GL2W =~ GL2* from /local/Code/gnsstk/data/test_dfix_karr0880.ed.10o
+ Add obs type GC1C =~ GC1* from /local/Code/gnsstk/data/test_dfix_karr0880.ed.10o
+ Add obs type GC2W =~ GC2* from /local/Code/gnsstk/data/test_dfix_karr0880.ed.10o
+ Add obs type GC1W =~ GC1* from /local/Code/gnsstk/data/test_dfix_karr0880.ed.10o
 Loader read 1 file successfully 
 
 Summary of input RINEX obs data files (1):
- RINEX obs file: /local/Code/gpstk/data/test_dfix_karr0880.ed.10o
+ RINEX obs file: /local/Code/gnsstk/data/test_dfix_karr0880.ed.10o
  Interval 30.00sec, obs types GL1C GL2W GC1C GC2W GC1W, store size 187
  Time limits: begin  2010/03/29 00:00:00 1577  86400.000
                 end  2010/03/29 01:44:30 1577  92670.000
@@ -19,7 +19,7 @@ Table of Sat/Obs counts
  TOT   186   186   187   186   186 total 187 epochs
 End of summary
 
-Header for file /local/Code/gpstk/data/test_dfix_karr0880.ed.10o
+Header for file /local/Code/gnsstk/data/test_dfix_karr0880.ed.10o
 ---------------------------------- REQUIRED ----------------------------------
 Rinex Version  2.11,  File type OBSERVATION DATA,  System G (GPS).
 Prgm: RinEdit,  Run: 06/14/2017 15:52:01,  By: Michael Moore
@@ -69,7 +69,7 @@ Searched for millisecond adjusts on obs types: L1 L2 C1 C2 P1 P2
 Millisecond adjusts: 3 total adjusts found, 3 invalid
 
 # GDC configuration:
-#GPSTk Discontinuity Corrector (GDC) v.9.0 5/20/17 configuration:
+#GNSSTk Discontinuity Corrector (GDC) v.9.0 5/20/17 configuration:
 # MaxGap=10          : maximum allowed gap within a segment (points)
 # MinPts=10          : minimum number of good points in phase segment (points)
 # WLgrossStep=6      : WL gross slip detection threshold (WLwl)

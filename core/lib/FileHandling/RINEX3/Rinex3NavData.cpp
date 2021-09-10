@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -50,7 +50,7 @@
 #include "GNSSconstants.hpp"
 #include "StringUtils.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace StringUtils;
    using namespace std;
@@ -343,11 +343,11 @@ namespace gpstk
             {
                FFStreamError fse(string("std::exception reading header ") +
                                  e.what());
-               GPSTK_THROW(fse);
+               GNSSTK_THROW(fse);
             }
             catch(FFStreamError& fse)
             {
-               GPSTK_RETHROW(fse);
+               GNSSTK_RETHROW(fse);
             }
          }
 
@@ -373,15 +373,15 @@ namespace gpstk
       catch(std::exception& e)
       {
          FFStreamError fse(string("std::exception: ") + e.what());
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
       catch(FFStreamError& fse)
       {
-         GPSTK_RETHROW(fse);
+         GNSSTK_RETHROW(fse);
       }
       catch(StringException& se)
       {
-         GPSTK_RETHROW(se);
+         GNSSTK_RETHROW(se);
       }
 
    }  // End of method 'Rinex3NavData::reallyGetRecord(FFStream& ffs)'
@@ -420,15 +420,15 @@ namespace gpstk
       catch(std::exception& e)
       {
          FFStreamError fse(string("std::exception: ") + e.what());
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
       catch(FFStreamError& fse)
       {
-         GPSTK_RETHROW(fse);
+         GNSSTK_RETHROW(fse);
       }
       catch(StringException& se)
       {
-         GPSTK_RETHROW(se);
+         GNSSTK_RETHROW(se);
       }
 
    }  // End of method 'Rinex3NavData::reallyPutRecord(FFStream& ffs)'
@@ -684,7 +684,7 @@ namespace gpstk
       }
       catch(Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1062,7 +1062,7 @@ namespace gpstk
       if (nline < 1 || nline > 7)
       {
          FFStreamError fse(string("Invalid line number ") + asString(nline));
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
 
       try
@@ -1211,7 +1211,7 @@ namespace gpstk
       catch (std::exception &e)
       {
          FFStreamError err("std::exception: " + string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
    }  // End of method 'Rinex3NavData::putRecord(const int& nline,...'
@@ -1233,12 +1233,12 @@ namespace gpstk
          {
             // check for spaces in the right spots...
             if (line[3] != ' ')
-               GPSTK_THROW(FFStreamError("Badly formatted epoch line"));
+               GNSSTK_THROW(FFStreamError("Badly formatted epoch line"));
             for(i = 8; i <= 20; i += 3)
             {
                if (line[i] != ' ')
                {
-                  GPSTK_THROW(FFStreamError("Badly formatted epoch line"));
+                  GNSSTK_THROW(FFStreamError("Badly formatted epoch line"));
                }
             }
 
@@ -1260,7 +1260,7 @@ namespace gpstk
             {
                if (line[i] != ' ')
                {
-                  GPSTK_THROW(FFStreamError("Badly formatted epoch line"));
+                  GNSSTK_THROW(FFStreamError("Badly formatted epoch line"));
                }
             }
 
@@ -1341,7 +1341,7 @@ namespace gpstk
       catch (std::exception &e)
       {
          FFStreamError err("std::exception: " + string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -1351,7 +1351,7 @@ namespace gpstk
       if (nline < 1 || nline > 7)
       {
          FFStreamError fse(string("Invalid line number ") + asString(nline));
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
 
       try
@@ -1517,10 +1517,10 @@ namespace gpstk
       catch (std::exception &e)
       {
          FFStreamError err("std::exception: " + string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
    }  // end getRecord()
 
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk

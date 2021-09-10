@@ -2,16 +2,16 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
-import gpstk
+from gnsstk.test_utils import args,run_unit_tests
+import gnsstk
 
 
 class TestRinex3(unittest.TestCase):
-    """Tests for the gpstk::Rinex3Obs file i/o"""
+    """Tests for the gnsstk::Rinex3Obs file i/o"""
 
     def test_readRinex3Obs(self):
         """Test reading entire rinex obs file and spot check the data"""
-        header, data = gpstk.readRinex3Obs( args.input_dir+"/arlm200a.15o", strict=True)
+        header, data = gnsstk.readRinex3Obs( args.input_dir+"/arlm200a.15o", strict=True)
         
         # Find the earliest and latest observations
         # function for how to compare Rinex3ObsData objects for min/max functions:
@@ -20,19 +20,19 @@ class TestRinex3(unittest.TestCase):
         latest = max(data, key=timeFunction)
 
         self.assertEqual(
-            gpstk.CivilTime(2015, 7, 19, 0, 0, 0, gpstk.TimeSystem(gpstk.TimeSystem.GPS)),
-            gpstk.CivilTime(earliest.time))
+            gnsstk.CivilTime(2015, 7, 19, 0, 0, 0, gnsstk.TimeSystem(gnsstk.TimeSystem.GPS)),
+            gnsstk.CivilTime(earliest.time))
 
         self.assertEqual(
-            gpstk.CivilTime(2015, 7, 19, 0, 59, 30, gpstk.TimeSystem(gpstk.TimeSystem.GPS)),
-            gpstk.CivilTime(latest.time))
+            gnsstk.CivilTime(2015, 7, 19, 0, 59, 30, gnsstk.TimeSystem(gnsstk.TimeSystem.GPS)),
+            gnsstk.CivilTime(latest.time))
 
     def test_writeRinex3Obs(self):
         """Test reading and writing back out a rinex obs file"""
 
-        header, data = gpstk.readRinex3Obs( args.input_dir+"/arlm200a.15o", strict=True)
+        header, data = gnsstk.readRinex3Obs( args.input_dir+"/arlm200a.15o", strict=True)
         # Now let's write it all back to a different file
-        gpstk.writeRinex3Obs( args.output_dir+'/swig-arlm200a.15o', header, data)
+        gnsstk.writeRinex3Obs( args.output_dir+'/swig-arlm200a.15o', header, data)
         # should really difference the files here
 
     def test_rinex3obs_fields(self):
@@ -41,25 +41,25 @@ class TestRinex3(unittest.TestCase):
         Please contact Andrew Kuck before deleting or modifying this test.
         """
 
-        h = gpstk.Rinex3ObsHeader()
+        h = gnsstk.Rinex3ObsHeader()
         # Check types are implemented correctly.
         # valid is representative of members with nested class type.
-        self.assertTrue(isinstance(h.valid, gpstk.Fields))
+        self.assertTrue(isinstance(h.valid, gnsstk.Fields))
         # allValid2 is representative of static const members with nested class type.
-        self.assertTrue(isinstance(h.allValid2, gpstk.Fields))
+        self.assertTrue(isinstance(h.allValid2, gnsstk.Fields))
 
         # Ensure combination with bitwise-or operator
         fields = h.allValid2 | h.allValid30
         self.assertIsNotNone(fields)
 
-        fields = gpstk.Fields()
+        fields = gnsstk.Fields()
         # Ensure addition with bitwise-or-equal operator
-        fields |= gpstk.Rinex3ObsHeader.validInterval
-        self.assertTrue(fields.isSet(gpstk.Rinex3ObsHeader.validInterval))
+        fields |= gnsstk.Rinex3ObsHeader.validInterval
+        self.assertTrue(fields.isSet(gnsstk.Rinex3ObsHeader.validInterval))
 
         # Ensure addition with set method
-        fields.set(gpstk.Rinex3ObsHeader.validFirstTime)
-        self.assertTrue(fields.isSet(gpstk.Rinex3ObsHeader.validFirstTime))
+        fields.set(gnsstk.Rinex3ObsHeader.validFirstTime)
+        self.assertTrue(fields.isSet(gnsstk.Rinex3ObsHeader.validFirstTime))
 
 if __name__ == '__main__':
     run_unit_tests()

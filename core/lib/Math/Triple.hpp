@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,21 +41,21 @@
  * Three element double vectors, for use with geodetic coordinates
  */
 
-#ifndef GPSTK_TRIPLE_HPP
-#define GPSTK_TRIPLE_HPP
+#ifndef GNSSTK_TRIPLE_HPP
+#define GNSSTK_TRIPLE_HPP
 
 #include <valarray>
 #include <vector>
 #include "Exception.hpp"
 #include "Vector.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @todo determine if this file should be moved into GNSSCore
 
-      /// Thrown when a gpstk::Triple operation can't be completed.
+      /// Thrown when a gnsstk::Triple operation can't be completed.
       /// @ingroup exceptiongroup
-   NEW_EXCEPTION_CLASS(GeometryException, gpstk::Exception);
+   NEW_EXCEPTION_CLASS(GeometryException, gnsstk::Exception);
 
       /// @ingroup MathGroup
       //@{
@@ -246,7 +246,7 @@ namespace gpstk
           * @param v dvec that is sent to \c s
           */
       friend std::ostream& operator<<(std::ostream& s, 
-                                      const gpstk::Triple& v);
+                                      const gnsstk::Triple& v);
       
       std::valarray<double> theArray;
 
@@ -254,7 +254,7 @@ namespace gpstk
 
       //@}
 
-} // namespace gpstk
+} // namespace gnsstk
 
 
 #endif

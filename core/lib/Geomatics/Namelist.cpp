@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -39,7 +39,7 @@
 /**
  * @file Namelist.cpp
  * Implementation of class Namelist.
- * class gpstk::Namelist encapsulates a list of labels for use with classes Matrix,
+ * class gnsstk::Namelist encapsulates a list of labels for use with classes Matrix,
  * Vector and SRI.
  */
 
@@ -50,14 +50,14 @@
 #include <algorithm>
 #include <ostream>
 #include <fstream> // for copyfmt
-// GPSTk
+// GNSSTk
 #include "Exception.hpp"
 #include "StringUtils.hpp"
 #include "Namelist.hpp"
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 
 using namespace StringUtils;
@@ -76,7 +76,7 @@ try {
       labels.push_back(name);
    }
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // explicit constructor - only a unique subset of names will be included.
@@ -91,7 +91,7 @@ try {
       if(unique) labels.push_back(names[i]);
    }
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // add a name to the Namelist; throw if the name is not unique.
@@ -99,11 +99,11 @@ Namelist& Namelist::operator+=(const std::string& name)
 {
 try {
    if(contains(name))
-      GPSTK_THROW(Exception("Name is not unique: " + name));
+      GNSSTK_THROW(Exception("Name is not unique: " + name));
    labels.push_back(name);
    return *this;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // remove a name from the Namelist; does nothing if the name is not found.
@@ -116,7 +116,7 @@ try {
       labels.erase(it);
    return *this;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // swap two elements, as given by their indexes; no effect if either index
@@ -130,7 +130,7 @@ try {
    labels[i] = labels[j];
    labels[j] = str;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // reorder the list by sorting
@@ -140,7 +140,7 @@ try {
    // compiler tries Namelist::sort() first...
    std::sort(labels.begin(),labels.end());
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // resize the list by either truncation or adding default names.
@@ -163,7 +163,7 @@ try {
       labels.pop_back();
    }
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // randomize the list
@@ -178,7 +178,7 @@ try {
       swap(labels[i], labels[std::rand() % (i+1)]);
    }
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // is the Namelist valid? checks for repeated names
@@ -190,7 +190,7 @@ try {
          if(labels[i] == labels[j]) return false;
    return true;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // does the Namelist contain the input name?
@@ -202,7 +202,7 @@ try {
    }
    return false;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // are two Namelists identical, ignoring a permutation?
@@ -219,7 +219,7 @@ try {
    }
    return true;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // are two Namelists different, ignoring a permutation?
@@ -228,7 +228,7 @@ bool operator!=(const Namelist& N1, const Namelist& N2)
 try {
    return !(N1==N2);
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // are two Namelists exactly identical, even considering permutations?
@@ -242,7 +242,7 @@ try {
    }
    return true;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // construct the subset Namelist which is common to the two input (AND)
@@ -253,7 +253,7 @@ try {
    N &= N2;
    return N;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // merge two Namelists, i.e. construct a non-redundant combination (OR)
@@ -264,7 +264,7 @@ try {
    N |= N2;
    return N;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // construct the subset Namelist which is NOT common to two others (XOR)
@@ -275,7 +275,7 @@ try {
    N ^= N2;
    return N;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // replace this with (this & input) (AND - common to both)
@@ -288,7 +288,7 @@ try {
    *this = NAND;
    return *this;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // replace this with (this | input) (OR - merge - superset)
@@ -302,7 +302,7 @@ try {
    *this = NOR;
    return *this;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // replace this with (this ^ input) (XOR - not common)
@@ -318,7 +318,7 @@ try {
    *this = NXOR;
    return *this;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 
@@ -337,7 +337,7 @@ try {
    if(in >= labels.size()) return string("out-of-range");
    return labels[in];
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // assign a specific name, given its index;
@@ -352,7 +352,7 @@ try {
    labels[in] = name;
    return true;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // return the index of the name in the list that matches the input, -1 if not found.
@@ -363,7 +363,7 @@ try {
       if(labels[i] == name) return i;
    return -1;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // output operator
@@ -377,7 +377,7 @@ try {
    }
    return os;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 ostream& operator<<(ostream& os, const LabeledVector& LV)
@@ -422,7 +422,7 @@ try {
 
    return os;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 std::ostream& operator<<(std::ostream& os, const LabeledMatrix& LM)
@@ -501,10 +501,10 @@ try {
 
    return os;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
-} // end namespace gpstk
+} // end namespace gnsstk
 
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------

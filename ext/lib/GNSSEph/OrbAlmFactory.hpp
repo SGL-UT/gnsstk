@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -36,8 +36,8 @@
 //
 //==============================================================================
 
-#ifndef GPSTK_ORBALMFACTORY_HPP
-#define GPSTK_ORBALMFACTORY_HPP
+#ifndef GNSSTK_ORBALMFACTORY_HPP
+#define GNSSTK_ORBALMFACTORY_HPP
 /**
  * @file OrbAlmFactory.hpp
  * Class that accepts a PackedNavBits that may contain a raw data 
@@ -54,7 +54,7 @@
 #include "PackedNavBits.hpp"
 #include "OrbAlm.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    class OrbAlmFactory
    {
@@ -67,7 +67,7 @@ namespace gpstk
          /**
           * @throw InvalidParameter
           */
-      OrbAlm* convert(const gpstk::PackedNavBits& pnb);
+      OrbAlm* convert(const gnsstk::PackedNavBits& pnb);
 
             // Factory methods for each message type
          /**
@@ -75,13 +75,13 @@ namespace gpstk
           *   by the return value.
           * @throw InvalidParameter
           */
-      OrbAlm* GPSLNAV(const gpstk::PackedNavBits& pnb);
+      OrbAlm* GPSLNAV(const gnsstk::PackedNavBits& pnb);
          /**
           * @note It is up to the caller to free the memory pointed to
           *   by the return value.
           * @throw InvalidParameter
           */
-      OrbAlm* GPSCNAV(const gpstk::PackedNavBits& pnb);
+      OrbAlm* GPSCNAV(const gnsstk::PackedNavBits& pnb);
 
       int debugLevel;
 

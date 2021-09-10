@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -43,8 +43,8 @@
 /// the phase and, if possible, estimate their size.
 /// Output is in the form of Rinex editing commands (see class RinexEditor).
 
-#ifndef GPSTK_DISCONTINUITY_CORRECTOR_INCLUDE
-#define GPSTK_DISCONTINUITY_CORRECTOR_INCLUDE
+#ifndef GNSSTK_DISCONTINUITY_CORRECTOR_INCLUDE
+#define GNSSTK_DISCONTINUITY_CORRECTOR_INCLUDE
 
 #include "Epoch.hpp"
 #include "RinexSatID.hpp"
@@ -59,13 +59,13 @@
 #include <vector>
 #include <map>
 
-namespace gpstk {
+namespace gnsstk {
 
    /** @addtogroup rinexutils */
    //@{
 
    /// class GDCconfiguration encapsulates the configuration for input to the
-   /// GPSTK Discontinuity Corrector.
+   /// GNSSTK Discontinuity Corrector.
    class GDCconfiguration {
    public:
          /// constructor; this sets a full default set of parameters.
@@ -129,7 +129,7 @@ namespace gpstk {
    }; // end class GDCconfiguration
 
    /// class GDCreturn encapsulates the information in the 'message' returned by
-   /// the GPSTK Discontinuity Corrector. Create it using the string created by
+   /// the GNSSTK Discontinuity Corrector. Create it using the string created by
    /// a call to DiscontinuityCorrector(SP,config,EditCmds,retMsg), then use it to
    /// access specific information about the results of the GDC.
    class GDCreturn {
@@ -234,13 +234,13 @@ namespace gpstk {
 
    }; // end class GDCreturn
 
-   /// GPSTK Discontinuity Corrector. Find, and fix if possible, discontinuities
+   /// GNSSTK Discontinuity Corrector. Find, and fix if possible, discontinuities
    /// in the GPS or GLONASS carrier phase data, given dual-frequency pseudorange and
    /// phase data for an entire satellite pass.
    /// Input is the SatPass object holding the data, and a GDCconfiguration object
    /// giving the parameter values for the corrector.
    /// Output is in the form of a list of strings - editing commands - that can be
-   /// parsed and applied using the GPSTK Rinex Editor (see Prgm EditRinex and the
+   /// parsed and applied using the GNSSTK Rinex Editor (see Prgm EditRinex and the
    /// RinexEditor class). Also, the L1 and L2 arrays in the input SatPass are
    /// corrected. The routine will mark bad points in the input data using
    /// the SatPass flag.
@@ -271,7 +271,7 @@ namespace gpstk {
 
    //@}
 
-}  // end namespace gpstk
+}  // end namespace gnsstk
 
 //------------------------------------------------------------------------------------
 #endif

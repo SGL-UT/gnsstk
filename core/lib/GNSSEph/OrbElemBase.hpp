@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -54,8 +54,8 @@
  *  clock offsets, and status information. 
  */
 
-#ifndef GPSTK_ORBELEMBASE_HPP
-#define GPSTK_ORBELEMBASE_HPP
+#ifndef GNSSTK_ORBELEMBASE_HPP
+#define GNSSTK_ORBELEMBASE_HPP
 
 #include "Exception.hpp"
 #include "CommonTime.hpp"
@@ -69,10 +69,10 @@
 
 #ifdef SWIG
 // make sure SWIG doesn't generate broken accessor methods to this data
-%immutable gpstk::OrbElemBase::satMetaDataStore;
+%immutable gnsstk::OrbElemBase::satMetaDataStore;
 #endif
 
-namespace gpstk
+namespace gnsstk
 {
    class OrbElemBase
    {
@@ -213,7 +213,7 @@ namespace gpstk
           * @param[out] svn If found the satellite's vehicle number.
           * @return true if the requested satellite mapping was found.
           */
-      bool getSVN(const SatID& sat, const gpstk::CommonTime& when,
+      bool getSVN(const SatID& sat, const gnsstk::CommonTime& when,
                   std::string& svn)
          const
       {
@@ -265,4 +265,4 @@ namespace gpstk
 
 } // end namespace
 
-#endif // GPSTK_ORBELEMBASE_HPP
+#endif // GNSSTK_ORBELEMBASE_HPP

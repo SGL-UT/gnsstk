@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -45,7 +45,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-// gpstk
+// gnsstk
 #include "SatPass.hpp"
 #include "Stats.hpp"
 #include "StringUtils.hpp"
@@ -58,7 +58,7 @@
 
 //------------------------------------------------------------------------------------
 using namespace std;
-namespace gpstk {
+namespace gnsstk {
 using namespace StringUtils;
 
 // ------------------ configuration --------------------------------
@@ -129,7 +129,7 @@ int SatPass::addData(const Epoch tt, std::vector<std::string>& ots, std::vector<
 {
    vector<unsigned short> lli(data.size(),0),ssi(data.size(),0);
    try { return addData(tt, ots, data, lli, ssi); }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // return -2 time tag out of order, data not added
@@ -148,13 +148,13 @@ int SatPass::addData(const Epoch tt,
                   + StringUtils::asString(data.size()) + ","
                   + StringUtils::asString(lli.size()) + ","
                   + StringUtils::asString(ssi.size()));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    if(spdvector.size() > 0 && spdvector[0].data.size() != data.size()) {
       Exception e("Error - addData passed different dimension that earlier!"
                    + StringUtils::asString(data.size()) + " != "
                    + StringUtils::asString(spdvector[0].data.size()));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 
    // create a new SatPassData
@@ -243,7 +243,7 @@ try {
 
    return 0;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // compute the GLO channel
@@ -267,7 +267,7 @@ try {
       (indexForLabel.find("P2") == indexForLabel.end() &&
        indexForLabel.find("C2") == indexForLabel.end())) {
       Exception e("Obs types L1 L2 C1/P1 C2/P2 required for GLOchannel()");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    if(indexForLabel.find("P1") == indexForLabel.end()) useC1=true;
 
@@ -440,7 +440,7 @@ try {
 
    return true;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Smooth pseudorange and debias phase; replace the data only if the corresponding
@@ -452,7 +452,7 @@ void SatPass::smoothSF(const bool smoothPR, const bool debiasPH, std::string& ms
 {
 try {
    if(freq != 1 && freq != 2)
-      GPSTK_THROW(Exception("smoothSF requires freq 1 or 2"));
+      GNSSTK_THROW(Exception("smoothSF requires freq 1 or 2"));
 
    // make sure Lf, Cf/Pf are present
    ostringstream oss;
@@ -461,7 +461,7 @@ try {
    if(freq==1 && !hasType("C1") && !hasType("P1")) oss << " C/P1";
    if(freq==2 && !hasType("C2") && !hasType("P2")) oss << " C/P2";
    if(!oss.str().empty())
-      GPSTK_THROW(Exception(string("smoothSF() requires pseudorange and phase:"
+      GNSSTK_THROW(Exception(string("smoothSF() requires pseudorange and phase:"
                               + oss.str() + string(" are missing."))));
 
    bool first,useC1(hasType("C1")),useC2(hasType("C2"));
@@ -551,7 +551,7 @@ try {
       }
    }
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // Smooth pseudorange and debias phase; replace the data only if the corresponding
@@ -569,7 +569,7 @@ try {
    if(!hasType("C1") && !hasType("P1")) oss << " C/P1";
    if(!hasType("C2") && !hasType("P2")) oss << " C/P2";
    if(!oss.str().empty())
-      GPSTK_THROW(Exception( string("smooth() requires obs types L1 L2 C/P1 C/P2:")
+      GNSSTK_THROW(Exception( string("smooth() requires obs types L1 L2 C/P1 C/P2:")
                               + oss.str() + string(" missing.")));
 
    bool useC1(hasType("C1")),useC2(hasType("C2"));
@@ -690,7 +690,7 @@ try {
       }
    }
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // -------------------------- get and set routines ----------------------------
@@ -699,12 +699,12 @@ double& SatPass::data(unsigned int i, std::string type)
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in data() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    map<string, unsigned int>::const_iterator it;
    if((it = indexForLabel.find(type)) == indexForLabel.end()) {
       Exception e("Invalid obs type in data() " + type);
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    return spdvector[i].data[it->second];
 }
@@ -713,7 +713,7 @@ double& SatPass::timeoffset(unsigned int i)
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in timeoffset() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    return spdvector[i].toffset;
 }
@@ -722,12 +722,12 @@ unsigned short& SatPass::LLI(unsigned int i, std::string type)
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in LLI() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    map<string, unsigned int>::const_iterator it;
    if((it = indexForLabel.find(type)) == indexForLabel.end()) {
       Exception e("Invalid obs type in LLI() " + type);
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    return spdvector[i].lli[it->second];
 }
@@ -736,12 +736,12 @@ unsigned short& SatPass::SSI(unsigned int i, std::string type)
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in SSI() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    map<string, unsigned int>::const_iterator it;
    if((it = indexForLabel.find(type)) == indexForLabel.end()) {
       Exception e("Invalid obs type in SSI() " + type);
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    return spdvector[i].ssi[it->second];
 }
@@ -751,7 +751,7 @@ void SatPass::setFlag(unsigned int i, unsigned short f)
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in setFlag() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 
    if(spdvector[i].flag != BAD && f == BAD) ngood--;
@@ -765,7 +765,7 @@ void SatPass::setUserFlag(unsigned int i, unsigned int f)
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in setUserFlag() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 
    spdvector[i].userflag = f;
@@ -777,7 +777,7 @@ unsigned short SatPass::getFlag(unsigned int i) const
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in getFlag() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    return spdvector[i].flag;
 }
@@ -788,7 +788,7 @@ unsigned int SatPass::getUserFlag(unsigned int i) const
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in getUserFlag() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    return spdvector[i].userflag;
 }
@@ -798,7 +798,7 @@ unsigned int SatPass::getCount(unsigned int i) const
 {
    if(i >= spdvector.size()) {
       Exception e("invalid in getCount() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    return spdvector[i].ndt;
 }
@@ -814,7 +814,7 @@ double SatPass::data(unsigned int i, std::string type1, std::string type2) const
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in data() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    map<string, unsigned int>::const_iterator it;
    if((it = indexForLabel.find(type1)) != indexForLabel.end())
@@ -823,7 +823,7 @@ double SatPass::data(unsigned int i, std::string type1, std::string type2) const
       return spdvector[i].data[it->second];
    else {
       Exception e("Invalid obs types in data() " + type1 + " " + type2);
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -831,7 +831,7 @@ unsigned short SatPass::LLI(unsigned int i, std::string type1, std::string type2
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in LLI() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    map<string, unsigned int>::const_iterator it;
    if((it = indexForLabel.find(type1)) != indexForLabel.end())
@@ -840,7 +840,7 @@ unsigned short SatPass::LLI(unsigned int i, std::string type1, std::string type2
       return spdvector[i].lli[it->second];
    else {
       Exception e("Invalid obs types in LLI() " + type1 + " " + type2);
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -848,7 +848,7 @@ unsigned short SatPass::SSI(unsigned int i, std::string type1, std::string type2
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in SSI() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    map<string, unsigned int>::const_iterator it;
    if((it = indexForLabel.find(type1)) == indexForLabel.end())
@@ -857,7 +857,7 @@ unsigned short SatPass::SSI(unsigned int i, std::string type1, std::string type2
       return spdvector[i].ssi[it->second];
    else {
       Exception e("Invalid obs types in SSI() " + type1 + " " + type2);
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -867,7 +867,7 @@ Epoch SatPass::time(unsigned int i) const
 {
    if(i >= spdvector.size()) {
       Exception e("Invalid index in time() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    // computing toff first is necessary to avoid a rare bug in Epoch..
    double toff = spdvector[i].ndt * dt + spdvector[i].toffset;
@@ -926,7 +926,7 @@ try {
 
    return true;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 void SatPass::decimate(const int N, Epoch refTime)
@@ -967,7 +967,7 @@ try {
    firstTime = newfirstTime;
    spdvector.resize(j); // trim
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 // dump all the data in the pass, one line per timetag;
@@ -1056,9 +1056,9 @@ struct SatPass::SatPassData SatPass::getData(unsigned int i) const
 {
    if(i >= spdvector.size()) {         // TD ?? keep this - its private
       Exception e("invalid in getData() " + asString(i));
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
    return spdvector[i];
 }
 
-}  // end namespace gpstk
+}  // end namespace gnsstk

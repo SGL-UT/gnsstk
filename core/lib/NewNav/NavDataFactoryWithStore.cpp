@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -54,7 +54,7 @@
 /// debug time string
 static const std::string dts("%Y/%03j/%02H:%02M:%02S %P");
 
-namespace gpstk
+namespace gnsstk
 {
    NavDataFactoryWithStore ::
    NavDataFactoryWithStore()
@@ -133,7 +133,7 @@ namespace gpstk
       {
          std::cerr << __PRETTY_FUNCTION__ << std::endl
                    << "  nmid=" << nmid << std::endl
-                   << "  when=" << gpstk::printTime(when,dts) << std::endl;
+                   << "  when=" << gnsstk::printTime(when,dts) << std::endl;
       }
          // dig through the maps of maps, matching keys with nmid along the way
       auto dataIt = data.find(nmid.messageType);
@@ -184,7 +184,7 @@ namespace gpstk
             if (debugLevel)
             {
                std::cerr << "  user time : "
-                         << gpstk::printTime(nmi->second->getUserTime(),dts)
+                         << gnsstk::printTime(nmi->second->getUserTime(),dts)
                          << std::endl
                          << "  (nmi != sati->second.end()) = "
                          << (nmi != sati->second.end()) << std::endl
@@ -203,7 +203,7 @@ namespace gpstk
                if ((debugLevel > 0) && (nmi != sati->second.end()))
                {
                   std::cerr << "  user time : "
-                            << gpstk::printTime(nmi->second->getUserTime(),dts)
+                            << gnsstk::printTime(nmi->second->getUserTime(),dts)
                             << std::endl;
                }
             }
@@ -238,7 +238,7 @@ namespace gpstk
             if (debugLevel)
             {
                std::cerr << "  user time : "
-                         << gpstk::printTime(nmi->second->getUserTime(),dts)
+                         << gnsstk::printTime(nmi->second->getUserTime(),dts)
                          << std::endl;
             }
             while ((nmi != sati->second.end()) &&
@@ -249,7 +249,7 @@ namespace gpstk
                if ((debugLevel > 0) && (nmi != sati->second.end()))
                {
                   std::cerr << "  user time : "
-                            << gpstk::printTime(nmi->second->getUserTime(),dts)
+                            << gnsstk::printTime(nmi->second->getUserTime(),dts)
                             << std::endl;
                }
             }
@@ -271,8 +271,8 @@ namespace gpstk
       {
          std::cerr << "itList.size() = " << itList.size() << std::endl;
       }
-      gpstk::CommonTime mostRecent = gpstk::CommonTime::BEGINNING_OF_TIME;
-      mostRecent.setTimeSystem(gpstk::TimeSystem::Any);
+      gnsstk::CommonTime mostRecent = gnsstk::CommonTime::BEGINNING_OF_TIME;
+      mostRecent.setTimeSystem(gnsstk::TimeSystem::Any);
       bool done = itList.empty();
       bool rv = false;
       while (!done)
@@ -418,7 +418,7 @@ namespace gpstk
             if (debugLevel)
             {
                std::cerr << "  matches " << sati->first << std::endl
-                         << "  when = " << gpstk::printTime(when,dts)
+                         << "  when = " << gnsstk::printTime(when,dts)
                          << std::endl;
             }
             NavNearMap::iterator nmi = sati->second.lower_bound(when);
@@ -527,8 +527,8 @@ namespace gpstk
       auto odi = offsetData.find(fwdKey);
       if (debugLevel)
       {
-         std::cerr << "  fwdKey=<" << gpstk::StringUtils::asString(fwdKey.first)
-                   << "," << gpstk::StringUtils::asString(fwdKey.second) << ">"
+         std::cerr << "  fwdKey=<" << gnsstk::StringUtils::asString(fwdKey.first)
+                   << "," << gnsstk::StringUtils::asString(fwdKey.second) << ">"
                    << std::endl;
       }
       if (odi == offsetData.end())
@@ -541,8 +541,8 @@ namespace gpstk
             for (const auto& x : offsetData)
             {
                std::cerr << "  fwdKey=<"
-                         << gpstk::StringUtils::asString(x.first.first)
-                         << "," << gpstk::StringUtils::asString(x.first.second)
+                         << gnsstk::StringUtils::asString(x.first.first)
+                         << "," << gnsstk::StringUtils::asString(x.first.second)
                          << ">" << std::endl;
             }
          }
@@ -600,8 +600,8 @@ namespace gpstk
             if (debugLevel)
             {
                std::cerr << "looking for acceptable data "
-                         << gpstk::StringUtils::asString(valid) << " "
-                         << gpstk::StringUtils::asString(xmitHealth)
+                         << gnsstk::StringUtils::asString(valid) << " "
+                         << gnsstk::StringUtils::asString(xmitHealth)
                          << std::endl;
             }
                // Message time is valid, so iterate through the
@@ -1155,7 +1155,7 @@ namespace gpstk
          // We're already trying to get health information, seems like
          // we could/should avoid getting into a loop by just
          // returning what we have.
-      if (ndp->signal.messageType == gpstk::NavMessageType::Health)
+      if (ndp->signal.messageType == gnsstk::NavMessageType::Health)
       {
          return rv;
       }
@@ -1183,7 +1183,7 @@ namespace gpstk
             if (debugLevel)
             {
                std::cerr << "  attempting to match "
-                         << gpstk::StringUtils::asString(xmitHealth)
+                         << gnsstk::StringUtils::asString(xmitHealth)
                          << std::endl;
             }
                // make sure the health status is the desired state

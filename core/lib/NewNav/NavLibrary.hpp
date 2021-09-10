@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -36,15 +36,15 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_NAVLIBRARY_HPP
-#define GPSTK_NAVLIBRARY_HPP
+#ifndef GNSSTK_NAVLIBRARY_HPP
+#define GNSSTK_NAVLIBRARY_HPP
 
 #include "NavDataFactory.hpp"
 #include "Xvt.hpp"
 #include "SVHealth.hpp"
 #include "Position.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /** @defgroup NavFactory Navigation Message Decoding and Finding
        * Classes for providing an generalized (GNSS-agnostic)
@@ -191,18 +191,18 @@ namespace gpstk
        * \code
        *    // Parameters used to construct sat will have been
        *    // specified on the command-line or via some other means.
-       * gpstk::CommonTime when;
+       * gnsstk::CommonTime when;
        * unsigned long subjID;
-       * gpstk::SatelliteSystem sys;
+       * gnsstk::SatelliteSystem sys;
        * int freqOffs;
        * bool freqOffsSpec; // true if specified
        *    // Output of search
-       * gpstk::Xvt xvt;
+       * gnsstk::Xvt xvt;
        *    // Construct a NavLibrary object.
-       * gpstk::NavLibrary navLib;
+       * gnsstk::NavLibrary navLib;
        *    // Construct a NavDataFactory object
-       * gpstk::NavDataFactoryPtr ndfp(
-       *    std::make_shared<gpstk::MultiFormatNavDataFactory>());
+       * gnsstk::NavDataFactoryPtr ndfp(
+       *    std::make_shared<gnsstk::MultiFormatNavDataFactory>());
        *    // Add the NavDataFactory to the NavLibrary
        * navLib.addFactory(ndfp);
        *    // Add input data (files) to the NavDataFactory
@@ -212,9 +212,9 @@ namespace gpstk
        *    return false;
        * }
        *    // Search the NavLibrary
-       * gpstk::NavSatelliteID sat(subjID, system, gpstk::CarrierBand::Any,
-       *                           gpstk::TrackingCode::Any,
-       *                           gpstk::XmitAnt::Any, freqOffs,
+       * gnsstk::NavSatelliteID sat(subjID, system, gnsstk::CarrierBand::Any,
+       *                           gnsstk::TrackingCode::Any,
+       *                           gnsstk::XmitAnt::Any, freqOffs,
        *                           !freqOffsSpec);
        * if (!navLib.getXvt(sat, when, xvt))
        * {
@@ -233,22 +233,22 @@ namespace gpstk
        * \code
        *    // Parameters used to construct sat will have been
        *    // specified on the command-line or via some other means.
-       * gpstk::CommonTime when;
+       * gnsstk::CommonTime when;
        * unsigned long subjID;
-       * gpstk::SatelliteSystem sys;
-       * gpstk::CarrierBand band;
-       * gpstk::TrackingCode code;
-       * gpstk::XmitAnt xmitAnt;
-       * gpstk::NavType nav; // e.g. GPSLNAV
+       * gnsstk::SatelliteSystem sys;
+       * gnsstk::CarrierBand band;
+       * gnsstk::TrackingCode code;
+       * gnsstk::XmitAnt xmitAnt;
+       * gnsstk::NavType nav; // e.g. GPSLNAV
        * int freqOffs;
        * bool freqOffsSpec; // true if specified
        *    // Output of search
-       * gpstk::Xvt xvt;
+       * gnsstk::Xvt xvt;
        *    // Construct a NavLibrary object.
-       * gpstk::NavLibrary navLib;
+       * gnsstk::NavLibrary navLib;
        *    // Construct a NavDataFactory object
-       * gpstk::NavDataFactoryPtr ndfp(
-       *    std::make_shared<gpstk::MultiFormatNavDataFactory>());
+       * gnsstk::NavDataFactoryPtr ndfp(
+       *    std::make_shared<gnsstk::MultiFormatNavDataFactory>());
        *    // Add the NavDataFactory to the NavLibrary
        * navLib.addFactory(ndfp);
        *    // Add input data (files) to the NavDataFactory
@@ -258,7 +258,7 @@ namespace gpstk
        *    return false;
        * }
        *    // Search the NavLibrary
-       * gpstk::NavSatelliteID sat(subjID, system, band, code, xmitAnt,
+       * gnsstk::NavSatelliteID sat(subjID, system, band, code, xmitAnt,
        *                           freqOffs, !freqOffsSpec, nav);
        * if (!navLib.getXvt(sat, when, xvt, false))
        * {
@@ -277,24 +277,24 @@ namespace gpstk
        * \code
        *    // Parameters used to construct sat will have been
        *    // specified on the command-line or via some other means.
-       * gpstk::CommonTime when;
+       * gnsstk::CommonTime when;
        * unsigned long subjID;
-       * gpstk::SatelliteSystem subjSys;
+       * gnsstk::SatelliteSystem subjSys;
        * unsigned long xmitID;
-       * gpstk::SatelliteSystem xmitSys;
-       * gpstk::CarrierBand band;
-       * gpstk::TrackingCode code;
-       * gpstk::XmitAnt xmitAnt;
-       * gpstk::NavType nav; // e.g. GPSLNAV
+       * gnsstk::SatelliteSystem xmitSys;
+       * gnsstk::CarrierBand band;
+       * gnsstk::TrackingCode code;
+       * gnsstk::XmitAnt xmitAnt;
+       * gnsstk::NavType nav; // e.g. GPSLNAV
        * int freqOffs;
        * bool freqOffsSpec; // true if specified
        *    // Output of search
-       * gpstk::Xvt xvt;
+       * gnsstk::Xvt xvt;
        *    // Construct a NavLibrary object.
-       * gpstk::NavLibrary navLib;
+       * gnsstk::NavLibrary navLib;
        *    // Construct a NavDataFactory object
-       * gpstk::NavDataFactoryPtr ndfp(
-       *    std::make_shared<gpstk::MultiFormatNavDataFactory>());
+       * gnsstk::NavDataFactoryPtr ndfp(
+       *    std::make_shared<gnsstk::MultiFormatNavDataFactory>());
        *    // Add the NavDataFactory to the NavLibrary
        * navLib.addFactory(ndfp);
        *    // Add input data (files) to the NavDataFactory
@@ -304,11 +304,11 @@ namespace gpstk
        *    return false;
        * }
        *    // Search the NavLibrary
-       * gpstk::ObsID oid(gpstk::ObservationType::NavMsg, band, code,
+       * gnsstk::ObsID oid(gnsstk::ObservationType::NavMsg, band, code,
        *                  freqOffs, xmitAnt, !freqOffsSpec);
-       * gpstk::SatID subjSat(subjID, subjSys);
-       * gpstk::SatID xmitSat(xmitID, xmitSys);
-       * gpstk::NavSatelliteID sat(subjSat, xmitSat, oid, nav);
+       * gnsstk::SatID subjSat(subjID, subjSys);
+       * gnsstk::SatID xmitSat(xmitID, xmitSys);
+       * gnsstk::NavSatelliteID sat(subjSat, xmitSat, oid, nav);
        * if (!navLib.getXvt(sat, when, xvt, false))
        * {
        *    cerr << "Unable to find XVT for " << sat << " @ " << when << endl;
@@ -405,9 +405,9 @@ namespace gpstk
        *         searching.}
        * \dicdef{nav}
        * \dicdef{This specifies the navigation message structure from
-       *         which the data was derived, e.g. gpstk::NavType::GPSLNAV.
+       *         which the data was derived, e.g. gnsstk::NavType::GPSLNAV.
        *         This too can be specified as a wildcard using
-       *         gpstk::NavType::Any.}
+       *         gnsstk::NavType::Any.}
        * \enddictionary
        *
        * @todo try to fix the NavType links above.
@@ -682,7 +682,7 @@ namespace gpstk
        * mind (in no particular order):
        * \li Provide a simple interface for common nav data tasks.
        * \li Support multiple GNSSes using a common interface.
-       * \li Support storage formats that are implemented in the gpstk.
+       * \li Support storage formats that are implemented in the gnsstk.
        * \li Allow for dynamic run-time extension of supported formats.
        * \li Support raw nav data bit decoding as needed by input formats.
        * \li Allow for dynamic run-time extension of raw nav data decoding.
@@ -741,10 +741,10 @@ namespace gpstk
        * declared static and is initialized at run time, which not
        * only allows for dynamic configuration of factory support, but
        * also allows for other libraries to add support for factories
-       * that do not exist in the gpstk.
+       * that do not exist in the gnsstk.
        *
        * As an example, support for RINEX NAV and SP3 is implemented
-       * in the core gpstk, but support for Yuma and SEM format files
+       * in the core gnsstk, but support for Yuma and SEM format files
        * is only present in the ext code.  While in this particular
        * case, using compiler directives would have worked to decide
        * whether to add support for Yuma and SEM, that wouldn't have
@@ -831,7 +831,7 @@ namespace gpstk
        *      custom factory to MultiFormatNavDataFactory whenever the
        *      code is used.
        *
-       * There are no examples of this outside the gpstk core, however
+       * There are no examples of this outside the gnsstk core, however
        * one may look at core/lib/NewNav/NavStatic.cpp to see how this
        * is done for the core PNBNavDataFactory classes.  There should
        * be little difference for outside code.
@@ -1289,4 +1289,4 @@ namespace gpstk
 
 }
 
-#endif // GPSTK_NAVLIBRARY_HPP
+#endif // GNSSTK_NAVLIBRARY_HPP

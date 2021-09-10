@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -41,9 +41,9 @@
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -52,15 +52,15 @@ namespace gpstk
 
    /** Implement a test class to expose protected members rather than
     * using friends. */
-class TestClass : public gpstk::YumaNavDataFactory
+class TestClass : public gnsstk::YumaNavDataFactory
 {
 public:
       /// Grant access to protected data.
-   gpstk::NavMessageMap& getData()
+   gnsstk::NavMessageMap& getData()
    { return data; }
 };
 
-/// Automated tests for gpstk::YumaNavDataFactory
+/// Automated tests for gnsstk::YumaNavDataFactory
 class YumaNavDataFactory_T
 {
 public:
@@ -74,8 +74,8 @@ public:
        *   used by TUASSERT macros in this function.
        * @param[in] nmm The data map to check. */
    template <class NavClass>
-   void verifyDataType(gpstk::TestUtil& testFramework,
-                       gpstk::NavMessageMap& nmm);
+   void verifyDataType(gnsstk::TestUtil& testFramework,
+                       gnsstk::NavMessageMap& nmm);
 };
 
 
@@ -83,12 +83,12 @@ unsigned YumaNavDataFactory_T ::
 constructorTest()
 {
    TUDEF("YumaNavDataFactory", "YumaNavDataFactory");
-   gpstk::YumaNavDataFactory fact;
+   gnsstk::YumaNavDataFactory fact;
       // check for expected signal support
-   gpstk::NavSignalID nsid1(gpstk::SatelliteSystem::GPS,
-                            gpstk::CarrierBand::L1,
-                            gpstk::TrackingCode::CA,
-                            gpstk::NavType::GPSLNAV);
+   gnsstk::NavSignalID nsid1(gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L1,
+                            gnsstk::TrackingCode::CA,
+                            gnsstk::NavType::GPSLNAV);
    TUASSERT(fact.supportedSignals.count(nsid1));
    TURETURN();
 }
@@ -100,51 +100,51 @@ loadIntoMapTest()
    TUDEF("YumaNavDataFactory", "loadIntoMap");
 
       // test loading YUMA 2 nav
-   gpstk::YumaNavDataFactory f2;
-   std::string f2name = gpstk::getPathData() + gpstk::getFileSep() +
+   gnsstk::YumaNavDataFactory f2;
+   std::string f2name = gnsstk::getPathData() + gnsstk::getFileSep() +
       "test_input_yuma377.txt";
       // this should implicitly load into the data map
    TUASSERT(f2.addDataSource(f2name));
    TUASSERTE(size_t, 60, f2.size());
 
    TestClass f4;
-   std::string f4name = gpstk::getPathData() + gpstk::getFileSep() +
+   std::string f4name = gnsstk::getPathData() + gnsstk::getFileSep() +
       "test_input_yuma377.txt";
-   TUCATCH(f4.setTypeFilter({gpstk::NavMessageType::Almanac}));
+   TUCATCH(f4.setTypeFilter({gnsstk::NavMessageType::Almanac}));
       // this should implicitly load into the data map
    TUASSERT(f4.addDataSource(f4name));
    TUASSERTE(size_t, 30, f4.size());
-   gpstk::NavMessageMap &nmm4(f4.getData());
+   gnsstk::NavMessageMap &nmm4(f4.getData());
       // only one message type
    TUASSERTE(size_t, 1, nmm4.size());
       // and it's almanac.
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Almanac,
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Almanac,
              nmm4.begin()->first);
    TUCSM("convertToOrbit/fillNavData");
-   verifyDataType<gpstk::GPSLNavAlm>(testFramework, nmm4);
+   verifyDataType<gnsstk::GPSLNavAlm>(testFramework, nmm4);
    TUCSM("loadIntoMap");
 
    TestClass f5;
-   std::string f5name = gpstk::getPathData() + gpstk::getFileSep() +
+   std::string f5name = gnsstk::getPathData() + gnsstk::getFileSep() +
       "test_input_yuma377.txt";
-   TUCATCH(f5.setTypeFilter({gpstk::NavMessageType::Health}));
+   TUCATCH(f5.setTypeFilter({gnsstk::NavMessageType::Health}));
       // this should implicitly load into the data map
    TUASSERT(f5.addDataSource(f5name));
    TUASSERTE(size_t, 30, f5.size());
-   gpstk::NavMessageMap &nmm5(f5.getData());
+   gnsstk::NavMessageMap &nmm5(f5.getData());
       // only one message type
    TUASSERTE(size_t, 1, nmm5.size());
       // and it's health.
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Health,
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Health,
              nmm5.begin()->first);
    TUCSM("convertToHealth/fillNavData");
-   verifyDataType<gpstk::GPSLNavHealth>(testFramework, nmm5);
+   verifyDataType<gnsstk::GPSLNavHealth>(testFramework, nmm5);
    TUCSM("loadIntoMap");
 
    TestClass f6;
-   std::string f6name = gpstk::getPathData() + gpstk::getFileSep() +
+   std::string f6name = gnsstk::getPathData() + gnsstk::getFileSep() +
       "test_input_yuma377.txt";
-   TUCATCH(f6.setTypeFilter({gpstk::NavMessageType::Ephemeris}));
+   TUCATCH(f6.setTypeFilter({gnsstk::NavMessageType::Ephemeris}));
       // this should implicitly load into the data map
    TUASSERT(f6.addDataSource(f6name));
       // except there isn't any data, because Yuma nav doesn't contain ephemeris
@@ -152,7 +152,7 @@ loadIntoMapTest()
 
       // test loading something that isn't yuma
    TestClass f7;
-   std::string f7name = gpstk::getPathData() + gpstk::getFileSep() +
+   std::string f7name = gnsstk::getPathData() + gnsstk::getFileSep() +
       "test_input_SP3a.sp3";
    TUASSERT(!f7.addDataSource(f7name));
    TUASSERTE(size_t, 0, f7.size());
@@ -163,8 +163,8 @@ loadIntoMapTest()
 
 template <class NavClass>
 void YumaNavDataFactory_T ::
-verifyDataType(gpstk::TestUtil& testFramework,
-               gpstk::NavMessageMap& nmm)
+verifyDataType(gnsstk::TestUtil& testFramework,
+               gnsstk::NavMessageMap& nmm)
 {
    for (auto& nmti : nmm)
    {

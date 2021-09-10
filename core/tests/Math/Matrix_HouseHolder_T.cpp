@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -40,12 +40,12 @@
 #include "Vector.hpp"
 #include "TestUtil.hpp"
 
-void hhtest(size_t r, size_t c, double a[], double hh_ref[], gpstk::TestUtil& testFramework)
+void hhtest(size_t r, size_t c, double a[], double hh_ref[], gnsstk::TestUtil& testFramework)
 {
-   gpstk::Matrix<double> A(r,c), HH_ref(r,c);
+   gnsstk::Matrix<double> A(r,c), HH_ref(r,c);
    A = a;
    HH_ref = hh_ref;
-   gpstk::Householder<double> HH;
+   gnsstk::Householder<double> HH;
    HH(A);
 
    testFramework.assert(
@@ -105,7 +105,7 @@ void hhtest(size_t r, size_t c, double a[], double hh_ref[], gpstk::TestUtil& te
 int main()
 {
    int errorCounter = 0;
-   gpstk::TestUtil testFramework("Matrix Householder", "--", __FILE__, __LINE__);
+   gnsstk::TestUtil testFramework("Matrix Householder", "--", __FILE__, __LINE__);
 
    // all of the reference values were computed using WolframAlpha to compute
    // the R value from a QR factorization

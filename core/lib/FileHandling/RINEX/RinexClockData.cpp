@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -51,7 +51,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace StringUtils;
 
@@ -87,14 +87,14 @@ namespace gpstk
       {
             // invalid type - throw
          FFStreamError e("Invalid type: " + type.type);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       if ( dvCount < 1 || dvCount > 6 )
       {
             // invalid dvCount - throw
          FFStreamError e("Invalid number of data values: " + asString(dvCount));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       s << setw(2) << type.type << ' '
@@ -155,7 +155,7 @@ namespace gpstk
       {
             // invalid record size - throw
          FFStreamError e("Invalid record length: " + asString(line.size()));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       if ( line[2]  != ' ' || line[7]  != ' ' ||
@@ -163,7 +163,7 @@ namespace gpstk
       {
             // invalid record - throw
          FFStreamError e("Invalid clock record.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       string ts = upperCase(line.substr(0,2));
@@ -176,7 +176,7 @@ namespace gpstk
       {
             // invalid type - throw
          FFStreamError e("Invalid clock type: " + type.type);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       name = line.substr(3,4);
@@ -188,7 +188,7 @@ namespace gpstk
       {
             // invalid dvCount - throw
          FFStreamError e("Invalid number of data values: " + asString(dvCount));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       clockData[0] = line.substr(40,19);
@@ -208,7 +208,7 @@ namespace gpstk
                // invalid continuation line size - throw
             FFStreamError e("Invalid continuation line length: " + 
                             asString(line.size()));
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          
          for (int i = 2; i < dvCount; i++)

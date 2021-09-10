@@ -8,8 +8,8 @@
       std::ostringstream ss;
       ss << "Index " << index << " is greater than the max allowed index of " << MAX << ".";
       std::string message = ss.str();
-      gpstk::IndexOutOfBoundsException e(message);
-      GPSTK_THROW(e);
+      gnsstk::IndexOutOfBoundsException e(message);
+      GNSSTK_THROW(e);
    }
 %enddef
 
@@ -20,22 +20,22 @@
         std::ostringstream ss;
         ss << "Index " << index << " is not within the allowed bounds [" << MIN << ", " << MAX << ")";
         std::string message = ss.str();
-        gpstk::IndexOutOfBoundsException e(message);
-        GPSTK_THROW(e);
+        gnsstk::IndexOutOfBoundsException e(message);
+        GNSSTK_THROW(e);
     }
 %enddef
 
 // This macro is used to help the C++ exceptions be translated to the python
 // wraps of the exception class - this is not automatically done by SWIG!
 %define CATCHER(NAME)
-    catch(const gpstk:: NAME &e)
+    catch(const gnsstk:: NAME &e)
     {
         SWIG_Python_Raise(
-            SWIG_NewPointerObj(new gpstk:: NAME (static_cast<const gpstk:: NAME &>(e)),
-                                SWIGTYPE_p_gpstk__##NAME,
+            SWIG_NewPointerObj(new gnsstk:: NAME (static_cast<const gnsstk:: NAME &>(e)),
+                                SWIGTYPE_p_gnsstk__##NAME,
                                 SWIG_POINTER_OWN),
             "NAME",
-            SWIGTYPE_p_gpstk__##NAME);
+            SWIGTYPE_p_gnsstk__##NAME);
         SWIG_fail;
     }
     %enddef
@@ -52,64 +52,64 @@
 //   - writeData method for the stream
 //   - _remove method to delete the object (called from python helpers below)
 //
-//  gpstk python functions:
+//  gnsstk python functions:
 //   - readX, where X is the file type
 //   - writeX, where X is the file type
 //
 
 %define STREAM_HELPER(FORMATNAME)
-%extend gpstk:: ## FORMATNAME ## Stream
+%extend gnsstk:: ## FORMATNAME ## Stream
 { 
 
    // methods for the stream itself:
-   static gpstk:: ## FORMATNAME ## Stream* in ## FORMATNAME ## Stream(
+   static gnsstk:: ## FORMATNAME ## Stream* in ## FORMATNAME ## Stream(
       const std::string fileName)
    {
-      gpstk:: ## FORMATNAME ## Stream * s = new gpstk:: ## FORMATNAME ## Stream(
+      gnsstk:: ## FORMATNAME ## Stream * s = new gnsstk:: ## FORMATNAME ## Stream(
          fileName.c_str());
       return s;
    }
 
-   static gpstk:: ## FORMATNAME ## Stream* out ## FORMATNAME ## Stream(
+   static gnsstk:: ## FORMATNAME ## Stream* out ## FORMATNAME ## Stream(
       const std::string fileName)
    {
-      gpstk:: ## FORMATNAME ## Stream * s = new gpstk:: ## FORMATNAME ## Stream(
+      gnsstk:: ## FORMATNAME ## Stream * s = new gnsstk:: ## FORMATNAME ## Stream(
          fileName.c_str(), std::ios::out|std::ios::trunc);
       return s;
    }
 
-   static void _remove(gpstk:: ## FORMATNAME ## Stream * ptr)
+   static void _remove(gnsstk:: ## FORMATNAME ## Stream * ptr)
    {
       delete ptr;
    }
 
    // reader functions:
-   gpstk:: ## FORMATNAME ## Header readHeader()
+   gnsstk:: ## FORMATNAME ## Header readHeader()
    {
-      gpstk:: ##FORMATNAME ## Header head;
+      gnsstk:: ##FORMATNAME ## Header head;
       (*($self)) >> head;
       return head;
    }
 
-   gpstk:: ## FORMATNAME ## Data readData()
+   gnsstk:: ## FORMATNAME ## Data readData()
    {
-      gpstk:: ## FORMATNAME ##Data data;
+      gnsstk:: ## FORMATNAME ##Data data;
       *($self) >> data;
 
       if( *($self) )
          return data;
       
-      gpstk::EndOfFile e("## FORMATNAME ## Stream reached an EOF.");
-      GPSTK_THROW(e);
+      gnsstk::EndOfFile e("## FORMATNAME ## Stream reached an EOF.");
+      GNSSTK_THROW(e);
    }
 
    // write functions:
-   void writeHeader(const gpstk:: ## FORMATNAME ## Header & head)
+   void writeHeader(const gnsstk:: ## FORMATNAME ## Header & head)
    {
       (*($self)) << head;
    }
 
-   void writeData(const gpstk:: ## FORMATNAME ## Data & data)
+   void writeData(const gnsstk:: ## FORMATNAME ## Data & data)
    {
       (*($self)) << data;
    }
@@ -184,7 +184,7 @@ def write ## FORMATNAME(fileName, header, data):
 ///////////////////////////////////////////////
 // Uses the dump method in the class to get string output
 %define STR_DUMP_HELPER(name)
-%extend gpstk:: ## name
+%extend gnsstk:: ## name
 {
    std::string __str__()
    {
@@ -198,7 +198,7 @@ def write ## FORMATNAME(fileName, header, data):
 
 // Uses the print method in the class to get string output
 %define STR_PRINT_HELPER(name)
-%extend gpstk:: ## name
+%extend gnsstk:: ## name
 {
    std::string __str__()
    {
@@ -221,7 +221,7 @@ def write ## FORMATNAME(fileName, header, data):
 // Uses the dump method in the class to get string output
 // for dump methods that have a detail parameter
 %define STR_DUMP_DETAIL_HELPER(name)
-%extend gpstk:: ## name {
+%extend gnsstk:: ## name {
    std::string __str__() {
       std::ostringstream stream;
       $self->dump(stream, 1);
@@ -233,10 +233,10 @@ def write ## FORMATNAME(fileName, header, data):
 // Uses the dump method in the class to get string output
 // for dump methods that have a detail parameter
 %define STR_NNDUMP_DETAIL_HELPER(name)
-%extend gpstk:: ## name {
+%extend gnsstk:: ## name {
    std::string __str__() {
       std::ostringstream stream;
-      $self->dump(stream, gpstk::DumpDetail::Full);
+      $self->dump(stream, gnsstk::DumpDetail::Full);
       return stream.str();
    }
 }
@@ -245,7 +245,7 @@ def write ## FORMATNAME(fileName, header, data):
 
 // Uses the operator<< in the class to get string output
 %define STR_STREAM_HELPER(name)
-%extend gpstk:: ##name {
+%extend gnsstk:: ##name {
    std::string __str__() {
       std::ostringstream stream;
       stream << *($self);
@@ -274,22 +274,22 @@ def write ## FORMATNAME(fileName, header, data):
 }
 %enddef
 
-// Uses gpstk::StringUtils::asString(x) to get string output
+// Uses gnsstk::StringUtils::asString(x) to get string output
 %define AS_STRING_HELPER(name)
-%extend gpstk:: ##name {
+%extend gnsstk:: ##name {
    std::string __str__() {
-      return gpstk::StringUtils::asString(*($self));
+      return gnsstk::StringUtils::asString(*($self));
    }
 
     std::string __repr__() {
-        return gpstk::StringUtils::asString(*($self));
+        return gnsstk::StringUtils::asString(*($self));
     } 
 }
 %enddef
 
 // Uses self->asString() to get string output
 %define AS_STRING_HELPER2(name)
-%extend gpstk:: ##name
+%extend gnsstk:: ##name
 {
     std::string __str__()
     {
@@ -305,7 +305,7 @@ def write ## FORMATNAME(fileName, header, data):
 
 // Uses self->asString() to get string output
 %define STR_FILTER_HELPER(name)
-%extend gpstk:: ##name
+%extend gnsstk:: ##name
 {
    std::string __str__()
    {
@@ -327,12 +327,12 @@ def write ## FORMATNAME(fileName, header, data):
     // C_NAME typemap for $symname out
     // printf("Received an out enumeration: %d $symname\n", $1);
 
-    // Note: We need to DECREF the gpstk_mod only.
+    // Note: We need to DECREF the gnsstk_mod only.
     // The sys_mod_dict is borrowed, and enum_instance is returned.
     PyObject* sys_mod_dict = PyImport_GetModuleDict();
-    PyObject* gpstk_mod = PyMapping_GetItemString(sys_mod_dict, "gpstk");
-    PyObject* enum_instance = PyObject_CallMethod(gpstk_mod, "P_NAME", "i", (int)$1);
-    Py_DECREF(gpstk_mod);
+    PyObject* gnsstk_mod = PyMapping_GetItemString(sys_mod_dict, "gnsstk");
+    PyObject* enum_instance = PyObject_CallMethod(gnsstk_mod, "P_NAME", "i", (int)$1);
+    Py_DECREF(gnsstk_mod);
     $result = enum_instance;
     return $result;
 }

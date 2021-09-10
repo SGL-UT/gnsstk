@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -38,7 +38,7 @@
 
 /**
  * @file Position.cpp
- * class gpstk::Position encapsulates 3-D positions, both geographic positions,
+ * class gnsstk::Position encapsulates 3-D positions, both geographic positions,
  *    expressed as geodetic (with respect to any geoid), geocentric or
  *    Earth-centered, Earth-fixed (cartesian) coordinates, as well as ordinary
  *    positions defined by spherical or cartesian coordinates. Position inherits
@@ -53,7 +53,7 @@
 #include "Angle.hpp"
 #include "DebugTrace.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 
    using namespace std;
@@ -116,7 +116,7 @@ namespace gpstk
          initialize(a,b,c,s,ell,frame);
       }
       catch(GeometryException& ge) {
-         GPSTK_RETHROW(ge);
+         GNSSTK_RETHROW(ge);
       }
    }
 
@@ -132,7 +132,7 @@ namespace gpstk
          initialize(a,b,c,s,ell,frame);
       }
       catch(GeometryException& ge) {
-         GPSTK_RETHROW(ge);
+         GNSSTK_RETHROW(ge);
       }
    }
 
@@ -489,7 +489,7 @@ namespace gpstk
       if(!ell)
       {
          GeometryException ge("Given EllipsoidModel pointer is NULL.");
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
       AEarth = ell->a();
       eccSquared = ell->eccSquared();
@@ -510,7 +510,7 @@ namespace gpstk
       {
          GeometryException ge("Invalid latitude in setGeodetic: "
                                  + StringUtils::asString(lat));
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
       theArray[0] = lat;
 
@@ -545,13 +545,13 @@ namespace gpstk
       {
          GeometryException ge("Invalid latitude in setGeocentric: "
                                  + StringUtils::asString(lat));
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
       if(rad < 0)
       {
          GeometryException ge("Invalid radius in setGeocentric: "
                                           + StringUtils::asString(rad));
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
       theArray[0] = lat;
       theArray[1] = lon;
@@ -580,13 +580,13 @@ namespace gpstk
       {
          GeometryException ge("Invalid theta in setSpherical: "
                                  + StringUtils::asString(theta));
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
       if(rad < 0)
       {
          GeometryException ge("Invalid radius in setSpherical: "
                                           + StringUtils::asString(rad));
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
 
       theArray[0] = theta;
@@ -790,7 +790,7 @@ namespace gpstk
                      InvalidRequest f(
                            "Invalid geodetic latitude for setTostring: "
                            + toBeRemoved);
-                     GPSTK_THROW(f);
+                     GNSSTK_THROW(f);
                   }
                   hglat = true;
                   break;
@@ -800,7 +800,7 @@ namespace gpstk
                      InvalidRequest f(
                            "Invalid geocentric latitude for setTostring: "
                            + toBeRemoved);
-                     GPSTK_THROW(f);
+                     GNSSTK_THROW(f);
                   }
                   hclat = true;
                   break;
@@ -833,7 +833,7 @@ namespace gpstk
                   if(theta > 180. || theta < 0.) {
                      InvalidRequest f("Invalid theta for setTostring: "
                                                 + toBeRemoved);
-                     GPSTK_THROW(f);
+                     GNSSTK_THROW(f);
                   }
                   htheta = true;
                   break;
@@ -842,7 +842,7 @@ namespace gpstk
                   if(theta > 90. || theta < -90.) {
                      InvalidRequest f("Invalid theta for setTostring: "
                                                 + toBeRemoved);
-                     GPSTK_THROW(f);
+                     GNSSTK_THROW(f);
                   }
                   htheta = true;
                   break;
@@ -873,7 +873,7 @@ namespace gpstk
                   if(rad < 0.0) {
                      InvalidRequest f("Invalid radius for setTostring: "
                                                 + toBeRemoved);
-                     GPSTK_THROW(f);
+                     GNSSTK_THROW(f);
                   }
                   hrad = true;
                   break;
@@ -882,7 +882,7 @@ namespace gpstk
                   if(rad < 0.0) {
                      InvalidRequest f("Invalid radius for setTostring: "
                                                 + toBeRemoved);
-                     GPSTK_THROW(f);
+                     GNSSTK_THROW(f);
                   }
                   hrad = true;
                   break;
@@ -914,7 +914,7 @@ namespace gpstk
                // throw an error - something didn't get processed in the strings
             InvalidRequest fe(
                "Processing error - parts of strings left unread - " + s);
-            GPSTK_THROW(fe);
+            GNSSTK_THROW(fe);
          }
 
          if (f.length() != 0)
@@ -922,14 +922,14 @@ namespace gpstk
                // throw an error - something didn't get processed in the strings
             InvalidRequest fe(
                "Processing error - parts of strings left unread - " + f);
-            GPSTK_THROW(fe);
+            GNSSTK_THROW(fe);
          }
 
             // throw if the specification is incomplete
          if ( !(hX && hY && hZ) && !(hglat && hlon && hht) &&
               !(hclat && hlon && hrad) && !(htheta && hphi && hrad)) {
             InvalidRequest fe("Incomplete specification for setToString");
-            GPSTK_THROW(fe);
+            GNSSTK_THROW(fe);
          }
 
             // define the Position toReturn
@@ -945,17 +945,17 @@ namespace gpstk
          *this = toReturn;
          return *this;
       }
-      catch(gpstk::Exception& exc)
+      catch(gnsstk::Exception& exc)
       {
          GeometryException ge(exc);
          ge.addText("Failed to convert string to Position");
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
       catch(std::exception& exc)
       {
          GeometryException ge(exc.what());
          ge.addText("Failed to convert string to Position");
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
    }
 
@@ -1285,7 +1285,7 @@ namespace gpstk
       if(A.AEarth != B.AEarth || A.eccSquared != B.eccSquared)
       {
          GeometryException ge("Unequal geoids");
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
 
          Position L(A),R(B);
@@ -1326,7 +1326,7 @@ namespace gpstk
       }
       catch(GeometryException& ge)
       {
-         GPSTK_RETHROW(ge);
+         GNSSTK_RETHROW(ge);
       }
       return elevation;
    }
@@ -1353,7 +1353,7 @@ namespace gpstk
       if (z.mag()<=1e-4) // if the positions are within .1 millimeter
       {
          GeometryException ge("Positions are within .1 millimeter");
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
 
       // Compute k vector in local North-East-Up (NEU) system
@@ -1385,7 +1385,7 @@ namespace gpstk
       }
       catch(GeometryException& ge)
       {
-         GPSTK_RETHROW(ge);
+         GNSSTK_RETHROW(ge);
       }
 
       return az;
@@ -1412,7 +1412,7 @@ namespace gpstk
       if (z.mag()<=1e-4) // if the positions are within .1 millimeter
       {
          GeometryException ge("Positions are within .1 millimeter");
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
 
       // Compute i vector in local North-East-Up (NEU) system
@@ -1721,7 +1721,7 @@ namespace gpstk
          {
             GeometryException ge("Invalid latitude in constructor: "
                                     + StringUtils::asString(a));
-            GPSTK_THROW(ge);
+            GNSSTK_THROW(ge);
          }
          if(bb < 0)
             bb += 360*(1+(unsigned long)(bb/360));
@@ -1734,7 +1734,7 @@ namespace gpstk
          {
             GeometryException ge("Invalid radius in constructor: "
                                            + StringUtils::asString(c));
-            GPSTK_THROW(ge);
+            GNSSTK_THROW(ge);
          }
       }
       if(s==Spherical)
@@ -1743,7 +1743,7 @@ namespace gpstk
          {
             GeometryException ge("Invalid theta in constructor: "
                                     + StringUtils::asString(a));
-            GPSTK_THROW(ge);
+            GNSSTK_THROW(ge);
          }
          if(bb < 0)
             bb += 360*(1+(unsigned long)(bb/360));
@@ -1769,4 +1769,4 @@ namespace gpstk
       refFrame = frame;
    }
 
-}  // namespace gpstk
+}  // namespace gnsstk

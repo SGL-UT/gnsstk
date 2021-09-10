@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,8 +41,8 @@
 /// and compute values at any timetag from this table. Inherits ClockSatStore,
 /// but assumes file input from RINEX Clock files.
 
-#ifndef GPSTK_RINEX_CLOCK_STORE_INCLUDE
-#define GPSTK_RINEX_CLOCK_STORE_INCLUDE
+#ifndef GNSSTK_RINEX_CLOCK_STORE_INCLUDE
+#define GNSSTK_RINEX_CLOCK_STORE_INCLUDE
 
 #include <iostream>
 #include <string>
@@ -54,7 +54,7 @@
 #include "RinexClockHeader.hpp"
 #include "RinexClockData.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    /// @ingroup GNSSEph 
    //@{
@@ -169,7 +169,7 @@ namespace gpstk
          RinexClockStream strm(filename.c_str());
          if(!strm.is_open()) {
             Exception e("File " + filename + " could not be opened");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          strm.exceptions(std::ios::failbit);
          //cout << "Opened file " << filename << endl;
@@ -184,7 +184,7 @@ namespace gpstk
          }
          catch(Exception& e) {
             e.addText("Error reading header of file " + filename);
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          //cout << "Read header" << endl; head.dump();
 
@@ -208,14 +208,14 @@ namespace gpstk
          }
          catch(Exception& e) {
             e.addText("Error reading data of file " + filename);
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
 
          // close
          strm.close();
 
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
 
       }  // end RinexClockStore::loadFile()
 
@@ -223,6 +223,6 @@ namespace gpstk
 
       //@}
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk
 
-#endif // GPSTK_RINEX_CLOCK_STORE_INCLUDE
+#endif // GNSSTK_RINEX_CLOCK_STORE_INCLUDE

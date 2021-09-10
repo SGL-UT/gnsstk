@@ -1,4 +1,4 @@
-// Global (gpstk-wide) %rename statements.
+// Global (gnsstk-wide) %rename statements.
 // Class-specific renames should go in class-specific .i files.
 
 %rename(__str__) *::asString() const;

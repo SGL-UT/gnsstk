@@ -1,20 +1,19 @@
-#pragma ident "$Id: //depot/msn/main/code/shared/gpstk/SinexHeader.cpp#4 $"
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -46,12 +45,12 @@
 #include "SinexStream.hpp"
 #include "SinexHeader.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 namespace Sinex
 {
 
-   using namespace gpstk::StringUtils;
+   using namespace gnsstk::StringUtils;
    using namespace std;
 
    const size_t  Header::MIN_LINE_LEN;
@@ -80,7 +79,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // Header::operator std::string()
 
@@ -90,7 +89,7 @@ namespace Sinex
       if (line.compare(0, FILE_BEGIN.size(), FILE_BEGIN) != 0)
       {
          Exception  err("Invalid Sinex Header");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       static int FIELD_DIVS[] = {5, 10, 14, 27, 31, 44, 57, 59, 65, -1};
       try
@@ -118,7 +117,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // Header::operator=()
 
@@ -141,4 +140,4 @@ namespace Sinex
 
 }  // namespace Sinex
 
-}  // namespace gpstk
+}  // namespace gnsstk

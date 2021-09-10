@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -42,7 +42,7 @@
 /// problems, weighting, robust estimation, and sequential estimation.
 
 //------------------------------------------------------------------------------------
-// GPSTk includes
+// GNSSTk includes
 #include "SRIleastSquares.hpp"
 #include "RobustStats.hpp"
 #include "StringUtils.hpp"
@@ -50,7 +50,7 @@
 //------------------------------------------------------------------------------------
 using namespace std;
 
-namespace gpstk {
+namespace gnsstk {
 using namespace StringUtils;
 
 //------------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ SRIleastSquares::SRIleastSquares(const Matrix<double>& Rin,
          + asString<int>(Zin.size()) + ", and NL has length "
          + asString<int>(NLin.size())
          );
-      GPSTK_THROW(me);
+      GNSSTK_THROW(me);
    }
    R = Rin;
    Z = Zin;
@@ -279,25 +279,25 @@ int SRIleastSquares::dataUpdate(Vector<double>& D,
    // errors
    if(N == 0) {
       MatrixException me("Called with zero-sized SRIleastSquares");
-      GPSTK_THROW(me);
+      GNSSTK_THROW(me);
    }
    if(doLinearize && M < N) {
       MatrixException me(
             string("When linearizing, problem must not be underdetermined:\n")
             + string("   data dimension is ") + asString(M)
             + string(" while state dimension is ") + asString(N));
-      GPSTK_THROW(me);
+      GNSSTK_THROW(me);
    }
    if(doSequential && R.rows() != X.size()) {
       MatrixException me("Sequential problem has inconsistent dimensions:\n  SRI is "
          + asString<int>(R.rows()) + "x"
          + asString<int>(R.cols()) + " while X has length "
          + asString<int>(X.size()));
-      GPSTK_THROW(me);
+      GNSSTK_THROW(me);
    }
    if(doWeight && doRobust) {
       MatrixException me("Cannot have doWeight and doRobust both true.");
-      GPSTK_THROW(me);
+      GNSSTK_THROW(me);
    }
    // TD disallow Robust and Linearized ? why?
    // TD disallow Robust and Sequential ? why?
@@ -503,7 +503,7 @@ try {
 
    return iret;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -548,8 +548,8 @@ void SRIleastSquares::Reset(const int N)
       Xsave = 0.0;
       number_batches = 0;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 //------------------------------------------------------------------------------------
-} // end namespace gpstk
+} // end namespace gnsstk

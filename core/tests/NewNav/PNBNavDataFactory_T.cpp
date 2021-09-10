@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -39,9 +39,9 @@
 #include "PNBNavDataFactory.hpp"
 #include "TestUtil.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavValidityType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavValidityType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -50,12 +50,12 @@ namespace gpstk
 
 
 /// Give access to protected members for testing.
-class TestClass : public gpstk::PNBNavDataFactory
+class TestClass : public gnsstk::PNBNavDataFactory
 {
 private:
    friend class PNBNavDataFactory_T;
-   bool addData(const gpstk::PackedNavBitsPtr& navIn,
-                gpstk::NavDataPtrList& navOut, double cadence = -1)
+   bool addData(const gnsstk::PackedNavBitsPtr& navIn,
+                gnsstk::NavDataPtrList& navOut, double cadence = -1)
       override
    { return false; }
    void resetState() override {}
@@ -75,7 +75,7 @@ constructorTest()
 {
    TUDEF("PNBNavDataFactory", "PNBNavDataFactory()");
    TestClass uut;
-   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::Any,
+   TUASSERTE(gnsstk::NavValidityType, gnsstk::NavValidityType::Any,
              uut.navValidity);
    TUASSERTE(bool, true, uut.processEph);
    TUASSERTE(bool, true, uut.processAlm);
@@ -91,12 +91,12 @@ setValidityFilterTest()
 {
    TUDEF("PNBNavDataFactory", "satValidityFilter()");
    TestClass uut;
-   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::Any,
+   TUASSERTE(gnsstk::NavValidityType, gnsstk::NavValidityType::Any,
              uut.navValidity);
-   for (gpstk::NavValidityType i : gpstk::NavValidityTypeIterator())
+   for (gnsstk::NavValidityType i : gnsstk::NavValidityTypeIterator())
    {
       uut.setValidityFilter(i);
-      TUASSERTE(gpstk::NavValidityType, i, uut.navValidity);
+      TUASSERTE(gnsstk::NavValidityType, i, uut.navValidity);
    }
    TURETURN();
 }
@@ -112,33 +112,33 @@ setTypeFilterTest()
    TUASSERTE(bool, true,  uut.processHea);
    TUASSERTE(bool, true,  uut.processTim);
    TUASSERTE(bool, true,  uut.processIono);
-   uut.setTypeFilter({gpstk::NavMessageType::Almanac});
+   uut.setTypeFilter({gnsstk::NavMessageType::Almanac});
    TUASSERTE(bool, false, uut.processEph);
    TUASSERTE(bool, true,  uut.processAlm);
    TUASSERTE(bool, false, uut.processHea);
    TUASSERTE(bool, false, uut.processTim);
    TUASSERTE(bool, false, uut.processIono);
-   uut.setTypeFilter({gpstk::NavMessageType::Ephemeris,
-                      gpstk::NavMessageType::TimeOffset});
+   uut.setTypeFilter({gnsstk::NavMessageType::Ephemeris,
+                      gnsstk::NavMessageType::TimeOffset});
    TUASSERTE(bool, true,  uut.processEph);
    TUASSERTE(bool, false, uut.processAlm);
    TUASSERTE(bool, false, uut.processHea);
    TUASSERTE(bool, true,  uut.processTim);
    TUASSERTE(bool, false, uut.processIono);
-   uut.setTypeFilter({gpstk::NavMessageType::Health,
-                      gpstk::NavMessageType::Clock});
+   uut.setTypeFilter({gnsstk::NavMessageType::Health,
+                      gnsstk::NavMessageType::Clock});
    TUASSERTE(bool, false, uut.processEph);
    TUASSERTE(bool, false, uut.processAlm);
    TUASSERTE(bool, true,  uut.processHea);
    TUASSERTE(bool, false, uut.processTim);
    TUASSERTE(bool, false, uut.processIono);
-   uut.setTypeFilter({gpstk::NavMessageType::Clock});
+   uut.setTypeFilter({gnsstk::NavMessageType::Clock});
    TUASSERTE(bool, false, uut.processEph);
    TUASSERTE(bool, false, uut.processAlm);
    TUASSERTE(bool, false, uut.processHea);
    TUASSERTE(bool, false, uut.processTim);
    TUASSERTE(bool, false, uut.processIono);
-   uut.setTypeFilter({gpstk::NavMessageType::Iono});
+   uut.setTypeFilter({gnsstk::NavMessageType::Iono});
    TUASSERTE(bool, false, uut.processEph);
    TUASSERTE(bool, false, uut.processAlm);
    TUASSERTE(bool, false, uut.processHea);

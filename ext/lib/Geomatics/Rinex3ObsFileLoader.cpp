@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -43,7 +43,7 @@
 // system includes
 #include <iostream>
 
-// GPSTk
+// GNSSTk
 #include "Exception.hpp"
 #include "StringUtils.hpp"
 #include "TimeString.hpp"        // printTime
@@ -60,7 +60,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 
 //------------------------------------------------------------------------------------
@@ -83,10 +83,10 @@ try {
    // critical to ObsID identification independent of RINEX version
    const double currVer(Rinex3ObsBase::currentVersion);
 
-   // Rinex3ObsHeader from Rinex3ObsHeader class GPSTk class
+   // Rinex3ObsHeader from Rinex3ObsHeader class GNSSTk class
    // roh = rinex obs header
    Rinex3ObsHeader roh;
-   // Rinex3ObsData from Rinex3ObsData class in GPSTk
+   // Rinex3ObsData from Rinex3ObsData class in GNSSTk
    // rod = rinex obs data, and outrod = output rinex obs data?
    Rinex3ObsData rod, outrod;
    vector<string>::const_iterator vit;
@@ -254,7 +254,7 @@ try {
                      nOrder[nOrder.size()-1]++;
                      continue;
                   //}
-                  //GPSTK_THROW(Exception(string("Records out of time order: dt ")
+                  //GNSSTK_THROW(Exception(string("Records out of time order: dt ")
                   //   + StringUtils::asString<double>(dt) + string(" at time ")
                   //   + printTime(rod.time,timefmt)));
                }
@@ -381,9 +381,9 @@ try {
 
    return nread;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -540,7 +540,7 @@ try {
 
    return npass;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -620,7 +620,7 @@ void Rinex3ObsFileLoader::dumpStoreData(ostream& s) const
 // param ostream s to which to write the table
 void dumpAllRinex3ObsTypes(ostream& os)
 {
-   using namespace gpstk::StringUtils;
+   using namespace gnsstk::StringUtils;
 
    // windows compiler truncates long names (!)
    typedef map<string, map<string, map<string, map<char,string> > > > tableMap;
@@ -741,4 +741,4 @@ void dumpAllRinex3ObsTypes(ostream& os)
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------
 
-} // end namespace gpstk
+} // end namespace gnsstk

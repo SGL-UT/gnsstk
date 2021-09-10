@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -40,9 +40,9 @@
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -62,8 +62,8 @@ unsigned KlobucharIonoData_T ::
 constructorTest()
 {
    TUDEF("KlobucharIonoData", "KlobucharIonoData");
-   gpstk::KlobucharIonoData uut;
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Iono,
+   gnsstk::KlobucharIonoData uut;
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Iono,
              uut.signal.messageType);
    TUASSERTFE(0.0, uut.alpha[0]);
    TUASSERTFE(0.0, uut.alpha[1]);
@@ -81,9 +81,9 @@ unsigned KlobucharIonoData_T ::
 getCorrectionTest()
 {
    TUDEF("KlobucharIonoData", "getCorrection");
-   gpstk::KlobucharIonoData uut;
-   gpstk::CommonTime when = gpstk::GPSWeekSecond(2100,135.0);
-   gpstk::Position rx, sv;
+   gnsstk::KlobucharIonoData uut;
+   gnsstk::CommonTime when = gnsstk::GPSWeekSecond(2100,135.0);
+   gnsstk::Position rx, sv;
    rx.setECEF(-1575232.0141,-4707872.2332, 3993198.4383);
    sv.setECEF(18217581.007, -14220522.580,  12707796.859);
    uut.alpha[0] =  1.11758709E-08;
@@ -95,9 +95,9 @@ getCorrectionTest()
    uut.beta[2]  = -1.32803702E+04;
    uut.beta[3]  =  3.38181850E+04;
    TUASSERTFE(13.174577965354167475,
-              uut.getCorrection(when, rx, sv, gpstk::CarrierBand::L2));
+              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::L2));
    TUASSERTFE(7.9994064218713107906,
-              uut.getCorrection(when, rx, sv, gpstk::CarrierBand::L1));
+              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::L1));
    TURETURN();
 }
 

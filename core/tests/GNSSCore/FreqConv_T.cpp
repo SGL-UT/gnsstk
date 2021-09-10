@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -50,14 +50,14 @@ unsigned FreqConv_T ::
 getFrequencyTest()
 {
    TUDEF("no class", "getFrequency");
-   for (gpstk::CarrierBand i : gpstk::CarrierBandIterator())
+   for (gnsstk::CarrierBand i : gnsstk::CarrierBandIterator())
    {
-      if ((i != gpstk::CarrierBand::Unknown) &&
-          (i != gpstk::CarrierBand::Any) &&
-          (i != gpstk::CarrierBand::L1L2) &&
-          (i != gpstk::CarrierBand::Undefined))
+      if ((i != gnsstk::CarrierBand::Unknown) &&
+          (i != gnsstk::CarrierBand::Any) &&
+          (i != gnsstk::CarrierBand::L1L2) &&
+          (i != gnsstk::CarrierBand::Undefined))
       {
-         TUASSERT(gpstk::getFrequency(i) != 0.0);
+         TUASSERT(gnsstk::getFrequency(i) != 0.0);
       }
    }
    TURETURN();

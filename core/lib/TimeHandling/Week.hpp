@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -40,18 +40,18 @@
 /// XXXWeekSecond for systems XXX (GPS QZS BDS GAL) and GPSWeek (for
 /// GPSWeekZcount).
 
-#ifndef GPSTK_WEEK_HPP
-#define GPSTK_WEEK_HPP
+#ifndef GNSSTK_WEEK_HPP
+#define GNSSTK_WEEK_HPP
 
 #define timeSystemCheck if(timeSystem != right.timeSystem && \
    timeSystem != TimeSystem::Any && right.timeSystem != TimeSystem::Any) \
-   GPSTK_THROW(InvalidRequest( \
+   GNSSTK_THROW(InvalidRequest( \
    "CommonTime objects not in same time system, cannot be compared"))
 
 #include "TimeTag.hpp"
 #include "TimeConverters.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup TimeHandling
       //@{
@@ -273,4 +273,4 @@ namespace gpstk
 
 #undef timeSystemCheck
 
-#endif // GPSTK_WEEK_HPP
+#endif // GNSSTK_WEEK_HPP

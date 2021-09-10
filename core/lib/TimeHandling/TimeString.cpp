@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -59,7 +59,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    std::string printTime( const CommonTime& t,
                           const std::string& fmt )
@@ -67,24 +67,24 @@ namespace gpstk
       try
       {
          string rv( fmt );
-         try {rv = ANSITime(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = CivilTime(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = GPSWeekSecond(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = GPSWeekZcount(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = JulianDate(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = MJD(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = UnixTime(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = PosixTime(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = YDSTime(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = GALWeekSecond(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = BDSWeekSecond(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = QZSWeekSecond(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = IRNWeekSecond(t).printf( rv );} catch (gpstk::InvalidRequest e){};
+         try {rv = ANSITime(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = CivilTime(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = GPSWeekSecond(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = GPSWeekZcount(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = JulianDate(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = MJD(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = UnixTime(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = PosixTime(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = YDSTime(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = GALWeekSecond(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = BDSWeekSecond(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = QZSWeekSecond(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = IRNWeekSecond(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
          return rv;
       }
-      catch( gpstk::StringUtils::StringException& se )
+      catch( gnsstk::StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
    }
    
@@ -112,13 +112,13 @@ namespace gpstk
             // Convert the CommonTime into the requested format.
          btime.convertFromCommonTime( ct );
       }
-      catch( gpstk::InvalidRequest& ir )
+      catch( gnsstk::InvalidRequest& ir )
       {
-         GPSTK_RETHROW( ir );
+         GNSSTK_RETHROW( ir );
       }
-      catch( gpstk::StringUtils::StringException& se )
+      catch( gnsstk::StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
    }
    
@@ -128,7 +128,7 @@ namespace gpstk
    {
       try
       {
-         using namespace gpstk::StringUtils;
+         using namespace gnsstk::StringUtils;
 
             // Get the mapping of character (from fmt) to value (from str).
          TimeTag::IdToValue info;
@@ -156,7 +156,7 @@ namespace gpstk
             switch( itr->first )
             {
                case 'P':
-                  ts = gpstk::StringUtils::asTimeSystem(itr->second);
+                  ts = gnsstk::StringUtils::asTimeSystem(itr->second);
                   t.setTimeSystem(ts);
                   break;
 
@@ -421,11 +421,11 @@ namespace gpstk
          }
 
          InvalidRequest ir("Incomplete time specification for readTime");
-         GPSTK_THROW( ir );
+         GNSSTK_THROW( ir );
       }
-      catch( gpstk::StringUtils::StringException& se )
+      catch( gnsstk::StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
    }   
 
@@ -435,7 +435,7 @@ namespace gpstk
    {
       try
       {
-         using namespace gpstk::StringUtils;
+         using namespace gnsstk::StringUtils;
 
             // Get the mapping of character (from fmt) to value (from str).
          TimeTag::IdToValue info;
@@ -468,7 +468,7 @@ namespace gpstk
             switch( itr->first )
             {
                case 'P':
-                  ts = gpstk::StringUtils::asTimeSystem(itr->second);
+                  ts = gnsstk::StringUtils::asTimeSystem(itr->second);
                   t.setTimeSystem(ts);
                   break;
 
@@ -552,7 +552,7 @@ namespace gpstk
                         ///@todo use a more appropriate exception class
                      Exception
                         exc("Invalid month abbreviation: " + itr->second);
-                     GPSTK_THROW(exc);
+                     GNSSTK_THROW(exc);
                   }
                   break;
 
@@ -564,7 +564,7 @@ namespace gpstk
                         ///@todo use a more appropriate exception class
                      Exception
                         exc("Invalid month name: " + itr->second);
-                     GPSTK_THROW(exc);
+                     GNSSTK_THROW(exc);
                   }
                   break;
 
@@ -587,7 +587,7 @@ namespace gpstk
                         ///@todo use a more appropriate exception class
                      Exception
                         exc("Invalid format for %y: expected 2 digits");
-                     GPSTK_THROW(exc);
+                     GNSSTK_THROW(exc);
                   }
                   iyear = asInt( itr->second );
                   if (iyear >= 69)
@@ -849,10 +849,10 @@ namespace gpstk
          }
          t = ct;
       }
-      catch( gpstk::StringUtils::StringException& se )
+      catch( gnsstk::StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
    }   
 
-} // namespace gpstk
+} // namespace gnsstk

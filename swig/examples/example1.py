@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-A GPSTk example with some simple time classes and functions.
+A GNSSTk example with some simple time classes and functions.
 
 This is a port of the older C++ example1.cpp.
 
@@ -11,35 +11,35 @@ Usage:
 """
 
 
-import gpstk
+import gnsstk
 
 
 def main():
-    # In the GPSTk there are multiple classes to manage time, depending
+    # In the GNSSTk there are multiple classes to manage time, depending
     # on the specific operation that we want to carry out. This modular
     # approach eases handling the many different time systems used in the
     # modern Global Navigation Satellite Systems.
 
-    # Note, however, that in the GPSTk the unifying class to do time
+    # Note, however, that in the GNSSTk the unifying class to do time
     # Computations is the 'CommonTime' class.
 
     # Read current time from system clock
-    systime = gpstk.SystemTime()
+    systime = gnsstk.SystemTime()
 
-    # Convert to 'CommonTime', the standard way to handle time at GPSTk
+    # Convert to 'CommonTime', the standard way to handle time at GNSSTk
     comtime = systime.toCommonTime()
 
     # This is the typical way to handle civil time
-    civtime = gpstk.CivilTime(comtime)
+    civtime = gnsstk.CivilTime(comtime)
 
     # The YDSTime class is very useful for common GNSS tasks
-    ydstime = gpstk.YDSTime(comtime)
+    ydstime = gnsstk.YDSTime(comtime)
 
     # This is a typical class to handle time in GPS system
-    gpstime = gpstk.GPSWeekSecond(comtime)
+    gpstime = gnsstk.GPSWeekSecond(comtime)
 
     # Class to handle Modified Julian Date
-    mjd = gpstk.MJD(comtime)
+    mjd = gnsstk.MJD(comtime)
 
     print "Hello world!"
     print "   The current civil time is", civtime
