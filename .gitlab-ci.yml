@@ -3,6 +3,13 @@
 # Note that the following tokens must be supplied via the Gitlab Repository Settings:
 # - CI_USER: username to pull from gitlab repository
 # - CI_TOKEN: password to pull from gitlab repository
+# - REPO_HOST: gitlab host
+# - DOCKER_REGISTRY: registry to pull internal images
+
+include:
+  - project: sgl-tks/ci-control
+    file: /gpstk/ci_downstrm_chain.yml
+    ref: main
 
 stages:
 - check
@@ -10,20 +17,23 @@ stages:
 - test
 - install
 - package
+- downstream_ci
 - deploy
-- downstream
+- downstream_stack
 
-# Default cmake arguments
 variables:
-  REPO_HOST: "sgl-git.arlut.utexas.edu"
+  # Default cmake arguments
   CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
-  # this is usually set to main, unless there are downstream dependencies
-  SGLTK_BRANCH: main
-  DOCKER_REGISTRY: "taflen.arlut.utexas.edu/sgl_ci"
   # this can be used for incremental builds
   # GIT_CLEAN_FLAGS: none
   # This can be set to True by Gitlab UI to only build/test packages.
   RELEASE_ONLY: "False"
+  GPSTK_APPS_COMMIT:
+    value: "main"
+    description: "Downstream branch of dependent gpstk_apps repo. Defaults to main."
+  NO_BIGBUILD_CI:
+    value: "False"
+    description: "If True then no big build jobs are executed on main/ci_xxx/version_xxx_prep branches. Defaults to False"
 
 # Template for all normal jobs.
 .normal_build:
@@ -39,17 +49,7 @@ variables:
       - /^ci_.*$/
       - /^version_.*_prep$/
     variables:
-      - $RELEASE_ONLY != "True"
-
-# Template for all builds that should produce packages.
-.package_build:
-  only:
-    refs:
-      - main
-      - /^ci_.*$/
-      - /^version_.*_prep$/
-      - tags
-      - /^tag_.*$/
+      - $RELEASE_ONLY != "True" && $NO_BIGBUILD_CI != "True"
 
 # Template for disabling stages
 .dont_build:
@@ -154,7 +154,7 @@ generate_documentation:
 build_debian_8:
   stage: build
   needs: []
-  extends: .normal_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -301,7 +301,7 @@ build_windows:
 test_debian_8:
   stage: test
   needs: [build_debian_8]
-  extends: .normal_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -451,7 +451,7 @@ test_windows:
 user_install_debian_9:
   stage: install
   needs: [build_debian_9]
-  extends: .normal_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -471,7 +471,7 @@ user_install_debian_9:
 user_install_redhat:
   stage: install
   needs: [build_redhat]
-  extends: .normal_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -489,7 +489,7 @@ user_install_redhat:
 user_install_redhat_8:
   stage: install
   needs: [build_redhat_8]
-  extends: .normal_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -527,7 +527,7 @@ user_install_windows:
 system_install_debian_9:
   stage: install
   needs: [build_debian_9]
-  extends: .normal_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -544,7 +544,7 @@ system_install_debian_9:
 system_install_redhat:
   stage: install
   needs: [build_redhat]
-  extends: .normal_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -559,7 +559,7 @@ system_install_redhat:
 system_install_redhat_8:
   stage: install
   needs: [build_redhat_8]
-  extends: .normal_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -570,7 +570,6 @@ system_install_redhat_8:
     - sudo make install -j 4
   dependencies:
     - build_redhat_8
-
 
 # Package Stage
 # Tests packaging of GPSTk on all platforms
@@ -614,7 +613,6 @@ system_install_redhat_8:
 package_debian_8:
   stage: package
   needs: []
-  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -639,7 +637,6 @@ package_debian_8:
 package_debian_9:
   stage: package
   needs: []
-  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -661,7 +658,6 @@ package_debian_9:
 package_debian_10:
   stage: package
   needs: []
-  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -687,7 +683,6 @@ package_debian_10:
 package_conda:
   stage: package
   needs: []
-  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/deb9_conda_py36
@@ -711,7 +706,6 @@ package_conda:
 package_redhat:
   stage: package
   needs: []
-  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -729,7 +723,6 @@ package_redhat:
 package_redhat_8:
   stage: package
   needs: []
-  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -747,7 +740,6 @@ package_redhat_8:
 package_redhat_8_py36:
   stage: package
   needs: []
-  extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -767,7 +759,7 @@ package_redhat_8_py36:
 deploy_debian_8:
   stage: deploy
   needs: [package_debian_8]
-  extends: .package_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian8_fai_ish
@@ -781,7 +773,7 @@ deploy_debian_8:
 deploy_debian_9:
   stage: deploy
   needs: [package_debian_9]
-  extends: .package_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian9_fai_ish
@@ -796,7 +788,7 @@ deploy_debian_9:
 deploy_debian_10:
   stage: deploy
   needs: [package_debian_10]
-  extends: .package_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -812,7 +804,7 @@ deploy_debian_10:
 deploy_redhat:
   stage: deploy
   needs: [package_redhat]
-  extends: .package_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos7_sgl
@@ -827,7 +819,7 @@ deploy_redhat:
 deploy_redhat_8:
   stage: deploy
   needs: [package_redhat_8]
-  extends: .package_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -842,7 +834,7 @@ deploy_redhat_8:
 deploy_redhat_py36:
   stage: deploy
   needs: [package_redhat_8, package_redhat_8_py36]
-  extends: .package_build
+  extends: .big_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/centos8_sgl
@@ -855,7 +847,6 @@ deploy_redhat_py36:
   dependencies:
     - package_redhat_8_py36
     - package_redhat_8
-
 
 # This requires a third-party package called NSIS.  We don't have it
 # installed and don't have the resources to make it work right now.
@@ -873,113 +864,3 @@ deploy_redhat_py36:
 #   artifacts:
 #     paths:
 #       - build/
-
-# Temporarily allow failures as Windows Runner issues are resolved
-
-
-sgltk_debian:
-  stage: downstream
-  needs: [user_install_debian_9]
-  extends: .dont_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/debian9_fai_ish
-  script:
-    - cd build
-    - git clone -b $SGLTK_BRANCH https://${CI_USER}:${CI_TOKEN}@${REPO_HOST}/sgl/sgltk.git
-    - export gpstk=`pwd`/install
-    - export LD_LIBRARY_PATH=$gpstk/lib:$LD_LIBRARY_PATH
-    - cd sgltk
-    - mkdir -p build
-    - cd build
-    - cmake -DCMAKE_PREFIX_PATH=$gpstk -DBUILD_PYTHON=ON -DTEST_SWITCH=ON ../
-    - make all -j 4
-  dependencies:
-    - user_install_debian_9
-
-sgltk_redhat:
-  stage: downstream
-  needs: [user_install_redhat]
-  extends: .dont_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/centos7_sgl
-  script:
-    - cd build
-    - git clone -b $SGLTK_BRANCH https://${CI_USER}:${CI_TOKEN}@${REPO_HOST}/sgl/sgltk.git
-    - export gpstk=`pwd`/install
-    - export LD_LIBRARY_PATH=$gpstk/lib:$LD_LIBRARY_PATH
-    - cd sgltk
-    - mkdir -p build
-    - cd build
-    - cmake -DBUILD_PYTHON=OFF -DCMAKE_PREFIX_PATH=$gpstk -DTEST_SWITCH=ON ../
-    - make all -j 4
-  dependencies:
-    - user_install_redhat
-
-# This approach allows the use of variables, and results in a linked
-# graph in the CI/CD pipeline status view.  But at this time the
-# downstream pipeline can't access this build's artifacts.
-apps_trigger_graph:
-  stage: deploy
-  extends: .dont_build
-  tags:
-   - docker-executor
-  image: $DOCKER_REGISTRY/debian10_fai_ish
-  script:
-    - 'curl --request POST --form token=$CI_JOB_TOKEN --form ref=$APPS_BRANCH "$CI_API_V4_URL/projects/$APPS_PROJID/trigger/pipeline"'
-
-# This approach allows the use of variables, but does not result in a
-# linked graph in the CI/CD pipeline status view, nor does this task
-# wait for the results from the downstream build process.  OTOH, the
-# downstream pipeline is able to access this build's artifacts.
-apps_trigger_simple:
-  stage: deploy
-  extends: .dont_build
-  tags:
-   - docker-executor
-  image: $DOCKER_REGISTRY/debian10_fai_ish
-  script:
-    - set
-    - 'echo curl --request POST --form token=$CI_APPS_TOKEN --form ref=$APPS_BRANCH --form "variables[GPSTK_COMMIT]=$CI_COMMIT_BRANCH" "$CI_API_V4_URL/projects/$APPS_PROJID/trigger/pipeline"'
-    - 'curl --request POST --form token=$CI_APPS_TOKEN --form ref=$APPS_BRANCH --form "variables[GPSTK_COMMIT]=$CI_COMMIT_BRANCH" "$CI_API_V4_URL/projects/$APPS_PROJID/trigger/pipeline"'
-    - 'echo curl --request POST --form token=$DS_TRIG_TOKEN --form ref=$DS_BRANCH --form "variables[GPSTK_COMMIT]=$CI_COMMIT_BRANCH" "$CI_API_V4_URL/projects/$DS_PROJID/trigger/pipeline"'
-    - 'curl --request POST --form token=$DS_TRIG_TOKEN --form ref=$DS_BRANCH --form "variables[GPSTK_COMMIT]=$CI_COMMIT_BRANCH" "$CI_API_V4_URL/projects/$DS_PROJID/trigger/pipeline"'
-
-# This approach allows the use of variables for specifying the branch
-# (but not the project), and results in a linked graph in the CI/CD
-# pipeline status view.  But at this time the downstream pipeline
-# can't access this build's artifacts.
-ds1_trigger:
-   stage: deploy
-   extends: .dont_build
-   trigger:
-     project: sgl/sgltk
-     branch: ci_pipeline_test
-     strategy: depend
-
-# sgltk_windows:
-#   stage: downstream
-#   needs: [user_install_windows]
-#   extends: .normal_build
-#   tags:
-#     - win10
-#   script:
-#     - set
-#     - cd
-#     - dir %CI_PROJECT_DIR%
-#     - dir %CI_PROJECT_DIR%\build
-#     - dir %CI_PROJECT_DIR%\build\install
-#     - cd build
-#     - git clone -b %SGLTK_BRANCH% https://sgl-git.arlut.utexas.edu/sgl-tks/sgltk.git
-#     - cd sgltk
-#     - mkdir -p build
-#     - cd build
-#     - cmake -DCMAKE_PREFIX_PATH=%CI_PROJECT_DIR%/build/install -DCMAKE_INSTALL_PREFIX=install -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" --trace ../
-#     - cmake --build .
-# #  artifacts:
-# #    paths:
-# #    - build/
-#   timeout: 30m
-#   dependencies:
-#     - user_install_windows
