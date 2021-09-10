@@ -47,7 +47,7 @@
 #include "BDSD1Bits.hpp"
 
 using namespace std;
-using namespace gpstk::bds;
+using namespace gnsstk::bds;
 
 namespace gnsstk
 {
