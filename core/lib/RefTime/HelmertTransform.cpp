@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -46,10 +46,10 @@
 #include "YDSTime.hpp"
 #include "GNSSconstants.hpp"
 
-using namespace gpstk;
+using namespace gnsstk;
 using namespace std;
 
-namespace gpstk {
+namespace gnsstk {
 
    // Explicit constructor, from the 7 parameters.
    HelmertTransform::HelmertTransform(
@@ -69,14 +69,14 @@ namespace gpstk {
       toFrame = to;
       if(from == ReferenceFrame::Unknown || to == ReferenceFrame::Unknown) {
          InvalidRequest e("Invalid Helmert transformation with Unknown frame");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       // check that rotation angles are small; sin x ~ x at 0.244 radians = 13.9 deg
       if(::fabs(rx) > 1.e-3 || ::fabs(ry) > 1.e-3 || ::fabs(rz) > 1.e-3) {
          InvalidRequest e("Invalid Helmert transformation : "
                                  "small angle approximation.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       // rotation matrix. NB. small angle approximation is used. NB. by construction
@@ -167,8 +167,8 @@ namespace gpstk {
       }
       else {
          InvalidRequest e("Helmert tranformation cannot act on frame " +
-                          gpstk::StringUtils::asString(pos.getReferenceFrame()));
-         GPSTK_THROW(e);
+                          gnsstk::StringUtils::asString(pos.getReferenceFrame()));
+         GNSSTK_THROW(e);
       }
    }
 
@@ -232,4 +232,4 @@ namespace gpstk {
       // add more transforms here, and increase HelmertTransform::stdCount in .cpp
    };
 
-} // end namespace gpstk
+} // end namespace gnsstk

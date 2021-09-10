@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -48,7 +48,7 @@
 #include <iostream>
 #include <string>
 
-using namespace gpstk;
+using namespace gnsstk;
 
 //============================================================
 // Class decalarations
@@ -113,8 +113,8 @@ void RinexObs_T :: init( void )
 {
 
    TestUtil test0;
-   std::string dataFilePath = gpstk::getPathData();
-   std::string tempFilePath = gpstk::getPathTestTemp
+   std::string dataFilePath = gnsstk::getPathData();
+   std::string tempFilePath = gnsstk::getPathTestTemp
       ();
 
       //----------------------------------------
@@ -183,7 +183,7 @@ void RinexObs_T :: init( void )
 //============================================================
 
 //------------------------------------------------------------
-// This tests throws many GPSTK RinexObsHeader exceptions including
+// This tests throws many GNSSTK RinexObsHeader exceptions including
 // Incomplete headers, invalid line lengths etc
 // Also an extended obs type is used and dumped within this test.
 //------------------------------------------------------------
@@ -199,38 +199,38 @@ int RinexObs_T :: headerExceptionTest( void )
    try
    {
 
-      gpstk::RinexObsStream RinexObsFile( dataRinexObsFile );
-      gpstk::RinexObsStream ih( dataIncompleteHeader );
-      gpstk::RinexObsStream il( dataInvalidLineLength );
-      gpstk::RinexObsStream inpwf( dataInvalidNumPRNWaveFact );
-      gpstk::RinexObsStream no( dataNotObs );
-      gpstk::RinexObsStream ss( dataSystemGeosync );
-      gpstk::RinexObsStream sr( dataSystemGlonass );
-      gpstk::RinexObsStream sm( dataSystemMixed );
-      gpstk::RinexObsStream st( dataSystemTransit );
-      gpstk::RinexObsStream unsupv( dataUnSupVersion );
-      gpstk::RinexObsStream contdata( dataRinexContData );
+      gnsstk::RinexObsStream RinexObsFile( dataRinexObsFile );
+      gnsstk::RinexObsStream ih( dataIncompleteHeader );
+      gnsstk::RinexObsStream il( dataInvalidLineLength );
+      gnsstk::RinexObsStream inpwf( dataInvalidNumPRNWaveFact );
+      gnsstk::RinexObsStream no( dataNotObs );
+      gnsstk::RinexObsStream ss( dataSystemGeosync );
+      gnsstk::RinexObsStream sr( dataSystemGlonass );
+      gnsstk::RinexObsStream sm( dataSystemMixed );
+      gnsstk::RinexObsStream st( dataSystemTransit );
+      gnsstk::RinexObsStream unsupv( dataUnSupVersion );
+      gnsstk::RinexObsStream contdata( dataRinexContData );
 
-      gpstk::RinexObsStream out( dataTestOutput, std::ios::out );
-      gpstk::RinexObsStream out2( dataTestOutput3, std::ios::out );
-      gpstk::RinexObsStream dump( dataTestOutputObsDump, std::ios::out );
+      gnsstk::RinexObsStream out( dataTestOutput, std::ios::out );
+      gnsstk::RinexObsStream out2( dataTestOutput3, std::ios::out );
+      gnsstk::RinexObsStream dump( dataTestOutputObsDump, std::ios::out );
 
-      gpstk::RinexObsHeader RinexObsFileh;
-      gpstk::RinexObsHeader ihh;
-      gpstk::RinexObsHeader ilh;
-      gpstk::RinexObsHeader inpwfh;
-      gpstk::RinexObsHeader noh;
-      gpstk::RinexObsHeader ssh;
-      gpstk::RinexObsHeader srh;
-      gpstk::RinexObsHeader smh;
-      gpstk::RinexObsHeader sth;
-      gpstk::RinexObsHeader unsupvh;
-      gpstk::RinexObsHeader contdatah;
+      gnsstk::RinexObsHeader RinexObsFileh;
+      gnsstk::RinexObsHeader ihh;
+      gnsstk::RinexObsHeader ilh;
+      gnsstk::RinexObsHeader inpwfh;
+      gnsstk::RinexObsHeader noh;
+      gnsstk::RinexObsHeader ssh;
+      gnsstk::RinexObsHeader srh;
+      gnsstk::RinexObsHeader smh;
+      gnsstk::RinexObsHeader sth;
+      gnsstk::RinexObsHeader unsupvh;
+      gnsstk::RinexObsHeader contdatah;
 
-      gpstk::RegisterExtendedRinexObsType( "ER","Testing Type", "Candela",
+      gnsstk::RegisterExtendedRinexObsType( "ER","Testing Type", "Candela",
                                            (unsigned) 2 );
-      gpstk::RinexObsData RinexObsFiled;
-      gpstk::RinexObsData contdatad;
+      gnsstk::RinexObsData RinexObsFiled;
+      gnsstk::RinexObsData contdatad;
 
       RinexObsFile >> RinexObsFileh;
       ih >> ihh;
@@ -269,7 +269,7 @@ int RinexObs_T :: headerExceptionTest( void )
       RinexObsFileh.dump( dump );
       contdatah.dump( dump );
       ilh.dump( dump );
-      gpstk::DisplayExtendedRinexObsTypes( dump );
+      gnsstk::DisplayExtendedRinexObsTypes( dump );
 
       testFramework.assert( 39 == RinexObsFileh.NumberHeaderRecordsToBeWritten(),
                             msg_test_desc + msg_false_pass, __LINE__ );
@@ -305,11 +305,11 @@ int RinexObs_T :: hardCodeTest( void )
 
    try
    {
-      gpstk::RinexObsStream RinexObsFile( dataRinexObsFile );
-      gpstk::RinexObsStream out( dataTestOutput2, std::ios::out );
-      gpstk::RinexObsStream dump( dataTestOutputObsDump, std::ios::out );
-      gpstk::RinexObsHeader RinexObsFileh;
-      gpstk::RinexObsData RinexObsFiled;
+      gnsstk::RinexObsStream RinexObsFile( dataRinexObsFile );
+      gnsstk::RinexObsStream out( dataTestOutput2, std::ios::out );
+      gnsstk::RinexObsStream dump( dataTestOutputObsDump, std::ios::out );
+      gnsstk::RinexObsHeader RinexObsFileh;
+      gnsstk::RinexObsData RinexObsFiled;
 
       RinexObsFile >> RinexObsFileh;
       out << RinexObsFileh;
@@ -335,7 +335,7 @@ int RinexObs_T :: hardCodeTest( void )
 }
 
 //------------------------------------------------------------
-// This test throws many GPSTK exceptions within the
+// This test throws many GNSSTK exceptions within the
 // RinexObsData, including BadEpochLine and BadEpochFlag
 //------------------------------------------------------------
 int RinexObs_T :: dataExceptionsTest( void )
@@ -344,22 +344,22 @@ int RinexObs_T :: dataExceptionsTest( void )
    TUDEF( "RinexObsStream", "dump" );
 
    std::string msg_test_desc   =
-      "RinexObsStream, test various gpstk exception throws, including BadEpochLine and BadEpochFlag";
+      "RinexObsStream, test various gnsstk exception throws, including BadEpochLine and BadEpochFlag";
    std::string msg_fail_throw  =
-      ", not all gpstk exceptions were thrown as expected.";
+      ", not all gnsstk exceptions were thrown as expected.";
    std::string msg_fail_except = ", threw an unexpected exception.";
 
    try
    {
-      gpstk::RinexObsStream BadEpochLine( dataBadEpochLine );
-      gpstk::RinexObsStream BadEpochFlag( dataBadEpochFlag );
-      gpstk::RinexObsStream BadLineSize( dataBadLineSize );
-      gpstk::RinexObsStream InvalidTimeFormat( dataInvalidTimeFormat );
-      gpstk::RinexObsStream out( dataTestOutputDataException, std::ios::out );
-      gpstk::RinexObsData BadEpochLined;
-      gpstk::RinexObsData BadEpochFlagd;
-      gpstk::RinexObsData BadLineSized;
-      gpstk::RinexObsData InvalidTimeFormatd;
+      gnsstk::RinexObsStream BadEpochLine( dataBadEpochLine );
+      gnsstk::RinexObsStream BadEpochFlag( dataBadEpochFlag );
+      gnsstk::RinexObsStream BadLineSize( dataBadLineSize );
+      gnsstk::RinexObsStream InvalidTimeFormat( dataInvalidTimeFormat );
+      gnsstk::RinexObsStream out( dataTestOutputDataException, std::ios::out );
+      gnsstk::RinexObsData BadEpochLined;
+      gnsstk::RinexObsData BadEpochFlagd;
+      gnsstk::RinexObsData BadLineSized;
+      gnsstk::RinexObsData InvalidTimeFormatd;
 
       while( BadEpochLine >> BadEpochLined )
       {
@@ -401,24 +401,24 @@ int RinexObs_T :: filterOperatorsTest( void )
 
    try
    {
-      gpstk::RinexObsStream FilterStream1( dataFilterTest1 );
+      gnsstk::RinexObsStream FilterStream1( dataFilterTest1 );
       FilterStream1.open( dataFilterTest1, std::ios::in );
 
-      gpstk::RinexObsStream FilterStream2( dataFilterTest2  );
-      gpstk::RinexObsStream FilterStream3( dataFilterTest3  );
-      gpstk::RinexObsStream FilterStream4( dataFilterTest4  );
-      gpstk::RinexObsStream out( dataTestFilterOutput, std::ios::out );
+      gnsstk::RinexObsStream FilterStream2( dataFilterTest2  );
+      gnsstk::RinexObsStream FilterStream3( dataFilterTest3  );
+      gnsstk::RinexObsStream FilterStream4( dataFilterTest4  );
+      gnsstk::RinexObsStream out( dataTestFilterOutput, std::ios::out );
 
-      gpstk::RinexObsHeader FilterHeader1;
-      gpstk::RinexObsHeader FilterHeader2;
-      gpstk::RinexObsHeader FilterHeader3;
-      gpstk::RinexObsHeader FilterHeader4;
+      gnsstk::RinexObsHeader FilterHeader1;
+      gnsstk::RinexObsHeader FilterHeader2;
+      gnsstk::RinexObsHeader FilterHeader3;
+      gnsstk::RinexObsHeader FilterHeader4;
 
-      gpstk::RinexObsData FilterData1;
-      gpstk::RinexObsData FilterData2;
-      gpstk::RinexObsData FilterData3;
-      gpstk::RinexObsData FilterData4;
-      gpstk::RinexObsData rodata;
+      gnsstk::RinexObsData FilterData1;
+      gnsstk::RinexObsData FilterData2;
+      gnsstk::RinexObsData FilterData3;
+      gnsstk::RinexObsData FilterData4;
+      gnsstk::RinexObsData rodata;
 
 
       FilterStream1 >> FilterHeader1;
@@ -443,26 +443,26 @@ int RinexObs_T :: filterOperatorsTest( void )
          FilterData4 = rodata;
       }
 
-      gpstk::RinexObsHeaderTouchHeaderMerge merged;
+      gnsstk::RinexObsHeaderTouchHeaderMerge merged;
       merged( FilterHeader1 );
       merged( FilterHeader2 );
 
-      gpstk::RinexObsDataOperatorLessThanFull( merged.obsSet );
+      gnsstk::RinexObsDataOperatorLessThanFull( merged.obsSet );
       out << merged.theHeader;
 
-      gpstk::RinexObsDataOperatorEqualsSimple EqualsSimple;
+      gnsstk::RinexObsDataOperatorEqualsSimple EqualsSimple;
       msg_test_desc =
          "RinexObsDataOperatorEqualsSimple( FilterData1, FilterData1 ), should evaluate as true";
       testFramework.assert( EqualsSimple( FilterData1, FilterData1 ), msg_test_desc,
                             __LINE__ );
 
-      gpstk::RinexObsDataOperatorLessThanSimple LessThanSimple;
+      gnsstk::RinexObsDataOperatorLessThanSimple LessThanSimple;
       msg_test_desc =
          "RinexObsDataOperatorLessThanSimple( FilterData1, FilterData1 ) should evaluated as false";
       testFramework.assert( !LessThanSimple( FilterData1, FilterData1 ),
                             msg_test_desc, __LINE__ );
 
-      gpstk::RinexObsDataOperatorLessThanFull LessThanFull( merged.obsSet );
+      gnsstk::RinexObsDataOperatorLessThanFull LessThanFull( merged.obsSet );
       msg_test_desc =
          "RinexObsDataOperator LessThanFull( FilterData1, FilterData1 ) should evaluate as false ";
       testFramework.assert( !LessThanFull( FilterData1, FilterData1 ) ,

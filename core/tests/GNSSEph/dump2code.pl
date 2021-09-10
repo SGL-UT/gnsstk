@@ -1,20 +1,20 @@
 #!/usr/bin/perl
 #==============================================================================
 #
-#  This file is part of GPSTk, the GPS Toolkit.
+#  This file is part of GNSSTk, the GNSS Toolkit.
 #
-#  The GPSTk is free software; you can redistribute it and/or modify
+#  The GNSSTk is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU Lesser General Public License as published
 #  by the Free Software Foundation; either version 3.0 of the License, or
 #  any later version.
 #
-#  The GPSTk is distributed in the hope that it will be useful,
+#  The GNSSTk is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU Lesser General Public License for more details.
 #
 #  You should have received a copy of the GNU Lesser General Public
-#  License along with GPSTk; if not, write to the Free Software Foundation,
+#  License along with GNSSTk; if not, write to the Free Software Foundation,
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 #
 #  This software was developed by Applied Research Laboratories at the
@@ -127,7 +127,7 @@ while (<>)
         $cus = $arr[2];
         $cuc = $arr[5];
         printf("   try\n   {\n");
-        printf("      gpstk::BDSEphemeris oe;\n");
+        printf("      gnsstk::BDSEphemeris oe;\n");
         printf("      oe.Cuc      = $cuc;\n");
         printf("      oe.Cus      = $cus;\n");
         printf("      oe.Crc      = $crc;\n");
@@ -146,14 +146,14 @@ while (<>)
         printf("      oe.OMEGAdot = $OMEGAdot;\n");
         printf("      oe.idot     = $idot;\n");
         ($m, $d, $y, $hr, $min, $sec) = split(/[\/ :]/, $tocStr);
-        printf("      oe.ctToc    = gpstk::CivilTime(%d,%d,%d,%d,%d,%d,gpstk::TimeSystem::BDT);\n",$y,$m,$d,$hr,$min,$sec);
+        printf("      oe.ctToc    = gnsstk::CivilTime(%d,%d,%d,%d,%d,%d,gnsstk::TimeSystem::BDT);\n",$y,$m,$d,$hr,$min,$sec);
         printf("      oe.af0      = $af0;\n");
         printf("      oe.af1      = $af1;\n");
         printf("      oe.af2      = $af2;\n");
         printf("      oe.dataLoadedFlag = true;\n");
-        printf("      oe.satID = gpstk::SatID($prn, gpstk::SatID::systemBeiDou);\n");
+        printf("      oe.satID = gnsstk::SatID($prn, gnsstk::SatID::systemBeiDou);\n");
         ($m, $d, $y, $hr, $min, $sec) = split(/[\/ :]/, $toeStr);
-        printf("      oe.ctToe    = gpstk::CivilTime(%d,%d,%d,%d,%d,%d,gpstk::TimeSystem::BDT);\n",$y,$m,$d,$hr,$min,$sec);
+        printf("      oe.ctToe    = gnsstk::CivilTime(%d,%d,%d,%d,%d,%d,gnsstk::TimeSystem::BDT);\n",$y,$m,$d,$hr,$min,$sec);
         printf("      writeVel(oe);\n");
         printf("   }\n");
         printf("   catch(...)\n");

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -59,9 +59,9 @@
 #include "TimeString.hpp"
 
 using namespace std;
-using gpstk::StringUtils::asString;
+using gnsstk::StringUtils::asString;
 
-namespace gpstk
+namespace gnsstk
 {
 
 //------------------------------------------------------------------------------
@@ -138,7 +138,7 @@ namespace gpstk
                     << "Input message matches a previously accepted message "
                     << "in Tx time, but not in data payload.";
          InvalidRequest ir(failString.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
       else if(storeAll)
       {  // Case where the user does not care for uniqueness testing, all valid
@@ -539,7 +539,7 @@ namespace gpstk
        }
        catch (InvalidRequest ir)
        {
-          GPSTK_RETHROW(ir);
+          GNSSTK_RETHROW(ir);
        }
 
           // Should never reach this point.   Leave an exception
@@ -549,14 +549,14 @@ namespace gpstk
        ss << "OrbSysStore::findUtcData(). ";
        ss << "  Unexpected error. ";
        InvalidRequest ir(ss.str());
-       GPSTK_THROW(ir);
+       GNSSTK_THROW(ir);
     }
 
 
 //-----------------------------------------------------------------------------
    void OrbSysStore::dumpContents(std::ostream& s,
-                                const gpstk::SatID& sidr,
-                                const gpstk::NavID& navtype,
+                                const gnsstk::SatID& sidr,
+                                const gnsstk::NavID& navtype,
                                 const unsigned long UID)
          const throw()
    {
@@ -639,7 +639,7 @@ namespace gpstk
       if (size()==0)
       {
          InvalidRequest ir("No data loaded.");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
       return initialTime;
    }
@@ -650,7 +650,7 @@ namespace gpstk
       if (size()==0)
       {
          InvalidRequest ir("No data loaded.");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
       return finalTime;
    }
@@ -705,7 +705,7 @@ namespace gpstk
       {
          failString << "Satellite " << sat << " not found in message store.";
          InvalidRequest ir(failString.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       const NM_UID_MSG_MAP& NMmapr = cit1->second;
@@ -714,7 +714,7 @@ namespace gpstk
       {
          failString << "Nav message type " << navtype << " not found in message store.";
          InvalidRequest ir(failString.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       const UID_MSG_MAP& UIDmapr = cit2->second;
@@ -723,7 +723,7 @@ namespace gpstk
       {
          failString << "Unique message ID " << UID << " not found in message store.";
          InvalidRequest ir(failString.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
          // Found a map of candidate messages.
@@ -756,7 +756,7 @@ namespace gpstk
          stringstream ss;
          ss << "Requested time is earlier than any message of requested type.";
          InvalidRequest ir(ss.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
          // Now we know that time t is beyod the beginning of the map.
@@ -782,7 +782,7 @@ namespace gpstk
          stringstream ss;
          ss << "Could not find object with appropriate transmit time.";
          InvalidRequest ir(ss.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
          // If not at the end, retreat one item.
@@ -811,7 +811,7 @@ namespace gpstk
          stringstream ss;
          ss << "Requested time is earlier than any message of requested type.";
          InvalidRequest ir(ss.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
       prior--;
       if (debugLevel) cout << "Returning object with xmit time: "
@@ -884,7 +884,7 @@ namespace gpstk
                     << " prior to time " << printTime(t,"%02m/%02d/%4Y %02H:%02M:%02S")
                     << " was found in message store.";
          InvalidRequest ir(failString.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       return retVal;
@@ -911,7 +911,7 @@ namespace gpstk
       {
          failString << "Satellite " << sat << " not found in message store.";
          InvalidRequest ir(failString.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       const NM_UID_MSG_MAP& NMmapr = cit1->second;
@@ -920,7 +920,7 @@ namespace gpstk
       {
          failString << "Nav message type " << navtype << " not found in message store.";
          InvalidRequest ir(failString.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
          // Iterate over each UID in the store for this message type
@@ -942,7 +942,7 @@ namespace gpstk
          }
          catch (InvalidRequest ir)
          {
-            GPSTK_RETHROW(ir);
+            GNSSTK_RETHROW(ir);
          }
       }
       return retList;
@@ -974,7 +974,7 @@ namespace gpstk
          stringstream failString;
          failString << "No messages with " << navtype << " and UID " << UID << " found in message store.";
          InvalidRequest ir(failString.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
       return retList;
    }
@@ -1000,7 +1000,7 @@ namespace gpstk
       {
          failString << "Satellite " << sat << " not found in message store.";
          InvalidRequest ir(failString.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       const NM_UID_MSG_MAP& NMmapr = cit1->second;
@@ -1009,7 +1009,7 @@ namespace gpstk
       {
          failString << "Nav message type " << navtype << " not found in message store.";
          InvalidRequest ir(failString.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       const UID_MSG_MAP& UIDmapr = cit2->second;
@@ -1018,7 +1018,7 @@ namespace gpstk
       {
          failString << "Uniuqe message type " << UID << " not found in message store.";
          InvalidRequest ir(failString.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
          // Iterate over the time-ordered message map and copy all the messages
@@ -1133,16 +1133,16 @@ namespace gpstk
          NMmapr.clear();
       }
       msgMap.clear();
-      initialTime = gpstk::CommonTime::END_OF_TIME;
-      finalTime = gpstk::CommonTime::BEGINNING_OF_TIME;
+      initialTime = gnsstk::CommonTime::END_OF_TIME;
+      finalTime = gnsstk::CommonTime::BEGINNING_OF_TIME;
       initialTime.setTimeSystem(timeSysForStore);
       finalTime.setTimeSystem(timeSysForStore);
    }
 
 //-----------------------------------------------------------------------------
-   list<gpstk::SatID> OrbSysStore::getSatIDList() const
+   list<gnsstk::SatID> OrbSysStore::getSatIDList() const
    {
-      list<gpstk::SatID> retList;
+      list<gnsstk::SatID> retList;
       SAT_NM_UID_MSG_MAP::const_iterator cit1;
       for (cit1=msgMap.begin();cit1!=msgMap.end();cit1++)
       {
@@ -1153,10 +1153,10 @@ namespace gpstk
    }
 
 //-----------------------------------------------------------------------------
-   std::list<gpstk::NavID> OrbSysStore::getNavIDList() const
+   std::list<gnsstk::NavID> OrbSysStore::getNavIDList() const
    {
          // Initially place the results in a set to enforce uniqueness.
-      set<gpstk::NavID> retSet;
+      set<gnsstk::NavID> retSet;
       SAT_NM_UID_MSG_MAP::const_iterator cit1;
       for (cit1=msgMap.begin();cit1!=msgMap.end();cit1++)
       {
@@ -1170,8 +1170,8 @@ namespace gpstk
       }
 
          // Now convert the set to a list for the return
-      list<gpstk::NavID> retList;
-      set<gpstk::NavID>::const_iterator cit3;
+      list<gnsstk::NavID> retList;
+      set<gnsstk::NavID>::const_iterator cit3;
       for (cit3=retSet.begin();cit3!=retSet.end();cit3++)
       {
          NavID nid = *cit3;
@@ -1181,7 +1181,7 @@ namespace gpstk
    }
 
 //-----------------------------------------------------------------------------
-   const std::list<gpstk::SatelliteSystem>& OrbSysStore::getSatSysList() const
+   const std::list<gnsstk::SatelliteSystem>& OrbSysStore::getSatSysList() const
    {
       return sysList;
    }
@@ -1223,7 +1223,7 @@ namespace gpstk
          }
 
          InvalidRequest ir(ess.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
    }
 
@@ -1237,7 +1237,7 @@ namespace gpstk
          stringstream ss;
          ss << "OrbSysStore::hasSignal() is only valid for GPS at this time.  sidr: " << sidr;
          InvalidRequest ir(ss.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       NavID nid(NavType::GPSLNAV);
@@ -1251,7 +1251,7 @@ namespace gpstk
       }
       catch (InvalidRequest ir)
       {
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
       return retVal;
    }

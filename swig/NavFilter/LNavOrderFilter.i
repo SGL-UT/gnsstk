@@ -1,7 +1,7 @@
-%extend gpstk::LNavTimeSort
+%extend gnsstk::LNavTimeSort
 {
-   bool __call__(const gpstk::LNavFilterData*const &l,
-                 const gpstk::LNavFilterData*const &r)
+   bool __call__(const gnsstk::LNavFilterData*const &l,
+                 const gnsstk::LNavFilterData*const &r)
    {
       return (*($self))(l, r);
    }

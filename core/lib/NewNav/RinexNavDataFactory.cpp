@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -54,7 +54,7 @@ using namespace std;
 
 static const std::string dts("%Y/%03j/%02H:%02M:%02S %P");
 
-namespace gpstk
+namespace gnsstk
 {
    RinexNavDataFactory ::
    RinexNavDataFactory()
@@ -257,7 +257,7 @@ namespace gpstk
             }
          }
       }
-      catch (gpstk::Exception& exc)
+      catch (gnsstk::Exception& exc)
       {
          rv = false;
          cerr << exc << endl;
@@ -476,7 +476,7 @@ namespace gpstk
                    NavDataPtrList& healthOut)
    {
       bool rv = true;
-      gpstk::NavDataPtr health;
+      gnsstk::NavDataPtr health;
       GPSLNavHealth *gps;
       GalINavHealth *galNav;
       unsigned healthBits = 0;
@@ -774,7 +774,7 @@ namespace gpstk
          case SatelliteSystem::QZSS:
                // NavData
             navOut->timeStamp =
-               gpstk::GPSWeekSecond(navIn.weeknum,navIn.xmitTime);
+               gnsstk::GPSWeekSecond(navIn.weeknum,navIn.xmitTime);
             if (navIn.sat.system == SatelliteSystem::QZSS)
                navOut->timeStamp.setTimeSystem(TimeSystem::QZS);
                // sat and xmitSat are always the same for ephemeris

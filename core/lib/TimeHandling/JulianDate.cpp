@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -42,7 +42,7 @@
 #include "JulianDate.hpp"
 #include "TimeConstants.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    JulianDate& JulianDate::operator=( const JulianDate& right )
    {
@@ -69,7 +69,7 @@ namespace gpstk
       catch (InvalidParameter& ip)
       {
          InvalidRequest ir(ip);
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
    }
 
@@ -89,7 +89,7 @@ namespace gpstk
    {
       try
       {
-         using gpstk::StringUtils::formattedPrint;
+         using gnsstk::StringUtils::formattedPrint;
          std::string rv( fmt );
 
          rv = formattedPrint( rv, getFormatPrefixFloat() + "J",
@@ -98,9 +98,9 @@ namespace gpstk
                               "Ps", StringUtils::asString(timeSystem).c_str() );
          return rv;
       }
-      catch( gpstk::StringUtils::StringException& se )
+      catch( gnsstk::StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
    }
 
@@ -108,7 +108,7 @@ namespace gpstk
    {
       try
       {
-         using gpstk::StringUtils::formattedPrint;
+         using gnsstk::StringUtils::formattedPrint;
          std::string rv( fmt );
 
          rv = formattedPrint( rv, getFormatPrefixFloat() + "J",
@@ -117,15 +117,15 @@ namespace gpstk
                               "Ps", getError().c_str() );
          return rv;
       }
-      catch( gpstk::StringUtils::StringException& se )
+      catch( gnsstk::StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
    }
 
    bool JulianDate::setFromInfo( const IdToValue& info )
    {
-      using namespace gpstk::StringUtils;
+      using namespace gnsstk::StringUtils;
 
       for( IdToValue::const_iterator i = info.begin(); i != info.end(); i++ )
       {
@@ -136,7 +136,7 @@ namespace gpstk
                break;
 
             case 'P':
-               timeSystem = gpstk::StringUtils::asTimeSystem(i->second);
+               timeSystem = gnsstk::StringUtils::asTimeSystem(i->second);
                break;
 
             default:
@@ -192,8 +192,8 @@ namespace gpstk
            right.timeSystem != TimeSystem::Any) &&
           timeSystem != right.timeSystem)
       {
-         gpstk::InvalidRequest ir("CommonTime objects not in same time system, cannot be compared");
-         GPSTK_THROW(ir);
+         gnsstk::InvalidRequest ir("CommonTime objects not in same time system, cannot be compared");
+         GNSSTK_THROW(ir);
       }
 
       if( jd < right.jd )

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -43,7 +43,7 @@
 
 #include "FFTextStream.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    FFTextStream ::
    FFTextStream()
@@ -109,10 +109,10 @@ namespace gpstk
       {
          FFStream::tryFFStreamGet(rec);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
          e.addText( std::string("Near file line ") +
-                    gpstk::StringUtils::asString(lineNumber) );
+                    gnsstk::StringUtils::asString(lineNumber) );
          lineNumber = initialLineNumber;
          mostRecentException = e;
          conditionalThrow();
@@ -129,10 +129,10 @@ namespace gpstk
       {
          FFStream::tryFFStreamPut(rec);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
          e.addText( std::string("Near file line ") +
-                    gpstk::StringUtils::asString(lineNumber) );
+                    gnsstk::StringUtils::asString(lineNumber) );
          lineNumber = initialLineNumber;
          mostRecentException = e;
          conditionalThrow();
@@ -161,7 +161,7 @@ namespace gpstk
             if (!isprint(line[i]))
             {
                FFStreamError err("Non-text data in file.");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
          }
             
@@ -169,7 +169,7 @@ namespace gpstk
          if(fail() && !eof())
          {
             FFStreamError err("Line too long");
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
             // catch EOF when stream exceptions are disabled
          if ((line.size() == 0) && eof())
@@ -177,12 +177,12 @@ namespace gpstk
             if (expectEOF)
             {
                EndOfFile err("EOF encountered");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
             else
             {
                FFStreamError err("Unexpected EOF encountered");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
          }
       }
@@ -194,21 +194,21 @@ namespace gpstk
             if (expectEOF)
             {
                EndOfFile err("EOF encountered");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
             else
             {
                FFStreamError err("Unexpected EOF");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
          }
          else
          {
             FFStreamError err("Critical file error: " +
                               std::string(e.what()));
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
       }
    }  // End of method 'FFTextStream::formattedGetLine()'
    
-}  // End of namespace gpstk
+}  // End of namespace gnsstk

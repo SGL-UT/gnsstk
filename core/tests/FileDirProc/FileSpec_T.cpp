@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -45,7 +45,7 @@
 #include <set>
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 class FileSpec_T
 {
@@ -1044,24 +1044,24 @@ testHasTimeField()
 
    try
    {
-      for (unsigned i = gpstk::FileSpec::unknown; i < gpstk::FileSpec::end; i++)
+      for (unsigned i = gnsstk::FileSpec::unknown; i < gnsstk::FileSpec::end; i++)
       {
             // Skip unknown and fixed.
-         if ((i == gpstk::FileSpec::unknown) || (i == gpstk::FileSpec::fixed))
+         if ((i == gnsstk::FileSpec::unknown) || (i == gnsstk::FileSpec::fixed))
             continue;
             // FileSpecType enums are expected to be "separated" into
             // two groups, the first group being the non-time fields
             // and the second group being nothing but time fields.  So
             // we expect hasTimeField to return true for all enums >=
             // firstTime.
-         gpstk::FileSpec::FileSpecType fst = (gpstk::FileSpec::FileSpecType)i;
+         gnsstk::FileSpec::FileSpecType fst = (gnsstk::FileSpec::FileSpecType)i;
          string specString = "Some-junk-%" +
-            gpstk::FileSpec::convertFileSpecType(fst);
-         gpstk::FileSpec fs(specString);
-         TUASSERTE(bool, i >= gpstk::FileSpec::firstTime, fs.hasTimeField());
+            gnsstk::FileSpec::convertFileSpecType(fst);
+         gnsstk::FileSpec fs(specString);
+         TUASSERTE(bool, i >= gnsstk::FileSpec::firstTime, fs.hasTimeField());
       }
    }
-   catch (gpstk::Exception& exc)
+   catch (gnsstk::Exception& exc)
    {
       cerr << exc << endl;
       TUFAIL("Unexpected exception");

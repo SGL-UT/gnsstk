@@ -23,8 +23,8 @@ script:
  - bash ./lint_test.sh
  - mkdir build
  - cd build
- - export gpstk=`pwd`/install
- - cmake -DPYTHON_INSTALL_PREFIX=$gpstk -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON ../
+ - export gnsstk=`pwd`/install
+ - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON ../
  - make all -j 2
  - ctest -j 2
 

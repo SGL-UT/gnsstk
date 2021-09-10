@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,8 +41,8 @@
  * Define the specification of a file.
  */
 
-#ifndef GPSTK_FILESPEC_HPP
-#define GPSTK_FILESPEC_HPP
+#ifndef GNSSTK_FILESPEC_HPP
+#define GNSSTK_FILESPEC_HPP
 
 #include <vector>
 #include <functional>
@@ -57,12 +57,12 @@ const char slash = '\\';
 const char slash = '/';
 #endif
 
-namespace gpstk
+namespace gnsstk
 {
       /// This exception is thrown when there is a problem with
       /// handling file specifications.
       /// @ingroup exceptiongroup
-   NEW_EXCEPTION_CLASS(FileSpecException, gpstk::Exception);
+   NEW_EXCEPTION_CLASS(FileSpecException, gnsstk::Exception);
 
       /// @ingroup FileDirProc
       //@{
@@ -202,7 +202,7 @@ namespace gpstk
           * most file types, all times are set to midnight of that day.
           * @throw FileSpecException when a time can't be formed
           */
-      virtual gpstk::CommonTime extractCommonTime(const std::string& filename)
+      virtual gnsstk::CommonTime extractCommonTime(const std::string& filename)
          const;
 
          /**
@@ -217,7 +217,7 @@ namespace gpstk
           * information into the FSTSMap, but it's not necessary.
           * @return the new filename.
           */
-      virtual std::string toString(const gpstk::CommonTime& dt,
+      virtual std::string toString(const gnsstk::CommonTime& dt,
                                    const FSTStringMap& fstsMap = FSTStringMap()) 
          const;
 
@@ -320,6 +320,6 @@ namespace gpstk
 
       //@}
 
-} // namespace gpstk
+} // namespace gnsstk
 
 #endif 

@@ -1,7 +1,7 @@
    // Wrap () operator of CNavMsgSort
-%extend gpstk::CNavMsgSort
+%extend gnsstk::CNavMsgSort
 {
-   bool __call__(const gpstk::CNavFilterData* l, const gpstk::CNavFilterData* r)
+   bool __call__(const gnsstk::CNavFilterData* l, const gnsstk::CNavFilterData* r)
    {
       return (*($self))(l, r);
    }

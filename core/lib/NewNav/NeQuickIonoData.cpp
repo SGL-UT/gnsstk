@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -115,7 +115,7 @@ enum NeQuickIonoDataConsts
 };
 
 
-namespace gpstk
+namespace gnsstk
 {
    NeQuickIonoData ::
    NeQuickIonoData()
@@ -377,7 +377,7 @@ namespace gpstk
             seas = 1;                                                   //eq.32
             break;
          default:
-            GPSTK_THROW(Exception("Invalid month"));
+            GNSSTK_THROW(Exception("Invalid month"));
             break;
       }
       double phi = pos.geodeticLatitude();
@@ -462,11 +462,11 @@ namespace gpstk
    solarDeclination(const CivilTime& when)
    {
       DEBUGTRACE_FUNCTION();
-      gpstk::BasicTimeSystemConverter btsc;
+      gnsstk::BasicTimeSystemConverter btsc;
       CivilTime whenUTC(when);
-      if (whenUTC.getTimeSystem() != gpstk::TimeSystem::UTC)
+      if (whenUTC.getTimeSystem() != gnsstk::TimeSystem::UTC)
       {
-         GPSTK_ASSERT(whenUTC.changeTimeSystem(gpstk::TimeSystem::UTC,&btsc));
+         GNSSTK_ASSERT(whenUTC.changeTimeSystem(gnsstk::TimeSystem::UTC,&btsc));
       }
          // compute day of year at the middle of the month
       double dy = 30.5 * whenUTC.month - 15;                            //eq.20
@@ -670,7 +670,7 @@ namespace gpstk
             ka = -7.77 + 0.097*ka*ka + 0.153*fNmF2;                     //eq.100
             break;
          default:
-            GPSTK_THROW(Exception("Invalid month"));
+            GNSSTK_THROW(Exception("Invalid month"));
             break;
       }
       double kb = neExp(ka-2);

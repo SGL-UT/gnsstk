@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -45,7 +45,7 @@
 ///            Analysis of Experiments," Wiley, New York, 1989.
  
 //------------------------------------------------------------------------------------
-// GPSTk includes
+// GNSSTk includes
 #include "Exception.hpp"
 #include "StringUtils.hpp"
 #include "Matrix.hpp"
@@ -54,13 +54,13 @@
 
 //------------------------------------------------------------------------------------
 // moved to RobustStats.hpp as macros
-//const double gpstk::Robust::TuningT=1.5;      // or 1.345;       // or 1.5
-//const double gpstk::Robust::TuningA=0.778;    // or 0.67;        // or 0.778
-//const double gpstk::Robust::TuningE=0.6745;
+//const double gnsstk::Robust::TuningT=1.5;      // or 1.345;       // or 1.5
+//const double gnsstk::Robust::TuningA=0.778;    // or 0.67;        // or 0.778
+//const double gnsstk::Robust::TuningE=0.6745;
 
 //------------------------------------------------------------------------------------
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 using namespace StringUtils;
 
 //------------------------------------------------------------------------------------
@@ -76,14 +76,14 @@ void Robust::StemLeafPlot(std::ostream& os, double *xd, long nd, std::string msg
    double x,scale;
    string buf;
 
-   if(!xd || nd < 2) GPSTK_THROW(Exception("Invalid input"));
+   if(!xd || nd < 2) GNSSTK_THROW(Exception("Invalid input"));
 
       // find range 
    double range = xd[nd-1] - xd[0];                   // max - min
    if(range < 0.0)
-      GPSTK_THROW(Exception("Array is not sorted"));
+      GNSSTK_THROW(Exception("Array is not sorted"));
    if(range == 0.0)
-      range = xd[0]; //GPSTK_THROW(Exception("Array has zero range"));
+      range = xd[0]; //GNSSTK_THROW(Exception("Array has zero range"));
 
       // find scale
    scale = 0.0;
@@ -260,7 +260,7 @@ void Robust::Quantiles(double *xd, long nd)
 {
    if(!xd || nd<2) {
       Exception e("Invalid input");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 
    double f;
@@ -279,7 +279,7 @@ int Robust::RobustPolyFit(double *xd, const double *td, int nd,
    try {
       if(!xd || !td || !c || nd < 2) {
          Exception e("Invalid input");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       const int maxiter=50;
@@ -392,12 +392,12 @@ int Robust::RobustPolyFit(double *xd, const double *td, int nd,
 #undef SEQUENTIAL
       return 0;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
    catch(std::exception& e) {
       Exception E("std except: "+string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
-   catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+   catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
    // Anderson-Darling test statistic, which is a variant of the Kolmogorov-Smirnoff
@@ -409,12 +409,12 @@ int Robust::RobustPolyFit(double *xd, const double *td, int nd,
    // @param stddev     standard deviation of the data.
    // @param save_flag  if true (default) array xd will NOT be changed, otherwise
    //                      it will be sorted.
-double gpstk::ADtest(double *xd, const int nd,
+double gnsstk::ADtest(double *xd, const int nd,
                      double mean, double stddev, bool save_flag)
 {
    if(!xd || nd < 2) {
       Exception e("Invalid input");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 
    try {
@@ -425,7 +425,7 @@ double gpstk::ADtest(double *xd, const int nd,
          save = new double[nd];
          if(!save) {
             Exception e("Could not allocate temporary array");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          for(i=0; i<nd; i++) save[i]=xd[i];
       }
@@ -451,12 +451,12 @@ double gpstk::ADtest(double *xd, const int nd,
 
       return AD;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
    catch(std::exception& e) {
       Exception E("std except: "+string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
-   catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+   catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,16 +41,16 @@
  * Encapsulate BINEX file data, including I/O
  */
 
-#ifndef GPSTK_BINEXDATA_HPP
-#define GPSTK_BINEXDATA_HPP
+#ifndef GNSSTK_BINEXDATA_HPP
+#define GNSSTK_BINEXDATA_HPP
 
-#include "gpstkplatform.h"
+#include "gnsstkplatform.h"
 
 #include "BinUtils.hpp"
 #include "FFData.hpp"
 #include "FFStream.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
@@ -746,7 +746,7 @@ namespace gpstk
             std::ostringstream errStrm;
             errStrm << "Invalid data size: " << size;
             InvalidParameter ip(errStrm.str() );
-            GPSTK_THROW(ip);
+            GNSSTK_THROW(ip);
          }
          bool   littleEndian  = ( (syncByte & eBigEndian) == 0) ? true : false;
          msg.replace(offset, size, reinterpret_cast<const char*>(&data), size);
@@ -843,14 +843,14 @@ namespace gpstk
             std::ostringstream errStrm;
             errStrm << "Data size invalid: " << size;
             InvalidParameter ip(errStrm.str() );
-            GPSTK_THROW(ip);
+            GNSSTK_THROW(ip);
          }
          if (offset + size > msg.size() )
          {
             std::ostringstream errStrm;
             errStrm << "Message buffer offset invalid: " << offset;
             InvalidParameter ip(errStrm.str() );
-            GPSTK_THROW(ip);
+            GNSSTK_THROW(ip);
          }
          bool littleEndian  = ( (syncByte & eBigEndian) == 0) ? true : false;
          if (littleEndian)
@@ -986,7 +986,7 @@ namespace gpstk
 
       //@}
 
-} // namespace gpstk
+} // namespace gnsstk
 
 
-#endif // GPSTK_BINEXDATA_HPP
+#endif // GNSSTK_BINEXDATA_HPP

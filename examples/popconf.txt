@@ -76,8 +76,8 @@ useC1 = TRUE
 
 rinexObsFile, Rinex observation file = acor1480.08o
 
-# Nominal positions were found using GPSTk's 'example9' PPP processing
-nominalPosition, ECEF-GPSTk = 4594489.6577  -678367.6943  4357066.1512, meters
+# Nominal positions were found using GNSSTk's 'example9' PPP processing
+nominalPosition, ECEF-GNSSTk = 4594489.6577  -678367.6943  4357066.1512, meters
 
 antennaModel   = LEIAT504        LEIS  # Antenna model
 
@@ -96,7 +96,7 @@ refStation = FALSE
 
 rinexObsFile, Rinex observation file = madr1480.08o
 
-nominalPosition, ECEF-GPSTk = 4849202.332  -360328.9051  4114913.2288, meters
+nominalPosition, ECEF-GNSSTk = 4849202.332  -360328.9051  4114913.2288, meters
 
 antennaModel   = AOAD/M_T        NONE  # Antenna model
 
@@ -115,7 +115,7 @@ refStation = FALSE
 
 rinexObsFile, Rinex observation file = scoa1480.08o
 
-nominalPosition, ECEF-GPSTk = 4639940.6168  -136225.1643  4359552.2808, meters
+nominalPosition, ECEF-GNSSTk = 4639940.6168  -136225.1643  4359552.2808, meters
 
 antennaModel   = LEIAT504        NONE  # Antenna model
 
@@ -132,7 +132,7 @@ useC1 = TRUE
 
 rinexObsFile, Rinex observation file = sfer1480.08o
 
-nominalPosition, ECEF-GPSTk = 5105518.9543  -555145.8212  3769803.4005, meters
+nominalPosition, ECEF-GNSSTk = 5105518.9543  -555145.8212  3769803.4005, meters
 
 antennaModel   = TRM29659.00     NONE  # Antenna model
 
@@ -149,7 +149,7 @@ useC1 = TRUE
 
 rinexObsFile, Rinex observation file = tlse1480.08o
 
-nominalPosition, ECEF-GPSTk = 4627851.7782  119640.0763  4372993.5686, meters
+nominalPosition, ECEF-GNSSTk = 4627851.7782  119640.0763  4372993.5686, meters
 
 antennaModel   = TRM29659.00     NONE  # Antenna model
 

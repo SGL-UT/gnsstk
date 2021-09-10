@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -50,11 +50,11 @@
 #include "RinexMetHeader.hpp"
 #include "RinexMetStream.hpp"
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
 
-namespace gpstk
+namespace gnsstk
 {
    const int RinexMetHeader::maxObsPerLine = 9;
 
@@ -106,7 +106,7 @@ namespace gpstk
       {
          FFStreamError err("Unknown RINEX version: " + asString(version,2));
          err.addText("Make sure to set the version correctly.");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       if ((valid & allValid) != allValid)
@@ -115,7 +115,7 @@ namespace gpstk
          errstr += bitString(allValid & ~valid);
          FFStreamError err(errstr);
          err.addText("Make sure you set all header valid bits for all of the available data.");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       string line;
@@ -280,7 +280,7 @@ namespace gpstk
          if (line.length()<60 || line.length()>81)
          {
             FFStreamError e("Bad line length");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          string thisLabel = strip(line.substr(60,20));
@@ -294,14 +294,14 @@ namespace gpstk
             {
                FFStreamError e("Unknown or unsupported RINEX version " + 
                                asString(version));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             version = asDouble(verstr);
             fileType = strip(line.substr(20,20));
             if ( (fileType[0] != 'M') && (fileType[0] != 'm'))
             {
                FFStreamError e("This isn't a Rinex Met file");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             valid |= validVersion;
          }
@@ -332,14 +332,14 @@ namespace gpstk
                // read the first line
             if (!(valid & validObsType))
             {
-               numObs = gpstk::StringUtils::asInt(line.substr(0,6));
+               numObs = gnsstk::StringUtils::asInt(line.substr(0,6));
                for (int i = 0; (i < numObs) && (i < maxObsPerLine); i++)
                {
                   int currPos = i * 6 + 6;
                   if (line.substr(currPos, 4) != string(4, ' '))
                   {
                      FFStreamError e("Format error for line type " + stringObsType);
-                     GPSTK_THROW(e);
+                     GNSSTK_THROW(e);
                   }
                   obsTypeList.push_back(convertObsType(line.substr(currPos + 4, 2)));
                }
@@ -357,7 +357,7 @@ namespace gpstk
                   if (line.substr(currPos, 4) != string(4,' '))
                   {
                      FFStreamError e("Format error for line type " + stringObsType);
-                     GPSTK_THROW(e);
+                     GNSSTK_THROW(e);
                   }
                   obsTypeList.push_back(convertObsType(line.substr(currPos + 4, 2)));
                }
@@ -368,7 +368,7 @@ namespace gpstk
             if (line.substr(40,6) != string(6, ' '))
             {
                FFStreamError e("Format error for line type " + stringSensorType);
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             sensorType st;
             st.model = strip(line.substr(0,20));
@@ -415,7 +415,7 @@ namespace gpstk
          else
          {
             FFStreamError e("Unknown header label " + thisLabel);
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
 
@@ -428,7 +428,7 @@ namespace gpstk
       {
          FFStreamError e("Unknown or unsupported RINEX version " + 
                          asString(version));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       if ( (allValid & valid) != allValid)
@@ -436,7 +436,7 @@ namespace gpstk
          string errstr("Incomplete or invalid header: missing: ");
          errstr += bitString(allValid & ~valid);
          FFStreamError err(errstr);
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       strm.header = *this;
@@ -476,7 +476,7 @@ namespace gpstk
       else
       {
          FFStreamError e("Bad obs type:" + oneObs);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -495,7 +495,7 @@ namespace gpstk
       else
       {
          FFStreamError e("Bad obs type:" + asString(oneObs));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -576,7 +576,7 @@ namespace gpstk
    } // bool RinexMetHeader::compare
 
    bool RinexMetHeader::sensorType::
-   operator==(const gpstk::RinexMetHeader::sensorType& r)
+   operator==(const gnsstk::RinexMetHeader::sensorType& r)
       const
    {
       return ((obsType == r.obsType) &&
@@ -586,7 +586,7 @@ namespace gpstk
    }
 
    bool RinexMetHeader::sensorType::
-   operator<(const gpstk::RinexMetHeader::sensorType& r)
+   operator<(const gnsstk::RinexMetHeader::sensorType& r)
       const
    {
       if (obsType < r.obsType) return true;
@@ -601,7 +601,7 @@ namespace gpstk
 
 
    bool RinexMetHeader::sensorPosType::
-   operator==(const gpstk::RinexMetHeader::sensorPosType& r)
+   operator==(const gnsstk::RinexMetHeader::sensorPosType& r)
       const
    {
       return ((obsType == r.obsType) &&
@@ -611,7 +611,7 @@ namespace gpstk
 
       // pretty arbitrary sorting order, just need it to be consistent.
    bool RinexMetHeader::sensorPosType::
-   operator<(const gpstk::RinexMetHeader::sensorPosType& r)
+   operator<(const gnsstk::RinexMetHeader::sensorPosType& r)
       const
    {
       if (obsType < r.obsType) return true;

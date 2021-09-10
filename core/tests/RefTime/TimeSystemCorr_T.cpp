@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -63,7 +63,7 @@ public:
 
    unsigned correctionTest();
 
-   gpstk::TimeSystemCorrection buildObject(const std::string& str);
+   gnsstk::TimeSystemCorrection buildObject(const std::string& str);
 
 private:
    double eps;
@@ -71,7 +71,7 @@ private:
    double A0;
    double A1;
    double deltaT;
-   gpstk::CommonTime tscRefTime; 
+   gnsstk::CommonTime tscRefTime; 
 };
 
 
@@ -80,18 +80,18 @@ initializationTest()
 {
    TUDEF("TimeSystemCorr", "Constructor");
 
-   gpstk::TimeSystemCorrection cUnknown;
-   TUASSERTE(gpstk::TimeSystemCorrection::CorrType,
-             gpstk::TimeSystemCorrection::Unknown, cUnknown.type);
+   gnsstk::TimeSystemCorrection cUnknown;
+   TUASSERTE(gnsstk::TimeSystemCorrection::CorrType,
+             gnsstk::TimeSystemCorrection::Unknown, cUnknown.type);
 
-   gpstk::TimeSystemCorrection cIRGP("IRGP");
-   TUASSERTE(gpstk::TimeSystemCorrection::CorrType,
-             gpstk::TimeSystemCorrection::IRGP, cIRGP.type);
-   TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::IRN, cIRGP.frTS);
-   TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::GPS, cIRGP.toTS);
+   gnsstk::TimeSystemCorrection cIRGP("IRGP");
+   TUASSERTE(gnsstk::TimeSystemCorrection::CorrType,
+             gnsstk::TimeSystemCorrection::IRGP, cIRGP.type);
+   TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::IRN, cIRGP.frTS);
+   TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GPS, cIRGP.toTS);
    TUASSERTFE(0.0, cIRGP.A0);
    TUASSERTFE(0.0, cIRGP.A1);
-   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime::BEGINNING_OF_TIME,
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME,
              cIRGP.refTime);
    TUASSERTE(int, 0, cIRGP.geoUTCid);
 
@@ -105,19 +105,19 @@ operatorTest()
    TUDEF("TimeSystemCorr", "operator<");
 
       // Build a complete set of correction objects
-   gpstk::TimeSystemCorrection cUnknown;
-   gpstk::TimeSystemCorrection cGPUT("GPUT");
-   gpstk::TimeSystemCorrection cGAUT("GAUT");
-   gpstk::TimeSystemCorrection cSBUT("SBUT");
-   gpstk::TimeSystemCorrection cGLUT("GLUT");
-   gpstk::TimeSystemCorrection cGPGA("GPGA");
-   gpstk::TimeSystemCorrection cGLGP("GLGP");
-   gpstk::TimeSystemCorrection cQZGP("QZGP");
-   gpstk::TimeSystemCorrection cQZUT("QZUT");
-   gpstk::TimeSystemCorrection cBDUT("BDUT");
-   gpstk::TimeSystemCorrection cBDGP("BDGP");
-   gpstk::TimeSystemCorrection cIRUT("IRUT");
-   gpstk::TimeSystemCorrection cIRGP("IRGP");
+   gnsstk::TimeSystemCorrection cUnknown;
+   gnsstk::TimeSystemCorrection cGPUT("GPUT");
+   gnsstk::TimeSystemCorrection cGAUT("GAUT");
+   gnsstk::TimeSystemCorrection cSBUT("SBUT");
+   gnsstk::TimeSystemCorrection cGLUT("GLUT");
+   gnsstk::TimeSystemCorrection cGPGA("GPGA");
+   gnsstk::TimeSystemCorrection cGLGP("GLGP");
+   gnsstk::TimeSystemCorrection cQZGP("QZGP");
+   gnsstk::TimeSystemCorrection cQZUT("QZUT");
+   gnsstk::TimeSystemCorrection cBDUT("BDUT");
+   gnsstk::TimeSystemCorrection cBDGP("BDGP");
+   gnsstk::TimeSystemCorrection cIRUT("IRUT");
+   gnsstk::TimeSystemCorrection cIRGP("IRGP");
 
    TUCSM("operator==");
    TUASSERT( !(cUnknown==cGPUT));
@@ -163,55 +163,55 @@ correctionTest()
    A0 = 1.0e-7;
    A1 = 1.0e-12;
    deltaT = -10000;    // 10,000 sec is a nice round number for prpogation
-   tscRefTime = gpstk::CivilTime(2016, 1, 3, 0, 0, 0.0); 
+   tscRefTime = gnsstk::CivilTime(2016, 1, 3, 0, 0, 0.0); 
 
-   gpstk::CommonTime timeOfInterest = tscRefTime + deltaT;
+   gnsstk::CommonTime timeOfInterest = tscRefTime + deltaT;
    double forwardResult = A0 + A1 * deltaT; 
    forwardResult = forwardResult * -1.0;   // This is a CORRECTION, not an error
    double corrVal = 0.0; 
 
-   gpstk::TimeSystemCorrection tscTest = buildObject("GPUT");
-   timeOfInterest.setTimeSystem(gpstk::TimeSystem::GPS);
+   gnsstk::TimeSystemCorrection tscTest = buildObject("GPUT");
+   timeOfInterest.setTimeSystem(gnsstk::TimeSystem::GPS);
    corrVal = tscTest.Correction(timeOfInterest);
    TUASSERTFEPS(forwardResult, corrVal, eps);
 
-   timeOfInterest.setTimeSystem(gpstk::TimeSystem::UTC);
+   timeOfInterest.setTimeSystem(gnsstk::TimeSystem::UTC);
    corrVal = tscTest.Correction(timeOfInterest);
    TUASSERTFEPS(-forwardResult, corrVal, eps);
 
    tscTest = buildObject("GAUT");
-   timeOfInterest.setTimeSystem(gpstk::TimeSystem::GAL);
+   timeOfInterest.setTimeSystem(gnsstk::TimeSystem::GAL);
    corrVal = tscTest.Correction(timeOfInterest);
    TUASSERTFEPS(forwardResult, corrVal, eps);
 
-   timeOfInterest.setTimeSystem(gpstk::TimeSystem::UTC);
+   timeOfInterest.setTimeSystem(gnsstk::TimeSystem::UTC);
    corrVal = tscTest.Correction(timeOfInterest);
    TUASSERTFEPS(-forwardResult, corrVal, eps);
 
    tscTest = buildObject("QZUT");
-   timeOfInterest.setTimeSystem(gpstk::TimeSystem::QZS);
+   timeOfInterest.setTimeSystem(gnsstk::TimeSystem::QZS);
    corrVal = tscTest.Correction(timeOfInterest);
    TUASSERTFEPS(forwardResult, corrVal, eps);
 
-   timeOfInterest.setTimeSystem(gpstk::TimeSystem::UTC);
+   timeOfInterest.setTimeSystem(gnsstk::TimeSystem::UTC);
    corrVal = tscTest.Correction(timeOfInterest);
    TUASSERTFEPS(-forwardResult, corrVal, eps);
 
    tscTest = buildObject("BDUT");
-   timeOfInterest.setTimeSystem(gpstk::TimeSystem::BDT);
+   timeOfInterest.setTimeSystem(gnsstk::TimeSystem::BDT);
    corrVal = tscTest.Correction(timeOfInterest);
    TUASSERTFEPS(forwardResult, corrVal, eps);
 
-   timeOfInterest.setTimeSystem(gpstk::TimeSystem::UTC);
+   timeOfInterest.setTimeSystem(gnsstk::TimeSystem::UTC);
    corrVal = tscTest.Correction(timeOfInterest);
    TUASSERTFEPS(-forwardResult, corrVal, eps);
 
    tscTest = buildObject("IRUT");
-   timeOfInterest.setTimeSystem(gpstk::TimeSystem::IRN);
+   timeOfInterest.setTimeSystem(gnsstk::TimeSystem::IRN);
    corrVal = tscTest.Correction(timeOfInterest);
    TUASSERTFEPS(forwardResult, corrVal, eps);
 
-   timeOfInterest.setTimeSystem(gpstk::TimeSystem::UTC);
+   timeOfInterest.setTimeSystem(gnsstk::TimeSystem::UTC);
    corrVal = tscTest.Correction(timeOfInterest);
    TUASSERTFEPS(-forwardResult, corrVal, eps);
 
@@ -220,21 +220,21 @@ correctionTest()
    forwardResult = A0 + A1 * deltaT; 
    forwardResult = forwardResult * -1.0;   // This is a CORRECTION, not an error
    tscTest = buildObject("GLUT");
-   timeOfInterest.setTimeSystem(gpstk::TimeSystem::GLO);
+   timeOfInterest.setTimeSystem(gnsstk::TimeSystem::GLO);
    corrVal = tscTest.Correction(timeOfInterest);
    TUASSERTFEPS(forwardResult, corrVal, eps);
 
-   timeOfInterest.setTimeSystem(gpstk::TimeSystem::UTC);
+   timeOfInterest.setTimeSystem(gnsstk::TimeSystem::UTC);
    corrVal = tscTest.Correction(timeOfInterest);
    TUASSERTFEPS(-forwardResult, corrVal, eps);
 
    TURETURN();
 }
 
-gpstk::TimeSystemCorrection TimeSystemCorr_T ::
+gnsstk::TimeSystemCorrection TimeSystemCorr_T ::
 buildObject(const std::string& str)
 {
-   gpstk::TimeSystemCorrection tsc(str);
+   gnsstk::TimeSystemCorrection tsc(str);
    tsc.refTime = tscRefTime;
    tsc.A0 = A0;
    tsc.A1 = A1; 

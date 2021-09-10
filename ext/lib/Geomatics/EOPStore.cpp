@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -37,7 +37,7 @@
 //==============================================================================
 
 /// @file EOPStore.cpp
-/// class gpstk::EOPStore encapsulates input, storage and retreval of
+/// class gnsstk::EOPStore encapsulates input, storage and retreval of
 /// Earth Orientation Parameters (EOPs - cf. class EarthOrientation).
 
 //------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@
 //------------------------------------------------------------------------------------
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    // Add to the store directly
    void EOPStore::addEOP(int mjd, EarthOrientation& eop)
@@ -70,7 +70,7 @@ namespace gpstk
       try {
          eo = eopp.computeEOP(mjd);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
 
       addEOP(mjd,eo);
 
@@ -91,7 +91,7 @@ namespace gpstk
       catch(FileMissingException& fme)
       {
          if(StringUtils::matches(fme.getText(),string("wrong format")).empty()) {
-            GPSTK_RETHROW(fme);
+            GNSSTK_RETHROW(fme);
          }
 
          // try other format
@@ -100,7 +100,7 @@ namespace gpstk
          }
          catch(FileMissingException& fme)
          {
-            GPSTK_RETHROW(fme);
+            GNSSTK_RETHROW(fme);
          }
       }
    }
@@ -119,7 +119,7 @@ namespace gpstk
       }
       catch(FileMissingException& fme)
       {
-         GPSTK_RETHROW(fme);
+         GNSSTK_RETHROW(fme);
       }
 
       // pull out the beginning of the valid time range
@@ -146,7 +146,7 @@ namespace gpstk
       ifstream inpf(filename.c_str());
       if(!inpf) {
          FileMissingException fme("Could not open IERS file " + filename);
-         GPSTK_THROW(fme);
+         GNSSTK_THROW(fme);
       }
 
       ok = true;
@@ -174,7 +174,7 @@ namespace gpstk
       if(!ok) {
          FileMissingException fme("IERS File " + filename
                                    + " is corrupted or wrong format");
-         GPSTK_THROW(fme);
+         GNSSTK_THROW(fme);
       }
    }
 
@@ -265,13 +265,13 @@ namespace gpstk
    {
       if(mapMJD_EOP.size() < 4) {
          InvalidRequest ir("Store is too small for interpolation");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       // Stored data uses UTC times
       //if(t.getTimeSystem() == TimeSystem::Unknown) {
       //   InvalidRequest ir("Time system is unknown");
-      //   GPSTK_THROW(ir);
+      //   GNSSTK_THROW(ir);
       //}
 
       // get MJD(UTC)
@@ -283,11 +283,11 @@ namespace gpstk
       (hiit = it)++;
       if(lowit == mapMJD_EOP.end() || hiit == mapMJD_EOP.end()) {
          InvalidRequest ir("Requested time lies outside the store");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
       if(mapMJD_EOP.size() < 4) {
          InvalidRequest ir("Store contains less than 4 entries");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       // low and hi must span 4 entries and bracket t
@@ -328,4 +328,4 @@ namespace gpstk
       return eo;
    }
 
-} // end namespace gpstk
+} // end namespace gnsstk

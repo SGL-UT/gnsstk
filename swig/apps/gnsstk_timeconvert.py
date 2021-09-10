@@ -2,20 +2,20 @@
 """
 ==============================================================================
 
-  This file is part of GPSTk, the GPS Toolkit.
+  This file is part of GNSSTk, the GNSS Toolkit.
 
-  The GPSTk is free software; you can redistribute it and/or modify
+  The GNSSTk is free software; you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 3.0 of the License, or
   any later version.
 
-  The GPSTk is distributed in the hope that it will be useful,
+  The GNSSTk is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU Lesser General Public License for more details.
 
   You should have received a copy of the GNU Lesser General Public
-  License along with GPSTk; if not, write to the Free Software Foundation,
+  License along with GNSSTk; if not, write to the Free Software Foundation,
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
   
   This software was developed by Applied Research Laboratories at the
@@ -40,7 +40,7 @@
 """
 
 import argparse
-import gpstk
+import gnsstk
 import sys
 
 # default args to argv are left in so the script can be run without starting
@@ -49,7 +49,7 @@ def main(args=sys.argv[1:]):
     program_description = ('Converts from a given input time specification to '
                            'other time formats. Include the quotation marks. '
                            'All year values are four digit years. '
-                           'Example: $ python gpstk_timeconvert.py -f "158 200" ')
+                           'Example: $ python gnsstk_timeconvert.py -f "158 200" ')
     parser = argparse.ArgumentParser(description=program_description)
 
     group = parser.add_mutually_exclusive_group()
@@ -97,18 +97,18 @@ def main(args=sys.argv[1:]):
         input_time = getattr(args, key)  # args.ansi, args.civil, etc.
         if input_time is not None:
             try:
-                ct = gpstk.scanTime(input_time, formats[key])
+                ct = gnsstk.scanTime(input_time, formats[key])
                 time_found = True
-            except gpstk.InvalidRequest:
-                raise gpstk.InvalidRequest('Input could not be parsed.'
+            except gnsstk.InvalidRequest:
+                raise gnsstk.InvalidRequest('Input could not be parsed.'
                      '\nCheck the formatting and ensure that the input is both valid and in quotes.'
                      '\nAlso check if the time is too early/late for these formats.')
 
 
     if not time_found:
-        ct = gpstk.SystemTime().toCommonTime()
+        ct = gnsstk.SystemTime().toCommonTime()
 
-    ct.setTimeSystem(gpstk.TimeSystem('GPS'))
+    ct.setTimeSystem(gnsstk.TimeSystem('GPS'))
 
     if args.add_offset is not None:
         for t in args.add_offset:
@@ -118,7 +118,7 @@ def main(args=sys.argv[1:]):
             ct.addSeconds(-float(t))
 
     if args.output_format is not None:
-        print gpstk.printTime(ct, args.output_format)
+        print gnsstk.printTime(ct, args.output_format)
     else:
         def left_align(str):
             spacing = ' ' * 8
@@ -127,25 +127,25 @@ def main(args=sys.argv[1:]):
         print ''  # newline
 
         print left_align('Month/Day/Year H:M:S'),
-        print gpstk.CivilTime(ct)
+        print gnsstk.CivilTime(ct)
 
         print left_align('Modified Julian Date'),
-        print gpstk.MJD(ct)
+        print gnsstk.MJD(ct)
 
         print left_align('GPSweek DayOfWeek SecOfWeek'),
-        print gpstk.GPSWeekSecond(ct).printf('%G %w % 13.6g')
+        print gnsstk.GPSWeekSecond(ct).printf('%G %w % 13.6g')
 
         print left_align('FullGPSweek Zcount'),
-        print gpstk.GPSWeekZcount(ct).printf('%F % 6z')
+        print gnsstk.GPSWeekZcount(ct).printf('%F % 6z')
 
         print left_align('Year DayOfYear SecondOfDay'),
-        print gpstk.YDSTime(ct).printf('%Y %03j % 12.6s')
+        print gnsstk.YDSTime(ct).printf('%Y %03j % 12.6s')
 
         print left_align('Unix: Second Microsecond'),
-        print gpstk.UnixTime(ct).printf('%U % 6u')
+        print gnsstk.UnixTime(ct).printf('%U % 6u')
 
         print left_align('Zcount: 29-bit (32-bit)'),
-        print gpstk.GPSWeekZcount(ct).printf('%c (%C)')
+        print gnsstk.GPSWeekZcount(ct).printf('%c (%C)')
 
         print ''  # newline
 

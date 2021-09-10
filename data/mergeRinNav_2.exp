@@ -1,5 +1,5 @@
       2.10          NAVIGATION                              RINEX VERSION / TYPE
-mergeRinNav         gpstk               01/08/2019 19:29:01 PGM / RUN BY / DATE
+mergeRinNav         gnsstk              01/08/2019 19:29:01 PGM / RUN BY / DATE
      .7451D-08   .7115D-08  -.6039D-08  -.3845D-08          ION ALPHA
      .9011D+05   .3651D+05  -.6640D+04  -.1691D+05          ION BETA
     -.931322574615D-09 -.355271367880D-14   233472     1854 DELTA-UTC: A0,A1,T,W

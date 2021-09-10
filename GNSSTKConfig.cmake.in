@@ -1,0 +1,33 @@
+# - GNSSTk: GNSS data processing library and applications by SGL @ ARL:UT.
+#The primary goals of the GNSSTk project are to:
+# * provide applications for use by the GNSS and satellite navigation community.
+# * provide a core library to facilitate the development of GNSS applications.
+#
+#==============================================================================
+# The source code provided by the GNSSTk is distributed under the GNU LGPL, Version 3.
+#
+# * This license gives all users the right to use and redistribute the code.
+# * Users of the GNSSTk are not required to open their source, according to the LGPL.
+# * This makes the GNSSTk a practical choice for commercial projects.
+# * Full text copies of the GPL (COPYING.txt) and the LGPL (COPYING.LESSER.txt) are included with the GNSSTk distribution package.
+#
+# For more information about the GPL or LGP, please refer to the following:
+#
+# * http://www.gnu.org/copyleft/lesser.html
+# * http://www.gnu.org/licenses/gpl-howto.html
+#==============================================================================
+
+set( GNSSTK_FOUND TRUE )
+
+@PACKAGE_INIT@
+
+set( GNSSTK_INCLUDE_DIRS "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@" "${PACKAGE_PREFIX_DIR}/@GNSSTK_INCLUDE_PARENT@" )
+set( GNSSTK_BINDIR "@PACKAGE_CMAKE_INSTALL_BINDIR@" )
+set( GNSSTK_LIBRARY_DIRS "@PACKAGE_CMAKE_INSTALL_LIBDIR@" )
+set( GNSSTK_RUNTIME_LIBRARY_DIRS "@PACKAGE_CMAKE_INSTALL_LIBDIR@" )
+set( GNSSTK_ROOT_DIR "@PACKAGE_CMAKE_INSTALL_PREFIX@" )
+set( GNSSTK_PYTHON_DIR "${PACKAGE_PREFIX_DIR}/lib/python2.7/site-packages")
+
+include("@PACKAGE_INSTALL_CONFIG_DIR@/@EXPORT_TARGETS_FILENAME@.cmake")
+
+message(STATUS "GNSSTk found at ${GNSSTK_ROOT_DIR}")

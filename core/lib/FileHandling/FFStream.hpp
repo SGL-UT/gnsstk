@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -42,8 +42,8 @@
  * operators ('<<' & '>>')
  */
 
-#ifndef GPSTK_FFSTREAM_HPP
-#define GPSTK_FFSTREAM_HPP
+#ifndef GNSSTK_FFSTREAM_HPP
+#define GNSSTK_FFSTREAM_HPP
 
 #include <iostream>
 #include <fstream>
@@ -54,7 +54,7 @@
 #include "FFData.hpp"
 #include "StringUtils.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /** @defgroup FileHandling Formatted File I/O
        *
@@ -64,7 +64,7 @@ namespace gpstk
 
       /// This gets thrown if a valid EOF occurs on formattedGetLine.
       /// @ingroup exceptionclass
-   NEW_EXCEPTION_CLASS(EndOfFile, gpstk::FFStreamError);
+   NEW_EXCEPTION_CLASS(EndOfFile, gnsstk::FFStreamError);
 
       /// @ingroup FileHandling
       //@{
@@ -75,8 +75,8 @@ namespace gpstk
        * operators (such as '<<' & '>>' ).
        *
        * As a special design consideration,
-       * all exceptions thrown are based on gpstk::Exception - all
-       * std::exception throws are rethrown as gpstk::Exception.
+       * all exceptions thrown are based on gnsstk::Exception - all
+       * std::exception throws are rethrown as gnsstk::Exception.
        * Furthermore, exceptions will not be thrown unless exceptions
        * are set to be thrown:
        * @code
@@ -89,7 +89,7 @@ namespace gpstk
        * \c ios::fail and will not read any more.  Exceptions for this
        * class store the record number of the file for when the exception
        * occurred as well as the file name and any detailed information
-       * about the error.  For gpstk::FFTextStream, the line number
+       * about the error.  For gnsstk::FFTextStream, the line number
        * of the file where the error was found is also recorded, allowing
        * for easy location of file problems.
        *
@@ -218,9 +218,9 @@ namespace gpstk
    {
       if (exceptions() & std::fstream::failbit)
       {
-         GPSTK_THROW(mostRecentException);
+         GNSSTK_THROW(mostRecentException);
       }
    }
 
-}  // End of namespace gpstk
-#endif   // GPSTK_FFSTREAM_HPP
+}  // End of namespace gnsstk
+#endif   // GNSSTK_FFSTREAM_HPP

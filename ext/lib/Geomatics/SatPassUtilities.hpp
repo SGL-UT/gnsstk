@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -39,8 +39,8 @@
 /// @file SatPassUtilities.hpp
 /// Various utilities using SatPass
 
-#ifndef GPSTK_SATELLITE_PASS_UTILS_INCLUDE
-#define GPSTK_SATELLITE_PASS_UTILS_INCLUDE
+#ifndef GNSSTK_SATELLITE_PASS_UTILS_INCLUDE
+#define GNSSTK_SATELLITE_PASS_UTILS_INCLUDE
 
 #include "SatPassIterator.hpp"
 
@@ -50,7 +50,7 @@
 #include "msecHandler.hpp"
 #include "RinexSatID.hpp"
 
-namespace gpstk {
+namespace gnsstk {
 
 // -------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ namespace gpstk {
 /// @param endTime   reject data after this time (END_OF TIME)
 /// @return -1 if the filenames list is empty, otherwise return the number of
 ///                files successfully read (may be less than the number input).
-/// @throw gpstk::Exception if there are exceptions while reading, if the data
+/// @throw gnsstk::Exception if there are exceptions while reading, if the data
 ///              in the file is out of time order.
 int SatPassFromRinexFiles(
             std::vector<std::string>& filenames,
@@ -86,8 +86,8 @@ int SatPassFromRinexFiles(
             std::vector<SatPass>& SPList,
             std::vector<RinexSatID> exSats=std::vector<RinexSatID>(),
             bool lenient=true,
-            gpstk::Epoch beginTime=gpstk::CommonTime::BEGINNING_OF_TIME,
-            gpstk::Epoch endTime=gpstk::CommonTime::END_OF_TIME);
+            gnsstk::Epoch beginTime=gnsstk::CommonTime::BEGINNING_OF_TIME,
+            gnsstk::Epoch endTime=gnsstk::CommonTime::END_OF_TIME);
 
 // -------------------------------------------------------------------------------
 /// deprecated - use SatPassToRinex3File for both 3 and 2.
@@ -137,6 +137,6 @@ void Dump(std::vector<SatPass>& SatPassList, std::ostream& os,
 
 }  // end namespace
 
-#endif // define GPSTK_SATELLITE_PASS_UTILS_INCLUDE
+#endif // define GNSSTK_SATELLITE_PASS_UTILS_INCLUDE
 // -------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -40,9 +40,9 @@
 #include "InterSigCorr.hpp"
 #include "TestUtil.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -50,12 +50,12 @@ namespace gpstk
 }
 
 /// Expose protected data and implement abstract methods.
-class TestClass : public gpstk::InterSigCorr
+class TestClass : public gnsstk::InterSigCorr
 {
 public:
-   void addRefOID(const gpstk::ObsID& oid)
+   void addRefOID(const gnsstk::ObsID& oid)
    { refOids.insert(oid); }
-   void addValidOID(const gpstk::ObsID& oid)
+   void addValidOID(const gnsstk::ObsID& oid)
    { validOids.insert(oid); }
    bool isRefOidsEmpty() const
    { return refOids.empty(); }
@@ -70,12 +70,12 @@ class InterSigCorr_T
 {
 public:
    InterSigCorr_T()
-         : oid1(gpstk::ObservationType::Unknown,
-                gpstk::CarrierBand::L1,
-                gpstk::TrackingCode::CA),
-           oid2(gpstk::ObservationType::Unknown,
-                gpstk::CarrierBand::L2,
-                gpstk::TrackingCode::Y)
+         : oid1(gnsstk::ObservationType::Unknown,
+                gnsstk::CarrierBand::L1,
+                gnsstk::TrackingCode::CA),
+           oid2(gnsstk::ObservationType::Unknown,
+                gnsstk::CarrierBand::L2,
+                gnsstk::TrackingCode::Y)
    {}
       /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
@@ -84,7 +84,7 @@ public:
       /// Dual frequency ISC test
    unsigned getISCDFTest();
 
-   gpstk::ObsID oid1, oid2;
+   gnsstk::ObsID oid1, oid2;
 };
 
 
@@ -93,7 +93,7 @@ constructorTest()
 {
    TUDEF("InterSigCorr", "InterSigCorr");
    TestClass uut;
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::ISC,
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::ISC,
              uut.signal.messageType);
    TUASSERTE(int, 1, isnan(uut.isc));
    TUASSERTE(bool, true, uut.isRefOidsEmpty());

@@ -1,20 +1,19 @@
-#pragma ident "$Id: //depot/msn/main/code/shared/gpstk/SinexData.cpp#5 $"
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -47,10 +46,10 @@
 #include "SinexData.hpp"
 #include "SinexTypes.hpp"
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 namespace Sinex
 {
@@ -128,7 +127,7 @@ namespace Sinex
       catch (Exception& exc)
       {
          FFStreamError  err;
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       Blocks::const_iterator  i = blocks.begin();
       for ( ; i != blocks.end(); ++i)
@@ -146,7 +145,7 @@ namespace Sinex
             catch (Exception& exc)
             {
                FFStreamError  err(exc);
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
          }
       }
@@ -171,7 +170,7 @@ namespace Sinex
       catch (Exception& exc)
       {
          FFStreamError  err(exc);
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       while (strm.good() )
       {
@@ -186,7 +185,7 @@ namespace Sinex
          if (line.size() < 1)
          {
             FFStreamError err("Invalid empty line.");
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
          switch (line[0])
          {
@@ -195,7 +194,7 @@ namespace Sinex
                if (currentBlock.size() > 0)
                {
                   FFStreamError err("Unexpected start of block.");
-                  GPSTK_THROW(err);
+                  GNSSTK_THROW(err);
                }
                currentBlock = line.substr(1);
                BlockFactory::iterator i = blockFactory.find(currentBlock);
@@ -203,7 +202,7 @@ namespace Sinex
                {
                   string  errMsg("Invalid block title: ");
                   FFStreamError err(errMsg + currentBlock);
-                  GPSTK_THROW(err);
+                  GNSSTK_THROW(err);
                }
                BlockCreateFunc  createFunc = i->second;
                BlockBase  *block = createFunc();
@@ -217,14 +216,14 @@ namespace Sinex
                   catch (Exception& exc)
                   {
                      FFStreamError  err(exc);
-                     GPSTK_THROW(err);
+                     GNSSTK_THROW(err);
                   }
                }
                else
                {
                   string  errMsg("Error creating block: ");
                   FFStreamError err(errMsg + currentBlock);
-                  GPSTK_THROW(err);
+                  GNSSTK_THROW(err);
                }
                break;
             }
@@ -233,12 +232,12 @@ namespace Sinex
                if (currentBlock.size() == 0)
                {
                   FFStreamError err("Unexpected end of block.");
-                  GPSTK_THROW(err);
+                  GNSSTK_THROW(err);
                }
                if (currentBlock.compare(line.substr(1) ) != 0)
                {
                   FFStreamError err("Block start and end do not match.");
-                  GPSTK_THROW(err);
+                  GNSSTK_THROW(err);
                }
                currentBlock.clear();
                break;
@@ -246,7 +245,7 @@ namespace Sinex
             case DATA_START:
             {
                FFStreamError err("Missing start of block.");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
                break;
             }
             case HEAD_TAIL_START:
@@ -259,7 +258,7 @@ namespace Sinex
                {
                   string  errMsg("Invalid line: ");
                   FFStreamError err(errMsg + line);
-                  GPSTK_THROW(err);
+                  GNSSTK_THROW(err);
                }
                break;
             }
@@ -272,7 +271,7 @@ namespace Sinex
             {
                string  errMsg("Invalid line start character: ");
                FFStreamError err(errMsg + line[0]);
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
                break;
             }
 
@@ -282,13 +281,13 @@ namespace Sinex
       {
          string  errMsg("Block not properly terminated: ");
          FFStreamError err(errMsg + currentBlock);
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       if (!terminated)
       {
          FFStreamError err("File not properly terminated (missing "
                            + FILE_END + " )");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }  // Data::reallyGetRecord()
 
@@ -319,4 +318,4 @@ namespace Sinex
 
 }  // namespace Sinex
 
-} // namespace gpstk
+} // namespace gnsstk

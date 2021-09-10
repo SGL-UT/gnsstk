@@ -1,6 +1,6 @@
-%extend gpstk::SatMetaDataSort
+%extend gnsstk::SatMetaDataSort
 {
-   bool __call__(const gpstk::SatMetaData& lhs, const gpstk::SatMetaData& rhs)
+   bool __call__(const gnsstk::SatMetaData& lhs, const gnsstk::SatMetaData& rhs)
    {
       return (*($self))(lhs, rhs);
    }

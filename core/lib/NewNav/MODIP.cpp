@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -58,7 +58,7 @@ enum MODIPConsts
 };
    
 
-namespace gpstk
+namespace gnsstk
 {
    MODIP ::
    MODIP()
@@ -301,10 +301,10 @@ namespace gpstk
       double longGridPos = (lambda + LongMax) / LongStep;               // eq.14
          // Truncate the grid longitude position to get the array index
       int longGridIdx = longGridPos;                                    // eq.6
-      GPSTK_ASSERT((longGridPos - longGridIdx) < 1);
+      GNSSTK_ASSERT((longGridPos - longGridIdx) < 1);
          // Compute the longitude fractional offset from the array index
       double longGridOffs = longGridPos - int(longGridPos);             // eq.15
-      GPSTK_ASSERT(longGridOffs < 1);
+      GNSSTK_ASSERT(longGridOffs < 1);
       DEBUGTRACE("longitude index before adjust " << longGridIdx);
          // check if index indicates lambda was < -180 degrees
          // longitude and adjust
@@ -333,8 +333,8 @@ namespace gpstk
       double latGridOffs = latGridPos - int(latGridPos);                // eq.10
          // Truncate the grid latitude position to get the array index
       int latGridIdx = int(latGridPos);                                 // eq.11
-      GPSTK_ASSERT(latGridOffs < 1);
-      GPSTK_ASSERT((latGridPos - latGridIdx) < 1);
+      GNSSTK_ASSERT(latGridOffs < 1);
+      GNSSTK_ASSERT((latGridPos - latGridIdx) < 1);
       double z1[InterpCount], z[InterpCount];
       DEBUGTRACE("longitude " << lambda << " idx " << longGridIdx << " offset "
                  << longGridOffs);

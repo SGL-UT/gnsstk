@@ -1,7 +1,7 @@
 Input File -> to Output File
 ----------------------------
-/home/jhprice/Documents/git/gpstk/data/inputs/brdc0070.16n -> /home/jhprice/Documents/git/gpstk/build/msndev-issue_320/Testing/Temporary/scanBrdcFile1-007.out
-/home/jhprice/Documents/git/gpstk/data/inputs/brdc0080.16n -> /home/jhprice/Documents/git/gpstk/build/msndev-issue_320/Testing/Temporary/scanBrdcFile1-008.out
+/home/jhprice/Documents/git/gnsstk/data/inputs/brdc0070.16n -> /home/jhprice/Documents/git/gnsstk/build/msndev-issue_320/Testing/Temporary/scanBrdcFile1-007.out
+/home/jhprice/Documents/git/gnsstk/data/inputs/brdc0080.16n -> /home/jhprice/Documents/git/gnsstk/build/msndev-issue_320/Testing/Temporary/scanBrdcFile1-008.out
 
 
 One-line summaries of data sets as they were read

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -46,7 +46,7 @@
 
 class FileSpecFind_T;
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileDirProc
       //@{
@@ -61,21 +61,21 @@ namespace gpstk
        *
        * Example with text spec token (%x):
        * @code{.cpp}
-       *    gpstk::CommonTime fromTime(gpstk::YDSTime(2018, 211, 0));
-       *    gpstk::CommonTime toTime(gpstk::YDSTime(2018, 212, 0));
+       *    gnsstk::CommonTime fromTime(gnsstk::YDSTime(2018, 211, 0));
+       *    gnsstk::CommonTime toTime(gnsstk::YDSTime(2018, 212, 0));
        *    string site("FOO");
-       *    gpstk::FileSpec::FSTStringMap textStore;
-       *    textStore[gpstk::FileSpec::text] = site;
-       *    std::list<std::string> fileList = gpstk::FileSpecFind::find("/data/%04Y/%05n/%03j/nsh-%x-%5n-%1r-%04Y-%03j-%02H%02M%02S.xml", fromTime, toTime, textStore);
+       *    gnsstk::FileSpec::FSTStringMap textStore;
+       *    textStore[gnsstk::FileSpec::text] = site;
+       *    std::list<std::string> fileList = gnsstk::FileSpecFind::find("/data/%04Y/%05n/%03j/nsh-%x-%5n-%1r-%04Y-%03j-%02H%02M%02S.xml", fromTime, toTime, textStore);
        * @endcode
        *
        *
        * Example without text spec token:
        * @code{.cpp}
-       *    gpstk::FileSpec::FSTStringMap fsts;
-       *    fromTime = gpstk::YDSTime(2017,1,0);
-       *    toTime = gpstk::YDSTime(2017,2,0);
-       *    std::list<std::string> fileList = gpstk::FileSpecFind::find(
+       *    gnsstk::FileSpec::FSTStringMap fsts;
+       *    fromTime = gnsstk::YDSTime(2017,1,0);
+       *    toTime = gnsstk::YDSTime(2017,2,0);
+       *    std::list<std::string> fileList = gnsstk::FileSpecFind::find(
        *       "/archive/%04Y/%05n/%05n-%04Y%03j-%1r%1t.raw",
        *       fromTime, toTime, fsts);
        * @endcode

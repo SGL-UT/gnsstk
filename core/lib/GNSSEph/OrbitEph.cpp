@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -60,7 +60,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 
    OrbitEph :: OrbitEph()
@@ -79,7 +79,7 @@ namespace gpstk
    bool OrbitEph::isValid(const CommonTime& ct) const
    {
       if(!dataLoadedFlag)
-         GPSTK_THROW(InvalidRequest("Data not loaded"));
+         GNSSTK_THROW(InvalidRequest("Data not loaded"));
       if(ct < beginValid || ct > endValid) return false;
       return true;
    }
@@ -89,7 +89,7 @@ namespace gpstk
    double OrbitEph::svClockBias(const CommonTime& t) const
    {
       if(!dataLoadedFlag)
-         GPSTK_THROW(InvalidRequest("Data not loaded"));
+         GNSSTK_THROW(InvalidRequest("Data not loaded"));
 
       double dtc, elaptc;
       elaptc = t - ctToc;
@@ -102,7 +102,7 @@ namespace gpstk
    double OrbitEph::svClockDrift(const CommonTime& t) const
    {
       if(!dataLoadedFlag)
-         GPSTK_THROW(InvalidRequest("Data not loaded"));
+         GNSSTK_THROW(InvalidRequest("Data not loaded"));
 
       double drift, elaptc;
       elaptc = t - ctToc;
@@ -115,7 +115,7 @@ namespace gpstk
    Xvt OrbitEph::svXvt(const CommonTime& t) const
    {
       if(!dataLoadedFlag)
-         GPSTK_THROW(InvalidRequest("Data not loaded"));
+         GNSSTK_THROW(InvalidRequest("Data not loaded"));
 
       Xvt sv;
       double ea;              // eccentric anomaly
@@ -260,7 +260,7 @@ namespace gpstk
    double OrbitEph::svRelativity(const CommonTime& t) const
    {
       if(!dataLoadedFlag)
-         GPSTK_THROW(InvalidRequest("Data not loaded"));
+         GNSSTK_THROW(InvalidRequest("Data not loaded"));
 
       GPSEllipsoid gell;
       CGCS2000Ellipsoid bell;
@@ -301,7 +301,7 @@ namespace gpstk
    string OrbitEph::asString(void) const
    {
       if(!dataLoadedFlag)
-         GPSTK_THROW(InvalidRequest("Data not loaded"));
+         GNSSTK_THROW(InvalidRequest("Data not loaded"));
 
       try {
          ostringstream os;
@@ -330,7 +330,7 @@ namespace gpstk
 
          return os.str();
       }
-      catch(Exception& e) { GPSTK_RETHROW(e);
+      catch(Exception& e) { GNSSTK_RETHROW(e);
       }
    }
 
@@ -338,7 +338,7 @@ namespace gpstk
    string OrbitEph::timeDisplay(const CommonTime& t, bool showHead) const
    {
       if(!dataLoadedFlag)
-         GPSTK_THROW(InvalidRequest("Data not loaded"));
+         GNSSTK_THROW(InvalidRequest("Data not loaded"));
 
       try {
          if(showHead) return string("Week( mod)     SOW     DOW   UTD     SOD"
@@ -377,7 +377,7 @@ namespace gpstk
 
          return os.str();
       }
-      catch(Exception& e) { GPSTK_RETHROW(e);
+      catch(Exception& e) { GNSSTK_RETHROW(e);
       }
    }
 
@@ -386,7 +386,7 @@ namespace gpstk
    void OrbitEph::dumpHeader(ostream& os) const
    {
       if(!dataLoadedFlag)
-         GPSTK_THROW(InvalidRequest("Data not loaded"));
+         GNSSTK_THROW(InvalidRequest("Data not loaded"));
 
       os << "****************************************************************"
         << "************" << endl
@@ -400,7 +400,7 @@ namespace gpstk
    void OrbitEph::dumpBody(ostream& os) const
    {
       if(!dataLoadedFlag)
-         GPSTK_THROW(InvalidRequest("Data not loaded"));
+         GNSSTK_THROW(InvalidRequest("Data not loaded"));
 
       os << "           TIMES OF INTEREST" << endl;
       os << "              " << timeDisplay(beginValid,true) << endl;
@@ -489,7 +489,7 @@ namespace gpstk
             ctToc.setTimeSystem(TimeSystem::QZS);
          }
          else
-            GPSTK_THROW(Exception("Unknown satellite system: " + rnd.satSys));
+            GNSSTK_THROW(Exception("Unknown satellite system: " + rnd.satSys));
 
          //cout << "ctToc " << printTime(oeptr->ctToc,"%Y/%m/%d %H:%M:%S %P") << endl;
 
@@ -532,7 +532,7 @@ namespace gpstk
 
          return true;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 */
 

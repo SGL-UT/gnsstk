@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -67,7 +67,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace StringUtils;
 
@@ -86,9 +86,9 @@ namespace gpstk
       PositionRecord prec;
       ClockRecord crec;
       try { prec = posStore.getValue(sat,ttag); }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
       try { crec = clkStore.getValue(sat,ttag); }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
 
       try {
          Xvt retXvt;
@@ -111,7 +111,7 @@ namespace gpstk
          retXvt.health = Xvt::HealthStatus::Unused;
          return retXvt;
       }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
    }
 
 
@@ -191,7 +191,7 @@ namespace gpstk
          catch(InvalidRequest& e) { tp = CommonTime::BEGINNING_OF_TIME; }
          return (tc > tp ? tc : tp);
       }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
    }
 
       // Determine the latest time for which this object can successfully 
@@ -210,7 +210,7 @@ namespace gpstk
          catch(InvalidRequest& e) { tp = CommonTime::END_OF_TIME; }
          return (tc > tp ? tp : tc);
       }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
    }
 
 // end of XvtStore interface
@@ -233,7 +233,7 @@ namespace gpstk
             prec.Pos[i] *= 1000.0;    // km -> m
          return prec.Pos;
       }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
    }
 
       // Return the velocity for the given satellite at the given time
@@ -254,7 +254,7 @@ namespace gpstk
             prec.Vel[i] *= 0.1;    // dm/s -> m/s
          return prec.Vel;
       }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
    }
 
       // Get the earliest time of data in the store for the given satellite.
@@ -272,7 +272,7 @@ namespace gpstk
          catch(InvalidRequest& e) { tp = CommonTime::BEGINNING_OF_TIME; }
          return (tc > tp ? tc : tp);
       }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
    }
 
       // Get the latest time of data in the store for the given satellite.
@@ -291,7 +291,7 @@ namespace gpstk
          catch(InvalidRequest& e) { tp = CommonTime::END_OF_TIME; }
          return (tc > tp ? tp : tc);
       }
-      catch(InvalidRequest& e) { GPSTK_RETHROW(e); }
+      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
    }
 
 
@@ -307,7 +307,7 @@ namespace gpstk
          if (!strm)
          {
             Exception e("File " + filename + " could not be opened");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          strm.exceptions(ios::failbit);
             //cout << "Opened file " << filename << endl;
@@ -323,7 +323,7 @@ namespace gpstk
          catch(Exception& e)
          {
             e.addText("Error reading header of file " + filename + e.getText());
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
             //cout << "Read header" << endl; head.dump();
 
@@ -345,11 +345,11 @@ namespace gpstk
             {
                InvalidRequest ir("Time system of file " + filename
                                  + " ("
-                                 + gpstk::StringUtils::asString(head.timeSystem)
+                                 + gnsstk::StringUtils::asString(head.timeSystem)
                                  + ") is incompatible with store time system ("
-                                 + gpstk::StringUtils::asString(storeTimeSystem)
+                                 + gnsstk::StringUtils::asString(storeTimeSystem)
                                  + ").");
-               GPSTK_THROW(ir);
+               GNSSTK_THROW(ir);
             }
          }  // end if header time system is set
 
@@ -585,7 +585,7 @@ namespace gpstk
          catch(Exception& e)
          {
             e.addText("Error reading data of file " + filename);
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
 
             // close
@@ -594,17 +594,17 @@ namespace gpstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       catch (std::exception& e)
       {
-         gpstk::Exception exc("std::exception " + std::string(e.what()));
-         GPSTK_THROW(exc);
+         gnsstk::Exception exc("std::exception " + std::string(e.what()));
+         GNSSTK_THROW(exc);
       }
       catch (...)
       {
-         gpstk::Exception exc("Unknown exception");
-         GPSTK_THROW(exc);
+         gnsstk::Exception exc("Unknown exception");
+         GNSSTK_THROW(exc);
       }
    }
 
@@ -653,7 +653,7 @@ namespace gpstk
       }
       catch(Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -667,7 +667,7 @@ namespace gpstk
       }
       catch(Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -683,7 +683,7 @@ namespace gpstk
          if(!strm.is_open())
          {
             Exception e("File " + filename + " could not be opened");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          strm.exceptions(std::ios::failbit);
             //cout << "Opened file " << filename << endl;
@@ -700,7 +700,7 @@ namespace gpstk
          catch(Exception& e)
          {
             e.addText("Error reading header of file " + filename);
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
             //cout << "Read header" << endl; head.dump();
 
@@ -722,11 +722,11 @@ namespace gpstk
             {
                InvalidRequest ir("Time system of file " + filename
                                  + " ("
-                                 + gpstk::StringUtils::asString(head.timeSystem)
+                                 + gnsstk::StringUtils::asString(head.timeSystem)
                                  + ") is incompatible with store time system ("
-                                 + gpstk::StringUtils::asString(storeTimeSystem)
+                                 + gnsstk::StringUtils::asString(storeTimeSystem)
                                  + ").");
-               GPSTK_THROW(ir);
+               GNSSTK_THROW(ir);
             }
          }  // end if header time system is set
 
@@ -768,7 +768,7 @@ namespace gpstk
          catch(Exception& e)
          {
             e.addText("Error reading data of file " + filename);
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
 
          strm.close();
@@ -776,10 +776,10 @@ namespace gpstk
       }
       catch(Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
       //@}
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk

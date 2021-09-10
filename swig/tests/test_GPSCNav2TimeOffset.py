@@ -2,15 +2,15 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
+from gnsstk.test_utils import args,run_unit_tests
 
-import gpstk
+import gnsstk
 
 class TestGPSCNav2TimeOffset(unittest.TestCase):
     def test_constructor(self):
-        uut = gpstk.GPSCNav2TimeOffset()
-        ct = gpstk.CommonTime()
-        self.assertEqual(gpstk.TimeSystem.Unknown, uut.tgt)
+        uut = gnsstk.GPSCNav2TimeOffset()
+        ct = gnsstk.CommonTime()
+        self.assertEqual(gnsstk.TimeSystem.Unknown, uut.tgt)
         self.assertEqual(0.0, uut.a0)
         self.assertEqual(0.0, uut.a1)
         self.assertEqual(0.0, uut.a2)
@@ -23,7 +23,7 @@ class TestGPSCNav2TimeOffset(unittest.TestCase):
         self.assertEqual(0.0, uut.deltatLSF)
 
     def test_validate(self):
-        uut = gpstk.GPSCNav2TimeOffset()
+        uut = gnsstk.GPSCNav2TimeOffset()
         self.assertEqual(True, uut.validate())
         uut.tot = 604784.0
         self.assertEqual(True, uut.validate())
@@ -38,27 +38,27 @@ class TestGPSCNav2TimeOffset(unittest.TestCase):
         self.assertEqual(False, uut.validate())
 
     def test_getUserTime(self):
-        uut = gpstk.GPSCNav2TimeOffset()
-        uut.timeStamp = gpstk.GPSWeekSecond(2100,135.0).toCommonTime()
+        uut = gnsstk.GPSCNav2TimeOffset()
+        uut.timeStamp = gnsstk.GPSWeekSecond(2100,135.0).toCommonTime()
         exp = uut.timeStamp + 5.48
         self.assertEqual(exp, uut.getUserTime())
 
     def test_getOffset(self):
-        uut = gpstk.GPSCNav2TimeOffset()
-        ws1 = gpstk.GPSWeekSecond(2060, 405504.0).toCommonTime()
-        ws2 = gpstk.GPSWeekSecond(2061, 405504.0).toCommonTime()
-        uut.tgt = gpstk.TimeSystem.UTC
+        uut = gnsstk.GPSCNav2TimeOffset()
+        ws1 = gnsstk.GPSWeekSecond(2060, 405504.0).toCommonTime()
+        ws2 = gnsstk.GPSWeekSecond(2061, 405504.0).toCommonTime()
+        uut.tgt = gnsstk.TimeSystem.UTC
         uut.a0 = 1.9790604711E-09
         uut.a1 = 7.5495165675E-15
         uut.a2 = 0
         uut.deltatLS = 18.0
         uut.tot = 21600.0
         uut.wnot = 2060
-        uut.refTime = gpstk.GPSWeekSecond(uut.wnot,uut.tot).toCommonTime()
-        rv,offset = uut.getOffset(gpstk.TimeSystem.GPS,gpstk.TimeSystem.UTC,ws1)
+        uut.refTime = gnsstk.GPSWeekSecond(uut.wnot,uut.tot).toCommonTime()
+        rv,offset = uut.getOffset(gnsstk.TimeSystem.GPS,gnsstk.TimeSystem.UTC,ws1)
         self.assertEqual(True, rv)
         self.assertEqual(18.000000004877350079, offset)
-        rv,offset = uut.getOffset(gpstk.TimeSystem.GPS,gpstk.TimeSystem.UTC,ws2)
+        rv,offset = uut.getOffset(gnsstk.TimeSystem.GPS,gnsstk.TimeSystem.UTC,ws2)
         self.assertEqual(True, rv)
         self.assertEqual(18.000000009443297699, offset)
 

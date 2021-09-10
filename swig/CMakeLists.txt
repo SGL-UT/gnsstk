@@ -1,5 +1,5 @@
 #----------------------------------------
-# gpstk/swig/CMakeLists.txt
+# gnsstk/swig/CMakeLists.txt
 #----------------------------------------
 
 cmake_minimum_required( VERSION 2.8.4  )
@@ -49,15 +49,15 @@ elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
 endif()
 
 
-set_property(SOURCE gpstk.i PROPERTY CPLUSPLUS ON )
-set_property(SOURCE gpstk.i PROPERTY USE_SWIG_DEPENDENCIES TRUE)
+set_property(SOURCE gnsstk.i PROPERTY CPLUSPLUS ON )
+set_property(SOURCE gnsstk.i PROPERTY USE_SWIG_DEPENDENCIES TRUE)
 
 if( DEBUG_SWITCH )
     message( STATUS "SWIG_EXECUTABLE          = ${SWIG_EXECUTABLE}" )
     message( STATUS "SWIG_USE_FILE            = ${SWIG_USE_FILE}" )
     message( STATUS "SWIG_DOC_DIR             = ${SWIG_DOC_DIR}")
     message( STATUS "PYTHON_INSTALL_PREFIX    = ${PYTHON_INSTALL_PREFIX}")
-    message( STATUS "PROJECT_BINARY_DIR       = ${PROJECT_BINARY_DIR}/libgpstk.so.${GPSTK_VERSION_MAJOR}.${GPSTK_VERSION_MINOR}.${GPSTK_VERSION_PATCH}")
+    message( STATUS "PROJECT_BINARY_DIR       = ${PROJECT_BINARY_DIR}/libgnsstk.so.${GNSSTK_VERSION_MAJOR}.${GNSSTK_VERSION_MINOR}.${GNSSTK_VERSION_PATCH}")
 endif()
 
 #----------------------------------------
@@ -69,8 +69,8 @@ endif()
 #       you must rerun cmake, not just make.
 #
 # Note: list of all headers files are included in
-#       gpstk_swig.hpp which is included in gpstk.i
-set( SWIG_MODULE "gpstk" )
+#       gnsstk_swig.hpp which is included in gnsstk.i
+set( SWIG_MODULE "gnsstk" )
 
 include_directories( ${PYTHON_INCLUDE_DIRS} )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -89,39 +89,39 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/SWIGHelpers )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/TimeHandling )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/Utilities )
 
-swig_add_module( ${SWIG_MODULE} python gpstk.i )
-swig_link_libraries( ${SWIG_MODULE} gpstk )
+swig_add_module( ${SWIG_MODULE} python gnsstk.i )
+swig_link_libraries( ${SWIG_MODULE} gnsstk )
 #swig_link_libraries( ${SWIG_MODULE} ${PYTHON_LIBRARIES} )
 
-# Install the gpstk module into the package file tree
+# Install the gnsstk module into the package file tree
 set( MODULE_PATH ${CMAKE_CURRENT_BINARY_DIR}/module )
 set( CMAKE_SWIG_OUTDIR ${MODULE_PATH}/${SWIG_MODULE} )
 
 
 #----------------------------------------
-# Add custom commands to the _gpstk.so build target
+# Add custom commands to the _gnsstk.so build target
 #----------------------------------------
 #    ...to relocate the output from teh swig build target to
 #    the correct directory within the python package file tree
 #        CMake documentation claims that all SWIG target output
 #        will be written to $CMAKE_SWIG_OUTDIR, but
-#        testing shows that this ONLY works for the gpstk.py
-#        and does NOT work for the _gpstk.so
+#        testing shows that this ONLY works for the gnsstk.py
+#        and does NOT work for the _gnsstk.so
 #----------------------------------------
 add_custom_target(swig-make-directory ALL
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${MODULE_PATH}/gpstk)
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${MODULE_PATH}/gnsstk)
 add_dependencies("_${SWIG_MODULE}" swig-make-directory)
 add_custom_command( TARGET "_${SWIG_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "_${SWIG_MODULE}.so" ${CMAKE_SWIG_OUTDIR} )
 add_custom_command( TARGET "_${SWIG_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${SWIG_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
 
 add_custom_command( TARGET "_${SWIG_MODULE}"
-                    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_BINARY_DIR}/libgpstk.so.${GPSTK_VERSION}" ${CMAKE_SWIG_OUTDIR}
-                    DEPENDS gpstk)
+                    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_BINARY_DIR}/libgnsstk.so.${GNSSTK_VERSION}" ${CMAKE_SWIG_OUTDIR}
+                    DEPENDS gnsstk)
 
-# Find all files in the gpstk, apps, and tests directories and set up dependancies to
+# Find all files in the gnsstk, apps, and tests directories and set up dependancies to
 # copy them to the python module directory
 file(GLOB_RECURSE module_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/gpstk/*.py"
+  "${CMAKE_CURRENT_SOURCE_DIR}/gnsstk/*.py"
   "${CMAKE_CURRENT_SOURCE_DIR}/apps/*.py"
   "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.py"
   )
@@ -147,9 +147,9 @@ set( SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in" )
 set( SETUP_PY    "${MODULE_PATH}/setup.py" )
 configure_file( ${SETUP_PY_IN} ${SETUP_PY} )
 
-set( GPSTK_ROOT_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/gpstk/__init__.py.in" )
-set( GPSTK_ROOT_PY    "${MODULE_PATH}/gpstk/__init__.py" )
-configure_file( ${GPSTK_ROOT_PY_IN} ${GPSTK_ROOT_PY} )
+set( GNSSTK_ROOT_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/gnsstk/__init__.py.in" )
+set( GNSSTK_ROOT_PY    "${MODULE_PATH}/gnsstk/__init__.py" )
+configure_file( ${GNSSTK_ROOT_PY_IN} ${GNSSTK_ROOT_PY} )
 
 
 # Note: For setup.py install options, see https://docs.python.org/2/install/
@@ -180,7 +180,7 @@ endif()
 
 file( GLOB_RECURSE swig_includes
   ${CMAKE_CURRENT_SOURCE_DIR}/*.i )
-install( FILES ${swig_includes} ${CMAKE_CURRENT_SOURCE_DIR}/gpstk_swig.hpp DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" )
+install( FILES ${swig_includes} ${CMAKE_CURRENT_SOURCE_DIR}/gnsstk_swig.hpp DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" )
 
 
 add_subdirectory(tests)

@@ -1,5 +1,5 @@
-# RinSum, part of the GPS Toolkit, Ver 4.1 8/26/15, Run 2017/03/22 15:10:48
-+++++++++++++ RinSum summary of Rinex obs file /home/jhprice/Documents/git/gpstk/data/inputs/igs/sptu0150.16o +++++++++++++
+# RinSum, part of the GNSS Toolkit, Ver 4.1 8/26/15, Run 2017/03/22 15:10:48
++++++++++++++ RinSum summary of Rinex obs file /home/jhprice/Documents/git/gnsstk/data/inputs/igs/sptu0150.16o +++++++++++++
 ---------------------------------- REQUIRED ----------------------------------
 Rinex Version  3.00,  File type OBSERVATION DATA,  System MIXED.
 Prgm: NetR9 4.85,  Run: 15-JAN-16 00:00:01,  By: Receiver Operator

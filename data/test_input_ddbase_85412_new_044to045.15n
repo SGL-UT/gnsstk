@@ -1,5 +1,5 @@
      2.100          NAVIGATION                              RINEX VERSION / TYPE
-mergeRinNav         gpstk               02/16/2015 18:53:22 PGM / RUN BY / DATE
+mergeRinNav         gnsstk              02/16/2015 18:53:22 PGM / RUN BY / DATE
                                                             END OF HEADER
  2 15  2 13 18  0  0.0  .547759234905D-03  .227373675443D-11  .000000000000D+00
      .610000000000D+02 -.102812500000D+02  .507842582253D-08  .155003158419D+01

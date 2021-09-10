@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -51,7 +51,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    // add a Rinex3NavData to the store
    // @param Rinex3NavData Rdata data to be added
@@ -173,14 +173,14 @@ namespace gpstk
             }
             catch(Exception& e) {
                cout << "addEphemeris caught excp " << e.what();
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
          }
 
          return nread;
       }
       catch(Exception& e) {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
    } // end Rinex3EphemerisStore::loadFile
@@ -192,8 +192,8 @@ namespace gpstk
    {
       string msg;
       ostringstream oss;
-      oss << "Convert from " << gpstk::StringUtils::asString(fromSys)
-         << " to " << gpstk::StringUtils::asString(toSys) << " : ";
+      oss << "Convert from " << gnsstk::StringUtils::asString(fromSys)
+         << " to " << gnsstk::StringUtils::asString(toSys) << " : ";
 
       if(toSys == fromSys) {
          oss << "time systems are the same";
@@ -229,7 +229,7 @@ namespace gpstk
 
       // first correct for leap seconds
       const CivilTime civt(ttag);
-      double dt = gpstk::getTimeSystemCorrection(fromSys, targetSys,
+      double dt = gnsstk::getTimeSystemCorrection(fromSys, targetSys,
                               civt.year, civt.month, civt.day);
       toReturn += dt;
       // the corrected timetag: now only the system, not the value, matters
@@ -248,7 +248,7 @@ namespace gpstk
       // failure
       //InvalidRequest e("Unable to convert time systems from "
       //   + ttag.getTimeSystem().asString() + " to " + targetSys.asString());
-      //GPSTK_THROW(e);
+      //GNSSTK_THROW(e);
 
       return toReturn;      // never reached, satisfy some compilers
    }
@@ -290,13 +290,13 @@ namespace gpstk
             //   break;
             default:
                InvalidRequest e("Unsupported satellite system");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
                break;
          }
 
          return xvt;
       }
-      catch(InvalidRequest& ir) { GPSTK_RETHROW(ir); }
+      catch(InvalidRequest& ir) { GNSSTK_RETHROW(ir); }
    }
 
 
@@ -457,7 +457,7 @@ namespace gpstk
 
          return retTime;
       }
-      catch(InvalidRequest& ir) { GPSTK_RETHROW(ir); }
+      catch(InvalidRequest& ir) { GNSSTK_RETHROW(ir); }
    }
 
    // Determine the latest time for which this object can successfully 
@@ -495,7 +495,7 @@ namespace gpstk
 
          return retTime;
       }
-      catch(InvalidRequest& ir) { GPSTK_RETHROW(ir); }
+      catch(InvalidRequest& ir) { GNSSTK_RETHROW(ir); }
    }
 
    // Determine the earliest time for which this object can successfully 
@@ -528,7 +528,7 @@ namespace gpstk
 
          return retTime;
       }
-      catch(InvalidRequest& ir) { GPSTK_RETHROW(ir); }
+      catch(InvalidRequest& ir) { GNSSTK_RETHROW(ir); }
    }
 
    // Determine the latest time for which this object can successfully 
@@ -562,7 +562,7 @@ namespace gpstk
 
          return retTime;
       }
-      catch(InvalidRequest& ir) { GPSTK_RETHROW(ir); }
+      catch(InvalidRequest& ir) { GNSSTK_RETHROW(ir); }
    }
 
    // use to access the data records in the store in bulk
@@ -632,4 +632,4 @@ namespace gpstk
       return n;
    }
 
-}  // namespace gpstk
+}  // namespace gnsstk

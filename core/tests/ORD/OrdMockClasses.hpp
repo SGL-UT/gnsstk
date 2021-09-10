@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -53,13 +53,13 @@
 #include "TimeSystem.hpp"
 #include "ord.hpp"
 
-using gpstk::SatID;
-using gpstk::CommonTime;
-using gpstk::TimeSystem;
-using gpstk::Xvt;
-using gpstk::Position;
+using gnsstk::SatID;
+using gnsstk::CommonTime;
+using gnsstk::TimeSystem;
+using gnsstk::Xvt;
+using gnsstk::Position;
 
-class MockXvtStore: public gpstk::XvtStore<SatID> {
+class MockXvtStore: public gnsstk::XvtStore<SatID> {
  public:
     MOCK_METHOD0(clear, void());
 
@@ -77,12 +77,12 @@ class MockXvtStore: public gpstk::XvtStore<SatID> {
     MOCK_METHOD2(edit, void(const CommonTime& tmin, const CommonTime& tmax));
 };
 
-class MockXvt: public gpstk::Xvt {
+class MockXvt: public gnsstk::Xvt {
  public:
     MOCK_METHOD0(computeRelativityCorrection, double());
 };
 
-class MockTropo: public gpstk::TropModel {
+class MockTropo: public gnsstk::TropModel {
  public:
     // It turns out that you can't mock a method with a throw() specifier.
     // Google test doesn't support it.
@@ -119,21 +119,21 @@ class MockTropo: public gpstk::TropModel {
     }
 };
 
-class MockIono: public gpstk::IonoModelStore {
+class MockIono: public gnsstk::IonoModelStore {
  public:
     MOCK_CONST_METHOD5(getCorrection_wrap,
             double(const CommonTime& time,
                    const Position& rxgeo,
                    double svel,
                    double svaz,
-                   gpstk::CarrierBand band));
+                   gnsstk::CarrierBand band));
 
     virtual double getCorrection(
             const CommonTime& time,
             const Position& rxgeo,
             double svel,
             double svaz,
-            gpstk::CarrierBand band) const
+            gnsstk::CarrierBand band) const
     {
         return getCorrection_wrap(time, rxgeo, svel, svaz, band);
     }

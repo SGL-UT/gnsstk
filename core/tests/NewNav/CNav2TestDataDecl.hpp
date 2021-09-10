@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -39,12 +39,12 @@
 /** @file CNav2TestDataDecl.hpp This file contains data declarations
  * for testing GPS and QZSS CNAV2 processing in the NavFactory code. */
 
-gpstk::ObsID oidCNAV2GPS;
-gpstk::SatID ephCNAV2GPSsid;
-gpstk::CommonTime sf123p1CNAV2GPSct,  sf123p2CNAV2GPSct,  sf123p4CNAV2GPSct, sf2CNAV2GPSct, sf2CNAV2GPS2ct, sf3p1CNAV2GPSct, sf3p2CNAV2GPSct, sf3p2fakeCNAV2GPSct, sf3p4CNAV2GPSct;
-gpstk::PackedNavBitsPtr sf123p1CNAV2GPS,  sf123p2CNAV2GPS,  sf123p4CNAV2GPS, sf2CNAV2GPS, sf2CNAV2GPS2, sf3p1CNAV2GPS, sf3p2CNAV2GPS, sf3p2fakeCNAV2GPS, sf3p4CNAV2GPS;
+gnsstk::ObsID oidCNAV2GPS;
+gnsstk::SatID ephCNAV2GPSsid;
+gnsstk::CommonTime sf123p1CNAV2GPSct,  sf123p2CNAV2GPSct,  sf123p4CNAV2GPSct, sf2CNAV2GPSct, sf2CNAV2GPS2ct, sf3p1CNAV2GPSct, sf3p2CNAV2GPSct, sf3p2fakeCNAV2GPSct, sf3p4CNAV2GPSct;
+gnsstk::PackedNavBitsPtr sf123p1CNAV2GPS,  sf123p2CNAV2GPS,  sf123p4CNAV2GPS, sf2CNAV2GPS, sf2CNAV2GPS2, sf3p1CNAV2GPS, sf3p2CNAV2GPS, sf3p2fakeCNAV2GPS, sf3p4CNAV2GPS;
 
-gpstk::ObsID oidCNAV2QZSS;
-gpstk::SatID ephCNAV2QZSSsid;
-gpstk::CommonTime sf2CNAV2QZSSct, sf3p1CNAV2QZSSct, sf3p2CNAV2QZSSct, sf3p4CNAV2QZSSct;
-gpstk::PackedNavBitsPtr sf2CNAV2QZSS, sf3p1CNAV2QZSS, sf3p2CNAV2QZSS, sf3p4CNAV2QZSS;
+gnsstk::ObsID oidCNAV2QZSS;
+gnsstk::SatID ephCNAV2QZSSsid;
+gnsstk::CommonTime sf2CNAV2QZSSct, sf3p1CNAV2QZSSct, sf3p2CNAV2QZSSct, sf3p4CNAV2QZSSct;
+gnsstk::PackedNavBitsPtr sf2CNAV2QZSS, sf3p1CNAV2QZSS, sf3p2CNAV2QZSS, sf3p4CNAV2QZSS;

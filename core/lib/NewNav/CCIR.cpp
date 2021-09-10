@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -51,7 +51,7 @@ constexpr double UTHourEpsilon = 1.0e-20;
 /// Epsilon for effective ionisation level comparison
 constexpr double AZEpsilon = 1.0e-10;
 
-namespace gpstk
+namespace gnsstk
 {
    CCIR ::
    CCIR()
@@ -81,13 +81,13 @@ namespace gpstk
    fourier(const CommonTime& when, double effSunSpots)
    {
       DEBUGTRACE_FUNCTION();
-      DEBUGTRACE("when=" << gpstk::printTime(when, "%4Y/%02m/%02d %02H:%02M:%02S"));
+      DEBUGTRACE("when=" << gnsstk::printTime(when, "%4Y/%02m/%02d %02H:%02M:%02S"));
       DEBUGTRACE("effSunSpots=" << effSunSpots);
-      gpstk::BasicTimeSystemConverter btsc;
+      gnsstk::BasicTimeSystemConverter btsc;
       CivilTime whenUTC(when);
-      if (whenUTC.getTimeSystem() != gpstk::TimeSystem::UTC)
+      if (whenUTC.getTimeSystem() != gnsstk::TimeSystem::UTC)
       {
-         GPSTK_ASSERT(whenUTC.changeTimeSystem(gpstk::TimeSystem::UTC,&btsc));
+         GNSSTK_ASSERT(whenUTC.changeTimeSystem(gnsstk::TimeSystem::UTC,&btsc));
       }
          // Compute the interpolated ITU-R coefficients AF2, Am3
          // (cacheF2 and cacheFM3)
@@ -192,9 +192,9 @@ namespace gpstk
    validateCache(const CommonTime& when, double effSunSpots)
    {
       DEBUGTRACE_FUNCTION();
-      DEBUGTRACE("when=" << gpstk::printTime(when, "%4Y/%02m/%02d %02H:%02M:%02S"));
+      DEBUGTRACE("when=" << gnsstk::printTime(when, "%4Y/%02m/%02d %02H:%02M:%02S"));
       DEBUGTRACE("effSunSpots=" << effSunSpots);
-      GPSTK_ASSERT(when.getTimeSystem() == TimeSystem::UTC);
+      GNSSTK_ASSERT(when.getTimeSystem() == TimeSystem::UTC);
       if (cacheMonth == -1)
       {
             // Set the cache vector sizes the first time through.
@@ -235,7 +235,7 @@ namespace gpstk
    double CCIR ::
    ccirF2(unsigned month, int cond, int deg, int ord)
    {
-      GPSTK_ASSERT(month >= 1 && month <= 12);
+      GNSSTK_ASSERT(month >= 1 && month <= 12);
       switch (month)
       {
          case  1: return ccir11F2(cond, deg, ord);
@@ -259,7 +259,7 @@ namespace gpstk
    double CCIR ::
    ccirFm3(unsigned month, int cond, int deg, int ord)
    {
-      GPSTK_ASSERT(month >= 1 && month <= 12);
+      GNSSTK_ASSERT(month >= 1 && month <= 12);
       switch (month)
       {
          case  1: return ccir11Fm3(cond, deg, ord);
@@ -897,9 +897,9 @@ namespace gpstk
              -0.11176485E-01, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
       return F2[cond][deg][ord];
    }
 
@@ -1207,9 +1207,9 @@ namespace gpstk
               0.80582756E-03, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
       return Fm3[cond][deg][ord];
    }
 
@@ -1831,9 +1831,9 @@ namespace gpstk
              -0.13315894E-01, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
       return F2[cond][deg][ord];
    }
 
@@ -2141,9 +2141,9 @@ namespace gpstk
               0.13429531E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
       return Fm3[cond][deg][ord];
    }
 
@@ -2765,9 +2765,9 @@ namespace gpstk
              -0.20335526E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
       return F2[cond][deg][ord];
    }
 
@@ -3075,9 +3075,9 @@ namespace gpstk
               0.50641391E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
       return Fm3[cond][deg][ord];
    }
 
@@ -3699,9 +3699,9 @@ namespace gpstk
              -0.65722289E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
       return F2[cond][deg][ord];
    }
 
@@ -4009,9 +4009,9 @@ namespace gpstk
               0.78903772E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
       return Fm3[cond][deg][ord];
    }
 
@@ -4633,9 +4633,9 @@ namespace gpstk
               0.29492131E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
       return F2[cond][deg][ord];
    }
 
@@ -4943,9 +4943,9 @@ namespace gpstk
               0.21139076E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
       return Fm3[cond][deg][ord];
    }
 
@@ -5567,9 +5567,9 @@ namespace gpstk
               0.73059131E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
       return F2[cond][deg][ord];
    }
 
@@ -5877,9 +5877,9 @@ namespace gpstk
               0.19899376E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
       return Fm3[cond][deg][ord];
    }
 
@@ -6501,9 +6501,9 @@ namespace gpstk
               0.67674026E-01, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
       return F2[cond][deg][ord];
    }
 
@@ -6811,9 +6811,9 @@ namespace gpstk
               0.25540697E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
       return Fm3[cond][deg][ord];
    }
 
@@ -7435,9 +7435,9 @@ namespace gpstk
               0.72064400E-01, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
       return F2[cond][deg][ord];
    }
 
@@ -7745,9 +7745,9 @@ namespace gpstk
               0.29371867E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
       return Fm3[cond][deg][ord];
    }
 
@@ -8369,9 +8369,9 @@ namespace gpstk
               0.42815138E-01, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
       return F2[cond][deg][ord];
    }
 
@@ -8679,9 +8679,9 @@ namespace gpstk
               0.29056252E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
       return Fm3[cond][deg][ord];
    }
 
@@ -9303,9 +9303,9 @@ namespace gpstk
               0.10820904E-01, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
       return F2[cond][deg][ord];
    }
 
@@ -9613,9 +9613,9 @@ namespace gpstk
               0.13707984E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
       return Fm3[cond][deg][ord];
    }
 
@@ -10237,9 +10237,9 @@ namespace gpstk
               0.36759220E-01, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
       return F2[cond][deg][ord];
    }
 
@@ -10547,9 +10547,9 @@ namespace gpstk
              -0.20263768E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
       return Fm3[cond][deg][ord];
    }
 
@@ -11171,9 +11171,9 @@ namespace gpstk
               0.64126670E-01, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < F2MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < F2MaxOrder);
       return F2[cond][deg][ord];
    }
 
@@ -11481,9 +11481,9 @@ namespace gpstk
              -0.45773280E-02, },
          },
       };
-      GPSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
-      GPSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
-      GPSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
+      GNSSTK_ASSERT(cond >= 0 && cond < F2SolarActCond);
+      GNSSTK_ASSERT(deg >= 0 && deg < FM3MaxDegree);
+      GNSSTK_ASSERT(ord >= 0 && ord < FM3MaxOrder);
       return Fm3[cond][deg][ord];
    }
 }

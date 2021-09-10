@@ -1,48 +1,48 @@
    // Allows cast from Rinex3NavData to EngEphemeris
-%extend gpstk::GloEphemeris
+%extend gnsstk::GloEphemeris
 {
-   GloEphemeris(const gpstk::Rinex3NavData& d)
+   GloEphemeris(const gnsstk::Rinex3NavData& d)
    {
-      return new gpstk::GloEphemeris(d);
+      return new gnsstk::GloEphemeris(d);
    }
 }
    // Allows cast from Rinex3NavData to GPSEphemeris
-%extend gpstk::BDSEphemeris
+%extend gnsstk::BDSEphemeris
 {
-   BDSEphemeris(const gpstk::Rinex3NavData& d)
+   BDSEphemeris(const gnsstk::Rinex3NavData& d)
    {
-      return new gpstk::BDSEphemeris(d);
+      return new gnsstk::BDSEphemeris(d);
    }
 }
    // Allows cast from Rinex3NavData to EngEphemeris
-%extend gpstk::GalEphemeris
+%extend gnsstk::GalEphemeris
 {
-   GalEphemeris(const gpstk::Rinex3NavData& d)
+   GalEphemeris(const gnsstk::Rinex3NavData& d)
    {
-      return new gpstk::GalEphemeris(d);
+      return new gnsstk::GalEphemeris(d);
    }
 }
    // Allows cast from Rinex3NavData to GPSEphemeris
-%extend gpstk::QZSEphemeris
+%extend gnsstk::QZSEphemeris
 {
-   QZSEphemeris(const gpstk::Rinex3NavData& d)
+   QZSEphemeris(const gnsstk::Rinex3NavData& d)
    {
-      return new gpstk::QZSEphemeris(d);
+      return new gnsstk::QZSEphemeris(d);
    }
 }
 
-%extend gpstk::EngEphemeris
+%extend gnsstk::EngEphemeris
 {
-   EngEphemeris(const gpstk::Rinex3NavData& d)
+   EngEphemeris(const gnsstk::Rinex3NavData& d)
    {
-      return new gpstk::EngEphemeris(d);
+      return new gnsstk::EngEphemeris(d);
    }
 }
 
-%extend gpstk::GPSEphemeris
+%extend gnsstk::GPSEphemeris
 {
-   GPSEphemeris(const gpstk::Rinex3NavData& d)
+   GPSEphemeris(const gnsstk::Rinex3NavData& d)
    {
-      return new gpstk::GPSEphemeris(d);
+      return new gnsstk::GPSEphemeris(d);
    }
 }

@@ -6,27 +6,27 @@ Time Functions
 
 These are largely helper functions that make some functionality a little easier or more succinct.
 
-.. py:function:: gpstk.now([timeSystem=TimeSystem('UTC')])
+.. py:function:: gnsstk.now([timeSystem=TimeSystem('UTC')])
     :noindex:
 
 Returns the current time in the given TimeSystem. The default is in the UTC time system since the time is
 derived from calling SystemTime(). ::
 
-    >>> print gpstk.now()
+    >>> print gnsstk.now()
     2456490 72040524 0.000665000000000 UTC
 
 
-.. py:function:: gpstk.times(starttime, endtime[, seconds=0.0, days=0])
+.. py:function:: gnsstk.times(starttime, endtime[, seconds=0.0, days=0])
     :noindex:
 
 This returns a generator of CommonTime objects that starts at starttime and advances
 by the seconds and days parameter each time. Special cases (no timestep parameters,
 negative parameters) are documented in the function's docstring and the quick reference section. ::
 
-    >>> start = gpstk.now()
+    >>> start = gnsstk.now()
     >>> # wait a few seconds...
-    >>> end = gpstk.now()
-    >>> times = list(gpstk.times(start, end, seconds=1.0))
+    >>> end = gnsstk.now()
+    >>> times = list(gnsstk.times(start, end, seconds=1.0))
     >>> for t in times:
     ...     print t
 
@@ -46,42 +46,42 @@ Position Functions
 **********************************
 Some helpful functions for creating Position objects more easily (with keyword arguments) were also added:
 
-.. py:function:: gpstk.cartesian([x=0.0, y=0.0, z=0.0, model=None, frame=ReferenceFrame('Unknown)'])
+.. py:function:: gnsstk.cartesian([x=0.0, y=0.0, z=0.0, model=None, frame=ReferenceFrame('Unknown)'])
     :noindex:
 
-    >>> print gpstk.spherical(radius=5, theta=45, phi=45)
+    >>> print gnsstk.spherical(radius=5, theta=45, phi=45)
     45.00000000 deg 45.00000000 deg 5.0000 m
 
-.. autofunction:: gpstk.spherical([theta=0.0, phi=0.0, radius=0.0, model=None, frame=ReferenceFrame('Unknown')])
+.. autofunction:: gnsstk.spherical([theta=0.0, phi=0.0, radius=0.0, model=None, frame=ReferenceFrame('Unknown')])
     :noindex:
 
-.. autofunction:: gpstk.geodetic([latitude=0.0, longitude=0.0, height=0.0, model=None, frame=ReferenceFrame('Unknown')])
+.. autofunction:: gnsstk.geodetic([latitude=0.0, longitude=0.0, height=0.0, model=None, frame=ReferenceFrame('Unknown')])
     :noindex:
 
-.. autofunction:: gpstk.geocentric([latitude=0.0, longitude=0.0, radius=0.0, model=None, frame=ReferenceFrame('Unknown')])
+.. autofunction:: gnsstk.geocentric([latitude=0.0, longitude=0.0, radius=0.0, model=None, frame=ReferenceFrame('Unknown')])
     :noindex:
 
 The next four functions are simply light wrappers over some relatively simple classes.
 The use of a entire class objects was warranted in C++, but they are not neccessary
 for typical python usage.
 
-.. autofunction:: gpstk.moonPosition
+.. autofunction:: gnsstk.moonPosition
     :noindex:
 
-    >>> print gpstk.moonPosition(gpstk.now())
+    >>> print gnsstk.moonPosition(gnsstk.now())
     (62424169.398472935, -365987646.51255625, -83100797.60563189)
 
 
-.. autofunction:: gpstk.sunPosition
+.. autofunction:: gnsstk.sunPosition
     :noindex:
 
-.. autofunction:: gpstk.poleTides
+.. autofunction:: gnsstk.poleTides
     :noindex:
 
-.. autofunction:: gpstk.solidTides
+.. autofunction:: gnsstk.solidTides
     :noindex:
 
-    >>> print gpstk.solidTides(gpstk.now(), gpstk.geodetic(latitude=29, longitude=95, height=0))
+    >>> print gnsstk.solidTides(gnsstk.now(), gnsstk.geodetic(latitude=29, longitude=95, height=0))
     (0.1601640329929359, -0.0031534542100034955, -0.03016846270875466)
 
 
@@ -99,12 +99,12 @@ strategy is similarly uniform for the python bindings.
 
 As an example, to read a SP3 file: ::
 
-    >>> header, data = gpstk.readSP3('sp3_data.txt')
+    >>> header, data = gnsstk.readSP3('sp3_data.txt')
 
 
 And to write an SP3 file... ::
 
-    >>> gpstk.writeSP3('sp3_data.txt.new', header, data)
+    >>> gnsstk.writeSP3('sp3_data.txt.new', header, data)
 
 
 In this case, header is a SP3Header. Data is a list of SP3Data objects.
@@ -118,7 +118,7 @@ a list yourself using the list() initializer with the generator as the argument.
 A common paradigm is to loop over all elements in the data and process them.
 As an example, to print all the data sets in a RINEX 3 Nav file: ::
 
-    header, data = gpstk.readRinex3Nav('rinex3nav_data.txt')
+    header, data = gnsstk.readRinex3Nav('rinex3nav_data.txt')
     for d in data:
         print d
 
@@ -131,7 +131,7 @@ For example, to get a generator of Rinex3NavData objects with only the PRNID of 
 
     >>> isPRN3 = (lambda x: x.PRNID == 3)
 
-    >>> header, data = gpstk.readRinex3Nav('rinex3nav_data.txt', filterfunction=isPRN3)
+    >>> header, data = gnsstk.readRinex3Nav('rinex3nav_data.txt', filterfunction=isPRN3)
 
     >>> print data.next()
     Sat: G03 TOE: 1274 367200.000 TOC: 1274 367200.000 codeflags:   1 L2Pflag:   0 IODC:  902 IODE:  134 HOWtime: 362376 FitInt:  4.000
@@ -163,5 +163,5 @@ Several of the constants in GPS_URA.hpp were C-style arrays. These could not be 
 directly to Python lists (without code duplication), so functions were added that gave
 access to the underlying array.
 
-A C++ call to gpstk::SV_ACCURACY_GPS_MIN_INDEX[3] would become a Python statement of gpstk.constants.sv_accuracy_gps_min_index(3)
+A C++ call to gnsstk::SV_ACCURACY_GPS_MIN_INDEX[3] would become a Python statement of gnsstk.constants.sv_accuracy_gps_min_index(3)
 

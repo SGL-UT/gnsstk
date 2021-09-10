@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -54,18 +54,18 @@
 
 using std::vector;
 
-using gpstk::SatID;
-using gpstk::CommonTime;
-using gpstk::Xvt;
-using gpstk::Position;
-using gpstk::ord::IonosphereFreeRange;
-using gpstk::ord::RawRange1;
-using gpstk::ord::RawRange2;
-using gpstk::ord::RawRange3;
-using gpstk::ord::RawRange4;
-using gpstk::ord::SvRelativityCorrection;
-using gpstk::ord::TroposphereCorrection;
-using gpstk::ord::IonosphereModelCorrection;
+using gnsstk::SatID;
+using gnsstk::CommonTime;
+using gnsstk::Xvt;
+using gnsstk::Position;
+using gnsstk::ord::IonosphereFreeRange;
+using gnsstk::ord::RawRange1;
+using gnsstk::ord::RawRange2;
+using gnsstk::ord::RawRange3;
+using gnsstk::ord::RawRange4;
+using gnsstk::ord::SvRelativityCorrection;
+using gnsstk::ord::TroposphereCorrection;
+using gnsstk::ord::IonosphereModelCorrection;
 
 using ::testing::Return;
 using ::testing::Invoke;
@@ -90,7 +90,7 @@ TEST(OrdTestCase, TestBasicIonosphereFreeRangeRequiresMoreThanOne) {
     std::vector<double> pseudoranges(arr, arr + sizeof(arr) / sizeof(arr[0]) );
 
     ASSERT_THROW(IonosphereFreeRange(frequencies, pseudoranges),
-            gpstk::Exception);
+            gnsstk::Exception);
 }
 
 TEST(OrdTestCase, TestBasicIonosphereFreeRangeRejectsHigherThanDual) {
@@ -100,7 +100,7 @@ TEST(OrdTestCase, TestBasicIonosphereFreeRangeRejectsHigherThanDual) {
     std::vector<double> pseudoranges(arr, arr + sizeof(arr) / sizeof(arr[0]) );
 
     ASSERT_THROW(IonosphereFreeRange(frequencies, pseudoranges),
-            gpstk::Exception);
+            gnsstk::Exception);
 }
 
 
@@ -114,7 +114,7 @@ TEST(OrdTestCase, TestBasicIonosphereFreeRangeRejectsSizeMismatch) {
             arr + sizeof(arr) / sizeof(arr[0]) );
 
     ASSERT_THROW(IonosphereFreeRange(frequencies, pseudoranges),
-            gpstk::Exception);
+            gnsstk::Exception);
 }
 
 
@@ -126,7 +126,7 @@ TEST(OrdTestCase, TestGetXvtFromStore) {
 
     EXPECT_CALL(foo, getXvt(satId, time)).WillOnce(Return(fakeXvt));
 
-    Xvt resultXvt = gpstk::ord::getSvXvt(satId, time, foo);
+    Xvt resultXvt = gnsstk::ord::getSvXvt(satId, time, foo);
 
     // This assertion is a proxy for verifying that the two Xvt instances are
     // the same.
@@ -137,11 +137,11 @@ TEST(OrdTestCase, TestGetXvtFromStore) {
 TEST(OrdTestCase, TestRawRange1) {
     MockXvtStore foo;
     Position rxLocation(10, 10, 0);
-    gpstk::SatID satId(10, gpstk::SatelliteSystem::UserDefined);
-    gpstk::CommonTime time(gpstk::CommonTime::BEGINNING_OF_TIME);
+    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
+    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
     Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(0, 0, 0);
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(0, 0, 0);
     Xvt returnedXvt;
 
     EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
@@ -157,28 +157,28 @@ TEST(OrdTestCase, TestRawRange1) {
 TEST(OrdTestCase, TestRawRange1HandlesException) {
     MockXvtStore foo;
     Position rxLocation(10, 10, 0);
-    SatID satId(10, gpstk::SatelliteSystem::UserDefined);
-    CommonTime time(gpstk::CommonTime::BEGINNING_OF_TIME);
+    SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
+    CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
     Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(0, 0, 0);
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(0, 0, 0);
     Xvt returnedXvt;
 
     EXPECT_CALL(foo, getXvt(satId, _)).WillOnce(
-            Throw(gpstk::InvalidRequest("Unsupported satellite system")));
+            Throw(gnsstk::InvalidRequest("Unsupported satellite system")));
 
     ASSERT_THROW(RawRange1(rxLocation, satId, time, foo, returnedXvt),
-            gpstk::Exception);
+            gnsstk::Exception);
 }
 
 TEST(OrdTestCase, TestRawRange2) {
     MockXvtStore foo;
     Position rxLocation(10, 10, 0);
-    gpstk::SatID satId(10, gpstk::SatelliteSystem::UserDefined);
-    gpstk::CommonTime time(gpstk::CommonTime::BEGINNING_OF_TIME);
+    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
+    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
     Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(0, 0, 0);
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(0, 0, 0);
     Xvt returnedXvt;
 
     EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
@@ -194,28 +194,28 @@ TEST(OrdTestCase, TestRawRange2) {
 TEST(OrdTestCase, TestRawRange2HandlesException) {
     MockXvtStore foo;
     Position rxLocation(10, 10, 0);
-    SatID satId(10, gpstk::SatelliteSystem::UserDefined);
-    CommonTime time(gpstk::CommonTime::BEGINNING_OF_TIME);
+    SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
+    CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
     Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(0, 0, 0);
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(0, 0, 0);
     Xvt returnedXvt;
 
     EXPECT_CALL(foo, getXvt(satId, _)).WillOnce(
-            Throw(gpstk::InvalidRequest("Unsupported satellite system")));
+            Throw(gnsstk::InvalidRequest("Unsupported satellite system")));
 
     ASSERT_THROW(RawRange2(0, rxLocation, satId, time, foo, returnedXvt),
-            gpstk::Exception);
+            gnsstk::Exception);
 }
 
 TEST(OrdTestCase, TestRawRange3) {
     MockXvtStore foo;
     Position rxLocation(10, 10, 0);
-    gpstk::SatID satId(10, gpstk::SatelliteSystem::UserDefined);
-    gpstk::CommonTime time(gpstk::CommonTime::BEGINNING_OF_TIME);
+    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
+    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
     Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(0, 0, 0);
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(0, 0, 0);
     Xvt returnedXvt;
 
     EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
@@ -231,28 +231,28 @@ TEST(OrdTestCase, TestRawRange3) {
 TEST(OrdTestCase, TestRawRange3HandlesException) {
     MockXvtStore foo;
     Position rxLocation(10, 10, 0);
-    SatID satId(10, gpstk::SatelliteSystem::UserDefined);
-    CommonTime time(gpstk::CommonTime::BEGINNING_OF_TIME);
+    SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
+    CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
     Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(0, 0, 0);
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(0, 0, 0);
     Xvt returnedXvt;
 
     EXPECT_CALL(foo, getXvt(satId, _)).WillOnce(
-            Throw(gpstk::InvalidRequest("Unsupported satellite system")));
+            Throw(gnsstk::InvalidRequest("Unsupported satellite system")));
 
     ASSERT_THROW(RawRange3(0, rxLocation, satId, time, foo, returnedXvt),
-            gpstk::Exception);
+            gnsstk::Exception);
 }
 
 TEST(OrdTestCase, TestRawRange4) {
     MockXvtStore foo;
     Position rxLocation(10, 10, 0);
-    gpstk::SatID satId(10, gpstk::SatelliteSystem::UserDefined);
-    gpstk::CommonTime time(gpstk::CommonTime::BEGINNING_OF_TIME);
+    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
+    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
     Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(0, 0, 0);
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(0, 0, 0);
     Xvt returnedXvt;
 
     EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
@@ -268,18 +268,18 @@ TEST(OrdTestCase, TestRawRange4) {
 TEST(OrdTestCase, TestRawRange4HandlesException) {
     MockXvtStore foo;
     Position rxLocation(10, 10, 0);
-    SatID satId(10, gpstk::SatelliteSystem::UserDefined);
-    CommonTime time(gpstk::CommonTime::BEGINNING_OF_TIME);
+    SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
+    CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
     Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(0, 0, 0);
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(0, 0, 0);
     Xvt returnedXvt;
 
     EXPECT_CALL(foo, getXvt(satId, _)).WillOnce(
-            Throw(gpstk::InvalidRequest("Unsupported satellite system")));
+            Throw(gnsstk::InvalidRequest("Unsupported satellite system")));
 
     ASSERT_THROW(RawRange4(rxLocation, satId, time, foo, returnedXvt),
-            gpstk::Exception);
+            gnsstk::Exception);
 }
 
 TEST(OrdTestCase, TestSvRelativityCorrection) {
@@ -287,7 +287,7 @@ TEST(OrdTestCase, TestSvRelativityCorrection) {
 
     EXPECT_CALL(sv_xvt, computeRelativityCorrection()).WillOnce(Return(5.6));
 
-    double return_value = gpstk::ord::SvRelativityCorrection(sv_xvt);
+    double return_value = gnsstk::ord::SvRelativityCorrection(sv_xvt);
 
     // Only verify that the number is less than -1e6
     // --- it's been multiplied by the speed of light.
@@ -296,8 +296,8 @@ TEST(OrdTestCase, TestSvRelativityCorrection) {
 
 TEST(OrdTestCase, TestTropoCorrection) {
     Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(0, 0, 0);
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(0, 0, 0);
     MockTropo tropo;
 
     Position rxLocation(10, 10, 0);
@@ -311,9 +311,9 @@ TEST(OrdTestCase, TestTropoCorrection) {
 
 TEST(OrdTestCase, TestIonoCorrection) {
     Xvt fakeXvt;
-    fakeXvt.x = gpstk::Triple(100, 100, 100);
-    fakeXvt.v = gpstk::Triple(0, 0, 0);
-    CommonTime time(gpstk::CommonTime::BEGINNING_OF_TIME);
+    fakeXvt.x = gnsstk::Triple(100, 100, 100);
+    fakeXvt.v = gnsstk::Triple(0, 0, 0);
+    CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
     MockIono iono;
 
     Position rxLocation(10, 10, 0);
@@ -321,7 +321,7 @@ TEST(OrdTestCase, TestIonoCorrection) {
     EXPECT_CALL(iono, getCorrection_wrap(_, _, _, _, _)).WillOnce(Return(42.0));
 
     double return_value = IonosphereModelCorrection(iono, time,
-            gpstk::IonoModel::L1, rxLocation, fakeXvt);
+            gnsstk::IonoModel::L1, rxLocation, fakeXvt);
 
     ASSERT_EQ(return_value, -42.0);
 }

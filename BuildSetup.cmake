@@ -1,4 +1,4 @@
-# gpstk/BuildSetup.cmake
+# gnsstk/BuildSetup.cmake
 #========================================
 # Try to keep all the platform dependent
 # options in this file
@@ -140,16 +140,16 @@ if( DEBUG_SWITCH AND NOT DEBUG_VERBOSE )
     message( STATUS "CMAKE_INSTALL_RPATH       = ${CMAKE_INSTALL_RPATH}" )
     message( STATUS "CMAKE_BUILD_WITH_INSTALL_RPATH = ${CMAKE_BUILD_WITH_INSTALL_RPATH}" )
     message( STATUS "CMAKE_INSTALL_RPATH_USE_LINK_PATH = ${CMAKE_INSTALL_RPATH_USE_LINK_PATH}" )
-    message( STATUS "CMAKE_CURRENT_LIST_DIR   = ${CMAKE_CURRENT_LIST_DIR}" )    # e.g., $HOME/git/gpstk
-    message( STATUS "CMAKE_CURRENT_LIST_FILE  = ${CMAKE_CURRENT_LIST_FILE}" )   # e.g., $HOME/git/gpstk/CMakeLists.txt
-    message( STATUS "CMAKE_SOURCE_DIR         = ${CMAKE_SOURCE_DIR}" )          # e.g., $HOME/git/gpstk
-    message( STATUS "CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}" )  # e.g., $HOME/git/gpstk
-    message( STATUS "CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}" )  # e.g., $HOME/git/gpstk/build
-    message( STATUS "PROJECT_NAME             = ${PROJECT_NAME}" )              # e.g., gpstk
-    message( STATUS "PROJECT_BINARY_DIR       = ${PROJECT_BINARY_DIR}" )        # e.g., $HOME/git/gpstk/build
-    message( STATUS "PROJECT_SOURCE_DIR       = ${PROJECT_SOURCE_DIR}" )        # e.g., $HOME/git/gpstk
+    message( STATUS "CMAKE_CURRENT_LIST_DIR   = ${CMAKE_CURRENT_LIST_DIR}" )    # e.g., $HOME/git/gnsstk
+    message( STATUS "CMAKE_CURRENT_LIST_FILE  = ${CMAKE_CURRENT_LIST_FILE}" )   # e.g., $HOME/git/gnsstk/CMakeLists.txt
+    message( STATUS "CMAKE_SOURCE_DIR         = ${CMAKE_SOURCE_DIR}" )          # e.g., $HOME/git/gnsstk
+    message( STATUS "CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}" )  # e.g., $HOME/git/gnsstk
+    message( STATUS "CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}" )  # e.g., $HOME/git/gnsstk/build
+    message( STATUS "PROJECT_NAME             = ${PROJECT_NAME}" )              # e.g., gnsstk
+    message( STATUS "PROJECT_BINARY_DIR       = ${PROJECT_BINARY_DIR}" )        # e.g., $HOME/git/gnsstk/build
+    message( STATUS "PROJECT_SOURCE_DIR       = ${PROJECT_SOURCE_DIR}" )        # e.g., $HOME/git/gnsstk
     message( STATUS "CMAKE_INSTALL_DIR        = ${CMAKE_INSTALL_DIR}" )         # e.g., /usr
-    message( STATUS "CMAKE_INSTALL_PREFIX     = ${CMAKE_INSTALL_PREFIX}" )      # e.g., $HOME/.local/gpstk
+    message( STATUS "CMAKE_INSTALL_PREFIX     = ${CMAKE_INSTALL_PREFIX}" )      # e.g., $HOME/.local/gnsstk
 endif()
 
 #----------------------------------------
@@ -170,8 +170,8 @@ install( FILES "${PROJECT_BINARY_DIR}/generated/build_config.h" DESTINATION "${C
 #----------------------------------------
 # Create file with install-information for down-stream pacakges.
 #----------------------------------------
-configure_file( "${PROJECT_SOURCE_DIR}/gpstk-config.in" "${PROJECT_BINARY_DIR}/generated/gpstk-config" )
-install( PROGRAMS "${PROJECT_BINARY_DIR}/generated/gpstk-config"
+configure_file( "${PROJECT_SOURCE_DIR}/gnsstk-config.in" "${PROJECT_BINARY_DIR}/generated/gnsstk-config" )
+install( PROGRAMS "${PROJECT_BINARY_DIR}/generated/gnsstk-config"
          DESTINATION "${CMAKE_INSTALL_BINDIR}" )
 
 #----------------------------------------
@@ -200,16 +200,16 @@ elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
     set( CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE.md")
 endif()
 
-set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "Libraries and applications for the GNSS processing GPSTk toolkit.") 
+set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "Libraries and applications for the GNSS processing GNSSTk toolkit.") 
 set( CPACK_PACKAGE_VENDOR "ARL:UT SGL" )
 set( CPACK_PACKAGE_CONTACT "Bryan Parsons <bparsons@arlut.utexas.edu>" )
 set( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md" )
-set( CPACK_PACKAGE_VERSION_MAJOR "${GPSTK_VERSION_MAJOR}" )
-set( CPACK_PACKAGE_VERSION_MINOR "${GPSTK_VERSION_MINOR}" )
-set( CPACK_PACKAGE_VERSION_PATCH "${GPSTK_VERSION_PATCH}" )
+set( CPACK_PACKAGE_VERSION_MAJOR "${GNSSTK_VERSION_MAJOR}" )
+set( CPACK_PACKAGE_VERSION_MINOR "${GNSSTK_VERSION_MINOR}" )
+set( CPACK_PACKAGE_VERSION_PATCH "${GNSSTK_VERSION_PATCH}" )
 set( CPACK_INCLUDE_TOPLEVEL_DIRECTORY "OFF" )
-set( CPACK_PACKAGE_INSTALL_DIRECTORY "gpstk")
-set( CPACK_TOPLEVEL_TAG "gpstk" ) 
+set( CPACK_PACKAGE_INSTALL_DIRECTORY "gnsstk")
+set( CPACK_TOPLEVEL_TAG "gnsstk" ) 
 
 set( CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.13)" )
 set( CPACK_DEBIAN_SECTION "stable" )

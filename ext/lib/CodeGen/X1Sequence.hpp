@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -42,10 +42,10 @@
 #define X1SEQUENCE_HPP
 
    // Project headers
-#include "gpstkplatform.h"
+#include "gnsstkplatform.h"
 #include "PCodeConst.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 /// @ingroup CodeGen   
 //@{
@@ -93,7 +93,7 @@ namespace gpstk
              *   PRIOR to instantiating the first X1Sequence object. 
              *   X1Sequence::allocateMemory() should only be called once.
              *   Violation of either condition will result in a 
-             *   gpstk::Exception thrown from either X1Sequence::X1Sequence()
+             *   gnsstk::Exception thrown from either X1Sequence::X1Sequence()
              *   or X1Sequence::allocateMemory().
              *
              *   The X1Sequence::deAllocateMemory() method may be called to

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -52,7 +52,7 @@ public:
 //==========================================================================================================================
    int constructorTest(void)
    {
-      gpstk::TestUtil testFramework( "PolyFit", "Constructor", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "PolyFit", "Constructor", __FILE__, __LINE__ );
       try
       {
          //---------------------------------------------------------------------
@@ -60,11 +60,11 @@ public:
          //---------------------------------------------------------------------
          try
          {
-            gpstk::PolyFit<double> PolyCheck;
+            gnsstk::PolyFit<double> PolyCheck;
             testFramework.assert(true, "Default constructor successfully built a PolyFit object", __LINE__);
          }
          catch(...){testFramework.assert(false, "Unexpected exception thrown during default construction of a PolyFit object", __LINE__); }
-         gpstk::PolyFit<double> Poly;
+         gnsstk::PolyFit<double> Poly;
          testFramework.assert((unsigned) 0 == Poly.N()     , "Default constructor created an object with data in it"    , __LINE__);
          testFramework.assert((unsigned) 0 == Poly.Degree(), "Default constructor allows for non-constant fits"         , __LINE__);
          testFramework.assert(Poly.isSingular()            , "The fit found after default construction was not singular", __LINE__);
@@ -74,16 +74,16 @@ public:
          //---------------------------------------------------------------------
          try
          {
-            gpstk::PolyFit<double> PolyCheck(4);
+            gnsstk::PolyFit<double> PolyCheck(4);
             testFramework.assert(true, "Explicit constructor successfully built a PolyFit object", __LINE__);
          }
          catch(...){testFramework.assert(false, "Unexpected exception thrown during explicit construction of a PolyFit object", __LINE__); }
-         gpstk::PolyFit<double> Poly4((unsigned) 4);
+         gnsstk::PolyFit<double> Poly4((unsigned) 4);
          testFramework.assert((unsigned) 0 == Poly4.N()     , "Explicit constructor created an object with data in it"            , __LINE__);
          testFramework.assert((unsigned) 4 == Poly4.Degree(), "Explicit constructor does not fit polynomials of the correct order", __LINE__);
          testFramework.assert(Poly4.isSingular()            , "The fit found after explicit construction was not singular"        , __LINE__);
       }
-      catch (gpstk::Exception& e) {}
+      catch (gnsstk::Exception& e) {}
 
       return testFramework.countFails();
    }
@@ -96,20 +96,20 @@ public:
 //==========================================================================================================================
    int AddTest()
    {
-      gpstk::TestUtil testFramework( "PolyFit", "Add", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "PolyFit", "Add", __FILE__, __LINE__ );
       std::string failMesg;
 
       int n = 4;
-      gpstk::PolyFit<double> testSingle(n), testGpstkVector(n), testStdVector(n);
+      gnsstk::PolyFit<double> testSingle(n), testGnsstkVector(n), testStdVector(n);
       double indepSingle[6] = {0, 1, 2, 3, 4, 5}, depSingle[6] = {0, 1, 8, 27, 64, 125};
-      gpstk::Vector<double> indepGpstkVector(6,0.), depGpstkVector(6,0.);
+      gnsstk::Vector<double> indepGnsstkVector(6,0.), depGnsstkVector(6,0.);
       std::vector<double>   indepStdVector(6,0.)  , depStdVector(6,0.);
 
       for(int i=0; i<6; i++)
       {
-         indepGpstkVector[i] = indepSingle[i];
+         indepGnsstkVector[i] = indepSingle[i];
          indepStdVector[i]   = indepSingle[i];	
-         depGpstkVector[i]   = depSingle[i];
+         depGnsstkVector[i]   = depSingle[i];
          depStdVector[i]     = depSingle[i];			
       }			
 
@@ -130,15 +130,15 @@ public:
       catch(...){testFramework.assert(false, "Exception thrown during Single add", __LINE__);}		
 
       //---------------------------------------------------------------------
-      //Test the gpstk::Vector Add
+      //Test the gnsstk::Vector Add
       //---------------------------------------------------------------------
       try 
       {
-         //Check that all values can be added with a gpstk::Vector
-         testGpstkVector.Add(indepGpstkVector, depGpstkVector);
-         testFramework.assert(testGpstkVector.N() == 6, "Not all gpstk::Vector adds were successful", __LINE__);		
+         //Check that all values can be added with a gnsstk::Vector
+         testGnsstkVector.Add(indepGnsstkVector, depGnsstkVector);
+         testFramework.assert(testGnsstkVector.N() == 6, "Not all gnsstk::Vector adds were successful", __LINE__);		
       }
-      catch(...){testFramework.assert(false, "Exception thrown during gpstk::Vector add", __LINE__);}	
+      catch(...){testFramework.assert(false, "Exception thrown during gnsstk::Vector add", __LINE__);}	
 
 
       //---------------------------------------------------------------------
@@ -167,15 +167,15 @@ public:
 //==========================================================================================================================
    int resetTest(void)
    {
-      gpstk::TestUtil testFramework( "PolyFit", "Reset", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "PolyFit", "Reset", __FILE__, __LINE__ );
       bool covMatDiffBool = true;
       bool solnDiffBool = true;	
 		
       //Polynomial will be reset without user inputed parameter
-      gpstk::PolyFit<double> resetPolyD(2);
+      gnsstk::PolyFit<double> resetPolyD(2);
 	
       //Poly will be reset with a parameter
-      gpstk::PolyFit<double> resetPolyP(2);
+      gnsstk::PolyFit<double> resetPolyP(2);
 	
 
       double data[4] = {0.,2.,4.,-1.};
@@ -192,11 +192,11 @@ public:
       //---------------------------------------------------------------------	
       resetPolyD.Reset();
 	
-      gpstk::Matrix<double> Blank(2,2,0.);
-      gpstk::Vector<double> Zero(2,0.);
+      gnsstk::Matrix<double> Blank(2,2,0.);
+      gnsstk::Vector<double> Zero(2,0.);
 	
-      gpstk::Vector<double> resetPolyDSolution = resetPolyD.Solution();
-      gpstk::Matrix<double> resetPolyDCov = resetPolyD.Covariance();
+      gnsstk::Vector<double> resetPolyDSolution = resetPolyD.Solution();
+      gnsstk::Matrix<double> resetPolyDCov = resetPolyD.Covariance();
 	
       testFramework.assert((unsigned) 0 == resetPolyD.N()     , "Reset did not set the datapoint counter to zero"   , __LINE__);
       testFramework.assert((unsigned) 2 == resetPolyD.Degree(), "Reset did not maintain the maximum fit degree as 2", __LINE__);
@@ -221,11 +221,11 @@ public:
       covMatDiffBool = true;
       solnDiffBool = true;	
 
-      gpstk::Matrix<double> BlankP(3,3,0.);
-      gpstk::Vector<double> ZeroP(3,0.);
+      gnsstk::Matrix<double> BlankP(3,3,0.);
+      gnsstk::Vector<double> ZeroP(3,0.);
 	
-      gpstk::Vector<double> resetPolyPSolution = resetPolyP.Solution();
-      gpstk::Matrix<double> resetPolyPCov = resetPolyP.Covariance();
+      gnsstk::Vector<double> resetPolyPSolution = resetPolyP.Solution();
+      gnsstk::Matrix<double> resetPolyPCov = resetPolyP.Covariance();
 	
       testFramework.assert((unsigned) 0 == resetPolyP.N()     , "Reset(int) did not set the datapoint counter to zero" , __LINE__);
       testFramework.assert((unsigned) 3 == resetPolyP.Degree(), "Reset(int) did not change the maximum fit degree to 3", __LINE__);
@@ -252,13 +252,13 @@ public:
 //==========================================================================================================================
    int SolutionTest3rdOrderResult()
    {
-      gpstk::TestUtil testFramework( "PolyFit", "Solution", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "PolyFit", "Solution", __FILE__, __LINE__ );
       std::string failMesg;
 
       int n = 4; //Highest order in polynomial fit + 1 (constant term)
       int errorCounter = 0;
-      gpstk::PolyFit<double> test(n); 
-      gpstk::Vector<double> soln; // To store the solution
+      gnsstk::PolyFit<double> test(n); 
+      gnsstk::Vector<double> soln; // To store the solution
       // Data values to create the fit
       double indep[6] = {0, 1, 2, 3, 4, 5}, dep[6] = {0, 1, 8, 27, 64, 125};
       // Add the data to the PolyFit object
@@ -294,13 +294,13 @@ public:
 //==========================================================================================================================
    int SolutionTest2ndOrderResult()
    {
-      gpstk::TestUtil testFramework( "PolyFit", "Solution", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "PolyFit", "Solution", __FILE__, __LINE__ );
       std::string failMesg;
 
       int n = 4;
       int errorCounter = 0;
-      gpstk::PolyFit<double> test(n);
-      gpstk::Vector<double> soln;
+      gnsstk::PolyFit<double> test(n);
+      gnsstk::Vector<double> soln;
       double indep[6] = {0, 1, 2, 3, 4, 5}, dep[6] = {0, 1, 4, 9, 16, 25};
 
       for(int i=0; i<6; i++)
@@ -335,13 +335,13 @@ public:
 //==========================================================================================================================
    int SolutionTest1stOrderResult()
    {
-      gpstk::TestUtil testFramework( "PolyFit", "Solution", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "PolyFit", "Solution", __FILE__, __LINE__ );
       std::string failMesg;
 
       int n = 4;
       int errorCounter = 0;
-      gpstk::PolyFit<double> test(n);
-      gpstk::Vector<double> soln;
+      gnsstk::PolyFit<double> test(n);
+      gnsstk::Vector<double> soln;
       double indep[6] = {0, 1, 2, 3, 4, 5}, dep[6] = {0, 1, 2, 3, 4, 5};
 
       for(int i=0; i<6; i++)
@@ -376,13 +376,13 @@ public:
 //==========================================================================================================================
    int SolutionTest0thOrderResult()
    {
-      gpstk::TestUtil testFramework( "PolyFit", "Solution", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "PolyFit", "Solution", __FILE__, __LINE__ );
       std::string failMesg;
 
       int n = 4;
       int errorCounter = 0;
-      gpstk::PolyFit<double> test(n);
-      gpstk::Vector<double> soln;
+      gnsstk::PolyFit<double> test(n);
+      gnsstk::Vector<double> soln;
       double indep[6] = {0, 1, 2, 3, 4, 5}, dep[6] = {7, 7, 7, 7, 7, 7};
 
       for(int i=0; i<6; i++)
@@ -416,13 +416,13 @@ public:
 //==========================================================================================================================
    int SolutionTest()
    {
-      gpstk::TestUtil testFramework( "PolyFit", "Solution", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "PolyFit", "Solution", __FILE__, __LINE__ );
       std::string failMesg;
 
       int n = 4;
       int errorCounter = 0;
-      gpstk::PolyFit<double> test(n);
-      gpstk::Vector<double> soln;
+      gnsstk::PolyFit<double> test(n);
+      gnsstk::Vector<double> soln;
       double indep[6] = {0, 1, 2, 3, 4, 5}, dep[6] = {2, 8, 30, 80, 170, 312};
 
       for(int i=0; i<6; i++)
@@ -457,12 +457,12 @@ public:
 //==========================================================================================================================
    int SolutionFailTest()
    {
-      gpstk::TestUtil testFramework( "PolyFit", "Solution", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "PolyFit", "Solution", __FILE__, __LINE__ );
       std::string failMesg;
 
       int n = 4;
-      gpstk::PolyFit<double> test(n);
-      gpstk::Vector<double> soln;
+      gnsstk::PolyFit<double> test(n);
+      gnsstk::Vector<double> soln;
       // Set the independent variable to the same value
       double indep[6] = {1, 1, 1, 1, 1, 1}, dep[6] = {1, 2, 3, 4, 5, 6};
 
@@ -487,12 +487,12 @@ public:
 //==========================================================================================================================
    int EvaluateVectorTest()
    {
-      gpstk::TestUtil testFramework( "PolyFit", "Evaluate", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "PolyFit", "Evaluate", __FILE__, __LINE__ );
       std::string failMesg;
 
       int n = 4;
-      gpstk::PolyFit<double> test(n);
-      gpstk::Vector<double> soln(3,0.), eval(3,0.);
+      gnsstk::PolyFit<double> test(n);
+      gnsstk::Vector<double> soln(3,0.), eval(3,0.);
       double indep[6] = {0, 1, 2, 3, 4, 5}, dep[6] = {0, 1, 4, 9, 16, 25};
 
       eval[0] = 6;
@@ -529,11 +529,11 @@ public:
 //==========================================================================================================================
    int EvaluateTest()
    {
-      gpstk::TestUtil testFramework( "PolyFit", "Evaluate", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "PolyFit", "Evaluate", __FILE__, __LINE__ );
       std::string failMesg;
 
       int n = 4;
-      gpstk::PolyFit<double> test(n);
+      gnsstk::PolyFit<double> test(n);
       double soln, eval;
       double indep[6] = {0, 1, 2, 3, 4, 5}, dep[6] = {0, 1, 4, 9, 16, 25};
 

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -45,20 +45,20 @@
 #include "DebugTrace.hpp"
 
 /// convert test data time stamps that EU used to CivilTime object
-gpstk::CivilTime convertTime(double hour, int month)
+gnsstk::CivilTime convertTime(double hour, int month)
 {
       // convert hour/month to a usable CivilTime object
    int hr = trunc(hour);
    double soh = (hour-hr)*3600;
    int min = trunc(soh/60.0);
    double sec = fmod(soh,60.0);
-   gpstk::CivilTime ct(2525,month,1,hr,min,sec,gpstk::TimeSystem::UTC);
-   GPSTK_ASSERT(fabs(ct.getUTHour()-hour) < 1e-7);
+   gnsstk::CivilTime ct(2525,month,1,hr,min,sec,gnsstk::TimeSystem::UTC);
+   GNSSTK_ASSERT(fabs(ct.getUTHour()-hour) < 1e-7);
    return ct;
 }
 
 /// Use this "ellipsoid" (sphere) for all testing
-gpstk::GalileoIonoEllipsoid galEll;
+gnsstk::GalileoIonoEllipsoid galEll;
 
 class NeQuickIonoData_T
 {
@@ -94,7 +94,7 @@ public:
    public:
       TestData(double hour, int month, double iazr, double lon, double lat,
                double cf, double tf)
-            : tAzr(iazr), tPos(lat,lon,0,gpstk::Position::Geodetic, &galEll),
+            : tAzr(iazr), tPos(lat,lon,0,gnsstk::Position::Geodetic, &galEll),
               criticalFreq(cf), transFactor(tf), ct(convertTime(hour, month))
       {
             // Test data supplies Azr (effective sunspot count), but
@@ -103,10 +103,10 @@ public:
          tAz = tAzr + 408.99;
          tAz = (((tAz * tAz) - 167273)/1123.6) + 63.7;
       }
-      gpstk::CivilTime ct;
+      gnsstk::CivilTime ct;
       double tAzr;
       double tAz;
-      gpstk::Position tPos;
+      gnsstk::Position tPos;
       double criticalFreq;
       double transFactor;
    };
@@ -181,11 +181,11 @@ public:
    public:
       TestDataSolar(double lon, double lat, double hour, int month,
                     double expect)
-            : pos(lat,lon,0,gpstk::Position::Geodetic, &galEll),
+            : pos(lat,lon,0,gnsstk::Position::Geodetic, &galEll),
               ct(convertTime(hour,month)), expAngle(expect)
       {}
-      gpstk::Position pos;
-      gpstk::CivilTime ct;
+      gnsstk::Position pos;
+      gnsstk::CivilTime ct;
       double expAngle;
    };
 
@@ -195,13 +195,13 @@ public:
    public:
       TestDataCritFreqE(double az, double lon, double lat, double hour,
                         int month, double expect)
-            : tAz(az), pos(lat,lon,0,gpstk::Position::Geodetic, &galEll),
+            : tAz(az), pos(lat,lon,0,gnsstk::Position::Geodetic, &galEll),
               ct(convertTime(hour,month)), expFreq(expect)
       {
       }
       double tAz;
-      gpstk::Position pos;
-      gpstk::CivilTime ct;
+      gnsstk::Position pos;
+      gnsstk::CivilTime ct;
       double expFreq;
    };
 
@@ -256,15 +256,15 @@ public:
                   double expect)
             : coefficients(coeff),
               ct(convertTime(hour,month)),
-              station(stalat, stalon, stah, gpstk::Position::Geodetic, &galEll),
-              satellite(satlat, satlon, sath, gpstk::Position::Geodetic,
+              station(stalat, stalon, stah, gnsstk::Position::Geodetic, &galEll),
+              satellite(satlat, satlon, sath, gnsstk::Position::Geodetic,
                         &galEll),
               expTEC(expect)
       {}
       std::vector<double> coefficients;
-      gpstk::CivilTime ct;
-      gpstk::Position station;
-      gpstk::Position satellite;
+      gnsstk::CivilTime ct;
+      gnsstk::Position station;
+      gnsstk::Position satellite;
       double expTEC;
    };
 
@@ -293,9 +293,9 @@ public:
       /// Input/truth data for getTECTest
    static const TestDataTEC testDataTEC[];
       /// Tool for computing modified dip latitude.
-   gpstk::MODIP modip;
+   gnsstk::MODIP modip;
       /// Tool for looking up iono model data.
-   gpstk::CCIR ccir;
+   gnsstk::CCIR ccir;
       /// Epsilon for critical frequency checks.
    static const double criticalFreqEps;
       /// Epsilon for trans factor checks.
@@ -667,7 +667,7 @@ unsigned NeQuickIonoData_T ::
 constructorTest()
 {
    TUDEF("NeQuickIonoData", "NeQuickIonoData()");
-   gpstk::NeQuickIonoData uut;
+   gnsstk::NeQuickIonoData uut;
    TUASSERTFE(0.0, uut.ai[0]);
    TUASSERTFE(0.0, uut.ai[1]);
    TUASSERTFE(0.0, uut.ai[2]);
@@ -685,7 +685,7 @@ getEffIonoLevelTest()
 {
    TUDEF("NeQuickIonoData", "getEffIonoLevel");
    unsigned numTests = sizeof(testDataAz)/sizeof(testDataAz[0]);
-   gpstk::NeQuickIonoData uut;
+   gnsstk::NeQuickIonoData uut;
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataAz& td(testDataAz[testNum]);
@@ -705,7 +705,7 @@ constructor2Test()
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataCritFreqE& td(testDataCFE[testNum]);
-      gpstk::NeQuickIonoData::ModelParameters uut(
+      gnsstk::NeQuickIonoData::ModelParameters uut(
          0, td.pos, td.tAz, ccir, td.ct);
       TUASSERTFEPS(td.expFreq, uut.ffoE, criticalFreqEps);
    }
@@ -722,7 +722,7 @@ legendreTest()
    {
       const TestData& td(testData[testNum]);
       double modip_u = modip.stModip(td.tPos);
-      gpstk::NeQuickIonoData::ModelParameters uut(
+      gnsstk::NeQuickIonoData::ModelParameters uut(
          modip_u, td.tPos, td.tAz, ccir, td.ct);
          // sanity check
       TUASSERTFEPS(td.tAzr, uut.fAzr, ionoSpotsEps);
@@ -741,7 +741,7 @@ heightTest()
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataHeight& td(testDataHeight[testNum]);
-      gpstk::NeQuickIonoData::ModelParameters uut(ccir);
+      gnsstk::NeQuickIonoData::ModelParameters uut(ccir);
       uut.fM3000F2 = td.transFactor;
       uut.ffoF2 = td.criticalFreqF2;
       uut.ffoE = td.criticalFreqE;
@@ -760,7 +760,7 @@ exosphereAdjustTest()
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataExosphere& td(testDataExosphere[testNum]);
-      gpstk::NeQuickIonoData::ModelParameters uut(ccir);
+      gnsstk::NeQuickIonoData::ModelParameters uut(ccir);
       uut.fNmF2 = td.electronDensity;
       uut.fB2bot = td.bottom;
       uut.fhmF2 = td.height;
@@ -780,7 +780,7 @@ peakAmplitudesTest()
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataAmplitude& td(testDataAmplitude[testNum]);
-      gpstk::NeQuickIonoData::ModelParameters uut(ccir);
+      gnsstk::NeQuickIonoData::ModelParameters uut(ccir);
       uut.fNmE = td.electronDensityE;
       uut.fBEtop = td.peakThickTopE;
       uut.ffoF1 = td.critFreqF1;
@@ -807,8 +807,8 @@ effSolarZenithAngleTest()
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataSolar& td(testDataSolar[testNum]);
-      gpstk::NeQuickIonoData::ModelParameters uut(ccir);
-      gpstk::Angle rv = uut.effSolarZenithAngle(td.pos, td.ct);
+      gnsstk::NeQuickIonoData::ModelParameters uut(ccir);
+      gnsstk::Angle rv = uut.effSolarZenithAngle(td.pos, td.ct);
       TUASSERTFEPS(td.expAngle, rv.deg(), solarEps);
    }
    TURETURN();
@@ -825,7 +825,7 @@ thicknessTest()
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataThickness& td(testDataThickness[testNum]);
-      gpstk::NeQuickIonoData::ModelParameters uut(ccir);
+      gnsstk::NeQuickIonoData::ModelParameters uut(ccir);
       uut.fM3000F2 = td.transFactor;
       uut.ffoF2 = td.critFreqF2;
       uut.fNmF2 = td.electronDensityF2;
@@ -848,7 +848,7 @@ getTECTest()
    using namespace std;
    TUDEF("NeQuickIonoData::ModelParameters", "getTEC");
    unsigned numTests = sizeof(testDataTEC)/sizeof(testDataTEC[0]);
-   gpstk::NeQuickIonoData uut;
+   gnsstk::NeQuickIonoData uut;
       /// E layer maximum density height in km.
    constexpr double hmE = 120.0;                                        //eq.78
    for (unsigned testNum = 0; testNum < numTests; testNum++)
@@ -877,9 +877,9 @@ getTECTest()
 }
 
 
-inline double getFactor(gpstk::CarrierBand band)
+inline double getFactor(gnsstk::CarrierBand band)
 {
-   double freq = gpstk::getFrequency(band);
+   double freq = gnsstk::getFrequency(band);
    return 40.3 / (freq*freq);
 }
 
@@ -889,15 +889,15 @@ getCorrectionTest()
    using namespace std;
    TUDEF("NeQuickIonoData::ModelParameters", "getCorrection");
    unsigned numTests = sizeof(testDataTEC)/sizeof(testDataTEC[0]);
-   gpstk::NeQuickIonoData uut;
+   gnsstk::NeQuickIonoData uut;
       /// E layer maximum density height in km.
    constexpr double hmE = 120.0;                                        //eq.78
-   gpstk::CarrierBand band;
+   gnsstk::CarrierBand band;
    double expCorr;
       // Only testing two carrier bands to make sure the formula
       // works.  The code is too slow for more thorough testing.
-   const double factorL1 = getFactor(gpstk::CarrierBand::L1);
-   const double factorL5 = getFactor(gpstk::CarrierBand::L5);
+   const double factorL1 = getFactor(gnsstk::CarrierBand::L1);
+   const double factorL5 = getFactor(gnsstk::CarrierBand::L5);
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataTEC& td(testDataTEC[testNum]);
@@ -905,13 +905,13 @@ getCorrectionTest()
       uut.ai[1] = td.coefficients[1];
       uut.ai[2] = td.coefficients[2];
          // test L1
-      band = gpstk::CarrierBand::L1;
+      band = gnsstk::CarrierBand::L1;
       expCorr = td.expTEC * factorL1 * 1e16;
       TUASSERTFEPS(expCorr, uut.getCorrection(td.ct, td.station, td.satellite,
                                               band),
                    docEps);
          // test L5
-      band = gpstk::CarrierBand::L5;
+      band = gnsstk::CarrierBand::L5;
       expCorr = td.expTEC * factorL5 * 1e16;
       TUASSERTFEPS(expCorr, uut.getCorrection(td.ct, td.station, td.satellite,
                                               band),

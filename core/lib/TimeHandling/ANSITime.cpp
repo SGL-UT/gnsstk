@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -42,7 +42,7 @@
 #include "ANSITime.hpp"
 #include "TimeConstants.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    ANSITime& ANSITime::operator=( const ANSITime& right )
    {
@@ -64,7 +64,7 @@ namespace gpstk
       catch (InvalidParameter& ip)
       {
          InvalidRequest ir(ip);
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
    }
 
@@ -80,7 +80,7 @@ namespace gpstk
       if ( ct < MIN_CT || ct > MAX_CT )
       {
          InvalidRequest ir("Unable to convert given CommonTime to ANSITime.");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       long jday, sod;
@@ -106,7 +106,7 @@ namespace gpstk
       }
       catch( StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
    }
 
@@ -125,7 +125,7 @@ namespace gpstk
       }
       catch( StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
    }
 
@@ -142,7 +142,7 @@ namespace gpstk
                break;
 
             case 'P':
-               timeSystem = gpstk::StringUtils::asTimeSystem(i->second);
+               timeSystem = gnsstk::StringUtils::asTimeSystem(i->second);
                break;
 
             default:
@@ -200,7 +200,7 @@ namespace gpstk
          timeSystem != right.timeSystem)
       {
          InvalidRequest ir("CommonTime objects not in same time system, cannot be compared");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       return ( time < right.time );

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -47,7 +47,7 @@
 #include "SparseVector.hpp"
 #include "Matrix.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    // forward declarations
    template <class T> class SparseMatrix;
@@ -476,8 +476,8 @@ namespace gpstk
       const SMatProxy<T> operator()(unsigned int i, unsigned int j) const
       {
       #ifdef RANGECHECK
-         if(i >= nrows) GPSTK_THROW(Exception("row index out of range"));
-         if(j >= ncols) GPSTK_THROW(Exception("col index out of range"));
+         if(i >= nrows) GNSSTK_THROW(Exception("row index out of range"));
+         if(j >= ncols) GNSSTK_THROW(Exception("col index out of range"));
       #endif
          return SMatProxy<T>(const_cast<SparseMatrix&>(*this), i, j);
       }
@@ -486,8 +486,8 @@ namespace gpstk
       SMatProxy<T> operator()(unsigned int i, unsigned int j)
       {
       #ifdef RANGECHECK
-         if(i >= nrows) GPSTK_THROW(Exception("row index out of range"));
-         if(j >= ncols) GPSTK_THROW(Exception("col index out of range"));
+         if(i >= nrows) GNSSTK_THROW(Exception("row index out of range"));
+         if(j >= ncols) GNSSTK_THROW(Exception("col index out of range"));
       #endif
          return SMatProxy<T>(*this, i, j);
       }
@@ -636,7 +636,7 @@ namespace gpstk
                            const unsigned int& rnum, const unsigned int& cnum)
    {
       if(rnum == 0 || cnum == 0 || rind+rnum > SM.nrows || cind+cnum > SM.ncols)
-         GPSTK_THROW(Exception("Invalid input submatrix c'tor - out of range"));
+         GNSSTK_THROW(Exception("Invalid input submatrix c'tor - out of range"));
 
       nrows = rnum;
       ncols = cnum;
@@ -836,7 +836,7 @@ namespace gpstk
    {
       try {
          if(L.cols() != V.size())
-            GPSTK_THROW(Exception("Incompatible dimensions op*(SM,SV)"));
+            GNSSTK_THROW(Exception("Incompatible dimensions op*(SM,SV)"));
 
          SparseVector<T> retSV(L.rows());
          typename std::map< unsigned int, SparseVector<T> >::const_iterator it;
@@ -848,7 +848,7 @@ namespace gpstk
          retSV.zeroize(T(0));
          return retSV;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    /// Matrix,Vector multiply: SparseVector = Matrix * SparseVector
@@ -857,7 +857,7 @@ namespace gpstk
    {
       try {
          if(L.cols() != V.size())
-            GPSTK_THROW(Exception("Incompatible dimensions op*(M,SV)"));
+            GNSSTK_THROW(Exception("Incompatible dimensions op*(M,SV)"));
 
          SparseVector<T> retSV(L.rows());
 
@@ -874,7 +874,7 @@ namespace gpstk
          retSV.zeroize(T(0));
          return retSV;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    /// Matrix,Vector multiply: SparseVector = SparseMatrix * Vector
@@ -883,7 +883,7 @@ namespace gpstk
    {
       try {
          if(L.cols() != V.size())
-            GPSTK_THROW(Exception("Incompatible dimensions op*(SM,V)"));
+            GNSSTK_THROW(Exception("Incompatible dimensions op*(SM,V)"));
 
          SparseVector<T> retSV(L.rows());
          typename std::map< unsigned int, SparseVector<T> >::const_iterator it;
@@ -895,7 +895,7 @@ namespace gpstk
          retSV.zeroize(T(0));
          return retSV;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    /// Vector,Matrix multiply: SparseVector = SparseVector * SparseMatrix
@@ -903,7 +903,7 @@ namespace gpstk
    SparseVector<T> operator*(const SparseVector<T>& V, const SparseMatrix<T>& R)
    {
       if(V.size() != R.rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op*(SV,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op*(SV,SM)"));
 
       SparseVector<T> retSV(R.cols());
 
@@ -931,7 +931,7 @@ namespace gpstk
    {
       try {
          if(V.size() != R.rows())
-            GPSTK_THROW(Exception("Incompatible dimensions op*(SV,M)"));
+            GNSSTK_THROW(Exception("Incompatible dimensions op*(SV,M)"));
 
          T sum;
          SparseVector<T> retSV(R.cols());
@@ -946,7 +946,7 @@ namespace gpstk
 
          return retSV;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    /// Vector,Matrix multiply: SparseVector = Vector * SparseMatrix
@@ -954,7 +954,7 @@ namespace gpstk
    SparseVector<T> operator*(const Vector<T>& V, const SparseMatrix<T>& R)
    {
       if(V.size() != R.rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op*(V,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op*(V,SM)"));
 
       SparseVector<T> retSV(R.cols());
 
@@ -980,7 +980,7 @@ namespace gpstk
    SparseMatrix<T> operator*(const SparseMatrix<T>& L, const SparseMatrix<T>& R)
    {
       if(L.cols() != R.rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op*(SM,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op*(SM,SM)"));
 
       const unsigned int nr(L.rows()), nc(R.cols());
       SparseMatrix<T> retSM(nr,nc);                // empty but with correct dimen.
@@ -1014,7 +1014,7 @@ namespace gpstk
    {
       try {
          if(L.cols() != R.rows())
-            GPSTK_THROW(Exception("Incompatible dimensions op*(SM,M)"));
+            GNSSTK_THROW(Exception("Incompatible dimensions op*(SM,M)"));
 
          const unsigned int nr(L.rows()), nc(R.cols());
          SparseMatrix<T> retSM(nr,nc);
@@ -1040,7 +1040,7 @@ namespace gpstk
 
          return retSM;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    /// Matrix multiply: SparseMatrix = Matrix * SparseMatrix
@@ -1048,7 +1048,7 @@ namespace gpstk
    SparseMatrix<T> operator*(const Matrix<T>& L, const SparseMatrix<T>& R)
    {
       if(L.cols() != R.rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op*(M,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op*(M,SM)"));
 
       const unsigned int nr(L.rows()), nc(R.cols());
       SparseMatrix<T> retSM(nr,nc);
@@ -1085,7 +1085,7 @@ namespace gpstk
    SparseMatrix<T> operator||(const SparseMatrix<T>& L, const Vector<T>& V)
    {
       if(L.rows() != V.size())
-         GPSTK_THROW(Exception("Incompatible dimensions op||(SM,V)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op||(SM,V)"));
       
       SparseMatrix<T> toRet(L);
       toRet.ncols++;
@@ -1110,7 +1110,7 @@ namespace gpstk
    SparseMatrix<T> operator||(const SparseMatrix<T>& L, const SparseMatrix<T>& R)
    {
       if(L.rows() != R.rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op||(SM,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op||(SM,SM)"));
 
       SparseMatrix<T> toRet(L);
       toRet.ncols += R.ncols;
@@ -1151,7 +1151,7 @@ namespace gpstk
    SparseMatrix<T>& SparseMatrix<T>::operator-=(const SparseMatrix<T>& SM)
    {
       if(SM.cols() != cols() || SM.rows() != rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op-=(SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-=(SM)"));
       //std::cout << "SM::op-=(SM)" << std::endl;
 
       // loop over rows of SM
@@ -1173,7 +1173,7 @@ namespace gpstk
    SparseMatrix<T>& SparseMatrix<T>::operator-=(const Matrix<T>& M)
    {
       if(M.cols() != cols() || M.rows() != rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op-=(M)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-=(M)"));
       //std::cout << "SM::op-=(M)" << std::endl;
       
       // loop over rows of M
@@ -1196,7 +1196,7 @@ namespace gpstk
    SparseMatrix<T> operator-(const SparseMatrix<T>& L, const SparseMatrix<T>& R)
    {
       if(L.cols() != R.cols() || L.rows() != R.rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op-(SM,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-(SM,SM)"));
       //std::cout << "SM::op-(SM,SM)" << std::endl;
 
       SparseMatrix<T> retSM(L);
@@ -1210,7 +1210,7 @@ namespace gpstk
    SparseMatrix<T> operator-(const SparseMatrix<T>& L, const Matrix<T>& R)
    {
       if(L.cols() != R.cols() || L.rows() != R.rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op-(SM,M)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-(SM,M)"));
       //std::cout << "SM::op-(SM,M)" << std::endl;
 
       SparseMatrix<T> retSM(L);
@@ -1224,7 +1224,7 @@ namespace gpstk
    SparseMatrix<T> operator-(const Matrix<T>& L, const SparseMatrix<T>& R)
    {
       if(L.cols() != R.cols() || L.rows() != R.rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op-(M,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-(M,SM)"));
       //std::cout << "SM::op-(M,SM)" << std::endl;
 
       SparseMatrix<T> retSM(R);
@@ -1240,7 +1240,7 @@ namespace gpstk
    SparseMatrix<T>& SparseMatrix<T>::operator+=(const SparseMatrix<T>& SM)
    {
       if(SM.cols() != cols() || SM.rows() != rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op+=(SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+=(SM)"));
       //std::cout << "SM::op+=(SM)" << std::endl;
 
       // loop over rows of SM
@@ -1262,7 +1262,7 @@ namespace gpstk
    SparseMatrix<T>& SparseMatrix<T>::operator+=(const Matrix<T>& M)
    {
       if(M.cols() != cols() || M.rows() != rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op+=(M)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+=(M)"));
       //std::cout << "SM::op+=(M)" << std::endl;
       
       // loop over rows of M
@@ -1306,7 +1306,7 @@ namespace gpstk
    template <class T>
    SparseMatrix<T>& SparseMatrix<T>::operator/=(const T& value)
    {
-      if(value == T(0)) GPSTK_THROW(Exception("Divide by zero"));
+      if(value == T(0)) GNSSTK_THROW(Exception("Divide by zero"));
 
       // loop over all elements
       typename std::map< unsigned int, SparseVector<T> >::iterator it;
@@ -1324,7 +1324,7 @@ namespace gpstk
    SparseMatrix<T> operator+(const SparseMatrix<T>& L, const SparseMatrix<T>& R)
    {
       if(L.cols() != R.cols() || L.rows() != R.rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op+(SM,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+(SM,SM)"));
       //std::cout << "SM::op+(SM,SM)" << std::endl;
 
       SparseMatrix<T> retSM(L);
@@ -1338,7 +1338,7 @@ namespace gpstk
    SparseMatrix<T> operator+(const SparseMatrix<T>& L, const Matrix<T>& R)
    {
       if(L.cols() != R.cols() || L.rows() != R.rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op+(SM,M)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+(SM,M)"));
       //std::cout << "SM::op+(SM,M)" << std::endl;
 
       SparseMatrix<T> retSM(L);
@@ -1352,7 +1352,7 @@ namespace gpstk
    SparseMatrix<T> operator+(const Matrix<T>& L, const SparseMatrix<T>& R)
    {
       if(L.cols() != R.cols() || L.rows() != R.rows())
-         GPSTK_THROW(Exception("Incompatible dimensions op+(M,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+(M,SM)"));
       //std::cout << "SM::op+(M,SM)" << std::endl;
 
       SparseMatrix<T> retSM(L);
@@ -1412,7 +1412,7 @@ namespace gpstk
    template <class T>
    void SparseMatrix<T>::swapRows(const unsigned int& ii, const unsigned int& jj)
    {
-      if(ii >= nrows || jj >= nrows) GPSTK_THROW(Exception("Invalid indexes"));
+      if(ii >= nrows || jj >= nrows) GNSSTK_THROW(Exception("Invalid indexes"));
       
       typename std::map< unsigned int, SparseVector<T> >::iterator it, jt;
       it = rowsMap.find(ii);
@@ -1441,7 +1441,7 @@ namespace gpstk
    template <class T>
    void SparseMatrix<T>::swapCols(const unsigned int ii, const unsigned int jj)
    {
-      if(ii >= ncols || jj >= ncols) GPSTK_THROW(Exception("Invalid indexes"));
+      if(ii >= ncols || jj >= ncols) GNSSTK_THROW(Exception("Invalid indexes"));
 
       // may not be the fastest, but may be fast enough - tranpose() is fast
       SparseMatrix<T> trans(transpose(*this));
@@ -1495,7 +1495,7 @@ namespace gpstk
 
          return toRet;
 
-      } catch(Exception& e) { GPSTK_RETHROW(e); }
+      } catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //---------------------------------------------------------------------------------
@@ -1506,7 +1506,7 @@ namespace gpstk
    {
       try {
          if(P.cols() != C.rows() || C.rows() != C.cols())
-            GPSTK_THROW(Exception("Incompatible dimensions transformDiag()"));
+            GNSSTK_THROW(Exception("Incompatible dimensions transformDiag()"));
 
          const unsigned int n(P.cols());
          typename std::map< unsigned int, SparseVector<T> >::const_iterator jt;
@@ -1532,7 +1532,7 @@ namespace gpstk
          }
          return toRet;
 
-      } catch(Exception& e) { GPSTK_RETHROW(e); }
+      } catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //---------------------------------------------------------------------------
@@ -1548,7 +1548,7 @@ namespace gpstk
          if(A.rows() != A.cols() || A.rows() == 0) {
             std::ostringstream oss;
             oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
-            GPSTK_THROW(Exception(oss.str()));
+            GNSSTK_THROW(Exception(oss.str()));
          }
 
          unsigned int i,k;
@@ -1561,7 +1561,7 @@ namespace gpstk
             if(i != it->first) {
                std::ostringstream oss;
                oss << "Singular matrix - zero row at index " << i << ")";
-               GPSTK_THROW(Exception(oss.str()));
+               GNSSTK_THROW(Exception(oss.str()));
             }
          }
 
@@ -1590,7 +1590,7 @@ namespace gpstk
                   break;
                }
                if(kt == GJ.rowsMap.end())
-                  GPSTK_THROW(Exception("Singular matrix"));
+                  GNSSTK_THROW(Exception("Singular matrix"));
             }
 
             dtmp = vt->second;
@@ -1644,7 +1644,7 @@ namespace gpstk
 
          return (SparseMatrix<T>(GJ,0,N,N,N));
 
-      } catch(Exception& e) { GPSTK_RETHROW(e); }
+      } catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //---------------------------------------------------------------------------
@@ -1690,7 +1690,7 @@ namespace gpstk
       if(A.rows() != A.cols() || A.rows() == 0) {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
-         GPSTK_THROW(Exception(oss.str()));
+         GNSSTK_THROW(Exception(oss.str()));
       }
    
       const unsigned int n=A.rows();
@@ -1709,7 +1709,7 @@ namespace gpstk
             std::ostringstream oss;
             oss << "lowerCholesky() requires positive-definite input:"
                << " (zero rows at index " << i << ")";
-            GPSTK_THROW(Exception(oss.str()));
+            GNSSTK_THROW(Exception(oss.str()));
          }
 
          SparseVector<T> Vrow(n);
@@ -1737,7 +1737,7 @@ namespace gpstk
             std::ostringstream oss;
             oss << "Non-positive eigenvalue " << std::scientific << d << " at col "
                << j << ": lowerCholesky() requires positive-definite input";
-            GPSTK_THROW(Exception(oss.str()));
+            GNSSTK_THROW(Exception(oss.str()));
          }
 
          diag = SQRT(d);
@@ -1772,7 +1772,7 @@ namespace gpstk
       if(L.rows() != L.cols() || L.rows() == 0) {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << L.rows() << "x" << L.cols();
-         GPSTK_THROW(Exception(oss.str()));
+         GNSSTK_THROW(Exception(oss.str()));
       }
 
       const unsigned int n(L.rows());
@@ -1791,7 +1791,7 @@ namespace gpstk
          {
             std::ostringstream oss;
             oss << "Singular matrix - zero diagonal at row " << i;
-            GPSTK_THROW(Exception(oss.str()));
+            GNSSTK_THROW(Exception(oss.str()));
          }
 
          dum = it->second[i];
@@ -1869,7 +1869,7 @@ namespace gpstk
       }
       catch(Exception& me) {
          me.addText("Called by inverseViaCholesky()");
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
 
@@ -2019,7 +2019,7 @@ namespace gpstk
             << R.rows() << "x" << R.cols() << ",\n  Z has length "
             << Z.size() << ",\n  and A has dimension "
             << A.rows() << "x" << A.cols();
-         GPSTK_THROW(Exception(oss.str()));
+         GNSSTK_THROW(Exception(oss.str()));
       }
    
       const T EPS=T(1.e-20);
@@ -2095,7 +2095,7 @@ namespace gpstk
       // must put last row of AT (last column of A) back into A - these are residuals
       jt = AT.rowsMap.find(AT.rows()-1);
       // should never happen
-      if(jt == AT.rowsMap.end()) GPSTK_THROW(Exception("Failure on last column"));
+      if(jt == AT.rowsMap.end()) GNSSTK_THROW(Exception("Failure on last column"));
 
       // put this row, jt->second, into the last column of A
       j = A.cols()-1;
@@ -2132,7 +2132,7 @@ namespace gpstk
          // copy residuals out of A into D
          D = Vector<T>(A.colCopy(A.cols()-1));
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //---------------------------------------------------------------------------

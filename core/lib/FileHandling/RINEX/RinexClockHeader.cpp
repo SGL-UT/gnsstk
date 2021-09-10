@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -59,7 +59,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace StringUtils;
 
@@ -298,7 +298,7 @@ namespace gpstk
          FFStreamError err("Incomplete or invalid header.");
          err.addText("Make sure you set all header valid bits for all "
                      "of the available data.");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       if (valid & versionValid)
@@ -457,12 +457,12 @@ namespace gpstk
          if ( line.length() == 0 )
          {
             FFStreamError ffse("No data read!");
-            GPSTK_THROW(ffse);
+            GNSSTK_THROW(ffse);
          }
          else if ( line.length() < 60 || line.length() > 80 )
          {
             FFStreamError ffse("Invalid line length");
-            GPSTK_THROW(ffse);
+            GNSSTK_THROW(ffse);
          }
 
          try
@@ -471,7 +471,7 @@ namespace gpstk
          }
          catch(FFStreamError& ffse)
          {
-            GPSTK_RETHROW(ffse);
+            GNSSTK_RETHROW(ffse);
          }
       }
 
@@ -497,7 +497,7 @@ namespace gpstk
          {
                // invalid fileType - throw
             FFStreamError e("Incorrect file type: " + fileType);
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          valid |= versionValid;
@@ -539,7 +539,7 @@ namespace gpstk
                // invalid number of data types - throw
             FFStreamError e("Invalid number of data types: " +
                             asString(numType));
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          dataTypeList.clear();
          for(int i = 0; i < numType; i++)
@@ -553,7 +553,7 @@ namespace gpstk
             else
             { // unknown data type - throw
                FFStreamError e("Invalid data type: " + dtype);
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
          }
 
@@ -602,7 +602,7 @@ namespace gpstk
                   FFStreamError e("Invalid Start/Stop Epoch start: " +
                                   line.substr(7,26) + ", stop: " +
                                   line.substr(34,26));
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
             }
             else
@@ -610,7 +610,7 @@ namespace gpstk
                FFStreamError e("Invalid Start/Stop Epoch start: " +
                                line.substr(7,26) + ", stop: " +
                                line.substr(34,26));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
          }
          else
@@ -621,7 +621,7 @@ namespace gpstk
                FFStreamError e("Invalid Start/Stop Epoch start: " +
                                line.substr(7,26) + ", stop: " +
                                line.substr(34,26));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             else
             {
@@ -641,7 +641,7 @@ namespace gpstk
          {  // empty list - throw
             FFStreamError e("\"ANALYSIS CLK REF\" record without previous "
                             "\"# OF CLK REF\" record.");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // get the previous reference clock record
@@ -652,7 +652,7 @@ namespace gpstk
          {  // Excessive # of clock references - throw
             FFStreamError e("\"ANALYSIS CLK REF\" entry exceeds "
                             "\"# of CLK REF\": " + asString(itr->numClkRef));
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          RefClk refclk;
@@ -716,7 +716,7 @@ namespace gpstk
             else
             {  // unknown satellite system - throw
                FFStreamError e("Invalid PRN: " + word);
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             word = stripFirstWord(s);
@@ -734,7 +734,7 @@ namespace gpstk
       else
       {  // invalid label - throw
          FFStreamError e("Invalid label: " + label);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
    }   // ParseHeaderRecord

@@ -7,7 +7,7 @@
 * See the detailed documentation...
     -# Make sure Doxygen is installed on your build system by running "doxygen -v"
     -# In the top level directory of the toolkit (where the Doxyfile resides), run doxygen.
-    -# In a web browser, open $TKROOT/gpstk_doc_dir/html/index.html
+    -# In a web browser, open $TKROOT/gnsstk_doc_dir/html/index.html
 
 * Build the toolkit...
     -# Refer to \ref INSTALL
@@ -30,7 +30,7 @@
 
 * Get offsets between time systems...
     -# For getting a precise offset (usually in milliseconds or better) between time systems the information may be extracted from navigation message data.  Refer to the guidance in \ref navlibrary for a detailed guide of how to use the NavLibrary classes.  Matching reference documentation can be found in the \ref NavFactory module documentation.
-    -# Refer to gpstk::CommonTime::changeTimeSystem(), gpstk::TimeSystemConverter, gpstk::BasicTimeSystemConverter (for second-resolution offsets), and/or gpstk::NavTimeSystemConverter (for ms-resolution offsets).
+    -# Refer to gnsstk::CommonTime::changeTimeSystem(), gnsstk::TimeSystemConverter, gnsstk::BasicTimeSystemConverter (for second-resolution offsets), and/or gnsstk::NavTimeSystemConverter (for ms-resolution offsets).
 
 * Use trace debugging...
     -# When writing code, include the file DebugTrace.hpp.
@@ -43,7 +43,7 @@ Note: switching between DEBUGTRACE=ON and OFF will likely require both
 a clean build and removing CMakeCache.txt from the build output
 directory before the change will take effect.
 
-Additional details can be found in the documentation for the gpstk::DebugTrace
+Additional details can be found in the documentation for the gnsstk::DebugTrace
 class.
 
 Refer to core/tests/Utilities/DebugTrace_T.cpp for example use.

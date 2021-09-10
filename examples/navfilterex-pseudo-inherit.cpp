@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -50,7 +50,7 @@ public:
 };
 
 /// Combine the nav filter store and the application store into a single class
-class MyNavFilterData : public gpstk::LNavFilterData
+class MyNavFilterData : public gnsstk::LNavFilterData
 {
 public:
    NavSubframe appData;
@@ -69,11 +69,11 @@ MyNavFilterData* readNav()
 void filterEX()
 {
       // Filter manager, where the work is done
-   gpstk::NavFilterMgr mgr;
+   gnsstk::NavFilterMgr mgr;
       // Individual filters being applied
-   gpstk::LNavCookFilter filtCook;
-   gpstk::LNavCrossSourceFilter filtVote;
-   gpstk::NavFilter::NavMsgList::const_iterator nmli;
+   gnsstk::LNavCookFilter filtCook;
+   gnsstk::LNavCrossSourceFilter filtVote;
+   gnsstk::NavFilter::NavMsgList::const_iterator nmli;
 
       // Tell the manager what filters to use
    mgr.addFilter(&filtCook);
@@ -84,7 +84,7 @@ void filterEX()
       MyNavFilterData *fd = readNav();
 
          // validate the subframe
-      gpstk::NavFilter::NavMsgList l = mgr.validate(fd);
+      gnsstk::NavFilter::NavMsgList l = mgr.validate(fd);
 
          // process the results
       for (nmli = l.begin(); nmli != l.end(); nmli++)
@@ -101,7 +101,7 @@ void filterEX()
 
       // Finalize the filters.  Probably not necessary when using only
       // depth 1 filters, but good practice in any case.
-   gpstk::NavFilter::NavMsgList l = mgr.finalize();
+   gnsstk::NavFilter::NavMsgList l = mgr.finalize();
 
       // process the results
    for (nmli = l.begin(); nmli != l.end(); nmli++)

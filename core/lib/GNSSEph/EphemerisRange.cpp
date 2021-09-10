@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -49,9 +49,9 @@
 #include "GNSSconstants.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
-namespace gpstk
+namespace gnsstk
 {
    // Compute the corrected range at RECEIVE time, from receiver at position Rx,
    // to the GPS satellite given by SatID sat, as well as all the CER quantities,
@@ -81,7 +81,7 @@ namespace gpstk
                svPosVel = Eph.getXvt(sat, transmit);
             }
             catch(InvalidRequest& e) {
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
 
             rotateEarth(Rx);
@@ -97,8 +97,8 @@ namespace gpstk
 
          return (rawrange-svclkbias-relativity);
       }
-      catch(gpstk::Exception& e) {
-         GPSTK_RETHROW(e);
+      catch(gnsstk::Exception& e) {
+         GNSSTK_RETHROW(e);
       }
    }  // end CorrectedEphemerisRange::ComputeAtReceiveTime
 
@@ -129,7 +129,7 @@ namespace gpstk
                svPosVel = Eph.getXvt(sat,tt);
             }
             catch(InvalidRequest& e) {
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
             tt = transmit;
             // remove clock bias and relativity correction
@@ -146,8 +146,8 @@ namespace gpstk
 
          return (rawrange-svclkbias-relativity);
       }
-      catch(gpstk::Exception& e) {
-         GPSTK_RETHROW(e);
+      catch(gnsstk::Exception& e) {
+         GNSSTK_RETHROW(e);
       }
    }  // end CorrectedEphemerisRange::ComputeAtTransmitTime
 
@@ -159,13 +159,13 @@ namespace gpstk
       const XvtStore<SatID>& Eph)
    {
       try {
-         gpstk::GPSEllipsoid gm;
+         gnsstk::GPSEllipsoid gm;
          svPosVel = Eph.getXvt(sat, tr_nom);
          double pr = svPosVel.preciseRho(Rx, gm);
          return ComputeAtTransmitTime(tr_nom, pr, Rx, sat, Eph);
       }
-      catch(gpstk::Exception& e) {
-         GPSTK_RETHROW(e);
+      catch(gnsstk::Exception& e) {
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -206,7 +206,7 @@ namespace gpstk
          return rawrange - svclkbias - relativity;
       }
       catch (Exception& e) {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -259,4 +259,4 @@ namespace gpstk
       return dtr;
    }
 
-}  // namespace gpstk
+}  // namespace gnsstk

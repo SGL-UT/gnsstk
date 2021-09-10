@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -41,9 +41,9 @@
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -55,18 +55,18 @@ class GPSLNavISC_T
 {
 public:
    GPSLNavISC_T()
-         : oid1(gpstk::ObservationType::Unknown,
-                gpstk::CarrierBand::L1,
-                gpstk::TrackingCode::CA),
-           oid2(gpstk::ObservationType::Unknown,
-                gpstk::CarrierBand::L1,
-                gpstk::TrackingCode::Y),
-           oid3(gpstk::ObservationType::Unknown,
-                gpstk::CarrierBand::L2,
-                gpstk::TrackingCode::Y),
-           oid4(gpstk::ObservationType::SNR,
-                gpstk::CarrierBand::L2,
-                gpstk::TrackingCode::Y)
+         : oid1(gnsstk::ObservationType::Unknown,
+                gnsstk::CarrierBand::L1,
+                gnsstk::TrackingCode::CA),
+           oid2(gnsstk::ObservationType::Unknown,
+                gnsstk::CarrierBand::L1,
+                gnsstk::TrackingCode::Y),
+           oid3(gnsstk::ObservationType::Unknown,
+                gnsstk::CarrierBand::L2,
+                gnsstk::TrackingCode::Y),
+           oid4(gnsstk::ObservationType::SNR,
+                gnsstk::CarrierBand::L2,
+                gnsstk::TrackingCode::Y)
    {}
       /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
@@ -79,7 +79,7 @@ public:
       /// Dual frequency ISC test
    unsigned getISCDFTest();
 
-   gpstk::ObsID oid1, oid2, oid3, oid4;
+   gnsstk::ObsID oid1, oid2, oid3, oid4;
 };
 
 
@@ -87,8 +87,8 @@ unsigned GPSLNavISC_T ::
 constructorTest()
 {
    TUDEF("GPSLNavISC", "GPSLNavISC");
-   gpstk::GPSLNavISC uut;
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::ISC,
+   gnsstk::GPSLNavISC uut;
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::ISC,
              uut.signal.messageType);
    TUASSERTE(uint32_t, 0, uut.pre);
    TUASSERTE(uint32_t, 0, uut.tlm);
@@ -102,7 +102,7 @@ unsigned GPSLNavISC_T ::
 validateTest()
 {
    TUDEF("GPSLNavISC", "validate");
-   gpstk::GPSLNavISC uut;
+   gnsstk::GPSLNavISC uut;
    TUASSERTE(bool, true, uut.validate());
    uut.pre = 0;
    TUASSERTE(bool, true, uut.validate());
@@ -120,11 +120,11 @@ unsigned GPSLNavISC_T ::
 getUserTimeTest()
 {
    TUDEF("GPSLNavISC", "getUserTime");
-   gpstk::GPSLNavISC uut;
-   uut.timeStamp = gpstk::GPSWeekSecond(2100,135.0);
-   gpstk::CommonTime exp(gpstk::GPSWeekSecond(2100,135.0));
+   gnsstk::GPSLNavISC uut;
+   uut.timeStamp = gnsstk::GPSWeekSecond(2100,135.0);
+   gnsstk::CommonTime exp(gnsstk::GPSWeekSecond(2100,135.0));
    exp = exp + 6.0;
-   TUASSERTE(gpstk::CommonTime, exp, uut.getUserTime());
+   TUASSERTE(gnsstk::CommonTime, exp, uut.getUserTime());
    TURETURN();
 }
 
@@ -133,7 +133,7 @@ unsigned GPSLNavISC_T ::
 getISCSFTest()
 {
    TUDEF("GPSLNavISC", "getISC(single-frequency)");
-   gpstk::GPSLNavISC uut;
+   gnsstk::GPSLNavISC uut;
       // isc should be nan
    double corr = 0.123456;
    double expCorr1 = 0.123456;
@@ -165,7 +165,7 @@ unsigned GPSLNavISC_T ::
 getISCDFTest()
 {
    TUDEF("GPSLNavISC", "getISC(dual-frequency)");
-   gpstk::GPSLNavISC uut;
+   gnsstk::GPSLNavISC uut;
    double corr = 0.123456;
       // dual frequency getISC should always return 0 for this class
    TUASSERTE(bool, true, uut.getISC(oid1, oid3, corr));

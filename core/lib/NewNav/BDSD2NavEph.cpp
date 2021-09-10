@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -45,7 +45,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    BDSD2NavEph ::
    BDSD2NavEph()
@@ -188,7 +188,7 @@ namespace gpstk
       double sinZ = ::sin(angleZ); 
 
          // Initiailize 3X3 with all 0.0
-      gpstk::Matrix<double> matZ(3,3); 
+      gnsstk::Matrix<double> matZ(3,3); 
          // Row,Col
       matZ(0,0) =  cosZ;
       matZ(0,1) =  sinZ;
@@ -204,7 +204,7 @@ namespace gpstk
       const double angleX = -5.0 * PI/180.0;
       double cosX = ::cos(angleX);
       double sinX = ::sin(angleX); 
-      gpstk::Matrix<double> matX(3,3);
+      gnsstk::Matrix<double> matX(3,3);
       matX(0,0) =   1.0;
       matX(0,1) =   0.0;
       matX(0,2) =   0.0;
@@ -216,12 +216,12 @@ namespace gpstk
       matX(2,2) =  cosX;
 
          // Matrix (single column) of xGK, yGK, zGK
-      gpstk::Matrix<double> inertialPos(3,1);
+      gnsstk::Matrix<double> inertialPos(3,1);
       inertialPos(0,0) = xGK;
       inertialPos(1,0) = yGK;
       inertialPos(2,0) = zGK;
 
-      gpstk::Matrix<double> result(3,1);
+      gnsstk::Matrix<double> result(3,1);
       result = matZ * matX * inertialPos;
 
       xvt.x[0] = result(0,0);
@@ -243,7 +243,7 @@ namespace gpstk
       dyp = drv*sinu + R*cosu*duv;
 
          // Time-derivative of Rz matrix
-      gpstk::Matrix<double> dmatZ(3,3);
+      gnsstk::Matrix<double> dmatZ(3,3);
          // Row,Col
       dmatZ(0,0) =  sinZ * -ell.angVelocity();
       dmatZ(0,1) = -cosZ * -ell.angVelocity();
@@ -256,7 +256,7 @@ namespace gpstk
       dmatZ(2,2) =   0.0;
 
          // Time-derivative of X,Y,Z in interial form
-      gpstk::Matrix<double> dIntPos(3,1);
+      gnsstk::Matrix<double> dIntPos(3,1);
       dIntPos(0,0) = - xip * san * OMEGAdot
          + dxp * can
          - yip * (cinc * can * OMEGAdot
@@ -269,7 +269,7 @@ namespace gpstk
          + dyp * cinc * can;
       dIntPos(2,0) = yip * cinc * div + dyp * sinc;
 
-      gpstk::Matrix<double> vresult(3,1);
+      gnsstk::Matrix<double> vresult(3,1);
       vresult =  matZ * matX * dIntPos + 
          dmatZ * matX * inertialPos;
      

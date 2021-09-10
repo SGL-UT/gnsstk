@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -45,7 +45,7 @@
 #include "Triple.hpp"
 #include <cmath>
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace std;
 
@@ -79,7 +79,7 @@ namespace gpstk
    {
       if (right.size() != 3)
       {
-         GPSTK_THROW(GeometryException("Incorrect vector size"));
+         GNSSTK_THROW(GeometryException("Incorrect vector size"));
       }
 
       theArray = right;
@@ -136,7 +136,7 @@ namespace gpstk
       double mag = std::sqrt(dot(*this));
       
       if (mag <= 1e-14)
-      	GPSTK_THROW(GeometryException("Divide by Zero Error"));
+      	GNSSTK_THROW(GeometryException("Divide by Zero Error"));
       
       Triple retArg;
       retArg[0] = (*this)[0] / mag;
@@ -155,7 +155,7 @@ namespace gpstk
       
       if (rx <= 1e-14 ||  ry <= 1e-14)
       {
-         GPSTK_THROW(GeometryException("Divide by Zero Error"));
+         GNSSTK_THROW(GeometryException("Divide by Zero Error"));
       }
       cosvects = dot(right) / ::sqrt(rx * ry);
 
@@ -203,7 +203,7 @@ namespace gpstk
       xyz = ::sqrt(xyz);
 
       if (xy <= 1e-14 || xyz <=1e-14)
-      	 GPSTK_THROW(GeometryException("Divide by Zero Error"))
+      	 GNSSTK_THROW(GeometryException("Divide by Zero Error"))
       
       cosl = (*this)[0] / xy;
       sinl = (*this)[1] / xy;
@@ -227,7 +227,7 @@ namespace gpstk
 
       if (test < 1.0e-14)
       {
-         GPSTK_THROW(GeometryException("azAngle(), failed p1+p2 test."));
+         GNSSTK_THROW(GeometryException("azAngle(), failed p1+p2 test."));
       }
 
       alpha = 90 - ::atan2(p1, p2) * RAD_TO_DEG;
@@ -323,7 +323,7 @@ namespace gpstk
    }
 
    std::ostream& operator<<(std::ostream& s, 
-                            const gpstk::Triple& v)
+                            const gnsstk::Triple& v)
    {
       if (v.size() > 0)
       {  
@@ -338,4 +338,4 @@ namespace gpstk
       return s;   
    }
 
-} // namespace gpstk
+} // namespace gnsstk

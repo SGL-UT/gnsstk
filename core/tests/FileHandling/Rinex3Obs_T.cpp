@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -49,13 +49,13 @@
 #include <string>
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
-namespace gpstk
+namespace gnsstk
 {
    std::ostream& operator<<(std::ostream& s, XmitAnt e)
    {
-      s << gpstk::StringUtils::asString(e);
+      s << gnsstk::StringUtils::asString(e);
       return s;
    }
 }
@@ -150,8 +150,8 @@ void Rinex3Obs_T :: init( void )
    cout << "Running tests for Rinex version 2.x" << endl;
 
    TestUtil test0;
-   dataFilePath = gpstk::getPathData();
-   tempFilePath = gpstk::getPathTestTemp();
+   dataFilePath = gnsstk::getPathData();
+   tempFilePath = gnsstk::getPathTestTemp();
 
       //----------------------------------------
       // Full file paths
@@ -331,36 +331,36 @@ int Rinex3Obs_T :: headerExceptionTest( void )
    try
    {
 
-      gpstk::Rinex3ObsStream rinex3ObsFile( dataRinexObsFile );
-      gpstk::Rinex3ObsStream ih( dataIncompleteHeader );
-      gpstk::Rinex3ObsStream il( dataInvalidLineLength );
-      gpstk::Rinex3ObsStream inpwf( dataInvalidNumPRNWaveFact );
-      gpstk::Rinex3ObsStream no( dataNotObs );
-      gpstk::Rinex3ObsStream ss( dataSystemGeosync );
-      gpstk::Rinex3ObsStream sr( dataSystemGlonass );
-      gpstk::Rinex3ObsStream sm( dataSystemMixed );
-      gpstk::Rinex3ObsStream st( dataSystemTransit );
-      gpstk::Rinex3ObsStream unsupv( dataUnSupVersion );
-      gpstk::Rinex3ObsStream contdata( dataRinexContData );
+      gnsstk::Rinex3ObsStream rinex3ObsFile( dataRinexObsFile );
+      gnsstk::Rinex3ObsStream ih( dataIncompleteHeader );
+      gnsstk::Rinex3ObsStream il( dataInvalidLineLength );
+      gnsstk::Rinex3ObsStream inpwf( dataInvalidNumPRNWaveFact );
+      gnsstk::Rinex3ObsStream no( dataNotObs );
+      gnsstk::Rinex3ObsStream ss( dataSystemGeosync );
+      gnsstk::Rinex3ObsStream sr( dataSystemGlonass );
+      gnsstk::Rinex3ObsStream sm( dataSystemMixed );
+      gnsstk::Rinex3ObsStream st( dataSystemTransit );
+      gnsstk::Rinex3ObsStream unsupv( dataUnSupVersion );
+      gnsstk::Rinex3ObsStream contdata( dataRinexContData );
 
-      gpstk::Rinex3ObsStream out( dataTestOutput, ios::out );
-      gpstk::Rinex3ObsStream out2( dataTestOutput3, ios::out );
-      gpstk::Rinex3ObsStream dump( dataTestOutputObsDump, ios::out );
+      gnsstk::Rinex3ObsStream out( dataTestOutput, ios::out );
+      gnsstk::Rinex3ObsStream out2( dataTestOutput3, ios::out );
+      gnsstk::Rinex3ObsStream dump( dataTestOutputObsDump, ios::out );
 
-      gpstk::Rinex3ObsHeader rinex3ObsHeader;
-      gpstk::Rinex3ObsHeader ihh;
-      gpstk::Rinex3ObsHeader ilh;
-      gpstk::Rinex3ObsHeader inpwfh;
-      gpstk::Rinex3ObsHeader noh;
-      gpstk::Rinex3ObsHeader ssh;
-      gpstk::Rinex3ObsHeader srh;
-      gpstk::Rinex3ObsHeader smh;
-      gpstk::Rinex3ObsHeader sth;
-      gpstk::Rinex3ObsHeader unsupvh;
-      gpstk::Rinex3ObsHeader contdatah;
+      gnsstk::Rinex3ObsHeader rinex3ObsHeader;
+      gnsstk::Rinex3ObsHeader ihh;
+      gnsstk::Rinex3ObsHeader ilh;
+      gnsstk::Rinex3ObsHeader inpwfh;
+      gnsstk::Rinex3ObsHeader noh;
+      gnsstk::Rinex3ObsHeader ssh;
+      gnsstk::Rinex3ObsHeader srh;
+      gnsstk::Rinex3ObsHeader smh;
+      gnsstk::Rinex3ObsHeader sth;
+      gnsstk::Rinex3ObsHeader unsupvh;
+      gnsstk::Rinex3ObsHeader contdatah;
 
-      gpstk::Rinex3ObsData rinex3ObsData;
-      gpstk::Rinex3ObsData contdatad;
+      gnsstk::Rinex3ObsData rinex3ObsData;
+      gnsstk::Rinex3ObsData contdatad;
 
          // read in some good headers and some crap ones
       rinex3ObsFile >> rinex3ObsHeader;
@@ -490,7 +490,7 @@ int Rinex3Obs_T :: headerExceptionTest( void )
       }
       TUPASS(msg_test_desc);
    }
-   catch(gpstk::Exception e)
+   catch(gnsstk::Exception e)
    {
       TUFAIL( msg_test_desc + msg_fail + e.what() );
    }
@@ -529,11 +529,11 @@ int Rinex3Obs_T :: hardCodeTest( void )
 
    try
    {
-      gpstk::Rinex3ObsStream rinex3ObsFile( dataRinexObsFile );
-      gpstk::Rinex3ObsStream out( dataTestOutput2, ios::out );
-      gpstk::Rinex3ObsStream dump( dataTestOutputObsDump, ios::out );
-      gpstk::Rinex3ObsHeader rinex3ObsHeader;
-      gpstk::Rinex3ObsData rinex3ObsData;
+      gnsstk::Rinex3ObsStream rinex3ObsFile( dataRinexObsFile );
+      gnsstk::Rinex3ObsStream out( dataTestOutput2, ios::out );
+      gnsstk::Rinex3ObsStream dump( dataTestOutputObsDump, ios::out );
+      gnsstk::Rinex3ObsHeader rinex3ObsHeader;
+      gnsstk::Rinex3ObsData rinex3ObsData;
 
       rinex3ObsFile >> rinex3ObsHeader;
       out << rinex3ObsHeader;
@@ -585,7 +585,7 @@ int Rinex3Obs_T :: hardCodeTest( void )
 }
 
 //------------------------------------------------------------
-// This test throws many GPSTK exceptions within the
+// This test throws many GNSSTK exceptions within the
 // Rinex3ObsData, including BadEpochLine and BadEpochFlag
 //------------------------------------------------------------
 int Rinex3Obs_T :: dataExceptionsTest( void )
@@ -594,22 +594,22 @@ int Rinex3Obs_T :: dataExceptionsTest( void )
    TestUtil test3( "Rinex3ObsStream", "dataExceptionsTest", __FILE__, __LINE__ );
 
    string msg_test_desc   =
-      "Rinex3ObsStream, test various gpstk exception throws, including BadEpochLine and BadEpochFlag";
+      "Rinex3ObsStream, test various gnsstk exception throws, including BadEpochLine and BadEpochFlag";
    string msg_fail_throw  =
-      ", not all gpstk exceptions were thrown as expected.";
+      ", not all gnsstk exceptions were thrown as expected.";
    string msg_fail_except = ", threw an unexpected exception.";
 
    try
    {
-      gpstk::Rinex3ObsStream BadEpochLine( dataBadEpochLine );
-      gpstk::Rinex3ObsStream BadEpochFlag( dataBadEpochFlag );
-      gpstk::Rinex3ObsStream BadLineSize( dataBadLineSize );
-      gpstk::Rinex3ObsStream InvalidTimeFormat( dataInvalidTimeFormat );
-      gpstk::Rinex3ObsStream out( dataTestOutputDataException, ios::out );
-      gpstk::Rinex3ObsData BadEpochLined;
-      gpstk::Rinex3ObsData BadEpochFlagd;
-      gpstk::Rinex3ObsData BadLineSized;
-      gpstk::Rinex3ObsData InvalidTimeFormatd;
+      gnsstk::Rinex3ObsStream BadEpochLine( dataBadEpochLine );
+      gnsstk::Rinex3ObsStream BadEpochFlag( dataBadEpochFlag );
+      gnsstk::Rinex3ObsStream BadLineSize( dataBadLineSize );
+      gnsstk::Rinex3ObsStream InvalidTimeFormat( dataInvalidTimeFormat );
+      gnsstk::Rinex3ObsStream out( dataTestOutputDataException, ios::out );
+      gnsstk::Rinex3ObsData BadEpochLined;
+      gnsstk::Rinex3ObsData BadEpochFlagd;
+      gnsstk::Rinex3ObsData BadLineSized;
+      gnsstk::Rinex3ObsData InvalidTimeFormatd;
 
       while( BadEpochLine >> BadEpochLined )
       {
@@ -649,40 +649,40 @@ int Rinex3Obs_T :: filterOperatorsTest( void )
    {
       fstream out( dataTestFilterOutput.c_str(), ios::out );
    
-      gpstk::Rinex3ObsStream s1(dataFilterTest1);
-      gpstk::Rinex3ObsHeader h1;
-      gpstk::Rinex3ObsData d1;
+      gnsstk::Rinex3ObsStream s1(dataFilterTest1);
+      gnsstk::Rinex3ObsHeader h1;
+      gnsstk::Rinex3ObsData d1;
       s1 >> h1;
       while( s1 >> d1)
          d1.dump(out);
    
       out << "Reading dataFilterTest2:" << endl;
-      gpstk::Rinex3ObsStream s2(dataFilterTest2);   
-      gpstk::Rinex3ObsHeader h2;
-      gpstk::Rinex3ObsData d2;
+      gnsstk::Rinex3ObsStream s2(dataFilterTest2);   
+      gnsstk::Rinex3ObsHeader h2;
+      gnsstk::Rinex3ObsData d2;
       s2 >> h2;
       while( s2 >> d2)
          d2.dump(out);
 
-      gpstk::Rinex3ObsDataOperatorEqualsSimple EqualsSimple;
+      gnsstk::Rinex3ObsDataOperatorEqualsSimple EqualsSimple;
       testFramework.changeSourceMethod("Rinex3ObsDataOperatorEqualsSimple");
       testFramework.assert( EqualsSimple( d1, d1 ), "", __LINE__);
       
-      gpstk::Rinex3ObsDataOperatorLessThanSimple LessThanSimple;
+      gnsstk::Rinex3ObsDataOperatorLessThanSimple LessThanSimple;
       testFramework.changeSourceMethod("Rinex3ObsDataOperatorLessThanSimple");
       testFramework.assert( !LessThanSimple( d1, d1 ), "", __LINE__ );
 
-      gpstk::Rinex3ObsHeaderTouchHeaderMerge merged;
+      gnsstk::Rinex3ObsHeaderTouchHeaderMerge merged;
       merged( h1 );
       merged( h2 );
       out << "Merged Header:" << endl;
       merged.theHeader.dump(out);
-      gpstk::Rinex3ObsDataOperatorLessThanFull LessThanFull(merged.theHeader.mapObsTypes);
+      gnsstk::Rinex3ObsDataOperatorLessThanFull LessThanFull(merged.theHeader.mapObsTypes);
       testFramework.changeSourceMethod("Rinex3ObsDataOperatorLessThanFull");
       testFramework.assert( !LessThanFull( d1, h1, d1, h1, 5 ) , "",  __LINE__ );
       testFramework.assert( !LessThanFull( d1, h1, d2, h2, 5 ) , "", __LINE__ );
    }
-   catch (gpstk::Exception& e)
+   catch (gnsstk::Exception& e)
    {
       cout << e << endl;
       testFramework.assert( false , "caught exception", __LINE__ );
@@ -699,10 +699,10 @@ int Rinex3Obs_T :: version3ToVersion2Test( void )
 {
    TUDEF("Rinex3Obs", "version3ToVersion2Test");
 
-   gpstk::Rinex3ObsStream inputStream(dataInputRinex3ObsFile.c_str());
-   gpstk::Rinex3ObsStream outputStream(dataOutputRinex2ObsFile.c_str(), ios::out);
-   gpstk::Rinex3ObsHeader ObsHeader;
-   gpstk::Rinex3ObsData ObsData;
+   gnsstk::Rinex3ObsStream inputStream(dataInputRinex3ObsFile.c_str());
+   gnsstk::Rinex3ObsStream outputStream(dataOutputRinex2ObsFile.c_str(), ios::out);
+   gnsstk::Rinex3ObsHeader ObsHeader;
+   gnsstk::Rinex3ObsData ObsData;
 
    inputStream >> ObsHeader;
 
@@ -732,11 +732,11 @@ int Rinex3Obs_T :: version2ToVersion3Test( void )
 {
    TestUtil testFramework("Rinex3Obs", "version2ToVersion3Test", __FILE__, __LINE__ );
 
-   gpstk::Rinex3ObsStream inputStream(dataInputRinex2ObsFile.c_str());
-   gpstk::Rinex3ObsStream outputStream(dataOutputRinex3ObsFile.c_str(),
+   gnsstk::Rinex3ObsStream inputStream(dataInputRinex2ObsFile.c_str());
+   gnsstk::Rinex3ObsStream outputStream(dataOutputRinex3ObsFile.c_str(),
                                        ios::out);
-   gpstk::Rinex3ObsHeader ObsHeader;
-   gpstk::Rinex3ObsData ObsData;
+   gnsstk::Rinex3ObsHeader ObsHeader;
+   gnsstk::Rinex3ObsData ObsData;
 
    inputStream >> ObsHeader;
 
@@ -766,10 +766,10 @@ int Rinex3Obs_T::roundTripTest( void )
 
    try
    {
-      gpstk::Rinex3ObsStream infile( dataRinexObsFile );
-      gpstk::Rinex3ObsStream outfile( dataTestOutput4, ios::out );
-      gpstk::Rinex3ObsHeader roh;
-      gpstk::Rinex3ObsData rod;
+      gnsstk::Rinex3ObsStream infile( dataRinexObsFile );
+      gnsstk::Rinex3ObsStream outfile( dataTestOutput4, ios::out );
+      gnsstk::Rinex3ObsHeader roh;
+      gnsstk::Rinex3ObsData rod;
 
       infile >> roh;
       roh.preserveDate = true;
@@ -803,30 +803,30 @@ embeddedHeadersTest()
    try
    {
       cerr << "opening " << dataHeaderTest << endl;
-      gpstk::Rinex3ObsStream ros(dataHeaderTest, std::ios::in);
-      gpstk::Rinex3ObsData rod;
-      gpstk::TimeSystem ts = gpstk::TimeSystem::GPS;
+      gnsstk::Rinex3ObsStream ros(dataHeaderTest, std::ios::in);
+      gnsstk::Rinex3ObsData rod;
+      gnsstk::TimeSystem ts = gnsstk::TimeSystem::GPS;
       TUASSERTE(bool, true, ros.good());
       ros >> ros.header;
       TUASSERTE(bool, true, ros.good());
          // make sure we read all of the header info, nothing more, nothing less
       TUASSERTE(Rinex3ObsHeader::Fields,
                 Rinex3ObsHeader::Fields({
-                      gpstk::Rinex3ObsHeader::validVersion,
-                         gpstk::Rinex3ObsHeader::validComment,
-                         gpstk::Rinex3ObsHeader::validRunBy,
-                         gpstk::Rinex3ObsHeader::validMarkerName,
-                         gpstk::Rinex3ObsHeader::validMarkerNumber,
-                         gpstk::Rinex3ObsHeader::validObserver,
-                         gpstk::Rinex3ObsHeader::validReceiver,
-                         gpstk::Rinex3ObsHeader::validAntennaType,
-                         gpstk::Rinex3ObsHeader::validAntennaPosition,
-                         gpstk::Rinex3ObsHeader::validAntennaDeltaHEN,
-                         gpstk::Rinex3ObsHeader::validWaveFact,
-                         gpstk::Rinex3ObsHeader::validReceiverOffset,
-                         gpstk::Rinex3ObsHeader::validNumObs,
-                         gpstk::Rinex3ObsHeader::validInterval,
-                         gpstk::Rinex3ObsHeader::validFirstTime}),
+                      gnsstk::Rinex3ObsHeader::validVersion,
+                         gnsstk::Rinex3ObsHeader::validComment,
+                         gnsstk::Rinex3ObsHeader::validRunBy,
+                         gnsstk::Rinex3ObsHeader::validMarkerName,
+                         gnsstk::Rinex3ObsHeader::validMarkerNumber,
+                         gnsstk::Rinex3ObsHeader::validObserver,
+                         gnsstk::Rinex3ObsHeader::validReceiver,
+                         gnsstk::Rinex3ObsHeader::validAntennaType,
+                         gnsstk::Rinex3ObsHeader::validAntennaPosition,
+                         gnsstk::Rinex3ObsHeader::validAntennaDeltaHEN,
+                         gnsstk::Rinex3ObsHeader::validWaveFact,
+                         gnsstk::Rinex3ObsHeader::validReceiverOffset,
+                         gnsstk::Rinex3ObsHeader::validNumObs,
+                         gnsstk::Rinex3ObsHeader::validInterval,
+                         gnsstk::Rinex3ObsHeader::validFirstTime}),
                 ros.header.valid);
          // Go through each record in the source file (there aren't
          // many) and verify that the contents are reasonable,
@@ -842,8 +842,8 @@ embeddedHeadersTest()
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 0, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,10,36,ts).convertToCommonTime(),
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,10,36,ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 4, rod.numSVs);
       TUASSERTE(size_t, 4, rod.obs.size());
@@ -859,15 +859,15 @@ embeddedHeadersTest()
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 4, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,10,50,ts).convertToCommonTime(),
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,10,50,ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 4, rod.numSVs);
       TUASSERTE(size_t, 0, rod.obs.size());
       TUASSERTE(Rinex3ObsHeader::Fields,
                 Rinex3ObsHeader::Fields({
-                      gpstk::Rinex3ObsHeader::validWaveFact,
-                         gpstk::Rinex3ObsHeader::validComment}),
+                      gnsstk::Rinex3ObsHeader::validWaveFact,
+                         gnsstk::Rinex3ObsHeader::validComment}),
                 rod.auxHeader.valid);
       TUASSERTE(size_t, 3, rod.auxHeader.commentList.size());
 
@@ -883,8 +883,8 @@ embeddedHeadersTest()
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 0, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,10,54,ts).convertToCommonTime(),
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,10,54,ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 6, rod.numSVs);
       TUASSERTE(size_t, 6, rod.obs.size());
@@ -897,14 +897,14 @@ embeddedHeadersTest()
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 2, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,11,0,ts).convertToCommonTime(),
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,11,0,ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 1, rod.numSVs);
       TUASSERTE(size_t, 0, rod.obs.size());
       TUASSERTE(Rinex3ObsHeader::Fields,
                 Rinex3ObsHeader::Fields({
-                      gpstk::Rinex3ObsHeader::validComment}),
+                      gnsstk::Rinex3ObsHeader::validComment}),
                 rod.auxHeader.valid);
       TUASSERTE(size_t, 1, rod.auxHeader.commentList.size());
 
@@ -918,8 +918,8 @@ embeddedHeadersTest()
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 0, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,11,48,ts).convertToCommonTime(),
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,11,48,ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 4, rod.numSVs);
       TUASSERTE(size_t, 4, rod.obs.size());
@@ -935,17 +935,17 @@ A 9080                                                      MARKER NAME
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 3, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,11,48,ts).convertToCommonTime(),
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,11,48,ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 4, rod.numSVs);
       TUASSERTE(size_t, 0, rod.obs.size());
       TUASSERTE(Rinex3ObsHeader::Fields,
                 Rinex3ObsHeader::Fields({
-                      gpstk::Rinex3ObsHeader::validMarkerName,
-                         gpstk::Rinex3ObsHeader::validMarkerNumber,
-                         gpstk::Rinex3ObsHeader::validAntennaDeltaHEN,
-                         gpstk::Rinex3ObsHeader::validComment}),
+                      gnsstk::Rinex3ObsHeader::validMarkerName,
+                         gnsstk::Rinex3ObsHeader::validMarkerNumber,
+                         gnsstk::Rinex3ObsHeader::validAntennaDeltaHEN,
+                         gnsstk::Rinex3ObsHeader::validComment}),
                 rod.auxHeader.valid);
       TUASSERTE(size_t, 1, rod.auxHeader.commentList.size());
 
@@ -959,8 +959,8 @@ A 9080                                                      MARKER NAME
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 0, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,12,6,ts).convertToCommonTime(),
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,12,6,ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 4, rod.numSVs);
       TUASSERTE(size_t, 4, rod.obs.size());
@@ -972,8 +972,8 @@ A 9080                                                      MARKER NAME
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 5, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,13,1.2345678,
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,13,1.2345678,
                                  ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 0, rod.numSVs);
@@ -987,15 +987,15 @@ A 9080                                                      MARKER NAME
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 4, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,13,1.2345678,
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,13,1.2345678,
                                  ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 1, rod.numSVs);
       TUASSERTE(size_t, 0, rod.obs.size());
       TUASSERTE(Rinex3ObsHeader::Fields,
                 Rinex3ObsHeader::Fields({
-                      gpstk::Rinex3ObsHeader::validComment}),
+                      gnsstk::Rinex3ObsHeader::validComment}),
                 rod.auxHeader.valid);
       TUASSERTE(size_t, 1, rod.auxHeader.commentList.size());
 
@@ -1009,8 +1009,8 @@ A 9080                                                      MARKER NAME
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 0, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,14,12,ts).convertToCommonTime(),
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,14,12,ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 4, rod.numSVs);
       TUASSERTE(size_t, 4, rod.obs.size());
@@ -1023,14 +1023,14 @@ A 9080                                                      MARKER NAME
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 4, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,14,12,ts).convertToCommonTime(),
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,14,12,ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 1, rod.numSVs);
       TUASSERTE(size_t, 0, rod.obs.size());
       TUASSERTE(Rinex3ObsHeader::Fields,
                 Rinex3ObsHeader::Fields({
-                      gpstk::Rinex3ObsHeader::validComment}),
+                      gnsstk::Rinex3ObsHeader::validComment}),
                 rod.auxHeader.valid);
       TUASSERTE(size_t, 1, rod.auxHeader.commentList.size());
 
@@ -1042,8 +1042,8 @@ A 9080                                                      MARKER NAME
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 6, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,14,12,ts).convertToCommonTime(),
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,14,12,ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 2, rod.numSVs);
       TUASSERTE(size_t, 2, rod.obs.size());
@@ -1057,14 +1057,14 @@ A 9080                                                      MARKER NAME
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 4, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,14,12,ts).convertToCommonTime(),
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,14,12,ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 2, rod.numSVs);
       TUASSERTE(size_t, 0, rod.obs.size());
       TUASSERTE(Rinex3ObsHeader::Fields,
                 Rinex3ObsHeader::Fields({
-                      gpstk::Rinex3ObsHeader::validComment}),
+                      gnsstk::Rinex3ObsHeader::validComment}),
                 rod.auxHeader.valid);
       TUASSERTE(size_t, 2, rod.auxHeader.commentList.size());
 
@@ -1078,8 +1078,8 @@ A 9080                                                      MARKER NAME
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 0, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,14,48,ts).convertToCommonTime(),
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,14,48,ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 4, rod.numSVs);
       TUASSERTE(size_t, 4, rod.obs.size());
@@ -1094,14 +1094,14 @@ A 9080                                                      MARKER NAME
       ros >> rod;
       TUASSERTE(bool, true, ros.good());
       TUASSERTE(short, 4, rod.epochFlag);
-      TUASSERTE(gpstk::CommonTime,
-                gpstk::CivilTime(2005,3,24,13,14,48,ts).convertToCommonTime(),
+      TUASSERTE(gnsstk::CommonTime,
+                gnsstk::CivilTime(2005,3,24,13,14,48,ts).convertToCommonTime(),
                 rod.time);
       TUASSERTE(short, 3, rod.numSVs);
       TUASSERTE(size_t, 0, rod.obs.size());
       TUASSERTE(Rinex3ObsHeader::Fields,
                 Rinex3ObsHeader::Fields({
-                      gpstk::Rinex3ObsHeader::validComment}),
+                      gnsstk::Rinex3ObsHeader::validComment}),
                 rod.auxHeader.valid);
       TUASSERTE(size_t, 3, rod.auxHeader.commentList.size());
    }
@@ -1135,19 +1135,19 @@ int Rinex3Obs_T :: transmitAntennaTest()
    dataTestOutput4             = tempFilePath + file_sep +
       "test_output_rinex3_obs_TestOutput4_xmitStd.15o";
    rv += roundTripTest();
-   gpstk::Rinex3ObsHeader header;
-   gpstk::Rinex3ObsData data;
-   gpstk::Rinex3ObsStream strm(dataRinexObsFile);
+   gnsstk::Rinex3ObsHeader header;
+   gnsstk::Rinex3ObsData data;
+   gnsstk::Rinex3ObsStream strm(dataRinexObsFile);
    TUASSERTE(bool, true, static_cast<bool>(strm));
       // default to Standard
-   TUASSERTE(gpstk::XmitAnt, gpstk::XmitAnt::Standard, header.xmitAnt);
+   TUASSERTE(gnsstk::XmitAnt, gnsstk::XmitAnt::Standard, header.xmitAnt);
    strm >> header;
    TUASSERTE(bool, true, static_cast<bool>(strm));
-   TUASSERTE(gpstk::XmitAnt, gpstk::XmitAnt::Standard, header.xmitAnt);
+   TUASSERTE(gnsstk::XmitAnt, gnsstk::XmitAnt::Standard, header.xmitAnt);
    while (strm)
    {
       strm >> data;
-      TUASSERTE(gpstk::XmitAnt, gpstk::XmitAnt::Standard, data.xmitAnt);
+      TUASSERTE(gnsstk::XmitAnt, gnsstk::XmitAnt::Standard, data.xmitAnt);
    }
    strm.close();
 
@@ -1156,17 +1156,17 @@ int Rinex3Obs_T :: transmitAntennaTest()
    dataTestOutput4             = tempFilePath + file_sep +
       "test_output_rinex3_obs_TestOutput4_xmitReg.15o";
    rv += roundTripTest();
-   gpstk::Rinex3ObsStream strm2(dataRinexObsFile);
+   gnsstk::Rinex3ObsStream strm2(dataRinexObsFile);
    TUASSERTE(bool, true, static_cast<bool>(strm2));
    strm2 >> header;
    TUASSERTE(bool, true, static_cast<bool>(strm2));
-   TUASSERTE(gpstk::XmitAnt, gpstk::XmitAnt::Regional, header.xmitAnt);
+   TUASSERTE(gnsstk::XmitAnt, gnsstk::XmitAnt::Regional, header.xmitAnt);
    while (strm2)
    {
       strm2 >> data;
       if (strm2)
       {
-         TUASSERTE(gpstk::XmitAnt, gpstk::XmitAnt::Regional, data.xmitAnt);
+         TUASSERTE(gnsstk::XmitAnt, gnsstk::XmitAnt::Regional, data.xmitAnt);
       }
    }
    strm2.close();

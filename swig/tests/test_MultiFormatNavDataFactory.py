@@ -2,13 +2,13 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
+from gnsstk.test_utils import args,run_unit_tests
 
-import gpstk
+import gnsstk
 
 class TestMultiFormatNavDataFactory(unittest.TestCase):
     def test_addDataSource(self):
-        ndf = gpstk.MultiFormatNavDataFactory()
+        ndf = gnsstk.MultiFormatNavDataFactory()
         ndf.addDataSource(args.input_dir+'/test_input_yuma377.txt')
         ndf.addDataSource(args.input_dir+
                           '/test_input_rinex_nav_RinexNavExample.99n')

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -52,7 +52,7 @@
 
 #include "OrbSysGpsL.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    class OrbSysGpsL_63 : public OrbSysGpsL
    {
@@ -93,16 +93,16 @@ namespace gpstk
          /**
           * @throw InvalidRequest
           */
-      bool hasSignal(const gpstk::SatID& sidr,
-                     const gpstk::CommonTime& ct,
-                     const gpstk::CarrierBand cb,
-                     const gpstk::TrackingCode tc) const;
+      bool hasSignal(const gnsstk::SatID& sidr,
+                     const gnsstk::CommonTime& ct,
+                     const gnsstk::CarrierBand cb,
+                     const gnsstk::TrackingCode tc) const;
          /**
           * @throw InvalidRequest
           */
-      bool hasSignal(const gpstk::SatID& sidr,
-                     const gpstk::CommonTime& ct,
-                     const gpstk::ObsID& oidr) const;
+      bool hasSignal(const gnsstk::SatID& sidr,
+                     const gnsstk::CommonTime& ct,
+                     const gnsstk::ObsID& oidr) const;
 
          /** Output the contents of this orbit data to the given stream.
           * @throw InvalidRequest if the required data has not been stored.
@@ -128,7 +128,7 @@ namespace gpstk
 
    }; // end class OrbSysGpsL_63
 
-} // end namespace gpstk
+} // end namespace gnsstk
 
 #endif
 

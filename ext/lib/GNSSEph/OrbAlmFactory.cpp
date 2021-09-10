@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -50,17 +50,17 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    OrbAlmFactory::OrbAlmFactory()
       {};
    
    OrbAlm* OrbAlmFactory::
-   convert(const gpstk::PackedNavBits& pnb)
+   convert(const gnsstk::PackedNavBits& pnb)
    {
       OrbAlm* retVal;
-      const gpstk::SatID& sidr = pnb.getsatSys();
-      const gpstk::ObsID& oidr = pnb.getobsID();
+      const gnsstk::SatID& sidr = pnb.getsatSys();
+      const gnsstk::ObsID& oidr = pnb.getobsID();
 
       NavID navID(sidr, oidr); 
 
@@ -88,7 +88,7 @@ namespace gpstk
       }
       catch (InvalidParameter ip)
       {
-         GPSTK_RETHROW(ip); 
+         GNSSTK_RETHROW(ip); 
       }
 
       return retVal;
@@ -96,7 +96,7 @@ namespace gpstk
 
 
    OrbAlm* OrbAlmFactory::
-   GPSLNAV(const gpstk::PackedNavBits& pnb)
+   GPSLNAV(const gnsstk::PackedNavBits& pnb)
    {
       OrbAlm* retVal = 0;
 
@@ -138,14 +138,14 @@ namespace gpstk
                cout << "Conversion attempt failed.  Caught an InvalidParameter" << endl;
                cout << ir << endl;
             }
-            GPSTK_RETHROW(ir); 
+            GNSSTK_RETHROW(ir); 
          }
       }
       return retVal; 
    }
 
    OrbAlm* OrbAlmFactory::
-   GPSCNAV(const gpstk::PackedNavBits& pnb)
+   GPSCNAV(const gnsstk::PackedNavBits& pnb)
    {
       OrbAlm* retVal = 0;
       return retVal; 

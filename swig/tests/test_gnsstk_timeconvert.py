@@ -3,7 +3,7 @@
 from cStringIO import StringIO
 import sys
 import unittest
-import gpstk_timeconvert
+import gnsstk_timeconvert
 
 
 default_condition = lambda expected,actual: expected.split() == actual.split()
@@ -13,13 +13,13 @@ def run_test(test, commands, expected='', pass_condition=default_condition, rais
     if raises is None:
         old_stdout = sys.stdout
         sys.stdout = mystdout = StringIO()
-        gpstk_timeconvert.main(commands)
+        gnsstk_timeconvert.main(commands)
         actual = mystdout.getvalue()
         sys.stdout = old_stdout
         fail_message = '\nExpected ouput: \n' + expected + "Actual output: " + actual
         test.assertTrue(pass_condition(expected, actual), fail_message)
     else:
-        test.assertRaises(raises, gpstk_timeconvert.main, commands)
+        test.assertRaises(raises, gnsstk_timeconvert.main, commands)
 
 
 class ANSI_input(unittest.TestCase):

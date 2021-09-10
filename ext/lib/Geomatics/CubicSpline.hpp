@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -47,7 +47,7 @@
 #include "Exception.hpp"
 #include "StringUtils.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup MathGroup */
       //@{
@@ -101,7 +101,7 @@ namespace gpstk
       {
          if(N == 0) {
             Exception e("Must call Initialize() first");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          if(x <= X[0]) { y = Y[0]; return false; }
          if(x >= X[N-1]) { y = Y[N-1]; return false; }
@@ -120,11 +120,11 @@ namespace gpstk
       {
          if(N == 0) {
             Exception e("Must call Initialize() first");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          if(x < X[0] || x > X[N-1]) {
             Exception e("Input value is outside range determined by Initialize()");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          // find x in the array X
@@ -151,7 +151,7 @@ namespace gpstk
       {
          if(N == 0) {
             Exception e("Must call Initialize() first");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          int n = x.size();
@@ -163,7 +163,7 @@ namespace gpstk
                Exception e(std::string("Input value at index ")
                   + StringUtils::asString(i)
                   + std::string(" is outside range determined by Initialize()"));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             // find x[i] in the array X: X[k-1] < x[i] <= X[k]
@@ -210,7 +210,7 @@ namespace gpstk
          N = (x.size() < y.size() ? x.size() : y.size());
          if(N == 0) {
             Exception e("Input data array(s) empty");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          
          // resize arrays
@@ -223,7 +223,7 @@ namespace gpstk
          for(i=1; i<N; i++) {
             if(x[i-1] >= x[i]) {
                Exception e("Input data array X is not strictly increasing");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             X[i] = x[i];
             Y[i] = y[i];

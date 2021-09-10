@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-"""GPSTk python package installer.
+"""GNSSTk python package installer.
 
 Purpose:
-    Install GPSTk python package using setuptools or distutils
+    Install GNSSTk python package using setuptools or distutils
 
 Usage:
     help:           $ python setup.py --help-commands
@@ -15,8 +15,8 @@ Examples:
     Windows: python setup.py install --install-lib=C:\Python27\Lib\site-packages
 
 Details:
-    Default install path: ~/.local/lib/python<version>/site-packages/gpstk
-    Environment: $ export LD_LIBRARY_PATH=/path/to/intall/of/libgpstk.so
+    Default install path: ~/.local/lib/python<version>/site-packages/gnsstk
+    Environment: $ export LD_LIBRARY_PATH=/path/to/intall/of/libgnsstk.so
 
 """
 
@@ -33,7 +33,7 @@ MODULE_DIR = os.path.split(__file__)[0]
 
 
 scripts_list = [
-    "apps/gpstk_timeconvert.py",
+    "apps/gnsstk_timeconvert.py",
     "apps/sem_plot.py",
     "apps/position_difference.py",
     ]
@@ -64,18 +64,18 @@ requirements_list = [ "python >= 2.7.3",
 # setup() call
 #----------------------------------------
 
-setup(name              = "gpstk",
-      version           = "@GPSTK_VERSION@",
+setup(name              = "gnsstk",
+      version           = "@GNSSTK_VERSION@",
       author            = "Space and Geophysics Lab, ARL, University of Texas at Austin",
       author_email      = "gpstk@arlut.utexas.edu",
-      url               = "http://www.gpstk.org/",
+      url               = "http://www.gnsstk.org/",
       license           = "LICENSE.txt",
-      description       = "GPSTk python package installer",
+      description       = "GNSSTk python package installer",
       long_description  = open(os.path.join(MODULE_DIR, 'README.md')).read(),
       keywords          = ('GNSS', 'GPS', 'RINEX'),
       classifiers       = classifiers_list,
-      packages          = ['gpstk'],
-      package_data      = { 'gpstk': ['_gpstk.so', 'libgpstk.so*'], },
+      packages          = ['gnsstk'],
+      package_data      = { 'gnsstk': ['_gnsstk.so', 'libgnsstk.so*'], },
       data_files        = [('', ['README.md',]),],
       scripts           = scripts_list,
       zip_safe          = False,

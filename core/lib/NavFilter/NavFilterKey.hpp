@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -42,9 +42,9 @@
 #include <ostream>
 #include "ObsID.hpp"
 #include "CommonTime.hpp"
-#include "gpstkplatform.h"
+#include "gnsstkplatform.h"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup NavFilter
       //@{
@@ -72,12 +72,12 @@ namespace gpstk
           * on GNSS and implementation.  Refer to the documentation
           * for the validate methods of individual filters for any
           * requirements on the contents of this field. */
-      gpstk::CommonTime timeStamp;
+      gnsstk::CommonTime timeStamp;
       std::string stationID;       ///< site/station identifier for data source
       std::string rxID;            ///< receiver identifier for data source
       uint32_t prn;                ///< identifier of broadcasting satellite 
       CarrierBand carrier;  ///< carrier band of navigation message
-      gpstk::TrackingCode code;    ///< ranging code of navigation message
+      gnsstk::TrackingCode code;    ///< ranging code of navigation message
          // Nav code is not necessary as each filter is unique to a
          // given navigation message structure.
 

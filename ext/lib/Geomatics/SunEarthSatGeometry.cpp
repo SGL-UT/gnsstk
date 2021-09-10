@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -44,14 +44,14 @@
 
 // system
 #include <map>
-// GPSTk includes
+// GNSSTk includes
 #include "GPSEllipsoid.hpp"         // angVelocity
 // geomatics
 #include "SunEarthSatGeometry.hpp"
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 
    // --------------------------------------------------------------------------------
@@ -84,12 +84,12 @@ namespace gpstk
    
          return R;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
       catch(exception& e) {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
-      catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+      catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
    
    // Same as NorthEastUp(P,true).
@@ -113,12 +113,12 @@ namespace gpstk
          for(int i=0; i<3; i++) { double r=R(0,i); R(0,i)=R(2,i); R(2,i)=r; }
          return R;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
       catch(exception& e) {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
-      catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+      catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
    
    // Same as UpEastNorth, but using geocentric coordinates, so that the -Up
@@ -196,12 +196,12 @@ namespace gpstk
          shadow /= ::acos(-1.0)*AngRadSun*AngRadSun;
          return shadow;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
       catch(exception& e) {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
-      catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+      catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
    
    // --------------------------------------------------------------------------------
@@ -233,7 +233,7 @@ namespace gpstk
 
          return ShadowFactor(AngRadEarth, AngRadSun, sesa);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    // --------------------------------------------------------------------------------
@@ -292,12 +292,12 @@ namespace gpstk
    
          return R;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
       catch(exception& e) {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
-      catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+      catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
 
   // -----------------------------------------------------------------------------------
@@ -342,9 +342,9 @@ namespace gpstk
 
       return R;
     }
-    catch(Exception& e) { GPSTK_RETHROW(e); }
-    catch(std::exception& e) {Exception E("std except: "+string(e.what())); GPSTK_THROW(E);}
-    catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+    catch(Exception& e) { GNSSTK_RETHROW(e); }
+    catch(std::exception& e) {Exception E("std except: "+string(e.what())); GNSSTK_THROW(E);}
+    catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
   }
    
    // --------------------------------------------------------------------------------
@@ -366,7 +366,7 @@ namespace gpstk
       try {
          if(Rot.rows() != 3 || Rot.cols() != 3) {
             Exception e("Rotation matrix invalid");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
    
          double d;
@@ -377,7 +377,7 @@ namespace gpstk
          d = RmS.mag();
          if(d == 0.0) {
             Exception e("Satellite and Receiver Positions identical");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          RmS = (1.0/d) * RmS;
    
@@ -391,12 +391,12 @@ namespace gpstk
          azimuth = ::atan2(Body(1),Body(0)) * RAD_TO_DEG;
          if(azimuth < 0.0) azimuth += 360.;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
       catch(exception& e) {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
-      catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+      catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
    
    // --------------------------------------------------------------------------------
@@ -422,12 +422,12 @@ namespace gpstk
          // compute the angle
          return (::acos(sat.dot(ssun)));
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
       catch(exception& e) {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
-      catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+      catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
 
    // --------------------------------------------------------------------------------
@@ -493,12 +493,12 @@ namespace gpstk
          else
             phi = 0.0;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
       catch(exception& e) {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
-      catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+      catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
    
    // --------------------------------------------------------------------------------
@@ -537,7 +537,7 @@ namespace gpstk
 
          return yaw;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
 }  // end namespace

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -57,9 +57,9 @@
 #include "OrbitEphStore.hpp"
 
 using namespace std;
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 
-namespace gpstk
+namespace gnsstk
 {
    Xvt OrbitEphStore::getXvt(const SatID& sat, const CommonTime& t) const
    {
@@ -70,14 +70,14 @@ namespace gpstk
          if (!eph)
          {
             InvalidRequest exc("No OrbitEph for satellite " + asString(sat));
-            GPSTK_THROW(exc);
+            GNSSTK_THROW(exc);
          }
 
             // no consideration is given to health here (OrbitEph does
             // not have health);
             // derived classes should override isHealthy()
          if (onlyHealthy && !eph->isHealthy())
-            GPSTK_THROW(InvalidRequest("Not healthy"));
+            GNSSTK_THROW(InvalidRequest("Not healthy"));
 
             // compute the position, velocity and time
          Xvt sv = eph->svXvt(t);
@@ -87,7 +87,7 @@ namespace gpstk
       }
       catch(InvalidRequest& ir)
       {
-         GPSTK_RETHROW(ir);
+         GNSSTK_RETHROW(ir);
       }
    }
 
@@ -295,7 +295,7 @@ namespace gpstk
                ir.addText("beginValid= " + printTime(eph->beginValid,fmt));
                ir.addText("Toe(prior)= " + printTime(it->second->ctToe,fmt));
                ir.addText("Toe(add)= "+ printTime(eph->ctToe,fmt));
-               GPSTK_THROW(ir);
+               GNSSTK_THROW(ir);
             }
          }
 
@@ -352,7 +352,7 @@ namespace gpstk
          else message = string("Late transmit copy");
          return ret;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e) }
+      catch(Exception& e) { GNSSTK_RETHROW(e) }
 
    }  // end OrbitEph* OrbitEphStore::addEphemeris(const OrbitEph* eph)
 
@@ -476,7 +476,7 @@ namespace gpstk
             //string mess = "Time is beyond table for satellite " + asString(sat)
             //   + " for time " + printTime(t,fmt);
             //InvalidRequest e(mess);
-            //GPSTK_THROW(e);
+            //GNSSTK_THROW(e);
             return NULL;
          }
       }  // end if not a direct match
@@ -496,7 +496,7 @@ namespace gpstk
          //string mess = "Time is before table for satellite " + asString(sat)
          //      + " for time " + printTime(t,fmt);
          //InvalidRequest e(mess);
-         //GPSTK_THROW(e);
+         //GNSSTK_THROW(e);
          return NULL;
       }
 
@@ -516,7 +516,7 @@ namespace gpstk
          //string mess = "No orbital elements found for satellite " + asString(sat)
          //   + " at time " + printTime(t,fmt);
          //InvalidRequest e(mess);
-         //GPSTK_THROW(e);
+         //GNSSTK_THROW(e);
          return NULL;
       }
 
@@ -647,7 +647,7 @@ namespace gpstk
       SatTableMap::const_iterator it = satTables.find(sat);
       if(it == satTables.end()) {
          InvalidRequest e("No OrbitEph for satellite " + asString(sat));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return it->second;
    }

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -77,10 +77,10 @@ static bool winMatchRE(const std::string& pattern, const std::string& test)
 {
       // change wildcards to regular expressions, making sure to match
       // the whole string.
-   std::string patternRE = "^" + gpstk::StringUtils::change(pattern,".","\\.") +
+   std::string patternRE = "^" + gnsstk::StringUtils::change(pattern,".","\\.") +
       "$";
-   patternRE = gpstk::StringUtils::change(patternRE,"*",".*");
-   patternRE = gpstk::StringUtils::change(patternRE,"?",".");
+   patternRE = gnsstk::StringUtils::change(patternRE,"*",".*");
+   patternRE = gnsstk::StringUtils::change(patternRE,"?",".");
    std::regex re(patternRE, std::regex::basic);
    std::smatch m;
    std::regex_search(test, m, re);
@@ -117,7 +117,7 @@ static void winGlob(const char *pattern, std::list<std::string>& results)
       pos2 = patternStr.find(PATH_SEP_STRING, pos);
       std::string pathSearch = patternStr.substr(0,pos2);
          // turn POSIX glob pattern into windows pattern before trying to find
-      pathSearch = gpstk::StringUtils::change(pathSearch, "[0-9]", "?");
+      pathSearch = gnsstk::StringUtils::change(pathSearch, "[0-9]", "?");
       std::string matchPattern = patternStr.substr(pos,pos2-pos);
       hFindFile = FindFirstFile(pathSearch.c_str(), &findFileData);
       if (hFindFile != INVALID_HANDLE_VALUE) 
@@ -134,7 +134,7 @@ static void winGlob(const char *pattern, std::list<std::string>& results)
                   patternStr.substr(0,pos) + findFileData.cFileName);
                   // Add the remaining pattern, if any, for recursive search
                std::string newPattern(
-                  match + gpstk::getFileSep() + patternStr.substr(pos2+1));
+                  match + gnsstk::getFileSep() + patternStr.substr(pos2+1));
                   // check if we have more directory layers to go in
                   // the pattern and the match is a directory.
                if ((pos2 != std::string::npos) &&
@@ -219,23 +219,23 @@ static void globfree(glob_t *pglob)
 }
 #endif
 
-namespace gpstk
+namespace gnsstk
 {
    list<string> FileSpecFind ::
    find(const std::string& fileSpecString,
-        const gpstk::CommonTime& start,
-        const gpstk::CommonTime& end,
-        const gpstk::FileSpec::FSTStringMap& fsts)
+        const gnsstk::CommonTime& start,
+        const gnsstk::CommonTime& end,
+        const gnsstk::FileSpec::FSTStringMap& fsts)
    {
          // This first pile of code replaces text tokens of frequently
          // unknown size with fixed sizes.  If you use FileSpec to
          // create a filename that has a token %x or %4x and you don't
          // have the "text" value set in fsts, FileSpec will not fill
          // in any default.  It will for most other tokens, however.
-      const gpstk::FileSpec::FileSpecType
-         fsType = gpstk::FileSpec::text,
-         fsSel = gpstk::FileSpec::selected;
-      gpstk::FileSpec::FSTStringMap dummyFSTS(fsts);
+      const gnsstk::FileSpec::FileSpecType
+         fsType = gnsstk::FileSpec::text,
+         fsSel = gnsstk::FileSpec::selected;
+      gnsstk::FileSpec::FSTStringMap dummyFSTS(fsts);
       string spec(fileSpecString);
       unsigned textLen = dummyFSTS[fsType].length();
       if (textLen == 0)
@@ -245,8 +245,8 @@ namespace gpstk
          dummyFSTS[fsType] = "Z";
          textLen = 1;
       }
-      string textTok = gpstk::FileSpec::convertFileSpecType(fsType);
-      string textLenS = gpstk::StringUtils::asString(textLen);
+      string textTok = gnsstk::FileSpec::convertFileSpecType(fsType);
+      string textLenS = gnsstk::StringUtils::asString(textLen);
       unsigned selLen = dummyFSTS[fsSel].length();
       if (selLen == 0)
       {
@@ -255,18 +255,18 @@ namespace gpstk
          dummyFSTS[fsSel] = "Z"; // whatever, no meaning behind it
          selLen = 1;
       }
-      string selTok = gpstk::FileSpec::convertFileSpecType(fsSel);
-      string selLenS = gpstk::StringUtils::asString(textLen);
+      string selTok = gnsstk::FileSpec::convertFileSpecType(fsSel);
+      string selLenS = gnsstk::StringUtils::asString(textLen);
          // Just change the arbitrary text token to the value we have,
          // since there's at most one value to match.
-      gpstk::StringUtils::change(spec, "%"+textTok, dummyFSTS[fsType]);
-      gpstk::StringUtils::change(spec, "%"+selTok, "%"+selLenS+selTok);
+      gnsstk::StringUtils::change(spec, "%"+textTok, dummyFSTS[fsType]);
+      gnsstk::StringUtils::change(spec, "%"+selTok, "%"+selLenS+selTok);
          // Fill in other defaults, which will get set to a fixed
          // width by FileSpec.
-      for (unsigned i = gpstk::FileSpec::unknown;
-           i < gpstk::FileSpec::firstTime; i++)
+      for (unsigned i = gnsstk::FileSpec::unknown;
+           i < gnsstk::FileSpec::firstTime; i++)
       {
-         gpstk::FileSpec::FileSpecType fst = (gpstk::FileSpec::FileSpecType)i;
+         gnsstk::FileSpec::FileSpecType fst = (gnsstk::FileSpec::FileSpecType)i;
          if ((fst == FileSpec::fixed) || (fst == FileSpec::unknown))
             continue;
          if (dummyFSTS.find(fst) == dummyFSTS.end())
@@ -292,10 +292,10 @@ namespace gpstk
          // tokens won't get translated if there's no value, e.g. %5n
          // will stay %5n after converting to string if there's no
          // station value in dummyFSTS
-      for (unsigned i = gpstk::FileSpec::unknown;
-           i < gpstk::FileSpec::firstTime; i++)
+      for (unsigned i = gnsstk::FileSpec::unknown;
+           i < gnsstk::FileSpec::firstTime; i++)
       {
-         gpstk::FileSpec::FileSpecType fst = (gpstk::FileSpec::FileSpecType)i;
+         gnsstk::FileSpec::FileSpecType fst = (gnsstk::FileSpec::FileSpecType)i;
          if ((fst == FileSpec::fixed) || (fst == FileSpec::unknown))
             continue;
          dummyFSTS[fst] = "";
@@ -310,12 +310,12 @@ namespace gpstk
          // chew through a FileSpec string changing tokens to glob patterns
       string rv;
       string::size_type spos = 0;
-      string textTok = gpstk::FileSpec::convertFileSpecType(
-         gpstk::FileSpec::text);
-      string selTok = gpstk::FileSpec::convertFileSpecType(
-         gpstk::FileSpec::selected);
-      string stnTok = gpstk::FileSpec::convertFileSpecType(
-         gpstk::FileSpec::station);
+      string textTok = gnsstk::FileSpec::convertFileSpecType(
+         gnsstk::FileSpec::text);
+      string selTok = gnsstk::FileSpec::convertFileSpecType(
+         gnsstk::FileSpec::selected);
+      string stnTok = gnsstk::FileSpec::convertFileSpecType(
+         gnsstk::FileSpec::station);
       while (true)
       {
          string::size_type ppos = token.find('%', spos);
@@ -471,10 +471,10 @@ namespace gpstk
        *       2018 211 67500.000000  TIME RANGE MATCHED
        */
    list<string> FileSpecFind ::
-   findGlob(const gpstk::CommonTime& fromTime,
-            const gpstk::CommonTime& toTime,
+   findGlob(const gnsstk::CommonTime& fromTime,
+            const gnsstk::CommonTime& toTime,
             const string& spec,
-            const gpstk::FileSpec::FSTStringMap& dummyFSTS,
+            const gnsstk::FileSpec::FSTStringMap& dummyFSTS,
             const Filter& filter,
             const string& matched,
             string::size_type pos)
@@ -531,8 +531,8 @@ namespace gpstk
          // Use the current spec to turn our time range into something
          // that will be useable to match at this level in the
          // heirarchy.
-      gpstk::CommonTime fromTimeMatch, toTimeMatch;
-      gpstk::FileSpec specScanner(thisSpec);
+      gnsstk::CommonTime fromTimeMatch, toTimeMatch;
+      gnsstk::FileSpec specScanner(thisSpec);
       if (checkTime)
       {
          string fromString = specScanner.toString(fromTime, dummyFSTS);
@@ -556,7 +556,7 @@ namespace gpstk
          {
                // check if the matched files/directories are within
                // the search time
-            gpstk::CommonTime fileTime =
+            gnsstk::CommonTime fileTime =
                specScanner.extractCommonTime(globbuf.gl_pathv[i]);
             timeMatched = ((fromTimeMatch <= fileTime) &&
                            (fileTime < toTimeMatch));

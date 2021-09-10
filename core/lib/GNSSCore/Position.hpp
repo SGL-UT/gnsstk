@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -38,7 +38,7 @@
 
 /**
  * @file Position.hpp
- * class gpstk::Position encapsulates 3-D positions, including
+ * class gnsstk::Position encapsulates 3-D positions, including
  *    geographic positions, expressed as geodetic (with respect to an
  *    ellipsoid), geocentric or Earth-centered, Earth-fixed
  *    (cartesian) coordinates, as well as ordinary positions defined
@@ -46,8 +46,8 @@
  *    class Triple.
  */
 
-#ifndef GPSTK_POSITION_HPP
-#define GPSTK_POSITION_HPP
+#ifndef GNSSTK_POSITION_HPP
+#define GNSSTK_POSITION_HPP
 
 #include "Exception.hpp"
 #include "StringUtils.hpp"
@@ -57,7 +57,7 @@
 #include "Xvt.hpp"
 #include "Angle.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup Geodetic
       //@{
@@ -117,7 +117,7 @@ namespace gpstk
        * Triple& xyz); These functions use Triple in the calling
        * arguments.
        *
-       * Position will throw exceptions (gpstk::GeometryException) on
+       * Position will throw exceptions (gnsstk::GeometryException) on
        * bad input (e.g. negative radius or latitude > 90 degrees);
        * otherwise the class attempts to handle all points, even the
        * pole and the origin, consistently and without throwing
@@ -137,7 +137,7 @@ namespace gpstk
        * either the pole or the origin.
        *
        * Position includes setToString() and printf() functions
-       * similar to those in gpstk::CommonTime; this allows flexible
+       * similar to those in gnsstk::CommonTime; this allows flexible
        * and powerful I/O of Position to strings and streams.
        *
        * @sa positiontest.cpp for examples.
@@ -389,7 +389,7 @@ namespace gpstk
       Position& asGeodetic(EllipsoidModel *ell)
       {
          try { setEllipsoidModel(ell); }
-         catch(GeometryException& ge) { GPSTK_RETHROW(ge); }
+         catch(GeometryException& ge) { GNSSTK_RETHROW(ge); }
          transformTo(Geodetic);
          return *this;
       }
@@ -1085,6 +1085,6 @@ namespace gpstk
 
       //@}
 
-}  // namespace gpstk
+}  // namespace gnsstk
 
-#endif   // GPSTK_POSITION_HPP
+#endif   // GNSSTK_POSITION_HPP

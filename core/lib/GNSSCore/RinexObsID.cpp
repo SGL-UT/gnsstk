@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -38,7 +38,7 @@
 
 /**
  * @file RinexObsID.cpp
- * gpstk::RinexObsID - Identifies types of observations
+ * gnsstk::RinexObsID - Identifies types of observations
  */
 
 #include "RinexObsID.hpp"
@@ -46,7 +46,7 @@
 #include "StringUtils.hpp"
 #include "Rinex3ObsHeader.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 
    // string containing the system characters for all valid RINEX systems.
@@ -346,7 +346,7 @@ namespace gpstk
       }
       catch(Exception& e) {
          s << "Exception: " << e.what() << std::endl;
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
       return s;
@@ -383,7 +383,7 @@ namespace gpstk
           char2cb.count(strID[1]) && 
           char2tc.count(strID[2]))
       {
-         GPSTK_THROW(InvalidParameter("Identifier " + strID +
+         GNSSTK_THROW(InvalidParameter("Identifier " + strID +
                                       " already defined."));
       }
 

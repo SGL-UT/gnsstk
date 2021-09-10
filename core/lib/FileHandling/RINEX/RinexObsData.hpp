@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -54,7 +54,7 @@
 #include "RinexObsHeader.hpp"
 #include "RinexDatum.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
@@ -62,7 +62,7 @@ namespace gpstk
       /**
        * This class models a RINEX Observation Data Record.
        *
-       * @sa gpstk::RinexObsStream and gpstk::RinexObsHeader.
+       * @sa gnsstk::RinexObsStream and gnsstk::RinexObsHeader.
        * @sa rinex_obs_test.cpp and rinex_obs_read_write.cpp for examples.
        */
    class RinexObsData : public RinexObsBase
@@ -70,11 +70,11 @@ namespace gpstk
    public:
 
          /// map from RinexObsType to RinexDatum.
-      typedef std::map<RinexObsType, gpstk::RinexDatum> RinexObsTypeMap;
+      typedef std::map<RinexObsType, gnsstk::RinexDatum> RinexObsTypeMap;
          /// map from SatID to RinexObsTypeMap.
-      typedef std::map<gpstk::SatID, RinexObsTypeMap> RinexSatMap;
+      typedef std::map<gnsstk::SatID, RinexObsTypeMap> RinexSatMap;
 
-      gpstk::CommonTime time;    ///< the time corresponding to the observations
+      gnsstk::CommonTime time;    ///< the time corresponding to the observations
          /** Epoch flag has the following values
           * 0 ok
           * 1 power failure since previous epoch
@@ -96,7 +96,7 @@ namespace gpstk
       RinexObsHeader auxHeader;///< auxiliary header records (epochFlag 2-5)
 
          /// Constructor.
-      RinexObsData() : time(gpstk::CommonTime::BEGINNING_OF_TIME){}
+      RinexObsData() : time(gnsstk::CommonTime::BEGINNING_OF_TIME){}
 
          /// Destructor
       virtual ~RinexObsData() {}
@@ -145,7 +145,7 @@ namespace gpstk
    private:
          /// Time corresponding to previous set of oberservations
          /// Used in cases where epoch time of a epoch flag==0
-      static gpstk::CommonTime previousTime;
+      static gnsstk::CommonTime previousTime;
 
          /// Writes the CommonTime object into RINEX format. If it's a bad time,
          /// it will return blanks.

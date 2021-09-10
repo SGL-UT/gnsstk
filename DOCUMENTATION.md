@@ -13,9 +13,9 @@ Contents:
 Doxygen API Documentation - Automated Build:
 ------------------------------------------------------------------------
 
-   1. Navigate to the root directory of the extract GPSTk file tree, herein called $gpstk_root:
+   1. Navigate to the root directory of the extract GNSSTk file tree, herein called $gnsstk_root:
 
-        $ cd $gpstk_root
+        $ cd $gnsstk_root
          
    2a. Execute the build script to build the Core Doxygen API Documentation
         
@@ -30,9 +30,9 @@ Doxygen API Documentation - Automated Build:
 Doxygen API Documentation - Manual Build:
 ----------------------------------------------------------------------
 
-   1. Navigate to the root directory of the extract GPSTk file tree:
+   1. Navigate to the root directory of the extract GNSSTk file tree:
 
-         $ cd $gpstk_root
+         $ cd $gnsstk_root
 
          $ doxygen 
 
@@ -40,12 +40,12 @@ Doxygen API Documentation - Manual Build:
 LaTex User's Reference Manual PDF:
 ----------------------------------
 
-To generate a PDF version of the GPSTk User's Guide, the source files must be compiled using a 
+To generate a PDF version of the GNSSTk User's Guide, the source files must be compiled using a 
 combination of perltex and latex. 
 
-   1. Navigate to the root directory of the extract GPSTk file tree, herein called $gpstk_root:
+   1. Navigate to the root directory of the extract GNSSTk file tree, herein called $gnsstk_root:
 
-         $ cd $gpstk_root
+         $ cd $gnsstk_root
 
    2. Navigate to the usersguide/ directory:
 

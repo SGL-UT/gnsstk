@@ -1,4 +1,4 @@
-namespace gpstk
+namespace gnsstk
 {
       // Wrap () operators for MetData operators
    %extend RinexMetDataFilterTime

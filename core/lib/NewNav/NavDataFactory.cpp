@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -43,7 +43,7 @@
 /// debug time string
 static const std::string dts("%Y/%03j/%02H:%02M:%02S %P");
 
-namespace gpstk
+namespace gnsstk
 {
    bool NavDataFactory :: isPresent(const NavMessageID& nmid,
                                     const CommonTime& fromTime,
@@ -52,12 +52,12 @@ namespace gpstk
       CommonTime t = fromTime;
       NavDataPtr junk;
          // std::cerr << __PRETTY_FUNCTION__ << " "
-         //           << gpstk::printTime(fromTime, dts) << " "
-         //           << gpstk::printTime(toTime, dts)
+         //           << gnsstk::printTime(fromTime, dts) << " "
+         //           << gnsstk::printTime(toTime, dts)
          //           << std::endl;
       while (true)
       {
-            // std::cerr << "isPresent calling find @ " << gpstk::printTime(t, dts)
+            // std::cerr << "isPresent calling find @ " << gnsstk::printTime(t, dts)
             //           << std::endl;
          if (find(nmid, t, junk, SVHealth::Any, NavValidityType::Any,
                   NavSearchOrder::User))

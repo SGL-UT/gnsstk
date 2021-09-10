@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -50,10 +50,10 @@
 
 #include <iostream>
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    const string RinexNavHeader::endOfHeader = "END OF HEADER";
    const string RinexNavHeader::leapSecondsString = "LEAP SECONDS";
@@ -99,14 +99,14 @@ namespace gpstk
       {
          FFStreamError err("Unknown RINEX version: " + asString(version,3));
          err.addText("Make sure to set the version correctly.");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       
       if ((valid & allValid) != allValid)
       {
          FFStreamError err("Incomplete or invalid header.");
          err.addText("Make sure you set all header valid bits for all of the available data.");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       
       string line;
@@ -212,7 +212,7 @@ namespace gpstk
          else if (line.length()<60 || line.length()>80)
          {
             FFStreamError e("Invalid line length");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          
          string thisLabel(line, 60, 20);
@@ -225,7 +225,7 @@ namespace gpstk
                  (fileType[0] != 'n'))
             {
                FFStreamError e("This isn't a Rinex Nav file");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             valid |= versionValid;
          }
@@ -274,7 +274,7 @@ namespace gpstk
          {
             FFStreamError exc("Unknown header label at line " + 
                               asString<size_t>(strm.lineNumber));
-            GPSTK_THROW(exc);
+            GNSSTK_THROW(exc);
          }
       }
       
@@ -286,13 +286,13 @@ namespace gpstk
       {
          FFStreamError e("Unknown or unsupported RINEX version " + 
                          asString(version));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       
       if ( (allValid & valid) != allValid)
       {
          FFStreamError e("Incomplete or invalid header");
-         GPSTK_THROW(e);               
+         GNSSTK_THROW(e);               
       }            
       
          // we got here, so something must be right...

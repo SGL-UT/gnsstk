@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -50,9 +50,9 @@
 #include "CivilTime.hpp"
 
 using namespace std;
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 
-namespace gpstk
+namespace gnsstk
 {
    const string IonexHeader::versionString         =  "IONEX VERSION / TYPE";
    const string IonexHeader::runByString           =  "PGM / RUN BY / DATE";
@@ -181,7 +181,7 @@ namespace gpstk
             default:                   // non-IONEX system character
                FFStreamError e(std::string("Invalid system character \"")
                                + c + std::string("\""));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
 
          }  // End of 'switch(line[3])'
 
@@ -218,7 +218,7 @@ namespace gpstk
          FFStreamError e(std::string( "Unidentified IONEX::DCB label: "
                                       + label) );
 
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
 
       }  // End of 'if (label == endAuxDataString)'...
 
@@ -382,7 +382,7 @@ namespace gpstk
 
          FFStreamError e("Unidentified IONEX header record: " + label);
 
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
 
       }
 
@@ -431,7 +431,7 @@ namespace gpstk
             {
 
                FFStreamError e("Invalid line length");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
 
             }
 
@@ -447,7 +447,7 @@ namespace gpstk
             }
             catch (FFStreamError& e)
             {
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
 
          }
@@ -460,7 +460,7 @@ namespace gpstk
             }
             catch (FFStreamError& e)
             {
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
 
          }  // End of 'if (auxDataFlag)...'
@@ -474,7 +474,7 @@ namespace gpstk
       {
          FFStreamError e( "Invalid IONEX version number " +
                           asString(version));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // time arguments consistency
@@ -482,7 +482,7 @@ namespace gpstk
       if (interval != static_cast<int>(interval0))
       {
          FFStreamError e("Inconsistent time arguments.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // map dimension consistency
@@ -492,7 +492,7 @@ namespace gpstk
          if ( (hgt[0] != hgt[1]) || (hgt[2] != 0.0) )
          {
             FFStreamError e("Error concerning map dimension.");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
       }
@@ -502,7 +502,7 @@ namespace gpstk
          if ( (hgt[0] == hgt[1]) || (hgt[2] == 0.0) )
          {
             FFStreamError e("Error concerning map dimension.");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
       }  // End of 'if (mapDims == 2)...'
@@ -530,7 +530,7 @@ namespace gpstk
          if (xdif > 1e-4)
          {
             FFStreamError e("Irregular Ionex data grid.");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
       }  // End of 'for (int i = 0; i < 4; i++)...'
@@ -554,7 +554,7 @@ namespace gpstk
       {
          FFStreamError err( "Unknown IONEX version: " + asString(version,2) );
          err.addText("Make sure to set the version correctly.");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       try
@@ -563,11 +563,11 @@ namespace gpstk
       }
       catch(FFStreamError& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       catch(StringException& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
    }  // End of method 'IonexHeader::reallyPutRecord()'
@@ -590,7 +590,7 @@ namespace gpstk
          {
             FFStreamError err("This isn't a Ionex file: " + 
                               fileType.substr(0,1));
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
 
          line += leftJustify(fileType, 20);
@@ -885,4 +885,4 @@ namespace gpstk
 
 
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk

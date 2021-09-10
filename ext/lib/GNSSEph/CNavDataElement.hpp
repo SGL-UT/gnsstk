@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -54,8 +54,8 @@
  *  the characteristics of the individual data types.
  */
 
-#ifndef GPSTK_CNAVDATAELEMENT_HPP
-#define GPSTK_CNAVDATAELEMENT_HPP
+#ifndef GNSSTK_CNAVDATAELEMENT_HPP
+#define GNSSTK_CNAVDATAELEMENT_HPP
 
 #include "ObsID.hpp"
 #include "Exception.hpp"
@@ -65,7 +65,7 @@
 #include "GPSWeekSecond.hpp"
 #include "SatMetaDataStore.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    class CNavDataElement
    {
@@ -140,7 +140,7 @@ namespace gpstk
           * @param[out] svn If found the satellite's vehicle number.
           * @return true if the requested satellite mapping was found.
           */
-      bool getSVN(const SatID& sat, const gpstk::CommonTime& when,
+      bool getSVN(const SatID& sat, const gnsstk::CommonTime& when,
                   std::string& svn)
          const
       {
@@ -170,4 +170,4 @@ namespace gpstk
 
 } // end namespace
 
-#endif // GPSTK_CNavDataElement_HPP
+#endif // GNSSTK_CNavDataElement_HPP

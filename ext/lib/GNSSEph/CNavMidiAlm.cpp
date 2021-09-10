@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -49,9 +49,9 @@
 #include "TimeString.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
-namespace gpstk
+namespace gnsstk
 {
    CNavMidiAlm::CNavMidiAlm()
       :OrbDataSys(),
@@ -75,7 +75,7 @@ namespace gpstk
       }
       catch (InvalidParameter ip)
       {
-         GPSTK_RETHROW(ip); 
+         GNSSTK_RETHROW(ip); 
       }
    }
 
@@ -85,7 +85,7 @@ namespace gpstk
       return new CNavMidiAlm (*this);
    }
 
-   bool CNavMidiAlm::isSameData(const gpstk::OrbData* right) const      
+   bool CNavMidiAlm::isSameData(const gnsstk::OrbData* right) const      
    {
          // First, test whether the test object is actually a CNavMidiAlm object.
       const CNavMidiAlm* p = dynamic_cast<const CNavMidiAlm*>(right);
@@ -125,7 +125,7 @@ namespace gpstk
             stringstream ss;
             ss << "CNavMidiAlm::loadData().  Expected CNAV-2, Subframe 3, Page 4.   Found page " << pageID;
             InvalidParameter ip(ss.str());
-            GPSTK_THROW(ip); 
+            GNSSTK_THROW(ip); 
          }
          almType = matCNAV2;
       }
@@ -138,7 +138,7 @@ namespace gpstk
             stringstream ss;
             ss << "CNavMidiAlm::loadData().  Expected CNAV, MT 37.   Found MT " << mt;
             InvalidParameter ip(ss.str());
-            GPSTK_THROW(ip); 
+            GNSSTK_THROW(ip); 
          }
          almType = matCNAV;
       }
@@ -193,7 +193,7 @@ namespace gpstk
       if (!dataLoadedFlag)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       s << "*********************************************************" << endl;
       s << " GPS CNAV System-level navigation message data.  Midi Almanac: " << endl;
@@ -210,7 +210,7 @@ namespace gpstk
       if (!dataLoadedFlag)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       if (almType==matCNAV)
          s << "MT 37. ";
@@ -226,7 +226,7 @@ namespace gpstk
       if (!dataLoadedFlag)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       s << endl

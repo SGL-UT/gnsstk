@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,12 +41,12 @@
  * Base classes (const and ref) for Matrix
  */
  
-#ifndef GPSTK_MATRIX_BASE_HPP
-#define GPSTK_MATRIX_BASE_HPP
+#ifndef GNSSTK_MATRIX_BASE_HPP
+#define GNSSTK_MATRIX_BASE_HPP
 
 #include "Vector.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup MathGroup
       //@{
@@ -149,7 +149,7 @@ namespace gpstk
          if ((c >= cols()) || (r >= rows()))
          {
             MatrixException e("Invalid ConstMatrixBase index for colCopy");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          Vector<T> toReturn(rows() - r);
@@ -168,7 +168,7 @@ namespace gpstk
          if ((c >= cols()) || (r >= rows()))
          {
             MatrixException e("Invalid ConstMatrixBase index for rowCopy");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          Vector<T> toReturn(cols() - c);
@@ -202,7 +202,7 @@ namespace gpstk
          if ((i >= b.rows()) || (j > b.cols()))
          {
             MatrixException e("Invalid ConstMatrixBase index for ref");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          return b(i,j);
@@ -292,7 +292,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.rows() != me.rows() || x.cols() != me.cols()) {
             MatrixException e("Invalid dimensions for Matrix assignFrom(Matrix)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -312,7 +312,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.size() != me.rows() * me.cols()) {
             MatrixException e("Invalid dimensions for Matrix assignFrom(Vector)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -332,7 +332,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.size() != me.rows() * me.cols()) {
             MatrixException e("Invalid dimensions for Matrix assignFrom(valarray)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -377,7 +377,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.rows() != me.rows() || x.cols() != me.cols()) {
             MatrixException e("Invalid dimensions for Matrix operator+=(Matrix)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -397,7 +397,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.size() != me.rows() * me.cols()) {
             MatrixException e("Invalid dimensions for Matrix operator+=(Vector)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -417,7 +417,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.size() != me.rows() * me.cols()) {
             MatrixException e("Invalid dimensions for Matrix operator+=(valarray)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -463,7 +463,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.rows() != me.rows() || x.cols() != me.cols()) {
             MatrixException e("Invalid dimensions for Matrix operator-=(Matrix)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -483,7 +483,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.size() != me.rows() * me.cols()) {
             MatrixException e("Invalid dimensions for Matrix operator-=(Vector)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -503,7 +503,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.size() != me.rows() * me.cols()) {
             MatrixException e("Invalid dimensions for Matrix operator-=(valarray)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -583,7 +583,7 @@ namespace gpstk
          if ( (row1 >= me.rows()) || (row2 >= me.rows()) )
          {
             MatrixException e("Invalid rows for swapRows");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i;
@@ -607,7 +607,7 @@ namespace gpstk
          if ( (col1 >= me.cols()) || (col2 >= me.cols()) )
          {
             MatrixException e("Invalid columns for swapCols");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i;
@@ -661,7 +661,7 @@ namespace gpstk
                  ((rowStart() + (rowSize()-1) * rowStride()) >= sourceRowSize))
             {
                MatrixException e("Invalid row range for slice");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
          }
          if (colSize() > 0)
@@ -670,7 +670,7 @@ namespace gpstk
                  ((colStart() + (colSize()-1) * colStride()) >= sourceColSize))
             {
                MatrixException e("Invalid col range for slice");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
          }
             //#endif

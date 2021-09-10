@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -53,7 +53,7 @@
 #define LDEXP(x,y) std::ldexp(x,y)
 #endif
 
-namespace gpstk
+namespace gnsstk
 {
    /// DecodeBits .
    struct DecodeBits
@@ -710,7 +710,7 @@ namespace gpstk
       return D | d;
    }
 
-      /// This is the OLD GPSTk method, left here for compatibility
+      /// This is the OLD GNSSTk method, left here for compatibility
    bool EngNav :: subframeParity(const long input[10])
    {
       uint32_t temp[10];
@@ -861,7 +861,7 @@ namespace gpstk
       {
          InvalidParameter exc("getNMCTValidity called using non-subframe 2"
                               " data");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
          // no math functions in anything but common time, so extra
          // conversions, yay.

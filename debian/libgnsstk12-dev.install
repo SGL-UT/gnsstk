@@ -1,0 +1,5 @@
+usr/include/gnsstk*/gnsstk/*.h
+usr/include/gnsstk*/gnsstk/*.hpp
+usr/share/cmake/GNSSTK/*
+usr/lib/*/lib*.so
+usr/bin/gnsstk-config

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -50,7 +50,7 @@
 #include "SP3EphemerisStore.hpp"
 #include "TestUtil.hpp"
 
-using namespace gpstk;
+using namespace gnsstk;
 using namespace std;
 
 class SP3EphemerisStore_T
@@ -66,9 +66,9 @@ public:
 //=============================================================================
    void init()
    {
-      std::string dataFilePath = gpstk::getPathData();
-      std::string tempFilePath = gpstk::getPathTestTemp();
-      std::string fileSep = gpstk::getFileSep();
+      std::string dataFilePath = gnsstk::getPathData();
+      std::string tempFilePath = gnsstk::getPathTestTemp();
+      std::string fileSep = gnsstk::getFileSep();
 
       inputSP3Data = dataFilePath + fileSep +
          "test_input_sp3_nav_ephemerisData.sp3";
@@ -303,8 +303,8 @@ public:
          SatID sid15(15, SatelliteSystem::GPS);
          SatID sid31(31, SatelliteSystem::GPS);
          SatID sid32(32, SatelliteSystem::GPS);
-         CommonTime eTime = CivilTime(1997,4,6,6,15,0,gpstk::TimeSystem::GPS);
-         CommonTime bTime = CivilTime(1997,4,6,0,0,0,gpstk::TimeSystem::GPS);
+         CommonTime eTime = CivilTime(1997,4,6,6,15,0,gnsstk::TimeSystem::GPS);
+         CommonTime bTime = CivilTime(1997,4,6,0,0,0,gnsstk::TimeSystem::GPS);
 
          store.rejectBadPositions(false);
          store.rejectBadClocks(false);
@@ -329,7 +329,7 @@ public:
          TUASSERTE(std::string, inputComparisonOutput31, outputStream31.str());
 
             // interpolation test
-         CommonTime iTime = CivilTime(1997,4,6,6,17,36,gpstk::TimeSystem::GPS);
+         CommonTime iTime = CivilTime(1997,4,6,6,17,36,gnsstk::TimeSystem::GPS);
          TUCATCH(rv = store.computeXvt(sid15,iTime));
          TUASSERTFE(-15643515.779275318608, rv.x[0]);
          TUASSERTFE(17046376.009584486485, rv.x[1]);
@@ -343,7 +343,7 @@ public:
          TUASSERTE(Xvt::HealthStatus, Xvt::Unused, rv.health);
 
             // before the beginning
-         iTime = CivilTime(1997,4,5,23,59,58,gpstk::TimeSystem::GPS);
+         iTime = CivilTime(1997,4,5,23,59,58,gnsstk::TimeSystem::GPS);
          TUCATCH(rv = store.computeXvt(sid15,iTime));
             // all zero because computeXvt will have failed
          TUASSERTFE(0.0, rv.x[0]);
@@ -358,7 +358,7 @@ public:
          TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
 
             // after the beginning
-         iTime = CivilTime(1997,4,6,0,0,2,gpstk::TimeSystem::GPS);
+         iTime = CivilTime(1997,4,6,0,0,2,gnsstk::TimeSystem::GPS);
          TUCATCH(rv = store.computeXvt(sid15,iTime));
             // all zero because computeXvt will have failed
          TUASSERTFE(0.0, rv.x[0]);
@@ -373,7 +373,7 @@ public:
          TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
 
             // before the end
-         iTime = CivilTime(1997,4,6,23,44,58,gpstk::TimeSystem::GPS);
+         iTime = CivilTime(1997,4,6,23,44,58,gnsstk::TimeSystem::GPS);
          TUCATCH(rv = store.computeXvt(sid15,iTime));
             // all zero because computeXvt will have failed
          TUASSERTFE(0.0, rv.x[0]);
@@ -388,7 +388,7 @@ public:
          TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
 
             // after the end
-         iTime = CivilTime(1997,4,6,23,45,2,gpstk::TimeSystem::GPS);
+         iTime = CivilTime(1997,4,6,23,45,2,gnsstk::TimeSystem::GPS);
          TUCATCH(rv = store.computeXvt(sid15,iTime));
             // all zero because computeXvt will have failed
          TUASSERTFE(0.0, rv.x[0]);
@@ -403,7 +403,7 @@ public:
          TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
 
             // not enough records before the time stamp to interpolate
-         iTime = CivilTime(1997,4,6,0,45,2,gpstk::TimeSystem::GPS);
+         iTime = CivilTime(1997,4,6,0,45,2,gnsstk::TimeSystem::GPS);
          TUCATCH(rv = store.computeXvt(sid15,iTime));
             // all zero because computeXvt will have failed
          TUASSERTFE(0.0, rv.x[0]);
@@ -418,7 +418,7 @@ public:
          TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
 
             // just enough records before the time stamp to interpolate
-         iTime = CivilTime(1997,4,6,1,0,2,gpstk::TimeSystem::GPS);
+         iTime = CivilTime(1997,4,6,1,0,2,gnsstk::TimeSystem::GPS);
          TUCATCH(rv = store.computeXvt(sid15,iTime));
          TUASSERTFE(11828403.294941648841, rv.x[0]);
          TUASSERTFE(14928607.236480718479, rv.x[1]);
@@ -432,7 +432,7 @@ public:
          TUASSERTE(Xvt::HealthStatus, Xvt::Unused, rv.health);
 
             // not enough records after the time stamp to interpolate
-         iTime = CivilTime(1997,4,6,22,46,0,gpstk::TimeSystem::GPS);
+         iTime = CivilTime(1997,4,6,22,46,0,gnsstk::TimeSystem::GPS);
          TUCATCH(rv = store.computeXvt(sid15,iTime));
             // all zero because computeXvt will have failed
          TUASSERTFE(0.0, rv.x[0]);
@@ -447,7 +447,7 @@ public:
          TUASSERTE(Xvt::HealthStatus, Xvt::Unavailable, rv.health);
 
             // just enough records after the time stamp to interpolate
-         iTime = CivilTime(1997,4,6,22,36,0,gpstk::TimeSystem::GPS);
+         iTime = CivilTime(1997,4,6,22,36,0,gnsstk::TimeSystem::GPS);
          TUCATCH(rv = store.computeXvt(sid15,iTime));
          TUASSERTFE(20430985.199506752193, rv.x[0]);
          TUASSERTFE(16242900.914267791435, rv.x[1]);
@@ -492,8 +492,8 @@ public:
          SatID sid27(27, SatelliteSystem::GPS);
          SatID sid31(31, SatelliteSystem::GPS);
          SatID sid32(32, SatelliteSystem::GPS);
-         CommonTime eTime = CivilTime(1997,4,6,6,15,0,gpstk::TimeSystem::GPS);
-         CommonTime bTime = CivilTime(1997,4,6,0,0,0,gpstk::TimeSystem::GPS);
+         CommonTime eTime = CivilTime(1997,4,6,6,15,0,gnsstk::TimeSystem::GPS);
+         CommonTime bTime = CivilTime(1997,4,6,0,0,0,gnsstk::TimeSystem::GPS);
 
          store.rejectBadPositions(false);
          store.rejectBadClocks(false);
@@ -512,7 +512,7 @@ public:
          TUASSERTE(int, 0, store.size());
          store.loadFile(inputSixNinesData);
          SatID sid4(4, SatelliteSystem::GPS);
-         CommonTime cTime = CivilTime(2019,1,10,1,5,0,gpstk::TimeSystem::GPS);
+         CommonTime cTime = CivilTime(2019,1,10,1,5,0,gnsstk::TimeSystem::GPS);
             // PRN 4 has clock bias of 999999.999999 but a valid position
          TUCATCH(rv = store.getSVHealth(sid4, cTime));
          TUASSERTE(Xvt::HealthStatus, Xvt::HealthStatus::Unused, rv);
@@ -843,8 +843,8 @@ public:
          SP3EphemerisStore store;
          store.loadFile(inputSP3Data);
          SatID sid15(1,SatelliteSystem::GPS);
-         CommonTime ttag = gpstk::CivilTime(1997,4,6,22,45,2,
-                                            gpstk::TimeSystem::GPS);
+         CommonTime ttag = gnsstk::CivilTime(1997,4,6,22,45,2,
+                                            gnsstk::TimeSystem::GPS);
          std::cerr << "starting this thing here" << std::endl;
          PositionRecord prec = store.posStore.getValue(sid15, ttag);
          ClockRecord crec = store.clkStore.getValue(sid15, ttag);
@@ -868,14 +868,14 @@ public:
               << " " << crec.accel << " " << crec.sig_accel
               << endl;
       }
-      catch (gpstk::Exception& exc)
+      catch (gnsstk::Exception& exc)
       {
          cerr << exc << endl;
       }
       try
       {
-         std::string dataFilePath = gpstk::getPathData();
-         std::string fileSep = gpstk::getFileSep();
+         std::string dataFilePath = gnsstk::getPathData();
+         std::string fileSep = gnsstk::getFileSep();
 
          string data3c = dataFilePath + fileSep +
             "test_input_SP3c_pos.sp3";
@@ -884,9 +884,9 @@ public:
          store.loadFile(data3c);
          cerr << "size = " << store.size() << endl;
          SatID sid15(15,SatelliteSystem::GPS);
-         CommonTime ttag = gpstk::CivilTime(2011,10,9,2,1,3,
-//         CommonTime ttag = gpstk::CivilTime(2011,10,9,3,0,0,
-                                            gpstk::TimeSystem::GPS);
+         CommonTime ttag = gnsstk::CivilTime(2011,10,9,2,1,3,
+//         CommonTime ttag = gnsstk::CivilTime(2011,10,9,3,0,0,
+                                            gnsstk::TimeSystem::GPS);
          PositionRecord prec = store.posStore.getValue(sid15, ttag);
          ClockRecord crec = store.clkStore.getValue(sid15, ttag);
          cerr << setprecision(20) << "prec" << endl
@@ -908,7 +908,7 @@ public:
               << " drift " << crec.drift << " " << crec.sig_drift << endl
               << " accel " << crec.accel << " " << crec.sig_accel << endl;
       }
-      catch (gpstk::Exception& exc)
+      catch (gnsstk::Exception& exc)
       {
          cerr << exc << endl;
       }

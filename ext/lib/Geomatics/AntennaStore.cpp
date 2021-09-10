@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -50,7 +50,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 
    // Add the given name, AntexData pair. If the name already exists in the store,
@@ -60,7 +60,7 @@ namespace gpstk
    {
       if(!antdata.isValid()) {
          Exception e("Invalid AntexData object");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       // is the name already in the store?
@@ -203,7 +203,7 @@ namespace gpstk
          antstrm.open(filename.c_str(),ios::in);
          if(!antstrm.is_open()) {
             Exception e("Could not open file " + filename);
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          antstrm.exceptions(fstream::failbit);
 
@@ -212,19 +212,19 @@ namespace gpstk
             antstrm >> anthdr;
             if(!anthdr.isValid()) {
                Exception e("Header is not valid");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
          }
-         catch(Exception& e) { GPSTK_RETHROW(e); }
+         catch(Exception& e) { GNSSTK_RETHROW(e); }
          catch(exception& e) {
             Exception ge(string("Std exception: ") + e.what());
-            GPSTK_THROW(ge);
+            GNSSTK_THROW(ge);
          }
 
          // read the data
          while(1) {
             try { antstrm >> antdata; }
-            catch(Exception& e) { GPSTK_RETHROW(e); }
+            catch(Exception& e) { GNSSTK_RETHROW(e); }
 
             // ignore invalid data
             if(!antdata.isValid()) {
@@ -260,7 +260,7 @@ namespace gpstk
 
          return n;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    // Compute the vector from the SV Center of Mass (COM) to
@@ -353,7 +353,7 @@ namespace gpstk
                   ss << "Invalid satellite system " << sys << " PRN " << n; 
                   ss << " for AntennaStore::ComToPcVector.";
                   InvalidRequest ir(ss.str());
-                  GPSTK_THROW(ir); 
+                  GNSSTK_THROW(ir); 
                }
             }
              
@@ -398,12 +398,12 @@ namespace gpstk
             ss << "AntennaStore::ComToPcVector.  No satellite data found for "
                << sys << " PRN " << n;
             InvalidRequest ir(ss.str());
-            GPSTK_THROW(ir); 
+            GNSSTK_THROW(ir); 
          }
       }
       catch(Exception exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }
 
@@ -426,7 +426,7 @@ namespace gpstk
             ss << "Invalid satellite system " << sidr; 
             ss << " for AntennaStore::ComToPcVector.";
             InvalidRequest ir(ss.str());
-            GPSTK_THROW(ir); 
+            GNSSTK_THROW(ir); 
          }
       }
 
@@ -436,7 +436,7 @@ namespace gpstk
       }
       catch(Exception exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
       return tp; 
    }

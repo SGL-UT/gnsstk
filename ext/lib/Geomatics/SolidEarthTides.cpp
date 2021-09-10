@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -47,7 +47,7 @@
 /// including position and mass ratios.
 
 //------------------------------------------------------------------------------------
-// GPSTk
+// GNSSTk
 //#include "geometry.hpp"             // for DEG_TO_RAD
 // geomatics
 #include "logstream.hpp"
@@ -55,7 +55,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    //---------------------------------------------------------------------------------
    // Compute the site displacement due to solid Earth tides for the given Position
@@ -88,7 +88,7 @@ namespace gpstk
    try {
       //if(ttag.getTimeSystem() == TimeSystem::Unknown) {
       //   Exception e("Time system is unknown");
-      //   GPSTK_THROW(e);
+      //   GNSSTK_THROW(e);
       //}
       
       // Use REarth from solid.f example program
@@ -581,12 +581,12 @@ namespace gpstk
    
       return disp;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
    catch(exception& e) {
       Exception E("std except: "+string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
-   catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+   catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 
    }  // end computeSolidEarthTides()
 
@@ -681,10 +681,10 @@ namespace gpstk
    
       return dispXYZ;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
-}  // end namespace gpstk
+}  // end namespace gnsstk
 
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------

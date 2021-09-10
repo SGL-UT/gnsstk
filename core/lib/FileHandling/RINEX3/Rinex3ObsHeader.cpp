@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -53,9 +53,9 @@
 #include "Rinex3ObsHeader.hpp"
 
 using namespace std;
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 
-namespace gpstk
+namespace gnsstk
 {
    const string Rinex3ObsHeader::hsVersion           = "RINEX VERSION / TYPE";
    const string Rinex3ObsHeader::hsRunBy             = "PGM / RUN BY / DATE";
@@ -248,7 +248,7 @@ namespace gpstk
 
    void Rinex3ObsHeader::reallyPutRecord(FFStream& ffs) const
    {
-      using gpstk::StringUtils::asString;
+      using gnsstk::StringUtils::asString;
       Rinex3ObsStream& strm = dynamic_cast<Rinex3ObsStream&>(ffs);
 
       strm.header = *this;
@@ -257,9 +257,9 @@ namespace gpstk
       if (allValid.empty())
       {
          FFStreamError err("Unknown RINEX version: " +
-                           gpstk::StringUtils::asString(version,2));
+                           gnsstk::StringUtils::asString(version,2));
          err.addText("Make sure to set the version correctly.");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       if((valid & allValid) != allValid)
@@ -268,7 +268,7 @@ namespace gpstk
          err.addText("Make sure you set all header valid bits for all of the"
                      " available data.");
          allValid.describeMissing(valid, err);
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       try
@@ -277,11 +277,11 @@ namespace gpstk
       }
       catch(FFStreamError& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       catch(StringException& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
    }  // end reallyPutRecord
@@ -344,7 +344,7 @@ namespace gpstk
       // This function writes all valid header records.
    void Rinex3ObsHeader::writeHeaderRecords(FFStream& ffs) const
    {
-      using gpstk::StringUtils::asString;
+      using gnsstk::StringUtils::asString;
       Rinex3ObsStream& strm = dynamic_cast<Rinex3ObsStream&>(ffs);
       string line;
 
@@ -356,7 +356,7 @@ namespace gpstk
          if((fileType[0] != 'O') && (fileType[0] != 'o'))
          {
             FFStreamError err("File type is not Observation: " + fileType);
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
 
          if (preserveVerType)
@@ -369,7 +369,7 @@ namespace gpstk
             if(fileSysSat.system == SatelliteSystem::Unknown)
             {
                FFStreamError err("Invalid satellite system");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
 
             line += leftJustify(string("OBSERVATION DATA"), 20);
@@ -567,7 +567,7 @@ namespace gpstk
          {
             InvalidRequest er("Header contains no R2ObsTypes. "
                                  "You must run prepareVer2Write before outputting an R2 file");
-            GPSTK_THROW(er);
+            GNSSTK_THROW(er);
          }
             // write out RinexObsTypes
          const int maxObsPerLine = 9;
@@ -698,7 +698,7 @@ namespace gpstk
                   catch (Exception& e)
                   {
                      FFStreamError ffse(e);
-                     GPSTK_THROW(ffse);
+                     GNSSTK_THROW(ffse);
                   }
                   satsWritten++;
                   satsLeft--;
@@ -937,7 +937,7 @@ namespace gpstk
          else if(mapObsTypes.find("R") != mapObsTypes.end())
          {
             FFStreamError err("Glonass Slot Freq No required for files containing Glonass Observations ");
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
       }
       if(version >= 3.02)
@@ -963,7 +963,7 @@ namespace gpstk
          else if(mapObsTypes.find("R") != mapObsTypes.end())
          {
             FFStreamError err("Glonass Code Phase Bias required for files containing Glonass Observations ");
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
       }
       if(valid & validLeapSeconds)
@@ -1027,7 +1027,7 @@ namespace gpstk
                   catch (Exception& e)
                   {
                      FFStreamError ffse(e);
-                     GPSTK_RETHROW(ffse); 
+                     GNSSTK_RETHROW(ffse); 
                   }
                }
                else if((numObsWritten % maxObsPerLine) == 0)
@@ -1086,7 +1086,7 @@ namespace gpstk
          if(fileType[0] != 'O' && fileType[0] != 'o')
          {
             FFStreamError e("This isn't a RINEX 3 Obs file.");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          valid |= validVersion;
@@ -1207,7 +1207,7 @@ namespace gpstk
          if(version >= 3)
          {
             FFStreamError e("RINEX 2 record in RINEX 3 file: " + label);
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // process the first line
@@ -1226,7 +1226,7 @@ namespace gpstk
          if(version < 3)
          {
             FFStreamError e("RINEX 3 record in RINEX 2 file: " + label);
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          string satSys = strip(line.substr(0,1));
@@ -1253,7 +1253,7 @@ namespace gpstk
          catch(InvalidParameter& ip)
          {
             FFStreamError fse("InvalidParameter: "+ip.what());
-            GPSTK_THROW(fse);
+            GNSSTK_THROW(fse);
          }
       }
       else if(label == hsWaveFact)         // R2 only
@@ -1278,7 +1278,7 @@ namespace gpstk
             if(Nsats > maxSatsPerLine)   // > not >=
             {
                FFStreamError e("Invalid number of Sats for " + hsWaveFact);
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
                
             for(i = 0; i < Nsats; i++)
@@ -1291,7 +1291,7 @@ namespace gpstk
                catch (Exception& e)
                {
                   FFStreamError ffse(e);
-                  GPSTK_RETHROW(ffse);
+                  GNSSTK_RETHROW(ffse);
                }
             }
                
@@ -1405,7 +1405,7 @@ namespace gpstk
                == sysPhaseShift[satSysTemp].end())
             {
                //FFStreamError e("SYS / PHASE SHIFT: unexpected continuation line");
-               //GPSTK_THROW(e);
+               //GNSSTK_THROW(e);
                // lenient - some writers have only a single blank record
                return;
             }
@@ -1542,7 +1542,7 @@ namespace gpstk
                if(mapObsTypes.find(GNSS) == mapObsTypes.end())
                {
                   Exception e("PRN/#OBS for system "+PRN.toString()+" not found in SYS/#/OBS");
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                otmax = mapObsTypes[GNSS].size();
             }
@@ -1565,7 +1565,7 @@ namespace gpstk
                if(mapObsTypes.find(GNSS) == mapObsTypes.end())
                {
                   Exception e("PRN/#OBS for system "+PRN.toString()+" not found in SYS/#/OBS");
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                otmax = mapObsTypes[GNSS].size();
             }
@@ -1587,7 +1587,7 @@ namespace gpstk
       else
       {
          FFStreamError e("Unidentified label: >" + label + "<");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    } // end of parseHeaderRecord
 
@@ -1595,7 +1595,7 @@ namespace gpstk
       // This function parses the entire header from the given stream
    void Rinex3ObsHeader::reallyGetRecord(FFStream& ffs)
    {
-      using gpstk::StringUtils::asString;
+      using gnsstk::StringUtils::asString;
       Rinex3ObsStream& strm = dynamic_cast<Rinex3ObsStream&>(ffs);
 
          // If already read, just return.
@@ -1618,12 +1618,12 @@ namespace gpstk
          if(line.length() == 0)
          {
             FFStreamError e("No data read");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          else if(line.length() < 60 || line.length() > 80)
          {
             FFStreamError e("Invalid line length");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          try
@@ -1632,12 +1632,12 @@ namespace gpstk
          }
          catch(FFStreamError& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(Exception& e)
          {
             FFStreamError fse("Exception: "+e.what());
-            GPSTK_THROW(fse);
+            GNSSTK_THROW(fse);
          }
 
       } // end while(not end of header)
@@ -1696,7 +1696,7 @@ namespace gpstk
             }
             catch(FFStreamError fse)
             {
-               GPSTK_RETHROW(fse); 
+               GNSSTK_RETHROW(fse); 
             }
 
                // TD if GPS and have wavelengthFactors, add more
@@ -1750,14 +1750,14 @@ namespace gpstk
       {
          FFStreamError e("Unknown or unsupported RINEX version " + 
                          asString(version,2));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       if((valid & allValid) != allValid)
       {
          FFStreamError e("Incomplete or invalid header");
          allValid.describeMissing(valid, e);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // If we get here, we should have reached the end of header line.
@@ -1804,12 +1804,12 @@ namespace gpstk
             firstObs.setTimeSystem(TimeSystem::GPS);
             // RINEX 3 requires this
             //FFStreamError e("TimeSystem in MIXED files must be given by first obs");
-            //GPSTK_THROW(e);
+            //GNSSTK_THROW(e);
          }
          else
          {
             FFStreamError e("Unknown file system type");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
 
@@ -1928,7 +1928,7 @@ namespace gpstk
          catch(InvalidParameter& ip)
          {
             FFStreamError fse("InvalidParameter: "+ip.what());
-            GPSTK_THROW(fse);
+            GNSSTK_THROW(fse);
          }
       }
       return obsids;
@@ -1982,7 +1982,7 @@ namespace gpstk
          catch(InvalidParameter& ip)
          {
             FFStreamError fse("InvalidParameter: "+ip.what());
-            GPSTK_THROW(fse);
+            GNSSTK_THROW(fse);
          }
       }
       return obsids;
@@ -2048,7 +2048,7 @@ namespace gpstk
          catch(InvalidParameter& ip)
          {
             FFStreamError fse("InvalidParameter: "+ip.what());
-            GPSTK_THROW(fse);
+            GNSSTK_THROW(fse);
          }
       }
       return obsids;
@@ -2092,7 +2092,7 @@ namespace gpstk
          catch(InvalidParameter& ip)
          {
             FFStreamError fse("InvalidParameter: "+ip.what());
-            GPSTK_THROW(fse);
+            GNSSTK_THROW(fse);
          }
       }
       return obsids;
@@ -2114,7 +2114,7 @@ namespace gpstk
       sec   = asDouble(line.substr(30, 13));
       tsys  =          line.substr(48,  3) ;
 
-      ts = gpstk::StringUtils::asTimeSystem(tsys);
+      ts = gnsstk::StringUtils::asTimeSystem(tsys);
 
       return CivilTime(year, month, day, hour, min, sec, ts);
    } // end parseTime
@@ -2122,8 +2122,8 @@ namespace gpstk
 
    string Rinex3ObsHeader::writeTime(const CivilTime& civtime) const
    {
-      using gpstk::StringUtils::asString;
-      string line, tsStr(gpstk::StringUtils::asString(civtime.getTimeSystem()));
+      using gnsstk::StringUtils::asString;
+      string line, tsStr(gnsstk::StringUtils::asString(civtime.getTimeSystem()));
 
       line  = rightJustify(asString<short>(civtime.year    )   ,  6);
       line += rightJustify(asString<short>(civtime.month   )   ,  6);
@@ -2174,7 +2174,7 @@ namespace gpstk
          {
             FFStreamError er(
                "Invalid system char string in header.mapObsTypes: "+sysString);
-            GPSTK_THROW(er);
+            GNSSTK_THROW(er);
          }
             // mit->first is system char as a 1-char string
          map<string, RinexObsID> mapR2toR3ObsID;
@@ -2252,7 +2252,7 @@ namespace gpstk
 
    void Rinex3ObsHeader::dump(std::ostream& s, double dumpVersion) const
    {
-      using gpstk::StringUtils::asString;
+      using gnsstk::StringUtils::asString;
       size_t i;
 
       string str;
@@ -2519,7 +2519,7 @@ namespace gpstk
          else
          {
             InvalidRequest exc("Invalid type.");
-            GPSTK_THROW(exc);
+            GNSSTK_THROW(exc);
          }
       }
 
@@ -2533,7 +2533,7 @@ namespace gpstk
       if( !isValidRinexObsID(newType) )
       {
          InvalidRequest ir(newType + " is not a valid RinexObsID!.");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
          // Extract the GNSS from the newType
@@ -2558,7 +2558,7 @@ namespace gpstk
       if (it == remapped.end())
       {
          InvalidRequest ir("GNSS system " + sys + " not stored.");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       const RinexObsVec& rov = it->second;
@@ -2569,7 +2569,7 @@ namespace gpstk
       }
       
       InvalidRequest ir(obsID.asString(version) + " is not stored in system " + sys + ".");
-      GPSTK_THROW(ir);
+      GNSSTK_THROW(ir);
       return 0;
    }
 
@@ -2884,4 +2884,4 @@ namespace gpstk
       }
    }
 
-} // namespace gpstk
+} // namespace gnsstk

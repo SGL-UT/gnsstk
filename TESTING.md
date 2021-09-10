@@ -3,9 +3,9 @@ TESTING
 
 Introduction
 ------------
-As an open source project, the source of the GPSTk is subject to intermittent updates, contributions, 
-and corrections. The GPSTk testing process has been redesigned to build confidence in the 
-functionality of the toolkit. Testing within the GPSTk is designed with the following distinct goals 
+As an open source project, the source of the GNSSTk is subject to intermittent updates, contributions, 
+and corrections. The GNSSTk testing process has been redesigned to build confidence in the 
+functionality of the toolkit. Testing within the GNSSTk is designed with the following distinct goals 
 in mind:
 	
 * Testing is repeatable with a low amount of effort.
@@ -15,7 +15,7 @@ in mind:
 
 All testing is performed using cmake/ctest. This allows the testing to function on all supported platforms.
 
-The goal is to have some level of testing performed on all classes and applications in the GPSTk core. 
+The goal is to have some level of testing performed on all classes and applications in the GNSSTk core. 
 In fact, some testing is a requirement for the classes and applications to be in core. However, it is
 encouraged that tests be written for all developed code whether it be in the core or ext. 
 
@@ -34,10 +34,10 @@ other software with the confidence that the interfaces will not be shifting in e
 How to execute unit tests
 -------------------------
 1. Using build.sh
-   * `$ cd ~/git/gpstk`
+   * `$ cd ~/git/gnsstk`
    * `$ build.sh -te`
 1. Manually
-   * `$ cd ~/git/gpstk/build`
+   * `$ cd ~/git/gnsstk/build`
    * `$ cmake .. -DTEST_SWITCH=ON`
    * `$ make`
    * `$ ctest`
@@ -57,32 +57,32 @@ How to Write Class Unit Tests
 
 Current Unit Test Structure
 ---------------------------
-* Unit tests for a particular GPSTk library class are organized in a single cpp file titled by 
-  the GPSTk library class under test with a _T.cpp appended.
-* Unit test files are kept in gpstk/core/tests and gpstk/ext/tests in the same subdirectories as in gpstk/core/lib/ and gpstk/ext/lib/.
-* The individual cpp files are broken into two parts, a test class to test the GPSTk library class and 
+* Unit tests for a particular GNSSTk library class are organized in a single cpp file titled by 
+  the GNSSTk library class under test with a _T.cpp appended.
+* Unit test files are kept in gnsstk/core/tests and gnsstk/ext/tests in the same subdirectories as in gnsstk/core/lib/ and gnsstk/ext/lib/.
+* The individual cpp files are broken into two parts, a test class to test the GNSSTk library class and 
   a main() segment to run those tests.
 * The test class is organized into multiple public methods in which each method contains multiple 
-  assertions which test a particular feature of the GPSTk library class under test.
-* The test class might inherit from the GPSTk library class in order to access protected members for 
+  assertions which test a particular feature of the GNSSTk library class under test.
+* The test class might inherit from the GNSSTk library class in order to access protected members for 
   direct checking of values.
-* To facilitate reporting to the testing logs, GPSTk uses its own TestUtil class. 
-  TestUtil provides standardized output containing information on the GPSTk library class being tested, 
+* To facilitate reporting to the testing logs, GNSSTk uses its own TestUtil class. 
+  TestUtil provides standardized output containing information on the GNSSTk library class being tested, 
   feature of class being tested, test file name, line number of test in that file, pass/fail bit, and 
   a failure message should the test have failed. It also provides the number of failures to the main() 
   portion of the test cpp file. The current style of using the TestUtil class is by use of its macros.
 * The main() portion of the code creates the test class object and executes its methods. It then tallies 
   the number of failures and reports it to the screen/log.
-* Data for testing is located in the gpstk/data directory. Only place data in there that is publicly releasable.
+* Data for testing is located in the gnsstk/data directory. Only place data in there that is publicly releasable.
 * The file build_config.h.in is configured by the cmake process to define some functions to allow C++ programs
 to find this data after they are compiled.
-* The CMAKE variable GPSTK\_TEST\_DATA\_DIR can be used to find the data from cmake. It is defined in the top level CMakeLists.txt file.
+* The CMAKE variable GNSSTK\_TEST\_DATA\_DIR can be used to find the data from cmake. It is defined in the top level CMakeLists.txt file.
 
 How to Write Application Tests
 ------------------------------
-1. The application tests utilize CMake scripts to run the GPSTk applications with varying options and data.
-1. The tests are added to the CMakeLists.txt file in the application's corresponding subdirectory of gpstk/core/tests/ or gpstk/ext/tests/.
-1. When possible, utilize one of the shared .cmake files in gpstk/core/tests/ in order to perform tests. The shared .cmake files include the following functionality:
+1. The application tests utilize CMake scripts to run the GNSSTk applications with varying options and data.
+1. The tests are added to the CMakeLists.txt file in the application's corresponding subdirectory of gnsstk/core/tests/ or gnsstk/ext/tests/.
+1. When possible, utilize one of the shared .cmake files in gnsstk/core/tests/ in order to perform tests. The shared .cmake files include the following functionality:
    * testhelp.cmake - Runs the application with various forms of help options to ensure they all work.
    * testfailexp.cmake - Runs the application with given options and expects that the application should exit with a code other than 0, but not segmentation fault.
    * testsuccexp.cmake - Runs the application with given options and expects that the application should exit with a code 0. It can also compare whole files.
@@ -100,12 +100,12 @@ Tips for Writing Application Tests
 
 Testing Data
 ------------
-Any input data should be placed in the gpstk/data/inputs/ directory and follow this naming convention:
+Any input data should be placed in the gnsstk/data/inputs/ directory and follow this naming convention:
    * File name should describe the key content of the data. For example, a v2.11 Rinex Obs file from day 360 of 2015 could be called robs.v2\_11.doy360.yr2015. 
    * A file taken from a production system may keep its original name if the file is unchanged. 
    * Any inputs generated from existing input files should have the modification description appended to it. Using the example Rinex obs file as a base, a new input with only the first half of that day's data could be called robs.v2\_11.doy360.yr2015.firsthalfday.
 
-Any expected result data should be placed in the gpstk/data/expected/ directory and follow this naming convention:
+Any expected result data should be placed in the gnsstk/data/expected/ directory and follow this naming convention:
    * File name be the test's name and end with a .exp. For example, expected output for a test called Foo\_bar should be named Foo\_bar.exp.
 
 Also, any further sub-organization of the testing data is left to the developer's discretion, but make sure that the name of the grouped content is clear. For example, if testing an app called foo required one of each of the Rinex filetypes for a single day, all of the data could be grouped into a directory named for the day.
@@ -116,8 +116,8 @@ Examples
 --------
 ### Application Test Example
 This illustrates one test on the rmwcheck application. The test is to verify that the application will fail when a non Rinex Met file is given. 
-It requires one file to be in the gpstk/data directories, arlm200a.15n.
-#### gpstk/ext/tests/checktools/CMakeLists.txt:
+It requires one file to be in the gnsstk/data directories, arlm200a.15n.
+#### gnsstk/ext/tests/checktools/CMakeLists.txt:
 This file is where the test scripts parameters are set and the test is added to the CTest suite.
 ```
 ...
@@ -129,12 +129,12 @@ add_test(NAME rmwcheck_Invalid_1
          -DTARGETDIR=${TD}
          -DNODIFF=1
          -DARGS=${SD}/arlm200a.15n
-         -DGPSTK_BINDIR=${GPSTK_BINDIR}
+         -DGNSSTK_BINDIR=${GNSSTK_BINDIR}
          -P ${CMAKE_CURRENT_SOURCE_DIR}/../testfailexp.cmake)
 ...
 ```
 
-#### gpstk/core/tests/testfailexp.cmake:
+#### gnsstk/core/tests/testfailexp.cmake:
 This is the script that is run to execute the test.
 ```
 # Generic test where failure is expected
@@ -163,17 +163,17 @@ endif()
 
 ### Class Unit Test Example
 These files illustrate how library unit tests are added to the system. The example shown will be how the ValidType class's tests are created and run.
-#### gpstk/core/tests/Utilities/CMakelists.txt:
-This snippet creates the executable to run the tests, links the executable to the gpstk library, and adds the executable to be run as part of the test suite.
+#### gnsstk/core/tests/Utilities/CMakelists.txt:
+This snippet creates the executable to run the tests, links the executable to the gnsstk library, and adds the executable to be run as part of the test suite.
 ```
 ...
 add_executable(ValidType_T ValidType_T.cpp)
-target_link_libraries(ValidType_T gpstk)
+target_link_libraries(ValidType_T gnsstk)
 add_test(Utilities_ValidType ValidType_T)
 ...
 ```
 
-#### gpstk/core/tests/Utilities/ValidType_T.cpp:
+#### gnsstk/core/tests/Utilities/ValidType_T.cpp:
 This is the program where the individual unit tests are stored. The file is broken into two parts, the test class and a main segment which instantiates the test class and runs its methods. Each of the test class's methods, shown below, contain multiple tests of a broader topic. For instance methodTest exercises ValidType's methods.
 ```c++
 #include "ValidType.hpp"
@@ -183,7 +183,7 @@ This is the program where the individual unit tests are stored. The file is brok
 #include <sstream>
 #include <cmath>
 
-using namespace gpstk;
+using namespace gnsstk;
 class ValidType_T
 {
 public: 
@@ -323,8 +323,8 @@ to the two examples.
 ...
 187/205 Testing: rmwcheck_Invalid_1
 187/205 Test: rmwcheck_Invalid_1
-Command: "/usr/bin/cmake" "-DTEST_PROG=/home/nfitz/git/appUnitTesting/gpstk/build/hpub5-moreAppUnitTests/core/apps/checktools/rmwcheck" "-DSOURCEDIR=/home/nfitz/git/appUnitTesting/gpstk/data" "-DTARGETDIR=/home/nfitz/git/appUnitTesting/gpstk/build/hpub5-moreAppUnitTests/Testing/Temporary" "-DNODIFF=1" "-DARGS=/home/nfitz/git/appUnitTesting/gpstk/data/arlm200a.15n" "-DGPSTK_BINDIR=" "-P" "/home/nfitz/git/appUnitTesting/gpstk/core/tests/checktools/../testfailexp.cmake"
-Directory: /home/nfitz/git/appUnitTesting/gpstk/build/hpub5-moreAppUnitTests/core/tests/checktools
+Command: "/usr/bin/cmake" "-DTEST_PROG=/home/nfitz/git/appUnitTesting/gnsstk/build/hpub5-moreAppUnitTests/core/apps/checktools/rmwcheck" "-DSOURCEDIR=/home/nfitz/git/appUnitTesting/gnsstk/data" "-DTARGETDIR=/home/nfitz/git/appUnitTesting/gnsstk/build/hpub5-moreAppUnitTests/Testing/Temporary" "-DNODIFF=1" "-DARGS=/home/nfitz/git/appUnitTesting/gnsstk/data/arlm200a.15n" "-DGNSSTK_BINDIR=" "-P" "/home/nfitz/git/appUnitTesting/gnsstk/core/tests/checktools/../testfailexp.cmake"
+Directory: /home/nfitz/git/appUnitTesting/gnsstk/build/hpub5-moreAppUnitTests/core/tests/checktools
 "rmwcheck_Invalid_1" start time: Jul 14 10:32 CDT
 Output:
 ----------------------------------------------------------
@@ -343,27 +343,27 @@ Test Passed.
 ...
 70/205 Testing: Utilities_ValidType
 70/205 Test: Utilities_ValidType
-Command: "/home/nfitz/git/appUnitTesting/gpstk/build/hpub5-moreAppUnitTests/core/tests/Utilities/ValidType_T"
-Directory: /home/nfitz/git/appUnitTesting/gpstk/build/hpub5-moreAppUnitTests/core/tests/Utilities
+Command: "/home/nfitz/git/appUnitTesting/gnsstk/build/hpub5-moreAppUnitTests/core/tests/Utilities/ValidType_T"
+Directory: /home/nfitz/git/appUnitTesting/gnsstk/build/hpub5-moreAppUnitTests/core/tests/Utilities
 "Utilities_ValidType" start time: Jul 14 10:32 CDT
 Output:
 ----------------------------------------------------------
-GPSTkTest, Class=ValidType, Method=isValid, testFile=ValidType_T.cpp, testLine=23, subtest=1, failBit=0
-GPSTkTest, Class=ValidType, Method=isValid, testFile=ValidType_T.cpp, testLine=26, subtest=2, failBit=0
-GPSTkTest, Class=ValidType, Method=isValid, testFile=ValidType_T.cpp, testLine=31, subtest=3, failBit=0
-GPSTkTest, Class=ValidType, Method=isValid, testFile=ValidType_T.cpp, testLine=34, subtest=4, failBit=0
-GPSTkTest, Class=ValidType, Method=isValid, testFile=ValidType_T.cpp, testLine=39, subtest=5, failBit=0
-GPSTkTest, Class=ValidType, Method=== Operator, testFile=ValidType_T.cpp, testLine=56, subtest=1, failBit=0
-GPSTkTest, Class=ValidType, Method=== Operator, testFile=ValidType_T.cpp, testLine=59, subtest=2, failBit=0
-GPSTkTest, Class=ValidType, Method== Operator, testFile=ValidType_T.cpp, testLine=65, subtest=3, failBit=0
-GPSTkTest, Class=ValidType, Method== Operator, testFile=ValidType_T.cpp, testLine=68, subtest=4, failBit=0
-GPSTkTest, Class=ValidType, Method=+= Operator, testFile=ValidType_T.cpp, testLine=74, subtest=5, failBit=0
-GPSTkTest, Class=ValidType, Method=+= Operator, testFile=ValidType_T.cpp, testLine=77, subtest=6, failBit=0
-GPSTkTest, Class=ValidType, Method=-= Operator, testFile=ValidType_T.cpp, testLine=84, subtest=7, failBit=0
-GPSTkTest, Class=ValidType, Method=-= Operator, testFile=ValidType_T.cpp, testLine=87, subtest=8, failBit=0
-GPSTkTest, Class=ValidType, Method=<< Operator, testFile=ValidType_T.cpp, testLine=103, subtest=9, failBit=0
-GPSTkTest, Class=ValidType, Method=<< Operator, testFile=ValidType_T.cpp, testLine=114, subtest=10, failBit=0
-Total Failures for /home/nfitz/git/appUnitTesting/gpstk/core/tests/Utilities/ValidType_T.cpp: 0
+GNSSTkTest, Class=ValidType, Method=isValid, testFile=ValidType_T.cpp, testLine=23, subtest=1, failBit=0
+GNSSTkTest, Class=ValidType, Method=isValid, testFile=ValidType_T.cpp, testLine=26, subtest=2, failBit=0
+GNSSTkTest, Class=ValidType, Method=isValid, testFile=ValidType_T.cpp, testLine=31, subtest=3, failBit=0
+GNSSTkTest, Class=ValidType, Method=isValid, testFile=ValidType_T.cpp, testLine=34, subtest=4, failBit=0
+GNSSTkTest, Class=ValidType, Method=isValid, testFile=ValidType_T.cpp, testLine=39, subtest=5, failBit=0
+GNSSTkTest, Class=ValidType, Method=== Operator, testFile=ValidType_T.cpp, testLine=56, subtest=1, failBit=0
+GNSSTkTest, Class=ValidType, Method=== Operator, testFile=ValidType_T.cpp, testLine=59, subtest=2, failBit=0
+GNSSTkTest, Class=ValidType, Method== Operator, testFile=ValidType_T.cpp, testLine=65, subtest=3, failBit=0
+GNSSTkTest, Class=ValidType, Method== Operator, testFile=ValidType_T.cpp, testLine=68, subtest=4, failBit=0
+GNSSTkTest, Class=ValidType, Method=+= Operator, testFile=ValidType_T.cpp, testLine=74, subtest=5, failBit=0
+GNSSTkTest, Class=ValidType, Method=+= Operator, testFile=ValidType_T.cpp, testLine=77, subtest=6, failBit=0
+GNSSTkTest, Class=ValidType, Method=-= Operator, testFile=ValidType_T.cpp, testLine=84, subtest=7, failBit=0
+GNSSTkTest, Class=ValidType, Method=-= Operator, testFile=ValidType_T.cpp, testLine=87, subtest=8, failBit=0
+GNSSTkTest, Class=ValidType, Method=<< Operator, testFile=ValidType_T.cpp, testLine=103, subtest=9, failBit=0
+GNSSTkTest, Class=ValidType, Method=<< Operator, testFile=ValidType_T.cpp, testLine=114, subtest=10, failBit=0
+Total Failures for /home/nfitz/git/appUnitTesting/gnsstk/core/tests/Utilities/ValidType_T.cpp: 0
 <end of output>
 Test time =   0.00 sec
 ----------------------------------------------------------

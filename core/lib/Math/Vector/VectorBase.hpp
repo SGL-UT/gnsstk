@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,20 +41,20 @@
  * Base Vector class
  */
  
-#ifndef GPSTK_VECTOR_BASE_HPP
-#define GPSTK_VECTOR_BASE_HPP
+#ifndef GNSSTK_VECTOR_BASE_HPP
+#define GNSSTK_VECTOR_BASE_HPP
 
 #include <valarray>
 #include "Exception.hpp"
 
 #include "MathBase.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
  
       /// An exception thrown when there's a problem with a vector
       /// @ingroup exceptiongroup
-   NEW_EXCEPTION_CLASS(VectorException, gpstk::Exception);
+   NEW_EXCEPTION_CLASS(VectorException, gnsstk::Exception);
 
       /// @ingroup MathGroup
       //@{
@@ -128,7 +128,7 @@ namespace gpstk
          if (i >= b.size())
          {
             VectorException e("Invalid ConstVectorBase index");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          return b[i];
@@ -188,7 +188,7 @@ namespace gpstk
       if (x.size() != me.size())                                \
       {                                                         \
          VectorException e("Unequal lengths for vectors");      \
-         GPSTK_THROW(e);                                        \
+         GNSSTK_THROW(e);                                        \
       }                                                         \
       size_t i; for (i=0; i < me.size(); i++) me[i] func x[i];  \
       return me;
@@ -256,7 +256,7 @@ namespace gpstk
          if (i >= b.size())
          {
             VectorException e("Invalid VectorBase index");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          return b[i]; 
@@ -296,7 +296,7 @@ namespace gpstk
               ((start() + (size() - 1) * stride()) >= sourceSize) )
          {
             VectorException e("Invalid range for slice");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
       }
@@ -328,8 +328,8 @@ namespace gpstk
 
       //@}
 
-}  // namespace gpstk
+}  // namespace gnsstk
 
 #include "VectorBaseOperators.hpp"
 
-#endif //GPSTK_VECTOR_BASE_HPP
+#endif //GNSSTK_VECTOR_BASE_HPP

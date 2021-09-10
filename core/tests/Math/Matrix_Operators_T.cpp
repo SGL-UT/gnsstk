@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,34 +41,34 @@
 /* Test the add/subtract and set operators */
 int Matrix_T::operatorTest (void)
 {
-	gpstk::TestUtil testFramework("Matrix","Operators",__FILE__,__LINE__);
+	gnsstk::TestUtil testFramework("Matrix","Operators",__FILE__,__LINE__);
    	std::string failMesg;
    	int badCount = 0;
 
-	gpstk::Vector<int> v1 = gpstk::Vector<int>(16);
+	gnsstk::Vector<int> v1 = gnsstk::Vector<int>(16);
 	for(int i = 0; i < 16; i++) v1[i] = i+1;
-	gpstk::Vector<int> v2 = gpstk::Vector<int>(16);
+	gnsstk::Vector<int> v2 = gnsstk::Vector<int>(16);
 	for(int i = 0; i < 16; i++) v2[i] = 16-i;
-	gpstk::Vector<int> v3 = gpstk::Vector<int>(4);
+	gnsstk::Vector<int> v3 = gnsstk::Vector<int>(4);
 	for(int i = 0; i < 4; i++) v3[i] = i+1;
-	gpstk::Vector<int> v4 = gpstk::Vector<int>(8);
+	gnsstk::Vector<int> v4 = gnsstk::Vector<int>(8);
 	for(int i = 0; i < 4; i++) {v4[i] = i+1+4; v4[i+4] = i+1+4;}
 
-	gpstk::Matrix<int> a(2,2,1);
-	gpstk::Matrix<int> b(8, 2, 3);
-	gpstk::Matrix<int> c(4, 2, 5);
-	gpstk::Matrix<int> d(4, 4, 7);
-	gpstk::Matrix<int> e(8, 2, v1);
-	gpstk::Matrix<int> f(4, 4, v2);
-	gpstk::Matrix<int> g(2, 2, v3);
-	gpstk::Matrix<int> h(4, 2, v4);
+	gnsstk::Matrix<int> a(2,2,1);
+	gnsstk::Matrix<int> b(8, 2, 3);
+	gnsstk::Matrix<int> c(4, 2, 5);
+	gnsstk::Matrix<int> d(4, 4, 7);
+	gnsstk::Matrix<int> e(8, 2, v1);
+	gnsstk::Matrix<int> f(4, 4, v2);
+	gnsstk::Matrix<int> g(2, 2, v3);
+	gnsstk::Matrix<int> h(4, 2, v4);
 
 //--------------Matrix_operatorTest_1 - Does 2x2 additon function as expected?
 	a += g; // 2x2 addition
 	for(int i = 0; i < a.rows(); i++)
 		for(int j = 0; j < a.cols(); j++)
 			if (v3(i*g.cols()+j)+1 != a(i,j)) {badCount++;}
-	failDescriptionStream << "Check to see if addition between two 2x2 gpstk::Matrix objects works. " << badCount << " of the elements are incorrect.";
+	failDescriptionStream << "Check to see if addition between two 2x2 gnsstk::Matrix objects works. " << badCount << " of the elements are incorrect.";
 	failDescriptionString = failDescriptionStream.str(); failDescriptionStream.str("");
 	testFramework.assert(badCount==0, failDescriptionString, __LINE__);
 	badCount = 0; // Reset error counter;
@@ -80,7 +80,7 @@ int Matrix_T::operatorTest (void)
 		for(int j = 0; j < b.cols(); j++)
 			//cout << b(i,j) << " " << 3-(1+i+j*8) << endl;
 			if (3-v1(i*e.cols()+j) != b(i,j)) {badCount++;}
-	failDescriptionStream << "Check to see if subtraction between two 8x2 gpstk::Matrix objects works. " << badCount << " of the elements are incorrect.";
+	failDescriptionStream << "Check to see if subtraction between two 8x2 gnsstk::Matrix objects works. " << badCount << " of the elements are incorrect.";
 	failDescriptionString = failDescriptionStream.str(); failDescriptionStream.str("");
 	testFramework.assert(badCount==0, failDescriptionString, __LINE__);
 	badCount = 0; // Reset error counter;
@@ -92,7 +92,7 @@ int Matrix_T::operatorTest (void)
 			for(int j = 0; j < c.cols(); j++)
 				//cout << c(i,j) << " " << 5-(5.+i) << endl;
   				if (5-v4(i*h.cols()+j) != c(i,j)) {badCount++;}
-	failDescriptionStream << "Check to see if subtraction between two 4x2 gpstk::Matrix objects works. " << badCount << " of the elements are incorrect.";
+	failDescriptionStream << "Check to see if subtraction between two 4x2 gnsstk::Matrix objects works. " << badCount << " of the elements are incorrect.";
 	failDescriptionString = failDescriptionStream.str(); failDescriptionStream.str("");
 	testFramework.assert(badCount==0, failDescriptionString, __LINE__);
 	badCount = 0; // Reset error counter;
@@ -104,7 +104,7 @@ int Matrix_T::operatorTest (void)
 			for(int j = 0; j < d.cols(); j++)
 			//cout << d(i,j) << " " << 16-i-4*j+7 << endl;
   				if (v2(i*f.cols()+j)+7 != d(i,j)) {badCount++;}
-	failDescriptionStream << "Check to see if addition between two 4x4 gpstk::Matrix objects works. " << badCount << " of the elements are incorrect.";
+	failDescriptionStream << "Check to see if addition between two 4x4 gnsstk::Matrix objects works. " << badCount << " of the elements are incorrect.";
 	failDescriptionString = failDescriptionStream.str(); failDescriptionStream.str("");
 	testFramework.assert(badCount==0, failDescriptionString, __LINE__);
 	badCount = 0; // Reset error counter

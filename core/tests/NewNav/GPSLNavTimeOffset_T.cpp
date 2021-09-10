@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -40,9 +40,9 @@
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -66,20 +66,20 @@ unsigned GPSLNavTimeOffset_T ::
 constructorTest()
 {
    TUDEF("GPSLNavTimeOffset", "GPSLNavTimeOffset");
-   gpstk::GPSLNavTimeOffset obj;
-   TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::GPS, obj.src);
-   TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::UTC, obj.tgt);
+   gnsstk::GPSLNavTimeOffset obj;
+   TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GPS, obj.src);
+   TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::UTC, obj.tgt);
    TUASSERTFE(0.0, obj.a0);
    TUASSERTFE(0.0, obj.a1);
    TUASSERTFE(0.0, obj.a2);
    TUASSERTFE(0.0, obj.deltatLS);
-   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime(), obj.refTime);
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime(), obj.refTime);
    TUASSERTFE(0.0, obj.tot);
    TUASSERTE(unsigned, 0, obj.wnot);
    TUASSERTE(unsigned, 0, obj.wnLSF);
    TUASSERTE(unsigned, 0, obj.dn);
    TUASSERTFE(0.0, obj.deltatLSF);
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::TimeOffset,
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::TimeOffset,
              obj.signal.messageType);
    TURETURN();
 }
@@ -89,7 +89,7 @@ unsigned GPSLNavTimeOffset_T ::
 validateTest()
 {
    TUDEF("GPSLNavTimeOffset", "validate");
-   gpstk::GPSLNavTimeOffset offs;
+   gnsstk::GPSLNavTimeOffset offs;
    TUASSERTE(bool, true, offs.validate());
    offs.tot = 602112.0;
    TUASSERTE(bool, true, offs.validate());
@@ -110,12 +110,12 @@ unsigned GPSLNavTimeOffset_T ::
 getUserTimeTest()
 {
    TUDEF("GPSLNavTimeOffset", "getUserTime");
-   gpstk::GPSLNavTimeOffset obj;
-   obj.timeStamp = gpstk::GPSWeekSecond(2100,135.0);
-   gpstk::CommonTime exp(gpstk::GPSWeekSecond(2100,135.0));
+   gnsstk::GPSLNavTimeOffset obj;
+   obj.timeStamp = gnsstk::GPSWeekSecond(2100,135.0);
+   gnsstk::CommonTime exp(gnsstk::GPSWeekSecond(2100,135.0));
       // 1x 6s subframe
    exp = exp + 6.0;
-   TUASSERTE(gpstk::CommonTime, exp, obj.getUserTime());
+   TUASSERTE(gnsstk::CommonTime, exp, obj.getUserTime());
    TURETURN();
 }
 
@@ -124,21 +124,21 @@ unsigned GPSLNavTimeOffset_T ::
 getOffsetTest()
 {
    TUDEF("GPSLNavTimeOffset", "getOffset");
-   gpstk::GPSLNavTimeOffset obj;
-   gpstk::GPSWeekSecond ws1(2092, 405504.0);
-   gpstk::GPSWeekSecond ws2(2093, 405504.0);
+   gnsstk::GPSLNavTimeOffset obj;
+   gnsstk::GPSWeekSecond ws1(2092, 405504.0);
+   gnsstk::GPSWeekSecond ws2(2093, 405504.0);
    obj.deltatLS = 18.0;
    obj.a0 = -2.79396772E-09;
    obj.a1 = -7.10542736E-15;
    obj.tot = 405504.0;
    obj.wnot = 2092;
-   obj.refTime = gpstk::GPSWeekSecond(obj.wnot, obj.tot);
+   obj.refTime = gnsstk::GPSWeekSecond(obj.wnot, obj.tot);
    double offset;
       /// @todo Truth values here need to be verified.
-   TUASSERT(obj.getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC, ws1,
+   TUASSERT(obj.getOffset(gnsstk::TimeSystem::GPS, gnsstk::TimeSystem::UTC, ws1,
                           offset));
    TUASSERTFE(17.99999999720603227615, offset);
-   TUASSERT(obj.getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC, ws2,
+   TUASSERT(obj.getOffset(gnsstk::TimeSystem::GPS, gnsstk::TimeSystem::UTC, ws2,
                           offset));
    TUASSERTFE(17.99999999290866981028, offset);
    TURETURN();
@@ -149,12 +149,12 @@ unsigned GPSLNavTimeOffset_T ::
 getConversionsTest()
 {
    TUDEF("GPSLNavTimeOffset", "getConversions");
-   gpstk::TimeCvtSet convs;
-   gpstk::GPSLNavTimeOffset offs;
-   gpstk::TimeCvtKey key1(gpstk::TimeSystem::GPS,
-                                          gpstk::TimeSystem::UTC);
-   gpstk::TimeCvtKey key2(gpstk::TimeSystem::UTC,
-                                          gpstk::TimeSystem::GPS);
+   gnsstk::TimeCvtSet convs;
+   gnsstk::GPSLNavTimeOffset offs;
+   gnsstk::TimeCvtKey key1(gnsstk::TimeSystem::GPS,
+                                          gnsstk::TimeSystem::UTC);
+   gnsstk::TimeCvtKey key2(gnsstk::TimeSystem::UTC,
+                                          gnsstk::TimeSystem::GPS);
    TUCATCH(convs = offs.getConversions());
    TUASSERTE(size_t, 2, convs.size());
    TUASSERTE(size_t, 1, convs.count(key1));

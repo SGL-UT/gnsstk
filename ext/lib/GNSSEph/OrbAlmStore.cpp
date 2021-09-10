@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -52,9 +52,9 @@
 #include "TimeString.hpp"
 
 using namespace std;
-using gpstk::StringUtils::asString;
+using gnsstk::StringUtils::asString;
 
-namespace gpstk
+namespace gnsstk
 {
    const unsigned short OrbAlmStore::ADD_NEITHER = 0x00;
    const unsigned short OrbAlmStore::ADD_BOTH    = 0x03;
@@ -72,7 +72,7 @@ namespace gpstk
       }
       catch(InvalidRequest& ir)
       {
-         GPSTK_RETHROW(ir);
+         GNSSTK_RETHROW(ir);
       }
    }
 
@@ -129,7 +129,7 @@ namespace gpstk
       }
       catch(InvalidRequest& ir)
       {
-         GPSTK_RETHROW(ir);
+         GNSSTK_RETHROW(ir);
       }
    }
 
@@ -154,7 +154,7 @@ namespace gpstk
          ss << convertSatelliteSystemToString(subjID.system) 
             << " is not a valid Satellite system for this OrbAlmStore.";
          InvalidRequest ir(ss.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
       try
       {
@@ -165,7 +165,7 @@ namespace gpstk
       }
       catch(InvalidRequest& ir)
       {
-         GPSTK_RETHROW(ir);
+         GNSSTK_RETHROW(ir);
       }
       return retVal;
    } // end of OrbAlmStore::getHealth()
@@ -383,11 +383,11 @@ namespace gpstk
       }
       catch(InvalidParameter ip)
       {
-         GPSTK_RETHROW(ip);
+         GNSSTK_RETHROW(ip);
       }
       catch(Exception exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
       return retVal;
    }
@@ -428,7 +428,7 @@ namespace gpstk
       }
       catch(Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       if (test1 || test2)
       {
@@ -482,7 +482,7 @@ namespace gpstk
       }
       catch(Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       return true;
    }
@@ -678,7 +678,7 @@ namespace gpstk
 
       //-----------------------------------------------------------------------------
       // Added for parallelism with OrbElemStore
-   std::list<gpstk::SatID> OrbAlmStore::getSatIDList() const
+   std::list<gnsstk::SatID> OrbAlmStore::getSatIDList() const
    {
       return listOfSubjectSV();
    }
@@ -747,7 +747,7 @@ namespace gpstk
          if (previt == em.end())
          {
             InvalidRequest e("No orbital elements for requested satellite ");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          candidate = previt->second;
       }
@@ -761,7 +761,7 @@ namespace gpstk
          if (!inRange)
          {
             InvalidRequest e("No orbital elements for requested satellite ");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
 
@@ -791,7 +791,7 @@ namespace gpstk
       }
       catch (InvalidRequest ir)
       {
-         GPSTK_RETHROW(ir);
+         GNSSTK_RETHROW(ir);
       }
       return oeb; 
    }
@@ -857,7 +857,7 @@ namespace gpstk
          ss << "Could not derive last Xmit for almanac with subject SV "
             << subjID << " as no data for that SV is in the store.";
          InvalidRequest ir(ss.str());
-         GPSTK_THROW(ir); 
+         GNSSTK_THROW(ir); 
       }
       return retVal; 
    }
@@ -903,14 +903,14 @@ namespace gpstk
       if (!validSatSystem(subjID))
       {
          InvalidRequest e("Incorrect satellite system requested.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       SubjectAlmMap::const_iterator prn_i = subjectAlmMap.find(subjID);
       if (prn_i == subjectAlmMap.end())
       {
          InvalidRequest e("No OrbAlm for satellite " + asString(subjID));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return(prn_i->second);
    }
@@ -923,14 +923,14 @@ namespace gpstk
       if (!validSatSystem(subjID))
       {
          InvalidRequest e("Incorrect satellite system requested.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       XmitAlmMap::const_iterator xmit_i = xmitAlmMap.find(xmitID);
       if (xmit_i == xmitAlmMap.end())
       {
          InvalidRequest ir("No OrbAlm from xmit satellite " + asString(xmitID));
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       const UniqueAlmMap& uam = xmit_i->second;
@@ -941,7 +941,7 @@ namespace gpstk
          ss << "No OrbAlm for subject satellite " << asString(subjID)
             << " from satellite " << asString(xmitID); 
          InvalidRequest ir(ss.str());
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
       return(prn_i->second);
    }

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -57,11 +57,11 @@
 #include <string>
 #include <vector>
 #include <map>
-// GPSTk
+// GNSSTk
 #include "Exception.hpp"
 #include "TimeConstants.hpp"
 
-namespace gpstk {
+namespace gnsstk {
 
 //------------------------------------------------------------------------------------
 /// Class SolarSystemEphemeris encapsulates the information in the JPL ephemeris file,
@@ -76,10 +76,10 @@ namespace gpstk {
 /// ephemeris data files for the same ephemeris (e.g. ascp1975.403, ascp2000.403 and
 /// ascp2025.403 - these files contain the complete "DE403" ephemeris covering years
 /// 1975 to 2025). The user should then use a conversion program (such as
-/// convertEphemeris in the gpstk) to read these files and write out a single binary
+/// convertEphemeris in the gnsstk) to read these files and write out a single binary
 /// file for use in applications. Writing the binary file on the platform on which it
 /// is going to be used avoids potential problems with platform dependencies.
-/// The gpstk also includes a test program, testEphemeris, which will read a test
+/// The gnsstk also includes a test program, testEphemeris, which will read a test
 /// file (also at the JPL ftp site) and compute several states, comparing them with
 /// JPL-generated 'truth' values; this will validate the generated binary file.
 /// To make use of this class and the generated binary file, the programmer simply
@@ -438,7 +438,7 @@ private:
 
 }; // end class SolarSystemEphemeris
 
-}  // end namespace gpstk
+}  // end namespace gnsstk
 
 #endif // SOLAR_SYSTEM_EPHEMERIS_INCLUDE
 // nothing below this

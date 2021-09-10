@@ -2,158 +2,158 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
-import gpstk
+from gnsstk.test_utils import args,run_unit_tests
+import gnsstk
 
 
 class TestGNSSCore(unittest.TestCase):
 
     def test_SatelliteSystem(self):
-        a = gpstk.SatelliteSystem.GPS
+        a = gnsstk.SatelliteSystem.GPS
         self.assertIsNotNone(a)
 
     def test_vectorGNSS(self):
-        a = gpstk.std_vector_GNSS()
-        a.append(gpstk.SatelliteSystem.GPS)
+        a = gnsstk.std_vector_GNSS()
+        a.append(gnsstk.SatelliteSystem.GPS)
         self.assertTrue(not a.empty())
 
     def test_SatID(self):
-        a = gpstk.SatID(gpstk.SatelliteSystem.GPS)
+        a = gnsstk.SatID(gnsstk.SatelliteSystem.GPS)
         self.assertTrue(a.isWild())
         self.assertTrue(a.isValid())
 
     def test_vectorSatID(self):
-        a = gpstk.std_vector_SatID()
-        a.append(gpstk.SatID(gpstk.SatelliteSystem.GPS))
+        a = gnsstk.std_vector_SatID()
+        a.append(gnsstk.SatID(gnsstk.SatelliteSystem.GPS))
         self.assertTrue(not a.empty())
 
     def test_Xvt(self):
-        a = gpstk.Xvt.Unhealthy
+        a = gnsstk.Xvt.Unhealthy
         self.assertIsNotNone(a)
-        b = gpstk.Xvt().getPos()
+        b = gnsstk.Xvt().getPos()
         self.assertIsNotNone(b)
 
     def test_AngleReduced(self):
-        a = gpstk.AngleReduced()
-        b = gpstk.AngleReduced.Sin
+        a = gnsstk.AngleReduced()
+        b = gnsstk.AngleReduced.Sin
         self.assertIsNotNone(a.sin())
         self.assertIsNotNone(b)
 
     def test_Angle(self):
-        a = gpstk.Angle()
-        b = gpstk.Angle(1,2)
+        a = gnsstk.Angle()
+        b = gnsstk.Angle(1,2)
         self.assertTrue(b.rad() == 1.5707963267948966)
         self.assertTrue(b.deg() == 90.0)
 
     def test_ObservationType(self):
-        a = gpstk.ObservationType.Range
+        a = gnsstk.ObservationType.Range
         self.assertIsNotNone(a)
 
     def test_mapObservationType_String(self):
-        a = gpstk.std_map_ObservationType_string()
+        a = gnsstk.std_map_ObservationType_string()
         self.assertTrue(len(a.values()) == 0)
         # This test fails but it doesn't really need to work in python
-        # a[gpstk.ObservationType.Range] = 'Range'
-        # self.assertTrue(a[gpstk.ObservationType.Range] == 'Range')
+        # a[gnsstk.ObservationType.Range] = 'Range'
+        # self.assertTrue(a[gnsstk.ObservationType.Range] == 'Range')
 
     def test_CarrierBand(self):
-        a = gpstk.CarrierBand.L1
+        a = gnsstk.CarrierBand.L1
         self.assertIsNotNone(a)
 
     def test_mapCarrierBand_String(self):
-        a = gpstk.std_map_CarrierBand_string()
+        a = gnsstk.std_map_CarrierBand_string()
         self.assertTrue(len(a.values()) == 0)
         # This test fails but it doesn't really need to work in python
-        # a[gpstk.CarrierBand.L1] = 'L1'
-        # self.assertTrue(a[gpstk.CarrierBand.L1] == 'L1')
+        # a[gnsstk.CarrierBand.L1] = 'L1'
+        # self.assertTrue(a[gnsstk.CarrierBand.L1] == 'L1')
 
     def test_TrackingCode(self):
-        a = gpstk.TrackingCode.CA
+        a = gnsstk.TrackingCode.CA
         self.assertIsNotNone(a)
 
     def test_mapTrackingCode_String(self):
-        a = gpstk.std_map_TrackingCode_string()
+        a = gnsstk.std_map_TrackingCode_string()
         self.assertTrue(len(a.values()) == 0)
         # This test fails but it doesn't really need to work in python
-        # a[gpstk.TrackingCode.CA] = 'L1'
-        # self.assertTrue(a[gpstk.TrackingCode.CA] == 'L1')
+        # a[gnsstk.TrackingCode.CA] = 'L1'
+        # self.assertTrue(a[gnsstk.TrackingCode.CA] == 'L1')
 
     def test_XmitAnt(self):
-        a = gpstk.XmitAnt.Standard
+        a = gnsstk.XmitAnt.Standard
         self.assertIsNotNone(a)
 
     def test_ObsID(self):
-        a = gpstk.ObsID(gpstk.ObservationType.Range, gpstk.CarrierBand.L1, gpstk.TrackingCode.CA)
-        self.assertIsInstance(a, gpstk.ObsID)
+        a = gnsstk.ObsID(gnsstk.ObservationType.Range, gnsstk.CarrierBand.L1, gnsstk.TrackingCode.CA)
+        self.assertIsInstance(a, gnsstk.ObsID)
 
     def test_vectorObsID(self):
-        a = gpstk.std_vector_ObsID()
-        a.append(gpstk.ObsID(gpstk.ObservationType.Range, gpstk.CarrierBand.L1, gpstk.TrackingCode.CA))
+        a = gnsstk.std_vector_ObsID()
+        a.append(gnsstk.ObsID(gnsstk.ObservationType.Range, gnsstk.CarrierBand.L1, gnsstk.TrackingCode.CA))
         self.assertTrue(not a.empty())
 
     def test_mapSvObsEpoch(self):
-        a = gpstk.std_map_SvObsEpoch()
+        a = gnsstk.std_map_SvObsEpoch()
         self.assertTrue(len(a.values()) == 0)
-        a[gpstk.ObsID(gpstk.ObservationType.Range, gpstk.CarrierBand.L1, gpstk.TrackingCode.CA)] = 5.0
-        self.assertTrue(a[gpstk.ObsID(gpstk.ObservationType.Range, gpstk.CarrierBand.L1, gpstk.TrackingCode.CA)] == 5.0)
+        a[gnsstk.ObsID(gnsstk.ObservationType.Range, gnsstk.CarrierBand.L1, gnsstk.TrackingCode.CA)] = 5.0
+        self.assertTrue(a[gnsstk.ObsID(gnsstk.ObservationType.Range, gnsstk.CarrierBand.L1, gnsstk.TrackingCode.CA)] == 5.0)
 
     def test_WGS84Ellipsoid(self):
-        a = gpstk.WGS84Ellipsoid()
-        self.assertIsInstance(a, gpstk.WGS84Ellipsoid)
+        a = gnsstk.WGS84Ellipsoid()
+        self.assertIsInstance(a, gnsstk.WGS84Ellipsoid)
 
     def test_GPSEllipsoid(self):
-        a = gpstk.GPSEllipsoid()
-        self.assertIsInstance(a, gpstk.GPSEllipsoid)
+        a = gnsstk.GPSEllipsoid()
+        self.assertIsInstance(a, gnsstk.GPSEllipsoid)
 
     def test_RinexSatID(self):
-        a = gpstk.SatID(gpstk.SatelliteSystem.GPS)
-        b = gpstk.RinexSatID(a)
-        self.assertIsInstance(b, gpstk.RinexSatID)
+        a = gnsstk.SatID(gnsstk.SatelliteSystem.GPS)
+        b = gnsstk.RinexSatID(a)
+        self.assertIsInstance(b, gnsstk.RinexSatID)
         self.assertTrue(b.toString() == "?-1")
 
     def test_vectorRinexSatID(self):
-        a = gpstk.std_vector_RinexSatID()
-        b = gpstk.SatID(gpstk.SatelliteSystem.GPS)
-        c = gpstk.RinexSatID(b)
+        a = gnsstk.std_vector_RinexSatID()
+        b = gnsstk.SatID(gnsstk.SatelliteSystem.GPS)
+        c = gnsstk.RinexSatID(b)
         a.append(c)
         self.assertTrue(not a.empty())
 
     def test_CGCS2000Ellipsoid(self):
-        a = gpstk.CGCS2000Ellipsoid()
-        self.assertIsInstance(a, gpstk.CGCS2000Ellipsoid)
+        a = gnsstk.CGCS2000Ellipsoid()
+        self.assertIsInstance(a, gnsstk.CGCS2000Ellipsoid)
 
     def test_SatMetaData(self):
-        a = gpstk.SatMetaData()
-        self.assertIsInstance(a, gpstk.SatMetaData)
+        a = gnsstk.SatMetaData()
+        self.assertIsInstance(a, gnsstk.SatMetaData)
         self.assertIsNotNone(a.asClockType('Cesium'))
 
     def test_Position(self):
-        a = gpstk.Position(1,2,3)
-        b = gpstk.Position(5,6,7)
-        self.assertTrue(gpstk.Position().range(a,b) == 6.928203230275509)
+        a = gnsstk.Position(1,2,3)
+        b = gnsstk.Position(5,6,7)
+        self.assertTrue(gnsstk.Position().range(a,b) == 6.928203230275509)
 
     def test_AlmOrbit(self):
-        a = gpstk.AlmOrbit()
-        self.assertIsInstance(a, gpstk.AlmOrbit)
+        a = gnsstk.AlmOrbit()
+        self.assertIsInstance(a, gnsstk.AlmOrbit)
         b = a.getTimestamp()
-        self.assertIsInstance(b, gpstk.CommonTime)
+        self.assertIsInstance(b, gnsstk.CommonTime)
 
     def test_RinexObsHeader(self):
-        a = gpstk.RinexObsHeader.allValid20
+        a = gnsstk.RinexObsHeader.allValid20
         self.assertIsNotNone(a)
-        b = gpstk.RinexObsHeader().isHeader()
+        b = gnsstk.RinexObsHeader().isHeader()
         self.assertTrue(b)
 
     def test_RinexObsID(self):
-        a = gpstk.ObsID(gpstk.ObservationType.Range, gpstk.CarrierBand.L1, gpstk.TrackingCode.CA)
-        b = gpstk.RinexObsID(a)
-        self.assertIsInstance(b, gpstk.RinexObsID)
+        a = gnsstk.ObsID(gnsstk.ObservationType.Range, gnsstk.CarrierBand.L1, gnsstk.TrackingCode.CA)
+        b = gnsstk.RinexObsID(a)
+        self.assertIsInstance(b, gnsstk.RinexObsID)
         self.assertTrue(str(b) == "C1C")
 
     def test_vectorRinexObsID(self):
-        a = gpstk.std_vector_RinexObsID()
-        b = gpstk.ObsID(gpstk.ObservationType.Range, gpstk.CarrierBand.L1, gpstk.TrackingCode.CA)
-        c = gpstk.RinexObsID(b)
+        a = gnsstk.std_vector_RinexObsID()
+        b = gnsstk.ObsID(gnsstk.ObservationType.Range, gnsstk.CarrierBand.L1, gnsstk.TrackingCode.CA)
+        c = gnsstk.RinexObsID(b)
         a.append(c)
         self.assertTrue(not a.empty())
 

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -49,10 +49,10 @@
 
 
 using namespace std;
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 
 
-namespace gpstk
+namespace gnsstk
 {
    const string IonexData::startTecMapString    =  "START OF TEC MAP";
    const string IonexData::startRmsMapString    =  "START OF RMS MAP";
@@ -107,7 +107,7 @@ namespace gpstk
       {
          FFStreamError err("This isn't a valid standard IONEX value type: " + 
             asString(type.description) );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       strm << line << endl;
       strm.lineNumber++;
@@ -194,7 +194,7 @@ namespace gpstk
       {
          FFStreamError err("This isn't a valid standard IONEX value type: " + 
             asString(type.description) );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       strm << line << endl;
       strm.lineNumber++;
@@ -249,7 +249,7 @@ namespace gpstk
          if (line.size() > 80)
          {
             FFStreamError e("Bad epoch line");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // skip empty lines
@@ -314,16 +314,16 @@ namespace gpstk
             if (ityp == 0)
             {
                FFStreamError e(string("Map type undefined: " + line) );
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
-#ifdef GPSTK_IONEX_UNUSED
+#ifdef GNSSTK_IONEX_UNUSED
             const double lat0 = asDouble(line.substr( 2,6)),
                          lon1 = asDouble(line.substr( 8,6)),
                          lon2 = asDouble(line.substr(14,6)),
                          dlon = asDouble(line.substr(20,6)),
                          hgt  = asDouble(line.substr(26,6));
-#endif  // GPSTK_IONEX_UNUSED
+#endif  // GNSSTK_IONEX_UNUSED
 
                //read single data block
             for (int ival = 0,line_ndx = 0; ival < dim[1]; ival++, line_ndx++)
@@ -343,7 +343,7 @@ namespace gpstk
                   {
 
                     FFStreamError e("Error reading IONEX data. Bad epoch line");
-                    GPSTK_THROW(e);
+                    GNSSTK_THROW(e);
 
                   }
 
@@ -401,7 +401,7 @@ namespace gpstk
          {
 
             FFStreamError e(string("Unidentified Ionex Data record " + line) );
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
 
          }
 
@@ -468,7 +468,7 @@ namespace gpstk
          InvalidRequest e( "Irregular latitude. Latitude "
                            + asString(in[0]) + " DEG" );
 
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
 
       }
 
@@ -508,7 +508,7 @@ namespace gpstk
 
          InvalidRequest e( "Irregular longitude. Longitude: "
                            + asString(in[1]) + " DEG" );
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
 
       }
 
@@ -540,7 +540,7 @@ namespace gpstk
             InvalidRequest e( "Irregular height. Height: "
                               + asString( in[2]/1000.0 ) + " km.");
 
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
 
          }  // End of 'if ( (ihgt >= 1) && (ihgt <= nhgt) )...'
 
@@ -562,7 +562,7 @@ namespace gpstk
 
          InvalidRequest e( "Position object is not in GEOCENTRIC coordinates");
 
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
 
       }
 
@@ -601,7 +601,7 @@ namespace gpstk
       if ( (xp < 0) || (xp > 1) || (xq < 0) || (xq > 1) )
       {
 
-         GPSTK_THROW(Exception("IonexData::getValue(): Wrong xp and xq factors!!!"));
+         GNSSTK_THROW(Exception("IonexData::getValue(): Wrong xp and xq factors!!!"));
 
       }
 
@@ -631,7 +631,7 @@ namespace gpstk
          else
          {
             FFStreamError e("Undefined TEC/RMS value(s).");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
       }  // End of 'for (int i = 0; i < 4; i++)...'
@@ -686,4 +686,4 @@ namespace gpstk
 
 
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk

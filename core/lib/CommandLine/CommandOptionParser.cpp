@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -47,7 +47,7 @@
 #include "StringUtils.hpp"
 
 using namespace std;
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 
 #ifdef _MSC_VER
    #if ( _MSC_VER < 1600 )
@@ -56,7 +56,7 @@ using namespace gpstk::StringUtils;
    #endif
 #endif
 
-namespace gpstk
+namespace gnsstk
 {
 
    CommandOptionParser::CommandOptionParser(
@@ -77,7 +77,7 @@ namespace gpstk
 
       // validate a new option and add it to optionVec
    CommandOptionParser&
-   CommandOptionParser::addOption(gpstk::CommandOption& co)
+   CommandOptionParser::addOption(gnsstk::CommandOption& co)
    {
       CommandOptionVec::const_iterator  optIter = optionVec.begin();
       for ( ; optIter != optionVec.end() ; ++optIter)
@@ -87,22 +87,22 @@ namespace gpstk
          {
             std::string  msg("Short option already in use: ");
             msg.append(1, co.shortOpt);
-            gpstk::InvalidParameter  exc(msg);
-            GPSTK_THROW(exc);            
+            gnsstk::InvalidParameter  exc(msg);
+            GNSSTK_THROW(exc);            
          }
          if (  (co.longOpt.size() != 0)
             && ((*optIter)->longOpt.compare(co.longOpt) == 0) )
          {
             std::string  msg("Long option already in use: ");
             msg.append(co.longOpt);
-            gpstk::InvalidParameter  exc(msg);
-            GPSTK_THROW(exc);            
+            gnsstk::InvalidParameter  exc(msg);
+            GNSSTK_THROW(exc);            
          }
          if (  ((*optIter)->optType == CommandOption::trailingType)
             && (co.optType == CommandOption::trailingType) )
          {
-            gpstk::InvalidParameter  exc("Multiple trailing options are disallowed");
-            GPSTK_THROW(exc);            
+            gnsstk::InvalidParameter  exc("Multiple trailing options are disallowed");
+            GNSSTK_THROW(exc);            
          }
       }
       optionVec.push_back( &co );
@@ -564,4 +564,4 @@ namespace gpstk
       oldSize += 1;
    }
 
-}  // end namespace gpstk
+}  // end namespace gnsstk

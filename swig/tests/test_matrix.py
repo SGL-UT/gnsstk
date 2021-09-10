@@ -2,9 +2,9 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args, run_unit_tests
+from gnsstk.test_utils import args, run_unit_tests
 
-import gpstk
+import gnsstk
 import math
 
 # Tests for vector
@@ -14,29 +14,29 @@ def test_matrix():
     test_num = 1
 
     # Matrix Constructor tests
-    a = gpstk.Matrix_double()
+    a = gnsstk.Matrix_double()
     actual = (a.size(), a.empty(), a.rows(), a.cols())
     expected = (0, True, 0, 0)
     check_test(actual, expected, "Default Matrix Constructor", test_num)
     test_num += 1
 
-    a = gpstk.Matrix_int(34, 67)
+    a = gnsstk.Matrix_int(34, 67)
     actual = (a.size(), a.empty(), a.rows(), a.cols())
     expected = (2278, False, 34, 67)
     check_test(actual, expected, "Matrix Constructor with initial size", test_num)
     test_num += 1
 
-    a = gpstk.Matrix_int(34, 67, 5)
+    a = gnsstk.Matrix_int(34, 67, 5)
     actual = (a.size(), a.empty(), a.rows(), a.cols(), a.get_value(1, 2), a.get_value(23, 34))
     expected = (2278, False, 34, 67, 5, 5)
     check_test(actual, expected, "Matrix Constructor with initial size and value", test_num)
     test_num += 1
 
     # Size, Num Rows, Num Cols, Empty, Max Size tests
-    a = gpstk.Matrix_double()
+    a = gnsstk.Matrix_double()
     actual = []
     actual.append(a.empty())
-    a = gpstk.Matrix_double(12, 23, 5)
+    a = gnsstk.Matrix_double(12, 23, 5)
     actual.extend([a.rows(), a.cols(), a.empty(), a.size(), a.max_size()])
     expected = [True, 12, 23, False, 276, 276]
     check_test(actual, expected, "Size, Num Rows, Num Cols, Empty, Max Size", test_num)
@@ -46,7 +46,7 @@ def test_matrix():
     # rowRef, colRef, row, col tests
 
     # Resize
-    a = gpstk.Matrix_double(12, 34, 5)
+    a = gnsstk.Matrix_double(12, 34, 5)
     actual = [a.rows(), a.cols(), a.size()]
     b = a.resize(34, 56)
     actual.extend([a.rows(), a.cols(), a.size(), b.rows(), b.cols(), b.size()])
@@ -55,30 +55,30 @@ def test_matrix():
     test_num += 1
 
     # zeroize, zeroizeRow, zeroizeCol
-    a = gpstk.Matrix_double(12, 34, 10**-9)
+    a = gnsstk.Matrix_double(12, 34, 10**-9)
     a.zeroizeRow(7)
     actual = [slice_is_value(a[7])]
-    a = gpstk.Matrix_double(12, 34, 10**-11)
+    a = gnsstk.Matrix_double(12, 34, 10**-11)
     a.zeroizeRow(7)
     actual.append(slice_is_value(a[7]))
 
-    a_col_slice = gpstk.MatrixColSlice_double(a, 30)
+    a_col_slice = gnsstk.MatrixColSlice_double(a, 30)
     actual.append(slice_is_value(a_col_slice))
     a.zeroizeCol(30)
     actual.append(slice_is_value(a_col_slice))
 
-    actual.append(matrices_are_equal(a, gpstk.Matrix_double(12, 34, 0)))
+    actual.append(matrices_are_equal(a, gnsstk.Matrix_double(12, 34, 0)))
     a.zeroize()
-    actual.append(matrices_are_equal(a, gpstk.Matrix_double(12, 34, 0)))
+    actual.append(matrices_are_equal(a, gnsstk.Matrix_double(12, 34, 0)))
 
     expected = [False, True, False, True, False, True]
     check_test(actual, expected, "Matrix zeroize zeroizeRow zeroizeCol", test_num)
     test_num += 1
 
     # Upper Triangular, Lower Triangular, Square, Diagonal, Symmetric
-    a = gpstk.Matrix_double(45, 45, 1)
-    b = gpstk.Matrix_double(45, 33, 0)
-    c = gpstk.Matrix_double(45, 45, 0)
+    a = gnsstk.Matrix_double(45, 45, 1)
+    b = gnsstk.Matrix_double(45, 33, 0)
+    c = gnsstk.Matrix_double(45, 45, 0)
     actual = [a.isSquare(), b.isSquare(), c.isSquare(), a.isUT(), b.isUT(), c.isUT(), a.isLT(), b.isLT(), c.isLT(),
               a.isDiagonal(), b.isDiagonal(), c.isDiagonal(), a.isSymmetric(), b.isSymmetric(), c.isSymmetric()]
     expected = [True, False, True, False, False, True, False, False, True, False, False, True, True, False, True]
@@ -86,7 +86,7 @@ def test_matrix():
     test_num += 1
 
     # ColCopy, rowCopy, diagCopy
-    a = gpstk.Matrix_double(34, 12, 1)
+    a = gnsstk.Matrix_double(34, 12, 1)
     vec1 = a.colCopy(5, 23)
     vec2 = a.rowCopy(33, 7)
     vec3 = a.diagCopy()
@@ -96,7 +96,7 @@ def test_matrix():
     test_num += 1
 
     # Swap rows and columns
-    a = gpstk.Matrix_double(34, 34)
+    a = gnsstk.Matrix_double(34, 34)
     for i in range(a.rows()):
         for j in range(a.cols()):
             a[i][j] = i
@@ -107,8 +107,8 @@ def test_matrix():
     for i in range(a.rows()):
         for j in range(a.cols()):
             a[i][j] = j
-    col1 = gpstk.MatrixColSlice_double(a, 1)
-    col20 = gpstk.MatrixColSlice_double(a, 20)
+    col1 = gnsstk.MatrixColSlice_double(a, 1)
+    col20 = gnsstk.MatrixColSlice_double(a, 20)
     actual.extend([slice_is_value(col1, 1), slice_is_value(col20, 20)])
     a.swapCols(1, 20)
     actual.extend([slice_is_value(col1, 20), slice_is_value(col20, 1)])
@@ -117,36 +117,36 @@ def test_matrix():
     test_num += 1
 
     # AssignFrom
-    a = gpstk.Matrix_double(5, 5)
-    b = gpstk.Matrix_double(5, 5, 10)
+    a = gnsstk.Matrix_double(5, 5)
+    b = gnsstk.Matrix_double(5, 5, 10)
     a.assignFromMatrix(b) # AssignFrom matrix
     b[2][3] = -3
-    actual = [matrices_are_equal(a, gpstk.Matrix_double(5, 5, 10)), matrices_are_equal(b, gpstk.Matrix_double(5, 5, 10))]
+    actual = [matrices_are_equal(a, gnsstk.Matrix_double(5, 5, 10)), matrices_are_equal(b, gnsstk.Matrix_double(5, 5, 10))]
 
-    b = gpstk.Vector_double(25, -78)
-    a.assignFromVector(b) # AssignFrom GPSTK vector
+    b = gnsstk.Vector_double(25, -78)
+    a.assignFromVector(b) # AssignFrom GNSSTK vector
     b[2] = 30
-    actual.extend([matrices_are_equal(a, gpstk.Matrix_double(5, 5, -78)), slice_is_value(b, -78)])
+    actual.extend([matrices_are_equal(a, gnsstk.Matrix_double(5, 5, -78)), slice_is_value(b, -78)])
     # This test is the only place that array_double is used, and the
     # array_double declarations cause downstream errors and have been
-    # commented out.  See gpstk.i
-    # double_array = gpstk.array_double(25)
+    # commented out.  See gnsstk.i
+    # double_array = gnsstk.array_double(25)
     # for i in range(25):
     #     double_array[i] = 4
     # a.assignFrom(double_array) # AssignFrom array
-    # actual.append(matrices_are_equal(a, gpstk.Matrix_double(5, 5, 4)))
+    # actual.append(matrices_are_equal(a, gnsstk.Matrix_double(5, 5, 4)))
 
     a.assignFrom(5) # AssignFrom value
-    actual.append(matrices_are_equal(a, gpstk.Matrix_double(5, 5, 5)))
+    actual.append(matrices_are_equal(a, gnsstk.Matrix_double(5, 5, 5)))
     expected = [True, False, True, False, True, True]
     check_test(actual, expected, "AssignFrom", test_num)
     test_num += 1
 
     # Operators +=, -=,  *=, /=, and unary negation
     # @todo actually do some tests...
-    a = gpstk.Matrix_double(5, 5, 3)
-    b = gpstk.Matrix_double(5, 5, 10)
-    vec = gpstk.Vector_double(25, -8)
+    a = gnsstk.Matrix_double(5, 5, 3)
+    b = gnsstk.Matrix_double(5, 5, 10)
+    vec = gnsstk.Vector_double(25, -8)
 
     # ident, trace, normF, normCol, slowDet
 
@@ -181,8 +181,8 @@ def check_test(observed, expected, description="", test_num=0):
 
 if __name__ == "__main__":
     test_matrix()
-#     # a = gpstk.Vector_double(5, 10)
-#     # b = gpstk.Vector_double(5, -9)
-#     # a = gpstk.WtdStats_double(a, b)
+#     # a = gnsstk.Vector_double(5, 10)
+#     # b = gnsstk.Vector_double(5, -9)
+#     # a = gnsstk.WtdStats_double(a, b)
 #     print(a)
 

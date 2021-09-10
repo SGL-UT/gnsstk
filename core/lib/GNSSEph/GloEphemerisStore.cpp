@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -46,7 +46,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 
       // Add ephemeris information from a Rinex3NavData object.
@@ -99,7 +99,7 @@ namespace gpstk
       if(epoch.getTimeSystem() != initialTime.getTimeSystem())
       {
          InvalidRequest e(string("Requested time system is not GLONASS time"));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       
          // Check that the given epoch is within the available time limits.
@@ -109,7 +109,7 @@ namespace gpstk
       {
          InvalidRequest e( "Requested time is out of boundaries for satellite "
                           + StringUtils::asString(sat) );
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // Look for the satellite in the 'pe' (EphMap) data structure.
@@ -120,7 +120,7 @@ namespace gpstk
       {
          InvalidRequest e( "Ephemeris for satellite  "
                            + StringUtils::asString(sat) + " not found." );
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // Let's take the second part of the EphMap
@@ -153,7 +153,7 @@ namespace gpstk
       {
          InvalidRequest e( "Requested time is out of boundaries for satellite "
                           + StringUtils::asString(sat) );
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // We now have the proper reference data record. Let's use it
@@ -479,7 +479,7 @@ namespace gpstk
       if( pe.empty() )
       {
          InvalidRequest e( "GloEphemerisStore object has no data." );
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       
       return initialTime;
@@ -498,7 +498,7 @@ namespace gpstk
       if( pe.empty() )
       {
          InvalidRequest e( "GloEphemerisStore object has no data." );
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       return finalTime;
@@ -561,7 +561,7 @@ namespace gpstk
       {
          InvalidRequest e( "Requested time is out of boundaries for satellite "
                           + StringUtils::asString(sat) );
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // Look for the satellite in the 'pe' (EphMap) data structure.
@@ -572,7 +572,7 @@ namespace gpstk
       {
          InvalidRequest e( "Ephemeris for satellite  "
                            + StringUtils::asString(sat) + " not found." );
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // Let's take the second part of the EphMap
@@ -602,7 +602,7 @@ namespace gpstk
       {
          InvalidRequest e( "Requested time is out of boundaries for satellite "
                           + StringUtils::asString(sat) );
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // We now have the proper reference data record. Let's return it
@@ -647,4 +647,4 @@ namespace gpstk
    }
 
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk

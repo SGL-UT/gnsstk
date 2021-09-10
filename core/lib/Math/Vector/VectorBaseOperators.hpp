@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,8 +41,8 @@
  * Vector base class operators, including I/O, min(), dot(), comparisons, etc
  */
 
-#ifndef GPSTK_VECTOR_BASE_OPERATORS_HPP
-#define GPSTK_VECTOR_BASE_OPERATORS_HPP
+#ifndef GNSSTK_VECTOR_BASE_OPERATORS_HPP
+#define GNSSTK_VECTOR_BASE_OPERATORS_HPP
 
 #include <fstream> // for copyfmt
 #include <vector>
@@ -58,7 +58,7 @@
 #undef max
 #endif
 
-namespace gpstk
+namespace gnsstk
 {
 
       /// @ingroup MathGroup
@@ -99,7 +99,7 @@ namespace gpstk
       if (l.size() == 0)
       {
          VectorException e("Can't find the minabs of an empty vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       T min = l[0];
       size_t i;
@@ -118,7 +118,7 @@ namespace gpstk
       if (l.size() == 0)
       {
          VectorException e("Can't find the min of an empty vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       T min = l[0];
       size_t i;
@@ -135,7 +135,7 @@ namespace gpstk
       if (l.size() == 0)
       {
          VectorException e("Can't find the maxabs of an empty vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       T max = l[0];
       size_t i;
@@ -152,7 +152,7 @@ namespace gpstk
       if (l.size() == 0)
       {
          VectorException e("Can't find the max of an empty vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       T max = l[0];
       size_t i;
@@ -228,7 +228,7 @@ namespace gpstk
       if (v.size()<4 || w.size()<4)
       {
          VectorException e("Minkowski requires vector length 4");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return (v(0)*w(0)+v(1)*w(1)+v(2)*w(2)-v(3)*w(3));
    }
@@ -293,6 +293,6 @@ namespace gpstk
 
    //@}
 
-}  // namespace gpstk
+}  // namespace gnsstk
  
-#endif // GPSTK_VECTOR_BASE_OPERATORS_HPP
+#endif // GNSSTK_VECTOR_BASE_OPERATORS_HPP

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -49,7 +49,7 @@
 #include "CommonTime.hpp"
 #include "Exception.hpp"
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 
 class TimeRange_T
@@ -91,10 +91,10 @@ public:
          // important to verify the values in the copy constructor
          // below.)
       testFramework.assert(emptyConstructed.getStart() ==
-                           gpstk::CommonTime::BEGINNING_OF_TIME,
+                           gnsstk::CommonTime::BEGINNING_OF_TIME,
                            "Start value for empty TimeRange is not the expected value", __LINE__);
       testFramework.assert(emptyConstructed.getEnd()   ==
-                           gpstk::CommonTime::END_OF_TIME      ,
+                           gnsstk::CommonTime::END_OF_TIME      ,
                            "End value for empty TimeRange is not the expected value"  , __LINE__);
 
 
@@ -116,11 +116,11 @@ public:
 
       TimeRange copyConstructed(emptyConstructed);
       testFramework.assert(emptyConstructed.getStart() ==
-                           gpstk::CommonTime::BEGINNING_OF_TIME,
+                           gnsstk::CommonTime::BEGINNING_OF_TIME,
                            "Start value for copy constructed TimeRange is not the expected value",
                            __LINE__);
       testFramework.assert(emptyConstructed.getEnd()   ==
-                           gpstk::CommonTime::END_OF_TIME      ,
+                           gnsstk::CommonTime::END_OF_TIME      ,
                            "End value for copy constructed TimeRange is not the expected value"  ,
                            __LINE__);
 
@@ -132,9 +132,9 @@ public:
          // Verify CommonTime constructor does throws expected errors
          // and creates the expected object
          //--------------------------------------------------------------------
-      CommonTime startEndpoint = gpstk::CivilTime(2011,1, 1, 0, 0,
+      CommonTime startEndpoint = gnsstk::CivilTime(2011,1, 1, 0, 0,
                                  0.0).convertToCommonTime();
-      CommonTime endEndpoint = gpstk::CivilTime(2011,1,31,23,59,
+      CommonTime endEndpoint = gnsstk::CivilTime(2011,1,31,23,59,
                                59.59).convertToCommonTime();
       bool beginningIncluded = true;
       bool endIncluded = false;
@@ -190,7 +190,7 @@ public:
          // Verify CommonTime constructor does throws expected errors
          // and creates the expected object
          //--------------------------------------------------------------------
-      gpstk::TimeRange::DTPair inputPair, invertedPair;
+      gnsstk::TimeRange::DTPair inputPair, invertedPair;
       inputPair = std::make_pair(startEndpoint,endEndpoint);
       invertedPair = std::make_pair(endEndpoint,startEndpoint);
 
@@ -252,15 +252,15 @@ public:
       TUDEF( "TimeRange", "inRange" );
 
 
-      CommonTime earlierThanRange = gpstk::CivilTime(2010,12,20, 0, 0,
+      CommonTime earlierThanRange = gnsstk::CivilTime(2010,12,20, 0, 0,
                                     0.0 ).convertToCommonTime();
-      CommonTime startEndpoint    = gpstk::CivilTime(2011, 1, 1, 0, 0,
+      CommonTime startEndpoint    = gnsstk::CivilTime(2011, 1, 1, 0, 0,
                                     0.0 ).convertToCommonTime();
-      CommonTime timeInRange      = gpstk::CivilTime(2011, 1,20, 0, 0,
+      CommonTime timeInRange      = gnsstk::CivilTime(2011, 1,20, 0, 0,
                                     0.0 ).convertToCommonTime();
-      CommonTime endEndpoint      = gpstk::CivilTime(2011, 1,31,23,59,
+      CommonTime endEndpoint      = gnsstk::CivilTime(2011, 1,31,23,59,
                                     59.59).convertToCommonTime();
-      CommonTime laterThanRange   = gpstk::CivilTime(2011, 2,20, 0, 0,
+      CommonTime laterThanRange   = gnsstk::CivilTime(2011, 2,20, 0, 0,
                                     0.0 ).convertToCommonTime();
 
          //Create a TimeRange where both ends are included
@@ -326,25 +326,25 @@ public:
       TUDEF( "TimeRange", "isPriorTo" );
 
          //Two time points before the reference TimeRange start endpoint
-      CommonTime earlierThanRangeStart = gpstk::CivilTime(2010,12,20, 0, 0,
+      CommonTime earlierThanRangeStart = gnsstk::CivilTime(2010,12,20, 0, 0,
                                          0.0 ).convertToCommonTime();
-      CommonTime earlierThanRangeEnd   = gpstk::CivilTime(2010,12,29, 0, 0,
+      CommonTime earlierThanRangeEnd   = gnsstk::CivilTime(2010,12,29, 0, 0,
                                          0.0 ).convertToCommonTime();
          //Reference TimeRange start endpoint
-      CommonTime startEndpoint         = gpstk::CivilTime(2011, 1, 1, 0, 0,
+      CommonTime startEndpoint         = gnsstk::CivilTime(2011, 1, 1, 0, 0,
                                          0.0 ).convertToCommonTime();
          //Two time points inside the reference TimeRange
-      CommonTime timeInRangeStart      = gpstk::CivilTime(2011, 1,10, 0, 0,
+      CommonTime timeInRangeStart      = gnsstk::CivilTime(2011, 1,10, 0, 0,
                                          0.0 ).convertToCommonTime();
-      CommonTime timeInRangeEnd        = gpstk::CivilTime(2011, 1,20, 0, 0,
+      CommonTime timeInRangeEnd        = gnsstk::CivilTime(2011, 1,20, 0, 0,
                                          0.0 ).convertToCommonTime();
          //Reference TimeRange end endpoint
-      CommonTime endEndpoint           = gpstk::CivilTime(2011, 1,31,23,59,
+      CommonTime endEndpoint           = gnsstk::CivilTime(2011, 1,31,23,59,
                                          59.59).convertToCommonTime();
          //Two time points after the reference TimeRange end endpoint
-      CommonTime laterThanRangeStart   = gpstk::CivilTime(2011, 2,20, 0, 0,
+      CommonTime laterThanRangeStart   = gnsstk::CivilTime(2011, 2,20, 0, 0,
                                          0.0 ).convertToCommonTime();
-      CommonTime laterThanRangeEnd     = gpstk::CivilTime(2011, 2,27, 0, 0,
+      CommonTime laterThanRangeEnd     = gnsstk::CivilTime(2011, 2,27, 0, 0,
                                          0.0 ).convertToCommonTime();
 
          //Include endpoints for all checks
@@ -420,25 +420,25 @@ public:
       TUDEF( "TimeRange", "overlaps" );
 
          //Two time points before the reference TimeRange start endpoint
-      CommonTime earlierThanRangeStart = gpstk::CivilTime(2010,12,20, 0, 0,
+      CommonTime earlierThanRangeStart = gnsstk::CivilTime(2010,12,20, 0, 0,
                                          0.0 ).convertToCommonTime();
-      CommonTime earlierThanRangeEnd   = gpstk::CivilTime(2010,12,29, 0, 0,
+      CommonTime earlierThanRangeEnd   = gnsstk::CivilTime(2010,12,29, 0, 0,
                                          0.0 ).convertToCommonTime();
          //Reference TimeRange start endpoint
-      CommonTime startEndpoint         = gpstk::CivilTime(2011, 1, 1, 0, 0,
+      CommonTime startEndpoint         = gnsstk::CivilTime(2011, 1, 1, 0, 0,
                                          0.0 ).convertToCommonTime();
          //Two time points inside the reference TimeRange
-      CommonTime timeInRangeStart      = gpstk::CivilTime(2011, 1,10, 0, 0,
+      CommonTime timeInRangeStart      = gnsstk::CivilTime(2011, 1,10, 0, 0,
                                          0.0 ).convertToCommonTime();
-      CommonTime timeInRangeEnd        = gpstk::CivilTime(2011, 1,20, 0, 0,
+      CommonTime timeInRangeEnd        = gnsstk::CivilTime(2011, 1,20, 0, 0,
                                          0.0 ).convertToCommonTime();
          //Reference TimeRange end endpoint
-      CommonTime endEndpoint           = gpstk::CivilTime(2011, 1,31,23,59,
+      CommonTime endEndpoint           = gnsstk::CivilTime(2011, 1,31,23,59,
                                          59.59).convertToCommonTime();
          //Two time points after the reference TimeRange end endpoint
-      CommonTime laterThanRangeStart   = gpstk::CivilTime(2011, 2,20, 0, 0,
+      CommonTime laterThanRangeStart   = gnsstk::CivilTime(2011, 2,20, 0, 0,
                                          0.0 ).convertToCommonTime();
-      CommonTime laterThanRangeEnd     = gpstk::CivilTime(2011, 2,27, 0, 0,
+      CommonTime laterThanRangeEnd     = gnsstk::CivilTime(2011, 2,27, 0, 0,
                                          0.0 ).convertToCommonTime();
 
          //Include endpoints for all checks
@@ -544,25 +544,25 @@ public:
       TUDEF( "TimeRange", "isSubsetOf" );
 
          //Two time points before the reference TimeRange start endpoint
-      CommonTime earlierThanRangeStart = gpstk::CivilTime(2010,12,20, 0, 0,
+      CommonTime earlierThanRangeStart = gnsstk::CivilTime(2010,12,20, 0, 0,
                                          0.0 ).convertToCommonTime();
-      CommonTime earlierThanRangeEnd   = gpstk::CivilTime(2010,12,29, 0, 0,
+      CommonTime earlierThanRangeEnd   = gnsstk::CivilTime(2010,12,29, 0, 0,
                                          0.0 ).convertToCommonTime();
          //Reference TimeRange start endpoint
-      CommonTime startEndpoint         = gpstk::CivilTime(2011, 1, 1, 0, 0,
+      CommonTime startEndpoint         = gnsstk::CivilTime(2011, 1, 1, 0, 0,
                                          0.0 ).convertToCommonTime();
          //Two time points inside the reference TimeRange
-      CommonTime timeInRangeStart      = gpstk::CivilTime(2011, 1,10, 0, 0,
+      CommonTime timeInRangeStart      = gnsstk::CivilTime(2011, 1,10, 0, 0,
                                          0.0 ).convertToCommonTime();
-      CommonTime timeInRangeEnd        = gpstk::CivilTime(2011, 1,20, 0, 0,
+      CommonTime timeInRangeEnd        = gnsstk::CivilTime(2011, 1,20, 0, 0,
                                          0.0 ).convertToCommonTime();
          //Reference TimeRange end endpoint
-      CommonTime endEndpoint           = gpstk::CivilTime(2011, 1,31,23,59,
+      CommonTime endEndpoint           = gnsstk::CivilTime(2011, 1,31,23,59,
                                          59.59).convertToCommonTime();
          //Two time points after the reference TimeRange end endpoint
-      CommonTime laterThanRangeStart   = gpstk::CivilTime(2011, 2,20, 0, 0,
+      CommonTime laterThanRangeStart   = gnsstk::CivilTime(2011, 2,20, 0, 0,
                                          0.0 ).convertToCommonTime();
-      CommonTime laterThanRangeEnd     = gpstk::CivilTime(2011, 2,27, 0, 0,
+      CommonTime laterThanRangeEnd     = gnsstk::CivilTime(2011, 2,27, 0, 0,
                                          0.0 ).convertToCommonTime();
 
          //Include endpoints for all checks
@@ -667,25 +667,25 @@ public:
       TUDEF( "TimeRange", "isAfter" );
 
          //Two time points before the reference TimeRange start endpoint
-      CommonTime earlierThanRangeStart = gpstk::CivilTime(2010,12,20, 0, 0,
+      CommonTime earlierThanRangeStart = gnsstk::CivilTime(2010,12,20, 0, 0,
                                          0.0 ).convertToCommonTime();
-      CommonTime earlierThanRangeEnd   = gpstk::CivilTime(2010,12,29, 0, 0,
+      CommonTime earlierThanRangeEnd   = gnsstk::CivilTime(2010,12,29, 0, 0,
                                          0.0 ).convertToCommonTime();
          //Reference TimeRange start endpoint
-      CommonTime startEndpoint         = gpstk::CivilTime(2011, 1, 1, 0, 0,
+      CommonTime startEndpoint         = gnsstk::CivilTime(2011, 1, 1, 0, 0,
                                          0.0 ).convertToCommonTime();
          //Two time points inside the reference TimeRange
-      CommonTime timeInRangeStart      = gpstk::CivilTime(2011, 1,10, 0, 0,
+      CommonTime timeInRangeStart      = gnsstk::CivilTime(2011, 1,10, 0, 0,
                                          0.0 ).convertToCommonTime();
-      CommonTime timeInRangeEnd        = gpstk::CivilTime(2011, 1,20, 0, 0,
+      CommonTime timeInRangeEnd        = gnsstk::CivilTime(2011, 1,20, 0, 0,
                                          0.0 ).convertToCommonTime();
          //Reference TimeRange end endpoint
-      CommonTime endEndpoint           = gpstk::CivilTime(2011, 1,31,23,59,
+      CommonTime endEndpoint           = gnsstk::CivilTime(2011, 1,31,23,59,
                                          59.59).convertToCommonTime();
          //Two time points after the reference TimeRange end endpoint
-      CommonTime laterThanRangeStart   = gpstk::CivilTime(2011, 2,20, 0, 0,
+      CommonTime laterThanRangeStart   = gnsstk::CivilTime(2011, 2,20, 0, 0,
                                          0.0 ).convertToCommonTime();
-      CommonTime laterThanRangeEnd     = gpstk::CivilTime(2011, 2,27, 0, 0,
+      CommonTime laterThanRangeEnd     = gnsstk::CivilTime(2011, 2,27, 0, 0,
                                          0.0 ).convertToCommonTime();
 
          //Include endpoints for all checks
@@ -909,23 +909,23 @@ public:
                    true, true),
 
             // %Y %j %s
-         TimeRange(gpstk::YDSTime(2012, 1, 0.0).convertToCommonTime(),
-                   gpstk::YDSTime(2012, 31, 86399.0).convertToCommonTime(),
+         TimeRange(gnsstk::YDSTime(2012, 1, 0.0).convertToCommonTime(),
+                   gnsstk::YDSTime(2012, 31, 86399.0).convertToCommonTime(),
                    true, true),
-         TimeRange(gpstk::YDSTime(2003, 1, 42300.0).convertToCommonTime(),
-                   gpstk::YDSTime(2003, 180, 42300.0).convertToCommonTime(),
+         TimeRange(gnsstk::YDSTime(2003, 1, 42300.0).convertToCommonTime(),
+                   gnsstk::YDSTime(2003, 180, 42300.0).convertToCommonTime(),
                    false, false),
-         TimeRange(gpstk::YDSTime(2011, 360, 0.0).convertToCommonTime(),
-                   gpstk::YDSTime(2012, 364, 84599.0).convertToCommonTime()
+         TimeRange(gnsstk::YDSTime(2011, 360, 0.0).convertToCommonTime(),
+                   gnsstk::YDSTime(2012, 364, 84599.0).convertToCommonTime()
                    ),
-         TimeRange(gpstk::YDSTime(2016, 4, 23000.0).convertToCommonTime(),
-                   gpstk::YDSTime(2016, 4, 80000.0).convertToCommonTime()
+         TimeRange(gnsstk::YDSTime(2016, 4, 23000.0).convertToCommonTime(),
+                   gnsstk::YDSTime(2016, 4, 80000.0).convertToCommonTime()
                    ),
-         TimeRange(gpstk::YDSTime(2016, 4, 23000.0).convertToCommonTime(),
-                   gpstk::YDSTime(2016, 4, 80000.0).convertToCommonTime()
+         TimeRange(gnsstk::YDSTime(2016, 4, 23000.0).convertToCommonTime(),
+                   gnsstk::YDSTime(2016, 4, 80000.0).convertToCommonTime()
                    ),
-         TimeRange(gpstk::YDSTime(2016, 4, 23000.0).convertToCommonTime(),
-                   gpstk::YDSTime(2016, 4, 80000.0).convertToCommonTime()
+         TimeRange(gnsstk::YDSTime(2016, 4, 23000.0).convertToCommonTime(),
+                   gnsstk::YDSTime(2016, 4, 80000.0).convertToCommonTime()
                    ),
 
             // %F %Z
@@ -988,7 +988,7 @@ public:
                      + exc.what());
             }
          }
-         catch (gpstk::InvalidRequest& exc)
+         catch (gnsstk::InvalidRequest& exc)
          {
             TUFAIL("Received unexpected exception when trying to call setToString: " 
                   + exc.what());
@@ -1012,11 +1012,11 @@ public:
       TUDEF( "TimeRange", "OperatorEquivalence" );
 
          //Reference TimeRange endpoints
-      CommonTime startPoint  = gpstk::CivilTime(2011, 1, 1, 0, 0,
+      CommonTime startPoint  = gnsstk::CivilTime(2011, 1, 1, 0, 0,
                                0.0 ).convertToCommonTime();
-      CommonTime endPoint    = gpstk::CivilTime(2011, 1,31,23,59,
+      CommonTime endPoint    = gnsstk::CivilTime(2011, 1,31,23,59,
                                59.59).convertToCommonTime();
-      CommonTime anotherTime = gpstk::CivilTime(2011, 1,10, 0, 0,
+      CommonTime anotherTime = gnsstk::CivilTime(2011, 1,10, 0, 0,
                                0.0 ).convertToCommonTime();
 
          //Create various TimeRanges
@@ -1058,11 +1058,11 @@ public:
       TUDEF( "TimeRange", "OperatorLessThan" );
 
          //Reference TimeRange endpoints
-      CommonTime startPoint  = gpstk::CivilTime(2011, 1, 1, 0, 0,
+      CommonTime startPoint  = gnsstk::CivilTime(2011, 1, 1, 0, 0,
                                0.0 ).convertToCommonTime();
-      CommonTime endPoint    = gpstk::CivilTime(2011, 1,31,23,59,
+      CommonTime endPoint    = gnsstk::CivilTime(2011, 1,31,23,59,
                                59.59).convertToCommonTime();
-      CommonTime anotherTime = gpstk::CivilTime(2011, 1,10, 0, 0,
+      CommonTime anotherTime = gnsstk::CivilTime(2011, 1,10, 0, 0,
                                0.0 ).convertToCommonTime();
 
          //Create various TimeRanges
@@ -1102,11 +1102,11 @@ public:
 
 
          //Reference TimeRange endpoints
-      CommonTime startPoint  = gpstk::CivilTime(2011, 1, 1, 0, 0,
+      CommonTime startPoint  = gnsstk::CivilTime(2011, 1, 1, 0, 0,
                                0.0 ).convertToCommonTime();
-      CommonTime endPoint    = gpstk::CivilTime(2011, 1,31,23,59,
+      CommonTime endPoint    = gnsstk::CivilTime(2011, 1,31,23,59,
                                59.59).convertToCommonTime();
-      CommonTime anotherTime = gpstk::CivilTime(2011, 1,10, 0, 0,
+      CommonTime anotherTime = gnsstk::CivilTime(2011, 1,10, 0, 0,
                                0.0 ).convertToCommonTime();
 
          //Create various TimeRanges
@@ -1168,9 +1168,9 @@ public:
       std::stringstream printfOutputStream;
 
          //Reference TimeRange endpoints
-      CommonTime startPoint  = gpstk::CivilTime(2011, 1, 1, 0, 0,
+      CommonTime startPoint  = gnsstk::CivilTime(2011, 1, 1, 0, 0,
                                0.0 ).convertToCommonTime();
-      CommonTime endPoint    = gpstk::CivilTime(2011, 1,31,23,59,
+      CommonTime endPoint    = gnsstk::CivilTime(2011, 1,31,23,59,
                                59.59).convertToCommonTime();
 
          //Create various TimeRanges
@@ -1229,9 +1229,9 @@ public:
       std::stringstream dumpOutputStream;
 
          //Reference TimeRange endpoints
-      CommonTime startPoint  = gpstk::CivilTime(2011, 1, 1, 0, 0,
+      CommonTime startPoint  = gnsstk::CivilTime(2011, 1, 1, 0, 0,
                                0.0 ).convertToCommonTime();
-      CommonTime endPoint    = gpstk::CivilTime(2011, 1,31,23,59,
+      CommonTime endPoint    = gnsstk::CivilTime(2011, 1,31,23,59,
                                59.59).convertToCommonTime();
 
          //Create various TimeRanges

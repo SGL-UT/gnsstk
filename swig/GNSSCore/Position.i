@@ -1,4 +1,4 @@
-namespace gpstk
+namespace gnsstk
 {
    %extend Position
    {
@@ -25,67 +25,67 @@ namespace gpstk
          return range(A,B);
       }
          // Conversion from Spherical to Cartesian
-      static gpstk::Triple convertSphericalToCartesian(const gpstk::Triple& tpr)
+      static gnsstk::Triple convertSphericalToCartesian(const gnsstk::Triple& tpr)
       {
-         gpstk::Triple xyz;
-         gpstk::Position::convertSphericalToCartesian(tpr, xyz);
+         gnsstk::Triple xyz;
+         gnsstk::Position::convertSphericalToCartesian(tpr, xyz);
          return xyz;
       }
          // Conversion from Cartesian to Spherical
-      static gpstk::Triple convertCartesianToSpherical(const gpstk::Triple& xyz)
+      static gnsstk::Triple convertCartesianToSpherical(const gnsstk::Triple& xyz)
       {
-         gpstk::Triple tpr;
-         gpstk::Position::convertCartesianToSpherical(xyz, tpr);
+         gnsstk::Triple tpr;
+         gnsstk::Position::convertCartesianToSpherical(xyz, tpr);
          return tpr;
       }
          // Conversion from Cartesian to Geodetic
-      static gpstk::Triple convertCartesianToGeodetic( const Triple& xyz,
+      static gnsstk::Triple convertCartesianToGeodetic( const Triple& xyz,
                                                        const double A,
                                                        const double eccSq)
       {
-         gpstk::Triple llh;
-         gpstk::Position::convertCartesianToGeodetic(xyz, llh, A, eccSq);
+         gnsstk::Triple llh;
+         gnsstk::Position::convertCartesianToGeodetic(xyz, llh, A, eccSq);
          return llh;
       }
          // Conversion from Geodetic to Cartesian
-      static gpstk::Triple convertGeodeticToCartesian( const Triple& llh,
+      static gnsstk::Triple convertGeodeticToCartesian( const Triple& llh,
                                                        const double A,
                                                        const double eccSq)
       {
-         gpstk::Triple xyz;
-         gpstk::Position::convertGeodeticToCartesian(llh, xyz, A, eccSq);
+         gnsstk::Triple xyz;
+         gnsstk::Position::convertGeodeticToCartesian(llh, xyz, A, eccSq);
          return xyz;
       }
          // Conversion from Cartesian to Geocentric
-      static gpstk::Triple convertCartesianToGeocentric(const Triple& xyz)
+      static gnsstk::Triple convertCartesianToGeocentric(const Triple& xyz)
       {
-         gpstk::Triple llr;
-         gpstk::Position::convertCartesianToGeocentric(xyz, llr);
+         gnsstk::Triple llr;
+         gnsstk::Position::convertCartesianToGeocentric(xyz, llr);
          return llr;
       }
          // Conversion from Geocentric to Cartesian
-      static gpstk::Triple convertGeocentricToCartesian(const gpstk::Triple& llr)
+      static gnsstk::Triple convertGeocentricToCartesian(const gnsstk::Triple& llr)
       {
-         gpstk::Triple xyz;
-         gpstk::Position::convertGeocentricToCartesian(llr, xyz);
+         gnsstk::Triple xyz;
+         gnsstk::Position::convertGeocentricToCartesian(llr, xyz);
          return xyz;
       }
          // Conversion from Geocentric to Geodetic
-      static gpstk::Triple convertGeocentricToGeodetic( const Triple& llr,
+      static gnsstk::Triple convertGeocentricToGeodetic( const Triple& llr,
                                                         const double A,
                                                         const double eccSq)
       {
-         gpstk::Triple geodeticllh;
-         gpstk::Position::convertGeocentricToGeodetic(llr, geodeticllh, A, eccSq);
+         gnsstk::Triple geodeticllh;
+         gnsstk::Position::convertGeocentricToGeodetic(llr, geodeticllh, A, eccSq);
          return geodeticllh;
       }
          // Conversion from Geodetic to Geocentric
-      static gpstk::Triple convertGeodeticToGeocentric( const Triple& geodeticllh,
+      static gnsstk::Triple convertGeodeticToGeocentric( const Triple& geodeticllh,
                                                         const double A,
                                                         const double eccSq)
       {
-         gpstk::Triple llr;
-         gpstk::Position::convertGeodeticToGeocentric(geodeticllh, llr, A, eccSq);
+         gnsstk::Triple llr;
+         gnsstk::Position::convertGeodeticToGeocentric(geodeticllh, llr, A, eccSq);
          return llr;
       }
    }

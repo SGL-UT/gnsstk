@@ -1,5 +1,5 @@
-# RinSum, part of the GPS Toolkit, Ver 4.1 8/26/15, Run 2017/03/22 15:08:05
-+++++++++++++ RinSum summary of Rinex obs file /home/jhprice/Documents/git/gpstk/data/inputs/igs/nrmg0150.16o +++++++++++++
+# RinSum, part of the GNSS Toolkit, Ver 4.1 8/26/15, Run 2017/03/22 15:08:05
++++++++++++++ RinSum summary of Rinex obs file /home/jhprice/Documents/git/gnsstk/data/inputs/igs/nrmg0150.16o +++++++++++++
 ---------------------------------- REQUIRED ----------------------------------
 Rinex Version  3.02,  File type OBSERVATION DATA,  System MIXED.
 Prgm: cnvtToRINEX 2.30.0,  Run: 16-Jan-16 00:35 UTC,  By: REGINA

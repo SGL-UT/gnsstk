@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -56,13 +56,13 @@
 
 int main(int argc, char *argv[])
 {
-   using namespace gpstk;
+   using namespace gnsstk;
    using namespace std;
 
    map< RinexObsID, string> i2s;
 
       // abbreviate.
-   double cv = gpstk::Rinex3ObsBase::currentVersion;
+   double cv = gnsstk::Rinex3ObsBase::currentVersion;
    i2s[RinexObsID("C1C", cv)] = "C1C";
    i2s[RinexObsID("L1C", cv)] = "L1C";
    i2s[RinexObsID("D1C", cv)] = "D1C";

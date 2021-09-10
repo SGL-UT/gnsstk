@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -48,7 +48,7 @@
 //------------------------------------------------------------------------------------
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    // load the EOPPrediction in the given file
    // return  0 if ok, -1 if error reading file
@@ -60,7 +60,7 @@ namespace gpstk
       ifstream inpf(filename.c_str());
       if(!inpf) {
          FileMissingException fme("Could not open EOPP file " + filename);
-         GPSTK_THROW(fme);
+         GNSSTK_THROW(fme);
       }
 
       ok = true;
@@ -131,7 +131,7 @@ namespace gpstk
       if(!ok) {
          FileMissingException fme("EOPP File " + filename
                                           + " is corrupted or wrong format");
-         GPSTK_THROW(fme);
+         GNSSTK_THROW(fme);
       }
       if(inpf.bad()) return -1;
       return 0;
@@ -144,7 +144,7 @@ namespace gpstk
    {
       int wk((imjd-GPS_EPOCH_MJD)/7);        // current week
       int w2 = wk-1;                         // the previous week
-      if(w2 < 0) { GPSTK_THROW(
+      if(w2 < 0) { GNSSTK_THROW(
          Exception("Invalid week in EOPP file: "+StringUtils::asString<short>(w2))); }
 
       int yr,w1;
@@ -162,7 +162,7 @@ namespace gpstk
          if(dow == 6) w1++;                  // week of first Friday of year
          yr = yr % 10;                       // last digit of the year
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
 
       return (100*yr + w2-w1+1);             // SN = Year (1 digit) + week of year
    }
@@ -259,5 +259,5 @@ namespace gpstk
       return os;
    }
 
-} // end namespace gpstk
+} // end namespace gnsstk
 

@@ -1,6 +1,6 @@
 %=SNX 2.02 ARL 08:185:12345 ARL 08:185:12345 08:185:12345 P 12345 2 S
 *
-* This file contains test input for the GPSTk SINEX classes
+* This file contains test input for the GNSSTk SINEX classes
 * Individual values are largely nonsense - just valid enough to be parsed.
 *
 +FILE/REFERENCE

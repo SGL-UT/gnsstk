@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -43,7 +43,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 // Macro to assert that there are no errors and add diagnostics to
 // test output if there are
@@ -1031,16 +1031,16 @@ int CommandOptionParser_T::testParseOptions()
             TUASSERTE(std::string,"2015 123 45678.0",values[0]);
             TUASSERTE(std::string,"2015 234 56789.0",values[1]);
          }
-         std::vector<gpstk::CommonTime>  times = cmdOpt.getTime();
+         std::vector<gnsstk::CommonTime>  times = cmdOpt.getTime();
          TUASSERTE(unsigned long,2,times.size());
          if (times.size() == 2)
          {
-            gpstk::CommonTime  t1 =
-               gpstk::YDSTime(2015, 123, 45678.0).convertToCommonTime();
-            gpstk::CommonTime  t2 =
-               gpstk::YDSTime(2015, 234, 56789.0).convertToCommonTime();
-            TUASSERTE(gpstk::CommonTime,t1,times[0]);
-            TUASSERTE(gpstk::CommonTime,t2,times[1]);
+            gnsstk::CommonTime  t1 =
+               gnsstk::YDSTime(2015, 123, 45678.0).convertToCommonTime();
+            gnsstk::CommonTime  t2 =
+               gnsstk::YDSTime(2015, 234, 56789.0).convertToCommonTime();
+            TUASSERTE(gnsstk::CommonTime,t1,times[0]);
+            TUASSERTE(gnsstk::CommonTime,t2,times[1]);
          }
       }
    }
@@ -1977,7 +1977,7 @@ int CommandOptionParser_T::testOptionPresence()
 }
 
 
-void testNOfWhichRpt(unsigned expWhich, gpstk::TestUtil& testFramework,
+void testNOfWhichRpt(unsigned expWhich, gnsstk::TestUtil& testFramework,
                      unsigned argc, char *argv[])
 {
    try

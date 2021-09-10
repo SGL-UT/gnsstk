@@ -1,20 +1,19 @@
-#pragma ident "$Id: //depot/msn/main/code/shared/gpstk/SinexTypes.cpp#7 $"
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -45,10 +44,10 @@
 #include "StringUtils.hpp"
 #include "SinexTypes.hpp"
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 namespace Sinex
 {
@@ -69,7 +68,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // FileReference::operator std::string()
 
@@ -86,7 +85,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // FileReference::operator=()
 
@@ -116,7 +115,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // FileComment::operator std::string()
 
@@ -131,7 +130,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // FileComment::operator=()
 
@@ -161,7 +160,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // InputHistory::operator std::string()
 
@@ -181,7 +180,7 @@ namespace Sinex
          }
          catch (Exception& exc)
          {
-            GPSTK_RETHROW(exc);
+            GNSSTK_RETHROW(exc);
          }
       }
       else
@@ -190,7 +189,7 @@ namespace Sinex
          ss << "Missing data; inadequate line length ("
             << line.size() << " < " << MIN_LINE_LEN << ")";
          Exception  exc(ss.str() );
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
    }  // InputHistory::operator=()
 
@@ -232,7 +231,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // InputFile::operator std::string()
 
@@ -251,7 +250,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // InputFile::operator=()
 
@@ -284,7 +283,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // InputAck::operator std::string()
 
@@ -301,7 +300,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // InputAck::operator=()
 
@@ -332,7 +331,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // NutationData::operator std::string()
 
@@ -349,7 +348,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // NutationData::operator=()
 
@@ -380,7 +379,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // Precession::operator std::string()
 
@@ -397,7 +396,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // PrecessionData::operator=()
 
@@ -430,7 +429,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SourceId::operator std::string()
 
@@ -449,7 +448,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SourceId::operator=()
 
@@ -492,7 +491,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SiteId::operator std::string()
 
@@ -519,7 +518,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SiteId::operator=()
 
@@ -568,7 +567,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SiteData::operator std::string()
 
@@ -594,7 +593,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SiteData::operator=()
 
@@ -640,7 +639,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SiteReceiver::operator std::string()
 
@@ -664,7 +663,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SiteReceiver::operator=()
 
@@ -707,7 +706,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SiteAntenna::operator std::string()
 
@@ -730,7 +729,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SiteAntenna::operator=()
 
@@ -772,7 +771,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SitePhaseCenter::operator std::string()
 
@@ -795,7 +794,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SitePhaseCenter::operator=()
 
@@ -861,7 +860,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SiteEccentricity::operator std::string()
 
@@ -886,7 +885,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SiteEccentricity::operator=()
 
@@ -929,7 +928,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SatelliteId::operator std::string()
 
@@ -951,7 +950,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SatelliteId::operator=()
 
@@ -996,7 +995,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SatellitePhaseCenter::operator std::string()
 
@@ -1022,7 +1021,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SatellitePhaseCenter::operator=()
 
@@ -1067,7 +1066,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // BiasEpoch::operator std::string()
 
@@ -1088,7 +1087,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // BiasEpoch::operator=()
 
@@ -1123,7 +1122,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionStatistics::operator std::string()
 
@@ -1140,7 +1139,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionStatistics::operator=()
 
@@ -1176,7 +1175,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionEpoch::operator std::string()
 
@@ -1198,7 +1197,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionEpoch::operator=()
 
@@ -1242,7 +1241,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionEstimate::operator std::string()
 
@@ -1266,7 +1265,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionEstimate::operator=()
 
@@ -1312,7 +1311,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionApriori::operator std::string()
 
@@ -1336,7 +1335,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionApriori::operator=()
 
@@ -1375,7 +1374,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionMatrixEstimate::operator std::string()
 
@@ -1394,7 +1393,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionMatrixEstimate::operator=()
 
@@ -1488,7 +1487,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionMatrixApriori::operator std::string()
 
@@ -1507,7 +1506,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionMatrixApriori::operator=()
 
@@ -1606,7 +1605,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionNormalEquationVector::operator std::string()
 
@@ -1629,7 +1628,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionNormalEquationVector::operator=()
 
@@ -1668,7 +1667,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionNormalEquationMatrix::operator std::string()
 
@@ -1687,7 +1686,7 @@ namespace Sinex
       }
       catch (Exception& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }  // SolutionNormalEquationMatrix::operator=()
 
@@ -1724,4 +1723,4 @@ namespace Sinex
 
 }  // namespace Sinex
 
-}  // namespace gpstk
+}  // namespace gnsstk

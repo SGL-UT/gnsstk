@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -38,7 +38,7 @@
 
 /**
  * @file GPSZcount.cpp
- * gpstk::GPSZcount - encapsulates time according to full GPS Week and Z-count.
+ * gnsstk::GPSZcount - encapsulates time according to full GPS Week and Z-count.
  */
 
 #include <limits>
@@ -47,9 +47,9 @@
 #include "StringUtils.hpp"
 
 using namespace std;
-using gpstk::StringUtils::asString;
+using gnsstk::StringUtils::asString;
 
-namespace gpstk
+namespace gnsstk
 {
    const long GPSZcount::ZCOUNT_MINUTE = 40;
    const long GPSZcount::ZCOUNT_HOUR = 2400;
@@ -64,9 +64,9 @@ namespace gpstk
          setWeek(inWeek);
          setZcount(inZcount);
       }
-      catch(gpstk::InvalidParameter& ip)
+      catch(gnsstk::InvalidParameter& ip)
       {
-         GPSTK_RETHROW(ip);
+         GNSSTK_RETHROW(ip);
       }
    }
 
@@ -76,9 +76,9 @@ namespace gpstk
       {
          setFullZcount(inFullZcount);
       }
-      catch(gpstk::InvalidParameter& ip)
+      catch(gnsstk::InvalidParameter& ip)
       {
-         GPSTK_RETHROW(ip);
+         GNSSTK_RETHROW(ip);
       }
    }
 
@@ -91,9 +91,9 @@ namespace gpstk
    {
       if( inWeek < 0 )
       {
-         gpstk::InvalidParameter ip("GPS Week invalid: " +
+         gnsstk::InvalidParameter ip("GPS Week invalid: " +
                                     asString<short>(inWeek)) ;
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
       week = inWeek;
       return *this;
@@ -103,9 +103,9 @@ namespace gpstk
    {
       if(validZcount(inZcount) != 0)
       {
-         gpstk::InvalidParameter ip("GPS Z-count invalid: " +
+         gnsstk::InvalidParameter ip("GPS Z-count invalid: " +
                                     asString<long>(inZcount));
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
       zcount = inZcount;
       return *this;
@@ -122,10 +122,10 @@ namespace gpstk
          setWeek((inZcount >> 19) & 0x3FFL);   // 10-bit mask
 
       }
-      catch(gpstk::InvalidParameter& ip)
+      catch(gnsstk::InvalidParameter& ip)
       {
          ip.addText("GPS Full Z-count invalid: " + asString<long>(inZcount)) ;
-         GPSTK_RETHROW(ip);
+         GNSSTK_RETHROW(ip);
       }
       return *this;
    }
@@ -141,12 +141,12 @@ namespace gpstk
       {
          return setWeek(week + inWeeks);
       }
-      catch(gpstk::InvalidParameter& ip)
+      catch(gnsstk::InvalidParameter& ip)
       {
-         gpstk::InvalidRequest ir(ip) ;
+         gnsstk::InvalidRequest ir(ip) ;
          ir.addText("Addition of " + asString(inWeeks) +
                     " weeks renders this object invalid.");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
    }
 
@@ -183,21 +183,21 @@ namespace gpstk
          return *this;
 
       }
-      catch(gpstk::InvalidRequest& ir)
+      catch(gnsstk::InvalidRequest& ir)
       {
          setWeek(originalWeek);
          setZcount(originalZcount);
          ir.addText("Did not add " + asString(inZcounts) + " Z-counts.") ;
-         GPSTK_RETHROW(ir);
+         GNSSTK_RETHROW(ir);
 
       }
-      catch(gpstk::InvalidParameter& ip)
+      catch(gnsstk::InvalidParameter& ip)
       {
          setWeek(originalWeek);
          setZcount(originalZcount);
-         gpstk::InvalidRequest ir(ip);
+         gnsstk::InvalidRequest ir(ip);
          ir.addText("Did not add " + asString(inZcounts) + " Z-counts.") ;
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
    }
 
@@ -379,10 +379,10 @@ namespace gpstk
    }
 
    std::ostream& operator<<(std::ostream& s,
-                            const gpstk::GPSZcount& z)
+                            const gnsstk::GPSZcount& z)
    {
       z.dump(s, 0);
       return s;
    }
 
-} // namespace gpstk
+} // namespace gnsstk

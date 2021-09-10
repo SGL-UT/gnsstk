@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -39,7 +39,7 @@
 #include "TimeTag.hpp"
 #include "StringUtils.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    void TimeTag::scanf( const std::string& str,
                         const std::string& fmt )
@@ -53,13 +53,13 @@ namespace gpstk
             // Attempt to set this object using the IdToValue object
          if( !setFromInfo( info ) )
          {
-            gpstk::InvalidRequest ir( "Incomplete time specification." );
-            GPSTK_THROW( ir );
+            gnsstk::InvalidRequest ir( "Incomplete time specification." );
+            GNSSTK_THROW( ir );
          }
       }
-      catch( gpstk::StringUtils::StringException& se )
+      catch( gnsstk::StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
    }
 
@@ -73,7 +73,7 @@ namespace gpstk
 
       try
       {
-         using namespace gpstk::StringUtils;
+         using namespace gnsstk::StringUtils;
 
             // Parse strings...  As we process each part, it's removed from both
             // strings so when we reach 0, we're done
@@ -163,16 +163,16 @@ namespace gpstk
             }
          } // end of while( (s.size() > 0) && (f.size() > 0) )
       }
-      catch( gpstk::StringUtils::StringException& se )
+      catch( gnsstk::StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
          // make sure the format string was fully processed.
       if (!f.empty())
       {
-         gpstk::StringUtils::StringException
+         gnsstk::StringUtils::StringException
             exc("Failed to process time string");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
    }
 
@@ -205,7 +205,7 @@ namespace gpstk
 } // namespace
 
 std::ostream& operator<<( std::ostream& s,
-                          const gpstk::TimeTag& t )
+                          const gnsstk::TimeTag& t )
 {
    s << t.printf( t.getDefaultFormat() );
    return s;

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -46,8 +46,8 @@
 /// 
 /// There are several statistical filters implemented as classes. These classes are
 /// templates; the template parameter should be a float (probably double);
-/// it is used to construct gpstk::Stats<T>, gpstk::TwoSampleStats<T> and
-/// gpstk::SeqStats<T>, which are fundamental to these algorithms.
+/// it is used to construct gnsstk::Stats<T>, gnsstk::TwoSampleStats<T> and
+/// gnsstk::SeqStats<T>, which are fundamental to these algorithms.
 ///    All the filters look for outliers and discontinuities (slips) in a timeseries.
 /// The first difference filter analyses the simple first difference of the data.
 /// The window filter uses a 2-pane sliding window centered on the data point in
@@ -95,7 +95,7 @@
 
 #include <vector>
 
-namespace gpstk
+namespace gnsstk
 {
 //------------------------------------------------------------------------------------
 // TODO
@@ -262,8 +262,8 @@ template<class T> int FDiffFilter<T>::filter(const size_t i0, int dsize)
    Avec.clear();
 
    // compute stats on sigmas and data in a sliding window of width Nwind
-   gpstk::TwoSampleStats<T> fstats;       // stats on the first diffs in window
-   gpstk::TwoSampleStats<T> dstats;       // stats on the data in window
+   gnsstk::TwoSampleStats<T> fstats;       // stats on the first diffs in window
+   gnsstk::TwoSampleStats<T> dstats;       // stats on the data in window
    std::vector<T> slopes;                 // store slopes, for robust stats
 
    // loop over all data, computing first difference and stats in sliding window
@@ -321,7 +321,7 @@ template<class T> int FDiffFilter<T>::filter(const size_t i0, int dsize)
    }
 
    // compute robust stats on slopes
-   madSlope = gpstk::Robust::MedianAbsoluteDeviation(&slopes[0], slopes.size(),
+   madSlope = gnsstk::Robust::MedianAbsoluteDeviation(&slopes[0], slopes.size(),
                                                       medSlope, false);
 
    return Avec.size();
@@ -346,8 +346,8 @@ template<class T> void FDiffFilter<T>::ComputeRobustSigmaLimit(int& N, T& new_si
       sd.push_back(Avec[i].sigN);
 
    T Q1,Q3;
-   gpstk::QSort(&sd[0],sd.size());                       // sort
-   gpstk::Robust::Quartiles(&sd[0],sd.size(),Q1,Q3);     // get Quartiles
+   gnsstk::QSort(&sd[0],sd.size());                       // sort
+   gnsstk::Robust::Quartiles(&sd[0],sd.size(),Q1,Q3);     // get Quartiles
 
    // compute new sigma limit ; outlier limit (high) 2.5Q3-1.5Q1
    new_siglim = 2.5*Q3 - 1.5*Q1;
@@ -502,14 +502,14 @@ template<class T> void FDiffFilter<T>::dump(std::ostream& os, std::string tag)
       while(j<N && Avec[j].index < i) j++;
       bool haveAvec(Avec[j].index == i);
       if(haveAvec) {
-         sdif = gpstk::StringUtils::asString(Avec[j].diff,osp);
-         ssig = gpstk::StringUtils::asString(Avec[j].sigN,osp);
+         sdif = gnsstk::StringUtils::asString(Avec[j].diff,osp);
+         ssig = gnsstk::StringUtils::asString(Avec[j].sigN,osp);
          if(iprev > -1) dt = (noxdata ? T(i-iprev) : xdata[i]-xdata[iprev]);
-         slop = gpstk::StringUtils::asString(Avec[j].sloN,osp);
-         slou = gpstk::StringUtils::asString(Avec[Avec[j].sloInd].sloN,osp);
-         sldx = gpstk::StringUtils::asString(Avec[j].sloN*dt,osp);
-         sludx = gpstk::StringUtils::asString(Avec[Avec[j].sloInd].sloN*dt,osp);
-         //sigslo = gpstk::StringUtils::asString(madSlope*dt,osp);
+         slop = gnsstk::StringUtils::asString(Avec[j].sloN,osp);
+         slou = gnsstk::StringUtils::asString(Avec[Avec[j].sloInd].sloN,osp);
+         sldx = gnsstk::StringUtils::asString(Avec[j].sloN*dt,osp);
+         sludx = gnsstk::StringUtils::asString(Avec[Avec[j].sloInd].sloN*dt,osp);
+         //sigslo = gnsstk::StringUtils::asString(madSlope*dt,osp);
       }
       else {
          sdif = ssig = sldx = sludx = slou = "?"; //sigslo = "?";
@@ -829,7 +829,7 @@ template<class T> int IterativeFDiffFilter<T>::analysis(void)
       results.clear();
 
       // dump this analysis
-      if(verbose) fdf.dump(logstrm,"FIX"+gpstk::StringUtils::asString(iter-1)+label);
+      if(verbose) fdf.dump(logstrm,"FIX"+gnsstk::StringUtils::asString(iter-1)+label);
 
       ++iter;                    // next iteration
 

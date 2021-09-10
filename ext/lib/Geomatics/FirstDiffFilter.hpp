@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,8 +41,8 @@
 ///    This class implements a statistical filter that uses first-differences. There
 /// are several statistical filters implemented as classes. These classes are
 /// templates; the template parameter should be a float (probably double);
-/// it is used to construct gpstk::Stats<T>, gpstk::TwoSampleStats<T> and
-/// gpstk::SeqStats<T>, which are fundamental to these algorithms.
+/// it is used to construct gnsstk::Stats<T>, gnsstk::TwoSampleStats<T> and
+/// gnsstk::SeqStats<T>, which are fundamental to these algorithms.
 ///    All the filters look for outliers and discontinuities (slips) in a timeseries.
 /// The first difference filter analyses the simple first difference of the data.
 /// The window filter uses a 2-pane sliding window centered on the data point in
@@ -90,7 +90,7 @@
 
 #include "StatsFilterHit.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 //------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------
@@ -393,7 +393,7 @@ template<class T> int FirstDiffFilter<T>::analyze2(
    const unsigned int N(4);
    unsigned int i,j;
    std::ostringstream oss;
-   gpstk::Stats<double> pstats,fstats;       // TD? TwoSampleStats
+   gnsstk::Stats<double> pstats,fstats;       // TD? TwoSampleStats
 
    if(dump) oss << "FirstDiff analyze2" << std::fixed << std::setprecision(3)
          << " fdlimit=" << fdlimit << " siglim=" << siglim << " ratlim=" << ratlim
@@ -442,7 +442,7 @@ template<class T> int FirstDiffFilter<T>::analyze2(
    //   //else std::cout << " D " << std::setw(8) << "NA";
    //   std::cout << std::endl;
    //}
-   //} catch(gpstk::Exception& e) { std::cout << "TST " << e.what() << std::endl; }
+   //} catch(gnsstk::Exception& e) { std::cout << "TST " << e.what() << std::endl; }
    //fstats.Reset();
    //pstats.Reset();
    //// END TEST
@@ -610,7 +610,7 @@ void FirstDiffFilter<T>::getStats(FilterHit<T>& fe)
 
    if(fdv.size() < 2) return;       // else MAD throws
 
-   fe.mad=gpstk::Robust::MedianAbsoluteDeviation<T>(&fdv[0],fdv.size(),fe.med,false);
+   fe.mad=gnsstk::Robust::MedianAbsoluteDeviation<T>(&fdv[0],fdv.size(),fe.med,false);
    fe.haveStats = true;
 }
 

@@ -2,13 +2,13 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
+from gnsstk.test_utils import args,run_unit_tests
 
-import gpstk
+import gnsstk
 
 class TestYumaNavDataFactory(unittest.TestCase):
     def test_addDataSource(self):
-        ndf = gpstk.YumaNavDataFactory()
+        ndf = gnsstk.YumaNavDataFactory()
         ndf.addDataSource(args.input_dir+'/test_input_yuma377.txt')
         self.assertEqual(60, ndf.size())
         ndf.clear()

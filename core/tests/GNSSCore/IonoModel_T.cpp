@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -39,7 +39,7 @@
 #include "TestUtil.hpp"
 #include "IonoModel.hpp"
 
-using namespace gpstk;
+using namespace gnsstk;
 using namespace std;
 
 class IonoModel_T
@@ -65,7 +65,7 @@ int IonoModel_T :: getSetTest( void )
 
    const double a[4] = {1.,2.,3.,4.};
    const double b[4] = {5.,6.,7.,8.};
-   gpstk::IonoModel model;
+   gnsstk::IonoModel model;
 
    double gotA[4] = {0.,0.,0.,0.};
    double gotB[4] = {0.,0.,0.,0.};
@@ -108,9 +108,9 @@ int IonoModel_T :: equalityTest( void )
    double c[4] = {1.,2.,3.,4.};
    double d[4] = {4.,3.,2.,1.};
    double e[4] = {0.,0.,0.,0.};
-   gpstk::IonoModel Model1(a,b);
-   gpstk::IonoModel Model2(c,d);
-   gpstk::IonoModel Model3(a,e);
+   gnsstk::IonoModel Model1(a,b);
+   gnsstk::IonoModel Model2(c,d);
+   gnsstk::IonoModel Model3(a,e);
 
    test1.assert(   Model1 == Model2,  test_desc + test_fail_equals,  __LINE__  );
    test1.assert( !(Model1 == Model3), test_desc + test_false_equals, __LINE__  );
@@ -135,9 +135,9 @@ int IonoModel_T :: nonEqualityTest( void )
    double c[4] = {1.,2.,3.,4.};
    double d[4] = {4.,3.,2.,1.};
    double e[4] = {0.,0.,0.,0.};
-   gpstk::IonoModel Model1(a,b);
-   gpstk::IonoModel Model2(c,d);
-   gpstk::IonoModel Model3(a,e);
+   gnsstk::IonoModel Model1(a,b);
+   gnsstk::IonoModel Model2(c,d);
+   gnsstk::IonoModel Model3(a,e);
 
    test2.assert( ( Model1 != Model2 )==false, test_desc + test_fail_notequal,  __LINE__  );
    test2.assert( ( Model1 != Model3 )==true,  test_desc + test_false_notequal, __LINE__  );
@@ -156,7 +156,7 @@ int IonoModel_T :: validTest( void )
    std::string test_fail = "";
 
    //Instantiate a blank almanac
-   gpstk::EngAlmanac blankAlmanac;
+   gnsstk::EngAlmanac blankAlmanac;
 
    //Create an alpha and a beta array which define the Ionospheric model
    double a[4] = {1.,2.,3.,4.};
@@ -169,19 +169,19 @@ int IonoModel_T :: validTest( void )
    // Construct with no inputs
    test_desc = "IonoModel object created with no input parameters";
    test_fail = "should result in an invalid model but did not";
-   gpstk::IonoModel model_withNoParam;
+   gnsstk::IonoModel model_withNoParam;
    test3.assert( !model_withNoParam.isValid(), test_desc + test_fail, __LINE__ );
 
    // Construct with multiple inputs
    test_desc = "IonoModel object created with multiple inputs";
    test_fail = "should result in a valid model but did not";
-   gpstk::IonoModel model_withArray(a,b);
+   gnsstk::IonoModel model_withArray(a,b);
    test3.assert( model_withArray.isValid(), test_desc + test_fail, __LINE__ );
 
    // Construct with blank Alamanac as input
    test_desc = "IonoModel object created with a blank EngAlamanac";
    test_fail = "should result in an invalid model but did no";
-   gpstk::IonoModel model_withblankAlmanac( blankAlmanac );
+   gnsstk::IonoModel model_withblankAlmanac( blankAlmanac );
    test3.assert( !model_withblankAlmanac.isValid(), test_desc + test_fail, __LINE__   );
 
    return( test3.countFails() );
@@ -203,13 +203,13 @@ int IonoModel_T :: exceptionTest( void )
    std::string assert_message = "";
 
    //Default constructer for Almanac will give a blank almanac
-   gpstk::EngAlmanac blankAlmanac;
+   gnsstk::EngAlmanac blankAlmanac;
 
    //Set DayTime to the current system time
-   gpstk::CommonTime commonTime;
+   gnsstk::CommonTime commonTime;
 
    //Use the default Geodetic constructer
-   gpstk::Position rxgeo;
+   gnsstk::Position rxgeo;
 
    //Set el and az to 0 for ease of testing
    double svel = 0;
@@ -218,8 +218,8 @@ int IonoModel_T :: exceptionTest( void )
    //Easy alpha and beta for Ionospheric testing
    double a[4] = {1.,2.,3.,4.};
    double b[4] = {4.,3.,2.,1.};
-   gpstk::IonoModel Model(blankAlmanac);
-   gpstk::IonoModel goodModel(a,b);
+   gnsstk::IonoModel Model(blankAlmanac);
+   gnsstk::IonoModel goodModel(a,b);
 
    //----------------------------------------
    // getIon() exception handling test
@@ -230,7 +230,7 @@ int IonoModel_T :: exceptionTest( void )
       assert_message = "blankAlmanac.getIon(), This test should have thrown an InvalidRequest exception";
       test4.assert( false, assert_message, __LINE__ );
    }
-   catch( gpstk::InvalidRequest& exception_invalid )
+   catch( gnsstk::InvalidRequest& exception_invalid )
    {
       assert_message = "blankAlmanac.getIon(), This test threw an InvalidRequest exception as expected";
       test4.assert( true, assert_message , __LINE__ );
@@ -249,9 +249,9 @@ int IonoModel_T :: exceptionTest( void )
    // try
    // {
    //     //Questioning why this isnt failing auto fail for now
-   //     CPPUNIT_ASSERT_ASSERTION_FAIL( CPPUNIT_ASSERT_THROW(gpstk::IonoModel Model(blankAlmanac), gpstk::Exception) );
+   //     CPPUNIT_ASSERT_ASSERTION_FAIL( CPPUNIT_ASSERT_THROW(gnsstk::IonoModel Model(blankAlmanac), gnsstk::Exception) );
    // }
-   // catch( gpstk::Exception& e )
+   // catch( gnsstk::Exception& e )
    // {
    //
    // }
@@ -263,7 +263,7 @@ int IonoModel_T :: exceptionTest( void )
       assert_message = "getCorrection(), This test should have thrown an InvalidIonoModel exception";
       test4.assert( false, assert_message, __LINE__ );
    }
-   catch( gpstk::IonoModel::InvalidIonoModel& exception_invalid )
+   catch( gnsstk::IonoModel::InvalidIonoModel& exception_invalid )
    {
       assert_message = "getCorrection(), This test threw an InvalidIonoModel exception as expected";
       test4.assert( true, assert_message, __LINE__ );
@@ -281,9 +281,9 @@ int IonoModel_T :: exceptionTest( void )
       assert_message = "getCorrection( L1 ), This test should NOT throw an exception";
       test4.assert( true, assert_message, __LINE__ );
    }
-   catch(gpstk::Exception& e)
+   catch(gnsstk::Exception& e)
    {
-      assert_message = "getCorrection( L1 ), This test should NOT have thrown any exceptions but threw gpstk::Exception";
+      assert_message = "getCorrection( L1 ), This test should NOT have thrown any exceptions but threw gnsstk::Exception";
       test4.assert( false, assert_message, __LINE__ );
    }
    catch(...)
@@ -300,9 +300,9 @@ int IonoModel_T :: exceptionTest( void )
       assert_message = "getCorrection( L2 ), This test should NOT throw an exception";
       test4.assert( true, assert_message, __LINE__ );
    }
-   catch( gpstk::Exception& e )
+   catch( gnsstk::Exception& e )
    {
-      assert_message = "getCorrection( L2 ), This test should NOT have thrown any exceptions but threw gpstk::Exception";
+      assert_message = "getCorrection( L2 ), This test should NOT have thrown any exceptions but threw gnsstk::Exception";
       test4.assert( false, assert_message, __LINE__ );
    }
    catch(...)
@@ -319,9 +319,9 @@ int IonoModel_T :: exceptionTest( void )
       assert_message = "getCorrection( commonTime,rxgeo,72.,45.,Model.L1 ), This test should NOT throw an exception";
       test4.assert( true, assert_message, __LINE__ );
    }
-   catch( gpstk::Exception& e )
+   catch( gnsstk::Exception& e )
    {
-      assert_message = "getCorrection( commonTime,rxgeo,72.,45.,Model.L1 ), This test should NOT have thrown any exceptions but threw gpstk::Exception";
+      assert_message = "getCorrection( commonTime,rxgeo,72.,45.,Model.L1 ), This test should NOT have thrown any exceptions but threw gnsstk::Exception";
       test4.assert( false, assert_message, __LINE__ );
    }
    catch(...)

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,8 +41,8 @@
  * Operators for FileFilter using Rinex observation data
  */
 
-#ifndef GPSTK_RINEXOBSFILTEROPERATORS_HPP
-#define GPSTK_RINEXOBSFILTEROPERATORS_HPP
+#ifndef GNSSTK_RINEXOBSFILTEROPERATORS_HPP
+#define GNSSTK_RINEXOBSFILTEROPERATORS_HPP
 
 #include "FileFilter.hpp"
 #include "RinexObsData.hpp"
@@ -51,7 +51,7 @@
 #include <set>
 #include <algorithm>
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
@@ -59,20 +59,20 @@ namespace gpstk
       /// This compares all elements of the RinexObsData with less than
       /// (only for those fields which the two obs data share).
    struct RinexObsDataOperatorLessThanFull :
-      public std::binary_function<gpstk::RinexObsData,
-                                  gpstk::RinexObsData, bool>
+      public std::binary_function<gnsstk::RinexObsData,
+                                  gnsstk::RinexObsData, bool>
    {
    public:
          /// The set is a set of RinexObsType that the two files have in
          /// common.  This is easily generated with the set_intersection
          /// STL function.  See difftools/rowdiff.cpp for an example.
       RinexObsDataOperatorLessThanFull
-      (const std::set<gpstk::RinexObsType>& rohset)
+      (const std::set<gnsstk::RinexObsType>& rohset)
             : obsSet(rohset)
       {}
 
-      bool operator()(const gpstk::RinexObsData& l,
-                      const gpstk::RinexObsData& r) const
+      bool operator()(const gnsstk::RinexObsData& l,
+                      const gnsstk::RinexObsData& r) const
       {
             // compare the times, offsets, then only those elements
             // that are common to both.  this ignores the flags
@@ -106,10 +106,10 @@ namespace gpstk
 
             // then check that each PRN has the same data for each of the
             // shared fields
-         gpstk::RinexObsData::RinexSatMap::const_iterator lItr =
+         gnsstk::RinexObsData::RinexSatMap::const_iterator lItr =
             l.obs.begin(), rItr;
 
-         gpstk::SatID sat;
+         gnsstk::SatID sat;
 
          while (lItr != l.obs.end())
          {
@@ -118,16 +118,16 @@ namespace gpstk
             if (rItr == r.obs.end())
                return false;
 
-            gpstk::RinexObsData::RinexObsTypeMap
+            gnsstk::RinexObsData::RinexObsTypeMap
                lObs = (*lItr).second,
                rObs = (*rItr).second;
 
-            std::set<gpstk::RinexObsType>::const_iterator obsItr =
+            std::set<gnsstk::RinexObsType>::const_iterator obsItr =
                obsSet.begin();
 
             while (obsItr != obsSet.end())
             {
-               gpstk::RinexDatum lData, rData;
+               gnsstk::RinexDatum lData, rData;
                lData = lObs[*obsItr];
                rData = rObs[*obsItr];
 
@@ -153,18 +153,18 @@ namespace gpstk
       }
 
    private:
-      std::set<gpstk::RinexObsType> obsSet;
+      std::set<gnsstk::RinexObsType> obsSet;
    };
 
       /// This is a much faster less than operator for RinexObsData,
       /// only checking time
    struct RinexObsDataOperatorLessThanSimple :
-      public std::binary_function<gpstk::RinexObsData,
-                                  gpstk::RinexObsData, bool>
+      public std::binary_function<gnsstk::RinexObsData,
+                                  gnsstk::RinexObsData, bool>
    {
    public:
-      bool operator()(const gpstk::RinexObsData& l,
-                      const gpstk::RinexObsData& r) const
+      bool operator()(const gnsstk::RinexObsData& l,
+                      const gnsstk::RinexObsData& r) const
       {
          if (l.time < r.time)
             return true;
@@ -175,12 +175,12 @@ namespace gpstk
       /// This simply compares the times of the two records
       /// for equality
    struct RinexObsDataOperatorEqualsSimple :
-      public std::binary_function<gpstk::RinexObsData,
-                                  gpstk::RinexObsData, bool>
+      public std::binary_function<gnsstk::RinexObsData,
+                                  gnsstk::RinexObsData, bool>
    {
    public:
-      bool operator()(const gpstk::RinexObsData& l,
-                      const gpstk::RinexObsData& r) const
+      bool operator()(const gnsstk::RinexObsData& l,
+                      const gnsstk::RinexObsData& r) const
       {
          if (l.time == r.time)
             return true;
@@ -196,14 +196,14 @@ namespace gpstk
       /// those files and obsSet will be the set of RinexObsTypes that
       /// will be printed to the file.
    struct RinexObsHeaderTouchHeaderMerge :
-      public std::unary_function<gpstk::RinexObsHeader, bool>
+      public std::unary_function<gnsstk::RinexObsHeader, bool>
    {
    public:
       RinexObsHeaderTouchHeaderMerge()
             : firstHeader(true)
       {}
 
-      bool operator()(const gpstk::RinexObsHeader& l)
+      bool operator()(const gnsstk::RinexObsHeader& l)
       {
          if (firstHeader)
          {
@@ -212,7 +212,7 @@ namespace gpstk
          }
          else
          {
-            std::set<gpstk::RinexObsType> thisObsSet,
+            std::set<gnsstk::RinexObsType> thisObsSet,
                tempObsSet;
             std::set<std::string> commentSet;
             obsSet.clear();
@@ -251,8 +251,8 @@ namespace gpstk
       }
 
       bool firstHeader;
-      gpstk::RinexObsHeader theHeader;
-      std::set<gpstk::RinexObsType> obsSet;
+      gnsstk::RinexObsHeader theHeader;
+      std::set<gnsstk::RinexObsType> obsSet;
    };
 
       //@}

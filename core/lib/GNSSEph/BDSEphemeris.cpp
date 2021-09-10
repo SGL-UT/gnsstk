@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -53,7 +53,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    BDSEphemeris :: BDSEphemeris()
          : HOWtime(0), IODE(0), IODC(0), health(1), accuracy(0.0), Tgd13(0.0),
@@ -75,7 +75,7 @@ namespace gpstk
          if(ct >= beginValid && ct <= endValid) return true;
          return false;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    // This function returns the health status of the SV.
@@ -86,7 +86,7 @@ namespace gpstk
          if(health == 0) return true;
          return false;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    // adjustBeginningValidity determines the beginValid and endValid times.
@@ -119,7 +119,7 @@ namespace gpstk
          if (transmitTime>beginValid) beginValid = transmitTime;
          endValid = ctToe + (SEC_PER_DAY * 7.0);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
       
    // Dump the orbit, etc information to the given output stream.
@@ -142,7 +142,7 @@ namespace gpstk
             << "IODC: " << IODC << "   IODE: " << IODE << "   health: " << health
             << endl;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    void BDSEphemeris::dumpTerse(std::ostream& os) const
@@ -160,7 +160,7 @@ namespace gpstk
 	    << setw(4) << IODE << "!"
 	    << setw(6) << health << "!" << endl;
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    //  BDS is different in that some satellites are in GEO orbits.
@@ -175,12 +175,12 @@ namespace gpstk
    Xvt BDSEphemeris::svXvt(const CommonTime& t) const
    {
       if(!dataLoadedFlag)
-         GPSTK_THROW(InvalidRequest("Data not loaded"));
+         GNSSTK_THROW(InvalidRequest("Data not loaded"));
       
          // If the inclination is more than 7 degrees, this
          // is a MEO or IGSO SV and use the standard OrbitEph
          // version of svXvt
-      if ((i0*180./gpstk::PI) > 7.0)
+      if ((i0*180./gnsstk::PI) > 7.0)
          return(OrbitEph::svXvt(t));
 
          // If PRN ID is in the range 1-5, treat this as a GEO
@@ -301,7 +301,7 @@ namespace gpstk
       double sinZ = ::sin(angleZ); 
 
          // Initiailize 3X3 with all 0.0
-      gpstk::Matrix<double> matZ(3,3); 
+      gnsstk::Matrix<double> matZ(3,3); 
       // Row,Col
       matZ(0,0) =  cosZ;
       matZ(0,1) =  sinZ;
@@ -317,7 +317,7 @@ namespace gpstk
       double angleX = -5.0 * PI/180.0;    /// This is a constant.  Should set it once
       double cosX = ::cos(angleX);
       double sinX = ::sin(angleX); 
-      gpstk::Matrix<double> matX(3,3);
+      gnsstk::Matrix<double> matX(3,3);
       matX(0,0) =   1.0;
       matX(0,1) =   0.0;
       matX(0,2) =   0.0;
@@ -329,12 +329,12 @@ namespace gpstk
       matX(2,2) =  cosX;
 
       // Matrix (single column) of xGK, yGK, zGK
-      gpstk::Matrix<double> inertialPos(3,1);
+      gnsstk::Matrix<double> inertialPos(3,1);
       inertialPos(0,0) = xGK;
       inertialPos(1,0) = yGK;
       inertialPos(2,0) = zGK;
 
-      gpstk::Matrix<double> result(3,1);
+      gnsstk::Matrix<double> result(3,1);
       result = matZ * matX * inertialPos;
 
       sv.x[0] = result(0,0);
@@ -356,7 +356,7 @@ namespace gpstk
       dyp = drv*sinu + R*cosu*duv;
 
       // Time-derivative of Rz matrix
-      gpstk::Matrix<double> dmatZ(3,3);
+      gnsstk::Matrix<double> dmatZ(3,3);
       // Row,Col
       dmatZ(0,0) =  sinZ * -ell.angVelocity();
       dmatZ(0,1) = -cosZ * -ell.angVelocity();
@@ -369,7 +369,7 @@ namespace gpstk
       dmatZ(2,2) =   0.0;
 
       // Time-derivative of X,Y,Z in interial form
-      gpstk::Matrix<double> dIntPos(3,1);
+      gnsstk::Matrix<double> dIntPos(3,1);
       dIntPos(0,0) = - xip * san * OMEGAdot
                      + dxp * can
                      - yip * (cinc * can * OMEGAdot
@@ -400,14 +400,14 @@ namespace gpstk
                    << ", " << dmatZ(2,1)
                    << ", " << dmatZ(2,2) << endl; 
       */
-      gpstk::Matrix<double> vresult(3,1);
+      gnsstk::Matrix<double> vresult(3,1);
       vresult =  matZ * matX * dIntPos + 
                 dmatZ * matX * inertialPos;
 
       /* debug
-      gpstk::Matrix<double> firstHalf(3,1);
+      gnsstk::Matrix<double> firstHalf(3,1);
       firstHalf = matZ * matX * dIntPos;
-      gpstk::Matrix<double> secondHalf(3,1);
+      gnsstk::Matrix<double> secondHalf(3,1);
       secondHalf = dmatZ * matX * inertialPos;
 
       cout << "firstHalf: " << firstHalf(0,0)

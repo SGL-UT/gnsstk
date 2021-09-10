@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -52,7 +52,7 @@
 
 using namespace std;
 
-namespace gpstk {
+namespace gnsstk {
 
    // -------------------------------------------------------------------------------
    const double msecHandler::Rfact = 0.001*C_MPS;      // 1ms in meters
@@ -102,7 +102,7 @@ namespace gpstk {
                                  const vector<double>& waves)
    {
       if(ots.size() != waves.size())
-         GPSTK_THROW(Exception("Inconsistent input"));
+         GNSSTK_THROW(Exception("Inconsistent input"));
       N = ots.size();
       obstypes = ots;
       wavelengths = waves;
@@ -115,7 +115,7 @@ namespace gpstk {
    void msecHandler::add(CommonTime ttag, SatID sat, string obstype, double data)
    {
       if(dt == -1.0)
-         GPSTK_THROW(Exception("Must set nominal timestep first"));
+         GNSSTK_THROW(Exception("Must set nominal timestep first"));
 
       if(data == 0.0) return; // NB assumes, as in RINEX, that data==0 is missing.
 
@@ -206,7 +206,7 @@ namespace gpstk {
       // find index and wavelength for this obstype
       int index = vectorindex(obstypes,obstype);
       if(index == -1)
-         GPSTK_THROW(Exception("Invalid obstype, internal error: "+obstype));
+         GNSSTK_THROW(Exception("Invalid obstype, internal error: "+obstype));
       double wl = wavelengths[index];
 
       // remove adjusts

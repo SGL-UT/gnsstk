@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -45,7 +45,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
-// gpstk
+// gnsstk
 #include "Exception.hpp"
 #include "Vector.hpp"
 #include "Matrix.hpp"
@@ -55,7 +55,7 @@
 // geomatics
 #include "logstream.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 //------------------------------------------------------------------------------------
 class WNJfilter : public KalmanFilter {
@@ -63,8 +63,8 @@ public:
    // member data is accessible by caller, but must be set before initializeFilter().
    bool filterOutput;               // output usual KMU,KTU,KSU,etc only if true
    // initial
-   gpstk::Vector<double> apState;   // apriori state, of length Nstate
-   gpstk::Vector<double> apNoise;   // apriori noise, of length Nstate
+   gnsstk::Vector<double> apState;   // apriori state, of length Nstate
+   gnsstk::Vector<double> apNoise;   // apriori noise, of length Nstate
 
    // TU
    int count;                       // index in data,msig of next point for MU
@@ -94,14 +94,14 @@ public:
    void Reset(int dim) throw()
    {
       // dim = NL.size() = Nstate is number of states : X, V, A, J, S, C, P
-      gpstk::Namelist NL;
+      gnsstk::Namelist NL;
       NL += std::string("X"); NL += std::string("V"); NL += std::string("A");
       if(dim > 3) NL += std::string("J");
       if(dim > 4) NL += std::string("S");
       if(dim > 5) NL += std::string("C");
       if(dim > 6) NL += std::string("P");
-      apState = gpstk::Vector<double>(dim,0.0);  // apriori state, of length Nstate
-      apNoise = gpstk::Vector<double>(dim,0.0);  // apriori noise, of length Nstate
+      apState = gnsstk::Vector<double>(dim,0.0);  // apriori state, of length Nstate
+      apNoise = gnsstk::Vector<double>(dim,0.0);  // apriori noise, of length Nstate
       ttag.clear();
       data.clear();
       msig.clear();
@@ -120,23 +120,23 @@ public:
        *   0 if no information is returned
        * @throw Exception
        */
-   int defineInitial(double& T0, gpstk::Vector<double>& State,
-                                 gpstk::Matrix<double>& Cov)
+   int defineInitial(double& T0, gnsstk::Vector<double>& State,
+                                 gnsstk::Matrix<double>& Cov)
    {
       count = 0;              // index into data arrays
       T0 = ttag[0];           // initial time
       Nnoise = 1;             // number of noises
 
       if(apState.size() != Nstate || apNoise.size() != Nstate) {
-         gpstk::Exception e(std::string("Must define apState and apNoise, and they ")
+         gnsstk::Exception e(std::string("Must define apState and apNoise, and they ")
             + std::string("must be of length Nstate = ")
-            + gpstk::StringUtils::asString(Nstate)
+            + gnsstk::StringUtils::asString(Nstate)
             + std::string(" before calling initializeFilter"));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       State = apState;
-      Cov = gpstk::Matrix<double>(Nstate,Nstate,0.0);
+      Cov = gnsstk::Matrix<double>(Nstate,Nstate,0.0);
       for(int i=0; i<Nstate; i++) Cov(i,i) = apNoise(i)*apNoise(i);
       LOG(DEBUG) << "defineI state " << State;
       LOG(DEBUG) << "defineI cov " << Cov;
@@ -152,20 +152,20 @@ public:
        * @throw Exception
        */
    void defineTimestep(const double T, const double DT,
-                       const gpstk::Vector<double>& State,
-                       const gpstk::Matrix<double>& Cov,
+                       const gnsstk::Vector<double>& State,
+                       const gnsstk::Matrix<double>& Cov,
                        const bool useFlag)
    {
       if(!useFlag) {
          LOG(INFO) << "Filter is singular in defineT";
-         //gpstk::Exception e("defineTimestep called with singular filter");
-         //GPSTK_THROW(e);
+         //gnsstk::Exception e("defineTimestep called with singular filter");
+         //GNSSTK_THROW(e);
       }
 
       LOG(DEBUG) << "defineT with Nstate " << Nstate << " and Nnoise " << Nnoise;
-      G = gpstk::Matrix<double>(Nstate,Nnoise,0.0);
-      Rw = gpstk::Matrix<double>(Nnoise,Nnoise,0.0);
-      PhiInv = gpstk::Matrix<double>(Nstate,Nstate,0.0);
+      G = gnsstk::Matrix<double>(Nstate,Nnoise,0.0);
+      Rw = gnsstk::Matrix<double>(Nnoise,Nnoise,0.0);
+      PhiInv = gnsstk::Matrix<double>(Nstate,Nstate,0.0);
 
       // build G and Rw
       G(Nstate-1,0) = 1.0;
@@ -201,22 +201,22 @@ public:
        * @throw Exception
        */
    KalmanReturn defineMeasurements(double& T,
-                                   const gpstk::Vector<double>& X,
-                                   const gpstk::Matrix<double>& Cov,
+                                   const gnsstk::Vector<double>& X,
+                                   const gnsstk::Matrix<double>& Cov,
                                    const bool useFlag)
     {
       if(!useFlag) {
          LOG(INFO) << "Filter is singular in defineM";
-         //gpstk::Exception e("defineMeasurement called with singular filter");
-         //GPSTK_THROW(e);
+         //gnsstk::Exception e("defineMeasurement called with singular filter");
+         //GNSSTK_THROW(e);
       }
 
       // TD make Partials, etc members of KalmanFilter, then don't have to resize
-      Partials = gpstk::Matrix<double>(1,Nstate,0.0);
+      Partials = gnsstk::Matrix<double>(1,Nstate,0.0);
       Partials(0,0) = 1.0;
-      Data = gpstk::Vector<double>(1);
+      Data = gnsstk::Vector<double>(1);
       Data(0) = data[count];
-      MCov = gpstk::Matrix<double>(1,1);
+      MCov = gnsstk::Matrix<double>(1,1);
       MCov(0,0) = msig[count];
 
       LOG(DEBUG) << "MU at T " << T << " Data: " << Data;
@@ -268,7 +268,7 @@ public:
       //if(stage == Init || stage == MU || stage == SU) {
       //   oss << ((stage==MU || stage==Init) ? "KNL" : "KSL") << KFtag << " "
       //      << std::fixed << N << " " << std::setprecision(3) << time;
-      //   gpstk::Namelist NL = srif.getNames();
+      //   gnsstk::Namelist NL = srif.getNames();
       //   for(i=0; i<NL.size(); i++)
       //      oss << " " << std::setw(9) << NL.getName(i);
       //   for(i=0; i<NL.size(); i++)

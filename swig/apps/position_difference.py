@@ -2,20 +2,20 @@
 """
 ==============================================================================
 
-  This file is part of GPSTk, the GPS Toolkit.
+  This file is part of GNSSTk, the GNSS Toolkit.
 
-  The GPSTk is free software; you can redistribute it and/or modify
+  The GNSSTk is free software; you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as published
   by the Free Software Foundation; either version 3.0 of the License, or
   any later version.
 
-  The GPSTk is distributed in the hope that it will be useful,
+  The GNSSTk is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU Lesser General Public License for more details.
 
   You should have received a copy of the GNU Lesser General Public
-  License along with GPSTk; if not, write to the Free Software Foundation,
+  License along with GNSSTk; if not, write to the Free Software Foundation,
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 
   This software was developed by Applied Research Laboratories at the
@@ -39,7 +39,7 @@
 ==============================================================================
 """
 import argparse
-import gpstk
+import gnsstk
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
@@ -49,7 +49,7 @@ valid_types = ['rinexnav', 'rinex3nav', 'yuma', 'sp3', 'fic', 'sem']
 
 
 def triple2Position(x):
-    return gpstk.Position(x[0], x[1], x[2])
+    return gnsstk.Position(x[0], x[1], x[2])
 
 
 # All data read functions should obey this contract:
@@ -58,9 +58,9 @@ def triple2Position(x):
 # 3. Return an object that has a first_time function (() -> CommonTime)
 # 4. Return an object that has a last_time (() -> CommonTime)
 def rinexnav_data(filename, prn):
-    header, data = gpstk.readRinexNav(filename)
-    sat = gpstk.SatID(prn, gpstk.SatelliteSystem.GPS)
-    g = gpstk.GPSEphemerisStore()
+    header, data = gnsstk.readRinexNav(filename)
+    sat = gnsstk.SatID(prn, gnsstk.SatelliteSystem.GPS)
+    g = gnsstk.GPSEphemerisStore()
     for d in data:
         if prn == d.PRNID:
             ephem = d.toEngEphemeris()
@@ -81,9 +81,9 @@ def rinexnav_data(filename, prn):
 
 
 def rinex3nav_data(filename, prn):
-    header, data = gpstk.readRinex3Nav(filename)
-    sat = gpstk.SatID(prn, gpstk.SatelliteSystem.GPS)
-    g = gpstk.GPSEphemerisStore()
+    header, data = gnsstk.readRinex3Nav(filename)
+    sat = gnsstk.SatID(prn, gnsstk.SatelliteSystem.GPS)
+    g = gnsstk.GPSEphemerisStore()
     for d in data:
         if prn == d.PRNID:
             ephem = d.toEngEphemeris()
@@ -104,9 +104,9 @@ def rinex3nav_data(filename, prn):
 
 
 def sp3_data(filename, prn):
-    store = gpstk.SP3EphemerisStore()
+    store = gnsstk.SP3EphemerisStore()
     store.loadFile(filename)
-    sat = gpstk.SatID(prn)
+    sat = gnsstk.SatID(prn)
 
     class sp3_holder:
         def __init__(self, sp3Store, satStore):
@@ -123,9 +123,9 @@ def sp3_data(filename, prn):
 
 
 def yuma_data(filename, prn):
-    header, data = gpstk.readYuma(filename)
-    sat = gpstk.SatID(prn, gpstk.SatelliteSystem.GPS)
-    almanac = gpstk.GPSAlmanacStore()
+    header, data = gnsstk.readYuma(filename)
+    sat = gnsstk.SatID(prn, gnsstk.SatelliteSystem.GPS)
+    almanac = gnsstk.GPSAlmanacStore()
     for d in data:
         if prn == d.PRN:
             orbit = d.toAlmOrbit()
@@ -146,9 +146,9 @@ def yuma_data(filename, prn):
 
 
 def sem_data(filename, prn):
-    header, data = gpstk.readSEM(filename)
-    sat = gpstk.SatID(prn, gpstk.SatelliteSystem.GPS)
-    almanac = gpstk.GPSAlmanacStore()
+    header, data = gnsstk.readSEM(filename)
+    sat = gnsstk.SatID(prn, gnsstk.SatelliteSystem.GPS)
+    almanac = gnsstk.GPSAlmanacStore()
     for d in data:
         if prn == d.PRN:
             orbit = d.toAlmOrbit()
@@ -210,7 +210,7 @@ def main(args=sys.argv[1:]):
 
 
     def timestr(t):
-        return str(gpstk.CivilTime(t))
+        return str(gnsstk.CivilTime(t))
 
     def check(filetype, filename):
         if not filetype in valid_types:
@@ -249,11 +249,11 @@ def main(args=sys.argv[1:]):
     n = 0
     maxErr = 0.0
 
-    for t in gpstk.times(starttime, endtime, seconds=args.timestep):
+    for t in gnsstk.times(starttime, endtime, seconds=args.timestep):
         try:
             p1 = pos1.position(t)
             p2 = pos2.position(t)
-            error = gpstk.range(p1, p2)
+            error = gnsstk.range(p1, p2)
             maxErr = max(maxErr, error)
             X.append(t.getDays())
             Y.append(error)
@@ -265,7 +265,7 @@ def main(args=sys.argv[1:]):
                 print '\tPosition 1:', p1
                 print '\tPosition 2:', p2
                 print '\tError:', error
-        except gpstk.exceptions.InvalidRequest:
+        except gnsstk.exceptions.InvalidRequest:
             if args.verbose:
                 print 'Can\'t use data at:', timestr(t)
 
@@ -275,7 +275,7 @@ def main(args=sys.argv[1:]):
 
     fig = plt.figure()
     title = ('Error for PRN ' + str(args.prn_id) + ' starting '
-        + gpstk.CivilTime(starttime).printf('%02m/%02d/%04Y %02H:%02M:%02S'))
+        + gnsstk.CivilTime(starttime).printf('%02m/%02d/%04Y %02H:%02M:%02S'))
 
     fig.suptitle(title, fontsize=14, fontweight='bold')
     ax = fig.add_subplot(111)
@@ -295,9 +295,9 @@ def main(args=sys.argv[1:]):
 
     # converts common time day (float) -> string
     def daytostring(x):
-        t = gpstk.CommonTime()
+        t = gnsstk.CommonTime()
         t.set(x)
-        return gpstk.CivilTime(t).printf(args.format)
+        return gnsstk.CivilTime(t).printf(args.format)
 
     # sets the text shown per-pixel when viewed interactively
     def format_coord(x, y):

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -36,14 +36,14 @@
 //
 //==============================================================================
 
-/// @file gdc.hpp GPSTk Discontinuity Corrector
+/// @file gdc.hpp GNSSTk Discontinuity Corrector
 /// GPS phase discontinuity correction. Given a SatPass object
 /// containing dual-frequency pseudorange and phase for an entire satellite pass,
 /// detect discontinuities in the phase and, if possible, estimate their size.
 /// Output is a list of Rinex editing commands (see EditRinex or class RinexEditor).
 
-#ifndef GPSTK_DISCONTINUITY_CORRECTOR_INCLUDE
-#define GPSTK_DISCONTINUITY_CORRECTOR_INCLUDE
+#ifndef GNSSTK_DISCONTINUITY_CORRECTOR_INCLUDE
+#define GNSSTK_DISCONTINUITY_CORRECTOR_INCLUDE
 
 #include <iostream>
 #include <fstream>
@@ -60,7 +60,7 @@
 #include "FDiffFilter.hpp"
 #include "WindowFilter.hpp"
 
-namespace gpstk {
+namespace gnsstk {
 
 //---------------------------------------------------------------------------
 /// Class Arc encapsulates information for both break points in the data, due to
@@ -305,7 +305,7 @@ public:
    {
       if(CFGdesc[a] == std::string()) {
          Exception e("cfg(UNKNOWN LABEL) : " + a);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return CFG[a];
    }
@@ -319,7 +319,7 @@ public:
    void ForceUniqueNumber(int n) throw() { unique = n; }
 
    //---------------------------------------------------------------------------
-   /// GPSTK Discontinuity Corrector (GDC).
+   /// GNSSTK Discontinuity Corrector (GDC).
    /// Find, and fix if possible, discontinuities in the GPS or GLONASS carrier phase
    /// data, given dual-frequency pseudorange and phase data for a satellite pass.
    ///
@@ -615,7 +615,7 @@ protected:
          for(std::map<int,Arc>::iterator ait = Arcs.begin(); ait != Arcs.end(); ++ait)
             getArcStats(ait, which);
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    /// compute stats for 'which' data (WL or GF but not both) for the given Arc.
@@ -657,7 +657,7 @@ protected:
    Epoch xtime(const int& i)
    {
       if(i >= dataWL.size())
-         GPSTK_THROW(Exception("Index out of range in xtime"));
+         GNSSTK_THROW(Exception("Index out of range in xtime"));
       Epoch tt(beginT);
       tt += xdata[i];
       return tt;
@@ -668,12 +668,12 @@ protected:
    void findArc(const unsigned int ind, std::map<int, Arc>::iterator& ait)
    {
       if(int(ind) < ait->second.index)
-         GPSTK_THROW(Exception("index before given Arc"));
+         GNSSTK_THROW(Exception("index before given Arc"));
 
       while(ait != Arcs.end() && ind >= ait->second.index+ait->second.npts) ++ait;
 
       if(ait == Arcs.end())         // index not found
-         GPSTK_THROW(Exception("index after end of Arcs"));
+         GNSSTK_THROW(Exception("index after end of Arcs"));
    }
 
    /// dump all Arcs, e.g.
@@ -714,7 +714,7 @@ protected:
 
 }; // end class gdc
 
-}  // end namespace gpstk
+}  // end namespace gnsstk
 
 //------------------------------------------------------------------------------------
-#endif   // GPSTK_DISCONTINUITY_CORRECTOR_INCLUDE
+#endif   // GNSSTK_DISCONTINUITY_CORRECTOR_INCLUDE

@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -53,28 +53,28 @@
 #include "GPSCNavRedAlm.hpp"
 #include "GPSCNavIono.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavValidityType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavValidityType e)
    {
       s << StringUtils::asString(e);
       return s;
    }
 }
 
-class TestClass : public gpstk::PNBMultiGNSSNavDataFactory
+class TestClass : public gnsstk::PNBMultiGNSSNavDataFactory
 {
 public:
-   static gpstk::PNBNavDataFactoryMap& getFactories()
+   static gnsstk::PNBNavDataFactoryMap& getFactories()
    { return factories(); }
 };
-class PNBTestFactory : public gpstk::PNBNavDataFactory
+class PNBTestFactory : public gnsstk::PNBNavDataFactory
 {
 public:
-   bool addData(const gpstk::PackedNavBitsPtr& navIn,
-                gpstk::NavDataPtrList& navOut, double cadence = -1) override
+   bool addData(const gnsstk::PackedNavBitsPtr& navIn,
+                gnsstk::NavDataPtrList& navOut, double cadence = -1) override
    { return false; }
-   gpstk::NavValidityType getValidity() const { return navValidity; }
+   gnsstk::NavValidityType getValidity() const { return navValidity; }
    bool getProcEph() const { return processEph; }
    bool getProcAlm() const { return processAlm; }
    bool getProcHea() const { return processHea; }
@@ -98,7 +98,7 @@ public:
    unsigned addDataTest();
 
       /// Count the various types of messages present in navOut.
-   void countResults(const gpstk::NavDataPtrList& navOut);
+   void countResults(const gnsstk::NavDataPtrList& navOut);
 
 #include "LNavTestDataDecl.hpp"
 #include "CNavTestDataDecl.hpp"
@@ -124,10 +124,10 @@ addFactoryTest()
 {
    TUDEF("PNBMultiGNSSNavDataFactory", "addFactory()");
       // Add a test factory to the multi gnss set.
-   gpstk::PNBNavDataFactoryPtr test(std::make_shared<PNBTestFactory>());
+   gnsstk::PNBNavDataFactoryPtr test(std::make_shared<PNBTestFactory>());
    TUASSERTE(bool, true,
-             gpstk::PNBMultiGNSSNavDataFactory::addFactory(
-                gpstk::NavType::Unknown, test));
+             gnsstk::PNBMultiGNSSNavDataFactory::addFactory(
+                gnsstk::NavType::Unknown, test));
    TURETURN();
 }
 
@@ -145,16 +145,16 @@ constructorTest()
       // factories, so we ignore anything else.
    for (auto& i : TestClass::getFactories())
    {
-      gpstk::PNBNavDataFactory *p = i.second.get();
-      if (dynamic_cast<gpstk::PNBGPSLNavDataFactory*>(p) != nullptr)
+      gnsstk::PNBNavDataFactory *p = i.second.get();
+      if (dynamic_cast<gnsstk::PNBGPSLNavDataFactory*>(p) != nullptr)
       {
          foundGPSLNav = true;
       }
-      else if (dynamic_cast<gpstk::PNBGPSCNavDataFactory*>(p) != nullptr)
+      else if (dynamic_cast<gnsstk::PNBGPSCNavDataFactory*>(p) != nullptr)
       {
          foundGPSCNav = true;
       }
-      else if (dynamic_cast<gpstk::PNBGPSCNav2DataFactory*>(p) != nullptr)
+      else if (dynamic_cast<gnsstk::PNBGPSCNav2DataFactory*>(p) != nullptr)
       {
          foundGPSCNav2 = true;
       }
@@ -175,12 +175,12 @@ unsigned PNBMultiGNSSNavDataFactory_T ::
 setValidityFilterTest()
 {
    TUDEF("PNBMultiGNSSNavDataFactory", "setValidityFilter()");
-   gpstk::PNBMultiGNSSNavDataFactory uut;
+   gnsstk::PNBMultiGNSSNavDataFactory uut;
    PNBTestFactory *fact = nullptr;
       // find our test factory so we can verify setValidityFilter
    for (auto& i : TestClass::getFactories())
    {
-      gpstk::PNBNavDataFactory *p = i.second.get();
+      gnsstk::PNBNavDataFactory *p = i.second.get();
       if ((fact = dynamic_cast<PNBTestFactory*>(p)) != nullptr)
       {
          break;
@@ -193,13 +193,13 @@ setValidityFilterTest()
       TURETURN();
    }
       // check default
-   TUASSERTE(gpstk::NavValidityType, gpstk::NavValidityType::Any,
+   TUASSERTE(gnsstk::NavValidityType, gnsstk::NavValidityType::Any,
              fact->getValidity());
       // check possible values
-   for (gpstk::NavValidityType i : gpstk::NavValidityTypeIterator())
+   for (gnsstk::NavValidityType i : gnsstk::NavValidityTypeIterator())
    {
       uut.setValidityFilter(i);
-      TUASSERTE(gpstk::NavValidityType, i, fact->getValidity());
+      TUASSERTE(gnsstk::NavValidityType, i, fact->getValidity());
    }
    TURETURN();
 }
@@ -209,12 +209,12 @@ unsigned PNBMultiGNSSNavDataFactory_T ::
 setTypeFilterTest()
 {
    TUDEF("PNBMultiGNSSNavDataFactory", "setTypeFilter()");
-   gpstk::PNBMultiGNSSNavDataFactory uut;
+   gnsstk::PNBMultiGNSSNavDataFactory uut;
    PNBTestFactory *fact = nullptr;
       // find our test factory so we can verify setTypeFilter
    for (auto& i : TestClass::getFactories())
    {
-      gpstk::PNBNavDataFactory *p = i.second.get();
+      gnsstk::PNBNavDataFactory *p = i.second.get();
       if ((fact = dynamic_cast<PNBTestFactory*>(p)) != nullptr)
       {
          break;
@@ -232,35 +232,35 @@ setTypeFilterTest()
    TUASSERTE(bool, true,  fact->getProcHea());
    TUASSERTE(bool, true,  fact->getProcTim());
       // check individual flags
-   uut.setTypeFilter({gpstk::NavMessageType::Ephemeris});
+   uut.setTypeFilter({gnsstk::NavMessageType::Ephemeris});
    TUASSERTE(bool, true,  fact->getProcEph());
    TUASSERTE(bool, false, fact->getProcAlm());
    TUASSERTE(bool, false, fact->getProcHea());
    TUASSERTE(bool, false, fact->getProcTim());
-   uut.setTypeFilter({gpstk::NavMessageType::Almanac});
+   uut.setTypeFilter({gnsstk::NavMessageType::Almanac});
    TUASSERTE(bool, false, fact->getProcEph());
    TUASSERTE(bool, true,  fact->getProcAlm());
    TUASSERTE(bool, false, fact->getProcHea());
    TUASSERTE(bool, false, fact->getProcTim());
-   uut.setTypeFilter({gpstk::NavMessageType::Health});
+   uut.setTypeFilter({gnsstk::NavMessageType::Health});
    TUASSERTE(bool, false, fact->getProcEph());
    TUASSERTE(bool, false, fact->getProcAlm());
    TUASSERTE(bool, true,  fact->getProcHea());
    TUASSERTE(bool, false, fact->getProcTim());
-   uut.setTypeFilter({gpstk::NavMessageType::TimeOffset});
+   uut.setTypeFilter({gnsstk::NavMessageType::TimeOffset});
    TUASSERTE(bool, false, fact->getProcEph());
    TUASSERTE(bool, false, fact->getProcAlm());
    TUASSERTE(bool, false, fact->getProcHea());
    TUASSERTE(bool, true,  fact->getProcTim());
       // some subset tests.
-   uut.setTypeFilter({gpstk::NavMessageType::TimeOffset,
-                      gpstk::NavMessageType::Ephemeris});
+   uut.setTypeFilter({gnsstk::NavMessageType::TimeOffset,
+                      gnsstk::NavMessageType::Ephemeris});
    TUASSERTE(bool, true,  fact->getProcEph());
    TUASSERTE(bool, false, fact->getProcAlm());
    TUASSERTE(bool, false, fact->getProcHea());
    TUASSERTE(bool, true,  fact->getProcTim());
-   uut.setTypeFilter({gpstk::NavMessageType::Almanac,
-                      gpstk::NavMessageType::Health});
+   uut.setTypeFilter({gnsstk::NavMessageType::Almanac,
+                      gnsstk::NavMessageType::Health});
    TUASSERTE(bool, false, fact->getProcEph());
    TUASSERTE(bool, true,  fact->getProcAlm());
    TUASSERTE(bool, true,  fact->getProcHea());
@@ -273,10 +273,10 @@ unsigned PNBMultiGNSSNavDataFactory_T ::
 addDataTest()
 {
    TUDEF("PNBMultiGNSSNavDataFactory", "addData()");
-   gpstk::PNBMultiGNSSNavDataFactory uut;
-   gpstk::NavDataPtrList navOut;
-   uut.setTypeFilter(gpstk::allNavMessageTypes);
-   uut.setValidityFilter(gpstk::NavValidityType::Any);
+   gnsstk::PNBMultiGNSSNavDataFactory uut;
+   gnsstk::NavDataPtrList navOut;
+   uut.setTypeFilter(gnsstk::allNavMessageTypes);
+   uut.setValidityFilter(gnsstk::NavValidityType::Any);
       //
       // Start with some GPS LNAV data.
       //
@@ -417,48 +417,48 @@ addDataTest()
 
 
 void PNBMultiGNSSNavDataFactory_T ::
-countResults(const gpstk::NavDataPtrList& navOut)
+countResults(const gnsstk::NavDataPtrList& navOut)
 {
    resetCount();
    for (const auto& i : navOut)
    {
-      if (dynamic_cast<gpstk::GPSLNavAlm*>(i.get()) != nullptr)
+      if (dynamic_cast<gnsstk::GPSLNavAlm*>(i.get()) != nullptr)
       {
          almCount++;
       }
-      else if (dynamic_cast<gpstk::GPSLNavEph*>(i.get()) != nullptr)
+      else if (dynamic_cast<gnsstk::GPSLNavEph*>(i.get()) != nullptr)
       {
          ephCount++;
       }
-      else if (dynamic_cast<gpstk::GPSLNavTimeOffset*>(i.get()) != nullptr)
+      else if (dynamic_cast<gnsstk::GPSLNavTimeOffset*>(i.get()) != nullptr)
       {
          toCount++;
       }
-      else if (dynamic_cast<gpstk::GPSLNavHealth*>(i.get()) != nullptr)
+      else if (dynamic_cast<gnsstk::GPSLNavHealth*>(i.get()) != nullptr)
       {
          heaCount++;
       }
-      else if (dynamic_cast<gpstk::GPSLNavIono*>(i.get()) != nullptr)
+      else if (dynamic_cast<gnsstk::GPSLNavIono*>(i.get()) != nullptr)
       {
          ionoCount++;
       }
-      else if (dynamic_cast<gpstk::GPSCNavAlm*>(i.get()) != nullptr)
+      else if (dynamic_cast<gnsstk::GPSCNavAlm*>(i.get()) != nullptr)
       {
          almCount++;
       }
-      else if (dynamic_cast<gpstk::GPSCNavEph*>(i.get()) != nullptr)
+      else if (dynamic_cast<gnsstk::GPSCNavEph*>(i.get()) != nullptr)
       {
          ephCount++;
       }
-      else if (dynamic_cast<gpstk::GPSCNavTimeOffset*>(i.get()) != nullptr)
+      else if (dynamic_cast<gnsstk::GPSCNavTimeOffset*>(i.get()) != nullptr)
       {
          toCount++;
       }
-      else if (dynamic_cast<gpstk::GPSCNavHealth*>(i.get()) != nullptr)
+      else if (dynamic_cast<gnsstk::GPSCNavHealth*>(i.get()) != nullptr)
       {
          heaCount++;
       }
-      else if (dynamic_cast<gpstk::GPSCNavIono*>(i.get()) != nullptr)
+      else if (dynamic_cast<gnsstk::GPSCNavIono*>(i.get()) != nullptr)
       {
          ionoCount++;
       }

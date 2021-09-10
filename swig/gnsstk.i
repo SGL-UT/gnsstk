@@ -1,4 +1,4 @@
-%module gpstk
+%module gnsstk
 
 // =============================================================
 //  Section 0: C++ template containers & typedefs
@@ -7,7 +7,7 @@
 %{
 // The header includes are kept in a separate file so they can be used
 // to build other swig modules
-#include "gpstk_swig.hpp"
+#include "gnsstk_swig.hpp"
 %}
 
 
@@ -79,22 +79,22 @@
 // =============================================================
 
  /** @todo Resolve the SWIG warnings caused by this include:
-gpstk/core/lib/NewNav/NavLibrary.hpp:984: Warning 509: Overloaded method gpstk::NavLibrary::getOffset(gpstk::TimeSystem,gpstk::TimeSystem,gpstk::CommonTime const &,double &) effectively ignored,
-gpstk/core/lib/NewNav/NavLibrary.hpp:964: Warning 509: as it is shadowed by gpstk::NavLibrary::getOffset(gpstk::TimeSystem,gpstk::TimeSystem,gpstk::CommonTime const &,gpstk::NavDataPtr &).
-gpstk/core/lib/NewNav/NavLibrary.hpp:964: Warning 509: Overloaded method gpstk::NavLibrary::getOffset(gpstk::TimeSystem,gpstk::TimeSystem,gpstk::CommonTime const &,gpstk::NavDataPtr &,gpstk::SVHealth) effectively ignored,
-gpstk/core/lib/NewNav/NavLibrary.hpp:984: Warning 509: as it is shadowed by gpstk::NavLibrary::getOffset(gpstk::TimeSystem,gpstk::TimeSystem,gpstk::CommonTime const &,double &,gpstk::SVHealth).
-gpstk/core/lib/NewNav/NavLibrary.hpp:984: Warning 509: Overloaded method gpstk::NavLibrary::getOffset(gpstk::TimeSystem,gpstk::TimeSystem,gpstk::CommonTime const &,double &,gpstk::SVHealth,gpstk::NavValidityType) effectively ignored,
-gpstk/core/lib/NewNav/NavLibrary.hpp:964: Warning 509: as it is shadowed by gpstk::NavLibrary::getOffset(gpstk::TimeSystem,gpstk::TimeSystem,gpstk::CommonTime const &,gpstk::NavDataPtr &,gpstk::SVHealth,gpstk::NavValidityType).
+gnsstk/core/lib/NewNav/NavLibrary.hpp:984: Warning 509: Overloaded method gnsstk::NavLibrary::getOffset(gnsstk::TimeSystem,gnsstk::TimeSystem,gnsstk::CommonTime const &,double &) effectively ignored,
+gnsstk/core/lib/NewNav/NavLibrary.hpp:964: Warning 509: as it is shadowed by gnsstk::NavLibrary::getOffset(gnsstk::TimeSystem,gnsstk::TimeSystem,gnsstk::CommonTime const &,gnsstk::NavDataPtr &).
+gnsstk/core/lib/NewNav/NavLibrary.hpp:964: Warning 509: Overloaded method gnsstk::NavLibrary::getOffset(gnsstk::TimeSystem,gnsstk::TimeSystem,gnsstk::CommonTime const &,gnsstk::NavDataPtr &,gnsstk::SVHealth) effectively ignored,
+gnsstk/core/lib/NewNav/NavLibrary.hpp:984: Warning 509: as it is shadowed by gnsstk::NavLibrary::getOffset(gnsstk::TimeSystem,gnsstk::TimeSystem,gnsstk::CommonTime const &,double &,gnsstk::SVHealth).
+gnsstk/core/lib/NewNav/NavLibrary.hpp:984: Warning 509: Overloaded method gnsstk::NavLibrary::getOffset(gnsstk::TimeSystem,gnsstk::TimeSystem,gnsstk::CommonTime const &,double &,gnsstk::SVHealth,gnsstk::NavValidityType) effectively ignored,
+gnsstk/core/lib/NewNav/NavLibrary.hpp:964: Warning 509: as it is shadowed by gnsstk::NavLibrary::getOffset(gnsstk::TimeSystem,gnsstk::TimeSystem,gnsstk::CommonTime const &,gnsstk::NavDataPtr &,gnsstk::SVHealth,gnsstk::NavValidityType).
  */
 %include "NewNavTypemaps.i"
-%include "gpstk_typemaps.i"
+%include "gnsstk_typemaps.i"
 
 // =============================================================
 //  Section 10: C++ include files
 //  Include classes IN DEPENDENCY ORDER otherwise swig will fail.
 // =============================================================
 
-%include "gpstk_swig.i"
+%include "gnsstk_swig.i"
 
 // =============================================================
 //  Section 11: Explicit Python wrappers
@@ -128,28 +128,28 @@ gpstk/core/lib/NewNav/NavLibrary.hpp:964: Warning 509: as it is shadowed by gpst
 #define KLOBUCHAR_SUPPORT (SWIG_VERSION >= 0x020012 ? True : False)
 #if SWIG_VERSION >= 0x020012
 %inline %{
-  gpstk::OrbSysGpsC_30* cast_to_OrbSysGpsC_30(gpstk::OrbDataSys* ods) {
-    return static_cast<gpstk::OrbSysGpsC_30*>(ods);
+  gnsstk::OrbSysGpsC_30* cast_to_OrbSysGpsC_30(gnsstk::OrbDataSys* ods) {
+    return static_cast<gnsstk::OrbSysGpsC_30*>(ods);
   }
-  gpstk::OrbSysGpsL_56* cast_to_OrbSysGpsL_56(gpstk::OrbDataSys* ods) {
-    return static_cast<gpstk::OrbSysGpsL_56*>(ods);
+  gnsstk::OrbSysGpsL_56* cast_to_OrbSysGpsL_56(gnsstk::OrbDataSys* ods) {
+    return static_cast<gnsstk::OrbSysGpsL_56*>(ods);
   }
 %}
 // Include to generate swig::trait::typename()
 %{
   namespace swig {
-    template <> struct traits<gpstk::OrbDataSys> {
+    template <> struct traits<gnsstk::OrbDataSys> {
         typedef pointer_category category;
-        static const char* type_name() {return "gpstk::OrbDataSys";}
+        static const char* type_name() {return "gnsstk::OrbDataSys";}
     };
   }
 %}
 
-// SWIG out the msgMap in gpstk::OrbSysStore
-%template (TimeMsgMap) std::map<gpstk::CommonTime, gpstk::OrbDataSys* >;
-%template (UIDMsgMap) std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > >;
-%template (NavIDMsgMap) std::map<gpstk::NavID, std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > > >;
-%template (SatIDMsgMap) std::map<gpstk::SatID, std::map<gpstk::NavID, std::map<uint16_t, std::map<gpstk::CommonTime, gpstk::OrbDataSys* > > > >;
+// SWIG out the msgMap in gnsstk::OrbSysStore
+%template (TimeMsgMap) std::map<gnsstk::CommonTime, gnsstk::OrbDataSys* >;
+%template (UIDMsgMap) std::map<uint16_t, std::map<gnsstk::CommonTime, gnsstk::OrbDataSys* > >;
+%template (NavIDMsgMap) std::map<gnsstk::NavID, std::map<uint16_t, std::map<gnsstk::CommonTime, gnsstk::OrbDataSys* > > >;
+%template (SatIDMsgMap) std::map<gnsstk::SatID, std::map<gnsstk::NavID, std::map<uint16_t, std::map<gnsstk::CommonTime, gnsstk::OrbDataSys* > > > >;
 #endif
 
 
@@ -164,7 +164,7 @@ gpstk/core/lib/NewNav/NavLibrary.hpp:964: Warning 509: as it is shadowed by gpst
 // =============================================================
 %pythoncode %{
         # clean-up the dir listing by removing *_swigregister.
-        import gpstk
+        import gnsstk
         stuff=None
         to_remove=[]
         for stuff in locals():

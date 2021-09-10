@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,8 +41,8 @@
  * Encapsulate header of Rinex observation file, including I/O
  */
 
-#ifndef GPSTK_RINEX3OBSHEADER_HPP
-#define GPSTK_RINEX3OBSHEADER_HPP
+#ifndef GNSSTK_RINEX3OBSHEADER_HPP
+#define GNSSTK_RINEX3OBSHEADER_HPP
 
 #include <vector>
 #include <list>
@@ -60,7 +60,7 @@
 #include "XmitAnt.hpp"
 
 
-namespace gpstk
+namespace gnsstk
 {
 
       /// @ingroup FileHandling
@@ -139,7 +139,7 @@ namespace gpstk
 
       /**
        * This class models the header for a RINEX 3 Observation File.
-       * @sa gpstk::Rinex3ObsData and gpstk::Rinex3ObsStream.
+       * @sa gnsstk::Rinex3ObsData and gnsstk::Rinex3ObsStream.
        * @sa rinex_obs_test.cpp and rinex_obs_read_write.cpp for examples.
        *
        * RINEX 2 is also supported.
@@ -444,7 +444,7 @@ namespace gpstk
          /// file sys char: RinexSatID system OR Mixed
       std::string fileSys;
          /** If false, the file type and system will be re-generated
-          * in the gpstk preferred format when writing the header,
+          * in the gnsstk preferred format when writing the header,
           * otherwise the strings fileType fileSys will be written
           * unaltered */
       bool preserveVerType;
@@ -467,16 +467,16 @@ namespace gpstk
       std::string recVers;             ///< receiver version
       std::string antNo;               ///< antenna number
       std::string antType;             ///< antenna type
-      gpstk::Triple antennaPosition;   ///< APPROX POSITION XYZ
-      gpstk::Triple antennaDeltaHEN;   ///< ANTENNA: DELTA H/E/N
-      gpstk::Triple antennaDeltaXYZ;   ///< ANTENNA: DELTA X/Y/Z
+      gnsstk::Triple antennaPosition;   ///< APPROX POSITION XYZ
+      gnsstk::Triple antennaDeltaHEN;   ///< ANTENNA: DELTA H/E/N
+      gnsstk::Triple antennaDeltaXYZ;   ///< ANTENNA: DELTA X/Y/Z
       std::string antennaSatSys;       ///< ANTENNA P.CTR BLOCK: SAT SYS
       std::string antennaObsCode;      ///< ANTENNA P.CTR BLOCK: OBS CODE
-      gpstk::Triple antennaPhaseCtr;   ///< ANTENNA P.CTR BLOCK: PCTR POS
-      gpstk::Triple antennaBsightXYZ;  ///< ANTENNA B.SIGHT XYZ
+      gnsstk::Triple antennaPhaseCtr;   ///< ANTENNA P.CTR BLOCK: PCTR POS
+      gnsstk::Triple antennaBsightXYZ;  ///< ANTENNA B.SIGHT XYZ
       double        antennaZeroDirAzi; ///< ANTENNA ZERODIR AZI
-      gpstk::Triple antennaZeroDirXYZ; ///< ANTENNA ZERODIR XYZ
-      gpstk::Triple centerOfMass;      ///< vehicle CENTER OF MASS: XYZ
+      gnsstk::Triple antennaZeroDirXYZ; ///< ANTENNA ZERODIR XYZ
+      gnsstk::Triple centerOfMass;      ///< vehicle CENTER OF MASS: XYZ
       RinexObsMap mapObsTypes;         ///< SYS / # / OBS TYPES
       short wavelengthFactor[2];       ///< WAVELENGTH FACT (system-wide)
       FactorVector extraWaveFactList;  ///< WAVELENGTH FACT (per SV)
@@ -694,4 +694,4 @@ namespace gpstk
 
 } // namespace
 
-#endif // GPSTK_RINEX3OBSHEADER_HPP
+#endif // GNSSTK_RINEX3OBSHEADER_HPP

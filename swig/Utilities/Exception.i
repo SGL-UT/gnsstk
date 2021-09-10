@@ -1,9 +1,9 @@
 %include "Macros.i"
 
-// Include STL and GPSTK Exceptions header files
-%rename(__str__) gpstk::Exception::what() const;
+// Include STL and GNSSTK Exceptions header files
+%rename(__str__) gnsstk::Exception::what() const;
 
-namespace gpstk
+namespace gnsstk
 {
    namespace StringUtils
    {
@@ -13,7 +13,7 @@ namespace gpstk
 }
 
 %inline %{
-   namespace gpstk
+   namespace gnsstk
    {
          // Class for StopIterator Python exception, used by Vector.i
       class StopIterator {};
@@ -46,10 +46,10 @@ namespace gpstk
    CATCHER(FFStreamError)
 
 
-   // Other gpstk exceptions:
-   catch (const gpstk::Exception &e)
+   // Other gnsstk exceptions:
+   catch (const gnsstk::Exception &e)
    {
-      std::string s("GPSTk exception\n"), s2(e.what());
+      std::string s("GNSSTk exception\n"), s2(e.what());
       s = s + s2;
       SWIG_exception(SWIG_RuntimeError, s.c_str());
    }
@@ -63,7 +63,7 @@ namespace gpstk
    }
 
    // Exception to stop Python iterator
-   catch (gpstk::StopIterator)
+   catch (gnsstk::StopIterator)
    {
        PyErr_SetString(PyExc_StopIteration, "Reached end of Iterator");
        return NULL;

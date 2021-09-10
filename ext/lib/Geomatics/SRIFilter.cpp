@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -45,7 +45,7 @@
 // TD
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 
 using namespace StringUtils;
@@ -97,7 +97,7 @@ SRIFilter::SRIFilter(const Matrix<double>& Rin,
          + asString<int>(Zin.size()) + ", and NL has length "
          + asString<int>(NLin.size())
          );
-      GPSTK_THROW(me);
+      GNSSTK_THROW(me);
    }
    R = Rin;
    Z = Zin;
@@ -136,7 +136,7 @@ void SRIFilter::measurementUpdate(const Matrix<double>& H, Vector<double>& D,
           + asString<int>(CM.cols());
 
       MatrixException me(msg);
-      GPSTK_THROW(me);
+      GNSSTK_THROW(me);
    }
    try {
          // whiten partials and data
@@ -156,8 +156,8 @@ void SRIFilter::measurementUpdate(const Matrix<double>& H, Vector<double>& D,
       if(&CM != &SRINullMatrix)           // same if above creates CHL
          D = CHL * D;
    }
-   catch(MatrixException& me) { GPSTK_RETHROW(me); }
-   catch(VectorException& ve) { GPSTK_RETHROW(ve); }
+   catch(MatrixException& me) { GNSSTK_RETHROW(me); }
+   catch(VectorException& ve) { GNSSTK_RETHROW(ve); }
 }
 
 //------------------------------------------------------------------------------------
@@ -181,7 +181,7 @@ void SRIFilter::measurementUpdate(const SparseMatrix<double>& H, Vector<double>&
           + asString<int>(CM.cols());
 
       MatrixException me(msg);
-      GPSTK_THROW(me);
+      GNSSTK_THROW(me);
    }
    try {
       SparseMatrix<double> A(H || D);
@@ -202,8 +202,8 @@ void SRIFilter::measurementUpdate(const SparseMatrix<double>& H, Vector<double>&
          D = CHL * D;
       }
    }
-   catch(MatrixException& me) { GPSTK_RETHROW(me); }
-   catch(VectorException& ve) { GPSTK_RETHROW(ve); }
+   catch(MatrixException& me) { GNSSTK_RETHROW(me); }
+   catch(VectorException& ve) { GNSSTK_RETHROW(ve); }
 }
 
 //------------------------------------------------------------------------------------
@@ -215,7 +215,7 @@ void SRIFilter::timeUpdate(Matrix<double>& PhiInv,
                            Matrix<double>& Rwx)
 {
    try { SrifTU(R, Z, PhiInv, Rw, G, Zw, Rwx); }
-   catch(MatrixException& me) { GPSTK_RETHROW(me); }
+   catch(MatrixException& me) { GNSSTK_RETHROW(me); }
 }
 
 //------------------------------------------------------------------------------------
@@ -227,7 +227,7 @@ void SRIFilter::smootherUpdate(Matrix<double>& Phi,
                                Matrix<double>& Rwx)
 {
    try { SrifSU(R, Z, Phi, Rw, G, Zw, Rwx); }
-   catch(MatrixException& me) { GPSTK_RETHROW(me); }
+   catch(MatrixException& me) { GNSSTK_RETHROW(me); }
 }
 
 //------------------------------------------------------------------------------------
@@ -240,7 +240,7 @@ void SRIFilter::DMsmootherUpdate(Matrix<double>& P,
                                  Matrix<double>& Rwx)
 {
    try { SrifSU_DM(P, X, Phinv, Rw, G, Zw, Rwx); }
-   catch(MatrixException& me) { GPSTK_RETHROW(me); }
+   catch(MatrixException& me) { GNSSTK_RETHROW(me); }
 }
 
 //------------------------------------------------------------------------------------
@@ -393,7 +393,7 @@ void SRIFilter::SrifTU(Matrix<T>& R,
          + asString<int>(Rwx.rows()) + "x"
          + asString<int>(Rwx.cols())
          );
-      GPSTK_THROW(me);
+      GNSSTK_THROW(me);
    }
 
    try {
@@ -510,7 +510,7 @@ void SRIFilter::SrifTU(Matrix<T>& R,
          for(i=0; i<=j; i++)
             R(i,j) = PhiInv(i,j);
    }
-   catch(MatrixException& me) { GPSTK_RETHROW(me); }
+   catch(MatrixException& me) { GNSSTK_RETHROW(me); }
 }  // end SrifTU
 
 //------------------------------------------------------------------------------------
@@ -615,7 +615,7 @@ void SRIFilter::SrifSU(Matrix<T>& R,
          + asString<int>(Rwx.rows()) + "x"
          + asString<int>(Rwx.cols())
          );
-      GPSTK_THROW(me);
+      GNSSTK_THROW(me);
    }
 
    const T EPS=-T(1.e-200);
@@ -765,7 +765,7 @@ try {
       }
    }
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end SrifSU
 
 //------------------------------------------------------------------------------
@@ -839,7 +839,7 @@ void SRIFilter::SrifSU_DM(Matrix<T>& P,
          + asString<int>(Rwx.rows()) + "x"
          + asString<int>(Rwx.cols())
          );
-      GPSTK_THROW(me);
+      GNSSTK_THROW(me);
    }
 
 try {
@@ -854,7 +854,7 @@ try {
    P = F*P*transpose(F) + G*transpose(G);
    P = Phinv*P*transpose(Phinv);
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 } // end SrifSU_DM
 
 // Modification for case with control vector: Xj+1 = Phi*Xj + Gwj + u
@@ -893,7 +893,7 @@ void DMsmootherUpdateWithControl(Matrix<double>& P,
          + asString<int>(Rwx.cols()) + "\n  U has length "
          + asString<int>(U.size())
          );
-      GPSTK_THROW(me);
+      GNSSTK_THROW(me);
    }
 
 try {
@@ -909,8 +909,8 @@ try {
    P = Phinv*P*transpose(Phinv);
    P += outer(U,U);
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 } // end DMsmootherUpdateWithControl
 
 //------------------------------------------------------------------------------------
-} // end namespace gpstk
+} // end namespace gnsstk

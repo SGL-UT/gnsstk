@@ -1,5 +1,5 @@
-# RinSum, part of the GPS Toolkit, Ver 4.1 8/26/15, Run 2017/05/25 11:22:55
-+++++++++++++ RinSum summary of Rinex obs file /local/Code/gpstk/data/inputs/igs/cags1700.16o +++++++++++++
+# RinSum, part of the GNSS Toolkit, Ver 4.1 8/26/15, Run 2017/05/25 11:22:55
++++++++++++++ RinSum summary of Rinex obs file /local/Code/gnsstk/data/inputs/igs/cags1700.16o +++++++++++++
 ---------------------------------- REQUIRED ----------------------------------
 Rinex Version  2.11,  File type OBSERVATION DATA,  System G (GPS).
 Prgm: teqc  2013Mar15,  Run: 20160619 01:10:02UTC,  By: Mike Craymer

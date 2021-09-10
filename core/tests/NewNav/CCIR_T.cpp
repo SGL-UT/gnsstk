@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -68,8 +68,8 @@ public:
        * @param[in] when The time to interpolate the data for.
        * @param[in] Azr The effective sunspot number.
        * @param[in] solarActIdx 0=low solar activity, 1=high solar activity. */
-   void testF2LayerCoeffAZr(gpstk::TestUtil& testFramework,
-                            const gpstk::CivilTime& when,
+   void testF2LayerCoeffAZr(gnsstk::TestUtil& testFramework,
+                            const gnsstk::CivilTime& when,
                             double Azr, unsigned solarActIdx);
 
       /// Hold input/truth data for testF2LayerCoeffInterp.
@@ -98,17 +98,17 @@ public:
          double soh = (hour-hr)*3600;
          int min = trunc(soh/60.0);
          double sec = fmod(soh,60.0);
-         ct = gpstk::CivilTime(2525,month,1,hr,min,sec,gpstk::TimeSystem::UTC);
-         GPSTK_ASSERT(fabs(ct.getUTHour()-hour) < 1e-7);
+         ct = gnsstk::CivilTime(2525,month,1,hr,min,sec,gnsstk::TimeSystem::UTC);
+         GNSSTK_ASSERT(fabs(ct.getUTHour()-hour) < 1e-7);
       }
       double tAzr;
-      gpstk::CivilTime ct;
+      gnsstk::CivilTime ct;
       std::vector<double> tCF2;
       std::vector<double> tCm3;
    };
 
       /// Reference time for various interpolation tests.
-   gpstk::CivilTime testTime;
+   gnsstk::CivilTime testTime;
       /// Input/truth data for testF2LayerCoeffInterp.
    static TestData testData[];
       /// Input/truth data for testF2LayerFourier.
@@ -438,7 +438,7 @@ CCIR_T::TestDataFourier CCIR_T::testDataFourier[] =
 
 CCIR_T ::
 CCIR_T()
-      : testTime(2525, 4, 1, 0, 0, 0, gpstk::TimeSystem::UTC)
+      : testTime(2525, 4, 1, 0, 0, 0, gnsstk::TimeSystem::UTC)
 {
 }
 
@@ -447,12 +447,12 @@ unsigned CCIR_T ::
 testValidateCache()
 {
    TUDEF("CCIR", "validateCache");
-   gpstk::CCIR uut;
-   gpstk::CivilTime t1(2525, 4, 1, 0, 0, 0, gpstk::TimeSystem::UTC);
-   gpstk::CivilTime t2(2525, 5, 1, 0, 0, 0, gpstk::TimeSystem::UTC);
-   gpstk::CivilTime t3(2525, 5, 1, 0, 0, 1.0e-16, gpstk::TimeSystem::UTC);
-   gpstk::CivilTime t4(2525, 5, 2, 0, 0, 1.0e-16, gpstk::TimeSystem::UTC);
-   gpstk::CivilTime t5(2526, 5, 2, 0, 0, 1.0e-16, gpstk::TimeSystem::UTC);
+   gnsstk::CCIR uut;
+   gnsstk::CivilTime t1(2525, 4, 1, 0, 0, 0, gnsstk::TimeSystem::UTC);
+   gnsstk::CivilTime t2(2525, 5, 1, 0, 0, 0, gnsstk::TimeSystem::UTC);
+   gnsstk::CivilTime t3(2525, 5, 1, 0, 0, 1.0e-16, gnsstk::TimeSystem::UTC);
+   gnsstk::CivilTime t4(2525, 5, 2, 0, 0, 1.0e-16, gnsstk::TimeSystem::UTC);
+   gnsstk::CivilTime t5(2526, 5, 2, 0, 0, 1.0e-16, gnsstk::TimeSystem::UTC);
    double ess1 = 123.456;
    double ess2 = ess1 + 1.1e-10;
       // check initial state
@@ -512,18 +512,18 @@ testF2LayerCoeff()
 
 
 void CCIR_T ::
-testF2LayerCoeffAZr(gpstk::TestUtil& testFramework,
-                    const gpstk::CivilTime& when,
+testF2LayerCoeffAZr(gnsstk::TestUtil& testFramework,
+                    const gnsstk::CivilTime& when,
                     double Azr, unsigned solarActIdx)
 {
    TUCSM("interpolate");
-   gpstk::CCIR uut;
+   gnsstk::CCIR uut;
    TUCATCH(uut.interpolate(when, Azr));
 
    unsigned vecidx = 0;
-   for (unsigned degree = 0; degree < gpstk::CCIR::F2MaxDegree; degree++)
+   for (unsigned degree = 0; degree < gnsstk::CCIR::F2MaxDegree; degree++)
    {
-      for (unsigned order = 0; order < gpstk::CCIR::F2MaxOrder; order++)
+      for (unsigned order = 0; order < gnsstk::CCIR::F2MaxOrder; order++)
       {
          TUASSERTFE(uut.ccirF2(when.month, solarActIdx, degree, order),
                     uut.cacheF2[vecidx]);
@@ -532,9 +532,9 @@ testF2LayerCoeffAZr(gpstk::TestUtil& testFramework,
    }
 
    vecidx = 0;
-   for (unsigned degree = 0; degree < gpstk::CCIR::FM3MaxDegree; degree++)
+   for (unsigned degree = 0; degree < gnsstk::CCIR::FM3MaxDegree; degree++)
    {
-      for (unsigned order = 0; order < gpstk::CCIR::FM3MaxOrder; order++)
+      for (unsigned order = 0; order < gnsstk::CCIR::FM3MaxOrder; order++)
       {
          TUASSERTFE(uut.ccirFm3(when.month, solarActIdx, degree, order),
                     uut.cacheFM3[vecidx]);
@@ -548,7 +548,7 @@ unsigned CCIR_T ::
 testF2LayerCoeffInterp()
 {
    TUDEF("CCIR", "interpolate");
-   gpstk::CCIR uut;
+   gnsstk::CCIR uut;
    unsigned numTests = sizeof(testData)/sizeof(testData[0]);
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
@@ -557,9 +557,9 @@ testF2LayerCoeffInterp()
       unsigned vecidx = 0;
       TUASSERTE(unsigned long, testData[testNum].tF2.size(),
                 uut.cacheF2.size());
-      for (unsigned degree = 0; degree < gpstk::CCIR::F2MaxDegree; degree++)
+      for (unsigned degree = 0; degree < gnsstk::CCIR::F2MaxDegree; degree++)
       {
-         for (unsigned order = 0; order < gpstk::CCIR::F2MaxOrder; order++)
+         for (unsigned order = 0; order < gnsstk::CCIR::F2MaxOrder; order++)
          {
             TUASSERTFEPS(testData[testNum].tF2[vecidx], uut.cacheF2[vecidx],
                          interpCoeffEps);
@@ -569,9 +569,9 @@ testF2LayerCoeffInterp()
       vecidx = 0;
       TUASSERTE(unsigned long, testData[testNum].tFm3.size(),
                 uut.cacheFM3.size());
-      for (unsigned degree = 0; degree < gpstk::CCIR::FM3MaxDegree; degree++)
+      for (unsigned degree = 0; degree < gnsstk::CCIR::FM3MaxDegree; degree++)
       {
-         for (unsigned order = 0; order < gpstk::CCIR::FM3MaxOrder; order++)
+         for (unsigned order = 0; order < gnsstk::CCIR::FM3MaxOrder; order++)
          {
             TUASSERTFEPS(testData[testNum].tFm3[vecidx], uut.cacheFM3[vecidx],
                          interpCoeffEps);
@@ -587,7 +587,7 @@ unsigned CCIR_T ::
 testF2LayerFourier()
 {
    TUDEF("CCIR", "fourier");
-   gpstk::CCIR uut;
+   gnsstk::CCIR uut;
    DEBUGTRACE_ENABLE();
    unsigned numTests = sizeof(testDataFourier)/sizeof(testDataFourier[0]);
    for (unsigned testNum = 0; testNum < numTests; testNum++)
@@ -597,8 +597,8 @@ testF2LayerFourier()
       unsigned vecidx = 0;
       TUASSERTE(unsigned long, testDataFourier[testNum].tCF2.size(),
                 uut.cacheCF2.size());
-      TUASSERTE(unsigned long, gpstk::CCIR::F2MaxDegree, uut.cacheCF2.size());
-      for (unsigned degree = 0; degree < gpstk::CCIR::F2MaxDegree; degree++)
+      TUASSERTE(unsigned long, gnsstk::CCIR::F2MaxDegree, uut.cacheCF2.size());
+      for (unsigned degree = 0; degree < gnsstk::CCIR::F2MaxDegree; degree++)
       {
          TUASSERTFEPS(testDataFourier[testNum].tCF2[vecidx],
                       uut.cacheCF2[vecidx], interpCoeffEps);
@@ -607,8 +607,8 @@ testF2LayerFourier()
       vecidx = 0;
       TUASSERTE(unsigned long, testDataFourier[testNum].tCm3.size(),
                 uut.cacheCM3.size());
-      TUASSERTE(unsigned long, gpstk::CCIR::FM3MaxDegree, uut.cacheCM3.size());
-      for (unsigned degree = 0; degree < gpstk::CCIR::FM3MaxDegree; degree++)
+      TUASSERTE(unsigned long, gnsstk::CCIR::FM3MaxDegree, uut.cacheCM3.size());
+      for (unsigned degree = 0; degree < gnsstk::CCIR::FM3MaxDegree; degree++)
       {
          TUASSERTFEPS(testDataFourier[testNum].tCm3[vecidx],
                       uut.cacheCM3[vecidx], interpCoeffEps);

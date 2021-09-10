@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,14 +41,14 @@
  * Constants as defined in the GPS-ICD-200D and by all RINEX GNSSs
  */
 
-#ifndef GPSTK_GPS_URA_HPP
-#define GPSTK_GPS_URA_HPP
+#ifndef GNSSTK_GPS_URA_HPP
+#define GNSSTK_GPS_URA_HPP
 
 #include "Exception.hpp"
 #include "RinexSatID.hpp"
 #include <cmath>
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup GNSSEph
       //@{
@@ -171,7 +171,7 @@ namespace gpstk
       if(ndx < 0 || ndx > SV_CNAV_NOMINAL_MAX_INDEX)
       {
          InvalidRequest exc("URA index out of range");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }      
       return SV_CNAV_ACCURACY_GPS_MAX_INDEX[ndx];   
    }
@@ -183,7 +183,7 @@ namespace gpstk
       if(ndx < 0 || ndx > SV_CNAV_NOMINAL_MAX_INDEX)
       {
          InvalidRequest exc("URA index out of range");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return SV_CNAV_ACCURACY_GPS_NOM_INDEX[ndx]; 
    }
@@ -192,4 +192,4 @@ namespace gpstk
 
 } // namespace
 
-#endif //GPSTK_GPS_URA_HPP
+#endif //GNSSTK_GPS_URA_HPP

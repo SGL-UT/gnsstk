@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the
@@ -41,15 +41,15 @@
  * Implementation of the IS-GPS-200 Ionosphere model (20.3.3.5.2.5).
  */
 
-#ifndef GPSTK_IONOMODEL_HPP
-#define GPSTK_IONOMODEL_HPP
+#ifndef GNSSTK_IONOMODEL_HPP
+#define GNSSTK_IONOMODEL_HPP
 
 #include "CommonTime.hpp"
 #include "CarrierBand.hpp"
 #include "EngAlmanac.hpp"
 #include "Position.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup GPSsolutions
       //@{
@@ -74,7 +74,7 @@ namespace gpstk
          /// Exception, thrown when attempting to use a model for which not all
          /// the necessary parameters have been specified.
          /// @ingroup exceptiongroup
-      NEW_EXCEPTION_CLASS(InvalidIonoModel, gpstk::Exception);
+      NEW_EXCEPTION_CLASS(InvalidIonoModel, gnsstk::Exception);
  
          /// Default constructor, creates an invalid model for lack of parameters.
       IonoModel() throw() : valid(false) {}
@@ -90,7 +90,7 @@ namespace gpstk
           * @param[in] semicircle_units A boolean indicating params are in
           *                         semicircles (T, default) or radians (F).
           * Note that the IS-GPS-200 defines the algorithm and parameters
-          * in terms of semi-circles, not radians; but that the GPSTk for
+          * in terms of semi-circles, not radians; but that the GNSSTk for
           * historical reasons extracts parameters from a GPS Nav message
           * in power of inverse radians.  Hence the need for the boolean flag.
           */
@@ -160,6 +160,6 @@ namespace gpstk
    };
       //@}
 
-}  // namespace gpstk
+}  // namespace gnsstk
 
-#endif  // GPSTK_IONOMODEL_HPP
+#endif  // GNSSTK_IONOMODEL_HPP

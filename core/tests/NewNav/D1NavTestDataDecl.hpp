@@ -1,19 +1,19 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //  
 //  This software was developed by Applied Research Laboratories at the 
@@ -39,8 +39,8 @@
 /** @file D1NavTestDataDecl.hpp This file contains data declarations
  * for testing BeiDou D1Nav processing in the NavFactory code. */
 
-gpstk::ObsID oidD1NAV;
-gpstk::PackedNavBitsPtr ephD1NAVSF1, ephD1NAVSF2, ephD1NAVSF3,
+gnsstk::ObsID oidD1NAV;
+gnsstk::PackedNavBitsPtr ephD1NAVSF1, ephD1NAVSF2, ephD1NAVSF3,
    almD1NAVSF4p1, almD1NAVSF5p1,
    almD1NAVSF4p7, almD1NAVSF5p7,
    almD1NAVSF4p8, almD1NAVSF5p8,
@@ -54,7 +54,7 @@ gpstk::PackedNavBitsPtr ephD1NAVSF1, ephD1NAVSF2, ephD1NAVSF3,
    almD1NAVSF4p7B, almD1NAVSF5p7B,
    almD1NAVSF4p24B2, almD1NAVSF5p24B2,
    almD1Default1, almD1Default2, almD1Default3;
-gpstk::CommonTime ephD1NAVSF1ct, ephD1NAVSF2ct, ephD1NAVSF3ct,
+gnsstk::CommonTime ephD1NAVSF1ct, ephD1NAVSF2ct, ephD1NAVSF3ct,
    almD1NAVSF4p1ct, almD1NAVSF5p1ct,
    almD1NAVSF4p7ct, almD1NAVSF5p7ct,
    almD1NAVSF4p8ct, almD1NAVSF5p8ct,
@@ -68,4 +68,4 @@ gpstk::CommonTime ephD1NAVSF1ct, ephD1NAVSF2ct, ephD1NAVSF3ct,
    almD1NAVSF4p7Bct, almD1NAVSF5p7Bct,
    almD1NAVSF4p24B2ct, almD1NAVSF5p24B2ct,
    almD1Default123ct;
-gpstk::SatID ephD1NAVSid, almD1NAVSid, almD1NAVSidB;
+gnsstk::SatID ephD1NAVSid, almD1NAVSid, almD1NAVSidB;
