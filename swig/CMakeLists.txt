@@ -162,7 +162,7 @@ elseif( PYTHON_USER_INSTALL )
     install( CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} install --user WORKING_DIRECTORY ${MODULE_PATH})" )
 else()
     install( DIRECTORY DESTINATION ${PYTHON_INSTALL_PREFIX}/lib/python2.7/site-packages )
-    install( CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} -m pip install --prefix=${PYTHON_INSTALL_PREFIX} ${MODULE_PATH} WORKING_DIRECTORY ${MODULE_PATH})" )
+    install( CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} -m pip install --prefix=${PYTHON_INSTALL_PREFIX} ${MODULE_PATH} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})" )
 endif()
 
 if( PIP_WHEEL_SWITCH )
