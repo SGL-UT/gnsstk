@@ -64,8 +64,8 @@ namespace gnsstk
          D1ExpAlmHeaPg = 24,    ///< Page containing expanded almanac health
 
          D2MinSF = 1,           ///< Minimum D2 subframe ID
-         D2MinAlmSF = 5,        ///< Minimum D2 subframe ID containing alm data
-         D2MaxAlmSF = 5,        ///< Maximum D2 subframe ID containing alm data
+         D2EphSF = 1,           ///< D2 subframe ID containing ephemeris data
+         D2AlmSF = 5,           ///< D2 subframe ID containing almanac data
          D2MaxSF = 5,           ///< Maximum D2 subframe ID
       };
    }
