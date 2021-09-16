@@ -2,11 +2,25 @@ gnsstk (12.0.0-1) stable; urgency=low
 
   * Updated to version 12.0.0
   * TKS Split out to separate lib and apps repository.
-  * Add GPSCNavISC class for inter-signal corrections
-  * Add GPSCNav2ISC class for inter-signal corrections
-  * Add GalINavISC and related classes.
+  * Use Pip to install python as wheel when building from source.
+  * Rename gpstk to gnsstk
+  * fix conda recipe for py36 to make sure enum34 is optional dependency.
+  * Allow windows and system install jobs to fail until we fix the concurrent-id.
+  * Deprecate conda package support for numpy=1.8
+  * Deprecate conda package support for python=2.7
+  * Resolve "Major updates for new nav store"
+  * TKS Split Out: Ci updates for issue_479_feature branch
+  * Integrate SWIG changes into feature branch, 3rd try
+  * CI Updates for feature branch issue_479_feature (TKS SPLIT OUT)
+  * Expand IonoModel and IonoModelStore to improve usability
+  * Change implementation of StdNavTimeOffset to make sense for gpstk
+  * Add BDS D2 support to new nav
+  * Add BDS D1 support to new nav
+  * Add support for Galileo I/NAV ISC (BGD)
+  * Implement GPS CNAV-2 ISC support
+  * Implement CNAV ISC processing
 
- -- David Barber <dbarber@sgl-lap096.arlut.utexas.edu>  Thu, 19 Aug 2021 09:20:54 -0500
+ -- David Barber <dbarber@sgl-lap096.arlut.utexas.edu>  Wed, 15 Sep 2021 09:20:54 -0500
 
 gnsstk (11.2.1-1) stable; urgency=low
 

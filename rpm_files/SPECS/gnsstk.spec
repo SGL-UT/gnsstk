@@ -57,11 +57,23 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Aug 19 2021 David Barber <dbarber@arlut.utexas.edu>
-- Updated for v12.0.0 release
-- Add GPSCNavISC class for inter-signal corrections
-- Add GPSCNav2ISC class for inter-signal corrections
-- Add GalINavISC and related classes.
+* Wed Sep 15 2021 David Barber <dbarber@arlut.utexas.edu>
+- Use Pip to instal python wheel.
+- Rename gpstk to gnsstk  
+- fix conda recipe for py36 to make sure enum34 is optional dependency. 
+- Allow windows and system install jobs to fail until we fix the concurrent-id.
+- Deprecate conda package support for numpy=1.8  
+- Resolve "Major updates for new nav store"
+- TKS Split Out: Ci updates for issue_479_feature branch 
+- Integrate SWIG changes into feature branch, 3rd try
+- CI Updates for feature branch issue_479_feature (TKS SPLIT OUT)
+- Expand IonoModel and IonoModelStore to improve usability
+- Change implementation of StdNavTimeOffset to make sense for gpstk
+- Add BDS D2 support to new nav
+- Add BDS D1 support to new nav
+- Add support for Galileo I/NAV ISC (BGD)
+- Implement GPS CNAV-2 ISC support
+- Implement CNAV ISC processing
 * Thu Jul 22 2021 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v11.2.1 release
 - Updated git url ref to new sgl-git
