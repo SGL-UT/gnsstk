@@ -85,9 +85,15 @@ namespace gnsstk
           * @param[in,out] s The stream to write the data to. */
       virtual void dumpHarmonics(std::ostream& s) const;
          /** This is just a method for making the dump output say
-          * "almanac" vs "ephemeris" when appropriate. */
+          * "almanac" vs "ephemeris" when appropriate.  Yes it's
+          * perfectly legitimate to alternate between Ephemeris and
+          * Almanac based on the message type, as no other message
+          * types would be inheriting from OrbitDataKepler. */
       virtual std::string getDataType() const
-      { return "Ephemeris"; }
+      {
+         return (signal.messageType == NavMessageType::Ephemeris
+                 ? "Ephemeris" : "Almanac");
+      }
 
          /** Compute the satellites position and velocity at a time.
           * @note Defaults to using the GPS ellipsoid parameters.

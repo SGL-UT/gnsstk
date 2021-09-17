@@ -67,10 +67,6 @@ namespace gnsstk
           */
       bool validate() const override;
 
-         /** This is just a method for making the dump output say
-          * "Almanac" vs "Ephemeris" when appropriate. */
-      std::string getDataType() const override
-      { return "Almanac"; }
          /** Override dumpHarmonics to hide them in output since GPS
           * CNav2 almanacs don't contain this data. */
       void dumpHarmonics(std::ostream& s) const override

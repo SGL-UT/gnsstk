@@ -105,11 +105,11 @@ namespace gnsstk
               << "Satellite Health" << endl << endl
               << "PRN : " << setw(2) << signal.sat << " / "
               << "SVN : " << setw(2);
-               // std::string svn;
-               // if (getSVN(satID, ctToe, svn))
-               // {
-               //    s << svn;
-               // }
+            std::string svn;
+            if (getSVN(signal.sat, timeStamp, svn))
+            {
+               s << svn;
+            }
             s << endl << endl
               << "           TIMES OF INTEREST"
               << endl << endl

@@ -62,6 +62,7 @@ static std::string demangle(const char* name)
 namespace gnsstk
 {
    const std::string NavData :: dumpTimeFmt("  %6.0g   %3a-%w   %3j   %5.0s   %02m/%02d/%04Y   %02H:%02M:%02S");
+   gnsstk::SatMetaDataStore *NavData::satMetaDataStore = nullptr;
 
    NavData ::
    NavData()

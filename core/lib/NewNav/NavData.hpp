@@ -46,6 +46,12 @@
 #include "NavSignalID.hpp"
 #include "NavMessageID.hpp"
 #include "DumpDetail.hpp"
+#include "SatMetaDataStore.hpp"
+
+#ifdef SWIG
+// make sure SWIG doesn't generate broken accessor methods to this data
+%immutable gnsstk::NavData::satMetaDataStore;
+#endif
 
 namespace gnsstk
 {
@@ -84,15 +90,41 @@ namespace gnsstk
       { return timeStamp; }
          /** Print the contents of this NavData object in a
           * human-readable format.
+          * @note for dump methods to properly map from PRN to SVN,
+          *   the "global" satMetaDataStore pointer must be set to a
+          *   store that has data loaded.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
       virtual void dump(std::ostream& s, DumpDetail dl) const;
+         /** Shortcut to SatMetaDataStore::getSVN() that obviates
+          * having to check the pointer for null.
+          * @param[in] sat The ID of the desired satellite.
+          * @param[in] when The time of interest of the desired satellite.
+          * @param[out] svn If found the satellite's vehicle number.
+          * @return true if the requested satellite mapping was found.
+          */
+      bool getSVN(const SatID& sat, const gnsstk::CommonTime& when,
+                  std::string& svn)
+         const
+      {
+         return ((satMetaDataStore != nullptr) &&
+                 satMetaDataStore->getSVN(sat,when,svn));
+      }
          /** Time stamp used to sort the data.  This should be the
           * appropriate time stamp used when attempting to find the
           * data, usually the transmit time. */
       CommonTime timeStamp;
          /// Source signal identification for this navigation message data.
       NavMessageID signal;
+
+         /// Set this to a valid store to get PRN->SVN translations in dump().
+      static gnsstk::SatMetaDataStore *satMetaDataStore;
+         /// Accessor for python
+      static void setSatMetaDataStore(gnsstk::SatMetaDataStore *smds)
+      { satMetaDataStore = smds; }
+         /// Accessor for python
+      static gnsstk::SatMetaDataStore* getSatMetaDataStore()
+      { return satMetaDataStore; }
 
          /** Format string for printing week in dump().  This defaults
           * to "%4F(%4G)" which is the GPS full and short week, and

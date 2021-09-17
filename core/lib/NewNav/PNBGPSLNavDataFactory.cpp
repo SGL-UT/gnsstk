@@ -220,7 +220,7 @@ enum EphBitInfo
    esiAODO = sf2, ///< AODO subframe index
    esbAODO = 287, ///< AODO start bit
    enbAODO = 5,   ///< AODO number of bits
-   escAODO = 1,   ///< AODO scale factor
+   escAODO = 900, ///< AODO scale factor
 
    esiCic = sf3, ///< Cic subframe index
    esbCic = 60,  ///< Cic start bit
@@ -643,6 +643,7 @@ namespace gnsstk
       eph->codesL2 = static_cast<GPSLNavEph::L2Codes>(
          ephSF[esiL2]->asUnsignedLong(esbL2,enbL2,escL2));
       eph->L2Pdata = ephSF[esiL2P]->asUnsignedLong(esbL2P,enbL2P,escL2P);
+      eph->aodo = ephSF[esiAODO]->asUnsignedLong(esbAODO,enbAODO,escAODO);
       eph->fixFit();
       // cerr << "add LNAV eph" << endl;
       navOut.push_back(p0);

@@ -60,6 +60,12 @@ namespace gnsstk
          /// Set message type to ISC.
       InterSigCorr();
 
+         /** Print the contents of this object in a human-readable
+          * format.
+          * @param[in,out] s The stream to write the data to.
+          * @param[in] dl The level of detail the output should contain. */
+      void dump(std::ostream& s, DumpDetail dl) const override;
+
          /** Get inter-signal corrections for the single-frequency user.
           * @param[in] oid The carrier band and tracking code of the
           *   signal to get the correction for.
@@ -95,6 +101,11 @@ namespace gnsstk
          /** The inter-signal correction value from the navigation
           * data (sometimes known as T<sub>GD</sub> or BGD). */
       double isc;
+
+         /** Label for the ISC value when dumping.  May be changed by
+          * derived classes.  Length should be less than 20
+          * characters. */
+      std::string iscLabel;
 
    protected:
          /** The reference signals to which this ISC applies.  These

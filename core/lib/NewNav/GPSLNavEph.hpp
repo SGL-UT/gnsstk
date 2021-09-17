@@ -98,6 +98,7 @@ namespace gnsstk
           *   LNAV data stream was commanded OFF on the P-code of the
           *   in-phase component of the L2 channel */
       bool L2Pdata;
+      unsigned long aodo; ///< Age of Data Offset in seconds.
    };
 
 
