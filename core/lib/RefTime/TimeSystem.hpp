@@ -43,6 +43,7 @@
 
 #include <iostream>
 #include <string>
+#include "EnumIterator.hpp"
 
 namespace gnsstk
 {
@@ -69,6 +70,10 @@ namespace gnsstk
          // Last MUST BE LAST
       Last        ///< Used to verify that all items are described at compile time
    };
+
+      /** Define an iterator so C++11 can do things like
+       * for (TimeSystem i : TimeSystemIterator()) */
+   typedef EnumIterator<TimeSystem,TimeSystem::Unknown,TimeSystem::Last> TimeSystemIterator;
 
 
       /** Return the number of leap seconds between UTC and TAI, that
