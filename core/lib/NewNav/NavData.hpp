@@ -64,8 +64,10 @@ namespace gnsstk
    class NavData
    {
    public:
-         /// Time format used for the dump method.
+         /// Time format used for the dump method (Full).
       static const std::string dumpTimeFmt;
+         /// Time format used for the dump method (Brief).
+      static const std::string dumpTimeFmtBrief;
          /// Initialize internal data fields.
       NavData();
          /** Checks the contents of this message against known

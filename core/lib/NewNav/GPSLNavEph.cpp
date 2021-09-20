@@ -158,7 +158,7 @@ namespace gnsstk
         << "L2 P Nav data       :" << "       " << (L2Pdata ? "off" : " on")
         << endl << right
         << "Tgd                 :" << setw(14) << setprecision(6) << scientific
-        << tgd << " sec" << endl
+        << uppercase << tgd << " sec" << endl
         << "AODO                :" << setw(10) << aodo << " sec" << endl
         << endl;
       s.flags(oldFlags);

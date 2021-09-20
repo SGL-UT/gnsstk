@@ -61,7 +61,11 @@ namespace gnsstk
    {
       if (dl == DumpDetail::OneLine)
       {
-         NavData::dump(s,dl);
+         s << printTime(timeStamp, dumpTimeFmtBrief) << " " << signal
+           << (signal.messageType == NavMessageType::Almanac
+               ? " toa: " : " toe: ")
+           << printTime(Toe, dumpTimeFmtBrief) << " "
+           << gnsstk::StringUtils::asString(health) << std::endl;
          return;
       }
          // "header"

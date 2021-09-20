@@ -103,17 +103,17 @@ namespace gnsstk
       s << endl
         << "           KLOBUCHAR IONO PARAMETERS" << endl
         << "Parameter              Value" << endl
-        << "alpha[0]     " << setw(16) << alpha[0] << " sec" << endl
-        << "alpha[1]     " << setw(16) << alpha[1] << " sec/semi-circle" << endl
-        << "alpha[2]     " << setw(16) << alpha[2] << " sec/semi-circle**2"
+        << "alpha[0]    " << setw(16) << alpha[0] << " sec" << endl
+        << "alpha[1]    " << setw(16) << alpha[1] << " sec/semi-circle" << endl
+        << "alpha[2]    " << setw(16) << alpha[2] << " sec/semi-circle**2"
         << endl
-        << "alpha[3]     " << setw(16) << alpha[3] << " sec/semi-circle**3"
+        << "alpha[3]    " << setw(16) << alpha[3] << " sec/semi-circle**3"
         << endl
-        << "beta[0]      " << setw(16) << beta[0] << " sec" << endl
-        << "beta[1]      " << setw(16) << beta[1] << " sec/semi-circle" << endl
-        << "beta[2]      " << setw(16) << beta[2] << " sec/semi-circle**2"
+        << "beta[0]     " << setw(16) << beta[0] << " sec" << endl
+        << "beta[1]     " << setw(16) << beta[1] << " sec/semi-circle" << endl
+        << "beta[2]     " << setw(16) << beta[2] << " sec/semi-circle**2"
         << endl
-        << "beta[3]      " << setw(16) << beta[3] << " sec/semi-circle**3"
+        << "beta[3]     " << setw(16) << beta[3] << " sec/semi-circle**3"
         << endl;
 
       s.flags(oldFlags);
