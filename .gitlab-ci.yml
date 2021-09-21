@@ -524,6 +524,7 @@ user_install_windows:
   timeout: 20m
   # Allow failures here to prevent blocking the rest of the pipeline.
   allow_failure: true
+  retry: 2
 
 # System Stage
 # Tests install of Gnsstk on each platform, saves artifacts for downstream builds.
