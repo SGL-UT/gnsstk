@@ -61,6 +61,10 @@ namespace gnsstk
       bool rv = true;
       bool processAlm = (procNavTypes.count(NavMessageType::Almanac) > 0);
       bool processHea = (procNavTypes.count(NavMessageType::Health) > 0);
+         /** @bug The use of gotdata is a kludge.  It appears that the
+          * YumaStream implementation will read invalid data to the
+          * end of the file, and we need it to not do that. */
+      bool gotdata = false;
       try
       {
          YumaStream is(filename.c_str(), ios::in);
@@ -72,11 +76,12 @@ namespace gnsstk
             is >> data;
             if (!is)
             {
-               if (is.eof())
+               if (is.eof() && gotdata)
                   break;
                else
                   return false; // some other error
             }
+            gotdata = true;
             NavDataPtr alm, health;
             if (processAlm)
             {
