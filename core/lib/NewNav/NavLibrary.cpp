@@ -645,6 +645,35 @@ namespace gnsstk
    }
 
 
+   std::set<SatID> NavLibrary ::
+   getIndexSet(const CommonTime& fromTime,
+               const CommonTime& toTime) const
+   {
+      NavSatelliteIDSet fullSatSet = getAvailableSats(fromTime,toTime);
+      std::set<SatID> rv;
+      for (const auto& fssi : fullSatSet)
+      {
+         rv.insert(fssi.sat);
+      }
+      return rv;
+   }
+
+
+   std::set<SatID> NavLibrary ::
+   getIndexSet(NavMessageType nmt,
+               const CommonTime& fromTime,
+               const CommonTime& toTime) const
+   {
+      NavSatelliteIDSet fullSatSet = getAvailableSats(nmt,fromTime,toTime);
+      std::set<SatID> rv;
+      for (const auto& fssi : fullSatSet)
+      {
+         rv.insert(fssi.sat);
+      }
+      return rv;
+   }
+
+
    NavMessageIDSet NavLibrary ::
    getAvailableMsgs(const CommonTime& fromTime,
                     const CommonTime& toTime)
