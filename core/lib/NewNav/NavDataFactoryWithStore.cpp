@@ -952,6 +952,7 @@ namespace gnsstk
    addNavData(const NavDataPtr& nd)
    {
       OrbitDataKepler *odkp = nullptr;
+      OrbitData *odp = nullptr;
       TimeOffsetData *todp = nullptr;
       if (debugLevel)
       {
@@ -960,48 +961,17 @@ namespace gnsstk
       }
       if ((odkp = dynamic_cast<OrbitDataKepler*>(nd.get())) != nullptr)
       {
-         if (((initialTime.getTimeSystem() != odkp->beginFit.getTimeSystem()) &&
-              (initialTime.getTimeSystem() != TimeSystem::Any)) ||
-             ((finalTime.getTimeSystem() != odkp->endFit.getTimeSystem()) &&
-              (finalTime.getTimeSystem() != TimeSystem::Any)))
-         {
-               // different time systems, convert to UTC first.
-            CommonTime t0(initialTime), t1(finalTime), f0(odkp->beginFit),
-               f1(odkp->endFit);
-            BasicTimeSystemConverter btsc;
-            if ((t0.getTimeSystem() != TimeSystem::Any) &&
-                !t0.changeTimeSystem(TimeSystem::UTC, &btsc))
-            {
-               return false;
-            }
-            if ((t1.getTimeSystem() != TimeSystem::Any) &&
-                !t1.changeTimeSystem(TimeSystem::UTC, &btsc))
-            {
-               return false;
-            }
-            if ((f0.getTimeSystem() != TimeSystem::Any) &&
-                !f0.changeTimeSystem(TimeSystem::UTC, &btsc))
-            {
-               return false;
-            }
-            if ((f1.getTimeSystem() != TimeSystem::Any) &&
-                !f1.changeTimeSystem(TimeSystem::UTC, &btsc))
-            {
-               return false;
-            }
-               // Compare UTC times, but set initialTime/finalTime to
-               // original time system
-            if (f0 < t0)
-               initialTime = odkp->beginFit;
-            if (f1 > t1)
-               finalTime = odkp->endFit;
-         }
-         else
-         {
-            initialTime = std::min(initialTime, odkp->beginFit);
-            finalTime = std::max(finalTime, odkp->endFit);
-         }
+         if (!updateInitialFinal(odkp->beginFit, odkp->endFit))
+            return false;
       }
+      else if ((odp = dynamic_cast<OrbitData*>(nd.get())) != nullptr)
+      {
+            // Non-Keplerian orbit data. Tabular, usually.  Use the
+            // reference time to update initial/final time.
+         if (!updateInitialFinal(odp->timeStamp,odp->timeStamp))
+            return false;
+      }
+         // do NOT use else here
       if ((todp = dynamic_cast<TimeOffsetData*>(nd.get())) == nullptr)
       {
             // everything BUT TimeOffsetData
@@ -1015,6 +985,54 @@ namespace gnsstk
       for (const auto& ci : conversions)
       {
          offsetData[ci][nd->getUserTime()][nd->signal] = nd;
+      }
+      return true;
+   }
+
+
+   bool NavDataFactoryWithStore ::
+   updateInitialFinal(const CommonTime& begin, const CommonTime& end)
+   {
+      if (((initialTime.getTimeSystem() != begin.getTimeSystem()) &&
+           (initialTime.getTimeSystem() != TimeSystem::Any)) ||
+          ((finalTime.getTimeSystem() != end.getTimeSystem()) &&
+           (finalTime.getTimeSystem() != TimeSystem::Any)))
+      {
+            // different time systems, convert to UTC first.
+         CommonTime t0(initialTime), t1(finalTime), f0(begin),
+            f1(end);
+         BasicTimeSystemConverter btsc;
+         if ((t0.getTimeSystem() != TimeSystem::Any) &&
+             !t0.changeTimeSystem(TimeSystem::UTC, &btsc))
+         {
+            return false;
+         }
+         if ((t1.getTimeSystem() != TimeSystem::Any) &&
+             !t1.changeTimeSystem(TimeSystem::UTC, &btsc))
+         {
+            return false;
+         }
+         if ((f0.getTimeSystem() != TimeSystem::Any) &&
+             !f0.changeTimeSystem(TimeSystem::UTC, &btsc))
+         {
+            return false;
+         }
+         if ((f1.getTimeSystem() != TimeSystem::Any) &&
+             !f1.changeTimeSystem(TimeSystem::UTC, &btsc))
+         {
+            return false;
+         }
+            // Compare UTC times, but set initialTime/finalTime to
+            // original time system
+         if (f0 < t0)
+            initialTime = begin;
+         if (f1 > t1)
+            finalTime = end;
+      }
+      else
+      {
+         initialTime = std::min(initialTime, begin);
+         finalTime = std::max(finalTime, end);
       }
       return true;
    }
