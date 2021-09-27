@@ -5,6 +5,8 @@
 # - CI_TOKEN: password to pull from gitlab repository
 # - REPO_HOST: gitlab host
 # - DOCKER_REGISTRY: registry to pull internal images
+# - CLEAN_GNSSTK_WRKSP:  purge build pipeline directories in local workspace
+# - BLD_VS2019: activate windows jobs with VS2019
 
 include:
   - project: sgl-tks/ci-control
@@ -20,6 +22,7 @@ stages:
 - downstream_ci
 - deploy
 - downstream_stack
+- clean
 
 variables:
   # Default cmake arguments
@@ -273,28 +276,42 @@ build_redhat_8:
       - build/
 
 build_windows:
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/$CI_PIPELINE_ID
   stage: build
   needs: []
   extends: .normal_build
   tags:
-    - win10
+    - win10-vs2019 
   script:
-# incremental builds
-#    - if not exist "%CI_PROJECT_DIR%/build/" mkdir "%CI_PROJECT_DIR%/build"
-# non-incremental builds
     - mkdir build
     - cd build
     - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
-    - cmake --build . --config Release
+    - cmake --build . --config Release -- /m
   artifacts:
     paths:
     - build/
-# used for incremental builds
-#  cache:
-#    paths:
-#    - build/
-  timeout: 30m
 
+build_windows_vs2019:
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019
+  only:
+    variables:
+      - $BLD_VS2019 == "True"
+  stage: build
+  needs: []
+  extends: .normal_build
+  tags:
+    - win10-vs2019
+  script:
+    - mkdir build
+    - cd build
+    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ../
+    - cmake --build . --config Release -- /m
+  artifacts:
+    paths:
+      - build/
+  allow_failure: true
 
 # Test Stage
 # Runs all tests of GNSSTK for each platform
@@ -429,11 +446,14 @@ test_redhat_8:
     - build_redhat_8
 
 test_windows:
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/$CI_PIPELINE_ID
+    GIT_STRATEGY: none
   stage: test
   needs: [build_windows]
   extends: .normal_build
   tags:
-    - win10
+    - win10-vs2019
   script:
     - cd build
     - cmake --build . --target RUN_TESTS --config Release
@@ -444,7 +464,33 @@ test_windows:
     - build/swig/
   dependencies:
     - build_windows
-  timeout: 5m
+  timeout: 10m
+  # Allow failures here to prevent blocking the rest of the pipeline.
+  allow_failure: true
+
+test_windows_vs2019:
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019
+    GIT_STRATEGY: none
+  only:
+    variables:
+      - $BLD_VS2019 == "True"
+  stage: test
+  needs: [build_windows_vs2019]
+  extends: .normal_build
+  tags:
+    - win10-vs2019
+  script:
+    - cd build
+    - cmake --build . --target RUN_TESTS --config Release
+  artifacts:
+    when: on_failure
+    paths:
+      - build/Testing/Temporary/
+      - build/swig/
+  dependencies:
+    - build_windows_vs2019
+  timeout: 10m
   # Allow failures here to prevent blocking the rest of the pipeline.
   allow_failure: true
 
@@ -506,10 +552,13 @@ user_install_redhat_8:
 
 user_install_windows:
   stage: install
-  needs: [build_windows]
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/$CI_PIPELINE_ID
+    GIT_STRATEGY: none
+  needs: [build_windows,test_windows]
   extends: .normal_build
   tags:
-    - win10
+    - win10-vs2019
   script:
     - cd build
     - cmake --build . --config Release --target install
@@ -520,10 +569,32 @@ user_install_windows:
       - build/install/
   dependencies:
     - build_windows
+    - test_windows
   timeout: 20m
   # Allow failures here to prevent blocking the rest of the pipeline.
   allow_failure: true
   retry: 2
+
+user_install_windows_vs2019:
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019
+    GIT_STRATEGY: none
+  only:
+    variables:
+      - $BLD_VS2019 == "True"
+  stage: install
+  needs: [build_windows_vs2019,test_windows_vs2019]
+  extends: .normal_build
+  tags:
+    - win10-vs2019
+  script:
+    - cd build
+    - cmake --build . --config Release --target install
+  dependencies:
+    - build_windows_vs2019
+    - test_windows_vs2019
+  allow_failure: true
+  timeout: 20m
 
 # System Stage
 # Tests install of Gnsstk on each platform, saves artifacts for downstream builds.
@@ -865,3 +936,19 @@ deploy_redhat_py36:
 #   artifacts:
 #     paths:
 #       - build/
+
+clean_gpstk_win10_wrksp:
+  variables:
+    PS_DATE_EXP: '{($$_.LastWriteTime -lt $$(Get-Date).Adddays(-1))}'
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_JOB_NAME
+  only:
+    variables:
+      - $CLEAN_GNSSTK_WRKSP == "True"
+  stage: clean
+  tags:
+    - win10-vs2019
+  script:
+    - powershell -Command "Get-ChildItem -Path 'C:\GitLab-Runner\builds\gnsstk' -Directory | Where-Object $PS_DATE_EXP | Remove-Item -recurse -force"
+  dependencies: []
+  # Allow failures here to prevent failing of the pipeline.
+  allow_failure: true
