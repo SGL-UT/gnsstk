@@ -316,6 +316,40 @@ namespace gnsstk
        * }
        * \endcode
        *
+       * @subsubsection NavDataFactoryDatum Data Field Retrieval Example
+       *
+       * This code snippet shows how one might take the results of a
+       * class derived from PNBNavDataFactory and immediately process
+       * the resulting decoded messages, looking at individual data
+       * fields.  Something like this would be used if there's no
+       * intent to store the data internally for searching.
+       *
+       * \code
+       * if (!pnbFactory.addData(pnb, ndList, cadence))
+       * {
+       *    return false;
+       * }
+       *    // process any results from addData
+       * std::shared_ptr<gnsstk::GPSLNavEph> gpsLNavEph;
+       * std::shared_ptr<gnsstk::OrbitDataKepler> odk;
+       * for (auto& i : ndList)
+       * {
+       *       // using = treats the expression as a boolean which
+       *       // means the pointer is valid.
+       *    if (gpsLNavEph = std::dynamic_pointer_cast<gnsstk::GPSLNavEph>(i))
+       *    {
+       *       cout << "Found a GPS LNAV ephemeris. IODC=" << hex
+       *            << gpsLNavEph->iodc << endl;
+       *    }
+       *       // No else because inheritance means data fields of
+       *       // interest can be in more than one place.
+       *    if (odk = std::dynamic_pointer_cast<gnsstk::OrbitDataKepler>(i))
+       *    {
+       *       cout << "Found Keplerian orbit parameters, A=" << odk->A << endl;
+       *    }
+       * }
+       * \endcode
+       *
        * @section NavFactorySearchParams Search Parameters
        *
        * The NavLibrary entry points have a common set of parameters
@@ -602,7 +636,7 @@ namespace gnsstk
        *     NavLibrary::addFactory() method to add the specific
        *     format factory for processing the input data.
        *   * If you don't need the high-level interface and just want
-       *     to retrieve the NavData-derived objects, use the
+       *     to retrieve the objects derived from NavData, use the
        *     appropriate NavDataFactory::find() object/method.
        *
        * \li Get the health of the subject satellite...
@@ -707,7 +741,7 @@ namespace gnsstk
        *     message bits into their engineering units counterparts
        *     that are derived from NavData.  In short, the
        *     PNBNavDataFactory classes take a PackedNavBits object as
-       *     input and produce 0 or more NavData-derived objects as
+       *     input and produce 0 or more objects derived from NavData as
        *     output.  These classes are typically used internally by
        *     NavDataFactory classes.
        *
@@ -774,8 +808,8 @@ namespace gnsstk
        * libraries at run-time.
        *
        * There is no NavLibrary equivalent for PNBNavDataFactory.
-       * Instead, a NavDataFactory-derived class that is expected to
-       * process the raw navigation messages from multiple systems
+       * Instead, a class derived from NavDataFactory that is expected
+       * to process the raw navigation messages from multiple systems
        * would use an instance of this class to decode the raw
        * navigation messages in the form of PackedNavBits.  Data goes
        * through the translation process using
