@@ -316,6 +316,40 @@ namespace gnsstk
        * }
        * \endcode
        *
+       * @subsubsection NavDataFactoryDatum Data Field Retrieval Example
+       *
+       * This code snippet shows how one might take the results of a
+       * PNBNavDataFactory-derived class and immediately process the
+       * resulting decoded messages, looking at individual data
+       * fields.  Something like this would be used if there's no
+       * intent to store the data internally for searching.
+       *
+       * \code
+       * if (!pnbFactory.addData(pnb, ndList, cadence))
+       * {
+       *    return false;
+       * }
+       *    // process any results from addData
+       * std::shared_ptr<gnsstk::GPSLNavEph> gpsLNavEph;
+       * std::shared_ptr<gnsstk::OrbitDataKepler> odk;
+       * for (auto& i : ndList)
+       * {
+       *       // using = treats the expression as a boolean which
+       *       // means the pointer is valid.
+       *    if (gpsLNavEph = std::dynamic_pointer_cast<gnsstk::GPSLNavEph>(i))
+       *    {
+       *       cout << "Found a GPS LNAV ephemeris. IODC=" << hex
+       *            << gpsLNavEph->iodc << endl;
+       *    }
+       *       // No else because inheritance means data fields of
+       *       // interest can be in more than one place.
+       *    if (odk = std::dynamic_pointer_cast<gnsstk::OrbitDataKepler>(i))
+       *    {
+       *       cout << "Found Keplerian orbit parameters, A=" << odk->A << endl;
+       *    }
+       * }
+       * \endcode
+       *
        * @section NavFactorySearchParams Search Parameters
        *
        * The NavLibrary entry points have a common set of parameters
