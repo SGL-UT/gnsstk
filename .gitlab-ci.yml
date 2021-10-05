@@ -282,7 +282,7 @@ build_windows:
   needs: []
   extends: .normal_build
   tags:
-    - win10-vs2019 
+    - win10-vs2019
   script:
     - mkdir build
     - cd build
