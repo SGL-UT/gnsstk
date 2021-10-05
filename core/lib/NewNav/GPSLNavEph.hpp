@@ -69,14 +69,31 @@ namespace gnsstk
           */
       bool validate() const override;
 
+         /** Returns the time when the navigation message would have
+          * first been available to the user equipment, i.e. the time
+          * at which the final bit of a given broadcast navigation
+          * message is received.  This is used by
+          * NavDataFactoryWithStore::find() in User mode.
+          * @return most recent transmit time + 6s.
+          */
+      CommonTime getUserTime() const override;
+
          /** Fill the beginFit and endFit values for this object.
           * @pre Toe, iodc, fitIntFlag and xmitTime must all be set. */
       void fixFit();
+
+         /** Print the contents of this NavData object in a (usually)
+          * human-readable format.
+          * @param[in,out] s The stream to write the data to.
+          * @param[in] dl The level of detail the output should contain. */
+      void dump(std::ostream& s, DumpDetail dl) const override;
 
          /** Dump SV status information (e.g. health).
           * @param[in,out] s The stream to write the data to. */
       void dumpSVStatus(std::ostream& s) const override;
 
+      CommonTime xmit2;   ///< Transmit time for subframe 2.
+      CommonTime xmit3;   ///< Transmit time for subframe 3.
       uint32_t pre2;      ///< The TLM preamble from word 1 of subframe 2.
       uint32_t pre3;      ///< The TLM preamble from word 1 of subframe 3.
       uint32_t tlm2;      ///< The TLM message from word 1 of subframe 2.
@@ -98,7 +115,7 @@ namespace gnsstk
           *   LNAV data stream was commanded OFF on the P-code of the
           *   in-phase component of the L2 channel */
       bool L2Pdata;
-      unsigned long aodo; ///< Age of Data Offset in seconds.
+      long aodo;          ///< Age of Data Offset in seconds (-1=uninitialized).
    };
 
 

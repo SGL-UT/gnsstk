@@ -111,10 +111,10 @@ getUserTimeTest()
 {
    TUDEF("GPSLNavEph", "getUserTime");
    gnsstk::GPSLNavEph obj;
-   obj.timeStamp = gnsstk::GPSWeekSecond(2100,135.0);
-   gnsstk::CommonTime exp(gnsstk::GPSWeekSecond(2100,135.0));
-      // ephemeris = 3 subframes * 6 seconds = 18 seconds.
-   exp = exp + 18.0;
+   obj.xmitTime = gnsstk::GPSWeekSecond(2100,135.0);
+   obj.xmit2 = gnsstk::GPSWeekSecond(2100,111.0);
+   obj.xmit3 = gnsstk::GPSWeekSecond(2100,147.0);
+   gnsstk::CommonTime exp(gnsstk::GPSWeekSecond(2100,153.0));
    TUASSERTE(gnsstk::CommonTime, exp, obj.getUserTime());
    TURETURN();
 }

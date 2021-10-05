@@ -570,6 +570,8 @@ namespace gnsstk
          // OrbitData = empty
          // OrbitDataKepler
       eph->xmitTime = eph->timeStamp;
+      eph->xmit2 = ephSF[sf2]->getTransmitTime();
+      eph->xmit3 = ephSF[sf3]->getTransmitTime();
       double toe = ephSF[esitoe]->asUnsignedDouble(esbtoe,enbtoe,esctoe);
       double toc = ephSF[esitoc]->asUnsignedDouble(esbtoc,enbtoc,esctoc);
       unsigned wn = ephSF[esiWN]->asUnsignedLong(esbWN,enbWN,escWN);

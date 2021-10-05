@@ -52,6 +52,7 @@ namespace gnsstk
    {
       OneLine, ///< Limit output to minimal information on a single line.
       Brief,   ///< Limit output to <= 5 lines of minimal information.
+      Terse,   ///< Aptly named, multiple lines of output with no labels.
       Full     ///< Include all detailed information.
    };
 
