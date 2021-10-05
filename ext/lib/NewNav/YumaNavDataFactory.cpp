@@ -40,6 +40,7 @@
 #include "YumaStream.hpp"
 #include "YumaHeader.hpp"
 #include "GPSLNavHealth.hpp"
+#include "GPSWeekSecond.hpp"
 
 using namespace std;
 

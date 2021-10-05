@@ -80,7 +80,6 @@
 #include "Exception.hpp"
 #include "EphTime.hpp"
 #include "Position.hpp"
-#include "XvtStore.hpp"
 
 // geomatics
 #include "EOPStore.hpp"
