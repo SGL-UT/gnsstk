@@ -199,10 +199,18 @@ namespace gnsstk
       // ---------------- BeiDou ----------------------------------
       /// The maximum number of active satellites in the Compass constellation.
    const long MAX_PRN_COM     = 63;
+      /// The first ranging code number for BeiDou GEO phase II satellites
+   const long MIN_GEO_BDS_II  = 1;
+      /// The last ranging code number for BeiDou GEO phase II satellites
+   const long MAX_GEO_BDS_II  = 5;
       /// The first ranging code number for BeiDou MEO/IGSO satellites
    const long MIN_MEO_BDS     = 6;
       /// The last ranging code number for BeiDou MEO/IGSO satellites
    const long MAX_MEO_BDS     = 58;
+      /// The first ranging code number for BeiDou GEO phase III satellites
+   const long MIN_GEO_BDS_III = 59;
+      /// The last ranging code number for BeiDou GEO phase III satellites
+   const long MAX_GEO_BDS_III = 63;
 
       // ---------------- QZSS ----------------------------------
       // PRN range defined in QZSS IS Table 3.2.2-2
