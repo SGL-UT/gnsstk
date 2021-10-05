@@ -45,7 +45,6 @@
 
 #include "EphemerisRange.hpp"
 #include "EngEphemeris.hpp"
-#include "GPSEphemerisStore.hpp"
 #include "MiscMath.hpp"
 #include "GNSSconstants.hpp"
 #include "TimeString.hpp"
@@ -61,7 +60,7 @@ namespace gnsstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& eph,
       EllipsoidModel& em,
       bool svTime)
       : obstime(time), svid(svid), ord(0), wonky(false)
@@ -80,7 +79,7 @@ namespace gnsstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& eph,
       EllipsoidModel& em,
       const IonoModelStore& ion,
       CarrierBand band,
@@ -103,7 +102,7 @@ namespace gnsstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& eph,
       EllipsoidModel& em,
       const TropModel& tm,
       bool svTime)
@@ -118,7 +117,7 @@ namespace gnsstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& eph,
       EllipsoidModel& em,
       const TropModel& tm,
       const IonoModelStore& ion,
@@ -141,7 +140,7 @@ namespace gnsstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& eph,
       EllipsoidModel& em,
       bool svTime,
       double gamma)
@@ -167,7 +166,7 @@ namespace gnsstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& eph,
       const EllipsoidModel& em,
       const TropModel& tm,
       bool svTime,
@@ -186,7 +185,7 @@ namespace gnsstk
    void ObsRngDev::computeOrdRx(
       const double obs,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& eph,
       const EllipsoidModel& em)
    {
       CorrectedEphemerisRange cer;
@@ -194,14 +193,8 @@ namespace gnsstk
       azimuth = cer.azimuth;
       elevation = cer.elevation;
       ord = obs - rho;
-
-      if (typeid(eph) == typeid(GPSEphemerisStore))
-      {
-         const GPSEphemerisStore& bce = dynamic_cast<const GPSEphemerisStore&>(eph);
-         const GPSEphemeris& eph = bce.findEphemeris(svid, obstime);
-         iodc = eph.IODC;
-         health = eph.health;
-      }
+      iodc = cer.iodc;
+      health = cer.health;
 
       if (debug)
       {
@@ -226,7 +219,7 @@ namespace gnsstk
    void ObsRngDev::computeOrdTx(
       double obs,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& eph,
       const EllipsoidModel& em)
    {
       CorrectedEphemerisRange cer;

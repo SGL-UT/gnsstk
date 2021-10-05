@@ -48,7 +48,7 @@
 
 #include "CommonTime.hpp"
 #include "CarrierBand.hpp"
-#include "XvtStore.hpp"
+#include "NavLibrary.hpp"
 #include "Exception.hpp"
 #include "GPSEllipsoid.hpp"
 #include "IonoModelStore.hpp"
@@ -96,7 +96,7 @@ namespace gnsstk
                 const SatID& svid,
                 const CommonTime& time,
                 const Position& rxpos,
-                const XvtStore<SatID>& eph,
+                NavLibrary& eph,
                 EllipsoidModel& em,
                 bool svTime = false);
          /**
@@ -117,7 +117,7 @@ namespace gnsstk
                 const SatID& svid,
                 const CommonTime& time,
                 const Position& rxpos,
-                const XvtStore<SatID>& eph,
+                NavLibrary& eph,
                 EllipsoidModel& em,
                 const IonoModelStore& ion,
                 CarrierBand band,
@@ -139,7 +139,7 @@ namespace gnsstk
                 const SatID& svid,
                 const CommonTime& time,
                 const Position& rxpos,
-                const XvtStore<SatID>& eph,
+                NavLibrary& eph,
                 EllipsoidModel& em,
                 const TropModel& tm,
                 bool svTime = false);
@@ -163,7 +163,7 @@ namespace gnsstk
                 const SatID& svid,
                 const CommonTime& time,
                 const Position& rxpos,
-                const XvtStore<SatID>& eph,
+                NavLibrary& eph,
                 EllipsoidModel& em,
                 const TropModel& tm,
                 const IonoModelStore& ion,
@@ -189,7 +189,7 @@ namespace gnsstk
                 const SatID& svid,
                 const CommonTime& time,
                 const Position& rxpos,
-                const XvtStore<SatID>& eph,
+                NavLibrary& eph,
                 EllipsoidModel& em,
                 bool svTime = false,
                 double gamma = GAMMA_GPS);
@@ -214,7 +214,7 @@ namespace gnsstk
                 const SatID& svid,
                 const CommonTime& time,
                 const Position& rxpos,
-                const XvtStore<SatID>& eph,
+                NavLibrary& eph,
                 const EllipsoidModel& em,
                 const TropModel& tm,
                 bool svTime = false,
@@ -289,7 +289,7 @@ namespace gnsstk
    private:
       void computeOrd(double obs,
                       const Position& rxpos,
-                      const XvtStore<SatID>& eph,
+                      NavLibrary& eph,
                       const EllipsoidModel& em,
                       bool svTime)
       {
@@ -304,12 +304,12 @@ namespace gnsstk
 
       void computeOrdTx(double obs,
                         const Position& rxpos,
-                        const XvtStore<SatID>& eph,
+                        NavLibrary& eph,
                         const EllipsoidModel& em);
    
       void computeOrdRx(double obs,
                         const Position& rxpos,
-                        const XvtStore<SatID>& eph,
+                        NavLibrary& eph,
                         const EllipsoidModel& em);
 
       void computeTrop(const TropModel& tm);

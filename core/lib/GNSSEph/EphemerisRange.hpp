@@ -47,7 +47,8 @@
 #include "CommonTime.hpp"
 #include "SatID.hpp"
 #include "Position.hpp"
-#include "XvtStore.hpp"
+#include "NavLibrary.hpp"
+#include "ValidType.hpp"
 
 namespace gnsstk
 {
@@ -73,7 +74,7 @@ namespace gnsstk
          const CommonTime& tr_nom,
          const Position& Rx,
          const SatID sat,
-         const XvtStore<SatID>& Eph);
+         NavLibrary& eph);
 
          /// Compute the corrected range at TRANSMIT time, from
          /// receiver at position Rx, to the GPS satellite given by
@@ -85,7 +86,7 @@ namespace gnsstk
          const double& pr,
          const Position& Rx,
          const SatID sat,
-         const XvtStore<SatID>& Eph);
+         NavLibrary& eph);
 
          /// Compute the corrected range at TRANSMIT time, from
          /// receiver at position Rx, to the GPS satellite given by
@@ -100,7 +101,7 @@ namespace gnsstk
          const CommonTime& tr_nom,
          const Position& Rx,
          const SatID sat,
-         const XvtStore<SatID>& Eph);
+         NavLibrary& eph);
 
          /// Compute the corrected range at TRANSMIT time, from
          /// receiver at position Rx, to the GPS satellite given by
@@ -112,7 +113,7 @@ namespace gnsstk
          const double& pr,
          const Position& Rx,
          const SatID sat,
-         const XvtStore<SatID>& Eph);
+         NavLibrary& eph);
 
          /// The computed raw (geometric) range in meters.
       double rawrange;
@@ -141,11 +142,22 @@ namespace gnsstk
       Triple cosines;
          /// The satellite position (m) and velocity (m/s) in ECEF coordinates.
       Xvt svPosVel;
+         /// The IODC of the GPS LNAV ephemeris, invalid for other GNSSes
+      vshort iodc;
+         /** The health bits from the GPS LNAV ephemeris, invalid for
+          * other GNSSes */
+      vshort health;
+
+         /** This is a kludge to allow people to do compute ORDs using
+          * "Nearest" instead of "User" (User is the default). */
+      static NavSearchOrder order;
 
    private:
          // These are just helper functions to keep from repeating code
       void updateCER(const Position& Rx);
       void rotateEarth(const Position& Rx);
+      bool getXvt(NavLibrary& navLib, const NavSatelliteID& sat,
+                  const CommonTime& when);
 
    }; // end class CorrectedEphemerisRange
 

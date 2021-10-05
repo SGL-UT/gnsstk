@@ -55,7 +55,7 @@
 #include "CommonTime.hpp"
 #include "SatID.hpp"
 #include "Position.hpp"
-#include "XvtStore.hpp"
+#include "NavLibrary.hpp"
 #include "TropModel.hpp"
 
 namespace gnsstk {
@@ -84,14 +84,14 @@ double IonosphereModelCorrection(const gnsstk::IonoModelStore& ionoModel,
 
 /// Given a satellite id, a time, and an ephemeris store, retrieves the
 /// satellite location/velocity in xvt instance. This is a relatively thin
-/// wrapper for XvtStore.getXvt() to bring the method into the same
+/// wrapper for NavLibrary.getXvt() to bring the method into the same
 /// namespace as the other range calculations.
 /// @param sat_id Identifier for the satellite
 /// @param time The time of interest.
 /// @param ephemeris The ephemeris to query against.
 /// @return Xvt instance containing satellite location/velocity
 gnsstk::Xvt getSvXvt(const gnsstk::SatID& sat_id, const gnsstk::CommonTime& time,
-        const gnsstk::XvtStore<gnsstk::SatID>& ephemeris);
+        NavLibrary& ephemeris);
 
 /// Calculate the raw range at RECEIVE time per RECEIVER clock.
 /// @param rx_loc The location of the receiver.
@@ -102,7 +102,7 @@ gnsstk::Xvt getSvXvt(const gnsstk::SatID& sat_id, const gnsstk::CommonTime& time
 /// @return Range in meters
 double RawRange1(const gnsstk::Position& rx_loc, const gnsstk::SatID& sat_id,
         const gnsstk::CommonTime& time,
-        const gnsstk::XvtStore<gnsstk::SatID>& ephemeris, gnsstk::Xvt& sv_xvt);
+        NavLibrary& ephemeris, gnsstk::Xvt& sv_xvt);
 
 /// Calculate the raw range at TRANSMIT time per the RECEIVER clock.
 /// @param pseudorange Pseudorange in meters to seed the calculation.
@@ -114,7 +114,7 @@ double RawRange1(const gnsstk::Position& rx_loc, const gnsstk::SatID& sat_id,
 /// @return Range in meters
 double RawRange2(double pseudorange, const gnsstk::Position& rx_loc,
         const gnsstk::SatID& sat_id, const gnsstk::CommonTime& time,
-        const gnsstk::XvtStore<gnsstk::SatID>& ephemeris, gnsstk::Xvt& sv_xvt);
+        NavLibrary& ephemeris, gnsstk::Xvt& sv_xvt);
 
 /// Calculate the raw range at TRANSMIT time per the SATELLITE clock
 /// @param pseudorange Pseudorange in meters to seed the calculation.
@@ -126,7 +126,7 @@ double RawRange2(double pseudorange, const gnsstk::Position& rx_loc,
 /// @return Range in meters
 double RawRange3(double pseudorange, const gnsstk::Position& rx_loc,
         const gnsstk::SatID& sat_id, const gnsstk::CommonTime& time,
-        const gnsstk::XvtStore<gnsstk::SatID>& ephemeris, gnsstk::Xvt& sv_xvt);
+        NavLibrary& ephemeris, gnsstk::Xvt& sv_xvt);
 
 /// Calculate the raw range at TRANSMIT time per RECEIVER clock, without
 /// seeding the pseudorange.
@@ -138,7 +138,7 @@ double RawRange3(double pseudorange, const gnsstk::Position& rx_loc,
 /// @return Range in meters
 double RawRange4(const gnsstk::Position& rx_loc, const gnsstk::SatID& sat_id,
         const gnsstk::CommonTime& time,
-        const gnsstk::XvtStore<gnsstk::SatID>& ephemeris, gnsstk::Xvt& sv_xvt);
+        NavLibrary& ephemeris, gnsstk::Xvt& sv_xvt);
 
 /// Calculate the range delta due to clock bias.
 /// Note: Most of the work is actually done by the Xvt object.
@@ -188,7 +188,7 @@ double calculate_ord(const std::vector<CarrierBand>& bands,
         const gnsstk::CommonTime& receive_time,
         const gnsstk::IonoModelStore& iono_model,
         const gnsstk::TropModel& trop_model,
-        const gnsstk::XvtStore<gnsstk::SatID>& ephemeris,
+        NavLibrary& ephemeris,
         int range_method);
  */
 
