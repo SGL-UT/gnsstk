@@ -139,6 +139,7 @@ public:
    unsigned setTypeFilterTest();
       /// Exercise loadIntoMap by loading data with different options in place.
    unsigned loadIntoMapTest();
+   unsigned getFactoryTest();
 };
 
 
@@ -541,6 +542,21 @@ loadIntoMapTest()
 }
 
 
+unsigned MultiFormatNavDataFactory_T ::
+getFactoryTest()
+{
+   TUDEF("MultiFormatNavDataFactory", "getFactory");
+   gnsstk::MultiFormatNavDataFactory uut;
+   std::shared_ptr<gnsstk::SP3NavDataFactory> sp3fact =
+      uut.getFactory<gnsstk::SP3NavDataFactory>();
+   TUASSERTE(bool, true, static_cast<bool>(sp3fact));
+   std::shared_ptr<gnsstk::Exception> shouldFail =
+      uut.getFactory<gnsstk::Exception>();
+   TUASSERTE(bool, false, static_cast<bool>(shouldFail));
+   TURETURN();
+}
+
+
 int main()
 {
    MultiFormatNavDataFactory_T testClass;
@@ -556,6 +572,7 @@ int main()
    errorTotal += testClass.setValidityFilterTest();
    errorTotal += testClass.setTypeFilterTest();
    errorTotal += testClass.loadIntoMapTest();
+   errorTotal += testClass.getFactoryTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

@@ -40,6 +40,7 @@
 #define GNSSTK_MULTIFORMATNAVDATAFACTORY_HPP
 
 #include "NavDataFactoryWithStoreFile.hpp"
+#include "NDFUniqIterator.hpp"
 
 namespace gnsstk
 {
@@ -64,7 +65,11 @@ namespace gnsstk
        *   implemented using polymorphism so that this class behaves
        *   correctly when used in conjunction with NavLibrary.
        * @warning Overridden methods affect every instance of this
-       *   class due to the static data. */
+       *   class due to the static data.
+       * @warning Instantiating more than one of this class at any
+       *   time will likely have unexpected results due to the shared
+       *   (static) data stored internally.  DON'T DO IT.
+       */
    class MultiFormatNavDataFactory : public NavDataFactoryWithStoreFile
    {
    public:
@@ -282,6 +287,13 @@ namespace gnsstk
           * @param[in] dl The level of detail the output should contain. */
       void dump(std::ostream& s, DumpDetail dl) const;
 
+         /** Get the instance of a given factory type, specified by
+          * the template argument.  This allows you to get a specific
+          * factory if for some reason you need to tweak its
+          * settings. */
+      template <class Fact>
+      std::shared_ptr<Fact> getFactory();
+
    protected:
          /** Known nav data factories, organized by signal to make
           * searches simpler and/or quicker.  Declared static so that
@@ -297,6 +309,21 @@ namespace gnsstk
                        NavMessageMap& navMap) override
       { return false; }
    };
+
+
+   template <class Fact>
+   std::shared_ptr<Fact> MultiFormatNavDataFactory ::
+   getFactory()
+   {
+      std::shared_ptr<Fact> rv;
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories()))
+      {
+         rv = std::dynamic_pointer_cast<Fact>(fi.second);
+         if (rv)
+            return rv;
+      }
+      return rv;
+   }
 
       //@}
 
