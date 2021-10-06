@@ -52,7 +52,7 @@
 #include "Stats.hpp"
 #include "Matrix.hpp"
 #include "Namelist.hpp"
-#include "XvtStore.hpp"
+#include "NavLibrary.hpp"
 #include "TropModel.hpp"
 
 namespace gnsstk
@@ -372,7 +372,7 @@ namespace gnsstk
       ///                     which there is no ephemeris.
       /// @param Pseudorange input std::vector<double> of raw pseudoranges (parallel
       ///                     to Sats), in meters
-      /// @param pEph        input pointer to gnsstk::XvtStore<SatID> to be used
+      /// @param eph[in]     NavLibrary to be used
       /// @param SVP         output gnsstk::Matrix<double> of dimension (N,4), N is
       ///                     the number of satellites in Sats[] (marked or not),
       ///                     on output this contains the satellite positions at
@@ -383,7 +383,7 @@ namespace gnsstk
       int PreparePRSolution(const CommonTime& Tr,
                             std::vector<SatID>& Sats,
                             const std::vector<double>& Pseudorange,
-                            const XvtStore<SatID> *pEph,
+                            NavLibrary& eph,
                             Matrix<double>& SVP) const;
 
       /// Compute a single autonomous pseudorange solution, after calling
@@ -438,7 +438,7 @@ namespace gnsstk
       int RAIMComputeUnweighted(const CommonTime& Tr,
                                 std::vector<SatID>& Satellites,
                                 const std::vector<double>& Pseudorange,
-                                const XvtStore<SatID> *pEph,
+                                NavLibrary& eph,
                                 TropModel *pTropModel);
 
       /// Compute a position/time solution, given satellite PRNs and pseudoranges
@@ -470,7 +470,7 @@ namespace gnsstk
                       std::vector<SatID>& Satellites,
                       const std::vector<double>& Pseudorange,
                       const Matrix<double>& invMC,
-                      const XvtStore<SatID> *pEph,
+                      NavLibrary& eph,
                       TropModel *pTropModel);
 
       /// Compute DOPs using the partials matrix from the last successful solution.

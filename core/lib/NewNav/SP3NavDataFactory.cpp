@@ -42,6 +42,9 @@
 #include "SP3Header.hpp"
 #include "SP3Data.hpp"
 #include "OrbitDataSP3.hpp"
+#include "Rinex3ClockStream.hpp"
+#include "Rinex3ClockHeader.hpp"
+#include "Rinex3ClockData.hpp"
 #include "TimeString.hpp"
 #include "MiscMath.hpp"
 
@@ -67,9 +70,18 @@ namespace gnsstk
    const NavType SP3NavDataFactory::ntGLONASS(NavType::GloCivilF);
    const NavType SP3NavDataFactory::ntBeiDou(NavType::BeiDou_D1);
 
+      /// A clock bias >= this is considered bad.
+   const double maxBias = 999999.0;
+
    SP3NavDataFactory ::
    SP3NavDataFactory()
          : storeTimeSystem(TimeSystem::Any),
+           useSP3clock(true),
+           rejectBadPosFlag(true),
+           rejectBadClockFlag(true),
+           rejectPredPosFlag(false),
+           rejectPredClockFlag(false),
+           interpType(ClkInterpType::Lagrange),
            halfOrder(5)
    {
       supportedSignals.insert(NavSignalID(SatelliteSystem::BeiDou,
@@ -423,10 +435,14 @@ namespace gnsstk
          SP3Header head;
          SP3Data data;
          if (!is)
+         {
             return false;
+         }
          is >> head;
          if (!is)
-            return false;
+         {
+            return addRinexClock(source);
+         }
 
             // know whether to look for the extra info contained in SP3c
          bool isC = (head.version==SP3Header::SP3c);
@@ -443,6 +459,11 @@ namespace gnsstk
             else if (storeTimeSystem != head.timeSystem)
             {
                   // Don't load an SP3 file with a differing time system
+               cerr << "Time system mismatch in SP3 data, "
+                    << gnsstk::StringUtils::asString(storeTimeSystem)
+                    << " (store) != "
+                    << gnsstk::StringUtils::asString(head.timeSystem)
+                    << " (file)" << endl;
                return false;
             }
          }
@@ -466,7 +487,7 @@ namespace gnsstk
                if (!store(processEph, eph))
                   return false;
                // cerr << "storing clk" << endl;
-               if (!store(processClk, clk))
+               if (!store(processClk && useSP3clock, clk))
                   return false;
             }
                // Don't process time records otherwise we'll end up
@@ -474,15 +495,40 @@ namespace gnsstk
                // a bogus satellite ID.
             if (data.RecType != '*')
             {
+               if (rejectBadPosFlag &&
+                   (data.x[0] == 0.0) ||
+                   (data.x[1] == 0.0) ||
+                   (data.x[2] == 0.0))
+               {
+                     // don't add this record with a bad position
+                  continue;
+               }
+               else if (rejectBadClockFlag && (fabs(data.clk) >= maxBias))
+               {
+                     // don't add this record with a bad clock
+                  continue;
+               }
                if (processEph)
                {
-                  if (!convertToOrbit(head, data, isC, eph))
+                     // If the orbit data are predictions and we've
+                     // been asked to ignore position predictions, do
+                     // so. Otherwise, add the data to the store.
+                  if ((!rejectPredPosFlag || data.orbitPredFlag) &&
+                      !convertToOrbit(head, data, isC, eph))
+                  {
                      return false;
+                  }
                }
                if (processClk)
                {
-                  if (!convertToClock(head, data, isC, clk))
+                     // If the clock data are predictions and we've
+                     // been asked to ignore clock predictions, do
+                     // so. Otherwise, add the data to the store.
+                  if ((!rejectPredClockFlag || data.clockPredFlag) &&
+                      !convertToClock(head, data, isC, clk))
+                  {
                      return false;
+                  }
                }
             }
          }
@@ -493,6 +539,119 @@ namespace gnsstk
          // cerr << "storing last clk" << endl;
          if (!store(processClk, clk))
             return false;
+      }
+      catch (gnsstk::Exception& exc)
+      {
+         rv = false;
+         cerr << exc << endl;
+      }
+      catch (std::exception& exc)
+      {
+         rv = false;
+         cerr << exc.what() << endl;
+      }
+      catch (...)
+      {
+         rv = false;
+         cerr << "Unknown exception" << endl;
+      }
+      return rv;
+   }
+
+
+   bool SP3NavDataFactory ::
+   addRinexClock(const std::string& source)
+   {
+      bool rv = true;
+         // We have to handle this a bit carefully.  If we're not
+         // processing clock data, we still need to at least identify
+         // the data, otherwise NavLibrary/MultiFormatNavDataFactory
+         // might incorrectly handle the processing of the file.
+      bool processClk = (procNavTypes.count(NavMessageType::Clock) > 0);
+      try
+      {
+         Rinex3ClockStream is(source.c_str(), ios::in);
+         Rinex3ClockHeader head;
+         Rinex3ClockData data;
+         if (!is)
+         {
+            return false;
+         }
+         is >> head;
+         if (!is)
+         {
+            return false;
+         }
+
+            // At this point, we have valid RINEX clock.  Probably.
+         if (!processClk)
+            return true; // ...but the user doesn't want it.
+
+            // check/save TimeSystem to storeTimeSystem
+         if(head.timeSystem != TimeSystem::Any &&
+            head.timeSystem != TimeSystem::Unknown)
+         {
+               // if store time system has not been set, do so
+            if(storeTimeSystem == TimeSystem::Any)
+            {
+                  /// @note store TimeSystem must be consistent.
+               storeTimeSystem = head.timeSystem;
+            }
+            else if (storeTimeSystem != head.timeSystem)
+            {
+                  // Don't load a RINEX clock file with a differing time system
+               cerr << "Time system mismatch in SP3/RINEX clock data "
+                    << gnsstk::StringUtils::asString(storeTimeSystem)
+                    << " (store) != "
+                    << gnsstk::StringUtils::asString(head.timeSystem)
+                    << " (file)" << endl;
+               return false;
+            }
+         }
+         else
+         {
+            head.timeSystem = TimeSystem::GPS;
+            storeTimeSystem = head.timeSystem;
+         }
+
+            // Valid RINEX clock data with appropriate time system, go
+            // ahead and switch to using RINEX clock instead of SP3
+            // clock.
+         useRinexClockData();
+
+         while (is)
+         {
+            is >> data;
+            if (!is)
+            {
+               if (is.eof())
+                  break;
+               else
+                  return false; // some other error
+            }
+            if(data.datatype == std::string("AS"))
+            {
+               data.time.setTimeSystem(head.timeSystem);
+               OrbitDataSP3 *gps;
+               NavDataPtr clk = std::make_shared<OrbitDataSP3>();
+                  // Force the message type to clock because
+                  // OrbitDataSP3 defaults to Ephemeris.
+               clk->signal.messageType = NavMessageType::Clock;
+               gps = dynamic_cast<OrbitDataSP3*>(clk.get());
+               gps->timeStamp = data.time;
+                  // apparently the time system isn't set in
+                  // Rinex3ClockData, only in the header.
+               gps->timeStamp.setTimeSystem(head.timeSystem);
+               gps->clkBias = data.bias;
+               gps->biasSig = data.sig_bias;
+               gps->clkDrift = data.drift;
+               gps->driftSig = data.sig_drift;
+               gps->clkDrRate = data.accel;
+               gps->drRateSig = data.sig_accel;
+               if (!store(processClk, clk))
+                  return false;
+            }
+         }
       }
       catch (gnsstk::Exception& exc)
       {
@@ -681,7 +840,7 @@ namespace gnsstk
             // Clear the shared_ptr so the next time
             // convertToOrbit is called, it creates a new one.
          // cerr << "  store resetting obj ptr, use_count=" << obj.use_count() << endl;
-         NavData *ptr = obj.get();
+         // NavData *ptr = obj.get();
          // cerr << "DUMP BEFORE:" << endl;
          // ptr->dump(cerr, DumpDetail::Full);
          obj.reset();
@@ -997,6 +1156,16 @@ namespace gnsstk
    {
       nmidOut = nmidIn; // copy all the original data first.
       return setSignal(nmidIn.sat, nmidOut);
+   }
+
+
+   void SP3NavDataFactory ::
+   useRinexClockData(bool useRC)
+   {
+      if (useRC == !useSP3clock)
+         return;
+      useSP3clock = !useRC;
+      clearClock();
    }
 
 } // namespace gnsstk

@@ -102,8 +102,18 @@ public:
    unsigned sp3cPVTest();
       /// Test find with an SP3c file which contains P/EP records (no V)
    unsigned sp3cPTest();
-      /// Exercise loadIntoMap by loading mixed source data.
-   unsigned loadIntoMapFGNSSTest();
+      /** Exercise loadIntoMap by loading mixed source data.
+       * @param[in] badPos Set the rejectBadPosFlag to this value.
+       * @param[in] badClk Set the rejectBadClkFlag to this value.
+       * @param[in] rcBefore Call useRinexClockData with this value
+       *   before calling addDataSource.
+       * @param[in] rcAfter Call useRinexClockData with this value
+       *   after calling addDataSource.
+       */
+   unsigned loadIntoMapFGNSSTest(bool badPos, bool badClk, bool rcBefore,
+                                 bool rcAfter);
+      /// Test loading of RINEX clock data.
+   unsigned addRinexClockTest();
       /** Use dynamic_cast to verify that the contents of nmm are the
        * right class.
        * @param[in] testFramework The test framework created by TUDEF,
@@ -951,7 +961,7 @@ sp3cPTest()
 
 
 unsigned SP3NavDataFactory_T ::
-loadIntoMapFGNSSTest()
+loadIntoMapFGNSSTest(bool badPos, bool badClk, bool rcBefore, bool rcAfter)
 {
    using namespace gnsstk;
    TUDEF("SP3NavDataFactory", "loadIntoMap");
@@ -976,12 +986,95 @@ loadIntoMapFGNSSTest()
       
    std::string fname = getPathData() + getFileSep() +
       "test_input_SP3c_mgex1.sp3";
+   uut.rejectBadPositions(badPos);
+   uut.rejectBadClocks(badClk);
+   uut.useRinexClockData(rcBefore);
       // this should implicitly load into the data map
    TUASSERT(uut.addDataSource(fname));
-      // 400 ephemeris, 400 clock
-   TUASSERTE(size_t, 800, uut.size());
+   uut.useRinexClockData(rcAfter);
    unsigned gps = 0, gal = 0, qzs = 0, glo = 0, irn = 0, bei = 0, leo = 0,
       other = 0;
+   unsigned gpsExp = 320, galExp = 110, qzsExp = 10, gloExp = 230, irnExp = 0,
+      beiExp = 80, leoExp = 50, otherExp = 0, allExp = 800;
+   if (!rcBefore && !rcAfter)
+   {
+      if ((badPos == false) && (badClk == false))
+      {
+            // default values apply to these conditions
+      }
+      else if ((badPos == false) && (badClk == true))
+      {
+         galExp = 102;
+         beiExp =  74;
+         allExp = 786;
+      }
+      else if ((badPos == true) && (badClk == false))
+      {
+            // all positions good?
+      }
+      else if ((badPos == true) && (badClk == true))
+      {
+         galExp = 102;
+         beiExp =  74;
+         allExp = 786;
+      }
+   }
+   else
+   {
+         // end results should be the same whether the change took
+         // place before or after the addDataSource call.
+      if ((badPos == false) && (badClk == false))
+      {
+            // Lazily divide everything by 2 since you USUALLY will
+            // have P/V in pairs.
+         gpsExp >>= 1;
+         galExp >>= 1;
+         qzsExp >>= 1;
+         gloExp >>= 1;
+         irnExp >>= 1;
+         beiExp >>= 1;
+         leoExp >>= 1;
+         otherExp >>= 1;
+         allExp >>= 1;
+      }
+      else if ((badPos == false) && (badClk == true))
+      {
+         gpsExp >>= 1;
+         galExp =  51;
+         qzsExp >>= 1;
+         gloExp >>= 1;
+         irnExp >>= 1;
+         beiExp =  37;
+         leoExp >>= 1;
+         otherExp >>= 1;
+         allExp = 393;
+      }
+      else if ((badPos == true) && (badClk == false))
+      {
+         gpsExp >>= 1;
+         galExp >>= 1;
+         qzsExp >>= 1;
+         gloExp >>= 1;
+         irnExp >>= 1;
+         beiExp >>= 1;
+         leoExp >>= 1;
+         otherExp >>= 1;
+         allExp >>= 1;
+      }
+      else if ((badPos == true) && (badClk == true))
+      {
+         gpsExp >>= 1;
+         galExp =  51;
+         qzsExp >>= 1;
+         gloExp >>= 1;
+         irnExp >>= 1;
+         beiExp =  37;
+         leoExp >>= 1;
+         otherExp >>= 1;
+         allExp = 393;
+      }
+   }
+   TUASSERTE(size_t, allExp, uut.size());
    for (auto& nmti : uut.getData())
    {
       for (auto& sati : nmti.second)
@@ -1039,14 +1132,14 @@ loadIntoMapFGNSSTest()
          }
       }
    }
-   TUASSERTE(unsigned, 320, gps);
-   TUASSERTE(unsigned, 110, gal);
-   TUASSERTE(unsigned, 230, glo);
-   TUASSERTE(unsigned,  80, bei);
-   TUASSERTE(unsigned,  10, qzs);
-   TUASSERTE(unsigned,   0, irn);
-   TUASSERTE(unsigned,  50, leo);
-   TUASSERTE(unsigned,   0, other);
+   TUASSERTE(unsigned, gpsExp, gps);
+   TUASSERTE(unsigned, galExp, gal);
+   TUASSERTE(unsigned, gloExp, glo);
+   TUASSERTE(unsigned, beiExp, bei);
+   TUASSERTE(unsigned, qzsExp, qzs);
+   TUASSERTE(unsigned, irnExp, irn);
+   TUASSERTE(unsigned, leoExp, leo);
+   TUASSERTE(unsigned, otherExp, other);
       // make sure we can find data
    gnsstk::NavSatelliteID satID1(193, 193, gnsstk::SatelliteSystem::QZSS,
                                 gnsstk::CarrierBand::L2,
@@ -1056,6 +1149,11 @@ loadIntoMapFGNSSTest()
    gnsstk::CivilTime civ1(2016, 5, 1, 0, 15, 0, gnsstk::TimeSystem::TAI);
    gnsstk::CommonTime ct1(civ1);
    gnsstk::NavDataPtr nd1;
+   if (rcBefore || rcAfter)
+   {
+         /// @todo should we be able to form a useful OrbitDataSP3 w/o clock?
+      TURETURN();
+   }
    TUASSERT(uut.find(nmid1, ct1, nd1, gnsstk::SVHealth::Any,
                      gnsstk::NavValidityType::ValidOnly,
                      gnsstk::NavSearchOrder::User));
@@ -1068,7 +1166,7 @@ loadIntoMapFGNSSTest()
    TUASSERT(uut.find(nmid2, ct1, nd1, gnsstk::SVHealth::Any,
                      gnsstk::NavValidityType::ValidOnly,
                      gnsstk::NavSearchOrder::User));
-TURETURN();
+   TURETURN();
 }
 
 
@@ -1090,6 +1188,39 @@ verifyDataType(gnsstk::TestUtil& testFramework,
 }
 
 
+unsigned SP3NavDataFactory_T ::
+addRinexClockTest()
+{
+   using namespace gnsstk;
+   TUDEF("SP3NavDataFactory", "addRinexClockTest");
+
+      // test loading SP3c with mixed systems nav
+   TestClass uut, uut2;
+   std::string fnameSP3 = getPathData() + getFileSep() +
+      "test_input_SP3c_mgex1.sp3";
+   std::string fnameClk = getPathData() + getFileSep() +
+      "test_input_rinex3_clock_RinexClockExample.96c";
+      // this should implicitly load into the data map
+   TUASSERT(uut.addDataSource(fnameSP3));
+   TUASSERTE(size_t, 786, uut.size());
+      // this should fail because it's a different time system
+   TUASSERT(!uut.addDataSource(fnameClk));
+   TUASSERTE(size_t, 786, uut.size());
+      // Make sure time system incompatibility is flagged as an error
+   fnameSP3 = getPathData() + getFileSep() + "test_input_SP3c.sp3";
+   fnameClk = getPathData() + getFileSep() +
+      "test_input_rinex3_clock_RinexClockExample.96c";
+   TUASSERT(!uut.addDataSource(fnameSP3));
+      // First, add appropriate SP3 data (time system matching)
+   TUASSERT(uut2.addDataSource(fnameSP3));
+   TUASSERTE(size_t, 1500, uut2.size());
+      // Add the RINEX clock data which should clear the SP3 clock records out
+   TUASSERT(uut2.addDataSource(fnameClk));
+   TUASSERTE(size_t, 751, uut2.size());
+   TURETURN();
+}
+
+
 int main()
 {
    SP3NavDataFactory_T testClass;
@@ -1102,7 +1233,21 @@ int main()
    errorTotal += testClass.findEdgeTest();
    errorTotal += testClass.sp3cPVTest();
    errorTotal += testClass.sp3cPTest();
-   errorTotal += testClass.loadIntoMapFGNSSTest();
+   errorTotal += testClass.loadIntoMapFGNSSTest(false, false, false, false);
+   errorTotal += testClass.loadIntoMapFGNSSTest(false, true, false, false);
+   errorTotal += testClass.loadIntoMapFGNSSTest(true, false, false, false);
+   errorTotal += testClass.loadIntoMapFGNSSTest(true, true, false, false);
+
+   errorTotal += testClass.loadIntoMapFGNSSTest(false, false, true, false);
+   errorTotal += testClass.loadIntoMapFGNSSTest(false, true, true, false);
+   errorTotal += testClass.loadIntoMapFGNSSTest(true, false, true, false);
+   errorTotal += testClass.loadIntoMapFGNSSTest(true, true, true, false);
+
+   errorTotal += testClass.loadIntoMapFGNSSTest(false, false, false, true);
+   errorTotal += testClass.loadIntoMapFGNSSTest(false, true, false, true);
+   errorTotal += testClass.loadIntoMapFGNSSTest(true, false, false, true);
+   errorTotal += testClass.loadIntoMapFGNSSTest(true, true, false, true);
+   errorTotal += testClass.addRinexClockTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

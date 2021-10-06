@@ -59,6 +59,13 @@ namespace gnsstk
    class SP3NavDataFactory : public NavDataFactoryWithStoreFile
    {
    public:
+         /// Types of interpolation that can be used on the clock data
+      enum class ClkInterpType
+      {
+         Linear,
+         Lagrange,
+         Derivative
+      };
          /// Generic ObsIDs for each GNSS.
       static const ObsID oidGPS, oidGalileo, oidQZSS, oidGLONASS, oidBeiDou;
          /// Generic NavTypes for each GNSS.
@@ -98,6 +105,12 @@ namespace gnsstk
                 NavSearchOrder order) override;
 
          /** Load a file into internal store.
+          * @post If RINEX clock data is successfully loaded, the
+          *   factory will be automatically switched to use RINEX
+          *   clock data in place of SP3 clock.  As a side effect, any
+          *   SP3 clock data will be removed from the internal store
+          *   and any subsequent attempts to load SP3 data will not
+          *   include the clock data from those SP3 files.
           * @param[in] source The path to the SP3 file to load.
           * @return true on success, false on failure. */
       bool addDataSource(const std::string& source) override;
@@ -145,14 +158,87 @@ namespace gnsstk
       static bool transNavMsgID(const NavMessageID& nmidIn,
                                 NavMessageID& nmidOut);
 
+         /** Clear the clock dataset only, meaning remove all clock
+          * data from the internal store. */
+      void clearClock()
+      { data.erase(NavMessageType::Clock); }
+
+         /** Choose to load the clock data tables from RINEX clock
+          * files. This will clear the clock store if the state
+          * changes (from using to not using or vice versa).  The
+          * addDataSource() method should be called after this, to
+          * load data into the clock store from RINEX clock files (or
+          * SP3 if changing back to using SP3 clock files).
+          * @note If this is used prior to calling addDataSource()
+          *   with an SP3 file, the SP3 clock data will not be loaded.
+          *   But if it's called after loading SP3 or RINEX clock
+          *   data, that data will be cleared from the internal
+          *   storage. */
+      void useRinexClockData(bool useRC = true);
+
+         /** Set rejectBadPosFlag; if true then all values in a record
+          * are rejected when that record contains a bad position,
+          * while adding data to the store. */
+      void rejectBadPositions(bool flag)
+      { rejectBadPosFlag = flag; }
+
+         /** Set rejectBadClockFlag; if true then all values in a
+          * record are rejected when that record contains a bad clock,
+          * while adding data to the store. */
+      void rejectBadClocks(bool flag)
+      { rejectBadClockFlag = flag; }
+
+         /** Set rejectPredPosFlag; if true then predicted position
+          * values in a record are rejected when adding data to the
+          * store. */
+      void rejectPredPositions(bool flag)
+      { rejectPredPosFlag = flag; }
+
+         /** Set rejectPredClockFlag; if true then predicted clock
+          * values are rejected when adding data to the store. */
+      void rejectPredClocks(bool flag)
+      { rejectPredClockFlag = flag; }
+
          /** Half of the interpolation order.  When interpolating SP3
           * records, 2x this number of records are used, centered on
           * the time of interest. */
       unsigned halfOrder;
 
    private:
+         /** Load a RINEX clock file into internal store.
+          * @post If RINEX clock data is successfully loaded, the
+          *   factory will be automatically switched to use RINEX
+          *   clock data in place of SP3 clock.
+          * @param[in] source The path to the RINEX clock file to load.
+          * @return true on success, false on failure. */
+      bool addRinexClock(const std::string& source);
+      
+         /** Store the given NavDataPtr object internally, provided it
+          * passes any requested valditity checking. 
+          * @param[in] process If true, validate and store.  If false,
+          *   no storing or validation is done.  This is done to
+          *   obviate having to check whether ephemeris or clock data
+          *   is being processed prior to calling this method. 
+          * @param[in,out] obj The object to (potentially) be stored.
+          *   Regardless of whether the object is stored, the pointer
+          *   will be reset, freeing this particular use. 
+          * @return false if a failed attempt was made to store the
+          *   data, true otherwise. */
       bool store(bool process, NavDataPtr& obj);
 
+         /** Implementation of the core of what goes on in the find()
+          * method.  This is a separate function because the
+          * user-accessible find() method needs to acquire both clock
+          * and ephemeris data to return a complete record.
+          * @param[in] nmt The type of message to find (Ephemeris or Clock).
+          * @param[in] nsid The satellite and codes to search for.
+          * @param[in] when The time for which the data should be
+          *   retrieved (and interpolated, if appropriate).
+          * @param[in,out] navData The navData object, in the form of
+          *   an OrbitDataSP3, to contain the results.  If navData is
+          *   not allocated, it will be.
+          * @return true on success, false if unable to find data or
+          *   interpolate. */
       bool findGeneric(NavMessageType nmt, const NavSatelliteID& nsid,
                        const CommonTime& when, NavDataPtr& navData);
 
@@ -210,6 +296,34 @@ namespace gnsstk
          /** Used to make sure that we don't load SP3 data with
           * inconsistent time systems. */
       TimeSystem storeTimeSystem;
+
+         /** Flag indicating whether the clock store contains data
+          * from SP3 (true, the default) or RINEX clock (false)
+          * files */
+      bool useSP3clock;
+
+         /** Flag to reject all data in a record when that record
+          * contains a bad position, default true. */
+      bool rejectBadPosFlag;
+
+         /** Flag to reject all data in a record when that record
+          * contains bad clocks, default true.
+          * @note this flag has no effect if the clock store comes
+          * from RINEX clock files. */
+      bool rejectBadClockFlag;
+
+         /** Flag to reject predicted position data, using
+          * orbitPredFlag in SP3Data. */
+      bool rejectPredPosFlag;
+
+         /** Flag to reject predicted clock data, using clockPredFlag
+          * in SP3Data.
+          * @note this flag has no effect if the clock store comes
+          * from RINEX clock files. */
+      bool rejectPredClockFlag;
+
+         /// Clock data interpolation method.
+      ClkInterpType interpType;
    };
 
       //@}
