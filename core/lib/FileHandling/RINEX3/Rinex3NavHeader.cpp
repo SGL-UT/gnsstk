@@ -259,7 +259,7 @@ namespace gnsstk
          else if(thisLabel == stringComment)
          {
                // "COMMENT"
-            commentList.push_back(strip(line.substr(0,60)));
+            commentList.push_back(stripTrailing(line.substr(0,60)));
             valid |= validComment;
          }
          else if(thisLabel == stringIonAlpha)
