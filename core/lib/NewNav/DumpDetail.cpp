@@ -18,7 +18,7 @@
 //  
 //  This software was developed by Applied Research Laboratories at the 
 //  University of Texas at Austin.
-//  Copyright 2004-2020, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -36,42 +36,39 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GNSSTK_DUMPDETAIL_HPP
-#define GNSSTK_DUMPDETAIL_HPP
-
-#include <string>
-#include "EnumIterator.hpp"
+#include "DumpDetail.hpp"
 
 namespace gnsstk
 {
-      /// @ingroup NavFactory
-      //@{
-
-      /// Specify level of detail for dump output.
-   enum class DumpDetail
-   {
-      Unknown, ///< Uninitialized or unknown value.
-      OneLine, ///< Limit output to minimal information on a single line.
-      Brief,   ///< Limit output to <= 5 lines of minimal information.
-      Terse,   ///< Aptly named, multiple lines of output with no labels.
-      Full,    ///< Include all detailed information.
-      Last     ///< Used to create an iterator.
-   };
-
-      /** Define an iterator so C++11 can do things like
-       * for (DumpDetail i : DumpDetailIterator()) */
-   typedef EnumIterator<DumpDetail, DumpDetail::Unknown, DumpDetail::Last> DumpDetailIterator;
-
    namespace StringUtils
    {
-         /// Convert a DumpDetail to a whitespace-free string name.
-      std::string asString(DumpDetail e) throw();
-         /// Convert a string name to an DumpDetail
-      DumpDetail asDumpDetail(const std::string& s) throw();
-   }
+      std::string asString(DumpDetail e) throw()
+      {
+         switch (e)
+         {
+            case DumpDetail::Unknown: return "Unknown";
+            case DumpDetail::OneLine: return "OneLine";
+            case DumpDetail::Brief:   return "Brief";
+            case DumpDetail::Terse:   return "Terse";
+            case DumpDetail::Full:    return "Full";
+            default:                  return "???";
+         } // switch (e)
+      } // asString(DumpDetail)
 
-      //@}
 
-}
-
-#endif // GNSSTK_DUMPDETAIL_HPP
+      DumpDetail asDumpDetail(const std::string& s) throw()
+      {
+         if (s == "Unknown")
+            return DumpDetail::Unknown;
+         if (s == "OneLine")
+            return DumpDetail::OneLine;
+         if (s == "Brief")
+            return DumpDetail::Brief;
+         if (s == "Terse")
+            return DumpDetail::Terse;
+         if (s == "Full")
+            return DumpDetail::Full;
+         return DumpDetail::Unknown;
+      } // asDumpDetail(string)
+   } // namespace StringUtils
+} // namespace gnsstk
