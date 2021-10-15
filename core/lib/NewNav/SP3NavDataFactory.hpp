@@ -63,8 +63,7 @@ namespace gnsstk
       enum class ClkInterpType
       {
          Linear,
-         Lagrange,
-         Derivative
+         Lagrange
       };
          /// Generic ObsIDs for each GNSS.
       static const ObsID oidGPS, oidGalileo, oidQZSS, oidGLONASS, oidBeiDou;
@@ -176,6 +175,84 @@ namespace gnsstk
           *   storage. */
       void useRinexClockData(bool useRC = true);
 
+         /// Return the time system of the loaded data.
+      TimeSystem getTimeSystem() const
+      { return storeTimeSystem; }
+
+         /// Is position gap checking on?
+      bool isPosDataGapCheck()
+      { return checkDataGapPos; }
+
+         /// Disable checking of data gaps in both position and clock.
+      void disableDataGapCheck()
+      { checkDataGapPos = checkDataGapClk = false; }
+
+         /// Disable checking of position data gaps.
+      void disablePosDataGapCheck()
+      { checkDataGapPos = false; }
+
+         /// Get current position gap interval.
+      double getPosGapInterval() const
+      { return gapIntervalPos; }
+
+         /// Set position gap interval and turn on gap checking
+      void setPosGapInterval(double interval)
+      { checkDataGapPos = true; gapIntervalPos = interval; }
+
+         /// Is clock gap checking on?
+      bool isClkDataGapCheck()
+      { return checkDataGapClk; }
+
+         /// Disable checking of clock data gaps.
+      void disableClkDataGapCheck()
+      { checkDataGapClk = false; }
+
+         /// Get current clock gap interval.
+      double getClkGapInterval() const
+      { return gapIntervalClk; }
+
+         /// Set clock gap interval and turn on gap checking
+      void setClkGapInterval(double interval)
+      { checkDataGapClk = true; gapIntervalClk = interval; }
+
+         /// Is interval checking for position on?
+      bool isPosIntervalCheck()
+      { return checkIntervalPos; }
+
+         /// Is interval checking for clock on?
+      bool isClkIntervalCheck()
+      { return checkIntervalClk; }
+
+         /// Disable checking of maximum interval in both position and clock.
+      void disableIntervalCheck()
+      { checkIntervalPos = checkIntervalClk = false; }
+
+         /// Disable checking of maximum interval in position store
+      void disablePosIntervalCheck()
+      { checkIntervalPos = false; }
+
+         /// Disable checking of maximum interval in clock store
+      void disableClockIntervalCheck()
+      { checkIntervalClk = false; }
+
+         /// Get current maximum interval in the position store
+      double getPosMaxInterval() const
+      { return maxIntervalPos; }
+
+         /// Get current maximum interval in the clock store
+      double getClockMaxInterval() const
+      { return maxIntervalClk; }
+
+         /** Set maximum interval and turn on interval checking in the
+          * position store There is no default. */
+      void setPosMaxInterval(double interval)
+      { checkIntervalPos = true; maxIntervalPos = interval; }
+
+         /** Set maximum interval and turn on interval checking in the
+          * clock store There is no default. */
+      void setClockMaxInterval(double interval)
+      { checkIntervalClk = true; maxIntervalClk = interval; }
+
          /** Set rejectBadPosFlag; if true then all values in a record
           * are rejected when that record contains a bad position,
           * while adding data to the store. */
@@ -199,10 +276,44 @@ namespace gnsstk
       void rejectPredClocks(bool flag)
       { rejectPredClockFlag = flag; }
 
-         /** Half of the interpolation order.  When interpolating SP3
-          * records, 2x this number of records are used, centered on
-          * the time of interest. */
-      unsigned halfOrder;
+         /** Get the nominal time step in seconds for the position
+          * data and the given sat */
+      double getPositionTimeStep(const SatID& sat) const;
+
+         /** Get the nominal time step in seconds for the clock data
+          * and the given sat */
+      double getClockTimeStep(const SatID& sat) const;
+
+         /// Get current interpolation order for the position table
+      unsigned int getPositionInterpOrder() const
+      { return 2*halfOrderPos; }
+
+         /** Set the interpolation order for the position table; it is
+          * forced to be even. */
+      void setPositionInterpOrder(unsigned int order)
+      { halfOrderPos = (order+1)/2; }
+
+         /** Get current interpolation order for the clock data
+          * (meaningless if the interpolation type is linear). */
+      unsigned int getClockInterpOrder() const
+      { return 2*halfOrderClk; }
+
+         /** Set the interpolation order for the clock table; it is
+          * forced to be even.  This is ignored if the clock
+          * interpolation type is linear. */
+      void setClockInterpOrder(unsigned int order);
+
+         /** Set the type of clock interpolation to Lagrange (the
+          * default); set the order of the interpolation to 10. */
+      void setClockLagrangeInterp();
+
+         /** Set the type of clock interpolation to linear
+          * (interpolation order is ignored). */
+      void setClockLinearInterp();
+
+         /** Print the current configuration of this factory to the
+          * given stream. */
+      void dumpConfig(std::ostream& s) const;
 
    private:
          /** Load a RINEX clock file into internal store.
@@ -293,9 +404,72 @@ namespace gnsstk
           * @return true if successful, false if the system is unsupported. */
       static bool setSignal(const SatID& sat, NavMessageID& signal);
 
+         /** Compute the nominal timestep of the data for the given signal.
+          * @return 0 if the signal is not found, otherwise return the
+          *   nominal timestep in seconds. */
+      double nomTimeStep(const NavMessageID& nmid) const;
+
          /** Used to make sure that we don't load SP3 data with
           * inconsistent time systems. */
       TimeSystem storeTimeSystem;
+
+         /** Flag to check for data gaps in position data (default
+          * false).  If this flag is enabled, data gaps wider than
+          * member data gapInterval will result in findGeneric()
+          * returning false. */
+      bool checkDataGapPos;
+
+         /** Smallest time interval (seconds) that constitutes a data
+          * gap in position data. */
+      double gapIntervalPos;
+
+         /** Flag to check for data gaps in clock data (default
+          * false).  If this flag is enabled, data gaps wider than
+          * member data gapInterval will result in findGeneric()
+          * returning false. */
+      bool checkDataGapClk;
+
+         /** Smallest time interval (seconds) that constitutes a data
+          * gap in clock data. */
+      double gapIntervalClk;
+
+         /** Flag to check the length of available interpolation
+          * interval for position data (default false).  If this flag
+          * is enabled, interpolation intervals shorter than member
+          * data maxInterval will result in findGeneric() returning
+          * false. */
+      bool checkIntervalPos;
+
+         /** Maximum total time interval (seconds) allowed for
+          * position interpolation.  For example, with dt=900s and
+          * 10-point Lagrange interpolation, this should be
+          * (10-1)*900s+1=8101s. */
+      double maxIntervalPos;
+
+         /** Flag to check the length of available interpolation
+          * interval for clock data (default false).  If this flag
+          * is enabled, interpolation intervals shorter than member
+          * data maxInterval will result in findGeneric() returning
+          * false. */
+      bool checkIntervalClk;
+
+         /** Maximum total time interval (seconds) allowed for
+          * clock interpolation.  For example, with dt=900s and
+          * 10-point Lagrange interpolation, this should be
+          * (10-1)*900s+1=8101s. */
+      double maxIntervalClk;
+
+         /** Half of the interpolation order for position
+          * interpolation.  When interpolating SP3 records, 2x this
+          * number of records are used, centered on the time of
+          * interest. */
+      unsigned halfOrderPos;
+
+         /** Half of the interpolation order for clock
+          * interpolation.  When interpolating SP3 records, 2x this
+          * number of records are used, centered on the time of
+          * interest. */
+      unsigned halfOrderClk;
 
          /** Flag indicating whether the clock store contains data
           * from SP3 (true, the default) or RINEX clock (false)

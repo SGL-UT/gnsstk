@@ -66,7 +66,8 @@ namespace gnsstk
                                      vector<SatID>& Sats,
                                      const vector<double>& Pseudorange,
                                      NavLibrary& eph,
-                                     Matrix<double>& SVP) const
+                                     Matrix<double>& SVP,
+                                     NavSearchOrder order) const
    {
       LOG(DEBUG) << "PreparePRSolution at time " << printTime(Tr,timfmt);
 
@@ -124,7 +125,9 @@ namespace gnsstk
                /** @todo getXvt was expected to throw an exception on
                 * failure in the past.  This assert more or less mimics
                 * that behavior.  Refactoring is needed.  */
-            GNSSTK_ASSERT(eph.getXvt(NavSatelliteID(Sats[i]), tx, PVT));
+            GNSSTK_ASSERT(eph.getXvt(NavSatelliteID(Sats[i]), tx, PVT, false,
+                                     SVHealth::Healthy,
+                                     NavValidityType::ValidOnly, order));
             LOG(DEBUG) << " returned from getXvt";
          }
          catch(AssertionFailure& e) {
@@ -145,7 +148,9 @@ namespace gnsstk
                /** @todo getXvt was expected to throw an exception on
                 * failure in the past.  This assert more or less mimics
                 * that behavior.  Refactoring is needed.  */
-            GNSSTK_ASSERT(eph.getXvt(NavSatelliteID(Sats[i]), tx, PVT));
+            GNSSTK_ASSERT(eph.getXvt(NavSatelliteID(Sats[i]), tx, PVT, false,
+                                     SVHealth::Healthy,
+                                     NavValidityType::ValidOnly, order));
          }
          catch(AssertionFailure& e) {                   // unnecessary....you'd think!
             LOG(DEBUG) << "Warning - PRSolution ignores satellite (no ephemeris 2) "
@@ -495,11 +500,13 @@ namespace gnsstk
                                          vector<SatID>& Sats,
                                          const vector<double>& Pseudorange,
                                          NavLibrary& eph,
-                                         TropModel *pTropModel)
+                                         TropModel *pTropModel,
+                                         NavSearchOrder order)
    {
       try {
          Matrix<double> invMC;         // measurement covariance is empty
-         return (RAIMCompute(Tr, Sats, Pseudorange, invMC, eph, pTropModel));
+         return (RAIMCompute(Tr, Sats, Pseudorange, invMC, eph, pTropModel,
+                             order));
       }
       catch(Exception& e) {
          GNSSTK_RETHROW(e);
@@ -514,7 +521,8 @@ namespace gnsstk
                                const vector<double>& Pseudorange,
                                const Matrix<double>& invMC,
                                NavLibrary& eph,
-                               TropModel *pTropModel)
+                               TropModel *pTropModel,
+                               NavSearchOrder order)
    {
       try {
          // uncomment to turn on DEBUG output to stdout
@@ -544,7 +552,7 @@ namespace gnsstk
          // fill the SVP matrix, and use it for every solution
          // NB this routine will reject sat systems not found in allowedGNSS, and
          //    sats without ephemeris.
-         N = PreparePRSolution(Tr, Sats, Pseudorange, eph, SVP);
+         N = PreparePRSolution(Tr, Sats, Pseudorange, eph, SVP, order);
 
          if(LOGlevel >= ConfigureLOG::Level("DEBUG")) {
             LOG(DEBUG) << "Prepare returns " << N;

@@ -377,6 +377,7 @@ namespace gnsstk
       ///                     the number of satellites in Sats[] (marked or not),
       ///                     on output this contains the satellite positions at
       ///                     transmit time (cols 0-2), the corrected pseudorange (1).
+      /// @param[in] order   How NavLibrary searches are performed.
       /// @return Return values:
       ///  >= 0 number of good satellites found
       /// -4    ephemeris not found for all the satellites
@@ -384,7 +385,8 @@ namespace gnsstk
                             std::vector<SatID>& Sats,
                             const std::vector<double>& Pseudorange,
                             NavLibrary& eph,
-                            Matrix<double>& SVP) const;
+                            Matrix<double>& SVP,
+                            NavSearchOrder order = NavSearchOrder::User) const;
 
       /// Compute a single autonomous pseudorange solution, after calling
       /// PreparePRSolution(). On output, all the member data is filled with results.
@@ -439,7 +441,8 @@ namespace gnsstk
                                 std::vector<SatID>& Satellites,
                                 const std::vector<double>& Pseudorange,
                                 NavLibrary& eph,
-                                TropModel *pTropModel);
+                                TropModel *pTropModel,
+                                NavSearchOrder order = NavSearchOrder::User);
 
       /// Compute a position/time solution, given satellite PRNs and pseudoranges
       /// using a RAIM algorithm. This is the main computation done by this class.
@@ -471,7 +474,8 @@ namespace gnsstk
                       const std::vector<double>& Pseudorange,
                       const Matrix<double>& invMC,
                       NavLibrary& eph,
-                      TropModel *pTropModel);
+                      TropModel *pTropModel,
+                      NavSearchOrder order = NavSearchOrder::User);
 
       /// Compute DOPs using the partials matrix from the last successful solution.
       /// RAIMCompute(), if successful, calls this before returning.

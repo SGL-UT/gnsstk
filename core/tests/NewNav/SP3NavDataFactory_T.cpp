@@ -40,6 +40,7 @@
 #include "TestUtil.hpp"
 #include "OrbitDataSP3.hpp"
 #include "CivilTime.hpp"
+#include "GPSWeekSecond.hpp"
 
 namespace gnsstk
 {
@@ -102,6 +103,10 @@ public:
    unsigned sp3cPVTest();
       /// Test find with an SP3c file which contains P/EP records (no V)
    unsigned sp3cPTest();
+      /// Test find with gap interval
+   unsigned gapTest();
+      /// Test nomTimeStep via the friendlier wrapper methods.
+   unsigned nomTimeStepTest();
       /** Exercise loadIntoMap by loading mixed source data.
        * @param[in] badPos Set the rejectBadPosFlag to this value.
        * @param[in] badClk Set the rejectBadClkFlag to this value.
@@ -1221,6 +1226,115 @@ addRinexClockTest()
 }
 
 
+unsigned SP3NavDataFactory_T ::
+gapTest()
+{
+   TUDEF("SP3NavDataFactory", "setPosGapInterval");
+   TestClass uut;
+   std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sp3_nav_2015_200.sp3";
+   TUASSERT(uut.addDataSource(fname));
+   TUASSERTE(size_t, 17856, uut.size());
+   gnsstk::NavDataPtr navOut;
+   gnsstk::NavSatelliteID satID(15, 15, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavMessageID nmid(satID, gnsstk::NavMessageType::Ephemeris);
+   gnsstk::CommonTime when = gnsstk::GPSWeekSecond(1854,3599.926);
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a tiny position gap interval and expect failure
+   TUCATCH(uut.setPosGapInterval(1));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // set a reasonable gap interval and expect success
+   TUCATCH(uut.setPosGapInterval(301));
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a slightly unreasonable gap interval and expect failure
+   TUCATCH(uut.setPosGapInterval(299));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // disable and verify
+   TUCATCH(uut.disablePosDataGapCheck());
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a tiny clock gap interval and expect failure
+   TUCATCH(uut.setClkGapInterval(1));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // disable and verify
+   TUCATCH(uut.disableClkDataGapCheck());
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a tiny max interval and expect failure
+   TUCATCH(uut.setPosMaxInterval(1));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // set a reasonable max interval and expect success
+   TUCATCH(uut.setPosMaxInterval(2701));
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a slightly unreasonable max interval and expect failure
+   TUCATCH(uut.setPosMaxInterval(2699));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // disable and verify
+   TUCATCH(uut.disablePosIntervalCheck());
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a tiny clock max interval and expect failure
+   TUCATCH(uut.setClockMaxInterval(1));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // set a reasonable clock max interval and expect success
+   TUCATCH(uut.setClockMaxInterval(2701));
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a slightly unreasonable clock max interval and expect failure
+   TUCATCH(uut.setClockMaxInterval(2699));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // disable and verify
+   TUCATCH(uut.disableClockIntervalCheck());
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+   TURETURN();
+}
+
+
+unsigned SP3NavDataFactory_T ::
+nomTimeStepTest()
+{
+   TUDEF("SP3NavDataFactory", "nomTimeStep");
+   TestClass uut;
+   std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sp3_nav_2015_200.sp3";
+   TUASSERT(uut.addDataSource(fname));
+   TUASSERTE(size_t, 17856, uut.size());
+   gnsstk::SatID satID(15, gnsstk::SatelliteSystem::GPS);
+   TUASSERTE(double, 300.0, uut.getPositionTimeStep(satID));
+   TUASSERTE(double, 300.0, uut.getClockTimeStep(satID));
+   TURETURN();
+}
+
+
 int main()
 {
    SP3NavDataFactory_T testClass;
@@ -1248,6 +1362,8 @@ int main()
    errorTotal += testClass.loadIntoMapFGNSSTest(true, false, false, true);
    errorTotal += testClass.loadIntoMapFGNSSTest(true, true, false, true);
    errorTotal += testClass.addRinexClockTest();
+   errorTotal += testClass.gapTest();
+   errorTotal += testClass.nomTimeStepTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

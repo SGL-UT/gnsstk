@@ -47,6 +47,7 @@
 #include "GPSLNavTimeOffset.hpp"
 #include "TestUtil.hpp"
 // #include "BasicTimeSystemConverter.hpp"
+#include "TimeString.hpp"
 
 namespace gnsstk
 {
@@ -152,6 +153,8 @@ public:
    unsigned clearTest();
    unsigned getAvailableSatsTest();
    unsigned isPresentTest();
+   unsigned countTest();
+   unsigned getFirstLastTimeTest();
 
       /// Fill fact with test data
    void fillFactory(gnsstk::TestUtil& testFramework, TestClass& fact);
@@ -1934,6 +1937,122 @@ isPresentTest()
 }
 
 
+unsigned NavDataFactoryWithStore_T ::
+countTest()
+{
+   TUDEF("NavDataFactoryWithStore", "count");
+   TestClass uut;
+   TUCATCH(fillFactory(testFramework, uut));
+   size_t totalCount = uut.size();
+   gnsstk::NavMessageID key1(
+      gnsstk::NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                             gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                             gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                           gnsstk::CarrierBand::Any,
+                                           gnsstk::TrackingCode::Any,
+                                           gnsstk::XmitAnt::Any),
+                             gnsstk::NavID(gnsstk::NavType::Any)),
+      gnsstk::NavMessageType::Unknown);
+   key1.sat.makeWild();
+   key1.xmitSat.makeWild();
+      // key1, being a complete wildcard, should yield the same
+      // results as size()
+   TUASSERTE(size_t, totalCount, uut.count(key1));
+
+   gnsstk::NavMessageID key2(
+      gnsstk::NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::GPS),
+                             gnsstk::SatID(gnsstk::SatelliteSystem::GPS),
+                             gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                           gnsstk::CarrierBand::Any,
+                                           gnsstk::TrackingCode::Any,
+                                           gnsstk::XmitAnt::Any),
+                             gnsstk::NavID(gnsstk::NavType::Any)),
+      gnsstk::NavMessageType::Unknown);
+      // key2, is mostly a wildcard, but does specify the satellite
+      // system as GPS, and should yield the same results as size()
+   TUASSERTE(size_t, totalCount, uut.count(key2));
+
+   gnsstk::NavMessageID key3(
+      gnsstk::NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::Galileo),
+                             gnsstk::SatID(gnsstk::SatelliteSystem::Galileo),
+                             gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                           gnsstk::CarrierBand::Any,
+                                           gnsstk::TrackingCode::Any,
+                                           gnsstk::XmitAnt::Any),
+                             gnsstk::NavID(gnsstk::NavType::Any)),
+      gnsstk::NavMessageType::Unknown);
+      // we have nothing in the store for Galileo.
+   TUASSERTE(size_t, 0, uut.count(key3));
+
+      // count GPS L1
+   gnsstk::NavMessageID key4(
+      gnsstk::NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::GPS),
+                             gnsstk::SatID(gnsstk::SatelliteSystem::GPS),
+                             gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                           gnsstk::CarrierBand::L1,
+                                           gnsstk::TrackingCode::Any,
+                                           gnsstk::XmitAnt::Any),
+                             gnsstk::NavID(gnsstk::NavType::Any)),
+      gnsstk::NavMessageType::Unknown);
+   TUASSERTE(size_t, totalCount, uut.count(key4));
+
+      // count GPS L2
+   gnsstk::NavMessageID key5(
+      gnsstk::NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::GPS),
+                             gnsstk::SatID(gnsstk::SatelliteSystem::GPS),
+                             gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                           gnsstk::CarrierBand::L2,
+                                           gnsstk::TrackingCode::Any,
+                                           gnsstk::XmitAnt::Any),
+                             gnsstk::NavID(gnsstk::NavType::Any)),
+      gnsstk::NavMessageType::Unknown);
+   TUASSERTE(size_t, 0, uut.count(key5));
+
+      // count using SatelliteSystem only
+   TUASSERTE(size_t, totalCount, uut.count(gnsstk::SatelliteSystem::GPS));
+   TUASSERTE(size_t, 0, uut.count(gnsstk::SatelliteSystem::Galileo));
+      // count using subject satellite
+   TUASSERTE(size_t, 4,
+             uut.count(gnsstk::SatID(23,gnsstk::SatelliteSystem::GPS)));
+   TUASSERTE(size_t, 0,
+             uut.count(gnsstk::SatID(32,gnsstk::SatelliteSystem::GPS)));
+      // count using message type
+   TUASSERTE(size_t, totalCount, uut.count(gnsstk::NavMessageType::Ephemeris));
+   TUASSERTE(size_t, 0, uut.count(gnsstk::NavMessageType::Almanac));
+
+   TURETURN();
+}
+
+
+unsigned NavDataFactoryWithStore_T ::
+getFirstLastTimeTest()
+{
+   TUDEF("NavDataFactoryWithStore", "getFirstTime");
+   TestClass uut;
+   TUCATCH(fillFactory(testFramework, uut));
+   gnsstk::SatID sat23(23,gnsstk::SatelliteSystem::GPS),
+      sat7(7,gnsstk::SatelliteSystem::GPS),
+      sat11(11,gnsstk::SatelliteSystem::GPS),
+      sat12(12,gnsstk::SatelliteSystem::GPS),
+      sat23R(23,gnsstk::SatelliteSystem::Glonass);
+   TUASSERTE(gnsstk::CommonTime, ct-3600, uut.getFirstTime(sat23));
+   TUASSERTE(gnsstk::CommonTime, ct-3510, uut.getLastTime(sat23));
+   TUASSERTE(gnsstk::CommonTime, ct-3600, uut.getFirstTime(sat7));
+   TUASSERTE(gnsstk::CommonTime, ct-3570, uut.getLastTime(sat7));
+   TUASSERTE(gnsstk::CommonTime, ct-3600, uut.getFirstTime(sat11));
+   TUASSERTE(gnsstk::CommonTime, ct-3570, uut.getLastTime(sat11));
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::END_OF_TIME,
+             uut.getFirstTime(sat12));
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME,
+             uut.getLastTime(sat12));
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::END_OF_TIME,
+             uut.getFirstTime(sat23R));
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME,
+             uut.getLastTime(sat23R));
+   TURETURN();
+}
+
+
 int main()
 {
    NavDataFactoryWithStore_T testClass;
@@ -1951,6 +2070,8 @@ int main()
    errorTotal += testClass.getOffset2Test();
    errorTotal += testClass.getAvailableSatsTest();
    errorTotal += testClass.isPresentTest();
+   errorTotal += testClass.countTest();
+   errorTotal += testClass.getFirstLastTimeTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
