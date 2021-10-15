@@ -843,10 +843,10 @@ sp3cPVTest()
    TUASSERTFE(-103.26419599999999832, uut->clkBias);
    TUASSERTFE(0.0010629999999999999259, uut->biasSig);
    TUASSERTFE(1.3259000000000000871e-06, uut->clkDrift);
-   TUASSERTFE(7.2199999999999998003e-08, uut->driftSig);
+   TUASSERTFE(1.0175328004541179996e-07, uut->driftSig);
       /// @note drift rate value not confirmed by SP3EphemerisStore
    TUASSERTFE(-2.1102292768909279853e-13, uut->clkDrRate);
-   TUASSERTFE(8.0222222222222225231e-11, uut->drRateSig);
+   TUASSERTFE(1.130592000504575508e-10, uut->drRateSig);
       // interpolated match
    ct = gnsstk::CivilTime(2011,10,9,2,1,3,gnsstk::TimeSystem::GPS);
    TUASSERT(fact.find(nmid1, ct, nd, gnsstk::SVHealth::Any,

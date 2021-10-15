@@ -971,10 +971,21 @@ namespace gnsstk
          }
          else
          {
-            firstLastMap[satID].first = std::min(firstLastMap[satID].first,
-                                                 nd->timeStamp);
-            firstLastMap[satID].second = std::max(firstLastMap[satID].second,
-                                                  nd->timeStamp);
+               // Ignore time systems when comparing, because I'm
+               // lazy.  The few seconds difference in time systems
+               // isn't going to have a big effect on this information
+               // anyway.
+            CommonTime anyFirst(firstLastMap[satID].first),
+               anyLast(firstLastMap[satID].second),
+               anyTimeStamp(nd->timeStamp);
+            anyFirst.setTimeSystem(TimeSystem::Any);
+            anyLast.setTimeSystem(TimeSystem::Any);
+            anyTimeStamp.setTimeSystem(TimeSystem::Any);
+               // set the stored time stamps using the original time system.
+            if (anyTimeStamp < anyFirst)
+               firstLastMap[satID].first = nd->timeStamp;
+            if (anyTimeStamp > anyLast)
+               firstLastMap[satID].second = nd->timeStamp;
          }
       }
       if ((odkp = dynamic_cast<OrbitDataKepler*>(nd.get())) != nullptr)
