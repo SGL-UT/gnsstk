@@ -45,10 +45,6 @@ This project (optionally) uses doxygen to dynamically generate API documentation
    
     http://www.doxygen.org/
 
-This project (optionally) uses LaTex to dynamically generate User's Reference Manual.
-   
-    https://www.latex-project.org/
-
 This project (optionally) uses Sphinx for generating the python bindings documentation.
    
     http://sphinx-doc.org/
