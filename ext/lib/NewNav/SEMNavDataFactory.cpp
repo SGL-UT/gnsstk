@@ -236,6 +236,8 @@ namespace gnsstk
       gps = dynamic_cast<GPSLNavHealth*>(healthOut.get());
          // NavData
       fillNavData(navIn, healthOut);
+         // this is the only timestamp we have from SEM
+      gps->timeStamp = GPSWeekSecond(navIn.week, navIn.Toa);
          // GPSLNavHealth
       gps->svHealth = navIn.SV_health;
       return rv;
