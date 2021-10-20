@@ -293,7 +293,7 @@ namespace gnsstk
       if (dataIt == data.end())
       {
          // cerr << "  no data for nav message type" << endl;
-         return false;
+         return 0.;
       }
          // To support wildcard signals, we need to do a linear search.
       for (auto& sati : dataIt->second)
