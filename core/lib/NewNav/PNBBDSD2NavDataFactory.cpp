@@ -417,8 +417,19 @@ namespace gnsstk
                 * scale factor is for the SOW field.  It's stored in
                 * 20 bits even though 604800 only requires 19 bits. */
             unsigned long sowA, sowB;
-            sowA = ephSF[i-1]->asUnsignedLong(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,
-                                              fscSOW);
+            if (i == pg3)
+            {
+                  // page 3, which follows page 2 (of course) may be
+                  // absent, but since we don't care about page 2, we
+                  // check page 3 against page 1 + (3 seconds).
+               sowA = ephSF[i-2]->asUnsignedLong(fsbSOWm,fnbSOWm,fsbSOWl,
+                                                 fnbSOWl,fscSOW) + 3;
+            }
+            else
+            {
+               sowA = ephSF[i-1]->asUnsignedLong(fsbSOWm,fnbSOWm,fsbSOWl,
+                                                 fnbSOWl,fscSOW);
+            }
             sowB = ephSF[i]->asUnsignedLong(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,
                                             fscSOW);
                // subframe 1 is broadcast every 3 seconds
