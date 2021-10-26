@@ -50,6 +50,7 @@ namespace gnsstk
    {
       src = TimeSystem::BDT;
       msgLenSec = 6.0;
+      weekFmt = "%4D(%4e)";
    }
 
 

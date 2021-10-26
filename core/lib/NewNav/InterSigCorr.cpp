@@ -88,10 +88,8 @@ namespace gnsstk
       s.fill(' ');
 
       s << "           TIMES OF INTEREST" << endl << endl
-        << "              Week(10bt)     SOW     DOW   UTD     SOD"
-        << "   MM/DD/YYYY   HH:MM:SS\n"
-        << "Transmit:     " << printTime(timeStamp, weekFmt+dumpTimeFmt)
-        << endl;
+        << "              " << getDumpTimeHdr(dl) << endl
+        << "Transmit:     " << getDumpTime(dl, timeStamp) << endl;
 
       s << endl
         << "           SIGNALS"

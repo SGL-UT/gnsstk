@@ -88,13 +88,11 @@ namespace gnsstk
       s.precision(0);
       s.fill(' ');
 
-      std::string timeFmt = weekFmt+dumpTimeFmt;
       s << endl
         << "           TIMES OF INTEREST"
         << endl << endl
-        << "              Week(10bt)     SOW     DOW   UTD     SOD"
-        << "   MM/DD/YYYY   HH:MM:SS\n"
-        << "Transmit:     " << printTime(timeStamp, timeFmt) << endl;
+        << "              " << getDumpTimeHdr(dl) << endl
+        << "Transmit:     " << getDumpTime(dl, timeStamp) << endl;
 
       s.setf(ios::scientific, ios::floatfield);
       s.precision(8);

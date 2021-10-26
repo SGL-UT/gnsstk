@@ -47,6 +47,7 @@ namespace gnsstk
    GalINavTimeOffset()
          : tow(0.0)
    {
+      weekFmt = "%4L(%4l)";
       msgLenSec = 2.0;
       src = TimeSystem::GAL;
    }

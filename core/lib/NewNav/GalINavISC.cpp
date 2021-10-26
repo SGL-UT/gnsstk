@@ -49,6 +49,7 @@ namespace gnsstk
          : bgdE1E5a(std::numeric_limits<double>::quiet_NaN()),
            bgdE1E5b(std::numeric_limits<double>::quiet_NaN())
    {
+      weekFmt = "%4L(%4l)";
       msgLenSec = 2.0;
    }
 

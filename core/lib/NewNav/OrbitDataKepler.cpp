@@ -109,17 +109,15 @@ namespace gnsstk
 
       dumpSVStatus(s);
 
-      std::string timeFmt = weekFmt+dumpTimeFmt;
       s << endl
         << "           TIMES OF INTEREST"
         << endl << endl
-        << "              Week(10bt)     SOW     DOW   UTD     SOD"
-        << "   MM/DD/YYYY   HH:MM:SS\n"
-        << "Begin Valid:  " << printTime(beginFit, timeFmt) << endl
-        << "Clock Epoch:  " << printTime(Toc, timeFmt) << endl
+        << "              " << getDumpTimeHdr(dl) << endl
+        << "Begin Valid:  " << getDumpTime(dl, beginFit) << endl
+        << "Clock Epoch:  " << getDumpTime(dl, Toc) << endl
         << (signal.messageType == NavMessageType::Ephemeris ? "Eph" : "Alm")
-        << " Epoch:    " << printTime(Toe, timeFmt) << endl
-        << "End Valid:    " << printTime(endFit, timeFmt) << endl;
+        << " Epoch:    " << getDumpTime(dl, Toe) << endl
+        << "End Valid:    " << getDumpTime(dl, endFit) << endl;
 
       s.setf(ios::scientific, ios::floatfield);
       s.precision(precision);

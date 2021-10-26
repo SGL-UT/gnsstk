@@ -112,6 +112,16 @@ namespace gnsstk
          return ((satMetaDataStore != nullptr) &&
                  satMetaDataStore->getSVN(sat,when,svn));
       }
+         /** Return an appropriate header label for the time format in dump().
+          * @param[in] dl The detail level for the time string to be dumped. 
+          * @return A string labeling the columns of the time format
+          *   (may be blank for some detail levels). */
+      std::string getDumpTimeHdr(DumpDetail dl) const;
+         /** Format a time appropriately for dump().
+          * @param[in] dl The detail level for the time string to be dumped. 
+          * @param[in] t The time to format for dumping.
+          * @return A string containing the formatted time. */
+      std::string getDumpTime(DumpDetail dl, const CommonTime& t) const;
          /** Time stamp used to sort the data.  This should be the
           * appropriate time stamp used when attempting to find the
           * data, usually the transmit time. */
@@ -131,7 +141,10 @@ namespace gnsstk
          /** Format string for printing week in dump().  This defaults
           * to "%4F(%4G)" which is the GPS full and short week, and
           * other GNSSes should use the same width, but different
-          * format tokens (see TimeString.hpp). */
+          * format tokens (see TimeString.hpp).  Systems that don't
+          * have a week number, e.g. GLONASS, should set this to an
+          * empty string, and dump() methods should ignore it
+          * accordingly. */
       std::string weekFmt;
    protected:
          /** Navigation message length in seconds.  This is used by

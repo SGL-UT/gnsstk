@@ -989,7 +989,7 @@ namespace gnsstk
       p0->timeStamp = navIn->getTransmitTime();
       p0->signal = NavMessageID(
          NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
-                               navIn->getobsID(), navIn->getNavID()),
+                        navIn->getobsID(), navIn->getNavID()),
          NavMessageType::TimeOffset);
       GPSLNavTimeOffset *to = dynamic_cast<GPSLNavTimeOffset*>(p0.get());
          // Bit positions taken from IS-GPS-200 figure 20-1 sheet 8,

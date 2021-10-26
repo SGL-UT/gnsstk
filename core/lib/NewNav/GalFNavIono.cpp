@@ -48,6 +48,7 @@ namespace gnsstk
    GalFNavIono ::
    GalFNavIono()
    {
+      weekFmt = "%4L(%4l)";
          // Galileo F/NAV nominal page transmit time is 10 seconds per
          // OS-SIS-ICD figure 14.
       msgLenSec = 10.0;

@@ -123,7 +123,6 @@ namespace gnsstk
       s.setf(ios::uppercase);
       s.precision(0);
       s.fill(' ');
-      std::string timeFmt = weekFmt+dumpTimeFmt;
       s << "           ACCURACY PARAMETERS"
         << endl
         << endl
@@ -137,9 +136,8 @@ namespace gnsstk
         << "Integrity Status Flag          : "
         << (integStat ? "1 (Enhanced)" : "0 (Legacy)")
         << endl << endl << endl
-        << "              Week(10bt)     SOW     DOW   UTD     SOD"
-        << "   MM/DD/YYYY   HH:MM:SS" << endl
-        << "Predict    :  " << printTime(top, timeFmt) << endl
+        << "              " << getDumpTimeHdr(DumpDetail::Full) << endl
+        << "Predict    :  " << getDumpTime(DumpDetail::Full, top) << endl
         << endl
         << "           SV STATUS"
         << endl
@@ -163,9 +161,8 @@ namespace gnsstk
         << dOMEGAdot << " rad" << endl
         << endl
         << "           TRANSMIT TIMES" << endl << endl
-        << "              Week(10bt)     SOW     DOW   UTD     SOD"
-        << "   MM/DD/YYYY   HH:MM:SS" << endl
-        << "Subframe 2:   " << printTime(xmitTime, timeFmt) << endl;
+        << "              " << getDumpTimeHdr(DumpDetail::Full) << endl
+        << "Subframe 2:   " << getDumpTime(DumpDetail::Full, xmitTime) << endl;
       s.flags(oldFlags);
    }
 }

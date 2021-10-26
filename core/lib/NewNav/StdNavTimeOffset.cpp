@@ -68,7 +68,8 @@ namespace gnsstk
          t0.setTimeSystem(fromSys);
             // difference between tE and tot (using GPS terms)
          double dt = when - t0;
-            // delta tLS should be 0 for anything other than UTC.
+            // delta tLS should be 0 for anything other than UTC,
+            // except in the case of GLONASS.
          offset = deltatLS + a0 + a1*dt + a2*dt*dt;
             // UTC conversion includes leap seconds and everyone
             // copied what GPS was doing, more or less, including the
@@ -122,33 +123,32 @@ namespace gnsstk
       }
 
       s << "           TIMES OF INTEREST" << endl << endl
-        << "              Week(10bt)     SOW     DOW   UTD     SOD"
-        << "   MM/DD/YYYY   HH:MM:SS\n"
-        << "Transmit:     " << printTime(timeStamp, weekFmt+dumpTimeFmt)
+        << "              " << getDumpTimeHdr(dl) << endl
+        << "Transmit:     " << getDumpTime(dl, timeStamp)
         << endl << endl
         << "           " << StringUtils::asString(src) << " "
         << StringUtils::asString(tgt) << " PARAMETERS" << endl
-        << "Parameter              Value" << endl
+        << "Parameter                 Value" << endl
         << "Reference   "
         << printTime(refTime,"%Y/%02m/%02d %02H:%02M:%02S") << endl
         << "Effective   "
         << printTime(effTime,"%Y/%02m/%02d %02H:%02M:%02S") << endl
         << right << uppercase << fixed << setprecision(0) << setfill(' ')
-        << "t-sub-ot    " << setw(16) << tot << " sec" << endl
+        << "t-sub-ot       " << setw(16) << tot << " sec" << endl
         << scientific << setprecision(9)
-        << "A0          " << setw(16) << a0 << " sec" << endl
-        << "A1          " << setw(16) << a1 << " sec/sec" << endl
-        << "A2          " << setw(16) << a2 << " sec/sec**2" << endl
+        << "A0             " << setw(16) << a0 << " sec" << endl
+        << "A1             " << setw(16) << a1 << " sec/sec" << endl
+        << "A2             " << setw(16) << a2 << " sec/sec**2" << endl
         << fixed << setprecision(0)
-        << "dtLS        " << setw(16) << deltatLS << " sec" << endl
-        << "dtLSF       " << setw(16) << deltatLSF << " sec" << endl
-        << "WNot        " << setw(11) << wnot << "("
+        << "dtLS           " << setw(16) << deltatLS << " sec" << endl
+        << "dtLSF          " << setw(16) << deltatLSF << " sec" << endl
+        << "WNot           " << setw(11) << wnot << "("
         << setw(3) << (wnot & 0x0ff) << ") Full week (modulo 256 week)" << endl
-        << "WN(LSF)     " << setw(11) << wnLSF << "("
+        << "WN(LSF)        " << setw(11) << wnLSF << "("
         << setw(3) << (wnLSF & 0x0ff) << ") Full week (modulo 256 week)" << endl
             /** @todo maybe need to make this a dynamic label for
              * systems that start at DN=0 */
-        << "DN          " << setw(16) << dn << " day (1-7)" << endl;
+        << "DN             " << setw(16) << dn << " day (1-7)" << endl;
       s.flags(oldFlags);
    }
 

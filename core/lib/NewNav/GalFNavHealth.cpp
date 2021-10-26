@@ -52,6 +52,7 @@ namespace gnsstk
          /** @todo Figure out a way to initialize sisaIndex such that
           * not having the value doesn't result in the health status
           * being tagged as Degraded. */
+      weekFmt = "%4L(%4l)";
       msgLenSec = 10.0;
    }
 
