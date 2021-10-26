@@ -133,6 +133,7 @@ public:
    unsigned editTest();
    unsigned clearTest();
    unsigned sizeTest();
+   unsigned countTest();
    unsigned numSignalsTest();
    unsigned numSatellitesTest();
    unsigned setValidityFilterTest();
@@ -389,6 +390,46 @@ sizeTest()
 
 
 unsigned MultiFormatNavDataFactory_T ::
+countTest()
+{
+   TUDEF("MultiFormatNavDataFactory", "count");
+   gnsstk::MultiFormatNavDataFactory uut;
+   std::string dpath = gnsstk::getPathData() + gnsstk::getFileSep();
+   TUCSM("loadIntoMap");
+   TUASSERT(uut.addDataSource(dpath + "arlm2000.15n"));
+   TUASSERT(uut.addDataSource(dpath + "test_input_SP3a.sp3"));
+   TUCSM("count");
+   size_t totalCount = uut.size();
+   gnsstk::NavMessageID key1(
+      gnsstk::NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                             gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                             gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                           gnsstk::CarrierBand::Any,
+                                           gnsstk::TrackingCode::Any,
+                                           gnsstk::XmitAnt::Any),
+                             gnsstk::NavID(gnsstk::NavType::Any)),
+      gnsstk::NavMessageType::Unknown);
+   key1.sat.makeWild();
+   key1.xmitSat.makeWild();
+      // debug enable.  Should probably make this a method and apply
+      // it to all managed factories.
+      // std::shared_ptr<gnsstk::SP3NavDataFactory> sp3 =
+      //    uut.getFactory<gnsstk::SP3NavDataFactory>();
+      // std::shared_ptr<gnsstk::RinexNavDataFactory> rinex =
+      //    uut.getFactory<gnsstk::RinexNavDataFactory>();
+      // sp3->debugLevel = 1;
+      // rinex->debugLevel = 1;
+      //
+      // key1, being a complete wildcard, should yield the same
+      // results as size()
+   TUASSERTE(size_t, totalCount, uut.count(key1));
+      // sp3->debugLevel = 0;
+      // rinex->debugLevel = 0;
+   TURETURN();
+}
+
+
+unsigned MultiFormatNavDataFactory_T ::
 numSignalsTest()
 {
    TUDEF("MultiFormatNavDataFactory", "numSignals");
@@ -551,6 +592,7 @@ int main()
    errorTotal += testClass.editTest();
    errorTotal += testClass.clearTest();
    errorTotal += testClass.sizeTest();
+   errorTotal += testClass.countTest();
    errorTotal += testClass.numSignalsTest();
    errorTotal += testClass.numSatellitesTest();
    errorTotal += testClass.setValidityFilterTest();

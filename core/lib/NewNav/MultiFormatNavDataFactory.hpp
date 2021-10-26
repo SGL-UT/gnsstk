@@ -239,6 +239,21 @@ namespace gnsstk
 
          /// Return the number of nav messages in all factories.
       size_t size() const override;
+         /// @copydoc NavDataFactoryWithStore::count(const NavMessageID&) const
+      size_t count(const NavMessageID& nmid) const override;
+         /// @copydoc NavDataFactoryWithStore::count(SatelliteSystem,NavMessageType) const
+      size_t count(SatelliteSystem sys,
+                   NavMessageType nmt = NavMessageType::Unknown)
+         const override
+      { return NavDataFactoryWithStore::count(sys,nmt); }
+         /// @copydoc NavDataFactoryWithStore::count(const SatID&,NavMessageType) const
+      size_t count(const SatID& satID,
+                   NavMessageType nmt = NavMessageType::Unknown)
+         const override
+      { return NavDataFactoryWithStore::count(satID,nmt); }
+         /// @copydoc NavDataFactoryWithStore::count(gnsstk::NavMessageType) const
+      size_t count(NavMessageType nmt) const override
+      { return NavDataFactoryWithStore::count(nmt); }
          /// Return the number of distinct signals (ignoring PRN) in factories.
       size_t numSignals() const override;
          /// Return the number of distinct signals including PRN, in factories.
