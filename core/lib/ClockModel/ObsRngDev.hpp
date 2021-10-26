@@ -79,224 +79,289 @@ namespace gnsstk
           * containers of this object.
           */
       ObsRngDev() throw()
-      : obstime(CommonTime::END_OF_TIME), wonky(0) {}
+      : obstime(CommonTime::END_OF_TIME), wonky(0)
+      {}
+
          /**
-          * constructor.
           * Creates an ORD, with no ionospheric correction and a default
           * trop correction.
-          * @param prange the observed pseudorange
-          * @param svid the SV being observed
-          * @param time the time of the observation
-          * @param rxpos the earth-centered, earth-fixed receiver position
-          * @param eph a store of either broadcast or precise ephemerides
-          * @param em an EllipsoidModel for performing range calculations
-          * @param svTime true if prange is in SV time, false for RX time.
+          * @param[in] prange The observed pseudorange
+          * @param[in] svid The SV being observed
+          * @param[in] time The time of the observation
+          * @param[in] rxpos The earth-centered, earth-fixed receiver position
+          * @param[in] navLib A store of either broadcast or precise ephemerides
+          * @param[in] em An EllipsoidModel for performing range calculations
+          * @param[in] svTime True if prange is in SV time, false for RX time.
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time.
+          * @param[in] xmitHealth The desired health status of the
+          *   satellite transmitting the nav data.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
           */ 
       ObsRngDev(const double prange,
                 const SatID& svid,
                 const CommonTime& time,
                 const Position& rxpos,
-                NavLibrary& eph,
-                EllipsoidModel& em,
-                bool svTime = false);
-         /**
-          * constructor.
-          * Creates an ORD, applies a single-frequency nav-message based
-          * ionospheric correction and a default trop correction.
-          * @param prange the observed pseudorange
-          * @param svid the PRN number of the observed SV
-          * @param time the time of the observation
-          * @param rxpos the earth-centered, earth-fixed receiver position
-          * @param eph a store of either broadcast or precise ephemerides
-          * @param em an EllipsoidModel for performing range calculations
-          * @param ion a store of nav based ionospheric models
-          * @param fq the GPS band (L1, L2, L5) from which the obs was made
-          * @param svTime true if prange is in SV time, false for RX time.
-          */ 
-      ObsRngDev(const double prange,
-                const SatID& svid,
-                const CommonTime& time,
-                const Position& rxpos,
-                NavLibrary& eph,
-                EllipsoidModel& em,
-                const IonoModelStore& ion,
-                CarrierBand band,
-                bool svTime = false);
-         /**
-          * constructor.
-          * Creates an ORD, applies no ionospheric correction and
-          * a user-specified trop correction.
-          * @param prange the observed pseudorange
-          * @param svid the PRN number of the observed SV
-          * @param time the time of the observation
-          * @param rxpos the earth-centered, earth-fixed receiver position
-          * @param eph a store of either broadcast or precise ephemerides
-          * @param em an EllipsoidModel for performing range calculations
-          * @param tm a TropModel for performing trop calculation
-          * @param svTime true if prange is in SV time, false for RX time.
-          */ 
-      ObsRngDev(const double prange,
-                const SatID& svid,
-                const CommonTime& time,
-                const Position& rxpos,
-                NavLibrary& eph,
-                EllipsoidModel& em,
-                const TropModel& tm,
-                bool svTime = false);
-   
-         /**
-          * constructor.
-          * Creates an ORD, applies a single-frequency nav-message based
-          * ionospheric correction and a user-specified trop correction.
-          * @param prange the observed pseudorange
-          * @param svid the PRN number of the observed SV
-          * @param time the time of the observation
-          * @param rxpos the earth-centered, earth-fixed receiver position
-          * @param eph a store of either broadcast or precise ephemerides
-          * @param em an EllipsoidModel for performing range calculations
-          * @param tm a TropModel for performing trop calculation
-          * @param ion a store of nav based ionospheric models
-          * @param fq the GPS band (L1, L2, L5) from which the obs was made
-          * @param svTime true if prange is in SV time, false for RX time.
-          */ 
-      ObsRngDev(const double prange,
-                const SatID& svid,
-                const CommonTime& time,
-                const Position& rxpos,
-                NavLibrary& eph,
-                EllipsoidModel& em,
-                const TropModel& tm,
-                const IonoModelStore& ion,
-                CarrierBand band,
-                bool svTime = false);
-   
-         /**
-          * constructor.
-          * Creates an ORD, applies a dual-frequency ionospheric correction
-          * and a default trop correction.
-          * @param prange1 the observed pseudorange on the first carrier
-          * @param prange2 the observed pseudorange on the second carrier
-          * @param svid the PRN number of the observed SV
-          * @param time the time of the observation
-          * @param rxpos the earth-centered, earth-fixed receiver position
-          * @param eph a store of either broadcast or precise ephemerides
-          * @param em an EllipsoidModel for performing range calculations
-          * @param svTime true if prange is in SV time, false for RX time.
-          * @param gamma The value of gamma: \f$\gamma_{12} = (f_{L1}/f_{L2})^2\f$
-          */ 
-      ObsRngDev(const double prange1,
-                const double prange2,
-                const SatID& svid,
-                const CommonTime& time,
-                const Position& rxpos,
-                NavLibrary& eph,
+                NavLibrary& navLib,
                 EllipsoidModel& em,
                 bool svTime = false,
-                double gamma = GAMMA_GPS);
+                NavSearchOrder order = NavSearchOrder::User,
+                SVHealth xmitHealth = SVHealth::Any,
+                NavValidityType valid = NavValidityType::ValidOnly);
+
+         /**
+          * Creates an ORD, applies a single-frequency nav-message based
+          * ionospheric correction and a default trop correction.
+          * @param[in] prange The observed pseudorange
+          * @param[in] svid The PRN number of the observed SV
+          * @param[in] time The time of the observation
+          * @param[in] rxpos The earth-centered, earth-fixed receiver position
+          * @param[in] navLib A store of either broadcast or precise ephemerides
+          * @param[in] em An EllipsoidModel for performing range calculations
+          * @param[in] ion A store of nav based ionospheric models
+          * @param[in] fq The GPS band (L1, L2, L5) from which the obs was made
+          * @param[in] svTime True if prange is in SV time, false for RX time.
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time.
+          * @param[in] xmitHealth The desired health status of the
+          *   satellite transmitting the nav data.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          */ 
+      ObsRngDev(const double prange,
+                const SatID& svid,
+                const CommonTime& time,
+                const Position& rxpos,
+                NavLibrary& navLib,
+                EllipsoidModel& em,
+                const IonoModelStore& ion,
+                CarrierBand band,
+                bool svTime = false,
+                NavSearchOrder order = NavSearchOrder::User,
+                SVHealth xmitHealth = SVHealth::Any,
+                NavValidityType valid = NavValidityType::ValidOnly);
+
+         /**
+          * Creates an ORD, applies no ionospheric correction and
+          * a user-specified trop correction.
+          * @param[in] prange The observed pseudorange
+          * @param[in] svid The PRN number of the observed SV
+          * @param[in] time The time of the observation
+          * @param[in] rxpos The earth-centered, earth-fixed receiver position
+          * @param[in] navLib A store of either broadcast or precise ephemerides
+          * @param[in] em An EllipsoidModel for performing range calculations
+          * @param[in] tm A TropModel for performing trop calculation
+          * @param[in] svTime True if prange is in SV time, false for RX time.
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time.
+          * @param[in] xmitHealth The desired health status of the
+          *   satellite transmitting the nav data.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          */ 
+      ObsRngDev(const double prange,
+                const SatID& svid,
+                const CommonTime& time,
+                const Position& rxpos,
+                NavLibrary& navLib,
+                EllipsoidModel& em,
+                const TropModel& tm,
+                bool svTime = false,
+                NavSearchOrder order = NavSearchOrder::User,
+                SVHealth xmitHealth = SVHealth::Any,
+                NavValidityType valid = NavValidityType::ValidOnly);
    
          /**
-          * constructor.
+          * Creates an ORD, applies a single-frequency nav-message based
+          * ionospheric correction and a user-specified trop correction.
+          * @param[in] prange The observed pseudorange
+          * @param[in] svid The PRN number of the observed SV
+          * @param[in] time The time of the observation
+          * @param[in] rxpos The earth-centered, earth-fixed receiver position
+          * @param[in] navLib A store of either broadcast or precise ephemerides
+          * @param[in] em An EllipsoidModel for performing range calculations
+          * @param[in] tm A TropModel for performing trop calculation
+          * @param[in] ion A store of nav based ionospheric models
+          * @param[in] fq The GPS band (L1, L2, L5) from which the obs was made
+          * @param[in] svTime True if prange is in SV time, false for RX time.
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time.
+          * @param[in] xmitHealth The desired health status of the
+          *   satellite transmitting the nav data.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          */ 
+      ObsRngDev(const double prange,
+                const SatID& svid,
+                const CommonTime& time,
+                const Position& rxpos,
+                NavLibrary& navLib,
+                EllipsoidModel& em,
+                const TropModel& tm,
+                const IonoModelStore& ion,
+                CarrierBand band,
+                bool svTime = false,
+                NavSearchOrder order = NavSearchOrder::User,
+                SVHealth xmitHealth = SVHealth::Any,
+                NavValidityType valid = NavValidityType::ValidOnly);
+   
+         /**
           * Creates an ORD, applies a dual-frequency ionospheric correction
-          * and a user-specified trop correction.
-          * @param prange1 the observed pseudorange on the first carrier
-          * @param prange2 the observed pseudorange on the second carrier
-          * @param svid the PRN number of the observed SV
-          * @param time the time of the observation
-          * @param rxpos the earth-centered, earth-fixed receiver position
-          * @param eph a store of either broadcast or precise ephemerides
-          * @param em an EllipsoidModel for performing range calculations
-          * @param tm a TropModel for performing trop calculations
-          * @param svTime true if prange is in SV time, false for RX time.
-          * @param gamma The value of gamma: \f$\gamma_{12} = (f_{L1}/f_{L2})^2\f$
+          * and a default trop correction.
+          * @param[in] prange1 The observed pseudorange on the first carrier
+          * @param[in] prange2 The observed pseudorange on the second carrier
+          * @param[in] svid The PRN number of the observed SV
+          * @param[in] time The time of the observation
+          * @param[in] rxpos The earth-centered, earth-fixed receiver position
+          * @param[in] navLib A store of either broadcast or precise ephemerides
+          * @param[in] em An EllipsoidModel for performing range calculations
+          * @param[in] svTime True if prange is in SV time, false for RX time.
+          * @param[in] gamma The value of gamma: \f$\gamma_{12} = (f_{L1}/f_{L2})^2\f$
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time.
+          * @param[in] xmitHealth The desired health status of the
+          *   satellite transmitting the nav data.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
           */ 
       ObsRngDev(const double prange1,
                 const double prange2,
                 const SatID& svid,
                 const CommonTime& time,
                 const Position& rxpos,
-                NavLibrary& eph,
+                NavLibrary& navLib,
+                EllipsoidModel& em,
+                bool svTime = false,
+                double gamma = GAMMA_GPS,
+                NavSearchOrder order = NavSearchOrder::User,
+                SVHealth xmitHealth = SVHealth::Any,
+                NavValidityType valid = NavValidityType::ValidOnly);
+   
+         /**
+          * Creates an ORD, applies a dual-frequency ionospheric correction
+          * and a user-specified trop correction.
+          * @param[in] prange1 The observed pseudorange on the first carrier
+          * @param[in] prange2 The observed pseudorange on the second carrier
+          * @param[in] svid The PRN number of the observed SV
+          * @param[in] time The time of the observation
+          * @param[in] rxpos The earth-centered, earth-fixed receiver position
+          * @param[in] navLib A store of either broadcast or precise ephemerides
+          * @param[in] em An EllipsoidModel for performing range calculations
+          * @param[in] tm A TropModel for performing trop calculations
+          * @param[in] svTime True if prange is in SV time, false for RX time.
+          * @param[in] gamma The value of gamma: \f$\gamma_{12} = (f_{L1}/f_{L2})^2\f$
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time.
+          * @param[in] xmitHealth The desired health status of the
+          *   satellite transmitting the nav data.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          */ 
+      ObsRngDev(const double prange1,
+                const double prange2,
+                const SatID& svid,
+                const CommonTime& time,
+                const Position& rxpos,
+                NavLibrary& navLib,
                 const EllipsoidModel& em,
                 const TropModel& tm,
                 bool svTime = false,
-                double gamma = GAMMA_GPS);
+                double gamma = GAMMA_GPS,
+                NavSearchOrder order = NavSearchOrder::User,
+                SVHealth xmitHealth = SVHealth::Any,
+                NavValidityType valid = NavValidityType::ValidOnly);
    
          /// destructor
-      virtual ~ObsRngDev() throw() {}
+      virtual ~ObsRngDev() throw()
+      {}
 
          // get accessor methods ----------------------------------------------
          /**
           * returns the time of the SV observation
           * \return time of SV observation
           */
-      const CommonTime& getTime() const throw() { return obstime; }
+      const CommonTime& getTime() const throw()
+      { return obstime; }
 
          /**
           * returns the observed SV's identifier
           * \return svid
           */
-      SatID getSvID() const throw() { return svid; }
+      SatID getSvID() const throw()
+      { return svid; }
 
          /**
           * returns the SV azimuth angle (in degrees) in relation to the rx
           * \return SV azimuth angle
           */
-      vfloat getAzimuth() const throw() { return azimuth; }
+      vfloat getAzimuth() const throw()
+      { return azimuth; }
 
          /**
           * returns elevation (in degrees) of the SV in relation to the rx
           * \return SV elevation angle
           */
-      vfloat getElevation() const throw() { return elevation; }
+      vfloat getElevation() const throw()
+      { return elevation; }
 
          /**
           * returns the 6-bit SV health bitfield from epehemeris, subframe 1
           * \return SV health bitfield
           */
-      vshort getHealth() const throw() { return health; }
+      vshort getHealth() const throw()
+      { return health; }
 
          /**
           * returns the Issue Of Data, Clock (IODC) from ephemeris, subframe 1
           * \return ephemeris IODC
           */
-      vshort getIODC() const throw() { return iodc; }
+      vshort getIODC() const throw()
+      { return iodc; }
 
          /**
           * returns the observed range deviation (ORD) (in meters)
           * \returns ORD
           */
-      double getORD() const throw() { return ord; }
+      double getORD() const throw()
+      { return ord; }
 
          /**
           * returns the ionospheric offset (in meters)
           * \returns ionospheric offset
           */
-      vdouble getIono() const throw() { return iono; }
+      vdouble getIono() const throw()
+      { return iono; }
 
          /**
           * returns the tropospheric offset (in meters)
           * \returns tropospheric offset
           */
-      vdouble getTrop() const throw() { return trop; }
+      vdouble getTrop() const throw()
+      { return trop; }
 
       friend std::ostream& operator<<(std::ostream& s, 
                                       const ObsRngDev& r) throw();
 
       void applyClockOffset(double clockOffset)
-      {ord -= clockOffset;}
+      { ord -= clockOffset; }
 
       static bool debug;
 
    private:
       void computeOrd(double obs,
                       const Position& rxpos,
-                      NavLibrary& eph,
+                      NavLibrary& navLib,
                       const EllipsoidModel& em,
-                      bool svTime)
+                      bool svTime,
+                      NavSearchOrder order,
+                      SVHealth xmitHealth,
+                      NavValidityType valid)
       {
          if (svTime) 
-            computeOrdTx(obs, rxpos, eph, em);
+            computeOrdTx(obs, rxpos, navLib, em, order, xmitHealth, valid);
          else 
-            computeOrdRx(obs, rxpos, eph, em);
+            computeOrdRx(obs, rxpos, navLib, em, order, xmitHealth, valid);
          return;
       }
 
@@ -304,13 +369,19 @@ namespace gnsstk
 
       void computeOrdTx(double obs,
                         const Position& rxpos,
-                        NavLibrary& eph,
-                        const EllipsoidModel& em);
+                        NavLibrary& navLib,
+                        const EllipsoidModel& em,
+                        NavSearchOrder order,
+                        SVHealth xmitHealth,
+                        NavValidityType valid);
    
       void computeOrdRx(double obs,
                         const Position& rxpos,
-                        NavLibrary& eph,
-                        const EllipsoidModel& em);
+                        NavLibrary& navLib,
+                        const EllipsoidModel& em,
+                        NavSearchOrder order,
+                        SVHealth xmitHealth,
+                        NavValidityType valid);
 
       void computeTrop(const TropModel& tm);
 

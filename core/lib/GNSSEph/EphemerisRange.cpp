@@ -54,18 +54,19 @@ using namespace gnsstk;
 
 namespace gnsstk
 {
-   NavSearchOrder CorrectedEphemerisRange::order = NavSearchOrder::User;
-
    // Compute the corrected range at RECEIVE time, from receiver at position Rx,
    // to the GPS satellite given by SatID sat, as well as all the CER quantities,
-   // given the nominal receive time tr_nom and an EphemerisStore. Note that this
+   // given the nominal receive time trNom and an EphemerisStore. Note that this
    // routine does not intrinsicly account for the receiver clock error
    // like the ComputeAtTransmitTime routine does.
    double CorrectedEphemerisRange::ComputeAtReceiveTime(
-      const CommonTime& tr_nom,
+      const CommonTime& trNom,
       const Position& Rx,
       const SatID sat,
-      NavLibrary& eph)
+      NavLibrary& navLib,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       try {
          int nit;
@@ -76,7 +77,7 @@ namespace gnsstk
          tof = 0.07;       // initial guess 70ms
          do {
             // best estimate of transmit time
-            transmit = tr_nom;
+            transmit = trNom;
             transmit -= tof;
             tof_old = tof;
             // get SV position
@@ -84,7 +85,8 @@ namespace gnsstk
                   /** @todo getXvt was expected to throw an exception on
                    * failure in the past.  This assert more or less mimics
                    * that behavior.  Refactoring is needed.  */
-               GNSSTK_ASSERT(getXvt(eph, NavSatelliteID(sat), transmit));
+               GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), transmit,
+                                    order, xmitHealth, valid));
             }
             catch(AssertionFailure& e) {
                GNSSTK_RETHROW(e);
@@ -111,20 +113,23 @@ namespace gnsstk
 
       // Compute the corrected range at TRANSMIT time, from receiver at position Rx,
       // to the GPS satellite given by SatID sat, as well as all the CER quantities,
-      // given the nominal receive time tr_nom and an EphemerisStore, as well as
+      // given the nominal receive time trNom and an EphemerisStore, as well as
       // the raw measured pseudorange.
    double CorrectedEphemerisRange::ComputeAtTransmitTime(
-      const CommonTime& tr_nom,
+      const CommonTime& trNom,
       const double& pr,
       const Position& Rx,
       const SatID sat,
-      NavLibrary& eph)
+      NavLibrary& navLib,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       try {
          CommonTime tt;
 
          // 0-th order estimate of transmit time = receiver - pseudorange/c
-         transmit = tr_nom;
+         transmit = trNom;
          transmit -= pr/C_MPS;
          tt = transmit;
 
@@ -135,7 +140,8 @@ namespace gnsstk
                   /** @todo getXvt was expected to throw an exception on
                    * failure in the past.  This assert more or less mimics
                    * that behavior.  Refactoring is needed.  */
-               GNSSTK_ASSERT(getXvt(eph, NavSatelliteID(sat), tt));
+               GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), tt,
+                                    order, xmitHealth, valid));
             }
             catch(InvalidRequest& e) {
                GNSSTK_RETHROW(e);
@@ -162,19 +168,23 @@ namespace gnsstk
 
 
    double CorrectedEphemerisRange::ComputeAtTransmitTime(
-      const CommonTime& tr_nom,
+      const CommonTime& trNom,
       const Position& Rx,
       const SatID sat,
-      NavLibrary& eph)
+      NavLibrary& navLib,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       try {
          gnsstk::GPSEllipsoid gm;
             /** @todo getXvt was expected to throw an exception on
              * failure in the past.  This assert more or less mimics
              * that behavior.  Refactoring is needed.  */
-         GNSSTK_ASSERT(getXvt(eph, NavSatelliteID(sat), tr_nom));
+         GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), trNom,
+                              order, xmitHealth, valid));
          double pr = svPosVel.preciseRho(Rx, gm);
-         return ComputeAtTransmitTime(tr_nom, pr, Rx, sat, eph);
+         return ComputeAtTransmitTime(trNom, pr, Rx, sat, navLib);
       }
       catch(gnsstk::Exception& e) {
          GNSSTK_RETHROW(e);
@@ -183,11 +193,14 @@ namespace gnsstk
 
 
    double CorrectedEphemerisRange::ComputeAtTransmitSvTime(
-      const CommonTime& tt_nom,
+      const CommonTime& ttNom,
       const double& pr,
       const Position& rx,
       const SatID sat,
-      NavLibrary& eph)
+      NavLibrary& navLib,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       try
       {
@@ -197,7 +210,8 @@ namespace gnsstk
             /** @todo getXvt was expected to throw an exception on
              * failure in the past.  This assert more or less mimics
              * that behavior.  Refactoring is needed.  */
-         GNSSTK_ASSERT(getXvt(eph, NavSatelliteID(sat), tt_nom));
+         GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), ttNom,
+                              order, xmitHealth, valid));
 
          // compute rotation angle in the time of signal transit
 
@@ -264,14 +278,16 @@ namespace gnsstk
 
 
    bool CorrectedEphemerisRange ::
-   getXvt(NavLibrary& navLib, const NavSatelliteID& sat, const CommonTime& when)
+   getXvt(NavLibrary& navLib, const NavSatelliteID& sat, const CommonTime& when,
+          NavSearchOrder order,
+          SVHealth xmitHealth,
+          NavValidityType valid)
    {
       NavMessageID nmid(sat, NavMessageType::Ephemeris);
       NavDataPtr ndp;
       std::shared_ptr<OrbitData> od;
       std::shared_ptr<GPSLNavEph> ephLNav;
-      if (!navLib.find(nmid, when, ndp, SVHealth::Any,
-                       NavValidityType::ValidOnly, order))
+      if (!navLib.find(nmid, when, ndp, xmitHealth, valid, order))
       {
          return false;
       }
