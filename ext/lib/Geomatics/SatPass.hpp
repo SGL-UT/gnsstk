@@ -54,6 +54,7 @@
 #include "RinexObsData.hpp"
 #include "RinexUtilities.hpp"
 #include "Exception.hpp"
+#include "TimeString.hpp"
 
 namespace gnsstk {
 

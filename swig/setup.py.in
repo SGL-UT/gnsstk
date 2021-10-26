@@ -78,6 +78,7 @@ setup(name              = "gnsstk",
       package_data      = { 'gnsstk': ['_gnsstk.so', 'libgnsstk.so*'], },
       data_files        = [('', ['README.md',]),],
       scripts           = scripts_list,
+      extras_require    = {'python_version == "2.7"': ['enum34']},
       zip_safe          = False,
       )
 

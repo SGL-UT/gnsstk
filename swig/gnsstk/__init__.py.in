@@ -5,14 +5,6 @@
 import os
 import warnings
 
-# Force load the libgnsstk library, so the symbols will already be present, even if ld wouldn't find them.
-from ctypes import cdll
-try:
-    lib_gnsstk = cdll.LoadLibrary(os.path.join(os.path.split(__file__)[0], 'libgnsstk.so.@GNSSTK_VERSION@'))
-except Exception as ex:
-    warnings.warn(ex.message)
-    warnings.warn("Failed to import internal binaries.  Will attempt to use standard LD search path.", ImportWarning)
-
 #----------
 # Populate gnsstk namespace
 #----------

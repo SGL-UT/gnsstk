@@ -114,10 +114,6 @@ add_dependencies("_${SWIG_MODULE}" swig-make-directory)
 add_custom_command( TARGET "_${SWIG_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "_${SWIG_MODULE}.so" ${CMAKE_SWIG_OUTDIR} )
 add_custom_command( TARGET "_${SWIG_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${SWIG_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
 
-add_custom_command( TARGET "_${SWIG_MODULE}"
-                    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_BINARY_DIR}/libgnsstk.so.${GNSSTK_VERSION}" ${CMAKE_SWIG_OUTDIR}
-                    DEPENDS gnsstk)
-
 # Find all files in the gnsstk, apps, and tests directories and set up dependancies to
 # copy them to the python module directory
 file(GLOB_RECURSE module_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"

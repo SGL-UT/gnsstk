@@ -165,6 +165,20 @@ namespace gnsstk
       CommonTime getFinalTime() const override
       { return finalTime; }
 
+         /** Determine the timestamp of the oldest record in this
+          * store for the given satellite.
+          * @note This should not be confused with getInitialTime(),
+	  *   which is the time of applicability, not the time stamp
+	  *   of the contained data. */
+      CommonTime getFirstTime(const SatID& sat) const;
+
+      	 /** Determine the timestamp of the newest record in this
+	  * store for the given satellite.
+	  * @note This should not be confused with getFinalTime(),
+	  *   which is the time of applicability, not the time stamp
+	  *   of the contained data. */
+      CommonTime getLastTime(const SatID& sat) const;
+
          /** Obtain a set of satellites for which we have data in the
           * given time span.
           * @param[in] fromTime The earliest time for which any
@@ -216,6 +230,64 @@ namespace gnsstk
 
          /// Return the number of nav messages in data.
       virtual size_t size() const;
+         /** Return a count of messages matching the given NavMessageID.
+          * @param[in] nmid The NavMessageID to match.  Wildcards may
+          *   be used. In addition to the standard wildcard support in
+          *   SatID, ObsID and NavID, the signal field may be set to
+          *   "Unknown" to be treated as a wildcard, as may the
+          *   messageType field.  The following code snippet
+          *   represents a NavMessageID with all wildcards (which will
+          *   match the results from the size() method).
+          *
+          * \code{.cpp}
+          *   NavMessageID key1(
+          *      NavSatelliteID(SatID(SatelliteSystem::Unknown),
+          *                     SatID(SatelliteSystem::Unknown),
+          *                     ObsID(ObservationType::Any,
+          *                           CarrierBand::Any,
+          *                           TrackingCode::Any,
+          *                           XmitAnt::Any),
+          *                     NavID(NavType::Any)),
+          *      NavMessageType::Unknown);
+          *   key1.sat.makeWild();
+          *   key1.xmitSat.makeWild();
+          * \endcode
+          *
+          * The \a system field is initialized in the above
+          * constructor from the SatID system, which is why we're
+          * initializing it to "Unknown" (to make \a system a
+          * wildcard).  But setting the SatID::system to Unknown
+          * doesn't make SatID a wildcard, that requires the
+          * SatID::makeWild() method calls.
+          *
+          * @note This method has a bit of overhead, though no more
+          *   than find(). */
+      virtual size_t count(const NavMessageID& nmid) const;
+         /** Return a count of messages matching the given
+          * SatelliteSystem and NavMessageType.
+          * @param[in] sys The SatelliteSystem to match when counting.
+          * @param[in] nmt The NavMessageType to match (default Unknown=all).
+          * @note This method has a bit of overhead, though no more
+          *   than find().
+          * @note Only NavSignalID::system is checked, if you need to
+          *   explicitly check NavSatelliteID::SatID::system, use the
+          *   count(constNavMessageID&). */
+      virtual size_t count(SatelliteSystem sys,
+                           NavMessageType nmt = NavMessageType::Unknown)
+         const;
+         /** Return a count of messages where the SUBJECT satellite ID
+          * matches the given SatID and message type.
+          * @param[in] satID The subject satellite ID to match.
+          * @param[in] nmt The NavMessageType to match (default Unknown=all).
+          * @note This method has a bit of overhead, though no more
+          *   than find(). */
+      virtual size_t count(const SatID& satID,
+                           NavMessageType nmt = NavMessageType::Unknown)
+         const;
+         /** Return a count of messages matching the given NavMessageType.
+          * @note This method has a bit of overhead, though no more
+          *   than find(). */
+      virtual size_t count(NavMessageType nmt) const;
          /// Return the number of distinct signals (ignoring PRN) in the data.
       virtual size_t numSignals() const;
          /// Return the number of distinct signals including PRN, in the data.
@@ -345,6 +417,8 @@ namespace gnsstk
       CommonTime initialTime;
          /// Store the latest applicable orbit time here, by addNavData
       CommonTime finalTime;
+         /// Map subject satellite ID to time stamp pair (oldest,newest).
+      std::map<SatID,std::pair<CommonTime,CommonTime> > firstLastMap;
 
          /// Grant access to MultiFormatNavDataFactory for various functions.
       friend class MultiFormatNavDataFactory;

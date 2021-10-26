@@ -61,7 +61,7 @@ Package: python-gnsstk
 Build-Profiles: <pkg_python>
 Section: python
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-enum34
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: GNSS Toolkit (GNSSTk) - Python bindings
