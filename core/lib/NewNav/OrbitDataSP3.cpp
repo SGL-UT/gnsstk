@@ -95,7 +95,7 @@ namespace gnsstk
       }
       xvt.clkbias = clkBias * 1e-6; // microseconds to seconds
       xvt.clkdrift = clkDrift * 1e-6;
-      xvt.health = Xvt::HealthStatus::Unavailable;
+      xvt.health = Xvt::HealthStatus::Unused;
       xvt.computeRelativityCorrection();
          /// @todo set xvt.frame
       return true;

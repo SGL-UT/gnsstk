@@ -958,6 +958,36 @@ namespace gnsstk
          std::cerr << "addNavData user = " << nd->getUserTime()
                    << "  nearest = " << nd->getNearTime() << std::endl;
       }
+      SatID satID = nd->signal.sat;
+         // TimeOffset data doesn't have an associated satellite, so
+         // ignore those to avoid time system conflicts in this block
+         // of code.
+      if (satID.system != SatelliteSystem::Unknown)
+      {
+         if (firstLastMap.find(satID) == firstLastMap.end())
+         {
+            firstLastMap[satID] = std::pair<CommonTime,CommonTime>(
+               nd->timeStamp,nd->timeStamp);
+         }
+         else
+         {
+               // Ignore time systems when comparing, because I'm
+               // lazy.  The few seconds difference in time systems
+               // isn't going to have a big effect on this information
+               // anyway.
+            CommonTime anyFirst(firstLastMap[satID].first),
+               anyLast(firstLastMap[satID].second),
+               anyTimeStamp(nd->timeStamp);
+            anyFirst.setTimeSystem(TimeSystem::Any);
+            anyLast.setTimeSystem(TimeSystem::Any);
+            anyTimeStamp.setTimeSystem(TimeSystem::Any);
+               // set the stored time stamps using the original time system.
+            if (anyTimeStamp < anyFirst)
+               firstLastMap[satID].first = nd->timeStamp;
+            if (anyTimeStamp > anyLast)
+               firstLastMap[satID].second = nd->timeStamp;
+         }
+      }
       if ((odkp = dynamic_cast<OrbitDataKepler*>(nd.get())) != nullptr)
       {
          if (((initialTime.getTimeSystem() != odkp->beginFit.getTimeSystem()) &&
@@ -1046,6 +1076,165 @@ namespace gnsstk
          }
       }
       return rv + ndpUnique.size();
+   }
+
+
+   size_t NavDataFactoryWithStore ::
+   count(const NavMessageID& nmid) const
+   {
+      size_t rv = 0;
+         // Make a copy of the key that can be modified so that values
+         // that are otherwise not wildcards e.g. SatelliteSystem can
+         // be managed like wildcards.
+      NavMessageID key(nmid);
+         // Iterate over all nav message types.  Skip anything that
+         // doesn't match, treating "Unknown" as a wildcard.
+      for (NavMessageType i : NavMessageTypeIterator())
+      {
+         if ((nmid.messageType != NavMessageType::Unknown) &&
+             (nmid.messageType != i))
+         {
+            if (debugLevel)
+            {
+               std::cerr << "skipping message type " << StringUtils::asString(i)
+                         << std::endl;
+            }
+            continue;
+         }
+         if (debugLevel)
+         {
+            std::cerr << "counting message type " << StringUtils::asString(i)
+                      << std::endl;
+         }
+         if (i == NavMessageType::TimeOffset)
+         {
+               // TimeOffset has a separate internal store from the rest.
+               // OffsetCvtMap can contain duplicates when a TimeOffsetData
+               // object applies to multiple time systems, so count unique
+               // pointers.
+            std::set<NavData*> ndpUnique;
+            for (const auto& ocmi : offsetData)
+            {
+               for (const auto& oemi : ocmi.second)
+               {
+                  for (const auto& omi : oemi.second)
+                  {
+                     if (debugLevel)
+                     {
+                        std::cerr << "wildcard search: " << nmid << std::endl;
+                     }
+                        // treat the SatelliteSystem::Unknown like a wildcard
+                     if (nmid.system == SatelliteSystem::Unknown)
+                        key.system = omi.first.system;
+                     if (omi.first == key)
+                     {
+                        if (debugLevel)
+                        {
+                           std::cerr << "  matches " << omi.first << std::endl;
+                        }
+                        ndpUnique.insert(omi.second.get());
+                     }
+                     else if (debugLevel)
+                     {
+                        std::cerr << "  " << omi.first << " != " << nmid
+                                  << std::endl;
+                     }
+                  }
+               }
+            }
+            rv += ndpUnique.size();
+         }
+         else
+         {
+            auto dataIt = data.find(i);
+            if (dataIt == data.end())
+            {
+                  // no data for this message type, move on
+               continue;
+            }
+               // There are no non-wildcard searches because we treat
+               // SatelliteSystem::Unknown as a wildcard when it normally
+               // is not.
+            if (debugLevel)
+            {
+               std::cerr << "wildcard search: " << nmid << std::endl;
+            }
+            for (const auto& sati : dataIt->second)
+            {
+                  // treat the SatelliteSystem::Unknown like a wildcard
+               if (nmid.system == SatelliteSystem::Unknown)
+                  key.system = sati.first.system;
+               if (sati.first == key)
+               {
+                  if (debugLevel)
+                  {
+                     std::cerr << "  matches " << sati.first << std::endl;
+                  }
+                  rv += sati.second.size();
+               }
+               else if (debugLevel)
+               {
+                  std::cerr << "  " << sati.first << " != " << nmid
+                            << std::endl;
+               }
+            }
+         }
+      }
+      return rv;
+   }
+
+
+   size_t NavDataFactoryWithStore ::
+   count(SatelliteSystem sys, NavMessageType nmt) const
+   {
+      NavMessageID key(
+         NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                        gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                        gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                      gnsstk::CarrierBand::Any,
+                                      gnsstk::TrackingCode::Any,
+                                      gnsstk::XmitAnt::Any),
+                        gnsstk::NavID(gnsstk::NavType::Any)),
+         nmt);
+      key.sat.makeWild();
+      key.xmitSat.makeWild();
+      key.system = sys;
+      return count(key);
+   }
+
+
+   size_t NavDataFactoryWithStore ::
+   count(const SatID& satID, NavMessageType nmt) const
+   {
+      NavMessageID key(
+         NavSatelliteID(satID,
+                        gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                        gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                      gnsstk::CarrierBand::Any,
+                                      gnsstk::TrackingCode::Any,
+                                      gnsstk::XmitAnt::Any),
+                        gnsstk::NavID(gnsstk::NavType::Any)),
+         nmt);
+      key.xmitSat.makeWild();
+      return count(key);
+   }
+
+
+   size_t NavDataFactoryWithStore ::
+   count(NavMessageType nmt) const
+   {
+      NavMessageID key(
+         NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                        gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                        gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                      gnsstk::CarrierBand::Any,
+                                      gnsstk::TrackingCode::Any,
+                                      gnsstk::XmitAnt::Any),
+                        gnsstk::NavID(gnsstk::NavType::Any)),
+         nmt);
+      key.sat.makeWild();
+      key.xmitSat.makeWild();
+      return count(key);
    }
 
 
@@ -1251,6 +1440,24 @@ namespace gnsstk
    }
 
 
+   CommonTime NavDataFactoryWithStore :: getFirstTime(const SatID& sat) const
+   {
+      auto i = firstLastMap.find(sat);
+      if (i != firstLastMap.end())
+         return i->second.first;
+      return CommonTime::END_OF_TIME;
+   }
+
+
+   CommonTime NavDataFactoryWithStore :: getLastTime(const SatID& sat) const
+   {
+      auto i = firstLastMap.find(sat);
+      if (i != firstLastMap.end())
+         return i->second.second;
+      return CommonTime::BEGINNING_OF_TIME;
+   }
+
+
    NavSatelliteIDSet NavDataFactoryWithStore :: getAvailableSats(
       const CommonTime& fromTime, const CommonTime& toTime)
       const
@@ -1321,7 +1528,8 @@ namespace gnsstk
             {
                case DumpDetail::OneLine:
                   s << StringUtils::asString(nmmi.first) << " "
-                    << StringUtils::asString(nsami.first) << std::endl;
+                    << StringUtils::asString(nsami.first) << " "
+                    << nsami.second.size() << " objects" << std::endl;
                   break;
                case DumpDetail::Brief:
                   for (const auto& cti : nsami.second)

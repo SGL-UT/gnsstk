@@ -294,6 +294,26 @@ namespace gnsstk
 
 
    size_t MultiFormatNavDataFactory ::
+   count(const NavMessageID& nmid) const
+   {
+         // this one is easy, it's just the sum of each individual
+         // factory's count() results
+      size_t rv = 0;
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories()))
+      {
+         NavDataFactory *ndfp = fi.second.get();
+         NavDataFactoryWithStore *ndfs =
+            dynamic_cast<NavDataFactoryWithStore*>(ndfp);
+         if (ndfs != nullptr)
+         {
+            rv += ndfs->count(nmid);
+         }
+      }
+      return rv;
+   }
+
+
+   size_t MultiFormatNavDataFactory ::
    numSignals() const
    {
       std::set<NavSignalID> uniqueSig;

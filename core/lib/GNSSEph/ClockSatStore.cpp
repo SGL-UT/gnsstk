@@ -148,7 +148,7 @@ namespace gnsstk
             }
             else {
                // linear interpolation
-               slope = (drifts[Nhi]-drifts[Nlow]) /
+               slope = (accels[Nhi]-accels[Nlow]) /
                                    (times[Nhi]-times[Nlow]);            // sec/sec^2
                rec.accel = accels[Nlow] + slope*(dt-times[Nlow]);       // sec/sec^2
             }

@@ -40,6 +40,7 @@
 #include "SEMStream.hpp"
 #include "SEMHeader.hpp"
 #include "GPSLNavHealth.hpp"
+#include "GPSWeekSecond.hpp"
 
 using namespace std;
 

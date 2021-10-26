@@ -52,7 +52,7 @@
 #include "Stats.hpp"
 #include "Matrix.hpp"
 #include "Namelist.hpp"
-#include "XvtStore.hpp"
+#include "NavLibrary.hpp"
 #include "TropModel.hpp"
 
 namespace gnsstk
@@ -372,19 +372,21 @@ namespace gnsstk
       ///                     which there is no ephemeris.
       /// @param Pseudorange input std::vector<double> of raw pseudoranges (parallel
       ///                     to Sats), in meters
-      /// @param pEph        input pointer to gnsstk::XvtStore<SatID> to be used
+      /// @param eph[in]     NavLibrary to be used
       /// @param SVP         output gnsstk::Matrix<double> of dimension (N,4), N is
       ///                     the number of satellites in Sats[] (marked or not),
       ///                     on output this contains the satellite positions at
       ///                     transmit time (cols 0-2), the corrected pseudorange (1).
+      /// @param[in] order   How NavLibrary searches are performed.
       /// @return Return values:
       ///  >= 0 number of good satellites found
       /// -4    ephemeris not found for all the satellites
       int PreparePRSolution(const CommonTime& Tr,
                             std::vector<SatID>& Sats,
                             const std::vector<double>& Pseudorange,
-                            const XvtStore<SatID> *pEph,
-                            Matrix<double>& SVP) const;
+                            NavLibrary& eph,
+                            Matrix<double>& SVP,
+                            NavSearchOrder order = NavSearchOrder::User) const;
 
       /// Compute a single autonomous pseudorange solution, after calling
       /// PreparePRSolution(). On output, all the member data is filled with results.
@@ -438,8 +440,9 @@ namespace gnsstk
       int RAIMComputeUnweighted(const CommonTime& Tr,
                                 std::vector<SatID>& Satellites,
                                 const std::vector<double>& Pseudorange,
-                                const XvtStore<SatID> *pEph,
-                                TropModel *pTropModel);
+                                NavLibrary& eph,
+                                TropModel *pTropModel,
+                                NavSearchOrder order = NavSearchOrder::User);
 
       /// Compute a position/time solution, given satellite PRNs and pseudoranges
       /// using a RAIM algorithm. This is the main computation done by this class.
@@ -470,8 +473,9 @@ namespace gnsstk
                       std::vector<SatID>& Satellites,
                       const std::vector<double>& Pseudorange,
                       const Matrix<double>& invMC,
-                      const XvtStore<SatID> *pEph,
-                      TropModel *pTropModel);
+                      NavLibrary& eph,
+                      TropModel *pTropModel,
+                      NavSearchOrder order = NavSearchOrder::User);
 
       /// Compute DOPs using the partials matrix from the last successful solution.
       /// RAIMCompute(), if successful, calls this before returning.
