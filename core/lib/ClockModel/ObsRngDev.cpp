@@ -60,7 +60,7 @@ namespace gnsstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      NavLibrary& eph,
+      NavLibrary& navLib,
       EllipsoidModel& em,
       bool svTime,
       NavSearchOrder order,
@@ -68,7 +68,7 @@ namespace gnsstk
       NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
-      computeOrd(prange, rxpos, eph, em, svTime, order, xmitHealth, valid);
+      computeOrd(prange, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       Position gx(rxpos);
       gx.asGeodetic(&em);
       NBTropModel nb(gx.getAltitude(),
@@ -82,7 +82,7 @@ namespace gnsstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      NavLibrary& eph,
+      NavLibrary& navLib,
       EllipsoidModel& em,
       const IonoModelStore& ion,
       CarrierBand band,
@@ -92,7 +92,7 @@ namespace gnsstk
       NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
-      computeOrd(prange, rxpos, eph, em, svTime, order, xmitHealth, valid);
+      computeOrd(prange, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       Position gx(rxpos);
       gx.asGeodetic(&em);
       NBTropModel nb(gx.getAltitude(),
@@ -108,7 +108,7 @@ namespace gnsstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      NavLibrary& eph,
+      NavLibrary& navLib,
       EllipsoidModel& em,
       const TropModel& tm,
       bool svTime,
@@ -117,7 +117,7 @@ namespace gnsstk
       NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
-      computeOrd(prange, rxpos, eph, em, svTime, order, xmitHealth, valid);
+      computeOrd(prange, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       computeTrop(tm);
    }
 
@@ -126,7 +126,7 @@ namespace gnsstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      NavLibrary& eph,
+      NavLibrary& navLib,
       EllipsoidModel& em,
       const TropModel& tm,
       const IonoModelStore& ion,
@@ -137,7 +137,7 @@ namespace gnsstk
       NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
-      computeOrd(prange, rxpos, eph, em, svTime, order, xmitHealth, valid);
+      computeOrd(prange, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       computeTrop(tm);
       Position gx(rxpos);
       gx.asGeodetic(&em);
@@ -152,7 +152,7 @@ namespace gnsstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      NavLibrary& eph,
+      NavLibrary& navLib,
       EllipsoidModel& em,
       bool svTime,
       double gamma,
@@ -165,7 +165,7 @@ namespace gnsstk
       double icpr = (prange2 - gamma * prange1)/(1-gamma);
       iono = prange1 - icpr;
 
-      computeOrd(icpr, rxpos, eph, em, svTime, order, xmitHealth, valid);
+      computeOrd(icpr, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       Position gx(rxpos);
       gx.asGeodetic(&em);
       NBTropModel nb(gx.getAltitude(),
@@ -181,7 +181,7 @@ namespace gnsstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      NavLibrary& eph,
+      NavLibrary& navLib,
       const EllipsoidModel& em,
       const TropModel& tm,
       bool svTime,
@@ -195,7 +195,7 @@ namespace gnsstk
       double icpr = (prange2 - gamma * prange1)/(1-gamma);
       iono = prange1 - icpr;
 
-      computeOrd(icpr, rxpos, eph, em, svTime, order, xmitHealth, valid);
+      computeOrd(icpr, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       computeTrop(tm);
    }
 
@@ -203,14 +203,14 @@ namespace gnsstk
    void ObsRngDev::computeOrdRx(
       const double obs,
       const Position& rxpos,
-      NavLibrary& eph,
+      NavLibrary& navLib,
       const EllipsoidModel& em,
       NavSearchOrder order,
       SVHealth xmitHealth,
       NavValidityType valid)
    {
       CorrectedEphemerisRange cer;
-      rho = cer.ComputeAtTransmitTime(obstime,obs, rxpos, svid, eph, order,
+      rho = cer.ComputeAtTransmitTime(obstime,obs, rxpos, svid, navLib, order,
                                       xmitHealth, valid);
       azimuth = cer.azimuth;
       elevation = cer.elevation;
@@ -241,15 +241,15 @@ namespace gnsstk
    void ObsRngDev::computeOrdTx(
       double obs,
       const Position& rxpos,
-      NavLibrary& eph,
+      NavLibrary& navLib,
       const EllipsoidModel& em,
       NavSearchOrder order,
       SVHealth xmitHealth,
       NavValidityType valid)
    {
       CorrectedEphemerisRange cer;
-      rho = cer.ComputeAtTransmitSvTime(obstime, obs, rxpos, svid, eph, order,
-                                        xmitHealth, valid);
+      rho = cer.ComputeAtTransmitSvTime(obstime, obs, rxpos, svid, navLib,
+                                        order, xmitHealth, valid);
       azimuth = cer.azimuth;
       elevation = cer.elevation;
       ord = obs - rho;
