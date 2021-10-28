@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -243,11 +243,11 @@ namespace gnsstk
    {
      OrbAlmGen oag;
 
-     oag.AHalf    = Ahalf; 
-     oag.A        = Ahalf * Ahalf; 
+     oag.AHalf    = Ahalf;
+     oag.A        = Ahalf * Ahalf;
      oag.af1      = AF1;
      oag.af0      = AF0;
-     oag.OMEGA0   = OMEGA0; 
+     oag.OMEGA0   = OMEGA0;
      oag.ecc      = ecc;
      oag.deltai   = i_offset;
      oag.i0       = i_total;
@@ -255,27 +255,27 @@ namespace gnsstk
      oag.w        = w;
      oag.M0       = M0;
      oag.toa      = Toa;
-     oag.health   = SV_health; 
-     
+     oag.health   = SV_health;
+
      // At this writing Yuma almanacs only exist for GPS
-     oag.subjectSV = SatID(PRN, SatelliteSystem::GPS); 
+     oag.subjectSV = SatID(PRN, SatelliteSystem::GPS);
 
-     // Unfortunately, we've NO IDEA which SV transmitted 
+     // Unfortunately, we've NO IDEA which SV transmitted
      // these data.
-     oag.satID = SatID(0,SatelliteSystem::GPS); 
+     oag.satID = SatID(0,SatelliteSystem::GPS);
 
-     // 
+     //
      oag.ctToe = GPSWeekSecond(week,Toa,TimeSystem::GPS);
 
-     // There is no transmit time in the SEM alamanc format.  
+     // There is no transmit time in the SEM alamanc format.
      // Therefore, beginValid and endvalid are estimated.  The
-     // estimate is based on IS-GPS-200 Table 20-XIII.  
+     // estimate is based on IS-GPS-200 Table 20-XIII.
      oag.beginValid = oag.ctToe - (70 * 3600.0);
      oag.endValid   = oag.beginValid + (144 * 3600.0);
 
-     oag.dataLoadedFlag = true; 
+     oag.dataLoadedFlag = true;
      oag.setHealthy(false);
-     if (oag.health==0) 
+     if (oag.health==0)
         oag.setHealthy(true);
 
         // It is assumed that the data were broadcast on
@@ -284,7 +284,7 @@ namespace gnsstk
         // but this will probably never be examined.
      oag.obsID = ObsID(ObservationType::NavMsg,CarrierBand::L1,TrackingCode::CA);
 
-     return oag;       
+     return oag;
    }
 
 

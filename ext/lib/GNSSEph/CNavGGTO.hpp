@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -59,15 +59,15 @@ namespace gnsstk
       static const int NO_DATA_AVAIL;
       static const int GALILEO_ID;
       static const int GLONASS_ID;
-   
+
          /// Default constructor
       CNavGGTO();
-  
+
          /**
           * @throw InvalidParameter
           */
       CNavGGTO(const PackedNavBits& message35);
-      
+
          /// Destructor
       virtual ~CNavGGTO() {}
 
@@ -75,7 +75,7 @@ namespace gnsstk
       virtual CNavGGTO* clone() const;
 
       virtual bool isSameData(const CNavDataElement* right) const;
-       
+
          /**
           * Store the contents of message type 35 in this object.
           * @param message35 300 bits of Message Type 35
@@ -92,7 +92,7 @@ namespace gnsstk
       {
          return "Civilian Navigation (CNAV) GGTO Parameters";
       }
-      
+
       virtual void dumpBody(std::ostream& s = std::cout) const;
 
       double A0GGTO;
@@ -101,10 +101,10 @@ namespace gnsstk
       long   TGGTO;   // Note: This is stored for completeness,
       short  WNGGTO;  // The epoch time variable provides a CommonTime representation,
       short  GNSS_ID;
-      
+
    }; // end class CNavGGTO
 
-   std::ostream& operator<<(std::ostream& s, 
+   std::ostream& operator<<(std::ostream& s,
                                     const CNavGGTO& eph);
 } // end namespace
 

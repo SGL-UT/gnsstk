@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,7 +41,7 @@
  * Designed to support loading GPS CNAV EOP data
  * Message Type 32.  NOTE: The clock data contained in the front half
  * of the message is ignored.   See the orbit handling classes for
- * that data. 
+ * that data.
  */
 #ifndef SGLTK_ORBSYSGPSC_32_HPP
 #define SGLTK_ORBSYSGPSC_32_HPP
@@ -60,29 +60,29 @@ namespace gnsstk
    {
    public:
       static const double SIX_HOURS;
-   
+
          /// Default constructor
       OrbSysGpsC_32();
-  
+
          /** Constructor for creating directly from a PackedNavBits object
           * @throw InvalidParameter
           */
       OrbSysGpsC_32(const PackedNavBits& msg);
-      
+
          /// Destructor
       virtual ~OrbSysGpsC_32() {}
 
          /// Clone method
       virtual OrbSysGpsC_32* clone() const;
-        
+
          /**
           * Store the contents of Subframe 4, Page 18 in this object.
           * @param msg - 300 bits of Subframe 4, Page 18.
           * @throw InvalidParameter if message data is invalid
           */
       virtual void loadData(const PackedNavBits& msg);
-         
-      virtual bool isSameData(const OrbData* right) const;      
+
+      virtual bool isSameData(const OrbData* right) const;
 
       virtual std::string getName() const
       {
@@ -106,10 +106,10 @@ namespace gnsstk
          /**
           * Compute UT1  as per IS-GPS-200 30.3.3.5 Table 30=VIII
           * NOTE: See preceding method, isUtcValid( ) to determine
-          * if provided parameters are OK to use.  
+          * if provided parameters are OK to use.
           * @throw InvalidRequest
           */
-      virtual CommonTime getUT1(const CommonTime& ct, 
+      virtual CommonTime getUT1(const CommonTime& ct,
                                 const CommonTime& tutc) const;
          /**
           * @throw InvalidRequest
@@ -130,19 +130,19 @@ namespace gnsstk
       virtual void dumpBody(std::ostream& s = std::cout) const;
 
          // UTC Parameters
-      gnsstk::CommonTime ctEpoch; 
-      unsigned long tEOP; 
+      gnsstk::CommonTime ctEpoch;
+      unsigned long tEOP;
       double PM_X;
-      double PM_X_dot; 
-      double PM_Y; 
-      double PM_Y_dot; 
+      double PM_X_dot;
+      double PM_Y;
+      double PM_Y_dot;
       double delta_UT1;
       double delta_UT1_dot;
       double delta_UT1_dot_per_sec;   // Convenience translation
-      
+
    }; // end class ORBSYSGPSC_33
 
 } // end namespace gnsstk
 
-#endif 
+#endif
 

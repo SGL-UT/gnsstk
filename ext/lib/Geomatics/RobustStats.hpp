@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -43,7 +43,7 @@
 /// polynomial.
 /// Reference: Mason, Gunst and Hess, "Statistical Design and
 ///            Analysis of Experiments," Wiley, New York, 1989.
- 
+
 #ifndef GNSSTK_ROBUSTSTATS_HPP
 #define GNSSTK_ROBUSTSTATS_HPP
 
@@ -84,7 +84,7 @@ namespace gnsstk {
       else if(a < b) return -1;
       else return 0;
    }
-   
+
       /// Insert sort. operator>() and operator<() must be defined for T,
       /// and a user comparison function comp(T,T) may be passed to override
       /// the default Qsort_compare().
@@ -101,7 +101,7 @@ namespace gnsstk {
       for(i=1; i < na; i=i+1) { // insert the i-th element into the sorted array
          stemp = sa[i];
          j = i - 1;             // find where it goes
-         while((j >= 0) && (comp(stemp,sa[j]) < 0)) { 
+         while((j >= 0) && (comp(stemp,sa[j]) < 0)) {
             sa[j+1] = sa[j];
             j = j - 1;
          }
@@ -123,13 +123,13 @@ namespace gnsstk {
    {
       int i,j,nr;
       T stemp, spart;
-      while(1) { 
+      while(1) {
          if(na < 8) {                     // use insert sort for small arrays
             insert(sa,na,comp);
             return;
          }
          spart = sa[na/2];                // pick middle element as pivot
-         i = -1; 
+         i = -1;
          j = na;
          while(1) {
             do {                          // find first element to move right
@@ -148,17 +148,17 @@ namespace gnsstk {
          }
          nr = na - i;
          if(i < (na/2)) {                 // now sort each partition
-            QSort(sa, i, comp);           // sort left side 
+            QSort(sa, i, comp);           // sort left side
             sa = &sa[i];                  // sort right side here
             na = nr;                      // memsort(&(sa[i]),nr,comp);
          }
-         else { 
+         else {
             QSort(&(sa[i]), nr, comp);    // sort right side
             na = i;
          }
       }
    }  // end QSort
-   
+
       /// Insert sort one vector, keeping a second parallel.
       /// See the single-vector version of insert.
       /// @param sa is the array of type T to be sorted.
@@ -177,7 +177,7 @@ namespace gnsstk {
          stemp = sa[i];
          ptemp = pa[i];
          j = i - 1;             // find where it goes
-         while((j >= 0) && (comp(stemp,sa[j]) < 0)) { 
+         while((j >= 0) && (comp(stemp,sa[j]) < 0)) {
             sa[j+1] = sa[j];
             pa[j+1] = pa[j];
             j = j - 1;
@@ -202,13 +202,13 @@ namespace gnsstk {
       int i,j,nr;
       T stemp, spart;
       S ptemp;
-      while(1) { 
+      while(1) {
          if(na < 8) {                     // use insert sort for small arrays
             insert(sa,pa,na,comp);
             return;
          }
          spart = sa[na/2];                // pick middle element as pivot
-         i = -1; 
+         i = -1;
          j = na;
          while(1) {
             do {                          // find first element to move right
@@ -227,18 +227,18 @@ namespace gnsstk {
          }
          nr = na - i;
          if(i < (na/2)) {                 // now sort each partition
-            QSort(sa, pa, i, comp);       // sort left side 
+            QSort(sa, pa, i, comp);       // sort left side
             sa = &sa[i];                  // sort right side here
             pa = &pa[i];
             na = nr;                      // memsort(&(sa[i]),nr,comp);
          }
-         else { 
+         else {
             QSort(&(sa[i]), &(pa[i]), nr, comp);    // sort right side
             na = i;
          }
       }
    }  // end QSort
-   
+
       /// Approximation to complimentary error function with fractional
       /// error everywhere less than 1.2e-7. Ref. Numerical Recipes part 6.2.
       /// NB. error function erf = 1-erfc

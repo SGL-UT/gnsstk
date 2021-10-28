@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -58,9 +58,9 @@ public:
       double dat2[12] = {1,0,-2,1,
                          3,1,-2,2,
                          -5,-1,9,3};
-      double dat3[20] = {2, 3, 1, 5, 1, 
-                         1, 0, 3, 1, 2, 
-                         0, 2, -3, 2, 3, 
+      double dat3[20] = {2, 3, 1, 5, 1,
+                         1, 0, 3, 1, 2,
+                         0, 2, -3, 2, 3,
                          0, 2, 3, 1, 4};
       double dat4[24] = {8,5,18,-2,1.5,1./6,
                          7,-9,5,0,7,0,
@@ -100,11 +100,11 @@ public:
       B2 = B2Temp;
       B3 = B3Temp;
    }
-   
+
    ~Matrix_T() // Default Desructor
    {       // finally delete objects
 
-   } 
+   }
 
    double eps;
    gnsstk::Matrix<double> A1aug, A2aug, A3aug, A4aug, A1, A2, A3, A4;
@@ -129,7 +129,7 @@ public:
 
    //Functions in Matrix_LUDecomp_T.cpp
    int LUinitializationTest(void);
-   int LUdeterminantTest(void);	
+   int LUdeterminantTest(void);
    int LUATest(void);
    int LUbackSubTest(void);
 

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -49,7 +49,7 @@ using namespace gnsstk;
 
 namespace gnsstk
 {
-      // Almanac period is 12.5 minutes long = 750 seconds. 
+      // Almanac period is 12.5 minutes long = 750 seconds.
    static const unsigned long ALMANAC_PERIOD = 750;
    static const unsigned long FRAME_PERIOD = 30;
 
@@ -61,9 +61,9 @@ namespace gnsstk
    {
          // First, test whether the test object is actually a OrbSysGpsL object.
       const OrbSysGpsL* p = dynamic_cast<const OrbSysGpsL*>(right);
-      if (p==0) return false; 
+      if (p==0) return false;
 
-      if (!OrbDataSys::isSameData(right))  return false; 
+      if (!OrbDataSys::isSameData(right))  return false;
       return true;
    }
 
@@ -78,7 +78,7 @@ namespace gnsstk
       s << "*******************************************************" << endl;
       s << " GPS System-level navigation message data.  UID: " << UID << endl;
       s << " Transmitting SV : " << satID << endl;
-      s << " Transmit Time   : " 
+      s << " Transmit Time   : "
         << printTime(beginValid,"%02m/%02d/%4Y DOY %03j %02H:%02M:%02S  %F %6.0g")
         << endl;
    }
@@ -86,26 +86,26 @@ namespace gnsstk
    void OrbSysGpsL::setUID(const PackedNavBits& pnb)
    {
       unsigned long sfNum = pnb.asUnsignedLong(49, 3, 1);
-      if (sfNum==4 || sfNum==5) 
+      if (sfNum==4 || sfNum==5)
       {
          UID = pnb.asUnsignedLong(62,6,1);
       }
-   }  
+   }
 
       // Of the system-level data, only Data ID 51 is in subframe 5.
       // All the others are in subframe 4
    unsigned short OrbSysGpsL::getSubframe() const
    {
       if (UID==51) return 5;
-      return 4; 
+      return 4;
    }
 
-      // The page ID for some Data ID is dependent on where in the 
+      // The page ID for some Data ID is dependent on where in the
       // subframe cycle they are located.   For those Data IDs, the
       // transmit time (beginValid) must be referenced.
    unsigned short OrbSysGpsL::getPageID() const
    {
-      unsigned short retVal = 0; 
+      unsigned short retVal = 0;
       switch (UID)
       {
          case 51: { retVal=25; break;}
@@ -123,13 +123,13 @@ namespace gnsstk
          case 63: { retVal=25; break;}
 
          case 57:
-         case 62: 
-         { 
+         case 62:
+         {
             double sow = static_cast<GPSWeekSecond>(beginValid).sow;
-            unsigned long lsow = (unsigned long) sow; 
+            unsigned long lsow = (unsigned long) sow;
             unsigned long secInAlmPeriod = lsow % ALMANAC_PERIOD;
-            unsigned long page = secInAlmPeriod / FRAME_PERIOD; 
-            retVal = (unsigned short) page; 
+            unsigned long page = secInAlmPeriod / FRAME_PERIOD;
+            retVal = (unsigned short) page;
             break;
          }
          default: break;

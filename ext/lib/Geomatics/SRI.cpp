@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -205,7 +205,7 @@ using namespace StringUtils;
    //
    //          S (R Z)       =         S1            +         Sleft
    // with    names                       NL                  names
-   //     A B C D E F G           . . . D E F G           A B C D E F G   
+   //     A B C D E F G           . . . D E F G           A B C D E F G
    //     - - - - - - -  -        - - - - - - -  -        - - - - - - -  -
    //     1 2 3 4 5 6 7  a   =    . . . . . . .  .   +    1 2 3 4 5 6 7  a
    //       8 9 1 2 3 4  b          . . . . . .  .          8 9 1 2 3 4  b
@@ -258,7 +258,7 @@ using namespace StringUtils;
          }
 
          unsigned int i,j;
-            // copy names and permute it so that its end matches NL 
+            // copy names and permute it so that its end matches NL
          Namelist N0(names);
          for(i=1; i<=n; i++) {           // loop (backwards) over names in NL
             for(j=1; j<=m; j++) {        // search (backwards) in NO for a match
@@ -490,7 +490,7 @@ using namespace StringUtils;
       if(n >= R.rows())
          return;
 
-      for(unsigned int j=n; j<R.cols(); j++) 
+      for(unsigned int j=n; j<R.cols(); j++)
          R(n,j) = 0.0;
       Z(n) = 0.0;
    }
@@ -512,7 +512,7 @@ using namespace StringUtils;
          return;
 
       for(unsigned int i=0; i<n; i++) {
-         for(unsigned int j=i; j<R.cols(); j++) 
+         for(unsigned int j=i; j<R.cols(); j++)
             R(i,j) = 0.0;
          Z(i) = 0.0;
       }
@@ -575,7 +575,7 @@ using namespace StringUtils;
    }
 
    // Retriangularize the SRI, that is assuming R has been modified to a non-UT
-   // matrix (e.g. by transform()). Given RR and ZZ, apply HH transforms to 
+   // matrix (e.g. by transform()). Given RR and ZZ, apply HH transforms to
    // retriangularize, and store as R,Z.
    // @param R Matrix<double> input the modified (non-UT) R
    // @param Z Vector<double> input the (potentially) modified Z
@@ -590,7 +590,7 @@ using namespace StringUtils;
             + " and " + asString<int>(ZZ.size()));
          GNSSTK_THROW(me);
       }
-      
+
       Matrix<double> A(RR || ZZ);
       retriangularize(A);
    }

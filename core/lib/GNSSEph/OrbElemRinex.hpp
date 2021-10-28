@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -44,7 +44,7 @@
   *  This class inherits from the OrbElem class and provides both the capability
   *  to load an OrbElem from a set of Rinex data and storage for the Rinex-specific
   *  parts of the Rinex file.
-  */ 
+  */
 
 #ifndef GNSSTK_ORBELEMRINEX_HPP
 #define GNSSTK_ORBELEMRINEX_HPP
@@ -83,10 +83,10 @@ namespace gnsstk
 
          /**  Load an existing object from a RinexNavData object.
            *  @throw InvalidParameter if the data are not consistent.
-           */ 
-      void loadData( const RinexNavData& rinNav ); 
+           */
+      void loadData( const RinexNavData& rinNav );
 
-         /** Load an existing object from a Rinex3NavData object. 
+         /** Load an existing object from a Rinex3NavData object.
            * @throw InvalidParameter if the data are not consistent.
            */
       void loadData( const Rinex3NavData& rinNav );
@@ -95,17 +95,17 @@ namespace gnsstk
       {
          return "OrbElemRinex";
       }
- 
+
       virtual std::string getNameLong() const
       {
          return "Rinex Navigation Message";
       }
-      
+
          /** Returns the upper bound of the URA range
           * @throw InvalidRequest
           */
       double getAccuracy()  const;
- 
+
         /* Should only be used by GPSOrbElemStore::rationalize()
          */
       void adjustBeginningValidity();
@@ -127,7 +127,7 @@ namespace gnsstk
           *  designated output stream (default to cout).
           *  @throw InvalidParameter if the object has been
           *    instantiated, but not loaded.
-          */   
+          */
       void dumpTerse(std::ostream& s = std::cout) const;
 
          /// Accessor for the \c health data member.
@@ -161,11 +161,11 @@ namespace gnsstk
    public:
               /// Ephemeris overhead information
          //@{
-      
+
       CommonTime transmitTime; /** Estimated beginning time of this sample */
 
       short  codeflags;     /**< L2 codes */
-      double accuracyValue; /**< User Range Accuracy (meters) */ 
+      double accuracyValue; /**< User Range Accuracy (meters) */
       short  L2Pdata;       /**< L2 P data flag */
       short  IODC;          /**< Index of data-clock  */
       short  fitDuration;   /**< Fit duration (hours) */
@@ -175,14 +175,14 @@ namespace gnsstk
          // Static and public for test support pruposes.  Should only be used with OrbElemCNAV and OrbElemCNAV2
          // in production.
          //
-         // Determining the earliest transmit time is deterministic for non-upload cutovers 
-         // and needs to be done correctly in order to replicated user experience in post-processing, 
+         // Determining the earliest transmit time is deterministic for non-upload cutovers
+         // and needs to be done correctly in order to replicated user experience in post-processing,
          // even if the actual data were collected later than earliest transmission. However, in the
          // case of upload cutovers, we have to depend on continuous collection to properly detect
-         // upload cutover times. 
+         // upload cutover times.
       static CommonTime computeBeginValid(const SatID& satID,
                                           const CommonTime& xmit,
-                                          const CommonTime& ctToe ); 
+                                          const CommonTime& ctToe );
       static CommonTime computeEndValid(const CommonTime& ctToe,
                                         const int fitHours );
       static bool  isNominalToe(const CommonTime& ctToe);
@@ -211,9 +211,9 @@ namespace gnsstk
 
    //@}
 
-   std::ostream& operator<<(std::ostream& s, 
+   std::ostream& operator<<(std::ostream& s,
                                      const OrbElemRinex& eph);
 
-} // end namespace 
+} // end namespace
 
 #endif // GNSSTK_ORBELEMRINEX_HPP

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -125,7 +125,7 @@ void LUDecompInitializer(void)
 
 	CompareLUA1 = P1 * (L1 * U1);
 	CompareLUA2 = P2 * (L2 * U2);
-	CompareLUA3 = P3 * (L3 * U3);		
+	CompareLUA3 = P3 * (L3 * U3);
 }
 
 //-------------------------------------------------------------------------------
@@ -177,7 +177,7 @@ int Matrix_T::LUATest(void)
 	failDescriptionStream << "Check if LU decomposition of A2 returns the right matrix. " << badCount << " of the elements are incorrect.";
    	failDescriptionString = failDescriptionStream.str(); failDescriptionStream.str("");
   	testFramework.assert(badCount==0, failDescriptionString, __LINE__);
-  	badCount = 0; // Reset error counter  
+  	badCount = 0; // Reset error counter
 
 	for(int i = 0; i < A3.rows(); i++)
 	    for(int j = 0; j < A3.cols(); j++)
@@ -185,7 +185,7 @@ int Matrix_T::LUATest(void)
    	failDescriptionStream << "Check if LU decomposition of A3 returns the right matrix. " << badCount << " of the elements are incorrect.";
   	failDescriptionString = failDescriptionStream.str(); failDescriptionStream.str("");
   	testFramework.assert(badCount==0, failDescriptionString, __LINE__);
-	badCount = 0; // Reset error counter          	
+	badCount = 0; // Reset error counter
 
 	return testFramework.countFails();
 }

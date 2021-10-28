@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -395,7 +395,7 @@ double incompleteBeta(const double& x, const double& a, const double& b)
 //      regardless of the distribution of the original variable.
 //   The sampling distribution of the mean is centered at the population mean,
 //      mu, of the original variable. In addition, the standard deviation of the
-//      sampling distribution of the mean approaches sig/sqrt(n). 
+//      sampling distribution of the mean approaches sig/sqrt(n).
 // Probability density function (PDF) of the Normal distribution.
 // Ref http://www.itl.nist.gov/div898/handbook/ 1.3.6.6.1
 // param x   input statistic
@@ -512,7 +512,7 @@ double invNormalCDF(double prob, const double& mu, const double& sig)
 //   T < chisquare(1-alpha,N-1)   for a two-tailed test or
 //   T < chisquare(1-alpha,N-1)
 // where chi-square(p,N-1) is the critical value or inverseCDF of the chi-square
-// distribution with N-1 degrees of freedom. 
+// distribution with N-1 degrees of freedom.
 //
 // param x input statistic, equal to an RSS(); x >= 0
 // param n    input value for number of degrees of freedom, n > 0
@@ -600,7 +600,7 @@ double invChisqCDF(double alpha, int n)
 // assumed mean, mu0 are:
 //   H0: mu = mu0
 //   H0: mu <= mu0
-//   H0: mu >= mu0 
+//   H0: mu >= mu0
 // The basic statistics for the test are the sample mean and the standard
 // deviation. The form of the test statistic depends on whether the poulation
 // standard deviation, sigma, is known or is estimated from the data at hand.
@@ -617,7 +617,7 @@ double invChisqCDF(double alpha, int n)
 // enumerated above is rejected if:
 //   |t| >= t(alpha/2,N-1)
 //   t >= t(alpha,N-1)
-//   t <= -t(alpha,N-1) 
+//   t <= -t(alpha,N-1)
 //   where t(alpha/2,N-1) is the upper alpha/2 critical value (inverse CDF)
 // from the t distribution with N-1 degrees of freedom.
 // param X input statistic
@@ -753,7 +753,7 @@ double FDistCDF(const double& F, const int& n1, const int& n2)
 //   H0:   s1 = s2     (sN is sigma or std deviation)
 //   Ha:   s1 < s2     for a lower one tailed test
 //         s1 > s2     for an upper one tailed test
-//         s1 != s2    for a two tailed test 
+//         s1 != s2    for a two tailed test
 // Test Statistic: F = s1^2/s2^2 where s1^2 and s2^2 are the sample variances.
 // The more this ratio deviates from 1, the stronger the evidence for unequal
 // population variances. Significance Level is alpha, a probability (0<=alpha<=1).
@@ -764,8 +764,8 @@ double FDistCDF(const double& F, const int& n1, const int& n2)
 //    F > PP(alpha/2,N1-1,N2-1)
 // where PP(alpha,k-1,N-1) is the percent point function of the F distribution
 // [PPfunc is inverse of the CDF : PP(alpha,N1,N2) == F where alpha=CDF(F,N1,N2)]
-// with N1 and N2 degrees of freedom and a significance level of alpha. 
-// 
+// with N1 and N2 degrees of freedom and a significance level of alpha.
+//
 // Ref http://www.itl.nist.gov/div898/handbook/ 1.3.6.6.5
 // param x probability or significance level of the test, >=0 and < 1
 // param n1   degrees of freedom of first sample, n1 > 0

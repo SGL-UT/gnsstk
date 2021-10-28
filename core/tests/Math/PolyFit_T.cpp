@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -43,7 +43,7 @@
 
 class PolyFit_T
 {
-public: 
+public:
    PolyFit_T(){eps = 1e-11;}// Default Constructor, set the precision value
    ~PolyFit_T() {} // Default Desructor
 
@@ -108,15 +108,15 @@ public:
       for(int i=0; i<6; i++)
       {
          indepGnsstkVector[i] = indepSingle[i];
-         indepStdVector[i]   = indepSingle[i];	
+         indepStdVector[i]   = indepSingle[i];
          depGnsstkVector[i]   = depSingle[i];
-         depStdVector[i]     = depSingle[i];			
-      }			
+         depStdVector[i]     = depSingle[i];
+      }
 
       //---------------------------------------------------------------------
       //Test the single entry Add
       //---------------------------------------------------------------------
-      try 
+      try
       {
          //Can single values be added
          for(int i=0; i<6; i++)
@@ -127,30 +127,30 @@ public:
          testFramework.assert(testSingle.N() == 6, "Not all single adds were successful", __LINE__);
 
       }
-      catch(...){testFramework.assert(false, "Exception thrown during Single add", __LINE__);}		
+      catch(...){testFramework.assert(false, "Exception thrown during Single add", __LINE__);}
 
       //---------------------------------------------------------------------
       //Test the gnsstk::Vector Add
       //---------------------------------------------------------------------
-      try 
+      try
       {
          //Check that all values can be added with a gnsstk::Vector
          testGnsstkVector.Add(indepGnsstkVector, depGnsstkVector);
-         testFramework.assert(testGnsstkVector.N() == 6, "Not all gnsstk::Vector adds were successful", __LINE__);		
+         testFramework.assert(testGnsstkVector.N() == 6, "Not all gnsstk::Vector adds were successful", __LINE__);
       }
-      catch(...){testFramework.assert(false, "Exception thrown during gnsstk::Vector add", __LINE__);}	
+      catch(...){testFramework.assert(false, "Exception thrown during gnsstk::Vector add", __LINE__);}
 
 
       //---------------------------------------------------------------------
       //Test the std::vector Add
       //---------------------------------------------------------------------
-      try 
+      try
       {
          //Check that all values can be added with a std::Vector
          testStdVector.Add(indepStdVector, depStdVector);
-         testFramework.assert(testStdVector.N() == 6, "Not all std::vector adds were successful", __LINE__);	
+         testFramework.assert(testStdVector.N() == 6, "Not all std::vector adds were successful", __LINE__);
       }
-      catch(...){testFramework.assert(false, "Exception thrown during std::vector add", __LINE__);}	
+      catch(...){testFramework.assert(false, "Exception thrown during std::vector add", __LINE__);}
 
 
       return testFramework.countFails();
@@ -169,18 +169,18 @@ public:
    {
       gnsstk::TestUtil testFramework( "PolyFit", "Reset", __FILE__, __LINE__ );
       bool covMatDiffBool = true;
-      bool solnDiffBool = true;	
-		
+      bool solnDiffBool = true;
+
       //Polynomial will be reset without user inputed parameter
       gnsstk::PolyFit<double> resetPolyD(2);
-	
+
       //Poly will be reset with a parameter
       gnsstk::PolyFit<double> resetPolyP(2);
-	
+
 
       double data[4] = {0.,2.,4.,-1.};
       double time[4] = {3.,3.,4.,2.,};
-	
+
       for (int i =0;i<4;i++)
       {
          resetPolyD.Add(time[i],data[i]);
@@ -189,15 +189,15 @@ public:
 
       //---------------------------------------------------------------------
       //Test Reset()
-      //---------------------------------------------------------------------	
+      //---------------------------------------------------------------------
       resetPolyD.Reset();
-	
+
       gnsstk::Matrix<double> Blank(2,2,0.);
       gnsstk::Vector<double> Zero(2,0.);
-	
+
       gnsstk::Vector<double> resetPolyDSolution = resetPolyD.Solution();
       gnsstk::Matrix<double> resetPolyDCov = resetPolyD.Covariance();
-	
+
       testFramework.assert((unsigned) 0 == resetPolyD.N()     , "Reset did not set the datapoint counter to zero"   , __LINE__);
       testFramework.assert((unsigned) 2 == resetPolyD.Degree(), "Reset did not maintain the maximum fit degree as 2", __LINE__);
       testFramework.assert(resetPolyD.isSingular()            , "The fit found after Reset was not singular"        , __LINE__);
@@ -215,18 +215,18 @@ public:
 
       //---------------------------------------------------------------------
       //Test Reset(int)
-      //---------------------------------------------------------------------		
+      //---------------------------------------------------------------------
       resetPolyP.Reset((unsigned) 3);
 
       covMatDiffBool = true;
-      solnDiffBool = true;	
+      solnDiffBool = true;
 
       gnsstk::Matrix<double> BlankP(3,3,0.);
       gnsstk::Vector<double> ZeroP(3,0.);
-	
+
       gnsstk::Vector<double> resetPolyPSolution = resetPolyP.Solution();
       gnsstk::Matrix<double> resetPolyPCov = resetPolyP.Covariance();
-	
+
       testFramework.assert((unsigned) 0 == resetPolyP.N()     , "Reset(int) did not set the datapoint counter to zero" , __LINE__);
       testFramework.assert((unsigned) 3 == resetPolyP.Degree(), "Reset(int) did not change the maximum fit degree to 3", __LINE__);
       testFramework.assert(resetPolyP.isSingular()            , "The fit found after Reset(int) was not singular"      , __LINE__);
@@ -240,14 +240,14 @@ public:
       }
       testFramework.assert(covMatDiffBool, "Covariance matrix found to be nonzero after Reset(int)", __LINE__);
       testFramework.assert(solnDiffBool  , "Solution vector found to be nonzero after Reset(int)"  , __LINE__);
-			
+
       return testFramework.countFails();
    }
 
 
 
 //==========================================================================================================================
-//	Test to check that the correct solution is found. 
+//	Test to check that the correct solution is found.
 //	The result should be only a 3rd order term.
 //==========================================================================================================================
    int SolutionTest3rdOrderResult()
@@ -257,7 +257,7 @@ public:
 
       int n = 4; //Highest order in polynomial fit + 1 (constant term)
       int errorCounter = 0;
-      gnsstk::PolyFit<double> test(n); 
+      gnsstk::PolyFit<double> test(n);
       gnsstk::Vector<double> soln; // To store the solution
       // Data values to create the fit
       double indep[6] = {0, 1, 2, 3, 4, 5}, dep[6] = {0, 1, 8, 27, 64, 125};
@@ -276,7 +276,7 @@ public:
          // Expect soln = {0, 0, 0, 1}
          if ((i != 3 && std::abs(soln[i]) > eps) || (i == 3 && std::abs(soln[i] - 1) > eps))
          {
-            //std::cout << "i: " << i << " value: " << soln[i] << " absVal: " << fabs(soln[i]) << " fabsVal(soln-1): " << fabs(soln[i]-1) << std::endl; 
+            //std::cout << "i: " << i << " value: " << soln[i] << " absVal: " << fabs(soln[i]) << " fabsVal(soln-1): " << fabs(soln[i]-1) << std::endl;
             errorCounter += 1; // Increment the return value for each wrong value
          }
       }
@@ -289,7 +289,7 @@ public:
 
 
 //==========================================================================================================================
-//	Test to check that the correct solution is found. 
+//	Test to check that the correct solution is found.
 //	The result should be only a 2nd order term.
 //==========================================================================================================================
    int SolutionTest2ndOrderResult()
@@ -310,14 +310,14 @@ public:
 
 
       soln = test.Solution();
-      //std::cout << "Solution is: " << soln << std::endl;		
+      //std::cout << "Solution is: " << soln << std::endl;
       for (int i = 0; i<4; i++)
       {
          // Make sure the data matches what is expected
          // Expect soln = {0, 0, 1, 0}
          if ((i != 2 && std::abs(soln[i]) > eps) || (i == 2 && std::abs(soln[i] - 1) > eps))
          {
-            //std::cout << "i: " << i << " value: " << soln[i] << " absVal: " << fabs(soln[i]) << " fabsVal(soln-1): " << fabs(soln[i]-1) << std::endl; 
+            //std::cout << "i: " << i << " value: " << soln[i] << " absVal: " << fabs(soln[i]) << " fabsVal(soln-1): " << fabs(soln[i]-1) << std::endl;
             errorCounter += 1; // Increment the return value for each wrong value
          }
       }
@@ -330,7 +330,7 @@ public:
 
 
 //==========================================================================================================================
-//	Test to check that the correct solution is found. 
+//	Test to check that the correct solution is found.
 //	The result should be only a 1st order term.
 //==========================================================================================================================
    int SolutionTest1stOrderResult()
@@ -351,14 +351,14 @@ public:
 
 
       soln = test.Solution();
-      //std::cout << "Solution is: " << soln << std::endl;			
+      //std::cout << "Solution is: " << soln << std::endl;
       for (int i = 0; i<4; i++)
       {
          // Make sure the data matches what is expected
          // Expect soln = {0, 1, 0, 0}
          if ((i != 1 && std::abs(soln[i]) > eps) || (i == 1 && std::abs(soln[i] - 1) > eps))
          {
-            //std::cout << "i: " << i << " value: " << soln[i] << " absVal: " << fabs(soln[i]) << " fabsVal(soln-1): " << fabs(soln[i]-1) << std::endl; 
+            //std::cout << "i: " << i << " value: " << soln[i] << " absVal: " << fabs(soln[i]) << " fabsVal(soln-1): " << fabs(soln[i]-1) << std::endl;
             errorCounter += 1; // Increment the return value for each wrong value
          }
       }
@@ -371,7 +371,7 @@ public:
 
 
 //==========================================================================================================================
-//	Test to check that the correct solution is found. 
+//	Test to check that the correct solution is found.
 //	The result should be only a 0th order term.
 //==========================================================================================================================
    int SolutionTest0thOrderResult()
@@ -392,14 +392,14 @@ public:
 
 
       soln = test.Solution();
-      //std::cout << "Solution is: " << soln << std::endl;		
+      //std::cout << "Solution is: " << soln << std::endl;
       for (int i = 0; i<4; i++)
       {
          // Make sure the data matches what is expected
          // Expect soln = {7, 0, 0, 0}
          if ((i != 0 && std::abs(soln[i]) > eps) || (i == 0 && std::abs(soln[i] - 7) > eps))
          {
-            //std::cout << "i: " << i << " value: " << soln[i] << " absVal: " << fabs(soln[i]) << " fabsVal(soln-1): " << fabs(soln[i]-1) << std::endl; 
+            //std::cout << "i: " << i << " value: " << soln[i] << " absVal: " << fabs(soln[i]) << " fabsVal(soln-1): " << fabs(soln[i]-1) << std::endl;
             errorCounter += 1; // Increment the return value for each wrong value
          }
       }
@@ -432,14 +432,14 @@ public:
 
 
       soln = test.Solution();
-      //std::cout << "Solution is: " << soln << std::endl;		
+      //std::cout << "Solution is: " << soln << std::endl;
       for (int i = 0; i<4; i++)
       {
          // Make sure the data matches what is expected
          // Expect soln = {2, 2, 2, 2}
          if (fabs(soln[i] - 2) > eps)
          {
-            //std::cout << "i: " << i << " value: " << soln[i] << " absVal: " << fabs(soln[i]) << " fabs(val-2): " << fabs(soln[i] - 2) << std::endl; 
+            //std::cout << "i: " << i << " value: " << soln[i] << " absVal: " << fabs(soln[i]) << " fabs(val-2): " << fabs(soln[i] - 2) << std::endl;
             errorCounter += 1; // Increment the return value for each wrong value
          }
       }
@@ -452,7 +452,7 @@ public:
 
 
 //==========================================================================================================================
-//	Test to check that the correct solution is found. 
+//	Test to check that the correct solution is found.
 //	In this case the problem is singular.
 //==========================================================================================================================
    int SolutionFailTest()
@@ -473,7 +473,7 @@ public:
 
       soln = test.Solution(); // This might NaN
 
-      //std::cout << "Solution is: " << test.isSingular() << std::endl;		
+      //std::cout << "Solution is: " << test.isSingular() << std::endl;
 
       failMesg = "Was the solution computed singular?";
       testFramework.assert(test.isSingular(), failMesg, __LINE__); // The singular flag should be set
@@ -498,7 +498,7 @@ public:
       eval[0] = 6;
       eval[1] = 8;
       eval[2] = 10;
-			
+
       for(int i=0; i<6; i++)
       {
          test.Add(dep[i],indep[i]);
@@ -507,12 +507,12 @@ public:
 
       soln = test.Evaluate(eval);
       //std::cout << "Solution is: " << soln << std::endl;
-      n = 0;			
+      n = 0;
       for (int i = 0; i<3; i++)
       {
 
          // Using relative error since the soln >> 1
-         if (fabs(soln[i] - eval[i]*eval[i])/(eval[i]*eval[i]) > eps) 
+         if (fabs(soln[i] - eval[i]*eval[i])/(eval[i]*eval[i]) > eps)
          {
             n += 1; // Increment the return value for each wrong value
          }
@@ -538,7 +538,7 @@ public:
       double indep[6] = {0, 1, 2, 3, 4, 5}, dep[6] = {0, 1, 4, 9, 16, 25};
 
       eval = 6;
-			
+
       for(int i=0; i<6; i++)
       {
          test.Add(dep[i],indep[i]);

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -82,9 +82,9 @@ public:
       // static strings contained in the loadData( ) method.
    list<PackedNavBits*> messageList;
 
-      // This is a parallel list of CNavFilterData objects created from 
-      // the PackedNavBit objects.   These are all believed to be valid. 
-   list<CNavFilterData> cNavList;  
+      // This is a parallel list of CNavFilterData objects created from
+      // the PackedNavBit objects.   These are all believed to be valid.
+   list<CNavFilterData> cNavList;
 };
 
 //-------------------------------------------------------------------
@@ -109,7 +109,7 @@ CNavFilter_T ::
 unsigned CNavFilter_T ::
 loadData()
 {
-   static const int MSG_COUNT_CNAV = 12; 
+   static const int MSG_COUNT_CNAV = 12;
    string sv63_CNAV[] =
    {
       "365,12/31/2015,00:00:00,1877,345600,1,63,10, 0x8B04A708, 0x10EAA60A, 0x6A49007A, 0x2E3FFDAE, 0x42EEB000, 0x81B983C7, 0x9A881433, 0x89C04F25, 0xB9F60DD4, 0xED600000",
@@ -141,14 +141,14 @@ loadData()
       "365,12/31/2015,04:00:36,1877,360036,5,50,33, 0x8B161753, 0x4205E5F9, 0x85D6149A, 0x801FA801, 0xFFCE0000, 0x022979C7, 0x5539D988, 0x80000000, 0x000001DC, 0x8CA00000"
    };
 
-   ObsID oidCNAV(ObservationType::NavMsg, CarrierBand::L2, TrackingCode::L2CML); 
+   ObsID oidCNAV(ObservationType::NavMsg, CarrierBand::L2, TrackingCode::L2CML);
    for (int i1=0; i1<MSG_COUNT_CNAV; i1++)
    {
       vector<string> words;
       for (int i2=0; i2<2; i2++)
       {
       words.clear();
-      if (i2==0) 
+      if (i2==0)
          words = StringUtils::split(sv63_CNAV[i1],',');
        else
          words = StringUtils::split(sv50_CNAV[i1],',');
@@ -156,7 +156,7 @@ loadData()
       int gpsWeek = StringUtils::asInt(words[3]);
       double sow = StringUtils::asInt(words[4]);
       CommonTime ct = GPSWeekSecond(gpsWeek, sow, TimeSystem::GPS);
-      
+
       int prn = StringUtils::asInt(words[5]);
       SatID sid(prn, SatelliteSystem::GPS);
 
@@ -174,14 +174,14 @@ loadData()
       {
          int ndx = i + offset;
          string hexStr = StringUtils::strip(words[ndx]);
-         string::size_type n = hexStr.find("x"); 
+         string::size_type n = hexStr.find("x");
          hexStr = hexStr.substr(n+1);
          unsigned long bits = StringUtils::x2uint(hexStr);
          if (i<9) pnb->addUnsignedLong(bits,32,1);
          else
          {
             bits >>= 20;
-            pnb->addUnsignedLong(bits,12,1); 
+            pnb->addUnsignedLong(bits,12,1);
          }
       }
       pnb->trimsize();
@@ -189,7 +189,7 @@ loadData()
       messageList.push_back(pnb);
 
       CNavFilterData cnavFilt(pnb);
-      cNavList.push_back(cnavFilt);     
+      cNavList.push_back(cnavFilt);
       }   // end i2
    }      // end i1
 
@@ -205,7 +205,7 @@ noFilterTest()
    NavFilterMgr mgr;
    unsigned long count = 0;
 
-   list<CNavFilterData>::iterator it; 
+   list<CNavFilterData>::iterator it;
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
@@ -233,7 +233,7 @@ testCNavCook()
 
    mgr.addFilter(&filtCook);
 
-   list<CNavFilterData>::iterator it; 
+   list<CNavFilterData>::iterator it;
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
@@ -250,7 +250,7 @@ testCNavCook()
       // data is set upright.   To address that, take a valid
       // message, invert it, cook it, then see that the result
       // is correct.
-   count = 0; 
+   count = 0;
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
@@ -283,7 +283,7 @@ testCNavParity()
    mgr.addFilter(&filtParity);
 
       // Test with valid data
-   list<CNavFilterData>::iterator it; 
+   list<CNavFilterData>::iterator it;
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
@@ -297,15 +297,15 @@ testCNavParity()
    TUASSERTE(unsigned long, expected, acceptCount);
    TUASSERTE(unsigned long, 0, rejectCount);
 
-      // Clone a valid message, modify the CRC, and 
+      // Clone a valid message, modify the CRC, and
       // verify that the filter rejects the data.
    acceptCount = 0;
-   rejectCount = 0; 
+   rejectCount = 0;
    list<PackedNavBits*>::iterator it2 = messageList.begin();
-   PackedNavBits* p = *it2; 
+   PackedNavBits* p = *it2;
    PackedNavBits* pnb = p->clone();
    unsigned long zeroes = 0x00000000;
-   pnb->insertUnsignedLong(zeroes,276,24); 
+   pnb->insertUnsignedLong(zeroes,276,24);
    CNavFilterData fd(pnb);
    gnsstk::NavFilter::NavMsgList l = mgr.validate(&fd);
    acceptCount = l.size();
@@ -329,7 +329,7 @@ testCNavEmpty()
 
    mgr.addFilter(&filtEmpty);
 
-   list<CNavFilterData>::iterator it; 
+   list<CNavFilterData>::iterator it;
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
@@ -344,22 +344,22 @@ testCNavEmpty()
       // Now test an empty message.   Create an empty message
       // by cloning the first message in the list (which is
       // known to be valid), then zeroing out the "payload".
-      // Since CNavFilterData does not pay attention to 
-      // whether the CRC is good or bad, we don't need to 
-      // worry about that. 
-      // The goal is to retain bits 1-38 and bits 277-300 
+      // Since CNavFilterData does not pay attention to
+      // whether the CRC is good or bad, we don't need to
+      // worry about that.
+      // The goal is to retain bits 1-38 and bits 277-300
       // for a valid message while zeroing out bits 39-276.
    acceptCount = 0;
-   rejectCount = 0; 
+   rejectCount = 0;
    CNavFilterData fd;
    list<PackedNavBits*>::iterator it2 = messageList.begin();
-   PackedNavBits* p = *it2; 
+   PackedNavBits* p = *it2;
    PackedNavBits* pnbEmptyMsg = p->clone();
 
    unsigned long bits_1_32 = p->asUnsignedLong(0,32,1);
    unsigned long bits_33_38 = p->asUnsignedLong(32,6,1);
    unsigned long bits_277_300 = p->asUnsignedLong(276,24,1);
-   unsigned long alternating = 0xAAAAAAAA; 
+   unsigned long alternating = 0xAAAAAAAA;
 
 /*
    Actually, the 1/0 pattern is default navigation message data.
@@ -368,7 +368,7 @@ testCNavEmpty()
    pnbEmptyMsg->reset_num_bits();
    pnbEmptyMsg->addUnsignedLong(bits_1_32,32,1);
    pnbEmptyMsg->addUnsignedLong(bits_33_38,6,1);
-   unsigned long alternating26 = alternating >> 6; 
+   unsigned long alternating26 = alternating >> 6;
    pnbEmptyMsg->addUnsignedLong(alternating26,26,1);  // bits  39- 64
    pnbEmptyMsg->addUnsignedLong(alternating,32,1);  // bits  65- 96
    pnbEmptyMsg->addUnsignedLong(alternating,32,1);  // bits  97-128
@@ -376,7 +376,7 @@ testCNavEmpty()
    pnbEmptyMsg->addUnsignedLong(alternating,32,1);  // bits 161-192
    pnbEmptyMsg->addUnsignedLong(alternating,32,1);  // bits 193-224
    pnbEmptyMsg->addUnsignedLong(alternating,32,1);  // bits 225-256
-   unsigned long alternating20 = alternating >> 12; 
+   unsigned long alternating20 = alternating >> 12;
    pnbEmptyMsg->addUnsignedLong(alternating20,20,1);  // bits 257-276
    pnbEmptyMsg->addUnsignedLong(bits_277_300,24,1);
 
@@ -412,22 +412,22 @@ testCNavEmpty()
    rejectCount += filtEmpty.rejected.size();
    delete pnbZeroMsg;
 
-      // Now build a 0/1 message (since the IS isn't totally 
+      // Now build a 0/1 message (since the IS isn't totally
       // specific on whether its 1/0 or 0/1)
-   unsigned long alt01 = 0x55555555; 
-   int startBit = 39 - 1;              // Bit 39 (1 based) == Bit 38 (0 based) 
+   unsigned long alt01 = 0x55555555;
+   int startBit = 39 - 1;              // Bit 39 (1 based) == Bit 38 (0 based)
    int nBitsPerWord = 32;
    int endBit = 277;
-   int lastPossibleStartBit = endBit - nBitsPerWord; 
-   PackedNavBits* pnb01Msg = p->clone();      
+   int lastPossibleStartBit = endBit - nBitsPerWord;
+   PackedNavBits* pnb01Msg = p->clone();
    while (startBit < lastPossibleStartBit)
    {
-      pnb01Msg->insertUnsignedLong(alt01,startBit,32); 
-      startBit += 32; 
+      pnb01Msg->insertUnsignedLong(alt01,startBit,32);
+      startBit += 32;
    }
    int lastNBits = endBit - startBit;
-   alt01 >>= (32 - lastNBits); 
-   pnb01Msg->insertUnsignedLong(alt01,startBit,lastNBits); 
+   alt01 >>= (32 - lastNBits);
+   pnb01Msg->insertUnsignedLong(alt01,startBit,lastNBits);
 
    CNavFilterData fd01Msg(pnb01Msg);
    l = mgr.validate(&fd01Msg);
@@ -448,12 +448,12 @@ testCNavTOW()
 
    NavFilterMgr mgr;
    unsigned long rejectCount = 0;
-   unsigned long acceptCount = 0; 
+   unsigned long acceptCount = 0;
    CNavTOWFilter filtTOW;
 
    mgr.addFilter(&filtTOW);
 
-   list<CNavFilterData>::iterator it; 
+   list<CNavFilterData>::iterator it;
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
@@ -465,18 +465,18 @@ testCNavTOW()
    TUASSERTE(unsigned long, expected, acceptCount);
    TUASSERTE(unsigned long, 0,  rejectCount);
 
-   // --- NOW GENERATE SOME INVALID MESSAGES AND VERIFY THAT 
+   // --- NOW GENERATE SOME INVALID MESSAGES AND VERIFY THAT
    // --- THEY ARE REJECTED
       // Modify a message to have an invalid TOW count.
    acceptCount = 0;
-   rejectCount = 0; 
+   rejectCount = 0;
    CNavFilterData fd;
    list<PackedNavBits*>::iterator it2 = messageList.begin();
-   PackedNavBits* p = *it2; 
+   PackedNavBits* p = *it2;
 
       // Message with invalid too large) TOW
    PackedNavBits* pnbBadTOWMsg = p->clone();
-   unsigned long badTOW = 604800; 
+   unsigned long badTOW = 604800;
    pnbBadTOWMsg->insertUnsignedLong(badTOW, 20, 17, 6);
 
       // Message with invalid preamble
@@ -484,13 +484,13 @@ testCNavTOW()
    unsigned long badPre = 0;
    pnbBadPreamble->insertUnsignedLong(badPre, 0, 8);
 
-   acceptCount = 0; 
-   rejectCount = 0; 
+   acceptCount = 0;
+   rejectCount = 0;
    CNavFilterData fdBadTOW(pnbBadTOWMsg);
    gnsstk::NavFilter::NavMsgList l = mgr.validate(&fdBadTOW);
    rejectCount += filtTOW.rejected.size();
    acceptCount += l.size();
-   
+
    CNavFilterData fdBadPreamble(pnbBadPreamble);
    l = mgr.validate(&fdBadPreamble);
    rejectCount += filtTOW.rejected.size();
@@ -498,8 +498,8 @@ testCNavTOW()
 
       // Bad Message Type tests
       // Test the invalid MT immediately above/below the valid ranges.
-   unsigned long badMT[] = { 9, 16, 29, 40}; 
-   int badMTCount = 4; 
+   unsigned long badMT[] = { 9, 16, 29, 40};
+   int badMTCount = 4;
    PackedNavBits* pnbBadMT = p->clone();
    for (int i=0; i<badMTCount; i++)
    {
@@ -513,7 +513,7 @@ testCNavTOW()
    delete pnbBadTOWMsg;
    delete pnbBadPreamble;
 
-   unsigned long expReject = 2 + badMTCount; 
+   unsigned long expReject = 2 + badMTCount;
    TUASSERTE(unsigned long, 0, acceptCount);
    TUASSERTE(unsigned long, expReject,  rejectCount);
 
@@ -536,12 +536,12 @@ testCNavCombined()
    mgr.addFilter(&filtEmpty);
    mgr.addFilter(&filtTOW);
 
-   list<CNavFilterData>::iterator it; 
+   list<CNavFilterData>::iterator it;
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
       gnsstk::NavFilter::NavMsgList l = mgr.validate(&fd);
-         // if l is empty, the subframe was rejected.. 
+         // if l is empty, the subframe was rejected..
       rejectCount += l.empty();
    }
    int expected = cNavList.size();
@@ -556,7 +556,7 @@ testCNavCrossSource()
    TUDEF("CNavCrossSource", "validate");
 
    NavFilterMgr mgr;
-   unsigned long acceptCount = 0; 
+   unsigned long acceptCount = 0;
    unsigned long rejectCount = 0;
    unsigned long expReject = 0;
    CNavCookFilter filtCook;
@@ -573,16 +573,16 @@ testCNavCrossSource()
 
       // This is a bit different than the earlier tests.   The list will
       // be empty until the epoch changes, then (if successful) it
-      // will contain a list of the accepted messages. 
+      // will contain a list of the accepted messages.
 
       // For the first test, simply submit each message TWICE, thus
       // simulating the same message being received from different
-      // sources. 
-   unsigned short cnt = 0; 
+      // sources.
+   unsigned short cnt = 0;
    gnsstk::NavFilter::NavMsgList l;
    NavFilterMgr::FilterSet::const_iterator fsi;
    NavFilter::NavMsgList::const_iterator nmli;
-   list<CNavFilterData>::iterator it; 
+   list<CNavFilterData>::iterator it;
 
       // DEBUG: Dump of list of the CNavList pointers for comparison
    //cout << " Here are the CNavList pointer values: " << endl;
@@ -606,17 +606,17 @@ testCNavCrossSource()
          for (fsi=mgr.rejected.begin(); fsi!=mgr.rejected.end(); fsi++)
          {
             for (nmli=(*fsi)->rejected.begin();
-                 nmli!=(*fsi)->rejected.end();nmli++)  
-            {  
+                 nmli!=(*fsi)->rejected.end();nmli++)
+            {
                CNavFilterData* fd = dynamic_cast<CNavFilterData*>(*nmli);
                rejectCount++;
                // Should NOT be any rejected data in this test.   Even if there IS,
                // we do not want to delete the data as the deletion will "orphan"
                // a pointer in CNavList that is going to be reused.
-               //delete fd; 
+               //delete fd;
             }
          }
-         cnt++; 
+         cnt++;
       }
    }
    l = mgr.finalize();
@@ -624,40 +624,40 @@ testCNavCrossSource()
    for (fsi=mgr.rejected.begin(); fsi!=mgr.rejected.end(); fsi++)
    {
       for (nmli=(*fsi)->rejected.begin();
-           nmli!=(*fsi)->rejected.end();nmli++)  
-      {       
+           nmli!=(*fsi)->rejected.end();nmli++)
+      {
          CNavFilterData* fd = dynamic_cast<CNavFilterData*>(*nmli);
          rejectCount++;
-         //delete fd; 
+         //delete fd;
       }
    }
 
-      // Mulitply because we submitted each message twice. 
+      // Mulitply because we submitted each message twice.
    int expected = cNavList.size() * 2;
    TUASSERTE(unsigned long, expected, acceptCount);
    TUASSERTE(unsigned long, 0, rejectCount);
 
       // DEBUG TEST - To Understand filter operation
    //cout << "Dump of filtXSource after all is finalized" << endl;
-   //filtXSource.dump(std::cout); 
+   //filtXSource.dump(std::cout);
 
-      // For the third test, submit each message TWICE, 
-      // then create a clone with 
-      //   1. a different station ID,  
+      // For the third test, submit each message TWICE,
+      // then create a clone with
+      //   1. a different station ID,
       //   2. a different receiver ID,
       //   3. a different, but still relevant, tracking code.
       //      (e.g L2CM and L2CML)
-      // All three messages should be accepted. 
-   cnt = 0; 
+      // All three messages should be accepted.
+   cnt = 0;
    acceptCount = 0;
-   rejectCount = 0; 
+   rejectCount = 0;
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
       for (int n=0; n<3; n++)
       {
-            // Zero out the CRC.   NOTE:  In doing so, 
-            // we are modifying the input data.   If we want to add any 
+            // Zero out the CRC.   NOTE:  In doing so,
+            // we are modifying the input data.   If we want to add any
             // tests below that re-use these data, we'll need to modify thiat
             // to create a clone (and delete it when rejected).
          if (n==2)
@@ -666,12 +666,12 @@ testCNavCrossSource()
             fd.rxID = "unk2";
             fd.code = TrackingCode::L2CM;
             fd.pnb->setRxID("unk2");
-            ObsID oid2(ObservationType::NavMsg, CarrierBand::L2, TrackingCode::L2CM); 
+            ObsID oid2(ObservationType::NavMsg, CarrierBand::L2, TrackingCode::L2CM);
             fd.pnb->setObsID(oid2);
          }
 
          l = mgr.validate(&fd);
-         
+
             // At change of epoch, l.size() will be noo-zero
          acceptCount += l.size();
 
@@ -679,67 +679,67 @@ testCNavCrossSource()
          for (fsi=mgr.rejected.begin(); fsi!=mgr.rejected.end(); fsi++)
          {
             for (nmli=(*fsi)->rejected.begin();
-                 nmli!=(*fsi)->rejected.end();nmli++)  
-            {  
+                 nmli!=(*fsi)->rejected.end();nmli++)
+            {
                CNavFilterData* fd = dynamic_cast<CNavFilterData*>(*nmli);
                rejectCount++;
                // If we later create "flawed clones" of the original data,
-               // we would delete them here. 
-               //delete fd; 
+               // we would delete them here.
+               //delete fd;
             }
          }
-         cnt++; 
+         cnt++;
       }
    }
-   l = mgr.finalize();      
+   l = mgr.finalize();
    acceptCount += l.size();
    for (fsi=mgr.rejected.begin(); fsi!=mgr.rejected.end(); fsi++)
    {
       for (nmli=(*fsi)->rejected.begin();
-           nmli!=(*fsi)->rejected.end();nmli++)  
-      {       
+           nmli!=(*fsi)->rejected.end();nmli++)
+      {
          CNavFilterData* fd = dynamic_cast<CNavFilterData*>(*nmli);
          rejectCount++;
-         //delete fd; 
+         //delete fd;
       }
    }
 
       // DEBUG TEST - To Understand filter operation
    //cout << "Dump of filtXSource after all is finalized" << endl;
-   //filtXSource.dump(std::cout); 
+   //filtXSource.dump(std::cout);
 
-      // Mulitply because we submitted each message three times. 
-   expected = cNavList.size() * 3; 
+      // Mulitply because we submitted each message three times.
+   expected = cNavList.size() * 3;
    expReject = 0;
    TUASSERTE(unsigned long, expected, acceptCount);
    TUASSERTE(unsigned long, expReject, rejectCount);
 
-      // For the third test, submit each message TWICE, 
-      // then create a clone, zero-out the CRC, and submit 
+      // For the third test, submit each message TWICE,
+      // then create a clone, zero-out the CRC, and submit
       // the message a third time.   The third message should
       // be rejected, but there should still be two accepted messages.
       //
-      // NOTE: 
+      // NOTE:
    unsigned long zeroes = 0x00000000;
-   cnt = 0; 
+   cnt = 0;
    acceptCount = 0;
-   rejectCount = 0; 
+   rejectCount = 0;
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
       for (int n=0; n<3; n++)
       {
-            // Zero out the CRC.   NOTE:  In doing so, 
-            // we are modifying the input data.   If we want to add any 
+            // Zero out the CRC.   NOTE:  In doing so,
+            // we are modifying the input data.   If we want to add any
             // tests below that re-use these data, we'll need to modify thiat
             // to create a clone (and delete it when rejected).
          if (n==2)
          {
-            fd.pnb->insertUnsignedLong(zeroes, 276, 24); 
+            fd.pnb->insertUnsignedLong(zeroes, 276, 24);
          }
-         
+
          l = mgr.validate(&fd);
-         
+
             // At change of epoch, l.size() will be noo-zero
          acceptCount += l.size();
 
@@ -747,34 +747,34 @@ testCNavCrossSource()
          for (fsi=mgr.rejected.begin(); fsi!=mgr.rejected.end(); fsi++)
          {
             for (nmli=(*fsi)->rejected.begin();
-                 nmli!=(*fsi)->rejected.end();nmli++)  
-            {  
+                 nmli!=(*fsi)->rejected.end();nmli++)
+            {
                CNavFilterData* fdp = dynamic_cast<CNavFilterData*>(*nmli);
                rejectCount++;
 
                // Avoid this step because we don't want to delete the
-               // objects on cNavList, even though we're modifying them. 
-               //delete fdp; 
+               // objects on cNavList, even though we're modifying them.
+               //delete fdp;
             }
          }
-         cnt++; 
+         cnt++;
       }
    }
-   l = mgr.finalize();      
+   l = mgr.finalize();
    acceptCount += l.size();
    for (fsi=mgr.rejected.begin(); fsi!=mgr.rejected.end(); fsi++)
    {
       for (nmli=(*fsi)->rejected.begin();
-           nmli!=(*fsi)->rejected.end();nmli++)  
-      {       
+           nmli!=(*fsi)->rejected.end();nmli++)
+      {
          CNavFilterData* fd = dynamic_cast<CNavFilterData*>(*nmli);
          rejectCount++;
-         //delete fd; 
+         //delete fd;
       }
    }
 
-      // Mulitply because we (successfully) submitted each message twice. 
-   expected = cNavList.size() * 2; 
+      // Mulitply because we (successfully) submitted each message twice.
+   expected = cNavList.size() * 2;
    expReject = cNavList.size();
    TUASSERTE(unsigned long, expected, acceptCount);
    TUASSERTE(unsigned long, expReject, rejectCount);

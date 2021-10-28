@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -81,7 +81,7 @@ namespace gnsstk
       string line;
 
       SEMStream& strm = dynamic_cast<SEMStream&>(ffs);
-      
+
       //Grab the first line
       strm.formattedGetLine(line);
       if (line.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_ .-+") != std::string::npos ||
@@ -90,7 +90,7 @@ namespace gnsstk
          FFStreamError fe("Invalid data");
          GNSSTK_THROW(fe);
       }
-                  
+
       numRecords = (short) asInt(line.substr(0,2));
       Title = line.substr(3,24);
 
@@ -102,7 +102,7 @@ namespace gnsstk
          FFStreamError fe("Invalid data");
          GNSSTK_THROW(fe);
       }
-      vector<std::string> values = split(line,' '); 
+      vector<std::string> values = split(line,' ');
       if (values.size()!=2)
       {
          FFStreamError fe("Invalid data");

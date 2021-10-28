@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,14 +29,14 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
-#include "WxObsMap.hpp" 
+#include "WxObsMap.hpp"
 
 #include "TestUtil.hpp"
 #include <iostream>
@@ -46,7 +46,7 @@
 
 class WxObsMap_T
 {
-public: 
+public:
    WxObsMap_T(){ singlePrecisionError = 1E-7; }// Default Constructor, set the precision value for single precision. Note WxObsMap stores floating point values in single precision.
    ~WxObsMap_T() {} // Default Desructor
 
@@ -171,18 +171,18 @@ public:
 
       testFramework.changeSourceMethod("getMostRecent");
 
-      gnsstk::WxObservation obs1 = Compare.getMostRecent(cTime);	
+      gnsstk::WxObservation obs1 = Compare.getMostRecent(cTime);
       gnsstk::WxObservation obs2(cTime, 108, 0.058f, 0.088f);
 
          //std::cout<<obs2<<std::endl<<obs1<<std::endl;
-		
+
          //std::cout<<Compare.obs[cTime]<<std::endl;
 
 
       failMesg = "Did the getMostRecent method function correctly?";
 
          //should be able to do obs1 == obs2, but b/c theres no == operator...
-      testFramework.assert(obs2.t == obs1.t && 
+      testFramework.assert(obs2.t == obs1.t &&
                            obs2.temperature == obs1.temperature &&
                            obs2.pressure == obs1.pressure &&
                            obs2.humidity == obs1.humidity, failMesg, __LINE__);
@@ -218,7 +218,7 @@ public:
       gnsstk::WxObservation obs4(cTime, 103, 0.053f, 0.083f);
 
       failMesg = "Did the getWxObservation return the correct object when called explicitly?	";
-      testFramework.assert(obs3.t == obs3.t && 
+      testFramework.assert(obs3.t == obs3.t &&
                            obs3.temperature == obs4.temperature &&
                            obs3.pressure == obs4.pressure &&
                            obs3.humidity == obs4.humidity, failMesg, __LINE__);
@@ -226,22 +226,22 @@ public:
          //return right object within range when theres only one
       cTime.set((double)1009);
       gnsstk::WxObservation obs6(cTime, 109, 0.059f, 0.089f);
-      cTime.set((double)1010);		
+      cTime.set((double)1010);
       gnsstk::WxObservation obs5 = Compare.getWxObservation(cTime, 86401, false);
 
       failMesg = "Did the getWxObservation return the correct object when called in a range containing 1 object?";
-      testFramework.assert(obs5.t == obs6.t && 
+      testFramework.assert(obs5.t == obs6.t &&
                            obs5.temperature == obs6.temperature &&
                            obs5.pressure == obs6.pressure &&
                            obs5.humidity == obs6.humidity, failMesg, __LINE__);
 
          //return right object within range when theres multiple
       cTime.set((double)1006);
-      gnsstk::WxObservation obs8(cTime, 106, 0.056f, 0.086f);	
+      gnsstk::WxObservation obs8(cTime, 106, 0.056f, 0.086f);
       gnsstk::WxObservation obs7 = Compare.getWxObservation(cTime, 86401, false);
 
       failMesg = "Did the getWxObservation return the correct object when called in a range containing 2 objects?";
-      testFramework.assert(obs7.t == obs8.t && 
+      testFramework.assert(obs7.t == obs8.t &&
                            obs7.temperature == obs8.temperature &&
                            obs7.pressure == obs8.pressure &&
                            obs7.humidity == obs8.humidity, failMesg, __LINE__);
@@ -254,15 +254,15 @@ public:
       gnsstk::WxObservation obs10(cTime, 107.5f, 0.0575f, 0.0875f);
 
       failMesg = "Did the getWxObservation perform linear interpolation succesfully?";
-      testFramework.assert(std::abs(obs9.t - obs10.t) < singlePrecisionError && 
+      testFramework.assert(std::abs(obs9.t - obs10.t) < singlePrecisionError &&
                            std::abs(obs9.temperature - obs10.temperature) < singlePrecisionError&&
                            std::abs(obs9.pressure - obs10.pressure) < singlePrecisionError &&
                            std::abs(obs9.humidity - obs10.humidity) < singlePrecisionError, failMesg, __LINE__);
-		
+
       return testFramework.countFails();
    }
 
-//================================================================	
+//================================================================
 
 private:
    double singlePrecisionError;
@@ -283,5 +283,5 @@ int main() //Main function to initialize and run all tests above
 
 	std::cout << "Total Failures for " << __FILE__ << ": " << errorCounter << std::endl;
 
-	return errorCounter; 	
+	return errorCounter;
 }

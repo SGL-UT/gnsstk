@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -53,7 +53,7 @@ namespace gnsstk
 
    CNavEOP::CNavEOP()
       :CNavDataElement(),
-       PM_X(0.0), 
+       PM_X(0.0),
        PM_X_dot(0.0),
        PM_Y(0.0),
        PM_Y_dot(0.0),
@@ -69,14 +69,14 @@ namespace gnsstk
 
    CNavEOP* CNavEOP::clone() const
    {
-      return new CNavEOP (*this); 
+      return new CNavEOP (*this);
    }
 
-     // In this case, since epoch time is arbitrarily set to Xmit, 
+     // In this case, since epoch time is arbitrarily set to Xmit,
      // the epoch time is NOT a distinguishing factor.  (This is
-     // worth noting because epoch time frequently is THE 
-     // distinguishing factor.) 
-   bool CNavEOP::isSameData(const CNavDataElement* right) const      
+     // worth noting because epoch time frequently is THE
+     // distinguishing factor.)
+   bool CNavEOP::isSameData(const CNavDataElement* right) const
    {
       if (const CNavEOP* rp = dynamic_cast<const CNavEOP*>(right))
       {
@@ -88,14 +88,14 @@ namespace gnsstk
          if (deltaUT1     !=rp->deltaUT1)     return false;
          if (deltaUT1_dot !=rp->deltaUT1_dot) return false;
             // Note: Already tested Teop (indirectly) by ctEpoch test.
-         return true;      
+         return true;
       }
       return false;
    }
-   
+
    void CNavEOP::loadData(const PackedNavBits& message32)
    {
-         // First, verify the correct message type is being passed in. 
+         // First, verify the correct message type is being passed in.
       long msgType = message32.asUnsignedLong(14,6,1);
       if(msgType!=32)
       {
@@ -103,8 +103,8 @@ namespace gnsstk
          sprintf(errStr,"Expected CNAV MsgType 32.  Found MsgType %ld",msgType);
          std::string tstr(errStr);
          InvalidParameter exc(tstr);
-         GNSSTK_THROW(exc);    
-      } 
+         GNSSTK_THROW(exc);
+      }
       obsID     = message32.getobsID();
       satID     = message32.getsatSys();
       ctXmit    = message32.getTransmitTime();
@@ -118,8 +118,8 @@ namespace gnsstk
       deltaUT1_dot = message32.asSignedDouble(246,19,-25);
 
          // The message does not contain a week counter.
-         // We'll assume the Teop is to be within 1/2 week 
-         // of the transmit time. 
+         // We'll assume the Teop is to be within 1/2 week
+         // of the transmit time.
       long xmitSOW = (static_cast<GPSWeekSecond>(ctXmit)).sow;
       short xmitWeek = (static_cast<GPSWeekSecond>(ctXmit)).week;
       double timeDiff = Teop - xmitSOW;
@@ -129,7 +129,7 @@ namespace gnsstk
 
       ctEpoch   = GPSWeekSecond(epochWeek, Teop, TimeSystem::GPS);
 
-      dataLoadedFlag = true;   
+      dataLoadedFlag = true;
    } // end of loadData()
 
    void CNavEOP::dumpBody(ostream& s) const
@@ -139,14 +139,14 @@ namespace gnsstk
          InvalidRequest exc("Required data not stored.");
          GNSSTK_THROW(exc);
       }
-    
+
       s << endl
         << "           EARTH ORIENTATION PARAMETERS"
         << endl
         << "Parameter        Value" << endl;
 
       s.setf(ios::scientific, ios::floatfield);
-      s.precision(8); 
+      s.precision(8);
       s.fill(' ');
 
       s << "PM_X:           " << setw(16) << PM_X         << " arc-sec" << endl;
@@ -155,8 +155,8 @@ namespace gnsstk
       s << "PM_X(dot):      " << setw(16) << PM_Y_dot     << " arc-sec/day" << endl;
       s << "deltaUT1:       " << setw(16) << deltaUT1     << " sec" << endl;
       s << "deltaUIT1(dot): " << setw(16) << deltaUT1_dot << " sec/day" << endl;
-      
-   } // end of dumpBody()   
+
+   } // end of dumpBody()
 
    ostream& operator<<(ostream& s, const CNavEOP& eph)
    {

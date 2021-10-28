@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,19 +29,19 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  * @file OrbElemStore.cpp
- * Store GNSS broadcast OrbElemBase information, and access by 
+ * Store GNSS broadcast OrbElemBase information, and access by
  * satellite and time.  Several of the "least common denominator"
  * methods are defined in this base class, several are over-ridden
- * by descendent classes. 
+ * by descendent classes.
  */
 
 #include <iostream>
@@ -84,7 +84,7 @@ namespace gnsstk
          // Find appropriate orbit elements (if available)
          const OrbElemBase* eph = findOrbElem(sat,t);
 
-         // If the orbital elements are unhealthy, refuse to 
+         // If the orbital elements are unhealthy, refuse to
          // calculate an SV position and throw.
          if (!eph->isHealthy() && onlyHealthy)
          {
@@ -157,21 +157,21 @@ namespace gnsstk
          ess << static_cast<int>(sat.system);
          ess << ". " << endl;
          ess << " Valid systems are :" << endl;
-         
+
          list<SatelliteSystem>::const_iterator cit;
          for (cit=sysList.begin();cit!=sysList.end();cit++)
          {
             SatelliteSystem ssTest = *cit;
             ess << convertSatelliteSystemToString(ssTest) << endl;
          }
-         
+
          InvalidRequest ir(ess.str());
          GNSSTK_THROW(ir);
       }
    }
 
 //--------------------------------------------------------------------------
-// Typically overridden by descendents to obtain system-specific 
+// Typically overridden by descendents to obtain system-specific
 // listing behavior.
 
    void OrbElemStore::dump(std::ostream& s, short detail) const
@@ -199,20 +199,20 @@ namespace gnsstk
               << " has " << em.size() << " entries." << std::endl;
             OrbElemMap::const_iterator ei;
 
-            for (ei = em.begin(); ei != em.end(); ei++) 
+            for (ei = em.begin(); ei != em.end(); ei++)
             {
                const OrbElemBase* oe = ei->second;
                s << "PRN " << setw(2) << it->first
                  << " TOE " << printTime(oe->ctToe,fmt)
                  << " KEY " << printTime(ei->first,fmt);
                s << " begVal: " << printTime(oe->beginValid,fmt)
-                 << " endVal: " << printTime(oe->endValid,fmt); 
-                
+                 << " endVal: " << printTime(oe->endValid,fmt);
+
                s << std::endl;
             } //end inner for-loop */
 
          } // end outer for-loop
-   
+
          //s << "  End of Orbit/Clock data." << std::endl << std::endl;
 
       } //end else-block
@@ -221,23 +221,23 @@ namespace gnsstk
 //------------------------------------------------------------------------------------
 // Keeps only one OrbElemBase for a given SVN and Toe.
 // It should keep the one with the earliest transmit time.
-//------------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------------
    bool OrbElemStore::addOrbElem(const OrbElemBase* eph)
    {
      bool dbg = false;
-     
+
      try
      {
      SatID sid = eph->satID;
 
        // If this is the first set of elements and the valid sat system has not
-       // been set, then assume the intent is to store this system in the store. 
+       // been set, then assume the intent is to store this system in the store.
      if (sysList.size()==0 && size()==0)
      {
-        addSatSys(sid.system); 
+        addSatSys(sid.system);
      }
 
-        // Find reference to map for this SV 
+        // Find reference to map for this SV
      OrbElemMap& oem = ube[sid];
      string ts = "%02m/%02d/%02y %02H:%02M:%02S";
 
@@ -295,9 +295,9 @@ namespace gnsstk
            str += ", Toe(candidate)= "+ printTime(oe->ctToe,ts);
            str += ". ";
            if (dbg)
-             cout << str << endl; 
+             cout << str << endl;
            InvalidParameter exc( str );
-           GNSSTK_THROW(exc); 
+           GNSSTK_THROW(exc);
         }
      }
         // Did not already find match to
@@ -358,7 +358,7 @@ namespace gnsstk
         //    (a.) Candidate is late transmit copy of
         //         previous OrbElemBase in table - discard (do nothing)
         //    (b.) Candidate OrbElemBase is not in table
- 
+
         // Already checked for it==oem.beginValid() earlier
      it--;
      const OrbElemBase* oe2 = it->second;
@@ -370,14 +370,14 @@ namespace gnsstk
         return (true);
      }
      return (false);
-    
+
    }
    catch(Exception& e)
    {
       GNSSTK_RETHROW(e)
    }
  }
-    
+
 //-----------------------------------------------------------------------------
 
    void OrbElemStore::edit(const CommonTime& tmin, const CommonTime& tmax)
@@ -389,18 +389,18 @@ namespace gnsstk
 
          OrbElemMap::iterator lower = eMap.lower_bound(tmin);
          if (lower != eMap.begin())
-         { 
+         {
             for (OrbElemMap::iterator emi = eMap.begin(); emi != lower; emi++)
-               delete emi->second;        
+               delete emi->second;
             eMap.erase(eMap.begin(), lower);
-         } 
+         }
 
          OrbElemMap::iterator upper = eMap.upper_bound(tmax);
          if (upper != eMap.end())
          {
             for (OrbElemMap::iterator emi = upper; emi != eMap.end(); emi++)
-               delete emi->second; 
-            eMap.erase(upper, eMap.end());          
+               delete emi->second;
+            eMap.erase(upper, eMap.end());
          }
       }
 
@@ -421,14 +421,14 @@ namespace gnsstk
 
 
 //-----------------------------------------------------------------------------
-   bool OrbElemStore::isPresent(const SatID& id) const 
+   bool OrbElemStore::isPresent(const SatID& id) const
       throw()
    {
       UBEMap::const_iterator ci = ube.find(id);
       if (ci==ube.end()) return false;
       return true;
    }
-   
+
 
 //-----------------------------------------------------------------------------
 
@@ -463,31 +463,31 @@ namespace gnsstk
 	       // is another way of saying "earliest transmit time".  A call
          // to em.lower_bound( t ) will return the element of the map
 	       // with a key "one beyond the key" assuming the t is NOT a direct
-	       // match for any key. 
-	 
+	       // match for any key.
+
 	    // First, check for the "direct match" case.   If this is
-      // found, return the result. 
+      // found, return the result.
       OrbElemMap::const_iterator it = em.find(t);
       if (it!=em.end())
          return it->second;
 
-      it = em.lower_bound(t); 
-	              
+      it = em.lower_bound(t);
+
 	       // Tricky case here.  If the key is beyond the last key in the table,
 	       // lower_bound( ) will return em.end( ).  However, this doesn't entirely
-	       // settle the matter.  It is theoretically possible that the final 
+	       // settle the matter.  It is theoretically possible that the final
 	       // item in the table may have an effectivity that "stretches" far enough
-	       // to cover time t.   Therefore, if it==em.end( ) we need to check 
-	       // the period of validity of the final element in the table against 
+	       // to cover time t.   Therefore, if it==em.end( ) we need to check
+	       // the period of validity of the final element in the table against
 	       // time t.
 	       //
-	    if (it==em.end())	
+	    if (it==em.end())
       {
          OrbElemMap::const_reverse_iterator rit = em.rbegin();
          if (rit->second->isValid(t)) return(rit->second);   // Last element in map works
 
 	          // We reached the end of the map, checked the end of the map,
-	          // and we still have nothing.  
+	          // and we still have nothing.
          string mess = "All orbital elements found for satellite " + asString(sat) + " are too early for time "
             + (static_cast<CivilTime>(t)).printf("%02m/%02d/%04Y %02H:%02M:%02S %P");
          InvalidRequest e(mess);
@@ -509,31 +509,31 @@ namespace gnsstk
       }
 
 	    // The iterator should be a valid iterator and set one beyond
-	    // the item of interest.  However, there may be gaps in the 
+	    // the item of interest.  However, there may be gaps in the
 	    // middle of the map and cases where periods of effectivity do
-	    // not overlap.  That's OK, the key represents the EARLIEST 
-	    // time the elements should be used.   Therefore, we can 
+	    // not overlap.  That's OK, the key represents the EARLIEST
+	    // time the elements should be used.   Therefore, we can
 	    // decrement the counter and test to see if the element is
-	    // valid. 
-      it--; 
+	    // valid.
+      it--;
       if (!(it->second->isValid(t)))
       {
-	    // If we reach this throw, the cause is a "hole" in the middle of a map. 
+	    // If we reach this throw, the cause is a "hole" in the middle of a map.
          string mess = "No orbital elements found for satellite " + asString(sat) + " at "
             + (static_cast<CivilTime>(t)).printf("%02m/%02d/%04Y %02H:%02M:%02S %P");
          InvalidRequest e(mess);
          GNSSTK_THROW(e);
       }
       return(it->second);
-   } 
+   }
 
- 
+
 //-----------------------------------------------------------------------------
- 
+
    const OrbElemBase*
    OrbElemStore::findNearOrbElem(const SatID& sat, const CommonTime& t) const
    {
-        // Check for any OrbElem for this SV            
+        // Check for any OrbElem for this SV
       UBEMap::const_iterator prn_i = ube.find(sat);
       if (prn_i == ube.end())
       {
@@ -548,25 +548,25 @@ namespace gnsstk
          InvalidRequest e("No orbital elements for satellite " + asString(sat));
          GNSSTK_THROW(e);
       }
-   
+
          // FIRST, try to find the elements that were
-         // actually being broadcast at the time of 
+         // actually being broadcast at the time of
          // interest.  That will ALWAYS be the most
          // correct response.   IF YOU REALLY THINK
-         // OTHERWISE CALL ME AND LET'S TALK ABOUT 
+         // OTHERWISE CALL ME AND LET'S TALK ABOUT
          // IT - Brent Renfro
       try
       {
          const OrbElemBase* oep = findOrbElem(sat, t);
          return(oep);
-      }      
-         // No OrbElemBase in store for requested sat time  
+      }
+         // No OrbElemBase in store for requested sat time
       catch(InvalidRequest)
       {
            // Create references to map for this satellite
          const OrbElemMap& em = prn_i->second;
            /*
-              Three Cases: 
+              Three Cases:
                 1. t is within a gap within the store
                 2. t is before all OrbElemBase in the store
                 3. t is after all OrbElemBase in the store
@@ -600,7 +600,7 @@ namespace gnsstk
          return(itNext->second);
       }
    }
-      
+
 //-----------------------------------------------------------------------------
    const OrbElemBase* OrbElemStore::
    findToe(const SatID& sat, const CommonTime& t)
@@ -617,8 +617,8 @@ namespace gnsstk
          InvalidRequest e(ss.str());
          GNSSTK_THROW(e);
       }
-   
-         // Check for any OrbElem for this SV            
+
+         // Check for any OrbElem for this SV
       UBEMap::const_iterator prn_i = ube.find(sat);
       if (prn_i == ube.end())
       {
@@ -638,7 +638,7 @@ namespace gnsstk
       {
          const OrbElemBase* candidate = cit->second;
          if (candidate->ctToe==t) return(candidate);
-      }         
+      }
 
          // If we reached this point, we didn't find a match.
       std::stringstream ss;
@@ -648,8 +648,8 @@ namespace gnsstk
       GNSSTK_THROW(e);
 
          // Keep the compiler happy.
-      OrbElemBase* dummy = 0;    
-      return(dummy); 
+      OrbElemBase* dummy = 0;
+      return(dummy);
    }
 
 
@@ -671,7 +671,7 @@ namespace gnsstk
          }
       }
       return n;
-   } 
+   }
 
 //-----------------------------------------------------------------------------
 
@@ -686,12 +686,12 @@ namespace gnsstk
          {
             delete oi->second;
          }
-      } 
+      }
      ube.clear();
      initialTime = gnsstk::CommonTime::END_OF_TIME;
      finalTime = gnsstk::CommonTime::BEGINNING_OF_TIME;
      initialTime.setTimeSystem(timeSysForStore);
-     finalTime.setTimeSystem(timeSysForStore); 
+     finalTime.setTimeSystem(timeSysForStore);
    }
 
 //-----------------------------------------------------------------------------
@@ -709,7 +709,7 @@ namespace gnsstk
       }
       return(prn_i->second);
    }
-   
+
 //-----------------------------------------------------------------------------
 
    list<gnsstk::SatID> OrbElemStore::getSatIDList() const
@@ -719,7 +719,7 @@ namespace gnsstk
       {
          SatID sid = ui->first;
          retList.push_back(sid);
-      } 
+      }
       return retList;
    }
 
@@ -731,7 +731,7 @@ namespace gnsstk
       {
          SatID sid = ui->first;
          retSet.insert(sid);
-      } 
+      }
       return retSet;
    }
 
@@ -747,7 +747,7 @@ namespace gnsstk
       }
       return false;
    }
-   
+
    void OrbElemStore::addSatSys(const SatelliteSystem ss)
    {
       sysList.push_back(ss);
@@ -755,20 +755,20 @@ namespace gnsstk
 
    std::list<SatelliteSystem> OrbElemStore::getValidSystemList() const
    {
-      list<SatelliteSystem> retList; 
+      list<SatelliteSystem> retList;
       list<SatelliteSystem>::const_iterator cit;
       for (cit=sysList.begin();cit!=sysList.end();cit++)
       {
          SatelliteSystem ssTest = *cit;
          retList.push_back(ssTest);
       }
-      return retList;     
+      return retList;
    }
 
    void OrbElemStore::dumpValidSystemList(std::ostream& out) const
    {
-      out << "List of systems in OrbElemStore: "; 
-      bool first = true; 
+      out << "List of systems in OrbElemStore: ";
+      bool first = true;
       list<SatelliteSystem>::const_iterator cit;
       for (cit=sysList.begin();cit!=sysList.end();cit++)
       {
@@ -776,18 +776,18 @@ namespace gnsstk
             out << ", ";
          SatelliteSystem ssTest = *cit;
          out << static_cast<int>(ssTest);
-         first = false; 
+         first = false;
       }
       out << endl;
-   } 
+   }
 
 
-//------------------------------------------------------------------------------------      
-// See notes in the .hpp.  This function is designed to be called 
+//------------------------------------------------------------------------------------
+// See notes in the .hpp.  This function is designed to be called
 // AFTER all elements are loaded.  It can then make adjustments to
-// time relationships based on inter-comparisons between sets of 
+// time relationships based on inter-comparisons between sets of
 // elements that cannot be performed until the ordering has been
-// determined. 
+// determined.
 //-----------------------------------------------------------------------------
    void OrbElemStore::rationalize( )
     {
@@ -815,48 +815,48 @@ namespace gnsstk
          bool begin = true;
          double previousOffset = 0.0;
          long previousToe = 0.0;
-         bool previousIsOffset = false; 
+         bool previousIsOffset = false;
          bool currentIsOffset = false;
          bool previousBeginAdjusted = false;
          bool adjustedBegin = false;
-         CommonTime prevOrigBeginValid; 
+         CommonTime prevOrigBeginValid;
 
          string tForm = "%03j.%02H:%02M:%02S";
          //SatID sid = it->first;
          //cout << " Scannning PRN ID: " << sid.id << endl;
 
-            // Scan the map for this SV looking for 
-            // uploads.  Uploads are identifed by 
-            // Toe values that are offset from 
-            // an even hour.  
+            // Scan the map for this SV looking for
+            // uploads.  Uploads are identifed by
+            // Toe values that are offset from
+            // an even hour.
          OrbElemBase* oePrev = 0;
-         for (ei = em.begin(); ei != em.end(); ei++) 
+         for (ei = em.begin(); ei != em.end(); ei++)
          {
             currentIsOffset = false;      // start with this assumption
               // Since this is OrbElemStore, then the type in the
-              // store must AT LEAST be OrbElem.  
+              // store must AT LEAST be OrbElem.
             OrbElemBase* oeb = ei->second;
             OrbElem* oe = dynamic_cast<OrbElem*>(oeb);
             long Toe = (long) (static_cast<GPSWeekSecond> (oe->ctToe)).sow;
             double currentOffset = Toe % 3600;
-            
+
             CommonTime currOrigBeginValid = oe->beginValid;
 
             //cout << "Top of For Loop.  oe->beginValid = " << printTime(oe->beginValid,tForm);
             //cout << ", currentOffset =" << currentOffset << endl;
-            
-            if ( (currentOffset)!=0) 
+
+            if ( (currentOffset)!=0)
             {
-               currentIsOffset = true; 
+               currentIsOffset = true;
 
                //cout << "*** Found an offset" << endl;
-               //cout << " currentIsOffset: " << currentIsOffset; 
-               //cout << " previousIsOffset: " << previousIsOffset; 
-               //cout << " current, previous Offset = " << currentOffset << ", " << previousOffset << endl; 
-            
+               //cout << " currentIsOffset: " << currentIsOffset;
+               //cout << " previousIsOffset: " << previousIsOffset;
+               //cout << " current, previous Offset = " << currentOffset << ", " << previousOffset << endl;
+
                   // If this set is offset AND the previous set is offset AND
                   // the two offsets are the same AND the difference
-                  // in time between the two Toe == two hours, 
+                  // in time between the two Toe == two hours,
                   // then this is the SECOND
                   // set of elements in an upload.  In that case the OrbElem
                   // load routines have conservatively set the beginning time
@@ -866,13 +866,13 @@ namespace gnsstk
                   // adjust the beginning of validity as needed.
                   // Since the algorithm is dependent on the message
                   // format, this must be done in OrbElem.
-                  // 
-                  // IMPORTANT NOTE:  We also need to adjust the 
+                  //
+                  // IMPORTANT NOTE:  We also need to adjust the
                   // key in the map, which is based on the beginning
                   // of validity.  However, we can't do it in this
                   // loop without destroying the integrity of the
                   // iterator.  This is handled later in a second
-                  // loop.  See notes on the second loop, below. 
+                  // loop.  See notes on the second loop, below.
                long diffToe = Toe - previousToe;
                if (previousIsOffset &&
                    currentIsOffset  &&
@@ -880,16 +880,16 @@ namespace gnsstk
                    diffToe==7200)
                {
                  //cout << "*** Adjusting beginValid.  Initial value: "
-                 //     << printTime(oe->beginValid,tForm); 
+                 //     << printTime(oe->beginValid,tForm);
                  oe->adjustBeginningValidity();
                  adjustedBegin = true;
-                 //cout << ", Adjusted value: " 
+                 //cout << ", Adjusted value: "
                  //     << printTime(oe->beginValid,tForm) << endl;
                }
-               
-                  // If the previous set is not offset, then 
+
+                  // If the previous set is not offset, then
                   // we've found an upload.
-                  // For that matter, if previous IS offset, but 
+                  // For that matter, if previous IS offset, but
                   // the current offset is different than the
                   // previous, then it is an upload.
                if (!previousIsOffset ||
@@ -900,11 +900,11 @@ namespace gnsstk
 
                      // Adjust the ending time of validity of any elements
                      // broadcast BEFORE the new upload such that they
-                     // end at the beginning validity of the upload.  
+                     // end at the beginning validity of the upload.
                      // That beginning validity value should already be
                      // set to the transmit time (or earliest transmit
                      // time found) by OrbElem and OrbElemStore.addOrbElem( )
-                     // This adjustment is consistent with the IS-GPS-XXX 
+                     // This adjustment is consistent with the IS-GPS-XXX
                      // rules that a new upload invalidates previous elements.
                      // Note that this may be necessary for more than one
                      // preceding set of elements.
@@ -913,10 +913,10 @@ namespace gnsstk
                      //cout << "*** Adjusting endValid Times" << endl;
                      OrbElemMap::iterator ri;
                      ri = em.find(oePrev->beginValid);     // We KNOW it exists in the map
-                        // Actuall, there is a really, odd rare case where it 
-                        // DOES NOT exist in the map.  That case is the case 
+                        // Actuall, there is a really, odd rare case where it
+                        // DOES NOT exist in the map.  That case is the case
                         // in which we modified the begin valid time of oePrev
-                        // in the previous iteration of the loop.  
+                        // in the previous iteration of the loop.
                      if (ri==em.end() && previousBeginAdjusted)
                      {
                         //cout << "*** Didn't find oePrev->beginValid(), but prev beginValid changed.";
@@ -929,8 +929,8 @@ namespace gnsstk
                         }
                         //cout << "  Successfully found the previous object." << endl;
                      }
-                     
-                     
+
+
                      bool done = false;
                      while (!done)
                      {
@@ -943,11 +943,11 @@ namespace gnsstk
                            // adjust the ending and set done to true.
                         if (oeRev->endValid <= oe->beginValid) done = true;
 
-                           // Otherwise, adjust the ending validity to 
-                           // match the begin of the upload. 
+                           // Otherwise, adjust the ending validity to
+                           // match the begin of the upload.
                          else oeRev->endValid = oe->beginValid;
 
-                           // If we've reached the beginning of the map, stop. 
+                           // If we've reached the beginning of the map, stop.
                            // Otherwise, decrement and test again.
                         if (ri!=em.begin()) ri--;
                          else done = true;
@@ -955,7 +955,7 @@ namespace gnsstk
                   }
                }
             }
-            
+
                // Update condition flags for next loop
             previousIsOffset = currentIsOffset;
             previousToe      = Toe;
@@ -964,35 +964,35 @@ namespace gnsstk
                // the flag previousBeginAdjusted so we have that
                // information to inform the next iteration.  However,
                // do not let the flag persist beyond one iteration
-               // unless adjustedBegin is set again. 
+               // unless adjustedBegin is set again.
             previousBeginAdjusted = false;
             if (adjustedBegin) previousBeginAdjusted = true;
             adjustedBegin = false;
-            prevOrigBeginValid = currOrigBeginValid; 
-            
+            prevOrigBeginValid = currOrigBeginValid;
+
             oePrev = oe;           // May need this for next loop.
-            begin = false; 
+            begin = false;
             //cout << "Bottom of For loop.  currentIsOffset: " << currentIsOffset <<
             //        ", previousIsOffset: " << previousIsOffset << endl;
-         } //end inner for-loop 
+         } //end inner for-loop
 
             // The preceding process has left some elements in a condition
-            // when the beginValid value != the key in the map.  This 
+            // when the beginValid value != the key in the map.  This
             // must be addressed, but the map key is a const (by definition).
             // We have to search the map for these disagreements.  When found,
-            // the offending item need to be copied out of the map, the 
+            // the offending item need to be copied out of the map, the
             // existing entry deleted, the item re-entered with the new key.
-            // Since it is unsafe to modify a map while traversing the map, 
+            // Since it is unsafe to modify a map while traversing the map,
             // each time this happens, we have to reset the loop process.
             //
-            // NOTE: Simplisitically, we could restart the loop at the 
+            // NOTE: Simplisitically, we could restart the loop at the
             // beginning each time.  HOWEVER, we sometimes load a long
             // period in a map (e.g. a year).  At one upload/day, that
             // would mean ~365 times, each time one day deeper into the map.
             // As an alternate, we use the variable loopStart to note how
             // far we scanned prior to finding a problem and manipulating
-            // the map.  Then we can restart at that point. 
-         bool done = false; 
+            // the map.  Then we can restart at that point.
+         bool done = false;
          CommonTime loopStart = CommonTime::BEGINNING_OF_TIME;
          while (!done)
          {
@@ -1003,7 +1003,7 @@ namespace gnsstk
               if (ei->first!=oe->beginValid)
               {
                  //cout << "Removing an element.....";
-                 OrbElemBase* oeAdj= oe->clone();       // Adjustment was done in 
+                 OrbElemBase* oeAdj= oe->clone();       // Adjustment was done in
                                                    // first loop above.
                  delete ei->second;                // oe becomes invalid.
                  em.erase(ei);                     // Remove the map entry.
@@ -1014,13 +1014,13 @@ namespace gnsstk
               loopStart = ei->first; // Scanned this far successfully, so
                                      // save this as a potential restart point.
               ei++;
-              if (ei==em.end()) done = true;   // Successfully completed 
-                                               // the loop w/o finding any 
-                                               // mismatches.  We're done. 
-            } 
+              if (ei==em.end()) done = true;   // Successfully completed
+                                               // the loop w/o finding any
+                                               // mismatches.  We're done.
+            }
         }
 
-           // Well, not quite done.  We need to update the initial/final 
+           // Well, not quite done.  We need to update the initial/final
            // times of the map.
         const OrbElemMap::iterator Cei = em.begin( );
         initialTime = Cei->second->beginValid;
@@ -1028,7 +1028,7 @@ namespace gnsstk
         finalTime   = rCei->second->endValid;
 
       } // end outer for-loop
-      //cout << "Exiting OrbElem.rationalize()" << endl; 
+      //cout << "Exiting OrbElem.rationalize()" << endl;
     }
-   
+
 } // namespace

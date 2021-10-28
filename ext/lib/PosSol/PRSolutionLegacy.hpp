@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004, The Board of Regents of The University of Texas System
@@ -41,7 +41,7 @@
  * @file PRSolutionLegacy.hpp
  * Autonomous pseudorange navigation solution, including RAIM algorithm
  */
- 
+
 #ifndef PRS_POSITION_SOLUTION_NEW_HPP
 #define PRS_POSITION_SOLUTION_NEW_HPP
 
@@ -59,7 +59,7 @@ namespace gnsstk
 {
    /** @defgroup GPSsolutions GPS solution algorithms and Tropospheric models */
    //@{
- 
+
    /** This class defines an interface to routines which compute a position
     * and time solution from pseudorange data, with a data editing algorithm
     * based on Receiver Autonomous Integrity Monitoring (RAIM) concepts.

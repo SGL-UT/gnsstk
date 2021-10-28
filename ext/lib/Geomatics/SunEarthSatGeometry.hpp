@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -75,7 +75,7 @@ namespace gnsstk
    ///             local topocentric or North,East,Up frame at the position P.
    /// @throw Exception
    Matrix<double> NorthEastUpGeocentric(Position& P);
-   
+
    /// Same as NorthEastUp(P,false).
    /// @param P  Position at which the rotation matrix will be defined.
    /// @return   3x3 rotation matrix that will transform an ECEF vector into the
@@ -109,7 +109,7 @@ namespace gnsstk
    ///             local topocentric or North,East,Up frame at the position P.
    /// @throw Exception
    Matrix<double> UpEastNorthGeocentric(Position& P);
-   
+
    /// Same as UpEastNorth, but using geodetic coordinates
    /// @param P  Position at which the rotation matrix will be defined.
    /// @return  3x3 rotation matrix that will transform an ECEF vector into the
@@ -127,7 +127,7 @@ namespace gnsstk
    /// NB. units only need be consistent.
    /// @throw Exception
    double ShadowFactor(double AngRadEarth, double AngRadSun, double AngSeparation);
-   
+
    /// Compute the fraction of the Sun covered by the earth as seen from a satellite,
    /// given Sun and satellite positions. Cf. the other version of this function.
    /// @param SV  Position (input) Satellite position

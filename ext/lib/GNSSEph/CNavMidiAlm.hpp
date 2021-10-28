@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,15 +29,15 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 /**
  * @file CNavMidiAlm.hpp
- * Enables cracking of CNAV and CNAV-2 Midi Almanac packet data. 
+ * Enables cracking of CNAV and CNAV-2 Midi Almanac packet data.
  *
  */
 
@@ -55,7 +55,7 @@ namespace gnsstk
 {
    // This one inherits from OrbDataSys because it is shared between
    // CNAV and CNAV-2.  Therefore, neither OrbSysGpsC nor the CNAV-2
-   // equivalent is correct. 
+   // equivalent is correct.
    class CNavMidiAlm : public OrbDataSys
    {
    public:
@@ -72,18 +72,18 @@ namespace gnsstk
          /// Clone method
       virtual CNavMidiAlm* clone() const;
 
-         /** pnb      - CNAV MT37 or CNAV-2 subframe 3, page 4. 
+         /** pnb      - CNAV MT37 or CNAV-2 subframe 3, page 4.
           * @throw InvalidParameter
           */
       CNavMidiAlm(const PackedNavBits& pnb);
-  
+
          /**
           * @throw InvalidParameter
           */
       void loadData(const PackedNavBits& pnb);
 
-      bool isSameData(const gnsstk::OrbData* right) const;      
- 
+      bool isSameData(const gnsstk::OrbData* right) const;
+
       virtual std::string getName() const
       {
          return "MIDI ALM";
@@ -109,7 +109,7 @@ namespace gnsstk
           */
       virtual void dumpBody(std::ostream& s = std::cout) const;
 
-      MidiAlmType almType; 
+      MidiAlmType almType;
       CommonTime ctAlmEpoch;
       SatID  xmitSv;
       SatID  subjSv;
@@ -133,4 +133,4 @@ namespace gnsstk
 
 } // end namespace gnsstk
 
-#endif 
+#endif

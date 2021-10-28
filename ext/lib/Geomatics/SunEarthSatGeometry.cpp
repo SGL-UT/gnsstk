@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -61,7 +61,7 @@ namespace gnsstk
       try {
          Matrix<double> R(3,3);
          P.transformTo(geocentric ? Position::Geocentric : Position::Geodetic);
-   
+
          double lat = (geocentric ?  P.getGeocentricLatitude()
                                   : P.getGeodeticLatitude()) * DEG_TO_RAD;  // rad N
          double lon = P.getLongitude() * DEG_TO_RAD;                          // rad E
@@ -69,19 +69,19 @@ namespace gnsstk
          double sa = ::sin(lat);
          double co = ::cos(lon);
          double so = ::sin(lon);
-   
+
          // This is the rotation matrix which will
          // transform  X=(x,y,z) into (R*X)(north,east,up)
          R(0,0) = -sa*co;  R(0,1) = -sa*so;  R(0,2) = ca;
          R(1,0) =    -so;  R(1,1) =     co;  R(1,2) = 0.;
          R(2,0) =  ca*co;  R(2,1) =  ca*so;  R(2,2) = sa;
-   
+
          // The rows of R are also the unit vectors, in ECEF, of north,east,up;
          //  R = (N && E && U) = transpose(N || E || U).
          //Vector<double> N = R.rowCopy(0);
          //Vector<double> E = R.rowCopy(1);
          //Vector<double> U = R.rowCopy(2);
-   
+
          return R;
       }
       catch(Exception& e) { GNSSTK_RETHROW(e); }
@@ -91,11 +91,11 @@ namespace gnsstk
       }
       catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
-   
+
    // Same as NorthEastUp(P,true).
    Matrix<double> NorthEastUpGeocentric(Position& P)
       { return NorthEastUp(P, true); }
-   
+
    // Same as NorthEastUp(P,false).
    Matrix<double> NorthEastUpGeodetic(Position& P)
       { return NorthEastUp(P, false); }
@@ -120,12 +120,12 @@ namespace gnsstk
       }
       catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
-   
+
    // Same as UpEastNorth, but using geocentric coordinates, so that the -Up
    // direction will meet the center of Earth.
    Matrix<double> UpEastNorthGeocentric(Position& P)
       { return UpEastNorth(P, true); }
-   
+
    // Same as UpEastNorth, but using geodetic coordinates
    Matrix<double> UpEastNorthGeodetic(Position& P)
       { return UpEastNorth(P, false); }
@@ -203,7 +203,7 @@ namespace gnsstk
       }
       catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
-   
+
    // --------------------------------------------------------------------------------
    double ShadowFactor(const Position& SV, const Position& Sun)
    {
@@ -272,7 +272,7 @@ namespace gnsstk
          Y = Z.cross(T);
          d = 1.0/Y.mag();
          Y = d * Y;                    // normalize Y
-   
+
          // ... such that X points generally in the direction of the sun
          X = Y.cross(Z);               // X will be unit vector since Y and Z are
 
@@ -280,7 +280,7 @@ namespace gnsstk
             X = -1.0 * X;
             Y = -1.0 * Y;
          }
-   
+
          // fill the rotation matrix: rows are X, Y and Z
          // so R*V(ECEF XYZ) = V(body frame components) = (V dot X,Y,Z)
          Matrix<double> R(3,3);
@@ -289,7 +289,7 @@ namespace gnsstk
             R(1,i) = Y[i];
             R(2,i) = Z[i];
          }
-   
+
          return R;
       }
       catch(Exception& e) { GNSSTK_RETHROW(e); }
@@ -346,7 +346,7 @@ namespace gnsstk
     catch(std::exception& e) {Exception E("std except: "+string(e.what())); GNSSTK_THROW(E);}
     catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
   }
-   
+
    // --------------------------------------------------------------------------------
    // Compute the azimuth and nadir angle, in the satellite body frame,
    // of receiver Position RX as seen at the satellite Position SV. The nadir angle
@@ -368,7 +368,7 @@ namespace gnsstk
             Exception e("Rotation matrix invalid");
             GNSSTK_THROW(e);
          }
-   
+
          double d;
          Position RmS;
          // RmS points from satellite to receiver
@@ -380,13 +380,13 @@ namespace gnsstk
             GNSSTK_THROW(e);
          }
          RmS = (1.0/d) * RmS;
-   
+
          Vector<double> XYZ(3),Body(3);
          XYZ(0) = RmS.X();
          XYZ(1) = RmS.Y();
          XYZ(2) = RmS.Z();
          Body = Rot * XYZ;
-   
+
          nadir = ::acos(Body(2)) * RAD_TO_DEG;
          azimuth = ::atan2(Body(1),Body(0)) * RAD_TO_DEG;
          if(azimuth < 0.0) azimuth += 360.;
@@ -398,7 +398,7 @@ namespace gnsstk
       }
       catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
-   
+
    // --------------------------------------------------------------------------------
    // Compute the angle from satellite to Earth to Sun; that is the angular
    // separation of the satellite and the Sun, as seen from the center of Earth.
@@ -418,7 +418,7 @@ namespace gnsstk
          double d;         // normalize
          d = 1.0/ssun.mag(); ssun = ssun * d;
          d = 1.0/sat.mag(); sat = sat * d;
-   
+
          // compute the angle
          return (::acos(sat.dot(ssun)));
       }
@@ -453,7 +453,7 @@ namespace gnsstk
          Position SatR(Pos),SatV(Vel),PSun(Sun);
          GPSEllipsoid ellips;
          double omega(ellips.angVelocity()); // 7.292115e-5 rad/sec
-   
+
          // compute inertial velocity
          Position inertialV;
          inertialV.setECEF(SatV.X()-omega*SatR.Y(),SatV.Y()+omega*SatR.X(),SatV.Z());
@@ -470,7 +470,7 @@ namespace gnsstk
 
          // u is R cross V - normal to orbit plane
          u = sat.cross(vel);
-   
+
          // compute the angle beta : u dot sun = sin(beta) = cos(PI/2-beta)
          double udotsun(u.dot(ssun));
          beta = PI/2.0 - ::acos(udotsun);
@@ -500,7 +500,7 @@ namespace gnsstk
       }
       catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    }
-   
+
    // --------------------------------------------------------------------------------
    // Compute the nominal yaw angle of the satellite given the satellite position and
    // velocity and the Sun position at the given time, plus a flag for GPS Block IIR

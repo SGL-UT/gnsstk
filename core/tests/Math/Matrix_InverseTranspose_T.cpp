@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -83,7 +83,7 @@ int Matrix_T::inverseTest(void)
 	failDescriptionStream << "Check if gnsstk::inverse(A3) returns the right matrix. " << badCount << " of the elements are incorrect.";
 	failDescriptionString = failDescriptionStream.str(); failDescriptionStream.str("");
     testFramework.assert(badCount==0, failDescriptionString, __LINE__);
-  	badCount = 0; // Reset error counter      	      	
+  	badCount = 0; // Reset error counter
 
   	return testFramework.countFails();
 }
@@ -102,7 +102,7 @@ int Matrix_T::transposeTest(void)
 	double temp4[4] = {2,-3,5,-7};
 	double temp5[9] = {1,3,-5,0,1,-1,-2,-2,9};
 	double temp6[16] = {2,1,0,0,3,0,2,2,1,3,-3,3,5,1,2,1};
-	double temp7[20] = {8,7,1,-78,5,-9,7,24,18,5,10,20,-2,0,11,-68,1.5,7,47,0};		
+	double temp7[20] = {8,7,1,-78,5,-9,7,24,18,5,10,20,-2,0,11,-68,1.5,7,47,0};
 
 	CompareA1T = temp4;
 	CompareA2T = temp5;
@@ -142,7 +142,7 @@ int Matrix_T::transposeTest(void)
 	failDescriptionStream << "Check if gnsstk::transpose(A4) returns the right matrix. " << badCount << " of the elements are incorrect.";
 	failDescriptionString = failDescriptionStream.str(); failDescriptionStream.str("");
     testFramework.assert(badCount==0, failDescriptionString, __LINE__);
-  	badCount = 0; // Reset error counter      	
+  	badCount = 0; // Reset error counter
 
   	return testFramework.countFails();
   }

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -59,7 +59,7 @@ namespace gnsstk
    {
    }
 
-   Triple :: Triple(double a, 
+   Triple :: Triple(double a,
                     double b,
                     double c)
       : theArray(3)
@@ -134,10 +134,10 @@ namespace gnsstk
    Triple Triple::unitVector() const
    {
       double mag = std::sqrt(dot(*this));
-      
+
       if (mag <= 1e-14)
       	GNSSTK_THROW(GeometryException("Divide by Zero Error"));
-      
+
       Triple retArg;
       retArg[0] = (*this)[0] / mag;
       retArg[1] = (*this)[1] / mag;
@@ -149,10 +149,10 @@ namespace gnsstk
    double Triple :: cosVector(const Triple& right) const
    {
       double rx, ry, cosvects;
-   
+
       rx = dot(*this);
       ry = right.dot(right);
-      
+
       if (rx <= 1e-14 ||  ry <= 1e-14)
       {
          GNSSTK_THROW(GeometryException("Divide by Zero Error"));
@@ -204,7 +204,7 @@ namespace gnsstk
 
       if (xy <= 1e-14 || xyz <=1e-14)
       	 GNSSTK_THROW(GeometryException("Divide by Zero Error"))
-      
+
       cosl = (*this)[0] / xy;
       sinl = (*this)[1] / xy;
       sint = (*this)[2] / xyz;
@@ -235,12 +235,12 @@ namespace gnsstk
       {
          return alpha + 360;
       }
-      else 
+      else
       {
          return alpha;
       }
    }
-   
+
 
       /* Computes rotation about axis X.
        * @param angle    Angle to rotate, in degrees
@@ -300,33 +300,33 @@ namespace gnsstk
    {
      return (*this)[0]==right[0] && (*this)[1]==right[1] && (*this)[2]==right[2];
    }
-     
+
    Triple Triple :: operator-(const Triple& right) const
-   { 
+   {
       Triple tmp;
       tmp.theArray = this->theArray - right.theArray;
       return tmp;
    }
 
    Triple Triple :: operator+(const Triple& right) const
-   { 
-      Triple tmp; 
-      tmp.theArray = this->theArray + right.theArray; 
+   {
+      Triple tmp;
+      tmp.theArray = this->theArray + right.theArray;
       return tmp;
    }
 
    Triple operator*(double scale, const Triple& rhs)
    {
-      Triple tmp; 
-      tmp.theArray = rhs.theArray * scale; 
+      Triple tmp;
+      tmp.theArray = rhs.theArray * scale;
       return tmp;
    }
 
-   std::ostream& operator<<(std::ostream& s, 
+   std::ostream& operator<<(std::ostream& s,
                             const gnsstk::Triple& v)
    {
       if (v.size() > 0)
-      {  
+      {
          s << "(" << v[0];
          for (size_t i = 1; i < v.size(); i++)
          {
@@ -334,8 +334,8 @@ namespace gnsstk
          }
          s << ")";
       }
-      
-      return s;   
+
+      return s;
    }
 
 } // namespace gnsstk

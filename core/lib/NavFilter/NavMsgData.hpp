@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -73,7 +73,7 @@ namespace gnsstk
    };
 
       //@}
-   
+
 } // namespace gnsstk
 
 #endif // NAVMSGDATA_HPP

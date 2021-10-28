@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,8 +15,8 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
@@ -25,14 +25,14 @@
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -109,7 +109,7 @@ namespace gnsstk
             for (unsigned order = 0; order < 6; order++)
             {
                   // idx = i,2k = degree,2*order, add 1 because
-                  // k=[1,6] while order/index=[0,5] 
+                  // k=[1,6] while order/index=[0,5]
                idx = degree*F2MaxOrder+(order*2+1);
                DEBUGTRACE("  j=" << order);
                DEBUGTRACE("    term 1=" << (cacheF2[idx] * sin((order+1)*t)));
@@ -250,7 +250,7 @@ namespace gnsstk
          case 10: return ccir20F2(cond, deg, ord);
          case 11: return ccir21F2(cond, deg, ord);
          case 12: return ccir22F2(cond, deg, ord);
-      }         
+      }
          // shouldn't be reachable
       return std::numeric_limits<double>::quiet_NaN();
    }
@@ -274,7 +274,7 @@ namespace gnsstk
          case 10: return ccir20Fm3(cond, deg, ord);
          case 11: return ccir21Fm3(cond, deg, ord);
          case 12: return ccir22Fm3(cond, deg, ord);
-      }         
+      }
          // shouldn't be reachable
       return std::numeric_limits<double>::quiet_NaN();
    }

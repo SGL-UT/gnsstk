@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -65,7 +65,7 @@ namespace gnsstk
       ctToc.setTimeSystem(TimeSystem::GPS);
       beginValid.setTimeSystem(TimeSystem::GPS);
       endValid.setTimeSystem(TimeSystem::GPS);
-   } 
+   }
 
    bool OrbElem::isValid(const CommonTime& ct) const
    {
@@ -176,11 +176,11 @@ namespace gnsstk
       // been ported to C, then C++, then became part of the toolkit.
       // The original code was based on IS-GPS-200 Table 20-IV.
       // In July 2013, the code was modified to conform to Table 30-II
-      // which includes additional time-dependent terms (A(dot) 
+      // which includes additional time-dependent terms (A(dot)
       // and delta n(dot)) that are in CNAV but not in LNAV.  These
-      // changes should be backward compatible with LNAV as long as the 
-      // Adot and dndot variables are appropriately set to 0.0 by the 
-      // LNAV loaders. 
+      // changes should be backward compatible with LNAV as long as the
+      // Adot and dndot variables are appropriately set to 0.0 by the
+      // LNAV loaders.
    Xvt OrbElem::svXvt(const CommonTime& t) const
    {
       if (!dataLoaded())
@@ -230,9 +230,9 @@ namespace gnsstk
 
          // Compute mean motion
       double dnA = dn + 0.5 * dndot * elapte;
-      double Ahalf = SQRT(A); 
+      double Ahalf = SQRT(A);
       amm  = (sqrtgm / (A*Ahalf)) + dnA;  // NOT Ak because this equation
-                                          // specifies A0, not Ak.  
+                                          // specifies A0, not Ak.
 
          // In-plane angles
          //     meana - Mean anomaly
@@ -366,12 +366,12 @@ namespace gnsstk
       double elapte = t - ctToe;
 
          // Compute A at time of interest
-      double Ak = A + Adot * elapte;   
-      
+      double Ak = A + Adot * elapte;
+
       double dnA = dn + 0.5 * dndot * elapte;
       double Ahalf = SQRT(A);
       double amm    = (sqrtgm / (A*Ahalf)) + dnA;// NOT Ak because this equation
-                                                 // specifies A0, not Ak.  
+                                                 // specifies A0, not Ak.
       double meana,F,G,delea;
 
       meana = M0 + elapte * amm;
@@ -386,9 +386,9 @@ namespace gnsstk
          ea    = ea + delea;
          loop_cnt++;
       } while ( (ABS(delea) > 1.0e-11 ) && (loop_cnt <= 20) );
-      
+
          // Use Ak as we are interested in semi-major axis at this moment.
-      double dtr = REL_CONST * ecc * SQRT(Ak) * ::sin(ea); 
+      double dtr = REL_CONST * ecc * SQRT(Ak) * ::sin(ea);
       return dtr;
    }
 
@@ -459,7 +459,7 @@ namespace gnsstk
          GNSSTK_THROW(exc);
       }
       const ios::fmtflags oldFlags = s.flags();
-      size_t precision = 8; 
+      size_t precision = 8;
 
       s.setf(ios::fixed, ios::floatfield);
       s.setf(ios::right, ios::adjustfield);

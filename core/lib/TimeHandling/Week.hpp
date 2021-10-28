@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -122,14 +122,14 @@ namespace gnsstk
       Week(int w = 0, TimeSystem ts = TimeSystem::Unknown )
             : week(w)
       { timeSystem = ts; }
-      
+
          /// Virtual Destructor.
       virtual ~Week()
       {}
-      
+
          /// Assignment Operator.
       Week& operator=(const Week& right);
-      
+
          /// @name Comparison Operators.
          //@{
       inline bool operator==(const Week& right) const
@@ -147,25 +147,25 @@ namespace gnsstk
          timeSystemCheck;
          return (week != right.week);
       }
-      
+
       inline bool operator<(const Week& right) const
       {
          timeSystemCheck;
          return week < right.week;
       }
-      
+
       inline bool operator<=(const Week& right) const
       {
          timeSystemCheck;
          return week <= right.week;
       }
-      
+
       inline bool operator>(const Week& right) const
       {
          timeSystemCheck;
          return week > right.week;
       }
-      
+
       inline bool operator>=(const Week& right) const
       {
          timeSystemCheck;
@@ -184,19 +184,19 @@ namespace gnsstk
       {
          return (week & bitmask());
       }
-      
+
       inline virtual unsigned int getEpoch() const
       {
          return (week >> Nbits());
       }
-      
+
       inline virtual void getEpochModWeek(unsigned int& e,
                                           unsigned int& w) const
       {
          e = getEpoch();
          w = getModWeek();
       }
-      
+
       inline virtual void setEpoch(unsigned int e)
       {
          week &= bitmask();
@@ -208,7 +208,7 @@ namespace gnsstk
          week &= ~bitmask();
          week |= w & bitmask();
       }
-      
+
       inline virtual void setEpochModWeek(unsigned int e,
                                           unsigned int w)
       {
@@ -236,14 +236,14 @@ namespace gnsstk
       }
 
          //@}
-      
+
          /** Return a string containing the characters that this class
           * understands when printing times. */
       inline virtual std::string getPrintChars() const
       {
          return "EFGP";
       }
-         
+
          /// Return a string containing the default format to use in printing.
       inline virtual std::string getDefaultFormat() const
       {
@@ -254,12 +254,12 @@ namespace gnsstk
       {
          return ((week >= 0) && (week <= MAXWEEK()));
       }
-      
+
       inline virtual void reset()
       {
          week = 0;
       }
-      
+
          /// Force this interface on this classes descendants.
       virtual unsigned int getDayOfWeek() const = 0;
 

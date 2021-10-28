@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -72,13 +72,13 @@ namespace gnsstk
       /**
        * This class is part of a replacement for getopt.
        *
-       * Each CommandOption 
-       * represents an option you would enter at a command line.  You can 
-       * specify whether the option does or does not require an argument, 
-       * if the option is of a certain type (string or number), then the 
-       * short option (i.e. '-f') and long option ('--foo'), whether it's 
+       * Each CommandOption
+       * represents an option you would enter at a command line.  You can
+       * specify whether the option does or does not require an argument,
+       * if the option is of a certain type (string or number), then the
+       * short option (i.e. '-f') and long option ('--foo'), whether it's
        * a required option or not, then a short description for a help display.
-       * By default, options can appear an unlimited number of times on a 
+       * By default, options can appear an unlimited number of times on a
        * command line.  Use setMaxCount() to set a maximum limit to this.
        * In that case, additional appearances of that option will trigger
        * an error once parsed.
@@ -86,15 +86,15 @@ namespace gnsstk
        * When a CommandOption is created (not using the default
        * constructor), it automatically adds itself to a list that will
        * be used by gnsstk::CommandOptionParser. If you want to manage your
-       * own list, pass in your own std::vector<gnsstk::CommandOptionParser> 
+       * own list, pass in your own std::vector<gnsstk::CommandOptionParser>
        * with the CommandOption constructor. After parsing the command
-       * line, you can use the getValue() and 
-       * getCount() methods to see what arguments 
+       * line, you can use the getValue() and
+       * getCount() methods to see what arguments
        * the options had and how many times the option was listed on
        * the command line.
        *
        * This class is strongly connected to gnsstk::CommandOptionParser, so
-       * if you change anything here, make sure you don't side affect 
+       * if you change anything here, make sure you don't side affect
        * the other.
        *
        * For additional details, see \ref appbuilding.
@@ -141,24 +141,24 @@ namespace gnsstk
           * @param ot The type of option (string, number, any, etc.)
           * @param shOpt The one character command line option.  Set to 0
           * if unused.
-          * @param loOpt The long command option.  Set to std::string() 
+          * @param loOpt The long command option.  Set to std::string()
           * if unused.
           * @param desc A string describing what this option does.
           * @param req Set to true if this is a required option.
-          * @param optVectorList Use this to create your own 
+          * @param optVectorList Use this to create your own
           * command option list if you want to use an alternate method
           * of parsing the command options.
           */
-      CommandOption(const CommandOptionFlag of, 
+      CommandOption(const CommandOptionFlag of,
                     const CommandOptionType ot,
-                    const char shOpt, 
-                    const std::string& loOpt, 
+                    const char shOpt,
+                    const std::string& loOpt,
                     const std::string& desc,
                     const bool req = false,
-                    CommandOptionVec& optVectorList =  
+                    CommandOptionVec& optVectorList =
                     defaultCommandOptionList);
 
-         /// Sets the maximum number of times this should appear on the 
+         /// Sets the maximum number of times this should appear on the
          /// command line.
       CommandOption& setMaxCount(const unsigned long l)
       {maxCount = l; return *this;}
@@ -171,7 +171,7 @@ namespace gnsstk
          /// (i.e.  "  -f, --foo=ARG")
       std::string getFullOptionString() const;
 
-         /// Returns a string with the argument format. 
+         /// Returns a string with the argument format.
       virtual std::string getArgString() const
       { return "ARG"; }
 
@@ -196,7 +196,7 @@ namespace gnsstk
           * the command line, with 1 being the first option.  If it
           * can be repeated and idx is unspecified, this order
           * represents the order of the last occurance of this
-          * option. 
+          * option.
           *
           * @param idx the index of the instance of this command
           * option to get the order of.  This is used when the command
@@ -274,8 +274,8 @@ namespace gnsstk
          /// Constructor
       RequiredOption(const CommandOptionFlag of,
                      const CommandOptionType ot,
-                     const char shOpt, 
-                     const std::string& loOpt, 
+                     const char shOpt,
+                     const std::string& loOpt,
                      const std::string& desc)
             : CommandOption(of, ot, shOpt, loOpt, desc, true)
       {}
@@ -295,13 +295,13 @@ namespace gnsstk
    {
    public:
          /// Constructor
-      CommandOptionNoArg(const char shOpt, 
-                         const std::string& loOpt, 
+      CommandOptionNoArg(const char shOpt,
+                         const std::string& loOpt,
                          const std::string& desc,
                          const bool required = false)
             : CommandOption(noArgument, stdType, shOpt, loOpt, desc, required)
       {}
-         
+
          /// Destructor
       virtual ~CommandOptionNoArg() {}
          /// Returns true if this option was found on the command line
@@ -320,8 +320,8 @@ namespace gnsstk
    public:
          /// Constructor
       CommandOptionWithArg(const CommandOptionType ot,
-                           const char shOpt, 
-                           const std::string& loOpt, 
+                           const char shOpt,
+                           const std::string& loOpt,
                            const std::string& desc,
                            const bool required = false)
             : CommandOption(hasArgument, ot, shOpt, loOpt, desc, required)
@@ -342,8 +342,8 @@ namespace gnsstk
    {
    public:
          /// Constructor
-      CommandOptionWithAnyArg(const char shOpt, 
-                              const std::string& loOpt, 
+      CommandOptionWithAnyArg(const char shOpt,
+                              const std::string& loOpt,
                               const std::string& desc,
                               const bool required = false)
             : CommandOptionWithArg(stdType, shOpt, loOpt, desc, required)
@@ -365,8 +365,8 @@ namespace gnsstk
    {
    public:
          /// Constructor
-      CommandOptionWithStringArg(const char shOpt, 
-                                 const std::string& loOpt, 
+      CommandOptionWithStringArg(const char shOpt,
+                                 const std::string& loOpt,
                                  const std::string& desc,
                                  const bool required = false)
             : CommandOptionWithArg(stdType, shOpt, loOpt, desc, required)
@@ -377,7 +377,7 @@ namespace gnsstk
 
       virtual std::string checkArguments();
 
-         /// Returns a string with the argument format. 
+         /// Returns a string with the argument format.
       virtual std::string getArgString() const
       { return "ALPHA"; }
 
@@ -394,8 +394,8 @@ namespace gnsstk
    {
    public:
          /// Constructor
-      CommandOptionWithNumberArg(const char shOpt, 
-                                 const std::string& loOpt, 
+      CommandOptionWithNumberArg(const char shOpt,
+                                 const std::string& loOpt,
                                  const std::string& desc,
                                  const bool required = false)
             : CommandOptionWithArg(stdType, shOpt, loOpt, desc, required)
@@ -406,7 +406,7 @@ namespace gnsstk
 
       virtual std::string checkArguments();
 
-         /// Returns a string with the argument format. 
+         /// Returns a string with the argument format.
       virtual std::string getArgString() const
       { return "NUM"; }
 
@@ -423,8 +423,8 @@ namespace gnsstk
    {
    public:
          /// Constructor
-      CommandOptionWithDecimalArg(const char shOpt, 
-                                  const std::string& loOpt, 
+      CommandOptionWithDecimalArg(const char shOpt,
+                                  const std::string& loOpt,
                                   const std::string& desc,
                                   const bool required = false)
             : CommandOptionWithArg(stdType, shOpt, loOpt, desc, required)
@@ -435,7 +435,7 @@ namespace gnsstk
 
       virtual std::string checkArguments();
 
-         /// Returns a string with the argument format. 
+         /// Returns a string with the argument format.
       virtual std::string getArgString() const
       { return "DEC"; }
 
@@ -450,7 +450,7 @@ namespace gnsstk
        * that are not part of any other options.  e.g. "strace -ofile
        * command arg1 arg2". The "command arg1 arg2" part is placed in
        * objects of this class.
-       * 
+       *
        * @short CommandOption to take the rest of the command line
        */
    class CommandOptionRest : public CommandOptionWithArg
@@ -467,10 +467,10 @@ namespace gnsstk
                         const bool required = false)
             : CommandOptionWithArg(trailingType, 0, "", desc, required)
       {}
-      
+
          /// Destructor
       virtual ~CommandOptionRest() {}
-      
+
       virtual std::string checkArguments();
 
    protected:
@@ -510,7 +510,7 @@ namespace gnsstk
       {
          setMaxCount(num);
       }
-      
+
          /// Destructor
       virtual ~CommandOptionNOf() {}
 
@@ -521,7 +521,7 @@ namespace gnsstk
 
          /// @return the command options that were used (empty vector if none).
       std::vector<CommandOption*> which() const;
-      
+
    protected:
       CommandOptionVec optionVec;
       unsigned long N;
@@ -546,7 +546,7 @@ namespace gnsstk
       CommandOptionOneOf()
             : CommandOption(noArgument, metaType, 0, "", "")
       {}
-      
+
          /// Destructor
       virtual ~CommandOptionOneOf() {}
 
@@ -557,7 +557,7 @@ namespace gnsstk
 
          /// @return the command option that was used (NULL if none).
       CommandOption* whichOne() const;
-      
+
    protected:
       CommandOptionVec optionVec;
    };
@@ -580,7 +580,7 @@ namespace gnsstk
           */
       CommandOptionAllOf()
       {}
-      
+
          /// Destructor
       virtual ~CommandOptionAllOf() {}
 
@@ -618,7 +618,7 @@ namespace gnsstk
       CommandOptionMutex(const bool required = false)
             : doOneOfChecking(required)
       {}
-      
+
          /// Destructor
       virtual ~CommandOptionMutex() {}
 
@@ -682,7 +682,7 @@ namespace gnsstk
           */
       CommandOptionGroupOr()
       {}
-      
+
          /// Destructor.
       virtual ~CommandOptionGroupOr() {}
 
@@ -714,7 +714,7 @@ namespace gnsstk
           */
       CommandOptionGroupAnd()
       {}
-      
+
          /// Destructor.
       virtual ~CommandOptionGroupAnd() {}
 
@@ -751,7 +751,7 @@ namespace gnsstk
                         const std::string& desc)
             : CommandOption(of, stdType, shOpt, loOpt, desc, false)
       {}
-         
+
          /// Destructor
       virtual ~CommandOptionHelp() {}
          /** Print the requested help information.
@@ -780,11 +780,11 @@ namespace gnsstk
                              const std::string& desc = "Print help usage")
             : CommandOptionHelp(noArgument, shOpt, loOpt, desc)
       {}
-         
+
          /// Destructor
       virtual ~CommandOptionHelpUsage() {}
          /** Print command-line usage information.
-          * @param[in] out The stream to which the help text will be printed. 
+          * @param[in] out The stream to which the help text will be printed.
           * @param[in] pretty If true, use "pretty print"
           *   descriptions.  See CommandOptionParser::displayUsage.
           *   appropriate (dependent on child class implementation as
@@ -816,11 +816,11 @@ namespace gnsstk
             : CommandOptionHelp(noArgument, shOpt, loOpt, desc),
               helpText(help)
       {}
-         
+
          /// Destructor
       virtual ~CommandOptionHelpSimple() {}
          /** Print command-line simple information.
-          * @param[in] out The stream to which the help text will be printed. 
+          * @param[in] out The stream to which the help text will be printed.
           * @param[in] pretty Ignored. */
       virtual void printHelp(std::ostream& out, bool pretty = true)
       {
@@ -831,6 +831,6 @@ namespace gnsstk
    };
 
       //@}
-   
+
 } // namespace gnsstk
 #endif

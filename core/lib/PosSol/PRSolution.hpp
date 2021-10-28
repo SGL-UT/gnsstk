@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -39,7 +39,7 @@
 /// @file PRSolution.hpp
 /// Pseudorange navigation solution, either a simple solution using all the
 /// given data, or a solution including editing via a RAIM algorithm.
- 
+
 #ifndef PRS_POSITION_SOLUTION_HPP
 #define PRS_POSITION_SOLUTION_HPP
 
@@ -206,7 +206,7 @@ namespace gnsstk
    /// will be determined by the input ephemerides; usually IGS SP3 ephemerides use
    /// GPS time for all the systems (but there is still a system time offset relative
    /// to GPS for each other GNSS).
-   /// 
+   ///
    /// Note that at any epoch it may happen that no satellites from some system are
    /// available (either in the data or after the RAIM algorithm), in this case the
    /// clock bias for that system is undefined and set to zero.
@@ -390,7 +390,7 @@ namespace gnsstk
 
       /// Compute a single autonomous pseudorange solution, after calling
       /// PreparePRSolution(). On output, all the member data is filled with results.
-      /// 
+      ///
       /// Input only (first 3 should be just as returned from PreparePRSolution()):
       /// @param Tr          const. Measured time of reception of the data.
       ///                     On output member currTime set to this.
@@ -515,7 +515,7 @@ namespace gnsstk
 
       // ------------------------------------------------------------
       /// Fix the apriori solution to the given constant value (XYZ,m)
-      /// and initialize the 
+      /// and initialize the
       void fixAPSolution(const double& X, const double& Y, const double& Z)
       {
          //fixedAPriori = true;   //TD user input

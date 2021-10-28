@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -299,7 +299,7 @@ namespace gnsstk
           *   A default message will simply say what was expected and
           *   what the value actually was when expected != got.
           * @param[in] epsilon The maximum difference between expected
-          *   and got that will be considered "equal". If this number is 
+          *   and got that will be considered "equal". If this number is
           *   less than zero, the type's epsilon is used.
           */
       void assert_equals( double expected,
@@ -308,28 +308,28 @@ namespace gnsstk
                           const std::string& testMsg = std::string(),
                           double epsilon=-1)
       {assert_equals_fp<double>(expected, got, lineNumber, testMsg, epsilon);}
-   
+
       void assert_equals( long double expected,
                           long double got,
                           int lineNumber,
                           const std::string& testMsg = std::string(),
                           long double epsilon=-1)
       {assert_equals_fp<double>(expected, got, lineNumber, testMsg, epsilon);}
-   
+
       void assert_equals( float expected,
                           float got,
                           int lineNumber,
                           const std::string& testMsg = std::string(),
                           float epsilon=-1)
       {assert_equals_fp<double>(expected, got, lineNumber, testMsg, epsilon);}
-   
+
       template <typename T>
       void assert_equals_fp( const T& expected,
                              const T& got,
                              int lineNumber,
                              const std::string& testMsg = std::string(),
                              T epsilon = -1);
-   
+
 
          /** Takes two matricies, compares them and passes the test
           * if the values are equal within an epsilon.
@@ -341,7 +341,7 @@ namespace gnsstk
           *   A default message will simply say what was expected and
           *   what the value actually was when expected != got.
           * @param[in] epsilon The maximum difference between expected
-          *   and got that will be considered "equal". If this number is 
+          *   and got that will be considered "equal". If this number is
           *   less than zero, the type's epsilon is used.
           */
       template<typename T>
@@ -356,7 +356,7 @@ namespace gnsstk
                           int lineNumber,
                           const std::string& testMsg = std::string(),
                           T epsilon = -1);
-   
+
          /** Compare two text files, line-by-line.  Test passes if there
           * are no differences according to the rules set by parameters.
           * @param[in] lineNumber The line of source in the test file
@@ -485,7 +485,7 @@ namespace gnsstk
          /** if failBit==1 && verbosity>=1, print this string description
           * of why the test failed to be set by the test app developer */
       std::string testMessage;
-    
+
          /// store the result of a test (0=pass, 1=fail)
       int failBit;
          /** if verbosity>=0, print summary line; if verbosity>=1, print
@@ -570,7 +570,7 @@ namespace gnsstk
    {
       setTestMessage( testMsg );
       setTestLine( lineNumber );
-      
+
       if( testExpression == false )
       {
          fail();
@@ -629,7 +629,7 @@ namespace gnsstk
             ostr << " > ";
          ostr << epsilon;
          mess = ostr.str();
-      }      
+      }
       assert(good, mess, lineNumber);
    }
 
@@ -644,7 +644,7 @@ namespace gnsstk
    {
       if (epsilon < 0)
          epsilon = std::numeric_limits<T>::epsilon();
-   
+
       std::string mess(testMsg);
       T mag = maxabs(expected - got);
       if (testMsg.empty())
@@ -766,15 +766,15 @@ namespace gnsstk
       std::ifstream checkStream;
       std::string   refLine;
       std::string   checkLine;
-   
+
       refStream.open( refFile.c_str() );
       checkStream.open( checkFile.c_str() );
-   
+
          // Compare each line until you reach the end of Ref
       while( !refStream.eof() )
       {
          lineNumber++;
-      
+
             // If we reach the end of Check, but there is
             // more left in Ref, then they are not equal
          if( checkStream.eof() )
@@ -782,14 +782,14 @@ namespace gnsstk
             filesEqual = false;
             return( filesEqual );
          }
-      
+
             // get the next line and compare
          getline( refStream, refLine );
          getline( checkStream, checkLine );
-      
+
          if (lineNumber <= numLinesSkip)
             continue;
-      
+
          if (ignoreLeadingSpaces)
          {
             std::size_t idx = refLine.find_first_not_of(" \t\r\n\f\v");
@@ -829,7 +829,7 @@ namespace gnsstk
             if (ignore)
                continue;
          }
-      
+
             // only fail if you find differences AFTER the skipped lines
          if (refLine != checkLine)
          {
@@ -837,7 +837,7 @@ namespace gnsstk
             return( filesEqual );
          }
       }
-   
+
          // If we reach the end of Ref, but there is
          // more left in Check, then they are not equal
       if( !checkStream.eof() )
@@ -973,7 +973,7 @@ namespace gnsstk
    {
          // increment subtest counter/ID
       subtestID = countTests() + 1;
-   
+
          // reset fail parameters for next/new subtest
       failBit = 0;
       testMessage = "Developer is a lazy slacker";

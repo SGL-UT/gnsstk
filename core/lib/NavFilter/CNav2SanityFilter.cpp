@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -59,21 +59,21 @@ namespace gnsstk
       for (i = msgBitsIn.begin(); i != msgBitsIn.end(); i++)
       {
          CNavFilterData *fd = dynamic_cast<CNavFilterData*>(*i);
-         uint32_t msgWeek = (uint32_t) fd->pnb->asUnsignedLong(9,13,1); 
+         uint32_t msgWeek = (uint32_t) fd->pnb->asUnsignedLong(9,13,1);
          uint32_t TOI   = (uint32_t) fd->pnb->asUnsignedLong(0,9,1);
          uint32_t ITOW  = (uint32_t) fd->pnb->asUnsignedLong(22,8,1);
          unsigned bitOffset = 9 + 600;
          uint32_t PRN = (int32_t) fd->pnb->asUnsignedLong(bitOffset,8,1);
-         bitOffset += 8; 
+         bitOffset += 8;
          uint32_t pageNum = (uint32_t) fd->pnb->asUnsignedLong(bitOffset,6,1);
 
-         unsigned msgSOW = 7200 * ITOW + TOI * 18; 
+         unsigned msgSOW = 7200 * ITOW + TOI * 18;
          msgSOW -= 18;
          if (msgSOW<0)
-            msgSOW += 604800; 
+            msgSOW += 604800;
          unsigned xmitSOW = static_cast<GPSWeekSecond>(fd->pnb->getTransmitTime()).sow;
          unsigned xmitWeek = static_cast<GPSWeekSecond>(fd->pnb->getTransmitTime()).week;
- 
+
          bool valid =
                // check SOW time is consistent
             ( msgSOW == xmitSOW &&

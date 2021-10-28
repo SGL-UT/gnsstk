@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -54,10 +54,10 @@
 #include "StringUtils.hpp"
 #include "Expression.hpp"
 
-namespace gnsstk 
+namespace gnsstk
 {
-   
-   double Expression::BinOpNode::getValue() 
+
+   double Expression::BinOpNode::getValue()
    {
 
       // To get the value, compute the value of the left and
@@ -113,23 +113,23 @@ namespace gnsstk
       return ostr;
    }
 
-   void Expression::VarNode::setValue(double newValue)         
+   void Expression::VarNode::setValue(double newValue)
    {
       value=newValue;
       hasValue=true;
    };
-         
-   double Expression::VarNode::getValue(void) 
+
+   double Expression::VarNode::getValue(void)
    {
-      if (!hasValue) 
-      { 
-         ExpressionException ee("Variable " + name + " undefined."); 
+      if (!hasValue)
+      {
+         ExpressionException ee("Variable " + name + " undefined.");
          GNSSTK_THROW(ee);
       }
-      
+
       return value;
    }
-   Expression::Token::Token(std::string iValue, int iPriority, 
+   Expression::Token::Token(std::string iValue, int iPriority,
                             bool isOp=false)
          :
          value(iValue), isOperator(isOp), resolved(false), priority(iPriority),
@@ -139,12 +139,12 @@ namespace gnsstk
    {
       ostr <<" Value '" << value;
       ostr << "', operation priority " << priority << ", ";
-    
+
       if (isOperator) ostr << "operator";
       else ostr << "not operator";
 
       ostr << ", ";
-      
+
       if (used) ostr << "used,";
       else ostr << "not used,";
 
@@ -157,14 +157,14 @@ namespace gnsstk
    bool Expression::operatorsDefined = false;
    std::map<std::string,int> Expression::operatorMap;
    std::map<std::string,std::string> Expression::argumentPatternMap;
-   
+
    Expression::Expression(const std::string& istr)
          : root(0)
    {
       defineOperators();
       setExpression(istr);
    }
-   
+
    void Expression::setExpression(const std::string& istr)
    {
       dumpLists();
@@ -192,11 +192,11 @@ namespace gnsstk
       std::ostringstream ostr;
       rhs.print(ostr);
       setExpression(ostr.str());
-      return (*this);      
+      return (*this);
    }
-   
+
    void Expression::dumpLists(void)
-   {   
+   {
       // first release the points tracked by this Expression
       std::list<ExpNode *>::iterator i= eList.begin(), itemp;
       while (i!= eList.end())
@@ -212,13 +212,13 @@ namespace gnsstk
       tList = emptyTokenList;
       root =0;
    }
-      
+
 
    void Expression::defineOperators(void)
    {
       if (!operatorsDefined)
       {
-         operatorMap["+"]=1; 
+         operatorMap["+"]=1;
          operatorMap["-"]=1;
          operatorMap["*"]=2;
          operatorMap["/"]=2;
@@ -255,14 +255,14 @@ namespace gnsstk
          operatorsDefined = true;
       }
    }
-   
+
    Expression::~Expression(void)
    {
-      std::list<ExpNode *>::iterator i;      
+      std::list<ExpNode *>::iterator i;
       for (i=eList.begin(); i!=eList.end(); i++)
          delete (*i);
    }
-   
+
    void Expression::tokenize(const std::string& istr)
    {
       using namespace std;
@@ -274,43 +274,43 @@ namespace gnsstk
       char tempc;
       vector<int> baseOrder;
       int currentOrder = 0;
-      
+
       while (ss >> skipws >> tempc)
       {
          bool strip=false;
-         
+
          if (tempc == '(')
          {
             currentOrder+=10;
             strip=true;
          }
-         
+
          if (tempc == ')')
          {
             currentOrder-=10;
             strip=true;
-         }        
-         
+         }
+
          if (!strip)
-         { 
+         {
             baseOrder.push_back(currentOrder);
             str.append(&tempc,1);
          }
       }
-      
+
       map<string, int>::iterator it;
       list<int> breaks;
       breaks.push_back(0);
-      
-      // Break the expression into candidates for tokens. First known 
+
+      // Break the expression into candidates for tokens. First known
       // operators and functions
-      // are found and marked with as a "break" in the the string.        
+      // are found and marked with as a "break" in the the string.
       // Note the location and compute the order of operation of each.
       // key is location in string. value is ord. of op.
       map<int,int> breakPriority;
 
       // Note when the breaks are due to an operator or to an operand.
-      // Each break can become a token but not all othem do. 
+      // Each break can become a token but not all othem do.
       // Key is location in the string, value is boolean, true for operators and functions.
       map<int, bool> breakType;
 
@@ -321,15 +321,15 @@ namespace gnsstk
          {
             // Account for scientific notation
             bool sciNotation=false;
-            if ((it->first=="+") || (it->first=="-")) 
+            if ((it->first=="+") || (it->first=="-"))
             {
                sciNotation =
-                  ( ( (str.substr(position-1,1)=="E") || 
+                  ( ( (str.substr(position-1,1)=="E") ||
                       (str.substr(position-1,1)=="e")    )         &&
                     (isdigit(str.substr(position-2,1).c_str()[0])) &&
                     (isdigit(str.substr(position+1,1).c_str()[0]))      );
             }
-            
+
             if (!sciNotation)
             {
                breaks.push_back(position);
@@ -342,7 +342,7 @@ namespace gnsstk
                breakType[operandPos] = false;
             }
          }
-         
+
       }
       breaks.push_back(str.size());
 
@@ -366,14 +366,14 @@ namespace gnsstk
                // Create the token
             Token tok(thisToken,thisOop, isOp);
 
-            if ( tok.getOperator() ) 
+            if ( tok.getOperator() )
                tok.setArgumentPattern( argumentPatternMap[thisToken] );
-            
+
             // Create an expression node, save it, and link it to the token
             ExpNode *expNode;
-            
 
-            if (!isOp) 
+
+            if (!isOp)
             {
                char testChar = thisToken.c_str()[0];
                if (isalpha(testChar))
@@ -383,21 +383,21 @@ namespace gnsstk
                eList.push_back(expNode);
                tok.setNode(expNode);
                tok.setResolved(true);
-            }     
+            }
 
             // Now that the token has the best possible state, save it
             tList.push_back(tok);
          }
-      }      
+      }
    } // end tokenize function
 
 
    int Expression::countResolvedTokens(void)
    {
       using namespace std;
-      
+
       list<Token>::iterator itt;
-   
+
       // How many have already been processed? Are we done yet?
       int totalResolved=0;
       for (itt = tList.begin(); itt!=tList.end(); itt++)
@@ -406,12 +406,12 @@ namespace gnsstk
       }
       return totalResolved;
    }
-   
-   
+
+
    void Expression::buildExpressionTree(void)
    {
       using namespace std;
-       
+
       list<Token>::iterator itt, targetToken;
 
       if ((tList.size()==1)&&(tList.begin()->getResolved()))
@@ -419,13 +419,13 @@ namespace gnsstk
          root = tList.begin()->getNode();
          return;
       }
-      
+
       size_t totalResolved = countResolvedTokens();
 
       while (totalResolved<tList.size())
       {
-         
-         // 
+
+         //
          // Step through tokens to find the value for the highest priority
          // that doesn not yet have an expression node ExpNode assigned to it.
          // A subtle but important sideeffect of this traversal is taht
@@ -438,7 +438,7 @@ namespace gnsstk
          {
             if ( itt->getOperator() && !itt->getResolved() )
             {
-               if (itt->getPriority()>highestP) 
+               if (itt->getPriority()>highestP)
                {
                   targetToken = itt;
                   highestP=itt->getPriority();
@@ -454,11 +454,11 @@ namespace gnsstk
             stringstream argstr(targetToken->getArgumentPattern());
             char thisArg;
             bool searching;
-            
+
             while (argstr >> thisArg)
             {
                switch (thisArg) {
-                  case 'R': 
+                  case 'R':
                      searching = true;
 
                      while (searching)
@@ -470,11 +470,11 @@ namespace gnsstk
 
                         searching = (rightArg->getUsed());
                      }
-                     
+
                      break;
 
                   case 'L':
-               
+
                         // Resolve left arg
                      searching=true;
 
@@ -487,15 +487,15 @@ namespace gnsstk
 
                         searching = (leftArg->getUsed());
                      }
-                     
+
                      break;
                } // end of argumentPattern cases
             } // done processing argument list
-            
-            
+
+
            if (targetToken->getArgumentPattern()=="RL")
            {
-              ExpNode *opNode = 
+              ExpNode *opNode =
               new BinOpNode(targetToken->getValue(),leftArg->getNode(), rightArg->getNode());
               targetToken->setNode(opNode);
               eList.push_back(opNode);
@@ -509,7 +509,7 @@ namespace gnsstk
 
            if (targetToken->getArgumentPattern()=="R")
            {
-              ExpNode *opNode = 
+              ExpNode *opNode =
               new FuncOpNode(targetToken->getValue(),rightArg->getNode());
               targetToken->setNode(opNode);
 
@@ -520,31 +520,31 @@ namespace gnsstk
 
               rightArg->setUsed();
            }
-            
+
          } // If this is an operator
 
          // Are we done yet?
          totalResolved = countResolvedTokens();
-      }      
-      
+      }
+
    } // end buildExpressionTree
-   
+
 
    bool Expression::set(const std::string name, double value)
    {
       using namespace std;
-      
+
       bool gotSet;
 
       std::list<ExpNode *>::iterator i;
       int t;
-      
+
       for (t=0, i=eList.begin(); i!=eList.end(); t++, i++)
       {
          VarNode *vnode = dynamic_cast<VarNode *> (*i);
-         if (vnode!=0) 
+         if (vnode!=0)
          {
-            if (StringUtils::upperCase(vnode->name) == 
+            if (StringUtils::upperCase(vnode->name) ==
                 StringUtils::upperCase(name))
             {
                vnode->setValue(value);
@@ -560,16 +560,16 @@ namespace gnsstk
    bool Expression::canEvaluate(void)
    {
       using namespace std;
-      
+
       bool areSet=true;
 
       std::list<ExpNode *>::iterator i;
       int t;
-      
+
       for (t=0, i=eList.begin(); i!=eList.end(); t++, i++)
       {
          VarNode *vnode = dynamic_cast<VarNode *> (*i);
-         if (vnode!=0) 
+         if (vnode!=0)
          {
             areSet &= vnode->hasValue;
          }
@@ -577,11 +577,11 @@ namespace gnsstk
 
       return areSet;
    }
-    
+
    bool Expression::setGPSConstants(void)
    {
       bool gotSet = false;
-      
+
       gotSet |= set("gamma",(L1_FREQ_GPS / L2_FREQ_GPS)*(L1_FREQ_GPS / L2_FREQ_GPS));
       gotSet |= set("pi",PI);
       gotSet |= set("c",C_MPS);
@@ -595,11 +595,11 @@ namespace gnsstk
       gotSet |= set("wl2",C_MPS/L2_FREQ_GPS);
       return gotSet;
    }
-   
+
    bool Expression::setRinexObs(const RinexObsData::RinexObsTypeMap& rotm)
    {
       bool gotSet = false;
-      
+
       RinexObsData::RinexObsTypeMap::const_iterator i;
       for (i=rotm.begin(); i!=rotm.end(); i++)
          gotSet |= set(i->first.type, i->second.data);
@@ -642,7 +642,7 @@ namespace gnsstk
             case CarrierBand::E6:   band = "6"; break;
             case CarrierBand::E5b:  band = "7"; break;
             case CarrierBand::E5ab: band = "8"; break;
-			default: break; //NB Determine if additional enumeration values need to be handled	
+			default: break; //NB Determine if additional enumeration values need to be handled
          }
 
          switch (i->first.code)
@@ -678,5 +678,5 @@ namespace gnsstk
       }
       return gotSet;
    }
-      
+
 } // end namespace gnsstk

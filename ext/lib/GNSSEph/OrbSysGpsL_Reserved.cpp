@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -66,23 +66,23 @@ namespace gnsstk
 
    OrbSysGpsL_Reserved* OrbSysGpsL_Reserved::clone() const
    {
-      return new OrbSysGpsL_Reserved (*this); 
+      return new OrbSysGpsL_Reserved (*this);
    }
 
-   bool OrbSysGpsL_Reserved::isSameData(const OrbData* right) const      
+   bool OrbSysGpsL_Reserved::isSameData(const OrbData* right) const
    {
          // First, test whether the test object is actually a OrbSysGpsL_Reserved object.
       const OrbSysGpsL_Reserved* p = dynamic_cast<const OrbSysGpsL_Reserved*>(right);
-      if (p==0) return false; 
+      if (p==0) return false;
 
-         // Establish if it refers to the same SV and UID. 
+         // Establish if it refers to the same SV and UID.
       if (!OrbSysGpsL::isSameData(right)) return false;
-       
+
          // Finally, examine the contents
-      if (!pnb.matchBits(p->pnb)) return false; 
-      return true;      
+      if (!pnb.matchBits(p->pnb)) return false;
+      return true;
    }
-   
+
    void OrbSysGpsL_Reserved::loadData(const PackedNavBits& msg)
    {
       setUID(msg);
@@ -94,11 +94,11 @@ namespace gnsstk
          ss << "Expected GPS Subframe 4, Reserved Page.  Found unique ID ";
          ss << StringUtils::asString(UID);
          InvalidParameter exc(ss.str());
-         GNSSTK_THROW(exc);    
-      } 
+         GNSSTK_THROW(exc);
+      }
 
          // Why isn't this in OrbDataSys and why is there no virtual
-         // loadData( ) method in the ancestors? 
+         // loadData( ) method in the ancestors?
       obsID        = msg.getobsID();
       satID        = msg.getsatSys();
       beginValid   = msg.getTransmitTime();
@@ -107,7 +107,7 @@ namespace gnsstk
          // message. Then load the appropriate
          // bits from the message array into the reserved bit array.
       pnb = PackedNavBits(msg.getsatSys(),msg.getobsID(),
-                          msg.getRxID(), msg.getTransmitTime());  
+                          msg.getRxID(), msg.getTransmitTime());
 
       unsigned long uword = msg.asUnsignedLong(68,16,1);
       pnb.addUnsignedLong(uword,16,1);
@@ -121,7 +121,7 @@ namespace gnsstk
       pnb.addUnsignedLong(uword,22,1);
       pnb.trimsize();
 
-      dataLoadedFlag = true;   
+      dataLoadedFlag = true;
    } // end of loadData()
 
    void OrbSysGpsL_Reserved::dumpTerse(std::ostream& s) const
@@ -132,14 +132,14 @@ namespace gnsstk
          GNSSTK_THROW(exc);
       }
 
-      string ssys = convertSatelliteSystemToString(satID.system); 
+      string ssys = convertSatelliteSystemToString(satID.system);
       s << setw(7) << ssys;
       s << " " << setw(2) << satID.id;
 
       string tform="%02m/%02d/%04Y %03j %02H:%02M:%02S";
       s << "  " << setw(2) << UID;
       s << " " << printTime(beginValid,tform) << "  ";
-      s << "Reserved bits "; 
+      s << "Reserved bits ";
    } // end of dumpTerse()
 
    void OrbSysGpsL_Reserved::dumpBody(ostream& s) const
@@ -153,22 +153,22 @@ namespace gnsstk
       s.setf(ios::uppercase);
       s.precision(0);
       s.fill('0');
-      s << hex; 
+      s << hex;
       s << " Contents of Reserved Bits in Words 4-10 (with parity removed)" << endl;
       s << " 182 bits, left-justified in 32 bit words" << endl;
-      unsigned long uword = 0; 
+      unsigned long uword = 0;
       long ndx;
       for (int i=0;i<4;i++)
       {
-         ndx = i * 32; 
+         ndx = i * 32;
          uword = pnb.asUnsignedLong(ndx,32,1);
          s << " 0x" << setw(8) << uword;
       }
       ndx = 4 * 32;
       uword = pnb.asUnsignedLong(ndx,22,1);
-      uword <<= 10; 
-      s << " 0x" << setw(8) << uword; 
+      uword <<= 10;
+      s << " 0x" << setw(8) << uword;
       s << endl;
-   } // end of dumpBody()   
+   } // end of dumpBody()
 
 } // end namespace gnsstk

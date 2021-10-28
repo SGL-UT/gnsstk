@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -70,12 +70,12 @@ namespace gnsstk
       }
       catch (InvalidParameter ip)
       {
-         GNSSTK_RETHROW(ip); 
+         GNSSTK_RETHROW(ip);
       }
    }
 
    //----------------------------------------------------------------
-   void DiffCorrClk::loadData(const PackedNavBits& msg, 
+   void DiffCorrClk::loadData(const PackedNavBits& msg,
                             const unsigned startBit)
    {
       try
@@ -84,7 +84,7 @@ namespace gnsstk
       }
       catch (InvalidParameter ip)
       {
-         GNSSTK_RETHROW(ip); 
+         GNSSTK_RETHROW(ip);
       }
 
       unsigned short subjPrnId = msg.asUnsignedLong(startBit,8,1);
@@ -94,10 +94,10 @@ namespace gnsstk
 
       subjSv = SatID(subjPrnId,SatelliteSystem::GPS);
 
-         // CNAV-2 corrections are always for CNAV-2.  In the 
+         // CNAV-2 corrections are always for CNAV-2.  In the
          // case of CNAV, the data may be either for CNAv or LNAb.
-         // This is indicted in the DC Data Type bit that is 
-         // just prior to the start of the packet.   See 
+         // This is indicted in the DC Data Type bit that is
+         // just prior to the start of the packet.   See
          // IS-GPS-200 Section 30.3.3.7.1
       if (msg.getNumBits()==274)   // Length of a CNAV-2 message is different then CNAV.
          dcDataType = dtCNAV2;
@@ -110,16 +110,16 @@ namespace gnsstk
             dcDataType = dtLNAV;
       }
 
-      dataLoadedFlag = true; 
-   } 
-  
+      dataLoadedFlag = true;
+   }
+
    //----------------------------------------------------------------
    bool DiffCorrClk::isSameData(const DiffCorrClk& right) const
    {
       if (!DiffCorrBase::isSameData(right)) return false;
       if (daf0 !=right.daf0) return false;
       if (daf1 !=right.daf1) return false;
-      if (UDRA !=right.UDRA) return false; 
+      if (UDRA !=right.UDRA) return false;
       return true;
    }
 
@@ -130,7 +130,7 @@ namespace gnsstk
       {
          InvalidRequest exc("Required data not stored.");
          GNSSTK_THROW(exc);
-      }    
+      }
       DiffCorrBase::dump();
       s.setf(ios::scientific, ios::floatfield);
       s.setf(ios::right, ios::adjustfield);

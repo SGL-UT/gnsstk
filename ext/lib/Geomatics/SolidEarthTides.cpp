@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -90,7 +90,7 @@ namespace gnsstk
       //   Exception e("Time system is unknown");
       //   GNSSTK_THROW(e);
       //}
-      
+
       // Use REarth from solid.f example program
       static const double REarth=6378136.55;
       static const bool debug = (LOGlevel >= DEBUG7);
@@ -103,14 +103,14 @@ namespace gnsstk
       Triple disp, sunUnit, moonUnit, rx, tSun, tMoon, north, east, up;
       // quantities for debug printing only
       Triple northGD, eastGD, upGD, tmp, tmp2, tmp3, tmp4;
-   
+
       LOG(DEBUG7) << "Sun position " << ttag.asGPSString()
             << fixed << setprecision(3)
             << setw(23) << Sun.X() << setw(23) << Sun.Y() << setw(23) << Sun.Z();
       LOG(DEBUG7) << "Moon position" << ttag.asGPSString()
             << fixed << setprecision(3)
             << setw(23) << Moon.X() << setw(23) << Moon.Y() << setw(23) << Moon.Z();
-   
+
       // distances (m)
       RSun = Sun.radius();
       RMoon = Moon.radius();
@@ -120,7 +120,7 @@ namespace gnsstk
       sunUnit = Triple(Sun.X()/RSun, Sun.Y()/RSun, Sun.Z()/RSun);
       moonUnit = Triple(Moon.X()/RMoon, Moon.Y()/RMoon, Moon.Z()/RMoon);
       rx = Triple(site.X()/Rx, site.Y()/Rx, site.Z()/Rx);
-   
+
       // generate geodetic transformation first - for debug
       if(debug) {
          lat = site.getGeodeticLatitude()*DEG_TO_RAD;
@@ -147,12 +147,12 @@ namespace gnsstk
       coslat = ::cos(lat);
       sinlon = ::sin(lon);
       coslon = ::cos(lon);
-   
+
       // transform  X=(x,y,z) into (R*X)(north,east,up) using geocentric longitude
       north = Triple(-sinlat*coslon, -sinlat*sinlon, coslat);
       east  = Triple(       -sinlon,         coslon,    0.0);
       up    = Triple( coslat*coslon,  coslat*sinlon, sinlat);
-   
+
       // GM*R factors
       REoRS = REarth/RSun;                         // ratio Earth/Sun radius
       sunFactor = REarth*REoRS*REoRS*REoRS*SERAT;  // = (GMS/GME)*RE^4/RS^3
@@ -162,15 +162,15 @@ namespace gnsstk
       // S/E mass ratio (403) 332946.048630181234330     (405) 332946.050894783285912
       //LOG(INFO) << " E/M mass ratio " << fixed << setprecision(15) << EMRAT;
       //LOG(INFO) << " S/E mass ratio " << fixed << setprecision(15) << SERAT;
-   
+
       // dot products
       sunDOTrx = sunUnit.dot(rx);
       moonDOTrx = moonUnit.dot(rx);
-   
+
       // transverse to radial direction - not unit vectors
       tSun = sunUnit - sunDOTrx * rx;
       tMoon = moonUnit - moonDOTrx * rx;
-   
+
       // -------------------------------------------------------------------------
       // compute displacements
       disp = Triple(0,0,0);
@@ -198,15 +198,15 @@ namespace gnsstk
       LOG(DEBUG6) << "P2 " << setw(4) << icount << fixed << setprecision(15)
                << " " << setw(18) << 3*(Love/2-Shida)*sunDOTrx*sunDOTrx-0.5*Love
                << " " << setw(18) << 3*(Love/2-Shida)*moonDOTrx*moonDOTrx-0.5*Love;
-   
+
       tmp = sunFactor * (Love * (1.5*sunDOTrx*sunDOTrx-0.5) * rx
                          + 3.0*Shida*sunDOTrx*tSun);
       for(i=0; i<3; i++) disp[i] += tmp[i];
-   
+
       tmp = moonFactor * (Love * (1.5*moonDOTrx*moonDOTrx-0.5) * rx
                           + 3.0*Shida*moonDOTrx*tMoon);
       for(i=0; i<3; i++) disp[i] += tmp[i];
-   
+
       // Step 1b IERS(1996) eq. (9) pg 61.
       // nominal degree 3 Love and Shida numbers pg 60
       double Shida2=Shida;
@@ -215,7 +215,7 @@ namespace gnsstk
       tmp = sunFactor*REoRS * (Love * (2.5*sunDOTrx*sunDOTrx - 1.5) * sunDOTrx * rx
                                + Shida * (7.5*sunDOTrx*sunDOTrx - 1.5) * tSun);
       for(i=0; i<3; i++) disp[i] += tmp[i];
-   
+
       LOG(DEBUG6) << "P3 " << setw(4) << icount << fixed << setprecision(15)
                << " " << setw(18) << 2.5*(Love-3*Shida)*sunDOTrx*sunDOTrx*sunDOTrx
                                        +1.5*(Shida-Love)*sunDOTrx
@@ -241,7 +241,7 @@ namespace gnsstk
       tmp = moonFactor*REoRM * (Love * (2.5*moonDOTrx*moonDOTrx-1.5) * moonDOTrx * rx
                             + Shida * (7.5*moonDOTrx*moonDOTrx-1.5) * tMoon);
       for(i=0; i<3; i++) disp[i] += tmp[i];
-   
+
       // all of 8 and 9
       if(debug) {
          tmp2[0] = northGD[0]*disp[0] + northGD[1]*disp[1] + northGD[2]*disp[2];
@@ -256,18 +256,18 @@ namespace gnsstk
                   << " " << setw(18) << disp[0]
                   << " " << setw(18) << disp[1]
                   << " " << setw(18) << disp[2];
-   
+
       // Step 1c IERS(1996) eq. (13) pg 63. diurnal tides
       Love = -0.0025;
       Shida = -0.0007;
       tmp = -0.75*Love*::sin(2*lat) *            // radial 13a
                ( sunFactor*::sin(2*latSun)*::sin(lon-lonSun)
                  + moonFactor*::sin(2*latMoon)*::sin(lon-lonMoon)) * rx
-              
+
              - 1.5*Shida*::cos(2*lat) *          // north 13b
                ( sunFactor*::sin(2*latSun)*::sin(lon-lonSun)
                  + moonFactor*::sin(2*latMoon)*::sin(lon-lonMoon)) * north
-   
+
              - 1.5*Shida*sinlat *                // east 13b
                ( sunFactor*::sin(2*latSun)*::cos(lon-lonSun)
                  + moonFactor*::sin(2*latMoon)*::cos(lon-lonMoon)) * east;
@@ -278,7 +278,7 @@ namespace gnsstk
                   << " " << setw(18) << tmp[2];
 
       for(i=0; i<3; i++) disp[i] += tmp[i];
-   
+
       if(debug) {
          tmp2[0] = northGD[0]*tmp[0] + northGD[1]*tmp[1] + northGD[2]*tmp[2];
          tmp2[1] =  eastGD[0]*tmp[0] +  eastGD[1]*tmp[1] +  eastGD[2]*tmp[2];
@@ -288,18 +288,18 @@ namespace gnsstk
             << " " << tmp[0] << " " << tmp[1] << " " << tmp[2]
             << " " << tmp2[0] << " " << tmp2[1] << " " << tmp2[2];
       }
-   
+
       // Step 1d IERS(1996) eq. (14) pg 63. semidiurnal tides
       Love = -0.0022;
       Shida = -0.0007;
       tmp = -0.75*Love*coslat*coslat *          // radial 14a
             ( sunFactor*::cos(latSun)*::cos(latSun)*::sin(2*(lon-lonSun))
              + moonFactor*::cos(latMoon)*::cos(latMoon)*::sin(2*(lon-lonMoon)))*rx
-   
+
             + 0.75*Shida*::sin(2*lat) *         // north 14b
             ( sunFactor*::cos(latSun)*::cos(latSun)*::sin(2*(lon-lonSun))
              + moonFactor*::cos(latMoon)*::cos(latMoon)*::sin(2*(lon-lonMoon)))*north
-   
+
             - 1.50*Shida*coslat *               // east 14b
             ( sunFactor*::cos(latSun)*::cos(latSun)*::cos(2*(lon-lonSun))
              + moonFactor*::cos(latMoon)*::cos(latMoon)*::cos(2*(lon-lonMoon)))*east;
@@ -310,7 +310,7 @@ namespace gnsstk
                   << " " << setw(18) << tmp[2];
 
       for(i=0; i<3; i++) disp[i] += tmp[i];
-   
+
       if(debug) {
          tmp2[0] = northGD[0]*tmp[0] + northGD[1]*tmp[1] + northGD[2]*tmp[2];
          tmp2[1] =  eastGD[0]*tmp[0] +  eastGD[1]*tmp[1] +  eastGD[2]*tmp[2];
@@ -320,19 +320,19 @@ namespace gnsstk
             << " " << tmp[0] << " " << tmp[1] << " " << tmp[2]
             << " " << tmp2[0] << " " << tmp2[1] << " " << tmp2[2];
       }
-   
+
       // Step 1e IERS(1996) eq. (11) pg 62. latitude dependence of diurnal band
       Shida = 0.0012;
       tmp = - 3.0*Shida*sinlat*sinlat *         // north
               ( sunFactor*::cos(latSun)*::sin(latSun)*::cos(lon-lonSun)
                + moonFactor*::cos(latMoon)*::sin(latMoon)*::cos(lon-lonMoon)) * north
-   
+
             + 3.0*Shida*sinlat*::cos(2*lat) *   // east
               ( sunFactor*::cos(latSun)*::sin(latSun)*::sin(lon-lonSun)
                + moonFactor*::cos(latMoon)*::sin(latMoon)*::sin(lon-lonMoon)) * east;
 
       for(i=0; i<3; i++) { tmp4[i] = tmp[i]; disp[i] += tmp[i]; }
-   
+
       if(debug) {
          tmp3 = tmp;    // save for below
          tmp2[0] = northGD[0]*tmp[0] + northGD[1]*tmp[1] + northGD[2]*tmp[2];
@@ -343,13 +343,13 @@ namespace gnsstk
             << " " << tmp[0] << " " << tmp[1] << " " << tmp[2]
             << " " << tmp2[0] << " " << tmp2[1] << " " << tmp2[2];
       }
-   
+
       // Step 1f IERS(1996) eq. (12) pg 62. semidiurnal band
       Shida = 0.0024;
       tmp = - 1.5*Shida*sinlat*coslat *            // north
               ( sunFactor*::cos(latSun)*::cos(latSun)*::cos(2*(lon-lonSun))
              + moonFactor*::cos(latMoon)*::cos(latMoon)*::cos(2*(lon-lonMoon)))*north
-   
+
             - 1.5*Shida*sinlat*sinlat*coslat *     // east
               ( sunFactor*::cos(latSun)*::cos(latSun)*::sin(2*(lon-lonSun))
              + moonFactor*::cos(latMoon)*::cos(latMoon)*::sin(2*(lon-lonMoon)))*east;
@@ -360,7 +360,7 @@ namespace gnsstk
                   << " " << setw(18) << tmp4[2]+tmp[2];
 
       for(i=0; i<3; i++) disp[i] += tmp[i];
-   
+
       if(debug) {
          tmp2[0] = northGD[0]*tmp[0] + northGD[1]*tmp[1] + northGD[2]*tmp[2];
          tmp2[1] =  eastGD[0]*tmp[0] +  eastGD[1]*tmp[1] +  eastGD[2]*tmp[2];
@@ -380,7 +380,7 @@ namespace gnsstk
             << " " << tmp[0] << " " << tmp[1] << " " << tmp[2]
             << " " << tmp2[0] << " " << tmp2[1] << " " << tmp2[2];
       }
-   
+
       // Step 2a IERS(1996) eq. (15) pg 63.
       // frequency dependence of Love and Shida from diurnal band
       static double step2diurnalData[9*31] = {
@@ -415,14 +415,14 @@ namespace gnsstk
          2., 0.,-1., 0., 0.,-0.02, 0.02,  0.0, 0.01,
          3., 0., 0., 0., 0., 0.0,  0.01,  0.0, 0.01,
          3., 0., 0., 1., 0., 0.0,  0.01,  0.0,  0.0 };
-   
+
       // times
       EphTime TT(ttag);
       TT.convertSystemTo(TimeSystem::TT);
       double T,fhr,fmjd = TT.dMJD();
       T = (fmjd-51544.0)/36525.0;            // MJD of J2000 is 51544.0
       fhr = (fmjd-int(fmjd))*24.0;
-   
+
       // compute standard arguments
       double s,tau,pr,h,p,zns,ps;
       {
@@ -450,7 +450,7 @@ namespace gnsstk
          zns = fmod(zns,360.0);
          ps  = fmod(ps, 360.0);
       }
-   
+
       double thetaf,ctl,stl,dr,dn,de;
       tmp = Triple(0,0,0);
       for(i=0; i<31; i++) {
@@ -471,7 +471,7 @@ namespace gnsstk
          tmp[1] += dr*up[1] + de*east[1] + dn*north[1];
          tmp[2] += dr*up[2]              + dn*north[2];
       }
-   
+
       // convert total to meters
       for(i=0; i<3; i++) tmp[i] /= 1000.0;   // mm -> m
 
@@ -481,7 +481,7 @@ namespace gnsstk
                      << " " << setw(18) << tmp[2];
 
       for(i=0; i<3; i++) disp[i] += tmp[i];
-   
+
       if(debug) {
          tmp2[0] = northGD[0]*tmp[0] + northGD[1]*tmp[1] + northGD[2]*tmp[2];
          tmp2[1] =  eastGD[0]*tmp[0] +  eastGD[1]*tmp[1] +  eastGD[2]*tmp[2];
@@ -491,7 +491,7 @@ namespace gnsstk
             << " " << tmp[0] << " " << tmp[1] << " " << tmp[2]
             << " " << tmp2[0] << " " << tmp2[1] << " " << tmp2[2];
       }
-      
+
       //// Ref. Kouba 2009 and IERS technical note 3, 1989 (out of print)
       //// Kouba (pers comm 8/12/09) says it is not necessary unless using IERS(1989)
       //double Tg;        // Greenwhich sidereal time
@@ -506,7 +506,7 @@ namespace gnsstk
       //Tg *= TWO_PI;         // radians
       //dr = -25. * sinlat * coslat * ::sin(Tg + lon);
       //for(i=0; i<3; i++) tmp[i] -= dr*up[i];
-   
+
       // Step 2b IERS(1996) eq. (16) pg 64.
       // frequency dependence of Love and Shida from the long period band
       static double step2longData[9*5] = {
@@ -515,7 +515,7 @@ namespace gnsstk
          1, 0,-1, 0, 0, -0.11,-0.08,-0.09,-0.04,
          2, 0, 0, 0, 0, -0.13,-0.11,-0.15,-0.07,
          2, 0, 0, 1, 0, -0.05,-0.05,-0.06,-0.03 };
-   
+
       tmp = Triple(0,0,0);
       for(i=0; i<5; i++) {
          thetaf = (  step2longData[0+9*i] * s
@@ -542,7 +542,7 @@ namespace gnsstk
                   << " " << setw(18) << tmp[2];
 
       for(i=0; i<3; i++) disp[i] += tmp[i];
-   
+
       if(debug) {
          tmp2[0] = northGD[0]*tmp[0] + northGD[1]*tmp[1] + northGD[2]*tmp[2];
          tmp2[1] =  eastGD[0]*tmp[0] +  eastGD[1]*tmp[1] +  eastGD[2]*tmp[2];
@@ -552,11 +552,11 @@ namespace gnsstk
             << " " << tmp[0] << " " << tmp[1] << " " << tmp[2]
             << " " << tmp2[0] << " " << tmp2[1] << " " << tmp2[2];
       }
-   
+
       // remove permanent deformation IERS(1996) eq. 17 pg 65.
       //tmp = -0.1196*(1.5*sinlat*sinlat-0.5)*rx - 0.0247*::sin(2*lat)*north;
       //for(i=0; i<3; i++) disp[i] += tmp[i];
-   
+
       if(debug) {
          tmp = -0.1196*(1.5*sinlat*sinlat-0.5)*rx - 0.0247*::sin(2*lat)*north;
          tmp2[0] = northGD[0]*tmp[0] + northGD[1]*tmp[1] + northGD[2]*tmp[2];
@@ -567,7 +567,7 @@ namespace gnsstk
             << " " << tmp[0] << " " << tmp[1] << " " << tmp[2]
             << " " << tmp2[0] << " " << tmp2[1] << " " << tmp2[2];
       }
-   
+
       if(debug) {
          for(i=0; i<3; i++) tmp[i] = disp[i];
          tmp2[0] = northGD[0]*tmp[0] + northGD[1]*tmp[1] + northGD[2]*tmp[2];
@@ -578,7 +578,7 @@ namespace gnsstk
             << " " << tmp[0] << " " << tmp[1] << " " << tmp[2]
             << " " << tmp2[0] << " " << tmp2[1] << " " << tmp2[2];
       }
-   
+
       return disp;
    }
    catch(Exception& e) { GNSSTK_RETHROW(e); }
@@ -651,7 +651,7 @@ namespace gnsstk
       // the rest is nearly identical in all conventions
       double lat, lon, theta, sinlat, coslat, sinlon, coslon;
       Triple disp, dispXYZ;
-   
+
       lat = site.getGeocentricLatitude();
       lon = site.getLongitude();
       sinlat = ::sin(lat*DEG_TO_RAD);
@@ -659,26 +659,26 @@ namespace gnsstk
       sinlon = ::sin(lon*DEG_TO_RAD);
       coslon = ::cos(lon*DEG_TO_RAD);
       theta = (90.0-lat)*DEG_TO_RAD;
-   
+
       // NEU components (r==Up, theta=S, lambda=E)
       disp[0] =   0.009 * ::cos(2*theta) * (m1 * coslon + m2 * sinlon); // -S = N
       disp[1] =   0.009 * ::cos(theta) * (m1 * sinlon - m2 * coslon);   // E
       disp[2] = -upcoef * ::sin(2*theta) * (m1 * coslon + m2 * sinlon); // U
-   
+
       LOG(DEBUG7) << " poletide " << iers << " (NEU) "
             << ttag.asGPSString()
             << fixed << setprecision(9)
             << disp[0] << " " << disp[1] << " " << disp[2];
-   
+
       //// transform  X=(x,y,z) into (R*X)(north,east,up)
       //R(0,0) = -sa*co;  R(0,1) = -sa*so;  R(0,2) = ca;
       //R(1,0) =    -so;  R(1,1) =     co;  R(1,2) = 0.;
       //R(2,0) =  ca*co;  R(2,1) =  ca*so;  R(2,2) = sa;
-   
+
       dispXYZ[0] = - sinlat*coslon*disp[0] - sinlon*disp[1] + coslat*coslon*disp[2];
       dispXYZ[1] = - sinlat*sinlon*disp[0] + coslon*disp[1] + coslat*sinlon*disp[2];
       dispXYZ[2] =          coslat*disp[0]                  +        sinlat*disp[2];
-   
+
       return dispXYZ;
    }
    catch(Exception& e) { GNSSTK_RETHROW(e); }

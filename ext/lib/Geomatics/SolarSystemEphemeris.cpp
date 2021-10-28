@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -562,7 +562,7 @@ try {
    writeBinary(strm,(char *)&constants["AU"],sizeof(double));
    writeBinary(strm,(char *)&constants["EMRAT"],sizeof(double));
    recLength += 2*sizeof(double);
-   
+
    // 6. c_arrays for the first 12 planets
    for(i=0; i<12; i++) {
       writeBinary(strm,(char *)&c_offset[i],sizeof(int));
@@ -581,7 +581,7 @@ try {
    writeBinary(strm,(char *)&c_ncoeff[12],sizeof(int));
    writeBinary(strm,(char *)&c_nsets[12],sizeof(int));
    recLength += 3*sizeof(int);
-  
+
    // 9. pad
    LOG(DEBUG) << "Pad length 1 = " << Ncoeff*sizeof(double)-recLength;
    char c=' ';
@@ -683,7 +683,7 @@ void SolarSystemEphemeris::RelativeInertialPositionVelocity(const double MJD,
 {
 try {
    int iret,i;
-   
+
    // initialize
    for(i=0; i<6; i++) pv[i] = 0.0;
 
@@ -768,10 +768,10 @@ try {
       for(i=0; i<6; i++) pvtarget[i] = pvembary[i] + pvtarget[i]*Mratio;
    if(center == idMoon && target != idEarth)
       for(i=0; i<6; i++) pvcenter[i] = pvembary[i] + pvcenter[i]*Mratio;
-   
+
    // final relative result
    for(i=0; i<6; i++) pv[i] = pvtarget[i] - pvcenter[i];
-   
+
    if(!kilometers) {
       double AU = constants["AU"];
       for(i=0; i<6; i++) pv[i] /= AU;

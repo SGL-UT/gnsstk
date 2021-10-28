@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -284,7 +284,7 @@ namespace gnsstk
    double NBTropModel::dry_zenith_delay(void) const
    {
       THROW_IF_INVALID_DETAILED();
-      
+
       double beta = NB_Interpolate(latitude,doy,ZB);
       double gm = 9.784*(1.0-2.66e-3*std::cos(2.0*latitude*DEG_TO_RAD)-2.8e-7*height);
 
@@ -303,7 +303,7 @@ namespace gnsstk
    double NBTropModel::wet_zenith_delay(void) const
    {
       THROW_IF_INVALID_DETAILED();
-      
+
       double beta = NB_Interpolate(latitude,doy,ZB);
       double lam = NB_Interpolate(latitude,doy,ZL);
       double gm = 9.784*(1.0-2.66e-3*std::cos(2.0*latitude*DEG_TO_RAD)-2.8e-7*height);
@@ -326,7 +326,7 @@ namespace gnsstk
    double NBTropModel::dry_mapping_function(double elevation) const
    {
       THROW_IF_INVALID_DETAILED();
-      
+
       if(elevation < 0.0) return 0.0;
 
       double a,b,c,se,map;
@@ -354,7 +354,7 @@ namespace gnsstk
    double NBTropModel::wet_mapping_function(double elevation) const
    {
       THROW_IF_INVALID_DETAILED();
-      
+
       if(elevation < 0.0) return 0.0;
 
       double a,b,c,se;
@@ -465,5 +465,5 @@ namespace gnsstk
       if(!validWeather && validRxLatitude && validDOY)
          setWeather();
    }
-   
+
 }

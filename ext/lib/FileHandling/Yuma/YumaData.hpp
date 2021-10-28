@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -60,13 +60,13 @@ namespace gnsstk
       /// @ingroup FileHandling
       //@{
 
-      /** 
-       * This class stores, reads, and writes Yuma records. 
+      /**
+       * This class stores, reads, and writes Yuma records.
        *
        * @sa tests/Yuma for examples
        * @sa YumaStream.
        * @sa YumaHeader for information on writing Yuma files.
-       */ 
+       */
    class YumaData : public YumaBase
    {
    public:
@@ -75,7 +75,7 @@ namespace gnsstk
 
          /// Destructor
       virtual ~YumaData() {}
-      
+
          /// This is is the nearest full GPS week to the 10-bit week
          /// available in the SEM file.  If this value is 0 it is ignored.
          /// Otherwise, the 10-bit week is moved into the GPS Epoch
@@ -94,9 +94,9 @@ namespace gnsstk
       static const std::string sMnAn;
       static const std::string sAf0;
       static const std::string sAf1;
-      static const std::string sweek; 
-      
-      
+      static const std::string sweek;
+
+
       short PRN;
       short week;
       short SV_health;
@@ -108,20 +108,20 @@ namespace gnsstk
       double Ahalf;      // m**1/2
       double OMEGA0;     // radians
       double w;          // radians
-      double M0;         // radians 
+      double M0;         // radians
       double AF0;        // s
       double AF1;        // s/s
       long xmit_time;
-      
-      
+
+
          /**
-          * Debug output function. 
+          * Debug output function.
           * Dump the contents of each of the Yuma class to a
           * given ostream \c s.
-          */ 
+          */
       virtual void dump(std::ostream& s) const;
-      
-         //! This class is "data" so this function always returns "true". 
+
+         //! This class is "data" so this function always returns "true".
       virtual bool isData() const {return true;}
 
          /**
@@ -129,14 +129,14 @@ namespace gnsstk
           * @return the constructed AlmOrbit object
           */
       operator AlmOrbit() const;
-      
+
          /**
           * cast *this into an OrbAlmGen
           * @return the constructed OrbAlmGen object
           */
-      operator OrbAlmGen() const;    
+      operator OrbAlmGen() const;
 
-   protected:      
+   protected:
 	 /**
           * Writes a correctly formatted record from this data to stream \a s.
           * @throw std::exception
@@ -144,9 +144,9 @@ namespace gnsstk
           * @throw StringUtils::StringException
           */
       void reallyPutRecord(FFStream& s) const;
-  
+
          /**
-          * This functions obtains a Yuma almanac record from the given 
+          * This functions obtains a Yuma almanac record from the given
           * FFStream.
           * If there is an error in reading from the stream, it is reset
           * to its original position and its fail-bit is set.
@@ -163,7 +163,7 @@ namespace gnsstk
           */
       std::string lineParser(const std::string& line, const std::string& s)
          const;
-      
+
    }; // class YumaData
 
       //@}
