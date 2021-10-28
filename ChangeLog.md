@@ -1,3 +1,36 @@
+# Version 12.1.0   Thursday October 28, 2021
+
+Modifications by Author
+-----------------------
+     Andrew Kuck <kuck@arlut.utexas.edu> (3):
+           Remove embedded libgnsstk.so from python.
+           Explictly declare Enum Dependency
+           Update Copyright statement
+
+     David Barber <dbarber@arlut.utexas.edu> (4):
+           retry job pipeline setting
+           Removing python -c "import gnsstk" script steps.
+           Updating for new VM and VS2019 support
+           removing conda extra checkout
+
+     John Knutson <johnk@arlut.utexas.edu> (14):
+           Tweaks to BeiDou D1 newnav
+           Namespace change
+           Move BDS D2 bit constants into a separate file
+           Add more useful BeiDou constants
+           Add quick code snippet to newnav docs
+           Fix -derived comments so that autolinking works
+           Fix minor issues with RINEX
+           Fix a bug in SP3EphemerisStore/ClockSatStore where clock drift rate was being computed as clock drift
+           Add missing timestamp setting in SEMAlmanacStore
+           Remove references to latex documentation that no longer exists
+           Make sure PNBMultiGNSSNavDataFactory knows about BeiDou D2
+           Tweak SolarPosition SWIG wrapping so it maps output data properly
+           Add FREQ_STEP_GLONASS_* constants to FreqConsts.hpp to replace those that were in DeprecatedConsts.hpp
+           Fix SWIG docstrings for SolarPosition
+
+
+
 # Version 12.0.0   Wednesday September 15, 2021
 
 Modifications by Author
