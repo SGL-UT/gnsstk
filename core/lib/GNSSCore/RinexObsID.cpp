@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -379,8 +379,8 @@ namespace gnsstk
    RinexObsID RinexObsID ::
    newID(const std::string& strID, const std::string& desc)
    {
-      if (char2ot.count(strID[0]) && 
-          char2cb.count(strID[1]) && 
+      if (char2ot.count(strID[0]) &&
+          char2cb.count(strID[1]) &&
           char2tc.count(strID[2]))
       {
          GNSSTK_THROW(InvalidParameter("Identifier " + strID +
@@ -429,7 +429,7 @@ namespace gnsstk
       }
       else
          code = char2tc[tc];
- 
+
       return RinexObsID(type, band, code);
    }
 

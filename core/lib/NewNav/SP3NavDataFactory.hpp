@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,8 +15,8 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
@@ -25,14 +25,14 @@
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -91,7 +91,7 @@ namespace gnsstk
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
-          *   behavior or by nearest to when in time. 
+          *   behavior or by nearest to when in time.
           * @return true if successful.  If false, navOut will be untouched. */
       bool find(const NavMessageID& nmid, const CommonTime& when,
                 NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
@@ -136,7 +136,7 @@ namespace gnsstk
           * translate from arbitrary NavMessageID objects into ones
           * that will match the internally stored data.  This is used
           * by find() but is public in case someone finds a use for
-          * it. 
+          * it.
           * @note The system used for making the generic NavMessageID
           *   comes from the subject satellite.
           * @param[in] nmidIn The NavMessageID to translate to generic form.
@@ -201,7 +201,7 @@ namespace gnsstk
 
          /** Set the obs and nav identification for the given NavMessageID
           * object, using a satellite system only.  This is really
-          * just a "best guess" for a given system. 
+          * just a "best guess" for a given system.
           * @param[in] sat The satellite identifier (incl GNSS) for the data.
           * @param[in,out] signal The NavMessageID object to update.
           * @return true if successful, false if the system is unsupported. */

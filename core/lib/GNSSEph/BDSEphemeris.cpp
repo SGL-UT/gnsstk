@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -47,7 +47,7 @@
 
 #include "BDSEphemeris.hpp"
 #include "GPSWeekSecond.hpp"
-#include "WGS84Ellipsoid.hpp"   
+#include "WGS84Ellipsoid.hpp"
 #include "TimeString.hpp"
 #include "Matrix.hpp"
 
@@ -91,37 +91,37 @@ namespace gnsstk
 
    // adjustBeginningValidity determines the beginValid and endValid times.
    // Note that this is currently a "best guess" based on observation of Beidou
-   // operation. The concept of a fit interval is mentioned in the ICD, but the 
-   // fit interval is undefined. 
+   // operation. The concept of a fit interval is mentioned in the ICD, but the
+   // fit interval is undefined.
    //   - It appears the Toe is aligned with the beginning of transmit.
-   //   - It is assumed data should not be used prior to transmit.  
+   //   - It is assumed data should not be used prior to transmit.
    //   - The transmission period appears to be one hour.
    //     However, SVs set unhealthy have been observed to "coast"
    //     on a single message for more than a day.
    // As a result of all this:
-   //  beginValid is set to the ctToe or the actual time of receipt, 
+   //  beginValid is set to the ctToe or the actual time of receipt,
    //  whichever is later.
-   //  endValid is set a week in the future.  This is based on the 
-   //  fact that the ctToe is based on a a half-week assumption in the 
+   //  endValid is set a week in the future.  This is based on the
+   //  fact that the ctToe is based on a a half-week assumption in the
    //  message, so there MUST be a new message within a half-week or
-   //  a piece of user equipmeent collectin the message fo the first 
-   //  time will not derive a correct ctToe. 
+   //  a piece of user equipmeent collectin the message fo the first
+   //  time will not derive a correct ctToe.
    // @throw Invalid Request if the required data has not been stored.
    void BDSEphemeris::adjustValidity()
    {
       try {
          OrbitEph::adjustValidity();   // for dataLoaded check
-         
+
          beginValid = ctToe;  // Default case
 
             // If elements were updated during the hour, then
-            // we want to use the later time. 
+            // we want to use the later time.
          if (transmitTime>beginValid) beginValid = transmitTime;
          endValid = ctToe + (SEC_PER_DAY * 7.0);
       }
       catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
-      
+
    // Dump the orbit, etc information to the given output stream.
    // @throw Invalid Request if the required data has not been stored.
    void BDSEphemeris::dumpBody(std::ostream& os) const
@@ -150,8 +150,8 @@ namespace gnsstk
       string tform = "%03j %02H:%02M:%02S";
       try
       {
-	 os << " " << setw(3) << satID.id << " ! ";     
-         os << printTime(transmitTime,tform) << " ! " 
+	 os << " " << setw(3) << satID.id << " ! ";
+         os << printTime(transmitTime,tform) << " ! "
 	    << printTime(ctToe,tform) << " ! "
 	    << printTime(endValid,tform) << " !"
 	    << fixed << setprecision(2)
@@ -164,8 +164,8 @@ namespace gnsstk
    }
 
    //  BDS is different in that some satellites are in GEO orbits.
-   //  According to the ICD, the 
-   //  SV position derivation for MEO and IGSO is identical to 
+   //  According to the ICD, the
+   //  SV position derivation for MEO and IGSO is identical to
    //  that for other kepler+perturbation systems (e.g. GPS); however,
    //  the position derivation for the GEO SVs is different.
    //  According to the ICD, the GEO SVs are those with PRNs 1-5.
@@ -176,7 +176,7 @@ namespace gnsstk
    {
       if(!dataLoadedFlag)
          GNSSTK_THROW(InvalidRequest("Data not loaded"));
-      
+
          // If the inclination is more than 7 degrees, this
          // is a MEO or IGSO SV and use the standard OrbitEph
          // version of svXvt
@@ -184,7 +184,7 @@ namespace gnsstk
          return(OrbitEph::svXvt(t));
 
          // If PRN ID is in the range 1-5, treat this as a GEO
-         // 
+         //
          // The initial calculations are identical to the standard
          // Kepler+preturbation model
       Xvt sv;
@@ -272,8 +272,8 @@ namespace gnsstk
       R    = A*G  + dr;
       AINC = i0 + tdrinc * elapte  +  di;
 
-      // At this point, the ICD formulation diverges to something 
-      // different. 
+      // At this point, the ICD formulation diverges to something
+      // different.
       //  Longitude of ascending node (ANLON)
       ANLON = OMEGA0 + OMEGAdot * elapte
                      - ell.angVelocity() * ToeSOW;
@@ -298,25 +298,25 @@ namespace gnsstk
       // Rz matrix
       double angleZ = ell.angVelocity() * elapte;
       double cosZ = ::cos(angleZ);
-      double sinZ = ::sin(angleZ); 
+      double sinZ = ::sin(angleZ);
 
          // Initiailize 3X3 with all 0.0
-      gnsstk::Matrix<double> matZ(3,3); 
+      gnsstk::Matrix<double> matZ(3,3);
       // Row,Col
       matZ(0,0) =  cosZ;
       matZ(0,1) =  sinZ;
       matZ(0,2) =   0.0;
       matZ(1,0) = -sinZ;
-      matZ(1,1) =  cosZ; 
+      matZ(1,1) =  cosZ;
       matZ(1,2) =   0.0;
       matZ(2,0) =   0.0;
       matZ(2,1) =   0.0;
-      matZ(2,2) =   1.0; 
+      matZ(2,2) =   1.0;
 
       // Rx matrix
       double angleX = -5.0 * PI/180.0;    /// This is a constant.  Should set it once
       double cosX = ::cos(angleX);
-      double sinX = ::sin(angleX); 
+      double sinX = ::sin(angleX);
       gnsstk::Matrix<double> matX(3,3);
       matX(0,0) =   1.0;
       matX(0,1) =   0.0;
@@ -342,7 +342,7 @@ namespace gnsstk
       sv.x[2] = result(2,0);
 
       // derivatives of true anamoly and arg of latitude
-      dek = amm / G; 
+      dek = amm / G;
       dlk =  amm * q / (G*G);
 
       // in-plane, cross-plane, and radial derivatives
@@ -383,25 +383,25 @@ namespace gnsstk
       dIntPos(2,0) = yip * cinc * div + dyp * sinc;
 
       /*
-      cout << "dIntPos : " << dIntPos(0,0) 
+      cout << "dIntPos : " << dIntPos(0,0)
                            << ", " << dIntPos(1,0)
                            << ", " << dIntPos(2,0) << endl;
-      double vMag = ::sqrt(dIntPos(0,0)*dIntPos(0,0) + 
-                           dIntPos(1,0)*dIntPos(1,0) +                    
+      double vMag = ::sqrt(dIntPos(0,0)*dIntPos(0,0) +
+                           dIntPos(1,0)*dIntPos(1,0) +
                            dIntPos(2,0)*dIntPos(2,0) );
-      cout << " dIntPos Mag: " << vMag << endl;     
-      cout << "dmatZ : " << dmatZ(0,0) 
+      cout << " dIntPos Mag: " << vMag << endl;
+      cout << "dmatZ : " << dmatZ(0,0)
                    << ", " << dmatZ(0,1)
-                   << ", " << dmatZ(0,2) << endl; 
-      cout << "dmatZ : " << dmatZ(1,0) 
+                   << ", " << dmatZ(0,2) << endl;
+      cout << "dmatZ : " << dmatZ(1,0)
                    << ", " << dmatZ(1,1)
-                   << ", " << dmatZ(1,2) << endl; 
-      cout << "dmatZ : " << dmatZ(2,0) 
+                   << ", " << dmatZ(1,2) << endl;
+      cout << "dmatZ : " << dmatZ(2,0)
                    << ", " << dmatZ(2,1)
-                   << ", " << dmatZ(2,2) << endl; 
+                   << ", " << dmatZ(2,2) << endl;
       */
       gnsstk::Matrix<double> vresult(3,1);
-      vresult =  matZ * matX * dIntPos + 
+      vresult =  matZ * matX * dIntPos +
                 dmatZ * matX * inertialPos;
 
       /* debug
@@ -417,7 +417,7 @@ namespace gnsstk
                     << ", " << secondHalf(1,0)
                     << ", " << secondHalf(2,0) << endl;
       end debug */
-     
+
       // Move results into output variables
       sv.v[0] = vresult(0,0);
       sv.v[1] = vresult(1,0);

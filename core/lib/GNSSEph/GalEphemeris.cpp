@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -75,8 +75,8 @@ namespace gnsstk
 
    // adjustBeginningValidity determines the beginValid and endValid times.
    // @throw Invalid Request if the required data has not been stored.
-   // 
-   // NOTE: The Galileo ICD does not make the same sort of promises about 
+   //
+   // NOTE: The Galileo ICD does not make the same sort of promises about
    // the relationship of t-sub-oe and beginning time of transmission as
    // GPS.  Therefore, we should NOT adjust the beginValid time to be
    // anything other than the earliest tranmit time we recorded.
@@ -84,20 +84,20 @@ namespace gnsstk
    // The end of validity presents a problem also.  There is no guidance in
    // the ICD.  The only guidance in the SDD is "do not use beyond four hours
    // from initial time of transmission".   We don't KNOW that the transmission
-   // time we have in hand is the earliest transmission.  Typically, the toe is 
-   // about ten minutes prior to the first time of transmission.   Therefore, 
-   // we will go with that. 
+   // time we have in hand is the earliest transmission.  Typically, the toe is
+   // about ten minutes prior to the first time of transmission.   Therefore,
+   // we will go with that.
    //
    void GalEphemeris::adjustValidity(void)
    {
       try {
          OrbitEph::adjustValidity();   // for dataLoaded check
-         beginValid = transmitTime;     
+         beginValid = transmitTime;
          endValid = ctToe + (3600*4);  // Four hours
       }
       catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
-      
+
    // Dump the orbit, etc information to the given output stream.
    // @throw Invalid Request if the required data has not been stored.
    void GalEphemeris::dumpBody(std::ostream& os) const
@@ -172,8 +172,8 @@ namespace gnsstk
       }
    }
 
-   Xvt::HealthStatus GalEphemeris::deriveHealth(const unsigned short SHS, 
-                                  const unsigned short DVS, 
+   Xvt::HealthStatus GalEphemeris::deriveHealth(const unsigned short SHS,
+                                  const unsigned short DVS,
                                   const unsigned short SISA )
    {
       if (SHS==1 || SHS==3)
@@ -190,7 +190,7 @@ namespace gnsstk
          if (DVS==0)
          {
             if (SISA==255)
-               return Xvt::Degraded; 
+               return Xvt::Degraded;
             if (SISA<255)
                return Xvt::Healthy;
          }

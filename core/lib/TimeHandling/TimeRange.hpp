@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,16 +29,16 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  *   A utility class that contains a pair of CommonTime objects that
- *   specify the beginning and end of a time range.  
+ *   specify the beginning and end of a time range.
  */
 #ifndef TIMERANGE_HPP
 #define TIMERANGE_HPP
@@ -61,29 +61,29 @@ namespace gnsstk
    public:
 
       NEW_EXCEPTION_CLASS(TimeRangeException, Exception);
-      
+
       typedef std::pair<CommonTime, CommonTime> DTPair;
-   
+
       TimeRange();
-      
+
          /**
           * @throw TimeRangeException
           */
-      TimeRange(const CommonTime& startDT, 
+      TimeRange(const CommonTime& startDT,
                 const CommonTime& endDT,
-                const bool startInclusive=true, 
+                const bool startInclusive=true,
                 const bool endInclusive=true);
 
-         /** To cover potential use with RiseSetTimeList               
+         /** To cover potential use with RiseSetTimeList
           * @throw TimeRangeException
           */
       TimeRange(DTPair dtPair,
-                const bool startInclusive=true, 
+                const bool startInclusive=true,
                 const bool endInclusive=true);
 
-         /// Copy construtor       
-      TimeRange(const TimeRange& tr); 
-     
+         /// Copy construtor
+      TimeRange(const TimeRange& tr);
+
       ~TimeRange( ) {};
 
          // Accessors
@@ -93,16 +93,16 @@ namespace gnsstk
          /**
           * @throw TimeRangeException
           */
-      void set( const CommonTime& startDT, 
+      void set( const CommonTime& startDT,
                 const CommonTime& endDT,
-                const bool startInclusive=true, 
+                const bool startInclusive=true,
                 const bool endInclusive=true );
 
          /** Return true is testDT is within the TimeRange.  Whether
           * the boundaries are included is in accordance with the
           * indications provided in includeStartTime and
           * includeEndTime. */
-      bool inRange( const CommonTime& testDT ) const; 
+      bool inRange( const CommonTime& testDT ) const;
 
          /// Equivalence means all members are identical.
       bool operator==(const TimeRange& right) const;
@@ -111,7 +111,7 @@ namespace gnsstk
           * Included to enable use in maps/sets.  This
           * operator returns true if the start time of
           * left is less than start time of right, regardless
-          * of end time. 
+          * of end time.
           */
       bool operator<(const TimeRange& right) const;
 
@@ -119,29 +119,29 @@ namespace gnsstk
           * to start of "right" */
       bool isPriorTo( const TimeRange& right ) const;
 
-         /** @return true if this.start < right.end and 
+         /** @return true if this.start < right.end and
           * this.end > right.start */
       bool overlaps( const TimeRange& right ) const;
 
-         /** @return true if this.start >= right.start and 
+         /** @return true if this.start >= right.start and
           * this.end <= right.end */
       bool isSubsetOf( const TimeRange& right ) const;
-      
+
          /** True if start/end of this object are both after the end
           * of "right" */
       bool isAfter( const TimeRange& right ) const;
 
          /** Formatted string input.
-          * Assume string has 
-          *  \li possible white space followed by 
-          *  \li optional '[' or '(' (assume '['), 
-          *  \li followed by a valid CommonTime string corresponding to fmt, 
+          * Assume string has
+          *  \li possible white space followed by
+          *  \li optional '[' or '(' (assume '['),
+          *  \li followed by a valid CommonTime string corresponding to fmt,
           *  \li followed by a ','
           *  \li followed by a valid CommonTime string corresponding to fmt,
           *  \li followed by an optional ']' or ')' (assume ']').
           * @throw TimeRangeException
           * @throw StringUtils::StringException */
-      TimeRange& setToString( const std::string& str, 
+      TimeRange& setToString( const std::string& str,
                               const std::string& fmt);
 
          /** Formatted print
@@ -149,21 +149,21 @@ namespace gnsstk
           */
       std::string printf(const std::string formatArg="%02m/%02d/%02y %02H:%02M:%02S" ) const;
 
-         /// Dump method.   
+         /// Dump method.
       std::string dump(const std::string formatArg="%02m/%02d/%02y %02H:%02M:%02S" ) const;
-        
-   protected: 
+
+   protected:
       CommonTime start;
       CommonTime end;
       bool includeStartTime;
-      bool includeEndTime; 
+      bool includeEndTime;
 
          /**
           * @throw TimeRangeException
           */
-      void init(const CommonTime& startDT, 
+      void init(const CommonTime& startDT,
                 const CommonTime& endDT,
-                const bool startInclusive=true, 
+                const bool startInclusive=true,
                 const bool endInclusive=true);
 
    };

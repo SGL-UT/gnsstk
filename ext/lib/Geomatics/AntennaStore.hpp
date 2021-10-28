@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,7 +41,7 @@
 /// receiver/satellite name.
 /// Access using name (receivers), or name and time (satellites); compute compute PCOs
 /// at any (elevation, azimuth).
- 
+
 #ifndef GNSSTK_ANTENNA_STORE_INCLUDE
 #define GNSSTK_ANTENNA_STORE_INCLUDE
 
@@ -170,7 +170,7 @@ namespace gnsstk
                        CommonTime time = CommonTime::BEGINNING_OF_TIME);
 
       /// Compute the vector from the SV Center of Mass (COM) to
-      /// the phase center of the antenna. 
+      /// the phase center of the antenna.
       /// Satellites are identified by two things:
       /// system character: G or blank GPS, R GLONASS, E GALILEO, M MIXED, C BeiDou
       /// and integer PRN or SVN number.
@@ -184,17 +184,17 @@ namespace gnsstk
       /// @param inputPRN  If false, parameter n is SVN not PRN (default true).
       /// @return vector (m) from COM to PC
       /// @throw InvalidRequest if no data available
-      Triple ComToPcVector(const char sys, 
+      Triple ComToPcVector(const char sys,
                            const int n,
                            const CommonTime& ct,
-                           const Triple& satVector, 
+                           const Triple& satVector,
                            bool inputPRN=true) const;
 
          /** Same as above except with different calling sequence for
           * convenience
           * @throw Exception
           */
-      Triple ComToPcVector(const SatID& sidr, 
+      Triple ComToPcVector(const SatID& sidr,
                            const CommonTime& ct,
                            const Triple& satVector) const;
 
@@ -211,8 +211,8 @@ namespace gnsstk
 
       /// map from name of antenna to AntexData object
       std::map<std::string, AntexData> antennaMap;
-      
+
    }; // end class AntennaStore
-   
+
 } // namespace gnsstk
 #endif  // GNSSTK_ANTENNA_STORE_INCLUDE

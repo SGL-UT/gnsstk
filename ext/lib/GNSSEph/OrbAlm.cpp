@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -39,7 +39,7 @@
 #include "OrbAlm.hpp"
 
 namespace gnsstk
-{   
+{
    OrbAlm::OrbAlm(): OrbElemBase()
    { }
 
@@ -56,19 +56,19 @@ namespace gnsstk
         << std::endl;
 
       std::string tform("test");
-      
+
          // To do, generalize for all systems
       if (subjectSV.system==SatelliteSystem::IRNSS)
 	 tform = "%02m/%02d/%Y %03j %02H:%02M:%02S  %7.0s  %4O %6.0g  %P";
-      else 
+      else
 	 tform = "%02m/%02d/%Y %03j %02H:%02M:%02S  %7.0s  %4F %6.0g  %P";
-      
+
       s << std::endl
         << "              MM/DD/YYYY DOY HH:MM:SS      SOD  WWWW    SOW\n";
       s << "Transmit   :  "
         << printTime(beginValid,tform) << std::endl;
       s << "Orbit Epoch:  "
         << printTime(ctToe,tform) << std::endl;
-      s << std::endl; 
+      s << std::endl;
    }
 }

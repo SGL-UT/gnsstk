@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -53,13 +53,13 @@
 #include "RinexObsHeader.hpp"
 #include "RinexObsData.hpp"
 #include "ObsEpochMap.hpp"
-#include "Exception.hpp" 
+#include "Exception.hpp"
 
 namespace gnsstk
 {
-   /// @ingroup MathGroup 
+   /// @ingroup MathGroup
    //@{
- 
+
       /**
        * This class provides the ability to resolve general mathematical
        * expressions at run time. The goal is to allow the end user the
@@ -72,23 +72,23 @@ namespace gnsstk
        * is then converted into a 'classic" binary expression tree. All this
        * happens during construction, hidden to the user.
        *
-       * The design of the expression node classes is based on 
+       * The design of the expression node classes is based on
        * material by David Eck and Scotty Orr found at
        *
        *     http://math.hws.edu/orr/s04/cpsc225/btrees/index.html
        *
        * After the expression is instantiated, it can be evaluated. If the
        * expression contains variables, those must be set using the set
-       * operation for the expression to successfully evaluate. 
+       * operation for the expression to successfully evaluate.
        *
-       */  
+       */
 
    NEW_EXCEPTION_CLASS(ExpressionException, Exception);
 
-   class Expression 
+   class Expression
    {
    public:
-        
+
          /**
           * Empty constructor
           */
@@ -96,14 +96,14 @@ namespace gnsstk
 
          /**
           * Constructor.
-          * @param str Expression to be evaluated. 
+          * @param str Expression to be evaluated.
           */
       Expression(const std::string& str);
 
          /**
           * Copy constructor.
           * @param rhs Expression to be copied.
-          * @note variable values are not copied. 
+          * @note variable values are not copied.
           */
       Expression(const Expression& rhs);
 
@@ -112,8 +112,8 @@ namespace gnsstk
 
          /// Assignment operator.
       Expression& operator=(const Expression& rhs);
-      
-      
+
+
         /**
          * Sets a variable in the expression to the input value.
          * All instances of the variable are set to this value.
@@ -135,16 +135,16 @@ namespace gnsstk
          * @param value Value to set the variable to.
          * @return True if the variable was found.
          */
-      bool set(const char* name, double value) 
+      bool set(const char* name, double value)
          { return set (std::string(name),value); }
 
         /**
          * Sets multiple variables in the expression to constants associated
-         * with GPS. Predefined variables include: PI; C (meters per 
-         * second); L1 and L2, carrier frequencies in cycles per second; 
-         * WL1 and WL2, carrier 
+         * with GPS. Predefined variables include: PI; C (meters per
+         * second); L1 and L2, carrier frequencies in cycles per second;
+         * WL1 and WL2, carrier
          * wavelengths. As with other variables, the case is insensitive.
-         * @return True if any GPS related constants were found 
+         * @return True if any GPS related constants were found
          */
       bool setGPSConstants(void);
 
@@ -154,9 +154,9 @@ namespace gnsstk
           * RinexObsData class.
           * @param rotm Map of RinexObsType to RinexObsDatum
           * @return True if an obs variable was found.
-          */  
+          */
       bool setRinexObs(const RinexObsData::RinexObsTypeMap& rotm);
-      
+
       bool setSvObsEpoch(const SvObsEpoch& soe);
 
          /**
@@ -164,7 +164,7 @@ namespace gnsstk
           * @return True if all variables are set.
           */
       bool canEvaluate(void);
-      
+
          /**
           * Returns the numerical value of the expression. Note that
           * if the expression contains variables, those variables must
@@ -177,7 +177,7 @@ namespace gnsstk
          /**
           * Writes the expression out to a stream.
           */
-      void print(std::ostream& ostr) const {root->print(ostr);} 
+      void print(std::ostream& ostr) const {root->print(ostr);}
 
       private:
       // Represents a node of any type in an expression tree.
@@ -190,15 +190,15 @@ namespace gnsstk
              * @throw ExpressionException
              */
          virtual double getValue() = 0;
-         
-  
+
+
          // Write out this node to a stream
-        virtual std::ostream& print(std::ostream& ostr) =0; 
+        virtual std::ostream& print(std::ostream& ostr) =0;
 
       }; // end class ExpNode
 
 
-      // Represents a node that holds a number.  
+      // Represents a node that holds a number.
       class ConstNode : public ExpNode {
          public:
             // Constructor.  Create a node to hold val.
@@ -218,10 +218,10 @@ namespace gnsstk
             double number;  // The number in the node.
       }; // end class ConstNode
 
-      // Represents a node that holds a variable  
+      // Represents a node that holds a variable
       class VarNode : public ExpNode {
          public:
-            // Constructor.  
+            // Constructor.
 
             VarNode(std::string theName ): name(theName), hasValue(false)
                 {}
@@ -243,8 +243,8 @@ namespace gnsstk
 
         private:
             double value;
-          
-         
+
+
       }; // end class VarNode
 
       // Represents a node that holds an operator.
@@ -289,12 +289,12 @@ namespace gnsstk
       }; // end class FuncOpNode
 
          // This class is used internally, during construction of an Expression,
-         // to generate ExpNodes. 
+         // to generate ExpNodes.
       class Token
       {
          public:
 
-            Token(std::string value, int relPriority, 
+            Token(std::string value, int relPriority,
                   bool isOperator);
 
             std::string getValue(void) {return value;}
@@ -328,7 +328,7 @@ namespace gnsstk
             ExpNode *expNode;
             bool used; // has the node of this token been used (linked to?)
 
-            std::string argumentPattern;       
+            std::string argumentPattern;
       };
 
          void setExpression(const std::string& newExpression);
@@ -338,18 +338,18 @@ namespace gnsstk
          void tokenize(const std::string& str);
          void buildExpressionTree(void);
 
-         int countResolvedTokens(void);   
-      
+         int countResolvedTokens(void);
+
          static std::map<std::string,int> operatorMap;
          static std::map<std::string,std::string> argumentPatternMap;
-         static bool operatorsDefined;   
+         static bool operatorsDefined;
 
          std::list<Token> tList;
          std::list<ExpNode *> eList;
-         ExpNode *root;      
+         ExpNode *root;
    }; // End class expression
-   
-   
+
+
 } // End namespace gnsstk
 
 #endif // EXPRESSION_HPP

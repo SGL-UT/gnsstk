@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -70,7 +70,7 @@ namespace gnsstk
       -2.828e-05, +5.403e-07, +4.390e-07, +1.350e-08, +1.800e-09,
       +0.000e+00, -2.736e-02, -2.977e-04, +8.113e-05, +2.329e-07,
       +8.451e-07, +4.490e-08, -8.100e-09, -1.500e-09, +2.000e-10 };
-       
+
    const double GlobalTropModel::ADryAmp[55] = {
       -2.738e-01, -2.837e+00, +1.298e-02, -3.588e-01, +2.413e-02,
       +3.427e-02, -7.624e-01, +7.272e-02, +2.160e-02, -3.385e-03,
@@ -83,7 +83,7 @@ namespace gnsstk
       +2.070e-06, -9.620e-08, -2.742e-07, -6.370e-08, -6.300e-09,
       +8.625e-02, -5.971e-03, +4.705e-04, +2.335e-05, +4.226e-06,
       +2.475e-07, -8.850e-08, -3.600e-08, -2.900e-09, +0.000e+00 };
-       
+
    const double GlobalTropModel::BDryAmp[55] = {
       +0.000e+00, +0.000e+00, -1.136e-01, +0.000e+00, -1.868e-01,
       -1.399e-02, +0.000e+00, -1.043e-01, +1.175e-02, -2.240e-03,
@@ -96,7 +96,7 @@ namespace gnsstk
       -3.290e-05, -1.705e-07, +7.440e-08, +2.720e-08, -6.600e-09,
       +0.000e+00, +1.236e-02, -9.981e-04, -3.792e-05, -1.355e-05,
       +1.162e-06, -1.789e-07, +1.470e-08, -2.400e-09, -4.000e-10 };
-       
+
    const double GlobalTropModel::AWetMean[55] = {
       +5.640e+01, +1.555e+00, -1.011e+00, -3.975e+00, +3.171e-02,
       +1.065e-01, +6.175e-01, +1.376e-01, +4.229e-02, +3.028e-03,
@@ -109,7 +109,7 @@ namespace gnsstk
       +3.544e-04, +1.148e-05, +7.503e-06, -5.667e-07, -3.660e-08,
       +8.683e-01, -5.931e-02, -1.864e-03, -1.277e-04, +2.029e-04,
       +1.269e-05, +1.629e-06, +9.660e-08, -1.015e-07, -5.000e-10 };
-       
+
    const double GlobalTropModel::BWetMean[55] = {
       +0.000e+00, +0.000e+00, +2.592e-01, +0.000e+00, +2.974e-02,
       -5.471e-01, +0.000e+00, -5.926e-01, -1.030e-01, -1.567e-02,
@@ -122,7 +122,7 @@ namespace gnsstk
       -1.287e-04, -2.438e-05, -7.561e-07, +1.158e-06, +4.950e-08,
       +0.000e+00, -1.344e-01, +5.342e-03, +3.775e-04, -6.756e-05,
       -1.686e-06, -1.184e-06, +2.768e-07, +2.730e-08, +5.700e-09 };
-       
+
    const double GlobalTropModel::AWetAmp[55] = {
       +1.023e-01, -2.695e+00, +3.417e-01, -1.405e-01, +3.175e-01,
       +2.116e-01, +3.536e+00, -1.505e-01, -1.660e-02, +2.967e-02,
@@ -135,7 +135,7 @@ namespace gnsstk
       +1.083e-04, +2.570e-06, -2.140e-06, -5.710e-08, +2.000e-08,
       -1.632e+00, -6.948e-03, -3.893e-03, +8.592e-04, +7.577e-05,
       +4.539e-06, -3.852e-07, -2.213e-07, -1.370e-08, +5.800e-09 };
-       
+
    const double GlobalTropModel::BWetAmp[55] = {
       +0.000e+00, +0.000e+00, -8.865e-02, +0.000e+00, -4.309e-01,
       +6.340e-02, +0.000e+00, +1.162e-01, +6.176e-02, -4.234e-03,
@@ -298,11 +298,11 @@ namespace gnsstk
    }
 
 
-   // Compute and return the full tropospheric delay. The receiver height, 
+   // Compute and return the full tropospheric delay. The receiver height,
    // latitude and time must has been set before using the appropriate
    // methods.
    // @param elevation Elevation of satellite as seen at receiver, in degrees
-   double GlobalTropModel::correction(double elevation) const       
+   double GlobalTropModel::correction(double elevation) const
    {
       try { testValidity(); }
       catch(InvalidTropModel& e) { GNSSTK_RETHROW(e); }
@@ -448,7 +448,7 @@ namespace gnsstk
    //
    //                a (x+c)    x(x^2 + xc + b) + a(x+c)
    // f(x) = x + ------------ = ------------------------
-   //            x^2 + xc + b        x^2 + xc + b    
+   //            x^2 + xc + b        x^2 + xc + b
    //
    //        x^3 + x^2 c + x(a+b) + ac
    //      = -------------------------
@@ -518,7 +518,7 @@ namespace gnsstk
    {
       try { testValidity(); }
       catch(InvalidTropModel& e) { GNSSTK_RETHROW(e); }
-      
+
       int i;
 
       // undulation and orthometric height
@@ -535,7 +535,7 @@ namespace gnsstk
          aa += (APressAmp[i]*aP[i] + BPressAmp[i]*bP[i]);
       }
       v0 = am + aa * ::cos(dayfactor);
-      
+
       // pressure at height
       // NB this implies any orthoht > 1/2.26e-5 == 44247.78m is invalid!
       P = v0 * ::pow(1.0-2.26e-5*orthoht,5.225);
@@ -558,7 +558,7 @@ namespace gnsstk
    void GlobalTropModel::setReceiverHeight(const double& ht)
    {
       if(height != ht) {
-         height = ht; 
+         height = ht;
          validHeight = true;
          validCoeff = false;
          setValid();          // calls updateGTMCoeff()

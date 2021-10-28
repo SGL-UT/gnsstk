@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -57,7 +57,7 @@ namespace gnsstk
             FileMissingException e("File " + filename + " could not be opened.");
             GNSSTK_THROW(e);
          }
-         
+
          YumaHeader header;
          strm >> header;
          addFile(filename, header);
@@ -66,8 +66,8 @@ namespace gnsstk
          while(strm >> rec)
 	      {
                // If the user has indcated a time of interest and
-               // the reference week number is less than 10 bits long, 
-               // assume the almanac must be within 511 weeks of the 
+               // the reference week number is less than 10 bits long,
+               // assume the almanac must be within 511 weeks of the
                // time of interest
                // If necessary, adjust the GPS week number
             if (timeOfInterest>CommonTime::BEGINNING_OF_TIME &&
@@ -77,14 +77,14 @@ namespace gnsstk
                short nEpochs = (diff+512) / 1024;
                rec.week += nEpochs * 1024;
             }
-            OrbAlmGen oag = OrbAlmGen(rec); 
+            OrbAlmGen oag = OrbAlmGen(rec);
             addOrbAlm(&(oag));
-         }	 
+         }
       }
       catch (Exception& e)
       {
          GNSSTK_RETHROW(e);
-      }   
+      }
    }
 
    //----------------------------------------------------------------
@@ -106,7 +106,7 @@ namespace gnsstk
       }
       if (retVal==OrbAlmStore::ADD_NEITHER)
          return false;
-      return true; 
+      return true;
    }
 
 }

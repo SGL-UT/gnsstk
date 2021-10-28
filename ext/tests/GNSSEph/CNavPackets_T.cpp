@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,16 +29,16 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
  /*********************************************************************
 *
-*  Test program for 
+*  Test program for
 *     gnsstk/ext/lib/GNSSEph/CNavReducedAlm
 *     gnsstk/ext/lib/GNSSEph/DiffCorrBase
 *     gnsstk/ext/lib/GNSSEph/DiffCorrClk
@@ -77,8 +77,8 @@ public:
    void init();
 
    unsigned createStore();
-   unsigned test_ReducedAlm(); 
-   unsigned test_Corrections(); 
+   unsigned test_ReducedAlm();
+   unsigned test_Corrections();
 
 //-------------------------------------------------------------------
    void setUpCNAV();
@@ -94,17 +94,17 @@ public:
    OrbSysStore oss;
    NavID nid;
 
-   ofstream out; 
+   ofstream out;
 
       // For testing the test
-   int debugLevel;   
+   int debugLevel;
 };
 
 //-------------------------------------------------------------------
 CNavPackets_T::
 CNavPackets_T(): nid(NavType::GPSCNAV2)
 {
-   debugLevel = 0; 
+   debugLevel = 0;
    init();
 }
 
@@ -113,13 +113,13 @@ unsigned CNavPackets_T::
 createStore()
 {
    bool loadFail = false;
-   unsigned retVal = 0; 
+   unsigned retVal = 0;
    string currMethod = typeDesc + " create/store CNAV-2 objects";
    TUDEF("CNavPackets_T",currMethod);
 
       // Open an output stream specific to this navigation message type
-      // All the navigation message data will be placed here. 
-   oss.setDebugLevel(debugLevel); 
+      // All the navigation message data will be placed here.
+   oss.setDebugLevel(debugLevel);
 
    list<PackedNavBits>::const_iterator cit;
    for (cit=dataList.begin();cit!=dataList.end();cit++)
@@ -145,7 +145,7 @@ createStore()
    }
 
    if (loadFail) retVal = 1;
-   return retVal; 
+   return retVal;
 }
 
 //-------------------------------------------------------------------
@@ -153,7 +153,7 @@ void CNavPackets_T::
 init()
 {
    dataList.clear();
-} 
+}
 
 //-------------------------------------------------------------------
 void CNavPackets_T::
@@ -162,14 +162,14 @@ setUpCNAV()
    init();
 
       // Define state variables for writing an CNAV data
-   gnsstk::ObsID currObsID(gnsstk::ObservationType::NavMsg, 
-                    gnsstk::CarrierBand::L1, 
+   gnsstk::ObsID currObsID(gnsstk::ObservationType::NavMsg,
+                    gnsstk::CarrierBand::L1,
                     gnsstk::TrackingCode::L1CD);
    typeDesc = "GPS_CNAV2";
    initialCT = CivilTime(2017,1,1,00,00,24,TimeSystem::GPS);
    finalCT   = CivilTime(2017,1,1,00,54,12,TimeSystem::GPS);
 
-      // Literals for CNAV-2 test data 
+      // Literals for CNAV-2 test data
       // Test data set corresponds to GPS III L1C test data collected in Spring 2018.   At the time of this writing, these
       // are the only test data we have with examples of reduced almanac packets and corrction packets.
    const unsigned short CNavExCount = 5;
@@ -179,7 +179,7 @@ setUpCNAV()
 "217,08/05/2011,06:11:18,1647,454278,11,46,305, 0x0B16F85F, 0x0090017F, 0x74242687, 0xF7E94140, 0x9854C002, 0x40000000, 0x00000000, 0x00000025, 0xE0A98000",
 "217,08/05/2011,06:15:48,1647,454548,11,46,303, 0x0B0CCDF2, 0x016013C6, 0x811FE81F, 0x886002AE, 0x2438000F, 0xF021F8AE, 0x0915FFAA, 0xD080002D, 0x803B4000",
 "217,08/05/2011,06:16:06,1647,454566,11,46,303, 0x0B0CCDF2, 0x02601051, 0x902FEA96, 0x48BFF80B, 0x407FFCAE, 0x400BFFAA, 0x111DFF81, 0x4480001B, 0xA2048000",
-// Following is a hand-edited copy the data from 6:15:48 in which the PRN value of the first packed has been changed to zero. 
+// Following is a hand-edited copy the data from 6:15:48 in which the PRN value of the first packed has been changed to zero.
 "217,08/05/2011,06:16:24,1647,454548,11,46,303, 0x0B0CCDF2, 0x000013C6, 0x811FE81F, 0x886002AE, 0x2438000F, 0xF021F8AE, 0x0915FFAA, 0xD080002D, 0x803B4000",
    };
 
@@ -192,9 +192,9 @@ setUpCNAV()
    }
    return;
 }
- 
+
 //-------------------------------------------------------------------
-   gnsstk::PackedNavBits 
+   gnsstk::PackedNavBits
    CNavPackets_T::
    getPnbCNav(const gnsstk::ObsID& oidr, const std::string& str)
    {
@@ -204,7 +204,7 @@ setUpCNAV()
             // There should be 18 words
          vector<string> words = StringUtils::split(str,',');
          unsigned short numWords = words.size();
-         if (numWords!=17) 
+         if (numWords!=17)
          {
             stringstream ss;
             ss << "Line format problem. ";
@@ -217,15 +217,15 @@ setUpCNAV()
          int week = gnsstk::StringUtils::asInt(words[3]);
          double sow = gnsstk::StringUtils::asDouble(words[4]);
          CommonTime ct = GPSWeekSecond(week,sow,TimeSystem::GPS);
-         
+
             // Convert the PRN to a SatID
          int prn = StringUtils::asInt(words[5]);
          SatID sid(prn,SatelliteSystem::GPS);
 
             // Get the message ID
-         int msgID = StringUtils::asInt(words[7]); 
+         int msgID = StringUtils::asInt(words[7]);
 
-         PackedNavBits pnb(sid,oidr,ct); 
+         PackedNavBits pnb(sid,oidr,ct);
 
             // Load the raw data
             // Words 0-7 have 32 bits.
@@ -237,7 +237,7 @@ setUpCNAV()
          {
             int ndx = i + offset;
             string hexStr = StringUtils::strip(words[ndx]);
-            string::size_type n = hexStr.find("x"); 
+            string::size_type n = hexStr.find("x");
             hexStr = hexStr.substr(n+1);
             unsigned long bits = StringUtils::x2uint(hexStr);
             if (i<8) pnb.addUnsignedLong(bits,32,1);
@@ -256,7 +256,7 @@ setUpCNAV()
          ss << "String conversion error:'" << str << "'.";
          InvalidParameter ip(ss.str());
          GNSSTK_THROW(ip);
-      }  
+      }
    }
 
 //-------------------------------------------------------------------
@@ -279,7 +279,7 @@ test_ReducedAlm()
       { 0.0000000000E+00, -1.0240000000E+03,  0.0000000000E+00,  0.0000000000E+00, -2.0480000000E+03, -5.1200000000E+02},
       { 0.0000000000E+00, -1.0240000000E+03, -5.1200000000E+02, -5.1200000000E+02, -5.1200000000E+02, -5.1200000000E+02}
    };
-   double Omega0Vals[2][6] = 
+   double Omega0Vals[2][6] =
    {
       { -2.4052818754E+00, -3.1415926536E+00,  2.0616701789E+00,  4.9087385212E-02,  2.1107575641E+00, -2.1107575641E+00},
       { -3.0925052684E+00, -2.1598449493E+00,  0.0000000000E+00,  1.0308350895E+00, -1.0799224747E+00, -3.1415926536E+00}
@@ -298,10 +298,10 @@ test_ReducedAlm()
 
          // Construct a fake CommonTime for test purposes
    CommonTime ctNow = CivilTime(2011,8,11,0,0,0.0);
-   ctNow.setTimeSystem(TimeSystem::GPS); 
+   ctNow.setTimeSystem(TimeSystem::GPS);
 
-   unsigned countMajor = 0; 
-   unsigned totalCount = 0; 
+   unsigned countMajor = 0;
+   unsigned totalCount = 0;
    list<PackedNavBits>::const_iterator cit;
    for (cit=dataList.begin(); cit!=dataList.end(); cit++)
    {
@@ -313,16 +313,16 @@ test_ReducedAlm()
          for (int i=0;i<6;i++)
          {
             CNavReducedAlm cra = CNavReducedAlm(CNavReducedAlm::atCNAV2,ctNow,pnb,startBit);
-            TUASSERTE(CommonTime,ctNow,cra.ctAlmEpoch); 
+            TUASSERTE(CommonTime,ctNow,cra.ctAlmEpoch);
             TUASSERTE(int,prnVals[countMajor][countMinor],cra.subjSv.id);
-            TUASSERTFEPS(cra.deltaA,deltaAVals[countMajor][countMinor],epsilon); 
-            TUASSERTFEPS(cra.OMEGA0,Omega0Vals[countMajor][countMinor],epsilon); 
-            TUASSERTFEPS(cra.Psi0,Psi0Vals[countMajor][countMinor],epsilon); 
+            TUASSERTFEPS(cra.deltaA,deltaAVals[countMajor][countMinor],epsilon);
+            TUASSERTFEPS(cra.OMEGA0,Omega0Vals[countMajor][countMinor],epsilon);
+            TUASSERTFEPS(cra.Psi0,Psi0Vals[countMajor][countMinor],epsilon);
             TUASSERTE(unsigned,0,cra.L1HEALTH);
             TUASSERTE(unsigned,0,cra.L2HEALTH);
-            TUASSERTE(unsigned,L5HVals[countMajor][countMinor],cra.L5HEALTH); 
+            TUASSERTE(unsigned,L5HVals[countMajor][countMinor],cra.L5HEALTH);
             startBit += 33;
-            countMinor++; 
+            countMinor++;
          }
          countMajor++;
       }
@@ -338,18 +338,18 @@ test_ReducedAlm()
          {
             stringstream ss;
             ss << "Successfully detected zero PRN packet." << endl;
-            ss << "Exception text: " << ip; 
-            TUPASS(ss.str());           
+            ss << "Exception text: " << ip;
+            TUPASS(ss.str());
          }
          else
          {
             stringstream ss;
             ss << "Threw InvalidParameter exception on valid data set.";
-            ss << endl << "Exception text: " << ip; 
+            ss << endl << "Exception text: " << ip;
             TUFAIL(ss.str());
          }
       }
-      totalCount++; 
+      totalCount++;
    }
 
       // Puprosely request a packet that would be outside the length of the message
@@ -357,17 +357,17 @@ test_ReducedAlm()
    cit++;
    cit++;   // move to the third entry
    const PackedNavBits& pnbTest = *cit;
-   try 
+   try
    {
       CNavReducedAlm craTest = CNavReducedAlm(CNavReducedAlm::atCNAV2,ctNow,pnbTest,275);
       TUFAIL("Requested a packet beyond the end of the message and did NOT throw an exception.");
    }
    catch (InvalidParameter ip)
    {
-      TUPASS("Correctly threw an exception when requesting a packet outside the message."); 
+      TUPASS("Correctly threw an exception when requesting a packet outside the message.");
    }
-     
-   TURETURN(); 
+
+   TURETURN();
 }
 
 //-------------------------------------------------------------------
@@ -385,10 +385,10 @@ test_Corrections()
    double daf0[2] = {  -2.9103830457E-11,   1.4551915228E-10 };
    double daf1[2] = {   8.8817841970E-16,  -1.3322676296E-15 };
    unsigned subjPrnId[2] = { 22, 18 };
-  
+
    unsigned retVal = 0;
-   unsigned countMajor = 0; 
-   unsigned totalCount = 0; 
+   unsigned countMajor = 0;
+   unsigned totalCount = 0;
    list<PackedNavBits>::const_iterator cit;
    for (cit=dataList.begin(); cit!=dataList.end(); cit++)
    {
@@ -397,14 +397,14 @@ test_Corrections()
       {
          unsigned startBit = 37;
          DiffCorrClk cdc = DiffCorrClk(pnb,startBit);
-         TUASSERTE(CommonTime,ctExpected,cdc.topD); 
+         TUASSERTE(CommonTime,ctExpected,cdc.topD);
          TUASSERTE(CommonTime,ctExpected,cdc.tOD);
-         TUASSERTFEPS(daf0[countMajor],cdc.daf0,epsilon); 
-         TUASSERTFEPS(daf1[countMajor],cdc.daf1,epsilon); 
+         TUASSERTFEPS(daf0[countMajor],cdc.daf0,epsilon);
+         TUASSERTFEPS(daf1[countMajor],cdc.daf1,epsilon);
          TUASSERTE(unsigned,subjPrnId[countMajor],cdc.subjSv.id);
          TUASSERTE(unsigned,xmitPrnId,cdc.xmitSv.id);
 
-         //startBit = startBit + 34; 
+         //startBit = startBit + 34;
          //DiffCorrEph edc = DiffCorrEph(pnb,startBit);
          countMajor++;
       }
@@ -421,29 +421,29 @@ test_Corrections()
          {
             stringstream ss;
             ss << "Successfully detected zero PRN packet." << endl;
-            ss << "Exception text: " << ip; 
-            TUPASS(ss.str());           
+            ss << "Exception text: " << ip;
+            TUPASS(ss.str());
          }
          */
          else
          {
             stringstream ss;
             ss << "Threw InvalidParameter exception on valid data set.";
-            ss << endl << "Exception text: " << ip; 
+            ss << endl << "Exception text: " << ip;
             TUFAIL(ss.str());
          }
       }
-      totalCount++; 
+      totalCount++;
    }
 
-   TURETURN(); 
+   TURETURN();
 }
 
 //-------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
   unsigned errorTotal = 0;
-  
+
   CNavPackets_T testClass;
 
   testClass.setUpCNAV();

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -70,12 +70,12 @@ namespace gnsstk
       // 1.) The beginValid comparison is omitted since beginValid
       // is fequently derived from the transmit time.  Therefore,
       // two otherwise identical sets of data could disagree
-      // on beginValid and still be the same data set. 
+      // on beginValid and still be the same data set.
       //
       // 2.) The obsID comparison is omitted due to the fact that
       // in some cases, data should be identical across different
-      // carriers/codes. This may be address by keeping separate 
-      // stores of messages at a higher level. 
+      // carriers/codes. This may be address by keeping separate
+      // stores of messages at a higher level.
       //
    bool OrbData::isSameData(const OrbData* right) const
    {
@@ -89,19 +89,19 @@ namespace gnsstk
       // Compare, but also return a list of all differences found
    std::list<std::string> OrbData::compare(const OrbData* right) const
    {
-      std::list<std::string> retList; 
+      std::list<std::string> retList;
       if (dataLoadedFlag != right->dataLoadedFlag) retList.push_back("dataLoadedFlag");
       if (satID          != right->satID)          retList.push_back("satID");
       if (obsID          != right->obsID)          retList.push_back("obsID");
       if (beginValid     != right->beginValid)     retList.push_back("beginValid");
-      return retList; 
+      return retList;
    }
 
       // The base dump method exists in order that a dump() with
       // minimum functionality is guaranteed to exist.  The
       // test that the data are loaded is implemented, the header,
       // body, and footer are called, and any output formats are
-      // preserved. 
+      // preserved.
    void OrbData::dump(ostream& s) const
    {
       if (!dataLoaded())
@@ -110,11 +110,11 @@ namespace gnsstk
          GNSSTK_THROW(exc);
       }
       const ios::fmtflags oldFlags = s.flags();
-      
+
       dumpHeader(s);
       dumpBody(s);
       dumpFooter(s);
-      
+
       s.flags(oldFlags);
    }
 

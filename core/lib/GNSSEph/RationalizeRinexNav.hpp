@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,20 +29,20 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /// @file RationalizeRinexNav.hpp
-/// Reads RinexNavData or Rinex3Navdata file (or files).  Stores the records 
-/// internally as Rinex3NavData objects.   Once reading is complete, the 
-/// stored objects are sanity-checked to resolve common problems in IGS brdc 
+/// Reads RinexNavData or Rinex3Navdata file (or files).  Stores the records
+/// internally as Rinex3NavData objects.   Once reading is complete, the
+/// stored objects are sanity-checked to resolve common problems in IGS brdc
 /// aggregated navigation message data files.   The results can then be loaded
 /// into a OrbEphStore or OrbElemStore object.  The rationalization process creates
-/// a log of all changes made in the process of rationalizing the data set. 
+/// a log of all changes made in the process of rationalizing the data set.
 ///
 ///
 #ifndef GNSSTK_RATIONALIZERINEXNAV_HPP
@@ -83,9 +83,9 @@ namespace gnsstk
 
          // Attempt to read a file (assumed ot the Rinex or Rinex 3 navgation data)
          // and load the data into memory.   This method may be called multiple times.
-      bool inputFile(const std::string inFileName); 
+      bool inputFile(const std::string inFileName);
 
-         // Generate a new Rinex 3 Nav file containing the same header 
+         // Generate a new Rinex 3 Nav file containing the same header
          // and all the items in the original, but corrected.
       bool writeOutputFile(const std::string inFileName,
                            const std::string outFileName,
@@ -99,7 +99,7 @@ namespace gnsstk
           */
       void removeMisTaggedDataSets();
 
-         // Return a bit-encoded count of the number of 
+         // Return a bit-encoded count of the number of
          // parameters that are NOT equal.
       unsigned long countUnequal(const Rinex3NavData& left,
                                  const Rinex3NavData& right);
@@ -117,7 +117,7 @@ namespace gnsstk
       void outputActionLog(std::ostream& out=std::cout) const;
 
          // Claer all data and all intermediate results from this object
-      void clear(); 
+      void clear();
 
       bool loadStore(OrbitEphStore& oes);
       bool loadStore(OrbElemStore& oes);
@@ -128,13 +128,13 @@ namespace gnsstk
       std::string strSumm(const Rinex3NavData& r3nd) const;
       void addLog(const SatID& sidr, const CommonTime& ct, const std::string& s);
 
-      static bool compXmitTimes(const Rinex3NavData& left, const Rinex3NavData& right); 
+      static bool compXmitTimes(const Rinex3NavData& left, const Rinex3NavData& right);
       static CommonTime formXmitTime(const Rinex3NavData& r3nd);
 
          // List of all Rinex Nav Data objects for a single SV
          // When first created, the list is in the order in which the data were
          // present in the file.  It is re-sorted as the process executes
-         // and some transmit times are adjusted. 
+         // and some transmit times are adjusted.
       typedef std::list<Rinex3NavData> NAV_DATA_LIST;
 
          // Key is the satellite that transmitted the data.
@@ -142,14 +142,14 @@ namespace gnsstk
       typedef std::map<SatID, NAV_DATA_LIST> SAT_NAV_DATA_LIST;
       SAT_NAV_DATA_LIST sndl;
 
-         // Map of all actions in which data were modified.  The 
+         // Map of all actions in which data were modified.  The
          // map is for a single SV.
          // Key is the Toe of the subject nav data set.  The string is
          // a description of the action taken wrt to that object.
       typedef std::map<CommonTime, std::string> LOG_DATA_LIST;
 
          // Key is the satellite that transmitted the data.
-         // The value is a map of the actions associated with 
+         // The value is a map of the actions associated with
          // changes to the data set for that satellite.
       typedef std::map<SatID, LOG_DATA_LIST> SAT_LOG_DATA_LIST;
       SAT_LOG_DATA_LIST sldl;

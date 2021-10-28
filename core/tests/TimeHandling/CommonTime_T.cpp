@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -754,7 +754,7 @@ rolloverTest()
 
    CommonTime  expectedfsodROver;  expectedfsodROver.set(10, 6789 , 0.001000);
    CommonTime  expectedmsodROver;  expectedmsodROver.set(11, 0    , 0.0001);
-   CommonTime  expectedDayRUnder;  expectedDayRUnder.set( 9, 86399, 0.0001); 
+   CommonTime  expectedDayRUnder;  expectedDayRUnder.set( 9, 86399, 0.0001);
    CommonTime expectedmsodRUnder; expectedmsodRUnder.set(10, 9    , 0.999999);
 
    long    obtainedDay,  expectedDay;
@@ -777,7 +777,7 @@ rolloverTest()
    testFramework.assert(obtainedMsod == expectedMsod, "Rollover of fsod did not change msod", __LINE__);
    diff = fabs(obtainedFsod - expectedFsod);
    testFramework.assert(diff < eps, "fsod did not rollover properly"      , __LINE__);
- 
+
 
       //msod Rollover test
    msodRollover.addSeconds(incrementSecLong);
@@ -803,7 +803,7 @@ rolloverTest()
    testFramework.assert(obtainedMsod == expectedMsod, "msod did not rollunder properly"       , __LINE__);
    diff = fabs(obtainedFsod - expectedFsod);
    testFramework.assert(diff < eps, "Rollunder of msod affected fsod oddly", __LINE__);
- 
+
 
       //msod Rollover test
    msodRollunder.addSeconds(decrementSecDouble);
@@ -829,7 +829,7 @@ changeTimeSystemTest()
       dynamic_cast<gnsstk::BasicTimeSystemConverter *>(btscShared.get());
    gnsstk::CommonTime uut, exp;
 
-      //Check conversion from any given time system to UTC and back 
+      //Check conversion from any given time system to UTC and back
    uut = gnsstk::CivilTime(1990,11,6,0,0,0,gnsstk::TimeSystem::UTC);
    exp = gnsstk::CivilTime(1990,11,6,0,0,6,gnsstk::TimeSystem::GPS);
    TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GPS,btsc));

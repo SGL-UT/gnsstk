@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,7 +41,7 @@
  *  This class encapsulates the "least common denominator"
  *  for system-level navigation message data across multiple GNSS.
  *  This primarily means defining that there must exist a unique
- *  identifier for each message type that contains different 
+ *  identifier for each message type that contains different
  *  contents.  That unique identifier will be used in the container
  *  class that stores set of objects derived from this base class.
  *
@@ -79,10 +79,10 @@ namespace gnsstk
       virtual void dumpFooter(std::ostream& s = std::cout) const;
 
          /// Members
-         /// Only member is the unique identifier.  The 
-         /// definition varies by navigation message 
-         /// type. 
-      unsigned long UID; 
+         /// Only member is the unique identifier.  The
+         /// definition varies by navigation message
+         /// type.
+      unsigned long UID;
 
    }; // end class OrbDataSys
 

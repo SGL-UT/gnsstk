@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -172,14 +172,14 @@ SRIleastSquares& SRIleastSquares::operator=(const SRIleastSquares& right)
 //          dX |X=X0
 // where dX is defined as (X-X0), the new solution is X, and the partials matrix is
 // P=(df/dX)|X=X0. Dimensions are P(M,N)*dX(N) = D(M) - f(X0)(M).
-// Linearized problems are iterated until the solution converges (stops changing). 
-// 
+// Linearized problems are iterated until the solution converges (stops changing).
+//
 // The solution may be weighted by a measurement covariance matrix MCov,
 // or weight matrix W (in which case MCov = inverse(W)). MCov must be non-singular.
-// 
+//
 // Options are to make the algorithm linearized (via the boolean input variable
 // doLinearize) and/or sequential (doSequential).
-// 
+//
 //    - linearized. When doLinearize is true, the algorithm solves the linearized
 //    version of the measurement equation (see above), rather than the simple
 //    linear version P*X=D. Also when doLinearize is true, the code will iterate
@@ -188,30 +188,30 @@ SRIleastSquares& SRIleastSquares::operator=(const SRIleastSquares& right)
 //    NB In this case, a solution must be found for each nominal solution
 //    (i.e. the information matrix must be non-singular); otherwise there can be
 //    no iteration.
-// 
+//
 //    - sequential. When doSequential is true, the class will save the accumulated
 //    information from all the calls to this routine since the last reset()
 //    within the class. This means the resulting solution is determined by ALL the
 //    data fed to the class since the last reset(). In this case the data is fed
 //    to the algorithm in 'batches', which may be of any size.
-// 
+//
 //    NB When doLinearize is true, the information stored in the class has a
 //    different interpretation than it does in the linear case.
 //    Calling Solve(X,Cov) will NOT give the solution vector X, but rather the
 //    latest update (X-X0) = (X-Xsave).
-// 
+//
 //    NB In the linear case, the result you get from sequentially processing
 //    a large dataset in many small batches is identical to what you would get
 //    by processing all the data in one big batch. This is NOT true in the
 //    linearized case, because the information at each batch is dependent on the
 //    nominal state. See the next comment.
-// 
+//
 //    NB Sequential, linearized LS really makes sense only when the state is
 //    changing. It is difficult to get a good solution in this case with small
 //    batches, because the stored information is dependent on the (final) state
 //    solution at each batch. Start with a good nominal state, or with a large
 //    batch of data that will produce one.
-// 
+//
 // The general Least Squares algorithm is:
 //  0. set i=0.
 //  1. If non-sequential, or if this is the first call, set R=z=0
@@ -239,7 +239,7 @@ SRIleastSquares& SRIleastSquares::operator=(const SRIleastSquares& right)
 // 17. Set X0 = X
 // 18. Return to step 5.
 // 19. quit: if(sequential and failed) set SRI=SRIsave.
-// 
+//
 // From the code:
 //  1a. Save SRI (i.e. R, Z) in Rapriori, Zapriori
 //  2a. If non-sequential, or if this is the first call, set R=z=0 -- DON'T

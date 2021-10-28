@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -59,8 +59,8 @@ namespace gnsstk
       //@{
 
       /// This compares all elements of the RinexNavData with less than.
-   struct RinexNavDataOperatorLessThanFull : 
-      public std::binary_function<gnsstk::RinexNavData, 
+   struct RinexNavDataOperatorLessThanFull :
+      public std::binary_function<gnsstk::RinexNavData,
                                   gnsstk::RinexNavData, bool>
    {
    public:
@@ -79,11 +79,11 @@ namespace gnsstk
                std::list<double>
                   llist = l.toList(),
                   rlist = r.toList();
-                  
-               std::list<double>::iterator 
-                  litr = llist.begin(), 
+
+               std::list<double>::iterator
+                  litr = llist.begin(),
                   ritr = rlist.begin();
-                  
+
                while (litr != llist.end())
                {
                   if (*litr < *ritr)
@@ -104,8 +104,8 @@ namespace gnsstk
    };
 
       /// This compares all elements of the RinexNavData with equals
-   struct RinexNavDataOperatorEqualsFull : 
-      public std::binary_function<gnsstk::RinexNavData, 
+   struct RinexNavDataOperatorEqualsFull :
+      public std::binary_function<gnsstk::RinexNavData,
                                   gnsstk::RinexNavData, bool>
    {
    public:
@@ -121,8 +121,8 @@ namespace gnsstk
                llist = l.toList(),
                rlist = r.toList();
 
-            std::list<double>::iterator 
-               litr = llist.begin(), 
+            std::list<double>::iterator
+               litr = llist.begin(),
                ritr = rlist.begin();
 
             while (litr != llist.end())
@@ -139,8 +139,8 @@ namespace gnsstk
    };
 
       /// Only compares time.  Suitable for sorting a RinexNav file.
-   struct RinexNavDataOperatorLessThanSimple : 
-      public std::binary_function<gnsstk::RinexNavData, 
+   struct RinexNavDataOperatorLessThanSimple :
+      public std::binary_function<gnsstk::RinexNavData,
                                   gnsstk::RinexNavData, bool>
    {
    public:
@@ -200,7 +200,7 @@ namespace gnsstk
    };
 
       /// Filter based on PRN ID.
-   struct RinexNavDataFilterPRN : 
+   struct RinexNavDataFilterPRN :
       public std::unary_function<gnsstk::RinexNavData,  bool>
    {
    public:
@@ -212,7 +212,7 @@ namespace gnsstk
       {
          long testValue = (long) l.PRNID;
          return find(prnList.begin(), prnList.end(), testValue )
-            == prnList.end(); 
+            == prnList.end();
       }
    private:
       std::list<long> prnList;

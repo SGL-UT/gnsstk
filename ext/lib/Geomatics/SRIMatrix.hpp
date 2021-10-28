@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -71,14 +71,14 @@ namespace gnsstk
    // Return values:
    //    SrifMU returns void, but throws exceptions if the input matrices
    // or vectors have incompatible dimensions.
-   // 
+   //
    // Measurment noise associated with H and D must be white
    // with unit covariance.  If necessary, the data can be 'whitened'
    // before calling this routine in order to satisfy this requirement.
-   // This is done as follows.  Compute the lower triangular square root 
+   // This is done as follows.  Compute the lower triangular square root
    // of the covariance matrix, L, and replace H with inverse(L)*H and
    // D with inverse(L)*D.
-   // 
+   //
    //    The Householder transformation is simply an orthogonal
    // transformation designed to make the elements below the diagonal
    // zero.  It works by explicitly performing the transformation, one
@@ -114,7 +114,7 @@ namespace gnsstk
    //
    // Ref: Bierman, G.J. "Factorization Methods for Discrete Sequential
    //      Estimation," Academic Press, 1977.
-   
+
    /// Square root information measurement update, with new data in the form of a
    /// single matrix concatenation of H and D: A = H || D.
    /// See doc for the overloaded SrifMU().
@@ -137,53 +137,53 @@ namespace gnsstk
             GNSSTK_THROW(MatrixException(oss.str()));
          }
       }
-   
+
       const T EPS=-T(1.e-200);
       unsigned int m=M, n=R.rows();
       if(m==0 || m > A.rows()) m=A.rows();
       unsigned int np1=n+1;         // if np1 = n, state vector Z is not updated
       unsigned int i,j,k;
       T dum, delta, beta;
-   
+
       for(j=0; j<n; j++) {          // loop over columns
          T sum = T(0);
          for(i=0; i<m; i++)
             sum += A(i,j)*A(i,j);   // sum squares of elements in this column below d
          if(sum <= T(0)) continue;
-   
+
          dum = R(j,j);
          sum += dum * dum;          // add diagonal element
          sum = (dum > T(0) ? -T(1) : T(1)) * ::sqrt(sum);
          delta = dum - sum;
          R(j,j) = sum;
-   
+
          if(j+1 > np1) break;
-   
+
          beta = sum*delta;          // beta must be negative
          if(beta > EPS) continue;
          beta = T(1)/beta;
-   
+
          for(k=j+1; k<np1; k++) {   // columns to right of diagonal
             sum = delta * (k==n ? Z(j) : R(j,k));
             for(i=0; i<m; i++)
                sum += A(i,j) * A(i,k);
             if(sum == T(0)) continue;
-   
+
             sum *= beta;
             if(k==n) Z(j) += sum*delta;
             else   R(j,k) += sum*delta;
-   
+
             for(i=0; i<m; i++)
                A(i,k) += sum * A(i,j);
          }
       }
    }  // end SrifMU
-    
+
 
    //---------------------------------------------------------------------------------
    // This is simply SrifMU(R,Z,A) with H and D passed in rather
    // than concatenated into a single Matrix A = H || D.
-   
+
    /// Square root information filter (Srif) measurement update (MU).
    /// Use the Householder transformation to combine the information stored in the
    /// square root information (SRI) covariance matrix R and state Z with new
@@ -207,15 +207,15 @@ namespace gnsstk
       try {
          Matrix<T> A;
          A = H || D;
-   
+
          SrifMU(R,Z,A,M);
-   
+
          // copy residuals out of A into D
          D = Vector<T>(A.colCopy(A.cols()-1));
       }
       catch(MatrixException& me) { GNSSTK_RETHROW(me); }
    }
-   
+
 
    //---------------------------------------------------------------------------------
    // Compute Cholesky decomposition of symmetric positive definite matrix using Crout
@@ -233,7 +233,7 @@ namespace gnsstk
    //    Aii = Lii^2 + sum(k=0,i-1) Lik^2
    //    Aij = Lij*Ljj + sum(k=0,j-1) Lik*Ljk
    // These can be inverted by looping over columns, and filling L from diagonal down.
-   
+
    /// Compute lower triangular square root of a symmetric positive definite matrix
    /// (Cholesky decomposition) Crout algorithm.
    /// @param A Matrix to be decomposed; symmetric and positive definite, unchanged
@@ -249,11 +249,11 @@ namespace gnsstk
          oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
          GNSSTK_THROW(MatrixException(oss.str()));
       }
-   
+
       const unsigned int n=A.rows();
       unsigned int i,j,k;
       Matrix<T> L(n,n,T(0));
-   
+
       for(j=0; j<n; j++) {             // loop over cols
          T d(A(j,j));
          for(k=0; k<j; k++) d -= L(j,k)*L(j,k);
@@ -270,7 +270,7 @@ namespace gnsstk
             L(i,j) = d/L(j,j);
          }
       }
-   
+
       return L;
    }
 
@@ -290,7 +290,7 @@ namespace gnsstk
          oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
          GNSSTK_THROW(MatrixException(oss.str()));
       }
-   
+
       const unsigned int n=A.cols();
       unsigned int i,j,k;
       Matrix<T> U(n,n,T(0));
@@ -349,7 +349,7 @@ namespace gnsstk
    // efficient algorithm. Throw MatrixException if the matrix is singular.
    // If the pointers are defined, on exit (but not if an exception is thrown),
    // they return the smallest and largest eigenvalues of the matrix.
-   
+
    /// Compute inverse of upper triangular matrix, returning smallest and largest
    /// eigenvalues.
    /// @param UT upper triangular matrix to be inverted
@@ -366,24 +366,24 @@ namespace gnsstk
          oss << "Invalid input dimensions: " << UT.rows() << "x" << UT.cols();
          GNSSTK_THROW(MatrixException(oss.str()));
       }
-   
+
       unsigned int i,j,k,n=UT.rows();
       T big(0),small(0),sum,dum;
       Matrix<T> Inv(UT);
-   
+
          // start at the last row,col
       dum = UT(n-1,n-1);
       if(dum == T(0)) {
          GNSSTK_THROW(SingularMatrixException("Singular matrix at element 0"));
       }
-   
+
       big = small = fabs(dum);
       Inv(n-1,n-1) = T(1)/dum;
 
       if(n > 1) {
          // zero row n-1 to left of diagonal
          for(i=0; i<n-1; i++) Inv(n-1,i)=0;
-   
+
          // move to rows i = n-2 to 0; NB i is unsigned, so break loop at bottom
          for(i=n-2; ; i--) {
             if(UT(i,i) == T(0)) {
@@ -391,12 +391,12 @@ namespace gnsstk
                oss << "Singular matrix at element " << i;
                GNSSTK_THROW(MatrixException(oss.str()));
             }
-   
+
             if(fabs(UT(i,i)) > big) big = fabs(UT(i,i));
             if(fabs(UT(i,i)) < small) small = fabs(UT(i,i));
             dum = T(1)/UT(i,i);
             Inv(i,i) = dum;                        // diagonal element first
-   
+
             // now do off-diagonal elements (i,i+1) to (i,n-1): row i to right
             for(j=i+1; j<n; j++) {
                sum = T(0);
@@ -405,17 +405,17 @@ namespace gnsstk
                Inv(i,j) = - sum * dum;
             }
             for(j=0; j<i; j++) Inv(i,j)=0;         // zero row i to left of diag
-   
+
             if(i==0) break;         // NB i is unsigned, hence 0-1 = 4294967295!
          }
       }
-   
+
       if(ptrSmall) *ptrSmall=small;
       if(ptrBig) *ptrBig=big;
- 
+
       return Inv;
    }
-   
+
 
    //---------------------------------------------------------------------------------
    // Given an upper triangular matrix UT, compute the symmetric matrix
@@ -433,11 +433,11 @@ namespace gnsstk
          oss << "Invalid input dimensions: " << UT.rows() << "x" << UT.cols();
          GNSSTK_THROW(MatrixException(oss.str()));
       }
-   
+
       unsigned int i,j,k;
       T sum;
       Matrix<T> S(n,n);
-   
+
       for(i=0; i<n-1; i++) {        // loop over rows of UT, except the last
          sum = T(0);                // diagonal element (i,i)
          for(j=i; j<n; j++)
@@ -451,11 +451,11 @@ namespace gnsstk
          }
       }
       S(n-1,n-1) = UT(n-1,n-1)*UT(n-1,n-1);   // the last diagonal element
-   
+
       return S;
    }
-   
-   
+
+
    //---------------------------------------------------------------------------------
    /// Compute inverse of lower triangular matrix, returning smallest and largest
    /// eigenvalues.
@@ -473,34 +473,34 @@ namespace gnsstk
          oss << "Invalid input dimensions: " << LT.rows() << "x" << LT.cols();
          GNSSTK_THROW(MatrixException(oss.str()));
       }
-   
+
       unsigned int i,j,k,n=LT.rows();
       T big(0),small(0),sum,dum;
       Matrix<T> Inv(LT.rows(),LT.cols(),T(0));
-   
+
          // start at the first row,col
       dum = LT(0,0);
       if(dum == T(0)) {
          SingularMatrixException e("Singular matrix at element 0");
          GNSSTK_THROW(e);
       }
-   
+
       big = small = fabs(dum);
       Inv(0,0) = T(1)/dum;
       if(n == 1) return Inv;                 // 1x1 matrix
       //for(i=1; i<n; i++) Inv(0,i)=0;         // zero out columns to right of 0,0
-   
+
          // now move to rows i = 1 to n-1
       for(i=1; i<n; i++) {
          if(LT(i,i) == T(0)) {
             GNSSTK_THROW(SingularMatrixException("Singular matrix at element 0"));
          }
-   
+
          if(fabs(LT(i,i)) > big) big = fabs(LT(i,i));
          if(fabs(LT(i,i)) < small) small = fabs(LT(i,i));
          dum = T(1)/LT(i,i);
          Inv(i,i) = dum;                        // diagonal element first
-   
+
             // now do off-diagonal elements to left of diag (i,0) to (i,i-1)
          for(j=0; j<i; j++) {
             sum = T(0);
@@ -510,13 +510,13 @@ namespace gnsstk
          }
          //for(j=i+1; j<n; j++) Inv(i,j) = 0;  // row i right of diagonal = 0
       }
-   
+
       if(ptrSmall) *ptrSmall=small;
       if(ptrBig) *ptrBig=big;
- 
+
       return Inv;
    }
-   
+
    //---------------------------------------------------------------------------------
    /// Compute LDL (lower-diagonal-lower) decomposition of a square positive definite
    /// matrix. Return the lower triangular matrix L and the diagonal as a Vector<T>.
@@ -535,7 +535,7 @@ namespace gnsstk
             oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
             GNSSTK_THROW(MatrixException(oss.str()));
          }
-   
+
          const unsigned int N(A.rows());
          Matrix<T> L;
          try {
@@ -566,7 +566,7 @@ namespace gnsstk
          GNSSTK_RETHROW(me);
       }
    }
-   
+
    //---------------------------------------------------------------------------------
    /// Compute UDU (upper-diagonal-upper) decomposition of a square positive definite
    /// matrix. Return the upper triangular matrix U and the diagonal as a Vector<T>.
@@ -585,7 +585,7 @@ namespace gnsstk
             oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
             GNSSTK_THROW(MatrixException(oss.str()));
          }
-   
+
          const unsigned int N(A.rows());
          Matrix<T> U;
          try {
@@ -616,7 +616,7 @@ namespace gnsstk
          GNSSTK_RETHROW(me);
       }
    }
-   
+
 } // end namespace gnsstk
-   
+
 #endif // SQUAREROOTINFORMATION_MATRICIES_INCLUDE

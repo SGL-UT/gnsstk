@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -119,7 +119,7 @@ namespace gnsstk
          /// destructor
       virtual ~Rinex3EphemerisStore()
       { }
-      
+
          // XvtStore interface:
 
          /** Returns the position, velocity, and clock offset of the indicated
@@ -170,7 +170,7 @@ namespace gnsstk
           * time interval
           * @param[in] tmin defines the beginning of the time interval
           * @param[in] tmax defines the end of the time interval */
-      virtual void edit(const CommonTime& tmin, 
+      virtual void edit(const CommonTime& tmin,
                         const CommonTime& tmax = CommonTime::END_OF_TIME)
       {
          if(ORBstore.size()) ORBstore.edit(tmin, tmax);
@@ -187,7 +187,7 @@ namespace gnsstk
             //GEOstore.clear();
       }
 
-         /** Return time system of this store. 
+         /** Return time system of this store.
           * @note This is needed only to satisfy the XvtStore virtual
           * interface; the system stores (GPSstore, GLOstore, etc)
           * will be used internally to determine time system. */
@@ -200,7 +200,7 @@ namespace gnsstk
           * @throw InvalidRequest if the object has no data. */
       virtual CommonTime getInitialTime(void) const;
 
-         /** Determine the latest time for which this object can successfully 
+         /** Determine the latest time for which this object can successfully
           * determine the Xvt for any object.
           * @return the latest time in the table
           * @throw InvalidRequest if the object has no data. */
@@ -239,7 +239,7 @@ namespace gnsstk
           * @throw InvalidRequest if the object has no data. */
       virtual CommonTime getInitialTime(const SatID& sat) const;
 
-         /** Determine the latest time for which this object can successfully 
+         /** Determine the latest time for which this object can successfully
           * determine the Xvt for this satellite or system (sat.id == -1).
           * @param sat satellite, or system if sat.id==-1
           * @return the latest time in the table

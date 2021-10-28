@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -58,18 +58,18 @@ namespace gnsstk
    public:
          /// Default constructor
       CNavText();
-  
+
          /**
           * @throw InvalidParameter
           */
       CNavText(const PackedNavBits& pnb);
-      
+
          /// Destructor
       virtual ~CNavText() {}
 
          /// Clone method
       virtual CNavText* clone() const;
-        
+
          /**
           * Store the contents of message this object.
           * @param pnb - 300 bits of Message Type 15 or 37
@@ -88,7 +88,7 @@ namespace gnsstk
       }
 
       virtual bool isSameData(const CNavDataElement* right) const;
-      
+
          /**
           * @throw InvalidRequest
           */
@@ -96,7 +96,7 @@ namespace gnsstk
 
       std::string textMessage;
       int textPage;
-      
+
    }; // end class CnavText
 
    std::ostream& operator<<(std::ostream& s, const CNavText& eph);

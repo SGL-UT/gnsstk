@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -53,12 +53,12 @@ namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
-   
+
       /**
        * This class models a RINEX Clock Data Record.
        *
        * @sa gnsstk::RinexClockStream and gnsstk::RinexClockHeader.
-       */   
+       */
    class RinexClockData : public RinexClockBase
    {
    public:
@@ -67,25 +67,25 @@ namespace gnsstk
             : epochTime(CommonTime::BEGINNING_OF_TIME),
               dvCount(0), clockData(6,RCDouble(0))
       {}
-      
+
          /// Destructor
       virtual ~RinexClockData() {}
 
-         /// clock data type 
+         /// clock data type
          /// (AR, AS, CR, DR, MS)
       RinexClkType type;
-      
+
          /// receiver or satellite name
-         /// IGS 4 char receiver designation or 
-         /// 3 char satellite designation (Gnn for GPS) (Rnn for GLONASS) 
+         /// IGS 4 char receiver designation or
+         /// 3 char satellite designation (Gnn for GPS) (Rnn for GLONASS)
       std::string name;
-      
+
          /// Epoch in GPS time
       CivilTime epochTime;
-      
+
          /// number of data values
       short dvCount;
-      
+
          /// clock data
          /// [0] Clock bias (seconds).
          /// [1] Clock bias sigma [optional] (seconds).
@@ -95,13 +95,13 @@ namespace gnsstk
          /// [5] Clock acceleration sigma [optional] (per second).
       std::vector<RCDouble> clockData;
 
-         /// RinexClockData is a "data", so this function always returns 
+         /// RinexClockData is a "data", so this function always returns
          /// true.
       virtual bool isData() const { return true; }
-      
-         /// Debug output function. 
+
+         /// Debug output function.
       virtual void dump(std::ostream& s) const;
-      
+
    protected:
          /** Writes a correctly formatted record from this data to stream
           * @throw std::exception
@@ -109,22 +109,22 @@ namespace gnsstk
           * @throw StringUtils::StringException
           */
       virtual void reallyPutRecord(FFStream& s) const;
-      
-         
+
+
          /** This function obtains a RINEX Clock record from the given stream
           * @throw std::exception
           * @throw FFStreamError
           * @throw StringUtils::StringException
           */
       virtual void reallyGetRecord(FFStream& s);
-      
+
    }; // class RinexClockData
-   
+
       //@}
-   
+
 } // namespace gnsstk
 
 #endif  //  GNSSTK_RINEXCLOCKDATA_HPP
 
-      
+
 

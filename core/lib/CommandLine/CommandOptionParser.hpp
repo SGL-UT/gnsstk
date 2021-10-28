@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -56,16 +56,16 @@ namespace gnsstk
       /// @ingroup CommandLine
       //@{
 
-      /** 
+      /**
        * This class parses the command line options and modifies the
-       * corresponding CommandOptions.  By default, any CommandOptions you 
+       * corresponding CommandOptions.  By default, any CommandOptions you
        * create will be put on a static vector<CommandOption> which is used
        * by CommandOptionParser.  You can make your own as well but that
        * isn't necessary.  You can also use addOption() to add individual
        * CommandOptions to the parser, but again this isn't necessary as the
        * default list is usually sufficient.
        *
-       * Call parseOptions() to process the command line, then 
+       * Call parseOptions() to process the command line, then
        * call hasErrors() to see if there
        * were any problems parsing the string. Errors can occur when
        * a required option isn't found on the command line, when an option
@@ -89,7 +89,7 @@ namespace gnsstk
          /// Typedef for a map between the command line option (-f) and the
          /// associated CommandOption.
       typedef std::map<std::string, gnsstk::CommandOption*> CommandOptionMap;
-      
+
          /** Constructor given a text description of the program.
           * @warning The CommandOptions in optList must exist for the entire
           *          lifetime of this CommandOptionParser.
@@ -98,7 +98,7 @@ namespace gnsstk
           *   CommandOptions for this parser.
           */
       CommandOptionParser(const std::string& description,
-                          const CommandOptionVec& optList = 
+                          const CommandOptionVec& optList =
                           defaultCommandOptionList);
 
          /** Adds the CommandOption to the list for parsing.
@@ -106,10 +106,10 @@ namespace gnsstk
           *          lifetime of this CommandOptionParser.
           */
       CommandOptionParser& addOption(gnsstk::CommandOption& co);
-      
+
          /// Parses the command line.
       void parseOptions(int argc, char* argv[]);
-      
+
          /// Returns true if any processing errors occurred.
       bool hasErrors() { return !errorStrings.empty(); }
          /// Writes the errors to \c out.
@@ -145,7 +145,7 @@ namespace gnsstk
    private:
          /// changes the size of the option array for getopt_long.
       void resizeOptionArray(struct option* &oldArray, unsigned long& oldSize);
-      
+
          /// The vector of CommandOptions for the parser
       CommandOptionVec optionVec;
          /// The vector of error strings for displaying to the user.

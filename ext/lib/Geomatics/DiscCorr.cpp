@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -139,7 +139,7 @@ try {
    map<string,double>::const_iterator it;
    for(it=CFG.begin(); it != CFG.end(); it++) {
       if(CFGdescription[it->first][0] == '*')      // advanced options
-         continue;  
+         continue;
       ostringstream stst;
       stst << it->first                            // label
          << "=" << it->second;                     // value
@@ -151,7 +151,7 @@ try {
    os << "   Advanced options:\n";
    for(it=CFG.begin(); it != CFG.end(); it++) {
       if(CFGdescription[it->first][0] != '*')      // ordinary options
-         continue;  
+         continue;
       ostringstream stst;
       stst << it->first                            // label
          << "=" << it->second;                     // value
@@ -1165,7 +1165,7 @@ try {
          outlier = false;
          igood = ibad;
       }
-      else 
+      else
          igood = i;
    }
    it->npts = nok;
@@ -1488,7 +1488,7 @@ try {
          }
          iminus++;
       }
-   
+
    }  // end loop over i=all points in segment
 
    return  ReturnOK;
@@ -1551,7 +1551,7 @@ try {
          if(nok < halfwidth || (it->npts - nok) < halfwidth ) {
             // failed test 3 - near ends of segment
             // consider chopping off this end of segment - large limit?
-            // TD must do something here ... 
+            // TD must do something here ...
             if(cfg(Debug) >= 6) log << "too near end " << GDCUnique
                << " " << i << " " << nok << " " << it->npts-nok
                << " " << printTime(time(i),outFormat)
@@ -2037,7 +2037,7 @@ try {
       << " tests " << n1+nadj-dnGFR << " " << Rstats.StdDev()+Lstats.StdDev()
       << endl;
    }
-   
+
    // full slip, including biases
    dn1 += right->bias2 - left->bias2;
    n1 = long(dn1 + (dn1 > 0 ? 0.5 : -0.5));
@@ -2141,7 +2141,7 @@ try {
       }  // end loop over fits
 
       // the value of this is questionable, b/c with active ionosphere the real
-      // GFP is NOT smooth 
+      // GFP is NOT smooth
       for(quit=false,k=0; k<3; k++) if(rmsrof[in[k]] > cfg(GFFixMaxRMS)) {
          log << "Warning - large RMS ROF in GF slip fix at in,k = "
             << in[k] << " " << k << " " << rmsrof[in[k]] << " abort.\n";
@@ -2302,7 +2302,7 @@ try {
    // L1 = GFP+GFR in cycles, by prepareGFdata()
    // L2 = GFP in cycles, by prepareGFdata()
    // P1 = wlbias
-   // P2 = -GFR in cycles, by prepareGFdata() 
+   // P2 = -GFR in cycles, by prepareGFdata()
    // A1 = GFP-(local fit) OR its 1stD, by GFphaseResiduals()
    //      (was 1stD of GFP+GFR (in L1), by firstDifferences())
    // A2 = 1stD of GFP (in L2), by firstDifferences()
@@ -2361,7 +2361,7 @@ try {
    for(i=it->nbeg; i <= it->nend; i++) {
       // skip bad data
       if(!(spdvector[i].flag & OK)) continue;
-      
+
       fit = it->PF.Evaluate(spdvector[i].ndt);
 
       // all (fit, resid, gfr and gfp) are in cycles of wlgf (5.4cm)
@@ -2387,7 +2387,7 @@ try {
          prev = tmp;          // store residual for next point
          nprev = spdvector[i].ndt;
       }
-      
+
    }
 
    return ReturnOK;
@@ -2526,7 +2526,7 @@ catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
 }
 
 //------------------------------------------------------------------------------------
-bool GDCPass::foundGFoutlier(int i, int inew, 
+bool GDCPass::foundGFoutlier(int i, int inew,
    Stats<double>& pastSt, Stats<double>& futureSt)
 {
 try {
@@ -2655,8 +2655,8 @@ try {
          << " " << printTime(time(i),outFormat) << fixed << setprecision(3)
          << " mag=" << mag << " snr=" << snr;      // no endl
 
-      // 0. if WL slip here - ...? 
-   
+      // 0. if WL slip here - ...?
+
       // 1. slip must be non-trivial
       if(fabs(mag) <= minMag) isSlip=false;
       if(cfg(Debug) >= 6) oss << " (1)|" << mag << (isSlip?"|>":"|<=") << minMag;
@@ -2696,7 +2696,7 @@ try {
          }
          magGFR = fGFRmPh.Average() - pGFRmPh.Average();
          mtnGFR = fabs(magGFR)/::sqrt(pGFRmPh.Variance()+fGFRmPh.Variance());
-         
+
          if(cfg(Debug) >= 6)
             oss << "; GFR-GFP has mag: " << magGFR
                << ", |dmag|: " << fabs(mag-magGFR)
@@ -2742,7 +2742,7 @@ try {
          if(cfg(Debug) >= 6) oss << " (8)skipGFsmall";
          isSlip = false;
       }
-   
+
       break;
    }  // end for(;;)
 
@@ -2815,7 +2815,7 @@ try {
             spdvector[k].data[P1] -= nwl;                                 // WLbias
             spdvector[k].data[L2] -= nwl * factor;                        // GFP
          }
-         
+
          // Add to slip list
          Slip newSlip(i);
          newSlip.NWL = nwl;
@@ -2888,7 +2888,7 @@ try {
       // is this point bad?
       if(!(spdvector[i].flag & OK)) {  // data is bad
          ok = false;
-         if(i == static_cast<int>(size()) - 1) {         // but this is the last point 
+         if(i == static_cast<int>(size()) - 1) {         // but this is the last point
             i++;
             ok = true;
          }
@@ -3214,7 +3214,7 @@ try {
          << " " << s.nbeg << " - " << s.nend
          << " biases " << fixed << setprecision(3) << s.bias1 << " " << s.bias2
          << endl;
- 
+
    learn["breaks found: " + msg]++;
 
    return SegList.insert(++sit,s); // insert puts s before ++sit

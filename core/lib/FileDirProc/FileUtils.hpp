@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -81,13 +81,13 @@ namespace gnsstk
           * @param mode the permission of the new directory (like 0755)
           * @return always 0
           */
-     
+
 #ifdef WIN32
       inline int makeDir(const std::string& path, unsigned mode)
       {
         std::string temppath = path;
-        
-        //Clean up windows file path 
+
+        //Clean up windows file path
         std::replace(temppath.begin(), temppath.end(), '\\', '/');
         std::string::size_type i = 0;
 
@@ -123,7 +123,7 @@ namespace gnsstk
             // #endif
          return 0;
       }
-     
+
 #endif
          /**
           * makeDir that takes a char* for an argument.
@@ -148,19 +148,19 @@ namespace gnsstk
           *   access.  There's nothing we can do about this.
           * @return true if the file can be accessed
           */
-      inline bool fileAccessCheck(const char* fname, 
+      inline bool fileAccessCheck(const char* fname,
                                   std::ios::openmode mode=std::ios::in)
       {
          std::fstream test(fname, mode);
          return !test.fail();
       }
 
-      inline bool fileAccessCheck(const std::string& fname, 
+      inline bool fileAccessCheck(const std::string& fname,
                                   std::ios::openmode mode=std::ios::in)
       {
          return fileAccessCheck(fname.c_str(), mode);
       }
-      
+
 
    } // namespace FileUtils
 

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -83,19 +83,19 @@ namespace gnsstk
                                                     384.0, 768.0, 1536.0, 3072.0,
                                                     6144.0};
       /// map for SV accuracy/Nominal URA indices
-      /// Further details in 
+      /// Further details in
       /// IS-GPS-200 30.3.3.1.1.4
       /// IS-GPS-705 20.3.3.1.1.4
       /// IS_GPS-800 3.5.3.5
    const double SV_CNAV_ACCURACY_GPS_NOM_INDEX[] = {0.011049, 0.015625, 0.022097, 0.03125,
                                                     0.044194, 0.0625, 0.088388, 0.125, 0.176777,
-                                                    0.25, 0.353553, 0.5, 0.707107, 1, 1.414214, 2, 
+                                                    0.25, 0.353553, 0.5, 0.707107, 1, 1.414214, 2,
                                                     2.8, 4, 5.7, 8, 11.3, 16, 32, 64, 128, 256, 512,
                                                     1024, 2048, 4096};
       /// constant for max array index in gps nom index table
    const int SV_CNAV_NOMINAL_MAX_INDEX = 30;
- 
-      /// constant for gps nom index table offset 
+
+      /// constant for gps nom index table offset
    const int SV_CNAV_INDEX_OFFSET = 15;
 
       /// map from SV accuracy/URA flag to maximum accuracy values in m
@@ -119,7 +119,7 @@ namespace gnsstk
          ura = SV_ACCURACY_GPS_MAX_INDEX_VALUE;
       return ura;
    }
-   
+
    inline
    double ura2accuracy(short ura) throw()
    {
@@ -141,7 +141,7 @@ namespace gnsstk
          ura = SV_ACCURACY_GPS_MAX_INDEX_VALUE;
       return ura;
    }
-   
+
    inline
    double ura2nominalAccuracy(short ura) throw()
    {
@@ -165,15 +165,15 @@ namespace gnsstk
    }
 
    inline
-   double ura2CNAVaccuracy(short ura) 
+   double ura2CNAVaccuracy(short ura)
    {
       short ndx = ura+SV_CNAV_INDEX_OFFSET;
       if(ndx < 0 || ndx > SV_CNAV_NOMINAL_MAX_INDEX)
       {
          InvalidRequest exc("URA index out of range");
          GNSSTK_THROW(exc);
-      }      
-      return SV_CNAV_ACCURACY_GPS_MAX_INDEX[ndx];   
+      }
+      return SV_CNAV_ACCURACY_GPS_MAX_INDEX[ndx];
    }
 
    inline
@@ -185,7 +185,7 @@ namespace gnsstk
          InvalidRequest exc("URA index out of range");
          GNSSTK_THROW(exc);
       }
-      return SV_CNAV_ACCURACY_GPS_NOM_INDEX[ndx]; 
+      return SV_CNAV_ACCURACY_GPS_NOM_INDEX[ndx];
    }
 
       //@}

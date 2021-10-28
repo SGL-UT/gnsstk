@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -66,13 +66,13 @@ namespace gnsstk
 
          /// explicit constructor, no defaults
          /// WARNING: This constructor has proven insufficient
-         /// for BeiDou.  The BDS ICD requires that PRN 1-5 
+         /// for BeiDou.  The BDS ICD requires that PRN 1-5
          /// use format D2 and PRN 6-30 use format D1.  That
          /// appears to not be followed in all cases.   Therefore
-         /// users need to differentiate D1/D2 outside NavID 
+         /// users need to differentiate D1/D2 outside NavID
          /// and use the explicit constructor
          ///      NavID( NavType::<xxxxx> )
-         /// to instatiate a BeiDou-related NavID. 
+         /// to instatiate a BeiDou-related NavID.
       NavID( const SatID& sidr, const ObsID& oidr );
 
       NavID( const NavType nt) { navType = nt; }

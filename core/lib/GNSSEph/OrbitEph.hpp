@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -113,18 +113,18 @@ namespace gnsstk
          /** Compute the satellite clock drift (sec/sec) at the given time
           * @throw Invalid Request if the required data has not been stored. */
       double svClockDrift(const CommonTime& t) const;
-      
+
          /** Compute satellite position at the given time.
           * This implements equations of motion as defined in IS-GPS-200.
           * (This code has its origins in 1980's FORTRAN code that has
           * been ported to C, then C++, then became part of the gnsstk.
           * The original code was based on IS-GPS-200 Table 20-IV.
           * In July 2013, the code was modified to conform to Table 30-II
-          * which includes additional time-dependent terms (A(dot) 
+          * which includes additional time-dependent terms (A(dot)
           * and delta n(dot)) that are in CNAV but not in LNAV.  These
-          * changes should be backward compatible with LNAV as long as the 
-          * Adot and dndot variables are appropriately set to 0.0 by the 
-          * LNAV loaders.) 
+          * changes should be backward compatible with LNAV as long as the
+          * Adot and dndot variables are appropriately set to 0.0 by the
+          * LNAV loaders.)
           * @throw Invalid Request if the required data has not been stored. */
       Xvt svXvt(const CommonTime& t) const;
 
@@ -144,7 +144,7 @@ namespace gnsstk
             beginValid = ctToe - 7200.0;
          endValid = ctToe + 7200.0;
       }
-      
+
          /** Dump the overhead information as a string containing a
           * single line.
           * @throw Invalid Request if the required data has not been stored. */
@@ -185,7 +185,7 @@ namespace gnsstk
          //virtual bool load(const Rinex3NavData& rnd);
 
          // member data
-     
+
          // overhead
       bool dataLoadedFlag; ///< True if data is present
       SatID satID;         ///< Define satellite system and specific SV
@@ -226,7 +226,7 @@ namespace gnsstk
    }; // end class OrbitEph
 
       //@}
-   
+
       /// Write OrbitEph to output stream
    std::ostream& operator<<(std::ostream& os, const OrbitEph& eph);
 

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,8 +15,8 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
@@ -25,14 +25,14 @@
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -84,7 +84,7 @@ namespace gnsstk
       double ANLON,cosu,sinu,xip,yip,can,san,cinc,sinc;
       double xef,yef,zef,dek,dlk,div,domk,duv,drv;
       double dxp,dyp,vxef,vyef,vzef;
-      double xGK,yGK,zGK; 
+      double xGK,yGK,zGK;
 
          // Compute time since ephemeris & clock epochs
       elapte = when - Toe;
@@ -102,9 +102,9 @@ namespace gnsstk
 
          // Compute mean motion
       double dnA = dn + 0.5 * dndot * elapte;
-      double Ahalf = SQRT(A); 
+      double Ahalf = SQRT(A);
       amm  = (sqrtgm / (A*Ahalf)) + dnA;  // NOT Ak because this equation
-                                          // specifies A0, not Ak.  
+                                          // specifies A0, not Ak.
 
          // In-plane angles
          //     meana - Mean anomaly
@@ -159,8 +159,8 @@ namespace gnsstk
       U    = alat + du;
       R    = Ak*G  + dr;
       AINC = i0 + tdrinc * elapte  +  di;
-         // At this point, the ICD formulation diverges to something 
-         // different. 
+         // At this point, the ICD formulation diverges to something
+         // different.
          //  Longitude of ascending node (ANLON)
       ANLON = OMEGA0 + OMEGAdot * elapte
          - ell.angVelocity() * ToeSOW;
@@ -185,25 +185,25 @@ namespace gnsstk
          // Rz matrix
       double angleZ = ell.angVelocity() * elapte;
       double cosZ = ::cos(angleZ);
-      double sinZ = ::sin(angleZ); 
+      double sinZ = ::sin(angleZ);
 
          // Initiailize 3X3 with all 0.0
-      gnsstk::Matrix<double> matZ(3,3); 
+      gnsstk::Matrix<double> matZ(3,3);
          // Row,Col
       matZ(0,0) =  cosZ;
       matZ(0,1) =  sinZ;
       matZ(0,2) =   0.0;
       matZ(1,0) = -sinZ;
-      matZ(1,1) =  cosZ; 
+      matZ(1,1) =  cosZ;
       matZ(1,2) =   0.0;
       matZ(2,0) =   0.0;
       matZ(2,1) =   0.0;
-      matZ(2,2) =   1.0; 
+      matZ(2,2) =   1.0;
 
          // Rx matrix
       const double angleX = -5.0 * PI/180.0;
       double cosX = ::cos(angleX);
-      double sinX = ::sin(angleX); 
+      double sinX = ::sin(angleX);
       gnsstk::Matrix<double> matX(3,3);
       matX(0,0) =   1.0;
       matX(0,1) =   0.0;
@@ -229,7 +229,7 @@ namespace gnsstk
       xvt.x[2] = result(2,0);
 
          // derivatives of true anamoly and arg of latitude
-      dek = amm / G; 
+      dek = amm / G;
       dlk =  amm * q / (G*G);
 
          // in-plane, cross-plane, and radial derivatives
@@ -270,9 +270,9 @@ namespace gnsstk
       dIntPos(2,0) = yip * cinc * div + dyp * sinc;
 
       gnsstk::Matrix<double> vresult(3,1);
-      vresult =  matZ * matX * dIntPos + 
+      vresult =  matZ * matX * dIntPos +
          dmatZ * matX * inertialPos;
-     
+
          // Move results into output variables
       xvt.v[0] = vresult(0,0);
       xvt.v[1] = vresult(1,0);

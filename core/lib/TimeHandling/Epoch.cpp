@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -67,7 +67,7 @@ namespace gnsstk
    const double Epoch::ONE_MIN_TOLERANCE = 60;
       // One hour tolerance.
    const double Epoch::ONE_HOUR_TOLERANCE = 3600;
-   
+
       // Tolerance for time equality.
 #ifdef _WIN32
    double Epoch::EPOCH_TOLERANCE = ONE_USEC_TOLERANCE;
@@ -88,7 +88,7 @@ namespace gnsstk
       tolerance = tol;
       return *this;
    }
-   
+
       // Default constructor; initializes to current system time.
    Epoch::Epoch(const TimeTag& tt)
          : tolerance(EPOCH_TOLERANCE)
@@ -100,7 +100,7 @@ namespace gnsstk
          : core(ct),
            tolerance(EPOCH_TOLERANCE)
    {}
-      /** 
+      /**
        * TimeTag + Year Constructor.
        * Set the current time using the given year as a hint.
        */
@@ -184,7 +184,7 @@ namespace gnsstk
    {
       return addSeconds(seconds);
    }
-   
+
       // Subtract seconds from this time.
       // @param sec Number of seconds to decrease this time by.
    Epoch& Epoch::operator-=(double seconds)
@@ -261,7 +261,7 @@ namespace gnsstk
    }
 
       // Equality operator.
-   bool Epoch::operator==(const Epoch &right) const 
+   bool Epoch::operator==(const Epoch &right) const
       throw()
    {
       // use the smaller of the two tolerances for comparison
@@ -270,14 +270,14 @@ namespace gnsstk
    }
 
       // Inequality operator.
-   bool Epoch::operator!=(const Epoch &right) const 
+   bool Epoch::operator!=(const Epoch &right) const
       throw()
    {
       return !(operator==(right));
    }
 
       // Comparison operator (less-than).
-   bool Epoch::operator<(const Epoch &right) const 
+   bool Epoch::operator<(const Epoch &right) const
       throw()
    {
       return (operator-(right) <
@@ -285,22 +285,22 @@ namespace gnsstk
    }
 
       // Comparison operator (greater-than).
-   bool Epoch::operator>(const Epoch &right) const 
+   bool Epoch::operator>(const Epoch &right) const
       throw()
    {
       return (operator-(right) >
             ((tolerance > right.tolerance) ? right.tolerance : tolerance));
    }
-   
+
       // Comparison operator (less-than or equal-to).
-   bool Epoch::operator<=(const Epoch &right) const 
+   bool Epoch::operator<=(const Epoch &right) const
       throw()
    {
       return !(operator>(right));
    }
 
       // Comparison operator (greater-than or equal-to).
-   bool Epoch::operator>=(const Epoch &right) const 
+   bool Epoch::operator>=(const Epoch &right) const
       throw()
    {
       return !(operator<(right));
@@ -381,7 +381,7 @@ namespace gnsstk
          GNSSTK_THROW(ee);
       }
    }
-   
+
    Epoch& Epoch::setDate(const CommonTime& ct)
    {
       try
@@ -399,7 +399,7 @@ namespace gnsstk
          GNSSTK_THROW(ee);
       }
    }
-   
+
       // set using local time
    Epoch& Epoch::setLocalTime()
    {
@@ -407,7 +407,7 @@ namespace gnsstk
       time(&t);
       struct tm  *ltod;
       ltod = localtime(&t);
-      return set(CivilTime(1900 + ltod->tm_year, 
+      return set(CivilTime(1900 + ltod->tm_year,
                            ltod->tm_mon + 1,
                            ltod->tm_mday,
                            ltod->tm_hour,
@@ -446,7 +446,7 @@ namespace gnsstk
       // @param s stream to append formatted Epoch to.
       // @param t Epoch to append to stream \c s.
       // @return reference to \c s.
-   ostream& operator<<( ostream& s, 
+   ostream& operator<<( ostream& s,
                         const Epoch& e )
    {
       s << e.printf();

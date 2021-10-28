@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -44,7 +44,7 @@
 
 class TimeSystem_T
 {
-public: 
+public:
    unsigned operatorTest()
    {
       TUDEF("TimeSystem", "operator<<");
@@ -96,20 +96,20 @@ public:
    {
       TUDEF("TimeSystem", "getTimeSystemCorrection");
 
-         //Check conversion from any given time system to UTC and back 
+         //Check conversion from any given time system to UTC and back
       TUASSERTFE(6, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::GPS, 1990, 11, 6));
       TUASSERTFE(-13, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::GPS, gnsstk::TimeSystem::UTC, 2004, 11, 16));
       TUASSERTFE(0, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::GLO, 1992, 10, 3));
       TUASSERTFE(0, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::GLO, gnsstk::TimeSystem::UTC, 1995, 5, 10));
       TUASSERTFE(12, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::GAL, 1997, 7, 25));
       TUASSERTFE(-14, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::GAL, gnsstk::TimeSystem::UTC, 2008, 6, 5));
-		
-         // QZSS can't be converted 
+
+         // QZSS can't be converted
          //testMesg = "Conversion from UTC time to QZS time was incorrect";
          //testFramework.assert(std::abs(gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::QZS, 1985, 8, 10) - 4) < eps, testMesg, __LINE__);
          //testMesg = "Conversion from QZS time to UTC time was incorrect";
          //testFramework.assert(std::abs(gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::QZS, gnsstk::TimeSystem::UTC, 2010, 2, 14) - 15) < eps, testMesg, __LINE__);
-		
+
       TUASSERTFE(0, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::BDT, 2006, 9, 21));
       TUASSERTFE(-2, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::BDT, gnsstk::TimeSystem::UTC, 2012, 8, 27));
       TUASSERTFE(13, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::IRN, 2004, 11, 16));

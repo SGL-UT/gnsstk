@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -57,12 +57,12 @@ void choleskyTest(size_t r, size_t c,
 
    TUASSERTFEPS( A, C.L * transpose(C.L), eps);
    TUASSERTFEPS( A, C.U * transpose(C.U), eps);
-   
+
    gnsstk::Vector<double> B(r), BSref(r);
    B = xB;
    BSref = xBSref;
    C.backSub(B);
-   TUASSERTFEPS( B, BSref, eps);   
+   TUASSERTFEPS( B, BSref, eps);
 }
 
 
@@ -76,10 +76,10 @@ void choleskyCroutTest(size_t r, size_t c,
    A = xA;
    gnsstk::CholeskyCrout<double> C;
    C(A);
-   
+
    TUASSERTFEPS( A, C.L * transpose(C.L), eps);
    TUASSERTFEPS( A, transpose(C.U) * C.U, eps);
-   
+
    gnsstk::Vector<double> B(r), BSref(r);
    B = xB;
    BSref = xBSref;
@@ -100,8 +100,8 @@ int main()
 
    double a44[16] = {2,-1,0,0,-1,2,-1,0,0,-1,2,-1,0,0,-1,2};
    double b4[4] = {5,1,-2,6};
-   double bs4[4] ={5,5,4,5}; 
-   
+   double bs4[4] ={5,5,4,5};
+
    gnsstk::TestUtil testFramework("Matrix Cholesky", "--", __FILE__, __LINE__);
    choleskyTest(2, 2, a22, b2, bs2, testFramework, "2x2");
    choleskyTest(3, 3, a33, b3, bs3, testFramework, "3x3");

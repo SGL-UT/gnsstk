@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -64,7 +64,7 @@ namespace gnsstk
       int EffPRNID = PRNID - dayAdvance * 37;
       long X1count = GPSWeekZcount(currentZTime + dayAdvance*86400.0).zcount;
       long X2count;
-   
+
          /*
             Trivial, but special, case for beginning of week.  This
             can't be simplified into the general case due to the beginning
@@ -74,7 +74,7 @@ namespace gnsstk
             handled within the X2Sequence::operator[] method.
          */
       if (X1count==0 && PRNID <= 37) X2count = -PRNID;
-   
+
          /*
             At the beginning of an X1 epoch, the previous X2 epoch
             will still be unfinished due to delays.  The accumulated
@@ -90,16 +90,16 @@ namespace gnsstk
       }
 
          /*
-            If this if the final six-second interval of the week, 
+            If this if the final six-second interval of the week,
             signal the X2 bit sequence generator to use the "end of week"
             sequence.  Otherwise, use the "regular" sequence.
          */
       if ( X1count==LAST_6SEC_ZCOUNT_OF_WEEK) X2Seq.setEOWX2Epoch(true);
        else X2Seq.setEOWX2Epoch(false);
-   
+
          // Update the time and code state in the CodeBuffer object
       pcb.updateBufferStatus( currentZTime, P_CODE );
-   
+
          // Starting at the beginning of the interval, step through
          // the six second period loading the code buffer as we go.
       for ( long i=0;i<NUM_6SEC_WORDS;++i )
@@ -114,7 +114,7 @@ namespace gnsstk
    {
       currentZTime += 6;    // 6 seconds == 4 Zcounts.
    }
-   
+
    void SVPCodeGen::setCurrentZCount(const gnsstk::GPSZcount& z)
    {
       GPSZcount z2 = z - z%4;

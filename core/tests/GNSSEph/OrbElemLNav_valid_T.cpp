@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -62,24 +62,24 @@ using namespace gnsstk;
 int main()
 {
    TUDEF( "OrbElemLNav_valid", "" );
-   
+
    /***********************************************/
    //  Test a variety of hand-picked cases to verify that
-   //  the beginning of validity time and end of 
-   //  validity time are being correctly 
+   //  the beginning of validity time and end of
+   //  validity time are being correctly
    //  determined.  This bacame more challenging with GPS III
    //  and it is anticiapted that the list of test cases will
    //  expand over time and with experience.
    //
    testFramework.changeSourceMethod( "compute(Begin|End)Valid" );
 
-   int fitHours = 4; 
+   int fitHours = 4;
 
    SatID gpsSatId = SatID(1,SatelliteSystem::GPS);
-   SatID qzsSatId = SatID(MIN_PRN_QZS,SatelliteSystem::QZSS); 
+   SatID qzsSatId = SatID(MIN_PRN_QZS,SatelliteSystem::QZSS);
 
       // Data set cutover without upload cutover.
-   CommonTime xmit = CivilTime(2019, 1, 11, 2, 0, 0.0, TimeSystem::GPS); 
+   CommonTime xmit = CivilTime(2019, 1, 11, 2, 0, 0.0, TimeSystem::GPS);
    CommonTime toe = CivilTime(2019, 1, 11, 4, 00, 0.0, TimeSystem::GPS);
    CommonTime result = OrbElemRinex::computeBeginValid(gpsSatId,xmit,toe);
    TUASSERTE( CommonTime, xmit, result );
@@ -92,9 +92,9 @@ int main()
    TUASSERTE( CommonTime, endValid, result );
 
       // Data set cutover without upload cutover, late receipt
-   xmit = CivilTime(2019, 1, 11, 2, 12, 0.0, TimeSystem::GPS); 
+   xmit = CivilTime(2019, 1, 11, 2, 12, 0.0, TimeSystem::GPS);
    toe = CivilTime(2019, 1, 11, 4, 00, 0.0, TimeSystem::GPS);
-   CommonTime expect = CivilTime(2019, 1, 11, 2, 0, 0.0, TimeSystem::GPS); 
+   CommonTime expect = CivilTime(2019, 1, 11, 2, 0, 0.0, TimeSystem::GPS);
    result = OrbElemRinex::computeBeginValid(gpsSatId,xmit,toe);
    TUASSERTE( CommonTime, expect, result );
 
@@ -102,7 +102,7 @@ int main()
    TUASSERTE( CommonTime, xmit, result );
 
       // Upload cutover.  Example from prior to GPS III
-   xmit = CivilTime(2019, 1, 11, 2, 36, 0.0, TimeSystem::GPS); 
+   xmit = CivilTime(2019, 1, 11, 2, 36, 0.0, TimeSystem::GPS);
    toe = CivilTime(2019, 1, 11, 3, 59, 44.0, TimeSystem::GPS);
    result = OrbElemRinex::computeBeginValid(gpsSatId,xmit,toe);
    TUASSERTE( CommonTime, xmit, result );
@@ -115,7 +115,7 @@ int main()
    TUASSERTE( CommonTime, endValid, result );
 
       // Upload cutover.  Example from early GPS III L1 C/A
-   xmit = CivilTime(2019, 1, 9, 22, 30, 00.0, TimeSystem::GPS); 
+   xmit = CivilTime(2019, 1, 9, 22, 30, 00.0, TimeSystem::GPS);
    toe = CivilTime(2019, 1, 10,  0, 29, 36.0, TimeSystem::GPS);
    result = OrbElemRinex::computeBeginValid(gpsSatId,xmit,toe);
    TUASSERTE( CommonTime, xmit, result );
@@ -126,7 +126,7 @@ int main()
 
       // Upload cutover.  Example from GPS III presentation
       // by Steven Brown (L-M) to 2018 Public ICWG
-   xmit = CivilTime(2019, 1, 12, 1, 01, 0.0, TimeSystem::GPS); 
+   xmit = CivilTime(2019, 1, 12, 1, 01, 0.0, TimeSystem::GPS);
    toe = CivilTime(2019, 1, 12, 2, 59, 44.0, TimeSystem::GPS);
    result = OrbElemRinex::computeBeginValid(gpsSatId,xmit,toe);
    TUASSERTE( CommonTime, xmit, result );
@@ -135,7 +135,7 @@ int main()
    result = OrbElemRinex::computeEndValid(toe, fitHours);
    TUASSERTE( CommonTime, endValid, result );
 
-   xmit = CivilTime(2019, 1, 12, 1, 16, 0.0, TimeSystem::GPS); 
+   xmit = CivilTime(2019, 1, 12, 1, 16, 0.0, TimeSystem::GPS);
    result = OrbElemRinex::computeBeginValid(gpsSatId,xmit,toe);
    TUASSERTE( CommonTime, xmit, result );
 
@@ -143,7 +143,7 @@ int main()
    TUASSERTE( CommonTime, endValid, result );
 
       //  2
-   xmit = CivilTime(2019, 1, 12, 1, 31, 0.0, TimeSystem::GPS); 
+   xmit = CivilTime(2019, 1, 12, 1, 31, 0.0, TimeSystem::GPS);
    result = OrbElemRinex::computeBeginValid(gpsSatId,xmit,toe);
    TUASSERTE( CommonTime, xmit, result );
 
@@ -151,7 +151,7 @@ int main()
    TUASSERTE( CommonTime, endValid, result );
 
       //  3
-   xmit = CivilTime(2019, 1, 12, 1, 46, 0.0, TimeSystem::GPS); 
+   xmit = CivilTime(2019, 1, 12, 1, 46, 0.0, TimeSystem::GPS);
    result = OrbElemRinex::computeBeginValid(gpsSatId,xmit,toe);
    TUASSERTE( CommonTime, xmit, result );
 
@@ -161,8 +161,8 @@ int main()
    std::cerr << "Ending program." << std::endl;
    std::cout << "Total Failures for " << __FILE__ << ": "
              << testFramework.countFails() << std::endl;
-             
+
    return testFramework.countFails();
-             
+
 }
-   
+

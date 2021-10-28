@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -45,14 +45,14 @@
 
 class BasicTimeSystemConverter_T
 {
-public: 
+public:
    unsigned getOffsetTest()
    {
       TUDEF("TimeSystemConverter", "getOffset");
       double offs;
       gnsstk::BasicTimeSystemConverter btsc;
 
-         //Check conversion from any given time system to UTC and back 
+         //Check conversion from any given time system to UTC and back
       TUASSERTE(bool, true, btsc.getOffset(gnsstk::TimeSystem::UTC,
                                            gnsstk::TimeSystem::GPS,
                                            gnsstk::CivilTime(1990,11,6),
@@ -88,19 +88,19 @@ public:
                                            gnsstk::CivilTime(2008, 6, 5),
                                            offs));
       TUASSERTFE(-14, offs);
-		
+
       TUASSERTE(bool, true, btsc.getOffset(gnsstk::TimeSystem::UTC,
                                            gnsstk::TimeSystem::QZS,
                                            gnsstk::CivilTime(1985, 8, 10),
                                            offs));
       TUASSERTFE(4, offs);
-		
+
       TUASSERTE(bool, true, btsc.getOffset(gnsstk::TimeSystem::UTC,
                                            gnsstk::TimeSystem::QZS,
                                            gnsstk::CivilTime(2010, 2, 14),
                                            offs));
       TUASSERTFE(15, offs);
-		
+
       TUASSERTE(bool, true, btsc.getOffset(gnsstk::TimeSystem::UTC,
                                            gnsstk::TimeSystem::BDT,
                                            gnsstk::CivilTime(2006, 9, 21),

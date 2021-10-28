@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -54,7 +54,7 @@ namespace gnsstk
 {
    OrbAlmFactory::OrbAlmFactory()
       {};
-   
+
    OrbAlm* OrbAlmFactory::
    convert(const gnsstk::PackedNavBits& pnb)
    {
@@ -62,33 +62,33 @@ namespace gnsstk
       const gnsstk::SatID& sidr = pnb.getsatSys();
       const gnsstk::ObsID& oidr = pnb.getobsID();
 
-      NavID navID(sidr, oidr); 
+      NavID navID(sidr, oidr);
 
       try
       {
       switch (navID.navType)
       {
-         case NavType::GPSLNAV: 
+         case NavType::GPSLNAV:
          {
-            retVal = GPSLNAV(pnb); 
+            retVal = GPSLNAV(pnb);
             break;
          }
 
-         case NavType::GPSCNAVL5: 
+         case NavType::GPSCNAVL5:
          case NavType::GPSCNAVL2:
          {
-            retVal = GPSCNAV(pnb); 
+            retVal = GPSCNAV(pnb);
             break;
          }
 
-         default: 
+         default:
             retVal = 0;
             break;
          }
       }
       catch (InvalidParameter ip)
       {
-         GNSSTK_RETHROW(ip); 
+         GNSSTK_RETHROW(ip);
       }
 
       return retVal;
@@ -115,15 +115,15 @@ namespace gnsstk
       {
          short WNa = (short) pnb.asUnsignedLong(76, 8, 1);
          unsigned long lToa = pnb.asUnsignedLong(68, 8, 4096);
-         double Toa = (double) lToa; 
+         double Toa = (double) lToa;
          short fullWN = static_cast<GPSWeekSecond>(pnb.getTransmitTime()).week;
          short fullWNa = EngNav::convertXBit(fullWN,WNa,EngNav::BITS8);
-         OrbAlmGen::loadWeekNumber(fullWNa,Toa); 
+         OrbAlmGen::loadWeekNumber(fullWNa,Toa);
       }
 
          // Determine whether the PNB object is an appropriate
-         // OrbAlm candidate.   That is to say, is it 
-         // in the range of SV ID 1-32.  
+         // OrbAlm candidate.   That is to say, is it
+         // in the range of SV ID 1-32.
       if (uid<=32)
       {
          try
@@ -138,16 +138,16 @@ namespace gnsstk
                cout << "Conversion attempt failed.  Caught an InvalidParameter" << endl;
                cout << ir << endl;
             }
-            GNSSTK_RETHROW(ir); 
+            GNSSTK_RETHROW(ir);
          }
       }
-      return retVal; 
+      return retVal;
    }
 
    OrbAlm* OrbAlmFactory::
    GPSCNAV(const gnsstk::PackedNavBits& pnb)
    {
       OrbAlm* retVal = 0;
-      return retVal; 
+      return retVal;
    }
 }

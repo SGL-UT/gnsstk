@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -124,7 +124,7 @@ namespace gnsstk
       Cis            = rinNav.Cis;
 
 
-      double Toe     = rinNav.Toe; 
+      double Toe     = rinNav.Toe;
       M0             = rinNav.M0;       // OrbElem only stores fully qualified times
       dn             = rinNav.dn;       // see notes below.
       ecc            = rinNav.ecc;
@@ -140,9 +140,9 @@ namespace gnsstk
     // The system is assumed (legacy navigation message is from GPS)
       satID.id     = static_cast<short>( rinNav.PRNID );
       satID.system = SatelliteSystem::GPS;
-      if (satID.id>=MIN_PRN_QZS && 
-          satID.id<=MAX_PRN_QZS) 
-         satID.system = SatelliteSystem::QZSS;  
+      if (satID.id>=MIN_PRN_QZS &&
+          satID.id<=MAX_PRN_QZS)
+         satID.system = SatelliteSystem::QZSS;
 
          // The observation ID has a type of navigation, but the
          // carrier and code types are undefined.  They could be
@@ -170,22 +170,22 @@ namespace gnsstk
     //
     //   Item 2 moved to computeBeginValid() in Jan 2019 as GPS III
     //   changes are handled. Note that item 2 is really the beginValid
-    //   time as opposed to the transmit time. 
+    //   time as opposed to the transmit time.
 	 //   2.) If Toc IS even two hour interval, pick time from SF 1,
 	 //   round back to nearest EVEN two hour boundary.  This assumes collection
 	 //   SOMETIME in first hour of transmission.  Could be more
 	 //   complete by looking at fit interval and IODC to more accurately
 	 //   determine earliest transmission time.
 	 //
-	 //   3.) SPECIAL CASE to address oddity in IGS brdc aggregate files. 
-	 //   At the beginning of day, it appears the some stations report 
-	 //   the last set of the previous day with a "transmit time" of 0 SOD 
+	 //   3.) SPECIAL CASE to address oddity in IGS brdc aggregate files.
+	 //   At the beginning of day, it appears the some stations report
+	 //   the last set of the previous day with a "transmit time" of 0 SOD
 	 //   and a Toc of 0 SOD.  This is errant nonsense, but its in the data.
-	 //   I suspect someone's "daily file writer" is dumping out the last 
+	 //   I suspect someone's "daily file writer" is dumping out the last
 	 //   SF 1/2/3 of the previous day with the earliest valid time for the
-	 //   current day. 
+	 //   current day.
 	 //   SO - If the "transmit time" claims 0 SOD with the Toc of 0 SOD, we'll
-	 //   nudge the "tranmist time" back into the previous day. 
+	 //   nudge the "tranmist time" back into the previous day.
       long longToc = (long) Toc;
 
          // Case 3 check
@@ -197,11 +197,11 @@ namespace gnsstk
          adjHOWtime = HOWtime - 30;
          if (adjHOWtime<0)
          {
-            adjHOWtime += FULLWEEK;  
-            fullXmitWeekNum--;     
+            adjHOWtime += FULLWEEK;
+            fullXmitWeekNum--;
          }
       }
-      
+
       // Determine Transmit Time
       // Transmit time is the actual time this
       // SF 1/2/3 sample was collected
@@ -222,8 +222,8 @@ namespace gnsstk
       ctToc = GPSWeekSecond(epochWeek, Toc, TimeSystem::GPS);
       ctToe = GPSWeekSecond(epochWeek, Toe, TimeSystem::GPS);
 
-      beginValid = computeBeginValid(satID, transmitTime, ctToe); 
-      endValid = computeEndValid(ctToe,fitDuration); 
+      beginValid = computeBeginValid(satID, transmitTime, ctToe);
+      endValid = computeEndValid(ctToe,fitDuration);
 
 	 // Semi-major axis and time-rate-of-change of semi-major axis
 	 //    Note: Legacy navigation message (SF 1/2/3) used SQRT(A).
@@ -272,7 +272,7 @@ namespace gnsstk
       Cic            = rinNav.Cic;
       Cis            = rinNav.Cis;
 
-      Toe3           = rinNav.Toe; 
+      Toe3           = rinNav.Toe;
       M0             = rinNav.M0;       // OrbElem only stores fully qualified times
       dn             = rinNav.dn;       // see notes below.
       ecc            = rinNav.ecc;
@@ -286,10 +286,10 @@ namespace gnsstk
       // - - - Now work on the things that need to be calculated - - -
 
       satID.id     = rinNav.sat.id;
-      satID.system = rinNav.sat.system; 
+      satID.system = rinNav.sat.system;
 
          // Galileo-specific override
-         // This points out that the existing OrbElemRinex is wholly inadequate to the 
+         // This points out that the existing OrbElemRinex is wholly inadequate to the
          // task of representing all the special cases in Rinex V3.
       if (satID.system==SatelliteSystem::Galileo)
       {
@@ -304,7 +304,7 @@ namespace gnsstk
       obsID.code = TrackingCode::Undefined;
 
          // The rules for deriving Toe, Toc, begin valid, begin transmit,
-         // and end valid are similar, but system-specific. 
+         // and end valid are similar, but system-specific.
          // Therefore, we'll encapsulate all this into a set of methods.
       determineTimes();
 
@@ -338,7 +338,7 @@ namespace gnsstk
 
    //----------------------------------------------------------------
    // The rules for deriving Toe, Toc, begin valid, begin transmit,
-   // and end valid are similar, but system-specific. 
+   // and end valid are similar, but system-specific.
    void OrbElemRinex::determineTimes()
    {
       switch (satID.system)
@@ -370,22 +370,22 @@ namespace gnsstk
    //
    //   Item 2 moved to computeBeginValid() in Jan 2019 as GPS III
    //   changes are handled. Note that item 2 is really the beginValid
-   //   time as opposed to the transmit time. 
+   //   time as opposed to the transmit time.
    //   2.) If Toc IS even two hour interval, pick time from SF 1,
    //   round back to nearest EVEN two hour boundary.  This assumes collection
    //   SOMETIME in first hour of transmission.  Could be more
    //   complete by looking at fit interval and IODC to more accurately
    //   determine earliest transmission time.
    //
-   //   3.) SPECIAL CASE to address oddity in IGS brdc aggregate files. 
-   //   At the beginning of day, it appears the some stations report 
-   //   the last set of the previous day with a "transmit time" of 0 SOD 
+   //   3.) SPECIAL CASE to address oddity in IGS brdc aggregate files.
+   //   At the beginning of day, it appears the some stations report
+   //   the last set of the previous day with a "transmit time" of 0 SOD
    //   and a Toc of 0 SOD.  This is errant nonsense, but its in the data.
-   //   I suspect someone's "daily file writer" is dumping out the last 
+   //   I suspect someone's "daily file writer" is dumping out the last
    //   SF 1/2/3 of the previous day with the earliest valid time for the
-   //   current day. 
+   //   current day.
    //   SO - If the "transmit time" claims 0 SOD with the Toc of 0 SOD, we'll
-   //   nudge the "transmit time" back into the previous day. 
+   //   nudge the "transmit time" back into the previous day.
    void OrbElemRinex::determineTimesGPS()
    {
       long longToc = (long) Toc3;
@@ -423,21 +423,21 @@ namespace gnsstk
 
       ctToc = GPSWeekSecond(epochWeek, Toc3, TimeSystem::GPS);
       ctToe = GPSWeekSecond(epochWeek, Toe3, TimeSystem::GPS);
-      beginValid = computeBeginValid(satID, transmitTime, ctToe); 
-      endValid = computeEndValid(ctToe,fitDuration);                 
+      beginValid = computeBeginValid(satID, transmitTime, ctToe);
+      endValid = computeEndValid(ctToe,fitDuration);
    }
 
    //----------------------------------------------------------------
    // All we can say for Galileo is that the earliest transmit time
-   // is equivalent to the HOWTime rounded back to the beginning 
+   // is equivalent to the HOWTime rounded back to the beginning
    // of the subframe.  Unfortunately, in RINEX we've lost reference to
    // which band/code the data were collected from.   Therefore, we can only
    // go with the HOWtime.
    // However, we'll go ahead and define a specific method against the hope
-   // that we will figure out some brilliant way around this later. 
+   // that we will figure out some brilliant way around this later.
    void OrbElemRinex::determineTimesGalileo()
    {
-      fullXmitWeekNum -= 1024;    // RINEX 3 stores GPS Week numbers. 
+      fullXmitWeekNum -= 1024;    // RINEX 3 stores GPS Week numbers.
                                   // Need to move to Galileo week numbers.
 
       long longToc = (long) Toc3;
@@ -543,58 +543,58 @@ namespace gnsstk
 
       switch (satID.system)
       {
-         case SatelliteSystem::Glonass: 
+         case SatelliteSystem::Glonass:
          {
             ctToc        = GPSWeekSecond(epochWeek,       Toc3,       TimeSystem::GPS);
             ctToe        = GPSWeekSecond(epochWeek,       Toe3,       TimeSystem::GPS);
             beginValid   = GPSWeekSecond(fullXmitWeekNum, XmitSOW,   TimeSystem::GPS);
             transmitTime = GPSWeekSecond(fullXmitWeekNum, XmitSOW,   TimeSystem::GPS);
             endValid     = GPSWeekSecond(endFitWk,        endFitSOW, TimeSystem::GPS);
-            break; 
+            break;
          }
 
-         case SatelliteSystem::BeiDou:  
-         { 
+         case SatelliteSystem::BeiDou:
+         {
             beginValid   = BDSWeekSecond(fullXmitWeekNum, XmitSOW,   TimeSystem::BDT);
             transmitTime = BDSWeekSecond(fullXmitWeekNum, XmitSOW,   TimeSystem::BDT);
             ctToc        = BDSWeekSecond(epochWeek,       Toc3,       TimeSystem::BDT);
             ctToe        = BDSWeekSecond(epochWeek,       Toe3,       TimeSystem::BDT);
             endValid     = BDSWeekSecond(endFitWk,        endFitSOW, TimeSystem::BDT);
-            break; 
+            break;
          }
-         
-         case SatelliteSystem::QZSS:    
-         { 
+
+         case SatelliteSystem::QZSS:
+         {
             beginValid   = QZSWeekSecond(fullXmitWeekNum, XmitSOW,   TimeSystem::QZS);
             transmitTime = QZSWeekSecond(fullXmitWeekNum, XmitSOW,   TimeSystem::QZS);
             ctToc        = QZSWeekSecond(epochWeek,       Toc3,       TimeSystem::QZS);
             ctToe        = QZSWeekSecond(epochWeek,       Toe3,       TimeSystem::QZS);
             endValid     = QZSWeekSecond(endFitWk,        endFitSOW, TimeSystem::QZS);
-            break; 
+            break;
          }
-         
-         case SatelliteSystem::IRNSS:   
-         { 
+
+         case SatelliteSystem::IRNSS:
+         {
             beginValid   = IRNWeekSecond(fullXmitWeekNum, XmitSOW,   TimeSystem::IRN);
             transmitTime = IRNWeekSecond(fullXmitWeekNum, XmitSOW,   TimeSystem::IRN);
             ctToc        = IRNWeekSecond(epochWeek,       Toc3,       TimeSystem::IRN);
             ctToe        = IRNWeekSecond(epochWeek,       Toe3,       TimeSystem::IRN);
             endValid     = IRNWeekSecond(endFitWk,        endFitSOW, TimeSystem::IRN);
-            break; 
+            break;
          }
       }
    }
 
    //----------------------------------------------------------------
-   // The following method should only be used by 
+   // The following method should only be used by
    // GPSOrbElemStore::rationnalize()
    void OrbElemRinex::adjustBeginningValidity()
    {
       if (!dataLoaded()) return;
 
          // The adjustment logic only applies to GPS.  The other
-         // systems do not make these promises in their ICDs. 
-      if (satID.system!=SatelliteSystem::GPS) 
+         // systems do not make these promises in their ICDs.
+      if (satID.system!=SatelliteSystem::GPS)
          return;
 
          // The nominal beginning of validity is calculated from
@@ -766,23 +766,23 @@ namespace gnsstk
 
    //----------------------------------------------------------------
       // The following method is designed to work for all LNAV.  Therefore
-      // it will be called by various descendents. 
+      // it will be called by various descendents.
       // It is a static implementation to allow unit tests apart from
       // building complete objects.
-      // 
+      //
       // xmit - the transmisson time of the CEI data set.  For LNAV, this is the
       //        xmit time of the beginning of the first bit of the earliest message
-      //        of the set. 
+      //        of the set.
       // toe  - The toe of the data set.
    CommonTime OrbElemRinex::computeBeginValid(const SatID& satID,
-                                              const CommonTime& xmit, 
+                                              const CommonTime& xmit,
                                               const CommonTime& ctToe )
    {
       int xmitWeek = static_cast<GPSWeekSecond>(xmit).week;
       long xmitSOW = (long) static_cast<GPSWeekSecond>(xmit).sow;
 
          // If the toe is NOT offset, then the begin valid time can be set
-         // to the beginning of the two hour interval. 
+         // to the beginning of the two hour interval.
          // NOTE: This is only true for GPS.   We can't do this
          // for QZSS, even though it also broadcasts the LNAV message format.
       if (satID.system==SatelliteSystem::GPS && isNominalToe(ctToe))
@@ -797,18 +797,18 @@ namespace gnsstk
          // NOTE: Prior to GPS III, the offset was typically applied to BOTH the first
          // and second data sets following a cutover.  So this means the SECOND data
          // set will NOT be coerced to the top of the even hour start time if it
-         // wasn't collected at the top of the hour. 
+         // wasn't collected at the top of the hour.
       CommonTime beginValid = GPSWeekSecond(xmitWeek, xmitSOW, TimeSystem::GPS);
       return beginValid;
    } // end of computeBeginValid()
 
    //----------------------------------------------------------------
       // Launch of the first GPS III led to realization the end valid times have likely
-      // been incorrect for some time.  There are two conditions.  
-      // - The toe is in the nominal alignment.   In this case the mid-point of the 
+      // been incorrect for some time.  There are two conditions.
+      // - The toe is in the nominal alignment.   In this case the mid-point of the
       //   curve fit interval is aligned with the toe and the end valid determination
-      //   is trivial. 
-      // - The tow is NOT aligned with the nominal.   In this case, the mid-point of the 
+      //   is trivial.
+      // - The tow is NOT aligned with the nominal.   In this case, the mid-point of the
       //   curve fit is the first even 15 minute interval later than the toe.
       //   Prior to GPS, this would be a 2 hour boundary.  With GPS III it could be
       //   any 15 minute boundary.
@@ -817,13 +817,13 @@ namespace gnsstk
    {
          // Default case.
       long fitSeconds = fitHours * 3600;
-      CommonTime endValid = ctToe + (double) (fitSeconds/2); 
+      CommonTime endValid = ctToe + (double) (fitSeconds/2);
 
          // If an upload cutover, need some adjustment.
          // Calculate the SOW aligned with the mid point and then
          // calculate the number of seconds the toe is SHORT
          // of that value.   That's how far the endValid needs
-         // to be adjusted.   
+         // to be adjusted.
       if (!isNominalToe(ctToe))
       {
          long sow = (long) static_cast<GPSWeekSecond>(ctToe).sow;
@@ -836,7 +836,7 @@ namespace gnsstk
    }
 
    //----------------------------------------------------------------
-      // For a CEI data set that is NOT an upload cutover, toe should be 
+      // For a CEI data set that is NOT an upload cutover, toe should be
       // an even two hour boundary.
    bool OrbElemRinex::isNominalToe(const gnsstk::CommonTime& ctToe)
    {

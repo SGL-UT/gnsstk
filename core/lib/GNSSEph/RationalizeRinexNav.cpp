@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -71,13 +71,13 @@ namespace gnsstk
       {
          NAV_DATA_LIST& ndl = sndl[rnd.sat];
          ndl.push_back(rnd);
-    
-            // Store a list of ToC values so 
+
+            // Store a list of ToC values so
             // we know which Toc values were in this file.
          NAV_ID_PAIR p = make_pair(gnsstk::SatID(rnd.sat),rnd.time);
-         tocList.push_back(p); 
-      }    
-      return true; 
+         tocList.push_back(p);
+      }
+      return true;
    }
 
    //----------------------------------------------------------------
@@ -89,8 +89,8 @@ namespace gnsstk
    {
       map<string,Rinex3NavHeader>::const_iterator cft;
       cft = rnhMap.find(inFileName);
-      if (cft==rnhMap.end()) 
-         return false; 
+      if (cft==rnhMap.end())
+         return false;
 
          // Open a new Rinex 3 nav file and write the header
       Rinex3NavStream rns(outFileName.c_str(), ios::out|ios::trunc);
@@ -100,13 +100,13 @@ namespace gnsstk
       ostringstream ostr;
       ostr << CivilTime(SystemTime());
       rnh.date = ostr.str();
-      rns << rnh; 
+      rns << rnh;
 
       std::map<std::string,TOC_LIST>::const_iterator cft2;
       cft2 = listOfTocsByFile.find(inFileName);
       if (cft2==listOfTocsByFile.end())
          return false;
-      const TOC_LIST& tList = cft2->second; 
+      const TOC_LIST& tList = cft2->second;
       TOC_LIST::const_iterator cit;
       for (cit=tList.begin(); cit!=tList.end(); cit++)
       {
@@ -141,39 +141,39 @@ namespace gnsstk
       bool prev2TocOffset = false;
       CommonTime prevToc;
 
-         //  For each SV  
+         //  For each SV
       SAT_NAV_DATA_LIST::iterator it1;
       for (it1=sndl.begin(); it1!=sndl.end(); it1++)
       {
-            // This process is only relevant to GPS.  Therefore, 
+            // This process is only relevant to GPS.  Therefore,
             // if this is not a GPS SV, skip it.
          const SatID& sidr = it1->first;
          if (sidr.system!=SatelliteSystem::GPS) continue;
 
          NAV_DATA_LIST& ndl = it1->second;
 
-            // First pass:  
+            // First pass:
             // 1.) Fix the fit intervals
-            // 2.) Find the non-upload data sets that can 
-            // be trivially fixed as a result of the 
+            // 2.) Find the non-upload data sets that can
+            // be trivially fixed as a result of the
             // promises in 20.3.4.4.
          NAV_DATA_LIST::iterator it2;
          for (it2=ndl.begin();it2!=ndl.end();it2++)
          {
-            Rinex3NavData& r3nd = *it2; 
+            Rinex3NavData& r3nd = *it2;
 
             long sowToc = static_cast<GPSWeekSecond>(r3nd.time).sow;
             long origxmitTime = r3nd.xmitTime;
             CommonTime xmitCT = formXmitTime(r3nd);
 
-               // RINEX specifcation allows fit interval to be expressed in hours 
+               // RINEX specifcation allows fit interval to be expressed in hours
                // or as a two-state identifier.  We want the fit interval consistently
-               // represented in hours. 
+               // represented in hours.
                // If in hours, the valid values are
-               // 4, 6, 8, 14, 26 (see IS-GPS-200 Table 20-XII).  
+               // 4, 6, 8, 14, 26 (see IS-GPS-200 Table 20-XII).
                // If an identifier, the valid values are 0 or 1.  0 stands for 4 hours
-               // and 1 stands for 6 hours. 
-            if (r3nd.fitint==0) 
+               // and 1 stands for 6 hours.
+            if (r3nd.fitint==0)
             {
                r3nd.fitint=4;
                addLog(sidr,r3nd.time,"Fit set to 4 h");
@@ -185,7 +185,7 @@ namespace gnsstk
             }
 
                // If Toc/Toe is an even-hour interval the initial time of transmission
-               // will be Toc/Toe minus 1/2 of the fit interval. 
+               // will be Toc/Toe minus 1/2 of the fit interval.
             if (sowToc%3600==0)
             {
                r3nd.xmitTime = sowToc - (r3nd.fitint/2.0 * 3600.0);
@@ -193,8 +193,8 @@ namespace gnsstk
                if (r3nd.xmitTime<0)
                {
                   r3nd.xmitTime += FULLWEEK;
-                  r3nd.weeknum--; 
-               } 
+                  r3nd.weeknum--;
+               }
             }
 
                // Log changes
@@ -203,21 +203,21 @@ namespace gnsstk
             {
                stringstream ss;
                ss << "xmitTime adjusted by " << diff << " s";
-               addLog(sidr,r3nd.time,ss.str()); 
+               addLog(sidr,r3nd.time,ss.str());
             }
          }
 
-            // Get the data close to receive time order 
-            // (as opposed to the Toc order that is typical in brdc files). 
+            // Get the data close to receive time order
+            // (as opposed to the Toc order that is typical in brdc files).
          ndl.sort(compXmitTimes);
 
-            // Second pass: 
-            // There are still a couple of sort order issues 
+            // Second pass:
+            // There are still a couple of sort order issues
             // with respect to the first data sets.
-            //  
-            // There's a limit to what can be done regarding the 
+            //
+            // There's a limit to what can be done regarding the
             // first data set in an upload.  The cutover can happen
-            // at any time.  
+            // at any time.
             // However, it is safe to assume that the
             // cutover happens within a window between
             // two hours PRIOR to the Toc and the Toc.
@@ -226,14 +226,14 @@ namespace gnsstk
 
          for (it2=ndl.begin();it2!=ndl.end();it2++)
          {
-            Rinex3NavData& r3nd = *it2; 
+            Rinex3NavData& r3nd = *it2;
 
             long sowToc = static_cast<GPSWeekSecond>(r3nd.time).sow;
             long origXmitTime = r3nd.xmitTime;
             CommonTime xmitCT = formXmitTime(r3nd);
 
                // In some cases, the transmission time in the
-               // Rinex nav file is slightly AFTER the Toc.   
+               // Rinex nav file is slightly AFTER the Toc.
                // So (arbitrarily) set the transmission time to five minutes
                // before the Toc (rounded to the nearest two hour interval).
             if (sowToc%3600!=0 && !prevTocOffset)
@@ -249,17 +249,17 @@ namespace gnsstk
 
                   stringstream ss;
                   ss << "Orig. xmitTime after Toc  ";
-                  addLog(sidr,r3nd.time,ss.str()); 
+                  addLog(sidr,r3nd.time,ss.str());
                }
             }
 
-               // It is also the case that the frist transmit time 
-               // for an upload cutover must be sometime in the 
+               // It is also the case that the frist transmit time
+               // for an upload cutover must be sometime in the
                // two hours preceding the time of the Toc (rounded
                // up to account for the small difference).  So if the
                // transmission time is before this, move it to be five minutes after
                // the preceding two-hour epoch.   NOTE: This is an absolute
-               // fabrication, but the other options are 
+               // fabrication, but the other options are
                //  a.) Have the transmission times in the file out-of-order of
                //      transmission and wrong,
                //  b.) Omit this data set entirely.
@@ -267,13 +267,13 @@ namespace gnsstk
             {
                short week = static_cast<GPSWeekSecond>(r3nd.time).week;
                long twoHourOfWeek = sowToc / 7200;
-               long testTime = (twoHourOfWeek) * 7200; 
+               long testTime = (twoHourOfWeek) * 7200;
                CommonTime prevTwoHourEpoch = GPSWeekSecond(week,testTime);
 /*
                cout << "Found a 'too early' first data set.  PRN " << sidr
                     << " xmit: " << printTime(howCT,"%02H:%02M:%02S")
                     << " sowToc: " << printTime(r3nd.time,"%02H:%02M:%02S")
-                    << " prevTwoHourEpoch: " << printTime(prevTwoHourEpoch,"%02H:%02M:%02S") << endl; 
+                    << " prevTwoHourEpoch: " << printTime(prevTwoHourEpoch,"%02H:%02M:%02S") << endl;
 */
                if (xmitCT<prevTwoHourEpoch)
                {
@@ -282,20 +282,20 @@ namespace gnsstk
 
                   stringstream ss;
                   ss << "Orig. xmitTime too early. ";
-                  addLog(sidr,r3nd.time,ss.str()); 
-               }            
+                  addLog(sidr,r3nd.time,ss.str());
+               }
             }
 
             prev2TocOffset = prevTocOffset;
             if (sowToc%3600!=0) prevTocOffset = true;
-             else prevTocOffset = false; 
+             else prevTocOffset = false;
 
             long diff = r3nd.xmitTime - origXmitTime;
             if (diff!=0)
             {
                stringstream ss;
                ss << "xmitTime adjusted by " << diff << " s";
-               addLog(sidr,r3nd.time,ss.str()); 
+               addLog(sidr,r3nd.time,ss.str());
             }
          }
 
@@ -308,7 +308,7 @@ namespace gnsstk
             // and the following second data sets will be next
             // to each other in the sort order.
             //
-            // If this is the SECOND data set of an upload, 
+            // If this is the SECOND data set of an upload,
             // set the transmission time to be equivalent to the nominal beginning
             // of transmission based on the statements in IS-GPS-200
             // Section 20.3.4.5 and Table 20-XIII.
@@ -330,15 +330,15 @@ namespace gnsstk
 
             if (secondDataSet)
             {
-                  // The same "small offset" must be present.  Given an upload, 
+                  // The same "small offset" must be present.  Given an upload,
                   // the spacing between data sets will be two hours
                double diff = r3nd.time - prevToc;
                if (diff==7200.0)
                {
                   // Set transmit time to most recent previous two-hour interval
-                  // This assumes that the "small offset" was "back" in time. 
+                  // This assumes that the "small offset" was "back" in time.
                   // We use the modulo to determine the two hour interval within the
-                  // week and set the transmit time to the beginning of that period. 
+                  // week and set the transmit time to the beginning of that period.
                   long twoHourOfWeek = sowToc / 7200;
                   r3nd.xmitTime = twoHourOfWeek * 7200;
                }
@@ -349,7 +349,7 @@ namespace gnsstk
             {
                stringstream ss;
                ss << "xmitTime adjusted by " << diff << " s";
-               addLog(sidr,r3nd.time,ss.str()); 
+               addLog(sidr,r3nd.time,ss.str());
             }
 
                // Store Offset status for what will be TWO data sets back.
@@ -374,8 +374,8 @@ namespace gnsstk
    //----------------------------------------------------------------
    bool RationalizeRinexNav::loadStore(OrbitEphStore& oes)
    {
-      mostRecentLoadCount = 0; 
-      stringstream ss; 
+      mostRecentLoadCount = 0;
+      stringstream ss;
       bool retVal = true;
 
       SAT_NAV_DATA_LIST::const_iterator cit1;
@@ -387,7 +387,7 @@ namespace gnsstk
          NAV_DATA_LIST::const_iterator cit2;
          for (cit2=ndl.begin();cit2!=ndl.end();cit2++)
          {
-            const Rinex3NavData& r3nd = *cit2; 
+            const Rinex3NavData& r3nd = *cit2;
             switch (r3nd.sat.system)
             {
                case SatelliteSystem::GPS:
@@ -395,7 +395,7 @@ namespace gnsstk
                   try
                   {
                      GPSEphemeris oe(r3nd);
-                     oes.addEphemeris(dynamic_cast<OrbitEph*>(&oe)); 
+                     oes.addEphemeris(dynamic_cast<OrbitEph*>(&oe));
                      mostRecentLoadCount++;
                   }
                   catch (InvalidParameter ip)
@@ -407,22 +407,22 @@ namespace gnsstk
                }
 
                // Add other systems
-               
+
                default:
                   break;
             }
          }
       }
       mostRecentLoadErrors = ss.str();
-      return retVal; 
+      return retVal;
    }
 
   //----------------------------------------------------------------
    bool RationalizeRinexNav::loadStore(OrbElemStore& oes)
    {
-      mostRecentLoadCount = 0; 
+      mostRecentLoadCount = 0;
       bool retVal = true;
-      stringstream ss; 
+      stringstream ss;
 
       SAT_NAV_DATA_LIST::const_iterator cit1;
       for (cit1=sndl.begin(); cit1!=sndl.end(); cit1++)
@@ -433,8 +433,8 @@ namespace gnsstk
          NAV_DATA_LIST::const_iterator cit2;
          for (cit2=ndl.begin();cit2!=ndl.end();cit2++)
          {
-            const Rinex3NavData& r3nd = *cit2; 
-            OrbElemBase* oep; 
+            const Rinex3NavData& r3nd = *cit2;
+            OrbElemBase* oep;
 
             switch (r3nd.sat.system)
             {
@@ -443,7 +443,7 @@ namespace gnsstk
                   try
                   {
                      OrbElemRinex oe(r3nd);
-                     oes.addOrbElem(dynamic_cast<OrbElemBase*>(&oe)); 
+                     oes.addOrbElem(dynamic_cast<OrbElemBase*>(&oe));
                      mostRecentLoadCount++;
                   }
                   catch (InvalidParameter ip)
@@ -455,14 +455,14 @@ namespace gnsstk
                }
 
                // Add other systems
-               
+
                default:
                   break;
             }
         }
       }
       mostRecentLoadErrors = ss.str();
-      return retVal; 
+      return retVal;
    }
 
    //----------------------------------------------------------------
@@ -490,7 +490,7 @@ namespace gnsstk
          NAV_DATA_LIST::const_iterator cit2;
          for (cit2=ndl.begin();cit2!=ndl.end();cit2++)
          {
-            const Rinex3NavData& r3nd = *cit2; 
+            const Rinex3NavData& r3nd = *cit2;
             out << strSumm(r3nd) << endl;
          }
       }
@@ -516,11 +516,11 @@ namespace gnsstk
          NAV_DATA_LIST::const_iterator cit2;
          for (cit2=ndl.begin();cit2!=ndl.end();cit2++)
          {
-            const Rinex3NavData& r3nd = *cit2; 
+            const Rinex3NavData& r3nd = *cit2;
             out << strSumm(r3nd);
             if (citLog!=sldl.end())
             {
-               const LOG_DATA_LIST& logMap = citLog->second; 
+               const LOG_DATA_LIST& logMap = citLog->second;
                LOG_DATA_LIST::const_iterator citLog2;
                citLog2 = logMap.find(r3nd.time);
                if (citLog2!=logMap.end())
@@ -532,7 +532,7 @@ namespace gnsstk
             out << endl;
          }
 
-            // Lastly, see if any data sets were REMOVED for this PRN. 
+            // Lastly, see if any data sets were REMOVED for this PRN.
             // If so, list them at the bottom.
          if (citLog!=sldl.end())
          {
@@ -587,7 +587,7 @@ namespace gnsstk
       ss << "!" << setw(6) << r3nd.xmitTime << "  " << setw(4) << xmitWeek << " " ;
       ss << printTime(xmitCT,tform) << " ! ";
       ss << printTime(r3nd.time,tform) << " ! ";
-      ss << setw(3) << r3nd.fitint.val << " ! "; 
+      ss << setw(3) << r3nd.fitint.val << " ! ";
       return(ss.str());
    }
 
@@ -600,11 +600,11 @@ namespace gnsstk
       it = ldl.find(ct);
       if (it==ldl.end())
          ldl[ct] = s;
-      else    
+      else
       {
          string& currString = it->second;
-         currString += ", " + s; 
-      }      
+         currString += ", " + s;
+      }
    }
 
    //----------------------------------------------------------------
@@ -620,12 +620,12 @@ namespace gnsstk
    CommonTime RationalizeRinexNav::formXmitTime(const Rinex3NavData& r3nd)
    {
       int weekEpoch = static_cast<GPSWeekSecond>(r3nd.time).week;
-      int sowEpoch = static_cast<GPSWeekSecond>(r3nd.time).sow; 
+      int sowEpoch = static_cast<GPSWeekSecond>(r3nd.time).sow;
 
       int xmitWeek = weekEpoch;
       long diff = sowEpoch - r3nd.xmitTime;
       if (diff<-HALFWEEK)
-         xmitWeek--; 
+         xmitWeek--;
 
       CommonTime xmitCT = GPSWeekSecond(xmitWeek, r3nd.xmitTime);
       return(xmitCT);
@@ -634,19 +634,19 @@ namespace gnsstk
    //----------------------------------------------------------------
    void RationalizeRinexNav::removeMisTaggedDataSets()
    {
-         //  For each SV  
+         //  For each SV
       SAT_NAV_DATA_LIST::iterator it1;
       for (it1=sndl.begin(); it1!=sndl.end(); it1++)
       {
-            // This process is only relevant to GPS.  Therefore, 
+            // This process is only relevant to GPS.  Therefore,
             // if this is not a GPS SV, skip it.
          const SatID& sidr = it1->first;
          if (sidr.system!=SatelliteSystem::GPS) continue;
 
-            // ctCompare is where we store the time at 
+            // ctCompare is where we store the time at
             // which all data sets will be compared.
-            // This is arbitrarily chosen to be the 
-            // Toc of the first data set in the list. 
+            // This is arbitrarily chosen to be the
+            // Toc of the first data set in the list.
          CommonTime ctCompare;
          bool first = true;
 
@@ -654,7 +654,7 @@ namespace gnsstk
 
             // This process only works if there are at least
             // four data sets
-         if (ndl.size()<4) continue; 
+         if (ndl.size()<4) continue;
 
             // First pass: compute SV positions at ctCompare.
             // Store those postions.
@@ -662,7 +662,7 @@ namespace gnsstk
          NAV_DATA_LIST::iterator it2;
          for (it2=ndl.begin();it2!=ndl.end();it2++)
          {
-            Rinex3NavData& r3nd = *it2; 
+            Rinex3NavData& r3nd = *it2;
 
             long sowToc = static_cast<GPSWeekSecond>(r3nd.time).sow;
             long origxmitTime = r3nd.xmitTime;
@@ -679,11 +679,11 @@ namespace gnsstk
 
             // Second pass: Compute differences in position
             // for adjacent data sets.
-         list<double> diffList; 
+         list<double> diffList;
          list<Triple>::const_iterator cit, citPrev;
          cit = posList.begin();
          citPrev = cit;
-         cit++; 
+         cit++;
          while (cit!=posList.end())
          {
             Triple trip = *cit;
@@ -697,7 +697,7 @@ namespace gnsstk
 
          const double THRESHOLD = 10000.0;  // 10 km
          bool runAvgCheck = false;
-         int count = 1; 
+         int count = 1;
          list<int> badPairs;
          list<double>::const_iterator citd;
          for (citd=diffList.begin();citd!=diffList.end();citd++)
@@ -708,7 +708,7 @@ namespace gnsstk
                runAvgCheck = true;
                badPairs.push_back(count);
             }
-            count++; 
+            count++;
          }
 
          if (runAvgCheck)
@@ -724,11 +724,11 @@ namespace gnsstk
                badSet.insert(bp-1);
                badSet.insert(bp);
             }
-           
+
             cit = posList.begin();
             Triple sum;
-            int count = 0; 
-            int nvalues = 0; 
+            int count = 0;
+            int nvalues = 0;
             while (cit!=posList.end())
             {
                Triple trip = *cit;
@@ -744,7 +744,7 @@ namespace gnsstk
             Triple avg = sum * invertNValues;
 
             cit = posList.begin();
-            count = 0; 
+            count = 0;
             list<int> rejectList;
             while (cit!=posList.end())
             {
@@ -755,13 +755,13 @@ namespace gnsstk
                {
                   rejectList.push_back(count);
                }
-               count++; 
+               count++;
                cit++;
             }
 
-               // If there is more than one rejection, 
-               // assume this is a delta V or some other 
-               // explanation.             
+               // If there is more than one rejection,
+               // assume this is a delta V or some other
+               // explanation.
             if (rejectList.size()==1)
             {
                   // Create a reference to the suspect object.
@@ -776,7 +776,7 @@ namespace gnsstk
                }
 
 
-               const Rinex3NavData& rndr = *citc; 
+               const Rinex3NavData& rndr = *citc;
                const CommonTime ctTest = rndr.time;
                const Triple& rndp = *cit;
 
@@ -786,7 +786,7 @@ namespace gnsstk
                citr1 = sndl.begin();
                while (!found && citr1!=sndl.end())
                {
-                     // This process is only relevant to GPS.  Therefore, 
+                     // This process is only relevant to GPS.  Therefore,
                      // if this is not a GPS SV, skip it.
                   const SatID& sidr1 = citr1->first;
                   if (sidr1.system!=SatelliteSystem::GPS)
@@ -795,13 +795,13 @@ namespace gnsstk
                      continue;
                   }
 
-                     // No need to run a comparison check on the data 
+                     // No need to run a comparison check on the data
                      // from the same SV as the reject
                   if (sidr.id==sidr1.id)
                   {
                      citr1++;
                      continue;
-                  } 
+                  }
 
                  const NAV_DATA_LIST& ndlr = citr1->second;
                   NAV_DATA_LIST::const_iterator citr2 = ndlr.begin();
@@ -823,12 +823,12 @@ namespace gnsstk
                         unsigned long unequal = countUnequal(r3nd,rndr);
                         if (unequal==0)
                         {
-                           found = true; 
+                           found = true;
                         }
 
                         if (diffVal<100.0)
                         {
-                           found = true; 
+                           found = true;
                         }
 
                         if (found==true)
@@ -836,21 +836,21 @@ namespace gnsstk
                            ndl.erase(citc);
                            stringstream ss;
                            ss << " Removed.  Actually from " << sidr1;
-                           addLog(sidr,r3nd.time,ss.str()); 
+                           addLog(sidr,r3nd.time,ss.str());
 
                         }
 
                         done = true;
-                     }   
-                    
+                     }
+
                         // If the Toc for the satellite being checked is more than
-                        // two hours in the future, assume we have passed the time 
-                        // of interest for this SV. 
+                        // two hours in the future, assume we have passed the time
+                        // of interest for this SV.
                      double diff = r3nd.time - ctTest;
                      if (diff>7200.0)
-                        done = true; 
+                        done = true;
 
-                     citr2++; 
+                     citr2++;
                   }
                   citr1++;
                }
@@ -863,7 +863,7 @@ namespace gnsstk
    unsigned long RationalizeRinexNav::countUnequal(const Rinex3NavData& left,
                                                    const Rinex3NavData& right)
    {
-      unsigned long result = 0; 
+      unsigned long result = 0;
       if (left.time!=right.time) result += 0x00000001;
       if (left.satSys!=right.satSys) result += 0x00000002;
       if (left.accuracy!=right.accuracy) result += 0x00000004;
@@ -891,7 +891,7 @@ namespace gnsstk
       if (left.OMEGAdot!=right.OMEGAdot) result += 0x01000000;
       if (left.idot!=right.idot) result += 0x02000000;
       // (left.fitint!=right.fitint) result += 0x04000000;    //Don't test this as RINEX is inconsistent on fit interval definition
-      
+
       return result;
    }
 

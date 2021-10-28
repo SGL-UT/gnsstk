@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -227,7 +227,7 @@ namespace gnsstk
           * time interval
           * @param[in] tmin defines the beginning of the time interval
           * @param[in] tmax defines the end of the time interval */
-      virtual void edit(const CommonTime& tmin, 
+      virtual void edit(const CommonTime& tmin,
                         const CommonTime& tmax = CommonTime::END_OF_TIME) throw()
       {
          posStore.edit(tmin, tmax);
@@ -237,7 +237,7 @@ namespace gnsstk
          /// Clear the dataset, meaning remove all data
       virtual void clear(void) throw()
       { clearPosition(); clearClock(); }
- 
+
          /// Return time system (@note usually GPS, but CANNOT assume so)
       virtual TimeSystem getTimeSystem(void) const throw()
       { return storeTimeSystem; }
@@ -352,7 +352,7 @@ namespace gnsstk
       virtual void clearClock(void) throw()
       { clkStore.clear(); }
 
-   
+
          /** Choose to load the clock data tables from RINEX clock
           * files. This will clear the clock store; loadFile() or
           * loadRinexClockFile() should be called after this, to load
@@ -581,7 +581,7 @@ namespace gnsstk
           * and load the data into the clock store. This routine will
           * may set the velocity, acceleration, bias or drift 'have'
           * flags.
-          * @param filename name of file (SP3 or RINEX clock format) to load 
+          * @param filename name of file (SP3 or RINEX clock format) to load
           * @throw Exception if time step is inconsistent with previous value
           */
       void loadFile(const std::string& filename);
@@ -589,7 +589,7 @@ namespace gnsstk
          /** Load an SP3 ephemeris file; may set the velocity and
           * acceleration flags.  If the clock store uses RINEX clock
           * data, this will ignore the clock data.
-          * @param filename name of file (SP3 format) to load 
+          * @param filename name of file (SP3 format) to load
           * @throw Exception if time step is inconsistent with previous value
           */
       void loadSP3File(const std::string& filename);
@@ -597,7 +597,7 @@ namespace gnsstk
          /** Load a RINEX clock file; may set the 'have' bias and
           * drift flags.  If clock store is set to use SP3 data, this
           * will call useRinexClockData()
-          * @param filename name of file (RINEX clock format) to load 
+          * @param filename name of file (RINEX clock format) to load
           * @throw Exception if time step is inconsistent with previous value
           */
       void loadRinexClockFile(const std::string& filename);

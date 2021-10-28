@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -400,12 +400,12 @@ namespace gnsstk
          { 2, 2,   1.95,  7.3254073, 12.82972756 },
          { 2, 2,   1.17,  9.1574019, 13.06071921 }
       };
- 
+
       static const double dt(2.0);
       static const double TWOPI(6.283185307179586476925287);
       int j,k,n,m;
       double a[2][3], b[2][3], dt60, pinm, alpha;
- 
+
       // compute time dependent potential matrix
       for(k=0; k<3; ++k) {
          dt60 = (mjd - (k-1)*dt) - 37076.5;
@@ -482,7 +482,7 @@ namespace gnsstk
          for(j=0; j<12; ++j)
             eop[k] += h[j] * orthowts[j][k];
       }
-      
+
       // convert to arcsec and seconds
       dxp = eop[0] * 1.e-6;
       dyp = eop[1] * 1.e-6;
@@ -1421,7 +1421,7 @@ namespace gnsstk
                arg += C32010[i].coeff[j] * farg[j];
             st[3] += C32010[i].sincoeff * ::sin(arg)+C32010[i].coscoeff * ::cos(arg);
          }
-   
+
       for(i=n4-1; i>=0; --i) {            // order 4
          arg = 0.0;
          for(j=0; j<8; ++j)
@@ -1512,7 +1512,7 @@ namespace gnsstk
          for(i=0; i<14; i++)
             if(nFAplanetary[ifreq][i])                         // don't add zero
                arg += double(nFAplanetary[ifreq][i]) * fa[i];
-            
+
          // store sin and cos
          sc[0] = ::sin(arg);
          sc[1] = ::cos(arg);
@@ -1535,7 +1535,7 @@ namespace gnsstk
          for(i=0; i<5; i++)
             if(nFAlunarsolar[ifreq][i])                         // don't add zero
                arg += double(nFAlunarsolar[ifreq][i]) * fa[i];
-            
+
          // store sin and cos
          sc[0] = ::sin(arg);
          sc[1] = ::cos(arg);
@@ -1731,7 +1731,7 @@ namespace gnsstk
       double d(D(T));     // mean elongation of the moon from the sun
       double l(L(T));     // mean anomaly of the moon
       double lp(Lp(T));   // mean anomaly of the sun
-   
+
       //-----------------------------------------------------------------------
       // include code that forms UT1mUT1R dlodR domegaR
       #include "IERS1996UT1mUTCData.hpp"
@@ -1923,7 +1923,7 @@ namespace gnsstk
    // days'= number of days elapsed since the Julian Epoch t0 (J2000)
    //      = +/-(integer+0.5)
    //   and
-   // (UT1-UTC) (seconds) is taken from the IERS bulletin 
+   // (UT1-UTC) (seconds) is taken from the IERS bulletin
    //
    // GMST0 = GMST at 0h UT1
    //      = 6h 41min (50.54841+8640184.812866*T'+0.093104*T'^2-6.2E-6*T'^3)sec
