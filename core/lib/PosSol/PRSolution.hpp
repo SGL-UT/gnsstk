@@ -458,7 +458,7 @@ namespace gnsstk
       ///                    inverse (meter^-2) of the pseudorange data (for N
       ///                    see Sats). If this matrix has dimension 0, no weighting
       ///                    of the data is done.
-      /// @param pEph        pointer to gnsstk::XvtStore to be used in the algorithm.
+      /// @param eph         NavLibrary to be used in the algorithm.
       /// @param pTropModel  pointer to gnsstk::TropModel for trop correction.
       ///
       /// @return Return values:
