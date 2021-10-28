@@ -4,6 +4,10 @@
 %apply double& OUTPUT {double& AR};
 %apply double& OUTPUT {double& lat, double& lon};
 
+%feature("autodoc", "SolarPosition(CommonTime t) -> (Position, double angular_radius)") SolarPosition;
+%feature("autodoc", "CrudeSolarPosition(CommonTime t) -> (double lat, double lon)") CrudeSolarPosition;
+%feature("autodoc", "LunarPosition(CommonTime t) -> (Position, double angular_radius)") LunarPosition;
+
 // The apply directives will be applied to all files below them.
 %include "SolarPosition.hpp"
 
