@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -39,7 +39,7 @@
  * @file MatrixBaseOperators.hpp
  * Matrix operators for the base class
  */
- 
+
 #ifndef GNSSTK_MATRIX_BASE_OPERATORS_HPP
 #define GNSSTK_MATRIX_BASE_OPERATORS_HPP
 
@@ -52,10 +52,10 @@ namespace gnsstk
 
       /// @ingroup MathGroup
       //@{
- 
+
       /// Output operator for ConstMatrixBase classes
    template <class T, class E>
-   std::ostream& operator<<(std::ostream& s, const ConstMatrixBase<T, E>& a) 
+   std::ostream& operator<<(std::ostream& s, const ConstMatrixBase<T, E>& a)
    {
       size_t i, j;
       std::ofstream savefmt;
@@ -145,7 +145,7 @@ namespace gnsstk
    }
 
       /**
-       * Uses the sum of minor determinates to calculate the whole det. 
+       * Uses the sum of minor determinates to calculate the whole det.
        * Slow for large matricies, but it works.
        * @throw MatrixException
        */
@@ -162,7 +162,7 @@ namespace gnsstk
          return l(0,0)*l(1,1) - l(0,1)*l(1,0);
       else
       {
-            // use v[0,0] * det(minor matrix(0,0)) + 
+            // use v[0,0] * det(minor matrix(0,0)) +
             //     v[0,1] * det(minor matrix(0,1)) + ...
          size_t i;
          int sign;
@@ -178,7 +178,7 @@ namespace gnsstk
    }
 
       //@}
- 
+
 }  // namespace
 
 #endif

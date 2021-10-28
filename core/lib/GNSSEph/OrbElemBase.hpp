@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,7 +41,7 @@
  *  to GNSS orbits.  Note that OrbElem was defined PRIOR to OrbElemBase.
  *  However, we then needed to handle GLONASS, which uses a tabular
  *  orbit rather than pseudo-Keplerian elements.   As a result, we
- *  need a virtual base class that defined a common interface to 
+ *  need a virtual base class that defined a common interface to
  *  key functionality without in any way defining how that functionality
  *  is implemented.   This was necessary in order that OrbElemStore could
  *  serve as a storage base for all the derived orbit classes.
@@ -51,7 +51,7 @@
  *  descendent classes provide the functionality to load the
  *  coefficients from various navigation message formats
  *  and types and then manipulate the data to produce SV positions,
- *  clock offsets, and status information. 
+ *  clock offsets, and status information.
  */
 
 #ifndef GNSSTK_ORBELEMBASE_HPP
@@ -150,13 +150,13 @@ namespace gnsstk
           */
       virtual double svRelativity(const CommonTime& t) const = 0;
 
-          /** Returns true if this two objects are 
+          /** Returns true if this two objects are
            *   a.) same concrete type, and
            *   b.) same data contents.
            * This is intended as a "data uniqueness test" to allow
            * detection of successive transmissions of same data
-           * and avoid duplicate storage.  The exact rules for 
-           * uniqueness will vary by descendent class. 
+           * and avoid duplicate storage.  The exact rules for
+           * uniqueness will vary by descendent class.
            * NOTE: This would be better as a pure virtual method.
            * However, it came about late in the process, so it is
            * implemented here as a stub that returns false.
@@ -167,9 +167,9 @@ namespace gnsstk
            *  Any differences are summarized and written to the output stream
            *  provided.
            *  The base method compares the members common to the base.  The descendent classes
-           *  should add additional member comparisions as needed in order   
-           *  to provide a complete comparison of members of interest to be compared.   
-           *  The return list is a list of the members that disagreed.  
+           *  should add additional member comparisions as needed in order
+           *  to provide a complete comparison of members of interest to be compared.
+           *  The return list is a list of the members that disagreed.
            */
       virtual std::list<std::string> compare(const OrbElemBase* right) const;
 
@@ -251,7 +251,7 @@ namespace gnsstk
          // the bounds between which the data in OrbElemBase are valid.
 	 // The manner in which these are derived varies by satellite system,
 	 // but the bounds are required for proper operation of the navigation
-	 // message storage classes. 
+	 // message storage classes.
 
          //@{
       CommonTime beginValid;    /**< Time at beginning of validity */

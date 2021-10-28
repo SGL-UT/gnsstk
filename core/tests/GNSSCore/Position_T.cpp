@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -66,7 +66,7 @@ public:
       try
       {
          Position c,s,d,g; //An object for each of the Position types.
-        
+
             // test transformTo
 
             // Start in ECEF (Cartesian)
@@ -81,7 +81,7 @@ public:
 
          t = c; // Reset comparison object
          t.transformTo(Position::Spherical);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
 
             //Start in Geodetic
          TUCSM("Geodetic transformTo");
@@ -92,18 +92,18 @@ public:
 
          t = d;  // Reset comparison object
          t.transformTo(Position::Geocentric);
-         TUASSERTFEPS(0, range(t,d), eps); 
+         TUASSERTFEPS(0, range(t,d), eps);
 
          t = d;  // Reset comparison object
          t.transformTo(Position::Spherical);
-         TUASSERTFEPS(0, range(t,d), eps); 
+         TUASSERTFEPS(0, range(t,d), eps);
 
             //Start in Geocentric
          TUCSM("Geocentric transformTo");
          g.setGeocentric(38.811958506159,251.499999999370,6371110.627671023800);
          t = g;  // Reset comparison object
          t.transformTo(Position::Cartesian);
-         TUASSERTFEPS(0, range(t,g), eps); 
+         TUASSERTFEPS(0, range(t,g), eps);
 
          t = g;  // Reset comparison object
          t.transformTo(Position::Geodetic);
@@ -111,7 +111,7 @@ public:
 
          t = g;  // Reset comparison object
          t.transformTo(Position::Spherical);
-         TUASSERTFEPS(0, range(t,g), eps); 
+         TUASSERTFEPS(0, range(t,g), eps);
 
             //Start in Spherical
          TUCSM("Spherical transformTo");
@@ -126,7 +126,7 @@ public:
 
          t = s;
          t.transformTo(Position::Geodetic);
-         TUASSERTFEPS(0, range(t,s), eps); 
+         TUASSERTFEPS(0, range(t,s), eps);
       }
       catch(...)
       {
@@ -233,7 +233,7 @@ public:
             "%a degN %L degE %r m",
             "%x m %y m %z m",
             "%t deg %p deg %r M"};
-         for(int i=1; i<5; i++) 
+         for(int i=1; i<5; i++)
          {
             string str;
                // A dummy Position initialized at c and another
@@ -309,23 +309,23 @@ public:
          t.transformTo(Position::Geodetic);
          TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Geocentric);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Spherical);
          TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Cartesian);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Geodetic);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Cartesian);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Spherical);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Geodetic);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Spherical);
          TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Geocentric);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Cartesian);
          TUASSERTFEPS(0, range(t,c), eps);
       }
@@ -339,7 +339,7 @@ public:
    }
 
       /*      Many of the tests above use the range() function to
-              measure the distances between two positions. It in turn 
+              measure the distances between two positions. It in turn
               needs to be tested to ensure that it works. */
    unsigned rangeTest()
    {

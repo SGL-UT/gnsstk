@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,37 +29,37 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 /*
 *   The Galileo health status is determined from several pieces of data in the
 *   message.  This is defined the Galileo Service Definition Document (SDD) in
-*   section 2.3.1.4.  In order to test the various combinations, a 
-*   RINEX 3 nav file was hand edited to cover the various combinations.  
+*   section 2.3.1.4.  In order to test the various combinations, a
+*   RINEX 3 nav file was hand edited to cover the various combinations.
 *   A different SV was assigned to each combination in order to simplify the
 *   test process.
 *
-*   Note that the full complement of possible combinations do not need to be 
+*   Note that the full complement of possible combinations do not need to be
 *   tested.   SHS is the highest priority in the decision tree.   Unless
 *   SHS==0, the other parameters do not matter.   Similarly, DVS is higher
-*   prioity than SISA.   
+*   prioity than SISA.
 *
-*   The RINEX "health" word is actually bit-encoded and contains 
+*   The RINEX "health" word is actually bit-encoded and contains
 *   the DVS (1 bit) and the SHS (three bits).  This is described in the
-*   RINEX 3.04 specification in Table A8.  The exact location of 
+*   RINEX 3.04 specification in Table A8.  The exact location of
 *   the three bits varies by signal type.  As a result, the reconstruted
 *   "health" word is provided to aid confirmation.
 *
 *        Bit    8 7 6 5 4 3 2 1 0
 *   Quantity    S S D S S D S S D
-*               ----- ----- -----  
+*               ----- ----- -----
 *     Signal      E5b   E5a   E1B
 *
-*                     Data Source                     "Health" word    Expected 
+*                     Data Source                     "Health" word    Expected
 *   PRN ID  Signal    dec.   hex.  SISA   DVS    SHS     hex.   dec.     Result     Notes
 *   ------  ------    -----------  ----   ---    ---   -------------   --------   -----
 *      E01     E5b    516, 0x0204  !=255    0      0     0x000     0   Healthy    As broadcast
@@ -69,10 +69,10 @@
 *      E05                         !=255    1      0     0x040    64   Marginal   DVS = Working without guarantee
 *      E06                            -1    0      0     0x000     0   Marginal   SISA = no accuracy predication available
 *      E07     E1B    513, 0x0201  !=255    0      0     0x000     0   Healthy
-*      E08            513, 0x0201  !=255    0      3     0x006     6   Unhealthy  
+*      E08            513, 0x0201  !=255    0      3     0x006     6   Unhealthy
 *      E09            513, 0x0201     -1    0      0     0x000     0   Marginal
-*      E10     E5a    258, 0x0102  !=255    0      0     0x000     0   Healthy    High order bit in data source changes due to E5a   
-*      E11            258, 0x0102  !=255    0      3     0x030    48   Unhealthy  
+*      E10     E5a    258, 0x0102  !=255    0      0     0x000     0   Healthy    High order bit in data source changes due to E5a
+*      E11            258, 0x0102  !=255    0      3     0x030    48   Unhealthy
 *      E12            258, 0x0102     -1    0      0     0x000     0   Marginal
 *      E14   E1B+E5b  517, 0x0205  !=255    0      3     0x186   390   Unhealthy   As broadcast. Both E1B and E5b
 */
@@ -97,10 +97,10 @@ using namespace std;
 class GalEphemeris_T
 {
 public:
-   
-  gnsstk::OrbitEphStore store; 
 
-      /** This loads the test file into an OrbitEphStore. 
+  gnsstk::OrbitEphStore store;
+
+      /** This loads the test file into an OrbitEphStore.
         * OrbitEphStore is tested elsewhere
         */
    unsigned loadRinexNavData()
@@ -109,8 +109,8 @@ public:
 
       std::string dataFilePath = gnsstk::getPathData();
       std::string file_sep = "/";
-      string fn = dataFilePath + file_sep + "test_input_rinex3_nav_gal.20n"; 
-       
+      string fn = dataFilePath + file_sep + "test_input_rinex3_nav_gal.20n";
+
       gnsstk::Rinex3NavStream strm;
       strm.open(fn.c_str(),ios::in);
       if (!strm.is_open())
@@ -156,13 +156,13 @@ public:
          catch (gnsstk::Exception e)
          {
             TUFAIL("Caught exception attempting to load test_input");
-            done = true; 
+            done = true;
          }
       }
       TURETURN();
    }
 
-      /** This tests the known health status of selected 
+      /** This tests the known health status of selected
         * SVs.
         */
    unsigned testHealthSettings()
@@ -208,10 +208,10 @@ public:
 
       int CASE_COUNT = 13;
 
-      gnsstk::CommonTime ctTest = gnsstk::CivilTime(2020, 5, 29, 0, 30, 0.0, gnsstk::TimeSystem::GAL); 
+      gnsstk::CommonTime ctTest = gnsstk::CivilTime(2020, 5, 29, 0, 30, 0.0, gnsstk::TimeSystem::GAL);
       for (int i=0; i<CASE_COUNT; i++)
       {
-         gnsstk::SatID sid(prnId[i],gnsstk::SatelliteSystem::Galileo); 
+         gnsstk::SatID sid(prnId[i],gnsstk::SatelliteSystem::Galileo);
          gnsstk::Xvt::HealthStatus health;
          TUCATCH(health = store.getSVHealth(sid, ctTest));
          TUASSERTE(gnsstk::Xvt::HealthStatus,

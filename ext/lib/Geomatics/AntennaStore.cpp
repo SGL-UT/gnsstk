@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,7 +41,7 @@
 /// receiver/satellite name.
 /// Access using name (receivers), or name and time (satellites); compute compute PCOs
 /// at any (elevation, azimuth).
- 
+
 #include "AntennaStore.hpp"
 #include "Position.hpp"
 #include "Matrix.hpp"
@@ -231,7 +231,7 @@ namespace gnsstk
                if(!antstrm) break;
                continue;
             }
-      
+
             // name it
             string name = antdata.name();
 
@@ -264,7 +264,7 @@ namespace gnsstk
    }
 
    // Compute the vector from the SV Center of Mass (COM) to
-   // the phase center of the antenna. 
+   // the phase center of the antenna.
    // Satellites are identified by two things:
    // system character: G or blank GPS, R GLONASS, E GALILEO, C BeiDou
    // and integer PRN or SVN number.
@@ -275,14 +275,14 @@ namespace gnsstk
    // the satellites valid at that time tag - most likely exactly one per sys/PRN.
    // param        char sys  System character for the satellite: G,R,E or M
    // param           int n  PRN (or SVN) of the satellite
-   // param Triple satVector Vector from center of Earth to SV. 
+   // param Triple satVector Vector from center of Earth to SV.
    // param   bool inputPRN  If false, parameter n is SVN not PRN (default true).
    // return vector from COM to PC
    // throw InvalidRequest if no data available
    Triple AntennaStore::ComToPcVector(const char sys,
                                       const int n,
                                       const CommonTime& ct,
-                                      const Triple& satVector, 
+                                      const Triple& satVector,
                                       bool inputPRN) const
    {
       AntexData antenna;
@@ -293,7 +293,7 @@ namespace gnsstk
          if (getSatelliteAntenna(sys, n, name, antenna))
          {
 
-            // tracking, and future expansion. 
+            // tracking, and future expansion.
             double fact1 = 1.0;
             double fact2 = 1.0;
             string freq1("");
@@ -319,15 +319,15 @@ namespace gnsstk
                //
                //  Design short-coming in that we are limited to ONE decision
                //  per GNSS.   The BeiDou ICD says the Broadcast Orbits are aligned
-               //  to B3I phase center.  Generally, we are attempting to move the 
-               //  broadcast orbit from the APC to the COM.  Therefore, we only 
+               //  to B3I phase center.  Generally, we are attempting to move the
+               //  broadcast orbit from the APC to the COM.  Therefore, we only
                //  need B3 (C06)
                case 'C':
                {
                   /*
                   double alpha = ((1561.098 * 1561.098) / (1268.52 * 1268.52)) - 1.0;  // B1 and B3
-                  fact1 = (alpha+1.0) / alpha;   
-                  fact2 = -1.0 / alpha; 
+                  fact1 = (alpha+1.0) / alpha;
+                  fact2 = -1.0 / alpha;
                   freq1 = "C02";
                   freq2 = "C06";
                   */
@@ -340,8 +340,8 @@ namespace gnsstk
                case 'E':
                {
                   double alpha = ((154*154) / (116.5*116.5)) -1.0;   // E1 and E5a
-                  fact1 = (alpha+1.0) / alpha;   
-                  fact2 = -1.0 / alpha; 
+                  fact1 = (alpha+1.0) / alpha;
+                  fact2 = -1.0 / alpha;
                   freq1 = "E01";
                   freq2 = "E05";
                   break;
@@ -350,13 +350,13 @@ namespace gnsstk
                default:
                {
                   stringstream ss;
-                  ss << "Invalid satellite system " << sys << " PRN " << n; 
+                  ss << "Invalid satellite system " << sys << " PRN " << n;
                   ss << " for AntennaStore::ComToPcVector.";
                   InvalidRequest ir(ss.str());
-                  GNSSTK_THROW(ir); 
+                  GNSSTK_THROW(ir);
                }
             }
-             
+
            // Rotation matrix from satellite attitude.
            // Rot * [XYZ] = [body frame]
            Matrix<double> SVAtt;
@@ -389,8 +389,8 @@ namespace gnsstk
            Vector<double> SatPCOXYZ(3);
            SatPCOXYZ = transpose(SVAtt) * PCO;
            Triple pcoxyz = Triple(SatPCOXYZ(0), SatPCOXYZ(1), SatPCOXYZ(2));
-           
-           return pcoxyz; 
+
+           return pcoxyz;
          }
          else
          {
@@ -398,7 +398,7 @@ namespace gnsstk
             ss << "AntennaStore::ComToPcVector.  No satellite data found for "
                << sys << " PRN " << n;
             InvalidRequest ir(ss.str());
-            GNSSTK_THROW(ir); 
+            GNSSTK_THROW(ir);
          }
       }
       catch(Exception exc)
@@ -408,8 +408,8 @@ namespace gnsstk
    }
 
    // Same as above except with different calling sequence for convenience
-   Triple AntennaStore::ComToPcVector(const SatID& sidr, 
-                                      const CommonTime& ct, 
+   Triple AntennaStore::ComToPcVector(const SatID& sidr,
+                                      const CommonTime& ct,
                                       const Triple& satVector) const
    {
       char sys = ' ';
@@ -417,28 +417,28 @@ namespace gnsstk
       switch (sidr.system)
       {
          case SatelliteSystem::GPS:     {sys='G'; break;}
-         case SatelliteSystem::Galileo: {sys='E'; break;}  
+         case SatelliteSystem::Galileo: {sys='E'; break;}
          case SatelliteSystem::Glonass: {sys='R'; break;}
          case SatelliteSystem::BeiDou:  {sys='C'; break;}
          default:
          {
             stringstream ss;
-            ss << "Invalid satellite system " << sidr; 
+            ss << "Invalid satellite system " << sidr;
             ss << " for AntennaStore::ComToPcVector.";
             InvalidRequest ir(ss.str());
-            GNSSTK_THROW(ir); 
+            GNSSTK_THROW(ir);
          }
       }
 
       try
       {
-         tp = ComToPcVector(sys, sidr.id, ct, satVector);             
+         tp = ComToPcVector(sys, sidr.id, ct, satVector);
       }
       catch(Exception exc)
       {
          GNSSTK_RETHROW(exc);
       }
-      return tp; 
+      return tp;
    }
 
 

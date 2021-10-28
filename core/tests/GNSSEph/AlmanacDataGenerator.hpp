@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -46,7 +46,7 @@
 
 #ifdef _MSC_VER
 static inline double round(double val)
-{    
+{
     return floor(val + 0.5);
 }
 #endif
@@ -69,7 +69,7 @@ public:
    float af1[31];
    float week[31];
    std::string line;
-        
+
    AlmanacData(void)
    {
 
@@ -158,7 +158,7 @@ public:
          startaf0 = ( (uint32_t) aData.af0[i] ) >> 3;
          endaf0 = (((uint32_t) aData.af0[i]) << (32-3)) >> (32-3);
          allSVs[i].word10 = ( (((startaf0 << 11) + (uint32_t) aData.af1[i]) << 3) + endaf0 ) << 8;
-                
+
          totalSf[i][0] = allSVs[i].word1;
          totalSf[i][1] = allSVs[i].word2;
          totalSf[i][2] = allSVs[i].word3;
@@ -178,7 +178,7 @@ public:
       for(int i=0; i<31; i++)
       {
             //pow is used to scale, round returns an signed int, uint32_t recasts to unsigned
-            //resigned in 32, so 
+            //resigned in 32, so
          aData.ecc[i] = twosCompliment((uint32_t) round(aData.ecc[i] * pow(2.,21)), 16);
          aData.toa[i] = twosCompliment((uint32_t) round(aData.toa[i] * pow(2.,-12)), 8);
          aData.oi[i] = twosCompliment((uint32_t) round((aData.oi[i] - .3*M_PI) * pow(2., 19) / M_PI), 16);
@@ -197,7 +197,7 @@ public:
    uint32_t twosCompliment(uint32_t data, int size)
    {
       if (data > 0x1000)
-         data = (data << (32 - size)) >> (32-size); 
+         data = (data << (32 - size)) >> (32-size);
       else data = (uint32_t) round(data);
 
       return data;
@@ -210,7 +210,7 @@ public:
 uint32_t threesCompliment(uint32_t data, int size)
 {
    if (data > 0x1000)
-      data = (data << (32 - size)) >> (32-size); 
+      data = (data << (32 - size)) >> (32-size);
    else data = (uint32_t) round(data);
 
    return data;

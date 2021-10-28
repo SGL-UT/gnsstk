@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -51,14 +51,14 @@
 #include "FormattedDouble.hpp"
 
 namespace gnsstk
-{ 
+{
       /// @ingroup FileHandling
       //@{
 
       /// Provide a base class for RinexClockData and RinexClockHeader.
    class RinexClockBase : public FFData
    {
-   public:  
+   public:
          /** Class used to read and write the formatted data in a
           * RINEX clock file. */
       class RCDouble : public FormattedDouble
@@ -76,9 +76,9 @@ namespace gnsstk
          { FormattedDouble::operator=(s); return *this; }
       };
 
-         /// Destructor 
+         /// Destructor
       virtual ~RinexClockBase() {}
-      
+
          /// RINEX clock data types
       struct RinexClkType
       {
@@ -88,7 +88,7 @@ namespace gnsstk
                           description(std::string("Unknown or Invalid")){}
          RinexClkType(std::string t, std::string d) : type(t), description(d){}
          bool operator==(const RinexClkType &other) const
-         {  return (StringUtils::upperCase(type) == 
+         {  return (StringUtils::upperCase(type) ==
                     StringUtils::upperCase(other.type));
          }
          bool operator!=(const RinexClkType &other) const
@@ -102,7 +102,7 @@ namespace gnsstk
          bool operator>=(const RinexClkType &other) const
          {  return (type >= other.type); }
       };
-      
+
          /** @name Standard RINEX clock data types
           */
          //@{
@@ -111,27 +111,27 @@ namespace gnsstk
       static const RinexClkType AS;
       static const RinexClkType CR;
       static const RinexClkType DR;
-      static const RinexClkType MS;    
+      static const RinexClkType MS;
          //@}
 
    protected:
-      
+
          /// Converts a CivilTime object into a Rinex Clock time
          /// Format is 26 characters "yyyy mm dd hh mm ss.ssssss"
          /// If CommonTime == BEGINNING_OF_TIME an all blank string will
          /// be returned.
       std::string writeTime(const CivilTime& dt) const;
-      
-         /** Converts a 26 character Rinex Clock time in the format 
+
+         /** Converts a 26 character Rinex Clock time in the format
           * "yyyy mm dd hh mm ss.ssssss" to a CivilTime object.
           * If the string is blank a CommonTime::BEGINNING_OF_TIME is returned.
           * @throw FFStreamError
           */
       CivilTime parseTime(const std::string& line) const;
-      
+
    };  //  RinexClockBase
       //@}
-   
+
 }  // namespace
 
 #endif

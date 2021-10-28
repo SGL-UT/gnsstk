@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -55,13 +55,13 @@ size_t statsTest()
 
    gnsstk::TwoSampleStats<T> tso;
 
-   tso.Add(1, 2);	
+   tso.Add(1, 2);
    tso.Add(2, 5);
    tso.Add(3, 1);
    tso.Add(4, 4);
    tso.Add(5, 3);
    TUA(5, tso.N(), "Add()");
-   
+
    TUAE(3, tso.AverageX(), precision, "AverageX()");
    TUAE(5, tso.MaximumX(), precision, "MaxX()");
    TUAE(1, tso.MinimumX(), precision, "MinX()");
@@ -79,8 +79,8 @@ size_t statsTest()
    TUAE(0.574456264653802865989, tso.SigmaSlope(), precision, "SigmaSlope()");
    TUAE(1.81659021245849499920, tso.SigmaYX(), precision, "SigmaYX()");
    TUAE(0.1, tso.Correlation(), precision, "Correlation()");
-   
-   return testFramework.countFails();                  
+
+   return testFramework.countFails();
 }
 
 
@@ -90,7 +90,7 @@ int main()
    ec += statsTest<float>();
    ec += statsTest<double>();
    ec += statsTest<long double>();
-	
+
    cout << "Total Failures for " << __FILE__ << ": " << ec << endl;
    return ec;
 }

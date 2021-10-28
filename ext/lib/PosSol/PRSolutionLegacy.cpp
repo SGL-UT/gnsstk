@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004, The Board of Regents of The University of Texas System
@@ -41,7 +41,7 @@
  * @file PRSolutionLegacy.cpp
  * Autonomous pseudorange navigation solution, including RAIM algorithm
  */
- 
+
 #include "MathBase.hpp"
 #include "PRSolutionLegacy.hpp"
 #include "EphemerisRange.hpp"
@@ -75,7 +75,7 @@ public:
       nc = n = k = 0;
       Index = NULL;
    }
-   
+
       /// Constructor for C(n,k) = Combinations of n things taken k at a time (k <= n)
       /// @throw Exception on invalid input (k>n).
    Combinations(int N, int K)
@@ -89,14 +89,14 @@ public:
          GNSSTK_RETHROW(e);
       }
    }
-   
+
       /// copy constructor
    Combinations(const Combinations& right)
       throw()
    {
       *this = right;
    }
-   
+
       /// destructor
    ~Combinations(void)
    {
@@ -104,7 +104,7 @@ public:
          delete[] Index;
       Index = NULL;
    }
-   
+
       /// Assignment operator.
    Combinations& operator=(const Combinations& right)
       throw()
@@ -118,11 +118,11 @@ public:
       }
       return *this;
    }
-   
+
       /// Compute the next combination, returning the number of Combinations computed
       /// so far; if there are no more Combinations, return -1.
    int Next(void) throw();
-   
+
       /// Return index i (0 <= i < n) of jth selection (0 <= j < k);
       /// if j is out of range, return -1.
    int Selection(int j)
@@ -132,7 +132,7 @@ public:
          return -1;
       return Index[j];
    }
-   
+
       /// Return true if the given index j (0 <= j < n) is
       /// currently selected (i.e. if j = Selection(i) for some i)
    bool isSelected(int j)
@@ -151,10 +151,10 @@ private:
       /// The initialization routine used by constructors.
       /// @throw Exception on invalid input (k>n or either n or k < 0).
    void init(int N, int K);
-   
+
       /// Recursive function to increment Index[j].
    int Increment(int j) throw();
-   
+
    int nc;         ///< number of Combinations computed so far
    int k,n;        ///< Combinations of n things taken k at a time, given at c'tor
    int* Index;     ///< Index[j] = index of jth selection (j=0...k-1; I[j]=0...n-1)
@@ -197,7 +197,7 @@ void Combinations::init(int N, int K)
       gnsstk::Exception e("Combinations(n,k) must have k <= n, with n,k >= 0");
       GNSSTK_THROW(e);
    }
-   
+
    if (K > 0)
    {
       Index = new int[K];
@@ -209,7 +209,7 @@ void Combinations::init(int N, int K)
    }
    else
       Index = NULL;
-   
+
    nc = 0;
    k = K;
    n = N;
@@ -294,7 +294,7 @@ namespace gnsstk
             *pDebugStream << fixed << setw(16) << setprecision(3) << SVP << endl;
          }
          if (i) return i;  // return is 0 (ok) or -4 (no ephemeris)
-         
+
          // count how many good satellites we have
          // Initialize UseSat based on Satellite, and build GoodIndexes.
          // UseSat is used to mark good sats (true) and those to ignore (false).
@@ -316,7 +316,7 @@ namespace gnsstk
             }
          }
          UseSave = UseSat;
-         
+
          // don't even try if there are not 4 good satellites
 
          if (!hasGlonass && N < 4)
@@ -329,30 +329,30 @@ namespace gnsstk
          // ( not really RAIM || not RAIM at all - just one solution)
          if (!ResidualCriterion || NSatsReject==0)
             MinSV=4;
-         
+
          // how many satellites can RAIM reject, if we have to?
          // default is -1, meaning as many as possible
          Nreject = NSatsReject;
          if (Nreject == -1 || Nreject > N-MinSV)
             Nreject=N-MinSV;
-            
+
          // ----------------------------------------------------------------
          // now compute the solution, first with all the data. If this fails,
          // reject 1 satellite at a time and try again, then 2, etc.
-         
+
          // Slopes for each satellite are computed (cf. the RAIM algorithm)
          Vector<double> Slopes(Pseudorange.size());
-         
+
          // Residuals stores the post-fit data residuals.
          Vector<double> Residuals(Satellite.size(),0.0);
-         
+
          // stage is the number of satellites to reject.
          stage = 0;
-         
+
          do{
             // compute all the Combinations of N satellites taken stage at a time
             Combinations Combo(N,stage);
-            
+
             // compute a solution for each combination of marked satellites
             do{
                // Mark the satellites for this combination
@@ -375,7 +375,7 @@ namespace gnsstk
                iret = AutonomousPRSolution(Tr, UseSat, SVP, pTropModel, Algebraic,
                   NIterations, Convergence, Solution, Covariance, Residuals, Slopes,
                   pDebugStream, ((hasGlonass && hasOther)?(&satSystems):(NULL)) );
-               
+
                // ----------------------------------------------------------------
                // Compute RMS residual...
                if (!ResidualCriterion)
@@ -429,7 +429,7 @@ namespace gnsstk
                      // also print the return value
                   *pDebugStream << " (" << iret << ")" << endl;
                }// end debug print
-               
+
                // ----------------------------------------------------------------
                // deal with the results of AutonomousPRSolution()
                if (iret)
@@ -453,24 +453,24 @@ namespace gnsstk
                   if ((stage==0 || ReturnAtOnce) && RMSResidual < RMSLimit)
                      break;
                }
-               
+
                // get the next Combinations and repeat
             } while(Combo.Next() != -1);
-            
+
             // end of the stage
             if (BestRMS > 0.0 && BestRMS < RMSLimit)
             {     // success
                iret=0;
                break;
             }
-            
+
             // go to next stage
             stage++;
             if (stage > Nreject)
                break;
-               
+
          } while(iret == 0);        // end loop over stages
-         
+
          // ----------------------------------------------------------------
          // copy out the best solution and return
          Convergence = BestConv;
@@ -486,17 +486,17 @@ namespace gnsstk
             else
                Nsvs++;
          }
-         
+
          if (iret==0 && BestSL > SlopeLimit)
             iret=1;
          if (iret==0 && BestSL > SlopeLimit/2.0 && Nsvs == 5)
             iret=1;
          if (iret>=0 && BestRMS >= RMSLimit)
             iret=2;
-            
+
          if (iret==0)
             Valid=true;
-         
+
          return iret;
       }
       catch(Exception& e)
@@ -520,12 +520,12 @@ namespace gnsstk
       int i,j,nsvs,N=Satellite.size();
       CommonTime tx;                // transmit time
       Xvt PVT;
-      
+
       if (N <= 0)
          return 0;
       SVP = Matrix<double>(N,4);
       SVP = 0.0;
-      
+
       for (nsvs=0,i=0; i<N; i++)
       {
             // skip marked satellites
@@ -541,7 +541,7 @@ namespace gnsstk
                continue;
             }
 
-         
+
             // first estimate of transmit time
          tx = Tr;
          tx -= Pseudorange[i]/C_MPS;
@@ -563,7 +563,7 @@ namespace gnsstk
                   << Satellite[i] << endl;
             continue;
          }
-         
+
             // update transmit time and get ephemeris range again
          tx -= PVT.clkbias + PVT.relcorr;     // clk+rel
          try
@@ -576,7 +576,7 @@ namespace gnsstk
             Satellite[i].id = -::abs(Satellite[i].id);
             continue;
          }
-         
+
             // SVP = {SV position at transmit time}, raw range + clk + rel
          for (j=0; j<3; j++)
          {
@@ -585,7 +585,7 @@ namespace gnsstk
          SVP(i,3) = Pseudorange[i] + C_MPS * (PVT.clkbias + PVT.relcorr);
          nsvs++;
       }
-      
+
       if (nsvs == 0)
          return -4;
       return 0;
@@ -604,7 +604,7 @@ namespace gnsstk
          int N=A.rows();
          Matrix<double> AT=transpose(A);
          Matrix<double> B=AT,C(4,4);
-         
+
          C = AT * A;
          // invert
          try
@@ -618,12 +618,12 @@ namespace gnsstk
          {
             return -2;
          }
-         
+
          B = C * AT;
-         
+
          Vector<double> One(N,1.0),V(4),U(4);
          double E,F,G,d,lam;
-         
+
          U = B * One;
          V = B * Q;
          E = Minkowski(U,U);
@@ -634,21 +634,21 @@ namespace gnsstk
          if (d < 0.0)
             d=0.0;
          d = SQRT(d);
-         
+
             // first solution ...
          lam = (-F+d)/E;
          X = lam*U + V;
          X(3) = -X(3);
             // ... and its residual
          R(0) = A(0,3)-X(3) - RSS(X(0)-A(0,0), X(1)-A(0,1), X(2)-A(0,2));
-         
+
             // second solution ...
          lam = (-F-d)/E;
          X = lam*U + V;
          X(3) = -X(3);
             // ... and its residual
          R(1) = A(0,3)-X(3) - RSS(X(0)-A(0,0), X(1)-A(0,1), X(2)-A(0,2));
-         
+
             // pick the right solution
          if (ABS(R(1)) > ABS(R(0)))
          {
@@ -656,15 +656,15 @@ namespace gnsstk
             X = lam*U + V;
             X(3) = -X(3);
          }
-         
+
             // compute the residuals
          for (int i=0; i<N; i++)
          {
             R(i) = A(i,3)-X(3) - RSS(X(0)-A(i,0), X(1)-A(i,1), X(2)-A(i,2));
          }
-         
+
          return 0;
-         
+
       }
       catch(Exception& e)
       {
@@ -695,24 +695,24 @@ namespace gnsstk
          Exception e("Undefined tropospheric model");
          GNSSTK_THROW(e);
       }
-      
+
       int size;
       if (satSystems != NULL)
          size = 5;
       else
          size = 4;
-      
+
       try
       {
          int iret,j,n,N;
          size_t i;
          double rho,wt,svxyz[3];
          GPSEllipsoid ell;               // WGS84?
-         
+
          //if (pDebugStream)
          //   *pDebugStream << "Enter APRS " << n_iterate << " "
          //                << scientific << setprecision(3) << converge << endl;
-         
+
             // find the number of good satellites
          for (N=0,i=0; i<Use.size(); i++)
          {
@@ -723,29 +723,29 @@ namespace gnsstk
             return -3;
          else if (N < 4)
             return -3;
-            
+
             // define for computation
          Vector<double> CRange(N),dX(size);
          Matrix<double> P(N,size),PT,G(size,N),PG(N,N);
          Xvt SV,RX;
-         
+
          Sol.resize(size);
          Cov.resize(size,size);
          Resid.resize(N);
          Slope.resize(Use.size());
-         
+
             // define for algebraic solution
          Vector<double> U(size),Q(N);
          Matrix<double> A(P);
             // and for linearized least squares
          int niter_limit = (n_iterate < 2 ? 2 : n_iterate);
          double conv_limit = converge;
-         
+
             // prepare for iteration loop
          Sol = 0.0;                                // initial guess: center of earth
          n_iterate = 0;
          converge = 0.0;
-         
+
             // iteration loop
             // do at least twice (even for algebraic solution) so that
             // trop model gets evaluated
@@ -756,27 +756,27 @@ namespace gnsstk
 
                // current estimate of position solution
             for(i=0; i<3; i++) RX.x[i]=Sol(i);
-            
+
                // loop over satellites, computing partials matrix
             for (n=0,i=0; i<Use.size(); i++)
             {
                   // ignore marked satellites
                if (!Use[i])
                   continue;
-                  
+
                   // time of flight (sec)
                if (n_iterate == 0)
                   rho = 0.070;             // initial guess: 70ms
                else
                   rho = RSS(SVP(i,0)-Sol(0), SVP(i,1)-Sol(1), SVP(i,2)-Sol(2))
                             / ell.c();
-                            
+
                   // correct for earth rotation
                wt = ell.angVelocity()*rho;             // radians
                svxyz[0] =  ::cos(wt)*SVP(i,0) + ::sin(wt)*SVP(i,1);
                svxyz[1] = -::sin(wt)*SVP(i,0) + ::cos(wt)*SVP(i,1);
                svxyz[2] = SVP(i,2);
-               
+
                   // corrected pseudorange (m)
                CRange(n) = SVP(i,3);
 
@@ -799,10 +799,10 @@ namespace gnsstk
                   CRange(n) -= tc;
 
                }
-               
+
                   // geometric range
                rho = RSS(svxyz[0]-Sol(0),svxyz[1]-Sol(1),svxyz[2]-Sol(2));
-               
+
                   // partials matrix
                P(n,0) = (Sol(0)-svxyz[0])/rho;           // x direction cosine
                P(n,1) = (Sol(1)-svxyz[1])/rho;           // y direction cosine
@@ -810,18 +810,18 @@ namespace gnsstk
                P(n,3) = 1.0;
                if (satSystems != NULL)
                   P(n,4) = (*satSystems)[i]; // 1 if GLONASS, 0 if GPS
-               
+
                   // data vector: corrected range residual
                Resid(n) = CRange(n) - rho - Sol(3);
                if (satSystems != NULL && (*satSystems)[i] == 1)
                {
                   Resid(n) -= Sol(4);
                }
-             
+
                   // TD: allow weight matrix = measurement covariance
                // P *= MCov;
                // Resid *= MCov;
-               
+
                   // compute intermediate quantities for algebraic solution
                if (satSystems == NULL && Algebraic)
                {
@@ -832,14 +832,14 @@ namespace gnsstk
                   U(4) = A(n,4) = P(n,4);
                   Q(n) = 0.5 * Minkowski(U,U);
                }
-               
+
                n++;        // n is number of good satellites - used for Slope
             }  // end loop over satellites
-            
+
                // compute information matrix = inverse covariance matrix
             PT = transpose(P);
             Cov = PT * P;
-            
+
                // invert using SVD
             //double big,small;
             //condNum(PT*P,big,small);
@@ -854,13 +854,13 @@ namespace gnsstk
             {
                return -2;
             }
-            
+
                // generalized inverse
             G = Cov * PT;
             PG = P * G;                         // used for Slope
-            
+
             n_iterate++;                        // increment number iterations
-            
+
                // ----------------- algebraic solution -----------------------
             if (satSystems == NULL && Algebraic)
             {
@@ -893,7 +893,7 @@ namespace gnsstk
                   break;
                }
             }
-            
+
          }
 
         while(1);    // end iteration loop
@@ -902,7 +902,7 @@ namespace gnsstk
             //*pDebugStream << "Warning - trop correction not applied at time "
                //<< T.printf("%4F %10.3g\n");
 
-         
+
 
             // compute slopes
          Slope = 0.0;
@@ -920,9 +920,9 @@ namespace gnsstk
                j++;
             }
          }
-         
+
          return iret;
-      } 
+      }
       catch(Exception& e)
       {
          GNSSTK_RETHROW(e);

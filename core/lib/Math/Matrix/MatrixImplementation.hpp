@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -84,12 +84,12 @@ namespace gnsstk
    template <class T>
    MatrixRowSlice<T> Matrix<T>::rowRef(size_t rowNum, size_t colNum)
    {
-      return MatrixRowSlice<T>(*this, rowNum, 
+      return MatrixRowSlice<T>(*this, rowNum,
                                std::slice(colNum, cols()-colNum, 1));
    }
 
    template <class T>
-   ConstMatrixRowSlice<T> Matrix<T>::row(size_t rowNum, const std::slice& s) 
+   ConstMatrixRowSlice<T> Matrix<T>::row(size_t rowNum, const std::slice& s)
       const
    {
       return ConstMatrixRowSlice<T>(*this, rowNum, s);
@@ -99,7 +99,7 @@ namespace gnsstk
    ConstMatrixRowSlice<T> Matrix<T>::row(size_t rowNum, size_t colNum)
       const
    {
-      return ConstMatrixRowSlice<T>(*this, rowNum, 
+      return ConstMatrixRowSlice<T>(*this, rowNum,
                                     std::slice(colNum, cols()-colNum, 1));
    }
 
@@ -112,19 +112,19 @@ namespace gnsstk
    template <class T>
    MatrixColSlice<T> Matrix<T>::colRef(size_t colNum, size_t rowNum)
    {
-      return MatrixColSlice<T>(*this, colNum, 
+      return MatrixColSlice<T>(*this, colNum,
                                std::slice(rowNum, rows() - rowNum, 1));
    }
 
    template <class T>
-   ConstMatrixColSlice<T> Matrix<T>::col(size_t colNum, 
+   ConstMatrixColSlice<T> Matrix<T>::col(size_t colNum,
                                          const std::slice& s) const
    {
       return ConstMatrixColSlice<T>(*this, colNum, s);
    }
 
    template <class T>
-   ConstMatrixColSlice<T> Matrix<T>::col(size_t colNum, 
+   ConstMatrixColSlice<T> Matrix<T>::col(size_t colNum,
                                          size_t rowNum) const
    {
       return ConstMatrixColSlice<T>(*this, colNum,

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -54,7 +54,7 @@
 namespace gnsstk
 {
 
-      /// @ingroup formattedfile 
+      /// @ingroup formattedfile
       //@{
 
       /** This is a class to parse and manage configuration data files.
@@ -227,9 +227,9 @@ namespace gnsstk
       virtual double getValueAsDouble( std::string variable,
                                        std::string section = "DEFAULT",
                                        double defaultVal = 0.0)
-      { 
-         return StringUtils::asDouble( 
-               getValue(variable, section, StringUtils::asString(defaultVal)) ); 
+      {
+         return StringUtils::asDouble(
+               getValue(variable, section, StringUtils::asString(defaultVal)) );
       };
 
 
@@ -242,9 +242,9 @@ namespace gnsstk
       virtual int getValueAsInt( std::string variable,
                                  std::string section = "DEFAULT",
                                  int    defaultVal = 0 )
-      { 
-         return StringUtils::asInt( 
-                  getValue(variable, section, StringUtils::asString(defaultVal)) ); 
+      {
+         return StringUtils::asInt(
+                  getValue(variable, section, StringUtils::asString(defaultVal)) );
       };
 
 
@@ -255,7 +255,7 @@ namespace gnsstk
           * @throw ConfigurationException
           */
       virtual bool getValueAsBoolean( std::string variable,
-                                      std::string section = "DEFAULT", 
+                                      std::string section = "DEFAULT",
                                       bool   defaultVal = false );
 
 
@@ -291,9 +291,9 @@ namespace gnsstk
       virtual double fetchListValueAsDouble( std::string variableList,
                                              std::string section = "DEFAULT",
                                              double defaultVal = 0.0 )
-      { 
-         return StringUtils::asDouble( 
-         fetchListValue(variableList,section,StringUtils::asString(defaultVal))); 
+      {
+         return StringUtils::asDouble(
+         fetchListValue(variableList,section,StringUtils::asString(defaultVal)));
       };
 
 
@@ -312,9 +312,9 @@ namespace gnsstk
       virtual int fetchListValueAsInt( std::string variableList,
                                        std::string section = "DEFAULT",
                                        int    defaultVal = 0 )
-      { 
-         return StringUtils::asInt( 
-         fetchListValue(variableList,section,StringUtils::asString(defaultVal))); 
+      {
+         return StringUtils::asInt(
+         fetchListValue(variableList,section,StringUtils::asString(defaultVal)));
       };
 
 

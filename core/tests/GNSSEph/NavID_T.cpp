@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -163,13 +163,13 @@ constructorTest()
 
       //Beidou D2
    TUASSERTE(gnsstk::NavType, NavType::BeiDou_D2, testIDBD2.navType);
-   
+
       //Glonass Civil F
    TUASSERTE(gnsstk::NavType, NavType::GloCivilF, testIDGloF.navType);
-   
+
       //Glonass Civil C
    TUASSERTE(gnsstk::NavType, NavType::GloCivilC, testIDGloC.navType);
-   
+
       //Galileo Open Sys
    TUASSERTE(gnsstk::NavType, NavType::GalINAV, testIDGalOS.navType);
 
@@ -179,10 +179,10 @@ constructorTest()
 
       //IRNSS L5 SPS
    TUASSERTE(gnsstk::NavType, NavType::IRNSS_SPS, testID_IRNSS_SPS.navType);
-   
+
       //Any
    TUASSERTE(gnsstk::NavType, NavType::Any, testIDAny.navType);
-   
+
       //Unknown
    TUASSERTE(gnsstk::NavType, NavType::Unknown, testIDUnkwn.navType);
 
@@ -197,46 +197,46 @@ streamOutputTest()
 
    ln << testIDLNAV;
    TUASSERTE(std::string, "GPS_LNAV", ln.str());
-   
+
    l2 << testIDCNAVL2;
    TUASSERTE(std::string, "GPS_CNAV_L2", l2.str());
-   
+
    l5 << testIDCNAVL5;
    TUASSERTE(std::string, "GPS_CNAV_L5", l5.str());
 
    cnav2 << testIDCNAV2;
    TUASSERTE(std::string, "GPS_CNAV2", cnav2.str());
-   
+
    mn << testIDMNAV;
    TUASSERTE(std::string, "GPS_MNAV", mn.str());
-   
+
    d1 << testIDBD1;
    TUASSERTE(std::string, "Beidou_D1", d1.str());
-   
+
    d2 << testIDBD2;
    TUASSERTE(std::string, "Beidou_D2", d2.str());
-   
+
    gf << testIDGloF;
    TUASSERTE(std::string, "GloCivilF", gf.str());
-   
+
    gc << testIDGloC;
    TUASSERTE(std::string, "GloCivilC", gc.str());
-   
+
    ginv << testIDGalOS;
    TUASSERTE(std::string, "GalINAV", ginv.str());
-   
+
    ginv_2 << testIDGalOS_2;
    TUASSERTE(std::string, "GalINAV", ginv_2.str());
-   
+
    gfnv << testIDGalOS_F;
    TUASSERTE(std::string, "GalFNAV", gfnv.str());
 
    is << testID_IRNSS_SPS;
    TUASSERTE(std::string, "IRNSS_SPS", is.str());
-   
+
    any << testIDAny;
    TUASSERTE(std::string, "Any", any.str());
-   
+
    un << testIDUnkwn;
    TUASSERTE(std::string, "Unknown", un.str());
 
@@ -251,43 +251,43 @@ stringConstructorTest()
 
    NavID testIDLNAVString(ln.str());
    TUASSERTE(gnsstk::NavType, NavType::GPSLNAV, testIDLNAVString.navType);
-   
+
    NavID testIDCNAVL2String(l2.str());
    TUASSERTE(gnsstk::NavType, NavType::GPSCNAVL2, testIDCNAVL2String.navType);
-   
+
    NavID testIDCNAVL5String(l5.str());
    TUASSERTE(gnsstk::NavType, NavType::GPSCNAVL5, testIDCNAVL5String.navType);
-   
+
    NavID testIDCNAV2String(cnav2.str());
    TUASSERTE(gnsstk::NavType, NavType::GPSCNAV2, testIDCNAV2String.navType);
-   
+
    NavID testIDMNAVString(mn.str());
    TUASSERTE(gnsstk::NavType, NavType::GPSMNAV, testIDMNAVString.navType);
-   
+
    NavID testIDBD1String(d1.str());
    TUASSERTE(gnsstk::NavType, NavType::BeiDou_D1, testIDBD1String.navType);
-   
+
    NavID testIDBD2String(d2.str());
    TUASSERTE(gnsstk::NavType, NavType::BeiDou_D2, testIDBD2String.navType);
-   
+
    NavID testIDGloFString(gf.str());
    TUASSERTE(gnsstk::NavType, NavType::GloCivilF, testIDGloFString.navType);
-   
+
    NavID testIDGloCString(gc.str());
    TUASSERTE(gnsstk::NavType, NavType::GloCivilC, testIDGloCString.navType);
-   
+
    NavID testIDGalOSStringI(ginv.str());
    TUASSERTE(gnsstk::NavType, NavType::GalINAV, testIDGalOSStringI.navType);
-   
+
    NavID testIDGalOSStringF(gfnv.str());
    TUASSERTE(gnsstk::NavType, NavType::GalFNAV, testIDGalOSStringF.navType);
-   
+
    NavID testID_IRNSS_SPS_String(is.str());
    TUASSERTE(gnsstk::NavType,NavType::IRNSS_SPS,testID_IRNSS_SPS_String.navType);
-   
+
    NavID testIDAnyString(any.str());
    TUASSERTE(gnsstk::NavType, NavType::Any, testIDAnyString.navType);
-   
+
    NavID testIDUnkwnString(un.str());
    TUASSERTE(gnsstk::NavType, NavType::Unknown, testIDUnkwnString.navType);
 

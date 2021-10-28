@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -90,7 +90,7 @@ namespace gnsstk
          for(int k=0; k<NUM_HARMONICS; k++)
          {
 
-            temp += harmonics(i,k) * 
+            temp += harmonics(i,k) *
                     std::cos( arguments(k) - harmonics( (i+3),k)*DEG_TO_RAD );
 
          }
@@ -205,7 +205,7 @@ namespace gnsstk
       for(int k=0; k<NUM_HARMONICS; k++)
       {
 
-         double temp( sig(k)*fday + angfac(0,k)*H0 + 
+         double temp( sig(k)*fday + angfac(0,k)*H0 +
                       angfac(1,k)*S0 + angfac(2,k)*P0 + angfac(3,k)*TWO_PI );
 
          arguments(k) = fmod(temp,TWO_PI);

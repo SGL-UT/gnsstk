@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,8 +15,8 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
@@ -25,14 +25,14 @@
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -826,7 +826,7 @@ namespace gnsstk
        * PNBMultiGNSSNavDataFactory.
        *
        * @section NavFactoryAdd Adding Custom NavData Factories
-       * 
+       *
        * If you wish to add support for additional file formats to
        * MultiFormatNavDataFactory, you will need to do the following:
        *
@@ -930,7 +930,7 @@ namespace gnsstk
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
-          *   behavior or by nearest to when in time. 
+          *   behavior or by nearest to when in time.
           * @return true if successful, false if no nav data was found
           *   to compute the Xvt. */
       bool getXvt(const NavSatelliteID& sat, const CommonTime& when,
@@ -951,7 +951,7 @@ namespace gnsstk
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
-          *   behavior or by nearest to when in time. 
+          *   behavior or by nearest to when in time.
           * @return true if successful, false if no nav data was found
           *   to compute the Xvt. */
       bool getXvt(const NavSatelliteID& sat, const CommonTime& when,
@@ -968,7 +968,7 @@ namespace gnsstk
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
-          *   behavior or by nearest to when in time. 
+          *   behavior or by nearest to when in time.
           * @return true if successful, false if no nav data was found
           *   containing health status. */
       bool getHealth(const NavSatelliteID& sat, const CommonTime& when,
@@ -1150,7 +1150,7 @@ namespace gnsstk
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
-          *   behavior or by nearest to when in time. 
+          *   behavior or by nearest to when in time.
           * @return true if successful.  If false, navData will be untouched. */
       bool find(const NavMessageID& nmid, const CommonTime& when,
                 NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
@@ -1215,13 +1215,13 @@ namespace gnsstk
          /// Remove all data from the library's factories.
       void clear();
 
-         /** Determine the earliest time for which this object can successfully 
+         /** Determine the earliest time for which this object can successfully
           * determine the Xvt for any object.
           * @return The initial time, or CommonTime::END_OF_TIME if no
           *   data is available. */
       CommonTime getInitialTime() const;
 
-         /** Determine the latest time for which this object can successfully 
+         /** Determine the latest time for which this object can successfully
           * determine the Xvt for any object.
           * @return The initial time, or CommonTime::BEGINNING_OF_TIME if no
           *   data is available. */

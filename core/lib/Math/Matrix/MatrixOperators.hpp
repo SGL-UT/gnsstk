@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -52,15 +52,15 @@ namespace gnsstk
 {
       /// @ingroup MathGroup
       //@{
- 
-      /** 
+
+      /**
        * Returns the top to bottom concatenation of Matrices l and r
        * only if they have the same number of columns.
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
-   inline Matrix<T> operator&&(const ConstMatrixBase<T, BaseClass1>& l, 
-                               const ConstMatrixBase<T, BaseClass2>& r) 
+   inline Matrix<T> operator&&(const ConstMatrixBase<T, BaseClass1>& l,
+                               const ConstMatrixBase<T, BaseClass2>& r)
    {
       if (l.cols() != r.cols())
       {
@@ -83,14 +83,14 @@ namespace gnsstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the top to bottom concatenation of Matrix t and Vector b
        * only if they have the same number of columns.
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
-   inline Matrix<T> operator&&(const ConstMatrixBase<T, BaseClass1>& t, 
-                               const ConstVectorBase<T, BaseClass2>& b) 
+   inline Matrix<T> operator&&(const ConstMatrixBase<T, BaseClass1>& t,
+                               const ConstVectorBase<T, BaseClass2>& b)
    {
       if (t.cols() != b.size())
       {
@@ -112,14 +112,14 @@ namespace gnsstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the top to bottom concatenation of Vector t and Matrix b
        * only if they have the same number of columns.
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
-   inline Matrix<T> operator&&(const ConstVectorBase<T, BaseClass1>& t, 
-                               const ConstMatrixBase<T, BaseClass2>& b) 
+   inline Matrix<T> operator&&(const ConstVectorBase<T, BaseClass1>& t,
+                               const ConstMatrixBase<T, BaseClass2>& b)
    {
       if (t.size() != b.cols())
       {
@@ -141,14 +141,14 @@ namespace gnsstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the left to right concatenation of l and r only if
        * they have the same number of rows.
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
    inline Matrix<T> operator||(const ConstMatrixBase<T, BaseClass1>& l,
-                               const ConstMatrixBase<T, BaseClass2>& r)  
+                               const ConstMatrixBase<T, BaseClass2>& r)
    {
       if (l.rows() != r.rows())
       {
@@ -171,7 +171,7 @@ namespace gnsstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the left to right concatenation of Matrix l and Vector r
        * only if they have the same number of rows.
        * @throw MatrixException
@@ -200,7 +200,7 @@ namespace gnsstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the left to right concatenation of Vector l and Matrix r
        * only if they have the same number of rows.
        * @throw MatrixException
@@ -229,7 +229,7 @@ namespace gnsstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the left to right concatenation of Vector l and Vector r
        * only if they have the same number of rows.
        * @throw MatrixException
@@ -256,7 +256,7 @@ namespace gnsstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the minor matrix of l at element (row, col).  A minor
        * matrix is the same matrix as \c l but with row \c row and col
        * \c col removed.
@@ -264,7 +264,7 @@ namespace gnsstk
        */
    template <class T, class BaseClass>
    inline Matrix<T> minorMatrix(const ConstMatrixBase<T, BaseClass>& l,
-                                size_t row, size_t col) 
+                                size_t row, size_t col)
    {
       if ((row >= l.rows()) || (col >= l.cols()))
       {
@@ -276,7 +276,7 @@ namespace gnsstk
       {
          if (col == 0)
          {
-            return Matrix<T>(l,1,1,l.rows()-1,l.cols()-1);  
+            return Matrix<T>(l,1,1,l.rows()-1,l.cols()-1);
          }
          else if (col == (l.cols() - 1))
          {
@@ -316,7 +316,7 @@ namespace gnsstk
       }
       else
       {
-         return (Matrix<T>(l, 0, 0, row, col) || 
+         return (Matrix<T>(l, 0, 0, row, col) ||
                  Matrix<T>(l, 0, col + 1, row, l.cols()-col-1)) &&
             (Matrix<T>(l, row + 1, 0, l.rows()-row-1, col) ||
              Matrix<T>(l, row + 1, col + 1, l.rows()-row-1, l.cols()-col-1));
@@ -336,13 +336,13 @@ namespace gnsstk
             temp(j,i) = m(i,j);
       return temp;
    }
- 
+
       /**
        * Uses an LU Decomposition to calculate the determinate of m.
        * @throw MatrixException
        */
    template <class T, class BaseClass>
-   inline T det(const ConstMatrixBase<T, BaseClass>& m) 
+   inline T det(const ConstMatrixBase<T, BaseClass>& m)
    {
       try
       {
@@ -361,7 +361,7 @@ namespace gnsstk
        * returns the condition number of the matrix
        */
    template <class T, class BaseClass>
-   inline T condNum(const ConstMatrixBase<T, BaseClass>& m, T& bigNum, T& smallNum) 
+   inline T condNum(const ConstMatrixBase<T, BaseClass>& m, T& bigNum, T& smallNum)
       throw()
    {
       SVD<T> svd;
@@ -380,7 +380,7 @@ namespace gnsstk
        * bigNum or smallNum.
        */
    template <class T, class BaseClass>
-   inline T condNum(const ConstMatrixBase<T, BaseClass>& m) 
+   inline T condNum(const ConstMatrixBase<T, BaseClass>& m)
       throw()
    {
       T bigNum, smallNum;
@@ -811,7 +811,7 @@ namespace gnsstk
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
-   inline Matrix<T> operator* (const ConstMatrixBase<T, BaseClass1>& l, 
+   inline Matrix<T> operator* (const ConstMatrixBase<T, BaseClass1>& l,
                                const ConstMatrixBase<T, BaseClass2>& r)
    {
       if (l.cols() != r.rows())
@@ -819,7 +819,7 @@ namespace gnsstk
          MatrixException e("Incompatible dimensions for Matrix * Matrix");
          GNSSTK_THROW(e);
       }
-   
+
       Matrix<T> toReturn(l.rows(), r.cols(), T(0));
       size_t i, j, k;
       for (i = 0; i < toReturn.rows(); i++)
@@ -835,7 +835,7 @@ namespace gnsstk
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
-   inline Vector<T> operator* (const ConstMatrixBase<T, BaseClass1>& m, 
+   inline Vector<T> operator* (const ConstMatrixBase<T, BaseClass1>& m,
                                const ConstVectorBase<T, BaseClass2>& v)
    {
       if (v.size() != m.cols())
@@ -843,10 +843,10 @@ namespace gnsstk
          gnsstk::MatrixException e("Incompatible dimensions for Vector * Matrix");
          GNSSTK_THROW(e);
       }
-   
+
       Vector<T> toReturn(m.rows());
       size_t i, j;
-      for (i = 0; i < m.rows(); i++) 
+      for (i = 0; i < m.rows(); i++)
       {
          toReturn[i] = 0;
          for (j = 0; j < m.cols(); j++)
@@ -859,7 +859,7 @@ namespace gnsstk
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
-   inline Vector<T> operator* (const ConstVectorBase<T, BaseClass1>& v, 
+   inline Vector<T> operator* (const ConstVectorBase<T, BaseClass1>& v,
                                const ConstMatrixBase<T, BaseClass2>& m)
    {
       if (v.size() != m.rows())
@@ -867,10 +867,10 @@ namespace gnsstk
          gnsstk::MatrixException e("Incompatible dimensions for Vector * Matrix");
          GNSSTK_THROW(e);
       }
-   
+
       Vector<T> toReturn(m.cols());
       size_t i, j;
-      for (i = 0; i < m.cols(); i++) 
+      for (i = 0; i < m.cols(); i++)
       {
          toReturn[i] = 0;
          for (j = 0; j < m.rows(); j++)
@@ -945,7 +945,7 @@ namespace gnsstk
    }
 
       /**
-       * find the maximum magnitude in a matrix 
+       * find the maximum magnitude in a matrix
        */
    template <class T, class BaseClass>
    inline T maxabs(const ConstMatrixBase<T, BaseClass>& a)
@@ -1030,7 +1030,7 @@ namespace gnsstk
    }
 
       //@}
- 
+
 }  // namespace
 
 #endif

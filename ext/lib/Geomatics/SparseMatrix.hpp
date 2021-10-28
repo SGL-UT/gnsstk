@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -156,7 +156,7 @@ namespace gnsstk
    }
 
    //---------------------------------------------------------------------------
-   // cast 
+   // cast
    template <class T> SMatProxy<T>::operator T() const
    {
       typename std::map< unsigned int, SparseVector<T> >::iterator it;
@@ -447,7 +447,7 @@ namespace gnsstk
          if(newcols < ncols)
             for(it=rowsMap.begin(); it != rowsMap.end(); ++it)
                it->second.resize(newcols);
-         
+
          nrows = newrows;
          ncols = newcols;
       }
@@ -521,7 +521,7 @@ namespace gnsstk
          const
       {
          rows.clear(); cols.clear(); values.clear();
-         
+
          // loop over rows, then columns
          typename std::map< unsigned int, SparseVector<T> >::const_iterator it;
          typename std::map<unsigned int, T>::const_iterator jt;
@@ -1086,7 +1086,7 @@ namespace gnsstk
    {
       if(L.rows() != V.size())
          GNSSTK_THROW(Exception("Incompatible dimensions op||(SM,V)"));
-      
+
       SparseMatrix<T> toRet(L);
       toRet.ncols++;
 
@@ -1163,7 +1163,7 @@ namespace gnsstk
          else
             rowsMap[sit->first] -= sit->second;
       }
-      
+
       zeroize(T(0));
       return *this;
    }
@@ -1175,7 +1175,7 @@ namespace gnsstk
       if(M.cols() != cols() || M.rows() != rows())
          GNSSTK_THROW(Exception("Incompatible dimensions op-=(M)"));
       //std::cout << "SM::op-=(M)" << std::endl;
-      
+
       // loop over rows of M
       for(unsigned int i=0; i<M.rows(); i++) {
          Vector<T> rowV(M.rowCopy(i));
@@ -1190,7 +1190,7 @@ namespace gnsstk
       zeroize(T(0));
       return *this;
    }
-   
+
    /// Matrix subtraction: SparseMatrix = SparseMatrix - SparseMatrix
    template <class T>
    SparseMatrix<T> operator-(const SparseMatrix<T>& L, const SparseMatrix<T>& R)
@@ -1252,7 +1252,7 @@ namespace gnsstk
          else
             rowsMap[sit->first] += sit->second;
       }
-      
+
       zeroize(T(0));
       return *this;
    }
@@ -1264,7 +1264,7 @@ namespace gnsstk
       if(M.cols() != cols() || M.rows() != rows())
          GNSSTK_THROW(Exception("Incompatible dimensions op+=(M)"));
       //std::cout << "SM::op+=(M)" << std::endl;
-      
+
       // loop over rows of M
       for(unsigned int i=0; i<M.rows(); i++) {
          Vector<T> rowV(M.rowCopy(i));
@@ -1275,7 +1275,7 @@ namespace gnsstk
          else
             rowsMap[i] += rowV;
       }
-      
+
       zeroize(T(0));
       return *this;
    }
@@ -1413,7 +1413,7 @@ namespace gnsstk
    void SparseMatrix<T>::swapRows(const unsigned int& ii, const unsigned int& jj)
    {
       if(ii >= nrows || jj >= nrows) GNSSTK_THROW(Exception("Invalid indexes"));
-      
+
       typename std::map< unsigned int, SparseVector<T> >::iterator it, jt;
       it = rowsMap.find(ii);
       jt = rowsMap.find(jj);
@@ -1525,7 +1525,7 @@ namespace gnsstk
             for(unsigned int k=0; k<n; k++) {
                sum = T(0);
                for(vt=jt->second.vecMap.begin(); vt!=jt->second.vecMap.end(); ++vt)
-                  sum += vt->second * C(vt->first,k);   
+                  sum += vt->second * C(vt->first,k);
                if(sum != T(0)) prod(k) = sum;
             }
             toRet(j) = dot(jt->second,prod);
@@ -1677,7 +1677,7 @@ namespace gnsstk
    //     123   d
    //     123    d
    //     123 etc d
-   
+
    /// Compute lower triangular square root of a symmetric positive definite matrix
    /// (Cholesky decomposition) Crout algorithm.
    /// @param A SparseMatrix to be decomposed; symmetric and positive definite, const
@@ -1692,7 +1692,7 @@ namespace gnsstk
          oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
          GNSSTK_THROW(Exception(oss.str()));
       }
-   
+
       const unsigned int n=A.rows();
       unsigned int i,j,k;
       T d, diag;
@@ -1760,7 +1760,7 @@ namespace gnsstk
          }  // end loop over rows below the diagonal
 
       }  // end loop over column j of A
-      
+
       return L;
    }
 
@@ -1780,7 +1780,7 @@ namespace gnsstk
       T big(0), small(0), dum, sum;
 
       // trick is to fill transpose(inverse) and then transpose at the end
-      SparseMatrix<T> invLT(L.cols(),L.rows()); 
+      SparseMatrix<T> invLT(L.cols(),L.rows());
       typename std::map< unsigned int, SparseVector<T> >::const_iterator it;
       typename std::map< unsigned int, SparseVector<T> >::iterator jt;
 
@@ -1959,13 +1959,13 @@ namespace gnsstk
    //    contains the residuals of fit (D - A*state).
    // Return values: SrifMU returns void, but throws exceptions if the input matrices
    //    or vectors have incompatible dimensions.
-   // 
+   //
    // Measurment noise associated with H and D must be white with unit covariance.
    // If necessary, the data can be 'whitened' before calling this routine in order
    // to satisfy this requirement. This is done as follows.
    // Compute the lower triangular square root of the covariance matrix, L,
    // and replace H with inverse(L)*H and D with inverse(L)*D.
-   // 
+   //
    //    The Householder transformation is simply an orthogonal transformation
    // designed to make the elements below the diagonal zero. It works by explicitly
    // performing the transformation, one column at a time, without actually
@@ -2021,7 +2021,7 @@ namespace gnsstk
             << A.rows() << "x" << A.cols();
          GNSSTK_THROW(Exception(oss.str()));
       }
-   
+
       const T EPS=T(1.e-20);
       const unsigned int m(M==0 || M>A.rows() ? A.rows() : M), n(R.rows());
       const unsigned int np1(n+1);  // if np1 = n, state vector Z is not updated
@@ -2031,7 +2031,7 @@ namespace gnsstk
       typename std::map< unsigned int, T >::iterator vt;
 
       SparseMatrix<T> AT(transpose(A));         // work with the transpose
-   
+
       for(j=0; j<n; j++) {          // loop over columns
          jt = AT.rowsMap.find(j);   // is column j empty?
          if(jt == AT.rowsMap.end()) //   no, so A is already zero below the diagonal
@@ -2044,15 +2044,15 @@ namespace gnsstk
          //for(i=0; i<m; i++)
          //   sum += A(i,j)*A(i,j); // sum of squares of elements in column below diag
          if(sum < EPS) continue;    // sum is positive
-   
+
          dum = R(j,j);
          sum += dum * dum;          // add diagonal element
          sum = (dum > T(0) ? -T(1) : T(1)) * SQRT(sum);
          delta = dum - sum;
          R(j,j) = sum;
-   
+
          //if(j+1 > np1) break;       // this in case np1 is ever set to n ....
-   
+
          beta = sum*delta;          // beta by construction must be negative
          if(beta > -EPS) continue;
          beta = T(1)/beta;
@@ -2074,11 +2074,11 @@ namespace gnsstk
        //     for(i=0; i<m; i++)
        //        sum += A(i,j) * A(i,k);
             if(sum == T(0)) continue;
-   
+
             sum *= beta;
             if(k==n) Z(j) += sum*delta;
             else   R(j,k) += sum*delta;
-   
+
             vt = kt->second.vecMap.begin();
             for(i=0; i<m; i++) {       // loop over rows in column k
        //      A(i,k) += sum * A(i,j);

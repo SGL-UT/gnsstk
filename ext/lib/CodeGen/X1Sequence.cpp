@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -64,7 +64,7 @@ namespace gnsstk
          GNSSTK_THROW(e);
       }
    }
-   
+
    void X1Sequence::allocateMemory( )
    {
       int X1Aepoch;
@@ -74,24 +74,24 @@ namespace gnsstk
       int X1epoch = 1;
       long X1Word = 0;
       int lengthOfX1BSequence;
-   
+
       if (isInit==true)
       {
          gnsstk::Exception e ("X1Sequence::allocateMemory() called multiple times");
          GNSSTK_THROW(e);
       }
-      
+
       X1Bits = new uint32_t[NUM_6SEC_WORDS];
-      if (X1Bits==0) 
+      if (X1Bits==0)
       {
          gnsstk::Exception e ("X1Sequence::allocateMemory() - allocation failed.");
          GNSSTK_THROW(e);
       }
-   
+
          // Generate the X1A and X1B sequences.
       gnsstk::GenXSequence X1A( X1A_INIT, X1A_TAPS, XA_COUNT, XA_EPOCH_DELAY);
       gnsstk::GenXSequence X1B( X1B_INIT, X1B_TAPS, XB_COUNT, XB_EPOCH_DELAY);
-   
+
          // Combination will be performed for four X1 epochs.
          // This will generate six seconds of X1 bits sequence
          // that will end on an even 32-bit boundary.
@@ -102,13 +102,13 @@ namespace gnsstk
       X1Bepoch = 1;
       X1Bcount = 0;
       lengthOfX1BSequence = XB_COUNT;
-   
+
       while ( X1Word < NUM_6SEC_WORDS )
       {
             // Get 32 X1A bits.  Update counters and handle rollovers.
          X1Abits = X1A[X1Acount];
          X1Acount += MAX_BIT;
-      
+
          if ( X1Acount >= XA_COUNT )
          {
             ++X1Aepoch;
@@ -119,7 +119,7 @@ namespace gnsstk
             }
             X1Acount = X1Acount - XA_COUNT;
          }
-      
+
             // Get 32 X1B bits.  Update counters and handle rollovers
          X1Bbits = X1B[X1Bcount];
          X1Bcount += MAX_BIT;
@@ -128,16 +128,16 @@ namespace gnsstk
             X1Bcount = X1Bcount - lengthOfX1BSequence;
             ++X1Bepoch;
             if (X1Bepoch>XB_MAX_EPOCH) X1Bepoch = 1;
-            if (X1Bepoch==XB_MAX_EPOCH) 
+            if (X1Bepoch==XB_MAX_EPOCH)
                lengthOfX1BSequence = XB_COUNT+XB_EPOCH_DELAY;
              else
                lengthOfX1BSequence = XB_COUNT;
             X1B.setLengthOfSequence( lengthOfX1BSequence );
          }
-         
+
          X1Bits[X1Word++] = X1Abits ^ X1Bbits;
-      }   
-   
+      }
+
       isInit = true;
    }
 
@@ -151,5 +151,5 @@ namespace gnsstk
       delete [] X1Bits;
       isInit = false;
    }
-   
+
 }     // end of namespace

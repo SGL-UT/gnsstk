@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -61,7 +61,7 @@ void SVDTest(size_t r, size_t c,
    for (int i=0; i < min(r,c); i++)
       S(i,i) = svd.S(i);
    TUASSERTFEPS( A, svd.U * S * transpose(svd.V), eps);
-   
+
    TUASSERTFEPS( gnsstk::ident<T>(r), svd.U * transpose(svd.U), eps);
    TUASSERTFEPS( gnsstk::ident<T>(c), svd.V * transpose(svd.V), eps);
 
@@ -96,7 +96,7 @@ unsigned multipass()
 
    T a44[] = {2,-1,0,0,-1,2,-1,0,0,-1,2,-1,0,0,-1,2};
    T b4[] = {5,1,-2,6};
-   T bs4[] ={5,5,4,5};   
+   T bs4[] ={5,5,4,5};
    SVDTest<T>(4, 4, a44, b4, bs4, testFramework);
    SVDTest<T>(2, 8, a44, NULL, NULL, testFramework);
    SVDTest<T>(8, 2, a44, NULL, NULL, testFramework);
@@ -111,7 +111,7 @@ int main()
    ec += multipass<float>();
    ec += multipass<double>();
    ec += multipass<long double>();
-   
+
    std::cout << "Total Failures for " << __FILE__ << ": " << ec << std::endl;
 
    return ec;

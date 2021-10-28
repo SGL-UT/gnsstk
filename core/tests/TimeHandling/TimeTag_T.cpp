@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -364,7 +364,7 @@ changeTimeSystemTest()
       // can't use TimeTag directly as it's abstract, so use CivilTime instead
    gnsstk::CivilTime uut, exp;
 
-      //Check conversion from any given time system to UTC and back 
+      //Check conversion from any given time system to UTC and back
    uut = gnsstk::CivilTime(1990,11,6,0,0,0,gnsstk::TimeSystem::UTC);
    exp = gnsstk::CivilTime(1990,11,6,0,0,6,gnsstk::TimeSystem::GPS);
    TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GPS,btsc));
@@ -445,7 +445,7 @@ int main() //Main function to initialize and run all tests above
    errorTotal += testClass.scanfUnixTime();
    errorTotal += testClass.scanfYDSTime();
    errorTotal += testClass.changeTimeSystemTest();
-	
+
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
       //Return the total number of errors

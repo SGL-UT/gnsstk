@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -245,7 +245,7 @@ namespace gnsstk
          validPrnObs,                         ///< PRN / # OF OBS
          validLast                            ///< Used for testing only.
       };
-   
+
          /** RINEX 3 DCBS/PCVS info (for differential code bias and
           * phase center variations corr.) */
       class Rinex3CorrInfo
@@ -528,7 +528,7 @@ namespace gnsstk
           */
       virtual void dump(std::ostream& s) const
       { dump(s, version); }
-         
+
          /** This is a debug output function which provides a lot of
           * detail about the header contents for a specified RINEX
           * format version.
@@ -557,7 +557,7 @@ namespace gnsstk
 
          /** Parse a single header record, and modify valid
           * accordingly.  Used by reallyGetRecord for both
-          * Rinex3ObsHeader and Rinex3ObsData. 
+          * Rinex3ObsHeader and Rinex3ObsData.
           * @throw FFStreamError
           */
       void parseHeaderRecord(std::string& line);
@@ -640,7 +640,7 @@ namespace gnsstk
 
          /** Helper methods
           * The conversion between RINEX v2.11 to RINEX v3 observation
-          * type is fraught with system-specific idiosyncracies.   These 
+          * type is fraught with system-specific idiosyncracies.   These
           * methods read the list of v2.11 obs types stored in R2ObsTypes
           * and attempt to build a corresponding list of v3 observation
           * types where appropriate.

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -351,13 +351,13 @@ namespace gnsstk
    // Note that calling these will transform the Position to another coordinate
    // system if that is required.
    //
-   
+
    const ReferenceFrame& Position::getReferenceFrame() const
       throw()
-   {   
+   {
       return refFrame;
    }
-   
+
       // Get X coordinate (meters)
    double Position::X() const
       throw()
@@ -478,7 +478,7 @@ namespace gnsstk
    {
       refFrame = frame;
    }
-   
+
       /**
       * Set the ellipsoid values for this Position given a ellipsoid.
       * @param ell  Pointer to the EllipsoidModel.
@@ -1489,34 +1489,34 @@ namespace gnsstk
 
 
         /**
-        * A member function that computes the radius of curvature of the 
+        * A member function that computes the radius of curvature of the
         * meridian (Rm) corresponding to this Position.
         * @return radius of curvature of the meridian (in meters)
         */
     double Position::getCurvMeridian() const
         throw()
     {
-    
+
         double slat = ::sin(geodeticLatitude()*DEG_TO_RAD);
         double W = 1.0/SQRT(1.0-eccSquared*slat*slat);
-        
+
         return AEarth*(1.0-eccSquared)*W*W*W;
-        
+
     }
 
         /**
-        * A member function that computes the radius of curvature in the 
+        * A member function that computes the radius of curvature in the
         * prime vertical (Rn) corresponding to this Position.
         * @return radius of curvature in the prime vertical (in meters)
         */
     double Position::getCurvPrimeVertical() const
         throw()
     {
-    
+
         double slat = ::sin(geodeticLatitude()*DEG_TO_RAD);
-        
+
         return AEarth/SQRT(1.0-eccSquared*slat*slat);
-        
+
     }
 
 

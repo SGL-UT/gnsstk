@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -101,7 +101,7 @@ namespace gnsstk
          InvalidRequest e(string("Requested time system is not GLONASS time"));
          GNSSTK_THROW(e);
       }
-      
+
          // Check that the given epoch is within the available time limits.
          // We have to add a margin of 15 minutes (900 seconds).
       if ( epoch <  (initialTime - 900.0) ||
@@ -182,7 +182,7 @@ namespace gnsstk
                // of "wrong time system"
             return rv;
          }
-      
+
             // Check that the given epoch is within the available time limits.
             // We have to add a margin of 15 minutes (900 seconds).
          if ((epoch <  (initialTime - 900.0)) ||
@@ -261,7 +261,7 @@ namespace gnsstk
                // of "wrong time system"
             return rv;
          }
-      
+
             // Check that the given epoch is within the available time limits.
             // We have to add a margin of 15 minutes (900 seconds).
          if ((epoch <  (initialTime - 900.0)) ||
@@ -444,7 +444,7 @@ namespace gnsstk
 
                   // If we are within the proper boundaries, let's add the data
                GloEphemeris data( (*tgmIter).second );
-            
+
                SatID sat( (*it).first );
                bak[sat][t] = data;     // Add entry
 
@@ -464,7 +464,7 @@ namespace gnsstk
       pe = bak;
 
       return;
-      
+
    }; // End of method 'GloEphemerisStore::edit()'
 
 
@@ -481,7 +481,7 @@ namespace gnsstk
          InvalidRequest e( "GloEphemerisStore object has no data." );
          GNSSTK_THROW(e);
       }
-      
+
       return initialTime;
 
    }; // End of method 'GloEphemerisStore::getInitialTime()'
@@ -540,7 +540,7 @@ namespace gnsstk
         const SatID& sidr = cit->first;
         retSet.insert(sidr);
       }
-      return retSet; 
+      return retSet;
    }
 
       /* Find the corresponding GLONASS ephemeris for the given epoch.

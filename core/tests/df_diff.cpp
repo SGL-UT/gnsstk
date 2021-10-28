@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -89,7 +89,7 @@ public:
 
       if (!BasicFramework::initialize(argc,argv))
          return false;
-      
+
       input1Fn = input1Option.getValue()[0];
       input2Fn = input2Option.getValue()[0];
 
@@ -102,14 +102,14 @@ public:
          exitCode=1;
          return false;
       }
-      
+
       if (!input1)
       {
          cerr << "Could not open: " << input2Fn << endl;
          exitCode=1;
          return false;
       }
-      
+
          // Determine total number of lines in input file 1
       string line;
       while (getline(input1, line))
@@ -155,7 +155,7 @@ public:
 
       if (lineSkipOption.getCount())
          linesToSkip = gnsstk::StringUtils::asInt(lineSkipOption.getValue()[0]);
-     
+
       if (debugLevel)
          output << "First file " << input1Fn << endl
                 << "Second file " << input2Fn << endl
@@ -163,10 +163,10 @@ public:
                 << "Epsilon " << epsilon << endl
                 << "Skipping " << linesToSkip << " lines at beginning" << endl
                 << "Skipping " << lastlineValue << " lines at end" << endl;
-      
+
       return true;
    }
-   
+
 protected:
    virtual void spinUp()
    {}
@@ -183,7 +183,7 @@ protected:
                exitCode++;
                break;
             }
-            
+
             if (lineNumber <= linesToSkip)
                continue;
 
@@ -205,7 +205,7 @@ protected:
                      double err = d2;
                      if (d1 != 0)
                         err = diff/d1;
-                  
+
                      if (abs(err) > epsilon)
                      {
                         exitCode += 1;
@@ -217,7 +217,7 @@ protected:
                      exitCode += 1;
                      lineDiff = true;
                   }
-                  
+
                   if (verboseLevel && lineDiff)
                      output << "f1, " << lineNumber << ":" << line1 << endl
                             << "f2, " << lineNumber << ":" << line2 << endl;
@@ -256,7 +256,7 @@ int main(int argc, char *argv[])
 
    if (crap.initialize(argc, argv))
       crap.run();
-   
+
    return crap.exitCode;
 }
 

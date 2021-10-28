@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -70,18 +70,18 @@ namespace gnsstk
    class IonoModel
    {
    public:
-        
+
          /// Exception, thrown when attempting to use a model for which not all
          /// the necessary parameters have been specified.
          /// @ingroup exceptiongroup
       NEW_EXCEPTION_CLASS(InvalidIonoModel, gnsstk::Exception);
- 
+
          /// Default constructor, creates an invalid model for lack of parameters.
       IonoModel() throw() : valid(false) {}
-      
+
          /// Destructor.
       virtual ~IonoModel() throw() {}
-      
+
          /** Ionosphere model constructor.
           * Creates a valid model with satellite transmitted alpha and beta
           * (Klobuchar) parameters provided by the user.
@@ -96,13 +96,13 @@ namespace gnsstk
           */
       IonoModel(const double a[4], const double b[4],
                 const bool semicircle_units = true) throw();
-      
+
          /** EngAlmanac constructor.
           * Creates a valid model from and EngAlmanac object.
           * @param[in] engalm An EngAlmanac object.
           */
       IonoModel(const EngAlmanac& engalm) throw();
-      
+
          /** Method to feed the model with satellite-transmitted alpha and
           * beta parameters from the passed almanac.
           * See the IS-GPS-200, 20.3.3.3.3.2.
@@ -111,13 +111,13 @@ namespace gnsstk
           */
       void setModel(const double a[4], const double b[4],
                     const bool semicircle_units = true) throw();
-      
+
          /** Return whether the model contains valid data.
           * @return model validity
           */
       bool isValid() const throw()
       { return valid; }
-      
+
          /** Get the ionospheric correction value.
           * @param[in] time Time of the observation.
           * @param[in] rxgeo WGS84 geodetic position of the receiver.
@@ -137,7 +137,7 @@ namespace gnsstk
       bool operator==(const IonoModel& right) const throw();
 
          /// Inequality operator
-      bool operator!=(const IonoModel& right) const throw();     
+      bool operator!=(const IonoModel& right) const throw();
 
          /** Get the raw model contents in semicircle units.
           * @param[in,out] a Ionospheric model alpha parameters

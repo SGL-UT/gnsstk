@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -48,7 +48,7 @@
 
 using namespace std;
 
-// Generate a norimally distributed deviate with zero mean and unit variance. 
+// Generate a norimally distributed deviate with zero mean and unit variance.
 // Kudos to Press, Flannery, Teukolsky, and Veterling. And the man, Knuth.
 // If you don't care about being thread safe, you can make v1 a static and use
 // for every other call. Also this uses the libc standard rand() function
@@ -59,7 +59,7 @@ double gasdev()
 {
    const double mr2 = 2.0 / RAND_MAX;
    double v1, v2, fac;
-   
+
    double r;
    do
    {
@@ -119,9 +119,9 @@ int main(int argc, char *argv[])
    }
 
 
-      //if (e1 > 1e-3 || e2 > 1e-3 || 
-      //    std::abs(ps.average()) > 1e-3 || 
-      //    std::abs(sqrt(ps.variance())-1) > 2e-3 || 
+      //if (e1 > 1e-3 || e2 > 1e-3 ||
+      //    std::abs(ps.average()) > 1e-3 ||
+      //    std::abs(sqrt(ps.variance())-1) > 2e-3 ||
       //    std::abs(ps.skew()) > 0.01 ||
       //    std::abs(ps.kurtosis()-3) > 0.05)
       //{

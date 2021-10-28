@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -145,7 +145,7 @@ findSatTest()
                              gnsstk::YDSTime(1989,1,0), sat));
       // try to find the PRN during the transition (between SV assignments)
    TUASSERT(!testObj.findSat(gnsstk::SatelliteSystem::GPS, 32,
-                             gnsstk::YDSTime(2016,26,0), sat));   
+                             gnsstk::YDSTime(2016,26,0), sat));
       // find a satellite that is beyond the end of the contents of the map
    TUASSERT(!testObj.findSat(gnsstk::SatelliteSystem::GPS, 33,
                              gnsstk::YDSTime(2020,1,0), sat));
@@ -176,7 +176,7 @@ getSVNTest()
                              gnsstk::YDSTime(1989,1,0), svn));
       // try to find the PRN during the transition (between SV assignments)
    TUASSERT(!testObj.getSVN(gnsstk::SatelliteSystem::GPS, 32,
-                             gnsstk::YDSTime(2016,26,0), svn));   
+                             gnsstk::YDSTime(2016,26,0), svn));
       // find a satellite that is beyond the end of the contents of the map
    TUASSERT(!testObj.getSVN(gnsstk::SatelliteSystem::GPS, 33,
                              gnsstk::YDSTime(2020,1,0), svn));
@@ -254,7 +254,7 @@ findSatBySVNTest()
                                   gnsstk::YDSTime(1989,1,0), sat));
       // try to find the SVN during the transition (between SV assignments)
    TUASSERT(!testObj.findSatBySVN(gnsstk::SatelliteSystem::GPS, "70",
-                                  gnsstk::YDSTime(2016,26,0), sat));   
+                                  gnsstk::YDSTime(2016,26,0), sat));
       // find a satellite that is beyond the end of the contents of the map
    TUASSERT(!testObj.findSatBySVN(gnsstk::SatelliteSystem::GPS, "71",
                                   gnsstk::YDSTime(2020,1,0), sat));
@@ -333,7 +333,7 @@ getPRNTest()
                              gnsstk::YDSTime(1989,1,0), prn));
       // try to find the PRN during the transition (between SV assignments)
    TUASSERT(!testObj.getPRN(gnsstk::SatelliteSystem::GPS, "70",
-                             gnsstk::YDSTime(2016,26,0), prn));   
+                             gnsstk::YDSTime(2016,26,0), prn));
       // find a satellite that is beyond the end of the contents of the map
    TUASSERT(!testObj.getPRN(gnsstk::SatelliteSystem::GPS, "71",
                              gnsstk::YDSTime(2020,1,0), prn));

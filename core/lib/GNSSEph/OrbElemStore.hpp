@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,23 +29,23 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  * @file OrbElemStore.hpp
- * Base class for storing and/or computing position, velocity, 
+ * Base class for storing and/or computing position, velocity,
  * and clock data.  This class is typically extended in order
- * to implement SV-system specific behavior.  Theoretically, 
+ * to implement SV-system specific behavior.  Theoretically,
  * it could be used to store OrbElemBase objects across multiple
- * systems, but that would entail moving all the time tags to a 
- * common system. 
+ * systems, but that would entail moving all the time tags to a
+ * common system.
  */
- 
+
 #ifndef GNSSTK_ORBELEMSTORE_HPP
 #define GNSSTK_ORBELEMSTORE_HPP
 
@@ -62,19 +62,19 @@
 
 namespace gnsstk
 {
-      /// @ingroup GNSSEph 
+      /// @ingroup GNSSEph
       //@{
 
-      /// Base class for storing and accessing an objects position, 
+      /// Base class for storing and accessing an objects position,
       /// velocity, and clock data. Also defines a simple interface to remove
       /// data that has been added.
    class OrbElemStore : public XvtStore<SatID>
    {
    public:
-      
+
       OrbElemStore()
       throw()
-      :initialTime(CommonTime::END_OF_TIME), 
+      :initialTime(CommonTime::END_OF_TIME),
          finalTime(CommonTime::BEGINNING_OF_TIME),
          timeSysForStore(TimeSystem::Any)
       {
@@ -88,23 +88,23 @@ namespace gnsstk
          /// The timing relationships defined in IS-GPS-200 20.3.4.5 mean
          /// (1.) The end of validity of a given set of orbital elements
          /// may be determined by the beginning of transmission of a new
-         /// upload.   
+         /// upload.
          /// (2.) The beginning of validity of the SECOND set of elements
          /// following and upload should be Toe-(0.5 fit interval) but
          /// it is not practical to differentiate between the first and
          ///
-         /// second set following an upload when only looking at a 
+         /// second set following an upload when only looking at a
          /// single set of elements.
          ///
-         /// The rationalize( ) function is a means of addressing these 
+         /// The rationalize( ) function is a means of addressing these
          /// shortcomings.   The intention is to load all the navigation
          /// message data in the store, then call rationalize( ).  The
          /// function will sweep through the ordered set of elements and
-         /// make appropriate adjustments to beginning and end of 
+         /// make appropriate adjustments to beginning and end of
          /// validity values.  In general, the only changes will
          /// occur in set of elements immediately before an upload,
          /// the first set following the upload, and (perhaps) the
-         /// second set following the upload. 
+         /// second set following the upload.
          ///
       void rationalize( );
 
@@ -160,14 +160,14 @@ namespace gnsstk
          /// Edit the dataset, removing data outside the indicated time interval
          /// @param[in] tmin defines the beginning of the time interval
          /// @param[in] tmax defines the end of the time interval
-      virtual void edit(const CommonTime& tmin, 
+      virtual void edit(const CommonTime& tmin,
                         const CommonTime& tmax = CommonTime::END_OF_TIME)
-         throw(); 
+         throw();
 
          /// Clear the dataset, meaning remove all data
       virtual void clear(void) throw();
 
-         /// Determine the earliest time for which this object can successfully 
+         /// Determine the earliest time for which this object can successfully
          /// determine the Xvt for any object.
          /// @return The initial time
          /// @throw InvalidRequest This is thrown if the object has no data.
@@ -176,7 +176,7 @@ namespace gnsstk
       { return initialTime; }
 
 
-         /// Determine the latest time for which this object can successfully 
+         /// Determine the latest time for which this object can successfully
          /// determine the Xvt for any object.
          /// @return The final time
          /// @throw InvalidRequest This is thrown if the object has no data.
@@ -184,9 +184,9 @@ namespace gnsstk
          throw()
       { return finalTime; }
 
-         /// Return the number of orbit/clock elements stored in this store. 
+         /// Return the number of orbit/clock elements stored in this store.
       virtual unsigned size() const
-         throw(); 
+         throw();
 
       virtual bool velocityIsPresent()
          const throw()
@@ -205,21 +205,21 @@ namespace gnsstk
 
          /// Classes to set/test the satellite system list.
       bool isSatSysPresent(const SatelliteSystem ss) const;
-      void addSatSys(const SatelliteSystem ss); 
+      void addSatSys(const SatelliteSystem ss);
       void validSatSystem(const SatID& sat) const;
       std::list<SatelliteSystem> getValidSystemList() const;
-      void dumpValidSystemList(std::ostream& out) const;  
+      void dumpValidSystemList(std::ostream& out) const;
 
       /*
        *  Explanation of find( ) function for OrbElemStore
-       *  
+       *
        *  The findOrbElem( ) funtion
        *  does the best possible job of emulating the choice
        *  that would be made by a real-time user
        *
-       *  It is strongly suggested that the user load ALL 
-       *  available set of orbital elements into the store, 
-       *  regardless of health status.  
+       *  It is strongly suggested that the user load ALL
+       *  available set of orbital elements into the store,
+       *  regardless of health status.
        */
       /// @param sat SatID of satellite of interest
       /// @param t time with which to search for OrbElemBase
@@ -254,7 +254,7 @@ namespace gnsstk
          /// @return list of SatID objects
       std::list<gnsstk::SatID> getSatIDList() const;
 
-      virtual std::set<SatID> getIndexSet() const; 
+      virtual std::set<SatID> getIndexSet() const;
 
          /// Add all ephemerides to an existing list<OrbElemBase>.
          /// @return the number of ephemerides added.
@@ -275,7 +275,7 @@ namespace gnsstk
       const OrbElemMap& getOrbElemMap( const SatID& sat ) const;
 
    protected:
-     
+
          /// This is intended to hold all unique OrbElemBase objects for each SV
          /// The key is the prn of the SV.
       typedef std::map<SatID, OrbElemMap> UBEMap;
@@ -287,20 +287,20 @@ namespace gnsstk
       CommonTime finalTime;   //< Time of the last OrbElemBase in the store
 
          // List of the satellite systems stored in this store.  Typically
-         // only one and set by descendents. 
+         // only one and set by descendents.
       std::list<SatelliteSystem> sysList;
-      
+
          // TimeSystem used in this store.  Set by default to "Any", but
-         // typically overridden by descendents. 
-      TimeSystem timeSysForStore; 
+         // typically overridden by descendents.
+      TimeSystem timeSysForStore;
 
          // Here is a method to simplify the .cpp
       void updateInitialFinal(const OrbElemBase* eph)
       {
-         if (eph->beginValid<initialTime)       
+         if (eph->beginValid<initialTime)
             initialTime = eph->beginValid;
-         
-         if (eph->endValid>finalTime)               
+
+         if (eph->endValid>finalTime)
             finalTime = eph->endValid;
       }
 

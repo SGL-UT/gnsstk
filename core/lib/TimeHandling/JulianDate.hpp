@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -57,11 +57,11 @@ namespace gnsstk
       /// (0) JD is integer at noon, which is awkward; MJD is integer at midnight.
       /// Thus the representation of "integer day" plus "fractional part of day"
       /// or similar is straightforward for MJD but for JD there is that pesky 0.5.
-      /// 
+      ///
       /// (1) Some compliers, notably MSVC on Windows implement long double as double.
       /// This causes a loss of precision when attempting to write JD as a single
       /// floating number (double or even long double). Therefore, point 2:
-      /// 
+      ///
       /// (2) Here, long double is eliminated; the long double c'tor is deprecated.
       /// There is a "long double JD()" provided, for convenience when high precision
       /// is not needed (e.g. Solar system ephemeris), but with a warning of less
@@ -84,7 +84,7 @@ namespace gnsstk
       /// (5) fromString() and asString() provide I/O which is repeatable and
       /// the most precise, with up to 34 decimal digits (prec ~ 1e-34 = JDFACT^2).
       /// fromIntFrac() is the worst b/c of the double fraction of the day.
-      ///  
+      ///
 
    class JulianDate : public TimeTag
    {

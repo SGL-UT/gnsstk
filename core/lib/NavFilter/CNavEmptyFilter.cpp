@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -46,7 +46,7 @@ namespace gnsstk
    {
    }
 
-      // Bits 39-276 are a total of 238 bits.   That's 7 * 32 with 
+      // Bits 39-276 are a total of 238 bits.   That's 7 * 32 with
       // a remainder of 14.
    void CNavEmptyFilter ::
    validate(NavMsgList& msgBitsIn, NavMsgList& msgBitsOut)
@@ -58,13 +58,13 @@ namespace gnsstk
       {
          CNavFilterData *fd = dynamic_cast<CNavFilterData*>(*i);
 
-         int startBit = 38; 
+         int startBit = 38;
          for (int n=0;n<7;n++)
          {
             word[n] = fd->pnb->asUnsignedLong(startBit,32,1);
             startBit += 32;
          }
-         word[7] = fd->pnb->asUnsignedLong(startBit,14,1); 
+         word[7] = fd->pnb->asUnsignedLong(startBit,14,1);
 
          bool blank =
             ( (word[0]==0) &&
