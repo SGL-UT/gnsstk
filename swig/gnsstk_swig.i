@@ -559,7 +559,7 @@
 /* %include "SinexBlock.hpp" */
 /* %include "SinexData.hpp" */
 /* %include "SinexStream.hpp" */
-%include "SolarPosition.hpp"
+%include "SolarPosition.i"
 /* %include "SpecialFuncs.hpp" */
 %include "StreamBuf.hpp"
 %include "TimeCorrection.hpp"
