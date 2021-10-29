@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -74,7 +74,7 @@ namespace gnsstk
    const string AntexData::endOfAntennaString = "END OF ANTENNA";
 
    // NB. this dimension must be updated with the list
-   //  in IGS file rcvr_ant.tab.   See that file for 
+   //  in IGS file rcvr_ant.tab.   See that file for
    //  additional information.
    /// Number of types that are used for satellites
 
@@ -83,7 +83,7 @@ namespace gnsstk
        in IGS file rcvr_ant.tab.   See that file for additional information.
    */
    const vector<string> AntexData::SatelliteTypes =
-   { 
+   {
       "BEIDOU-2G",
       "BEIDOU-2I",
       "BEIDOU-2M",
@@ -170,7 +170,7 @@ namespace gnsstk
          double sinel = ::sin(elev * DEG_TO_RAD);
          double cosaz = ::cos(azim * DEG_TO_RAD);
          double sinaz = ::sin(azim * DEG_TO_RAD);
-         
+
          // see doc for class AntexData for signs, etc
          return (-pcv + pco[0]*cosel*cosaz
                       + pco[1]*cosel*sinaz
@@ -198,7 +198,7 @@ namespace gnsstk
          GNSSTK_THROW(e);
       }
       //const antennaPCOandPCVData& antpco = it->second;
-      
+
       Triple retval;
       for(int i=0; i<3; i++)
          retval[i] = it->second.PCOvalue[i];
@@ -479,7 +479,7 @@ namespace gnsstk
       return;
    }
 
-   void AntexData::reallyPutRecord(FFStream& ffs) const 
+   void AntexData::reallyPutRecord(FFStream& ffs) const
    {
       if(!isValid()) {
          FFStreamError fse(string("Cannot write invalid AntexData"));
@@ -496,7 +496,7 @@ namespace gnsstk
       line = rightJustify(leftJustify(startAntennaString,20),80);
       strm << line << endl;
       strm.lineNumber++;
-   
+
       line  = leftJustify(type,20);
       line += leftJustify(serialNo,20);
       line += leftJustify(satCode,10);
@@ -668,19 +668,19 @@ namespace gnsstk
    }   // end AntexData::reallyPutRecord
 
 
-   void AntexData::reallyGetRecord(FFStream& ffs) 
+   void AntexData::reallyGetRecord(FFStream& ffs)
    {
       AntexStream& strm = dynamic_cast<AntexStream&>(ffs);
-      
+
          // If the header hasn't been read, read it...
       if(!strm.headerRead) strm >> strm.header;
-      
+
          // Clear out this object
       AntexData ad;
       *this = ad;
-      
+
       string line;
-      
+
       while(!(valid & endOfAntennaValid)) {
          strm.formattedGetLine(line, true);
          stripTrailing(line);
@@ -695,7 +695,7 @@ namespace gnsstk
             GNSSTK_THROW(e);
          }
       }
-      
+
    } // end of reallyGetRecord()
 
    // ----------------------------------------------------------------------------
@@ -918,7 +918,7 @@ namespace gnsstk
          // parse the time
          int year, month, day, hour, min;
          double sec;
-   
+
          year  = asInt(   line.substr( 2, 4));
          month = asInt(   line.substr(10, 4));
          day   = asInt(   line.substr(16, 4));

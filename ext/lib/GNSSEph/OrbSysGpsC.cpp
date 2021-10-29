@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -57,9 +57,9 @@ namespace gnsstk
    {
          // First, test whether the test object is actually a OrbSysGpsC object.
       const OrbSysGpsC* p = dynamic_cast<const OrbSysGpsC*>(right);
-      if (p==0) return false; 
+      if (p==0) return false;
 
-      if (!OrbDataSys::isSameData(right))  return false; 
+      if (!OrbDataSys::isSameData(right))  return false;
       return true;
    }
 
@@ -74,7 +74,7 @@ namespace gnsstk
       s << "*********************************************************" << endl;
       s << " GPS CNAV System-level navigation message data.  UID: " << UID << endl;
       s << " Transmitting SV : " << satID << endl;
-      s << " Transmit Time   : " 
+      s << " Transmit Time   : "
         << printTime(beginValid,"%02m/%02d/%4Y DOY %03j %02H:%02M:%02S  %F %6.0g")
         << endl;
    }
@@ -82,7 +82,7 @@ namespace gnsstk
    void OrbSysGpsC::setUID(const PackedNavBits& pnb)
    {
       UID = pnb.asUnsignedLong(14,6,1);
-   }  
+   }
 
       // Of the system-level data, only Data ID 51 is in subframe 5.
       // All the others are in subframe 4

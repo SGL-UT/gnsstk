@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -85,7 +85,7 @@ namespace gnsstk
    template <class T> inline T mad(const gnsstk::Vector<T>& v)
    {
       if (v.size() < 2) return T();
-      
+
       double med = gnsstk::median(v);
       gnsstk::Vector<T> w(v);
       for(size_t i=0; i < w.size(); i++)
@@ -111,7 +111,7 @@ namespace gnsstk
    template <class T> inline T mad(const std::vector<T>& v)
    {
       if (v.size() < 2) return T();
-      
+
       double med = gnsstk::median(v);
       std::vector<T> w(v);
       for(size_t i=0; i < w.size(); i++)
@@ -363,7 +363,7 @@ namespace gnsstk
    }; // end class Stats
 
    /// Output operator for Stats class
-   template <class T> std::ostream& operator<<(std::ostream& s, const Stats<T>& ST) 
+   template <class T> std::ostream& operator<<(std::ostream& s, const Stats<T>& ST)
    {
       std::ofstream savefmt;
       savefmt.copyfmt(s);
@@ -1133,7 +1133,7 @@ namespace gnsstk
 
    /// Output operator for TwoSampleStats class
    template <class T>
-   std::ostream& operator<<(std::ostream& s, const TwoSampleStats<T>& TSS) 
+   std::ostream& operator<<(std::ostream& s, const TwoSampleStats<T>& TSS)
    {
       std::ofstream savefmt;
       savefmt.copyfmt(s);

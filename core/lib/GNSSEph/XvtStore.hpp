@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,16 +29,16 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  * @file XvtStore.hpp
- * Abstract base class for storing and/or computing position, velocity, 
+ * Abstract base class for storing and/or computing position, velocity,
  * and clock data.
  */
 
@@ -57,7 +57,7 @@ namespace gnsstk
       /// @ingroup GNSSEph
       //@{
 
-      /// Abstract base class for storing and accessing an object's position, 
+      /// Abstract base class for storing and accessing an object's position,
       /// velocity, and clock data. Also defines a simple interface to remove
       /// data that had been added.
    template <class IndexType>
@@ -111,7 +111,7 @@ namespace gnsstk
          /// Edit the dataset, removing data outside the indicated time interval
          /// @param[in] tmin defines the beginning of the time interval
          /// @param[in] tmax defines the end of the time interval
-      virtual void edit(const CommonTime& tmin, 
+      virtual void edit(const CommonTime& tmin,
                         const CommonTime& tmax = CommonTime::END_OF_TIME) = 0;
 
          /// Clear the dataset, meaning remove all data
@@ -120,13 +120,13 @@ namespace gnsstk
          /// Return the time system of the store
       virtual TimeSystem getTimeSystem(void) const = 0;
 
-         /// Determine the earliest time for which this object can successfully 
+         /// Determine the earliest time for which this object can successfully
          /// determine the Xvt for any object.
          /// @return The initial time
          /// @throw InvalidRequest This is thrown if the object has no data.
       virtual CommonTime getInitialTime(void) const = 0;
 
-         /// Determine the latest time for which this object can successfully 
+         /// Determine the latest time for which this object can successfully
          /// determine the Xvt for any object.
          /// @return The final time
          /// @throw InvalidRequest This is thrown if the object has no data.
@@ -140,8 +140,8 @@ namespace gnsstk
 
          /// Return a set containing the indices found in this store.
          /// For exmaple, for an XvtStore<SatID> return a set of all the unique
-         /// SatIDs available in the store. 
-      virtual std::set<IndexType> getIndexSet() const = 0; 
+         /// SatIDs available in the store.
+      virtual std::set<IndexType> getIndexSet() const = 0;
 
          /** flag indicating unhealthy ephemerides should be excluded
           * from getXvt, otherwise it will throw (default condition may vary

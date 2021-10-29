@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -184,26 +184,26 @@ namespace gnsstk
    }
 
 
-   void Rinex3NavHeader::reallyGetRecord(FFStream& ffs) 
+   void Rinex3NavHeader::reallyGetRecord(FFStream& ffs)
    {
       Rinex3NavStream& strm = dynamic_cast<Rinex3NavStream&>(ffs);
-   
+
          // if already read, just return
       if(strm.headerRead == true) return;
-   
+
       int i;
       valid = 0;
-   
+
          // clear out anything that was unsuccessfully read first
       commentList.clear();
-   
-      while (!(valid & validEoH)) 
+
+      while (!(valid & validEoH))
       {
          string line;
          strm.formattedGetLine(line);
          stripTrailing(line);
          if(line.length() == 0) continue;
-         else if(line.length() < 60 || line.length() > 80) 
+         else if(line.length() < 60 || line.length() > 80)
          {
             FFStreamError e("Invalid line length");
             GNSSTK_THROW(e);
@@ -212,15 +212,15 @@ namespace gnsstk
          string thisLabel(line, 60, 20);
 
             // following is huge if else else ... endif for each record type
-         if(thisLabel == stringVersion) 
+         if(thisLabel == stringVersion)
          {
                // "RINEX VERSION / TYPE"
             version = asDouble(line.substr( 0,20));
 
             fileType = strip(line.substr(20,20));
-            if(version >= 3) 
+            if(version >= 3)
             {                        // ver 3
-               if(fileType[0] != 'N' && fileType[0] != 'n') 
+               if(fileType[0] != 'N' && fileType[0] != 'n')
                {
                   FFStreamError e("File type is not NAVIGATION: " + fileType);
                   GNSSTK_THROW(e);
@@ -229,7 +229,7 @@ namespace gnsstk
                setFileSystem(fileSys);
                fileType = "N: GNSS NAV DATA";
             }
-            else 
+            else
             {                                    // ver 2
                if(fileType[0] == 'N' || fileType[0] == 'n')
                   setFileSystem("G");
@@ -237,7 +237,7 @@ namespace gnsstk
                   setFileSystem("R");
                else if(fileType[0] == 'H' || fileType[0] == 'h')
                   setFileSystem("S");
-               else 
+               else
                {
                   FFStreamError e("Version 2 file type is invalid: " +
                                   fileType);
@@ -259,7 +259,7 @@ namespace gnsstk
          else if(thisLabel == stringComment)
          {
                // "COMMENT"
-            commentList.push_back(strip(line.substr(0,60)));
+            commentList.push_back(stripTrailing(line.substr(0,60)));
             valid |= validComment;
          }
          else if(thisLabel == stringIonAlpha)
@@ -811,7 +811,7 @@ namespace gnsstk
                   fileType = "G: GLO NAV DATA)";
                else if(sat.system == SatelliteSystem::Geosync)
                   fileType = "H: GEO NAV DATA";
-               else 
+               else
                {
                   Exception e( std::string("RINEX version 2 ") +
                                sat.systemString3() +
@@ -821,7 +821,7 @@ namespace gnsstk
             }
          }
       }
-      catch(Exception& e) 
+      catch(Exception& e)
       {
          GNSSTK_RETHROW(e);
       }
@@ -866,7 +866,7 @@ namespace gnsstk
       std::map<std::string,IonoCorr>::const_iterator lici, rici;
       if (((ltci = mapTimeCorr.find("GPUT")) != mapTimeCorr.end()) &&
           ((rtci = right.mapTimeCorr.find("GPUT")) != right.mapTimeCorr.end()))
-      
+
       {
          lineMap[stringDeltaUTC] = ltci->second == rtci->second;
       }
@@ -880,7 +880,7 @@ namespace gnsstk
  */
       if (((ltci = mapTimeCorr.find("SBUT")) != mapTimeCorr.end()) &&
           ((rtci = right.mapTimeCorr.find("SBUT")) != right.mapTimeCorr.end()))
-      
+
       {
          lineMap[stringDUTC] = ltci->second == rtci->second;
       }
@@ -890,7 +890,7 @@ namespace gnsstk
       }
       if (((lici = mapIonoCorr.find("GPSA")) != mapIonoCorr.end()) &&
           ((rici = right.mapIonoCorr.find("GPSA")) != right.mapIonoCorr.end()))
-      
+
       {
 //         lineMap[stringIonAlpha] = lici->second == rici->second;
       }
@@ -900,7 +900,7 @@ namespace gnsstk
       }
       if (((lici = mapIonoCorr.find("GPSB")) != mapIonoCorr.end()) &&
           ((rici = right.mapIonoCorr.find("GPSB")) != right.mapIonoCorr.end()))
-      
+
       {
 //         lineMap[stringIonBeta] = lici->second == rici->second;
       }
@@ -915,10 +915,10 @@ namespace gnsstk
          std::map<std::string,bool>::const_iterator olmi;
          lineMap.clear();
          for (unsigned i = 0; i < inclExclList.size(); i++)
-         
+
          {
             if ((olmi = oldLineMap.find(inclExclList[i])) != oldLineMap.end())
-            
+
             {
                lineMap[olmi->first] = olmi->second;
             }
@@ -928,7 +928,7 @@ namespace gnsstk
       {
             // exclude, remove items in inclExclList
          for (unsigned i = 0; i < inclExclList.size(); i++)
-         
+
          {
             lineMap.erase(inclExclList[i]);
          }

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -61,8 +61,8 @@ namespace gnsstk
       /// @ingroup FileHandling
       //@{
 
-      /** 
-       * This class stores, reads, and writes SEM records. 
+      /**
+       * This class stores, reads, and writes SEM records.
        * @warning The SEM header information and data information don't
        * correctly talk to each other at the time of completion of this file.
        * The current fix is in SEMAlamanacStore.hpp.
@@ -74,14 +74,14 @@ namespace gnsstk
    class SEMData : public SEMBase
    {
    public:
-   
+
          /// Constructor.
       SEMData();
 
          /// Destructor
       virtual ~SEMData() {}
-      
-         
+
+
       short PRN;
       short SVNnum;             ///< SVN
       short URAnum;             ///< "Avg" URA index over unknown period
@@ -94,23 +94,23 @@ namespace gnsstk
       FormattedDouble w;        ///< radians
       FormattedDouble M0;       ///< radians
       FormattedDouble AF0;      ///< sec
-      FormattedDouble AF1;      ///< sec/sec 
+      FormattedDouble AF1;      ///< sec/sec
       short SV_health;
       short satConfig;
-      
+
       long xmit_time;
-      
+
       long Toa;
       short week;
-      
+
          /**
-          * Debug output function. 
+          * Debug output function.
           * Dump the contents of each of the SEM class to a
           * given ostream \c s.
-          */ 
+          */
       virtual void dump(std::ostream& s) const;
-      
-         //! This class is "data" so this function always returns "true". 
+
+         //! This class is "data" so this function always returns "true".
       virtual bool isData() const {return true;}
 
          /**
@@ -118,15 +118,15 @@ namespace gnsstk
           * @return the constructed AlmOrbit object
           */
       operator AlmOrbit() const;
-      
+
          /**
           * cast *this into an OrbAlmGen
           * @return the constructed OrbAlmGen object
           */
-      operator OrbAlmGen() const;    
-            
-   protected:      
-	 
+      operator OrbAlmGen() const;
+
+   protected:
+
 	 /**
           * Writes a correctly formatted record from this data to stream \a s.
           * @throw std::exception
@@ -134,9 +134,9 @@ namespace gnsstk
           * @throw StringUtils::StringException
           */
       virtual void reallyPutRecord(FFStream& s) const;
-  
+
          /**
-          * This functions obtains a SEM almanac record from the given 
+          * This functions obtains a SEM almanac record from the given
           * FFStream.
           * If there is an error in reading from the stream, it is reset
           * to its original position and its fail-bit is set.
@@ -147,7 +147,7 @@ namespace gnsstk
           *  stream to its pre-read position.
           */
       virtual void reallyGetRecord(FFStream& s);
-      
+
    }; // class SEMData
 
       //@}

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -39,7 +39,7 @@
 /// @file PRSolution.hpp
 /// Pseudorange navigation solution, either a simple solution using all the
 /// given data, or a solution including editing via a RAIM algorithm.
- 
+
 #ifndef PRS_POSITION_SOLUTION_HPP
 #define PRS_POSITION_SOLUTION_HPP
 
@@ -52,7 +52,7 @@
 #include "Stats.hpp"
 #include "Matrix.hpp"
 #include "Namelist.hpp"
-#include "XvtStore.hpp"
+#include "NavLibrary.hpp"
 #include "TropModel.hpp"
 
 namespace gnsstk
@@ -206,7 +206,7 @@ namespace gnsstk
    /// will be determined by the input ephemerides; usually IGS SP3 ephemerides use
    /// GPS time for all the systems (but there is still a system time offset relative
    /// to GPS for each other GNSS).
-   /// 
+   ///
    /// Note that at any epoch it may happen that no satellites from some system are
    /// available (either in the data or after the RAIM algorithm), in this case the
    /// clock bias for that system is undefined and set to zero.
@@ -372,23 +372,25 @@ namespace gnsstk
       ///                     which there is no ephemeris.
       /// @param Pseudorange input std::vector<double> of raw pseudoranges (parallel
       ///                     to Sats), in meters
-      /// @param pEph        input pointer to gnsstk::XvtStore<SatID> to be used
+      /// @param eph[in]     NavLibrary to be used
       /// @param SVP         output gnsstk::Matrix<double> of dimension (N,4), N is
       ///                     the number of satellites in Sats[] (marked or not),
       ///                     on output this contains the satellite positions at
       ///                     transmit time (cols 0-2), the corrected pseudorange (1).
+      /// @param[in] order   How NavLibrary searches are performed.
       /// @return Return values:
       ///  >= 0 number of good satellites found
       /// -4    ephemeris not found for all the satellites
       int PreparePRSolution(const CommonTime& Tr,
                             std::vector<SatID>& Sats,
                             const std::vector<double>& Pseudorange,
-                            const XvtStore<SatID> *pEph,
-                            Matrix<double>& SVP) const;
+                            NavLibrary& eph,
+                            Matrix<double>& SVP,
+                            NavSearchOrder order = NavSearchOrder::User) const;
 
       /// Compute a single autonomous pseudorange solution, after calling
       /// PreparePRSolution(). On output, all the member data is filled with results.
-      /// 
+      ///
       /// Input only (first 3 should be just as returned from PreparePRSolution()):
       /// @param Tr          const. Measured time of reception of the data.
       ///                     On output member currTime set to this.
@@ -438,8 +440,9 @@ namespace gnsstk
       int RAIMComputeUnweighted(const CommonTime& Tr,
                                 std::vector<SatID>& Satellites,
                                 const std::vector<double>& Pseudorange,
-                                const XvtStore<SatID> *pEph,
-                                TropModel *pTropModel);
+                                NavLibrary& eph,
+                                TropModel *pTropModel,
+                                NavSearchOrder order = NavSearchOrder::User);
 
       /// Compute a position/time solution, given satellite PRNs and pseudoranges
       /// using a RAIM algorithm. This is the main computation done by this class.
@@ -455,7 +458,7 @@ namespace gnsstk
       ///                    inverse (meter^-2) of the pseudorange data (for N
       ///                    see Sats). If this matrix has dimension 0, no weighting
       ///                    of the data is done.
-      /// @param pEph        pointer to gnsstk::XvtStore to be used in the algorithm.
+      /// @param eph         NavLibrary to be used in the algorithm.
       /// @param pTropModel  pointer to gnsstk::TropModel for trop correction.
       ///
       /// @return Return values:
@@ -470,8 +473,9 @@ namespace gnsstk
                       std::vector<SatID>& Satellites,
                       const std::vector<double>& Pseudorange,
                       const Matrix<double>& invMC,
-                      const XvtStore<SatID> *pEph,
-                      TropModel *pTropModel);
+                      NavLibrary& eph,
+                      TropModel *pTropModel,
+                      NavSearchOrder order = NavSearchOrder::User);
 
       /// Compute DOPs using the partials matrix from the last successful solution.
       /// RAIMCompute(), if successful, calls this before returning.
@@ -511,7 +515,7 @@ namespace gnsstk
 
       // ------------------------------------------------------------
       /// Fix the apriori solution to the given constant value (XYZ,m)
-      /// and initialize the 
+      /// and initialize the
       void fixAPSolution(const double& X, const double& Y, const double& Z)
       {
          //fixedAPriori = true;   //TD user input

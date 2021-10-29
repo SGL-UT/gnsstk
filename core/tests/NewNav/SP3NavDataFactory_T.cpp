@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,8 +15,8 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
@@ -25,14 +25,14 @@
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,6 +40,7 @@
 #include "TestUtil.hpp"
 #include "OrbitDataSP3.hpp"
 #include "CivilTime.hpp"
+#include "GPSWeekSecond.hpp"
 
 namespace gnsstk
 {
@@ -102,8 +103,22 @@ public:
    unsigned sp3cPVTest();
       /// Test find with an SP3c file which contains P/EP records (no V)
    unsigned sp3cPTest();
-      /// Exercise loadIntoMap by loading mixed source data.
-   unsigned loadIntoMapFGNSSTest();
+      /// Test find with gap interval
+   unsigned gapTest();
+      /// Test nomTimeStep via the friendlier wrapper methods.
+   unsigned nomTimeStepTest();
+      /** Exercise loadIntoMap by loading mixed source data.
+       * @param[in] badPos Set the rejectBadPosFlag to this value.
+       * @param[in] badClk Set the rejectBadClkFlag to this value.
+       * @param[in] rcBefore Call useRinexClockData with this value
+       *   before calling addDataSource.
+       * @param[in] rcAfter Call useRinexClockData with this value
+       *   after calling addDataSource.
+       */
+   unsigned loadIntoMapFGNSSTest(bool badPos, bool badClk, bool rcBefore,
+                                 bool rcAfter);
+      /// Test loading of RINEX clock data.
+   unsigned addRinexClockTest();
       /** Use dynamic_cast to verify that the contents of nmm are the
        * right class.
        * @param[in] testFramework The test framework created by TUDEF,
@@ -828,10 +843,10 @@ sp3cPVTest()
    TUASSERTFE(-103.26419599999999832, uut->clkBias);
    TUASSERTFE(0.0010629999999999999259, uut->biasSig);
    TUASSERTFE(1.3259000000000000871e-06, uut->clkDrift);
-   TUASSERTFE(7.2199999999999998003e-08, uut->driftSig);
+   TUASSERTFE(1.0175328004541179996e-07, uut->driftSig);
       /// @note drift rate value not confirmed by SP3EphemerisStore
    TUASSERTFE(-2.1102292768909279853e-13, uut->clkDrRate);
-   TUASSERTFE(8.0222222222222225231e-11, uut->drRateSig);
+   TUASSERTFE(1.130592000504575508e-10, uut->drRateSig);
       // interpolated match
    ct = gnsstk::CivilTime(2011,10,9,2,1,3,gnsstk::TimeSystem::GPS);
    TUASSERT(fact.find(nmid1, ct, nd, gnsstk::SVHealth::Any,
@@ -921,7 +936,7 @@ sp3cPTest()
                       gnsstk::NavValidityType::ValidOnly,
                       gnsstk::NavSearchOrder::User));
    uut = dynamic_cast<gnsstk::OrbitDataSP3*>(nd.get());
-   
+
    TUASSERTFE(6606.1838019497745336, uut->pos[0]);
    TUASSERTFE(-20053.583423044379742, uut->pos[1]);
    TUASSERTFE(16014.263355443905311, uut->pos[2]);
@@ -951,7 +966,7 @@ sp3cPTest()
 
 
 unsigned SP3NavDataFactory_T ::
-loadIntoMapFGNSSTest()
+loadIntoMapFGNSSTest(bool badPos, bool badClk, bool rcBefore, bool rcAfter)
 {
    using namespace gnsstk;
    TUDEF("SP3NavDataFactory", "loadIntoMap");
@@ -973,15 +988,98 @@ loadIntoMapFGNSSTest()
       expNTGLO(NavType::GloCivilF),
       expNTBei(NavType::BeiDou_D1),
       expNTOth(NavType::Unknown);
-      
+
    std::string fname = getPathData() + getFileSep() +
       "test_input_SP3c_mgex1.sp3";
+   uut.rejectBadPositions(badPos);
+   uut.rejectBadClocks(badClk);
+   uut.useRinexClockData(rcBefore);
       // this should implicitly load into the data map
    TUASSERT(uut.addDataSource(fname));
-      // 400 ephemeris, 400 clock
-   TUASSERTE(size_t, 800, uut.size());
+   uut.useRinexClockData(rcAfter);
    unsigned gps = 0, gal = 0, qzs = 0, glo = 0, irn = 0, bei = 0, leo = 0,
       other = 0;
+   unsigned gpsExp = 320, galExp = 110, qzsExp = 10, gloExp = 230, irnExp = 0,
+      beiExp = 80, leoExp = 50, otherExp = 0, allExp = 800;
+   if (!rcBefore && !rcAfter)
+   {
+      if ((badPos == false) && (badClk == false))
+      {
+            // default values apply to these conditions
+      }
+      else if ((badPos == false) && (badClk == true))
+      {
+         galExp = 102;
+         beiExp =  74;
+         allExp = 786;
+      }
+      else if ((badPos == true) && (badClk == false))
+      {
+            // all positions good?
+      }
+      else if ((badPos == true) && (badClk == true))
+      {
+         galExp = 102;
+         beiExp =  74;
+         allExp = 786;
+      }
+   }
+   else
+   {
+         // end results should be the same whether the change took
+         // place before or after the addDataSource call.
+      if ((badPos == false) && (badClk == false))
+      {
+            // Lazily divide everything by 2 since you USUALLY will
+            // have P/V in pairs.
+         gpsExp >>= 1;
+         galExp >>= 1;
+         qzsExp >>= 1;
+         gloExp >>= 1;
+         irnExp >>= 1;
+         beiExp >>= 1;
+         leoExp >>= 1;
+         otherExp >>= 1;
+         allExp >>= 1;
+      }
+      else if ((badPos == false) && (badClk == true))
+      {
+         gpsExp >>= 1;
+         galExp =  51;
+         qzsExp >>= 1;
+         gloExp >>= 1;
+         irnExp >>= 1;
+         beiExp =  37;
+         leoExp >>= 1;
+         otherExp >>= 1;
+         allExp = 393;
+      }
+      else if ((badPos == true) && (badClk == false))
+      {
+         gpsExp >>= 1;
+         galExp >>= 1;
+         qzsExp >>= 1;
+         gloExp >>= 1;
+         irnExp >>= 1;
+         beiExp >>= 1;
+         leoExp >>= 1;
+         otherExp >>= 1;
+         allExp >>= 1;
+      }
+      else if ((badPos == true) && (badClk == true))
+      {
+         gpsExp >>= 1;
+         galExp =  51;
+         qzsExp >>= 1;
+         gloExp >>= 1;
+         irnExp >>= 1;
+         beiExp =  37;
+         leoExp >>= 1;
+         otherExp >>= 1;
+         allExp = 393;
+      }
+   }
+   TUASSERTE(size_t, allExp, uut.size());
    for (auto& nmti : uut.getData())
    {
       for (auto& sati : nmti.second)
@@ -1039,14 +1137,14 @@ loadIntoMapFGNSSTest()
          }
       }
    }
-   TUASSERTE(unsigned, 320, gps);
-   TUASSERTE(unsigned, 110, gal);
-   TUASSERTE(unsigned, 230, glo);
-   TUASSERTE(unsigned,  80, bei);
-   TUASSERTE(unsigned,  10, qzs);
-   TUASSERTE(unsigned,   0, irn);
-   TUASSERTE(unsigned,  50, leo);
-   TUASSERTE(unsigned,   0, other);
+   TUASSERTE(unsigned, gpsExp, gps);
+   TUASSERTE(unsigned, galExp, gal);
+   TUASSERTE(unsigned, gloExp, glo);
+   TUASSERTE(unsigned, beiExp, bei);
+   TUASSERTE(unsigned, qzsExp, qzs);
+   TUASSERTE(unsigned, irnExp, irn);
+   TUASSERTE(unsigned, leoExp, leo);
+   TUASSERTE(unsigned, otherExp, other);
       // make sure we can find data
    gnsstk::NavSatelliteID satID1(193, 193, gnsstk::SatelliteSystem::QZSS,
                                 gnsstk::CarrierBand::L2,
@@ -1056,6 +1154,11 @@ loadIntoMapFGNSSTest()
    gnsstk::CivilTime civ1(2016, 5, 1, 0, 15, 0, gnsstk::TimeSystem::TAI);
    gnsstk::CommonTime ct1(civ1);
    gnsstk::NavDataPtr nd1;
+   if (rcBefore || rcAfter)
+   {
+         /// @todo should we be able to form a useful OrbitDataSP3 w/o clock?
+      TURETURN();
+   }
    TUASSERT(uut.find(nmid1, ct1, nd1, gnsstk::SVHealth::Any,
                      gnsstk::NavValidityType::ValidOnly,
                      gnsstk::NavSearchOrder::User));
@@ -1068,7 +1171,7 @@ loadIntoMapFGNSSTest()
    TUASSERT(uut.find(nmid2, ct1, nd1, gnsstk::SVHealth::Any,
                      gnsstk::NavValidityType::ValidOnly,
                      gnsstk::NavSearchOrder::User));
-TURETURN();
+   TURETURN();
 }
 
 
@@ -1090,6 +1193,148 @@ verifyDataType(gnsstk::TestUtil& testFramework,
 }
 
 
+unsigned SP3NavDataFactory_T ::
+addRinexClockTest()
+{
+   using namespace gnsstk;
+   TUDEF("SP3NavDataFactory", "addRinexClockTest");
+
+      // test loading SP3c with mixed systems nav
+   TestClass uut, uut2;
+   std::string fnameSP3 = getPathData() + getFileSep() +
+      "test_input_SP3c_mgex1.sp3";
+   std::string fnameClk = getPathData() + getFileSep() +
+      "test_input_rinex3_clock_RinexClockExample.96c";
+      // this should implicitly load into the data map
+   TUASSERT(uut.addDataSource(fnameSP3));
+   TUASSERTE(size_t, 786, uut.size());
+      // this should fail because it's a different time system
+   TUASSERT(!uut.addDataSource(fnameClk));
+   TUASSERTE(size_t, 786, uut.size());
+      // Make sure time system incompatibility is flagged as an error
+   fnameSP3 = getPathData() + getFileSep() + "test_input_SP3c.sp3";
+   fnameClk = getPathData() + getFileSep() +
+      "test_input_rinex3_clock_RinexClockExample.96c";
+   TUASSERT(!uut.addDataSource(fnameSP3));
+      // First, add appropriate SP3 data (time system matching)
+   TUASSERT(uut2.addDataSource(fnameSP3));
+   TUASSERTE(size_t, 1500, uut2.size());
+      // Add the RINEX clock data which should clear the SP3 clock records out
+   TUASSERT(uut2.addDataSource(fnameClk));
+   TUASSERTE(size_t, 751, uut2.size());
+   TURETURN();
+}
+
+
+unsigned SP3NavDataFactory_T ::
+gapTest()
+{
+   TUDEF("SP3NavDataFactory", "setPosGapInterval");
+   TestClass uut;
+   std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sp3_nav_2015_200.sp3";
+   TUASSERT(uut.addDataSource(fname));
+   TUASSERTE(size_t, 17856, uut.size());
+   gnsstk::NavDataPtr navOut;
+   gnsstk::NavSatelliteID satID(15, 15, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavMessageID nmid(satID, gnsstk::NavMessageType::Ephemeris);
+   gnsstk::CommonTime when = gnsstk::GPSWeekSecond(1854,3599.926);
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a tiny position gap interval and expect failure
+   TUCATCH(uut.setPosGapInterval(1));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // set a reasonable gap interval and expect success
+   TUCATCH(uut.setPosGapInterval(301));
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a slightly unreasonable gap interval and expect failure
+   TUCATCH(uut.setPosGapInterval(299));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // disable and verify
+   TUCATCH(uut.disablePosDataGapCheck());
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a tiny clock gap interval and expect failure
+   TUCATCH(uut.setClkGapInterval(1));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // disable and verify
+   TUCATCH(uut.disableClkDataGapCheck());
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a tiny max interval and expect failure
+   TUCATCH(uut.setPosMaxInterval(1));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // set a reasonable max interval and expect success
+   TUCATCH(uut.setPosMaxInterval(2701));
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a slightly unreasonable max interval and expect failure
+   TUCATCH(uut.setPosMaxInterval(2699));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // disable and verify
+   TUCATCH(uut.disablePosIntervalCheck());
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a tiny clock max interval and expect failure
+   TUCATCH(uut.setClockMaxInterval(1));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // set a reasonable clock max interval and expect success
+   TUCATCH(uut.setClockMaxInterval(2701));
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+      // set a slightly unreasonable clock max interval and expect failure
+   TUCATCH(uut.setClockMaxInterval(2699));
+   TUASSERT(!uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                      gnsstk::NavValidityType::ValidOnly,
+                      gnsstk::NavSearchOrder::User));
+      // disable and verify
+   TUCATCH(uut.disableClockIntervalCheck());
+   TUASSERT(uut.find(nmid, when, navOut, gnsstk::SVHealth::Any,
+                     gnsstk::NavValidityType::ValidOnly,
+                     gnsstk::NavSearchOrder::User));
+   TURETURN();
+}
+
+
+unsigned SP3NavDataFactory_T ::
+nomTimeStepTest()
+{
+   TUDEF("SP3NavDataFactory", "nomTimeStep");
+   TestClass uut;
+   std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sp3_nav_2015_200.sp3";
+   TUASSERT(uut.addDataSource(fname));
+   TUASSERTE(size_t, 17856, uut.size());
+   gnsstk::SatID satID(15, gnsstk::SatelliteSystem::GPS);
+   TUASSERTE(double, 300.0, uut.getPositionTimeStep(satID));
+   TUASSERTE(double, 300.0, uut.getClockTimeStep(satID));
+   TURETURN();
+}
+
+
 int main()
 {
    SP3NavDataFactory_T testClass;
@@ -1102,7 +1347,23 @@ int main()
    errorTotal += testClass.findEdgeTest();
    errorTotal += testClass.sp3cPVTest();
    errorTotal += testClass.sp3cPTest();
-   errorTotal += testClass.loadIntoMapFGNSSTest();
+   errorTotal += testClass.loadIntoMapFGNSSTest(false, false, false, false);
+   errorTotal += testClass.loadIntoMapFGNSSTest(false, true, false, false);
+   errorTotal += testClass.loadIntoMapFGNSSTest(true, false, false, false);
+   errorTotal += testClass.loadIntoMapFGNSSTest(true, true, false, false);
+
+   errorTotal += testClass.loadIntoMapFGNSSTest(false, false, true, false);
+   errorTotal += testClass.loadIntoMapFGNSSTest(false, true, true, false);
+   errorTotal += testClass.loadIntoMapFGNSSTest(true, false, true, false);
+   errorTotal += testClass.loadIntoMapFGNSSTest(true, true, true, false);
+
+   errorTotal += testClass.loadIntoMapFGNSSTest(false, false, false, true);
+   errorTotal += testClass.loadIntoMapFGNSSTest(false, true, false, true);
+   errorTotal += testClass.loadIntoMapFGNSSTest(true, false, false, true);
+   errorTotal += testClass.loadIntoMapFGNSSTest(true, true, false, true);
+   errorTotal += testClass.addRinexClockTest();
+   errorTotal += testClass.gapTest();
+   errorTotal += testClass.nomTimeStepTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

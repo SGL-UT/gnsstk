@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -199,17 +199,25 @@ namespace gnsstk
       // ---------------- BeiDou ----------------------------------
       /// The maximum number of active satellites in the Compass constellation.
    const long MAX_PRN_COM     = 63;
+      /// The first ranging code number for BeiDou GEO phase II satellites
+   const long MIN_GEO_BDS_II  = 1;
+      /// The last ranging code number for BeiDou GEO phase II satellites
+   const long MAX_GEO_BDS_II  = 5;
       /// The first ranging code number for BeiDou MEO/IGSO satellites
    const long MIN_MEO_BDS     = 6;
       /// The last ranging code number for BeiDou MEO/IGSO satellites
    const long MAX_MEO_BDS     = 58;
+      /// The first ranging code number for BeiDou GEO phase III satellites
+   const long MIN_GEO_BDS_III = 59;
+      /// The last ranging code number for BeiDou GEO phase III satellites
+   const long MAX_GEO_BDS_III = 63;
 
       // ---------------- QZSS ----------------------------------
       // PRN range defined in QZSS IS Table 3.2.2-2
-      // PRN 198-202 reserved for maint./test, not to be used 
-      // by users. 
+      // PRN 198-202 reserved for maint./test, not to be used
+      // by users.
       // These need to be defined in order to differentiate
-      // QZSS from GPS in cases where QZSS is broadcasting 
+      // QZSS from GPS in cases where QZSS is broadcasting
       // GPS-similar signals and navigation messages.
       // Note that 203-206 are "alternate" PRNs for satellites, see
       // Table 3.2.1-1
@@ -222,7 +230,7 @@ namespace gnsstk
    const int MAX_PRN_QZS_LNAV = 202;
 
       //@}
-   
+
 } // namespace
 
 // this is at the end because it needs some of the constants defined above

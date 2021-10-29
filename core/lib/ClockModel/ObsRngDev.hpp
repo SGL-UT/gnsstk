@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -91,7 +91,7 @@ namespace gnsstk
           * @param eph a store of either broadcast or precise ephemerides
           * @param em an EllipsoidModel for performing range calculations
           * @param svTime true if prange is in SV time, false for RX time.
-          */ 
+          */
       ObsRngDev(const double prange,
                 const SatID& svid,
                 const CommonTime& time,
@@ -112,7 +112,7 @@ namespace gnsstk
           * @param ion a store of nav based ionospheric models
           * @param fq the GPS band (L1, L2, L5) from which the obs was made
           * @param svTime true if prange is in SV time, false for RX time.
-          */ 
+          */
       ObsRngDev(const double prange,
                 const SatID& svid,
                 const CommonTime& time,
@@ -134,7 +134,7 @@ namespace gnsstk
           * @param em an EllipsoidModel for performing range calculations
           * @param tm a TropModel for performing trop calculation
           * @param svTime true if prange is in SV time, false for RX time.
-          */ 
+          */
       ObsRngDev(const double prange,
                 const SatID& svid,
                 const CommonTime& time,
@@ -143,7 +143,7 @@ namespace gnsstk
                 EllipsoidModel& em,
                 const TropModel& tm,
                 bool svTime = false);
-   
+
          /**
           * constructor.
           * Creates an ORD, applies a single-frequency nav-message based
@@ -158,7 +158,7 @@ namespace gnsstk
           * @param ion a store of nav based ionospheric models
           * @param fq the GPS band (L1, L2, L5) from which the obs was made
           * @param svTime true if prange is in SV time, false for RX time.
-          */ 
+          */
       ObsRngDev(const double prange,
                 const SatID& svid,
                 const CommonTime& time,
@@ -169,7 +169,7 @@ namespace gnsstk
                 const IonoModelStore& ion,
                 CarrierBand band,
                 bool svTime = false);
-   
+
          /**
           * constructor.
           * Creates an ORD, applies a dual-frequency ionospheric correction
@@ -183,7 +183,7 @@ namespace gnsstk
           * @param em an EllipsoidModel for performing range calculations
           * @param svTime true if prange is in SV time, false for RX time.
           * @param gamma The value of gamma: \f$\gamma_{12} = (f_{L1}/f_{L2})^2\f$
-          */ 
+          */
       ObsRngDev(const double prange1,
                 const double prange2,
                 const SatID& svid,
@@ -193,7 +193,7 @@ namespace gnsstk
                 EllipsoidModel& em,
                 bool svTime = false,
                 double gamma = GAMMA_GPS);
-   
+
          /**
           * constructor.
           * Creates an ORD, applies a dual-frequency ionospheric correction
@@ -208,7 +208,7 @@ namespace gnsstk
           * @param tm a TropModel for performing trop calculations
           * @param svTime true if prange is in SV time, false for RX time.
           * @param gamma The value of gamma: \f$\gamma_{12} = (f_{L1}/f_{L2})^2\f$
-          */ 
+          */
       ObsRngDev(const double prange1,
                 const double prange2,
                 const SatID& svid,
@@ -219,7 +219,7 @@ namespace gnsstk
                 const TropModel& tm,
                 bool svTime = false,
                 double gamma = GAMMA_GPS);
-   
+
          /// destructor
       virtual ~ObsRngDev() throw() {}
 
@@ -278,7 +278,7 @@ namespace gnsstk
           */
       vdouble getTrop() const throw() { return trop; }
 
-      friend std::ostream& operator<<(std::ostream& s, 
+      friend std::ostream& operator<<(std::ostream& s,
                                       const ObsRngDev& r) throw();
 
       void applyClockOffset(double clockOffset)
@@ -293,9 +293,9 @@ namespace gnsstk
                       const EllipsoidModel& em,
                       bool svTime)
       {
-         if (svTime) 
+         if (svTime)
             computeOrdTx(obs, rxpos, eph, em);
-         else 
+         else
             computeOrdRx(obs, rxpos, eph, em);
          return;
       }
@@ -306,7 +306,7 @@ namespace gnsstk
                         const Position& rxpos,
                         const XvtStore<SatID>& eph,
                         const EllipsoidModel& em);
-   
+
       void computeOrdRx(double obs,
                         const Position& rxpos,
                         const XvtStore<SatID>& eph,

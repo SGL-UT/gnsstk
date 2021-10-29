@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -71,9 +71,9 @@ public:
       // static strings contained in the loadData( ) method.
    list<PackedNavBits*> messageList;
 
-      // This is a parallel list of CNavFilterData objects created from 
-      // the PackedNavBit objects.   These are all believed to be valid. 
-   list<CNavFilterData> cNavList;  
+      // This is a parallel list of CNavFilterData objects created from
+      // the PackedNavBit objects.   These are all believed to be valid.
+   list<CNavFilterData> cNavList;
 };
 
 //-------------------------------------------------------------------
@@ -101,23 +101,23 @@ CNav2Filter_T ::
 //   1.) Message data are stored one frame to a PackedNavBits message.
 //   2.) The TOI, ITOW, week number, PRN, and page number are generated
 //       via the test algorithm.  The remaining data are zero except where
-//       modified to exercise the change detection. 
+//       modified to exercise the change detection.
 //   3.) The messages cycle through subframe 3 page 1 - subframe 3 page 6.
 //       NOTE:  There is no reason to expect that this will be the
 //       operational pattern.  The goal is to exercise all the
-//       valid subframes. 
+//       valid subframes.
 //
 unsigned CNav2Filter_T ::
 loadData()
 {
-   ObsID oidCNAV2(ObservationType::NavMsg, CarrierBand::L1, TrackingCode::L1CDP); 
+   ObsID oidCNAV2(ObservationType::NavMsg, CarrierBand::L1, TrackingCode::L1CDP);
    unsigned PRN = 1;
    SatID sid(PRN,SatelliteSystem::GPS);
    CommonTime ct = GPSWeekSecond(2000,86400.0);
    double MESSAGE_INTERVAL = 18.0;      // CNAV-2 message rate
    size_t MAX_PAGE_NUMBER = 6;
-   unsigned pageNum = 1; 
-   size_t NUMBER_MESSAGES = 12; 
+   unsigned pageNum = 1;
+   size_t NUMBER_MESSAGES = 12;
    string RX_STRING = "unk";
    unsigned TWO_HOURS = 7200;
 
@@ -134,8 +134,8 @@ loadData()
          SOW -= FULLWEEK;
       unsigned ITOW = SOW / TWO_HOURS;
       unsigned TOI  = SOW - (ITOW * TWO_HOURS);
-      TOI = TOI / 18;     
-      unsigned long zeroes = 0x00000000L;  
+      TOI = TOI / 18;
+      unsigned long zeroes = 0x00000000L;
 
       pnb->addUnsignedLong(TOI,9,1);     // Subframe 1
                                          // Subframe 2
@@ -150,7 +150,7 @@ loadData()
       pnb->addUnsignedLong(PRN,8,1);     // PRN ID
       pnb->addUnsignedLong(pageNum,6,1); // subframe ID
       for (int i1=0;i1<8;i1++)  // Add 260 zeroes to pad data space.
-      {                                  // That's 8 32 bits, plus 4 bits 
+      {                                  // That's 8 32 bits, plus 4 bits
          pnb->addUnsignedLong(zeroes,32,1);
       }
       pnb->addUnsignedLong(zeroes,4,1);
@@ -160,12 +160,12 @@ loadData()
       messageList.push_back(pnb);
 
       CNavFilterData cnavFilt(pnb);
-      cNavList.push_back(cnavFilt);     
+      cNavList.push_back(cnavFilt);
 
       pageNum++;
       if (pageNum>MAX_PAGE_NUMBER)
-         pageNum = 1; 
-      ct += MESSAGE_INTERVAL; 
+         pageNum = 1;
+      ct += MESSAGE_INTERVAL;
    }
 
    return 0;
@@ -180,7 +180,7 @@ noFilterTest()
    NavFilterMgr mgr;
    unsigned long count = 0;
 
-   list<CNavFilterData>::iterator it; 
+   list<CNavFilterData>::iterator it;
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
@@ -208,7 +208,7 @@ testCNav2Sanity()
    mgr.addFilter(&filtSanity);
 
       // Test with valid data
-   list<CNavFilterData>::iterator it; 
+   list<CNavFilterData>::iterator it;
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
@@ -222,18 +222,18 @@ testCNav2Sanity()
    TUASSERTE(unsigned long, expected, acceptCount);
    TUASSERTE(unsigned long, 0, rejectCount);
 
-      // Clone a valid message, modify the ITOW, and 
+      // Clone a valid message, modify the ITOW, and
       // verify that the filter rejects the data.
    acceptCount = 0;
-   rejectCount = 0; 
+   rejectCount = 0;
    list<PackedNavBits*>::iterator it2 = messageList.begin();
-   PackedNavBits* p = *it2; 
+   PackedNavBits* p = *it2;
 
       // There are 84 two-hour epochs in a week.  That's 54 base 16.
       // An ITOW of a solid 7 bits would be too large.
    PackedNavBits* pnb = p->clone();
    unsigned long wordBad = 0x0000003F;
-   pnb->insertUnsignedLong(wordBad,22,8); 
+   pnb->insertUnsignedLong(wordBad,22,8);
    CNavFilterData fd(pnb);
    gnsstk::NavFilter::NavMsgList l = mgr.validate(&fd);
    acceptCount = l.size();
@@ -247,7 +247,7 @@ testCNav2Sanity()
       // An TOI of a 0x1FF is too large.
    PackedNavBits* pnb2 = p->clone();
    wordBad = 0x000001FF;
-   pnb2->insertUnsignedLong(wordBad,0,9); 
+   pnb2->insertUnsignedLong(wordBad,0,9);
    CNavFilterData fd2(pnb2);
    gnsstk::NavFilter::NavMsgList l2 = mgr.validate(&fd2);
    acceptCount = l2.size();
@@ -261,7 +261,7 @@ testCNav2Sanity()
       // 2000 = 0x7CF.
    PackedNavBits* pnb3 = p->clone();
    wordBad = 0x000007CF;
-   pnb3->insertUnsignedLong(wordBad,9,13); 
+   pnb3->insertUnsignedLong(wordBad,9,13);
    CNavFilterData fd3(pnb3);
    gnsstk::NavFilter::NavMsgList l3 = mgr.validate(&fd3);
    acceptCount = l3.size();
@@ -274,7 +274,7 @@ testCNav2Sanity()
    PackedNavBits* pnb4 = p->clone();
    wordBad = 0x00000000;
    unsigned long bitOffset = 609;
-   pnb4->insertUnsignedLong(wordBad,bitOffset,8); 
+   pnb4->insertUnsignedLong(wordBad,bitOffset,8);
    CNavFilterData fd4(pnb4);
    gnsstk::NavFilter::NavMsgList l4 = mgr.validate(&fd4);
    acceptCount = l4.size();
@@ -286,7 +286,7 @@ testCNav2Sanity()
       // A page number of 0 doesn't match the test value.
    PackedNavBits* pnb5 = p->clone();
    bitOffset = 609 + 8;
-   pnb5->insertUnsignedLong(wordBad,bitOffset,6); 
+   pnb5->insertUnsignedLong(wordBad,bitOffset,6);
    CNavFilterData fd5(pnb5);
    gnsstk::NavFilter::NavMsgList l5 = mgr.validate(&fd5);
    acceptCount = l5.size();
@@ -307,12 +307,12 @@ testCNavTOW()
 
    NavFilterMgr mgr;
    unsigned long rejectCount = 0;
-   unsigned long acceptCount = 0; 
+   unsigned long acceptCount = 0;
    CNavTOWFilter filtTOW;
 
    mgr.addFilter(&filtTOW);
 
-   list<CNavFilterData>::iterator it; 
+   list<CNavFilterData>::iterator it;
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
@@ -324,18 +324,18 @@ testCNavTOW()
    TUASSERTE(unsigned long, expected, acceptCount);
    TUASSERTE(unsigned long, 0,  rejectCount);
 
-   // --- NOW GENERATE SOME INVALID MESSAGES AND VERIFY THAT 
+   // --- NOW GENERATE SOME INVALID MESSAGES AND VERIFY THAT
    // --- THEY ARE REJECTED
       // Modify a message to have an invalid TOW count.
    acceptCount = 0;
-   rejectCount = 0; 
+   rejectCount = 0;
    CNavFilterData fd;
    list<PackedNavBits*>::iterator it2 = messageList.begin();
-   PackedNavBits* p = *it2; 
+   PackedNavBits* p = *it2;
 
       // Message with invalid too large) TOW
    PackedNavBits* pnbBadTOWMsg = p->clone();
-   unsigned long badTOW = 604800; 
+   unsigned long badTOW = 604800;
    pnbBadTOWMsg->insertUnsignedLong(badTOW, 20, 17, 6);
 
       // Message with invalid preamble
@@ -343,13 +343,13 @@ testCNavTOW()
    unsigned long badPre = 0;
    pnbBadPreamble->insertUnsignedLong(badPre, 0, 8);
 
-   acceptCount = 0; 
-   rejectCount = 0; 
+   acceptCount = 0;
+   rejectCount = 0;
    CNavFilterData fdBadTOW(pnbBadTOWMsg);
    gnsstk::NavFilter::NavMsgList l = mgr.validate(&fdBadTOW);
    rejectCount += filtTOW.rejected.size();
    acceptCount += l.size();
-   
+
    CNavFilterData fdBadPreamble(pnbBadPreamble);
    l = mgr.validate(&fdBadPreamble);
    rejectCount += filtTOW.rejected.size();
@@ -357,8 +357,8 @@ testCNavTOW()
 
       // Bad Message Type tests
       // Test the invalid MT immediately above/below the valid ranges.
-   unsigned long badMT[] = { 9, 16, 29, 40}; 
-   int badMTCount = 4; 
+   unsigned long badMT[] = { 9, 16, 29, 40};
+   int badMTCount = 4;
    PackedNavBits* pnbBadMT = p->clone();
    for (int i=0; i<badMTCount; i++)
    {
@@ -369,7 +369,7 @@ testCNavTOW()
       acceptCount += l.size();
    }
 
-   unsigned long expReject = 2 + badMTCount; 
+   unsigned long expReject = 2 + badMTCount;
    TUASSERTE(unsigned long, 0, acceptCount);
    TUASSERTE(unsigned long, expReject,  rejectCount);
 
@@ -388,12 +388,12 @@ testCNav2Combined()
 
    mgr.addFilter(&filtSanity);
 
-   list<CNavFilterData>::iterator it; 
+   list<CNavFilterData>::iterator it;
    for (it=cNavList.begin(); it!=cNavList.end(); it++)
    {
       CNavFilterData& fd = *it;
       gnsstk::NavFilter::NavMsgList l = mgr.validate(&fd);
-         // if l is empty, the subframe was rejected. 
+         // if l is empty, the subframe was rejected.
       rejectCount += l.empty();
    }
    int expected = cNavList.size();

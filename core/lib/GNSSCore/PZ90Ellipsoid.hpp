@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -59,7 +59,7 @@ namespace gnsstk
          /// @return semi-major axis of Earth in meters.
       virtual double a() const throw()
       { return 6378136.0; }
-		 
+
          ///Defined in table 3.2 of ICD-2008 (v5.1)
          /// @return semi-major axis of Earth in km.
       virtual double a_km() const throw()
@@ -79,7 +79,7 @@ namespace gnsstk
           */
       virtual double flattening() const throw()
       { return 3.35280373518e-3; }
-     
+
          // The eccentricity and eccSquared values were computed from the
          // flattening value via the formula:
          // ecc2 = 1 - (1 - f)^2 = f*(2.0 - f)

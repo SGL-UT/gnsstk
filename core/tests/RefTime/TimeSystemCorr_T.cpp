@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -46,7 +46,7 @@
 
 class TimeSystemCorr_T
 {
-public: 
+public:
       // Default Constructor, set the precision value
    TimeSystemCorr_T()
    { eps = 1E-12; }
@@ -55,7 +55,7 @@ public:
        * methods are tested implicitly */
    unsigned initializationTest();
 
-      /** operator==() and operator()< only exist in order to support 
+      /** operator==() and operator()< only exist in order to support
        * use of TimeSystemCorr objects as map keys.  In this role, only the
        * CorrType is checked.   Therefore, it is sufficient
        * to see that the ordering is maintained without change. */
@@ -71,7 +71,7 @@ private:
    double A0;
    double A1;
    double deltaT;
-   gnsstk::CommonTime tscRefTime; 
+   gnsstk::CommonTime tscRefTime;
 };
 
 
@@ -158,17 +158,17 @@ correctionTest()
 
       // Define a representative A0 and A1.  Define an epoch time and
       // a reasonable refernce time.
-      // Use these values throughout the set of tests. 
+      // Use these values throughout the set of tests.
       // Test at least one conversion for each conversion type.
    A0 = 1.0e-7;
    A1 = 1.0e-12;
    deltaT = -10000;    // 10,000 sec is a nice round number for prpogation
-   tscRefTime = gnsstk::CivilTime(2016, 1, 3, 0, 0, 0.0); 
+   tscRefTime = gnsstk::CivilTime(2016, 1, 3, 0, 0, 0.0);
 
    gnsstk::CommonTime timeOfInterest = tscRefTime + deltaT;
-   double forwardResult = A0 + A1 * deltaT; 
+   double forwardResult = A0 + A1 * deltaT;
    forwardResult = forwardResult * -1.0;   // This is a CORRECTION, not an error
-   double corrVal = 0.0; 
+   double corrVal = 0.0;
 
    gnsstk::TimeSystemCorrection tscTest = buildObject("GPUT");
    timeOfInterest.setTimeSystem(gnsstk::TimeSystem::GPS);
@@ -217,7 +217,7 @@ correctionTest()
 
       // GLONASS is a little different in that the A1 term is not used
    A1 = 0;
-   forwardResult = A0 + A1 * deltaT; 
+   forwardResult = A0 + A1 * deltaT;
    forwardResult = forwardResult * -1.0;   // This is a CORRECTION, not an error
    tscTest = buildObject("GLUT");
    timeOfInterest.setTimeSystem(gnsstk::TimeSystem::GLO);
@@ -237,7 +237,7 @@ buildObject(const std::string& str)
    gnsstk::TimeSystemCorrection tsc(str);
    tsc.refTime = tscRefTime;
    tsc.A0 = A0;
-   tsc.A1 = A1; 
+   tsc.A1 = A1;
 
    return tsc;
 }

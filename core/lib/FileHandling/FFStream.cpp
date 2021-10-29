@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -125,7 +125,7 @@ namespace gnsstk
    isFFStream(std::istream& i)
    {
       try
-      { 
+      {
          (void)dynamic_cast<FFStream&>(i);
       }
       catch(...)
@@ -230,7 +230,7 @@ namespace gnsstk
             recordNumber = initialRecordNumber;
             setstate(std::ios::failbit);
             conditionalThrow();
-          
+
          }
       }
          // this is if you throw an FFStream error in the above catch
@@ -277,7 +277,7 @@ namespace gnsstk
 
 
 
-      // the crazy double try block is so that no gnsstk::Exception throws 
+      // the crazy double try block is so that no gnsstk::Exception throws
       // get masked, allowing all exception information (line numbers, text,
       // etc) to be retained.
    void FFStream ::
@@ -310,7 +310,7 @@ namespace gnsstk
             setstate(std::ios::failbit);
             conditionalThrow();
          }
-         catch (gnsstk::StringUtils::StringException& e)  
+         catch (gnsstk::StringUtils::StringException& e)
          {
             e.addText("In record " +
                       gnsstk::StringUtils::asString(recordNumber));
@@ -321,7 +321,7 @@ namespace gnsstk
             recordNumber = initialRecordNumber;
             setstate(std::ios::failbit);
             conditionalThrow();
-         } 
+         }
             // catches some errors we can encounter
          catch (FFStreamError& e)
          {

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -57,8 +57,8 @@ namespace gnsstk
       finalTime(CommonTime::END_OF_TIME),
       keepingOnlyUnique(false)
     {
-       initialTime.setTimeSystem(TimeSystem::GPS); 
-       finalTime.setTimeSystem(TimeSystem::GPS); 
+       initialTime.setTimeSystem(TimeSystem::GPS);
+       finalTime.setTimeSystem(TimeSystem::GPS);
        keepingOnlyUnique = keepOnlyUnique;
     }
 
@@ -71,12 +71,12 @@ namespace gnsstk
          {
             delete oi->second;
          }
-      } 
+      }
      deMap.clear();
      initialTime = gnsstk::CommonTime::END_OF_TIME;
      finalTime = gnsstk::CommonTime::BEGINNING_OF_TIME;
      initialTime.setTimeSystem(TimeSystem::GPS);
-     finalTime.setTimeSystem(TimeSystem::GPS); 
+     finalTime.setTimeSystem(TimeSystem::GPS);
    }
 
    void CNavDataElementStore::dump(std::ostream& s, short detail) const
@@ -87,17 +87,17 @@ namespace gnsstk
          SatID satID = (SatID) cit1->first;
          s << "*******************************************************" << endl;
          s << "CNAV Data Elements for " << satID << endl;
-         DataElementMap& dem = (DataElementMap&) cit1->second; 
+         DataElementMap& dem = (DataElementMap&) cit1->second;
          DataElementMap::const_iterator cit2;
          for (cit2=dem.begin();cit2!=dem.end();cit2++)
          {
             const CNavDataElement* p = (const CNavDataElement*) cit2->second;
             p->dump(s);
          }
-      }   
+      }
    }
 
-   void CNavDataElementStore::edit(const CommonTime& tmin, 
+   void CNavDataElementStore::edit(const CommonTime& tmin,
                      const CommonTime& tmax)
    {
       for (DEMap::iterator i=deMap.begin(); i!=deMap.end();i++)
@@ -107,7 +107,7 @@ namespace gnsstk
          if (lower!=dem.begin())
          {
             for (DataElementMap::iterator dmi = dem.begin();dmi!=lower; dmi++)
-            { 
+            {
                delete dmi->second;
             }
             dem.erase(dem.begin(),lower);
@@ -124,7 +124,7 @@ namespace gnsstk
          }
       }
       initialTime = tmin;
-      finalTime = tmax; 
+      finalTime = tmax;
    }
 
    CommonTime CNavDataElementStore::getInitialTime() const
@@ -134,7 +134,7 @@ namespace gnsstk
 
    CommonTime CNavDataElementStore::getFinalTime() const
    {
-      return finalTime; 
+      return finalTime;
    }
 
    bool CNavDataElementStore::addDataElement(const CNavDataElement& cnde)
@@ -148,11 +148,11 @@ namespace gnsstk
          dem[cnde.ctXmit] = cnde.clone();
          if (cnde.ctXmit<initialTime) initialTime = cnde.ctXmit;
          if (cnde.ctXmit>finalTime) finalTime = cnde.ctXmit;
-         return true; 
+         return true;
       }
 
          // Check to see if there is already an entry in the map.
-         // If not, add the element and return true.  
+         // If not, add the element and return true.
          // If an entry DOES exist, do NOT update and return false.
       DataElementMap::iterator it = dem.find(cnde.ctXmit);
       if (it==dem.end())
@@ -172,15 +172,15 @@ namespace gnsstk
       {
          counter += i->second.size();
       }
-      return counter; 
+      return counter;
    }
 
    /// Need to add methods to FIND particular data elements.   Need
-   /// to figure those out first. 
+   /// to figure those out first.
 
       // NEED TO IMPROVE THIS TO FILTER TO ONLY THOSE ELEMENTS THAT
       // ARE WITHIN THE TIME BOUNDS.
-   const CNavDataElementStore::DataElementMap& 
+   const CNavDataElementStore::DataElementMap&
    CNavDataElementStore::getDataElementMap(const SatID& satID,
                                            const CommonTime& begin,
                                            const CommonTime& end) const

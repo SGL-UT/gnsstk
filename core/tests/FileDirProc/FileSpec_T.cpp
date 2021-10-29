@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -49,7 +49,7 @@ using namespace gnsstk;
 
 class FileSpec_T
 {
-public: 
+public:
 
       // constructor
    FileSpec_T() { init(); }
@@ -355,7 +355,7 @@ unsigned FileSpec_T :: testInitInvalid()
       {
          TUPASS("expected exception for invalid FileSpec");
       }
-   }   
+   }
 
    TURETURN();
 }
@@ -432,8 +432,8 @@ unsigned FileSpec_T :: testInitValid()
              << *specIter << "\"): " << fse;
          TUFAIL(oss.str());
       }
-   }   
-   
+   }
+
    TURETURN();
 }
 
@@ -617,7 +617,7 @@ unsigned FileSpec_T :: testExtractField()
    try   // extract a field that is present (single)
    {
       FileSpec  spec("test-%4y-spec");
-         
+
       string  field = spec.extractField("test-1999-spec", FileSpec::year);
       TUASSERTE(int, 0, field.compare("1999"));
    }
@@ -627,11 +627,11 @@ unsigned FileSpec_T :: testExtractField()
       oss << "unexpected exception: " << fse;
       TUFAIL(oss.str());
    }
-      
+
    try   // extract a field that is present multiple times
    {
       FileSpec  spec("test-%2y-spec-%2y");
-         
+
       string  field = spec.extractField("test-97-spec-96", FileSpec::year);
       TUASSERTE(string, "97", field);
    }
@@ -641,11 +641,11 @@ unsigned FileSpec_T :: testExtractField()
       oss << "unexpected exception: " << fse;
       TUFAIL(oss.str());
    }
-      
+
    try   // extract multiple different fields
    {
       FileSpec  spec("test-%4y%03j%05s-spec");
-         
+
       string  yField = spec.extractField("test-200412312345", FileSpec::year);
       TUASSERTE(string, "2004", yField);
 
@@ -662,7 +662,7 @@ unsigned FileSpec_T :: testExtractField()
       oss << "unexpected exception: " << fse;
       TUFAIL(oss.str());
    }
-      
+
    try   // extract a field that isn't there
    {
       FileSpec  spec("test-%y-spec");
@@ -691,7 +691,7 @@ unsigned FileSpec_T :: testExtractCommonTime()
    try   // extract a valid time
    {
       FileSpec  spec("test-%4Y%03j%05s-spec");
-         
+
       CommonTime t = spec.extractCommonTime("test-200412312345-spec");
       YDSTime  ydst(2004, 123, 12345.0);
       TUASSERT(ydst == t);
@@ -706,7 +706,7 @@ unsigned FileSpec_T :: testExtractCommonTime()
    try   // extract an invalid time
    {
       FileSpec  spec("test-%4Y%03j%05s-spec");
-         
+
       CommonTime t = spec.extractCommonTime("test-101043299999-spec");
       TUFAIL("expected exception for invalid time");
    }
@@ -723,7 +723,7 @@ unsigned FileSpec_T :: testExtractCommonTime()
  try   // extract an incomplete time
  {
  FileSpec  spec("test-%4Y-%05s-spec");
-         
+
  CommonTime t = spec.extractCommonTime("test-1999-12345-spec");
  TUFAIL("expected exception for incomplete time");
  }
@@ -738,7 +738,7 @@ unsigned FileSpec_T :: testExtractCommonTime()
    try   // extract a missing time
    {
       FileSpec  spec("test-%4Y%03j%05s-spec");
-         
+
       CommonTime t = spec.extractCommonTime("test-spec");
       TUFAIL("expected exception for missing time");
    }
@@ -753,7 +753,7 @@ unsigned FileSpec_T :: testExtractCommonTime()
    try   // extract from a time-less spec
    {
    FileSpec  spec("test-%2p-%2r-spec");
-         
+
    CommonTime t = spec.extractCommonTime("test-24-01-spec");
    TUFAIL("expected exception for missing time in spec");
    }
@@ -778,7 +778,7 @@ unsigned FileSpec_T :: testToString()
    try // default GPSWeekZcount
    {
       FileSpec  spec("test-%04F%06Z-spec");
-         
+
       GPSWeekZcount wz;
       CommonTime t(wz);
       string  str = spec.toString(t);
@@ -794,7 +794,7 @@ unsigned FileSpec_T :: testToString()
    try // non-default GPSWeekZcount
    {
       FileSpec  spec("test-%04F%06Z-spec");
-         
+
       GPSWeekZcount wz(1234,56789);
       CommonTime t(wz);
       string  str = spec.toString(t);
@@ -810,7 +810,7 @@ unsigned FileSpec_T :: testToString()
    try // non-default GPSWeekZcount plus missing other stuff
    {
       FileSpec  spec("test-%04F%06Z-%p-%n-%k-%I-spec");
-         
+
       GPSWeekZcount wz(1234,56789);
       CommonTime t(wz);
       string  str = spec.toString(t);
@@ -826,7 +826,7 @@ unsigned FileSpec_T :: testToString()
    try // non-default GPSWeekZcount plus supplied other stuff
    {
       FileSpec  spec("test-%04F%06Z-%02p-%05n-%02r-%02k-spec");
-         
+
       GPSWeekZcount wz(1234,56789);
       CommonTime t(wz);
       FileSpec::FSTStringMap  stuff;
@@ -849,7 +849,7 @@ unsigned FileSpec_T :: testToString()
   try   // default CommonTime
   {
   FileSpec  spec("test-%04Y%03j%05.0s-spec");
-         
+
   CommonTime t;
   string  str = spec.toString(t);
   testFramework.assert( (str.compare("test-000000000000-spec") == 0),
@@ -865,7 +865,7 @@ unsigned FileSpec_T :: testToString()
   try   // non-default CommonTime
   {
   FileSpec  spec("test-%04Y%03j%05.0s-spec");
-         
+
   YDSTime  ydst(1991, 234, 23456);
   string  str = spec.toString(ydst);
   testFramework.assert( (str.compare("test-199123423456-spec") == 0),
@@ -881,7 +881,7 @@ unsigned FileSpec_T :: testToString()
   try   // non-default CommonTime plus missing other stuff
   {
   FileSpec  spec("test-%04Y%03j%05.0s-%p-%n-%k-spec");
-         
+
   YDSTime  ydst(1991, 234, 23456);
   string  str = spec.toString(ydst);
   testFramework.assert( (str.compare("test-199123423456-spec") == 0),
@@ -897,7 +897,7 @@ unsigned FileSpec_T :: testToString()
   try   // non-default CommonTime plus supplied other stuff
   {
   FileSpec  spec("test-%04Y%03j%05.0s-%02p-%05n-%02r-%02k-spec");
-         
+
   YDSTime  ydst(1991, 234, 23456);
   FileSpec::FSTStringMap  stuff;
   stuff[FileSpec::prn] = "12";
@@ -998,7 +998,7 @@ unsigned FileSpec_T :: testSortList()
 
       vector<string>  sortedFileList;
          // index
-         //                     v    v   v1 v    vv 2v    vv v3 v 
+         //                     v    v   v1 v    vv 2v    vv v3 v
          //                     01234567890123456789012345678901234567
          //                   ("test-199702001000-13-96344-01-01-spec");
          // field sort order and name

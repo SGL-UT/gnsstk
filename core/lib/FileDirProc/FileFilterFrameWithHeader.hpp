@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -77,9 +77,9 @@ namespace gnsstk
    public:
          /** Default constructor
           * @throw Exception */
-      FileFilterFrameWithHeader(const gnsstk::CommonTime& start = 
+      FileFilterFrameWithHeader(const gnsstk::CommonTime& start =
                                 gnsstk::CommonTime::BEGINNING_OF_TIME,
-                                const gnsstk::CommonTime& end = 
+                                const gnsstk::CommonTime& end =
                                 gnsstk::CommonTime::END_OF_TIME)
             : FileFilterFrame<FileStream, FileData>(start, end)
       {}
@@ -87,9 +87,9 @@ namespace gnsstk
          /** Takes a list of files to open in lieu of day times
           * @throw Exception */
       FileFilterFrameWithHeader(const std::vector<std::string>& fileList,
-                                const gnsstk::CommonTime& start = 
+                                const gnsstk::CommonTime& start =
                                 gnsstk::CommonTime::BEGINNING_OF_TIME,
-                                const gnsstk::CommonTime& end = 
+                                const gnsstk::CommonTime& end =
                                 gnsstk::CommonTime::END_OF_TIME)
             : FileFilterFrame<FileStream, FileData>(fileList, start, end)
       {
@@ -104,10 +104,10 @@ namespace gnsstk
 
          /** Takes a file name for a single file filter.
           * @throw Exception when there's a file error. */
-      FileFilterFrameWithHeader(const std::string& filename, 
-                                const gnsstk::CommonTime& start = 
+      FileFilterFrameWithHeader(const std::string& filename,
+                                const gnsstk::CommonTime& start =
                                 gnsstk::CommonTime::BEGINNING_OF_TIME,
-                                const gnsstk::CommonTime& end = 
+                                const gnsstk::CommonTime& end =
                                 gnsstk::CommonTime::END_OF_TIME)
             : FileFilterFrame<FileStream, FileData>(filename, start, end)
       {init();}
@@ -115,10 +115,10 @@ namespace gnsstk
          /** Uses the FileSpec to retrieve files.  Use filter like you would
           * in FileSpecFind, to filter FOR stations, receivers, etc.
           * @throw Exception when there's a file error. */
-      FileFilterFrameWithHeader(const FileSpec& spec, 
-                                const gnsstk::CommonTime& start = 
+      FileFilterFrameWithHeader(const FileSpec& spec,
+                                const gnsstk::CommonTime& start =
                                 gnsstk::CommonTime::BEGINNING_OF_TIME,
-                                const gnsstk::CommonTime& end = 
+                                const gnsstk::CommonTime& end =
                                 gnsstk::CommonTime::END_OF_TIME,
                                 const FileSpecFind::Filter& filter =
                                 FileSpecFind::Filter())
@@ -129,11 +129,11 @@ namespace gnsstk
           * the data to the filter. Use filter like you would
           * in FileSpecFind, to filter FOR stations, receivers, etc.
           * @throw Exception */
-      FileFilterFrameWithHeader& 
-      newSource(const FileSpec& filespec, 
-                const gnsstk::CommonTime& start = 
+      FileFilterFrameWithHeader&
+      newSource(const FileSpec& filespec,
+                const gnsstk::CommonTime& start =
                 gnsstk::CommonTime::BEGINNING_OF_TIME,
-                const gnsstk::CommonTime& end = 
+                const gnsstk::CommonTime& end =
                 gnsstk::CommonTime::END_OF_TIME,
                 const FileSpecFind::Filter& filter =
                 FileSpecFind::Filter())
@@ -146,11 +146,11 @@ namespace gnsstk
 
          /** Reads in the file and adds the data to the filter.
           * @throw Exception */
-      FileFilterFrameWithHeader& 
-      newSource(const std::string& filename, 
-                const gnsstk::CommonTime& start = 
+      FileFilterFrameWithHeader&
+      newSource(const std::string& filename,
+                const gnsstk::CommonTime& start =
                 gnsstk::CommonTime::BEGINNING_OF_TIME,
-                const gnsstk::CommonTime& end = 
+                const gnsstk::CommonTime& end =
                 gnsstk::CommonTime::END_OF_TIME)
       {
          FileFilterFrame<FileStream, FileData>::newSource(filename, start,
@@ -161,11 +161,11 @@ namespace gnsstk
 
          /** Reads in the file and adds the data to the filter.
           * @throw Exception */
-      FileFilterFrameWithHeader& 
-      newSource(const std::vector<std::string>& fileList, 
-                const gnsstk::CommonTime& start = 
+      FileFilterFrameWithHeader&
+      newSource(const std::vector<std::string>& fileList,
+                const gnsstk::CommonTime& start =
                 gnsstk::CommonTime::BEGINNING_OF_TIME,
-                const gnsstk::CommonTime& end = 
+                const gnsstk::CommonTime& end =
                 gnsstk::CommonTime::END_OF_TIME)
       {
          FileFilterFrame<FileStream, FileData>::newSource(fileList, start,
@@ -251,7 +251,7 @@ namespace gnsstk
       std::list<FileHeader> getHeaderData(void) const {return headerList;}
 
          /// Returns the number of data items in the header list.
-      typename std::list<FileHeader>::size_type getHeaderCount(void) const 
+      typename std::list<FileHeader>::size_type getHeaderCount(void) const
       { return headerList.size(); }
 
          /**
@@ -317,7 +317,7 @@ namespace gnsstk
          }
       }
 
-   protected:   
+   protected:
       std::list<FileHeader> headerList;
    };
 
@@ -333,7 +333,7 @@ namespace gnsstk
 
       if (pos != std::string::npos)
          gnsstk::FileUtils::makeDir(outputFile.substr(0,pos).c_str(), 0755);
-      
+
       FileStream stream(outputFile.c_str(), std::ios::out|std::ios::trunc);
       stream.exceptions(std::ios::failbit);
 
@@ -435,11 +435,11 @@ namespace gnsstk
 
    template <class FileStream, class FileData, class FileHeader>
    void
-   FileFilterFrameWithHeader<FileStream,FileData,FileHeader> :: 
+   FileFilterFrameWithHeader<FileStream,FileData,FileHeader> ::
    init(const FileSpecFind::Filter& filter)
    {
          // find the files
-      std::list<std::string> listOfFiles = 
+      std::list<std::string> listOfFiles =
          FileSpecFind::find(this->fs, this->startTime, this->endTime, filter);
 
          // for each file, just read the header

@@ -819,6 +819,7 @@ INPUT                  = MAINPAGE.txt \
                          INSTALL.md \
                          INTRO.txt \
                          HOWTO.txt \
+                         NewNav-gotchas.md \
                          ref/doxygen/ \
                          core/lib \
                          ext/lib

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -87,10 +87,10 @@ namespace gnsstk
               << " has " << em.size() << " entries." << std::endl;
             OrbElemMap::const_iterator ei;
 
-            for (ei = em.begin(); ei != em.end(); ei++) 
+            for (ei = em.begin(); ei != em.end(); ei++)
             {
                   // Since this is GPSOrbElemStore, then the type in the
-                  // store must AT LEAST be OrbElem.  
+                  // store must AT LEAST be OrbElem.
                const OrbElemBase* oeb = ei->second;
                const OrbElem* oe = dynamic_cast<const OrbElem*>(oeb);
                s << "PRN " << setw(2) << it->first
@@ -98,13 +98,13 @@ namespace gnsstk
                  << " TOC " << printTime(oe->ctToc,fmt)
                  << " KEY " << printTime(ei->first,fmt);
                s << " begVal: " << printTime(oe->beginValid,fmt)
-                 << " endVal: " << printTime(oe->endValid,fmt); 
-                
+                 << " endVal: " << printTime(oe->endValid,fmt);
+
                s << std::endl;
             } //end inner for-loop */
 
          } // end outer for-loop
-   
+
          s << "  End of GPSOrbElemStore data." << std::endl << std::endl;
 
       } //end else-block
@@ -115,7 +115,7 @@ namespace gnsstk
       {
          string tf1 = "%02m/%02d/%02y %02H:%02M:%02S";
          string tf2 = "%02H:%02M:%02S";
-         
+
          for (it = ube.begin(); it != ube.end(); it++)
          {
             const OrbElemMap& em = it->second;
@@ -125,10 +125,10 @@ namespace gnsstk
 
             s << "  PRN  MM/DD/YY      Key     Begin       Toe       Toc      End  Healthy" << endl;
 
-            for (ei = em.begin(); ei != em.end(); ei++) 
+            for (ei = em.begin(); ei != em.end(); ei++)
             {
                   // Since this is GPSOrbElemStore, then the type in the
-                  // store must AT LEAST be OrbElem.  
+                  // store must AT LEAST be OrbElem.
                const OrbElemBase* oeb = ei->second;
                const OrbElem* oe = dynamic_cast<const OrbElem*>(oeb);
                s << it->first
@@ -152,7 +152,7 @@ namespace gnsstk
               << " has " << em.size() << " entries." << std::endl;
             OrbElemMap::const_iterator ei;
 
-            for (ei = em.begin(); ei != em.end(); ei++) 
+            for (ei = em.begin(); ei != em.end(); ei++)
             {
                const OrbElemBase* oe = ei->second;
                oe->dump(s);
@@ -160,5 +160,5 @@ namespace gnsstk
          }
       }
    } // end GPSOrbElemStore::dump
-   
+
 } // namespace

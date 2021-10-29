@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,8 +15,8 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
@@ -25,14 +25,14 @@
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -87,7 +87,7 @@ namespace gnsstk
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
-          *   behavior or by nearest to when in time. 
+          *   behavior or by nearest to when in time.
           * @return true if successful.  If false, navData will be untouched. */
       bool find(const NavMessageID& nmid, const CommonTime& when,
                 NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
@@ -151,19 +151,33 @@ namespace gnsstk
           * @return true if successful. */
       bool addNavData(const NavDataPtr& nd);
 
-         /** Determine the earliest time for which this object can successfully 
+         /** Determine the earliest time for which this object can successfully
           * determine the Xvt for any object.
           * @return The initial time, or CommonTime::END_OF_TIME if no
           *   data is available. */
       CommonTime getInitialTime() const override
       { return initialTime; }
 
-         /** Determine the latest time for which this object can successfully 
+         /** Determine the latest time for which this object can successfully
           * determine the Xvt for any object.
           * @return The initial time, or CommonTime::BEGINNING_OF_TIME if no
           *   data is available. */
       CommonTime getFinalTime() const override
       { return finalTime; }
+
+         /** Determine the timestamp of the oldest record in this
+          * store for the given satellite.
+          * @note This should not be confused with getInitialTime(),
+	  *   which is the time of applicability, not the time stamp
+	  *   of the contained data. */
+      CommonTime getFirstTime(const SatID& sat) const;
+
+      	 /** Determine the timestamp of the newest record in this
+	  * store for the given satellite.
+	  * @note This should not be confused with getFinalTime(),
+	  *   which is the time of applicability, not the time stamp
+	  *   of the contained data. */
+      CommonTime getLastTime(const SatID& sat) const;
 
          /** Obtain a set of satellites for which we have data in the
           * given time span.
@@ -216,6 +230,64 @@ namespace gnsstk
 
          /// Return the number of nav messages in data.
       virtual size_t size() const;
+         /** Return a count of messages matching the given NavMessageID.
+          * @param[in] nmid The NavMessageID to match.  Wildcards may
+          *   be used. In addition to the standard wildcard support in
+          *   SatID, ObsID and NavID, the signal field may be set to
+          *   "Unknown" to be treated as a wildcard, as may the
+          *   messageType field.  The following code snippet
+          *   represents a NavMessageID with all wildcards (which will
+          *   match the results from the size() method).
+          *
+          * \code{.cpp}
+          *   NavMessageID key1(
+          *      NavSatelliteID(SatID(SatelliteSystem::Unknown),
+          *                     SatID(SatelliteSystem::Unknown),
+          *                     ObsID(ObservationType::Any,
+          *                           CarrierBand::Any,
+          *                           TrackingCode::Any,
+          *                           XmitAnt::Any),
+          *                     NavID(NavType::Any)),
+          *      NavMessageType::Unknown);
+          *   key1.sat.makeWild();
+          *   key1.xmitSat.makeWild();
+          * \endcode
+          *
+          * The \a system field is initialized in the above
+          * constructor from the SatID system, which is why we're
+          * initializing it to "Unknown" (to make \a system a
+          * wildcard).  But setting the SatID::system to Unknown
+          * doesn't make SatID a wildcard, that requires the
+          * SatID::makeWild() method calls.
+          *
+          * @note This method has a bit of overhead, though no more
+          *   than find(). */
+      virtual size_t count(const NavMessageID& nmid) const;
+         /** Return a count of messages matching the given
+          * SatelliteSystem and NavMessageType.
+          * @param[in] sys The SatelliteSystem to match when counting.
+          * @param[in] nmt The NavMessageType to match (default Unknown=all).
+          * @note This method has a bit of overhead, though no more
+          *   than find().
+          * @note Only NavSignalID::system is checked, if you need to
+          *   explicitly check NavSatelliteID::SatID::system, use the
+          *   count(constNavMessageID&). */
+      virtual size_t count(SatelliteSystem sys,
+                           NavMessageType nmt = NavMessageType::Unknown)
+         const;
+         /** Return a count of messages where the SUBJECT satellite ID
+          * matches the given SatID and message type.
+          * @param[in] satID The subject satellite ID to match.
+          * @param[in] nmt The NavMessageType to match (default Unknown=all).
+          * @note This method has a bit of overhead, though no more
+          *   than find(). */
+      virtual size_t count(const SatID& satID,
+                           NavMessageType nmt = NavMessageType::Unknown)
+         const;
+         /** Return a count of messages matching the given NavMessageType.
+          * @note This method has a bit of overhead, though no more
+          *   than find(). */
+      virtual size_t count(NavMessageType nmt) const;
          /// Return the number of distinct signals (ignoring PRN) in the data.
       virtual size_t numSignals() const;
          /// Return the number of distinct signals including PRN, in the data.
@@ -332,6 +404,8 @@ namespace gnsstk
       CommonTime initialTime;
          /// Store the latest applicable orbit time here, by addNavData
       CommonTime finalTime;
+         /// Map subject satellite ID to time stamp pair (oldest,newest).
+      std::map<SatID,std::pair<CommonTime,CommonTime> > firstLastMap;
 
          /// Grant access to MultiFormatNavDataFactory for various functions.
       friend class MultiFormatNavDataFactory;

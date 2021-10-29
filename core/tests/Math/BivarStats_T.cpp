@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -43,7 +43,7 @@
 
 class BivarStats_T
 {
-        public: 
+        public:
 		BivarStats_T(){eps = 1e-12;}// Default Constructor, set the precision value
 		~BivarStats_T() {} // Default Desructor
 		double eps;
@@ -56,7 +56,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -75,7 +75,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -94,7 +94,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -113,7 +113,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -132,7 +132,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -151,7 +151,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -170,7 +170,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -189,7 +189,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -198,7 +198,7 @@ class BivarStats_T
 			failMesg  = "The VarianceX method was unsuccessful";
 			//std::cout << "The Variance of X is: " << test.varianceX() << std::endl;
 			testFramework.assert(fabs(test.varianceX() - 2.5) < eps, failMesg, __LINE__);
-			return testFramework.countFails();	
+			return testFramework.countFails();
 		}
 
 		int VarianceYTest()
@@ -208,7 +208,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -217,7 +217,7 @@ class BivarStats_T
 			failMesg  = "The VarianceY method was unsuccessful";
 			//std::cout << "The Variance of Y is: " << test.varianceY() << std::endl;
 			testFramework.assert(fabs(test.varianceY() - 2.5) < eps, failMesg, __LINE__);
-			return testFramework.countFails();	
+			return testFramework.countFails();
 		}
 
 		int StdDevXTest()
@@ -227,7 +227,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -245,7 +245,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -264,7 +264,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -283,7 +283,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -302,7 +302,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -321,7 +321,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -340,7 +340,7 @@ class BivarStats_T
 			std::string failMesg;
 
 			gnsstk::BivarStats<double> test;
-			test.add(1, 2);		
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -380,31 +380,31 @@ int main()
 	check = testClass.MinYTest();
 	errorCounter += check;
 
-	check = testClass.VarianceXTest(); 
+	check = testClass.VarianceXTest();
 	errorCounter += check;
 
-	check = testClass.VarianceYTest(); 
+	check = testClass.VarianceYTest();
 	errorCounter += check;
 
-	check = testClass.StdDevXTest(); 
+	check = testClass.StdDevXTest();
 	errorCounter += check;
 
-	check = testClass.StdDevYTest(); 
+	check = testClass.StdDevYTest();
 	errorCounter += check;
 
-	check = testClass.SlopeTest(); 
+	check = testClass.SlopeTest();
 	errorCounter += check;
 
-	check = testClass.InterceptTest(); 
+	check = testClass.InterceptTest();
 	errorCounter += check;
 
-	check = testClass.ConditionalUncertaintyTest(); 
+	check = testClass.ConditionalUncertaintyTest();
 	errorCounter += check;
 
-	check = testClass.SlopeUncertaintyTest(); 
+	check = testClass.SlopeUncertaintyTest();
 	errorCounter += check;
 
-	check = testClass.CorrelationTest(); 
+	check = testClass.CorrelationTest();
 	errorCounter += check;
 
 	std::cout << "Total Errors: " << errorCounter << std::endl;

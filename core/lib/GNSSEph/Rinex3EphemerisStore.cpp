@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -119,7 +119,7 @@ namespace gnsstk
          int nread(0);
          Rinex3NavStream strm;
          what = string();
-         
+
          strm.open(filename.c_str(), ios::in);
          if(!strm.is_open()) {
             what = string("File ") + filename + string(" could not be opened.");
@@ -422,7 +422,7 @@ namespace gnsstk
       os << "End dump of Rinex3EphemerisStore\n";
    }
 
-   // Determine the earliest time for which this object can successfully 
+   // Determine the earliest time for which this object can successfully
    // determine the Xvt for any object.
    // @return the earliest time in the table
    // @throw InvalidRequest if the object has no data.
@@ -434,7 +434,7 @@ namespace gnsstk
          // CommonTime does not allow comparisions unless TimeSystems agree,
          // or if one is "Any"
          retTime.setTimeSystem(TimeSystem::Any);
-         
+
          if(ORBstore.size()) {
             time = ORBstore.getInitialTime();
             if(time < retTime) {
@@ -460,7 +460,7 @@ namespace gnsstk
       catch(InvalidRequest& ir) { GNSSTK_RETHROW(ir); }
    }
 
-   // Determine the latest time for which this object can successfully 
+   // Determine the latest time for which this object can successfully
    // determine the Xvt for any object.
    // @return the latest time in the table
    // @throw InvalidRequest if the object has no data.
@@ -472,7 +472,7 @@ namespace gnsstk
          // CommonTime does not allow comparisions unless TimeSystems agree,
          // or if one is "Any"
          retTime.setTimeSystem(TimeSystem::Any);
-         
+
          if(ORBstore.size()) {
             time = ORBstore.getFinalTime();
             if(time > retTime) {
@@ -498,7 +498,7 @@ namespace gnsstk
       catch(InvalidRequest& ir) { GNSSTK_RETHROW(ir); }
    }
 
-   // Determine the earliest time for which this object can successfully 
+   // Determine the earliest time for which this object can successfully
    // determine the Xvt for any object.
    // @param SatID sat satellite, or system if sat.id==-1
    // @return the earliest time in the table
@@ -531,7 +531,7 @@ namespace gnsstk
       catch(InvalidRequest& ir) { GNSSTK_RETHROW(ir); }
    }
 
-   // Determine the latest time for which this object can successfully 
+   // Determine the latest time for which this object can successfully
    // determine the Xvt for any object.
    // @param SatID sat satellite, or system if sat.id==-1
    // @return the latest time in the table

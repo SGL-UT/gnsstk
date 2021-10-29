@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -64,7 +64,7 @@ namespace gnsstk
    const unsigned long OrbAlmGen::ALMANAC_PERIOD_LNAV = 720;     // 12.5 minutes for GPS LNAV
    const unsigned long OrbAlmGen::FRAME_PERIOD_LNAV   =  30;     //  30 seconds for GPS LNAV
 
-   bool OrbAlmGen::WN_set = false; 
+   bool OrbAlmGen::WN_set = false;
    unsigned int OrbAlmGen::WNa_full;
    double OrbAlmGen::t_oa;
 
@@ -109,12 +109,12 @@ namespace gnsstk
          }
 
          case NavType::GPSCNAVL2:
-         case NavType::GPSCNAVL5: 
+         case NavType::GPSCNAVL5:
          {
             loadDataGpsCNAV(pnb);
             break;
          }
-	 
+
          default:
          {
             stringstream ss;
@@ -135,9 +135,9 @@ namespace gnsstk
    }
 
    //------------------------------------------------------------
-   //  When the calling program receives the following pages, 
-   //  this should be called to update the almanac time parameters.   
-   //    LNAV SF4/Pg 25  
+   //  When the calling program receives the following pages,
+   //  this should be called to update the almanac time parameters.
+   //    LNAV SF4/Pg 25
    //    BDS D1 SF5/Pg 8
    //    BDS D2 SF5/Pg 36
    //  This "maintenance" is not required for GPS CNAV
@@ -145,7 +145,7 @@ namespace gnsstk
    {
       WNa_full = WNa;
       t_oa = toa;
-      WN_set = true;   
+      WN_set = true;
    }
 
       // Alternate entry point for situation in which the WNa/toa
@@ -153,7 +153,7 @@ namespace gnsstk
    void OrbAlmGen::loadWeekNumber(const CommonTime& ct)
    {
       unsigned int week = 0;
-      double sow = 0.0; 
+      double sow = 0.0;
       bool successfullySet = false;
       if (ct.getTimeSystem()==TimeSystem::GPS)
       {
@@ -173,10 +173,10 @@ namespace gnsstk
 
    //------------------------------------------------------------
    //  If the first almanac data page is received prior to the
-   //  first definition of the WNa and Toa, estimate the 
+   //  first definition of the WNa and Toa, estimate the
    //  WNa_full based on the transmit time of the message.
    //  This assumes that the almanac WNa/toa is "in the future"
-   //  from the current time by at least a day. 
+   //  from the current time by at least a day.
    void OrbAlmGen::estimateWeekNumber(const CommonTime& currTime)
    {
       CommonTime adjustedTime = currTime + SEC_PER_DAY;
@@ -189,7 +189,7 @@ namespace gnsstk
    //  NOTE: The following block of sv?????? methods are very
    //  similar to the methods is OrbElem, however the additional
    //  terms that are asseumed to be zero (0.0) for almanac messages
-   //  have been removed. 
+   //  have been removed.
    //
    double OrbAlmGen::svClockBias(const gnsstk::CommonTime& t) const
    {
@@ -202,7 +202,7 @@ namespace gnsstk
       elaptc = t - ctToe;
       dtc = af0 + elaptc * af1;
 
-      return dtc;      
+      return dtc;
    }
 
    double OrbAlmGen::svClockBiasM(const gnsstk::CommonTime& t) const
@@ -217,7 +217,7 @@ namespace gnsstk
       return (ret);
    }
 
-   double OrbAlmGen::svClockDrift(const gnsstk::CommonTime& t) const 
+   double OrbAlmGen::svClockDrift(const gnsstk::CommonTime& t) const
    {
       if (!dataLoaded())
       {
@@ -258,7 +258,7 @@ namespace gnsstk
          // Compute time since ephemeris & clock epochs
       elapte = t - ctToe;
 
-      /* debug 
+      /* debug
       string tstr("%D %w:%02H:%02M:%4.1f %8.2g");
       cout << " t " << printTime(t,tstr)
            << ", ctToe " << printTime(ctToe,tstr)
@@ -280,9 +280,9 @@ namespace gnsstk
 
          // Compute mean motion
       double dnA = 0;    // dn + 0.5 * dndot * elapte;   No correction to mean motion in almanac
-      double Ahalf = SQRT(A); 
+      double Ahalf = SQRT(A);
       amm  = (sqrtgm / (A*Ahalf)) + dnA;  // NOT Ak because this equation
-                                          // specifies A0, not Ak.  
+                                          // specifies A0, not Ak.
          // In-plane angles
          //     meana - Mean anomaly
          //     ea    - Eccentric anomaly
@@ -366,7 +366,7 @@ namespace gnsstk
          // Compute velocity of rotation coordinates
       dek = amm / G;
       dlk = amm * q / (G*G);
-      div = 0.0; 
+      div = 0.0;
       /*
       *  idot and Harmonic perturbations set to zero in almanac
       div = tdrinc - 2.0e0 * dlk *
@@ -375,13 +375,13 @@ namespace gnsstk
 
       domk = OMEGAdot - ell.angVelocity();
 
-      duv = dlk; 
+      duv = dlk;
       /*
       *  Harmonic perturbations set to zero in almanac
       duv = dlk*(1.e0+ 2.e0 * (Cus*c2al - Cuc*s2al) );
-      */ 
+      */
 
-      drv = Ak * lecc * dek * sinea; 
+      drv = Ak * lecc * dek * sinea;
       /*
       *  Harmonic perturbations set to zero in almanac
       drv = Ak * lecc * dek * sinea - 2.e0 * dlk *
@@ -419,14 +419,14 @@ namespace gnsstk
       double twoPI  = 2.0e0 * PI;
       double sqrtgm = SQRT(ell.gm());
       double elapte = t - ctToe;
-      
+
          // Compute A at time of interest
       double Ak = A;  // + Adot * elapte;   // No adot in almanac
-      
+
       double dnA = 0;   // dn + 0.5 * dndot * elapte;  No correction to mean motion in almanac
       double Ahalf = SQRT(A);
       double amm    = (sqrtgm / (A*Ahalf)) + dnA;// NOT Ak because this equation
-                                                 // specifies A0, not Ak.  
+                                                 // specifies A0, not Ak.
       double meana,F,G,delea;
 
       meana = M0 + elapte * amm;
@@ -441,33 +441,33 @@ namespace gnsstk
          ea    = ea + delea;
          loop_cnt++;
       } while ( (ABS(delea) > 1.0e-11 ) && (loop_cnt <= 20) );
-      
+
          // Use Ak as we are interested in semi-major axis at this moment.
-      double dtr = REL_CONST * ecc * SQRT(Ak) * ::sin(ea); 
-      return dtr;      
+      double dtr = REL_CONST * ecc * SQRT(Ak) * ::sin(ea);
+      return dtr;
    }
 
    bool OrbAlmGen::isSameData(const OrbElemBase* right) const
    {
-         // If the right pointer doesn't point to an OrbAlmGen, then 
-         // they can't be the same data. 
-      if (const OrbAlmGen* rp = dynamic_cast<const OrbAlmGen*>(right)) 
-      {       
+         // If the right pointer doesn't point to an OrbAlmGen, then
+         // they can't be the same data.
+      if (const OrbAlmGen* rp = dynamic_cast<const OrbAlmGen*>(right))
+      {
             // Compare the contents of the basic OrbElemBase data members
             // This is NOT done via the base class because the assumption for
             // almanac are different than in the base.  To be specific:
             // 1. beginValid is set to xmit time, so that comparision would be invalid
             // 2. satID is the transmitting SV.  We're interested in the almanac data and
-            //    the satellite that is the subject of that almanac.  
+            //    the satellite that is the subject of that almanac.
             // 3. The same almanac could be collected on either frequency and still
             //    be the same data.
             // 4. However we can (and will) confirm that the navigation
-            //    message type is the same. 
+            //    message type is the same.
             // 5. endValid is not useful as it is always set to END_OF_TIME.
          if (dataLoadedFlag != right->dataLoadedFlag) return false;
          NavID nid(satID,obsID);
          NavID rightNid(right->satID, right->obsID);
-         if (nid.navType    != rightNid.navType)      return false; 
+         if (nid.navType    != rightNid.navType)      return false;
          //if (satID          != right->satID)          return false;
          //if (obsID          != right->obsID)          return false;
          if (ctToe          != right->ctToe)          return false;
@@ -475,49 +475,49 @@ namespace gnsstk
          //if (beginValid     != right->beginValid)     return false;
          //if (endValid       != right->endValid)       return false;
 
-            // Don't compare 
+            // Don't compare
             // ctXmit is OK if different
          //if (ctXmit  != rp->ctXmit)  return false;
-         if (subjectSV  != rp->subjectSV)  return false; 
+         if (subjectSV  != rp->subjectSV)  return false;
          if (AHalf      != rp->AHalf)      return false;
          if (af1        != rp->af1)        return false;
          if (af0        != rp->af0)        return false;
-         if (OMEGA0     != rp->OMEGA0)     return false; 
+         if (OMEGA0     != rp->OMEGA0)     return false;
          if (ecc        != rp->ecc)        return false;
          if (deltai     != rp->deltai)     return false;
          if (OMEGAdot   != rp->OMEGAdot)   return false;
          if (w          != rp->w)          return false;
          if (M0         != rp->M0)         return false;
-         if (health     != rp->health)     return false; 
+         if (health     != rp->health)     return false;
          return true;
       }
-      return false;       
-   }            
+      return false;
+   }
 
    //-----------------------------------------------------------------
    // Following method is untested.  Just as it was written to support
-   // debug of a problem, the problem was resolved. 
+   // debug of a problem, the problem was resolved.
    std::string OrbAlmGen::listDifferences(const OrbElemBase* right) const
    {
       string retVal;
 
-         // If the right pointer doesn't point to an OrbAlmGen, then 
-         // they can't be the same data. 
-      if (const OrbAlmGen* rp = dynamic_cast<const OrbAlmGen*>(right)) 
-      {       
+         // If the right pointer doesn't point to an OrbAlmGen, then
+         // they can't be the same data.
+      if (const OrbAlmGen* rp = dynamic_cast<const OrbAlmGen*>(right))
+      {
             // Compare the contents of the basic OrbElemBase data members
             // and return a list of differences.
          if (dataLoadedFlag != right->dataLoadedFlag) retVal += " dataLoaded";
          NavID nid(satID,obsID);
          NavID rightNid(right->satID, right->obsID);
-         if (nid.navType    != rightNid.navType)      retVal += " navType"; 
+         if (nid.navType    != rightNid.navType)      retVal += " navType";
          if (ctToe          != right->ctToe)          retVal += " ctToe";
          if (isHealthy()    != right->isHealthy())    retVal += " healthy";
-         if (subjectSV  != rp->subjectSV)  retVal += " subjectSV"; 
+         if (subjectSV  != rp->subjectSV)  retVal += " subjectSV";
          if (AHalf      != rp->AHalf)      retVal += " AHalf";
          if (af1        != rp->af1)        retVal += " af1";
          if (af0        != rp->af0)        retVal += " af0";
-         if (OMEGA0     != rp->OMEGA0)     retVal += " OMEGA0"; 
+         if (OMEGA0     != rp->OMEGA0)     retVal += " OMEGA0";
          if (ecc        != rp->ecc)        retVal += " ecc";
          if (deltai     != rp->deltai)     retVal += " deltai";
          if (OMEGAdot   != rp->OMEGAdot)   retVal += " OMEGADot";
@@ -525,7 +525,7 @@ namespace gnsstk
          if (M0         != rp->M0)         retVal += " M0";
          if (health     != rp->health)     retVal += " health";
       }
-      return retVal;       
+      return retVal;
    }
 
 
@@ -551,7 +551,7 @@ namespace gnsstk
 
       if (subjectSV.system==SatelliteSystem::BeiDou)
       {
-         s << "Health                 0x" << hex << setfill('0') << setw(3) 
+         s << "Health                 0x" << hex << setfill('0') << setw(3)
                         << health << " 9 bits"
                         << setfill(' ') << dec << endl;
            // Health decode
@@ -587,7 +587,7 @@ namespace gnsstk
       }
       else
       {
-         s << "Health                  0x" << hex << setfill('0') << setw(2) 
+         s << "Health                  0x" << hex << setfill('0') << setw(2)
                         << health << " 8 bits"
                         << setfill(' ') << dec << endl;
       }
@@ -605,8 +605,8 @@ namespace gnsstk
          GNSSTK_THROW(exc);
       }
       string tform2("%02m/%02d/%4Y %03j %02H:%02M:%02S");
-      stringstream ss; 
-      string ssys = convertSatelliteSystemToString(subjectSV.system); 
+      stringstream ss;
+      string ssys = convertSatelliteSystemToString(subjectSV.system);
       ss << setw(7) << ssys;
       ss << " " << setw(2) << subjectSV.id;
       ss << "  AL ";
@@ -619,10 +619,10 @@ namespace gnsstk
       }
       else
       {
-         ss << ", UNhealthy"; 
+         ss << ", UNhealthy";
       }
       ss << "  xmit PRN: " << setw(2) << satID.id;
-      s << ss.str(); 
+      s << ss.str();
 
     } // end of dumpTerse()
 
@@ -646,19 +646,19 @@ namespace gnsstk
          stringstream ss;
          ss << "Expected GPS LNAV subframe 4/5.  Found subframe " << subframe;
          InvalidParameter ip(ss.str());
-         GNSSTK_THROW(ip); 
+         GNSSTK_THROW(ip);
       }
       if (SVID>32)
       {
-         stringstream ss; 
+         stringstream ss;
          ss << "Expected GPS LNAV almanac with SV ID 1-32.  Found SV ID ";
          ss << SVID;
          InvalidParameter ip(ss.str());
-         GNSSTK_THROW(ip); 
+         GNSSTK_THROW(ip);
       }
 
-         // If the almanac time parameters are not yet set, estimate 
-         // them based on the current transmit time. 
+         // If the almanac time parameters are not yet set, estimate
+         // them based on the current transmit time.
       if (!WN_set)
          estimateWeekNumber(msg.getTransmitTime());
 
@@ -666,33 +666,33 @@ namespace gnsstk
       satID = msg.getsatSys();
       if (satID.id>=MIN_PRN_QZS && satID.id<=MAX_PRN_QZS)
       {
-         satID.system = SatelliteSystem::QZSS; 
+         satID.system = SatelliteSystem::QZSS;
       }
 
          // Set the subjectSV (found in OrbAlm.hpp)
       int subjectPRN = SVID;
       if (subjectPRN>0 && satID.system==SatelliteSystem::QZSS)
       {
-         subjectPRN += (MIN_PRN_QZS - 1); 
+         subjectPRN += (MIN_PRN_QZS - 1);
       }
       subjectSV = SatID(subjectPRN, satID.system);
 
 
-         // Test for default nav data.  It's probably NOT default, so we want this test to 
-         // terminate and move on quickly if that's the case. 
+         // Test for default nav data.  It's probably NOT default, so we want this test to
+         // terminate and move on quickly if that's the case.
       if (subjectSV.id==0)
       {
          unsigned long  sow = (unsigned long) static_cast<GPSWeekSecond>(msg.getTransmitTime()).sow;
          unsigned long offsetInCycle = sow % ALMANAC_PERIOD_LNAV;
-         int pageInCycle = (offsetInCycle / FRAME_PERIOD_LNAV) + 1; 
+         int pageInCycle = (offsetInCycle / FRAME_PERIOD_LNAV) + 1;
          stringstream ss;
          ss << "Found dummy almanac data from " << satID << " for subframe " << subframe
-            << " page " << pageInCycle; 
+            << " page " << pageInCycle;
          InvalidParameter ip(ss.str());
-         GNSSTK_THROW(ip); 
+         GNSSTK_THROW(ip);
       }
 
-         // Crack the bits into engineering units. 
+         // Crack the bits into engineering units.
       ecc = msg.asUnsignedDouble(68, 16, -21);
       toa = msg.asUnsignedLong(90, 8, 4096);
       deltai = msg.asDoubleSemiCircles(98, 16, -19);
@@ -706,18 +706,18 @@ namespace gnsstk
       const unsigned startBits[] = {270, 289};
       const unsigned numBits[]   = {  8,   3};
       af0 = msg.asSignedDouble(startBits, numBits, 2, -20);
-      af1 = msg.asSignedDouble(278, 11, -38); 
-      
+      af1 = msg.asSignedDouble(278, 11, -38);
+
          // Now work out the derived parameters
       A = AHalf * AHalf;
-      i0 = (0.3 * PI) + deltai;   // deltai is already in radians. 
+      i0 = (0.3 * PI) + deltai;   // deltai is already in radians.
 
       setHealthy(health==0);
 
          // Determine fully qualified toa.
-         // Assume the toa found in this almanac is either 
-         // equal to the WNa, t_oa provided, or within a 
-         // week of that time. 
+         // Assume the toa found in this almanac is either
+         // equal to the WNa, t_oa provided, or within a
+         // week of that time.
       unsigned short wk = WNa_full;
 
       if (toa!=t_oa)
@@ -726,10 +726,10 @@ namespace gnsstk
          if (diff < -HALFWEEK) wk++;
          if (diff >  HALFWEEK) wk--;
       }
-      ctToe = GPSWeekSecond(wk,toa,TimeSystem::GPS); 
+      ctToe = GPSWeekSecond(wk,toa,TimeSystem::GPS);
 
          // Determine beginValid.  This is set to the transmit
-         // time of this page. 
+         // time of this page.
       beginValid = msg.getTransmitTime();
       beginValid.setTimeSystem(TimeSystem::GPS);
 
@@ -749,7 +749,7 @@ namespace gnsstk
          stringstream ss;
          ss << "Expected GPS CNAV message 37.  Found message " << msgType;
          InvalidParameter ip(ss.str());
-         GNSSTK_THROW(ip); 
+         GNSSTK_THROW(ip);
       }
 
          // Store the transmitting SV
@@ -758,7 +758,7 @@ namespace gnsstk
          // Set the subjectSV (found in OrbAlm.hpp)
       subjectSV = SatID(SVID, SatelliteSystem::GPS);
 
-         // Crack the bits into engineering units. 
+         // Crack the bits into engineering units.
       unsigned short wna = (unsigned short) msg.asUnsignedLong(127,13,1);
       toa = msg.asUnsignedLong(140, 8, 4096);
       health = (unsigned short) msg.asUnsignedLong(154, 3, 1);
@@ -770,13 +770,13 @@ namespace gnsstk
       w = msg.asDoubleSemiCircles(223, 16, -15);
       M0 = msg.asDoubleSemiCircles(239, 16, -15);
       af0 = msg.asSignedDouble(255, 11, -20);
-      af1 = msg.asSignedDouble(266, 10, -37); 
-      
+      af1 = msg.asSignedDouble(266, 10, -37);
+
          // Now work out the derived parameters
       A = AHalf * AHalf;
-      i0 = (0.3 * PI) + deltai;   // deltai is already in radians. 
+      i0 = (0.3 * PI) + deltai;   // deltai is already in radians.
 
-      setHealthy(false); 
+      setHealthy(false);
       const ObsID& oidr = msg.getobsID();
       if (oidr.band==CarrierBand::L2 &&
            !(health & 0x02))
@@ -786,16 +786,16 @@ namespace gnsstk
       if (oidr.band==CarrierBand::L5 &&
           !(health & 0x01))
       {
-         setHealthy(false); 
+         setHealthy(false);
       }
-      ctToe = GPSWeekSecond(wna,toa,TimeSystem::GPS); 
+      ctToe = GPSWeekSecond(wna,toa,TimeSystem::GPS);
 
          // Determine beginValid.  This is set to the transmit
-         // time of this page. 
+         // time of this page.
       beginValid = msg.getTransmitTime();
       beginValid.setTimeSystem(TimeSystem::GPS);
 
-         // Determine endValid.   This is set to "end of time" 
+         // Determine endValid.   This is set to "end of time"
       endValid   = CommonTime::END_OF_TIME;
       endValid.setTimeSystem(TimeSystem::GPS);
    }

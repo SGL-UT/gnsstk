@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,8 +15,8 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
@@ -25,14 +25,14 @@
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -313,6 +313,40 @@ namespace gnsstk
        * {
        *    cerr << "Unable to find XVT for " << sat << " @ " << when << endl;
        *    return false;
+       * }
+       * \endcode
+       *
+       * @subsubsection NavDataFactoryDatum Data Field Retrieval Example
+       *
+       * This code snippet shows how one might take the results of a
+       * class derived from PNBNavDataFactory and immediately process
+       * the resulting decoded messages, looking at individual data
+       * fields.  Something like this would be used if there's no
+       * intent to store the data internally for searching.
+       *
+       * \code
+       * if (!pnbFactory.addData(pnb, ndList, cadence))
+       * {
+       *    return false;
+       * }
+       *    // process any results from addData
+       * std::shared_ptr<gnsstk::GPSLNavEph> gpsLNavEph;
+       * std::shared_ptr<gnsstk::OrbitDataKepler> odk;
+       * for (auto& i : ndList)
+       * {
+       *       // using = treats the expression as a boolean which
+       *       // means the pointer is valid.
+       *    if (gpsLNavEph = std::dynamic_pointer_cast<gnsstk::GPSLNavEph>(i))
+       *    {
+       *       cout << "Found a GPS LNAV ephemeris. IODC=" << hex
+       *            << gpsLNavEph->iodc << endl;
+       *    }
+       *       // No else because inheritance means data fields of
+       *       // interest can be in more than one place.
+       *    if (odk = std::dynamic_pointer_cast<gnsstk::OrbitDataKepler>(i))
+       *    {
+       *       cout << "Found Keplerian orbit parameters, A=" << odk->A << endl;
+       *    }
        * }
        * \endcode
        *
@@ -602,7 +636,7 @@ namespace gnsstk
        *     NavLibrary::addFactory() method to add the specific
        *     format factory for processing the input data.
        *   * If you don't need the high-level interface and just want
-       *     to retrieve the NavData-derived objects, use the
+       *     to retrieve the objects derived from NavData, use the
        *     appropriate NavDataFactory::find() object/method.
        *
        * \li Get the health of the subject satellite...
@@ -707,7 +741,7 @@ namespace gnsstk
        *     message bits into their engineering units counterparts
        *     that are derived from NavData.  In short, the
        *     PNBNavDataFactory classes take a PackedNavBits object as
-       *     input and produce 0 or more NavData-derived objects as
+       *     input and produce 0 or more objects derived from NavData as
        *     output.  These classes are typically used internally by
        *     NavDataFactory classes.
        *
@@ -774,8 +808,8 @@ namespace gnsstk
        * libraries at run-time.
        *
        * There is no NavLibrary equivalent for PNBNavDataFactory.
-       * Instead, a NavDataFactory-derived class that is expected to
-       * process the raw navigation messages from multiple systems
+       * Instead, a class derived from NavDataFactory that is expected
+       * to process the raw navigation messages from multiple systems
        * would use an instance of this class to decode the raw
        * navigation messages in the form of PackedNavBits.  Data goes
        * through the translation process using
@@ -792,7 +826,7 @@ namespace gnsstk
        * PNBMultiGNSSNavDataFactory.
        *
        * @section NavFactoryAdd Adding Custom NavData Factories
-       * 
+       *
        * If you wish to add support for additional file formats to
        * MultiFormatNavDataFactory, you will need to do the following:
        *
@@ -896,7 +930,7 @@ namespace gnsstk
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
-          *   behavior or by nearest to when in time. 
+          *   behavior or by nearest to when in time.
           * @return true if successful, false if no nav data was found
           *   to compute the Xvt. */
       bool getXvt(const NavSatelliteID& sat, const CommonTime& when,
@@ -917,7 +951,7 @@ namespace gnsstk
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
-          *   behavior or by nearest to when in time. 
+          *   behavior or by nearest to when in time.
           * @return true if successful, false if no nav data was found
           *   to compute the Xvt. */
       bool getXvt(const NavSatelliteID& sat, const CommonTime& when,
@@ -934,7 +968,7 @@ namespace gnsstk
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
-          *   behavior or by nearest to when in time. 
+          *   behavior or by nearest to when in time.
           * @return true if successful, false if no nav data was found
           *   containing health status. */
       bool getHealth(const NavSatelliteID& sat, const CommonTime& when,
@@ -1116,7 +1150,7 @@ namespace gnsstk
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
-          *   behavior or by nearest to when in time. 
+          *   behavior or by nearest to when in time.
           * @return true if successful.  If false, navData will be untouched. */
       bool find(const NavMessageID& nmid, const CommonTime& when,
                 NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
@@ -1181,13 +1215,13 @@ namespace gnsstk
          /// Remove all data from the library's factories.
       void clear();
 
-         /** Determine the earliest time for which this object can successfully 
+         /** Determine the earliest time for which this object can successfully
           * determine the Xvt for any object.
           * @return The initial time, or CommonTime::END_OF_TIME if no
           *   data is available. */
       CommonTime getInitialTime() const;
 
-         /** Determine the latest time for which this object can successfully 
+         /** Determine the latest time for which this object can successfully
           * determine the Xvt for any object.
           * @return The initial time, or CommonTime::BEGINNING_OF_TIME if no
           *   data is available. */

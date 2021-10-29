@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -106,7 +106,7 @@ const map<unsigned, string> Arc::markStr = Arc::create_mark_string_map();
 //       GrossProcessing
 //          filterFirstDiff - filter using first diff
 //          mergeFilterResultsIntoArcs
-//             outlier or short seg -> set flag for all segment; 
+//             outlier or short seg -> set flag for all segment;
 //             slip: if already a slip of this type, "unfix";
 //                   else add an Arc and mark "slip"  ** define slip, not Nslip **
 //          getArcStats
@@ -118,7 +118,7 @@ const map<unsigned, string> Arc::markStr = Arc::create_mark_string_map();
 //          getArcStats
 //          fixSlips
 //    end ProcessOneCombo
-//           
+//
 //    ProcessOneCombo(GF)
 //
 //    final "double check" -- tbd
@@ -417,33 +417,33 @@ int gdc::GrossProcessing(const unsigned which)
       iret = filterFirstDiff(which, label, limit, filterResults);
       if(iret < 0) return iret;
       nslips += iret;
-   
+
       // dump filter hits
       if(cfg_func("debug") > -1) DumpHits(filterResults,"#"+tag,label,2);
-   
+
       // merge 1st difference filter results with Arcs; returns number of new arcs
       // NB i unused
       i = mergeFilterResultsIntoArcs(filterResults, which);
-      
+
       // recompute stats in each segment
       // not until window filter - gross slip can use Arc.info.step = FilterHit.step
       getArcStats(which);
-   
+
       // dump Arcs
       if(cfg_func(label)) DumpArcs("#"+tag,label,2);
-   
+
       // look for gaps > MaxGap, end Arc there, add Arc(BEG) where data resumes
       findLargeGaps();
-   
+
       // fix gross slips
       // remove slips that are "size 0" -- do this in vector<FilterHit> ? no
       // NB i unused
       i = fixSlips(which);
-   
+
       // dump data (WLG GFG)
-      label = LAB[which]+"G"; 
+      label = LAB[which]+"G";
       if(cfg_func(label)) dumpData(LOGstrm,tag+" "+label);
-   
+
       return nslips;
    }
    catch(Exception& e) { GNSSTK_RETHROW(e); }
@@ -470,32 +470,32 @@ int gdc::FineProcessing(const unsigned which)
          return iret;
       }
       nslips += iret;         // iret >= 1 -- counts BOD
-   
+
       // dump filter hits
       if(cfg_func("debug") > -1) DumpHits(filterResults,"#"+tag,label,2);
-   
+
       // merge window filter results with Arcs
       i = mergeFilterResultsIntoArcs(filterResults, which);
-   
+
       // Recompute stats in each segment.
       // NB Filters define FilterHit.step using their analysis; that step is then
       // copied over to Arc.xxinfo.step in mergeFilterResultsIntoArcs().
       // The first difference step is used to fix gross slips. The window filter step
-      // (same as in the window algorithm) can also be used, or you could try to 
+      // (same as in the window algorithm) can also be used, or you could try to
       // re-compute step using more data.
       getArcStats(which);
-   
+
       // fix small slips using stats
       // NB i unused
       i = fixSlips(which);
-   
+
       // dump Arcs
       if(cfg_func(label)) DumpArcs("#"+tag,label,2);
-   
+
       // dump data WLF GFF
       label = LAB[which]+"F";
       if(cfg_func(label)) dumpData(LOGstrm,tag+" "+label);
-   
+
       return nslips;
    }
    catch(Exception& e) { GNSSTK_RETHROW(e); }
@@ -831,12 +831,12 @@ void gdc::getArcStats(map<int,Arc>::iterator& ait, const unsigned which)
       bool isWL(which == WL);
       int i,index,npts;
       map<int,Arc>::iterator cit(ait);
-         
+
       if(isWL) ptrStats = new OneSampleStatsFilter<double>();
       else     ptrStats = new TwoSampleStatsFilter<double>();
       i = index = cit->second.index;
       npts = cit->second.npts;
-      
+
       // loop over continuous data in the arc
       while(cit != Arcs.end() && i < xdata.size()) {
          // add to stats (xdata is ignored in OneSampleStats)
@@ -970,7 +970,7 @@ int gdc::fixSlips(const unsigned which)
       static const double GFfactor(wl2/wlGF);
       static const double IFfactor(isGLO ? 3.5 : 3.52941176470588);// TD what is this?
 
-      // loop over Arcs using iterator ait //, with dummy copy cit 
+      // loop over Arcs using iterator ait //, with dummy copy cit
       map<int,Arc>::iterator ait;   //, cit;
       for(ait = Arcs.begin(); ait != Arcs.end(); ++ait) {
          if((ait->second.mark & SLIP[which]) == 0)             // its not a slip
@@ -1029,7 +1029,7 @@ int gdc::FinalCheck(void)
       unsigned int i,k;
       int iret(0),j,currstate,ngood,nbad;
       vector<int> gbs;
-      
+
       // look for segments of N good (+) or bad (-) points
       currstate = ngood = nbad = 0;
       for(i=0; i<xdata.size(); i++) {
@@ -1279,7 +1279,7 @@ try {
    const string L1("L1"), L2("L2");
 
    nL1 = nL2 = 0;                         // running total slip
-   ait = Arcs.begin();  
+   ait = Arcs.begin();
    for(i=0; i<SP.size(); i++) {
       if(ait != Arcs.end() && i == ait->first) {      // at new arc
          Arc& arc(ait->second);
@@ -1516,7 +1516,7 @@ bool gdc::setParameter(std::string label, double value)
    // NB this does NOT set LOG(DEBUG)
    if(label == string("debug")) {
       // first return to default
-      CFG["RAW"] = CFG["WLF"] = CFG["GFF"] = CFG["WL1"] = CFG["WLG"] = CFG["WLW"] = 
+      CFG["RAW"] = CFG["WLF"] = CFG["GFF"] = CFG["WL1"] = CFG["WLG"] = CFG["WLW"] =
       CFG["WLF"] = CFG["GF1"] = CFG["GFG"] = CFG["GFW"] = CFG["GFF"] = CFG["FIN"] = 0;
       if(value > -1) {
          CFG["verbose"] = 1;              // debug implies verbose
@@ -1567,7 +1567,7 @@ void gdc::DisplayParameterUsage(ostream& os, string tag, bool advanced)
       for(it=CFGlist.begin(); it != CFGlist.end(); it++) {
          name = it->second;
          if(CFGdesc[name][0] == '*')      // advanced options
-            continue;  
+            continue;
          ostringstream stst;
          stst << name                     // label
             << "=" << CFG[name];          // value
@@ -1580,7 +1580,7 @@ void gdc::DisplayParameterUsage(ostream& os, string tag, bool advanced)
          for(it=CFGlist.begin(); it != CFGlist.end(); it++) {
             name = it->second;
             if(CFGdesc[name][0] != '*')   // ordinary options
-               continue;  
+               continue;
             ostringstream stst;
             stst << name                  // label
                << "=" << CFG[name];       // value

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -105,7 +105,7 @@ namespace gnsstk
       }
       else
       {
-         FFStreamError err("This isn't a valid standard IONEX value type: " + 
+         FFStreamError err("This isn't a valid standard IONEX value type: " +
             asString(type.description) );
          GNSSTK_THROW(err);
       }
@@ -127,7 +127,7 @@ namespace gnsstk
 
       for (int ilat = 0; ilat < nlat; ilat++)
       {
-            // write record initializing a new TEC/RMS 
+            // write record initializing a new TEC/RMS
             // data block for latitude 'currLat'
          double currLat = lat[0] + ilat*lat[2];
 
@@ -154,7 +154,7 @@ namespace gnsstk
                          std::pow(10.0,-exponent)*data[index] : 9999.0;
 
                // we need to put there an integer, i.e., the neareast integer
-            int valint = (val > 0.0) ? 
+            int valint = (val > 0.0) ?
                          static_cast<int>(val+0.5) : static_cast<int>(val-0.5);
             line += rightJustify( asString<short>(valint), 5 );
 
@@ -192,7 +192,7 @@ namespace gnsstk
       }
       else
       {
-         FFStreamError err("This isn't a valid standard IONEX value type: " + 
+         FFStreamError err("This isn't a valid standard IONEX value type: " +
             asString(type.description) );
          GNSSTK_THROW(err);
       }
@@ -302,7 +302,7 @@ namespace gnsstk
                             / hdr.lon[2] + 1 ); // consider Greenwich meridian
 
             dim[2] = (hdr.hgt[2] == 0) ?
-                     1 : static_cast<int>( (hdr.hgt[1]-hdr.hgt[0]) 
+                     1 : static_cast<int>( (hdr.hgt[1]-hdr.hgt[0])
                                            / hdr.hgt[2]+1 );
 
             data.resize( dim[0]*dim[1]*dim[2], 999.9 );
@@ -571,7 +571,7 @@ namespace gnsstk
       int e[4];
       double xsum = 0.0;
 
-         // the object is required for AEarth to be consistent with 
+         // the object is required for AEarth to be consistent with
          // Position::getIonosphericPiercePoint()
       WGS84Ellipsoid WGS84;
 
@@ -580,9 +580,9 @@ namespace gnsstk
       double lambda  = p.theArray[1];
       double height  = p.theArray[2]-WGS84.a();
 
-         // we need this step because in the Position object the longitude is 
-         // expressed in degrees E (i.e., [0 +360]), while in IONEX files 
-         // longitude takes values within [-180 180]) (see IONEX manual) 
+         // we need this step because in the Position object the longitude is
+         // expressed in degrees E (i.e., [0 +360]), while in IONEX files
+         // longitude takes values within [-180 180]) (see IONEX manual)
       if (lambda > 180.0)
       {
          lambda = lambda - 360.0;

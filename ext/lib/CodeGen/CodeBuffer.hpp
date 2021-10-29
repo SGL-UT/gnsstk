@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -47,7 +47,7 @@
 
 namespace gnsstk
 {
-      /// @ingroup CodeGen    
+      /// @ingroup CodeGen
       //@{
       /** P(Y)-code Buffer class.
        *  Applied Research Laboratories, The University of Texas at Austin
@@ -57,25 +57,25 @@ namespace gnsstk
        *  Six seconds of code for a particular satellite is stored in each
        *  object.  The satellite is identified by PRNID and the beginning
        *  time is specified in a CommonTime object.  The code is stored in an
-       *  array of unsigned long (assumed 32-bit) integers.  The time order 
-       *  started with the MSB of first word of the buffer ([0]) and runs 
+       *  array of unsigned long (assumed 32-bit) integers.  The time order
+       *  started with the MSB of first word of the buffer ([0]) and runs
        *  through the LSB of the last word of the buffer.
        *
-       *  The size of the buffer is probably the most notable feature of 
-       *  this class. 1.5s (one Z-count) of P(Y)-code is 15,345,000 bits.  
+       *  The size of the buffer is probably the most notable feature of
+       *  this class. 1.5s (one Z-count) of P(Y)-code is 15,345,000 bits.
        *  Therefore, 6 seconds is equal to 4 Z-counts or 4 * 15,345,000 bits
-       *  = 61,380,000 bits.  These bits are stored in 1,918,125 unsigned 
+       *  = 61,380,000 bits.  These bits are stored in 1,918,125 unsigned
        *  long integers.  The fact that 61,380,000 is evenly divisble by 32
-       *  is not a coincidence, but part of the design.  The constant 
+       *  is not a coincidence, but part of the design.  The constant
        *  NUM_6SEC_WORDS is used to hold the value 1,918,125 and located in
        *  PCodeConst.h.
        */
    class CodeBuffer
    {
       public:
-           /// Defines the type of code held in the buffer 
-         //enum codeType { P_CODE, Y_CODE, BOTH }; 
-      
+           /// Defines the type of code held in the buffer
+         //enum codeType { P_CODE, Y_CODE, BOTH };
+
             /**
              * Instantiate and initialize a code buffer for a particular
              * satellite.
@@ -83,47 +83,47 @@ namespace gnsstk
          CodeBuffer( const int SVPRNID );
          ~CodeBuffer( );
          CodeBuffer& operator=( const CodeBuffer& c );
-         
+
             /**
              * Update the time associated with the buffer and the designation
              * of the data contained in the buffer as P-code or Y-code.
              */
-         void updateBufferStatus( const gnsstk::CommonTime& dt, 
+         void updateBufferStatus( const gnsstk::CommonTime& dt,
                                   const codeType PYFlag );
 
             /**
              * Update the time associated with the buffer and the designation
              * of the data contained in the buffer as P-code or Y-code.  In this
-             * case, the time is not being changed, but the code flag may be 
+             * case, the time is not being changed, but the code flag may be
              * changed.
              */
          void updateBufferStatus( const codeType PYFlag ) { POrYCode = PYFlag; }
-         
+
             /// Accessor returning the current time.
          const gnsstk::CommonTime& getCurrentTime( ) { return(currentTime); }
-         
+
             /// Accessor returning the type of code in the buffer (P or Y)
-         codeType getPYFlag( ) { return(POrYCode); } 
-         
+         codeType getPYFlag( ) { return(POrYCode); }
+
             /// Accessor returing the PRN ID of the buffer
          int getPRNID( ) { return(PRNID); }
-            
+
             /// Set or return the designated word of the code buffer.
          unsigned long& operator[]( int i );
          const unsigned long& operator[]( const int i ) const;
-         
+
             /** Given a bit number between 0 and (NUM_6SEC_WORDS * MAX_BIT) - 1,
-             * return the value of the bit as a right justified unsigned 
+             * return the value of the bit as a right justified unsigned
              * long word (0x00000000 or 0x00000001).
              */
          unsigned long getBit( const long i ) const;
-         
-            /** Perform an exclusive-or operation on the bits contained in 
+
+            /** Perform an exclusive-or operation on the bits contained in
              * this instance of CodeBuffer and the instance referenced by cb.
              */
          CodeBuffer& operator^=( const CodeBuffer& cb );
-     
-      protected:  
+
+      protected:
          CodeBuffer( const CodeBuffer& c );
          unsigned long * buffer;
          int PRNID;
@@ -133,7 +133,7 @@ namespace gnsstk
 
    inline  CodeBuffer::~CodeBuffer( ) { delete [] buffer; }
    inline CodeBuffer& CodeBuffer::operator^=( const CodeBuffer& cb )
-   { 
+   {
       for (long i=0;i<NUM_6SEC_WORDS;++i) buffer[i] ^= cb.buffer[i];
       return( *this );
    }
@@ -154,12 +154,12 @@ namespace gnsstk
       long bNdx = i / MAX_BIT;
       long bitNum = i - (bNdx * MAX_BIT);
       iret = buffer[bNdx];
-   
+
       // Shift LEFT to clear off msbs
       iret <<= bitNum;
       // Then shift RIGHT to clear off lsbs
       iret >>= (MAX_BIT-1);
-   
+
       return iret;
    }
       //@}

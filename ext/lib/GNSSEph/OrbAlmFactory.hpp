@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,14 +40,14 @@
 #define GNSSTK_ORBALMFACTORY_HPP
 /**
  * @file OrbAlmFactory.hpp
- * Class that accepts a PackedNavBits that may contain a raw data 
+ * Class that accepts a PackedNavBits that may contain a raw data
  * for a GNSS orbit-almanac (e.g. GPS LNAV SV ID 1-32), determines
  * the appropriate OrbAlm-descendent class for the data, creates/loads the
  * class, and returns a pointer to the new object.
  *
- * Note that OrbAlmFactory does NO memory management.   Once the 
+ * Note that OrbAlmFactory does NO memory management.   Once the
  * object is created and returned, it is the responsibility of the
- * calling program to see to the deletion of the object. 
+ * calling program to see to the deletion of the object.
  */
 
 #include "Exception.hpp"

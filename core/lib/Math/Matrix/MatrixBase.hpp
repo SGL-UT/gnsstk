@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,7 +40,7 @@
  * @file MatrixBase.hpp
  * Base classes (const and ref) for Matrix
  */
- 
+
 #ifndef GNSSTK_MATRIX_BASE_HPP
 #define GNSSTK_MATRIX_BASE_HPP
 
@@ -82,11 +82,11 @@ namespace gnsstk
       { return static_cast<const BaseClass*>(this)->rows(); }
          /// returns a const version of the (i,j)'th element in the matrix,
          /// valid for 0...rows()-1, 0...cols()-1.
-      T operator() (size_t i, size_t j) const 
+      T operator() (size_t i, size_t j) const
       { return constMatrixRef(i, j); }
-   
+
          /// returns true if this is a square matrix (false for a null matrix).
-      inline bool isSquare() const 
+      inline bool isSquare() const
       { return ((rows() == cols()) && (rows() != 0)); }
          /// returns true if this is an upper triangular matrix.
       inline bool isUT() const
@@ -144,7 +144,7 @@ namespace gnsstk
           * @throw MatrixException
           */
       Vector<T> colCopy(size_t c, size_t r = 0) const
-      { 
+      {
 #ifdef RANGECHECK
          if ((c >= cols()) || (r >= rows()))
          {
@@ -163,7 +163,7 @@ namespace gnsstk
           * @throw MatrixException
           */
       Vector<T> rowCopy(size_t r, size_t c = 0) const
-      { 
+      {
 #ifdef RANGECHECK
          if ((c >= cols()) || (r >= rows()))
          {
@@ -182,7 +182,7 @@ namespace gnsstk
           * @throw MatrixException
           */
       Vector<T> diagCopy(void) const
-      { 
+      {
          size_t i, n(cols());
          if(rows() < n) n = rows();
          Vector<T> toReturn(n);
@@ -224,7 +224,7 @@ namespace gnsstk
       {}
 
          /// returns a reference to the (i,j) element of the matrix.
-      T& operator() (size_t i, size_t j) 
+      T& operator() (size_t i, size_t j)
       { return static_cast<BaseClass*>(this)->operator()(i,j); }
 
          /// returns the rows()*cols() size of the matrix
@@ -248,7 +248,7 @@ namespace gnsstk
                   me(i,j) = T(0);
          return me;
       }
-         /// any value in row r with absolute value below 
+         /// any value in row r with absolute value below
          /// RefVectorBaseHelper::zeroTolerance is set to 0.
       BaseClass& zeroizeRow(size_t r)
       {
@@ -259,7 +259,7 @@ namespace gnsstk
                  me(r, j) = T(0);
          return me;
       }
-         /// any value in column c with absolute value below 
+         /// any value in column c with absolute value below
          /// RefVectorBaseHelper::zeroTolerance is set to 0.
       BaseClass& zeroizeCol(size_t c)
       {
@@ -272,7 +272,7 @@ namespace gnsstk
       }
 
 
-              
+
          /// remember that operator= isn't inherited.  use assignFrom in
          /// derived classes' copy constructors and operator=.
          //MatBaseNewAssignOperator(assignFrom, =);
@@ -282,7 +282,7 @@ namespace gnsstk
          //      MatBaseNewAssignOperator(assignFrom, =);
 
          /** performs = on each element of this matrix with each
-          * element of x 
+          * element of x
           * @throw MatrixException
           */
       template <class E> BaseClass& assignFrom(const ConstMatrixBase<T, E>& x)
@@ -535,7 +535,7 @@ namespace gnsstk
                me(i,j) -= x;
          return me;
       }
-   
+
 
          /// multiplies each element in this matrix by x.
       BaseClass& operator*=(const T x)
@@ -576,7 +576,7 @@ namespace gnsstk
          /** swaps rows row1 and row2 in this matrix.
           * @throw MatrixException
           */
-      BaseClass& swapRows(size_t row1, size_t row2) 
+      BaseClass& swapRows(size_t row1, size_t row2)
       {
          BaseClass& me = static_cast<BaseClass&>(*this);
 #ifdef RANGECHECK
@@ -600,7 +600,7 @@ namespace gnsstk
          /** swaps columns col1 and col2 in this matrix.
           * @throw MatrixException
           */
-      BaseClass& swapCols(size_t col1, size_t col2) 
+      BaseClass& swapCols(size_t col1, size_t col2)
       {
          BaseClass& me = static_cast<BaseClass&>(*this);
 #ifdef RANGECHECK
@@ -651,13 +651,13 @@ namespace gnsstk
           * to see if it's a valid slice.
           * @throw MatrixException
           */
-      inline void matSliceCheck(size_t sourceRowSize, 
+      inline void matSliceCheck(size_t sourceRowSize,
                                 size_t sourceColSize) const
       {
             //#ifdef RANGECHECK
          if (rowSize() > 0)
          {
-            if ( (rowStart() >= sourceRowSize) || 
+            if ( (rowStart() >= sourceRowSize) ||
                  ((rowStart() + (rowSize()-1) * rowStride()) >= sourceRowSize))
             {
                MatrixException e("Invalid row range for slice");

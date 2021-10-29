@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -274,46 +274,46 @@ void SRIFilter::Reset(const int N)
 // This routine uses the Householder transformation to propagate the SRIFilter
 // state and covariance through a time step.
 // Input:
-// R       a priori square root information (SRI) matrix (an n by n 
+// R       a priori square root information (SRI) matrix (an n by n
 //            upper triangular matrix)
 // Z       a priori SRIF state vector, of length n (state is X, Z = R*X).
 // PhiInv  Inverse of state transition matrix, an n by n matrix.
 //            PhiInv is destroyed on output.
 // Rw      a priori square root information matrix for the process
 //            noise, an ns by ns upper triangular matrix
-// G       The n by ns matrix associated with process noise.  The 
+// G       The n by ns matrix associated with process noise.  The
 //            process noise covariance is G*Q*transpose(G) where inverse(Q)
 //            is transpose(Rw)*Rw. G is destroyed on output.
 // Zw      a priori 'state' associated with the process noise,
 //            a vector with ns elements.  Usually set to zero by
 //            the calling routine (for unbiased process noise).
-// Rwx     An ns by n matrix which is set to zero by this routine 
+// Rwx     An ns by n matrix which is set to zero by this routine
 //            but is used for output.
-// 
+//
 // Output:
 //    The updated square root information matrix and SRIF state (R,Z) and
 // the matrices which are used in smoothing: Rw, Zw, Rwx.
 // Note that PhiInv and G are trashed, and that Rw and Zw are modified.
-// 
+//
 // Return values:
 //    SrifTU returns void, but throws exceptions if the input matrices
 // or vectors have incompatible dimensions or incorrect types.
-// 
+//
 // Method:
 //    This SRIF time update method treats the process noise and mapping
 // information as a separate data equation, and applies a Householder
 // transformation to the (appended) equations to solve for an updated
-// state.  Thus there is another 'state' variable associated with 
+// state.  Thus there is another 'state' variable associated with
 // whatever state variables have process noise.  The matrix G relates
-// the process noise variables to the regular state variables, and 
+// the process noise variables to the regular state variables, and
 // appears in the term GQG(trans) of the covariance.  If all n state
 // variables have process noise, then ns=n and G is an n by n matrix.
-// Since some (or all) of the state variables may not have process 
+// Since some (or all) of the state variables may not have process
 // noise, ns may be zero.  [Bierman ftnt pg 122 seems to indicate that
 // variables with zero process noise can be handled by ns=n & setting a
 // column of G=0.  But note that the case of the matrix G=0 is the
 // same as ns=0, because the first ns columns would be zero below the
-// diagonal in that case anyway, so the HH transformation would be 
+// diagonal in that case anyway, so the HH transformation would be
 // null.]
 //    For startup, all of the a priori information and state arrays may
 // be zero.  That is, "no information" would imply that R and Z are zero,
@@ -327,9 +327,9 @@ void SRIFilter::Reset(const int N)
 // (3) Take the sqrt of process noise covariance matrix Q, then set
 // G=this sqrt and Rw = 1.  [2 and 3 have been tested.]
 //    The routine applies a Householder transformation to a large
-// matrix formed by concatenation of the input matricies.  Two preliminary 
-// steps are to form Rd = R*PhiInv (stored in PhiInv) and -Rd*G (stored in 
-// G) by matrix multiplication, and to set Rwx to the zero matrix.  
+// matrix formed by concatenation of the input matricies.  Two preliminary
+// steps are to form Rd = R*PhiInv (stored in PhiInv) and -Rd*G (stored in
+// G) by matrix multiplication, and to set Rwx to the zero matrix.
 // Then the Householder transformation is applied to the following
 // matrix, dimensions are shown in ():
 //       _  (ns)   (n)   (1)  _          _                  _
@@ -338,8 +338,8 @@ void SRIFilter::Reset(const int N)
 //       -                    -          -                  -
 // The SRI matricies R and Rw remain upper triangular.
 //
-//    For the programmer:  after Rwx is set to zero, G is made into 
-// -Rd*G and PhiInv is made into R*PhiInv, the transformation is applied 
+//    For the programmer:  after Rwx is set to zero, G is made into
+// -Rd*G and PhiInv is made into R*PhiInv, the transformation is applied
 // to the matrix:
 //       _   (ns)   (n)   (1) _
 // (ns) |    Rw    Rwx    Zw   |
@@ -350,7 +350,7 @@ void SRIFilter::Reset(const int N)
 //    The matrix Rwx is related to the sensitivity of the state
 // estimate to the unmodeled parameters in Zw.  The sensitivity matrix
 // is          Sen = -inverse(Rw)*Rwx,
-// where perturbation in model X = 
+// where perturbation in model X =
 //             Sen * diagonal(a priori sigmas of parameter uncertainties).
 // -------------------------------------------------------------------
 //    The quantities Rw, Rwx and Zw on output are to be saved and used
@@ -518,15 +518,15 @@ void SRIFilter::SrifTU(Matrix<T>& R,
 // This routine uses the Householder transformation to propagate the SRIF
 // state and covariance through a smoother (backward filter) step.
 // Input:
-// R     A priori square root information (SRI) matrix (an N by N 
+// R     A priori square root information (SRI) matrix (an N by N
 //          upper triangular matrix)
 // z     a priori SRIF state vector, an N vector (state is x, z = R*x).
 // Phi   State transition matrix, an N by N matrix. Phi is destroyed on output.
 // Rw    A priori square root information matrix for the process
-//          noise, an Ns by Ns upper triangular matrix (which has 
+//          noise, an Ns by Ns upper triangular matrix (which has
 //          Ns(Ns+1)/2 elements).
-// G     The N by Ns matrix associated with process noise.  The 
-//          process noise covariance is GQGtrans where Qinverse 
+// G     The N by Ns matrix associated with process noise.  The
+//          process noise covariance is GQGtrans where Qinverse
 //          is Rw(trans)*Rw. G is destroyed on output.
 // Zw    A priori 'state' associated with the process noise,
 //          a vector with Ns elements. Zw is destroyed on output.
@@ -534,18 +534,18 @@ void SRIFilter::SrifTU(Matrix<T>& R,
 //
 // The inputs Rw,Zw,Rwx are the output of the SRIF time update, and these and
 // Phi and G are associated with the same timestep.
-// 
+//
 // Output:
 //    The updated square root information matrix and SRIF smoothed state (R,z).
 // All other inputs are trashed.
-// 
+//
 // Return values:
 //    SrifSU returns void, but throws exceptions if the input matrices
 // or vectors have incompatible dimensions or incorrect types.
-// 
+//
 // Method:
-//    The fixed interval square root information smoother (SRIS) is 
-// composed of two Kalman filters, one identical with the square root 
+//    The fixed interval square root information smoother (SRIS) is
+// composed of two Kalman filters, one identical with the square root
 // information filter (SRIF), the other similar but operating on the
 // data in reverse order and combining the current (smoothed) state
 // with elements output by the SRIF in its forward run and saved.
@@ -557,16 +557,16 @@ void SRIFilter::SrifTU(Matrix<T>& R,
 // propagates the state and covariance rather than the SRI (R,z). (As always,
 // at any point the state X and covariance P are related to the SRI by
 // X = R^-1 * z , P = R^-1 * R^-T.)
-//    For startup of the backward filter, the state after the final 
+//    For startup of the backward filter, the state after the final
 // measurement update of the SRIF is given another time update, the
-// output of which is identified with the a priori values for the 
+// output of which is identified with the a priori values for the
 // backward filter.  Backward filtering proceeds from there, the N+1st
 // point, toward the first point.
 //
 //    In this implementation of the backward filter, the Householder
 // transformation is applied to the following matrix
 // (dimensions are shown in ()):
-// 
+//
 //       _  (Ns)     (N)      (1) _          _                  _
 // (Ns) |  Rw+Rwx*G  Rwx*Phi  Zw   |   ==>  |   Rw   Rwx   Zw    |
 // (N)  |  R*G       R*Phi    z    |   ==>  |   0     R    z     | .
@@ -773,7 +773,7 @@ catch(Exception& e) { GNSSTK_RETHROW(e); }
 // This routine implements the Dyer-McReynolds form of the state and covariance
 // recursions which constitute the backward filter of the Square Root
 // Information Smoother.
-// 
+//
 // Input: (assume N and Ns are greater than zero)
 //		Vector X(N)				A priori state, derived from SRI (R*X=Z)
 // 	Matrix P(N,N)			A priori covariance, derived from SRI (P=R^-1*R^-T)
@@ -784,10 +784,10 @@ catch(Exception& e) { GNSSTK_RETHROW(e); }
 // 	Matrix G(N,Ns)			Noise coupling matrix, saved at SRIF TU
 // Output:
 // 	Updated X and P. The other inputs are trashed.
-// 
+//
 // Method:
-// 	The fixed interval square root information smoother (SRIS) is 
-// composed of two Kalman filters, one identical with the square root 
+// 	The fixed interval square root information smoother (SRIS) is
+// composed of two Kalman filters, one identical with the square root
 // information filter (SRIF), the other similar but operating on the
 // data in reverse order and combining the current (smoothed) state
 // with elements output by the SRIF in its forward run and saved.
@@ -799,9 +799,9 @@ catch(Exception& e) { GNSSTK_RETHROW(e); }
 // resources. It is not necessary to update both the state and the
 // covariance, although doing both at once is less expensive than
 // doing them separately. (This routine does both.)
-// 	For startup of the backward filter, the state after the final 
+// 	For startup of the backward filter, the state after the final
 // measurement update of the SRIF is given another time update, the
-// output of which is identified with the a priori values for the 
+// output of which is identified with the a priori values for the
 // backward filter.  Backward filtering proceeds from there, the N+1st
 // point, toward the first point.
 //

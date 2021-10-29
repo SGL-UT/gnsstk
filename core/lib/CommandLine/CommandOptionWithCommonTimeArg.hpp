@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -65,7 +65,7 @@ namespace gnsstk
          /** Constructor
           * @param shOpt The one character command line option.  Set to 0
           *    if unused.
-          * @param loOpt The long command option.  Set to std::string() 
+          * @param loOpt The long command option.  Set to std::string()
           *    if unused.
           * @param timeFormat format for scanning argument into a CommonTime
           *    (\see scanTime() in TimeString.hpp and TimeString.cpp for details).
@@ -83,7 +83,7 @@ namespace gnsstk
 
          /// Destructor
       virtual ~CommandOptionWithCommonTimeArg() {}
-      
+
          /** Returns a string with the argument format (just "TIME",
           * not scanning format). */
       virtual std::string getArgString() const
@@ -94,13 +94,13 @@ namespace gnsstk
 
          /// Return the times scanned in from the command line.
       const std::vector<CommonTime>& getTime() const { return times; }
-      
+
    protected:
          /// Collection of times scanned in from the command line.
       std::vector<CommonTime> times;
          /// Format used to scan times in.
       std::string timeSpec;
-      
+
          /// Default Constructor
       CommandOptionWithCommonTimeArg() {}
 

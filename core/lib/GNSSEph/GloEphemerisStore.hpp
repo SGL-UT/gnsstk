@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -104,12 +104,12 @@ namespace gnsstk
          /** Returns the position, velocity and clock offset of the indicated
           *  satellite in ECEF coordinates (meters) at the indicated time,
           *  in the PZ-90 ellipsoid.
-          * 
+          *
           *  @param[in] sat   Satellite's identifier
           *  @param[in] epoch Time to look up
-          * 
+          *
           *  @return the Xvt of the object at the indicated time
-          * 
+          *
           *  @throw InvalidRequest If the request can not be completed for any
           *  reason, this is thrown. The text may have additional information
           *  as to why the request failed.
@@ -166,7 +166,7 @@ namespace gnsstk
 
          /** A debugging function that outputs in human readable form,
           *  all data stored in this object.
-          * 
+          *
           * @param[in] s The stream to receive the output; defaults to cout
           * @param[in] detail The level of detail to provide
           *
@@ -178,7 +178,7 @@ namespace gnsstk
 
          /** Edit the dataset, removing data outside the indicated
           * time interval
-          * 
+          *
           * @param[in] tmin   Defines the beginning of the time interval
           * @param[in] tmax   Defines the end of the time interval
           */
@@ -281,7 +281,7 @@ namespace gnsstk
          /// @return the number of ephemerides added.
       int addToList( std::list<GloEphemeris>& v ) const;
 
-      virtual std::set<gnsstk::SatID> getIndexSet() const; 
+      virtual std::set<gnsstk::SatID> getIndexSet() const;
 
    private:
 

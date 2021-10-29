@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,7 +40,7 @@
  * @file Matrix.hpp
  * Basic Matrix algorithms
  */
- 
+
 #ifndef GNSSTK_MATRIX_HPP
 #define GNSSTK_MATRIX_HPP
 
@@ -52,7 +52,7 @@ namespace gnsstk
 
       /// @ingroup MathGroup
       //@{
- 
+
       // forward declarations
    template <class T> class MatrixRowSlice;
    template <class T> class ConstMatrixRowSlice;
@@ -65,7 +65,7 @@ namespace gnsstk
        * internal basis.  This class is STL compliant with the
        * iterator proceeding in row major order.  Operators +=, -=, *=
        * and /= are implemented in RefMatrixBase.
-       * 
+       *
        * @sa matvectest.cpp for examples
        */
    template <class T>
@@ -83,7 +83,7 @@ namespace gnsstk
          /// STL iterator type
       typedef typename Vector<T>::iterator iterator;
          /// STL const iterator type
-      typedef typename Vector<T>::const_iterator const_iterator;  
+      typedef typename Vector<T>::const_iterator const_iterator;
 
          /// default constructor
       Matrix();
@@ -101,7 +101,7 @@ namespace gnsstk
 
          /// constructor for a ConstMatrixBase object
       template <class BaseClass>
-      Matrix(const ConstMatrixBase<T, BaseClass>& mat) 
+      Matrix(const ConstMatrixBase<T, BaseClass>& mat)
             : v(mat.size()), r(mat.rows()), c(mat.cols()), s(mat.size())
       {
          size_t i,j;
@@ -112,12 +112,12 @@ namespace gnsstk
 
          /// submatrix constructor
       template <class BaseClass>
-      Matrix(const ConstMatrixBase<T, BaseClass>& mat, size_t topRow, 
-             size_t topCol, size_t numRows, size_t numCols) 
+      Matrix(const ConstMatrixBase<T, BaseClass>& mat, size_t topRow,
+             size_t topCol, size_t numRows, size_t numCols)
             : v((size_t)0), r(0), c(0), s(0)
       {
             // sanity checks...
-         if ( (topCol > mat.cols()) || 
+         if ( (topCol > mat.cols()) ||
               (topRow > mat.rows()) ||
               ((topRow + numRows) > mat.rows()) ||
               ((topCol + numCols) > mat.cols()) )
@@ -125,7 +125,7 @@ namespace gnsstk
             MatrixException e("Invalid dimensions or size for Matrix(MatrixBase)");
             GNSSTK_THROW(e);
          }
-         
+
             // seems ok - make the valarray and copy column by column
          r = numRows;
          c = numCols;
@@ -193,14 +193,14 @@ namespace gnsstk
       inline MatrixRowSlice<T> operator[] (size_t row)
       { return rowRef(row); }
          /// const operator[] that returns a const row slice
-      inline ConstMatrixRowSlice<T> operator[] (size_t rowNum) const 
+      inline ConstMatrixRowSlice<T> operator[] (size_t rowNum) const
       { return row(rowNum);}
 
          /// Resizes the matrix to rows*cols.
          /// @warning YOUR DATA MAY NOT BE RETAINED!!!
       inline Matrix& resize(size_t rows, size_t cols);
 
-      inline Matrix& resize(size_t rows, size_t cols, 
+      inline Matrix& resize(size_t rows, size_t cols,
                             const T initialValue);
 
          /**
@@ -222,10 +222,10 @@ namespace gnsstk
          /// Copies from any matrix.
       template <class BaseClass>
       inline Matrix& operator=(const ConstMatrixBase<T, BaseClass>& mat)
-      { 
-         v.resize(mat.size()); 
-         r=mat.rows(); 
-         c=mat.cols(); 
+      {
+         v.resize(mat.size());
+         r=mat.rows();
+         c=mat.cols();
          s=mat.size();
          return this->assignFrom(mat);
       }
@@ -250,7 +250,7 @@ namespace gnsstk
    {
    public:
          /// default constructor
-      MatrixSlice() : m(NULL), rSlice(std::slice(0,0,0)), 
+      MatrixSlice() : m(NULL), rSlice(std::slice(0,0,0)),
                       cSlice(std::slice(0,0,0)), s(0)
       {}
 
@@ -272,7 +272,7 @@ namespace gnsstk
       }
 
          /// Submatrix slice.
-      MatrixSlice(Matrix<T>& mat, size_t topRow, size_t topCol, 
+      MatrixSlice(Matrix<T>& mat, size_t topRow, size_t topCol,
                   size_t numRows, size_t numCols)
             : m(&mat), rSlice(std::slice(topRow, numRows, 1)),
               cSlice(std::slice(topCol, numCols, 1)),
@@ -280,7 +280,7 @@ namespace gnsstk
       {
          this->matSliceCheck(mat.rows(), mat.cols());
       }
-      
+
          /// Copies from x to (*this).
       template <class V>
       MatrixSlice& operator=(const ConstMatrixBase<T, V>& x)
@@ -309,11 +309,11 @@ namespace gnsstk
       size_t rows() const { return rowSize(); }
          /// returns the (i,j) element of the slice.
       T& operator() (size_t i, size_t j)
-      { return (*m)(i * rowStride() + rowStart(), 
+      { return (*m)(i * rowStride() + rowStart(),
                     j * colStride() + colStart()); }
          /// returns the (i,j) element of the slice, const version.
       T operator() (size_t i, size_t j) const
-      { return (*m)(i * rowStride() + rowStart(), 
+      { return (*m)(i * rowStride() + rowStart(),
                     j * colStride() + colStart()); }
 
 
@@ -346,7 +346,7 @@ namespace gnsstk
    {
    public:
          /// default constructor
-      ConstMatrixSlice(void) : m(NULL), rSlice(std::slice(0,0,0)), 
+      ConstMatrixSlice(void) : m(NULL), rSlice(std::slice(0,0,0)),
                                cSlice(std::slice(0,0,0)), s(0)
       {}
 
@@ -368,7 +368,7 @@ namespace gnsstk
       }
 
          /// submatrix slice
-      ConstMatrixSlice(const Matrix<T>& mat, size_t topRow, size_t topCol, 
+      ConstMatrixSlice(const Matrix<T>& mat, size_t topRow, size_t topCol,
                        size_t numRows, size_t numCols)
             : m(&mat), rSlice(std::slice(topRow, numRows, 1)),
               cSlice(std::slice(topCol, numCols, 1)),
@@ -384,8 +384,8 @@ namespace gnsstk
          /// the number of rows in the slice
       size_t rows() const { return rowSize(); }
          /// the (i,j) element of the slice, const.
-      T operator() (size_t i, size_t j) const 
-      { return (*m)(i * rowStride() + rowStart(), 
+      T operator() (size_t i, size_t j) const
+      { return (*m)(i * rowStride() + rowStart(),
                     j * colStride() + colStart()); }
 
          /// returns the number of rows in this slice
@@ -420,14 +420,14 @@ namespace gnsstk
          /// makes a slice of the column \c col from matrix \c mat.
       MatrixColSlice(Matrix<T>& mat, size_t col)
             : m(&mat), c(col), rSlice(std::slice(0,mat.rows(),1))
-      { 
-         this->matSliceCheck(mat.rows(), mat.cols()); 
+      {
+         this->matSliceCheck(mat.rows(), mat.cols());
       }
          /// makes a slice of the column from the matrix using \c s to
          /// further slice the column.
       MatrixColSlice(Matrix<T>& mat, size_t col, const std::slice& s)
             : m(&mat), c(col), rSlice(s)
-      { 
+      {
             // decide if the input is reasonable
          this->matSliceCheck(mat.rows(), mat.cols());
       }
@@ -452,10 +452,10 @@ namespace gnsstk
       { return this->assignFrom(x); }
 
          /// returns the i'th element of the column, non-const
-      T& operator[] (size_t i) 
+      T& operator[] (size_t i)
       { return (*m)(rowStart() + i * rowStride(), c); }
          /// returns the i'th element of the column, non-const
-      T& operator() (size_t i) 
+      T& operator() (size_t i)
       { return (*m)(rowStart() + i * rowStride(), c); }
          /// returns the i'th element of the column, const
       T operator[] (size_t i) const
@@ -465,7 +465,7 @@ namespace gnsstk
       { return (*m)(rowStart() + i * rowStride(), c); }
 
          /// returns the (i,j) element, non-const
-      T& operator() (size_t i, size_t j) 
+      T& operator() (size_t i, size_t j)
       { return (*m)(rowStart() + i * rowStride(), j + c); }
          /// returns the (i,j) element, non-const
       T operator() (size_t i, size_t j) const
@@ -509,8 +509,8 @@ namespace gnsstk
    {
    public:
          /// default constructor
-      ConstMatrixColSlice() 
-            : m(NULL), c(0), rSlice(std::slice(0,0,0)) 
+      ConstMatrixColSlice()
+            : m(NULL), c(0), rSlice(std::slice(0,0,0))
       {}
 
          /// constructor taking a slice of column \c col from the matrix.
@@ -520,10 +520,10 @@ namespace gnsstk
 
          /// constructor taking a slice of column \c col from the matrix,
          /// slicing the column by \c s.
-      ConstMatrixColSlice(const Matrix<T>& mat, size_t col, 
+      ConstMatrixColSlice(const Matrix<T>& mat, size_t col,
                           const std::slice& s)
             : m(&mat), c(col), rSlice(s)
-      { 
+      {
             // decide if the input is reasonable
          this->matSliceCheck(mat.rows(), mat.cols());
       }
@@ -575,8 +575,8 @@ namespace gnsstk
    {
    public:
          /// default constructor
-      MatrixRowSlice() 
-            : m(NULL), r(0), cSlice(std::slice(0,0,0)) 
+      MatrixRowSlice()
+            : m(NULL), r(0), cSlice(std::slice(0,0,0))
       {}
          /// makes a slice of row \c row from the matrix.
       MatrixRowSlice(Matrix<T>& mat, size_t row)
@@ -584,13 +584,13 @@ namespace gnsstk
       { this->matSliceCheck(mat.rows(), mat.cols()); }
 
          /// makes a slice of row \c row from the matrix, slicing it by \c s.
-      MatrixRowSlice(Matrix<T>& mat, size_t row, 
+      MatrixRowSlice(Matrix<T>& mat, size_t row,
                      const std::slice& s)
             : m(&mat), r(row), cSlice(s)
-      { 
+      {
             // decide if the input is reasonable
          this->matSliceCheck(mat.rows(), mat.cols());
-      }   
+      }
 
          /// assigns this row to x.
       template <class V>
@@ -623,7 +623,7 @@ namespace gnsstk
       T operator() (size_t j) const
       { return (*m)(r, colStart() + j * colStride()); }
          /// returns the (i,j) element of the slice, non-const
-      T& operator() (size_t i, size_t j) 
+      T& operator() (size_t i, size_t j)
       { return (*m)(i + r, colStart() + j * colStride()); }
          /// returns the (i,j) element of the slice, const
       T operator() (size_t i, size_t j) const
@@ -666,8 +666,8 @@ namespace gnsstk
    {
    public:
          /// default constructor
-      ConstMatrixRowSlice() 
-            : m(NULL), r(0), cSlice(std::slice(0,0,0)) 
+      ConstMatrixRowSlice()
+            : m(NULL), r(0), cSlice(std::slice(0,0,0))
       {}
          /// makes a const row slice from the matrix
       ConstMatrixRowSlice(const Matrix<T>& mat, size_t row)
@@ -675,13 +675,13 @@ namespace gnsstk
       { this->matSliceCheck(mat.rows(), mat.cols()); }
 
          /// makes a const row slice from the matrix, slicing that row by \c s.
-      ConstMatrixRowSlice(const Matrix<T>& mat, size_t row, 
+      ConstMatrixRowSlice(const Matrix<T>& mat, size_t row,
                           const std::slice& s)
             : m(&mat), r(row), cSlice(s)
-      { 
+      {
             // decide if the input is reasonable
          this->matSliceCheck(mat.rows(), mat.cols());
-      }   
+      }
 
          /// returns the i'th element of the slice
       T operator[] (size_t i) const

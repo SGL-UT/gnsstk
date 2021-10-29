@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -254,7 +254,7 @@ namespace gnsstk
       }
    }
 
-   void RinexMetHeader::reallyGetRecord(FFStream& ffs) 
+   void RinexMetHeader::reallyGetRecord(FFStream& ffs)
    {
       RinexMetStream& strm = dynamic_cast<RinexMetStream&>(ffs);
 
@@ -292,7 +292,7 @@ namespace gnsstk
                (verstr != "2.10") && (verstr != "2.11") && (verstr != "3.0") &&
                (verstr != "3.01") && (verstr!= "3.02"))
             {
-               FFStreamError e("Unknown or unsupported RINEX version " + 
+               FFStreamError e("Unknown or unsupported RINEX version " +
                                asString(version));
                GNSSTK_THROW(e);
             }
@@ -349,7 +349,7 @@ namespace gnsstk
             else
             {
                int currentObsTypes = obsTypeList.size();
-               for (int i = currentObsTypes; 
+               for (int i = currentObsTypes;
                     (i < numObs) && (i < (maxObsPerLine + currentObsTypes));
                     i++)
                {
@@ -397,11 +397,11 @@ namespace gnsstk
             sp.position[1] = asDouble(line.substr(14,14));
             sp.position[2] = asDouble(line.substr(28,14));
             sp.height = asDouble(line.substr(42,14));
-            
+
             sp.obsType = convertObsType(line.substr(57,2));
-            
+
             sensorPosList.push_back(sp);
-            
+
                // Only barometer is required, so set it valid only if you see that record.
             if (sp.obsType == PR)
             {
@@ -426,7 +426,7 @@ namespace gnsstk
       else if (version >= 3.0 ) allValid = allValid21;
       else
       {
-         FFStreamError e("Unknown or unsupported RINEX version " + 
+         FFStreamError e("Unknown or unsupported RINEX version " +
                          asString(version));
          GNSSTK_THROW(e);
       }

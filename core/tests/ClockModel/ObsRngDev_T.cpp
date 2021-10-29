@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -61,7 +61,7 @@ gnsstk::IonoModelStore ionoModelStoreGen(std::vector<gnsstk::CommonTime>& cTimeV
 
    gnsstk::IonoModelStore ims;
 
-   for (int i=0; i < cTimeVec.size(); i++)	
+   for (int i=0; i < cTimeVec.size(); i++)
       ims.addIonoModel(cTimeVec[i], gnsstk::IonoModel(a,b));
 
    return ims;
@@ -69,7 +69,7 @@ gnsstk::IonoModelStore ionoModelStoreGen(std::vector<gnsstk::CommonTime>& cTimeV
 
 class ObsRngDev_T
 {
-public: 
+public:
    ObsRngDev_T()
    {
       receiverPos.setGeodetic(30.387577, -97.727607, 240);
@@ -94,7 +94,7 @@ public:
       std::string path = gnsstk::getPathData() + "/test_input_rinex_nav_ephemerisData.031";
       ephemStore.loadFile(path);
    };
-   
+
    ~ObsRngDev_T() {}
 
    int BasicConstructorTest(void)
@@ -157,14 +157,14 @@ public:
          std::cout << e << std::endl;
          TUFAIL("unexpected exception");
       }
-      
+
       failCount = 0;
       for (int i=0; i < ordVecIon.size(); i++)
          if(!(ordVecIon[i].obstime == cTimeVec[i]))
             failCount++;
       TUASSERT(failCount == 0);
       TUASSERT(ordVecIon.size() == 3);
-	
+
       failCount = 0;
       for (int i=0; i < ordVecIon.size(); i++)
          if(!(ordVecIon[i].svid == id))
@@ -184,7 +184,7 @@ public:
    {
       TUDEF("ObsRngDev", "TroposphericConstructor");
 
-      gnsstk::SimpleTropModel stm(18.8889, 1021.2176, 77.7777); // Celsius, mmBar, %humidity		
+      gnsstk::SimpleTropModel stm(18.8889, 1021.2176, 77.7777); // Celsius, mmBar, %humidity
 
       try
       {
@@ -199,7 +199,7 @@ public:
       {
          TUFAIL("unexpected exception");
       }
-		
+
       failCount = 0;
       for (int i=0; i < ordVecTrop.size(); i++)
             //Have same timeVec for every 10 instances of ordVecTrop
@@ -207,7 +207,7 @@ public:
             failCount++;
       TUASSERT(failCount == 0);
       TUASSERT(ordVecTrop.size() == 3);
-	
+
       failCount = 0;
       for (int i=0; i < ordVecTrop.size(); i++)
          if(!(ordVecTrop[i].svid == id))
@@ -235,7 +235,7 @@ public:
       {
          for (int i=0; i < cTimeVec.size(); i++)
          {
-            gnsstk::ObsRngDev ord(prange[i], id, cTimeVec[i], receiverPos, 
+            gnsstk::ObsRngDev ord(prange[i], id, cTimeVec[i], receiverPos,
                                  ephemStore, em, stm, ims, L1);
             ordVecTropIon.push_back(ord);
          }
@@ -244,14 +244,14 @@ public:
       {
          TUFAIL("unexpected exception");
       }
-      
+
       failCount = 0;
       for (int i=0; i < ordVecTropIon.size(); i++)
          if(!(ordVecTropIon[i].obstime == cTimeVec[i]))
             failCount++;
       TUASSERT(failCount == 0);
       TUASSERT(ordVecTropIon.size() == 3);
-	
+
       failCount = 0;
       for (int i=0; i < ordVecTropIon.size(); i++)
          if(!(ordVecTropIon[i].svid == id))
@@ -270,7 +270,7 @@ public:
    int GammaConstructorTest(void)
    {
       TUDEF("ObsRngDev", "GammaConstructor");
-      
+
       try
       {
          for (int i=0; i < cTimeVec.size(); i++)
@@ -284,14 +284,14 @@ public:
       {
          TUFAIL("unexpected exception");
       }
-      
+
       failCount = 0;
       for (int i=0; i < ordVecGamma.size(); i++)
          if(!(ordVecGamma[i].obstime == cTimeVec[i]))
             failCount++;
       TUASSERT(failCount == 0);
       TUASSERT(ordVecGamma.size() == 3);
-	
+
       failCount = 0;
       for (int i=0; i < ordVecGamma.size(); i++)
          if(!(ordVecGamma[i].svid == id))
@@ -332,7 +332,7 @@ public:
             failCount++;
       TUASSERT(failCount == 0);
       TUASSERT(ordVecTropGamma.size() == 3);
-	
+
       failCount = 0;
       for (int i=0; i < ordVecTropGamma.size(); i++)
          if(!(ordVecTropGamma[i].svid == id))
@@ -369,7 +369,7 @@ public:
          if (!(ordVec[i].getSvID() == ordVec[i].svid))
             failCount++;
       TUASSERT(failCount == 0);
-      
+
       failCount = 0;
       for(int i=0; i<ordVec.size(); i++)
          if (!(ordVec[i].getAzimuth().get_value() == ordVec[i].azimuth.get_value()))
@@ -414,10 +414,10 @@ public:
 
       TURETURN();
    }
-	
-   int BasicCalculationTest(void) 
+
+   int BasicCalculationTest(void)
    {
-      TUDEF("ObsRngDev", "BasicCalculation");      
+      TUDEF("ObsRngDev", "BasicCalculation");
       TUASSERT(ordVec.size() > 0);
 
       for (int i=0; i < ordVec.size(); i++)
@@ -435,7 +435,7 @@ public:
 
    int IonosphericCalculationTest(void)
    {
-      TUDEF("ObsRngDev", "IonosphericCalculation");      
+      TUDEF("ObsRngDev", "IonosphericCalculation");
       TUASSERT(ordVecIon.size() > 0);
 
       for (int i=0; i < ordVecIon.size(); i++)
@@ -453,7 +453,7 @@ public:
 
    int TroposphericCalculationTest(void)
    {
-      TUDEF("ObsRngDev", "TroposphericCalculation");      
+      TUDEF("ObsRngDev", "TroposphericCalculation");
       TUASSERT(ordVecTrop.size() > 0);
 
       for (int i=0; i < ordVecTrop.size(); i++)
@@ -472,7 +472,7 @@ public:
 
    int IonosphericTroposphericCalculationTest(void)
    {
-      TUDEF("ObsRngDev", "IonosphericTroposphericCalculation");      
+      TUDEF("ObsRngDev", "IonosphericTroposphericCalculation");
       TUASSERT(ordVecTropIon.size() > 0);
 
       for (int i=0; i < ordVecTropIon.size(); i++)
@@ -490,7 +490,7 @@ public:
 
    int GammaCalculationTest(void)
    {
-      TUDEF("ObsRngDev", "GammaCalculation");      
+      TUDEF("ObsRngDev", "GammaCalculation");
       TUASSERT(ordVecGamma.size() > 0);
 
       for (int i=0; i < ordVecGamma.size(); i++)
@@ -508,7 +508,7 @@ public:
 
    int TroposphericGammaCalculationTest(void)
    {
-      TUDEF("ObsRngDev", "TroposphericGammaCalculation");      
+      TUDEF("ObsRngDev", "TroposphericGammaCalculation");
       TUASSERT(ordVecTropGamma.size() > 0);
 
       for (int i=0; i < ordVecTropGamma.size(); i++)
