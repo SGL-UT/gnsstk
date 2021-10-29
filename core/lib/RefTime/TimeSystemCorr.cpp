@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -64,7 +64,7 @@ namespace gnsstk
       A1 = 0.0;
       refTime = CommonTime::BEGINNING_OF_TIME;
       geoProvider = "";
-      geoUTCid = 0; 
+      geoUTCid = 0;
    }
 
    void TimeSystemCorrection ::
@@ -91,55 +91,55 @@ namespace gnsstk
          toTS = TimeSystem::UTC;
       }
       else if(STR == std::string("GLUT"))
-      { 
+      {
          type = GLUT;
          frTS = TimeSystem::GLO;
          toTS = TimeSystem::UTC;
       }
       else if(STR == std::string("GPGA") || STR == std::string("GAGP")) // R3.04 A5
-      { 
+      {
          type = GPGA;
          frTS = TimeSystem::GPS;
          toTS = TimeSystem::GAL;
       }
       else if(STR == std::string("GLGP"))
-      { 
+      {
          type = GLGP;
          frTS = TimeSystem::GLO;
          toTS = TimeSystem::GPS;
       }
       else if(STR == std::string("QZGP"))
-      { 
+      {
          type = QZGP;
          frTS = TimeSystem::QZS;
          toTS = TimeSystem::GPS;
       }
       else if(STR == std::string("QZUT"))
-      { 
+      {
          type = QZUT;
          frTS = TimeSystem::QZS;
          toTS = TimeSystem::UTC;
       }
       else if(STR == std::string("BDUT"))
-      { 
+      {
          type = BDUT;
          frTS = TimeSystem::BDT;
          toTS = TimeSystem::UTC;
       }
       else if(STR == std::string("BDGP"))
-      { 
+      {
          type = BDGP;
          frTS = TimeSystem::BDT;
          toTS = TimeSystem::GPS;
       }
       else if(STR == std::string("IRUT"))
-      { 
+      {
          type = IRUT;
          frTS = TimeSystem::IRN;
          toTS = TimeSystem::UTC;
       }
       else if(STR == std::string("IRGP"))
-      { 
+      {
          type = IRGP;
          frTS = TimeSystem::IRN;
          toTS = TimeSystem::GPS;
@@ -532,5 +532,5 @@ namespace gnsstk
             break;
       }
    }
-   
+
 } // namespace gnsstk

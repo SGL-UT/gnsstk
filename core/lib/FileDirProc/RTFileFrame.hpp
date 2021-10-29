@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -55,7 +55,7 @@ namespace gnsstk
       /// @ingroup FileDirProc
       //@{
 
-      /// specifying internal enums and classes of a template class can be 
+      /// specifying internal enums and classes of a template class can be
       /// problematic, so these are declared outside RTFileFrame
    class RTFileFrameHelper
    {
@@ -65,10 +65,10 @@ namespace gnsstk
          Dumb  = 0, ///< only tries to read once from current file
          Smart = 1  ///< if cannot read, rolls files or waits for data
       };
-      
+
          /**
           * Whether additional file data can be read from the end of a file
-          * or not.  
+          * or not.
           */
       enum FileReadingMode
       {
@@ -90,7 +90,7 @@ namespace gnsstk
    {
    public:
          /// default constructor
-      RTFileFrameIterator() 
+      RTFileFrameIterator()
             : rtff(NULL)
       {}
 
@@ -104,9 +104,9 @@ namespace gnsstk
 
          /// assignment operator
       RTFileFrameIterator& operator=(const RTFileFrameIterator& r)
-      { 
-         rtff = r.rtff; 
-         return *this; 
+      {
+         rtff = r.rtff;
+         return *this;
       }
 
          /// prefix increment of internal iterator
@@ -135,7 +135,7 @@ namespace gnsstk
       {
          return &(rtff->lastData);
       }
-      
+
          /// equality operator
       bool operator==(const RTFileFrameIterator& right) const
       {
@@ -143,7 +143,7 @@ namespace gnsstk
          {
             if (rtff == NULL)
                return true;
-               
+
             if ((rtff->isOK == right.rtff->isOK) ||
                 (!rtff->isOK && (right.rtff->fileStream == rtff->fileStream)))
                return true;
@@ -161,12 +161,12 @@ namespace gnsstk
       bool operator!=(const RTFileFrameIterator& right) const
       { return !(*this == right);}
 
-         /// give RTFileFrame access to the 
+         /// give RTFileFrame access to the
       friend class RTFileFrame<FileStream, FileData>;
-      
+
    protected:
          /// gets the next record
-      void read() 
+      void read()
       { rtff->getRecord(); }
 
    private:
@@ -200,12 +200,12 @@ namespace gnsstk
        * }
        * rtf.waitForData(10);
        * @endcode
-       * The waitForData() call will ready the internal file stream 
+       * The waitForData() call will ready the internal file stream
        * for the next read.  Remember that RTFileFrameIterator is a
        * past-the-end style iterator, so you must reset it to begin() when
-       * it has finished otherwise you'll get no data. In Dumb mode, 
+       * it has finished otherwise you'll get no data. In Dumb mode,
        * you will need to use the openNextDay() function to advance
-       * to tne next day.  
+       * to tne next day.
        * When you reach the end of a data set, there are three ways
        * to restore the valid state of the RTFileFrame iteration:
        * @code rtf.waitForData(900) @endcode
@@ -219,10 +219,10 @@ namespace gnsstk
        * the read position for the stream.
        * @warning In Smart mode, you could potentially miss data when
        * you pass to the start of a new day if data gets written to the
-       * file of the previous day.  
+       * file of the previous day.
        * @warning DO NOT MIX THE TWO ITERATOR SEMANTICS. Doing so, you will
        * definately miss data.
-       * 
+       *
        *
        */
    template <class FileStream, class FileData>
@@ -240,13 +240,13 @@ namespace gnsstk
           */
       RTFileFrame(const gnsstk::FileSpec& fnFormat,
                   const gnsstk::CommonTime& beginning = gnsstk::CommonTime::BEGINNING_OF_TIME,
-                  const gnsstk::CommonTime& ending = gnsstk::CommonTime::END_OF_TIME, 
+                  const gnsstk::CommonTime& ending = gnsstk::CommonTime::END_OF_TIME,
                   const RTFileFrameHelper::FileReadingMode frm = AppendedData,
                   const RTFileFrameHelper::GetRecordMode grm = Dumb);
-      
+
          /// destructor
       ~RTFileFrame();
-      
+
          /// Allows changing of the FileReadingMode
       RTFileFrame& setFileReadingMode(const FileReadingMode f);
 
@@ -263,17 +263,17 @@ namespace gnsstk
          /// returns true if the file currently being read from has
          /// changed since its last read
       bool hasFileChanged();
-      
+
          /// Returns true if all data for the given time has been read.
       bool endOfDataSet();
 
          /// end of data set iterator, useful for loops
       RTFileFrameIterator<FileStream, FileData> end();
 
-         /// start of data set, set appropriately for the 
+         /// start of data set, set appropriately for the
          /// given FileReadingMode.  if in AppendedData mode, begin will
          /// start at the next record that hasn't been read.  if in
-         /// FromTheBeginning mode, begin starts at the start of the 
+         /// FromTheBeginning mode, begin starts at the start of the
          /// current file.
       RTFileFrameIterator<FileStream, FileData> begin();
 
@@ -283,7 +283,7 @@ namespace gnsstk
 
          /// when in Dumb mode, use this function to advance to the next day.
       void openNextDay();
-      
+
          /// returns the last read data
       const FileData& data() const { return lastData;}
 
@@ -325,7 +325,7 @@ namespace gnsstk
       std::string currentFileName;
          /// the file spec for determining file names
       gnsstk::FileSpec fs;
-      
+
       gnsstk::CommonTime startTime, ///< start time for file searching
          currentTime,            ///< time last used for finding a file
          endTime;                ///< end time for file searching
@@ -347,10 +347,10 @@ namespace gnsstk
    RTFileFrame<FileStream, FileData>::
    RTFileFrame<FileStream, FileData>(const gnsstk::FileSpec& fnFormat,
                                      const gnsstk::CommonTime& beginning,
-                                     const gnsstk::CommonTime& ending, 
+                                     const gnsstk::CommonTime& ending,
                                      const RTFileFrameHelper::FileReadingMode frm,
                                      const RTFileFrameHelper::GetRecordMode grm)
-      : fileStream(NULL), fs(fnFormat), startTime(beginning), 
+      : fileStream(NULL), fs(fnFormat), startTime(beginning),
       currentTime(beginning), endTime(ending), readMode(frm), getMode(grm)
    {
          // zero out seconds
@@ -373,21 +373,21 @@ namespace gnsstk
    }
 
    template <class FileStream, class FileData>
-   RTFileFrame<FileStream, FileData>& 
-   RTFileFrame<FileStream, FileData> :: 
+   RTFileFrame<FileStream, FileData>&
+   RTFileFrame<FileStream, FileData> ::
    setFileReadingMode(const RTFileFrameHelper::FileReadingMode f)
-   { 
-      readMode = f; 
-      return *this; 
+   {
+      readMode = f;
+      return *this;
    }
 
       /// Allows changing of the GetRecordMode
    template <class FileStream, class FileData>
-   RTFileFrame<FileStream, FileData>& 
-   RTFileFrame<FileStream, FileData> :: 
+   RTFileFrame<FileStream, FileData>&
+   RTFileFrame<FileStream, FileData> ::
    setGetRecordMode(const RTFileFrameHelper::GetRecordMode g)
-   { 
-      getMode = g; 
+   {
+      getMode = g;
       return *this;
    }
 
@@ -397,7 +397,7 @@ namespace gnsstk
    {
       sleep(wait);
       if(readMode == AppendedData)
-      {  
+      {
             // reopen the file and skip to where we left off - openCurrentFile
             // will overwrite lastPosition...
          std::streampos cachedPos = lastPosition;
@@ -421,7 +421,7 @@ namespace gnsstk
          return false;
       if (tempStat.st_mtime != fileInfo.st_mtime)
          return true;
-      else 
+      else
          return false;
    }
 
@@ -443,7 +443,7 @@ namespace gnsstk
    }
 
    template <class FileStream, class FileData>
-   RTFileFrameIterator<FileStream, FileData> 
+   RTFileFrameIterator<FileStream, FileData>
    RTFileFrame<FileStream, FileData>::begin()
    {
       if (readMode == AppendedData)
@@ -485,7 +485,7 @@ namespace gnsstk
                   // still before today?
                gnsstk::CommonTime today;
                today.setYDoySod(today.year(), today.DOY(), 0);
-               
+
                if (currentTime < today)
                {
                   openNextDay();
@@ -522,7 +522,7 @@ namespace gnsstk
       if (!endOfDataSet())
          openCurrentFile();
    }
-   
+
    template <class FileStream, class FileData>
    std::list<FileData>
    RTFileFrame<FileStream, FileData>::getList() const

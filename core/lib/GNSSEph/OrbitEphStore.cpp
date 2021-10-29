@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -258,9 +258,9 @@ namespace gnsstk
 
          TimeOrbitEphTable& toet = satTables[eph->satID];
 
-            // Determine the time to use as the key.   
-            // If strictMethod==true, the key is the beginning of validity (earliest transmit). 
-            // If strictMethod==false, the key is the t-sub-oe. 
+            // Determine the time to use as the key.
+            // If strictMethod==true, the key is the beginning of validity (earliest transmit).
+            // If strictMethod==false, the key is the t-sub-oe.
          CommonTime keyVal = eph->beginValid;
          if (!strictMethod)
             keyVal = eph->ctToe;
@@ -556,25 +556,25 @@ namespace gnsstk
             // Verify the first item in the table has a fit interval that
             // covers the time of interest.   If not, then there are no
             // data sets available that cover the time of interest, so return
-            // NULL. 
+            // NULL.
          if (itNext->second->isValid(t))
             return itNext->second;
-         else 
+         else
             return NULL;
       }
 
        // Test for case 3
-      if(itNext == table.end()) 
+      if(itNext == table.end())
       {
          TimeOrbitEphTable::const_reverse_iterator rit = table.rbegin();
             // Verify the last item in the table has a fit interval that
             // covers the time of interest.   If not, then there are no
             // data sets available that cover the time of interest, so return
-            // NULL. 
+            // NULL.
          if (rit->second->isValid(t))
             return rit->second;
          else
-            return NULL; 
+            return NULL;
       }
 
       // case 1: it is not the beginning, so safe to decrement
@@ -586,7 +586,7 @@ namespace gnsstk
       double diffFromLast = t - lastTOE;
 
          // Determine which is closer to Toe and assign temporary
-         // pointers accordingly.  
+         // pointers accordingly.
       TimeOrbitEphTable::const_iterator itSelect;
       TimeOrbitEphTable::const_iterator itUnSelect;
       if(diffToNext > diffFromLast)
@@ -601,8 +601,8 @@ namespace gnsstk
       }
 
          // If the selected item is valid return it.
-         // If not, check to see if the unselected item is valid; if so return that one. 
-         // Otherwise, there is no data set with a valid fit interval. 
+         // If not, check to see if the unselected item is valid; if so return that one.
+         // Otherwise, there is no data set with a valid fit interval.
       if (itSelect->second->isValid(t))
       {
          return itSelect->second;

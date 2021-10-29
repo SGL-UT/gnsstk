@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -549,7 +549,7 @@ namespace gnsstk
       // the accuracy flag.  We'll give it zero and pass the accuracy
       // separately via the setAccuracy() method.
 
-      ee.tlm_message[0] = 0;           
+      ee.tlm_message[0] = 0;
       ee.tlm_message[1] = 0;
       ee.tlm_message[2] = 0;
       ee.HOWtime[0] = xmitTime + 6;       // GPS standard specifies
@@ -561,7 +561,7 @@ namespace gnsstk
 
       ee.weeknum    = weeknum;
       ee.codeflags  = codeflgs;
-      ee.health     = health;  
+      ee.health     = health;
       ee.IODC       = short(IODC);
       ee.L2Pdata    = L2Pdata;
       ee.Tgd        = Tgd;
@@ -588,10 +588,10 @@ namespace gnsstk
       ee.bcClock.loadData( satSys, obsID, PRNID, tocCT,
                         accFlag, healthy, af0, af1, af2);
 
-      ee.IODE    = short(IODE);      
+      ee.IODE    = short(IODE);
       ee.fitint  = (fitint > 4) ? 1 : 0;
       //double toe = Toe; //?????
-      
+
       //Needed for modernized nav quatities
       double A = Ahalf * Ahalf;
       double dndot = 0.0;
@@ -620,8 +620,8 @@ namespace gnsstk
       CommonTime toeCT = GPSWeekSecond(epochWeek, Toe, TimeSystem::GPS);
 
       ee.orbit.loadData( satSys, obsID, PRNID, beginFit, endFit, toeCT,
-                      accFlag, healthy, Cuc, Cus, Crc, Crs, Cic, Cis, 
-                      M0, dn, dndot, ecc, A, Ahalf, Adot, OMEGA0, i0, 
+                      accFlag, healthy, Cuc, Cus, Crc, Crs, Cic, Cis,
+                      M0, dn, dndot, ecc, A, Ahalf, Adot, OMEGA0, i0,
                       w, OMEGAdot, idot);
 
       ee.haveSubframe[0] = true;    // need to be true to perform certain EngEphemeris functions
@@ -657,7 +657,7 @@ namespace gnsstk
          oeptr->af0 = af0;
          oeptr->af1 = af1;
          oeptr->af2 = af2;
-   
+
          // Major orbit parameters
          oeptr->M0 = M0;
          oeptr->dn = dn;
@@ -671,7 +671,7 @@ namespace gnsstk
          // modern nav msg
          oeptr->dndot = 0.;
          oeptr->Adot = 0.;
-   
+
          // Harmonic perturbations
          oeptr->Cuc = Cuc;
          oeptr->Cus = Cus;
@@ -679,7 +679,7 @@ namespace gnsstk
          oeptr->Crs = Crs;
          oeptr->Cic = Cic;
          oeptr->Cis = Cis;
-   
+
          oeptr->dataLoadedFlag = true;
       }
       catch(Exception& e)
@@ -716,17 +716,17 @@ namespace gnsstk
       // NB IODC must be set first
       gpse.fitint = fitint;
       if (fitint==0) gpse.fitint = 4;
-      if (fitint==1) gpse.fitint = 6; 
-      gpse.setFitIntervalFlag(int(fitint)); 
+      if (fitint==1) gpse.fitint = 6;
+      gpse.setFitIntervalFlag(int(fitint));
 
-         // Rinex transmit times are frequently flawed.  For GPS, except for 
+         // Rinex transmit times are frequently flawed.  For GPS, except for
          // the first data set in an upload the beginning of transmission is
-         // deterministic based on the Toe/Toc.   Therefore, 
+         // deterministic based on the Toe/Toc.   Therefore,
          //  a.) For each item with an EVEN Toe/Toc, set
          // the transmission time to be equivalent to the nominal beginning
          // of transmission based on the statements in IS-GPS-200
          // Section 20.3.4.5 and Table 20-XIII.
-         //  b.) If this is the SECOND data set of an upload, 
+         //  b.) If this is the SECOND data set of an upload,
          // set the transmission time to be equivalent to the nominal beginning
          // of transmission based on the statements in IS-GPS-200
          // Section 20.3.4.5 and Table 20-XIII.
@@ -734,7 +734,7 @@ namespace gnsstk
          // If Toc/Toe is an even-hour interval the initial time of transmission
          // will be Toc/Toe minus 1/2 of the fit interval.
       long adjXmitTime = xmitTime;
-      short adjWeeknum = weeknum;  
+      short adjWeeknum = weeknum;
       long sowToc = static_cast<GPSWeekSecond>(time).sow;
       if (sowToc%3600==0)
       {
@@ -742,9 +742,9 @@ namespace gnsstk
          if (adjXmitTime<0)
          {
             adjXmitTime += FULLWEEK;
-            adjWeeknum--; 
-         } 
-      }    
+            adjWeeknum--;
+         }
+      }
 
       // Get week for clock, to build Toc
       gpse.ctToc = time;
@@ -1499,13 +1499,13 @@ namespace gnsstk
             {
                fitint  =        line.substr(n,19); n+=19;
             }
-   
+
             // Some RINEX files have xmitTime < 0.
             while(xmitTime < 0)
             {
                xmitTime += (long)FULLWEEK;
             }
-   
+
             // In RINEX *files*, weeknum is the week of TOE.
             // Internally (Rinex3NavData), weeknum is week of transmission
             if (xmitTime - Toe > HALFWEEK)

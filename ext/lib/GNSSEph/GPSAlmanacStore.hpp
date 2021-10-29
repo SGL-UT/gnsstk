@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,20 +29,20 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  * @file GPSAlmanacStore.hpp
- * Store GPS almanac information (i.e. like the data in subframes 4&5) and 
+ * Store GPS almanac information (i.e. like the data in subframes 4&5) and
  * compute satellite Xvt based upon this data and the algorithms defined
  * in the IS-GPS-200.
  */
- 
+
 #ifndef GNSSTK_GPSALMANACSTORE_HPP
 #define GNSSTK_GPSALMANACSTORE_HPP
 
@@ -61,7 +61,7 @@ namespace gnsstk
    /** @defgroup GNSSEph */
    //@{
 
-   /// Store GPS almanac information (i.e. like the data in subframes 4&5) and 
+   /// Store GPS almanac information (i.e. like the data in subframes 4&5) and
    /// compute satellite Xvt based upon this data and the algorithms defined
    /// in the IS-GPS-200.
    class GPSAlmanacStore : public OrbElemStore
@@ -70,13 +70,13 @@ namespace gnsstk
 
       GPSAlmanacStore()
          throw()
-         : initialTime(CommonTime::END_OF_TIME), 
+         : initialTime(CommonTime::END_OF_TIME),
            finalTime(CommonTime::BEGINNING_OF_TIME)
       {}
 
       virtual ~GPSAlmanacStore()
       {}
-      
+
       /// Returns the position, velocity, and clock offset of the indicated
       /// object in ECEF coordinates (meters) at the indicated time.
       /// @param[in] id the object's identifier
@@ -85,7 +85,7 @@ namespace gnsstk
       /// @throw InvalidRequest If the request can not be completed for any
       ///    reason, this is thrown. The text may have additional
       ///    information as to why the request failed.
-      virtual Xvt getXvt(const SatID& id, const CommonTime& t) 
+      virtual Xvt getXvt(const SatID& id, const CommonTime& t)
          const;
 
 
@@ -104,20 +104,20 @@ namespace gnsstk
       ///    information as to why the request failed.
       virtual Xvt getXvtMostRecentXmit(const SatID id, const CommonTime& t)
          const;
-      
+
 
       /// A debugging function that outputs in human readable form,
       /// all data stored in this object.
       /// @param[in] s the stream to receive the output; defaults to cout
       /// @param[in] detail the level of detail to provide
-      virtual void dump(std::ostream& s = std::cout, short detail = 0) 
+      virtual void dump(std::ostream& s = std::cout, short detail = 0)
          const throw();
 
 
       /// Edit the dataset, removing data outside the indicated time interval
       /// @param[in] tmin defines the beginning of the time interval
       /// @param[in] tmax defines the end of the time interval
-      virtual void edit(const CommonTime& tmin, 
+      virtual void edit(const CommonTime& tmin,
                         const CommonTime& tmax = CommonTime::END_OF_TIME)
          throw();
 
@@ -129,15 +129,15 @@ namespace gnsstk
       virtual TimeSystem getTimeSystem(void) const throw()
          { return TimeSystem::GPS; }
 
-      /// Determine the earliest time for which this object can successfully 
+      /// Determine the earliest time for which this object can successfully
       /// determine the Xvt for any object.
       /// @return The initial time
       virtual CommonTime getInitialTime()
          const throw()
       {return initialTime;}
 
-      
-      /// Determine the latest time for which this object can successfully 
+
+      /// Determine the latest time for which this object can successfully
       /// determine the Xvt for any object.
       /// @return The final time
       virtual CommonTime getFinalTime()
@@ -160,7 +160,7 @@ namespace gnsstk
       }
 
       //---------------------------------------------------------------
-      // Below are interfaces that are unique to this class (i.e. not 
+      // Below are interfaces that are unique to this class (i.e. not
       // in the parent class)
       //---------------------------------------------------------------
 
@@ -169,7 +169,7 @@ namespace gnsstk
       /// @param t the time to look up
       /// @return the SV health bits
       /// @throw InvalidRequest no data found in store
-      short getSatHealth(const SatID sat, const CommonTime& t) 
+      short getSatHealth(const SatID sat, const CommonTime& t)
          const;
 
       bool addAlmanac(const AlmOrbit& alm) throw();
@@ -182,7 +182,7 @@ namespace gnsstk
       /// @param sat the satellite's SatID
       /// @param t the time of interest
       /// @throw InvalidRequest
-      AlmOrbit findAlmanac(const SatID sat, const CommonTime& t) 
+      AlmOrbit findAlmanac(const SatID sat, const CommonTime& t)
          const;
 
       /// gets the most recent almanac for the given time and satellite id,
@@ -197,7 +197,7 @@ namespace gnsstk
          /** returns all almanacs closest to t for all satellites
           * @throw InvalidRequest
           */
-      AlmOrbits findAlmanacs(const CommonTime& t) 
+      AlmOrbits findAlmanacs(const CommonTime& t)
          const;
 
    protected:
@@ -214,7 +214,7 @@ namespace gnsstk
 
       CommonTime initialTime; //< Earliest Toa minus a half week
       CommonTime finalTime;   //< Last Toa plus a half week
-      
+
    };
 
    //@}

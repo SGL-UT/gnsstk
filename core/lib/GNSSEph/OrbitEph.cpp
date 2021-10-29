@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -352,7 +352,7 @@ namespace gnsstk
             ptr = new BDSWeekSecond(t);
          else if(t.getTimeSystem() == TimeSystem::QZS)
             ptr = new QZSWeekSecond(t);
-         else 
+         else
             ptr = new GPSWeekSecond(t);
 
          os << setw(4) << ptr->week << "(";
@@ -370,8 +370,8 @@ namespace gnsstk
             case 6: os << "Sat-6"; break;
             default: break;
          }
-         
-         delete ptr;         
+
+         delete ptr;
 
          os << printTime(t,"   %3j   %5.0s   %02m/%02d/%04Y   %02H:%02M:%02S %P");
 
@@ -456,7 +456,7 @@ namespace gnsstk
          int week = rnd.weeknum;
          if(dt < -HALFWEEK) week++;
          else if(dt > HALFWEEK) week--;
-      
+
          //MGEX NB MGEX data has GPS week numbers in all systems except BeiDou,
          //MGEX so must implement temporary fixes: use GPS Toc for GAL and QZSS
          CommonTime gpstoc = GPSWeekSecond(week, rnd.Toc, TimeSystem::GPS);   //MGEX
@@ -504,7 +504,7 @@ namespace gnsstk
          af0 = rnd.af0;
          af1 = rnd.af1;
          af2 = rnd.af2;
-   
+
          // Major orbit parameters
          M0 = rnd.M0;
          dn = rnd.dn;
@@ -518,7 +518,7 @@ namespace gnsstk
          // modern nav msg
          dndot = 0.;
          Adot = 0.;
-   
+
          // Harmonic perturbations
          Cuc = rnd.Cuc;
          Cus = rnd.Cus;
@@ -526,7 +526,7 @@ namespace gnsstk
          Crs = rnd.Crs;
          Cic = rnd.Cic;
          Cis = rnd.Cis;
-   
+
          dataLoadedFlag = true;
          adjustValidity();
 

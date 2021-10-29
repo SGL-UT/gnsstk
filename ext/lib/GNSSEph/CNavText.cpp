@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -68,27 +68,27 @@ namespace gnsstk
 
    CNavText* CNavText::clone() const
    {
-      return new CNavText (*this); 
+      return new CNavText (*this);
    }
 
-     // In this case, since epoch time is arbitrarily set to Xmit, 
+     // In this case, since epoch time is arbitrarily set to Xmit,
      // the epoch time is NOT a distinguishing factor.  (This is
-     // worth noting because epoch time frequently is THE 
-     // distinguishing factor.) 
-   bool CNavText::isSameData(const CNavDataElement* right) const      
+     // worth noting because epoch time frequently is THE
+     // distinguishing factor.)
+   bool CNavText::isSameData(const CNavDataElement* right) const
    {
       if (const CNavText* rp = dynamic_cast<const CNavText*>(right))
       {
          if (textMessage.compare(rp->textMessage)!=0)  return false;
          if (textPage!=rp->textPage)     return false;
-         return true;      
+         return true;
       }
       return false;
    }
-   
+
    void CNavText::loadData(const PackedNavBits& pnb)
    {
-         // First, verify the correct message type is being passed in. 
+         // First, verify the correct message type is being passed in.
       long msgType = pnb.asUnsignedLong(14,6,1);
       if(msgType!=15 && msgType!=36)
       {
@@ -96,9 +96,9 @@ namespace gnsstk
          sprintf(temp,"Expected CNAV MsgType 15 or 36.  Found MsgType %ld",msgType);
          std::string tstr(temp);
          InvalidParameter exc(tstr);
-         GNSSTK_THROW(exc);    
-      } 
-      
+         GNSSTK_THROW(exc);
+      }
+
       obsID     = pnb.getobsID();
       satID     = pnb.getsatSys();
       ctXmit    = pnb.getTransmitTime();
@@ -113,9 +113,9 @@ namespace gnsstk
       {
          textMessage  = pnb.asString(127,18);
          textPage     = pnb.asUnsignedLong(271, 4, 1);
-      }   
-      
-      dataLoadedFlag = true;   
+      }
+
+      dataLoadedFlag = true;
    } // end of loadData()
 
    void CNavText::dumpBody(ostream& s) const
@@ -125,15 +125,15 @@ namespace gnsstk
          InvalidRequest exc("Required data not stored.");
          GNSSTK_THROW(exc);
       }
-    
+
       s << endl
         << "           TEXT MESSAGE PARAMETERS"
         << endl
         << endl;
       s << "Text Page: " << textPage << endl;
       s << "Message  : '" << textMessage << "'" << endl;
-      
-   } // end of dumpBody()   
+
+   } // end of dumpBody()
 
    ostream& operator<<(ostream& s, const CNavText& eph)
    {

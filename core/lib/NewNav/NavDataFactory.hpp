@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,8 +15,8 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
@@ -25,14 +25,14 @@
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -84,7 +84,7 @@ namespace gnsstk
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
-          *   behavior or by nearest to when in time. 
+          *   behavior or by nearest to when in time.
           * @return true if successful.  If false, navData will be untouched. */
       virtual bool find(const NavMessageID& nmid, const CommonTime& when,
                         NavDataPtr& navOut, SVHealth xmitHealth,
@@ -181,14 +181,14 @@ namespace gnsstk
       virtual void clear()
       {}
 
-         /** Determine the earliest time for which this object can successfully 
+         /** Determine the earliest time for which this object can successfully
           * determine the Xvt for any object.
           * @return The initial time, or CommonTime::END_OF_TIME if no
           *   data is available. */
       virtual CommonTime getInitialTime() const
       { return CommonTime::END_OF_TIME; }
 
-         /** Determine the latest time for which this object can successfully 
+         /** Determine the latest time for which this object can successfully
           * determine the Xvt for any object.
           * @return The initial time, or CommonTime::BEGINNING_OF_TIME if no
           *   data is available. */
@@ -312,7 +312,7 @@ namespace gnsstk
           * @note We specifically require the time range parameters to
           *   try to avoid making assumptions about the size of the
           *   data set (i.e. assuming the data is going to be a day's
-          *   worth when it's actually several years). 
+          *   worth when it's actually several years).
           * @note This method iterates over the given time span until
           *   it finds a match.  As such, it is strongly recommended
           *   that you not use BEGINNING_OF_TIME or END_OF_TIME, as it

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,7 +40,7 @@
  * @file BivarStats.hpp
  * Bivariate Statistics
  */
- 
+
 #ifndef INCLUDE_GNSSTK_BIVARSTATS_HPP
 #define INCLUDE_GNSSTK_BIVARSTATS_HPP
 
@@ -54,7 +54,7 @@ namespace gnsstk
 
       /// @ingroup MathGroup
       //@{
- 
+
       /** Conventional statistics for two samples.  Constructor does
        * the same as clear(); use this when starting a new series of
        * input samples.
@@ -71,7 +71,7 @@ namespace gnsstk
          /** @{ */
       BivarStats(bool scale=false);
       BivarStats(const T& x, const T&, bool scale=false);
-      BivarStats(const std::vector<T>& x, const std::vector<T>& y, 
+      BivarStats(const std::vector<T>& x, const std::vector<T>& y,
                  bool scale=false);
       BivarStats(const std::vector< std::pair<T, T> >& d, bool scale=false);
       BivarStats(const Vector<T>& x, const Vector<T>& y, bool scale=false);
@@ -85,7 +85,7 @@ namespace gnsstk
       void add(const std::vector< std::pair<T, T> >& d);
       void add(const Vector<T>& x, const Vector<T>& y);
          /** @} */
-      
+
          /** @name Subtraction Functions
           * Subtract data from the statistics. */
          /** @{ */
@@ -114,7 +114,7 @@ namespace gnsstk
          /// Return slope of best-fit line Y=slope*X + intercept.
       T slope(void) const;
          /// Return intercept of best-fit line Y=slope*X + intercept
-      T intercept(void) const; 
+      T intercept(void) const;
          /// Return uncertainty in slope.
       T sigmaSlope(void) const;
 
@@ -147,7 +147,7 @@ namespace gnsstk
 
       /// Output operator for BivarStats class
    template <class T>
-   std::ostream& operator<<(std::ostream& s, const BivarStats<T>& BVS) 
+   std::ostream& operator<<(std::ostream& s, const BivarStats<T>& BVS)
    {
       s << " N       = " << BVS.n() << std::endl
         << " Minimum: X = " << BVS.minimumX()
@@ -177,9 +177,9 @@ namespace gnsstk
    {
       add(x,y);
    }
-   
+
    template<class T>
-   BivarStats<T>::BivarStats(const std::vector<T>& x, const std::vector<T>& y, 
+   BivarStats<T>::BivarStats(const std::vector<T>& x, const std::vector<T>& y,
                              bool s )
          :ns(0), scaled(s)
    {
@@ -346,14 +346,14 @@ namespace gnsstk
    T BivarStats<T>::averageX(void) const
    { return ns>0 ? scaleX*sumX/T(ns) : T(0); }
    template<class T>
-   T BivarStats<T>::averageY(void) const 
+   T BivarStats<T>::averageY(void) const
    { return ns>0 ? scaleY*sumY/T(ns) : T(0); }
 
-   
+
    template<class T>
    T BivarStats<T>::varianceX(void) const
-   {  
-      return (ns>1) ? scaleX*scaleX * (sumX2 - sumX*sumX/T(ns)) / T(ns-1) : T(0); 
+   {
+      return (ns>1) ? scaleX*scaleX * (sumX2 - sumX*sumX/T(ns)) / T(ns-1) : T(0);
    }
 
    template<class T>
@@ -371,7 +371,7 @@ namespace gnsstk
    T BivarStats<T>::slope(void) const
    {
       if (ns>0)
-         return (scaleY/scaleX) * (sumXY - sumX*sumY/T(ns)) / 
+         return (scaleY/scaleX) * (sumXY - sumX*sumY/T(ns)) /
             (sumX2 - sumX*sumX/T(ns));
       else
          return T();
@@ -385,7 +385,7 @@ namespace gnsstk
       else
          return T();
    }
-   
+
    template<class T>
    T BivarStats<T>::sigmaSlope(void) const
    {
@@ -394,7 +394,7 @@ namespace gnsstk
       else
          return T();
    }
-   
+
    template<class T>
    T BivarStats<T>::correlation(void) const
    {
@@ -424,7 +424,7 @@ namespace gnsstk
       xMax = std::max(xMax, S.xMax);
       yMin = std::min(yMin, S.yMin);
       yMax = std::max(yMax, S.yMax);
-      T xscaler( S.scaleX/scaleX ), yscaler( S.scaleY/scaleY ); 
+      T xscaler( S.scaleX/scaleX ), yscaler( S.scaleY/scaleY );
       sumX += xscaler * S.sumX;
       sumY += yscaler * S.sumY;
       sumX2 += xscaler * xscaler * S.sumX2;

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -111,7 +111,7 @@ namespace gnsstk
       inline void buitohf  (const void* p, float& v,    unsigned pos = 0);
          /// @copydoc gnsstk::BinUtils::buitohs
       inline void buitohd  (const void* p, double& v,   unsigned pos = 0);
-      
+
          /** Converts Network (big-endian) to host byte order.
           * @param[in] p a pointer to the buffer containing the
           *   big-endian value.
@@ -157,7 +157,7 @@ namespace gnsstk
       inline void buhtoif  (void* p, float v,     unsigned pos = 0);
          /// @copydoc gnsstk::BinUtils::buhtois
       inline void buhtoid  (void* p, double v,    unsigned pos = 0);
-      
+
          /** Converts host byte order to Network byte order (big-endian).
           * @param[in,out] p a pointer to the buffer where the converted
           *   value will be stored.
@@ -221,7 +221,7 @@ namespace gnsstk
       template <class T>
       inline T decodeVarLE( std::string& str );
 
-         /** 
+         /**
           * Add the network ordered binary representation of a var to the
           * the given string.
           * @param[in] v the object of type T to convert to a string.
@@ -229,7 +229,7 @@ namespace gnsstk
       template<class T>
       inline std::string encodeVar( const T& v );
 
-         /** 
+         /**
           * Add the network ordered binary representation of a var to the
           * the given string.
           * @param[in] v the object of type T to convert to a string.
@@ -241,7 +241,7 @@ namespace gnsstk
       template<class T>
       inline void encodeVar( const T& v, std::string& str, size_t pos=0 );
 
-         /** 
+         /**
           * Add the little-endian binary representation of a var to the
           * the given string.
           * @param[in] v the object of type T to convert to a string.
@@ -249,7 +249,7 @@ namespace gnsstk
       template<class T>
       inline std::string encodeVarLE( const T& v );
 
-         /** 
+         /**
           * Add the little-endian binary representation of a var to the
           * the given string.
           * @param[in] v the object of type T to convert to a string.
@@ -272,7 +272,7 @@ namespace gnsstk
       inline unsigned short countBits(uint32_t v);
 
          /// Reflects the lower \a bitnum bits of \a crc
-      inline unsigned long reflect (unsigned long crc, 
+      inline unsigned long reflect (unsigned long crc,
                                     int bitnum);
 
          /// Encapsulate parameters for CRC computation
@@ -329,7 +329,7 @@ namespace gnsstk
           *   evenly divisible by wordSize.
           * @param[in] wordSize The size of the checksum in bytes.
           * @return the calculated checksum in the same byte order as \a str.
-          * @throw gnsstk::InvalidParameter if there is a partial word at 
+          * @throw gnsstk::InvalidParameter if there is a partial word at
           *  the end of \a str.
           */
       inline std::string xorChecksum(const std::string& str, unsigned wordSize);
@@ -451,7 +451,7 @@ namespace gnsstk
       }
 
 
-      inline unsigned long reflect (unsigned long crc, 
+      inline unsigned long reflect (unsigned long crc,
                                     int bitnum)
       {
          unsigned long i, j = 1, crcout = 0;
@@ -480,7 +480,7 @@ namespace gnsstk
 
             // at first, compute constant bit masks for whole CRC and
             // CRC high bit
-         uint32_t crcmask = 
+         uint32_t crcmask =
             ((((uint32_t)1 << (params.order - 1)) - 1) << 1) | 1;
          uint32_t crchighbit = (uint32_t)1 << (params.order - 1);
 
@@ -549,13 +549,13 @@ namespace gnsstk
       {
          size_t strSize = str.size();
          std::string rv(wordSize, 0);
-         
+
          if (strSize % wordSize != 0)
          {
             gnsstk::InvalidParameter ip("Incomplete word in string.");
             GNSSTK_THROW(ip);
          }
-         
+
          for (size_t i = 0; (i + wordSize - 1) < strSize; i += wordSize)
          {
             for (size_t j = 0; j < wordSize; j++)
@@ -563,7 +563,7 @@ namespace gnsstk
                rv[j] ^= str[i+j];
             }
          }
-         
+
          return rv;
       }
 
@@ -627,8 +627,8 @@ namespace gnsstk
             ((*tp >> 8) & 0x00ff));
 #endif
       }
-      
-      
+
+
       inline void buitohsl(const void* p, int32_t& v, unsigned pos)
       {
          const uint8_t *cp = static_cast<const uint8_t*>(p) + pos;
@@ -759,8 +759,8 @@ namespace gnsstk
             ((*tp >> 8) & 0x00ff));
 #endif
       }
-      
-      
+
+
       inline void buntohsl(const void* p, int32_t& v, unsigned pos)
       {
          const uint8_t *cp = static_cast<const uint8_t*>(p) + pos;
@@ -891,8 +891,8 @@ namespace gnsstk
                 ((v >> 8) & 0x00ff));
 #endif
       }
-      
-      
+
+
       inline void buhtoisl(void* p, int32_t v, unsigned pos)
       {
          uint8_t *cp = static_cast<uint8_t*>(p) + pos;
@@ -1023,8 +1023,8 @@ namespace gnsstk
                 ((v >> 8) & 0x00ff));
 #endif
       }
-      
-      
+
+
       inline void buhtonsl(void* p, int32_t v, unsigned pos)
       {
          uint8_t *cp = static_cast<uint8_t*>(p) + pos;

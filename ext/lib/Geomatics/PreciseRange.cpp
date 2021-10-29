@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -77,7 +77,7 @@ namespace gnsstk
       // nominal transmit time
       transmit = nomRecTime;     // receive time on receiver's clock
       transmit -= pr/ellips.c(); // correct for measured time of flight and Rx clock
-   
+
       // get the satellite position at the nominal time, computing and
       // correcting for the satellite clock bias and other delays
       try {
@@ -121,7 +121,7 @@ namespace gnsstk
       relativity = svPosVel.relcorr * ellips.c();
       satclkbias = svPosVel.clkbias * ellips.c();
       satclkdrift = svPosVel.clkdrift * ellips.c();
-   
+
       // correct for Earth rotation
       double sxyz[3], wt;
       rawrange = range(SatR,Rx);
@@ -134,7 +134,7 @@ namespace gnsstk
       sxyz[1] = -::sin(wt)*SatV.X() + ::cos(wt)*SatV.Y();
       sxyz[2] = SatV.Z();
       SatV.setECEF(sxyz);
-   
+
       // geometric range, again
       rawrange = range(SatR,Rx);
 
@@ -191,17 +191,17 @@ namespace gnsstk
          satLOSPCO = satLOSPCV = 0.0;
          SatPCOXYZ=Vector<double>(3,0.0);
       }
-   
+
       // ----------------------------------------------------------
       // direction cosines
       for(i=0; i<3; i++) cosines[i] = -S2R[i];            // receiver to satellite
-   
+
       // elevation and azimuth
       elevation = Rx.elevation(SatR);
       azimuth = Rx.azimuth(SatR);
       elevationGeodetic = Rx.elevationGeodetic(SatR);
       azimuthGeodetic = Rx.azimuthGeodetic(SatR);
-   
+
       // return corrected ephemeris range
       return (rawrange-satclkbias-relativity-relativity2-satLOSPCO+satLOSPCV);
 
@@ -209,5 +209,5 @@ namespace gnsstk
    catch(gnsstk::Exception& e) { GNSSTK_RETHROW(e); }
 
    }  // end PreciseRange::ComputeAtTransmitTime
-   
+
 }  // namespace gnsstk

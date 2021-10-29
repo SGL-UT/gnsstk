@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -45,17 +45,17 @@
  *     - time of first transmission
  *     - bool isSameData( )  - is the "data payload" of two objects of
  *       the same subclass identical
- *     - operator<<( ) 
- *     - dump(std::ostream& out=std::cout) 
- * 
+ *     - operator<<( )
+ *     - dump(std::ostream& out=std::cout)
+ *
  *  This is a pure virtual class and designed to support polymorphic behavior.
  *  Therefore the will need
  *  to instantiate a descendent of this
  *  class as opposed to instantiating this class directly.  The
- *  descendent classes provide the functionality to load 
+ *  descendent classes provide the functionality to load
  *  data from various navigation message formats
- *  and types and then manipulate the data to produce 
- *  useful information. 
+ *  and types and then manipulate the data to produce
+ *  useful information.
  *
  *  The existence of a common base class enables the storage of objects
  *  in a common store.
@@ -63,7 +63,7 @@
 
 #ifndef GNSSTK_ORBDATA_HPP
 #define GNSSTK_ORBDATA_HPP
- 
+
 #include <list>
 
 #include "Exception.hpp"
@@ -106,13 +106,13 @@ namespace gnsstk
 
       virtual std::string getNameLong() const = 0;
 
-          /** Returns true if this two objects are 
+          /** Returns true if this two objects are
            *   a.) same concrete type, and
            *   b.) same data contents.
            * This is intended as a "data uniqueness test" to allow
            * detection of successive transmissions of same data
-           * and avoid duplicate storage.  The exact rules for 
-           * uniqueness will vary by descendent class. 
+           * and avoid duplicate storage.  The exact rules for
+           * uniqueness will vary by descendent class.
            */
       virtual bool isSameData(const OrbData* right) const = 0;
 
@@ -120,9 +120,9 @@ namespace gnsstk
            *  Any differences are summarized and written to the output stream
            *  provided.
            *  The base method compares the members common to the base.  The descendent classes
-           *  should add additional member comparisions as needed in order   
-           *  to provide a complete comparison of members of interest to be compared.   
-           *  The return list is a list of the members that disagreed.  
+           *  should add additional member comparisions as needed in order
+           *  to provide a complete comparison of members of interest to be compared.
+           *  The return list is a list of the members that disagreed.
            */
       virtual std::list<std::string> compare(const OrbData* right) const;
 

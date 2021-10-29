@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -54,7 +54,7 @@ namespace gnsstk
 {
    OrbSysGpsC_30::OrbSysGpsC_30()
       :OrbSysGpsC(),
-       Tgd(0.0), 
+       Tgd(0.0),
        ISC_L1CA(0.0),
        ISC_L2C(0.0),
        ISC_L5I5(0.0),
@@ -74,7 +74,7 @@ namespace gnsstk
 
    OrbSysGpsC_30::OrbSysGpsC_30(const PackedNavBits& msg)
          : OrbSysGpsC(),
-       Tgd(0.0), 
+       Tgd(0.0),
        ISC_L1CA(0.0),
        ISC_L2C(0.0),
        ISC_L5I5(0.0),
@@ -95,18 +95,18 @@ namespace gnsstk
 
    OrbSysGpsC_30* OrbSysGpsC_30::clone() const
    {
-      return new OrbSysGpsC_30 (*this); 
+      return new OrbSysGpsC_30 (*this);
    }
 
-   bool OrbSysGpsC_30::isSameData(const OrbData* right) const      
+   bool OrbSysGpsC_30::isSameData(const OrbData* right) const
    {
          // First, test whether the test object is actually a OrbSysGpsC_30 object.
       const OrbSysGpsC_30* p = dynamic_cast<const OrbSysGpsC_30*>(right);
-      if (p==0) return false; 
+      if (p==0) return false;
 
-         // Establish if it refers to the same SV and UID. 
+         // Establish if it refers to the same SV and UID.
       if (!OrbSysGpsC::isSameData(p)) return false;
-       
+
             // Finally, examine the contents
       if (avail_Tgd  != p->avail_Tgd)  return false;
       if (avail_L1CA != p->avail_L1CA) return false;
@@ -114,7 +114,7 @@ namespace gnsstk
       if (avail_L5I5 != p->avail_L5I5) return false;
       if (avail_L5Q5 != p->avail_L5Q5) return false;
 
-         // Whether avail values are true or false, 
+         // Whether avail values are true or false,
          // the actual values should match.  That is to say,
          // if avail = false, the corresponding ISC is 0.0.
       if (Tgd      != p->Tgd)      return false;
@@ -128,10 +128,10 @@ namespace gnsstk
          if (alpha[i] != p->alpha[i]) return false;
          if ( beta[i] != p->beta[i]) return false;
       }
-         
-      return true;      
+
+      return true;
    }
-   
+
    void OrbSysGpsC_30::loadData(const PackedNavBits& msg)
    {
       setUID(msg);
@@ -141,8 +141,8 @@ namespace gnsstk
          std::string msgString("Expected GPS CNAV MT 30.  Found unique ID ");
          msgString += StringUtils::asString(UID);
          InvalidParameter exc(msgString);
-         GNSSTK_THROW(exc);    
-      } 
+         GNSSTK_THROW(exc);
+      }
       obsID        = msg.getobsID();
       satID        = msg.getsatSys();
       beginValid   = msg.getTransmitTime();
@@ -150,7 +150,7 @@ namespace gnsstk
            // Message Type 30 data
       unsigned long testAvail = 4096;    // Pattern in message of 0x1000
                                          // if data quantity not available
-                                          
+
       unsigned long avail = msg.asUnsignedLong(127,13,1);
       avail_Tgd = false;
       if (avail!=testAvail)
@@ -166,7 +166,7 @@ namespace gnsstk
          avail_L1CA = true;
          ISC_L1CA  = msg.asSignedDouble(140, 13, -35);
       }
-      
+
       avail = msg.asUnsignedLong(153,13,1);
       avail_L2C = false;
       if (avail!=testAvail)
@@ -174,7 +174,7 @@ namespace gnsstk
          avail_L2C = true;
          ISC_L2C   = msg.asSignedDouble(153, 13, -35);
       }
-      
+
       avail = msg.asUnsignedLong(166,13,1);
       avail_L5I5 = false;
       if (avail!=testAvail)
@@ -201,7 +201,7 @@ namespace gnsstk
       beta[3]  = msg.asSignedDouble(248, 8,  16);
 
          // Need to convert from sec/semi-circle to sec/rad
-      double conversion = 1.0 / PI; 
+      double conversion = 1.0 / PI;
       alpha[1] *= conversion;
       beta[1]  *= conversion;
       alpha[2] *= conversion * conversion;
@@ -209,7 +209,7 @@ namespace gnsstk
       alpha[3] *= conversion * conversion * conversion;
       beta[3]  *= conversion * conversion * conversion;
 
-      dataLoadedFlag = true;   
+      dataLoadedFlag = true;
    } // end of loadData()
 
    void OrbSysGpsC_30::dumpTerse(std::ostream& s) const
@@ -220,7 +220,7 @@ namespace gnsstk
          GNSSTK_THROW(exc);
       }
 
-      string ssys = convertSatelliteSystemToString(satID.system); 
+      string ssys = convertSatelliteSystemToString(satID.system);
       s << setw(7) << ssys;
       s << " " << setw(2) << satID.id;
 
@@ -258,31 +258,31 @@ namespace gnsstk
       s << "Tgd            ";
       if (avail_Tgd)
          s << "Y       " << setw(16) << Tgd << endl;
-      else 
+      else
          s << "N" << endl;
 
       s << "ISC(L1CA)      ";
       if (avail_L1CA)
          s << "Y       " << setw(16) << ISC_L1CA << endl;
-      else 
+      else
          s << "N" << endl;
 
       s << "ISC(L2C)       ";
       if (avail_L2C)
          s << "Y       " << setw(16) << ISC_L2C << endl;
-      else 
+      else
          s << "N" << endl;
 
       s << "ISC(L5I5)      ";
       if (avail_L5I5)
          s << "Y       " << setw(16) << ISC_L5I5 << endl;
-      else 
+      else
          s << "N" << endl;
 
       s << "ISC(L5Q5)      ";
       if (avail_L5Q5)
          s << "Y       " << setw(16) << ISC_L5Q5 << endl;
-      else 
+      else
          s << "N" << endl;
 
       s << endl
@@ -296,6 +296,6 @@ namespace gnsstk
         << "   Beta 2: " << setw(16) << beta[2]  << " sec/rad**2" << endl;
       s << "  Alpha 3: " << setw(16) << alpha[3] << " sec/rad**3"
         << "   Beta 3: " << setw(16) << beta[3]  << " sec/rad**3" << endl;
-   } // end of dumpBody()   
+   } // end of dumpBody()
 
 } // end namespace gnsstk

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -197,7 +197,7 @@ namespace gnsstk
                   for(k=i; k<m; k++) U(k,j) += f * U(k,i);
                }
                for(j = i; j < m; j++) U(j,i) *= g;
-            } 
+            }
             else {
                for(j=i; j<m; j++) U(j,i) = T(0);
             }
@@ -250,7 +250,7 @@ namespace gnsstk
                   }
                   break;
                }
-            
+
                if (its == iterationMax) {
                   MatrixException e("SVD algorithm did not converge");
                   GNSSTK_THROW(e);
@@ -340,7 +340,7 @@ namespace gnsstk
          return true;
 
       }  // end SVD::operator() - the SVD algorithm
-   
+
 
          /** Backsubstitution using SVD.
           * Solve A*x=b for vector x where A [mxn] has been SVD'ed and
@@ -352,14 +352,14 @@ namespace gnsstk
           * @throw MatrixException
           */
       template <class BaseClass>
-      void backSub(RefVectorBase<T, BaseClass>& b) const 
+      void backSub(RefVectorBase<T, BaseClass>& b) const
       {
          if(b.size() != U.rows())
          {
             MatrixException e("SVD::BackSub called with unequal dimensions");
             GNSSTK_THROW(e);
          }
-   
+
          size_t i, n=V.cols(), m=U.rows();
          Matrix<T> W(n,m,T(0));    // build the 'inverse singular values' matrix
          for(i=0; i<S.size(); i++) W(i,i)=(S(i)==T(0)?T(0):T(1)/S(i));
@@ -415,9 +415,9 @@ namespace gnsstk
 
    private:
       const size_t iterationMax;
-   
+
       T SIGN(T a, T b)
-      { 
+      {
          if (b >= T(0))
             return ABS(a);
          else
@@ -661,7 +661,7 @@ namespace gnsstk
             GNSSTK_THROW(e);
          }
          size_t i,j,N=L.rows();
-      
+
          Vector<T> y(b.size());
          y(0) = b(0)/L(0,0);
          for(i=1; i<N; i++) {
@@ -696,7 +696,7 @@ namespace gnsstk
        * here m = transpose(U)*U, but there m = U * transpose(U); see doc for
        * Cholesky.
        */
-   template <class T> 
+   template <class T>
    class CholeskyCrout : public Cholesky<T>
    {
    public:
@@ -722,7 +722,7 @@ namespace gnsstk
                (*this).L(j,j) = SQRT(sum);
             } else {
                MatrixException e("CholeskyCrout fails - eigenvalue <= 0");
-               GNSSTK_THROW(e);          
+               GNSSTK_THROW(e);
             }
 
             for(i=j+1; i<N; i++){
@@ -806,7 +806,7 @@ namespace gnsstk
          }  // end loop over cols
 
       }  // end Householder::operator()
-      
+
          /// The upper triangular transformed matrix.
       Matrix<T> A;
 

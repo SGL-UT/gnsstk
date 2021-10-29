@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,8 +15,8 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
@@ -25,14 +25,14 @@
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -47,7 +47,7 @@
 #include "DebugTrace.hpp"
 
 /*
- * ALL EQUATION AND SECTION REFERENCES ARE TO THE DOCUMENT 
+ * ALL EQUATION AND SECTION REFERENCES ARE TO THE DOCUMENT
  * "Ionospheric Correction Algorithm for Galileo Single Frequency Users"
  * aka "Galileo Ionospheric Model"
  * UNLESS OTHERWISE STATED
@@ -73,7 +73,7 @@ namespace gnsstk
        *   * Magic numbers abound, though they have been replaced when a
        *     useful name could be found.
        *   * No, I don't know why A1=F2 amplitude, etc.
-       * 
+       *
        * References:
        * \cite galileo:iono
        * \cite itur:iono
@@ -132,7 +132,7 @@ namespace gnsstk
       bool idf[5]; ///< Ionospheric disturbance flag for regions 1-5 (0-4).
 
          /** Similar to standard exp() function, but with the exponent
-          * clipped to +/- 80, per F2.1.2.3 \cite galileo:iono 
+          * clipped to +/- 80, per F2.1.2.3 \cite galileo:iono
           * @param[in] x The exponent to raise e to.
           * @return e^x. */
       static double neExp(double x);
@@ -176,7 +176,7 @@ namespace gnsstk
 
             /** Compute the solar zenith angle.
              * @param[in] pos The geodetic position of the observer.
-             * @param[in] when The time at which to compute the solar zenith. 
+             * @param[in] when The time at which to compute the solar zenith.
              * @return The solar zenith angle. */
          static Angle solarZenithAngle(const Position& pos,
                                        const CivilTime& when);
@@ -200,12 +200,12 @@ namespace gnsstk
          void height();
 
             /** Compute thickness parameters.
-             * @pre fNmF2, ffoF2, fM3000F2, fhmF1, fhmF2 must be set. 
+             * @pre fNmF2, ffoF2, fM3000F2, fhmF1, fhmF2 must be set.
              * @post fB2bot, fB1top, fB1bot, fBEtop are set. */
          void thickness();
 
             /** Compute the top-side thickness parameter.
-             * @pre fAzr, fhmF2, fB2bot, fNmF2 must be set. 
+             * @pre fAzr, fhmF2, fB2bot, fNmF2 must be set.
              * @param[in] month Month 1-12 for ionospheric model.
              * @post fH0 is set. */
          void exosphereAdjust(unsigned month);

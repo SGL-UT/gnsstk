@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -1143,7 +1143,7 @@ namespace gnsstk
           * the end of the word and the start of the next word.
           * If the last word in \a s is removed, all trailing delimiters
           * are removed as well; if all words in \a s are removed, the
-          * resulting string is empty. 
+          * resulting string is empty.
           * @param s a string with words to be removed.
           * @param first the first word to be removed (the first word is 0).
           * @param wordsToReplace the number of words to remove,
@@ -2190,10 +2190,10 @@ namespace gnsstk
          {
             if ((firstWord == 0) && (numWords == 1))
                return StringUtils::firstWord(s, delimiter);
-               
+
             if (numWords == 0)
                return "";
-               
+
             std::string::size_type wordNum = 0;
             std::string::size_type pos = 0, startPos = std::string::npos;
 
@@ -2205,13 +2205,13 @@ namespace gnsstk
             {
                if (wordNum == firstWord)
                   startPos = pos;
-                  
+
                   // get first delimter after word wordNum
                pos = s.find(delimiter, pos);
                if (((int)numWords != -1)
                    && ((int)wordNum == (int)(firstWord + (numWords-1))))
                   break;
-                  
+
                pos = s.find_first_not_of(delimiter, pos);
                wordNum++;
             }
@@ -2220,7 +2220,7 @@ namespace gnsstk
                return ""; // never found the start of the word
             if (pos == std::string::npos)
                return ((wordNum >= firstWord) ? s.substr(startPos) : "");
-               
+
             return s.substr(startPos, pos-startPos);
          }
          catch(StringException &e)
@@ -2420,7 +2420,7 @@ namespace gnsstk
          {
             std::string::size_type rmStart = std::string::npos;
             std::string::size_type rmCount = std::string::npos;
-            
+
                // Find start of word 0
             std::string::size_type sPos = s.find_first_not_of(delimiter);
 
@@ -2442,7 +2442,7 @@ namespace gnsstk
                {
                   rmCount = sPos - rmStart;
                   break;
-               }               
+               }
                   // Find the end of the current word
                sPos = s.find(delimiter, sPos);
                if (sPos != std::string::npos)
@@ -2459,7 +2459,7 @@ namespace gnsstk
                {
                   stripTrailing(s, delimiter);
                }
-            }         
+            }
             return s;
          }
          catch(StringException &e)

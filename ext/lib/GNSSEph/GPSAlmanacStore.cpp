@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,16 +29,16 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  * @file GPSAlmanacStore.cpp
- * Store GPS almanac information (i.e. like the data in subframes 4&5) and 
+ * Store GPS almanac information (i.e. like the data in subframes 4&5) and
  * compute satellite Xvt based upon this data and the algorithms defined
  * in the IS-GPS-200.
  */
@@ -57,13 +57,13 @@ namespace gnsstk
       return a.svXvt(t);
    }
 
-   Xvt GPSAlmanacStore::getXvtMostRecentXmit(const SatID sat, const CommonTime& t) 
+   Xvt GPSAlmanacStore::getXvtMostRecentXmit(const SatID sat, const CommonTime& t)
          const
    {
       AlmOrbit a = findMostRecentAlmanac(sat, t);
       return a.svXvt(t);
    }
-   
+
    short GPSAlmanacStore::getSatHealth(const SatID sat, const CommonTime& t)
       const
    {
@@ -101,7 +101,7 @@ namespace gnsstk
 
    /// gets the closest almanac for the given time and satellite,
    /// closest being in the past or future.
-   AlmOrbit GPSAlmanacStore::findAlmanac(const SatID sat, const CommonTime& t) 
+   AlmOrbit GPSAlmanacStore::findAlmanac(const SatID sat, const CommonTime& t)
       const
    {
       UBAMap::const_iterator satItr = uba.find(sat);
@@ -111,12 +111,12 @@ namespace gnsstk
                         StringUtils::asString(sat));
          GNSSTK_THROW(e);
       }
-         
+
       const EngAlmMap& eam = satItr->second;
 
       // find the closest almanac BEFORE t, if any.
       EngAlmMap::const_iterator neXvtItr = eam.begin(), almItr = eam.end();
-         
+
       while ( (neXvtItr != eam.end()) &&
               (neXvtItr->first < t) )
       {
@@ -126,7 +126,7 @@ namespace gnsstk
 
       if (almItr == eam.end())
       {
-         if (neXvtItr == eam.end()) 
+         if (neXvtItr == eam.end())
          {
             InvalidRequest e("No almanacs for time " + t.asString());
             GNSSTK_THROW(e);
@@ -147,7 +147,7 @@ namespace gnsstk
       return (*almItr).second;
    }
 
-   AlmOrbit GPSAlmanacStore::findMostRecentAlmanac(const SatID sat, const CommonTime& t) 
+   AlmOrbit GPSAlmanacStore::findMostRecentAlmanac(const SatID sat, const CommonTime& t)
          const
    {
       UBAMap::const_iterator satItr = uba.find(sat);
@@ -157,12 +157,12 @@ namespace gnsstk
                         StringUtils::asString(sat));
          GNSSTK_THROW(e);
       }
-         
+
       const EngAlmMap& eam = satItr->second;
 
       // find the closest almanac BEFORE t, if any.
       EngAlmMap::const_iterator neXvtItr = eam.begin(), almItr = eam.end();
-         
+
       while ( (neXvtItr != eam.end()) &&
               (neXvtItr->second.getTransmitTime() < t) )
       {
@@ -172,7 +172,7 @@ namespace gnsstk
 
       if (almItr == eam.end())
       {
-         if (neXvtItr == eam.end()) 
+         if (neXvtItr == eam.end())
          {
             InvalidRequest e("No almanacs for time " + t.asString());
             GNSSTK_THROW(e);
@@ -182,10 +182,10 @@ namespace gnsstk
             almItr = neXvtItr;
          }
       }
-      return (*almItr).second;     
+      return (*almItr).second;
    }
 
-   AlmOrbits GPSAlmanacStore::findAlmanacs(const CommonTime& t) 
+   AlmOrbits GPSAlmanacStore::findAlmanacs(const CommonTime& t)
       const
    {
       AlmOrbits ao;
@@ -230,5 +230,5 @@ namespace gnsstk
          }
       }
    }
-   
+
 }

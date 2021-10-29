@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -48,15 +48,15 @@
   *  the the possibiity that there may be multiple different almanac orbits
   *  available for a given subject SV at a given moment with each version.
   *
-  *  It would have been nice to have this class descend from OrbElem and 
+  *  It would have been nice to have this class descend from OrbElem and
   *  thereby have access to the svXvt( ) in OrbElem.  However, the Glonass
   *  almanac data doesn't conform to the structure enforced by OrbElem.  It
-  *  was felt that the need to group all almanacs together outweighed the 
+  *  was felt that the need to group all almanacs together outweighed the
   *  convenience of reusing svXvt( ).
   *
   *  Even though it has a member, OrbAlm is still pure virtual and no
-  *  objects of this type may be created. 
-  */ 
+  *  objects of this type may be created.
+  */
 
 #ifndef GNSSTK_ORBALM_HPP
 #define GNSSTK_ORBALM_HPP
@@ -84,21 +84,21 @@ namespace gnsstk
 
          /**  Load an existing object from a PackedNavBits object.
            *  @throw InvalidParameter if the data are not consistent.
-           */ 
+           */
       void loadData( const gnsstk::PackedNavBits& pnbr );
 
       virtual std::string getName() const
       {
          return "OrbAlm";
       }
- 
+
       virtual std::string getNameLong() const
       {
          return "SV Almanac Orbit";
       }
 
-      virtual bool isSameData(const OrbElemBase* right) const = 0;      
-      
+      virtual bool isSameData(const OrbElemBase* right) const = 0;
+
          /**
           * @throw InvalidRequest
           */
@@ -113,23 +113,23 @@ namespace gnsstk
          /** Generate a formatted human-readable one-line output that summarizes
           *  the critical times associated with this object and send it to the
           *  designated output stream (default to cout).
-          */   
+          */
       virtual void dumpTerse(std::ostream& s = std::cout) const
       {}
 
          // subjectSV stores the satellite identifier for the satellite orbit which
-         // is desribed in thie data set.   OrbData::satID stors the satellite 
-         // identifier for the satellite that TRANSMITTED the data set contained 
-         // herein. 
-      gnsstk::SatID subjectSV; 
+         // is desribed in thie data set.   OrbData::satID stors the satellite
+         // identifier for the satellite that TRANSMITTED the data set contained
+         // herein.
+      gnsstk::SatID subjectSV;
 
    }; // end class OrbAlm
 
    //@}
 
-   std::ostream& operator<<(std::ostream& s, 
+   std::ostream& operator<<(std::ostream& s,
                                      const OrbAlm& eph);
 
-} // end namespace 
+} // end namespace
 
 #endif // GNSSTK_ORBALM_HPP

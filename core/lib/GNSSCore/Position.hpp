@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -68,7 +68,7 @@ namespace gnsstk
        * @throw GeometryException
        */
    double range(const Position& A, const Position& B);
-   
+
       /**
        * A position representation class for common 3D geographic
        * position formats, including geodetic (geodetic latitude,
@@ -169,7 +169,7 @@ namespace gnsstk
       static const double ONE_CM_TOLERANCE;
          /// One micron tolerance.
       static const double ONE_UM_TOLERANCE;
-      
+
          /// Default tolerance for time equality in days.
       static double POSITION_TOLERANCE;
 
@@ -180,7 +180,7 @@ namespace gnsstk
          /// Returns the current POSITION_TOLERANCE.
       static double getPositionTolerance()
       { return POSITION_TOLERANCE; }
-   
+
          /**
           * Sets the tolerance for output and comparisons, for this
           * object only.
@@ -376,7 +376,7 @@ namespace gnsstk
           */
       Position& transformTo(CoordinateSystem sys)
          throw();
-  
+
          /// Convert to geodetic coordinates (does nothing if
          /// system == Geodetic already).
       Position& asGeodetic()
@@ -402,7 +402,7 @@ namespace gnsstk
 
 
          // ----------- Part  7: member functions: get ------------------------
-         // 
+         //
          // These routines retrieve coordinate values in all
          // coordinate systems.
          //
@@ -410,7 +410,7 @@ namespace gnsstk
          /// return coordinate ReferenceFrame
       const ReferenceFrame& getReferenceFrame() const
          throw();
-      
+
          /// return X coordinate (meters)
       double X() const
          throw();
@@ -456,7 +456,7 @@ namespace gnsstk
 
          /// return the coordinate system for this Position
       CoordinateSystem getCoordinateSystem() const
-         throw() 
+         throw()
       { return system; };
 
          /// return geodetic latitude (deg N)
@@ -634,7 +634,7 @@ namespace gnsstk
           * pos.setToString("123.4342,9328.1982,-128987.399", "%X,%Y,%Z");
           * @endcode
           *
-          * works but 
+          * works but
           *
           * @code
           * pos.setToString("123.4342,9328.1982", "%X,%Y");
@@ -709,7 +709,7 @@ namespace gnsstk
       std::string asString() const;
 
          // ----------- Part 10: functions: fundamental conversions -----------
-         // 
+         //
          /** Fundamental conversion from spherical to cartesian coordinates.
           * @param[in] tpr theta, phi (degrees), radius
           * @param[out] xyz X,Y,Z in units of radius
@@ -796,7 +796,7 @@ namespace gnsstk
                                               const double eccSq)
          throw();
 
-         /** Fundamental routine to convert geodetic to geocentric 
+         /** Fundamental routine to convert geodetic to geocentric
           * @param[in] geodeticllh geodetic latitude (deg N),
           *            longitude (deg E), and height above ellipsoid (meters)
           * @param[out] llr geocentric lat (deg N),lon (deg E),radius (meters)
@@ -919,7 +919,7 @@ namespace gnsstk
          throw();
 
          /**
-          * A member function that computes the radius of curvature of the 
+          * A member function that computes the radius of curvature of the
           * meridian (Rm) corresponding to this Position.
           * @return radius of curvature of the meridian (in meters)
           */
@@ -927,7 +927,7 @@ namespace gnsstk
          throw();
 
          /**
-          * A member function that computes the radius of curvature in the 
+          * A member function that computes the radius of curvature in the
           * prime vertical (Rn) corresponding to this Position.
           * @return radius of curvature in the prime vertical (in meters)
           */
@@ -1017,7 +1017,7 @@ namespace gnsstk
          /** This is a bit of a kludge to deal with the fact that
           * Position doesn't store the actual ellipsoid model but
           * rather a couple of terms from it.  It works by copying
-          * those terms from another object into this one. 
+          * those terms from another object into this one.
           * @todo Modify Position to store a
           *   shared_ptr<EllipsoidModel> instead of AEarth, eccSquared
           *   etc.
@@ -1078,7 +1078,7 @@ namespace gnsstk
 
          /// tolerance used in comparisons
       double tolerance;
-      
+
       ReferenceFrame refFrame;
 
    };   // end class Position

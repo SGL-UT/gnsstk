@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -53,12 +53,12 @@ namespace gnsstk
    const string AntexHeader::headerCommentString = "COMMENT";
    const string AntexHeader::endOfHeaderString =   "END OF HEADER";
 
-   void AntexHeader::reallyPutRecord(FFStream& ffs) const 
+   void AntexHeader::reallyPutRecord(FFStream& ffs) const
    {
       AntexStream& strm = dynamic_cast<AntexStream&>(ffs);
-      
+
       strm.header = *this;
-      
+
       unsigned long allValid;
       if (version == 1.3)        allValid = allValid13;
       else {
@@ -66,13 +66,13 @@ namespace gnsstk
          err.addText("Make sure to set the version correctly.");
          GNSSTK_THROW(err);
       }
-      
+
       if ((valid & allValid) != allValid) {
          FFStreamError err("Incomplete or invalid header.");
          err.addText("Set all header valid bits for all of the available data.");
          GNSSTK_THROW(err);
       }
-      
+
       try {
          WriteHeaderRecords(strm);
       }
@@ -80,7 +80,7 @@ namespace gnsstk
       catch(StringException& e) { GNSSTK_RETHROW(e); }
 
    }  // end AntexHeader::reallyPutRecord
-      
+
 
       // this function writes all valid header records
    void AntexHeader::WriteHeaderRecords(FFStream& ffs) const
@@ -120,20 +120,20 @@ namespace gnsstk
          line  = string(60, ' ');
          line += endOfHeaderString;
          strm << leftJustify(line,80) << endl;
-         strm.lineNumber++;               
-      }   
+         strm.lineNumber++;
+      }
    }   // end AntexHeader::WriteHeaderRecords()
 
       // this function parses a single header record
    void AntexHeader::ParseHeaderRecord(string& line)
    {
       string label(line, 60, 20);
-         
+
       if(label == versionString) {
          version = asDouble(line.substr(0,8));
          system = line[20];
          if(system != ' ' && system != 'G' &&
-            system != 'R' && system != 'E' && 
+            system != 'R' && system != 'E' &&
             system != 'C' && system != 'M')
          {
             stringstream os;
@@ -174,7 +174,7 @@ namespace gnsstk
    void AntexHeader::reallyGetRecord(FFStream& ffs)
    {
       AntexStream& strm = dynamic_cast<AntexStream&>(ffs);
-      
+
          // if already read, just return
       if (strm.headerRead == true)
          return;
@@ -187,7 +187,7 @@ namespace gnsstk
       commentList.clear();
       version = 1.3;
       valid = 0;
-      
+
       string line;
       while(!(valid & endValid)) {
          strm.formattedGetLine(line);
@@ -202,7 +202,7 @@ namespace gnsstk
 
          try { ParseHeaderRecord(line); }
          catch(FFStreamError& e) { GNSSTK_RETHROW(e); }
-         
+
       }   // end while(not end of header)
 
       unsigned long allValid;
@@ -212,16 +212,16 @@ namespace gnsstk
          FFStreamError e("Unknown or unsupported Antex version " + asString(version));
          GNSSTK_THROW(e);
       }
-            
+
       if((allValid & valid) != allValid) {
          FFStreamError e("Incomplete or invalid header");
-         GNSSTK_THROW(e);               
+         GNSSTK_THROW(e);
       }
-            
+
          // If we get here, we should have reached the end of header line
       strm.header = *this;
       strm.headerRead = true;
-            
+
    }  // end of reallyGetRecord()
 
    void AntexHeader::dump(ostream& s) const

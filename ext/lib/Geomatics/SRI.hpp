@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -132,7 +132,7 @@ extern const SparseMatrix<double> SRINullSparseMatrix;
 /// (think of covariance as a measure of uncertainty - the opposite or inverse of
 /// information) become small.
 ///
-/// The structure of the SRI method allows some powerful techniques to be used in 
+/// The structure of the SRI method allows some powerful techniques to be used in
 /// manipulating, combining and separating state elements and the information
 /// associated with them in SRIs. For example, if the measurement updates have
 /// failed to increase the information about one particular state element, then
@@ -315,7 +315,7 @@ public:
    void retriangularize(const Matrix<double>& A);
 
       /// Retriangularize the SRI, that is assuming R has been modified to a non-UT
-      /// matrix (e.g. by transform()). Given RR and ZZ, apply HH transforms to 
+      /// matrix (e.g. by transform()). Given RR and ZZ, apply HH transforms to
       /// retriangularize, and store as R,Z.
       /// NB caller must modify names, if necessary
       /// @param[in] RR the modified (non-UT) R

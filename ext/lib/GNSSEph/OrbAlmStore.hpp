@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -54,7 +54,7 @@
 *   identifiers.
 *     satID     - The SatID of the satellite that broadcast an almanac (regardless
 *                  of the satellite to which the almanac applies).
-*     subjectSV - The SatID of the satellite ot which the almanac applies. 
+*     subjectSV - The SatID of the satellite ot which the almanac applies.
 *
 */
 #ifndef GNSSTK_ORBALMSTORE_HPP

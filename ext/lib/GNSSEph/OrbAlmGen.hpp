@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,23 +29,23 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
   *  @file OrbAlmGen.hpp
-  *  Contains the "engineering units" contents of a almanac that uses 
+  *  Contains the "engineering units" contents of a almanac that uses
   *  pseudo-Keplerian elements as its parameters.  This include GPS LNAV,
   *  GPS CNAV (Midi), BeiDou (both D1 and D2), and IRNSS
   *  The same algorithm is used across all these systems. therefore, it
   *  is practical to roll them all into one class.  Several of the members
   *  in OrbElem are not used by the almanac formats.  These are all set
-  *  to zero by convention. 
-  */ 
+  *  to zero by convention.
+  */
 
 #ifndef GNSSTK_ORBALMGEN_HPP
 #define GNSSTK_ORBALMGEN_HPP
@@ -78,16 +78,16 @@ namespace gnsstk
          /**  Load an existing object from a PackedNavBits object.
            *  @throw InvalidParameter if the data are not consistent.
            *  For GPS, the health argument (hArg) will be ignored
-           *  and the health in the msg will be used.   However, 
+           *  and the health in the msg will be used.   However,
            *  this is the only source of health information
-           *  for BDS.    */ 
+           *  for BDS.    */
       void loadData(const gnsstk::PackedNavBits& msg,
                     const unsigned short hArg = 0);
 
        //------------------------------------------------------------
-      //  When the calling program receives the following pages, 
-      //  this should be called to update the almanac time parameters.   
-      //    LNAV SF4/Pg 25  
+      //  When the calling program receives the following pages,
+      //  this should be called to update the almanac time parameters.
+      //    LNAV SF4/Pg 25
       //    BDS D1 SF5/Pg 8
       //    BDS D2 SF5/Pg 36
       //  This "maintenance" is not required for GPS CNAV
@@ -98,7 +98,7 @@ namespace gnsstk
       {
          return "OrbAlmGen";
       }
- 
+
       virtual std::string getNameLong() const
       {
          return "SV Almanac Orbit";
@@ -130,9 +130,9 @@ namespace gnsstk
           */
       virtual double svRelativity(const gnsstk::CommonTime& t) const;
 
-      virtual bool isSameData(const OrbElemBase* right) const;      
+      virtual bool isSameData(const OrbElemBase* right) const;
 
-      virtual std::string listDifferences(const OrbElemBase* right) const;      
+      virtual std::string listDifferences(const OrbElemBase* right) const;
 
          /**
           * @throw InvalidRequest
@@ -152,12 +152,12 @@ namespace gnsstk
           *  the critical times associated with this object and send it to the
           *  designated output stream (default to cout).
           *  @throw InvalidRequest if the object has been instantiated, but not loaded.
-          */   
+          */
       virtual void dumpTerse(std::ostream& s = std::cout) const;
          //@}
- 
+
          // GPS LNAV, GPS CNAV, BDS D1/D2, and IRNSS all have the following
-         // almanac members in common. 
+         // almanac members in common.
       double          AHalf;       // sqrt A
       double              A;       // semi-major axis
       double            af1;
@@ -169,7 +169,7 @@ namespace gnsstk
       double       OMEGAdot;
       double              w;
       double             M0;
-      unsigned long     toa; 
+      unsigned long     toa;
 
          // For GPS, health is provided in the page containing the orbit data.
          // For BDs, health is supplied from Sf5 pg 7 or pg 8
@@ -184,8 +184,8 @@ namespace gnsstk
          // WNa/toa from either GPS LNAV SF5/p25 or the BDS equivalent.
          // Since there is no guarantee that this information will appear
          // BEFORE the first almanac data page, there is also provision
-         // for estimating these values from the first available data. 
-      static bool WN_set; 
+         // for estimating these values from the first available data.
+      static bool WN_set;
       static unsigned int WNa_full;
       static double t_oa;
 
@@ -198,15 +198,15 @@ namespace gnsstk
           */
       void loadDataGpsCNAV(const gnsstk::PackedNavBits& msg);
          // Used internally during startup if WNa has not been received
-         // prior to first almanac data page.         
+         // prior to first almanac data page.
       void estimateWeekNumber(const CommonTime& currTime);
    }; // end class OrbAlmGen
 
    //@}
 
-   std::ostream& operator<<(std::ostream& s, 
+   std::ostream& operator<<(std::ostream& s,
                                      const OrbAlmGen& eph);
 
-} // end namespace 
+} // end namespace
 
 #endif // GNSSTK_ORBALMGEN_HPP

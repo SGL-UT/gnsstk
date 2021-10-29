@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -71,18 +71,18 @@ namespace gnsstk
 
    OrbSysGpsC_32* OrbSysGpsC_32::clone() const
    {
-      return new OrbSysGpsC_32 (*this); 
+      return new OrbSysGpsC_32 (*this);
    }
 
-   bool OrbSysGpsC_32::isSameData(const OrbData* right) const      
+   bool OrbSysGpsC_32::isSameData(const OrbData* right) const
    {
          // First, test whether the test object is actually a OrbSysGpsC_32 object.
       const OrbSysGpsC_32* p = dynamic_cast<const OrbSysGpsC_32*>(right);
-      if (p==0) return false; 
+      if (p==0) return false;
 
-         // Establish if it refers to the same SV and UID. 
+         // Establish if it refers to the same SV and UID.
       if (!OrbSysGpsC::isSameData(right)) return false;
-       
+
          // Finally, examine the contents
       if (ctEpoch != p->ctEpoch) return false;
 
@@ -93,9 +93,9 @@ namespace gnsstk
       if (delta_UT1     !=p->delta_UT1)     return false;
       if (delta_UT1_dot !=p->delta_UT1_dot) return false;
 
-      return true;      
+      return true;
    }
-   
+
    void OrbSysGpsC_32::loadData(const PackedNavBits& msg)
    {
       setUID(msg);
@@ -105,8 +105,8 @@ namespace gnsstk
          std::string msgString("Expected GPS CNAV MT 32.  Found unique ID ");
          msgString += StringUtils::asString(UID);
          InvalidParameter exc(msgString);
-         GNSSTK_THROW(exc);    
-      } 
+         GNSSTK_THROW(exc);
+      }
       obsID        = msg.getobsID();
       satID        = msg.getsatSys();
       beginValid   = msg.getTransmitTime();
@@ -119,13 +119,13 @@ namespace gnsstk
       delta_UT1      = msg.asSignedDouble(215, 31, -24);
       delta_UT1_dot  = msg.asSignedDouble(246, 19, -25);
       delta_UT1_dot_per_sec = delta_UT1_dot / SEC_PER_DAY;
-   
+
          // Deriving the epoch time is challenging due to the
-         // lack of a week number in this message. For the moment, 
+         // lack of a week number in this message. For the moment,
          // assume tEOP is within a half-week of the transmit time.
-      unsigned short WNxmit = static_cast<GPSWeekSecond>(beginValid).week; 
-      double SOWxmit = static_cast<GPSWeekSecond>(beginValid).sow; 
-      long lSOWxmit = (unsigned long) SOWxmit; 
+      unsigned short WNxmit = static_cast<GPSWeekSecond>(beginValid).week;
+      double SOWxmit = static_cast<GPSWeekSecond>(beginValid).sow;
+      long lSOWxmit = (unsigned long) SOWxmit;
       unsigned short WN = WNxmit;
       long diffSOW = tEOP - lSOWxmit;
       if (diffSOW>HALFWEEK) WN--;
@@ -133,7 +133,7 @@ namespace gnsstk
 
       ctEpoch = GPSWeekSecond(WN, tEOP, TimeSystem::GPS);
 
-      dataLoadedFlag = true;   
+      dataLoadedFlag = true;
    } // end of loadData()
 
 
@@ -141,31 +141,31 @@ namespace gnsstk
       // xmit Time < epoch time < (xmit Time + 1 week)
       //
       // This test is based on 20.3.3.3.5.4.a (last paragraph)
-      // and Karl Kovach's interpretation thereof following 
+      // and Karl Kovach's interpretation thereof following
       // the time anomaly of 1/25-26/2016.
       // 1.) t-sub-ot must be in the future from
       //     the provided time.
-      // 2.) t-sub-ot must be less than a week in the 
-      //     future from the provided time.  
-      // 
-      // Note that if initialXMit is false (default) the 
+      // 2.) t-sub-ot must be less than a week in the
+      //     future from the provided time.
+      //
+      // Note that if initialXMit is false (default) the
       // following interpretation applies:  It is assumed
       // that the transmit interval for the data is approximately
       // 24 hours.  Therefore, t-sub-ot is still in the future
-      // at the end of the transmission interval, but may 
-      // only be in the future by ~(70-24) hours = 46 hours. 
+      // at the end of the transmission interval, but may
+      // only be in the future by ~(70-24) hours = 46 hours.
    bool OrbSysGpsC_32::isEopValid(const CommonTime& ct,
                                   const bool initialXMit) const
    {
-         // Test that the t-sub-EOP is in the future.  If 
+         // Test that the t-sub-EOP is in the future.  If
          // initialXMit check that it is at least two days.
          // If not initial Xmit check that is is at least
-         // one day. 
+         // one day.
       double testDiff = 3600 * 48;
       if (!initialXMit) testDiff = 3600*24;
       double diff = ctEpoch - ct;
 
-      //cout << " testDiff: " << testDiff << ", diff: " << diff << endl; 
+      //cout << " testDiff: " << testDiff << ", diff: " << diff << endl;
 
       if (diff<testDiff) return false;
 
@@ -176,7 +176,7 @@ namespace gnsstk
       return true;
    } // end of isEopValid()
 
-   CommonTime OrbSysGpsC_32::getUT1(const CommonTime& ct, 
+   CommonTime OrbSysGpsC_32::getUT1(const CommonTime& ct,
                                 const CommonTime& tutc) const
    {
       if (tutc.getTimeSystem()!=TimeSystem::UTC)
@@ -188,7 +188,7 @@ namespace gnsstk
          GNSSTK_THROW(ir);
       }
 
-      double elapt = ct - ctEpoch; 
+      double elapt = ct - ctEpoch;
       double UT1Adjust = delta_UT1 + delta_UT1_dot_per_sec * elapt;
 
       CommonTime retVal = tutc;
@@ -209,22 +209,22 @@ namespace gnsstk
          ss << " is not a valid evaluation time for an MT33 with a t-sub-ot of ";
          ss << printTime(mt33->ctEpoch,tform);
          InvalidRequest ir(ss.str());
-         GNSSTK_THROW(ir); 
+         GNSSTK_THROW(ir);
       }
 
-      // The simple approach would be 
+      // The simple approach would be
       //   double utcOffset = mt33.getUtcOffset(ct);
       //
       // However, in the event of a leap second adjust, the UTC would have a
       // discontinuity and therefore the UT1 would have a discontinuity.   Therefore,
-      // we have to compute the UTC offset from the MT 33 contents and use 
+      // we have to compute the UTC offset from the MT 33 contents and use
       // delta t-sub-LS regardless of the leap second situation.
                // delta t-sub-UTC is the same in all cases.
       double dtUTC = mt33->getUtcOffsetModLeapSec(ct);
-      double utcOffset = (double) mt33->dtLS + dtUTC; 
+      double utcOffset = (double) mt33->dtLS + dtUTC;
 
       CommonTime tutc = ct - utcOffset;
-      tutc.setTimeSystem(TimeSystem::UTC); 
+      tutc.setTimeSystem(TimeSystem::UTC);
 
       return getUT1(ct, tutc);
    }
@@ -232,16 +232,16 @@ namespace gnsstk
 
    double OrbSysGpsC_32::getxp(const CommonTime& ct) const
    {
-      double elapt = ct - ctEpoch; 
+      double elapt = ct - ctEpoch;
       double retVal = PM_X + PM_X_dot/SEC_PER_DAY * elapt;
-      return retVal; 
+      return retVal;
    }
 
    double OrbSysGpsC_32::getyp(const CommonTime& ct) const
    {
-      double elapt = ct - ctEpoch; 
+      double elapt = ct - ctEpoch;
       double retVal = PM_Y + PM_Y_dot/SEC_PER_DAY * elapt;
-      return retVal; 
+      return retVal;
    }
 
    void OrbSysGpsC_32::dumpTerse(std::ostream& s) const
@@ -252,14 +252,14 @@ namespace gnsstk
          GNSSTK_THROW(exc);
       }
 
-      string tform = "%02m/%02d/%04Y %03j %02H:%02M:%02S"; 
-      string ssys = convertSatelliteSystemToString(satID.system); 
+      string tform = "%02m/%02d/%04Y %03j %02H:%02M:%02S";
+      string ssys = convertSatelliteSystemToString(satID.system);
       s << setw(7) << ssys;
       s << " " << setw(2) << satID.id;
 
       s << "  32";      // UID
       s << " " << printTime(beginValid,tform) << "  ";
-      s << "tEOP: " << printTime(ctEpoch,tform) << " "; 
+      s << "tEOP: " << printTime(ctEpoch,tform) << " ";
 
       s.setf(ios::scientific, ios::floatfield);
       s.setf(ios::right, ios::adjustfield);
@@ -287,7 +287,7 @@ namespace gnsstk
         << "Parameter              Value" << endl;
 
       string tform="  %02m/%02d/%04Y %02H:%02M:%02S";
-      s << "t-sub-EOP     " << printTime(ctEpoch,tform) << endl; 
+      s << "t-sub-EOP     " << printTime(ctEpoch,tform) << endl;
       s.setf(ios::fixed, ios::floatfield);
       s.precision(0);
       s << "t-sub_EOP(sow)" << setw(10) << tEOP << " sec" << endl;
@@ -304,7 +304,7 @@ namespace gnsstk
       s << "delta_UT1     " << setw(16) << delta_UT1 << " sec" << endl;
       s << "delta_UT1_dot " << setw(16) << delta_UT1_dot << " sec/day" << endl;
 
-      
-   } // end of dumpBody()   
+
+   } // end of dumpBody()
 
 } // end namespace gnsstk

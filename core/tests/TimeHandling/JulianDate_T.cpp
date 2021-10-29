@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -116,7 +116,7 @@ class JulianDate_T
 		//Does a proper setFromInfo work with all information provided?
 		//---------------------------------------------------------------------
 		testFramework.assert(setFromInfo1.setFromInfo(Id), "setFromInfo experienced an error and returned false", __LINE__);
-		testFramework.assert(Compare == setFromInfo1,      "setFromInfo did not set all of the values properly",  __LINE__); 
+		testFramework.assert(Compare == setFromInfo1,      "setFromInfo did not set all of the values properly",  __LINE__);
 
 
 		Id.erase('J');
@@ -124,7 +124,7 @@ class JulianDate_T
 		//Does a proper setFromInfo work with missing information?
 		//---------------------------------------------------------------------
 		testFramework.assert(setFromInfo2.setFromInfo(Id), "setFromInfo experienced an error and returned false", __LINE__);
-		testFramework.assert(Compare2 == setFromInfo2,     "setFromInfo did not set all of the values properly",  __LINE__); 	
+		testFramework.assert(Compare2 == setFromInfo2,     "setFromInfo did not set all of the values properly",  __LINE__);
 
 		return testFramework.countFails();
 	}
@@ -289,14 +289,14 @@ class JulianDate_T
 		testFramework.assert(GPS1 != UNKNOWN, "Equivalent objects with differing TimeSystems are found to be equal",                                  __LINE__);
 		testFramework.assert(!(GPS1 != ANY),  "Equivalent objects with differing TimeSystems where one is TimeSystem::Any are found to be not-equal", __LINE__);
 
-		testFramework.changeSourceMethod("OperatorLessThanWithDifferingTimeSystem");	
+		testFramework.changeSourceMethod("OperatorLessThanWithDifferingTimeSystem");
 		//---------------------------------------------------------------------
-		//Verify TimeSystem=ANY does not matter in other operator comparisons 
+		//Verify TimeSystem=ANY does not matter in other operator comparisons
 		//---------------------------------------------------------------------
 		testFramework.assert(ANY2 < GPS1, "Less than object with Any TimeSystem is not found to be less than", __LINE__);
 		testFramework.assert(GPS2 < ANY,"Less than object with GPS TimeSystem is not found to be less-than a greater object with Any TimeSystem", __LINE__);
 
-		testFramework.changeSourceMethod("setTimeSystem");	
+		testFramework.changeSourceMethod("setTimeSystem");
   		UNKNOWN.setTimeSystem(TimeSystem(2)); //Set the Unknown TimeSystem
 		//---------------------------------------------------------------------
 		//Ensure resetting a Time System changes it
@@ -325,7 +325,7 @@ class JulianDate_T
 		testFramework.assert(UTC1.printf("%08J %02P") == (std::string)"1350000.000000 UTC", "printf did not output in the proper format", __LINE__);
 
 
-		testFramework.changeSourceMethod("printError");	
+		testFramework.changeSourceMethod("printError");
 		//---------------------------------------------------------------------
 		//Verify printed error message matches expectation
 		//---------------------------------------------------------------------
@@ -365,7 +365,7 @@ int main() //Main function to initialize and run all tests above
 
 	check = testClass.printfTest();
 	errorCounter += check;
-	
+
 	std::cout << "Total Failures for " << __FILE__ << ": " << errorCounter << std::endl;
 
 	return errorCounter; //Return the total number of errors

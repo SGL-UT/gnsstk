@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,7 +40,7 @@
  * @file CNavUTC.cpp
  * CNAV UTC data encapsulated in engineering terms
  */
- 
+
 #include <iomanip>
 #include <cmath>
 
@@ -54,7 +54,7 @@ namespace gnsstk
 
    CNavUTC::CNavUTC()
       :CNavDataElement(),
-       A0(0.0), 
+       A0(0.0),
        A1(0.0),
        A2(0.0),
        deltaTls(0),
@@ -73,10 +73,10 @@ namespace gnsstk
 
    CNavUTC* CNavUTC::clone() const
    {
-      return new CNavUTC (*this); 
+      return new CNavUTC (*this);
    }
 
-   bool CNavUTC::isSameData(const CNavDataElement* right) const      
+   bool CNavUTC::isSameData(const CNavDataElement* right) const
    {
       if (const CNavUTC* rp = dynamic_cast<const CNavUTC*>(right))
       {
@@ -89,14 +89,14 @@ namespace gnsstk
          if (WNlsf    !=rp->WNlsf)     return false;
          if (DN       !=rp->DN)        return false;
          if (deltaTlsf!=rp->deltaTlsf) return false;
-         return true;      
+         return true;
       }
       return false;
    }
-   
+
    void CNavUTC::loadData(const PackedNavBits& message33)
    {
-         // First, verify the correct message type is being passed in. 
+         // First, verify the correct message type is being passed in.
       long msgType = message33.asUnsignedLong(14,6,1);
       if(msgType!=33)
       {
@@ -104,12 +104,12 @@ namespace gnsstk
          sprintf(errStr,"Expected CNAV MsgType 33.  Found MsgType %ld",msgType);
          std::string tstr(errStr);
          InvalidParameter exc(tstr);
-         GNSSTK_THROW(exc);    
-      } 
+         GNSSTK_THROW(exc);
+      }
       obsID     = message33.getobsID();
       satID     = message33.getsatSys();
       ctXmit    = message33.getTransmitTime();
- 
+
       A0 = message33.asSignedDouble(127,16,-35);
       A1 = message33.asSignedDouble(143,13,-51);
       A2 = message33.asSignedDouble(156, 7,-68);
@@ -123,7 +123,7 @@ namespace gnsstk
 
       ctEpoch   = GPSWeekSecond(WNot, Tot, TimeSystem::GPS);
 
-      dataLoadedFlag = true;   
+      dataLoadedFlag = true;
    } // end of loadData()
 
    void CNavUTC::dumpBody(ostream& s) const
@@ -133,7 +133,7 @@ namespace gnsstk
          InvalidRequest exc("Required data not stored.");
          GNSSTK_THROW(exc);
       }
-    
+
       s << endl
         << "           UTC CORRECTION PARAMETERS"
         << endl
@@ -149,14 +149,14 @@ namespace gnsstk
       s << "A(1-n):         " << setw(16) << A1 << " sec/sec" << endl;
       s << "A(2-n):         " << setw(16) << A2 << " sec/sec**2" << endl;
 
-      s.setf(ios::fixed, ios::floatfield);    
+      s.setf(ios::fixed, ios::floatfield);
       s.precision(0);
       s << "dT(LS):         " << setw(16) << deltaTls  << " sec" << endl;
       s << "WN(LSF):        " << setw(16) << WNlsf     << " weeks" << endl;
       s << "DN:             " << setw(16) << DN        << " days" << endl;
       s << "dT(LSF):        " << setw(16) << deltaTlsf << " sec" << endl;
-      
-   } // end of dumpBody()   
+
+   } // end of dumpBody()
 
    ostream& operator<<(ostream& s, const CNavUTC& eph)
    {

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -77,12 +77,12 @@ namespace gnsstk
        * object. @see CommonTime
        *
        * In addition, the representation includes a tolerance value which is
-       * used in CommonTime comparisons. It defaults to the value of the static 
-       * gnsstk::Epoch::EPOCH_TOLERANCE, but this can be modified with the 
-       * static method setEpochTolerance().  Several different default 
-       * tolerances have been defined and are in the Epoch-Specific 
+       * used in CommonTime comparisons. It defaults to the value of the static
+       * gnsstk::Epoch::EPOCH_TOLERANCE, but this can be modified with the
+       * static method setEpochTolerance().  Several different default
+       * tolerances have been defined and are in the Epoch-Specific
        * Definitions section. The tolerance can also be changed on a per-object
-       * basis with the setTolerance() member function.  All comparisons are 
+       * basis with the setTolerance() member function.  All comparisons are
        * done using the tolerance as a range for the comparison.
        * So, for example, operator==() returns true if the times are within
        * 'tolerance' seconds. Once set for each object, the tolerance is
@@ -97,7 +97,7 @@ namespace gnsstk
        * The range of validity of the jday--calendar routines is approximately
        * 4317 B.C. to 4317 A.D.; these limits are incorporated into constants
        * Epoch::BEGINNING_OF_TIME and Epoch::END_OF_TIME.
-       * 
+       *
        * * All Epoch objects that lie outside these limits are disallowed. *
        *
        * This representation separates day and time-of-day cleanly.
@@ -109,12 +109,12 @@ namespace gnsstk
        * data, not to zero, but to the current (system) time.]
        *
        * When constructing Epoch objects from GPS time values -- such as
-       * GPS week and seconds of weeks, or GPS week and z count -- there 
+       * GPS week and seconds of weeks, or GPS week and z count -- there
        * may be ambiguity associated with the GPS week. Many receivers
        * and receiver processing software store the GPS week as it appears
        * in the NAV message, as a 10-bit number. This leads to a 1024 week
        * ambiguity when 10-bit GPS weeks are used to specify a Epoch.
-       * In general, Epoch uses the system time to disambiguate which 
+       * In general, Epoch uses the system time to disambiguate which
        * 1024 week period to use. This is a good assumption except when
        * processing binary data from before GPS week rollover, which
        * occured on August 22, 1999.
@@ -130,13 +130,13 @@ namespace gnsstk
           * and/or InvalidParameter?
           */
       NEW_EXCEPTION_CLASS(EpochException, gnsstk::Exception);
-      
+
          /**
           * @ingroup exceptionclass
           * Epoch formatting ("printing") error exception class.
           */
       NEW_EXCEPTION_CLASS(FormatException, gnsstk::Exception);
-      
+
          /**
           * @name Epoch-Specific Definitions
           * All of these tolerances are 1/2 of the tolerance they specify.
@@ -156,10 +156,10 @@ namespace gnsstk
       static const double ONE_MIN_TOLERANCE;
          /// One hour tolerance.
       static const double ONE_HOUR_TOLERANCE;
-      
+
          /// Default tolerance for time equality in days.
       static double EPOCH_TOLERANCE;
-      
+
          /// Earliest representable Epoch.
       static const Epoch BEGINNING_OF_TIME;
          /// Latest Representable Epoch.
@@ -168,7 +168,7 @@ namespace gnsstk
          /// This is how an Epoch is printed by default.
       static std::string PRINT_FORMAT;
          //@}
-      
+
          /// @name Tolerance Functions
          //@{
          /// Changes the EPOCH_TOLERANCE for all Epoch objects
@@ -180,7 +180,7 @@ namespace gnsstk
       static double getEpochTolerance()
          throw()
       { return EPOCH_TOLERANCE; }
-   
+
          /**
           * Sets the tolerance for output and comparisons on this object only.
           * See the constants in this file (e.g. ONE_NSEC_TOLERANCE)
@@ -191,7 +191,7 @@ namespace gnsstk
       Epoch& setTolerance(double tol)
          throw();
 
-         /** 
+         /**
           * Return the tolerance value currently in use by this object.
           * @return the current tolerance value (in seconds, of course)
           */
@@ -222,7 +222,7 @@ namespace gnsstk
       Epoch(const CommonTime& ct)
          throw();
 
-         /** 
+         /**
           * TimeTag + Year Constructor.
           * Set the current time using the given year as a hint.
           * For example, when one only knows the 10-bit GPS week, one could
@@ -240,7 +240,7 @@ namespace gnsstk
           */
       Epoch(const GPSZcount& gzc)
          throw();
-      
+
          // Other Constructors:
          // gps 29-bit zcount w/ epoch determined by current system time
          //     (GPSZcount29 + SystemTime)
@@ -261,7 +261,7 @@ namespace gnsstk
       Epoch& operator=(const Epoch& right)
          throw();
          //@}
-      
+
          /// @name Arithmetic
          //@{
          /**
@@ -432,18 +432,18 @@ namespace gnsstk
          /// @throw EpochException
       inline double GPSsow() const;
 
-         /// Get full (>10 bits) week 
+         /// Get full (>10 bits) week
          /// @throw EpochException
       inline short GPSweek() const;
 
          /// Get BDS second of week.
          /// @throw EpochException
       inline double BDSsow() const;
-   
-         /// Get full BDS week 
+
+         /// Get full BDS week
          /// @throw EpochException
       inline short BDSweek() const;
-   
+
          /// Get mod (short) BDS week
          /// @throw EpochException
       inline short BDSModWeek() const;
@@ -451,11 +451,11 @@ namespace gnsstk
          /// Get QZS second of week.
          /// @throw EpochException
       inline double QZSsow() const;
-   
-         /// Get full QZS week 
+
+         /// Get full QZS week
          /// @throw EpochException
       inline short QZSweek() const;
-   
+
          /// Get mod (short) QZS week
          /// @throw EpochException
       inline short QZSModWeek() const;
@@ -463,11 +463,11 @@ namespace gnsstk
          /// Get GAL second of week.
          /// @throw EpochException
       inline double GALsow() const;
-   
-         /// Get full GAL week 
+
+         /// Get full GAL week
          /// @throw EpochException
       inline short GALweek() const;
-   
+
          /// Get mod (short) GAL week
          /// @throw EpochException
       inline short GALModWeek() const;
@@ -499,7 +499,7 @@ namespace gnsstk
           * @throw EpochException
           */
       Epoch& set(const TimeTag& tt = SystemTime());
-      
+
          /** Set the object using a TimeTag and a year as a hint.
           * @param tt the TimeTag to which to set this object.
           * @param year the "hint" year
@@ -508,7 +508,7 @@ namespace gnsstk
           */
       Epoch& set(const WeekSecond& tt,
                  short year);
-      
+
          /**
           * Set the object using the give CommonTime.
           * @param c the CommonTime object to set to
@@ -551,7 +551,7 @@ namespace gnsstk
          // other sets:
          // ymdhms
          // week and sow (if week is 10-bit, set epoch from system time)
-         // week and zcount (if week is 10-bit, set epoch from system time) 
+         // week and zcount (if week is 10-bit, set epoch from system time)
          // week, zcount, year (if week is 10-bit, set epoch from given year)
          // week, sow, year  (if week is 10-bit, set epoch from given year)
          // gps 29-bit zcount (epoch determined by system time)
@@ -572,7 +572,7 @@ namespace gnsstk
          /// nice in doxygen.
          /**
           * Similar to scanf, this function takes a string and a
-          * format describing string in order to read in 
+          * format describing string in order to read in
           * values.  The parameters it can take are listed below and
           * described above with the printf() function.
           *
@@ -601,11 +601,11 @@ namespace gnsstk
           *  %j                                      %Y %y %s
           * @endcode
           *
-          * So 
+          * So
           * @code
           * time.setToString("Aug 1, 2000 20:20:20", "%b %d, %Y %H:%M:%S")
           * @endcode
-          * works but 
+          * works but
           * @code
           * time.setToString("Aug 2000", "%b %Y")
           * @endcode
@@ -626,7 +626,7 @@ namespace gnsstk
           * \c str or \c fmt strings.
           * @return a reference to this object.
           */
-      Epoch& scanf(const std::string& str, 
+      Epoch& scanf(const std::string& str,
                    const std::string& fmt);
 
          // if you can see this, ignore the \'s below, as they are for
@@ -635,7 +635,7 @@ namespace gnsstk
          /**
           * Format this time into a string.
           *
-          * @note 
+          * @note
           * Whenever a format is added or removed from the Epoch
           * class, it more than likely should also be added or removed
           * from the FileSpec class.  Additionally, the format
@@ -697,10 +697,10 @@ namespace gnsstk
          /// This is the core of the Epoch.
          /// @see CommonTime.hpp
       CommonTime core;
-      
+
          /// double tolerance used in comparisons (seconds)
-      double tolerance;    
-      
+      double tolerance;
+
          //@}
    };   // end class Epoch
 
@@ -727,69 +727,69 @@ namespace gnsstk
    }
 
       /// Get Julian Date JD
-      /// @warning For some compilers, this result may have diminished 
+      /// @warning For some compilers, this result may have diminished
       /// accuracy.
    long double Epoch::JD() const
    {
       return get<JulianDate>().jd;
    }
-   
+
       /// Get Modified Julian Date MJD
-      /// @warning For some compilers, this result may have diminished 
+      /// @warning For some compilers, this result may have diminished
       /// accuracy.
    long double Epoch::MJD() const
    {
       return get<gnsstk::MJD>().mjd;    // gnsstk to distinguish from Epoch::MJD
    }
-   
+
       /// Get year.
    short Epoch::year() const
    {
       return static_cast<short>(get<CivilTime>().year);
    }
-   
+
       /// Get month of year.
    short Epoch::month() const
    {
       return static_cast<short>(get<CivilTime>().month);
    }
-   
+
       /// Get day of month.
    short Epoch::day() const
    {
       return static_cast<short>(get<CivilTime>().day);
    }
-   
+
       /// Get day of week
    short Epoch::dow() const
    {
       return (((static_cast<long>(JD()) % 7) + 1) % 7) ;
    }
-   
+
       /// Get hour of day.
    short Epoch::hour() const
    {
       return static_cast<short>(get<CivilTime>().hour);
    }
-   
+
       /// Get minutes of hour.
    short Epoch::minute() const
    {
       return static_cast<short>(get<CivilTime>().minute);
    }
-   
+
       /// Get seconds of minute.
    double Epoch::second() const
    {
       return get<CivilTime>().second;
    }
-   
+
       /// Get seconds of day.
    double Epoch::sod() const
    {
       return get<YDSTime>().sod;
    }
-   
+
       /// Get 10-bit GPS week. Deprecated, used GPSModWeek()
    short Epoch::GPSweek10() const
    {
@@ -801,20 +801,20 @@ namespace gnsstk
    {
       return static_cast<short>(get<GPSWeekSecond>().getModWeek());
    }
-   
+
       /// Get normal (19 bit) zcount.
    long Epoch::GPSzcount() const
    {
       return get<GPSWeekZcount>().zcount;
    }
-   
+
       /// Same as GPSzcount() but without rounding to nearest zcount.
    long Epoch::GPSzcountFloor() const
    {
       Epoch e = *this + .75; // add half a zcount
       return e.get<GPSWeekZcount>().zcount;
    }
-   
+
       /// Get time as 32 bit Z count.
       /// The 13 MSBs are week modulo 1024, 19 LSBs are seconds of
       /// week in Zcounts.
@@ -822,92 +822,92 @@ namespace gnsstk
    {
       return get<GPSWeekZcount>().getZcount32();
    }
-   
+
       /// Same as fullZcount() but without rounding to nearest zcount.
    unsigned long Epoch::GPSzcount32Floor() const
    {
       Epoch e = *this + .75; // add half a zcount
       return e.get<GPSWeekZcount>().getZcount32();
    }
-   
+
       /// Get GPS second of week.
    double Epoch::GPSsow() const
    {
       return get<GPSWeekSecond>().sow;
    }
-   
-      /// Get full (>10 bits) week 
+
+      /// Get full (>10 bits) week
    short Epoch::GPSweek() const
    {
       return static_cast<short>(get<GPSWeekSecond>().week);
    }
-   
+
       /// Get BDS second of week.
    double Epoch::BDSsow() const
    {
       return get<BDSWeekSecond>().sow;
    }
-   
-      /// Get full BDS week 
+
+      /// Get full BDS week
    short Epoch::BDSweek() const
    {
       return static_cast<short>(get<BDSWeekSecond>().week);
    }
-   
+
       /// Get mod (short) BDS week
    short Epoch::BDSModWeek() const
    {
       return static_cast<short>(get<BDSWeekSecond>().getModWeek());
    }
-   
+
       /// Get QZS second of week.
    double Epoch::QZSsow() const
    {
       return get<QZSWeekSecond>().sow;
    }
-   
-      /// Get full QZS week 
+
+      /// Get full QZS week
    short Epoch::QZSweek() const
    {
       return static_cast<short>(get<QZSWeekSecond>().week);
    }
-   
+
       /// Get mod (short) QZS week
    short Epoch::QZSModWeek() const
    {
       return static_cast<short>(get<QZSWeekSecond>().getModWeek());
    }
-   
+
       /// Get GAL second of week.
    double Epoch::GALsow() const
    {
       return get<GALWeekSecond>().sow;
    }
-   
-      /// Get full GAL week 
+
+      /// Get full GAL week
    short Epoch::GALweek() const
    {
       return static_cast<short>(get<GALWeekSecond>().week);
    }
-   
+
       /// Get mod (short) GAL week
    short Epoch::GALModWeek() const
    {
       return static_cast<short>(get<GALWeekSecond>().getModWeek());
    }
-   
+
       /// Get day of year.
    short Epoch::doy() const
    {
       return static_cast<short>(get<YDSTime>().doy);
    }
-   
+
       /// Get object time in UNIX timeval structure.
    struct timeval Epoch::unixTime() const
    {
       return get<UnixTime>().tv;
    }
-   
+
 }  // namespace gnsstk
 
 #endif   // GNSSTK_EPOCH_HPP

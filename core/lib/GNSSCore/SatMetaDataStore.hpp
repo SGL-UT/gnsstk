@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -267,7 +267,7 @@ namespace gnsstk
           *  its orbit slotID and FDMA channel.  To be a unique
           *  identification, both are necessary.
           *  This is only applicable to GLONASS FDMA SVs
-          * @param[in] slotID The GLONASS orbit slot ID 
+          * @param[in] slotID The GLONASS orbit slot ID
           *   identifying the desired satellite.
           * @param[in] channel The FDMA channel
           *   identifying the desired satellite.

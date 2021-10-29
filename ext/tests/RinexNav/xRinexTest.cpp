@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004, The Board of Regents of The University of Texas System
@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
    CommonTime dt = g.convertToCommonTime();
 
    short weeknum   = 1638;     // By rules of Kepler Orbit, this must be week of Toe
-  
+
    // Test data from 06/02/2011
 
    long subframe1[10] = { 0x22C2663D, 0x1F0E29B8, 0x2664002B, 0x09FCC1B6, 0x0F60EB8A,
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
                           0x008081F8, 0x1330CC2C, 0x0461E855, 0x034F8045, 0x17BB1E68 };
    long subframe3[10] = { 0x22C2663D, 0x1F0E6BA0, 0x3FE129CD, 0x26E31837, 0x0006C96A,
                           0x35A74DFC, 0x065C8B0F, 0x1E4F400A, 0x3FE8966D, 0x05860C44 };
-   
+
 
    //The dump from ee.dump() and ee_copy.dump() should be the same
    //    an EngEphemeris object is created, then used to create a Rinex3NavData

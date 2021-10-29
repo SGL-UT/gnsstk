@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -89,7 +89,7 @@ namespace gnsstk
          MinValue,
          Uninitialized = MinValue, ///< Health status has not been set.
          Unavailable, ///< Orbit information was not available, PVT invalid.
-         Unused,      ///< Sat health is not used in computing this PVT. 
+         Unused,      ///< Sat health is not used in computing this PVT.
          Unknown,     ///< Health state is unknown.
          Unhealthy,   ///< Sat is marked unhealthy, do not use PVT.
          Degraded,    ///< Sat is in a degraded state, recommend do not use.
@@ -129,7 +129,7 @@ namespace gnsstk
       { return relcorr; }
 
          /** Compute and return the relativity correction (-2R dot
-          * V/c^2) in seconds.  
+          * V/c^2) in seconds.
           * @note -2*dot(R,V)/(c*c) =
           *   -4.4428e-10(s/sqrt(m)) * ecc * sqrt(A(m)) * sinE
           */
@@ -142,7 +142,7 @@ namespace gnsstk
           * @param[in] correction offset in meters (include any factors other
           *   than the SV clock correction and the relativity correction).
           * @return Range in meters */
-      double preciseRho(const Triple& rxPos, 
+      double preciseRho(const Triple& rxPos,
                         const EllipsoidModel& ellipsoid,
                         double correction = 0) const throw();
 

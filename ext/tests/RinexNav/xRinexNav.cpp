@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004, The Board of Regents of The University of Texas System
@@ -56,9 +56,9 @@ class xRinexNav
   {
 
     TestUtil testFramework( "Rinex3EphemerisStore", "addToList", __FILE__, __LINE__ );
-                        
+
     const short PRN6 = 6 ;
-    gnsstk::SatID sid6( PRN6, gnsstk::SatelliteSystem::GPS ); 
+    gnsstk::SatID sid6( PRN6, gnsstk::SatelliteSystem::GPS );
 
     try
     {
@@ -79,7 +79,7 @@ class xRinexNav
         const gnsstk::EngEphemeris& Eph6 = GStore.findUserEphemeris( sid6, Time );
         gnsstk::RinexNavData Data( Eph6 );
         list<double> NavDataList = Data.toList();
-        
+
         testFramework.assert( true, 'Load data into Rinex3EphemerisStore, convert to EngEphemeris, store in GPSEphemerisStore, extract with findUserEphemeris', __LINE__ );
     }
     catch( gnsstk::Exception& e )

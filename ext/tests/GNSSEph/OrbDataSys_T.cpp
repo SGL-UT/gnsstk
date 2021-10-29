@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -81,16 +81,16 @@ public:
    CommonTime initialCT;
    CommonTime finalCT;
 
-   ofstream out; 
+   ofstream out;
 
       // For testing the test
-   int debugLevel;   
+   int debugLevel;
 };
 
 OrbDataSys_T::
 OrbDataSys_T()
 {
-   debugLevel = 0; 
+   debugLevel = 0;
    init();
 }
 
@@ -101,7 +101,7 @@ createAndDump()
    TUDEF("OrbDataSys",currMethod);
 
       // Open an output stream specific to this navigation message type
-   std::string fs = getFileSep(); 
+   std::string fs = getFileSep();
    std::string tf(getPathTestTemp()+fs);
    std::string tempFile = tf + "test_output_OrbDataSys_T_" +
                          typeDesc+".out";
@@ -114,9 +114,9 @@ createAndDump()
       TURETURN();
    }
 
-      // All the navigation message data will be placed here. 
+      // All the navigation message data will be placed here.
    OrbSysStore oss;
-   oss.setDebugLevel(debugLevel); 
+   oss.setDebugLevel(debugLevel);
 
    list<PackedNavBits>::const_iterator cit;
    for (cit=dataList.begin();cit!=dataList.end();cit++)
@@ -137,13 +137,13 @@ createAndDump()
       catch(gnsstk::InvalidRequest ir)
       {
          // do nothing
-         // The failure will be reflected in the 
+         // The failure will be reflected in the
          // fact that the output will be missing expected data
       }
    }
 
-      // Verify number of entries in the store. 
-   out << "# of OrbSysStore entries: " << oss.size() << endl; 
+      // Verify number of entries in the store.
+   out << "# of OrbSysStore entries: " << oss.size() << endl;
 
       // Dump the store
    oss.dump(out);
@@ -161,14 +161,14 @@ createAndDump()
    oss.clear();
    out.close();
 
-   return 0; 
+   return 0;
 }
 
 void OrbDataSys_T::
 init()
 {
    dataList.clear();
-} 
+}
 
 void OrbDataSys_T::
 setUpLNAV()
@@ -180,7 +180,7 @@ setUpLNAV()
    initialCT = CivilTime(2015,12,31,00,00,18,TimeSystem::GPS);
    finalCT   = CivilTime(2015,12,31,18,43,48,TimeSystem::GPS);
 
-      // Literals for LNAV test data 
+      // Literals for LNAV test data
    const unsigned short LNavExCount = 18;
    const std::string LNavEx[] =
    {
@@ -228,14 +228,14 @@ setUpCNAV()
    init();
 
       // Define state variables for writing an CNAV data
-   gnsstk::ObsID currObsID(gnsstk::ObservationType::NavMsg, 
-                    gnsstk::CarrierBand::L2, 
+   gnsstk::ObsID currObsID(gnsstk::ObservationType::NavMsg,
+                    gnsstk::CarrierBand::L2,
                     gnsstk::TrackingCode::L2CML);
    typeDesc = "GPS_CNAV";
    initialCT = CivilTime(2017,1,1,00,00,24,TimeSystem::GPS);
    finalCT   = CivilTime(2017,1,1,00,54,12,TimeSystem::GPS);
 
-      // Literals for CNAV test data 
+      // Literals for CNAV test data
       // Test data set corresponds to Jan 1, 2017 in order to test Dec 31, 2016-Jan 1, 2017 Leap Second Event
    const unsigned short CNavExCount = 25;
    const std::string CNavEx[] =
@@ -292,7 +292,7 @@ setUpCNAV()
    gnsstk::PackedNavBits
    OrbDataSys_T::
    getPnbLNav(const gnsstk::ObsID& oidr, const std::string& str)
-   {      
+   {
       try
       {
             // Split the line into words separated by commas.
@@ -304,7 +304,7 @@ setUpCNAV()
               << ", [0]: '" << words[0]
               << "', [numWords-1]: '" << words[numWords-1] << "'." << endl;
          */
-         if (numWords!=18) 
+         if (numWords!=18)
          {
             stringstream ss;
             ss << "Line format problem. ";
@@ -317,15 +317,15 @@ setUpCNAV()
          int week = gnsstk::StringUtils::asInt(words[3]);
          double sow = gnsstk::StringUtils::asDouble(words[4]);
          CommonTime ct = GPSWeekSecond(week,sow,TimeSystem::GPS);
-         
+
             // Convert the PRN to a SatID
          int prn = StringUtils::asInt(words[5]);
          SatID sid(prn,SatelliteSystem::GPS);
 
             // Get the message ID
-         int msgID = StringUtils::asInt(words[7]); 
+         int msgID = StringUtils::asInt(words[7]);
 
-         PackedNavBits pnb(sid,oidr,ct); 
+         PackedNavBits pnb(sid,oidr,ct);
 
             // Load the raw data
          int offset = 8;
@@ -333,13 +333,13 @@ setUpCNAV()
          {
             int ndx = i + offset;
             string hexStr = StringUtils::strip(words[ndx]);
-            string::size_type n = hexStr.find("x"); 
+            string::size_type n = hexStr.find("x");
             hexStr = hexStr.substr(n+1);
             unsigned long bits = StringUtils::x2uint(hexStr);
             pnb.addUnsignedLong(bits,30,1);
          }
          pnb.trimsize();
-         return pnb; 
+         return pnb;
       }
       catch (StringUtils::StringException)
       {
@@ -347,12 +347,12 @@ setUpCNAV()
          ss << "String conversion error:'" << str << "'.";
          InvalidParameter ip(ss.str());
          GNSSTK_THROW(ip);
-      }  
+      }
    }
 
-   
+
    //-------------------------------------------------
-   gnsstk::PackedNavBits 
+   gnsstk::PackedNavBits
    OrbDataSys_T::
    getPnbCNav(const gnsstk::ObsID& oidr, const std::string& str)
    {
@@ -362,7 +362,7 @@ setUpCNAV()
             // There should be 18 words
          vector<string> words = StringUtils::split(str,',');
          unsigned short numWords = words.size();
-         if (numWords!=18) 
+         if (numWords!=18)
          {
             stringstream ss;
             ss << "Line format problem. ";
@@ -375,15 +375,15 @@ setUpCNAV()
          int week = gnsstk::StringUtils::asInt(words[3]);
          double sow = gnsstk::StringUtils::asDouble(words[4]);
          CommonTime ct = GPSWeekSecond(week,sow,TimeSystem::GPS);
-         
+
             // Convert the PRN to a SatID
          int prn = StringUtils::asInt(words[5]);
          SatID sid(prn,SatelliteSystem::GPS);
 
             // Get the message ID
-         int msgID = StringUtils::asInt(words[7]); 
+         int msgID = StringUtils::asInt(words[7]);
 
-         PackedNavBits pnb(sid,oidr,ct); 
+         PackedNavBits pnb(sid,oidr,ct);
 
             // Load the raw data
             // Words 0-8 have 32 bits.
@@ -395,7 +395,7 @@ setUpCNAV()
          {
             int ndx = i + offset;
             string hexStr = StringUtils::strip(words[ndx]);
-            string::size_type n = hexStr.find("x"); 
+            string::size_type n = hexStr.find("x");
             hexStr = hexStr.substr(n+1);
             unsigned long bits = StringUtils::x2uint(hexStr);
             if (offset<9) pnb.addUnsignedLong(bits,32,1);
@@ -414,7 +414,7 @@ setUpCNAV()
          ss << "String conversion error:'" << str << "'.";
          InvalidParameter ip(ss.str());
          GNSSTK_THROW(ip);
-      }  
+      }
    }
 
 int main(int argc, char *argv[])
@@ -425,7 +425,7 @@ int main(int argc, char *argv[])
      return 1;
   }
   unsigned errorTotal = 0;
-  
+
   OrbDataSys_T testClass;
 
   string argValue(argv[1]);
