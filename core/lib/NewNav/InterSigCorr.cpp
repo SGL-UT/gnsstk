@@ -89,31 +89,21 @@ namespace gnsstk
 
       s << "           TIMES OF INTEREST" << endl << endl
         << "              " << getDumpTimeHdr(dl) << endl
-        << "Transmit:     " << getDumpTime(dl, timeStamp) << endl;
+        << "Transmit:     " << getDumpTime(dl, timeStamp) << endl << endl;
+      dumpCorrections(s);
+      s.flags(oldFlags);
+   }
 
-      s << endl
-        << "           SIGNALS"
-        << endl << endl
-        << "               BAND          CODE" << endl;
-      for (const auto& oid : refOids)
-      {
-         s << "Reference: " << setw(8) << ObsID::cbDesc[oid.band]
-           << "  " << setw(12) << ObsID::tcDesc[oid.code] << endl;
-      }
-      for (const auto& oid : validOids)
-      {
-         s << "Valid:     " << setw(8) << ObsID::cbDesc[oid.band]
-           << "  " << setw(12) << ObsID::tcDesc[oid.code] << endl;
-      }
-      s << endl
-        << "           CORRECTION"
-        << endl << endl
-        << setw(20) << left << (iscLabel+":");
-      s.setf(ios::scientific, ios::floatfield);
-      s.precision(8);
-      s.fill(' ');
-      s << isc << endl;
 
+   void InterSigCorr ::
+   dumpCorrections(std::ostream& s) const
+   {
+      const ios::fmtflags oldFlags = s.flags();
+      s << "           CORRECTION"
+        << endl << endl
+        << scientific << setprecision(8) << setfill(' ')
+        << setw(20) << left << (iscLabel+":")
+        << setw(15) << right << isc << endl;
       s.flags(oldFlags);
    }
 

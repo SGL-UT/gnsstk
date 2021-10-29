@@ -342,14 +342,13 @@ namespace gnsstk
          // fine.
       BDSWeekSecond ws1(0,sow);
       s << "           SV STATUS" << endl << endl
-        << "Health bit (SatH1)  :      0x" << hex << (unsigned)satH1 << dec
+        << "Health bit (SatH1)  :    0x" << hex << (unsigned)satH1 << dec
         << endl
         << "AODC                : " << setw(6) << getAOD(aodc) << " hours ("
         << (unsigned)aodc << ")" << endl
         << "AODE                : " << setw(6) << getAOD(aode) << " hours ("
         << (unsigned)aode << ")" << endl
-        << "URA index           : " << setw(9) << (unsigned)uraIndex << endl
-            //                     1234567890123
+        << "URA index           : " << setw(6) << (unsigned)uraIndex << endl
         << "URA (nominal)       : " << setw(6) << fixed
         << SV_ACCURACY_GPS_NOMINAL_INDEX[uraIndex] << " m" << endl
         << endl

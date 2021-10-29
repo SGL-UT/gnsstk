@@ -142,14 +142,12 @@ namespace gnsstk
         << "NED accuracy indices  0, 1, 2  :  " << setfill(' ')
         << dec << setw(4) << (int) uraNED0 << ", "
         << dec << setw(4) << (unsigned) uraNED1 << ", "
-        << dec << setw(4) << (unsigned) uraNED2 << ", packed  0x"
-        << hex << setw(3) << /*URAnedPacked <<*/ dec << endl
+        << dec << setw(4) << (unsigned) uraNED2 << endl
         << "Integrity Status Flag          : "
         << (integStat ? "1 (Enhanced)" : "0 (Legacy)")
         << endl << endl << endl
-        << "              Week(10bt)     SOW     DOW   UTD     SOD"
-        << "   MM/DD/YYYY   HH:MM:SS" << endl
-        << "Predict    :  " << printTime(top, dumpTimeFmt) << endl
+        << "              " << getDumpTimeHdr(DumpDetail::Full) << endl
+        << "Predict    :  " << getDumpTime(DumpDetail::Full, top) << endl
         << endl
         << "           SV STATUS"
         << endl
@@ -161,11 +159,10 @@ namespace gnsstk
         << phasingL2C << " (0=quadrature, 1=in-phase)"
         << endl << endl << endl
         << "           TRANSMIT TIMES" << endl << endl
-        << "              Week(10bt)     SOW     DOW   UTD     SOD"
-        << "   MM/DD/YYYY   HH:MM:SS" << endl
-        << "Message 10:   " << printTime(xmitTime, dumpTimeFmt) << endl
-        << "Message 11:   " << printTime(xmit11, dumpTimeFmt) << endl
-        << "Clock:        " << printTime(xmitClk, dumpTimeFmt) << endl;
+        << "              " << getDumpTimeHdr(DumpDetail::Full) << endl
+        << "Message 10:   " << getDumpTime(DumpDetail::Full, xmitTime) << endl
+        << "Message 11:   " << getDumpTime(DumpDetail::Full, xmit11) << endl
+        << "Clock:        " << getDumpTime(DumpDetail::Full, xmitClk) << endl;
       s.flags(oldFlags);
    }
 }

@@ -66,6 +66,11 @@ namespace gnsstk
           * @param[in] dl The level of detail the output should contain. */
       void dump(std::ostream& s, DumpDetail dl) const override;
 
+         /** Print the actual corrections provided by this object in a
+          * human-readable format.  Typically called by dump().
+          * @param[in,out] s The stream to write the data to. */
+      virtual void dumpCorrections(std::ostream& s) const;
+
          /** Get inter-signal corrections for the single-frequency user.
           * @param[in] oid The carrier band and tracking code of the
           *   signal to get the correction for.

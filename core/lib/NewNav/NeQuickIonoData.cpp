@@ -136,7 +136,7 @@ namespace gnsstk
          // "header"
       s << "****************************************************************"
         << "************" << endl
-        << " Ionospheric correction data"
+        << "Ionospheric correction data"
         << endl
         << endl
         << "PRN : " << setw(2) << signal.sat << " / "
@@ -172,7 +172,7 @@ namespace gnsstk
 
       s << endl
         << "           NEQUICK IONO PARAMETERS" << endl
-        << "Parameter              Value" << endl
+        << "Parameter               Value" << endl
         << "a_i0         " << setw(16) << ai[0] << " sfu" << endl
         << "a_i1         " << setw(16) << ai[1] << " sfu/degree" << endl
         << "a_i2         " << setw(16) << ai[2] << " sfu/degree**2" << endl

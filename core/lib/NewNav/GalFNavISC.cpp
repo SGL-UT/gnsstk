@@ -54,6 +54,18 @@ namespace gnsstk
    }
 
 
+   void GalFNavISC ::
+   dumpCorrections(std::ostream& s) const
+   {
+      const ios::fmtflags oldFlags = s.flags();
+      s << "           CORRECTION"
+        << endl << endl
+        << scientific << setprecision(8) << setfill(' ')
+        << setw(20) << left << "BDS(E1,E5a):" << setw(15) << isc << endl;
+      s.flags(oldFlags);
+   }
+
+
    bool GalFNavISC ::
    validate() const
    {

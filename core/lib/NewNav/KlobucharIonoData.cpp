@@ -64,7 +64,7 @@ namespace gnsstk
          // "header"
       s << "****************************************************************"
         << "************" << endl
-        << " Ionospheric correction data"
+        << "Ionospheric correction data"
         << endl
         << endl
         << "PRN : " << setw(2) << signal.sat << " / "

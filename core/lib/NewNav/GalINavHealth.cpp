@@ -59,18 +59,61 @@ namespace gnsstk
    void GalINavHealth ::
    dump(std::ostream& s, DumpDetail dl) const
    {
-      NavData::dump(s,dl);
-      if (dl == DumpDetail::OneLine)
+      const ios::fmtflags oldFlags = s.flags();
+      s.setf(ios::fixed, ios::floatfield);
+      s.setf(ios::right, ios::adjustfield);
+      s.setf(ios::uppercase);
+      s.precision(0);
+      s.fill(' ');
+      switch (dl)
       {
-         return;
+         case DumpDetail::OneLine:
+            NavData::dump(s,dl);
+            break;
+         case DumpDetail::Brief:
+            NavData::dump(s,dl);
+            s << "  sigHealthStatus = "
+              << static_cast<unsigned>(sigHealthStatus)
+              << "  " << gnsstk::StringUtils::asString(sigHealthStatus) << endl
+              << "  dataValidityStatus = "
+              << static_cast<unsigned>(dataValidityStatus)
+              << "  " << gnsstk::StringUtils::asString(dataValidityStatus)
+              << endl
+              << "  sigInSpaceAcc = " << (unsigned)sisaIndex << endl
+              << "  health = " << gnsstk::StringUtils::asString(getHealth())
+              << endl;
+            break;
+         case DumpDetail::Full:
+               // "header"
+            s << "*************************************************************"
+              << "***************" << endl
+              << "Satellite Health" << endl << endl
+              << "PRN : " << setw(2) << signal.sat << " / "
+              << "SVN : " << setw(2);
+            std::string svn;
+            if (getSVN(signal.sat, timeStamp, svn))
+            {
+               s << svn;
+            }
+            s << endl << endl
+              << "           TIMES OF INTEREST"
+              << endl << endl
+              << "              " << getDumpTimeHdr(dl) << endl
+              << "Transmit:     " << getDumpTime(dl, timeStamp) << endl
+              << endl
+              << "           HEALTH DATA" << endl
+              << "SHS Bits           0x" << hex << setw(1)
+              << (unsigned)sigHealthStatus << dec << " ("
+              << StringUtils::asString(sigHealthStatus) << ")" << endl
+              << "DVS Bits           0x" << hex << setw(1)
+              << (unsigned)dataValidityStatus << dec << " ("
+              << StringUtils::asString(dataValidityStatus) << ")" << endl
+              << "SISA Index         " << dec << (unsigned)sisaIndex << endl
+              << "Status             " << StringUtils::asString(getHealth())
+              << endl << endl;
+            break;
       }
-      s << "  sigHealthStatus = " << static_cast<unsigned>(sigHealthStatus)
-        << "  " << gnsstk::StringUtils::asString(sigHealthStatus) << endl
-        << "  dataValidityStatus = "
-        << static_cast<unsigned>(dataValidityStatus)
-        << "  " << gnsstk::StringUtils::asString(dataValidityStatus) << endl
-        << "  sigInSpaceAcc = " << (unsigned)sisaIndex << endl
-        << "  health = " << gnsstk::StringUtils::asString(getHealth()) << endl;
+      s.flags(oldFlags);
    }
 
 

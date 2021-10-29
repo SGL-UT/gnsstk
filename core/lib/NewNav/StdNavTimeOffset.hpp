@@ -133,6 +133,7 @@ namespace gnsstk
       unsigned wnLSF;   ///< Leap second reference week number (UTC only).
       unsigned dn;      ///< Leap second reference day number (UTC only).
       double deltatLSF; ///< Current or future leap second count (UTC only).
+      unsigned dnSun;   ///< dn value for Sunday.
    };
 
       //@}

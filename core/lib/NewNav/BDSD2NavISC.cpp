@@ -58,6 +58,19 @@ namespace gnsstk
    }
 
 
+   void BDSD2NavISC ::
+   dumpCorrections(std::ostream& s) const
+   {
+      const ios::fmtflags oldFlags = s.flags();
+      s << "           CORRECTION"
+        << endl << endl
+        << scientific << setprecision(8) << setfill(' ')
+        << setw(20) << left << "Tgd1:" << setw(15) << tgd1 << endl
+        << setw(20) << left << "Tgd2:" << setw(15) << tgd2 << endl;
+      s.flags(oldFlags);
+   }
+
+
    bool BDSD2NavISC ::
    validate() const
    {

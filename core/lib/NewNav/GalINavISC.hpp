@@ -54,6 +54,11 @@ namespace gnsstk
          /// Initialize data members.
       GalINavISC();
 
+         /** Print the actual corrections provided by this object in a
+          * human-readable format.  Typically called by dump().
+          * @param[in,out] s The stream to write the data to. */
+      void dumpCorrections(std::ostream& s) const override;
+
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
           * @todo implement some checks.

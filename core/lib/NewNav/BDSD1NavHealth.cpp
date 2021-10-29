@@ -143,11 +143,11 @@ namespace gnsstk
             }
             s << endl
               << "B1I signal         "
-              << (svHealth & B1ISignalWeak ? "Weak" : "Normal") << endl
+              << (svHealth & B1ISignalWeak ? "weak" : "normal") << endl
               << "B2I signal         "
-              << (svHealth & B2ISignalWeak ? "Weak" : "Normal") << endl
+              << (svHealth & B2ISignalWeak ? "weak" : "normal") << endl
               << "B3I signal         "
-              << (svHealth & B3ISignalWeak ? "Weak" : "Normal") << endl
+              << (svHealth & B3ISignalWeak ? "weak" : "normal") << endl
               << "Reserved (5)       "
               << (svHealth & 0x10 ? "set" : "unset") << endl
               << "Reserved (4)       "

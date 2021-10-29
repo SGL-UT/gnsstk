@@ -54,6 +54,19 @@ namespace gnsstk
    }
 
 
+   void GalINavISC ::
+   dumpCorrections(std::ostream& s) const
+   {
+      const ios::fmtflags oldFlags = s.flags();
+      s << "           CORRECTION"
+        << endl << endl
+        << scientific << setprecision(8) << setfill(' ')
+        << setw(20) << left << "BDS(E1,E5a):" << setw(15) << bgdE1E5a << endl
+        << setw(20) << left << "BDS(E1,E5b):" << setw(15) << bgdE1E5b << endl;
+      s.flags(oldFlags);
+   }
+
+
    bool GalINavISC ::
    validate() const
    {

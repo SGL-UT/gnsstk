@@ -46,7 +46,7 @@ namespace gnsstk
    StdNavTimeOffset ::
    StdNavTimeOffset()
          : a0(0.0), a1(0.0), a2(0.0), deltatLS(0.0), tot(0.0), wnot(0),
-           wnLSF(0), dn(0), deltatLSF(0.0),
+           wnLSF(0), dn(0), deltatLSF(0.0), dnSun(1),
            src(TimeSystem::Unknown), tgt(TimeSystem::Unknown)
    {
    }
@@ -122,7 +122,8 @@ namespace gnsstk
          s << svn;
       }
 
-      s << "           TIMES OF INTEREST" << endl << endl
+      s << endl << endl
+        << "           TIMES OF INTEREST" << endl << endl
         << "              " << getDumpTimeHdr(dl) << endl
         << "Transmit:     " << getDumpTime(dl, timeStamp)
         << endl << endl
@@ -148,7 +149,8 @@ namespace gnsstk
         << setw(3) << (wnLSF & 0x0ff) << ") Full week (modulo 256 week)" << endl
             /** @todo maybe need to make this a dynamic label for
              * systems that start at DN=0 */
-        << "DN             " << setw(16) << dn << " day (1-7)" << endl;
+        << "DN             " << setw(16) << dn << " day (" << dnSun << "-"
+        << (dnSun+6) << ")" << endl;
       s.flags(oldFlags);
    }
 

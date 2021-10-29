@@ -131,8 +131,7 @@ namespace gnsstk
         << "NED accuracy indices  0, 1, 2  :  " << setfill(' ')
         << dec << setw(4) << (int) uraNED0 << ", "
         << dec << setw(4) << (unsigned) uraNED1 << ", "
-        << dec << setw(4) << (unsigned) uraNED2 << ", packed  0x"
-        << hex << setw(3) << /*URAnedPacked <<*/ dec << endl
+        << dec << setw(4) << (unsigned) uraNED2 << endl
         << "Integrity Status Flag          : "
         << (integStat ? "1 (Enhanced)" : "0 (Legacy)")
         << endl << endl << endl

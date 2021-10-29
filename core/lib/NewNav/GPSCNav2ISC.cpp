@@ -58,6 +58,25 @@ namespace gnsstk
    }
 
 
+   void GPSCNav2ISC ::
+   dumpCorrections(std::ostream& s) const
+   {
+      using namespace std;
+      const ios::fmtflags oldFlags = s.flags();
+      s << "           CORRECTION"
+        << endl << endl
+        << scientific << setprecision(8) << setfill(' ')
+        << setw(20) << left << "Tgd:" << setw(15) << isc << endl
+        << setw(20) << left << "ISC_L1CP:" << setw(15) << iscL1CP << endl
+        << setw(20) << left << "ISC_L1CD:" << setw(15) << iscL1CD << endl
+        << setw(20) << left << "ISC_L1CA:" << setw(15) << iscL1CA << endl
+        << setw(20) << left << "ISC_L2C:" << setw(15) << iscL2C << endl
+        << setw(20) << left << "ISC_L5I5:" << setw(15) << iscL5I5 << endl
+        << setw(20) << left << "ISC_L5Q5:" << setw(15) << iscL5Q5 << endl;
+      s.flags(oldFlags);
+   }
+
+
    CommonTime GPSCNav2ISC ::
    getUserTime() const
    {
