@@ -61,8 +61,8 @@ namespace gnsstk
       s << "           CORRECTION"
         << endl << endl
         << scientific << setprecision(8) << setfill(' ')
-        << setw(20) << left << "BDS(E1,E5a):" << setw(15) << bgdE1E5a << endl
-        << setw(20) << left << "BDS(E1,E5b):" << setw(15) << bgdE1E5b << endl;
+        << setw(20) << left << "BGD(E1,E5a):" << setw(15) << bgdE1E5a << endl
+        << setw(20) << left << "BGD(E1,E5b):" << setw(15) << bgdE1E5b << endl;
       s.flags(oldFlags);
    }
 
