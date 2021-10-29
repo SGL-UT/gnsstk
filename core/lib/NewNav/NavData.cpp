@@ -104,6 +104,7 @@ namespace gnsstk
       std::string fmt;
       switch (dl)
       {
+         case DumpDetail::OneLine:
          case DumpDetail::Brief:
             fmt = dumpTimeFmtBrief;
             break;
