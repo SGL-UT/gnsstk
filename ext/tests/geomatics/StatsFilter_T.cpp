@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -234,7 +234,7 @@ try {
    //# Linear combinations WLC:12 GF:P:12
    //# RinDump output for file job4131.obs
    //# Header ObsIDs GPS (4): C1C L1C C2W L2X
-   //# wk secs-of-wk sat     WLC:12       GF:P:12   
+   //# wk secs-of-wk sat     WLC:12       GF:P:12
    const unsigned int M1=243;
    // sow WLC GF
    double data1[3*M1] = {
@@ -322,7 +322,7 @@ try {
    };
 
    const unsigned int M2=26;
-   //# secs-of-wk WLC:12       GF:P:12   
+   //# secs-of-wk WLC:12       GF:P:12
    double data2[2*M2] = {
       489510.000,  -8.546, 489540.000,   9.683, 489570.000,  -7.921,
       489600.000,  -1.244, 489630.000,  -1.742, 489660.000,  -2.081,
@@ -337,7 +337,7 @@ try {
 
    //# RinDump output for file /local/Work/HFGeo/G10/G10_0180.14o.new
    const unsigned int M3=245;
-   //# secs-of-wk WLC:12       GF:P:12   
+   //# secs-of-wk WLC:12       GF:P:12
    double data3[3*M3] = {
       522000.000,  0.087, 522030.000, -0.039, 522060.000,  0.045, 522090.000, -0.246,
       522120.000, -0.159, 522150.000, -0.006, 522180.000, -0.214, 522210.000,  0.051,

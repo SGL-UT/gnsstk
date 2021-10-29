@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -69,7 +69,7 @@ namespace gnsstk
       :OrbSysGpsL(), toa(0), WNa(0)
    {
       for (int i=0;i< 9;i++) { health[i] = 0; }
-      ctToa = MJD(GPS_EPOCH_MJD,TimeSystem::GPS); 
+      ctToa = MJD(GPS_EPOCH_MJD,TimeSystem::GPS);
    }
 
    OrbSysGpsL_51::OrbSysGpsL_51(const PackedNavBits& msg)
@@ -80,26 +80,26 @@ namespace gnsstk
 
    OrbSysGpsL_51* OrbSysGpsL_51::clone() const
    {
-      return new OrbSysGpsL_51 (*this); 
+      return new OrbSysGpsL_51 (*this);
    }
 
-   bool OrbSysGpsL_51::isSameData(const OrbData* right) const      
+   bool OrbSysGpsL_51::isSameData(const OrbData* right) const
    {
          // First, test whether the test object is actually a OrbSysGpsL_51 object.
       const OrbSysGpsL_51* p = dynamic_cast<const OrbSysGpsL_51*>(right);
-      if (p==0) return false; 
+      if (p==0) return false;
 
-         // Establish if it refers to the same SV and UID. 
+         // Establish if it refers to the same SV and UID.
       if (!OrbSysGpsL::isSameData(right)) return false;
-       
+
          // Finally, examine the contents
       for (int i=1; i<=24; i++)
       {
          if (health[i] != p->health[i]) return false;
       }
-      return true;      
+      return true;
    }
-   
+
    void OrbSysGpsL_51::loadData(const PackedNavBits& msg)
    {
       setUID(msg);
@@ -109,10 +109,10 @@ namespace gnsstk
          ss << "Expected GPS Subframe 5, Page 25, SVID 51 (525).  Found unique ID ";
          ss << StringUtils::asString(UID);
          InvalidParameter exc(ss.str());
-         GNSSTK_THROW(exc);    
-      } 
+         GNSSTK_THROW(exc);
+      }
 
-         // Clear any existing data 
+         // Clear any existing data
       for (int i=0;i<=24;i++) { health[i] = 0; }
 
       obsID        = msg.getobsID();
@@ -128,15 +128,15 @@ namespace gnsstk
       }
 
       unsigned short currXMitWeek = static_cast<GPSWeekSecond>(beginValid).week;
-      unsigned short currXMitWeek8bit = currXMitWeek & 0x00FF; 
+      unsigned short currXMitWeek8bit = currXMitWeek & 0x00FF;
       unsigned short currXMitWeekMSBs = currXMitWeek & 0xFF00;
-      unsigned short WNaFull = currXMitWeekMSBs + WNa; 
+      unsigned short WNaFull = currXMitWeekMSBs + WNa;
       short diff8 = (short) WNa - (short) currXMitWeek8bit;
-      if (diff8 < -127) WNaFull += 256; 
+      if (diff8 < -127) WNaFull += 256;
       if (diff8 >  127) WNaFull -= 256;
       ctToa = GPSWeekSecond(WNaFull, toa, TimeSystem::GPS);
 
-      dataLoadedFlag = true;   
+      dataLoadedFlag = true;
    } // end of loadData()
 
    void OrbSysGpsL_51::dumpTerse(std::ostream& s) const
@@ -147,7 +147,7 @@ namespace gnsstk
          GNSSTK_THROW(exc);
       }
 
-      string ssys = convertSatelliteSystemToString(satID.system); 
+      string ssys = convertSatelliteSystemToString(satID.system);
       s << setw(7) << ssys;
       s << " " << setw(2) << satID.id;
 
@@ -165,17 +165,17 @@ namespace gnsstk
          it = fMap.find(health[i]);
          if (it==fMap.end())
          {
-            unsigned short count = 0; 
+            unsigned short count = 0;
             map<unsigned short, unsigned short>::value_type p(health[i],count);
             fMap.insert(p);
             it = fMap.find(health[i]);
          }
-         (it->second)++; 
+         (it->second)++;
       }
       for (it=fMap.begin();it!=fMap.end();it++)
       {
          if (it!=fMap.begin()) s << ", ";
-         s << "Hlt 0x" 
+         s << "Hlt 0x"
            << hex << setfill('0') << setw(2) << it->first
            << dec << setfill(' ') << ":#" << it->second;
       }
@@ -198,19 +198,19 @@ namespace gnsstk
       s << endl;
       s << " toa, WNa : " << toa << ", " << WNa << endl;
       string tform2 = "%02m/%02d/%04Y %02H:%02M:%02S  %4F %6.0g";
-      s << " Full Toa : " << printTime(ctToa,tform2); 
+      s << " Full Toa : " << printTime(ctToa,tform2);
 
       s << endl;
       s << "SV Health" << endl;
-      s << " PRN  hex  dec   PRN  hex dec   PRN  hex dec   PRN  hex dec" << endl;      
+      s << " PRN  hex  dec   PRN  hex dec   PRN  hex dec   PRN  hex dec" << endl;
       for (int i=1; i<=24; i++)
       {
          unsigned prnNum = i;
          s << "  " << setw(2) << prnNum << ": 0x";
-         s << hex << setw(2) << health[i] << "  " 
+         s << hex << setw(2) << health[i] << "  "
            << dec << setw(2) << health[i] << " ";
-         if (i%4==0) s << endl; 
-      }      
-   } // end of dumpBody()   
+         if (i%4==0) s << endl;
+      }
+   } // end of dumpBody()
 
 } // end namespace gnsstk

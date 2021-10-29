@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -115,7 +115,7 @@ namespace gnsstk
       size_t i;                                                         \
       for (i=0; i < r.size(); i++) toReturn[i] = l func r[i];           \
       return toReturn;                                                  \
-   } 
+   }
 
    VecBaseNewBinaryOperator(*, Vector<T>)
    VecBaseNewBinaryOperator(/, Vector<T>)
@@ -161,15 +161,15 @@ namespace gnsstk
       size_t i;                                                         \
       for (i=0; i < r.size(); i++) toReturn[i] = func(l, r[i]);         \
       return toReturn;                                                  \
-   } 
+   }
 
    /** finds the cross product between l and r
     * @throw VectorException
     */
-   template <class T, class BaseClass, class BaseClass2> 
-   Vector<T> cross(const ConstVectorBase<T, BaseClass>& l, 
+   template <class T, class BaseClass, class BaseClass2>
+   Vector<T> cross(const ConstVectorBase<T, BaseClass>& l,
                    const ConstVectorBase<T, BaseClass2>& r)
-   { 
+   {
       if ((l.size() != 3) && (r.size() != 3))
       {
          VectorException e("Cross product requires vectors of size 3");
@@ -184,21 +184,21 @@ namespace gnsstk
 
       /** returns a new vector with the normalized version of l */
    template <class T, class BaseClass>
-   Vector<T> normalize(const ConstVectorBase<T, BaseClass>& l) 
-   { return l / norm(l); } 
+   Vector<T> normalize(const ConstVectorBase<T, BaseClass>& l)
+   { return l / norm(l); }
 
       /** returns the root-sum-square of the elements of l */
    template <class T, class BaseClass>
-   T RSS(const ConstVectorBase<T, BaseClass>& l) 
-   { return norm(l); } 
+   T RSS(const ConstVectorBase<T, BaseClass>& l)
+   { return norm(l); }
 
       /** returns the root-mean-square of the elements of l */
    template <class T, class BaseClass>
-   T RMS(const ConstVectorBase<T, BaseClass>& l) 
-   { return norm(l)/SQRT(T(l.size())); } 
+   T RMS(const ConstVectorBase<T, BaseClass>& l)
+   { return norm(l)/SQRT(T(l.size())); }
 
       //@}
- 
+
 }  // namespace
 
 namespace std

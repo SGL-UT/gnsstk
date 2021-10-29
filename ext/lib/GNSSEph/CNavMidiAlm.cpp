@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -56,7 +56,7 @@ namespace gnsstk
    CNavMidiAlm::CNavMidiAlm()
       :OrbDataSys(),
        L1HEALTH(1),
-       L2HEALTH(1), 
+       L2HEALTH(1),
        L5HEALTH(1)
    {
       almType = matUnknown;
@@ -65,7 +65,7 @@ namespace gnsstk
    CNavMidiAlm::CNavMidiAlm(const PackedNavBits& pnb)
       :OrbDataSys(),
        L1HEALTH(1),
-       L2HEALTH(1), 
+       L2HEALTH(1),
        L5HEALTH(1)
    {
       almType = matUnknown;
@@ -75,7 +75,7 @@ namespace gnsstk
       }
       catch (InvalidParameter ip)
       {
-         GNSSTK_RETHROW(ip); 
+         GNSSTK_RETHROW(ip);
       }
    }
 
@@ -85,7 +85,7 @@ namespace gnsstk
       return new CNavMidiAlm (*this);
    }
 
-   bool CNavMidiAlm::isSameData(const gnsstk::OrbData* right) const      
+   bool CNavMidiAlm::isSameData(const gnsstk::OrbData* right) const
    {
          // First, test whether the test object is actually a CNavMidiAlm object.
       const CNavMidiAlm* p = dynamic_cast<const CNavMidiAlm*>(right);
@@ -108,7 +108,7 @@ namespace gnsstk
       if (L1HEALTH    != p->L1HEALTH)   return false;
       if (L2HEALTH    != p->L2HEALTH)   return false;
       if (L5HEALTH    != p->L5HEALTH)   return false;
-      return true; 
+      return true;
    }
 
    void CNavMidiAlm::loadData(const PackedNavBits& pnb)
@@ -120,12 +120,12 @@ namespace gnsstk
       if (pnb.getNumBits()==274)
       {
          unsigned pageID = pnb.asUnsignedLong(8,6,1);
-         if (pageID!=4) 
+         if (pageID!=4)
          {
             stringstream ss;
             ss << "CNavMidiAlm::loadData().  Expected CNAV-2, Subframe 3, Page 4.   Found page " << pageID;
             InvalidParameter ip(ss.str());
-            GNSSTK_THROW(ip); 
+            GNSSTK_THROW(ip);
          }
          almType = matCNAV2;
       }
@@ -138,7 +138,7 @@ namespace gnsstk
             stringstream ss;
             ss << "CNavMidiAlm::loadData().  Expected CNAV, MT 37.   Found MT " << mt;
             InvalidParameter ip(ss.str());
-            GNSSTK_THROW(ip); 
+            GNSSTK_THROW(ip);
          }
          almType = matCNAV;
       }
@@ -148,19 +148,19 @@ namespace gnsstk
       satID = pnb.getsatSys();
 
          // CNAV and CNAV-2 use the same bit layout, but different starting
-         // locations. (This is true except for the transmit (xmit) SV.)  Therefore, 
-         // we'll use the CNAV-2 starting bit indices that begin at bit 14 
-         // (zero index).  If CNAV, then we will apply an offset that 
+         // locations. (This is true except for the transmit (xmit) SV.)  Therefore,
+         // we'll use the CNAV-2 starting bit indices that begin at bit 14
+         // (zero index).  If CNAV, then we will apply an offset that
          // represents the difference between the CNAV (127, index 0) and
          // CNAV-2 starting locations.
-      unsigned offsetBits = 0;                  
+      unsigned offsetBits = 0;
       if (almType==matCNAV) offsetBits = 127 - 14;
 
       unsigned prnLen = 6;
       unsigned prnStart = 8;
       if (almType==matCNAV2) { prnStart=0; prnLen=8; }
       unsigned long prnId = pnb.asUnsignedLong(prnStart, prnLen, 1);
-      xmitSv = SatID(prnId,SatelliteSystem::GPS); 
+      xmitSv = SatID(prnId,SatelliteSystem::GPS);
 
       unsigned long wn = pnb.asUnsignedLong(14+offsetBits,13,1);
       unsigned long toaSOW = pnb.asUnsignedLong(27+offsetBits,8,4096);
@@ -183,9 +183,9 @@ namespace gnsstk
       w        = pnb.asDoubleSemiCircles(112+offsetBits,16,-15);
       M0       = pnb.asDoubleSemiCircles(128+offsetBits,16,-15);
       af0      = pnb.asSignedDouble(144+offsetBits,11,-20);
-      af1      = pnb.asSignedDouble(155+offsetBits,10,-37); 
+      af1      = pnb.asSignedDouble(155+offsetBits,10,-37);
 
-      dataLoadedFlag = true;   
+      dataLoadedFlag = true;
    } // end of loadData()
 
    void CNavMidiAlm::dumpHeader(std::ostream& s) const
@@ -215,7 +215,7 @@ namespace gnsstk
       if (almType==matCNAV)
          s << "MT 37. ";
       else
-         s << "UID 304. "; 
+         s << "UID 304. ";
       s << " xmit PRN: " << xmitSv.id;
       s << " subject PRN: " << subjSv.id;
       s << " t_oa: " << printTime(ctAlmEpoch,"%02m/%02d/%04Y %02H:%02M:%02S %P") << endl;
@@ -246,7 +246,7 @@ namespace gnsstk
 
       s << "Transmit SV" << setw(17) << xmitSv << endl;
       s << "Subject SV " << setw(17) << subjSv << endl;
- 
+
       s.setf(ios::scientific, ios::floatfield);
       s.setf(ios::right, ios::adjustfield);
       s.setf(ios::uppercase);

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -71,7 +71,7 @@ public:
       CommonTime testTime;
       Xvt truthXvt;
 
-      PassFailData(): 
+      PassFailData():
          subjID(SatID()),
          testTime(CommonTime::END_OF_TIME)
          { }
@@ -103,16 +103,16 @@ public:
       // List of PassFailData objects that contain definitions for sepcific find( ) tests.
    list<PassFailData> pfList;
 
-   ofstream out; 
+   ofstream out;
 
       // For testing the test
-   int debugLevel;   
+   int debugLevel;
 };
 
 OrbAlm_T::
 OrbAlm_T()
 {
-   debugLevel = 0; 
+   debugLevel = 0;
    init();
 }
 
@@ -123,7 +123,7 @@ createAndDump()
    TUDEF("OrbDataSys",currMethod);
 
       // Open an output stream specific to this navigation message type
-   std::string fs = getFileSep(); 
+   std::string fs = getFileSep();
    std::string tf(getPathTestTemp()+fs);
    std::string tempFile = tf + "test_output_OrbAlm_T_" +
                          typeDesc+".out";
@@ -136,9 +136,9 @@ createAndDump()
       TURETURN();
    }
 
-      // All the navigation message data will be placed here. 
+      // All the navigation message data will be placed here.
    OrbAlmStore oas;
-   oas.setDebugLevel(debugLevel); 
+   oas.setDebugLevel(debugLevel);
 
    list<PackedNavBits>::const_iterator cit;
    for (cit=dataList.begin();cit!=dataList.end();cit++)
@@ -150,7 +150,7 @@ createAndDump()
       }
       catch(gnsstk::InvalidParameter ir)
       {
-            // Do nothing except move to next message. 
+            // Do nothing except move to next message.
       }
    }
 
@@ -158,15 +158,15 @@ createAndDump()
    out << "         Xmit               Differences" << endl;
    out << "       Sat  mm/dd/yy HH:MM:SS  Position RSS (m)  Velocity RSS (m/s)"
        << "  Clock Bias (nsec)  Clock Drift (nsec/sec)" << endl;
-   string tform = "%02m/%02d/%02y %02H:%02M:%02S"; 
+   string tform = "%02m/%02d/%02y %02H:%02M:%02S";
 
       // For each SatID on the list, retrieve the appropriate OrbAlm messages and
-      // check them against the provided truth data. 
+      // check them against the provided truth data.
    list<PassFailData>::const_iterator cit2;
    for (cit2=pfList.begin();cit2!=pfList.end();cit2++)
    {
       const PassFailData& pfd = *cit2;
-      const Xvt& truth = pfd.truthXvt; 
+      const Xvt& truth = pfd.truthXvt;
       const OrbAlmStore::OrbAlmMap& almMap = oas.getOrbAlmMap(pfd.subjID);
       OrbAlmStore::OrbAlmMap::const_iterator calm;
       for (calm=almMap.begin();calm!=almMap.end();calm++)
@@ -176,7 +176,7 @@ createAndDump()
          Triple xDiff = test.x - truth.x;
          Triple vDiff = test.v - truth.v;
          double clockDiff = test.clkbias - truth.clkbias;
-         double driftDiff = test.clkdrift - truth.clkdrift; 
+         double driftDiff = test.clkdrift - truth.clkdrift;
 
          double xMag = xDiff.mag();
          double vMag = vDiff.mag();
@@ -187,7 +187,7 @@ createAndDump()
          string temps(temp);
          out << setw(10) << StringUtils::asString(pfd.subjID) << "  "
              << printTime(alm->beginValid,tform) << "  "
-             << temps << endl; 
+             << temps << endl;
       }
    }
 
@@ -195,19 +195,19 @@ createAndDump()
    oas.clear();
    out.close();
 
-   return 0; 
+   return 0;
 }
 
 void OrbAlm_T::
 init()
 {
    dataList.clear();
-} 
+}
 
 //--------------------------------------------------------------------
 // IS-GPS-200 makes two statements regarding accuradcy of the almanac
 // data.
-//  1.20.3.3.5.2.1 - There is a table that indicates the the almanac ephemeris URE (1 simga) 
+//  1.20.3.3.5.2.1 - There is a table that indicates the the almanac ephemeris URE (1 simga)
 //                   should be 900 m.   There follows list of exceptions and caveats that
 //                   includes Normal Operations, Eclipse season, and SV thrust events.
 //  2. 20.3.3.5.2.3 - states that "it is expected that the almanac time parameters will
@@ -220,7 +220,7 @@ setUpLNAV()
       // Define state variables for creating a LNAV store
    typeDesc = "GPS_LNAV";
 
-      // Literals for LNAV test data 
+      // Literals for LNAV test data
    const unsigned short LNavExCount = 9;
    const std::string LNavEx[] =
    {
@@ -247,18 +247,18 @@ setUpLNAV()
       dataList.push_back(msg);
    }
 
-   SatID sid(1,SatelliteSystem::GPS); 
+   SatID sid(1,SatelliteSystem::GPS);
 
       // 12/31/2015 12:00 == Week 1877, DOW 4, SOD 43200
    /*
     *  Excerpt from apc18774
     *  2015 12 31 12  0  0.00000000
-    P  1  21660.911135  14060.970775  -6739.268021      7.973244                    
-    V  1  -8691.174513   -995.106026 -30138.831453      0.009383                    
-    P  2  -1441.679351 -16790.824227  21014.933039    598.668560                    
-    V  2  24392.452591   8269.357517   8018.651385      0.004558                    
-    P 25 -14870.571034  -8788.484129  20126.874993    -91.725396                    
-    V 25  -2637.830466 -25557.191698 -12868.533309     -0.062373                    
+    P  1  21660.911135  14060.970775  -6739.268021      7.973244
+    V  1  -8691.174513   -995.106026 -30138.831453      0.009383
+    P  2  -1441.679351 -16790.824227  21014.933039    598.668560
+    V  2  24392.452591   8269.357517   8018.651385      0.004558
+    P 25 -14870.571034  -8788.484129  20126.874993    -91.725396
+    V 25  -2637.830466 -25557.191698 -12868.533309     -0.062373
     *
     *  In SP3
     *     Position is in km
@@ -267,34 +267,34 @@ setUpLNAV()
     *     Clock rate is 10**-4 microseconds/sec
     */
    double usecToSec = 1.0e-6;
-   double rateChgToSec = usecToSec * 1.0e-2; 
+   double rateChgToSec = usecToSec * 1.0e-2;
    CommonTime truthTime = CivilTime(2015,12,31,12,00,00,TimeSystem::GPS);
-   Xvt truthXvt; 
+   Xvt truthXvt;
    truthXvt.x = Triple(  21660.911135, 14060.970775,  -6739.268021);
    truthXvt.v = Triple(  -8691.174513,  -995.106026, -30138.831453);
    truthXvt.x = 1000.0 * truthXvt.x;    // Convert from km to m
-   truthXvt.v =    0.1 * truthXvt.v; 
+   truthXvt.v =    0.1 * truthXvt.v;
    truthXvt.clkbias =  7.973244 * usecToSec;
    truthXvt.clkdrift = 0.009383 * rateChgToSec;
-   truthXvt.relcorr = 0.0; 
+   truthXvt.relcorr = 0.0;
    PassFailData pfd(sid,truthTime,truthXvt);
    pfList.push_back(pfd);
 
-   sid = SatID(2,SatelliteSystem::GPS); 
+   sid = SatID(2,SatelliteSystem::GPS);
    truthXvt.x = Triple( -1441.679351, -16790.824227,  21014.933039);
    truthXvt.v = Triple( 24392.452591,   8269.357517,   8018.651385);
    truthXvt.x = 1000.0 * truthXvt.x;    // Convert from km to m
-   truthXvt.v =    0.1 * truthXvt.v; 
+   truthXvt.v =    0.1 * truthXvt.v;
    truthXvt.clkbias = 598.668560 * usecToSec;
    truthXvt.clkdrift =  0.004558 * rateChgToSec;
    pfd = PassFailData(sid,truthTime,truthXvt);
    pfList.push_back(pfd);
 
-   sid = SatID(25,SatelliteSystem::GPS); 
+   sid = SatID(25,SatelliteSystem::GPS);
    truthXvt.x = Triple( -14870.571034,  -8788.484129,  20126.874993);
    truthXvt.v = Triple(  -2637.830466, -25557.191698, -12868.533309);
    truthXvt.x = 1000.0 * truthXvt.x;    // Convert from km to m
-   truthXvt.v =    0.1 * truthXvt.v; 
+   truthXvt.v =    0.1 * truthXvt.v;
    truthXvt.clkbias =  -91.725396 * usecToSec;
    truthXvt.clkdrift =  -0.062373 * rateChgToSec;
    pfd = PassFailData(sid,truthTime,truthXvt);
@@ -309,12 +309,12 @@ setUpCNAV()
    init();
 
       // Define state variables for writing an CNAV data
-   gnsstk::ObsID currObsID(gnsstk::ObservationType::NavMsg, 
-                    gnsstk::CarrierBand::L2, 
+   gnsstk::ObsID currObsID(gnsstk::ObservationType::NavMsg,
+                    gnsstk::CarrierBand::L2,
                     gnsstk::TrackingCode::L2CML);
    typeDesc = "GPS_CNAV";
 
-      // Literals for CNAV test data 
+      // Literals for CNAV test data
    const unsigned short CNavExCount = 8;
    const std::string CNavEx[] =
    {
@@ -342,7 +342,7 @@ setUpCNAV()
    gnsstk::PackedNavBits
    OrbAlm_T::
    getPnbLNav(const gnsstk::ObsID& oidr, const std::string& str)
-   {      
+   {
       try
       {
             // Split the line into words separated by commas.
@@ -354,7 +354,7 @@ setUpCNAV()
               << ", [0]: '" << words[0]
               << "', [numWords-1]: '" << words[numWords-1] << "'." << endl;
          */
-         if (numWords!=18) 
+         if (numWords!=18)
          {
             stringstream ss;
             ss << "Line format problem. ";
@@ -367,15 +367,15 @@ setUpCNAV()
          int week = gnsstk::StringUtils::asInt(words[3]);
          double sow = gnsstk::StringUtils::asDouble(words[4]);
          CommonTime ct = GPSWeekSecond(week,sow,TimeSystem::GPS);
-         
+
             // Convert the PRN to a SatID
          int prn = StringUtils::asInt(words[5]);
          SatID sid(prn,SatelliteSystem::GPS);
 
             // Get the message ID
-         int msgID = StringUtils::asInt(words[7]); 
+         int msgID = StringUtils::asInt(words[7]);
 
-         PackedNavBits pnb(sid,oidr,ct); 
+         PackedNavBits pnb(sid,oidr,ct);
 
             // Load the raw data
          int offset = 8;
@@ -383,13 +383,13 @@ setUpCNAV()
          {
             int ndx = i + offset;
             string hexStr = StringUtils::strip(words[ndx]);
-            string::size_type n = hexStr.find("x"); 
+            string::size_type n = hexStr.find("x");
             hexStr = hexStr.substr(n+1);
             unsigned long bits = StringUtils::x2uint(hexStr);
             pnb.addUnsignedLong(bits,30,1);
          }
          pnb.trimsize();
-         return pnb; 
+         return pnb;
       }
       catch (StringUtils::StringException)
       {
@@ -397,12 +397,12 @@ setUpCNAV()
          ss << "String conversion error:'" << str << "'.";
          InvalidParameter ip(ss.str());
          GNSSTK_THROW(ip);
-      }  
+      }
    }
 
-   
+
    //-------------------------------------------------
-   gnsstk::PackedNavBits 
+   gnsstk::PackedNavBits
    OrbAlm_T::
    getPnbCNav(const gnsstk::ObsID& oidr, const std::string& str)
    {
@@ -412,7 +412,7 @@ setUpCNAV()
             // There should be 18 words
          vector<string> words = StringUtils::split(str,',');
          unsigned short numWords = words.size();
-         if (numWords!=18) 
+         if (numWords!=18)
          {
             stringstream ss;
             ss << "Line format problem. ";
@@ -425,15 +425,15 @@ setUpCNAV()
          int week = gnsstk::StringUtils::asInt(words[3]);
          double sow = gnsstk::StringUtils::asDouble(words[4]);
          CommonTime ct = GPSWeekSecond(week,sow,TimeSystem::GPS);
-         
+
             // Convert the PRN to a SatID
          int prn = StringUtils::asInt(words[5]);
          SatID sid(prn,SatelliteSystem::GPS);
 
             // Get the message ID
-         int msgID = StringUtils::asInt(words[7]); 
+         int msgID = StringUtils::asInt(words[7]);
 
-         PackedNavBits pnb(sid,oidr,ct); 
+         PackedNavBits pnb(sid,oidr,ct);
 
             // Load the raw data
             // Words 0-8 have 32 bits.
@@ -445,7 +445,7 @@ setUpCNAV()
          {
             int ndx = i + offset;
             string hexStr = StringUtils::strip(words[ndx]);
-            string::size_type n = hexStr.find("x"); 
+            string::size_type n = hexStr.find("x");
             hexStr = hexStr.substr(n+1);
             unsigned long bits = StringUtils::x2uint(hexStr);
             if (offset<9) pnb.addUnsignedLong(bits,32,1);
@@ -464,18 +464,18 @@ setUpCNAV()
          ss << "String conversion error:'" << str << "'.";
          InvalidParameter ip(ss.str());
          GNSSTK_THROW(ip);
-      }  
+      }
    }
 
 int main()
 {
   unsigned errorTotal = 0;
-  
+
   OrbAlm_T testClass;
 
   testClass.setUpLNAV();
   errorTotal += testClass.createAndDump();
-  
+
   testClass.setUpCNAV();
   //errorTotal += testClass.createAndDump();
 

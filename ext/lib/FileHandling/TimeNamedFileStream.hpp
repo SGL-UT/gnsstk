@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,16 +29,16 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  * @file TimeNamedFileStream.hpp
- * Writes data to a file whose name is derived from a pattern and a nominal epoch. 
+ * Writes data to a file whose name is derived from a pattern and a nominal epoch.
  */
 
 #ifndef GNSSTK_TIME_NAMED_FILE_STREAM_HPP
@@ -55,7 +55,7 @@
 
 namespace gnsstk
 {
-   /// @ingroup FFStream 
+   /// @ingroup FFStream
    //@{
 
    template <class BaseStream>
@@ -63,7 +63,7 @@ namespace gnsstk
    {
    public:
 
-      TimeNamedFileStream() 
+      TimeNamedFileStream()
          : omode(std::ios::in), debugLevel(0)
       {}
       TimeNamedFileStream(
@@ -92,7 +92,7 @@ namespace gnsstk
 
 
       // Get the filename of the current file
-      std::string getCurrentFilename(void) const 
+      std::string getCurrentFilename(void) const
       { return currentFilename; }
 
 
@@ -110,7 +110,7 @@ namespace gnsstk
             currentTime = t;
             return false;
          }
-         
+
          if (currentFilename.size() > 0)
          {
             if (debugLevel)
@@ -119,7 +119,7 @@ namespace gnsstk
          }
          currentFilename = newFilename;
          currentTime = t;
-         
+
          std::string::size_type i = newFilename.rfind('/');
          std::string dir(newFilename.substr(0, i));
          if (dir.size())
@@ -128,11 +128,11 @@ namespace gnsstk
                std::cout << "Creating directory " << dir << std::endl;
             gnsstk::FileUtils::makeDir(dir, 0755);
          }
-         
+
          BaseStream::open(currentFilename.c_str(), omode);
          if (debugLevel)
             std::cout << "Opened " << currentFilename << std::endl;
-         
+
          return true;
       }
 
@@ -141,7 +141,7 @@ namespace gnsstk
    private:
       /// Pattern on which to create new files
       std::string filespec;
-      
+
       /// Name of the current output file.
       std::string currentFilename;
 

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -83,7 +83,7 @@ namespace gnsstk
          /** This enum lists the different possible elements you can
           * have in a FileSpec.
           *
-          * @note 
+          * @note
           * Whenever a format is added or removed from the CommonTime
           * class, it more than likely should also be added or removed
           * from the FileSpec class.  Additionally, the format
@@ -98,7 +98,7 @@ namespace gnsstk
          prn,           ///< 'p' A field for PRN number
          selected,      ///< 't' A field for selected/unselected receiver
          sequence,      ///< 'I' A sequence number, as in part 1, part 2, etc..
-         version,       ///< 'v' A version number, as in version 2 
+         version,       ///< 'v' A version number, as in version 2
                         ///<     is more recent than version 1
          fixed,         ///< A field for fixed characters
          clock,         ///< 'k' A field for the clock number
@@ -109,7 +109,7 @@ namespace gnsstk
          year,          ///< 'y' or 'Y' A field for a year
          firstTime = year, ///< First enumeration value pertaining to time
          month,         ///< 'm' A field for month (numeric)
-         dayofmonth,    ///< 'd' A field for day-of-month  
+         dayofmonth,    ///< 'd' A field for day-of-month
          hour,          ///< 'H' A field for hours (out of 24)
          minute,        ///< 'M' A field for minutes (out of 60)
          second,        ///< 'S' A field for seconds (out of 60)
@@ -179,7 +179,7 @@ namespace gnsstk
           * @throw FileSpecException when the FileSpecType doesn't exist
           *  in the FileSpec
           */
-      virtual std::string extractField(const std::string& filename, 
+      virtual std::string extractField(const std::string& filename,
                                        const FileSpecType) const;
 
          /**
@@ -196,7 +196,7 @@ namespace gnsstk
       bool hasNonTimeField() const
       { return (!fileSpecSet.empty() && ((*fileSpecSet.begin()) < firstTime)); }
 
-         /** 
+         /**
           * If possible, returns a CommonTime object with the time the file
           * represents.  Since the time resolution only goes to days for
           * most file types, all times are set to midnight of that day.
@@ -218,21 +218,21 @@ namespace gnsstk
           * @return the new filename.
           */
       virtual std::string toString(const gnsstk::CommonTime& dt,
-                                   const FSTStringMap& fstsMap = FSTStringMap()) 
+                                   const FSTStringMap& fstsMap = FSTStringMap())
          const;
 
          /**
-          * Sort the list of files ascending or 
+          * Sort the list of files ascending or
           * descending.  The fields of the files are sorted in the order
           * that they're specified in the FileSpecType enum.
           * The list fileList is modified as a result
           * of this.  If the files in fileList have paths listed, then
-          * only the file name (taken to be the word after the last '/') 
+          * only the file name (taken to be the word after the last '/')
           * will be used in the comparison.  This function also filters
           * out older versions of files in the fileList.
           * @throw FileSpecException
           */
-      virtual void sortList(std::vector<std::string>& fileList, 
+      virtual void sortList(std::vector<std::string>& fileList,
                             const FileSpecSortType fsst = ascending) const;
 
          /// semi-nicely print the FileSpec to the stream.
@@ -266,13 +266,13 @@ namespace gnsstk
       {
       public:
             /// This is the default constructor too.
-         FileSpecElement(const std::string::size_type numChars = 0, 
-                         const std::string::size_type offs = 0, 
+         FileSpecElement(const std::string::size_type numChars = 0,
+                         const std::string::size_type offs = 0,
                          const FileSpecType fst = unknown,
                          const std::string& fld = std::string())
                : numCh(numChars), offset(offs), type(fst), field(fld)
          {}
-         
+
             /// The number of characters this field is in the file name.
          std::string::size_type numCh;
             /// The offset in the string where this field begins
@@ -322,4 +322,4 @@ namespace gnsstk
 
 } // namespace gnsstk
 
-#endif 
+#endif

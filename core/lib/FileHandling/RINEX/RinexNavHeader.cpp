@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -85,12 +85,12 @@ namespace gnsstk
            A0(0), A1(0), UTCRefTime(0), UTCRefWeek(0), leapSeconds(0)
    {}
 
-   void RinexNavHeader::reallyPutRecord(FFStream& ffs) const 
+   void RinexNavHeader::reallyPutRecord(FFStream& ffs) const
    {
       RinexNavStream& strm = dynamic_cast<RinexNavStream&>(ffs);
-      
+
       strm.header = (*this);
-      
+
       unsigned long allValid;
       if (version == 2.0)        allValid = allValid20;
       else if (version == 2.1)   allValid = allValid21;
@@ -101,16 +101,16 @@ namespace gnsstk
          err.addText("Make sure to set the version correctly.");
          GNSSTK_THROW(err);
       }
-      
+
       if ((valid & allValid) != allValid)
       {
          FFStreamError err("Incomplete or invalid header.");
          err.addText("Make sure you set all header valid bits for all of the available data.");
          GNSSTK_THROW(err);
       }
-      
+
       string line;
-      
+
       if (valid & versionValid)
       {
          line  = rightJustify(asString(version,2), 9);
@@ -121,7 +121,7 @@ namespace gnsstk
          strm << line << endl;
          strm.lineNumber++;
       }
-      if (valid & runByValid) 
+      if (valid & runByValid)
       {
          line  = leftJustify(fileProgram,20);
          line += leftJustify(fileAgency,20);
@@ -186,22 +186,22 @@ namespace gnsstk
          strm << line << endl;
          strm.lineNumber++;
       }
-      
+
    }
 
-   void RinexNavHeader::reallyGetRecord(FFStream& ffs) 
+   void RinexNavHeader::reallyGetRecord(FFStream& ffs)
    {
       RinexNavStream& strm = dynamic_cast<RinexNavStream&>(ffs);
-      
+
          // if already read, just return
       if (strm.headerRead == true)
          return;
-      
+
       valid = 0;
-      
+
          // clear out anything that was unsuccessfully read the first
       commentList.clear();
-      
+
       while (! (valid & endValid))
       {
          string line;
@@ -214,9 +214,9 @@ namespace gnsstk
             FFStreamError e("Invalid line length");
             GNSSTK_THROW(e);
          }
-         
+
          string thisLabel(line, 60, 20);
-         
+
          if (thisLabel == versionString)
          {
             version = asDouble(line.substr(0,20));
@@ -272,32 +272,32 @@ namespace gnsstk
          }
          else
          {
-            FFStreamError exc("Unknown header label at line " + 
+            FFStreamError exc("Unknown header label at line " +
                               asString<size_t>(strm.lineNumber));
             GNSSTK_THROW(exc);
          }
       }
-      
+
       unsigned long allValid;
       if      (version == 2.0)      allValid = allValid20;
       else if (version == 2.1)      allValid = allValid21;
       else if (version == 2.11)     allValid = allValid211;
       else
       {
-         FFStreamError e("Unknown or unsupported RINEX version " + 
+         FFStreamError e("Unknown or unsupported RINEX version " +
                          asString(version));
          GNSSTK_THROW(e);
       }
-      
+
       if ( (allValid & valid) != allValid)
       {
          FFStreamError e("Incomplete or invalid header");
-         GNSSTK_THROW(e);               
-      }            
-      
+         GNSSTK_THROW(e);
+      }
+
          // we got here, so something must be right...
       strm.header = *this;
-      strm.headerRead = true;      
+      strm.headerRead = true;
    }
 
    void RinexNavHeader::dump(ostream& s) const

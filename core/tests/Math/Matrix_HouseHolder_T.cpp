@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -110,18 +110,18 @@ int main()
    // all of the reference values were computed using WolframAlpha to compute
    // the R value from a QR factorization
    // for A8 https://www.wolframalpha.com/input/?i=QR+factorization++{{6,5},{-5,7}}
-   
+
    double a5[] = {
       1,1,0,
       1,0,1,
       0,1,1};
    double ref5[] = {
-      pow(2,.5), pow(2,-.5), pow(2,-.5), 
+      pow(2,.5), pow(2,-.5), pow(2,-.5),
       0, pow(1.5,.5), pow(6,-.5),
       0,0,2./pow(3,.5)};
    testFramework.changeSourceMethod("A5");
    hhtest(3, 3, a5, ref5, testFramework);
-   
+
    double a6[9] = {
       12,-51,4,
       6,167,-68,
@@ -132,7 +132,7 @@ int main()
       0, 0, 1481./35};
    testFramework.changeSourceMethod("A6");
    hhtest(3, 3, a6, ref6, testFramework);
-        
+
    double a7[9] = {
       1,2,3,
       -1,0,-3,

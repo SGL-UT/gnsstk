@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -99,7 +99,7 @@ static bool winMatchRE(const std::string& pattern, const std::string& test)
  */
 static void winGlob(const char *pattern, std::list<std::string>& results)
 {
-   WIN32_FIND_DATA findFileData; 
+   WIN32_FIND_DATA findFileData;
    HANDLE hFindFile;
    std::string patternStr(pattern);
    if (patternStr.empty())
@@ -120,9 +120,9 @@ static void winGlob(const char *pattern, std::list<std::string>& results)
       pathSearch = gnsstk::StringUtils::change(pathSearch, "[0-9]", "?");
       std::string matchPattern = patternStr.substr(pos,pos2-pos);
       hFindFile = FindFirstFile(pathSearch.c_str(), &findFileData);
-      if (hFindFile != INVALID_HANDLE_VALUE) 
-      { 
-         do 
+      if (hFindFile != INVALID_HANDLE_VALUE)
+      {
+         do
          {
                // Check to make sure the results match the globbing
                // pattern, since windows globbing is much less
@@ -149,8 +149,8 @@ static void winGlob(const char *pattern, std::list<std::string>& results)
                   results.push_back(match);
                }
             }
-         } while(FindNextFile(hFindFile, &findFileData)); 
-         FindClose(hFindFile); 
+         } while(FindNextFile(hFindFile, &findFileData));
+         FindClose(hFindFile);
       }
    }
    else
@@ -417,7 +417,7 @@ namespace gnsstk
        * Example:
        * .....Level 0..........................
        * spec         : /data/%04Y/%05n/%03j/nsh-FOO-%5n-%1r-%04Y-%03j-%02H%02M%02S.xml
-       * matched      : 
+       * matched      :
        * pos          : 0
        * thisSpec     : /data/%04Y
        * pattern      : /data/[0-9][0-9][0-9][0-9]
@@ -456,8 +456,8 @@ namespace gnsstk
        *       2018 218 0.000000  not a time range match
        *    /data/2018/85789/211
        *       2018 211 0.000000  TIME RANGE MATCHED
-       * 
-       * 
+       *
+       *
        * .....Level 3..........................
        * spec         : /data/%04Y/%05n/%03j/nsh-FOO-%5n-%1r-%04Y-%03j-%02H%02M%02S.xml
        * matched      : /data/2018/85789/211

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -44,7 +44,7 @@
 
 #ifndef LINEARCLOCKMODEL_HPP
 #define LINEARCLOCKMODEL_HPP
- 
+
 #include <map>
 
 #include "Exception.hpp"
@@ -65,7 +65,7 @@ namespace gnsstk
       LinearClockModel(double sigma = 2, double elmask = 0, SvMode mode = ALWAYS)
             :ObsClockModel(sigma, elmask, mode) {reset();};
 
-      virtual double getOffset(const gnsstk::CommonTime& t) const 
+      virtual double getOffset(const gnsstk::CommonTime& t) const
          throw()
       {
          if (!isOffsetValid(t))
@@ -89,7 +89,7 @@ namespace gnsstk
 
       friend std::ostream& operator<<(std::ostream& s, const LinearClockModel& r)
       { r.dump(s, 0); return s; };
-      
+
    private:
          // x is time y is clock offset
       gnsstk::TwoSampleStats<double> clockModel;
@@ -97,7 +97,7 @@ namespace gnsstk
       gnsstk::CommonTime startTime, endTime, baseTime;
 
       unsigned long tossCount;
-   
+
          // This is were we store what SVs were used to compute the individual
          // clock observations
       std::map<gnsstk::CommonTime, SvStatusMap> prnStatus;

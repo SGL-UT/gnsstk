@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -59,7 +59,7 @@ namespace gnsstk
    const unsigned short OrbAlmStore::ADD_NEITHER = 0x00;
    const unsigned short OrbAlmStore::ADD_BOTH    = 0x03;
    const unsigned short OrbAlmStore::ADD_XMIT    = 0x01;
-   const unsigned short OrbAlmStore::ADD_SUBJ    = 0x02; 
+   const unsigned short OrbAlmStore::ADD_SUBJ    = 0x02;
 
 //--------------------------------------------------------------------------
    Xvt OrbAlmStore::getXvt(const SatID& subjID, const CommonTime& t) const
@@ -136,9 +136,9 @@ namespace gnsstk
 
 //------------------------------------------------------------------------------
       // This method is basically unimplemented at this level.   It may
-      // be overriden by a descendent that needs to limit access to a 
-      // certain system or systems. 
-   bool OrbAlmStore::validSatSystem(const SatID& subjID) const 
+      // be overriden by a descendent that needs to limit access to a
+      // certain system or systems.
+   bool OrbAlmStore::validSatSystem(const SatID& subjID) const
    {
       return true;
    }
@@ -151,7 +151,7 @@ namespace gnsstk
       if (!validSatSystem(subjID))
       {
          stringstream ss;
-         ss << convertSatelliteSystemToString(subjID.system) 
+         ss << convertSatelliteSystemToString(subjID.system)
             << " is not a valid Satellite system for this OrbAlmStore.";
          InvalidRequest ir(ss.str());
          GNSSTK_THROW(ir);
@@ -160,7 +160,7 @@ namespace gnsstk
       {
             // test for GPS satellite system in sat?
          const OrbAlm* alm = find(subjID, t);
-         
+
          retVal = alm->isHealthy();
       }
       catch(InvalidRequest& ir)
@@ -182,9 +182,9 @@ namespace gnsstk
 //------------------------------------------------------------------------------------
 
 //
-//  Detail 0 = Only cout of objects per satellite 
+//  Detail 0 = Only cout of objects per satellite
 //  Detail 1 = terse mode (one line)
-//  Datial 2 = full dump of each object. 
+//  Datial 2 = full dump of each object.
    void OrbAlmStore::dumpSubjAlm( std::ostream& s, short detail, const SatID& subjID) const
    {
       SubjectAlmMap::const_iterator it;
@@ -202,7 +202,7 @@ namespace gnsstk
          return;
       } // end if-block
 
-         // If the user specified a particular SV, simply say so and 
+         // If the user specified a particular SV, simply say so and
          // return.
       bool singleSV = false;
       if (subjID.id!=-1)
@@ -212,7 +212,7 @@ namespace gnsstk
          if (it==subjectAlmMap.end())
          {
             s << "No almanac data to dump for " << subjID << endl;
-            return; 
+            return;
          }
       }
 
@@ -221,7 +221,7 @@ namespace gnsstk
       for (it = subjectAlmMap.begin(); it != subjectAlmMap.end(); it++)
       {
          const SatID& sidr = it->first;
-         if (singleSV && sidr!=subjID) continue; 
+         if (singleSV && sidr!=subjID) continue;
 
          const OrbAlmMap& em = it->second;
 
@@ -231,16 +231,16 @@ namespace gnsstk
               << " has " << em.size() << " entries." << std::endl;
             OrbAlmMap::const_iterator ei;
 
-            for (ei = em.begin(); ei != em.end(); ei++) 
+            for (ei = em.begin(); ei != em.end(); ei++)
             {
                const OrbAlm* oe = ei->second;
                s << "PRN " << setw(2) << it->first
                  << " Toa " << printTime(oe->ctToe,fmt)
                  << " begValid: " << printTime(oe->beginValid,fmt)
                  << " endValid: " << printTime(oe->endValid,fmt);
-                
+
                s << std::endl;
-            } //end inner for-loop 
+            } //end inner for-loop
          }    //end if (detail==1)
 
             // In this case the output is
@@ -255,8 +255,8 @@ namespace gnsstk
                // Get header from system-specific descendent of this class.
             s << getTerseHeader() << endl;
                //s << "          Epoch Time             " << endl;
-               //s << " PRN  mm/dd/yyyy DOY hh:mm:ss   Health" << endl; 
-            for (ei = em.begin(); ei != em.end(); ei++) 
+               //s << " PRN  mm/dd/yyyy DOY hh:mm:ss   Health" << endl;
+            for (ei = em.begin(); ei != em.end(); ei++)
             {
                const OrbAlm* oe = ei->second;
                oe->dumpTerse(s);
@@ -271,7 +271,7 @@ namespace gnsstk
               << " has " << em.size() << " entries." << std::endl;
             OrbAlmMap::const_iterator ei;
 
-            for (ei = em.begin(); ei != em.end(); ei++) 
+            for (ei = em.begin(); ei != em.end(); ei++)
             {
                const OrbAlm* oe = ei->second;
                oe->dump(s);
@@ -281,14 +281,14 @@ namespace gnsstk
    } // end OrbAlmStore::dumpSubjAlm()
 
 //
-//  Dtaill 0 = Only cout of objects per satellite 
+//  Dtaill 0 = Only cout of objects per satellite
 //  Detail 1 = terse mode (one line)
-//  Detail 2 = full dump mode 
+//  Detail 2 = full dump mode
    void OrbAlmStore::dumpXmitAlm( std::ostream& s, short detail, const SatID& subjID ) const
    {
       XmitAlmMap::const_iterator   it;
       UniqueAlmMap::const_iterator it2;
-      OrbAlmMap::const_iterator   it3; 
+      OrbAlmMap::const_iterator   it3;
       static const string fmt("%02m/%02d/%4Y %02H:%02M:%02S %P");
 
       bool singleSubject = false;
@@ -313,52 +313,52 @@ namespace gnsstk
          {
             const SatID xmitID = it->first;
             s << endl;
-            s << " List of almanacs received from " << xmitID << endl;; 
+            s << " List of almanacs received from " << xmitID << endl;;
             const UniqueAlmMap& uam = it->second;
-            OrbAlmMap tempMap; 
+            OrbAlmMap tempMap;
 
-               // Need to construct a multimap of all the alamancs received, 
+               // Need to construct a multimap of all the alamancs received,
                // regardless of the satellite to which they are applicable.
             for (it2=uam.begin();it2!=uam.end();it2++)
             {
                const SatID& sidr = it2->first;
-               if (singleSubject && sidr!=subjID) 
+               if (singleSubject && sidr!=subjID)
                   continue;
                const OrbAlmMap& oem = it2->second;
                for (it3=oem.begin();it3!=oem.end();it3++)
                {
                   CommonTime ct = it3->first;
-                  OrbAlm* oeb = it3->second; 
+                  OrbAlm* oeb = it3->second;
                   OrbAlmMap::value_type p(ct,oeb);
                   tempMap.insert(p);
                }
             }
-        
+
                // Get header from system-specific descendent of this class.
             if (detail==1) s << getTerseHeader() << endl;
 
-               // The multimap was a convenient sorting method, but the 
-               // order of the elements is unspecified.  Therefore, 
+               // The multimap was a convenient sorting method, but the
+               // order of the elements is unspecified.  Therefore,
                // we are going to build a temporary map that allows
-               // the subset we just selected to be output in transmit-time 
+               // the subset we just selected to be output in transmit-time
                // order.
-               // FIRST - create the temporary ordered map. 
+               // FIRST - create the temporary ordered map.
             OrbAlmMap tempMap2;
             for (const auto& cit : tempMap)
             {
-               OrbAlm* oeb = cit.second; 
-               CommonTime ct = oeb->beginValid; 
+               OrbAlm* oeb = cit.second;
+               CommonTime ct = oeb->beginValid;
                OrbAlmMap::value_type pT(ct,oeb);
                tempMap2.insert(pT);
             }
-               // SECOND - iterate over the tempoarary map. 
+               // SECOND - iterate over the tempoarary map.
             OrbAlmMap::const_iterator citT;
             for (citT=tempMap2.begin();citT!=tempMap2.end();citT++)
             {
-               const OrbAlm* oeb = citT->second; 
+               const OrbAlm* oeb = citT->second;
                if (detail==2) oeb->dump(s);
-               else oeb->dumpTerse(s); 
-               s << std::endl;          
+               else oeb->dumpTerse(s);
+               s << std::endl;
             }
                // Then clear the temp maps
             tempMap2.clear();
@@ -368,13 +368,13 @@ namespace gnsstk
    }
 
 //------------------------------------------------------------------------------------
-      /// Convenience method.  Since 
+      /// Convenience method.  Since
    unsigned short OrbAlmStore::addMessage(const PackedNavBits& pnb)
    {
-      unsigned short retVal = ADD_NEITHER; 
+      unsigned short retVal = ADD_NEITHER;
       try
       {
-         OrbAlm* p = orbAlmFactory.convert(pnb); 
+         OrbAlm* p = orbAlmFactory.convert(pnb);
          if (p)
          {
             retVal = addOrbAlm(p);
@@ -397,18 +397,18 @@ namespace gnsstk
 // It should keep the one with the earliest transmit time.
 //
 // There are two maps to be updated and the satellite ids associated
-// with the OrbAlm object are not always the satellite IDs to be 
-// uas as the key. 
+// with the OrbAlm object are not always the satellite IDs to be
+// uas as the key.
 //
-// It is assumed that the provided OrbAlm already contains the 
-// SatID of the subject satellite. 
-//------------------------------------------------------------------------------------ 
-   unsigned short OrbAlmStore::addOrbAlm( const OrbAlm* alm, 
+// It is assumed that the provided OrbAlm already contains the
+// SatID of the subject satellite.
+//------------------------------------------------------------------------------------
+   unsigned short OrbAlmStore::addOrbAlm( const OrbAlm* alm,
                                           const bool isXmitHealthy )
    {
-      unsigned short retVal = ADD_NEITHER; 
+      unsigned short retVal = ADD_NEITHER;
       bool test1 = false;
-      bool test2 = false; 
+      bool test2 = false;
       try
       {
             // First work on the subject almanac map.
@@ -416,7 +416,7 @@ namespace gnsstk
          {
             OrbAlmMap& oem = subjectAlmMap[alm->subjectSV];
             test1 = addOrbAlmToOrbAlmMap(alm,oem);
-         } 
+         }
 
             // Then work on the xmitAlmMap
          if ((alm->satID).id>0)
@@ -432,18 +432,18 @@ namespace gnsstk
       }
       if (test1 || test2)
       {
-         updateInitialFinal(alm); 
+         updateInitialFinal(alm);
          if (test1) retVal |= ADD_SUBJ;
          if (test2) retVal |= ADD_XMIT;
       }
-      return retVal; 
+      return retVal;
    }
 
       //-----------------------------------------------------------------------------
       // This is a protected method.  In this case, the appropriate
       // OrbAlmMap has already been selected by satllite.  Now the
-      // question is where to add this element into that map.  
-   bool OrbAlmStore::addOrbAlmToOrbAlmMap( const OrbAlm* alm, 
+      // question is where to add this element into that map.
+   bool OrbAlmStore::addOrbAlmToOrbAlmMap( const OrbAlm* alm,
                                            OrbAlmMap& oem)
    {
       try
@@ -476,9 +476,9 @@ namespace gnsstk
             }
          }
 
-            // If the new almanac does not match any existing almanac, 
+            // If the new almanac does not match any existing almanac,
             // it will be added to the map.
-         oem.insert(OrbAlmMap::value_type(alm->beginValid,alm->clone())); 
+         oem.insert(OrbAlmMap::value_type(alm->beginValid,alm->clone()));
       }
       catch(Exception& e)
       {
@@ -486,7 +486,7 @@ namespace gnsstk
       }
       return true;
    }
-    
+
       //-----------------------------------------------------------------------------
    void OrbAlmStore::edit(const CommonTime& tmin, const CommonTime& tmax)
       throw()
@@ -497,18 +497,18 @@ namespace gnsstk
 
          OrbAlmMap::iterator lower = eMap.lower_bound(tmin);
          if (lower != eMap.begin())
-         { 
+         {
             for (OrbAlmMap::iterator emi = eMap.begin(); emi != lower; emi++)
-               delete emi->second;        
+               delete emi->second;
             eMap.erase(eMap.begin(), lower);
-         } 
+         }
 
          OrbAlmMap::iterator upper = eMap.upper_bound(tmax);
          if (upper != eMap.end())
          {
             for (OrbAlmMap::iterator emi = upper; emi != eMap.end(); emi++)
-               delete emi->second; 
-            eMap.erase(upper, eMap.end());          
+               delete emi->second;
+            eMap.erase(upper, eMap.end());
          }
       }
 
@@ -522,18 +522,18 @@ namespace gnsstk
 
             OrbAlmMap::iterator lower = eMap.lower_bound(tmin);
             if (lower != eMap.begin())
-            { 
+            {
                for (OrbAlmMap::iterator emi = eMap.begin(); emi != lower; emi++)
-                  delete emi->second;        
+                  delete emi->second;
                eMap.erase(eMap.begin(), lower);
-            } 
+            }
 
             OrbAlmMap::iterator upper = eMap.upper_bound(tmax);
             if (upper != eMap.end())
             {
                for (OrbAlmMap::iterator emi = upper; emi != eMap.end(); emi++)
-                  delete emi->second; 
-               eMap.erase(upper, eMap.end());          
+                  delete emi->second;
+               eMap.erase(upper, eMap.end());
             }
          }
       }
@@ -603,11 +603,11 @@ namespace gnsstk
             const UniqueAlmMap& uam = i2->second;
             for (i3=uam.begin();i3!=uam.end();i3++)
             {
-               counter += i3->second.size(); 
+               counter += i3->second.size();
             }
          }
       }
-      return counter;      
+      return counter;
    }
 
       //-----------------------------------------------------------------------------
@@ -632,7 +632,7 @@ namespace gnsstk
    unsigned OrbAlmStore::sizeXmitAlm(const SatID& xmitID) const
       throw()
    {
-      unsigned counter = 0; 
+      unsigned counter = 0;
       XmitAlmMap::const_iterator i2 = xmitAlmMap.find(xmitID);
       if (i2!=xmitAlmMap.end())
       {
@@ -640,11 +640,11 @@ namespace gnsstk
          const UniqueAlmMap& uam = i2->second;
          for (i3=uam.begin();i3!=uam.end();i3++)
          {
-            counter += i3->second.size(); 
+            counter += i3->second.size();
          }
       }
       return counter;
-   } 
+   }
 
       //-----------------------------------------------------------------------------
    std::list<SatID> OrbAlmStore::listOfSubjectSV() const
@@ -656,7 +656,7 @@ namespace gnsstk
          SatID sid = cit->first;
          retList.push_back(sid);
       }
-      return retList; 
+      return retList;
    }
 
       //-----------------------------------------------------------------------------
@@ -674,7 +674,7 @@ namespace gnsstk
          retSet.insert(sidr);
       }
       return retSet;
-   } 
+   }
 
       //-----------------------------------------------------------------------------
       // Added for parallelism with OrbElemStore
@@ -691,35 +691,35 @@ namespace gnsstk
 // in question at the time of interest).
 // Since this case addresses almanac data, there is NO concern regarding
 // period of effectivity.  The method simply looks for the most recently
-// transmitted almanac.   Unfortunately, given that the KEY is the 
-// epoch time, that search is not a simple find.   HOWEVER, we want to 
-// keep the map in time-order by epoch time due to other concerns. 
+// transmitted almanac.   Unfortunately, given that the KEY is the
+// epoch time, that search is not a simple find.   HOWEVER, we want to
+// keep the map in time-order by epoch time due to other concerns.
 //-----------------------------------------------------------------------------
    const OrbAlm*
-   OrbAlmStore::find(const OrbAlmMap& em, 
+   OrbAlmStore::find(const OrbAlmMap& em,
                      const CommonTime& t,
                      const bool useEffectivity) const
    {
-      OrbAlmMap::const_iterator cit; 
-      const OrbAlm* candidate = NULL; 
+      OrbAlmMap::const_iterator cit;
+      const OrbAlm* candidate = NULL;
 
          // For the moment, this is implemented as a dirt-stupid linear search
          // from the beginning of the map.  If we ever want to process
-         // weeks-and-weeks of almanac data at once, we will want to 
-         // reconsider this. 
-      OrbAlmMap::const_iterator previt = em.end(); 
-      bool first = true; 
+         // weeks-and-weeks of almanac data at once, we will want to
+         // reconsider this.
+      OrbAlmMap::const_iterator previt = em.end();
+      bool first = true;
       for (cit=em.begin();cit!=em.end();cit++)
       {
          OrbAlm* testp = cit->second;
          if (first)
          {
                // If the very first item in the map has a transmit time
-               // later than the time of interest, then the best we can 
+               // later than the time of interest, then the best we can
                // do is return that item.
-            if (testp->beginValid >= t) 
+            if (testp->beginValid >= t)
             {
-               candidate = cit->second; 
+               candidate = cit->second;
                break;
             }
             first = false;
@@ -730,17 +730,17 @@ namespace gnsstk
             {
                candidate = previt->second;
                break;
-            } 
+            }
          }
 
-            // Store this pointer as a POSSIBLE candidate, 
-            // and move on the next item. 
-         previt = cit; 
+            // Store this pointer as a POSSIBLE candidate,
+            // and move on the next item.
+         previt = cit;
       }
 
          // We reached the end of the map without finding a transmit
          // time beyond the time of interest.  Return the last item
-         // in the map. 
+         // in the map.
       if (candidate == NULL)
       {
             // make sure previt is valid before we try to use it.
@@ -765,13 +765,13 @@ namespace gnsstk
          }
       }
 
-      return candidate; 
-   } 
+      return candidate;
+   }
 
 //-----------------------------------------------------------------------------
-   const OrbAlm* OrbAlmStore::find( const SatID& subjID, 
+   const OrbAlm* OrbAlmStore::find( const SatID& subjID,
                                     const CommonTime& t,
-                                    const bool useEffectivity, 
+                                    const bool useEffectivity,
                                     const SatID& xmitID )
       const
    {
@@ -781,29 +781,29 @@ namespace gnsstk
          if (xmitID==invalidSatID)
          {
             const OrbAlmMap& oam = getOrbAlmMap(subjID);
-            oeb = find(oam,t,useEffectivity); 
+            oeb = find(oam,t,useEffectivity);
          }
          else
          {
             const OrbAlmMap& oam = getOrbAlmMap(xmitID,subjID);
-            oeb = find(oam,t,useEffectivity); 
+            oeb = find(oam,t,useEffectivity);
          }
       }
       catch (InvalidRequest ir)
       {
          GNSSTK_RETHROW(ir);
       }
-      return oeb; 
+      return oeb;
    }
 
 //-----------------------------------------------------------------------------
    CommonTime OrbAlmStore::deriveLastXmit(const OrbAlm* oap)
       const
    {
-      bool foundAtLeastOne = false; 
+      bool foundAtLeastOne = false;
       const SatID& subjID = oap->subjectSV;
       const CommonTime& epochT = oap->ctToe;
-      CommonTime retVal = CommonTime::BEGINNING_OF_TIME; 
+      CommonTime retVal = CommonTime::BEGINNING_OF_TIME;
       XmitAlmMap::const_iterator cit1;
       for (cit1=xmitAlmMap.begin();cit1!=xmitAlmMap.end();cit1++)
       {
@@ -815,7 +815,7 @@ namespace gnsstk
 
                // We're allowing for the possibility that there may be
                // different data sets with the same epoch time (sigh).
-               // Therefore, we have to do an exhaustive search using 
+               // Therefore, we have to do an exhaustive search using
                // isSameData( ) to verify that we have the correct
                // item.
             OrbAlmMap::const_iterator cit3;
@@ -825,7 +825,7 @@ namespace gnsstk
                if (testp->isSameData(oap))
                {
                   foundAtLeastOne = true;
-                  OrbAlmMap::const_iterator nextIT = cit3; 
+                  OrbAlmMap::const_iterator nextIT = cit3;
                   nextIT++;
                   if (nextIT!=mOAM.end())
                   {
@@ -838,15 +838,15 @@ namespace gnsstk
                      // If this transmitting SV transmitted the
                      // subject almanac in question and it was
                      // not replaced by the time the store ends,
-                     // then we'll assign a return value of 
+                     // then we'll assign a return value of
                      // END_OF_TIME indicating that at least
                      // one SV was still broadcasting the almanac
                      // page of interest at the end of the span
-                     // of time covered by the store. 
+                     // of time covered by the store.
                   else
                   {
-                     retVal = CommonTime::END_OF_TIME; 
-                  }  
+                     retVal = CommonTime::END_OF_TIME;
+                  }
                }
             }
          }
@@ -857,15 +857,15 @@ namespace gnsstk
          ss << "Could not derive last Xmit for almanac with subject SV "
             << subjID << " as no data for that SV is in the store.";
          InvalidRequest ir(ss.str());
-         GNSSTK_THROW(ir); 
+         GNSSTK_THROW(ir);
       }
-      return retVal; 
+      return retVal;
    }
 
 //-----------------------------------------------------------------------------
    list<SatID> OrbAlmStore::xmitBySVs(const OrbAlm* oap) const
    {
-      list<SatID> retList; 
+      list<SatID> retList;
 
       XmitAlmMap::const_iterator cit1;
       for (cit1=xmitAlmMap.begin();cit1!=xmitAlmMap.end();cit1++)
@@ -879,7 +879,7 @@ namespace gnsstk
 
                // We're allowing for the possibility that there may be
                // different data sets with the same epoch time (sigh).
-               // Therefore, we have to do an exhaustive search using 
+               // Therefore, we have to do an exhaustive search using
                // isSameData( ) to verify that we have the correct
                // item.
             OrbAlmMap::const_iterator cit3;
@@ -917,7 +917,7 @@ namespace gnsstk
 
 //-----------------------------------------------------------------------------
    const OrbAlmStore::OrbAlmMap&
-   OrbAlmStore::getOrbAlmMap(const SatID& xmitID, 
+   OrbAlmStore::getOrbAlmMap(const SatID& xmitID,
                              const SatID& subjID) const
    {
       if (!validSatSystem(subjID))
@@ -939,7 +939,7 @@ namespace gnsstk
       {
          stringstream ss;
          ss << "No OrbAlm for subject satellite " << asString(subjID)
-            << " from satellite " << asString(xmitID); 
+            << " from satellite " << asString(xmitID);
          InvalidRequest ir(ss.str());
          GNSSTK_THROW(ir);
       }
@@ -951,8 +951,8 @@ namespace gnsstk
       stringstream ss;
       ss << "                   Transmit Time " << endl;
       ss << "   Sys PRN     mm/dd/yyyy DOY HH:MM:SS ";
-      return ss.str(); 
-   } 
+      return ss.str();
+   }
 
-   
+
 } // namespace

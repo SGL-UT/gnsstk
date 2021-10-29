@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -162,7 +162,7 @@ try {
 
                      // wsrot = wanted string rinex obs type
                      string wsrot(inputWantedObsTypes[j]);
-                     
+
                      string wsys(wsrot.substr(0,1));
                      if(wsys != "*" && wsys != sys)               // different systems
                         continue;
@@ -178,7 +178,7 @@ try {
                      wantedObsTypes.push_back(srot);              // add it
                      // the number of observations for each observation type
                      countWantedObsTypes.push_back(0);
-                        
+
                      ossx << " Add obs type " << srot
                            << " =~ " << inputWantedObsTypes[j]
                            << " from " << filename << endl;
@@ -392,7 +392,7 @@ string Rinex3ObsFileLoader::asString(void)
    int i;
    static const string longfmt("%04Y/%02m/%02d %02H:%02M:%02S %4F %10.3g");
    ostringstream oss;
-   oss << "Summary of input RINEX obs data files (" << filenames.size() << "):\n"; 
+   oss << "Summary of input RINEX obs data files (" << filenames.size() << "):\n";
    for(i=0; i<filenames.size(); i++)
       oss << (i==0 ? " RINEX obs file: " : "                 ")
          << filenames[i] << endl;
@@ -422,7 +422,7 @@ string Rinex3ObsFileLoader::asString(void)
 //    {index in loader's ObsIDs for each obstype, or -1 if not in loader}
 // param[in,out] SPList vector of SatPass to which data store is written
 // return >0 number of passes created, -1 inconsistent input, -2 obstypes
-// inconsistent with existing SatPass, -3 Loader not configured to save data, 
+// inconsistent with existing SatPass, -3 Loader not configured to save data,
 // -4 no data -5 obstypes not provided for all systems
 int Rinex3ObsFileLoader::WriteSatPassList(const map<char, vector<string> >& sysSPOT,
                                           const map<char, vector<int> >& indexLoadOT,
@@ -556,7 +556,7 @@ void Rinex3ObsFileLoader::dumpSatObsTable(ostream& s) const
    for(i=0; i<wantedObsTypes.size(); i++)
       s << " " << setw(5) << wantedObsTypes[i];
    s << endl;
-   
+
    // dump the counts
    map<RinexSatID, vector<int> >::const_iterator soit;
    for(soit = SatObsCountMap.begin(); soit != SatObsCountMap.end(); ++soit) {

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -54,7 +54,7 @@
 
 namespace gnsstk
 {
-      /// @ingroup formattedfile 
+      /// @ingroup formattedfile
       //@{
 
       /** This is a class to read and parse ocean tides harmonics data
@@ -157,7 +157,7 @@ namespace gnsstk
           * @return A Matrix<double> of siw rows and eleven columns
           * containing tide harmonics M2, S2, N2, K2, K1, O1, P1, Q1, MF,
           * MM and SSA for amplitudes (radial, west, south, in meters) and
-          * phases (radial, west, south, in degrees). If station is 
+          * phases (radial, west, south, in degrees). If station is
           * not found, this method will return a matrix full of zeros.
           */
       virtual Matrix<double> getTideHarmonics(const std::string& station);

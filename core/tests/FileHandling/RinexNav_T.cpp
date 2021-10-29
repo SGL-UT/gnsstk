@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -63,11 +63,11 @@ using namespace gnsstk;
 
 /** Ephemeris subframe words at the end of a week.  Useful for a
  * week-rollover test of toe and toc as well as other things.
- * Sorry about the decimal, it came that way out of HDF5. 
+ * Sorry about the decimal, it came that way out of HDF5.
  * @note this data has been modified so that toe != toc, to facilitate
  * verifying that the appropriate quantity is used where
  * appropriate. */
-const uint32_t ephEOW[] = 
+const uint32_t ephEOW[] =
 {  583228942, 824945128,  904134685,  184026330,  459310087,
     16899638, 845363969, 0x0f647980,    4193148, 1073290676,
    583228942, 824953464,  260012308,  225364840,  787693093,
@@ -83,7 +83,7 @@ const CommonTime ephEOWhowTime1 = GPSWeekZcount(ephEOWwk, 402804);
 const CommonTime ephEOWhowTime2 = GPSWeekZcount(ephEOWwk, 402808);
 const CommonTime ephEOWhowTime3 = GPSWeekZcount(ephEOWwk, 402812);
 const long ephEOWhowSec1 = 604206;
-const long ephEOWhowSec2 = 604212; 
+const long ephEOWhowSec2 = 604212;
 const long ephEOWhowSec3 = 604218;
 const CommonTime ephEOWxmitTime1 = ephEOWhowTime1 - 6;
 const CommonTime ephEOWxmitTime2 = ephEOWhowTime2 - 6;
@@ -486,7 +486,7 @@ unsigned RinexNav_T :: filterOperatorsTest()
       // todo: This is a brokent test as of 4/25/16. In some environments
       // this test is returning a false pass and on others its failing.
    return 0;
-   
+
    TUDEF("RinexNavStream", "filterOperatorsTest");
 
    try
@@ -607,7 +607,7 @@ unsigned RinexNav_T :: castTest()
    TUASSERTFE(ephEOWiodc, rnd.IODC);
       // 7
       // not available... yay.
-      //TUASSERTFE(ephEOWxmitTimeSec1, 
+      //TUASSERTFE(ephEOWxmitTimeSec1,
    TUASSERTFE(ephEOWfitint, rnd.fitint);
 
    gnsstk::RinexNavStream out(outputTestOutput4.c_str(), std::ios::out);

@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,19 +29,19 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  * @file BrcKeplerOrbit.hpp
- * Orbit data broadcast by a GNSS in pseudo-Keplerian elements 
+ * Orbit data broadcast by a GNSS in pseudo-Keplerian elements
  * encapsulated in engineering terms
  * BrcKeplerOrbit is designed to address all the GNSS navigation message
- * formats that are based on pseudo-Keplerian elements. 
+ * formats that are based on pseudo-Keplerian elements.
  */
 
 #ifndef GNSSTK_BRCKEPLERORBIT_HPP
@@ -73,9 +73,9 @@ namespace gnsstk
       /**
        * Orbit information for a single satellite.  This class
        * encapsulates the orbit parameters in any of several
-       * navigation message formats (basically those that use 
+       * navigation message formats (basically those that use
        * Keplerian elements), provides functions to decode the
-       * as-broadcast bit-encodings, and generate SV positions 
+       * as-broadcast bit-encodings, and generate SV positions
        * as a function of time.
        */
    class BrcKeplerOrbit : public EngNav
@@ -92,23 +92,23 @@ namespace gnsstk
           */
 
          /// General purpose constructor
-      BrcKeplerOrbit( const std::string satSysArg, const ObsID obsIDArg, 
-                      const short PRNIDArg, const CommonTime beginFitArg, 
-                      const CommonTime endFitArg, const CommonTime ToeArg, 
-                      const short URAoeArg, 
-                      const bool healthyArg, const double CucArg, 
-                      const double CusArg, const double CrcArg, 
-                      const double CrsArg, const double CicArg, 
-                      const double CisArg, const double M0Arg, 
+      BrcKeplerOrbit( const std::string satSysArg, const ObsID obsIDArg,
+                      const short PRNIDArg, const CommonTime beginFitArg,
+                      const CommonTime endFitArg, const CommonTime ToeArg,
+                      const short URAoeArg,
+                      const bool healthyArg, const double CucArg,
+                      const double CusArg, const double CrcArg,
+                      const double CrsArg, const double CicArg,
+                      const double CisArg, const double M0Arg,
                       const double dnArg, const double dndotArg,
-                      const double eccArg, const double AArg, 
+                      const double eccArg, const double AArg,
                       const double AhalfArg, const double AdotArg,
-                      const double OMEGA0Arg, const double i0Arg, 
-                      const double wArg, const double OMEGAdotARg, 
+                      const double OMEGA0Arg, const double i0Arg,
+                      const double wArg, const double OMEGAdotARg,
                       const double idotArg );
 
-         /// Legacy GPS Subframe 1-3  
-      BrcKeplerOrbit( const ObsID obsIDArg,  
+         /// Legacy GPS Subframe 1-3
+      BrcKeplerOrbit( const ObsID obsIDArg,
                       const short PRNID,
                       const short fullweeknum,
                       const long subframe1[10],
@@ -143,14 +143,14 @@ namespace gnsstk
          /** Load data based on the GPS Legacy message
           * @throw InvalidParameter
           */
-      void loadData( const ObsID obsIDArg, 
-                     const short PRNID, 
+      void loadData( const ObsID obsIDArg,
+                     const short PRNID,
                      const short fullweeknum,
                      const long subframe1[10],
                      const long subframe2[10],
                      const long subframe3[10] );
 
-         /** 
+         /**
           * Returns the epoch time (time of ephemeris) from this
           * ephemeris, correcting for half weeks and HOW time.
           * @throw InvalidRequest
@@ -203,7 +203,7 @@ namespace gnsstk
           * @throw InvalidRequest
           */
       short getFullWeek() const;
-      
+
          /** This function returns the value of the SV accuracy (m)
           * computed from the accuracy information contained in the
           * nav message
@@ -216,7 +216,7 @@ namespace gnsstk
           * @throw InvalidRequest
           */
       void setAccuracy(const double& acc);
-   
+
          /**
           * @throw InvalidRequest
           */
@@ -227,49 +227,49 @@ namespace gnsstk
           * @throw InvalidRequest
           */
       double getCus() const;
-      
+
          /** This function returns the value of the sine radius
           * harmonic perturbation in meters.
           * @throw InvalidRequest
           */
       double getCrs() const;
-      
+
          /** This function returns the value of the sine inclination
           * harmonic perturbation in radians.
           * @throw InvalidRequest
           */
       double getCis() const;
-      
+
          /** This function returns the value of the cosine radius
           * harmonic perturbation in meters.
           * @throw InvalidRequest
           */
       double getCrc() const;
-      
+
          /** This function returns the value of the cosine latitude
           * harmonic perturbation in radians.
           * @throw InvalidRequest
           */
       double getCuc() const;
-      
+
          /** This function returns the value of the cosine inclination
           * harmonic perturbation in radians.
           * @throw InvalidRequest
           */
       double getCic() const;
-      
+
          /** This function returns the value of the time of orbit
           * in GPS seconds of week.
           * @throw InvalidRequest
           */
       double getToe() const;
-      
+
          /** This function returns the value of the mean anomaly in
           * radians.
           * @throw InvalidRequest
           */
       double getM0() const;
-      
+
          /** This function returns the value of the correction to the
           * mean motion in radians/second.
           * @throw InvalidRequest
@@ -281,19 +281,19 @@ namespace gnsstk
           * @throw InvalidRequest
           */
       double getDnDot() const;
-      
+
          /** This function returns the value of the eccentricity.
           * @throw InvalidRequest
           */
       double getEcc() const;
-      
-         /** This function returns the value of the 
+
+         /** This function returns the value of the
           * semi-major axis in meters.
           * @throw InvalidRequest
           */
       double getA() const;
-      
-         /** This function returns the value of the 
+
+         /** This function returns the value of the
           * square root of the semi-major axis in meters**.5.
           * @throw InvalidRequest
           */
@@ -304,37 +304,37 @@ namespace gnsstk
           * @throw InvalidRequest
           */
       double getAdot() const;
-   
+
          /** This function returns the value of the right ascension of
           * the ascending node in radians.
           * @throw InvalidRequest
           */
       double getOmega0() const;
-      
+
          /** This function returns the value of the inclination in
           * radians.
           * @throw InvalidRequest
           */
       double getI0() const;
-      
+
          /** This function returns the value of the argument of
           * perigee in radians.
           * @throw InvalidRequest
           */
       double getW() const;
-      
+
          /** This function returns the value of the rate of the right
           * ascension of the ascending node in radians/second.
           * @throw InvalidRequest
           */
       double getOmegaDot() const;
-      
+
          /** This function returns the value of the rate of the
           * inclination in radians/second.
           * @throw InvalidRequest
           */
       double getIDot() const;
-      
+
          /** Compute satellite position at the given time
           * using this orbit data.
           * @throw InvalidRequest if a required subframe has not been stored.
@@ -345,7 +345,7 @@ namespace gnsstk
           * @throw InvalidRequest if a required subframe has not been stored.
           */
       double svRelativity(const CommonTime& t) const;
-      
+
          /** Output the contents of this orbit data to the given stream. */
       void dump(std::ostream& s = std::cout) const throw();
 
@@ -379,7 +379,7 @@ namespace gnsstk
       double   ecc;           /**< Eccentricity */
       double   A;             /**< Semi-major axis (m) */
       double   Ahalf;         /**< Square Root of semi-major axis (m**.5) */
-      double   Adot;          /**< Rate of semi-major axis (m/sec) */ 
+      double   Adot;          /**< Rate of semi-major axis (m/sec) */
       double   OMEGA0;        /**< Rt ascension of ascending node (rad) */
       double   i0;            /**< Inclination (rad) */
       double   w;             /**< Argument of perigee (rad) */
@@ -394,7 +394,7 @@ namespace gnsstk
          //@}
 
       friend class ::BrcKeplerOrbit_T;
-      friend std::ostream& operator<<(std::ostream& s, 
+      friend std::ostream& operator<<(std::ostream& s,
                                       const BrcKeplerOrbit& eph);
 
    }; // class BrcKeplerOrbit

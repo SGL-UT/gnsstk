@@ -1,6 +1,6 @@
 //==============================================================================
 //
-//  This file is part of GNSSTk, the GNSS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
 //  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -72,9 +72,9 @@ public:
    void init();
 
    unsigned createStore();
-   unsigned test_MT30(); 
-   unsigned test_MT32(); 
-   unsigned test_MT33(); 
+   unsigned test_MT30();
+   unsigned test_MT32();
+   unsigned test_MT33();
 
       /**
        * @throw InvalidRequest */
@@ -96,16 +96,16 @@ public:
    OrbSysStore oss;
    NavID nid;
 
-   ofstream out; 
+   ofstream out;
 
       // For testing the test
-   int debugLevel;   
+   int debugLevel;
 };
 
 OrbSysGpsC_T::
 OrbSysGpsC_T(): nid(NavType::GPSCNAVL2)
 {
-   debugLevel = 0; 
+   debugLevel = 0;
    init();
 }
 
@@ -113,13 +113,13 @@ unsigned OrbSysGpsC_T::
 createStore()
 {
    bool loadFail = false;
-   unsigned retVal = 0; 
+   unsigned retVal = 0;
    string currMethod = typeDesc + " create/store OrbSysGpsC objects";
    TUDEF("OrbSysGpsC",currMethod);
 
       // Open an output stream specific to this navigation message type
-      // All the navigation message data will be placed here. 
-   oss.setDebugLevel(debugLevel); 
+      // All the navigation message data will be placed here.
+   oss.setDebugLevel(debugLevel);
 
    list<PackedNavBits>::const_iterator cit;
    for (cit=dataList.begin();cit!=dataList.end();cit++)
@@ -145,14 +145,14 @@ createStore()
    }
 
    if (loadFail) retVal = 1;
-   return retVal; 
+   return retVal;
 }
 
 void OrbSysGpsC_T::
 init()
 {
    dataList.clear();
-} 
+}
 
 void OrbSysGpsC_T::
 setUpCNAV()
@@ -160,14 +160,14 @@ setUpCNAV()
    init();
 
       // Define state variables for writing an CNAV data
-   gnsstk::ObsID currObsID(gnsstk::ObservationType::NavMsg, 
-                    gnsstk::CarrierBand::L2, 
+   gnsstk::ObsID currObsID(gnsstk::ObservationType::NavMsg,
+                    gnsstk::CarrierBand::L2,
                     gnsstk::TrackingCode::L2CML);
    typeDesc = "GPS_CNAV";
    initialCT = CivilTime(2017,1,1,00,00,24,TimeSystem::GPS);
    finalCT   = CivilTime(2017,1,1,00,54,12,TimeSystem::GPS);
 
-      // Literals for CNAV test data 
+      // Literals for CNAV test data
       // Test data set corresponds to Dec 30, 2016 - Jan 1, 2017 in order to test Dec 31, 2016-Jan 1, 2017 Leap Second Event
    const unsigned short CNavExCount = 42;
    const std::string CNavEx[] =
@@ -231,9 +231,9 @@ setUpCNAV()
    }
    return;
 }
- 
+
    //-------------------------------------------------
-   gnsstk::PackedNavBits 
+   gnsstk::PackedNavBits
    OrbSysGpsC_T::
    getPnbCNav(const gnsstk::ObsID& oidr, const std::string& str)
    {
@@ -243,7 +243,7 @@ setUpCNAV()
             // There should be 18 words
          vector<string> words = StringUtils::split(str,',');
          unsigned short numWords = words.size();
-         if (numWords!=18) 
+         if (numWords!=18)
          {
             stringstream ss;
             ss << "Line format problem. ";
@@ -256,15 +256,15 @@ setUpCNAV()
          int week = gnsstk::StringUtils::asInt(words[3]);
          double sow = gnsstk::StringUtils::asDouble(words[4]);
          CommonTime ct = GPSWeekSecond(week,sow,TimeSystem::GPS);
-         
+
             // Convert the PRN to a SatID
          int prn = StringUtils::asInt(words[5]);
          SatID sid(prn,SatelliteSystem::GPS);
 
             // Get the message ID
-         int msgID = StringUtils::asInt(words[7]); 
+         int msgID = StringUtils::asInt(words[7]);
 
-         PackedNavBits pnb(sid,oidr,ct); 
+         PackedNavBits pnb(sid,oidr,ct);
 
             // Load the raw data
             // Words 0-8 have 32 bits.
@@ -276,7 +276,7 @@ setUpCNAV()
          {
             int ndx = i + offset;
             string hexStr = StringUtils::strip(words[ndx]);
-            string::size_type n = hexStr.find("x"); 
+            string::size_type n = hexStr.find("x");
             hexStr = hexStr.substr(n+1);
             unsigned long bits = StringUtils::x2uint(hexStr);
             if (offset<9) pnb.addUnsignedLong(bits,32,1);
@@ -295,7 +295,7 @@ setUpCNAV()
          ss << "String conversion error:'" << str << "'.";
          InvalidParameter ip(ss.str());
          GNSSTK_THROW(ip);
-      }  
+      }
    }
 
 // Stub for future methods that may be written
@@ -305,7 +305,7 @@ test_MT30()
    string currMethod = typeDesc + " MT30 get methods";
    TUDEF("OrbSysGpsC",currMethod);
    unsigned retVal = 0;
-   return retVal; 
+   return retVal;
 }
 
 unsigned OrbSysGpsC_T::
@@ -315,17 +315,17 @@ test_MT32()
    TUDEF("OrbSysGpsC_32",currMethod);
    unsigned retVal = 0;
 
-   double epsilon = 1.0e-9; 
+   double epsilon = 1.0e-9;
 
    // We want to verify UT1 is appropriate in the following cases:
    //  1.)  At the beginning of the day of the leap second (IS-GPS-200 20.3.3.5.2.4.a)
-   //  2.)  During the leap second transition wherre UTC is discontinuous but UT1 is 
+   //  2.)  During the leap second transition wherre UTC is discontinuous but UT1 is
    //       continuous (23:59:59, 23:59:60, and 00:00:00 UTC).
-   //       In this case, 
+   //       In this case,
    //  3.)  At the end of the day after the leap second (once a new upload has occurred).
    static const unsigned int NVALUES = 5;
    CommonTime test[NVALUES];
-   test[0] = CivilTime(2016,12,31, 0,00,00, TimeSystem::GPS); 
+   test[0] = CivilTime(2016,12,31, 0,00,00, TimeSystem::GPS);
    test[1] = CivilTime(2017, 1, 1, 0,00,16, TimeSystem::GPS);
    test[2] = CivilTime(2017, 1, 1, 0,00,17, TimeSystem::GPS);
    test[3] = CivilTime(2017, 1, 1, 0,00,18, TimeSystem::GPS);
@@ -342,8 +342,8 @@ test_MT32()
    {
       try
       {
-         CommonTime ut1 = exercise_getUT1(test[i]); 
-         //cout << "ct, ut1: " << printTime(test[i],"%02H:%02M:%02S") 
+         CommonTime ut1 = exercise_getUT1(test[i]);
+         //cout << "ct, ut1: " << printTime(test[i],"%02H:%02M:%02S")
          //     << ", " << printTime(ut1,"%02H:%02M:%015.12f") << endl;
          double diff = ut1 - truth[i];
          TUASSERTFEPS(diff,0.0,epsilon);
@@ -356,7 +356,7 @@ test_MT32()
       }
    }
 
-   TURETURN(); 
+   TURETURN();
 }
 
 CommonTime OrbSysGpsC_T::
@@ -385,7 +385,7 @@ exercise_getUT1(CommonTime& currT)
       GNSSTK_RETHROW(ir);
    }
 
-   CommonTime utc = currT - mt33->getUtcOffset(currT); 
+   CommonTime utc = currT - mt33->getUtcOffset(currT);
    utc.setTimeSystem(TimeSystem::UTC);
    CommonTime ut1 = mt32->getUT1(currT,mt33);
    return ut1;
@@ -426,17 +426,17 @@ test_MT33()
 
    currMethod = "getUtcOffset()";
    TUCSM(currMethod);
-   double epsilon = 1.0e-9; 
+   double epsilon = 1.0e-9;
 
    // We want to verify UTC is appropriate in the following cases:
    //  1.)  At the beginning of the day of the leap second (IS-GPS-200 20.3.3.5.2.4.a)
-   //  2.)  During the leap second transition wherre UTC is discontinuous but UT1 is 
+   //  2.)  During the leap second transition wherre UTC is discontinuous but UT1 is
    //       continuous (23:59:59, 23:59:60, and 00:00:00 UTC).
-   //       In this case, 
+   //       In this case,
    //  3.)  At the end of the day after the leap second (once a new upload has occurred).
    static const unsigned int NVALUES = 5;
    CommonTime test[NVALUES];
-   test[0] = CivilTime(2016,12,31, 0,00,00, TimeSystem::GPS); 
+   test[0] = CivilTime(2016,12,31, 0,00,00, TimeSystem::GPS);
    test[1] = CivilTime(2017, 1, 1, 0,00,16, TimeSystem::GPS);
    test[2] = CivilTime(2017, 1, 1, 0,00,17, TimeSystem::GPS);
    test[3] = CivilTime(2017, 1, 1, 0,00,18, TimeSystem::GPS);
@@ -455,14 +455,14 @@ test_MT33()
       {
          odsp = oss.find(nid,33,test[i]);
          mt33 = dynamic_cast<const OrbSysGpsC_33*>(odsp);
-         double uoff = mt33->getUtcOffset(test[i]); 
+         double uoff = mt33->getUtcOffset(test[i]);
 
          char tchar[40];
-         sprintf(tchar,"%15.12f",uoff); 
+         sprintf(tchar,"%15.12f",uoff);
          string tstr(tchar);
          /*
-         cout << "ct, utc offset: " << printTime(test[i],"%02m/%02d/%04Y %02H:%02M:%02S") 
-              << ", " << tstr 
+         cout << "ct, utc offset: " << printTime(test[i],"%02m/%02d/%04Y %02H:%02M:%02S")
+              << ", " << tstr
               << ", dtLS, dtLSF, A0, A1, A2 : " << mt33->dtLS << ", " << mt33->dtLSF
               << ", " << mt33->A0 << ", " << mt33->A1 << ", " << mt33->A2
               << ", tot " << printTime(mt33->ctEpoch,"%02m/%02d/%04Y %02H:%02M:%02S")
@@ -479,19 +479,19 @@ test_MT33()
       }
    }
 
-   TURETURN(); 
+   TURETURN();
 }
 
 int main(int argc, char *argv[])
 {
   unsigned errorTotal = 0;
-  
+
   OrbSysGpsC_T testClass;
 
   testClass.setUpCNAV();
   errorTotal += testClass.createStore();
 
-     // Since MT32 operation is dependent on MT33, we should test MT33 first. 
+     // Since MT32 operation is dependent on MT33, we should test MT33 first.
   errorTotal += testClass.test_MT33();
 
   errorTotal += testClass.test_MT32();
