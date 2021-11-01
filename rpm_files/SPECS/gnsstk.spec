@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 12.0.0
+%define version 12.1.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,25 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 28 2021 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v12.1.0 release
+- Update SolarPosition SWIG bindings to map output data.
+- Add FREQ_STEP_GLONASS_* constants to FreqConsts.hpp
+- Update copyright statement.
+- Fix PNBBDSD2NavDataFactory so it doesn't dump core if subframe 1 page 2 is missing
+- Fix PNBMultiGNSSNavDataFactory so it knows about BeiDou D2
+- Fix SEMNavDataFactory so it properly sets a timestamp of the data
+- Remove references to latex documentation that no longer exists
+- Fix ClockSatStore where it was interpolating clock drift instead of drift rate.
+- Add "Mixed" satellite system to RinexSatID translation to strings.
+- Fix RINEX 3 nav headers to preserve leading spaces in comments
+- Update conda recipe to use local src already checked out.
+- Add explicit debian dependency fom python-gnsstk to python-enum34.
+- Add PNBNavDataFactory code snippet do newnav docs
+- Update pipeline to use new windows VM instance
+- Add some constants for BeiDou.
+- Update Remove embedded libgnsstk.so from python
+- Update pipeline retry job setting
 * Wed Sep 15 2021 David Barber <dbarber@arlut.utexas.edu>
 - Use Pip to instal python wheel.
 - Rename gpstk to gnsstk  

@@ -1,3 +1,28 @@
+gnsstk (12.1.0-1) stable; urgency=low
+
+  * Updated to version 12.1.0
+  * Update pipeline retry job setting
+  * Update Remove embedded libgnsstk.so from python
+  * Add some constants for BeiDou.
+  * Update pipeline to use new windows VM instance
+  * Add PNBNavDataFactory code snippet do newnav docs
+  * Add explicit debian dependency fom python-gnsstk to python-enum34.
+  * Update conda recipe to use local src already checked out.
+  * Fix RINEX 3 nav headers to preserve leading spaces in comments
+  * Add "Mixed" satellite system to RinexSatID translation to strings.
+  * Fix ClockSatStore where it was interpolating clock drift instead of
+    drift rate.
+  * Remove references to latex documentation that no longer exists
+  * Fix SEMNavDataFactory so it properly sets a timestamp of the data
+  * Fix PNBMultiGNSSNavDataFactory so it knows about BeiDou D2
+  * Fix PNBBDSD2NavDataFactory so it doesn't dump core if subframe 1
+    page 2 is missing
+  * Update copyright statement.
+  * Add FREQ_STEP_GLONASS_* constants to FreqConsts.hpp
+  * Update SolarPosition SWIG bindings to map output data.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 28 Oct 2021 13:37:28 -0500
+
 gnsstk (12.0.0-1) stable; urgency=low
 
   * Updated to version 12.0.0
