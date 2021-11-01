@@ -769,7 +769,7 @@ package_conda:
     # Don't archive the cache files.
     - rm -r conda-bld/linux-64/.cache
     # Display the contents of the py36 tarball
-    - tar -tf conda-bld/linux-64/gnsstk-12.0.0-py36*.tar.bz2
+    - tar -tf conda-bld/linux-64/gnsstk-*py36*.tar.bz2
   artifacts:
     paths:
       - conda-bld/linux-64/
