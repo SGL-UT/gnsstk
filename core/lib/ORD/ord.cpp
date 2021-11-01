@@ -119,13 +119,18 @@ double IonosphereModelCorrection(const gnsstk::IonoModelStore& ionoModel,
 }
 
 gnsstk::Xvt getSvXvt(const gnsstk::SatID& satId, const gnsstk::CommonTime& time,
-        const gnsstk::XvtStore<gnsstk::SatID>& ephemeris) {
-    return ephemeris.getXvt(satId, time);
+        NavLibrary& ephemeris) {
+   Xvt rv;
+      /** @todo getXvt was expected to throw an exception on failure
+       * in the past.  This assert more or less mimics that behavior.
+       * Refactoring is needed.  */
+   GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), time, rv));
+   return rv;
 }
 
 double RawRange1(const gnsstk::Position& rxLoc, const gnsstk::SatID& satId,
         const gnsstk::CommonTime& timeReceived,
-        const gnsstk::XvtStore<gnsstk::SatID>& ephemeris, gnsstk::Xvt& svXvt) {
+        NavLibrary& ephemeris, gnsstk::Xvt& svXvt) {
     try {
         int nit;
         double tof, tof_old, rawrange;
@@ -143,7 +148,11 @@ double RawRange1(const gnsstk::Position& rxLoc, const gnsstk::SatID& satId,
             tof_old = tof;
             // get SV position
             try {
-                svPosVel = ephemeris.getXvt(satId, transmit);
+                  /** @todo getXvt was expected to throw an exception on
+                   * failure in the past.  This assert more or less mimics
+                   * that behavior.  Refactoring is needed.  */
+               GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), transmit,
+                                              svPosVel));
             } catch (InvalidRequest& e) {
                 GNSSTK_RETHROW(e);
             }
@@ -165,7 +174,7 @@ double RawRange1(const gnsstk::Position& rxLoc, const gnsstk::SatID& satId,
 
 double RawRange2(double pseudorange, const gnsstk::Position& rxLoc,
         const gnsstk::SatID& satId, const gnsstk::CommonTime& time,
-        const gnsstk::XvtStore<gnsstk::SatID>& ephemeris, gnsstk::Xvt& svXvt) {
+        NavLibrary& ephemeris, gnsstk::Xvt& svXvt) {
     try {
         CommonTime tt, transmit;
         Xvt svPosVel;     // Initialize to zero
@@ -181,7 +190,11 @@ double RawRange2(double pseudorange, const gnsstk::Position& rxLoc,
         for (int i = 0; i < 2; i++) {
             // get SV position
             try {
-                svPosVel = ephemeris.getXvt(satId, tt);
+                  /** @todo getXvt was expected to throw an exception on
+                   * failure in the past.  This assert more or less mimics
+                   * that behavior.  Refactoring is needed.  */
+               GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), tt,
+                                              svPosVel));
             } catch (InvalidRequest& e) {
                 GNSSTK_RETHROW(e);
             }
@@ -207,11 +220,16 @@ double RawRange2(double pseudorange, const gnsstk::Position& rxLoc,
 
 double RawRange3(double pseudorange, const gnsstk::Position& rxLoc,
         const gnsstk::SatID& satId, const gnsstk::CommonTime& time,
-        const gnsstk::XvtStore<gnsstk::SatID>& ephemeris, gnsstk::Xvt& svXvt) {
+        NavLibrary& ephemeris, gnsstk::Xvt& svXvt) {
     Position trx(rxLoc);
     trx.asECEF();
 
-    Xvt svPosVel = ephemeris.getXvt(satId, time);
+    Xvt svPosVel;
+       /** @todo getXvt was expected to throw an exception on
+        * failure in the past.  This assert more or less mimics
+        * that behavior.  Refactoring is needed.  */
+    GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), time,
+                                   svPosVel));
 
     // compute rotation angle in the time of signal transit
 
@@ -237,10 +255,15 @@ double RawRange3(double pseudorange, const gnsstk::Position& rxLoc,
 
 double RawRange4(const gnsstk::Position& rxLoc, const gnsstk::SatID& satId,
         const gnsstk::CommonTime& time,
-        const gnsstk::XvtStore<gnsstk::SatID>& ephemeris, gnsstk::Xvt& svXvt) {
+        NavLibrary& ephemeris, gnsstk::Xvt& svXvt) {
     try {
        gnsstk::GPSEllipsoid gm;
-       Xvt svPosVel = ephemeris.getXvt(satId, time);
+       Xvt svPosVel;
+          /** @todo getXvt was expected to throw an exception on
+           * failure in the past.  This assert more or less mimics
+           * that behavior.  Refactoring is needed.  */
+       GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), time,
+                                      svPosVel));
        double pr = svPosVel.preciseRho(rxLoc, gm);
        return RawRange2(pr, rxLoc, satId, time, ephemeris, svXvt);
     }
@@ -285,7 +308,7 @@ double calculate_ord(const std::vector<CarrierBand>& bands,
                      const gnsstk::CommonTime& receive_time,
                      const gnsstk::IonoModelStore& iono_model,
                      const gnsstk::TropModel& trop_model,
-                     const gnsstk::XvtStore<gnsstk::SatID>& ephemeris,
+                     NavLibrary& ephemeris,
                      int range_method) {
     double ps_range = IonosphereFreeRange(bands, pseudoranges);
 
