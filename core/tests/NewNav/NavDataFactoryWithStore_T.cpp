@@ -1604,9 +1604,6 @@ addData(gnsstk::TestUtil& testFramework, TestClass& fact,
       dynamic_cast<gnsstk::OrbitDataKepler*>(navOut.get())->xmitTime = ct-3600;
       dynamic_cast<gnsstk::GPSLNavEph*>(navOut.get())->xmit2 = ct-3594;
       dynamic_cast<gnsstk::GPSLNavEph*>(navOut.get())->xmit3 = ct-3588;
-      // dynamic_cast<gnsstk::OrbitDataKepler*>(navOut.get())->xmitTime = ct;
-      // dynamic_cast<gnsstk::GPSLNavEph*>(navOut.get())->xmit2 = ct+6;
-      // dynamic_cast<gnsstk::GPSLNavEph*>(navOut.get())->xmit3 = ct+12;
       dynamic_cast<gnsstk::GPSLNavEph*>(navOut.get())->fixFit();
    }
    else if (nmt == gnsstk::NavMessageType::Almanac)

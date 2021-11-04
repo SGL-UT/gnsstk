@@ -80,7 +80,7 @@ namespace gnsstk
               << static_cast<unsigned>(dataValidityStatus)
               << "  " << gnsstk::StringUtils::asString(dataValidityStatus)
               << endl
-              << "  sigInSpaceAcc = " << (unsigned)sisaIndex << endl
+              << "  sigInSpaceAcc = " << static_cast<unsigned>(sisaIndex) <<endl
               << "  health = " << gnsstk::StringUtils::asString(getHealth())
               << endl;
             break;
@@ -104,12 +104,13 @@ namespace gnsstk
               << endl
               << "           HEALTH DATA" << endl
               << "SHS Bits           0x" << hex << setw(1)
-              << (unsigned)sigHealthStatus << dec << " ("
+              << static_cast<unsigned>(sigHealthStatus) << dec << " ("
               << StringUtils::asString(sigHealthStatus) << ")" << endl
               << "DVS Bits           0x" << hex << setw(1)
-              << (unsigned)dataValidityStatus << dec << " ("
+              << static_cast<unsigned>(dataValidityStatus) << dec << " ("
               << StringUtils::asString(dataValidityStatus) << ")" << endl
-              << "SISA Index         " << dec << (unsigned)sisaIndex << endl
+              << "SISA Index         " << dec
+              << static_cast<unsigned>(sisaIndex) << endl
               << "Status             " << StringUtils::asString(getHealth())
               << endl << endl;
             break;
