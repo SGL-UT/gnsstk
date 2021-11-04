@@ -384,6 +384,19 @@ namespace gnsstk
           *   transmitted ndp matches xmitHealth. */
       bool matchHealth(NavData *ndp, SVHealth xmitHealth);
 
+         /** Update initialTime and finalTime according to a fit
+          * interval or other timestamp.
+          * For orbital elements with an actual fit interval, the
+          * beginning and end of the fit interval are specified as
+          * arguments.  For tabular orbital data (e.g. SP3), the time
+          * stamp of the data is used for both parameters.
+          * @param[in] begin The start of the fit interval of the
+          *   orbital elements being processed.
+          * @param[in] end The end of the fit interval of the
+          *   orbital elements being processed.
+          * @post initialTime and/or finalTime may be updated. */
+      bool updateInitialFinal(const CommonTime& begin, const CommonTime& end);
+
          /// Internal storage of navigation data for User searches
       NavMessageMap data;
          /// Internal storage of navigation data for Nearest searches
