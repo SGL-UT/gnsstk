@@ -859,6 +859,9 @@ namespace gnsstk
       long xmit = adjHOWtime - (adjHOWtime % 30);
       double xmitSOW = (double) xmit;
       navOut.xmitTime = GPSWeekSecond(fullXmitWeekNum, (double)xmit, ts);
+         // We don't really know this, but we need to make an assumption.
+      navOut.xmit2 = navOut.xmitTime + 6;
+      navOut.xmit3 = navOut.xmitTime + 12;
 
          // Fully qualified Toe and Toc
          // As broadcast, Toe and Toc are in GPS SOW and do not include

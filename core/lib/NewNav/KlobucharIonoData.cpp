@@ -64,16 +64,16 @@ namespace gnsstk
          // "header"
       s << "****************************************************************"
         << "************" << endl
-        << " Ionospheric correction data"
+        << "Ionospheric correction data"
         << endl
         << endl
         << "PRN : " << setw(2) << signal.sat << " / "
         << "SVN : " << setw(2);
-         // std::string svn;
-         // if (getSVN(satID, ctToe, svn))
-         // {
-         //    s << svn;
-         // }
+      std::string svn;
+      if (getSVN(signal.sat, timeStamp, svn))
+      {
+         s << svn;
+      }
       s << endl << endl;
 
          // the rest is full details, so just return if Full is not asked for.
@@ -88,13 +88,11 @@ namespace gnsstk
       s.precision(0);
       s.fill(' ');
 
-      std::string timeFmt = weekFmt+dumpTimeFmt;
       s << endl
         << "           TIMES OF INTEREST"
         << endl << endl
-        << "              Week(10bt)     SOW     DOW   UTD     SOD"
-        << "   MM/DD/YYYY   HH:MM:SS\n"
-        << "Transmit:     " << printTime(timeStamp, timeFmt) << endl;
+        << "              " << getDumpTimeHdr(dl) << endl
+        << "Transmit:     " << getDumpTime(dl, timeStamp) << endl;
 
       s.setf(ios::scientific, ios::floatfield);
       s.precision(8);
@@ -103,17 +101,17 @@ namespace gnsstk
       s << endl
         << "           KLOBUCHAR IONO PARAMETERS" << endl
         << "Parameter              Value" << endl
-        << "alpha[0]     " << setw(16) << alpha[0] << " sec" << endl
-        << "alpha[1]     " << setw(16) << alpha[1] << " sec/semi-circle" << endl
-        << "alpha[2]     " << setw(16) << alpha[2] << " sec/semi-circle**2"
+        << "alpha[0]    " << setw(16) << alpha[0] << " sec" << endl
+        << "alpha[1]    " << setw(16) << alpha[1] << " sec/semi-circle" << endl
+        << "alpha[2]    " << setw(16) << alpha[2] << " sec/semi-circle**2"
         << endl
-        << "alpha[3]     " << setw(16) << alpha[3] << " sec/semi-circle**3"
+        << "alpha[3]    " << setw(16) << alpha[3] << " sec/semi-circle**3"
         << endl
-        << "beta[0]      " << setw(16) << beta[0] << " sec" << endl
-        << "beta[1]      " << setw(16) << beta[1] << " sec/semi-circle" << endl
-        << "beta[2]      " << setw(16) << beta[2] << " sec/semi-circle**2"
+        << "beta[0]     " << setw(16) << beta[0] << " sec" << endl
+        << "beta[1]     " << setw(16) << beta[1] << " sec/semi-circle" << endl
+        << "beta[2]     " << setw(16) << beta[2] << " sec/semi-circle**2"
         << endl
-        << "beta[3]      " << setw(16) << beta[3] << " sec/semi-circle**3"
+        << "beta[3]     " << setw(16) << beta[3] << " sec/semi-circle**3"
         << endl;
 
       s.flags(oldFlags);

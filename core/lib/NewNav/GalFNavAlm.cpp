@@ -117,7 +117,7 @@ namespace gnsstk
       s.setf(ios::scientific, ios::floatfield);
       s << "           PAGE OVERHEAD" << endl
         << endl
-        << "                SOW    DOW:HH:MM:SS      IODa" << endl
+        << "                SOW    DOW:HH:MM:SS         IODa" << endl
         << printTime(xmitTime,"Part 1 TOW : %6.0g  %3a-%1w:%02H:%02M:%02S")
         << setw(13) << (unsigned)ioda5 << endl
         << printTime(xmit2,"Part 2 TOW : %6.0g  %3a-%1w:%02H:%02M:%02S")

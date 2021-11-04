@@ -36,26 +36,39 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "GalINavIono.hpp"
-#include "TimeString.hpp"
-#include "YDSTime.hpp"
-#include "FreqConv.hpp"
-
-using namespace std;
+#include "DumpDetail.hpp"
 
 namespace gnsstk
 {
-   GalINavIono ::
-   GalINavIono()
+   namespace StringUtils
    {
-      weekFmt = "%4L(%4l)";
-      msgLenSec = 2.0;
-   }
+      std::string asString(DumpDetail e) throw()
+      {
+         switch (e)
+         {
+            case DumpDetail::Unknown: return "Unknown";
+            case DumpDetail::OneLine: return "OneLine";
+            case DumpDetail::Brief:   return "Brief";
+            case DumpDetail::Terse:   return "Terse";
+            case DumpDetail::Full:    return "Full";
+            default:                  return "???";
+         } // switch (e)
+      } // asString(DumpDetail)
 
 
-   bool GalINavIono ::
-   validate() const
-   {
-      return true;
-   }
-}
+      DumpDetail asDumpDetail(const std::string& s) throw()
+      {
+         if (s == "Unknown")
+            return DumpDetail::Unknown;
+         if (s == "OneLine")
+            return DumpDetail::OneLine;
+         if (s == "Brief")
+            return DumpDetail::Brief;
+         if (s == "Terse")
+            return DumpDetail::Terse;
+         if (s == "Full")
+            return DumpDetail::Full;
+         return DumpDetail::Unknown;
+      } // asDumpDetail(string)
+   } // namespace StringUtils
+} // namespace gnsstk

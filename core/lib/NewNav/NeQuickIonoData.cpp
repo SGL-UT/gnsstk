@@ -136,16 +136,16 @@ namespace gnsstk
          // "header"
       s << "****************************************************************"
         << "************" << endl
-        << " Ionospheric correction data"
+        << "Ionospheric correction data"
         << endl
         << endl
         << "PRN : " << setw(2) << signal.sat << " / "
         << "SVN : " << setw(2);
-         // std::string svn;
-         // if (getSVN(satID, ctToe, svn))
-         // {
-         //    s << svn;
-         // }
+      std::string svn;
+      if (getSVN(signal.sat, timeStamp, svn))
+      {
+         s << svn;
+      }
       s << endl << endl;
 
          // the rest is full details, so just return if Full is not asked for.
@@ -160,13 +160,11 @@ namespace gnsstk
       s.precision(0);
       s.fill(' ');
 
-      std::string timeFmt = weekFmt+dumpTimeFmt;
       s << endl
         << "           TIMES OF INTEREST"
         << endl << endl
-        << "              Week(10bt)     SOW     DOW   UTD     SOD"
-        << "   MM/DD/YYYY   HH:MM:SS\n"
-        << "Transmit:     " << printTime(timeStamp, timeFmt) << endl;
+        << "              " << getDumpTimeHdr(dl) << endl
+        << "Transmit:     " << getDumpTime(dl, timeStamp) << endl;
 
       s.setf(ios::scientific, ios::floatfield);
       s.precision(8);
@@ -174,7 +172,7 @@ namespace gnsstk
 
       s << endl
         << "           NEQUICK IONO PARAMETERS" << endl
-        << "Parameter              Value" << endl
+        << "Parameter               Value" << endl
         << "a_i0         " << setw(16) << ai[0] << " sfu" << endl
         << "a_i1         " << setw(16) << ai[1] << " sfu/degree" << endl
         << "a_i2         " << setw(16) << ai[2] << " sfu/degree**2" << endl

@@ -39,6 +39,7 @@
 #include "GPSLNavEph.hpp"
 #include "GPSWeekSecond.hpp"
 #include "TimeString.hpp"
+#include "GPS_URA.hpp"
 
 using namespace std;
 
@@ -61,6 +62,7 @@ namespace gnsstk
            alert2(false),
            alert3(false),
            codesL2(L2Codes::Invalid1),
+           aodo(-1),
            L2Pdata(false)
    {
       signal.messageType = NavMessageType::Ephemeris;
@@ -73,6 +75,14 @@ namespace gnsstk
    {
       return GPSLNavData::validate() && ((pre2 == 0) || (pre2 == 0x8b)) &&
          ((pre3 == 0) || (pre3 == 0x8b));
+   }
+
+
+   CommonTime GPSLNavEph ::
+   getUserTime() const
+   {
+      CommonTime mr = std::max({xmitTime, xmit2, xmit3});
+      return mr + 6.0;
    }
 
 
@@ -122,6 +132,52 @@ namespace gnsstk
 
 
    void GPSLNavEph ::
+   dump(std::ostream& s, DumpDetail dl) const
+   {
+      if (dl != DumpDetail::Terse)
+      {
+            // standard dump routine is fine for anything other than Terse
+         GPSLNavData::dump(s,dl);
+         return;
+      }
+      ios::fmtflags oldFlags = s.flags();
+
+      s.setf(ios::fixed, ios::floatfield);
+      s.setf(ios::right, ios::adjustfield);
+      s.setf(ios::uppercase);
+      s.precision(0);
+      s.fill(' ');
+
+      std::string svn("0");
+      if (getSVN(signal.sat, Toe, svn))
+      {
+         s << setw(2) << " " << svn << "  ";
+      }
+      else
+      {
+         s << "  XX  ";
+      }
+
+      s << setw(2) << signal.sat.id << " ! ";
+
+      string tform = "%3j %02H:%02M:%02S";
+
+      s << printTime( beginFit, tform ) << " ! ";
+      s << printTime( Toe, tform ) << " ! ";
+      s << printTime( endFit, tform ) << " !  ";
+
+      s << setw(4) << setprecision(1) << ura2accuracy(uraIndex) << "  ! ";
+      s << "0x"    << setfill('0')    << hex << setw(3) << iodc << " ! ";
+      s << "0x"    << setfill('0')    << setw(2) << (unsigned)healthBits;
+      s << setfill(' ') << dec;
+      s << "   "   << setw(2) << (unsigned)healthBits << " ! ";
+
+      s << endl;
+      s.flags(oldFlags);
+   }
+
+
+   void GPSLNavEph ::
    dumpSVStatus(std::ostream& s) const
    {
       const ios::fmtflags oldFlags = s.flags();
@@ -137,12 +193,12 @@ namespace gnsstk
         << nouppercase << iodc << dec << setfill(' ') << "      "
         << noboolalpha << alert << "     " << (asFlag ? " on" : "off") << endl
         << "SF2 HOW:   "
-        << gnsstk::printTime(xmitTime+12, "%7.0g  %3a-%1w:%02H:%02M:%02S")
+        << gnsstk::printTime(xmit2+6, "%7.0g  %3a-%1w:%02H:%02M:%02S")
         << "    0x" << hex << setw(2) << internal << setfill('0')
         << nouppercase << iode << dec << setfill(' ') << "      "
         << alert2 << "     " << (asFlag2 ? " on" : "off") << endl
         << "SF3 HOW:   "
-        << gnsstk::printTime(xmitTime+18, "%7.0g  %3a-%1w:%02H:%02M:%02S")
+        << gnsstk::printTime(xmit3+6, "%7.0g  %3a-%1w:%02H:%02M:%02S")
         << "    0x" << hex << setw(2) << internal << setfill('0')
         << nouppercase << iode << dec << setfill(' ') << "      "
         << alert3 << "     " << (asFlag3 ? " on" : "off") << endl
@@ -158,7 +214,12 @@ namespace gnsstk
         << "L2 P Nav data       :" << "       " << (L2Pdata ? "off" : " on")
         << endl << right
         << "Tgd                 :" << setw(14) << setprecision(6) << scientific
-        << tgd << " sec" << endl;
+        << uppercase << tgd << " sec" << endl;
+      if (aodo != -1)
+      {
+         s << "AODO                :" << setw(10) << aodo << " sec" << endl;
+      }
+      s << endl;
       s.flags(oldFlags);
    }
 

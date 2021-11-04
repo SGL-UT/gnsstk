@@ -220,7 +220,7 @@ enum EphBitInfo
    esiAODO = sf2, ///< AODO subframe index
    esbAODO = 287, ///< AODO start bit
    enbAODO = 5,   ///< AODO number of bits
-   escAODO = 1,   ///< AODO scale factor
+   escAODO = 900, ///< AODO scale factor
 
    esiCic = sf3, ///< Cic subframe index
    esbCic = 60,  ///< Cic start bit
@@ -570,6 +570,8 @@ namespace gnsstk
          // OrbitData = empty
          // OrbitDataKepler
       eph->xmitTime = eph->timeStamp;
+      eph->xmit2 = ephSF[sf2]->getTransmitTime();
+      eph->xmit3 = ephSF[sf3]->getTransmitTime();
       double toe = ephSF[esitoe]->asUnsignedDouble(esbtoe,enbtoe,esctoe);
       double toc = ephSF[esitoc]->asUnsignedDouble(esbtoc,enbtoc,esctoc);
       unsigned wn = ephSF[esiWN]->asUnsignedLong(esbWN,enbWN,escWN);
@@ -643,6 +645,7 @@ namespace gnsstk
       eph->codesL2 = static_cast<GPSLNavEph::L2Codes>(
          ephSF[esiL2]->asUnsignedLong(esbL2,enbL2,escL2));
       eph->L2Pdata = ephSF[esiL2P]->asUnsignedLong(esbL2P,enbL2P,escL2P);
+      eph->aodo = ephSF[esiAODO]->asUnsignedLong(esbAODO,enbAODO,escAODO);
       eph->fixFit();
       // cerr << "add LNAV eph" << endl;
       navOut.push_back(p0);
@@ -986,7 +989,7 @@ namespace gnsstk
       p0->timeStamp = navIn->getTransmitTime();
       p0->signal = NavMessageID(
          NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
-                               navIn->getobsID(), navIn->getNavID()),
+                        navIn->getobsID(), navIn->getNavID()),
          NavMessageType::TimeOffset);
       GPSLNavTimeOffset *to = dynamic_cast<GPSLNavTimeOffset*>(p0.get());
          // Bit positions taken from IS-GPS-200 figure 20-1 sheet 8,

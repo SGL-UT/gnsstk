@@ -49,7 +49,21 @@ namespace gnsstk
          : bgdE1E5a(std::numeric_limits<double>::quiet_NaN()),
            bgdE1E5b(std::numeric_limits<double>::quiet_NaN())
    {
+      weekFmt = "%4L(%4l)";
       msgLenSec = 2.0;
+   }
+
+
+   void GalINavISC ::
+   dumpCorrections(std::ostream& s) const
+   {
+      const ios::fmtflags oldFlags = s.flags();
+      s << "           CORRECTION"
+        << endl << endl
+        << scientific << setprecision(8) << setfill(' ')
+        << setw(20) << left << "BGD(E1,E5a):" << setw(15) << bgdE1E5a << endl
+        << setw(20) << left << "BGD(E1,E5b):" << setw(15) << bgdE1E5b << endl;
+      s.flags(oldFlags);
    }
 
 

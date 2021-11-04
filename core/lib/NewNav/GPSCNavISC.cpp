@@ -58,6 +58,22 @@ namespace gnsstk
    }
 
 
+   void GPSCNavISC ::
+   dumpCorrections(std::ostream& s) const
+   {
+      const ios::fmtflags oldFlags = s.flags();
+      s << "           CORRECTION"
+        << endl << endl
+        << scientific << setprecision(8) << setfill(' ')
+        << setw(20) << left << "Tgd:" << setw(15) << isc << endl
+        << setw(20) << left << "ISC_L1C/A:" << setw(15) << iscL1CA << endl
+        << setw(20) << left << "ISC_L2C:" << setw(15) << iscL2C << endl
+        << setw(20) << left << "ISC_L5I5:" << setw(15) << iscL5I5 << endl
+        << setw(20) << left << "ISC_L5Q5:" << setw(15) << iscL5Q5 << endl;
+      s.flags(oldFlags);
+   }
+
+
    bool GPSCNavISC ::
    validate() const
    {
