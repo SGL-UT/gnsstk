@@ -137,11 +137,13 @@
 // Create a python conversion of all signed valid C types with this macro
 // int, double, float, char, short, long
 %define VALIDTYPE_TEMPLATE(TYPE)
+%ignore gnsstk::ValidType::operator TYPE() const;
 %template(ValidType_ ## TYPE) gnsstk::ValidType<TYPE>;
 %enddef
 
 // Create a python conversion of all valid C types with this macro
 // uchar, ushort, uint, ulong
 %define UNSIGNED_VALIDTYPE_TEMPLATE(TYPE)
-%template(ValidType_ ## u ## TYPE) ValidType<unsigned TYPE>;
+%ignore gnsstk::ValidType::operator unsigned TYPE() const;
+%template(ValidType_ ## u ## TYPE) gnsstk::ValidType<unsigned TYPE>;
 %enddef
