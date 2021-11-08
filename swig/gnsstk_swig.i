@@ -1,5 +1,6 @@
 %include "Exception.hpp"
 %include "TimeConstants.hpp"
+%include "EnumIterator.hpp"
 %include "TimeSystem.hpp"
 %include "TimeSystemConverter.hpp"
 %include "CommonTime.hpp"
@@ -9,7 +10,6 @@
 %include "ANSITime.hpp"
 %include "AllanDeviation.hpp"
 %include "gps_constants.hpp"
-%include "EnumIterator.hpp"
 %include "SatelliteSystem.hpp"
 %template(std_vector_GNSS)       std::vector<gnsstk::SatelliteSystem>;
 %include "SatID.hpp"
@@ -54,6 +54,7 @@
 %include "TimeConverters.hpp"
 %include "EphTime.hpp"
 %include "AtmLoadTides.hpp"
+/* %include "BDSD1Bits.hpp" */
 %include "Rinex3ObsBase.hpp"
 %include "ObservationType.hpp"
 %template(std_map_ObservationType_string) std::map<gnsstk::ObservationType, std::string>;
@@ -100,6 +101,7 @@
 %include "TimeOffsetData.hpp"
 %include "StdNavTimeOffset.hpp"
 %include "BDSD1NavTimeOffset.hpp"
+/* %include "BDSD2Bits.hpp" */
 %include "BDSD2NavData.hpp"
 %include "BDSD2NavAlm.hpp"
 %include "BDSD2NavEph.hpp"
@@ -275,6 +277,11 @@
 /* %include "EOPPrediction.hpp" */
 /* %include "EOPStore.hpp" */
 %include "EngAlmanac.hpp"
+%include "NavValidityType.hpp"
+%include "NavSearchOrder.hpp"
+%include "NavDataFactory.hpp"
+%include "NavLibrary.hpp"
+%include "ValidType.hpp"
 %include "EphemerisRange.hpp"
 %feature("flatnested");
 %include "IonoModel.hpp"
@@ -282,7 +289,6 @@
 %feature("flatnested");
 %include "IonoModelStore.hpp"
 %feature("flatnested", "");
-%include "ValidType.hpp"
 %include "SvObsEpoch.hpp"
 %template(std_map_ObsEpoch) std::map<gnsstk::SatID, gnsstk::SvObsEpoch>;
 %include "ObsEpochMap.hpp"
@@ -424,18 +430,14 @@
 %include "MatrixOperators.hpp"
 %include "MetReader.hpp"
 %include "MostCommonValue.hpp"
-%include "NavValidityType.hpp"
-%include "NavSearchOrder.hpp"
-%include "NavDataFactory.hpp"
 %include "NavDataFactoryWithStore.hpp"
 %include "NavDataFactoryWithStoreFile.hpp"
+%include "NDFUniqIterator.hpp"
+%template (NDFUniqIterator_NavDataFactoryMap) gnsstk::NDFUniqIterator<gnsstk::NavDataFactoryMap>;
 %include "MultiFormatNavDataFactory.hpp"
 %include "NDFUniqConstIterator.hpp"
 %template (NDFUniqConstIterator_NavDataFactoryMap) gnsstk::NDFUniqConstIterator<gnsstk::NavDataFactoryMap>;
-%include "NDFUniqIterator.hpp"
-%template (NDFUniqIterator_NavDataFactoryMap) gnsstk::NDFUniqIterator<gnsstk::NavDataFactoryMap>;
 %include "NEDUtil.hpp"
-%include "NavLibrary.hpp"
 %include "NavMsgData.hpp"
 %include "NavMsgDataBits.hpp"
 %include "NavMsgDataPNB.hpp"

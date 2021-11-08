@@ -5,3 +5,4 @@
 //%include "Exception.i"
 
 %include "FormattedDouble.i"
+%include "ValidType.i"
