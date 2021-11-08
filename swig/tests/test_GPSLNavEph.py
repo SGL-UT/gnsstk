@@ -42,7 +42,9 @@ class TestGPSLNavEph(unittest.TestCase):
 
     def test_getUserTime(self):
         uut = gnsstk.GPSLNavEph()
-        uut.timeStamp = gnsstk.GPSWeekSecond(2100,135.0).toCommonTime()
+        uut.xmitTime = gnsstk.GPSWeekSecond(2100,135.0).toCommonTime()
+        uut.xmit2 = gnsstk.GPSWeekSecond(2100,111.0).toCommonTime()
+        uut.xmit3 = gnsstk.GPSWeekSecond(2100,147.0).toCommonTime()
         exp = gnsstk.GPSWeekSecond(2100,153.0).toCommonTime()
         self.assertEqual(exp, uut.getUserTime())
 
