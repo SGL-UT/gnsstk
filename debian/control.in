@@ -3,7 +3,7 @@ Source: gnsstk
 Priority: optional
 Maintainer: Bryan Parsons <bparsons@arlut.utexas.edu>
 Build-Depends: debhelper (>= 9), cmake, python3-dev <pkg_python>, dh-python <pkg_python>
-X-Python-Version: 2.7
+X-Python3-Version: >= 3.6
 Standards-Version: 3.9.5
 Section: libs
 Homepage: http://www.gnsstk.org/
@@ -63,7 +63,7 @@ Section: python
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python3:Depends}
 Provides: ${python3:Provides}
-XB-Python-Version: ${python:Versions}
+XB-Python-Version: ${python3:Versions}
 Description: GNSS Toolkit (GNSSTk) - Python bindings
  The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by
  the Space and Geophysics Laboratory (SGL), part of the Applied Research
