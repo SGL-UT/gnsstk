@@ -54,7 +54,7 @@
 %include "TimeConverters.hpp"
 %include "EphTime.hpp"
 %include "AtmLoadTides.hpp"
-%include "BDSD1Bits.hpp"
+/* %include "BDSD1Bits.hpp" */
 %include "Rinex3ObsBase.hpp"
 %include "ObservationType.hpp"
 %template(std_map_ObservationType_string) std::map<gnsstk::ObservationType, std::string>;
@@ -101,7 +101,7 @@
 %include "TimeOffsetData.hpp"
 %include "StdNavTimeOffset.hpp"
 %include "BDSD1NavTimeOffset.hpp"
-%include "BDSD2Bits.hpp"
+/* %include "BDSD2Bits.hpp" */
 %include "BDSD2NavData.hpp"
 %include "BDSD2NavAlm.hpp"
 %include "BDSD2NavEph.hpp"
@@ -432,11 +432,11 @@
 %include "MostCommonValue.hpp"
 %include "NavDataFactoryWithStore.hpp"
 %include "NavDataFactoryWithStoreFile.hpp"
+%include "NDFUniqIterator.hpp"
+%template (NDFUniqIterator_NavDataFactoryMap) gnsstk::NDFUniqIterator<gnsstk::NavDataFactoryMap>;
 %include "MultiFormatNavDataFactory.hpp"
 %include "NDFUniqConstIterator.hpp"
 %template (NDFUniqConstIterator_NavDataFactoryMap) gnsstk::NDFUniqConstIterator<gnsstk::NavDataFactoryMap>;
-%include "NDFUniqIterator.hpp"
-%template (NDFUniqIterator_NavDataFactoryMap) gnsstk::NDFUniqIterator<gnsstk::NavDataFactoryMap>;
 %include "NEDUtil.hpp"
 %include "NavMsgData.hpp"
 %include "NavMsgDataBits.hpp"

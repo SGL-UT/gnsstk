@@ -48,7 +48,7 @@
 #include "TimeConverters.hpp"
 #include "EphTime.hpp"
 #include "AtmLoadTides.hpp"
-#include "BDSD1Bits.hpp"
+/* #include "BDSD1Bits.hpp" */
 #include "Rinex3ObsBase.hpp"
 #include "ObservationType.hpp"
 #include "CarrierBand.hpp"
@@ -81,7 +81,7 @@
 #include "TimeOffsetData.hpp"
 #include "StdNavTimeOffset.hpp"
 #include "BDSD1NavTimeOffset.hpp"
-#include "BDSD2Bits.hpp"
+/* #include "BDSD2Bits.hpp" */
 #include "BDSD2NavData.hpp"
 #include "BDSD2NavAlm.hpp"
 #include "BDSD2NavEph.hpp"
@@ -339,9 +339,9 @@
 #include "MostCommonValue.hpp"
 #include "NavDataFactoryWithStore.hpp"
 #include "NavDataFactoryWithStoreFile.hpp"
+#include "NDFUniqIterator.hpp"
 #include "MultiFormatNavDataFactory.hpp"
 #include "NDFUniqConstIterator.hpp"
-#include "NDFUniqIterator.hpp"
 #include "NEDUtil.hpp"
 #include "NavMsgData.hpp"
 #include "NavMsgDataBits.hpp"
