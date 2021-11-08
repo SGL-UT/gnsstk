@@ -57,7 +57,7 @@ Description: GNSS Toolkit (GNSSTk) - Shared Library Debugging Symbols
  * provide applications for use by the GNSS and satellite navigation community.
  * provide a core library to facilitate the development of GNSS applications.
 
-Package: python-gnsstk
+Package: python3-gnsstk
 Build-Profiles: <pkg_python>
 Section: python
 Architecture: any
