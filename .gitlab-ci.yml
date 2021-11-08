@@ -209,6 +209,25 @@ build_debian_10:
     paths:
       - build/
 
+build_debian_10_virtualenv:
+  stage: build
+  needs: []
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/debian10_fai_ish
+  script:
+    - python3 -m virtualenv --system-site-packages -p /usr/bin/python3 myenv
+    - source myenv/bin/activate
+    - mkdir -p build
+    - cd build
+    - cmake -DDEBUG_SWITCH=ON -DPYTHON_INSTALL_PREFIX=$VIRTUAL_ENV -DCMAKE_INSTALL_PREFIX=$VIRTUAL_ENV $CMAKE_ARG_DEFAULT -DPYTHON_EXECUTABLE=$VIRTUAL_ENV/bin/python3
+    - make all -j 4
+  artifacts:
+    paths:
+      - myenv/
+      - build/
+
 build_conda_py27:
   stage: build
   needs: []
@@ -375,6 +394,26 @@ test_debian_10:
   dependencies:
     - build_debian_10
 
+test_debian_10_virtualenv:
+  stage: test
+  needs: [build_debian_10_virtualenv]
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/debian10_fai_ish
+  script:
+    - source myenv/bin/activate
+    - cd build
+    - ctest -j 4
+    - touch $CI_PROJECT_DIR/success
+  artifacts:
+    when: on_failure
+    paths:
+    - build/Testing/Temporary/
+    - build/swig/
+  dependencies:
+    - build_debian_10_virtualenv
+
 test_conda_py27:
   stage: test
   needs: [build_conda_py27]
@@ -499,6 +538,7 @@ test_windows_vs2019:
   allow_failure: true
 
 # User_Install Stage
+
 # Tests user install of Gnsstk on each platform, saves artifacts for downstream builds.
 user_install_debian_9:
   stage: install
@@ -517,6 +557,43 @@ user_install_debian_9:
       - build/install
   dependencies:
     - build_debian_9
+
+user_install_debian_10:
+  stage: install
+  needs: [build_debian_10]
+  extends: .big_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/debian9_fai_ish
+  script:
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_USER_INSTALL=ON ../
+    - make install -j 4
+  artifacts:
+    paths:
+      - build/install
+  dependencies:
+    - build_debian_10
+
+virtualenv_install_debian_10:
+  stage: install
+  needs: [build_debian_10_virtualenv]
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/debian10_fai_ish
+  script:
+    - source myenv/bin/activate
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_USER_INSTALL=ON ../
+    - make install -j 4
+  artifacts:
+    paths:
+      - myenv
+  dependencies:
+    - build_debian_10_virtualenv
 
 user_install_redhat:
   stage: install
