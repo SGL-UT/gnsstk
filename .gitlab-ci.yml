@@ -933,7 +933,7 @@ deploy_debian_9:
   script:
     - cd debs
     - sudo apt-get -y install ./*.deb
-    - python -c "import gnsstk"
+    - python3 -c "import gnsstk"
     - df_diff -h
   dependencies:
     - package_debian_9
@@ -948,7 +948,7 @@ deploy_debian_10:
   script:
     - cd debs
     - sudo apt-get -y install ./*.deb
-    - python -c "import gnsstk"
+    - python3 -c "import gnsstk"
     - df_diff -h
     - gnsstk-config --includedir
   dependencies:

@@ -2,7 +2,7 @@
 Source: gnsstk
 Priority: optional
 Maintainer: Bryan Parsons <bparsons@arlut.utexas.edu>
-Build-Depends: debhelper (>= 9), cmake, python-dev <pkg_python>, dh-python <pkg_python>
+Build-Depends: debhelper (>= 9), cmake, python3-dev <pkg_python>, dh-python <pkg_python>
 X-Python-Version: 2.7
 Standards-Version: 3.9.5
 Section: libs
@@ -12,7 +12,7 @@ Vcs-Browser: https://github.com/SGL-UT/GNSSTk.git
 
 Package: gnsstk-bin
 Architecture: any
-Depends: libgnsstk__VER__ (>= ${binary:Version}), python-gnsstk <pkg_python>, ${misc:Depends}, ${shlibs:Depends}, ${python:Depends}
+Depends: libgnsstk__VER__ (>= ${binary:Version}), python3-gnsstk <pkg_python>, ${misc:Depends}, ${shlibs:Depends}, ${python3:Depends}
 Description: GNSS Toolkit (GNSSTk) - command line tools
  The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by
  the Space and Geophysics Laboratory (SGL), part of the Applied Research
@@ -57,12 +57,12 @@ Description: GNSS Toolkit (GNSSTk) - Shared Library Debugging Symbols
  * provide applications for use by the GNSS and satellite navigation community.
  * provide a core library to facilitate the development of GNSS applications.
 
-Package: python-gnsstk
+Package: python3-gnsstk
 Build-Profiles: <pkg_python>
 Section: python
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-enum34
-Provides: ${python:Provides}
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python3:Depends}
+Provides: ${python3:Provides}
 XB-Python-Version: ${python:Versions}
 Description: GNSS Toolkit (GNSSTk) - Python bindings
  The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by
