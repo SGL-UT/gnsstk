@@ -61,7 +61,11 @@ namespace gnsstk
    {
       if (dl == DumpDetail::OneLine)
       {
-         NavData::dump(s,dl);
+         s << printTime(timeStamp, dumpTimeFmtBrief) << " " << signal
+           << (signal.messageType == NavMessageType::Almanac
+               ? " toa: " : " toe: ")
+           << printTime(Toe, dumpTimeFmtBrief) << " "
+           << gnsstk::StringUtils::asString(health) << std::endl;
          return;
       }
          // "header"
@@ -73,11 +77,22 @@ namespace gnsstk
         << endl
         << "PRN : " << setw(2) << signal.sat << " / "
         << "SVN : " << setw(2);
-         // std::string svn;
-         // if (getSVN(satID, ctToe, svn))
-         // {
-         //    s << svn;
-         // }
+      std::string svn;
+      if (getSVN(signal.sat, timeStamp, svn))
+      {
+         s << svn;
+      }
+      if (signal.messageType == NavMessageType::Almanac)
+      {
+            // for almanacs, print the transmitting satellite as well.
+         s << endl
+           << "XMIT: " << setw(2) << signal.xmitSat << " / "
+           << "SVN : " << setw(2);
+         if (getSVN(signal.xmitSat, timeStamp, svn))
+         {
+            s << svn;
+         }
+      }
       s << endl << endl;
 
          // the rest is full details, so just return if Full is not asked for.
@@ -94,16 +109,15 @@ namespace gnsstk
 
       dumpSVStatus(s);
 
-      std::string timeFmt = weekFmt+dumpTimeFmt;
       s << endl
         << "           TIMES OF INTEREST"
         << endl << endl
-        << "              Week(10bt)     SOW     DOW   UTD     SOD"
-        << "   MM/DD/YYYY   HH:MM:SS\n"
-        << "Begin Valid:  " << printTime(beginFit, timeFmt) << endl
-        << "Clock Epoch:  " << printTime(Toc, timeFmt) << endl
-        << "Eph Epoch:    " << printTime(Toe, timeFmt) << endl
-        << "End Valid:    " << printTime(endFit, timeFmt) << endl;
+        << "              " << getDumpTimeHdr(dl) << endl
+        << "Begin Valid:  " << getDumpTime(dl, beginFit) << endl
+        << "Clock Epoch:  " << getDumpTime(dl, Toc) << endl
+        << (signal.messageType == NavMessageType::Ephemeris ? "Eph" : "Alm")
+        << " Epoch:    " << getDumpTime(dl, Toe) << endl
+        << "End Valid:    " << getDumpTime(dl, endFit) << endl;
 
       s.setf(ios::scientific, ios::floatfield);
       s.precision(precision);

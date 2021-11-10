@@ -58,7 +58,7 @@ public:
       : gnsstk::BasicFramework(
          applName,
          "Differences two input files while allowing small differences"
-         "in floating point values."),
+         " in floating point values."),
         epsilon(1e-5),
         linesToSkip(0),
         lastlineValue(0),
@@ -85,6 +85,8 @@ public:
          lineSkipOption('l', "lines", "Number of lines to skip at beginning of file."),
          epsilonOption('e', "epsilon", "Percent allowable difference in floating point values."),
          outputOption('o', "output", "A file to receive the output. The default is stdout."),
+         regexOption('X', "regexclude", "Exclude lines matching a regular"
+                     " expression"),
          lastLineOption('z', "last", "ignore the last X lines of the file");
 
       if (!BasicFramework::initialize(argc,argv))
@@ -156,6 +158,9 @@ public:
       if (lineSkipOption.getCount())
          linesToSkip = gnsstk::StringUtils::asInt(lineSkipOption.getValue()[0]);
 
+      if (regexOption.getCount())
+         regexclude = regexOption.getValue();
+     
       if (debugLevel)
          output << "First file " << input1Fn << endl
                 << "Second file " << input2Fn << endl
@@ -185,6 +190,23 @@ protected:
             }
 
             if (lineNumber <= linesToSkip)
+               continue;
+
+               // Try to match BOTH lines with each user-specified
+               // regular expression.  If they both match, skip the
+               // line.  If only one matches, that counts as a
+               // difference.
+            bool skipregex = false;
+            for (unsigned i = 0; i < regexclude.size(); i++)
+            {
+               if (gnsstk::StringUtils::isLike(line1, regexclude[i]) &&
+                   gnsstk::StringUtils::isLike(line2, regexclude[i]))
+               {
+                  skipregex = true;
+                  break;
+               }
+            }
+            if (skipregex)
                continue;
 
             string s1, s2;
@@ -243,6 +265,7 @@ protected:
    ofstream output;
    ifstream input1, input2;
    double epsilon;
+   vector<string> regexclude;
 public:
    long linesToSkip;
    long totalLines;

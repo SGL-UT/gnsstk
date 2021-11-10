@@ -39,7 +39,6 @@
 #include "MultiFormatNavDataFactory.hpp"
 #include "BasicTimeSystemConverter.hpp"
 #include "NDFUniqConstIterator.hpp"
-#include "NDFUniqIterator.hpp"
 
 namespace gnsstk
 {

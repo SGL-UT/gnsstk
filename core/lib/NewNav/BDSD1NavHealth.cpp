@@ -49,6 +49,7 @@ namespace gnsstk
            satH1(true),
            svHealth(0xff)
    {
+      weekFmt = "%4D(%4e)";
       msgLenSec = 6.0;
    }
 
@@ -81,9 +82,7 @@ namespace gnsstk
    void BDSD1NavHealth ::
    dump(std::ostream& s, DumpDetail dl) const
    {
-      NavData::dump(s,dl);
       const ios::fmtflags oldFlags = s.flags();
-      std::string timeFmt = weekFmt+dumpTimeFmt;
 
       s.setf(ios::fixed, ios::floatfield);
       s.setf(ios::right, ios::adjustfield);
@@ -93,8 +92,10 @@ namespace gnsstk
       switch (dl)
       {
          case DumpDetail::OneLine:
+            NavData::dump(s,dl);
             break;
          case DumpDetail::Brief:
+            NavData::dump(s,dl);
             s << "svHealth = " << hex << (unsigned)svHealth << dec << "  "
               << StringUtils::asString(getHealth()) << endl;
             break;
@@ -105,17 +106,16 @@ namespace gnsstk
               << "Satellite Health" << endl << endl
               << "PRN : " << setw(2) << signal.sat << " / "
               << "SVN : " << setw(2);
-               // std::string svn;
-               // if (getSVN(satID, ctToe, svn))
-               // {
-               //    s << svn;
-               // }
+            std::string svn;
+            if (getSVN(signal.sat, timeStamp, svn))
+            {
+               s << svn;
+            }
             s << endl << endl
               << "           TIMES OF INTEREST"
               << endl << endl
-              << "              Week(10bt)     SOW     DOW   UTD     SOD"
-              << "   MM/DD/YYYY   HH:MM:SS\n"
-              << "Transmit:     " << printTime(timeStamp, timeFmt) << endl
+              << "              " << getDumpTimeHdr(dl) << endl
+              << "Transmit:     " << getDumpTime(dl, timeStamp) << endl
               << endl
               << "           HEALTH DATA" << endl
               << "Bits               0x" << hex << setw(3) << setfill('0')
@@ -143,11 +143,11 @@ namespace gnsstk
             }
             s << endl
               << "B1I signal         "
-              << (svHealth & B1ISignalWeak ? "Weak" : "Normal") << endl
+              << (svHealth & B1ISignalWeak ? "weak" : "normal") << endl
               << "B2I signal         "
-              << (svHealth & B2ISignalWeak ? "Weak" : "Normal") << endl
+              << (svHealth & B2ISignalWeak ? "weak" : "normal") << endl
               << "B3I signal         "
-              << (svHealth & B3ISignalWeak ? "Weak" : "Normal") << endl
+              << (svHealth & B3ISignalWeak ? "weak" : "normal") << endl
               << "Reserved (5)       "
               << (svHealth & 0x10 ? "set" : "unset") << endl
               << "Reserved (4)       "

@@ -50,10 +50,25 @@ namespace gnsstk
       /// Specify level of detail for dump output.
    enum class DumpDetail
    {
+      Unknown, ///< Uninitialized or unknown value.
       OneLine, ///< Limit output to minimal information on a single line.
       Brief,   ///< Limit output to <= 5 lines of minimal information.
-      Full     ///< Include all detailed information.
+      Terse,   ///< Aptly named, multiple lines of output with no labels.
+      Full,    ///< Include all detailed information.
+      Last     ///< Used to create an iterator.
    };
+
+      /** Define an iterator so C++11 can do things like
+       * for (DumpDetail i : DumpDetailIterator()) */
+   typedef EnumIterator<DumpDetail, DumpDetail::Unknown, DumpDetail::Last> DumpDetailIterator;
+
+   namespace StringUtils
+   {
+         /// Convert a DumpDetail to a whitespace-free string name.
+      std::string asString(DumpDetail e) throw();
+         /// Convert a string name to an DumpDetail
+      DumpDetail asDumpDetail(const std::string& s) throw();
+   }
 
       //@}
 

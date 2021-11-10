@@ -39,6 +39,7 @@
 #include <math.h>
 #include "InterSigCorr.hpp"
 #include "FreqConv.hpp"
+#include "TimeString.hpp"
 
 using namespace std;
 
@@ -46,9 +47,64 @@ namespace gnsstk
 {
    InterSigCorr ::
    InterSigCorr()
-         : isc(std::numeric_limits<double>::quiet_NaN())
+         : isc(std::numeric_limits<double>::quiet_NaN()),
+           iscLabel("ISC")
    {
       signal.messageType = NavMessageType::ISC;
+   }
+
+
+   void InterSigCorr ::
+   dump(std::ostream& s, DumpDetail dl) const
+   {
+      if (dl == DumpDetail::OneLine)
+      {
+         NavData::dump(s,dl);
+         return;
+      }
+         // "header"
+      s << "****************************************************************"
+        << "************" << endl
+        << "Inter-signal Corrections" << endl << endl
+        << "PRN : " << setw(2) << signal.sat << " / "
+        << "SVN : " << setw(2);
+      std::string svn;
+      if (getSVN(signal.sat, timeStamp, svn))
+      {
+         s << svn;
+      }
+      s << endl << endl;
+
+         // the rest is full details, so just return if Full is not asked for.
+      if (dl != DumpDetail::Full)
+         return;
+
+      const ios::fmtflags oldFlags = s.flags();
+
+      s.setf(ios::fixed, ios::floatfield);
+      s.setf(ios::right, ios::adjustfield);
+      s.setf(ios::uppercase);
+      s.precision(0);
+      s.fill(' ');
+
+      s << "           TIMES OF INTEREST" << endl << endl
+        << "              " << getDumpTimeHdr(dl) << endl
+        << "Transmit:     " << getDumpTime(dl, timeStamp) << endl << endl;
+      dumpCorrections(s);
+      s.flags(oldFlags);
+   }
+
+
+   void InterSigCorr ::
+   dumpCorrections(std::ostream& s) const
+   {
+      const ios::fmtflags oldFlags = s.flags();
+      s << "           CORRECTION"
+        << endl << endl
+        << scientific << setprecision(8) << setfill(' ')
+        << setw(20) << left << (iscLabel+":")
+        << setw(15) << right << isc << endl;
+      s.flags(oldFlags);
    }
 
 

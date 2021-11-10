@@ -46,7 +46,8 @@
 #include "MiscMath.hpp"
 #include "GPSEllipsoid.hpp"
 #include "GNSSconstants.hpp"
-#include "GNSSconstants.hpp"
+#include "GPSLNavEph.hpp"
+#include "TimeString.hpp"
 
 using namespace std;
 using namespace gnsstk;
@@ -55,14 +56,17 @@ namespace gnsstk
 {
    // Compute the corrected range at RECEIVE time, from receiver at position Rx,
    // to the GPS satellite given by SatID sat, as well as all the CER quantities,
-   // given the nominal receive time tr_nom and an EphemerisStore. Note that this
+   // given the nominal receive time trNom and an EphemerisStore. Note that this
    // routine does not intrinsicly account for the receiver clock error
    // like the ComputeAtTransmitTime routine does.
    double CorrectedEphemerisRange::ComputeAtReceiveTime(
-      const CommonTime& tr_nom,
+      const CommonTime& trNom,
       const Position& Rx,
       const SatID sat,
-      const XvtStore<SatID>& Eph)
+      NavLibrary& navLib,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       try {
          int nit;
@@ -73,14 +77,18 @@ namespace gnsstk
          tof = 0.07;       // initial guess 70ms
          do {
             // best estimate of transmit time
-            transmit = tr_nom;
+            transmit = trNom;
             transmit -= tof;
             tof_old = tof;
             // get SV position
             try {
-               svPosVel = Eph.getXvt(sat, transmit);
+                  /** @todo getXvt was expected to throw an exception on
+                   * failure in the past.  This assert more or less mimics
+                   * that behavior.  Refactoring is needed.  */
+               GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), transmit,
+                                    order, xmitHealth, valid));
             }
-            catch(InvalidRequest& e) {
+            catch(AssertionFailure& e) {
                GNSSTK_RETHROW(e);
             }
 
@@ -105,20 +113,23 @@ namespace gnsstk
 
       // Compute the corrected range at TRANSMIT time, from receiver at position Rx,
       // to the GPS satellite given by SatID sat, as well as all the CER quantities,
-      // given the nominal receive time tr_nom and an EphemerisStore, as well as
+      // given the nominal receive time trNom and an EphemerisStore, as well as
       // the raw measured pseudorange.
    double CorrectedEphemerisRange::ComputeAtTransmitTime(
-      const CommonTime& tr_nom,
+      const CommonTime& trNom,
       const double& pr,
       const Position& Rx,
       const SatID sat,
-      const XvtStore<SatID>& Eph)
+      NavLibrary& navLib,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       try {
          CommonTime tt;
 
          // 0-th order estimate of transmit time = receiver - pseudorange/c
-         transmit = tr_nom;
+         transmit = trNom;
          transmit -= pr/C_MPS;
          tt = transmit;
 
@@ -126,7 +137,11 @@ namespace gnsstk
          for(int i=0; i<2; i++) {
             // get SV position
             try {
-               svPosVel = Eph.getXvt(sat,tt);
+                  /** @todo getXvt was expected to throw an exception on
+                   * failure in the past.  This assert more or less mimics
+                   * that behavior.  Refactoring is needed.  */
+               GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), tt,
+                                    order, xmitHealth, valid));
             }
             catch(InvalidRequest& e) {
                GNSSTK_RETHROW(e);
@@ -153,16 +168,23 @@ namespace gnsstk
 
 
    double CorrectedEphemerisRange::ComputeAtTransmitTime(
-      const CommonTime& tr_nom,
+      const CommonTime& trNom,
       const Position& Rx,
       const SatID sat,
-      const XvtStore<SatID>& Eph)
+      NavLibrary& navLib,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       try {
          gnsstk::GPSEllipsoid gm;
-         svPosVel = Eph.getXvt(sat, tr_nom);
+            /** @todo getXvt was expected to throw an exception on
+             * failure in the past.  This assert more or less mimics
+             * that behavior.  Refactoring is needed.  */
+         GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), trNom,
+                              order, xmitHealth, valid));
          double pr = svPosVel.preciseRho(Rx, gm);
-         return ComputeAtTransmitTime(tr_nom, pr, Rx, sat, Eph);
+         return ComputeAtTransmitTime(trNom, pr, Rx, sat, navLib);
       }
       catch(gnsstk::Exception& e) {
          GNSSTK_RETHROW(e);
@@ -171,18 +193,25 @@ namespace gnsstk
 
 
    double CorrectedEphemerisRange::ComputeAtTransmitSvTime(
-      const CommonTime& tt_nom,
+      const CommonTime& ttNom,
       const double& pr,
       const Position& rx,
       const SatID sat,
-      const XvtStore<SatID>& eph)
+      NavLibrary& navLib,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       try
       {
          Position trx(rx);
          trx.asECEF();
 
-         svPosVel = eph.getXvt(sat, tt_nom);
+            /** @todo getXvt was expected to throw an exception on
+             * failure in the past.  This assert more or less mimics
+             * that behavior.  Refactoring is needed.  */
+         GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), ttNom,
+                              order, xmitHealth, valid));
 
          // compute rotation angle in the time of signal transit
 
@@ -245,6 +274,39 @@ namespace gnsstk
       sy = -::sin(wt)*svPosVel.v[0] + ::cos(wt)*svPosVel.v[1];
       svPosVel.v[0] = sx;
       svPosVel.v[1] = sy;
+   }
+
+
+   bool CorrectedEphemerisRange ::
+   getXvt(NavLibrary& navLib, const NavSatelliteID& sat, const CommonTime& when,
+          NavSearchOrder order,
+          SVHealth xmitHealth,
+          NavValidityType valid)
+   {
+      NavMessageID nmid(sat, NavMessageType::Ephemeris);
+      NavDataPtr ndp;
+      std::shared_ptr<OrbitData> od;
+      std::shared_ptr<GPSLNavEph> ephLNav;
+      if (!navLib.find(nmid, when, ndp, xmitHealth, valid, order))
+      {
+         return false;
+      }
+      if (od = std::dynamic_pointer_cast<OrbitData>(ndp))
+      {
+         if (!od->getXvt(when, svPosVel))
+            return false;
+      }
+      else
+      {
+            // Not orbit data? How?
+         return false;
+      }
+      if (ephLNav = std::dynamic_pointer_cast<GPSLNavEph>(ndp))
+      {
+         iodc = ephLNav->iodc;
+         health = ephLNav->healthBits;
+      }
+      return true;
    }
 
 

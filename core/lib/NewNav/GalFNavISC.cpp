@@ -47,9 +47,22 @@ namespace gnsstk
    GalFNavISC ::
    GalFNavISC()
    {
+      weekFmt = "%4L(%4l)";
          // Galileo F/NAV nominal page transmit time is 10 seconds per
          // OS-SIS-ICD figure 14.
       msgLenSec = 10.0;
+   }
+
+
+   void GalFNavISC ::
+   dumpCorrections(std::ostream& s) const
+   {
+      const ios::fmtflags oldFlags = s.flags();
+      s << "           CORRECTION"
+        << endl << endl
+        << scientific << setprecision(8) << setfill(' ')
+        << setw(20) << left << "BGD(E1,E5a):" << setw(15) << isc << endl;
+      s.flags(oldFlags);
    }
 
 
