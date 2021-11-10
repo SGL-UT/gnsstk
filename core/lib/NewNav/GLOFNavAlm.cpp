@@ -92,6 +92,7 @@ namespace gnsstk
          // assume that the data should not be used before
          // the transmit time. 
       beginFit = timeStamp;
+         /// @todo get a better end fit interval than this.
       endFit = CommonTime::END_OF_TIME;
       endFit.setTimeSystem(beginFit.getTimeSystem());
    }

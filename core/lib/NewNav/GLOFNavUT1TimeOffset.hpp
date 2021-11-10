@@ -97,12 +97,13 @@ namespace gnsstk
       bool validate() const override;
 
 
-      double tauc;
-      double B1;
-      double B2;
-      unsigned KP;
-      unsigned NT;
-      unsigned NA;
+         /// @todo document this stuff as well as you can
+      double tauc; ///< Non-integer correction between UTC(SU) and GLONASS.
+      double B1;   ///< Time bias in seconds.
+      double B2;   ///< Time drift in s/s.
+      unsigned KP; ///< Leap second indicator.
+      unsigned NT; ///< Ephemeris days since leap year.
+      unsigned NA; ///< Almanac days since leap year.
    };
 
       //@}

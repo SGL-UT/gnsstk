@@ -36,46 +36,83 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GNSSTK_SVHEALTH_HPP
-#define GNSSTK_SVHEALTH_HPP
-
-#include <string>
-#include "Xvt.hpp"
-#include "EnumIterator.hpp"
+#include "TestUtil.hpp"
+#include "GLOFNavData.hpp"
 
 namespace gnsstk
 {
-      /// @ingroup NavFactory
-      //@{
-
-      /// Identify different types of SV health states.
-   enum class SVHealth
+   std::ostream& operator<<(std::ostream& s, GLOFNavData::SatType e)
    {
-      Unknown,    ///< Health is not known or is uninitialized.
-      Any,        ///< Use in searches when you don't care about the SV health.
-      Healthy,    ///< Satellite is in a healthy and useable state.
-      Unhealthy,  ///< Satellite is unhealthy and should not be used.
-      Degraded,   ///< Satellite is in a degraded state. Use at your own risk.
-      Last        ///< Used to create an iterator.
-   };
-
-      /// Cast SVHealth to Xvt::HealthStatus
-   Xvt::HealthStatus toXvtHealth(SVHealth e);
-
-      /** Define an iterator so C++11 can do things like
-       * for (SVHealth i : SVHealthIterator()) */
-   typedef EnumIterator<SVHealth, SVHealth::Unknown, SVHealth::Last> SVHealthIterator;
-
-   namespace StringUtils
-   {
-         /// Convert a SVHealth to a whitespace-free string name.
-      std::string asString(SVHealth e) throw();
-         /// Convert a string name to an SVHealth
-      SVHealth asSVHealth(const std::string& s) throw();
+      s << StringUtils::asString(e);
+      return s;
    }
 
-      //@}
 
+   std::ostream& operator<<(std::ostream& s, SVHealth h)
+   {
+      s << StringUtils::asString(h);
+      return s;
+   }
 }
 
-#endif // GNSSTK_SVHEALTH_HPP
+
+/// Make a testable non-abstract class
+class TestClass : public gnsstk::GLOFNavData
+{
+public:
+   bool getXvt(const gnsstk::CommonTime& t, gnsstk::Xvt& xvt) override
+   { return false; }
+};
+
+
+class GLOFNavData_T
+{
+public:
+   unsigned constructorTest();
+   unsigned validateTest();
+};
+
+
+unsigned GLOFNavData_T ::
+constructorTest()
+{
+   TUDEF("GLOFNavData", "GLOFNavData()");
+   TestClass uut;
+   gnsstk::CommonTime exp;
+   TUASSERTE(gnsstk::CommonTime, exp, uut.xmit2);
+   TUASSERTE(gnsstk::GLOFNavData::SatType,gnsstk::GLOFNavData::SatType::Unknown,
+             uut.satType);
+   TUASSERTE(unsigned, -1, uut.slot);
+   TUASSERTE(bool, false, uut.lhealth);
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Unknown, uut.health);
+   TUASSERTE(gnsstk::CommonTime, exp, uut.beginFit);
+   TUASSERTE(gnsstk::CommonTime, exp, uut.endFit);
+   TURETURN();
+}
+
+
+unsigned GLOFNavData_T ::
+validateTest()
+{
+   TUDEF("GLOFNavData", "validate()");
+   TestClass uut;
+      /// @todo Implement some testing when the function has some meat to it.
+   TUASSERTE(bool, true, uut.validate());
+   TURETURN();
+}
+
+
+
+int main()
+{
+   GLOFNavData_T testClass;
+   unsigned errorTotal = 0;
+
+   errorTotal += testClass.constructorTest();
+   errorTotal += testClass.validateTest();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+             << std::endl;
+
+   return errorTotal;
+}

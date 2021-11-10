@@ -135,7 +135,7 @@ namespace gnsstk
 
          /// Used to convert time stamps to and from GLONASS.
       BasicTimeSystemConverter btsc;
-
+         /// Used to set the reference almanac time.
       CommonTime almDOY;
 
          /** Set to true if there are pending almanacs waiting on

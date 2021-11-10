@@ -36,6 +36,7 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#include <math.h>
 #include "RinexNavDataFactory.hpp"
 #include "TestUtil.hpp"
 #include "GPSLNavEph.hpp"
@@ -46,6 +47,9 @@
 #include "GalINavISC.hpp"
 #include "GalFNavEph.hpp"
 #include "GalINavHealth.hpp"
+#include "GLOFNavEph.hpp"
+#include "GLOFNavHealth.hpp"
+#include "GLOFNavISC.hpp"
 #include "RinexTimeOffset.hpp"
 #include "GALWeekSecond.hpp"
 
@@ -72,6 +76,16 @@ namespace gnsstk
       return s;
    }
    std::ostream& operator<<(std::ostream& s, GalDataValid e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
+   std::ostream& operator<<(std::ostream& s, GLOFNavData::PCode e)
+   {
+      s << StringUtils::asString(e);
+      return s;
+   }
+   std::ostream& operator<<(std::ostream& s, GLOFNavData::SatType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -258,7 +272,7 @@ loadIntoMapTest()
       // count INAV, FNAV, and LNAV data
    unsigned ephICount = 0, ephFCount = 0, ephLCount = 0, heaICount = 0,
       heaLCount = 0, ionoCount = 0, iscLCount = 0, iscICount = 0,
-      otherCount = 0;
+      otherCount = 0, heaFCount = 0, iscFCount = 0;
    for (auto& nmti : f8.getData())
    {
       for (auto& sati : nmti.second)
@@ -661,6 +675,153 @@ loadIntoMapTest()
    TUASSERTE(unsigned, 1, ionoCount);
    TUASSERTE(unsigned, 1, iscLCount);
    TUASSERTE(unsigned, 0, otherCount);
+
+   TestClass f9;
+   std::string f9name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "mixed.06n";
+      // this should implicitly load into the data map
+   TUASSERT(f9.addDataSource(f9name));
+      // 4 ephemerides
+      // 5 health
+      // 1 iono
+      // 2 ISC
+      // 2 time offset (2 duplicates)
+   ephFCount = ephLCount = heaFCount = heaLCount = iscFCount = iscLCount = 0;
+   for (auto& nmti : f9.getData())
+   {
+      for (auto& sati : nmti.second)
+      {
+         for (auto& ti : sati.second)
+         {
+            gnsstk::GPSLNavEph *ephL;
+            gnsstk::GPSLNavHealth *heaL;
+            gnsstk::GPSLNavISC *iscL;
+            gnsstk::GLOFNavEph *ephF;
+            gnsstk::GLOFNavHealth *heaF;
+            gnsstk::GLOFNavISC *iscF;
+            if ((ephF = dynamic_cast<gnsstk::GLOFNavEph*>(ti.second.get()))
+                != nullptr)
+            {
+               if (ephFCount == 0)
+               {
+                  static const gnsstk::CommonTime expToe =
+                     gnsstk::CivilTime(2006, 10, 1, 0, 15, 0,
+                                       gnsstk::TimeSystem::UTC);
+                  static const gnsstk::CommonTime expTS =
+                     gnsstk::CivilTime(2006, 10, 1, 0, 1, 30,
+                                       gnsstk::TimeSystem::UTC);
+                  static const gnsstk::NavMessageID expNMID(
+                     gnsstk::NavSatelliteID(1, gnsstk::SatelliteSystem::Glonass,
+                                            gnsstk::CarrierBand::G1,
+                                            gnsstk::TrackingCode::Standard,
+                                            gnsstk::XmitAnt::Standard, 7, false,
+                                            gnsstk::NavType::GloCivilF),
+                     gnsstk::NavMessageType::Ephemeris);
+                     // NavData
+                  TUASSERTE(gnsstk::CommonTime, expTS, ephF->timeStamp);
+                  TUASSERTE(gnsstk::NavMessageID, expNMID, ephF->signal);
+                     // GLOFNavData
+                  TUASSERTE(gnsstk::CommonTime, expTS+2.0, ephF->xmit2);
+                  TUASSERTE(gnsstk::GLOFNavData::SatType,
+                            gnsstk::GLOFNavData::SatType::Unknown,
+                            ephF->satType);
+                  TUASSERTE(unsigned, 1, ephF->slot);
+                  TUASSERTE(bool, false, ephF->lhealth);
+                  TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Healthy,
+                            ephF->health);
+                  TUASSERTE(gnsstk::CommonTime, expTS, ephF->beginFit);
+                  TUASSERTE(gnsstk::CommonTime, expToe+930.0, ephF->endFit);
+                     // GLOFNavEph
+                  TUASSERTE(gnsstk::CommonTime, expTS, ephF->ref);
+                  TUASSERTE(gnsstk::CommonTime, expTS+4.0, ephF->xmit3);
+                  TUASSERTE(gnsstk::CommonTime, expTS+6.0, ephF->xmit4);
+                     // 1 nm tolerance.
+                  TUASSERTFEPS( 0.157594921875E+08, ephF->pos[0], 1e-9);
+                  TUASSERTFEPS(-0.813711474609E+07, ephF->pos[1], 1e-9);
+                  TUASSERTFEPS( 0.183413398438E+08, ephF->pos[2], 1e-9);
+                  TUASSERTFEPS(-0.145566368103E+04, ephF->vel[0], 1e-9);
+                  TUASSERTFEPS( 0.205006790161E+04, ephF->vel[1], 1e-9);
+                  TUASSERTFEPS( 0.215388488770E+04, ephF->vel[2], 1e-9);
+                  TUASSERTFEPS( 0.000000000000E+00, ephF->acc[0], 1e-9);
+                  TUASSERTFEPS( 0.931322574615E-06, ephF->acc[1], 1e-9);
+                  TUASSERTFEPS(-0.186264514923E-05, ephF->acc[2], 1e-9);
+                  TUASSERTFE(0.137668102980E-04, ephF->clkBias);
+                  TUASSERTFE(-0.454747350886E-11, ephF->freqBias);
+                  TUASSERTE(unsigned, 0, ephF->healthBits);
+                  TUASSERTE(unsigned, -1, ephF->tb);
+                  TUASSERTE(unsigned, -1, ephF->P1);
+                  TUASSERTE(unsigned, -1, ephF->P2);
+                  TUASSERTE(unsigned, -1, ephF->P3);
+                  TUASSERTE(unsigned, -1, ephF->P4);
+                  TUASSERTE(unsigned, 0, ephF->interval);
+                  TUASSERTE(gnsstk::GLOFNavData::PCode,
+                            gnsstk::GLOFNavData::PCode::Unknown,
+                            ephF->opStatus);
+                  TUASSERTE(int, 1, isnan(ephF->tauDelta));
+                  TUASSERTE(unsigned, 1, ephF->aod);
+                  TUASSERTE(unsigned, -1, ephF->accIndex);
+                  TUASSERTE(unsigned, -1, ephF->dayCount);
+                  TUASSERTE(gnsstk::CommonTime, expToe, ephF->Toe);
+                  TUASSERTFE(1, ephF->step);
+               }
+               ephFCount++;
+            }
+            else if ((ephL = dynamic_cast<gnsstk::GPSLNavEph*>(ti.second.get()))
+                     != nullptr)
+            {
+               ephLCount++;
+            }
+            else if ((heaF=dynamic_cast<gnsstk::GLOFNavHealth*>(ti.second.get()))
+                     != nullptr)
+            {
+               if (heaFCount == 0)
+               {
+                  static const gnsstk::CommonTime expTS =
+                     gnsstk::CivilTime(2006, 10, 1, 0, 1, 30,
+                                       gnsstk::TimeSystem::UTC);
+                  static const gnsstk::NavMessageID expNMID(
+                     gnsstk::NavSatelliteID(1, gnsstk::SatelliteSystem::Glonass,
+                                            gnsstk::CarrierBand::G1,
+                                            gnsstk::TrackingCode::Standard,
+                                            gnsstk::XmitAnt::Standard, 7, false,
+                                            gnsstk::NavType::GloCivilF),
+                     gnsstk::NavMessageType::Health);
+                     // NavData
+                  TUASSERTE(gnsstk::CommonTime, expTS, heaF->timeStamp);
+                  TUASSERTE(gnsstk::NavMessageID, expNMID, heaF->signal);
+                     // GLOFNavHealth
+                  TUASSERTE(bool, true, heaF->healthBits.is_valid());
+                  TUASSERTE(bool, false, heaF->ln.is_valid());
+                  TUASSERTE(bool, false, heaF->Cn.is_valid());
+                  TUASSERTE(unsigned,0,static_cast<unsigned>(heaF->healthBits));
+               }
+               heaFCount++;
+            }
+            else if ((heaL=dynamic_cast<gnsstk::GPSLNavHealth*>(ti.second.get()))
+                     != nullptr)
+            {
+               heaLCount++;
+            }
+            else if ((iscF = dynamic_cast<gnsstk::GLOFNavISC*>(ti.second.get()))
+                     != nullptr)
+            {
+               iscFCount++;
+            }
+            else if ((iscL = dynamic_cast<gnsstk::GPSLNavISC*>(ti.second.get()))
+                     != nullptr)
+            {
+               iscLCount++;
+            }
+         }
+      }
+   }
+   TUASSERTE(unsigned, 2, ephLCount);
+   TUASSERTE(unsigned, 2, ephFCount);
+   TUASSERTE(unsigned, 3, heaLCount);
+   TUASSERTE(unsigned, 2, heaFCount);
+   TUASSERTE(unsigned, 0, iscFCount);
+   TUASSERTE(unsigned, 2, iscLCount);
+   TUASSERTE(size_t, 14, f9.size());
    TURETURN();
 }
 

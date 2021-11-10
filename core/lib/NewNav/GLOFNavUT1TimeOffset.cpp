@@ -45,6 +45,10 @@ namespace gnsstk
 {
    GLOFNavUT1TimeOffset ::
    GLOFNavUT1TimeOffset()
+         : tauc(std::numeric_limits<double>::quiet_NaN()),
+           B1(std::numeric_limits<double>::quiet_NaN()),
+           B2(std::numeric_limits<double>::quiet_NaN()),
+           KP(-1), NT(-1), NA(-1)
    {
       msgLenSec = 2.0;
       weekFmt = "";
@@ -99,9 +103,10 @@ namespace gnsstk
       s.setf(ios::uppercase);
       s.precision(6);
       s.fill(' ');
-      s << "B1            " << setw(14) << B1      << " sec" << endl
+      s << "tau_c         " << setw(14) << tauc    << " sec" << endl
+        << "B1            " << setw(14) << B1      << " sec" << endl
         << "B2            " << setw(14) << B2      << " sec/sec" << endl
-        << "KP              " << setw(12) << KP;     
+        << "KP              " << setw(12) << KP;
       if (KP==0)
       {
          s << " No leap second this quarter";
@@ -118,7 +123,9 @@ namespace gnsstk
       {
          s << " Unknown meaning";
       }
-      s << endl;
+      s << endl
+        << "NT              " << setw(12) << NT << " days" << endl
+        << "NA              " << setw(12) << NA << " days" << endl;
       s.flags(oldFlags);
    }
 
@@ -133,7 +140,7 @@ namespace gnsstk
       s.setf(ios::uppercase);
       s.precision(9);
       s.fill(' ');
-      s << "B1:" << B1;                 
+      s << "B1:" << B1;
       s.precision(6);
       s << " s, B2:" << B2;
 
@@ -157,7 +164,6 @@ namespace gnsstk
             // T_GLO = T_UTC(SU) + 3 hours, or
             // T_UTC(SU) = T_GLO - 3 hours
             // UT1 = UTC(SU) - dUT1
-            // tauc is the non-integer correction between UTC(SU) and GLONASS.
          offset = -10800 + tauc + dUT1;
          if (fromSys == TimeSystem::UTC)
             offset = -offset;

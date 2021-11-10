@@ -98,9 +98,9 @@ namespace gnsstk
       CommonTime ref;     ///< Reference time (t_k) for this ephemeris.
       CommonTime xmit3;   ///< Transmit time for string 3.
       CommonTime xmit4;   ///< Transmit time for string 4.
-      Triple pos;         ///< Satellite position at tb.
-      Triple vel;         ///< Satellite velocity at tb.
-      Triple acc;         ///< Satellite acceleration at tb.
+      Triple pos;         ///< Satellite position at tb in km.
+      Triple vel;         ///< Satellite velocity at tb in km/s.
+      Triple acc;         ///< Satellite acceleration at tb in km/s**2.
       double clkBias;     ///< Satellite clock bias in sec (tau_n).
       double freqBias;    ///< Satellite relative frequency bias (gamma_n).
       uint8_t healthBits; ///< The 3-bit B_n value (look at bit 2 not 0 or 1).
@@ -116,6 +116,20 @@ namespace gnsstk
       unsigned accIndex;  ///< User accuracy index (F_T).
       unsigned dayCount;  ///< Days since Jan 1 of most recent leap year (N_T).
       CommonTime Toe;     ///< Orbit epoch (t_b).
+         /// Integration step for Runge-Kutta algorithm (1 second by default)
+      double step;
+
+   private:
+         /** Compute true sidereal time  (in hours) at Greenwich at 0 hours UT.
+          * @warning This method (copied from the deprecated
+          *   GloEphemeris) seems to assume \a time is in a specific
+          *   time system.  Not sure if the assumption is UTC or
+          *   GLO. */
+      double getSiderealTime(const CommonTime& time) const;
+
+         /// Function implementing the derivative of GLONASS orbital model.
+      Vector<double> derivative(const Vector<double>& inState,
+                                const Vector<double>& accel) const;
    };
 
       //@}

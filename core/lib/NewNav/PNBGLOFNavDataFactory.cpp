@@ -40,6 +40,8 @@
 #include "GLOFBits.hpp"
 #include "GLOFNavAlm.hpp"
 #include "GLOFNavEph.hpp"
+#include "GLOFNavHealth.hpp"
+#include "GLOFNavISC.hpp"
 #include "GLOFNavTimeOffset.hpp"
 #include "GLOFNavUT1TimeOffset.hpp"
 #include "CivilTime.hpp"
@@ -135,7 +137,16 @@ namespace gnsstk
                          navIn->getobsID(), navIn->getNavID());
       if ((stringID < 1) || (stringID > 4))
          return false; // not actually part of the ephemeris.
-      if (!PNBNavDataFactory::processEph)
+      if ((stringID == esidtaun) && PNBNavDataFactory::processISC)
+      {
+         NavDataPtr p2 = std::make_shared<GLOFNavISC>();
+         GLOFNavISC *isc = dynamic_cast<GLOFNavISC*>(p2.get());
+         isc->timeStamp = navIn->getTransmitTime();
+         isc->signal = NavMessageID(key, NavMessageType::ISC);
+         isc->isc = navIn->asSignMagDouble(esbdtaun,enbdtaun,escdtaun);
+         navOut.push_back(p2);
+      }
+      if (!PNBNavDataFactory::processEph && !PNBNavDataFactory::processHea)
       {
             // User doesn't want ephemerides so don't do any processing.
          return true;
@@ -163,6 +174,18 @@ namespace gnsstk
           (ephS[str4]->getTransmitTime()-ephS[str3]->getTransmitTime() != 2))
       {
          return true;
+      }
+         // Health data here only requires string 2-3.
+         /// @todo Maybe make it so we can still get the health w/o strings 1&4
+      if (PNBNavDataFactory::processHea)
+      {
+         NavDataPtr p1 = std::make_shared<GLOFNavHealth>();
+         p1->timeStamp = navIn->getTransmitTime();
+         p1->signal = NavMessageID(key, NavMessageType::Health);
+         GLOFNavHealth *hea = dynamic_cast<GLOFNavHealth*>(p1.get());
+         hea->healthBits = ephS[esiBn]->asUnsignedLong(esbBn,enbBn,escBn);
+         hea->ln = ephS[esiln]->asBool(esbln);
+         navOut.push_back(p1);
       }
       NavDataPtr p0 = std::make_shared<GLOFNavEph>();
       GLOFNavEph *eph = dynamic_cast<GLOFNavEph*>(p0.get());
@@ -305,9 +328,9 @@ namespace gnsstk
             /// @todo Should we process the transmit satellite health here?
          return true; // string 15
       }
-      if (!PNBNavDataFactory::processAlm)
+      if (!PNBNavDataFactory::processAlm && !PNBNavDataFactory::processHea)
       {
-            // User doesn't want almanacs so don't do any processing.
+            // User doesn't want almanacs or health so don't do any processing.
          return true;
       }
       if (almAcc.find(key) == almAcc.end())
@@ -368,16 +391,32 @@ namespace gnsstk
          pendingAlms = true;
          return true;
       }
-      SatID xmitSat(almS[almIdx]->getsatSys());
       // cerr << "complete almanac" << endl;
+      SatID xmitSat(almS[almIdx]->getsatSys());
+      unsigned long slot = almS[almIdx+ason]->asUnsignedLong(asbn,anbn,ascn);
+      NavSatelliteID sat(slot, xmitSat, almS[almIdx]->getobsID(),
+                         almS[almIdx]->getNavID());
+      if (PNBNavDataFactory::processHea)
+      {
+         NavDataPtr p1 = std::make_shared<GLOFNavHealth>();
+         p1->timeStamp = almS[almIdx]->getTransmitTime();
+         p1->signal = NavMessageID(key, NavMessageType::Health);
+         GLOFNavHealth *hea = dynamic_cast<GLOFNavHealth*>(p1.get());
+         hea->Cn = almS[almIdx+asoC]->asBool(asbC);
+         hea->ln = almS[almIdx+asol]->asBool(asbl);
+         navOut.push_back(p1);
+      }
+      if (!PNBNavDataFactory::processAlm)
+      {
+            // nothing more to do here
+         return true;
+      }
       NavDataPtr p0 = std::make_shared<GLOFNavAlm>();
       GLOFNavAlm *alm = dynamic_cast<GLOFNavAlm*>(p0.get());
       alm->timeStamp = almS[almIdx]->getTransmitTime();
       alm->xmit2 = almS[almIdx+1]->getTransmitTime();
          // Actual satellite ID (subject and transmit)
-      alm->slot = almS[almIdx+ason]->asUnsignedLong(asbn,anbn,ascn);
-      NavSatelliteID sat(alm->slot, xmitSat, almS[almIdx]->getobsID(),
-                         almS[almIdx]->getNavID());
+      alm->slot = slot;
       alm->signal = NavMessageID(sat, NavMessageType::Almanac);
       // cerr << "signal=" << alm->signal << endl;
       alm->healthBits = almS[almIdx+asoC]->asBool(asbC);
@@ -431,6 +470,15 @@ namespace gnsstk
       bool rv = true;
       NavSatelliteID key(navIn->getsatSys().id, navIn->getsatSys(),
                          navIn->getobsID(), navIn->getNavID());
+      if (PNBNavDataFactory::processHea)
+      {
+         NavDataPtr p1 = std::make_shared<GLOFNavHealth>();
+         p1->timeStamp = navIn->getTransmitTime();
+         p1->signal = NavMessageID(key, NavMessageType::Health);
+         GLOFNavHealth *hea = dynamic_cast<GLOFNavHealth*>(p1.get());
+         hea->ln = navIn->asBool(tsbln);
+         navOut.push_back(p1);
+      }
       if (PNBNavDataFactory::processAlm)
       {
             // day within four-year interval
@@ -510,7 +558,6 @@ namespace gnsstk
                // These values don't really matter much, since A1 and A2 are 0.
                // We set them mostly for display purposes (dump).
             to->refTime = to->effTime = to->timeStamp;
-            to->dump(std::cerr, DumpDetail::Full);
             navOut.push_back(p0);
          }
       }
@@ -538,7 +585,7 @@ namespace gnsstk
          NavDataPtr p0 = timeAcc[key];
          p0->timeStamp = navIn->getTransmitTime();
          p0->signal = NavMessageID(key, NavMessageType::TimeOffset);
-         p0->dump(std::cerr, DumpDetail::Full);
+         p0->dump(std::cerr,DumpDetail::Full);
          navOut.push_back(p0);
       }
       return true;

@@ -36,46 +36,51 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GNSSTK_SVHEALTH_HPP
-#define GNSSTK_SVHEALTH_HPP
+#ifndef GNSSTK_GLOFNAVHEALTH_HPP
+#define GNSSTK_GLOFNAVHEALTH_HPP
 
-#include <string>
-#include "Xvt.hpp"
-#include "EnumIterator.hpp"
+#include "ValidType.hpp"
+#include "NavHealthData.hpp"
 
 namespace gnsstk
 {
       /// @ingroup NavFactory
       //@{
 
-      /// Identify different types of SV health states.
-   enum class SVHealth
+      /** Wrapper for the health status data scattered throughout the
+       * GLONASS Civil F NAV data. */
+   class GLOFNavHealth : public NavHealthData
    {
-      Unknown,    ///< Health is not known or is uninitialized.
-      Any,        ///< Use in searches when you don't care about the SV health.
-      Healthy,    ///< Satellite is in a healthy and useable state.
-      Unhealthy,  ///< Satellite is unhealthy and should not be used.
-      Degraded,   ///< Satellite is in a degraded state. Use at your own risk.
-      Last        ///< Used to create an iterator.
+   public:
+         /// Initialize to unhealthy using a value typically not seen in health.
+      GLOFNavHealth();
+
+         /** Checks the contents of this message against known
+          * validity rules as defined in the appropriate ICD.
+          * @return true if any of the data are usable.
+          */
+      bool validate() const override;
+
+         /** Print the contents of this object in a human-readable
+          * format.
+          * @param[in,out] s The stream to write the data to.
+          * @param[in] dl The level of detail the output should contain. */
+      void dump(std::ostream& s, DumpDetail dl) const override;
+
+         /** Defines the status of NavData::signal, specifically sat
+          * (not xmitSat).
+          * @return Healthy if no health bits are set. */
+      SVHealth getHealth() const override;
+
+         // We use ValidType to account for the fact that the health
+         // data can be a variety of combinations.
+      ValidType<uint8_t> healthBits; ///< The 3-bit B_n value.
+      ValidType<bool> ln; ///< The l_n health bit in strings 3,5,7,9,11,13,15.
+      ValidType<bool> Cn; ///< The C_n health bit in strings 6,8,10,12,14.
    };
-
-      /// Cast SVHealth to Xvt::HealthStatus
-   Xvt::HealthStatus toXvtHealth(SVHealth e);
-
-      /** Define an iterator so C++11 can do things like
-       * for (SVHealth i : SVHealthIterator()) */
-   typedef EnumIterator<SVHealth, SVHealth::Unknown, SVHealth::Last> SVHealthIterator;
-
-   namespace StringUtils
-   {
-         /// Convert a SVHealth to a whitespace-free string name.
-      std::string asString(SVHealth e) throw();
-         /// Convert a string name to an SVHealth
-      SVHealth asSVHealth(const std::string& s) throw();
-   }
 
       //@}
 
 }
 
-#endif // GNSSTK_SVHEALTH_HPP
+#endif // GNSSTK_GLOFNAVHEALTH_HPP

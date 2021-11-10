@@ -36,46 +36,54 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GNSSTK_SVHEALTH_HPP
-#define GNSSTK_SVHEALTH_HPP
+#include <math.h>
+#include "GLOFNavISC.hpp"
+#include "TimeString.hpp"
+#include "YDSTime.hpp"
+#include "FreqConv.hpp"
 
-#include <string>
-#include "Xvt.hpp"
-#include "EnumIterator.hpp"
+using namespace std;
 
 namespace gnsstk
 {
-      /// @ingroup NavFactory
-      //@{
-
-      /// Identify different types of SV health states.
-   enum class SVHealth
+   GLOFNavISC ::
+   GLOFNavISC()
    {
-      Unknown,    ///< Health is not known or is uninitialized.
-      Any,        ///< Use in searches when you don't care about the SV health.
-      Healthy,    ///< Satellite is in a healthy and useable state.
-      Unhealthy,  ///< Satellite is unhealthy and should not be used.
-      Degraded,   ///< Satellite is in a degraded state. Use at your own risk.
-      Last        ///< Used to create an iterator.
-   };
-
-      /// Cast SVHealth to Xvt::HealthStatus
-   Xvt::HealthStatus toXvtHealth(SVHealth e);
-
-      /** Define an iterator so C++11 can do things like
-       * for (SVHealth i : SVHealthIterator()) */
-   typedef EnumIterator<SVHealth, SVHealth::Unknown, SVHealth::Last> SVHealthIterator;
-
-   namespace StringUtils
-   {
-         /// Convert a SVHealth to a whitespace-free string name.
-      std::string asString(SVHealth e) throw();
-         /// Convert a string name to an SVHealth
-      SVHealth asSVHealth(const std::string& s) throw();
+      msgLenSec = 2.0;
+      iscLabel = "dtau_n";
    }
 
-      //@}
 
+   bool GLOFNavISC ::
+   validate() const
+   {
+         /// @todo implement some checking.
+      return true;
+   }
+
+
+   bool GLOFNavISC ::
+   getISC(const ObsID& oid1, const ObsID& oid2, double& corrOut) const
+   {
+      if (isnan(isc))
+         return false;
+      if ((oid1.code == TrackingCode::Standard) &&
+          (oid2.code == TrackingCode::Standard))
+      {
+         if ((oid1.band == CarrierBand::G1) && (oid2.band == CarrierBand::G2))
+         {
+               /** @todo I'm not sure if I have this polarity right.
+                * dtau_n=t_f2-t_f1. */
+            corrOut = isc;
+            return true;
+         }
+         else if ((oid1.band == CarrierBand::G2) &&
+                  (oid2.band == CarrierBand::G1))
+         {
+            corrOut = -isc;
+            return true;
+         }
+      }
+      return false;
+   }
 }
-
-#endif // GNSSTK_SVHEALTH_HPP

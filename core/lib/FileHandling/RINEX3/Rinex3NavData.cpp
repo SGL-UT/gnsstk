@@ -1293,7 +1293,7 @@ namespace gnsstk
          // specify the time system based on satellite system
          time.setTimeSystem(TimeSystem::Any);
          if (satSys == "G") time.setTimeSystem(TimeSystem::GPS);
-         if (satSys == "R") time.setTimeSystem(TimeSystem::GLO);
+         if (satSys == "R") time.setTimeSystem(TimeSystem::UTC);
          if (satSys == "E") time.setTimeSystem(TimeSystem::GAL);
          if (satSys == "C") time.setTimeSystem(TimeSystem::BDT);
          if (satSys == "J") time.setTimeSystem(TimeSystem::QZS);
