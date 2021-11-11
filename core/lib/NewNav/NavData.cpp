@@ -36,28 +36,9 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifdef __GNUG__
-#include <cxxabi.h>
-#endif
 #include "NavData.hpp"
 #include "TimeString.hpp"
-
-// required to demangle G++ class names
-static std::string demangle(const char* name)
-{
-      // yanked from stackoverflow.com/questions/281818/unmangling-the-result-of-stdtype-infoname
-#ifdef __GNUG__
-   int status = -4;
-   std::unique_ptr<char, void(*)(void*)> res {
-      abi::__cxa_demangle(name, NULL, NULL, &status),
-      std::free
-   };
-   return (status == 0) ? res.get() : name;
-#else
-      // do nothing if not G++
-   return name;
-#endif
-}
+#include "demangle.hpp"
 
 namespace gnsstk
 {

@@ -47,8 +47,12 @@
 #include "Rinex3ClockData.hpp"
 #include "TimeString.hpp"
 #include "MiscMath.hpp"
+#include "DebugTrace.hpp"
 
 using namespace std;
+
+/// debug time string
+static const std::string dts("%Y/%02m/%02d %02H:%02M:%02S %3j %P");
 
 namespace gnsstk
 {
@@ -233,6 +237,7 @@ namespace gnsstk
         NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
         NavSearchOrder order)
    {
+      DEBUGTRACE_FUNCTION();
       bool rv;
       NavMessageID genericID;
       if (nmid.messageType != NavMessageType::Ephemeris)
@@ -265,6 +270,10 @@ namespace gnsstk
    findGeneric(NavMessageType nmt, const NavSatelliteID& nsid,
                const CommonTime& when, NavDataPtr& navData)
    {
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("nmt=" << StringUtils::asString(nmt));
+      DEBUGTRACE("nsid=" << nsid);
+      DEBUGTRACE("when=" << printTime(when,dts));
       unsigned halfOrder;
       bool checkDataGap, checkInterval;
       double gapInterval, maxInterval;
@@ -285,14 +294,14 @@ namespace gnsstk
          maxInterval = maxIntervalClk;
       }
       else
+      {
          return false;
-      // cerr << __PRETTY_FUNCTION__ << " nmt=" << StringUtils::asString(nmt)
-      //      << endl;
+      }
       bool giveUp = false;
       auto dataIt = data.find(nmt);
       if (dataIt == data.end())
       {
-         // cerr << "  no data for nav message type" << endl;
+         DEBUGTRACE("no data for nav message type");
          return 0.;
       }
          // To support wildcard signals, we need to do a linear search.
@@ -304,16 +313,16 @@ namespace gnsstk
             // entry we probably (depending on order) *don't* want.
          auto ti2 = sati.second.upper_bound(when);
          auto ti1 = ti2, ti3 = ti2;
-         // cerr << printTime(ti2->first,"  ti2 has been set to %F/%g") << endl;
          if (ti2 == sati.second.end())
          {
                // Since we're at the end we can't do interpolation,
                // but we can still check for an exact match.
-            // cerr << "  probably giving up because we're at the end" << endl;
+            DEBUGTRACE("probably giving up because we're at the end");
             giveUp = true;
          }
          else
          {
+            DEBUGTRACE(printTime(ti2->first,"  ti2 has been set to "+dts));
                // I wouldn't have done this except that I'm trying to
                // match the behavior of SP3EphemerisStore.  Basically,
                // for exact matches, the interpolation interval is
@@ -326,11 +335,16 @@ namespace gnsstk
             {
                offs = 1;
             }
-            // cerr << "gap = " << (ti2->first - tiTmp->first) << endl;
+            if (DebugTrace::enabled)
+            {
+               CommonTime dt2(ti2->first);
+               dt2.setTimeSystem(TimeSystem::Any);
+               DEBUGTRACE("gap = " << (dt2 - tiTmp->first));
+            }
             if (checkDataGap && (tiTmp != sati.second.end()) &&
                 ((ti2->first - tiTmp->first) > gapInterval))
             {
-               // cerr << "  giving up because the gap interval is too big"<< endl;
+               DEBUGTRACE("giving up because the gap interval is too big");
                giveUp = true;
             }
                // This is consistent with SP3EphemerisStore for exact match
@@ -338,47 +352,46 @@ namespace gnsstk
             giveUp |=
                (std::distance(sati.second.begin(), ti2) < (halfOrder+offs)) |
                (std::distance(ti2, sati.second.end()) < (halfOrder-offs));
-            // cerr << "  distance from begin = "
-            //      << std::distance(sati.second.begin(), ti2) << endl
-            //      << "  distance to end = "
-            //      << std::distance(ti2, sati.second.end()) << endl;
+            DEBUGTRACE("distance from begin = "
+                       << std::distance(sati.second.begin(), ti2));
+            DEBUGTRACE("distance to end = "
+                       << std::distance(ti2, sati.second.end()));
             if (!giveUp)
             {
                   // we can do interpolation so set up iterators
                ti1 = std::prev(ti2,halfOrder+offs);
                ti3 = std::next(ti2,halfOrder-offs);
-               // cerr << printTime(ti1->first,"  ti1 has been set to %F/%g") << endl << printTime(ti3->first,"  ti3 has been set to %F/%g") << endl;
+               DEBUGTRACE(printTime(ti1->first,"  ti1 has been set to "+dts));
+               DEBUGTRACE(printTime(ti3->first,"  ti3 has been set to "+dts));
             }
             else
             {
                   // We're on the edge of available and can't interpolate.
-               // cerr << "  probably giving up because we're near the bound" << endl;
+               DEBUGTRACE("probably giving up because we're near the bound");
             }
          }
             // always back up one which allows us to check for exact match.
          ti2 = std::prev(ti2);
-         // cerr << printTime(ti1->first,"  ti1 has been set to %F/%g") << endl;
          if (ti2 == sati.second.end())
          {
-            // cerr << "ti2 is now end?" << endl;
+            DEBUGTRACE("ti2 is now end?");
                // Nothing available that's even close.
             return false;
          }
+         DEBUGTRACE(printTime(ti2->first,"  ti2 has been set to "+dts));
          if (!giveUp)
          {
                // Need a copy of ti3 to move it back 1, as otherwise
                // the interval check will give the wrong results since
                // it's 1 beyond the actual last interpolated item.
             auto iti3 = std::prev(ti3);
-            // cerr << "  distance from ti1 to ti2 = " << std::distance(ti1,ti2)
-            //      << endl
-            //      << "  distance from ti2 to ti3 = " << std::distance(ti2,ti3)
-            //      << endl
-            //      << "  interval = " << (iti3->first - ti1->first) << endl;
+            DEBUGTRACE("distance from ti1 to ti2 = " << std::distance(ti1,ti2));
+            DEBUGTRACE("distance from ti2 to ti3 = " << std::distance(ti2,ti3));
+            DEBUGTRACE("interval = " << (iti3->first - ti1->first));
             if (checkInterval && ((iti3->first - ti1->first) > maxInterval))
             {
-               // cerr << "  giving up because the interpolation interval is too"
-               //      << " big" << endl;
+               DEBUGTRACE("giving up because the interpolation interval is too"
+                          " big");
                giveUp = true;
             }
          }
@@ -400,16 +413,16 @@ namespace gnsstk
                {
                   if (nmt == NavMessageType::Ephemeris)
                   {
-                     // cerr << "  interpolating ephemeris for exact match" << endl;
+                     DEBUGTRACE("interpolating ephemeris for exact match");
                      interpolateEph(ti1, ti3, when, navData);
                   }
                   else if (nmt == NavMessageType::Clock)
                   {
-                     // cerr << "  interpolating clock for exact match" << endl;
+                     DEBUGTRACE("interpolating clock for exact match");
                      interpolateClk(ti1, ti3, when, navData);
                   }
                }
-               // cerr << "  found an exact match" << endl;
+               DEBUGTRACE("found an exact match");
                return true;
             }
             else
@@ -424,7 +437,7 @@ namespace gnsstk
                      // fill in missing data if we can
                   if (!giveUp)
                   {
-                     // cerr << "  interpolating ephemeris for exact match (2)" << endl;
+                     DEBUGTRACE("interpolating ephemeris for exact match (2)");
                      interpolateEph(ti1, ti3, when, navData);
                   }
                }
@@ -434,39 +447,40 @@ namespace gnsstk
                      // fill in missing data if we can
                   if (!giveUp)
                   {
-                     // cerr << "  interpolating clock for exact match (2)" << endl;
+                     DEBUGTRACE("interpolating clock for exact match (2)");
                      interpolateClk(ti1, ti3, when, navData);
                   }
                }
                // stored->dump(std::cerr, DumpDetail::Full);
                // navOut->dump(std::cerr, DumpDetail::Full);
-               // cerr << "  found an exact match with existing data" << endl;
+               DEBUGTRACE("found an exact match with existing data");
                return true;
             }
          }
          else if (giveUp)
          {
                // not an exact match and no data available for interpolation.
-            // cerr << "  giving up, insufficient data for interpolation" << endl;
+            DEBUGTRACE("giving up, insufficient data for interpolation");
             return false;
          }
          else
          {
-            // cerr << "  faking interpolation" << endl;
+            DEBUGTRACE("faking interpolation");
             if (!navData)
             {
-               // cerr << "  creating new empty navData" << endl;
+               DEBUGTRACE("creating new empty navData");
                OrbitDataSP3 *stored = dynamic_cast<OrbitDataSP3*>(
                   ti2->second.get());
                navData = std::make_shared<OrbitDataSP3>(*stored);
                navData->timeStamp = when;
             }
-            // else
-            // {
-            //    cerr << "  already have valid navData" << endl;
-            // }
-            // std::cerr << "OK, have interval " << printTime(ti1->first,"%F/%g") <<
-            //       " <= " <<printTime(when,"%F/%g")<< " < " <<printTime(ti3->first,"%F/%g");
+            else
+            {
+               DEBUGTRACE("already have valid navData");
+            }
+            DEBUGTRACE("OK, have interval " << printTime(ti1->first,""+dts)
+                       << " <= " <<printTime(when,""+dts)<< " < "
+                       << printTime(ti3->first,dts));
             if (nmt == gnsstk::NavMessageType::Ephemeris)
             {
                interpolateEph(ti1, ti3, when, navData);
@@ -479,7 +493,7 @@ namespace gnsstk
             }
          } // else (do interpolation)
       } // for (auto& sati : dataIt->second)
-      // cerr << "  giving up at the end" << endl;
+      DEBUGTRACE("giving up at the end");
       return false;
    }
 
@@ -487,6 +501,7 @@ namespace gnsstk
    bool SP3NavDataFactory ::
    addDataSource(const std::string& source)
    {
+      DEBUGTRACE_FUNCTION();
       bool rv = true;
       bool processEph = (procNavTypes.count(NavMessageType::Ephemeris) > 0);
       bool processClk = (procNavTypes.count(NavMessageType::Clock) > 0);
@@ -546,13 +561,13 @@ namespace gnsstk
             }
             if ((lastSat != data.sat) || (lastTime != data.time))
             {
-               // cerr << "time or satellite change, storing" << endl;
+               DEBUGTRACE("time or satellite change, storing");
                lastSat = data.sat;
                lastTime = data.time;
-               // cerr << "storing eph" << endl;
+               DEBUGTRACE("storing eph");
                if (!store(processEph, eph))
                   return false;
-               // cerr << "storing clk" << endl;
+               DEBUGTRACE("storing clk");
                if (!store(processClk && useSP3clock, clk))
                   return false;
             }
@@ -599,10 +614,10 @@ namespace gnsstk
             }
          }
             // store the final record(s)
-         // cerr << "storing last eph" << endl;
+         DEBUGTRACE("storing last eph");
          if (!store(processEph, eph))
             return false;
-         // cerr << "storing last clk" << endl;
+         DEBUGTRACE("storing last clk");
          if (!store(processClk, clk))
             return false;
       }
@@ -756,18 +771,18 @@ namespace gnsstk
    convertToOrbit(const SP3Header& head, const SP3Data& navIn, bool isC,
                   NavDataPtr& navOut)
    {
-      // cerr << __PRETTY_FUNCTION__ << endl;
+      DEBUGTRACE_FUNCTION();
       OrbitDataSP3 *gps;
          // SP3 needs to merge multiple records, position and
          // velocity, so we only create new objects as needed.
       if (!navOut)
       {
-         // cerr << "  creating OrbitDataSP3" << endl;
+         DEBUGTRACE("creating OrbitDataSP3");
          navOut = std::make_shared<OrbitDataSP3>();
       }
       gps = dynamic_cast<OrbitDataSP3*>(navOut.get());
-      // cerr << "  navIn.RecType=" << navIn.RecType << endl
-      //      << "  navIn.correlationFlag=" << navIn.correlationFlag << endl;
+      DEBUGTRACE("navIn.RecType=" << navIn.RecType);
+      DEBUGTRACE("navIn.correlationFlag=" << navIn.correlationFlag);
       switch (navIn.RecType)
       {
          case 'P':
@@ -784,12 +799,13 @@ namespace gnsstk
                if (navIn.correlationFlag)
                {
                   gps->posSig[i] = navIn.sdev[i];
-                  // cerr << "navIn.sdev[" << i << "] = " << gps->posSig[i] << endl;
+                  DEBUGTRACE("navIn.sdev[" << i << "] = " << gps->posSig[i]);
                }
                else if (isC && (navIn.sig[i] >= 0))
                {
                   gps->posSig[i] = ::pow(head.basePV, navIn.sig[i]);
-                  // cerr << "pow(head.basePV,navIn.sig[" << i << "] = " << gps->posSig[i] << endl;
+                  DEBUGTRACE("pow(head.basePV,navIn.sig[" << i << "] = "
+                             << gps->posSig[i]);
                }
             }
             setSignal(navIn.sat, navOut->signal);
@@ -856,11 +872,11 @@ namespace gnsstk
    bool SP3NavDataFactory ::
    store(bool process, NavDataPtr& obj)
    {
-      // cerr << __PRETTY_FUNCTION__ << endl;
+      DEBUGTRACE_FUNCTION();
          // only process if we have something to process.
       if (obj)
       {
-         // cerr << "  store storing " << obj.get() << endl;
+         DEBUGTRACE("store storing " << obj.get());
             // check the validity
          bool check = false;
          bool expect = false;
@@ -887,7 +903,7 @@ namespace gnsstk
                {
                   if (!addNavData(obj))
                   {
-                     // cerr << "  store failed to add nav data" << endl;
+                     DEBUGTRACE("store failed to add nav data");
                      return false;
                   }
                }
@@ -899,19 +915,19 @@ namespace gnsstk
             {
                if (!addNavData(obj))
                {
-                  // cerr << "  store failed to add nav data" << endl;
+                  DEBUGTRACE("store failed to add nav data");
                   return false;
                }
             }
          }
             // Clear the shared_ptr so the next time
             // convertToOrbit is called, it creates a new one.
-         // cerr << "  store resetting obj ptr, use_count=" << obj.use_count() << endl;
+         DEBUGTRACE("store resetting obj ptr, use_count=" << obj.use_count());
          // NavData *ptr = obj.get();
-         // cerr << "DUMP BEFORE:" << endl;
+         DEBUGTRACE("DUMP BEFORE:");
          // ptr->dump(cerr, DumpDetail::Full);
          obj.reset();
-         // cerr << "DUMP AFTER:" << endl;
+         DEBUGTRACE("DUMP AFTER:");
          // ptr->dump(cerr, DumpDetail::Full);
       }
       return true;
@@ -924,7 +940,9 @@ namespace gnsstk
    interpolateEph(const NavMap::iterator& ti1, const NavMap::iterator& ti3,
                   const CommonTime& when, NavDataPtr& navData)
    {
-      // cerr << "  start interpolating ephemeris, distance = " << std::distance(ti1,ti3) << endl;
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("start interpolating ephemeris, distance = "
+                 << std::distance(ti1,ti3));
       std::vector<double> tdata(2*halfOrderPos);
       std::vector<std::vector<double>> posData(3), posSigData(3), velData(3),
          velSigData(3), accData(3), accSigData(3);
@@ -947,26 +965,26 @@ namespace gnsstk
          accData[i].resize(2*halfOrderPos);
          accSigData[i].resize(2*halfOrderPos);
       }
-      // cerr << "  resized" << endl;
+      DEBUGTRACE("resized");
       bool haveVel = false, haveAcc = false;
       NavMap::iterator ti2;
       for (ti2 = ti1, idx=0; ti2 != ti3; ++ti2, ++idx)
       {
-         // cerr << "  idx=" << idx << endl;
+         DEBUGTRACE("idx=" << idx);
          tdata[idx] = ti2->second->timeStamp - firstTime;
          if ((idx == halfOrderPos) && (ti2->second->timeStamp == when))
             isExact = true;
          OrbitDataSP3 *nav = dynamic_cast<OrbitDataSP3*>(
             ti2->second.get());
-         // cerr << "  nav=" << nav << endl;
+         DEBUGTRACE("nav=" << nav);
          // ti2->second->dump(cerr, DumpDetail::Full);
          for (unsigned i = 0; i < 3; i++)
          {
-            // cerr << "  i=" << i << endl
-            //      << posData.size() << " " << velData.size() << " "
-            //      << accData.size() << endl
-            //      << nav->pos.size() << " " << nav->vel.size() << " "
-            //      << nav->acc.size() << endl;
+            DEBUGTRACE("i=" << i);
+            DEBUGTRACE(posData.size() << " " << velData.size() << " "
+                       << accData.size());
+            DEBUGTRACE(nav->pos.size() << " " << nav->vel.size() << " "
+                       << nav->acc.size());
             posData[i][idx] = nav->pos[i];
             velData[i][idx] = nav->vel[i];
             accData[i][idx] = nav->acc[i];
@@ -979,22 +997,24 @@ namespace gnsstk
       }
       double dt = when - firstTime, err;
       OrbitDataSP3 *osp3 = dynamic_cast<OrbitDataSP3*>(navData.get());
-      // cerr << printTime(when, "  when=%Y/%02m/%02d %02H:%02M:%02S")
-      //      << endl
-      //      << printTime(firstTime, "  firstTime=%Y/%02m/%02d %02H:%02M:%02S")
-      //      << endl << setprecision(20) << "  dt=" << dt << endl;
-      // for (unsigned i = 0; i < tdata.size(); i++)
-      // {
-      //    cerr << "  i=" << i << " times=" << tdata[i] << endl
-      //         << "  P=" << posData[0][i] << " " << posData[1][i] << " "
-      //         << posData[2][i] << endl
-      //         << "  V=" << velData[0][i] << " " << velData[1][i] << " "
-      //         << velData[2][i] << endl
-      //         << "  A=" << accData[0][i] << " " << accData[1][i] << " "
-      //         << accData[2][i] << endl;
-      // }
-      // cerr << "  haveVelocity=" << haveVel << "  haveAcceleration="
-      //      << haveAcc << endl;
+      DEBUGTRACE(printTime(when, "when=%Y/%02m/%02d %02H:%02M:%02S"));
+      DEBUGTRACE(printTime(firstTime, "firstTime=%Y/%02m/%02d %02H:%02M:%02S"));
+      DEBUGTRACE(setprecision(20) << "  dt=" << dt);
+      if (DebugTrace::enabled)
+      {
+         for (unsigned i = 0; i < tdata.size(); i++)
+         {
+            DEBUGTRACE("i=" << i << " times=" << tdata[i]);
+            DEBUGTRACE("P=" << posData[0][i] << " " << posData[1][i] << " "
+                       << posData[2][i]);
+            DEBUGTRACE("V=" << velData[0][i] << " " << velData[1][i] << " "
+                       << velData[2][i]);
+            DEBUGTRACE("A=" << accData[0][i] << " " << accData[1][i] << " "
+                       << accData[2][i]);
+         }
+      }
+      DEBUGTRACE("haveVelocity=" << haveVel << "  haveAcceleration="
+                 << haveAcc);
          // Interpolate XYZ position/velocity/acceleration.
       for (unsigned i = 0; i < 3; i++)
       {
@@ -1004,12 +1024,18 @@ namespace gnsstk
             osp3->vel[i] = LagrangeInterpolation(tdata,velData[i],dt,err);
             osp3->acc[i] = LagrangeInterpolation(tdata,accData[i],dt,err);
             unsigned Nhi = halfOrderPos, Nlow=halfOrderPos-1;
-            // cerr << "!isExact sigP[" << i << "][" << Nhi << "] = " << posSigData[i][Nhi] << endl
-            //      << "         sigP[" << i << "][" << Nlow << "] = " << posSigData[i][Nlow] << endl
-            //      << "         sigV[" << i << "][" << Nhi << "] = " << velSigData[i][Nhi] << endl
-            //      << "         sigV[" << i << "][" << Nlow << "] = " << velSigData[i][Nlow] << endl
-            //      << "         sigA[" << i << "][" << Nhi << "] = " << accSigData[i][Nhi] << endl
-            //      << "         sigA[" << i << "][" << Nlow << "] = " << accSigData[i][Nlow] << endl;
+            DEBUGTRACE("!isExact sigP[" << i << "][" << Nhi << "] = "
+                       << posSigData[i][Nhi]);
+            DEBUGTRACE("         sigP[" << i << "][" << Nlow << "] = "
+                       << posSigData[i][Nlow]);
+            DEBUGTRACE("         sigV[" << i << "][" << Nhi << "] = "
+                       << velSigData[i][Nhi]);
+            DEBUGTRACE("         sigV[" << i << "][" << Nlow << "] = "
+                       << velSigData[i][Nlow]);
+            DEBUGTRACE("         sigA[" << i << "][" << Nhi << "] = "
+                       << accSigData[i][Nhi]);
+            DEBUGTRACE("         sigA[" << i << "][" << Nlow << "] = "
+                       << accSigData[i][Nlow]);
             if (!isExact)
             {
                osp3->posSig[i] = RSS(posSigData[i][halfOrderPos-1],
@@ -1018,9 +1044,9 @@ namespace gnsstk
                                      velSigData[i][halfOrderPos]);
                osp3->accSig[i] = RSS(accSigData[i][halfOrderPos-1],
                                      accSigData[i][halfOrderPos]);
-               // cerr << "1 RSS(posSigData[" << i << "][" << (halfOrderPos-1)
-               //      << "],posSigData[" << i << "][" << halfOrderPos << "]) = "
-               //      << osp3->posSig[i] << endl;
+               DEBUGTRACE("1 RSS(posSigData[" << i << "][" << (halfOrderPos-1)
+                          << "],posSigData[" << i << "][" << halfOrderPos
+                          << "]) = " << osp3->posSig[i]);
             }
          }
          else if (haveVel && !haveAcc)
@@ -1030,12 +1056,18 @@ namespace gnsstk
                                   osp3->acc[i]);
             osp3->acc[i] *= 0.1;
             unsigned Nhi = halfOrderPos, Nlow=halfOrderPos-1;
-            // cerr << "!isExact sigP[" << i << "][" << Nhi << "] = " << posSigData[i][Nhi] << endl
-            //      << "         sigP[" << i << "][" << Nlow << "] = " << posSigData[i][Nlow] << endl
-            //      << "         sigV[" << i << "][" << Nhi << "] = " << velSigData[i][Nhi] << endl
-            //      << "         sigV[" << i << "][" << Nlow << "] = " << velSigData[i][Nlow] << endl
-            //      << "         sigA[" << i << "][" << Nhi << "] = " << accSigData[i][Nhi] << endl
-            //      << "         sigA[" << i << "][" << Nlow << "] = " << accSigData[i][Nlow] << endl;
+            DEBUGTRACE("!isExact sigP[" << i << "][" << Nhi << "] = "
+                       << posSigData[i][Nhi]);
+            DEBUGTRACE("         sigP[" << i << "][" << Nlow << "] = "
+                       << posSigData[i][Nlow]);
+            DEBUGTRACE("         sigV[" << i << "][" << Nhi << "] = "
+                       << velSigData[i][Nhi]);
+            DEBUGTRACE("         sigV[" << i << "][" << Nlow << "] = "
+                       << velSigData[i][Nlow]);
+            DEBUGTRACE("         sigA[" << i << "][" << Nhi << "] = "
+                       << accSigData[i][Nhi]);
+            DEBUGTRACE("         sigA[" << i << "][" << Nlow << "] = "
+                       << accSigData[i][Nlow]);
             if (!isExact)
             {
                osp3->posSig[i] = RSS(posSigData[i][halfOrderPos-1],
@@ -1043,9 +1075,9 @@ namespace gnsstk
                osp3->velSig[i] = RSS(velSigData[i][halfOrderPos-1],
                                      velSigData[i][halfOrderPos]);
             }
-            // cerr << "2 RSS(posSigData[" << i << "][" << (halfOrderPos-1)
-            //      << "],posSigData[" << i << "][" << halfOrderPos << "]) = "
-            //      << osp3->posSig[i] << endl;
+            DEBUGTRACE("2 RSS(posSigData[" << i << "][" << (halfOrderPos-1)
+                       << "],posSigData[" << i << "][" << halfOrderPos
+                       << "]) = " << osp3->posSig[i]);
          }
          else
          {
@@ -1061,17 +1093,20 @@ namespace gnsstk
                osp3->posSig[i] = RSS(posSigData[i][halfOrderPos-1],
                                      posSigData[i][halfOrderPos]);
             }
-            // cerr << "3 RSS(posSigData[" << i << "][" << (halfOrderPos-1)
-            //      << "],posSigData[" << i << "][" << halfOrderPos << "]) = "
-            //      << osp3->posSig[i] << endl;
+            DEBUGTRACE("3 RSS(posSigData[" << i << "][" << (halfOrderPos-1)
+                       << "],posSigData[" << i << "][" << halfOrderPos
+                       << "]) = " << osp3->posSig[i]);
          }
       } // for (unsigned i = 0; i < 3; i++)
-      // for (unsigned i = 0; i < 3; i++)
-      // {
-      //    cerr << "  pos[" << i << "]=" << osp3->pos[i] << endl
-      //         << "  vel[" << i << "]=" << osp3->vel[i] << endl
-      //         << "  acc[" << i << "]=" << osp3->acc[i] << endl;
-      // }
+      if (DebugTrace::enabled)
+      {
+         for (unsigned i = 0; i < 3; i++)
+         {
+            DEBUGTRACE("pos[" << i << "]=" << osp3->pos[i]
+                       << "  vel[" << i << "]=" << osp3->vel[i]
+                       << "  acc[" << i << "]=" << osp3->acc[i]);
+         }
+      }
    }
 
 
@@ -1079,7 +1114,9 @@ namespace gnsstk
    interpolateClk(const NavMap::iterator& ti1, const NavMap::iterator& ti3,
                   const CommonTime& when, NavDataPtr& navData)
    {
-      // cerr << "  start interpolating clock, distance = " << std::distance(ti1,ti3) << endl;
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("start interpolating clock, distance = "
+                 << std::distance(ti1,ti3));
       unsigned Nhi = halfOrderClk, Nlow = halfOrderClk-1;
       std::vector<double> tdata(2*halfOrderClk),
          biasData(2*halfOrderClk), biasSigData(2*halfOrderClk),
@@ -1096,13 +1133,13 @@ namespace gnsstk
       NavMap::iterator ti2;
       for (ti2 = ti1, idx=0; ti2 != ti3; ++ti2, ++idx)
       {
-         // cerr << "  idx=" << idx << endl;
+         DEBUGTRACE("idx=" << idx);
          tdata[idx] = ti2->second->timeStamp - firstTime;
          if ((idx == halfOrderClk) && (ti2->second->timeStamp == when))
             isExact = true;
          OrbitDataSP3 *nav = dynamic_cast<OrbitDataSP3*>(
             ti2->second.get());
-         // cerr << "  nav=" << nav << endl;
+         DEBUGTRACE("nav=" << nav);
          // ti2->second->dump(cerr, DumpDetail::Full);
          biasData[idx] = nav->clkBias;
          driftData[idx] = nav->clkDrift;
@@ -1116,7 +1153,7 @@ namespace gnsstk
       double dt = when - firstTime, err, slope,
          slopedt = tdata[Nhi]-tdata[Nlow];
       OrbitDataSP3 *osp3 = dynamic_cast<OrbitDataSP3*>(navData.get());
-      // cerr << setprecision(20) << "  dt=" << dt << endl;
+      DEBUGTRACE(setprecision(20) << "  dt=" << dt);
       gnsstk::InvalidRequest unkType(
          "Clock interpolation type " +
          StringUtils::asString(static_cast<int>(interpType)) +
@@ -1143,9 +1180,9 @@ namespace gnsstk
          if (!isExact)
          {
             osp3->biasSig = RSS(biasSigData[Nlow], biasSigData[Nhi]);
-            // cerr << " biasSig = " << osp3->biasSig << endl
-            //      << " driftSig = " << osp3->driftSig << endl
-            //      << " drRateSig = " << osp3->drRateSig << endl;
+            DEBUGTRACE("biasSig = " << osp3->biasSig)
+            DEBUGTRACE(" driftSig = " << osp3->driftSig)
+            DEBUGTRACE(" drRateSig = " << osp3->drRateSig);
          }
          osp3->driftSig = RSS(driftSigData[Nlow], driftSigData[Nhi]);
       }
@@ -1171,7 +1208,7 @@ namespace gnsstk
          if (!isExact)
          {
             osp3->biasSig = RSS(biasSigData[Nlow], biasSigData[Nhi]);
-            // cerr << " biasSig = " << osp3->biasSig << endl;
+            DEBUGTRACE("biasSig = " << osp3->biasSig);
          }
             // linear interpolation of drift
             /** @todo this doesn't look right to me because it
@@ -1328,7 +1365,7 @@ namespace gnsstk
    double SP3NavDataFactory ::
    nomTimeStep(const NavMessageID& nmid) const
    {
-      // cerr << __PRETTY_FUNCTION__ << "  nmid=" << nmid << endl;
+      DEBUGTRACE_FUNCTION();
       auto dataIt = data.find(nmid.messageType);
          // map delta time * 100 to a count
       std::map<long,unsigned long> stepCount;
@@ -1336,7 +1373,7 @@ namespace gnsstk
       std::map<unsigned long,long> countStep;
       if (dataIt == data.end())
       {
-         // cerr << "  no data for nav message type" << endl;
+         DEBUGTRACE("no data for nav message type");
          return false;
       }
          // To support wildcard signals, we need to do a linear search.
@@ -1344,13 +1381,13 @@ namespace gnsstk
       {
          if (sati.first != nmid)
             continue; // skip non matches
-         // cerr << "  found a match" << endl;
+         DEBUGTRACE("found a match");
          auto ti1 = sati.second.begin();
          auto ti2 = std::next(ti1);
          while (ti2 != sati.second.end())
          {
             double diff = ti2->first - ti1->first;
-            // cerr << "  diff=" << diff << endl;
+            DEBUGTRACE("diff=" << diff);
             stepCount[(long)(diff*100)]++;
             ++ti1;
             ++ti2;
@@ -1363,7 +1400,7 @@ namespace gnsstk
       {
          countStep[sci.second] = sci.first;
       }
-      // cerr << "countStep.empty()=" << countStep.empty() << endl;
+      DEBUGTRACE("countStep.empty()=" << countStep.empty());
       if (!countStep.empty())
       {
             // change the scale back to seconds.

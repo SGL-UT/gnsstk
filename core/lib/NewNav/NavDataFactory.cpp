@@ -39,6 +39,7 @@
 #include <iterator>
 #include "NavDataFactory.hpp"
 #include "TimeString.hpp"
+#include "demangle.hpp"
 
 /// debug time string
 static const std::string dts("%Y/%03j/%02H:%02M:%02S %P");
@@ -109,5 +110,12 @@ namespace gnsstk
          rv.insert(fssi.sat);
       }
       return rv;
+   }
+
+
+   std::string NavDataFactory ::
+   getClassName() const
+   {
+      return demangle(typeid(*this).name());
    }
 }
