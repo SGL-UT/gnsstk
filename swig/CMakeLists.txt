@@ -151,13 +151,13 @@ configure_file( ${GNSSTK_ROOT_PY_IN} ${GNSSTK_ROOT_PY} )
 # Note: For setup.py install options, see https://docs.python.org/2/install/
 if( BUILD_FOR_PACKAGE_SWITCH )
     # If building for a package, use the "root" switch to imitate the system package path
-    install( DIRECTORY DESTINATION ${PYTHON_INSTALL_PREFIX}/lib/python2.7/site-packages )
+    install( DIRECTORY DESTINATION ${PYTHON_INSTALL_PREFIX}/lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages )
     install( CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} install --root=${PYTHON_INSTALL_PREFIX} WORKING_DIRECTORY ${MODULE_PATH})" )
 elseif( PYTHON_USER_INSTALL )
     # If performing a user-install, use the `--user` flag, otherwise it may not create the correct directores.
     install( CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} install --user WORKING_DIRECTORY ${MODULE_PATH})" )
 else()
-    install( DIRECTORY DESTINATION ${PYTHON_INSTALL_PREFIX}/lib/python2.7/site-packages )
+    install( DIRECTORY DESTINATION ${PYTHON_INSTALL_PREFIX}/lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages )
     install( CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} -m pip install --prefix=${PYTHON_INSTALL_PREFIX} ${MODULE_PATH} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})" )
 endif()
 
