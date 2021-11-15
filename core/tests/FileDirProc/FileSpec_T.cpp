@@ -644,17 +644,23 @@ unsigned FileSpec_T :: testExtractField()
       
    try   // extract multiple different fields
    {
-      FileSpec  spec("test-%4y%03j%05s-spec");
-         
-      string  yField = spec.extractField("test-200412312345", FileSpec::year);
+      FileSpec  spec("test-%4y%03j%05s-spec.%3x");
+
+      string  yField = spec.extractField("test-200412312345-spec.pdf",
+                                         FileSpec::year);
       TUASSERTE(string, "2004", yField);
 
-      string  jField = spec.extractField("test-200412312345", FileSpec::day);
+      string  jField = spec.extractField("test-200412312345-spec.pdf",
+                                         FileSpec::day);
       TUASSERTE(string, "123", jField);
 
-      string  sField = spec.extractField("test-200412312345",
+      string  sField = spec.extractField("test-200412312345-spec.pdf",
                                          FileSpec::doysecond);
       TUASSERTE(string, "12345", sField);
+
+      string  xField = spec.extractField("test-200412312345-spec.pdf",
+                                         FileSpec::text);
+      TUASSERTE(string, "pdf", xField);
    }
    catch (FileSpecException& fse)
    {
@@ -678,6 +684,37 @@ unsigned FileSpec_T :: testExtractField()
       oss << "received expected exception: " << fse;
       TUPASS(oss.str());
    }
+
+   /*    // @todo - The following tests currently fail, but it's possible
+         //         that things might work better in the future. 
+
+   try   // extract fields without explicit width
+   {
+      FileSpec  spec("test_%y_%j_%s_spec.%x");
+
+      string  yField = spec.extractField("test_2004_12_345_spec.pdf",
+                                         FileSpec::year);
+      TUASSERTE(string, "2004", yField);
+
+      string  jField = spec.extractField("test_2004_12_345_spec.pdf",
+                                         FileSpec::day);
+      TUASSERTE(string, "12", jField);
+
+      string  sField = spec.extractField("test_2004_12_345_spec.pdf",
+                                         FileSpec::doysecond);
+      TUASSERTE(string, "345", sField);
+
+      string  xField = spec.extractField("test_2004_12_345_spec.pdf",
+                                         FileSpec::text);
+      TUASSERTE(string, "pdf", xField);
+   }
+   catch (FileSpecException& fse)
+   {
+      ostringstream  oss;
+      oss << "unexpected exception: " << fse;
+      TUFAIL(oss.str());
+   }
+   */
 
    TURETURN();
 }
@@ -836,6 +873,52 @@ unsigned FileSpec_T :: testToString()
       stuff[FileSpec::clock] = "1";
       string  str = spec.toString(t, stuff);
       TUASSERTE(string, "test-1234056789-12-96344-01-01-spec", str);
+   }
+   catch (FileSpecException& fse)
+   {
+      ostringstream  oss;
+      oss << "unexpected exception: " << fse;
+      TUFAIL(oss.str());
+   }
+
+   try  // test the text type
+   {
+      GPSWeekZcount wz(1234,56789);  // dummy time
+      CommonTime t(wz);
+
+      FileSpec  spec0("test%x");
+      FileSpec  spec1("test%1x");
+      FileSpec  spec2("test%2x");
+
+      FileSpec::FSTStringMap  stuff;
+      string str;
+
+         // empty text
+      stuff[FileSpec::text] = "";
+      str = spec0.toString(t, stuff);
+      TUASSERTE(string, "test", str);  // 0 == width == size
+      str = spec1.toString(t, stuff);
+      TUASSERTE(string, "test ", str);  // width > size == 0
+      str = spec2.toString(t, stuff);
+      TUASSERTE(string, "test  ", str);  // width > size == 0
+
+         // short text
+      stuff[FileSpec::text] = "A";
+      str = spec0.toString(t, stuff);
+      TUASSERTE(string, "testA", str);   // 0 == width < size
+      str = spec1.toString(t, stuff);
+      TUASSERTE(string, "testA", str);   // width == size
+      str = spec2.toString(t, stuff);
+      TUASSERTE(string, "testA ", str);  // width > size
+
+         // long text
+      stuff[FileSpec::text] = "ABCD";
+      str = spec0.toString(t, stuff);
+      TUASSERTE(string, "testABCD", str);  // 0 == width < size
+      str = spec1.toString(t, stuff);
+      TUASSERTE(string, "testA", str);    // width < size
+      str = spec2.toString(t, stuff);
+      TUASSERTE(string, "testAB", str);  // width < size
    }
    catch (FileSpecException& fse)
    {

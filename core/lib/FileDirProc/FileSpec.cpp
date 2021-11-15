@@ -300,8 +300,19 @@ namespace gpstk
                   // than the original implementation which simply
                   // didn't set the field width even if one was
                   // specified (which would cause RTT failures).
-               toReturn += 
-                  rightJustify((*fstsItr).second, (*fslItr).numCh);
+                  // Also, if width is unspecified (0), copy the
+                  // entire text field into the file spec.
+               if ((*fslItr).numCh == 0)
+               {
+                     // Use as much space as necessary
+                  toReturn += (*fstsItr).second;
+               }
+               else
+               {
+                     // Use at most numCh characters
+                  toReturn +=
+                     leftJustify((*fstsItr).second, (*fslItr).numCh);
+               }
             }
             else
             {
@@ -464,25 +475,30 @@ namespace gpstk
                
                   // get any integers that come before the letter we're lookin 
                   // for, then erase them
-               int numChs = asInt(fs);
-               if (numChs == 0)
-                  numChs = 1;
-               
+               int rawNumChs = asInt(fs);
+               int numChs = (rawNumChs == 0) ? 1 : rawNumChs;
+
                if (fs[0] == '0')
                   atom += '0';
 
                stripLeading(fs, "0");
                stripLeading(fs, asString(numChs));
 
-               atom += asString(numChs);
-               
-                  // get the file spec type and erase that part of the string
+                  // get the file spec type
                FileSpecType fst = convertFileSpecType(fs.substr(0,1));
+
+                  // super special case - %x -> %0x
+               if ((fs.substr(0,1) == string("x")) && (rawNumChs == 0))
+                  numChs = 0;
+
+                  // super special case - %Y -> %4y
+               if ((fs.substr(0,1) == string("Y")) && (numChs < 4))
+                  numChs = 4;
+
+               atom += asString(numChs);
                atom += fs[0];
 
-                  // super special case - %Y -> %4y  FIX shouldn't this be <4?
-               if ((fs.substr(0,1) == string("Y")) && (numChs != 4))
-                  numChs = 4;
+                  // erase the file spec element type character
                fs.erase(0,1);
                
                FileSpecElement fse(numChs, offset, fst, atom);

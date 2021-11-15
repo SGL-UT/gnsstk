@@ -102,7 +102,8 @@ namespace gpstk
                         ///<     is more recent than version 1
          fixed,         ///< A field for fixed characters
          clock,         ///< 'k' A field for the clock number
-         text,          ///< 'x' A field for arbitrary text
+         text,          ///< 'x' A field for arbitrary text,
+                        ///<     left-aligned and space-padded
 
 
             // see CommonTime for more information on the following elements
@@ -175,7 +176,8 @@ namespace gpstk
           * Given a file name and a field, returns that field from the string.
           * Use hasField() first to see if the field exists in the FileSpec.
           * If multiple fields of FileSpecType are defined, only the first
-          * is returned.
+          * is returned.  If the FileSpec contains fields without an explicit
+          * width, the behavior of this method is currently undefined.
           * @throw FileSpecException when the FileSpecType doesn't exist
           *  in the FileSpec
           */
@@ -200,6 +202,8 @@ namespace gpstk
           * If possible, returns a CommonTime object with the time the file
           * represents.  Since the time resolution only goes to days for
           * most file types, all times are set to midnight of that day.
+          * If the FileSpec contains fields without an explicit width,
+          * the behavior of this method is currently undefined.
           * @throw FileSpecException when a time can't be formed
           */
       virtual gpstk::CommonTime extractCommonTime(const std::string& filename)
