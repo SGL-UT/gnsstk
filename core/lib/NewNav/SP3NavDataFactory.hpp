@@ -353,6 +353,12 @@ namespace gnsstk
       bool findGeneric(NavMessageType nmt, const NavSatelliteID& nsid,
                        const CommonTime& when, NavDataPtr& navData);
 
+      bool findIterator(NavSatMap::iterator& sati,
+                        const CommonTime& when, NavDataPtr& navData,
+                        unsigned halfOrder, bool findEph,
+                        bool checkDataGap, bool checkInterval,
+                        double gapInterval, double maxInterval);
+
          /** Interpolate the ephemeris data
           * (position/velocity/acceleration) from the data in the
           * sequence [ti1,ti3).

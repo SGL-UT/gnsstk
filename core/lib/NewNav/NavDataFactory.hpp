@@ -63,14 +63,16 @@ namespace gnsstk
           * known message types. */
       NavDataFactory()
             : navValidity(NavValidityType::Any),
-              procNavTypes(allNavMessageTypes),
-              debugLevel(0)
+              procNavTypes(allNavMessageTypes)
       {}
 
          /// Clean up.
       virtual ~NavDataFactory()
       {
       }
+
+         /// Returns the fully-qualified class name.  Used for debugging.
+      virtual std::string getClassName() const;
 
          /** Search the store as defined by each child class of
           * NavDataFactory to find the navigation message that meets
@@ -335,9 +337,6 @@ namespace gnsstk
           * use this factory, so it is up to the derived classes to
           * fill out the signals as appropriate. */
       NavSignalSet supportedSignals;
-
-         /// Debug output when processing.
-      unsigned debugLevel;
 
    protected:
          /** Determines how the factory should load nav data from the store.

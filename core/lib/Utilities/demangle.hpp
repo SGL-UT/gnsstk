@@ -36,80 +36,15 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "NavData.hpp"
-#include "TimeString.hpp"
-#include "demangle.hpp"
+#ifndef GNSSTK_DEMANGLE_HPP
+#define GNSSTK_DEMANGLE_HPP
+
+#include <string>
 
 namespace gnsstk
 {
-   const std::string NavData :: dumpTimeFmt("%3a-%w   %3j   %5.0s   %02m/%02d/%04Y   %02H:%02M:%02S");
-   const std::string NavData :: dumpTimeFmtBrief("%4Y/%02m/%02d %03j %02H:%02M:%02S");
-   gnsstk::SatMetaDataStore *NavData::satMetaDataStore = nullptr;
-
-   NavData ::
-   NavData()
-         : msgLenSec(0),
-           weekFmt("%4F(%4G)")
-   {
-   }
-
-
-   void NavData ::
-   dump(std::ostream& s, DumpDetail dl) const
-   {
-      s << getDumpTime(dl,timeStamp) << " " << signal << std::endl;
-   }
-
-
-   std::string NavData ::
-   getDumpTimeHdr(DumpDetail dl) const
-   {
-      std::string hdr;
-      switch (dl)
-      {
-         case DumpDetail::Full:
-            if (!weekFmt.empty())
-            {
-               hdr = "Week(10bt)     SOW   ";
-            }
-            hdr += "  DOW   UTD     SOD   MM/DD/YYYY   HH:MM:SS";
-            break;
-      }
-      return hdr;
-   }
-
-
-   std::string NavData ::
-   getDumpTime(DumpDetail dl, const CommonTime& t) const
-   {
-      std::string fmt;
-      switch (dl)
-      {
-         case DumpDetail::OneLine:
-         case DumpDetail::Brief:
-            fmt = dumpTimeFmtBrief;
-            break;
-         case DumpDetail::Full:
-            if (weekFmt.empty())
-            {
-               fmt = dumpTimeFmt;
-            }
-            else
-            {
-               fmt = weekFmt + "  %6.0g   " + dumpTimeFmt;
-            }
-            break;
-      }
-      if (fmt.empty())
-         return fmt;
-      return printTime(t, fmt);
-   }
-
-
-   std::string NavData ::
-   getClassName() const
-   {
-      return demangle(typeid(*this).name());
-   }
+      /// Demangle G++ class names.
+   std::string demangle(const char* name);
 }
 
+#endif // GNSSTK_DEMANGLE_HPP
