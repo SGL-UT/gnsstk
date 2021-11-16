@@ -81,6 +81,8 @@ OPTIONS:
    -t                   Build and run tests.
    -T                   Build and run tests but don't stop on test failures.
 
+   -K                   Enable profiler.  Implies static linked debug build.
+
    -g                   Compile code with gcov instrumenation enabled.
 
    -p                   Build supported packages (source, binary, deb,  ...)
@@ -90,7 +92,7 @@ EOF
 }
 
 
-while getopts ":hab:cdepi:j:xnP:sutTgv" OPTION; do
+while getopts ":hab:cdepi:j:xnP:sutTKgv" OPTION; do
     case $OPTION in
         h) usage
            exit 0
@@ -132,6 +134,11 @@ while getopts ":hab:cdepi:j:xnP:sutTgv" OPTION; do
         t) test_switch=1
            ;;
         T) test_switch=-1
+           ;;
+        K) enable_profiler=1
+           link_static=1
+           no_address_sanitizer=1
+           EXTRA_CMAKE_ARGS="$EXTRA_CMAKE_ARGS -DCMAKE_BUILD_TYPE=debug"
            ;;
         g) coverage_switch=1
            ;;
@@ -182,8 +189,10 @@ if ((verbose>0)); then
     log "build_docs           = $(ptof $build_docs)"
     log "build_packages       = $(ptof $build_packages)"
     log "test_switch          = $(ptof $test_switch)"
-    log "coverage_switch = $(ptof $coverage_switch)"
+    log "coverage_switch      = $(ptof $coverage_switch)"
     log "clean                = $(ptof $clean)"
+    log "link_static          = $(ptof $link_static)"
+    log "enable_profiler      = $(ptof $enable_profiler)"
     log "verbose              = $(ptof $verbose)"
     log "num_threads          = $num_threads"
     log "cmake args           = $@"

@@ -13,6 +13,17 @@ elseif( WIN32 )
     set( STADYN "STATIC" )
 endif()
 
+# profiler stuff
+if( ${PROFILER} )
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg -no-pie -static" )
+  set( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg -no-pie -static" )
+  set( AEC_LIBRARIES "aec" )
+  message(STATUS "Profiler is enabled")
+else()
+  set( AEC_LIBRARIES "" )
+  message(STATUS "Profiler is disabled")
+endif()
+
 if( ${DEBUGTRACE} )
   message(STATUS "Tracing is enabled")
 else()

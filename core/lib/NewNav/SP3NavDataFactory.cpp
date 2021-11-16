@@ -57,17 +57,18 @@ static const std::string dts("%Y/%02m/%02d %02H:%02M:%02S %3j %P");
 namespace gnsstk
 {
    const ObsID SP3NavDataFactory::oidGPS(ObservationType::NavMsg,
-                                         CarrierBand::L1,TrackingCode::CA);
+                                         CarrierBand::L1,TrackingCode::CA,0,0);
    const ObsID SP3NavDataFactory::oidGalileo(ObservationType::NavMsg,
                                              CarrierBand::L5,
-                                             TrackingCode::E5aI);
+                                             TrackingCode::E5aI,0,0);
    const ObsID SP3NavDataFactory::oidQZSS(ObservationType::NavMsg,
-                                          CarrierBand::L1,TrackingCode::CA);
+                                          CarrierBand::L1,TrackingCode::CA,0,0);
    const ObsID SP3NavDataFactory::oidGLONASS(ObservationType::NavMsg,
                                              CarrierBand::G1,
                                              TrackingCode::Standard);
    const ObsID SP3NavDataFactory::oidBeiDou(ObservationType::NavMsg,
-                                            CarrierBand::B1,TrackingCode::B1I);
+                                            CarrierBand::B1,TrackingCode::B1I,
+                                            0,0);
    const NavType SP3NavDataFactory::ntGPS(NavType::GPSLNAV);
    const NavType SP3NavDataFactory::ntGalileo(NavType::GalFNAV);
    const NavType SP3NavDataFactory::ntQZSS(NavType::GPSLNAV);
@@ -275,10 +276,11 @@ namespace gnsstk
       DEBUGTRACE("nsid=" << nsid);
       DEBUGTRACE("when=" << printTime(when,dts));
       unsigned halfOrder;
-      bool checkDataGap, checkInterval;
+      bool checkDataGap, checkInterval, findEph;
       double gapInterval, maxInterval;
       if (nmt == NavMessageType::Ephemeris)
       {
+         findEph = true;
          halfOrder = halfOrderPos;
          checkDataGap = checkDataGapPos;
          gapInterval = gapIntervalPos;
@@ -287,6 +289,7 @@ namespace gnsstk
       }
       else if (nmt == NavMessageType::Clock)
       {
+         findEph = false;
          halfOrder = halfOrderClk;
          checkDataGap = checkDataGapClk;
          gapInterval = gapIntervalClk;
@@ -297,202 +300,252 @@ namespace gnsstk
       {
          return false;
       }
-      bool giveUp = false;
       auto dataIt = data.find(nmt);
       if (dataIt == data.end())
       {
          DEBUGTRACE("no data for nav message type");
-         return 0.;
+         return false;
       }
-         // To support wildcard signals, we need to do a linear search.
-      for (auto& sati : dataIt->second)
+      if (!nsid.isWild())
       {
-         if (sati.first != nsid)
-            continue; // skip non matches
-            // This is not the entry we want, but it is instead the first
-            // entry we probably (depending on order) *don't* want.
-         auto ti2 = sati.second.upper_bound(when);
-         auto ti1 = ti2, ti3 = ti2;
-         if (ti2 == sati.second.end())
+         auto sati = dataIt->second.find(nsid);
+         if (sati == dataIt->second.end())
          {
-               // Since we're at the end we can't do interpolation,
-               // but we can still check for an exact match.
-            DEBUGTRACE("probably giving up because we're at the end");
+            DEBUGTRACE("no data!");
+            return false;
+         }
+         return findIterator(sati, when, navData, halfOrder, findEph,
+                             checkDataGap, checkInterval, gapInterval,
+                             maxInterval);
+      }
+      else
+      {
+            // To support wildcard signals, we need to do a linear search.
+         bool rv = false;
+         for (auto sati = dataIt->second.begin(); sati != dataIt->second.end();
+              sati++)
+         {
+            if (sati->first != nsid)
+               continue; // skip non matches
+            rv = findIterator(sati, when, navData, halfOrder, findEph,
+                              checkDataGap, checkInterval, gapInterval,
+                              maxInterval);
+            if (rv)
+               break;
+         }
+         return rv;
+      }
+   }
+
+
+   bool SP3NavDataFactory ::
+   findIterator(NavSatMap::iterator& sati,
+                const CommonTime& when, NavDataPtr& navData,
+                unsigned halfOrder, bool findEph,
+                bool checkDataGap, bool checkInterval,
+                double gapInterval, double maxInterval)
+   {
+      bool giveUp = false;
+         // This is not the entry we want, but it is instead the first
+         // entry we probably (depending on order) *don't* want.
+      auto ti2 = sati->second.upper_bound(when);
+      auto ti1 = ti2, ti3 = ti2;
+      if (ti2 == sati->second.end())
+      {
+            // Since we're at the end we can't do interpolation,
+            // but we can still check for an exact match.
+         DEBUGTRACE("probably giving up because we're at the end");
+         giveUp = true;
+      }
+      else
+      {
+         DEBUGTRACE(printTime(ti2->first,"  ti2 has been set to "+dts));
+            // I wouldn't have done this except that I'm trying to
+            // match the behavior of SP3EphemerisStore.  Basically,
+            // for exact matches, the interpolation interval is
+            // shifted "left" by one, but not when the time match
+            // is not exact.
+         auto tiTmp = std::prev(ti2);
+         unsigned offs = 0;
+         bool exactMatch = false;
+         if ((tiTmp != sati->second.end()) &&
+             (tiTmp->second->timeStamp == when))
+         {
+            exactMatch = true;
+            offs = 1;
+         }
+         if (DebugTrace::enabled)
+         {
+            CommonTime dt2(ti2->first);
+            dt2.setTimeSystem(TimeSystem::Any);
+            DEBUGTRACE("gap = " << (dt2 - tiTmp->first));
+         }
+         if (checkDataGap && (tiTmp != sati->second.end()) &&
+             ((ti2->first - tiTmp->first) > gapInterval))
+         {
+            DEBUGTRACE("giving up because the gap interval is too big");
             giveUp = true;
          }
-         else
-         {
-            DEBUGTRACE(printTime(ti2->first,"  ti2 has been set to "+dts));
-               // I wouldn't have done this except that I'm trying to
-               // match the behavior of SP3EphemerisStore.  Basically,
-               // for exact matches, the interpolation interval is
-               // shifted "left" by one, but not when the time match
-               // is not exact.
-            auto tiTmp = std::prev(ti2);
-            unsigned offs = 0;
-            if ((tiTmp != sati.second.end()) &&
-                (tiTmp->second->timeStamp == when))
-            {
-               offs = 1;
-            }
-            if (DebugTrace::enabled)
-            {
-               CommonTime dt2(ti2->first);
-               dt2.setTimeSystem(TimeSystem::Any);
-               DEBUGTRACE("gap = " << (dt2 - tiTmp->first));
-            }
-            if (checkDataGap && (tiTmp != sati.second.end()) &&
-                ((ti2->first - tiTmp->first) > gapInterval))
-            {
-               DEBUGTRACE("giving up because the gap interval is too big");
-               giveUp = true;
-            }
-               // This is consistent with SP3EphemerisStore for exact match
-               // Check to see if we can do interpolation.
-            giveUp |=
-               (std::distance(sati.second.begin(), ti2) < (halfOrder+offs)) |
-               (std::distance(ti2, sati.second.end()) < (halfOrder-offs));
-            DEBUGTRACE("distance from begin = "
-                       << std::distance(sati.second.begin(), ti2));
-            DEBUGTRACE("distance to end = "
-                       << std::distance(ti2, sati.second.end()));
-            if (!giveUp)
-            {
-                  // we can do interpolation so set up iterators
-               ti1 = std::prev(ti2,halfOrder+offs);
-               ti3 = std::next(ti2,halfOrder-offs);
-               DEBUGTRACE(printTime(ti1->first,"  ti1 has been set to "+dts));
-               DEBUGTRACE(printTime(ti3->first,"  ti3 has been set to "+dts));
-            }
-            else
-            {
-                  // We're on the edge of available and can't interpolate.
-               DEBUGTRACE("probably giving up because we're near the bound");
-            }
-         }
-            // always back up one which allows us to check for exact match.
-         ti2 = std::prev(ti2);
-         if (ti2 == sati.second.end())
-         {
-            DEBUGTRACE("ti2 is now end?");
-               // Nothing available that's even close.
-            return false;
-         }
-         DEBUGTRACE(printTime(ti2->first,"  ti2 has been set to "+dts));
+
+            // now expand the interval to include 2*halfOrder timesteps
+            // if possible.
+            /** @note at one point I tried using the std::distance()
+             * function, but it ended up being extremely slow */
+            // Check to see if we can do interpolation.
+         unsigned count = 0;
          if (!giveUp)
          {
-               // Need a copy of ti3 to move it back 1, as otherwise
-               // the interval check will give the wrong results since
-               // it's 1 beyond the actual last interpolated item.
-            auto iti3 = std::prev(ti3);
-            DEBUGTRACE("distance from ti1 to ti2 = " << std::distance(ti1,ti2));
-            DEBUGTRACE("distance from ti2 to ti3 = " << std::distance(ti2,ti3));
-            DEBUGTRACE("interval = " << (iti3->first - ti1->first));
-            if (checkInterval && ((iti3->first - ti1->first) > maxInterval))
+            while (true)
             {
-               DEBUGTRACE("giving up because the interpolation interval is too"
-                          " big");
-               giveUp = true;
+               count++;
+               if (count > halfOrder+offs)
+               {
+                  break;
+               }
+               if ((ti1 == sati->second.end()) ||
+                   ((ti3 == sati->second.end()) &&
+                    (count <= halfOrder-offs)) ||
+                   ((ti1 == sati->second.begin()) &&
+                    (count <= halfOrder+offs)))
+               {
+                     // give up and reset the iterators to the starting point.
+                  giveUp = true;
+                  ti1 = ti3 = ti2;
+                  break;
+               }
+               if (count <= halfOrder+offs)
+               {
+                  --ti1;
+               }
+               if (count <= halfOrder-offs)
+               {
+                  ++ti3;
+               }
             }
          }
-         if (ti2->second->timeStamp == when)
+      }
+         // always back up one which allows us to check for exact match.
+      ti2 = std::prev(ti2);
+      if (ti2 == sati->second.end())
+      {
+         DEBUGTRACE("ti2 is now end?");
+            // Nothing available that's even close.
+         return false;
+      }
+      DEBUGTRACE(printTime(ti2->first,"  ti2 has been set to "+dts));
+      if (!giveUp)
+      {
+            // Need a copy of ti3 to move it back 1, as otherwise
+            // the interval check will give the wrong results since
+            // it's 1 beyond the actual last interpolated item.
+         auto iti3 = std::prev(ti3);
+         DEBUGTRACE("distance from ti1 to ti2 = " << std::distance(ti1,ti2));
+         DEBUGTRACE("distance from ti2 to ti3 = " << std::distance(ti2,ti3));
+         DEBUGTRACE("interval = " << (iti3->first - ti1->first));
+         if (checkInterval && ((iti3->first - ti1->first) > maxInterval))
          {
-               // Even though it's an exact match, we still need to
-               // make a new object so that we can fill in clock
-               // information without affecting the internal store.
-            if (!navData)
-            {
-               OrbitDataSP3 *stored = dynamic_cast<OrbitDataSP3*>(
-                  ti2->second.get());
-               navData = std::make_shared<OrbitDataSP3>(*stored);
+            DEBUGTRACE("giving up because the interpolation interval is too"
+                       " big");
+            giveUp = true;
+         }
+      }
+      if (ti2->second->timeStamp == when)
+      {
+            // Even though it's an exact match, we still need to
+            // make a new object so that we can fill in clock
+            // information without affecting the internal store.
+         if (!navData)
+         {
+            OrbitDataSP3 *stored = dynamic_cast<OrbitDataSP3*>(
+               ti2->second.get());
+            navData = std::make_shared<OrbitDataSP3>(*stored);
                // ti2->second->dump(std::cerr, DumpDetail::Full);
                // navData->dump(std::cerr, DumpDetail::Full);
-                  // If giveUp is not set, then we can do some
-                  // interpolation to fill in any missing data.
-               if (!giveUp)
-               {
-                  if (nmt == NavMessageType::Ephemeris)
-                  {
-                     DEBUGTRACE("interpolating ephemeris for exact match");
-                     interpolateEph(ti1, ti3, when, navData);
-                  }
-                  else if (nmt == NavMessageType::Clock)
-                  {
-                     DEBUGTRACE("interpolating clock for exact match");
-                     interpolateClk(ti1, ti3, when, navData);
-                  }
-               }
-               DEBUGTRACE("found an exact match");
-               return true;
-            }
-            else
+               // If giveUp is not set, then we can do some
+               // interpolation to fill in any missing data.
+            if (!giveUp)
             {
-               OrbitDataSP3 *stored = dynamic_cast<OrbitDataSP3*>(
-                  ti2->second.get());
-               OrbitDataSP3 *navOut = dynamic_cast<OrbitDataSP3*>(
-                  navData.get());
-               if (nmt == NavMessageType::Ephemeris)
+               if (findEph)
                {
-                  navOut->copyXV(*stored);
-                     // fill in missing data if we can
-                  if (!giveUp)
-                  {
-                     DEBUGTRACE("interpolating ephemeris for exact match (2)");
-                     interpolateEph(ti1, ti3, when, navData);
-                  }
+                  DEBUGTRACE("interpolating ephemeris for exact match");
+                  interpolateEph(ti1, ti3, when, navData);
                }
-               else if (nmt == NavMessageType::Clock)
+               else
                {
-                  navOut->copyT(*stored);
-                     // fill in missing data if we can
-                  if (!giveUp)
-                  {
-                     DEBUGTRACE("interpolating clock for exact match (2)");
-                     interpolateClk(ti1, ti3, when, navData);
-                  }
+                  DEBUGTRACE("interpolating clock for exact match");
+                  interpolateClk(ti1, ti3, when, navData);
                }
-               // stored->dump(std::cerr, DumpDetail::Full);
-               // navOut->dump(std::cerr, DumpDetail::Full);
-               DEBUGTRACE("found an exact match with existing data");
-               return true;
             }
-         }
-         else if (giveUp)
-         {
-               // not an exact match and no data available for interpolation.
-            DEBUGTRACE("giving up, insufficient data for interpolation");
-            return false;
+            DEBUGTRACE("found an exact match");
+            return true;
          }
          else
          {
-            DEBUGTRACE("faking interpolation");
-            if (!navData)
+            OrbitDataSP3 *stored = dynamic_cast<OrbitDataSP3*>(
+               ti2->second.get());
+            OrbitDataSP3 *navOut = dynamic_cast<OrbitDataSP3*>(
+               navData.get());
+            if (findEph)
             {
-               DEBUGTRACE("creating new empty navData");
-               OrbitDataSP3 *stored = dynamic_cast<OrbitDataSP3*>(
-                  ti2->second.get());
-               navData = std::make_shared<OrbitDataSP3>(*stored);
-               navData->timeStamp = when;
+               navOut->copyXV(*stored);
+                  // fill in missing data if we can
+               if (!giveUp)
+               {
+                  DEBUGTRACE("interpolating ephemeris for exact match (2)");
+                  interpolateEph(ti1, ti3, when, navData);
+               }
             }
             else
             {
-               DEBUGTRACE("already have valid navData");
+               navOut->copyT(*stored);
+                  // fill in missing data if we can
+               if (!giveUp)
+               {
+                  DEBUGTRACE("interpolating clock for exact match (2)");
+                  interpolateClk(ti1, ti3, when, navData);
+               }
             }
-            DEBUGTRACE("OK, have interval " << printTime(ti1->first,""+dts)
-                       << " <= " <<printTime(when,""+dts)<< " < "
-                       << printTime(ti3->first,dts));
-            if (nmt == gnsstk::NavMessageType::Ephemeris)
-            {
-               interpolateEph(ti1, ti3, when, navData);
-               return true;
-            }
-            else if (nmt == gnsstk::NavMessageType::Clock)
-            {
-               interpolateClk(ti1, ti3, when, navData);
-               return true;
-            }
-         } // else (do interpolation)
-      } // for (auto& sati : dataIt->second)
+               // stored->dump(std::cerr, DumpDetail::Full);
+               // navOut->dump(std::cerr, DumpDetail::Full);
+            DEBUGTRACE("found an exact match with existing data");
+            return true;
+         }
+      }
+      else if (giveUp)
+      {
+            // not an exact match and no data available for interpolation.
+         DEBUGTRACE("giving up, insufficient data for interpolation");
+         return false;
+      }
+      else
+      {
+         DEBUGTRACE("faking interpolation");
+         if (!navData)
+         {
+            DEBUGTRACE("creating new empty navData");
+            OrbitDataSP3 *stored = dynamic_cast<OrbitDataSP3*>(
+               ti2->second.get());
+            navData = std::make_shared<OrbitDataSP3>(*stored);
+            navData->timeStamp = when;
+         }
+         else
+         {
+            DEBUGTRACE("already have valid navData");
+         }
+         DEBUGTRACE("OK, have interval " << printTime(ti1->first,""+dts)
+                    << " <= " <<printTime(when,""+dts)<< " < "
+                    << printTime(ti3->first,dts));
+         if (findEph)
+         {
+            interpolateEph(ti1, ti3, when, navData);
+            return true;
+         }
+         else
+         {
+            interpolateClk(ti1, ti3, when, navData);
+            return true;
+         }
+      } // else (do interpolation)
       DEBUGTRACE("giving up at the end");
       return false;
    }
@@ -1266,6 +1319,7 @@ namespace gnsstk
       signal.sat = sat;
       signal.xmitSat = sat;
       signal.system = sat.system;
+         /// @todo What do we do with non-standard antennas?
          // make our best guess.
       switch (sat.system)
       {
@@ -1284,6 +1338,8 @@ namespace gnsstk
          case SatelliteSystem::Glonass:
             signal.obs = oidGLONASS;
             signal.nav = ntGLONASS;
+               /** @todo GLONASS frequency offset should be set to
+                * *something*, but what? */
             break;
          case SatelliteSystem::BeiDou:
             signal.obs = oidBeiDou;

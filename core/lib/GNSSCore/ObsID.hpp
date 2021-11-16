@@ -82,7 +82,7 @@ namespace gnsstk
    {
    public:
          /// empty constructor, creates a wildcard object.
-         /// mcode and freqOffs are kept non-wild by default intentionally.
+         /// mcode and freqOffs are kept wild by default intentionally.
       ObsID()
             : type(ObservationType::Unknown), band(CarrierBand::Unknown),
               code(TrackingCode::Unknown), freqOffs(0), freqOffsWild(true),
@@ -90,7 +90,7 @@ namespace gnsstk
       {}
 
          /// Explicit constructor
-         /// mcode and freqOffs are kept non-wild by default intentionally.
+         /// mcode and freqOffs are kept wild by default intentionally.
       ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc,
             XmitAnt transmitter = XmitAnt::Any)
             : type(ot), band(cb), code(tc), freqOffs(0), freqOffsWild(true),
@@ -109,6 +109,21 @@ namespace gnsstk
                      bool fw = false)
             : type(ot), band(cb), code(tc), freqOffs(fo), freqOffsWild(fw),
               mcode(0), mcodeMask(0), xmitAnt(transmitter)
+      {}
+
+         /** Explicit constructor for avoiding wildcard values.
+          * @param[in] ot The observation type (range, phase,, etc.).
+          * @param[in] cb The carrier band (L1, L2, etc.).
+          * @param[in] tc The tracking code (CA, L2CM, etc.).
+          * @param[in] fo The frequency offset of the GLONASS signal.
+          * @param[in] mc The mcode bits to match.
+          * @param[in] fw If true, fo is ignored and freqOffs will
+          *   match any value. */
+      explicit ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc,
+                     int fo, uint32_t mc,
+                     XmitAnt transmitter = XmitAnt::Standard, bool fw = false)
+            : type(ot), band(cb), code(tc), freqOffs(fo), freqOffsWild(fw),
+              mcode(mc), mcodeMask(-1), xmitAnt(transmitter)
       {}
 
          /// Equality requires all fields to be the same
