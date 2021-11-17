@@ -55,6 +55,19 @@ namespace gnsstk
    using namespace StringUtils;
    using namespace std;
 
+   Rinex3NavData ::
+   Rinex3NavData()
+         : time(CommonTime::BEGINNING_OF_TIME), PRNID(-1), fitint(4),
+           xmitTime(0), weeknum(0), accuracy(0), health(0), codeflgs(0),
+           L2Pdata(0), IODC(0), IODE(0), TauN(0), GammaN(0), MFTraw(0),
+           MFtime(0), freqNum(0), ageOfInfo(0), datasources(0), IODnav(0),
+           accCode(0), IODN(0), Toc(0), af0(0), af1(0), af2(0), Tgd(0), Tgd2(0),
+           Cuc(0), Cus(0), Crc(0), Crs(0), Cic(0), Cis(0), Toe(0), M0(0), dn(0),
+           ecc(0), Ahalf(0), OMEGA0(0), i0(0), w(0), OMEGAdot(0), idot(0),
+           px(0), py(0), pz(0), vx(0), vy(0), vz(0), ax(0), ay(0), az(0)
+   {}
+
+
    // Create from a RINEX version 2 RinexNavData (for backward compatibility)
    Rinex3NavData::Rinex3NavData(const RinexNavData& rnd)
    {
