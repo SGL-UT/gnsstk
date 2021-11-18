@@ -238,4 +238,95 @@ namespace gnsstk
          }
       }
    }
+
+
+   bool GPSLNavEphIODCComp ::
+   operator()(const std::shared_ptr<GPSLNavEph> lhs,
+              const std::shared_ptr<GPSLNavEph> rhs) const
+   {
+      if (lhs->signal < rhs->signal) return true;
+      if (rhs->signal < lhs->signal) return false;
+      GPSWeekSecond lws(lhs->Toe), rws(rhs->Toe);
+      if (lws.week < rws.week) return true;
+      if (rws.week < lws.week) return false;
+      if (lhs->iodc < rhs->iodc) return true;
+      return false;
+   }
+
+
+   bool GPSLNavEphCEIComp ::
+   operator()(const std::shared_ptr<GPSLNavEph> lhs,
+              const std::shared_ptr<GPSLNavEph> rhs) const
+   {
+         // We still need to do signal and Toe, so do those first,
+         // since they're the most likely to change.
+      if (lhs->signal < rhs->signal) return true;
+      if (rhs->signal < lhs->signal) return false;
+      GPSWeekSecond lws(lhs->Toe), rws(rhs->Toe);
+      if (lws.week < rws.week) return true;
+      if (rws.week < lws.week) return false;
+      if (lhs->iodc < rhs->iodc) return true;
+      if (rhs->iodc < lhs->iodc) return false;
+         // Everything else is in the order it appears in Table 6-I-1,
+         // for convenience (i.e. if there's a compelling reason to
+         // change it, this order has no specific meaning)
+      if (lhs->healthBits < rhs->healthBits) return true;
+      if (rhs->healthBits < lhs->healthBits) return false;
+      if (lhs->uraIndex < rhs->uraIndex) return true;
+      if (rhs->uraIndex < lhs->uraIndex) return false;
+      if (lhs->tgd < rhs->tgd) return true;
+      if (rhs->tgd < lhs->tgd) return false;
+      if (lhs->af0 < rhs->af0) return true;
+      if (rhs->af0 < lhs->af0) return false;
+      if (lhs->af1 < rhs->af1) return true;
+      if (rhs->af1 < lhs->af1) return false;
+      if (lhs->af2 < rhs->af2) return true;
+      if (rhs->af2 < lhs->af2) return false;
+      if (lhs->Toc < rhs->Toc) return true;
+      if (rhs->Toc < lhs->Toc) return false;
+      if (lhs->Ahalf < rhs->Ahalf) return true;
+      if (rhs->Ahalf < lhs->Ahalf) return false;
+      if (lhs->dn < rhs->dn) return true;
+      if (rhs->dn < lhs->dn) return false;
+      if (lhs->fitIntFlag < rhs->fitIntFlag) return true;
+      if (rhs->fitIntFlag < lhs->fitIntFlag) return false;
+      if (lhs->ecc < rhs->ecc) return true;
+      if (rhs->ecc < lhs->ecc) return false;
+      if (lhs->M0 < rhs->M0) return true;
+      if (rhs->M0 < lhs->M0) return false;
+      if (lhs->Toe < rhs->Toe) return true;
+      if (rhs->Toe < lhs->Toe) return false;
+      if (lhs->Crs < rhs->Crs) return true;
+      if (rhs->Crs < lhs->Crs) return false;
+      if (lhs->Cuc < rhs->Cuc) return true;
+      if (rhs->Cuc < lhs->Cuc) return false;
+      if (lhs->Cus < rhs->Cus) return true;
+      if (rhs->Cus < lhs->Cus) return false;
+         /// @todo integrity status flag?
+      if (lhs->iode < rhs->iode) return true;
+      if (rhs->iode < lhs->iode) return false;
+      if (lhs->w < rhs->w) return true;
+      if (rhs->w < lhs->w) return false;
+      if (lhs->OMEGAdot < rhs->OMEGAdot) return true;
+      if (rhs->OMEGAdot < lhs->OMEGAdot) return false;
+      if (lhs->OMEGA0 < rhs->OMEGA0) return true;
+      if (rhs->OMEGA0 < lhs->OMEGA0) return false;
+      if (lhs->i0 < rhs->i0) return true;
+      if (rhs->i0 < lhs->i0) return false;
+      if (lhs->idot < rhs->idot) return true;
+      if (rhs->idot < lhs->idot) return false;
+      if (lhs->Cic < rhs->Cic) return true;
+      if (rhs->Cic < lhs->Cic) return false;
+      if (lhs->Cis < rhs->Cis) return true;
+      if (rhs->Cis < lhs->Cis) return false;
+      if (lhs->Crc < rhs->Crc) return true;
+      if (rhs->Crc < lhs->Crc) return false;
+      if (lhs->alert < rhs->alert) return true;
+      if (rhs->alert < lhs->alert) return false;
+      if (lhs->alert2 < rhs->alert2) return true;
+      if (rhs->alert2 < lhs->alert2) return false;
+      if (lhs->alert3 < rhs->alert3) return true;
+      if (rhs->alert3 < lhs->alert3) return false;
+      return false;
+   }
 }
