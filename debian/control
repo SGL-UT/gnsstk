@@ -45,6 +45,7 @@ Description: GNSS Toolkit (GNSSTk) - Shared Libraries
  * provide a core library to facilitate the development of GNSS applications.
 
 Package: libgnsstk12-dbg
+Build-Profiles: <debug_package>
 Architecture: any
 Section: debug
 Priority: extra
