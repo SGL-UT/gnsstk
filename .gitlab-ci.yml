@@ -158,23 +158,6 @@ generate_documentation:
     paths:
       - docs/
 
-build_debian_8:
-  stage: build
-  needs: []
-  extends: .big_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/debian8_fai_ish
-  script:
-    - mkdir -p build
-    - cd build
-    - export gnsstk=`pwd`/install
-    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DTEST_SWITCH=ON ../
-    - make all -j 4
-  artifacts:
-    paths:
-      - build/
-
 build_debian_9:
   stage: build
   needs: []
@@ -338,24 +321,6 @@ build_windows_vs2019:
 
 # Test Stage
 # Runs all tests of GNSSTK for each platform
-test_debian_8:
-  stage: test
-  needs: [build_debian_8]
-  extends: .big_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/debian8_fai_ish
-  script:
-    - cd build
-    - ctest -j 4
-    - touch $CI_PROJECT_DIR/success
-  artifacts:
-    when: on_failure
-    paths:
-    - build/Testing/Temporary/
-  dependencies:
-    - build_debian_8
-
 test_debian_9:
   stage: test
   needs: [build_debian_9]
