@@ -10,7 +10,7 @@ add_test(NAME YumaData
          -DOWNOUTPUT=1
          -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
          -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
-         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testsuccexp.cmake)
+         -P ${CMAKE_SOURCE_DIR}/core/tests/testsuccexp.cmake)
 
 add_executable(SEM_T SEM_T.cpp)
 target_link_libraries(SEM_T gnsstk)
@@ -22,4 +22,4 @@ add_test(NAME SEMData
          -DOWNOUTPUT=1
          -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
          -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
-         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testsuccexp.cmake)
+         -P ${CMAKE_SOURCE_DIR}/core/tests/testsuccexp.cmake)
