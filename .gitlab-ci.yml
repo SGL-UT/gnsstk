@@ -41,7 +41,7 @@ variables:
   NO_BIGBUILD_CI:
     value: "False"
     description: "If True then no big build jobs are executed on main/ci_xxx/version_xxx_prep branches. Defaults to False"
-
+    
 # Template for all normal jobs.
 .normal_build:
   only:
@@ -157,23 +157,6 @@ generate_documentation:
   artifacts:
     paths:
       - docs/
-
-build_debian_8:
-  stage: build
-  needs: []
-  extends: .big_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/debian8_fai_ish
-  script:
-    - mkdir -p build
-    - cd build
-    - export gnsstk=`pwd`/install
-    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DTEST_SWITCH=ON ../
-    - make all -j 4
-  artifacts:
-    paths:
-      - build/
 
 build_debian_9:
   stage: build
@@ -338,24 +321,6 @@ build_windows_vs2019:
 
 # Test Stage
 # Runs all tests of GNSSTK for each platform
-test_debian_8:
-  stage: test
-  needs: [build_debian_8]
-  extends: .big_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/debian8_fai_ish
-  script:
-    - cd build
-    - ctest -j 4
-    - touch $CI_PROJECT_DIR/success
-  artifacts:
-    when: on_failure
-    paths:
-    - build/Testing/Temporary/
-  dependencies:
-    - build_debian_8
-
 test_debian_9:
   stage: test
   needs: [build_debian_9]
@@ -761,29 +726,30 @@ system_install_redhat_8:
 #   dependencies:
 #     - build_debian_7
 
-package_debian_8:
-  stage: package
-  needs: []
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/debian8_fai_ish
-  script:
-    - rm -rf ../*.deb
-    # Mark the debian log so that this package is a backport.
-    # Use the most recent Maintainer as current maintainer.
-    - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
-    - dch --bpo "No Changes"
-    - dpkg-buildpackage -us -uc -d --changes-option="-DDistribution=jessie-sgl"
-    - mkdir debs
-    - mv ../*.deb debs
-    - mv ../*.changes debs
-    - mv ../*.dsc debs
-    - mv ../*.git debs
-  artifacts:
-    paths:
-    - debs/
-  dependencies:
-    - build_debian_8
+# According to the toolkit matrix, we don't need to support debian8.
+# package_debian_8:
+#   stage: package
+#   needs: []
+#   tags:
+#     - docker-executor
+#   image: $DOCKER_REGISTRY/debian8_fai_ish
+#   script:
+#     - rm -rf ../*.deb
+#     # Mark the debian log so that this package is a backport.
+#     # Use the most recent Maintainer as current maintainer.
+#     - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
+#     - dch --bpo "No Changes"
+#     - dpkg-buildpackage -us -uc -d --changes-option="-DDistribution=jessie-sgl"
+#     - mkdir debs
+#     - mv ../*.deb debs
+#     - mv ../*.changes debs
+#     - mv ../*.dsc debs
+#     - mv ../*.git debs
+#   artifacts:
+#     paths:
+#     - debs/
+#   dependencies:
+#     - build_debian_8
 
 package_debian_9:
   stage: package
@@ -793,7 +759,7 @@ package_debian_9:
   image: $DOCKER_REGISTRY/debian9_fai_ish
   script:
     - rm -rf ../*.deb
-    - dpkg-buildpackage --build-profiles=pkg_python -us -uc -d --changes-option="-DDistribution=stretch-sgl"
+    - dpkg-buildpackage --build-profiles=pkg_python,debug_package -us -uc -d --changes-option="-DDistribution=stretch-sgl"
     - mkdir debs
     - mv ../*.deb debs
     - mv ../*.changes debs
@@ -809,6 +775,16 @@ package_debian_9:
 package_debian_10:
   stage: package
   needs: []
+  variables:
+    BUILD_TYPE: fast
+  rules:
+    # Add this rule to prevent an "additional" single element pipeline for merge requests.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_REF_NAME =~ /main/ || $CI_COMMIT_REF_NAME =~/^ci_.*$/ || $CI_COMMIT_REF_NAME=~/^version_.*_prep$/
+      variables:
+        BUILD_TYPE: debug
+    - when: on_success
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
@@ -818,7 +794,8 @@ package_debian_10:
     # Use the most recent Maintainer as current maintainer.
     - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
     - dch --bpo "No Changes"
-    - dpkg-buildpackage --build-profiles=pkg_python -us -uc -d --changes-option="-DDistribution=buster-sgl"
+    - if [ "$BUILD_TYPE" == "debug" ]; then BUILD_PROFILES="pkg_python,debug_package"; else BUILD_PROFILES="pkg_python"; fi
+    - dpkg-buildpackage --build-profiles=${BUILD_PROFILES} -us -uc -d --changes-option="-DDistribution=buster-sgl"
     - mkdir debs
     - mv ../*.deb debs
     - mv ../*.changes debs
@@ -828,6 +805,7 @@ package_debian_10:
   artifacts:
     paths:
       - debs/
+  timeout:  90m
   dependencies:
     - build_debian_10
 
@@ -907,19 +885,6 @@ package_redhat_8_py36:
 
 # Deploy Stage
 # Tests install of Gnsstk package on each platform, saves artifacts for downstream builds.
-deploy_debian_8:
-  stage: deploy
-  needs: [package_debian_8]
-  extends: .big_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/debian8_fai_ish
-  script:
-    - cd debs
-    - sudo dpkg -i ./*.deb
-    - df_diff -h
-  dependencies:
-    - package_debian_8
 
 deploy_debian_9:
   stage: deploy

@@ -34,6 +34,12 @@ ifneq ($(filter pkg_python,$(DEB_BUILD_PROFILES)), )
     PYTHON_INSTALL_PREFIX_PARAM="-DPYTHON_INSTALL_PREFIX=$(CURDIR)/debian/python3-gnsstk"
 endif
 
+DEBUG_PKG_PARAM=
+# add additional debug flags for package builds using profile debug_package
+ifneq ($(filter debug_package,$(DEB_BUILD_PROFILES)), )
+	DEBUG_PKG_PARAM="-DCMAKE_BUILD_TYPE=relwithdebinfo"
+endif
+
 gen_control:
 	@echo "$@ Generated $(major) $(minor)."
 	sed -e 's/__VER__/$(major)/g' -e 's/__FULLVER__/$(major).$(minor)/g' debian/control.in >debian/control
@@ -53,7 +59,7 @@ override_dh_auto_configure: gen_control
 	 -DBUILD_FOR_PACKAGE_SWITCH=$(BUILD_FOR_PACKAGE_SWITCH_FLAG) \
 	 -DUSE_RPATH=OFF \
 	 -DVERSIONED_HEADER_INSTALL=ON \
-	 -DCMAKE_BUILD_TYPE=relwithdebinfo
+	 $(DEBUG_PKG_PARAM)
 
 override_dh_auto_clean: gen_control
 	dh_auto_clean
