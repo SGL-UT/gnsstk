@@ -16,7 +16,7 @@ add_test(NAME EarthOrientation_SOFA
          -DTESTNAME=EarthOrientation_SOFA
          -DTESTBASE=EarthOrientation_SOFA
          -DDIFF_ARGS=-l1\ -e1.e-12
-         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testsuccexp.cmake)
+         -P ${CMAKE_SOURCE_DIR}/core/tests/testsuccexp.cmake)
 set_property(TEST EarthOrientation_SOFA PROPERTY LABELS Geomatics)
 
 ###############################################################################
@@ -35,7 +35,7 @@ add_test(NAME EarthTides_IERS
          -DTESTBASE=EarthTides_IERS
          -DARGS=--dt\ 360.\ --prec\ 6\ --solid\ --ocean\ --oceanfile\ ${GNSSTK_TEST_DATA_DIR}/testocean.blq\ --oceansite\ ONSALA,REYKJAVIK\ --atm\ --atmfile\ ${GNSSTK_TEST_DATA_DIR}/testatm.atl\ --atmsite\ reyk,onsa
          -DDIFF_ARGS=-l4\ -e1.e-5
-         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testsuccexp.cmake)
+         -P ${CMAKE_SOURCE_DIR}/core/tests/testsuccexp.cmake)
 set_property(TEST EarthTides_IERS PROPERTY LABELS Geomatics)
 
 set(JPLDIR ${CMAKE_CURRENT_SOURCE_DIR}/../../apps/geomatics/JPLeph/JPL/)
@@ -64,7 +64,7 @@ add_test(NAME Rinex3ObsLoader_R303
          -DTESTBASE=Rinex3ObsLoader_R303
          -DARGS=${GNSSTK_TEST_DATA_DIR}/Rinex3ObsLoader303.obs
          -DDIFF_ARGS=-l1
-         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testsuccexp.cmake)
+         -P ${CMAKE_SOURCE_DIR}/core/tests/testsuccexp.cmake)
 set_property(TEST Rinex3ObsLoader_R303 PROPERTY LABELS Geomatics)
 
 ###############################################################################
@@ -80,7 +80,7 @@ add_test(NAME Rinex3ObsLoader_R211
          -DTESTBASE=Rinex3ObsLoader_R211
          -DARGS=${GNSSTK_TEST_DATA_DIR}/Rinex3ObsLoader211.obs
          -DDIFF_ARGS=-l1
-         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testsuccexp.cmake)
+         -P ${CMAKE_SOURCE_DIR}/core/tests/testsuccexp.cmake)
 set_property(TEST Rinex3ObsLoader_R211 PROPERTY LABELS Geomatics)
 
 ###############################################################################
@@ -96,7 +96,7 @@ add_test(NAME Rinex3ObsLoader_R210
          -DTESTBASE=Rinex3ObsLoader_R210
          -DARGS=${GNSSTK_TEST_DATA_DIR}/Rinex3ObsLoader210.obs
          -DDIFF_ARGS=-l1
-         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testsuccexp.cmake)
+         -P ${CMAKE_SOURCE_DIR}/core/tests/testsuccexp.cmake)
 set_property(TEST Rinex3ObsLoader_R210 PROPERTY LABELS Geomatics)
 
 ###############################################################################
