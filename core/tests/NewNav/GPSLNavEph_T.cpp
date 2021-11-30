@@ -87,6 +87,8 @@ constructorTest()
    TUASSERTE(uint32_t, 0, obj.pre3);
    TUASSERTE(uint32_t, 0, obj.tlm2);
    TUASSERTE(uint32_t, 0, obj.tlm3);
+   TUASSERTE(bool, false, obj.isf2);
+   TUASSERTE(bool, false, obj.isf3);
    TUASSERTE(uint16_t, 0, obj.iodc);
    TUASSERTE(uint16_t, 0, obj.iode);
    TUASSERTE(uint8_t,  0, obj.fitIntFlag);

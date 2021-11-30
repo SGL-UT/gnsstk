@@ -51,6 +51,8 @@ namespace gnsstk
            pre3(0),
            tlm2(0),
            tlm3(0),
+           isf2(false),
+           isf3(false),
            iodc(0),
            iode(0),
            fitIntFlag(0),
@@ -186,22 +188,26 @@ namespace gnsstk
           * just guessing about the SF2 and SF3 HOW times. */
       unsigned health = healthBits;
       s << "           SUBFRAME OVERHEAD" << endl << endl
-        << "               SOW    DOW:HH:MM:SS     IOD    ALERT   A-S" << endl
+        << "               SOW    DOW:HH:MM:SS     IOD    ALERT   A-S   ISF"
+        << endl
         << "SF1 HOW:   "
         << gnsstk::printTime(xmitTime+6, "%7.0g  %3a-%1w:%02H:%02M:%02S")
         << "   0x" << hex << setw(3) << internal << setfill('0')
         << nouppercase << iodc << dec << setfill(' ') << "      "
-        << noboolalpha << alert << "     " << (asFlag ? " on" : "off") << endl
+        << noboolalpha << alert << "     " << (asFlag ? " on   " : "off   ")
+        << (isf ? "enhanced" : "legacy") << endl
         << "SF2 HOW:   "
         << gnsstk::printTime(xmit2+6, "%7.0g  %3a-%1w:%02H:%02M:%02S")
         << "    0x" << hex << setw(2) << internal << setfill('0')
         << nouppercase << iode << dec << setfill(' ') << "      "
-        << alert2 << "     " << (asFlag2 ? " on" : "off") << endl
+        << alert2 << "     " << (asFlag2 ? " on   " : "off   ")
+        << (isf2 ? "enhanced" : "legacy") << endl
         << "SF3 HOW:   "
         << gnsstk::printTime(xmit3+6, "%7.0g  %3a-%1w:%02H:%02M:%02S")
         << "    0x" << hex << setw(2) << internal << setfill('0')
         << nouppercase << iode << dec << setfill(' ') << "      "
-        << alert3 << "     " << (asFlag3 ? " on" : "off") << endl
+        << alert3 << "     " << (asFlag3 ? " on   " : "off   ")
+        << (isf3 ? "enhanced" : "legacy") << endl
         << endl
         << "           SV STATUS" << endl << endl
         << "Health bits         :      0x" << setw(2)
@@ -302,9 +308,14 @@ namespace gnsstk
       if (rhs->Cuc < lhs->Cuc) return false;
       if (lhs->Cus < rhs->Cus) return true;
       if (rhs->Cus < lhs->Cus) return false;
-         /// @todo integrity status flag?
       if (lhs->iode < rhs->iode) return true;
       if (rhs->iode < lhs->iode) return false;
+      if (lhs->isf < rhs->isf) return true;
+      if (rhs->isf < lhs->isf) return false;
+      if (lhs->isf2 < rhs->isf2) return true;
+      if (rhs->isf2 < lhs->isf2) return false;
+      if (lhs->isf3 < rhs->isf3) return true;
+      if (rhs->isf3 < lhs->isf3) return false;
       if (lhs->w < rhs->w) return true;
       if (rhs->w < lhs->w) return false;
       if (lhs->OMEGAdot < rhs->OMEGAdot) return true;

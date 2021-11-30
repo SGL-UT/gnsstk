@@ -49,6 +49,7 @@ namespace gnsstk
    GPSLNavIono()
          : pre(0),
            tlm(0),
+           isf(false),
            alert(false),
            asFlag(false)
    {

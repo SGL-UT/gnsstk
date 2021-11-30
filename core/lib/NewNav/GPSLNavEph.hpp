@@ -98,6 +98,8 @@ namespace gnsstk
       uint32_t pre3;      ///< The TLM preamble from word 1 of subframe 3.
       uint32_t tlm2;      ///< The TLM message from word 1 of subframe 2.
       uint32_t tlm3;      ///< The TLM message from word 1 of subframe 3.
+      bool isf2;          ///< Integrity status flag from subframe 2.
+      bool isf3;          ///< Integrity status flag from subframe 3.
       uint16_t iodc;      ///< Issue Of Data-Clock for the ephemeris.
       uint16_t iode;      ///< Issue Of Data-Ephemeris.
       uint8_t fitIntFlag; ///< Fit interval flag from subframe 2.
