@@ -156,14 +156,62 @@ public:
       {
          gnsstk::GloEphemerisStore store;
          gnsstk::Rinex3NavData nd = loadNav(store, testFramework, false);
-         gnsstk::Xvt rv;
+         gnsstk::Xvt rv, exp1, exp2, exp3;
          gnsstk::SatID fake(933, gnsstk::SatelliteSystem::Glonass);
+         exp1.x[0] = 15553634.277300000191;
+         exp1.x[1] = -19901129.882800001651;
+         exp1.x[2] = 3553335.4492200003006;
+         exp1.v[0] = -419.38495635999998967;
+         exp1.v[1] = 324.19204711899999438;
+         exp1.v[2] = 3526.6609191899997313;
+         exp1.clkbias = 5.0643837887362983528e-05;
+         exp1.clkdrift = 1.8189894035500000529e-12;
+         exp1.relcorr = 9.8656234370161929753e-09;
+         cerr << "getting xvt at " << gnsstk::printTime(nd.time,"%Y %m %d %H %M %S") << endl;
          TUCATCH(rv = store.computeXvt(nd.sat, nd.time));
          TUASSERTE(gnsstk::Xvt::HealthStatus,
                    gnsstk::Xvt::HealthStatus::Healthy, rv.health);
+         for (unsigned i = 0; i < 3; i++)
+         {
+            TUASSERTFE(exp1.x[i], rv.x[i]);
+            TUASSERTFE(exp1.v[i], rv.v[i]);
+         }
+         TUASSERTFE(exp1.clkbias, rv.clkbias);
+         TUASSERTFE(exp1.clkdrift, rv.clkdrift);
+         TUASSERTFE(exp1.relcorr, rv.relcorr);
+            //
+         exp2.x[0] = 15414234.528789049014;
+         exp2.x[1] = -19781497.388794392347;
+         exp2.x[2] = 4628091.6838117558509;
+         exp2.v[0] = -490.60674446407949745;
+         exp2.v[1] = 458.15034224403763119;
+         exp2.v[2] = 3496.5690971072995126;
+         exp2.clkbias = 5.064440682959031175e-05;
+         exp2.clkdrift = 1.8189894035500000529e-12;
+         exp2.relcorr = 9.8532919671748554905e-09;
+         TUCATCH(rv = store.computeXvt(nd.sat, nd.time + 306));
+         TUASSERTE(gnsstk::Xvt::HealthStatus,
+                   gnsstk::Xvt::HealthStatus::Healthy, rv.health);
+         for (unsigned i = 0; i < 3; i++)
+         {
+            TUASSERTFE(exp2.x[i], rv.x[i]);
+            TUASSERTFE(exp2.v[i], rv.v[i]);
+         }
+         TUASSERTFE(exp2.clkbias, rv.clkbias);
+         TUASSERTFE(exp2.clkdrift, rv.clkdrift);
+         TUASSERTFE(exp2.relcorr, rv.relcorr);         
+            //
          TUCATCH(rv = store.computeXvt(fake, nd.time));
          TUASSERTE(gnsstk::Xvt::HealthStatus,
                    gnsstk::Xvt::HealthStatus::Unavailable, rv.health);
+         for (unsigned i = 0; i < 3; i++)
+         {
+            TUASSERTFE(exp3.x[i], rv.x[i]);
+            TUASSERTFE(exp3.v[i], rv.v[i]);
+         }
+         TUASSERTFE(exp3.clkbias, rv.clkbias);
+         TUASSERTFE(exp3.clkdrift, rv.clkdrift);
+         TUASSERTFE(exp3.relcorr, rv.relcorr);
       }
       catch (...)
       {
