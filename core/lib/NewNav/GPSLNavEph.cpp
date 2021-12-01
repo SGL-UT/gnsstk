@@ -51,6 +51,8 @@ namespace gnsstk
            pre3(0),
            tlm2(0),
            tlm3(0),
+           isf2(false),
+           isf3(false),
            iodc(0),
            iode(0),
            fitIntFlag(0),
@@ -186,22 +188,26 @@ namespace gnsstk
           * just guessing about the SF2 and SF3 HOW times. */
       unsigned health = healthBits;
       s << "           SUBFRAME OVERHEAD" << endl << endl
-        << "               SOW    DOW:HH:MM:SS     IOD    ALERT   A-S" << endl
+        << "               SOW    DOW:HH:MM:SS     IOD    ALERT   A-S   ISF"
+        << endl
         << "SF1 HOW:   "
         << gnsstk::printTime(xmitTime+6, "%7.0g  %3a-%1w:%02H:%02M:%02S")
         << "   0x" << hex << setw(3) << internal << setfill('0')
         << nouppercase << iodc << dec << setfill(' ') << "      "
-        << noboolalpha << alert << "     " << (asFlag ? " on" : "off") << endl
+        << noboolalpha << alert << "     " << (asFlag ? " on   " : "off   ")
+        << (isf ? "enhanced" : "legacy") << endl
         << "SF2 HOW:   "
         << gnsstk::printTime(xmit2+6, "%7.0g  %3a-%1w:%02H:%02M:%02S")
         << "    0x" << hex << setw(2) << internal << setfill('0')
         << nouppercase << iode << dec << setfill(' ') << "      "
-        << alert2 << "     " << (asFlag2 ? " on" : "off") << endl
+        << alert2 << "     " << (asFlag2 ? " on   " : "off   ")
+        << (isf2 ? "enhanced" : "legacy") << endl
         << "SF3 HOW:   "
         << gnsstk::printTime(xmit3+6, "%7.0g  %3a-%1w:%02H:%02M:%02S")
         << "    0x" << hex << setw(2) << internal << setfill('0')
         << nouppercase << iode << dec << setfill(' ') << "      "
-        << alert3 << "     " << (asFlag3 ? " on" : "off") << endl
+        << alert3 << "     " << (asFlag3 ? " on   " : "off   ")
+        << (isf3 ? "enhanced" : "legacy") << endl
         << endl
         << "           SV STATUS" << endl << endl
         << "Health bits         :      0x" << setw(2)
@@ -237,5 +243,101 @@ namespace gnsstk
             default:                            return "Unknown";
          }
       }
+   }
+
+
+   bool GPSLNavEphIODCComp ::
+   operator()(const std::shared_ptr<GPSLNavEph> lhs,
+              const std::shared_ptr<GPSLNavEph> rhs) const
+   {
+      if (lhs->signal < rhs->signal) return true;
+      if (rhs->signal < lhs->signal) return false;
+      GPSWeekSecond lws(lhs->Toe), rws(rhs->Toe);
+      if (lws.week < rws.week) return true;
+      if (rws.week < lws.week) return false;
+      if (lhs->iodc < rhs->iodc) return true;
+      return false;
+   }
+
+
+   bool GPSLNavEphCEIComp ::
+   operator()(const std::shared_ptr<GPSLNavEph> lhs,
+              const std::shared_ptr<GPSLNavEph> rhs) const
+   {
+         // We still need to do signal and Toe, so do those first,
+         // since they're the most likely to change.
+      if (lhs->signal < rhs->signal) return true;
+      if (rhs->signal < lhs->signal) return false;
+      GPSWeekSecond lws(lhs->Toe), rws(rhs->Toe);
+      if (lws.week < rws.week) return true;
+      if (rws.week < lws.week) return false;
+      if (lhs->iodc < rhs->iodc) return true;
+      if (rhs->iodc < lhs->iodc) return false;
+         // Everything else is in the order it appears in Table 6-I-1,
+         // for convenience (i.e. if there's a compelling reason to
+         // change it, this order has no specific meaning)
+      if (lhs->healthBits < rhs->healthBits) return true;
+      if (rhs->healthBits < lhs->healthBits) return false;
+      if (lhs->uraIndex < rhs->uraIndex) return true;
+      if (rhs->uraIndex < lhs->uraIndex) return false;
+      if (lhs->tgd < rhs->tgd) return true;
+      if (rhs->tgd < lhs->tgd) return false;
+      if (lhs->af0 < rhs->af0) return true;
+      if (rhs->af0 < lhs->af0) return false;
+      if (lhs->af1 < rhs->af1) return true;
+      if (rhs->af1 < lhs->af1) return false;
+      if (lhs->af2 < rhs->af2) return true;
+      if (rhs->af2 < lhs->af2) return false;
+      if (lhs->Toc < rhs->Toc) return true;
+      if (rhs->Toc < lhs->Toc) return false;
+      if (lhs->Ahalf < rhs->Ahalf) return true;
+      if (rhs->Ahalf < lhs->Ahalf) return false;
+      if (lhs->dn < rhs->dn) return true;
+      if (rhs->dn < lhs->dn) return false;
+      if (lhs->fitIntFlag < rhs->fitIntFlag) return true;
+      if (rhs->fitIntFlag < lhs->fitIntFlag) return false;
+      if (lhs->ecc < rhs->ecc) return true;
+      if (rhs->ecc < lhs->ecc) return false;
+      if (lhs->M0 < rhs->M0) return true;
+      if (rhs->M0 < lhs->M0) return false;
+      if (lhs->Toe < rhs->Toe) return true;
+      if (rhs->Toe < lhs->Toe) return false;
+      if (lhs->Crs < rhs->Crs) return true;
+      if (rhs->Crs < lhs->Crs) return false;
+      if (lhs->Cuc < rhs->Cuc) return true;
+      if (rhs->Cuc < lhs->Cuc) return false;
+      if (lhs->Cus < rhs->Cus) return true;
+      if (rhs->Cus < lhs->Cus) return false;
+      if (lhs->iode < rhs->iode) return true;
+      if (rhs->iode < lhs->iode) return false;
+      if (lhs->isf < rhs->isf) return true;
+      if (rhs->isf < lhs->isf) return false;
+      if (lhs->isf2 < rhs->isf2) return true;
+      if (rhs->isf2 < lhs->isf2) return false;
+      if (lhs->isf3 < rhs->isf3) return true;
+      if (rhs->isf3 < lhs->isf3) return false;
+      if (lhs->w < rhs->w) return true;
+      if (rhs->w < lhs->w) return false;
+      if (lhs->OMEGAdot < rhs->OMEGAdot) return true;
+      if (rhs->OMEGAdot < lhs->OMEGAdot) return false;
+      if (lhs->OMEGA0 < rhs->OMEGA0) return true;
+      if (rhs->OMEGA0 < lhs->OMEGA0) return false;
+      if (lhs->i0 < rhs->i0) return true;
+      if (rhs->i0 < lhs->i0) return false;
+      if (lhs->idot < rhs->idot) return true;
+      if (rhs->idot < lhs->idot) return false;
+      if (lhs->Cic < rhs->Cic) return true;
+      if (rhs->Cic < lhs->Cic) return false;
+      if (lhs->Cis < rhs->Cis) return true;
+      if (rhs->Cis < lhs->Cis) return false;
+      if (lhs->Crc < rhs->Crc) return true;
+      if (rhs->Crc < lhs->Crc) return false;
+      if (lhs->alert < rhs->alert) return true;
+      if (rhs->alert < lhs->alert) return false;
+      if (lhs->alert2 < rhs->alert2) return true;
+      if (rhs->alert2 < lhs->alert2) return false;
+      if (lhs->alert3 < rhs->alert3) return true;
+      if (rhs->alert3 < lhs->alert3) return false;
+      return false;
    }
 }

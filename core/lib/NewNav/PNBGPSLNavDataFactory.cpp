@@ -53,13 +53,18 @@ using namespace std;
  * apply to all messages. */
 enum FullBitInfo
 {
+      // every subframe has a preamble and tlm so no subframe index here.
    fsbPre = 0, ///< Preamble start bit
    fnbPre = 8, ///< Preamble number of bits
    fscPre = 1, ///< Preamble scale factor
 
-   fsbTLM = 8,  ///< Telemetry Message start bit
+   fsbTLM = fsbPre+fnbPre,  ///< Telemetry Message start bit
    fnbTLM = 14, ///< Telemetry Message number of bits
    fscTLM = 1,  ///< Telemetry Message scale factor
+
+   fsbISF = fsbTLM+fnbTLM, ///< Integrity Status Flag bit
+   fnbISF = 1,             ///< Integrity Status Flag number of bits
+   fscISF = 1,             ///< Integrity Status Flag scale factor
 
    fsbAlert = 47, ///< Alert flag start bit
    fnbAlert = 1,  ///< Alert flag number of bits
@@ -99,7 +104,6 @@ enum SFIndex
  */
 enum EphBitInfo
 {
-      // every subframe has a preamble and tlm so no subframe index here.
    esiWN = sf1, ///< WN subframe index
    esbWN = 60,  ///< WN start bit
    enbWN = 10,  ///< WN number of bits
@@ -507,6 +511,10 @@ namespace gnsstk
             isc->signal = NavMessageID(key, NavMessageType::ISC);
             isc->pre = navIn->asUnsignedLong(fsbPre,fnbPre,fscPre);
             isc->tlm = navIn->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
+            if (navIn->getsatSys().system == gnsstk::SatelliteSystem::GPS)
+            {
+               isc->isf = navIn->asBool(fsbISF);
+            }
             isc->alert = navIn->asBool(fsbAlert);
             isc->asFlag = navIn->asBool(fsbAS);
             isc->isc = navIn->asSignedDouble(esbTGD,enbTGD,escTGD);
@@ -620,6 +628,10 @@ namespace gnsstk
          // GPSLNavData
       eph->pre = ephSF[sf1]->asUnsignedLong(fsbPre,fnbPre,fscPre);
       eph->tlm = ephSF[sf1]->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
+      if (navIn->getsatSys().system == gnsstk::SatelliteSystem::GPS)
+      {
+         eph->isf = ephSF[sf1]->asBool(fsbISF);
+      }
       eph->alert = ephSF[sf1]->asBool(fsbAlert);
       eph->asFlag = ephSF[sf1]->asBool(fsbAS);
          // GPSLNavEph
@@ -627,6 +639,11 @@ namespace gnsstk
       eph->pre3 = ephSF[sf3]->asUnsignedLong(fsbPre,fnbPre,fscPre);
       eph->tlm2 = ephSF[sf2]->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
       eph->tlm3 = ephSF[sf3]->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
+      if (navIn->getsatSys().system == gnsstk::SatelliteSystem::GPS)
+      {
+         eph->isf2 = ephSF[sf2]->asBool(fsbISF);
+         eph->isf3 = ephSF[sf3]->asBool(fsbISF);
+      }
          // 2 = size of iodcStart/iodcNum arrays
       eph->iodc = ephSF[esiIODC]->asUnsignedLong(esbIODCm,enbIODCm,esbIODCl,
                                                  enbIODCl,escIODC);
@@ -700,6 +717,10 @@ namespace gnsstk
          // constructor
       alm->pre = navIn->asUnsignedLong(fsbPre,fnbPre,fscPre);
       alm->tlm = navIn->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
+      if (navIn->getsatSys().system == gnsstk::SatelliteSystem::GPS)
+      {
+         alm->isf = navIn->asBool(fsbISF);
+      }
       alm->alert = navIn->asBool(fsbAlert);
       alm->asFlag = navIn->asBool(fsbAS);
       alm->xmitTime = navIn->getTransmitTime();
@@ -968,6 +989,10 @@ namespace gnsstk
             // GPSLNavIono
          iono->pre = navIn->asUnsignedLong(fsbPre,fnbPre,fscPre);
          iono->tlm = navIn->asUnsignedLong(fsbTLM,fnbTLM,fscTLM);
+         if (navIn->getsatSys().system == gnsstk::SatelliteSystem::GPS)
+         {
+            iono->isf = navIn->asBool(fsbISF);
+         }
          iono->alert = navIn->asBool(fsbAlert);
          iono->asFlag = navIn->asBool(fsbAS);
          iono->alpha[0] = navIn->asSignedDouble(asbAlpha0,anbAlpha0,ascAlpha0);

@@ -92,6 +92,7 @@ constructorTest()
              uut.signal.messageType);
    TUASSERTE(uint32_t, 0, uut.pre);
    TUASSERTE(uint32_t, 0, uut.tlm);
+   TUASSERTE(bool, false, uut.isf);
    TUASSERTE(bool, false, uut.alert);
    TUASSERTE(bool, false, uut.asFlag);
    TURETURN();

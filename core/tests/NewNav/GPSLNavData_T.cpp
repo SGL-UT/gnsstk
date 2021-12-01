@@ -64,6 +64,7 @@ constructorTest()
    TestClass obj;
    TUASSERTE(uint32_t, 0, obj.pre);
    TUASSERTE(uint32_t, 0, obj.tlm);
+   TUASSERTE(bool, false, obj.isf);
    TUASSERTE(bool, false, obj.asFlag);
    TUASSERTE(bool, false, obj.alert);
    TURETURN();
