@@ -32,9 +32,9 @@ add_executable(GalEphemeris_T GalEphemeris_T.cpp)
 target_link_libraries(GalEphemeris_T gnsstk)
 add_test(GNSSEph_GalEphemeris GalEphemeris_T)
 
-add_executable(GloEphemerisStore_T GloEphemerisStore_T.cpp)
-target_link_libraries(GloEphemerisStore_T gnsstk)
-add_test(GNSSEph_GloEphemerisStore GloEphemerisStore_T)
+#add_executable(GloEphemerisStore_T GloEphemerisStore_T.cpp)
+#target_link_libraries(GloEphemerisStore_T gnsstk)
+#add_test(GNSSEph_GloEphemerisStore GloEphemerisStore_T)
 
 add_executable(NavID_T NavID_T.cpp)
 target_link_libraries(NavID_T gnsstk)
