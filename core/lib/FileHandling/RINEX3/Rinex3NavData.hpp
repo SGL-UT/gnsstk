@@ -78,9 +78,7 @@ namespace gnsstk
           * @warning CHECK THE PRNID TO SEE IF THIS DATA IS VALID BEFORE
           *          USING!!!.
           */
-      Rinex3NavData(void)
-            : time(CommonTime::BEGINNING_OF_TIME), PRNID(-1), fitint(4)
-      {}
+      Rinex3NavData();
 
          /// Initializes the nav data with a GloEphemeris
       Rinex3NavData(const GloEphemeris& gloe);

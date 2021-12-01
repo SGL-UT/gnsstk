@@ -98,6 +98,8 @@ namespace gnsstk
       uint32_t pre3;      ///< The TLM preamble from word 1 of subframe 3.
       uint32_t tlm2;      ///< The TLM message from word 1 of subframe 2.
       uint32_t tlm3;      ///< The TLM message from word 1 of subframe 3.
+      bool isf2;          ///< Integrity status flag from subframe 2.
+      bool isf3;          ///< Integrity status flag from subframe 3.
       uint16_t iodc;      ///< Issue Of Data-Clock for the ephemeris.
       uint16_t iode;      ///< Issue Of Data-Ephemeris.
       uint8_t fitIntFlag; ///< Fit interval flag from subframe 2.
@@ -124,6 +126,40 @@ namespace gnsstk
          /// Convert L2Codes to a printable string for dump().
       std::string asString(GPSLNavEph::L2Codes e);
    }
+
+      /** Class that sorts GPSLNavEph using the combination of
+       * NavSatelliteID, GPS week and IODC.  Intended to be used as a
+       * comparator for standard C++ library containers. */
+   class GPSLNavEphIODCComp
+   {
+   public:
+         /** Comparison function for the container class.
+          * @return true if signal, Toe.week and iodc in lhs are less than rhs.
+          */
+      bool operator()(const std::shared_ptr<GPSLNavEph> lhs,
+                      const std::shared_ptr<GPSLNavEph> rhs) const;
+   };
+
+      /// Store GPSLNavEph shared_ptrs using GPSLNavEphIODCComp to sort.
+   using GPSLNavIODCUniq = std::set<std::shared_ptr<GPSLNavEph>,
+                                    GPSLNavEphIODCComp>;
+
+      /** Class that sorts GPSLNavEph using the CEI data as defined in
+       * Table-6-I-1 of IS-GPS-200. */
+   class GPSLNavEphCEIComp
+   {
+   public:
+         /** Comparison function for the container class.
+          * @return true if the CEI data set parameters in lhs are
+          *   less than rhs. */
+      bool operator()(const std::shared_ptr<GPSLNavEph> lhs,
+                      const std::shared_ptr<GPSLNavEph> rhs) const;
+   };
+
+      /// Store GPSLNavEph shared_ptrs using GPSLNavEphCEIComp to sort.
+   using GPSLNavCEIUniq = std::set<std::shared_ptr<GPSLNavEph>,
+                                    GPSLNavEphCEIComp>;
+      
 
       //@}
 

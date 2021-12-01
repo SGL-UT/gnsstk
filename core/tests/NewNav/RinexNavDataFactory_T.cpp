@@ -502,15 +502,18 @@ loadIntoMapTest()
                      // GPSLNavData
                   TUASSERTE(uint32_t, 0, ephL->pre);
                   TUASSERTE(uint32_t, 0, ephL->tlm);
+                  TUASSERTE(bool, false, ephL->isf);
                   TUASSERTE(bool, false, ephL->alert);
                   TUASSERTE(bool, true, ephL->asFlag);
                      // GPSLNavEph
                   TUASSERTE(uint32_t, 0, ephL->pre2);
                   TUASSERTE(uint32_t, 0, ephL->tlm2);
+                  TUASSERTE(bool, false, ephL->isf2);
                   TUASSERTE(bool, false, ephL->alert2);
                   TUASSERTE(bool, true, ephL->asFlag2);
                   TUASSERTE(uint32_t, 0, ephL->pre3);
                   TUASSERTE(uint32_t, 0, ephL->tlm3);
+                  TUASSERTE(bool, false, ephL->isf3);
                   TUASSERTE(bool, false, ephL->alert3);
                   TUASSERTE(bool, true, ephL->asFlag3);
                   TUASSERTE(uint16_t, 48, ephL->iodc);
@@ -629,6 +632,7 @@ loadIntoMapTest()
                   // GPSLNavISC fields
                TUASSERTE(uint32_t, 0, iscL->pre);
                TUASSERTE(uint32_t, 0, iscL->tlm);
+               TUASSERTE(bool, false, iscL->isf);
                TUASSERTE(bool, false, iscL->alert);
                TUASSERTE(bool, true, iscL->asFlag);
                iscLCount++;
@@ -946,13 +950,16 @@ loadIntoMapQZSSTest()
                   // GPSLNavData fields
                TUASSERTE(uint32_t, 0, eph->pre);
                TUASSERTE(uint32_t, 0, eph->tlm);
+               TUASSERTE(bool, false, eph->isf);
                TUASSERTE(bool, false, eph->alert);
                TUASSERTE(bool, false, eph->asFlag);
                   // GPSLNavEph fields
                TUASSERTE(uint32_t, 0, eph->pre2);
                TUASSERTE(uint32_t, 0, eph->tlm2);
+               TUASSERTE(bool, false, eph->isf2);
                TUASSERTE(uint32_t, 0, eph->pre3);
                TUASSERTE(uint32_t, 0, eph->tlm3);
+               TUASSERTE(bool, false, eph->isf3);
                TUASSERTE(uint16_t, 69, eph->iodc);
                TUASSERTE(uint16_t, 69, eph->iode);
                TUASSERTE(unsigned, 0, eph->fitIntFlag);
@@ -985,6 +992,7 @@ loadIntoMapQZSSTest()
                   // GPSLNavISC fields
                TUASSERTE(uint32_t, 0, isc->pre);
                TUASSERTE(uint32_t, 0, isc->tlm);
+               TUASSERTE(bool, false, isc->isf);
                TUASSERTE(bool, false, isc->alert);
                TUASSERTE(bool, false, isc->asFlag);
             }

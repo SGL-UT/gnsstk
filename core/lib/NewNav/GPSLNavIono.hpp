@@ -61,6 +61,7 @@ namespace gnsstk
 
       uint32_t pre;    ///< The TLM preamble from word 1 of the subframe.
       uint32_t tlm;    ///< The TLM message from word 1 of the subframe.
+      bool isf;        ///< Integrity status flag.
       bool alert;      ///< Alert flag from HOW.
       bool asFlag;     ///< Anti-spoof flag from HOW.
    };
