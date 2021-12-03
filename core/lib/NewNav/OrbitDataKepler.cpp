@@ -406,4 +406,118 @@ namespace gnsstk
       drift = af1 + elaptc * af2;
       return drift;
    }
+
+
+   bool OrbitDataKepler ::
+   isSameData(const NavDataPtr& right) const
+   {
+      const std::shared_ptr<OrbitDataKepler> rhs =
+         std::dynamic_pointer_cast<OrbitDataKepler>(right);
+      if (!rhs)
+      {
+            // not the same type.
+         return false;
+      }
+      return (NavData::isSameData(right) &&
+              (Toe == rhs->Toe) &&
+              (Toc == rhs->Toc) &&
+              (Cuc == rhs->Cuc) &&
+              (Cus == rhs->Cus) &&
+              (Crc == rhs->Crc) &&
+              (Crs == rhs->Crs) &&
+              (Cic == rhs->Cic) &&
+              (Cis == rhs->Cis) &&
+              (M0 == rhs->M0) &&
+              (dn == rhs->dn) &&
+              (dndot == rhs->dndot) &&
+              (ecc == rhs->ecc) &&
+              (A == rhs->A) &&
+              (Ahalf == rhs->Ahalf) &&
+              (Adot == rhs->Adot) &&
+              (OMEGA0 == rhs->OMEGA0) &&
+              (i0 == rhs->i0) &&
+              (w == rhs->w) &&
+              (OMEGAdot == rhs->OMEGAdot) &&
+              (idot == rhs->idot) &&
+              (af0 == rhs->af0) &&
+              (af1 == rhs->af1) &&
+              (af2 == rhs->af2));
+   }
+
+
+   std::list<std::string> OrbitDataKepler ::
+   compare(const NavDataPtr& right) const
+   {
+         // OrbitData doesn't have any data, but OrbitData::compare
+         // instead throws an exception if called so as to make sure
+         // unimplemented children make it clear they're
+         // unimplemented.  So jump directly to NavData::compare.
+      std::list<std::string> rv = NavData::compare(right);
+      const std::shared_ptr<OrbitDataKepler> rhs =
+         std::dynamic_pointer_cast<OrbitDataKepler>(right);
+      if (!rhs)
+      {
+            // not the same type.
+         rv.push_back("CLASS");
+      }
+      else
+      {
+            // old nav implementation clearly didn't check this
+            // if (xmitTime != rhs->xmitTime)
+            //    rv.push_back("xmitTime");
+         if (Toe != rhs->Toe)
+            rv.push_back("Toe");
+         if (Toc != rhs->Toc)
+            rv.push_back("Toc");
+         if (health != rhs->health)
+            rv.push_back("health");
+         if (Cuc != rhs->Cuc)
+            rv.push_back("Cuc");
+         if (Cus != rhs->Cus)
+            rv.push_back("Cus");
+         if (Crc != rhs->Crc)
+            rv.push_back("Crc");
+         if (Crs != rhs->Crs)
+            rv.push_back("Crs");
+         if (Cic != rhs->Cic)
+            rv.push_back("Cic");
+         if (Cis != rhs->Cis)
+            rv.push_back("Cis");
+         if (M0 != rhs->M0)
+            rv.push_back("M0");
+         if (dn != rhs->dn)
+            rv.push_back("dn");
+         if (dndot != rhs->dndot)
+            rv.push_back("dndot");
+         if (ecc != rhs->ecc)
+            rv.push_back("ecc");
+         if (A != rhs->A)
+            rv.push_back("A");
+         if (Ahalf != rhs->Ahalf)
+            rv.push_back("Ahalf");
+         if (Adot != rhs->Adot)
+            rv.push_back("Adot");
+         if (OMEGA0 != rhs->OMEGA0)
+            rv.push_back("OMEGA0");
+         if (i0 != rhs->i0)
+            rv.push_back("i0");
+         if (w != rhs->w)
+            rv.push_back("w");
+         if (OMEGAdot != rhs->OMEGAdot)
+            rv.push_back("OMEGAdot");
+         if (idot != rhs->idot)
+            rv.push_back("idot");
+         if (af0 != rhs->af0)
+            rv.push_back("af0");
+         if (af1 != rhs->af1)
+            rv.push_back("af1");
+         if (af2 != rhs->af2)
+            rv.push_back("af2");
+         if (beginFit != rhs->beginFit)
+            rv.push_back("beginFit");
+         if (endFit != rhs->endFit)
+            rv.push_back("endFit");
+      }
+      return rv;
+   }
 }

@@ -64,6 +64,14 @@ namespace gnsstk
          /** Defines the status of NavData::signal, specifically sat
           * (not xmitSat). */
       virtual SVHealth getHealth() const = 0;
+
+         /// @copydoc NavData::isSameData
+      bool isSameData(const NavDataPtr& right) const override
+      { GNSSTK_THROW(Exception("Unimplemented function")); }
+         /// @copydoc NavData::compare
+      std::list<std::string> compare(const NavDataPtr& right)
+         const override
+      { GNSSTK_THROW(Exception("Unimplemented function")); }
    };
 
       //@}

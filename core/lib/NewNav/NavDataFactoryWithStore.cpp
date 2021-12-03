@@ -844,7 +844,8 @@ namespace gnsstk
 
 
    bool NavDataFactoryWithStore ::
-   addNavData(const NavDataPtr& nd)
+   addNavData(const NavDataPtr& nd, NavMessageMap& navMap,
+              NavNearMessageMap& navNearMap, OffsetCvtMap& ofsMap)
    {
       DEBUGTRACE_FUNCTION();
       DEBUGTRACE("class: " << getClassName());
@@ -899,8 +900,8 @@ namespace gnsstk
       if ((todp = dynamic_cast<TimeOffsetData*>(nd.get())) == nullptr)
       {
             // everything BUT TimeOffsetData
-         data[nd->signal.messageType][nd->signal][nd->getUserTime()] = nd;
-         nearestData[nd->signal.messageType][nd->signal][nd->getNearTime()]
+         navMap[nd->signal.messageType][nd->signal][nd->getUserTime()] = nd;
+         navNearMap[nd->signal.messageType][nd->signal][nd->getNearTime()]
             .push_back(nd);
          return true;
       }
@@ -908,7 +909,7 @@ namespace gnsstk
       TimeCvtSet conversions = todp->getConversions();
       for (const auto& ci : conversions)
       {
-         offsetData[ci][nd->getUserTime()][nd->signal] = nd;
+         ofsMap[ci][nd->getUserTime()][nd->signal] = nd;
       }
       return true;
    }
@@ -1377,6 +1378,48 @@ namespace gnsstk
    }
 
 
+   std::set<SatID> NavDataFactoryWithStore ::
+   getIndexSet(const CommonTime& fromTime,
+               const CommonTime& toTime) const
+   {
+      std::set<SatID> rv;
+      for (const auto& nmmi : data)
+      {
+         for (const auto& nsmi : nmmi.second)
+         {
+            auto ti1 = nsmi.second.lower_bound(fromTime);
+            if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
+            {
+               rv.insert(nsmi.first.sat);
+            }
+         }
+      }
+      return rv;
+   }
+
+
+   std::set<SatID> NavDataFactoryWithStore ::
+   getIndexSet(NavMessageType nmt,
+               const CommonTime& fromTime,
+               const CommonTime& toTime) const
+   {
+      std::set<SatID> rv;
+      auto nmmi = data.find(nmt);
+      if (nmmi != data.end())
+      {
+         for (const auto& nsmi : nmmi->second)
+         {
+            auto ti1 = nsmi.second.lower_bound(fromTime);
+            if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
+            {
+               rv.insert(nsmi.first.sat);
+            }
+         }
+      }
+      return rv;
+   }
+
+
    NavMessageIDSet NavDataFactoryWithStore :: getAvailableMsgs(
       const CommonTime& fromTime, const CommonTime& toTime)
       const
@@ -1397,6 +1440,22 @@ namespace gnsstk
    }
 
 
+   const NavMap* NavDataFactoryWithStore ::
+   getNavMap(const NavMessageID& nmid) const
+   {
+      auto nmmi = data.find(nmid.messageType);
+      if (nmmi != data.end())
+      {
+         auto nsmi = nmmi->second.find(nmid);
+         if (nsmi != nmmi->second.end())
+         {
+            return &nsmi->second;
+         }
+      }
+      return nullptr;
+   }
+
+
    void NavDataFactoryWithStore ::
    dump(std::ostream& s, DumpDetail dl) const
    {
@@ -1413,6 +1472,23 @@ namespace gnsstk
                   s << StringUtils::asString(nmmi.first) << " "
                     << StringUtils::asString(nsami.first) << " "
                     << nsami.second.size() << " objects" << std::endl;
+                  break;
+               case DumpDetail::Terse:
+                     /** @todo To support the variances between nav
+                      * codes Terse dump formats, it would probably be
+                      * best to implement a "getTerseHeader" method
+                      * and just call it for the first object in this
+                      * map (which should be the same class for each
+                      * item in nsami.second). */
+                  s << "  Map for " << StringUtils::asString(nmmi.first)
+                    << " " << StringUtils::asString(nsami.first) << " has "
+                    << nsami.second.size() << " entries." << std::endl
+                    << "SVN  PRN     Begin Fit        Toe          End Fit"
+                    << "       URA     IODC      Health" << std::endl;
+                  for (const auto& cti : nsami.second)
+                  {
+                     cti.second->dump(s, dl);
+                  }                  
                   break;
                case DumpDetail::Brief:
                   for (const auto& cti : nsami.second)
@@ -1440,6 +1516,8 @@ namespace gnsstk
          switch (dl)
          {
             case DumpDetail::OneLine:
+                  /// @todo Support Terse dump in TimeOffsetData
+            case DumpDetail::Terse:
                s << label << " " << ocmi.first.first << " -> "
                  << ocmi.first.second << std::endl;
                break;

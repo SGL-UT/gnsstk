@@ -954,7 +954,7 @@ namespace gnsstk
             {
                if (obj->validate() == expect)
                {
-                  if (!addNavData(obj))
+                  if (!addNavData(obj, data, nearestData, offsetData))
                   {
                      DEBUGTRACE("store failed to add nav data");
                      return false;
@@ -966,7 +966,7 @@ namespace gnsstk
          {
             if (process)
             {
-               if (!addNavData(obj))
+               if (!addNavData(obj, data, nearestData, offsetData))
                {
                   DEBUGTRACE("store failed to add nav data");
                   return false;

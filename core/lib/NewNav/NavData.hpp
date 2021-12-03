@@ -90,6 +90,25 @@ namespace gnsstk
           * is used by NavDataFactoryWithStore::find(). */
       virtual CommonTime getNearTime() const
       { return timeStamp; }
+         /** Returns true if this two objects are 
+          *   1. same concrete type, and
+          *   2. same data contents.
+          * This is intended as a "data uniqueness test" to allow
+          * detection of successive transmissions of same data
+          * and avoid duplicate storage.  The exact rules for 
+          * uniqueness will vary by descendent class. 
+          * @note We use shared_ptr to allow for casting without
+          *   risking memory leaks. */
+      virtual bool isSameData(const std::shared_ptr<NavData>& right) const;
+         /** Compare two NavData descendent objects.
+          *  Any differences are summarized and returned as a list of
+          *  readable text.
+          * @param[in] right The data to compare against.
+          * @return a text list of mismatched data.
+          * @note We use shared_ptr to allow for casting without
+          *   risking memory leaks. */
+      virtual std::list<std::string> compare(
+         const std::shared_ptr<NavData>& right) const;
          /** Print the contents of this NavData object in a
           * human-readable format.
           * @note for dump methods to properly map from PRN to SVN,

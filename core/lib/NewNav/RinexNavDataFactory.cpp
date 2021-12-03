@@ -83,7 +83,8 @@ namespace gnsstk
 
 
    bool RinexNavDataFactory ::
-   loadIntoMap(const std::string& filename, NavMessageMap& navMap)
+   loadIntoMap(const std::string& filename, NavMessageMap& navMap,
+               NavNearMessageMap& navNearMap, OffsetCvtMap& ofsMap)
    {
       bool rv = true;
       bool processEph = (procNavTypes.count(NavMessageType::Ephemeris) > 0);
@@ -133,13 +134,13 @@ namespace gnsstk
                {
                   if (i->validate() == expect)
                   {
-                     if (!addNavData(i))
+                     if (!addNavData(i, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
                else
                {
-                  if (!addNavData(i))
+                  if (!addNavData(i, navMap, navNearMap, ofsMap))
                      return false;
                }
             }
@@ -169,13 +170,13 @@ namespace gnsstk
                   {
                      if (i->validate() == expect)
                      {
-                        if (!addNavData(i))
+                        if (!addNavData(i, navMap, navNearMap, ofsMap))
                            return false;
                      }
                   }
                   else
                   {
-                     if (!addNavData(i))
+                     if (!addNavData(i, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
@@ -210,7 +211,7 @@ namespace gnsstk
                {
                   if (eph->validate() == expect)
                   {
-                     if (!addNavData(eph))
+                     if (!addNavData(eph, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
@@ -220,7 +221,7 @@ namespace gnsstk
                   {
                      if (hp->validate() == expect)
                      {
-                        if (!addNavData(hp))
+                        if (!addNavData(hp, navMap, navNearMap, ofsMap))
                            return false;
                      }
                   }
@@ -229,7 +230,7 @@ namespace gnsstk
                {
                   if (isc->validate() == expect)
                   {
-                     if (!addNavData(isc))
+                     if (!addNavData(isc, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
@@ -238,20 +239,20 @@ namespace gnsstk
             {
                if (processEph)
                {
-                  if (!addNavData(eph))
+                  if (!addNavData(eph, navMap, navNearMap, ofsMap))
                      return false;
                }
                if (processHea)
                {
                   for (const auto& hp : health)
                   {
-                     if (!addNavData(hp))
+                     if (!addNavData(hp, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
                if (processISC && (isc != nullptr))
                {
-                  if (!addNavData(isc))
+                  if (!addNavData(isc, navMap, navNearMap, ofsMap))
                      return false;
                }
             }

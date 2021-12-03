@@ -62,6 +62,16 @@ namespace gnsstk
    class NavDataFactoryWithStore : public NavDataFactory
    {
    public:
+         // Time offset information is organized differently due to the use case
+         /** Map that will contain all TimeOffsetData objects with the
+          * same conversion pair broadcast at a given time. */
+      using OffsetMap = std::map<NavSatelliteID, NavDataPtr>;
+         /** Map from the timeStamp of a TimeOffsetData object to the
+          * collection of TimeOffsetData objects. */
+      using OffsetEpochMap = std::map<CommonTime, OffsetMap>;
+         /// Map from the time system conversion pair to the conversion objects.
+      using OffsetCvtMap = std::map<TimeCvtKey, OffsetEpochMap>;
+
          /// Initialize internal data.
       NavDataFactoryWithStore();
 
@@ -149,7 +159,18 @@ namespace gnsstk
          /** Add a nav message to the internal store (data).
           * @param[in] nd The nav data to add.
           * @return true if successful. */
-      bool addNavData(const NavDataPtr& nd);
+      bool addNavData(const NavDataPtr& nd)
+      { return addNavData(nd, data, nearestData, offsetData); }
+
+         /** Add a nav message to the given store.
+          * @param[in] nd The nav data to add.
+          * @param[out] navMap The map to load the data in.
+          * @param[out] navNearMap The map to load the data in
+          *   for use by "Nearest" (as opposed to "User") searches.
+          * @param[out] ofsMap The map to load TimeOffsetData into.
+          * @return true if successful. */
+      bool addNavData(const NavDataPtr& nd, NavMessageMap& navMap,
+                      NavNearMessageMap& navNearMap, OffsetCvtMap& ofsMap);
 
          /** Determine the earliest time for which this object can successfully
           * determine the Xvt for any object.
@@ -212,6 +233,40 @@ namespace gnsstk
                                          const CommonTime& fromTime,
                                          const CommonTime& toTime)
          const override;
+
+         /** Similar to getAvailableSats() except it only returns the
+          * basic subject satellite ID, making no further distinction
+          * between codes.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of satellites for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      std::set<SatID> getIndexSet(const CommonTime& fromTime,
+                                  const CommonTime& toTime) const;
+
+         /** Similar to getAvailableSats() except it only returns the
+          * basic subject satellite ID, making no further distinction
+          * between codes.
+          * @param[in] nmt The navigation message type you're looking for.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of satellites for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      std::set<SatID> getIndexSet(NavMessageType nmt,
+                                  const CommonTime& fromTime,
+                                  const CommonTime& toTime) const;
 
          /** Obtain a set of satellites+message types for which we
           * have data in the given time span.
@@ -296,7 +351,20 @@ namespace gnsstk
           * format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-       void dump(std::ostream& s, DumpDetail dl) const override;
+      void dump(std::ostream& s, DumpDetail dl) const override;
+         /// Get read-only access to the nav data map (User priority).
+      const NavMessageMap& getNavMessageMap() const
+      { return data; }
+         /// Get read-only access to the nav data map (Nearest priority).
+      const NavNearMessageMap& getNavNearMessageMap() const
+      { return nearestData; }
+         /// Get read-only access to the time offset map.
+      const OffsetCvtMap& getTimeOffsetMap() const
+      { return offsetData; }
+         /** Get read-only access to the nav data for a specific type/sat.
+          * @param[in] nmid The nav message ID to obtain the map for.
+          * @return The resulting NavMap if available or nullptr if not. */
+      const NavMap* getNavMap(const NavMessageID& nmid) const;
 
    protected:
          /** Search the store to find the navigation message that meets
@@ -401,15 +469,6 @@ namespace gnsstk
       NavMessageMap data;
          /// Internal storage of navigation data for Nearest searches
       NavNearMessageMap nearestData;
-         // Time offset information is organized differently due to the use case
-         /** Map that will contain all TimeOffsetData objects with the
-          * same conversion pair broadcast at a given time. */
-      using OffsetMap = std::map<NavSatelliteID, NavDataPtr>;
-         /** Map from the timeStamp of a TimeOffsetData object to the
-          * collection of TimeOffsetData objects. */
-      using OffsetEpochMap = std::map<CommonTime, OffsetMap>;
-         /// Map from the time system conversion pair to the conversion objects.
-      using OffsetCvtMap = std::map<TimeCvtKey, OffsetEpochMap>;
          /** Store the time offset data separate from the other nav
           * data because searching is very different. */
       OffsetCvtMap offsetData;

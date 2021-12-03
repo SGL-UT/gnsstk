@@ -68,9 +68,14 @@ namespace gnsstk
          /** Load Yuma nav data into a map.
           * @param[in] filename The path of the file to load.
           * @param[out] navMap The map to store the loaded data in.
+          * @param[out] navNearMap The map to store the loaded data in
+          *   for use by "Nearest" (as opposed to "User") searches.
+          * @param[out] ofsMap The map to load TimeOffsetData into.
           * @return true on succes, false on failure. */
       bool loadIntoMap(const std::string& filename,
-                       NavMessageMap& navMap) override;
+                       NavMessageMap& navMap,
+                       NavNearMessageMap& navNearMap,
+                       OffsetCvtMap& ofsMap) override;
 
          /// Return a comma-separated list of formats supported by this factory.
       std::string getFactoryFormats() const override;
