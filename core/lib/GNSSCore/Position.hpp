@@ -36,16 +36,6 @@
 //
 //==============================================================================
 
-/**
- * @file Position.hpp
- * class gnsstk::Position encapsulates 3-D positions, including
- *    geographic positions, expressed as geodetic (with respect to an
- *    ellipsoid), geocentric or Earth-centered, Earth-fixed
- *    (cartesian) coordinates, as well as ordinary positions defined
- *    by spherical or cartesian coordinates. Position inherits from
- *    class Triple.
- */
-
 #ifndef GNSSTK_POSITION_HPP
 #define GNSSTK_POSITION_HPP
 
