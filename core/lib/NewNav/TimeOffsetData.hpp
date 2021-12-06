@@ -99,11 +99,17 @@ namespace gnsstk
 
          /// @copydoc NavData::isSameData
       bool isSameData(const NavDataPtr& right) const override
-      { GNSSTK_THROW(Exception("Unimplemented function")); }
+      {
+         Exception exc("Unimplemented function");
+         GNSSTK_THROW(exc);
+      }
          /// @copydoc NavData::compare
       std::list<std::string> compare(const NavDataPtr& right)
          const override
-      { GNSSTK_THROW(Exception("Unimplemented function")); }
+      {
+         Exception exc("Unimplemented function");
+         GNSSTK_THROW(exc);
+      }
    };
 
       //@}

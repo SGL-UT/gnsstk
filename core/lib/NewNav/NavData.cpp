@@ -55,7 +55,7 @@ namespace gnsstk
 
 
    bool NavData ::
-   isSameData(const std::shared_ptr<NavData>& right) const
+   isSameData(const NavDataPtr& right) const
    {
       return ((timeStamp == right->timeStamp) &&
               (signal == right->signal));
@@ -63,7 +63,7 @@ namespace gnsstk
 
 
    std::list<std::string> NavData ::
-   compare(const std::shared_ptr<NavData>& right) const
+   compare(const NavDataPtr& right) const
    {
       std::list<std::string> rv;
          // old nav implementation clearly didn't check this
