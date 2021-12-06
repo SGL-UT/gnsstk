@@ -168,7 +168,14 @@ namespace gnsstk
       s << printTime( Toe, tform ) << " ! ";
       s << printTime( endFit, tform ) << " !  ";
 
-      s << setw(4) << setprecision(1) << ura2accuracy(uraIndex) << "  ! ";
+      if (uraIndex < SV_ACCURACY_GPS_MAX_INDEX_VALUE)
+      {
+         s << setw(4) << setprecision(1) << ura2accuracy(uraIndex) << "  ! ";
+      }
+      else
+      {
+         s << setw(4) << "N/A" << "  ! ";
+      }
       s << "0x"    << setfill('0')    << hex << setw(3) << iodc << " ! ";
       s << "0x"    << setfill('0')    << setw(2) << (unsigned)healthBits;
       s << setfill(' ') << dec;
