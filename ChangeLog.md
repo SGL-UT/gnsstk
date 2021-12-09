@@ -1,3 +1,15 @@
+# Version 11.2.2   Thursday December 09, 2021
+
+Modifications by Author
+-----------------------
+     Anthony Hughes <anthony@arlut.utexas.edu> (1):
+           Fixed handling of the text file spec type (%x) and added relevant unit tests as per TKS-435.
+
+     David Barber <dbarber@arlut.utexas.edu> (1):
+           Adding maintenance branch to package builds.
+
+
+
 # Version 11.2.1   Thursday July 22, 2021
 
 Modifications by Author

@@ -1,13 +1,20 @@
-GPSTk 11.2.1 Release Notes
+GNSSTk 11.2.2 Release Notes
 ========================
 
- * This release introduces Gitlab CI updates to use new sgl git location.
+ * This release addresses a backport fix for bad text handling in FileSpec
 
-Updates since v11.2.0
+Updates since v11.2.1
 ---------------------
 
 **Gitlab CI**
-  * Updated git url ref to new sgl git location
+  * Adding maintenance branch to package builds. 
+
+**Library Changes**
+  * Adding maintenance branch to package builds.
+
+Fixes since v11.2.1
+--------------------
+  * Backport fix: Fixed handling of the text file spec type (%x) and added relevant unit tests as per TKS-435
 
 Known Issues since v11.1.0
 -------------------------

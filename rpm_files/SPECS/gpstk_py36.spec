@@ -1,5 +1,5 @@
 %define name python3-gpstk
-%define version 11.2.1
+%define version 11.2.2
 %define release 1
 
 Summary:        GPS Toolkit

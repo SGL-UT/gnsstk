@@ -1,3 +1,12 @@
+gpstk (11.2.2-1) stable; urgency=low
+
+  * Updated to version 11.2.2
+  * Backport fix: Fixed handling of the text file spec type (%x) and
+    added relevant unit tests as per TKS-435.
+  * Adding maintenance branch to package builds.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 09 Dec 2021 12:54:59 -0600
+
 gpstk (11.2.1-1) stable; urgency=low
 
   * Updated to version 11.2.1
