@@ -50,6 +50,7 @@ variables:
       - /^version_.*_prep$/
       - tags
       - /^tag_.*$/
+      - maint_11.x
 
 # Check Stage
 # Runs static analysis on code.
