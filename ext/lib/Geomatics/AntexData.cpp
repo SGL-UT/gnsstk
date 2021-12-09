@@ -869,7 +869,7 @@ namespace gpstk
          // NOAZI : data stored under azimuth = -1.0
          if(noazi == string("NOAZI")) azim = -1.0;
 
-         n = StringUtils::numWords(line) - 1;
+         n = line.length()/8 - 1;
          if(n != 1+int((zenRange[1]-zenRange[0])/zenRange[2])) {
             FFStreamError fse("Invalid format; wrong number of zenith/offset values");
             GPSTK_THROW(fse);
