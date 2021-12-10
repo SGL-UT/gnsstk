@@ -424,7 +424,7 @@ namespace gnsstk
 
 
    double GLOFNavEph ::
-   getSiderealTime(const CommonTime& time) const
+   getSiderealTime(const CommonTime& time)
    {
          // The following algorithm is based on the paper:
          // Aoki, S., Guinot,B., Kaplan, G. H., Kinoshita, H., McCarthy, D. D.

@@ -440,7 +440,7 @@ namespace gnsstk
          asbepsilon,anbepsilon,ascepsilon);
       alm->omega = almS[almIdx+asoomega]->asSignMagDoubleSemiCircles(
          asbomega,anbomega,ascomega);
-      alm->tEpoch = almS[almIdx+asot]->asUnsignedDouble(asbt,anbt,asct);
+      alm->tLambda = almS[almIdx+asot]->asUnsignedDouble(asbt,anbt,asct);
          // Epoch time for the almanac is tied to the first ascending
          // crossing of the plane.  The NATIVE timescale for GLONASS
          // time is UTC + 3h.  The Na parameter from String 5 should
@@ -448,7 +448,7 @@ namespace gnsstk
          // SOD epoch time to the almanac day (all in UTC+3h)
          // then move that time to UTC.
       YDSTime almYDS(almDOY);
-      alm->Toa = YDSTime(almYDS.year,almYDS.doy,alm->tEpoch,TimeSystem::GLO);
+      alm->Toa = YDSTime(almYDS.year,almYDS.doy,alm->tLambda,TimeSystem::GLO);
       alm->deltaT = almS[almIdx+asoDeltaT]->asSignMagDouble(
          asbDeltaT,anbDeltaT,ascDeltaT);
       alm->deltaTdot = almS[almIdx+asoDeltaTdot]->asSignMagDouble(

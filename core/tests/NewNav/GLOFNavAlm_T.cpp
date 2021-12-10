@@ -40,6 +40,9 @@
 #include "TestUtil.hpp"
 #include "GLOFNavAlm.hpp"
 #include "CivilTime.hpp"
+#include "YDSTime.hpp"
+#include "TimeString.hpp"
+#include "GLOFNavEph.hpp"
 
 namespace gnsstk
 {
@@ -74,7 +77,7 @@ constructorTest()
    TUASSERTE(int, 1, isnan(uut.deltai));
    TUASSERTE(int, 1, isnan(uut.ecc));
    TUASSERTE(int, 1, isnan(uut.omega));
-   TUASSERTE(int, 1, isnan(uut.tEpoch));
+   TUASSERTE(int, 1, isnan(uut.tLambda));
    TUASSERTE(int, 1, isnan(uut.deltaT));
    TUASSERTE(int, 1, isnan(uut.deltaTdot));
    TUASSERTE(int, -1, uut.freq);
@@ -97,7 +100,35 @@ unsigned GLOFNavAlm_T ::
 getXvtTest()
 {
    TUDEF("GLOFNavAlm", "getXvt()");
-      /// @todo implement getXvt for GLOFNavAlm and test it.
+   gnsstk::GLOFNavAlm uut;
+      // 2001/09/06
+   gnsstk::YDSTime toi(2001, 249, 33300, gnsstk::TimeSystem::GLO);
+      // taken from ICD appendix A.3.2.3
+   uut.lambda = -0.189986229 * gnsstk::PI;
+   uut.tLambda = 27122.09375;
+   uut.deltai = 0.011929512 * gnsstk::PI;
+   uut.deltaT = -2655.76171875;
+   uut.deltaTdot = 0.000549316;
+   uut.ecc = 0.001482010;
+   uut.omega = 0.440277100 * gnsstk::PI;
+   uut.Toa = gnsstk::YDSTime(2001, 249, uut.tLambda, gnsstk::TimeSystem::GLO);
+      // Normally called by fixFit, but we don't care about the fit
+      // interval for this test.
+   uut.setSemiMajorAxisIncl();
+   gnsstk::Xvt xvt;
+   TUASSERTE(bool, true, uut.getXvt(toi, xvt));
+   std::cout << "xvt = " << std::setprecision(17) << xvt << std::endl;
+   gnsstk::CommonTime x(gnsstk::YDSTime(2001,249,0,gnsstk::TimeSystem::GLO));
+   unsigned i = 0;
+   double st = 0;
+   while (st <= 6.02401539573)
+   {
+      gnsstk::CommonTime y = x+(double)i;
+      st = (gnsstk::GLOFNavEph::getSiderealTime(y)*gnsstk::PI/12.0);
+      std::cout << gnsstk::printTime(y, "%Y %j %s %m %d = ")
+                << std::setprecision(15) << st << std::endl;
+      i += 86400;
+   }
    TURETURN();
 }
 

@@ -95,6 +95,13 @@ namespace gnsstk
          /// Returns the accuracy in meters as defined in Table 4.4 of the ICD.
       double getAccuracy() const;
 
+         /** Compute true sidereal time  (in hours) at Greenwich at 0 hours UT.
+          * @warning This method (copied from the deprecated
+          *   GloEphemeris) seems to assume \a time is in a specific
+          *   time system.  Not sure if the assumption is UTC or
+          *   GLO. */
+      static double getSiderealTime(const CommonTime& time);
+
       CommonTime ref;     ///< Reference time (t_k) for this ephemeris.
       CommonTime xmit3;   ///< Transmit time for string 3.
       CommonTime xmit4;   ///< Transmit time for string 4.
@@ -120,13 +127,6 @@ namespace gnsstk
       double step;
 
    private:
-         /** Compute true sidereal time  (in hours) at Greenwich at 0 hours UT.
-          * @warning This method (copied from the deprecated
-          *   GloEphemeris) seems to assume \a time is in a specific
-          *   time system.  Not sure if the assumption is UTC or
-          *   GLO. */
-      double getSiderealTime(const CommonTime& time) const;
-
          /// Function implementing the derivative of GLONASS orbital model.
       Vector<double> derivative(const Vector<double>& inState,
                                 const Vector<double>& accel) const;

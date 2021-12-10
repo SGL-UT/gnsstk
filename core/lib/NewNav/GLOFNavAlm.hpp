@@ -40,6 +40,7 @@
 #define GNSSTK_GLOFNAVALM_HPP
 
 #include "GLOFNavData.hpp"
+#include "PZ90Ellipsoid.hpp"
 
 namespace gnsstk
 {
@@ -51,6 +52,25 @@ namespace gnsstk
    class GLOFNavAlm : public GLOFNavData
    {
    public:
+         /// Ellipsoid parameters used by GLONASS
+      static const PZ90Ellipsoid ell;
+         /// Gravitational constant.
+      static const double mu;
+         /// Equatorial radius of Earth in km.
+      static const double ae;
+         /// Fatty acids? No, Earth's rotation rate.
+      static constexpr double omega3 = 0.7392115e-4;
+         /// i<sub>cp</cp> as defined in GLONASS ICD appendix 3.2.1
+      static const double icp;
+         /// T<sub>cp</cp> as defined in GLONASS ICD appendix 3.2.1
+      static const double Tcp;
+         /// Second zonal harmonic of spherical harmonic expansion.
+      static const double C20;
+         /// Some constant or other related to C20.
+      static const double J;
+         /// Term used in computing orbit.
+      static const double C20Term;
+
          /// Sets the nav message type, and all other data members to 0.
       GLOFNavAlm();
 
@@ -93,17 +113,158 @@ namespace gnsstk
           * @param[in,out] s The stream to write the data to. */
       void dumpTerse(std::ostream& s) const;
 
+         /// Compute and set the semi-major axis (A) and inclination (i).
+      void setSemiMajorAxisIncl();
+
+         /// Class to assist in doing all the math to get the XVT.
+      class NumberCruncher
+      {
+      public:
+            /// Initialize stuff to NaN.
+         NumberCruncher();
+
+	    /** Set terms related to eccentricity and argument of perigee
+	     * @param[in] ecc The satellite's orbital eccentricity.
+	     * @param[in] omega The satellite's orbital argument of perigee.
+	     * @post h and l are set.
+	     */
+	 void setEccArgOfPerigee(double ecc, double omega);
+            /** Set terms related to the orbit semi-major axis and inclination.
+             * @param[in] deltaT Delta T parameter from broadcast almanac. */
+         void setSemiMajorAxisIncl(double deltaT, double deltai, double omega, double ecc);
+            /** Set lambdaBar and related data members according to
+             * the given values.
+             * @param[in] M Computed mean anomaly, I think.
+             * @param[in] omega Argument of perigee.
+             * @param[in] tau Either 0 or time between t<sub>i</sub>
+             *   and t<sub>&lambda;k</sub> in seconds (see the mess of
+             *   math in the ICD or the implementation in setDeltas).
+             * @param[in] n the value of n (2pi/Tdeltap) as computed
+             *   by GLOFNavAlm::setSemiMajorAxisIncl.
+             * @post lambdabar, coslambdaBar, sinlambdaBar,
+             *   cos2lambdaBar, sin2lambdaBar, cos3lambdaBar,
+             *   sin3lambdaBar, cos4lambdaBar, sin4lambdaBar are
+             *   set. */
+         void setLambdaBar(double M, double omega, double tau, double n);
+            /** Set the deltas values.
+             * @param[in] M Computed mean anomaly, I think.
+             * @param[in] omega Argument of perigee.
+             * @param[in] a Satellite orbit semi-major axis.
+             * @param[in] dt The delta time in seconds,
+             *   &tau;=t<sub>i</sub>-t<sub>&lambda;k</sub>
+             *   named dt instead of tau here to avoid confusion with other tau.
+             * @pre coslambdaBar, sinlambdaBar, cos2lambdaBar,
+             *   sin2lambdaBar, cos3lambdaBar, sin3lambdaBar,
+             *   cos4lambdaBar, sin4lambdaBar, tau, n, l, h, JTerm,
+             *   JsinTerm, Jsini2Term, Jcosi2term must be set. */
+         void setDeltas(double M, double omega, double a, double dt);
+            /** Get the value for &omega;<sub>i</sub> given the
+             * already computed values for h<sub>i</sub>,
+             * l<sub>i</sub> and &epsilon;<sub>i</sub>.
+             * @param[in] hi Value h<sub>i</sub> as computed by getXvt().
+             * @param[in] li Value l<sub>i</sub> as computed by getXvt().
+             * @param[in] epsi Value &epsilon;<sub>i</sub> as computed
+             *   by getXvt().
+             * @return The appropriate value for &omega;<sub>i</sub>
+             *   (see Appendix A.3.2.2, probably the Russian-language
+             *   version as the formatting in the English version is a
+             *   mess). */
+         static double getomegai(double hi, double li, double epsi);
+            /** Numerically integrate to get E_i^(n).
+             * @param[in] Mi Value M<sub>i</sub> as computed by getXvt().
+             * @param[in] epsi Value &epsilon;<sub>i</sub> as computed
+             *   by getXvt().
+             * @return The integrated E_i^(n).
+             */
+         static double integrateEin(double Mi, double epsi);
+
+         bool getXvt(const CommonTime& when, Xvt& xvt, const GLOFNavAlm& alm);
+      private:
+            /** Yet more abstraction, as these data get computed
+             * multiple times.  What are they? *shrug*. */
+         class Deltas
+         {
+         public:
+               /// Initialize everything to NaN.
+            Deltas();
+               /** Set the delta values in this object.
+                * @param[in] nc The NumberCruncher that has all the
+                *   necessary data used to compute the deltas (which
+                *   is most of the data fields in NumberCruncher).
+                * @param[in] a The semi-major axis of the satellite's orbit.
+                * @param[in] tau The value of tau, which should be 0
+                *   for computing m=1, and
+                *   t<sub>i-t<sub>&lambdak</sub> for m=2. 
+                * @param[in] n the value of n (2pi/Tdeltap) as computed
+                *   by GLOFNavAlm::setSemiMajorAxisIncl. */
+            void setDeltas(const NumberCruncher& nc, double a, double tau,
+                           double n);
+            Deltas operator-(const Deltas& right) const;
+            double deltaa;
+            double deltah;
+            double deltal;
+            double deltaOMEGA;
+            double deltai;
+            double deltalambdaBar;
+         };
+            // These are all terms defined in the ICD, however I can't
+            // say I know exactly what they represent, as the ICD
+            // frequently doesn't, hence the absence of documentation.
+            // A lot of these are values that are computed once and
+            // reused several time, an optimization favoring
+            // performance over memory use.
+         double lambdaBar;
+         double tau;
+         double nu;
+         double Tdeltap;        ///< deltaT + half day for some reason.
+         double n;              ///< 2pi/Tdeltap.
+         double a;              ///< Semi-major axis (m)
+         double i;              ///< Inclination (rad)
+         double coslambdaBar;   ///< cos(lambdaBar)
+         double sinlambdaBar;   ///< sin(lambdaBar)
+         double cos2lambdaBar;  ///< cos(2*lambdaBar)
+         double sin2lambdaBar;  ///< sin(2*lambdaBar)
+         double cos3lambdaBar;  ///< cos(3*lambdaBar)
+         double sin3lambdaBar;  ///< sin(3*lambdaBar)
+         double cos4lambdaBar;  ///< cos(4*lambdaBar)
+         double sin4lambdaBar;  ///< sin(4*lambdaBar)
+         double earthvs;        ///< (A_earth/A_SV)**2.
+         double sini;           ///< sin(i)
+         double sini2;          ///< sin(i)**2
+         double cosi;           ///< cos(i)
+         double cosi2;          ///< cos(i)**2
+         double JTerm;          ///< J * earthvs
+         double JsinTerm;       ///< JTerm * (1-TH*sini2)
+         double Jsini2Term;     ///< JTerm * sini2
+         double Jcosi2Term;     ///< JTerm * sini2
+         double h;
+         double l;
+         double ecc2;           ///< ecc**2
+         double ecc2obv;        ///< 1-ecc**2
+         Deltas deltas;         ///< Final delta results, not m=1 or m=2.
+         friend class Deltas;
+      };
+
+         // M_n^a is stored in GLOFNavData::satType
+         // slot (n^A) is stored in the signal structure and GLOFNavData::slot
       CommonTime Toa;     ///< Reference time for almanac.
       bool healthBits;    ///< Health flag (C_n, 1 = operable).
-      double tau;         ///< Time offset to GLONASS time.
-      double lambda;      ///< Longitude of ascending node.
-      double deltai;      ///< Correction to mean inclination (mean=63 degrees).
-      double ecc;         ///< Eccentricity (epsilon).
-      double omega;       ///< Argument of perigee.
-      double tEpoch;      ///< Time of ascending node crossing.
-      double deltaT;      ///< Correction to mean value of Draconian period.
-      double deltaTdot;   ///< Time derivative of deltaT.
-      int freq;           ///< Frequency offset (H_n).
+         // This is tau sub n sup A, not to be confused with tau used
+         // to compute the orbit.
+      double tau;         ///< Time offset to GLONASS time (tau_n^A).
+      double lambda;      ///< Longitude of ascending node (lambda_n^A).
+      double deltai;      ///< Correction to mean inclination (Delta i_n^A).
+      double ecc;         ///< Eccentricity (epsilon_n^A).
+      double omega;       ///< Argument of perigee (omega_n^A).
+      double tLambda;     ///< Time of ascending node crossing (t_lambda_n^A).
+      double deltaT;      ///< Correction to mean value of Draconian period (Delta T_n^A).
+      double deltaTdot;   ///< Time derivative of deltaT (Delta T'_n^A).
+      int freq;           ///< Frequency offset (H_n^A).
+         // These data members are computed by setSemiMajorAxisIncl,
+         // which should be done immediately following filling in the
+         // data above and calling fixFit() when decoding a GLONASS
+         // almanac.
+      NumberCruncher nc;  ///< Retain as much computed data as possible.
    };
 
       //@}
