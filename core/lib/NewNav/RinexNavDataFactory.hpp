@@ -172,6 +172,14 @@ namespace gnsstk
       static void fixTimeGalileo(const Rinex3NavData& navIn,
                                  OrbitDataKepler& navOut);
 
+         /** Set the xmitTime field in navOut according to the
+          * appropriate data in navIn.
+          * @param[in] navIn A BeiDou D1Nav or D2Nav record in RINEX format.
+          * @param[in,out] navOut The BDSD1NavEph or BDSD2NavEph
+          *   object whose time stamps are to be set. */
+      static void fixTimeBeiDou(const Rinex3NavData& navIn,
+                                OrbitDataKepler& navOut);
+
          /** Convert accuracy in meters into a Galileo Signal In Space
           * Accuracy index.
           * @note This uses RINEX conventions (naturally) of using -1
