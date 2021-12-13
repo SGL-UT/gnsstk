@@ -524,7 +524,7 @@ namespace gnsstk
            << "vybb = " << vybb << endl
            << "vyb = " << vyb << endl;
       xvt.v[2] = Vri * sinui * sinii + Vui * cosui * sinii;
-      return false;
+      return true;
    }
 
 
