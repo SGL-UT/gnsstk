@@ -152,6 +152,7 @@ public:
    unsigned editTest();
    unsigned clearTest();
    unsigned getAvailableSatsTest();
+   unsigned getIndexSetTest();
    unsigned isPresentTest();
    unsigned countTest();
    unsigned getFirstLastTimeTest();
@@ -1851,6 +1852,73 @@ getAvailableSatsTest()
 
 
 unsigned NavDataFactoryWithStore_T ::
+getIndexSetTest()
+{
+   TUDEF("NavDataFactoryWithStore", "getIndexSet");
+   TestClass uut;
+   TUCATCH(fillFactory(testFramework, uut));
+   std::set<gnsstk::SatID> satset;
+   gnsstk::SatID
+      sat1(23,gnsstk::SatelliteSystem::GPS),
+      sat2(7,gnsstk::SatelliteSystem::GPS),
+      sat3(11,gnsstk::SatelliteSystem::GPS);
+      // test over entire time span
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::CommonTime::BEGINNING_OF_TIME,
+              gnsstk::CommonTime::END_OF_TIME));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat1));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat2));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat3));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 3, satset.size());
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::NavMessageType::Ephemeris,
+              gnsstk::CommonTime::BEGINNING_OF_TIME,
+              gnsstk::CommonTime::END_OF_TIME));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat1));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat2));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat3));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 3, satset.size());
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::NavMessageType::Almanac,
+              gnsstk::CommonTime::BEGINNING_OF_TIME,
+              gnsstk::CommonTime::END_OF_TIME));
+   TUASSERTE(bool, true, satset.empty());
+      // test with time span before any data
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::CivilTime(2020,4,12,0,56,0,gnsstk::TimeSystem::GPS),
+              gnsstk::CivilTime(2020,4,12,0,57,0,gnsstk::TimeSystem::GPS)));
+   TUASSERTE(bool, true, satset.empty());
+      // test with time span after all data
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::CivilTime(2020,4,12,1,0,0,gnsstk::TimeSystem::GPS),
+              gnsstk::CivilTime(2020,4,12,2,0,0,gnsstk::TimeSystem::GPS)));
+   TUASSERTE(bool, true, satset.empty());
+      // test with a time span that will get all satellites even
+      // though it's only partial coverage.
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::CivilTime(2020,4,11,23,56,0,gnsstk::TimeSystem::GPS),
+              gnsstk::CivilTime(2020,4,11,23,58,0,gnsstk::TimeSystem::GPS)));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat1));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat2));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat3));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 3, satset.size());
+      // test with a time span that will only get one satellite
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::CivilTime(2020,4,11,23,59,0,gnsstk::TimeSystem::GPS),
+              gnsstk::CivilTime(2020,4,12,0,0,0,gnsstk::TimeSystem::GPS)));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat1));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.size());
+      // test with a time span that is in the middle of the data time
+      // span, but without any matches
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::CivilTime(2020,4,11,23,57,50,gnsstk::TimeSystem::GPS),
+              gnsstk::CivilTime(2020,4,11,23,58,10,gnsstk::TimeSystem::GPS)));
+   TUASSERTE(bool, true, satset.empty());
+   TURETURN();
+}
+
+
+unsigned NavDataFactoryWithStore_T ::
 isPresentTest()
 {
    TUDEF("NavDataFactoryWithStore", "isPresent");
@@ -2080,6 +2148,7 @@ int main()
    errorTotal += testClass.getOffsetTest();
    errorTotal += testClass.getOffset2Test();
    errorTotal += testClass.getAvailableSatsTest();
+   errorTotal += testClass.getIndexSetTest();
    errorTotal += testClass.isPresentTest();
    errorTotal += testClass.countTest();
    errorTotal += testClass.getFirstLastTimeTest();

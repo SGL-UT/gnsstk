@@ -321,7 +321,9 @@ namespace gnsstk
           * NavMessageMap, because SP3's find method performs
           * interpolation. */
       bool loadIntoMap(const std::string& filename,
-                       NavMessageMap& navMap) override
+                       NavMessageMap& navMap,
+                       NavNearMessageMap& navNearMap,
+                       OffsetCvtMap& ofsMap) override
       { return false; }
    };
 

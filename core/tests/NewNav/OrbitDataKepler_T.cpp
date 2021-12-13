@@ -72,6 +72,7 @@ public:
    unsigned svRelativityTest();
    unsigned svClockBiasTest();
    unsigned svClockDriftTest();
+   unsigned isSameDataTest();
 
       /// Set the fields in TestClass/OrbitDataKepler for testing
    void fillTestClass(TestClass& uut);
@@ -230,6 +231,22 @@ fillTestClass(TestClass& uut)
 }
 
 
+unsigned OrbitDataKepler_T ::
+isSameDataTest()
+{
+   TUDEF("OrbitDataKepler", "isSameData");
+   std::shared_ptr<TestClass>
+      uut1 = std::make_shared<TestClass>(),
+      uut2 = std::make_shared<TestClass>(),
+      uut3 = std::make_shared<TestClass>();
+      // make sure all initialized data are comparable
+   TUASSERTE(bool, true, uut1->isSameData(uut2));
+   uut3->Cuc = 1;
+   TUASSERTE(bool, false, uut1->isSameData(uut3));
+   TURETURN();
+}
+
+
 int main()
 {
    OrbitDataKepler_T testClass;
@@ -240,6 +257,7 @@ int main()
    errorTotal += testClass.svRelativityTest();
    errorTotal += testClass.svClockBiasTest();
    errorTotal += testClass.svClockDriftTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

@@ -61,7 +61,7 @@ namespace gnsstk
           * @param[in] source The path to the file to load.
           * @return true on success, false on failure. */
       bool addDataSource(const std::string& source) override
-      { return loadIntoMap(source, data); }
+      { return loadIntoMap(source, data, nearestData, offsetData); }
 
          /** Abstract method that should be overridden by specific
           * file-reading factory classes in order to load the data
@@ -70,9 +70,14 @@ namespace gnsstk
           *   validity checks!
           * @param[in] filename The path of the file to load.
           * @param[out] navMap The map to store the loaded data in.
+          * @param[out] navNearMap The map to store the loaded data in
+          *   for use by "Nearest" (as opposed to "User") searches.
+          * @param[out] ofsMap The map to load TimeOffsetData into.
           * @return true on success, false on failure. */
       virtual bool loadIntoMap(const std::string& filename,
-                               NavMessageMap& navMap) = 0;
+                               NavMessageMap& navMap,
+                               NavNearMessageMap& navNearMap,
+                               OffsetCvtMap& ofsMap) = 0;
    };
 
       //@}
