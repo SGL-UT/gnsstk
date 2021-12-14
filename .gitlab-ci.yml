@@ -981,7 +981,7 @@ deploy_redhat_py36:
 #     paths:
 #       - build/
 
-clean_gpstk_win10_wrksp:
+clean_gnsstk_win10_wrksp:
   variables:
     PS_DATE_EXP: '{($$_.LastWriteTime -lt $$(Get-Date).Adddays(-1))}'
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_JOB_NAME
@@ -993,6 +993,7 @@ clean_gpstk_win10_wrksp:
     - win10-vs2019
   script:
     - powershell -Command "Get-ChildItem -Path 'C:\GitLab-Runner\builds\gnsstk' -Directory | Where-Object $PS_DATE_EXP | Remove-Item -recurse -force"
+    - powershell -Command "Get-ChildItem -Path 'C:\GitLab-Runner\builds\gnsstk-apps' -Directory | Where-Object $PS_DATE_EXP | Remove-Item -recurse -force"
   dependencies: []
   # Allow failures here to prevent failing of the pipeline.
   allow_failure: true
