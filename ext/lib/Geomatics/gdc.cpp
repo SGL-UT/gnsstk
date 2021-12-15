@@ -1311,7 +1311,9 @@ try {
          }
 
          if(arc.mark & Arc::BEG) {
-            if(i != 0) LOG(WARNING) << " Warning - GDC breaks pass at index " << i;
+            if(i != 0) LOG(WARNING) << " Warning - GDC breaks pass at index " << i
+               << " sat " << sat
+               << " time " << printTime(xtime(i),outfmt);
          }
 
          // increment ait, prep for next arc
