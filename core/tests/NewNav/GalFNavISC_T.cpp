@@ -143,13 +143,12 @@ getISCSFTest()
    gnsstk::GalFNavISC uut;
    double corr = 0.123456;
    const double gammaE1E5a = (1575.42/1176.45)*(1575.42/1176.45);
-   const double gammaE1E5b = (1575.42/1207.14)*(1575.42/1207.14);
    const double expCorr1 = 0.123456;
    const double expCorr2 = gammaE1E5a * 4.656613E-09;
    TUASSERTE(bool, false, uut.getISC(oid1, corr));
    TUASSERTFE(expCorr1, corr); // corr should not change.
       // set isc
-   uut.bgdE1E5a = -4.656613E-09;
+   uut.isc = -4.656613E-09;
    TUASSERTE(bool, false, uut.getISC(oid1, corr));
    TUASSERTFE(expCorr1, corr);
       // try again with same band, different code.

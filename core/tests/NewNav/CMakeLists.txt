@@ -297,6 +297,10 @@ target_link_libraries(GalFNavEph_T gnsstk)
 add_test(GalFNavEph_T GalFNavEph_T)
 set_property(TEST GalFNavEph_T PROPERTY LABELS NewNav)
 
+add_executable(GalFNavISC_T GalFNavISC_T.cpp)
+target_link_libraries(GalFNavISC_T gnsstk)
+add_test(GalFNavISC_T GalFNavISC_T)
+
 add_executable(PNBGalFNavDataFactory_T PNBGalFNavDataFactory_T.cpp)
 target_link_libraries(PNBGalFNavDataFactory_T gnsstk)
 add_test(PNBGalFNavDataFactory_T PNBGalFNavDataFactory_T)
