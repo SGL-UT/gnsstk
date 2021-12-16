@@ -40,25 +40,25 @@
 
 namespace gnsstk
 {
-   Xvt::HealthStatus toXvtHealth(SVHealth e)
+   gnsstk::Xvt::HealthStatus toXvtHealth(SVHealth e)
    {
-      Xvt::HealthStatus rv;
+      gnsstk::Xvt::HealthStatus rv;
       switch (e)
       {
          case SVHealth::Unknown:
-            rv = Xvt::Unknown;
+            rv = gnsstk::Xvt::Unknown;
             break;
          case SVHealth::Healthy:
-            rv = Xvt::Healthy;
+            rv = gnsstk::Xvt::Healthy;
             break;
          case SVHealth::Unhealthy:
-            rv = Xvt::Unhealthy;
+            rv = gnsstk::Xvt::Unhealthy;
             break;
          case SVHealth::Degraded:
-            rv = Xvt::Degraded;
+            rv = gnsstk::Xvt::Degraded;
             break;
          default:
-            rv = Xvt::Uninitialized;
+            rv = gnsstk::Xvt::Uninitialized;
             break;
       }
       return rv;

@@ -82,6 +82,11 @@
 %include "NavMessageID.hpp"
 %template(NavMessageIDSet) std::set<gnsstk::NavMessageID>;
 %include "DumpDetail.hpp"
+%include "SatMetaData.hpp"
+%include "SatMetaDataSort.hpp"
+%feature("flatnested");
+%include "SatMetaDataStore.hpp"
+%feature("flatnested", "");
 %include "NavData.hpp"
 %include "OrbitData.hpp"
 %include "SVHealth.hpp"
@@ -181,11 +186,6 @@
 %include "CNavCookFilter.hpp"
 %include "NavFilterMgr.hpp"
 %include "CNavCrossSourceFilter.hpp"
-%include "SatMetaData.hpp"
-%include "SatMetaDataSort.hpp"
-%feature("flatnested");
-%include "SatMetaDataStore.hpp"
-%feature("flatnested", "");
 /* %include "CNavDataElement.hpp" */
 /* %include "CNavDataElementStore.hpp" */
 /* %include "CNavEOP.hpp" */
@@ -322,13 +322,21 @@
 %include "GCATTropModel.hpp"
 %include "GGHeightTropModel.hpp"
 %include "GGTropModel.hpp"
+%include "GLOFBits.hpp"
+%include "GLOFNavData.hpp"
+%include "PZ90Ellipsoid.hpp"
+%include "GLOFNavAlm.hpp"
+%include "GLOFNavEph.hpp"
+%include "GLOFNavHealth.hpp"
+%include "GLOFNavISC.hpp"
+%include "GLOFNavTimeOffset.hpp"
+%include "GLOFNavUT1TimeOffset.hpp"
 %include "Rinex3NavBase.hpp"
 %include "IRNWeekSecond.hpp"
 %include "TimeSystemCorr.hpp"
 %include "Rinex3NavHeader.hpp"
 %template(std_unary_function_Rinex3NavHeader) std::unary_function<gnsstk::Rinex3NavHeader, bool>;
 %include "Rinex3NavStream.hpp"
-%include "PZ90Ellipsoid.hpp"
 %include "GloEphemeris.hpp"
 %include "GalEphemeris.hpp"
 %include "QZSEphemeris.hpp"
@@ -478,6 +486,7 @@
 %feature("flatnested");
 %include "PNBBDSD2NavDataFactory.hpp"
 %feature("flatnested", "");
+%include "PNBGLOFNavDataFactory.hpp"
 %include "PNBGPSCNav2DataFactory.hpp"
 %include "PNBGPSCNavDataFactory.hpp"
 %include "PNBGPSLNavDataFactory.hpp"
@@ -582,6 +591,7 @@
  /* %include "YumaAlmanacStore.hpp" */ // requires OrbAlmStore
 %include "YumaNavDataFactory.hpp"
 %include "convhelp.hpp"
+%include "demangle.hpp"
 %include "expandtilde.hpp"
 %include "format.hpp"
 /* %include "gdc.hpp" */

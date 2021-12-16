@@ -60,7 +60,7 @@ namespace gnsstk
    };
 
       /// Cast SVHealth to Xvt::HealthStatus
-   Xvt::HealthStatus toXvtHealth(SVHealth e);
+   gnsstk::Xvt::HealthStatus toXvtHealth(SVHealth e);
 
       /** Define an iterator so C++11 can do things like
        * for (SVHealth i : SVHealthIterator()) */

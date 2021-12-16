@@ -69,6 +69,13 @@
 %shared_ptr(gnsstk::BDSD2NavTimeOffset)
 %shared_ptr(gnsstk::BDSD2NavIono)
 %shared_ptr(gnsstk::BDSD2NavISC)
+%shared_ptr(gnsstk::GLOFNavAlm)
+%shared_ptr(gnsstk::GLOFNavData)
+%shared_ptr(gnsstk::GLOFNavEph)
+%shared_ptr(gnsstk::GLOFNavHealth)
+%shared_ptr(gnsstk::GLOFNavISC)
+%shared_ptr(gnsstk::GLOFNavTimeOffset)
+%shared_ptr(gnsstk::GLOFNavUT1TimeOffset)
 
 %shared_ptr(gnsstk::NavDataFactory)
 %shared_ptr(gnsstk::NavDataFactoryWithStore)
@@ -87,5 +94,6 @@
 %shared_ptr(gnsstk::PNBGalFNavDataFactory)
 %shared_ptr(gnsstk::PNBBDSD1NavDataFactory)
 %shared_ptr(gnsstk::PNBBDSD2NavDataFactory)
+%shared_ptr(gnsstk::PNBGLOFNavDataFactory)
  // silence warnings from swig
 %shared_ptr(gnsstk::TimeSystemCorrection)
