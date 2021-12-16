@@ -57,7 +57,8 @@ namespace gnsstk
 
 
    bool YumaNavDataFactory ::
-   loadIntoMap(const std::string& filename, NavMessageMap& navMap)
+   loadIntoMap(const std::string& filename, NavMessageMap& navMap,
+               NavNearMessageMap& navNearMap, OffsetCvtMap& ofsMap)
    {
       bool rv = true;
       bool processAlm = (procNavTypes.count(NavMessageType::Almanac) > 0);
@@ -118,7 +119,7 @@ namespace gnsstk
                {
                   if (alm->validate() == expect)
                   {
-                     if (!addNavData(alm))
+                     if (!addNavData(alm, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
@@ -126,7 +127,7 @@ namespace gnsstk
                {
                   if (health->validate() == expect)
                   {
-                     if (!addNavData(health))
+                     if (!addNavData(health, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
@@ -135,12 +136,12 @@ namespace gnsstk
             {
                if (processAlm)
                {
-                  if (!addNavData(alm))
+                  if (!addNavData(alm, navMap, navNearMap, ofsMap))
                      return false;
                }
                if (processHea)
                {
-                  if (!addNavData(health))
+                  if (!addNavData(health, navMap, navNearMap, ofsMap))
                      return false;
                }
             }

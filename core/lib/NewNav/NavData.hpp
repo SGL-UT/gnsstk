@@ -58,6 +58,27 @@ namespace gnsstk
       /// @ingroup NavFactory
       //@{
 
+   class NavData; // forward declaration
+
+      /// Factories instantiate these in response to find() requests
+   typedef std::shared_ptr<NavData> NavDataPtr;
+      /// Map nav message transmit time to nav message.
+   typedef std::map<CommonTime, NavDataPtr> NavMap;
+      /// Map satellite to nav data.
+   typedef std::map<NavSatelliteID, NavMap> NavSatMap;
+      /// Map nav message type to the rest of the storage.
+   typedef std::map<NavMessageType, NavSatMap> NavMessageMap;
+      /** List of NavDataPtr, typically used when converting from
+       * source data to NavDataPtr when multiple objects can be
+       * created from a single input. */
+   typedef std::list<NavDataPtr> NavDataPtrList;
+      /// Map from "nearest" time reference (e.g. toe) to list of NavDataPtr.
+   typedef std::map<CommonTime, NavDataPtrList> NavNearMap;
+      /// Map satellite to nearest map.
+   typedef std::map<NavSatelliteID, NavNearMap> NavNearSatMap;
+      /// Map nav message type to the rest of the storage.
+   typedef std::map<NavMessageType, NavNearSatMap> NavNearMessageMap;
+
       /** This is an abstract base class for decoded navigation
        * message data, including orbit information, health data and
        * time offsets. */
@@ -90,6 +111,24 @@ namespace gnsstk
           * is used by NavDataFactoryWithStore::find(). */
       virtual CommonTime getNearTime() const
       { return timeStamp; }
+         /** Returns true if this two objects are 
+          *   1. same concrete type, and
+          *   2. same data contents.
+          * This is intended as a "data uniqueness test" to allow
+          * detection of successive transmissions of same data
+          * and avoid duplicate storage.  The exact rules for 
+          * uniqueness will vary by descendent class. 
+          * @note We use shared_ptr to allow for casting without
+          *   risking memory leaks. */
+      virtual bool isSameData(const NavDataPtr& right) const;
+         /** Compare two NavData descendent objects.
+          *  Any differences are summarized and returned as a list of
+          *  readable text.
+          * @param[in] right The data to compare against.
+          * @return a text list of mismatched data.
+          * @note We use shared_ptr to allow for casting without
+          *   risking memory leaks. */
+      virtual std::list<std::string> compare(const NavDataPtr& right) const;
          /** Print the contents of this NavData object in a
           * human-readable format.
           * @note for dump methods to properly map from PRN to SVN,
@@ -155,25 +194,6 @@ namespace gnsstk
          /// Allow RinexNavDataFactory access to msgLenSec
       friend class RinexNavDataFactory;
    };
-
-      /// Factories instantiate these in response to find() requests
-   typedef std::shared_ptr<NavData> NavDataPtr;
-      /// Map nav message transmit time to nav message.
-   typedef std::map<CommonTime, NavDataPtr> NavMap;
-      /// Map satellite to nav data.
-   typedef std::map<NavSatelliteID, NavMap> NavSatMap;
-      /// Map nav message type to the rest of the storage.
-   typedef std::map<NavMessageType, NavSatMap> NavMessageMap;
-      /** List of NavDataPtr, typically used when converting from
-       * source data to NavDataPtr when multiple objects can be
-       * created from a single input. */
-   typedef std::list<NavDataPtr> NavDataPtrList;
-      /// Map from "nearest" time reference (e.g. toe) to list of NavDataPtr.
-   typedef std::map<CommonTime, NavDataPtrList> NavNearMap;
-      /// Map satellite to nearest map.
-   typedef std::map<NavSatelliteID, NavNearMap> NavNearSatMap;
-      /// Map nav message type to the rest of the storage.
-   typedef std::map<NavMessageType, NavNearSatMap> NavNearMessageMap;
 
       //@}
 

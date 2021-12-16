@@ -59,6 +59,20 @@ namespace gnsstk
           * @return true if successful, false if required nav data was
           *   unavailable. */
       virtual bool getXvt(const CommonTime& when, Xvt& xvt) = 0;
+
+         /// @copydoc NavData::isSameData
+      bool isSameData(const NavDataPtr& right) const override
+      {
+         Exception exc("Unimplemented function");
+         GNSSTK_THROW(exc);
+      }
+         /// @copydoc NavData::compare
+      std::list<std::string> compare(const NavDataPtr& right)
+         const override
+      {
+         Exception exc("Unimplemented function");
+         GNSSTK_THROW(exc);
+      }
    };
 
       //@}

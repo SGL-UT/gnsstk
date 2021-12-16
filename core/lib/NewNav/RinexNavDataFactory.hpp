@@ -71,9 +71,14 @@ namespace gnsstk
          /** Load RINEX NAV data into a map.
           * @param[in] filename The path of the file to load.
           * @param[out] navMap The map to store the loaded data in.
+          * @param[out] navNearMap The map to store the loaded data in
+          *   for use by "Nearest" (as opposed to "User") searches.
+          * @param[out] ofsMap The map to load TimeOffsetData into.
           * @return true on success, false on failure. */
       bool loadIntoMap(const std::string& filename,
-                       NavMessageMap& navMap) override;
+                       NavMessageMap& navMap,
+                       NavNearMessageMap& navNearMap,
+                       OffsetCvtMap& ofsMap) override;
 
          /// Return a comma-separated list of formats supported by this factory.
       std::string getFactoryFormats() const override;
@@ -166,6 +171,14 @@ namespace gnsstk
           *   stamps are to be set. */
       static void fixTimeGalileo(const Rinex3NavData& navIn,
                                  OrbitDataKepler& navOut);
+
+         /** Set the xmitTime field in navOut according to the
+          * appropriate data in navIn.
+          * @param[in] navIn A BeiDou D1Nav or D2Nav record in RINEX format.
+          * @param[in,out] navOut The BDSD1NavEph or BDSD2NavEph
+          *   object whose time stamps are to be set. */
+      static void fixTimeBeiDou(const Rinex3NavData& navIn,
+                                OrbitDataKepler& navOut);
 
          /** Convert accuracy in meters into a Galileo Signal In Space
           * Accuracy index.

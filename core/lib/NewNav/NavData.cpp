@@ -54,6 +54,27 @@ namespace gnsstk
    }
 
 
+   bool NavData ::
+   isSameData(const NavDataPtr& right) const
+   {
+      return ((timeStamp == right->timeStamp) &&
+              (signal == right->signal));
+   }
+
+
+   std::list<std::string> NavData ::
+   compare(const NavDataPtr& right) const
+   {
+      std::list<std::string> rv;
+         // old nav implementation clearly didn't check this
+         // if (timeStamp != right->timeStamp)
+         //    rv.push_back("timeStamp");
+      if (signal != right->signal)
+         rv.push_back("signal");
+      return rv;
+   }
+
+
    void NavData ::
    dump(std::ostream& s, DumpDetail dl) const
    {

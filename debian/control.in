@@ -64,6 +64,7 @@ Section: python
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python3:Depends}
 Provides: ${python3:Provides}
+Conflicts: python-gnsstk
 XB-Python-Version: ${python3:Versions}
 Description: GNSS Toolkit (GNSSTk) - Python bindings
  The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by

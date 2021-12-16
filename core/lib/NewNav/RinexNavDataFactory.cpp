@@ -48,7 +48,13 @@
 #include "GalFNavEph.hpp"
 #include "GalINavHealth.hpp"
 #include "BDSD1NavEph.hpp"
+#include "BDSD1NavHealth.hpp"
+#include "BDSD1NavIono.hpp"
+#include "BDSD1NavISC.hpp"
 #include "BDSD2NavEph.hpp"
+#include "BDSD2NavHealth.hpp"
+#include "BDSD2NavISC.hpp"
+#include "BDSWeekSecond.hpp"
 #include "GLOFNavEph.hpp"
 #include "GLOFNavHealth.hpp"
 #include "GLOFNavISC.hpp"
@@ -84,11 +90,20 @@ namespace gnsstk
                                           CarrierBand::L5,
                                           TrackingCode::E5aI,
                                           NavType::GalFNAV));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::BeiDou,
+                                          CarrierBand::B1,
+                                          TrackingCode::B1I,
+                                          NavType::BeiDou_D1));
+      supportedSignals.insert(NavSignalID(SatelliteSystem::BeiDou,
+                                          CarrierBand::B1,
+                                          TrackingCode::B1I,
+                                          NavType::BeiDou_D2));
    }
 
 
    bool RinexNavDataFactory ::
-   loadIntoMap(const std::string& filename, NavMessageMap& navMap)
+   loadIntoMap(const std::string& filename, NavMessageMap& navMap,
+               NavNearMessageMap& navNearMap, OffsetCvtMap& ofsMap)
    {
       bool rv = true;
       bool processEph = (procNavTypes.count(NavMessageType::Ephemeris) > 0);
@@ -138,13 +153,13 @@ namespace gnsstk
                {
                   if (i->validate() == expect)
                   {
-                     if (!addNavData(i))
+                     if (!addNavData(i, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
                else
                {
-                  if (!addNavData(i))
+                  if (!addNavData(i, navMap, navNearMap, ofsMap))
                      return false;
                }
             }
@@ -174,13 +189,13 @@ namespace gnsstk
                   {
                      if (i->validate() == expect)
                      {
-                        if (!addNavData(i))
+                        if (!addNavData(i, navMap, navNearMap, ofsMap))
                            return false;
                      }
                   }
                   else
                   {
-                     if (!addNavData(i))
+                     if (!addNavData(i, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
@@ -215,7 +230,7 @@ namespace gnsstk
                {
                   if (eph->validate() == expect)
                   {
-                     if (!addNavData(eph))
+                     if (!addNavData(eph, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
@@ -225,7 +240,7 @@ namespace gnsstk
                   {
                      if (hp->validate() == expect)
                      {
-                        if (!addNavData(hp))
+                        if (!addNavData(hp, navMap, navNearMap, ofsMap))
                            return false;
                      }
                   }
@@ -234,7 +249,7 @@ namespace gnsstk
                {
                   if (isc->validate() == expect)
                   {
-                     if (!addNavData(isc))
+                     if (!addNavData(isc, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
@@ -243,20 +258,20 @@ namespace gnsstk
             {
                if (processEph)
                {
-                  if (!addNavData(eph))
+                  if (!addNavData(eph, navMap, navNearMap, ofsMap))
                      return false;
                }
                if (processHea)
                {
                   for (const auto& hp : health)
                   {
-                     if (!addNavData(hp))
+                     if (!addNavData(hp, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
                if (processISC && (isc != nullptr))
                {
-                  if (!addNavData(isc))
+                  if (!addNavData(isc, navMap, navNearMap, ofsMap))
                      return false;
                }
             }
@@ -303,6 +318,8 @@ namespace gnsstk
       GPSLNavEph *gps;
       GalINavEph *galINav;
       GalFNavEph *galFNav;
+      BDSD1NavEph *bdsD1Nav;
+      BDSD2NavEph *bdsD2Nav;
       GLOFNavEph *glo;
       switch (navIn.sat.system)
       {
@@ -438,6 +455,58 @@ namespace gnsstk
                rv = false;
             }
             break;
+         case SatelliteSystem::BeiDou:
+            if (isBeiDouGEO(navIn.sat))
+            {
+               navOut = std::make_shared<BDSD2NavEph>();
+               bdsD2Nav = dynamic_cast<BDSD2NavEph*>(navOut.get());
+                  // NavData
+               fillNavData(navIn, navOut);
+                  // OrbitDataKepler
+               fixTimeBeiDou(navIn, *bdsD2Nav);
+               bdsD2Nav->Toe = BDSWeekSecond(navIn.weeknum, navIn.Toe);
+               bdsD2Nav->health = ((navIn.health == 0) ? SVHealth::Healthy :
+                                   SVHealth::Unhealthy);
+               convertToOrbitDataKepler(navIn, bdsD2Nav);
+                  // BDSD2NavEph
+               bdsD2Nav->satH1 = navIn.health;
+               bdsD2Nav->aodc = navIn.IODC;
+               bdsD2Nav->aode = navIn.IODE;
+                  // Table 5-4 of ICD-B1I-v3.0 is the same as what GPS uses
+               bdsD2Nav->uraIndex = accuracy2ura(navIn.accuracy);
+               bdsD2Nav->sow = BDSWeekSecond(bdsD2Nav->xmitTime).sow;
+               bdsD2Nav->tgd1 = navIn.Tgd;
+               bdsD2Nav->tgd2 = navIn.Tgd2;
+               bdsD2Nav->fixFit();
+            }
+            else
+            {
+               navOut = std::make_shared<BDSD1NavEph>();
+               bdsD1Nav = dynamic_cast<BDSD1NavEph*>(navOut.get());
+                  // NavData
+               fillNavData(navIn, navOut);
+                  // OrbitDataKepler
+               fixTimeBeiDou(navIn, *bdsD1Nav);
+               bdsD1Nav->Toe = BDSWeekSecond(navIn.weeknum, navIn.Toe);
+               bdsD1Nav->health = ((navIn.health == 0) ? SVHealth::Healthy :
+                                   SVHealth::Unhealthy);
+               convertToOrbitDataKepler(navIn, bdsD1Nav);
+                  // BDSD1NavEph
+               bdsD1Nav->satH1 = navIn.health;
+               bdsD1Nav->aodc = navIn.IODC;
+               bdsD1Nav->aode = navIn.IODE;
+                  // Table 5-4 of ICD-B1I-v3.0 is the same as what GPS uses
+               bdsD1Nav->uraIndex = accuracy2ura(navIn.accuracy);
+               bdsD1Nav->xmit2 = bdsD1Nav->xmitTime + bdsD1Nav->msgLenSec;
+               bdsD1Nav->xmit3 = bdsD1Nav->xmit2 + bdsD1Nav->msgLenSec;
+               bdsD1Nav->sow = BDSWeekSecond(bdsD1Nav->xmitTime).sow;
+               bdsD1Nav->sow2 = BDSWeekSecond(bdsD1Nav->xmit2).sow;
+               bdsD1Nav->sow3 = BDSWeekSecond(bdsD1Nav->xmit3).sow;
+               bdsD1Nav->tgd1 = navIn.Tgd;
+               bdsD1Nav->tgd2 = navIn.Tgd2;
+               bdsD1Nav->fixFit();
+            }
+            break;
          case SatelliteSystem::Glonass:
             navOut = std::make_shared<GLOFNavEph>();
             glo = dynamic_cast<GLOFNavEph*>(navOut.get());
@@ -491,8 +560,6 @@ namespace gnsstk
                //glo->step is algorithm configuration
             glo->fixFit();
             break;
-         case SatelliteSystem::BeiDou:
-            break;
          default:
                /// @todo add other GNSSes
             rv = false;
@@ -540,6 +607,8 @@ namespace gnsstk
       gnsstk::NavDataPtr health;
       GPSLNavHealth *gps;
       GalINavHealth *galNav;
+      BDSD1NavHealth *bdsD1Nav;
+      BDSD2NavHealth *bdsD2Nav;
       GLOFNavHealth *glo;
       unsigned healthBits = 0;
       switch (navIn.sat.system)
@@ -626,6 +695,28 @@ namespace gnsstk
             healthOut.push_back(health);
             break;
          case SatelliteSystem::BeiDou:
+            if (isBeiDouGEO(navIn.sat))
+            {
+               health = std::make_shared<BDSD2NavHealth>();
+               bdsD2Nav = dynamic_cast<BDSD2NavHealth*>(health.get());
+                  // NavData
+               fillNavData(navIn, health);
+                  // BDSD2NavHealth
+               bdsD2Nav->isAlmHealth = false;
+               bdsD2Nav->satH1 = navIn.health;
+               healthOut.push_back(health);
+            }
+            else
+            {
+               health = std::make_shared<BDSD1NavHealth>();
+               bdsD1Nav = dynamic_cast<BDSD1NavHealth*>(health.get());
+                  // NavData
+               fillNavData(navIn, health);
+                  // BDSD1NavHealth
+               bdsD1Nav->isAlmHealth = false;
+               bdsD1Nav->satH1 = navIn.health;
+               healthOut.push_back(health);
+            }
             break;
          case SatelliteSystem::Glonass:
             health = std::make_shared<GLOFNavHealth>();
@@ -778,6 +869,62 @@ namespace gnsstk
          health->sisaIndex = 0;
          navOut.push_back(health);
       }
+      if (((ai = navIn.mapIonoCorr.find("BDSA")) != navIn.mapIonoCorr.end()) &&
+          ((bi = navIn.mapIonoCorr.find("BDSB")) != navIn.mapIonoCorr.end()))
+      {
+            // we have the BDS alpha and beta terms.
+            // we *don't* have any idea if these came from D1 or D2, so assume.
+         std::shared_ptr<BDSD1NavIono> iono(std::make_shared<BDSD1NavIono>());
+         iono->timeStamp = when;
+            // We don't know the satellite ID from which the iono data
+            // came from so just set it to 0.  If someone is using the
+            // NavLibrary interface for looking up iono data, this
+            // will be irrelevant anyway.
+         iono->signal.sat.id = 0;
+         iono->signal.sat.system = SatelliteSystem::BeiDou;
+         iono->signal.xmitSat.id = 0;
+         iono->signal.xmitSat.system = SatelliteSystem::BeiDou;
+         iono->signal.system = SatelliteSystem::BeiDou;
+            // we can't obtain these from RINEX NAV, so just assume B1 B1I
+         iono->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::B1,
+                                  TrackingCode::B1I);
+         iono->signal.nav = NavType::BeiDou_D1;
+         for (unsigned i = 0; i < 4; i++)
+         {
+            iono->alpha[i] = ai->second.param[i];
+            iono->beta[i]  = bi->second.param[i];
+         }
+         navOut.push_back(iono);
+            // THIS IS A KLUDGE
+            // RINEX doesn't identify the source of the ionospheric
+            // data in the header, and as such we set the satellite ID
+            // to 0 as noted above.  This presents additional problems
+            // as the NavLibrary::getIonoCorr method specifically
+            // looks for iono data from healthy satellites, so we have
+            // to make the invalid assumption that the iono data in
+            // the RINEX header came from a healthy satellite, and
+            // stuff a fake satellite 0 health record in the data.
+         std::shared_ptr<BDSD1NavHealth> health(
+            std::make_shared<BDSD1NavHealth>());
+            // NavData
+            // further kludge to set fake health time stamp to beginning of day
+         YDSTime bod(when);
+         bod.sod = 0;
+         health->timeStamp = bod;
+         health->signal.sat.id = 0;
+         health->signal.sat.system = SatelliteSystem::BeiDou;
+         health->signal.xmitSat.id = 0;
+         health->signal.xmitSat.system = SatelliteSystem::BeiDou;
+         health->signal.system = SatelliteSystem::BeiDou;
+            // we can't obtain these from RINEX NAV, so just assume B1 B1I
+         health->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::B1,
+                                    TrackingCode::B1I);
+         health->signal.nav = NavType::BeiDou_D1;
+            // BDSD1NavHealth
+         health->isAlmHealth = false;
+         health->satH1 = false; // force "PRN 0" to be healthy
+         navOut.push_back(health);
+      }
       return true;
    }
 
@@ -788,6 +935,8 @@ namespace gnsstk
       bool rv = true;
       GPSLNavISC *gps;
       GalINavISC *galI;
+      BDSD1NavISC *bdsD1;
+      BDSD2NavISC *bdsD2;
       switch (navIn.sat.system)
       {
          case SatelliteSystem::GPS:
@@ -829,6 +978,26 @@ namespace gnsstk
             galI->bgdE1E5b = navIn.Tgd2;
             break;
          case SatelliteSystem::BeiDou:
+            if (isBeiDouGEO(navIn.sat))
+            {
+               navOut = std::make_shared<BDSD2NavISC>();
+               bdsD2 = dynamic_cast<BDSD2NavISC*>(navOut.get());
+                  // NavData
+               fillNavData(navIn, navOut);
+               bdsD2->sow = navIn.xmitTime;
+               bdsD2->tgd1 = navIn.Tgd;
+               bdsD2->tgd2 = navIn.Tgd2;
+            }
+            else
+            {
+               navOut = std::make_shared<BDSD1NavISC>();
+               bdsD1 = dynamic_cast<BDSD1NavISC*>(navOut.get());
+                  // NavData
+               fillNavData(navIn, navOut);
+               bdsD1->sow = navIn.xmitTime;
+               bdsD1->tgd1 = navIn.Tgd;
+               bdsD1->tgd2 = navIn.Tgd2;
+            }
             break;
          case SatelliteSystem::Glonass:
                // Delta tau_n is not stored in RINEX.
@@ -902,6 +1071,26 @@ namespace gnsstk
             }
             break;
          case SatelliteSystem::BeiDou:
+               // NavData
+            navOut->timeStamp =
+               gnsstk::BDSWeekSecond(navIn.weeknum,navIn.xmitTime);
+               // sat and xmitSat are always the same for ephemeris
+            navOut->signal.sat = navIn.sat;
+            navOut->signal.xmitSat = navIn.sat;
+            navOut->signal.system = navIn.sat.system;
+               // we can't obtain these from RINEX NAV, so just assume B1 B1I
+            navOut->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::B1,
+                                       TrackingCode::B1I);
+               // Make a reasonable guess about the nav signal type
+               // based on the PRN...
+            if (isBeiDouGEO(navIn.sat))
+            {
+               navOut->signal.nav = NavType::BeiDou_D2;
+            }
+            else
+            {
+               navOut->signal.nav = NavType::BeiDou_D1;
+            }
             break;
          case SatelliteSystem::Glonass:
          {
@@ -990,6 +1179,14 @@ namespace gnsstk
          // really a Galileo week number.
       navOut.xmitTime = GPSWeekSecond(navIn.weeknum, navIn.xmitTime);
          //navOut.xmitTime.setTimeSystem(TimeSystem::GAL);
+   }
+
+
+   void RinexNavDataFactory ::
+   fixTimeBeiDou(const Rinex3NavData& navIn, OrbitDataKepler& navOut)
+   {
+         /// @todo Probably need to do half week tests on the transmit time
+      navOut.xmitTime = BDSWeekSecond(navIn.weeknum, navIn.xmitTime);
    }
 
 

@@ -211,7 +211,12 @@ if( BUILD_EXT )
    add_subdirectory( ext )
    add_subdirectory( examples )
    if( BUILD_PYTHON )
+       include( swig/PythonSetup.cmake )
        add_subdirectory( swig )
+   else()
+       # keep cmake quiet
+       set( PYTHON_VERSION_MAJOR 0 )
+       set( PYTHON_VERSION_MINOR 0 )
    endif()
 endif()
 
@@ -224,7 +229,7 @@ set( INSTALL_CONFIG_DIR ${CMAKE_INSTALL_DATADIR}/cmake/GNSSTK)
 configure_package_config_file( ${CMAKE_CURRENT_SOURCE_DIR}/GNSSTKConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/GNSSTKConfig.cmake
     INSTALL_DESTINATION ${INSTALL_CONFIG_DIR}
-    PATH_VARS CMAKE_INSTALL_LIBDIR CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_BINDIR CMAKE_INSTALL_PREFIX INSTALL_CONFIG_DIR )
+    PATH_VARS CMAKE_INSTALL_LIBDIR CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_BINDIR CMAKE_INSTALL_PREFIX INSTALL_CONFIG_DIR PYTHON_VERSION_MAJOR PYTHON_VERSION_MINOR BUILD_PYTHON )
 write_basic_package_version_file( ${CMAKE_CURRENT_BINARY_DIR}/GNSSTKConfigVersion.cmake
     VERSION ${GNSSTK_VERSION}
     COMPATIBILITY ExactVersion )

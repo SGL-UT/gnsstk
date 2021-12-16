@@ -212,6 +212,14 @@ namespace gnsstk
       /// The last ranging code number for BeiDou GEO phase III satellites
    const long MAX_GEO_BDS_III = 63;
 
+      /// Return true if the given SatID is BeiDou GEO (expecting D2 nav).
+   inline bool isBeiDouGEO(const SatID& sat)
+   {
+      return ((sat.system == SatelliteSystem::BeiDou) &&
+              (((sat.id >= MIN_GEO_BDS_II) && (sat.id <= MAX_GEO_BDS_II)) ||
+               ((sat.id >= MIN_GEO_BDS_III) && (sat.id <= MAX_GEO_BDS_III))));
+   }
+
       // ---------------- QZSS ----------------------------------
       // PRN range defined in QZSS IS Table 3.2.2-2
       // PRN 198-202 reserved for maint./test, not to be used
