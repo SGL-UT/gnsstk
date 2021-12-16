@@ -5,8 +5,6 @@
 cmake_minimum_required( VERSION 2.8.4  )
 include( make_copy_targets.cmake )
 
-include( PythonSetup.cmake )
-
 find_package( SWIG REQUIRED )
 include( ${SWIG_USE_FILE} )
 
