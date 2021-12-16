@@ -585,7 +585,6 @@ namespace gnsstk
          NavDataPtr p0 = timeAcc[key];
          p0->timeStamp = navIn->getTransmitTime();
          p0->signal = NavMessageID(key, NavMessageType::TimeOffset);
-         p0->dump(std::cerr,DumpDetail::Full);
          navOut.push_back(p0);
       }
       return true;
