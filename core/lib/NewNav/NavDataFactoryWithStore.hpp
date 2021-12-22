@@ -65,12 +65,12 @@ namespace gnsstk
          // Time offset information is organized differently due to the use case
          /** Map that will contain all TimeOffsetData objects with the
           * same conversion pair broadcast at a given time. */
-      using OffsetMap = std::map<NavSatelliteID, NavDataPtr>;
+      typedef std::map<NavSatelliteID, NavDataPtr> OffsetMap;
          /** Map from the timeStamp of a TimeOffsetData object to the
           * collection of TimeOffsetData objects. */
-      using OffsetEpochMap = std::map<CommonTime, OffsetMap>;
+      typedef std::map<CommonTime, OffsetMap> OffsetEpochMap;
          /// Map from the time system conversion pair to the conversion objects.
-      using OffsetCvtMap = std::map<TimeCvtKey, OffsetEpochMap>;
+      typedef std::map<TimeCvtKey, OffsetEpochMap> OffsetCvtMap;
 
          /// Initialize internal data.
       NavDataFactoryWithStore();

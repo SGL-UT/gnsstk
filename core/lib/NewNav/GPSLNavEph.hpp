@@ -141,8 +141,7 @@ namespace gnsstk
    };
 
       /// Store GPSLNavEph shared_ptrs using GPSLNavEphIODCComp to sort.
-   using GPSLNavIODCUniq = std::set<std::shared_ptr<GPSLNavEph>,
-                                    GPSLNavEphIODCComp>;
+   typedef std::set<std::shared_ptr<GPSLNavEph>, GPSLNavEphIODCComp> GPSLNavIODCUniq;
 
       /** Class that sorts GPSLNavEph using the CEI data as defined in
        * Table-6-I-1 of IS-GPS-200. */
@@ -157,8 +156,7 @@ namespace gnsstk
    };
 
       /// Store GPSLNavEph shared_ptrs using GPSLNavEphCEIComp to sort.
-   using GPSLNavCEIUniq = std::set<std::shared_ptr<GPSLNavEph>,
-                                    GPSLNavEphCEIComp>;
+   typedef std::set<std::shared_ptr<GPSLNavEph>,GPSLNavEphCEIComp> GPSLNavCEIUniq;
       
 
       //@}
