@@ -840,6 +840,8 @@ namespace gnsstk
       data.clear();
       nearestData.clear();
       offsetData.clear();
+      initialTime = gnsstk::CommonTime::END_OF_TIME;
+      finalTime = gnsstk::CommonTime::BEGINNING_OF_TIME;
    }
 
 
