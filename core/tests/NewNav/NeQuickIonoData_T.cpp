@@ -38,7 +38,7 @@
 //==============================================================================
 
 #include "TestUtil.hpp"
-#include "NeQuickIonoData.hpp"
+#include "NeQuickIonoNavData.hpp"
 #include "MODIP.hpp"
 #include "GalileoIonoEllipsoid.hpp"
 #include "FreqConv.hpp"
@@ -60,33 +60,33 @@ gnsstk::CivilTime convertTime(double hour, int month)
 /// Use this "ellipsoid" (sphere) for all testing
 gnsstk::GalileoIonoEllipsoid galEll;
 
-class NeQuickIonoData_T
+class NeQuickIonoNavData_T
 {
 public:
-   NeQuickIonoData_T();
+   NeQuickIonoNavData_T();
 
-      /// Test the NeQuickIonoData constructor
+      /// Test the NeQuickIonoNavData constructor
    unsigned constructorTest();
-      /// Test NequickIonoData::getEffIonoLevel
+      /// Test NequickIonoNavData::getEffIonoLevel
    unsigned getEffIonoLevelTest();
-      /// Test the NeQuickIonoData::ModelParameters constructor
+      /// Test the NeQuickIonoNavData::ModelParameters constructor
    unsigned constructor2Test();
-      /// Test NeQuickIonoData::ModelParameters::legendre
+      /// Test NeQuickIonoNavData::ModelParameters::legendre
    unsigned legendreTest();
-      /// Test NeQuickIonoData::ModelParameters::height
+      /// Test NeQuickIonoNavData::ModelParameters::height
    unsigned heightTest();
-      /// Test NeQuickIonoData::ModelParameters::exosphereAdjust
+      /// Test NeQuickIonoNavData::ModelParameters::exosphereAdjust
    unsigned exosphereAdjustTest();
-      /// Test NeQuickIonoData::ModelParameters::peakAmplitudes
+      /// Test NeQuickIonoNavData::ModelParameters::peakAmplitudes
    unsigned peakAmplitudesTest();
-      /// Test NeQuickIonoData::ModelParameters::effSolarZenithAngle
+      /// Test NeQuickIonoNavData::ModelParameters::effSolarZenithAngle
    unsigned effSolarZenithAngleTest();
-      /// Test NeQuickIonoData::ModelParameters::thickness
+      /// Test NeQuickIonoNavData::ModelParameters::thickness
    unsigned thicknessTest();
-      /// Test NeQuickIonoData::getTEC (implicitly getSED, getVED).
+      /// Test NeQuickIonoNavData::getTEC (implicitly getSED, getVED).
    unsigned getTECTest();
-      /// Test NeQuickIonoData::getCorrection
-   unsigned getCorrectionTest();
+      /// Test NeQuickIonoNavData::getIonoCorr
+   unsigned getIonoCorrTest();
 
       /// Hold input/truth data for legendreTest
    class TestData
@@ -320,20 +320,20 @@ public:
 // NeQuickG_JRC_iono_layer_amplitudes_test.c
 // NeQuickG_JRC_Az_test.c
 // NeQuickG_JRC_iono_layer_thickness_test.c
-const double NeQuickIonoData_T::criticalFreqEps = 1e-5;
-const double NeQuickIonoData_T::transFactorEps = 1e-5;
-const double NeQuickIonoData_T::amplitudeEps = 1e-5;
-const double NeQuickIonoData_T::solarEps = 1e-5;
-const double NeQuickIonoData_T::azEps = 1e-6;
-const double NeQuickIonoData_T::thicknessEps = 1e-5;
+const double NeQuickIonoNavData_T::criticalFreqEps = 1e-5;
+const double NeQuickIonoNavData_T::transFactorEps = 1e-5;
+const double NeQuickIonoNavData_T::amplitudeEps = 1e-5;
+const double NeQuickIonoNavData_T::solarEps = 1e-5;
+const double NeQuickIonoNavData_T::azEps = 1e-6;
+const double NeQuickIonoNavData_T::thicknessEps = 1e-5;
 // precision is not great, but this is the level of precision that is
 // supplied in the truth table in Annex E.1, plus fudge factor for
 // accumulated differences that particularly show up in
 // integrateGaussKronrod as it adds large numbers together.
-const double NeQuickIonoData_T::docEps = 4e-2;
-const double NeQuickIonoData_T::ionoSpotsEps = 1e-13;
+const double NeQuickIonoNavData_T::docEps = 4e-2;
+const double NeQuickIonoNavData_T::ionoSpotsEps = 1e-13;
 
-const NeQuickIonoData_T::TestData NeQuickIonoData_T::testData[] =
+const NeQuickIonoNavData_T::TestData NeQuickIonoNavData_T::testData[] =
 {
    {
       0.0, 4,
@@ -362,7 +362,7 @@ const NeQuickIonoData_T::TestData NeQuickIonoData_T::testData[] =
 };
 
 
-const NeQuickIonoData_T::TestDataHeight NeQuickIonoData_T::testDataHeight[] =
+const NeQuickIonoNavData_T::TestDataHeight NeQuickIonoNavData_T::testDataHeight[] =
 {
    {
       2.366982653,
@@ -373,8 +373,8 @@ const NeQuickIonoData_T::TestDataHeight NeQuickIonoData_T::testDataHeight[] =
 };
 
 
-const NeQuickIonoData_T::TestDataExosphere
-NeQuickIonoData_T::testDataExosphere[] =
+const NeQuickIonoNavData_T::TestDataExosphere
+NeQuickIonoNavData_T::testDataExosphere[] =
 {
    {
       5.361596779,
@@ -387,8 +387,8 @@ NeQuickIonoData_T::testDataExosphere[] =
 };
 
 
-const NeQuickIonoData_T::TestDataAmplitude
-NeQuickIonoData_T::testDataAmplitude[] =
+const NeQuickIonoNavData_T::TestDataAmplitude
+NeQuickIonoNavData_T::testDataAmplitude[] =
 {
    {
       5.361596779,
@@ -431,7 +431,7 @@ NeQuickIonoData_T::testDataAmplitude[] =
 
 /** @note I've discarded the extraneous (unused, set to zero) data
  * that was present in the EU test code */
-const NeQuickIonoData_T::TestDataSolar NeQuickIonoData_T::testDataSolar[] =
+const NeQuickIonoNavData_T::TestDataSolar NeQuickIonoNavData_T::testDataSolar[] =
 {
    {
       297.438315, 82.481346,
@@ -463,7 +463,7 @@ const NeQuickIonoData_T::TestDataSolar NeQuickIonoData_T::testDataSolar[] =
 
 /** @note I've discarded the extraneous (unused, set to zero) data
  * that was present in the EU test code */
-const NeQuickIonoData_T::TestDataCritFreqE NeQuickIonoData_T::testDataCFE[] =
+const NeQuickIonoNavData_T::TestDataCritFreqE NeQuickIonoNavData_T::testDataCFE[] =
 {
    {
       230.245562,
@@ -486,17 +486,17 @@ const NeQuickIonoData_T::TestDataCritFreqE NeQuickIonoData_T::testDataCFE[] =
 };
 
 
-const std::vector<double> NeQuickIonoData_T::highSolarCoeff
+const std::vector<double> NeQuickIonoNavData_T::highSolarCoeff
 {236.831641, -0.39362878, 0.00402826613};
 
-const std::vector<double> NeQuickIonoData_T::mediumSolarCoeff
+const std::vector<double> NeQuickIonoNavData_T::mediumSolarCoeff
 {121.129893, 0.351254133, 0.0134635348};
 
-const std::vector<double> NeQuickIonoData_T::lowSolarCoeff
+const std::vector<double> NeQuickIonoNavData_T::lowSolarCoeff
 {2.580271, 0.127628236, 0.0252748384};
 
 
-const NeQuickIonoData_T::TestDataAz NeQuickIonoData_T::testDataAz[] =
+const NeQuickIonoNavData_T::TestDataAz NeQuickIonoNavData_T::testDataAz[] =
 {
    { highSolarCoeff, 76.284073, 230.245562 },
    { mediumSolarCoeff, 76.284073, 226.272795 },
@@ -525,8 +525,8 @@ const NeQuickIonoData_T::TestDataAz NeQuickIonoData_T::testDataAz[] =
 };
 
 
-const NeQuickIonoData_T::TestDataThickness
-NeQuickIonoData_T::testDataThickness[] =
+const NeQuickIonoNavData_T::TestDataThickness
+NeQuickIonoNavData_T::testDataThickness[] =
 {
    {
       2.366982653,
@@ -540,8 +540,8 @@ NeQuickIonoData_T::testDataThickness[] =
 };
 
 
-const NeQuickIonoData_T::TestDataTEC
-NeQuickIonoData_T::testDataTEC[] =
+const NeQuickIonoNavData_T::TestDataTEC
+NeQuickIonoNavData_T::testDataTEC[] =
 {
       // pulled from Annex E of galileo:iono
    {highSolarCoeff,4,0,297.66,82.49,78.11,8.23,54.29,20281546.18,20.40},
@@ -657,17 +657,17 @@ NeQuickIonoData_T::testDataTEC[] =
 };
 
 
-NeQuickIonoData_T ::
-NeQuickIonoData_T()
+NeQuickIonoNavData_T ::
+NeQuickIonoNavData_T()
 {
 }
 
 
-unsigned NeQuickIonoData_T ::
+unsigned NeQuickIonoNavData_T ::
 constructorTest()
 {
-   TUDEF("NeQuickIonoData", "NeQuickIonoData()");
-   gnsstk::NeQuickIonoData uut;
+   TUDEF("NeQuickIonoNavData", "NeQuickIonoNavData()");
+   gnsstk::NeQuickIonoNavData uut;
    TUASSERTFE(0.0, uut.ai[0]);
    TUASSERTFE(0.0, uut.ai[1]);
    TUASSERTFE(0.0, uut.ai[2]);
@@ -680,12 +680,12 @@ constructorTest()
 }
 
 
-unsigned NeQuickIonoData_T ::
+unsigned NeQuickIonoNavData_T ::
 getEffIonoLevelTest()
 {
-   TUDEF("NeQuickIonoData", "getEffIonoLevel");
+   TUDEF("NeQuickIonoNavData", "getEffIonoLevel");
    unsigned numTests = sizeof(testDataAz)/sizeof(testDataAz[0]);
-   gnsstk::NeQuickIonoData uut;
+   gnsstk::NeQuickIonoNavData uut;
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataAz& td(testDataAz[testNum]);
@@ -697,15 +697,15 @@ getEffIonoLevelTest()
    TURETURN();
 }
 
-unsigned NeQuickIonoData_T ::
+unsigned NeQuickIonoNavData_T ::
 constructor2Test()
 {
-   TUDEF("NeQuickIonoData::ModelParameters", "constructor");
+   TUDEF("NeQuickIonoNavData::ModelParameters", "constructor");
    unsigned numTests = sizeof(testDataCFE)/sizeof(testDataCFE[0]);
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataCritFreqE& td(testDataCFE[testNum]);
-      gnsstk::NeQuickIonoData::ModelParameters uut(
+      gnsstk::NeQuickIonoNavData::ModelParameters uut(
          0, td.pos, td.tAz, ccir, td.ct);
       TUASSERTFEPS(td.expFreq, uut.ffoE, criticalFreqEps);
    }
@@ -713,16 +713,16 @@ constructor2Test()
 }
 
 
-unsigned NeQuickIonoData_T ::
+unsigned NeQuickIonoNavData_T ::
 legendreTest()
 {
-   TUDEF("NeQuickIonoData::ModelParameters", "legendre");
+   TUDEF("NeQuickIonoNavData::ModelParameters", "legendre");
    unsigned numTests = sizeof(testData)/sizeof(testData[0]);
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestData& td(testData[testNum]);
       double modip_u = modip.stModip(td.tPos);
-      gnsstk::NeQuickIonoData::ModelParameters uut(
+      gnsstk::NeQuickIonoNavData::ModelParameters uut(
          modip_u, td.tPos, td.tAz, ccir, td.ct);
          // sanity check
       TUASSERTFEPS(td.tAzr, uut.fAzr, ionoSpotsEps);
@@ -733,15 +733,15 @@ legendreTest()
 }
 
 
-unsigned NeQuickIonoData_T ::
+unsigned NeQuickIonoNavData_T ::
 heightTest()
 {
-   TUDEF("NeQuickIonoData::ModelParameters", "height");
+   TUDEF("NeQuickIonoNavData::ModelParameters", "height");
    unsigned numTests = sizeof(testDataHeight)/sizeof(testDataHeight[0]);
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataHeight& td(testDataHeight[testNum]);
-      gnsstk::NeQuickIonoData::ModelParameters uut(ccir);
+      gnsstk::NeQuickIonoNavData::ModelParameters uut(ccir);
       uut.fM3000F2 = td.transFactor;
       uut.ffoF2 = td.criticalFreqF2;
       uut.ffoE = td.criticalFreqE;
@@ -752,15 +752,15 @@ heightTest()
 }
 
 
-unsigned NeQuickIonoData_T ::
+unsigned NeQuickIonoNavData_T ::
 exosphereAdjustTest()
 {
-   TUDEF("NeQuickIonoData::ModelParameters", "exosphereAdjust");
+   TUDEF("NeQuickIonoNavData::ModelParameters", "exosphereAdjust");
    unsigned numTests = sizeof(testDataExosphere)/sizeof(testDataExosphere[0]);
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataExosphere& td(testDataExosphere[testNum]);
-      gnsstk::NeQuickIonoData::ModelParameters uut(ccir);
+      gnsstk::NeQuickIonoNavData::ModelParameters uut(ccir);
       uut.fNmF2 = td.electronDensity;
       uut.fB2bot = td.bottom;
       uut.fhmF2 = td.height;
@@ -772,15 +772,15 @@ exosphereAdjustTest()
 }
 
 
-unsigned NeQuickIonoData_T ::
+unsigned NeQuickIonoNavData_T ::
 peakAmplitudesTest()
 {
-   TUDEF("NeQuickIonoData::ModelParameters", "peakAmplitudes");
+   TUDEF("NeQuickIonoNavData::ModelParameters", "peakAmplitudes");
    unsigned numTests = sizeof(testDataAmplitude)/sizeof(testDataAmplitude[0]);
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataAmplitude& td(testDataAmplitude[testNum]);
-      gnsstk::NeQuickIonoData::ModelParameters uut(ccir);
+      gnsstk::NeQuickIonoNavData::ModelParameters uut(ccir);
       uut.fNmE = td.electronDensityE;
       uut.fBEtop = td.peakThickTopE;
       uut.ffoF1 = td.critFreqF1;
@@ -799,15 +799,15 @@ peakAmplitudesTest()
 }
 
 
-unsigned NeQuickIonoData_T ::
+unsigned NeQuickIonoNavData_T ::
 effSolarZenithAngleTest()
 {
-   TUDEF("NeQuickIonoData::ModelParameters", "effSolarZenithAngle");
+   TUDEF("NeQuickIonoNavData::ModelParameters", "effSolarZenithAngle");
    unsigned numTests = sizeof(testDataSolar)/sizeof(testDataSolar[0]);
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataSolar& td(testDataSolar[testNum]);
-      gnsstk::NeQuickIonoData::ModelParameters uut(ccir);
+      gnsstk::NeQuickIonoNavData::ModelParameters uut(ccir);
       gnsstk::Angle rv = uut.effSolarZenithAngle(td.pos, td.ct);
       TUASSERTFEPS(td.expAngle, rv.deg(), solarEps);
    }
@@ -815,17 +815,17 @@ effSolarZenithAngleTest()
 }
 
 
-unsigned NeQuickIonoData_T ::
+unsigned NeQuickIonoNavData_T ::
 thicknessTest()
 {
-   TUDEF("NeQuickIonoData::ModelParameters", "thickness");
+   TUDEF("NeQuickIonoNavData::ModelParameters", "thickness");
    unsigned numTests = sizeof(testDataThickness)/sizeof(testDataThickness[0]);
       /// E layer maximum density height in km.
    constexpr double hmE = 120.0;                                        //eq.78
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataThickness& td(testDataThickness[testNum]);
-      gnsstk::NeQuickIonoData::ModelParameters uut(ccir);
+      gnsstk::NeQuickIonoNavData::ModelParameters uut(ccir);
       uut.fM3000F2 = td.transFactor;
       uut.ffoF2 = td.critFreqF2;
       uut.fNmF2 = td.electronDensityF2;
@@ -842,13 +842,13 @@ thicknessTest()
 }
 
 
-unsigned NeQuickIonoData_T ::
+unsigned NeQuickIonoNavData_T ::
 getTECTest()
 {
    using namespace std;
-   TUDEF("NeQuickIonoData::ModelParameters", "getTEC");
+   TUDEF("NeQuickIonoNavData::ModelParameters", "getTEC");
    unsigned numTests = sizeof(testDataTEC)/sizeof(testDataTEC[0]);
-   gnsstk::NeQuickIonoData uut;
+   gnsstk::NeQuickIonoNavData uut;
       /// E layer maximum density height in km.
    constexpr double hmE = 120.0;                                        //eq.78
    for (unsigned testNum = 0; testNum < numTests; testNum++)
@@ -883,13 +883,13 @@ inline double getFactor(gnsstk::CarrierBand band)
    return 40.3 / (freq*freq);
 }
 
-unsigned NeQuickIonoData_T ::
-getCorrectionTest()
+unsigned NeQuickIonoNavData_T ::
+getIonoCorrTest()
 {
    using namespace std;
-   TUDEF("NeQuickIonoData::ModelParameters", "getCorrection");
+   TUDEF("NeQuickIonoNavData::ModelParameters", "getIonoCorr");
    unsigned numTests = sizeof(testDataTEC)/sizeof(testDataTEC[0]);
-   gnsstk::NeQuickIonoData uut;
+   gnsstk::NeQuickIonoNavData uut;
       /// E layer maximum density height in km.
    constexpr double hmE = 120.0;                                        //eq.78
    gnsstk::CarrierBand band;
@@ -907,13 +907,13 @@ getCorrectionTest()
          // test L1
       band = gnsstk::CarrierBand::L1;
       expCorr = td.expTEC * factorL1 * 1e16;
-      TUASSERTFEPS(expCorr, uut.getCorrection(td.ct, td.station, td.satellite,
+      TUASSERTFEPS(expCorr, uut.getIonoCorr(td.ct, td.station, td.satellite,
                                               band),
                    docEps);
          // test L5
       band = gnsstk::CarrierBand::L5;
       expCorr = td.expTEC * factorL5 * 1e16;
-      TUASSERTFEPS(expCorr, uut.getCorrection(td.ct, td.station, td.satellite,
+      TUASSERTFEPS(expCorr, uut.getIonoCorr(td.ct, td.station, td.satellite,
                                               band),
                    docEps);
    }
@@ -923,7 +923,7 @@ getCorrectionTest()
 
 int main(int argc, char *argv[])
 {
-   NeQuickIonoData_T testClass;
+   NeQuickIonoNavData_T testClass;
    unsigned errorTotal = 0;
 
    errorTotal += testClass.constructorTest();
@@ -936,7 +936,7 @@ int main(int argc, char *argv[])
    errorTotal += testClass.effSolarZenithAngleTest();
    errorTotal += testClass.thicknessTest();
    errorTotal += testClass.getTECTest();
-   errorTotal += testClass.getCorrectionTest();
+   errorTotal += testClass.getIonoCorrTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

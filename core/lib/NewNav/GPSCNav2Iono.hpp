@@ -39,7 +39,7 @@
 #ifndef GNSSTK_GPSCNAV2IONO_HPP
 #define GNSSTK_GPSCNAV2IONO_HPP
 
-#include "KlobucharIonoData.hpp"
+#include "KlobucharIonoNavData.hpp"
 #include "TimeSystem.hpp"
 
 namespace gnsstk
@@ -49,7 +49,7 @@ namespace gnsstk
 
       /** Class containing data elements unique to GPS CNav ionospheric data.
        * Nothing beyond the basic Klobuchar model, i.e. no extra metadata. */
-   class GPSCNav2Iono : public KlobucharIonoData
+   class GPSCNav2Iono : public KlobucharIonoNavData
    {
    public:
          /// Initialize all data (which is in parent classes).

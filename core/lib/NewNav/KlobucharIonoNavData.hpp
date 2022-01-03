@@ -47,11 +47,11 @@ namespace gnsstk
       //@{
 
       /// Class containing data elements unique to the Klobuchar iono model.
-   class KlobucharIonoData : public IonoData
+   class KlobucharIonoNavData : public IonoNavData
    {
    public:
          /// Sets the nav message type.
-      KlobucharIonoData();
+      KlobucharIonoNavData();
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
@@ -61,7 +61,7 @@ namespace gnsstk
       bool validate() const override
       { return true; }
 
-         /** Print the contents of this KlobucharIonoData object in a
+         /** Print the contents of this KlobucharIonoNavData object in a
           * human-readable format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
@@ -73,10 +73,10 @@ namespace gnsstk
           * @param[in] svgeo The observed satellite's geodetic position.
           * @param[in] band The carrier band of the signal being corrected.
           * @return The ionospheric delay, in meters, on band. */
-      double getCorrection(const CommonTime& when,
-                           const Position& rxgeo,
-                           const Position& svgeo,
-                           CarrierBand band) const override;
+      double getIonoCorr(const CommonTime& when,
+                         const Position& rxgeo,
+                         const Position& svgeo,
+                         CarrierBand band) const override;
 
          // alpha/beta terms are seconds, seconds/semi-circle,
          // seconds/semi-circle**2, seconds/semi-circle**3.  Refer to

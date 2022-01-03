@@ -149,8 +149,8 @@ namespace gnsstk
       {
          return false;
       }
-      IonoData *iono = dynamic_cast<IonoData*>(navOut.get());
-      corrOut = iono->getCorrection(when, rxgeo, svgeo, band);
+      IonoNavData *iono = dynamic_cast<IonoNavData*>(navOut.get());
+      corrOut = iono->getIonoCorr(when, rxgeo, svgeo, band);
       return true;
    }
 

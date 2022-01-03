@@ -713,7 +713,7 @@ namespace gnsstk
             NavSatelliteID(navIn->getsatSys().id, navIn->getsatSys(),
                            navIn->getobsID(), navIn->getNavID()),
             NavMessageType::Iono);
-            // KlobucharIonoData
+            // KlobucharIonoNavData
          iono->alpha[0] = navIn->asSignedDouble(offset+csbAlpha0,cnbAlpha0,
                                                 cscAlpha0);
          iono->alpha[1] = navIn->asSignedDouble(offset+csbAlpha1,cnbAlpha1,

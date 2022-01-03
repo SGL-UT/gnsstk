@@ -39,7 +39,7 @@
 #ifndef GNSSTK_BDSD2NAVIONO_HPP
 #define GNSSTK_BDSD2NAVIONO_HPP
 
-#include "KlobucharIonoData.hpp"
+#include "KlobucharIonoNavData.hpp"
 
 namespace gnsstk
 {
@@ -48,7 +48,7 @@ namespace gnsstk
 
       /** Class containing data elements unique to BeiDou D2NAV
        * ionospheric data. */
-   class BDSD2NavIono : public KlobucharIonoData
+   class BDSD2NavIono : public KlobucharIonoNavData
    {
    public:
          /// Sets the nav message type.

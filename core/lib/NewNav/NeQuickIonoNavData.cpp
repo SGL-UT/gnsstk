@@ -38,7 +38,7 @@
 //==============================================================================
 #include <cmath>
 #include <string.h>
-#include "NeQuickIonoData.hpp"
+#include "NeQuickIonoNavData.hpp"
 #include "TimeString.hpp"
 #include "MODIP.hpp"
 #include "FreqConv.hpp"
@@ -57,7 +57,7 @@ using namespace std;
  * meaningful labels when possible, otherwise this is how it appears
  * in the source document.
  *
- * See the NeQuickIonoData class documentation for additional references.
+ * See the NeQuickIonoNavData class documentation for additional references.
  */
 
 /// Threshold for solar flux coefficients to consider them zero and unavailable.
@@ -104,7 +104,7 @@ constexpr double BEbot = 5.0;                                           //eq.89
    /** Define constants using enums, which avoids the complications of
     * using precompilter macros and also avoids the use of memory that
     * a static const elicits. */
-enum NeQuickIonoDataConsts
+enum NeQuickIonoNavDataConsts
 {
    F2LayerMODIPCoeffCount = 12, ///< Legendre coefficient count for mod dip lat.
    F2LayerLongCoeffCount = 9,   ///< Legendre coefficient count for longitude.
@@ -117,15 +117,15 @@ enum NeQuickIonoDataConsts
 
 namespace gnsstk
 {
-   NeQuickIonoData ::
-   NeQuickIonoData()
+   NeQuickIonoNavData ::
+   NeQuickIonoNavData()
          : ai{0,0,0},
            idf{false,false,false,false,false}
    {
    }
 
 
-   void NeQuickIonoData ::
+   void NeQuickIonoNavData ::
    dump(std::ostream& s, DumpDetail dl) const
    {
       if (dl == DumpDetail::OneLine)
@@ -187,11 +187,11 @@ namespace gnsstk
    }
 
 
-   double NeQuickIonoData ::
-   getCorrection(const CommonTime& when,
-                 const Position& rxgeo,
-                 const Position& svgeo,
-                 CarrierBand band) const
+   double NeQuickIonoNavData ::
+   getIonoCorr(const CommonTime& when,
+               const Position& rxgeo,
+               const Position& svgeo,
+               CarrierBand band) const
    {
       DEBUGTRACE_FUNCTION();
       double tec = getTEC(when, rxgeo, svgeo);
@@ -202,7 +202,7 @@ namespace gnsstk
    }
 
 
-   double NeQuickIonoData ::
+   double NeQuickIonoNavData ::
    getTEC(const CommonTime& when,
           const Position& rxgeo,
           const Position& svgeo)
@@ -267,7 +267,7 @@ namespace gnsstk
    }
 
 
-   double NeQuickIonoData ::
+   double NeQuickIonoNavData ::
    getEffIonoLevel(double modip_u)
       const
    {
@@ -289,7 +289,7 @@ namespace gnsstk
    }
 
 
-   double NeQuickIonoData ::
+   double NeQuickIonoNavData ::
    getSED(double dist, const Position& rxgeo, const Position& svgeo,
           const MODIP& modip, CCIR& ccirData, const CivilTime& when,
           double azu)
@@ -308,7 +308,7 @@ namespace gnsstk
    }
 
 
-   double NeQuickIonoData ::
+   double NeQuickIonoNavData ::
    getVED(double dist, const Position& rxgeo, const Position& svgeo,
           double modip_u, CCIR& ccirData, const CivilTime& when,
           double azu)
@@ -326,7 +326,7 @@ namespace gnsstk
    }
 
 
-   double NeQuickIonoData ::
+   double NeQuickIonoNavData ::
    neExp(double x)
    {
       if (x > ExponentMax)
@@ -341,7 +341,7 @@ namespace gnsstk
    }
 
 
-   NeQuickIonoData::ModelParameters ::
+   NeQuickIonoNavData::ModelParameters ::
    ModelParameters(double modip_u, const Position& pos, double az,
                    CCIR& ccirData, const CivilTime& when)
          : fXeff(effSolarZenithAngle(pos,when)),
@@ -429,7 +429,7 @@ namespace gnsstk
    }
 
 
-   NeQuickIonoData::ModelParameters ::
+   NeQuickIonoNavData::ModelParameters ::
    ModelParameters(CCIR& ccirData)
          : ccir(ccirData),
            fAzr(std::numeric_limits<double>::quiet_NaN()),
@@ -456,7 +456,7 @@ namespace gnsstk
    }
 
 
-   AngleReduced NeQuickIonoData::ModelParameters ::
+   AngleReduced NeQuickIonoNavData::ModelParameters ::
    solarDeclination(const CivilTime& when)
    {
       DEBUGTRACE_FUNCTION();
@@ -478,7 +478,7 @@ namespace gnsstk
    }
 
 
-   Angle NeQuickIonoData::ModelParameters ::
+   Angle NeQuickIonoNavData::ModelParameters ::
    solarZenithAngle(const Position& pos, const CivilTime& when)
    {
       DEBUGTRACE_FUNCTION();
@@ -494,7 +494,7 @@ namespace gnsstk
    }
 
 
-   Angle NeQuickIonoData::ModelParameters ::
+   Angle NeQuickIonoNavData::ModelParameters ::
    effSolarZenithAngle(const Position& pos, const CivilTime& when)
    {
       DEBUGTRACE_FUNCTION();
@@ -507,7 +507,7 @@ namespace gnsstk
    }
 
 
-   void NeQuickIonoData::ModelParameters ::
+   void NeQuickIonoNavData::ModelParameters ::
    legendre(double modip_u, const Position& pos)
    {
       DEBUGTRACE_FUNCTION();
@@ -607,7 +607,7 @@ namespace gnsstk
    }
 
 
-   void NeQuickIonoData::ModelParameters ::
+   void NeQuickIonoNavData::ModelParameters ::
    height()
    {
       DEBUGTRACE_FUNCTION();
@@ -626,7 +626,7 @@ namespace gnsstk
    }
 
 
-   void NeQuickIonoData::ModelParameters ::
+   void NeQuickIonoNavData::ModelParameters ::
    thickness()
    {
       DEBUGTRACE_FUNCTION();
@@ -640,7 +640,7 @@ namespace gnsstk
    }
 
 
-   void NeQuickIonoData::ModelParameters ::
+   void NeQuickIonoNavData::ModelParameters ::
    exosphereAdjust(unsigned month)
    {
       DEBUGTRACE_FUNCTION();
@@ -686,7 +686,7 @@ namespace gnsstk
    }
 
 
-   void NeQuickIonoData::ModelParameters ::
+   void NeQuickIonoNavData::ModelParameters ::
    peakAmplitudes()
    {
       DEBUGTRACE_FUNCTION();
@@ -728,7 +728,7 @@ namespace gnsstk
    }
 
 
-   double NeQuickIonoData::ModelParameters ::
+   double NeQuickIonoNavData::ModelParameters ::
    electronDensity(const Position& pos)
    {
       DEBUGTRACE_FUNCTION();
@@ -747,7 +747,7 @@ namespace gnsstk
    }
 
 
-   double NeQuickIonoData::ModelParameters ::
+   double NeQuickIonoNavData::ModelParameters ::
    electronDensityTop(const Position& pos)
    {
       DEBUGTRACE_FUNCTION();
@@ -770,7 +770,7 @@ namespace gnsstk
    }
 
 
-   double NeQuickIonoData::ModelParameters ::
+   double NeQuickIonoNavData::ModelParameters ::
    electronDensityBottom(const Position& pos)
    {
       DEBUGTRACE_FUNCTION();
@@ -822,7 +822,7 @@ namespace gnsstk
    }
 
 
-   NeQuickIonoData::IntegrationParameters ::
+   NeQuickIonoNavData::IntegrationParameters ::
    IntegrationParameters(const Position& rx, const Position& sv,
                          const Position& Pp, bool vertical)
    {
@@ -917,7 +917,7 @@ namespace gnsstk
    }
 
 
-   double NeQuickIonoData ::
+   double NeQuickIonoNavData ::
    integrateGaussKronrod(double heightPt1, double heightPt2,
                          const Position& rxgeo, const Position& svgeo,
                          const MODIP& modip, double modipSta, CCIR& ccirData,

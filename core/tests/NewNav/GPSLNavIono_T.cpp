@@ -55,7 +55,7 @@ public:
       /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
    unsigned getUserTimeTest();
-   unsigned getCorrectionTest();
+   unsigned getIonoCorrTest();
 };
 
 
@@ -90,9 +90,9 @@ getUserTimeTest()
 
 
 unsigned GPSLNavIono_T ::
-getCorrectionTest()
+getIonoCorrTest()
 {
-   TUDEF("GPSLNavIono", "getCorrection");
+   TUDEF("GPSLNavIono", "getIonoCorr");
    gnsstk::GPSLNavIono uut;
    gnsstk::CommonTime when = gnsstk::GPSWeekSecond(2100,135.0);
    gnsstk::Position rx, sv;
@@ -107,9 +107,9 @@ getCorrectionTest()
    uut.beta[2]  = -1.32803702E+04;
    uut.beta[3]  =  3.38181850E+04;
    TUASSERTFE(13.174577965354167475,
-              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::L2));
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L2));
    TUASSERTFE(7.9994064218713107906,
-              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::L1));
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L1));
    TURETURN();
 }
 
@@ -121,7 +121,7 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getUserTimeTest();
-   errorTotal += testClass.getCorrectionTest();
+   errorTotal += testClass.getIonoCorrTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

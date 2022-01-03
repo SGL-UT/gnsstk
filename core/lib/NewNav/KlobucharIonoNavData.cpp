@@ -36,7 +36,7 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "KlobucharIonoData.hpp"
+#include "KlobucharIonoNavData.hpp"
 #include "TimeString.hpp"
 #include "YDSTime.hpp"
 #include "FreqConv.hpp"
@@ -45,15 +45,15 @@ using namespace std;
 
 namespace gnsstk
 {
-   KlobucharIonoData ::
-   KlobucharIonoData()
+   KlobucharIonoNavData ::
+   KlobucharIonoNavData()
          : alpha{0,0,0,0},
            beta{0,0,0,0}
    {
    }
 
 
-   void KlobucharIonoData ::
+   void KlobucharIonoNavData ::
    dump(std::ostream& s, DumpDetail dl) const
    {
       if (dl == DumpDetail::OneLine)
@@ -118,11 +118,11 @@ namespace gnsstk
    }
 
 
-   double KlobucharIonoData ::
-   getCorrection(const CommonTime& when,
-                 const Position& rxgeo,
-                 const Position& svgeo,
-                 CarrierBand band) const
+   double KlobucharIonoNavData ::
+   getIonoCorr(const CommonTime& when,
+               const Position& rxgeo,
+               const Position& svgeo,
+               CarrierBand band) const
    {
          // style guide strongly discourages using underscores, but
          // I'm using them here to denote subscripts, latex style.

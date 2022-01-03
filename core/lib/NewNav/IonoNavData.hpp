@@ -50,15 +50,15 @@ namespace gnsstk
       /** Defines the interface for classes that provide the ability
        * to compute ionospheric delay, using data extracted from GNSS
        * navigation messages. */
-   class IonoData : public NavData
+   class IonoNavData : public NavData
    {
    public:
          /// Set the messageType
-      IonoData()
+      IonoNavData()
       { signal.messageType = NavMessageType::Iono; }
 
          /// Obligatory virtual destructor.
-      virtual ~IonoData()
+      virtual ~IonoNavData()
       {}
 
          /** Get the ionospheric correction in meters.
@@ -67,10 +67,10 @@ namespace gnsstk
           * @param[in] svgeo The observed satellite's geodetic position.
           * @param[in] band The carrier band of the signal being corrected.
           * @return The ionospheric delay, in meters, on band. */
-      virtual double getCorrection(const CommonTime& when,
-                                   const Position& rxgeo,
-                                   const Position& svgeo,
-                                   CarrierBand band) const = 0;
+      virtual double getIonoCorr(const CommonTime& when,
+                                 const Position& rxgeo,
+                                 const Position& svgeo,
+                                 CarrierBand band) const = 0;
 
          /// @copydoc NavData::isSameData
       bool isSameData(const NavDataPtr& right) const override

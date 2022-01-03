@@ -39,7 +39,7 @@
 #ifndef GNSSTK_GPSLNAVIONO_HPP
 #define GNSSTK_GPSLNAVIONO_HPP
 
-#include "KlobucharIonoData.hpp"
+#include "KlobucharIonoNavData.hpp"
 
 namespace gnsstk
 {
@@ -47,7 +47,7 @@ namespace gnsstk
       //@{
 
       /// Class containing data elements unique to GPS LNav ionospheric data.
-   class GPSLNavIono : public KlobucharIonoData
+   class GPSLNavIono : public KlobucharIonoNavData
    {
    public:
          /// Sets the nav message type.
