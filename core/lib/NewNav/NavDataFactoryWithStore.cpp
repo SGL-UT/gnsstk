@@ -122,7 +122,7 @@ namespace gnsstk
          bool finished;
          NavMap::iterator it;
       };
-      using MatchList = std::list<FindMatches>;
+      typedef std::list<FindMatches> MatchList;
 
       DEBUGTRACE("nmid=" << nmid << "  when=" << gnsstk::printTime(when,dts));
 
@@ -323,7 +323,7 @@ namespace gnsstk
          NavNearMap::iterator itGT, itLT;
          const CommonTime& when;
       };
-      using MatchList = std::list<FindMatches>;
+      typedef std::list<FindMatches> MatchList;
 
          // dig through the maps of maps, matching keys with nmid along the way
       auto dataIt = nearestData.find(nmid.messageType);
