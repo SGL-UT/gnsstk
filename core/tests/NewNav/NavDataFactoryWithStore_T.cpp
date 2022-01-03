@@ -1564,6 +1564,10 @@ clearTest()
    fact.clear();
    TUASSERTE(size_t, 0, fact.size());
    TUASSERTE(size_t, 0, fact.sizeNearest());
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME,
+             fact.getFinalTime());
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::END_OF_TIME,
+             fact.getInitialTime());
 
    TURETURN();
 }
