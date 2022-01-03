@@ -39,7 +39,7 @@
 #ifndef GNSSTK_NEQUICKIONODATA_HPP
 #define GNSSTK_NEQUICKIONODATA_HPP
 
-#include "IonoData.hpp"
+#include "IonoNavData.hpp"
 #include "CivilTime.hpp"
 #include "CCIR.hpp"
 #include "MODIP.hpp"

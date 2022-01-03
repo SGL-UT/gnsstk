@@ -42,7 +42,7 @@
 #include "TimeOffsetData.hpp"
 #include "NDFUniqConstIterator.hpp"
 #include "NDFUniqIterator.hpp"
-#include "IonoData.hpp"
+#include "IonoNavData.hpp"
 #include "InterSigCorr.hpp"
 
 namespace gnsstk

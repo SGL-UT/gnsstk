@@ -75,7 +75,7 @@
 #include "InterSigCorr.hpp"
 #include "BDSD1NavISC.hpp"
 #include "Position.hpp"
-#include "IonoData.hpp"
+#include "IonoNavData.hpp"
 #include "KlobucharIonoData.hpp"
 #include "BDSD1NavIono.hpp"
 #include "TimeOffsetData.hpp"

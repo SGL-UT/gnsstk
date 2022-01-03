@@ -39,7 +39,7 @@
 #ifndef GNSSTK_KLOBUCHARIONODATA_HPP
 #define GNSSTK_KLOBUCHARIONODATA_HPP
 
-#include "IonoData.hpp"
+#include "IonoNavData.hpp"
 
 namespace gnsstk
 {
