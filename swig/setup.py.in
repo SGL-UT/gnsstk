@@ -33,9 +33,7 @@ MODULE_DIR = os.path.split(__file__)[0]
 
 
 scripts_list = [
-    "apps/gnsstk_timeconvert.py",
     "apps/sem_plot.py",
-    "apps/position_difference.py",
     ]
 
 # For package distribution channels
