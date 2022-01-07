@@ -45,7 +45,7 @@
 #include "CommonTime.hpp"
 #include "Position.hpp"
 #include "GNSSconstants.hpp"       // TWO_PI
-#include "GNSSconstants.hpp"                // DEG_TO_RAD
+#include "GNSSconstants.hpp"       // DEG_TO_RAD
 #include "SolarPosition.hpp"
 #include "YDSTime.hpp"
 #include "JulianDate.hpp"
@@ -155,70 +155,6 @@ void CrudeSolarPosition(CommonTime t, double& lat, double& lon) throw()
    lat = lat / std::sqrt(1.0-lat*lat);
    lat = RAD_TO_DEG*std::atan(lat);
    lon = 180.0 - hod*15.0;
-}
-
-//------------------------------------------------------------------------------------
-// Consider the sun and the earth as seen from the satellite. Let the sun be a circle
-// of angular radius r, center in direction s, and the earth be a (larger) circle
-// of angular radius R, center in direction e. The circles overlap if |e-s| < R+r;
-// complete overlap if |e-s| < R. Let L == |e-s|.
-//    What is the area of overlap if R-r < L < R+r ?
-// Call the two points where the circles intersect p1 and p2. Draw a line from e to s;
-// call the points where this line intersects the two circles r1 and R1, respectively.
-// Draw lines from e to s, e to p1, e to p2, s to p1 and s to p2. Call the angle
-// between e-s and e-p1 alpha, and that between s-e and s-p1, beta.
-// Draw a rectangle with top and bottom parallel to e-s passing through p1 and p2,
-// and with sides passing through s and r1. Similarly for e and R1. Note that the
-// area of intersection lies within the intersection of these two rectangles.
-// Call the area of the rectangle outside the circles A and B. The height H of the
-// rectangles is
-// H = 2Rsin(alpha) = 2rsin(beta)
-// also L = rcos(beta)+Rcos(alpha)
-// The area A will be the area of the rectangle
-//              minus the area of the wedge formed by the angle 2*alpha
-//              minus the area of the two triangles which meet at s :
-// A = RH - (2alpha/2pi)*pi*R*R - 2*(1/2)*(H/2)Rcos(alpha)
-// Similarly
-// B = rH - (2beta/2pi)*pi*r*r  - 2*(1/2)*(H/2)rcos(beta)
-// The area of intersection will be the area of the rectangular intersection
-//                            minus the area A
-//                            minus the area B
-// Intersection = H(R+r-L) - A - B
-//              = HR+Hr-HL -HR+alpha*R*R+(H/2)Rcos(alpha) -Hr+beta*r*r+(H/2)rcos(beta)
-// Cancel terms, and substitute for L using above equation L = ..
-//              = -(H/2)rcos(beta)-(H/2)Rcos(alpha)+alpha*R*R+beta*r*r
-// substitute for H/2
-//              = -R*R*sin(alpha)cos(alpha)-r*r*sin(beta)cos(beta)+alpha*R*R+beta*r*r
-// Intersection = R*R*[alpha-sin(alpha)cos(alpha)]+r*r*[beta-sin(beta)cos(beta)]
-// Solve for alpha and beta in terms of R, r and L using the H and L relations above
-// (r/R)cos(beta)=(L/R)-cos(alpha)
-// (r/R)sin(beta)=sin(alpha)
-// so
-// (r/R)^2 = (L/R)^2 - (2L/R)cos(alpha) + 1
-// cos(alpha) = (R/2L)(1+(L/R)^2-(r/R)^2)
-// cos(beta) = (L/r) - (R/r)cos(alpha)
-// and 0 <= alpha or beta <= pi
-//
-// Rearth    angular radius of the earth as seen at the satellite
-// Rsun      angular radius of the sun as seen at the satellite
-// dES       angular distance of the sun from the earth
-// return    fraction (0 <= f <= 1) of area of sun covered by earth
-// units only need be consistent
-double shadowFactor(double Rearth, double Rsun, double dES) throw()
-{
-   if(dES >= Rearth+Rsun) return 0.0;
-   if(dES <= std::fabs(Rearth-Rsun)) return 1.0;
-   double r=Rsun, R=Rearth, L=dES;
-   if(Rsun > Rearth) { r=Rearth; R=Rsun; }
-   double cosalpha = (R/L)*(1.0+(L/R)*(L/R)-(r/R)*(r/R))/2.0;
-   double cosbeta = (L/r) - (R/r)*cosalpha;
-   double sinalpha = ::sqrt(1-cosalpha*cosalpha);
-   double sinbeta = ::sqrt(1-cosbeta*cosbeta);
-   double alpha = ::asin(sinalpha);
-   double beta = ::asin(sinbeta);
-   double shadow = r*r*(beta-sinbeta*cosbeta)+R*R*(alpha-sinalpha*cosalpha);
-   shadow /= ::acos(-1.0)*Rsun*Rsun;
-   return shadow;
 }
 
 //------------------------------------------------------------------------------------
