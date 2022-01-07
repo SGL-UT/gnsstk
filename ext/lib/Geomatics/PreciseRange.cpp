@@ -163,7 +163,7 @@ namespace gnsstk
          else {
             double AR;     // angular radius of sun
             Position Sun = SolarPosition(transmit, AR);
-            SVAtt = SatelliteAttitude(SatR, Sun);
+            SVAtt = satelliteAttitude(SatR, Sun);
          }
 
          // phase center offset vector in body frame
@@ -183,7 +183,7 @@ namespace gnsstk
          // phase center variation TD should this should be subtracted from rawrange?
          // get the body frame azimuth and nadir angles
          double nadir,az;
-         SatelliteNadirAzimuthAngles(SatR, Rx, SVAtt, nadir, az);
+         satelliteNadirAzimuthAngles(SatR, Rx, SVAtt, nadir, az);
          satLOSPCV = 0.001*(fact1 * antenna.getPhaseCenterVariation(Freq1, az, nadir)
                          + fact2 * antenna.getPhaseCenterVariation(Freq2, az, nadir));
       }
