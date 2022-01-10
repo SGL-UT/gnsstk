@@ -136,7 +136,7 @@ namespace gnsstk
 
    protected:
          /// Quick alias for a shared_ptr to GPSCNav2ISC.
-      using GPSCNav2ISCPtr = std::shared_ptr<GPSCNav2ISC>;
+      typedef std::shared_ptr<GPSCNav2ISC> GPSCNav2ISCPtr;
 
          /// Map signal to ISC for accumulating data between SF2 and SF3.
       std::map<NavSatelliteID, GPSCNav2ISCPtr> iscAcc;

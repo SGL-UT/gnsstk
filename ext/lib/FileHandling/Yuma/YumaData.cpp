@@ -289,54 +289,5 @@ namespace gnsstk
 
    } // end of AlmOrbit()
 
-   YumaData::operator OrbAlmGen() const
-   {
-     OrbAlmGen oag;
-
-     oag.AHalf    = Ahalf;
-     oag.A        = Ahalf * Ahalf;
-     oag.af1      = AF1;
-     oag.af0      = AF0;
-     oag.OMEGA0   = OMEGA0;
-     oag.ecc      = ecc;
-     oag.deltai   = i_offset;
-     oag.i0       = i_total;
-     oag.OMEGAdot = OMEGAdot;
-     oag.w        = w;
-     oag.M0       = M0;
-     oag.toa      = Toa;
-     oag.health   = SV_health;
-
-     // At this writing Yuma almanacs only exist for GPS
-     oag.subjectSV = SatID(PRN, SatelliteSystem::GPS);
-
-     // Unfortunately, we've NO IDEA which SV transmitted
-     // these data.
-     oag.satID = SatID(0,SatelliteSystem::GPS);
-
-     //
-     oag.ctToe = GPSWeekSecond(week,Toa,TimeSystem::GPS);
-
-     // There is no transmit time in the Yuma alamanc format.
-     // Therefore, beginValid and endvalid are estimated.  The
-     // estimate is based on IS-GPS-200 Table 20-XIII.
-     oag.beginValid = oag.ctToe - (70 * 3600.0);
-     oag.endValid   = oag.beginValid + (144 * 3600.0);
-
-     oag.dataLoadedFlag = true;
-     oag.setHealthy(false);
-     if (oag.health==0)
-        oag.setHealthy(true);
-
-        // It is assumed that the data were broadcast on
-        // each of L1 C/A, L1 P(Y), and L2 P(Y).   We'll
-        // load obsID with L1 C/A for the sake of completeness,
-        // but this will probably never be examined.
-     oag.obsID = ObsID(ObservationType::NavMsg,CarrierBand::L1,TrackingCode::CA);
-
-     return oag;
-   }
-
-
 
 } // namespace

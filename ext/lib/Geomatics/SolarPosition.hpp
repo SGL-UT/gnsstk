@@ -80,14 +80,6 @@ namespace gnsstk {
    /// @return  Position (ECEF) of the Moon at t
    Position LunarPosition(CommonTime t, double& AR) throw();
 
-   /// Compute the fraction of the area of the Sun covered by the Earth as seen from
-   /// another body (e.g. satellite).
-   /// @param Rearth  Apparent angular radius of Earth.
-   /// @param Rsun    Apparent angular radius of Sun.
-   /// @param dES     Angular separation of Sun and Earth.
-   /// @return Fraction (0 <= factor <= 1) of Sun area covered by Earth
-   double shadowFactor(double Rearth, double Rsun, double dES) throw();
-
 }  // end namespace gnsstk
 
 #endif // SOLAR_POSITION_INCLUDE

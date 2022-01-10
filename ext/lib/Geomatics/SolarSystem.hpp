@@ -304,7 +304,7 @@ public:
    {
       try {
          Position Sun = SolarSystem::SolarPosition(tt);
-         return gnsstk::SatelliteAttitude(SV, Sun);
+         return gnsstk::satelliteAttitude(SV, Sun);
       }
       catch(Exception& e) { GNSSTK_RETHROW(e); }
    }
@@ -329,7 +329,7 @@ public:
    {
       try {
          Position Sun = SolarSystem::SolarPosition(tt);
-         gnsstk::SunOrbitAngles(Pos, Vel, Sun, beta, phi);
+         gnsstk::sunOrbitAngles(Pos, Vel, Sun, beta, phi);
       }
       catch(Exception& e) { GNSSTK_RETHROW(e); }
    }

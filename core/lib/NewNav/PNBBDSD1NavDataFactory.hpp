@@ -205,9 +205,9 @@ namespace gnsstk
          uint8_t amEpID; ///< The two-bit AmEpID value.
       };
          /// Alias for almanac objects.
-      using AlmPtr = std::shared_ptr<BDSD1NavAlm>;
+      typedef std::shared_ptr<BDSD1NavAlm> AlmPtr;
          /// Alias for list of almanac objects.
-      using AlmPtrList = std::list<AlmPtr>;
+      typedef std::list<AlmPtr> AlmPtrList;
          /** Map transmit PRN to fully qualified week/second
           * (WNa/toa).  This is set by sf 5 pg 8. */
       std::map<unsigned, BDSWeekSecond> fullWNaMap;

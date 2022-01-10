@@ -50,7 +50,6 @@
 
 #include "FFStream.hpp"
 #include "AlmOrbit.hpp"
-#include "OrbAlmGen.hpp"
 #include "YumaBase.hpp"
 #include "YumaHeader.hpp"
 #include "StringUtils.hpp"
@@ -129,12 +128,6 @@ namespace gnsstk
           * @return the constructed AlmOrbit object
           */
       operator AlmOrbit() const;
-
-         /**
-          * cast *this into an OrbAlmGen
-          * @return the constructed OrbAlmGen object
-          */
-      operator OrbAlmGen() const;
 
    protected:
 	 /**

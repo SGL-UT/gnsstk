@@ -38,8 +38,8 @@
 
 /// @file PreciseRange.hpp
 /// Include file defining class PreciseRange: computation of range and associated
-/// quantities from XvtStore, given receiver position and time.
-
+/// quantities from NavLibrary, given receiver position and time.
+ 
 //------------------------------------------------------------------------------------
 #ifndef PRECISE_EPHEMERIS_RANGE_INCLUDE
 #define PRECISE_EPHEMERIS_RANGE_INCLUDE
@@ -48,7 +48,7 @@
 // GNSSTk
 #include "CommonTime.hpp"
 #include "Position.hpp"
-#include "XvtStore.hpp"
+#include "NavLibrary.hpp"
 #include "SatID.hpp"
 #include "Matrix.hpp"
 
@@ -65,7 +65,7 @@ namespace gnsstk
    /// class PreciseRange. Compute the corrected range from receiver
    /// at position Rx, to the GPS satellite given by SatID sat, as well as azimuth,
    /// elevation, etc., given a nominal timetag (either received or transmitted
-   /// time) and an XvtStore.
+   /// time) and a NavLibrary.
    class PreciseRange
    {
    public:
@@ -73,7 +73,7 @@ namespace gnsstk
       PreciseRange() {}
 
       /// Compute the corrected range at transmit time from ephemeris is the given
-      /// XvtStore, from receiver at position Rx with measured pseudorange pr and
+      /// NavLibrary, from receiver at position Rx with measured pseudorange pr and
       /// time tag nomRecTime, to the GPS satellite given by SatID sat,
       /// as well as all the CER quantities.
       /// @param nomRecTime  nominal receive time
@@ -97,7 +97,7 @@ namespace gnsstk
                                    const std::string& freq1,
                                    const std::string& freq2,
                                    SolarSystem& SolSys,
-                                   const XvtStore<SatID>& Eph,
+                                   NavLibrary& Eph,
                                    const bool isCOM=false);
 
       /// Version with no antenna, and therefore no Attitude and no SolarSystem;
@@ -107,7 +107,7 @@ namespace gnsstk
                                    const double pr,
                                    const Position& Rx,
                                    const SatID sat,
-                                   const XvtStore<SatID>& Eph)
+                                   NavLibrary& Eph)
       {
          // ant will be invalid, so antenna computations will be skipped;
          // thus satellite attitude will not be needed.
@@ -128,7 +128,7 @@ namespace gnsstk
       /// The satellite position (m) and velocity (m/s) in ECEF coordinates
       Position SatR, SatV;
 
-      /// The satellite clock bias (m) and drift (m/s) at transmit time, from XvtStore
+      /// The satellite clock bias (m) and drift (m/s) at transmit time, from NavLibrary
       double satclkbias, satclkdrift;
 
       /// The satellite elevation (spheroidal), as seen at the receiver, in degrees.
