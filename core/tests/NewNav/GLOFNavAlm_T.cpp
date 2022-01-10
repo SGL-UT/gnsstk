@@ -118,7 +118,7 @@ getXvtTest()
       // interval for this test.
    uut.setSemiMajorAxisIncl();
    gnsstk::Xvt xvt;
-   TUASSERTE(bool, true, uut.getXvt(toi, xvt));
+   TUASSERTE(bool, false, uut.getXvt(toi, xvt));
    std::cout << "xvt = " << std::setprecision(17) << xvt << std::endl;
    gnsstk::CommonTime x(gnsstk::YDSTime(2001,249,0,gnsstk::TimeSystem::GLO));
    unsigned i = 0;
