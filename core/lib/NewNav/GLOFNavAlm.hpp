@@ -58,8 +58,10 @@ namespace gnsstk
       static const double mu;
          /// Equatorial radius of Earth in km.
       static const double ae;
-         /// Fatty acids? No, Earth's rotation rate.
-      static constexpr double omega3 = 0.7392115e-4;
+         /** Fatty acids? No, Earth's rotation rate.
+          * @note This is incorrectly listed as .73... in one
+          * location.  It is, in fact, .72... */
+      static constexpr double omega3 = 0.7292115e-4;
          /// i<sub>cp</cp> as defined in GLONASS ICD appendix 3.2.1
       static const double icp;
          /// T<sub>cp</cp> as defined in GLONASS ICD appendix 3.2.1
@@ -81,7 +83,8 @@ namespace gnsstk
       bool validate() const override;
 
          /** Compute the satellites position and velocity at a time.
-          * @todo Make sure this statement is either true or fixed/removed.
+          * @bug This method does not yield expected results and until
+          *   it is fixed will always return false.
           * @note Defaults to using the GPS ellipsoid parameters.
           * @param[in] when The time at which to compute the xvt.
           * @param[out] xvt The resulting computed position/velocity.
@@ -131,7 +134,8 @@ namespace gnsstk
 	 void setEccArgOfPerigee(double ecc, double omega);
             /** Set terms related to the orbit semi-major axis and inclination.
              * @param[in] deltaT Delta T parameter from broadcast almanac. */
-         void setSemiMajorAxisIncl(double deltaT, double deltai, double omega, double ecc);
+         void setSemiMajorAxisIncl(double deltaT, double deltai, double omega,
+                                   double ecc);
             /** Set lambdaBar and related data members according to
              * the given values.
              * @param[in] M Computed mean anomaly, I think.

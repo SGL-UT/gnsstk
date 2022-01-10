@@ -22,6 +22,7 @@
 //
 //==============================================================================
 
+
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -35,51 +36,42 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-
-#include <math.h>
-#include "AngleReduced.hpp"
-#include "GNSSconstants.hpp"
+#include "AngleType.hpp"
 
 namespace gnsstk
 {
-   AngleReduced ::
-   AngleReduced()
-         : sine(std::numeric_limits<double>::quiet_NaN()),
-           cosine(std::numeric_limits<double>::quiet_NaN())
-   {}
-
-
-   void AngleReduced ::
-   setValue(double v, AngleType t)
+   namespace StringUtils
    {
-      double radians;
-      switch (t)
+      std::string asString(AngleType e) throw()
       {
-         case AngleType::Rad:
-            sine = ::sin(v);
-            cosine = ::cos(v);
-            break;
-         case AngleType::Deg:
-            radians = v * DEG2RAD;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::SemiCircle:
-            radians = v * PI;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::Sin:
-            sine = v;
-            cosine = ::sqrt(1-sine*sine);
-            break;
-         case AngleType::Cos:
-            cosine = v;
-            sine = ::sqrt(1-cosine*cosine);
-            break;
-         default:
-            GNSSTK_THROW(Exception("Invalid type in setValue"));
-            break;
+         switch (e)
+         {
+            case AngleType::Unknown:    return "Unknown";
+            case AngleType::Rad:        return "radians";
+            case AngleType::Deg:        return "degrees";
+            case AngleType::SemiCircle: return "semi-circles";
+            case AngleType::Sin:        return "sin";
+            case AngleType::Cos:        return "cos";
+            default:                    return "???";
+         }
       }
-   }
-}
+
+
+      AngleType asAngleType(const std::string& s) throw()
+      {
+         if (s == "Unknown")
+            return AngleType::Unknown;
+         if (s == "radians")
+            return AngleType::Rad;
+         if (s == "degrees")
+            return AngleType::Deg;
+         if (s == "semi-circles")
+            return AngleType::SemiCircle;
+         if (s == "sin")
+            return AngleType::Sin;
+         if (s == "cos")
+            return AngleType::Cos;
+         return AngleType::Unknown;
+      }
+   } // namespace StringUtils
+} // namespace gnsstk

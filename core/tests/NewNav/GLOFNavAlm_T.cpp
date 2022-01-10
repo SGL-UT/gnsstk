@@ -43,6 +43,7 @@
 #include "YDSTime.hpp"
 #include "TimeString.hpp"
 #include "GLOFNavEph.hpp"
+#include "Angle.hpp"
 
 namespace gnsstk
 {
@@ -61,6 +62,7 @@ public:
    unsigned getXvtTest();
    unsigned getUserTimeTest();
    unsigned fixFitTest();
+   unsigned blahTest();
 };
 
 
@@ -166,6 +168,89 @@ fixFitTest()
 }
 
 
+unsigned GLOFNavAlm_T ::
+blahTest()
+{
+   TUDEF("GLOFNavAlm", "nothing");
+   using namespace gnsstk;
+   using namespace std;
+      // system/model constants
+   const double omega3 = 0.7292115e-4;
+   const double mu = 398600.4418; // km**3/sec**2
+   const double C20 = -1082.62575e-6;
+   const double ae = 6378.136; // km
+   const Angle icp(63.0, AngleType::Deg);
+   const double Tcp = 43200; // seconds
+      // elemnents from almanac
+   const unsigned aNAj = 615;                // Date 06 09 2001
+   const Angle alambdaj(-0.189986229, AngleType::SemiCircle);
+   const double atlambdaj = 27122.09375;     // seconds
+   const Angle aDeltaij(0.011929512, AngleType::SemiCircle);
+   const double aDeltaTj = -2655.76171875;   // seconds
+   const double aDeltaTPrimej = 0.000549316; // seconds/cycle**2
+   const double aepsilonj = 0.001482010;     // unit
+   const Angle aomegaj(0.440277100, AngleType::SemiCircle);
+      // time of interest
+   const unsigned cNAj = 615;                // Date 06 09 2001
+   const double ctlambdaj = 33300.;          // seconds
+   const Angle cS0(6.02401539573, AngleType::Rad);
+      // expected values
+   const double eXoi = 10947.021572;
+   const double eYoi = 13078.978287;
+   const double eZoi = 18922.063362;
+   const double eVxoi = -3.375497;
+   const double eVyoi = -0.161453;
+   const double eVzoi = 2.060844;
+
+      // dummies, aka my best guess at what values are supposed to be
+      // plugged in since the ICD isn't 100% clear.
+   unsigned N0 = aNAj;
+   Angle lambda = alambdaj;
+   double tlambda = atlambdaj;
+   Angle Deltai = aDeltaij;
+   double DeltaT = aDeltaTj;
+   double DeltaTPrime = aDeltaTPrimej;
+   double e = aepsilonj;
+   Angle omega = aomegaj;
+   Angle S0 = cS0;
+   double ti = ctlambdaj;
+   double NA = cNAj;
+   
+
+      // page 67 (russian)
+   double Tdeltap = Tcp + DeltaT;
+   Angle i = icp + Deltai;
+      // a* are in km
+   double a0 = ::pow((Tdeltap/(2*PI))*(Tdeltap/(2*PI))*mu, 1.0/3.0);
+   cerr << "a(0) = " << a0 << endl;
+   double an = a0;
+   double anp1 = -9999999999999;
+   Angle nu = -omega;
+   unsigned n = 0;
+   while (fabs(anp1-an) >= 1e-3)
+   {
+      double pn = an * (1-e*e);
+      cerr << "p(" << n << ") = " << pn << endl;
+      double Tocknp1 = Tdeltap /
+         (1+(3/2)*C20*(ae/pn)*(ae/pn)*
+          ((2-(5/2)*sin(i)*sin(i)) *
+           (::pow(1-e*e,3.0/2.0) / ((1+e*cos(omega))*(1+e*cos(omega)))) +
+           (((1+e*cos(nu))*(1+e*cos(nu))*(1+e*cos(nu))) / (1-e*e))));
+      cerr << "Tock(" << (n+1) << ") = " << Tocknp1 << endl;
+      if (n > 0)
+         an = anp1;
+      anp1 = ::pow((Tocknp1/(2*PI))*(Tocknp1/(2*PI))*mu, 1.0/3.0);
+      cerr << "a(" << n << ") = " << an << endl
+           << "a(" << (n+1) << ") = " << anp1 << endl;
+      n++;
+   }
+   cerr << "a = " << anp1 << " km" << endl;
+//   double Vzoi = Vri * sin(ui) * sin(ii) + Vui * sin(ui) * sin(ii);
+   GLOFNavAlm::NumberCruncher nc;
+   TURETURN();
+}
+
+
 int main()
 {
    GLOFNavAlm_T testClass;
@@ -176,6 +261,7 @@ int main()
    errorTotal += testClass.getXvtTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.fixFitTest();
+   errorTotal += testClass.blahTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

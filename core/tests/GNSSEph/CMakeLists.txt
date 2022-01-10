@@ -28,10 +28,6 @@ add_executable(EphemerisRange_T EphemerisRange_T.cpp)
 target_link_libraries(EphemerisRange_T gnsstk)
 add_test(GNSSEph_EphemerisRange EphemerisRange_T)
 
-add_executable(GalEphemeris_T GalEphemeris_T.cpp)
-target_link_libraries(GalEphemeris_T gnsstk)
-add_test(GNSSEph_GalEphemeris GalEphemeris_T)
-
 add_executable(NavID_T NavID_T.cpp)
 target_link_libraries(NavID_T gnsstk)
 add_test(GNSSEph_NavID NavID_T)

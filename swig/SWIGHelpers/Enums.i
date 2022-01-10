@@ -21,6 +21,7 @@ ENUM_MAPPER(gnsstk::ReferenceFrame, ReferenceFrame)
 %include "GalHealthStatus.hpp"
 %include "GalDataValid.hpp"
 %include "XmitAnt.hpp"
+%include "AngleType.hpp"
 
 // This code allows us to turn C++ enums into Python enums while
 // maintaining compatibility in SWIG bindings.  We specifically use an
@@ -62,6 +63,7 @@ renameEnums('DumpDetail')
 renameEnums('GalHealthStatus')
 renameEnums('GalDataValid')
 renameEnums('XmitAnt')
+renameEnums('AngleType')
 del renameEnums
 del IntEnum
 %}
