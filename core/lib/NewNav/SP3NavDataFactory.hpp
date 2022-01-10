@@ -42,8 +42,6 @@
 #include "NavDataFactoryWithStoreFile.hpp"
 #include "SP3Data.hpp"
 #include "SP3Header.hpp"
-#include "ClockSatStore.hpp"
-#include "PositionSatStore.hpp"
 
 namespace gnsstk
 {
