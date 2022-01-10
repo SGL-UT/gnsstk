@@ -123,37 +123,6 @@ gnsstk/core/lib/NewNav/NavLibrary.hpp:964: Warning 509: as it is shadowed by gns
 %include "STLHelpers.i"
 
 
-// v 2.0.12 required for KLOBUCHAR IONO MODEL
-// We need to provide methods that allow casting objects to their instance types.
-#define KLOBUCHAR_SUPPORT (SWIG_VERSION >= 0x020012 ? True : False)
-#if SWIG_VERSION >= 0x020012
-%inline %{
-  gnsstk::OrbSysGpsC_30* cast_to_OrbSysGpsC_30(gnsstk::OrbDataSys* ods) {
-    return static_cast<gnsstk::OrbSysGpsC_30*>(ods);
-  }
-  gnsstk::OrbSysGpsL_56* cast_to_OrbSysGpsL_56(gnsstk::OrbDataSys* ods) {
-    return static_cast<gnsstk::OrbSysGpsL_56*>(ods);
-  }
-%}
-// Include to generate swig::trait::typename()
-%{
-  namespace swig {
-    template <> struct traits<gnsstk::OrbDataSys> {
-        typedef pointer_category category;
-        static const char* type_name() {return "gnsstk::OrbDataSys";}
-    };
-  }
-%}
-
-// SWIG out the msgMap in gnsstk::OrbSysStore
-%template (TimeMsgMap) std::map<gnsstk::CommonTime, gnsstk::OrbDataSys* >;
-%template (UIDMsgMap) std::map<uint16_t, std::map<gnsstk::CommonTime, gnsstk::OrbDataSys* > >;
-%template (NavIDMsgMap) std::map<gnsstk::NavID, std::map<uint16_t, std::map<gnsstk::CommonTime, gnsstk::OrbDataSys* > > >;
-%template (SatIDMsgMap) std::map<gnsstk::SatID, std::map<gnsstk::NavID, std::map<uint16_t, std::map<gnsstk::CommonTime, gnsstk::OrbDataSys* > > > >;
-#endif
-
-
-
 // =============================================================
 //  Section 13: Aggregated features (e.g. string translation)
 // =============================================================

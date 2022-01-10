@@ -46,10 +46,6 @@
 #include <string>
 #include <vector>
 
-// GNSSTk
-#include "GPSEphemerisStore.hpp"
-#include "SP3EphemerisStore.hpp"
-
 namespace gnsstk
 {
       /// @ingroup FileHandling
@@ -113,16 +109,6 @@ namespace gnsstk
       /// @param files  vector<string> containing filenames, with path
       /// @return string containing error messages, if any
    std::string sortRinex3ObsFiles(std::vector<std::string>& files);
-
-      /// Open the files and add to the appropriate EphemerisStore.
-      /// @param files vector of the filenames.
-      /// @param PE an SP3EphemerisStore into which to put SP3 ephemeris data.
-      /// @param BCE a GPSEphemerisStore into which to put broadcast
-      ///    (Rinex Nav) ephemeris data.
-      /// @return the number of files successfully read.
-   int FillEphemerisStore(const std::vector<std::string>& files,
-                          gnsstk::SP3EphemerisStore& PE,
-                          gnsstk::GPSEphemerisStore& BCE);
 
       //@}
 

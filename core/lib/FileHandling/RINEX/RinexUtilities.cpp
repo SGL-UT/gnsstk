@@ -453,65 +453,6 @@ string sortRinex3ObsFiles(vector<string>& files)
    return msg;
 }
 
-//------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------
-int FillEphemerisStore(const vector<string>& files, SP3EphemerisStore& PE,
-                                                     GPSEphemerisStore& BCE)
-{
-   try
-   {
-      int nread = 0;
-      Rinex3NavHeader rnh;
-      Rinex3NavData rne;
-      for(size_t nfile = 0; nfile < files.size(); nfile++) {
-         if(files[nfile].empty()) {
-            Exception e("File name is empty");
-            GNSSTK_THROW(e);
-         }
-
-         if(isRinex3NavFile(files[nfile]) || isRinexNavFile(files[nfile])) {
-            Rinex3NavStream instrm(files[nfile].c_str());
-            instrm.exceptions(fstream::failbit);
-            try {
-               instrm >> rnh;
-               while (instrm >> rne) {
-                  // check health...
-                  if(rne.health == 0)
-                     BCE.addEphemeris(rne);
-               }
-               nread++;
-            }
-            catch(Exception& e) {
-               GNSSTK_RETHROW(e);
-            }
-         }
-
-         else if(isSP3File(files[nfile])) {
-            try {
-               PE.loadFile(files[nfile]);
-               nread++;
-            }
-            catch(Exception& e) { GNSSTK_RETHROW(e); }
-         }
-         else {
-            Exception e("File " + files[nfile]
-                  + " is neither Rinex Nav nor SP3 file.");
-            GNSSTK_THROW(e);
-         }
-      }
-      return nread;
-   }
-   catch(Exception& e) { GNSSTK_RETHROW(e); }
-   catch(std::exception& e) {
-      Exception E("std except: "+string(e.what()));
-      GNSSTK_THROW(E);
-   }
-   catch(...) {
-      Exception e("Unknown exception");
-      GNSSTK_THROW(e);
-   }
-}
-
 } // end namespace gnsstk
 
 //------------------------------------------------------------------------------------
