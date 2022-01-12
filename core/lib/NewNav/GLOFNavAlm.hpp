@@ -133,7 +133,12 @@ namespace gnsstk
 	     */
 	 void setEccArgOfPerigee(double ecc, double omega);
             /** Set terms related to the orbit semi-major axis and inclination.
-             * @param[in] deltaT Delta T parameter from broadcast almanac. */
+             * @param[in] deltaT Delta T parameter from broadcast almanac.
+             * @param[in] deltai Delta i parameter from broadcast almanac.
+             * @param[in] omega omega (lower-case) parameter from
+             *   broadcast almanac.
+             * @param[in] ecc epsilon (lower-case) parameter from
+             *   broadcast almanac (eccentricity). */
          void setSemiMajorAxisIncl(double deltaT, double deltai, double omega,
                                    double ecc);
             /** Set lambdaBar and related data members according to
@@ -251,24 +256,27 @@ namespace gnsstk
 
          // M_n^a is stored in GLOFNavData::satType
          // slot (n^A) is stored in the signal structure and GLOFNavData::slot
+         // Note that in naming variables below, I've explicitly added
+         // "nA" to match the ICD notation to the extent we can and to
+         // hopefully reduce confusion due to overloaded variables.
       CommonTime Toa;     ///< Reference time for almanac.
       bool healthBits;    ///< Health flag (C_n, 1 = operable).
          // This is tau sub n sup A, not to be confused with tau used
          // to compute the orbit.
-      double tau;         ///< Time offset to GLONASS time (tau_n^A).
-      double lambda;      ///< Longitude of ascending node (lambda_n^A).
-      double deltai;      ///< Correction to mean inclination (Delta i_n^A).
-      double ecc;         ///< Eccentricity (epsilon_n^A).
-      double omega;       ///< Argument of perigee (omega_n^A).
-      double tLambda;     ///< Time of ascending node crossing (t_lambda_n^A).
-      double deltaT;      ///< Correction to mean value of Draconian period (Delta T_n^A).
-      double deltaTdot;   ///< Time derivative of deltaT (Delta T'_n^A).
-      int freq;           ///< Frequency offset (H_n^A).
+      double taunA;         ///< Time offset to GLONASS time (tau_n^A).
+      double lambdanA;      ///< Longitude of ascending node (lambda_n^A).
+      double deltainA;      ///< Correction to mean inclination (Delta i_n^A).
+      double eccnA;         ///< Eccentricity (epsilon_n^A).
+      double omeganA;       ///< Argument of perigee (omega_n^A).
+      double tLambdanA;     ///< Time of ascending node crossing (t_lambda_n^A).
+      double deltaTnA;      ///< Correction to mean value of Draconian period (Delta T_n^A).
+      double deltaTdotnA;   ///< Time derivative of deltaT (Delta T'_n^A).
+      int freqnA;           ///< Frequency offset (H_n^A).
          // These data members are computed by setSemiMajorAxisIncl,
          // which should be done immediately following filling in the
          // data above and calling fixFit() when decoding a GLONASS
          // almanac.
-      NumberCruncher nc;  ///< Retain as much computed data as possible.
+      NumberCruncher math;  ///< Retain as much computed data as possible.
    };
 
       //@}

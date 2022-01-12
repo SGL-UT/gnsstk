@@ -37,43 +37,53 @@
 //
 //==============================================================================
 #include "AngleType.hpp"
-#include "StringUtils.hpp"
+#include "TestUtil.hpp"
 
 namespace gnsstk
 {
-   namespace StringUtils
+   std::ostream& operator<<(std::ostream& s, gnsstk::AngleType e)
    {
-      std::string asString(AngleType e) throw()
-      {
-         switch (e)
-         {
-            case AngleType::Unknown:    return "Unknown";
-            case AngleType::Rad:        return "radians";
-            case AngleType::Deg:        return "degrees";
-            case AngleType::SemiCircle: return "semi-circles";
-            case AngleType::Sin:        return "sin";
-            case AngleType::Cos:        return "cos";
-            default:                    return "???";
-         }
-      }
+      s << StringUtils::asString(e);
+      return s;
+   }
+}
 
 
-      AngleType asAngleType(const std::string& s) throw()
-      {
-         std::string lc(gnsstk::StringUtils::lowerCase(s));
-         if (lc == "unknown")
-            return AngleType::Unknown;
-         if (lc == "radians")
-            return AngleType::Rad;
-         if (lc == "degrees")
-            return AngleType::Deg;
-         if (lc == "semi-circles")
-            return AngleType::SemiCircle;
-         if (lc == "sin")
-            return AngleType::Sin;
-         if (lc == "cos")
-            return AngleType::Cos;
-         return AngleType::Unknown;
-      }
-   } // namespace StringUtils
-} // namespace gnsstk
+class AngleType_T
+{
+public:
+   unsigned convertTest();
+};
+
+
+unsigned AngleType_T ::
+convertTest()
+{
+   TUDEF("AngleType", "asString");
+      // This effectively tests AngleTypeIterator and asString at once.
+   for (gnsstk::AngleType e : gnsstk::AngleTypeIterator())
+   {
+      TUCSM("asString");
+      std::string s(gnsstk::StringUtils::asString(e));
+      TUASSERT(!s.empty());
+      TUASSERT(s != "???");
+      TUCSM("asAngleType");
+      gnsstk::AngleType e2 = gnsstk::StringUtils::asAngleType(s);
+      TUASSERTE(gnsstk::AngleType, e, e2);
+   }
+   TURETURN();
+}
+
+
+int main()
+{
+   AngleType_T testClass;
+   unsigned errorTotal = 0;
+
+   errorTotal += testClass.convertTest();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+             << std::endl;
+
+   return errorTotal;
+}

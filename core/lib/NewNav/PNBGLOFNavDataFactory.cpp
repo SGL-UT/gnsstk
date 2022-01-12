@@ -425,22 +425,22 @@ namespace gnsstk
                      : SVHealth::Unhealthy);
       alm->satType = static_cast<GLOFNavEph::SatType>(
          almS[almIdx+asoM]->asUnsignedLong(asbM,anbM,ascM));
-      alm->tau = almS[almIdx+asotau]->asSignMagDouble(asbtau,anbtau,asctau);
+      alm->taunA = almS[almIdx+asotau]->asSignMagDouble(asbtau,anbtau,asctau);
       // cerr << "almIdx+asolambda=" << (almIdx+asolambda) << endl;
       unsigned long fudge1 = almS[almIdx]->asUnsignedLong(
          fsbStrNum,fnbStrNum,fscStrNum);
       unsigned long fudge2 = almS[almIdx+1]->asUnsignedLong(
          fsbStrNum,fnbStrNum,fscStrNum);
       // cerr << "fudge1=" << fudge1 << "  fudge2=" << fudge2 << endl;
-      alm->lambda = almS[almIdx+asolambda]->asSignMagDoubleSemiCircles(
+      alm->lambdanA = almS[almIdx+asolambda]->asSignMagDoubleSemiCircles(
          asblambda,anblambda,asclambda);
-      alm->deltai = almS[almIdx+asodeltai]->asSignMagDoubleSemiCircles(
+      alm->deltainA = almS[almIdx+asodeltai]->asSignMagDoubleSemiCircles(
          asbdeltai,anbdeltai,ascdeltai);
-      alm->ecc = almS[almIdx+asoepsilon]->asSignMagDouble(
+      alm->eccnA = almS[almIdx+asoepsilon]->asSignMagDouble(
          asbepsilon,anbepsilon,ascepsilon);
-      alm->omega = almS[almIdx+asoomega]->asSignMagDoubleSemiCircles(
+      alm->omeganA = almS[almIdx+asoomega]->asSignMagDoubleSemiCircles(
          asbomega,anbomega,ascomega);
-      alm->tLambda = almS[almIdx+asot]->asUnsignedDouble(asbt,anbt,asct);
+      alm->tLambdanA = almS[almIdx+asot]->asUnsignedDouble(asbt,anbt,asct);
          // Epoch time for the almanac is tied to the first ascending
          // crossing of the plane.  The NATIVE timescale for GLONASS
          // time is UTC + 3h.  The Na parameter from String 5 should
@@ -448,12 +448,12 @@ namespace gnsstk
          // SOD epoch time to the almanac day (all in UTC+3h)
          // then move that time to UTC.
       YDSTime almYDS(almDOY);
-      alm->Toa = YDSTime(almYDS.year,almYDS.doy,alm->tLambda,TimeSystem::GLO);
-      alm->deltaT = almS[almIdx+asoDeltaT]->asSignMagDouble(
+      alm->Toa = YDSTime(almYDS.year,almYDS.doy,alm->tLambdanA,TimeSystem::GLO);
+      alm->deltaTnA = almS[almIdx+asoDeltaT]->asSignMagDouble(
          asbDeltaT,anbDeltaT,ascDeltaT);
-      alm->deltaTdot = almS[almIdx+asoDeltaTdot]->asSignMagDouble(
+      alm->deltaTdotnA = almS[almIdx+asoDeltaTdot]->asSignMagDouble(
          asbDeltaTdot,anbDeltaTdot,ascDeltaTdot);
-      alm->freq = almS[almIdx+asoH]->asLong(asbH,anbH,ascH);
+      alm->freqnA = almS[almIdx+asoH]->asLong(asbH,anbH,ascH);
       alm->lhealth = almS[almIdx+asol]->asBool(asbl);
       alm->fixFit();
       navOut.push_back(p0);
@@ -512,7 +512,7 @@ namespace gnsstk
          }
          unsigned year = 1996 + 4*(N4-1) + (J - 1);
          almDOY = YDSTime(year,doy,0);
-            // cerr << "almDOY = " << almDOY << "  pendingAlms=" << pendingAlms << endl;
+         cerr << "almDOY = " << almDOY << "  year=" << year << "  doy=" << doy << "  N4=" << N4 << "  J=" << J << "  pendingAlms=" << pendingAlms << endl;
          if (pendingAlms)
          {
                // iterate through the almanac accumulator and finish any

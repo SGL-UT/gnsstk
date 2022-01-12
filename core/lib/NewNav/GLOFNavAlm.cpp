@@ -40,6 +40,7 @@
 #include "TimeString.hpp"
 #include "YDSTime.hpp"
 #include "GLOFNavEph.hpp"
+#include "DebugTrace.hpp"
 
 using namespace std;
 
@@ -50,7 +51,7 @@ namespace gnsstk
    const double GLOFNavAlm::ae = ell.a_km();
    const double GLOFNavAlm::icp = 63.0 * gnsstk::PI / 180.0;
    const double GLOFNavAlm::Tcp = 43200.0;
-   const double GLOFNavAlm::C20 = -1082.63e-6;
+   const double GLOFNavAlm::C20 = -1082.62575e-6;
    const double GLOFNavAlm::J = (-3.0/2.0) * C20;
    const double GLOFNavAlm::C20Term = (3.0/2.0) * C20;
 
@@ -58,15 +59,15 @@ namespace gnsstk
    GLOFNavAlm ::
    GLOFNavAlm()
          : healthBits(false),
-           tau(std::numeric_limits<double>::quiet_NaN()),
-           lambda(std::numeric_limits<double>::quiet_NaN()),
-           deltai(std::numeric_limits<double>::quiet_NaN()),
-           ecc(std::numeric_limits<double>::quiet_NaN()),
-           omega(std::numeric_limits<double>::quiet_NaN()),
-           tLambda(std::numeric_limits<double>::quiet_NaN()),
-           deltaT(std::numeric_limits<double>::quiet_NaN()),
-           deltaTdot(std::numeric_limits<double>::quiet_NaN()),
-           freq(-1)
+           taunA(std::numeric_limits<double>::quiet_NaN()),
+           lambdanA(std::numeric_limits<double>::quiet_NaN()),
+           deltainA(std::numeric_limits<double>::quiet_NaN()),
+           eccnA(std::numeric_limits<double>::quiet_NaN()),
+           omeganA(std::numeric_limits<double>::quiet_NaN()),
+           tLambdanA(std::numeric_limits<double>::quiet_NaN()),
+           deltaTnA(std::numeric_limits<double>::quiet_NaN()),
+           deltaTdotnA(std::numeric_limits<double>::quiet_NaN()),
+           freqnA(-1)
    {
       signal.messageType = NavMessageType::Almanac;
       msgLenSec = 4.0;
@@ -84,7 +85,7 @@ namespace gnsstk
    bool GLOFNavAlm ::
    getXvt(const CommonTime& when, Xvt& xvt)
    {
-      return nc.getXvt(when, xvt, *this);
+      return math.getXvt(when, xvt, *this);
    }
 
 
@@ -128,10 +129,6 @@ namespace gnsstk
       s.precision(0);
       s.fill(' ');
 
-      // s << "****************************************************************"
-      //   << "************" << endl
-      //   << "GLONASS ORB/CLK (IMMEDIATE) PARAMETERS" << endl << endl
-      //   << "SAT : " << signal.sat << endl << endl;
       s << "**************************************************************"
         << endl
         << " GLONASS ORB/CLK (NON-IMMEDIATE) PARAMETERS for GLONASS Slot "
@@ -169,14 +166,14 @@ namespace gnsstk
       s.precision(6);
       s.fill(' ');
 
-      s << "tau         " << setw(16) << tau  << " sec" << endl
-        << "lambda      " << setw(16) << lambda << " rad" << endl
-        << "di          " << setw(16) << deltai << " rad" << endl
-        << "e           " << setw(16) << ecc << " dimensionless" << endl
-        << "omega       " << setw(16) << omega << " rad" << endl
-        << "tLambda     " << setw(16) << tLambda << " seconds" << endl
-        << "dT          " << setw(16) << deltaT << " sec/orbit" << endl
-        << "dTd         " << setw(16) << deltaTdot << " sec/orbit**2" << endl;
+      s << "tau         " << setw(16) << taunA  << " sec" << endl
+        << "lambda      " << setw(16) << lambdanA << " rad" << endl
+        << "di          " << setw(16) << deltainA << " rad" << endl
+        << "e           " << setw(16) << eccnA << " dimensionless" << endl
+        << "omega       " << setw(16) << omeganA << " rad" << endl
+        << "tLambda     " << setw(16) << tLambdanA << " seconds" << endl
+        << "dT          " << setw(16) << deltaTnA << " sec/orbit" << endl
+        << "dTd         " << setw(16) << deltaTdotnA << " sec/orbit**2" << endl;
 
       s.setf(ios::fixed, ios::floatfield);
       s.precision(0);
@@ -192,7 +189,7 @@ namespace gnsstk
       s << endl
         << "M           " << setw(16) << static_cast<int>(satType)
         << " encoded: " << StringUtils::asString(satType) << endl
-        << "H           " << setw(16) << freq << " freq. offset" << endl
+        << "H           " << setw(16) << freqnA << " freq. offset" << endl
         << "Transmit SV " << setw(16) << signal.xmitSat << endl
         << "l           " << setw(16) << lhealth
         << " Health of transmitting SV" << endl;
@@ -218,7 +215,7 @@ namespace gnsstk
       {
          ss << "bad";
       }
-      ss << "    " << setw(2) << freq;
+      ss << "    " << setw(2) << freqnA;
       ss << "    " << setw(2) << signal.sat.id;
       s << ss.str();
    }
@@ -227,7 +224,8 @@ namespace gnsstk
    void GLOFNavAlm ::
    setSemiMajorAxisIncl()
    {
-      nc.setSemiMajorAxisIncl(deltaT, deltai, omega, ecc);
+      DEBUGTRACE_FUNCTION();
+      math.setSemiMajorAxisIncl(deltaTnA, deltainA, omeganA, eccnA);
    }
    
 
@@ -268,18 +266,30 @@ namespace gnsstk
    void GLOFNavAlm::NumberCruncher ::
    setEccArgOfPerigee(double ecc, double omega)
    {
+      DEBUGTRACE_FUNCTION();
       h = ecc * std::sin(omega);
       l = ecc * std::cos(omega);
       ecc2 = ecc * ecc;
       ecc2obv = 1.0 - ecc2;
+      DEBUGTRACE("ecc = " << ecc);
+      DEBUGTRACE("omega = " << omega);
+      DEBUGTRACE("h = " << h);
+      DEBUGTRACE("l = " << l);
+      DEBUGTRACE("ecc2 = " << ecc2);
+      DEBUGTRACE("ecc2obv = " << ecc2obv);
    }
 
 
    void GLOFNavAlm::NumberCruncher ::
    setSemiMajorAxisIncl(double deltaT, double deltai, double omega, double ecc)
    {
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("deltaT = " << deltaT);
+      DEBUGTRACE("deltai = " << deltai);
+      DEBUGTRACE("omega = " << omega);
+      DEBUGTRACE("ecc = " << ecc);
          // from GLONASS ICD appendix 3.2.2, Algorithm of calculation
-      double aCurr = 0, aPrev = 9999999;
+      double aCurr = -9999999999999, aPrev = -9999999999999;
       setEccArgOfPerigee(ecc, omega);
       Tdeltap = Tcp + deltaT;
       n = 2.0*gnsstk::PI / Tdeltap;
@@ -289,40 +299,51 @@ namespace gnsstk
       cosi = std::cos(i);
       cosi2 = cosi * cosi;
       double ninv = Tdeltap / (2.0*gnsstk::PI);
-      cerr << setprecision(15) << "icp = " << icp << endl << "Delta i = " << deltai << endl << "i = " << i << endl << "sini2 = " << sini2 << endl << "ninv = " << ninv << endl << "mu = " << mu << endl << "ecc2obv = "
-           << ecc2obv << endl;
+      DEBUGTRACE(setprecision(15) << "icp = " << icp);
+      DEBUGTRACE("Delta i = " << deltai);
+      DEBUGTRACE("i = " << i);
+      DEBUGTRACE("sini2 = " << sini2);
+      DEBUGTRACE("ninv = " << ninv);
+      DEBUGTRACE("mu = " << mu);
+      DEBUGTRACE("ecc2obv = " << ecc2obv);
       nu = -omega;
       double nuTerm = std::pow(1.0 + ecc * cos(nu), 3.0);
       double omegaTerm = std::pow(1.0 + ecc * cos(omega), 2.0);
       double eTerm = std::pow(ecc2obv, 3.0/2.0);
+      double siniTerm = (2.0 - (5.0/2.0)*sini2);
       double bigTerm =
-         ((2.0 - (5.0/2.0)*sini2) * (eTerm / omegaTerm) + (nuTerm / ecc2obv));
+         (siniTerm * (eTerm / omegaTerm) + (nuTerm / ecc2obv));
+      DEBUGTRACE("bigTerm = " << siniTerm << " * (" << eTerm << " / "
+                 << omegaTerm << ") + (" << nuTerm << " / " << ecc2obv << ")");
          // initial approximation a^(0)
-      aCurr = std::pow(ninv * ninv * mu, 1.0/3.0);
-      cerr << "a^(0) = " << aCurr << endl;
-      cerr << "  Tock_b = " << nuTerm << endl;
-      cerr << "  Tock_c = " << (nuTerm / ecc2obv) << endl;
-      cerr << "  Tock_d = " << eTerm << endl;
-      cerr << "  Tock_f = " << omegaTerm << endl;
-      cerr << "  Tock_g = " << (eTerm / omegaTerm) << endl;
-      cerr << "  Tock_h = " << (2.0 - (5.0/2.0)*sini2) << endl;
-      cerr << "  Tock_i = " << bigTerm << endl;
+      aPrev = std::pow(ninv * ninv * mu, 1.0/3.0);
+      DEBUGTRACE("a^(0) = " << aPrev);
+      DEBUGTRACE("Tock_b = " << nuTerm);
+      DEBUGTRACE("Tock_c = " << (nuTerm / ecc2obv));
+      DEBUGTRACE("Tock_d = " << eTerm);
+      DEBUGTRACE("Tock_e = " << C20Term);
+      DEBUGTRACE("Tock_f = " << omegaTerm);
+      DEBUGTRACE("Tock_g = " << (eTerm / omegaTerm));
+      DEBUGTRACE("Tock_h = " << siniTerm);
+      DEBUGTRACE("Tock_i = " << bigTerm);
       unsigned iteration = 0;
       while (fabs(aCurr-aPrev) >= 1e-3)
       {
-         cerr << "a^(" << iteration << ") = " << aPrev << endl;
-         aPrev = aCurr;
-         cerr << "   now a^(" << iteration << ") = " << aPrev << endl;
-         double p = aPrev * ecc2obv;
+         double pn = aPrev * ecc2obv;
             // note that I use Tdeltap / .... to match Tdeltap * ....^-1
-         double tock_k = (1.0 + C20Term * (ae/p) * (ae/p) * bigTerm);
-         cerr << "  Tock_k = " << tock_k << endl
-              << "  pn = " << p << endl;
+         double tock_k = (1.0 + C20Term * (ae/pn) * (ae/pn) * bigTerm);
          double Tock = Tdeltap / tock_k;
+         DEBUGTRACE("Tock_k = " << tock_k);
+         DEBUGTRACE("p(" << iteration << ") = " << pn);
+         DEBUGTRACE("Tock(" << (iteration+1) << ") = " << Tock);
+         if (iteration > 0)
+            aPrev = aCurr;
          aCurr = std::pow(std::pow(Tock/(2.0*gnsstk::PI),2.0) * mu, 1.0/3.0);
-         cerr << "a^(" << iteration++ << "+1) = " << aCurr << endl
-              << "  diff = " << fabs(aCurr-aPrev) << endl;
+         DEBUGTRACE("a^(" << iteration << ") = " << aCurr);
+         DEBUGTRACE("diff = " << fabs(aCurr-aPrev));
+         iteration++;
       }
+      DEBUGTRACE("a = " << aCurr << " km");
       a = aCurr;
       earthvs = std::pow(ae/a, 2.0);
       JTerm = J * earthvs;
@@ -335,14 +356,14 @@ namespace gnsstk
    void GLOFNavAlm::NumberCruncher ::
    setLambdaBar(double M, double omega, double tau, double n)
    {
+      DEBUGTRACE_FUNCTION();
       lambdaBar = M + omega + n * tau;
-      cerr << "setLambdaBar:" << endl
-           << "  M = " << M << endl
-           << "  omega = " << omega << endl
-           << "  n = " << n << endl
-           << "  tau = " << tau << endl
-           << "  n*tau = " << (n*tau) << endl
-           << "  lambdaBar = " << lambdaBar << endl;
+      DEBUGTRACE("M = " << M);
+      DEBUGTRACE("omega = " << omega);
+      DEBUGTRACE("n = " << n);
+      DEBUGTRACE("tau = " << tau);
+      DEBUGTRACE("n*tau = " << (n*tau));
+      DEBUGTRACE("lambdaBar = " << lambdaBar);
       coslambdaBar = std::cos(lambdaBar);
       sinlambdaBar = std::sin(lambdaBar);
       cos2lambdaBar = std::cos(2.0*lambdaBar);
@@ -357,6 +378,11 @@ namespace gnsstk
    void GLOFNavAlm::NumberCruncher ::
    setDeltas(double M, double omega, double a, double dt)
    {
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("M = " << M);
+      DEBUGTRACE("omega = " << omega);
+      DEBUGTRACE("a = " << a);
+      DEBUGTRACE("dt = " << dt);
       Deltas m1, m2;
          // lambda Bar MUST be set just prior to calling setDeltas in
          // order to get the proper value for tau, and thus the proper
@@ -366,19 +392,20 @@ namespace gnsstk
       setLambdaBar(M, omega, dt, n);
       m2.setDeltas(*this, a, dt, n);
       deltas = m2 - m1;
-      cerr << "deltas:" << endl
-           << "delta a = " << deltas.deltaa << endl
-           << "delta h = " << deltas.deltah << endl
-           << "delta l = " << deltas.deltal << endl
-           << "delta OMEGA = " << deltas.deltaOMEGA << endl
-           << "delta i = " << deltas.deltai << endl
-           << "delta lambda* = " << deltas.deltalambdaBar << endl;
+      DEBUGTRACE("deltas:");
+      DEBUGTRACE("delta a = " << deltas.deltaa);
+      DEBUGTRACE("delta h = " << deltas.deltah);
+      DEBUGTRACE("delta l = " << deltas.deltal);
+      DEBUGTRACE("delta OMEGA = " << deltas.deltaOMEGA);
+      DEBUGTRACE("delta i = " << deltas.deltai);
+      DEBUGTRACE("delta lambda* = " << deltas.deltalambdaBar);
    }
 
 
    double GLOFNavAlm::NumberCruncher ::
    getomegai(double hi, double li, double epsi)
    {
+      DEBUGTRACE_FUNCTION();
       if (epsi == 0)
       {
          return 0;
@@ -407,6 +434,7 @@ namespace gnsstk
    double GLOFNavAlm::NumberCruncher ::
    integrateEin(double Mi, double epsi)
    {
+      DEBUGTRACE_FUNCTION();
       double Ein = Mi, lastEin = -99999;
       while (fabs(Ein-lastEin) >= 1e-8)
       {
@@ -420,43 +448,52 @@ namespace gnsstk
    bool GLOFNavAlm::NumberCruncher ::
    getXvt(const CommonTime& when, Xvt& xvt, const GLOFNavAlm& alm)
    {
+      DEBUGTRACE_FUNCTION();
          // expressions computed once and reused multiple times are
          // marked "optimize"
          // I think this is sufficient - the original formula appears
          // to be getting the time difference between the requested
          // and reference times, in seconds.
          // This may also be the only place where NA is implicitly used.
+      DEBUGTRACE("when = " << printTime(when, "%Y/%02m/%02d %02H:%02M:%05.2f"));
+      DEBUGTRACE("toa = " << printTime(alm.Toa, "%Y/%02m/%02d %02H:%02M:%05.2f"));
       double tstar = when - alm.Toa;
       double Wk = tstar / Tdeltap;
          // I'm definitely not sure about this one.
       double W;
       std::modf(Wk,&W); // W is the integer part of Wk
-      double tscale = Tdeltap*W + alm.deltaTdot*W*W;       // optimize
-      double tLambdakBar = alm.tLambda + tscale;
+      double tscale = Tdeltap*W + alm.deltaTdotnA*W*W;       // optimize
+      double tLambdakBar = alm.tLambdanA + tscale;
       double tLambdak = std::fmod(tLambdakBar, 86400.0);
       double OMEGAdot = C20Term * n * earthvs * cosi * std::sqrt(ecc2obv);
-      cerr << "OMEGAdot = " << OMEGAdot << endl
-           << "n = " << n << endl;
-      double lambdak = alm.lambda + (OMEGAdot - omega3) * tscale;
+      double lambdak = alm.lambdanA + (OMEGAdot - omega3) * tscale;
+      DEBUGTRACE("tstar = " << tstar);
+      DEBUGTRACE("Wk = " << Wk);
+      DEBUGTRACE("W = " << W);
+      DEBUGTRACE("tlambdakBar = " << tLambdakBar);
+      DEBUGTRACE("tlambdak = " << tLambdak);
+      DEBUGTRACE("n = " << n);
+      DEBUGTRACE("OMEGAdot = " << OMEGAdot);
+      DEBUGTRACE("lambdak = " << lambdak);
       double gst = GLOFNavEph::getSiderealTime(alm.Toa);
       double S0 = gst*PI/12.0;
       double S = S0 + omega3 * (tLambdak - 10800);
       double OMEGA = lambdak + S;
-      cerr << "OMEGA = " << OMEGA << endl
-           << "S = " << S << endl
-           << "S0 = " << S0 << endl
-           << "C20Term = " << C20Term << endl
-           << "earthvs = " << earthvs << endl
-           << "ecc2obv = " << ecc2obv << endl;
+      DEBUGTRACE("OMEGA = " << OMEGA);
+      DEBUGTRACE("S = " << S);
+      DEBUGTRACE("S0 = " << S0);
+      DEBUGTRACE("C20Term = " << C20Term);
+      DEBUGTRACE("earthvs = " << earthvs);
+      DEBUGTRACE("ecc2obv = " << ecc2obv);
          ///////////////////////////////////////////////////////////////////////
-      double tanEdiv2 = std::sqrt((1.0-alm.ecc)/(1.0+alm.ecc)) *
+      double tanEdiv2 = std::sqrt((1.0-alm.eccnA)/(1.0+alm.eccnA)) *
          std::tan(nu/2.0);
       double E = 2.0 * std::atan(tanEdiv2);
-      double M = E - alm.ecc * std::sin(E);
-      cerr << "tan(E/2) = " << tanEdiv2 << endl
-           << "E = " << E << endl
-           << "M = " << M << endl;
-      setDeltas(M, alm.omega, a, tstar);
+      double M = E - alm.eccnA * std::sin(E);
+      DEBUGTRACE("tan(E/2) = " << tanEdiv2);
+      DEBUGTRACE("E = " << E);
+      DEBUGTRACE("M = " << M);
+      setDeltas(M, alm.omeganA, a, tstar);
          ///////////////////////////////////////////////////////////////////////
       double ai = a + deltas.deltaa;
       double hi = h + deltas.deltah;
@@ -467,7 +504,7 @@ namespace gnsstk
       double cosOMEGAi = std::cos(OMEGAi);
       double epsi = std::sqrt(hi*hi+li*li);
       double omegai = getomegai(hi, li, epsi);
-      double lambdaStar = M + alm.omega + n*tstar + deltas.deltalambdaBar;
+      double lambdaStar = M + alm.omeganA + n*tstar + deltas.deltalambdaBar;
       double Mi = lambdaStar - omegai;
       double Ein = integrateEin(Mi, epsi);
       double tannuidiv2 = std::sqrt((1.0+epsi)/(1.0-epsi)) * std::tan(Ein/2.0);
@@ -484,29 +521,33 @@ namespace gnsstk
       double ri = ai * (1-(epsi * cos(Ein)));
       double Vri = muTerm * ((epsi * sinnui) / epsiTerm);
       double Vui = muTerm * ((1 + epsi * cosnui) / epsiTerm);
-      cerr << "hi = " << hi << endl
-           << "li = " << li << endl
-           << "epsi = " << epsi << endl
-           << "omegai = " << omegai << endl
-           << "ai = " << ai << endl
-           << "ii = " << ii << endl
-           << "OMEGAi = " << OMEGAi << endl
-           << "Mi = " << Mi << endl
-           << "lambda* = " << lambdaStar << endl
-           << "Ein = " << Ein << endl
-           << "nui = " << nui << endl
-           << "ui = " << ui << endl
-           << "ri = " << ri << endl
-           << "Vri = " << Vri << endl
-           << "Vui = " << Vui << endl;
+      DEBUGTRACE("hi = " << hi);
+      DEBUGTRACE("li = " << li);
+      DEBUGTRACE("epsi = " << epsi);
+      DEBUGTRACE("omegai = " << omegai);
+      DEBUGTRACE("ai = " << ai);
+      DEBUGTRACE("ii = " << ii);
+      DEBUGTRACE("OMEGAi = " << OMEGAi);
+      DEBUGTRACE("Mi = " << Mi);
+      DEBUGTRACE("lambda* = " << lambdaStar);
+      DEBUGTRACE("Ein = " << Ein);
+      DEBUGTRACE("nui = " << nui);
+      DEBUGTRACE("ui = " << ui);
+      DEBUGTRACE("ri = " << ri);
+      DEBUGTRACE("Vri = " << Vri);
+      DEBUGTRACE("Vui = " << Vui);
       xvt.x[0] = ri * (cosui*cosOMEGAi - sinui*sinOMEGAi*cosii);
       xvt.x[1] = ri * (cosui*sinOMEGAi + sinui*cosOMEGAi*cosii);
       xvt.x[2] = ri * sinui * sinii;
+         // change km to m
+      xvt.x[0] *= 1000.0;
+      xvt.x[1] *= 1000.0;
+      xvt.x[2] *= 1000.0;
 
-      cerr << "             sin                  cos" << endl
-           << "ii          " << sinii << "    " << cosii << endl
-           << "ui          " << sinui << "    " << cosui << endl
-           << "OMEGAi      " << sinOMEGAi << "    " << cosOMEGAi << endl;
+      DEBUGTRACE("             sin                  cos");
+      DEBUGTRACE("ii          " << sinii << "    " << cosii);
+      DEBUGTRACE("ui          " << sinui << "    " << cosui);
+      DEBUGTRACE("OMEGAi      " << sinOMEGAi << "    " << cosOMEGAi);
       xvt.v[0] = Vri * (cosui*cosOMEGAi - sinui*sinOMEGAi*cosii) -
          Vui * (sinui*cosOMEGAi + cosui*sinOMEGAi*cosii);
       xvt.v[1] = Vri * (cosui*sinOMEGAi + sinui*cosOMEGAi*cosii) -
@@ -517,13 +558,17 @@ namespace gnsstk
       double vyba = (sinui*sinOMEGAi);
       double vybb = (-cosui*cosOMEGAi*cosii);
       double vyb = -Vui * (vyba + vybb);
-      cerr << "vyaa = " << vyaa << endl
-           << "vyab = " << vyab << endl
-           << "vya = " << vya << endl
-           << "vyba = " << vyba << endl
-           << "vybb = " << vybb << endl
-           << "vyb = " << vyb << endl;
+      DEBUGTRACE("vyaa = " << vyaa);
+      DEBUGTRACE("vyab = " << vyab);
+      DEBUGTRACE("vya = " << vya);
+      DEBUGTRACE("vyba = " << vyba);
+      DEBUGTRACE("vybb = " << vybb);
+      DEBUGTRACE("vyb = " << vyb);
       xvt.v[2] = Vri * sinui * sinii + Vui * cosui * sinii;
+         // change km/s to m/s
+      xvt.v[0] *= 1000.0;
+      xvt.v[1] *= 1000.0;
+      xvt.v[2] *= 1000.0;
       return false;
    }
 
@@ -559,8 +604,9 @@ namespace gnsstk
 
 
    void GLOFNavAlm::NumberCruncher::Deltas ::
-      setDeltas(const NumberCruncher& nc, double a, double tau, double n)
+   setDeltas(const NumberCruncher& math, double a, double tau, double n)
    {
+      DEBUGTRACE_FUNCTION();
          // fractions used repeatedly.
       static constexpr double OH = 0.5;      // one half
       static constexpr double TH = 3.0/2.0;  // three halves
@@ -576,96 +622,96 @@ namespace gnsstk
          // note that lambda bar is defined in two different ways, one
          // without adding n*tau, and one with, where the latter is
          // used when computing corrections due to effects of C20.
-      double a_a = 2.0 * nc.JsinTerm * (nc.l * nc.coslambdaBar
-                                        + nc.h * nc.sinlambdaBar)
-         + nc.Jsini2Term * (OH * nc.h * nc.sinlambdaBar
-                            - OH * nc.l * nc.coslambdaBar
-                            + nc.cos2lambdaBar
-                            + SH * nc.l * nc.cos3lambdaBar
-                            + SH * nc.h * nc.sin3lambdaBar);
+      double a_a = 2.0 * math.JsinTerm * (math.l * math.coslambdaBar
+                                        + math.h * math.sinlambdaBar)
+         + math.Jsini2Term * (OH * math.h * math.sinlambdaBar
+                            - OH * math.l * math.coslambdaBar
+                            + math.cos2lambdaBar
+                            + SH * math.l * math.cos3lambdaBar
+                            + SH * math.h * math.sin3lambdaBar);
          // The ICD defines the abbove expression as delta a(m) / a,
          // so multiply the whole thing by a to get delta a(m)
       deltaa = a_a * a;
-      deltah = nc.JsinTerm * (nc.l * n * tau
-                              + nc.sinlambdaBar
-                              + TH * nc.l * nc.sin2lambdaBar
-                              - TH * nc.h * nc.cos2lambdaBar)
-         - OQ * nc.Jsini2Term * (nc.sinlambdaBar
-                                 - ST * nc.sin3lambdaBar
-                                 + 5.0 * nc.l * nc.sin2lambdaBar
-                                 - STH * nc.l * nc.sin4lambdaBar
-                                 + STH * nc.h * nc.cos4lambdaBar
-                                 + nc.h * nc.cos2lambdaBar)
-         + nc.Jcosi2Term * (nc.l * n * tau
-                            - OH * nc.l * nc.sin2lambdaBar);
-      deltal = nc.JsinTerm * (-nc.h * n * tau
-                              + nc.coslambdaBar
-                              + TH * nc.l * nc.cos2lambdaBar
-                              + TH * nc.h * nc.sin2lambdaBar)
-         - OQ * nc.Jsini2Term * (-nc.coslambdaBar
-                                 - ST*nc.cos3lambdaBar
-                                 - 5.0 * nc.h * nc.sin2lambdaBar
-                                 - STH * nc.l * nc.cos4lambdaBar
-                                 - STH * nc.h * nc.sin4lambdaBar
-                                 + nc.l * nc.cos2lambdaBar)
-         + nc.Jcosi2Term * (-nc.h * n * tau
-                            + OH * nc.h * nc.sin2lambdaBar);
-      deltaOMEGA = -nc.JTerm * nc.cosi * (n * tau
-                                          + SH * nc.l * nc.sinlambdaBar
-                                          - FH * nc.h * nc.coslambdaBar
-                                          - OH * nc.sin2lambdaBar
-                                          - SS * nc.l * nc.sin3lambdaBar
-                                          + SS * nc.h * nc.cos3lambdaBar);
-      deltai = OH * nc.JTerm * nc.sini * nc.cosi *
-         (-nc.l * nc.coslambdaBar
-          + nc.h * nc.sinlambdaBar
-          + nc.cos2lambdaBar
-          + ST * nc.l * nc.cos3lambdaBar
-          + ST * nc.h * nc.sin3lambdaBar);
-      deltalambdaBar = (2.0 * nc.JsinTerm * (n * tau
-                                             + SQ * nc.l * nc.sinlambdaBar
-                                             - SQ * nc.h * nc.coslambdaBar))
-         + (3.0 * nc.Jsini2Term * (-STF * nc.h * nc.coslambdaBar
-                                   - STF * nc.l * nc.sinlambdaBar
-                                   - FNSS * nc.h * nc.cos3lambdaBar
-                                   + FNSS * nc.l * nc.sin3lambdaBar
-                                   + OQ * nc.sin2lambdaBar))
-         + (nc.Jcosi2Term * (n * tau
-                             + SH * nc.l * nc.sinlambdaBar
-                             - FH * nc.h * nc.coslambdaBar
-                             - OH * nc.sin2lambdaBar
-                             - SS * nc.l * nc.sin3lambdaBar
-                             + SS * nc.h * nc.cos3lambdaBar));
-      double K81 = (2.0 * nc.JsinTerm * (n * tau +
-                                         SQ * nc.l * nc.sinlambdaBar -
-                                         SQ * nc.h * nc.coslambdaBar));
-      double Q81 = (3.0 * nc.Jsini2Term * (-STF * nc.h * nc.coslambdaBar -
-                                           STF * nc.l * nc.sinlambdaBar -
-                                           FNSS * nc.h * nc.cos3lambdaBar +
-                                           FNSS * nc.l * nc.sin3lambdaBar +
-                                           OQ * nc.sin2lambdaBar));
-      double W81 = (nc.Jcosi2Term * (n * tau
-                                     + SH * nc.l * nc.sinlambdaBar
-                                     - FH * nc.h * nc.coslambdaBar
-                                     - OH * nc.sin2lambdaBar
-                                     - SS * nc.l * nc.sin3lambdaBar
-                                     + SS * nc.h * nc.cos3lambdaBar));
+      deltah = math.JsinTerm * (math.l * n * tau
+                              + math.sinlambdaBar
+                              + TH * math.l * math.sin2lambdaBar
+                              - TH * math.h * math.cos2lambdaBar)
+         - OQ * math.Jsini2Term * (math.sinlambdaBar
+                                 - ST * math.sin3lambdaBar
+                                 + 5.0 * math.l * math.sin2lambdaBar
+                                 - STH * math.l * math.sin4lambdaBar
+                                 + STH * math.h * math.cos4lambdaBar
+                                 + math.h * math.cos2lambdaBar)
+         + math.Jcosi2Term * (math.l * n * tau
+                            - OH * math.l * math.sin2lambdaBar);
+      deltal = math.JsinTerm * (-math.h * n * tau
+                              + math.coslambdaBar
+                              + TH * math.l * math.cos2lambdaBar
+                              + TH * math.h * math.sin2lambdaBar)
+         - OQ * math.Jsini2Term * (-math.coslambdaBar
+                                 - ST*math.cos3lambdaBar
+                                 - 5.0 * math.h * math.sin2lambdaBar
+                                 - STH * math.l * math.cos4lambdaBar
+                                 - STH * math.h * math.sin4lambdaBar
+                                 + math.l * math.cos2lambdaBar)
+         + math.Jcosi2Term * (-math.h * n * tau
+                            + OH * math.h * math.sin2lambdaBar);
+      deltaOMEGA = -math.JTerm * math.cosi * (n * tau
+                                          + SH * math.l * math.sinlambdaBar
+                                          - FH * math.h * math.coslambdaBar
+                                          - OH * math.sin2lambdaBar
+                                          - SS * math.l * math.sin3lambdaBar
+                                          + SS * math.h * math.cos3lambdaBar);
+      deltai = OH * math.JTerm * math.sini * math.cosi *
+         (-math.l * math.coslambdaBar
+          + math.h * math.sinlambdaBar
+          + math.cos2lambdaBar
+          + ST * math.l * math.cos3lambdaBar
+          + ST * math.h * math.sin3lambdaBar);
+      deltalambdaBar = (2.0 * math.JsinTerm * (n * tau
+                                             + SQ * math.l * math.sinlambdaBar
+                                             - SQ * math.h * math.coslambdaBar))
+         + (3.0 * math.Jsini2Term * (-STF * math.h * math.coslambdaBar
+                                   - STF * math.l * math.sinlambdaBar
+                                   - FNSS * math.h * math.cos3lambdaBar
+                                   + FNSS * math.l * math.sin3lambdaBar
+                                   + OQ * math.sin2lambdaBar))
+         + (math.Jcosi2Term * (n * tau
+                             + SH * math.l * math.sinlambdaBar
+                             - FH * math.h * math.coslambdaBar
+                             - OH * math.sin2lambdaBar
+                             - SS * math.l * math.sin3lambdaBar
+                             + SS * math.h * math.cos3lambdaBar));
+      double K81 = (2.0 * math.JsinTerm * (n * tau +
+                                         SQ * math.l * math.sinlambdaBar -
+                                         SQ * math.h * math.coslambdaBar));
+      double Q81 = (3.0 * math.Jsini2Term * (-STF * math.h * math.coslambdaBar -
+                                           STF * math.l * math.sinlambdaBar -
+                                           FNSS * math.h * math.cos3lambdaBar +
+                                           FNSS * math.l * math.sin3lambdaBar +
+                                           OQ * math.sin2lambdaBar));
+      double W81 = (math.Jcosi2Term * (n * tau
+                                     + SH * math.l * math.sinlambdaBar
+                                     - FH * math.h * math.coslambdaBar
+                                     - OH * math.sin2lambdaBar
+                                     - SS * math.l * math.sin3lambdaBar
+                                     + SS * math.h * math.cos3lambdaBar));
       int m = (tau == 0) ? 1 : 2;
-      cerr << "deltaa(m=" << m << ")/a = " << a_a << endl
-           << "deltah(m=" << m << ") = " << deltah << endl
-           << "deltal(m=" << m << ") = " << deltal << endl
-           << "deltaOMEGA(m=" << m << ") = " << deltaOMEGA << endl
-           << "deltai(m=" << m << ") = " << deltai << endl
-           << "deltalambdaBar(m=" << m << ") = " << deltalambdaBar << endl
-           << "lambdaBar(m=" << m << ") = " << nc.lambdaBar << endl
-           << "h(m=" << m << ") = " << nc.h << endl
-           << "l(m=" << m << ") = " << nc.l << endl
-           << "tau(m=" << m << ") = " << tau << endl
-           << "J(m=" << m << ") = " << J << endl
-           << "e^2(m=" << m << ") = " << nc.ecc2 << endl
-           << "1-e^2(m=" << m << ") = " << nc.ecc2obv << endl
-           << "JTerm(m=" << m << ") = " << nc.JTerm << endl
-           << "JsinTerm(m=" << m << ") = " << nc.JsinTerm << endl
-           << "a(m=" << m << ") = " << a << endl;
+      DEBUGTRACE("deltaa(m=" << m << ")/a = " << a_a);
+      DEBUGTRACE("deltah(m=" << m << ") = " << deltah);
+      DEBUGTRACE("deltal(m=" << m << ") = " << deltal);
+      DEBUGTRACE("deltaOMEGA(m=" << m << ") = " << deltaOMEGA);
+      DEBUGTRACE("deltai(m=" << m << ") = " << deltai);
+      DEBUGTRACE("deltalambdaBar(m=" << m << ") = " << deltalambdaBar);
+      DEBUGTRACE("lambdaBar(m=" << m << ") = " << math.lambdaBar);
+      DEBUGTRACE("h(m=" << m << ") = " << math.h);
+      DEBUGTRACE("l(m=" << m << ") = " << math.l);
+      DEBUGTRACE("tau(m=" << m << ") = " << tau);
+      DEBUGTRACE("J(m=" << m << ") = " << J);
+      DEBUGTRACE("e^2(m=" << m << ") = " << math.ecc2);
+      DEBUGTRACE("1-e^2(m=" << m << ") = " << math.ecc2obv);
+      DEBUGTRACE("JTerm(m=" << m << ") = " << math.JTerm);
+      DEBUGTRACE("JsinTerm(m=" << m << ") = " << math.JsinTerm);
+      DEBUGTRACE("a(m=" << m << ") = " << a);
    }
 }

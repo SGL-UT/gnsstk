@@ -44,6 +44,8 @@
 #include "TimeString.hpp"
 #include "GLOFNavEph.hpp"
 #include "Angle.hpp"
+#include "Position.hpp"
+#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -74,15 +76,15 @@ constructorTest()
    TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Almanac,
              uut.signal.messageType);
    TUASSERTE(bool, false, uut.healthBits);
-   TUASSERTE(int, 1, isnan(uut.tau));
-   TUASSERTE(int, 1, isnan(uut.lambda));
-   TUASSERTE(int, 1, isnan(uut.deltai));
-   TUASSERTE(int, 1, isnan(uut.ecc));
-   TUASSERTE(int, 1, isnan(uut.omega));
-   TUASSERTE(int, 1, isnan(uut.tLambda));
-   TUASSERTE(int, 1, isnan(uut.deltaT));
-   TUASSERTE(int, 1, isnan(uut.deltaTdot));
-   TUASSERTE(int, -1, uut.freq);
+   TUASSERTE(int, 1, isnan(uut.taunA));
+   TUASSERTE(int, 1, isnan(uut.lambdanA));
+   TUASSERTE(int, 1, isnan(uut.deltainA));
+   TUASSERTE(int, 1, isnan(uut.eccnA));
+   TUASSERTE(int, 1, isnan(uut.omeganA));
+   TUASSERTE(int, 1, isnan(uut.tLambdanA));
+   TUASSERTE(int, 1, isnan(uut.deltaTnA));
+   TUASSERTE(int, 1, isnan(uut.deltaTdotnA));
+   TUASSERTE(int, -1, uut.freqnA);
    TURETURN();
 }
 
@@ -106,20 +108,46 @@ getXvtTest()
       // 2001/09/06
    gnsstk::YDSTime toi(2001, 249, 33300, gnsstk::TimeSystem::GLO);
       // taken from ICD appendix A.3.2.3
-   uut.lambda = -0.189986229 * gnsstk::PI;
-   uut.tLambda = 27122.09375;
-   uut.deltai = 0.011929512 * gnsstk::PI;
-   uut.deltaT = -2655.76171875;
-   uut.deltaTdot = 0.000549316;
-   uut.ecc = 0.001482010;
-   uut.omega = 0.440277100 * gnsstk::PI;
-   uut.Toa = gnsstk::YDSTime(2001, 249, uut.tLambda, gnsstk::TimeSystem::GLO);
+   uut.lambdanA = -0.189986229 * gnsstk::PI;
+   uut.tLambdanA = 27122.09375;
+   uut.deltainA = 0.011929512 * gnsstk::PI;
+   uut.deltaTnA = -2655.76171875;
+   uut.deltaTdotnA = 0.000549316;
+   uut.eccnA = 0.001482010;
+   uut.omeganA = 0.440277100 * gnsstk::PI;
+   uut.Toa = gnsstk::YDSTime(2001, 249, uut.tLambdanA, gnsstk::TimeSystem::GLO);
+#if 0
+   gnsstk::YDSTime toi(2020, 40, 35960, gnsstk::TimeSystem::GLO);
+   uut.taunA = 5.340576E-05;
+   uut.lambdanA = -1.624857E+00;
+   uut.deltainA = 2.173339E-02;
+   uut.deltaTnA = -2.656084E+03;
+   uut.deltaTdotnA = -1.831055E-04;
+   uut.eccnA = 3.414154E-04;
+   uut.omeganA = 1.410304E-01;
+   uut.tLambdanA = 3.594441E+04;
+   uut.healthBits = true;
+      //uut. M                          1 encoded: GLONASS-M SV
+   uut.freqnA = 1;
+      //Transmit SV          GLONASS 1
+      //l                          0 Health of transmitting SV
+   uut.Toa = gnsstk::YDSTime(2020, 40, uut.tLambdanA, gnsstk::TimeSystem::GLO);
+#endif
+
       // Normally called by fixFit, but we don't care about the fit
       // interval for this test.
+   std::cerr << "setting semi-major axis" << std::endl;
    uut.setSemiMajorAxisIncl();
+   std::cerr << "DONE setting semi-major axis" << std::endl;
+   uut.dump(std::cerr, gnsstk::DumpDetail::Full);
    gnsstk::Xvt xvt;
    TUASSERTE(bool, false, uut.getXvt(toi, xvt));
    std::cout << "xvt = " << std::setprecision(17) << xvt << std::endl;
+   gnsstk::PZ90Ellipsoid ell;
+   gnsstk::Position pos(xvt.x, gnsstk::Position::Cartesian, &ell);
+   pos.transformTo(gnsstk::Position::Geodetic);
+   std::cout << "  = " << pos << std::endl;
+#if 0
    gnsstk::CommonTime x(gnsstk::YDSTime(2001,249,0,gnsstk::TimeSystem::GLO));
    unsigned i = 0;
    double st = 0;
@@ -131,6 +159,7 @@ getXvtTest()
                 << std::setprecision(15) << st << std::endl;
       i += 86400;
    }
+#endif
    TURETURN();
 }
 
@@ -226,25 +255,72 @@ blahTest()
    double an = a0;
    double anp1 = -9999999999999;
    Angle nu = -omega;
-   unsigned n = 0;
+   unsigned iteration = 0;
+   double nuTerm = 1 + (e * cos(nu));
+   nuTerm = nuTerm * nuTerm * nuTerm;
+   double ecc2obv = 1 - (e*e);
+   double eTerm = ::pow(ecc2obv, 3.0/2.0);
+   double omegaTerm = 1 + (e * cos(omega));
+   omegaTerm = omegaTerm * omegaTerm;
+   double siniTerm = 2.0 - ((5.0/2.0) * sin(i) * sin(i));
+   double bigTerm = siniTerm * (eTerm / omegaTerm) + (nuTerm / ecc2obv);
+   double C20Term = (3.0/2.0)*C20;
+   cerr << "bigTerm = " << siniTerm << " * (" << eTerm << " / " << omegaTerm
+        << ") + (" << nuTerm << " / " << ecc2obv << ")" << endl;
+   cerr << "  Tock_b = " << nuTerm << endl
+        << "  Tock_c = " << (nuTerm / ecc2obv) << endl
+        << "  Tock_d = " << eTerm << endl
+        << "  Tock_e = " << C20Term << endl
+        << "  Tock_f = " << omegaTerm << endl
+        << "  Tock_g = " << (eTerm / omegaTerm) << endl
+        << "  Tock_h = " << siniTerm << endl
+        << "  Tock_i = " << bigTerm << endl;
    while (fabs(anp1-an) >= 1e-3)
    {
       double pn = an * (1-e*e);
-      cerr << "p(" << n << ") = " << pn << endl;
-      double Tocknp1 = Tdeltap /
-         (1+(3/2)*C20*(ae/pn)*(ae/pn)*
-          ((2-(5/2)*sin(i)*sin(i)) *
-           (::pow(1-e*e,3.0/2.0) / ((1+e*cos(omega))*(1+e*cos(omega)))) +
-           (((1+e*cos(nu))*(1+e*cos(nu))*(1+e*cos(nu))) / (1-e*e))));
-      cerr << "Tock(" << (n+1) << ") = " << Tocknp1 << endl;
-      if (n > 0)
+      // double Tocknp1 = Tdeltap /
+      //    (1+(3/2)*C20*(ae/pn)*(ae/pn)*
+      //     ((2-(5/2)*sin(i)*sin(i)) *
+      //      (::pow(1-e*e,3.0/2.0) / ((1+e*cos(omega))*(1+e*cos(omega)))) +
+      //      (((1+e*cos(nu))*(1+e*cos(nu))*(1+e*cos(nu))) / (1-e*e))));
+      double tock_k = (1.0+(3.0/2.0)*C20*(ae/pn)*(ae/pn)*bigTerm);
+      double Tocknp1 = Tdeltap / tock_k;
+      cerr << "  Tock_k = " << tock_k << endl
+           << "p(" << iteration << ") = " << pn << endl
+           << "  Tock(" << (iteration+1) << ") = " << Tocknp1 << endl;
+      if (iteration > 0)
          an = anp1;
       anp1 = ::pow((Tocknp1/(2*PI))*(Tocknp1/(2*PI))*mu, 1.0/3.0);
-      cerr << "a(" << n << ") = " << an << endl
-           << "a(" << (n+1) << ") = " << anp1 << endl;
-      n++;
+      cerr << "a(" << iteration << ") = " << an << endl
+           << "a(" << (iteration+1) << ") = " << anp1 << endl;
+      iteration++;
    }
-   cerr << "a = " << anp1 << " km" << endl;
+   double a = anp1;
+   cerr << "a = " << a << " km" << endl;
+      // NEXT...................................................................
+   double earthvs = (ae/a);
+   earthvs = earthvs * earthvs;
+   double tstar = ti - tlambda + (86400.0*(N0-NA));
+   double Wk = tstar / Tdeltap;
+   double W;
+   std::modf(Wk,&W);
+      // note that tlambdakBar = tlambda unless computing across a day boundary
+   double secSinceRef = (Tdeltap*W) + (DeltaTPrime * W * W);
+   double tlambdakBar = tlambda + secSinceRef;
+   double tlambdak = std::fmod(tlambdakBar, 86400.0);
+   double n = ((2.0*gnsstk::PI)/Tdeltap);
+      // ought to be radians per second... but do we know? no.
+   double OmegaPrime = C20Term * n * earthvs * cos(i) * ::sqrt(ecc2obv);
+   double radPerSec = OmegaPrime - omega3;
+   Angle lambdak = lambda + Angle(radPerSec * secSinceRef, AngleType::Rad);
+   cerr << "tstar = " << tstar << endl
+        << "Wk = " << Wk << endl
+        << "W = " << W << endl
+        << "tlambdakBar = " << tlambdakBar << endl
+        << "tlambdak = " << tlambdak << endl
+        << "n = " << n << endl
+        << "OMEGAdot = " << OmegaPrime << endl
+        << "lambdak = " << lambdak << endl;
 //   double Vzoi = Vri * sin(ui) * sin(ii) + Vui * sin(ui) * sin(ii);
    GLOFNavAlm::NumberCruncher nc;
    TURETURN();
@@ -256,11 +332,12 @@ int main()
    GLOFNavAlm_T testClass;
    unsigned errorTotal = 0;
 
-   errorTotal += testClass.constructorTest();
-   errorTotal += testClass.validateTest();
+   // errorTotal += testClass.constructorTest();
+   // errorTotal += testClass.validateTest();
+   DEBUGTRACE_ENABLE();
    errorTotal += testClass.getXvtTest();
-   errorTotal += testClass.getUserTimeTest();
-   errorTotal += testClass.fixFitTest();
+   // errorTotal += testClass.getUserTimeTest();
+   // errorTotal += testClass.fixFitTest();
    errorTotal += testClass.blahTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal

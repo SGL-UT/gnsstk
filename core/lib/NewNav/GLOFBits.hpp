@@ -373,7 +373,7 @@ namespace gnsstk
          tnbtaucM = 32,                         ///< tau_c bits for GLONASS-M
          tsctaucM = -31,                        ///< tau_c scale for GLONASS-M
 
-         tsbRev6 = tsbtauc+tnbtauc,
+         tsbRev6 = tsbtauc+tnbtaucM,
          tnbRev6 = 1,
          tscRev6 = 1,
 

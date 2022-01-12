@@ -189,5 +189,9 @@ add_executable(Angle_T Angle_T.cpp)
 target_link_libraries(Angle_T gnsstk)
 add_test(GNSSCore_Angle Angle_T)
 
+add_executable(AngleType_T AngleType_T.cpp)
+target_link_libraries(AngleType_T gnsstk)
+add_test(GNSSCore_AngleType AngleType_T)
+
 ###############################################################################
 ###############################################################################
