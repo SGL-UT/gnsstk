@@ -22,6 +22,7 @@
 //
 //==============================================================================
 
+
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -35,51 +36,28 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#include "GLOFNavTimeOffset.hpp"
+#include "GPSWeekSecond.hpp"
 
-#include <math.h>
-#include "AngleReduced.hpp"
-#include "GNSSconstants.hpp"
+using namespace std;
 
 namespace gnsstk
 {
-   AngleReduced ::
-   AngleReduced()
-         : sine(std::numeric_limits<double>::quiet_NaN()),
-           cosine(std::numeric_limits<double>::quiet_NaN())
-   {}
-
-
-   void AngleReduced ::
-   setValue(double v, AngleType t)
+   GLOFNavTimeOffset ::
+   GLOFNavTimeOffset()
    {
-      double radians;
-      switch (t)
-      {
-         case AngleType::Rad:
-            sine = ::sin(v);
-            cosine = ::cos(v);
-            break;
-         case AngleType::Deg:
-            radians = v * DEG2RAD;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::SemiCircle:
-            radians = v * PI;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::Sin:
-            sine = v;
-            cosine = ::sqrt(1-sine*sine);
-            break;
-         case AngleType::Cos:
-            cosine = v;
-            sine = ::sqrt(1-cosine*cosine);
-            break;
-         default:
-            GNSSTK_THROW(Exception("Invalid type in setValue"));
-            break;
-      }
+      msgLenSec = 2.0;
+      src = TimeSystem::GLO;
+      tgt = TimeSystem::GPS;
+      weekFmt = "";
+   }
+
+
+   bool GLOFNavTimeOffset ::
+   validate() const
+   {
+         /// @todo add some checks.
+      return true;
    }
 }
+

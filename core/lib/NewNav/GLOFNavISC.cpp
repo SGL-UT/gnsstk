@@ -22,6 +22,7 @@
 //
 //==============================================================================
 
+
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -35,51 +36,54 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-
 #include <math.h>
-#include "AngleReduced.hpp"
-#include "GNSSconstants.hpp"
+#include "GLOFNavISC.hpp"
+#include "TimeString.hpp"
+#include "YDSTime.hpp"
+#include "FreqConv.hpp"
+
+using namespace std;
 
 namespace gnsstk
 {
-   AngleReduced ::
-   AngleReduced()
-         : sine(std::numeric_limits<double>::quiet_NaN()),
-           cosine(std::numeric_limits<double>::quiet_NaN())
-   {}
-
-
-   void AngleReduced ::
-   setValue(double v, AngleType t)
+   GLOFNavISC ::
+   GLOFNavISC()
    {
-      double radians;
-      switch (t)
+      msgLenSec = 2.0;
+      iscLabel = "dtau_n";
+   }
+
+
+   bool GLOFNavISC ::
+   validate() const
+   {
+         /// @todo implement some checking.
+      return true;
+   }
+
+
+   bool GLOFNavISC ::
+   getISC(const ObsID& oid1, const ObsID& oid2, double& corrOut) const
+   {
+      if (isnan(isc))
+         return false;
+      if ((oid1.code == TrackingCode::Standard) &&
+          (oid2.code == TrackingCode::Standard))
       {
-         case AngleType::Rad:
-            sine = ::sin(v);
-            cosine = ::cos(v);
-            break;
-         case AngleType::Deg:
-            radians = v * DEG2RAD;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::SemiCircle:
-            radians = v * PI;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::Sin:
-            sine = v;
-            cosine = ::sqrt(1-sine*sine);
-            break;
-         case AngleType::Cos:
-            cosine = v;
-            sine = ::sqrt(1-cosine*cosine);
-            break;
-         default:
-            GNSSTK_THROW(Exception("Invalid type in setValue"));
-            break;
+         if ((oid1.band == CarrierBand::G1) && (oid2.band == CarrierBand::G2))
+         {
+               /** @todo I'm not sure if I have this polarity right.
+                * dtau_n=t_f2-t_f1. */
+            corrOut = isc;
+            return true;
+         }
+         else if ((oid1.band == CarrierBand::G2) &&
+                  (oid2.band == CarrierBand::G1))
+         {
+            corrOut = -isc;
+            return true;
+         }
       }
+      return false;
    }
 }

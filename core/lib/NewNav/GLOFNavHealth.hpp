@@ -22,6 +22,7 @@
 //
 //==============================================================================
 
+
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -35,51 +36,51 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#ifndef GNSSTK_GLOFNAVHEALTH_HPP
+#define GNSSTK_GLOFNAVHEALTH_HPP
 
-#include <math.h>
-#include "AngleReduced.hpp"
-#include "GNSSconstants.hpp"
+#include "ValidType.hpp"
+#include "NavHealthData.hpp"
 
 namespace gnsstk
 {
-   AngleReduced ::
-   AngleReduced()
-         : sine(std::numeric_limits<double>::quiet_NaN()),
-           cosine(std::numeric_limits<double>::quiet_NaN())
-   {}
+      /// @ingroup NavFactory
+      //@{
 
-
-   void AngleReduced ::
-   setValue(double v, AngleType t)
+      /** Wrapper for the health status data scattered throughout the
+       * GLONASS Civil F NAV data. */
+   class GLOFNavHealth : public NavHealthData
    {
-      double radians;
-      switch (t)
-      {
-         case AngleType::Rad:
-            sine = ::sin(v);
-            cosine = ::cos(v);
-            break;
-         case AngleType::Deg:
-            radians = v * DEG2RAD;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::SemiCircle:
-            radians = v * PI;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::Sin:
-            sine = v;
-            cosine = ::sqrt(1-sine*sine);
-            break;
-         case AngleType::Cos:
-            cosine = v;
-            sine = ::sqrt(1-cosine*cosine);
-            break;
-         default:
-            GNSSTK_THROW(Exception("Invalid type in setValue"));
-            break;
-      }
-   }
+   public:
+         /// Initialize to unhealthy using a value typically not seen in health.
+      GLOFNavHealth();
+
+         /** Checks the contents of this message against known
+          * validity rules as defined in the appropriate ICD.
+          * @return true if any of the data are usable.
+          */
+      bool validate() const override;
+
+         /** Print the contents of this object in a human-readable
+          * format.
+          * @param[in,out] s The stream to write the data to.
+          * @param[in] dl The level of detail the output should contain. */
+      void dump(std::ostream& s, DumpDetail dl) const override;
+
+         /** Defines the status of NavData::signal, specifically sat
+          * (not xmitSat).
+          * @return Healthy if no health bits are set. */
+      SVHealth getHealth() const override;
+
+         // We use ValidType to account for the fact that the health
+         // data can be a variety of combinations.
+      ValidType<uint8_t> healthBits; ///< The 3-bit B_n value.
+      ValidType<bool> ln; ///< The l_n health bit in strings 3,5,7,9,11,13,15.
+      ValidType<bool> Cn; ///< The C_n health bit in strings 6,8,10,12,14.
+   };
+
+      //@}
+
 }
+
+#endif // GNSSTK_GLOFNAVHEALTH_HPP

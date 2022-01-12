@@ -22,6 +22,7 @@
 //
 //==============================================================================
 
+
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -35,51 +36,62 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#include "GLOFNavData.hpp"
 
-#include <math.h>
-#include "AngleReduced.hpp"
-#include "GNSSconstants.hpp"
+using namespace std;
 
 namespace gnsstk
 {
-   AngleReduced ::
-   AngleReduced()
-         : sine(std::numeric_limits<double>::quiet_NaN()),
-           cosine(std::numeric_limits<double>::quiet_NaN())
-   {}
-
-
-   void AngleReduced ::
-   setValue(double v, AngleType t)
+   GLOFNavData ::
+   GLOFNavData()
+         : health(SVHealth::Unknown),
+           satType(SatType::Unknown),
+           slot(-1),
+           lhealth(false)
    {
-      double radians;
-      switch (t)
+      weekFmt = "";
+   }
+
+
+   bool GLOFNavData ::
+   validate() const
+   {
+         /// @todo implement some checking.
+      return true;
+   }
+
+
+   namespace StringUtils
+   {
+      std::string asString(GLOFNavData::PCode e)
       {
-         case AngleType::Rad:
-            sine = ::sin(v);
-            cosine = ::cos(v);
-            break;
-         case AngleType::Deg:
-            radians = v * DEG2RAD;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::SemiCircle:
-            radians = v * PI;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::Sin:
-            sine = v;
-            cosine = ::sqrt(1-sine*sine);
-            break;
-         case AngleType::Cos:
-            cosine = v;
-            sine = ::sqrt(1-cosine*cosine);
-            break;
-         default:
-            GNSSTK_THROW(Exception("Invalid type in setValue"));
-            break;
+         switch (e)
+         {
+            case GLOFNavData::PCode::CRelGPSRel:
+               return "tau_c from CS, tau_GPS from CS";
+            case GLOFNavData::PCode::CRelGPSCalc:
+               return "tau_c from CS, tau_GPS calc SV";
+            case GLOFNavData::PCode::CCalcGPSRel:
+               return "tau_c calc SV, tau_GPS from CS";
+            case GLOFNavData::PCode::CCalcGPSCalc:
+               return "tau_c calc SV, tau_GPS calc SV";
+            default:
+               return "???????";
+         }
+      }
+
+
+      std::string asString(GLOFNavData::SatType e)
+      {
+         switch (e)
+         {
+            case GLOFNavData::SatType::GLONASS:
+               return "GLONASS SV";
+            case GLOFNavData::SatType::GLONASS_M:
+               return "GLONASS-M SV";
+            default:
+               return "??????";
+         }
       }
    }
 }

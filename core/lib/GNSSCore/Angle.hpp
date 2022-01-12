@@ -56,24 +56,24 @@ namespace gnsstk
          /// Initialize all data to NaN.
       Angle();
 
-         /** Initialize from a single value, filling out the rest.
-          * @param[in] v The value to set.
-          * @param[in] t The type of datum contained in v.
-          * @post rad, deg, sin and cos are all set. */
-      Angle(double v, Type t)
-      { setValue(v, t); }
-
          /** Initialize from a pair of sin/cos values, filling out the rest.
           * @param[in] s The sine of the angle.
           * @param[in] c The cosine of the angle.
           * @post rad, deg, sin and cos are all set. */
-      Angle(double s, double c);
+      explicit Angle(double s, double c);
+
+         /** Initialize from a single value, filling out the rest.
+          * @param[in] v The value to set.
+          * @param[in] t The type of datum contained in v.
+          * @post rad, deg, sin and cos are all set. */
+      explicit Angle(double v, AngleType t)
+      { setValue(v, t); }
 
          /** Set all values from a single angle datum.
           * @param[in] v The value to set.
           * @param[in] t The type of datum contained in v.
           * @post rad, deg, sin and cos are all set. */
-      void setValue(double v, Type t);
+      void setValue(double v, AngleType t);
 
          /** Basic difference.
           * @param[in] right The angle to subtract from this one.
@@ -83,7 +83,7 @@ namespace gnsstk
          /** Numeric negation of angle. Changes radians to -radians
           * then recomputes the rest. */
       Angle operator-() const
-      { return Angle(-radians, Rad); }
+      { return Angle(-radians, AngleType::Rad); }
 
          /** Basic addition.
           * @param[in] right The angle to add to this one.
@@ -98,6 +98,14 @@ namespace gnsstk
       inline double deg() const
       { return degrees; }
 
+         /// Get the angle in semi-circles (aka half-cycles).
+      inline double semicirc() const
+      { return semicircles; }
+
+         /// Get the tangent of this angle.
+      inline double tan() const
+      { return tangent; }
+
          /** Return a string containing the data separated by commas
           * (rad,deg,sin,cos). */
       std::string asString() const;
@@ -105,13 +113,25 @@ namespace gnsstk
    protected:
       double radians; ///< The angle in radians.
       double degrees; ///< The angle in degrees.
+      double tangent; ///< The tangent of the angle.
+      double semicircles; ///< The angle in semi-circles (aka half-cycles).
+
+   private:
+         // Disable a bunch of constructors so unexpected behavior is
+         // avoided in C++.  In python, all bets are off,
+         // unfortunately.
+      explicit Angle(int, int);
+      explicit Angle(long, long);
+      explicit Angle(unsigned, unsigned);
+      explicit Angle(unsigned long, unsigned long);
    }; // class Angle
 
 
    inline std::ostream& operator<<(std::ostream& s, const Angle& a)
    {
-      s << std::setprecision(20) << a.rad() << "," << a.deg() << "," << a.sin() << ","
-        << a.cos();
+      s << std::setprecision(20) << "rad:" << a.rad() << ",deg:" << a.deg()
+        << ",semi-circles:" << a.semicirc() << ",sin:" << a.sin() << ",cos:"
+        << a.cos() << ",tan:" << a.tan();
       return s;
    }
 
@@ -125,6 +145,8 @@ namespace std
    { return x.sin(); }
    inline double cos(gnsstk::Angle x)
    { return x.cos(); }
+   inline double tan(gnsstk::Angle x)
+   { return x.tan(); }
 }
 
 #endif // GNSSTK_ANGLE_HPP

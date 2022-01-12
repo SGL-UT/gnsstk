@@ -55,6 +55,9 @@
 #include "BDSD2NavHealth.hpp"
 #include "BDSD2NavISC.hpp"
 #include "BDSWeekSecond.hpp"
+#include "GLOFNavEph.hpp"
+#include "GLOFNavHealth.hpp"
+#include "GLOFNavISC.hpp"
 #include "RinexTimeOffset.hpp"
 #include "TimeString.hpp"
 
@@ -317,6 +320,7 @@ namespace gnsstk
       GalFNavEph *galFNav;
       BDSD1NavEph *bdsD1Nav;
       BDSD2NavEph *bdsD2Nav;
+      GLOFNavEph *glo;
       switch (navIn.sat.system)
       {
          case SatelliteSystem::GPS:
@@ -503,6 +507,59 @@ namespace gnsstk
                bdsD1Nav->fixFit();
             }
             break;
+         case SatelliteSystem::Glonass:
+            navOut = std::make_shared<GLOFNavEph>();
+            glo = dynamic_cast<GLOFNavEph*>(navOut.get());
+               // NavData
+            fillNavData(navIn, navOut);
+               // GLOFNavData
+               //glo->satType not in RINEX, default to unknown
+            glo->slot = navIn.PRNID;
+               // The l_n health bits are absent from RINEX, set to
+               // healthy so the determination of health is only
+               // related to B_n.
+            glo->lhealth = false;
+            glo->health= navIn.health ? SVHealth::Unhealthy : SVHealth::Healthy;
+               // GLOFNavEph
+            glo->ref = glo->timeStamp;
+               // Set transmit time stamps to a best-guess, as they
+               // are needed for getUserTime().
+            glo->xmit2 = glo->ref + 2.0;
+            glo->xmit3 = glo->ref + 4.0;
+            glo->xmit4 = glo->ref + 6.0;
+            glo->pos[0] = navIn.px * 1e3;
+            glo->pos[1] = navIn.py * 1e3;
+            glo->pos[2] = navIn.pz * 1e3;
+            glo->vel[0] = navIn.vx * 1e3;
+            glo->vel[1] = navIn.vy * 1e3;
+            glo->vel[2] = navIn.vz * 1e3;
+            glo->acc[0] = navIn.ax * 1e3;
+            glo->acc[1] = navIn.ay * 1e3;
+            glo->acc[2] = navIn.az * 1e3;
+            glo->clkBias = -navIn.TauN;
+            glo->freqBias = navIn.GammaN;
+            glo->healthBits = navIn.health << 2;
+               //glo->tb not in RINEX. Used to compute Toe which is given
+               //glo->P1 not in RINEX. Used to determine interval.
+               //glo->P2 not in RINEX
+               //glo->P3 not in RINEX
+               //glo->P4 not in RINEX
+               // interval is not in RINEX.  It's used to compute Toe
+               // which is given, but it's also used in computing the
+               // fit interval.  We set it to 0 which is the narrowest
+               // fit interval we can use.  This could lead to gaps in
+               // position solutions, but I'm not sure how best to
+               // handle this.
+            glo->interval = 0;
+               //glo->opStatus not in RINEX, default to Unknown
+               //glo->tauDelta not in RINEX, default to NaN
+            glo->aod = navIn.ageOfInfo;
+               //glo->accIndex not in RINEX
+               //glo->dayCount not in RINEX
+            glo->Toe = navIn.time;
+               //glo->step is algorithm configuration
+            glo->fixFit();
+            break;
          default:
                /// @todo add other GNSSes
             rv = false;
@@ -552,6 +609,7 @@ namespace gnsstk
       GalINavHealth *galNav;
       BDSD1NavHealth *bdsD1Nav;
       BDSD2NavHealth *bdsD2Nav;
+      GLOFNavHealth *glo;
       unsigned healthBits = 0;
       switch (navIn.sat.system)
       {
@@ -659,6 +717,15 @@ namespace gnsstk
                bdsD1Nav->satH1 = navIn.health;
                healthOut.push_back(health);
             }
+            break;
+         case SatelliteSystem::Glonass:
+            health = std::make_shared<GLOFNavHealth>();
+            glo = dynamic_cast<GLOFNavHealth*>(health.get());
+               // NavData
+            fillNavData(navIn, health);
+               // GLOFNavHealth
+            glo->healthBits = navIn.health << 2;
+            healthOut.push_back(health);
             break;
          default:
                /// @todo add other GNSSes
@@ -932,6 +999,9 @@ namespace gnsstk
                bdsD1->tgd2 = navIn.Tgd2;
             }
             break;
+         case SatelliteSystem::Glonass:
+               // Delta tau_n is not stored in RINEX.
+            break;
          default:
                // Return true to ignore unsupported/unknown codes
                // rather than returing false to indicate an error.
@@ -1022,6 +1092,23 @@ namespace gnsstk
                navOut->signal.nav = NavType::BeiDou_D1;
             }
             break;
+         case SatelliteSystem::Glonass:
+         {
+               // NavData
+            YDSTime tmp(navIn.time);
+            unsigned tkSOD = navIn.MFtime % 86400;
+            tmp.sod = tkSOD;
+            navOut->timeStamp = tmp;
+               // sat and xmitSat are always the same for ephemeris
+            navOut->signal.sat = navIn.sat;
+            navOut->signal.xmitSat = navIn.sat;
+            navOut->signal.system = navIn.sat.system;
+               // we can't obtain these from RINEX NAV, so just assume G1 Std
+            navOut->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::G1,
+                                       TrackingCode::Standard, navIn.freqNum);
+            navOut->signal.nav = NavType::GloCivilF;
+            break;
+         }
          default:
                /// @todo add other GNSSes
             break;

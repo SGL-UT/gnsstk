@@ -36,50 +36,45 @@
 //
 //==============================================================================
 
-#include <math.h>
-#include "AngleReduced.hpp"
-#include "GNSSconstants.hpp"
+#ifndef GNSSTK_ANGLETYPE_HPP
+#define GNSSTK_ANGLETYPE_HPP
+
+#include <string>
+#include "EnumIterator.hpp"
 
 namespace gnsstk
 {
-   AngleReduced ::
-   AngleReduced()
-         : sine(std::numeric_limits<double>::quiet_NaN()),
-           cosine(std::numeric_limits<double>::quiet_NaN())
-   {}
+      /// @ingroup Geodetic
+      //@{
 
-
-   void AngleReduced ::
-   setValue(double v, AngleType t)
+      /** Because the angle can be initialized via a variety of
+       * different values that are the same type, we use this enum
+       * to indicate in the constructor what type is being
+       * passed. */
+   enum class AngleType
    {
-      double radians;
-      switch (t)
-      {
-         case AngleType::Rad:
-            sine = ::sin(v);
-            cosine = ::cos(v);
-            break;
-         case AngleType::Deg:
-            radians = v * DEG2RAD;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::SemiCircle:
-            radians = v * PI;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::Sin:
-            sine = v;
-            cosine = ::sqrt(1-sine*sine);
-            break;
-         case AngleType::Cos:
-            cosine = v;
-            sine = ::sqrt(1-cosine*cosine);
-            break;
-         default:
-            GNSSTK_THROW(Exception("Invalid type in setValue"));
-            break;
-      }
+      Unknown,    ///< Uninitialized value.
+      Rad,        ///< Value is in radians.
+      Deg,        ///< Value is in degrees.
+      SemiCircle, ///< Value is in semi-circles (aka half-cycles).
+      Sin,        ///< Value is the sine of the angle.
+      Cos,        ///< Value is the cosine of the angle.
+      Last        ///< Used to create an iterator.
+   };
+
+      /** Define an iterator so C++11 can do things like
+       * for (AngleType i : AngleTypeIterator()) */
+   typedef EnumIterator<AngleType, AngleType::Unknown, AngleType::Last> AngleTypeIterator;
+
+   namespace StringUtils
+   {
+         /// Convert a AngleType to a whitespace-free string name.
+      std::string asString(AngleType e) throw();
+         /// Convert a string name to an AngleType
+      AngleType asAngleType(const std::string& s) throw();
    }
+
+      //@}
 }
+
+#endif // GNSSTK_ANGLETYPE_HPP

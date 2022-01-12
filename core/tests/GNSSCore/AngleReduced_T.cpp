@@ -52,15 +52,16 @@ public:
    class TestData
    {
    public:
-      TestData(double val, gnsstk::AngleReduced::Type type, double radians,
-               double degrees, double sine, double cosine)
+      TestData(double val, gnsstk::AngleType type, double radians,
+               double degrees, double sine, double cosine, double semicirc)
             : v(val), t(type), rad(radians), deg(degrees), sin(sine),
-              cos(cosine)
+              cos(cosine), sc(semicirc)
       {}
       double v;
-      gnsstk::AngleReduced::Type t;
+      gnsstk::AngleType t;
       double rad;
       double deg;
+      double sc;
       double sin;
       double cos;
    };
@@ -81,6 +82,7 @@ constructorTest()
    TUDEF("AngleReduced", "AngleReduced");
    const double radians = 0.52359877559829881566;
    const double degrees = 30.0;
+   const double semicirc = 0.16666666666666666666;
    const double sine = ::sin(radians);
    const double cosine = ::cos(radians);
       // test default constructor
@@ -88,25 +90,29 @@ constructorTest()
    TUASSERTE(bool, true, isnan(uut1.sin()));
    TUASSERTE(bool, true, isnan(uut1.cos()));
       // test radians constructor
-   gnsstk::AngleReduced uut2(radians, gnsstk::AngleReduced::Rad);
+   gnsstk::AngleReduced uut2(radians, gnsstk::AngleType::Rad);
    TUASSERTFEPS(sine,    uut2.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut2.cos(), epsilon);
       // test degrees constructor
-   gnsstk::AngleReduced uut3(degrees, gnsstk::AngleReduced::Deg);
+   gnsstk::AngleReduced uut3(degrees, gnsstk::AngleType::Deg);
    TUASSERTFEPS(sine,    uut3.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut3.cos(), epsilon);
       // test sin constructor
-   gnsstk::AngleReduced uut4(sine, gnsstk::AngleReduced::Sin);
+   gnsstk::AngleReduced uut4(sine, gnsstk::AngleType::Sin);
    TUASSERTFEPS(sine,    uut4.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut4.cos(), epsilon);
       // test cos constructor
-   gnsstk::AngleReduced uut5(cosine, gnsstk::AngleReduced::Cos);
+   gnsstk::AngleReduced uut5(cosine, gnsstk::AngleType::Cos);
    TUASSERTFEPS(sine,    uut5.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut5.cos(), epsilon);
       // test sin/cos constructor
    gnsstk::AngleReduced uut6(sine, cosine);
    TUASSERTFEPS(sine,    uut6.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut6.cos(), epsilon);
+      // test semi-circles constructor
+   gnsstk::AngleReduced uut7(semicirc, gnsstk::AngleType::SemiCircle);
+   TUASSERTFEPS(sine,    uut7.sin(), epsilon);
+   TUASSERTFEPS(cosine,  uut7.cos(), epsilon);
    TURETURN();
 }
 
@@ -119,13 +125,15 @@ setValueTest()
    using gnsstk::RAD2DEG;
    static const TestData testData[] =
       {
-         { 0.0,  gnsstk::AngleReduced::Rad, 0.0, 0.0, 0.0,  1.0 },
-         { 1.0,  gnsstk::AngleReduced::Deg, 1.0*DEG2RAD, 1.0, ::sin(1.0*DEG2RAD),
-           ::cos(1.0*DEG2RAD) },
-         { 0.34, gnsstk::AngleReduced::Sin, ::asin(0.34), ::asin(0.34)*RAD2DEG,
-           0.34, ::cos(::asin(0.34)) },
-         { 0.78, gnsstk::AngleReduced::Cos, ::acos(0.78), ::acos(0.78)*RAD2DEG,
-           ::sin(::acos(0.78)),  0.78 },
+         { 0.0,  gnsstk::AngleType::Rad, 0.0, 0.0, 0.0,  1.0, 0.0 },
+         { 1.0,  gnsstk::AngleType::Deg, 1.0*DEG2RAD, 1.0,
+           ::sin(1.0*DEG2RAD), ::cos(1.0*DEG2RAD), 1.0/180.0 },
+         { 0.34, gnsstk::AngleType::Sin, ::asin(0.34),
+           ::asin(0.34)*RAD2DEG, 0.34, ::cos(::asin(0.34)),
+           ::asin(0.34)/gnsstk::PI },
+         { 0.78, gnsstk::AngleType::Cos, ::acos(0.78),
+           ::acos(0.78)*RAD2DEG, ::sin(::acos(0.78)),  0.78,
+           ::acos(0.78)/gnsstk::PI },
       };
    unsigned numTests = sizeof(testData) / sizeof(testData[0]);
    for (unsigned testNum = 0; testNum < numTests; testNum++)

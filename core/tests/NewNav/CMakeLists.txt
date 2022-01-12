@@ -345,3 +345,38 @@ add_executable(BDSD1NavTimeOffset_T BDSD1NavTimeOffset_T.cpp)
 target_link_libraries(BDSD1NavTimeOffset_T gnsstk)
 add_test(BDSD1NavTimeOffset_T BDSD1NavTimeOffset_T)
 set_property(TEST BDSD1NavTimeOffset_T PROPERTY LABELS NewNav)
+
+add_executable(GLOFNavAlm_T GLOFNavAlm_T.cpp)
+target_link_libraries(GLOFNavAlm_T gnsstk)
+add_test(GLOFNavAlm_T GLOFNavAlm_T)
+set_property(TEST GLOFNavAlm_T PROPERTY LABELS NewNav)
+
+add_executable(GLOFNavData_T GLOFNavData_T.cpp)
+target_link_libraries(GLOFNavData_T gnsstk)
+add_test(GLOFNavData_T GLOFNavData_T)
+set_property(TEST GLOFNavData_T PROPERTY LABELS NewNav)
+
+add_executable(GLOFNavEph_T GLOFNavEph_T.cpp)
+target_link_libraries(GLOFNavEph_T gnsstk)
+add_test(GLOFNavEph_T GLOFNavEph_T)
+set_property(TEST GLOFNavEph_T PROPERTY LABELS NewNav)
+
+add_executable(GLOFNavHealth_T GLOFNavHealth_T.cpp)
+target_link_libraries(GLOFNavHealth_T gnsstk)
+add_test(GLOFNavHealth_T GLOFNavHealth_T)
+set_property(TEST GLOFNavHealth_T PROPERTY LABELS NewNav)
+
+add_executable(GLOFNavTimeOffset_T GLOFNavTimeOffset_T.cpp)
+target_link_libraries(GLOFNavTimeOffset_T gnsstk)
+add_test(GLOFNavTimeOffset_T GLOFNavTimeOffset_T)
+set_property(TEST GLOFNavTimeOffset_T PROPERTY LABELS NewNav)
+
+add_executable(GLOFNavUT1TimeOffset_T GLOFNavUT1TimeOffset_T.cpp)
+target_link_libraries(GLOFNavUT1TimeOffset_T gnsstk)
+add_test(GLOFNavUT1TimeOffset_T GLOFNavUT1TimeOffset_T)
+set_property(TEST GLOFNavUT1TimeOffset_T PROPERTY LABELS NewNav)
+
+add_executable(GLOFNavISC_T GLOFNavISC_T.cpp)
+target_link_libraries(GLOFNavISC_T gnsstk)
+add_test(GLOFNavISC_T GLOFNavISC_T)
+set_property(TEST GLOFNavISC_T PROPERTY LABELS NewNav)

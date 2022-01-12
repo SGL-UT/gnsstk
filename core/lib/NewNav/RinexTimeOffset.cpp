@@ -103,7 +103,7 @@ namespace gnsstk
               << "Parameter                 Value" << endl
               << "Reference   "
               << printTime(refTime,"%Y/%02m/%02d %02H:%02M:%02S") << endl
-              << scientific << setprecision(9)
+              << scientific << setprecision(9) << setfill(' ')
               << "A0             " << setw(16) << A0 << " sec" << endl
               << "A1             " << setw(16) << A1 << " sec/sec" << endl
               << fixed << setprecision(0)

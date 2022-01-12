@@ -338,25 +338,7 @@ namespace gnsstk
       xvt.v[0] = vxef;
       xvt.v[1] = vyef;
       xvt.v[2] = vzef;
-      switch (health)
-      {
-         case SVHealth::Unknown:
-            xvt.health = Xvt::Unknown;
-            break;
-         case SVHealth::Healthy:
-            xvt.health = Xvt::Healthy;
-            break;
-         case SVHealth::Unhealthy:
-            xvt.health = Xvt::Unhealthy;
-            break;
-         case SVHealth::Degraded:
-            xvt.health = Xvt::Degraded;
-            break;
-         default:
-            xvt.health = Xvt::Uninitialized;
-            break;
-      }
-
+      xvt.health = toXvtHealth(health);
       return true;
    }
 

@@ -22,6 +22,7 @@
 //
 //==============================================================================
 
+
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -35,51 +36,54 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-
-#include <math.h>
-#include "AngleReduced.hpp"
-#include "GNSSconstants.hpp"
+#include "AngleType.hpp"
+#include "TestUtil.hpp"
 
 namespace gnsstk
 {
-   AngleReduced ::
-   AngleReduced()
-         : sine(std::numeric_limits<double>::quiet_NaN()),
-           cosine(std::numeric_limits<double>::quiet_NaN())
-   {}
-
-
-   void AngleReduced ::
-   setValue(double v, AngleType t)
+   std::ostream& operator<<(std::ostream& s, gnsstk::AngleType e)
    {
-      double radians;
-      switch (t)
-      {
-         case AngleType::Rad:
-            sine = ::sin(v);
-            cosine = ::cos(v);
-            break;
-         case AngleType::Deg:
-            radians = v * DEG2RAD;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::SemiCircle:
-            radians = v * PI;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::Sin:
-            sine = v;
-            cosine = ::sqrt(1-sine*sine);
-            break;
-         case AngleType::Cos:
-            cosine = v;
-            sine = ::sqrt(1-cosine*cosine);
-            break;
-         default:
-            GNSSTK_THROW(Exception("Invalid type in setValue"));
-            break;
-      }
+      s << StringUtils::asString(e);
+      return s;
    }
+}
+
+
+class AngleType_T
+{
+public:
+   unsigned convertTest();
+};
+
+
+unsigned AngleType_T ::
+convertTest()
+{
+   TUDEF("AngleType", "asString");
+      // This effectively tests AngleTypeIterator and asString at once.
+   for (gnsstk::AngleType e : gnsstk::AngleTypeIterator())
+   {
+      TUCSM("asString");
+      std::string s(gnsstk::StringUtils::asString(e));
+      TUASSERT(!s.empty());
+      TUASSERT(s != "???");
+      TUCSM("asAngleType");
+      gnsstk::AngleType e2 = gnsstk::StringUtils::asAngleType(s);
+      TUASSERTE(gnsstk::AngleType, e, e2);
+   }
+   TURETURN();
+}
+
+
+int main()
+{
+   AngleType_T testClass;
+   unsigned errorTotal = 0;
+
+   errorTotal += testClass.convertTest();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+             << std::endl;
+
+   return errorTotal;
 }

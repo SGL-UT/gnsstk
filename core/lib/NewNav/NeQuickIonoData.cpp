@@ -233,12 +233,12 @@ namespace gnsstk
       DEBUGTRACE("svgeo.geodeticLatitude()=" << svgeo.geodeticLatitude());
       DEBUGTRACE("svgeo.longitude()=" << svgeo.longitude());
       DEBUGTRACE("svgeo.height()=" << svgeo.height());
-      Angle debugAngle(rxgeo.geodeticLatitude(),Angle::Deg);
+      Angle debugAngle(rxgeo.geodeticLatitude(),AngleType::Deg);
       DEBUGTRACE("pPosition->latitude.rad=" << scientific << debugAngle.rad());
       DEBUGTRACE("pPosition->latitude.degree=" << scientific << debugAngle.deg());
       DEBUGTRACE("pPosition->latitude.sin=" << scientific << debugAngle.sin());
       DEBUGTRACE("pPosition->latitude.cos=" << scientific << debugAngle.cos());
-      debugAngle = Angle(rxgeo.longitude(), Angle::Deg);
+      debugAngle = Angle(rxgeo.longitude(), AngleType::Deg);
       DEBUGTRACE("pPosition->longitude.rad=" << scientific << debugAngle.rad());
       DEBUGTRACE("pPosition->longitude.degree=" << scientific << debugAngle.deg());
       DEBUGTRACE("pPosition->longitude.sin=" << scientific << debugAngle.sin());
@@ -474,7 +474,7 @@ namespace gnsstk
       double am = (0.9856 * t - 3.289) * DEG2RAD;                       //eq.22
       double al = am + (1.916*sin(am) + 0.020*sin(2*am) + 282.634) *    //eq.23
          DEG2RAD;
-      return AngleReduced(0.39782*sin(al),AngleReduced::Sin);           //eq.24
+      return AngleReduced(0.39782*sin(al),AngleType::Sin);              //eq.24
    }
 
 
@@ -490,7 +490,7 @@ namespace gnsstk
          // X is really chi.
       double cosX=sin(phiRad) * sin(deltaSun) +                         //eq.26
          cos(phiRad) * cos(deltaSun) * cos(PI/12*(12-lt));
-      return Angle(atan2(sqrt(1-cosX*cosX),cosX),Angle::Rad);           //eq.27
+      return Angle(atan2(sqrt(1-cosX*cosX),cosX),AngleType::Rad);       //eq.27
    }
 
 
@@ -503,7 +503,7 @@ namespace gnsstk
       Angle x = solarZenithAngle(pos, when);
       double exp2 = neExp(12*(x.deg()-x0));                             //eq.29
       return Angle((x.deg()+(90-0.24*neExp(20-0.2*x.deg()))*exp2) / (1+exp2),
-                   Angle::Deg);
+                   AngleType::Deg);
    }
 
 

@@ -22,6 +22,7 @@
 //
 //==============================================================================
 
+
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -35,51 +36,83 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-
-#include <math.h>
-#include "AngleReduced.hpp"
-#include "GNSSconstants.hpp"
+#include "TestUtil.hpp"
+#include "GLOFNavData.hpp"
 
 namespace gnsstk
 {
-   AngleReduced ::
-   AngleReduced()
-         : sine(std::numeric_limits<double>::quiet_NaN()),
-           cosine(std::numeric_limits<double>::quiet_NaN())
-   {}
-
-
-   void AngleReduced ::
-   setValue(double v, AngleType t)
+   std::ostream& operator<<(std::ostream& s, GLOFNavData::SatType e)
    {
-      double radians;
-      switch (t)
-      {
-         case AngleType::Rad:
-            sine = ::sin(v);
-            cosine = ::cos(v);
-            break;
-         case AngleType::Deg:
-            radians = v * DEG2RAD;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::SemiCircle:
-            radians = v * PI;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::Sin:
-            sine = v;
-            cosine = ::sqrt(1-sine*sine);
-            break;
-         case AngleType::Cos:
-            cosine = v;
-            sine = ::sqrt(1-cosine*cosine);
-            break;
-         default:
-            GNSSTK_THROW(Exception("Invalid type in setValue"));
-            break;
-      }
+      s << StringUtils::asString(e);
+      return s;
    }
+
+
+   std::ostream& operator<<(std::ostream& s, SVHealth h)
+   {
+      s << StringUtils::asString(h);
+      return s;
+   }
+}
+
+
+/// Make a testable non-abstract class
+class TestClass : public gnsstk::GLOFNavData
+{
+public:
+   bool getXvt(const gnsstk::CommonTime& t, gnsstk::Xvt& xvt) override
+   { return false; }
+};
+
+
+class GLOFNavData_T
+{
+public:
+   unsigned constructorTest();
+   unsigned validateTest();
+};
+
+
+unsigned GLOFNavData_T ::
+constructorTest()
+{
+   TUDEF("GLOFNavData", "GLOFNavData()");
+   TestClass uut;
+   gnsstk::CommonTime exp;
+   TUASSERTE(gnsstk::CommonTime, exp, uut.xmit2);
+   TUASSERTE(gnsstk::GLOFNavData::SatType,gnsstk::GLOFNavData::SatType::Unknown,
+             uut.satType);
+   TUASSERTE(unsigned, -1, uut.slot);
+   TUASSERTE(bool, false, uut.lhealth);
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Unknown, uut.health);
+   TUASSERTE(gnsstk::CommonTime, exp, uut.beginFit);
+   TUASSERTE(gnsstk::CommonTime, exp, uut.endFit);
+   TURETURN();
+}
+
+
+unsigned GLOFNavData_T ::
+validateTest()
+{
+   TUDEF("GLOFNavData", "validate()");
+   TestClass uut;
+      /// @todo Implement some testing when the function has some meat to it.
+   TUASSERTE(bool, true, uut.validate());
+   TURETURN();
+}
+
+
+
+int main()
+{
+   GLOFNavData_T testClass;
+   unsigned errorTotal = 0;
+
+   errorTotal += testClass.constructorTest();
+   errorTotal += testClass.validateTest();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+             << std::endl;
+
+   return errorTotal;
 }

@@ -22,6 +22,7 @@
 //
 //==============================================================================
 
+
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -35,51 +36,35 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#ifndef GNSSTK_GLOFNAVTIMEOFFSET_HPP
+#define GNSSTK_GLOFNAVTIMEOFFSET_HPP
 
-#include <math.h>
-#include "AngleReduced.hpp"
-#include "GNSSconstants.hpp"
+#include "StdNavTimeOffset.hpp"
+#include "TimeSystem.hpp"
 
 namespace gnsstk
 {
-   AngleReduced ::
-   AngleReduced()
-         : sine(std::numeric_limits<double>::quiet_NaN()),
-           cosine(std::numeric_limits<double>::quiet_NaN())
-   {}
+      /// @ingroup NavFactory
+      //@{
 
-
-   void AngleReduced ::
-   setValue(double v, AngleType t)
+      /** Defines the class that provides the ability to convert
+       * GLONASS to/from GPS or UTC, using data extracted from
+       * GLONASS navigation messages. */
+   class GLOFNavTimeOffset : public StdNavTimeOffset
    {
-      double radians;
-      switch (t)
-      {
-         case AngleType::Rad:
-            sine = ::sin(v);
-            cosine = ::cos(v);
-            break;
-         case AngleType::Deg:
-            radians = v * DEG2RAD;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::SemiCircle:
-            radians = v * PI;
-            sine = ::sin(radians);
-            cosine = ::cos(radians);
-            break;
-         case AngleType::Sin:
-            sine = v;
-            cosine = ::sqrt(1-sine*sine);
-            break;
-         case AngleType::Cos:
-            cosine = v;
-            sine = ::sqrt(1-cosine*cosine);
-            break;
-         default:
-            GNSSTK_THROW(Exception("Invalid type in setValue"));
-            break;
-      }
-   }
+   public:
+         /// Initialize all data to 0.
+      GLOFNavTimeOffset();
+
+         /** Checks the contents of this message against known
+          * validity rules as defined in the appropriate ICD.
+          * @return true if this message is valid according to ICD criteria.
+          */
+      bool validate() const override;
+   };
+
+      //@}
+
 }
+
+#endif // GNSSTK_GLOFNAVTIMEOFFSET_HPP

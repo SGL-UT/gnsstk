@@ -52,17 +52,20 @@ public:
    class TestData
    {
    public:
-      TestData(double val, gnsstk::Angle::Type type, double radians,
-               double degrees, double sine, double cosine)
+      TestData(double val, gnsstk::AngleType type, double radians,
+               double degrees, double sine, double cosine, double semicirc,
+               double tangent)
             : v(val), t(type), rad(radians), deg(degrees), sin(sine),
-              cos(cosine)
+              cos(cosine), sc(semicirc), tan(tangent)
       {}
       double v;
-      gnsstk::Angle::Type t;
+      gnsstk::AngleType t;
       double rad;
       double deg;
+      double sc;
       double sin;
       double cos;
+      double tan;
    };
 };
 
@@ -81,44 +84,66 @@ constructorTest()
    TUDEF("Angle", "Angle");
    const double radians = 0.52359877559829881566;
    const double degrees = 30.0;
+   const double semicirc = 0.16666666666666666666;
    const double sine = ::sin(radians);
    const double cosine = ::cos(radians);
+   const double tangent = ::tan(radians);
       // test default constructor
    gnsstk::Angle uut1;
    TUASSERTE(bool, true, isnan(uut1.rad()));
    TUASSERTE(bool, true, isnan(uut1.deg()));
+   TUASSERTE(bool, true, isnan(uut1.semicirc()));
    TUASSERTE(bool, true, isnan(uut1.sin()));
    TUASSERTE(bool, true, isnan(uut1.cos()));
+   TUASSERTE(bool, true, isnan(uut1.tan()));
       // test radians constructor
-   gnsstk::Angle uut2(radians, gnsstk::Angle::Rad);
+   gnsstk::Angle uut2(radians, gnsstk::AngleType::Rad);
    TUASSERTFEPS(radians, uut2.rad(), epsilon);
    TUASSERTFEPS(degrees, uut2.deg(), epsilon);
+   TUASSERTFEPS(semicirc,uut2.semicirc(), epsilon);
    TUASSERTFEPS(sine,    uut2.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut2.cos(), epsilon);
+   TUASSERTFEPS(tangent, uut2.tan(), epsilon);
       // test degrees constructor
-   gnsstk::Angle uut3(degrees, gnsstk::Angle::Deg);
+   gnsstk::Angle uut3(degrees, gnsstk::AngleType::Deg);
    TUASSERTFEPS(radians, uut3.rad(), epsilon);
    TUASSERTFEPS(degrees, uut3.deg(), epsilon);
+   TUASSERTFEPS(semicirc,uut3.semicirc(), epsilon);
    TUASSERTFEPS(sine,    uut3.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut3.cos(), epsilon);
+   TUASSERTFEPS(tangent, uut3.tan(), epsilon);
       // test sin constructor
-   gnsstk::Angle uut4(sine, gnsstk::Angle::Sin);
+   gnsstk::Angle uut4(sine, gnsstk::AngleType::Sin);
    TUASSERTFEPS(radians, uut4.rad(), epsilon);
    TUASSERTFEPS(degrees, uut4.deg(), epsilon);
+   TUASSERTFEPS(semicirc,uut4.semicirc(), epsilon);
    TUASSERTFEPS(sine,    uut4.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut4.cos(), epsilon);
+   TUASSERTFEPS(tangent, uut4.tan(), epsilon);
       // test cos constructor
-   gnsstk::Angle uut5(cosine, gnsstk::Angle::Cos);
+   gnsstk::Angle uut5(cosine, gnsstk::AngleType::Cos);
    TUASSERTFEPS(radians, uut5.rad(), epsilon);
    TUASSERTFEPS(degrees, uut5.deg(), epsilon);
+   TUASSERTFEPS(semicirc,uut5.semicirc(), epsilon);
    TUASSERTFEPS(sine,    uut5.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut5.cos(), epsilon);
+   TUASSERTFEPS(tangent, uut5.tan(), epsilon);
       // test sin/cos constructor
    gnsstk::Angle uut6(sine, cosine);
    TUASSERTFEPS(radians, uut6.rad(), epsilon);
    TUASSERTFEPS(degrees, uut6.deg(), epsilon);
+   TUASSERTFEPS(semicirc,uut6.semicirc(), epsilon);
    TUASSERTFEPS(sine,    uut6.sin(), epsilon);
    TUASSERTFEPS(cosine,  uut6.cos(), epsilon);
+   TUASSERTFEPS(tangent, uut6.tan(), epsilon);
+      // test semi-circles constructor
+   gnsstk::Angle uut7(semicirc, gnsstk::AngleType::SemiCircle);
+   TUASSERTFEPS(radians, uut7.rad(), epsilon);
+   TUASSERTFEPS(degrees, uut7.deg(), epsilon);
+   TUASSERTFEPS(semicirc,uut7.semicirc(), epsilon);
+   TUASSERTFEPS(sine,    uut7.sin(), epsilon);
+   TUASSERTFEPS(cosine,  uut7.cos(), epsilon);
+   TUASSERTFEPS(tangent, uut7.tan(), epsilon);
    TURETURN();
 }
 
@@ -131,13 +156,15 @@ setValueTest()
    using gnsstk::RAD2DEG;
    static const TestData testData[] =
       {
-         { 0.0,  gnsstk::Angle::Rad, 0.0, 0.0, 0.0,  1.0 },
-         { 1.0,  gnsstk::Angle::Deg, 1.0*DEG2RAD, 1.0, ::sin(1.0*DEG2RAD),
-           ::cos(1.0*DEG2RAD) },
-         { 0.34, gnsstk::Angle::Sin, ::asin(0.34), ::asin(0.34)*RAD2DEG,
-           0.34, ::cos(::asin(0.34)) },
-         { 0.78, gnsstk::Angle::Cos, ::acos(0.78), ::acos(0.78)*RAD2DEG,
-           ::sin(::acos(0.78)),  0.78 },
+         { 0.0,  gnsstk::AngleType::Rad, 0.0, 0.0, 0.0,  1.0, 0.0, 0.0 },
+         { 1.0,  gnsstk::AngleType::Deg, 1.0*DEG2RAD, 1.0, ::sin(1.0*DEG2RAD),
+           ::cos(1.0*DEG2RAD), 1.0/180.0, ::tan(1.0*DEG2RAD) },
+         { 0.34, gnsstk::AngleType::Sin, ::asin(0.34), ::asin(0.34)*RAD2DEG,
+           0.34, ::cos(::asin(0.34)), ::asin(0.34)/gnsstk::PI,
+           ::tan(::asin(0.34)) },
+         { 0.78, gnsstk::AngleType::Cos, ::acos(0.78), ::acos(0.78)*RAD2DEG,
+           ::sin(::acos(0.78)),  0.78, ::acos(0.78)/gnsstk::PI,
+           ::tan(::acos(0.78)) },
       };
    unsigned numTests = sizeof(testData) / sizeof(testData[0]);
    for (unsigned testNum = 0; testNum < numTests; testNum++)
@@ -147,8 +174,10 @@ setValueTest()
       uut.setValue(td.v, td.t);
       TUASSERTFEPS(td.rad, uut.rad(), epsilon);
       TUASSERTFEPS(td.deg, uut.deg(), epsilon);
+      TUASSERTFEPS(td.sc,  uut.semicirc(), epsilon);
       TUASSERTFEPS(td.sin, uut.sin(), epsilon);
       TUASSERTFEPS(td.cos, uut.cos(), epsilon);
+      TUASSERTFEPS(td.tan, uut.tan(), epsilon);
    }
    TURETURN();
 }
