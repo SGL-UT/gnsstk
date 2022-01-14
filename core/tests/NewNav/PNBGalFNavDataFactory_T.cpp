@@ -340,7 +340,7 @@ processEphTest()
             // NavData fields
          TUASSERTE(gnsstk::CommonTime, navFNAVGalPT1ct, iono->timeStamp);
          TUASSERTE(gnsstk::NavMessageID, nmidExpE5a, iono->signal);
-            // NeQuickIonoData fields
+            // NeQuickIonoNavData fields
             // values confirmed by hand.
          TUASSERTFE(45.75, iono->ai[0]);
          TUASSERTFE(0.1640625, iono->ai[1]);

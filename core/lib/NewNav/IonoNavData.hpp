@@ -36,36 +36,30 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GNSSTK_KLOBUCHARIONODATA_HPP
-#define GNSSTK_KLOBUCHARIONODATA_HPP
+#ifndef GNSSTK_IONODATA_HPP
+#define GNSSTK_IONODATA_HPP
 
-#include "IonoData.hpp"
+#include "NavData.hpp"
+#include "Position.hpp"
 
 namespace gnsstk
 {
       /// @ingroup NavFactory
       //@{
 
-      /// Class containing data elements unique to the Klobuchar iono model.
-   class KlobucharIonoData : public IonoData
+      /** Defines the interface for classes that provide the ability
+       * to compute ionospheric delay, using data extracted from GNSS
+       * navigation messages. */
+   class IonoNavData : public NavData
    {
    public:
-         /// Sets the nav message type.
-      KlobucharIonoData();
+         /// Set the messageType
+      IonoNavData()
+      { signal.messageType = NavMessageType::Iono; }
 
-         /** Checks the contents of this message against known
-          * validity rules as defined in the appropriate ICD.
-          * @todo implement some checking.
-          * @return true if this message is valid according to ICD criteria.
-          */
-      bool validate() const override
-      { return true; }
-
-         /** Print the contents of this KlobucharIonoData object in a
-          * human-readable format.
-          * @param[in,out] s The stream to write the data to.
-          * @param[in] dl The level of detail the output should contain. */
-      void dump(std::ostream& s, DumpDetail dl) const override;
+         /// Obligatory virtual destructor.
+      virtual ~IonoNavData()
+      {}
 
          /** Get the ionospheric correction in meters.
           * @param[in] when The time of the observation to correct.
@@ -73,20 +67,28 @@ namespace gnsstk
           * @param[in] svgeo The observed satellite's geodetic position.
           * @param[in] band The carrier band of the signal being corrected.
           * @return The ionospheric delay, in meters, on band. */
-      double getCorrection(const CommonTime& when,
-                           const Position& rxgeo,
-                           const Position& svgeo,
-                           CarrierBand band) const override;
+      virtual double getIonoCorr(const CommonTime& when,
+                                 const Position& rxgeo,
+                                 const Position& svgeo,
+                                 CarrierBand band) const = 0;
 
-         // alpha/beta terms are seconds, seconds/semi-circle,
-         // seconds/semi-circle**2, seconds/semi-circle**3.  Refer to
-         // IS-GPS-200 Table 20-X.
-      double alpha[4]; ///< alpha terms of Klobuchar model, using semi-circles.
-      double beta[4];  ///< beta terms of Klobuchar model, using semi-circles.
+         /// @copydoc NavData::isSameData
+      bool isSameData(const NavDataPtr& right) const override
+      {
+         Exception exc("Unimplemented function");
+         GNSSTK_THROW(exc);
+      }
+         /// @copydoc NavData::compare
+      std::list<std::string> compare(const NavDataPtr& right)
+         const override
+      {
+         Exception exc("Unimplemented function");
+         GNSSTK_THROW(exc);
+      }
    };
 
       //@}
 
 }
 
-#endif // GNSSTK_KLOBUCHARIONODATA_HPP
+#endif // GNSSTK_IONODATA_HPP

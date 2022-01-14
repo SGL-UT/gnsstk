@@ -101,8 +101,8 @@
 %include "InterSigCorr.hpp"
 %include "BDSD1NavISC.hpp"
 %include "Position.hpp"
-%include "IonoData.hpp"
-%include "KlobucharIonoData.hpp"
+%include "IonoNavData.hpp"
+%include "KlobucharIonoNavData.hpp"
 %include "BDSD1NavIono.hpp"
 %include "TimeOffsetData.hpp"
 %include "StdNavTimeOffset.hpp"
@@ -331,7 +331,7 @@
 %include "GalileoEllipsoid.hpp"
 %include "GalileoIonoEllipsoid.hpp"
 %feature("flatnested");
-%include "NeQuickIonoData.hpp"
+%include "NeQuickIonoNavData.hpp"
 %feature("flatnested", "");
 %include "GalFNavIono.hpp"
 %include "GalFNavTimeOffset.hpp"
