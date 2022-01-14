@@ -126,12 +126,14 @@ getXvtTest()
       //uut.dump(std::cerr, gnsstk::DumpDetail::Full);
    gnsstk::Xvt xvt;
    TUASSERTE(bool, true, uut.getXvt(toi, xvt));
-   TUASSERTFE(10945967.138109738, xvt.x[0]);
-   TUASSERTFE(13079860.921750335, xvt.x[1]);
-   TUASSERTFE(18922063.556836389, xvt.x[2]);
-   TUASSERTFE(-3375.4834789088281, xvt.v[0]);
-   TUASSERTFE(-161.72513071304218, xvt.v[1]);
-   TUASSERTFE(2060.8444711932389, xvt.v[2]);
+      // 10 nm tolerance
+   TUASSERTFEPS(10945967.138109738, xvt.x[0], 1e-8);
+   TUASSERTFEPS(13079860.921750335, xvt.x[1], 1e-8);
+   TUASSERTFEPS(18922063.556836389, xvt.x[2], 1e-8);
+      // 1 pm/s tolerance
+   TUASSERTFEPS(-3375.4834789088281, xvt.v[0], 1e-12);
+   TUASSERTFEPS(-161.72513071304218, xvt.v[1], 1e-12);
+   TUASSERTFEPS(2060.8444711932389, xvt.v[2], 1e-12);
    TUASSERTFE(0, xvt.clkbias);
    TUASSERTFE(0, xvt.clkdrift);
    TUASSERTFE(0, xvt.relcorr);
