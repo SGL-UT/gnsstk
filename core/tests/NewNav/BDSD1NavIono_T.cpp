@@ -55,7 +55,7 @@ public:
       /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
    unsigned getUserTimeTest();
-   unsigned getCorrectionTest();
+   unsigned getIonoCorrTest();
 };
 
 
@@ -89,9 +89,9 @@ getUserTimeTest()
 
 
 unsigned BDSD1NavIono_T ::
-getCorrectionTest()
+getIonoCorrTest()
 {
-   TUDEF("BDSD1NavIono", "getCorrection");
+   TUDEF("BDSD1NavIono", "getIonoCorr");
    gnsstk::BDSD1NavIono uut;
    gnsstk::CommonTime when = gnsstk::BDSWeekSecond(2100,135.0);
    gnsstk::Position rx, sv;
@@ -107,15 +107,15 @@ getCorrectionTest()
    uut.beta[3]  =  3.38181850E+04;
       // probably wouldn't use L1 or L2 for BDS D1 but this is a sanity check
    TUASSERTFE(13.174577965354167475,
-              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::L2));
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L2));
    TUASSERTFE(7.9994064218713107906,
-              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::L1));
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L1));
    TUASSERTFE(8.1468578153895165883,
-              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::B1));
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::B1));
    TUASSERTFE(13.624958539291872839,
-              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::B2));
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::B2));
    TUASSERTFE(12.338314431653227388,
-              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::B3));
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::B3));
    TURETURN();
 }
 
@@ -127,7 +127,7 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getUserTimeTest();
-   errorTotal += testClass.getCorrectionTest();
+   errorTotal += testClass.getIonoCorrTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

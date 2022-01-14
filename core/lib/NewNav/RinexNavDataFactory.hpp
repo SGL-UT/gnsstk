@@ -122,8 +122,8 @@ namespace gnsstk
       static bool convertToOffset(const Rinex3NavHeader& navIn,
                                   NavDataPtrList& navOut);
 
-         /** Convert RINEX nav header data into a IonoData object.
-          * @param[in] when A timestamp to use for the IonoData, since
+         /** Convert RINEX nav header data into a IonoNavData object.
+          * @param[in] when A timestamp to use for the IonoNavData, since
           *   the RINEX nav header doesn't include time information on
           *   its own (usually a timestamp pulled from the data).
           * @param[in] navIn The RINEX nav header to convert.

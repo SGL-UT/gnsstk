@@ -39,7 +39,7 @@
 #ifndef GNSSTK_NEQUICKIONODATA_HPP
 #define GNSSTK_NEQUICKIONODATA_HPP
 
-#include "IonoData.hpp"
+#include "IonoNavData.hpp"
 #include "CivilTime.hpp"
 #include "CCIR.hpp"
 #include "MODIP.hpp"
@@ -54,7 +54,7 @@
  */
 
 // forward declaration of test class
-class NeQuickIonoData_T;
+class NeQuickIonoNavData_T;
 
 namespace gnsstk
 {
@@ -78,11 +78,11 @@ namespace gnsstk
        * \cite galileo:iono
        * \cite itur:iono
        */
-   class NeQuickIonoData : public IonoData
+   class NeQuickIonoNavData : public IonoNavData
    {
    public:
          /// Initialize internal data.
-      NeQuickIonoData();
+      NeQuickIonoNavData();
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
@@ -92,7 +92,7 @@ namespace gnsstk
       bool validate() const override
       { return true; }
 
-         /** Print the contents of this NeQuickIonoData object in a
+         /** Print the contents of this NeQuickIonoNavData object in a
           * human-readable format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
@@ -104,10 +104,10 @@ namespace gnsstk
           * @param[in] svgeo The observed satellite's geodetic position.
           * @param[in] band The carrier band of the signal being corrected.
           * @return The ionospheric delay, in meters, on band. */
-      double getCorrection(const CommonTime& when,
-                           const Position& rxgeo,
-                           const Position& svgeo,
-                           CarrierBand band) const override;
+      double getIonoCorr(const CommonTime& when,
+                         const Position& rxgeo,
+                         const Position& svgeo,
+                         CarrierBand band) const override;
 
          /** Get the total electron content between rxgeo and svgeo at
           * the given time.
@@ -284,7 +284,7 @@ namespace gnsstk
             /// Constructor for testing only.
          ModelParameters(CCIR& ccirData);
 
-         friend class ::NeQuickIonoData_T;
+         friend class ::NeQuickIonoNavData_T;
       };
 
          /// Class to contain data used when integrating TEC.
@@ -397,10 +397,10 @@ namespace gnsstk
          /// Number of degrees longitude per hour.
       static constexpr double DEGREE_PER_HOUR = 15.0;
 
-      friend class ::NeQuickIonoData_T;
+      friend class ::NeQuickIonoNavData_T;
    };
 
-   double NeQuickIonoData::ModelParameters ::
+   double NeQuickIonoNavData::ModelParameters ::
    epstein(double x, double y, double z, double w)
    {
       DEBUGTRACE_FUNCTION();
@@ -414,7 +414,7 @@ namespace gnsstk
       return rv;
    }
 
-   double NeQuickIonoData::ModelParameters ::
+   double NeQuickIonoNavData::ModelParameters ::
    solarGetLongitude(const CivilTime& when)
    {
          // eq.4, sort of.

@@ -36,7 +36,7 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "KlobucharIonoData.hpp"
+#include "KlobucharIonoNavData.hpp"
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
 
@@ -49,20 +49,20 @@ namespace gnsstk
    }
 }
 
-class KlobucharIonoData_T
+class KlobucharIonoNavData_T
 {
 public:
       /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
-   unsigned getCorrectionTest();
+   unsigned getIonoCorrTest();
 };
 
 
-unsigned KlobucharIonoData_T ::
+unsigned KlobucharIonoNavData_T ::
 constructorTest()
 {
-   TUDEF("KlobucharIonoData", "KlobucharIonoData");
-   gnsstk::KlobucharIonoData uut;
+   TUDEF("KlobucharIonoNavData", "KlobucharIonoNavData");
+   gnsstk::KlobucharIonoNavData uut;
    TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Iono,
              uut.signal.messageType);
    TUASSERTFE(0.0, uut.alpha[0]);
@@ -77,11 +77,11 @@ constructorTest()
 }
 
 
-unsigned KlobucharIonoData_T ::
-getCorrectionTest()
+unsigned KlobucharIonoNavData_T ::
+getIonoCorrTest()
 {
-   TUDEF("KlobucharIonoData", "getCorrection");
-   gnsstk::KlobucharIonoData uut;
+   TUDEF("KlobucharIonoNavData", "getIonoCorr");
+   gnsstk::KlobucharIonoNavData uut;
    gnsstk::CommonTime when = gnsstk::GPSWeekSecond(2100,135.0);
    gnsstk::Position rx, sv;
    rx.setECEF(-1575232.0141,-4707872.2332, 3993198.4383);
@@ -95,20 +95,20 @@ getCorrectionTest()
    uut.beta[2]  = -1.32803702E+04;
    uut.beta[3]  =  3.38181850E+04;
    TUASSERTFE(13.174577965354167475,
-              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::L2));
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L2));
    TUASSERTFE(7.9994064218713107906,
-              uut.getCorrection(when, rx, sv, gnsstk::CarrierBand::L1));
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L1));
    TURETURN();
 }
 
 
 int main()
 {
-   KlobucharIonoData_T testClass;
+   KlobucharIonoNavData_T testClass;
    unsigned errorTotal = 0;
 
    errorTotal += testClass.constructorTest();
-   errorTotal += testClass.getCorrectionTest();
+   errorTotal += testClass.getIonoCorrTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
