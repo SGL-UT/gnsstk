@@ -475,8 +475,10 @@ namespace gnsstk
       DEBUGTRACE("n = " << n);
       DEBUGTRACE("OMEGAdot = " << OMEGAdot);
       DEBUGTRACE("lambdak = " << lambdak);
-      double gst = GLOFNavEph::getSiderealTime(alm.Toa);
+      double gst = GLOFNavEph::getSiderealTime(when);
+      DEBUGTRACE("gst = " << gst);
       double S0 = gst*PI/12.0;
+      DEBUGTRACE("S0 = " << S0);
       double S = S0 + omega3 * (tLambdak - 10800);
       double OMEGA = lambdak + S;
       DEBUGTRACE("OMEGA = " << OMEGA);
@@ -499,6 +501,8 @@ namespace gnsstk
       double hi = h + deltas.deltah;
       double li = l + deltas.deltal;
       double ii = i + deltas.deltai;
+      DEBUGTRACE("OMEGA = " << OMEGA);
+      DEBUGTRACE("deltaOMEGA = " << deltas.deltaOMEGA);
       double OMEGAi = OMEGA + deltas.deltaOMEGA;
       double sinOMEGAi = std::sin(OMEGAi);
       double cosOMEGAi = std::cos(OMEGAi);
@@ -536,8 +540,8 @@ namespace gnsstk
       DEBUGTRACE("ri = " << ri);
       DEBUGTRACE("Vri = " << Vri);
       DEBUGTRACE("Vui = " << Vui);
-      xvt.x[0] = ri * (cosui*cosOMEGAi - sinui*sinOMEGAi*cosii);
-      xvt.x[1] = ri * (cosui*sinOMEGAi + sinui*cosOMEGAi*cosii);
+      xvt.x[0] = ri * ((cosui*cosOMEGAi) - (sinui*sinOMEGAi*cosii));
+      xvt.x[1] = ri * ((cosui*sinOMEGAi) + (sinui*cosOMEGAi*cosii));
       xvt.x[2] = ri * sinui * sinii;
          // change km to m
       xvt.x[0] *= 1000.0;
@@ -552,6 +556,7 @@ namespace gnsstk
          Vui * (sinui*cosOMEGAi + cosui*sinOMEGAi*cosii);
       xvt.v[1] = Vri * (cosui*sinOMEGAi + sinui*cosOMEGAi*cosii) -
          Vui * (sinui*sinOMEGAi - cosui*cosOMEGAi*cosii);
+         /* debugging code
       double vyaa = (cosui*sinOMEGAi);
       double vyab = (sinui*cosOMEGAi*cosii);
       double vya = Vri * (vyaa + vyab);
@@ -564,12 +569,13 @@ namespace gnsstk
       DEBUGTRACE("vyba = " << vyba);
       DEBUGTRACE("vybb = " << vybb);
       DEBUGTRACE("vyb = " << vyb);
+         */
       xvt.v[2] = Vri * sinui * sinii + Vui * cosui * sinii;
          // change km/s to m/s
       xvt.v[0] *= 1000.0;
       xvt.v[1] *= 1000.0;
       xvt.v[2] *= 1000.0;
-      return false;
+      return true;
    }
 
 

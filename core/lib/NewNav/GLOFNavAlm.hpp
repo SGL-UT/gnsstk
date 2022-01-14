@@ -83,9 +83,15 @@ namespace gnsstk
       bool validate() const override;
 
          /** Compute the satellites position and velocity at a time.
-          * @bug This method does not yield expected results and until
-          *   it is fixed will always return false.
-          * @note Defaults to using the GPS ellipsoid parameters.
+          * @note We consider this method validated by comparison with
+          *   the GLONASS ICD almanac numerical example.  We also
+          *   determined that the example contains an error of
+          *   statement for the sidereal time.  We reproduce the
+          *   example's numerical result using the stated value of S0,
+          *   but the value doesn't match the sidereal time
+          *   computation given the date.  Our sidereal time method
+          *   was previously validated by comparison with other
+          *   available calculators.
           * @param[in] when The time at which to compute the xvt.
           * @param[out] xvt The resulting computed position/velocity.
           * @return true if successful, false if required nav data was

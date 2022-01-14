@@ -64,6 +64,9 @@ public:
    unsigned getXvtTest();
    unsigned getUserTimeTest();
    unsigned fixFitTest();
+      /** This isn't a real test, it was code implemented in an
+       * attempt to track down bugs in the library code through
+       * duplication.  Disabled for now, but leaving it here JIC. */
    unsigned blahTest();
 };
 
@@ -116,39 +119,45 @@ getXvtTest()
    uut.eccnA = 0.001482010;
    uut.omeganA = 0.440277100 * gnsstk::PI;
    uut.Toa = gnsstk::YDSTime(2001, 249, uut.tLambdanA, gnsstk::TimeSystem::GLO);
-#if 0
-   gnsstk::YDSTime toi(2020, 40, 35960, gnsstk::TimeSystem::GLO);
-   uut.taunA = 5.340576E-05;
-   uut.lambdanA = -1.624857E+00;
-   uut.deltainA = 2.173339E-02;
-   uut.deltaTnA = -2.656084E+03;
-   uut.deltaTdotnA = -1.831055E-04;
-   uut.eccnA = 3.414154E-04;
-   uut.omeganA = 1.410304E-01;
-   uut.tLambdanA = 3.594441E+04;
-   uut.healthBits = true;
-      //uut. M                          1 encoded: GLONASS-M SV
-   uut.freqnA = 1;
-      //Transmit SV          GLONASS 1
-      //l                          0 Health of transmitting SV
-   uut.Toa = gnsstk::YDSTime(2020, 40, uut.tLambdanA, gnsstk::TimeSystem::GLO);
-#endif
 
       // Normally called by fixFit, but we don't care about the fit
       // interval for this test.
-   std::cerr << "setting semi-major axis" << std::endl;
    uut.setSemiMajorAxisIncl();
-   std::cerr << "DONE setting semi-major axis" << std::endl;
-   uut.dump(std::cerr, gnsstk::DumpDetail::Full);
+      //uut.dump(std::cerr, gnsstk::DumpDetail::Full);
    gnsstk::Xvt xvt;
-   TUASSERTE(bool, false, uut.getXvt(toi, xvt));
+   TUASSERTE(bool, true, uut.getXvt(toi, xvt));
+   TUASSERTFE(10945967.138109738, xvt.x[0]);
+   TUASSERTFE(13079860.921750335, xvt.x[1]);
+   TUASSERTFE(18922063.556836389, xvt.x[2]);
+   TUASSERTFE(-3375.4834789088281, xvt.v[0]);
+   TUASSERTFE(-161.72513071304218, xvt.v[1]);
+   TUASSERTFE(2060.8444711932389, xvt.v[2]);
+   TUASSERTFE(0, xvt.clkbias);
+   TUASSERTFE(0, xvt.clkdrift);
+   TUASSERTFE(0, xvt.relcorr);
+#if 0
+      // This is more code that was used to track down what was going
+      // on with getXvt.  Specifically it first helped me confirm that
+      // the getSiderealTime method was always starting at midnight
+      // GMT, and second it helped me confirm that the truth value in
+      // the ICD was *not* starting at GMT midnight.  Third, it
+      // allowed me to see the position in geodetic coordinates which
+      // is easier to conceptualize.
+      // It's not a proper tests so leaving it commented out in case
+      // there's a reason to use it again later.
    std::cout << "xvt = " << std::setprecision(17) << xvt << std::endl;
+      // these are the truth values from the ICD.
+   std::cout << "err_x = " << fabs(xvt.x[0] - 10947021.572) << std::endl
+             << "err_y = " << fabs(xvt.x[1] - 13078978.287) << std::endl
+             << "err_z = " << fabs(xvt.x[2] - 18922063.362) << std::endl
+             << "err_vx = " << fabs(xvt.v[0] - -3375.497) << std::endl
+             << "err_vy = " << fabs(xvt.v[1] - -161.453) << std::endl
+             << "err_vz = " << fabs(xvt.v[2] - 2060.844) << std::endl;
    gnsstk::PZ90Ellipsoid ell;
    gnsstk::Position pos(xvt.x, gnsstk::Position::Cartesian, &ell);
    pos.transformTo(gnsstk::Position::Geodetic);
    std::cout << "  = " << pos << std::endl;
-#if 0
-   gnsstk::CommonTime x(gnsstk::YDSTime(2001,249,0,gnsstk::TimeSystem::GLO));
+   gnsstk::CommonTime x(gnsstk::YDSTime(2001,240,0,gnsstk::TimeSystem::GLO));
    unsigned i = 0;
    double st = 0;
    while (st <= 6.02401539573)
@@ -200,6 +209,8 @@ fixFitTest()
 unsigned GLOFNavAlm_T ::
 blahTest()
 {
+      // non-test code (see doxygen at the top)
+      // helped me figure out problems in computing the semi-major axis.
    TUDEF("GLOFNavAlm", "nothing");
    using namespace gnsstk;
    using namespace std;
@@ -246,7 +257,7 @@ blahTest()
    double NA = cNAj;
    
 
-      // page 67 (russian)
+      // page 67 (Russian)
    double Tdeltap = Tcp + DeltaT;
    Angle i = icp + Deltai;
       // a* are in km
@@ -332,13 +343,13 @@ int main()
    GLOFNavAlm_T testClass;
    unsigned errorTotal = 0;
 
-   // errorTotal += testClass.constructorTest();
-   // errorTotal += testClass.validateTest();
+   errorTotal += testClass.constructorTest();
+   errorTotal += testClass.validateTest();
    DEBUGTRACE_ENABLE();
    errorTotal += testClass.getXvtTest();
-   // errorTotal += testClass.getUserTimeTest();
-   // errorTotal += testClass.fixFitTest();
-   errorTotal += testClass.blahTest();
+   errorTotal += testClass.getUserTimeTest();
+   errorTotal += testClass.fixFitTest();
+   // errorTotal += testClass.blahTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
