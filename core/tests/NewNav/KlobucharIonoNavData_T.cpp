@@ -39,6 +39,7 @@
 #include "KlobucharIonoNavData.hpp"
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
+#include "CivilTime.hpp"
 
 namespace gnsstk
 {
@@ -55,6 +56,7 @@ public:
       /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
    unsigned getIonoCorrTest();
+   unsigned rolloverTest();
 };
 
 
@@ -102,6 +104,29 @@ getIonoCorrTest()
 }
 
 
+unsigned KlobucharIonoNavData_T ::
+rolloverTest()
+{
+   TUDEF("KlobucharIonoNavData", "getIonoCorr(day rollover)");
+   gnsstk::KlobucharIonoNavData uut;
+   gnsstk::CommonTime when = gnsstk::CivilTime(2020, 10, 1, 23, 30, 0.0);
+   gnsstk::Position rx, sv;
+   rx.setECEF(-740290.055522, -5457071.691343, 3207245.635068);
+   sv.setECEF(-20606679.6114, -12462848.0260, 11325426.4074);
+   uut.alpha[0] = 1.0244548320770264e-08;
+   uut.alpha[1] = 7.450580596923828e-09;
+   uut.alpha[2] = -5.960464477539063e-08;
+   uut.alpha[3] = -5.960464477539063e-08;
+   uut.beta[0] = 88064.0;
+   uut.beta[1] = 0.0;
+   uut.beta[2] = -196608.0;
+   uut.beta[3] = -65536.0;
+   TUASSERTFE(5.4106367748768136039,
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L1));
+   TURETURN();
+}
+
+
 int main()
 {
    KlobucharIonoNavData_T testClass;
@@ -109,6 +134,7 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getIonoCorrTest();
+   errorTotal += testClass.rolloverTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
