@@ -1,5 +1,6 @@
 %include "Exception.hpp"
 %include "TimeConstants.hpp"
+%include "EnumIterator.hpp"
 %include "TimeSystem.hpp"
 %include "TimeSystemConverter.hpp"
 %include "CommonTime.hpp"
@@ -9,7 +10,6 @@
 %include "ANSITime.hpp"
 %include "AllanDeviation.hpp"
 %include "gps_constants.hpp"
-%include "EnumIterator.hpp"
 %include "SatelliteSystem.hpp"
 %template(std_vector_GNSS)       std::vector<gnsstk::SatelliteSystem>;
 %include "SatID.hpp"
@@ -26,6 +26,7 @@
 %include "GNSSconstants.hpp"
 %include "Xvt.hpp"
 %include "AlmOrbit.hpp"
+%include "AngleType.hpp"
 %include "AngleReduced.hpp"
 %include "Angle.hpp"
 %include "FFStreamError.hpp"
@@ -54,6 +55,7 @@
 %include "TimeConverters.hpp"
 %include "EphTime.hpp"
 %include "AtmLoadTides.hpp"
+/* %include "BDSD1Bits.hpp" */
 %include "Rinex3ObsBase.hpp"
 %include "ObservationType.hpp"
 %template(std_map_ObservationType_string) std::map<gnsstk::ObservationType, std::string>;
@@ -81,6 +83,11 @@
 %include "NavMessageID.hpp"
 %template(NavMessageIDSet) std::set<gnsstk::NavMessageID>;
 %include "DumpDetail.hpp"
+%include "SatMetaData.hpp"
+%include "SatMetaDataSort.hpp"
+%feature("flatnested");
+%include "SatMetaDataStore.hpp"
+%feature("flatnested", "");
 %include "NavData.hpp"
 %include "OrbitData.hpp"
 %include "SVHealth.hpp"
@@ -94,12 +101,13 @@
 %include "InterSigCorr.hpp"
 %include "BDSD1NavISC.hpp"
 %include "Position.hpp"
-%include "IonoData.hpp"
-%include "KlobucharIonoData.hpp"
+%include "IonoNavData.hpp"
+%include "KlobucharIonoNavData.hpp"
 %include "BDSD1NavIono.hpp"
 %include "TimeOffsetData.hpp"
 %include "StdNavTimeOffset.hpp"
 %include "BDSD1NavTimeOffset.hpp"
+/* %include "BDSD2Bits.hpp" */
 %include "BDSD2NavData.hpp"
 %include "BDSD2NavAlm.hpp"
 %include "BDSD2NavEph.hpp"
@@ -107,13 +115,6 @@
 %include "BDSD2NavISC.hpp"
 %include "BDSD2NavIono.hpp"
 %include "BDSD2NavTimeOffset.hpp"
-%include "OrbitEph.hpp"
-%include "BDSEphemeris.hpp"
-%include "XvtStore.hpp"
-%template(XvtStore_SatID)  gnsstk::XvtStore<gnsstk::SatID>;
-%template(XvtStore_string) gnsstk::XvtStore<std::string>;
-%include "OrbitEphStore.hpp"
-%include "BDSEphemerisStore.hpp"
 %include "Week.hpp"
 %include "WeekSecond.hpp"
 %include "BDSWeekSecond.hpp"
@@ -179,32 +180,18 @@
 %include "CNavCookFilter.hpp"
 %include "NavFilterMgr.hpp"
 %include "CNavCrossSourceFilter.hpp"
-%include "SatMetaData.hpp"
-%include "SatMetaDataSort.hpp"
-%feature("flatnested");
-%include "SatMetaDataStore.hpp"
-%feature("flatnested", "");
 /* %include "CNavDataElement.hpp" */
 /* %include "CNavDataElementStore.hpp" */
 /* %include "CNavEOP.hpp" */
 /* %include "CNavEmptyFilter.hpp" */
 /* %include "CNavGGTO.hpp" */
 /* %include "CNavISC.hpp" */
-%include "OrbData.hpp"
-%include "OrbDataSys.hpp"
-%include "CNavMidiAlm.hpp"
 %include "CNavParityFilter.hpp"
 %include "CNavReducedAlm.hpp"
 %include "CNavTOWFilter.hpp"
 /* %include "CNavText.hpp" */
 /* %include "CNavUTC.hpp" */
 %include "ClockModel.hpp"
-%include "TimeString.hpp"
-%include "TabularSatStore.hpp"
-%include "ClockRecord.hpp"
-%template(TabularSatStore_ClockRecord) gnsstk::TabularSatStore<gnsstk::ClockRecord>;
-%include "FileStore.hpp"
-%include "ClockSatStore.hpp"
 %include "PCodeConst.hpp"
 %include "CodeBuffer.hpp"
 %include "Combinations.hpp"
@@ -242,31 +229,8 @@
 %template(std_map_RinexSatID_RinexObsTypeMap) std::map<gnsstk::SatID, std::map<gnsstk::RinexObsType, gnsstk::RinexDatum> >;
 %include "RinexObsData.hpp"
 %template(std_binary_function_RinexObsData) std::binary_function<gnsstk::RinexObsData,gnsstk::RinexObsData,bool>;
-%include "GPSEphemeris.hpp"
-%include "RinexNavBase.hpp"
-%include "EngEphemeris.hpp"
-%include "FormattedDouble.hpp"
-%include "RNDouble.hpp"
-%include "RinexNavData.hpp"
-%template(std_binary_function_RinexNavData) std::binary_function<gnsstk::RinexNavData,gnsstk::RinexNavData,bool>;
-%template(std_unary_function_RinexNavData) std::unary_function<gnsstk::RinexNavData,bool>;
-%include "GPSEphemerisStore.hpp"
-%include "PositionRecord.hpp"
-%template(TabularSatStore_PositionRecord) gnsstk::TabularSatStore<gnsstk::PositionRecord>;
-%include "SP3SatID.hpp"
-%include "SP3Base.hpp"
-%include "SP3Data.hpp"
-%include "PositionSatStore.hpp"
-%include "SP3Header.hpp"
-%feature("flatnested");
-%include "Rinex3ClockBase.hpp"
-%feature("flatnested", "");
-%include "RinexObsID.hpp"
-%template(std_vector_RinexObsID) std::vector<gnsstk::RinexObsID>;
-%template(std_map_string_vector_RinexObsID) std::map<std::string, std::vector<gnsstk::RinexObsID> >;
-%include "Rinex3ClockHeader.hpp"
-%include "SP3EphemerisStore.hpp"
 %include "RinexUtilities.hpp"
+%include "TimeString.hpp"
 /* %include "SatPass.hpp" */
 /* %include "DiscCorr.hpp" */
 %include "ENUUtil.hpp"
@@ -275,6 +239,12 @@
 /* %include "EOPPrediction.hpp" */
 /* %include "EOPStore.hpp" */
 %include "EngAlmanac.hpp"
+%include "EngEphemeris.hpp"
+%include "NavValidityType.hpp"
+%include "NavSearchOrder.hpp"
+%include "NavDataFactory.hpp"
+%include "NavLibrary.hpp"
+%include "ValidType.hpp"
 %include "EphemerisRange.hpp"
 %feature("flatnested");
 %include "IonoModel.hpp"
@@ -282,7 +252,6 @@
 %feature("flatnested");
 %include "IonoModelStore.hpp"
 %feature("flatnested", "");
-%include "ValidType.hpp"
 %include "SvObsEpoch.hpp"
 %template(std_map_ObsEpoch) std::map<gnsstk::SatID, gnsstk::SvObsEpoch>;
 %include "ObsEpochMap.hpp"
@@ -301,6 +270,9 @@
 %include "FileSpecFind.hpp"
 %include "FileUtils.hpp"
 %include "FileFilterFrame.hpp"
+%include "RinexObsID.hpp"
+%template(std_vector_RinexObsID) std::vector<gnsstk::RinexObsID>;
+%template(std_map_string_vector_RinexObsID) std::map<std::string, std::vector<gnsstk::RinexObsID> >;
  // Use a special wrapper for the include file which resolves issues
  // with the nested definitions
 %include "Rinex3ObsHeader.i"
@@ -309,29 +281,24 @@
 %template(std_vector_Rinex3ObsData) std::vector<gnsstk::Rinex3ObsData>;
 %template(std_binary_function_Rinex3ObsData) std::binary_function<gnsstk::Rinex3ObsData,gnsstk::Rinex3ObsData,bool>;
 %include "FileFilterFrameWithHeader.hpp"
+%include "FileStore.hpp"
 %feature("flatnested");
 %include "FirstDiffFilter.hpp"
 %feature("flatnested", "");
+%include "FormattedDouble.hpp"
 %include "FreqConv.hpp"
 %include "GCATTropModel.hpp"
 %include "GGHeightTropModel.hpp"
 %include "GGTropModel.hpp"
-%include "Rinex3NavBase.hpp"
-%include "IRNWeekSecond.hpp"
-%include "TimeSystemCorr.hpp"
-%include "Rinex3NavHeader.hpp"
-%template(std_unary_function_Rinex3NavHeader) std::unary_function<gnsstk::Rinex3NavHeader, bool>;
-%include "Rinex3NavStream.hpp"
+%include "GLOFBits.hpp"
+%include "GLOFNavData.hpp"
 %include "PZ90Ellipsoid.hpp"
-%include "GloEphemeris.hpp"
-%include "GalEphemeris.hpp"
-%include "QZSEphemeris.hpp"
-%include "Rinex3NavData.hpp"
-%template(std_binary_function_Rinex3NavData) std::binary_function<gnsstk::Rinex3NavData,gnsstk::Rinex3NavData,bool>;
-%template(std_unary_function_Rinex3NavData) std::unary_function<gnsstk::Rinex3NavData,bool>;
-%include "OrbElemBase.hpp"
-%include "OrbElemStore.hpp"
-%include "GPSAlmanacStore.hpp"
+%include "GLOFNavAlm.hpp"
+%include "GLOFNavEph.hpp"
+%include "GLOFNavHealth.hpp"
+%include "GLOFNavISC.hpp"
+%include "GLOFNavTimeOffset.hpp"
+%include "GLOFNavUT1TimeOffset.hpp"
 %include "GPSCNav2Alm.hpp"
 %include "GPSCNav2Eph.hpp"
 %include "GPSCNav2Health.hpp"
@@ -353,10 +320,8 @@
 %include "GPSLNavISC.hpp"
 %include "GPSLNavIono.hpp"
 %include "GPSLNavTimeOffset.hpp"
-%include "GPSOrbElemStore.hpp"
 %include "GSatID.hpp"
 %include "GalDataValid.hpp"
-%include "GalEphemerisStore.hpp"
 %include "GalHealthStatus.hpp"
 %include "GalFNavAlm.hpp"
 %include "GalFNavEph.hpp"
@@ -366,7 +331,7 @@
 %include "GalileoEllipsoid.hpp"
 %include "GalileoIonoEllipsoid.hpp"
 %feature("flatnested");
-%include "NeQuickIonoData.hpp"
+%include "NeQuickIonoNavData.hpp"
 %feature("flatnested", "");
 %include "GalFNavIono.hpp"
 %include "GalFNavTimeOffset.hpp"
@@ -378,13 +343,14 @@
 %include "GalINavTimeOffset.hpp"
 %include "GenXSequence.hpp"
 %include "GenericNavFilterData.hpp"
-%include "GloEphemerisStore.hpp"
+%include "GloEphemeris.hpp"
 %include "GlobalTropModel.hpp"
 %include "HelmertTransform.hpp"
  //%include "IERS1996NutationData.hpp"
  //%include "IERS1996UT1mUTCData.hpp"
  //%include "IERS2003NutationData.hpp"
 /* %include "IERS2010CIOSeriesData.hpp" */
+%include "IRNWeekSecond.hpp"
 /* %include "LoopedFramework.hpp" */
 /* %include "InOutFramework.hpp" */
 %include "IonexBase.hpp"
@@ -424,18 +390,14 @@
 %include "MatrixOperators.hpp"
 %include "MetReader.hpp"
 %include "MostCommonValue.hpp"
-%include "NavValidityType.hpp"
-%include "NavSearchOrder.hpp"
-%include "NavDataFactory.hpp"
 %include "NavDataFactoryWithStore.hpp"
 %include "NavDataFactoryWithStoreFile.hpp"
+%include "NDFUniqIterator.hpp"
+%template (NDFUniqIterator_NavDataFactoryMap) gnsstk::NDFUniqIterator<gnsstk::NavDataFactoryMap>;
 %include "MultiFormatNavDataFactory.hpp"
 %include "NDFUniqConstIterator.hpp"
 %template (NDFUniqConstIterator_NavDataFactoryMap) gnsstk::NDFUniqConstIterator<gnsstk::NavDataFactoryMap>;
-%include "NDFUniqIterator.hpp"
-%template (NDFUniqIterator_NavDataFactoryMap) gnsstk::NDFUniqIterator<gnsstk::NavDataFactoryMap>;
 %include "NEDUtil.hpp"
-%include "NavLibrary.hpp"
 %include "NavMsgData.hpp"
 %include "NavMsgDataBits.hpp"
 %include "NavMsgDataPNB.hpp"
@@ -448,26 +410,6 @@
 %include "OceanLoadTides.hpp"
 %feature("flatnested", "");
 %include "OceanLoading.hpp"
-%include "OrbElem.hpp"
- /* %include "OrbAlm.hpp" */ // SEGFAULT
-/* %include "OrbAlmFactory.hpp" */
-/* %include "OrbAlmGen.hpp" */
- /* %include "OrbAlmStore.hpp" */ // requires OrbAlm to build
-%include "OrbDataSysFactory.hpp"
-%include "OrbDataUTC.hpp"
-%include "OrbElemRinex.hpp"
-%include "OrbSysGpsC.hpp"
-%include "OrbSysGpsC_30.hpp"
-%include "OrbSysGpsC_33.hpp"
-/* %include "OrbSysGpsC_32.hpp" */
-%include "OrbSysGpsL.hpp"
-/* %include "OrbSysGpsL_51.hpp" */
-%include "OrbSysGpsL_52.hpp"
-%include "OrbSysGpsL_55.hpp"
-%include "OrbSysGpsL_56.hpp"
-/* %include "OrbSysGpsL_63.hpp" */
-%include "OrbSysGpsL_Reserved.hpp"
-%include "OrbSysStore.hpp"
 %include "OrbitDataSP3.hpp"
 %include "PNBNavDataFactory.hpp"
 %feature("flatnested");
@@ -476,6 +418,7 @@
 %feature("flatnested");
 %include "PNBBDSD2NavDataFactory.hpp"
 %feature("flatnested", "");
+%include "PNBGLOFNavDataFactory.hpp"
 %include "PNBGPSCNav2DataFactory.hpp"
 %include "PNBGPSCNavDataFactory.hpp"
 %include "PNBGPSLNavDataFactory.hpp"
@@ -484,7 +427,6 @@
 %include "PNBMultiGNSSNavDataFactory.hpp"
 %include "stl_helpers.hpp"
 %include "PRSolution.hpp"
-%include "PRSolutionLegacy.hpp"
 %include "PoleTides.hpp"
 %include "PolyFit.hpp"
 %template(PolyFit_double) gnsstk::PolyFit<double>;
@@ -495,13 +437,27 @@
 %include "SolidEarthTides.hpp"
 /* %include "SolarSystem.hpp" */
 /* %include "PreciseRange.hpp" */
-%include "QZSEphemerisStore.hpp"
 %include "RACRotation.hpp"
+%include "RNDouble.hpp"
 /* %include "RTFileFrame.hpp" */
-%include "RationalizeRinexNav.hpp"
+%feature("flatnested");
+%include "Rinex3ClockBase.hpp"
+%feature("flatnested", "");
 %include "Rinex3ClockData.hpp"
+%include "Rinex3ClockHeader.hpp"
 %include "Rinex3ClockStream.hpp"
-%include "Rinex3EphemerisStore.hpp"
+%include "Rinex3NavBase.hpp"
+%include "TimeSystemCorr.hpp"
+%include "Rinex3NavHeader.hpp"
+%template(std_unary_function_Rinex3NavHeader) std::unary_function<gnsstk::Rinex3NavHeader, bool>;
+%include "Rinex3NavStream.hpp"
+%include "RinexNavBase.hpp"
+%include "RinexNavData.hpp"
+%template(std_binary_function_RinexNavData) std::binary_function<gnsstk::RinexNavData,gnsstk::RinexNavData,bool>;
+%template(std_unary_function_RinexNavData) std::unary_function<gnsstk::RinexNavData,bool>;
+%include "Rinex3NavData.hpp"
+%template(std_binary_function_Rinex3NavData) std::binary_function<gnsstk::Rinex3NavData,gnsstk::Rinex3NavData,bool>;
+%template(std_unary_function_Rinex3NavData) std::unary_function<gnsstk::Rinex3NavData,bool>;
 %include "Rinex3NavFilterOperators.hpp"
 /* %include "Rinex3ObsFileLoader.hpp" */
 %include "Rinex3ObsFilterOperators.hpp"
@@ -514,12 +470,6 @@
 %include "RinexClockHeader.hpp"
 %feature("flatnested", "");
 %include "RinexClockStream.hpp"
- //%include "RinexClockStore.hpp"
-%include "RinexNavHeader.hpp"
-%template (FileStore_RinexNavHeader) gnsstk::FileStore<gnsstk::RinexNavHeader>;
-%template(std_unary_function_RinexNavHeader) std::unary_function<gnsstk::RinexNavHeader,bool>;
-%include "RinexNavStream.hpp"
-%include "RinexEphemerisStore.hpp"
 %include "RinexMetBase.hpp"
 %feature("flatnested");
 %include "RinexMetHeader.hpp"
@@ -530,7 +480,11 @@
 %include "RinexMetFilterOperators.hpp"
 %include "RinexMetStream.hpp"
 %include "RinexNavDataFactory.hpp"
+%include "RinexNavHeader.hpp"
+%template (FileStore_RinexNavHeader) gnsstk::FileStore<gnsstk::RinexNavHeader>;
+%template(std_unary_function_RinexNavHeader) std::unary_function<gnsstk::RinexNavHeader,bool>;
 %include "RinexNavFilterOperators.hpp"
+%include "RinexNavStream.hpp"
 %include "RinexObsFilterOperators.hpp"
 %include "RinexObsStream.hpp"
 %include "RinexTimeOffset.hpp"
@@ -538,9 +492,12 @@
 %include "SEMHeader.hpp"
 %template(FileStore_SEMHeader) gnsstk::FileStore<gnsstk::SEMHeader>;
 %include "SEMData.hpp"
-%include "SEMStream.hpp"
- /* %include "SEMAlmanacStore.hpp" */ // requires OrbAlmStore
 %include "SEMNavDataFactory.hpp"
+%include "SEMStream.hpp"
+%include "SP3Base.hpp"
+%include "SP3SatID.hpp"
+%include "SP3Data.hpp"
+%include "SP3Header.hpp"
 %include "SP3NavDataFactory.hpp"
 %include "SP3Stream.hpp"
 /* %include "SRIleastSquares.hpp" */
@@ -576,10 +533,10 @@
 %include "YumaHeader.hpp"
 %template(FileStore_YumaHeader) gnsstk::FileStore<gnsstk::YumaHeader>;
 %include "YumaData.hpp"
-%include "YumaStream.hpp"
- /* %include "YumaAlmanacStore.hpp" */ // requires OrbAlmStore
 %include "YumaNavDataFactory.hpp"
+%include "YumaStream.hpp"
 %include "convhelp.hpp"
+%include "demangle.hpp"
 %include "expandtilde.hpp"
 %include "format.hpp"
 /* %include "gdc.hpp" */

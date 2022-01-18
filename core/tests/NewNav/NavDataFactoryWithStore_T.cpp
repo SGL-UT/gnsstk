@@ -47,6 +47,7 @@
 #include "GPSLNavTimeOffset.hpp"
 #include "TestUtil.hpp"
 // #include "BasicTimeSystemConverter.hpp"
+#include "TimeString.hpp"
 
 namespace gnsstk
 {
@@ -151,7 +152,10 @@ public:
    unsigned editTest();
    unsigned clearTest();
    unsigned getAvailableSatsTest();
+   unsigned getIndexSetTest();
    unsigned isPresentTest();
+   unsigned countTest();
+   unsigned getFirstLastTimeTest();
 
       /// Fill fact with test data
    void fillFactory(gnsstk::TestUtil& testFramework, TestClass& fact);
@@ -211,8 +215,12 @@ addNavDataTest()
       // NavData is abstract so we instantiate a GPSLNavEph instead
    gnsstk::SatID subjID(23,gnsstk::SatelliteSystem::GPS);
    gnsstk::SatID xmitID(32,gnsstk::SatelliteSystem::GPS);
-   gnsstk::NavDataPtr navOut = std::make_shared<gnsstk::GPSLNavEph>();
+   std::shared_ptr<gnsstk::GPSLNavEph> navOut =
+      std::make_shared<gnsstk::GPSLNavEph>();
    navOut->timeStamp = ct;
+   navOut->xmitTime = ct;
+   navOut->xmit2 = ct + 6;
+   navOut->xmit3 = ct + 12;
    navOut->signal.messageType = gnsstk::NavMessageType::Ephemeris;
    navOut->signal.sat = subjID;
    navOut->signal.xmitSat = xmitID;
@@ -378,32 +386,33 @@ findTest()
    TUCATCH(fillFactory(testFramework, fact1));
    TUCATCH(fillSat(nmid1a, 23, 32));
    nmid1a.messageType = gnsstk::NavMessageType::Ephemeris;
+   gnsstk::CommonTime ect(ct-3600); // make the base time match the ephemeris
       // check basic time stamps that should work
-   TUASSERT(fact1.find(nmid1a, ct+35, result, gnsstk::SVHealth::Any,
+   TUASSERT(fact1.find(nmid1a, ect+35, result, gnsstk::SVHealth::Any,
                        gnsstk::NavValidityType::Any,
                        gnsstk::NavSearchOrder::User));
-   TUASSERT(fact1.find(nmid1a, ct+30, result, gnsstk::SVHealth::Any,
+   TUASSERT(fact1.find(nmid1a, ect+30, result, gnsstk::SVHealth::Any,
                        gnsstk::NavValidityType::Any,
                        gnsstk::NavSearchOrder::User));
-   TUASSERT(fact1.find(nmid1a, ct+60, result, gnsstk::SVHealth::Any,
+   TUASSERT(fact1.find(nmid1a, ect+60, result, gnsstk::SVHealth::Any,
                        gnsstk::NavValidityType::Any,
                        gnsstk::NavSearchOrder::User));
       // check time stamps that don't work
-   TUASSERT(!fact1.find(nmid1a, ct, result, gnsstk::SVHealth::Any,
+   TUASSERT(!fact1.find(nmid1a, ect, result, gnsstk::SVHealth::Any,
                         gnsstk::NavValidityType::Any,
                         gnsstk::NavSearchOrder::User));
       // time edge cases.
-   TUASSERT(!fact1.find(nmid1a, ct+17, result, gnsstk::SVHealth::Any,
+   TUASSERT(!fact1.find(nmid1a, ect+17, result, gnsstk::SVHealth::Any,
                         gnsstk::NavValidityType::Any,
                         gnsstk::NavSearchOrder::User));
-   TUASSERT(fact1.find(nmid1a, ct+18, result, gnsstk::SVHealth::Any,
+   TUASSERT(fact1.find(nmid1a, ect+18, result, gnsstk::SVHealth::Any,
                        gnsstk::NavValidityType::Any,
                        gnsstk::NavSearchOrder::User));
       // test validity flags
-   TUASSERT(fact1.find(nmid1a, ct+30, result, gnsstk::SVHealth::Any,
+   TUASSERT(fact1.find(nmid1a, ect+30, result, gnsstk::SVHealth::Any,
                        gnsstk::NavValidityType::ValidOnly,
                        gnsstk::NavSearchOrder::User));
-   TUASSERT(!fact1.find(nmid1a, ct+30, result, gnsstk::SVHealth::Any,
+   TUASSERT(!fact1.find(nmid1a, ect+30, result, gnsstk::SVHealth::Any,
                         gnsstk::NavValidityType::InvalidOnly,
                         gnsstk::NavSearchOrder::User));
 
@@ -716,7 +725,7 @@ find2Test()
    TUASSERTE(bool, true,
              uut.find(findNMID1L1CAe,findTime1,result,SH::Any,VT::Any,
                       SO::User));
-   gnsstk::CommonTime expTime1Eph(gnsstk::GPSWeekSecond(2101, 3810));
+   gnsstk::CommonTime expTime1Eph(gnsstk::GPSWeekSecond(2101, 3210));
    TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
    TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
    TUASSERTE(int, 1, result->signal.sat.id);
@@ -807,7 +816,7 @@ find2Test()
    TUASSERTE(bool, true,
              uut.find(findNMID1L2Ye,findTime1,result,SH::Healthy,VT::Any,
                       SO::User));
-   gnsstk::CommonTime expTime2Eph(gnsstk::GPSWeekSecond(2101, 1680));
+   gnsstk::CommonTime expTime2Eph(gnsstk::GPSWeekSecond(2100, 602880));
    TUASSERTE(gnsstk::CommonTime, expTime2Eph, result->timeStamp);
    TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
    TUASSERTE(int, 1, result->signal.sat.id);
@@ -997,7 +1006,7 @@ findNearestTest()
    TUASSERTE(bool, true,
              uut.find(findNMID1L1CAe,findTime1,result,SH::Any,VT::Any,
                       SO::Nearest));
-   gnsstk::CommonTime expTime1Eph(gnsstk::GPSWeekSecond(2101, 7200));
+   gnsstk::CommonTime expTime1Eph(gnsstk::GPSWeekSecond(2101, 3600));
    TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
    TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
    TUASSERTE(int, 1, result->signal.sat.id);
@@ -1106,7 +1115,7 @@ findNearestTest()
    TUASSERTE(bool, true,
              uut.find(findNMID1L2Ye,findTime2,result,SH::Healthy,VT::Any,
                       SO::Nearest));
-   gnsstk::CommonTime expTime2Eph(gnsstk::GPSWeekSecond(2101, 0));
+   gnsstk::CommonTime expTime2Eph(gnsstk::GPSWeekSecond(2100, 601200));
    TUASSERTE(gnsstk::CommonTime, expTime2Eph, result->timeStamp);
    TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
    TUASSERTE(int, 1, result->signal.sat.id);
@@ -1126,7 +1135,7 @@ findNearestTest()
              uut.find(findNMID1L2Ye,findTime1,result,SH::Unhealthy,VT::Any,
                       SO::Nearest));
       // this is the first of the unhealthy data
-   gnsstk::CommonTime expTime3Eph(gnsstk::GPSWeekSecond(2101, 1710));
+   gnsstk::CommonTime expTime3Eph(gnsstk::GPSWeekSecond(2100, 602910));
    TUASSERTE(gnsstk::CommonTime, expTime3Eph, result->timeStamp);
    TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
    TUASSERTE(int, 1, result->signal.sat.id);
@@ -1337,6 +1346,7 @@ editTest()
 
       // First check the plain edit
    TestClass fact1;
+   gnsstk::CommonTime ect(ct-3600); // make the base time match the ephemeris
    TUCATCH(fillFactory(testFramework, fact1));
       // verify initial conditions
    TUASSERTE(size_t, 8, fact1.size());
@@ -1345,39 +1355,39 @@ editTest()
    TUASSERTE(size_t, 8, fact1.sizeNearest());
    TUASSERTE(size_t, 3, fact1.numSatellitesNearest());
       // remove nothing
-   TUCATCH(fact1.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ct));
+   TUCATCH(fact1.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ect));
    TUASSERTE(size_t, 8, fact1.size());
    TUASSERTE(size_t, 2, fact1.numSignals());
    TUASSERTE(size_t, 3, fact1.numSatellites());
    TUASSERTE(size_t, 8, fact1.sizeNearest());
    TUASSERTE(size_t, 3, fact1.numSatellitesNearest());
    checkForEmpty(testFramework, fact1);
-      // remove messages at ct
-   TUCATCH(fact1.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ct+30));
+      // remove messages at ect
+   TUCATCH(fact1.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ect+30));
    TUASSERTE(size_t, 5, fact1.size());
    TUASSERTE(size_t, 2, fact1.numSignals());
    TUASSERTE(size_t, 3, fact1.numSatellites());
    TUASSERTE(size_t, 5, fact1.sizeNearest());
    TUASSERTE(size_t, 3, fact1.numSatellitesNearest());
    checkForEmpty(testFramework, fact1);
-      // remove messages at ct+30
-   TUCATCH(fact1.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ct+60));
+      // remove messages at ect+30
+   TUCATCH(fact1.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ect+60));
    TUASSERTE(size_t, 2, fact1.size());
    TUASSERTE(size_t, 1, fact1.numSignals());
    TUASSERTE(size_t, 1, fact1.numSatellites());
    TUASSERTE(size_t, 2, fact1.sizeNearest());
    TUASSERTE(size_t, 1, fact1.numSatellitesNearest());
    checkForEmpty(testFramework, fact1);
-      // remove messages at ct+60
-   TUCATCH(fact1.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ct+90));
+      // remove messages at ect+60
+   TUCATCH(fact1.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ect+90));
    TUASSERTE(size_t, 1, fact1.size());
    TUASSERTE(size_t, 1, fact1.numSignals());
    TUASSERTE(size_t, 1, fact1.numSatellites());
    TUASSERTE(size_t, 1, fact1.sizeNearest());
    TUASSERTE(size_t, 1, fact1.numSatellitesNearest());
    checkForEmpty(testFramework, fact1);
-      // remove messages at ct+90
-   TUCATCH(fact1.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ct+120));
+      // remove messages at ect+90
+   TUCATCH(fact1.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ect+120));
    TUASSERTE(size_t, 0, fact1.size());
    TUASSERTE(size_t, 0, fact1.numSignals());
    TUASSERTE(size_t, 0, fact1.numSatellites());
@@ -1404,7 +1414,7 @@ editTest()
    TUASSERTE(size_t, 3, fact2.numSatellitesNearest());
    checkForEmpty(testFramework, fact2);
       // remove nothing
-   TUCATCH(fact2.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ct, satID2a));
+   TUCATCH(fact2.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ect, satID2a));
    TUASSERTE(size_t, 8, fact2.size());
    TUASSERTE(size_t, 2, fact2.numSignals());
    TUASSERTE(size_t, 3, fact2.numSatellites());
@@ -1448,7 +1458,7 @@ editTest()
    TUASSERTE(size_t, 1, fact2.numSatellitesNearest());
    checkForEmpty(testFramework, fact2);
       // remove some of sat 23 data
-   TUCATCH(fact2.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ct+30, satID2e));
+   TUCATCH(fact2.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ect+30, satID2e));
    TUASSERTE(size_t, 3, fact2.size());
    TUASSERTE(size_t, 1, fact2.numSignals());
    TUASSERTE(size_t, 1, fact2.numSatellites());
@@ -1481,7 +1491,7 @@ editTest()
    TUASSERTE(size_t, 3, fact3.numSatellitesNearest());
    checkForEmpty(testFramework, fact3);
       // remove nothing
-   TUCATCH(fact3.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ct, sig3a));
+   TUCATCH(fact3.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ect, sig3a));
    TUASSERTE(size_t, 8, fact3.size());
    TUASSERTE(size_t, 2, fact3.numSignals());
    TUASSERTE(size_t, 3, fact3.numSatellites());
@@ -1507,7 +1517,7 @@ editTest()
    TUASSERTE(size_t, 2, fact3.numSatellitesNearest());
    checkForEmpty(testFramework, fact3);
       // remove some of L1-CA data
-   TUCATCH(fact3.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ct+30, sig3a));
+   TUCATCH(fact3.edit(gnsstk::CommonTime::BEGINNING_OF_TIME, ect+30, sig3a));
    TUASSERTE(size_t, 4, fact3.size());
    TUASSERTE(size_t, 1, fact3.numSignals());
    TUASSERTE(size_t, 2, fact3.numSatellites());
@@ -1554,6 +1564,10 @@ clearTest()
    fact.clear();
    TUASSERTE(size_t, 0, fact.size());
    TUASSERTE(size_t, 0, fact.sizeNearest());
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME,
+             fact.getFinalTime());
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::END_OF_TIME,
+             fact.getInitialTime());
 
    TURETURN();
 }
@@ -1587,16 +1601,20 @@ addData(gnsstk::TestUtil& testFramework, TestClass& fact,
    if (nmt == gnsstk::NavMessageType::Ephemeris)
    {
       navOut = std::make_shared<gnsstk::GPSLNavEph>();
+      navOut->timeStamp = ct-3600;
       dynamic_cast<gnsstk::OrbitDataKepler*>(navOut.get())->health = hea;
       toe.sow -= fmod(toe.sow,7200);
       dynamic_cast<gnsstk::OrbitDataKepler*>(navOut.get())->Toe = toe;
       dynamic_cast<gnsstk::OrbitDataKepler*>(navOut.get())->Toc = toe;
       dynamic_cast<gnsstk::OrbitDataKepler*>(navOut.get())->xmitTime = ct-3600;
+      dynamic_cast<gnsstk::GPSLNavEph*>(navOut.get())->xmit2 = ct-3594;
+      dynamic_cast<gnsstk::GPSLNavEph*>(navOut.get())->xmit3 = ct-3588;
       dynamic_cast<gnsstk::GPSLNavEph*>(navOut.get())->fixFit();
    }
    else if (nmt == gnsstk::NavMessageType::Almanac)
    {
       navOut = std::make_shared<gnsstk::GPSLNavAlm>();
+      navOut->timeStamp = ct;
       dynamic_cast<gnsstk::OrbitDataKepler*>(navOut.get())->health = hea;
       toe.sow = toe.sow - fmod(toe.sow,86400) + (xmitSat == 3 ? 61000 : 61056);
       dynamic_cast<gnsstk::OrbitDataKepler*>(navOut.get())->Toe = toe;
@@ -1606,6 +1624,7 @@ addData(gnsstk::TestUtil& testFramework, TestClass& fact,
    else if (nmt == gnsstk::NavMessageType::Health)
    {
       navOut = std::make_shared<gnsstk::GPSLNavHealth>();
+      navOut->timeStamp = ct;
       gnsstk::GPSLNavHealth *hp =
          dynamic_cast<gnsstk::GPSLNavHealth*>(navOut.get());
       switch (hea)
@@ -1625,6 +1644,7 @@ addData(gnsstk::TestUtil& testFramework, TestClass& fact,
    else if (nmt == gnsstk::NavMessageType::TimeOffset)
    {
       navOut = std::make_shared<gnsstk::GPSLNavTimeOffset>();
+      navOut->timeStamp = ct;
       gnsstk::GPSLNavTimeOffset *to =
          dynamic_cast<gnsstk::GPSLNavTimeOffset*>(navOut.get());
          // Set deltatLS to the transmitting satellite which gives us
@@ -1640,7 +1660,6 @@ addData(gnsstk::TestUtil& testFramework, TestClass& fact,
          // to->deltatLSF = 0.0;
       to->refTime = gnsstk::GPSWeekSecond(0,0);
    }
-   navOut->timeStamp = ct;
    navOut->signal.messageType = nmt;
    fillSat(navOut->signal, sat, xmitSat, sys, car, code, nav);
    TUASSERT(fact.addNavData(navOut));
@@ -1814,23 +1833,90 @@ getAvailableSatsTest()
       // test with a time span that will get all satellites even
       // though it's only partial coverage.
    TUCATCH(satset = uut.getAvailableSats(
-              gnsstk::CivilTime(2020,4,12,0,56,0,gnsstk::TimeSystem::GPS),
-              gnsstk::CivilTime(2020,4,12,0,58,0,gnsstk::TimeSystem::GPS)));
+              gnsstk::CivilTime(2020,4,11,23,56,0,gnsstk::TimeSystem::GPS),
+              gnsstk::CivilTime(2020,4,11,23,58,0,gnsstk::TimeSystem::GPS)));
    TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat1));
    TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat2));
    TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat3));
    TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 3, satset.size());
       // test with a time span that will only get one satellite
    TUCATCH(satset = uut.getAvailableSats(
-              gnsstk::CivilTime(2020,4,12,0,59,0,gnsstk::TimeSystem::GPS),
-              gnsstk::CivilTime(2020,4,12,1,0,0,gnsstk::TimeSystem::GPS)));
+              gnsstk::CivilTime(2020,4,11,23,59,0,gnsstk::TimeSystem::GPS),
+              gnsstk::CivilTime(2020,4,12,0,0,0,gnsstk::TimeSystem::GPS)));
    TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat1));
    TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.size());
       // test with a time span that is in the middle of the data time
       // span, but without any matches
    TUCATCH(satset = uut.getAvailableSats(
-              gnsstk::CivilTime(2020,4,12,0,57,50,gnsstk::TimeSystem::GPS),
-              gnsstk::CivilTime(2020,4,12,0,58,10,gnsstk::TimeSystem::GPS)));
+              gnsstk::CivilTime(2020,4,11,23,57,50,gnsstk::TimeSystem::GPS),
+              gnsstk::CivilTime(2020,4,11,23,58,10,gnsstk::TimeSystem::GPS)));
+   TUASSERTE(bool, true, satset.empty());
+   TURETURN();
+}
+
+
+unsigned NavDataFactoryWithStore_T ::
+getIndexSetTest()
+{
+   TUDEF("NavDataFactoryWithStore", "getIndexSet");
+   TestClass uut;
+   TUCATCH(fillFactory(testFramework, uut));
+   std::set<gnsstk::SatID> satset;
+   gnsstk::SatID
+      sat1(23,gnsstk::SatelliteSystem::GPS),
+      sat2(7,gnsstk::SatelliteSystem::GPS),
+      sat3(11,gnsstk::SatelliteSystem::GPS);
+      // test over entire time span
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::CommonTime::BEGINNING_OF_TIME,
+              gnsstk::CommonTime::END_OF_TIME));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat1));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat2));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat3));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 3, satset.size());
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::NavMessageType::Ephemeris,
+              gnsstk::CommonTime::BEGINNING_OF_TIME,
+              gnsstk::CommonTime::END_OF_TIME));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat1));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat2));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat3));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 3, satset.size());
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::NavMessageType::Almanac,
+              gnsstk::CommonTime::BEGINNING_OF_TIME,
+              gnsstk::CommonTime::END_OF_TIME));
+   TUASSERTE(bool, true, satset.empty());
+      // test with time span before any data
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::CivilTime(2020,4,12,0,56,0,gnsstk::TimeSystem::GPS),
+              gnsstk::CivilTime(2020,4,12,0,57,0,gnsstk::TimeSystem::GPS)));
+   TUASSERTE(bool, true, satset.empty());
+      // test with time span after all data
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::CivilTime(2020,4,12,1,0,0,gnsstk::TimeSystem::GPS),
+              gnsstk::CivilTime(2020,4,12,2,0,0,gnsstk::TimeSystem::GPS)));
+   TUASSERTE(bool, true, satset.empty());
+      // test with a time span that will get all satellites even
+      // though it's only partial coverage.
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::CivilTime(2020,4,11,23,56,0,gnsstk::TimeSystem::GPS),
+              gnsstk::CivilTime(2020,4,11,23,58,0,gnsstk::TimeSystem::GPS)));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat1));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat2));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat3));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 3, satset.size());
+      // test with a time span that will only get one satellite
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::CivilTime(2020,4,11,23,59,0,gnsstk::TimeSystem::GPS),
+              gnsstk::CivilTime(2020,4,12,0,0,0,gnsstk::TimeSystem::GPS)));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.count(sat1));
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 1, satset.size());
+      // test with a time span that is in the middle of the data time
+      // span, but without any matches
+   TUCATCH(satset = uut.getIndexSet(
+              gnsstk::CivilTime(2020,4,11,23,57,50,gnsstk::TimeSystem::GPS),
+              gnsstk::CivilTime(2020,4,11,23,58,10,gnsstk::TimeSystem::GPS)));
    TUASSERTE(bool, true, satset.empty());
    TURETURN();
 }
@@ -1858,16 +1944,16 @@ isPresentTest()
       // test with time span before any data
    TUASSERTE(bool, false, uut.isPresent(
                 nmid1e,
-                gnsstk::CivilTime(2020,4,12,0,56,0,gnsstk::TimeSystem::GPS),
-                gnsstk::CivilTime(2020,4,12,0,57,0,gnsstk::TimeSystem::GPS)));
+                gnsstk::CivilTime(2020,4,11,23,56,0,gnsstk::TimeSystem::GPS),
+                gnsstk::CivilTime(2020,4,11,23,57,0,gnsstk::TimeSystem::GPS)));
    TUASSERTE(bool, false, uut.isPresent(
                 nmid2e,
-                gnsstk::CivilTime(2020,4,12,0,56,0,gnsstk::TimeSystem::GPS),
-                gnsstk::CivilTime(2020,4,12,0,57,0,gnsstk::TimeSystem::GPS)));
+                gnsstk::CivilTime(2020,4,11,23,56,0,gnsstk::TimeSystem::GPS),
+                gnsstk::CivilTime(2020,4,11,23,57,0,gnsstk::TimeSystem::GPS)));
    TUASSERTE(bool, false, uut.isPresent(
                 nmid3e,
-                gnsstk::CivilTime(2020,4,12,0,56,0,gnsstk::TimeSystem::GPS),
-                gnsstk::CivilTime(2020,4,12,0,57,0,gnsstk::TimeSystem::GPS)));
+                gnsstk::CivilTime(2020,4,11,23,56,0,gnsstk::TimeSystem::GPS),
+                gnsstk::CivilTime(2020,4,11,23,57,0,gnsstk::TimeSystem::GPS)));
       // test with time span after all data
    TUASSERTE(bool, true, uut.isPresent(
                 nmid1e,
@@ -1879,8 +1965,8 @@ isPresentTest()
                 gnsstk::CivilTime(2020,4,12,2,0,0,gnsstk::TimeSystem::GPS)));
    TUASSERTE(bool, true, uut.isPresent(
                 nmid3e,
-                gnsstk::CivilTime(2020,4,12,1,0,0,gnsstk::TimeSystem::GPS),
-                gnsstk::CivilTime(2020,4,12,2,0,0,gnsstk::TimeSystem::GPS)));
+                gnsstk::CivilTime(2020,4,12,0,0,0,gnsstk::TimeSystem::GPS),
+                gnsstk::CivilTime(2020,4,12,1,0,0,gnsstk::TimeSystem::GPS)));
       // test with a time span that will get all satellites even
       // though it's only partial coverage.
    // uut.dump(std::cout, gnsstk::DumpDetail::Brief);
@@ -1894,8 +1980,8 @@ isPresentTest()
                 gnsstk::CivilTime(2020,4,12,0,58,19,gnsstk::TimeSystem::GPS)));
    TUASSERTE(bool, true, uut.isPresent(
                 nmid3e,
-                gnsstk::CivilTime(2020,4,12,0,56,0,gnsstk::TimeSystem::GPS),
-                gnsstk::CivilTime(2020,4,12,0,58,19,gnsstk::TimeSystem::GPS)));
+                gnsstk::CivilTime(2020,4,11,23,56,0,gnsstk::TimeSystem::GPS),
+                gnsstk::CivilTime(2020,4,11,23,58,19,gnsstk::TimeSystem::GPS)));
       // test with a time span that only contains one satellite, but
       // prior valid ephemerides exist for the other two.
    TUASSERTE(bool, true, uut.isPresent(
@@ -1908,8 +1994,8 @@ isPresentTest()
                 gnsstk::CivilTime(2020,4,12,1,0,0,gnsstk::TimeSystem::GPS)));
    TUASSERTE(bool, true, uut.isPresent(
                 nmid3e,
-                gnsstk::CivilTime(2020,4,12,0,59,0,gnsstk::TimeSystem::GPS),
-                gnsstk::CivilTime(2020,4,12,1,0,0,gnsstk::TimeSystem::GPS)));
+                gnsstk::CivilTime(2020,4,11,23,59,0,gnsstk::TimeSystem::GPS),
+                gnsstk::CivilTime(2020,4,12,0,0,0,gnsstk::TimeSystem::GPS)));
       // test with a time span that is in the middle of the data time
       // span, but without any data contained within (which just
       // matches the prior available ephemerides)
@@ -1923,13 +2009,129 @@ isPresentTest()
                 gnsstk::CivilTime(2020,4,12,0,58,10,gnsstk::TimeSystem::GPS)));
    TUASSERTE(bool, true, uut.isPresent(
                 nmid3e,
-                gnsstk::CivilTime(2020,4,12,0,57,50,gnsstk::TimeSystem::GPS),
-                gnsstk::CivilTime(2020,4,12,0,58,10,gnsstk::TimeSystem::GPS)));
+                gnsstk::CivilTime(2020,4,11,23,57,50,gnsstk::TimeSystem::GPS),
+                gnsstk::CivilTime(2020,4,11,23,58,10,gnsstk::TimeSystem::GPS)));
       // test with wildcards
    TUASSERTE(bool, true, uut.isPresent(
                 nmid4e,
-                gnsstk::CivilTime(2020,4,12,0,56,0,gnsstk::TimeSystem::GPS),
-                gnsstk::CivilTime(2020,4,12,0,58,0,gnsstk::TimeSystem::GPS)));
+                gnsstk::CivilTime(2020,4,11,23,56,0,gnsstk::TimeSystem::GPS),
+                gnsstk::CivilTime(2020,4,11,23,58,0,gnsstk::TimeSystem::GPS)));
+   TURETURN();
+}
+
+
+unsigned NavDataFactoryWithStore_T ::
+countTest()
+{
+   TUDEF("NavDataFactoryWithStore", "count");
+   TestClass uut;
+   TUCATCH(fillFactory(testFramework, uut));
+   size_t totalCount = uut.size();
+   gnsstk::NavMessageID key1(
+      gnsstk::NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                             gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                             gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                           gnsstk::CarrierBand::Any,
+                                           gnsstk::TrackingCode::Any,
+                                           gnsstk::XmitAnt::Any),
+                             gnsstk::NavID(gnsstk::NavType::Any)),
+      gnsstk::NavMessageType::Unknown);
+   key1.sat.makeWild();
+   key1.xmitSat.makeWild();
+      // key1, being a complete wildcard, should yield the same
+      // results as size()
+   TUASSERTE(size_t, totalCount, uut.count(key1));
+
+   gnsstk::NavMessageID key2(
+      gnsstk::NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::GPS),
+                             gnsstk::SatID(gnsstk::SatelliteSystem::GPS),
+                             gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                           gnsstk::CarrierBand::Any,
+                                           gnsstk::TrackingCode::Any,
+                                           gnsstk::XmitAnt::Any),
+                             gnsstk::NavID(gnsstk::NavType::Any)),
+      gnsstk::NavMessageType::Unknown);
+      // key2, is mostly a wildcard, but does specify the satellite
+      // system as GPS, and should yield the same results as size()
+   TUASSERTE(size_t, totalCount, uut.count(key2));
+
+   gnsstk::NavMessageID key3(
+      gnsstk::NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::Galileo),
+                             gnsstk::SatID(gnsstk::SatelliteSystem::Galileo),
+                             gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                           gnsstk::CarrierBand::Any,
+                                           gnsstk::TrackingCode::Any,
+                                           gnsstk::XmitAnt::Any),
+                             gnsstk::NavID(gnsstk::NavType::Any)),
+      gnsstk::NavMessageType::Unknown);
+      // we have nothing in the store for Galileo.
+   TUASSERTE(size_t, 0, uut.count(key3));
+
+      // count GPS L1
+   gnsstk::NavMessageID key4(
+      gnsstk::NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::GPS),
+                             gnsstk::SatID(gnsstk::SatelliteSystem::GPS),
+                             gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                           gnsstk::CarrierBand::L1,
+                                           gnsstk::TrackingCode::Any,
+                                           gnsstk::XmitAnt::Any),
+                             gnsstk::NavID(gnsstk::NavType::Any)),
+      gnsstk::NavMessageType::Unknown);
+   TUASSERTE(size_t, totalCount, uut.count(key4));
+
+      // count GPS L2
+   gnsstk::NavMessageID key5(
+      gnsstk::NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::GPS),
+                             gnsstk::SatID(gnsstk::SatelliteSystem::GPS),
+                             gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                           gnsstk::CarrierBand::L2,
+                                           gnsstk::TrackingCode::Any,
+                                           gnsstk::XmitAnt::Any),
+                             gnsstk::NavID(gnsstk::NavType::Any)),
+      gnsstk::NavMessageType::Unknown);
+   TUASSERTE(size_t, 0, uut.count(key5));
+
+      // count using SatelliteSystem only
+   TUASSERTE(size_t, totalCount, uut.count(gnsstk::SatelliteSystem::GPS));
+   TUASSERTE(size_t, 0, uut.count(gnsstk::SatelliteSystem::Galileo));
+      // count using subject satellite
+   TUASSERTE(size_t, 4,
+             uut.count(gnsstk::SatID(23,gnsstk::SatelliteSystem::GPS)));
+   TUASSERTE(size_t, 0,
+             uut.count(gnsstk::SatID(32,gnsstk::SatelliteSystem::GPS)));
+      // count using message type
+   TUASSERTE(size_t, totalCount, uut.count(gnsstk::NavMessageType::Ephemeris));
+   TUASSERTE(size_t, 0, uut.count(gnsstk::NavMessageType::Almanac));
+
+   TURETURN();
+}
+
+
+unsigned NavDataFactoryWithStore_T ::
+getFirstLastTimeTest()
+{
+   TUDEF("NavDataFactoryWithStore", "getFirstTime");
+   TestClass uut;
+   TUCATCH(fillFactory(testFramework, uut));
+   gnsstk::SatID sat23(23,gnsstk::SatelliteSystem::GPS),
+      sat7(7,gnsstk::SatelliteSystem::GPS),
+      sat11(11,gnsstk::SatelliteSystem::GPS),
+      sat12(12,gnsstk::SatelliteSystem::GPS),
+      sat23R(23,gnsstk::SatelliteSystem::Glonass);
+   TUASSERTE(gnsstk::CommonTime, ct-3600, uut.getFirstTime(sat23));
+   TUASSERTE(gnsstk::CommonTime, ct-3510, uut.getLastTime(sat23));
+   TUASSERTE(gnsstk::CommonTime, ct-3600, uut.getFirstTime(sat7));
+   TUASSERTE(gnsstk::CommonTime, ct-3570, uut.getLastTime(sat7));
+   TUASSERTE(gnsstk::CommonTime, ct-3600, uut.getFirstTime(sat11));
+   TUASSERTE(gnsstk::CommonTime, ct-3570, uut.getLastTime(sat11));
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::END_OF_TIME,
+             uut.getFirstTime(sat12));
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME,
+             uut.getLastTime(sat12));
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::END_OF_TIME,
+             uut.getFirstTime(sat23R));
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME,
+             uut.getLastTime(sat23R));
    TURETURN();
 }
 
@@ -1950,7 +2152,10 @@ int main()
    errorTotal += testClass.getOffsetTest();
    errorTotal += testClass.getOffset2Test();
    errorTotal += testClass.getAvailableSatsTest();
+   errorTotal += testClass.getIndexSetTest();
    errorTotal += testClass.isPresentTest();
+   errorTotal += testClass.countTest();
+   errorTotal += testClass.getFirstLastTimeTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

@@ -586,7 +586,7 @@ processEphTest()
             // NavData fields
          TUASSERTE(gnsstk::CommonTime, navD2SF1p002ct, iono->timeStamp);
          TUASSERTE(gnsstk::NavMessageID, nmidExp, iono->signal);
-            // KlobucharIonoData
+            // KlobucharIonoNavData
          TUASSERTFE( 6.519258E-09, iono->alpha[0]);
          TUASSERTFE( 2.98023223876953125e-08, iono->alpha[1]);
          TUASSERTFE(-2.98023223876953125e-07, iono->alpha[2]);

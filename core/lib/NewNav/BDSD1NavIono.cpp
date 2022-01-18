@@ -61,7 +61,7 @@ namespace gnsstk
    bool BDSD1NavIono ::
    validate() const
    {
-      return (KlobucharIonoData::validate() &&
+      return (KlobucharIonoNavData::validate() &&
               ((pre == 0) || (pre == bds::Preamble)) &&
               (fraID == 1));
    }

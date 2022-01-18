@@ -40,6 +40,7 @@
 #define GNSSTK_MULTIFORMATNAVDATAFACTORY_HPP
 
 #include "NavDataFactoryWithStoreFile.hpp"
+#include "NDFUniqIterator.hpp"
 
 namespace gnsstk
 {
@@ -64,7 +65,11 @@ namespace gnsstk
        *   implemented using polymorphism so that this class behaves
        *   correctly when used in conjunction with NavLibrary.
        * @warning Overridden methods affect every instance of this
-       *   class due to the static data. */
+       *   class due to the static data.
+       * @warning Instantiating more than one of this class at any
+       *   time will likely have unexpected results due to the shared
+       *   (static) data stored internally.  DON'T DO IT.
+       */
    class MultiFormatNavDataFactory : public NavDataFactoryWithStoreFile
    {
    public:
@@ -239,6 +244,21 @@ namespace gnsstk
 
          /// Return the number of nav messages in all factories.
       size_t size() const override;
+         /// @copydoc NavDataFactoryWithStore::count(const NavMessageID&) const
+      size_t count(const NavMessageID& nmid) const override;
+         /// @copydoc NavDataFactoryWithStore::count(SatelliteSystem,NavMessageType) const
+      size_t count(SatelliteSystem sys,
+                   NavMessageType nmt = NavMessageType::Unknown)
+         const override
+      { return NavDataFactoryWithStore::count(sys,nmt); }
+         /// @copydoc NavDataFactoryWithStore::count(const SatID&,NavMessageType) const
+      size_t count(const SatID& satID,
+                   NavMessageType nmt = NavMessageType::Unknown)
+         const override
+      { return NavDataFactoryWithStore::count(satID,nmt); }
+         /// @copydoc NavDataFactoryWithStore::count(gnsstk::NavMessageType) const
+      size_t count(NavMessageType nmt) const override
+      { return NavDataFactoryWithStore::count(nmt); }
          /// Return the number of distinct signals (ignoring PRN) in factories.
       size_t numSignals() const override;
          /// Return the number of distinct signals including PRN, in factories.
@@ -282,6 +302,13 @@ namespace gnsstk
           * @param[in] dl The level of detail the output should contain. */
       void dump(std::ostream& s, DumpDetail dl) const;
 
+         /** Get the instance of a given factory type, specified by
+          * the template argument.  This allows you to get a specific
+          * factory if for some reason you need to tweak its
+          * settings. */
+      template <class Fact>
+      std::shared_ptr<Fact> getFactory();
+
    protected:
          /** Known nav data factories, organized by signal to make
           * searches simpler and/or quicker.  Declared static so that
@@ -294,9 +321,26 @@ namespace gnsstk
           * NavMessageMap, because SP3's find method performs
           * interpolation. */
       bool loadIntoMap(const std::string& filename,
-                       NavMessageMap& navMap) override
+                       NavMessageMap& navMap,
+                       NavNearMessageMap& navNearMap,
+                       OffsetCvtMap& ofsMap) override
       { return false; }
    };
+
+
+   template <class Fact>
+   std::shared_ptr<Fact> MultiFormatNavDataFactory ::
+   getFactory()
+   {
+      std::shared_ptr<Fact> rv;
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories()))
+      {
+         rv = std::dynamic_pointer_cast<Fact>(fi.second);
+         if (rv)
+            return rv;
+      }
+      return rv;
+   }
 
       //@}
 

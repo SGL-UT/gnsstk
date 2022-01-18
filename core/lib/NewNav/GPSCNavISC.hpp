@@ -53,6 +53,11 @@ namespace gnsstk
          /// Sets the internal data members.
       GPSCNavISC();
 
+         /** Print the actual corrections provided by this object in a
+          * human-readable format.  Typically called by dump().
+          * @param[in,out] s The stream to write the data to. */
+      void dumpCorrections(std::ostream& s) const override;
+
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
           * @return true if this message is valid according to ICD criteria.

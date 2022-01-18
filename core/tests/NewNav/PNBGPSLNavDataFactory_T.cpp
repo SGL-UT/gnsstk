@@ -424,6 +424,7 @@ processEphTest()
             // GPSLNavISC
          TUASSERTE(uint32_t, 0x8b, isc->pre);
          TUASSERTE(uint32_t, 0x34d, isc->tlm);
+         TUASSERTE(bool, false, isc->isf);
          TUASSERTE(bool, false, isc->alert);
          TUASSERTE(bool, true, isc->asFlag);
       }
@@ -473,13 +474,16 @@ processEphTest()
             // GPSLNavData fields
          TUASSERTE(uint32_t, 0x8b, eph->pre);
          TUASSERTE(uint32_t, 0x34d, eph->tlm);
+         TUASSERTE(bool, false, eph->isf);
          TUASSERTE(bool, false, eph->alert);
          TUASSERTE(bool, true, eph->asFlag);
             // GPSLNavEph fields
          TUASSERTE(uint32_t, 0x8b, eph->pre2);
          TUASSERTE(uint32_t, 0x34d, eph->tlm2);
+         TUASSERTE(bool, false, eph->isf2);
          TUASSERTE(uint32_t, 0x8b, eph->pre3);
          TUASSERTE(uint32_t, 0x34d, eph->tlm3);
+         TUASSERTE(bool, false, eph->isf3);
          TUASSERTE(uint16_t, 0x4a, eph->iodc);
          TUASSERTE(uint16_t, 0x4a, eph->iode);
          TUASSERTE(unsigned, 0, eph->fitIntFlag);
@@ -597,6 +601,7 @@ processAlmOrbTest()
             // GPSLNavData fields
          TUASSERTE(uint32_t, 0x8b, alm->pre);
          TUASSERTE(uint32_t, 0x34d, alm->tlm);
+         TUASSERTE(bool, false, alm->isf);
          TUASSERTE(bool, false, alm->alert);
          TUASSERTE(bool, true, alm->asFlag);
             // GPSLNavAlm fields
@@ -669,6 +674,7 @@ processAlmOrbTest()
             // GPSLNavData fields
          TUASSERTE(uint32_t, 0x8b, alm->pre);
          TUASSERTE(uint32_t, 0x34d, alm->tlm);
+         TUASSERTE(bool, false, alm->isf);
          TUASSERTE(bool, false, alm->alert);
          TUASSERTE(bool, true, alm->asFlag);
             // GPSLNavAlm fields
@@ -803,6 +809,7 @@ processSVID56Test()
          TUASSERTE(gnsstk::NavMessageID, nmidExp, iono->signal);
          TUASSERTE(uint32_t, 0x8b, iono->pre);
          TUASSERTE(uint32_t, 845, iono->tlm);
+         TUASSERTE(bool, false, iono->isf);
          TUASSERTE(bool, false, iono->alert);
          TUASSERTE(bool, true, iono->asFlag);
          TUASSERTFE( 2.142041922e-08, iono->alpha[0]);
@@ -903,6 +910,7 @@ processEphQZSSTest()
             // GPSLNavISC
          TUASSERTE(uint32_t, 0x8b, isc->pre);
          TUASSERTE(uint32_t, 0xaa, isc->tlm);
+         TUASSERTE(bool, false, isc->isf);
          TUASSERTE(bool, false, isc->alert);
          TUASSERTE(bool, false, isc->asFlag);
       }
@@ -952,6 +960,7 @@ processEphQZSSTest()
             // GPSLNavData fields
          TUASSERTE(uint32_t, 0x8b, eph->pre);
          TUASSERTE(uint32_t, 0xaa, eph->tlm);
+         TUASSERTE(bool, false, eph->isf);
          TUASSERTE(bool, false, eph->alert);
          TUASSERTE(bool, false, eph->asFlag);
             // GPSLNavEph fields
@@ -959,6 +968,8 @@ processEphQZSSTest()
          TUASSERTE(uint32_t, 0xaa, eph->tlm2);
          TUASSERTE(uint32_t, 0x8b, eph->pre3);
          TUASSERTE(uint32_t, 0xaa, eph->tlm3);
+         TUASSERTE(bool, false, eph->isf2);
+         TUASSERTE(bool, false, eph->isf3);
          TUASSERTE(uint16_t, 0x381, eph->iodc);
          TUASSERTE(uint16_t, 0x81, eph->iode);
          TUASSERTE(unsigned, 0, eph->fitIntFlag);
@@ -1094,6 +1105,7 @@ processAlmOrbQZSSTest()
             // GPSLNavData fields
          TUASSERTE(uint32_t, 0x8b, alm->pre);
          TUASSERTE(uint32_t, 0xaa, alm->tlm);
+         TUASSERTE(bool, false, alm->isf);
          TUASSERTE(bool, false, alm->alert);
          TUASSERTE(bool, false, alm->asFlag);
             // GPSLNavAlm fields
@@ -1168,6 +1180,7 @@ processAlmOrbQZSSTest()
             // GPSLNavData fields
          TUASSERTE(uint32_t, 0x8b, alm->pre);
          TUASSERTE(uint32_t, 0xaa, alm->tlm);
+         TUASSERTE(bool, false, alm->isf);
          TUASSERTE(bool, false, alm->alert);
          TUASSERTE(bool, false, alm->asFlag);
             // GPSLNavAlm fields
@@ -1284,6 +1297,7 @@ processSVID56QZSSTest()
          TUASSERTE(gnsstk::NavMessageID, nmidExp, iono->signal);
          TUASSERTE(uint32_t, 0x8b, iono->pre);
          TUASSERTE(uint32_t, 170, iono->tlm);
+         TUASSERTE(bool, false, iono->isf);
          TUASSERTE(bool, false, iono->alert);
          TUASSERTE(bool, false, iono->asFlag);
          TUASSERTFE( 5.587935448e-09, iono->alpha[0]);
@@ -1330,6 +1344,7 @@ processSVID56QZSSTest()
          TUASSERTE(gnsstk::NavMessageID, nmidExp, iono->signal);
          TUASSERTE(uint32_t, 0x8b, iono->pre);
          TUASSERTE(uint32_t, 170, iono->tlm);
+         TUASSERTE(bool, false, iono->isf);
          TUASSERTE(bool, false, iono->alert);
          TUASSERTE(bool, false, iono->asFlag);
          TUASSERTFE( 1.024454832e-08, iono->alpha[0]);

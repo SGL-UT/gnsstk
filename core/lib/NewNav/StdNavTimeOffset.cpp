@@ -46,7 +46,7 @@ namespace gnsstk
    StdNavTimeOffset ::
    StdNavTimeOffset()
          : a0(0.0), a1(0.0), a2(0.0), deltatLS(0.0), tot(0.0), wnot(0),
-           wnLSF(0), dn(0), deltatLSF(0.0),
+           wnLSF(0), dn(0), deltatLSF(0.0), dnSun(1),
            src(TimeSystem::Unknown), tgt(TimeSystem::Unknown)
    {
    }
@@ -68,7 +68,8 @@ namespace gnsstk
          t0.setTimeSystem(fromSys);
             // difference between tE and tot (using GPS terms)
          double dt = when - t0;
-            // delta tLS should be 0 for anything other than UTC.
+            // delta tLS should be 0 for anything other than UTC,
+            // except in the case of GLONASS.
          offset = deltatLS + a0 + a1*dt + a2*dt*dt;
             // UTC conversion includes leap seconds and everyone
             // copied what GPS was doing, more or less, including the
@@ -96,39 +97,60 @@ namespace gnsstk
    dump(std::ostream& s, DumpDetail dl) const
    {
       const ios::fmtflags oldFlags = s.flags();
-      NavData::dump(s,dl);
-      double offset;
-      switch (dl)
+      if (dl == DumpDetail::OneLine)
       {
-         case DumpDetail::OneLine:
-            break;
-         case DumpDetail::Brief:
-               // brief just shows the offset as of the reference time.
-            getOffset(src, tgt, refTime, offset);
-            s << StringUtils::asString(src) << "-" << StringUtils::asString(tgt)
-              << " offset = " << offset << endl;
-            break;
-         case DumpDetail::Full:
-            getOffset(src, tgt, refTime, offset);
-            s << setprecision(16)
-              << "  src system = " << StringUtils::asString(src) << endl
-              << "  tgt system = " << StringUtils::asString(tgt) << endl
-              << "  A0         = " << a0 << endl
-              << "  A1         = " << a1 << endl
-              << "  A2         = " << a2 << endl
-              << "  delta tLS  = " << deltatLS << endl
-              << "  refTime    = "
-              << printTime(refTime,"%Y/%02m/%02d %02H:%02M:%02S") << endl
-              << "  effTime    = "
-              << printTime(effTime,"%Y/%02m/%02d %02H:%02M:%02S") << endl
-              << "  tot        = " << tot << endl
-              << "  WNot       = " << wnot << endl
-              << "  WN(LSF)    = " << wnLSF << endl
-              << "  DN         = " << dn << endl
-              << "  delta tLSF = " << deltatLSF << endl
-              << "  offset(ref)= " << offset << endl;
-            break;
+         NavData::dump(s,dl);
+         return;
       }
+      if (dl == DumpDetail::Brief)
+      {
+         double offset;
+         getOffset(src, tgt, refTime, offset);
+            // brief just shows the offset as of the reference time.
+         s << StringUtils::asString(src) << "-" << StringUtils::asString(tgt)
+           << " offset = " << offset << endl;
+         return;
+      }
+      s << "****************************************************************"
+        << "************" << endl
+        << "Time System Offset" << endl << endl
+        << "PRN : " << setw(2) << signal.sat << " / "
+        << "SVN : " << setw(2);
+      std::string svn;
+      if (getSVN(signal.sat, timeStamp, svn))
+      {
+         s << svn;
+      }
+
+      s << endl << endl
+        << "           TIMES OF INTEREST" << endl << endl
+        << "              " << getDumpTimeHdr(dl) << endl
+        << "Transmit:     " << getDumpTime(dl, timeStamp)
+        << endl << endl
+        << "           " << StringUtils::asString(src) << " "
+        << StringUtils::asString(tgt) << " PARAMETERS" << endl
+        << "Parameter                 Value" << endl
+        << "Reference   "
+        << printTime(refTime,"%Y/%02m/%02d %02H:%02M:%02S") << endl
+        << "Effective   "
+        << printTime(effTime,"%Y/%02m/%02d %02H:%02M:%02S") << endl
+        << right << uppercase << fixed << setprecision(0) << setfill(' ')
+        << "t-sub-ot       " << setw(16) << tot << " sec" << endl
+        << scientific << setprecision(9)
+        << "A0             " << setw(16) << a0 << " sec" << endl
+        << "A1             " << setw(16) << a1 << " sec/sec" << endl
+        << "A2             " << setw(16) << a2 << " sec/sec**2" << endl
+        << fixed << setprecision(0)
+        << "dtLS           " << setw(16) << deltatLS << " sec" << endl
+        << "dtLSF          " << setw(16) << deltatLSF << " sec" << endl
+        << "WNot           " << setw(11) << wnot << "("
+        << setw(3) << (wnot & 0x0ff) << ") Full week (modulo 256 week)" << endl
+        << "WN(LSF)        " << setw(11) << wnLSF << "("
+        << setw(3) << (wnLSF & 0x0ff) << ") Full week (modulo 256 week)" << endl
+            /** @todo maybe need to make this a dynamic label for
+             * systems that start at DN=0 */
+        << "DN             " << setw(16) << dn << " day (" << dnSun << "-"
+        << (dnSun+6) << ")" << endl;
       s.flags(oldFlags);
    }
 

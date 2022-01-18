@@ -49,10 +49,12 @@ namespace gnsstk
    GPSLNavISC()
          : pre(0),
            tlm(0),
+           isf(false),
            alert(false),
            asFlag(false)
    {
       msgLenSec = 6.0;
+      iscLabel = "Tgd";
       refOids = {ObsID(ObservationType::Unknown,
                        gnsstk::CarrierBand::L1,
                        gnsstk::TrackingCode::CA),

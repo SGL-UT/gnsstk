@@ -42,14 +42,7 @@
 #include "OrbitDataKepler.hpp"
 #include "NavHealthData.hpp"
 #include "BasicTimeSystemConverter.hpp"
-
-#if !defined(__PRETTY_FUNCTION__)
-#ifdef __FUNCSIG__
-#define __PRETTY_FUNCTION__ __FUNCSIG__
-#else
-#define __PRETTY_FUNCTION__ __FUNCTION__
-#endif
-#endif
+#include "DebugTrace.hpp"
 
 /// debug time string
 static const std::string dts("%Y/%03j/%02H:%02M:%02S %P");
@@ -111,6 +104,8 @@ namespace gnsstk
             NavDataPtr& navData, SVHealth xmitHealth,
             NavValidityType valid)
    {
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("class: " << getClassName());
          /** Class for gathering matches in findUser().  It's only
           * used in findUser so it is declared and implemented here
           * alone. */
@@ -127,22 +122,15 @@ namespace gnsstk
          bool finished;
          NavMap::iterator it;
       };
-      using MatchList = std::list<FindMatches>;
+      typedef std::list<FindMatches> MatchList;
 
-      if (debugLevel)
-      {
-         std::cerr << __PRETTY_FUNCTION__ << std::endl
-                   << "  nmid=" << nmid << std::endl
-                   << "  when=" << gnsstk::printTime(when,dts) << std::endl;
-      }
+      DEBUGTRACE("nmid=" << nmid << "  when=" << gnsstk::printTime(when,dts));
+
          // dig through the maps of maps, matching keys with nmid along the way
       auto dataIt = data.find(nmid.messageType);
       if (dataIt == data.end())
       {
-         if (debugLevel)
-         {
-            std::cerr << " false = not found 1" << std::endl;
-         }
+         DEBUGTRACE("false = not found 1");
          return false; // not found.
       }
          // Make a collection of the NavMap iterators that match the
@@ -156,121 +144,91 @@ namespace gnsstk
       MatchList itList;
       if (nmid.isWild())
       {
-         if (debugLevel)
-         {
-            std::cerr << "wildcard search: " << nmid << std::endl;
-         }
+         DEBUGTRACE("wildcard search: " << nmid);
          for (NavSatMap::iterator sati = dataIt->second.begin();
               sati != dataIt->second.end(); sati++)
          {
             if (sati->first != nmid)
             {
-               if (debugLevel)
-               {
-                  std::cerr << "  " << sati->first << " != " << nmid
-                            << std::endl;
-               }
+               DEBUGTRACE(sati->first << " != " << nmid);
                continue; // skip non matches
             }
-            if (debugLevel)
-            {
-               std::cerr << "  matches " << sati->first << std::endl;
-            }
+            DEBUGTRACE("matches " << sati->first);
             NavMap::iterator nmi = sati->second.lower_bound(when);
             if (nmi == sati->second.end())
             {
                nmi = std::prev(nmi);
             }
-            if (debugLevel)
-            {
-               std::cerr << "  user time : "
-                         << gnsstk::printTime(nmi->second->getUserTime(),dts)
-                         << std::endl
-                         << "  (nmi != sati->second.end()) = "
-                         << (nmi != sati->second.end()) << std::endl
-                         << "  (nmi->second->getUserTime() > when) = "
-                         << (nmi->second->getUserTime() > when) << std::endl;
-            }
+            DEBUGTRACE("user time : "
+                       << gnsstk::printTime(nmi->second->getUserTime(),dts));
+            DEBUGTRACE("(nmi != sati->second.end()) = "
+                       << (nmi != sati->second.end()));
+            DEBUGTRACE("(nmi->second->getUserTime() > when) = "
+                       << (nmi->second->getUserTime() > when));
             while ((nmi != sati->second.end()) &&
                    (nmi->second->getUserTime() > when))
             {
-               if (debugLevel)
-               {
-                  std::cerr << "  backing up (maybe)" << std::endl;
-               }
+               DEBUGTRACE("backing up (maybe)");
                nmi = (nmi == sati->second.begin() ? sati->second.end()
                       : std::prev(nmi));
-               if ((debugLevel > 0) && (nmi != sati->second.end()))
+               if (nmi != sati->second.end())
                {
-                  std::cerr << "  user time : "
-                            << gnsstk::printTime(nmi->second->getUserTime(),dts)
-                            << std::endl;
+                  DEBUGTRACE("user time : "
+                             << gnsstk::printTime(nmi->second->getUserTime(),
+                                                  dts));
                }
             }
             if (nmi != sati->second.end())
             {
                itList.push_back(FindMatches(&(sati->second), nmi));
             }
-            else if (debugLevel)
+            else
             {
-               std::cerr << "  did not add match" << std::endl;
+               DEBUGTRACE("did not add match");
             }
          }
       }
       else
       {
-         if (debugLevel)
-         {
-            std::cerr << "non-wildcard search: " << nmid << std::endl;
-         }
+         DEBUGTRACE("non-wildcard search: " << nmid);
          auto sati = dataIt->second.find(nmid);
          if (sati != dataIt->second.end())
          {
-            if (debugLevel)
-            {
-               std::cerr << "  found" << std::endl;
-            }
+            DEBUGTRACE("found");
             NavMap::iterator nmi = sati->second.lower_bound(when);
             if (nmi == sati->second.end())
             {
                nmi = std::prev(nmi);
             }
-            if (debugLevel)
-            {
-               std::cerr << "  user time : "
-                         << gnsstk::printTime(nmi->second->getUserTime(),dts)
-                         << std::endl;
-            }
+            DEBUGTRACE("user time : "
+                       << gnsstk::printTime(nmi->second->getUserTime(),dts));
             while ((nmi != sati->second.end()) &&
                    (nmi->second->getUserTime() > when))
             {
                nmi = (nmi == sati->second.begin() ? sati->second.end()
                       : std::prev(nmi));
-               if ((debugLevel > 0) && (nmi != sati->second.end()))
+               if (nmi != sati->second.end())
                {
-                  std::cerr << "  user time : "
-                            << gnsstk::printTime(nmi->second->getUserTime(),dts)
-                            << std::endl;
+                  DEBUGTRACE("user time : "
+                             << gnsstk::printTime(nmi->second->getUserTime(),
+                                                  dts));
                }
             }
             if (nmi != sati->second.end())
             {
                itList.push_back(FindMatches(&(sati->second), nmi));
             }
-            else if (debugLevel)
+            else
             {
-               std::cerr << "  did not add match" << std::endl;
+               DEBUGTRACE("did not add match");
             }
          }
-         else if (debugLevel)
+         else
          {
-            std::cerr << "  not found" << std::endl;
+            DEBUGTRACE("not found");
          }
       }
-      if (debugLevel)
-      {
-         std::cerr << "itList.size() = " << itList.size() << std::endl;
-      }
+      DEBUGTRACE("itList.size() = " << itList.size());
       gnsstk::CommonTime mostRecent = gnsstk::CommonTime::BEGINNING_OF_TIME;
       mostRecent.setTimeSystem(gnsstk::TimeSystem::Any);
       bool done = itList.empty();
@@ -296,10 +254,7 @@ namespace gnsstk
                       (imi.it->second->getUserTime() > when)) ||
                      !validityCheck(imi.it,*imi.map,valid,xmitHealth,when))
             {
-               if (debugLevel)
-               {
-                  std::cerr << "  not end, not right time" << std::endl;
-               }
+               DEBUGTRACE("not end, not right time");
                imi.it = (imi.it == imi.map->begin()
                          ? imi.map->end()
                          : std::prev(imi.it));
@@ -312,33 +267,20 @@ namespace gnsstk
             }
             else
             {
-               if (debugLevel)
-               {
-                  std::cerr << "Found something good at "
-                            << printTime(imi.it->first, dts)
-                            << std::endl;
-               }
+               DEBUGTRACE("Found something good at "
+                          << printTime(imi.it->first, dts));
                if (imi.it->second->getUserTime() > mostRecent)
                {
                   mostRecent = imi.it->second->getUserTime();
                   navData = imi.it->second;
-                  if (debugLevel)
-                  {
-                     std::cerr << "result is now " << navData->signal
-                               << std::endl;
-                  }
+                  DEBUGTRACE("result is now " << navData->signal);
                }
                imi.finished = true;
                rv = true;
             }
          }
       }
-      if (debugLevel)
-      {
-         std::cerr << "Most recent = "
-                   << printTime(mostRecent, dts)
-                   << std::endl;
-      }
+      DEBUGTRACE("Most recent = " << printTime(mostRecent, dts));
       return rv;
    }
 
@@ -348,6 +290,8 @@ namespace gnsstk
                NavDataPtr& navData, SVHealth xmitHealth,
                NavValidityType valid)
    {
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("class: " << getClassName());
          /** Class for gathering matches in findNearest().  It's only
           * used in findNearest so it is declared and implemented here
           * alone. */
@@ -379,20 +323,13 @@ namespace gnsstk
          NavNearMap::iterator itGT, itLT;
          const CommonTime& when;
       };
-      using MatchList = std::list<FindMatches>;
+      typedef std::list<FindMatches> MatchList;
 
-      if (debugLevel)
-      {
-         std::cerr << __PRETTY_FUNCTION__ << std::endl;
-      }
          // dig through the maps of maps, matching keys with nmid along the way
       auto dataIt = nearestData.find(nmid.messageType);
       if (dataIt == nearestData.end())
       {
-         if (debugLevel)
-         {
-            std::cerr << " false = not found 1" << std::endl;
-         }
+         DEBUGTRACE(" false = not found 1");
          return false; // not found.
       }
          // Make a collection of the NavMap iterators that match the
@@ -406,44 +343,31 @@ namespace gnsstk
       MatchList itList;
       if (nmid.isWild())
       {
-         if (debugLevel)
-         {
-            std::cerr << "wildcard search: " << nmid << std::endl;
-         }
+         DEBUGTRACE("wildcard search: " << nmid);
          for (NavNearSatMap::iterator sati = dataIt->second.begin();
               sati != dataIt->second.end(); sati++)
          {
             if (sati->first != nmid)
                continue; // skip non matches
-            if (debugLevel)
-            {
-               std::cerr << "  matches " << sati->first << std::endl
-                         << "  when = " << gnsstk::printTime(when,dts)
-                         << std::endl;
-            }
+            DEBUGTRACE("matches " << sati->first);
+            DEBUGTRACE("when = " << gnsstk::printTime(when,dts));
             NavNearMap::iterator nmi = sati->second.lower_bound(when);
             itList.push_back(FindMatches(&(sati->second), nmi, when));
          }
       }
       else
       {
-         if (debugLevel)
-         {
-            std::cerr << "non-wildcard search: " << nmid << std::endl;
-         }
+         DEBUGTRACE("non-wildcard search: " << nmid);
          auto sati = dataIt->second.find(nmid);
          if (sati != dataIt->second.end())
          {
-            if (debugLevel)
-            {
-               std::cerr << "  found" << std::endl;
-            }
+            DEBUGTRACE("found");
             NavNearMap::iterator nmi = sati->second.lower_bound(when);
             itList.push_back(FindMatches(&(sati->second), nmi, when));
          }
-         else if (debugLevel)
+         else
          {
-            std::cerr << "  not found" << std::endl;
+            DEBUGTRACE("not found");
          }
       }
       bool done = itList.empty();
@@ -514,10 +438,9 @@ namespace gnsstk
              const CommonTime& when, NavDataPtr& offset,
              SVHealth xmitHealth, NavValidityType valid)
    {
-      if (debugLevel)
-      {
-         std::cerr << printTime(when,"looking for "+dts) << std::endl;
-      }
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("class: " << getClassName());
+      DEBUGTRACE(printTime(when,"looking for "+dts));
       bool rv = false;
          // Only search for forward key and let the TimeOffset classes
          // and factories handle the reverse offset.
@@ -525,32 +448,27 @@ namespace gnsstk
          // First look in the offsetData map for the key matching the
          // offset translation in the forward direction (fromSys->toSys).
       auto odi = offsetData.find(fwdKey);
-      if (debugLevel)
-      {
-         std::cerr << "  fwdKey=<" << gnsstk::StringUtils::asString(fwdKey.first)
-                   << "," << gnsstk::StringUtils::asString(fwdKey.second) << ">"
-                   << std::endl;
-      }
+      DEBUGTRACE("fwdKey=<" << gnsstk::StringUtils::asString(fwdKey.first)
+                 << "," << gnsstk::StringUtils::asString(fwdKey.second) << ">");
       if (odi == offsetData.end())
       {
-         if (debugLevel)
+         if (DebugTrace::enabled)
          {
-            std::cerr << "did not find key, giving up" << std::endl;
-            std::cerr << "offsetData.size() = " << offsetData.size()
-                      << std::endl;
+            DEBUGTRACE("did not find key, giving up");
+            DEBUGTRACE("offsetData.size() = " << offsetData.size());
             for (const auto& x : offsetData)
             {
-               std::cerr << "  fwdKey=<"
-                         << gnsstk::StringUtils::asString(x.first.first)
-                         << "," << gnsstk::StringUtils::asString(x.first.second)
-                         << ">" << std::endl;
+               DEBUGTRACE("fwdKey=<"
+                          << gnsstk::StringUtils::asString(x.first.first) << ","
+                          << gnsstk::StringUtils::asString(x.first.second)
+                          << ">");
             }
          }
          return false; // no conversion available
       }
-      else if (debugLevel)
+      else
       {
-         std::cerr << "found forward key" << std::endl;
+         DEBUGTRACE("found forward key");
       }
          // Make a copy of "when" with a time system of Any so that we
          // can search for offset data whether we're doing a "forward"
@@ -561,26 +479,17 @@ namespace gnsstk
       auto oemi = odi->second.lower_bound(whenny);
       if (oemi == odi->second.end())
       {
-         if (debugLevel)
-         {
-            std::cerr << "got end right away, backing up one" << std::endl;
-         }
+         DEBUGTRACE("got end right away, backing up one");
          oemi = std::prev(oemi);
       }
-      if (debugLevel)
-      {
-         std::cerr << printTime(oemi->first,"found "+dts) << std::endl;
-      }
+      DEBUGTRACE(printTime(oemi->first,"found "+dts));
       bool done = false;
       while (!done)
       {
          if (oemi == odi->second.end())
          {
                // give up, couldn't find any valid matches.
-            if (debugLevel)
-            {
-               std::cerr << "giving up, reached the end" << std::endl;
-            }
+            DEBUGTRACE("giving up, reached the end");
             done = true;
          }
          else if (oemi->first > whenny)
@@ -589,21 +498,13 @@ namespace gnsstk
                // so back up if possible
             oemi = (oemi == odi->second.begin()
                     ? odi->second.end() : std::prev(oemi));
-            if (debugLevel)
-            {
-               std::cerr << printTime(oemi->first,"backed up to "+dts)
-                         << std::endl;
-            }
+            DEBUGTRACE(printTime(oemi->first,"backed up to "+dts));
          }
          else
          {
-            if (debugLevel)
-            {
-               std::cerr << "looking for acceptable data "
-                         << gnsstk::StringUtils::asString(valid) << " "
-                         << gnsstk::StringUtils::asString(xmitHealth)
-                         << std::endl;
-            }
+            DEBUGTRACE("looking for acceptable data "
+                       << gnsstk::StringUtils::asString(valid) << " "
+                       << gnsstk::StringUtils::asString(xmitHealth));
                // Message time is valid, so iterate through the
                // per-signal data for a usable record (matching
                // validity and transmit satellite health)
@@ -611,10 +512,7 @@ namespace gnsstk
             {
                TimeOffsetData *todp = dynamic_cast<TimeOffsetData*>(
                   omi.second.get());
-               if (debugLevel)
-               {
-                  std::cerr << "  checking " << todp->signal << std::endl;
-               }
+               DEBUGTRACE("checking " << todp->signal);
                if (todp == nullptr)
                   continue; // shouldn't happen.
                switch (valid)
@@ -643,10 +541,7 @@ namespace gnsstk
                      break;
                }
             }
-            if (debugLevel)
-            {
-               std::cerr << "  didn't find any acceptable data" << std::endl;
-            }
+            DEBUGTRACE("didn't find any acceptable data");
             oemi = (oemi == odi->second.begin()
                     ? odi->second.end() : std::prev(oemi));
          }
@@ -945,68 +840,70 @@ namespace gnsstk
       data.clear();
       nearestData.clear();
       offsetData.clear();
+      initialTime = gnsstk::CommonTime::END_OF_TIME;
+      finalTime = gnsstk::CommonTime::BEGINNING_OF_TIME;
    }
 
 
    bool NavDataFactoryWithStore ::
-   addNavData(const NavDataPtr& nd)
+   addNavData(const NavDataPtr& nd, NavMessageMap& navMap,
+              NavNearMessageMap& navNearMap, OffsetCvtMap& ofsMap)
    {
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("class: " << getClassName());
       OrbitDataKepler *odkp = nullptr;
+      OrbitData *odp = nullptr;
       TimeOffsetData *todp = nullptr;
-      if (debugLevel)
+      DEBUGTRACE("addNavData user = " << nd->getUserTime()
+                 << "  nearest = " << nd->getNearTime());
+      SatID satID = nd->signal.sat;
+         // TimeOffset data doesn't have an associated satellite, so
+         // ignore those to avoid time system conflicts in this block
+         // of code.
+      if (satID.system != SatelliteSystem::Unknown)
       {
-         std::cerr << "addNavData user = " << nd->getUserTime()
-                   << "  nearest = " << nd->getNearTime() << std::endl;
-      }
-      if ((odkp = dynamic_cast<OrbitDataKepler*>(nd.get())) != nullptr)
-      {
-         if (((initialTime.getTimeSystem() != odkp->beginFit.getTimeSystem()) &&
-              (initialTime.getTimeSystem() != TimeSystem::Any)) ||
-             ((finalTime.getTimeSystem() != odkp->endFit.getTimeSystem()) &&
-              (finalTime.getTimeSystem() != TimeSystem::Any)))
+         if (firstLastMap.find(satID) == firstLastMap.end())
          {
-               // different time systems, convert to UTC first.
-            CommonTime t0(initialTime), t1(finalTime), f0(odkp->beginFit),
-               f1(odkp->endFit);
-            BasicTimeSystemConverter btsc;
-            if ((t0.getTimeSystem() != TimeSystem::Any) &&
-                !t0.changeTimeSystem(TimeSystem::UTC, &btsc))
-            {
-               return false;
-            }
-            if ((t1.getTimeSystem() != TimeSystem::Any) &&
-                !t1.changeTimeSystem(TimeSystem::UTC, &btsc))
-            {
-               return false;
-            }
-            if ((f0.getTimeSystem() != TimeSystem::Any) &&
-                !f0.changeTimeSystem(TimeSystem::UTC, &btsc))
-            {
-               return false;
-            }
-            if ((f1.getTimeSystem() != TimeSystem::Any) &&
-                !f1.changeTimeSystem(TimeSystem::UTC, &btsc))
-            {
-               return false;
-            }
-               // Compare UTC times, but set initialTime/finalTime to
-               // original time system
-            if (f0 < t0)
-               initialTime = odkp->beginFit;
-            if (f1 > t1)
-               finalTime = odkp->endFit;
+            firstLastMap[satID] = std::pair<CommonTime,CommonTime>(
+               nd->timeStamp,nd->timeStamp);
          }
          else
          {
-            initialTime = std::min(initialTime, odkp->beginFit);
-            finalTime = std::max(finalTime, odkp->endFit);
+               // Ignore time systems when comparing, because I'm
+               // lazy.  The few seconds difference in time systems
+               // isn't going to have a big effect on this information
+               // anyway.
+            CommonTime anyFirst(firstLastMap[satID].first),
+               anyLast(firstLastMap[satID].second),
+               anyTimeStamp(nd->timeStamp);
+            anyFirst.setTimeSystem(TimeSystem::Any);
+            anyLast.setTimeSystem(TimeSystem::Any);
+            anyTimeStamp.setTimeSystem(TimeSystem::Any);
+               // set the stored time stamps using the original time system.
+            if (anyTimeStamp < anyFirst)
+               firstLastMap[satID].first = nd->timeStamp;
+            if (anyTimeStamp > anyLast)
+               firstLastMap[satID].second = nd->timeStamp;
          }
       }
+      if ((odkp = dynamic_cast<OrbitDataKepler*>(nd.get())) != nullptr)
+      {
+         if (!updateInitialFinal(odkp->beginFit, odkp->endFit))
+            return false;
+      }
+      else if ((odp = dynamic_cast<OrbitData*>(nd.get())) != nullptr)
+      {
+            // Non-Keplerian orbit data. Tabular, usually.  Use the
+            // reference time to update initial/final time.
+         if (!updateInitialFinal(odp->timeStamp,odp->timeStamp))
+            return false;
+      }
+         // do NOT use else here
       if ((todp = dynamic_cast<TimeOffsetData*>(nd.get())) == nullptr)
       {
             // everything BUT TimeOffsetData
-         data[nd->signal.messageType][nd->signal][nd->getUserTime()] = nd;
-         nearestData[nd->signal.messageType][nd->signal][nd->getNearTime()]
+         navMap[nd->signal.messageType][nd->signal][nd->getUserTime()] = nd;
+         navNearMap[nd->signal.messageType][nd->signal][nd->getNearTime()]
             .push_back(nd);
          return true;
       }
@@ -1014,7 +911,55 @@ namespace gnsstk
       TimeCvtSet conversions = todp->getConversions();
       for (const auto& ci : conversions)
       {
-         offsetData[ci][nd->getUserTime()][nd->signal] = nd;
+         ofsMap[ci][nd->getUserTime()][nd->signal] = nd;
+      }
+      return true;
+   }
+
+
+   bool NavDataFactoryWithStore ::
+   updateInitialFinal(const CommonTime& begin, const CommonTime& end)
+   {
+      if (((initialTime.getTimeSystem() != begin.getTimeSystem()) &&
+           (initialTime.getTimeSystem() != TimeSystem::Any)) ||
+          ((finalTime.getTimeSystem() != end.getTimeSystem()) &&
+           (finalTime.getTimeSystem() != TimeSystem::Any)))
+      {
+            // different time systems, convert to UTC first.
+         CommonTime t0(initialTime), t1(finalTime), f0(begin),
+            f1(end);
+         BasicTimeSystemConverter btsc;
+         if ((t0.getTimeSystem() != TimeSystem::Any) &&
+             !t0.changeTimeSystem(TimeSystem::UTC, &btsc))
+         {
+            return false;
+         }
+         if ((t1.getTimeSystem() != TimeSystem::Any) &&
+             !t1.changeTimeSystem(TimeSystem::UTC, &btsc))
+         {
+            return false;
+         }
+         if ((f0.getTimeSystem() != TimeSystem::Any) &&
+             !f0.changeTimeSystem(TimeSystem::UTC, &btsc))
+         {
+            return false;
+         }
+         if ((f1.getTimeSystem() != TimeSystem::Any) &&
+             !f1.changeTimeSystem(TimeSystem::UTC, &btsc))
+         {
+            return false;
+         }
+            // Compare UTC times, but set initialTime/finalTime to
+            // original time system
+         if (f0 < t0)
+            initialTime = begin;
+         if (f1 > t1)
+            finalTime = end;
+      }
+      else
+      {
+         initialTime = std::min(initialTime, begin);
+         finalTime = std::max(finalTime, end);
       }
       return true;
    }
@@ -1046,6 +991,145 @@ namespace gnsstk
          }
       }
       return rv + ndpUnique.size();
+   }
+
+
+   size_t NavDataFactoryWithStore ::
+   count(const NavMessageID& nmid) const
+   {
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("class: " << getClassName());
+      size_t rv = 0;
+         // Make a copy of the key that can be modified so that values
+         // that are otherwise not wildcards e.g. SatelliteSystem can
+         // be managed like wildcards.
+      NavMessageID key(nmid);
+         // Iterate over all nav message types.  Skip anything that
+         // doesn't match, treating "Unknown" as a wildcard.
+      for (NavMessageType i : NavMessageTypeIterator())
+      {
+         if ((nmid.messageType != NavMessageType::Unknown) &&
+             (nmid.messageType != i))
+         {
+            DEBUGTRACE("skipping message type " << StringUtils::asString(i));
+            continue;
+         }
+         DEBUGTRACE("counting message type " << StringUtils::asString(i));
+         if (i == NavMessageType::TimeOffset)
+         {
+               // TimeOffset has a separate internal store from the rest.
+               // OffsetCvtMap can contain duplicates when a TimeOffsetData
+               // object applies to multiple time systems, so count unique
+               // pointers.
+            std::set<NavData*> ndpUnique;
+            for (const auto& ocmi : offsetData)
+            {
+               for (const auto& oemi : ocmi.second)
+               {
+                  for (const auto& omi : oemi.second)
+                  {
+                     DEBUGTRACE("wildcard search: " << nmid);
+                        // treat the SatelliteSystem::Unknown like a wildcard
+                     if (nmid.system == SatelliteSystem::Unknown)
+                        key.system = omi.first.system;
+                     if (omi.first == key)
+                     {
+                        DEBUGTRACE("matches " << omi.first);
+                        ndpUnique.insert(omi.second.get());
+                     }
+                     else
+                     {
+                        DEBUGTRACE(omi.first << " != " << nmid);
+                     }
+                  }
+               }
+            }
+            rv += ndpUnique.size();
+         }
+         else
+         {
+            auto dataIt = data.find(i);
+            if (dataIt == data.end())
+            {
+                  // no data for this message type, move on
+               continue;
+            }
+               // There are no non-wildcard searches because we treat
+               // SatelliteSystem::Unknown as a wildcard when it normally
+               // is not.
+            DEBUGTRACE("wildcard search: " << nmid);
+            for (const auto& sati : dataIt->second)
+            {
+                  // treat the SatelliteSystem::Unknown like a wildcard
+               if (nmid.system == SatelliteSystem::Unknown)
+                  key.system = sati.first.system;
+               if (sati.first == key)
+               {
+                  DEBUGTRACE("matches " << sati.first);
+                  rv += sati.second.size();
+               }
+               else
+               {
+                  DEBUGTRACE(sati.first << " != " << nmid);
+               }
+            }
+         }
+      }
+      return rv;
+   }
+
+
+   size_t NavDataFactoryWithStore ::
+   count(SatelliteSystem sys, NavMessageType nmt) const
+   {
+      NavMessageID key(
+         NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                        gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                        gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                      gnsstk::CarrierBand::Any,
+                                      gnsstk::TrackingCode::Any,
+                                      gnsstk::XmitAnt::Any),
+                        gnsstk::NavID(gnsstk::NavType::Any)),
+         nmt);
+      key.sat.makeWild();
+      key.xmitSat.makeWild();
+      key.system = sys;
+      return count(key);
+   }
+
+
+   size_t NavDataFactoryWithStore ::
+   count(const SatID& satID, NavMessageType nmt) const
+   {
+      NavMessageID key(
+         NavSatelliteID(satID,
+                        gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                        gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                      gnsstk::CarrierBand::Any,
+                                      gnsstk::TrackingCode::Any,
+                                      gnsstk::XmitAnt::Any),
+                        gnsstk::NavID(gnsstk::NavType::Any)),
+         nmt);
+      key.xmitSat.makeWild();
+      return count(key);
+   }
+
+
+   size_t NavDataFactoryWithStore ::
+   count(NavMessageType nmt) const
+   {
+      NavMessageID key(
+         NavSatelliteID(gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                        gnsstk::SatID(gnsstk::SatelliteSystem::Unknown),
+                        gnsstk::ObsID(gnsstk::ObservationType::Any,
+                                      gnsstk::CarrierBand::Any,
+                                      gnsstk::TrackingCode::Any,
+                                      gnsstk::XmitAnt::Any),
+                        gnsstk::NavID(gnsstk::NavType::Any)),
+         nmt);
+      key.sat.makeWild();
+      key.xmitSat.makeWild();
+      return count(key);
    }
 
 
@@ -1166,6 +1250,8 @@ namespace gnsstk
    bool NavDataFactoryWithStore ::
    matchHealth(NavData *ndp, SVHealth xmitHealth)
    {
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("class: " << getClassName());
       bool rv = true;
          // Set to true if the health status matched.  If it remains
          // false, we have to do a look up of the health status of the
@@ -1180,12 +1266,8 @@ namespace gnsstk
          case SVHealth::Healthy:
          case SVHealth::Unhealthy:
          case SVHealth::Degraded:
-            if (debugLevel)
-            {
-               std::cerr << "  attempting to match "
-                         << gnsstk::StringUtils::asString(xmitHealth)
-                         << std::endl;
-            }
+            DEBUGTRACE("attempting to match "
+                       << gnsstk::StringUtils::asString(xmitHealth));
                // make sure the health status is the desired state
             if (ndp->signal.sat == ndp->signal.xmitSat)
             {
@@ -1205,10 +1287,7 @@ namespace gnsstk
             }
             if (!rvSet)
             {
-               if (debugLevel)
-               {
-                  std::cerr << "  looking up health data" << std::endl;
-               }
+               DEBUGTRACE("looking up health data");
                   // We were not able to obtain health status of the
                   // transmitting satellite so look it up.  We
                   // specifically use SVHealth::Any because we're
@@ -1233,10 +1312,7 @@ namespace gnsstk
                          SVHealth::Any, NavValidityType::Any,
                          NavSearchOrder::User))
                {
-                  if (debugLevel)
-                  {
-                     std::cerr << "  couldn't find health" << std::endl;
-                  }
+                  DEBUGTRACE("  couldn't find health");
                   return false;
                }
                hea = dynamic_cast<NavHealthData*>(heaPtr.get());
@@ -1248,6 +1324,24 @@ namespace gnsstk
             break;
       }
       return rv;
+   }
+
+
+   CommonTime NavDataFactoryWithStore :: getFirstTime(const SatID& sat) const
+   {
+      auto i = firstLastMap.find(sat);
+      if (i != firstLastMap.end())
+         return i->second.first;
+      return CommonTime::END_OF_TIME;
+   }
+
+
+   CommonTime NavDataFactoryWithStore :: getLastTime(const SatID& sat) const
+   {
+      auto i = firstLastMap.find(sat);
+      if (i != firstLastMap.end())
+         return i->second.second;
+      return CommonTime::BEGINNING_OF_TIME;
    }
 
 
@@ -1286,6 +1380,48 @@ namespace gnsstk
    }
 
 
+   std::set<SatID> NavDataFactoryWithStore ::
+   getIndexSet(const CommonTime& fromTime,
+               const CommonTime& toTime) const
+   {
+      std::set<SatID> rv;
+      for (const auto& nmmi : data)
+      {
+         for (const auto& nsmi : nmmi.second)
+         {
+            auto ti1 = nsmi.second.lower_bound(fromTime);
+            if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
+            {
+               rv.insert(nsmi.first.sat);
+            }
+         }
+      }
+      return rv;
+   }
+
+
+   std::set<SatID> NavDataFactoryWithStore ::
+   getIndexSet(NavMessageType nmt,
+               const CommonTime& fromTime,
+               const CommonTime& toTime) const
+   {
+      std::set<SatID> rv;
+      auto nmmi = data.find(nmt);
+      if (nmmi != data.end())
+      {
+         for (const auto& nsmi : nmmi->second)
+         {
+            auto ti1 = nsmi.second.lower_bound(fromTime);
+            if ((ti1 != nsmi.second.end()) && (ti1->first < toTime))
+            {
+               rv.insert(nsmi.first.sat);
+            }
+         }
+      }
+      return rv;
+   }
+
+
    NavMessageIDSet NavDataFactoryWithStore :: getAvailableMsgs(
       const CommonTime& fromTime, const CommonTime& toTime)
       const
@@ -1306,13 +1442,28 @@ namespace gnsstk
    }
 
 
+   const NavMap* NavDataFactoryWithStore ::
+   getNavMap(const NavMessageID& nmid) const
+   {
+      auto nmmi = data.find(nmid.messageType);
+      if (nmmi != data.end())
+      {
+         auto nsmi = nmmi->second.find(nmid);
+         if (nsmi != nmmi->second.end())
+         {
+            return &nsmi->second;
+         }
+      }
+      return nullptr;
+   }
+
+
    void NavDataFactoryWithStore ::
    dump(std::ostream& s, DumpDetail dl) const
    {
-      if (debugLevel)
-      {
-         std::cerr << "data.size() = " << data.size() << std::endl;
-      }
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("class: " << getClassName());
+      DEBUGTRACE("data.size() = " << data.size());
       for (const auto& nmmi : data)
       {
          for (const auto& nsami : nmmi.second)
@@ -1321,7 +1472,25 @@ namespace gnsstk
             {
                case DumpDetail::OneLine:
                   s << StringUtils::asString(nmmi.first) << " "
-                    << StringUtils::asString(nsami.first) << std::endl;
+                    << StringUtils::asString(nsami.first) << " "
+                    << nsami.second.size() << " objects" << std::endl;
+                  break;
+               case DumpDetail::Terse:
+                     /** @todo To support the variances between nav
+                      * codes Terse dump formats, it would probably be
+                      * best to implement a "getTerseHeader" method
+                      * and just call it for the first object in this
+                      * map (which should be the same class for each
+                      * item in nsami.second). */
+                  s << "  Map for " << StringUtils::asString(nmmi.first)
+                    << " " << StringUtils::asString(nsami.first) << " has "
+                    << nsami.second.size() << " entries." << std::endl
+                    << "SVN  PRN     Begin Fit        Toe          End Fit"
+                    << "       URA     IODC      Health" << std::endl;
+                  for (const auto& cti : nsami.second)
+                  {
+                     cti.second->dump(s, dl);
+                  }                  
                   break;
                case DumpDetail::Brief:
                   for (const auto& cti : nsami.second)
@@ -1341,10 +1510,7 @@ namespace gnsstk
             }
          }
       }
-      if (debugLevel)
-      {
-         std::cerr << "offsetData.size() = " << offsetData.size() << std::endl;
-      }
+      DEBUGTRACE("offsetData.size() = " << offsetData.size());
          // time offset data is a separate map, but still needs to be dumped.
       std::string label = StringUtils::asString(NavMessageType::TimeOffset);
       for (const auto& ocmi : offsetData)
@@ -1352,6 +1518,8 @@ namespace gnsstk
          switch (dl)
          {
             case DumpDetail::OneLine:
+                  /// @todo Support Terse dump in TimeOffsetData
+            case DumpDetail::Terse:
                s << label << " " << ocmi.first.first << " -> "
                  << ocmi.first.second << std::endl;
                break;

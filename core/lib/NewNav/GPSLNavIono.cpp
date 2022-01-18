@@ -49,6 +49,7 @@ namespace gnsstk
    GPSLNavIono()
          : pre(0),
            tlm(0),
+           isf(false),
            alert(false),
            asFlag(false)
    {
@@ -59,6 +60,6 @@ namespace gnsstk
    bool GPSLNavIono ::
    validate() const
    {
-      return (KlobucharIonoData::validate() && ((pre == 0) || (pre == 0x8b)));
+      return (KlobucharIonoNavData::validate() && ((pre == 0) || (pre == 0x8b)));
    }
 }

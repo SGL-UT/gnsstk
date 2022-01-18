@@ -37,7 +37,7 @@
 //==============================================================================
 
 /// @file PreciseRange.cpp
-/// Implement computation of range and associated quantities from XvtStore,
+/// Implement computation of range and associated quantities from NavLibrary,
 /// given receiver position and time.
 
 // system includes
@@ -65,7 +65,7 @@ namespace gnsstk
                                               const std::string& Freq1,
                                               const std::string& Freq2,
                                               SolarSystem& SolSys,
-                                              const XvtStore<SatID>& Eph,
+                                              NavLibrary& Eph,
                                               const bool isCOM)
    {
    try {
@@ -81,11 +81,14 @@ namespace gnsstk
       // get the satellite position at the nominal time, computing and
       // correcting for the satellite clock bias and other delays
       try {
-         svPosVel = Eph.getXvt(sat,transmit);
+            /** @todo getXvt was expected to throw an exception on
+             * failure in the past.  This assert more or less mimics
+             * that behavior.  Refactoring is needed.  */
+         GNSSTK_ASSERT(Eph.getXvt(NavSatelliteID(sat), transmit, svPosVel));
          SatR.setECEF(svPosVel.x[0],svPosVel.x[1],svPosVel.x[2]);
       }
       // this should be a 'no ephemeris' exception
-      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
+      catch(AssertionFailure& e) { GNSSTK_RETHROW(e); }
 
       // update the transmit time for sat clk bias + relativity
       transmit -= svPosVel.clkbias + svPosVel.relcorr;
@@ -109,7 +112,10 @@ namespace gnsstk
 
       // iterate satellite position
       try {
-         svPosVel = Eph.getXvt(sat,transmit);
+            /** @todo getXvt was expected to throw an exception on
+             * failure in the past.  This assert more or less mimics
+             * that behavior.  Refactoring is needed.  */
+         GNSSTK_ASSERT(Eph.getXvt(NavSatelliteID(sat), transmit, svPosVel));
          // Do NOT replace these with Xvt
          SatR.setECEF(svPosVel.x[0],svPosVel.x[1],svPosVel.x[2]);
          SatV.setECEF(svPosVel.v[0],svPosVel.v[1],svPosVel.v[2]);
@@ -163,7 +169,7 @@ namespace gnsstk
          else {
             double AR;     // angular radius of sun
             Position Sun = SolarPosition(transmit, AR);
-            SVAtt = SatelliteAttitude(SatR, Sun);
+            SVAtt = satelliteAttitude(SatR, Sun);
          }
 
          // phase center offset vector in body frame
@@ -183,7 +189,7 @@ namespace gnsstk
          // phase center variation TD should this should be subtracted from rawrange?
          // get the body frame azimuth and nadir angles
          double nadir,az;
-         SatelliteNadirAzimuthAngles(SatR, Rx, SVAtt, nadir, az);
+         satelliteNadirAzimuthAngles(SatR, Rx, SVAtt, nadir, az);
          satLOSPCV = 0.001*(fact1 * antenna.getPhaseCenterVariation(Freq1, az, nadir)
                          + fact2 * antenna.getPhaseCenterVariation(Freq2, az, nadir));
       }

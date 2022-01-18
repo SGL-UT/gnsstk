@@ -43,6 +43,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include "AngleType.hpp"
 
 namespace gnsstk
 {
@@ -59,18 +60,6 @@ namespace gnsstk
    class AngleReduced
    {
    public:
-         /** Because the angle can be initialized via a variety of
-          * different values that are the same type, we use this enum
-          * to indicate in the constructor what type is being
-          * passed. */
-      enum Type
-      {
-         Rad,  ///< Value is in radians.
-         Deg,  ///< Value is in degrees.
-         Sin,  ///< Value is the sine of the angle.
-         Cos   ///< Value is the cosine of the angle.
-      };
-
          /// Initialize all data to NaN.
       AngleReduced();
 
@@ -80,7 +69,7 @@ namespace gnsstk
           * @param[in] v The value to set.
           * @param[in] t The type of datum contained in v.
           * @post sin and cos are set. */
-      AngleReduced(double v, Type t)
+      AngleReduced(double v, AngleType t)
       { setValue(v, t); }
 
          /** Initialize using the sine and cosine values.
@@ -99,7 +88,7 @@ namespace gnsstk
           * @param[in] v The value to set.
           * @param[in] t The type of datum contained in v.
           * @post sin and cos are set. */
-      void setValue(double v, Type t);
+      void setValue(double v, AngleType t);
 
          /// Get the sine of this angle.
       inline double sin() const
@@ -120,7 +109,7 @@ namespace gnsstk
 
    inline std::ostream& operator<<(std::ostream& s, const AngleReduced& a)
    {
-      s << std::setprecision(20) << a.sin() << "," << a.cos();
+      s << std::setprecision(20) << "sin:" << a.sin() << ",cos:" << a.cos();
       return s;
    }
 

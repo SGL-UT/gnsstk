@@ -62,6 +62,16 @@ namespace gnsstk
    class NavDataFactoryWithStore : public NavDataFactory
    {
    public:
+         // Time offset information is organized differently due to the use case
+         /** Map that will contain all TimeOffsetData objects with the
+          * same conversion pair broadcast at a given time. */
+      typedef std::map<NavSatelliteID, NavDataPtr> OffsetMap;
+         /** Map from the timeStamp of a TimeOffsetData object to the
+          * collection of TimeOffsetData objects. */
+      typedef std::map<CommonTime, OffsetMap> OffsetEpochMap;
+         /// Map from the time system conversion pair to the conversion objects.
+      typedef std::map<TimeCvtKey, OffsetEpochMap> OffsetCvtMap;
+
          /// Initialize internal data.
       NavDataFactoryWithStore();
 
@@ -149,7 +159,18 @@ namespace gnsstk
          /** Add a nav message to the internal store (data).
           * @param[in] nd The nav data to add.
           * @return true if successful. */
-      bool addNavData(const NavDataPtr& nd);
+      bool addNavData(const NavDataPtr& nd)
+      { return addNavData(nd, data, nearestData, offsetData); }
+
+         /** Add a nav message to the given store.
+          * @param[in] nd The nav data to add.
+          * @param[out] navMap The map to load the data in.
+          * @param[out] navNearMap The map to load the data in
+          *   for use by "Nearest" (as opposed to "User") searches.
+          * @param[out] ofsMap The map to load TimeOffsetData into.
+          * @return true if successful. */
+      bool addNavData(const NavDataPtr& nd, NavMessageMap& navMap,
+                      NavNearMessageMap& navNearMap, OffsetCvtMap& ofsMap);
 
          /** Determine the earliest time for which this object can successfully
           * determine the Xvt for any object.
@@ -164,6 +185,20 @@ namespace gnsstk
           *   data is available. */
       CommonTime getFinalTime() const override
       { return finalTime; }
+
+         /** Determine the timestamp of the oldest record in this
+          * store for the given satellite.
+          * @note This should not be confused with getInitialTime(),
+	  *   which is the time of applicability, not the time stamp
+	  *   of the contained data. */
+      CommonTime getFirstTime(const SatID& sat) const;
+
+      	 /** Determine the timestamp of the newest record in this
+	  * store for the given satellite.
+	  * @note This should not be confused with getFinalTime(),
+	  *   which is the time of applicability, not the time stamp
+	  *   of the contained data. */
+      CommonTime getLastTime(const SatID& sat) const;
 
          /** Obtain a set of satellites for which we have data in the
           * given time span.
@@ -199,6 +234,40 @@ namespace gnsstk
                                          const CommonTime& toTime)
          const override;
 
+         /** Similar to getAvailableSats() except it only returns the
+          * basic subject satellite ID, making no further distinction
+          * between codes.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of satellites for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      std::set<SatID> getIndexSet(const CommonTime& fromTime,
+                                  const CommonTime& toTime) const;
+
+         /** Similar to getAvailableSats() except it only returns the
+          * basic subject satellite ID, making no further distinction
+          * between codes.
+          * @param[in] nmt The navigation message type you're looking for.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of satellites for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      std::set<SatID> getIndexSet(NavMessageType nmt,
+                                  const CommonTime& fromTime,
+                                  const CommonTime& toTime) const;
+
          /** Obtain a set of satellites+message types for which we
           * have data in the given time span.
           * @param[in] fromTime The earliest time for which any
@@ -216,6 +285,64 @@ namespace gnsstk
 
          /// Return the number of nav messages in data.
       virtual size_t size() const;
+         /** Return a count of messages matching the given NavMessageID.
+          * @param[in] nmid The NavMessageID to match.  Wildcards may
+          *   be used. In addition to the standard wildcard support in
+          *   SatID, ObsID and NavID, the signal field may be set to
+          *   "Unknown" to be treated as a wildcard, as may the
+          *   messageType field.  The following code snippet
+          *   represents a NavMessageID with all wildcards (which will
+          *   match the results from the size() method).
+          *
+          * \code{.cpp}
+          *   NavMessageID key1(
+          *      NavSatelliteID(SatID(SatelliteSystem::Unknown),
+          *                     SatID(SatelliteSystem::Unknown),
+          *                     ObsID(ObservationType::Any,
+          *                           CarrierBand::Any,
+          *                           TrackingCode::Any,
+          *                           XmitAnt::Any),
+          *                     NavID(NavType::Any)),
+          *      NavMessageType::Unknown);
+          *   key1.sat.makeWild();
+          *   key1.xmitSat.makeWild();
+          * \endcode
+          *
+          * The \a system field is initialized in the above
+          * constructor from the SatID system, which is why we're
+          * initializing it to "Unknown" (to make \a system a
+          * wildcard).  But setting the SatID::system to Unknown
+          * doesn't make SatID a wildcard, that requires the
+          * SatID::makeWild() method calls.
+          *
+          * @note This method has a bit of overhead, though no more
+          *   than find(). */
+      virtual size_t count(const NavMessageID& nmid) const;
+         /** Return a count of messages matching the given
+          * SatelliteSystem and NavMessageType.
+          * @param[in] sys The SatelliteSystem to match when counting.
+          * @param[in] nmt The NavMessageType to match (default Unknown=all).
+          * @note This method has a bit of overhead, though no more
+          *   than find().
+          * @note Only NavSignalID::system is checked, if you need to
+          *   explicitly check NavSatelliteID::SatID::system, use the
+          *   count(constNavMessageID&). */
+      virtual size_t count(SatelliteSystem sys,
+                           NavMessageType nmt = NavMessageType::Unknown)
+         const;
+         /** Return a count of messages where the SUBJECT satellite ID
+          * matches the given SatID and message type.
+          * @param[in] satID The subject satellite ID to match.
+          * @param[in] nmt The NavMessageType to match (default Unknown=all).
+          * @note This method has a bit of overhead, though no more
+          *   than find(). */
+      virtual size_t count(const SatID& satID,
+                           NavMessageType nmt = NavMessageType::Unknown)
+         const;
+         /** Return a count of messages matching the given NavMessageType.
+          * @note This method has a bit of overhead, though no more
+          *   than find(). */
+      virtual size_t count(NavMessageType nmt) const;
          /// Return the number of distinct signals (ignoring PRN) in the data.
       virtual size_t numSignals() const;
          /// Return the number of distinct signals including PRN, in the data.
@@ -224,7 +351,20 @@ namespace gnsstk
           * format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-       void dump(std::ostream& s, DumpDetail dl) const override;
+      void dump(std::ostream& s, DumpDetail dl) const override;
+         /// Get read-only access to the nav data map (User priority).
+      const NavMessageMap& getNavMessageMap() const
+      { return data; }
+         /// Get read-only access to the nav data map (Nearest priority).
+      const NavNearMessageMap& getNavNearMessageMap() const
+      { return nearestData; }
+         /// Get read-only access to the time offset map.
+      const OffsetCvtMap& getTimeOffsetMap() const
+      { return offsetData; }
+         /** Get read-only access to the nav data for a specific type/sat.
+          * @param[in] nmid The nav message ID to obtain the map for.
+          * @return The resulting NavMap if available or nullptr if not. */
+      const NavMap* getNavMap(const NavMessageID& nmid) const;
 
    protected:
          /** Search the store to find the navigation message that meets
@@ -312,19 +452,23 @@ namespace gnsstk
           *   transmitted ndp matches xmitHealth. */
       bool matchHealth(NavData *ndp, SVHealth xmitHealth);
 
+         /** Update initialTime and finalTime according to a fit
+          * interval or other timestamp.
+          * For orbital elements with an actual fit interval, the
+          * beginning and end of the fit interval are specified as
+          * arguments.  For tabular orbital data (e.g. SP3), the time
+          * stamp of the data is used for both parameters.
+          * @param[in] begin The start of the fit interval of the
+          *   orbital elements being processed.
+          * @param[in] end The end of the fit interval of the
+          *   orbital elements being processed.
+          * @post initialTime and/or finalTime may be updated. */
+      bool updateInitialFinal(const CommonTime& begin, const CommonTime& end);
+
          /// Internal storage of navigation data for User searches
       NavMessageMap data;
          /// Internal storage of navigation data for Nearest searches
       NavNearMessageMap nearestData;
-         // Time offset information is organized differently due to the use case
-         /** Map that will contain all TimeOffsetData objects with the
-          * same conversion pair broadcast at a given time. */
-      using OffsetMap = std::map<NavSatelliteID, NavDataPtr>;
-         /** Map from the timeStamp of a TimeOffsetData object to the
-          * collection of TimeOffsetData objects. */
-      using OffsetEpochMap = std::map<CommonTime, OffsetMap>;
-         /// Map from the time system conversion pair to the conversion objects.
-      using OffsetCvtMap = std::map<TimeCvtKey, OffsetEpochMap>;
          /** Store the time offset data separate from the other nav
           * data because searching is very different. */
       OffsetCvtMap offsetData;
@@ -332,6 +476,8 @@ namespace gnsstk
       CommonTime initialTime;
          /// Store the latest applicable orbit time here, by addNavData
       CommonTime finalTime;
+         /// Map subject satellite ID to time stamp pair (oldest,newest).
+      std::map<SatID,std::pair<CommonTime,CommonTime> > firstLastMap;
 
          /// Grant access to MultiFormatNavDataFactory for various functions.
       friend class MultiFormatNavDataFactory;

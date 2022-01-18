@@ -1517,10 +1517,10 @@ namespace gnsstk
       Position p1(*this), p2(target);
       p1.transformTo(Geodetic);
       p2.transformTo(Geodetic);
-      Angle phi1(p1.geodeticLatitude(), Angle::Deg);
-      Angle lambda1(p1.longitude(), Angle::Deg);
-      Angle phi2(p2.geodeticLatitude(), Angle::Deg);
-      Angle lambda2(p2.longitude(), Angle::Deg);
+      Angle phi1(p1.geodeticLatitude(), AngleType::Deg);
+      Angle lambda1(p1.longitude(), AngleType::Deg);
+      Angle phi2(p2.geodeticLatitude(), AngleType::Deg);
+      Angle lambda2(p2.longitude(), AngleType::Deg);
          // radius requires spherical coordinates, so get them from
          // the original Position objects in the off-chance they were
          // already in the spherical system (we can be guaranteed p1
@@ -1541,11 +1541,11 @@ namespace gnsstk
          // reference \cite galileo:iono though probably not exclusively
       delta.setValue(sin(phi1)*sin(phi2) +                              //eq.153
                      cos(phi1)*cos(phi2)*cos(lambda2-lambda1),
-                     AngleReduced::Cos);
+                     AngleType::Cos);
       DEBUGTRACE("delta.sin=" << scientific << delta.sin());
       DEBUGTRACE("delta.cos=" << scientific << delta.cos());
       return Angle(atan2(sin(delta),cos(delta) - (r1/r2)),              //eq.155
-                   AngleReduced::Rad);
+                   AngleType::Rad);
    }
 
 
@@ -1556,10 +1556,10 @@ namespace gnsstk
       Position p1(*this), p2(target);
       p1.transformTo(Geodetic);
       p2.transformTo(Geodetic);
-      Angle phi1(p1.geodeticLatitude(), Angle::Deg);
-      Angle lambda1(p1.longitude(), Angle::Deg);
-      Angle phi2(p2.geodeticLatitude(), Angle::Deg);
-      Angle lambda2(p2.longitude(), Angle::Deg);
+      Angle phi1(p1.geodeticLatitude(), AngleType::Deg);
+      Angle lambda1(p1.longitude(), AngleType::Deg);
+      Angle phi2(p2.geodeticLatitude(), AngleType::Deg);
+      Angle lambda2(p2.longitude(), AngleType::Deg);
          // radius requires spherical coordinates, so get them from
          // the original Position objects in the off-chance they were
          // already in the spherical system (we can be guaranteed p1
@@ -1578,7 +1578,7 @@ namespace gnsstk
       {
          phiP = (phi1.deg() > 0) ? zeta : -zeta;                        //eq.157
          lambdaP.setValue((zeta.rad() >= 0) ? lambda2.rad() + PI :      //eq.164
-                          lambda2.rad(), Angle::Rad);
+                          lambda2.rad(), AngleType::Rad);
       }
       else
       {
@@ -1586,9 +1586,9 @@ namespace gnsstk
             (sin(lambda2-lambda1) * cos(phi2)) / sin(delta),            //eq.158
             ((sin(phi2) - (cos(delta)*sin(phi1))) /                     //eq.159
              (sin(delta) * cos(phi1))));
-         Angle deltaP(PI/2.0 - zeta.rad(), Angle::Rad);                 //eq.160
+         Angle deltaP(PI/2.0 - zeta.rad(), AngleType::Rad);             //eq.160
          phiP.setValue(sin(phi1)*cos(deltaP) -                          //eq.161
-                       cos(phi1)*sin(deltaP)*cos(sigma), Angle::Sin);
+                       cos(phi1)*sin(deltaP)*cos(sigma), AngleType::Sin);
          Angle dLambda(-(sin(sigma)*sin(deltaP))/cos(phiP),             //eq.165
                        ((cos(deltaP)-sin(phi1)*sin(phiP)) /             //eq.166
                         (cos(phi1)*cos(phiP))));
@@ -1608,10 +1608,10 @@ namespace gnsstk
       Position p2(target);
       p2.transformTo(Geodetic);
       Position pp(getRayPerigee(target));
-      Angle phi2(p2.geodeticLatitude(), Angle::Deg);
-      Angle lambda2(p2.longitude(), Angle::Deg);
-      Angle phip(pp.geodeticLatitude(), Angle::Deg);
-      Angle lambdap(pp.longitude(), Angle::Deg);
+      Angle phi2(p2.geodeticLatitude(), AngleType::Deg);
+      Angle lambda2(p2.longitude(), AngleType::Deg);
+      Angle phip(pp.geodeticLatitude(), AngleType::Deg);
+      Angle lambdap(pp.longitude(), AngleType::Deg);
       Angle dLambda(lambda2 - lambdap);
       AngleReduced psi; ///< Great circle angle from ray-perigee to satellite
       AngleReduced sigmap; ///< azimuth of satellite as seen from ray-perigee pp
@@ -1634,23 +1634,23 @@ namespace gnsstk
       if (fabs(fabs(phip.deg())-90.0) < 1e-10)
       {
          psi.setValue(fabs(p2.geodeticLatitude()-pp.geodeticLatitude()),//eq.168
-                      Angle::Deg);
+                      AngleType::Deg);
          if (phip.deg() > 0)
          {
-            sigmap = Angle(0, -1);                                      //eq.173
+            sigmap = Angle(0.0, -1.0);                                  //eq.173
          }
          else
          {
                // note that the equation says >0 or <0 but not ==0,
                // but the EU code does it this way as well (see
                // NeQuickG_JRC_ray.c, get_azimuth())
-            sigmap = Angle(0, 1);                                       //eq.173
+            sigmap = Angle(0.0, 1.0);                                   //eq.173
          }
       }
       else
       {
          psi = AngleReduced(sin(phip)*sin(phi2) +                       //eq.169
-                            cos(phip)*cos(phi2)*cos(dLambda), Angle::Cos);
+                            cos(phip)*cos(phi2)*cos(dLambda), AngleType::Cos);
          sigmap = AngleReduced(cos(phi2)*sin(dLambda)/sin(psi),         //eq.174
                                (sin(phi2)-sin(phip)*cos(psi)) /         //eq.175
                                (cos(phip)*sin(psi)));
@@ -1669,7 +1669,7 @@ namespace gnsstk
       double cosDeltas = 1/sqrt(1+tanDeltas*tanDeltas);                 //eq.180
       double sinDeltas = tanDeltas * cosDeltas;                         //eq.181
       Angle phis(sin(phip)*cosDeltas + cos(phip)*sinDeltas*cos(sigmap), //eq.182
-                 Angle::Sin);
+                 AngleType::Sin);
       Angle dlambda(sinDeltas*sin(sigmap)*cos(phip),                    //eq.185
                     cosDeltas-sin(phip)*sin(phis));                     //eq.186
       double lambdas = dlambda.deg() + lambdap.deg();                   //eq.187

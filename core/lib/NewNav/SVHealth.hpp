@@ -40,6 +40,7 @@
 #define GNSSTK_SVHEALTH_HPP
 
 #include <string>
+#include "Xvt.hpp"
 #include "EnumIterator.hpp"
 
 namespace gnsstk
@@ -57,6 +58,9 @@ namespace gnsstk
       Degraded,   ///< Satellite is in a degraded state. Use at your own risk.
       Last        ///< Used to create an iterator.
    };
+
+      /// Cast SVHealth to Xvt::HealthStatus
+   gnsstk::Xvt::HealthStatus toXvtHealth(SVHealth e);
 
       /** Define an iterator so C++11 can do things like
        * for (SVHealth i : SVHealthIterator()) */

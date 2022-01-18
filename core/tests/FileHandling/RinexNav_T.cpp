@@ -43,7 +43,6 @@
 
 #include "StringUtils.hpp"
 #include "Exception.hpp"
-#include "RinexEphemerisStore.hpp"
 #include "GPSWeekZcount.hpp"
 #include "TimeString.hpp"
 

@@ -51,11 +51,6 @@
 #include "Rinex3NavBase.hpp"
 #include "Rinex3NavStream.hpp"
 #include "EngEphemeris.hpp"         // GPS only, deprecated
-#include "GloEphemeris.hpp"
-#include "GPSEphemeris.hpp"
-#include "GalEphemeris.hpp"
-#include "BDSEphemeris.hpp"
-#include "QZSEphemeris.hpp"
 #include "RinexSatID.hpp"
 #include "RinexNavData.hpp"
 
@@ -78,12 +73,7 @@ namespace gnsstk
           * @warning CHECK THE PRNID TO SEE IF THIS DATA IS VALID BEFORE
           *          USING!!!.
           */
-      Rinex3NavData(void)
-            : time(CommonTime::BEGINNING_OF_TIME), PRNID(-1), fitint(4)
-      {}
-
-         /// Initializes the nav data with a GloEphemeris
-      Rinex3NavData(const GloEphemeris& gloe);
+      Rinex3NavData();
 
          /// Create from a RinexNavData (for backward compatibility)
       Rinex3NavData(const RinexNavData& rnd);
@@ -91,18 +81,6 @@ namespace gnsstk
          /// Initializes the nav data with an EngEphemeris
          /// EngEphemeris is deprecated; use GPSEphemeris
       Rinex3NavData(const EngEphemeris& ee);
-
-         /// Initializes the nav data with a GPSEphemeris
-      Rinex3NavData(const GPSEphemeris& gpseph);
-
-         /// Initializes the nav data with a GalEphemeris
-      Rinex3NavData(const GalEphemeris& galeph);
-
-         /// Initializes the nav data with a BDSEphemeris
-      Rinex3NavData(const BDSEphemeris& bdseph);
-
-         /// Initializes the nav data with a QZSEphemeris
-      Rinex3NavData(const QZSEphemeris& qzseph);
 
          /// Destructor
       virtual ~Rinex3NavData() {}
@@ -120,21 +98,6 @@ namespace gnsstk
          /// deprecated; use GPSEphemeris, GPS-only.
          /// Converts Rinex3NavData to an EngEphemeris object.
       operator EngEphemeris() const throw();
-
-         /// Converts Rinex3NavData to a GPSEphemeris object.
-      operator GPSEphemeris() const throw();
-
-         /// Converts this Rinex3NavData to a GloEphemeris object.
-      operator GloEphemeris() const throw();
-
-         /// Converts Rinex3NavData to a GalEphemeris object.
-      operator GalEphemeris() const throw();
-
-         /// Converts Rinex3NavData to a BDSEphemeris object.
-      operator BDSEphemeris() const throw();
-
-         /// Converts Rinex3NavData to a QZSEphemeris object.
-      operator QZSEphemeris() const throw();
 
          /// Converts the (non-CommonTime) data to an easy list
          /// for comparison operators.
@@ -278,13 +241,6 @@ namespace gnsstk
           * @throw FFStreamError
           */
       void putRecord(const int& n, Rinex3NavStream& strm) const;
-
-         /** Helper routine for constructors of this from
-          * OrbitEph-based Ephemerides */
-      void loadFrom(const OrbitEph *oeptr);
-
-         /// Helper routine for casts from this to OrbitEph-based Ephemerides
-      void castTo(OrbitEph *oeptr) const;
 
    protected:
 

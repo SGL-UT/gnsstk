@@ -63,11 +63,12 @@
    // Class for handling tropospheric model
 #include "GGTropModel.hpp"
 
-   // Class for storing "broadcast-type" ephemerides
-#include "GPSEphemerisStore.hpp"
+   // Classes for storing ephemerides
+#include "NavLibrary.hpp"
+#include "MultiFormatNavDataFactory.hpp"
 
    // Class for handling RAIM
-#include "PRSolutionLegacy.hpp"
+#include "PRSolution.hpp"
 
    // Class defining GPS system constants
 #include "GNSSconstants.hpp"
@@ -80,9 +81,12 @@ using namespace gnsstk;
 int main(int argc, char *argv[])
 {
 
-      // Declaration of objects for storing ephemerides and handling RAIM
-   GPSEphemerisStore bcestore;
-   PRSolutionLegacy raimSolver;
+      /// High level nav store interface.
+   NavLibrary navLib;
+      /// nav data file reader
+   gnsstk::NavDataFactoryPtr ndfp;
+      /// Declaration of object for handling RAIM
+   PRSolution raimSolver;
 
       // Object for void-type tropospheric model (in case no meteorological
       // RINEX is available)
@@ -114,19 +118,16 @@ int main(int argc, char *argv[])
    try
    {
 
-         // Read nav file and store unique list of ephemerides
-      Rinex3NavStream rnffs(argv[2]);    // Open ephemerides data file
-      Rinex3NavData rne;
-      Rinex3NavHeader hdr;
-
-         // Let's read the header (may be skipped)
-      rnffs >> hdr;
-
-         // Storing the ephemeris in "bcstore"
-      while (rnffs >> rne) bcestore.addEphemeris(rne);
-
-         // Setting the criteria for looking up ephemeris
-      bcestore.SearchNear();
+         // Create the nav file reader
+      ndfp = std::make_shared<gnsstk::MultiFormatNavDataFactory>();
+         // Add the nav file reader to the nav library interface
+      navLib.addFactory(ndfp);
+         // Read nav file and store navigation data
+      if (!ndfp->addDataSource(argv[2]))
+      {
+         cerr << "Failed to read \"" << argv[2] << "\"" << endl;
+         return 1;
+      }
 
          // If provided, open and store met file into a linked list.
       list<RinexMetData> rml;
@@ -295,7 +296,7 @@ int main(int argc, char *argv[])
 
             }  // End of 'for( it = rod.obs.begin(); it!= rod.obs.end(); ...'
 
-               // The default constructor for PRSolutionLegacy objects (like
+               // The default constructor for PRSolution objects (like
                // "raimSolver") is to set a RMSLimit of 6.5. We change that
                // here. With this value of 3e6 the solution will have a lot
                // more dispersion.
@@ -305,11 +306,11 @@ int main(int argc, char *argv[])
                // vector of visible satellites, the vector of corresponding
                // ranges, the object containing satellite ephemerides, and a
                // pointer to the tropospheric model to be applied
-            raimSolver.RAIMCompute( rod.time,
-                                    prnVec,
-                                    rangeVec,
-                                    bcestore,
-                                    tropModelPtr );
+            raimSolver.RAIMComputeUnweighted( rod.time,
+                                              prnVec,
+                                              rangeVec,
+                                              navLib,
+                                              tropModelPtr );
 
                // Note: Given that the default constructor sets public
                // attribute "Algebraic" to FALSE, a linearized least squares

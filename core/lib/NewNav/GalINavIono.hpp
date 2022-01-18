@@ -39,7 +39,7 @@
 #ifndef GNSSTK_GALINAVIONO_HPP
 #define GNSSTK_GALINAVIONO_HPP
 
-#include "NeQuickIonoData.hpp"
+#include "NeQuickIonoNavData.hpp"
 
 namespace gnsstk
 {
@@ -47,7 +47,7 @@ namespace gnsstk
       //@{
 
       /// Class containing data elements unique to Galileo I/NAV iono data.
-   class GalINavIono : public NeQuickIonoData
+   class GalINavIono : public NeQuickIonoNavData
    {
    public:
          /// Sets the nav message type.

@@ -48,6 +48,7 @@ namespace gnsstk
    GPSLNavData()
          : pre(0),
            tlm(0),
+           isf(false),
            asFlag(false),
            alert(false)
    {}

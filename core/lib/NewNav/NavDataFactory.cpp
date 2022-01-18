@@ -39,6 +39,7 @@
 #include <iterator>
 #include "NavDataFactory.hpp"
 #include "TimeString.hpp"
+#include "demangle.hpp"
 
 /// debug time string
 static const std::string dts("%Y/%03j/%02H:%02M:%02S %P");
@@ -80,5 +81,41 @@ namespace gnsstk
          }
       }
       return false;
+   }
+
+
+   std::set<SatID> NavDataFactory ::
+   getIndexSet(const CommonTime& fromTime,
+               const CommonTime& toTime) const
+   {
+      NavSatelliteIDSet fullSatSet = getAvailableSats(fromTime,toTime);
+      std::set<SatID> rv;
+      for (const auto& fssi : fullSatSet)
+      {
+         rv.insert(fssi.sat);
+      }
+      return rv;
+   }
+
+
+   std::set<SatID> NavDataFactory ::
+   getIndexSet(NavMessageType nmt,
+               const CommonTime& fromTime,
+               const CommonTime& toTime) const
+   {
+      NavSatelliteIDSet fullSatSet = getAvailableSats(nmt,fromTime,toTime);
+      std::set<SatID> rv;
+      for (const auto& fssi : fullSatSet)
+      {
+         rv.insert(fssi.sat);
+      }
+      return rv;
+   }
+
+
+   std::string NavDataFactory ::
+   getClassName() const
+   {
+      return demangle(typeid(*this).name());
    }
 }

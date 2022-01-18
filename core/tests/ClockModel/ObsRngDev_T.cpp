@@ -40,7 +40,8 @@
 #include "TestUtil.hpp"
 #include <iostream>
 
-#include "RinexEphemerisStore.hpp"
+#include "NavLibrary.hpp"
+#include "RinexNavDataFactory.hpp"
 
 #include "EphemerisRange.hpp"
 #include "SimpleTropModel.hpp"
@@ -92,7 +93,9 @@ public:
       cTimeVec.push_back(ct3);
 
       std::string path = gnsstk::getPathData() + "/test_input_rinex_nav_ephemerisData.031";
-      ephemStore.loadFile(path);
+      ndfp = std::make_shared<gnsstk::RinexNavDataFactory>();
+      GNSSTK_ASSERT(ndfp->addDataSource(path));
+      ephemStore.addFactory(ndfp);
    };
 
    ~ObsRngDev_T() {}
@@ -542,7 +545,10 @@ private:
    std::vector< std::map<int, float> > prnPrange;
    std::vector<gnsstk::CommonTime> cTimeVec;
    gnsstk::Position receiverPos;
-   gnsstk::RinexEphemerisStore ephemStore;
+      /// High level nav store interface.
+   gnsstk::NavLibrary ephemStore;
+      /// nav data file reader
+   gnsstk::NavDataFactoryPtr ndfp;
    gnsstk::WGS84Ellipsoid em;
 };
 

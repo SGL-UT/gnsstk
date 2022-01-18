@@ -334,9 +334,9 @@ try {
 
    // get rotation matrix XYZ->NEU for pos
    Matrix<double> Rotate,RotOTL,RotATM;
-   Rotate = NorthEastUp(C.posset);
-   RotOTL = NorthEastUp(C.posotl);
-   RotATM = NorthEastUp(C.posatm);
+   Rotate = northEastUp(C.posset);
+   RotOTL = northEastUp(C.posotl);
+   RotATM = northEastUp(C.posatm);
 
    // -------------------------------------------------------------------------
    if(!isValid) {

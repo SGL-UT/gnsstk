@@ -50,7 +50,6 @@
 
 #include "FFStream.hpp"
 #include "AlmOrbit.hpp"
-#include "OrbAlmGen.hpp"
 #include "SEMBase.hpp"
 #include "StringUtils.hpp"
 #include "SEMHeader.hpp"
@@ -119,14 +118,8 @@ namespace gnsstk
           */
       operator AlmOrbit() const;
 
-         /**
-          * cast *this into an OrbAlmGen
-          * @return the constructed OrbAlmGen object
-          */
-      operator OrbAlmGen() const;
-
-   protected:
-
+   protected:      
+	 
 	 /**
           * Writes a correctly formatted record from this data to stream \a s.
           * @throw std::exception

@@ -51,7 +51,6 @@
 #include "FFStream.hpp"
 #include "RinexNavBase.hpp"
 #include "EngEphemeris.hpp"
-#include "GPSEphemeris.hpp"
 #include "RNDouble.hpp"
 
 namespace gnsstk
@@ -102,10 +101,6 @@ namespace gnsstk
           * Converts this RinexNavData to an EngEphemeris object.
           */
       operator EngEphemeris() const throw();
-
-         /** Convert this RinexNavData to a GPSEphemeris object.  For
-          * backward compatibility only - use Rinex3NavData. */
-      operator GPSEphemeris() const;
 
          /** Round a given seconds of week down to the nearest
           * possible subframe 1 transmit time. */

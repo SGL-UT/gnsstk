@@ -48,6 +48,7 @@ namespace gnsstk
    GalINavIono ::
    GalINavIono()
    {
+      weekFmt = "%4L(%4l)";
       msgLenSec = 2.0;
    }
 

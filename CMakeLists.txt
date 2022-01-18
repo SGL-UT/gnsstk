@@ -157,10 +157,16 @@ endif()
 # GNSSTK Library, Build and Install Targets
 #============================================================
 
-# Gnsstk shared-object library (e.g. libgnsstk.so) build target
-add_library( gnsstk ${STADYN} ${GNSSTK_SRC_FILES} ${GNSSTK_INC_FILES} )
+if ( ${PROFILER} )
+  # don't build the shared library with profiler enabled
+  add_library( gnsstk STATIC ${GNSSTK_SRC_FILES} ${GNSSTK_INC_FILES} )
+elseif( WIN32 )
+  # someday we'll figure out how to do shared libs for windows...
+  add_library( gnsstk STATIC ${GNSSTK_SRC_FILES} ${GNSSTK_INC_FILES} )
+else()
+  add_library( gnsstk SHARED ${GNSSTK_SRC_FILES} ${GNSSTK_INC_FILES} )
+endif()
 
-# GNSSTk library install target
 install( TARGETS gnsstk DESTINATION "${CMAKE_INSTALL_LIBDIR}" EXPORT "${EXPORT_TARGETS_FILENAME}" )
 
 # GNSSTk header file install target (whether it is version dependent changes based on user flag)

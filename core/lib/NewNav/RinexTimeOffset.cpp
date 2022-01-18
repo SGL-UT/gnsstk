@@ -78,29 +78,38 @@ namespace gnsstk
    dump(ostream& s, DumpDetail dl) const
    {
       const ios::fmtflags oldFlags = s.flags();
-      NavData::dump(s,dl);
-      double offset;
       switch (dl)
       {
          case DumpDetail::OneLine:
+            NavData::dump(s,dl);
             break;
          case DumpDetail::Brief:
+            NavData::dump(s,dl);
                // brief just shows the offset as of the reference time.
             s << StringUtils::asString(frTS) << "-"
               << StringUtils::asString(toTS) << " offset = " << (deltatLS+A0)
               << endl;
             break;
          case DumpDetail::Full:
-            s << setprecision(16)
-              << "  src system = " << StringUtils::asString(frTS) << endl
-              << "  tgt system = " << StringUtils::asString(toTS) << endl
-              << "  A0         = " << A0 << endl
-              << "  A1         = " << A1 << endl
-              << "  delta tLS  = " << deltatLS << endl
-              << "  ref time   = "
-              << printTime(refTime, "%Y/%02m/%02d %02H:%02M:%02S") << endl
-              << "  provider   = " << geoProvider << endl
-              << "  UTC        = ";
+            s << "*************************************************************"
+              << "***************" << endl
+              << "Time System Offset" << endl << endl
+              << "           TIMES OF INTEREST" << endl << endl
+              << "              " << getDumpTimeHdr(dl) << endl
+              << "Transmit:     " << getDumpTime(dl, timeStamp)
+              << endl << endl
+              << "           " << StringUtils::asString(frTS) << " "
+              << StringUtils::asString(toTS) << " PARAMETERS" << endl
+              << "Parameter                 Value" << endl
+              << "Reference   "
+              << printTime(refTime,"%Y/%02m/%02d %02H:%02M:%02S") << endl
+              << scientific << setprecision(9) << setfill(' ')
+              << "A0             " << setw(16) << A0 << " sec" << endl
+              << "A1             " << setw(16) << A1 << " sec/sec" << endl
+              << fixed << setprecision(0)
+              << "dtLS           " << setw(16) << deltatLS << " sec" << endl
+              << "Provider       " << setw(16) << geoProvider << endl
+              << "UTC            " << setw(16);
             switch (geoUTCid)
             {
                case 0: s << "Unknown" << endl; break;

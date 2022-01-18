@@ -85,9 +85,15 @@ namespace gnsstk
           * @param[in,out] s The stream to write the data to. */
       virtual void dumpHarmonics(std::ostream& s) const;
          /** This is just a method for making the dump output say
-          * "almanac" vs "ephemeris" when appropriate. */
+          * "almanac" vs "ephemeris" when appropriate.  Yes it's
+          * perfectly legitimate to alternate between Ephemeris and
+          * Almanac based on the message type, as no other message
+          * types would be inheriting from OrbitDataKepler. */
       virtual std::string getDataType() const
-      { return "Ephemeris"; }
+      {
+         return (signal.messageType == NavMessageType::Ephemeris
+                 ? "Ephemeris" : "Almanac");
+      }
 
          /** Compute the satellites position and velocity at a time.
           * @note Defaults to using the GPS ellipsoid parameters.
@@ -135,6 +141,24 @@ namespace gnsstk
       virtual double svRelativity(const CommonTime& when,
                                   const EllipsoidModel& ell)
          const;
+
+         /** Returns true if this two objects are 
+          *   1. same concrete type, and
+          *   2. same data contents.
+          * This is intended as a "data uniqueness test" to allow
+          * detection of successive transmissions of same data
+          * and avoid duplicate storage.  The exact rules for 
+          * uniqueness will vary by descendent class.
+          * @note This method assumes that no tweaking of values has
+          *   been made, i.e. it checks all potentially relevant
+          *   parameters, not just those that are specific to the type
+          *   (e.g. Cuc etc. are checked even for almanacs, which
+          *   should be fine as long as they remain in their initial
+          *   states). */
+      bool isSameData(const NavDataPtr& right) const override;
+         /// @copydoc NavData::compare
+      std::list<std::string> compare(const NavDataPtr& right)
+         const override;
 
       CommonTime xmitTime; ///< Time of transmission of the start of the data.
       CommonTime Toe;      ///< Orbit epoch

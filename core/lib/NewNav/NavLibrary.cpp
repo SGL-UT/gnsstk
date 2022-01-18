@@ -42,7 +42,7 @@
 #include "TimeOffsetData.hpp"
 #include "NDFUniqConstIterator.hpp"
 #include "NDFUniqIterator.hpp"
-#include "IonoData.hpp"
+#include "IonoNavData.hpp"
 #include "InterSigCorr.hpp"
 
 namespace gnsstk
@@ -149,8 +149,8 @@ namespace gnsstk
       {
          return false;
       }
-      IonoData *iono = dynamic_cast<IonoData*>(navOut.get());
-      corrOut = iono->getCorrection(when, rxgeo, svgeo, band);
+      IonoNavData *iono = dynamic_cast<IonoNavData*>(navOut.get());
+      corrOut = iono->getIonoCorr(when, rxgeo, svgeo, band);
       return true;
    }
 
@@ -640,6 +640,35 @@ namespace gnsstk
          {
             rv.insert(i);
          }
+      }
+      return rv;
+   }
+
+
+   std::set<SatID> NavLibrary ::
+   getIndexSet(const CommonTime& fromTime,
+               const CommonTime& toTime) const
+   {
+      NavSatelliteIDSet fullSatSet = getAvailableSats(fromTime,toTime);
+      std::set<SatID> rv;
+      for (const auto& fssi : fullSatSet)
+      {
+         rv.insert(fssi.sat);
+      }
+      return rv;
+   }
+
+
+   std::set<SatID> NavLibrary ::
+   getIndexSet(NavMessageType nmt,
+               const CommonTime& fromTime,
+               const CommonTime& toTime) const
+   {
+      NavSatelliteIDSet fullSatSet = getAvailableSats(nmt,fromTime,toTime);
+      std::set<SatID> rv;
+      for (const auto& fssi : fullSatSet)
+      {
+         rv.insert(fssi.sat);
       }
       return rv;
    }

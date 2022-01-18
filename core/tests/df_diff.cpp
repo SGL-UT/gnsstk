@@ -44,6 +44,7 @@
 #include <fstream>
 #include <string>
 #include <cmath>
+#include <set>
 
 #include "BasicFramework.hpp"
 #include "StringUtils.hpp"
@@ -58,12 +59,20 @@ public:
       : gnsstk::BasicFramework(
          applName,
          "Differences two input files while allowing small differences"
-         "in floating point values."),
+         " in floating point values."),
         epsilon(1e-5),
         linesToSkip(0),
         lastlineValue(0),
         totalLines(0)
    {};
+
+
+      /// Structure that defines column and regular expression to ignore.
+   struct RegExcludeCol
+   {
+      unsigned col;
+      string regex;
+   };
 
       // While this is in C11, we don't want to work under C03
    double stringToDouble(const string& s, bool& isDouble)
@@ -85,6 +94,10 @@ public:
          lineSkipOption('l', "lines", "Number of lines to skip at beginning of file."),
          epsilonOption('e', "epsilon", "Percent allowable difference in floating point values."),
          outputOption('o', "output", "A file to receive the output. The default is stdout."),
+         regexOption('X', "regexclude", "Exclude lines matching a regular"
+                     " expression"),
+         igregOption('I', "ign-reg", "Ignore column X (starting with 0) on"
+                     " lines matching regular expression Y, ARG=X,Y"),
          lastLineOption('z', "last", "ignore the last X lines of the file");
 
       if (!BasicFramework::initialize(argc,argv))
@@ -156,6 +169,36 @@ public:
       if (lineSkipOption.getCount())
          linesToSkip = gnsstk::StringUtils::asInt(lineSkipOption.getValue()[0]);
 
+      if (regexOption.getCount())
+         regexclude = regexOption.getValue();
+
+      if (igregOption.getCount())
+      {
+         vector<string> igvec(igregOption.getValue());
+         for (unsigned i = 0; i < igvec.size(); i++)
+         {
+            if (gnsstk::StringUtils::numWords(igvec[i],',') < 2)
+            {
+               cerr << "Invalid spec \"" << igvec[i]
+                    << "\", expecting column,regex" << endl;
+               exitCode = gnsstk::BasicFramework::OPTION_ERROR;
+               return false;
+            }
+            string colStr = gnsstk::StringUtils::firstWord(igvec[i],',');
+            if (!gnsstk::StringUtils::isDigitString(colStr))
+            {
+               cerr << "Invalid spec \"" << igvec[i]
+                    << "\", expecting column,regex" << endl;
+               exitCode = gnsstk::BasicFramework::OPTION_ERROR;
+               return false;
+            }
+            RegExcludeCol rec;
+            rec.col = gnsstk::StringUtils::asUnsigned(colStr);
+            rec.regex = gnsstk::StringUtils::words(igvec[i],1,string::npos,',');
+            recs.push_back(rec);
+         }
+      }
+
       if (debugLevel)
          output << "First file " << input1Fn << endl
                 << "Second file " << input2Fn << endl
@@ -187,13 +230,44 @@ protected:
             if (lineNumber <= linesToSkip)
                continue;
 
+               // Try to match BOTH lines with each user-specified
+               // regular expression.  If they both match, skip the
+               // line.  If only one matches, that counts as a
+               // difference.
+            bool skipregex = false;
+            for (unsigned i = 0; i < regexclude.size(); i++)
+            {
+               if (gnsstk::StringUtils::isLike(line1, regexclude[i]) &&
+                   gnsstk::StringUtils::isLike(line2, regexclude[i]))
+               {
+                  skipregex = true;
+                  break;
+               }
+            }
+            if (skipregex)
+               continue;
+
             string s1, s2;
             istringstream ss1(line1);
             istringstream ss2(line2);
             bool lineDiff = false;
-
+            unsigned column = 0;
+            set<unsigned> skipCols;
+               // collect the columns to ignore due to matching regular expr.
+            for (unsigned i = 0; i < recs.size(); i++)
+            {
+               if (gnsstk::StringUtils::isLike(line1, recs[i].regex) &&
+                   gnsstk::StringUtils::isLike(line2, recs[i].regex))
+               {
+                  skipCols.insert(recs[i].col);
+               }
+            }
             while ((ss1 >> s1) && (ss2 >> s2))
             {
+               if (skipCols.count(column++))
+               {
+                  continue;
+               }
                if (s1 != s2)
                {
                   bool df1,df2;
@@ -219,8 +293,10 @@ protected:
                   }
 
                   if (verboseLevel && lineDiff)
+                  {
                      output << "f1, " << lineNumber << ":" << line1 << endl
                             << "f2, " << lineNumber << ":" << line2 << endl;
+                  }
                }
             }
          }
@@ -243,6 +319,8 @@ protected:
    ofstream output;
    ifstream input1, input2;
    double epsilon;
+   vector<string> regexclude;
+   vector<RegExcludeCol> recs;
 public:
    long linesToSkip;
    long totalLines;

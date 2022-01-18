@@ -40,6 +40,31 @@
 
 namespace gnsstk
 {
+   gnsstk::Xvt::HealthStatus toXvtHealth(SVHealth e)
+   {
+      gnsstk::Xvt::HealthStatus rv;
+      switch (e)
+      {
+         case SVHealth::Unknown:
+            rv = gnsstk::Xvt::Unknown;
+            break;
+         case SVHealth::Healthy:
+            rv = gnsstk::Xvt::Healthy;
+            break;
+         case SVHealth::Unhealthy:
+            rv = gnsstk::Xvt::Unhealthy;
+            break;
+         case SVHealth::Degraded:
+            rv = gnsstk::Xvt::Degraded;
+            break;
+         default:
+            rv = gnsstk::Xvt::Uninitialized;
+            break;
+      }
+      return rv;
+   }
+
+
    namespace StringUtils
    {
       std::string asString(SVHealth e) throw()

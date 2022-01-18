@@ -36,32 +36,15 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifdef __GNUG__
-#include <cxxabi.h>
-#endif
 #include "NavData.hpp"
 #include "TimeString.hpp"
-
-// required to demangle G++ class names
-static std::string demangle(const char* name)
-{
-      // yanked from stackoverflow.com/questions/281818/unmangling-the-result-of-stdtype-infoname
-#ifdef __GNUG__
-   int status = -4;
-   std::unique_ptr<char, void(*)(void*)> res {
-      abi::__cxa_demangle(name, NULL, NULL, &status),
-      std::free
-   };
-   return (status == 0) ? res.get() : name;
-#else
-      // do nothing if not G++
-   return name;
-#endif
-}
+#include "demangle.hpp"
 
 namespace gnsstk
 {
-   const std::string NavData :: dumpTimeFmt("  %6.0g   %3a-%w   %3j   %5.0s   %02m/%02d/%04Y   %02H:%02M:%02S");
+   const std::string NavData :: dumpTimeFmt("%3a-%w   %3j   %5.0s   %02m/%02d/%04Y   %02H:%02M:%02S");
+   const std::string NavData :: dumpTimeFmtBrief("%4Y/%02m/%02d %03j %02H:%02M:%02S");
+   gnsstk::SatMetaDataStore *NavData::satMetaDataStore = nullptr;
 
    NavData ::
    NavData()
@@ -71,11 +54,76 @@ namespace gnsstk
    }
 
 
+   bool NavData ::
+   isSameData(const NavDataPtr& right) const
+   {
+      return ((timeStamp == right->timeStamp) &&
+              (signal == right->signal));
+   }
+
+
+   std::list<std::string> NavData ::
+   compare(const NavDataPtr& right) const
+   {
+      std::list<std::string> rv;
+         // old nav implementation clearly didn't check this
+         // if (timeStamp != right->timeStamp)
+         //    rv.push_back("timeStamp");
+      if (signal != right->signal)
+         rv.push_back("signal");
+      return rv;
+   }
+
+
    void NavData ::
    dump(std::ostream& s, DumpDetail dl) const
    {
-      static const std::string timeFmt("%4Y/%02m/%02d %03j %02H:%02M:%02S");
-      s << printTime(timeStamp, timeFmt) << " " << signal << std::endl;
+      s << getDumpTime(dl,timeStamp) << " " << signal << std::endl;
+   }
+
+
+   std::string NavData ::
+   getDumpTimeHdr(DumpDetail dl) const
+   {
+      std::string hdr;
+      switch (dl)
+      {
+         case DumpDetail::Full:
+            if (!weekFmt.empty())
+            {
+               hdr = "Week(10bt)     SOW   ";
+            }
+            hdr += "  DOW   UTD     SOD   MM/DD/YYYY   HH:MM:SS";
+            break;
+      }
+      return hdr;
+   }
+
+
+   std::string NavData ::
+   getDumpTime(DumpDetail dl, const CommonTime& t) const
+   {
+      std::string fmt;
+      switch (dl)
+      {
+         case DumpDetail::OneLine:
+         case DumpDetail::Brief:
+            fmt = dumpTimeFmtBrief;
+            break;
+         case DumpDetail::Full:
+            if (weekFmt.empty())
+            {
+               fmt = dumpTimeFmt;
+            }
+            else
+            {
+               fmt = weekFmt + "  %6.0g   " + dumpTimeFmt;
+            }
+            break;
+      }
+      if (fmt.empty())
+         return fmt;
+      return printTime(t, fmt);
    }
 
 

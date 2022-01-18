@@ -50,25 +50,30 @@ namespace gnsstk
 
 
    void AngleReduced ::
-   setValue(double v, Type t)
+   setValue(double v, AngleType t)
    {
       double radians;
       switch (t)
       {
-         case Rad:
+         case AngleType::Rad:
             sine = ::sin(v);
             cosine = ::cos(v);
             break;
-         case Deg:
+         case AngleType::Deg:
             radians = v * DEG2RAD;
             sine = ::sin(radians);
             cosine = ::cos(radians);
             break;
-         case Sin:
+         case AngleType::SemiCircle:
+            radians = v * PI;
+            sine = ::sin(radians);
+            cosine = ::cos(radians);
+            break;
+         case AngleType::Sin:
             sine = v;
             cosine = ::sqrt(1-sine*sine);
             break;
-         case Cos:
+         case AngleType::Cos:
             cosine = v;
             sine = ::sqrt(1-cosine*cosine);
             break;

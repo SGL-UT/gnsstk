@@ -44,7 +44,6 @@
 
 #include "StringUtils.hpp"
 #include "Exception.hpp"
-#include "RinexEphemerisStore.hpp"
 
 #include "build_config.h"
 

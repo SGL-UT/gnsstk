@@ -56,7 +56,7 @@ namespace gnsstk
    bool GPSCNavIono ::
    validate() const
    {
-      return (KlobucharIonoData::validate() && ((pre == 0) || (pre == 0x8b)));
+      return (KlobucharIonoNavData::validate() && ((pre == 0) || (pre == 0x8b)));
    }
 
 

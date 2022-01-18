@@ -40,6 +40,7 @@
 #include "YumaStream.hpp"
 #include "YumaHeader.hpp"
 #include "GPSLNavHealth.hpp"
+#include "GPSWeekSecond.hpp"
 
 using namespace std;
 
@@ -56,11 +57,16 @@ namespace gnsstk
 
 
    bool YumaNavDataFactory ::
-   loadIntoMap(const std::string& filename, NavMessageMap& navMap)
+   loadIntoMap(const std::string& filename, NavMessageMap& navMap,
+               NavNearMessageMap& navNearMap, OffsetCvtMap& ofsMap)
    {
       bool rv = true;
       bool processAlm = (procNavTypes.count(NavMessageType::Almanac) > 0);
       bool processHea = (procNavTypes.count(NavMessageType::Health) > 0);
+         /** @bug The use of gotdata is a kludge.  It appears that the
+          * YumaStream implementation will read invalid data to the
+          * end of the file, and we need it to not do that. */
+      bool gotdata = false;
       try
       {
          YumaStream is(filename.c_str(), ios::in);
@@ -72,11 +78,12 @@ namespace gnsstk
             is >> data;
             if (!is)
             {
-               if (is.eof())
+               if (is.eof() && gotdata)
                   break;
                else
                   return false; // some other error
             }
+            gotdata = true;
             NavDataPtr alm, health;
             if (processAlm)
             {
@@ -112,7 +119,7 @@ namespace gnsstk
                {
                   if (alm->validate() == expect)
                   {
-                     if (!addNavData(alm))
+                     if (!addNavData(alm, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
@@ -120,7 +127,7 @@ namespace gnsstk
                {
                   if (health->validate() == expect)
                   {
-                     if (!addNavData(health))
+                     if (!addNavData(health, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
@@ -129,12 +136,12 @@ namespace gnsstk
             {
                if (processAlm)
                {
-                  if (!addNavData(alm))
+                  if (!addNavData(alm, navMap, navNearMap, ofsMap))
                      return false;
                }
                if (processHea)
                {
-                  if (!addNavData(health))
+                  if (!addNavData(health, navMap, navNearMap, ofsMap))
                      return false;
                }
             }
