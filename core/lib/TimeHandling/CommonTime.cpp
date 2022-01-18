@@ -193,7 +193,7 @@ namespace gnsstk
       bool rv = conv->getOffset(m_timeSystem, timeSystem, *this, offs);
       if (rv)
       {
-         operator+=(offs);
+         operator-=(offs);
          m_timeSystem = timeSystem;
       }
       return rv;
