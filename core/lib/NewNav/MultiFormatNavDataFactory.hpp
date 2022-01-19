@@ -99,21 +99,7 @@ namespace gnsstk
                 NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
                 NavSearchOrder order) override;
 
-         /** Get the offset, in seconds, to apply to times when
-          * converting them from fromSys to toSys.
-          * @param[in] fromSys The time system to convert from.
-          * @param[in] toSys The time system to convert to.
-          * @param[in] when The time being converted, usually in the
-          *   time system appropriate for a given nav message source.
-          *   The details of what time system this should be in and
-          *   any other restrictions will be documented in each leaf
-          *   class, e.g. GPSLNavTimeOffset.
-          * @param[out] offset The offset when converting fromSys->toSys.
-          * @param[in] xmitHealth The desired health status of the
-          *   transmitting satellite.
-          * @param[in] valid Specify whether to search only for valid
-          *   or invalid messages, or both.
-          * @return true if an offset is available, false if not. */
+         /// @copydoc NavDataFactory::getOffset()
       bool getOffset(TimeSystem fromSys, TimeSystem toSys,
                      const CommonTime& when, NavDataPtr& offset,
                      SVHealth xmitHealth = SVHealth::Any,
