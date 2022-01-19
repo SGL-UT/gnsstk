@@ -139,6 +139,10 @@ namespace gnsstk
          phi_i = -0.416;
       double lambda_i = lambda_u + (psi * ::sin(az * PI) / ::cos(phi_i * PI));
       double t = 43200 * lambda_i + YDSTime(when).sod;
+      if (t >= 86400.0)
+         t -= 86400.0;
+      else if (t < 0.0)
+         t += 86400.0;
       double phi_m = phi_i + 0.064 * ::cos((lambda_i-1.617) * PI);
       double iAMP = alpha[0]+phi_m*(alpha[1]+phi_m*(alpha[2]+phi_m*alpha[3]));
       double iPER =  beta[0]+phi_m*( beta[1]+phi_m*( beta[2]+phi_m* beta[3]));
