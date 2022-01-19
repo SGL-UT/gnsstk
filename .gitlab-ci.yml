@@ -883,6 +883,21 @@ package_redhat_8_py36:
       - rpm_files/SRPMS/python3-gnsstk-*
   dependencies: []
 
+package_windows:
+  stage: package
+  needs: [build_windows]
+  tags:
+    - win10-vs2019
+  script:
+    - cd build
+    - cpack -C Release
+#    - cpack -G WIX -C Release
+  dependencies:
+    - build_windows
+  artifacts:
+    paths:
+      - build/_CPack_Packages
+
 # Deploy Stage
 # Tests install of Gnsstk package on each platform, saves artifacts for downstream builds.
 
@@ -963,23 +978,6 @@ deploy_redhat_py36:
   dependencies:
     - package_redhat_8_py36
     - package_redhat_8
-
-# This requires a third-party package called NSIS.  We don't have it
-# installed and don't have the resources to make it work right now.
-# package_windows:
-#   stage: package
-#   needs: [build_windows]
-#   extends: .package_build
-#   tags:
-#     - win10
-#   script:
-#     - cd build
-#     - cpack -C Release
-#   dependencies:
-#     - build_windows
-#   artifacts:
-#     paths:
-#       - build/
 
 clean_gnsstk_win10_wrksp:
   variables:
