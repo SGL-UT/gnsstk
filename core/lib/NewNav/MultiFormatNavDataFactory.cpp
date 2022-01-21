@@ -39,14 +39,20 @@
 #include "MultiFormatNavDataFactory.hpp"
 #include "BasicTimeSystemConverter.hpp"
 #include "NDFUniqConstIterator.hpp"
+#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
    MultiFormatNavDataFactory ::
    MultiFormatNavDataFactory()
    {
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("this = " << this);
+         // get our own shared pointer to the factories map.
+      myFactories = factories();
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
          // keys for factories are not unique but that doesn't really matter.
-      for (const auto& i : factories())
+      for (const auto& i : *myFactories)
       {
          supportedSignals.insert(i.first);
       }
@@ -56,6 +62,8 @@ namespace gnsstk
    MultiFormatNavDataFactory ::
    ~MultiFormatNavDataFactory()
    {
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("this = " << this);
       clear();
    }
 
@@ -73,7 +81,8 @@ namespace gnsstk
          // LNAV is first in the map, the signals don't match and the
          // factory won't be looked at again.
       std::set<NavDataFactory*> uniques;
-      for (auto& fi : factories())
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (auto& fi : *myFactories)
       {
          // std::cerr << "fi.first = " << fi.first << "   nmid = " << nmid << std::endl;
          if ((fi.first == nmid) && (uniques.count(fi.second.get()) == 0))
@@ -92,7 +101,8 @@ namespace gnsstk
              const CommonTime& when, NavDataPtr& offset,
              SVHealth xmitHealth, NavValidityType valid)
    {
-      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
          if (fi.second->getOffset(fromSys, toSys, when, offset, xmitHealth,
                                    valid))
@@ -107,7 +117,8 @@ namespace gnsstk
    void MultiFormatNavDataFactory ::
    edit(const CommonTime& fromTime, const CommonTime& toTime)
    {
-      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
          fi.second->edit(fromTime,toTime);
       }
@@ -118,7 +129,8 @@ namespace gnsstk
    edit(const CommonTime& fromTime, const CommonTime& toTime,
         const NavSatelliteID& satID)
    {
-      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
          fi.second->edit(fromTime,toTime,satID);
       }
@@ -129,7 +141,8 @@ namespace gnsstk
    edit(const CommonTime& fromTime, const CommonTime& toTime,
         const NavSignalID& signal)
    {
-      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
          fi.second->edit(fromTime,toTime,signal);
       }
@@ -139,8 +152,12 @@ namespace gnsstk
    void MultiFormatNavDataFactory ::
    clear()
    {
-      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories()))
+	  DEBUGTRACE_FUNCTION();
+	  DEBUGTRACE("starting to iterate over *myFactories");
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
+		 DEBUGTRACE("calling clear on " << fi.second);
          fi.second->clear();
       }
    }
@@ -155,7 +172,8 @@ namespace gnsstk
       BasicTimeSystemConverter btsc;
       CommonTime rv = CommonTime::END_OF_TIME;
       rv.setTimeSystem(TimeSystem::Any);
-      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          CommonTime t = fi.second->getInitialTime();
          if ((rv.getTimeSystem() == TimeSystem::Any) ||
@@ -184,7 +202,8 @@ namespace gnsstk
       BasicTimeSystemConverter btsc;
       CommonTime rv = CommonTime::BEGINNING_OF_TIME;
       rv.setTimeSystem(TimeSystem::Any);
-      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          CommonTime t = fi.second->getFinalTime();
          if ((rv.getTimeSystem() == TimeSystem::Any) ||
@@ -209,7 +228,8 @@ namespace gnsstk
       const
    {
       NavSatelliteIDSet rv, tmp;
-      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          tmp = fi.second->getAvailableSats(fromTime, toTime);
          for (const auto& i : tmp)
@@ -228,7 +248,8 @@ namespace gnsstk
       const
    {
       NavSatelliteIDSet rv, tmp;
-      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          tmp = fi.second->getAvailableSats(nmt, fromTime, toTime);
          for (const auto& i : tmp)
@@ -246,7 +267,8 @@ namespace gnsstk
       const
    {
       NavMessageIDSet rv, tmp;
-      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          tmp = fi.second->getAvailableMsgs(fromTime, toTime);
          for (const auto& i : tmp)
@@ -263,7 +285,8 @@ namespace gnsstk
              const CommonTime& fromTime,
              const CommonTime& toTime)
    {
-      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          if (fi.second->isPresent(nmid, fromTime, toTime))
             return true;
@@ -278,7 +301,8 @@ namespace gnsstk
          // this one is easy, it's just the sum of each individual
          // factory's size
       size_t rv = 0;
-      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          NavDataFactory *ndfp = fi.second.get();
          NavDataFactoryWithStore *ndfs =
@@ -298,7 +322,8 @@ namespace gnsstk
          // this one is easy, it's just the sum of each individual
          // factory's count() results
       size_t rv = 0;
-      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          NavDataFactory *ndfp = fi.second.get();
          NavDataFactoryWithStore *ndfs =
@@ -316,7 +341,8 @@ namespace gnsstk
    numSignals() const
    {
       std::set<NavSignalID> uniqueSig;
-      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          NavDataFactory *ndfp = fi.second.get();
          NavDataFactoryWithStore *ndfs =
@@ -340,7 +366,8 @@ namespace gnsstk
    numSatellites() const
    {
       std::set<NavSatelliteID> uniqueSat;
-      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          NavDataFactory *ndfp = fi.second.get();
          NavDataFactoryWithStore *ndfs =
@@ -367,7 +394,8 @@ namespace gnsstk
          // times for any factory that has multiple supported signals,
          // but the end result is the same whether we check for
          // duplicates or not.
-      for (auto& i : NDFUniqIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (auto& i : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
          i.second->setValidityFilter(nvt);
       }
@@ -381,7 +409,8 @@ namespace gnsstk
          // for any factory that has multiple supported signals, but
          // the end result is the same whether we check for duplicates
          // or not.
-      for (auto& i : NDFUniqIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (auto& i : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
          i.second->setTypeFilter(nmts);
       }
@@ -404,9 +433,10 @@ namespace gnsstk
       }
          // Yes, we do add multiple copies of the NavDataFactoryPtr to
          // the map, it's a convenience.
+      DEBUGTRACE("factories().use_count() = " << factories().use_count());
       for (const auto& si : fact->supportedSignals)
       {
-         factories().insert(NavDataFactoryMap::value_type(si,fact));
+         factories()->insert(NavDataFactoryMap::value_type(si,fact));
       }
       return true;
    }
@@ -415,7 +445,8 @@ namespace gnsstk
    bool MultiFormatNavDataFactory ::
    addDataSource(const std::string& source)
    {
-      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
          NavDataFactory *ptr = fi.second.get();
          NavDataFactoryWithStoreFile *fact =
@@ -436,7 +467,8 @@ namespace gnsstk
    void MultiFormatNavDataFactory ::
    dump(std::ostream& s, DumpDetail dl) const
    {
-      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          NavDataFactory *ptr = fi.second.get();
          ptr->dump(s,dl);
@@ -448,7 +480,8 @@ namespace gnsstk
    getFactoryFormats() const
    {
       std::string rv;
-      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories()))
+      DEBUGTRACE("myFactories.use_count() = " << myFactories.use_count());
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          NavDataFactory *ptr = fi.second.get();
          std::string ff(ptr->getFactoryFormats());
@@ -463,10 +496,12 @@ namespace gnsstk
    }
 
 
-   NavDataFactoryMap& MultiFormatNavDataFactory ::
+   std::shared_ptr<NavDataFactoryMap> MultiFormatNavDataFactory ::
    factories()
    {
-      static NavDataFactoryMap rv;
+      DEBUGTRACE_FUNCTION();
+      static std::shared_ptr<NavDataFactoryMap> rv = std::make_shared<NavDataFactoryMap>();
+      DEBUGTRACE("rv.use_count() = " << rv.use_count());
       return rv;
    }
 }

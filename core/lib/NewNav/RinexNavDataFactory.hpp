@@ -42,6 +42,7 @@
 #include "NavDataFactoryWithStoreFile.hpp"
 #include "Rinex3NavData.hpp"
 #include "GPSLNavEph.hpp"
+#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -66,6 +67,8 @@ namespace gnsstk
          /// Clean up.
       virtual ~RinexNavDataFactory()
       {
+		 DEBUGTRACE_FUNCTION();
+		 DEBUGTRACE("this = " << this);
       }
 
          /** Load RINEX NAV data into a map.

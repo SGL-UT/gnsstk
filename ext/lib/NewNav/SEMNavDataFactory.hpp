@@ -42,6 +42,7 @@
 #include "NavDataFactoryWithStoreFile.hpp"
 #include "SEMData.hpp"
 #include "GPSLNavAlm.hpp"
+#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -63,6 +64,8 @@ namespace gnsstk
          /// Clean up.
       virtual ~SEMNavDataFactory()
       {
+		 DEBUGTRACE_FUNCTION();
+		 DEBUGTRACE("this = " << this);
       }
 
          /** Load SEM nav data into a map.

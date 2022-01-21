@@ -44,7 +44,7 @@
 class TestClass : public gnsstk::MultiFormatNavDataFactory
 {
 public:
-   static gnsstk::NavDataFactoryMap& getFactories()
+   static std::shared_ptr<gnsstk::NavDataFactoryMap> getFactories()
    { return factories(); }
 };
 
@@ -67,7 +67,7 @@ constructorTest()
       // Iterate over the factories and try to find the expected
       // factory objects.  The factories map may also contain ext
       // factories, so we ignore anything else.
-   for (auto& i : TestClass::getFactories())
+   for (auto& i : *(TestClass::getFactories()))
    {
       gnsstk::NavDataFactory *p = i.second.get();
       if (dynamic_cast<gnsstk::YumaNavDataFactory*>(p) != nullptr)

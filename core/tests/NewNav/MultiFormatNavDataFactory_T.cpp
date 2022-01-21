@@ -104,7 +104,7 @@ public:
       /// Grant access to protected data.
    gnsstk::NavMessageMap& getData()
    { return data; }
-   static gnsstk::NavDataFactoryMap& getFactories()
+   static std::shared_ptr<gnsstk::NavDataFactoryMap> getFactories()
    { return factories(); }
 };
 
@@ -285,7 +285,7 @@ editTest()
       // get pointers to known factories to verify results
    gnsstk::RinexNavDataFactory *rinFact = nullptr;
    gnsstk::SP3NavDataFactory *sp3Fact = nullptr;
-   for (auto& i : TestClass::getFactories())
+   for (auto& i : *(TestClass::getFactories()))
    {
       gnsstk::NavDataFactory *p = i.second.get();
       if (rinFact == nullptr)
@@ -446,7 +446,7 @@ numSignalsTest()
    TUCSM("numSignals");
       // should just be one, L1 C/A LNav
    TUASSERTE(size_t, 1, fact.numSignals());
-   for (const auto& fi : TestClass::getFactories())
+   for (const auto& fi : *(TestClass::getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(fi.second.get());
       TUASSERT(tfp != nullptr);
@@ -485,14 +485,14 @@ setValidityFilterTest()
    TUDEF("MultiFormatNavDataFactory", "setValidityFilter");
    TestClass mfact;
    mfact.setValidityFilter(gnsstk::NavValidityType::ValidOnly);
-   for (const auto& i : TestClass::getFactories())
+   for (const auto& i : *(TestClass::getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERTE(gnsstk::NavValidityType, gnsstk::NavValidityType::ValidOnly,
                 tfp->getValidityFilter());
    }
    mfact.setValidityFilter(gnsstk::NavValidityType::Any);
-   for (const auto& i : TestClass::getFactories())
+   for (const auto& i : *(TestClass::getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERTE(gnsstk::NavValidityType, gnsstk::NavValidityType::Any,
@@ -510,19 +510,19 @@ setTypeFilterTest()
    gnsstk::NavMessageTypeSet nmts1 { gnsstk::NavMessageType::Unknown };
    gnsstk::NavMessageTypeSet nmts2 { gnsstk::NavMessageType::Ephemeris };
    mfact.setTypeFilter(nmts1);
-   for (const auto& i : TestClass::getFactories())
+   for (const auto& i : *(TestClass::getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERTE(gnsstk::NavMessageTypeSet, nmts1, tfp->getTypeFilter());
    }
    mfact.setTypeFilter(nmts2);
-   for (const auto& i : TestClass::getFactories())
+   for (const auto& i : *(TestClass::getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERTE(gnsstk::NavMessageTypeSet, nmts2, tfp->getTypeFilter());
    }
    mfact.setTypeFilter(gnsstk::allNavMessageTypes);
-   for (const auto& i : TestClass::getFactories())
+   for (const auto& i : *(TestClass::getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERTE(gnsstk::NavMessageTypeSet, gnsstk::allNavMessageTypes,
@@ -540,7 +540,7 @@ loadIntoMapTest()
       // get pointers to known factories to verify results
    gnsstk::RinexNavDataFactory *rinFact = nullptr;
    gnsstk::SP3NavDataFactory *sp3Fact = nullptr;
-   for (auto& i : TestClass::getFactories())
+   for (auto& i : *(TestClass::getFactories()))
    {
       gnsstk::NavDataFactory *p = i.second.get();
       if (rinFact == nullptr)

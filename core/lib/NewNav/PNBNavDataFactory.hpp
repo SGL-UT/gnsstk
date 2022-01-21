@@ -44,6 +44,7 @@
 #include "PackedNavBits.hpp"
 #include "NavData.hpp"
 #include "NavValidityType.hpp"
+#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -63,6 +64,8 @@ namespace gnsstk
          /** Initialize navValidity to All and procNavTypes to all
           * known message types. */
       PNBNavDataFactory();
+	  virtual ~PNBNavDataFactory()
+	  { DEBUGTRACE_FUNCTION(); }
 
          /** Set the factory's handling of valid and invalid
           * navigation data.  This should be called before any addData()

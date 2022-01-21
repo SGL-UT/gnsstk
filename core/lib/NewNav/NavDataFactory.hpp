@@ -48,6 +48,7 @@
 #include "NavMessageID.hpp"
 #include "NavSearchOrder.hpp"
 #include "SVHealth.hpp"
+#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -69,6 +70,8 @@ namespace gnsstk
          /// Clean up.
       virtual ~NavDataFactory()
       {
+		 DEBUGTRACE_FUNCTION();
+		 DEBUGTRACE("this = " << this);
       }
 
          /// Returns the fully-qualified class name.  Used for debugging.
@@ -355,7 +358,15 @@ namespace gnsstk
       /// Managed pointer to NavDataFactory.
    typedef std::shared_ptr<NavDataFactory> NavDataFactoryPtr;
       /// Map signal to a factory.
-   typedef std::multimap<NavSignalID, NavDataFactoryPtr> NavDataFactoryMap;
+//   typedef std::multimap<NavSignalID, NavDataFactoryPtr> NavDataFactoryMap;
+   class NavDataFactoryMap : public std::multimap<NavSignalID, NavDataFactoryPtr>
+   {
+	   public:
+	   NavDataFactoryMap()
+	   { DEBUGTRACE_FUNCTION(); DEBUGTRACE("this = " << this); }
+	   virtual ~NavDataFactoryMap()
+	   { DEBUGTRACE_FUNCTION(); DEBUGTRACE("this = " << this); }
+   };
 
       //@}
 
