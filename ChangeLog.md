@@ -1,3 +1,115 @@
+# Version 13.0.0   Friday January 21, 2022
+
+Modifications by Author
+-----------------------
+     Andrew Kuck <kuck@arlut.utexas.edu> (11):
+           Update .gitlab-ci.yml to push to Artifactory.
+           Better support Python3 detection.
+           Switch debian packaging rom python2 to python3
+           Update debian/control
+           Update debian/control.in, debian/control files
+           Update debian/control, debian/control.in files
+           Further improve Python3 detection
+           Change default to py3.
+           Improve non-main pipeline build times.
+           Update code-owners to include code reviewers.
+           Update debian package python3-gnsstk to explicitly conflict with python-gnsstk
+
+     Anthony Hughes <anthony@arlut.utexas.edu> (1):
+           Fixed handling of the text file spec type (%x) and added relevant unit tests as per TKS-435.
+
+     Dave Rainwater <rain@arlut.utexas.edu> (1):
+           Remove redundant & misleading docstring paragraph.
+
+     David Barber <dbarber@arlut.utexas.edu> (6):
+           remove debian 8 jobs
+           fix windows clean up script [skip_ci]
+           deprecating a couple of swig apps
+           Update copyright to year 2022
+           Updating a couple of references
+           Add windows packaging
+
+     David Rainwater <rain@arlut.utexas.edu> (1):
+           Migrate SunEarthSatGeometry to core and enforce C++ style.
+
+     John Knutson <johnk@arlut.utexas.edu> (70):
+           Add support in NavData::dump methods for PRN->SVN translation
+           Update the dump methods of various newnav classes
+           Add TimeSystem EnumIterator type definition
+           Prevent YumaNavDataFactory for erroneously reporting success when reading an input file
+           Update NavDataFactoryWithStore to set initialTime/finalTime for non-Keplerian XVT data
+           Start documenting observations made while migrating apps to newnav
+           Add NavLibrary::getIndexSet method after the 3rd time I needed it
+           Add a Terse type of nav dump, which differs from OneLine
+           Refactor ORDs code to use newnav
+           Add some accessors to MultiFormatNavDataFactory (getFactory) and NavDataFactory (getIndexSet)
+           Minor #include updates
+           Adding RINEX clock support to the SP3 nav data factory
+           add count methods to MultiFormatNavDataFactory, NavDataFactoryWithStore
+           Fix NavDataFactoryWithStore::addNavData to deal with time systems when updating firstLastMap
+           Add iterators, string translation and Terse mode to DumpDetail
+           Update include usage so toolkit path must be included
+           Should return a double, not a bool
+           Set dump week format in new nav where applicable
+           Change the NewNav integration for ObsRngDev and EphemerisRange to pass the search parameters by argument
+           Change ObsRngDev.cpp arg names to match .hpp
+           Fix dump output of BDS nav health
+           Add option to exclude lines matching a regex to df_diff
+           Fix a doxygen comment
+           Clean up and complete (?) the NewNav dump methods
+           Update DumpDetail.cpp copyright
+           Fix typo in Galileo ISC dump methods
+           Initial commit of GLONASS NewNav classes
+           Make sure a time value is printed in one-line dump format in NewNav
+           Fix copyright statement in GLONASS files
+           Changes suggested from review
+           Update SWIG stuff due to changes in #includes
+           Remove BDS bits include files from SWIG to avoid quiet naming conflicts in python
+           Add ValidType SWIG wrappers
+           Fix issues with ValidType SWIG wrap
+           Change SWIG/python GPSLNavEph getUserTime test to reflect changes to GPSLNavEph
+           Fix RINEX 3 GLONASS nav time system
+           Change cerr debug output to use DEBUGTRACE
+           Tool for demangling GNU C++ names
+           Improve performance of SP3NavDataFactory
+           Initialize data fields in Rinex3NavData
+           Add Compare classes for unique-ifying/sorting GPSLNavEph
+           Change wavelength constants to be computed via c/freq
+           Add option to df_diff to ignore specific columns of matching lines
+           Remove unmaintained copy of testsuccexp.cmake that was in ext
+           Add integrity status flag to GPS LNAV data structures
+           Tweak old glonass eph store test for regression test creation
+           Disable GloEphemerisStore test
+           Add method for determining if a BeiDou satellite should be GEO
+           Add minimal (mostly unimplemented except for select classes) isSameData and compare methods to the NavData tree
+           Quick fix for GPSLNavEph terse mode dump with ura index=15
+           Changes from review
+           Submitting GLOFNavAlm code for math review
+           Make GLOFNavAlm::getXvt return true even if we're unconvinced it's correct
+           Fixes for cmake when installing gnsstk swig bindings
+           Remove some debug output from PNBGLOFNavDataFactory.cpp
+           GLONASS classes swig wrapping
+           Add test to build
+           Rename IonoData to IonoNavData
+           Rename KlobucharIonoData to KlobucharIonoNavData and NeQuickIonoData to NeQuickIonoNavData
+           Rename IonoData classes in NewNav for clarity and consistency
+           Rename test files to match library
+           Rename tests to match renamed classes
+           Deprecate old nav
+           Add semi-circles and tangent to Angle class
+           Make the GLOFNavAlm test expect getXvt to return false, for now
+           Make asAngleType do case-insensitive conversion
+           Derive S0 from time of interest, not toa
+           Change the epsilon for glo alm xvt so windows is barely adequate
+           Fix sign error in time offset use
+           Add missing day rollover check in Klobuchar model
+
+     Taben Malik <malik@arlut.utexas.edu> (2):
+           SWIG does not support c++11 type aliasing 'using' until 3.0.11. Debian 9 has swig 3.0.10
+           Reset initial/final time when NavDataFactory is cleared
+
+
+
 # Version 12.1.0   Thursday October 28, 2021
 
 Modifications by Author
