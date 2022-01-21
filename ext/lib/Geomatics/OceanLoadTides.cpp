@@ -99,7 +99,7 @@ namespace gnsstk {
       vector<double> coeff;
       string site;
       while(1) {                                // read the file
-         int count;
+         int count = 0;
          string line,word;
 
          // get the next line
