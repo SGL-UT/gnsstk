@@ -12,7 +12,7 @@ Vcs-Browser: https://github.com/SGL-UT/GNSSTk.git
 
 Package: gnsstk-bin
 Architecture: any
-Depends: libgnsstk12 (>= ${binary:Version}), python3-gnsstk <pkg_python>, ${misc:Depends}, ${shlibs:Depends}, ${python3:Depends}
+Depends: libgnsstk13 (>= ${binary:Version}), python3-gnsstk <pkg_python>, ${misc:Depends}, ${shlibs:Depends}, ${python3:Depends}
 Description: GNSS Toolkit (GNSSTk) - command line tools
  The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by
  the Space and Geophysics Laboratory (SGL), part of the Applied Research
@@ -21,10 +21,10 @@ Description: GNSS Toolkit (GNSSTk) - command line tools
  * provide applications for use by the GNSS and satellite navigation community.
  * provide a core library to facilitate the development of GNSS applications.
 
-Package: libgnsstk12-dev
+Package: libgnsstk13-dev
 Section: libdevel
 Architecture: any
-Depends: libgnsstk12 (= ${binary:Version}), ${misc:Depends}
+Depends: libgnsstk13 (= ${binary:Version}), ${misc:Depends}
 Description: GNSS Toolkit (GNSSTk) - Headers
  The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by
  the Space and Geophysics Laboratory (SGL), part of the Applied Research
@@ -33,7 +33,7 @@ Description: GNSS Toolkit (GNSSTk) - Headers
  * provide applications for use by the GNSS and satellite navigation community.
  * provide a core library to facilitate the development of GNSS applications.
 
-Package: libgnsstk12
+Package: libgnsstk13
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: GNSS Toolkit (GNSSTk) - Shared Libraries
@@ -44,12 +44,12 @@ Description: GNSS Toolkit (GNSSTk) - Shared Libraries
  * provide applications for use by the GNSS and satellite navigation community.
  * provide a core library to facilitate the development of GNSS applications.
 
-Package: libgnsstk12-dbg
+Package: libgnsstk13-dbg
 Build-Profiles: <debug_package>
 Architecture: any
 Section: debug
 Priority: extra
-Depends: libgnsstk12 (= ${binary:Version}), ${misc:Depends}
+Depends: libgnsstk13 (= ${binary:Version}), ${misc:Depends}
 Description: GNSS Toolkit (GNSSTk) - Shared Library Debugging Symbols
  The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by
  the Space and Geophysics Laboratory (SGL), part of the Applied Research

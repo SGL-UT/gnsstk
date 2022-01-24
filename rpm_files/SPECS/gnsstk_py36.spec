@@ -1,5 +1,5 @@
 %define name python3-gnsstk
-%define version 12.1.0
+%define version 13.0.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -64,6 +64,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 21 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v13.0.0 release
 * Thu Oct 28 2021 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v12.1.0 release
 * Wed Sep 15 2021 David Barber <dbarber@arlut.utexas.edu>

@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 12.1.0
+%define version 13.0.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,54 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 21 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v13.0.0 release
+-   Add windows packaging job
+-   Update copyright header to year 2022
+-   Fix KlobucharIonoNavData day rollover check
+-   Fix CommonTime/TimeTag/etc. time offset to subtract instead of add.
+-   Update Rename IonoData::getCorrection to getIonoCorr
+-   Update Rename NeQuickIonoData to NeQuickIonoNavData
+-   Update Rename KlobucharIonoData to KlobucharIonoNavData
+-   Update Rename IonoData to IonoNavData
+-   Add GLONASS NewNav classes
+-   Update Refactor SunEarthSatGeometry from ext to core, comply with style guide.
+-   Update Remove numerous deprecated classes
+-   Fix Reset times when NavDataFactory is cleared
+-   Update SWIG does not support c++11 type aliasing 'using' until 3.0.11. Debian 9 has swig 3.0.10
+-   Fix cmake when installing gnsstk swig bindings
+-   Update debian package python3-gnsstk to explicitly conflict with python-gnsstk
+-   Add method for determining if a BeiDou satellite should be GEO
+-   Add support for Terse mode dumps to NavDataFactoryWithStore
+-   Add getIndexSet, getNavMap methods to NavDataFactoryWithStore
+-   Fix loadIntoMap methods of the NavDataFactory tree to properly fill in the desired data maps
+-   Add minimal (mostly unimplemented except for select classes) isSameData and compare methods to the NavData tree
+-   Update wavelength constants to be computed via c/freq
+-   Fix FileSpec text handling
+-   Fix (remove) redundant/misleading docstring paragraph.
+-   Add Compare classes for unique-ifying/sorting GPSLNavEph
+-   Add option to df_diff to ignore specific columns of matching lines
+-   Update build.sh to use python3 by default instead of python2
+-   Add profiler support to build process.
+-   Update SP3NavDataFactory for performance improvements.
+-   Add ObsID constructor that avoids wildcards.
+-   Fix ObsID incorrect comment in constructor docs.
+-   Update debian control files to build python3 bindings, instead of python2.
+-   Update NewNav debug output to use DEBUGTRACE instead of cerr
+-   Update test_GPSLNavEph.py to reflect changes in GPSLNavEph getUserTime implementation
+-   Update SWIG stuff due to changes in #includes
+-   Update python3 detection for swig bindings.
+-   NewNav dump method updates for consistency.
+-   Add GPSLNavEph xmit2/xmit3 fields for transmit time of SF2/3
+-   Add a "Terse" dump type for NewNav
+-   Fix YumaNavDataFactory problem with reading Yuma nav files
+-   Add option for regular expression exclusion in df_diff.
+-   Update how initial/finalTime are set in NavDataFactoryWithStore.
+-   Add NavLibrary::getIndexSet() methods.
+-   Add NavDataFactory::getIndexSet() methods.
+-   Add MultiFormatNavDataFactory::getFactory() method.
+-   Add Store CI artifacts in artifactory.
+-   Update Refactor ORDs code to use newnav
 * Thu Oct 28 2021 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v12.1.0 release
 - Update SolarPosition SWIG bindings to map output data.
