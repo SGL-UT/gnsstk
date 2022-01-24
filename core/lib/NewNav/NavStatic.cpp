@@ -143,8 +143,6 @@ namespace gnsstk
             glof(std::make_shared<gnsstk::PNBGLOFNavDataFactory>());
          PNBMultiGNSSNavDataFactory::addFactory(NavType::GloCivilF,glof);
       }
-	  ~GNSSTKFormatInitializer()
-	  { exit(123); DEBUGTRACE_FUNCTION(); }
    };
 
    static GNSSTKFormatInitializer gnsstkMFNDFI;

@@ -41,7 +41,6 @@
 
 #include "NavDataFactory.hpp"
 #include "TimeOffsetData.hpp"
-#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -79,8 +78,6 @@ namespace gnsstk
          /// Clean up.
       virtual ~NavDataFactoryWithStore()
       {
-		  DEBUGTRACE_FUNCTION();
-		  DEBUGTRACE("this = " << this);
       }
 
          /** Search the store to find the navigation message that meets

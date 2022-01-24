@@ -40,7 +40,6 @@
 #define GNSSTK_NAVDATAFACTORYWITHSTOREFILE_HPP
 
 #include "NavDataFactoryWithStore.hpp"
-#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -57,8 +56,6 @@ namespace gnsstk
          /// Clean up.
       virtual ~NavDataFactoryWithStoreFile()
       {
-		 DEBUGTRACE_FUNCTION();
-		 DEBUGTRACE("this = " << this);
       }
          /** Load a file into the default map, NavDataFactoryWithStore::data.
           * @param[in] source The path to the file to load.

@@ -62,22 +62,22 @@ namespace gnsstk
    public:
       NDFUniqIterator()
             : map(nullptr)
-      {DEBUGTRACE_FUNCTION();}
+      {}
       NDFUniqIterator(T& omap)
             : nuit(omap.begin()), map(&omap)
-      {DEBUGTRACE_FUNCTION();}
+      {}
       NDFUniqIterator(T& omap, typename T::iterator i)
             : nuit(i), map(&omap)
-      {DEBUGTRACE_FUNCTION();}
+      {}
       NDFUniqIterator(std::shared_ptr<T> omap)
             : nuit(omap->begin()), map(omap.get())
-      {DEBUGTRACE_FUNCTION();}
+      {}
       NDFUniqIterator(std::shared_ptr<T> omap, typename T::iterator i)
-            : nuit(i), map(&omap.get())
-      {DEBUGTRACE_FUNCTION();}
+            : nuit(i), map(omap.get())
+      {}
       NDFUniqIterator& operator++()
       {
-		 DEBUGTRACE_FUNCTION();
+         
          nuit++;
          NavDataFactory *ndfp = dynamic_cast<NavDataFactory*>(
             nuit->second.get());
@@ -93,11 +93,8 @@ namespace gnsstk
       }
       typename T::value_type& operator*()
       {
-		 DEBUGTRACE_FUNCTION();
-		 DEBUGTRACE("map=" << map);
          if (nuit != map->end())
          {
-			DEBUGTRACE("doing the thing");
             NavDataFactory *ndfp = dynamic_cast<NavDataFactory*>(
                nuit->second.get());
             uniques.insert(ndfp);
@@ -105,11 +102,11 @@ namespace gnsstk
          return *nuit;
       }
       NDFUniqIterator begin()
-      { DEBUGTRACE_FUNCTION(); DEBUGTRACE("map=" << map); return NDFUniqIterator(*map); }
+      { return NDFUniqIterator(*map); }
       NDFUniqIterator end()
-      { DEBUGTRACE_FUNCTION(); DEBUGTRACE("map=" << map); return NDFUniqIterator(*map, map->end()); }
+      { return NDFUniqIterator(*map, map->end()); }
       bool operator!=(const NDFUniqIterator& i)
-      { DEBUGTRACE_FUNCTION(); return ((map != i.map) || (nuit != i.nuit)); }
+      { return ((map != i.map) || (nuit != i.nuit)); }
    private:
          /// non-unique iterator.
       typename T::iterator nuit;

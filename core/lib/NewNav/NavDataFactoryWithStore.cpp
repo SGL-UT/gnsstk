@@ -837,7 +837,6 @@ namespace gnsstk
    void NavDataFactoryWithStore ::
    clear()
    {
-	  DEBUGTRACE_FUNCTION();
       data.clear();
       nearestData.clear();
       offsetData.clear();

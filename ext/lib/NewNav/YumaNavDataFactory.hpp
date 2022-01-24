@@ -42,7 +42,6 @@
 #include "NavDataFactoryWithStoreFile.hpp"
 #include "YumaData.hpp"
 #include "GPSLNavAlm.hpp"
-#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -64,8 +63,6 @@ namespace gnsstk
          /// Clean up.
       virtual ~YumaNavDataFactory()
       {
-		 DEBUGTRACE_FUNCTION();
-		 DEBUGTRACE("this = " << this);
       }
 
          /** Load Yuma nav data into a map.

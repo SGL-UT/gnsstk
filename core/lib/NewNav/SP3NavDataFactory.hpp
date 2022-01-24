@@ -42,7 +42,6 @@
 #include "NavDataFactoryWithStoreFile.hpp"
 #include "SP3Data.hpp"
 #include "SP3Header.hpp"
-#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -78,8 +77,6 @@ namespace gnsstk
          /// Clean up.
       virtual ~SP3NavDataFactory()
       {
-		 DEBUGTRACE_FUNCTION();
-		 DEBUGTRACE("this = " << this);
       }
 
          /** Search the store to find the navigation message that
