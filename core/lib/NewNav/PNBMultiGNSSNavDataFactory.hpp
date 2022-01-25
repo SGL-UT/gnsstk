@@ -66,6 +66,9 @@ namespace gnsstk
    class PNBMultiGNSSNavDataFactory : public PNBNavDataFactory
    {
    public:
+         /// Initialize myFactories.
+      PNBMultiGNSSNavDataFactory();
+
          /** Set the factories' handling of valid and invalid
           * navigation data.  This should be called before any addData()
           * calls.
@@ -115,7 +118,12 @@ namespace gnsstk
          /** Known PNB -> nav data factories, organized by navigation
           * message type.  Declared static so that the user doesn't
           * have to add all the factories themselves. */
-      static PNBNavDataFactoryMap& factories();
+      static std::shared_ptr<PNBNavDataFactoryMap> factories();
+
+        /** Keep a cached copy of the shared_ptr to the static
+         * PNBNavDataFactoryMap so that windows doesn't destroy it before
+         * destroying this. */
+     std::shared_ptr<PNBNavDataFactoryMap> myFactories;
    }; // class PNBMultiGNSSNavDataFactory
 
       //@}

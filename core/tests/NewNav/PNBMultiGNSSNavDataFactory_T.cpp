@@ -65,7 +65,7 @@ namespace gnsstk
 class TestClass : public gnsstk::PNBMultiGNSSNavDataFactory
 {
 public:
-   static gnsstk::PNBNavDataFactoryMap& getFactories()
+   static std::shared_ptr<gnsstk::PNBNavDataFactoryMap> getFactories()
    { return factories(); }
 };
 class PNBTestFactory : public gnsstk::PNBNavDataFactory
@@ -143,7 +143,7 @@ constructorTest()
       // Iterate over the factories and try to find the expected
       // factory objects.  The factories map may also contain ext
       // factories, so we ignore anything else.
-   for (auto& i : TestClass::getFactories())
+   for (auto& i : *(TestClass::getFactories()))
    {
       gnsstk::PNBNavDataFactory *p = i.second.get();
       if (dynamic_cast<gnsstk::PNBGPSLNavDataFactory*>(p) != nullptr)
@@ -178,7 +178,7 @@ setValidityFilterTest()
    gnsstk::PNBMultiGNSSNavDataFactory uut;
    PNBTestFactory *fact = nullptr;
       // find our test factory so we can verify setValidityFilter
-   for (auto& i : TestClass::getFactories())
+   for (auto& i : *(TestClass::getFactories()))
    {
       gnsstk::PNBNavDataFactory *p = i.second.get();
       if ((fact = dynamic_cast<PNBTestFactory*>(p)) != nullptr)
@@ -212,7 +212,7 @@ setTypeFilterTest()
    gnsstk::PNBMultiGNSSNavDataFactory uut;
    PNBTestFactory *fact = nullptr;
       // find our test factory so we can verify setTypeFilter
-   for (auto& i : TestClass::getFactories())
+   for (auto& i : *(TestClass::getFactories()))
    {
       gnsstk::PNBNavDataFactory *p = i.second.get();
       if ((fact = dynamic_cast<PNBTestFactory*>(p)) != nullptr)

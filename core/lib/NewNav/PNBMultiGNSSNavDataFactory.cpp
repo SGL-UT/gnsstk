@@ -40,10 +40,18 @@
 
 namespace gnsstk
 {
+   PNBMultiGNSSNavDataFactory ::
+   PNBMultiGNSSNavDataFactory()
+   {
+         // get our own shared pointer to the factories map.
+      myFactories = factories();
+   }
+
+
    void PNBMultiGNSSNavDataFactory ::
    setValidityFilter(NavValidityType nvt)
    {
-      for (auto& fi : factories())
+      for (auto& fi : *myFactories)
       {
          fi.second->setValidityFilter(nvt);
       }
@@ -53,7 +61,7 @@ namespace gnsstk
    void PNBMultiGNSSNavDataFactory ::
    setTypeFilter(const NavMessageTypeSet& nmts)
    {
-      for (auto& fi : factories())
+      for (auto& fi : *myFactories)
       {
          fi.second->setTypeFilter(nmts);
       }
@@ -65,8 +73,8 @@ namespace gnsstk
            double cadence)
    {
       NavType navType = navIn->getNavID().navType;
-      auto fi = factories().find(navType);
-      if (fi == factories().end())
+      auto fi = myFactories->find(navType);
+      if (fi == myFactories->end())
       {
             // We don't have a factory for this navigation message type
          return false;
@@ -88,7 +96,7 @@ namespace gnsstk
       {
          return false;
       }
-      factories()[navType] = fact;
+      (*factories())[navType] = fact;
       return true;
    }
 
@@ -96,17 +104,18 @@ namespace gnsstk
    void PNBMultiGNSSNavDataFactory ::
    resetState()
    {
-      for (auto& fi : factories())
+      for (auto& fi : *myFactories)
       {
          fi.second->resetState();
       }
    }
 
 
-   PNBNavDataFactoryMap& PNBMultiGNSSNavDataFactory ::
+   std::shared_ptr<PNBNavDataFactoryMap> PNBMultiGNSSNavDataFactory ::
    factories()
    {
-      static PNBNavDataFactoryMap rv;
+      static std::shared_ptr<PNBNavDataFactoryMap> rv =
+         std::make_shared<PNBNavDataFactoryMap>();
       return rv;
    }
 }

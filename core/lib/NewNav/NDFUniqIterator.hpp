@@ -69,8 +69,15 @@ namespace gnsstk
       NDFUniqIterator(T& omap, typename T::iterator i)
             : nuit(i), map(&omap)
       {}
+      NDFUniqIterator(std::shared_ptr<T> omap)
+            : nuit(omap->begin()), map(omap.get())
+      {}
+      NDFUniqIterator(std::shared_ptr<T> omap, typename T::iterator i)
+            : nuit(i), map(omap.get())
+      {}
       NDFUniqIterator& operator++()
       {
+         
          nuit++;
          NavDataFactory *ndfp = dynamic_cast<NavDataFactory*>(
             nuit->second.get());

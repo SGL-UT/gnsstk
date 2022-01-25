@@ -299,7 +299,12 @@ namespace gnsstk
          /** Known nav data factories, organized by signal to make
           * searches simpler and/or quicker.  Declared static so that
           * other libraries can transparently add factories. */
-      static NavDataFactoryMap& factories();
+     static std::shared_ptr<NavDataFactoryMap> factories();
+     
+        /** Keep a cached copy of the shared_ptr to the static
+         * NavDataFactoryMap so that windows doesn't destroy it before
+         * destroying this. */
+     std::shared_ptr<NavDataFactoryMap> myFactories;
 
    private:
          /** This method makes no sense in this context, because we
