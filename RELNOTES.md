@@ -6,6 +6,7 @@ GNSSTk 13.0.0 Release Notes
    * Final deprecation of old C++ Nav classes (see list below)
    * Addition of GLONASS NewNav classes (see list below)
    * Addition of NewNav support for BeiDou data from RINEX
+   * Fixing windows' destructor order by using a shared_ptr
    * Python2 is no longer supported for our platform packages.
  * Additionally, it contains minor library updates and bug fixes
 
@@ -54,6 +55,7 @@ Updates since v12.1.0
    *  Update Rename IonoData::getCorrection to getIonoCorr
    *  Update Remove numerous deprecated classes
    *  Update Refactor SunEarthSatGeometry from ext to core, comply with style guide.
+   *  Fixing windows' destructor order by using a shared_ptr
 
 Fixes since v12.1.0
 --------------------

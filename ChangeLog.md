@@ -32,7 +32,7 @@ Modifications by Author
      David Rainwater <rain@arlut.utexas.edu> (1):
            Migrate SunEarthSatGeometry to core and enforce C++ style.
 
-     John Knutson <johnk@arlut.utexas.edu> (70):
+     John Knutson <johnk@arlut.utexas.edu> (73):
            Add support in NavData::dump methods for PRN->SVN translation
            Update the dump methods of various newnav classes
            Add TimeSystem EnumIterator type definition
@@ -103,6 +103,9 @@ Modifications by Author
            Change the epsilon for glo alm xvt so windows is barely adequate
            Fix sign error in time offset use
            Add missing day rollover check in Klobuchar model
+           Fix windows' destructor order by using a shared_ptr
+           Initialize a couple of variables that were pointed out by windows as being uninitialized
+           Clean up changes and add similar pointer management to the static factories in PNBMultiGNSSNavDataFactory
 
      Taben Malik <malik@arlut.utexas.edu> (2):
            SWIG does not support c++11 type aliasing 'using' until 3.0.11. Debian 9 has swig 3.0.10

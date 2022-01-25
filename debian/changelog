@@ -1,6 +1,7 @@
 gnsstk (13.0.0-1) stable; urgency=low
 
   * Updated to version 13.0.0
+  * Fix windows' destructor order by using a shared_ptr
   * Update Refactor ORDs code to use newnav
   * Add Store CI artifacts in artifactory.
   * Add MultiFormatNavDataFactory::getFactory() method.
