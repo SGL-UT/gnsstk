@@ -231,7 +231,7 @@ if [ $build_docs ]; then
 
     if [[ -z $exclude_python && $build_ext ]] ; then
         log "Generating swig/python doc files from Doxygen output ..."
-        ${python_exe} $repo/swig/docstring_generator.py "$build_root"/doc "$build_root"/swig/doc >"$build_root"/swig_doc.log
+        ${python_exe} $repo/swig/docstring_generator.py "$repo"/docs "$build_root"/swig/doc >"$build_root"/swig_doc.log
     fi
 fi
 

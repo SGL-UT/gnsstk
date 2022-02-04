@@ -134,7 +134,10 @@ make_copy_targets(meta_files ${CMAKE_SOURCE_DIR} ${MODULE_PATH})
 set( SWIG_DOC_DIR ${CMAKE_CURRENT_BINARY_DIR}/doc )
 include_directories( ${SWIG_DOC_DIR} )
 file( MAKE_DIRECTORY ${SWIG_DOC_DIR} )
-file( WRITE ${SWIG_DOC_DIR}/doc.i "// dummy file. Is replaced when docs are generated for bindings." )
+# file needs to exist regardless if docstring_generator.py has run or not
+if( NOT EXISTS ${SWIG_DOC_DIR}/doc.i )
+    file( WRITE ${SWIG_DOC_DIR}/doc.i "// dummy file. Is written if docs are not generated for python bindings.")
+endif()
 
 # Provide ability to use CMake variables to define some values within the setup.py script
 set( SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in" )

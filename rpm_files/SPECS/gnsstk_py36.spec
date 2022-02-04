@@ -32,6 +32,9 @@ The primary goals of the GNSSTk project are to:
 # Setup and build GNSSTk utilizing CMake
 %build
 mkdir build
+doxygen Doxyfile
+mkdir -p build/swig/doc
+python3 swig/docstring_generator.py ./docs/ $(pwd)/build/swig/doc
 cd build
 cmake -DPYTHON_INSTALL_PREFIX=$RPM_BUILD_ROOT/ -DCMAKE_INSTALL_PREFIX=$RPM_BUILD_ROOT/usr -DBUILD_EXT=ON -DBUILD_PYTHON=ON -DBUILD_FOR_PACKAGE_SWITCH=ON -DVERSIONED_HEADER_INSTALL=ON -DPYTHON_EXECUTABLE=/usr/bin/python3.6 ../
 make all -j 4
