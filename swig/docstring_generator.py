@@ -47,11 +47,11 @@ def generate_docs(args):
     (gnsstk_root, swig_dir) = os.path.split( path_gnsstk_swig )
 
     # Build a list of all the XML files that dOxygen output previously
-    xml_glob_pattern = os.path.sep.join((args.src_dir, 'xml', '*.xml'))
-    xml_files = glob.glob( xml_glob_pattern )
+    xml_glob_pattern = os.path.sep.join((args.src_dir, 'xml', '**', '*.xml'))
+    xml_files = glob.glob( xml_glob_pattern, recursive=True)
     num_files = len( xml_files )
     if num_files == 0:
-        print 'WARNING: No doxygen-xml files found, docstrings cannot be generated.'
+        print('WARNING: No doxygen-xml files found, docstrings cannot be generated.')
         return
 
     # create directories for swig doc files
@@ -68,21 +68,21 @@ def generate_docs(args):
             try:
                 doxy2swig.convert(f_xml, output_file, False, False)
                 clean_errors(output_file)
-                print 'Parsed ', f, 'to', output_file
+                print('Parsed ', f, 'to', output_file)
             except Exception as e:
-                print 'ERROR:', f_xml, 'can not be parsed'
-                print '\t', e
+                print('ERROR:', f_xml, 'can not be parsed')
+                print('\t', e)
 
     # Add the includes for each converted xml file.i to the doc.i file
     out_file = open(path_gnsstk_swig_doc + os.path.sep + 'doc.i', 'w')
-    out_file.write('# This is an AUTO-GENERATED file by doc.py.\n')
-    out_file.write('# Do not modify it unless you know what you are doing.\n')
+    out_file.write('// This is an AUTO-GENERATED file by docstring_generator.py.\n')
+    out_file.write('// Do not modify it unless you know what you are doing.\n')
     doc_files = glob.glob(path_gnsstk_swig_doc + os.path.sep + '*.i')
     for f_i in doc_files:
         if 'doc.i' not in f_i:
             out_file.write('%include ' + f_i + '\n')
     out_file.close()
-    print '\nFinished with documentation.'
+    print('\nFinished with documentation.')
 
 
 if __name__ == '__main__':

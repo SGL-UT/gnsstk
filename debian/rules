@@ -40,6 +40,8 @@ ifneq ($(filter debug_package,$(DEB_BUILD_PROFILES)), )
 	DEBUG_PKG_PARAM="-DCMAKE_BUILD_TYPE=relwithdebinfo"
 endif
 
+builddir="./build"
+
 gen_control:
 	@echo "$@ Generated $(major) $(minor)."
 	sed -e 's/__VER__/$(major)/g' -e 's/__FULLVER__/$(major).$(minor)/g' debian/control.in >debian/control
@@ -47,7 +49,18 @@ gen_control:
 
 # main packaging script based on dh7 syntax
 %:
-	dh $@  --parallel --with python3
+	dh $@ --builddirectory $(builddir) --parallel --with python3
+
+override_dh_auto_build: gen_control
+ifeq ($(PYTHON_FLAG), "ON")
+	doxygen ./Doxyfile > $(builddir)/Doxygen.log
+	mkdir -p $(builddir)/swig/doc
+    # Second argument must be an absolute path
+	/usr/bin/python3 ./swig/docstring_generator.py ./docs $$(realpath $(builddir)/swig/doc)
+	# Clean up generated html/xml from doxygen
+	rm -r ./docs
+endif
+	dh_auto_build
 
 override_dh_auto_configure: gen_control
 	debian/check_versions_match.sh
