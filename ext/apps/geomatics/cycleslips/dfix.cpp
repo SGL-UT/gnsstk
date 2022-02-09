@@ -1107,11 +1107,11 @@ try {
    GlobalData& GD=GlobalData::Instance();
 
    msecHandler msh;
-   i = FindMilliseconds(GD.SPList, msh);
+   i = findMilliseconds(GD.SPList, msh);
    LOG(INFO) << "\n" << msh.getFindMessage(GD.fixMS);    // flag is verbose
 
    if(GD.fixMS && i) {
-      RemoveMilliseconds(GD.SPList, msh);
+      removeMilliseconds(GD.SPList, msh);
       LOG(INFO) << msh.getFixMessage(GD.verbose);
    }
 
