@@ -60,6 +60,7 @@ namespace gnsstk
       signal.messageType = NavMessageType::Ephemeris;
       weekFmt = "%4L(%4l)";
       msgLenSec = 10.0;
+      frame = ReferenceFrame::ITRF;
    }
 
 

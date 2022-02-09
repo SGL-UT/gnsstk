@@ -39,6 +39,7 @@
 #include "BDSD1NavEph.hpp"
 #include "TestUtil.hpp"
 #include "BDSWeekSecond.hpp"
+#include "CivilTime.hpp"
 
 namespace gnsstk
 {
@@ -58,6 +59,7 @@ public:
    unsigned fixFitTest();
    unsigned validateTest();
    unsigned getAODTest();
+   unsigned getXvtTest();
 };
 
 
@@ -160,6 +162,24 @@ getAODTest()
 }
 
 
+unsigned BDSD1NavEph_T ::
+getXvtTest()
+{
+   TUDEF("BDSD1NavEph", "getXvt");
+   gnsstk::BDSD1NavEph uut;
+   gnsstk::Xvt xvt;
+   uut.xmitTime = gnsstk::BDSWeekSecond(1854, .720000000000e+04);
+   uut.Toe = gnsstk::BDSWeekSecond(1854, .143840000000e+05);
+   uut.Toc = gnsstk::CivilTime(2015,7,19,3,59,44.0,gnsstk::TimeSystem::BDT);
+   uut.health = gnsstk::SVHealth::Healthy;
+   gnsstk::CivilTime civ(2015,7,19,2,0,35.0,gnsstk::TimeSystem::BDT);
+   TUASSERT(uut.getXvt(civ, xvt));
+   TUASSERTE(gnsstk::Xvt::HealthStatus, gnsstk::Xvt::Healthy, xvt.health);
+   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::CGCS2000,xvt.frame);
+   TURETURN();
+}
+
+
 int main()
 {
    BDSD1NavEph_T testClass;
@@ -170,6 +190,7 @@ int main()
    errorTotal += testClass.fixFitTest();
    errorTotal += testClass.validateTest();
    errorTotal += testClass.getAODTest();
+   errorTotal += testClass.getXvtTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

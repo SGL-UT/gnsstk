@@ -85,7 +85,9 @@ namespace gnsstk
    bool GLOFNavAlm ::
    getXvt(const CommonTime& when, Xvt& xvt)
    {
-      return math.getXvt(when, xvt, *this);
+      bool rv = math.getXvt(when, xvt, *this);
+      xvt.health = (healthBits ? Xvt::Healthy : Xvt::Unhealthy);
+      return rv;
    }
 
 
@@ -575,6 +577,9 @@ namespace gnsstk
       xvt.v[0] *= 1000.0;
       xvt.v[1] *= 1000.0;
       xvt.v[2] *= 1000.0;
+      xvt.frame = ReferenceFrame::PZ90;
+         // clock bias and drift are not available (?).
+      xvt.relcorr = xvt.computeRelativityCorrection();
       return true;
    }
 

@@ -39,6 +39,7 @@
 #include "GalFNavAlm.hpp"
 #include "TestUtil.hpp"
 #include "GALWeekSecond.hpp"
+#include "CivilTime.hpp"
 
 namespace gnsstk
 {
@@ -69,6 +70,7 @@ public:
    unsigned getUserTimeTest();
    unsigned fixFitTest();
    unsigned fixHealthTest();
+   unsigned getXvtTest();
 };
 
 
@@ -148,6 +150,24 @@ fixHealthTest()
 }
 
 
+unsigned GalFNavAlm_T ::
+getXvtTest()
+{
+   TUDEF("GalFNavAlm", "getXvt");
+   gnsstk::GalFNavAlm uut;
+   gnsstk::Xvt xvt;
+   uut.xmitTime = gnsstk::GALWeekSecond(1854, .720000000000e+04);
+   uut.Toe = gnsstk::GALWeekSecond(1854, .143840000000e+05);
+   uut.Toc = gnsstk::CivilTime(2015,7,19,3,59,44.0,gnsstk::TimeSystem::GAL);
+   uut.health = gnsstk::SVHealth::Healthy;
+   gnsstk::CivilTime civ(2015,7,19,2,0,35.0,gnsstk::TimeSystem::GAL);
+   TUASSERT(uut.getXvt(civ, xvt));
+   TUASSERTE(gnsstk::Xvt::HealthStatus, gnsstk::Xvt::Healthy, xvt.health);
+   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::ITRF,xvt.frame);
+   TURETURN();
+}
+
+
 int main()
 {
    GalFNavAlm_T testClass;
@@ -157,6 +177,7 @@ int main()
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.fixFitTest();
    errorTotal += testClass.fixHealthTest();
+   errorTotal += testClass.getXvtTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

@@ -48,6 +48,7 @@ namespace gnsstk
            sow(0)
    {
       weekFmt = "%4D(%4e)";
+      frame = ReferenceFrame::CGCS2000;
    }
 
 
