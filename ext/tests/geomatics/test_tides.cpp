@@ -376,8 +376,8 @@ try {
       ttag.setTimeSystem(TimeSystem::UTC);
       if(C.doSolid) {
          if(C.doSimple) {
-            Position Sun(SolarPosition(ttag, arad));
-            Position Moon(LunarPosition(ttag, arad));
+            Position Sun(solarPosition(ttag, arad));
+            Position Moon(lunarPosition(ttag, arad));
             dXYZ = computeSolidEarthTides(C.posset, ttag, Sun, Moon);
          }
          else {

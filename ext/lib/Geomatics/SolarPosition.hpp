@@ -15,7 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with GPSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
 //  Copyright 2004-2021, The Board of Regents of The University of Texas System
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,55 +40,62 @@
 
 //------------------------------------------------------------------------------------
 #ifndef SOLAR_POSITION_INCLUDE
-#define SOLAR_POSITION_INCLUDE
+#   define SOLAR_POSITION_INCLUDE
 
 //------------------------------------------------------------------------------------
 // includes
 // system
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
+#   include <fstream>
+#   include <iostream>
+#   include <string>
+#   include <vector>
 
 // GPSTk
-#include "CommonTime.hpp"
-#include "Position.hpp"
+#   include "CommonTime.hpp"
+#   include "Position.hpp"
 
-// geomatics
+namespace gpstk
+{
 
-namespace gpstk {
+      /**
+       Compute the Position of the Sun in WGS84 ECEF coordinates.
+       Ref. Astronomical Almanac pg C24, as presented on USNO web site; claimed
+       accuracy is about 1 arcminute, when t is within 2 centuries of 2000.
+       @param t  Input epoch of interest
+       @param AR  Output apparent angular radius of sun as seen at Earth (deg)
+       @return  Position (ECEF) of the Sun at t
+      */
+   Position solarPosition(const CommonTime& t, double& AR);
 
-   /// Compute the Position of the Sun in WGS84 ECEF coordinates.
-   /// Ref. Astronomical Almanac pg C24, as presented on USNO web site; claimed
-   /// accuracy is about 1 arcminute, when t is within 2 centuries of 2000.
-   /// @param t  Input epoch of interest
-   /// @param AR  Output apparent angular radius of sun as seen at Earth (deg)
-   /// @return  Position (ECEF) of the Sun at t
-   Position SolarPosition(CommonTime t, double& AR) throw();
+      /**
+       Compute the latitude and longitude of the Sun using a very simple
+       algorithm. Adapted from sunpos by D. Coco ARL:UT 12/15/94
+       @param t  Input epoch of interest
+       @param lat Output latitude of the Sun at t
+       @param lon Output longitude of the Sun at t
+      */
+   void crudeSolarPosition(const CommonTime& t, double& lat, double& lon);
 
-   /// Compute the latitude and longitude of the Sun using a very simple algorithm.
-   /// Adapted from sunpos by D. Coco ARL:UT 12/15/94
-   /// @param t  Input epoch of interest
-   /// @param lat Output latitude of the Sun at t
-   /// @param lon Output longitude of the Sun at t
-   void CrudeSolarPosition(CommonTime t, double& lat, double& lon) throw();
+      /**
+       Compute the Position of the Moon in WGS84 ECEF coordinates.
+       Ref. Astronomical Almanac 1990 D46
+       @param t  Input epoch of interest
+       @param AR  Output apparent angular radius of moon as seen at Earth (deg)
+       @return  Position (ECEF) of the Moon at t
+      */
+   Position lunarPosition(const CommonTime& t, double& AR);
 
-   /// Compute the Position of the Moon in WGS84 ECEF coordinates.
-   /// Ref. Astronomical Almanac 1990 D46
-   /// @param t  Input epoch of interest
-   /// @param AR  Output apparent angular radius of moon as seen at Earth (deg)
-   /// @return  Position (ECEF) of the Moon at t
-   Position LunarPosition(CommonTime t, double& AR) throw();
+      /**
+       Compute the fraction of the area of the Sun covered by the Earth as seen
+       from another body (e.g. satellite).
+       @param Rearth  Apparent angular radius of Earth.
+       @param Rsun    Apparent angular radius of Sun.
+       @param dES     Angular separation of Sun and Earth.
+       @return Fraction (0 <= factor <= 1) of Sun area covered by Earth
+      */
+   double shadowFactor(double Rearth, double Rsun, double dES);
 
-   /// Compute the fraction of the area of the Sun covered by the Earth as seen from
-   /// another body (e.g. satellite).
-   /// @param Rearth  Apparent angular radius of Earth.
-   /// @param Rsun    Apparent angular radius of Sun.
-   /// @param dES     Angular separation of Sun and Earth.
-   /// @return Fraction (0 <= factor <= 1) of Sun area covered by Earth
-   double shadowFactor(double Rearth, double Rsun, double dES) throw();
-
-}  // end namespace gpstk
+} // end namespace gpstk
 
 #endif // SOLAR_POSITION_INCLUDE
 // nothing below this
