@@ -868,7 +868,9 @@ namespace gnsstk
       std::vector<char> refBuf(bufsize, 0), checkBuf(bufsize, 0);
       std::ifstream ref(refFile.c_str()), check(checkFile.c_str());
       if (!ref || !check)
+      {
          return false; // missing or inaccessible file
+      }
          // get the file sizes
       unsigned long long refSize, checkSize, curPos;
       ref.seekg(0, std::ios_base::end);
@@ -876,19 +878,25 @@ namespace gnsstk
       check.seekg(0, std::ios_base::end);
       checkSize = check.tellg();
       if (refSize != checkSize)
+      {
          return false; // files not the same size
+      }
          // set our limit to the smaller of the file size and "to"
       to = std::min(to, refSize);
       if (!ref.seekg(from, std::ios_base::beg))
+      {
          return false; // seek failure, usually file too short
+      }
       if (!check.seekg(from, std::ios_base::beg))
+      {
          return false; // seek failure, usually file too short
+      }
 
       while (!done)
       {
          curPos = ref.tellg();
             // stop where requested
-         if ((curPos + readsize) > to)
+         if (((curPos + readsize) > to) || (curPos > refSize))
          {
             readsize = 1+(to - curPos);
             done = true;
@@ -896,7 +904,9 @@ namespace gnsstk
          ref.read(&refBuf[0], readsize);
          check.read(&checkBuf[0], readsize);
          if (refBuf != checkBuf)
+         {
             return false;
+         }
       }
       return true;
    }

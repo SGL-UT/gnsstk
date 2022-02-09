@@ -64,24 +64,56 @@ namespace gnsstk
       public std::binary_function<Rinex3NavData, Rinex3NavData, bool>
    {
    public:
+         /// Set the default epsilon to 1e-5 for comparison.
+      Rinex3NavDataOperatorLessThanFull()
+            : epsilon(1e-5)
+      {}
+
+         /** Set how different the left and right values can be before
+          * they're considered different.
+          *  e.g. left-right/left > epsilon. 
+          * @param[in] e The exponent for base 10 (epsilon=10**-e). */
       void setPrecision(int e)
       {
-         precision = e;
+         epsilon = std::pow(10.0, -e);
       }
 
+         /** Compare two Rinex3NavData objects.
+          * @param[in] l The left hand side of the < operation.
+          * @param[in] r The right hand side of the < operation.
+          * @return true if the left transmit time is less than the
+          *   right transmit time, the left satellite ID is less than
+          *   the right satellite ID, or if the individual data fields
+          *   of the left object are less than the right object. */
       bool operator()(const Rinex3NavData& l, const Rinex3NavData& r) const
       {
          GPSWeekSecond lXmitTime(l.weeknum, (double)l.xmitTime);
          GPSWeekSecond rXmitTime(r.weeknum, (double)r.xmitTime);
 
          if (lXmitTime < rXmitTime)
+         {
             return true;
+         }
          else if (lXmitTime == rXmitTime)
          {
                // compare the times and all data members
             if (l.time < r.time)
+            {
                return true;
-            else if (l.time == r.time)
+            }
+            else if (r.time < l.time)
+            {
+               return false;
+            }
+            else if (l.sat < r.sat)
+            {
+               return true;
+            }
+            else if (r.sat < l.sat)
+            {
+               return false;
+            }
+            else
             {
                std::list<double>
                   llist = l.toList(),
@@ -93,10 +125,18 @@ namespace gnsstk
 
                while (litr != llist.end())
                {
-                  if ((*litr + std::abs(*litr * std::pow((long double)10, -precision))) < *ritr )
+                     // Compare the two values against each other,
+                     // with an epsilon-sized slop.
+                  double diff = *litr - *ritr;
+                  double err = (*litr == 0 ? *ritr : (diff/(*litr)));
+                  if (err > epsilon)
+                  {
                      return true;
-                  else if (*litr > (*ritr + std::abs(*ritr * std::pow((long double)10,-precision))))
+                  }
+                  else if (err < -epsilon)
+                  {
                      return false;
+                  }
                   else
                   {
                      litr++;
@@ -108,7 +148,8 @@ namespace gnsstk
          return false;
       }
    private:
-      int precision;
+         /// Value used to allow some "slop" in measuring equality in operator()
+      double epsilon;
    };
 
       /// This compares all elements of the Rinex3NavData with equals

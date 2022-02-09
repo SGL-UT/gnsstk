@@ -41,7 +41,9 @@ variables:
   NO_BIGBUILD_CI:
     value: "False"
     description: "If True then no big build jobs are executed on main/ci_xxx/version_xxx_prep branches. Defaults to False"
-    
+  BLD_VS2019:
+    value: "True"
+    description: "If True, then build under Windows using Visual Studio 2019"
 # Template for all normal jobs.
 .normal_build:
   only:
@@ -634,6 +636,11 @@ user_install_windows_vs2019:
   script:
     - cd build
     - cmake --build . --config Release --target install
+    - cd ..
+    - dir build\install
+  artifacts:
+    paths:
+      - build/install/
   dependencies:
     - build_windows_vs2019
     - test_windows_vs2019
