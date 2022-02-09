@@ -95,6 +95,8 @@ namespace gnsstk
       bool getISC(const ObsID& oid1, const ObsID& oid2, double& corr)
          const override;
 
+         /** @note T_GD is stored as the isc data field in the parent
+          * class InterSigCorr */
       uint32_t pre;   ///< The preamble from the start of the subframe.
       bool alert;     ///< Alert flag
       double iscL1CA; ///< Intersignal corrections for L1 C/A.

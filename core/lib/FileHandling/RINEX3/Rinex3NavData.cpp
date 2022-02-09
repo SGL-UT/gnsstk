@@ -558,7 +558,7 @@ namespace gnsstk
       else
       {
             // version 2
-         strm << setw(2) << PRNID << ' '
+         strm << right << setw(2) << PRNID << ' '
               << printTime(civtime, "%02y %2m %2d %2H %2M %4.1f");
       }
 
