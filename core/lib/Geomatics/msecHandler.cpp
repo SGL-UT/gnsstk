@@ -109,7 +109,9 @@ namespace gpstk
                                  const vector<double> &waves)
    {
       if (ots.size() != waves.size())
+      {
          GPSTK_THROW(Exception("Inconsistent input"));
+      }
       N           = ots.size();
       obstypes    = ots;
       wavelengths = waves;
@@ -123,21 +125,31 @@ namespace gpstk
                          double data)
    {
       if (dt == -1.0)
+      {
          GPSTK_THROW(Exception("Must set nominal timestep first"));
+      }
 
       if (data == 0.0)
+      {
          return; // NB assumes, as in RINEX, that data==0 is missing.
+      }
 
       if (currttag == CommonTime::BEGINNING_OF_TIME)
+      {
          currttag = ttag;
+      }
       if (ttag != currttag)
+      {
          compute(ttag);
+      }
 
       // first find it in obstypes
       vector<string>::const_iterator it;
       it = find(obstypes.begin(), obstypes.end(), obstype);
       if (it == obstypes.end())
+      {
          return; // not one of the obstypes
+      }
       int i = (it - obstypes.begin());
 
       // store current value
@@ -183,7 +195,9 @@ namespace gpstk
                    string("so apply fix to the timetags.");
       }
       else
+      {
          fixMsg += string("Do not apply adjusts to timtags.");
+      }
 
       ims = ntot = 0;
       tref       = CommonTime::BEGINNING_OF_TIME;
@@ -225,7 +239,9 @@ namespace gpstk
       // find index and wavelength for this obstype
       int index = vectorindex(obstypes, obstype);
       if (index == -1)
+      {
          GPSTK_THROW(Exception("Invalid obstype, internal error: " + obstype));
+      }
       double wl = wavelengths[index];
 
       // remove adjusts
@@ -233,14 +249,18 @@ namespace gpstk
       {
          // remove adjust from the time tag
          if (doPR)
+         {
             ttag -= ntot * 0.001;
+         }
 
          // remove adjust from the data
          if (find(ots[ims - 1].begin(), ots[ims - 1].end(), obstype) !=
              ots[ims - 1].end())
+         {
             if (data != 0.0)
             {
                data -= ntot * (wl == 0.0 ? Rfact : Rfact / wl);
+         }
             }
       }
 
@@ -252,9 +272,13 @@ namespace gpstk
          double dtot = (intercept + slope * (ttag - tref)) * Rfact;
          ttag += dtot / C_MPS;
          if (wl != 0.0)
+         {
             dtot /= wl;
+         }
          if (data != 0.0)
+         {
             data += dtot;
+         }
       }
    }
 
@@ -281,14 +305,18 @@ namespace gpstk
                     string(" adjusts for ") + tit->first;
 
       if (typesMap.size() > 1)
+      {
          findMsg +=
             string("\n  Warning - detected millisecond adjusts are not ") +
             string("consistently applied to the observables.");
+      }
 
       if (adjMsgs.size() > 0 && badMsgs.size() > adjMsgs.size() / 2)
+      {
          findMsg +=
             string("\n  Warning - millisecond adjust detection seems to be ") +
             string("of poor quality - consider rerunning with option --noMS");
+      }
 
       if (verbose)
       {
@@ -328,12 +356,18 @@ namespace gpstk
          for (i = 0; i < N; i++)
          {
             if (wavelengths[i] != 0.0)
+            {
                ave[i] *= wavelengths[i];
+            }
             if (npt[i] > 0)
+            {
                ave[i] *=
                   1000.0 / (npt[i] * C_MPS); // form average and convert to ms
+            }
             else
+            {
                ave[i] = 0.0;
+            }
          }
 
          // do for time tag as well
@@ -356,13 +390,21 @@ namespace gpstk
             {
                adj = true;
                if (wavelengths[i] != 0.0)
+               {
                   adjPh = true;
+               }
                else
+               {
                   adjPR = true;
+               }
                if (nadj == 0)
+               {
                   nadj = iave[i];
+               }
                else if (nadj != iave[i])
+               {
                   consist = false;
+               }
             }
          }
 
@@ -376,7 +418,9 @@ namespace gpstk
             for (i = 0; i < N; i++)
             { // just phases
                if (wavelengths[i] == 0.0)
+               {
                   continue;
+               }
 
                double med, mad;
                vector<double> deltas;
@@ -408,7 +452,9 @@ namespace gpstk
                   iave[i] = int(ave[i] + (ave[i] >= 0.0 ? 0.5 : -0.5));
                }
                if (iave[i] != 0)
+               {
                   foundPhase = true;
+               }
             }
 
             // fix it - duplicate code above
@@ -424,9 +470,13 @@ namespace gpstk
                   {
                      adj = true;
                      if (nadj == 0)
+                     {
                         nadj = iave[i];
+                     }
                      else if (nadj != iave[i])
+                     {
                         consist = false;
+                     }
                   }
                }
             }
@@ -456,13 +506,21 @@ namespace gpstk
             for (i = 0; i < N; i++)
             { // phase only
                if (wavelengths[i] == 0.0)
+               {
                   continue; // skip PR
+               }
                if (npt[i] == 0)
+               {
                   continue; // skip no data
+               }
                if (iave[i] != 0)
+               {
                   onphase = true;
+               }
                if (in == -1)
+               {
                   in = i;
+               }
                if (iave[i] != iave[in])
                {
                   consist = false;
@@ -474,13 +532,21 @@ namespace gpstk
             for (i = 0; i < N; i++)
             { // code only
                if (wavelengths[i] != 0.0)
+               {
                   continue; // skip Phase
+               }
                if (npt[i] == 0)
+               {
                   continue; // skip no data
+               }
                if (iave[i] != 0)
+               {
                   oncode = true;
+               }
                if (in == -1)
+               {
                   in = i;
+               }
                if (iave[i] != iave[in])
                {
                   consist = false;
@@ -488,29 +554,43 @@ namespace gpstk
                }
             }
             if (consist && onphase && !oncode)
+            {
                conmsg += string(" (Phase-only)");
+            }
             if (consist && !onphase && oncode)
+            {
                conmsg += string(" (PR-only)");
+            }
             if (!consist)
+            {
                conmsg += string(" invalid");
+            }
 
             // create the types str, the ots and the msg
             oss.str("");
             string types;
             vector<string> no, ot;
             if (iave[N] == 0)
+            {
                no.push_back("TT");
+            }
             else
+            {
                ot.push_back("TT");
+            }
             oss << (iave[N] == 0 ? "!" : "") << "TT";
             for (i = 0; i < N; i++)
             {
                if (npt[i])
                {
                   if (iave[i] == 0)
+                  {
                      no.push_back(obstypes[i]);
+                  }
                   else
+                  {
                      ot.push_back(obstypes[i]);
+                  }
                   oss << " " << (iave[i] == 0 ? "!" : "") << obstypes[i];
                }
             }
@@ -541,7 +621,9 @@ namespace gpstk
 
                // increment types map
                if (typesMap.find(types) == typesMap.end())
+               {
                   typesMap.insert(map<string, int>::value_type(types, 0));
+               }
                typesMap[types]++;
 
                adjMsgs.push_back(oss.str());
@@ -550,7 +632,9 @@ namespace gpstk
                for (i = 0; i < N; i++)
                {
                   if (iave[i] == 0)
+                  {
                      continue;
+                  }
                   oss.str("");
                   oss << "--BD+ ";
                   if (obstypes[i].length() > 2)
