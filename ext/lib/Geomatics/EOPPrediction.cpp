@@ -62,7 +62,7 @@ namespace gnsstk
       if (!inpf)
       {
          FileMissingException fme("Could not open EOPP file " + filename);
-         GPSTK_THROW(fme);
+         GNSSTK_THROW(fme);
       }
 
       ok = true;
@@ -201,7 +201,7 @@ namespace gnsstk
       {
          FileMissingException fme("EOPP File " + filename +
                                   " is corrupted or wrong format");
-         GPSTK_THROW(fme);
+         GNSSTK_THROW(fme);
       }
       if (inpf.bad())
       {
@@ -219,7 +219,7 @@ namespace gnsstk
       int w2 = wk - 1;                    // the previous week
       if (w2 < 0)
       {
-         GPSTK_THROW(Exception("Invalid week in EOPP file: " +
+         GNSSTK_THROW(Exception("Invalid week in EOPP file: " +
                                StringUtils::asString<short>(w2)));
       }
 
@@ -244,7 +244,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
       return (100 * yr + w2 - w1 + 1); // SN = Year (1 digit) + week of year

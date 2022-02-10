@@ -402,7 +402,7 @@ namespace gnsstk
             catch (gnsstk::Exception& e)
             {
                e.addText("Failed to add apriori");
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
 
             if (inverted)
@@ -413,7 +413,7 @@ namespace gnsstk
          catch (gnsstk::Exception& e)
          {
             e.addText("initializeFilter");
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 
@@ -441,7 +441,7 @@ namespace gnsstk
                gnsstk::Exception e(
                   std::string("Filter time step must be ") +
                   (timeReversed ? std::string("< 0") : std::string("> 0")));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             // save filter timestep, which is the timestep of one TU,
@@ -551,7 +551,7 @@ namespace gnsstk
          catch (gnsstk::Exception& e)
          {
             e.addText("ForwardFilter");
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 
@@ -562,7 +562,7 @@ namespace gnsstk
          */
       void BackwardFilter(double M)
       {
-         GPSTK_THROW(
+         GNSSTK_THROW(
             gnsstk::Exception("BackwardFilter must be called with integer NTU"));
       }
 
@@ -579,12 +579,12 @@ namespace gnsstk
             if (!isSmoother())
             {
                gnsstk::Exception e("Use setSmoother(true) to turn on smoothing");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             if (singular)
             {
                gnsstk::Exception e("Cannot smooth singular filter");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             stage = SU;
@@ -619,7 +619,7 @@ namespace gnsstk
          catch (gnsstk::Exception& e)
          {
             e.addText("BackwardFilter");
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 
@@ -723,7 +723,7 @@ namespace gnsstk
          catch (gnsstk::Exception& e)
          {
             e.addText("KINT");
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 
@@ -771,7 +771,7 @@ namespace gnsstk
          catch (gnsstk::Exception& e)
          {
             e.addText("KMU");
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 
@@ -837,7 +837,7 @@ namespace gnsstk
          catch (gnsstk::Exception& e)
          {
             e.addText("KTU");
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 
@@ -895,7 +895,7 @@ namespace gnsstk
          catch (gnsstk::Exception& e)
          {
             e.addText("KSU");
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 
@@ -1008,12 +1008,12 @@ namespace gnsstk
             inverted = false;
             LOG(DEBUG) << msg << " (singular)";
             e.addText(msg);
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch (std::exception& e)
          {
             gnsstk::Exception E(std::string("std exception: ") + e.what());
-            GPSTK_THROW(E);
+            GNSSTK_THROW(E);
          }
       }
 

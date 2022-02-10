@@ -79,18 +79,18 @@ void Robust::StemLeafPlot(std::ostream& os, double *xd, long nd,
 
    if (!xd || nd < 2)
    {
-      GPSTK_THROW(Exception("Invalid input"));
+      GNSSTK_THROW(Exception("Invalid input"));
    }
 
       // find range
    double range = xd[nd - 1] - xd[0]; // max - min
    if (range < 0.0)
    {
-      GPSTK_THROW(Exception("Array is not sorted"));
+      GNSSTK_THROW(Exception("Array is not sorted"));
    }
    if (range == 0.0)
    {
-      range = xd[0]; // GPSTK_THROW(Exception("Array has zero range"));
+      range = xd[0]; // GNSSTK_THROW(Exception("Array has zero range"));
    }
 
       // find scale
@@ -352,7 +352,7 @@ void Robust::Quantiles(double *xd, long nd)
    if (!xd || nd < 2)
    {
       Exception e("Invalid input");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 
    double f;
@@ -373,7 +373,7 @@ int Robust::RobustPolyFit(double *xd, const double *td, int nd, int N,
       if (!xd || !td || !c || nd < 2)
       {
          Exception e("Invalid input");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       const int maxiter       = 50;
@@ -535,17 +535,17 @@ int Robust::RobustPolyFit(double *xd, const double *td, int nd, int N,
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }  // end RobustPolyFit
 
@@ -564,7 +564,7 @@ double gnsstk::ADtest(double *xd, const int nd, double mean, double stddev,
    if (!xd || nd < 2)
    {
       Exception e("Invalid input");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 
    try
@@ -578,7 +578,7 @@ double gnsstk::ADtest(double *xd, const int nd, double mean, double stddev,
          if (!save)
          {
             Exception e("Could not allocate temporary array");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          for (i = 0; i < nd; i++)
          {
@@ -613,17 +613,17 @@ double gnsstk::ADtest(double *xd, const int nd, double mean, double stddev,
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 

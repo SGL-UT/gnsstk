@@ -38,8 +38,8 @@
 
 /// @file SatPass.hpp Data for one complete satellite pass.
 
-#ifndef GPSTK_SATELLITE_PASS_INCLUDE
-#define GPSTK_SATELLITE_PASS_INCLUDE
+#ifndef GNSSTK_SATELLITE_PASS_INCLUDE
+#define GNSSTK_SATELLITE_PASS_INCLUDE
 
 #include <map>
 #include <ostream>
@@ -60,7 +60,7 @@ namespace gnsstk
       /**
        class SatPass holds all range and phase data for a full satellite pass.
        Constructed and filled by the calling program, it is used to pass data
-       into and out of the GPSTK discontinuity corrector. NB. if objects of this
+       into and out of the GNSSTK discontinuity corrector. NB. if objects of this
        class are combined together, e.g. in STL containers such as list or
        vector, they MUST be consistently defined, namely the number of
        observation types must be the same, otherwise a nasty segmentation fault
@@ -910,4 +910,4 @@ namespace gnsstk
 } // end namespace gnsstk
 
 // -----------------------------------------------------------------------------------
-#endif // GPSTK_SATELLITE_PASS_INCLUDE
+#endif // GNSSTK_SATELLITE_PASS_INCLUDE

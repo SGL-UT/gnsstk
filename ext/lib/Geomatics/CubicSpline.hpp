@@ -111,7 +111,7 @@ namespace gnsstk
          if (N == 0)
          {
             Exception e("Must call initialize() first");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          if (x <= X[0])
          {
@@ -142,13 +142,13 @@ namespace gnsstk
          if (N == 0)
          {
             Exception e("Must call initialize() first");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          if (x < X[0] || x > X[N - 1])
          {
             Exception e(
                "Input value is outside range determined by initialize()");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          // find x in the array X
@@ -187,7 +187,7 @@ namespace gnsstk
          if (N == 0)
          {
             Exception e("Must call initialize() first");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          int n = x.size();
@@ -202,7 +202,7 @@ namespace gnsstk
                   std::string("Input value at index ") +
                   StringUtils::asString(i) +
                   std::string(" is outside range determined by initialize()"));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             // find x[i] in the array X: X[k-1] < x[i] <= X[k]
@@ -264,7 +264,7 @@ namespace gnsstk
          if (N == 0)
          {
             Exception e("Input data array(s) empty");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          // resize arrays
@@ -280,7 +280,7 @@ namespace gnsstk
             if (x[i - 1] >= x[i])
             {
                Exception e("Input data array X is not strictly increasing");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             X[i] = x[i];
             Y[i] = y[i];

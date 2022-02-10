@@ -113,17 +113,17 @@ void GDCconfiguration::setParameter(std::string cmd)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -151,17 +151,17 @@ void GDCconfiguration::setParameter(const std::string& label, double value)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -212,17 +212,17 @@ void GDCconfiguration::DisplayParameterUsage(ostream& os, bool advanced)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -318,17 +318,17 @@ void GDCconfiguration::initialize()
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -589,7 +589,7 @@ class GDCPass : public SatPass, public GDCconfiguration
       if (CFGdescription[a] == string())
       {
          Exception e("cfg(UNKNOWN LABEL) : " + a);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return CFG[a];
    }
@@ -927,17 +927,17 @@ int gnsstk::DiscontinuityCorrector(SatPass& svp, GDCconfiguration& gdc,
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -1152,17 +1152,17 @@ int GDCPass::preprocess()
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -1226,17 +1226,17 @@ int GDCPass::linearCombinations()
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -1328,17 +1328,17 @@ int GDCPass::detectWLslips()
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -1495,17 +1495,17 @@ int GDCPass::detectObviousSlips(string which)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -1568,17 +1568,17 @@ int GDCPass::firstDifferences(string which)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -1612,17 +1612,17 @@ void GDCPass::WLcomputeStats(list<Segment>::iterator& it)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -1803,17 +1803,17 @@ void GDCPass::WLsigmaStrip(list<Segment>::iterator& it)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -1922,17 +1922,17 @@ int GDCPass::WLstatSweep(list<Segment>::iterator& it, int width)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -2047,17 +2047,17 @@ int GDCPass::detectWLsmallSlips()
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -2260,17 +2260,17 @@ bool GDCPass::foundWLsmallSlip(list<Segment>::iterator& it, int i)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -2373,17 +2373,17 @@ int GDCPass::fixAllSlips(string which)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -2466,17 +2466,17 @@ void GDCPass::fixOneSlip(list<Segment>::iterator& kt, string which)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -2547,17 +2547,17 @@ void GDCPass::WLslipFix(list<Segment>::iterator& left,
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -2719,17 +2719,17 @@ void GDCPass::GFslipFix(list<Segment>::iterator& left,
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -2897,17 +2897,17 @@ long GDCPass::EstimateGFslipFix(list<Segment>::iterator& left,
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -2956,17 +2956,17 @@ int GDCPass::prepareGFdata()
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -3057,17 +3057,17 @@ int GDCPass::detectGFslips()
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -3158,17 +3158,17 @@ int GDCPass::GFphaseResiduals(list<Segment>::iterator& it)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -3313,17 +3313,17 @@ int GDCPass::detectGFsmallSlips()
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -3403,17 +3403,17 @@ bool GDCPass::foundGFoutlier(int i, int inew, Stats<double>& pastSt,
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -3714,17 +3714,17 @@ bool GDCPass::foundGFsmallSlip(int i, int nseg, int iend, int ibeg,
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -3840,17 +3840,17 @@ int GDCPass::WLconsistencyCheck()
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -4276,17 +4276,17 @@ string GDCPass::finish(int iret, SatPass& svp, vector<string>& editCmds)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -4352,17 +4352,17 @@ list<Segment>::iterator GDCPass::createSegment(list<Segment>::iterator sit,
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -4476,17 +4476,17 @@ string GDCPass::dumpSegments(string label, int level, bool extra)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 
@@ -4518,17 +4518,17 @@ void GDCPass::deleteSegment(list<Segment>::iterator& it, string msg)
    }
    catch (Exception& e)
    {
-      GPSTK_RETHROW(e);
+      GNSSTK_RETHROW(e);
    }
    catch (std::exception& e)
    {
       Exception E("std except: " + string(e.what()));
-      GPSTK_THROW(E);
+      GNSSTK_THROW(E);
    }
    catch (...)
    {
       Exception e("Unknown exception");
-      GPSTK_THROW(e);
+      GNSSTK_THROW(e);
    }
 }
 

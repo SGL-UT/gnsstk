@@ -86,7 +86,7 @@ namespace gnsstk
       {
             /* if(ttag.getTimeSystem() == TimeSystem::Unknown) {
                  Exception e("Time system is unknown");
-                 GPSTK_THROW(e);
+                 GNSSTK_THROW(e);
            } */
 
             // Use REarth from solid.f example program
@@ -677,17 +677,17 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       catch (exception& e)
       {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
       catch (...)
       {
          Exception e("Unknown exception");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
    } // end computeSolidEarthTides()
@@ -798,7 +798,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 

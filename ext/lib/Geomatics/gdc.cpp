@@ -236,7 +236,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end int gdc::DiscontinuityCorrector(SatPass& SP, string& retMsg, int GLOn)
 
@@ -435,7 +435,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end int gdc::DiscontinuityCorrector(dataL1, dataL2,...)
 
@@ -471,7 +471,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end ProcessOneCombo()
 
@@ -540,7 +540,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end GrossProcessing()
 
@@ -607,7 +607,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end FineProcessing()
 
@@ -658,7 +658,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end gdc::filterFirstDiff()
 
@@ -691,7 +691,7 @@ namespace gnsstk
          if (iret == -2)
          {
             LOG(ERROR) << " Call to GF window filter without time data!";
-            GPSTK_THROW(
+            GNSSTK_THROW(
                Exception("Call to GF window filter without time data"));
          }
          else if (iret == -1 || iret == -3)
@@ -737,11 +737,11 @@ namespace gnsstk
       catch (std::exception& e)
       {
          LOG(ERROR) << "std exception " << e.what();
-         GPSTK_THROW(Exception(string("std exception") + e.what()));
+         GNSSTK_THROW(Exception(string("std exception") + e.what()));
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end int gdc::filterWindow()
 
@@ -760,11 +760,11 @@ namespace gnsstk
             // is this necessary? ever used?
          if (Arcs.size() == 0)
          {
-            GPSTK_THROW(Exception("No Arcs found"));
+            GNSSTK_THROW(Exception("No Arcs found"));
          }
          if (hits.size() == 0)
          {
-            GPSTK_THROW(Exception("No Filter results found"));
+            GNSSTK_THROW(Exception("No Filter results found"));
          }
 
          bool fixup(false);
@@ -831,7 +831,7 @@ namespace gnsstk
                      }
                      else
                      {
-                        GPSTK_THROW( // marked SLIP but not fixed
+                        GNSSTK_THROW( // marked SLIP but not fixed
                            Exception(
                               "Already marked but unfixed should not happen"));
                      }
@@ -879,7 +879,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end int gdc::mergeFilterResultsIntoArcs()
 
@@ -961,7 +961,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end void gdc::fixUpArcs()
 
@@ -992,7 +992,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1063,7 +1063,7 @@ namespace gnsstk
       catch (Exception& e)
       {
          delete ptrStats;
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       delete ptrStats;
    } // end void gdc::getArcStats()
@@ -1134,7 +1134,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end void gdc::findLargeGaps()
 
@@ -1178,7 +1178,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end map<int,int> gdc::findGaps(const Arc& arc) throw(Exception)
 
@@ -1264,7 +1264,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end int gdc::fixSlips(const unsigned which) throw(Exception)
 
@@ -1377,7 +1377,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1693,7 +1693,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1880,7 +1880,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1924,7 +1924,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end bool gdc::setParameter(string cmd) throw(Exception)
 
@@ -1935,7 +1935,7 @@ namespace gnsstk
    {
       if (CFG.find(label) == CFG.end())
       {
-         return false; // GPSTK_THROW(Exception("Unknown configuration label " +
+         return false; // GNSSTK_THROW(Exception("Unknown configuration label " +
       }
                           // label));
 
@@ -2052,7 +2052,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end void gdc::DisplayParameterUsage(ostream& os, bool advanced)
 
@@ -2128,7 +2128,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end void gdc::init()
 

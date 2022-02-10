@@ -86,7 +86,7 @@ namespace gnsstk
             // this should be a 'no ephemeris' exception
          catch (InvalidRequest& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
 
             // update the transmit time for sat clk bias + relativity
@@ -106,7 +106,7 @@ namespace gnsstk
          double rx = Rx.radius();
          if (::fabs(rx) < 1.e-8)
          {
-            GPSTK_THROW(Exception("Rx at origin!"));
+            GNSSTK_THROW(Exception("Rx at origin!"));
          }
          double rs   = SatR.radius();
          double dr   = range(SatR, Rx);
@@ -123,7 +123,7 @@ namespace gnsstk
          }
          catch (InvalidRequest& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
 
             // ----------------------------------------------------------
@@ -238,7 +238,7 @@ namespace gnsstk
       } // end try
       catch (gnsstk::Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
    } // end PreciseRange::ComputeAtTransmitTime

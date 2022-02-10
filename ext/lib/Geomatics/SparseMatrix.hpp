@@ -539,11 +539,11 @@ namespace gnsstk
 #ifdef RANGECHECK
          if (i >= nrows)
          {
-            GPSTK_THROW(Exception("row index out of range"));
+            GNSSTK_THROW(Exception("row index out of range"));
          }
          if (j >= ncols)
          {
-            GPSTK_THROW(Exception("col index out of range"));
+            GNSSTK_THROW(Exception("col index out of range"));
          }
 #endif
          return SMatProxy<T>(const_cast<SparseMatrix &>(*this), i, j);
@@ -555,11 +555,11 @@ namespace gnsstk
 #ifdef RANGECHECK
          if (i >= nrows)
          {
-            GPSTK_THROW(Exception("row index out of range"));
+            GNSSTK_THROW(Exception("row index out of range"));
          }
          if (j >= ncols)
          {
-            GPSTK_THROW(Exception("col index out of range"));
+            GNSSTK_THROW(Exception("col index out of range"));
          }
 #endif
          return SMatProxy<T>(*this, i, j);
@@ -732,7 +732,7 @@ namespace gnsstk
       if (rnum == 0 || cnum == 0 || rind + rnum > SM.nrows ||
           cind + cnum > SM.ncols)
       {
-         GPSTK_THROW(Exception("Invalid input submatrix c'tor - out of range"));
+         GNSSTK_THROW(Exception("Invalid input submatrix c'tor - out of range"));
       }
 
       nrows = rnum;
@@ -999,7 +999,7 @@ namespace gnsstk
       {
          if (L.cols() != V.size())
          {
-            GPSTK_THROW(Exception("Incompatible dimensions op*(SM,SV)"));
+            GNSSTK_THROW(Exception("Incompatible dimensions op*(SM,SV)"));
          }
 
          SparseVector<T> retSV(L.rows());
@@ -1014,7 +1014,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1026,7 +1026,7 @@ namespace gnsstk
       {
          if (L.cols() != V.size())
          {
-            GPSTK_THROW(Exception("Incompatible dimensions op*(M,SV)"));
+            GNSSTK_THROW(Exception("Incompatible dimensions op*(M,SV)"));
          }
 
          SparseVector<T> retSV(L.rows());
@@ -1047,7 +1047,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1059,7 +1059,7 @@ namespace gnsstk
       {
          if (L.cols() != V.size())
          {
-            GPSTK_THROW(Exception("Incompatible dimensions op*(SM,V)"));
+            GNSSTK_THROW(Exception("Incompatible dimensions op*(SM,V)"));
          }
 
          SparseVector<T> retSV(L.rows());
@@ -1074,7 +1074,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1084,7 +1084,7 @@ namespace gnsstk
    {
       if (V.size() != R.rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op*(SV,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op*(SV,SM)"));
       }
 
       SparseVector<T> retSV(R.cols());
@@ -1122,7 +1122,7 @@ namespace gnsstk
       {
          if (V.size() != R.rows())
          {
-            GPSTK_THROW(Exception("Incompatible dimensions op*(SV,M)"));
+            GNSSTK_THROW(Exception("Incompatible dimensions op*(SV,M)"));
          }
 
          T sum;
@@ -1144,7 +1144,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1154,7 +1154,7 @@ namespace gnsstk
    {
       if (V.size() != R.rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op*(V,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op*(V,SM)"));
       }
 
       SparseVector<T> retSV(R.cols());
@@ -1187,7 +1187,7 @@ namespace gnsstk
    {
       if (L.cols() != R.rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op*(SM,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op*(SM,SM)"));
       }
 
       const unsigned int nr(L.rows()), nc(R.cols());
@@ -1228,7 +1228,7 @@ namespace gnsstk
       {
          if (L.cols() != R.rows())
          {
-            GPSTK_THROW(Exception("Incompatible dimensions op*(SM,M)"));
+            GNSSTK_THROW(Exception("Incompatible dimensions op*(SM,M)"));
          }
 
          const unsigned int nr(L.rows()), nc(R.cols());
@@ -1261,7 +1261,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1271,7 +1271,7 @@ namespace gnsstk
    {
       if (L.cols() != R.rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op*(M,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op*(M,SM)"));
       }
 
       const unsigned int nr(L.rows()), nc(R.cols());
@@ -1314,7 +1314,7 @@ namespace gnsstk
    {
       if (L.rows() != V.size())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op||(SM,V)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op||(SM,V)"));
       }
 
       SparseMatrix<T> toRet(L);
@@ -1345,7 +1345,7 @@ namespace gnsstk
    {
       if (L.rows() != R.rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op||(SM,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op||(SM,SM)"));
       }
 
       SparseMatrix<T> toRet(L);
@@ -1394,7 +1394,7 @@ namespace gnsstk
    {
       if (SM.cols() != cols() || SM.rows() != rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op-=(SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-=(SM)"));
       }
       // std::cout << "SM::op-=(SM)" << std::endl;
 
@@ -1423,7 +1423,7 @@ namespace gnsstk
    {
       if (M.cols() != cols() || M.rows() != rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op-=(M)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-=(M)"));
       }
       // std::cout << "SM::op-=(M)" << std::endl;
 
@@ -1452,7 +1452,7 @@ namespace gnsstk
    {
       if (L.cols() != R.cols() || L.rows() != R.rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op-(SM,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-(SM,SM)"));
       }
       // std::cout << "SM::op-(SM,SM)" << std::endl;
 
@@ -1468,7 +1468,7 @@ namespace gnsstk
    {
       if (L.cols() != R.cols() || L.rows() != R.rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op-(SM,M)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-(SM,M)"));
       }
       // std::cout << "SM::op-(SM,M)" << std::endl;
 
@@ -1484,7 +1484,7 @@ namespace gnsstk
    {
       if (L.cols() != R.cols() || L.rows() != R.rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op-(M,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-(M,SM)"));
       }
       // std::cout << "SM::op-(M,SM)" << std::endl;
 
@@ -1502,7 +1502,7 @@ namespace gnsstk
    {
       if (SM.cols() != cols() || SM.rows() != rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op+=(SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+=(SM)"));
       }
       // std::cout << "SM::op+=(SM)" << std::endl;
 
@@ -1531,7 +1531,7 @@ namespace gnsstk
    {
       if (M.cols() != cols() || M.rows() != rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op+=(M)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+=(M)"));
       }
       // std::cout << "SM::op+=(M)" << std::endl;
 
@@ -1587,7 +1587,7 @@ namespace gnsstk
    {
       if (value == T(0))
       {
-         GPSTK_THROW(Exception("Divide by zero"));
+         GNSSTK_THROW(Exception("Divide by zero"));
       }
 
       // loop over all elements
@@ -1609,7 +1609,7 @@ namespace gnsstk
    {
       if (L.cols() != R.cols() || L.rows() != R.rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op+(SM,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+(SM,SM)"));
       }
       // std::cout << "SM::op+(SM,SM)" << std::endl;
 
@@ -1625,7 +1625,7 @@ namespace gnsstk
    {
       if (L.cols() != R.cols() || L.rows() != R.rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op+(SM,M)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+(SM,M)"));
       }
       // std::cout << "SM::op+(SM,M)" << std::endl;
 
@@ -1644,7 +1644,7 @@ namespace gnsstk
    {
       if (L.cols() != R.cols() || L.rows() != R.rows())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op+(M,SM)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+(M,SM)"));
       }
       // std::cout << "SM::op+(M,SM)" << std::endl;
 
@@ -1715,7 +1715,7 @@ namespace gnsstk
    {
       if (ii >= nrows || jj >= nrows)
       {
-         GPSTK_THROW(Exception("Invalid indexes"));
+         GNSSTK_THROW(Exception("Invalid indexes"));
       }
 
       typename std::map<unsigned int, SparseVector<T>>::iterator it, jt;
@@ -1755,7 +1755,7 @@ namespace gnsstk
    {
       if (ii >= ncols || jj >= ncols)
       {
-         GPSTK_THROW(Exception("Invalid indexes"));
+         GNSSTK_THROW(Exception("Invalid indexes"));
       }
 
       // may not be the fastest, but may be fast enough - tranpose() is fast
@@ -1825,7 +1825,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1839,7 +1839,7 @@ namespace gnsstk
       {
          if (P.cols() != C.rows() || C.rows() != C.cols())
          {
-            GPSTK_THROW(Exception("Incompatible dimensions transformDiag()"));
+            GNSSTK_THROW(Exception("Incompatible dimensions transformDiag()"));
          }
 
          const unsigned int n(P.cols());
@@ -1874,7 +1874,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1895,7 +1895,7 @@ namespace gnsstk
          {
             std::ostringstream oss;
             oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
-            GPSTK_THROW(Exception(oss.str()));
+            GNSSTK_THROW(Exception(oss.str()));
          }
 
          unsigned int i, k;
@@ -1910,7 +1910,7 @@ namespace gnsstk
             {
                std::ostringstream oss;
                oss << "Singular matrix - zero row at index " << i << ")";
-               GPSTK_THROW(Exception(oss.str()));
+               GNSSTK_THROW(Exception(oss.str()));
             }
          }
 
@@ -1948,7 +1948,7 @@ namespace gnsstk
                }
                if (kt == GJ.rowsMap.end())
                {
-                  GPSTK_THROW(Exception("Singular matrix"));
+                  GNSSTK_THROW(Exception("Singular matrix"));
                }
             }
 
@@ -2018,7 +2018,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -2062,7 +2062,7 @@ namespace gnsstk
       {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
-         GPSTK_THROW(Exception(oss.str()));
+         GNSSTK_THROW(Exception(oss.str()));
       }
 
       const unsigned int n = A.rows();
@@ -2083,7 +2083,7 @@ namespace gnsstk
             std::ostringstream oss;
             oss << "lowerCholesky() requires positive-definite input:"
                 << " (zero rows at index " << i << ")";
-            GPSTK_THROW(Exception(oss.str()));
+            GNSSTK_THROW(Exception(oss.str()));
          }
 
          SparseVector<T> Vrow(n);
@@ -2113,7 +2113,7 @@ namespace gnsstk
             oss << "Non-positive eigenvalue " << std::scientific << d
                 << " at col " << j
                 << ": lowerCholesky() requires positive-definite input";
-            GPSTK_THROW(Exception(oss.str()));
+            GNSSTK_THROW(Exception(oss.str()));
          }
 
          diag                   = SQRT(d);
@@ -2151,7 +2151,7 @@ namespace gnsstk
       {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << L.rows() << "x" << L.cols();
-         GPSTK_THROW(Exception(oss.str()));
+         GNSSTK_THROW(Exception(oss.str()));
       }
 
       const unsigned int n(L.rows());
@@ -2172,7 +2172,7 @@ namespace gnsstk
          {
             std::ostringstream oss;
             oss << "Singular matrix - zero diagonal at row " << i;
-            GPSTK_THROW(Exception(oss.str()));
+            GNSSTK_THROW(Exception(oss.str()));
          }
 
          dum = it->second[i];
@@ -2281,7 +2281,7 @@ namespace gnsstk
       catch (Exception& me)
       {
          me.addText("Called by inverseViaCholesky()");
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
 
@@ -2474,7 +2474,7 @@ namespace gnsstk
          oss << "Invalid input dimensions:\n  R has dimension " << R.rows()
              << "x" << R.cols() << ",\n  Z has length " << Z.size()
              << ",\n  and A has dimension " << A.rows() << "x" << A.cols();
-         GPSTK_THROW(Exception(oss.str()));
+         GNSSTK_THROW(Exception(oss.str()));
       }
 
       const T EPS = T(1.e-20);
@@ -2585,7 +2585,7 @@ namespace gnsstk
       // should never happen
       if (jt == AT.rowsMap.end())
       {
-         GPSTK_THROW(Exception("Failure on last column"));
+         GNSSTK_THROW(Exception("Failure on last column"));
       }
 
       // put this row, jt->second, into the last column of A
@@ -2630,7 +2630,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 

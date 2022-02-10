@@ -44,8 +44,8 @@
     size. Output is a list of Rinex editing commands (see EditRinex or class
     RinexEditor).*/
 
-#ifndef GPSTK_DISCONTINUITY_CORRECTOR_INCLUDE
-#define GPSTK_DISCONTINUITY_CORRECTOR_INCLUDE
+#ifndef GNSSTK_DISCONTINUITY_CORRECTOR_INCLUDE
+#define GNSSTK_DISCONTINUITY_CORRECTOR_INCLUDE
 
 #include <fstream>
 #include <iostream>
@@ -372,7 +372,7 @@ namespace gnsstk
          if (CFGdesc[a] == std::string())
          {
             Exception e("cfg(UNKNOWN LABEL) : " + a);
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          return CFG[a];
       }
@@ -748,7 +748,7 @@ namespace gnsstk
          }
          catch (Exception& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 
@@ -801,7 +801,7 @@ namespace gnsstk
       {
          if (i >= dataWL.size())
          {
-            GPSTK_THROW(Exception("Index out of range in xtime"));
+            GNSSTK_THROW(Exception("Index out of range in xtime"));
          }
          Epoch tt(beginT);
          tt += xdata[i];
@@ -817,7 +817,7 @@ namespace gnsstk
       {
          if (int(ind) < ait->second.index)
          {
-            GPSTK_THROW(Exception("index before given Arc"));
+            GNSSTK_THROW(Exception("index before given Arc"));
          }
 
          while (ait != Arcs.end() &&
@@ -826,7 +826,7 @@ namespace gnsstk
 
          if (ait == Arcs.end()) // index not found
          {
-            GPSTK_THROW(Exception("index after end of Arcs"));
+            GNSSTK_THROW(Exception("index after end of Arcs"));
          }
       }
 
@@ -885,4 +885,4 @@ namespace gnsstk
 } // end namespace gnsstk
 
 //------------------------------------------------------------------------------------
-#endif // GPSTK_DISCONTINUITY_CORRECTOR_INCLUDE
+#endif // GNSSTK_DISCONTINUITY_CORRECTOR_INCLUDE

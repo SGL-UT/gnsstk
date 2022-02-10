@@ -435,7 +435,7 @@ namespace gnsstk
 #ifdef RANGECHECK
          if (in >= len)
          {
-            GPSTK_THROW(Exception("index out of range"));
+            GNSSTK_THROW(Exception("index out of range"));
          }
 #endif
          return SVecProxy<T>(const_cast<SparseVector &>(*this), in);
@@ -447,7 +447,7 @@ namespace gnsstk
 #ifdef RANGECHECK
          if (in >= len)
          {
-            GPSTK_THROW(Exception("index out of range"));
+            GNSSTK_THROW(Exception("index out of range"));
          }
 #endif
          return SVecProxy<T>(*this, in);
@@ -613,7 +613,7 @@ namespace gnsstk
    {
       if (ind + n > SV.len)
       {
-         GPSTK_THROW(Exception("Invalid input subvector c'tor - out of range"));
+         GNSSTK_THROW(Exception("Invalid input subvector c'tor - out of range"));
       }
       if (n == 0)
       {
@@ -743,13 +743,13 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
       T norm1(norm(S1)), norm2(norm(S2));
       if (norm1 == T(0) || norm2 == T(0))
       {
-         GPSTK_THROW(Exception("zero norm"));
+         GNSSTK_THROW(Exception("zero norm"));
       }
 
       return ((cv / norm1) / norm2);
@@ -765,13 +765,13 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
       T norm1(norm(SV)), norm2(norm(V));
       if (norm1 == T(0) || norm2 == T(0))
       {
-         GPSTK_THROW(Exception("zero norm"));
+         GNSSTK_THROW(Exception("zero norm"));
       }
 
       return ((cv / norm1) / norm2);
@@ -790,7 +790,7 @@ namespace gnsstk
    {
       if (SL.size() != SR.size())
       {
-         GPSTK_THROW(Exception("length mismatch"));
+         GNSSTK_THROW(Exception("length mismatch"));
       }
       T value(0);
       typename std::map<unsigned int, T>::const_iterator it = SL.vecMap.begin();
@@ -822,7 +822,7 @@ namespace gnsstk
    {
       if (SL.size() != SR.size())
       {
-         GPSTK_THROW(Exception("length mismatch"));
+         GNSSTK_THROW(Exception("length mismatch"));
       }
       T value(0);
       typename std::map<unsigned int, T>::const_iterator it = SL.vecMap.begin();
@@ -859,7 +859,7 @@ namespace gnsstk
    {
       if (SL.size() != R.size())
       {
-         GPSTK_THROW(Exception("length mismatch"));
+         GNSSTK_THROW(Exception("length mismatch"));
       }
       T value(0);
       typename std::map<unsigned int, T>::const_iterator it;
@@ -949,7 +949,7 @@ namespace gnsstk
    {
       if (len != R.size())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op-=(SV)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-=(SV)"));
       }
 
       typename std::map<unsigned int, T>::const_iterator Rit;
@@ -975,7 +975,7 @@ namespace gnsstk
    {
       if (len != R.size())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op-=(V)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-=(V)"));
       }
 
       for (unsigned int i = 0; i < R.size(); i++)
@@ -1005,7 +1005,7 @@ namespace gnsstk
    {
       if (len != R.size())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op+=(SV)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+=(SV)"));
       }
 
       typename std::map<unsigned int, T>::const_iterator Rit;
@@ -1031,7 +1031,7 @@ namespace gnsstk
    {
       if (len != R.size())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op+=(V)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+=(V)"));
       }
       // std::cout << " op+=(V)" << std::endl;
 
@@ -1067,7 +1067,7 @@ namespace gnsstk
       }
       if (len != R.size())
       {
-         GPSTK_THROW(
+         GNSSTK_THROW(
             Exception("Incompatible dimensions addScaledSparseVector()"));
       }
 
@@ -1116,7 +1116,7 @@ namespace gnsstk
    {
       if (value == T(0))
       {
-         GPSTK_THROW(Exception("Divide by zero"));
+         GNSSTK_THROW(Exception("Divide by zero"));
       }
 
       typename std::map<unsigned int, T>::iterator it;
@@ -1134,7 +1134,7 @@ namespace gnsstk
    {
       if (L.size() != R.size())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op-(SV,SV)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-(SV,SV)"));
       }
 
       // std::cout << "Call copy ctor from op-(SV,SV)" << std::endl;
@@ -1150,7 +1150,7 @@ namespace gnsstk
    {
       if (L.size() != R.size())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op-(SV,V)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-(SV,V)"));
       }
       // std::cout << "Call copy ctor from op-(SV,V)" << std::endl;
 
@@ -1166,7 +1166,7 @@ namespace gnsstk
    {
       if (L.size() != R.size())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op-(V,SV)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op-(V,SV)"));
       }
       // std::cout << "Call copy ctor from op-(V,SV)" << std::endl;
 
@@ -1183,7 +1183,7 @@ namespace gnsstk
    {
       if (L.size() != R.size())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op+(SV,SV)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+(SV,SV)"));
       }
       // std::cout << "Call copy ctor from op+(SV,SV)" << std::endl;
 
@@ -1199,7 +1199,7 @@ namespace gnsstk
    {
       if (L.size() != R.size())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op+(SV,V)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+(SV,V)"));
       }
       // std::cout << "Call copy ctor from op+(SV,V)" << std::endl;
 
@@ -1215,7 +1215,7 @@ namespace gnsstk
    {
       if (L.size() != R.size())
       {
-         GPSTK_THROW(Exception("Incompatible dimensions op+(V,SV)"));
+         GNSSTK_THROW(Exception("Incompatible dimensions op+(V,SV)"));
       }
       // std::cout << "Call copy ctor from op+(V,SV)" << std::endl;
 

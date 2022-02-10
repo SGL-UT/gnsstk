@@ -36,8 +36,8 @@
 //
 //==============================================================================
 
-#ifndef GPSTK_WINDOWFILTER_HPP
-#define GPSTK_WINDOWFILTER_HPP
+#ifndef GNSSTK_WINDOWFILTER_HPP
+#define GNSSTK_WINDOWFILTER_HPP
 
 /** @file WindowFilter.hpp
        This class implements a statistical filter that uses 'windowed' averages.
@@ -1519,4 +1519,4 @@ namespace gnsstk
 
 } // namespace gnsstk
 
-#endif // GPSTK_WINDOWFILTER_HPP
+#endif // GNSSTK_WINDOWFILTER_HPP

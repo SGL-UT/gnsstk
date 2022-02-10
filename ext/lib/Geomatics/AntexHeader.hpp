@@ -38,8 +38,8 @@
 
 /// @file AntexHeader.hpp Encapsulate header of ANTEX antenna file, including I/O
 
-#ifndef GPSTK_ANTEX_HEADER_HPP
-#define GPSTK_ANTEX_HEADER_HPP
+#ifndef GNSSTK_ANTEX_HEADER_HPP
+#define GNSSTK_ANTEX_HEADER_HPP
 
 #include <string>
 #include <vector>
@@ -157,4 +157,4 @@ namespace gnsstk
 
 } // namespace gnsstk
 
-#endif // GPSTK_ANTEX_HEADER_HPP
+#endif // GNSSTK_ANTEX_HEADER_HPP

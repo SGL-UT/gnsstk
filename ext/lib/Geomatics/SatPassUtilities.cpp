@@ -123,7 +123,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end dump()
 
@@ -178,7 +178,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end findMilliseconds()
 
@@ -243,7 +243,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end removeMilliseconds()
 
@@ -363,7 +363,7 @@ namespace gnsstk
                {
                   LOG(ERROR)
                      << "Reading RINEX obs threw exception " << e.what();
-                  GPSTK_RETHROW(e);
+                  GNSSTK_RETHROW(e);
                }
 
                if (RinFile.eof() || !RinFile.good())
@@ -420,7 +420,7 @@ namespace gnsstk
                         }
                         else
                         {
-                           GPSTK_THROW(Exception(
+                           GNSSTK_THROW(Exception(
                               string("Invalid time step: expected ") +
                               asString<double>(dtin) +
                               string(" seconds but found ") +
@@ -473,7 +473,7 @@ namespace gnsstk
                      }
                      else
                      {
-                        GPSTK_THROW(Exception(
+                        GNSSTK_THROW(Exception(
                            string("Invalid time step: expected ") +
                            asString<double>(dtin) +
                            string(" seconds but found ") +
@@ -561,7 +561,7 @@ namespace gnsstk
                            " at time " + printTime(obsdata.time, timfmt) +
                            (lenient ? " - Error, this should not happen!"
                                     : ""));
-                        GPSTK_THROW(e);
+                        GNSSTK_THROW(e);
                      }
 
                         // else if(i == -3) {   // sat not found (RinexObsData form
@@ -582,7 +582,7 @@ namespace gnsstk
                                   << " are out of time order";
                   LOG(ERROR) << "ERROR - too many 'short timestep' warnings - "
                              << "decimate the data file first.";
-                  GPSTK_THROW(
+                  GNSSTK_THROW(
                      Exception("Too many short timesteps - decimate instead"));
                }
 
@@ -604,7 +604,7 @@ namespace gnsstk
             // dt
          if (::fabs(dt - dtin) > esttol)
          {
-            GPSTK_THROW(Exception("Input time step (" + asString(dtin, 2) +
+            GNSSTK_THROW(Exception("Input time step (" + asString(dtin, 2) +
                                   ") does not match computed (" +
                                   asString(dt, 2) + ")"));
          }
@@ -637,7 +637,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -782,7 +782,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
       return 0;
@@ -943,7 +943,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
       return 0;

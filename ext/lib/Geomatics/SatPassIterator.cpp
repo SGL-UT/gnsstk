@@ -55,7 +55,7 @@ namespace gnsstk
       if (SPList.size() == 0)
       {
          Exception e("Empty list");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       int i, j;
@@ -72,7 +72,7 @@ namespace gnsstk
             //      == RinexObsHeader::UN)
             //{
             //   Exception e("Unregistered observation type :
-            //   "+SPList[0].labelForIndex[i]); GPSTK_THROW(e);
+            //   "+SPList[0].labelForIndex[i]); GNSSTK_THROW(e);
             //}
       }
 
@@ -90,7 +90,7 @@ namespace gnsstk
          {
             Exception e("Inconsistent time intervals: " +
                         asString(SPList[i].dt) + " != " + asString(DT));
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // find the earliest and latest time

@@ -43,8 +43,8 @@
     squares estimation of a polynomial. Reference: Mason, Gunst and Hess,
     "Statistical Design and Analysis of Experiments," Wiley, New York, 1989. */
 
-#ifndef GPSTK_ROBUSTSTATS_HPP
-#define GPSTK_ROBUSTSTATS_HPP
+#ifndef GNSSTK_ROBUSTSTATS_HPP
+#define GNSSTK_ROBUSTSTATS_HPP
 
 //------------------------------------------------------------------------------------
 // system includes
@@ -363,7 +363,7 @@ namespace gnsstk
          if (!xd || nd < 2)
          {
             Exception e("Invalid input");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          try
@@ -377,7 +377,7 @@ namespace gnsstk
                if (!save)
                {
                   Exception e("Could not allocate temporary array");
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                for (i = 0; i < nd; i++)
                   save[i] = xd[i];
@@ -406,7 +406,7 @@ namespace gnsstk
          }
          catch (Exception &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
 
       } // end Median
@@ -427,7 +427,7 @@ namespace gnsstk
          if (!xd || nd < 2)
          {
             Exception e("Invalid input");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          int q;
@@ -472,7 +472,7 @@ namespace gnsstk
          if (!xd || nd < 2)
          {
             Exception e("Invalid input");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          // store data in a temporary array
@@ -482,7 +482,7 @@ namespace gnsstk
             if (!save)
             {
                Exception e("Could not allocate temporary array");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             for (i = 0; i < nd; i++)
                save[i] = xd[i];
@@ -549,7 +549,7 @@ namespace gnsstk
             if (!xd || nd < 2)
             {
                Exception e("Invalid input");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             tv = T(RobustTuningT) * MAD;
@@ -590,7 +590,7 @@ namespace gnsstk
          }
          catch (Exception& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
 
       } // end MEstimate

@@ -109,7 +109,7 @@ namespace gnsstk
          }
          catch (Exception& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 
@@ -143,7 +143,7 @@ namespace gnsstk
          if (sys != TimeSystem::UTC && sys != TimeSystem::TT &&
              sys != TimeSystem::TDB)
          {
-            GPSTK_THROW(Exception("Time system not allowed"));
+            GNSSTK_THROW(Exception("Time system not allowed"));
          }
          system = sys;
       }
@@ -220,7 +220,7 @@ namespace gnsstk
          }
          catch (Exception& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 

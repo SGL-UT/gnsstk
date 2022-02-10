@@ -354,7 +354,7 @@ namespace gnsstk
             oss << "Invalid input dimensions:\n  R has dimension " << R.rows()
                 << "x" << R.cols() << ",\n  Z has length " << Z.size()
                 << ",\n  and A has dimension " << A.rows() << "x" << A.cols();
-            GPSTK_THROW(MatrixException(oss.str()));
+            GNSSTK_THROW(MatrixException(oss.str()));
          }
       }
 
@@ -461,7 +461,7 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
 
@@ -500,7 +500,7 @@ namespace gnsstk
       {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
-         GPSTK_THROW(MatrixException(oss.str()));
+         GNSSTK_THROW(MatrixException(oss.str()));
       }
 
       const unsigned int n = A.rows();
@@ -518,7 +518,7 @@ namespace gnsstk
             oss << "Non-positive eigenvalue " << std::scientific << d
                 << " at col " << j
                 << ": lowerCholesky() requires positive-definite input";
-            GPSTK_THROW(SingularMatrixException(oss.str()));
+            GNSSTK_THROW(SingularMatrixException(oss.str()));
          }
          L(j, j) = ::sqrt(d);
          for (i = j + 1; i < n; i++)
@@ -549,7 +549,7 @@ namespace gnsstk
       {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
-         GPSTK_THROW(MatrixException(oss.str()));
+         GNSSTK_THROW(MatrixException(oss.str()));
       }
 
       const unsigned int n = A.cols();
@@ -567,7 +567,7 @@ namespace gnsstk
             oss << "Non-positive eigenvalue " << std::scientific << d
                 << " at col " << j
                 << ": upperCholesky() requires positive-definite input";
-            GPSTK_THROW(SingularMatrixException(oss.str()));
+            GNSSTK_THROW(SingularMatrixException(oss.str()));
          }
          U(j, j) = ::sqrt(d);
          d       = T(1) / U(j, j);
@@ -610,7 +610,7 @@ namespace gnsstk
       catch (MatrixException& me)
       {
          me.addText("Called by inverseCholesky()");
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
 
@@ -639,7 +639,7 @@ namespace gnsstk
       {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << UT.rows() << "x" << UT.cols();
-         GPSTK_THROW(MatrixException(oss.str()));
+         GNSSTK_THROW(MatrixException(oss.str()));
       }
 
       unsigned int i, j, k, n = UT.rows();
@@ -650,7 +650,7 @@ namespace gnsstk
       dum = UT(n - 1, n - 1);
       if (dum == T(0))
       {
-         GPSTK_THROW(SingularMatrixException("Singular matrix at element 0"));
+         GNSSTK_THROW(SingularMatrixException("Singular matrix at element 0"));
       }
 
       big = small       = fabs(dum);
@@ -669,7 +669,7 @@ namespace gnsstk
             {
                std::ostringstream oss;
                oss << "Singular matrix at element " << i;
-               GPSTK_THROW(MatrixException(oss.str()));
+               GNSSTK_THROW(MatrixException(oss.str()));
             }
 
             if (fabs(UT(i, i)) > big)
@@ -729,7 +729,7 @@ namespace gnsstk
       {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << UT.rows() << "x" << UT.cols();
-         GPSTK_THROW(MatrixException(oss.str()));
+         GNSSTK_THROW(MatrixException(oss.str()));
       }
 
       unsigned int i, j, k;
@@ -776,7 +776,7 @@ namespace gnsstk
       {
          std::ostringstream oss;
          oss << "Invalid input dimensions: " << LT.rows() << "x" << LT.cols();
-         GPSTK_THROW(MatrixException(oss.str()));
+         GNSSTK_THROW(MatrixException(oss.str()));
       }
 
       unsigned int i, j, k, n = LT.rows();
@@ -788,7 +788,7 @@ namespace gnsstk
       if (dum == T(0))
       {
          SingularMatrixException e("Singular matrix at element 0");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       big = small = fabs(dum);
@@ -805,7 +805,7 @@ namespace gnsstk
       {
          if (LT(i, i) == T(0))
          {
-            GPSTK_THROW(
+            GNSSTK_THROW(
                SingularMatrixException("Singular matrix at element 0"));
          }
 
@@ -865,7 +865,7 @@ namespace gnsstk
          {
             std::ostringstream oss;
             oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
-            GPSTK_THROW(MatrixException(oss.str()));
+            GNSSTK_THROW(MatrixException(oss.str()));
          }
 
          const unsigned int N(A.rows());
@@ -877,7 +877,7 @@ namespace gnsstk
          catch (MatrixException& me)
          {
             me.addText("lowerCholesky failed");
-            GPSTK_RETHROW(me);
+            GNSSTK_RETHROW(me);
          }
 
          D = L.diagCopy(); // have to square these later
@@ -899,7 +899,7 @@ namespace gnsstk
       catch (MatrixException& me)
       {
          me.addText("Called by LDL()");
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
 
@@ -922,7 +922,7 @@ namespace gnsstk
          {
             std::ostringstream oss;
             oss << "Invalid input dimensions: " << A.rows() << "x" << A.cols();
-            GPSTK_THROW(MatrixException(oss.str()));
+            GNSSTK_THROW(MatrixException(oss.str()));
          }
 
          const unsigned int N(A.rows());
@@ -934,7 +934,7 @@ namespace gnsstk
          catch (MatrixException& me)
          {
             me.addText("upperCholesky failed");
-            GPSTK_RETHROW(me);
+            GNSSTK_RETHROW(me);
          }
 
          D = U.diagCopy(); // have to square these later
@@ -956,7 +956,7 @@ namespace gnsstk
       catch (MatrixException& me)
       {
          me.addText("Called by UDU()");
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
 

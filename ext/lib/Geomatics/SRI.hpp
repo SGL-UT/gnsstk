@@ -476,7 +476,7 @@ namespace gnsstk
          }
          catch (Exception& me)
          {
-            GPSTK_RETHROW(me);
+            GNSSTK_RETHROW(me);
          }
       }
 
@@ -497,7 +497,7 @@ namespace gnsstk
          }
          catch (MatrixException& me)
          {
-            GPSTK_RETHROW(me);
+            GNSSTK_RETHROW(me);
          }
       }
 

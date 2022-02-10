@@ -821,7 +821,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1027,7 +1027,7 @@ namespace gnsstk
       else
       {
          Exception e("IERS convention is not defined");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -1058,12 +1058,12 @@ namespace gnsstk
          else
          {
             Exception e("IERS convention is not defined");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1094,12 +1094,12 @@ namespace gnsstk
          else
          {
             Exception e("IERS convention is not defined");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1125,7 +1125,7 @@ namespace gnsstk
       else
       {
          Exception e("IERS convention is not defined");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -1151,7 +1151,7 @@ namespace gnsstk
       else
       {
          Exception e("IERS convention is not defined");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -1175,7 +1175,7 @@ namespace gnsstk
               NutationAngles2010(T,deps,dpsi);
            else {
               Exception e("IERS convention is not defined");
-              GPSTK_THROW(e);
+              GNSSTK_THROW(e);
            }
         } */
 
@@ -1201,12 +1201,12 @@ namespace gnsstk
          else
          {
             Exception e("IERS convention is not defined");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1234,7 +1234,7 @@ namespace gnsstk
       else
       {
          Exception e("IERS convention is not defined");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -1264,12 +1264,12 @@ namespace gnsstk
          else
          {
             Exception e("IERS convention is not defined");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1285,7 +1285,7 @@ namespace gnsstk
            try {
               if(convention != IERSConvention::IERS2010) {
                  Exception e("ECEFtoJ2000 implemented only for IERS2010");
-                 GPSTK_THROW(e);
+                 GNSSTK_THROW(e);
               }
 
               // get the frame bias matrix
@@ -1305,7 +1305,7 @@ namespace gnsstk
 
               return (FB*T2C);
            }
-           catch(Exception& e) { GPSTK_RETHROW(e); }
+           catch(Exception& e) { GNSSTK_RETHROW(e); }
         }
       */
 
@@ -1755,7 +1755,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1889,7 +1889,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -2012,7 +2012,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -2041,7 +2041,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -2074,7 +2074,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -2107,7 +2107,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -2165,7 +2165,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -2205,7 +2205,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -2252,7 +2252,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -2814,7 +2814,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -2841,7 +2841,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -2912,7 +2912,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -2989,7 +2989,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -3061,7 +3061,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 

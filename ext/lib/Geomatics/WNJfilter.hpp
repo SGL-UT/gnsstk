@@ -166,7 +166,7 @@ namespace gnsstk
                std::string("must be of length Nstate = ") +
                gnsstk::StringUtils::asString(Nstate) +
                std::string(" before calling initializeFilter"));
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          State = apState;
@@ -196,7 +196,7 @@ namespace gnsstk
          {
             LOG(INFO) << "Filter is singular in defineT";
             // gnsstk::Exception e("defineTimestep called with singular filter");
-            // GPSTK_THROW(e);
+            // GNSSTK_THROW(e);
          }
 
          LOG(DEBUG) << "defineT with Nstate " << Nstate << " and Nnoise "
@@ -248,7 +248,7 @@ namespace gnsstk
          {
             LOG(INFO) << "Filter is singular in defineM";
             // gnsstk::Exception e("defineMeasurement called with singular
-            // filter"); GPSTK_THROW(e);
+            // filter"); GNSSTK_THROW(e);
          }
 
          // TD make Partials, etc members of KalmanFilter, then don't have to

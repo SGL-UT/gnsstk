@@ -39,8 +39,8 @@
 /** @file Rinex3ObsFileLoader.hpp  Read a RINEX3 file, selecting, counting and
     saving obs data, then allow caller to access that data easily. */
 
-#ifndef GPSTK_RINEX3_FILE_LOADER_INCLUDE
-#define GPSTK_RINEX3_FILE_LOADER_INCLUDE
+#ifndef GNSSTK_RINEX3_FILE_LOADER_INCLUDE
+#define GNSSTK_RINEX3_FILE_LOADER_INCLUDE
 
 //------------------------------------------------------------------------------------
 // system includes
@@ -455,4 +455,4 @@ namespace gnsstk
 
 } // end namespace gnsstk
 
-#endif // GPSTK_RINEX3_FILE_LOADER_INCLUDE
+#endif // GNSSTK_RINEX3_FILE_LOADER_INCLUDE

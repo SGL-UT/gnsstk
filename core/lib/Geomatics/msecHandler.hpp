@@ -39,8 +39,8 @@
 /** @file msecHandler.hpp  Detect and fix millisecond clock adjusts in data,
       including pseudoranges, phases and time tags. */
 
-#ifndef GPSTK_MSHANDLER_INCLUDE
-#define GPSTK_MSHANDLER_INCLUDE
+#ifndef GNSSTK_MSHANDLER_INCLUDE
+#define GNSSTK_MSHANDLER_INCLUDE
 
 #include <map>
 #include <string>
@@ -188,4 +188,4 @@ namespace gnsstk
 
 } // namespace gnsstk
 
-#endif // GPSTK_MSHANDLER_INCLUDE
+#endif // GNSSTK_MSHANDLER_INCLUDE

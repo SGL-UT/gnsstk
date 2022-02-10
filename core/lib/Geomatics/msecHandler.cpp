@@ -110,7 +110,7 @@ namespace gnsstk
    {
       if (ots.size() != waves.size())
       {
-         GPSTK_THROW(Exception("Inconsistent input"));
+         GNSSTK_THROW(Exception("Inconsistent input"));
       }
       N           = ots.size();
       obstypes    = ots;
@@ -126,7 +126,7 @@ namespace gnsstk
    {
       if (dt == -1.0)
       {
-         GPSTK_THROW(Exception("Must set nominal timestep first"));
+         GNSSTK_THROW(Exception("Must set nominal timestep first"));
       }
 
       if (data == 0.0)
@@ -240,7 +240,7 @@ namespace gnsstk
       int index = vectorindex(obstypes, obstype);
       if (index == -1)
       {
-         GPSTK_THROW(Exception("Invalid obstype, internal error: " + obstype));
+         GNSSTK_THROW(Exception("Invalid obstype, internal error: " + obstype));
       }
       double wl = wavelengths[index];
 

@@ -103,7 +103,7 @@ namespace gnsstk
             asString<int>(r.rows()) + "x" + asString<int>(r.cols()) +
             ", Z has length " + asString<int>(z.size()) +
             " and NL has length " + asString<int>(nl.size()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       if (r.rows() <= 0)
       {
@@ -128,7 +128,7 @@ namespace gnsstk
             asString<int>(Cov.rows()) + "x" + asString<int>(Cov.cols()) +
             ", State has length " + asString<int>(State.size()) +
             " and NL has length " + asString<int>(NL.size()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       R     = inverseUT(upperCholesky(Cov));
       Z     = R * State;
@@ -169,7 +169,7 @@ namespace gnsstk
       {
          MatrixException me(
             "Invalid input: Namelists must be == to w/in permute");
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       try
@@ -190,11 +190,11 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch (VectorException& ve)
       {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -270,7 +270,7 @@ namespace gnsstk
          {
             MatrixException me(
                "split: Input Namelist must be a subset of this one");
-            GPSTK_THROW(me);
+            GNSSTK_THROW(me);
          }
 
          unsigned int i, j;
@@ -290,7 +290,7 @@ namespace gnsstk
             {
                MatrixException me(
                   "split: Input Namelist is not non-trivial subset");
-               GPSTK_THROW(me);
+               GNSSTK_THROW(me);
             }
          }
 
@@ -311,11 +311,11 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch (VectorException& ve)
       {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -345,11 +345,11 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch (VectorException& ve)
       {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -383,11 +383,11 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch (VectorException& ve)
       {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -404,7 +404,7 @@ namespace gnsstk
          if ((names & S.names).size() > 0)
          {
             Exception e("Cannot append duplicate names");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // append to names at the end, and to R Z, zero filling
@@ -415,7 +415,7 @@ namespace gnsstk
          if (I + S.names.size() != names.size())
          {
             Exception e("Append failed");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // loop over new names, copying data from input into the new SRI
@@ -430,11 +430,11 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch (VectorException& ve)
       {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -468,7 +468,7 @@ namespace gnsstk
             if (k == -1)
             {
                MatrixException me("Algorithm error 1");
-               GPSTK_THROW(me);
+               GNSSTK_THROW(me);
             }
 
                // copy this col of R into A (R is UT)
@@ -485,7 +485,7 @@ namespace gnsstk
             if (k == -1)
             {
                MatrixException me("Algorithm error 2");
-               GPSTK_THROW(me);
+               GNSSTK_THROW(me);
             }
             for (i = 0; i <= j; i++)
                A(m + i, k) = S.R(i, j);
@@ -506,11 +506,11 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch (VectorException& ve)
       {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -526,11 +526,11 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch (VectorException& ve)
       {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -587,7 +587,7 @@ namespace gnsstk
                             asString<int>(R.rows()) +
                             " while input has length " +
                             asString<int>(X0.size()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       Z = Z - R * X0;
    }
@@ -604,7 +604,7 @@ namespace gnsstk
                             asString<int>(R.rows()) +
                             " while input has length " +
                             asString<int>(Z0.size()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       Z = Z - Z0;
    }
@@ -624,7 +624,7 @@ namespace gnsstk
                             asString<int>(n) + " while input has dimension " +
                             asString<int>(A.rows()) + "x" +
                             asString<int>(A.cols()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       Householder<double> HA;
@@ -650,7 +650,7 @@ namespace gnsstk
             "Invalid input dimension: SRI has dimension " + asString<int>(n) +
             " while input has dimension " + asString<int>(RR.rows()) + "x" +
             asString<int>(RR.cols()) + " and " + asString<int>(ZZ.size()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       Matrix<double> A(RR || ZZ);
@@ -674,7 +674,7 @@ namespace gnsstk
                             asString<int>(n) + " while invT has dimension " +
                             asString<int>(invT.rows()) + "x" +
                             asString<int>(invT.cols()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       R = R * invT;
@@ -739,11 +739,11 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch (VectorException& ve)
       {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -777,7 +777,7 @@ namespace gnsstk
    {
       if (index >= names.size())
       {
-         GPSTK_THROW(Exception("Index out of range"));
+         GNSSTK_THROW(Exception("Index out of range"));
       }
       const unsigned int N(names.size());
 
@@ -846,11 +846,11 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch (VectorException& ve)
       {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -865,7 +865,7 @@ namespace gnsstk
          if (dropNL.size() != values_in.size())
          {
             VectorException e("Input has inconsistent lengths");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          /*
@@ -881,7 +881,7 @@ namespace gnsstk
                   const int n=indexes.size();         // new dimension
                   if(n == 0) {
                      Exception e("Cannot drop all states");
-                     GPSTK_THROW(e);
+                     GNSSTK_THROW(e);
                   }
 
                   Vector<double> X,newX(n);
@@ -989,11 +989,11 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch (VectorException& ve)
       {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -1010,7 +1010,7 @@ namespace gnsstk
             asString<int>(R.rows()) + ",\n  while input is Cov(" +
             asString<int>(Cov.rows()) + "x" + asString<int>(Cov.cols()) +
             ") and X(" + asString<int>(X.size()) + ").");
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       try
@@ -1020,7 +1020,7 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
    }
 
@@ -1036,7 +1036,7 @@ namespace gnsstk
             asString<int>(R.rows()) + ",\n  while input is InvCov(" +
             asString<int>(InvCov.rows()) + "x" + asString<int>(InvCov.cols()) +
             ") and X(" + asString<int>(X.size()) + ").");
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       try
@@ -1048,7 +1048,7 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
    }
 
@@ -1072,7 +1072,7 @@ namespace gnsstk
       catch (MatrixException& me)
       {
          me.addText("Called by getConditionNumber");
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
 
@@ -1104,7 +1104,7 @@ namespace gnsstk
             MatrixException me(
                "Singular matrix; zero diagonal element at index " +
                asString<int>(i));
-            GPSTK_THROW(me);
+            GNSSTK_THROW(me);
          }
          double sum = Z(i);
          for (j = i + 1; j < n; j++) // sum over columns to right of diagonal
@@ -1144,7 +1144,7 @@ namespace gnsstk
             MatrixException me("Singular matrix: condition number is " +
                                asString<double>(big) + " / " +
                                asString<double>(small));
-            GPSTK_THROW(me);
+            GNSSTK_THROW(me);
          }
 
          C = UTtimesTranspose(invR);
@@ -1152,11 +1152,11 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch (VectorException& ve)
       {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 

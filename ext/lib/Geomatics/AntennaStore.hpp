@@ -43,8 +43,8 @@
     compute PCOs at any (elevation, azimuth).
 */
 
-#ifndef GPSTK_ANTENNA_STORE_INCLUDE
-#define GPSTK_ANTENNA_STORE_INCLUDE
+#ifndef GNSSTK_ANTENNA_STORE_INCLUDE
+#define GNSSTK_ANTENNA_STORE_INCLUDE
 
 #include <iostream>
 #include <map>
@@ -234,4 +234,4 @@ namespace gnsstk
    }; // end class AntennaStore
 
 } // namespace gnsstk
-#endif // GPSTK_ANTENNA_STORE_INCLUDE
+#endif // GNSSTK_ANTENNA_STORE_INCLUDE

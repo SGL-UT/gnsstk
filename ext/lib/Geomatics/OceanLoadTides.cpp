@@ -98,7 +98,7 @@ namespace gnsstk
          if (!infile || !infile.is_open())
          {
             Exception e("File " + filename + " could not be opened.");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          n            = 0;    // number of successes
@@ -182,7 +182,7 @@ namespace gnsstk
                      Exception e("File " + filename +
                                  " is corrupted for site " + site +
                                  " - offending line follows\n" + line);
-                     GPSTK_THROW(e);
+                     GNSSTK_THROW(e);
                   }
                      // LOG(VERBOSE) << "Push back line " << line;
                   for (i = 0; i < 11; i++)
@@ -246,17 +246,17 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       catch (exception& e)
       {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
       catch (...)
       {
          Exception e("Unknown exception");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -277,7 +277,7 @@ namespace gnsstk
          if (!isValid(site))
          {
             Exception e("Site " + site + " has not been initialized.");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // get the coefficients for this site
@@ -387,17 +387,17 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       catch (exception& e)
       {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
       catch (...)
       {
          Exception e("Unknown exception");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -423,7 +423,7 @@ namespace gnsstk
          if (!isValid(site))
          {
             Exception e("Site " + site + " has not been initialized.");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // get the coefficients for this site
@@ -451,7 +451,7 @@ namespace gnsstk
          if ((int)(sizeof(SchInd) / sizeof(NVector)) != NSTD)
          {
             Exception e("Static SchInd array is corrupted");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // compute time argument
@@ -639,17 +639,17 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       catch (exception& e)
       {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
       catch (...)
       {
          Exception e("Unknown exception");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
    } // end Triple OceanLoadTides::computeDisplacement
@@ -897,7 +897,7 @@ namespace gnsstk
           (int)(sizeof(DerInd) / sizeof(NVector)) != NDER)
       {
          Exception e("Static arrays are corrupted");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       int i, j, k, kk;

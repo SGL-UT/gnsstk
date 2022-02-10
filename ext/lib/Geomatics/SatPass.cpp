@@ -141,7 +141,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -162,7 +162,7 @@ namespace gnsstk
                      StringUtils::asString(data.size()) + "," +
                      StringUtils::asString(lli.size()) + "," +
                      StringUtils::asString(ssi.size()));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       if (spdvector.size() > 0 && spdvector[0].data.size() != data.size())
       {
@@ -170,7 +170,7 @@ namespace gnsstk
             "Error - addData passed different dimension that earlier!" +
             StringUtils::asString(data.size()) +
             " != " + StringUtils::asString(spdvector[0].data.size()));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // create a new SatPassData
@@ -295,7 +295,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -327,7 +327,7 @@ namespace gnsstk
          {
             Exception e(
                "Obs types L1 L2 C1/P1 C2/P2 required for GLOchannel()");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          if (indexForLabel.find("P1") == indexForLabel.end())
          {
@@ -542,7 +542,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -557,7 +557,7 @@ namespace gnsstk
       {
          if (freq != 1 && freq != 2)
          {
-            GPSTK_THROW(Exception("smoothSF requires freq 1 or 2"));
+            GNSSTK_THROW(Exception("smoothSF requires freq 1 or 2"));
          }
 
             // make sure Lf, Cf/Pf are present
@@ -580,7 +580,7 @@ namespace gnsstk
          }
          if (!oss.str().empty())
          {
-            GPSTK_THROW(Exception(
+            GNSSTK_THROW(Exception(
                string("smoothSF() requires pseudorange and phase:" + oss.str() +
                       string(" are missing."))));
          }
@@ -707,7 +707,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -740,7 +740,7 @@ namespace gnsstk
          }
          if (!oss.str().empty())
          {
-            GPSTK_THROW(Exception(
+            GNSSTK_THROW(Exception(
                string("smooth() requires obs types L1 L2 C/P1 C/P2:") +
                oss.str() + string(" missing.")));
          }
@@ -873,7 +873,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -884,13 +884,13 @@ namespace gnsstk
       if (i >= spdvector.size())
       {
          Exception e("Invalid index in data() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       map<string, unsigned int>::const_iterator it;
       if ((it = indexForLabel.find(type)) == indexForLabel.end())
       {
          Exception e("Invalid obs type in data() " + type);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return spdvector[i].data[it->second];
    }
@@ -900,7 +900,7 @@ namespace gnsstk
       if (i >= spdvector.size())
       {
          Exception e("Invalid index in timeoffset() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return spdvector[i].toffset;
    }
@@ -910,13 +910,13 @@ namespace gnsstk
       if (i >= spdvector.size())
       {
          Exception e("Invalid index in LLI() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       map<string, unsigned int>::const_iterator it;
       if ((it = indexForLabel.find(type)) == indexForLabel.end())
       {
          Exception e("Invalid obs type in LLI() " + type);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return spdvector[i].lli[it->second];
    }
@@ -926,13 +926,13 @@ namespace gnsstk
       if (i >= spdvector.size())
       {
          Exception e("Invalid index in SSI() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       map<string, unsigned int>::const_iterator it;
       if ((it = indexForLabel.find(type)) == indexForLabel.end())
       {
          Exception e("Invalid obs type in SSI() " + type);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return spdvector[i].ssi[it->second];
    }
@@ -944,7 +944,7 @@ namespace gnsstk
       if (i >= spdvector.size())
       {
          Exception e("Invalid index in setFlag() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       if (spdvector[i].flag != BAD && f == BAD)
@@ -966,7 +966,7 @@ namespace gnsstk
       if (i >= spdvector.size())
       {
          Exception e("Invalid index in setUserFlag() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       spdvector[i].userflag = f;
@@ -979,7 +979,7 @@ namespace gnsstk
       if (i >= spdvector.size())
       {
          Exception e("Invalid index in getFlag() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return spdvector[i].flag;
    }
@@ -992,7 +992,7 @@ namespace gnsstk
       if (i >= spdvector.size())
       {
          Exception e("Invalid index in getUserFlag() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return spdvector[i].userflag;
    }
@@ -1003,7 +1003,7 @@ namespace gnsstk
       if (i >= spdvector.size())
       {
          Exception e("invalid in getCount() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return spdvector[i].ndt;
    }
@@ -1025,7 +1025,7 @@ namespace gnsstk
       if (i >= spdvector.size())
       {
          Exception e("Invalid index in data() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       map<string, unsigned int>::const_iterator it;
       if ((it = indexForLabel.find(type1)) != indexForLabel.end())
@@ -1039,7 +1039,7 @@ namespace gnsstk
       else
       {
          Exception e("Invalid obs types in data() " + type1 + " " + type2);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -1049,7 +1049,7 @@ namespace gnsstk
       if (i >= spdvector.size())
       {
          Exception e("Invalid index in LLI() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       map<string, unsigned int>::const_iterator it;
       if ((it = indexForLabel.find(type1)) != indexForLabel.end())
@@ -1063,7 +1063,7 @@ namespace gnsstk
       else
       {
          Exception e("Invalid obs types in LLI() " + type1 + " " + type2);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -1073,7 +1073,7 @@ namespace gnsstk
       if (i >= spdvector.size())
       {
          Exception e("Invalid index in SSI() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       map<string, unsigned int>::const_iterator it;
       if ((it = indexForLabel.find(type1)) == indexForLabel.end())
@@ -1087,7 +1087,7 @@ namespace gnsstk
       else
       {
          Exception e("Invalid obs types in SSI() " + type1 + " " + type2);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -1099,7 +1099,7 @@ namespace gnsstk
       if (i >= spdvector.size())
       {
          Exception e("Invalid index in time() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
          // computing toff first is necessary to avoid a rare bug in Epoch..
       double toff = spdvector[i].ndt * dt + spdvector[i].toffset;
@@ -1177,7 +1177,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1246,7 +1246,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1435,7 +1435,7 @@ namespace gnsstk
       if (i >= spdvector.size())
       { // TD ?? keep this - its private
          Exception e("invalid in getData() " + asString(i));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return spdvector[i];
    }

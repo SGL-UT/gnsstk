@@ -90,7 +90,7 @@ namespace gnsstk
          }
          catch (Exception& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 
@@ -281,7 +281,7 @@ namespace gnsstk
             default: // invalid system character
                Exception e(std::string("Invalid system character \"") + c +
                            std::string("\""));
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
          }
          iss >> id;
          if (id <= 0)

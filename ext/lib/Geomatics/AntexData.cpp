@@ -193,7 +193,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -207,7 +207,7 @@ namespace gnsstk
       if (!isValid())
       {
          gnsstk::Exception e("Invalid AntexData object");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // get the antennaPCOandPCVData for this frequency
@@ -218,7 +218,7 @@ namespace gnsstk
          gnsstk::Exception e(
             "Frequency " + freq +
             " not found! System not supported or data corrupted.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
          // const antennaPCOandPCVData& antpco = it->second;
 
@@ -238,12 +238,12 @@ namespace gnsstk
       if (!isValid())
       {
          Exception e("Invalid AntexData object");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       if (elev_nadir < 0.0 || elev_nadir > 90.0)
       {
          Exception e("Invalid elevation/nadir angle");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       double retpco, azim, zen;
@@ -283,7 +283,7 @@ namespace gnsstk
       {
          Exception e("Frequency " + freq +
                      " not found! System not supported or data corrupted.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       const antennaPCOandPCVData &antpco = it->second;
@@ -575,7 +575,7 @@ namespace gnsstk
       if (!isValid())
       {
          FFStreamError fse(string("Cannot write invalid AntexData"));
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
 
       size_t i;
@@ -818,7 +818,7 @@ namespace gnsstk
          }
          catch (FFStreamError& e)
          {
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
 
@@ -835,7 +835,7 @@ namespace gnsstk
       {
          FFStreamError fse(string("Records are out of order: detected at ") +
                            label);
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
    }
 
@@ -996,7 +996,7 @@ namespace gnsstk
             {
                FFStreamError fse("START/END OF FREQ confused: " + freq +
                                  " != " + line.substr(3, 3));
-               GPSTK_THROW(fse);
+               GNSSTK_THROW(fse);
             }
             valid |= endOfFreqValid;
          }
@@ -1025,7 +1025,7 @@ namespace gnsstk
             {
                FFStreamError fse("START/END OF FREQ RMS confused: " + freq +
                                  " != " + line.substr(3, 3));
-               GPSTK_THROW(fse);
+               GNSSTK_THROW(fse);
             }
             valid |= endOfFreqRMSValid;
          }
@@ -1043,7 +1043,7 @@ namespace gnsstk
             {
                FFStreamError fse(
                   "Invalid format; zero delta azimuth without NOAZI");
-               GPSTK_THROW(fse);
+               GNSSTK_THROW(fse);
             }
 
                // NOAZI : data stored under azimuth = -1.0
@@ -1057,7 +1057,7 @@ namespace gnsstk
             {
                FFStreamError fse(
                   "Invalid format; wrong number of zenith/offset values");
-               GPSTK_THROW(fse);
+               GNSSTK_THROW(fse);
             }
 
                // loop over values; format is 3x,a5,mf8.2
@@ -1080,7 +1080,7 @@ namespace gnsstk
       } // end try
       catch (FFStreamError& fse)
       {
-         GPSTK_RETHROW(fse);
+         GNSSTK_RETHROW(fse);
       }
    } // end AntexData::ParseDataRecord
 
@@ -1108,7 +1108,7 @@ namespace gnsstk
              (line.substr(24, 4) != string(4, ' ')) || (line[43] != ' '))
          {
             FFStreamError e("Invalid time format");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // parse the time
@@ -1130,7 +1130,7 @@ namespace gnsstk
       catch (std::exception& e)
       {
          FFStreamError err("std::exception: " + string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       catch (Exception& e)
       {
@@ -1138,7 +1138,7 @@ namespace gnsstk
          for (size_t i = 0; i < e.getTextCount(); i++)
             text += e.getText(i);
          FFStreamError err("Exception in parseTime(): " + text);
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 

@@ -79,7 +79,7 @@ namespace gnsstk
       const Vector<double> &V;///< Vector to print
 
       /// Constructor, defaults are width 12 prec 5 format fixed
-      LabeledVector(const Namelist &nl, const Vector<double> &v)
+      LabeledVector(const Namelist& nl, const Vector<double>& v)
          : wid(12), prec(5), form(1), NL(nl), V(v)
       {
       }
@@ -113,14 +113,14 @@ namespace gnsstk
       }
 
       /// Set the label or name
-      LabeledVector& message(const std::string &m)
+      LabeledVector& message(const std::string& m)
       {
          msg = m;
          return *this;
       }
 
       /// Set the tag
-      LabeledVector& linetag(const std::string &m)
+      LabeledVector& linetag(const std::string& m)
       {
          tag = m;
          return *this;
@@ -161,7 +161,7 @@ namespace gnsstk
 
       /** Constructor, defaults are width 12 prec 5 format fixed, not symmetric,
           label both rows and columns, same names on rows and columns */
-      LabeledMatrix(const Namelist &nl, const Matrix<double> &m)
+      LabeledMatrix(const Namelist& nl, const Matrix<double>& m)
          : sym(false), cln(false), wid(12), prec(5), form(1), rc(0), M(m),
            NLrows(nl), NLcols(nl)
       {
@@ -169,8 +169,8 @@ namespace gnsstk
 
       /** Constructor, defaults are width 12 prec 5 format fixed, not symmetric,
           label both rows and columns, different names on rows and columns */
-      LabeledMatrix(const Namelist &nr, const Namelist &nc,
-                    const Matrix<double> &m)
+      LabeledMatrix(const Namelist& nr, const Namelist& nc,
+                    const Matrix<double>& m)
          : sym(false), cln(false), wid(12), prec(5), form(1), rc(0), M(m),
            NLrows(nr), NLcols(nc)
       {
@@ -240,14 +240,14 @@ namespace gnsstk
       }
 
       /// Print the given message
-      LabeledMatrix& message(const std::string &m)
+      LabeledMatrix& message(const std::string& m)
       {
          msg = m;
          return *this;
       }
 
       /// Print the given tag at the beginning of each line
-      LabeledMatrix& linetag(const std::string &m)
+      LabeledMatrix& linetag(const std::string& m)
       {
          tag = m;
          return *this;
@@ -255,10 +255,10 @@ namespace gnsstk
    };
 
       /// output ostream operator for LabeledMatrix
-   std::ostream& operator<<(std::ostream &os, const LabeledMatrix &lm);
+   std::ostream& operator<<(std::ostream& os, const LabeledMatrix& lm);
 
       /// output ostream operator for LabeledVector
-   std::ostream& operator<<(std::ostream &os, const LabeledVector &lv);
+   std::ostream& operator<<(std::ostream& os, const LabeledVector& lv);
 
    //---------------------------------------------------------------------------------
    /** class Namelist. A Namelist is simply an ordered set of unique strings
@@ -272,28 +272,28 @@ namespace gnsstk
    class Namelist
    {
       friend class SRI;
-      friend std::ostream& operator<<(std::ostream &, const LabeledMatrix &);
-      friend std::ostream& operator<<(std::ostream &, const LabeledVector &);
+      friend std::ostream& operator<<(std::ostream& , const LabeledMatrix& );
+      friend std::ostream& operator<<(std::ostream& , const LabeledVector& );
 
    public:
       /// empty constructor
       Namelist() {}
 
       /// constructor given dimension - creates default labels
-      Namelist(const unsigned int &);
+      Namelist(const unsigned int& );
 
       /** explicit constructor - only a unique subset of the input will be
           included. */
-      Namelist(const std::vector<std::string> &);
+      Namelist(const std::vector<std::string>& );
 
       /// copy constructor
-      Namelist(const Namelist &names) { labels = names.labels; }
+      Namelist(const Namelist& names) { labels = names.labels; }
 
       /// destructor
       ~Namelist() { labels.clear(); }
 
       /// operator=
-      Namelist& operator=(const Namelist &right)
+      Namelist& operator=(const Namelist& right)
       {
          labels = right.labels;
          return *this;
@@ -301,30 +301,30 @@ namespace gnsstk
 
       /** add a single name to the Namelist
           @throw if the name is not unique */
-      Namelist& operator+=(const std::string &);
+      Namelist& operator+=(const std::string& );
 
       /// add entire Namelist to this using operator+=(string)
-      Namelist& operator+=(const Namelist &right)
+      Namelist& operator+=(const Namelist& right)
       {
          try
          {
             for (unsigned int i = 0; i < right.size(); i++)
                this->operator+=(right.getName(i));
          }
-         catch (gnsstk::Exception &e)
+         catch (gnsstk::Exception& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          return *this;
       }
 
       /** remove a name from the Namelist; does nothing if the name is not
           found. */
-      Namelist& operator-=(const std::string &);
+      Namelist& operator-=(const std::string& );
 
       /** swap two elements, as given by their indexes; no effect if either
           index is out of range. */
-      void swap(const unsigned int &, const unsigned int &);
+      void swap(const unsigned int& , const unsigned int& );
 
       /// reorder the list by sorting
       void sort();
@@ -342,39 +342,39 @@ namespace gnsstk
       bool valid() const;
 
       /// does the Namelist contain the input name?
-      bool contains(const std::string &) const;
+      bool contains(const std::string& ) const;
 
       /// are two Namelists identical, ignoring permutations?
-      friend bool operator==(const Namelist &, const Namelist &);
+      friend bool operator==(const Namelist& , const Namelist& );
 
       /// are two Namelists different, ignoring permutations?
-      friend bool operator!=(const Namelist &, const Namelist &);
+      friend bool operator!=(const Namelist& , const Namelist& );
 
       /// are two Namelists exactly identical, even considering permutations?
-      friend bool identical(const Namelist &, const Namelist &);
+      friend bool identical(const Namelist& , const Namelist& );
 
       /// construct the subset Namelist which is common to the two inputs (AND)
-      friend Namelist operator&(const Namelist &, const Namelist &);
+      friend Namelist operator&(const Namelist& , const Namelist& );
 
       /// merge two Namelists, i.e. construct a non-redundant combination (OR)
-      friend Namelist operator|(const Namelist &, const Namelist &);
+      friend Namelist operator|(const Namelist& , const Namelist& );
 
       /// construct the subset Namelist which is NOT common to two others (XOR)
-      friend Namelist operator^(const Namelist &, const Namelist &);
+      friend Namelist operator^(const Namelist& , const Namelist& );
 
-      /// replace this with (this & input)
-      Namelist& operator&=(const Namelist &N);
+      /// replace this with (this&  input)
+      Namelist& operator&=(const Namelist& N);
 
       /// replace this with (this | input)
-      Namelist& operator|=(const Namelist &N);
+      Namelist& operator|=(const Namelist& N);
 
       /// replace this with (this ^ input)
-      Namelist& operator^=(const Namelist &N);
+      Namelist& operator^=(const Namelist& N);
 
       /** bind a Namelist to a Matrix<double> before sending it to an output
           stream, to get a 'labelled display' of the matrix.
        */
-      LabeledMatrix operator()(Matrix<double> &m)
+      LabeledMatrix operator()(Matrix<double>& m)
       {
          return LabeledMatrix(*this, m);
       }
@@ -382,7 +382,7 @@ namespace gnsstk
       /** bind a Namelist to a Vector<double> before sending it to an output
           stream, to get a 'labelled display' of the vector.
        */
-      LabeledVector operator()(Vector<double> &v)
+      LabeledVector operator()(Vector<double>& v)
       {
          return LabeledVector(*this, v);
       }
@@ -406,15 +406,15 @@ namespace gnsstk
           no effect if the name is not unique;
           return true if successful.
        */
-      bool setName(const unsigned int, const std::string &);
+      bool setName(const unsigned int, const std::string& );
 
       /** return the index of the name in the list that matches the input,
           -1 if not found.
       */
-      int index(const std::string &) const;
+      int index(const std::string& ) const;
 
       /// output ostream operator
-      friend std::ostream& operator<<(std::ostream &s, const Namelist &);
+      friend std::ostream& operator<<(std::ostream& s, const Namelist& );
 
       // member data
 

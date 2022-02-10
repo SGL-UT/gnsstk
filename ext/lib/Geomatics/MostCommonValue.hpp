@@ -41,8 +41,8 @@
     Simple class to find the most common value, within a given tolerance, in a
     given set of values. */
 
-#ifndef GPSTK_MOST_COMMON_VALUE_INCLUDE
-#define GPSTK_MOST_COMMON_VALUE_INCLUDE
+#ifndef GNSSTK_MOST_COMMON_VALUE_INCLUDE
+#define GNSSTK_MOST_COMMON_VALUE_INCLUDE
 
 #include <math.h>
 
@@ -185,4 +185,4 @@ namespace gnsstk
 #undef DEFAULT_TOL
    }; // end class MostCommonValue
 } // namespace gnsstk
-#endif // GPSTK_MOST_COMMON_VALUE_INCLUDE
+#endif // GNSSTK_MOST_COMMON_VALUE_INCLUDE

@@ -61,7 +61,7 @@ namespace gnsstk
       if (!antdata.isValid())
       {
          Exception e("Invalid AntexData object");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // is the name already in the store?
@@ -235,7 +235,7 @@ namespace gnsstk
          if (!antstrm.is_open())
          {
             Exception e("Could not open file " + filename);
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          antstrm.exceptions(fstream::failbit);
 
@@ -246,17 +246,17 @@ namespace gnsstk
             if (!anthdr.isValid())
             {
                Exception e("Header is not valid");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
          }
          catch (Exception& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch (exception& e)
          {
             Exception ge(string("Std exception: ") + e.what());
-            GPSTK_THROW(ge);
+            GNSSTK_THROW(ge);
          }
 
             // read the data
@@ -268,7 +268,7 @@ namespace gnsstk
             }
             catch (Exception& e)
             {
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
 
                // ignore invalid data
@@ -319,7 +319,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -412,7 +412,7 @@ namespace gnsstk
                   ss << "Invalid satellite system " << sys << " PRN " << n;
                   ss << " for AntennaStore::ComToPcVector.";
                   InvalidRequest ir(ss.str());
-                  GPSTK_THROW(ir);
+                  GNSSTK_THROW(ir);
                }
             }
 
@@ -458,12 +458,12 @@ namespace gnsstk
             ss << "AntennaStore::ComToPcVector.  No satellite data found for "
                << sys << " PRN " << n;
             InvalidRequest ir(ss.str());
-            GPSTK_THROW(ir);
+            GNSSTK_THROW(ir);
          }
       }
       catch (Exception exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
    }
 
@@ -501,7 +501,7 @@ namespace gnsstk
             ss << "Invalid satellite system " << sidr;
             ss << " for AntennaStore::ComToPcVector.";
             InvalidRequest ir(ss.str());
-            GPSTK_THROW(ir);
+            GNSSTK_THROW(ir);
          }
       }
 
@@ -511,7 +511,7 @@ namespace gnsstk
       }
       catch (Exception exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
       return tp;
    }

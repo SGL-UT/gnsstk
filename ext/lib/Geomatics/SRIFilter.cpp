@@ -99,7 +99,7 @@ namespace gnsstk
                             asString<int>(Rin.cols()) + ", Z has length " +
                             asString<int>(Zin.size()) + ", and NL has length " +
                             asString<int>(NLin.size()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       R     = Rin;
       Z     = Zin;
@@ -139,7 +139,7 @@ namespace gnsstk
          }
 
          MatrixException me(msg);
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       try
       {
@@ -165,11 +165,11 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch (VectorException& ve)
       {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -196,7 +196,7 @@ namespace gnsstk
          }
 
          MatrixException me(msg);
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       try
       {
@@ -222,11 +222,11 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
       catch (VectorException& ve)
       {
-         GPSTK_RETHROW(ve);
+         GNSSTK_RETHROW(ve);
       }
    }
 
@@ -242,7 +242,7 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
 
@@ -258,7 +258,7 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
 
@@ -274,7 +274,7 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    }
 
@@ -418,7 +418,7 @@ namespace gnsstk
             "x" + asString<int>(G.cols()) + "\n  Zw has length " +
             asString<int>(Zw.size()) + "\n  Rwx is " +
             asString<int>(Rwx.rows()) + "x" + asString<int>(Rwx.cols()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       try
@@ -568,7 +568,7 @@ namespace gnsstk
       }
       catch (MatrixException& me)
       {
-         GPSTK_RETHROW(me);
+         GNSSTK_RETHROW(me);
       }
    } // end SrifTU
 
@@ -666,7 +666,7 @@ namespace gnsstk
             "x" + asString<int>(G.cols()) + "\n  Zw has length " +
             asString<int>(Zw.size()) + "\n  Rwx is " +
             asString<int>(Rwx.rows()) + "x" + asString<int>(Rwx.cols()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       const T EPS = -T(1.e-200);
@@ -866,7 +866,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end SrifSU
 
@@ -932,7 +932,7 @@ namespace gnsstk
             "x" + asString<int>(G.cols()) + "\n  Zw has length " +
             asString<int>(Zw.size()) + "\n  Rwx is " +
             asString<int>(Rwx.rows()) + "x" + asString<int>(Rwx.cols()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       try
@@ -950,7 +950,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end SrifSU_DM
 
@@ -979,7 +979,7 @@ namespace gnsstk
             asString<int>(Zw.size()) + "\n  Rwx is " +
             asString<int>(Rwx.rows()) + "x" + asString<int>(Rwx.cols()) +
             "\n  U has length " + asString<int>(U.size()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
 
       try
@@ -998,7 +998,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    } // end DMsmootherUpdateWithControl
 

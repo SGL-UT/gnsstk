@@ -38,8 +38,8 @@
 
 /// @file AntexStream.hpp File stream for Rinex observation file data
 
-#ifndef GPSTK_ANTEX_STREAM_HPP
-#define GPSTK_ANTEX_STREAM_HPP
+#ifndef GNSSTK_ANTEX_STREAM_HPP
+#define GNSSTK_ANTEX_STREAM_HPP
 
 #include <list>
 #include <map>

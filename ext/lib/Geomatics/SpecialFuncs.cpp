@@ -72,7 +72,7 @@ namespace gnsstk
 
          if (x <= 0)
          {
-            GPSTK_THROW(Exception("Non-positive argument"));
+            GNSSTK_THROW(Exception("Non-positive argument"));
          }
 
          double y(x);
@@ -86,7 +86,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -103,7 +103,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -117,7 +117,7 @@ namespace gnsstk
       {
          if (n < 0)
          {
-            GPSTK_THROW(Exception("Negative argument"));
+            GNSSTK_THROW(Exception("Negative argument"));
          }
 
          if (n > 32)
@@ -138,7 +138,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -152,7 +152,7 @@ namespace gnsstk
       {
          if (n < 0)
          {
-            GPSTK_THROW(Exception("Negative argument"));
+            GNSSTK_THROW(Exception("Negative argument"));
          }
          if (n <= 1)
          {
@@ -162,7 +162,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -180,7 +180,7 @@ namespace gnsstk
       {
          if (n < 0 || k > n)
          {
-            GPSTK_THROW(Exception("Invalid arguments"));
+            GNSSTK_THROW(Exception("Invalid arguments"));
          }
 
          if (n <= 32)
@@ -193,7 +193,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -209,7 +209,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -225,11 +225,11 @@ namespace gnsstk
       {
          if (x < 0)
          {
-            GPSTK_THROW(Exception("Negative first argument"));
+            GNSSTK_THROW(Exception("Negative first argument"));
          }
          if (a <= 0)
          {
-            GPSTK_THROW(Exception("Non-positive second argument"));
+            GNSSTK_THROW(Exception("Non-positive second argument"));
          }
 
          static const int imax(1000);
@@ -249,11 +249,11 @@ namespace gnsstk
                return (sum * ::exp(-x + a * ::log(x) - lngamma));
             }
          }
-         GPSTK_THROW(Exception("Overflow; first arg too big"));
+         GNSSTK_THROW(Exception("Overflow; first arg too big"));
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
       return 0.0;
@@ -271,11 +271,11 @@ namespace gnsstk
       {
          if (x < 0)
          {
-            GPSTK_THROW(Exception("Negative first argument"));
+            GNSSTK_THROW(Exception("Negative first argument"));
          }
          if (a <= 0)
          {
-            GPSTK_THROW(Exception("Non-positive second argument"));
+            GNSSTK_THROW(Exception("Non-positive second argument"));
          }
 
          static const int imax(1000);
@@ -313,14 +313,14 @@ namespace gnsstk
 
          if (i > imax)
          {
-            GPSTK_THROW(Exception("Overflow; first arg too big"));
+            GNSSTK_THROW(Exception("Overflow; first arg too big"));
          }
 
          return (::exp(-x + a * ::log(x) - lngamma) * h);
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -335,11 +335,11 @@ namespace gnsstk
       {
          if (x < 0)
          {
-            GPSTK_THROW(Exception("Negative first argument"));
+            GNSSTK_THROW(Exception("Negative first argument"));
          }
          if (a <= 0)
          {
-            GPSTK_THROW(Exception("Non-positive second argument"));
+            GNSSTK_THROW(Exception("Non-positive second argument"));
          }
 
          if (x < a + 1.0)
@@ -353,7 +353,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -369,11 +369,11 @@ namespace gnsstk
       {
          if (x < 0)
          {
-            GPSTK_THROW(Exception("Negative first argument"));
+            GNSSTK_THROW(Exception("Negative first argument"));
          }
          if (a <= 0)
          {
-            GPSTK_THROW(Exception("Non-positive second argument"));
+            GNSSTK_THROW(Exception("Non-positive second argument"));
          }
 
          if (x < a + 1.0)
@@ -387,7 +387,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -397,7 +397,7 @@ namespace gnsstk
    {
       if (x < 0)
       {
-         GPSTK_THROW(Exception("Negative first argument"));
+         GNSSTK_THROW(Exception("Negative first argument"));
       }
       try
       {
@@ -405,7 +405,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -416,7 +416,7 @@ namespace gnsstk
    {
       if (x < 0)
       {
-         GPSTK_THROW(Exception("Negative first argument"));
+         GNSSTK_THROW(Exception("Negative first argument"));
       }
       try
       {
@@ -425,7 +425,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -484,7 +484,7 @@ namespace gnsstk
       }
       if (i > imax)
       {
-         GPSTK_THROW(Exception("Overflow; a or b too big"));
+         GNSSTK_THROW(Exception("Overflow; a or b too big"));
       }
 
       return h;
@@ -500,11 +500,11 @@ namespace gnsstk
    {
       if (x < 0 || x > 1)
       {
-         GPSTK_THROW(Exception("Invalid x argument"));
+         GNSSTK_THROW(Exception("Invalid x argument"));
       }
       if (a <= 0 || b <= 0)
       {
-         GPSTK_THROW(Exception("Non-positive argument"));
+         GNSSTK_THROW(Exception("Non-positive argument"));
       }
 
       if (x == 0)
@@ -531,7 +531,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -575,7 +575,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -589,7 +589,7 @@ namespace gnsstk
    {
       if (sig <= 0.0)
       {
-         GPSTK_THROW(Exception("Non-positive sigma"));
+         GNSSTK_THROW(Exception("Non-positive sigma"));
       }
 
       try
@@ -601,7 +601,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -618,11 +618,11 @@ namespace gnsstk
       {
          if (prob < 0 || prob >= 1)
          {
-            GPSTK_THROW(Exception("Invalid probability argument"));
+            GNSSTK_THROW(Exception("Invalid probability argument"));
          }
          if (sig <= 0.0)
          {
-            GPSTK_THROW(Exception("Non-positive sigma"));
+            GNSSTK_THROW(Exception("Non-positive sigma"));
          }
 
          static const double eps(1000000 *
@@ -634,7 +634,7 @@ namespace gnsstk
          }
          if (1.0 - prob < eps)
          {
-            GPSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
+            GNSSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
          }
 
             /* find X such that prob == NormalCDF(X,mu,sig); use bracket method
@@ -685,7 +685,7 @@ namespace gnsstk
             }
             if (++niter > 1000)
             {
-               GPSTK_THROW(Exception("Failed to converge"));
+               GNSSTK_THROW(Exception("Failed to converge"));
             }
          }
 
@@ -693,7 +693,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -733,11 +733,11 @@ namespace gnsstk
    {
       if (x < 0)
       {
-         GPSTK_THROW(Exception("Negative statistic"));
+         GNSSTK_THROW(Exception("Negative statistic"));
       }
       if (n <= 0)
       {
-         GPSTK_THROW(Exception("Non-positive degrees of freedom"));
+         GNSSTK_THROW(Exception("Non-positive degrees of freedom"));
       }
 
       try
@@ -748,7 +748,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -761,11 +761,11 @@ namespace gnsstk
    {
       if (x < 0)
       {
-         GPSTK_THROW(Exception("Negative statistic"));
+         GNSSTK_THROW(Exception("Negative statistic"));
       }
       if (n <= 0)
       {
-         GPSTK_THROW(Exception("Non-positive degrees of freedom"));
+         GNSSTK_THROW(Exception("Non-positive degrees of freedom"));
       }
 
       try
@@ -776,7 +776,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -792,11 +792,11 @@ namespace gnsstk
       {
          if (alpha < 0 || alpha >= 1)
          {
-            GPSTK_THROW(Exception("Invalid probability argument"));
+            GNSSTK_THROW(Exception("Invalid probability argument"));
          }
          if (n <= 0)
          {
-            GPSTK_THROW(Exception("Non-positive degree of freedom"));
+            GNSSTK_THROW(Exception("Non-positive degree of freedom"));
          }
 
          static const double eps(1000000 *
@@ -807,7 +807,7 @@ namespace gnsstk
          }
          if (1.0 - alpha < eps)
          {
-            GPSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
+            GNSSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
          }
 
             /* find X such that alpha == ChisqCDF(X,n); use bracket method
@@ -847,7 +847,7 @@ namespace gnsstk
             }
             if (++niter > 1000)
             {
-               GPSTK_THROW(Exception("Failed to converge"));
+               GNSSTK_THROW(Exception("Failed to converge"));
             }
          }
 
@@ -855,7 +855,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -891,7 +891,7 @@ namespace gnsstk
    {
       if (n <= 0)
       {
-         GPSTK_THROW(Exception("Non-positive degrees of freedom"));
+         GNSSTK_THROW(Exception("Non-positive degrees of freedom"));
       }
 
       try
@@ -902,7 +902,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -922,7 +922,7 @@ namespace gnsstk
    {
       if (n <= 0)
       {
-         GPSTK_THROW(Exception("Non-positive degree of freedom"));
+         GNSSTK_THROW(Exception("Non-positive degree of freedom"));
       }
 
       try
@@ -938,7 +938,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -953,11 +953,11 @@ namespace gnsstk
       {
          if (prob < 0 || prob >= 1)
          {
-            GPSTK_THROW(Exception("Invalid probability argument"));
+            GNSSTK_THROW(Exception("Invalid probability argument"));
          }
          if (n <= 0)
          {
-            GPSTK_THROW(Exception("Non-positive degree of freedom"));
+            GNSSTK_THROW(Exception("Non-positive degree of freedom"));
          }
 
          static const double eps(1000000 *
@@ -968,7 +968,7 @@ namespace gnsstk
          }
          if (1.0 - prob < eps)
          {
-            GPSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
+            GNSSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
          }
 
             // find X such that prob == StudentsCDF(X,n); use bracket method
@@ -1018,7 +1018,7 @@ namespace gnsstk
             }
             if (++niter > 1000)
             {
-               GPSTK_THROW(Exception("Failed to converge"));
+               GNSSTK_THROW(Exception("Failed to converge"));
             }
          }
 
@@ -1026,7 +1026,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1051,11 +1051,11 @@ namespace gnsstk
    {
       if (F < 0)
       {
-         GPSTK_THROW(Exception("Negative statistic"));
+         GNSSTK_THROW(Exception("Negative statistic"));
       }
       if (n1 <= 0 || n2 <= 0)
       {
-         GPSTK_THROW(Exception("Non-positive degree of freedom"));
+         GNSSTK_THROW(Exception("Non-positive degree of freedom"));
       }
 
       try
@@ -1066,7 +1066,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1113,7 +1113,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -1130,11 +1130,11 @@ namespace gnsstk
       {
          if (prob < 0 || prob >= 1)
          {
-            GPSTK_THROW(Exception("Invalid probability argument"));
+            GNSSTK_THROW(Exception("Invalid probability argument"));
          }
          if (n1 <= 0 || n2 <= 0)
          {
-            GPSTK_THROW(Exception("Non-positive degree of freedom"));
+            GNSSTK_THROW(Exception("Non-positive degree of freedom"));
          }
 
          static const double eps(100000 *
@@ -1145,7 +1145,7 @@ namespace gnsstk
          }
          if (1.0 - prob < eps)
          {
-            GPSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
+            GNSSTK_THROW(Exception("Invalid probability -- too close to 1.0"));
          }
 
             // find F such that prob == FDistCDF(F,n1,n2); use bracket method
@@ -1198,7 +1198,7 @@ namespace gnsstk
             n++;
             if (n > 1000)
             {
-               GPSTK_THROW(Exception("Failed to converge"));
+               GNSSTK_THROW(Exception("Failed to converge"));
             }
          }
 
@@ -1206,7 +1206,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 

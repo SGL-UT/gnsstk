@@ -87,7 +87,7 @@ namespace gnsstk
          if (!infile || !infile.is_open())
          {
             Exception e("File " + filename + " could not be opened.");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          nwant        = sites.size();
@@ -170,7 +170,7 @@ namespace gnsstk
                      Exception e("File " + filename +
                                  " is corrupted for site " + site +
                                  " - offending line follows\n" + line);
-                     GPSTK_THROW(e);
+                     GNSSTK_THROW(e);
                   }
                      // LOG(INFO) << "Push back line " << line;
                   for (i = 0; i < 4; i++)
@@ -235,17 +235,17 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       catch (exception& e)
       {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
       catch (...)
       {
          Exception e("Unknown exception");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -271,7 +271,7 @@ namespace gnsstk
             // get the coefficients for this site
          if (coefficientMap.find(site) == coefficientMap.end())
          {
-            GPSTK_THROW(
+            GNSSTK_THROW(
                Exception("Site not found in atmospheric loading store"));
          }
          vector<double> coeff = coefficientMap[site];
@@ -316,17 +316,17 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       catch (exception& e)
       {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
       catch (...)
       {
          Exception e("Unknown exception");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
    } // end Triple AtmLoadTides::computeDisplacement

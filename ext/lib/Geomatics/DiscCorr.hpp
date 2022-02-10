@@ -43,8 +43,8 @@
     in the phase and, if possible, estimate their size. Output is in the form of
     Rinex editing commands (see class RinexEditor). */
 
-#ifndef GPSTK_DISCONTINUITY_CORRECTOR_INCLUDE
-#define GPSTK_DISCONTINUITY_CORRECTOR_INCLUDE
+#ifndef GNSSTK_DISCONTINUITY_CORRECTOR_INCLUDE
+#define GNSSTK_DISCONTINUITY_CORRECTOR_INCLUDE
 
 #include "Epoch.hpp"
 #include "Exception.hpp"
@@ -67,7 +67,7 @@ namespace gnsstk
 
       /**
        class GDCconfiguration encapsulates the configuration for input to the
-       GPSTK Discontinuity Corrector.
+       GNSSTK Discontinuity Corrector.
       */
    class GDCconfiguration
    {
@@ -148,7 +148,7 @@ namespace gnsstk
 
       /**
        class GDCreturn encapsulates the information in the 'message' returned by
-       the GPSTK Discontinuity Corrector. Create it using the string created by
+       the GNSSTK Discontinuity Corrector. Create it using the string created by
        a call to DiscontinuityCorrector(SP,config,EditCmds,retMsg), then use it
        to access specific information about the results of the GDC.
       */
@@ -314,13 +314,13 @@ namespace gnsstk
    }; // end class GDCreturn
 
       /**
-       GPSTK Discontinuity Corrector. Find, and fix if possible, discontinuities
+       GNSSTK Discontinuity Corrector. Find, and fix if possible, discontinuities
        in the GPS or GLONASS carrier phase data, given dual-frequency
        pseudorange and phase data for an entire satellite pass. Input is the
        SatPass object holding the data, and a GDCconfiguration object giving the
        parameter values for the corrector. Output is in the form of a list of
        strings - editing commands - that can be parsed and applied using the
-       GPSTK Rinex Editor (see Prgm EditRinex and the RinexEditor class). Also,
+       GNSSTK Rinex Editor (see Prgm EditRinex and the RinexEditor class). Also,
        the L1 and L2 arrays in the input SatPass are corrected. The routine will
        mark bad points in the input data using the SatPass flag. Glonass
        satellites require a frequency channel integer; the caller may pass this

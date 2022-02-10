@@ -38,8 +38,8 @@
 
 /// @file SatPassIterator.hpp Iterate over a vector of SatPass in time order.
 
-#ifndef GPSTK_SATELLITE_PASS_ITERATOR_INCLUDE
-#define GPSTK_SATELLITE_PASS_ITERATOR_INCLUDE
+#ifndef GNSSTK_SATELLITE_PASS_ITERATOR_INCLUDE
+#define GNSSTK_SATELLITE_PASS_ITERATOR_INCLUDE
 
 // -------------------------------------------------------------------------------
 #include "SatPass.hpp"
@@ -204,4 +204,4 @@ namespace gnsstk
 
 } // namespace gnsstk
 
-#endif // GPSTK_SATELLITE_PASS_ITERATOR_INCLUDE
+#endif // GNSSTK_SATELLITE_PASS_ITERATOR_INCLUDE

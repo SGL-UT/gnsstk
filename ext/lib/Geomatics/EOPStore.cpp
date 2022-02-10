@@ -82,7 +82,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
       addEOP(mjd, eo);
@@ -105,7 +105,7 @@ namespace gnsstk
       {
          if (StringUtils::matches(fme.getText(), string("wrong format")).empty())
          {
-            GPSTK_RETHROW(fme);
+            GNSSTK_RETHROW(fme);
          }
 
             // try other format
@@ -115,7 +115,7 @@ namespace gnsstk
          }
          catch (FileMissingException& fme)
          {
-            GPSTK_RETHROW(fme);
+            GNSSTK_RETHROW(fme);
          }
       }
    }
@@ -135,7 +135,7 @@ namespace gnsstk
       }
       catch (FileMissingException& fme)
       {
-         GPSTK_RETHROW(fme);
+         GNSSTK_RETHROW(fme);
       }
 
          // pull out the beginning of the valid time range
@@ -164,7 +164,7 @@ namespace gnsstk
       if (!inpf)
       {
          FileMissingException fme("Could not open IERS file " + filename);
-         GPSTK_THROW(fme);
+         GNSSTK_THROW(fme);
       }
 
       ok = true;
@@ -202,7 +202,7 @@ namespace gnsstk
       {
          FileMissingException fme("IERS File " + filename +
                                   " is corrupted or wrong format");
-         GPSTK_THROW(fme);
+         GNSSTK_THROW(fme);
       }
    }
 
@@ -316,13 +316,13 @@ namespace gnsstk
       if (mapMJD_EOP.size() < 4)
       {
          InvalidRequest ir("Store is too small for interpolation");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
          /* Stored data uses UTC times
             if(t.getTimeSystem() == TimeSystem::Unknown) {
               InvalidRequest ir("Time system is unknown");
-              GPSTK_THROW(ir);
+              GNSSTK_THROW(ir);
         } */
 
          // get MJD(UTC)
@@ -335,12 +335,12 @@ namespace gnsstk
       if (lowit == mapMJD_EOP.end() || hiit == mapMJD_EOP.end())
       {
          InvalidRequest ir("Requested time lies outside the store");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
       if (mapMJD_EOP.size() < 4)
       {
          InvalidRequest ir("Store contains less than 4 entries");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
          // low and hi must span 4 entries and bracket t

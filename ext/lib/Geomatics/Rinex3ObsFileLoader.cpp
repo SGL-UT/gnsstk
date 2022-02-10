@@ -297,7 +297,7 @@ namespace gnsstk
                         nOrder[nOrder.size() - 1]++;
                         continue;
                         //}
-                           // GPSTK_THROW(Exception(string("Records out of time
+                           // GNSSTK_THROW(Exception(string("Records out of time
                            // order: dt ")
                            //   + StringUtils::asString<double>(dt) + string(" at
                            //   time ")
@@ -477,17 +477,17 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       catch (exception& e)
       {
          Exception E("std except: " + string(e.what()));
-         GPSTK_THROW(E);
+         GNSSTK_THROW(E);
       }
       catch (...)
       {
          Exception e("Unknown exception");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -676,7 +676,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 

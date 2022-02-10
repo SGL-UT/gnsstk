@@ -99,7 +99,7 @@ namespace gnsstk
                             asString<int>(Rin.cols()) + ", Z has length " +
                             asString<int>(Zin.size()) + ", and NL has length " +
                             asString<int>(NLin.size()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       R     = Rin;
       Z     = Zin;
@@ -284,7 +284,7 @@ namespace gnsstk
       if (N == 0)
       {
          MatrixException me("Called with zero-sized SRIleastSquares");
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       if (doLinearize && M < N)
       {
@@ -292,7 +292,7 @@ namespace gnsstk
             string("When linearizing, problem must not be underdetermined:\n") +
             string("   data dimension is ") + asString(M) +
             string(" while state dimension is ") + asString(N));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       if (doSequential && R.rows() != X.size())
       {
@@ -300,12 +300,12 @@ namespace gnsstk
             "Sequential problem has inconsistent dimensions:\n  SRI is " +
             asString<int>(R.rows()) + "x" + asString<int>(R.cols()) +
             " while X has length " + asString<int>(X.size()));
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
       if (doWeight && doRobust)
       {
          MatrixException me("Cannot have doWeight and doRobust both true.");
-         GPSTK_THROW(me);
+         GNSSTK_THROW(me);
       }
          // TD disallow Robust and Linearized ? why?
          // TD disallow Robust and Sequential ? why?
@@ -592,7 +592,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -647,7 +647,7 @@ namespace gnsstk
       }
       catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 

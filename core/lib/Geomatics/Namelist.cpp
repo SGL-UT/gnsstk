@@ -45,15 +45,15 @@
 
 //------------------------------------------------------------------------------------
 // system includes
+#include <string>
+#include <vector>
 #include <algorithm>
 #include <fstream> // for copyfmt
 #include <ostream>
-#include <string>
-#include <vector>
 // GNSSTk
 #include "Exception.hpp"
-#include "Namelist.hpp"
 #include "StringUtils.hpp"
+#include "Namelist.hpp"
 
 using namespace std;
 
@@ -64,7 +64,7 @@ namespace gnsstk
 
    //---------------------------------------------------------------------------------
    // constructor given dimension - creates default labels
-   Namelist::Namelist(const unsigned int &n)
+   Namelist::Namelist(const unsigned int& n)
    {
       try
       {
@@ -79,14 +79,11 @@ namespace gnsstk
             labels.push_back(name);
          }
       }
-      catch (Exception &e)
-      {
-         GPSTK_RETHROW(e);
-      }
+      catch (Exception& e) { GNSSTK_RETHROW(e); }
    }
 
    // explicit constructor - only a unique subset of names will be included.
-   Namelist::Namelist(const std::vector<std::string> &names)
+   Namelist::Namelist(const std::vector<std::string>& names)
    {
       try
       {
@@ -105,32 +102,32 @@ namespace gnsstk
                labels.push_back(names[i]);
          }
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // add a name to the Namelist; throw if the name is not unique.
-   Namelist& Namelist::operator+=(const std::string &name)
+   Namelist& Namelist::operator+=(const std::string& name)
    {
       try
       {
          if (contains(name))
          {
-            GPSTK_THROW(Exception("Name is not unique: " + name));
+            GNSSTK_THROW(Exception("Name is not unique: " + name));
          }
          labels.push_back(name);
          return *this;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // remove a name from the Namelist; does nothing if the name is not found.
-   Namelist& Namelist::operator-=(const std::string &name)
+   Namelist& Namelist::operator-=(const std::string& name)
    {
       try
       {
@@ -140,15 +137,15 @@ namespace gnsstk
             labels.erase(it);
          return *this;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // swap two elements, as given by their indexes; no effect if either index
    // is out of range.
-   void Namelist::swap(const unsigned int &i, const unsigned int &j)
+   void Namelist::swap(const unsigned int& i, const unsigned int& j)
    {
       try
       {
@@ -164,9 +161,9 @@ namespace gnsstk
          labels[i]  = labels[j];
          labels[j]  = str;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -178,9 +175,9 @@ namespace gnsstk
          // compiler tries Namelist::sort() first...
          std::sort(labels.begin(), labels.end());
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -211,9 +208,9 @@ namespace gnsstk
             labels.pop_back();
          }
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -238,9 +235,9 @@ namespace gnsstk
             swap(labels[i], labels[std::rand() % (i + 1)]);
          }
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -255,14 +252,14 @@ namespace gnsstk
                   return false;
          return true;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // does the Namelist contain the input name?
-   bool Namelist::contains(const std::string &name) const
+   bool Namelist::contains(const std::string& name) const
    {
       try
       {
@@ -273,14 +270,14 @@ namespace gnsstk
          }
          return false;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // are two Namelists identical, ignoring a permutation?
-   bool operator==(const Namelist &N1, const Namelist &N2)
+   bool operator==(const Namelist& N1, const Namelist& N2)
    {
       try
       {
@@ -309,27 +306,27 @@ namespace gnsstk
          }
          return true;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // are two Namelists different, ignoring a permutation?
-   bool operator!=(const Namelist &N1, const Namelist &N2)
+   bool operator!=(const Namelist& N1, const Namelist& N2)
    {
       try
       {
          return !(N1 == N2);
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // are two Namelists exactly identical, even considering permutations?
-   bool identical(const Namelist &N1, const Namelist &N2)
+   bool identical(const Namelist& N1, const Namelist& N2)
    {
       try
       {
@@ -348,14 +345,14 @@ namespace gnsstk
          }
          return true;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // construct the subset Namelist which is common to the two input (AND)
-   Namelist operator&(const Namelist &N1, const Namelist &N2)
+   Namelist operator&(const Namelist& N1, const Namelist& N2)
    {
       try
       {
@@ -363,14 +360,14 @@ namespace gnsstk
          N &= N2;
          return N;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // merge two Namelists, i.e. construct a non-redundant combination (OR)
-   Namelist operator|(const Namelist &N1, const Namelist &N2)
+   Namelist operator|(const Namelist& N1, const Namelist& N2)
    {
       try
       {
@@ -378,14 +375,14 @@ namespace gnsstk
          N |= N2;
          return N;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // construct the subset Namelist which is NOT common to two others (XOR)
-   Namelist operator^(const Namelist &N1, const Namelist &N2)
+   Namelist operator^(const Namelist& N1, const Namelist& N2)
    {
       try
       {
@@ -393,14 +390,14 @@ namespace gnsstk
          N ^= N2;
          return N;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // replace this with (this & input) (AND - common to both)
-   Namelist& Namelist::operator&=(const Namelist &N)
+   Namelist& Namelist::operator&=(const Namelist& N)
    {
       try
       {
@@ -415,15 +412,15 @@ namespace gnsstk
          *this = NAND;
          return *this;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // replace this with (this | input) (OR - merge - superset)
    // NB new elements must be added at the end (for class SRI).
-   Namelist& Namelist::operator|=(const Namelist &N)
+   Namelist& Namelist::operator|=(const Namelist& N)
    {
       try
       {
@@ -438,14 +435,14 @@ namespace gnsstk
          *this = NOR;
          return *this;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // replace this with (this ^ input) (XOR - not common)
-   Namelist& Namelist::operator^=(const Namelist &N)
+   Namelist& Namelist::operator^=(const Namelist& N)
    {
       try
       {
@@ -468,9 +465,9 @@ namespace gnsstk
          *this = NXOR;
          return *this;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -493,16 +490,16 @@ namespace gnsstk
          }
          return labels[in];
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    /* assign a specific name, given its index;
       no effect if the index is out of range or the name is not unique.
       return true if successful*/
-   bool Namelist::setName(const unsigned int in, const std::string &name)
+   bool Namelist::setName(const unsigned int in, const std::string& name)
    {
       try
       {
@@ -521,14 +518,14 @@ namespace gnsstk
          labels[in] = name;
          return true;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // return the index of the name in the list that matches the input, -1 if not found.
-   int Namelist::index(const std::string &name) const
+   int Namelist::index(const std::string& name) const
    {
       try
       {
@@ -541,14 +538,14 @@ namespace gnsstk
          }
          return -1;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
    // output operator
-   ostream& operator<<(ostream &os, const Namelist &N)
+   ostream& operator<<(ostream& os, const Namelist& N)
    {
       try
       {
@@ -562,13 +559,13 @@ namespace gnsstk
          }
          return os;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
-   ostream& operator<<(ostream &os, const LabeledVector &LV)
+   ostream& operator<<(ostream& os, const LabeledVector& LV)
    {
       try
       {
@@ -629,13 +626,13 @@ namespace gnsstk
 
          return os;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
-   std::ostream& operator<<(std::ostream &os, const LabeledMatrix &LM)
+   std::ostream& operator<<(std::ostream& os, const LabeledMatrix& LM)
    {
       try
       {
@@ -772,9 +769,9 @@ namespace gnsstk
 
          return os;
       }
-      catch (Exception &e)
+      catch (Exception& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 

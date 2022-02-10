@@ -38,8 +38,8 @@
 
 /// @file AntexBase.hpp Base class for Antex file data
 
-#ifndef GPSTK_ANTEX_BASE_HPP
-#define GPSTK_ANTEX_BASE_HPP
+#ifndef GNSSTK_ANTEX_BASE_HPP
+#define GNSSTK_ANTEX_BASE_HPP
 
 #include "FFData.hpp"
 

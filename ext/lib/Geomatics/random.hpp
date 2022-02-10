@@ -38,8 +38,8 @@
 
 /// @file random.hpp Simple random number generator.
 
-#ifndef GPSTK_GEOMATICS_RANDOM_INCLUDE
-#define GPSTK_GEOMATICS_RANDOM_INCLUDE
+#ifndef GNSSTK_GEOMATICS_RANDOM_INCLUDE
+#define GNSSTK_GEOMATICS_RANDOM_INCLUDE
 
 namespace gnsstk
 {

@@ -67,7 +67,7 @@ namespace gnsstk
       {
          FFStreamError err("Unknown Antex version: " + asString(version, 2));
          err.addText("Make sure to set the version correctly.");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       if ((valid & allValid) != allValid)
@@ -75,7 +75,7 @@ namespace gnsstk
          FFStreamError err("Incomplete or invalid header.");
          err.addText(
             "Set all header valid bits for all of the available data.");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       try
@@ -84,11 +84,11 @@ namespace gnsstk
       }
       catch (FFStreamError& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       catch (StringException& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
    } // end AntexHeader::reallyPutRecord
@@ -155,7 +155,7 @@ namespace gnsstk
             stringstream os;
             os >> system;
             FFStreamError e("Satellite system is invalid: " + os.str());
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          valid |= versionValid;
          valid |= systemValid;
@@ -168,7 +168,7 @@ namespace gnsstk
             stringstream os;
             os >> pcvType;
             FFStreamError e("PCV type is invalid: " + os.str());
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          refAntType   = line.substr(20, 20);
          refAntSerNum = line.substr(40, 20);
@@ -186,7 +186,7 @@ namespace gnsstk
       else
       {
          FFStreamError e("Unidentified label: " + label);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    } // end of AntexHeader::ParseHeaderRecord(string& line)
 
@@ -223,7 +223,7 @@ namespace gnsstk
          else if (line.length() < 60 || line.length() > 80)
          {
             FFStreamError e("Invalid line length");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          try
@@ -232,7 +232,7 @@ namespace gnsstk
          }
          catch (FFStreamError& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
 
       } // end while(not end of header)
@@ -246,13 +246,13 @@ namespace gnsstk
       {
          FFStreamError e("Unknown or unsupported Antex version " +
                          asString(version));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       if ((allValid & valid) != allValid)
       {
          FFStreamError e("Incomplete or invalid header");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // If we get here, we should have reached the end of header line
