@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -48,7 +48,7 @@
 
 using namespace std;
 
-// Generate a norimally distributed deviate with zero mean and unit variance. 
+// Generate a norimally distributed deviate with zero mean and unit variance.
 // Kudos to Press, Flannery, Teukolsky, and Veterling. And the man, Knuth.
 // If you don't care about being thread safe, you can make v1 a static and use
 // for every other call. Also this uses the libc standard rand() function
@@ -59,7 +59,7 @@ double gasdev()
 {
    const double mr2 = 2.0 / RAND_MAX;
    double v1, v2, fac;
-   
+
    double r;
    do
    {
@@ -75,8 +75,8 @@ double gasdev()
 int main(int argc, char *argv[])
 {
    TUDEF("PowerSum", "fail");
-   gpstk::PowerSum ps;
-   gpstk::Stats<double> s;
+   gnsstk::PowerSum ps;
+   gnsstk::Stats<double> s;
 
    for (int i=0; i<100000; i++)
    {
@@ -112,16 +112,16 @@ int main(int argc, char *argv[])
       TUCSM("kurtosis");
       TUASSERT(std::abs(ps.kurtosis()-3) < 0.05);
    }
-   catch (gpstk::Exception& e)
+   catch (gnsstk::Exception& e)
    {
       cout << e;
       TUFAIL("Exception");
    }
 
 
-      //if (e1 > 1e-3 || e2 > 1e-3 || 
-      //    std::abs(ps.average()) > 1e-3 || 
-      //    std::abs(sqrt(ps.variance())-1) > 2e-3 || 
+      //if (e1 > 1e-3 || e2 > 1e-3 ||
+      //    std::abs(ps.average()) > 1e-3 ||
+      //    std::abs(sqrt(ps.variance())-1) > 2e-3 ||
       //    std::abs(ps.skew()) > 0.01 ||
       //    std::abs(ps.kurtosis()-3) > 0.05)
       //{

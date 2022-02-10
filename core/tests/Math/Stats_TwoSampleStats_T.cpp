@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -49,19 +49,19 @@ using namespace std;
 template<class T>
 size_t statsTest()
 {
-   std::string typeName = gpstk::typeString<T>();
+   std::string typeName = gnsstk::typeString<T>();
    T precision = 10*std::numeric_limits<T>::epsilon();
-   gpstk::TestUtil testFramework( "Stats<"+typeName+">", "--", __FILE__, __LINE__ );
+   gnsstk::TestUtil testFramework( "Stats<"+typeName+">", "--", __FILE__, __LINE__ );
 
-   gpstk::TwoSampleStats<T> tso;
+   gnsstk::TwoSampleStats<T> tso;
 
-   tso.Add(1, 2);	
+   tso.Add(1, 2);
    tso.Add(2, 5);
    tso.Add(3, 1);
    tso.Add(4, 4);
    tso.Add(5, 3);
    TUA(5, tso.N(), "Add()");
-   
+
    TUAE(3, tso.AverageX(), precision, "AverageX()");
    TUAE(5, tso.MaximumX(), precision, "MaxX()");
    TUAE(1, tso.MinimumX(), precision, "MinX()");
@@ -79,8 +79,8 @@ size_t statsTest()
    TUAE(0.574456264653802865989, tso.SigmaSlope(), precision, "SigmaSlope()");
    TUAE(1.81659021245849499920, tso.SigmaYX(), precision, "SigmaYX()");
    TUAE(0.1, tso.Correlation(), precision, "Correlation()");
-   
-   return testFramework.countFails();                  
+
+   return testFramework.countFails();
 }
 
 
@@ -90,7 +90,7 @@ int main()
    ec += statsTest<float>();
    ec += statsTest<double>();
    ec += statsTest<long double>();
-	
+
    cout << "Total Failures for " << __FILE__ << ": " << ec << endl;
    return ec;
 }

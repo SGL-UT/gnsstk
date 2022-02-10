@@ -32,11 +32,11 @@ if ( EXISTS ${GMOCK_INCLUDE_DIR}/CMakeLists.txt )
     add_test(GTestExperimentalTests GTestExperiments_T)
     
     add_executable(OrdUnitTests_T OrdUnitTests_T.cpp)
-    target_link_libraries(OrdUnitTests_T gpstk pthread gmock_main)
+    target_link_libraries(OrdUnitTests_T gnsstk pthread gmock_main)
     add_test(OrdUnitTests OrdUnitTests_T)
     
     add_executable(OrdRegressionChecks_T OrdRegressionChecks_T.cpp)
-    target_link_libraries(OrdRegressionChecks_T gpstk pthread gmock_main gmock)
+    target_link_libraries(OrdRegressionChecks_T gnsstk pthread gmock_main gmock)
     add_test(OrdRegressionCheck OrdRegressionChecks_T)
 else ( )
     message( WARNING "Unable to locate GTest/GMock.  Some tests cannot be run." )

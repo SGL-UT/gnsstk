@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,14 +41,14 @@
  * Classes for Vector, both constant and modifiable
  */
 
-#ifndef GPSTK_VECTOR_HPP
-#define GPSTK_VECTOR_HPP
+#ifndef GNSSTK_VECTOR_HPP
+#define GNSSTK_VECTOR_HPP
 
 #include <limits>
 #include <vector>
 #include "VectorBase.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup MathGroup
       //@{
@@ -60,7 +60,7 @@ namespace gpstk
        * This class pretty much duplicates std::valarray<T> except it's fully
        * STL container compliant.  Remember that operators +=, -=, *= and /=
        * are provided by RefVectorBase.
-       * 
+       *
        * @sa matvectest.cpp for examples
        */
    template <class T>
@@ -89,7 +89,7 @@ namespace gpstk
             v = new T[siz];
             if(!v) {
                VectorException e("Vector(size_t) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
          }
       }
@@ -104,7 +104,7 @@ namespace gpstk
             v = new T[siz];
             if(!v) {
                VectorException e("Vector<T>(size_t, const T) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             this->assignFrom(defaultValue);
          }
@@ -120,7 +120,7 @@ namespace gpstk
             v = new T[r.size()];
             if(!v) {
                VectorException e("Vector<T>(ConstVectorBase) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             this->assignFrom(r);
          }
@@ -135,7 +135,7 @@ namespace gpstk
             v = new T[r.s];
             if(!v) {
                VectorException e("Vector(Vector) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             this->assignFrom(r);
          }
@@ -150,7 +150,7 @@ namespace gpstk
             v = new T[r.size()];
             if(!v) {
                VectorException e("Vector(valarray) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             this->assignFrom(r);
          }
@@ -163,18 +163,18 @@ namespace gpstk
              size_t num) : v(NULL), s(0)
       {
             // sanity checks...
-         if ( top >= vec.size() || 
+         if ( top >= vec.size() ||
               top + num > vec.size())
          {
             VectorException e("Invalid dimensions or size for Vector(VectorBase)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          if (num>0)
          {
             v = new T[num];
             if(!v) {
                VectorException e("Vector(subvector) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             size_t i;
             for(i = 0; i < num; i++)
@@ -182,7 +182,7 @@ namespace gpstk
             s = num;
          }
       }
-   
+
          /// Destructor
       ~Vector()
       {
@@ -209,13 +209,13 @@ namespace gpstk
       size_t max_size() const { return std::numeric_limits<size_t>().max(); }
 
          /// Non-const operator []
-      T& operator[] (size_t i) 
+      T& operator[] (size_t i)
       { return v[i]; }
          /// Const operator []
       T operator[] (size_t i) const
       { return v[i]; }
          /// Non-const operator ()
-      T& operator() (size_t i) 
+      T& operator() (size_t i)
       { return v[i]; }
          /// Const operator ()
       T operator() (size_t i) const
@@ -251,16 +251,16 @@ namespace gpstk
          size_t vs = x.size();
          (*this).resize(vs);
 
-         for (i = 0; i < vs; i++) 
+         for (i = 0; i < vs; i++)
             (*this)[i] = x[i];
 
-         return (*this); 
+         return (*this);
       }
 
          /// Resizes the vector.  if index > size, the vector will be
          /// erased and the contents destroyed.
       Vector& resize(const size_t index)
-      { 
+      {
          if (index > s)
          {
             if (v)
@@ -268,7 +268,7 @@ namespace gpstk
             v = new T[index];
             if(!v) {
                VectorException e("Vector.resize(size_t) failed to allocate");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
          }
          s = index;
@@ -284,13 +284,13 @@ namespace gpstk
          return *this;
       }
 
-         // convert the gpstk vector to std vector
+         // convert the gnsstk vector to std vector
       std::vector<T> toStdVector()
       {
-         std::vector<T> v;
+         std::vector<T> std_vec;
          for(size_t i = 0; i < s; i++)
-            v.push_back(v[i] );
-         return v;
+            std_vec.push_back(v[i] );
+         return std_vec;
       }
 
       inline Vector& operator<<(const Vector& b)
@@ -313,13 +313,13 @@ namespace gpstk
       }
 
          /// Returns the concatenation of this Vector and a scalar of type T
-      inline Vector& operator<<(const T &b) 
+      inline Vector& operator<<(const T &b)
       {
          return (*this) << Vector(1,b);
       }
 
          /// Returns the concatenation of this Vector and Vector b
-      inline Vector operator&&(const Vector &b) 
+      inline Vector operator&&(const Vector &b)
       {
          size_t i;
          size_t vs = this->size();
@@ -337,7 +337,7 @@ namespace gpstk
       }
 
          /// Returns the concatenation of this Vector and a scalar of type T
-      inline Vector operator&&(const T &b) 
+      inline Vector operator&&(const T &b)
       {
          size_t i;
          size_t vs = this->size();
@@ -365,7 +365,7 @@ namespace gpstk
          return true;
 #endif
       }
-   
+
          /// The vector
       T* v;
          /// The size of the vector.
@@ -374,7 +374,7 @@ namespace gpstk
       // end class Vector<T>
 
       /**
-       * A slice of Vector<T> that can be modified.  
+       * A slice of Vector<T> that can be modified.
        * @warning Remember that (VectorSlice = VectorSlice) will
        * assign elements to the VectorSlice, not copy the VectorSlice internal data!
        */
@@ -391,11 +391,11 @@ namespace gpstk
       VectorSlice(Vector<T>& vv)
             : v(&vv), s(std::slice(0,vv.size(),1))
       {}
-            
+
          /// Makes a slice of the vector with the given std::slice.
       VectorSlice(Vector<T>& vv, const std::slice& ss)
             : v(&vv), s(ss)
-      { vecSliceCheck(vv.size()); }
+      { this->vecSliceCheck(vv.size()); }
 
          /// Assign the elements of this slice from another vector.
       template <class V>
@@ -415,13 +415,13 @@ namespace gpstk
       { return this->assignFrom(x); }
 
          /// Returns the modifiable i'th element of the slice.
-      T& operator[] (size_t i) 
+      T& operator[] (size_t i)
       { return (*v)[start() + i * stride()]; }
          /// Returns the const i'th element of the slice.
       T operator[] (size_t i) const
       { return (*v)[start() + i * stride()]; }
          /// Returns the modifiable i'th element of the slice.
-      T& operator() (size_t i) 
+      T& operator() (size_t i)
       { return (*v)[start() + i * stride()]; }
          /// Returns the const i'th element of the slice.
       T operator() (size_t i) const
@@ -431,7 +431,7 @@ namespace gpstk
       inline size_t size() const { return s.size(); }
          /// returns the index in the vector of the first element.
       inline size_t start() const { return s.start(); }
-         /// returns the number of elements to skip between (*this)[i] and 
+         /// returns the number of elements to skip between (*this)[i] and
          /// (*this)[i+1]
       inline size_t stride() const { return s.stride(); }
    private:
@@ -442,7 +442,7 @@ namespace gpstk
    };
 
       /**
-       * A Vector<T> slice that doesn't allow modification. 
+       * A Vector<T> slice that doesn't allow modification.
        */
    template <class T>
    class ConstVectorSlice : public ConstVectorSliceBase<T, ConstVectorSlice<T> >
@@ -457,7 +457,7 @@ namespace gpstk
       ConstVectorSlice(const Vector<T>& vv)
             : v(&vv), s(std::slice(0,vv.size(),1))
       { }
-            
+
          /// Uses the given slice and vector.
       ConstVectorSlice(const Vector<T>& vv, const std::slice& ss)
             : v(&vv), s(ss)
@@ -474,7 +474,7 @@ namespace gpstk
       inline size_t size() const { return s.size(); }
          /// returns the index in the vector of the first element.
       inline size_t start() const { return s.start(); }
-         /// returns the number of elements to skip between (*this)[i] and 
+         /// returns the number of elements to skip between (*this)[i] and
          /// (*this)[i+1]
       inline size_t stride() const { return s.stride(); }
 

@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,26 +29,26 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
-#ifndef GPSTK_RINEXOBSID_HPP
-#define GPSTK_RINEXOBSID_HPP
+#ifndef GNSSTK_RINEXOBSID_HPP
+#define GNSSTK_RINEXOBSID_HPP
 
 /**
  * @file RinexObsID.hpp
- * gpstk::RinexObsID - A specialization of ObsID that has only RINEX-specific
+ * gnsstk::RinexObsID - A specialization of ObsID that has only RINEX-specific
  * observation identifiers.
  */
 
 #include "ObsID.hpp"
 #include "RinexObsHeader.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @todo determine if this really belongs with the RINEX files
 
@@ -113,7 +113,7 @@ namespace gpstk
             : ObsID(ot, cb, tc),
               rinexVersion(version)
       {}
-      
+
          /** Construct this object from the string specifier.
           * @param[in] strID The RINEX observation identifier to
           *   decode.  This must be a RINEX 3 ID, three or four
@@ -164,7 +164,7 @@ namespace gpstk
          if(!isValidRinexObsID(str))
          {
             InvalidParameter ip("Invalid RinexObsID: " + str);
-            GPSTK_THROW(ip);
+            GNSSTK_THROW(ip);
          }
       }
 
@@ -288,6 +288,43 @@ namespace gpstk
       static std::map< CarrierBand, char > cb2char;
       static std::map< TrackingCode, char> tc2char;
 
+         /** Return a string containing all the keys of char2ot.
+          * Intended for use by SWIG/Python where the mappings of
+          * enums are a bit sketchy when used in container
+          * templates. */
+      static std::string getOTChars();
+         /** Return a string containing the description of a given
+          * RINEX 3 character tracking code.
+          * Intended for use by SWIG/Python where the mappings of
+          * enums are a bit sketchy when used in container
+          * templates. */
+      static std::string getOTDescFromChar(char c)
+      { return otDesc[char2ot[c]]; }
+         /** Return a string containing all the keys of char2cb.
+          * Intended for use by SWIG/Python where the mappings of
+          * enums are a bit sketchy when used in container
+          * templates. */
+      static std::string getCBChars();
+         /** Return a string containing the description of a given
+          * RINEX 3 character tracking code.
+          * Intended for use by SWIG/Python where the mappings of
+          * enums are a bit sketchy when used in container
+          * templates. */
+      static std::string getCBDescFromChar(char c)
+      { return cbDesc[char2cb[c]]; }
+         /** Return a string containing all the keys of char2tc.
+          * Intended for use by SWIG/Python where the mappings of
+          * enums are a bit sketchy when used in container
+          * templates. */
+      static std::string getTCChars();
+         /** Return a string containing the description of a given
+          * RINEX 3 character tracking code.
+          * Intended for use by SWIG/Python where the mappings of
+          * enums are a bit sketchy when used in container
+          * templates. */
+      static std::string getTCDescFromChar(char c)
+      { return tcDesc[char2tc[c]]; }
+
    private:
       static RinexObsID idCreator(const std::string& id,
                                   const std::string& desc="");
@@ -296,6 +333,6 @@ namespace gpstk
 
       //@}
 
-} // namespace gpstk
+} // namespace gnsstk
 
 #endif

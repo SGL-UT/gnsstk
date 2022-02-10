@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -47,14 +47,14 @@
 
 #include "LinearClockModel.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace std;
 
    void LinearClockModel::reset() throw()
    {
-      startTime = gpstk::CommonTime::END_OF_TIME;
-      endTime = gpstk::CommonTime::BEGINNING_OF_TIME;
+      startTime = gnsstk::CommonTime::END_OF_TIME;
+      endTime = gnsstk::CommonTime::BEGINNING_OF_TIME;
       clockObs.clear();
       prnStatus.clear();
       clockModel.Reset();
@@ -67,11 +67,11 @@ namespace gpstk
    void LinearClockModel::addEpoch(const ORDEpoch& oe)
    {
       ORDEpoch::ORDMap::const_iterator itr;
-      const gpstk::CommonTime t=oe.time;
-      
+      const gnsstk::CommonTime t=oe.time;
+
       // Start off by getting an estimate of this epoch's clock
       // note that this also sets the prn status map
-      gpstk::Stats<double> stat = simpleOrdClock(oe);
+      gnsstk::Stats<double> stat = simpleOrdClock(oe);
       SvStatusMap& statusMap = prnStatus[t];
       statusMap = status;
 

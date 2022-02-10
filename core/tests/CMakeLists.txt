@@ -2,14 +2,14 @@
 
 # A program to help app testing
 add_executable(df_diff df_diff.cpp)
-target_link_libraries(df_diff gpstk)
+target_link_libraries(df_diff gnsstk)
 install (TARGETS df_diff DESTINATION "${CMAKE_INSTALL_BINDIR}")
 
 add_test(NAME df_diff_1
     COMMAND ${CMAKE_COMMAND}
     -DTEST_PROG=$<TARGET_FILE:df_diff>
-    -DSOURCEDIR=${GPSTK_TEST_DATA_DIR}
-    -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+    -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+    -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
     -P ${CMAKE_CURRENT_SOURCE_DIR}/testhelp.cmake)
 
 # df_diff.in and arlm200b.15o differ in several ways
@@ -22,8 +22,8 @@ add_test(NAME df_diff_2
     -DTEST_PROG=$<TARGET_FILE:df_diff>
     -DTESTBASE=df_diff_2
     -DTESTNAME=df_diff_2
-    -DARGS=-1\ ${GPSTK_TEST_DATA_DIR}/arlm200b.15o\ -2\ ${GPSTK_TEST_DATA_DIR}/df_diff.in
-    -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+    -DARGS=-1\ ${GNSSTK_TEST_DATA_DIR}/arlm200b.15o\ -2\ ${GNSSTK_TEST_DATA_DIR}/df_diff.in
+    -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
     -DEXP_RC=2
     -DNODIFF=1
     -P ${CMAKE_CURRENT_SOURCE_DIR}/testsuccexp.cmake)
@@ -34,8 +34,8 @@ add_test(NAME df_diff_3
     -DTEST_PROG=$<TARGET_FILE:df_diff>
     -DTESTBASE=df_diff_3
     -DTESTNAME=df_diff_3
-    -DARGS=-1\ ${GPSTK_TEST_DATA_DIR}/arlm200b.15o\ -2\ ${GPSTK_TEST_DATA_DIR}/df_diff.in\ -l\ 2
-    -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+    -DARGS=-1\ ${GNSSTK_TEST_DATA_DIR}/arlm200b.15o\ -2\ ${GNSSTK_TEST_DATA_DIR}/df_diff.in\ -l\ 2
+    -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
     -DEXP_RC=1
     -DNODIFF=1
     -P ${CMAKE_CURRENT_SOURCE_DIR}/testsuccexp.cmake)
@@ -46,8 +46,8 @@ add_test(NAME df_diff_4
     -DTEST_PROG=$<TARGET_FILE:df_diff>
     -DTESTBASE=df_diff_3
     -DTESTNAME=df_diff_4
-    -DARGS=-1\ ${GPSTK_TEST_DATA_DIR}/arlm200b.15o\ -2\ ${GPSTK_TEST_DATA_DIR}/df_diff.in\ -l\ 2\ -e\ 1e-4
-    -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+    -DARGS=-1\ ${GNSSTK_TEST_DATA_DIR}/arlm200b.15o\ -2\ ${GNSSTK_TEST_DATA_DIR}/df_diff.in\ -l\ 2\ -e\ 1e-4
+    -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
     -DEXP_RC=0
     -DNODIFF=1
     -P ${CMAKE_CURRENT_SOURCE_DIR}/testsuccexp.cmake)
@@ -58,8 +58,8 @@ add_test(NAME df_diff_5
     -DTEST_PROG=$<TARGET_FILE:df_diff>
     -DTESTBASE=df_diff_5
     -DTESTNAME=df_diff_5
-    -DARGS=-1\ ${GPSTK_TEST_DATA_DIR}/arlm200b.15o\ -2\ ${GPSTK_TEST_DATA_DIR}/df_diff.in\ -l\ 2\ -e\ 1e-14\ -z\ 2617
-    -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+    -DARGS=-1\ ${GNSSTK_TEST_DATA_DIR}/arlm200b.15o\ -2\ ${GNSSTK_TEST_DATA_DIR}/df_diff.in\ -l\ 2\ -e\ 1e-14\ -z\ 2617
+    -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
     -DEXP_RC=2
     -DNODIFF=1
     -P ${CMAKE_CURRENT_SOURCE_DIR}/testsuccexp.cmake)
@@ -74,8 +74,8 @@ function(test_app_with_file test_name app_name labels args diff_args)
         -DTEST_PROG=$<TARGET_FILE:${app_name}>
         -DTESTBASE=${test_name}
         -DTESTNAME=${test_name}
-        -DSOURCEDIR=${GPSTK_TEST_DATA_DIR}/outputs
-        -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+        -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}/outputs
+        -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
         -DARGS=${args}
         -DOWNOUTPUT=1
         -DDIFF_PROG=$<TARGET_FILE:df_diff>
@@ -94,8 +94,8 @@ function(test_app_with_stdout test_name app_name labels args diff_args)
         -DTEST_PROG=$<TARGET_FILE:${app_name}>
         -DTESTBASE=${test_name}
         -DTESTNAME=${test_name}
-        -DSOURCEDIR=${GPSTK_TEST_DATA_DIR}/outputs
-        -DTARGETDIR=${GPSTK_TEST_OUTPUT_DIR}
+        -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}/outputs
+        -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
         -DARGS=${args}
         -DDIFF_PROG=$<TARGET_FILE:df_diff>
         -DDIFF_ARGS=${diff_args}
@@ -118,14 +118,14 @@ if (TEST_SWITCH)
     add_subdirectory( NavFilter )
     add_subdirectory( NewNav )
     add_subdirectory( ORD )
+    add_subdirectory( AppFrame )
 
     # application testing
-    add_subdirectory( difftools )
-    add_subdirectory( filetools )
-    add_subdirectory( time )
-    add_subdirectory( positioning )
-    add_subdirectory( Rinextools )
-    add_subdirectory( mergetools )
-    add_subdirectory( checktools )
-    add_subdirectory( AppFrame )
+    # add_subdirectory( difftools )
+    # add_subdirectory( filetools )
+    # add_subdirectory( time )
+    # add_subdirectory( positioning )
+    # add_subdirectory( Rinextools )
+    # add_subdirectory( mergetools )
+    # add_subdirectory( checktools )
 endif()

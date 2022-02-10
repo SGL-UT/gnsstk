@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -45,9 +45,9 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
-   
+
       // Method to store load ocean tide harmonics data in this class'
       // data map
    void DCBDataReader::loadData()
@@ -61,30 +61,30 @@ namespace gpstk
 
             // a buffer
          string line;
-         
-            // read first line 
+
+            // read first line
          formattedGetLine(line, true);
-                  
+
             // Let's skip 6 lines
          for(int i=0; i<6; i++) formattedGetLine(line, true);
-         
-         
+
+
             // Now, let's read data
          while(1)
          {
             formattedGetLine(line, true);
 
             if(line.length() < 46) continue;
-            
+
             string sysFlag = line.substr(0,1);
-            
+
             int satPRN = StringUtils::asInt(line.substr(1,2));
-            
+
             string station = StringUtils::strip(line.substr(6,4));
-            
+
             const double dcbVal = StringUtils::asDouble(line.substr(26,9));
             //const double dcbRms = StringUtils::asDouble(line.substr(38,9));
-             
+
             if(station.length() < 4)       // this is satellite DCB data
             {
 
@@ -100,12 +100,12 @@ namespace gpstk
                else
                {
                   // Unexpected and we do nothing here
-                  
+
 
                }
-               
+
                allDCB.satDCB[sat] = dcbVal;
-               
+
             }
             else                           // this is receiver DCB data
             {
@@ -129,7 +129,7 @@ namespace gpstk
       }  // End of try block
       catch (EndOfFile& e)
       {
-       
+
             // We should close this data stream before returning
          (*this).close();
 
@@ -150,7 +150,7 @@ namespace gpstk
 
 
 
-      // Method to open AND load DCB data file. 
+      // Method to open AND load DCB data file.
    void DCBDataReader::open(const char* fn)
    {
 
@@ -185,7 +185,7 @@ namespace gpstk
       // return P1-P2 or P1-C1 depend what you have loaded
    double DCBDataReader::getDCB(const SatID& sat)
    {
-      return allDCB.satDCB[sat];     
+      return allDCB.satDCB[sat];
    }
 
       // Get DCB data of a satellite
@@ -198,7 +198,7 @@ namespace gpstk
    }
 
       // Get DCB data of aReceiver
-      // it return P1-P2 
+      // it return P1-P2
    double DCBDataReader::getDCB(const std::string& station,
                                 const SatelliteSystem& system)
    {
@@ -211,7 +211,7 @@ namespace gpstk
       {
          return allDCB.glonassDCB[station];
       }
-      else 
+      else
       {
             // Unexpected and return 0
          return 0.0;
@@ -221,4 +221,4 @@ namespace gpstk
 
 
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk

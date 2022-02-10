@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,17 +29,17 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /// @file HelmertTransform.hpp
 
-#ifndef GPSTK_HELMERT_TRANSFORM_HPP
-#define GPSTK_HELMERT_TRANSFORM_HPP
+#ifndef GNSSTK_HELMERT_TRANSFORM_HPP
+#define GNSSTK_HELMERT_TRANSFORM_HPP
 
 #include <map>
 #include <string>
@@ -52,7 +52,7 @@
 #include "Matrix.hpp"
 #include "Xvt.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    /// Helmert transformations, which are 7-parameter transformations between
    /// reference frames (i.e. ECEF position coordinates). A Helmert tranformation is
@@ -108,7 +108,7 @@ namespace gpstk
       {
          if(vec.size() > 3) {
             InvalidRequest e("Input Vector is not of length 3");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          try {
             Position pos(vec[0],vec[1],vec[2],Position::Cartesian), res;
@@ -119,7 +119,7 @@ namespace gpstk
             result[1] = res.Y();
             result[2] = res.Z();
          }
-         catch(Exception& e) { GPSTK_RETHROW(e); }
+         catch(Exception& e) { GNSSTK_RETHROW(e); }
       }
 
       /// Transform a Triple using this Helmert transformation or its inverse.
@@ -137,7 +137,7 @@ namespace gpstk
             result[1] = res[1];
             result[2] = res[2];
          }
-         catch(Exception& e) { GPSTK_RETHROW(e); }
+         catch(Exception& e) { GNSSTK_RETHROW(e); }
       }
 
       /// Transform an Xvt using this Helmert transformation or its inverse.
@@ -155,7 +155,7 @@ namespace gpstk
             result.x[1] = res[1];
             result.x[2] = res[2];
          }
-         catch(Exception& e) { GPSTK_RETHROW(e); }
+         catch(Exception& e) { GNSSTK_RETHROW(e); }
       }
 
       /// Transform 3 doubles, in the given frame, using this Helmert transformation.
@@ -175,7 +175,7 @@ namespace gpstk
             ry = res.Y();
             rz = res.Z();
          }
-         catch(Exception& e) { GPSTK_RETHROW(e); }
+         catch(Exception& e) { GNSSTK_RETHROW(e); }
       }
 
       // accessors
@@ -234,6 +234,6 @@ namespace gpstk
    /// parts per billion
    static const double PPB = 1.e-9;
 
-} // end namespace gpstk
+} // end namespace gnsstk
 
 #endif

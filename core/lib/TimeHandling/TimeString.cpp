@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -59,7 +59,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    std::string printTime( const CommonTime& t,
                           const std::string& fmt )
@@ -67,27 +67,27 @@ namespace gpstk
       try
       {
          string rv( fmt );
-         try {rv = ANSITime(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = CivilTime(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = GPSWeekSecond(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = GPSWeekZcount(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = JulianDate(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = MJD(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = UnixTime(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = PosixTime(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = YDSTime(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = GALWeekSecond(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = BDSWeekSecond(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = QZSWeekSecond(t).printf( rv );} catch (gpstk::InvalidRequest e){};
-         try {rv = IRNWeekSecond(t).printf( rv );} catch (gpstk::InvalidRequest e){};
+         try {rv = ANSITime(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = CivilTime(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = GPSWeekSecond(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = GPSWeekZcount(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = JulianDate(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = MJD(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = UnixTime(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = PosixTime(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = YDSTime(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = GALWeekSecond(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = BDSWeekSecond(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = QZSWeekSecond(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
+         try {rv = IRNWeekSecond(t).printf( rv );} catch (gnsstk::InvalidRequest e){};
          return rv;
       }
-      catch( gpstk::StringUtils::StringException& se )
+      catch( gnsstk::StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
    }
-   
+
       /// Fill the TimeTag object \a btime with time information found in
       /// string \a str formatted according to string \a fmt.
    void scanTime( TimeTag& btime,
@@ -99,12 +99,12 @@ namespace gpstk
             // Get the mapping of character (from fmt) to value (from str).
          TimeTag::IdToValue info;
          TimeTag::getInfo( str, fmt, info );
-         
+
          if( btime.setFromInfo( info ) )
          {
             return;
          }
-         
+
             // Convert to CommonTime, and try to set using all formats.
          CommonTime ct( btime.convertToCommonTime() );
          scanTime( ct, str, fmt );
@@ -112,34 +112,34 @@ namespace gpstk
             // Convert the CommonTime into the requested format.
          btime.convertFromCommonTime( ct );
       }
-      catch( gpstk::InvalidRequest& ir )
+      catch( gnsstk::InvalidRequest& ir )
       {
-         GPSTK_RETHROW( ir );
+         GNSSTK_RETHROW( ir );
       }
-      catch( gpstk::StringUtils::StringException& se )
+      catch( gnsstk::StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
    }
-   
+
    void scanTime( CommonTime& t,
                   const string& str,
                   const string& fmt )
    {
       try
       {
-         using namespace gpstk::StringUtils;
+         using namespace gnsstk::StringUtils;
 
             // Get the mapping of character (from fmt) to value (from str).
          TimeTag::IdToValue info;
          TimeTag::getInfo( str, fmt, info );
-         
+
             // These indicate which information has been found.
          bool hmjd( false ), hsow( false ), hweek( false ), hfullweek( false ),
             hdow( false ), hyear( false ), hmonth( false ), hday( false ),
-            hzcount( false ), hdoy( false ), hzcount29( false ), 
+            hzcount( false ), hdoy( false ), hzcount29( false ),
             hzcount32( false ), hhour( false ), hmin( false ), hsec( false ),
-            hsod( false ), hunixsec( false ), hunixusec( false ), 
+            hsod( false ), hunixsec( false ), hunixusec( false ),
             hepoch( false ), hansi( false ), hjulian( false ),
             hbdsw( false ), hqzsw( false ), hgalw( false ), hirnw( false ),
             hbdsfw( false ), hqzsfw( false ), hgalfw( false ), hirnfw( false ),
@@ -156,7 +156,7 @@ namespace gpstk
             switch( itr->first )
             {
                case 'P':
-                  ts = gpstk::StringUtils::asTimeSystem(itr->second);
+                  ts = gnsstk::StringUtils::asTimeSystem(itr->second);
                   t.setTimeSystem(ts);
                   break;
 
@@ -223,7 +223,7 @@ namespace gpstk
                      }
                   }
                   break;
-                  
+
                case 'm':
                   hmonth = true;
                   break;
@@ -265,7 +265,7 @@ namespace gpstk
                case 'N':
                   hposixnsec = true;
                   break;
-                  
+
                case 'c':
                   hzcount29 = true;
                   break;
@@ -277,11 +277,11 @@ namespace gpstk
                case 'J':
                   hjulian = true;
                   break;
-                  
+
                case 'K':
                   hansi = true;
                   break;
-                  
+
                case 'E':
                   hepoch = true;
                   break;
@@ -318,7 +318,7 @@ namespace gpstk
                tt.setFromInfo( info );
                if( hsod )
                {
-                  convertSODtoTime( asDouble( info['s'] ), 
+                  convertSODtoTime( asDouble( info['s'] ),
                                     tt.hour, tt.minute, tt.second );
                }
                t = tt.convertToCommonTime();
@@ -330,8 +330,8 @@ namespace gpstk
                tt.setFromInfo( info );
                if( hhour && hmin && hsec )
                {
-                  tt.sod = convertTimeToSOD( asInt( info['H'] ), 
-                                             asInt( info['M'] ), 
+                  tt.sod = convertTimeToSOD( asInt( info['H'] ),
+                                             asInt( info['M'] ),
                                              asDouble( info['S'] ) );
                }
                t = tt.convertToCommonTime();
@@ -342,7 +342,7 @@ namespace gpstk
 
          if( hzcount32 ||
              (hfullweek && (hzcount || hzcount29)) ||
-             (hepoch && (hzcount29 || 
+             (hepoch && (hzcount29 ||
                          (hweek && hzcount))) )
          {
             GPSWeekZcount tt;
@@ -369,8 +369,8 @@ namespace gpstk
                }
                else if( hhour && hmin && hsec )
                {
-                  ptt->sow += convertTimeToSOD( asInt( info['H'] ), 
-                                              asInt( info['M'] ), 
+                  ptt->sow += convertTimeToSOD( asInt( info['H'] ),
+                                              asInt( info['M'] ),
                                               asDouble( info['S'] ) );
                }
             }
@@ -402,8 +402,8 @@ namespace gpstk
             tt.setFromInfo( info );
             t = tt.convertToCommonTime();
             return;
-         } 
-         
+         }
+
          if( hunixsec || hunixusec )
          {
             UnixTime tt;
@@ -421,13 +421,13 @@ namespace gpstk
          }
 
          InvalidRequest ir("Incomplete time specification for readTime");
-         GPSTK_THROW( ir );
+         GNSSTK_THROW( ir );
       }
-      catch( gpstk::StringUtils::StringException& se )
+      catch( gnsstk::StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
-   }   
+   }
 
    void mixedScanTime( CommonTime& t,
                        const string& str,
@@ -435,16 +435,16 @@ namespace gpstk
    {
       try
       {
-         using namespace gpstk::StringUtils;
+         using namespace gnsstk::StringUtils;
 
             // Get the mapping of character (from fmt) to value (from str).
          TimeTag::IdToValue info;
          TimeTag::getInfo( str, fmt, info );
-         
+
             // These indicate which information has been found.
          bool hsow( false ), hweek( false ), hfullweek( false ),
             hdow( false ), hyear( false ), hmonth( false ), hday( false ),
-            hzcount( false ), hdoy( false ), hzcount29( false ), 
+            hzcount( false ), hdoy( false ), hzcount29( false ),
             hhour( false ), hmin( false ), hsec( false ),
             hsod( false ), hepoch( false ),
             //hunixsec( false ), hunixusec( false ),
@@ -455,7 +455,7 @@ namespace gpstk
             // MJD, Julian Date, ANSI time, Unix time, Posix time, and
             // 32-bit Zcounts are treated as stand-alone types and are
             // not mixed with others if detected.
-         
+
             // These variables will hold the values for use later.
          double isow, isod, isec;
          int iweek, ifullweek, idow, iyear, imonth, iday, izcount, idoy,
@@ -468,7 +468,7 @@ namespace gpstk
             switch( itr->first )
             {
                case 'P':
-                  ts = gpstk::StringUtils::asTimeSystem(itr->second);
+                  ts = gnsstk::StringUtils::asTimeSystem(itr->second);
                   t.setTimeSystem(ts);
                   break;
 
@@ -479,7 +479,7 @@ namespace gpstk
                case 'J':
                   t = JulianDate( asLongDouble(itr->second) );
                   break;
-                  
+
                case 'C':
                   t = GPSWeekZcount().setZcount32( asInt(itr->second) );
                   break;
@@ -487,7 +487,7 @@ namespace gpstk
                case 'K':
                   t = ANSITime( asInt(itr->second) );
                   break;
-                  
+
                case 'U':
                case 'u':
                {
@@ -552,7 +552,7 @@ namespace gpstk
                         ///@todo use a more appropriate exception class
                      Exception
                         exc("Invalid month abbreviation: " + itr->second);
-                     GPSTK_THROW(exc);
+                     GNSSTK_THROW(exc);
                   }
                   break;
 
@@ -564,7 +564,7 @@ namespace gpstk
                         ///@todo use a more appropriate exception class
                      Exception
                         exc("Invalid month name: " + itr->second);
-                     GPSTK_THROW(exc);
+                     GNSSTK_THROW(exc);
                   }
                   break;
 
@@ -587,7 +587,7 @@ namespace gpstk
                         ///@todo use a more appropriate exception class
                      Exception
                         exc("Invalid format for %y: expected 2 digits");
-                     GPSTK_THROW(exc);
+                     GNSSTK_THROW(exc);
                   }
                   iyear = asInt( itr->second );
                   if (iyear >= 69)
@@ -611,7 +611,7 @@ namespace gpstk
                   else if (isLike(thisDay, "sat.*")) idow = 6;
                }
                break;
-                  
+
                case 'm':
                   hmonth = true;
                   imonth = asInt(itr->second);
@@ -696,10 +696,10 @@ namespace gpstk
             // We'll copy this time to 't' after all of the processing.
          CommonTime ct(t);
          ct.setTimeSystem(t.getTimeSystem());
-         
+
             // Go through all of the types in order of least precise to most
             // precise.
-         if( hepoch ) 
+         if( hepoch )
          {
             WeekSecond *ptt;
             if(hbds) ptt = new BDSWeekSecond(ct);
@@ -711,14 +711,14 @@ namespace gpstk
             ct = ptt->convertToCommonTime();
             delete ptt;
          }
-         
+
          if( hyear )
          {
             YDSTime tt(ct);
             tt.year = iyear;
             ct = tt.convertToCommonTime();
          }
- 
+
          if( hmonth )
          {
             CivilTime tt(ct);
@@ -743,7 +743,7 @@ namespace gpstk
             {
               ptt->week = ifullweek;
             }
-	    else 
+	    else
             {
               ptt->convertFromCommonTime(ct);
               ptt->week = ifullweek;
@@ -752,7 +752,7 @@ namespace gpstk
             ct = ptt->convertToCommonTime();
             delete ptt;
          }
-         
+
          if( hweek )
          {
             WeekSecond *ptt;
@@ -765,7 +765,7 @@ namespace gpstk
             ct = ptt->convertToCommonTime();
             delete ptt;
          }
-         
+
          if( hdow )
          {
             WeekSecond *ptt;
@@ -778,26 +778,26 @@ namespace gpstk
             ct = ptt->convertToCommonTime();
             delete ptt;
          }
-         
+
          if( hday )
          {
             CivilTime tt(ct);
             tt.day = iday;
             ct = tt.convertToCommonTime();
          }
-         
+
          if( hdoy )
          {
             YDSTime tt(ct);
             tt.doy = idoy;
             ct = tt.convertToCommonTime();
          }
-         
+
          if( hzcount29 )
          {
             GPSWeekZcount tt(ct);
             tt.setZcount29( izcount29 );
-            ct = tt.convertToCommonTime(); 
+            ct = tt.convertToCommonTime();
          }
 
          if( hzcount )
@@ -820,7 +820,7 @@ namespace gpstk
             tt.minute = imin;
             ct = tt.convertToCommonTime();
          }
-         
+
          if( hsow )
          {
             WeekSecond *ptt;
@@ -833,7 +833,7 @@ namespace gpstk
             ct = ptt->convertToCommonTime();
             delete ptt;
          }
-         
+
          if( hsod )
          {
             YDSTime tt(ct);
@@ -849,10 +849,10 @@ namespace gpstk
          }
          t = ct;
       }
-      catch( gpstk::StringUtils::StringException& se )
+      catch( gnsstk::StringUtils::StringException& se )
       {
-         GPSTK_RETHROW( se );
+         GNSSTK_RETHROW( se );
       }
-   }   
+   }
 
-} // namespace gpstk
+} // namespace gnsstk

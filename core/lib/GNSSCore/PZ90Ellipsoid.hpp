@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,12 +41,12 @@
  * PZ90.02 model of the Ellipsoid (as defined in table 3.2 of ICD-2008, v5.1).
  */
 
-#ifndef GPSTK_PZ90ELLIPSOID_HPP
-#define GPSTK_PZ90ELLIPSOID_HPP
+#ifndef GNSSTK_PZ90ELLIPSOID_HPP
+#define GNSSTK_PZ90ELLIPSOID_HPP
 
 #include "EllipsoidModel.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup Geodetic
       //@{
@@ -59,7 +59,7 @@ namespace gpstk
          /// @return semi-major axis of Earth in meters.
       virtual double a() const throw()
       { return 6378136.0; }
-		 
+
          ///Defined in table 3.2 of ICD-2008 (v5.1)
          /// @return semi-major axis of Earth in km.
       virtual double a_km() const throw()
@@ -79,7 +79,7 @@ namespace gpstk
           */
       virtual double flattening() const throw()
       { return 3.35280373518e-3; }
-     
+
          // The eccentricity and eccSquared values were computed from the
          // flattening value via the formula:
          // ecc2 = 1 - (1 - f)^2 = f*(2.0 - f)
@@ -129,6 +129,6 @@ namespace gpstk
 
       //@}
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk
 
-#endif   // GPSTK_PZ90ELLIPSOID_HPP
+#endif   // GNSSTK_PZ90ELLIPSOID_HPP

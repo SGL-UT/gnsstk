@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,8 +41,8 @@
  * Class to read DCB data from CODE.
  */
 
-#ifndef GPSTK_DCBDATAREADER_HPP
-#define GPSTK_DCBDATAREADER_HPP
+#ifndef GNSSTK_DCBDATAREADER_HPP
+#define GNSSTK_DCBDATAREADER_HPP
 
 #include <string>
 #include <map>
@@ -53,10 +53,10 @@
 #include "SatID.hpp"
 
 
-namespace gpstk
+namespace gnsstk
 {
 
-      /// @ingroup formattedfile 
+      /// @ingroup formattedfile
       //@{
 
       /** This is a class to read and DCB(Differences of Code Biases) data file
@@ -68,17 +68,17 @@ namespace gpstk
        *    ftp.unibe.ch/aiub/CODE            - monthly P1-P2 and P1-C1
        *
        *
-       *  You should use different objects to load different DCB files. A typical 
+       *  You should use different objects to load different DCB files. A typical
        *  way to use these classes follows:
        *
        * @code
        *      // Declare some Antenna objects
        *   DCBDataReader dcbP1P2("P1P21002_ALL.DCB");
        *   DCBDataReader dcbP1C1("P1C11002.DCB");
-       *   
+       *
        *   double p1p2Sat1 = dcbP1P2.getDCB(1, SatelliteSystem::GPS);
        *   double p1c1Sat1 = dcbP1C1.getDCB(1, SatelliteSystem::GPS);
-       *   
+       *
        *   double p1p2ALGO = dcbP1P2.getDCB("ALGO");
        *
        * @endcode
@@ -91,7 +91,7 @@ namespace gpstk
          /// Default constructor
       DCBDataReader()
       {};
-         
+
          /** Common constructor. It will always open file for read and will
           *  load DCB data in one pass.
           *
@@ -153,10 +153,10 @@ namespace gpstk
 
          // Map holding satellite DCB data
       typedef std::map< SatID, double > SatDCBData;
-      
+
          // Map holding receiver DCB data
       typedef std::map< std::string, double > ReceiverDCBData;
-         
+
          /// A structure used to store daily DCB data
       struct DailyDCBData
       {
@@ -164,7 +164,7 @@ namespace gpstk
 
          ReceiverDCBData   gpsDCB;
 
-         ReceiverDCBData   glonassDCB; 
+         ReceiverDCBData   glonassDCB;
       };
 
          /// Object holding all of the DCB data
@@ -182,6 +182,6 @@ namespace gpstk
 
        //@}
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk
 
-#endif  // GPSTK_DCBDATAREADER_HPP
+#endif  // GNSSTK_DCBDATAREADER_HPP

@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,8 +41,8 @@
  * Define the specification of a file.
  */
 
-#ifndef GPSTK_FILESPEC_HPP
-#define GPSTK_FILESPEC_HPP
+#ifndef GNSSTK_FILESPEC_HPP
+#define GNSSTK_FILESPEC_HPP
 
 #include <vector>
 #include <functional>
@@ -57,12 +57,12 @@ const char slash = '\\';
 const char slash = '/';
 #endif
 
-namespace gpstk
+namespace gnsstk
 {
       /// This exception is thrown when there is a problem with
       /// handling file specifications.
       /// @ingroup exceptiongroup
-   NEW_EXCEPTION_CLASS(FileSpecException, gpstk::Exception);
+   NEW_EXCEPTION_CLASS(FileSpecException, gnsstk::Exception);
 
       /// @ingroup FileDirProc
       //@{
@@ -83,7 +83,7 @@ namespace gpstk
          /** This enum lists the different possible elements you can
           * have in a FileSpec.
           *
-          * @note 
+          * @note
           * Whenever a format is added or removed from the CommonTime
           * class, it more than likely should also be added or removed
           * from the FileSpec class.  Additionally, the format
@@ -98,18 +98,19 @@ namespace gpstk
          prn,           ///< 'p' A field for PRN number
          selected,      ///< 't' A field for selected/unselected receiver
          sequence,      ///< 'I' A sequence number, as in part 1, part 2, etc..
-         version,       ///< 'v' A version number, as in version 2 
+         version,       ///< 'v' A version number, as in version 2
                         ///<     is more recent than version 1
          fixed,         ///< A field for fixed characters
          clock,         ///< 'k' A field for the clock number
-         text,          ///< 'x' A field for arbitrary text
+         text,          ///< 'x' A field for arbitrary text,
+                        ///<     left-aligned and space-padded
 
 
             // see CommonTime for more information on the following elements
          year,          ///< 'y' or 'Y' A field for a year
          firstTime = year, ///< First enumeration value pertaining to time
          month,         ///< 'm' A field for month (numeric)
-         dayofmonth,    ///< 'd' A field for day-of-month  
+         dayofmonth,    ///< 'd' A field for day-of-month
          hour,          ///< 'H' A field for hours (out of 24)
          minute,        ///< 'M' A field for minutes (out of 60)
          second,        ///< 'S' A field for seconds (out of 60)
@@ -175,11 +176,12 @@ namespace gpstk
           * Given a file name and a field, returns that field from the string.
           * Use hasField() first to see if the field exists in the FileSpec.
           * If multiple fields of FileSpecType are defined, only the first
-          * is returned.
+          * is returned.  If the FileSpec contains fields without an explicit
+          * width, the behavior of this method is currently undefined.
           * @throw FileSpecException when the FileSpecType doesn't exist
           *  in the FileSpec
           */
-      virtual std::string extractField(const std::string& filename, 
+      virtual std::string extractField(const std::string& filename,
                                        const FileSpecType) const;
 
          /**
@@ -196,13 +198,15 @@ namespace gpstk
       bool hasNonTimeField() const
       { return (!fileSpecSet.empty() && ((*fileSpecSet.begin()) < firstTime)); }
 
-         /** 
+         /**
           * If possible, returns a CommonTime object with the time the file
           * represents.  Since the time resolution only goes to days for
           * most file types, all times are set to midnight of that day.
+          * If the FileSpec contains fields without an explicit width,
+          * the behavior of this method is currently undefined.
           * @throw FileSpecException when a time can't be formed
           */
-      virtual gpstk::CommonTime extractCommonTime(const std::string& filename)
+      virtual gnsstk::CommonTime extractCommonTime(const std::string& filename)
          const;
 
          /**
@@ -217,22 +221,22 @@ namespace gpstk
           * information into the FSTSMap, but it's not necessary.
           * @return the new filename.
           */
-      virtual std::string toString(const gpstk::CommonTime& dt,
-                                   const FSTStringMap& fstsMap = FSTStringMap()) 
+      virtual std::string toString(const gnsstk::CommonTime& dt,
+                                   const FSTStringMap& fstsMap = FSTStringMap())
          const;
 
          /**
-          * Sort the list of files ascending or 
+          * Sort the list of files ascending or
           * descending.  The fields of the files are sorted in the order
           * that they're specified in the FileSpecType enum.
           * The list fileList is modified as a result
           * of this.  If the files in fileList have paths listed, then
-          * only the file name (taken to be the word after the last '/') 
+          * only the file name (taken to be the word after the last '/')
           * will be used in the comparison.  This function also filters
           * out older versions of files in the fileList.
           * @throw FileSpecException
           */
-      virtual void sortList(std::vector<std::string>& fileList, 
+      virtual void sortList(std::vector<std::string>& fileList,
                             const FileSpecSortType fsst = ascending) const;
 
          /// semi-nicely print the FileSpec to the stream.
@@ -266,13 +270,13 @@ namespace gpstk
       {
       public:
             /// This is the default constructor too.
-         FileSpecElement(const std::string::size_type numChars = 0, 
-                         const std::string::size_type offs = 0, 
+         FileSpecElement(const std::string::size_type numChars = 0,
+                         const std::string::size_type offs = 0,
                          const FileSpecType fst = unknown,
                          const std::string& fld = std::string())
                : numCh(numChars), offset(offs), type(fst), field(fld)
          {}
-         
+
             /// The number of characters this field is in the file name.
          std::string::size_type numCh;
             /// The offset in the string where this field begins
@@ -320,6 +324,6 @@ namespace gpstk
 
       //@}
 
-} // namespace gpstk
+} // namespace gnsstk
 
-#endif 
+#endif

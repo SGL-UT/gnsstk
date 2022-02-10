@@ -1,65 +1,65 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 #include "NavSatelliteID.hpp"
 #include "TestUtil.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::SatelliteSystem e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::SatelliteSystem e)
    {
       s << StringUtils::asString(e);
       return s;
    }
 
-   std::ostream& operator<<(std::ostream& s, gpstk::CarrierBand e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::CarrierBand e)
    {
       s << StringUtils::asString(e);
       return s;
    }
 
-   std::ostream& operator<<(std::ostream& s, gpstk::TrackingCode e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::TrackingCode e)
    {
       s << StringUtils::asString(e);
       return s;
    }
 
-   std::ostream& operator<<(std::ostream& s, gpstk::NavType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -81,103 +81,102 @@ constructorTest()
 {
    TUDEF("NavSatelliteID", "NavSatelliteID");
       // test default constructor
-   gpstk::NavSatelliteID nsid1;
-   gpstk::SatID exp1a(0,gpstk::SatelliteSystem::Unknown);
-   gpstk::SatID exp1b(0,gpstk::SatelliteSystem::GPS);
+   gnsstk::NavSatelliteID nsid1;
+   gnsstk::SatID exp1a(0,gnsstk::SatelliteSystem::Unknown);
+   gnsstk::SatID exp1b(0,gnsstk::SatelliteSystem::GPS);
       // test for exact match
-   TUASSERTE(gpstk::SatID, exp1a, nsid1.sat);
-   TUASSERTE(gpstk::SatID, exp1a, nsid1.xmitSat);
+   TUASSERTE(gnsstk::SatID, exp1a, nsid1.sat);
+   TUASSERTE(gnsstk::SatID, exp1a, nsid1.xmitSat);
       // test for expected mismatch
    TUASSERT(nsid1.sat != exp1b);
    TUASSERT(nsid1.xmitSat != exp1b);
       // test constructor with integer satellite IDs
-   gpstk::NavSatelliteID nsid2(23, 32, gpstk::SatelliteSystem::Transit,
-                               gpstk::CarrierBand::L5, gpstk::TrackingCode::Y,
-                               gpstk::NavType::GPSMNAV);
-   gpstk::SatID exps2a(23,gpstk::SatelliteSystem::Transit);
-   gpstk::SatID expx2a(32,gpstk::SatelliteSystem::Transit);
-   gpstk::SatID exps2b(23,gpstk::SatelliteSystem::GPS);
-   gpstk::SatID expx2b(32,gpstk::SatelliteSystem::GPS);
-   TUASSERTE(gpstk::SatID, exps2a, nsid2.sat);
-   TUASSERTE(gpstk::SatID, expx2a, nsid2.xmitSat);
+   gnsstk::NavSatelliteID nsid2(23, 32, gnsstk::SatelliteSystem::Transit,
+                               gnsstk::CarrierBand::L5, gnsstk::TrackingCode::Y,
+                               gnsstk::NavType::GPSMNAV);
+   gnsstk::SatID exps2a(23,gnsstk::SatelliteSystem::Transit);
+   gnsstk::SatID expx2a(32,gnsstk::SatelliteSystem::Transit);
+   gnsstk::SatID exps2b(23,gnsstk::SatelliteSystem::GPS);
+   gnsstk::SatID expx2b(32,gnsstk::SatelliteSystem::GPS);
+   TUASSERTE(gnsstk::SatID, exps2a, nsid2.sat);
+   TUASSERTE(gnsstk::SatID, expx2a, nsid2.xmitSat);
    TUASSERT(nsid2.sat != exps2b);
    TUASSERT(nsid2.xmitSat != expx2b);
-   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::Transit,
+   TUASSERTE(gnsstk::SatelliteSystem, gnsstk::SatelliteSystem::Transit,
              nsid2.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid2.obs.band);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid2.obs.code);
-   TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid2.nav);
+   TUASSERTE(gnsstk::CarrierBand, gnsstk::CarrierBand::L5, nsid2.obs.band);
+   TUASSERTE(gnsstk::TrackingCode, gnsstk::TrackingCode::Y, nsid2.obs.code);
+   TUASSERTE(gnsstk::NavType, gnsstk::NavType::GPSMNAV, nsid2.nav);
       // test constructor with wildcard transmit satellite
-   gpstk::NavSatelliteID nsid7(23, gpstk::SatelliteSystem::Transit,
-                               gpstk::CarrierBand::L5, gpstk::TrackingCode::Y,
-                               gpstk::NavType::GPSMNAV);
-   gpstk::SatID expx7a;
+   gnsstk::NavSatelliteID nsid7(23, gnsstk::SatelliteSystem::Transit,
+                               gnsstk::CarrierBand::L5, gnsstk::TrackingCode::Y,
+                               gnsstk::NavType::GPSMNAV);
+   gnsstk::SatID expx7a;
    expx7a.makeWild();
-   TUASSERTE(gpstk::SatID, exps2a, nsid7.sat);
-   TUASSERTE(gpstk::SatID, expx7a, nsid7.xmitSat);
+   TUASSERTE(gnsstk::SatID, exps2a, nsid7.sat);
+   TUASSERTE(gnsstk::SatID, expx7a, nsid7.xmitSat);
    TUASSERT(nsid7.sat != exps2b);
       // should match because wildcard.
    TUASSERT(nsid7.xmitSat == expx2b);
-   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::Transit,
+   TUASSERTE(gnsstk::SatelliteSystem, gnsstk::SatelliteSystem::Transit,
              nsid7.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid7.obs.band);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid7.obs.code);
-   TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid7.nav);
+   TUASSERTE(gnsstk::CarrierBand, gnsstk::CarrierBand::L5, nsid7.obs.band);
+   TUASSERTE(gnsstk::TrackingCode, gnsstk::TrackingCode::Y, nsid7.obs.code);
+   TUASSERTE(gnsstk::NavType, gnsstk::NavType::GPSMNAV, nsid7.nav);
       // test "subframe 5 page 25" constructor
-   gpstk::SatID exps3a(17,gpstk::SatelliteSystem::GPS);
-   gpstk::SatID exps3b(23,gpstk::SatelliteSystem::GPS);
-   gpstk::ObsID oid3a(gpstk::ObservationType::NavMsg, gpstk::CarrierBand::L5,
-                      gpstk::TrackingCode::Y);
-   gpstk::NavID nid3a(gpstk::NavType::GPSMNAV);
+   gnsstk::SatID exps3a(17,gnsstk::SatelliteSystem::GPS);
+   gnsstk::SatID exps3b(23,gnsstk::SatelliteSystem::GPS);
+   gnsstk::ObsID oid3a(gnsstk::ObservationType::NavMsg, gnsstk::CarrierBand::L5,
+                      gnsstk::TrackingCode::Y);
+   gnsstk::NavID nid3a(gnsstk::NavType::GPSMNAV);
    oid3a.freqOffs = -7;
    oid3a.freqOffsWild = false;
-   oid3a.mcode = 0x12345678;
-   oid3a.mcodeMask = 0xffffffff;
-   gpstk::NavSatelliteID nsid3(17, exps3b, oid3a, nid3a);
-   TUASSERTE(gpstk::SatID, exps3a, nsid3.sat);
-   TUASSERTE(gpstk::SatID, exps3b, nsid3.xmitSat);
-   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
+   oid3a.setMcodeBits(0x12345678, 0xffffffff);
+   gnsstk::NavSatelliteID nsid3(17, exps3b, oid3a, nid3a);
+   TUASSERTE(gnsstk::SatID, exps3a, nsid3.sat);
+   TUASSERTE(gnsstk::SatID, exps3b, nsid3.xmitSat);
+   TUASSERTE(gnsstk::SatelliteSystem, gnsstk::SatelliteSystem::GPS,
              nsid3.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid3.obs.band);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid3.obs.code);
-   TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid3.nav);
-   TUASSERTE(gpstk::ObsID, oid3a, nsid3.obs);
+   TUASSERTE(gnsstk::CarrierBand, gnsstk::CarrierBand::L5, nsid3.obs.band);
+   TUASSERTE(gnsstk::TrackingCode, gnsstk::TrackingCode::Y, nsid3.obs.code);
+   TUASSERTE(gnsstk::NavType, gnsstk::NavType::GPSMNAV, nsid3.nav);
+   TUASSERTE(gnsstk::ObsID, oid3a, nsid3.obs);
       // test "QZSS CNAV" constructor
-   gpstk::SatID exps4a(17,gpstk::SatelliteSystem::GPS);
-   gpstk::SatID exps4b(23,gpstk::SatelliteSystem::QZSS);
-   gpstk::NavSatelliteID nsid4(exps4a, exps4b, oid3a, nid3a);
-   TUASSERTE(gpstk::SatID, exps4a, nsid4.sat);
-   TUASSERTE(gpstk::SatID, exps4b, nsid4.xmitSat);
-   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::QZSS,
+   gnsstk::SatID exps4a(17,gnsstk::SatelliteSystem::GPS);
+   gnsstk::SatID exps4b(23,gnsstk::SatelliteSystem::QZSS);
+   gnsstk::NavSatelliteID nsid4(exps4a, exps4b, oid3a, nid3a);
+   TUASSERTE(gnsstk::SatID, exps4a, nsid4.sat);
+   TUASSERTE(gnsstk::SatID, exps4b, nsid4.xmitSat);
+   TUASSERTE(gnsstk::SatelliteSystem, gnsstk::SatelliteSystem::QZSS,
              nsid4.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid4.obs.band);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid4.obs.code);
-   TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid4.nav);
-   TUASSERTE(gpstk::ObsID, oid3a, nsid3.obs);
+   TUASSERTE(gnsstk::CarrierBand, gnsstk::CarrierBand::L5, nsid4.obs.band);
+   TUASSERTE(gnsstk::TrackingCode, gnsstk::TrackingCode::Y, nsid4.obs.code);
+   TUASSERTE(gnsstk::NavType, gnsstk::NavType::GPSMNAV, nsid4.nav);
+   TUASSERTE(gnsstk::ObsID, oid3a, nsid3.obs);
       // test yet another constructor
-   gpstk::SatID exps5a(17,gpstk::SatelliteSystem::GPS);
-   gpstk::SatID exps5b(23,gpstk::SatelliteSystem::GPS);
-   gpstk::NavSatelliteID nsid5(exps5a, exps5b, gpstk::CarrierBand::L5,
-                               gpstk::TrackingCode::Y, gpstk::NavType::GPSMNAV);
-   TUASSERTE(gpstk::SatID, exps5a, nsid5.sat);
-   TUASSERTE(gpstk::SatID, exps5b, nsid5.xmitSat);
-   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
+   gnsstk::SatID exps5a(17,gnsstk::SatelliteSystem::GPS);
+   gnsstk::SatID exps5b(23,gnsstk::SatelliteSystem::GPS);
+   gnsstk::NavSatelliteID nsid5(exps5a, exps5b, gnsstk::CarrierBand::L5,
+                               gnsstk::TrackingCode::Y, gnsstk::NavType::GPSMNAV);
+   TUASSERTE(gnsstk::SatID, exps5a, nsid5.sat);
+   TUASSERTE(gnsstk::SatID, exps5b, nsid5.xmitSat);
+   TUASSERTE(gnsstk::SatelliteSystem, gnsstk::SatelliteSystem::GPS,
              nsid5.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::L5, nsid5.obs.band);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Y, nsid5.obs.code);
-   TUASSERTE(gpstk::NavType, gpstk::NavType::GPSMNAV, nsid5.nav);
+   TUASSERTE(gnsstk::CarrierBand, gnsstk::CarrierBand::L5, nsid5.obs.band);
+   TUASSERTE(gnsstk::TrackingCode, gnsstk::TrackingCode::Y, nsid5.obs.code);
+   TUASSERTE(gnsstk::NavType, gnsstk::NavType::GPSMNAV, nsid5.nav);
       // test the SatID constructor
-   gpstk::SatID exps6a(17,gpstk::SatelliteSystem::GPS);
-   gpstk::NavSatelliteID nsid6(exps6a);
-   TUASSERTE(gpstk::SatID, exps6a, nsid6.sat);
+   gnsstk::SatID exps6a(17,gnsstk::SatelliteSystem::GPS);
+   gnsstk::NavSatelliteID nsid6(exps6a);
+   TUASSERTE(gnsstk::SatID, exps6a, nsid6.sat);
    TUASSERTE(bool, true, nsid6.xmitSat.wildId);
    TUASSERTE(bool, true, nsid6.xmitSat.wildSys);
-   TUASSERTE(gpstk::SatelliteSystem, gpstk::SatelliteSystem::GPS,
+   TUASSERTE(gnsstk::SatelliteSystem, gnsstk::SatelliteSystem::GPS,
              nsid6.system);
-   TUASSERTE(gpstk::CarrierBand, gpstk::CarrierBand::Any, nsid6.obs.band);
-   TUASSERTE(gpstk::TrackingCode, gpstk::TrackingCode::Any, nsid6.obs.code);
-   TUASSERTE(gpstk::NavType, gpstk::NavType::Any, nsid6.nav);
-   
+   TUASSERTE(gnsstk::CarrierBand, gnsstk::CarrierBand::Any, nsid6.obs.band);
+   TUASSERTE(gnsstk::TrackingCode, gnsstk::TrackingCode::Any, nsid6.obs.code);
+   TUASSERTE(gnsstk::NavType, gnsstk::NavType::Any, nsid6.nav);
+
    TURETURN();
 }
 
@@ -186,82 +185,82 @@ unsigned NavSatelliteID_T ::
 equalTest()
 {
    TUDEF("NavSatelliteID", "operator==");
-   gpstk::NavSatelliteID nsid01(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid02(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid03(1, 1, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid04(2, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid05(1, 2, gpstk::SatelliteSystem::QZSS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid06(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L2, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid07(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::Y,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid08(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSCNAV2);
-   gpstk::NavSatelliteID nsid09(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::Any,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid10(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::Any,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid11(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::Any);
-   gpstk::NavSatelliteID nsid12(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid13(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid14(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid15(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid16(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid17(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid18(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid19(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   nsid12.sat = gpstk::SatID(1); // wildcard system
-   nsid13.sat = gpstk::SatID(2); // wildcard system
-   nsid14.sat = gpstk::SatID(gpstk::SatelliteSystem::GPS);  // wildcard sat
-   nsid15.sat = gpstk::SatID(gpstk::SatelliteSystem::QZSS); // wildcard sat
-   nsid16.xmitSat = gpstk::SatID(1); // wildcard system
-   nsid17.xmitSat = gpstk::SatID(2); // wildcard system
-   nsid18.xmitSat = gpstk::SatID(gpstk::SatelliteSystem::GPS);  // wild sat
-   nsid19.xmitSat = gpstk::SatID(gpstk::SatelliteSystem::QZSS); // wild sat
+   gnsstk::NavSatelliteID nsid01(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid02(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid03(1, 1, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid04(2, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid05(1, 2, gnsstk::SatelliteSystem::QZSS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid06(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L2, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid07(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::Y,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid08(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSCNAV2);
+   gnsstk::NavSatelliteID nsid09(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::Any,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid10(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::Any,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid11(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::Any);
+   gnsstk::NavSatelliteID nsid12(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid13(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid14(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid15(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid16(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid17(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid18(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid19(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   nsid12.sat = gnsstk::SatID(1); // wildcard system
+   nsid13.sat = gnsstk::SatID(2); // wildcard system
+   nsid14.sat = gnsstk::SatID(gnsstk::SatelliteSystem::GPS);  // wildcard sat
+   nsid15.sat = gnsstk::SatID(gnsstk::SatelliteSystem::QZSS); // wildcard sat
+   nsid16.xmitSat = gnsstk::SatID(1); // wildcard system
+   nsid17.xmitSat = gnsstk::SatID(2); // wildcard system
+   nsid18.xmitSat = gnsstk::SatID(gnsstk::SatelliteSystem::GPS);  // wild sat
+   nsid19.xmitSat = gnsstk::SatID(gnsstk::SatelliteSystem::QZSS); // wild sat
    TUASSERTE(bool, true,  nsid01 == nsid02);
    TUASSERTE(bool, false, nsid01 == nsid03);
    TUASSERTE(bool, false, nsid01 == nsid04);
@@ -307,82 +306,82 @@ unsigned NavSatelliteID_T ::
 lessThanTest()
 {
    TUDEF("NavSatelliteID", "operator<");
-   gpstk::NavSatelliteID nsid01(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid02(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid03(1, 1, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid04(2, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid05(1, 2, gpstk::SatelliteSystem::QZSS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid06(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L2, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid07(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::Y,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid08(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1, gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSCNAV2);
-   gpstk::NavSatelliteID nsid09(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::Any,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid10(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::Any,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid11(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::Any);
-   gpstk::NavSatelliteID nsid12(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid13(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid14(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid15(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid16(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid17(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid18(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   gpstk::NavSatelliteID nsid19(1, 2, gpstk::SatelliteSystem::GPS,
-                                gpstk::CarrierBand::L1,
-                                gpstk::TrackingCode::CA,
-                                gpstk::NavType::GPSLNAV);
-   nsid12.sat = gpstk::SatID(1); // wildcard system
-   nsid13.sat = gpstk::SatID(2); // wildcard system
-   nsid14.sat = gpstk::SatID(gpstk::SatelliteSystem::GPS);  // wildcard sat
-   nsid15.sat = gpstk::SatID(gpstk::SatelliteSystem::QZSS); // wildcard sat
-   nsid16.xmitSat = gpstk::SatID(1); // wildcard system
-   nsid17.xmitSat = gpstk::SatID(2); // wildcard system
-   nsid18.xmitSat = gpstk::SatID(gpstk::SatelliteSystem::GPS);  // wild sat
-   nsid19.xmitSat = gpstk::SatID(gpstk::SatelliteSystem::QZSS); // wild sat
+   gnsstk::NavSatelliteID nsid01(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid02(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid03(1, 1, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid04(2, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid05(1, 2, gnsstk::SatelliteSystem::QZSS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid06(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L2, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid07(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::Y,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid08(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSCNAV2);
+   gnsstk::NavSatelliteID nsid09(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::Any,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid10(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::Any,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid11(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::Any);
+   gnsstk::NavSatelliteID nsid12(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid13(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid14(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid15(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid16(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid17(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid18(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   gnsstk::NavSatelliteID nsid19(1, 2, gnsstk::SatelliteSystem::GPS,
+                                gnsstk::CarrierBand::L1,
+                                gnsstk::TrackingCode::CA,
+                                gnsstk::NavType::GPSLNAV);
+   nsid12.sat = gnsstk::SatID(1); // wildcard system
+   nsid13.sat = gnsstk::SatID(2); // wildcard system
+   nsid14.sat = gnsstk::SatID(gnsstk::SatelliteSystem::GPS);  // wildcard sat
+   nsid15.sat = gnsstk::SatID(gnsstk::SatelliteSystem::QZSS); // wildcard sat
+   nsid16.xmitSat = gnsstk::SatID(1); // wildcard system
+   nsid17.xmitSat = gnsstk::SatID(2); // wildcard system
+   nsid18.xmitSat = gnsstk::SatID(gnsstk::SatelliteSystem::GPS);  // wild sat
+   nsid19.xmitSat = gnsstk::SatID(gnsstk::SatelliteSystem::QZSS); // wild sat
    TUASSERTE(bool, false, nsid01 < nsid02);
    TUASSERTE(bool, false, nsid02 < nsid01);
    TUASSERTE(bool, false, nsid01 < nsid03);

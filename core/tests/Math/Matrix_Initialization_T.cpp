@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -48,10 +48,10 @@ int Matrix_T::initializeConstantsTest (void)
    unsigned badCount = 0;
 
       //4 matrices filled with constants
-   gpstk::Matrix<int> a(2,2,1);
-   gpstk::Matrix<int> b(8, 2, 3);
-   gpstk::Matrix<int> c(4, 2, 5);
-   gpstk::Matrix<int> d(4, 4, 7);
+   gnsstk::Matrix<int> a(2,2,1);
+   gnsstk::Matrix<int> b(8, 2, 3);
+   gnsstk::Matrix<int> c(4, 2, 5);
+   gnsstk::Matrix<int> d(4, 4, 7);
 
    for(unsigned i = 0; i < a.rows(); i++)
    {
@@ -109,34 +109,34 @@ int Matrix_T::initializeConstantsTest (void)
 }
 
 //-------------------------------------------------------------------------
-//gpstk::Vectors -- sort of implicitly tests intialization from array
+//gnsstk::Vectors -- sort of implicitly tests intialization from array
 int Matrix_T::initializeVectorsTest (void)
 {
    TUDEF("Matrix","Vector Constructor");
    unsigned badCount = 0;
 
-      //Initialize 4 gpstk::Vectors
-   gpstk::Vector<int> v1 = gpstk::Vector<int>(16);
+      //Initialize 4 gnsstk::Vectors
+   gnsstk::Vector<int> v1 = gnsstk::Vector<int>(16);
    for(unsigned i = 0; i < 16; i++)
       v1[i] = i+1;
-   gpstk::Vector<int> v2 = gpstk::Vector<int>(16);
+   gnsstk::Vector<int> v2 = gnsstk::Vector<int>(16);
    for(unsigned i = 0; i < 16; i++)
       v2[i] = 16-i;
-   gpstk::Vector<int> v3 = gpstk::Vector<int>(4);
+   gnsstk::Vector<int> v3 = gnsstk::Vector<int>(4);
    for(unsigned i = 0; i < 4; i++)
       v3[i] = i+1;
-   gpstk::Vector<int> v4 = gpstk::Vector<int>(8);
+   gnsstk::Vector<int> v4 = gnsstk::Vector<int>(8);
    for(unsigned i = 0; i < 4; i++)
    {
       v4[i] = i+1+4;
       v4[i+4] = i+1+4;
    }
 
-      //Make matrices from gpstk::Vectors
-   gpstk::Matrix<int> e(8, 2, v1);
-   gpstk::Matrix<int> f(4, 4, v2);
-   gpstk::Matrix<int> g(2, 2, v3);
-   gpstk::Matrix<int> h(4, 2, v4);
+      //Make matrices from gnsstk::Vectors
+   gnsstk::Matrix<int> e(8, 2, v1);
+   gnsstk::Matrix<int> f(4, 4, v2);
+   gnsstk::Matrix<int> g(2, 2, v3);
+   gnsstk::Matrix<int> h(4, 2, v4);
 
 
    for(unsigned i = 0; i < e.rows(); i++)
@@ -149,7 +149,7 @@ int Matrix_T::initializeVectorsTest (void)
          }
       }
    }
-   failDescriptionStream << "Check to see if gpstk::Matrix set the gpstk::Vector of values properly into a 8x2 matrix. " << badCount << " of them are set improperly.";
+   failDescriptionStream << "Check to see if gnsstk::Matrix set the gnsstk::Vector of values properly into a 8x2 matrix. " << badCount << " of them are set improperly.";
    failDescriptionString = failDescriptionStream.str();
    failDescriptionStream.str("");
    testFramework.assert(badCount==0, failDescriptionString, __LINE__);
@@ -165,7 +165,7 @@ int Matrix_T::initializeVectorsTest (void)
          }
       }
    }
-   failDescriptionStream << "Check to see if gpstk::Matrix set the gpstk::Vector of values properly into a 4x4 matrix. " << badCount << " of them are set improperly.";
+   failDescriptionStream << "Check to see if gnsstk::Matrix set the gnsstk::Vector of values properly into a 4x4 matrix. " << badCount << " of them are set improperly.";
    failDescriptionString = failDescriptionStream.str(); failDescriptionStream.str("");
    testFramework.assert(badCount==0, failDescriptionString, __LINE__);
    badCount = 0; // Reset error counter
@@ -180,7 +180,7 @@ int Matrix_T::initializeVectorsTest (void)
          }
       }
    }
-   failDescriptionStream << "Check to see if gpstk::Matrix set the gpstk::Vector of values properly into a 2x2 matrix. " << badCount << " of them are set improperly.";
+   failDescriptionStream << "Check to see if gnsstk::Matrix set the gnsstk::Vector of values properly into a 2x2 matrix. " << badCount << " of them are set improperly.";
    failDescriptionString = failDescriptionStream.str(); failDescriptionStream.str("");
    testFramework.assert(badCount==0, failDescriptionString, __LINE__);
    badCount = 0; // Reset error counter
@@ -195,7 +195,7 @@ int Matrix_T::initializeVectorsTest (void)
          }
       }
    }
-   failDescriptionStream << "Check to see if gpstk::Matrix set the gpstk::Vector of values properly into a 4x2 matrix. " << badCount << " of them are set improperly.";
+   failDescriptionStream << "Check to see if gnsstk::Matrix set the gnsstk::Vector of values properly into a 4x2 matrix. " << badCount << " of them are set improperly.";
    failDescriptionString = failDescriptionStream.str(); failDescriptionStream.str("");
    testFramework.assert(badCount==0, failDescriptionString, __LINE__);
    badCount = 0; // Reset error counter
@@ -214,7 +214,7 @@ int Matrix_T::initializeArrayTest (void)
         1.,  0., 0.,
         1., -1., 1.,
         1., -2., 4. };
-   gpstk::Matrix<double> A(5, 3, Aarr);
+   gnsstk::Matrix<double> A(5, 3, Aarr);
 
    unsigned arrIdx = 0;
    for (unsigned row = 0; row < 5; row++)

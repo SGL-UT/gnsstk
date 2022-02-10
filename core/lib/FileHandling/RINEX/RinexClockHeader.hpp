@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,33 +41,33 @@
  * Encapsulate header of Rinex clock file, including I/O
  */
 
-#ifndef GPSTK_RINEXCLOCKHEADER_HPP
-#define GPSTK_RINEXCLOCKHEADER_HPP
+#ifndef GNSSTK_RINEXCLOCKHEADER_HPP
+#define GNSSTK_RINEXCLOCKHEADER_HPP
 
 #include <string>
 #include <list>
-#include "gpstkplatform.h"
+#include "gnsstkplatform.h"
 #include "RinexClockBase.hpp"
 #include "SatID.hpp"
 #include "FFStream.hpp"
 #include "StringUtils.hpp"
 
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
    class RinexClockHeader : public RinexClockBase
    {
-      
+
    public:
          /// A Simple Constructor.
       RinexClockHeader() : valid(0), version(2.00)
       {}
-      
+
          /// Destructor
       virtual ~RinexClockHeader() {}
-      
+
          /// @name RINEX Clock Header Formatting Strings
          //@{
       static const std::string versionString;        ///< "RINEX VERSION / TYPE"
@@ -86,7 +86,7 @@ namespace gpstk
       static const std::string prnListString;        ///< "PRN LIST"
       static const std::string endOfHeader;          ///< "END OF HEADER"
          //@}
-      
+
          /// Validity bits for the RINEX Clock Header
       enum validBits
       {
@@ -103,9 +103,9 @@ namespace gpstk
          solnStaNameValid = 0x0400,       ///< "SOLN STA NAME / NUM"
          numSatsValid = 0x00800,          ///< "# OF SOLN SATS"
          prnListValid = 0x01000,          ///< "PRN LIST"
-         
+
          endValid =   0x080000000,        ///< "END OF HEADER"
-         
+
          allValidAR = 0x080000797,
          allValidAS = 0x080001F97,
          allValidCR = 0x080000073,
@@ -120,16 +120,16 @@ namespace gpstk
          RefClk()
                : clkConstraint(0)
          {}
-            /// name of the reciever or satellite used as a fixed reference 
+            /// name of the reciever or satellite used as a fixed reference
             /// in data analysis
          std::string name;
-            /// Unique identifier for reference clock (if a reciever), 
+            /// Unique identifier for reference clock (if a reciever),
             /// preferably the DOMES number for fixed stations
          std::string number;
             /// Optional non-zero value for the apriori clock constraint
          RCDouble clkConstraint;
       };
-      
+
 
          /** Encapsulates the aggregate list of RefClk objects
           * specified in an ANALYSIS CLK REF header. */
@@ -138,15 +138,15 @@ namespace gpstk
             /// number of analysis clock references (satellite or reciever
             /// clocks) listed under "ANALYSIS CLK REF"
          int numClkRef;
-            /// Start epoch (in GPS time) 
+            /// Start epoch (in GPS time)
          CivilTime startEpoch;
-            /// Stop epoch (in GPS time) 
+            /// Stop epoch (in GPS time)
          CivilTime stopEpoch;
             /// List of RefClks to appear as "ANALYSIS CLK REF"
          std::list<RefClk> clocks;
       };
-      
-      
+
+
          /** Clock solution participating station identifier as
           * specified in a SOLN STA NAME / NUM header record. */
       struct SolnSta
@@ -156,7 +156,7 @@ namespace gpstk
             /// Unique station/reciever identifier, preferably the DOMES number
             /// for fixed stations
          std::string number;
-            /// Geocentric XYZ station coordinates corresponding to the 
+            /// Geocentric XYZ station coordinates corresponding to the
             /// analysis clock values reported (in millimeters!)
             //@{
          int64_t posX;
@@ -168,7 +168,7 @@ namespace gpstk
          /// Format version (2.00)
       double version;
          /// File type ("C" for Clock Data)
-      std::string fileType;                  
+      std::string fileType;
          /// Name of program creating current file
       std::string fileProgram;
          /// Name of agency creating current file
@@ -182,45 +182,45 @@ namespace gpstk
          /// Number of different clock data types stored in the file
       int numType;
          /// List of clock data types
-      std::list<RinexClkType> dataTypeList;  
+      std::list<RinexClkType> dataTypeList;
          /// 4-character reciever name designator
-      std::string stationName;               
-         /// Unique reciever identifier, preferably the DOMES number 
+      std::string stationName;
+         /// Unique reciever identifier, preferably the DOMES number
          /// for fixed station
       std::string stationNumber;
-         /// Unique identifier for external reference clock being used as 
+         /// Unique identifier for external reference clock being used as
          /// the standard for calibration
-      std::string stationClkRef;             
+      std::string stationClkRef;
          /// 3-character IGS AC designator
-      std::string ac;                        
+      std::string ac;
          /// Full name of Analysis Center
       std::string acName;
-         /// List of RefClkRecords that make up the "# OF CLK REF" 
+         /// List of RefClkRecords that make up the "# OF CLK REF"
          /// "ANALYSIS CLK REF" groups
       std::list<RefClkRecord> refClkList;
-         /// Number of recievers included in the clock data records 
-         /// (including the analysis reference clock even if it has zero 
-         /// values and is not given in the data records) 
+         /// Number of recievers included in the clock data records
+         /// (including the analysis reference clock even if it has zero
+         /// values and is not given in the data records)
       int numSta;
-         /// Terrestrial reference frame or SINEX solution for the 
+         /// Terrestrial reference frame or SINEX solution for the
          /// station/reciever coordinates which match the clock solution
       std::string trf;
          /// List of each station/reciever included in the clock data records,
-         /// as well as the analysis reference clock even if it has zero 
+         /// as well as the analysis reference clock even if it has zero
          /// values and is not included in the data records
       std::list<SolnSta> solnStaList;
-         /// Number of different satellites in the clock data records and 
+         /// Number of different satellites in the clock data records and
          /// listed in following header records
-      int numSats;  
+      int numSats;
          /// List of PRNs
-      std::list<SatID> prnList;           
+      std::list<SatID> prnList;
          /// Bits set when individual header members are present and valid
-      unsigned long valid;                
+      unsigned long valid;
 
          /** RinexClockHeader is a "header" so this function always
           * returns true */
       virtual bool isHeader(void) const {return true;}
-    
+
          /// A debug function that outputs the header to \a s.
       virtual void dump(std::ostream& s) const;
 
@@ -235,9 +235,9 @@ namespace gpstk
           * @throw StringUtils::StringException
           */
       virtual void reallyPutRecord(FFStream& s) const;
-      
+
          /**
-          * This function retrieves the RINEX Clock Header from the 
+          * This function retrieves the RINEX Clock Header from the
           * given FFStream.
           * If an stream error is encountered, the stream is reset to its
           * original position and its fail-bit is set.
@@ -260,11 +260,11 @@ namespace gpstk
           * @throw FFStreamError
           */
       void ParseHeaderRecord(const std::string& line);
-    
+
    }; // RinexClockHeader
 
       //@}
-  
+
 }  // namespace
 
 #endif

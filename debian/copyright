@@ -1,9 +1,9 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: gpstk
-Source: http://www.gpstk.org/
+Upstream-Name: gnsstk
+Source: http://www.gnsstk.org/
 
 Files: *
-Copyright: 2017 University of Texas <gpstk@arlut.utexas.edu>
+Copyright: 2022 University of Texas <gpstk@arlut.utexas.edu>
 License: LGPL-3.0
 This package is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public

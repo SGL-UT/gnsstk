@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import gpstk
+import gnsstk
 import inspect
 import os
 
@@ -63,26 +63,26 @@ def write_page(x):
 
 
 def main():
-    os.system('rm -f gpstk.*.rst')
+    os.system('rm -f gnsstk.*.rst')
     classes = []
     functions = []
     constants = []
     exceptions = []
     cpp = []
-    namespace = ['gpstk.' + x for x in dir(gpstk)]
+    namespace = ['gnsstk.' + x for x in dir(gnsstk)]
 
     for x in namespace:
-        if 'gpstk._' in x:
+        if 'gnsstk._' in x:
             pass
-        elif x == 'gpstk.constants':
-            for y in get_dir(gpstk.constants):
-                constants.append('gpstk.constants.' + y)
-        elif x == 'gpstk.exceptions':
-            for y in get_dir(gpstk.exceptions):
-                exceptions.append('gpstk.exceptions.' + y)
-        elif x == 'gpstk.cpp':
-            for y in get_dir(gpstk.cpp):
-                cpp.append('gpstk.cpp.' + y)
+        elif x == 'gnsstk.constants':
+            for y in get_dir(gnsstk.constants):
+                constants.append('gnsstk.constants.' + y)
+        elif x == 'gnsstk.exceptions':
+            for y in get_dir(gnsstk.exceptions):
+                exceptions.append('gnsstk.exceptions.' + y)
+        elif x == 'gnsstk.cpp':
+            for y in get_dir(gnsstk.cpp):
+                cpp.append('gnsstk.cpp.' + y)
         elif is_class(x):
             classes.append(x)
         elif is_function(x):
@@ -92,7 +92,7 @@ def main():
     f = open('quickref.rst', 'w')
     f.write('.. _quickref_label:\n\n')
     f.write('Quick Reference\n====================\n\n')
-    desc = ("Here we provide a list of all members avaliable in the gpstk namespace."
+    desc = ("Here we provide a list of all members avaliable in the gnsstk namespace."
             "This is not meant to be complete documentation. Refer to the C++ API and "
             "the additional changes pages for more information. \n"
             "You should also try to use the help(x) function, where x is the object "
@@ -100,7 +100,7 @@ def main():
             "This is completely AUTO-GENERATED documentation. All text on the functions and classes "
             "is originally derived from the C++ source files.")
     f.write(desc + '\n\n')
-    f.write('.. py:currentmodule:: gpstk\n\n')
+    f.write('.. py:currentmodule:: gnsstk\n\n')
 
     f.write('\nClasses\n****************\n\n')
     f.write('.. toctree::\n   :maxdepth: 1\n\n')

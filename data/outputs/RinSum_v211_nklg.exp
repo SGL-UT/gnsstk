@@ -1,5 +1,5 @@
-# RinSum, part of the GPS Toolkit, Ver 4.1 8/26/15, Run 2020/08/21 15:22:00
-+++++++++++++ RinSum summary of Rinex obs file /home/johnk/src/git/toolkit-work/gpstk/data/inputs/igs/nklg170b00.16o +++++++++++++
+# RinSum, part of the GNSS Toolkit, Ver 4.1 8/26/15, Run 2020/08/21 15:22:00
++++++++++++++ RinSum summary of Rinex obs file /home/johnk/src/git/toolkit-work/gnsstk/data/inputs/igs/nklg170b00.16o +++++++++++++
 ---------------------------------- REQUIRED ----------------------------------
 Rinex Version  2.11,  File type OBSERVATION DATA,  System MIXED.
 Prgm: BNC 2.12.1,  Run: 18-Jun-16 00:59,  By: rtproc

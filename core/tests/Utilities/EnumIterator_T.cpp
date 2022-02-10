@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -72,12 +72,12 @@ unsigned EnumIterator_T ::
 constructorTest()
 {
    TUDEF("EnumIterator", "EnumIterator()");
-   typedef gpstk::EnumIterator<TestEnum1, TestEnum1::One, TestEnum1::Last> TestIterator1;
+   typedef gnsstk::EnumIterator<TestEnum1, TestEnum1::One, TestEnum1::Last> TestIterator1;
    TestIterator1 test1;
       // this also tests the dereference operator
    TUASSERTE(TestEnum1, TestEnum1::One, *test1);
 
-   typedef gpstk::EnumIterator<TestEnum1, TestEnum1::Two, TestEnum1::Last> TestIterator2;
+   typedef gnsstk::EnumIterator<TestEnum1, TestEnum1::Two, TestEnum1::Last> TestIterator2;
    TestIterator2 test2;
       // this also tests the dereference operator
    TUASSERTE(TestEnum1, TestEnum1::Two, *test2);
@@ -95,7 +95,7 @@ unsigned EnumIterator_T ::
 incrementTest()
 {
    TUDEF("EnumIterator", "operator++");
-   typedef gpstk::EnumIterator<TestEnum1, TestEnum1::One, TestEnum1::Last> TestIterator1;
+   typedef gnsstk::EnumIterator<TestEnum1, TestEnum1::One, TestEnum1::Last> TestIterator1;
    TestIterator1 test1;
       // this also tests the dereference operator
    TUASSERTE(TestEnum1, TestEnum1::One, *test1);
@@ -109,7 +109,7 @@ unsigned EnumIterator_T ::
 inequalityTest()
 {
    TUDEF("EnumIterator", "operator!=");
-   typedef gpstk::EnumIterator<TestEnum1, TestEnum1::One, TestEnum1::Last> TestIterator1;
+   typedef gnsstk::EnumIterator<TestEnum1, TestEnum1::One, TestEnum1::Last> TestIterator1;
    TestIterator1 test1, test2;
    TUASSERT(!(test1.operator!=(test2)));
    ++test2;
@@ -122,7 +122,7 @@ unsigned EnumIterator_T ::
 beginEndTest()
 {
    TUDEF("EnumIterator", "begin/end");
-   typedef gpstk::EnumIterator<TestEnum1, TestEnum1::One, TestEnum1::Last> TestIterator1;
+   typedef gnsstk::EnumIterator<TestEnum1, TestEnum1::One, TestEnum1::Last> TestIterator1;
    unsigned count = 0;
    TestIterator1 test;
    for (test = test.begin(); test != test.end(); ++test, count++)

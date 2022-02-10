@@ -115,7 +115,7 @@ developed by and for researchers. Fundamental to this format is the
 idea that the data should be independent of the type of receiver that
 collected it. For this reason the format is called Receiver
 INdependent Exchange, or RINEX. Another format associated with GPS is
-SP-3, which records the precise ephemeris. The GPSTk supports both
+SP-3, which records the precise ephemeris. The GNSSTk supports both
 RINEX and SP-3 formats.
 
 \see FileFormats
@@ -156,11 +156,11 @@ have been opened to the public, some have been reverse engineered.
 
 \page FileFormats Supported File Formats
 
-A variety of file formats are supported within the GPSTk.  The file
+A variety of file formats are supported within the GNSSTk.  The file
 formats generally store GPS observation data or data related to
 processing of GPS observables.  In this section, a summary of the file
-formats supported within the GPSTk is presented along with a brief
-rationale of why each format is supported within the GPSTk and where
+formats supported within the GNSSTk is presented along with a brief
+rationale of why each format is supported within the GNSSTk and where
 to find additional information on the format.
 
 \section FileFormatsRINEX RINEX
@@ -169,7 +169,7 @@ The Receiver INdependent EXchange (RINEX) format was developed by the
 National Geodetic Survey (NGS) in the U.S. and the University of Berne
 in Switzerland.  RINEX is actually three format definitions that allow
 storage of GPS observations, GPS navigation message information, and
-meteorological data associated with GPS observations.  GPSTk contains
+meteorological data associated with GPS observations.  GNSSTk contains
 classes to both read and write RINEX V2.1 and V3 data files of all
 types (observation, navigation message, and meteorological).  RINEX
 has undergone a number of revisions since its inception. Each revision
@@ -180,7 +180,7 @@ is defined using a standard \cite rinex1format, \cite rinex2format,
 
 The SP-3 format stores ephemeris information for satellites.
 Usually SP-3 is used for storage of GPS precise ephemerides.
-GPSTk supports both SP-3a and SP3-c formats.  SP-3 was originally designed
+GNSSTk supports both SP-3a and SP3-c formats.  SP-3 was originally designed
 by NGS.  Standards documents describe the specific details of the SP-3 formats
 \cite sp3format:ngs, \cite sp3format:igscb.
 
@@ -388,7 +388,7 @@ value of the polar radius of Earth (6,356.7523142 km)
 
 Now that WGS-84 is defined it is important to understand what
 coordinate systems can be attached to the ellipsoid and how to move
-between these different systems. The GPS Toolkit comes with \ref
+between these different systems. The GNSS Toolkit comes with \ref
 poscvt, an application that gives users the ability to easily convert
 coordinates in one reference frame to another. The coordinate systems
 that \ref poscvt recognizes are Cartesian (or XYZ), geodetic,

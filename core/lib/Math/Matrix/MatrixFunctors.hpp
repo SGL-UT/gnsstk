@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -39,14 +39,14 @@
 /// @file MatrixFunctors.hpp
 /// Matrix function operators (SVD, LUD, etc)
 
-#ifndef GPSTK_MATRIX_FUNCTORS_HPP
-#define GPSTK_MATRIX_FUNCTORS_HPP
+#ifndef GNSSTK_MATRIX_FUNCTORS_HPP
+#define GNSSTK_MATRIX_FUNCTORS_HPP
 
 #include <cmath>
 #include <limits>
 #include <algorithm>
 
-namespace gpstk
+namespace gnsstk
 {
 
       /// @ingroup MathGroup
@@ -197,7 +197,7 @@ namespace gpstk
                   for(k=i; k<m; k++) U(k,j) += f * U(k,i);
                }
                for(j = i; j < m; j++) U(j,i) *= g;
-            } 
+            }
             else {
                for(j=i; j<m; j++) U(j,i) = T(0);
             }
@@ -216,7 +216,7 @@ namespace gpstk
                   }
                   if (l == 0) { // should never happen
                      MatrixException e("SVD algorithm has nm==-1");
-                     GPSTK_THROW(e);
+                     GNSSTK_THROW(e);
                   }
                   if (ABS(S[nm])/MAX(ABS(S[nm]),anorm) < eps) break;
                   if(l == 0) break; // since l is unsigned...
@@ -250,15 +250,15 @@ namespace gpstk
                   }
                   break;
                }
-            
+
                if (its == iterationMax) {
                   MatrixException e("SVD algorithm did not converge");
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                x = S[l];
                if(k == 0) { // should never happen
                   MatrixException e("SVD algorithm has k==0");
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
                nm = k - 1;
                y = S[nm];
@@ -340,7 +340,7 @@ namespace gpstk
          return true;
 
       }  // end SVD::operator() - the SVD algorithm
-   
+
 
          /** Backsubstitution using SVD.
           * Solve A*x=b for vector x where A [mxn] has been SVD'ed and
@@ -352,14 +352,14 @@ namespace gpstk
           * @throw MatrixException
           */
       template <class BaseClass>
-      void backSub(RefVectorBase<T, BaseClass>& b) const 
+      void backSub(RefVectorBase<T, BaseClass>& b) const
       {
          if(b.size() != U.rows())
          {
             MatrixException e("SVD::BackSub called with unequal dimensions");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
-   
+
          size_t i, n=V.cols(), m=U.rows();
          Matrix<T> W(n,m,T(0));    // build the 'inverse singular values' matrix
          for(i=0; i<S.size(); i++) W(i,i)=(S(i)==T(0)?T(0):T(1)/S(i));
@@ -415,9 +415,9 @@ namespace gpstk
 
    private:
       const size_t iterationMax;
-   
+
       T SIGN(T a, T b)
-      { 
+      {
          if (b >= T(0))
             return ABS(a);
          else
@@ -444,7 +444,7 @@ namespace gpstk
       {
          if(!m.isSquare() || m.rows()<1) {
             MatrixException e("LUDecomp requires a square, non-trivial matrix");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          size_t N=m.rows(),i,j,k,imax;
@@ -464,7 +464,7 @@ namespace gpstk
             if(big <= T(0)) {    // m is singular
                   //LU *= T(0);
                SingularMatrixException e("singular matrix!");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             V(i) = T(1)/big;
          }
@@ -497,7 +497,7 @@ namespace gpstk
             if(t == 0.0) {       // m is singular
                   //LU *= T(0);
                SingularMatrixException e("singular matrix!");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             if(j != N-1) {
                d = T(1)/t;
@@ -515,7 +515,7 @@ namespace gpstk
       {
          if(LU.rows() != v.size()) {
             MatrixException e("Vector size does not match dimension of LUDecomp");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          bool first=true;
@@ -601,7 +601,7 @@ namespace gpstk
       {
          if(!m.isSquare()) {
             MatrixException e("Cholesky requires a square matrix");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          size_t N=m.rows(),i,j,k;
@@ -612,7 +612,7 @@ namespace gpstk
          for(j=N-1; ; j--) {
             if(P(j,j) <= T(0)) {
                MatrixException e("Cholesky fails - eigenvalue <= 0");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             U(j,j) = SQRT(P(j,j));
             d = T(1)/U(j,j);
@@ -630,7 +630,7 @@ namespace gpstk
          for(j=0; j<=N-1; j++) {
             if(P(j,j) <= T(0)) {
                MatrixException e("Cholesky fails - eigenvalue <= 0");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
             L(j,j) = SQRT(P(j,j));
             d = T(1)/L(j,j);
@@ -658,10 +658,10 @@ namespace gpstk
          if (L.rows() != b.size())
          {
             MatrixException e("Vector size does not match dimension of Cholesky");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
          size_t i,j,N=L.rows();
-      
+
          Vector<T> y(b.size());
          y(0) = b(0)/L(0,0);
          for(i=1; i<N; i++) {
@@ -696,7 +696,7 @@ namespace gpstk
        * here m = transpose(U)*U, but there m = U * transpose(U); see doc for
        * Cholesky.
        */
-   template <class T> 
+   template <class T>
    class CholeskyCrout : public Cholesky<T>
    {
    public:
@@ -708,7 +708,7 @@ namespace gpstk
       {
          if(!m.isSquare()) {
             MatrixException e("CholeskyCrout requires a square matrix");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          int N = m.rows(), i, j, k;
@@ -722,7 +722,7 @@ namespace gpstk
                (*this).L(j,j) = SQRT(sum);
             } else {
                MatrixException e("CholeskyCrout fails - eigenvalue <= 0");
-               GPSTK_THROW(e);          
+               GNSSTK_THROW(e);
             }
 
             for(i=j+1; i<N; i++){
@@ -806,7 +806,7 @@ namespace gpstk
          }  // end loop over cols
 
       }  // end Householder::operator()
-      
+
          /// The upper triangular transformed matrix.
       Matrix<T> A;
 

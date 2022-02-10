@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -47,7 +47,7 @@
 #include <string>
 #include <vector>
 #include <map>
-// GPSTk
+// GNSSTk
 #include "singleton.hpp"
 #include "Epoch.hpp"
 #include "TimeString.hpp"           // printTime
@@ -65,7 +65,7 @@
 #include "GCATTropModel.hpp"
 #include "MOPSTropModel.hpp"
 
-// gpstk-geomatics
+// gnsstk-geomatics
 #include "logstream.hpp"
 
 // geomatics
@@ -76,7 +76,7 @@
 
 //------------------------------------------------------------------------------------
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 //------------------------------------------------------------------------------------
 // NB Version below class GlobalData
@@ -222,7 +222,7 @@ try {
    // Build title = first line of output
    GD.Title = GD.PrgmName + ", Ver. "
       + GD.Version + printTime(wallclkbeg,", Run %04Y/%02m/%02d at %02H:%02M:%02S");
- 
+
    // TEMP, for debugging CommandLine; OpenLogFile will set Level from GD.debug
    //LOGlevel = ConfigureLOG::Level("DEBUG");
 
@@ -314,7 +314,7 @@ try {
    if(opts.hasHelp() || trophelp) {
       LOG(INFO) << cmdlineUsage;
       if(trophelp)
-         LOG(INFO) << "\n Valid trop model names (cf. gpstk/core/lib/GNSSCore):\n"
+         LOG(INFO) << "\n Valid trop model names (cf. gnsstk/core/lib/GNSSCore):\n"
 				<< "    GCAT - GPS Code Analysis Tool" << endl
 				<< "    GG - Goad and Goodman (1974)" << endl
 				<< "    GGHeight - Goad and Goodman with height" << endl
@@ -367,7 +367,7 @@ try {
 
    return 0;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end GlobalData::ProcessUserInput()
 
 //------------------------------------------------------------------------------------
@@ -418,7 +418,7 @@ try {
 
    return prgmdesc;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end GlobalData::BuildCommandLine()
 
 //------------------------------------------------------------------------------------
@@ -549,7 +549,7 @@ try {
 
    return (inputIsValid ? 0 : 4);
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -585,7 +585,7 @@ try {
 
    return 0;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }
 
 //------------------------------------------------------------------------------------
@@ -631,7 +631,7 @@ try {
 
    return 0;
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
 }  // end Process()
 
 //------------------------------------------------------------------------------------

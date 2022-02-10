@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -45,9 +45,9 @@
          if(!validHeight) e.addText("Invalid trop model: Rx Height");   \
          if(!validLat)  e.addText("Invalid trop model: Rx Latitude");   \
          if(!validDOY)   e.addText("Invalid trop model: day of year");  \
-         GPSTK_THROW(e);}}
+         GNSSTK_THROW(e);}}
 
-namespace gpstk
+namespace gnsstk
 {
       /* Tropospheric model based in the Neill mapping functions.
        *
@@ -206,7 +206,7 @@ namespace gpstk
       }
       catch(InvalidTropModel& e)
       {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
       return c;
@@ -326,7 +326,7 @@ namespace gpstk
 
          // Note: 1.013*2.27 = 2.29951
       double ddry( 2.29951*std::exp( (-0.000116 * NeillHeight) ) );
-         
+
          // where does above come from? Not Neill 1996
          // probably ought to use SaasDryDelay
       //return SaasDryDelay(press,NeillLat,NeillHeight);
@@ -456,14 +456,14 @@ namespace gpstk
          valid = false;
          InvalidTropModel e(
             "NeillTropModel must have Rx latitude before computing weather");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       if(!validDOY)
       {
          valid = false;
          InvalidTropModel e(
             "NeillTropModel must have day of year before computing weather");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       valid = validHeight && validLat && validDOY;

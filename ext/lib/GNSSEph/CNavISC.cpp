@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -47,13 +47,13 @@
 #include "StringUtils.hpp"
 #include "TimeString.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace std;
 
    CNavISC::CNavISC()
       :CNavDataElement(),
-       Tgd(0.0), 
+       Tgd(0.0),
        ISC_L1CA(0.0),
        ISC_L2C(0.0),
        ISC_L5I5(0.0),
@@ -78,14 +78,14 @@ namespace gpstk
 
    CNavISC* CNavISC::clone() const
    {
-      return new CNavISC (*this); 
+      return new CNavISC (*this);
    }
 
-     // In this case, since epoch time is arbitrarily set to Xmit, 
+     // In this case, since epoch time is arbitrarily set to Xmit,
      // the epoch time is NOT a distinguishing factor.  (This is
-     // worth noting because epoch time frequently is THE 
-     // distinguishing factor.) 
-   bool CNavISC::isSameData(const CNavDataElement* right) const      
+     // worth noting because epoch time frequently is THE
+     // distinguishing factor.)
+   bool CNavISC::isSameData(const CNavDataElement* right) const
    {
       if (const CNavISC* rp = dynamic_cast<const CNavISC*>(right))
       {
@@ -95,7 +95,7 @@ namespace gpstk
          if (avail_L5I5 != rp->avail_L5I5) return false;
          if (avail_L5Q5 != rp->avail_L5Q5) return false;
 
-            // Whether avail values are true or false, 
+            // Whether avail values are true or false,
             // the actual values should match.  That is to say,
             // if avail = false, the corresponding ISC is 0.0.
          if (Tgd      != rp->Tgd)      return false;
@@ -109,15 +109,15 @@ namespace gpstk
             if (alpha[i] != rp->alpha[i]) return false;
             if ( beta[i] != rp->beta[i]) return false;
          }
-         
-         return true;      
+
+         return true;
       }
       return false;
    }
-   
+
    void CNavISC::loadData(const PackedNavBits& message30)
    {
-         // First, verify the correct message type is being passed in. 
+         // First, verify the correct message type is being passed in.
       long msgType = message30.asUnsignedLong(14,6,1);
       if(msgType!=30)
       {
@@ -125,8 +125,8 @@ namespace gpstk
          sprintf(errStr,"Expected CNAV MsgType 30.  Found MsgType %ld",msgType);
          std::string tstr(errStr);
          InvalidParameter exc(tstr);
-         GPSTK_THROW(exc);    
-      } 
+         GNSSTK_THROW(exc);
+      }
       obsID     = message30.getobsID();
       satID     = message30.getsatSys();
       ctXmit    = message30.getTransmitTime();
@@ -135,7 +135,7 @@ namespace gpstk
            // Message Type 30 data
       unsigned long testAvail = 4096;    // Pattern in message of 0x1000
                                          // if data quantity not available
-                                          
+
       unsigned long avail = message30.asUnsignedLong(127,13,1);
       avail_Tgd = false;
       if (avail!=testAvail)
@@ -151,7 +151,7 @@ namespace gpstk
          avail_L1CA = true;
          ISC_L1CA  = message30.asSignedDouble(140, 13, -35);
       }
-      
+
       avail = message30.asUnsignedLong(153,13,1);
       avail_L2C = false;
       if (avail!=testAvail)
@@ -159,7 +159,7 @@ namespace gpstk
          avail_L2C = true;
          ISC_L2C   = message30.asSignedDouble(153, 13, -35);
       }
-      
+
       avail = message30.asUnsignedLong(166,13,1);
       avail_L5I5 = false;
       if (avail!=testAvail)
@@ -186,7 +186,7 @@ namespace gpstk
       beta[3]  = message30.asSignedDouble(248, 8,  16);
 
          // Need to convert from sec/semi-circle to sec/rad
-      double conversion = 1.0 / PI; 
+      double conversion = 1.0 / PI;
       alpha[1] *= conversion;
       beta[1]  *= conversion;
       alpha[2] *= conversion * conversion;
@@ -194,7 +194,7 @@ namespace gpstk
       alpha[3] *= conversion * conversion * conversion;
       beta[3]  *= conversion * conversion * conversion;
 
-      dataLoadedFlag = true;   
+      dataLoadedFlag = true;
    } // end of loadData()
 
    void CNavISC::dumpBody(ostream& s) const
@@ -202,9 +202,9 @@ namespace gpstk
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
-    
+
       s << endl
         << "           GROUP DELAY CORRECTIONS"
         << endl
@@ -218,31 +218,31 @@ namespace gpstk
       s << "Tgd            ";
       if (avail_Tgd)
          s << "Y       " << setw(16) << Tgd << endl;
-      else 
+      else
          s << "N" << endl;
 
       s << "ISC(L1CA)      ";
       if (avail_L1CA)
          s << "Y       " << setw(16) << ISC_L1CA << endl;
-      else 
+      else
          s << "N" << endl;
 
       s << "ISC(L2C)       ";
       if (avail_L2C)
          s << "Y       " << setw(16) << ISC_L2C << endl;
-      else 
+      else
          s << "N" << endl;
 
       s << "ISC(L5I5)      ";
       if (avail_L5I5)
          s << "Y       " << setw(16) << ISC_L5I5 << endl;
-      else 
+      else
          s << "N" << endl;
 
       s << "ISC(L5Q5)      ";
       if (avail_L5Q5)
          s << "Y       " << setw(16) << ISC_L5Q5 << endl;
-      else 
+      else
          s << "N" << endl;
 
       s << endl
@@ -256,8 +256,8 @@ namespace gpstk
         << "   Beta 2: " << setw(16) << beta[2]  << " sec/rad**2" << endl;
       s << "  Alpha 3: " << setw(16) << alpha[3] << " sec/rad**3"
         << "   Beta 3: " << setw(16) << beta[3]  << " sec/rad**3" << endl;
-      
-   } // end of dumpBody()   
+
+   } // end of dumpBody()
 
    ostream& operator<<(ostream& s, const CNavISC& eph)
    {
@@ -265,9 +265,9 @@ namespace gpstk
       {
          eph.dump(s);
       }
-      catch(gpstk::Exception& ex)
+      catch(gnsstk::Exception& ex)
       {
-         GPSTK_RETHROW(ex);
+         GNSSTK_RETHROW(ex);
       }
       return s;
 

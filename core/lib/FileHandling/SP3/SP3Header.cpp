@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -50,7 +50,7 @@
 
 #define debug false
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace StringUtils;
    using namespace std;
@@ -72,7 +72,7 @@ namespace gpstk
          else if(line[1] == 'd') version = SP3d;
          else {
             FFStreamError e("Unknown version of SP3: " + line.substr(0,3));
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          // are V records present?
@@ -89,9 +89,9 @@ namespace gpstk
          try {
             time = CivilTime(year, month, dom, hour, minute, second);
          }
-         catch (gpstk::Exception& e) {
+         catch (gnsstk::Exception& e) {
             FFStreamError fe("Invalid time:" + string(1, line[0]));
-            GPSTK_THROW(fe);
+            GNSSTK_THROW(fe);
          }
          numberOfEpochs = asInt(line.substr(32,7));
          dataUsed = line.substr(40,5);
@@ -102,7 +102,7 @@ namespace gpstk
       else
       {
          FFStreamError e("Unknown label in line 1: " + line.substr(0,2));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       strm.formattedGetLine(line);
@@ -114,7 +114,7 @@ namespace gpstk
       else
       {
          FFStreamError e("Unknown label in line 2: " + line.substr(0,2));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       int i, index;
@@ -161,7 +161,7 @@ namespace gpstk
                       }
                       catch (Exception& e) {
                          FFStreamError ffse(e);
-                         GPSTK_THROW(ffse);
+                         GNSSTK_THROW(ffse);
                       }
                       svsAsWritten[readSVs] = sat;
                       satList[sat] = 0;
@@ -178,7 +178,7 @@ namespace gpstk
                 FFStreamError e("Unknown 1st char: "
                                    //in line " + asString(i) + ": "
                    + string(1, line[0]));
-                GPSTK_THROW(e);
+                GNSSTK_THROW(e);
              }
          }
       }
@@ -214,7 +214,7 @@ namespace gpstk
          {
             FFStreamError e("Unknown label in line " + asString(i) + ": "
                + line.substr(0,2));
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
 
@@ -229,12 +229,12 @@ namespace gpstk
 
             // time system
             string ts = upperCase(line.substr(9,3));
-            timeSystem = gpstk::StringUtils::asTimeSystem(ts);
+            timeSystem = gnsstk::StringUtils::asTimeSystem(ts);
          }
          else
          {
             FFStreamError e("Unknown label in line %c1: " + line.substr(0,2));
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
 
@@ -254,7 +254,7 @@ namespace gpstk
          else
          {
             FFStreamError e("Unknown label in line %f1: " + line.substr(0,2));
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
       }
 
@@ -384,7 +384,7 @@ namespace gpstk
                     catch(Exception& e)
                     {
                         FFStreamError ffse(e);
-                        GPSTK_THROW(ffse);
+                        GNSSTK_THROW(ffse);
                     }
                 }
                 else
@@ -421,7 +421,7 @@ namespace gpstk
                    it++;
                 }
                 else j=0;            // no more
-    
+
                 if(j == -1)          // sat version b or c
                    try {
                       line += rightJustify(SP3SatID(SVid).toString(),3);
@@ -429,7 +429,7 @@ namespace gpstk
                    catch (Exception& e)
                    {
                       FFStreamError ffse(e);
-                      GPSTK_THROW(ffse);
+                      GNSSTK_THROW(ffse);
                    }
                 else                 // sat version a, accuracy, or 0
                    line += rightJustify(asString(j),3);
@@ -452,7 +452,7 @@ namespace gpstk
          if(timeSystem != TimeSystem::GPS && timeSystem != TimeSystem::UTC)
          {
             FFStreamError ffse("Time system must be GPS or UTC");
-            GPSTK_THROW(ffse);
+            GNSSTK_THROW(ffse);
          }
       }
       if(isVerC || isVerD)
@@ -462,7 +462,7 @@ namespace gpstk
             timeSystem != TimeSystem::UTC && timeSystem != TimeSystem::QZS )
          {
             FFStreamError ffse("Time system must be GPS, GLO, GAL, TAI, UTC, or QZS");
-            GPSTK_THROW(ffse);
+            GNSSTK_THROW(ffse);
          }
       }
       strm << "%c " << ft << " cc"
@@ -518,8 +518,8 @@ namespace gpstk
       // save header for use with SP3Data::reallyPut
       strm.header = *this;
    }
-   catch(Exception& e) { GPSTK_RETHROW(e); }
-   catch(std::exception& e) { Exception g(e.what()); GPSTK_THROW(g); }
+   catch(Exception& e) { GNSSTK_RETHROW(e); }
+   catch(std::exception& e) { Exception g(e.what()); GNSSTK_THROW(g); }
    }
 
 

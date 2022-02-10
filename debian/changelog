@@ -1,11 +1,120 @@
-gpstk (11.2.1-1) stable; urgency=low
+gnsstk (13.0.0-1) stable; urgency=low
+
+  * Updated to version 13.0.0
+  * Fix windows' destructor order by using a shared_ptr
+  * Update Refactor ORDs code to use newnav
+  * Add Store CI artifacts in artifactory.
+  * Add MultiFormatNavDataFactory::getFactory() method.
+  * Add NavDataFactory::getIndexSet() methods.
+  * Add NavLibrary::getIndexSet() methods.
+  * Update how initial/finalTime are set in NavDataFactoryWithStore.
+  * Add option for regular expression exclusion in df_diff.
+  * Fix YumaNavDataFactory problem with reading Yuma nav files
+  * Add a "Terse" dump type for NewNav
+  * Add GPSLNavEph xmit2/xmit3 fields for transmit time of SF2/3
+  * NewNav dump method updates for consistency.
+  * Update python3 detection for swig bindings.
+  * Update SWIG stuff due to changes in #includes
+  * Update test_GPSLNavEph.py to reflect changes in GPSLNavEph
+    getUserTime implementation
+  * Update NewNav debug output to use DEBUGTRACE instead of cerr
+  * Update debian control files to build python3 bindings, instead of
+    python2.
+  * Fix ObsID incorrect comment in constructor docs.
+  * Add ObsID constructor that avoids wildcards.
+  * Update SP3NavDataFactory for performance improvements.
+  * Add profiler support to build process.
+  * Update build.sh to use python3 by default instead of python2
+  * Add option to df_diff to ignore specific columns of matching lines
+  * Add Compare classes for unique-ifying/sorting GPSLNavEph
+  * Fix (remove) redundant/misleading docstring paragraph.
+  * Fix FileSpec text handling
+  * Update wavelength constants to be computed via c/freq
+  * Add minimal (mostly unimplemented except for select classes)
+    isSameData and compare methods to the NavData tree
+  * Fix loadIntoMap methods of the NavDataFactory tree to properly fill
+    in the desired data maps
+  * Add getIndexSet, getNavMap methods to NavDataFactoryWithStore
+  * Add support for Terse mode dumps to NavDataFactoryWithStore
+  * Add method for determining if a BeiDou satellite should be GEO
+  * Update debian package python3-gnsstk to explicitly conflict with
+    python-gnsstk
+  * Fix cmake when installing gnsstk swig bindings
+  * Update SWIG does not support c++11 type aliasing 'using' until
+    3.0.11. Debian 9 has swig 3.0.10
+  * Fix Reset times when NavDataFactory is cleared
+  * Update Remove numerous deprecated classes
+  * Update Refactor SunEarthSatGeometry from ext to core, comply with
+    style guide.
+  * Add GLONASS NewNav classes
+  * Update Rename IonoData to IonoNavData
+  * Update Rename KlobucharIonoData to KlobucharIonoNavData
+  * Update Rename NeQuickIonoData to NeQuickIonoNavData
+  * Update Rename IonoData::getCorrection to getIonoCorr
+  * Fix CommonTime/TimeTag/etc. time offset to subtract instead of add.
+  * Fix KlobucharIonoNavData day rollover check
+  * Update copyright header to year 2022
+  * Add windows packaging job
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Fri, 21 Jan 2022 12:41:03 -0600
+
+gnsstk (12.1.0-1) stable; urgency=low
+
+  * Updated to version 12.1.0
+  * Update pipeline retry job setting
+  * Update Remove embedded libgnsstk.so from python
+  * Add some constants for BeiDou.
+  * Update pipeline to use new windows VM instance
+  * Add PNBNavDataFactory code snippet do newnav docs
+  * Add explicit debian dependency fom python-gnsstk to python-enum34.
+  * Update conda recipe to use local src already checked out.
+  * Fix RINEX 3 nav headers to preserve leading spaces in comments
+  * Add "Mixed" satellite system to RinexSatID translation to strings.
+  * Fix ClockSatStore where it was interpolating clock drift instead of
+    drift rate.
+  * Remove references to latex documentation that no longer exists
+  * Fix SEMNavDataFactory so it properly sets a timestamp of the data
+  * Fix PNBMultiGNSSNavDataFactory so it knows about BeiDou D2
+  * Fix PNBBDSD2NavDataFactory so it doesn't dump core if subframe 1
+    page 2 is missing
+  * Update copyright statement.
+  * Add FREQ_STEP_GLONASS_* constants to FreqConsts.hpp
+  * Update SolarPosition SWIG bindings to map output data.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 28 Oct 2021 13:37:28 -0500
+
+gnsstk (12.0.0-1) stable; urgency=low
+
+  * Updated to version 12.0.0
+  * TKS Split out to separate lib and apps repository.
+  * Use Pip to install python as wheel when building from source.
+  * Rename gpstk to gnsstk
+  * fix conda recipe for py36 to make sure enum34 is optional dependency.
+  * Allow windows and system install jobs to fail until we fix the concurrent-id.
+  * Deprecate conda package support for numpy=1.8
+  * Deprecate conda package support for python=2.7
+  * Resolve "Major updates for new nav store"
+  * TKS Split Out: Ci updates for issue_479_feature branch
+  * Integrate SWIG changes into feature branch, 3rd try
+  * CI Updates for feature branch issue_479_feature (TKS SPLIT OUT)
+  * Expand IonoModel and IonoModelStore to improve usability
+  * Change implementation of StdNavTimeOffset to make sense for gpstk
+  * Add BDS D2 support to new nav
+  * Add BDS D1 support to new nav
+  * Add support for Galileo I/NAV ISC (BGD)
+  * Implement GPS CNAV-2 ISC support
+  * Implement CNAV ISC processing
+
+ -- David Barber <dbarber@sgl-lap096.arlut.utexas.edu>  Wed, 15 Sep 2021 09:20:54 -0500
+
+gnsstk (11.2.1-1) stable; urgency=low
 
   * Updated to version 11.2.1
   * Updated git url ref to new sgl-git
 
  -- David Barber <dbarber@arlut.utexas.edu>  Thu, 22 Jul 2021 10:28:43 -0500
 
-gpstk (11.2.0-1) stable; urgency=low
+gnsstk (11.2.0-1) stable; urgency=low
 
   * Updated to version 11.2.0
   * Add DebugTrace code for execution tracing.
@@ -28,7 +137,7 @@ gpstk (11.2.0-1) stable; urgency=low
 
  -- David Barber <dbarber@arlut.utexas.edu>  Thu, 17 Jun 2021 09:27:17 -0500
 
-gpstk (11.1.0-1) stable; urgency=low
+gnsstk (11.1.0-1) stable; urgency=low
 
   * Updated to version 11.1.0
   * Add DebugTrace code for execution tracing.
@@ -44,7 +153,7 @@ gpstk (11.1.0-1) stable; urgency=low
 
  -- David Barber <dbarber@arlut.utexas.edu>  Thu, 13 May 2021 13:29:25 -0500
 
-gpstk (11.0.1-1) stable; urgency=low
+gnsstk (11.0.1-1) stable; urgency=low
 
   * Updated to version 11.0.1
   * Fix ext/lib/FileHandling/SEM/SEMData.cpp: correct faulty unit
@@ -52,7 +161,7 @@ gpstk (11.0.1-1) stable; urgency=low
 
  -- David Barber <dbarber@arlut.utexas.edu>  Wed, 21 Apr 2021 14:59:06 -0500
 
-gpstk (11.0.0-1) stable; urgency=low
+gnsstk (11.0.0-1) stable; urgency=low
 
   * Updated to version 11.0.0
   * Fix StringUtils::words() for cases of empty strings or single words.
@@ -63,7 +172,7 @@ gpstk (11.0.0-1) stable; urgency=low
 
  -- David Barber <dbarber@arlut.utexas.edu>  Thu, 18 Mar 2021 11:45:17 -0500
 
-gpstk (10.0.0-1) stable; urgency=low
+gnsstk (10.0.0-1) stable; urgency=low
 
   * Updated to version 10.0.0
   * Update TimeTag_T.cpp to follow proper style
@@ -118,7 +227,7 @@ gpstk (10.0.0-1) stable; urgency=low
 
  -- David Barber <dbarber@arlut.utexas.edu>  Thu, 11 Feb 2021 09:18:05 -0600
 
-gpstk (9.1.0-1) stable; urgency=low
+gnsstk (9.1.0-1) stable; urgency=low
 
   * Updated to version 9.1.0
   * Fix conda recipe to specify correct default branch for GPSTk.
@@ -144,7 +253,7 @@ gpstk (9.1.0-1) stable; urgency=low
 
  -- David Barber <dbarber@arlut.utexas.edu>  Thu, 14 Jan 2021 08:12:55 -0600
 
-gpstk (9.0.0-1) stable; urgency=low
+gnsstk (9.0.0-1) stable; urgency=low
 
   * Updated to version 9.0.0
   * Add CI stage to check files and history for sensitive words.
@@ -156,7 +265,7 @@ gpstk (9.0.0-1) stable; urgency=low
 
  -- David Barber <dbarber@arlut.utexas.edu>  Thu, 10 Dec 2020 08:31:21 -0600
 
-gpstk (8.0.0-1) stable; urgency=low
+gnsstk (8.0.0-1) stable; urgency=low
 
   * Updated to version 8.0.0
   * Update Nav reader code to properly assign being/end validity values
@@ -179,7 +288,7 @@ gpstk (8.0.0-1) stable; urgency=low
 
  -- David Barber <dbarber@arlut.utexas.edu>  Thu, 19 Nov 2020 05:00:35 -0600
 
-gpstk (7.0.0-1) stable; urgency=low
+gnsstk (7.0.0-1) stable; urgency=low
 
   * Updated to version 7.0.0
   * Add CODEOWNERS file.
@@ -218,7 +327,7 @@ gpstk (7.0.0-1) stable; urgency=low
 
  -- Andrew Kuck <kuck@arlut.utexas.edu>  Fri, 18 Sep 2020 12:38:33 -0500
 
-gpstk (6.0.0-1) stable; urgency=low
+gnsstk (6.0.0-1) stable; urgency=low
 
   * Updated to version 6.0.0
   * Add Rinex3ObsHeader accessors for wavelengthFactor in support of
@@ -291,14 +400,14 @@ gpstk (6.0.0-1) stable; urgency=low
 
  -- Andrew Kuck <kuck@arlut.utexas.edu>  Thu, 30 Jul 2020 14:20:04 -0500
 
-gpstk (5.0.1-1) stable; urgency=low
+gnsstk (5.0.1-1) stable; urgency=low
 
   * Updated to version 5.0.1
   * Fix Swig wrapper of PRSolution to allow passing list of GNSS system.
 
  -- Andrew Kuck <kuck@arlut.utexas.edu>  Wed, 17 Jun 2020 11:40:05 -0500
 
-gpstk (5.0.0-1) stable; urgency=low
+gnsstk (5.0.0-1) stable; urgency=low
 
   * Updated to version 5.0.0
   * Add tests for computeXvt and getSVHealth with unhealthy satellites
@@ -377,7 +486,7 @@ gpstk (5.0.0-1) stable; urgency=low
 
  -- Andrew Kuck <kuck@arlut.utexas.edu>  Fri, 12 Jun 2020 14:59:16 -0500
 
-gpstk (4.0.0-1) stable; urgency=low
+gnsstk (4.0.0-1) stable; urgency=low
 
   * Updated to version 4.0.0
   * Modify RPM packages to seperate python installation from C++
@@ -406,200 +515,200 @@ gpstk (4.0.0-1) stable; urgency=low
 
  -- Andrew Kuck <kuck@arlut.utexas.edu>  Mon, 30 Mar 2020 15:06:22 -0500
 
-gpstk (3.1.0-1) stable; urgency=low
+gnsstk (3.1.0-1) stable; urgency=low
 
   * Updated to version 3.1.0
 
  -- Andrew Kuck <kuck@arlut.utexas.edu>  Tue, 03 Mar 2020 13:34:46 -0600
 
-gpstk (3.0.0-1) stable; urgency=medium
+gnsstk (3.0.0-1) stable; urgency=medium
 
   * Build for stretch 
 
  -- Bryan Parsons <bparsons@clau>  Tue, 11 Feb 2020 11:02:39 -0600
 
-gpstk (3.0.0-1~bpo9+2) stable; urgency=medium
+gnsstk (3.0.0-1~bpo9+2) stable; urgency=medium
 
   * Build for wheezy-backports
 
  -- Bryan Parsons <bparsons@clau>  Tue, 11 Feb 2020 11:01:47 -0600
 
-gpstk (3.0.0-1~bpo9+3) stable; urgency=medium
+gnsstk (3.0.0-1~bpo9+3) stable; urgency=medium
 
   * Update to upstream version 3.0.0
   * Build for jessie-backports
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Tue, 11 Feb 2020 10:46:54 -0600
 
-gpstk (2.12.2-1) stable; urgency=medium
+gnsstk (2.12.2-1) stable; urgency=medium
 
   * Update to upstream version 2.12.2
   * Build for Stretch
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Fri, 17 Jan 2020 12:09:38 -0600
 
-gpstk (2.12.2-1~bpo9+2) stable; urgency=medium
+gnsstk (2.12.2-1~bpo9+2) stable; urgency=medium
 
   * Rebuild for wheezy-backports
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Fri, 17 Jan 2020 12:08:38 -0600
 
-gpstk (2.12.2-1~bpo9+3) stable; urgency=medium
+gnsstk (2.12.2-1~bpo9+3) stable; urgency=medium
 
   * Rebuild for jessie-backports
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Fri, 17 Jan 2020 12:07:38 -0600
 
-gpstk (2.12.1-2) stable; urgency=medium
+gnsstk (2.12.1-2) stable; urgency=medium
 
   * Rebuild for Stretch
 
  -- Bryan Parsons <bparsons@clau>  Wed, 16 Oct 2019 10:25:41 -0500
 
-gpstk (2.12.1-2~bpo9+2) stable; urgency=medium
+gnsstk (2.12.1-2~bpo9+2) stable; urgency=medium
 
   * 2nd Rebuild for wheezy-backports
 
  -- Bryan Parsons <bparsons@clau>  Wed, 16 Oct 2019 10:25:05 -0500
 
-gpstk (2.12.1-2~bpo9+3) stable; urgency=medium
+gnsstk (2.12.1-2~bpo9+3) stable; urgency=medium
 
   * 2nd Rebuild for jessie-backports
 
  -- Bryan Parsons <bparsons@clau>  Wed, 16 Oct 2019 10:24:05 -0500
 
-gpstk (2.12.1-1~bpo9+3) stable; urgency=medium
+gnsstk (2.12.1-1~bpo9+3) stable; urgency=medium
 
   * Rebuild for jessie-backports
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Thu, 10 Oct 2019 15:21:56 -0500
 
-gpstk (2.12.1-1~bpo9+2) stable; urgency=medium
+gnsstk (2.12.1-1~bpo9+2) stable; urgency=medium
 
   * Rebuild for wheezy-backports
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Wed, 09 Oct 2019 10:18:45 -0500
 
-gpstk (2.12.1-1) stable; urgency=medium
+gnsstk (2.12.1-1) stable; urgency=medium
 
   * Update to upstream version 2.12.1
   * Build for Stretch
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Wed, 09 Oct 2019 09:37:40 -0500
 
-gpstk (2.12.0-1~bpo9+3) stable; urgency=low
+gnsstk (2.12.0-1~bpo9+3) stable; urgency=low
 
   * Rebuild for wheezy-backports
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Fri, 16 Aug 2019 11:07:54 -0500
 
-gpstk (2.12.0-1~bpo9+2) stable; urgency=medium
+gnsstk (2.12.0-1~bpo9+2) stable; urgency=medium
 
   * Rebuild for stretch-backports
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Fri, 16 Aug 2019 10:50:24 -0500
 
-gpstk (2.12.0-1) stable; urgency=medium
+gnsstk (2.12.0-1) stable; urgency=medium
 
   * Update to upstream version 2.12
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Thu, 15 Aug 2019 11:33:55 -0500
 
-gpstk (2.11.2-1~bpo9+3) wheezy-backports; urgency=low
+gnsstk (2.11.2-1~bpo9+3) wheezy-backports; urgency=low
 
   * Rebuild for wheezy-backports.
   * no changes
 
  -- Bryan Parsons <bparsons@ayudar.arlut.utexas.edu>  Fri, 12 Apr 2019 09:34:54 -0500
 
-gpstk (2.11.2-1~bpo9+2) stretch-backports; urgency=medium
+gnsstk (2.11.2-1~bpo9+2) stretch-backports; urgency=medium
 
   * Rebuild for stretch-backports.
   * no changes
 
  -- Bryan Parsons <bparsons@clau.arlut.utexas.edu>  Tue, 09 Apr 2019 08:59:26 -0500
 
-gpstk (2.11.2-1) stable; urgency=medium
+gnsstk (2.11.2-1) stable; urgency=medium
 
   * Update to upstream version 2.11.2
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Fri, 05 Apr 2019 09:33:29 -0500
 
-gpstk (2.11.1-1) stable; urgency=medium
+gnsstk (2.11.1-1) stable; urgency=medium
 
   * Update to upstream version 2.11.1
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Mon, 04 Feb 2019 13:23:58 -0600
 
-gpstk (2.11.0-1) stable; urgency=medium
+gnsstk (2.11.0-1) stable; urgency=medium
 
   * Update to upstream version 2.11
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Tue, 18 Dec 2018 10:32:41 -0600
 
-gpstk (2.10.7-1) stable; urgency=medium
+gnsstk (2.10.7-1) stable; urgency=medium
 
   * Update to upstream version 2.10.7
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Thu, 06 Dec 2018 15:02:41 -0600
 
-gpstk (2.10.6-1) stable; urgency=medium
+gnsstk (2.10.6-1) stable; urgency=medium
 
   * Update to upstream version 2.10.6
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Mon, 24 Sep 2018 15:02:46 -0500
 
-gpstk (2.10.5-1) stable; urgency=medium
+gnsstk (2.10.5-1) stable; urgency=medium
 
   * Update to upstream version 2.10.5
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Wed, 22 Aug 2018 10:14:23 -0500
 
-gpstk (2.10.4-1) stable; urgency=medium
+gnsstk (2.10.4-1) stable; urgency=medium
 
   * Update to upstream version 2.10.4
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Wed, 01 Aug 2018 11:41:37 -0500
 
-gpstk (2.10.3-2) stable; urgency=medium
+gnsstk (2.10.3-2) stable; urgency=medium
 
   * Update to upstream version 2.10.3
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Mon, 30 Jul 2018 13:43:26 -0500
 
-gpstk (2.10.2-1) stable; urgency=medium
+gnsstk (2.10.2-1) stable; urgency=medium
 
   * Update to upstream version 2.10.2
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Thu, 26 Apr 2018 13:52:11 -0500
 
-gpstk (2.10.1-1) stable; urgency=medium
+gnsstk (2.10.1-1) stable; urgency=medium
 
   * Update to upstream version 2.10.1
 
  -- Bryan Parsons <bparsons@arlut.utexas.edu>  Mon, 22 Jan 2018 14:55:58 -0600
 
-gpstk (2.9.8-2) unstable; urgency=medium
+gnsstk (2.9.8-2) unstable; urgency=medium
 
   * Switch source format to "git" to allow deb src packages to build
   * Add a libgpstkX.Y-dbg Debian package with debugging symbols
 
  -- Johnathan York <york@arlut.utexas.edu>  Thu, 11 May 2017 09:11:30 -0500
 
-gpstk (2.9.8-1) unstable; urgency=medium
+gnsstk (2.9.8-1) unstable; urgency=medium
 
   * Update to upstream version 2.9.8
 
  -- Johnathan York <york@arlut.utexas.edu>  Wed, 26 Apr 2017 20:16:08 -0500
 
-gpstk (2.9.7-2) unstable; urgency=medium
+gnsstk (2.9.7-2) unstable; urgency=medium
 
   * Add -ext and Python support
   * Fix building on wheezy
 
  -- Johnathan York <york@arlut.utexas.edu>  Mon, 10 Apr 2017 18:33:36 -0500
 
-gpstk (2.9.7-1) unstable; urgency=low
+gnsstk (2.9.7-1) unstable; urgency=low
 
   * Initial Debian Packaging, not using CPack
 

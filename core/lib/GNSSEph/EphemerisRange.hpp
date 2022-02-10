@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,27 +29,28 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  * @file EphemerisRange.hpp
- * Computation of range and associated quantities from XvtStore
+ * Computation of range and associated quantities from NavLibrary
  */
- 
+
 #ifndef NEW_EPHEMERIS_RANGE_HPP
 #define NEW_EPHEMERIS_RANGE_HPP
 
 #include "CommonTime.hpp"
 #include "SatID.hpp"
 #include "Position.hpp"
-#include "XvtStore.hpp"
+#include "NavLibrary.hpp"
+#include "ValidType.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup GNSSEph
       //@{
@@ -57,7 +58,7 @@ namespace gpstk
       /** Compute the corrected range from receiver at position Rx, to
        * the GPS satellite given by SatID sat, as well as azimuth,
        * elevation, etc., given a nominal timetag (either received or
-       * transmitted time) and an XvtStore.
+       * transmitted time) and a NavLibrary.
        */
    class CorrectedEphemerisRange
    {
@@ -65,54 +66,106 @@ namespace gpstk
          /// Default constructor.
       CorrectedEphemerisRange() {}
 
-         /// Compute the corrected range at RECEIVE time, from
-         /// receiver at position Rx, to the GPS satellite given by
-         /// SatID sat, as well as all the CER quantities, given the
-         /// nominal receive time tr_nom and an XvtStore.
+         /** Compute the corrected range at RECEIVE time, from rx to
+          * sat at trNom.
+          * @param[in] trNom Nominal receive time.
+          * @param[in] rx Receiver position.
+          * @param[in] sat Satellite ID to get the position for.
+          * @param[in] navLib The navigation data library to use for
+          *   looking up satellite XVT.
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time.
+          * @param[in] xmitHealth The desired health status of the
+          *   satellite transmitting the nav data.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          * @return The corrected range from rx to sat at trNom. */
       double ComputeAtReceiveTime(
-         const CommonTime& tr_nom,
-         const Position& Rx,
+         const CommonTime& trNom,
+         const Position& rx,
          const SatID sat,
-         const XvtStore<SatID>& Eph);
+         NavLibrary& navLib,
+         NavSearchOrder order = NavSearchOrder::User,
+         SVHealth xmitHealth = SVHealth::Any,
+         NavValidityType valid = NavValidityType::ValidOnly);
 
-         /// Compute the corrected range at TRANSMIT time, from
-         /// receiver at position Rx, to the GPS satellite given by
-         /// SatID sat, as well as all the CER quantities, given the
-         /// nominal receive time tr_nom, the measured pseudorange,
-         /// and an XvtStore.
+         /** Compute the corrected range at TRANSMIT time (receiver
+          * time frame), from rx to sat at trNom.
+          * @param[in] trNom Nominal transmit time.
+          * @param[in] pr Measured pseudorange to initialize time-of-flight.
+          * @param[in] rx Receiver position.
+          * @param[in] sat Satellite ID to get the position for.
+          * @param[in] navLib The navigation data library to use for
+          *   looking up satellite XVT.
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time.
+          * @param[in] xmitHealth The desired health status of the
+          *   satellite transmitting the nav data.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          * @return The corrected range from rx to sat at trNom. */
       double ComputeAtTransmitTime(
-         const CommonTime& tr_nom,
+         const CommonTime& trNom,
          const double& pr,
-         const Position& Rx,
+         const Position& rx,
          const SatID sat,
-         const XvtStore<SatID>& Eph);
+         NavLibrary& navLib,
+         NavSearchOrder order = NavSearchOrder::User,
+         SVHealth xmitHealth = SVHealth::Any,
+         NavValidityType valid = NavValidityType::ValidOnly);
 
-         /// Compute the corrected range at TRANSMIT time, from
-         /// receiver at position Rx, to the GPS satellite given by
-         /// SatID sat, as well as all the CER quantities, given the
-         /// nominal receive time tr_nom and an XvtStore.
-         /// This doesn't use a pseudorange to initialize the
-         /// time-of-flight computation; however note that this could
-         /// be problematic since the measured pseudorange includes
-         /// the Rx clock bias while this does not; prefer the version
-         /// with measured pseudorange input.
+         /** Compute the corrected range at TRANSMIT time (receiver
+          * time frame), from rx to sat at trNom.
+          * @note This doesn't use a pseudorange to initialize the
+          *   time-of-flight computation; however note that this could
+          *   be problematic since the measured pseudorange includes
+          *   the rx clock bias while this does not; prefer the
+          *   version with measured pseudorange input.
+          * @param[in] trNom Nominal transmit time.
+          * @param[in] rx Receiver position.
+          * @param[in] sat Satellite ID to get the position for.
+          * @param[in] navLib The navigation data library to use for
+          *   looking up satellite XVT.
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time.
+          * @param[in] xmitHealth The desired health status of the
+          *   satellite transmitting the nav data.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          * @return The corrected range from rx to sat at trNom. */
       double ComputeAtTransmitTime(
-         const CommonTime& tr_nom,
-         const Position& Rx,
+         const CommonTime& trNom,
+         const Position& rx,
          const SatID sat,
-         const XvtStore<SatID>& Eph);
+         NavLibrary& navLib,
+         NavSearchOrder order = NavSearchOrder::User,
+         SVHealth xmitHealth = SVHealth::Any,
+         NavValidityType valid = NavValidityType::ValidOnly);
 
-         /// Compute the corrected range at TRANSMIT time, from
-         /// receiver at position Rx, to the GPS satellite given by
-         /// SatID sat, as well as all the CER quantities, given the
-         /// nominal transmit time tt_nom and an XvtStore. This is
-         /// used for data smoothed to transmit time.
+         /** Compute the corrected range at TRANSMIT time (SV time
+          * frame), from rx to sat at trNom.
+          * @param[in] ttNom Nominal transmit time.
+          * @param[in] pr Measured pseudorange to initialize time-of-flight.
+          * @param[in] rx Receiver position.
+          * @param[in] sat Satellite ID to get the position for.
+          * @param[in] navLib The navigation data library to use for
+          *   looking up satellite XVT.
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time.
+          * @param[in] xmitHealth The desired health status of the
+          *   satellite transmitting the nav data.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          * @return The corrected range from rx to sat at ttNom. */
       double ComputeAtTransmitSvTime(
-         const CommonTime& tt_nom,
+         const CommonTime& ttNom,
          const double& pr,
-         const Position& Rx,
+         const Position& rx,
          const SatID sat,
-         const XvtStore<SatID>& Eph);
+         NavLibrary& navLib,
+         NavSearchOrder order = NavSearchOrder::User,
+         SVHealth xmitHealth = SVHealth::Any,
+         NavValidityType valid = NavValidityType::ValidOnly);
 
          /// The computed raw (geometric) range in meters.
       double rawrange;
@@ -141,11 +194,21 @@ namespace gpstk
       Triple cosines;
          /// The satellite position (m) and velocity (m/s) in ECEF coordinates.
       Xvt svPosVel;
+         /// The IODC of the GPS LNAV ephemeris, invalid for other GNSSes
+      vshort iodc;
+         /** The health bits from the GPS LNAV ephemeris, invalid for
+          * other GNSSes */
+      vshort health;
 
    private:
          // These are just helper functions to keep from repeating code
-      void updateCER(const Position& Rx);
-      void rotateEarth(const Position& Rx);
+      void updateCER(const Position& rx);
+      void rotateEarth(const Position& rx);
+      bool getXvt(NavLibrary& navLib, const NavSatelliteID& sat,
+                  const CommonTime& when,
+                  NavSearchOrder order,
+                  SVHealth xmitHealth,
+                  NavValidityType valid);
 
    }; // end class CorrectedEphemerisRange
 
@@ -155,6 +218,6 @@ namespace gpstk
 
       //@}
 
-}  // namespace gpstk
+}  // namespace gnsstk
 
 #endif

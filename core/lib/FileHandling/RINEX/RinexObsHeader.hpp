@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,8 +41,8 @@
  * Encapsulate header of Rinex observation file, including I/O
  */
 
-#ifndef GPSTK_RINEXOBSHEADER_HPP
-#define GPSTK_RINEXOBSHEADER_HPP
+#ifndef GNSSTK_RINEXOBSHEADER_HPP
+#define GNSSTK_RINEXOBSHEADER_HPP
 
 #include <vector>
 #include <list>
@@ -56,7 +56,7 @@
 #include "Triple.hpp"
 #include "RinexSatID.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
@@ -84,8 +84,8 @@ namespace gpstk
 
 // Guards are here since an identical struct is used in RinexObsHeader
 // and Rinex3NavHeader
-#ifndef GPSTK_EXTRAWAVEFACT
-#define GPSTK_EXTRAWAVEFACT
+#ifndef GNSSTK_EXTRAWAVEFACT
+#define GNSSTK_EXTRAWAVEFACT
       /// RINEX 2 extra "WAVELENGTH FACT" lines
    struct ExtraWaveFact
    {
@@ -94,12 +94,12 @@ namespace gpstk
          /// vector of wavelength factor values
       short wavelengthFactor[2];
    };
-#endif  // GPSTK_EXTRAWAVEFACT
+#endif  // GNSSTK_EXTRAWAVEFACT
 
 
       /**
        * This class models the header for a RINEX Observation File.
-       * @sa gpstk::RinexObsData and gpstk::RinexObsStream.
+       * @sa gnsstk::RinexObsData and gnsstk::RinexObsStream.
        * @sa rinex_obs_test.cpp and rinex_obs_read_write.cpp for examples.
        */
    class RinexObsHeader : public RinexObsBase
@@ -241,8 +241,8 @@ namespace gpstk
          recVers;                            ///< RECEIVER VERSION
       std::string antNo,                     ///< ANTENNA NUMBER
          antType;                            ///< ANTENNA TYPE
-      gpstk::Triple antennaPosition;         ///< APPROXIMATE POSITION XYZ
-      gpstk::Triple antennaOffset;           ///< ANTENNA: DELTA H/E/N
+      gnsstk::Triple antennaPosition;         ///< APPROXIMATE POSITION XYZ
+      gnsstk::Triple antennaOffset;           ///< ANTENNA: DELTA H/E/N
       short wavelengthFactor[2];             ///< default WAVELENGTH FACTORS
       std::vector<ExtraWaveFact> extraWaveFactList; ///< extra (per PRN) WAVELENGTH FACTORS
       std::vector<RinexObsType> obsTypeList; ///< NUMBER & TYPES OF OBSERV

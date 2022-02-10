@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -46,14 +46,14 @@
 #include "RinexObsStream.hpp"
 #include "CivilTime.hpp"
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 
       // Definition of static variable to be used across RinexObsData objects
-   CommonTime gpstk::RinexObsData::previousTime;
+   CommonTime gnsstk::RinexObsData::previousTime;
 
    void RinexObsData::reallyPutRecord(FFStream& ffs) const
    {
@@ -121,11 +121,11 @@ namespace gpstk
          }
          catch(FFStreamError& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(StringException& e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
       }
 
@@ -236,7 +236,7 @@ namespace gpstk
       if ((epochFlag < 0) || (epochFlag > 6))
       {
          FFStreamError e("Invalid epoch flag: " + asString(epochFlag));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // Not all epoch flags are required to have a time.
@@ -253,7 +253,7 @@ namespace gpstk
           (epochFlag==0 || epochFlag==1 || epochFlag==5 || epochFlag==6 ))
       {
          FFStreamError e("Required epoch time missing: " + line);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       else if (noEpochTime)
       {
@@ -287,7 +287,7 @@ namespace gpstk
                if(line.size() > 80)
                {
                   FFStreamError err("Invalid line size:" + asString(line.size()));
-                  GPSTK_THROW(err);
+                  GNSSTK_THROW(err);
                }
             }
             try
@@ -297,7 +297,7 @@ namespace gpstk
             catch (Exception& e)
             {
                FFStreamError ffse(e);
-               GPSTK_THROW(ffse);
+               GNSSTK_THROW(ffse);
             }
          }
 
@@ -315,7 +315,7 @@ namespace gpstk
                   if (line.size() > 80)
                   {
                      FFStreamError err("Invalid line size:" + asString(line.size()));
-                     GPSTK_THROW(err);
+                     GNSSTK_THROW(err);
                   }
                }
 
@@ -341,11 +341,11 @@ namespace gpstk
             }
             catch(FFStreamError& e)
             {
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
             catch(StringException& e)
             {
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
          }
       }
@@ -370,7 +370,7 @@ namespace gpstk
               (line[15] != ' '))
          {
             FFStreamError e("Invalid time format");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // if there's no time, just return a bad time
@@ -403,14 +403,14 @@ namespace gpstk
       catch (std::exception &e)
       {
          FFStreamError err("std::exception: " + string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
-      catch (gpstk::Exception& e)
+      catch (gnsstk::Exception& e)
       {
          std::string text;
          for(size_t i=0; i<e.getTextCount(); i++) text += e.getText(i);
-         FFStreamError err("gpstk::Exception in parseTime(): " + text);
-         GPSTK_THROW(err);
+         FFStreamError err("gnsstk::Exception in parseTime(): " + text);
+         GNSSTK_THROW(err);
       }
 
    }

@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -56,11 +56,11 @@ public:
 
    ~EngAlmanac_T() {} // Default Desructor
 
-   gpstk::EngAlmanac alm;
+   gnsstk::EngAlmanac alm;
 
    int addSubframeTest(void)
    {
-      gpstk::TestUtil testFramework("EngAlmanac", "addSubframe", __FILE__, __LINE__);
+      gnsstk::TestUtil testFramework("EngAlmanac", "addSubframe", __FILE__, __LINE__);
 
 
          //Subframe and week number mod 1024
@@ -296,9 +296,9 @@ public:
    int getTest(void)
    {
       int x, failCount;
-      gpstk::TestUtil testFramework("EngAlmanac", "getTest", __FILE__, __LINE__);
+      gnsstk::TestUtil testFramework("EngAlmanac", "getTest", __FILE__, __LINE__);
 
-         //GPSTK documentation should really say what units these return as
+         //GNSSTK documentation should really say what units these return as
          // For loop which tests all the data values for the almanac. Commented out, too many tests
          /*
            for(int i=0; i<31; i++)
@@ -306,31 +306,31 @@ public:
            if ( i >= 7) x = i + 2; //switch to allow for skipped prn 8
            else x = i + 1;
            testMesg = "getEcc returned the wrong value";
-           testFramework.assert(std::abs(alm.getEcc(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) - aData.ecc[i])*1E2 < eps, testMesg, __LINE__);
+           testFramework.assert(std::abs(alm.getEcc(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) - aData.ecc[i])*1E2 < eps, testMesg, __LINE__);
            testMesg = "getIOffset returned the wrong value";
-           testFramework.assert(std::abs(alm.getIOffset(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) - (aData.oi[i] - .3*M_PI)) < eps, testMesg, __LINE__);
+           testFramework.assert(std::abs(alm.getIOffset(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) - (aData.oi[i] - .3*M_PI)) < eps, testMesg, __LINE__);
            testMesg = "getOmegadot returned the wrong value";
-           testFramework.assert(std::abs(alm.getOmegadot(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) - aData.rora[i])*1E8 < eps, testMesg, __LINE__);
+           testFramework.assert(std::abs(alm.getOmegadot(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) - aData.rora[i])*1E8 < eps, testMesg, __LINE__);
            testMesg = "get6bitHealth returned the wrong value";
-           testFramework.assert(alm.get6bitHealth(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) == 0 , testMesg, __LINE__);
+           testFramework.assert(alm.get6bitHealth(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) == 0 , testMesg, __LINE__);
            testMesg = "getSVHealth returned the wrong value";
-           testFramework.assert(alm.getSVHealth(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) == 0, testMesg, __LINE__);
+           testFramework.assert(alm.getSVHealth(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) == 0, testMesg, __LINE__);
            testMesg = "getSVConfig returned the wrong value";
-           testFramework.assert(alm.getSVConfig(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) == 9, testMesg, __LINE__); //9 is 1001
+           testFramework.assert(alm.getSVConfig(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) == 9, testMesg, __LINE__); //9 is 1001
            testMesg = "getAhalf returned the wrong value";
-           testFramework.assert(std::abs(alm.getAhalf(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) - aData.sqrta[i])*1E-4 < eps, testMesg, __LINE__);
+           testFramework.assert(std::abs(alm.getAhalf(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) - aData.sqrta[i])*1E-4 < eps, testMesg, __LINE__);
            testMesg = "getA returned the wrong value";
-           testFramework.assert(std::abs(alm.getA(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) - pow(aData.sqrta[i],2))*1E-8 < eps, testMesg, __LINE__);
+           testFramework.assert(std::abs(alm.getA(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) - pow(aData.sqrta[i],2))*1E-8 < eps, testMesg, __LINE__);
            testMesg = "getOmega0 returned the wrong value";
-           testFramework.assert(std::abs(alm.getOmega0(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) - aData.raaw[i])*1E-1 < eps, testMesg, __LINE__);
+           testFramework.assert(std::abs(alm.getOmega0(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) - aData.raaw[i])*1E-1 < eps, testMesg, __LINE__);
            testMesg = "getW returned the wrong value";
-           testFramework.assert(std::abs(alm.getW(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) - aData.aop[i]) < eps, testMesg, __LINE__);
+           testFramework.assert(std::abs(alm.getW(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) - aData.aop[i]) < eps, testMesg, __LINE__);
            testMesg = "getM0 returned the wrong value";
-           testFramework.assert(std::abs(alm.getM0(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) - aData.ma[i])*1E-1 < eps, testMesg, __LINE__);
+           testFramework.assert(std::abs(alm.getM0(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) - aData.ma[i])*1E-1 < eps, testMesg, __LINE__);
            testMesg = "getAf0 returned the wrong value";
-           testFramework.assert(std::abs(alm.getAf0(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) - aData.af0[i])*1E5 < eps, testMesg, __LINE__);
+           testFramework.assert(std::abs(alm.getAf0(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) - aData.af0[i])*1E5 < eps, testMesg, __LINE__);
            testMesg = "getAf1 returned the wrong value";
-           testFramework.assert(std::abs(alm.getAf1(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) - aData.af1[i]) < eps, testMesg, __LINE__);
+           testFramework.assert(std::abs(alm.getAf1(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) - aData.af1[i]) < eps, testMesg, __LINE__);
            }
          */
 
@@ -340,8 +340,8 @@ public:
       {
          if ( i >= 7) x = i + 2;
          else x = i + 1;
-         if (!(std::abs(alm.getEcc(gpstk::SatID(x,
-                                                gpstk::SatelliteSystem::GPS)) - aData.ecc[i])*1E2 < eps))
+         if (!(std::abs(alm.getEcc(gnsstk::SatID(x,
+                                                gnsstk::SatelliteSystem::GPS)) - aData.ecc[i])*1E2 < eps))
             failCount++;
       }
       testMesg = "getEcc returned the wrong value";
@@ -353,8 +353,8 @@ public:
       {
          if ( i >= 7) x = i + 2;
          else x = i + 1;
-         if (!(std::abs(alm.getIOffset(gpstk::SatID(x,
-                                                    gpstk::SatelliteSystem::GPS)) - (aData.oi[i] - .3*M_PI)) < eps))
+         if (!(std::abs(alm.getIOffset(gnsstk::SatID(x,
+                                                    gnsstk::SatelliteSystem::GPS)) - (aData.oi[i] - .3*M_PI)) < eps))
             failCount++;
       }
       testMesg = "getIOffset returned the wrong value";
@@ -366,8 +366,8 @@ public:
       {
          if ( i >= 7) x = i + 2;
          else x = i + 1;
-         if (!(std::abs(alm.getOmegadot(gpstk::SatID(x,
-                                                     gpstk::SatelliteSystem::GPS)) - aData.rora[i])*1E8 < eps))
+         if (!(std::abs(alm.getOmegadot(gnsstk::SatID(x,
+                                                     gnsstk::SatelliteSystem::GPS)) - aData.rora[i])*1E8 < eps))
             failCount++;
       }
       testMesg = "getOmegadot returned the wrong value";
@@ -379,7 +379,7 @@ public:
       {
          if ( i >= 7) x = i + 2;
          else x = i + 1;
-         if (!(alm.get6bitHealth(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) == 0))
+         if (!(alm.get6bitHealth(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) == 0))
             failCount++;
       }
       testMesg = "get6bitHealth returned the wrong value";
@@ -391,7 +391,7 @@ public:
       {
          if ( i >= 7) x = i + 2;
          else x = i + 1;
-         if (!(alm.getSVHealth(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) == 0))
+         if (!(alm.getSVHealth(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) == 0))
             failCount++;
       }
       testMesg = "getSVHealth returned the wrong value";
@@ -403,7 +403,7 @@ public:
       {
          if ( i >= 7) x = i + 2;
          else x = i + 1;
-         if (!(alm.getSVConfig(gpstk::SatID(x, gpstk::SatelliteSystem::GPS)) == 9))
+         if (!(alm.getSVConfig(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS)) == 9))
             failCount++;
       }
       testMesg = "getSVConfig returned the wrong value";
@@ -415,8 +415,8 @@ public:
       {
          if ( i >= 7) x = i + 2;
          else x = i + 1;
-         if (!(std::abs(alm.getAhalf(gpstk::SatID(x,
-                                                  gpstk::SatelliteSystem::GPS)) - aData.sqrta[i])*1E-4 < eps))
+         if (!(std::abs(alm.getAhalf(gnsstk::SatID(x,
+                                                  gnsstk::SatelliteSystem::GPS)) - aData.sqrta[i])*1E-4 < eps))
             failCount++;
       }
       testMesg = "getAhalf returned the wrong value";
@@ -428,8 +428,8 @@ public:
       {
          if ( i >= 7) x = i + 2;
          else x = i + 1;
-         if (!(std::abs(alm.getA(gpstk::SatID(x,
-                                              gpstk::SatelliteSystem::GPS)) - pow(aData.sqrta[i],2))*1E-8 < eps))
+         if (!(std::abs(alm.getA(gnsstk::SatID(x,
+                                              gnsstk::SatelliteSystem::GPS)) - pow(aData.sqrta[i],2))*1E-8 < eps))
             failCount++;
       }
       testMesg = "getA returned the wrong value";
@@ -441,8 +441,8 @@ public:
       {
          if ( i >= 7) x = i + 2;
          else x = i + 1;
-         if (!(std::abs(alm.getOmega0(gpstk::SatID(x,
-                                                   gpstk::SatelliteSystem::GPS)) - aData.raaw[i])*1E-1 < eps))
+         if (!(std::abs(alm.getOmega0(gnsstk::SatID(x,
+                                                   gnsstk::SatelliteSystem::GPS)) - aData.raaw[i])*1E-1 < eps))
             failCount++;
       }
       testMesg = "getOmega0 returned the wrong value";
@@ -454,8 +454,8 @@ public:
       {
          if ( i >= 7) x = i + 2;
          else x = i + 1;
-         if (!(std::abs(alm.getW(gpstk::SatID(x,
-                                              gpstk::SatelliteSystem::GPS)) - aData.aop[i]) < eps))
+         if (!(std::abs(alm.getW(gnsstk::SatID(x,
+                                              gnsstk::SatelliteSystem::GPS)) - aData.aop[i]) < eps))
             failCount++;
       }
       testMesg = "getW returned the wrong value";
@@ -467,8 +467,8 @@ public:
       {
          if ( i >= 7) x = i + 2;
          else x = i + 1;
-         if (!(std::abs(alm.getM0(gpstk::SatID(x,
-                                               gpstk::SatelliteSystem::GPS)) - aData.ma[i])*1E-1 < eps))
+         if (!(std::abs(alm.getM0(gnsstk::SatID(x,
+                                               gnsstk::SatelliteSystem::GPS)) - aData.ma[i])*1E-1 < eps))
             failCount++;
       }
       testMesg = "getM0 returned the wrong value";
@@ -480,8 +480,8 @@ public:
       {
          if ( i >= 7) x = i + 2;
          else x = i + 1;
-         if (!(std::abs(alm.getAf0(gpstk::SatID(x,
-                                                gpstk::SatelliteSystem::GPS)) - aData.af0[i])*1E5 < eps))
+         if (!(std::abs(alm.getAf0(gnsstk::SatID(x,
+                                                gnsstk::SatelliteSystem::GPS)) - aData.af0[i])*1E5 < eps))
             failCount++;
       }
       testMesg = "getAf0 returned the wrong value";
@@ -493,8 +493,8 @@ public:
       {
          if ( i >= 7) x = i + 2;
          else x = i + 1;
-         if (!(std::abs(alm.getAf1(gpstk::SatID(x,
-                                                gpstk::SatelliteSystem::GPS)) - aData.af1[i]) < eps))
+         if (!(std::abs(alm.getAf1(gnsstk::SatID(x,
+                                                gnsstk::SatelliteSystem::GPS)) - aData.af1[i]) < eps))
             failCount++;
       }
       testMesg = "getAf1 returned the wrong value";
@@ -572,13 +572,13 @@ public:
       {
          x = i+1;
          if (x > 7) x = i+2;
-         gpstk::AlmOrbit Compare(aData.id[i], aData.ecc[i], (aData.oi[i] - .3*M_PI),
+         gnsstk::AlmOrbit Compare(aData.id[i], aData.ecc[i], (aData.oi[i] - .3*M_PI),
                                  aData.rora[i],
                                  aData.sqrta[i], aData.raaw[i], aData.aop[i], aData.ma[i], aData.af0[i],
                                  aData.af1[i],
                                  aData.toa[i], 0/*?*/, aData.week[i], aData.health[i]);
-         gpstk::AlmOrbit orbitData;
-         orbitData = alm.getAlmOrbElem(gpstk::SatID(x, gpstk::SatelliteSystem::GPS));
+         gnsstk::AlmOrbit orbitData;
+         orbitData = alm.getAlmOrbElem(gnsstk::SatID(x, gnsstk::SatelliteSystem::GPS));
 
 // No == operator for AlmOrbit, using AlmOrbit's get methods to compare
 // Too many tests, using counter. Uncomment to find specific error
@@ -645,7 +645,7 @@ private:
 
 int main() //Main function to initialize and run all tests above
 {
-   std::string pathData = gpstk::getPathData();
+   std::string pathData = gnsstk::getPathData();
    std::string almanacLocation = pathData + "/test_input_gps_almanac.txt";
    std::ifstream iAlmanac(
       almanacLocation.c_str()); // Reads in almanac data from file

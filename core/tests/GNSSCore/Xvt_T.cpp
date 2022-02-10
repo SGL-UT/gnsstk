@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -46,11 +46,11 @@
 #include <sstream>
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 class Xvt_T
 {
-public: 
+public:
       /// Default Constructor, set the precision value
    Xvt_T()
          : eps(1E-12)
@@ -88,7 +88,7 @@ public:
       TUCSM("getRelativityCorr");
       TUASSERTFE(relativityCorrection, compare.getRelativityCorr());
       TUCSM("Xvt()");
-      TUASSERTE(gpstk::Xvt::HealthStatus, gpstk::Xvt::Uninitialized,
+      TUASSERTE(gnsstk::Xvt::HealthStatus, gnsstk::Xvt::Uninitialized,
                 compare.health);
 
       TURETURN();
@@ -100,7 +100,7 @@ public:
       TUDEF("Xvt","computeRelativityCorrection");
 
       Triple pos( 1234567000, 887654, 321 );
-      Triple vel(4321, 1234, 1342); 
+      Triple vel(4321, 1234, 1342);
       Xvt compare;
       double relcorr = -0.00011873444357376972;
       compare.x = pos;
@@ -161,7 +161,7 @@ public:
       Triple pos(1,2,3);
       Triple vel(4,5,6);
       double clockBias = 7, clockDrift = 8, relativityCorrection = 9;
-      Xvt output;               
+      Xvt output;
       output.x = pos;
       output.v = vel;
       output.clkbias = clockBias;
@@ -171,10 +171,10 @@ public:
       std::stringstream streamOutput;
       std::stringstream streamCompare;
       std::string stringOutput;
-      std::string stringCompare; 
+      std::string stringCompare;
 
       try
-      { 
+      {
             // Creates a string with the contents of output via the
             // stream output operator
          streamOutput << output;

@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -42,7 +42,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
  {
    const char* AshtechMBEN::mpcId = "MPC";
    const char* AshtechMBEN::mcaId = "MCA";
@@ -76,7 +76,7 @@ namespace gpstk
    //---------------------------------------------------------------------------
    void AshtechMBEN::decode(const std::string& data)
    {
-      using gpstk::BinUtils::decodeVar;
+      using gnsstk::BinUtils::decodeVar;
 
       string str(data);
 
@@ -179,7 +179,7 @@ namespace gpstk
    //---------------------------------------------------------------------------
    void AshtechMBEN::code_block::decodeBIN(string& str)
    {
-      using gpstk::BinUtils::decodeVar;
+      using gnsstk::BinUtils::decodeVar;
       uint32_t smo;
       warning        = decodeVar<uint8_t>(str);
       goodbad        = decodeVar<uint8_t>(str);
@@ -200,7 +200,7 @@ namespace gpstk
    //---------------------------------------------------------------------------
    void AshtechMBEN::code_block::dump(ostream& out) const
    {
-      using gpstk::StringUtils::asString;
+      using gnsstk::StringUtils::asString;
       out << hex
           << "warn:" << (int)warning
           << " gb:" << (int)goodbad
@@ -225,7 +225,7 @@ namespace gpstk
       const float d = PI/(n*n*m*m*4.0);
       float snr=0;
       // Note that ireg is as output from the MBEN which is 0-255, not the 0-99
-      // as displayed on the front panel. 
+      // as displayed on the front panel.
       if (ireg)
       {
          snr = exp(((float)ireg)/25.0);
@@ -240,7 +240,7 @@ namespace gpstk
    void AshtechMBEN::dump(ostream& out) const throw()
    {
       ostringstream oss;
-      using gpstk::StringUtils::asString;
+      using gnsstk::StringUtils::asString;
 
       AshtechData::dump(oss);
       oss << getName() << "1:"
@@ -268,4 +268,4 @@ namespace gpstk
       }
       out << oss.str() << flush;
    }
-} // namespace gpstk
+} // namespace gnsstk

@@ -1,47 +1,47 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_GPSCNAV2EPH_HPP
-#define GPSTK_GPSCNAV2EPH_HPP
+#ifndef GNSSTK_GPSCNAV2EPH_HPP
+#define GNSSTK_GPSCNAV2EPH_HPP
 
 #include "OrbitDataKepler.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup NavFactory
       //@{
@@ -54,6 +54,10 @@ namespace gpstk
       static const double refAGPS;
          /// OMEGA dot reference value defined in IS-GPS-800 (radians).
       static const double refOMEGAdotGPS;
+         /// Aref value defined in IS-QZSS-PNT-004 (meters).
+      static const double refAQZSS;
+         /// OMEGA dot reference value defined in IS-QZSS-PNT-004 (radians).
+      static const double refOMEGAdotQZSS;
 
          /// Sets the nav message type and all other data members to 0.
       GPSCNav2Eph();
@@ -93,4 +97,4 @@ namespace gpstk
 
 }
 
-#endif // GPSTK_GPSCNAV2EPH_HPP
+#endif // GNSSTK_GPSCNAV2EPH_HPP

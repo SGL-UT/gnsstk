@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -60,7 +60,7 @@ class FileSpecFind_T
 {
 public:
    FileSpecFind_T()
-         : fs(gpstk::getFileSep())
+         : fs(gnsstk::getFileSep())
    {}
 
       /// test find with absolute paths
@@ -104,7 +104,7 @@ openable(const list<string>& files)
 unsigned FileSpecFind_T ::
 findTestsAbs()
 {
-   string tld = gpstk::getPathData() + fs + "FileSpecFind";
+   string tld = gnsstk::getPathData() + fs + "FileSpecFind";
    return findTests(tld, "Abs");
 }
 
@@ -141,9 +141,9 @@ findTests(const std::string& tld, const std::string& testName)
    string searchSpec = tld + fs + "%04Y" + fs + "%05n" + fs + "%03j" + fs +
       "nsh-%x-%5n-%1r-%04Y-%03j-%02H%02M%02S.xml";
 
-   string winTest = gpstk::FileSpecFind::transToken(searchSpec);
-   gpstk::FileSpec::FSTStringMap fsts;
-   fsts[gpstk::FileSpec::text] = "FOO";
+   string winTest = gnsstk::FileSpecFind::transToken(searchSpec);
+   gnsstk::FileSpec::FSTStringMap fsts;
+   fsts[gnsstk::FileSpec::text] = "FOO";
    list<string> files;
    using ListSize = list<string>::size_type;
 
@@ -155,13 +155,13 @@ findTests(const std::string& tld, const std::string& testName)
    TUCSM("find(" + testName + ") no results");
    try
    {
-      files = gpstk::FileSpecFind::find(
+      files = gnsstk::FileSpecFind::find(
          searchSpec,
-         gpstk::YDSTime(2016,211,0),
-         gpstk::YDSTime(2016,212,0),
+         gnsstk::YDSTime(2016,211,0),
+         gnsstk::YDSTime(2016,212,0),
          fsts);
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
       cerr << exc;
       TUFAIL("Unexpected exception");
@@ -179,13 +179,13 @@ findTests(const std::string& tld, const std::string& testName)
    TUCSM("find(" + testName + ") single epoch");
    try
    {
-      files = gpstk::FileSpecFind::find(
+      files = gnsstk::FileSpecFind::find(
          searchSpec,
-         gpstk::YDSTime(2018,211,67500),
-         gpstk::YDSTime(2018,211,67500),
+         gnsstk::YDSTime(2018,211,67500),
+         gnsstk::YDSTime(2018,211,67500),
          fsts);
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
       cerr << exc;
       TUFAIL("Unexpected exception");
@@ -205,13 +205,13 @@ findTests(const std::string& tld, const std::string& testName)
    TUCSM("find(" + testName + ") single epoch via span");
    try
    {
-      files = gpstk::FileSpecFind::find(
+      files = gnsstk::FileSpecFind::find(
          searchSpec,
-         gpstk::YDSTime(2018,211,67500),
-         gpstk::YDSTime(2018,211,67800),
+         gnsstk::YDSTime(2018,211,67500),
+         gnsstk::YDSTime(2018,211,67800),
          fsts);
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
       cerr << exc;
       TUFAIL("Unexpected exception");
@@ -231,13 +231,13 @@ findTests(const std::string& tld, const std::string& testName)
    TUCSM("find(" + testName + ") multiple epochs");
    try
    {
-      files = gpstk::FileSpecFind::find(
+      files = gnsstk::FileSpecFind::find(
          searchSpec,
-         gpstk::YDSTime(2018,211,67500),
-         gpstk::YDSTime(2018,211,67801),
+         gnsstk::YDSTime(2018,211,67500),
+         gnsstk::YDSTime(2018,211,67801),
          fsts);
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
       cerr << exc;
       TUFAIL("Unexpected exception");
@@ -260,16 +260,16 @@ findTests(const std::string& tld, const std::string& testName)
    TUCSM("find(" + testName + ") multiple epochs with filter");
    try
    {
-      gpstk::FileSpecFind::Filter filter;
-      filter.insert(gpstk::FileSpecFind::Filter::value_type(
-                       gpstk::FileSpec::station, "10000"));
-      files = gpstk::FileSpecFind::find(
+      gnsstk::FileSpecFind::Filter filter;
+      filter.insert(gnsstk::FileSpecFind::Filter::value_type(
+                       gnsstk::FileSpec::station, "10000"));
+      files = gnsstk::FileSpecFind::find(
          searchSpec,
-         gpstk::YDSTime(2018,211,67500),
-         gpstk::YDSTime(2018,211,67801),
+         gnsstk::YDSTime(2018,211,67500),
+         gnsstk::YDSTime(2018,211,67801),
          filter);
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
       cerr << exc;
       TUFAIL("Unexpected exception");
@@ -288,18 +288,18 @@ findTests(const std::string& tld, const std::string& testName)
 
    try
    {
-      gpstk::FileSpecFind::Filter filter;
-      filter.insert(gpstk::FileSpecFind::Filter::value_type(
-                       gpstk::FileSpec::station, "10000"));
-      filter.insert(gpstk::FileSpecFind::Filter::value_type(
-                       gpstk::FileSpec::text, "FOO"));
-      files = gpstk::FileSpecFind::find(
+      gnsstk::FileSpecFind::Filter filter;
+      filter.insert(gnsstk::FileSpecFind::Filter::value_type(
+                       gnsstk::FileSpec::station, "10000"));
+      filter.insert(gnsstk::FileSpecFind::Filter::value_type(
+                       gnsstk::FileSpec::text, "FOO"));
+      files = gnsstk::FileSpecFind::find(
          searchSpec,
-         gpstk::YDSTime(2018,211,67500),
-         gpstk::YDSTime(2018,211,67801),
+         gnsstk::YDSTime(2018,211,67500),
+         gnsstk::YDSTime(2018,211,67801),
          filter);
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
       cerr << exc;
       TUFAIL("Unexpected exception");
@@ -318,18 +318,18 @@ findTests(const std::string& tld, const std::string& testName)
 
    try
    {
-      gpstk::FileSpecFind::Filter filter;
-      filter.insert(gpstk::FileSpecFind::Filter::value_type(
-                       gpstk::FileSpec::station, "10000"));
-      filter.insert(gpstk::FileSpecFind::Filter::value_type(
-                       gpstk::FileSpec::text, "BAR"));
-      files = gpstk::FileSpecFind::find(
+      gnsstk::FileSpecFind::Filter filter;
+      filter.insert(gnsstk::FileSpecFind::Filter::value_type(
+                       gnsstk::FileSpec::station, "10000"));
+      filter.insert(gnsstk::FileSpecFind::Filter::value_type(
+                       gnsstk::FileSpec::text, "BAR"));
+      files = gnsstk::FileSpecFind::find(
          searchSpec,
-         gpstk::YDSTime(2018,211,67500),
-         gpstk::YDSTime(2018,211,67801),
+         gnsstk::YDSTime(2018,211,67500),
+         gnsstk::YDSTime(2018,211,67801),
          filter);
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
       cerr << exc;
       TUFAIL("Unexpected exception");
@@ -348,18 +348,18 @@ findTests(const std::string& tld, const std::string& testName)
 
    try
    {
-      gpstk::FileSpecFind::Filter filter;
-      filter.insert(gpstk::FileSpecFind::Filter::value_type(
-                       gpstk::FileSpec::station, "10000"));
-      filter.insert(gpstk::FileSpecFind::Filter::value_type(
-                       gpstk::FileSpec::receiver, "2"));
-      files = gpstk::FileSpecFind::find(
+      gnsstk::FileSpecFind::Filter filter;
+      filter.insert(gnsstk::FileSpecFind::Filter::value_type(
+                       gnsstk::FileSpec::station, "10000"));
+      filter.insert(gnsstk::FileSpecFind::Filter::value_type(
+                       gnsstk::FileSpec::receiver, "2"));
+      files = gnsstk::FileSpecFind::find(
          searchSpec,
-         gpstk::YDSTime(2018,211,67500),
-         gpstk::YDSTime(2018,211,67801),
+         gnsstk::YDSTime(2018,211,67500),
+         gnsstk::YDSTime(2018,211,67801),
          filter);
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
       cerr << exc;
       TUFAIL("Unexpected exception");
@@ -381,14 +381,14 @@ findTests(const std::string& tld, const std::string& testName)
    TUCSM("find(" + testName + ") exact file name");
    try
    {
-      gpstk::FileSpecFind::Filter filter;
-      files = gpstk::FileSpecFind::find(
+      gnsstk::FileSpecFind::Filter filter;
+      files = gnsstk::FileSpecFind::find(
          searchSpec,
-         gpstk::CommonTime::BEGINNING_OF_TIME,
-         gpstk::CommonTime::END_OF_TIME,
+         gnsstk::CommonTime::BEGINNING_OF_TIME,
+         gnsstk::CommonTime::END_OF_TIME,
          filter);
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
       cerr << exc;
       TUFAIL("Unexpected exception");
@@ -421,12 +421,12 @@ findSimpleFileName()
          // refers to a file that exists in the data directory.  This
          // also assumes the test is run in the data directory, but
          // the other tests do as well.
-      files = gpstk::FileSpecFind::find(
+      files = gnsstk::FileSpecFind::find(
          "TropModel_Zero.exp",
-         gpstk::YDSTime(2016,211,0),
-         gpstk::YDSTime(2016,212,0));
+         gnsstk::YDSTime(2016,211,0),
+         gnsstk::YDSTime(2016,212,0));
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
       cerr << exc;
       TUFAIL("Unexpected exception");

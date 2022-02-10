@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,18 +40,18 @@
 /// XXXWeekSecond for systems XXX (GPS QZS BDS GAL) and GPSWeek (for
 /// GPSWeekZcount).
 
-#ifndef GPSTK_WEEK_HPP
-#define GPSTK_WEEK_HPP
+#ifndef GNSSTK_WEEK_HPP
+#define GNSSTK_WEEK_HPP
 
 #define timeSystemCheck if(timeSystem != right.timeSystem && \
    timeSystem != TimeSystem::Any && right.timeSystem != TimeSystem::Any) \
-   GPSTK_THROW(InvalidRequest( \
+   GNSSTK_THROW(InvalidRequest( \
    "CommonTime objects not in same time system, cannot be compared"))
 
 #include "TimeTag.hpp"
 #include "TimeConverters.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup TimeHandling
       //@{
@@ -122,14 +122,14 @@ namespace gpstk
       Week(int w = 0, TimeSystem ts = TimeSystem::Unknown )
             : week(w)
       { timeSystem = ts; }
-      
+
          /// Virtual Destructor.
       virtual ~Week()
       {}
-      
+
          /// Assignment Operator.
       Week& operator=(const Week& right);
-      
+
          /// @name Comparison Operators.
          //@{
       inline bool operator==(const Week& right) const
@@ -147,25 +147,25 @@ namespace gpstk
          timeSystemCheck;
          return (week != right.week);
       }
-      
+
       inline bool operator<(const Week& right) const
       {
          timeSystemCheck;
          return week < right.week;
       }
-      
+
       inline bool operator<=(const Week& right) const
       {
          timeSystemCheck;
          return week <= right.week;
       }
-      
+
       inline bool operator>(const Week& right) const
       {
          timeSystemCheck;
          return week > right.week;
       }
-      
+
       inline bool operator>=(const Week& right) const
       {
          timeSystemCheck;
@@ -184,19 +184,19 @@ namespace gpstk
       {
          return (week & bitmask());
       }
-      
+
       inline virtual unsigned int getEpoch() const
       {
          return (week >> Nbits());
       }
-      
+
       inline virtual void getEpochModWeek(unsigned int& e,
                                           unsigned int& w) const
       {
          e = getEpoch();
          w = getModWeek();
       }
-      
+
       inline virtual void setEpoch(unsigned int e)
       {
          week &= bitmask();
@@ -208,7 +208,7 @@ namespace gpstk
          week &= ~bitmask();
          week |= w & bitmask();
       }
-      
+
       inline virtual void setEpochModWeek(unsigned int e,
                                           unsigned int w)
       {
@@ -236,14 +236,14 @@ namespace gpstk
       }
 
          //@}
-      
+
          /** Return a string containing the characters that this class
           * understands when printing times. */
       inline virtual std::string getPrintChars() const
       {
          return "EFGP";
       }
-         
+
          /// Return a string containing the default format to use in printing.
       inline virtual std::string getDefaultFormat() const
       {
@@ -254,12 +254,12 @@ namespace gpstk
       {
          return ((week >= 0) && (week <= MAXWEEK()));
       }
-      
+
       inline virtual void reset()
       {
          week = 0;
       }
-      
+
          /// Force this interface on this classes descendants.
       virtual unsigned int getDayOfWeek() const = 0;
 
@@ -273,4 +273,4 @@ namespace gpstk
 
 #undef timeSystemCheck
 
-#endif // GPSTK_WEEK_HPP
+#endif // GNSSTK_WEEK_HPP

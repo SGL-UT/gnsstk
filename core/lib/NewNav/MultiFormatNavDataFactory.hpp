@@ -1,47 +1,48 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_MULTIFORMATNAVDATAFACTORY_HPP
-#define GPSTK_MULTIFORMATNAVDATAFACTORY_HPP
+#ifndef GNSSTK_MULTIFORMATNAVDATAFACTORY_HPP
+#define GNSSTK_MULTIFORMATNAVDATAFACTORY_HPP
 
 #include "NavDataFactoryWithStoreFile.hpp"
+#include "NDFUniqIterator.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup NavFactory
       //@{
@@ -64,7 +65,11 @@ namespace gpstk
        *   implemented using polymorphism so that this class behaves
        *   correctly when used in conjunction with NavLibrary.
        * @warning Overridden methods affect every instance of this
-       *   class due to the static data. */
+       *   class due to the static data.
+       * @warning Instantiating more than one of this class at any
+       *   time will likely have unexpected results due to the shared
+       *   (static) data stored internally.  DON'T DO IT.
+       */
    class MultiFormatNavDataFactory : public NavDataFactoryWithStoreFile
    {
    public:
@@ -84,31 +89,17 @@ namespace gpstk
           * @param[in] when The time of interest to search for data.
           * @param[in] xmitHealth The desired health status of the
           *   transmitting satellite.
-          * @param[out] navData The resulting navigation message.
+          * @param[out] navOut The resulting navigation message.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
           * @param[in] order Specify whether to search by receiver
-          *   behavior or by nearest to when in time. 
+          *   behavior or by nearest to when in time.
           * @return true if successful.  If false, navData will be untouched. */
       bool find(const NavMessageID& nmid, const CommonTime& when,
-                NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
+                NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
                 NavSearchOrder order) override;
 
-         /** Get the offset, in seconds, to apply to times when
-          * converting them from fromSys to toSys.
-          * @param[in] fromSys The time system to convert from.
-          * @param[in] toSys The time system to convert to.
-          * @param[in] when The time being converted, usually in the
-          *   time system appropriate for a given nav message source.
-          *   The details of what time system this should be in and
-          *   any other restrictions will be documented in each leaf
-          *   class, e.g. GPSLNavTimeOffset.
-          * @param[out] offset The offset when converting fromSys->toSys.
-          * @param[in] xmitHealth The desired health status of the
-          *   transmitting satellite.
-          * @param[in] valid Specify whether to search only for valid
-          *   or invalid messages, or both.
-          * @return true if an offset is available, false if not. */
+         /// @copydoc NavDataFactory::getOffset()
       bool getOffset(TimeSystem fromSys, TimeSystem toSys,
                      const CommonTime& when, NavDataPtr& offset,
                      SVHealth xmitHealth = SVHealth::Any,
@@ -147,7 +138,7 @@ namespace gpstk
          /// Remove all data from the internal store.
       void clear() override;
 
-         /** Determine the earliest time for which this object can successfully 
+         /** Determine the earliest time for which this object can successfully
           * determine the Xvt for any object.
           * @note In the case that data from multiple systems is
           *   stored, the result may be in the UTC time system.
@@ -155,7 +146,7 @@ namespace gpstk
           *   data is available. */
       CommonTime getInitialTime() const override;
 
-         /** Determine the latest time for which this object can successfully 
+         /** Determine the latest time for which this object can successfully
           * determine the Xvt for any object.
           * @note In the case that data from multiple systems is
           *   stored, the result may be in the UTC time system.
@@ -163,11 +154,97 @@ namespace gpstk
           *   data is available. */
       CommonTime getFinalTime() const override;
 
+         /** Obtain a set of satellites for which we have data in the
+          * given time span.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of satellites for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      NavSatelliteIDSet getAvailableSats(const CommonTime& fromTime,
+                                         const CommonTime& toTime)
+         const override;
+
+         /** Obtain a set of satellites for which we have data of a
+          * specific message type in the given time span.
+          * @param[in] nmt The navigation message type you're looking for.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of satellites for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      NavSatelliteIDSet getAvailableSats(NavMessageType nmt,
+                                         const CommonTime& fromTime,
+                                         const CommonTime& toTime)
+         const override;
+
+         /** Obtain a set of satellites+message types for which we
+          * have data in the given time span.
+          * @param[in] fromTime The earliest time for which any
+          *   messages should be available.
+          * @param[in] toTime The earliest time for which any
+          *   messages should be NOT available.
+          * @return a set of NavMessageID objects for which data is available
+          *   from [fromTime,toTime).
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years. */
+      NavMessageIDSet getAvailableMsgs(const CommonTime& fromTime,
+                                       const CommonTime& toTime)
+         const override;
+
+         /** Determine if a given message/satellite/signal is
+          * available in the factory.
+          * @param[in] nmid The message/satellite/signal to search for.
+          * @param[in] fromTime The earliest time for which a matching
+          *   message should be available.
+          * @param[in] toTime The latest time for which a matching
+          *   message should be available.
+          * @return true if the given satellite/signal is has data in
+          *   the given time span.
+          * @note We specifically require the time range parameters to
+          *   try to avoid making assumptions about the size of the
+          *   data set (i.e. assuming the data is going to be a day's
+          *   worth when it's actually several years).
+          * @note This method iterates over the given time span until
+          *   it finds a match.  As such, it is strongly recommended
+          *   that you not use BEGINNING_OF_TIME or END_OF_TIME, as it
+          *   takes several minutes to iterate over that time span. */
+      bool isPresent(const NavMessageID& nmid,
+                     const CommonTime& fromTime,
+                     const CommonTime& toTime) override;
+
          /// Return a comma-separated list of formats supported by the factories
       std::string getFactoryFormats() const override;
 
          /// Return the number of nav messages in all factories.
       size_t size() const override;
+         /// @copydoc NavDataFactoryWithStore::count(const NavMessageID&) const
+      size_t count(const NavMessageID& nmid) const override;
+         /// @copydoc NavDataFactoryWithStore::count(SatelliteSystem,NavMessageType) const
+      size_t count(SatelliteSystem sys,
+                   NavMessageType nmt = NavMessageType::Unknown)
+         const override
+      { return NavDataFactoryWithStore::count(sys,nmt); }
+         /// @copydoc NavDataFactoryWithStore::count(const SatID&,NavMessageType) const
+      size_t count(const SatID& satID,
+                   NavMessageType nmt = NavMessageType::Unknown)
+         const override
+      { return NavDataFactoryWithStore::count(satID,nmt); }
+         /// @copydoc NavDataFactoryWithStore::count(gnsstk::NavMessageType) const
+      size_t count(NavMessageType nmt) const override
+      { return NavDataFactoryWithStore::count(nmt); }
          /// Return the number of distinct signals (ignoring PRN) in factories.
       size_t numSignals() const override;
          /// Return the number of distinct signals including PRN, in factories.
@@ -209,13 +286,25 @@ namespace gpstk
           * format.
           * @param[in,out] s The stream to write the data to.
           * @param[in] dl The level of detail the output should contain. */
-      void dump(std::ostream& s, NavData::Detail dl) const;
+      void dump(std::ostream& s, DumpDetail dl) const;
+
+         /** Get the instance of a given factory type, specified by
+          * the template argument.  This allows you to get a specific
+          * factory if for some reason you need to tweak its
+          * settings. */
+      template <class Fact>
+      std::shared_ptr<Fact> getFactory();
 
    protected:
          /** Known nav data factories, organized by signal to make
           * searches simpler and/or quicker.  Declared static so that
           * other libraries can transparently add factories. */
-      static NavDataFactoryMap& factories();
+     static std::shared_ptr<NavDataFactoryMap> factories();
+     
+        /** Keep a cached copy of the shared_ptr to the static
+         * NavDataFactoryMap so that windows doesn't destroy it before
+         * destroying this. */
+     std::shared_ptr<NavDataFactoryMap> myFactories;
 
    private:
          /** This method makes no sense in this context, because we
@@ -223,12 +312,29 @@ namespace gpstk
           * NavMessageMap, because SP3's find method performs
           * interpolation. */
       bool loadIntoMap(const std::string& filename,
-                       NavMessageMap& navMap) override
+                       NavMessageMap& navMap,
+                       NavNearMessageMap& navNearMap,
+                       OffsetCvtMap& ofsMap) override
       { return false; }
    };
+
+
+   template <class Fact>
+   std::shared_ptr<Fact> MultiFormatNavDataFactory ::
+   getFactory()
+   {
+      std::shared_ptr<Fact> rv;
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories()))
+      {
+         rv = std::dynamic_pointer_cast<Fact>(fi.second);
+         if (rv)
+            return rv;
+      }
+      return rv;
+   }
 
       //@}
 
 }
 
-#endif // GPSTK_MULTIFORMATNAVDATAFACTORY_HPP
+#endif // GNSSTK_MULTIFORMATNAVDATAFACTORY_HPP

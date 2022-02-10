@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,13 +40,13 @@
  * @file MatrixBase.hpp
  * Base classes (const and ref) for Matrix
  */
- 
-#ifndef GPSTK_MATRIX_BASE_HPP
-#define GPSTK_MATRIX_BASE_HPP
+
+#ifndef GNSSTK_MATRIX_BASE_HPP
+#define GNSSTK_MATRIX_BASE_HPP
 
 #include "Vector.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup MathGroup
       //@{
@@ -82,11 +82,11 @@ namespace gpstk
       { return static_cast<const BaseClass*>(this)->rows(); }
          /// returns a const version of the (i,j)'th element in the matrix,
          /// valid for 0...rows()-1, 0...cols()-1.
-      T operator() (size_t i, size_t j) const 
+      T operator() (size_t i, size_t j) const
       { return constMatrixRef(i, j); }
-   
+
          /// returns true if this is a square matrix (false for a null matrix).
-      inline bool isSquare() const 
+      inline bool isSquare() const
       { return ((rows() == cols()) && (rows() != 0)); }
          /// returns true if this is an upper triangular matrix.
       inline bool isUT() const
@@ -144,12 +144,12 @@ namespace gpstk
           * @throw MatrixException
           */
       Vector<T> colCopy(size_t c, size_t r = 0) const
-      { 
+      {
 #ifdef RANGECHECK
          if ((c >= cols()) || (r >= rows()))
          {
             MatrixException e("Invalid ConstMatrixBase index for colCopy");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          Vector<T> toReturn(rows() - r);
@@ -163,12 +163,12 @@ namespace gpstk
           * @throw MatrixException
           */
       Vector<T> rowCopy(size_t r, size_t c = 0) const
-      { 
+      {
 #ifdef RANGECHECK
          if ((c >= cols()) || (r >= rows()))
          {
             MatrixException e("Invalid ConstMatrixBase index for rowCopy");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          Vector<T> toReturn(cols() - c);
@@ -182,7 +182,7 @@ namespace gpstk
           * @throw MatrixException
           */
       Vector<T> diagCopy(void) const
-      { 
+      {
          size_t i, n(cols());
          if(rows() < n) n = rows();
          Vector<T> toReturn(n);
@@ -202,7 +202,7 @@ namespace gpstk
          if ((i >= b.rows()) || (j > b.cols()))
          {
             MatrixException e("Invalid ConstMatrixBase index for ref");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          return b(i,j);
@@ -224,7 +224,7 @@ namespace gpstk
       {}
 
          /// returns a reference to the (i,j) element of the matrix.
-      T& operator() (size_t i, size_t j) 
+      T& operator() (size_t i, size_t j)
       { return static_cast<BaseClass*>(this)->operator()(i,j); }
 
          /// returns the rows()*cols() size of the matrix
@@ -248,18 +248,18 @@ namespace gpstk
                   me(i,j) = T(0);
          return me;
       }
-         /// any value in row r with absolute value below 
+         /// any value in row r with absolute value below
          /// RefVectorBaseHelper::zeroTolerance is set to 0.
       BaseClass& zeroizeRow(size_t r)
       {
          BaseClass& me = static_cast<BaseClass&>(*this);
          size_t j;
          for (j=0; j < me.cols(); j++)
-            if (ABS(me(r,j)) < RefVectorBaseHelper::zeroTolerance)
-               me(r,j) = T(0);
+             if (ABS(me(r, j)) < RefVectorBaseHelper::zeroTolerance)
+                 me(r, j) = T(0);
          return me;
       }
-         /// any value in column c with absolute value below 
+         /// any value in column c with absolute value below
          /// RefVectorBaseHelper::zeroTolerance is set to 0.
       BaseClass& zeroizeCol(size_t c)
       {
@@ -272,7 +272,7 @@ namespace gpstk
       }
 
 
-              
+
          /// remember that operator= isn't inherited.  use assignFrom in
          /// derived classes' copy constructors and operator=.
          //MatBaseNewAssignOperator(assignFrom, =);
@@ -282,7 +282,7 @@ namespace gpstk
          //      MatBaseNewAssignOperator(assignFrom, =);
 
          /** performs = on each element of this matrix with each
-          * element of x 
+          * element of x
           * @throw MatrixException
           */
       template <class E> BaseClass& assignFrom(const ConstMatrixBase<T, E>& x)
@@ -292,7 +292,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.rows() != me.rows() || x.cols() != me.cols()) {
             MatrixException e("Invalid dimensions for Matrix assignFrom(Matrix)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -312,7 +312,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.size() != me.rows() * me.cols()) {
             MatrixException e("Invalid dimensions for Matrix assignFrom(Vector)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -332,7 +332,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.size() != me.rows() * me.cols()) {
             MatrixException e("Invalid dimensions for Matrix assignFrom(valarray)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -377,7 +377,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.rows() != me.rows() || x.cols() != me.cols()) {
             MatrixException e("Invalid dimensions for Matrix operator+=(Matrix)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -397,7 +397,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.size() != me.rows() * me.cols()) {
             MatrixException e("Invalid dimensions for Matrix operator+=(Vector)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -417,7 +417,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.size() != me.rows() * me.cols()) {
             MatrixException e("Invalid dimensions for Matrix operator+=(valarray)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -463,7 +463,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.rows() != me.rows() || x.cols() != me.cols()) {
             MatrixException e("Invalid dimensions for Matrix operator-=(Matrix)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -483,7 +483,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.size() != me.rows() * me.cols()) {
             MatrixException e("Invalid dimensions for Matrix operator-=(Vector)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -503,7 +503,7 @@ namespace gpstk
 #ifdef RANGECHECK
          if(x.size() != me.rows() * me.cols()) {
             MatrixException e("Invalid dimensions for Matrix operator-=(valarray)");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i,j;
@@ -535,7 +535,7 @@ namespace gpstk
                me(i,j) -= x;
          return me;
       }
-   
+
 
          /// multiplies each element in this matrix by x.
       BaseClass& operator*=(const T x)
@@ -576,14 +576,14 @@ namespace gpstk
          /** swaps rows row1 and row2 in this matrix.
           * @throw MatrixException
           */
-      BaseClass& swapRows(size_t row1, size_t row2) 
+      BaseClass& swapRows(size_t row1, size_t row2)
       {
          BaseClass& me = static_cast<BaseClass&>(*this);
 #ifdef RANGECHECK
          if ( (row1 >= me.rows()) || (row2 >= me.rows()) )
          {
             MatrixException e("Invalid rows for swapRows");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i;
@@ -600,14 +600,14 @@ namespace gpstk
          /** swaps columns col1 and col2 in this matrix.
           * @throw MatrixException
           */
-      BaseClass& swapCols(size_t col1, size_t col2) 
+      BaseClass& swapCols(size_t col1, size_t col2)
       {
          BaseClass& me = static_cast<BaseClass&>(*this);
 #ifdef RANGECHECK
          if ( (col1 >= me.cols()) || (col2 >= me.cols()) )
          {
             MatrixException e("Invalid columns for swapCols");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          size_t i;
@@ -651,17 +651,17 @@ namespace gpstk
           * to see if it's a valid slice.
           * @throw MatrixException
           */
-      inline void matSliceCheck(size_t sourceRowSize, 
+      inline void matSliceCheck(size_t sourceRowSize,
                                 size_t sourceColSize) const
       {
             //#ifdef RANGECHECK
          if (rowSize() > 0)
          {
-            if ( (rowStart() >= sourceRowSize) || 
+            if ( (rowStart() >= sourceRowSize) ||
                  ((rowStart() + (rowSize()-1) * rowStride()) >= sourceRowSize))
             {
                MatrixException e("Invalid row range for slice");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
          }
          if (colSize() > 0)
@@ -670,7 +670,7 @@ namespace gpstk
                  ((colStart() + (colSize()-1) * colStride()) >= sourceColSize))
             {
                MatrixException e("Invalid col range for slice");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
          }
             //#endif

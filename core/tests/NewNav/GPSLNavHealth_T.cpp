@@ -1,38 +1,38 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,14 +40,14 @@
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
       return s;
    }
-   std::ostream& operator<<(std::ostream& s, gpstk::SVHealth e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::SVHealth e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -68,9 +68,9 @@ unsigned GPSLNavHealth_T ::
 constructorTest()
 {
    TUDEF("GPSLNavHealth", "GPSLNavHealth");
-   gpstk::GPSLNavHealth obj;
+   gnsstk::GPSLNavHealth obj;
    TUASSERTE(uint8_t, 0x80, obj.svHealth);
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::Health,
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Health,
              obj.signal.messageType);
    TURETURN();
 }
@@ -80,12 +80,12 @@ unsigned GPSLNavHealth_T ::
 getUserTimeTest()
 {
    TUDEF("GPSLNavHealth", "getUserTime");
-   gpstk::GPSLNavHealth obj;
-   obj.timeStamp = gpstk::GPSWeekSecond(2100,135.0);
-   gpstk::CommonTime exp(gpstk::GPSWeekSecond(2100,135.0));
+   gnsstk::GPSLNavHealth obj;
+   obj.timeStamp = gnsstk::GPSWeekSecond(2100,135.0);
+   gnsstk::CommonTime exp(gnsstk::GPSWeekSecond(2100,135.0));
       // 1x 6s subframe
    exp = exp + 6.0;
-   TUASSERTE(gpstk::CommonTime, exp, obj.getUserTime());
+   TUASSERTE(gnsstk::CommonTime, exp, obj.getUserTime());
    TURETURN();
 }
 
@@ -94,19 +94,19 @@ unsigned GPSLNavHealth_T ::
 getHealthTest()
 {
    TUDEF("GPSLNavHealth", "getHealth");
-   gpstk::GPSLNavHealth obj;
+   gnsstk::GPSLNavHealth obj;
       // default should be unhealthy
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unhealthy, obj.getHealth());
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Unhealthy, obj.getHealth());
       // the one condition that should result in healthy
    obj.svHealth = 0;
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Healthy, obj.getHealth());
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Healthy, obj.getHealth());
       // weird looking loop, but basically it just wraps around to 0
    bool failed = false;
    for (obj.svHealth = 1; obj.svHealth != 0; obj.svHealth++)
    {
-      if (obj.getHealth() != gpstk::SVHealth::Unhealthy)
+      if (obj.getHealth() != gnsstk::SVHealth::Unhealthy)
       {
-         TUFAIL("health bits " + gpstk::StringUtils::asString(obj.svHealth) +
+         TUFAIL("health bits " + gnsstk::StringUtils::asString(obj.svHealth) +
                 " should be Unhealthy");
          failed = true;
          break;

@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,12 +40,12 @@
 #include "Vector.hpp"
 #include "TestUtil.hpp"
 
-void hhtest(size_t r, size_t c, double a[], double hh_ref[], gpstk::TestUtil& testFramework)
+void hhtest(size_t r, size_t c, double a[], double hh_ref[], gnsstk::TestUtil& testFramework)
 {
-   gpstk::Matrix<double> A(r,c), HH_ref(r,c);
+   gnsstk::Matrix<double> A(r,c), HH_ref(r,c);
    A = a;
    HH_ref = hh_ref;
-   gpstk::Householder<double> HH;
+   gnsstk::Householder<double> HH;
    HH(A);
 
    testFramework.assert(
@@ -105,23 +105,23 @@ void hhtest(size_t r, size_t c, double a[], double hh_ref[], gpstk::TestUtil& te
 int main()
 {
    int errorCounter = 0;
-   gpstk::TestUtil testFramework("Matrix Householder", "--", __FILE__, __LINE__);
+   gnsstk::TestUtil testFramework("Matrix Householder", "--", __FILE__, __LINE__);
 
    // all of the reference values were computed using WolframAlpha to compute
    // the R value from a QR factorization
    // for A8 https://www.wolframalpha.com/input/?i=QR+factorization++{{6,5},{-5,7}}
-   
+
    double a5[] = {
       1,1,0,
       1,0,1,
       0,1,1};
    double ref5[] = {
-      pow(2,.5), pow(2,-.5), pow(2,-.5), 
+      pow(2,.5), pow(2,-.5), pow(2,-.5),
       0, pow(1.5,.5), pow(6,-.5),
       0,0,2./pow(3,.5)};
    testFramework.changeSourceMethod("A5");
    hhtest(3, 3, a5, ref5, testFramework);
-   
+
    double a6[9] = {
       12,-51,4,
       6,167,-68,
@@ -132,7 +132,7 @@ int main()
       0, 0, 1481./35};
    testFramework.changeSourceMethod("A6");
    hhtest(3, 3, a6, ref6, testFramework);
-        
+
    double a7[9] = {
       1,2,3,
       -1,0,-3,

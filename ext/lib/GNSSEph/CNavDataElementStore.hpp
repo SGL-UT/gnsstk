@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,14 +40,14 @@
  * @file CNavDataElementStore.hpp
  * A class for storing CNavDataElements. Note that this is NOT a descendent
  * of XVTStore and is NOT designed for convenient access of orbit/clock
- * data used in XVT calculations.  Instead, it is designed to support 
- * storing CNAV "overhead" message data such as UTC, IONO, ISC, GGTO, text.  
+ * data used in XVT calculations.  Instead, it is designed to support
+ * storing CNAV "overhead" message data such as UTC, IONO, ISC, GGTO, text.
  * These are things that were associated with the "almanac" in the legacy data
- * but occur in a less structured manner in CNAV and CNAV-2. 
+ * but occur in a less structured manner in CNAV and CNAV-2.
  */
 
-#ifndef GPSTK_CNAVDATAELEMENTSTORE_INCLUDE
-#define GPSTK_CNAVDATAELEMENTSTORE_INCLUDE
+#ifndef GNSSTK_CNAVDATAELEMENTSTORE_INCLUDE
+#define GNSSTK_CNAVDATAELEMENTSTORE_INCLUDE
 
 #include <iostream>
 
@@ -55,13 +55,13 @@
 #include "Exception.hpp"
 #include "CommonTime.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    class CNavDataElementStore
    {
    public:
       CNavDataElementStore(bool keepOnlyUnique=false);
-      
+
       ~CNavDataElementStore() { clear(); };
 
       /// Clear the dataset, meaning remove all data
@@ -76,14 +76,14 @@ namespace gpstk
       /// Edit the dataset, removing data outside the indicated time interval
       /// @param[in] tmin defines the beginning of the time interval
       /// @param[in] tmax defines the end of the time interval
-      void edit(const CommonTime& tmin, 
+      void edit(const CommonTime& tmin,
                         const CommonTime& tmax = CommonTime::END_OF_TIME);
 
       /// Return the time system of the store
       /// Only one option for CNAV/CNAV-2.
       TimeSystem getTimeSystem(void) const {return (TimeSystem::GPS);}
 
-      /// Return the earliest transmission time of any object in this 
+      /// Return the earliest transmission time of any object in this
       /// store.
       /// @return The initial time
       CommonTime getInitialTime() const;
@@ -98,11 +98,11 @@ namespace gpstk
       bool addDataElement(const CNavDataElement& cnde);
 
       /// Return the number of CNavDataElement objects in the store.
-      /// @return the number of CNavDataElement objects in the store. 
-      unsigned long size() const; 
+      /// @return the number of CNavDataElement objects in the store.
+      unsigned long size() const;
 
       /// Need to add methods to FIND particular data elements.   Need
-      /// to figure those out first. 
+      /// to figure those out first.
 
       /// Intended to store sets CNavDataElements for a specified SV.
       /// The index in the TRANSMIT TIME associated with the element.
@@ -110,16 +110,16 @@ namespace gpstk
       /// this guarantees uniqueness.
       /// NOTE: EVENTUALLY, I want to arrange matters so there are TWO
       /// OPTIONS: (1.) Store only unique information, (2.) Store ALL available
-      /// data elements. 
+      /// data elements.
       typedef std::map<CommonTime, CNavDataElement*> DataElementMap;
 
-      /// Returns a map of the data elements for the specified satellite.  
-      /// Optionally a time range of interest may be specified.  
+      /// Returns a map of the data elements for the specified satellite.
+      /// Optionally a time range of interest may be specified.
       /// The return is specifically chosen to be a const reference.  The
       /// intent is to provide "read only" access for analysis.
       /// @throw InvalidRequest if there are no elements present for
       /// the requested satellite.
-      const DataElementMap& 
+      const DataElementMap&
       getDataElementMap(const SatID& satID,
                         const CommonTime& begin=CommonTime::BEGINNING_OF_TIME,
                         const CommonTime& end=CommonTime::END_OF_TIME) const;
@@ -128,15 +128,15 @@ namespace gpstk
 
       typedef std::map<SatID, DataElementMap> DEMap;
 
-         // Map where all the CNavDataElements are stored. 
-      DEMap deMap;  
+         // Map where all the CNavDataElements are stored.
+      DEMap deMap;
 
       CommonTime initialTime;
-      CommonTime finalTime; 
+      CommonTime finalTime;
 
       bool keepingOnlyUnique;
-      
+
    };    // End of class
 }        // End of namespace
-         
-#endif 
+
+#endif

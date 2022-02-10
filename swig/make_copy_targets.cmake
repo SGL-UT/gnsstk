@@ -1,5 +1,5 @@
 #----------------------------------------
-# gpstk/swig/make_copy_targets.cmake
+# gnsstk/swig/make_copy_targets.cmake
 #----------------------------------------
 
 cmake_minimum_required( VERSION 2.8.9  )

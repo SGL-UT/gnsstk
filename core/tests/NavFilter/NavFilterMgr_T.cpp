@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -50,7 +50,7 @@
 #include "TimeString.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 // hard-coded expectations... is there a better way?
 
@@ -68,7 +68,7 @@ unsigned long expLNavCombined = 1488;
 // /usr/bin/tail +109 test_input_NavFilterMgr.txt | head -27513 | grep ':[03]0.0, ' | wc -l
 unsigned long expLNavEphs = 5210;
 
-typedef std::set<gpstk::CommonTime> TimeSet;
+typedef std::set<gnsstk::CommonTime> TimeSet;
 
 // define some classes for exercising NavFilterMgr
 class BunkFilterData : public NavFilterKey
@@ -204,8 +204,8 @@ init()
 {
    TUDEF("NavFilterMgr", "initialize");
    string fs = getFileSep();
-   string dp(gpstk::getPathData() + fs);
-   string tf(gpstk::getPathTestTemp() + fs);
+   string dp(gnsstk::getPathData() + fs);
+   string tf(gnsstk::getPathTestTemp() + fs);
 
    inputFileLNAV   = dp + "test_input_NavFilterMgr.txt";
    inputFileBunk   = dp + "test_input_NavFilterMgr_bunk.txt";
@@ -236,7 +236,7 @@ loadData()
          continue; // comment line
       if (line.length() == 0)
          continue; // blank line
-      timeString = gpstk::StringUtils::firstWord(line, ',');
+      timeString = gnsstk::StringUtils::firstWord(line, ',');
       scanTime(recTime, timeString, "%4Y %3j %02H:%02M:%04.1f");
 
          // check to make sure we don't run off the end of our vector
@@ -251,18 +251,18 @@ loadData()
       tmp.sf = &subframesLNAV[subframeIdx];
       for (unsigned strWord = 6; strWord <= 15; strWord++)
       {
-         wordStr = gpstk::StringUtils::word(line, strWord, ',');
-         subframesLNAV[subframeIdx++] = gpstk::StringUtils::x2uint(wordStr);
+         wordStr = gnsstk::StringUtils::word(line, strWord, ',');
+         subframesLNAV[subframeIdx++] = gnsstk::StringUtils::x2uint(wordStr);
       }
-      tmp.prn = gpstk::StringUtils::asUnsigned(
-         gpstk::StringUtils::word(line, 2, ','));
+      tmp.prn = gnsstk::StringUtils::asUnsigned(
+         gnsstk::StringUtils::word(line, 2, ','));
          // note that the test file contents use enums that probably
          // don't match ObsID's enums but that's really not important
          // for this test.
-      tmp.carrier = (CarrierBand)gpstk::StringUtils::asInt(
-         gpstk::StringUtils::word(line, 3, ','));
-      tmp.code = (gpstk::TrackingCode)gpstk::StringUtils::asInt(
-         gpstk::StringUtils::word(line, 4, ','));
+      tmp.carrier = (CarrierBand)gnsstk::StringUtils::asInt(
+         gnsstk::StringUtils::word(line, 3, ','));
+      tmp.code = (gnsstk::TrackingCode)gnsstk::StringUtils::asInt(
+         gnsstk::StringUtils::word(line, 4, ','));
       tmp.timeStamp = recTime;
 
       dataLNAV[dataIdxLNAV++] = tmp;
@@ -288,9 +288,9 @@ loadData()
          continue; // blank line
       for (unsigned strWord = 1; strWord <= 4; strWord++)
       {
-         wordStr = gpstk::StringUtils::word(line, strWord, ' ');
+         wordStr = gnsstk::StringUtils::word(line, strWord, ' ');
          bunkKey.data = &subframesBunk[subframeIdx];
-         subframesBunk[subframeIdx++] = gpstk::StringUtils::x2uint(wordStr);
+         subframesBunk[subframeIdx++] = gnsstk::StringUtils::x2uint(wordStr);
             // we don't really care waht the prn, carrier or code are
             // for this test
          dataBunk[dataIdxBunk++] = bunkKey;
@@ -313,7 +313,7 @@ noFilterTest()
 
    for (unsigned i = 0; i < dataIdxLNAV; i++)
    {
-      gpstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
+      gnsstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
          // We could do an assert for each record but that would be
          // stupid. Just compare the final counts.
       count += l.size();
@@ -347,7 +347,7 @@ testLNavCook()
          cout << " " << hex << setw(8) << dataLNAV[i].sf[sfword] << dec;
       cout << endl;
 */
-      gpstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
+      gnsstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
          // We could do an assert for each record but that would be
          // stupid. Just compare the final counts.
 /*
@@ -359,7 +359,7 @@ testLNavCook()
       count += l.size();
 
 /*
-      gpstk::NavFilter::NavMsgList::const_iterator nmli;
+      gnsstk::NavFilter::NavMsgList::const_iterator nmli;
          for (nmli = l.begin(); nmli != l.end(); nmli++)
          {
             LNavFilterData *fd = dynamic_cast<LNavFilterData*>(*nmli);
@@ -386,8 +386,8 @@ testLNavParity()
 
    for (unsigned i = 0; i < dataIdxLNAV; i++)
    {
-      gpstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
-      gpstk::NavFilter::NavMsgList::const_iterator nmli;
+      gnsstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
+      gnsstk::NavFilter::NavMsgList::const_iterator nmli;
          /*
       if (!filtParity.rejected.empty())
       {
@@ -435,7 +435,7 @@ testLNavEmpty()
 
    for (unsigned i = 0; i < dataIdxLNAV; i++)
    {
-      gpstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
+      gnsstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
       rejectCount += filtEmpty.rejected.size();
 /*
       if (!filtEmpty.rejected.empty())
@@ -445,7 +445,7 @@ testLNavEmpty()
    TUASSERTE(unsigned long, expLNavEmpty, rejectCount);
    LNavFilterData fd;
    fd.sf = emptySF;
-   gpstk::NavFilter::NavMsgList l = mgr.validate(&fd);
+   gnsstk::NavFilter::NavMsgList l = mgr.validate(&fd);
    TUASSERTE(unsigned long, 0, l.size());
    TUASSERTE(unsigned long, 1, filtEmpty.rejected.size());
 
@@ -477,7 +477,7 @@ testLNavTLMHOW()
       else if ((sfid < 1) || (sfid > 5))
          cout << (i+1) << " invalid SF ID " << sfid << endl;
          */
-      gpstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
+      gnsstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
       rejectCount += filtTLMHOW.rejected.size();
 /*
       if (!filtTLMHOW.rejected.empty())
@@ -504,7 +504,7 @@ testLNavEphMaker()
 
    for (unsigned i = 0; i < dataIdxLNAV; i++)
    {
-      gpstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
+      gnsstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
       ephCount += filtEph.completeEphs.size();
    }
    TUASSERTE(unsigned long, expLNavEphs, ephCount);
@@ -539,8 +539,8 @@ testLNavCombined()
          cerr << endl;
       }
 */
-      gpstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
-         // if l is empty, the subframe was rejected.. 
+      gnsstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
+         // if l is empty, the subframe was rejected..
       rejectCount += l.empty();
 /*
       if (l.empty())
@@ -566,29 +566,29 @@ testProcessingDepth(const std::string& filterName)
       mgr.addFilter(&filt);
       TimeSet allTimes;
          // 6 seconds for each subframe epoch
-      int expDelta = 6 * filt.processingDepth(); 
+      int expDelta = 6 * filt.processingDepth();
       for (unsigned i = 0; i < dataIdxLNAV; i++)
       {
          TimeSet timestamps;
-         gpstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
-         gpstk::NavFilter::NavMsgList::iterator nmli;
-         allTimes.insert(gpstk::CommonTime(dataLNAV[i].timeStamp));
+         gnsstk::NavFilter::NavMsgList l = mgr.validate(&dataLNAV[i]);
+         gnsstk::NavFilter::NavMsgList::iterator nmli;
+         allTimes.insert(gnsstk::CommonTime(dataLNAV[i].timeStamp));
          for (nmli = l.begin(); nmli != l.end(); nmli++)
          {
-            timestamps.insert(gpstk::CommonTime((*nmli)->timeStamp));
+            timestamps.insert(gnsstk::CommonTime((*nmli)->timeStamp));
          }
          for (fsi = mgr.rejected.begin(); fsi != mgr.rejected.end(); fsi++)
          {
             for (nmli = (*fsi)->rejected.begin(); nmli != (*fsi)->rejected.end();
                  nmli++)
             {
-               timestamps.insert(gpstk::CommonTime((*nmli)->timeStamp));
+               timestamps.insert(gnsstk::CommonTime((*nmli)->timeStamp));
             }
          }
          if (allTimes.size() > filt.processingDepth())
          {
             TUASSERTE(TimeSet::size_type, 1, timestamps.size());
-            gpstk::CommonTime timestampsTime;
+            gnsstk::CommonTime timestampsTime;
             if (!timestamps.empty())
             {
                timestampsTime = (*timestamps.begin());
@@ -686,8 +686,8 @@ testBunk1()
    ofstream outs(outputFileBunk1.c_str());
    NavFilterMgr mgr;
    BunkFilter1 filt1;
-   gpstk::NavFilter::NavMsgList l;
-   gpstk::NavFilter::NavMsgList::const_iterator nmli;
+   gnsstk::NavFilter::NavMsgList l;
+   gnsstk::NavFilter::NavMsgList::const_iterator nmli;
 
    if (!outs)
    {
@@ -731,8 +731,8 @@ testBunk2()
    ofstream outs(outputFileBunk2.c_str());
    NavFilterMgr mgr;
    BunkFilter2 filt2;
-   gpstk::NavFilter::NavMsgList l;
-   gpstk::NavFilter::NavMsgList::const_iterator nmli;
+   gnsstk::NavFilter::NavMsgList l;
+   gnsstk::NavFilter::NavMsgList::const_iterator nmli;
 
    if (!outs)
    {

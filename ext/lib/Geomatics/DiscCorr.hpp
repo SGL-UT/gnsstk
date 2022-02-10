@@ -47,6 +47,7 @@
 #define GNSSTK_DISCONTINUITY_CORRECTOR_INCLUDE
 
 #include "Epoch.hpp"
+#include "TimeString.hpp"
 #include "Exception.hpp"
 #include "RinexObsHeader.hpp"
 #include "RinexSatID.hpp"

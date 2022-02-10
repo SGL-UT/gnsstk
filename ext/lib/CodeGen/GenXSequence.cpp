@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -45,10 +45,10 @@
 #include "GenXSequence.hpp"
 
 using namespace std;
-namespace gpstk
+namespace gnsstk
 {
       // Constructor
-   GenXSequence::GenXSequence( const unsigned int initialState, 
+   GenXSequence::GenXSequence( const unsigned int initialState,
                                const unsigned int tapRegister,
                                const int initialLengthOfSequence,
                                const int maxDelay )
@@ -57,11 +57,11 @@ namespace gpstk
          /*
          *  NOTE: the x register functions assume a LSB-to-MSB shift.  Therefore,
          *  the tap register definition and the initialization definition for the
-         *  X register correspond to the diagrams in ICD-GPS-200, assuming 
+         *  X register correspond to the diagrams in ICD-GPS-200, assuming
          *  "stage 0" is the LSB.  That means the diagrams have to be read from
          *  LSB (LEFT) -> MSB (RIGHT).  The corresponding text doesn't have this
          *  problem.
-         */  
+         */
       unsigned int mask12bits[12] = { 0x0001, 0x0002, 0x0004, 0x0008,
                                       0x0010, 0x0020, 0x0040, 0x0080,
                                       0x0100, 0x0200, 0x0400, 0x0800 };
@@ -69,25 +69,25 @@ namespace gpstk
       unsigned int reg = initialState;
       lengthOfSequence = initialLengthOfSequence;
       maxOfSequence = lengthOfSequence + maxDelay;
-   
+
       uint32_t output = 0;
       word_num = 0;
       bit_num = 0;
       int andBits;
       int i;
-   
-         // Clear the output array 
+
+         // Clear the output array
       for ( i=0; i<MAX_WORD; ++i ) bits[i] = 0x00000000;
       debugPrint = false;
-      
+
       for ( i=0; i<lengthOfSequence ; ++i)
       {
-            // Get current output and store it away 
+            // Get current output and store it away
          if ( (reg & 0x0800) !=  0 ) output = 0x00000001;
           else                       output = 0x00000000;
          addBitToSequence( output );
-      
-            // Calculate next input bit 
+
+            // Calculate next input bit
          andBits = reg & tapRegister;
          reg <<= 1;
          reg &= 0x0FFF;
@@ -102,7 +102,7 @@ namespace gpstk
 
          // Fill delay bits with copies of the last ouptut bit
       for ( i=0; i<maxDelay; ++i) addBitToSequence( output );
-      
+
          //  When finished, make sure the last word (which is probably
          //  a partially-filled word) is left-justified.
       if (bit_num>0) bits[word_num] <<= (MAX_BIT-bit_num);
@@ -111,7 +111,7 @@ namespace gpstk
       // Private helper method to avoid duplicate code.
    void GenXSequence::addBitToSequence( uint32_t newBit )
    {
-         // Left shift any pre-existing data, then OR on the new 
+         // Left shift any pre-existing data, then OR on the new
          // data (assumed to be right-justified).
       bits[word_num] <<= 1;
       bits[word_num] |= newBit;
@@ -151,7 +151,7 @@ namespace gpstk
          /*
             Complicated case when coming up to end of sequence.  May have to
             put together parts of up to three words to get 32 bits.  Two words
-            at the end of sequence plus "wrap around" bits from beginning of 
+            at the end of sequence plus "wrap around" bits from beginning of
             sequence.
               First: If end of sequence doesn't fall in current word, use up
               remaining bits in the current word.
@@ -163,7 +163,7 @@ namespace gpstk
          int numRemainingInSequence = lengthOfSequence - i;
          int numRemainingInWord = MAX_BIT - offset;
          int numFilled = 0;
-      
+
             /*
                Get bits (if any) from next-to-last word.
             */

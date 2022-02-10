@@ -38,13 +38,13 @@ PROJECT_NAME           = "GPS ToolKit Software Library"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 11.2.1
+PROJECT_NUMBER         = 13.0.0
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "Documentation for the GPS Toolkit"
+PROJECT_BRIEF          = "Documentation for the GNSS Toolkit"
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
@@ -737,7 +737,7 @@ LAYOUT_FILE            =
 # LATEX_BIB_STYLE. To use this feature you need bibtex and perl available in the
 # search path. See also \cite for info how to create references.
 
-CITE_BIB_FILES         = ref/usersguide/gpstk.bib
+CITE_BIB_FILES         = ref/usersguide/gnsstk.bib
 
 #---------------------------------------------------------------------------
 # Configuration options related to warning and progress messages
@@ -819,11 +819,10 @@ INPUT                  = MAINPAGE.txt \
                          INSTALL.md \
                          INTRO.txt \
                          HOWTO.txt \
+                         NewNav-gotchas.md \
                          ref/doxygen/ \
                          core/lib \
-                         core/apps \
-                         ext/lib \
-                         ext/apps
+                         ext/lib
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses

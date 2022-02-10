@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -52,7 +52,7 @@
 #include <string>
 #include <iostream>
 
-using namespace gpstk;
+using namespace gnsstk;
 using namespace std;
 
 
@@ -167,13 +167,13 @@ private:
 void RinexMet_T :: init()
 {
    TestUtil test0;
-   std::string dataFilePath = gpstk::getPathData();
-   std::string tempFilePath = gpstk::getPathTestTemp();
+   std::string dataFilePath = gnsstk::getPathData();
+   std::string tempFilePath = gnsstk::getPathTestTemp();
 
       //----------------------------------------
       // Full file paths
       //----------------------------------------
-   std::string fileSep = gpstk::getFileSep();
+   std::string fileSep = gnsstk::getFileSep();
    std::string dp = dataFilePath  + fileSep;
    std::string tp = tempFilePath  + fileSep;
 
@@ -239,7 +239,7 @@ int RinexMet_T :: bitsAsStringTest()
    std::string test_desc =
       "RinexMetHeader, bitsAsString, file read compared to expected string, did not match";
 
-   gpstk::RinexMetHeader RinexMetHeader;
+   gnsstk::RinexMetHeader RinexMetHeader;
 
    std::string expected_string_a = "RINEX VERSION / TYPE";
    std::string expected_string_b = "PGM / RUN BY / DATE";
@@ -288,7 +288,7 @@ int RinexMet_T :: bitStringTest()
       "RinexMetHeader, bitString, test to assure that the version validity bits are what we expect them to be";
    std::string test_fail = "";
 
-   gpstk::RinexMetHeader RinexMetHeader;
+   gnsstk::RinexMetHeader RinexMetHeader;
 
    std::string sep=", ";
    std::string expected_string_a = "\"RINEX VERSION / TYPE\"";
@@ -323,16 +323,16 @@ int RinexMet_T :: reallyPutRecordTest()
    std::string msg_test_desc   =
       "RinexMetHeader, reallyPutRecordTest, exception tests";
    std::string msg_false_pass  =
-      ", should have thrown a gpstk::Exception but did not.";
+      ", should have thrown a gnsstk::Exception but did not.";
    std::string msg_fail        =
-      ", should have thrown a gpstk::Exception but threw an unexpected exception.";
+      ", should have thrown a gnsstk::Exception but threw an unexpected exception.";
    std::string msg_test_detail = "";
 
-   gpstk::RinexMetHeader RinexMetHeader;
+   gnsstk::RinexMetHeader RinexMetHeader;
 
-   gpstk::RinexMetStream UnSupRinex( inputUnSupRinex.c_str() );
-   gpstk::RinexMetStream MissingMarkerName( inputMissingMkr.c_str() );
-   gpstk::RinexMetStream output( outputExtraOutput.c_str(),
+   gnsstk::RinexMetStream UnSupRinex( inputUnSupRinex.c_str() );
+   gnsstk::RinexMetStream MissingMarkerName( inputMissingMkr.c_str() );
+   gnsstk::RinexMetStream output( outputExtraOutput.c_str(),
                                  std::ios::out );
 
    output.exceptions( std::fstream::failbit );
@@ -349,7 +349,7 @@ int RinexMet_T :: reallyPutRecordTest()
       UnSupRinex >> RinexMetHeader;
       TUFAIL( msg_test_desc + msg_test_detail + msg_false_pass );
    }
-   catch( gpstk::Exception e )
+   catch( gnsstk::Exception e )
    {
       TUPASS( msg_test_desc + msg_test_detail );
    }
@@ -367,7 +367,7 @@ int RinexMet_T :: reallyPutRecordTest()
       MissingMarkerName >> RinexMetHeader;
       TUFAIL( msg_test_desc + msg_test_detail + msg_false_pass );
    }
-   catch( gpstk::Exception e )
+   catch( gnsstk::Exception e )
    {
       TUPASS( msg_test_desc + msg_test_detail );
    }
@@ -390,45 +390,45 @@ int RinexMet_T :: reallyGetRecordTest()
 
    std::string msg_test_desc = "";
    std::string msg_false_pass  =
-      ", should have thrown a gpstk::Exception but did not.";
+      ", should have thrown a gnsstk::Exception but did not.";
    std::string msg_fail        =
-      ", should have thrown a gpstk::Exception but threw an unexpected exception.";
+      ", should have thrown a gnsstk::Exception but threw an unexpected exception.";
 
 
 
       //Header file we will be testing on
-   gpstk::RinexMetHeader RinexMetHeader;
+   gnsstk::RinexMetHeader RinexMetHeader;
 
       //Normal Met File (No changes, straight from the archive)
-   gpstk::RinexMetStream Normal( inputNormal.c_str() );
+   gnsstk::RinexMetStream Normal( inputNormal.c_str() );
 
       //Bad Line Length Met file (Add a space characacter to the end of the first line)
-   gpstk::RinexMetStream BLL( inputBLL.c_str() );
+   gnsstk::RinexMetStream BLL( inputBLL.c_str() );
 
       //Not a Met File (Change Met to zet in first line)
-   gpstk::RinexMetStream NMF( inputNMF.c_str() );
+   gnsstk::RinexMetStream NMF( inputNMF.c_str() );
 
       //Bad Obs line (Add in something between the MET obs besides space)
-   gpstk::RinexMetStream BOL( inputBOL.c_str() );
+   gnsstk::RinexMetStream BOL( inputBOL.c_str() );
 
       //Bad Sesor Type line, Format Error
-   gpstk::RinexMetStream FER( inputFER.c_str() );
+   gnsstk::RinexMetStream FER( inputFER.c_str() );
 
       //Extra header line with HEADERLINE2
-   gpstk::RinexMetStream ExtraH( inputExtraH.c_str() );
+   gnsstk::RinexMetStream ExtraH( inputExtraH.c_str() );
 
       //Unsupported Rinex Version (3.30)
-   gpstk::RinexMetStream UnSupRinex( inputUnSupRinex.c_str() );
+   gnsstk::RinexMetStream UnSupRinex( inputUnSupRinex.c_str() );
 
       //Missing SensorPos
-   gpstk::RinexMetStream MissingSPos( inputMissingSPos.c_str() );
+   gnsstk::RinexMetStream MissingSPos( inputMissingSPos.c_str() );
 
       //Error in the part of the header which holds the list of observations within the Met file
-   gpstk::RinexMetStream ObsHeaderStringError(
+   gnsstk::RinexMetStream ObsHeaderStringError(
       inputObsHdrStrErr.c_str() );
 
       //Error in the sensor type
-   gpstk::RinexMetStream SensorType( inputSensorType.c_str() );
+   gnsstk::RinexMetStream SensorType( inputSensorType.c_str() );
 
    Normal.exceptions( std::fstream::failbit );
    BLL.exceptions( std::fstream::failbit );
@@ -443,7 +443,7 @@ int RinexMet_T :: reallyGetRecordTest()
 
 
       //============================================================
-      // Fail any of the following tests which does NOT throw a gpstk::Exception
+      // Fail any of the following tests which does NOT throw a gnsstk::Exception
       //============================================================
 
       //----------------------------------------
@@ -454,7 +454,7 @@ int RinexMet_T :: reallyGetRecordTest()
       ExtraH >> RinexMetHeader;
       TUFAIL(msg_test_desc + msg_false_pass );
    }
-   catch( gpstk::Exception e )
+   catch( gnsstk::Exception e )
    {
       TUPASS(msg_test_desc );
    }
@@ -471,7 +471,7 @@ int RinexMet_T :: reallyGetRecordTest()
       UnSupRinex >> RinexMetHeader;
       TUFAIL(msg_test_desc + msg_false_pass );
    }
-   catch( gpstk::Exception e )
+   catch( gnsstk::Exception e )
    {
       TUPASS(msg_test_desc );
    }
@@ -488,7 +488,7 @@ int RinexMet_T :: reallyGetRecordTest()
       MissingSPos >> RinexMetHeader;
       TUFAIL(msg_test_desc + msg_false_pass );
    }
-   catch( gpstk::Exception e )
+   catch( gnsstk::Exception e )
    {
       TUPASS(msg_test_desc );
    }
@@ -505,7 +505,7 @@ int RinexMet_T :: reallyGetRecordTest()
       ObsHeaderStringError >> RinexMetHeader;
       TUFAIL(msg_test_desc + msg_false_pass );
    }
-   catch( gpstk::Exception e )
+   catch( gnsstk::Exception e )
    {
       TUPASS(msg_test_desc );
    }
@@ -522,7 +522,7 @@ int RinexMet_T :: reallyGetRecordTest()
       SensorType >> RinexMetHeader;
       TUFAIL(msg_test_desc + msg_false_pass );
    }
-   catch( gpstk::Exception e )
+   catch( gnsstk::Exception e )
    {
       TUPASS(msg_test_desc );
    }
@@ -539,7 +539,7 @@ int RinexMet_T :: reallyGetRecordTest()
       BLL >> RinexMetHeader;
       TUFAIL(msg_test_desc + msg_false_pass );
    }
-   catch( gpstk::Exception e )
+   catch( gnsstk::Exception e )
    {
       TUPASS(msg_test_desc );
    }
@@ -556,7 +556,7 @@ int RinexMet_T :: reallyGetRecordTest()
       NMF >> RinexMetHeader;
       TUFAIL(msg_test_desc + msg_false_pass );
    }
-   catch( gpstk::Exception e )
+   catch( gnsstk::Exception e )
    {
       TUPASS(msg_test_desc );
    }
@@ -573,7 +573,7 @@ int RinexMet_T :: reallyGetRecordTest()
       BOL >> RinexMetHeader;
       TUFAIL(msg_test_desc + msg_false_pass );
    }
-   catch( gpstk::Exception e )
+   catch( gnsstk::Exception e )
    {
       TUPASS(msg_test_desc );
    }
@@ -587,8 +587,8 @@ int RinexMet_T :: reallyGetRecordTest()
       // Fail the follow test if it throws ANYTHING!
       //----------------------------------------
    msg_test_desc = "Normal >> RinexMetHeader";
-   std::string msg_fail_gpstk =
-      ", should have thrown nothing, but threw a gpstk::Exception.";
+   std::string msg_fail_gnsstk =
+      ", should have thrown nothing, but threw a gnsstk::Exception.";
    std::string msg_fail_other =
       ", should have thrown nothing, but threw an exception.";
    try
@@ -596,10 +596,10 @@ int RinexMet_T :: reallyGetRecordTest()
       Normal >> RinexMetHeader;
       TUPASS(msg_test_desc );
    }
-   catch( gpstk::Exception e)
+   catch( gnsstk::Exception e)
    {
       cout << e << endl;
-      TUFAIL(msg_test_desc + msg_fail_gpstk );
+      TUFAIL(msg_test_desc + msg_fail_gnsstk );
    }
    catch(...)
    {
@@ -622,19 +622,19 @@ int RinexMet_T :: convertObsTypeSTRTest()
    std::string msg_test_desc = "convertObsTypeSTRTest, ";
    std::string msg_test_fail = "";
 
-   gpstk::RinexMetHeader RinexMetHeader;
-   gpstk::RinexMetStream Normal( inputNormal.c_str() );
+   gnsstk::RinexMetHeader RinexMetHeader;
+   gnsstk::RinexMetStream Normal( inputNormal.c_str() );
 
    Normal >> RinexMetHeader;
 
-   gpstk::RinexMetHeader::RinexMetType PR = RinexMetHeader.convertObsType( "PR" );
-   gpstk::RinexMetHeader::RinexMetType TD = RinexMetHeader.convertObsType( "TD" );
-   gpstk::RinexMetHeader::RinexMetType HR = RinexMetHeader.convertObsType( "HR" );
-   gpstk::RinexMetHeader::RinexMetType ZW = RinexMetHeader.convertObsType( "ZW" );
-   gpstk::RinexMetHeader::RinexMetType ZD = RinexMetHeader.convertObsType( "ZD" );
-   gpstk::RinexMetHeader::RinexMetType ZT = RinexMetHeader.convertObsType( "ZT" );
-   gpstk::RinexMetHeader::RinexMetType HI = RinexMetHeader.convertObsType( "HI" );
-      // gpstk::RinexMetHeader::RinexMetType KE = RinexMetHeader.convertObsType( "HI" );
+   gnsstk::RinexMetHeader::RinexMetType PR = RinexMetHeader.convertObsType( "PR" );
+   gnsstk::RinexMetHeader::RinexMetType TD = RinexMetHeader.convertObsType( "TD" );
+   gnsstk::RinexMetHeader::RinexMetType HR = RinexMetHeader.convertObsType( "HR" );
+   gnsstk::RinexMetHeader::RinexMetType ZW = RinexMetHeader.convertObsType( "ZW" );
+   gnsstk::RinexMetHeader::RinexMetType ZD = RinexMetHeader.convertObsType( "ZD" );
+   gnsstk::RinexMetHeader::RinexMetType ZT = RinexMetHeader.convertObsType( "ZT" );
+   gnsstk::RinexMetHeader::RinexMetType HI = RinexMetHeader.convertObsType( "HI" );
+      // gnsstk::RinexMetHeader::RinexMetType KE = RinexMetHeader.convertObsType( "HI" );
 
    std::string PRS = "PR";
    std::string TDS = "TD";
@@ -689,18 +689,18 @@ int RinexMet_T :: convertObsTypeHeaderTest()
    std::string msg_test_desc = "convertObsTypeHeaderTest, ";
    std::string msg_test_fail = "";
 
-   gpstk::RinexMetHeader RinexMetHeader;
-   gpstk::RinexMetStream Normal( inputNormal.c_str() );
+   gnsstk::RinexMetHeader RinexMetHeader;
+   gnsstk::RinexMetStream Normal( inputNormal.c_str() );
 
    Normal >> RinexMetHeader;
 
-   gpstk::RinexMetHeader::RinexMetType PR = RinexMetHeader.convertObsType( "PR" );
-   gpstk::RinexMetHeader::RinexMetType TD = RinexMetHeader.convertObsType( "TD" );
-   gpstk::RinexMetHeader::RinexMetType HR = RinexMetHeader.convertObsType( "HR" );
-   gpstk::RinexMetHeader::RinexMetType ZW = RinexMetHeader.convertObsType( "ZW" );
-   gpstk::RinexMetHeader::RinexMetType ZD = RinexMetHeader.convertObsType( "ZD" );
-   gpstk::RinexMetHeader::RinexMetType ZT = RinexMetHeader.convertObsType( "ZT" );
-      // gpstk::RinexMetHeader::RinexMetType KE = RinexMetHeader.convertObsType( "ZT" );
+   gnsstk::RinexMetHeader::RinexMetType PR = RinexMetHeader.convertObsType( "PR" );
+   gnsstk::RinexMetHeader::RinexMetType TD = RinexMetHeader.convertObsType( "TD" );
+   gnsstk::RinexMetHeader::RinexMetType HR = RinexMetHeader.convertObsType( "HR" );
+   gnsstk::RinexMetHeader::RinexMetType ZW = RinexMetHeader.convertObsType( "ZW" );
+   gnsstk::RinexMetHeader::RinexMetType ZD = RinexMetHeader.convertObsType( "ZD" );
+   gnsstk::RinexMetHeader::RinexMetType ZT = RinexMetHeader.convertObsType( "ZT" );
+      // gnsstk::RinexMetHeader::RinexMetType KE = RinexMetHeader.convertObsType( "ZT" );
 
    std::string PRS = "PR";
    std::string TDS = "TD";
@@ -737,7 +737,7 @@ int RinexMet_T :: convertObsTypeHeaderTest()
       //----------------------------------------
       // Fail if the following throws anything but a FFStreamError
       //----------------------------------------
-   msg_test_desc = "convertObsType( \"KE\" ), should throw  gpstk::FFStreamError";
+   msg_test_desc = "convertObsType( \"KE\" ), should throw  gnsstk::FFStreamError";
    std::string msg_false_pass = ", but threw no exceptions.";
    std::string msg_fail_other = ", but threw a different exception.";
    try
@@ -745,7 +745,7 @@ int RinexMet_T :: convertObsTypeHeaderTest()
       RinexMetHeader.convertObsType( "KE" );
       TUFAIL(msg_test_desc + msg_false_pass );
    }
-   catch(gpstk::FFStreamError)
+   catch(gnsstk::FFStreamError)
    {
       TUPASS(msg_test_desc  );
    }
@@ -774,9 +774,9 @@ int RinexMet_T :: hardCodeTest()
    std::string msg_test_desc = "RinexMetHeader data member value tests, ";
    std::string msg_test_fail = "";
 
-   gpstk::RinexMetStream testRinexMetStream( inputNormal.c_str() );
-   gpstk::RinexMetStream out( outputHardCode.c_str(), std::ios::out );
-   gpstk::RinexMetHeader testRinexMetHeader;
+   gnsstk::RinexMetStream testRinexMetStream( inputNormal.c_str() );
+   gnsstk::RinexMetStream out( outputHardCode.c_str(), std::ios::out );
+   gnsstk::RinexMetHeader testRinexMetHeader;
 
    testRinexMetStream >> testRinexMetHeader;
 
@@ -1114,9 +1114,9 @@ int RinexMet_T :: hardCodeTest()
       //============================================================
 
    out << testRinexMetHeader;
-   gpstk::RinexMetData testRinexMetData;
+   gnsstk::RinexMetData testRinexMetData;
    testRinexMetStream >> testRinexMetData;
-   gpstk::CivilTime TimeGuess(2004,4,19,0,0,0);
+   gnsstk::CivilTime TimeGuess(2004,4,19,0,0,0);
 
    msg_test_desc = "RinexMetData data member value tests, ";
    msg_test_fail = "";
@@ -1124,7 +1124,7 @@ int RinexMet_T :: hardCodeTest()
 
 
    msg_test_fail = "RinexMetData.time did not equal TimeGuess";
-   testFramework.assert( testRinexMetData.time == (gpstk::CommonTime)TimeGuess,
+   testFramework.assert( testRinexMetData.time == (gnsstk::CommonTime)TimeGuess,
                          msg_test_desc + msg_test_fail, __LINE__ );
 
    msg_test_fail = "RinexMetData.data for PR does not match expected value ";
@@ -1141,10 +1141,10 @@ int RinexMet_T :: hardCodeTest()
 
    out << testRinexMetData;
    testRinexMetStream >> testRinexMetData;
-   gpstk::CivilTime TimeGuess2(2004,4,19,0,15,0);
+   gnsstk::CivilTime TimeGuess2(2004,4,19,0,15,0);
 
    msg_test_fail = "RinexMetData.time did not equal TimeGuess2";
-   testFramework.assert( testRinexMetData.time == (gpstk::CommonTime)TimeGuess2,
+   testFramework.assert( testRinexMetData.time == (gnsstk::CommonTime)TimeGuess2,
                          msg_test_desc + msg_test_fail, __LINE__ );
 
    msg_test_fail = "RinexMetData.data for PR does not match expected value";
@@ -1170,7 +1170,7 @@ int RinexMet_T :: hardCodeTest()
    testFramework.assert( testFramework.fileEqualTest( inputNormal, outputHardCode,
                                                       2), msg_test_desc + msg_test_fail, __LINE__  );
 
-   gpstk::RinexMetStream MetDumps( outputDumps.c_str(), std::ios::out );
+   gnsstk::RinexMetStream MetDumps( outputDumps.c_str(), std::ios::out );
    testRinexMetHeader.dump( MetDumps );
    testRinexMetData.dump( MetDumps );
 
@@ -1193,11 +1193,11 @@ int RinexMet_T :: continuationTest()
       ", files are not equal, inputContLines outputContLines";
    std::string msg_fail_exception = ", threw unexpected exception";
 
-   gpstk::RinexMetStream RinexMetStream( inputContLines.c_str() );
-   gpstk::RinexMetStream out( outputContLines.c_str(), std::ios::out );
-   gpstk::RinexMetStream MetDumps( outputDumps.c_str(), std::ios::out );
-   gpstk::RinexMetHeader RinexMetHeader;
-   gpstk::RinexMetData RinexMetData;
+   gnsstk::RinexMetStream RinexMetStream( inputContLines.c_str() );
+   gnsstk::RinexMetStream out( outputContLines.c_str(), std::ios::out );
+   gnsstk::RinexMetStream MetDumps( outputDumps.c_str(), std::ios::out );
+   gnsstk::RinexMetHeader RinexMetHeader;
+   gnsstk::RinexMetData RinexMetData;
 
    try
    {
@@ -1230,8 +1230,8 @@ int RinexMet_T :: continuationTest()
 // a test with no observations data for the
 // listed header Obs and an invalid time format
 //
-// Note: assuming this means that these test SHOULD throw a gpstk::Exception
-// Throwing any exception other than gpstk::Exception is considered a failure.
+// Note: assuming this means that these test SHOULD throw a gnsstk::Exception
+// Throwing any exception other than gnsstk::Exception is considered a failure.
 // Throwing nothing is assumed also to be a failure of the test.
 //------------------------------------------------------------
 int RinexMet_T :: dataExceptionsTest()
@@ -1240,11 +1240,11 @@ int RinexMet_T :: dataExceptionsTest()
    std::string msg_test_desc = "dataExceptionsTest, ";
    std::string msg_test_fail = "";
 
-   gpstk::RinexMetStream NoObs( inputNoObs.c_str() );
-   gpstk::RinexMetStream InvalidTimeFormat( inputInvTimeFmt.c_str() );
-   gpstk::RinexMetStream out( outputExceptions.c_str(), std::ios::out );
-   gpstk::RinexMetHeader rmh;
-   gpstk::RinexMetData rme;
+   gnsstk::RinexMetStream NoObs( inputNoObs.c_str() );
+   gnsstk::RinexMetStream InvalidTimeFormat( inputInvTimeFmt.c_str() );
+   gnsstk::RinexMetStream out( outputExceptions.c_str(), std::ios::out );
+   gnsstk::RinexMetHeader rmh;
+   gnsstk::RinexMetData rme;
 
    NoObs.exceptions( std::fstream::failbit );
    InvalidTimeFormat.exceptions( std::fstream::failbit );
@@ -1323,20 +1323,20 @@ int RinexMet_T :: filterOperatorsTest()
    try
    {
 
-      gpstk::RinexMetStream FilterStream1( inputFilterTest1.c_str() );
+      gnsstk::RinexMetStream FilterStream1( inputFilterTest1.c_str() );
       FilterStream1.open( inputFilterTest1.c_str(), std::ios::in );
-      gpstk::RinexMetStream FilterStream2( inputFilterTest2.c_str() );
-      gpstk::RinexMetStream FilterStream3( inputFilterTest3.c_str() );
-      gpstk::RinexMetStream out( outputFilterTest.c_str(), std::ios::out );
+      gnsstk::RinexMetStream FilterStream2( inputFilterTest2.c_str() );
+      gnsstk::RinexMetStream FilterStream3( inputFilterTest3.c_str() );
+      gnsstk::RinexMetStream out( outputFilterTest.c_str(), std::ios::out );
 
-      gpstk::RinexMetHeader FilterHeader1;
-      gpstk::RinexMetHeader FilterHeader2;
-      gpstk::RinexMetHeader FilterHeader3;
+      gnsstk::RinexMetHeader FilterHeader1;
+      gnsstk::RinexMetHeader FilterHeader2;
+      gnsstk::RinexMetHeader FilterHeader3;
 
-      gpstk::RinexMetData FilterData1;
-      gpstk::RinexMetData FilterData2;
-      gpstk::RinexMetData FilterData3;
-      gpstk::RinexMetData rmdata;
+      gnsstk::RinexMetData FilterData1;
+      gnsstk::RinexMetData FilterData2;
+      gnsstk::RinexMetData FilterData3;
+      gnsstk::RinexMetData rmdata;
 
       FilterStream1 >> FilterHeader1;
       FilterStream2 >> FilterHeader2;
@@ -1355,13 +1355,13 @@ int RinexMet_T :: filterOperatorsTest()
          FilterData3 = rmdata;
       }
 
-      gpstk::RinexMetHeaderTouchHeaderMerge merged;
+      gnsstk::RinexMetHeaderTouchHeaderMerge merged;
       merged( FilterHeader1 );
       merged( FilterHeader2 );
-      gpstk::RinexMetDataOperatorLessThanFull( merged.obsSet );
+      gnsstk::RinexMetDataOperatorLessThanFull( merged.obsSet );
       out << merged.theHeader;
 
-      gpstk::RinexMetDataOperatorEqualsSimple EqualsSimple;
+      gnsstk::RinexMetDataOperatorEqualsSimple EqualsSimple;
 
       msg_test_fail =
          "Check to see if two equivalent files have the same times. They DO NOT.";
@@ -1373,7 +1373,7 @@ int RinexMet_T :: filterOperatorsTest()
       testFramework.assert( EqualsSimple(FilterData1, FilterData3) == false,
                             msg_test_desc + msg_test_fail, __LINE__ );
 
-      gpstk::RinexMetDataOperatorLessThanSimple LessThanSimple;
+      gnsstk::RinexMetDataOperatorLessThanSimple LessThanSimple;
       msg_test_fail =
          "Check to see if one file occurred earlier than another using equivalent files. One is found to be earlier than the other.";
       testFramework.assert( LessThanSimple(FilterData1, FilterData2) == false,
@@ -1384,7 +1384,7 @@ int RinexMet_T :: filterOperatorsTest()
       testFramework.assert( LessThanSimple(FilterData1, FilterData3) == true,
                             msg_test_desc + msg_test_fail, __LINE__ );
 
-      gpstk::RinexMetDataOperatorLessThanFull LessThanFull(merged.obsSet);
+      gnsstk::RinexMetDataOperatorLessThanFull LessThanFull(merged.obsSet);
 
       msg_test_fail =
          "Perform the full less than comparison on two identical files. FilterData1 has been found to be different than FilterData2.";
@@ -1406,12 +1406,12 @@ int RinexMet_T :: filterOperatorsTest()
       testFramework.assert( LessThanFull(FilterData3, FilterData1) == false,
                             msg_test_desc + msg_test_fail, __LINE__ );
 
-      gpstk::CivilTime Start = gpstk::CommonTime::END_OF_TIME;
-      gpstk::CivilTime End = gpstk::CommonTime::BEGINNING_OF_TIME;
-      gpstk::CivilTime Start2 = gpstk::CommonTime::BEGINNING_OF_TIME;
-      gpstk::CivilTime End2 = gpstk::CommonTime::END_OF_TIME;
-      gpstk::RinexMetDataFilterTime FilterTime(Start,End);
-      gpstk::RinexMetDataFilterTime FilterTime2(Start2,End2);
+      gnsstk::CivilTime Start = gnsstk::CommonTime::END_OF_TIME;
+      gnsstk::CivilTime End = gnsstk::CommonTime::BEGINNING_OF_TIME;
+      gnsstk::CivilTime Start2 = gnsstk::CommonTime::BEGINNING_OF_TIME;
+      gnsstk::CivilTime End2 = gnsstk::CommonTime::END_OF_TIME;
+      gnsstk::RinexMetDataFilterTime FilterTime(Start,End);
+      gnsstk::RinexMetDataFilterTime FilterTime2(Start2,End2);
 
       msg_test_fail =
          "FilterTime(FilterData1) == true, should evaluate as true but evaluated as false";
@@ -1423,7 +1423,7 @@ int RinexMet_T :: filterOperatorsTest()
       testFramework.assert( FilterTime2(FilterData1) == false,
                             msg_test_desc + msg_test_fail, __LINE__ );
    }
-   catch(gpstk::Exception& exc)
+   catch(gnsstk::Exception& exc)
    {
       cout << exc << endl;
       msg_test_fail = "Unexpected exception was thrown";
@@ -1450,9 +1450,9 @@ int RinexMet_T :: filterOperatorsTest()
 bool makeAndCompare(string inFile, string outFile, string expFile, double outVersion)
 {
    TUDEF( "RinexMetData", "versionTest" );
-   gpstk::RinexMetStream inStream( inFile.c_str() );
-   gpstk::RinexMetStream outStream( outFile.c_str(), std::ios::out );
-   gpstk::RinexMetHeader testHeader;
+   gnsstk::RinexMetStream inStream( inFile.c_str() );
+   gnsstk::RinexMetStream outStream( outFile.c_str(), std::ios::out );
+   gnsstk::RinexMetHeader testHeader;
 
    inStream.exceptions(ifstream::failbit);
    outStream.exceptions(ofstream::failbit);
@@ -1464,7 +1464,7 @@ bool makeAndCompare(string inFile, string outFile, string expFile, double outVer
 
       outStream << testHeader;
 
-      gpstk::RinexMetData testData;
+      gnsstk::RinexMetData testData;
       while( inStream >> testData )
       {
          outStream << testData;

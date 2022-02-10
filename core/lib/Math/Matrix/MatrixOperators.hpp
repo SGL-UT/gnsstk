@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,31 +41,31 @@
  * Matrix operators (arithmetic, transpose(), inverse(), etc)
  */
 
-#ifndef GPSTK_MATRIX_OPERATORS_HPP
-#define GPSTK_MATRIX_OPERATORS_HPP
+#ifndef GNSSTK_MATRIX_OPERATORS_HPP
+#define GNSSTK_MATRIX_OPERATORS_HPP
 
 #include <limits>
 #include "MiscMath.hpp"
 #include "MatrixFunctors.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup MathGroup
       //@{
- 
-      /** 
+
+      /**
        * Returns the top to bottom concatenation of Matrices l and r
        * only if they have the same number of columns.
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
-   inline Matrix<T> operator&&(const ConstMatrixBase<T, BaseClass1>& l, 
-                               const ConstMatrixBase<T, BaseClass2>& r) 
+   inline Matrix<T> operator&&(const ConstMatrixBase<T, BaseClass1>& l,
+                               const ConstMatrixBase<T, BaseClass2>& r)
    {
       if (l.cols() != r.cols())
       {
          MatrixException e("Incompatible dimensions for Matrix && Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = l.rows() + r.rows();
@@ -83,19 +83,19 @@ namespace gpstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the top to bottom concatenation of Matrix t and Vector b
        * only if they have the same number of columns.
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
-   inline Matrix<T> operator&&(const ConstMatrixBase<T, BaseClass1>& t, 
-                               const ConstVectorBase<T, BaseClass2>& b) 
+   inline Matrix<T> operator&&(const ConstMatrixBase<T, BaseClass1>& t,
+                               const ConstVectorBase<T, BaseClass2>& b)
    {
       if (t.cols() != b.size())
       {
          MatrixException e("Incompatible dimensions for Matrix && Vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = t.rows() + 1;
@@ -112,19 +112,19 @@ namespace gpstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the top to bottom concatenation of Vector t and Matrix b
        * only if they have the same number of columns.
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
-   inline Matrix<T> operator&&(const ConstVectorBase<T, BaseClass1>& t, 
-                               const ConstMatrixBase<T, BaseClass2>& b) 
+   inline Matrix<T> operator&&(const ConstVectorBase<T, BaseClass1>& t,
+                               const ConstMatrixBase<T, BaseClass2>& b)
    {
       if (t.size() != b.cols())
       {
          MatrixException e("Incompatible dimensions for Vector && Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = 1 + b.rows();
@@ -141,19 +141,19 @@ namespace gpstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the left to right concatenation of l and r only if
        * they have the same number of rows.
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
    inline Matrix<T> operator||(const ConstMatrixBase<T, BaseClass1>& l,
-                               const ConstMatrixBase<T, BaseClass2>& r)  
+                               const ConstMatrixBase<T, BaseClass2>& r)
    {
       if (l.rows() != r.rows())
       {
          MatrixException e("Incompatible dimensions for Matrix || Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = l.rows();
@@ -171,7 +171,7 @@ namespace gpstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the left to right concatenation of Matrix l and Vector r
        * only if they have the same number of rows.
        * @throw MatrixException
@@ -183,7 +183,7 @@ namespace gpstk
       if (l.rows() != r.size())
       {
          MatrixException e("Incompatible dimensions for Matrix || Vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = l.rows();
@@ -200,7 +200,7 @@ namespace gpstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the left to right concatenation of Vector l and Matrix r
        * only if they have the same number of rows.
        * @throw MatrixException
@@ -212,7 +212,7 @@ namespace gpstk
       if (l.size() != r.rows())
       {
          MatrixException e("Incompatible dimensions for Vector || Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = r.rows();
@@ -229,7 +229,7 @@ namespace gpstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the left to right concatenation of Vector l and Vector r
        * only if they have the same number of rows.
        * @throw MatrixException
@@ -241,7 +241,7 @@ namespace gpstk
       if (l.size() != r.size())
       {
          MatrixException e("Incompatible dimensions for Vector || Vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t rows = r.size();
@@ -256,7 +256,7 @@ namespace gpstk
       return toReturn;
    }
 
-      /** 
+      /**
        * Returns the minor matrix of l at element (row, col).  A minor
        * matrix is the same matrix as \c l but with row \c row and col
        * \c col removed.
@@ -264,19 +264,19 @@ namespace gpstk
        */
    template <class T, class BaseClass>
    inline Matrix<T> minorMatrix(const ConstMatrixBase<T, BaseClass>& l,
-                                size_t row, size_t col) 
+                                size_t row, size_t col)
    {
       if ((row >= l.rows()) || (col >= l.cols()))
       {
          MatrixException e("Invalid row or column for minorMatrix()");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
          // handle special cases
       if (row == 0)
       {
          if (col == 0)
          {
-            return Matrix<T>(l,1,1,l.rows()-1,l.cols()-1);  
+            return Matrix<T>(l,1,1,l.rows()-1,l.cols()-1);
          }
          else if (col == (l.cols() - 1))
          {
@@ -316,7 +316,7 @@ namespace gpstk
       }
       else
       {
-         return (Matrix<T>(l, 0, 0, row, col) || 
+         return (Matrix<T>(l, 0, 0, row, col) ||
                  Matrix<T>(l, 0, col + 1, row, l.cols()-col-1)) &&
             (Matrix<T>(l, row + 1, 0, l.rows()-row-1, col) ||
              Matrix<T>(l, row + 1, col + 1, l.rows()-row-1, l.cols()-col-1));
@@ -336,13 +336,13 @@ namespace gpstk
             temp(j,i) = m(i,j);
       return temp;
    }
- 
+
       /**
        * Uses an LU Decomposition to calculate the determinate of m.
        * @throw MatrixException
        */
    template <class T, class BaseClass>
-   inline T det(const ConstMatrixBase<T, BaseClass>& m) 
+   inline T det(const ConstMatrixBase<T, BaseClass>& m)
    {
       try
       {
@@ -353,7 +353,7 @@ namespace gpstk
       catch(MatrixException& e)
       {
          e.addText("in det()");
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -361,7 +361,7 @@ namespace gpstk
        * returns the condition number of the matrix
        */
    template <class T, class BaseClass>
-   inline T condNum(const ConstMatrixBase<T, BaseClass>& m, T& bigNum, T& smallNum) 
+   inline T condNum(const ConstMatrixBase<T, BaseClass>& m, T& bigNum, T& smallNum)
       throw()
    {
       SVD<T> svd;
@@ -380,7 +380,7 @@ namespace gpstk
        * bigNum or smallNum.
        */
    template <class T, class BaseClass>
-   inline T condNum(const ConstMatrixBase<T, BaseClass>& m) 
+   inline T condNum(const ConstMatrixBase<T, BaseClass>& m)
       throw()
    {
       T bigNum, smallNum;
@@ -397,7 +397,7 @@ namespace gpstk
       if (dim == 0)
       {
          MatrixException e("Invalid (0) dimension for ident()");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       Matrix<T> toReturn(dim, dim, T(0));
       size_t i;
@@ -416,7 +416,7 @@ namespace gpstk
       if ( (m.rows() != m.cols()) || (m.cols() < 1) )
       {
          MatrixException e("invalid matrix dimensions for m");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       const size_t dim = m.rows();
@@ -440,7 +440,7 @@ namespace gpstk
            (m2.rows() != m2.cols()) || (m2.cols() < 1) )
       {
          MatrixException e("Invalid matrix dimensions of input.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       const size_t dim1 = m1.rows();
@@ -497,7 +497,7 @@ namespace gpstk
       if (axis < 1 || axis > 3)
       {
          MatrixException e("Invalid axis (must be 1,2, or 3)");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       Matrix<T> toReturn(3,3,T(0));
       int i1 = axis-1;
@@ -521,7 +521,7 @@ namespace gpstk
       if ((m.rows() != m.cols()) || (m.cols() == 0))
       {
          MatrixException e("inverse() requires non-trivial square matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       Matrix<T> toReturn(m.rows(), m.cols() * 2);
@@ -554,7 +554,7 @@ namespace gpstk
             if (t == m.rows())
             {
                SingularMatrixException e("Singular matrix");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             for (j = r; j < toReturn.cols(); j++)
@@ -592,7 +592,7 @@ namespace gpstk
    {
       if ((m.rows() != m.cols()) || (m.cols() == 0)) {
          MatrixException e("inverseLUD() requires non-trivial square matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t i,j,N=m.rows();
@@ -621,7 +621,7 @@ namespace gpstk
    {
       if ((m.rows() != m.cols()) || (m.cols() == 0)) {
          MatrixException e("inverseLUD() requires non-trivial square matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t i,j,N=m.rows();
@@ -654,7 +654,7 @@ namespace gpstk
    {
       if ((m.rows() != m.cols()) || (m.cols() == 0)) {
          MatrixException e("inverseSVD() requires non-trivial square matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t i,j,N=m.rows();
@@ -665,7 +665,7 @@ namespace gpstk
       svd.sort(true);
       if(svd.S(0) == T(0)) {
          MatrixException e("Input is the zero matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
          // edit singular values TD input tolerance, output edited SVs
       for(i=1; i<N; i++) if(svd.S(i) < tol*svd.S(0)) svd.S(i)=T(0);
@@ -693,7 +693,7 @@ namespace gpstk
    {
       if ((m.rows() != m.cols()) || (m.cols() == 0)) {
          MatrixException e("inverseSVD() requires non-trivial square matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t i,j,N=m.rows();
@@ -704,7 +704,7 @@ namespace gpstk
       svd.sort(true);
       if(svd.S(0) == T(0)) {
          MatrixException e("Input is the zero matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // compute condition number = bigNum/smallNum
@@ -738,7 +738,7 @@ namespace gpstk
    {
       if ((m.rows() != m.cols()) || (m.cols() == 0)) {
          MatrixException e("inverseSVD() requires non-trivial square matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       size_t i,j,N=m.rows();
@@ -749,7 +749,7 @@ namespace gpstk
       svd.sort(true);
       if(svd.S(0) == T(0)) {
          MatrixException e("Input is the zero matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // save the singular values
@@ -786,7 +786,7 @@ namespace gpstk
       Matrix<T> LI(N,N, 0.0);      // Here we will first store L^-1, and later m^-1
 
          // Let's call CholeskyCrout class to decompose matrix "m" in L*LT
-      gpstk::CholeskyCrout<double> CC;
+      gnsstk::CholeskyCrout<double> CC;
       CC(m);
 
          // Let's find the inverse of L (the LI from above)
@@ -811,15 +811,15 @@ namespace gpstk
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
-   inline Matrix<T> operator* (const ConstMatrixBase<T, BaseClass1>& l, 
+   inline Matrix<T> operator* (const ConstMatrixBase<T, BaseClass1>& l,
                                const ConstMatrixBase<T, BaseClass2>& r)
    {
       if (l.cols() != r.rows())
       {
          MatrixException e("Incompatible dimensions for Matrix * Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
-   
+
       Matrix<T> toReturn(l.rows(), r.cols(), T(0));
       size_t i, j, k;
       for (i = 0; i < toReturn.rows(); i++)
@@ -835,18 +835,18 @@ namespace gpstk
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
-   inline Vector<T> operator* (const ConstMatrixBase<T, BaseClass1>& m, 
+   inline Vector<T> operator* (const ConstMatrixBase<T, BaseClass1>& m,
                                const ConstVectorBase<T, BaseClass2>& v)
    {
       if (v.size() != m.cols())
       {
-         gpstk::MatrixException e("Incompatible dimensions for Vector * Matrix");
-         GPSTK_THROW(e);
+         gnsstk::MatrixException e("Incompatible dimensions for Vector * Matrix");
+         GNSSTK_THROW(e);
       }
-   
+
       Vector<T> toReturn(m.rows());
       size_t i, j;
-      for (i = 0; i < m.rows(); i++) 
+      for (i = 0; i < m.rows(); i++)
       {
          toReturn[i] = 0;
          for (j = 0; j < m.cols(); j++)
@@ -859,18 +859,18 @@ namespace gpstk
        * @throw MatrixException
        */
    template <class T, class BaseClass1, class BaseClass2>
-   inline Vector<T> operator* (const ConstVectorBase<T, BaseClass1>& v, 
+   inline Vector<T> operator* (const ConstVectorBase<T, BaseClass1>& v,
                                const ConstMatrixBase<T, BaseClass2>& m)
    {
       if (v.size() != m.rows())
       {
-         gpstk::MatrixException e("Incompatible dimensions for Vector * Matrix");
-         GPSTK_THROW(e);
+         gnsstk::MatrixException e("Incompatible dimensions for Vector * Matrix");
+         GNSSTK_THROW(e);
       }
-   
+
       Vector<T> toReturn(m.cols());
       size_t i, j;
-      for (i = 0; i < m.cols(); i++) 
+      for (i = 0; i < m.cols(); i++)
       {
          toReturn[i] = 0;
          for (j = 0; j < m.rows(); j++)
@@ -890,7 +890,7 @@ namespace gpstk
       if (l.cols() != r.cols() || l.rows() != r.rows())
       {
          MatrixException e("Incompatible dimensions for Matrix + Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       Matrix<T> toReturn(l.rows(), r.cols(), T(0));
@@ -913,7 +913,7 @@ namespace gpstk
       if (l.cols() != r.cols() || l.rows() != r.rows())
       {
          MatrixException e("Incompatible dimensions for Matrix - Matrix");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       Matrix<T> toReturn(l.rows(), r.cols(), T(0));
@@ -935,7 +935,7 @@ namespace gpstk
    {
       if(v.size()*w.size() == 0) {
          MatrixException e("Zero length vector(s)");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       Matrix<T> M(v.size(),w.size(),T(0));
       for(size_t i=0; i<v.size(); i++)
@@ -945,7 +945,7 @@ namespace gpstk
    }
 
       /**
-       * find the maximum magnitude in a matrix 
+       * find the maximum magnitude in a matrix
        */
    template <class T, class BaseClass>
    inline T maxabs(const ConstMatrixBase<T, BaseClass>& a)
@@ -1030,7 +1030,7 @@ namespace gpstk
    }
 
       //@}
- 
+
 }  // namespace
 
 #endif

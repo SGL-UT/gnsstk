@@ -1,43 +1,43 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_PNBNAVDATAFACTORY_HPP
-#define GPSTK_PNBNAVDATAFACTORY_HPP
+#ifndef GNSSTK_PNBNAVDATAFACTORY_HPP
+#define GNSSTK_PNBNAVDATAFACTORY_HPP
 
 #include <memory>
 #include <map>
@@ -45,7 +45,7 @@
 #include "NavData.hpp"
 #include "NavValidityType.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup NavFactory
       //@{
@@ -113,15 +113,19 @@ namespace gpstk
       bool processHea;
          /// If true, time offset data will be output by addData.
       bool processTim;
+         /// If true, ionospheric data will be output by addData.
+      bool processIono;
+         /// If true, inter-signal correction data will be output by addData.
+      bool processISC;
    }; // class PNBNavDataFactory
 
       /// Managed pointer to a PNBNavDataFactory.
-   using PNBNavDataFactoryPtr = std::shared_ptr<PNBNavDataFactory>;
+   typedef std::shared_ptr<PNBNavDataFactory> PNBNavDataFactoryPtr;
       /// Map the navigation message type to a factory for producing that type.
-   using PNBNavDataFactoryMap = std::map<NavType, PNBNavDataFactoryPtr>;
+   typedef std::map<NavType, PNBNavDataFactoryPtr> PNBNavDataFactoryMap;
 
       //@}
 
-} // namespace gpstk
+} // namespace gnsstk
 
-#endif // GPSTK_PNBNAVDATAFACTORY_HPP
+#endif // GNSSTK_PNBNAVDATAFACTORY_HPP

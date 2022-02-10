@@ -40,35 +40,62 @@ if( ${PYTHON_CUSTOM_CONFIG} MATCHES "NOTFOUND" )
   # It looks like the find for PythonLibs gets the 'first' Python.h it can find,
   # which does not necessiarly match what the executable found by PythonInterp
   # will be copacetic with. So, we set CMAKE_INCLUDE_PATH to what is returned
-  # by the found python-config
+  # by the found python-config.
+
+  # For python2, we only need to se tthe include path specifically.
+  # Python3 requires more paths from python-config.
   if( ${PYTHON_VERSION_MAJOR} EQUAL 3 )
 
-    # Python 3 executables _might_ be named "python3" or "python"
-    # Get the form without the 3 so we can explicitly add it.
-    string(REGEX MATCH "^(.*python)" PYTHON_EXE_BASE ${PYTHON_EXECUTABLE})
+    # Find the python-config file.  First check for one next to the python
+    # interpreter, then look anywhere in the system path.
+    get_filename_component(PYTHON_BIN_BASE ${PYTHON_EXECUTABLE} DIRECTORY )
 
-    if(NOT EXISTS "${PYTHON_EXE_BASE}3-config")
-      message( FATAL_ERROR "Cannot find ${PYTHON_EXE_BASE}3-config. Cannot proceed. Exiting now!" )
+    find_program(PYTHON_CONFIG_EXE "python3-config" PATHS "${PYTHON_BIN_BASE}" NO_DEFAULT_PATH )
+    find_program(PYTHON_CONFIG_EXE "python3-config" )
+    # If we can't find the python3 specific one, try looking for a version without the three.
+    find_program(PYTHON_CONFIG_EXE "python-config" PATHS "${PYTHON_BIN_BASE}" NO_DEFAULT_PATH )
+    find_program(PYTHON_CONFIG_EXE "python-config" )
+    if(NOT PYTHON_CONFIG_EXE)
+      message( FATAL_ERROR "Cannot find any python3-config or python-config. Cannot proceed. Exiting now!" )
       return()
     endif()
+    message( STATUS "PYTHON_CONFIG_EXE        = ${PYTHON_CONFIG_EXE}" )
 
-    execute_process( COMMAND "${PYTHON_EXE_BASE}3-config" "--includes" OUTPUT_VARIABLE PYTHON_INCLUDES)
-    execute_process( COMMAND "${PYTHON_EXE_BASE}3-config" "--prefix" OUTPUT_VARIABLE PYTHON_PREFIX)
-    execute_process( COMMAND "${PYTHON_EXE_BASE}3-config" "--ldflags" OUTPUT_VARIABLE PYTHON_LDFLAGS)
+    execute_process( COMMAND "${PYTHON_CONFIG_EXE}" "--includes" OUTPUT_VARIABLE PYTHON_INCLUDES)
+    execute_process( COMMAND "${PYTHON_CONFIG_EXE}" "--prefix" OUTPUT_VARIABLE PYTHON_PREFIX)
+    execute_process( COMMAND "${PYTHON_CONFIG_EXE}" "--ldflags" OUTPUT_VARIABLE PYTHON_LDFLAGS)
 
     # String parsing to get the include path
+    # message( DEBUG "PYTHON_INCLUDES          = ${PYTHON_INCLUDES}" )
     string(REGEX MATCH "-I(.*) " _python_include ${PYTHON_INCLUDES})
     set(_python_include ${CMAKE_MATCH_1})
     set(CMAKE_INCLUDE_PATH ${_python_include})
 
-    # String parsing to get the library path and libarary name
-    string(REGEX MATCH "-L([^ ]*) -l([^ ]*) " _python_libdir ${PYTHON_LDFLAGS})
-    set(_python_libdir ${CMAKE_MATCH_1})
-    set(_python_libname ${CMAKE_MATCH_2})
+    # String parsing PYTHON_LDFLAGS to get the library path and library name
+    # Note: Major assumption here that the first library (-l) is the libpythonxx.so
+    # We'll try every directory (-L) to locate it.
+    # message( DEBUG "PYTHON_LDFLAGS            = ${PYTHON_LDFLAGS}" )
+    string(REGEX MATCH " -l([^ ]*) " _python_libname ${PYTHON_LDFLAGS})
+    set(_python_libname ${CMAKE_MATCH_1})
+    # message( DEBUG "_python_libname           = ${_python_libname}" )
+
+    # Grab all the "-L" directories, remove the "-L" and trailing spaces,
+    # then replace the inner spaces with semicolon to make it a list.
+    string(REGEX MATCH "(-L[^ ]* )+" _python_libdirargs ${PYTHON_LDFLAGS})
+    # message( DEBUG "_python_libdirargs        = ${_python_libdirargs}" )
+    string(REPLACE "-L" ""  _python_libdir ${_python_libdirargs})
+    string(STRIP ${_python_libdir} _python_libdir)
+    string(REPLACE " " ";"  _python_libdirs ${_python_libdir})
+    # message( DEBUG "_python_libdirs           = ${_python_libdirs}" )
+
+    foreach(_py_lib_dir ${_python_libdirs})
+      find_file(_python_library "lib${_python_libname}.so" PATHS ${_py_lib_dir} NO_DEFAULT_PATH )
+      # message( DEBUG "_python_library           = ${_python_library}" )
+    endforeach()
 
     # Python 3 isn't well supported for earlier versions of CMAKE.  So we roll our own.
     string(STRIP ${PYTHON_PREFIX} PYTHON_PREFIX)
-    set(PYTHON_LIBRARIES "${_python_libdir}/lib${_python_libname}.so")
+    set(PYTHON_LIBRARIES "${_python_lib_file}")
     set(PYTHON_INCLUDE_DIR ${_python_include})
     set(PYTHON_INCLUDE_DIRS ${_python_include})
     set(PYTHONLIBS_VERSION_STRING ${PYTHON_VERSION_STRING})
@@ -90,7 +117,7 @@ endif()
 # Debug messaging
 #------------------------------------------------------------
 if( DEBUG_SWITCH OR NOT PYTHONLIBS_FOUND)
-  message( STATUS "PYTHON_EXE_BASE          = ${PYTHON_EXE_BASE}" )
+  message( STATUS "PYTHON_BIN_BASE           = ${PYTHON_BIN_BASE}" )
   message( STATUS "PYTHONINTERP_FOUND        = ${PYTHONINTERP_FOUND}" )
   message( STATUS "PYTHON_EXECUTABLE         = ${PYTHON_EXECUTABLE}" )
   message( STATUS "PYTHON_VERSION_STRING     = ${PYTHON_VERSION_STRING}" )

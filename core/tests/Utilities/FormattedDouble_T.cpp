@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -41,17 +41,17 @@
 
 namespace std
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::StringUtils::FFLead v)
+   std::ostream& operator<<(std::ostream& s, gnsstk::StringUtils::FFLead v)
    {
       s << static_cast<int>(v);
       return s;
    }
-   std::ostream& operator<<(std::ostream& s, gpstk::StringUtils::FFSign v)
+   std::ostream& operator<<(std::ostream& s, gnsstk::StringUtils::FFSign v)
    {
       s << static_cast<int>(v);
       return s;
    }
-   std::ostream& operator<<(std::ostream& s, gpstk::StringUtils::FFAlign v)
+   std::ostream& operator<<(std::ostream& s, gnsstk::StringUtils::FFAlign v)
    {
       s << static_cast<int>(v);
       return s;
@@ -71,11 +71,11 @@ namespace std
       TUCSM("operator<<");                                              \
       TUASSERTE(std::string, EXP, formatted);                           \
       std::istringstream iss(formatted);                                \
-      gpstk::FormattedDouble fdin(FD.totalLen, FD.exponentChar);        \
+      gnsstk::FormattedDouble fdin(FD.totalLen, FD.exponentChar);        \
       iss >> fdin;                                                      \
       TUCSM("operator>>");                                              \
       TUASSERTFE(VAL, fdin.val);                                        \
-      gpstk::FormattedDouble fdin2(FD);                                 \
+      gnsstk::FormattedDouble fdin2(FD);                                 \
       fdin2 = formatted;                                                \
       TUCSM("operator=(string)");                                       \
       TUASSERTFE(VAL, fdin2.val);                                       \
@@ -97,49 +97,49 @@ constructorTest()
    TUDEF("FormattedDouble", "");
       // please don't mess with defaults...
    double d(1.234);
-   gpstk::FormattedDouble t1(d,gpstk::StringUtils::FFLead::Zero);
-   gpstk::FormattedDouble t2(d,gpstk::StringUtils::FFLead::Decimal, 99, 12, 128,
-                             'F', gpstk::StringUtils::FFSign::NegPos,
-                             gpstk::StringUtils::FFAlign::Right);
-   gpstk::FormattedDouble t3;
+   gnsstk::FormattedDouble t1(d,gnsstk::StringUtils::FFLead::Zero);
+   gnsstk::FormattedDouble t2(d,gnsstk::StringUtils::FFLead::Decimal, 99, 12, 128,
+                             'F', gnsstk::StringUtils::FFSign::NegPos,
+                             gnsstk::StringUtils::FFAlign::Right);
+   gnsstk::FormattedDouble t3;
 
    TUCSM("FormattedDouble(double,...)");
    TUASSERTFE(d, t1.val);
-   TUASSERTE(gpstk::StringUtils::FFLead,
-             gpstk::StringUtils::FFLead::Zero, t1.leadChar);
+   TUASSERTE(gnsstk::StringUtils::FFLead,
+             gnsstk::StringUtils::FFLead::Zero, t1.leadChar);
    TUASSERTE(unsigned, 0, t1.mantissaLen);
    TUASSERTE(unsigned, 2, t1.exponentLen);
    TUASSERTE(unsigned, 0, t1.totalLen);
    TUASSERTE(char, 'e', t1.exponentChar);
-   TUASSERTE(gpstk::StringUtils::FFSign,
-             gpstk::StringUtils::FFSign::NegOnly, t1.leadSign);
-   TUASSERTE(gpstk::StringUtils::FFAlign,
-             gpstk::StringUtils::FFAlign::Left, t1.alignment);
+   TUASSERTE(gnsstk::StringUtils::FFSign,
+             gnsstk::StringUtils::FFSign::NegOnly, t1.leadSign);
+   TUASSERTE(gnsstk::StringUtils::FFAlign,
+             gnsstk::StringUtils::FFAlign::Left, t1.alignment);
 
    TUASSERTFE(d, t2.val);
-   TUASSERTE(gpstk::StringUtils::FFLead,
-             gpstk::StringUtils::FFLead::Decimal, t2.leadChar);
+   TUASSERTE(gnsstk::StringUtils::FFLead,
+             gnsstk::StringUtils::FFLead::Decimal, t2.leadChar);
    TUASSERTE(unsigned, 99, t2.mantissaLen);
    TUASSERTE(unsigned, 12, t2.exponentLen);
    TUASSERTE(unsigned, 128, t2.totalLen);
    TUASSERTE(char, 'F', t2.exponentChar);
-   TUASSERTE(gpstk::StringUtils::FFSign,
-             gpstk::StringUtils::FFSign::NegPos, t2.leadSign);
-   TUASSERTE(gpstk::StringUtils::FFAlign,
-             gpstk::StringUtils::FFAlign::Right, t2.alignment);
+   TUASSERTE(gnsstk::StringUtils::FFSign,
+             gnsstk::StringUtils::FFSign::NegPos, t2.leadSign);
+   TUASSERTE(gnsstk::StringUtils::FFAlign,
+             gnsstk::StringUtils::FFAlign::Right, t2.alignment);
 
    TUCSM("FormattedDouble(unsigned,char)");
    TUASSERTFE(0., t3.val);
-   TUASSERTE(gpstk::StringUtils::FFLead,
-             gpstk::StringUtils::FFLead::NonZero, t3.leadChar);
+   TUASSERTE(gnsstk::StringUtils::FFLead,
+             gnsstk::StringUtils::FFLead::NonZero, t3.leadChar);
    TUASSERTE(unsigned, 0, t3.mantissaLen);
    TUASSERTE(unsigned, 2, t3.exponentLen);
    TUASSERTE(unsigned, 0, t3.totalLen);
    TUASSERTE(char, 'e', t3.exponentChar);
-   TUASSERTE(gpstk::StringUtils::FFSign,
-             gpstk::StringUtils::FFSign::NegOnly, t3.leadSign);
-   TUASSERTE(gpstk::StringUtils::FFAlign,
-             gpstk::StringUtils::FFAlign::Left, t3.alignment);
+   TUASSERTE(gnsstk::StringUtils::FFSign,
+             gnsstk::StringUtils::FFSign::NegOnly, t3.leadSign);
+   TUASSERTE(gnsstk::StringUtils::FFAlign,
+             gnsstk::StringUtils::FFAlign::Left, t3.alignment);
    TURETURN();
 }
 
@@ -151,34 +151,34 @@ streamTest()
 
    double p1 = 1.2345;  // positive test value
    double n1 = -1.2345; // negative test value
-   gpstk::FormattedDouble t1(p1,gpstk::StringUtils::FFLead::Zero,5,2);
-   gpstk::FormattedDouble t2(p1,gpstk::StringUtils::FFLead::Decimal,5,2);
-   gpstk::FormattedDouble t3(p1,gpstk::StringUtils::FFLead::NonZero,5,2);
-   gpstk::FormattedDouble t4(p1,gpstk::StringUtils::FFLead::Zero,5,2,0,'d');
-   gpstk::FormattedDouble t5(p1,gpstk::StringUtils::FFLead::Zero,5,2,0,'D');
-   gpstk::FormattedDouble t6(p1,gpstk::StringUtils::FFLead::Zero,5,2,0,'x');
-   gpstk::FormattedDouble t7(p1,gpstk::StringUtils::FFLead::Zero,5,2,0,'E',
-                             gpstk::StringUtils::FFSign::NegOnly);
-   gpstk::FormattedDouble t8(p1,gpstk::StringUtils::FFLead::Zero,5,2,0,'E',
-                             gpstk::StringUtils::FFSign::NegSpace);
-   gpstk::FormattedDouble t9(p1,gpstk::StringUtils::FFLead::Zero,5,2,0,'E',
-                             gpstk::StringUtils::FFSign::NegPos);
-   gpstk::FormattedDouble t10(p1,gpstk::StringUtils::FFLead::Zero,5,4,0,'E',
-                              gpstk::StringUtils::FFSign::NegPos);
-   gpstk::FormattedDouble t11(n1,gpstk::StringUtils::FFLead::Zero,5,2,0);
-   gpstk::FormattedDouble t12(n1,gpstk::StringUtils::FFLead::Decimal,5,2,0);
-   gpstk::FormattedDouble t13(n1,gpstk::StringUtils::FFLead::NonZero,5,2,0);
-   gpstk::FormattedDouble t14(n1,gpstk::StringUtils::FFLead::Zero,5,2,0,'d');
-   gpstk::FormattedDouble t15(n1,gpstk::StringUtils::FFLead::Zero,5,2,0,'D');
-   gpstk::FormattedDouble t16(n1,gpstk::StringUtils::FFLead::Zero,5,2,0,'x');
-   gpstk::FormattedDouble t17(n1,gpstk::StringUtils::FFLead::Zero,5,2,0,'E',
-                              gpstk::StringUtils::FFSign::NegOnly);
-   gpstk::FormattedDouble t18(n1,gpstk::StringUtils::FFLead::Zero,5,2,0,'E',
-                              gpstk::StringUtils::FFSign::NegSpace);
-   gpstk::FormattedDouble t19(n1,gpstk::StringUtils::FFLead::Zero,5,2,0,'E',
-                              gpstk::StringUtils::FFSign::NegPos);
-   gpstk::FormattedDouble t20(n1,gpstk::StringUtils::FFLead::Zero,5,4,0,'E',
-                              gpstk::StringUtils::FFSign::NegPos);
+   gnsstk::FormattedDouble t1(p1,gnsstk::StringUtils::FFLead::Zero,5,2);
+   gnsstk::FormattedDouble t2(p1,gnsstk::StringUtils::FFLead::Decimal,5,2);
+   gnsstk::FormattedDouble t3(p1,gnsstk::StringUtils::FFLead::NonZero,5,2);
+   gnsstk::FormattedDouble t4(p1,gnsstk::StringUtils::FFLead::Zero,5,2,0,'d');
+   gnsstk::FormattedDouble t5(p1,gnsstk::StringUtils::FFLead::Zero,5,2,0,'D');
+   gnsstk::FormattedDouble t6(p1,gnsstk::StringUtils::FFLead::Zero,5,2,0,'x');
+   gnsstk::FormattedDouble t7(p1,gnsstk::StringUtils::FFLead::Zero,5,2,0,'E',
+                             gnsstk::StringUtils::FFSign::NegOnly);
+   gnsstk::FormattedDouble t8(p1,gnsstk::StringUtils::FFLead::Zero,5,2,0,'E',
+                             gnsstk::StringUtils::FFSign::NegSpace);
+   gnsstk::FormattedDouble t9(p1,gnsstk::StringUtils::FFLead::Zero,5,2,0,'E',
+                             gnsstk::StringUtils::FFSign::NegPos);
+   gnsstk::FormattedDouble t10(p1,gnsstk::StringUtils::FFLead::Zero,5,4,0,'E',
+                              gnsstk::StringUtils::FFSign::NegPos);
+   gnsstk::FormattedDouble t11(n1,gnsstk::StringUtils::FFLead::Zero,5,2,0);
+   gnsstk::FormattedDouble t12(n1,gnsstk::StringUtils::FFLead::Decimal,5,2,0);
+   gnsstk::FormattedDouble t13(n1,gnsstk::StringUtils::FFLead::NonZero,5,2,0);
+   gnsstk::FormattedDouble t14(n1,gnsstk::StringUtils::FFLead::Zero,5,2,0,'d');
+   gnsstk::FormattedDouble t15(n1,gnsstk::StringUtils::FFLead::Zero,5,2,0,'D');
+   gnsstk::FormattedDouble t16(n1,gnsstk::StringUtils::FFLead::Zero,5,2,0,'x');
+   gnsstk::FormattedDouble t17(n1,gnsstk::StringUtils::FFLead::Zero,5,2,0,'E',
+                              gnsstk::StringUtils::FFSign::NegOnly);
+   gnsstk::FormattedDouble t18(n1,gnsstk::StringUtils::FFLead::Zero,5,2,0,'E',
+                              gnsstk::StringUtils::FFSign::NegSpace);
+   gnsstk::FormattedDouble t19(n1,gnsstk::StringUtils::FFLead::Zero,5,2,0,'E',
+                              gnsstk::StringUtils::FFSign::NegPos);
+   gnsstk::FormattedDouble t20(n1,gnsstk::StringUtils::FFLead::Zero,5,4,0,'E',
+                              gnsstk::StringUtils::FFSign::NegPos);
 
    STRMASSERT("0.1234e+01", t1, 0.1234e+01);
    STRMASSERT(".12345e+01", t2, .12345e+01);
@@ -211,10 +211,10 @@ castTest()
 {
    TUDEF("FormattedDouble", "operator=(double)");
 
-   gpstk::FormattedDouble t1;
-   gpstk::FormattedDouble &t1ref(t1 = 9.0);
+   gnsstk::FormattedDouble t1;
+   gnsstk::FormattedDouble &t1ref(t1 = 9.0);
    TUASSERTFE(9.0, t1.val);
-   TUASSERTE(gpstk::FormattedDouble*, &t1, &t1ref);
+   TUASSERTE(gnsstk::FormattedDouble*, &t1, &t1ref);
    double foo = t1 * 123.0;
    TUCSM("operator double()");
    TUASSERTFE(1107.0, foo);
@@ -222,26 +222,26 @@ castTest()
    TUASSERTFE(9.0, bar);
 
    TUCSM("operator=(double)");
-   gpstk::FormattedDouble t2(123.0, gpstk::StringUtils::FFLead::Zero, 10, 3, 0,
-                             'x', gpstk::StringUtils::FFSign::NegPos);
+   gnsstk::FormattedDouble t2(123.0, gnsstk::StringUtils::FFLead::Zero, 10, 3, 0,
+                             'x', gnsstk::StringUtils::FFSign::NegPos);
    t2 = 9.0;
    TUASSERTFE(9.0, t2.val);
       // make sure the assignment didn't reset any existing data fields
-   TUASSERTE(gpstk::StringUtils::FFLead,
-             gpstk::StringUtils::FFLead::Zero, t2.leadChar);
+   TUASSERTE(gnsstk::StringUtils::FFLead,
+             gnsstk::StringUtils::FFLead::Zero, t2.leadChar);
    TUASSERTE(unsigned, 10, t2.mantissaLen);
    TUASSERTE(unsigned, 3, t2.exponentLen);
    TUASSERTE(char, 'x', t2.exponentChar);
-   TUASSERTE(gpstk::StringUtils::FFSign,
-             gpstk::StringUtils::FFSign::NegPos, t2.leadSign);
+   TUASSERTE(gnsstk::StringUtils::FFSign,
+             gnsstk::StringUtils::FFSign::NegPos, t2.leadSign);
 
       // implicit conversions
    unsigned u = 9;
-   gpstk::FormattedDouble t3;
+   gnsstk::FormattedDouble t3;
    t3 = u;
    TUASSERTFE(9.0, t3.val);
    int i = 9;
-   gpstk::FormattedDouble t4;
+   gnsstk::FormattedDouble t4;
    t4 = i;
    TUASSERTFE(9.0, t4.val);
 
@@ -254,37 +254,37 @@ scaleTest()
 {
    TUDEF("FormattedDouble", "");
    double d(100.0);
-   gpstk::FormattedDouble t1(d,gpstk::StringUtils::FFLead::Decimal, 99, 12, 128,
-                             'F', gpstk::StringUtils::FFSign::NegPos,
-                             gpstk::StringUtils::FFAlign::Right);
-   gpstk::FormattedDouble t2 = t1 / 2.0;
-   gpstk::FormattedDouble t3 = t1 * 0.5;
+   gnsstk::FormattedDouble t1(d,gnsstk::StringUtils::FFLead::Decimal, 99, 12, 128,
+                             'F', gnsstk::StringUtils::FFSign::NegPos,
+                             gnsstk::StringUtils::FFAlign::Right);
+   gnsstk::FormattedDouble t2 = t1 / 2.0;
+   gnsstk::FormattedDouble t3 = t1 * 0.5;
 
    TUCSM("operator/(double)");
    TUASSERTFE(50.0, t2.val);
-   TUASSERTE(gpstk::StringUtils::FFLead,
-             gpstk::StringUtils::FFLead::Decimal, t2.leadChar);
+   TUASSERTE(gnsstk::StringUtils::FFLead,
+             gnsstk::StringUtils::FFLead::Decimal, t2.leadChar);
    TUASSERTE(unsigned, 99, t2.mantissaLen);
    TUASSERTE(unsigned, 12, t2.exponentLen);
    TUASSERTE(unsigned, 128, t2.totalLen);
    TUASSERTE(char, 'F', t2.exponentChar);
-   TUASSERTE(gpstk::StringUtils::FFSign,
-             gpstk::StringUtils::FFSign::NegPos, t2.leadSign);
-   TUASSERTE(gpstk::StringUtils::FFAlign,
-             gpstk::StringUtils::FFAlign::Right, t2.alignment);
+   TUASSERTE(gnsstk::StringUtils::FFSign,
+             gnsstk::StringUtils::FFSign::NegPos, t2.leadSign);
+   TUASSERTE(gnsstk::StringUtils::FFAlign,
+             gnsstk::StringUtils::FFAlign::Right, t2.alignment);
 
    TUCSM("operator*(double)");
    TUASSERTFE(50.0, t3.val);
-   TUASSERTE(gpstk::StringUtils::FFLead,
-             gpstk::StringUtils::FFLead::Decimal, t3.leadChar);
+   TUASSERTE(gnsstk::StringUtils::FFLead,
+             gnsstk::StringUtils::FFLead::Decimal, t3.leadChar);
    TUASSERTE(unsigned, 99, t3.mantissaLen);
    TUASSERTE(unsigned, 12, t3.exponentLen);
    TUASSERTE(unsigned, 128, t3.totalLen);
    TUASSERTE(char, 'F', t3.exponentChar);
-   TUASSERTE(gpstk::StringUtils::FFSign,
-             gpstk::StringUtils::FFSign::NegPos, t3.leadSign);
-   TUASSERTE(gpstk::StringUtils::FFAlign,
-             gpstk::StringUtils::FFAlign::Right, t3.alignment);
+   TUASSERTE(gnsstk::StringUtils::FFSign,
+             gnsstk::StringUtils::FFSign::NegPos, t3.leadSign);
+   TUASSERTE(gnsstk::StringUtils::FFAlign,
+             gnsstk::StringUtils::FFAlign::Right, t3.alignment);
 
    TURETURN();
 }

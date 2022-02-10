@@ -1,14 +1,14 @@
 dfix ver 2.0 5/20/17, Run 2017/06/14 at 14:58:44
 
 Load the RINEX files using Rinex3ObsFileLoader -------
- Add obs type RC1P =~ RC1* from /local/Code/gpstk/data/test_dfix_job4131.ed.obs
- Add obs type RL1C =~ RL1* from /local/Code/gpstk/data/test_dfix_job4131.ed.obs
- Add obs type RC2P =~ RC2* from /local/Code/gpstk/data/test_dfix_job4131.ed.obs
- Add obs type RL2C =~ RL2* from /local/Code/gpstk/data/test_dfix_job4131.ed.obs
+ Add obs type RC1P =~ RC1* from /local/Code/gnsstk/data/test_dfix_job4131.ed.obs
+ Add obs type RL1C =~ RL1* from /local/Code/gnsstk/data/test_dfix_job4131.ed.obs
+ Add obs type RC2P =~ RC2* from /local/Code/gnsstk/data/test_dfix_job4131.ed.obs
+ Add obs type RL2C =~ RL2* from /local/Code/gnsstk/data/test_dfix_job4131.ed.obs
 Loader read 1 file successfully 
 
 Summary of input RINEX obs data files (1):
- RINEX obs file: /local/Code/gpstk/data/test_dfix_job4131.ed.obs
+ RINEX obs file: /local/Code/gnsstk/data/test_dfix_job4131.ed.obs
  Interval 30.00sec, obs types RC1P RL1C RC2P RL2C, store size 488
  Time limits: begin  2013/11/01 00:56:30 1764 435390.000
                 end  2013/11/01 05:00:00 1764 450000.000
@@ -18,7 +18,7 @@ Table of Sat/Obs counts
  TOT   487   487   488   488 total 488 epochs
 End of summary
 
-Header for file /local/Code/gpstk/data/test_dfix_job4131.ed.obs
+Header for file /local/Code/gnsstk/data/test_dfix_job4131.ed.obs
 ---------------------------------- REQUIRED ----------------------------------
 Rinex Version  2.11,  File type OBSERVATION DATA,  System MIXED.
 Prgm: RinEdit,  Run: 06/14/2017 16:33:37,  By: 0.27
@@ -74,7 +74,7 @@ Searched for millisecond adjusts on obs types: L1 L2 C1 C2 P1 P2
 Millisecond adjusts: 0 total adjusts found, 0 invalid
 
 # GDC configuration:
-#GPSTk Discontinuity Corrector (GDC) v.9.0 5/20/17 configuration:
+#GNSSTk Discontinuity Corrector (GDC) v.9.0 5/20/17 configuration:
 # MaxGap=10          : maximum allowed gap within a segment (points)
 # MinPts=10          : minimum number of good points in phase segment (points)
 # WLgrossStep=6      : WL gross slip detection threshold (WLwl)

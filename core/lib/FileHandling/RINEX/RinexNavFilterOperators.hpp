@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,8 +41,8 @@
  * Operators for FileFilter using Rinex navigation data
  */
 
-#ifndef GPSTK_RINEXNAVFILTEROPERATORS_HPP
-#define GPSTK_RINEXNAVFILTEROPERATORS_HPP
+#ifndef GNSSTK_RINEXNAVFILTEROPERATORS_HPP
+#define GNSSTK_RINEXNAVFILTEROPERATORS_HPP
 
 #include "GPSWeekSecond.hpp"
 
@@ -53,19 +53,19 @@
 
 #include <set>
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
 
       /// This compares all elements of the RinexNavData with less than.
-   struct RinexNavDataOperatorLessThanFull : 
-      public std::binary_function<gpstk::RinexNavData, 
-                                  gpstk::RinexNavData, bool>
+   struct RinexNavDataOperatorLessThanFull :
+      public std::binary_function<gnsstk::RinexNavData,
+                                  gnsstk::RinexNavData, bool>
    {
    public:
-      bool operator()(const gpstk::RinexNavData& l,
-                      const gpstk::RinexNavData& r) const
+      bool operator()(const gnsstk::RinexNavData& l,
+                      const gnsstk::RinexNavData& r) const
       {
          if (l.getXmitTime() < r.getXmitTime())
             return true;
@@ -79,11 +79,11 @@ namespace gpstk
                std::list<double>
                   llist = l.toList(),
                   rlist = r.toList();
-                  
-               std::list<double>::iterator 
-                  litr = llist.begin(), 
+
+               std::list<double>::iterator
+                  litr = llist.begin(),
                   ritr = rlist.begin();
-                  
+
                while (litr != llist.end())
                {
                   if (*litr < *ritr)
@@ -104,13 +104,13 @@ namespace gpstk
    };
 
       /// This compares all elements of the RinexNavData with equals
-   struct RinexNavDataOperatorEqualsFull : 
-      public std::binary_function<gpstk::RinexNavData, 
-                                  gpstk::RinexNavData, bool>
+   struct RinexNavDataOperatorEqualsFull :
+      public std::binary_function<gnsstk::RinexNavData,
+                                  gnsstk::RinexNavData, bool>
    {
    public:
-      bool operator()(const gpstk::RinexNavData& l,
-                      const gpstk::RinexNavData& r) const
+      bool operator()(const gnsstk::RinexNavData& l,
+                      const gnsstk::RinexNavData& r) const
       {
             // compare the times and all data members
          if (l.time != r.time)
@@ -121,8 +121,8 @@ namespace gpstk
                llist = l.toList(),
                rlist = r.toList();
 
-            std::list<double>::iterator 
-               litr = llist.begin(), 
+            std::list<double>::iterator
+               litr = llist.begin(),
                ritr = rlist.begin();
 
             while (litr != llist.end())
@@ -139,13 +139,13 @@ namespace gpstk
    };
 
       /// Only compares time.  Suitable for sorting a RinexNav file.
-   struct RinexNavDataOperatorLessThanSimple : 
-      public std::binary_function<gpstk::RinexNavData, 
-                                  gpstk::RinexNavData, bool>
+   struct RinexNavDataOperatorLessThanSimple :
+      public std::binary_function<gnsstk::RinexNavData,
+                                  gnsstk::RinexNavData, bool>
    {
    public:
-      bool operator()(const gpstk::RinexNavData& l,
-                      const gpstk::RinexNavData& r) const
+      bool operator()(const gnsstk::RinexNavData& l,
+                      const gnsstk::RinexNavData& r) const
       {
          if (l.getXmitTime() < r.getXmitTime())
             return true;
@@ -160,14 +160,14 @@ namespace gpstk
       /// the internal theHeader will be the merged header data for
       /// those files.
    struct RinexNavHeaderTouchHeaderMerge :
-      public std::unary_function<gpstk::RinexNavHeader, bool>
+      public std::unary_function<gnsstk::RinexNavHeader, bool>
    {
    public:
       RinexNavHeaderTouchHeaderMerge()
             : firstHeader(true)
       {}
 
-      bool operator()(const gpstk::RinexNavHeader& l)
+      bool operator()(const gnsstk::RinexNavHeader& l)
       {
          if (firstHeader)
          {
@@ -196,23 +196,23 @@ namespace gpstk
       }
 
       bool firstHeader;
-      gpstk::RinexNavHeader theHeader;
+      gnsstk::RinexNavHeader theHeader;
    };
 
       /// Filter based on PRN ID.
-   struct RinexNavDataFilterPRN : 
-      public std::unary_function<gpstk::RinexNavData,  bool>
+   struct RinexNavDataFilterPRN :
+      public std::unary_function<gnsstk::RinexNavData,  bool>
    {
    public:
       RinexNavDataFilterPRN(const std::list<long>& lst )
             :prnList(lst)
       {}
          /// This should return true when the data are to be erased
-      bool operator()(const gpstk::RinexNavData& l) const
+      bool operator()(const gnsstk::RinexNavData& l) const
       {
          long testValue = (long) l.PRNID;
          return find(prnList.begin(), prnList.end(), testValue )
-            == prnList.end(); 
+            == prnList.end();
       }
    private:
       std::list<long> prnList;

@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -46,9 +46,9 @@
          if(!validRxHeight)   e.addText("Invalid trop model: Rx Height"); \
          if(!validRxLatitude) e.addText("Invalid trop model: Rx Latitude"); \
          if(!validDOY)        e.addText("Invalid trop model: day of year"); \
-         GPSTK_THROW(e);}}
+         GNSSTK_THROW(e);}}
 
-namespace gpstk
+namespace gnsstk
 {
    // Saastamoinen tropospheric model.
    // This model needs work; it is not the Saastamoinen model, but appears to be
@@ -160,15 +160,15 @@ namespace gpstk
    double SaasTropModel::correction(double elevation) const
    {
       if(!valid) {
-         if(!validWeather) GPSTK_THROW(
+         if(!validWeather) GNSSTK_THROW(
             InvalidTropModel("Invalid Saastamoinen trop model: weather"));
-         if(!validRxLatitude) GPSTK_THROW(
+         if(!validRxLatitude) GNSSTK_THROW(
             InvalidTropModel("Invalid Saastamoinen trop model: Rx Latitude"));
-         if(!validRxHeight) GPSTK_THROW(
+         if(!validRxHeight) GNSSTK_THROW(
             InvalidTropModel("Invalid Saastamoinen trop model: Rx Height"));
-         if(!validDOY) GPSTK_THROW(
+         if(!validDOY) GNSSTK_THROW(
             InvalidTropModel("Invalid Saastamoinen trop model: day of year"));
-         GPSTK_THROW(
+         GNSSTK_THROW(
             InvalidTropModel("Valid flag corrupted in Saastamoinen trop model"));
       }
 
@@ -179,7 +179,7 @@ namespace gpstk
          corr = (dry_zenith_delay() * dry_mapping_function(elevation)
             + wet_zenith_delay() * wet_mapping_function(elevation));
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
 
       return corr;
 
@@ -203,13 +203,13 @@ namespace gpstk
       SaasTropModel::setDayOfYear(int((static_cast<YDSTime>(tt).doy)));
 
       if(!valid) {
-         if(!validWeather) GPSTK_THROW(
+         if(!validWeather) GNSSTK_THROW(
             InvalidTropModel("Invalid Saastamoinen trop model: weather"));
-         if(!validRxLatitude) GPSTK_THROW(
+         if(!validRxLatitude) GNSSTK_THROW(
             InvalidTropModel("Invalid Saastamoinen trop model: Rx Latitude"));
-         if(!validRxHeight) GPSTK_THROW(
+         if(!validRxHeight) GNSSTK_THROW(
             InvalidTropModel("Invalid Saastamoinen trop model: Rx Height"));
-         if(!validDOY) GPSTK_THROW(
+         if(!validDOY) GNSSTK_THROW(
             InvalidTropModel("Invalid Saastamoinen trop model: day of year"));
          valid = true;
       }
@@ -218,7 +218,7 @@ namespace gpstk
       try {
          corr = SaasTropModel::correction(RX.elevation(SV));
       }
-      catch(Exception& e) { GPSTK_RETHROW(e); }
+      catch(Exception& e) { GNSSTK_RETHROW(e); }
 
       return corr;
 
@@ -381,7 +381,7 @@ namespace gpstk
       catch(InvalidParameter& e)
       {
          valid = validWeather = false;
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 

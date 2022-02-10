@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,9 +40,9 @@
  * @file AllanDeviation.hpp
  * Computes the overlapping Allan variance of a pair of vectors.
  */
- 
-#ifndef GPSTK_ALLANDEVIATION_HPP
-#define GPSTK_ALLANDEVIATION_HPP
+
+#ifndef GNSSTK_ALLANDEVIATION_HPP
+#define GNSSTK_ALLANDEVIATION_HPP
 
 #include <vector>
 #include <cmath>
@@ -50,12 +50,12 @@
 
 #include "Exception.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   /// @ingroup MathGroup 
+   /// @ingroup MathGroup
    //@{
 
-   
+
    /// Compute the overlapping Allan variance of the phase data provided.
    class AllanDeviation
    {
@@ -69,33 +69,33 @@ namespace gpstk
          if(N < 1 )
          {
             Exception e("Need more than 2 point to compute a meaningful allan variance.");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
          // Actual Overlapping Allan Deviation Calculation is done here
          // The Overlapping Allan Deviation is calculated as follows
          //  Sigma^2(Tau) = 1 / (2*(N-2*m)*Tau^2) * Sum(X[i+2*m]-2*X[i+m]+X[i], i=1, i=N-2*m)
          //  Where Tau is the averaging time, N is the total number of points, and Tau = m*Tau0
-         //  Where Tau0 is the basic measurement interval	
+         //  Where Tau0 is the basic measurement interval
          double sum, sigma;
          for(int m = 1; m <= (N-1)/2; m++)
          {
             double tau = m*tau0;
             sigma = 0;
-            
+
             for(int i = 0; i < (N-2*m); i++)
             {
                sum = 0;
-               if((phase[i+2*m]==0 ||  phase[i+m]==0 || phase[i]==0) 
+               if((phase[i+2*m]==0 ||  phase[i+m]==0 || phase[i]==0)
                   && i!=0 && i!=(N-2*m-1))
                   numGaps++;
                else
                   sum = phase[i+2*m] - 2*phase[i+m] + phase[i];
                sigma += sum * sum;
             }
-		
+
             sigma = sigma / (2.0*((double)N-(double)numGaps-0-2.0*(double)m)*tau*tau);
-            sigma = sqrt(sigma);
+            sigma = ::sqrt(sigma);
             deviation.push_back(sigma);
             time.push_back(tau);
          }

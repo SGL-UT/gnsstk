@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -55,7 +55,7 @@ public:
 //=============================================================================
    int  initializationTest(void)
    {
-      gpstk::TestUtil testFramework( "GPSZcount", "ConstructorExplicit2Inputs", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "GPSZcount", "ConstructorExplicit2Inputs", __FILE__, __LINE__ );
 
          //--------------------------------------------------------------------
          // Were the values set to expectation using the explicit
@@ -64,7 +64,7 @@ public:
          // Initialize a valid GPSZcount object
       try
       {
-         gpstk::GPSZcount validObject(10, 35); 
+         gnsstk::GPSZcount validObject(10, 35);
          testFramework.assert(true, "Valid object constructed", __LINE__);
          testFramework.assert(validObject.getWeek() == 10  , "Explicit constructor could not set week properly"  , __LINE__);
          testFramework.assert(validObject.getZcount() == 35, "Explicit constructor could not set zcount properly", __LINE__);
@@ -76,29 +76,29 @@ public:
          // Try to create an invalid week object (week < 0)
       try
       {
-         gpstk::GPSZcount invalidWeek(-10, 35); 
+         gnsstk::GPSZcount invalidWeek(-10, 35);
          testFramework.assert(false, "Invalid week object could be constructed", __LINE__);
       }
-      catch(gpstk::InvalidParameter e){testFramework.assert(true, "Expected exception caught", __LINE__);}
+      catch(gnsstk::InvalidParameter e){testFramework.assert(true, "Expected exception caught", __LINE__);}
       catch(...){testFramework.assert(false, "Unexpected exception caught for creation of invalid week GPSZcount", __LINE__);}
 
          // Try to create an invalid zcount object with too high of a value (zcount > 403200)
       try
       {
-         gpstk::GPSZcount invalidZcountHigh(10, 999999);
+         gnsstk::GPSZcount invalidZcountHigh(10, 999999);
          testFramework.assert(false, "Invalid zcount object could be constructed", __LINE__);
       }
-      catch(gpstk::InvalidParameter e){testFramework.assert(true, "Expected exception caught", __LINE__);}
+      catch(gnsstk::InvalidParameter e){testFramework.assert(true, "Expected exception caught", __LINE__);}
       catch(...){testFramework.assert(false, "Unexpected exception caught for creation of invalid zcount GPSZcount", __LINE__);}
 
 
          // Try to create an invalid zcount object with too low of a value (zcount < 0)
       try
       {
-         gpstk::GPSZcount invalidZcountHigh(10, -999999);
+         gnsstk::GPSZcount invalidZcountHigh(10, -999999);
          testFramework.assert(false, "Invalid zcount object could be constructed", __LINE__);
       }
-      catch(gpstk::InvalidParameter e){testFramework.assert(true, "Expected exception caught", __LINE__);}
+      catch(gnsstk::InvalidParameter e){testFramework.assert(true, "Expected exception caught", __LINE__);}
       catch(...){testFramework.assert(false, "Unexpected exception caught for creation of invalid zcount GPSZcount", __LINE__);}
 
 
@@ -111,24 +111,24 @@ public:
          // Initialize a valid GPSZcount object
       try
       {
-         int inputFullZcount = 1211600; // = 403200*3+2000 = 3 weeks 2000 zcount 
-         gpstk::GPSZcount validObject(inputFullZcount); 
+         int inputFullZcount = 1211600; // = 403200*3+2000 = 3 weeks 2000 zcount
+         gnsstk::GPSZcount validObject(inputFullZcount);
          testFramework.assert(true, "Valid object constructed", __LINE__);
          testFramework.assert(validObject.getWeek() == 2       , "Explicit constructor could not set week properly"  , __LINE__);
          testFramework.assert(validObject.getZcount() == 163024, "Explicit constructor could not set zcount properly", __LINE__);
          testFramework.assert(validObject.getFullZcount() == 1211600 , "getFullZcount did not return the expected value" , __LINE__);
          testFramework.assert(validObject.getTotalZcounts() == 969424, "getTotalZcount did not return the expected value", __LINE__);
       }
-      catch(...){testFramework.assert(false, "Valid object could not be constructed", __LINE__);}       
+      catch(...){testFramework.assert(false, "Valid object could not be constructed", __LINE__);}
 
          // Try to create an invalid zcount object with too high of a value (403200+n*2^(20) <= FullZCount <= 524287+n*2^(20) for all non-negative integers n)
       try
       {
-         gpstk::GPSZcount invalidZcountHigh(3548928);
+         gnsstk::GPSZcount invalidZcountHigh(3548928);
          testFramework.assert(false, "Invalid FullZCount object could be constructed", __LINE__);
       }
-      catch(gpstk::InvalidParameter e){testFramework.assert(true, "Expected exception caught", __LINE__);}
-      catch(...){testFramework.assert(false, "Unexpected exception caught for creation of invalid FullZCount GPSZcount", __LINE__);}    
+      catch(gnsstk::InvalidParameter e){testFramework.assert(true, "Expected exception caught", __LINE__);}
+      catch(...){testFramework.assert(false, "Unexpected exception caught for creation of invalid FullZCount GPSZcount", __LINE__);}
 
 
          //--------------------------------------------------------------------
@@ -138,8 +138,8 @@ public:
          // Initialize a valid GPSZcount object
       try
       {
-         gpstk::GPSZcount validObject(10, 35); 
-         gpstk::GPSZcount Copy(validObject);
+         gnsstk::GPSZcount validObject(10, 35);
+         gnsstk::GPSZcount Copy(validObject);
          testFramework.assert(true, "Valid object constructed", __LINE__);
          testFramework.assert(Copy.getWeek() == 10  , "Copy constructor could not set week properly"  , __LINE__);
          testFramework.assert(Copy.getZcount() == 35, "Copy constructor could not set zcount properly", __LINE__);
@@ -153,8 +153,8 @@ public:
          // Initialize a valid GPSZcount object
       try
       {
-         gpstk::GPSZcount validObject(10, 35); 
-         gpstk::GPSZcount Copy(11,25);
+         gnsstk::GPSZcount validObject(10, 35);
+         gnsstk::GPSZcount Copy(11,25);
          Copy = validObject;
          testFramework.assert(true, "Valid object constructed", __LINE__);
          testFramework.assert(Copy.getWeek() == 10  , "Set Operator could not set week properly"  , __LINE__);
@@ -169,7 +169,7 @@ public:
       testFramework.changeSourceMethod("set");
          // Initialize a valid GPSZcount object
 
-      gpstk::GPSZcount validObject(10, 35); 
+      gnsstk::GPSZcount validObject(10, 35);
       validObject.setWeek(9);
       validObject.setZcount(1000);
 
@@ -177,15 +177,15 @@ public:
       testFramework.assert(validObject.getZcount() == 1000, "setZcount did not set zcount properly", __LINE__);
 
       try{validObject.setWeek(-100); testFramework.assert(false, "setWeek allowed an invalid week to be set", __LINE__);}
-      catch(gpstk::InvalidParameter e){testFramework.assert(true, "Expected exception thrown", __LINE__);}
+      catch(gnsstk::InvalidParameter e){testFramework.assert(true, "Expected exception thrown", __LINE__);}
       catch(...){testFramework.assert(false, "Unexpected exception thrown", __LINE__);}
 
       try{validObject.setZcount(-100); testFramework.assert(false, "setZcount allowed an invalid zcount to be set", __LINE__);}
-      catch(gpstk::InvalidParameter e){testFramework.assert(true, "Expected exception thrown", __LINE__);}
+      catch(gnsstk::InvalidParameter e){testFramework.assert(true, "Expected exception thrown", __LINE__);}
       catch(...){testFramework.assert(false, "Unexpected exception thrown", __LINE__);}
 
       try{validObject.setZcount(999999); testFramework.assert(false, "setZcount allowed an invalid zcount to be set", __LINE__);}
-      catch(gpstk::InvalidParameter e){testFramework.assert(true, "Expected exception thrown", __LINE__);}
+      catch(gnsstk::InvalidParameter e){testFramework.assert(true, "Expected exception thrown", __LINE__);}
       catch(...){testFramework.assert(false, "Unexpected exception thrown", __LINE__);}
 
       return testFramework.countFails();
@@ -198,29 +198,29 @@ public:
 //=============================================================================
    int  addWeeksTest(void)
    {
-      gpstk::TestUtil testFramework( "GPSZcount", "addWeeks", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "GPSZcount", "addWeeks", __FILE__, __LINE__ );
 
          //--------------------------------------------------------------------
          // Were the values set to expectation using the addWeeks?
          //--------------------------------------------------------------------
          // Increment the week
-      gpstk::GPSZcount incWeek(10, 35);
+      gnsstk::GPSZcount incWeek(10, 35);
       incWeek.addWeeks(2);
       testFramework.assert(incWeek.getWeek() == 12, "addWeeks() did not set week properly"  , __LINE__);
-                
+
          // Decrement the week
-      gpstk::GPSZcount decWeek(10, 35);
+      gnsstk::GPSZcount decWeek(10, 35);
       decWeek.addWeeks(-2);
       testFramework.assert(decWeek.getWeek() == 8, "addWeeks() did not set week properly"  , __LINE__);
 
-         // Try to make the week negative 
+         // Try to make the week negative
       try
       {
-         gpstk::GPSZcount invalidWeek(10, 35);
+         gnsstk::GPSZcount invalidWeek(10, 35);
          invalidWeek.addWeeks(-12);
-         testFramework.assert(false, "addWeeks() allowed for change to an invalid week"  , __LINE__);   
+         testFramework.assert(false, "addWeeks() allowed for change to an invalid week"  , __LINE__);
       }
-      catch(gpstk::InvalidRequest e){testFramework.assert(true, "Expected exception thrown", __LINE__);}
+      catch(gnsstk::InvalidRequest e){testFramework.assert(true, "Expected exception thrown", __LINE__);}
       catch(...){testFramework.assert(false, "Unexpected exception thrown", __LINE__);}
 
       return testFramework.countFails();
@@ -233,42 +233,42 @@ public:
 //=============================================================================
    int  addZcountsTest(void)
    {
-      gpstk::TestUtil testFramework( "GPSZcount", "addZcounts", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "GPSZcount", "addZcounts", __FILE__, __LINE__ );
          //--------------------------------------------------------------------
          // Were the values set to expectation using the addZcounts?
          //--------------------------------------------------------------------
          // Increment the zcount
-      gpstk::GPSZcount incZcount(10, 35);
+      gnsstk::GPSZcount incZcount(10, 35);
       incZcount.addZcounts(2L);
       testFramework.assert(incZcount.getZcount() == 37, "addZcounts() did not set zcount properly"  , __LINE__);
-                
+
          // Decrement the zcount
-      gpstk::GPSZcount decZcount(10, 35);
+      gnsstk::GPSZcount decZcount(10, 35);
       decZcount.addZcounts(-2L);
       testFramework.assert(decZcount.getZcount() == 33, "addZcounts() did not set zcount properly"  , __LINE__);
 
          // Roll the week forward
-      gpstk::GPSZcount rollWeekF(10, 403198);
+      gnsstk::GPSZcount rollWeekF(10, 403198);
       rollWeekF.addZcounts(4L);
       testFramework.assert(rollWeekF.getWeek() == 11 , "addZcounts() did not roll week forward properly", __LINE__);
       testFramework.assert(rollWeekF.getZcount() == 2, "addZcounts() did not set zcount properly"       , __LINE__);
 
          // Roll the week backward
-      gpstk::GPSZcount rollWeekB(10, 0);
+      gnsstk::GPSZcount rollWeekB(10, 0);
       rollWeekB.addZcounts(-2L);
       testFramework.assert(rollWeekB.getWeek() == 9       , "addZcounts() did not roll week backward properly", __LINE__);
       testFramework.assert(rollWeekB.getZcount() == 403198, "addZcounts() did not set zcount properly"        , __LINE__);
 
-         // Try to make the week negative 
+         // Try to make the week negative
       try
       {
-         gpstk::GPSZcount invalidWeek(0, 35);
+         gnsstk::GPSZcount invalidWeek(0, 35);
          invalidWeek.addZcounts(-42);
-         testFramework.assert(false, "addZcounts() allowed for change to an invalid week"  , __LINE__); 
+         testFramework.assert(false, "addZcounts() allowed for change to an invalid week"  , __LINE__);
       }
-      catch(gpstk::InvalidRequest e){testFramework.assert(true, "Expected exception thrown", __LINE__);}
-      catch(...){testFramework.assert(false, "Unexpected exception thrown", __LINE__);}                                         
- 
+      catch(gnsstk::InvalidRequest e){testFramework.assert(true, "Expected exception thrown", __LINE__);}
+      catch(...){testFramework.assert(false, "Unexpected exception thrown", __LINE__);}
+
       return testFramework.countFails();
    }
 
@@ -279,23 +279,23 @@ public:
 //=============================================================================
    int  incrementTest(void)
    {
-      gpstk::TestUtil testFramework( "GPSZcount", "OperatorIncrement", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "GPSZcount", "OperatorIncrement", __FILE__, __LINE__ );
 
          // Increment the zcount
-      gpstk::GPSZcount arbitraryObject(10, 35);
+      gnsstk::GPSZcount arbitraryObject(10, 35);
       arbitraryObject++;
       testFramework.assert(arbitraryObject.getZcount() == 36, "Postfix Increment operator did not set zcount properly"  , __LINE__);
       ++arbitraryObject;
       testFramework.assert(arbitraryObject.getZcount() == 37, "Prefix Increment operator did not set zcount properly"  , __LINE__);
-                
+
          // Roll the week forward
-      gpstk::GPSZcount rollWeekF(10, 403199);
+      gnsstk::GPSZcount rollWeekF(10, 403199);
       rollWeekF++;
       testFramework.assert(rollWeekF.getWeek() == 11 , "Postfix Increment operator did not roll week forward properly", __LINE__);
       testFramework.assert(rollWeekF.getZcount() == 0, "Postfix Increment operator did not set zcount properly"       , __LINE__);
 
          // Roll the week forward
-      gpstk::GPSZcount rollWeekF2(10, 403199);
+      gnsstk::GPSZcount rollWeekF2(10, 403199);
       ++rollWeekF2;
       testFramework.assert(rollWeekF2.getWeek() == 11 , "Postfix Increment operator did not roll week forward properly", __LINE__);
       testFramework.assert(rollWeekF2.getZcount() == 0, "Postfix Increment operator did not set zcount properly"       , __LINE__);
@@ -309,23 +309,23 @@ public:
 //=============================================================================
    int  decrementTest(void)
    {
-      gpstk::TestUtil testFramework( "GPSZcount", "OperatorDecrement", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "GPSZcount", "OperatorDecrement", __FILE__, __LINE__ );
 
          // Decrement the zcount
-      gpstk::GPSZcount arbitraryObject(10, 35);
+      gnsstk::GPSZcount arbitraryObject(10, 35);
       arbitraryObject--;
       testFramework.assert(arbitraryObject.getZcount() == 34, "Postfix Decrement operator did not set zcount properly"  , __LINE__);
       --arbitraryObject;
       testFramework.assert(arbitraryObject.getZcount() == 33, "Prefix Decrement operator did not set zcount properly"  , __LINE__);
-                
+
          // Roll the week backward
-      gpstk::GPSZcount rollWeekB(10, 0);
+      gnsstk::GPSZcount rollWeekB(10, 0);
       rollWeekB--;
       testFramework.assert(rollWeekB.getWeek() == 9 , "Postfix Decrement operator did not roll week forward properly", __LINE__);
       testFramework.assert(rollWeekB.getZcount() == 403199, "Postfix Decrement operator did not set zcount properly"       , __LINE__);
 
          // Roll the week backward
-      gpstk::GPSZcount rollWeekB2(10, 0);
+      gnsstk::GPSZcount rollWeekB2(10, 0);
       --rollWeekB2;
       testFramework.assert(rollWeekB2.getWeek() == 9 , "Postfix Decrement operator did not roll week forward properly", __LINE__);
       testFramework.assert(rollWeekB2.getZcount() == 403199, "Postfix Decrement operator did not set zcount properly"       , __LINE__);
@@ -340,24 +340,24 @@ public:
 //=============================================================================
    int  additionTest(void)
    {
-      gpstk::TestUtil testFramework( "GPSZcount", "OperatorAddition", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "GPSZcount", "OperatorAddition", __FILE__, __LINE__ );
          // Add to the zcount
-      gpstk::GPSZcount justAddition(10, 35);
-      gpstk::GPSZcount additionAssign(15, 1000);
+      gnsstk::GPSZcount justAddition(10, 35);
+      gnsstk::GPSZcount additionAssign(15, 1000);
       justAddition = justAddition + 35;
       additionAssign += 4000;
 
       testFramework.assert(justAddition.getZcount() == 70, "Addition operator did not set zcount properly"  , __LINE__);
-      testFramework.assert(additionAssign.getZcount() == 5000, "Add and assign operator did not set zcount properly"  , __LINE__);      
+      testFramework.assert(additionAssign.getZcount() == 5000, "Add and assign operator did not set zcount properly"  , __LINE__);
 
-        
+
          // Roll the week forward
-      gpstk::GPSZcount justAdditionRollWeekF(10, 403199);
+      gnsstk::GPSZcount justAdditionRollWeekF(10, 403199);
       justAdditionRollWeekF = justAdditionRollWeekF + 1000;
       testFramework.assert(justAdditionRollWeekF.getWeek() == 11 , "Addition operator did not roll week forward properly", __LINE__);
       testFramework.assert(justAdditionRollWeekF.getZcount() == 999, "Addition operator did not set zcount properly"       , __LINE__);
 
-      gpstk::GPSZcount additionAssignRollWeekF(4, 403199);
+      gnsstk::GPSZcount additionAssignRollWeekF(4, 403199);
       additionAssignRollWeekF += 2000;
       testFramework.assert(additionAssignRollWeekF.getWeek() == 5 , "Add and assign operator did not roll week forward properly", __LINE__);
       testFramework.assert(additionAssignRollWeekF.getZcount() == 1999, "Add and assign operator did not set zcount properly"       , __LINE__);
@@ -372,24 +372,24 @@ public:
 //=============================================================================
    int  subtractionTest(void)
    {
-      gpstk::TestUtil testFramework( "GPSZcount", "OperatorSubtraction", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "GPSZcount", "OperatorSubtraction", __FILE__, __LINE__ );
          // Subtract from the zcount
-      gpstk::GPSZcount justSubtraction(10, 35);
-      gpstk::GPSZcount subtractionAssign(15, 1000);
+      gnsstk::GPSZcount justSubtraction(10, 35);
+      gnsstk::GPSZcount subtractionAssign(15, 1000);
       justSubtraction = justSubtraction - 15;
       subtractionAssign -= 500;
 
       testFramework.assert(justSubtraction.getZcount() == 20, "Subtraction operator did not set zcount properly"  , __LINE__);
-      testFramework.assert(subtractionAssign.getZcount() == 500, "Subtract and assign operator did not set zcount properly"  , __LINE__);       
-                
+      testFramework.assert(subtractionAssign.getZcount() == 500, "Subtract and assign operator did not set zcount properly"  , __LINE__);
+
          // Roll the week backward
-      gpstk::GPSZcount justSubtractionRollWeekB(10, 0);
+      gnsstk::GPSZcount justSubtractionRollWeekB(10, 0);
       justSubtractionRollWeekB = justSubtractionRollWeekB - 100;
       testFramework.assert(justSubtractionRollWeekB.getWeek() == 9 , "Subtraction operator did not roll week forward properly", __LINE__);
       testFramework.assert(justSubtractionRollWeekB.getZcount() == 403100, "Subtraction operator did not set zcount properly"       , __LINE__);
 
          // Roll the week backward
-      gpstk::GPSZcount subtractionAssignRollWeekB(2, 0);
+      gnsstk::GPSZcount subtractionAssignRollWeekB(2, 0);
       subtractionAssignRollWeekB -= 200;
       testFramework.assert(subtractionAssignRollWeekB.getWeek() == 1 , "Subtract and assign operator did not roll week forward properly", __LINE__);
       testFramework.assert(subtractionAssignRollWeekB.getZcount() == 403000, "Subtract and assign operator did not set zcount properly"       , __LINE__);
@@ -406,15 +406,15 @@ public:
 //=============================================================================
    int  differenceTest(void)
    {
-      gpstk::TestUtil testFramework( "GPSZcount", "OperatorDifference", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "GPSZcount", "OperatorDifference", __FILE__, __LINE__ );
 
          // Find the zcount difference between the two objects
       double diffLessThan, diffMoreThan, diffSame;
 
-      gpstk::GPSZcount object(10, 35);
-      gpstk::GPSZcount lessThanObject(4, 13);
-      gpstk::GPSZcount objectCopy(object);
-      gpstk::GPSZcount moreThanObject(15, 1000);
+      gnsstk::GPSZcount object(10, 35);
+      gnsstk::GPSZcount lessThanObject(4, 13);
+      gnsstk::GPSZcount objectCopy(object);
+      gnsstk::GPSZcount moreThanObject(15, 1000);
 
       diffLessThan = object - lessThanObject;
       diffMoreThan = object - moreThanObject;
@@ -434,12 +434,12 @@ public:
 //=============================================================================
    int  remainderTest(void)
    {
-      gpstk::TestUtil testFramework( "GPSZcount", "OperatorRemainder", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "GPSZcount", "OperatorRemainder", __FILE__, __LINE__ );
 
          // Find the zcount remainder between the object and some test values
       long remaiderWeek, remainderValue;
 
-      gpstk::GPSZcount object(10, 25);
+      gnsstk::GPSZcount object(10, 25);
 
       remaiderWeek = object % 403200;
       remainderValue = object % 25;
@@ -457,20 +457,20 @@ public:
 //=============================================================================
    int  comparisonTest(void)
    {
-      gpstk::TestUtil testFramework( "GPSZcount", "OperatorEquivalence", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "GPSZcount", "OperatorEquivalence", __FILE__, __LINE__ );
 
-      gpstk::GPSZcount Compare(10, 25);
-      gpstk::GPSZcount LessThanWeek(9,25);
-      gpstk::GPSZcount LessThanZcount(10,12);
-      gpstk::GPSZcount CompareCopy(Compare);
+      gnsstk::GPSZcount Compare(10, 25);
+      gnsstk::GPSZcount LessThanWeek(9,25);
+      gnsstk::GPSZcount LessThanZcount(10,12);
+      gnsstk::GPSZcount CompareCopy(Compare);
 
          //--------------------------------------------------------------------
          // Does the == Operator function?
          //--------------------------------------------------------------------
       testFramework.assert(  Compare == CompareCopy,     "Equivalence operator found equivalent objects to be not equivalent",     __LINE__);
       testFramework.assert(!(Compare == LessThanWeek),   "Equivalence operator found different week objects to be equivalent",     __LINE__);
-      testFramework.assert(!(Compare == LessThanZcount), "Equivalence operator found different zcount objects to be equivalent",   __LINE__);   
-                
+      testFramework.assert(!(Compare == LessThanZcount), "Equivalence operator found different zcount objects to be equivalent",   __LINE__);
+
 
       testFramework.changeSourceMethod("OperatorNotEquivalent");
          //--------------------------------------------------------------------
@@ -479,7 +479,7 @@ public:
       testFramework.assert(  Compare != LessThanWeek,   "Not-equal operator found different week objects to be equivalent",     __LINE__);
       testFramework.assert(  Compare != LessThanZcount, "Not-equal operator found different zcount objects to be equivalent",   __LINE__);
       testFramework.assert(!(Compare != Compare),       "Not-equal operator found equivalent objects to not be equivalent",     __LINE__);
-                
+
 
       testFramework.changeSourceMethod("OperatorLessThan");
          //--------------------------------------------------------------------
@@ -500,7 +500,7 @@ public:
       testFramework.assert(  Compare > LessThanWeek,    "Greater-than operator found greater-than week object to not be greater than",   __LINE__);
       testFramework.assert(  Compare > LessThanZcount,  "Greater-than operator found greater-than zcount object to not be greater than", __LINE__);
       testFramework.assert(!(Compare > CompareCopy),    "Greater-than operator found equivalent object to be greater than",              __LINE__);
-                
+
 
       testFramework.changeSourceMethod("OperatorLessThanOrEqualTo");
          //--------------------------------------------------------------------
@@ -511,7 +511,7 @@ public:
       testFramework.assert(!(Compare <= LessThanWeek),   "Less-than operator found greater-than week object to be less-than-or-equal-to",    __LINE__);
       testFramework.assert(!(Compare <= LessThanZcount), "Less-than operator found greater-than zcount object to be less-than-or-equal-to",  __LINE__);
       testFramework.assert(  Compare <= CompareCopy,     "Less-than operator found equivalent object to not be less-than-or-equal-to",       __LINE__);
-                
+
 
       testFramework.changeSourceMethod("OperatorGreaterThanOrEqualTo");
          //--------------------------------------------------------------------
@@ -533,10 +533,10 @@ public:
 //=============================================================================
    int  stringTest(void)
    {
-      gpstk::TestUtil testFramework( "GPSZcount", "OperatorString", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "GPSZcount", "OperatorString", __FILE__, __LINE__ );
 
       std::string expectedResult = "1234w56789z";
-      gpstk::GPSZcount object(1234, 56789);
+      gnsstk::GPSZcount object(1234, 56789);
       std::string obtainedResult = std::string(object);
 
       testFramework.assert(obtainedResult == expectedResult, "string operator did not obtain the expected result", __LINE__);
@@ -550,7 +550,7 @@ public:
 //=============================================================================
    int  dumpTest(void)
    {
-      gpstk::TestUtil testFramework( "GPSZcount", "dump", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "GPSZcount", "dump", __FILE__, __LINE__ );
 
       std::stringstream obtainedOutputStreamLevel0;
       std::stringstream obtainedOutputStreamLevel1;
@@ -560,8 +560,8 @@ public:
       expectedOutputStreamLevel0 << "1234w56789z";
       expectedOutputStreamLevel1 << "GPS Full Week: " << std::setw(6) << 1234 << std::endl
                                  << "GPS Z-count:   " << std::setw(6) << 56789 << std::endl;
-                
-      gpstk::GPSZcount object(1234, 56789);
+
+      gnsstk::GPSZcount object(1234, 56789);
       object.dump(obtainedOutputStreamLevel0, 0);
       object.dump(obtainedOutputStreamLevel1, 1);
 
@@ -579,44 +579,44 @@ public:
 //=============================================================================
    int inSameTimeBlockTest(void)
    {
-      gpstk::TestUtil testFramework( "GPSZcount", "inSameTimeBlock", __FILE__, __LINE__ );
+      gnsstk::TestUtil testFramework( "GPSZcount", "inSameTimeBlock", __FILE__, __LINE__ );
 
-      gpstk::GPSZcount compare(10,0);
-      gpstk::GPSZcount oneWeekMinus1(10,403199);
-      gpstk::GPSZcount compareOffset(10,20);
-      gpstk::GPSZcount withinWeek(10, 1000);
-      gpstk::GPSZcount oneWeek(11,0);
-      gpstk::GPSZcount oneWeekOffset(11,10);
-      gpstk::GPSZcount moreThanWeek(12,0);
-      gpstk::GPSZcount withinMinuteOffset(10,50);
+      gnsstk::GPSZcount compare(10,0);
+      gnsstk::GPSZcount oneWeekMinus1(10,403199);
+      gnsstk::GPSZcount compareOffset(10,20);
+      gnsstk::GPSZcount withinWeek(10, 1000);
+      gnsstk::GPSZcount oneWeek(11,0);
+      gnsstk::GPSZcount oneWeekOffset(11,10);
+      gnsstk::GPSZcount moreThanWeek(12,0);
+      gnsstk::GPSZcount withinMinuteOffset(10,50);
 
-      bool isWithinMinute    =  compare.inSameTimeBlock(compareOffset, gpstk::GPSZcount::ZCOUNT_MINUTE  , 0);
-      bool isNotWithinMinute = !compare.inSameTimeBlock(withinWeek   , gpstk::GPSZcount::ZCOUNT_MINUTE  , 0);           
-      bool isWithinWeek      =  compare.inSameTimeBlock(withinWeek   , gpstk::GPSZcount::ZCOUNT_WEEK    , 0);
-      bool isNotWithinWeek   = !compare.inSameTimeBlock(oneWeekOffset, gpstk::GPSZcount::ZCOUNT_WEEK    , 0);
+      bool isWithinMinute    =  compare.inSameTimeBlock(compareOffset, gnsstk::GPSZcount::ZCOUNT_MINUTE  , 0);
+      bool isNotWithinMinute = !compare.inSameTimeBlock(withinWeek   , gnsstk::GPSZcount::ZCOUNT_MINUTE  , 0);
+      bool isWithinWeek      =  compare.inSameTimeBlock(withinWeek   , gnsstk::GPSZcount::ZCOUNT_WEEK    , 0);
+      bool isNotWithinWeek   = !compare.inSameTimeBlock(oneWeekOffset, gnsstk::GPSZcount::ZCOUNT_WEEK    , 0);
 
          // For times at 1 week, the comparison is done assuming close
          // to week = 0, which is not any of these
 
          // Originally this was expected to be true, but it really
          // shouldn't be.  Week 11 is not in the same week as week 10.
-      bool isAtWeek          =  compare.inSameTimeBlock(oneWeek, gpstk::GPSZcount::ZCOUNT_WEEK, gpstk::GPSZcount::ZCOUNT_WEEK*10);
-      bool isNearWeek        =  compare.inSameTimeBlock(oneWeekMinus1, gpstk::GPSZcount::ZCOUNT_WEEK, gpstk::GPSZcount::ZCOUNT_WEEK*10);
-      bool isWithin3Weeks       = compare.inSameTimeBlock(moreThanWeek, gpstk::GPSZcount::ZCOUNT_WEEK*3, gpstk::GPSZcount::ZCOUNT_WEEK*10);
+      bool isAtWeek          =  compare.inSameTimeBlock(oneWeek, gnsstk::GPSZcount::ZCOUNT_WEEK, gnsstk::GPSZcount::ZCOUNT_WEEK*10);
+      bool isNearWeek        =  compare.inSameTimeBlock(oneWeekMinus1, gnsstk::GPSZcount::ZCOUNT_WEEK, gnsstk::GPSZcount::ZCOUNT_WEEK*10);
+      bool isWithin3Weeks       = compare.inSameTimeBlock(moreThanWeek, gnsstk::GPSZcount::ZCOUNT_WEEK*3, gnsstk::GPSZcount::ZCOUNT_WEEK*10);
 
-      bool isWithinMinuteOffset = compareOffset.inSameTimeBlock(withinMinuteOffset, gpstk::GPSZcount::ZCOUNT_MINUTE  , 20);
-      bool isWithinWeekOffset   = compareOffset.inSameTimeBlock(oneWeekOffset     , gpstk::GPSZcount::ZCOUNT_WEEK    , 20);
+      bool isWithinMinuteOffset = compareOffset.inSameTimeBlock(withinMinuteOffset, gnsstk::GPSZcount::ZCOUNT_MINUTE  , 20);
+      bool isWithinWeekOffset   = compareOffset.inSameTimeBlock(oneWeekOffset     , gnsstk::GPSZcount::ZCOUNT_WEEK    , 20);
 
 
       testFramework.assert(isWithinMinute      , "Returned false when object difference is 20 and timeblock is 40"                , __LINE__);
-      testFramework.assert(isNotWithinMinute   , "Returned true when object difference is 1000 and timeblock is 40"               , __LINE__);          
+      testFramework.assert(isNotWithinMinute   , "Returned true when object difference is 1000 and timeblock is 40"               , __LINE__);
       testFramework.assert(isWithinWeek        , "Returned false when object difference is 1000 and timeblock is 403200"          , __LINE__);
-      testFramework.assert(!isAtWeek           , "Returned true when object difference is 403200 and timeblock is 403200"        , __LINE__);  
-      testFramework.assert(isNearWeek          , "Returned false when object difference is 403199 and timeblock is 403200"        , __LINE__);  
-      testFramework.assert(isNotWithinWeek     , "Returned true when object difference is 403210 and timeblock is 403200"         , __LINE__);  
-      testFramework.assert(isWithin3Weeks      , "Returned false when object difference is 806400 and timeblock is 1209600"       , __LINE__);  
-      testFramework.assert(isWithinMinuteOffset, "Returned false when object difference is 30 and shifted timeblock is 40"        , __LINE__);  
-      testFramework.assert(isWithinWeekOffset  , "Returned false when object difference is 403190 and shifted timeblock is 403200", __LINE__);          
+      testFramework.assert(!isAtWeek           , "Returned true when object difference is 403200 and timeblock is 403200"        , __LINE__);
+      testFramework.assert(isNearWeek          , "Returned false when object difference is 403199 and timeblock is 403200"        , __LINE__);
+      testFramework.assert(isNotWithinWeek     , "Returned true when object difference is 403210 and timeblock is 403200"         , __LINE__);
+      testFramework.assert(isWithin3Weeks      , "Returned false when object difference is 806400 and timeblock is 1209600"       , __LINE__);
+      testFramework.assert(isWithinMinuteOffset, "Returned false when object difference is 30 and shifted timeblock is 40"        , __LINE__);
+      testFramework.assert(isWithinWeekOffset  , "Returned false when object difference is 403190 and shifted timeblock is 403200", __LINE__);
 
 
       return testFramework.countFails();
@@ -662,7 +662,7 @@ int main() // Main function to initialize and run all tests above
 
    check = testClass.inSameTimeBlockTest();
    errorCounter += check;
-        
+
    std::cout << "Total Failures for " << __FILE__ << ": " << errorCounter << std::endl;
 
    return errorCounter; // Return the total number of errors

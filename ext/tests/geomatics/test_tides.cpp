@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -45,7 +45,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-// gpstk
+// gnsstk
 #include "Exception.hpp"
 #include "EphTime.hpp"
 #include "Position.hpp"
@@ -62,7 +62,7 @@
 #include "logstream.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 using namespace StringUtils;
 
 //------------------------------------------------------------------------------------
@@ -334,9 +334,9 @@ try {
 
    // get rotation matrix XYZ->NEU for pos
    Matrix<double> Rotate,RotOTL,RotATM;
-   Rotate = NorthEastUp(C.posset);
-   RotOTL = NorthEastUp(C.posotl);
-   RotATM = NorthEastUp(C.posatm);
+   Rotate = northEastUp(C.posset);
+   RotOTL = northEastUp(C.posotl);
+   RotATM = northEastUp(C.posatm);
 
    // -------------------------------------------------------------------------
    if(!isValid) {
@@ -453,7 +453,7 @@ try {
 
    return iret;
 }
-catch(gpstk::Exception& e) { cerr << "Exception: " << e; }
+catch(gnsstk::Exception& e) { cerr << "Exception: " << e; }
 catch (...) { cerr << "Unknown exception.  Abort." << endl; }
    return 1;
 }   // end main()
@@ -614,9 +614,9 @@ try {
 
    return 0;                                    // ok
 }
-catch(Exception& e) { GPSTK_RETHROW(e); }
-catch(exception& e) { Exception E("std except: "+string(e.what())); GPSTK_THROW(E); }
-catch(...) { Exception e("Unknown exception"); GPSTK_THROW(e); }
+catch(Exception& e) { GNSSTK_RETHROW(e); }
+catch(exception& e) { Exception E("std except: "+string(e.what())); GNSSTK_THROW(E); }
+catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
    return -1;
 }
 

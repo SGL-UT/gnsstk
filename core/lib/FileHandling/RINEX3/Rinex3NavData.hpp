@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -39,8 +39,8 @@
 /// @file Rinex3NavData.hpp
 /// Encapsulates RINEX ver 3.02 Navigation data
 
-#ifndef GPSTK_RINEXNAVDATA_HPP
-#define GPSTK_RINEXNAVDATA_HPP
+#ifndef GNSSTK_RINEX3NAVDATA_HPP
+#define GNSSTK_RINEX3NAVDATA_HPP
 
 #include <list>
 #include <string>
@@ -51,15 +51,10 @@
 #include "Rinex3NavBase.hpp"
 #include "Rinex3NavStream.hpp"
 #include "EngEphemeris.hpp"         // GPS only, deprecated
-#include "GloEphemeris.hpp"
-#include "GPSEphemeris.hpp"
-#include "GalEphemeris.hpp"
-#include "BDSEphemeris.hpp"
-#include "QZSEphemeris.hpp"
 #include "RinexSatID.hpp"
 #include "RinexNavData.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
@@ -78,12 +73,7 @@ namespace gpstk
           * @warning CHECK THE PRNID TO SEE IF THIS DATA IS VALID BEFORE
           *          USING!!!.
           */
-      Rinex3NavData(void)
-            : time(CommonTime::BEGINNING_OF_TIME), PRNID(-1), fitint(4)
-      {}
-
-         /// Initializes the nav data with a GloEphemeris
-      Rinex3NavData(const GloEphemeris& gloe);
+      Rinex3NavData();
 
          /// Create from a RinexNavData (for backward compatibility)
       Rinex3NavData(const RinexNavData& rnd);
@@ -91,18 +81,6 @@ namespace gpstk
          /// Initializes the nav data with an EngEphemeris
          /// EngEphemeris is deprecated; use GPSEphemeris
       Rinex3NavData(const EngEphemeris& ee);
-
-         /// Initializes the nav data with a GPSEphemeris
-      Rinex3NavData(const GPSEphemeris& gpseph);
-
-         /// Initializes the nav data with a GalEphemeris
-      Rinex3NavData(const GalEphemeris& galeph);
-
-         /// Initializes the nav data with a BDSEphemeris
-      Rinex3NavData(const BDSEphemeris& bdseph);
-
-         /// Initializes the nav data with a QZSEphemeris
-      Rinex3NavData(const QZSEphemeris& qzseph);
 
          /// Destructor
       virtual ~Rinex3NavData() {}
@@ -120,21 +98,6 @@ namespace gpstk
          /// deprecated; use GPSEphemeris, GPS-only.
          /// Converts Rinex3NavData to an EngEphemeris object.
       operator EngEphemeris() const throw();
-
-         /// Converts Rinex3NavData to a GPSEphemeris object.
-      operator GPSEphemeris() const throw();
-
-         /// Converts this Rinex3NavData to a GloEphemeris object.
-      operator GloEphemeris() const throw();
-
-         /// Converts Rinex3NavData to a GalEphemeris object.
-      operator GalEphemeris() const throw();
-
-         /// Converts Rinex3NavData to a BDSEphemeris object.
-      operator BDSEphemeris() const throw();
-
-         /// Converts Rinex3NavData to a QZSEphemeris object.
-      operator QZSEphemeris() const throw();
 
          /// Converts the (non-CommonTime) data to an easy list
          /// for comparison operators.
@@ -171,7 +134,7 @@ namespace gpstk
          /** @name GPS Data */
          //@{
       short   codeflgs;    ///< L2 codes
-      short   L2Pdata;     ///< L2 P data flag 
+      short   L2Pdata;     ///< L2 P data flag
       RNDouble  IODC;      ///< Index of data-clock
       RNDouble  IODE;      ///< Index of data-eph
          //@}
@@ -279,13 +242,6 @@ namespace gpstk
           */
       void putRecord(const int& n, Rinex3NavStream& strm) const;
 
-         /** Helper routine for constructors of this from
-          * OrbitEph-based Ephemerides */
-      void loadFrom(const OrbitEph *oeptr);
-
-         /// Helper routine for casts from this to OrbitEph-based Ephemerides
-      void castTo(OrbitEph *oeptr) const;
-
    protected:
 
          /** This function retrieves a RINEX 3 NAV record from the given
@@ -312,6 +268,6 @@ namespace gpstk
 
       //@}
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk
 
-#endif   // GPSTK_RINEXNAVDATA_HPP
+#endif   // GNSSTK_RINEX3NAVDATA_HPP

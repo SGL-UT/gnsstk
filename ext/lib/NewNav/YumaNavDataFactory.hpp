@@ -1,49 +1,49 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_YUMANAVDATAFACTORY_HPP
-#define GPSTK_YUMANAVDATAFACTORY_HPP
+#ifndef GNSSTK_YUMANAVDATAFACTORY_HPP
+#define GNSSTK_YUMANAVDATAFACTORY_HPP
 
 #include "NavDataFactoryWithStoreFile.hpp"
 #include "YumaData.hpp"
 #include "GPSLNavAlm.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /** Factory class for loading Yuma nav data.
        * @note While in theory Y code and P code LNav are supported,
@@ -68,9 +68,14 @@ namespace gpstk
          /** Load Yuma nav data into a map.
           * @param[in] filename The path of the file to load.
           * @param[out] navMap The map to store the loaded data in.
+          * @param[out] navNearMap The map to store the loaded data in
+          *   for use by "Nearest" (as opposed to "User") searches.
+          * @param[out] ofsMap The map to load TimeOffsetData into.
           * @return true on succes, false on failure. */
       bool loadIntoMap(const std::string& filename,
-                       NavMessageMap& navMap) override;
+                       NavMessageMap& navMap,
+                       NavNearMessageMap& navNearMap,
+                       OffsetCvtMap& ofsMap) override;
 
          /// Return a comma-separated list of formats supported by this factory.
       std::string getFactoryFormats() const override;
@@ -110,4 +115,4 @@ namespace gpstk
    };
 }
 
-#endif // GPSTK_YUMANAVDATAFACTORY_HPP
+#endif // GNSSTK_YUMANAVDATAFACTORY_HPP

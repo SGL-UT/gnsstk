@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -44,10 +44,8 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
-   const std::string OrbitDataKepler :: dumpTimeFmt("%4F(%4G)  %6.0g   %3a-%w   %3j   %5.0s   %02m/%02d/%04Y   %02H:%02M:%02S");
-
    OrbitDataKepler ::
    OrbitDataKepler()
          : Cuc(0.0), Cus(0.0), Crc(0.0), Crs(0.0), Cic(0.0), Cis(0.0), M0(0.0),
@@ -59,11 +57,15 @@ namespace gpstk
 
 
    void OrbitDataKepler ::
-   dump(std::ostream& s, Detail dl) const
+   dump(std::ostream& s, DumpDetail dl) const
    {
-      if (dl == Detail::OneLine)
+      if (dl == DumpDetail::OneLine)
       {
-         NavData::dump(s,dl);
+         s << printTime(timeStamp, dumpTimeFmtBrief) << " " << signal
+           << (signal.messageType == NavMessageType::Almanac
+               ? " toa: " : " toe: ")
+           << printTime(Toe, dumpTimeFmtBrief) << " "
+           << gnsstk::StringUtils::asString(health) << std::endl;
          return;
       }
          // "header"
@@ -75,15 +77,26 @@ namespace gpstk
         << endl
         << "PRN : " << setw(2) << signal.sat << " / "
         << "SVN : " << setw(2);
-         // std::string svn;
-         // if (getSVN(satID, ctToe, svn))
-         // {
-         //    s << svn;
-         // }
+      std::string svn;
+      if (getSVN(signal.sat, timeStamp, svn))
+      {
+         s << svn;
+      }
+      if (signal.messageType == NavMessageType::Almanac)
+      {
+            // for almanacs, print the transmitting satellite as well.
+         s << endl
+           << "XMIT: " << setw(2) << signal.xmitSat << " / "
+           << "SVN : " << setw(2);
+         if (getSVN(signal.xmitSat, timeStamp, svn))
+         {
+            s << svn;
+         }
+      }
       s << endl << endl;
 
          // the rest is full details, so just return if Full is not asked for.
-      if (dl != Detail::Full)
+      if (dl != DumpDetail::Full)
          return;
 
       const ios::fmtflags oldFlags = s.flags();
@@ -99,12 +112,12 @@ namespace gpstk
       s << endl
         << "           TIMES OF INTEREST"
         << endl << endl
-        << "              Week(10bt)     SOW     DOW   UTD     SOD"
-        << "   MM/DD/YYYY   HH:MM:SS\n"
-        << "Begin Valid:  " << printTime(beginFit, dumpTimeFmt) << endl
-        << "Clock Epoch:  " << printTime(Toc, dumpTimeFmt) << endl
-        << "Eph Epoch:    " << printTime(Toe, dumpTimeFmt) << endl
-        << "End Valid:    " << printTime(endFit, dumpTimeFmt) << endl;
+        << "              " << getDumpTimeHdr(dl) << endl
+        << "Begin Valid:  " << getDumpTime(dl, beginFit) << endl
+        << "Clock Epoch:  " << getDumpTime(dl, Toc) << endl
+        << (signal.messageType == NavMessageType::Ephemeris ? "Eph" : "Alm")
+        << " Epoch:    " << getDumpTime(dl, Toe) << endl
+        << "End Valid:    " << getDumpTime(dl, endFit) << endl;
 
       s.setf(ios::scientific, ios::floatfield);
       s.precision(precision);
@@ -325,25 +338,7 @@ namespace gpstk
       xvt.v[0] = vxef;
       xvt.v[1] = vyef;
       xvt.v[2] = vzef;
-      switch (health)
-      {
-         case SVHealth::Unknown:
-            xvt.health = Xvt::Unknown;
-            break;
-         case SVHealth::Healthy:
-            xvt.health = Xvt::Healthy;
-            break;
-         case SVHealth::Unhealthy:
-            xvt.health = Xvt::Unhealthy;
-            break;
-         case SVHealth::Degraded:
-            xvt.health = Xvt::Degraded;
-            break;
-         default:
-            xvt.health = Xvt::Uninitialized;
-            break;
-      }
-
+      xvt.health = toXvtHealth(health);
       return true;
    }
 
@@ -392,5 +387,119 @@ namespace gpstk
       elaptc = when - Toc;
       drift = af1 + elaptc * af2;
       return drift;
+   }
+
+
+   bool OrbitDataKepler ::
+   isSameData(const NavDataPtr& right) const
+   {
+      const std::shared_ptr<OrbitDataKepler> rhs =
+         std::dynamic_pointer_cast<OrbitDataKepler>(right);
+      if (!rhs)
+      {
+            // not the same type.
+         return false;
+      }
+      return (NavData::isSameData(right) &&
+              (Toe == rhs->Toe) &&
+              (Toc == rhs->Toc) &&
+              (Cuc == rhs->Cuc) &&
+              (Cus == rhs->Cus) &&
+              (Crc == rhs->Crc) &&
+              (Crs == rhs->Crs) &&
+              (Cic == rhs->Cic) &&
+              (Cis == rhs->Cis) &&
+              (M0 == rhs->M0) &&
+              (dn == rhs->dn) &&
+              (dndot == rhs->dndot) &&
+              (ecc == rhs->ecc) &&
+              (A == rhs->A) &&
+              (Ahalf == rhs->Ahalf) &&
+              (Adot == rhs->Adot) &&
+              (OMEGA0 == rhs->OMEGA0) &&
+              (i0 == rhs->i0) &&
+              (w == rhs->w) &&
+              (OMEGAdot == rhs->OMEGAdot) &&
+              (idot == rhs->idot) &&
+              (af0 == rhs->af0) &&
+              (af1 == rhs->af1) &&
+              (af2 == rhs->af2));
+   }
+
+
+   std::list<std::string> OrbitDataKepler ::
+   compare(const NavDataPtr& right) const
+   {
+         // OrbitData doesn't have any data, but OrbitData::compare
+         // instead throws an exception if called so as to make sure
+         // unimplemented children make it clear they're
+         // unimplemented.  So jump directly to NavData::compare.
+      std::list<std::string> rv = NavData::compare(right);
+      const std::shared_ptr<OrbitDataKepler> rhs =
+         std::dynamic_pointer_cast<OrbitDataKepler>(right);
+      if (!rhs)
+      {
+            // not the same type.
+         rv.push_back("CLASS");
+      }
+      else
+      {
+            // old nav implementation clearly didn't check this
+            // if (xmitTime != rhs->xmitTime)
+            //    rv.push_back("xmitTime");
+         if (Toe != rhs->Toe)
+            rv.push_back("Toe");
+         if (Toc != rhs->Toc)
+            rv.push_back("Toc");
+         if (health != rhs->health)
+            rv.push_back("health");
+         if (Cuc != rhs->Cuc)
+            rv.push_back("Cuc");
+         if (Cus != rhs->Cus)
+            rv.push_back("Cus");
+         if (Crc != rhs->Crc)
+            rv.push_back("Crc");
+         if (Crs != rhs->Crs)
+            rv.push_back("Crs");
+         if (Cic != rhs->Cic)
+            rv.push_back("Cic");
+         if (Cis != rhs->Cis)
+            rv.push_back("Cis");
+         if (M0 != rhs->M0)
+            rv.push_back("M0");
+         if (dn != rhs->dn)
+            rv.push_back("dn");
+         if (dndot != rhs->dndot)
+            rv.push_back("dndot");
+         if (ecc != rhs->ecc)
+            rv.push_back("ecc");
+         if (A != rhs->A)
+            rv.push_back("A");
+         if (Ahalf != rhs->Ahalf)
+            rv.push_back("Ahalf");
+         if (Adot != rhs->Adot)
+            rv.push_back("Adot");
+         if (OMEGA0 != rhs->OMEGA0)
+            rv.push_back("OMEGA0");
+         if (i0 != rhs->i0)
+            rv.push_back("i0");
+         if (w != rhs->w)
+            rv.push_back("w");
+         if (OMEGAdot != rhs->OMEGAdot)
+            rv.push_back("OMEGAdot");
+         if (idot != rhs->idot)
+            rv.push_back("idot");
+         if (af0 != rhs->af0)
+            rv.push_back("af0");
+         if (af1 != rhs->af1)
+            rv.push_back("af1");
+         if (af2 != rhs->af2)
+            rv.push_back("af2");
+         if (beginFit != rhs->beginFit)
+            rv.push_back("beginFit");
+         if (endFit != rhs->endFit)
+            rv.push_back("endFit");
+      }
+      return rv;
    }
 }

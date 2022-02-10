@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -46,7 +46,7 @@
 #include "TestUtil.hpp"
 #include <iostream>
 
-using namespace gpstk;
+using namespace gnsstk;
 
 class RinexClock_T
 {
@@ -93,8 +93,8 @@ void RinexClock_T ::
 init()
 {
    TestUtil test0;
-   std::string iPath = gpstk::getPathData() + getFileSep();
-   std::string oPath = gpstk::getPathTestTemp() + getFileSep();
+   std::string iPath = gnsstk::getPathData() + getFileSep();
+   std::string oPath = gnsstk::getPathTestTemp() + getFileSep();
 
    dataRinexClockFile     = iPath +
       "test_input_rinex2_clock_RinexClockExample.96c";
@@ -135,20 +135,20 @@ headerExceptionTest()
 
    try
    {
-      gpstk::RinexClockStream
+      gnsstk::RinexClockStream
          rinexClockFile( dataRinexClockFile.c_str() ),
          ih( dataIncompleteHeader.c_str() ),
          il( dataInvalidLineLength.c_str() ),
          no( dataNotAClockFile.c_str() ),
          uh( dataUnknownHeaderLabel.c_str() ),
          out( dataTestOutput.c_str(), std::ios::out );
-      gpstk::RinexClockHeader
+      gnsstk::RinexClockHeader
          rinexClockHeader,
          ihh,
          ilh,
          noh,
          uhh;
-      gpstk::RinexClockData rinexClockData;
+      gnsstk::RinexClockData rinexClockData;
 
          // read in some good and some bad headers
       rinexClockFile >> rinexClockHeader;
@@ -233,11 +233,11 @@ roundTripTest()
    int numLinesSkip = 0;
    try
    {
-      gpstk::RinexClockStream
+      gnsstk::RinexClockStream
          rinexClockFile( dataRinexClockFile.c_str() ),
          out( dataRoundTripOutput.c_str(), std::ios::out );
-      gpstk::RinexClockHeader rinexClockHeader;
-      gpstk::RinexClockData rinexClockData;
+      gnsstk::RinexClockHeader rinexClockHeader;
+      gnsstk::RinexClockData rinexClockData;
 
       rinexClockFile.exceptions(std::fstream::failbit);
       out.exceptions(std::fstream::failbit);
@@ -271,15 +271,15 @@ int RinexClock_T::dataExceptionTest()
    TUDEF("RinexClockStream", "DataExceptions");
 
    std::string msg_desc                 = "";
-   std::string msg_expect               = ", should throw gpstk::Exception";
+   std::string msg_expect               = ", should throw gnsstk::Exception";
    std::string msg_falsePass    = " but threw no exception.";
    std::string msg_trueFail     = " but instead threw an unknown exception";
 
    try
    {
-      gpstk::RinexClockStream badEpochLine(dataBadEpochLine.c_str());
+      gnsstk::RinexClockStream badEpochLine(dataBadEpochLine.c_str());
       badEpochLine.exceptions(std::fstream::failbit);
-      gpstk::RinexClockData cd;
+      gnsstk::RinexClockData cd;
 
       msg_desc = "BadEpochLine test";
       try
@@ -287,7 +287,7 @@ int RinexClock_T::dataExceptionTest()
          while (badEpochLine >> cd);
          TUFAIL(msg_desc + msg_expect + msg_falsePass);
       }
-      catch(gpstk::Exception e)
+      catch(gnsstk::Exception e)
       {
          TUPASS(msg_desc + msg_expect);
       }
@@ -297,7 +297,7 @@ int RinexClock_T::dataExceptionTest()
       }
 
    }
-   catch(gpstk::Exception e)
+   catch(gnsstk::Exception e)
    {
       TUFAIL("Error thrown when running dataExceptionTest: "+e.what());
    }

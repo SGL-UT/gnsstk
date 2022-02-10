@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -46,7 +46,7 @@
 #include <iostream>
 #include <fstream>
 
-using namespace gpstk;
+using namespace gnsstk;
 using namespace std;
 
 /* Tests should be cleaned to use a == or != operator for the Triple class, once one is added.*/
@@ -72,7 +72,7 @@ class RACRotation_T
    			Triple SVVel( 0, 0, 4000 );
    			RACRotation rot( SVPos, SVVel );
 
-      			// OK, now give it test vectors to rotate			
+      			// OK, now give it test vectors to rotate
    			XYZ = Triple( 1.0, 1.0, 1.0);
    			rotatedXYZ = rot.convertToRAC( XYZ );
 			//Compare results
@@ -85,7 +85,7 @@ class RACRotation_T
 
 			failMesg = "Was the Z value rotated properly?";
    			testFramework.assert(-1 == rotatedXYZ[2], failMesg, __LINE__);
-   		
+
 
    			XYZ = Triple( -1.0, -1.0, -1.0);
    			rotatedXYZ = rot.convertToRAC( XYZ );
@@ -98,7 +98,7 @@ class RACRotation_T
 
 			failMesg = "Was the Z value rotated properly?";
    			testFramework.assert(1 == rotatedXYZ[2], failMesg, __LINE__);
-   		
+
 
    			XYZ = Triple( 0.0, 0.0, -1.0);
    			rotatedXYZ = rot.convertToRAC( XYZ );
@@ -111,7 +111,7 @@ class RACRotation_T
 
 			failMesg = "Was the Z value rotated properly?";
    			testFramework.assert(0 == rotatedXYZ[2], failMesg, __LINE__);
-   		
+
 
    			XYZ = Triple( 0.0, -1.0, 0.0);
    			rotatedXYZ = rot.convertToRAC( XYZ );
@@ -123,9 +123,9 @@ class RACRotation_T
    			testFramework.assert(0 == rotatedXYZ[1], failMesg, __LINE__);
 
 			failMesg = "Was the Z value rotated properly?";
-   			testFramework.assert(1 == rotatedXYZ[2], failMesg, __LINE__);	
+   			testFramework.assert(1 == rotatedXYZ[2], failMesg, __LINE__);
 
-			return testFramework.countFails();   
+			return testFramework.countFails();
 		}
 
 		/* Second test case.  SV at GPS orbit altitude at 0 deg N, 90 deg E
@@ -152,7 +152,7 @@ class RACRotation_T
 			failMesg = "Was the X value rotated properly?";
    			testFramework.assert(1 == rotatedXYZ[0], failMesg, __LINE__);
 
-			failMesg = "Was the Y value rotated properly?";   			
+			failMesg = "Was the Y value rotated properly?";
    			testFramework.assert(-1 == rotatedXYZ[1], failMesg, __LINE__);
 
 			failMesg = "Was the Z value rotated properly?";
@@ -164,7 +164,7 @@ class RACRotation_T
 			failMesg = "Was the X value rotated properly?";
    			testFramework.assert(-1 == rotatedXYZ[0], failMesg, __LINE__);
 
-			failMesg = "Was the Y value rotated properly?";   			
+			failMesg = "Was the Y value rotated properly?";
    			testFramework.assert(1 == rotatedXYZ[1], failMesg, __LINE__);
 
 			failMesg = "Was the Z value rotated properly?";
@@ -176,7 +176,7 @@ class RACRotation_T
 			failMesg = "Was the X value rotated properly?";
    			testFramework.assert(0 == rotatedXYZ[0], failMesg, __LINE__);
 
-			failMesg = "Was the Y value rotated properly?";   			
+			failMesg = "Was the Y value rotated properly?";
    			testFramework.assert(1 == rotatedXYZ[1], failMesg, __LINE__);
 
 			failMesg = "Was the Z value rotated properly?";
@@ -188,7 +188,7 @@ class RACRotation_T
 			failMesg = "Was the X value rotated properly?";
    			testFramework.assert(-1 == rotatedXYZ[0], failMesg, __LINE__);
 
-			failMesg = "Was the Y value rotated properly?";   			
+			failMesg = "Was the Y value rotated properly?";
    			testFramework.assert(0 == rotatedXYZ[1], failMesg, __LINE__);
 
 			failMesg = "Was the Z value rotated properly?";
@@ -221,7 +221,7 @@ class RACRotation_T
 			failMesg = "Was the X value rotated properly?";
    			testFramework.assert(1 == rotatedXYZ[0], failMesg, __LINE__);
 
-			failMesg = "Was the Y value rotated properly?";   			
+			failMesg = "Was the Y value rotated properly?";
    			testFramework.assert(1 == rotatedXYZ[1], failMesg, __LINE__);
 
 			failMesg = "Was the Z value rotated properly?";
@@ -233,7 +233,7 @@ class RACRotation_T
 			failMesg = "Was the X value rotated properly?";
    			testFramework.assert(-1 == rotatedXYZ[0], failMesg, __LINE__);
 
-			failMesg = "Was the Y value rotated properly?";   			
+			failMesg = "Was the Y value rotated properly?";
    			testFramework.assert(-1 == rotatedXYZ[1], failMesg, __LINE__);
 
 			failMesg = "Was the Z value rotated properly?";
@@ -245,7 +245,7 @@ class RACRotation_T
 			failMesg = "Was the X value rotated properly?";
    			testFramework.assert(-1 == rotatedXYZ[0], failMesg, __LINE__);
 
-			failMesg = "Was the Y value rotated properly?";   			
+			failMesg = "Was the Y value rotated properly?";
    			testFramework.assert(0 == rotatedXYZ[1], failMesg, __LINE__);
 
 			failMesg = "Was the Z value rotated properly?";
@@ -257,12 +257,12 @@ class RACRotation_T
 			failMesg = "Was the X value rotated properly?";
    			testFramework.assert(0 == rotatedXYZ[0], failMesg, __LINE__);
 
-			failMesg = "Was the Y value rotated properly?";   			
+			failMesg = "Was the Y value rotated properly?";
    			testFramework.assert(-1 == rotatedXYZ[1], failMesg, __LINE__);
 
 			failMesg = "Was the Z value rotated properly?";
    			testFramework.assert(0 == rotatedXYZ[2], failMesg, __LINE__);
-   			
+
 			return testFramework.countFails();
 		}
 
@@ -309,7 +309,7 @@ class RACRotation_T
 			double y = (-2.0+sqrt(2.0))/(2.0*sqrt(3.0));
 			double z = (1.0 - sqrt(2.0))/sqrt(3.0);
 
-			failMesg = "Was the X value rotated properly?";			
+			failMesg = "Was the X value rotated properly?";
 		   	testFramework.assert(fabs(x - rotatedXYZ[0]) < eps, failMesg, __LINE__);
 
 			failMesg = "Was the Y value rotated properly?";
@@ -325,7 +325,7 @@ class RACRotation_T
 			y = -(-2.0+sqrt(2.0))/(2.0*sqrt(3.0));
 			z = -(1.0 - sqrt(2.0))/sqrt(3.0);
 
-			failMesg = "Was the X value rotated properly?";			
+			failMesg = "Was the X value rotated properly?";
 		   	testFramework.assert(fabs(x - rotatedXYZ[0]) < eps, failMesg, __LINE__);
 
 			failMesg = "Was the Y value rotated properly?";
@@ -341,7 +341,7 @@ class RACRotation_T
 			y = -sqrt(2.0)/(2.0*sqrt(3.0));
 			z = -1.0/sqrt(3.0);
 
-			failMesg = "Was the X value rotated properly?";			
+			failMesg = "Was the X value rotated properly?";
 		   	testFramework.assert(fabs(x - rotatedXYZ[0]) < eps, failMesg, __LINE__);
 
 			failMesg = "Was the Y value rotated properly?";
@@ -357,7 +357,7 @@ class RACRotation_T
 			y = -1.0/(2.0*sqrt(3.0));
 			z = sqrt(2.0)/sqrt(3.0);
 
-			failMesg = "Was the X value rotated properly?";			
+			failMesg = "Was the X value rotated properly?";
 		   	testFramework.assert(fabs(x - rotatedXYZ[0]) < eps, failMesg, __LINE__);
 
 			failMesg = "Was the Y value rotated properly?";
@@ -390,7 +390,7 @@ class RACRotation_T
 
 		   	RACRotation rot5( refPoint );
 
-		      	// OK, now set up unit vectors in radius and velocity to 
+		      	// OK, now set up unit vectors in radius and velocity to
                         // see if the results align properly.
 		   	Xvt testPoint;
 		   	testPoint.x = Position( 1.0, 0.0, 0.0 );
@@ -402,7 +402,7 @@ class RACRotation_T
 		   	Xvt rotatedTestPoint = rot5.convertToRAC( testPoint );
 
 			failMesg = "Were the position values stored properly?";
-		   	testFramework.assert(Position(1,0,0) == (gpstk::Position)rotatedTestPoint.x, failMesg, __LINE__);
+		   	testFramework.assert(Position(1,0,0) == (gnsstk::Position)rotatedTestPoint.x, failMesg, __LINE__);
 
 			failMesg = "Were the velocity values stored properly?";
 		   	testFramework.assert(Triple(0,1,0) == rotatedTestPoint.v, failMesg, __LINE__);
@@ -435,7 +435,7 @@ class RACRotation_T
 		   	rotatedTestPoint = rot5.convertToRAC( testPoint );
 
 			failMesg = "Were the position values stored properly?";
-		   	testFramework.assert(Position(0, -0.5, -0.5) == (gpstk::Position)rotatedTestPoint.x, failMesg, __LINE__);
+		   	testFramework.assert(Position(0, -0.5, -0.5) == (gnsstk::Position)rotatedTestPoint.x, failMesg, __LINE__);
 
 			failMesg = "Were the velocity values stored properly?";
 		   	testFramework.assert(Triple(1.0, 1.0, 1.0) == rotatedTestPoint.v, failMesg, __LINE__);
@@ -488,7 +488,7 @@ int main() //Main function to initialize and run all tests above
 	check = testClass.tripleFirstTest();
 	errorCounter += check;
 
-	check = testClass.tripleSecondTest(); 
+	check = testClass.tripleSecondTest();
 	errorCounter += check;
 
 	check = testClass.tripleThirdTest();

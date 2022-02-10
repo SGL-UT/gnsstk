@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,8 +41,8 @@
  * Position and velocity as Triples, clock bias and drift as doubles.
  */
 
-#ifndef GPSTK_XVT_INCLUDE
-#define GPSTK_XVT_INCLUDE
+#ifndef GNSSTK_XVT_INCLUDE
+#define GNSSTK_XVT_INCLUDE
 
 #include <iostream>
 #include "Triple.hpp"
@@ -50,7 +50,7 @@
 #include "ReferenceFrame.hpp"
 #include "GNSSconstants.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /** @addtogroup geodeticgroup */
       //@{
@@ -89,7 +89,7 @@ namespace gpstk
          MinValue,
          Uninitialized = MinValue, ///< Health status has not been set.
          Unavailable, ///< Orbit information was not available, PVT invalid.
-         Unused,      ///< Sat health is not used in computing this PVT. 
+         Unused,      ///< Sat health is not used in computing this PVT.
          Unknown,     ///< Health state is unknown.
          Unhealthy,   ///< Sat is marked unhealthy, do not use PVT.
          Degraded,    ///< Sat is in a degraded state, recommend do not use.
@@ -129,7 +129,7 @@ namespace gpstk
       { return relcorr; }
 
          /** Compute and return the relativity correction (-2R dot
-          * V/c^2) in seconds.  
+          * V/c^2) in seconds.
           * @note -2*dot(R,V)/(c*c) =
           *   -4.4428e-10(s/sqrt(m)) * ecc * sqrt(A(m)) * sinE
           */
@@ -142,7 +142,7 @@ namespace gpstk
           * @param[in] correction offset in meters (include any factors other
           *   than the SV clock correction and the relativity correction).
           * @return Range in meters */
-      double preciseRho(const Triple& rxPos, 
+      double preciseRho(const Triple& rxPos,
                         const EllipsoidModel& ellipsoid,
                         double correction = 0) const throw();
 
@@ -176,6 +176,6 @@ namespace gpstk
    std::ostream& operator<<(std::ostream& os, const Xvt::HealthStatus& health)
       throw();
 
-}  // end namespace gpstk
+}  // end namespace gnsstk
 
-#endif // GPSTK_XVT_INCLUDE
+#endif // GNSSTK_XVT_INCLUDE

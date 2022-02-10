@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -43,8 +43,8 @@
  * between systems.
  */
 
-#ifndef GPSTK_TIMESYSTEMCORRECTION_INCLUDE
-#define GPSTK_TIMESYSTEMCORRECTION_INCLUDE
+#ifndef GNSSTK_TIMESYSTEMCORRECTION_INCLUDE
+#define GNSSTK_TIMESYSTEMCORRECTION_INCLUDE
 
 #include "GNSSconstants.hpp"
 #include "CommonTime.hpp"
@@ -52,7 +52,7 @@
 #include "IRNWeekSecond.hpp"
 #include "CivilTime.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 
       /** Time System Corrections as defined in the RINEX version 3
@@ -76,7 +76,7 @@ namespace gpstk
          BDUT,    ///< BDT  to UTC using A0, A1
          BDGP,    ///< BDT  to GPS using A0, A1  !! not in RINEX
          IRUT,    ///< IRN  to UTC using A0, A1
-         IRGP     ///< IRN  to GPS using A0, A1 
+         IRGP     ///< IRN  to GPS using A0, A1
       };
 
          /// Empty constructor
@@ -143,16 +143,16 @@ namespace gpstk
 
          //// Member data
          ///  NOTE: User is responsible for setting the following parameters
-         ///  after instantiation of a TimeSystemCorrection object and prior 
+         ///  after instantiation of a TimeSystemCorrection object and prior
          ///  to calling Correction( )
          ///    refWeek - must be in GPS full weeks (regardless of what GNSS
          ///              is being considered.)
          ///    refSOW
          ///    A0      - A0utc or A0gps for most system.  For GLONASS
-         ///              GLUT corection supply -1.0 * tau_sub_c.  
+         ///              GLUT corection supply -1.0 * tau_sub_c.
          ///              This convention is selected in order to maintain
          ///              consistency with the RINEX documentation in Table A5.
-         ///    A1 
+         ///    A1
       CorrType type;
       TimeSystem frTS,toTS;
       double A0, A1;
@@ -166,4 +166,4 @@ namespace gpstk
 
 };    // end namespace
 
-#endif // GPSTK_TIMESYSTEMCORRECTION_INCLUDE
+#endif // GNSSTK_TIMESYSTEMCORRECTION_INCLUDE

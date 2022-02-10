@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -42,15 +42,15 @@
  */
 
 
-#ifndef GPSTK_IONOMODELSTORE_HPP
-#define GPSTK_IONOMODELSTORE_HPP
+#ifndef GNSSTK_IONOMODELSTORE_HPP
+#define GNSSTK_IONOMODELSTORE_HPP
 
 #include <map>
 #include "CommonTime.hpp"
 #include "CarrierBand.hpp"
 #include "IonoModel.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup GPSsolutions
       //@{
@@ -66,7 +66,7 @@ namespace gpstk
          /** Thrown when attempting to get a model that isn't stored.
           * @ingroup exceptiongroup
           */
-      NEW_EXCEPTION_CLASS(NoIonoModelFound, gpstk::Exception);
+      NEW_EXCEPTION_CLASS(NoIonoModelFound, gnsstk::Exception);
 
 
          /// Constructor
@@ -105,11 +105,11 @@ namespace gpstk
           * @param[in] tmin Defines the beginning of the time interval (inclusive)
           * @param[in] tmax Defines the end of the time interval (inclusive)
           */
-      void edit(const CommonTime& tmin, 
+      void edit(const CommonTime& tmin,
                 const CommonTime& tmax = CommonTime::END_OF_TIME);
 
          /** Remove all data from the store
-          */ 
+          */
       void clear()
       { ims.clear(); }
 
@@ -151,9 +151,9 @@ namespace gpstk
 
 
    }; // End of class 'IonoModelStore'
-   
+
       //@}
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk
 
-#endif  // GPSTK_IONOMODELSTORE_HPP
+#endif  // GNSSTK_IONOMODELSTORE_HPP

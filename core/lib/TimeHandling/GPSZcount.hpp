@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,28 +29,28 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  * @file GPSZcount.hpp
- * gpstk::GPSZcount - encapsulates time according to full GPS Week and Z-count.
+ * gnsstk::GPSZcount - encapsulates time according to full GPS Week and Z-count.
  */
 
-#ifndef GPSTK_GPSZCOUNT_HPP
-#define GPSTK_GPSZCOUNT_HPP
+#ifndef GNSSTK_GPSZCOUNT_HPP
+#define GNSSTK_GPSZCOUNT_HPP
 
 // system includes
 #include <ostream>
 
-// GPSTK includes
+// GNSSTK includes
 #include "Exception.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup TimeHandling
       //@{
@@ -86,7 +86,7 @@ namespace gpstk
          /** Separate Week and Z-count Constructor.
           * @param inWeek the GPS week to use in this object.
           * @param inZcount the GPS Z-count to use in this object.
-          * @throw gpstk::InvalidParameter if either inWeek or inZcount
+          * @throw gnsstk::InvalidParameter if either inWeek or inZcount
           *  are invalid values for their respective types.
           */
       GPSZcount(short inWeek,
@@ -95,7 +95,7 @@ namespace gpstk
          /** Full Z-count Constructor.
           * @param inFullZcount the Full 29-bit GPS Z-count to use in
           *  this object. (default=0 => week == 0; Z-count == 0)
-          * @throw gpstk::InvalidParameter if either inFullZcount is
+          * @throw gnsstk::InvalidParameter if either inFullZcount is
           *  an invalid value for a full Z-count.
           */
       GPSZcount(long inFullZcount = 0);
@@ -133,7 +133,7 @@ namespace gpstk
          /** Set the GPS week.
           * @param inWeek the new value for GPS Week.
           * @return a reference to this object.
-          * @throw gpstk::InvalidParameter if inWeek is an invalid value
+          * @throw gnsstk::InvalidParameter if inWeek is an invalid value
           * for a GPS week.
           */
       GPSZcount& setWeek(short inWeek);
@@ -141,7 +141,7 @@ namespace gpstk
          /** Set the GPS Z-count.
           * @param inZcount the new value for GPS Z-count.
           * @return a reference to this object.
-          * @throw gpstk::InvalidParameter if inZcount is an invalid value
+          * @throw gnsstk::InvalidParameter if inZcount is an invalid value
           *  for a GPS Z-count.
           */
       GPSZcount& setZcount(long inZcount);
@@ -149,7 +149,7 @@ namespace gpstk
          /** Set the GPS Week and Z-count using the value broadcast from an SV.
           * @param inZcount A full Z-count (3 MSB unused, next 10 bits = week,
           *  19 LSB = Z-count)
-          * @throw gpstk::InvalidParameter if the extracted Z-count is
+          * @throw gnsstk::InvalidParameter if the extracted Z-count is
           *  an invalid value for a GPS Z-count.
           */
       GPSZcount& setFullZcount(long inZcount);
@@ -157,7 +157,7 @@ namespace gpstk
          /** Add the given number of weeks to the current value.
           * @param inWeeks the number of weeks to add to the current value.
           * @return a reference to this object
-          * @throw gpstk::InvalidRequest if adding inWeeks would render
+          * @throw gnsstk::InvalidRequest if adding inWeeks would render
           *  this object invalid.
           */
       GPSZcount& addWeeks(short inWeeks);
@@ -168,7 +168,7 @@ namespace gpstk
           * @param inZcounts the number of Z-counts to add to the current
           *  value.
           * @return a reference to this object
-          * @throw gpstk::InvalidRequest if adding inZcounts would render
+          * @throw gnsstk::InvalidRequest if adding inZcounts would render
           *  this object invalid.
           */
       GPSZcount& addZcounts(long inZcounts);
@@ -177,7 +177,7 @@ namespace gpstk
           * cause the roll-over of the Z-count and incrementing of the week.
           * @return a GPSZcount with the value of this object before the
           *  increment
-          * @throw gpstk::InvalidRequest if Z-count increment would render
+          * @throw gnsstk::InvalidRequest if Z-count increment would render
           *  this object invalid.
           */
       GPSZcount operator++(int);
@@ -185,7 +185,7 @@ namespace gpstk
          /** Prefix Increment the Z-count in this object (++x).  This may also
           * cause the roll-over of the Z-count and incrementing of the week.
           * @return a reference to this object.
-          * @throw gpstk::InvalidRequest if Z-count increment would render
+          * @throw gnsstk::InvalidRequest if Z-count increment would render
           *  this object invalid.
           */
       GPSZcount& operator++();
@@ -194,7 +194,7 @@ namespace gpstk
           * cause the roll-under of the Z-count and decrementing of the week.
           * @return a GPSZcount with the value of this object before the
           *  decrement
-          * @throw gpstk::InvalidRequest if a Z-count decrement would render
+          * @throw gnsstk::InvalidRequest if a Z-count decrement would render
           *  this object invalid.
           */
       GPSZcount operator--(int);
@@ -202,7 +202,7 @@ namespace gpstk
          /** Prefix Decrement the Z-count in this object (--x).  This may also
           * cause the roll-under of the Z-count and decrementing of the week.
           * @return a reference to this object.
-          * @throw gpstk::InvalidRequest if a Z-count decrement would render
+          * @throw gnsstk::InvalidRequest if a Z-count decrement would render
           *  this object invalid.
           */
       GPSZcount& operator--();
@@ -213,7 +213,7 @@ namespace gpstk
           * @param inZcounts the number of Z-counts to add to the current
           *  value.
           * @return a modified GPSZcount object
-          * @throw gpstk::InvalidRequest if adding inZcounts would render
+          * @throw gnsstk::InvalidRequest if adding inZcounts would render
           *  this object invalid.
           */
       GPSZcount operator+(long inZcounts) const;
@@ -224,7 +224,7 @@ namespace gpstk
           * @param inZcounts the number of Z-counts to subtract from the
           *  current value.
           * @return a modified GPSZcount object
-          * @throw gpstk::InvalidRequest if subtracting inZcounts would
+          * @throw gnsstk::InvalidRequest if subtracting inZcounts would
           *  render this object invalid.
           */
       GPSZcount operator-(long inZcounts) const;
@@ -249,7 +249,7 @@ namespace gpstk
           * @param inZcounts the number of Z-counts to add to the current
           *  value.
           * @return a reference to this object
-          * @throw gpstk::InvalidRequest if adding inZcounts would render
+          * @throw gnsstk::InvalidRequest if adding inZcounts would render
           *  this object invalid.
           */
       GPSZcount& operator+=(long inZcounts);
@@ -260,7 +260,7 @@ namespace gpstk
           * @param inZcounts the number of Z-counts to subtract from the
           *  current value.
           * @return a reference to this object
-          * @throw gpstk::InvalidRequest if subtracting inZcounts would
+          * @throw gnsstk::InvalidRequest if subtracting inZcounts would
           *  render this object invalid.
           */
       GPSZcount& operator-=(long inZcounts);
@@ -334,10 +334,10 @@ namespace gpstk
        * @return a reference to \c s.
        */
    std::ostream& operator<<(std::ostream& s,
-                            const gpstk::GPSZcount& z);
+                            const gnsstk::GPSZcount& z);
 
       //@}
 
-} // namespace gpstk
+} // namespace gnsstk
 
-#endif // GPSTK_GPSZCOUNT_HPP
+#endif // GNSSTK_GPSZCOUNT_HPP

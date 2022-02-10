@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,20 +29,20 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  * @file StringUtils.hpp
- * StringUtils namespace and GPSTK string utility functions
+ * StringUtils namespace and GNSSTK string utility functions
  */
 
-#ifndef GPSTK_STRINGUTILS_HPP
-#define GPSTK_STRINGUTILS_HPP
+#ifndef GNSSTK_STRINGUTILS_HPP
+#define GNSSTK_STRINGUTILS_HPP
 
 #include <string>
 #include <sstream>
@@ -71,19 +71,19 @@
 #include "Exception.hpp"
 #include "HexDumpDataConfig.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /** @defgroup stringutilsgroup Text String Manipulation Tools
-       * @copydoc gpstk::StringUtils
+       * @copydoc gnsstk::StringUtils
        */
 
       /**
        * Stuff to make the C++ string class a little easier to use.
        *
        * All functions here will throw
-       * gpstk::StringUtils::StringException on an error. Any
+       * gnsstk::StringUtils::StringException on an error. Any
        * std::exception is converted to a
-       * gpstk::StringUtils::StringException so that's the only
+       * gnsstk::StringUtils::StringException so that's the only
        * exception a user of this class needs to catch.
        *
        * For any function that modifies a string, make sure there is a
@@ -101,7 +101,7 @@ namespace gpstk
          //@{
 
          /// This is thrown instread of a std::exception when a
-         /// gpstk::StringUtils function fails.
+         /// gnsstk::StringUtils function fails.
          /// @ingroup exceptiongroup
       NEW_EXCEPTION_CLASS(StringException, Exception);
 
@@ -564,7 +564,7 @@ namespace gpstk
                                 const std::string& inputString,
                                 const std::string& outputString,
                                 std::string::size_type startPos = 0,
-                                unsigned numChanges = (std::numeric_limits<unsigned>::max)());
+                                unsigned numChanges = (std::numeric_limits<unsigned>().max()));
 
          /**
           * Changes occurrences of a specified pattern to a specified
@@ -1143,7 +1143,7 @@ namespace gpstk
           * the end of the word and the start of the next word.
           * If the last word in \a s is removed, all trailing delimiters
           * are removed as well; if all words in \a s are removed, the
-          * resulting string is empty. 
+          * resulting string is empty.
           * @param s a string with words to be removed.
           * @param first the first word to be removed (the first word is 0).
           * @param wordsToReplace the number of words to remove,
@@ -1380,13 +1380,13 @@ namespace gpstk
                                                             bool ignoreEmpty = true);
    } // namespace StringUtils
 
-} // namespace gpstk
+} // namespace gnsstk
 
 // ################################################
 //   Implementations of inline functions follow
 // ################################################
 
-namespace gpstk
+namespace gnsstk
 {
 
    namespace StringUtils
@@ -1429,7 +1429,7 @@ namespace gpstk
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1460,7 +1460,7 @@ namespace gpstk
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1558,7 +1558,7 @@ namespace gpstk
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1583,7 +1583,7 @@ namespace gpstk
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1608,12 +1608,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1630,7 +1630,7 @@ namespace gpstk
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1646,7 +1646,7 @@ namespace gpstk
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1663,7 +1663,7 @@ namespace gpstk
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1712,12 +1712,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1744,12 +1744,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1768,12 +1768,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1803,12 +1803,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1822,12 +1822,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1849,7 +1849,7 @@ namespace gpstk
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -1963,7 +1963,7 @@ namespace gpstk
          catch(std::regex_error& e)
          {
             Exception E(std::string("std::regex_error: ") + e.what() );
-            GPSTK_THROW(E);
+            GNSSTK_THROW(E);
          }
 
 #else
@@ -1981,7 +1981,7 @@ namespace gpstk
             regerror(rc, NULL, errorMsg, regErrorBufSize - 1);
             regfree(&regExp);
             StringException strerr("Regexp error: " + std::string(errorMsg));
-            GPSTK_THROW(strerr);
+            GNSSTK_THROW(strerr);
          }
          rc = regexec(&regExp, thisStr.c_str(), 1, &matches,
                       REG_NOTBOL | REG_NOTEOL);
@@ -1990,7 +1990,7 @@ namespace gpstk
             regerror(rc, &regExp, errorMsg, regErrorBufSize - 1);
             regfree(&regExp);
             StringException strerr("Regexp error: " + std::string(errorMsg));
-            GPSTK_THROW(strerr);
+            GNSSTK_THROW(strerr);
          }
 
          regfree(&regExp);
@@ -2030,7 +2030,7 @@ namespace gpstk
          catch(std::regex_error& e)
          {
             Exception E(std::string("std::regex_error:")+e.what());
-            GPSTK_THROW(E);
+            GNSSTK_THROW(E);
          }
 
          return rv;
@@ -2045,7 +2045,7 @@ namespace gpstk
             regerror(rc, NULL, buffer, bufferSize - 1);
             regfree(&re);
             StringException se("Regexp error: " + std::string(buffer));
-            GPSTK_THROW(se);
+            GNSSTK_THROW(se);
          }
 
          regmatch_t r;
@@ -2081,12 +2081,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -2144,12 +2144,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -2172,12 +2172,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -2190,10 +2190,10 @@ namespace gpstk
          {
             if ((firstWord == 0) && (numWords == 1))
                return StringUtils::firstWord(s, delimiter);
-               
+
             if (numWords == 0)
                return "";
-               
+
             std::string::size_type wordNum = 0;
             std::string::size_type pos = 0, startPos = std::string::npos;
 
@@ -2205,13 +2205,13 @@ namespace gpstk
             {
                if (wordNum == firstWord)
                   startPos = pos;
-                  
+
                   // get first delimter after word wordNum
                pos = s.find(delimiter, pos);
                if (((int)numWords != -1)
                    && ((int)wordNum == (int)(firstWord + (numWords-1))))
                   break;
-                  
+
                pos = s.find_first_not_of(delimiter, pos);
                wordNum++;
             }
@@ -2220,18 +2220,18 @@ namespace gpstk
                return ""; // never found the start of the word
             if (pos == std::string::npos)
                return ((wordNum >= firstWord) ? s.substr(startPos) : "");
-               
+
             return s.substr(startPos, pos-startPos);
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " +
                                    std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -2248,12 +2248,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -2270,12 +2270,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -2316,7 +2316,7 @@ namespace gpstk
          char currentDelimiter;
 
          if(delimiter == '\'' || delimiter == '"')
-            GPSTK_THROW(StringException("Delimiter must not be quote"));
+            GNSSTK_THROW(StringException("Delimiter must not be quote"));
 
          while(endPos != std::string::npos && endPos <= aStr.length())
          {
@@ -2341,10 +2341,10 @@ namespace gpstk
 
                // if quoted, remove the quotes
             if(currentDelimiter != delimiter)
-               token = gpstk::StringUtils::strip(token,currentDelimiter);
+               token = gnsstk::StringUtils::strip(token,currentDelimiter);
 
                // remove whitespace at beginning and end
-            if(trimWhitespace) token = gpstk::StringUtils::strip(token);
+            if(trimWhitespace) token = gnsstk::StringUtils::strip(token);
 
                // save it
             if(!token.empty() || !ignoreEmpty) toReturn.push_back(token);
@@ -2370,7 +2370,7 @@ namespace gpstk
          char currentDelimiter;
 
          if(delimiter == '"')
-            GPSTK_THROW(StringException("Delimiter must not be quote"));
+            GNSSTK_THROW(StringException("Delimiter must not be quote"));
 
          while(endPos != std::string::npos && endPos <= aStr.length())
          {
@@ -2394,10 +2394,10 @@ namespace gpstk
 
                // if quoted, remove the quotes
             if(currentDelimiter != delimiter)
-               token = gpstk::StringUtils::strip(token,currentDelimiter);
+               token = gnsstk::StringUtils::strip(token,currentDelimiter);
 
                // remove whitespace at beginning and end
-            if(trimWhitespace) token = gpstk::StringUtils::strip(token);
+            if(trimWhitespace) token = gnsstk::StringUtils::strip(token);
 
                // save it
             if(!token.empty() || !ignoreEmpty) toReturn.push_back(token);
@@ -2420,7 +2420,7 @@ namespace gpstk
          {
             std::string::size_type rmStart = std::string::npos;
             std::string::size_type rmCount = std::string::npos;
-            
+
                // Find start of word 0
             std::string::size_type sPos = s.find_first_not_of(delimiter);
 
@@ -2442,7 +2442,7 @@ namespace gpstk
                {
                   rmCount = sPos - rmStart;
                   break;
-               }               
+               }
                   // Find the end of the current word
                sPos = s.find(delimiter, sPos);
                if (sPos != std::string::npos)
@@ -2459,17 +2459,17 @@ namespace gpstk
                {
                   stripTrailing(s, delimiter);
                }
-            }         
+            }
             return s;
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -2568,7 +2568,7 @@ namespace gpstk
             if ((idx == 0) || (idx >= (startPos + length - expLen - 1)))
             {
                StringException e("sci2for: no decimal point in string");
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // Here, account for the possibility that there are
@@ -2594,7 +2594,7 @@ namespace gpstk
                if (idx == std::string::npos)
                {
                   StringException e("sci2for:no 'e' or 'E' in string");
-                  GPSTK_THROW(e);
+                  GNSSTK_THROW(e);
                }
             }
                // Change the exponent character to D normally, or E of checkSwitch is false.
@@ -2640,12 +2640,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }  // end sci2for
 
@@ -2670,12 +2670,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -2747,12 +2747,12 @@ namespace gpstk
          }
          catch(StringException &e)
          {
-            GPSTK_RETHROW(e);
+            GNSSTK_RETHROW(e);
          }
          catch(std::exception &e)
          {
             StringException strexc("Exception thrown: " + std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -2813,7 +2813,7 @@ namespace gpstk
          {
             StringException strexc("Exception thrown: " +
                                    std::string(e.what()));
-            GPSTK_THROW(strexc);
+            GNSSTK_THROW(strexc);
          }
       }
 
@@ -2821,5 +2821,5 @@ namespace gpstk
 
    } // namespace StringUtils
 
-} // namespace gpstk
-#endif // GPSTK_STRINGUTILS_HPP
+} // namespace gnsstk
+#endif // GNSSTK_STRINGUTILS_HPP

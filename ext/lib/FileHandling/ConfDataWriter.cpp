@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -45,7 +45,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 
 	   // Method to open a configuration data file to be written.
@@ -54,14 +54,14 @@ namespace gpstk
 		FFTextStream::open(fn, std::ios::out);
 
 		writeHeader();
-		
+
 		return;
 	}
       // Write a common header for all of the configuration data files
-      // written by this class. 
+      // written by this class.
 	void ConfDataWriter::writeHeader()
 	{
-     /* 
+     /*
 	   writeCommentLine("This is a configuration file written by ConfDataWriter, and it ");
       writeCommentLine("can be read by ConfDataReader.");
 		writeCommentLine("YAN Wei,Dec,8th 2009");
@@ -69,7 +69,7 @@ namespace gpstk
 		writeCommentLine("");
 		writeSeparatorLine();
 		*/
-      
+
 	}
 
       // Write a comment line start by '#'
@@ -92,17 +92,17 @@ namespace gpstk
 	void ConfDataWriter::writeBlankLine(const int& n)
 	{
 		int nLine = (n < 1) ? 0 : n;
-		for(int i = 0;i < nLine; i++) 
+		for(int i = 0;i < nLine; i++)
       {
          formattedPutLine("");
       }
 	}
-      
+
       /* Write a string variable with general format
       *
       * @param var          variable name
       * @param val          variable value
-      * @param varComment   variable comment 
+      * @param varComment   variable comment
       * @param valComment   value comment
       */
    void ConfDataWriter::writeVariable(const std::string& var,
@@ -112,15 +112,15 @@ namespace gpstk
 	{
 		string line=var;
 
-      if(int(var.length())<variableWidth) 
+      if(int(var.length())<variableWidth)
          line = StringUtils::leftJustify(var,variableWidth);
 
 		if(varComment.length()>0) line += " , " + varComment;
-		
+
       line += " = " + val;
-		
+
       if(valComment.length() > 0) line += " , " + valComment;
-		
+
       formattedPutLine(line);
 	}
 
@@ -128,26 +128,26 @@ namespace gpstk
        *
        * @param var          variable name
        * @param val          variable value
-       * @param varComment   variable comment 
+       * @param varComment   variable comment
        * @param valComment   value comment
        */
    void ConfDataWriter::writeVariable(const std::string& var,
                                       const double& val,
                                       const std::string& varComment,
                                       const std::string& valComment)
-   { 
+   {
       writeVariable(var,StringUtils::asString(val,valuePrecison),
                                                          varComment,valComment);
    }
 
-      
+
 
 	   /* Write a string variable list with general format
        *
        * @param var          variable name
        * @param valList      variable list values
        * @param n            size of the variable list
-       * @param varComment   variable comment 
+       * @param varComment   variable comment
        * @param valComment   value comment
        */
    void ConfDataWriter::writeVariableList(const std::string& var,
@@ -158,27 +158,27 @@ namespace gpstk
 	{
 		string line=var;
 
-      if(int(var.length())<variableWidth) 
+      if(int(var.length())<variableWidth)
          line = StringUtils::leftJustify(var,variableWidth);
 
 		if(varComment.length() > 0) line += " , " + varComment;
 
 		line += " = ";
-		
+
 		for(int i=0;i<n;i++) line += valList[i] + " ";
 
-		
+
 		if(valComment.length() > 0) line += " , " + valComment;
 
 		formattedPutLine(line);
 	}
-	
+
 
       /* Write a string variable list with general format
        *
        * @param var          variable name
        * @param valList      variable list values by std::vector
-       * @param varComment   variable comment 
+       * @param varComment   variable comment
        * @param valComment   value comment
        */
    void ConfDataWriter::writeVariableList(const std::string&         var,
@@ -188,7 +188,7 @@ namespace gpstk
 	{
 		string line=var;
 
-      if(int(var.length())<variableWidth) 
+      if(int(var.length())<variableWidth)
          line = StringUtils::leftJustify(var,variableWidth);
 
 		if(varComment.length() > 0) line += " , " + varComment;
@@ -214,7 +214,7 @@ namespace gpstk
        * @param var          variable name
        * @param valList      variable list values
        * @param n            size of the variable list
-       * @param varComment   variable comment 
+       * @param varComment   variable comment
        * @param valComment   value comment
        */
    void ConfDataWriter::writeVariableList(const std::string& var,
@@ -237,7 +237,7 @@ namespace gpstk
        * @param var          variable name
        * @param valList      variable list values
        * @param n            size of the variable list
-       * @param varComment   variable comment 
+       * @param varComment   variable comment
        * @param valComment   value comment
        */
    void ConfDataWriter::writeVariableList(const std::string& var,
@@ -247,15 +247,15 @@ namespace gpstk
                                           const std::string& valComment)
 	{
 		vector<string> vals;
-		for(int i = 0; i < n; i++) 
+		for(int i = 0; i < n; i++)
       {
          vals.push_back(StringUtils::asString(valList[i],valuePrecison));
       }
 
 		writeVariableList(var, vals, varComment, valComment);
 	}
-	
-	
+
+
       /* Write a new section with some comment
        *
        * @param name          name of the section to be written
@@ -270,11 +270,11 @@ namespace gpstk
       {
          commentCopy = "Configuration data for '" + name + "' section";
       }
-		
+
       writeCommentLine(StringUtils::upperCase(commentCopy));
 
 		writeSeparatorLine();
-		
+
       formattedPutLine("[" + StringUtils::strip(name) + "]");
 
 	}
@@ -287,7 +287,7 @@ namespace gpstk
 		writeBlankLine();
 
 		writeCommentLine("End Of the File");
-		
+
       writeSeparatorLine();
 	}
 
@@ -295,8 +295,8 @@ namespace gpstk
       // Write a string line to the file.
 	void ConfDataWriter::formattedPutLine(const std::string& sline)
 	{
-      // to make sure the line is less than 255 
+      // to make sure the line is less than 255
 		(*this) << sline.substr(0,255) << endl;
 	}
 
-}  // End of 'namespace gpstk'
+}  // End of 'namespace gnsstk'

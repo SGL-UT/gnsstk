@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -51,7 +51,7 @@
 #include "ClockModel.hpp"
 #include "SatID.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup ClockModel
       //@{
@@ -71,7 +71,7 @@ namespace gpstk
             ords.erase(i);
          return *this;
       }
-   
+
       ORDEpoch& applyClockModel(const ClockModel& cm) throw()
       {
          if (cm.isOffsetValid(time))
@@ -93,10 +93,10 @@ namespace gpstk
       vdouble clockOffset;    ///< clock bias value (application defined units)
       vdouble clockResidual;  ///< clock bias minus expected value
       ORDMap ords;            ///< map of ORDs in epoch
-      gpstk::CommonTime time;
+      gnsstk::CommonTime time;
       bool wonky;             ///< Indicates that this epoch is suspect
 
-      friend std::ostream& operator<<(std::ostream& s, 
+      friend std::ostream& operator<<(std::ostream& s,
                                       const ORDEpoch& oe)
          throw()
       {
@@ -107,11 +107,11 @@ namespace gpstk
             s << i->second << std::endl;
          return s;
       }
-   
+
    };
 
       // this is a store of ORDs over time
-   typedef std::map<gpstk::CommonTime, gpstk::ORDEpoch> ORDEpochMap;
+   typedef std::map<gnsstk::CommonTime, gnsstk::ORDEpoch> ORDEpochMap;
 
       //@}
 }

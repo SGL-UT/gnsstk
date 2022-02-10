@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -43,7 +43,7 @@
 #include "GloEphemeris.hpp"
 #include "TimeString.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 
 
@@ -61,7 +61,7 @@ namespace gpstk
            epoch >= (ephTime + 900.0)   )
       {
          InvalidRequest e( "Requested time is out of ephemeris data" );
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       Xvt retVal = svXvtOverrideFit(epoch);
@@ -238,7 +238,7 @@ namespace gpstk
       if(!valid)
       {
          InvalidRequest exc("getEphemerisEpoch(): No valid data stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       return ephTime;
@@ -254,7 +254,7 @@ namespace gpstk
       if(!valid)
       {
          InvalidRequest exc("getPRNID(): No valid data stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       return PRNID;
@@ -275,7 +275,7 @@ namespace gpstk
       if(!valid)
       {
          InvalidRequest exc("svClockBias(): No valid data stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
          // Auxiliar object
@@ -306,7 +306,7 @@ namespace gpstk
       if(!valid)
       {
          InvalidRequest exc("svClockDrift(): No valid data stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       return clkdrift;
@@ -340,7 +340,7 @@ namespace gpstk
       s << "Health      " << std::setw(12) << health << std::endl;
       s << "Freq. Offset" << std::setw(12) << freqNum << std::endl;
       s << "Age of Info " << std::setw(12) << ageOfInfo << " days" << std::endl;
-      
+
       s << "Position    " << std::setw(12) << x << "m" << std::endl;
       s << "Velocity    " << std::setw(12) << v << "m/sec" << std::endl;
       s << "Acceleration" << std::setw(12) << a << "m/sec**2" << std::endl;
@@ -500,4 +500,4 @@ namespace gpstk
    }  // End of 'std::ostream& operator<<()'
 
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk

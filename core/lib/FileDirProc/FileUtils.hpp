@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,8 +41,8 @@
  * File and directory utilities
  */
 
-#ifndef GPSTK_FILEUTILS_HPP
-#define GPSTK_FILEUTILS_HPP
+#ifndef GNSSTK_FILEUTILS_HPP
+#define GNSSTK_FILEUTILS_HPP
 
 // #ifdef __sun
 // #include <libgen.h>
@@ -62,7 +62,7 @@
 #endif
 
 using namespace std;
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileDirProc
       //@{
@@ -81,13 +81,13 @@ namespace gpstk
           * @param mode the permission of the new directory (like 0755)
           * @return always 0
           */
-     
+
 #ifdef WIN32
       inline int makeDir(const std::string& path, unsigned mode)
       {
         std::string temppath = path;
-        
-        //Clean up windows file path 
+
+        //Clean up windows file path
         std::replace(temppath.begin(), temppath.end(), '\\', '/');
         std::string::size_type i = 0;
 
@@ -123,7 +123,7 @@ namespace gpstk
             // #endif
          return 0;
       }
-     
+
 #endif
          /**
           * makeDir that takes a char* for an argument.
@@ -148,19 +148,19 @@ namespace gpstk
           *   access.  There's nothing we can do about this.
           * @return true if the file can be accessed
           */
-      inline bool fileAccessCheck(const char* fname, 
+      inline bool fileAccessCheck(const char* fname,
                                   std::ios::openmode mode=std::ios::in)
       {
          std::fstream test(fname, mode);
          return !test.fail();
       }
 
-      inline bool fileAccessCheck(const std::string& fname, 
+      inline bool fileAccessCheck(const std::string& fname,
                                   std::ios::openmode mode=std::ios::in)
       {
          return fileAccessCheck(fname.c_str(), mode);
       }
-      
+
 
    } // namespace FileUtils
 

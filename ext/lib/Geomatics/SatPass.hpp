@@ -47,6 +47,7 @@
 #include <vector>
 
 #include "Epoch.hpp"
+#include "TimeString.hpp"
 #include "Exception.hpp"
 #include "GNSSconstants.hpp"
 #include "RinexObsData.hpp"

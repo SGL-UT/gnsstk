@@ -1,38 +1,38 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -54,14 +54,14 @@ public:
    unsigned getUserTimeTest();
    unsigned getXvtTest();
 
-   gpstk::CivilTime civ;
-   gpstk::CommonTime ct;
+   gnsstk::CivilTime civ;
+   gnsstk::CommonTime ct;
 };
 
 
 OrbitDataSP3_T ::
 OrbitDataSP3_T()
-      : civ(2015,7,19,2,0,0.0,gpstk::TimeSystem::GPS),
+      : civ(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS),
         ct(civ)
 {
 }
@@ -71,8 +71,8 @@ unsigned OrbitDataSP3_T ::
 constructorTest()
 {
    TUDEF("OrbitDataSP3", "OrbitDataSP3");
-   gpstk::OrbitDataSP3 uut;
-   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime::BEGINNING_OF_TIME,
+   gnsstk::OrbitDataSP3 uut;
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME,
              uut.timeStamp);
    TUASSERTFE(0.0, uut.pos[0]);
    TUASSERTFE(0.0, uut.pos[1]);
@@ -106,7 +106,7 @@ unsigned OrbitDataSP3_T ::
 copyXVTest()
 {
    TUDEF("OrbitDataSP3", "copyXV");
-   gpstk::OrbitDataSP3 uut, from;
+   gnsstk::OrbitDataSP3 uut, from;
    TUASSERTFE(0.0, uut.pos[0]);
    TUASSERTFE(0.0, uut.pos[1]);
    TUASSERTFE(0.0, uut.pos[2]);
@@ -209,7 +209,7 @@ unsigned OrbitDataSP3_T ::
 copyTTest()
 {
    TUDEF("OrbitDataSP3", "copyT");
-   gpstk::OrbitDataSP3 uut, from;
+   gnsstk::OrbitDataSP3 uut, from;
    TUASSERTFE(0.0, uut.clkBias);
    TUASSERTFE(0.0, uut.biasSig);
    TUASSERTFE(0.0, uut.clkDrift);
@@ -300,10 +300,10 @@ unsigned OrbitDataSP3_T ::
 getUserTimeTest()
 {
    TUDEF("OrbitDataSP3", "getUserTime");
-   gpstk::OrbitDataSP3 uut;
-   gpstk::CommonTime t = gpstk::CivilTime(2020,1,2,3,4,5);
+   gnsstk::OrbitDataSP3 uut;
+   gnsstk::CommonTime t = gnsstk::CivilTime(2020,1,2,3,4,5);
    uut.timeStamp = t;
-   TUASSERTE(gpstk::CommonTime, t, uut.getUserTime());
+   TUASSERTE(gnsstk::CommonTime, t, uut.getUserTime());
    TURETURN();
 }
 
@@ -312,8 +312,8 @@ unsigned OrbitDataSP3_T ::
 getXvtTest()
 {
    TUDEF("OrbitDataSP3", "getXvt");
-   gpstk::OrbitDataSP3 uut;
-   gpstk::CommonTime t = gpstk::CivilTime(2020,1,2,3,4,5);
+   gnsstk::OrbitDataSP3 uut;
+   gnsstk::CommonTime t = gnsstk::CivilTime(2020,1,2,3,4,5);
    uut.timeStamp = t;
    uut.pos[0] = -15381.810046000001;
    uut.pos[1] = -15574.915217;
@@ -324,7 +324,7 @@ getXvtTest()
    uut.clkBias = 123.456789;
    uut.clkDrift = 234.56789;
       // make sure the scales are correct.
-   gpstk::Xvt xvt;
+   gnsstk::Xvt xvt;
    TUASSERTE(bool, true, uut.getXvt(t, xvt));
    TUASSERTFE(-15381810.046000001, xvt.x[0]);
    TUASSERTFE(-15574915.217, xvt.x[1]);

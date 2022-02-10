@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -45,7 +45,7 @@
 #include "Triple.hpp"
 #include <cmath>
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace std;
 
@@ -59,7 +59,7 @@ namespace gpstk
    {
    }
 
-   Triple :: Triple(double a, 
+   Triple :: Triple(double a,
                     double b,
                     double c)
       : theArray(3)
@@ -79,7 +79,7 @@ namespace gpstk
    {
       if (right.size() != 3)
       {
-         GPSTK_THROW(GeometryException("Incorrect vector size"));
+         GNSSTK_THROW(GeometryException("Incorrect vector size"));
       }
 
       theArray = right;
@@ -99,7 +99,7 @@ namespace gpstk
    std::vector<double> Triple::toStdVector()
    {
       std::vector<double> toReturn;
-      //for(int i=0;i<3;i++) toReturn.push_back(theArray[i]);
+      for(int i=0;i<3;i++) toReturn.push_back(theArray[i]);
       return toReturn;
    }
 
@@ -134,10 +134,10 @@ namespace gpstk
    Triple Triple::unitVector() const
    {
       double mag = std::sqrt(dot(*this));
-      
+
       if (mag <= 1e-14)
-      	GPSTK_THROW(GeometryException("Divide by Zero Error"));
-      
+      	GNSSTK_THROW(GeometryException("Divide by Zero Error"));
+
       Triple retArg;
       retArg[0] = (*this)[0] / mag;
       retArg[1] = (*this)[1] / mag;
@@ -149,13 +149,13 @@ namespace gpstk
    double Triple :: cosVector(const Triple& right) const
    {
       double rx, ry, cosvects;
-   
+
       rx = dot(*this);
       ry = right.dot(right);
-      
+
       if (rx <= 1e-14 ||  ry <= 1e-14)
       {
-         GPSTK_THROW(GeometryException("Divide by Zero Error"));
+         GNSSTK_THROW(GeometryException("Divide by Zero Error"));
       }
       cosvects = dot(right) / ::sqrt(rx * ry);
 
@@ -203,8 +203,8 @@ namespace gpstk
       xyz = ::sqrt(xyz);
 
       if (xy <= 1e-14 || xyz <=1e-14)
-      	 GPSTK_THROW(GeometryException("Divide by Zero Error"))
-      
+      	 GNSSTK_THROW(GeometryException("Divide by Zero Error"))
+
       cosl = (*this)[0] / xy;
       sinl = (*this)[1] / xy;
       sint = (*this)[2] / xyz;
@@ -227,7 +227,7 @@ namespace gpstk
 
       if (test < 1.0e-14)
       {
-         GPSTK_THROW(GeometryException("azAngle(), failed p1+p2 test."));
+         GNSSTK_THROW(GeometryException("azAngle(), failed p1+p2 test."));
       }
 
       alpha = 90 - ::atan2(p1, p2) * RAD_TO_DEG;
@@ -235,12 +235,12 @@ namespace gpstk
       {
          return alpha + 360;
       }
-      else 
+      else
       {
          return alpha;
       }
    }
-   
+
 
       /* Computes rotation about axis X.
        * @param angle    Angle to rotate, in degrees
@@ -300,33 +300,33 @@ namespace gpstk
    {
      return (*this)[0]==right[0] && (*this)[1]==right[1] && (*this)[2]==right[2];
    }
-     
+
    Triple Triple :: operator-(const Triple& right) const
-   { 
+   {
       Triple tmp;
       tmp.theArray = this->theArray - right.theArray;
       return tmp;
    }
 
    Triple Triple :: operator+(const Triple& right) const
-   { 
-      Triple tmp; 
-      tmp.theArray = this->theArray + right.theArray; 
+   {
+      Triple tmp;
+      tmp.theArray = this->theArray + right.theArray;
       return tmp;
    }
 
    Triple operator*(double scale, const Triple& rhs)
    {
-      Triple tmp; 
-      tmp.theArray = rhs.theArray * scale; 
+      Triple tmp;
+      tmp.theArray = rhs.theArray * scale;
       return tmp;
    }
 
-   std::ostream& operator<<(std::ostream& s, 
-                            const gpstk::Triple& v)
+   std::ostream& operator<<(std::ostream& s,
+                            const gnsstk::Triple& v)
    {
       if (v.size() > 0)
-      {  
+      {
          s << "(" << v[0];
          for (size_t i = 1; i < v.size(); i++)
          {
@@ -334,8 +334,8 @@ namespace gpstk
          }
          s << ")";
       }
-      
-      return s;   
+
+      return s;
    }
 
-} // namespace gpstk
+} // namespace gnsstk

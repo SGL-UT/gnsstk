@@ -2,22 +2,22 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gpstk.test_utils import args,run_unit_tests
-import gpstk
+from gnsstk.test_utils import args,run_unit_tests
+import gnsstk
 
 class TestTropModelsExist(unittest.TestCase):
     def test_TropModelsExist(self):
         tropMissing = 'Trop Model is missing'
         
-        self.assertTrue(hasattr(gpstk, 'GCATTropModel'),     tropMissing)
-        self.assertTrue(hasattr(gpstk, 'GGHeightTropModel'), tropMissing)
-        self.assertTrue(hasattr(gpstk, 'GGTropModel'),       tropMissing)
-        self.assertTrue(hasattr(gpstk, 'MOPSTropModel'),     tropMissing)
-        self.assertTrue(hasattr(gpstk, 'NBTropModel'),       tropMissing)
-        self.assertTrue(hasattr(gpstk, 'NeillTropModel'),    tropMissing)
-        self.assertTrue(hasattr(gpstk, 'SaasTropModel'),     tropMissing)
-        self.assertTrue(hasattr(gpstk, 'SimpleTropModel'),   tropMissing)
-        self.assertTrue(hasattr(gpstk, 'ZeroTropModel'),     tropMissing)
+        self.assertTrue(hasattr(gnsstk, 'GCATTropModel'),     tropMissing)
+        self.assertTrue(hasattr(gnsstk, 'GGHeightTropModel'), tropMissing)
+        self.assertTrue(hasattr(gnsstk, 'GGTropModel'),       tropMissing)
+        self.assertTrue(hasattr(gnsstk, 'MOPSTropModel'),     tropMissing)
+        self.assertTrue(hasattr(gnsstk, 'NBTropModel'),       tropMissing)
+        self.assertTrue(hasattr(gnsstk, 'NeillTropModel'),    tropMissing)
+        self.assertTrue(hasattr(gnsstk, 'SaasTropModel'),     tropMissing)
+        self.assertTrue(hasattr(gnsstk, 'SimpleTropModel'),   tropMissing)
+        self.assertTrue(hasattr(gnsstk, 'ZeroTropModel'),     tropMissing)
 
 
 class TestTropModelsValid(unittest.TestCase):
@@ -25,7 +25,7 @@ class TestTropModelsValid(unittest.TestCase):
         trop_list = ['GCAT', 'GG', 'GGHeight', 'MOPS', 'NB', 'Saas', 'Simple', 'Zero']
         for tropName in trop_list:
 
-            # check if the reference file exists in gpstk/data/TropModel_*.exp
+            # check if the reference file exists in gnsstk/data/TropModel_*.exp
             self.fname = os.path.join(os.path.dirname(__file__), '../../data/TropModel_'+tropName+'.exp')
             self.assertTrue(os.path.exists(self.fname), 'data path not found')
 
@@ -41,20 +41,20 @@ class TestTropModelsValid(unittest.TestCase):
         # from Tropdump.cpp
 
         # set up the trop model from the input string
-        if   tropName == "Simple"  : pTrop = gpstk.SimpleTropModel()
-        elif tropName == "Zero"    : pTrop = gpstk.ZeroTropModel()
-        elif tropName == "Saas"    : pTrop = gpstk.SaasTropModel()
-        elif tropName == "NB"      : pTrop = gpstk.NBTropModel()
-        elif tropName == "GG"      : pTrop = gpstk.GGTropModel()
-        elif tropName == "GGHeight": pTrop = gpstk.GGHeightTropModel()
-        #elif tropName == "Neill"   : pTrop = gpstk.NeillTropModel() # doesn't have a matching output file
-        #elif tropName == "Global"  : pTrop = gpstk.GlobalTropModel() # doesn't have a swig wrapper
-        elif tropName == "GCAT"    : pTrop = gpstk.GCATTropModel()
-        elif tropName == "MOPS"    : pTrop = gpstk.MOPSTropModel()
+        if   tropName == "Simple"  : pTrop = gnsstk.SimpleTropModel()
+        elif tropName == "Zero"    : pTrop = gnsstk.ZeroTropModel()
+        elif tropName == "Saas"    : pTrop = gnsstk.SaasTropModel()
+        elif tropName == "NB"      : pTrop = gnsstk.NBTropModel()
+        elif tropName == "GG"      : pTrop = gnsstk.GGTropModel()
+        elif tropName == "GGHeight": pTrop = gnsstk.GGHeightTropModel()
+        #elif tropName == "Neill"   : pTrop = gnsstk.NeillTropModel() # doesn't have a matching output file
+        #elif tropName == "Global"  : pTrop = gnsstk.GlobalTropModel() # doesn't have a swig wrapper
+        elif tropName == "GCAT"    : pTrop = gnsstk.GCATTropModel()
+        elif tropName == "MOPS"    : pTrop = gnsstk.MOPSTropModel()
         else:
             print(" Warning - unknown trop model: " + tropName+ "; use Simple")
             tropName = "Simple"
-            pTrop = gpstk.SimpleTropModel()
+            pTrop = gnsstk.SimpleTropModel()
 
         return pTrop
 
@@ -81,7 +81,7 @@ class TestTropModelsValid(unittest.TestCase):
         pTrop.setWeather(Temp,Press,Humid)
 
         # set up position
-        refPos = gpstk.Position()
+        refPos = gnsstk.Position()
         refPos.setECEF(refPosstr_x, refPosstr_y, refPosstr_z)
         pTrop.setReceiverHeight(refPos.getHeight())
         pTrop.setReceiverLatitude(refPos.getGeodeticLatitude())

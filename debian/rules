@@ -30,9 +30,17 @@ minor = $(shell dpkg-parsechangelog -S Version | sed -ne 's/^[0-9]\+\.\([0-9]\+\
 ifneq ($(filter pkg_python,$(DEB_BUILD_PROFILES)), )
     PYTHON_FLAG="ON"
     BUILD_FOR_PACKAGE_SWITCH_FLAG="ON"
-    PYTHON_EXE_PARAM="-DPYTHON_EXECUTABLE=/usr/bin/python"
-    PYTHON_INSTALL_PREFIX_PARAM="-DPYTHON_INSTALL_PREFIX=$(CURDIR)/debian/python-gpstk"
+    PYTHON_EXE_PARAM="-DPYTHON_EXECUTABLE=/usr/bin/python3"
+    PYTHON_INSTALL_PREFIX_PARAM="-DPYTHON_INSTALL_PREFIX=$(CURDIR)/debian/python3-gnsstk"
 endif
+
+DEBUG_PKG_PARAM=
+# add additional debug flags for package builds using profile debug_package
+ifneq ($(filter debug_package,$(DEB_BUILD_PROFILES)), )
+	DEBUG_PKG_PARAM="-DCMAKE_BUILD_TYPE=relwithdebinfo"
+endif
+
+builddir="./build"
 
 gen_control:
 	@echo "$@ Generated $(major) $(minor)."
@@ -41,7 +49,18 @@ gen_control:
 
 # main packaging script based on dh7 syntax
 %:
-	dh $@  --parallel --with python2
+	dh $@ --builddirectory $(builddir) --parallel --with python3
+
+override_dh_auto_build: gen_control
+ifeq ($(PYTHON_FLAG), "ON")
+	doxygen ./Doxyfile > $(builddir)/Doxygen.log
+	mkdir -p $(builddir)/swig/doc
+    # Second argument must be an absolute path
+	/usr/bin/python3 ./swig/docstring_generator.py ./docs $$(realpath $(builddir)/swig/doc)
+	# Clean up generated html/xml from doxygen
+	rm -r ./docs
+endif
+	dh_auto_build
 
 override_dh_auto_configure: gen_control
 	debian/check_versions_match.sh
@@ -53,7 +72,7 @@ override_dh_auto_configure: gen_control
 	 -DBUILD_FOR_PACKAGE_SWITCH=$(BUILD_FOR_PACKAGE_SWITCH_FLAG) \
 	 -DUSE_RPATH=OFF \
 	 -DVERSIONED_HEADER_INSTALL=ON \
-	 -DCMAKE_BUILD_TYPE=relwithdebinfo
+	 $(DEBUG_PKG_PARAM)
 
 override_dh_auto_clean: gen_control
 	dh_auto_clean
@@ -63,7 +82,7 @@ override_dh_usrlocal:
 
 .PHONY: override_dh_strip
 override_dh_strip:
-	dh_strip --dbg-package=$(shell grep -o "Package: libgpstk[0-9.]\+-dbg" debian/control | cut -d " " -f 2)
+	dh_strip --dbg-package=$(shell grep -o "Package: libgnsstk[0-9.]\+-dbg" debian/control | cut -d " " -f 2)
 
 override_dh_shlibdeps:
 	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info

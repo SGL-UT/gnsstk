@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -43,7 +43,7 @@
 
 class BivarStats_T
 {
-        public: 
+        public:
 		BivarStats_T(){eps = 1e-12;}// Default Constructor, set the precision value
 		~BivarStats_T() {} // Default Desructor
 		double eps;
@@ -52,11 +52,11 @@ class BivarStats_T
 		// Then add another stat on top with weight. I will use the average to check
 		// that data was added and that the data added was correct.
 		{
-                   gpstk::TestUtil testFramework("BivarStats","Add()",__FILE__,__LINE__);
+                   gnsstk::TestUtil testFramework("BivarStats","Add()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -71,11 +71,11 @@ class BivarStats_T
 		int AverageXTest()
 		// Verify the X average calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","AverageX()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","AverageX()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -90,11 +90,11 @@ class BivarStats_T
 		int AverageYTest()
 		// Verify the Y average calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","AverageY()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","AverageY()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -109,11 +109,11 @@ class BivarStats_T
 		int MaxXTest()
 		// Verify the X maximum calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","MaximumX()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","MaximumX()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -128,11 +128,11 @@ class BivarStats_T
 		int MaxYTest()
 		// Verify the Y maximum calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","MaximumY()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","MaximumY()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -147,11 +147,11 @@ class BivarStats_T
 		int MinXTest()
 		// Verify the X minimum calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","MinimumX()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","MinimumX()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -166,11 +166,11 @@ class BivarStats_T
 		int MinYTest()
 		// Verify the Y minimum calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","MinimumY()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","MinimumY()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -185,11 +185,11 @@ class BivarStats_T
 		int VarianceXTest()
 		// Verify the X variance calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","VarianceX()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","VarianceX()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -198,17 +198,17 @@ class BivarStats_T
 			failMesg  = "The VarianceX method was unsuccessful";
 			//std::cout << "The Variance of X is: " << test.varianceX() << std::endl;
 			testFramework.assert(fabs(test.varianceX() - 2.5) < eps, failMesg, __LINE__);
-			return testFramework.countFails();	
+			return testFramework.countFails();
 		}
 
 		int VarianceYTest()
 		// Verify the Y variance calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","VarianceY()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","VarianceY()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -217,17 +217,17 @@ class BivarStats_T
 			failMesg  = "The VarianceY method was unsuccessful";
 			//std::cout << "The Variance of Y is: " << test.varianceY() << std::endl;
 			testFramework.assert(fabs(test.varianceY() - 2.5) < eps, failMesg, __LINE__);
-			return testFramework.countFails();	
+			return testFramework.countFails();
 		}
 
 		int StdDevXTest()
 		// Verify the X Standard Deviation calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","StdDevX()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","StdDevX()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -241,11 +241,11 @@ class BivarStats_T
 		int StdDevYTest()
 		// Verify the Y Standard Deviation calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","StdDevY()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","StdDevY()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -260,11 +260,11 @@ class BivarStats_T
 		int SlopeTest()
 		// Verify the Slope calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","Slope()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","Slope()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -279,11 +279,11 @@ class BivarStats_T
 		int InterceptTest()
 		// Verify the Intercept calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","Intercept()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","Intercept()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -298,11 +298,11 @@ class BivarStats_T
 		int SlopeUncertaintyTest()
 		// Verify the Slope Uncertainty calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","SlopeUncertainty()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","SlopeUncertainty()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -317,11 +317,11 @@ class BivarStats_T
 		int ConditionalUncertaintyTest()
 		// Verify the Conditional Uncertainty calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","ConditionalUncertaintyTest()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","ConditionalUncertaintyTest()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -336,11 +336,11 @@ class BivarStats_T
 		int CorrelationTest()
 		// Verify the Correlation calculation.
 		{
-			gpstk::TestUtil testFramework("BivarStats","Correlation()",__FILE__,__LINE__);
+			gnsstk::TestUtil testFramework("BivarStats","Correlation()",__FILE__,__LINE__);
 			std::string failMesg;
 
-			gpstk::BivarStats<double> test;
-			test.add(1, 2);		
+			gnsstk::BivarStats<double> test;
+			test.add(1, 2);
 			test.add(2, 5);
 			test.add(3, 1);
 			test.add(4, 4);
@@ -380,31 +380,31 @@ int main()
 	check = testClass.MinYTest();
 	errorCounter += check;
 
-	check = testClass.VarianceXTest(); 
+	check = testClass.VarianceXTest();
 	errorCounter += check;
 
-	check = testClass.VarianceYTest(); 
+	check = testClass.VarianceYTest();
 	errorCounter += check;
 
-	check = testClass.StdDevXTest(); 
+	check = testClass.StdDevXTest();
 	errorCounter += check;
 
-	check = testClass.StdDevYTest(); 
+	check = testClass.StdDevYTest();
 	errorCounter += check;
 
-	check = testClass.SlopeTest(); 
+	check = testClass.SlopeTest();
 	errorCounter += check;
 
-	check = testClass.InterceptTest(); 
+	check = testClass.InterceptTest();
 	errorCounter += check;
 
-	check = testClass.ConditionalUncertaintyTest(); 
+	check = testClass.ConditionalUncertaintyTest();
 	errorCounter += check;
 
-	check = testClass.SlopeUncertaintyTest(); 
+	check = testClass.SlopeUncertaintyTest();
 	errorCounter += check;
 
-	check = testClass.CorrelationTest(); 
+	check = testClass.CorrelationTest();
 	errorCounter += check;
 
 	std::cout << "Total Errors: " << errorCounter << std::endl;

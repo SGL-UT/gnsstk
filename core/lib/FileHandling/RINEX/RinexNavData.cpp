@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -52,20 +52,20 @@
 #include "GNSSconstants.hpp"
 #include "TimeString.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   using namespace gpstk::StringUtils;
+   using namespace gnsstk::StringUtils;
    using namespace std;
 
    RinexNavData::RinexNavData()
-         : time(gpstk::CommonTime::BEGINNING_OF_TIME), PRNID(-1),
+         : time(gnsstk::CommonTime::BEGINNING_OF_TIME), PRNID(-1),
            sf1XmitTime(0), toeWeek(0), codeflgs(0), accuracy(0),
            health(0), L2Pdata(0), IODC(0), IODE(0), af0(0), af1(0), af2(0),
            Tgd(0), Cuc(0), Cus(0), Crc(0), Crs(0), Cic(0), Cis(0), Toe(0),
            M0(0), dn(0), ecc(0), Ahalf(0), OMEGA0(0), i0(0), w(0), OMEGAdot(0),
            idot(0), fitint(4)
    {
-      time.setTimeSystem(gpstk::TimeSystem::GPS);
+      time.setTimeSystem(gnsstk::TimeSystem::GPS);
    }
 
    RinexNavData::RinexNavData(const EngEphemeris& ee)
@@ -184,75 +184,6 @@ namespace gpstk
       return ee;
    }
 
-      // Convert this RinexNavData to a GPSEphemeris object.
-      // for backward compatibility only - use Rinex3NavData
-   RinexNavData::operator GPSEphemeris() const
-   {
-      GPSEphemeris gpse;
-      try
-      {
-            // Overhead
-         gpse.satID = SatID(PRNID, SatelliteSystem::GPS);
-         gpse.ctToe = time;
-
-            // clock model
-         gpse.af0 = af0;
-         gpse.af1 = af1;
-         gpse.af2 = af2;
-   
-            // Major orbit parameters
-         gpse.M0 = M0;
-         gpse.dn = dn;
-         gpse.ecc = ecc;
-         gpse.A = Ahalf * Ahalf;
-         gpse.OMEGA0 = OMEGA0;
-         gpse.i0 = i0;
-         gpse.w = w;
-         gpse.OMEGAdot = OMEGAdot;
-         gpse.idot = idot;
-            // modern nav msg
-         gpse.dndot = 0.;
-         gpse.Adot = 0.;
-   
-            // Harmonic perturbations
-         gpse.Cuc = Cuc;
-         gpse.Cus = Cus;
-         gpse.Crc = Crc;
-         gpse.Crs = Crs;
-         gpse.Cic = Cic;
-         gpse.Cis = Cis;
-   
-         gpse.dataLoadedFlag = true;
-
-         gpse.ctToc = time;
-         gpse.ctToc.setTimeSystem(TimeSystem::GPS);
-
-            // now load the GPS-specific parts
-         gpse.IODC = IODC;
-         gpse.IODE = IODE;
-         gpse.health = health;
-         gpse.accuracyFlag = accuracy;
-         gpse.Tgd = Tgd;
-
-         gpse.HOWtime = getHOWWS().sow;
-         gpse.transmitTime = getXmitTime();
-         gpse.transmitTime.setTimeSystem(TimeSystem::GPS);
-
-         gpse.codeflags = codeflgs;
-         gpse.L2Pdata = L2Pdata;
-
-            /// @note IODC must be set first...
-         gpse.fitint = fitint;
-         gpse.setFitIntervalFlag(int(fitint)); 
-         gpse.adjustValidity();
-      }
-      catch(Exception& e)
-      {
-         GPSTK_RETHROW(e);
-      }
-      return gpse;
-   }
-
    list<double> RinexNavData::toList() const
    {
       list<double> l;
@@ -325,7 +256,7 @@ namespace gpstk
             ds=sec;
             sec=0.0;
          }
-         time = CivilTime(yr,mo,day,hr,min,sec,gpstk::TimeSystem::GPS).convertToCommonTime();
+         time = CivilTime(yr,mo,day,hr,min,sec,gnsstk::TimeSystem::GPS).convertToCommonTime();
          if(ds != 0) time += ds;
 
          af0 = currentLine.substr(22,19);
@@ -336,7 +267,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -353,7 +284,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -370,7 +301,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -387,7 +318,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -404,7 +335,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -427,7 +358,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -449,7 +380,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -472,7 +403,7 @@ namespace gpstk
       {
          FFStreamError err("std::exception: " +
                            string(e.what()));
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 

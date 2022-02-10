@@ -57,7 +57,7 @@ namespace gnsstk
 
       // -----------------------------------------------------------------------------
       // Same as UpEastNorth(), but with rows re-ordered.
-   Matrix<double> NorthEastUp(Position& P, bool geocentric)
+   Matrix<double> northEastUp(Position& P, bool geocentric)
    {
       try
       {
@@ -109,16 +109,16 @@ namespace gnsstk
       }
    }
 
-      // Same as NorthEastUp(P,true).
-   Matrix<double> NorthEastUpGeocentric(Position& P)
+      // Same as northEastUp(P,true).
+   Matrix<double> northEastUpGeocentric(Position& P)
    {
-      return NorthEastUp(P, true);
+      return northEastUp(P, true);
    }
 
-      // Same as NorthEastUp(P,false).
-   Matrix<double> NorthEastUpGeodetic(Position& P)
+      // Same as northEastUp(P,false).
+   Matrix<double> northEastUpGeodetic(Position& P)
    {
-      return NorthEastUp(P, false);
+      return northEastUp(P, false);
    }
 
       /* -----------------------------------------------------------------------------
@@ -131,7 +131,7 @@ namespace gnsstk
    {
       try
       {
-         Matrix<double> R = NorthEastUp(P, geocentric);
+         Matrix<double> R = northEastUp(P, geocentric);
          for (int i = 0; i < 3; i++)
          {
             double r = R(0, i);

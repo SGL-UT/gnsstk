@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,20 +29,20 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  * @file TimeNamedFileStream.hpp
- * Writes data to a file whose name is derived from a pattern and a nominal epoch. 
+ * Writes data to a file whose name is derived from a pattern and a nominal epoch.
  */
 
-#ifndef GPSTK_TIME_NAMED_FILE_STREAM_HPP
-#define GPSTK_TIME_NAMED_FILE_STREAM_HPP
+#ifndef GNSSTK_TIME_NAMED_FILE_STREAM_HPP
+#define GNSSTK_TIME_NAMED_FILE_STREAM_HPP
 
 #include <string>
 
@@ -53,9 +53,9 @@
 #include "TimeString.hpp"
 #include "FileUtils.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   /// @ingroup FFStream 
+   /// @ingroup FFStream
    //@{
 
    template <class BaseStream>
@@ -63,7 +63,7 @@ namespace gpstk
    {
    public:
 
-      TimeNamedFileStream() 
+      TimeNamedFileStream()
          : omode(std::ios::in), debugLevel(0)
       {}
       TimeNamedFileStream(
@@ -92,7 +92,7 @@ namespace gpstk
 
 
       // Get the filename of the current file
-      std::string getCurrentFilename(void) const 
+      std::string getCurrentFilename(void) const
       { return currentFilename; }
 
 
@@ -110,7 +110,7 @@ namespace gpstk
             currentTime = t;
             return false;
          }
-         
+
          if (currentFilename.size() > 0)
          {
             if (debugLevel)
@@ -119,20 +119,20 @@ namespace gpstk
          }
          currentFilename = newFilename;
          currentTime = t;
-         
+
          std::string::size_type i = newFilename.rfind('/');
          std::string dir(newFilename.substr(0, i));
          if (dir.size())
          {
             if (debugLevel)
                std::cout << "Creating directory " << dir << std::endl;
-            gpstk::FileUtils::makeDir(dir, 0755);
+            gnsstk::FileUtils::makeDir(dir, 0755);
          }
-         
+
          BaseStream::open(currentFilename.c_str(), omode);
          if (debugLevel)
             std::cout << "Opened " << currentFilename << std::endl;
-         
+
          return true;
       }
 
@@ -141,7 +141,7 @@ namespace gpstk
    private:
       /// Pattern on which to create new files
       std::string filespec;
-      
+
       /// Name of the current output file.
       std::string currentFilename;
 
@@ -153,6 +153,6 @@ namespace gpstk
    }; // end class TimeNamedFileStream
 
    //@}
-}  // end namespace gpstk
+}  // end namespace gnsstk
 
-#endif // GPSTK_TIME_NAMED_FILE_STREAM_HPP
+#endif // GNSSTK_TIME_NAMED_FILE_STREAM_HPP

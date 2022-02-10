@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -58,7 +58,7 @@
 #include "ORDEpoch.hpp"
 
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup ClockModel
       //@{
@@ -72,13 +72,13 @@ namespace gpstk
          HEALTHY,  ///< include ORDs from this SV if it is healthy
          ALWAYS    ///< always include ORDs from this SV
       };
-      
+
       enum SvStatus
       {
          USED,      ///< ORD used in the clock bias computation
-         MANUAL,    ///< ORD removed from computation by user request 
+         MANUAL,    ///< ORD removed from computation by user request
          SVHEALTH,  ///< ORD removed from computation because SV unhealthy
-         ELEVATION, ///< ORD removed from computation because SV elevation < mask 
+         ELEVATION, ///< ORD removed from computation because SV elevation < mask
          WONKY,     ///< ORD removed due to being flagged wonky
          SIGMA      ///< ORD removed from computation because it was outlier
       };
@@ -101,7 +101,7 @@ namespace gpstk
           */
       virtual void addEpoch(const ORDEpoch& re) = 0;
 
-         // set accessor methods ----------------------------------------------   
+         // set accessor methods ----------------------------------------------
 
          /**
           * set a SvMode for all SVs.
@@ -110,7 +110,7 @@ namespace gpstk
           */
       ObsClockModel& setSvModeMap(const SvModeMap& right) throw();
 
-         /** 
+         /**
           * set the SvMode for a particular SV.
           * @param svid Sv number of the SV
           * @param mode SvMode for the SV
@@ -118,15 +118,15 @@ namespace gpstk
           */
       ObsClockModel& setSvMode(const SatID& svid, const SvMode& mode) throw()
       { modes[svid] = mode; return *this; }
-      
-         /** 
+
+         /**
           * set the SvMode for all SVs
           * @param mode SvMode for the SVs
           * @return a reference to this object
           */
       ObsClockModel& setSvMode(const SvMode& mode) throw()
       {
-         for(int prn = 1; prn <= gpstk::MAX_PRN; prn++)
+         for(int prn = 1; prn <= gnsstk::MAX_PRN; prn++)
          {
             SatID svid(prn, SatelliteSystem::GPS);
             modes[svid] = mode;
@@ -141,7 +141,7 @@ namespace gpstk
           */
       ObsClockModel& setSigmaMultiplier(double right) throw()
       { sigmam = right; return *this; }
-   
+
          /**
           * set the elevation mask angle for ORD stripping.
           * @param right elevation mask angle value
@@ -157,7 +157,7 @@ namespace gpstk
       { useWonkyData = right; return *this; }
 
          // get accessor methods ----------------------------------------------
-   
+
          /**
           * get the map indicating how each ORD was used in the bias
           * computation.
@@ -192,7 +192,7 @@ namespace gpstk
           * returns the sigma multiple value used for ORD stripping.
           * @return sigma multiple
           */
-      double getSigmaMultiplier() const throw() { return sigmam; } 
+      double getSigmaMultiplier() const throw() { return sigmam; }
 
          /**
           * returns the elevation mask angle used for ORD stripping.
@@ -211,7 +211,7 @@ namespace gpstk
           * elevation mask, and SvModeMap tests, removes those ORDS
           * that exceede the sigmam value and returns the resulting
           * statistics. This is effectivly a simple single epoch clock
-          * model. 
+          * model.
           * @throw InvalidValue */
       Stats<double> simpleOrdClock(const ORDEpoch& oe);
 
@@ -219,7 +219,7 @@ namespace gpstk
 
       friend std::ostream& operator<<(std::ostream& s, const ObsClockModel& r)
       { r.dump(s, 0); return s; };
-      
+
    protected:
 
       double sigmam;        ///< sigma multiple value for ORD stripping

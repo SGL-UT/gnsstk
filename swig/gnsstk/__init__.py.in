@@ -1,0 +1,12 @@
+#!/usr/bin/python
+"""The GNSS Toolkit, python extension package - gnsstk module
+    an open source library to the satellite navigation community."""
+
+import os
+import warnings
+
+#----------
+# Populate gnsstk namespace
+#----------
+from .gnsstk import *
+__version__ = "@GNSSTK_VERSION@"

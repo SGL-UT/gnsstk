@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,10 +41,10 @@
  * Implementation of Matrix algorithms
  */
 
-#ifndef GPSTK_MATRIX_IMPLEMENTATION_HPP
-#define GPSTK_MATRIX_IMPLEMENTATION_HPP
+#ifndef GNSSTK_MATRIX_IMPLEMENTATION_HPP
+#define GNSSTK_MATRIX_IMPLEMENTATION_HPP
 
-namespace gpstk
+namespace gnsstk
 {
 
       /// @ingroup MathGroup
@@ -84,12 +84,12 @@ namespace gpstk
    template <class T>
    MatrixRowSlice<T> Matrix<T>::rowRef(size_t rowNum, size_t colNum)
    {
-      return MatrixRowSlice<T>(*this, rowNum, 
+      return MatrixRowSlice<T>(*this, rowNum,
                                std::slice(colNum, cols()-colNum, 1));
    }
 
    template <class T>
-   ConstMatrixRowSlice<T> Matrix<T>::row(size_t rowNum, const std::slice& s) 
+   ConstMatrixRowSlice<T> Matrix<T>::row(size_t rowNum, const std::slice& s)
       const
    {
       return ConstMatrixRowSlice<T>(*this, rowNum, s);
@@ -99,7 +99,7 @@ namespace gpstk
    ConstMatrixRowSlice<T> Matrix<T>::row(size_t rowNum, size_t colNum)
       const
    {
-      return ConstMatrixRowSlice<T>(*this, rowNum, 
+      return ConstMatrixRowSlice<T>(*this, rowNum,
                                     std::slice(colNum, cols()-colNum, 1));
    }
 
@@ -112,19 +112,19 @@ namespace gpstk
    template <class T>
    MatrixColSlice<T> Matrix<T>::colRef(size_t colNum, size_t rowNum)
    {
-      return MatrixColSlice<T>(*this, colNum, 
+      return MatrixColSlice<T>(*this, colNum,
                                std::slice(rowNum, rows() - rowNum, 1));
    }
 
    template <class T>
-   ConstMatrixColSlice<T> Matrix<T>::col(size_t colNum, 
+   ConstMatrixColSlice<T> Matrix<T>::col(size_t colNum,
                                          const std::slice& s) const
    {
       return ConstMatrixColSlice<T>(*this, colNum, s);
    }
 
    template <class T>
-   ConstMatrixColSlice<T> Matrix<T>::col(size_t colNum, 
+   ConstMatrixColSlice<T> Matrix<T>::col(size_t colNum,
                                          size_t rowNum) const
    {
       return ConstMatrixColSlice<T>(*this, colNum,

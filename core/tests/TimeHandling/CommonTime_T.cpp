@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -43,7 +43,7 @@
 #include "CivilTime.hpp"
 #include <iostream>
 #include <cmath>
-using namespace gpstk;
+using namespace gnsstk;
 using namespace std;
 
 class CommonTime_T : public CommonTime
@@ -203,20 +203,20 @@ improperSetTest()
    try
    {
       Test.set(-1,0,0.);
-      TUFAIL("[testing] CommonTime.set() with negative day, exception gpstk::Exception, [actual] threw no exception");
+      TUFAIL("[testing] CommonTime.set() with negative day, exception gnsstk::Exception, [actual] threw no exception");
    }
-      // QUESTION: Why test for gpstk::InvalidRequest exception instead of gpstk::Exception?
-      // ANSWER: gpstk::InvalidRequest is a child of gpstk::Exception, and depending on CommonTime.cpp
-      // we might sometimes need to be more specific than catching gpstk::Exception
-      //     catch( gpstk::InvalidParameter e)
-      // For now, I'm replacing gpstk::InvalidParameter with gpstk::Exception to be consistent throughout this test application
-   catch( gpstk::Exception e)
+      // QUESTION: Why test for gnsstk::InvalidRequest exception instead of gnsstk::Exception?
+      // ANSWER: gnsstk::InvalidRequest is a child of gnsstk::Exception, and depending on CommonTime.cpp
+      // we might sometimes need to be more specific than catching gnsstk::Exception
+      //     catch( gnsstk::InvalidParameter e)
+      // For now, I'm replacing gnsstk::InvalidParameter with gnsstk::Exception to be consistent throughout this test application
+   catch( gnsstk::Exception e)
    {
-      TUPASS("CommonTime.set() with negative day should throw a gpstk::Exception");
+      TUPASS("CommonTime.set() with negative day should throw a gnsstk::Exception");
    }
    catch(...)
    {
-      TUFAIL("[testing] CommonTime.set() with negative day, exception gpstk::Exception, [actual] threw wrong exception");
+      TUFAIL("[testing] CommonTime.set() with negative day, exception gnsstk::Exception, [actual] threw wrong exception");
    }
 
       //----------------------------------------
@@ -225,15 +225,15 @@ improperSetTest()
    try
    {
       Test.set(3442449,0,0.);
-      TUFAIL("[testing] CommonTime.set() with too many days, exception gpstk::Exception, [actual] threw no exception");
+      TUFAIL("[testing] CommonTime.set() with too many days, exception gnsstk::Exception, [actual] threw no exception");
    }
-   catch(gpstk::Exception e)
+   catch(gnsstk::Exception e)
    {
-      TUPASS("CommonTime.set() with too many days should throw a gpstk::Exception" );
+      TUPASS("CommonTime.set() with too many days should throw a gnsstk::Exception" );
    }
    catch (...)
    {
-      TUFAIL("[testing] CommonTime.set() with too many days, exception gpstk::Exception, [actual] threw wrong exception");
+      TUFAIL("[testing] CommonTime.set() with too many days, exception gnsstk::Exception, [actual] threw wrong exception");
    }
 
       //----------------------------------------
@@ -242,11 +242,11 @@ improperSetTest()
    try
    {
       Test.set(700000,-1,0.);
-      TUFAIL("[testing] CommonTime.set() with negative seconds, exception gpstk::Exception, [actual] threw no exception");
+      TUFAIL("[testing] CommonTime.set() with negative seconds, exception gnsstk::Exception, [actual] threw no exception");
    }
-   catch(gpstk::Exception e)
+   catch(gnsstk::Exception e)
    {
-      TUPASS("CommonTime.set() with negative seconds should throw a gpstk::Exception");
+      TUPASS("CommonTime.set() with negative seconds should throw a gnsstk::Exception");
    }
    catch (...)
    {
@@ -259,15 +259,15 @@ improperSetTest()
    try
    {
       Test.set(700000,24*60*60+1,0.);
-      TUFAIL("[testing] CommonTime.set() with too many seconds, exception gpstk::Exception, [actual] threw no exception");
+      TUFAIL("[testing] CommonTime.set() with too many seconds, exception gnsstk::Exception, [actual] threw no exception");
    }
-   catch(gpstk::Exception e)
+   catch(gnsstk::Exception e)
    {
-      TUPASS("CommonTime.set() with too many seconds should throw a gpstk::Exception");
+      TUPASS("CommonTime.set() with too many seconds should throw a gnsstk::Exception");
    }
    catch (...)
    {
-      TUFAIL("[testing] CommonTime.set() with too many seconds, exception gpstk::Exception, [actual] threw wrong exception");
+      TUFAIL("[testing] CommonTime.set() with too many seconds, exception gnsstk::Exception, [actual] threw wrong exception");
    }
 
       //----------------------------------------
@@ -276,15 +276,15 @@ improperSetTest()
    try
    {
       Test.set(700000,0,-1.);
-      TUFAIL("[testing] CommonTime.set() with negative fractional seconds, exception gpstk::Exception, [actual] threw no exception");
+      TUFAIL("[testing] CommonTime.set() with negative fractional seconds, exception gnsstk::Exception, [actual] threw no exception");
    }
-   catch(gpstk::Exception e)
+   catch(gnsstk::Exception e)
    {
-      TUPASS("CommonTime.set() with negative fractional seconds should throw a gpstk::Exception");
+      TUPASS("CommonTime.set() with negative fractional seconds should throw a gnsstk::Exception");
    }
    catch (...)
    {
-      TUFAIL("[testing] CommonTime.set() with negative fractional seconds, exception gpstk::Exception, [actual] threw wrong exception");
+      TUFAIL("[testing] CommonTime.set() with negative fractional seconds, exception gnsstk::Exception, [actual] threw wrong exception");
    }
 
       //----------------------------------------
@@ -293,15 +293,15 @@ improperSetTest()
    try
    {
       Test.set(700000,0,2.);
-      TUFAIL("[testing] CommonTime.set() with too many fractional seconds, exception gpstk::Exception, [actual] threw no exception");
+      TUFAIL("[testing] CommonTime.set() with too many fractional seconds, exception gnsstk::Exception, [actual] threw no exception");
    }
-   catch( gpstk::Exception e )
+   catch( gnsstk::Exception e )
    {
-      TUPASS("CommonTime.set() with too many fractional seconds should throw a gpstk::Exception");
+      TUPASS("CommonTime.set() with too many fractional seconds should throw a gnsstk::Exception");
    }
    catch(...)
    {
-      TUFAIL("[testing] CommonTime.set() with too many fractional seconds, exception gpstk::Exception, [actual] threw wrong exception");
+      TUFAIL("[testing] CommonTime.set() with too many fractional seconds, exception gnsstk::Exception, [actual] threw wrong exception");
    }
 
       //----------------------------------------
@@ -310,15 +310,15 @@ improperSetTest()
    try
    {
       Test.setInternal(-1,0,0.);
-      TUFAIL("[testing] CommonTime.setInternal() with negative days, exception gpstk::Exception, [actual] threw no exception");
+      TUFAIL("[testing] CommonTime.setInternal() with negative days, exception gnsstk::Exception, [actual] threw no exception");
    }
-   catch( gpstk::Exception e )
+   catch( gnsstk::Exception e )
    {
-      TUPASS("CommonTime.setInternal() with negative days should throw a gpstk::Exception");
+      TUPASS("CommonTime.setInternal() with negative days should throw a gnsstk::Exception");
    }
    catch (...)
    {
-      TUFAIL("[testing] CommonTime.setInternal() with negative days, exception gpstk::Exception, [actual] threw wrong exception");
+      TUFAIL("[testing] CommonTime.setInternal() with negative days, exception gnsstk::Exception, [actual] threw wrong exception");
    }
 
       //----------------------------------------
@@ -327,15 +327,15 @@ improperSetTest()
    try
    {
       Test.setInternal(3442449,0,0.);
-      TUFAIL("[testing] CommonTime.setInternal() with too many days, exception gpstk::Exception, [actual] threw no exception");
+      TUFAIL("[testing] CommonTime.setInternal() with too many days, exception gnsstk::Exception, [actual] threw no exception");
    }
-   catch(gpstk::Exception e)
+   catch(gnsstk::Exception e)
    {
-      TUPASS("CommonTime.setInternal() with too many days should throw a gpstk::Exception");
+      TUPASS("CommonTime.setInternal() with too many days should throw a gnsstk::Exception");
    }
    catch (...)
    {
-      TUFAIL("[testing] CommonTime.setInternal() with too many days, exception gpstk::Exception, [actual] threw wrong exception");
+      TUFAIL("[testing] CommonTime.setInternal() with too many days, exception gnsstk::Exception, [actual] threw wrong exception");
    }
 
       //----------------------------------------
@@ -344,15 +344,15 @@ improperSetTest()
    try
    {
       Test.setInternal(700000,-1,0.);
-      TUFAIL("[testing] CommonTime.setInternal() with negative milliseconds, exception gpstk::Exception, [actual] threw no exception");
+      TUFAIL("[testing] CommonTime.setInternal() with negative milliseconds, exception gnsstk::Exception, [actual] threw no exception");
    }
-   catch(gpstk::Exception e)
+   catch(gnsstk::Exception e)
    {
-      TUPASS("CommonTime.setInternal() with negative milliseconds should throw a gpstk::Exception");
+      TUPASS("CommonTime.setInternal() with negative milliseconds should throw a gnsstk::Exception");
    }
    catch (...)
    {
-      TUFAIL("[testing] CommonTime.setInternal() with negative milliseconds, exception gpstk::Exception, [actual] threw wrong exception");
+      TUFAIL("[testing] CommonTime.setInternal() with negative milliseconds, exception gnsstk::Exception, [actual] threw wrong exception");
    }
 
       //----------------------------------------
@@ -361,15 +361,15 @@ improperSetTest()
    try
    {
       Test.setInternal(700000,24*60*60*1000+1,0.);
-      TUFAIL("[testing] CommonTime.setInternal() with too many milliseconds, exception gpstk::Exception, [actual] threw no exception");
+      TUFAIL("[testing] CommonTime.setInternal() with too many milliseconds, exception gnsstk::Exception, [actual] threw no exception");
    }
-   catch(gpstk::Exception e)
+   catch(gnsstk::Exception e)
    {
-      TUPASS("CommonTime.setInternal() with too many milliseconds should throw a gpstk::Exception");
+      TUPASS("CommonTime.setInternal() with too many milliseconds should throw a gnsstk::Exception");
    }
       // catch(...)
       // {
-      //     TUFAIL("[testing] CommonTime.setInternal() with too many milliseconds, exception gpstk::Exception, [actual] threw wrong exception");
+      //     TUFAIL("[testing] CommonTime.setInternal() with too many milliseconds, exception gnsstk::Exception, [actual] threw wrong exception");
       // }
 
       //----------------------------------------
@@ -378,15 +378,15 @@ improperSetTest()
    try
    {
       Test.setInternal(700000,1001,-1.);
-      TUFAIL("[testing] CommonTime.setInternal() with negative fractional seconds, exception gpstk::Exception, [actual] threw no exception");
+      TUFAIL("[testing] CommonTime.setInternal() with negative fractional seconds, exception gnsstk::Exception, [actual] threw no exception");
    }
-   catch(gpstk::Exception e)
+   catch(gnsstk::Exception e)
    {
-      TUPASS("CommonTime.setInternal() with negative fractional seconds should throw a gpstk::Exception");
+      TUPASS("CommonTime.setInternal() with negative fractional seconds should throw a gnsstk::Exception");
    }
    catch (...)
    {
-      TUFAIL("[testing] CommonTime.setInternal() with negative fractional seconds, exception gpstk::Exception, [actual] threw wrong exception");
+      TUFAIL("[testing] CommonTime.setInternal() with negative fractional seconds, exception gnsstk::Exception, [actual] threw wrong exception");
    }
 
       //----------------------------------------
@@ -395,15 +395,15 @@ improperSetTest()
    try
    {
       Test.setInternal(700000,1001,1001.);
-      TUFAIL("[testing] CommonTime.setInternal() with too many fractional seconds, exception gpstk::Exception, [actual] threw no exception");
+      TUFAIL("[testing] CommonTime.setInternal() with too many fractional seconds, exception gnsstk::Exception, [actual] threw no exception");
    }
-   catch(gpstk::Exception e)
+   catch(gnsstk::Exception e)
    {
-      TUPASS("CommonTime.setInternal() with too many fractional seconds should throw a gpstk::Exception");
+      TUPASS("CommonTime.setInternal() with too many fractional seconds should throw a gnsstk::Exception");
    }
    catch(...)
    {
-      TUFAIL("[testing] CommonTime.setInternal() with too many fractional seconds, exception gpstk::Exception, [actual] threw wrong exception");
+      TUFAIL("[testing] CommonTime.setInternal() with too many fractional seconds, exception gnsstk::Exception, [actual] threw wrong exception");
    }
 
       //----------------------------------------
@@ -754,7 +754,7 @@ rolloverTest()
 
    CommonTime  expectedfsodROver;  expectedfsodROver.set(10, 6789 , 0.001000);
    CommonTime  expectedmsodROver;  expectedmsodROver.set(11, 0    , 0.0001);
-   CommonTime  expectedDayRUnder;  expectedDayRUnder.set( 9, 86399, 0.0001); 
+   CommonTime  expectedDayRUnder;  expectedDayRUnder.set( 9, 86399, 0.0001);
    CommonTime expectedmsodRUnder; expectedmsodRUnder.set(10, 9    , 0.999999);
 
    long    obtainedDay,  expectedDay;
@@ -777,7 +777,7 @@ rolloverTest()
    testFramework.assert(obtainedMsod == expectedMsod, "Rollover of fsod did not change msod", __LINE__);
    diff = fabs(obtainedFsod - expectedFsod);
    testFramework.assert(diff < eps, "fsod did not rollover properly"      , __LINE__);
- 
+
 
       //msod Rollover test
    msodRollover.addSeconds(incrementSecLong);
@@ -803,7 +803,7 @@ rolloverTest()
    testFramework.assert(obtainedMsod == expectedMsod, "msod did not rollunder properly"       , __LINE__);
    diff = fabs(obtainedFsod - expectedFsod);
    testFramework.assert(diff < eps, "Rollunder of msod affected fsod oddly", __LINE__);
- 
+
 
       //msod Rollover test
    msodRollunder.addSeconds(decrementSecDouble);
@@ -824,73 +824,73 @@ changeTimeSystemTest()
 {
    TUDEF("CommonTime", "changeTimeSystem");
    std::shared_ptr<TimeSystemConverter> btscShared =
-      make_shared<gpstk::BasicTimeSystemConverter>();
-   gpstk::BasicTimeSystemConverter *btsc =
-      dynamic_cast<gpstk::BasicTimeSystemConverter *>(btscShared.get());
-   gpstk::CommonTime uut, exp;
+      make_shared<gnsstk::BasicTimeSystemConverter>();
+   gnsstk::BasicTimeSystemConverter *btsc =
+      dynamic_cast<gnsstk::BasicTimeSystemConverter *>(btscShared.get());
+   gnsstk::CommonTime uut, exp;
 
-      //Check conversion from any given time system to UTC and back 
-   uut = gpstk::CivilTime(1990,11,6,0,0,0,gpstk::TimeSystem::UTC);
-   exp = gpstk::CivilTime(1990,11,6,0,0,6,gpstk::TimeSystem::GPS);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GPS,btsc));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+      //Check conversion from any given time system to UTC and back
+   uut = gnsstk::CivilTime(1990,11,6,0,0,6,gnsstk::TimeSystem::UTC);
+   exp = gnsstk::CivilTime(1990,11,6,0,0,0,gnsstk::TimeSystem::GPS);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GPS,btsc));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(2004,11,16,0,0,0,gpstk::TimeSystem::GPS);
-   exp = gpstk::CivilTime(2004,11,15,23,59,47,gpstk::TimeSystem::UTC);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::UTC,btsc));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(2004,11,15,23,59,47,gnsstk::TimeSystem::GPS);
+   exp = gnsstk::CivilTime(2004,11,16,0,0,0,gnsstk::TimeSystem::UTC);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::UTC,btsc));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(1992,10,3,0,0,0,gpstk::TimeSystem::UTC);
-   exp = gpstk::CivilTime(1992,10,3,0,0,0,gpstk::TimeSystem::GLO);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO,btsc));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(1992,10,3,0,0,0,gnsstk::TimeSystem::UTC);
+   exp = gnsstk::CivilTime(1992,10,3,0,0,0,gnsstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO,btsc));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
-   exp = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::UTC);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::UTC,btsc));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   exp = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::UTC);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::UTC,btsc));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
-   exp = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO,btsc));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   exp = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO,btsc));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(2020,1,1,0,0,0,gpstk::TimeSystem::GPS);
-   exp = gpstk::CivilTime(2019,12,31,23,59,42,gpstk::TimeSystem::GLO);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO,btsc));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(2019,12,31,23,59,42,gnsstk::TimeSystem::GPS);
+   exp = gnsstk::CivilTime(2020,1,1,0,0,0,gnsstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO,btsc));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
       // conversion using static TimeSystemConverter
-   gpstk::CommonTime::tsConv = btscShared;
-   uut = gpstk::CivilTime(1990,11,6,0,0,0,gpstk::TimeSystem::UTC);
-   exp = gpstk::CivilTime(1990,11,6,0,0,6,gpstk::TimeSystem::GPS);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GPS));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   gnsstk::CommonTime::tsConv = btscShared;
+   uut = gnsstk::CivilTime(1990,11,6,0,0,6,gnsstk::TimeSystem::UTC);
+   exp = gnsstk::CivilTime(1990,11,6,0,0,0,gnsstk::TimeSystem::GPS);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GPS));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(2004,11,16,0,0,0,gpstk::TimeSystem::GPS);
-   exp = gpstk::CivilTime(2004,11,15,23,59,47,gpstk::TimeSystem::UTC);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::UTC));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(2004,11,15,23,59,47,gnsstk::TimeSystem::GPS);
+   exp = gnsstk::CivilTime(2004,11,16,0,0,0,gnsstk::TimeSystem::UTC);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::UTC));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(1992,10,3,0,0,0,gpstk::TimeSystem::UTC);
-   exp = gpstk::CivilTime(1992,10,3,0,0,0,gpstk::TimeSystem::GLO);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(1992,10,3,0,0,0,gnsstk::TimeSystem::UTC);
+   exp = gnsstk::CivilTime(1992,10,3,0,0,0,gnsstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
-   exp = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::UTC);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::UTC));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   exp = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::UTC);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::UTC));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
-   exp = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   exp = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(2020,1,1,0,0,0,gpstk::TimeSystem::GPS);
-   exp = gpstk::CivilTime(2019,12,31,23,59,42,gpstk::TimeSystem::GLO);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(2019,12,31,23,59,42,gnsstk::TimeSystem::GPS);
+   exp = gnsstk::CivilTime(2020,1,1,0,0,0,gnsstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
    TURETURN();
 }

@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,13 +40,13 @@
  * @file PolyFit.hpp
  * Least squares fit using a polynomial model.
  */
- 
-#ifndef GPSTK_POLYFIT_HPP
-#define GPSTK_POLYFIT_HPP
+
+#ifndef GNSSTK_POLYFIT_HPP
+#define GNSSTK_POLYFIT_HPP
 
 #include "Matrix.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup MathGroup
       //@{
@@ -62,7 +62,7 @@ namespace gpstk
        * PolyFit<double> PF(n);
        * for(i=0; i<17; i++)
        *    PF.Add(dat[i],times[i]);
-       * 
+       *
        * cout << "Solution vector: " << PF.Solution() << endl;
        * cout << "Covariance matrix: " << PF.Covariance() << endl;
        * for(i=0; i<17; i++)
@@ -125,7 +125,7 @@ namespace gpstk
          Inverted = false;
       }
 
-         /// Add a gpstk::Vector of data to the estimation.
+         /// Add a gnsstk::Vector of data to the estimation.
       void Add(const Vector<T>& d, const Vector<T>& t)
       {
          size_t m=d.size();
@@ -229,7 +229,7 @@ namespace gpstk
       {
          if(Inverted) return;
          try { Cov=inverse(InfMatrix); }
-         catch (gpstk::Exception& e) { Singular=true; return; }
+         catch (gnsstk::Exception& e) { Singular=true; return; }
          Singular = false;
          X = Cov * InfData;
          Inverted = true;
@@ -256,6 +256,6 @@ namespace gpstk
 
       //@}
 
-}  // namespace gpstk
+}  // namespace gnsstk
 
 #endif

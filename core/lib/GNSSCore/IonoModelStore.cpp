@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -46,7 +46,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 
       /* Get the ionospheric correction value.
@@ -73,7 +73,7 @@ namespace gpstk
       else
       {
          NoIonoModelFound e;
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
    }  // End of method 'IonoModelStore::getCorrection()'
@@ -114,7 +114,7 @@ namespace gpstk
        * \param tmin defines the beginning of the time interval
        * \param tmax defines the end of the time interval
        */
-   void IonoModelStore::edit(const CommonTime& tmin, 
+   void IonoModelStore::edit(const CommonTime& tmin,
                              const CommonTime& tmax)
     {
          // Get the first element >= tmin
@@ -142,13 +142,13 @@ namespace gpstk
    }
 
 
-   gpstk::CommonTime IonoModelStore::getInitialTime() const
+   gnsstk::CommonTime IonoModelStore::getInitialTime() const
    {
       return (ims.empty() ? CommonTime::END_OF_TIME : ims.begin()->first);
    }
 
 
-   gpstk::CommonTime IonoModelStore::getFinalTime() const
+   gnsstk::CommonTime IonoModelStore::getFinalTime() const
    {
       return (ims.empty() ? CommonTime::BEGINNING_OF_TIME : ims.rbegin()->first);
    }
@@ -160,9 +160,9 @@ namespace gpstk
       IonoModelMap::const_iterator i = ims.begin();
       for ( ; i != ims.end(); ++i, ++n)
       {
-         s << std::setw(3) << n << gpstk::printTime(i->first, " : %04Y %03j %08.2s  ");
+         s << std::setw(3) << n << gnsstk::printTime(i->first, " : %04Y %03j %08.2s  ");
          i->second.dump(s);
       }
    }
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk

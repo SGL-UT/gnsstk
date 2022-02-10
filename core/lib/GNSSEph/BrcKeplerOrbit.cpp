@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -44,10 +44,10 @@
 #include "BrcKeplerOrbit.hpp"
 #include <cmath>
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace std;
-   using namespace gpstk;
+   using namespace gnsstk;
 
    BrcKeplerOrbit::BrcKeplerOrbit()
       throw()
@@ -58,11 +58,11 @@ namespace gpstk
 
       satSys = "";
 
-      healthy = false;     
-     
+      healthy = false;
+
       URAoe = 0;
 
-      Cuc = Cus = Crc = Crs = Cic = Cis = M0 = dn = dndot = 
+      Cuc = Cus = Crc = Crs = Cic = Cis = M0 = dn = dndot =
          ecc = A = Ahalf =Adot = OMEGA0 = i0 = w = OMEGAdot = idot = 0.0;
    }
 
@@ -72,15 +72,15 @@ namespace gpstk
                                   const CommonTime beginFitArg,
                                   const CommonTime endFitArg,
                                   const CommonTime ToeArg,
-                                  const short URAoeArg, const bool healthyArg, 
-                                  const double CucArg, const double CusArg, 
-                                  const double CrcArg, const double CrsArg, 
-                                  const double CicArg, const double CisArg, 
-                                  const double M0Arg, const double dnArg, 
-                                  const double dndotArg, const double eccArg, 
-                                  const double AArg, const double AhalfArg, 
-                                  const double AdotArg, const double OMEGA0Arg, 
-                                  const double i0Arg, const double wArg, 
+                                  const short URAoeArg, const bool healthyArg,
+                                  const double CucArg, const double CusArg,
+                                  const double CrcArg, const double CrsArg,
+                                  const double CicArg, const double CisArg,
+                                  const double M0Arg, const double dnArg,
+                                  const double dndotArg, const double eccArg,
+                                  const double AArg, const double AhalfArg,
+                                  const double AdotArg, const double OMEGA0Arg,
+                                  const double i0Arg, const double wArg,
                                   const double OMEGAdotARg,
                                   const double idotArg )
    {
@@ -90,7 +90,7 @@ namespace gpstk
                AhalfArg, AdotArg, OMEGA0Arg, i0Arg, wArg, OMEGAdotARg, idotArg);
    }
 
-      /// Legacy GPS Subframe 1-3  
+      /// Legacy GPS Subframe 1-3
    BrcKeplerOrbit::BrcKeplerOrbit(const ObsID obsIDArg, const short PRNID,
                                   const short fullweeknum,
                                   const long subframe1[10],
@@ -139,15 +139,15 @@ namespace gpstk
                                  const CommonTime beginFitArg,
                                  const CommonTime endFitArg,
                                  const CommonTime ToeArg,
-                                 const short URAoeArg, const bool healthyArg, 
-                                 const double CucArg, const double CusArg, 
-                                 const double CrcArg, const double CrsArg, 
-                                 const double CicArg, const double CisArg,  
-                                 const double M0Arg, const double dnArg, 
-                                 const double dndotArg, const double eccArg, 
-                                 const double AArg, const double AhalfArg, 
-                                 const double AdotArg, const double OMEGA0Arg, 
-                                 const double i0Arg, const double wArg, 
+                                 const short URAoeArg, const bool healthyArg,
+                                 const double CucArg, const double CusArg,
+                                 const double CrcArg, const double CrsArg,
+                                 const double CicArg, const double CisArg,
+                                 const double M0Arg, const double dnArg,
+                                 const double dndotArg, const double eccArg,
+                                 const double AArg, const double AhalfArg,
+                                 const double AdotArg, const double OMEGA0Arg,
+                                 const double i0Arg, const double wArg,
                                  const double OMEGAdotARg, const double idotArg)
    {
       satSys      = satSysArg;
@@ -197,7 +197,7 @@ namespace gpstk
       if (!subframeConvert(subframe1, fullweeknum, ficked))
       {
          InvalidParameter exc("Subframe 1 not valid.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       short weeknum = static_cast<short>( ficked[5] );
@@ -208,12 +208,12 @@ namespace gpstk
       if (health == 0)
          healthy = true;
       iodc = static_cast<short>( ldexp( ficked[9], -11 ) );
-	  
+
          //Convert Subframe 2
       if (!subframeConvert(subframe2, fullweeknum, ficked))
       {
          InvalidParameter exc("Subframe 2 not valid.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       Crs    = ficked[6];
@@ -251,13 +251,13 @@ namespace gpstk
          endFitSOW -= FULLWEEK;
          endFitWk++;
       }
-      endFit = GPSWeekSecond(endFitWk, endFitSOW, TimeSystem::GPS);       
+      endFit = GPSWeekSecond(endFitWk, endFitSOW, TimeSystem::GPS);
 
          //Convert Subframe 3
       if (!subframeConvert(subframe3, fullweeknum, ficked))
       {
          InvalidParameter exc("Subframe3 not valid.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       Cic      = ficked[5];
@@ -272,10 +272,10 @@ namespace gpstk
       dndot      = 0.0;
       Adot       = 0.0;
       dataLoaded = true;
-	 
+
       return;
    }
-	     
+
    bool BrcKeplerOrbit::hasData() const
    {
       return(dataLoaded);
@@ -284,9 +284,9 @@ namespace gpstk
    bool BrcKeplerOrbit::isHealthy() const
    {
       if (!dataLoaded)
-      {   
+      {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return(healthy);
    }
@@ -294,11 +294,11 @@ namespace gpstk
    bool BrcKeplerOrbit::withinFitInterval(const CommonTime ct) const
    {
       if (!dataLoaded)
-      {   
+      {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
-      if (ct >= beginFit && ct <= endFit) return(true);    
+      if (ct >= beginFit && ct <= endFit) return(true);
       return(false);
    }
 
@@ -310,13 +310,13 @@ namespace gpstk
       double ToeSOW = gpsws.sow;
       double ea;              // eccentric anomaly //
       double delea;           // delta eccentric anomaly during iteration */
-      double elapte;          // elapsed time since Toe 
-         //double elaptc;          // elapsed time since Toc 
+      double elapte;          // elapsed time since Toe
+         //double elaptc;          // elapsed time since Toc
       double q,sinea,cosea;
       double GSTA,GCTA;
       double amm;
-      double meana;           // mean anomaly 
-      double F,G;             // temporary real variables 
+      double meana;           // mean anomaly
+      double F,G;             // temporary real variables
       double alat,talat,c2al,s2al,du,dr,di,U,R,truea,AINC;
       double ANLON,cosu,sinu,xip,yip,can,san,cinc,sinc;
       double xef,yef,zef,dek,dlk,div,domk,duv,drv;
@@ -349,7 +349,7 @@ namespace gpstk
 
       meana = M0 + elapte * amm;
       meana = fmod(meana, twoPI);
-   
+
       ea = meana + lecc * ::sin(meana);
 
       int loop_cnt = 1;
@@ -365,13 +365,13 @@ namespace gpstk
       sv.relcorr = svRelativity(t);
          // This appears to be only a string for naming
       sv.frame = ReferenceFrame::WGS84;
-   
+
          // Compute true anomaly
       q     = SQRT( 1.0e0 - lecc*lecc);
       sinea = ::sin(ea);
       cosea = ::cos(ea);
       G     = 1.0e0 - lecc * cosea;
-   
+
          //  G*SIN(TA) AND G*COS(TA)
       GSTA  = q * sinea;
       GCTA  = cosea - lecc;
@@ -410,7 +410,7 @@ namespace gpstk
       san  = ::sin( ANLON );
       cinc = ::cos( AINC  );
       sinc = ::sin( AINC  );
- 
+
          // Earth fixed - meters
       xef  =  xip*can  -  yip*cinc*san;
       yef  =  xip*san  +  yip*cinc*can;
@@ -457,8 +457,8 @@ namespace gpstk
       double elapte = t - getOrbitEpoch();
       double amm    = (sqrtgm / (A*Ahalf)) + dn;
       double meana,F,G,delea;
-      
-      meana = M0 + elapte * amm; 
+
+      meana = M0 + elapte * amm;
       meana = fmod(meana, twoPI);
       double ea = meana + ecc * ::sin(meana);
 
@@ -478,13 +478,13 @@ namespace gpstk
    {
       return Toe;
    }
-   
+
    CommonTime BrcKeplerOrbit::getBeginningOfFitInterval() const
    {
       if (!dataLoaded)
-      {   
+      {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return beginFit;
    }
@@ -492,9 +492,9 @@ namespace gpstk
    CommonTime BrcKeplerOrbit::getEndOfFitInterval() const
    {
       if (!dataLoaded)
-      {   
+      {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return endFit;
    }
@@ -504,17 +504,17 @@ namespace gpstk
       if(!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return PRNID;
-   }   
-  
+   }
+
    ObsID BrcKeplerOrbit::getObsID() const
    {
       if(!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return obsID;
    }
@@ -524,29 +524,29 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       GPSWeekSecond gpsws(Toe);
       return (gpsws.week);
-   }   
-  
+   }
+
    double BrcKeplerOrbit::getAccuracy()  const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       double accuracy = ura2CNAVaccuracy(URAoe);
       return accuracy;
-   }   
+   }
 
    void BrcKeplerOrbit::setAccuracy(const double& acc)
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       URAoe = accuracy2ura(acc);
    }
@@ -556,118 +556,118 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return URAoe;
    }
-         
+
    double BrcKeplerOrbit::getCus() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Cus;
    }
-   
+
    double BrcKeplerOrbit::getCrs() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Crs;
    }
-   
+
    double BrcKeplerOrbit::getCis() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Cis;
    }
-   
+
    double BrcKeplerOrbit::getCrc() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Crc;
    }
-   
+
    double BrcKeplerOrbit::getCuc() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Cuc;
    }
-  
+
    double BrcKeplerOrbit::getCic() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Cic;
    }
-   
+
    double BrcKeplerOrbit::getToe() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       GPSWeekSecond gpsws(Toe);
       return gpsws.sow;
    }
-   
+
    double BrcKeplerOrbit::getM0() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return M0;
    }
-   
+
    double BrcKeplerOrbit::getDn() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return dn;
    }
-   
+
    double BrcKeplerOrbit::getEcc() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return ecc;
    }
-      
+
    double BrcKeplerOrbit::getA() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return A;
    }
@@ -677,7 +677,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Ahalf;
    }
@@ -687,7 +687,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return Adot;
    }
@@ -697,57 +697,57 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return dndot;
    }
-   
+
    double BrcKeplerOrbit::getOmega0() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return OMEGA0;
    }
-   
+
    double BrcKeplerOrbit::getI0() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return i0;
    }
-   
+
    double BrcKeplerOrbit::getW() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return w;
    }
-   
+
    double BrcKeplerOrbit::getOmegaDot() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return OMEGAdot;
    }
-   
+
    double BrcKeplerOrbit::getIDot() const
    {
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return idot;
    }
@@ -772,7 +772,7 @@ namespace gpstk
          case 6: os << "Sat-6"; break;
          default: break;
       }
-      os << "   " << (static_cast<YDSTime>(t)).printf("%3j   %5.0s  ") 
+      os << "   " << (static_cast<YDSTime>(t)).printf("%3j   %5.0s  ")
          << (static_cast<CivilTime>(t)).printf("%02m/%02d/%04Y   %02H:%02M:%02S");
    }
 #pragma clang diagnostic push
@@ -782,7 +782,7 @@ namespace gpstk
       short DOW, hour, min, sec;
       long SOD, SOW;
       short SOH;
-      
+
       SOW  = static_cast<long>( HOW );
       DOW  = static_cast<short>( SOW / SEC_PER_DAY );
       SOD  = SOW - static_cast<long>( DOW * SEC_PER_DAY );
@@ -820,17 +820,17 @@ namespace gpstk
       s.setf(ios::uppercase);
       s.precision(0);
       s.fill(' ');
-      
+
       s << "****************************************************************"
         << "************" << endl
         << "Broadcast Ephemeris (Engineering Units)" << endl
         << endl
         << "PRN : " << setw(2) << PRNID << endl
         << endl;
-  
+
       s << "              Week(10bt)     SOW     DOW   UTD     SOD"
         << "   MM/DD/YYYY   HH:MM:SS\n";
-      
+
       s << endl;
       s << "Eph Epoch:    ";
       timeDisplay(s, getOrbitEpoch());
@@ -838,7 +838,7 @@ namespace gpstk
 
       s.setf(ios::scientific, ios::floatfield);
       s.precision(8);
-       
+
       s << endl
         << "           ORBIT PARAMETERS"
         << endl
@@ -853,7 +853,7 @@ namespace gpstk
         << setw(16) << OMEGAdot << " rad/sec" << endl
         << "Inclination:           " << setw(16) << i0     << " rad    "
         << setw(16) << idot     << " rad/sec" << endl;
-      
+
       s << endl
         << "           HARMONIC CORRECTIONS"
         << endl
@@ -863,18 +863,18 @@ namespace gpstk
         << "Inclination   Sine: " << setw(16) << Cis << " rad  Cosine: "
         << setw(16) << Cic << " rad" << endl
         << "In-track      Sine: " << setw(16) << Cus << " rad  Cosine: "
-        << setw(16) << Cuc << " rad" << endl;    
-      
+        << setw(16) << Cuc << " rad" << endl;
+
       s << endl;
 
       s.flags(oldFlags);
    } // end of BrcKeplerOrbit::dump()
-   
+
    ostream& operator<<(ostream& s, const BrcKeplerOrbit& eph)
    {
       eph.dump(s);
       return s;
 
    } // end of operator<<
-     
+
 } // namespace

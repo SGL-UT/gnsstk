@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -45,7 +45,7 @@
 using namespace std;
 
 // part of the test for this macro
-NEW_EXCEPTION_CLASS(TestExceptionClass, gpstk::InvalidParameter);
+NEW_EXCEPTION_CLASS(TestExceptionClass, gnsstk::InvalidParameter);
 
 class Exception_T
 {
@@ -69,12 +69,12 @@ public:
        * setSeverity()
        *
        * Macros:
-       * GPSTK_THROW()
+       * GNSSTK_THROW()
        */
    int testErrorSeverity();
       /** Test macro function:
-       * GPSTK_RETHROW()
-       * GPSTK_ASSERT()
+       * GNSSTK_RETHROW()
+       * GNSSTK_ASSERT()
        * NEW_EXCEPTION_CLASS()
        */
    int testMacros();
@@ -85,9 +85,9 @@ private:
    int throwType();
 
       /// Throw an exception for testMacros
-   void throwSomething(gpstk::TestUtil& testFramework);
+   void throwSomething(gnsstk::TestUtil& testFramework);
       /// Throw an exception for testMacros
-   void rethrowSomething(gpstk::TestUtil& testFramework);
+   void rethrowSomething(gnsstk::TestUtil& testFramework);
 
    int cowLine1, cowLine2;
 };
@@ -97,22 +97,22 @@ int Exception_T ::
 testThrowTypes()
 {
    int total = 0;
-   total += throwType<gpstk::Exception>();
-   total += throwType<gpstk::InvalidParameter>();
-   total += throwType<gpstk::InvalidRequest>();
-   total += throwType<gpstk::AssertionFailure>();
-   total += throwType<gpstk::AccessError>();
-   total += throwType<gpstk::IndexOutOfBoundsException>();
-   total += throwType<gpstk::InvalidArgumentException>();
-   total += throwType<gpstk::ConfigurationException>();
-   total += throwType<gpstk::FileMissingException>();
-   total += throwType<gpstk::SystemSemaphoreException>();
-   total += throwType<gpstk::SystemPipeException>();
-   total += throwType<gpstk::SystemQueueException>();
-   total += throwType<gpstk::OutOfMemory>();
-   total += throwType<gpstk::ObjectNotFound>();
-   total += throwType<gpstk::NullPointerException>();
-   total += throwType<gpstk::UnimplementedException>();
+   total += throwType<gnsstk::Exception>();
+   total += throwType<gnsstk::InvalidParameter>();
+   total += throwType<gnsstk::InvalidRequest>();
+   total += throwType<gnsstk::AssertionFailure>();
+   total += throwType<gnsstk::AccessError>();
+   total += throwType<gnsstk::IndexOutOfBoundsException>();
+   total += throwType<gnsstk::InvalidArgumentException>();
+   total += throwType<gnsstk::ConfigurationException>();
+   total += throwType<gnsstk::FileMissingException>();
+   total += throwType<gnsstk::SystemSemaphoreException>();
+   total += throwType<gnsstk::SystemPipeException>();
+   total += throwType<gnsstk::SystemQueueException>();
+   total += throwType<gnsstk::OutOfMemory>();
+   total += throwType<gnsstk::ObjectNotFound>();
+   total += throwType<gnsstk::NullPointerException>();
+   total += throwType<gnsstk::UnimplementedException>();
    return total;
 }
 
@@ -126,16 +126,16 @@ testErrorSeverity()
    std::string fn("testErrorSeverity");
    try
    {
-      gpstk::Exception exc("fail", 1234, gpstk::Exception::recoverable);
+      gnsstk::Exception exc("fail", 1234, gnsstk::Exception::recoverable);
          // do not separate these statements
-      loc1Line = __LINE__; GPSTK_THROW(exc);
-      testFramework.changeSourceMethod("GPSTK_THROW");
+      loc1Line = __LINE__; GNSSTK_THROW(exc);
+      testFramework.changeSourceMethod("GNSSTK_THROW");
       TUFAIL("Did not throw an exception when expected");
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
-      testFramework.changeSourceMethod("GPSTK_THROW");
-      TUPASS("GPSTK_THROW");
+      testFramework.changeSourceMethod("GNSSTK_THROW");
+      TUPASS("GNSSTK_THROW");
       testFramework.changeSourceMethod("getErrorId");
       TUASSERTE(unsigned long, 1234, exc.getErrorId());
       testFramework.changeSourceMethod("isRecoverable");
@@ -149,15 +149,15 @@ testErrorSeverity()
       TUASSERTE(size_t, 2, exc.getTextCount());
       testFramework.changeSourceMethod("addLocation");
          // do not separate these statements
-      loc2Line = __LINE__; gpstk::ExceptionLocation here(__FILE__,fn,__LINE__);
+      loc2Line = __LINE__; gnsstk::ExceptionLocation here(__FILE__,fn,__LINE__);
       exc.addLocation(here);
       TUASSERTE(size_t, 2, exc.getLocationCount());
       if (exc.getLocationCount() == 2)
       {
-         gpstk::TestUtil test2("ExceptionLocation", "", __FILE__, __LINE__);
-         gpstk::ExceptionLocation loc1 = exc.getLocation();
-         gpstk::ExceptionLocation loc2 = exc.getLocation(1);
-            // can't change class in gpstk::TestUtil, oh well
+         gnsstk::TestUtil test2("ExceptionLocation", "", __FILE__, __LINE__);
+         gnsstk::ExceptionLocation loc1 = exc.getLocation();
+         gnsstk::ExceptionLocation loc2 = exc.getLocation(1);
+            // can't change class in gnsstk::TestUtil, oh well
          testFramework.changeSourceMethod("getLineNumber");
          TUASSERTE(unsigned long, loc1Line, loc1.getLineNumber());
          TUASSERTE(unsigned long, loc2Line, loc2.getLineNumber());
@@ -175,7 +175,7 @@ testErrorSeverity()
    }
    catch (...)
    {
-      testFramework.changeSourceMethod("GPSTK_THROW");
+      testFramework.changeSourceMethod("GNSSTK_THROW");
       TUFAIL("Threw an unexpected exception type");
    }
    try
@@ -183,17 +183,17 @@ testErrorSeverity()
          // Initialize error id as 5678 then change it using
          // setErrorId to make sure that method works.  Likewise with
          // setSeverity()
-      gpstk::Exception exc("fail", 5678, gpstk::Exception::recoverable);
+      gnsstk::Exception exc("fail", 5678, gnsstk::Exception::recoverable);
       exc.setErrorId(9012);
-      exc.setSeverity(gpstk::Exception::unrecoverable);
-      GPSTK_THROW(exc);
-      testFramework.changeSourceMethod("GPSTK_THROW");
+      exc.setSeverity(gnsstk::Exception::unrecoverable);
+      GNSSTK_THROW(exc);
+      testFramework.changeSourceMethod("GNSSTK_THROW");
       TUFAIL("Did not throw an exception when expected");
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
-      testFramework.changeSourceMethod("GPSTK_THROW");
-      TUPASS("GPSTK_THROW");
+      testFramework.changeSourceMethod("GNSSTK_THROW");
+      TUPASS("GNSSTK_THROW");
       testFramework.changeSourceMethod("getErrorId");
       TUASSERTE(unsigned long, 9012, exc.getErrorId());
       testFramework.changeSourceMethod("isRecoverable");
@@ -201,7 +201,7 @@ testErrorSeverity()
    }
    catch (...)
    {
-      testFramework.changeSourceMethod("GPSTK_THROW");
+      testFramework.changeSourceMethod("GNSSTK_THROW");
       TUFAIL("Threw an unexpected exception type");
    }
    return testFramework.countFails();
@@ -213,16 +213,16 @@ testMacros()
 {
    TUDEF("Exception", "macros");
 
-      // test GPSTK_ASSERT
-   testFramework.changeSourceMethod("GPSTK_ASSERT");
+      // test GNSSTK_ASSERT
+   testFramework.changeSourceMethod("GNSSTK_ASSERT");
    try
    {
-      GPSTK_ASSERT(false);
+      GNSSTK_ASSERT(false);
       TUFAIL("Did not throw AssertionFailure exception");
    }
-   catch (gpstk::AssertionFailure &exc)
+   catch (gnsstk::AssertionFailure &exc)
    {
-      TUPASS("GPSTK_ASSERT");
+      TUPASS("GNSSTK_ASSERT");
    }
    catch (...)
    {
@@ -234,10 +234,10 @@ testMacros()
    try
    {
       TestExceptionClass exc("moo");
-      GPSTK_THROW(exc);
+      GNSSTK_THROW(exc);
       TUFAIL("Did not throw TestExceptionClass");
    }
-   catch (gpstk::InvalidParameter)
+   catch (gnsstk::InvalidParameter)
    {
          // make sure the exception class is a child of InvalidParameter
       TUPASS("NEW_EXCEPTION_CLASS");
@@ -247,20 +247,20 @@ testMacros()
       TUFAIL("Threw a different exception from InvalidParameter");
    }
 
-      // test GPSTK_RETHROW
-   testFramework.changeSourceMethod("GPSTK_RETHROW");
+      // test GNSSTK_RETHROW
+   testFramework.changeSourceMethod("GNSSTK_RETHROW");
    try
    {
       rethrowSomething(testFramework);
       TUFAIL("rethrowSomething didn't throw exception");
    }
-   catch(gpstk::InvalidRequest& exc)
+   catch(gnsstk::InvalidRequest& exc)
    {
       TUASSERTE(size_t, 2, exc.getLocationCount());
       if (exc.getLocationCount() == 2)
       {
-         gpstk::ExceptionLocation loc1 = exc.getLocation();
-         gpstk::ExceptionLocation loc2 = exc.getLocation(1);
+         gnsstk::ExceptionLocation loc1 = exc.getLocation();
+         gnsstk::ExceptionLocation loc2 = exc.getLocation(1);
          TUASSERTE(unsigned long, cowLine1, loc1.getLineNumber());
          TUASSERTE(unsigned long, cowLine2, loc2.getLineNumber());
       }
@@ -278,18 +278,18 @@ template <class EXC>
 int Exception_T ::
 throwType()
 {
-   TUDEF(typeid(EXC).name(), "GPSTK_THROW");
+   TUDEF(typeid(EXC).name(), "GNSSTK_THROW");
    try
    {
       EXC exc("fail");
-      GPSTK_THROW(exc);
+      GNSSTK_THROW(exc);
       TUFAIL("Did not throw an exception when expected");
    }
-   catch (gpstk::Exception &exc)
+   catch (gnsstk::Exception &exc)
    {
          // all Exception classes are expected to be children of
-         // gpstk::Exception
-      TUPASS("GPSTK_THROW");
+         // gnsstk::Exception
+      TUPASS("GNSSTK_THROW");
          // Removed - clearly not working and probably not being used.
          // Should the interface be removed from the Exception
          // implementation as well?
@@ -305,25 +305,25 @@ throwType()
 
 
 void Exception_T ::
-throwSomething(gpstk::TestUtil& testFramework)
+throwSomething(gnsstk::TestUtil& testFramework)
 {
-   gpstk::InvalidRequest exc("cow");
-   cowLine1 = __LINE__; GPSTK_THROW(exc);
+   gnsstk::InvalidRequest exc("cow");
+   cowLine1 = __LINE__; GNSSTK_THROW(exc);
 }
 
 
 void Exception_T ::
-rethrowSomething(gpstk::TestUtil& testFramework)
+rethrowSomething(gnsstk::TestUtil& testFramework)
 {
    try
    {
       throwSomething(testFramework);
       TUFAIL("throwSomething didn't throw exception");
    }
-   catch (gpstk::InvalidRequest &exc)
+   catch (gnsstk::InvalidRequest &exc)
    {
       TUPASS("throwSomething");
-      cowLine2 = __LINE__; GPSTK_RETHROW(exc);
+      cowLine2 = __LINE__; GNSSTK_RETHROW(exc);
    }
    catch (...)
    {

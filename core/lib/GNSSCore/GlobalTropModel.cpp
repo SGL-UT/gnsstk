@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -39,7 +39,7 @@
 #include "GlobalTropModel.hpp"
 #include "MJD.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    // ------------------------------------------------------------------------
    // GlobalTropModel
@@ -70,7 +70,7 @@ namespace gpstk
       -2.828e-05, +5.403e-07, +4.390e-07, +1.350e-08, +1.800e-09,
       +0.000e+00, -2.736e-02, -2.977e-04, +8.113e-05, +2.329e-07,
       +8.451e-07, +4.490e-08, -8.100e-09, -1.500e-09, +2.000e-10 };
-       
+
    const double GlobalTropModel::ADryAmp[55] = {
       -2.738e-01, -2.837e+00, +1.298e-02, -3.588e-01, +2.413e-02,
       +3.427e-02, -7.624e-01, +7.272e-02, +2.160e-02, -3.385e-03,
@@ -83,7 +83,7 @@ namespace gpstk
       +2.070e-06, -9.620e-08, -2.742e-07, -6.370e-08, -6.300e-09,
       +8.625e-02, -5.971e-03, +4.705e-04, +2.335e-05, +4.226e-06,
       +2.475e-07, -8.850e-08, -3.600e-08, -2.900e-09, +0.000e+00 };
-       
+
    const double GlobalTropModel::BDryAmp[55] = {
       +0.000e+00, +0.000e+00, -1.136e-01, +0.000e+00, -1.868e-01,
       -1.399e-02, +0.000e+00, -1.043e-01, +1.175e-02, -2.240e-03,
@@ -96,7 +96,7 @@ namespace gpstk
       -3.290e-05, -1.705e-07, +7.440e-08, +2.720e-08, -6.600e-09,
       +0.000e+00, +1.236e-02, -9.981e-04, -3.792e-05, -1.355e-05,
       +1.162e-06, -1.789e-07, +1.470e-08, -2.400e-09, -4.000e-10 };
-       
+
    const double GlobalTropModel::AWetMean[55] = {
       +5.640e+01, +1.555e+00, -1.011e+00, -3.975e+00, +3.171e-02,
       +1.065e-01, +6.175e-01, +1.376e-01, +4.229e-02, +3.028e-03,
@@ -109,7 +109,7 @@ namespace gpstk
       +3.544e-04, +1.148e-05, +7.503e-06, -5.667e-07, -3.660e-08,
       +8.683e-01, -5.931e-02, -1.864e-03, -1.277e-04, +2.029e-04,
       +1.269e-05, +1.629e-06, +9.660e-08, -1.015e-07, -5.000e-10 };
-       
+
    const double GlobalTropModel::BWetMean[55] = {
       +0.000e+00, +0.000e+00, +2.592e-01, +0.000e+00, +2.974e-02,
       -5.471e-01, +0.000e+00, -5.926e-01, -1.030e-01, -1.567e-02,
@@ -122,7 +122,7 @@ namespace gpstk
       -1.287e-04, -2.438e-05, -7.561e-07, +1.158e-06, +4.950e-08,
       +0.000e+00, -1.344e-01, +5.342e-03, +3.775e-04, -6.756e-05,
       -1.686e-06, -1.184e-06, +2.768e-07, +2.730e-08, +5.700e-09 };
-       
+
    const double GlobalTropModel::AWetAmp[55] = {
       +1.023e-01, -2.695e+00, +3.417e-01, -1.405e-01, +3.175e-01,
       +2.116e-01, +3.536e+00, -1.505e-01, -1.660e-02, +2.967e-02,
@@ -135,7 +135,7 @@ namespace gpstk
       +1.083e-04, +2.570e-06, -2.140e-06, -5.710e-08, +2.000e-08,
       -1.632e+00, -6.948e-03, -3.893e-03, +8.592e-04, +7.577e-05,
       +4.539e-06, -3.852e-07, -2.213e-07, -1.370e-08, +5.800e-09 };
-       
+
    const double GlobalTropModel::BWetAmp[55] = {
       +0.000e+00, +0.000e+00, -8.865e-02, +0.000e+00, -4.309e-01,
       +6.340e-02, +0.000e+00, +1.162e-01, +6.176e-02, -4.234e-03,
@@ -300,14 +300,14 @@ namespace gpstk
    }
 
 
-   // Compute and return the full tropospheric delay. The receiver height, 
+   // Compute and return the full tropospheric delay. The receiver height,
    // latitude and time must has been set before using the appropriate
    // methods.
    // @param elevation Elevation of satellite as seen at receiver, in degrees
-   double GlobalTropModel::correction(double elevation) const       
+   double GlobalTropModel::correction(double elevation) const
    {
       try { testValidity(); }
-      catch(InvalidTropModel& e) { GPSTK_RETHROW(e); }
+      catch(InvalidTropModel& e) { GNSSTK_RETHROW(e); }
 
       // Global mapping functions good down to 3 degrees of elevation
       if(elevation < 3.0) { return 0.0; }
@@ -346,17 +346,17 @@ namespace gpstk
       }
       catch(GeometryException& e) {
          validHeight = validLat = valid = false;
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
 
       try { testValidity(); }
-      catch(InvalidTropModel& e) { GPSTK_RETHROW(e); }
+      catch(InvalidTropModel& e) { GNSSTK_RETHROW(e); }
 
       double c;
       try {
          c = GlobalTropModel::correction(RX.elevationGeodetic(SV));
       }
-      catch(InvalidTropModel& e) { GPSTK_RETHROW(e); }
+      catch(InvalidTropModel& e) { GNSSTK_RETHROW(e); }
 
       return c;
 
@@ -367,7 +367,7 @@ namespace gpstk
    // Ref. Davis etal 1985 and Leick, 3rd ed, pg 197.
    double GlobalTropModel::dry_zenith_delay() const
    {
-      try { testValidity(); } catch(InvalidTropModel& e) { GPSTK_RETHROW(e); }
+      try { testValidity(); } catch(InvalidTropModel& e) { GNSSTK_RETHROW(e); }
       return SaasDryDelay(press,latitude,height);
 
    }  // end GlobalTropModel::dry_zenith_delay()
@@ -386,7 +386,7 @@ namespace gpstk
    // @param elevation Elevation of satellite as seen at receiver, in degrees
    double GlobalTropModel::dry_mapping_function(double elevation) const
    {
-      try { testValidity(); } catch(InvalidTropModel& e) { GPSTK_RETHROW(e); }
+      try { testValidity(); } catch(InvalidTropModel& e) { GNSSTK_RETHROW(e); }
       if(elevation < 3.0) { return 0.0; }
 
       double clat = ::cos(latitude*DEG_TO_RAD);
@@ -450,7 +450,7 @@ namespace gpstk
    //
    //                a (x+c)    x(x^2 + xc + b) + a(x+c)
    // f(x) = x + ------------ = ------------------------
-   //            x^2 + xc + b        x^2 + xc + b    
+   //            x^2 + xc + b        x^2 + xc + b
    //
    //        x^3 + x^2 c + x(a+b) + ac
    //      = -------------------------
@@ -476,7 +476,7 @@ namespace gpstk
    double GlobalTropModel::wet_mapping_function(double elevation) const
    {
       try { testValidity(); }
-      catch(InvalidTropModel& e) { GPSTK_RETHROW(e); }
+      catch(InvalidTropModel& e) { GNSSTK_RETHROW(e); }
 
       if(elevation < 3.0) { return 0.0; }
 
@@ -499,16 +499,17 @@ namespace gpstk
       double f(sine + aw/(sine + bw/(sine + cw)));
       double map = f1/f;
 
-      //// NB might be easier numerically... map' = map(elev+eps)-map(elev-eps)/2eps
-      //if(doDeriv) {
-      //   double apb(aw+bw);
-      //   double cw2(cw*cw);
-      //   double tmp(sine*(sine + 2*cw) + 2*bw+cw2);
-      //   double fpN(sine*(sine*(tmp-aw) + apb*(1.+3*cw)) + bw*apb-aw*cw2);
-      //   double fpD(sine*(sine*tmp + 2*bw));
-      //   double sinep(::cos(elevation*DEG_TO_RAD));
-      //   deriv = - map * (sinep*fpN/fpD) / f;
-      //}
+      /**  NB might be easier numerically... map' = map(elev+eps)-map(elev-eps)/2eps
+       *if(doDeriv) {
+       *   double apb(aw+bw);
+       *   double cw2(cw*cw);
+       *   double tmp(sine*(sine + 2*cw) + 2*bw+cw2);
+       *   double fpN(sine*(sine*(tmp-aw) + apb*(1.+3*cw)) + bw*apb-aw*cw2);
+       *   double fpD(sine*(sine*tmp + 2*bw));
+       *   double sinep(::cos(elevation*DEG_TO_RAD));
+       *   deriv = - map * (sinep*fpN/fpD) / f;
+       *}
+      */
 
       return map;
 
@@ -519,16 +520,19 @@ namespace gpstk
    void GlobalTropModel::getGPT(double& P, double& T, double& U)
    {
       try { testValidity(); }
-      catch(InvalidTropModel& e) { GPSTK_RETHROW(e); }
-      
+      catch(InvalidTropModel& e) { GNSSTK_RETHROW(e); }
+
       int i;
 
       // undulation and orthometric height
       U = 0.0;
       for(i=0; i<55; i++) U += (Ageoid[i]*aP[i] + Bgeoid[i]*bP[i]);
       double orthoht(height - U);
-      if(orthoht > HeightLimit) GPSTK_THROW(
-         InvalidTropModel("Invalid Global trop model: Rx Height exceeds limit"));
+      if(orthoht > HeightLimit)
+      {
+         GNSSTK_THROW(
+            InvalidTropModel("Invalid Global trop model: Rx Height exceeds limit"));
+      }
 
       // press at geoid
       double am(0.0),aa(0.0),v0;
@@ -537,7 +541,7 @@ namespace gpstk
          aa += (APressAmp[i]*aP[i] + BPressAmp[i]*bP[i]);
       }
       v0 = am + aa * ::cos(dayfactor);
-      
+
       // pressure at height
       // NB this implies any orthoht > 1/2.26e-5 == 44247.78m is invalid!
       P = v0 * ::pow(1.0-2.26e-5*orthoht,5.225);
@@ -560,7 +564,7 @@ namespace gpstk
    void GlobalTropModel::setReceiverHeight(const double& ht)
    {
       if(height != ht) {
-         height = ht; 
+         height = ht;
          validHeight = true;
          validCoeff = false;
          setValid();          // calls updateGTMCoeff()
@@ -680,14 +684,14 @@ namespace gpstk
    {
       if(!valid) {
          if(!validLat)
-            GPSTK_THROW(InvalidTropModel("Invalid Global trop model: Rx Latitude"));
+            GNSSTK_THROW(InvalidTropModel("Invalid Global trop model: Rx Latitude"));
          if(!validHeight)
-            GPSTK_THROW(InvalidTropModel("Invalid Global trop model: Rx Height"));
+            GNSSTK_THROW(InvalidTropModel("Invalid Global trop model: Rx Height"));
          if(!validDay)
-            GPSTK_THROW(InvalidTropModel("Invalid Global trop model: day of year"));
+            GNSSTK_THROW(InvalidTropModel("Invalid Global trop model: day of year"));
 
-         GPSTK_THROW(InvalidTropModel("Valid flag corrupted in Global trop model"));
+         GNSSTK_THROW(InvalidTropModel("Valid flag corrupted in Global trop model"));
       }
    }
 
-} // end namespace gpstk
+} // end namespace gnsstk

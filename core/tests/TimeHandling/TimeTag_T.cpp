@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -53,7 +53,7 @@
 #include <iomanip>
 #include <sstream>
 
-using namespace gpstk;
+using namespace gnsstk;
 using namespace std;
 
 // This test file will contain a series of scanf checks for each of
@@ -358,74 +358,74 @@ changeTimeSystemTest()
 {
    TUDEF("TimeTag", "changeTimeSystem");
    std::shared_ptr<TimeSystemConverter> btscShared =
-      make_shared<gpstk::BasicTimeSystemConverter>();
-   gpstk::BasicTimeSystemConverter *btsc =
-      dynamic_cast<gpstk::BasicTimeSystemConverter *>(btscShared.get());
+      make_shared<gnsstk::BasicTimeSystemConverter>();
+   gnsstk::BasicTimeSystemConverter *btsc =
+      dynamic_cast<gnsstk::BasicTimeSystemConverter *>(btscShared.get());
       // can't use TimeTag directly as it's abstract, so use CivilTime instead
-   gpstk::CivilTime uut, exp;
+   gnsstk::CivilTime uut, exp;
 
-      //Check conversion from any given time system to UTC and back 
-   uut = gpstk::CivilTime(1990,11,6,0,0,0,gpstk::TimeSystem::UTC);
-   exp = gpstk::CivilTime(1990,11,6,0,0,6,gpstk::TimeSystem::GPS);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GPS,btsc));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+      //Check conversion from any given time system to UTC and back
+   uut = gnsstk::CivilTime(1990,11,6,0,0,6,gnsstk::TimeSystem::UTC);
+   exp = gnsstk::CivilTime(1990,11,6,0,0,0,gnsstk::TimeSystem::GPS);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GPS,btsc));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(2004,11,16,0,0,0,gpstk::TimeSystem::GPS);
-   exp = gpstk::CivilTime(2004,11,15,23,59,47,gpstk::TimeSystem::UTC);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::UTC,btsc));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(2004,11,15,23,59,47,gnsstk::TimeSystem::GPS);
+   exp = gnsstk::CivilTime(2004,11,16,0,0,0,gnsstk::TimeSystem::UTC);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::UTC,btsc));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(1992,10,3,0,0,0,gpstk::TimeSystem::UTC);
-   exp = gpstk::CivilTime(1992,10,3,0,0,0,gpstk::TimeSystem::GLO);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO,btsc));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(1992,10,3,0,0,0,gnsstk::TimeSystem::UTC);
+   exp = gnsstk::CivilTime(1992,10,3,0,0,0,gnsstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO,btsc));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
-   exp = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::UTC);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::UTC,btsc));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   exp = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::UTC);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::UTC,btsc));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
-   exp = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO,btsc));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   exp = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO,btsc));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(2020,1,1,0,0,0,gpstk::TimeSystem::GPS);
-   exp = gpstk::CivilTime(2019,12,31,23,59,42,gpstk::TimeSystem::GLO);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO,btsc));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(2019,12,31,23,59,42,gnsstk::TimeSystem::GPS);
+   exp = gnsstk::CivilTime(2020,1,1,0,0,0,gnsstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO,btsc));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
       // conversion using static TimeSystemConverter
-   gpstk::CommonTime::tsConv = btscShared;
-   uut = gpstk::CivilTime(1990,11,6,0,0,0,gpstk::TimeSystem::UTC);
-   exp = gpstk::CivilTime(1990,11,6,0,0,6,gpstk::TimeSystem::GPS);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GPS));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   gnsstk::CommonTime::tsConv = btscShared;
+   uut = gnsstk::CivilTime(1990,11,6,0,0,6,gnsstk::TimeSystem::UTC);
+   exp = gnsstk::CivilTime(1990,11,6,0,0,0,gnsstk::TimeSystem::GPS);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GPS));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(2004,11,16,0,0,0,gpstk::TimeSystem::GPS);
-   exp = gpstk::CivilTime(2004,11,15,23,59,47,gpstk::TimeSystem::UTC);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::UTC));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(2004,11,15,23,59,47,gnsstk::TimeSystem::GPS);
+   exp = gnsstk::CivilTime(2004,11,16,0,0,0,gnsstk::TimeSystem::UTC);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::UTC));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(1992,10,3,0,0,0,gpstk::TimeSystem::UTC);
-   exp = gpstk::CivilTime(1992,10,3,0,0,0,gpstk::TimeSystem::GLO);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(1992,10,3,0,0,0,gnsstk::TimeSystem::UTC);
+   exp = gnsstk::CivilTime(1992,10,3,0,0,0,gnsstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
-   exp = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::UTC);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::UTC));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   exp = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::UTC);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::UTC));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
-   exp = gpstk::CivilTime(1995,5,10,0,0,0,gpstk::TimeSystem::GLO);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   exp = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gpstk::CivilTime(2020,1,1,0,0,0,gpstk::TimeSystem::GPS);
-   exp = gpstk::CivilTime(2019,12,31,23,59,42,gpstk::TimeSystem::GLO);
-   TUASSERTE(bool, true, uut.changeTimeSystem(gpstk::TimeSystem::GLO));
-   TUASSERTE(gpstk::CommonTime, uut, exp);
+   uut = gnsstk::CivilTime(2019,12,31,23,59,42,gnsstk::TimeSystem::GPS);
+   exp = gnsstk::CivilTime(2020,1,1,0,0,0,gnsstk::TimeSystem::GLO);
+   TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO));
+   TUASSERTE(gnsstk::CommonTime, uut, exp);
 
    TURETURN();
 }
@@ -445,7 +445,7 @@ int main() //Main function to initialize and run all tests above
    errorTotal += testClass.scanfUnixTime();
    errorTotal += testClass.scanfYDSTime();
    errorTotal += testClass.changeTimeSystemTest();
-	
+
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
       //Return the total number of errors

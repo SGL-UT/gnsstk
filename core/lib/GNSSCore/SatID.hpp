@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,15 +29,15 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
-#ifndef GPSTK_SATID_HPP
-#define GPSTK_SATID_HPP
+#ifndef GNSSTK_SATID_HPP
+#define GNSSTK_SATID_HPP
 
 #include <iostream>
 #include <iomanip>
@@ -47,10 +47,10 @@
 
 /**
  * @file SatID.hpp
- * gpstk::SatID - navigation system-independent representation of a satellite.
+ * gnsstk::SatID - navigation system-independent representation of a satellite.
  */
 
-namespace gpstk
+namespace gnsstk
 {
       // forward declarations
    class SatID;
@@ -148,7 +148,7 @@ namespace gpstk
          /** return true if this is a valid SatID
           * @note assumes all id's are positive and less than 100;
           *     plus GPS id's are less than or equal to MAX_PRN (32).
-          * @note this is not used internally in the gpstk library */
+          * @note this is not used internally in the gnsstk library */
       bool isValid() const;
 
       int id;                   ///< Satellite identifier, e.g. PRN
@@ -180,6 +180,6 @@ namespace gpstk
       }
    }
 
-} // namespace gpstk
+} // namespace gnsstk
 
 #endif

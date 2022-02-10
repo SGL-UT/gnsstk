@@ -1,38 +1,38 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -42,7 +42,7 @@
 #include "CivilTime.hpp"
 #include <iomanip>
 
-namespace gpstk
+namespace gnsstk
 {
    std::ostream& operator<<(std::ostream& s, SVHealth h)
    {
@@ -52,13 +52,13 @@ namespace gpstk
 }
 
 /// Allow us to test an abstract class
-class TestClass : public gpstk::OrbitDataKepler
+class TestClass : public gnsstk::OrbitDataKepler
 {
 public:
    bool validate() const override
    { return true; }
-   gpstk::CommonTime getUserTime() const override
-   { return gpstk::CommonTime::BEGINNING_OF_TIME; }
+   gnsstk::CommonTime getUserTime() const override
+   { return gnsstk::CommonTime::BEGINNING_OF_TIME; }
 };
 
 
@@ -72,18 +72,19 @@ public:
    unsigned svRelativityTest();
    unsigned svClockBiasTest();
    unsigned svClockDriftTest();
+   unsigned isSameDataTest();
 
       /// Set the fields in TestClass/OrbitDataKepler for testing
    void fillTestClass(TestClass& uut);
 
-   gpstk::CivilTime civ;
-   gpstk::CommonTime ct;
+   gnsstk::CivilTime civ;
+   gnsstk::CommonTime ct;
 };
 
 
 OrbitDataKepler_T ::
 OrbitDataKepler_T()
-      : civ(2015,7,19,2,0,0.0,gpstk::TimeSystem::GPS),
+      : civ(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS),
         ct(civ)
 {
 }
@@ -94,17 +95,17 @@ constructorTest()
 {
    TUDEF("OrbitDataKepler", "OrbitDataKepler");
    TestClass uut;
-   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime::BEGINNING_OF_TIME,
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME,
              uut.xmitTime);
-   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime::BEGINNING_OF_TIME,
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME,
              uut.Toe);
-   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime::BEGINNING_OF_TIME,
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME,
              uut.Toc);
-   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime::BEGINNING_OF_TIME,
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME,
              uut.beginFit);
-   TUASSERTE(gpstk::CommonTime, gpstk::CommonTime::BEGINNING_OF_TIME,
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME,
              uut.endFit);
-   TUASSERTE(gpstk::SVHealth, gpstk::SVHealth::Unknown, uut.health);
+   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Unknown, uut.health);
    TUASSERTFE(0.0, uut.Cuc);
    TUASSERTFE(0.0, uut.Cus);
    TUASSERTFE(0.0, uut.Crc);
@@ -135,7 +136,7 @@ getXvtTest()
 {
    TUDEF("OrbitDataKepler", "getXvt");
    TestClass uut;
-   gpstk::Xvt xvt;
+   gnsstk::Xvt xvt;
    fillTestClass(uut);
    TUASSERT(uut.getXvt(ct+35, xvt));
       // TUASSERTE is not good for this check as we're testing a bunch
@@ -152,7 +153,7 @@ getXvtTest()
    TUASSERTFE(-0.00021641018042870913346, xvt.clkbias);
    TUASSERTFE(4.3200998334200003381e-12, xvt.clkdrift);
    TUASSERTFE(-8.8197758101551758427e-09, xvt.relcorr);
-   TUASSERTE(gpstk::Xvt::HealthStatus, gpstk::Xvt::Healthy, xvt.health);
+   TUASSERTE(gnsstk::Xvt::HealthStatus, gnsstk::Xvt::Healthy, xvt.health);
    TURETURN();
 }
 
@@ -194,10 +195,10 @@ svClockDriftTest()
 void OrbitDataKepler_T ::
 fillTestClass(TestClass& uut)
 {
-   uut.xmitTime = gpstk::GPSWeekSecond(1854, .720000000000e+04);
-   uut.Toe = gpstk::GPSWeekSecond(1854, .143840000000e+05);
-   uut.Toc = gpstk::CivilTime(2015,7,19,3,59,44.0,gpstk::TimeSystem::GPS);
-   uut.health = gpstk::SVHealth::Healthy;
+   uut.xmitTime = gnsstk::GPSWeekSecond(1854, .720000000000e+04);
+   uut.Toe = gnsstk::GPSWeekSecond(1854, .143840000000e+05);
+   uut.Toc = gnsstk::CivilTime(2015,7,19,3,59,44.0,gnsstk::TimeSystem::GPS);
+   uut.health = gnsstk::SVHealth::Healthy;
    uut.Cuc = .200793147087e-05;
    uut.Cus = .823289155960e-05;
    uut.Crc = .214593750000e+03;
@@ -230,6 +231,22 @@ fillTestClass(TestClass& uut)
 }
 
 
+unsigned OrbitDataKepler_T ::
+isSameDataTest()
+{
+   TUDEF("OrbitDataKepler", "isSameData");
+   std::shared_ptr<TestClass>
+      uut1 = std::make_shared<TestClass>(),
+      uut2 = std::make_shared<TestClass>(),
+      uut3 = std::make_shared<TestClass>();
+      // make sure all initialized data are comparable
+   TUASSERTE(bool, true, uut1->isSameData(uut2));
+   uut3->Cuc = 1;
+   TUASSERTE(bool, false, uut1->isSameData(uut3));
+   TURETURN();
+}
+
+
 int main()
 {
    OrbitDataKepler_T testClass;
@@ -240,6 +257,7 @@ int main()
    errorTotal += testClass.svRelativityTest();
    errorTotal += testClass.svClockBiasTest();
    errorTotal += testClass.svClockDriftTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

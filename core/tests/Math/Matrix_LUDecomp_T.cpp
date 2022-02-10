@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -43,14 +43,14 @@
     //Testing determinant of LU compared to A
     //Testing P * (L * U) = A
 
-gpstk::Matrix<double> L1, U1, L2, U2, L3, U3;
-gpstk::Matrix<double> CompareLUA1, CompareLUA2, CompareLUA3;
-gpstk::LUDecomp<double> LUA1, LUA2, LUA3, LUA4;
-gpstk::Matrix<double> P1, P2, P3;
+gnsstk::Matrix<double> L1, U1, L2, U2, L3, U3;
+gnsstk::Matrix<double> CompareLUA1, CompareLUA2, CompareLUA3;
+gnsstk::LUDecomp<double> LUA1, LUA2, LUA3, LUA4;
+gnsstk::Matrix<double> P1, P2, P3;
 
 //-------------------------------------------------------------------------------
 //Helper functions, don't actually run any tests
-void LMatrixGeneration(gpstk::Matrix<double>& Lno, gpstk::LUDecomp<double> LUno)
+void LMatrixGeneration(gnsstk::Matrix<double>& Lno, gnsstk::LUDecomp<double> LUno)
 {
 	int zeroCount = Lno.cols() - 1;
 	for (int i = 0; i < Lno.rows(); i++) {
@@ -67,7 +67,7 @@ void LMatrixGeneration(gpstk::Matrix<double>& Lno, gpstk::LUDecomp<double> LUno)
  			zeroCount -= 1;}
 }
 
-void UMatrixGeneration(gpstk::Matrix<double>& Uno, gpstk::LUDecomp<double> LUno)
+void UMatrixGeneration(gnsstk::Matrix<double>& Uno, gnsstk::LUDecomp<double> LUno)
 {
 	int zeroCount = 0;
 	for (int i = 0; i< Uno.rows(); i++) {
@@ -81,7 +81,7 @@ void UMatrixGeneration(gpstk::Matrix<double>& Uno, gpstk::LUDecomp<double> LUno)
 	zeroCount += 1;}
 }
 
-void PermuationMatrixGeneration(gpstk::Matrix<double>& Pno, gpstk::LUDecomp<double>& LUno)
+void PermuationMatrixGeneration(gnsstk::Matrix<double>& Pno, gnsstk::LUDecomp<double>& LUno)
 {
 	//Identity Matrix Construction
 	int iCount = 0;
@@ -100,9 +100,9 @@ void PermuationMatrixGeneration(gpstk::Matrix<double>& Pno, gpstk::LUDecomp<doub
 
 void LUDecompInitializer(void)
 {
-	gpstk::Matrix<double> L1Temp(2,2), U1Temp(2,2), L2Temp(3,3), U2Temp(3,3), L3Temp(4,4), U3Temp(4,4);
-	gpstk::Matrix<double> CompareLUA1Temp(2,2), CompareLUA2Temp(3,3), CompareLUA3Temp(4,4);
-	gpstk::Matrix<double> P1Temp(2,2), P2Temp(3,3), P3Temp(4,4);
+	gnsstk::Matrix<double> L1Temp(2,2), U1Temp(2,2), L2Temp(3,3), U2Temp(3,3), L3Temp(4,4), U3Temp(4,4);
+	gnsstk::Matrix<double> CompareLUA1Temp(2,2), CompareLUA2Temp(3,3), CompareLUA3Temp(4,4);
+	gnsstk::Matrix<double> P1Temp(2,2), P2Temp(3,3), P3Temp(4,4);
 
 	L1 = L1Temp; U1 = U1Temp; L2 = L2Temp; U2 = U2Temp; L3 = L3Temp; U3 = U3Temp;
 	CompareLUA1 = CompareLUA1Temp; CompareLUA2 = CompareLUA2Temp; CompareLUA3 = CompareLUA3Temp;
@@ -125,7 +125,7 @@ void LUDecompInitializer(void)
 
 	CompareLUA1 = P1 * (L1 * U1);
 	CompareLUA2 = P2 * (L2 * U2);
-	CompareLUA3 = P3 * (L3 * U3);		
+	CompareLUA3 = P3 * (L3 * U3);
 }
 
 //-------------------------------------------------------------------------------
@@ -133,31 +133,31 @@ void LUDecompInitializer(void)
 
 int Matrix_T::LUinitializationTest(void)
 {
-	gpstk::TestUtil testFramework("Matrix LU","LU initialize", __FILE__, __LINE__);
+	gnsstk::TestUtil testFramework("Matrix LU","LU initialize", __FILE__, __LINE__);
 
 	LUA1(A1); LUA2(A2); LUA3(A3);
 	failMesg = "Able to perform LU decomposition on non-square matrix";
 	try{LUA4(A4); testFramework.assert(false, failMesg, __LINE__);}
-	catch(gpstk::Exception e) {testFramework.assert(true, failMesg, __LINE__);}\
+	catch(gnsstk::Exception e) {testFramework.assert(true, failMesg, __LINE__);}\
 
 	return testFramework.countFails();
 }
 
 int Matrix_T::LUdeterminantTest(void)
 {
-	gpstk::TestUtil testFramework("Matrix LU","LU Determinant", __FILE__, __LINE__);
+	gnsstk::TestUtil testFramework("Matrix LU","LU Determinant", __FILE__, __LINE__);
 
 	failMesg = "The LU decomposition's determinant is not equivalent to the determinant of the data matrix";
-	testFramework.assert(std::abs(LUA1.det() - gpstk::det(A1)) < eps, failMesg, __LINE__);
-	testFramework.assert(std::abs(LUA2.det() - gpstk::det(A2)) < eps, failMesg, __LINE__);
-	testFramework.assert(std::abs(LUA3.det() - gpstk::det(A3)) < eps, failMesg, __LINE__);
+	testFramework.assert(std::abs(LUA1.det() - gnsstk::det(A1)) < eps, failMesg, __LINE__);
+	testFramework.assert(std::abs(LUA2.det() - gnsstk::det(A2)) < eps, failMesg, __LINE__);
+	testFramework.assert(std::abs(LUA3.det() - gnsstk::det(A3)) < eps, failMesg, __LINE__);
 
 	return testFramework.countFails();
 }
 
 int Matrix_T::LUATest(void)
 {
-	gpstk::TestUtil testFramework("Matrix LU","P * (L * U) = A", __FILE__, __LINE__);
+	gnsstk::TestUtil testFramework("Matrix LU","P * (L * U) = A", __FILE__, __LINE__);
 
 	std::cout<<U1<<"\n\n"<<A1<<std::endl;
 
@@ -177,7 +177,7 @@ int Matrix_T::LUATest(void)
 	failDescriptionStream << "Check if LU decomposition of A2 returns the right matrix. " << badCount << " of the elements are incorrect.";
    	failDescriptionString = failDescriptionStream.str(); failDescriptionStream.str("");
   	testFramework.assert(badCount==0, failDescriptionString, __LINE__);
-  	badCount = 0; // Reset error counter  
+  	badCount = 0; // Reset error counter
 
 	for(int i = 0; i < A3.rows(); i++)
 	    for(int j = 0; j < A3.cols(); j++)
@@ -185,22 +185,22 @@ int Matrix_T::LUATest(void)
    	failDescriptionStream << "Check if LU decomposition of A3 returns the right matrix. " << badCount << " of the elements are incorrect.";
   	failDescriptionString = failDescriptionStream.str(); failDescriptionStream.str("");
   	testFramework.assert(badCount==0, failDescriptionString, __LINE__);
-	badCount = 0; // Reset error counter          	
+	badCount = 0; // Reset error counter
 
 	return testFramework.countFails();
 }
 
 int Matrix_T::LUbackSubTest(void)
 {
-	gpstk::TestUtil testFramework("Matrix LU","LU Determinant", __FILE__, __LINE__);
+	gnsstk::TestUtil testFramework("Matrix LU","LU Determinant", __FILE__, __LINE__);
 
   	//backSub overwrites input vectors
   	LUA1.backSub(B1);
   	LUA2.backSub(B2);
   	LUA3.backSub(B3);
 
-  	gpstk::Vector<double> A1sol(2), A2sol(3), A3sol(4);
-  	gpstk::Vector<double> CompareA1sol(2), CompareA2sol(3), CompareA3sol(4);
+  	gnsstk::Vector<double> A1sol(2), A2sol(3), A3sol(4);
+  	gnsstk::Vector<double> CompareA1sol(2), CompareA2sol(3), CompareA3sol(4);
 
   	A1sol = B1;
   	A2sol = B2;
@@ -246,10 +246,10 @@ int main() //Main function to initialize and run all tests above
 	int check, errorCounter = 0;
 	Matrix_T testClass;
 
-	check = testClass.LUinitializationTest(); //runs the gpstk::LUDecomp
+	check = testClass.LUinitializationTest(); //runs the gnsstk::LUDecomp
 	errorCounter += check;
 
-	LUDecompInitializer(); //seperates gpstk::LUDecomps into P L and U matrices
+	LUDecompInitializer(); //seperates gnsstk::LUDecomps into P L and U matrices
 
 	check = testClass.LUdeterminantTest();
 	errorCounter += check;

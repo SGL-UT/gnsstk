@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,8 +41,8 @@
  * Operators for FileFilter using Rinex navigation data
  */
 
-#ifndef GPSTK_RINEXNAVFILTEROPERATORS_HPP
-#define GPSTK_RINEXNAVFILTEROPERATORS_HPP
+#ifndef GNSSTK_RINEX3NAVFILTEROPERATORS_HPP
+#define GNSSTK_RINEX3NAVFILTEROPERATORS_HPP
 
 #include <set>
 #include <list>
@@ -54,7 +54,7 @@
 #include "GPSWeekSecond.hpp"
 #include <math.h>
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
@@ -64,24 +64,56 @@ namespace gpstk
       public std::binary_function<Rinex3NavData, Rinex3NavData, bool>
    {
    public:
+         /// Set the default epsilon to 1e-5 for comparison.
+      Rinex3NavDataOperatorLessThanFull()
+            : epsilon(1e-5)
+      {}
+
+         /** Set how different the left and right values can be before
+          * they're considered different.
+          *  e.g. left-right/left > epsilon. 
+          * @param[in] e The exponent for base 10 (epsilon=10**-e). */
       void setPrecision(int e)
       {
-         precision = e;
+         epsilon = std::pow(10.0, -e);
       }
 
+         /** Compare two Rinex3NavData objects.
+          * @param[in] l The left hand side of the < operation.
+          * @param[in] r The right hand side of the < operation.
+          * @return true if the left transmit time is less than the
+          *   right transmit time, the left satellite ID is less than
+          *   the right satellite ID, or if the individual data fields
+          *   of the left object are less than the right object. */
       bool operator()(const Rinex3NavData& l, const Rinex3NavData& r) const
       {
          GPSWeekSecond lXmitTime(l.weeknum, (double)l.xmitTime);
          GPSWeekSecond rXmitTime(r.weeknum, (double)r.xmitTime);
 
          if (lXmitTime < rXmitTime)
+         {
             return true;
+         }
          else if (lXmitTime == rXmitTime)
          {
                // compare the times and all data members
             if (l.time < r.time)
+            {
                return true;
-            else if (l.time == r.time)
+            }
+            else if (r.time < l.time)
+            {
+               return false;
+            }
+            else if (l.sat < r.sat)
+            {
+               return true;
+            }
+            else if (r.sat < l.sat)
+            {
+               return false;
+            }
+            else
             {
                std::list<double>
                   llist = l.toList(),
@@ -93,10 +125,18 @@ namespace gpstk
 
                while (litr != llist.end())
                {
-                  if ((*litr + std::abs(*litr * std::pow((long double)10, -precision))) < *ritr )
+                     // Compare the two values against each other,
+                     // with an epsilon-sized slop.
+                  double diff = *litr - *ritr;
+                  double err = (*litr == 0 ? *ritr : (diff/(*litr)));
+                  if (err > epsilon)
+                  {
                      return true;
-                  else if (*litr > (*ritr + std::abs(*ritr * std::pow((long double)10,-precision))))
+                  }
+                  else if (err < -epsilon)
+                  {
                      return false;
+                  }
                   else
                   {
                      litr++;
@@ -108,7 +148,8 @@ namespace gpstk
          return false;
       }
    private:
-      int precision;
+         /// Value used to allow some "slop" in measuring equality in operator()
+      double epsilon;
    };
 
       /// This compares all elements of the Rinex3NavData with equals
@@ -235,4 +276,4 @@ namespace gpstk
 
 }
 
-#endif // GPSTK_RINEXNAVFILTEROPERATORS_HPP
+#endif // GNSSTK_RINEX3NAVFILTEROPERATORS_HPP

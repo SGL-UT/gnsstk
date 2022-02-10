@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -55,10 +55,10 @@
 #include "CommonTime.hpp"
 #include "SatID.hpp"
 #include "Position.hpp"
-#include "XvtStore.hpp"
+#include "NavLibrary.hpp"
 #include "TropModel.hpp"
 
-namespace gpstk {
+namespace gnsstk {
 namespace ord {
 
 /// Given a set of frequency and pseudorange pairs, attempts to compensate
@@ -78,20 +78,20 @@ double IonosphereFreeRange(const std::vector<double>& frequencies,
 /// @param rxLoc The location of the receiver.
 /// @param svXvt The location of the satellite at time of interest.
 /// @return Range correction (delta) in meters
-double IonosphereModelCorrection(const gpstk::IonoModelStore& ionoModel,
-        const gpstk::CommonTime& time, CarrierBand band,
-        const gpstk::Position& rxLoc, const gpstk::Xvt& svXvt);
+double IonosphereModelCorrection(const gnsstk::IonoModelStore& ionoModel,
+        const gnsstk::CommonTime& time, CarrierBand band,
+        const gnsstk::Position& rxLoc, const gnsstk::Xvt& svXvt);
 
 /// Given a satellite id, a time, and an ephemeris store, retrieves the
 /// satellite location/velocity in xvt instance. This is a relatively thin
-/// wrapper for XvtStore.getXvt() to bring the method into the same
+/// wrapper for NavLibrary.getXvt() to bring the method into the same
 /// namespace as the other range calculations.
 /// @param sat_id Identifier for the satellite
 /// @param time The time of interest.
 /// @param ephemeris The ephemeris to query against.
 /// @return Xvt instance containing satellite location/velocity
-gpstk::Xvt getSvXvt(const gpstk::SatID& sat_id, const gpstk::CommonTime& time,
-        const gpstk::XvtStore<gpstk::SatID>& ephemeris);
+gnsstk::Xvt getSvXvt(const gnsstk::SatID& sat_id, const gnsstk::CommonTime& time,
+        NavLibrary& ephemeris);
 
 /// Calculate the raw range at RECEIVE time per RECEIVER clock.
 /// @param rx_loc The location of the receiver.
@@ -100,9 +100,9 @@ gpstk::Xvt getSvXvt(const gpstk::SatID& sat_id, const gpstk::CommonTime& time,
 /// @param ephemeris The ephemeris to query against.
 /// @param sv_xvt Final SV Position/Velocity returned here.
 /// @return Range in meters
-double RawRange1(const gpstk::Position& rx_loc, const gpstk::SatID& sat_id,
-        const gpstk::CommonTime& time,
-        const gpstk::XvtStore<gpstk::SatID>& ephemeris, gpstk::Xvt& sv_xvt);
+double RawRange1(const gnsstk::Position& rx_loc, const gnsstk::SatID& sat_id,
+        const gnsstk::CommonTime& time,
+        NavLibrary& ephemeris, gnsstk::Xvt& sv_xvt);
 
 /// Calculate the raw range at TRANSMIT time per the RECEIVER clock.
 /// @param pseudorange Pseudorange in meters to seed the calculation.
@@ -112,9 +112,9 @@ double RawRange1(const gpstk::Position& rx_loc, const gpstk::SatID& sat_id,
 /// @param ephemeris The ephemeris to query against.
 /// @param sv_xvt Final SV Position/Velocity returned here.
 /// @return Range in meters
-double RawRange2(double pseudorange, const gpstk::Position& rx_loc,
-        const gpstk::SatID& sat_id, const gpstk::CommonTime& time,
-        const gpstk::XvtStore<gpstk::SatID>& ephemeris, gpstk::Xvt& sv_xvt);
+double RawRange2(double pseudorange, const gnsstk::Position& rx_loc,
+        const gnsstk::SatID& sat_id, const gnsstk::CommonTime& time,
+        NavLibrary& ephemeris, gnsstk::Xvt& sv_xvt);
 
 /// Calculate the raw range at TRANSMIT time per the SATELLITE clock
 /// @param pseudorange Pseudorange in meters to seed the calculation.
@@ -124,9 +124,9 @@ double RawRange2(double pseudorange, const gpstk::Position& rx_loc,
 /// @param ephemeris The ephemeris to query against.
 /// @param sv_xvt Final SV Position/Velocity returned here.
 /// @return Range in meters
-double RawRange3(double pseudorange, const gpstk::Position& rx_loc,
-        const gpstk::SatID& sat_id, const gpstk::CommonTime& time,
-        const gpstk::XvtStore<gpstk::SatID>& ephemeris, gpstk::Xvt& sv_xvt);
+double RawRange3(double pseudorange, const gnsstk::Position& rx_loc,
+        const gnsstk::SatID& sat_id, const gnsstk::CommonTime& time,
+        NavLibrary& ephemeris, gnsstk::Xvt& sv_xvt);
 
 /// Calculate the raw range at TRANSMIT time per RECEIVER clock, without
 /// seeding the pseudorange.
@@ -136,21 +136,21 @@ double RawRange3(double pseudorange, const gpstk::Position& rx_loc,
 /// @param ephemeris The ephemeris to query against.
 /// @param sv_xvt Final SV Position/Velocity returned here.
 /// @return Range in meters
-double RawRange4(const gpstk::Position& rx_loc, const gpstk::SatID& sat_id,
-        const gpstk::CommonTime& time,
-        const gpstk::XvtStore<gpstk::SatID>& ephemeris, gpstk::Xvt& sv_xvt);
+double RawRange4(const gnsstk::Position& rx_loc, const gnsstk::SatID& sat_id,
+        const gnsstk::CommonTime& time,
+        NavLibrary& ephemeris, gnsstk::Xvt& sv_xvt);
 
 /// Calculate the range delta due to clock bias.
 /// Note: Most of the work is actually done by the Xvt object.
 /// @param svXvt Satellite location/velocity
 /// @returns Range correction (delta) in meters
-double SvClockBiasCorrection(const gpstk::Xvt& svXvt);
+double SvClockBiasCorrection(const gnsstk::Xvt& svXvt);
 
 // Calculate the range delta due to relativistic effects
 // Note: Most of the work is actually done by the Xvt object.
 /// @param svXvt Satellite location/velocity
 /// @returns Range correction (delta) in meters
-double SvRelativityCorrection(gpstk::Xvt& svXvt);
+double SvRelativityCorrection(gnsstk::Xvt& svXvt);
 
 /// Given a troposphere model, and locations of receiver and satellite,
 /// calculates tropospheric effects.
@@ -158,8 +158,8 @@ double SvRelativityCorrection(gpstk::Xvt& svXvt);
 /// @param rx_loc The location of the receiver.
 /// @param sv_xvt The location of the satellite at time of interest.
 /// @return Range correction (delta) in meters
-double TroposphereCorrection(const gpstk::TropModel& trop_model,
-        const gpstk::Position& rx_loc, const gpstk::Xvt& sv_xvt);
+double TroposphereCorrection(const gnsstk::TropModel& trop_model,
+        const gnsstk::Position& rx_loc, const gnsstk::Xvt& sv_xvt);
 
 /// Example method that applies _all_ corrections to generate an Observed Range Deviation.
 /// This is intended to be a sample showing how the above methods will be used.
@@ -182,17 +182,17 @@ double TroposphereCorrection(const gpstk::TropModel& trop_model,
 /*
 double calculate_ord(const std::vector<CarrierBand>& bands,
         const std::vector<double>& pseudoranges,
-        const gpstk::Position& rx_loc,
-        const gpstk::SatID& sat_id,
-        const gpstk::CommonTime& transmit_time,
-        const gpstk::CommonTime& receive_time,
-        const gpstk::IonoModelStore& iono_model,
-        const gpstk::TropModel& trop_model,
-        const gpstk::XvtStore<gpstk::SatID>& ephemeris,
+        const gnsstk::Position& rx_loc,
+        const gnsstk::SatID& sat_id,
+        const gnsstk::CommonTime& transmit_time,
+        const gnsstk::CommonTime& receive_time,
+        const gnsstk::IonoModelStore& iono_model,
+        const gnsstk::TropModel& trop_model,
+        NavLibrary& ephemeris,
         int range_method);
  */
 
 }  // namespace ord
-}  // namespace gpstk
+}  // namespace gnsstk
 
 #endif  // CORE_LIB_ORD_ORD_HPP_

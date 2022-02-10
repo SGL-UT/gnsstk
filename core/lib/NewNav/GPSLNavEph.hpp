@@ -1,47 +1,47 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_GPSLNAVEPH_HPP
-#define GPSTK_GPSLNAVEPH_HPP
+#ifndef GNSSTK_GPSLNAVEPH_HPP
+#define GNSSTK_GPSLNAVEPH_HPP
 
 #include "GPSLNavData.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup NavFactory
       //@{
@@ -69,18 +69,37 @@ namespace gpstk
           */
       bool validate() const override;
 
+         /** Returns the time when the navigation message would have
+          * first been available to the user equipment, i.e. the time
+          * at which the final bit of a given broadcast navigation
+          * message is received.  This is used by
+          * NavDataFactoryWithStore::find() in User mode.
+          * @return most recent transmit time + 6s.
+          */
+      CommonTime getUserTime() const override;
+
          /** Fill the beginFit and endFit values for this object.
           * @pre Toe, iodc, fitIntFlag and xmitTime must all be set. */
       void fixFit();
+
+         /** Print the contents of this NavData object in a (usually)
+          * human-readable format.
+          * @param[in,out] s The stream to write the data to.
+          * @param[in] dl The level of detail the output should contain. */
+      void dump(std::ostream& s, DumpDetail dl) const override;
 
          /** Dump SV status information (e.g. health).
           * @param[in,out] s The stream to write the data to. */
       void dumpSVStatus(std::ostream& s) const override;
 
+      CommonTime xmit2;   ///< Transmit time for subframe 2.
+      CommonTime xmit3;   ///< Transmit time for subframe 3.
       uint32_t pre2;      ///< The TLM preamble from word 1 of subframe 2.
       uint32_t pre3;      ///< The TLM preamble from word 1 of subframe 3.
       uint32_t tlm2;      ///< The TLM message from word 1 of subframe 2.
       uint32_t tlm3;      ///< The TLM message from word 1 of subframe 3.
+      bool isf2;          ///< Integrity status flag from subframe 2.
+      bool isf3;          ///< Integrity status flag from subframe 3.
       uint16_t iodc;      ///< Issue Of Data-Clock for the ephemeris.
       uint16_t iode;      ///< Issue Of Data-Ephemeris.
       uint8_t fitIntFlag; ///< Fit interval flag from subframe 2.
@@ -98,6 +117,7 @@ namespace gpstk
           *   LNAV data stream was commanded OFF on the P-code of the
           *   in-phase component of the L2 channel */
       bool L2Pdata;
+      long aodo;          ///< Age of Data Offset in seconds (-1=uninitialized).
    };
 
 
@@ -107,8 +127,40 @@ namespace gpstk
       std::string asString(GPSLNavEph::L2Codes e);
    }
 
+      /** Class that sorts GPSLNavEph using the combination of
+       * NavSatelliteID, GPS week and IODC.  Intended to be used as a
+       * comparator for standard C++ library containers. */
+   class GPSLNavEphIODCComp
+   {
+   public:
+         /** Comparison function for the container class.
+          * @return true if signal, Toe.week and iodc in lhs are less than rhs.
+          */
+      bool operator()(const std::shared_ptr<GPSLNavEph> lhs,
+                      const std::shared_ptr<GPSLNavEph> rhs) const;
+   };
+
+      /// Store GPSLNavEph shared_ptrs using GPSLNavEphIODCComp to sort.
+   typedef std::set<std::shared_ptr<GPSLNavEph>, GPSLNavEphIODCComp> GPSLNavIODCUniq;
+
+      /** Class that sorts GPSLNavEph using the CEI data as defined in
+       * Table-6-I-1 of IS-GPS-200. */
+   class GPSLNavEphCEIComp
+   {
+   public:
+         /** Comparison function for the container class.
+          * @return true if the CEI data set parameters in lhs are
+          *   less than rhs. */
+      bool operator()(const std::shared_ptr<GPSLNavEph> lhs,
+                      const std::shared_ptr<GPSLNavEph> rhs) const;
+   };
+
+      /// Store GPSLNavEph shared_ptrs using GPSLNavEphCEIComp to sort.
+   typedef std::set<std::shared_ptr<GPSLNavEph>,GPSLNavEphCEIComp> GPSLNavCEIUniq;
+      
+
       //@}
 
 }
 
-#endif // GPSTK_GPSLNAVEPH_HPP
+#endif // GNSSTK_GPSLNAVEPH_HPP

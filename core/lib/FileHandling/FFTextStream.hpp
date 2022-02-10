@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,12 +41,12 @@
  * An FFStream for text files
  */
 
-#ifndef GPSTK_FFTEXTSTREAM_HPP
-#define GPSTK_FFTEXTSTREAM_HPP
+#ifndef GNSSTK_FFTEXTSTREAM_HPP
+#define GNSSTK_FFTEXTSTREAM_HPP
 
 #include "FFStream.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
@@ -101,16 +101,16 @@ namespace gpstk
          /**
           * Like std::istream::getline but checks for EOF and removes '/r'.
           * Also increments lineNumber.  When \a expectEOF is true and EOF
-          * is found, an gpstk::EndOfFile exception is thrown.  If
+          * is found, an gnsstk::EndOfFile exception is thrown.  If
           * \a expectEOF is false and an EOF is encountered, an
-          * gpstk::FFStreamError is thrown.
+          * gnsstk::FFStreamError is thrown.
           * @param[out] line is set to the value of the line read from
           *   the file.
           * @param[in] expectEOF set true if finding EOF on this read
           *   is acceptable.
           * @throw EndOfFile if \a expectEOF is true and an EOF is encountered.
           * @throw FFStreamError if EOF is found and \a expectEOF is false
-          * @throw gpstk::StringUtils::StringException when a string
+          * @throw gnsstk::StringUtils::StringException when a string
           *   error occurs or if any other error happens.
           * @warning There is a maximum line length of 1500 characters when
           *   using this function.
@@ -141,12 +141,12 @@ namespace gpstk
 
       //@}
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk
 
 
 inline std::ostream& endlpp(std::ostream& os)
 {
-   gpstk::FFTextStream *tos = dynamic_cast<gpstk::FFTextStream*>(&os);
+   gnsstk::FFTextStream *tos = dynamic_cast<gnsstk::FFTextStream*>(&os);
    if (tos != nullptr)
    {
       tos->lineNumber++;
@@ -154,4 +154,4 @@ inline std::ostream& endlpp(std::ostream& os)
    return flush(os.put(os.widen('\n')));
 }
 
-#endif   // GPSTK_FFTEXTSTREAM_HPP
+#endif   // GNSSTK_FFTEXTSTREAM_HPP

@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,20 +29,20 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
-#ifndef GPSTK_CIVILTIME_HPP
-#define GPSTK_CIVILTIME_HPP
+#ifndef GNSSTK_CIVILTIME_HPP
+#define GNSSTK_CIVILTIME_HPP
 
 #include "TimeTag.hpp"
 #include "TimeSystem.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup TimeHandling
       //@{
@@ -165,13 +165,13 @@ namespace gpstk
 
          /** Translate a month abbreviation to its integer equivalent.
           * Comparisons are case-insensitive.
-          * @param amonStr the abbreviated month name. 
+          * @param amonStr the abbreviated month name.
           * @return month number 1-12 or 0 on error. */
       static int monthAbbrev(const std::string& amonStr);
 
          /** Translate a month name to its integer equivalent.
           * Comparisons are case-insensitive.
-          * @param monStr the month name. 
+          * @param monStr the month name.
           * @return month number 1-12 or 0 on error. */
       static int monthLong(const std::string& monStr);
 
@@ -190,6 +190,10 @@ namespace gpstk
       bool operator<=( const CivilTime& right ) const;
       bool operator>=( const CivilTime& right ) const;
          //@}
+
+         /// Get the "universal time"-esque fractional hour of day.
+      double getUTHour() const
+      { return (double)hour + (((minute*60.0)+second)/3600.0); }
 
       int year;
       int month;
@@ -212,6 +216,6 @@ namespace gpstk
     * @return reference to \c s.
     */
 std::ostream& operator<<( std::ostream& s,
-                          const gpstk::CivilTime& cit );
+                          const gnsstk::CivilTime& cit );
 
-#endif // GPSTK_CIVILTIME_HPP
+#endif // GNSSTK_CIVILTIME_HPP

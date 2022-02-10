@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -65,12 +65,12 @@ public:
        * written to the file correctly. */
    unsigned ionoDelayTest();
       /// generic filling of generic data.
-   void setObs(gpstk::TestUtil& testFramework, const std::string& system,
-               gpstk::Rinex3ObsHeader& hdr, gpstk::Rinex3ObsData& rod);
+   void setObs(gnsstk::TestUtil& testFramework, const std::string& system,
+               gnsstk::Rinex3ObsHeader& hdr, gnsstk::Rinex3ObsData& rod);
       /// Fill a v3.02 header with data for the obsIDVersionTest method.
-   void fillHeader302(gpstk::Rinex3ObsHeader& hdr);
+   void fillHeader302(gnsstk::Rinex3ObsHeader& hdr);
       /// Fill a v3.04 header with data for the obsIDVersionTest method.
-   void fillHeader304(gpstk::Rinex3ObsHeader& hdr);
+   void fillHeader304(gnsstk::Rinex3ObsHeader& hdr);
 };
 
 
@@ -79,16 +79,16 @@ phaseShiftTest()
 {
    TUDEF("Rinex3ObsHeader", "writeHeaderRecords (PHASE SHIFT)");
 
-   std::string outfn = gpstk::getPathTestTemp() + gpstk::getFileSep() +
+   std::string outfn = gnsstk::getPathTestTemp() + gnsstk::getFileSep() +
       "rinex3ObsTest_v304_PHASE_SHIFT.out";
-   std::string expfn = gpstk::getPathData() + gpstk::getFileSep() +
+   std::string expfn = gnsstk::getPathData() + gnsstk::getFileSep() +
       "rinex3ObsTest_v304_PHASE_SHIFT.exp";
 
-   gpstk::Rinex3ObsStream strm(outfn, std::ios::out | std::ios::trunc);
-   gpstk::Rinex3ObsHeader hdr;
-   gpstk::RinexObsID roidInvalid("GC1C",gpstk::Rinex3ObsBase::currentVersion);
-   gpstk::RinexObsID roidValid("GL1C", gpstk::Rinex3ObsBase::currentVersion);
-   gpstk::SatID sid(7, gpstk::SatelliteSystem::GPS);
+   gnsstk::Rinex3ObsStream strm(outfn, std::ios::out | std::ios::trunc);
+   gnsstk::Rinex3ObsHeader hdr;
+   gnsstk::RinexObsID roidInvalid("GC1C",gnsstk::Rinex3ObsBase::currentVersion);
+   gnsstk::RinexObsID roidValid("GL1C", gnsstk::Rinex3ObsBase::currentVersion);
+   gnsstk::SatID sid(7, gnsstk::SatelliteSystem::GPS);
    strm.exceptions(std::fstream::failbit);
       // Not setting most of the header fields because they're not being tested.
       // Basically, the phase shift record for "GL1C" should be
@@ -99,19 +99,19 @@ phaseShiftTest()
    hdr.date = "20200512 181734 UTC";
    hdr.preserveDate = true;
    hdr.version = 3.04;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validVersion;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validRunBy;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validMarkerName;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validObserver;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validReceiver;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaType;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaPosition;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaDeltaHEN;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validFirstTime;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validMarkerNumber;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validInterval;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validSystemNumObs;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validSystemPhaseShift;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validVersion;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validRunBy;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validMarkerName;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validObserver;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validReceiver;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaType;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaPosition;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaDeltaHEN;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validFirstTime;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validMarkerNumber;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validInterval;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validSystemNumObs;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validSystemPhaseShift;
    hdr.validEoH = true;
    TUCATCH(strm << hdr);
    TUCMPFILE(expfn, outfn, 0);
@@ -125,91 +125,91 @@ channelNumTest()
       // Note that Rinex3ObsData is also being tested
    TUDEF("Rinex3ObsHeader", "writeHeaderRecords (SYS / # / OBS TYPES)");
 
-   std::string outfn = gpstk::getPathTestTemp() + gpstk::getFileSep() +
+   std::string outfn = gnsstk::getPathTestTemp() + gnsstk::getFileSep() +
       "rinex3ObsTest_v304_SYS_NUM_OBS_TYPES.out";
-   std::string expfn = gpstk::getPathData() + gpstk::getFileSep() +
+   std::string expfn = gnsstk::getPathData() + gnsstk::getFileSep() +
       "rinex3ObsTest_v304_SYS_NUM_OBS_TYPES.exp";
 
       // abbreviate.
-   double cv = gpstk::Rinex3ObsBase::currentVersion;
-   gpstk::Rinex3ObsStream strm(outfn, std::ios::out | std::ios::trunc);
-   gpstk::Rinex3ObsHeader hdr;
-   gpstk::RinexObsID roidValid("GL1C", cv);
-   gpstk::SatID sid(7, gpstk::SatelliteSystem::GPS);
+   double cv = gnsstk::Rinex3ObsBase::currentVersion;
+   gnsstk::Rinex3ObsStream strm(outfn, std::ios::out | std::ios::trunc);
+   gnsstk::Rinex3ObsHeader hdr;
+   gnsstk::RinexObsID roidValid("GL1C", cv);
+   gnsstk::SatID sid(7, gnsstk::SatelliteSystem::GPS);
    strm.exceptions(std::fstream::failbit);
       // Not setting most of the header fields because they're not being tested.
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GC1C", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GL1C", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GD1C", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GS1C", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GC1S", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GL1S", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GD1S", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GS1S", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GC1L", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GL1L", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GD1L", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GS1L", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GC1X", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GL1X", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GD1X", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GS1X", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GC1P", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GL1P", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GD1P", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GS1P", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GC1W", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GL1W", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GD1W", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GS1W", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GC1Y", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GL1Y", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GD1Y", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GS1Y", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GC1M", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GL1M", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GD1M", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GS1M", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GL1N", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GD1N", cv));
-   hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GS1N", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GC1C", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GL1C", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GD1C", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GS1C", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GC1S", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GL1S", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GD1S", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GS1S", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GC1L", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GL1L", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GD1L", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GS1L", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GC1X", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GL1X", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GD1X", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GS1X", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GC1P", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GL1P", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GD1P", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GS1P", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GC1W", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GL1W", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GD1W", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GS1W", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GC1Y", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GL1Y", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GD1Y", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GS1Y", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GC1M", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GL1M", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GD1M", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GS1M", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GL1N", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GD1N", cv));
+   hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GS1N", cv));
       // now have fun with channels
-   TUCATCH(hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GX1 ", cv)));
-   TUTHROW(hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GX2Y", cv)));
+   TUCATCH(hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GX1 ", cv)));
+   TUTHROW(hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GX2Y", cv)));
       // This should not appear in the header as it is redundant, but
       // it is still valid as an ObsID.
-   gpstk::RinexObsID forced(gpstk::ObservationType::Channel, gpstk::CarrierBand::L1,
-                            gpstk::TrackingCode::CA);
+   gnsstk::RinexObsID forced(gnsstk::ObservationType::Channel, gnsstk::CarrierBand::L1,
+                            gnsstk::TrackingCode::CA);
    TUCATCH(hdr.mapObsTypes["G"].push_back(forced));
    hdr.sysPhaseShift["G"][roidValid][sid] = 54.321;
    hdr.date = "20200512 181734 UTC";
    hdr.preserveDate = true;
    hdr.version = cv;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validVersion;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validRunBy;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validMarkerName;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validObserver;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validReceiver;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaType;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaPosition;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaDeltaHEN;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validFirstTime;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validMarkerNumber;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validInterval;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validSystemNumObs;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validSystemPhaseShift;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validVersion;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validRunBy;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validMarkerName;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validObserver;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validReceiver;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaType;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaPosition;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaDeltaHEN;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validFirstTime;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validMarkerNumber;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validInterval;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validSystemNumObs;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validSystemPhaseShift;
    hdr.validEoH = true;
    TUCATCH(strm << hdr);
-   gpstk::Rinex3ObsData rod;
-   gpstk::RinexDatum data;
+   gnsstk::Rinex3ObsData rod;
+   gnsstk::RinexDatum data;
    data.dataBlank = false;
    data.lliBlank = true;
    data.ssiBlank = true;
-   rod.time = gpstk::CivilTime(2020,3,11,12,0,0,gpstk::TimeSystem::GPS);
+   rod.time = gnsstk::CivilTime(2020,3,11,12,0,0,gnsstk::TimeSystem::GPS);
    rod.epochFlag = 0;
    rod.numSVs = 1;
    rod.clockOffset = 0;
-   const gpstk::Rinex3ObsHeader::RinexObsVec &rov(hdr.mapObsTypes["G"]);
+   const gnsstk::Rinex3ObsHeader::RinexObsVec &rov(hdr.mapObsTypes["G"]);
       // set a data value for each observable including the redundant
       // channel number, which should get printed out as concatenated
       // two-digit numbers.
@@ -230,94 +230,94 @@ ionoDelayTest()
       // Note that Rinex3ObsData is also being tested
    TUDEF("Rinex3ObsHeader", "writeHeaderRecords (SYS / # / OBS TYPES)");
 
-   std::string outfn = gpstk::getPathTestTemp() + gpstk::getFileSep() +
+   std::string outfn = gnsstk::getPathTestTemp() + gnsstk::getFileSep() +
       "rinex3ObsTest_v304_IonoDelay.out";
-   std::string expfn = gpstk::getPathData() + gpstk::getFileSep() +
+   std::string expfn = gnsstk::getPathData() + gnsstk::getFileSep() +
       "rinex3ObsTest_v304_IonoDelay.exp";
 
       // abbreviate.
-   double cv = gpstk::Rinex3ObsBase::currentVersion;
-   gpstk::Rinex3ObsStream strm(outfn, std::ios::out | std::ios::trunc);
-   gpstk::Rinex3ObsHeader hdr;
-   gpstk::RinexObsID roidValid("GL1C", cv);
-   gpstk::SatID sid(7, gpstk::SatelliteSystem::GPS);
+   double cv = gnsstk::Rinex3ObsBase::currentVersion;
+   gnsstk::Rinex3ObsStream strm(outfn, std::ios::out | std::ios::trunc);
+   gnsstk::Rinex3ObsHeader hdr;
+   gnsstk::RinexObsID roidValid("GL1C", cv);
+   gnsstk::SatID sid(7, gnsstk::SatelliteSystem::GPS);
    strm.exceptions(std::fstream::failbit);
       // Not setting most of the header fields because they're not being tested.
-   TUCATCH(hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GC1C", cv)));
-   TUCATCH(hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GL1C", cv)));
-   TUCATCH(hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GD1C", cv)));
-   TUCATCH(hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GS1C", cv)));
-   TUCATCH(hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GI1 ", cv)));
-   TUCATCH(hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GC2C", cv)));
-   TUCATCH(hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GL2C", cv)));
-   TUCATCH(hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GD2C", cv)));
-   TUCATCH(hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GS2C", cv)));
-   TUCATCH(hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GI2 ", cv)));
-   TUCATCH(hdr.mapObsTypes["R"].push_back(gpstk::RinexObsID("RC3I", cv)));
-   TUCATCH(hdr.mapObsTypes["R"].push_back(gpstk::RinexObsID("RL3I", cv)));
-   TUCATCH(hdr.mapObsTypes["R"].push_back(gpstk::RinexObsID("RD3I", cv)));
-   TUCATCH(hdr.mapObsTypes["R"].push_back(gpstk::RinexObsID("RS3I", cv)));
-   TUCATCH(hdr.mapObsTypes["R"].push_back(gpstk::RinexObsID("RI3 ", cv)));
-   TUCATCH(hdr.mapObsTypes["R"].push_back(gpstk::RinexObsID("RC4A", cv)));
-   TUCATCH(hdr.mapObsTypes["R"].push_back(gpstk::RinexObsID("RL4A", cv)));
-   TUCATCH(hdr.mapObsTypes["R"].push_back(gpstk::RinexObsID("RD4A", cv)));
-   TUCATCH(hdr.mapObsTypes["R"].push_back(gpstk::RinexObsID("RS4A", cv)));
-   TUCATCH(hdr.mapObsTypes["R"].push_back(gpstk::RinexObsID("RI4 ", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("EC5I", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("EL5I", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("ED5I", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("ES5I", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("EI5 ", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("EC6A", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("EL6A", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("ED6A", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("ES6A", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("EI6 ", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("EC7I", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("EL7I", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("ED7I", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("ES7I", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("EI7 ", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("EC8I", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("EL8I", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("ED8I", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("ES8I", cv)));
-   TUCATCH(hdr.mapObsTypes["E"].push_back(gpstk::RinexObsID("EI8 ", cv)));
-   TUCATCH(hdr.mapObsTypes["I"].push_back(gpstk::RinexObsID("IC9A", cv)));
-   TUCATCH(hdr.mapObsTypes["I"].push_back(gpstk::RinexObsID("IL9A", cv)));
-   TUCATCH(hdr.mapObsTypes["I"].push_back(gpstk::RinexObsID("ID9A", cv)));
-   TUCATCH(hdr.mapObsTypes["I"].push_back(gpstk::RinexObsID("IS9A", cv)));
-   TUCATCH(hdr.mapObsTypes["I"].push_back(gpstk::RinexObsID("II9 ", cv)));
+   TUCATCH(hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GC1C", cv)));
+   TUCATCH(hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GL1C", cv)));
+   TUCATCH(hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GD1C", cv)));
+   TUCATCH(hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GS1C", cv)));
+   TUCATCH(hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GI1 ", cv)));
+   TUCATCH(hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GC2C", cv)));
+   TUCATCH(hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GL2C", cv)));
+   TUCATCH(hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GD2C", cv)));
+   TUCATCH(hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GS2C", cv)));
+   TUCATCH(hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GI2 ", cv)));
+   TUCATCH(hdr.mapObsTypes["R"].push_back(gnsstk::RinexObsID("RC3I", cv)));
+   TUCATCH(hdr.mapObsTypes["R"].push_back(gnsstk::RinexObsID("RL3I", cv)));
+   TUCATCH(hdr.mapObsTypes["R"].push_back(gnsstk::RinexObsID("RD3I", cv)));
+   TUCATCH(hdr.mapObsTypes["R"].push_back(gnsstk::RinexObsID("RS3I", cv)));
+   TUCATCH(hdr.mapObsTypes["R"].push_back(gnsstk::RinexObsID("RI3 ", cv)));
+   TUCATCH(hdr.mapObsTypes["R"].push_back(gnsstk::RinexObsID("RC4A", cv)));
+   TUCATCH(hdr.mapObsTypes["R"].push_back(gnsstk::RinexObsID("RL4A", cv)));
+   TUCATCH(hdr.mapObsTypes["R"].push_back(gnsstk::RinexObsID("RD4A", cv)));
+   TUCATCH(hdr.mapObsTypes["R"].push_back(gnsstk::RinexObsID("RS4A", cv)));
+   TUCATCH(hdr.mapObsTypes["R"].push_back(gnsstk::RinexObsID("RI4 ", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("EC5I", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("EL5I", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("ED5I", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("ES5I", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("EI5 ", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("EC6A", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("EL6A", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("ED6A", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("ES6A", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("EI6 ", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("EC7I", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("EL7I", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("ED7I", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("ES7I", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("EI7 ", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("EC8I", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("EL8I", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("ED8I", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("ES8I", cv)));
+   TUCATCH(hdr.mapObsTypes["E"].push_back(gnsstk::RinexObsID("EI8 ", cv)));
+   TUCATCH(hdr.mapObsTypes["I"].push_back(gnsstk::RinexObsID("IC9A", cv)));
+   TUCATCH(hdr.mapObsTypes["I"].push_back(gnsstk::RinexObsID("IL9A", cv)));
+   TUCATCH(hdr.mapObsTypes["I"].push_back(gnsstk::RinexObsID("ID9A", cv)));
+   TUCATCH(hdr.mapObsTypes["I"].push_back(gnsstk::RinexObsID("IS9A", cv)));
+   TUCATCH(hdr.mapObsTypes["I"].push_back(gnsstk::RinexObsID("II9 ", cv)));
       // now have fun with decoding
-   TUTHROW(hdr.mapObsTypes["G"].push_back(gpstk::RinexObsID("GI2Y", cv)));
+   TUTHROW(hdr.mapObsTypes["G"].push_back(gnsstk::RinexObsID("GI2Y", cv)));
       // This should not appear in the header as it is redundant, but
       // it is still valid as an ObsID.
-   gpstk::RinexObsID forced(gpstk::ObservationType::Iono, gpstk::CarrierBand::L1,
-                            gpstk::TrackingCode::CA);
+   gnsstk::RinexObsID forced(gnsstk::ObservationType::Iono, gnsstk::CarrierBand::L1,
+                            gnsstk::TrackingCode::CA);
    TUCATCH(hdr.mapObsTypes["G"].push_back(forced));
    hdr.sysPhaseShift["G"][roidValid][sid] = 54.321;
    hdr.date = "20200512 181734 UTC";
    hdr.preserveDate = true;
    hdr.version = 3.04;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validVersion;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validRunBy;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validMarkerName;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validObserver;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validReceiver;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaType;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaPosition;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaDeltaHEN;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validFirstTime;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validMarkerNumber;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validInterval;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validSystemNumObs;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validSystemPhaseShift;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validGlonassSlotFreqNo;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validGlonassCodPhsBias;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validVersion;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validRunBy;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validMarkerName;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validObserver;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validReceiver;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaType;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaPosition;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaDeltaHEN;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validFirstTime;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validMarkerNumber;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validInterval;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validSystemNumObs;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validSystemPhaseShift;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validGlonassSlotFreqNo;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validGlonassCodPhsBias;
    hdr.validEoH = true;
    TUCATCH(strm << hdr);
-   gpstk::Rinex3ObsData rod;
-   rod.time = gpstk::CivilTime(2020,3,11,12,0,0,gpstk::TimeSystem::GPS);
+   gnsstk::Rinex3ObsData rod;
+   rod.time = gnsstk::CivilTime(2020,3,11,12,0,0,gnsstk::TimeSystem::GPS);
    rod.epochFlag = 0;
    rod.numSVs = 1;
    rod.clockOffset = 0;
@@ -333,16 +333,16 @@ ionoDelayTest()
 
 
 void Rinex3ObsOther_T ::
-setObs(gpstk::TestUtil& testFramework, const std::string& system,
-       gpstk::Rinex3ObsHeader& hdr, gpstk::Rinex3ObsData& rod)
+setObs(gnsstk::TestUtil& testFramework, const std::string& system,
+       gnsstk::Rinex3ObsHeader& hdr, gnsstk::Rinex3ObsData& rod)
 {
-   gpstk::RinexSatID sid;
-   gpstk::RinexDatum data;
+   gnsstk::RinexSatID sid;
+   gnsstk::RinexDatum data;
    data.dataBlank = false;
    data.lliBlank = true;
    data.ssiBlank = true;
    sid.fromString(system + "07");
-   const gpstk::Rinex3ObsHeader::RinexObsVec &rov(hdr.mapObsTypes[system]);
+   const gnsstk::Rinex3ObsHeader::RinexObsVec &rov(hdr.mapObsTypes[system]);
       // set a data value for each observable including the redundant
       // channel number, which should get printed out as concatenated
       // two-digit numbers.
@@ -360,23 +360,23 @@ obsIDVersionTest()
 {
    TUDEF("Rinex3ObsHeader", "writeHeaderRecords");
 
-   std::string outtmpl = gpstk::getPathTestTemp() + gpstk::getFileSep() +
+   std::string outtmpl = gnsstk::getPathTestTemp() + gnsstk::getFileSep() +
       "rinex3ObsIDHeaderTest_v";
-   std::string exptmpl = gpstk::getPathData() + gpstk::getFileSep() +
+   std::string exptmpl = gnsstk::getPathData() + gnsstk::getFileSep() +
       "rinex3ObsIDHeaderTest_v";
 
       // test writing a header containing 3.02 obs to a 3.02 file
    try
    {
-      gpstk::Rinex3ObsStream strm(outtmpl + "302.out",
+      gnsstk::Rinex3ObsStream strm(outtmpl + "302.out",
                                   std::ios::out | std::ios::trunc);
-      gpstk::Rinex3ObsHeader hdr;
+      gnsstk::Rinex3ObsHeader hdr;
       strm.exceptions(std::fstream::failbit);
       fillHeader302(hdr);
       TUCATCH(strm << hdr);
       TUCMPFILE(exptmpl + "302.exp", outtmpl + "302.out", 0);
    }
-   catch (gpstk::Exception& exc)
+   catch (gnsstk::Exception& exc)
    {
       cerr << exc;
       TUFAIL("Exception");
@@ -394,16 +394,16 @@ obsIDVersionTest()
       // test writing a header containing 3.02 obs to a 3.04 file
    try
    {
-      gpstk::Rinex3ObsStream strm(outtmpl + "304.out",
+      gnsstk::Rinex3ObsStream strm(outtmpl + "304.out",
                                   std::ios::out | std::ios::trunc);
-      gpstk::Rinex3ObsHeader hdr;
+      gnsstk::Rinex3ObsHeader hdr;
       strm.exceptions(std::fstream::failbit);
       fillHeader302(hdr);
       hdr.version = 3.04;
       TUCATCH(strm << hdr);
       TUCMPFILE(exptmpl + "304.exp", outtmpl + "304.out", 0);
    }
-   catch (gpstk::Exception& exc)
+   catch (gnsstk::Exception& exc)
    {
       cerr << exc;
       TUFAIL("Exception");
@@ -421,16 +421,16 @@ obsIDVersionTest()
       // test writing a header containing 3.04 obs to a 3.02 file
    try
    {
-      gpstk::Rinex3ObsStream strm(outtmpl + "302b.out",
+      gnsstk::Rinex3ObsStream strm(outtmpl + "302b.out",
                                   std::ios::out | std::ios::trunc);
-      gpstk::Rinex3ObsHeader hdr;
+      gnsstk::Rinex3ObsHeader hdr;
       strm.exceptions(std::fstream::failbit);
       fillHeader304(hdr);
       hdr.version = 3.02;
       TUCATCH(strm << hdr);
       TUCMPFILE(exptmpl + "302.exp", outtmpl + "302b.out", 0);
    }
-   catch (gpstk::Exception& exc)
+   catch (gnsstk::Exception& exc)
    {
       cerr << exc;
       TUFAIL("Exception");
@@ -448,16 +448,16 @@ obsIDVersionTest()
       // test writing a header containing 3.04 obs to a 3.04 file
    try
    {
-      gpstk::Rinex3ObsStream strm(outtmpl + "304b.out",
+      gnsstk::Rinex3ObsStream strm(outtmpl + "304b.out",
                                   std::ios::out | std::ios::trunc);
-      gpstk::Rinex3ObsHeader hdr;
+      gnsstk::Rinex3ObsHeader hdr;
       strm.exceptions(std::fstream::failbit);
       fillHeader304(hdr);
       hdr.version = 3.04;
       TUCATCH(strm << hdr);
       TUCMPFILE(exptmpl + "304.exp", outtmpl + "304b.out", 0);
    }
-   catch (gpstk::Exception& exc)
+   catch (gnsstk::Exception& exc)
    {
       cerr << exc;
       TUFAIL("Exception");
@@ -476,121 +476,121 @@ obsIDVersionTest()
 
 
 void Rinex3ObsOther_T ::
-fillHeader302(gpstk::Rinex3ObsHeader& hdr)
+fillHeader302(gnsstk::Rinex3ObsHeader& hdr)
 {
-   gpstk::SatID sid(7, gpstk::SatelliteSystem::BeiDou);
+   gnsstk::SatID sid(7, gnsstk::SatelliteSystem::BeiDou);
    hdr.date = "20200512 181734 UTC";
    hdr.preserveDate = true;
    hdr.version = 3.02;
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CC1I", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CL1I", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CD1I", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CS1I", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CC1Q", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CL1Q", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CD1Q", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CS1Q", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CC7X", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CL7X", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CD7X", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CS7X", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CC1X", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CL1X", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CD1X", 3.02));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CS1X", 3.02));
-   hdr.sysPhaseShift["C"][gpstk::RinexObsID("CL1I", 3.02)][sid] = 2.345;
-   hdr.sysPhaseShift["C"][gpstk::RinexObsID("CL1Q", 3.02)][sid] = 6.789;
-   hdr.sysPhaseShift["C"][gpstk::RinexObsID("CL7X", 3.02)][sid] = 8.765;
-   hdr.sysPhaseShift["C"][gpstk::RinexObsID("CL1X", 3.02)][sid] = 0.123;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CC1I", 3.02)] = 1;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CL1I", 3.02)] = 10;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CD1I", 3.02)] = 100;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CS1I", 3.02)] = 1000;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CC1Q", 3.02)] = 1;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CL1Q", 3.02)] = 10;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CD1Q", 3.02)] = 100;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CS1Q", 3.02)] = 1000;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CC7X", 3.02)] = 1;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CL7X", 3.02)] = 10;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CD7X", 3.02)] = 100;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CS7X", 3.02)] = 1000;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CC1X", 3.02)] = 1;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CL1X", 3.02)] = 10;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CD1X", 3.02)] = 100;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CS1X", 3.02)] = 1000;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validVersion;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validRunBy;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validMarkerName;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validMarkerType;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validObserver;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validReceiver;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaType;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaPosition;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaDeltaHEN;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validSystemNumObs;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validFirstTime;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validSystemPhaseShift;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validSystemScaleFac;
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CC1I", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CL1I", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CD1I", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CS1I", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CC1Q", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CL1Q", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CD1Q", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CS1Q", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CC7X", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CL7X", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CD7X", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CS7X", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CC1X", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CL1X", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CD1X", 3.02));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CS1X", 3.02));
+   hdr.sysPhaseShift["C"][gnsstk::RinexObsID("CL1I", 3.02)][sid] = 2.345;
+   hdr.sysPhaseShift["C"][gnsstk::RinexObsID("CL1Q", 3.02)][sid] = 6.789;
+   hdr.sysPhaseShift["C"][gnsstk::RinexObsID("CL7X", 3.02)][sid] = 8.765;
+   hdr.sysPhaseShift["C"][gnsstk::RinexObsID("CL1X", 3.02)][sid] = 0.123;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CC1I", 3.02)] = 1;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CL1I", 3.02)] = 10;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CD1I", 3.02)] = 100;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CS1I", 3.02)] = 1000;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CC1Q", 3.02)] = 1;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CL1Q", 3.02)] = 10;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CD1Q", 3.02)] = 100;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CS1Q", 3.02)] = 1000;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CC7X", 3.02)] = 1;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CL7X", 3.02)] = 10;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CD7X", 3.02)] = 100;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CS7X", 3.02)] = 1000;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CC1X", 3.02)] = 1;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CL1X", 3.02)] = 10;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CD1X", 3.02)] = 100;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CS1X", 3.02)] = 1000;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validVersion;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validRunBy;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validMarkerName;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validMarkerType;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validObserver;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validReceiver;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaType;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaPosition;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaDeltaHEN;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validSystemNumObs;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validFirstTime;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validSystemPhaseShift;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validSystemScaleFac;
    hdr.validEoH = true;
 }
 
 
 void Rinex3ObsOther_T ::
-fillHeader304(gpstk::Rinex3ObsHeader& hdr)
+fillHeader304(gnsstk::Rinex3ObsHeader& hdr)
 {
-   gpstk::SatID sid(7, gpstk::SatelliteSystem::BeiDou);
+   gnsstk::SatID sid(7, gnsstk::SatelliteSystem::BeiDou);
    hdr.date = "20200512 181734 UTC";
    hdr.preserveDate = true;
    hdr.version = 3.04;
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CC2I", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CL2I", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CD2I", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CS2I", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CC2Q", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CL2Q", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CD2Q", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CS2Q", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CC7X", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CL7X", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CD7X", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CS7X", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CC2X", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CL2X", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CD2X", 3.04));
-   hdr.mapObsTypes["C"].push_back(gpstk::RinexObsID("CS2X", 3.04));
-   hdr.sysPhaseShift["C"][gpstk::RinexObsID("CL2I", 3.04)][sid] = 2.345;
-   hdr.sysPhaseShift["C"][gpstk::RinexObsID("CL2Q", 3.04)][sid] = 6.789;
-   hdr.sysPhaseShift["C"][gpstk::RinexObsID("CL7X", 3.04)][sid] = 8.765;
-   hdr.sysPhaseShift["C"][gpstk::RinexObsID("CL2X", 3.04)][sid] = 0.123;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CC2I", 3.04)] = 1;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CL2I", 3.04)] = 10;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CD2I", 3.04)] = 100;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CS2I", 3.04)] = 1000;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CC2Q", 3.04)] = 1;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CL2Q", 3.04)] = 10;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CD2Q", 3.04)] = 100;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CS2Q", 3.04)] = 1000;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CC7X", 3.04)] = 1;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CL7X", 3.04)] = 10;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CD7X", 3.04)] = 100;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CS7X", 3.04)] = 1000;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CC2X", 3.04)] = 1;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CL2X", 3.04)] = 10;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CD2X", 3.04)] = 100;
-   hdr.sysSfacMap["C"][gpstk::RinexObsID("CS2X", 3.04)] = 1000;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validVersion;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validRunBy;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validMarkerName;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validMarkerType;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validObserver;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validReceiver;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaType;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaPosition;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validAntennaDeltaHEN;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validSystemNumObs;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validFirstTime;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validSystemPhaseShift;
-   hdr.valid |= gpstk::Rinex3ObsHeader::validSystemScaleFac;
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CC2I", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CL2I", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CD2I", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CS2I", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CC2Q", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CL2Q", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CD2Q", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CS2Q", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CC7X", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CL7X", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CD7X", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CS7X", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CC2X", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CL2X", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CD2X", 3.04));
+   hdr.mapObsTypes["C"].push_back(gnsstk::RinexObsID("CS2X", 3.04));
+   hdr.sysPhaseShift["C"][gnsstk::RinexObsID("CL2I", 3.04)][sid] = 2.345;
+   hdr.sysPhaseShift["C"][gnsstk::RinexObsID("CL2Q", 3.04)][sid] = 6.789;
+   hdr.sysPhaseShift["C"][gnsstk::RinexObsID("CL7X", 3.04)][sid] = 8.765;
+   hdr.sysPhaseShift["C"][gnsstk::RinexObsID("CL2X", 3.04)][sid] = 0.123;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CC2I", 3.04)] = 1;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CL2I", 3.04)] = 10;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CD2I", 3.04)] = 100;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CS2I", 3.04)] = 1000;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CC2Q", 3.04)] = 1;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CL2Q", 3.04)] = 10;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CD2Q", 3.04)] = 100;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CS2Q", 3.04)] = 1000;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CC7X", 3.04)] = 1;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CL7X", 3.04)] = 10;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CD7X", 3.04)] = 100;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CS7X", 3.04)] = 1000;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CC2X", 3.04)] = 1;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CL2X", 3.04)] = 10;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CD2X", 3.04)] = 100;
+   hdr.sysSfacMap["C"][gnsstk::RinexObsID("CS2X", 3.04)] = 1000;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validVersion;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validRunBy;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validMarkerName;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validMarkerType;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validObserver;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validReceiver;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaType;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaPosition;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validAntennaDeltaHEN;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validSystemNumObs;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validFirstTime;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validSystemPhaseShift;
+   hdr.valid |= gnsstk::Rinex3ObsHeader::validSystemScaleFac;
    hdr.validEoH = true;
 }
 

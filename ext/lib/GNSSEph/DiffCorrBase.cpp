@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -51,7 +51,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    //----------------------------------------------------------------
    DiffCorrBase::DiffCorrBase()
@@ -70,21 +70,21 @@ namespace gpstk
       }
       catch (InvalidParameter ip)
       {
-         GPSTK_RETHROW(ip); 
+         GNSSTK_RETHROW(ip);
       }
    }
 
    //----------------------------------------------------------------
-   void DiffCorrBase::loadData(const PackedNavBits& msg, 
+   void DiffCorrBase::loadData(const PackedNavBits& msg,
                             const unsigned startBit)
    {
       dcDataType = dtUnknown;
       dataLoadedFlag = false;
 
       unsigned startBit_topD = 0;
-      unsigned startBit_tOD = 0; 
+      unsigned startBit_tOD = 0;
       unsigned startBit_prn = 0;
-      unsigned prnBitLength = 0; 
+      unsigned prnBitLength = 0;
 
          // Determine type of the message
       int numBits = msg.getNumBits();
@@ -111,14 +111,14 @@ namespace gpstk
             case 34: { startBit_topD =127; startBit_tOD=138; startBit_prn = 8; prnBitLength = 6; break; }
          }
       }
-         // If the message length and/or message type do not match any of the 
-         // messages of interest, throw an error. 
+         // If the message length and/or message type do not match any of the
+         // messages of interest, throw an error.
       if (startBit_topD==0)
       {
-         stringstream ss; 
+         stringstream ss;
          ss << "DiffCorrBase.loadData().  Invalid message length: " << numBits;
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip); 
+         GNSSTK_THROW(ip);
       }
 
          // Obtain the times in terms of continuous GPS time
@@ -126,18 +126,18 @@ namespace gpstk
       unsigned topD_sow = msg.asUnsignedLong(startBit_topD,11,sow_scale);
       unsigned tOD_sow = msg.asUnsignedLong(startBit_tOD,11,sow_scale);
 
-         // Determine the correct week number.   
+         // Determine the correct week number.
          // The time of prediction (top).  CNAV and CNAV-2 do not have
-         // any extended nav mode.   Therefore, top shoudl be within a 
-         // half week of the transmit time.   
+         // any extended nav mode.   Therefore, top shoudl be within a
+         // half week of the transmit time.
       unsigned xmitWeek = static_cast<GPSWeekSecond>(msg.getTransmitTime()).week;
       double xmitSOW = static_cast<GPSWeekSecond>(msg.getTransmitTime()).sow;
-      double diff = xmitSOW - topD_sow; 
+      double diff = xmitSOW - topD_sow;
       unsigned topD_week = xmitWeek;
       if (diff < -HALFWEEK)
          topD_week--;
       else if (diff > HALFWEEK)
-         topD_week++; 
+         topD_week++;
       topD = GPSWeekSecond(topD_week,topD_sow);
       topD.setTimeSystem(TimeSystem::GPS);
 
@@ -156,10 +156,10 @@ namespace gpstk
 
          // Obtain the transmit PRN ID.
       unsigned prnID = msg.asUnsignedLong(startBit_prn,prnBitLength,1);
-      xmitSv = SatID(prnID, SatelliteSystem::GPS); 
+      xmitSv = SatID(prnID, SatelliteSystem::GPS);
 
-   } 
-  
+   }
+
    //----------------------------------------------------------------
    bool DiffCorrBase::isSameData(const DiffCorrBase& right) const
    {
@@ -167,7 +167,7 @@ namespace gpstk
       if (tOD            != right.tOD)            return false;
       if (subjSv         != right.subjSv)          return false;
       if (xmitSv         != right.xmitSv)         return false;
-      if (dcDataType     != right.dcDataType)     return false; 
+      if (dcDataType     != right.dcDataType)     return false;
       if (dataLoadedFlag != right.dataLoadedFlag) return false;
       return true;
    }
@@ -178,7 +178,7 @@ namespace gpstk
       if (!dataLoadedFlag)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
       s << endl

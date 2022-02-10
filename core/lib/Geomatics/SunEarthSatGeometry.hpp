@@ -70,25 +70,25 @@ namespace gnsstk
                    local topocentric or North,East,Up frame at the position P.
        @throw Exception
       */
-   Matrix<double> NorthEastUp(Position& P, bool geoc = false);
+   Matrix<double> northEastUp(Position& P, bool geoc = false);
 
       /**
-       Same as NorthEastUp(P,true).
+       Same as northEastUp(P,true).
        @param P  Position at which the rotation matrix will be defined.
        @return   3x3 rotation matrix that will transform an ECEF vector into the
                    local topocentric or North,East,Up frame at the position P.
        @throw Exception
       */
-   Matrix<double> NorthEastUpGeocentric(Position& P);
+   Matrix<double> northEastUpGeocentric(Position& P);
 
       /**
-       Same as NorthEastUp(P,false).
+       Same as northEastUp(P,false).
        @param P  Position at which the rotation matrix will be defined.
        @return   3x3 rotation matrix that will transform an ECEF vector into the
                    local topocentric or North,East,Up frame at the position P.
        @throw Exception
       */
-   Matrix<double> NorthEastUpGeodetic(Position& P);
+   Matrix<double> northEastUpGeodetic(Position& P);
 
       /**
        Given a Position, compute unit vectors in ECEF coordinates in the Up,

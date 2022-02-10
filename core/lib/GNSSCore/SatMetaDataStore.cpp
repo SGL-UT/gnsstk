@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -43,7 +43,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    SatMetaDataStore::SVNID ::
    SVNID()
@@ -98,14 +98,14 @@ namespace gpstk
          {
             for (unsigned i = 0; i < vals.size(); i++)
             {
-               gpstk::StringUtils::strip(vals[i]);
+               gnsstk::StringUtils::strip(vals[i]);
             }
             if (vals.size() == 0)
             {
                   // this could still happen if there are lines with no commas
                continue;
             }
-            string key = gpstk::StringUtils::upperCase(vals[0]);
+            string key = gnsstk::StringUtils::upperCase(vals[0]);
             if (key == "SAT")
             {
                if (!addSat(vals, lineNo))
@@ -154,7 +154,7 @@ namespace gpstk
                continue;
             }
          }
-         catch (gpstk::Exception& exc)
+         catch (gnsstk::Exception& exc)
          {
             cerr << "Exception while processing line " << lineNo << ":" << endl
                  << exc << endl;
@@ -230,24 +230,24 @@ namespace gpstk
       sod = StringUtils::asDouble(vals[i++]);
       try
       {
-         sat.startTime = YDSTime(y,doy,sod,gpstk::TimeSystem::Any);
+         sat.startTime = YDSTime(y,doy,sod,gnsstk::TimeSystem::Any);
       }
-      catch (gpstk::Exception& exc)
+      catch (gnsstk::Exception& exc)
       {
          exc.addText("Processing startTime");
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
       y = StringUtils::asUnsigned(vals[i++]);
       doy = StringUtils::asUnsigned(vals[i++]);
       sod = StringUtils::asDouble(vals[i++]);
       try
       {
-         sat.endTime = YDSTime(y,doy,sod,gpstk::TimeSystem::Any);
+         sat.endTime = YDSTime(y,doy,sod,gnsstk::TimeSystem::Any);
       }
-      catch (gpstk::Exception& exc)
+      catch (gnsstk::Exception& exc)
       {
          exc.addText("Processing endTime");
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
       sat.plane = vals[i++];
       sat.slot = vals[i++];
@@ -375,12 +375,12 @@ namespace gpstk
       double sod = StringUtils::asDouble(vals[i++]);
       try
       {
-         launchMap[svn].launchTime = YDSTime(y,doy,sod,gpstk::TimeSystem::Any);
+         launchMap[svn].launchTime = YDSTime(y,doy,sod,gnsstk::TimeSystem::Any);
       }
-      catch (gpstk::Exception& exc)
+      catch (gnsstk::Exception& exc)
       {
          exc.addText("Processing launchTime");
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
       launchMap[svn].type = vals[i++];
       launchMap[svn].mission = vals[i++];
@@ -417,7 +417,7 @@ namespace gpstk
 
    bool SatMetaDataStore ::
    findSat(SatelliteSystem sys, uint32_t prn,
-           const gpstk::CommonTime& when,
+           const gnsstk::CommonTime& when,
            SatMetaData& sat)
       const
    {
@@ -466,7 +466,7 @@ namespace gpstk
 
    bool SatMetaDataStore ::
    findSatBySVN(SatelliteSystem sys, const std::string& svn,
-                const gpstk::CommonTime& when,
+                const gnsstk::CommonTime& when,
                 SatMetaData& sat)
       const
    {
@@ -502,7 +502,7 @@ namespace gpstk
    bool SatMetaDataStore::
    findSatBySlotFdma(uint32_t slotID,
                      int32_t channel,
-                     const gpstk::CommonTime& when,
+                     const gnsstk::CommonTime& when,
                      SatMetaData& sat)
          const
    {
@@ -539,7 +539,7 @@ namespace gpstk
 
    bool SatMetaDataStore ::
    getSVN(SatelliteSystem sys, uint32_t prn,
-          const gpstk::CommonTime& when,
+          const gnsstk::CommonTime& when,
           std::string& svn)
       const
    {
@@ -555,7 +555,7 @@ namespace gpstk
 
    bool SatMetaDataStore ::
    getPRN(SatelliteSystem sys, const std::string& svn,
-          const gpstk::CommonTime& when,
+          const gnsstk::CommonTime& when,
           uint32_t& prn)
       const
    {

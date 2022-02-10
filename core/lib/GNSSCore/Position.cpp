@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,29 +29,22 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-
-/**
- * @file Position.cpp
- * class gpstk::Position encapsulates 3-D positions, both geographic positions,
- *    expressed as geodetic (with respect to any geoid), geocentric or
- *    Earth-centered, Earth-fixed (cartesian) coordinates, as well as ordinary
- *    positions defined by spherical or cartesian coordinates. Position inherits
- *    from class Triple.
- */
 
 #include "Position.hpp"
 #include "WGS84Ellipsoid.hpp"
 #include "GNSSconstants.hpp"    // for TWO_PI, etc
 #include "GNSSconstants.hpp"             // for RAD_TO_DEG, etc
 #include "MiscMath.hpp"             // for RSS, SQRT
+#include "Angle.hpp"
+#include "DebugTrace.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 
    using namespace std;
@@ -107,20 +100,20 @@ namespace gpstk
                       const double& b,
                       const double& c,
                       Position::CoordinateSystem s,
-                      EllipsoidModel *ell,
+                      const EllipsoidModel *ell,
                       ReferenceFrame frame)
    {
       try {
          initialize(a,b,c,s,ell,frame);
       }
       catch(GeometryException& ge) {
-         GPSTK_RETHROW(ge);
+         GNSSTK_RETHROW(ge);
       }
    }
 
    Position::Position(const double ABC[3],
                       CoordinateSystem s,
-                      EllipsoidModel *ell,
+                      const EllipsoidModel *ell,
                       ReferenceFrame frame)
    {
       double a=ABC[0];
@@ -130,13 +123,13 @@ namespace gpstk
          initialize(a,b,c,s,ell,frame);
       }
       catch(GeometryException& ge) {
-         GPSTK_RETHROW(ge);
+         GNSSTK_RETHROW(ge);
       }
    }
 
    Position::Position(const Triple& ABC,
                       CoordinateSystem s,
-                      EllipsoidModel *ell,
+                      const EllipsoidModel *ell,
                       ReferenceFrame frame)
    {
       double a=ABC[0];
@@ -349,13 +342,13 @@ namespace gpstk
    // Note that calling these will transform the Position to another coordinate
    // system if that is required.
    //
-   
+
    const ReferenceFrame& Position::getReferenceFrame() const
       throw()
-   {   
+   {
       return refFrame;
    }
-   
+
       // Get X coordinate (meters)
    double Position::X() const
       throw()
@@ -476,7 +469,7 @@ namespace gpstk
    {
       refFrame = frame;
    }
-   
+
       /**
       * Set the ellipsoid values for this Position given a ellipsoid.
       * @param ell  Pointer to the EllipsoidModel.
@@ -487,7 +480,7 @@ namespace gpstk
       if(!ell)
       {
          GeometryException ge("Given EllipsoidModel pointer is NULL.");
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
       AEarth = ell->a();
       eccSquared = ell->eccSquared();
@@ -508,7 +501,7 @@ namespace gpstk
       {
          GeometryException ge("Invalid latitude in setGeodetic: "
                                  + StringUtils::asString(lat));
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
       theArray[0] = lat;
 
@@ -543,13 +536,13 @@ namespace gpstk
       {
          GeometryException ge("Invalid latitude in setGeocentric: "
                                  + StringUtils::asString(lat));
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
       if(rad < 0)
       {
          GeometryException ge("Invalid radius in setGeocentric: "
                                           + StringUtils::asString(rad));
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
       theArray[0] = lat;
       theArray[1] = lon;
@@ -578,13 +571,13 @@ namespace gpstk
       {
          GeometryException ge("Invalid theta in setSpherical: "
                                  + StringUtils::asString(theta));
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
       if(rad < 0)
       {
          GeometryException ge("Invalid radius in setSpherical: "
                                           + StringUtils::asString(rad));
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
 
       theArray[0] = theta;
@@ -788,7 +781,7 @@ namespace gpstk
                      InvalidRequest f(
                            "Invalid geodetic latitude for setTostring: "
                            + toBeRemoved);
-                     GPSTK_THROW(f);
+                     GNSSTK_THROW(f);
                   }
                   hglat = true;
                   break;
@@ -798,7 +791,7 @@ namespace gpstk
                      InvalidRequest f(
                            "Invalid geocentric latitude for setTostring: "
                            + toBeRemoved);
-                     GPSTK_THROW(f);
+                     GNSSTK_THROW(f);
                   }
                   hclat = true;
                   break;
@@ -831,7 +824,7 @@ namespace gpstk
                   if(theta > 180. || theta < 0.) {
                      InvalidRequest f("Invalid theta for setTostring: "
                                                 + toBeRemoved);
-                     GPSTK_THROW(f);
+                     GNSSTK_THROW(f);
                   }
                   htheta = true;
                   break;
@@ -840,7 +833,7 @@ namespace gpstk
                   if(theta > 90. || theta < -90.) {
                      InvalidRequest f("Invalid theta for setTostring: "
                                                 + toBeRemoved);
-                     GPSTK_THROW(f);
+                     GNSSTK_THROW(f);
                   }
                   htheta = true;
                   break;
@@ -871,7 +864,7 @@ namespace gpstk
                   if(rad < 0.0) {
                      InvalidRequest f("Invalid radius for setTostring: "
                                                 + toBeRemoved);
-                     GPSTK_THROW(f);
+                     GNSSTK_THROW(f);
                   }
                   hrad = true;
                   break;
@@ -880,7 +873,7 @@ namespace gpstk
                   if(rad < 0.0) {
                      InvalidRequest f("Invalid radius for setTostring: "
                                                 + toBeRemoved);
-                     GPSTK_THROW(f);
+                     GNSSTK_THROW(f);
                   }
                   hrad = true;
                   break;
@@ -912,7 +905,7 @@ namespace gpstk
                // throw an error - something didn't get processed in the strings
             InvalidRequest fe(
                "Processing error - parts of strings left unread - " + s);
-            GPSTK_THROW(fe);
+            GNSSTK_THROW(fe);
          }
 
          if (f.length() != 0)
@@ -920,14 +913,14 @@ namespace gpstk
                // throw an error - something didn't get processed in the strings
             InvalidRequest fe(
                "Processing error - parts of strings left unread - " + f);
-            GPSTK_THROW(fe);
+            GNSSTK_THROW(fe);
          }
 
             // throw if the specification is incomplete
          if ( !(hX && hY && hZ) && !(hglat && hlon && hht) &&
               !(hclat && hlon && hrad) && !(htheta && hphi && hrad)) {
             InvalidRequest fe("Incomplete specification for setToString");
-            GPSTK_THROW(fe);
+            GNSSTK_THROW(fe);
          }
 
             // define the Position toReturn
@@ -943,17 +936,17 @@ namespace gpstk
          *this = toReturn;
          return *this;
       }
-      catch(gpstk::Exception& exc)
+      catch(gnsstk::Exception& exc)
       {
          GeometryException ge(exc);
          ge.addText("Failed to convert string to Position");
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
       catch(std::exception& exc)
       {
          GeometryException ge(exc.what());
          ge.addText("Failed to convert string to Position");
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
    }
 
@@ -1283,7 +1276,7 @@ namespace gpstk
       if(A.AEarth != B.AEarth || A.eccSquared != B.eccSquared)
       {
          GeometryException ge("Unequal geoids");
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
 
          Position L(A),R(B);
@@ -1324,7 +1317,7 @@ namespace gpstk
       }
       catch(GeometryException& ge)
       {
-         GPSTK_RETHROW(ge);
+         GNSSTK_RETHROW(ge);
       }
       return elevation;
    }
@@ -1351,7 +1344,7 @@ namespace gpstk
       if (z.mag()<=1e-4) // if the positions are within .1 millimeter
       {
          GeometryException ge("Positions are within .1 millimeter");
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
 
       // Compute k vector in local North-East-Up (NEU) system
@@ -1383,7 +1376,7 @@ namespace gpstk
       }
       catch(GeometryException& ge)
       {
-         GPSTK_RETHROW(ge);
+         GNSSTK_RETHROW(ge);
       }
 
       return az;
@@ -1410,7 +1403,7 @@ namespace gpstk
       if (z.mag()<=1e-4) // if the positions are within .1 millimeter
       {
          GeometryException ge("Positions are within .1 millimeter");
-         GPSTK_THROW(ge);
+         GNSSTK_THROW(ge);
       }
 
       // Compute i vector in local North-East-Up (NEU) system
@@ -1487,35 +1480,214 @@ namespace gpstk
 
 
         /**
-        * A member function that computes the radius of curvature of the 
+        * A member function that computes the radius of curvature of the
         * meridian (Rm) corresponding to this Position.
         * @return radius of curvature of the meridian (in meters)
         */
     double Position::getCurvMeridian() const
         throw()
     {
-    
+
         double slat = ::sin(geodeticLatitude()*DEG_TO_RAD);
         double W = 1.0/SQRT(1.0-eccSquared*slat*slat);
-        
+
         return AEarth*(1.0-eccSquared)*W*W*W;
-        
+
     }
 
         /**
-        * A member function that computes the radius of curvature in the 
+        * A member function that computes the radius of curvature in the
         * prime vertical (Rn) corresponding to this Position.
         * @return radius of curvature in the prime vertical (in meters)
         */
     double Position::getCurvPrimeVertical() const
         throw()
     {
-    
+
         double slat = ::sin(geodeticLatitude()*DEG_TO_RAD);
-        
+
         return AEarth/SQRT(1.0-eccSquared*slat*slat);
-        
+
     }
+
+
+   Angle Position::getZenithAngle(const Position& target, AngleReduced& delta)
+      const
+   {
+      Position p1(*this), p2(target);
+      p1.transformTo(Geodetic);
+      p2.transformTo(Geodetic);
+      Angle phi1(p1.geodeticLatitude(), AngleType::Deg);
+      Angle lambda1(p1.longitude(), AngleType::Deg);
+      Angle phi2(p2.geodeticLatitude(), AngleType::Deg);
+      Angle lambda2(p2.longitude(), AngleType::Deg);
+         // radius requires spherical coordinates, so get them from
+         // the original Position objects in the off-chance they were
+         // already in the spherical system (we can be guaranteed p1
+         // and p2 will not be).
+      double r1 = radius();
+      double r2 = target.radius();
+      return getZenithAngle(phi1, lambda1, phi2, lambda2, r1, r2, delta);
+   }
+
+
+   Angle Position ::
+   getZenithAngle(const Angle& phi1, const Angle& lambda1,
+                  const Angle& phi2, const Angle& lambda2,
+                  double r1, double r2,
+                  AngleReduced& delta)
+   {
+      DEBUGTRACE_FUNCTION();
+         // reference \cite galileo:iono though probably not exclusively
+      delta.setValue(sin(phi1)*sin(phi2) +                              //eq.153
+                     cos(phi1)*cos(phi2)*cos(lambda2-lambda1),
+                     AngleType::Cos);
+      DEBUGTRACE("delta.sin=" << scientific << delta.sin());
+      DEBUGTRACE("delta.cos=" << scientific << delta.cos());
+      return Angle(atan2(sin(delta),cos(delta) - (r1/r2)),              //eq.155
+                   AngleType::Rad);
+   }
+
+
+   Position Position::getRayPerigee(const Position& target) const
+   {
+      DEBUGTRACE_FUNCTION();
+         // reference \cite galileo:iono though probably not exclusively
+      Position p1(*this), p2(target);
+      p1.transformTo(Geodetic);
+      p2.transformTo(Geodetic);
+      Angle phi1(p1.geodeticLatitude(), AngleType::Deg);
+      Angle lambda1(p1.longitude(), AngleType::Deg);
+      Angle phi2(p2.geodeticLatitude(), AngleType::Deg);
+      Angle lambda2(p2.longitude(), AngleType::Deg);
+         // radius requires spherical coordinates, so get them from
+         // the original Position objects in the off-chance they were
+         // already in the spherical system (we can be guaranteed p1
+         // and p2 will not be).
+         // Also convert from m to km for the formulae below.
+      double r1 = radius() / 1000.0;
+      double r2 = target.radius() / 1000.0;
+      AngleReduced delta;
+      Angle zeta = getZenithAngle(phi1,lambda1,phi2,lambda2,r1,r2,delta);
+      double rp = r1 * sin(zeta);                                       //eq.156
+      DEBUGTRACE(setprecision(20) << "pStation_position->radius_km=" << scientific << r1);
+      DEBUGTRACE("pZenith_angle->sin=" << scientific << sin(zeta));
+      DEBUGTRACE("pRay->slant.perigee_radius_km=" << scientific << rp);
+      Angle phiP, lambdaP;
+      if (fabs(fabs(phi1.deg())-90) < 1e-10)
+      {
+         phiP = (phi1.deg() > 0) ? zeta : -zeta;                        //eq.157
+         lambdaP.setValue((zeta.rad() >= 0) ? lambda2.rad() + PI :      //eq.164
+                          lambda2.rad(), AngleType::Rad);
+      }
+      else
+      {
+         AngleReduced sigma(
+            (sin(lambda2-lambda1) * cos(phi2)) / sin(delta),            //eq.158
+            ((sin(phi2) - (cos(delta)*sin(phi1))) /                     //eq.159
+             (sin(delta) * cos(phi1))));
+         Angle deltaP(PI/2.0 - zeta.rad(), AngleType::Rad);             //eq.160
+         phiP.setValue(sin(phi1)*cos(deltaP) -                          //eq.161
+                       cos(phi1)*sin(deltaP)*cos(sigma), AngleType::Sin);
+         Angle dLambda(-(sin(sigma)*sin(deltaP))/cos(phiP),             //eq.165
+                       ((cos(deltaP)-sin(phi1)*sin(phiP)) /             //eq.166
+                        (cos(phi1)*cos(phiP))));
+         lambdaP = dLambda + lambda1;                                   //eq.167
+      }
+         // rp is in km, convert to meters for Position
+      Position rv(phiP.deg(), lambdaP.deg(), rp*1000.0, Geocentric);
+      rv.copyEllipsoidModelFrom(*this);
+      return rv;
+   }
+
+
+   Position Position::getRayPosition(double dist, const Position& target) const
+   {
+      DEBUGTRACE_FUNCTION();
+         // reference \cite galileo:iono though probably not exclusively
+      Position p2(target);
+      p2.transformTo(Geodetic);
+      Position pp(getRayPerigee(target));
+      Angle phi2(p2.geodeticLatitude(), AngleType::Deg);
+      Angle lambda2(p2.longitude(), AngleType::Deg);
+      Angle phip(pp.geodeticLatitude(), AngleType::Deg);
+      Angle lambdap(pp.longitude(), AngleType::Deg);
+      Angle dLambda(lambda2 - lambdap);
+      AngleReduced psi; ///< Great circle angle from ray-perigee to satellite
+      AngleReduced sigmap; ///< azimuth of satellite as seen from ray-perigee pp
+      DEBUGTRACE("# pRay->latitude.rad=" << scientific << phip.rad());
+      DEBUGTRACE("# pRay->latitude.degree=" << scientific << phip.deg());
+      DEBUGTRACE("# pRay->latitude.sin=" << scientific << phip.sin());
+      DEBUGTRACE("# pRay->latitude.cos=" << scientific << phip.cos());
+      DEBUGTRACE("# pRay->longitude.rad=" << scientific << lambdap.rad());
+      DEBUGTRACE("# pRay->longitude.degree=" << scientific << lambdap.deg());
+      DEBUGTRACE("pRay->longitude.sin=" << scientific << lambdap.sin());
+      DEBUGTRACE("pRay->longitude.cos=" << scientific << lambdap.cos());
+      DEBUGTRACE("# pRay->satellite_position.latitude.rad=" << scientific << phi2.rad());
+      DEBUGTRACE("# pRay->satellite_position.latitude.degree=" << scientific << phi2.deg());
+      DEBUGTRACE("# pRay->satellite_position.latitude.sin=" << scientific << phi2.sin());
+      DEBUGTRACE("# pRay->satellite_position.latitude.cos=" << scientific << phi2.cos());
+      DEBUGTRACE("# pRay->satellite_position.longitude.rad=" << scientific << lambda2.rad());
+      DEBUGTRACE("# pRay->satellite_position.longitude.degree=" << scientific << lambda2.deg());
+      DEBUGTRACE("# pRay->satellite_position.longitude.sin=" << scientific << lambda2.sin());
+      DEBUGTRACE("# pRay->satellite_position.longitude.cos=" << scientific << lambda2.cos());
+      if (fabs(fabs(phip.deg())-90.0) < 1e-10)
+      {
+         psi.setValue(fabs(p2.geodeticLatitude()-pp.geodeticLatitude()),//eq.168
+                      AngleType::Deg);
+         if (phip.deg() > 0)
+         {
+            sigmap = Angle(0.0, -1.0);                                  //eq.173
+         }
+         else
+         {
+               // note that the equation says >0 or <0 but not ==0,
+               // but the EU code does it this way as well (see
+               // NeQuickG_JRC_ray.c, get_azimuth())
+            sigmap = Angle(0.0, 1.0);                                   //eq.173
+         }
+      }
+      else
+      {
+         psi = AngleReduced(sin(phip)*sin(phi2) +                       //eq.169
+                            cos(phip)*cos(phi2)*cos(dLambda), AngleType::Cos);
+         sigmap = AngleReduced(cos(phi2)*sin(dLambda)/sin(psi),         //eq.174
+                               (sin(phi2)-sin(phip)*cos(psi)) /         //eq.175
+                               (cos(phip)*sin(psi)));
+      }
+      DEBUGTRACE("# psi_angle.sin=" << scientific << psi.sin());
+      DEBUGTRACE("# psi_angle.cos=" << scientific << psi.cos());
+      DEBUGTRACE("# pRay->slant.azimuth.sin=" << scientific << sigmap.sin());
+      DEBUGTRACE("# pRay->slant.azimuth.cos=" << scientific << sigmap.cos());
+      double rp = pp.radius(); // radius in m
+         // rs is also in meters now rather than km per the equation,
+         // because the Position class prefers meters.  Also computing
+         // as a geocentric radius so as to avoid dealing with
+         // EllipsoidModels.
+      double rs = sqrt(dist*dist + rp*rp);                              //eq.178
+      double tanDeltas = dist / rp;                                     //eq.179
+      double cosDeltas = 1/sqrt(1+tanDeltas*tanDeltas);                 //eq.180
+      double sinDeltas = tanDeltas * cosDeltas;                         //eq.181
+      Angle phis(sin(phip)*cosDeltas + cos(phip)*sinDeltas*cos(sigmap), //eq.182
+                 AngleType::Sin);
+      Angle dlambda(sinDeltas*sin(sigmap)*cos(phip),                    //eq.185
+                    cosDeltas-sin(phip)*sin(phis));                     //eq.186
+      double lambdas = dlambda.deg() + lambdap.deg();                   //eq.187
+      Position rv(phis.deg(), lambdas, rs, Geocentric);
+         // Still need to copy the ellipsoid model so that any
+         // coordinate system conversions done by the user don't give
+         // unexpected results
+      rv.copyEllipsoidModelFrom(*this);
+      DEBUGTRACE("current_position.radius_km=" << scientific << (rs / 1000.0));
+      DEBUGTRACE("current_position.height=" << scientific << (rv.height() / 1000.0));
+      DEBUGTRACE("current_position.latitude.rad=" << scientific << phis.rad());
+      DEBUGTRACE("current_position.latitude.degree=" << scientific << phis.deg());
+      DEBUGTRACE("current_position.latitude.sin=" << scientific << phis.sin());
+      DEBUGTRACE("current_position.latitude.cos=" << scientific << phis.cos());
+      DEBUGTRACE("current_position.longitude.degree=" << scientific << lambdas);
+      return rv;
+   }
+
 
    // ----------- Part 12: private functions and member data -----------------
    //
@@ -1530,7 +1702,7 @@ namespace gpstk
                   const double b,
                   const double c,
                   Position::CoordinateSystem s,
-                  EllipsoidModel *ell,
+                  const EllipsoidModel *ell,
                   ReferenceFrame frame)
    {
       double bb(b);
@@ -1540,7 +1712,7 @@ namespace gpstk
          {
             GeometryException ge("Invalid latitude in constructor: "
                                     + StringUtils::asString(a));
-            GPSTK_THROW(ge);
+            GNSSTK_THROW(ge);
          }
          if(bb < 0)
             bb += 360*(1+(unsigned long)(bb/360));
@@ -1553,7 +1725,7 @@ namespace gpstk
          {
             GeometryException ge("Invalid radius in constructor: "
                                            + StringUtils::asString(c));
-            GPSTK_THROW(ge);
+            GNSSTK_THROW(ge);
          }
       }
       if(s==Spherical)
@@ -1562,7 +1734,7 @@ namespace gpstk
          {
             GeometryException ge("Invalid theta in constructor: "
                                     + StringUtils::asString(a));
-            GPSTK_THROW(ge);
+            GNSSTK_THROW(ge);
          }
          if(bb < 0)
             bb += 360*(1+(unsigned long)(bb/360));
@@ -1588,4 +1760,4 @@ namespace gpstk
       refFrame = frame;
    }
 
-}  // namespace gpstk
+}  // namespace gnsstk

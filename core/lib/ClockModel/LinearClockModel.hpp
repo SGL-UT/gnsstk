@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -44,7 +44,7 @@
 
 #ifndef LINEARCLOCKMODEL_HPP
 #define LINEARCLOCKMODEL_HPP
- 
+
 #include <map>
 
 #include "Exception.hpp"
@@ -54,7 +54,7 @@
 
 
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup ClockModel
       //@{
@@ -65,7 +65,7 @@ namespace gpstk
       LinearClockModel(double sigma = 2, double elmask = 0, SvMode mode = ALWAYS)
             :ObsClockModel(sigma, elmask, mode) {reset();};
 
-      virtual double getOffset(const gpstk::CommonTime& t) const 
+      virtual double getOffset(const gnsstk::CommonTime& t) const
          throw()
       {
          if (!isOffsetValid(t))
@@ -74,7 +74,7 @@ namespace gpstk
             return clockModel.Slope()*(t-baseTime) + clockModel.Intercept();
       };
 
-      virtual bool isOffsetValid(const gpstk::CommonTime& t) const throw()
+      virtual bool isOffsetValid(const gnsstk::CommonTime& t) const throw()
       {return t >= startTime && t <= endTime && clockModel.N() > 1;};
 
          /** Add in the given ord to the clock model.
@@ -89,18 +89,18 @@ namespace gpstk
 
       friend std::ostream& operator<<(std::ostream& s, const LinearClockModel& r)
       { r.dump(s, 0); return s; };
-      
+
    private:
          // x is time y is clock offset
-      gpstk::TwoSampleStats<double> clockModel;
+      gnsstk::TwoSampleStats<double> clockModel;
 
-      gpstk::CommonTime startTime, endTime, baseTime;
+      gnsstk::CommonTime startTime, endTime, baseTime;
 
       unsigned long tossCount;
-   
+
          // This is were we store what SVs were used to compute the individual
          // clock observations
-      std::map<gpstk::CommonTime, SvStatusMap> prnStatus;
+      std::map<gnsstk::CommonTime, SvStatusMap> prnStatus;
 
          // This is a store of the clock observations that were added into the
          // clockModel object

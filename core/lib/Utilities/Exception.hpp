@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,37 +29,37 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  * @file Exception.hpp
- * Exceptions for all of GPSTK, including location information
+ * Exceptions for all of GNSSTK, including location information
  */
 
 // The unusual include macro below is done this way because xerces
 // #defines EXCEPTION_HPP in their own exception class header file.
-#ifndef GPSTK_EXCEPTION_HPP
-#define GPSTK_EXCEPTION_HPP
+#ifndef GNSSTK_EXCEPTION_HPP
+#define GNSSTK_EXCEPTION_HPP
 
 #include <cstdlib>
 #include <iostream>
 #include <vector>
 #include <string>
 
-namespace gpstk
+namespace gnsstk
 {
       /**
        * @defgroup exceptiongroup Exception Classes
        * These classes are the exceptions that can be thrown in
        * the library code. Use these in your catch() blocks
        * and you'll be able to get more information
-       * than what std::exception provides.  Use GPSTK_THROW()
-       * and GPSTK_RETHROW() to throw or rethrow these exceptions
+       * than what std::exception provides.  Use GNSSTK_THROW()
+       * and GNSSTK_RETHROW() to throw or rethrow these exceptions
        * to automatically add line and file information to your
        * exceptions.
        */
@@ -333,7 +333,7 @@ namespace gpstk
    }; // class Exception
 
 
-}  // namespace gpstk
+}  // namespace gnsstk
 
 
 /**
@@ -347,38 +347,38 @@ namespace gpstk
  * See the exceptiontest.cpp code in the base/test directory.
  */
 #if defined ( __FUNCTION__ )
-#define FILE_LOCATION gpstk::ExceptionLocation(__FILE__, __FUNCTION__, __LINE__)
+#define FILE_LOCATION gnsstk::ExceptionLocation(__FILE__, __FUNCTION__, __LINE__)
 #else
-#define FILE_LOCATION gpstk::ExceptionLocation(__FILE__, "", __LINE__)
+#define FILE_LOCATION gnsstk::ExceptionLocation(__FILE__, "", __LINE__)
 #endif
 
 // For compilers without exceptions, die if you get an exception.
 #if defined (NO_EXCEPTIONS_SUPPORT)
-/// A macro for adding location when throwing an gpstk::Exception
+/// A macro for adding location when throwing an gnsstk::Exception
 /// @ingroup exceptiongroup
-#define GPSTK_THROW(exc) { exc.addLocation(FILE_LOCATION); exc.terminate(); }
-/// A macro for adding location when rethrowing an gpstk::Exception
+#define GNSSTK_THROW(exc) { exc.addLocation(FILE_LOCATION); exc.terminate(); }
+/// A macro for adding location when rethrowing an gnsstk::Exception
 /// @ingroup exceptiongroup
-#define GPSTK_RETHROW(exc) { exc.addLocation(FILE_LOCATION); exc.terminate(); }
+#define GNSSTK_RETHROW(exc) { exc.addLocation(FILE_LOCATION); exc.terminate(); }
 #else
-/// A macro for adding location when throwing an gpstk::Exception
+/// A macro for adding location when throwing an gnsstk::Exception
 /// @ingroup exceptiongroup
-#define GPSTK_THROW(exc)   { exc.addLocation(FILE_LOCATION); throw exc; }
-/// A macro for adding location when rethrowing an gpstk::Exception
+#define GNSSTK_THROW(exc)   { exc.addLocation(FILE_LOCATION); throw exc; }
+/// A macro for adding location when rethrowing an gnsstk::Exception
 /// @ingroup exceptiongroup
-#define GPSTK_RETHROW(exc) { exc.addLocation(FILE_LOCATION); throw; }
+#define GNSSTK_RETHROW(exc) { exc.addLocation(FILE_LOCATION); throw; }
 #endif
 
 /// Provide an "ASSERT" type macro
-#define GPSTK_ASSERT(CONDITION) if (!(CONDITION)) {                     \
-      gpstk::AssertionFailure exc("Assertion failed: " #CONDITION);     \
-      GPSTK_THROW(exc);                                                 \
+#define GNSSTK_ASSERT(CONDITION) if (!(CONDITION)) {                     \
+      gnsstk::AssertionFailure exc("Assertion failed: " #CONDITION);     \
+      GNSSTK_THROW(exc);                                                 \
    }
 
 
 /**
  * A macro for quickly defining a new exception class that inherits from
- * an gpstk::Exception derived class.  Use this to make specific exceptions,
+ * an gnsstk::Exception derived class.  Use this to make specific exceptions,
  * such as the ones defined in this header file.  Make sure that all
  * exceptions have "\@ingroup exceptiongroup" in their comment block
  * so doxygen knows what to do with them.
@@ -394,7 +394,7 @@ public: \
       /** Copy constructor. */ \
    child(const child& a): parent(a) {} \
       /** Cast constructor. */ \
-   child(const gpstk::Exception& a) : parent(a) {}; \
+   child(const gnsstk::Exception& a) : parent(a) {}; \
       /** \
        * Common use constructor. \
        * @param[in] a text description of exception condition. \
@@ -402,7 +402,7 @@ public: \
        * @param[in] c severity of exception (default unrecoverable) \
        */ \
    child(const std::string& a, unsigned long b = 0,\
-         gpstk::Exception::Severity c = gpstk::Exception::unrecoverable) \
+         gnsstk::Exception::Severity c = gnsstk::Exception::unrecoverable) \
          : parent(a, b, c) \
    {};\
       /** \
@@ -412,7 +412,7 @@ public: \
        * @param[in] c severity of exception (default unrecoverable) \
        */ \
    child(const char* a, unsigned long b = 0,\
-   gpstk::Exception::Severity c = gpstk::Exception::unrecoverable) \
+   gnsstk::Exception::Severity c = gnsstk::Exception::unrecoverable) \
    : parent(a, b, c) \
    {};\
       /** Destructor. */ \
@@ -427,7 +427,7 @@ public: \
       { c.dump(s); return s; } \
 }
 
-namespace gpstk
+namespace gnsstk
 {
       /// Thrown when a function is given a parameter value that it invalid
       /// @ingroup exceptiongroup
@@ -489,5 +489,5 @@ namespace gpstk
       /// @ingroup exceptiongroup
    NEW_EXCEPTION_CLASS(UnimplementedException, Exception);
 
-} // namespace gpstk
+} // namespace gnsstk
 #endif

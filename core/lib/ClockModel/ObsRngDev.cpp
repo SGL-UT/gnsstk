@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -45,13 +45,12 @@
 
 #include "EphemerisRange.hpp"
 #include "EngEphemeris.hpp"
-#include "GPSEphemerisStore.hpp"
 #include "MiscMath.hpp"
 #include "GNSSconstants.hpp"
 #include "TimeString.hpp"
 #include "ObsRngDev.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 
    bool ObsRngDev::debug=false;
@@ -61,12 +60,15 @@ namespace gpstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& navLib,
       EllipsoidModel& em,
-      bool svTime)
-      : obstime(time), svid(svid), ord(0), wonky(false)
+      bool svTime,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
+         : obstime(time), svid(svid), ord(0), wonky(false)
    {
-      computeOrd(prange, rxpos, eph, em, svTime);
+      computeOrd(prange, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       Position gx(rxpos);
       gx.asGeodetic(&em);
       NBTropModel nb(gx.getAltitude(),
@@ -80,14 +82,17 @@ namespace gpstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& navLib,
       EllipsoidModel& em,
       const IonoModelStore& ion,
       CarrierBand band,
-      bool svTime)
+      bool svTime,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
-      computeOrd(prange, rxpos, eph, em, svTime);
+      computeOrd(prange, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       Position gx(rxpos);
       gx.asGeodetic(&em);
       NBTropModel nb(gx.getAltitude(),
@@ -103,13 +108,16 @@ namespace gpstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& navLib,
       EllipsoidModel& em,
       const TropModel& tm,
-      bool svTime)
+      bool svTime,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
-      computeOrd(prange, rxpos, eph, em, svTime);
+      computeOrd(prange, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       computeTrop(tm);
    }
 
@@ -118,15 +126,18 @@ namespace gpstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& navLib,
       EllipsoidModel& em,
       const TropModel& tm,
       const IonoModelStore& ion,
       CarrierBand band,
-      bool svTime)
+      bool svTime,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
-      computeOrd(prange, rxpos, eph, em, svTime);
+      computeOrd(prange, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       computeTrop(tm);
       Position gx(rxpos);
       gx.asGeodetic(&em);
@@ -141,17 +152,20 @@ namespace gpstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& navLib,
       EllipsoidModel& em,
       bool svTime,
-      double gamma)
+      double gamma,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
       // for dual-frequency see IS-GPS-200, section 20.3.3.3.3.3
       double icpr = (prange2 - gamma * prange1)/(1-gamma);
       iono = prange1 - icpr;
 
-      computeOrd(icpr, rxpos, eph, em, svTime);
+      computeOrd(icpr, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       Position gx(rxpos);
       gx.asGeodetic(&em);
       NBTropModel nb(gx.getAltitude(),
@@ -167,18 +181,21 @@ namespace gpstk
       const SatID& svid,
       const CommonTime& time,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
+      NavLibrary& navLib,
       const EllipsoidModel& em,
       const TropModel& tm,
       bool svTime,
-      double gamma)
+      double gamma,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
       // for dual-frequency see IS-GPS-200, section 20.3.3.3.3.3
       double icpr = (prange2 - gamma * prange1)/(1-gamma);
       iono = prange1 - icpr;
 
-      computeOrd(icpr, rxpos, eph, em, svTime);
+      computeOrd(icpr, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       computeTrop(tm);
    }
 
@@ -186,22 +203,20 @@ namespace gpstk
    void ObsRngDev::computeOrdRx(
       const double obs,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
-      const EllipsoidModel& em)
+      NavLibrary& navLib,
+      const EllipsoidModel& em,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       CorrectedEphemerisRange cer;
-      rho = cer.ComputeAtTransmitTime(obstime,obs, rxpos, svid, eph);
+      rho = cer.ComputeAtTransmitTime(obstime,obs, rxpos, svid, navLib, order,
+                                      xmitHealth, valid);
       azimuth = cer.azimuth;
       elevation = cer.elevation;
       ord = obs - rho;
-
-      if (typeid(eph) == typeid(GPSEphemerisStore))
-      {
-         const GPSEphemerisStore& bce = dynamic_cast<const GPSEphemerisStore&>(eph);
-         const GPSEphemeris& eph = bce.findEphemeris(svid, obstime);
-         iodc = eph.IODC;
-         health = eph.health;
-      }
+      iodc = cer.iodc;
+      health = cer.health;
 
       if (debug)
       {
@@ -226,11 +241,15 @@ namespace gpstk
    void ObsRngDev::computeOrdTx(
       double obs,
       const Position& rxpos,
-      const XvtStore<SatID>& eph,
-      const EllipsoidModel& em)
+      NavLibrary& navLib,
+      const EllipsoidModel& em,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       CorrectedEphemerisRange cer;
-      rho = cer.ComputeAtTransmitSvTime(obstime, obs, rxpos, svid, eph);
+      rho = cer.ComputeAtTransmitSvTime(obstime, obs, rxpos, svid, navLib,
+                                        order, xmitHealth, valid);
       azimuth = cer.azimuth;
       elevation = cer.elevation;
       ord = obs - rho;

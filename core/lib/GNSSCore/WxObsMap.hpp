@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,15 +41,15 @@
  * A class encapsulating and managing wx observations data.
  */
 
-#ifndef GPSTK_WXOBSMAP_HPP
-#define GPSTK_WXOBSMAP_HPP
+#ifndef GNSSTK_WXOBSMAP_HPP
+#define GNSSTK_WXOBSMAP_HPP
 
 #include <map>
 #include <iostream>
 
 #include "CommonTime.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    /// A Single Weather Observation.
    struct WxObservation
@@ -66,9 +66,9 @@ namespace gpstk
        * @param pres the recorded pressure (millibars)
        * @param humid the recorded relative humidity (%)
        */
-      WxObservation(const CommonTime& t, 
-                    float temp, 
-                    float pres, 
+      WxObservation(const CommonTime& t,
+                    float temp,
+                    float pres,
                     float humid)
          throw()
          :t(t),
@@ -84,13 +84,13 @@ namespace gpstk
       float  humidity;     ///< percent
 
       /// An enumeration of the various weather sources.
-      enum EWxSrc 
+      enum EWxSrc
       {
          noWx,  ///< No weather measurements were available.
          defWx, ///< Default weather was used.
          obsWx  ///< The Observed Weather was used.
       };
-      
+
       enum EWxSrc temperatureSource; ///< source of the temperature meas.
       enum EWxSrc pressureSource;    ///< source of the pressure meas.
       enum EWxSrc humiditySource;    ///< source of the humidity meas.
@@ -105,12 +105,12 @@ namespace gpstk
        * @param obs the WxObservation from which the data comes
        * @return a reference to the modified ostream
        */
-      friend std::ostream& operator<<(std::ostream& s, 
+      friend std::ostream& operator<<(std::ostream& s,
                                       const WxObservation& obs) throw();
    };
 
 
-   /// This is a map of weather observations over time.  The key 
+   /// This is a map of weather observations over time.  The key
    /// should be the same time as the time of the epoch.
    typedef std::map<CommonTime, WxObservation> WxObsMap;
 
@@ -119,13 +119,13 @@ namespace gpstk
    {
       /// Constructor
       WxObsData() throw()
-         :firstTime(CommonTime::END_OF_TIME), 
+         :firstTime(CommonTime::END_OF_TIME),
           lastTime(CommonTime::BEGINNING_OF_TIME) {}
-     
+
       // First and last time of any data in this object
       CommonTime firstTime; ///< Time of the oldest data in this object.
       CommonTime lastTime;  ///< Time of the youngest data in this object.
-   
+
       /// This is the identifier of the site.
       unsigned rxId;
 
@@ -136,12 +136,12 @@ namespace gpstk
        * @return the WxObservation coming before time t
        */
       WxObservation getMostRecent(const CommonTime& t) const throw();
-      
+
       /** Insert a WxObservation.
        * @param obs the WxObservation to insert.
        */
       void insertObservation(const WxObservation& obs) throw();
-      
+
       /**
        * Removes all stored WxObservation objects older than time \a t.
        * \param t remove WxObservation objects older than this
@@ -169,4 +169,4 @@ namespace gpstk
                                      bool interpolate = true) const;
    };
 } // namespace
-#endif 
+#endif

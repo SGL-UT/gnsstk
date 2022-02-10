@@ -1,25 +1,24 @@
-#pragma ident "$Id: //depot/msn/main/code/shared/gpstk/SinexBase.cpp#6 $"
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -30,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -46,10 +45,10 @@
 #include "YDSTime.hpp"
 #include "FormattedDouble.hpp"
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
 namespace Sinex
 {
@@ -64,7 +63,7 @@ namespace Sinex
             string  errMsg("Invalid Observation Code: ");
             errMsg += c;
             Exception  err(errMsg);
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
          return false;
       }
@@ -82,7 +81,7 @@ namespace Sinex
             string  errMsg("Invalid Constraint Code: ");
             errMsg += c;
             Exception  err(errMsg);
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
          return false;
       }
@@ -100,7 +99,7 @@ namespace Sinex
             string  errMsg("Invalid Solution Type: ");
             errMsg += c;
             Exception  err(errMsg);
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
          return false;
       }
@@ -127,7 +126,7 @@ namespace Sinex
             ss << "Missing data; inadequate line length ("
                << sz << " < " << minLen << ")";
             Exception  err(ss.str() );
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
          return false;
       }
@@ -142,7 +141,7 @@ namespace Sinex
             ss << "Excessive line length ("
                << sz << " > " << maxLen << ")";
             Exception  err(ss.str() );
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
          return false;
       }
@@ -160,7 +159,7 @@ namespace Sinex
                   ss << "Field divider '" << FIELD_DIV
                      << "' expected in column " << pos;
                   Exception  err(ss.str() );
-                  GPSTK_THROW(err);
+                  GNSSTK_THROW(err);
                }
                return false;
             }
@@ -198,7 +197,7 @@ namespace Sinex
          msg << "Cannot represent value " << value;
          msg << " within width " << width;
          Exception  err(msg.str() );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       return s;
    }
@@ -216,7 +215,7 @@ namespace Sinex
          msg << "Cannot represent value " << value;
          msg << " within width " << width;
          Exception  err(msg.str() );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       return s;
    }
@@ -258,17 +257,17 @@ namespace Sinex
             msg << " within width " << width;
             msg << " with precision " << precision;
             Exception  err(msg.str() );
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
       }
       return s;
    }
 
 
-   Time::operator gpstk::CommonTime() const
+   Time::operator gnsstk::CommonTime() const
    {
       long  y = (year > 50) ? (year + 1900) : (year + 2000);
-      gpstk::YDSTime  ydsTime(y, doy, (double)sod);
+      gnsstk::YDSTime  ydsTime(y, doy, (double)sod);
       return ydsTime.convertToCommonTime();
    }
 
@@ -285,13 +284,13 @@ namespace Sinex
 
 
    void
-   Time::operator=(const gpstk::CommonTime& other)
+   Time::operator=(const gnsstk::CommonTime& other)
    {
-      gpstk::YDSTime  ydsTime(other);
+      gnsstk::YDSTime  ydsTime(other);
       if (ydsTime.year > 2050)
       {
          Exception  err("SINEX does not support years past 2050.");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       year = ydsTime.year % 100;  // Get last 2 digits of time
       doy  = ydsTime.doy;
@@ -305,7 +304,7 @@ namespace Sinex
       if ( (other.size() < 12) || (other[2] != ':') || (other[6] != ':') )
       {
          Exception  err("Invalid time syntax: " + other);
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       year = asInt(other.substr(0, 2) );
       doy  = asInt(other.substr(3, 3) );
@@ -314,4 +313,4 @@ namespace Sinex
 
 }  // namespace Sinex
 
-}  // namespace gpstk
+}  // namespace gnsstk

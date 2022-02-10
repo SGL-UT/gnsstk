@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -42,7 +42,7 @@
 #include "CivilTime.hpp"
 #include "TimeConverters.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// Long month names for converstion from numbers to strings
    const char * CivilTime::MonthNames[] =
@@ -90,7 +90,7 @@ namespace gpstk
       catch (InvalidParameter& ip)
       {
          InvalidRequest ir(ip);
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
    }
 
@@ -112,7 +112,7 @@ namespace gpstk
    {
       try
       {
-         using gpstk::StringUtils::formattedPrint;
+         using gnsstk::StringUtils::formattedPrint;
          std::string rv = fmt;
 
          rv = formattedPrint( rv, getFormatPrefixInt() + "Y",
@@ -139,9 +139,9 @@ namespace gpstk
                               "Ps", StringUtils::asString(timeSystem).c_str() );
          return rv;
       }
-      catch( gpstk::StringUtils::StringException& exc )
+      catch( gnsstk::StringUtils::StringException& exc )
       {
-         GPSTK_RETHROW( exc );
+         GNSSTK_RETHROW( exc );
       }
    }
 
@@ -149,7 +149,7 @@ namespace gpstk
    {
       try
       {
-         using gpstk::StringUtils::formattedPrint;
+         using gnsstk::StringUtils::formattedPrint;
          std::string rv = fmt;
 
          rv = formattedPrint( rv, getFormatPrefixInt() + "Y",
@@ -176,15 +176,15 @@ namespace gpstk
                               "Ps", getError().c_str() );
          return rv;
       }
-      catch( gpstk::StringUtils::StringException& exc )
+      catch( gnsstk::StringUtils::StringException& exc )
       {
-         GPSTK_RETHROW( exc );
+         GNSSTK_RETHROW( exc );
       }
    }
 
    bool CivilTime::setFromInfo( const IdToValue& info )
    {
-      using namespace gpstk::StringUtils;
+      using namespace gnsstk::StringUtils;
 
       for( IdToValue::const_iterator i = info.begin(); i != info.end(); i++ )
       {
@@ -247,7 +247,7 @@ namespace gpstk
                break;
 
             case 'P':
-               timeSystem = gpstk::StringUtils::asTimeSystem(i->second);
+               timeSystem = gnsstk::StringUtils::asTimeSystem(i->second);
                break;
 
             default:
@@ -281,7 +281,7 @@ namespace gpstk
 
    int CivilTime::monthAbbrev(const std::string& amonStr)
    {
-      using gpstk::StringUtils::lowerCase;
+      using gnsstk::StringUtils::lowerCase;
       for (unsigned i = 1; i <= 12; i++)
       {
          if (lowerCase(amonStr) == lowerCase(MonthAbbrevNames[i]))
@@ -292,7 +292,7 @@ namespace gpstk
 
    int CivilTime::monthLong(const std::string& monStr)
    {
-      using gpstk::StringUtils::lowerCase;
+      using gnsstk::StringUtils::lowerCase;
       for (unsigned i = 1; i <= 12; i++)
       {
          if (lowerCase(monStr) == lowerCase(MonthNames[i]))
@@ -333,8 +333,8 @@ namespace gpstk
            right.timeSystem != TimeSystem::Any) &&
           timeSystem != right.timeSystem)
       {
-         gpstk::InvalidRequest ir("CommonTime objects not in same time system, cannot be compared");
-         GPSTK_THROW(ir);
+         gnsstk::InvalidRequest ir("CommonTime objects not in same time system, cannot be compared");
+         GNSSTK_THROW(ir);
       }
 
       if( year < right.year )
@@ -402,7 +402,7 @@ namespace gpstk
 }
 
 std::ostream& operator<<( std::ostream& s,
-                          const gpstk::CivilTime& cit )
+                          const gnsstk::CivilTime& cit )
 {
    s << cit.printf("%02m/%02d/%04Y %02H:%02M:%02S %P");
    return s;

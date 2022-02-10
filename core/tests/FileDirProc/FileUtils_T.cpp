@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -55,11 +55,11 @@
 #endif
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 class FileUtils_T
 {
-public: 
+public:
 
       // constructor, set the precision value
    FileUtils_T() { init(); }
@@ -101,7 +101,7 @@ void FileUtils_T :: init()
 {
     TestUtil  tester;
 
-    tempFilePath = gpstk::getPathTestTemp();
+    tempFilePath = gnsstk::getPathTestTemp();
 
     testPrefix = "test_output_fileutils_";
 }
@@ -167,7 +167,7 @@ int FileUtils_T :: testMakeDir()
       tester.assert( (0 == FileUtils::makeDir(dir, 0755) ), "absolute (return)", __LINE__ );
       tester.assert( (0 == stat(dir.c_str(), &statbuf) ),   "absolute (exists)", __LINE__ );
       tester.assert( S_ISDIR(statbuf.st_mode),              "absolute (dir)",    __LINE__ );
-      #ifndef WIN32 
+      #ifndef WIN32
          tester.assert( ( (statbuf.st_mode & 0777) == 0755),   "absolute (mode)",   __LINE__ );
       #endif
 
@@ -200,7 +200,7 @@ int FileUtils_T :: testMakeDir()
       tester.assert( (0 == FileUtils::makeDir(dir, 0755) ), "existing (return)", __LINE__ );
       tester.assert( (0 == stat(dir.c_str(), &statbuf) ),   "existing (exists)", __LINE__ );
       tester.assert( S_ISDIR(statbuf.st_mode),              "existing (dir)",    __LINE__ );
-      #ifndef WIN32 
+      #ifndef WIN32
          tester.assert( ( (statbuf.st_mode & 0777) == 0755),   "existing (mode)",   __LINE__ );
       #endif
    }
@@ -217,7 +217,7 @@ int FileUtils_T :: testMakeDir()
       tester.assert( (0 == FileUtils::makeDir(dir, 0755) ), "trailing (return)", __LINE__ );
       tester.assert( (0 == stat(dir.c_str(), &statbuf) ),   "trailing (exists)", __LINE__ );
       tester.assert( S_ISDIR(statbuf.st_mode),              "trailing (dir)",    __LINE__ );
-      #ifndef WIN32 
+      #ifndef WIN32
          tester.assert( ( (statbuf.st_mode & 0777) == 0755),   "trailing (mode)",   __LINE__ );
       #endif
    }
@@ -242,7 +242,7 @@ int FileUtils_T :: testMakeDir()
       tester.assert( (0 == FileUtils::makeDir(dir, 0755) ), "recursion (return)", __LINE__ );
       tester.assert( (0 == stat(dir.c_str(), &statbuf) ),   "recursion (exists)", __LINE__ );
       tester.assert( S_ISDIR(statbuf.st_mode),              "recursion (dir)",    __LINE__ );
-      #ifndef WIN32 
+      #ifndef WIN32
          tester.assert( ( (statbuf.st_mode & 0777) == 0755),   "recursion (mode)",   __LINE__ );
       #endif
    }
@@ -279,7 +279,7 @@ int FileUtils_T :: testFileAccessCheck()
       tester.assert( false, "unexpected exception", __LINE__ );
    }
 
-   
+
    try   // file read
    {
       filename = tempFilePath + getFileSep() + testPrefix + "readable_file";
@@ -292,7 +292,7 @@ int FileUtils_T :: testFileAccessCheck()
       {
          ofs.flush();
          ofs.close();
-         #ifdef WIN32
+#ifdef WIN32
          if (0 != _chmod(filename.c_str(), _S_IREAD ))
          {
             tester.assert ( false, "test setup error (chmod)", __LINE__ );
@@ -304,7 +304,7 @@ int FileUtils_T :: testFileAccessCheck()
             tester.assert( FileUtils::fileAccessCheck(filename, ios::in),   "mode test failed",           __LINE__ );
             tester.assert( !FileUtils::fileAccessCheck(filename, ios::out), "expected mode test failure", __LINE__ );
          }
-         #else
+#else
          if (0 != chmod(filename.c_str(), 0444) )
          {
             tester.assert ( false, "test setup error (chmod)", __LINE__ );
@@ -314,13 +314,14 @@ int FileUtils_T :: testFileAccessCheck()
             filesToRemove.push_back(filename);
             tester.assert( FileUtils::fileAccessCheck(filename),            "read access failed",         __LINE__ );
             tester.assert( FileUtils::fileAccessCheck(filename, ios::in),   "mode test failed",           __LINE__ );
-               /** @note This test fails under Debian 7, which seems
-                * to have a bug in the OS/system calls that
-                * erroneously allow opening read-only files with write
-                * access.  There's nothing we can do about this. */
-            tester.assert( !FileUtils::fileAccessCheck(filename, ios::out), "expected mode test failure", __LINE__ );
+               /** @note This test fails when run as root, so don't
+                * make the assertion if we're root. */
+            if ((getuid() != 0) && (geteuid() != 0))
+            {
+               tester.assert( !FileUtils::fileAccessCheck(filename, ios::out), "expected mode test failure", __LINE__ );
+            }
          }
-         #endif
+#endif
 
       }
    }
@@ -347,7 +348,7 @@ int FileUtils_T :: testFileAccessCheck()
          {
             tester.assert ( false, "test setup error (chmod)", __LINE__ );
          }
-         else            
+         else
          {
             filesToRemove.push_back(filename);
             tester.assert( FileUtils::fileAccessCheck(filename),           "write access failed", __LINE__ );
@@ -359,7 +360,7 @@ int FileUtils_T :: testFileAccessCheck()
          {
             tester.assert ( false, "test setup error (chmod)", __LINE__ );
          }
-         else            
+         else
          {
             filesToRemove.push_back(filename);
             tester.assert( FileUtils::fileAccessCheck(filename),           "write access failed", __LINE__ );

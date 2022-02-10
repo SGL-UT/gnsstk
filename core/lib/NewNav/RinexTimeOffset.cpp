@@ -1,38 +1,38 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -42,7 +42,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    RinexTimeOffset ::
    RinexTimeOffset()
@@ -75,32 +75,41 @@ namespace gpstk
 
 
    void RinexTimeOffset ::
-   dump(ostream& s, Detail dl) const
+   dump(ostream& s, DumpDetail dl) const
    {
       const ios::fmtflags oldFlags = s.flags();
-      NavData::dump(s,dl);
-      double offset;
       switch (dl)
       {
-         case Detail::OneLine:
+         case DumpDetail::OneLine:
+            NavData::dump(s,dl);
             break;
-         case Detail::Brief:
+         case DumpDetail::Brief:
+            NavData::dump(s,dl);
                // brief just shows the offset as of the reference time.
             s << StringUtils::asString(frTS) << "-"
               << StringUtils::asString(toTS) << " offset = " << (deltatLS+A0)
               << endl;
             break;
-         case Detail::Full:
-            s << setprecision(16)
-              << "  src system = " << StringUtils::asString(frTS) << endl
-              << "  tgt system = " << StringUtils::asString(toTS) << endl
-              << "  A0         = " << A0 << endl
-              << "  A1         = " << A1 << endl
-              << "  delta tLS  = " << deltatLS << endl
-              << "  ref time   = "
-              << printTime(refTime, "%Y/%02m/%02d %02H:%02M:%02S") << endl
-              << "  provider   = " << geoProvider << endl
-              << "  UTC        = ";
+         case DumpDetail::Full:
+            s << "*************************************************************"
+              << "***************" << endl
+              << "Time System Offset" << endl << endl
+              << "           TIMES OF INTEREST" << endl << endl
+              << "              " << getDumpTimeHdr(dl) << endl
+              << "Transmit:     " << getDumpTime(dl, timeStamp)
+              << endl << endl
+              << "           " << StringUtils::asString(frTS) << " "
+              << StringUtils::asString(toTS) << " PARAMETERS" << endl
+              << "Parameter                 Value" << endl
+              << "Reference   "
+              << printTime(refTime,"%Y/%02m/%02d %02H:%02M:%02S") << endl
+              << scientific << setprecision(9) << setfill(' ')
+              << "A0             " << setw(16) << A0 << " sec" << endl
+              << "A1             " << setw(16) << A1 << " sec/sec" << endl
+              << fixed << setprecision(0)
+              << "dtLS           " << setw(16) << deltatLS << " sec" << endl
+              << "Provider       " << setw(16) << geoProvider << endl
+              << "UTC            " << setw(16);
             switch (geoUTCid)
             {
                case 0: s << "Unknown" << endl; break;
@@ -131,7 +140,7 @@ namespace gpstk
          offset = deltatLS + Correction(when);
          return true;
       }
-      catch (gpstk::Exception& exc)
+      catch (gnsstk::Exception& exc)
       {
          cerr << exc << endl;
          return false;
@@ -139,7 +148,7 @@ namespace gpstk
    }
 
 
-   TimeOffsetData::TimeCvtSet RinexTimeOffset ::
+   TimeCvtSet RinexTimeOffset ::
    getConversions() const
    {
       TimeCvtKey keyF(frTS,toTS);
@@ -147,4 +156,4 @@ namespace gpstk
       return TimeCvtSet({ keyF, keyR });
    }
 
-} // namespace gpstk
+} // namespace gnsstk

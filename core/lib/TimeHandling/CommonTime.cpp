@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -43,7 +43,7 @@
 #include "MathBase.hpp"
 #include "StringUtils.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    std::shared_ptr<TimeSystemConverter> CommonTime::tsConv;
 
@@ -95,21 +95,21 @@ namespace gpstk
       {
          InvalidParameter ip( "Invalid day: "
                                      + StringUtils::asString( day ) );
-         GPSTK_THROW( ip );
+         GNSSTK_THROW( ip );
       }
 
       if( sod < 0 || sod >= SEC_PER_DAY )
       {
          InvalidParameter ip( "Invalid seconds of day: "
                                      + StringUtils::asString( sod ) );
-         GPSTK_THROW( ip );
+         GNSSTK_THROW( ip );
       }
 
       if( fsod < 0.0 || fsod >= 1 )
       {
          InvalidParameter ip( "Invalid fractional-seconds: "
                                      + StringUtils::asString( fsod ) );
-         GPSTK_THROW( ip );
+         GNSSTK_THROW( ip );
       }
 
          // get the number of milliseconds in the fractional seconds argument
@@ -159,21 +159,21 @@ namespace gpstk
       {
          InvalidParameter ip( "Invalid day: "
                                      + StringUtils::asString( day ) );
-         GPSTK_THROW( ip );
+         GNSSTK_THROW( ip );
       }
 
       if( msod < 0 || msod >= MS_PER_DAY )
       {
          InvalidParameter ip( "Invalid milliseconds of day: "
                                      + StringUtils::asString( msod ) );
-         GPSTK_THROW( ip );
+         GNSSTK_THROW( ip );
       }
 
       if( fsod < 0.0 || fsod >= SEC_PER_MS )
       {
          InvalidParameter ip( "Invalid fractional-milliseconds: "
                                      + StringUtils::asString( fsod ) );
-         GPSTK_THROW( ip );
+         GNSSTK_THROW( ip );
       }
 
       m_day  = day;
@@ -193,7 +193,7 @@ namespace gpstk
       bool rv = conv->getOffset(m_timeSystem, timeSystem, *this, offs);
       if (rv)
       {
-         operator+=(offs);
+         operator-=(offs);
          m_timeSystem = timeSystem;
       }
       return rv;
@@ -299,7 +299,7 @@ namespace gpstk
                m_timeSystem != right.m_timeSystem )
       {
          InvalidRequest ir("CommonTime objects not in same time system, cannot be differenced");
-         GPSTK_THROW( ir );
+         GNSSTK_THROW( ir );
       }
 
       return( SEC_PER_DAY * static_cast<double>( m_day  - right.m_day  ) +
@@ -403,9 +403,9 @@ namespace gpstk
       {
          InvalidRequest ir(
             "CommonTime objects not in same time system, cannot be compared: " +
-            gpstk::StringUtils::asString(m_timeSystem) + " != " +
-            gpstk::StringUtils::asString(right.m_timeSystem));
-         GPSTK_THROW( ir );
+            gnsstk::StringUtils::asString(m_timeSystem) + " != " +
+            gnsstk::StringUtils::asString(right.m_timeSystem));
+         GNSSTK_THROW( ir );
       }
 
       if (m_day < right.m_day)
@@ -447,7 +447,7 @@ namespace gpstk
           << setw(7) << m_day  << " "
           << setw(8) << m_msod << " "
           << fixed << setprecision(15) << setw(17) << m_fsod
-          << " " << gpstk::StringUtils::asString(m_timeSystem) ;
+          << " " << gnsstk::StringUtils::asString(m_timeSystem) ;
       return oss.str();
    }
 

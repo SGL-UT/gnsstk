@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,16 +29,16 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /**
  * @file PackedNavBits_T.cpp
- * Tests for gpstk/ext/lib/GNSSEph/PackedNavBits
+ * Tests for gnsstk/ext/lib/GNSSEph/PackedNavBits
  */
 #include "CivilTime.hpp"
 #include "CommonTime.hpp"
@@ -51,7 +51,7 @@
 #include "TimeSystem.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 class PackedNavBits_T
 {
@@ -66,7 +66,7 @@ public:
    unsigned ancillaryMethods();
    unsigned addDataVecTest();
 
-   double eps; 
+   double eps;
 };
 
 PackedNavBits_T ::
@@ -115,7 +115,7 @@ abstractTest()
       // Unpack the data and see that the round-trip worked.
    int startbit = 0;
    unsigned long ultest = pnb.asUnsignedLong(startbit, u_n1, u_s1);
-   TUASSERTE(unsigned long, ultest, u_i1); 
+   TUASSERTE(unsigned long, ultest, u_i1);
    startbit += u_n1;
    ultest = pnb.asUnsignedLong(startbit, u_n2, u_s2);
    TUASSERTE(unsigned long, ultest, u_i2);
@@ -144,7 +144,7 @@ abstractTest()
    long s_i4 = 0;
    int s_n4  = 6;
    int s_s4  = 1;
-   
+
    long s_i5 = 4194304;
    int s_n5  = 24;
    int s_s5  = 1;
@@ -227,7 +227,7 @@ abstractTest()
    double sd_e2 = pow(2.0,sd_s1) * 3.0;   // value of lsb
 
    pnb.addDoubleSemiCircles(sd_i1, sd_n1, sd_s1);
-   pnb.addDoubleSemiCircles(sd_i2, sd_n2, sd_s2); 
+   pnb.addDoubleSemiCircles(sd_i2, sd_n2, sd_s2);
 
    dtest = pnb.asDoubleSemiCircles(startbit, sd_n1, sd_s1);
    TUASSERTFEPS(dtest, sd_i1, sd_e1);
@@ -311,7 +311,7 @@ realDataTest()
    int n_recc       = 32;
    int s_recc       = -33;
 
-   double rAhalf    = 5.15365527534E+03; 
+   double rAhalf    = 5.15365527534E+03;
    int n_rAhalf     = 32;
    int s_rAhalf     = -19;
 
@@ -378,7 +378,7 @@ realDataTest()
    pnb.addDoubleSemiCircles(rw, n_rw, s_rw);
    pnb.addDoubleSemiCircles(rOMEGAdot, n_rOMEGAdot, s_rOMEGAdot);
    pnb.addUnsignedLong(riode, n_riode, s_riode);
-   pnb.addDoubleSemiCircles(ridot, n_ridot, s_ridot); 
+   pnb.addDoubleSemiCircles(ridot, n_ridot, s_ridot);
    pnb.trimsize();
 
    int startbit = 0;
@@ -518,11 +518,11 @@ realDataTest()
 unsigned PackedNavBits_T ::
 equalityTest()
 {
-      // Create a master PackedNavBits, a copy, and 
+      // Create a master PackedNavBits, a copy, and
       // several not-quite-copies.
-      // At this point, the "packed bits" section of 
+      // At this point, the "packed bits" section of
       // this object is empty.  We are focused on testing
-      // the metadata handling. 
+      // the metadata handling.
    SatID satID(1, SatelliteSystem::GPS);
    ObsID obsID( ObservationType::NavMsg, CarrierBand::L2, TrackingCode::L2CML );
    NavID navID(satID,obsID);
@@ -531,7 +531,7 @@ equalityTest()
 
    SatID satID2(2, SatelliteSystem::GPS);
    ObsID obsID2(ObservationType::NavMsg, CarrierBand::L5, TrackingCode::L5Q );
-   NavID navID2(satID2,obsID2); 
+   NavID navID2(satID2,obsID2);
    std::string rxID2 = "rx2";
    CommonTime ctPlus = ct + 900.0;
 
@@ -539,12 +539,12 @@ equalityTest()
    PackedNavBits masterCopy(master);
 
    PackedNavBits diffSat(satID2,obsID,navID,rxID,ct);
-   PackedNavBits diffObs(satID,obsID2,navID,rxID,ct); 
-   PackedNavBits diffNav(satID,obsID,navID2,rxID,ct); 
-   PackedNavBits diffRx(satID,obsID,navID,rxID2,ct); 
-   PackedNavBits diffTime(satID,obsID,navID,rxID,ctPlus); 
+   PackedNavBits diffObs(satID,obsID2,navID,rxID,ct);
+   PackedNavBits diffNav(satID,obsID,navID2,rxID,ct);
+   PackedNavBits diffRx(satID,obsID,navID,rxID2,ct);
+   PackedNavBits diffTime(satID,obsID,navID,rxID,ctPlus);
       // Typical same SV/OBS/NAV across multiple Rx/Time case.
-   PackedNavBits diffRxTime(satID,obsID,navID,rxID2,ctPlus); 
+   PackedNavBits diffRxTime(satID,obsID,navID,rxID2,ctPlus);
 
    TUDEF("PackedNavBits","matchMetaData");
    TUASSERTE(bool,true,master.matchMetaData(master));
@@ -554,7 +554,7 @@ equalityTest()
    TUASSERTE(bool,false,master.matchMetaData(diffNav));
    TUASSERTE(bool,false,master.matchMetaData(diffRx));
    TUASSERTE(bool,false,master.matchMetaData(diffTime));
- 
+
    unsigned int ignoreSAT  =                        PackedNavBits::mmOBS | PackedNavBits::mmNAV | PackedNavBits::mmRX | PackedNavBits::mmTIME;
    unsigned int ignoreOBS  = PackedNavBits::mmSAT |                        PackedNavBits::mmNAV | PackedNavBits::mmRX | PackedNavBits::mmTIME;
    unsigned int ignoreNAV  = PackedNavBits::mmSAT | PackedNavBits::mmOBS |                        PackedNavBits::mmRX | PackedNavBits::mmTIME;
@@ -576,11 +576,11 @@ equalityTest()
    TUASSERTE(bool,false,master.matchMetaData( diffTime, PackedNavBits::mmTIME));
    TUASSERTE(bool,false,master.matchMetaData(diffRxTime, checkRXTIME));
 
-      // Now keep the metadata the same across copies, but add some 
-      // bits.  NOTE: The metadata is all left identical. 
+      // Now keep the metadata the same across copies, but add some
+      // bits.  NOTE: The metadata is all left identical.
    TUCSM("matchBits");
    PackedNavBits withBits(satID,obsID,navID,rxID,ct);
-   PackedNavBits withSameBits(satID,obsID,navID,rxID,ct); 
+   PackedNavBits withSameBits(satID,obsID,navID,rxID,ct);
    PackedNavBits withShortBits(satID,obsID,navID,rxID,ct);
    PackedNavBits withLongBits(satID,obsID,navID,rxID,ct);
 
@@ -629,19 +629,19 @@ equalityTest()
 
       // Test for same bits in area that matches
       // NOTE: The second argument is the ending BIT NUMBER
-      // NOT the number of bits.   
+      // NOT the number of bits.
    TUASSERTE(bool, true,withBits.matchBits( withSameBits,0,23));
 
       // It is CORRECT that these two fail. Even though the
-      // bits match, the overall length of the bits sets 
+      // bits match, the overall length of the bits sets
       // does NOT match.
    TUASSERTE(bool,false,withBits.matchBits(withShortBits,0,23));
    TUASSERTE(bool,false,withBits.matchBits( withLongBits,0,23));
 
-      // Same bits as withBits, but in different order.  
+      // Same bits as withBits, but in different order.
       // Therefore, same length, but different contents.
       // In fact, the first TWO entries are swapped, but
-      // the third entry should be the same bits in the 
+      // the third entry should be the same bits in the
       // same location.
    PackedNavBits diffOrder(satID,obsID,navID,rxID,ct);
 
@@ -685,7 +685,7 @@ equalityTest()
    TUASSERTE(bool, false,withBits==diffMetaWithBits2);
 
    TUCSM("operator<");
-   PackedNavBits rightTest(satID,obsID,navID,rxID2,ct); 
+   PackedNavBits rightTest(satID,obsID,navID,rxID2,ct);
    PackedNavBits leftSmall(satID,obsID,navID,rxID2,ct);
    PackedNavBits leftLarge(satID,obsID,navID,rxID2,ct);
    PackedNavBits leftEqual(satID,obsID,navID,rxID2,ct);
@@ -695,9 +695,9 @@ equalityTest()
    leftSmall.rawBitInput("035 0xFFFFFE0F 0xE0000000");
    leftLarge.rawBitInput("035 0xFFFFFFFF 0xE0000000");
 
-      // Ovbserved real-world case that trggered a failure.  
+      // Ovbserved real-world case that trggered a failure.
       // Right is greater than left at bit 5, but less than
-      // at bit 6.   The greater than was not causing false, so 
+      // at bit 6.   The greater than was not causing false, so
       // when the code got to bit 6, it would (incorrectly) return
       // true.
    PackedNavBits leftMixed(satID,obsID,navID,rxID2,ct);
@@ -717,12 +717,12 @@ equalityTest()
 }
 
    // These test cases are designed to test the methods
-   // test were added to enable more flexible use of 
+   // test were added to enable more flexible use of
    // PackedNavBits in testing:
    //    invert()
    //    copyBits()
    //    insertUnsignedBits()
-   // 
+   //
 unsigned PackedNavBits_T::
 ancillaryMethods()
 {
@@ -731,9 +731,9 @@ ancillaryMethods()
       // -------------------------------------------------------------
       // First test the invert() method.
       // Create a sample PackedNavBits.
-      // At this point, the "packed bits" section of 
+      // At this point, the "packed bits" section of
       // this object is empty.  We are focused on testing
-      // the metadata handling. 
+      // the metadata handling.
    SatID satID(1, SatelliteSystem::GPS);
    ObsID obsID( ObservationType::NavMsg, CarrierBand::L2, TrackingCode::L2CML );
    NavID navID(satID,obsID);
@@ -741,7 +741,7 @@ ancillaryMethods()
    CommonTime ct = CivilTime( 2011, 6, 2, 12, 14, 44.0, TimeSystem::GPS );
    PackedNavBits copyUpright(satID,obsID,navID,rxID,ct);
 
-      // Next add some bits with a fixed pattern. 
+      // Next add some bits with a fixed pattern.
       // Make a copy with a given bit pattern,....
    unsigned long uword = 0xAAAAAAAA;
    try
@@ -771,10 +771,10 @@ ancillaryMethods()
    }
    copyInverse.trimsize();
 
-      // Invert the upright and see that the results 
+      // Invert the upright and see that the results
       // matches expectations
-   copyUpright.invert(); 
-   TUASSERTE(bool,true,copyUpright.matchBits(copyInverse)); 
+   copyUpright.invert();
+   TUASSERTE(bool,true,copyUpright.matchBits(copyInverse));
 
       // -------------------------------------------------------------
       // Now test copyBits()
@@ -792,7 +792,7 @@ ancillaryMethods()
    allZeros.trimsize();
 
       // Copy first and last 16 bits from allZeros to all ones
-   allOnes.copyBits(allZeros,0,15); 
+   allOnes.copyBits(allZeros,0,15);
    allOnes.copyBits(allZeros,48,63);
 
    PackedNavBits expected(satID,obsID,navID,rxID,ct);
@@ -813,19 +813,19 @@ ancillaryMethods()
    insertTest.addUnsignedLong(uwordZeros,32,1);
    insertTest.trimsize();
 
-   unsigned long fakeSOW = 604800 - 6; 
+   unsigned long fakeSOW = 604800 - 6;
    unsigned long tenOnes = 0x000003FF;
 
-      // Insert an unscaled set of 10 1's into bits 20-29 
+      // Insert an unscaled set of 10 1's into bits 20-29
    insertTest.insertUnsignedLong(tenOnes,20,10,1);
 
-      // Insert a 17 bit SOW of 604794 scaled by 6 
+      // Insert a 17 bit SOW of 604794 scaled by 6
       // starting at bit 0
    insertTest.insertUnsignedLong(fakeSOW,0,17,6);
 
       // Build an expected PNB
    PackedNavBits insertExpected(satID,obsID,navID,rxID,ct);
-   insertExpected.addUnsignedLong(fakeSOW,17,6); 
+   insertExpected.addUnsignedLong(fakeSOW,17,6);
    insertExpected.addUnsignedLong(uwordZeros,3,1);
    insertExpected.addUnsignedLong(tenOnes,10,1);
    insertExpected.addUnsignedLong(uwordZeros,32,1);

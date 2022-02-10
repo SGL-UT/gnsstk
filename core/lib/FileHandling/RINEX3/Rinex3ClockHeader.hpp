@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -52,13 +52,13 @@
 #include "RinexObsID.hpp"
 #include "TimeSystem.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
 
       /// This class models the header for a RINEX Clock file.
-      /// @sa gpstk::Rinex3ClockStream and gpstk::Rinex3ClockData for more information.
+      /// @sa gnsstk::Rinex3ClockStream and gnsstk::Rinex3ClockData for more information.
       /// @sa ?.cpp for an example.
    class Rinex3ClockHeader : public Rinex3ClockBase
    {
@@ -131,7 +131,7 @@ namespace gpstk
          // The next four lines is our common interface
          /// Rinex3ClockHeader is a "header" so this function always returns true.
       virtual bool isHeader() const { return true; }
-     
+
          /** Dump information about the header to an ostream.
           * @param[in] s ostream to receive the output; defaults to std::cout
           * @param[in] detail integer level of detail to provide;

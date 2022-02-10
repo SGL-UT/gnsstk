@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,17 +41,17 @@
  * An FFStream for binary file reading
  */
 
-#ifndef GPSTK_FFBINARYSTREAM_HPP
-#define GPSTK_FFBINARYSTREAM_HPP
+#ifndef GNSSTK_FFBINARYSTREAM_HPP
+#define GNSSTK_FFBINARYSTREAM_HPP
 
 #include "FFStream.hpp"
 #include "BinUtils.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
- 
+
       /**
        * This is an FFStream that is required to be binary.  It also includes
        * functions for reading and writing binary file.  Otherwise, this
@@ -65,13 +65,13 @@ namespace gpstk
 
          /// destructor
       virtual ~FFBinaryStream();
-      
+
          /**
           * Constructor - opens the stream in binary mode if not set.
           * @param[in] fn file name.
           * @param[in] mode file open mode
           */
-      FFBinaryStream(const char* fn, 
+      FFBinaryStream(const char* fn,
                      std::ios::openmode mode=std::ios::in|std::ios::binary);
 
          /// Overrides open to ensure binary mode opens

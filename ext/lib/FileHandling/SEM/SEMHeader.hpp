@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -53,13 +53,13 @@
 #include "SEMBase.hpp"
 #include "StringUtils.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
 
-      /** 
-       * This class stores, reads, and writes SEM records. 
+      /**
+       * This class stores, reads, and writes SEM records.
        * @warning The SEM header information and data information don't
        * correctly talk to each other at the time of completion of this file.
        * The current fix is in SEMAlamanacStore.hpp.
@@ -87,21 +87,21 @@ namespace gpstk
       std::string Title;
       short week;
       long Toa;
-      
-      
+
+
          /**
-          * Debug output function. 
+          * Debug output function.
           * Dump the contents of each of the SEM header to a
           * given ostream \c s.
-          */ 
+          */
       virtual void dump(std::ostream& s) const;
-      
-         //! This class is a "header" so this function always returns "true". 
-      virtual bool isHeader() const {return true;}
-   
-      
 
-   protected:      
+         //! This class is a "header" so this function always returns "true".
+      virtual bool isHeader() const {return true;}
+
+
+
+   protected:
 	 /**
           * Writes a correctly formatted record from this header to stream \a s.
           * @throw std::exception
@@ -109,9 +109,9 @@ namespace gpstk
           * @throw FFStreamError
           */
       virtual void reallyPutRecord(FFStream& s) const;
-  
+
          /**
-          * This functions obtains a SEM header record from the given 
+          * This functions obtains a SEM header record from the given
           * FFStream.
           * If there is an error in reading from the stream, it is reset
           * to its original position and its fail-bit is set.
@@ -122,7 +122,7 @@ namespace gpstk
           *  stream to its pre-read position.
           */
       virtual void reallyGetRecord(FFStream& s);
-      
+
    }; // class SEMHeader
 
       //@}

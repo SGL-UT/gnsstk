@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -46,10 +46,10 @@
 #include "YDSTime.hpp"
 #include "GNSSconstants.hpp"
 
-using namespace gpstk;
+using namespace gnsstk;
 using namespace std;
 
-namespace gpstk {
+namespace gnsstk {
 
    // Explicit constructor, from the 7 parameters.
    HelmertTransform::HelmertTransform(
@@ -69,14 +69,14 @@ namespace gpstk {
       toFrame = to;
       if(from == ReferenceFrame::Unknown || to == ReferenceFrame::Unknown) {
          InvalidRequest e("Invalid Helmert transformation with Unknown frame");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       // check that rotation angles are small; sin x ~ x at 0.244 radians = 13.9 deg
       if(::fabs(rx) > 1.e-3 || ::fabs(ry) > 1.e-3 || ::fabs(rz) > 1.e-3) {
          InvalidRequest e("Invalid Helmert transformation : "
                                  "small angle approximation.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       // rotation matrix. NB. small angle approximation is used. NB. by construction
@@ -114,8 +114,8 @@ namespace gpstk {
           << fixed << " = " << Scale/PPB << " ppb" << endl
           << "  Rotation angles (deg):"
           << scientific
-          << "  X : " << rx*RAD_TO_DEG 
-          << ",  Y : " << ry*RAD_TO_DEG 
+          << "  X : " << rx*RAD_TO_DEG
+          << ",  Y : " << ry*RAD_TO_DEG
           << ",  Z : " << rz*RAD_TO_DEG << endl
           << "  Rotation angles (mas):"
           << fixed
@@ -167,8 +167,8 @@ namespace gpstk {
       }
       else {
          InvalidRequest e("Helmert tranformation cannot act on frame " +
-                          gpstk::StringUtils::asString(pos.getReferenceFrame()));
-         GPSTK_THROW(e);
+                          gnsstk::StringUtils::asString(pos.getReferenceFrame()));
+         GNSSTK_THROW(e);
       }
    }
 
@@ -232,4 +232,4 @@ namespace gpstk {
       // add more transforms here, and increase HelmertTransform::stdCount in .cpp
    };
 
-} // end namespace gpstk
+} // end namespace gnsstk

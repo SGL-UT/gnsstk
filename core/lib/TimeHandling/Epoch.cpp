@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,31 +29,31 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /// @file Epoch.cpp
-/// gpstk::Epoch - encapsulates date and time-of-day
+/// gnsstk::Epoch - encapsulates date and time-of-day
 
 #include <iostream>
 #include <iomanip>
 #include <string>
 #include <ctime>
 
-#include "gpstkplatform.h"
+#include "gnsstkplatform.h"
 #include "Epoch.hpp"
 
 #include "TimeConstants.hpp"
 #include "TimeString.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace std;
-   using namespace gpstk::StringUtils;
+   using namespace gnsstk::StringUtils;
 
       // One nanosecond tolerance.
    const double Epoch::ONE_NSEC_TOLERANCE = 1e-9;
@@ -67,7 +67,7 @@ namespace gpstk
    const double Epoch::ONE_MIN_TOLERANCE = 60;
       // One hour tolerance.
    const double Epoch::ONE_HOUR_TOLERANCE = 3600;
-   
+
       // Tolerance for time equality.
 #ifdef _WIN32
    double Epoch::EPOCH_TOLERANCE = ONE_USEC_TOLERANCE;
@@ -88,7 +88,7 @@ namespace gpstk
       tolerance = tol;
       return *this;
    }
-   
+
       // Default constructor; initializes to current system time.
    Epoch::Epoch(const TimeTag& tt)
          : tolerance(EPOCH_TOLERANCE)
@@ -100,7 +100,7 @@ namespace gpstk
          : core(ct),
            tolerance(EPOCH_TOLERANCE)
    {}
-      /** 
+      /**
        * TimeTag + Year Constructor.
        * Set the current time using the given year as a hint.
        */
@@ -130,10 +130,10 @@ namespace gpstk
          GPSWeekZcount wz = get<GPSWeekZcount>();
          return GPSZcount(wz.week, wz.zcount);
       }
-      catch (gpstk::InvalidParameter& ip)
+      catch (gnsstk::InvalidParameter& ip)
       {
          Epoch::EpochException ee(ip);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -184,7 +184,7 @@ namespace gpstk
    {
       return addSeconds(seconds);
    }
-   
+
       // Subtract seconds from this time.
       // @param sec Number of seconds to decrease this time by.
    Epoch& Epoch::operator-=(double seconds)
@@ -204,7 +204,7 @@ namespace gpstk
       catch( InvalidRequest& ir )
       {
          Epoch::EpochException ee(ir);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -220,7 +220,7 @@ namespace gpstk
       catch( InvalidRequest& ir )
       {
          Epoch::EpochException ee(ir);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -236,7 +236,7 @@ namespace gpstk
       catch( InvalidRequest& ir )
       {
          Epoch::EpochException ee(ir);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -256,12 +256,12 @@ namespace gpstk
       catch( InvalidRequest& ir )
       {
          Epoch::EpochException ee(ir);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
       // Equality operator.
-   bool Epoch::operator==(const Epoch &right) const 
+   bool Epoch::operator==(const Epoch &right) const
       throw()
    {
       // use the smaller of the two tolerances for comparison
@@ -270,14 +270,14 @@ namespace gpstk
    }
 
       // Inequality operator.
-   bool Epoch::operator!=(const Epoch &right) const 
+   bool Epoch::operator!=(const Epoch &right) const
       throw()
    {
       return !(operator==(right));
    }
 
       // Comparison operator (less-than).
-   bool Epoch::operator<(const Epoch &right) const 
+   bool Epoch::operator<(const Epoch &right) const
       throw()
    {
       return (operator-(right) <
@@ -285,22 +285,22 @@ namespace gpstk
    }
 
       // Comparison operator (greater-than).
-   bool Epoch::operator>(const Epoch &right) const 
+   bool Epoch::operator>(const Epoch &right) const
       throw()
    {
       return (operator-(right) >
             ((tolerance > right.tolerance) ? right.tolerance : tolerance));
    }
-   
+
       // Comparison operator (less-than or equal-to).
-   bool Epoch::operator<=(const Epoch &right) const 
+   bool Epoch::operator<=(const Epoch &right) const
       throw()
    {
       return !(operator>(right));
    }
 
       // Comparison operator (greater-than or equal-to).
-   bool Epoch::operator>=(const Epoch &right) const 
+   bool Epoch::operator>=(const Epoch &right) const
       throw()
    {
       return !(operator<(right));
@@ -322,7 +322,7 @@ namespace gpstk
       catch(InvalidParameter& ip)
       {
          EpochException ee(ip);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -360,7 +360,7 @@ namespace gpstk
       catch(Exception& exc)
       {
          EpochException ee(exc);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
 
@@ -378,10 +378,10 @@ namespace gpstk
       catch(InvalidParameter& ip)
       {
          EpochException ee(ip);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
-   
+
    Epoch& Epoch::setDate(const CommonTime& ct)
    {
       try
@@ -396,10 +396,10 @@ namespace gpstk
       catch(InvalidParameter& ip)
       {
          EpochException ee(ip);
-         GPSTK_THROW(ee);
+         GNSSTK_THROW(ee);
       }
    }
-   
+
       // set using local time
    Epoch& Epoch::setLocalTime()
    {
@@ -407,7 +407,7 @@ namespace gpstk
       time(&t);
       struct tm  *ltod;
       ltod = localtime(&t);
-      return set(CivilTime(1900 + ltod->tm_year, 
+      return set(CivilTime(1900 + ltod->tm_year,
                            ltod->tm_mon + 1,
                            ltod->tm_mday,
                            ltod->tm_hour,
@@ -425,7 +425,7 @@ namespace gpstk
       }
       catch (StringException& se)
       {
-         GPSTK_RETHROW(se);
+         GNSSTK_RETHROW(se);
       }
    }
 
@@ -438,7 +438,7 @@ namespace gpstk
       }
       catch (StringException& se)
       {
-         GPSTK_RETHROW(se);
+         GNSSTK_RETHROW(se);
       }
    }
 
@@ -446,11 +446,11 @@ namespace gpstk
       // @param s stream to append formatted Epoch to.
       // @param t Epoch to append to stream \c s.
       // @return reference to \c s.
-   ostream& operator<<( ostream& s, 
+   ostream& operator<<( ostream& s,
                         const Epoch& e )
    {
       s << e.printf();
       return s;
    }
 
-}   // end namespace gpstk
+}   // end namespace gnsstk

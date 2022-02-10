@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -42,12 +42,12 @@
 #define X1SEQUENCE_HPP
 
    // Project headers
-#include "gpstkplatform.h"
+#include "gnsstkplatform.h"
 #include "PCodeConst.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-/// @ingroup CodeGen   
+/// @ingroup CodeGen
 //@{
       /**
         *     GPS X1 Sequencer.
@@ -56,18 +56,18 @@ namespace gpstk
         *
         *  X1Sequence is contains
         *  a six-second (four Z-count) sequence of the combined X1A/X1B data
-        *  for the GPS constellation.  The X1 sequence repeats every 1.5s 
+        *  for the GPS constellation.  The X1 sequence repeats every 1.5s
         *  (each X1 epoch) and is identical for all SVs and all 1.5s epochs.
         *  In this case, 6 seconds of bitstream is generated and stored
         *  because this set of code "thinks" in term of 32-bit words and
         *  a 1.5s epoch doesn't contain an integer number of 32-bit words
-        *  of packed bits) - there's a .25 word (8 bit) remainder.  
+        *  of packed bits) - there's a .25 word (8 bit) remainder.
         *  Therefore, a six second seqeunce DOES include an even mulitple
         *  of 32 bits, which greatly simplifies handling of the data.
         *
         *  Six seconds of X1 bits is a significant amount of data:
         *    X1 Epoch = 4092 X1A bits * 3750 X1A cycles = 15,345,000 bits
-        *    6 s = 4 X1 Epoch = 4 * bits = 4 * 15,345,000 = 61,380,000 bits.              
+        *    6 s = 4 X1 Epoch = 4 * bits = 4 * 15,345,000 = 61,380,000 bits.
         *    The number of 32 bit words required equals
         *    61,380,000 bits / 32 bits/word = 1,918,125 words
         */
@@ -75,25 +75,25 @@ namespace gpstk
    {
       public:
             /**
-             *  Initialize the member variables associated with this object. 
-             *  In the case of this class, this is a significant amount of 
+             *  Initialize the member variables associated with this object.
+             *  In the case of this class, this is a significant amount of
              *  work. The X1A/X1B process described in ICD-GPS-200B is followed
              *  in order to fill the X1Bits array.
              */
          X1Sequence();
          ~X1Sequence( ) {};
 
-            /**  The X1 sequence requires a 6-second buffer of 10MBit/sec 
+            /**  The X1 sequence requires a 6-second buffer of 10MBit/sec
              *   samples.  This comes to approximately 2 million four-byte
              *   unsigned integers.  These data are the same for all PRN codes
              *   To minimize the memory footprint, these data are stored
-             *   in a dynamically-allocated static array.  It is 
+             *   in a dynamically-allocated static array.  It is
              *     - - - - NECESSARY - - - -
              *   that the calling method call X1Sequence::allocateMemory()
-             *   PRIOR to instantiating the first X1Sequence object. 
+             *   PRIOR to instantiating the first X1Sequence object.
              *   X1Sequence::allocateMemory() should only be called once.
-             *   Violation of either condition will result in a 
-             *   gpstk::Exception thrown from either X1Sequence::X1Sequence()
+             *   Violation of either condition will result in a
+             *   gnsstk::Exception thrown from either X1Sequence::X1Sequence()
              *   or X1Sequence::allocateMemory().
              *
              *   The X1Sequence::deAllocateMemory() method may be called to
@@ -102,22 +102,22 @@ namespace gpstk
              */
          static void allocateMemory( );
          static void deAllocateMemory( );
-         
+
          uint32_t & operator[]( int i );
             /**
-             *  Given a word number from 0 to NUM_6SEC_WORDS, return the 
+             *  Given a word number from 0 to NUM_6SEC_WORDS, return the
              *  requested word.
              */
          const uint32_t & operator[] ( int i ) const;
-     
+
       private:
          static uint32_t* X1Bits;
-         static bool isInit; 
+         static bool isInit;
    };
 
    inline uint32_t & X1Sequence::operator[] ( int i )
    {
-      return(X1Bits[i]); 
+      return(X1Bits[i]);
    }
 
    inline const uint32_t & X1Sequence::operator[] ( int i ) const

@@ -1,38 +1,38 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,9 +40,9 @@
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gpstk::NavMessageType e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::NavMessageType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -66,18 +66,19 @@ unsigned GPSCNav2TimeOffset_T ::
 constructorTest()
 {
    TUDEF("GPSCNav2TimeOffset", "GPSCNav2TimeOffset");
-   gpstk::GPSCNav2TimeOffset uut;
-   TUASSERTE(gpstk::TimeSystem, gpstk::TimeSystem::Unknown, uut.tgt);
+   gnsstk::GPSCNav2TimeOffset uut;
+   TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::Unknown, uut.tgt);
    TUASSERTFE(0.0, uut.a0);
    TUASSERTFE(0.0, uut.a1);
    TUASSERTFE(0.0, uut.a2);
    TUASSERTFE(0.0, uut.deltatLS);
+   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime(), uut.refTime);
    TUASSERTFE(0.0, uut.tot);
    TUASSERTE(unsigned, 0, uut.wnot);
    TUASSERTE(unsigned, 0, uut.wnLSF);
    TUASSERTE(unsigned, 0, uut.dn);
    TUASSERTFE(0.0, uut.deltatLSF);
-   TUASSERTE(gpstk::NavMessageType, gpstk::NavMessageType::TimeOffset,
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::TimeOffset,
              uut.signal.messageType);
    TURETURN();
 }
@@ -87,7 +88,7 @@ unsigned GPSCNav2TimeOffset_T ::
 validateTest()
 {
    TUDEF("GPSCNav2TimeOffset", "validate");
-   gpstk::GPSCNav2TimeOffset offs;
+   gnsstk::GPSCNav2TimeOffset offs;
    TUASSERTE(bool, true, offs.validate());
    offs.tot = 604784.0;
    TUASSERTE(bool, true, offs.validate());
@@ -108,10 +109,10 @@ unsigned GPSCNav2TimeOffset_T ::
 getUserTimeTest()
 {
    TUDEF("GPSCNav2TimeOffset", "getUserTime");
-   gpstk::GPSCNav2TimeOffset uut;
-   uut.timeStamp = gpstk::GPSWeekSecond(2100,135.0);
-   gpstk::CommonTime exp = uut.timeStamp + 5.48;
-   TUASSERTE(gpstk::CommonTime, exp, uut.getUserTime());
+   gnsstk::GPSCNav2TimeOffset uut;
+   uut.timeStamp = gnsstk::GPSWeekSecond(2100,135.0);
+   gnsstk::CommonTime exp = uut.timeStamp + 5.48;
+   TUASSERTE(gnsstk::CommonTime, exp, uut.getUserTime());
    TURETURN();
 }
 
@@ -120,22 +121,23 @@ unsigned GPSCNav2TimeOffset_T ::
 getOffsetTest()
 {
    TUDEF("GPSCNav2TimeOffset", "getOffset");
-   gpstk::GPSCNav2TimeOffset uut;
-   gpstk::GPSWeekSecond ws1(2060, 405504.0);
-   gpstk::GPSWeekSecond ws2(2061, 405504.0);
-   uut.tgt = gpstk::TimeSystem::UTC;
+   gnsstk::GPSCNav2TimeOffset uut;
+   gnsstk::GPSWeekSecond ws1(2060, 405504.0);
+   gnsstk::GPSWeekSecond ws2(2061, 405504.0);
+   uut.tgt = gnsstk::TimeSystem::UTC;
    uut.a0 = 1.9790604711E-09;
    uut.a1 = 7.5495165675E-15;
    uut.a2 = 0;
    uut.deltatLS = 18.0;
    uut.tot = 21600.0;
    uut.wnot = 2060;
+   uut.refTime = gnsstk::GPSWeekSecond(uut.wnot,uut.tot);
    double offset;
       /// @todo Truth values here need to be verified.
-   TUASSERT(uut.getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC, ws1,
+   TUASSERT(uut.getOffset(gnsstk::TimeSystem::GPS, gnsstk::TimeSystem::UTC, ws1,
                           offset));
    TUASSERTFE(18.000000004877350079, offset);
-   TUASSERT(uut.getOffset(gpstk::TimeSystem::GPS, gpstk::TimeSystem::UTC, ws2,
+   TUASSERT(uut.getOffset(gnsstk::TimeSystem::GPS, gnsstk::TimeSystem::UTC, ws2,
                           offset));
    TUASSERTFE(18.000000009443297699, offset);
    TURETURN();
@@ -146,15 +148,15 @@ unsigned GPSCNav2TimeOffset_T ::
 getConversionsTest()
 {
    TUDEF("GPSCNav2TimeOffset", "getConversions");
-   gpstk::TimeOffsetData::TimeCvtSet convs;
-   gpstk::GPSCNav2TimeOffset offs;
+   gnsstk::TimeCvtSet convs;
+   gnsstk::GPSCNav2TimeOffset offs;
       // This looks a bit weird, but basically getConversions is
       // expected to return a set containing one key pair for GPS to
       // the target time system, which by default is Unknown.
-   gpstk::TimeOffsetData::TimeCvtKey key1(gpstk::TimeSystem::GPS,
-                                          gpstk::TimeSystem::Unknown);
-   gpstk::TimeOffsetData::TimeCvtKey key2(gpstk::TimeSystem::Unknown,
-                                          gpstk::TimeSystem::GPS);
+   gnsstk::TimeCvtKey key1(gnsstk::TimeSystem::GPS,
+                                          gnsstk::TimeSystem::Unknown);
+   gnsstk::TimeCvtKey key2(gnsstk::TimeSystem::Unknown,
+                                          gnsstk::TimeSystem::GPS);
    TUCATCH(convs = offs.getConversions());
    TUASSERTE(size_t, 2, convs.size());
    TUASSERTE(size_t, 1, convs.count(key1));

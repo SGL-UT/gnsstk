@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -53,38 +53,38 @@ using namespace std;
    {                                            \
       testFramework.changeSourceMethod(#FN);    \
       TYPE val;                                 \
-      gpstk::BinUtils::FN(STR,val);             \
+      gnsstk::BinUtils::FN(STR,val);             \
       TUASSERTE(TYPE,EXP,val);                  \
    }
 #define TOHOSTTESTPOS(TYPE,STR,EXP,FN,POS)      \
    {                                            \
       testFramework.changeSourceMethod(#FN);    \
       TYPE val;                                 \
-      gpstk::BinUtils::FN(STR,val,POS);         \
+      gnsstk::BinUtils::FN(STR,val,POS);         \
       TUASSERTE(TYPE,EXP,val);                  \
    }
 #define TOHOSTTESTF(TYPE,STR,EXP,FN)            \
    {                                            \
       testFramework.changeSourceMethod(#FN);    \
       TYPE val;                                 \
-      gpstk::BinUtils::FN(STR,val);             \
+      gnsstk::BinUtils::FN(STR,val);             \
       TUASSERTFE(EXP,val);                      \
    }
 #define TOHOSTTESTFPOS(TYPE,STR,EXP,FN,POS)     \
    {                                            \
       testFramework.changeSourceMethod(#FN);    \
       TYPE val;                                 \
-      gpstk::BinUtils::FN(STR,val,POS);         \
+      gnsstk::BinUtils::FN(STR,val,POS);         \
       TUASSERTFE(EXP,val);                      \
    }
 
 #define HOSTTOTEST(TYPE,STR,VAL,FN)                     \
    testFramework.changeSourceMethod(#FN);               \
-   gpstk::BinUtils::FN(buffer,VAL);                     \
+   gnsstk::BinUtils::FN(buffer,VAL);                     \
    TUASSERTE(int,0,memcmp(buffer,STR,sizeof(TYPE)));
 #define HOSTTOTESTPOS(TYPE,STR,VAL,FN,POS)                      \
    testFramework.changeSourceMethod(#FN);                       \
-   gpstk::BinUtils::FN(buffer,VAL,POS);                         \
+   gnsstk::BinUtils::FN(buffer,VAL,POS);                         \
    TUASSERTE(int,0,memcmp(&buffer[POS],STR,sizeof(TYPE)));
 
 class BinUtils_T
@@ -270,11 +270,11 @@ public:
 
       std::string stringTest = "Random";
          // should remove first character of stringTest
-      gpstk::BinUtils::decodeVar<char>(stringTest);
+      gnsstk::BinUtils::decodeVar<char>(stringTest);
       TUASSERTE(std::string,"andom",stringTest);
 
       std::string stringTest0 = "Random";
-      char out0 = gpstk::BinUtils::decodeVar<char>(stringTest0, 0);
+      char out0 = gnsstk::BinUtils::decodeVar<char>(stringTest0, 0);
       TUASSERTE(char,'R',out0);
 
          // test possibility of corruption with numbers that would be
@@ -284,7 +284,7 @@ public:
       static const unsigned char test4Arr[] = { 0x3d, 0x85, 0x9d, 0x6a,
                                                 0xa8, 0x91, 0xf3, 0x7f };
       std::string encBE((char*)test4Arr, sizeof(test4Arr));
-      TUASSERTFE(*dptr,gpstk::BinUtils::decodeVar<double>(encBE));
+      TUASSERTFE(*dptr,gnsstk::BinUtils::decodeVar<double>(encBE));
       TUASSERTE(size_t,0,encBE.size());
 
          // These tests are strange to look at.  Do not make the
@@ -298,11 +298,11 @@ public:
          // "5000", it would be 0x1388 which is <CR>X in text.
 
       std::string stringTest1 = "I am 5000.";
-      uint32_t out1 = gpstk::BinUtils::decodeVar<uint32_t>(stringTest1, 5);
+      uint32_t out1 = gnsstk::BinUtils::decodeVar<uint32_t>(stringTest1, 5);
       TUASSERTE(uint32_t,0x35303030,out1);
 
       std::string stringTest2 = "The word 'this' should be read";
-      float out2 = gpstk::BinUtils::decodeVar<float>(stringTest2, 10);
+      float out2 = gnsstk::BinUtils::decodeVar<float>(stringTest2, 10);
       uint32_t bytes = 0x74686973;  // 'this' as ascii bytes
       float fexpected = *(float*)&bytes;  // interpret bytes as a float
       TUASSERTFE(fexpected,out2);
@@ -319,11 +319,11 @@ public:
 
       std::string stringTest = "Random";
          // should remove first character of stringTest
-      gpstk::BinUtils::decodeVarLE<char>(stringTest);
+      gnsstk::BinUtils::decodeVarLE<char>(stringTest);
       TUASSERTE(std::string,"andom",stringTest);
 
       std::string stringTest0 = "Random";
-      char out0 = gpstk::BinUtils::decodeVarLE<char>(stringTest0, 0);
+      char out0 = gnsstk::BinUtils::decodeVarLE<char>(stringTest0, 0);
       TUASSERTE(char,'R',out0);
 
          // test possibility of corruption with numbers that would be
@@ -333,7 +333,7 @@ public:
       static const unsigned char test4Arr[] = { 0x7f, 0xf3, 0x91, 0xa8,
                                                 0x6a, 0x9d, 0x85, 0x3d  };
       std::string encLE((char*)test4Arr, sizeof(test4Arr));
-      TUASSERTFE(*dptr,gpstk::BinUtils::decodeVarLE<double>(encLE));
+      TUASSERTFE(*dptr,gnsstk::BinUtils::decodeVarLE<double>(encLE));
       TUASSERTE(size_t,0,encLE.size());
 
          // These tests are strange to look at.  Do not make the
@@ -347,11 +347,11 @@ public:
          // "5000", it would be 0x1388 which is <CR>X in text.
 
       std::string stringTest1 = "I am 5012.";
-      uint32_t out1 = gpstk::BinUtils::decodeVarLE<uint32_t>(stringTest1, 5);
+      uint32_t out1 = gnsstk::BinUtils::decodeVarLE<uint32_t>(stringTest1, 5);
       TUASSERTE(uint32_t,0x32313035,out1);
 
       std::string stringTest2 = "The word 'this' should be read";
-      float out2 = gpstk::BinUtils::decodeVarLE<float>(stringTest2, 10);
+      float out2 = gnsstk::BinUtils::decodeVarLE<float>(stringTest2, 10);
       uint32_t bytes = 0x73696874;  // 'this' as ascii bytes
       float fexpected = *(float*)&bytes;  // interpret bytes as a float
       TUASSERTFE(fexpected,out2);
@@ -372,17 +372,17 @@ public:
       TUDEF("BinUtils", "encodeVar");
 
       char test1 = 'H';
-      std::string stringTest1 = gpstk::BinUtils::encodeVar<char>(test1);
+      std::string stringTest1 = gnsstk::BinUtils::encodeVar<char>(test1);
       TUASSERTE(std::string,"H",stringTest1);
 
       uint32_t test2 = 0x41424344; // "ABCD"
-      std::string stringTest2 = gpstk::BinUtils::encodeVar<uint32_t>(test2);
+      std::string stringTest2 = gnsstk::BinUtils::encodeVar<uint32_t>(test2);
       TUASSERTE(std::string,"ABCD",stringTest2);
 
          // This is weird.  Why do it this way?  Converting from hex
          // to 331575210351 decimal and storing it in a float...
       float test3 = 0x4D336C316F; // "M3l10"
-      std::string stringTest3 = gpstk::BinUtils::encodeVar<float>(test3);
+      std::string stringTest3 = gnsstk::BinUtils::encodeVar<float>(test3);
       TUASSERTE(std::string,"\x52\x9A\x66\xD8",stringTest3);
 
          // odd value that has been causing issues with MDP tests
@@ -392,7 +392,7 @@ public:
       static const unsigned char test4Arr[] = { 0x3d, 0x85, 0x9d, 0x6a,
                                                 0xa8, 0x91, 0xf3, 0x7f };
       static const std::string test4Str((char*)test4Arr, sizeof(test4Arr));
-      std::string encBE(gpstk::BinUtils::encodeVar<double>(test4));
+      std::string encBE(gnsstk::BinUtils::encodeVar<double>(test4));
       TUASSERTE(std::string, test4Str, encBE);
 
       return testFramework.countFails();
@@ -404,17 +404,17 @@ public:
       TUDEF("BinUtils", "encodeVarLE");
 
       char test1 = 'H';
-      std::string stringTest1 = gpstk::BinUtils::encodeVarLE<char>(test1);
+      std::string stringTest1 = gnsstk::BinUtils::encodeVarLE<char>(test1);
       TUASSERTE(std::string,"H",stringTest1);
 
       uint32_t test2 = 0x41424344; // "ABCD"
-      std::string stringTest2 = gpstk::BinUtils::encodeVarLE<uint32_t>(test2);
+      std::string stringTest2 = gnsstk::BinUtils::encodeVarLE<uint32_t>(test2);
       TUASSERTE(std::string,"DCBA",stringTest2);
 
          // This is weird.  Why do it this way?  Converting from hex
          // to 331575210351 decimal and storing it in a float...
       float test3 = 0x4D336C316F; // "M3l10"
-      std::string stringTest3 = gpstk::BinUtils::encodeVarLE<float>(test3);
+      std::string stringTest3 = gnsstk::BinUtils::encodeVarLE<float>(test3);
       TUASSERTE(std::string,"\xD8\x66\x9A\x52",stringTest3);
 
          // odd value that has been causing issues with MDP tests
@@ -424,7 +424,7 @@ public:
       static const unsigned char test4Arr[] = { 0x7f, 0xf3, 0x91, 0xa8,
                                                 0x6a, 0x9d, 0x85, 0x3d  };
       static const std::string test4Str((char*)test4Arr, sizeof(test4Arr));
-      std::string encLE(gpstk::BinUtils::encodeVarLE<double>(test4));
+      std::string encLE(gnsstk::BinUtils::encodeVarLE<double>(test4));
       TUASSERTE(std::string, test4Str, encLE);
 
       return testFramework.countFails();
@@ -444,8 +444,8 @@ public:
       //=====================================================================
    int computeCRCTest(void)
    {
-      using gpstk::BinUtils::computeCRC;
-      using gpstk::BinUtils::CRCParam;
+      using gnsstk::BinUtils::computeCRC;
+      using gnsstk::BinUtils::CRCParam;
       TUDEF("BinUtils", "computeCRC");
       uint32_t crc;
          // Use printable characters for the convenience of checking
@@ -464,19 +464,19 @@ public:
          // 6) reverse and do not reverse CRC before final XOR
 
          // Test a standard CRC-32
-      crc = computeCRC(data1, len1, gpstk::BinUtils::CRC32);
+      crc = computeCRC(data1, len1, gnsstk::BinUtils::CRC32);
       TUASSERTE(unsigned long, 0xeaa96e4d, crc);
 
          // Test a standard CRC-16
-      crc = computeCRC(data1, len1, gpstk::BinUtils::CRC16);
+      crc = computeCRC(data1, len1, gnsstk::BinUtils::CRC16);
       TUASSERTE(unsigned long, 0x2c74, crc);
 
          // Test a standard CRC-CCITT
-      crc = computeCRC(data1, len1, gpstk::BinUtils::CRCCCITT);
+      crc = computeCRC(data1, len1, gnsstk::BinUtils::CRCCCITT);
       TUASSERTE(unsigned long, 0x3bcc, crc);
 
          // Test a standard CRC-24Q
-      crc = computeCRC(data1, len1, gpstk::BinUtils::CRC24Q);
+      crc = computeCRC(data1, len1, gnsstk::BinUtils::CRC24Q);
       TUASSERTE(unsigned long, 0x6fa2f6, crc);
 
          // non-direct test
@@ -492,11 +492,11 @@ public:
          //test crc computation on 1 ASCII char
       unsigned char data2[] = { 0x72 };
       unsigned long len2 = 1;
-      crc = computeCRC(data2, len2, gpstk::BinUtils::CRC32);
+      crc = computeCRC(data2, len2, gnsstk::BinUtils::CRC32);
       TUASSERTE(unsigned long, 0x6c09ff9d, crc);
-      crc = computeCRC(data2, len2, gpstk::BinUtils::CRC16);
+      crc = computeCRC(data2, len2, gnsstk::BinUtils::CRC16);
       TUASSERTE(unsigned long, 0x2580, crc);
-      crc = computeCRC(data2, len2, gpstk::BinUtils::CRCCCITT);
+      crc = computeCRC(data2, len2, gnsstk::BinUtils::CRCCCITT);
       TUASSERTE(unsigned long, 0xbf25, crc);
 
       return testFramework.countFails();
@@ -516,10 +516,10 @@ public:
 
       try
       {
-         gpstk::BinUtils::xorChecksum("Hello", 2);
+         gnsstk::BinUtils::xorChecksum("Hello", 2);
          TUFAIL("xorChecksum should have failed on uneven input string");
       }
-      catch(gpstk::InvalidParameter e)
+      catch(gnsstk::InvalidParameter e)
       {
          TUPASS("xorChecksum");
       }
@@ -530,31 +530,31 @@ public:
 
       std::string cksum;
 
-      cksum = gpstk::BinUtils::xorChecksum("7", 1);
+      cksum = gnsstk::BinUtils::xorChecksum("7", 1);
       TUASSERTE(std::string,std::string("7"),cksum);
 
-      cksum = gpstk::BinUtils::xorChecksum("Bc", 1);
+      cksum = gnsstk::BinUtils::xorChecksum("Bc", 1);
       TUASSERTE(std::string,std::string("!"),cksum);
 
-      cksum = gpstk::BinUtils::xorChecksum("P/Q", 1);
+      cksum = gnsstk::BinUtils::xorChecksum("P/Q", 1);
       TUASSERTE(std::string,std::string("."),cksum);
 
-      cksum = gpstk::BinUtils::xorChecksum("mn", 2);
+      cksum = gnsstk::BinUtils::xorChecksum("mn", 2);
       TUASSERTE(std::string,std::string("mn"),cksum);
 
-      cksum = gpstk::BinUtils::xorChecksum("59WZ", 2);
+      cksum = gnsstk::BinUtils::xorChecksum("59WZ", 2);
       TUASSERTE(std::string,std::string("bc"),cksum);
 
-      cksum = gpstk::BinUtils::xorChecksum("am+*09", 2);
+      cksum = gnsstk::BinUtils::xorChecksum("am+*09", 2);
       TUASSERTE(std::string,std::string("z~"),cksum);
 
-      cksum = gpstk::BinUtils::xorChecksum("97Bg", 4);
+      cksum = gnsstk::BinUtils::xorChecksum("97Bg", 4);
       TUASSERTE(std::string,std::string("97Bg"),cksum);
 
-      cksum = gpstk::BinUtils::xorChecksum("ABCD!#$%", 4);
+      cksum = gnsstk::BinUtils::xorChecksum("ABCD!#$%", 4);
       TUASSERTE(std::string,std::string("`aga"),cksum);
 
-      cksum = gpstk::BinUtils::xorChecksum("+a0.ehZ64xYN", 4);
+      cksum = gnsstk::BinUtils::xorChecksum("+a0.ehZ64xYN", 4);
       TUASSERTE(std::string,std::string("zq3V"),cksum);
 
       return testFramework.countFails();
@@ -573,18 +573,18 @@ public:
       TUDEF("BinUtils", "countBits");
       std::string failMesg;
 
-      TUASSERTE(unsigned short,2,gpstk::BinUtils::countBits(5));
+      TUASSERTE(unsigned short,2,gnsstk::BinUtils::countBits(5));
 
          // testing if bit count is constant in a left-shift operation
-      TUASSERTE(unsigned short,2,gpstk::BinUtils::countBits(10));
-      TUASSERTE(unsigned short,2,gpstk::BinUtils::countBits(20));
+      TUASSERTE(unsigned short,2,gnsstk::BinUtils::countBits(10));
+      TUASSERTE(unsigned short,2,gnsstk::BinUtils::countBits(20));
 
          // same but for right bit
-      TUASSERTE(unsigned short,1,gpstk::BinUtils::countBits(16));
-      TUASSERTE(unsigned short,1,gpstk::BinUtils::countBits(8));
+      TUASSERTE(unsigned short,1,gnsstk::BinUtils::countBits(16));
+      TUASSERTE(unsigned short,1,gnsstk::BinUtils::countBits(8));
 
          // random case
-      TUASSERTE(unsigned short,4,gpstk::BinUtils::countBits(15));
+      TUASSERTE(unsigned short,4,gnsstk::BinUtils::countBits(15));
 
       return testFramework.countFails();
    }

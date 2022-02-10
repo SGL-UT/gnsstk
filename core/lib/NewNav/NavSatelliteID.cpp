@@ -1,44 +1,44 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 #include "NavSatelliteID.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    NavSatelliteID ::
    NavSatelliteID()
@@ -62,6 +62,28 @@ namespace gpstk
                   NavType nmt)
          : NavSignalID(sys,car,track,nmt), sat(subj,sys), xmitSat(xmit,sys)
    {
+   }
+
+
+   NavSatelliteID ::
+   NavSatelliteID(unsigned long subj, SatelliteSystem sys, CarrierBand car,
+                  TrackingCode track, XmitAnt ant, int freqOffs,
+                  bool freqOffsWild, NavType nmt)
+         : NavSignalID(sys,ObsID(ObservationType::NavMsg,car,track,freqOffs,
+                                 ant,freqOffsWild),nmt),
+           sat(subj,sys)
+   {
+      xmitSat.makeWild();
+   }
+
+
+   NavSatelliteID ::
+   NavSatelliteID(unsigned long subj, SatelliteSystem sys, const ObsID& oid,
+                  NavType nmt)
+         : NavSignalID(sys,oid,nmt),
+           sat(subj,sys)
+   {
+      xmitSat.makeWild();
    }
 
 
@@ -106,8 +128,8 @@ namespace gpstk
 
    NavSatelliteID ::
    NavSatelliteID(const SatID& subj)
-         : NavSignalID(subj.system, gpstk::CarrierBand::Any,
-                       gpstk::TrackingCode::Any, gpstk::NavType::Any),
+         : NavSignalID(subj.system, gnsstk::CarrierBand::Any,
+                       gnsstk::TrackingCode::Any, gnsstk::NavType::Any),
            sat(subj)
    {
       xmitSat.makeWild();
@@ -132,6 +154,7 @@ namespace gpstk
    bool NavSatelliteID ::
    operator==(const NavSatelliteID& right) const
    {
+         // std::cerr << __PRETTY_FUNCTION__ << std::endl;
          // Use the order() method so we don't have to compare
          // everything in the parent class twice.
       return ((NavSignalID::order(right) == 0) && (sat == right.sat) &&

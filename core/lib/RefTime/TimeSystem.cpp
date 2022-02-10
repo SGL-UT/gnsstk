@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -43,7 +43,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    ostream& operator<<(ostream& os, const TimeSystem ts)
    {
@@ -112,7 +112,7 @@ namespace gpstk
          { 2006,  1, 33 },
          { 2009,  1, 34 },
          { 2012,  7, 35 },
-         { 2015,  7, 36 }, 
+         { 2015,  7, 36 },
          { 2017,  1, 37 }, // leave the last comma!
             // add new entry here, of the form:
             // { year, month(1-12), leap_sec }, // leave the last comma!
@@ -194,7 +194,7 @@ namespace gpstk
       if (inTS == TimeSystem::Unknown || outTS == TimeSystem::Unknown)
       {
          Exception e("Cannot compute correction for TimeSystem::Unknown");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // compute TT-TDB here; ref Astronomical Almanac B7
@@ -217,7 +217,7 @@ namespace gpstk
       static const double TAI_minus_GPSGAL_EPOCH = 19.;
       static const double TAI_minus_BDT_EPOCH = 33.;
       static const double TAI_minus_TT_EPOCH = -32.184;
-      
+
          // -----------------------------------------------------------
          // conversions: first convert inTS->TAI ...
          // TAI = GPS + 19s
@@ -253,7 +253,7 @@ namespace gpstk
       else
       {                              // other
          Exception e("Invalid input TimeSystem " + StringUtils::asString(inTS));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // -----------------------------------------------------------
@@ -291,7 +291,7 @@ namespace gpstk
       else
       {                              // other
          Exception e("Invalid output TimeSystem "+StringUtils::asString(outTS));
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       return dt;

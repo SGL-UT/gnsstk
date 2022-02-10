@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -47,7 +47,7 @@
 #include "YDSTime.hpp"
 #include "GNSSconstants.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    IonoModel::IonoModel(const double a[4], const double b[4],
                         const bool semicircle_units) throw()
@@ -79,7 +79,7 @@ namespace gpstk
          beta[n] = b[n];
       }
          // Convert powers of inverse radians to inverse semi-circles, as needed by getCorrection.
-         // This is a necessary optional flag for historical GPSTk code reasons.
+         // This is a necessary optional flag for historical GNSSTk code reasons.
       if (!semicircle_units)
       {
          alpha[1] *= PI;
@@ -103,7 +103,7 @@ namespace gpstk
       if (!valid)
       {
          InvalidIonoModel e("Alpha and beta parameters invalid.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
          // All angle units are in semi-circles (radians/PI), per IS-GPS-200.

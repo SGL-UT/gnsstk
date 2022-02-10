@@ -7,13 +7,13 @@
 
 /** @mainpage
  * This documentation describes the architecture and design of the
- * GPS ToolKit (GPSTk), produced by the Space and Geophysics Laboratory (SGL)
+ * GPS ToolKit (GNSSTk), produced by the Space and Geophysics Laboratory (SGL)
  * of Applied Research Laboratories, The University of Texas at Austin (ARL:UT).
  *
- * This documentation is generated nightly from the GPSTk Subversion repository.
+ * This documentation is generated nightly from the GNSSTk Subversion repository.
  *
  * \section intro Introduction
- * GPSTK is a library of support routines designed for use by programmers
+ * GNSSTK is a library of support routines designed for use by programmers
  * developing applications that read and write (particularly in RINEX format),
  * process and otherwise manipulate GPS data. It is characterized by the following:
  * - Modern, ANSI C++; highly object oriented
@@ -23,13 +23,13 @@
  *
  * \section codedesign Code Design
  * \subsection namesp Namespaces
- * All GPSTK code is placed within the gpstk namespace. Within the gpstk namespace, other
+ * All GNSSTK code is placed within the gnsstk namespace. Within the gnsstk namespace, other
  * namespaces are defined for certain specialized functionality; these include
- * - gpstk::BinUtils in the Binary utilities module
- * - gpstk::FileUtils in the File utilities module
- * - gpstk::StringUtils in the String utilities module
+ * - gnsstk::BinUtils in the Binary utilities module
+ * - gnsstk::FileUtils in the File utilities module
+ * - gnsstk::StringUtils in the String utilities module
  *
- * Namespace std is also used throughout the GPSTK.
+ * Namespace std is also used throughout the GNSSTK.
  *
  * \section content Library Content
  * The library consists of several modules, which are more or less dependent upon each
@@ -60,7 +60,7 @@
  *
  * \section applic Applications
  * This distribution also includes several stand-alone application programs which
- * also serve as examples of how to use the GPSTK. These include
+ * also serve as examples of how to use the GNSSTK. These include
  * - Rinex summary
  * - Rinex editor
  * - Discontinuity Correction (i.e. cycle slip fixing)
@@ -68,7 +68,7 @@
  *
  */
 
-/** @namespace gpstk Namespace for entire GPSTK library. */
+/** @namespace gnsstk Namespace for entire GNSSTK library. */
 
 // These are all the example and test files we have and a brief description
 // of each.
@@ -182,7 +182,7 @@
 
 /**
  * @example example5.cpp
- * Demonstrates how to use some very useful high-level GPSTk classes for positioning.
+ * Demonstrates how to use some very useful high-level GNSSTk classes for positioning.
  */
 
 /**
@@ -216,7 +216,7 @@
 
 /**
  * @example example11.cpp
- * Example of GPSTk's built-in postscript plotting routines.
+ * Example of GNSSTk's built-in postscript plotting routines.
  */
 
 /**

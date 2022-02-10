@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -48,22 +48,22 @@
 #include "StringUtils.hpp"
 
 using namespace std;
-using namespace gpstk;
-using namespace gpstk::StringUtils;
+using namespace gnsstk;
+using namespace gnsstk::StringUtils;
 
-namespace gpstk
+namespace gnsstk
 {
       // operator-- for FileSpecType
    FileSpec::FileSpecType& operator-- (FileSpec::FileSpecType& fst, int)
    {
-      return fst = (fst == FileSpec::unknown) ? 
+      return fst = (fst == FileSpec::unknown) ?
          FileSpec::end : FileSpec::FileSpecType(fst-1);
    }
 
       // operator++ for FileSpecType
    FileSpec::FileSpecType& operator++ (FileSpec::FileSpecType& fst, int)
    {
-      return fst = (fst == FileSpec::end) ? 
+      return fst = (fst == FileSpec::end) ?
          FileSpec::unknown : FileSpec::FileSpecType(fst+1);
    }
 
@@ -102,7 +102,7 @@ namespace gpstk
       }
       return false; // r and l are the same
    }
-   
+
    string FileSpec::convertFileSpecType(const FileSpecType fst)
    {
       if (fst == station)          return string("n");
@@ -137,7 +137,7 @@ namespace gpstk
       else
       {
          FileSpecException fse("Unknown FileSpecType: " + asString(fst));
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
    }
 
@@ -152,7 +152,7 @@ namespace gpstk
       else if (fst == string("k"))   return clock;
       else if (fst == string("x"))   return text;
 
-      else if (fst == string("Y") || 
+      else if (fst == string("Y") ||
                fst == string("y"))   return year;
       else if (fst == string("m"))   return month;
       else if (fst == string("d"))   return dayofmonth;
@@ -176,7 +176,7 @@ namespace gpstk
       else
       {
          FileSpecException fse("Unknown FileSpecType: " + fst);
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
    }
 
@@ -192,9 +192,9 @@ namespace gpstk
             // the error case first...
          if ( ((*itr).type <= unknown) || ((*itr).type >= end) )
          {
-            FileSpecException fse("Unknown FileSpecType: " + 
+            FileSpecException fse("Unknown FileSpecType: " +
                                   asString((*itr).type));
-            GPSTK_THROW(fse);
+            GNSSTK_THROW(fse);
          }
             // just add the fixed fields
          else if ((*itr).type == fixed)
@@ -213,15 +213,15 @@ namespace gpstk
       return searchString;
    }
 
-   string FileSpec::extractField(const string& filename, 
+   string FileSpec::extractField(const string& filename,
                                  const FileSpecType fst) const
    {
          // stupidity check - is it a valid FST?
       if ((fst <= unknown) || (fst >= end))
       {
-         FileSpecException fse("Unknown FileSpecType: " + 
+         FileSpecException fse("Unknown FileSpecType: " +
                                convertFileSpecType(fst));
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
 
          // check the FileSpec for this type of FST
@@ -240,7 +240,7 @@ namespace gpstk
          // oops - didn't find it.
       FileSpecException fse("Couldn't find specified FileSpecType: " +
                             convertFileSpecType(fst));
-      GPSTK_THROW(fse);
+      GNSSTK_THROW(fse);
    }
 
 
@@ -258,24 +258,24 @@ namespace gpstk
             // too ambiguous - throw an exception
          FileSpecException fse(exc);
          fse.addText("Can't generate a CommonTime for this FileSpec");
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
       catch(std::exception& exc)
       {
          FileSpecException fse("std::exception: " + string(exc.what()));
          fse.addText("Can't generate a CommonTime for this FileSpec");
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
       catch(...)
       {
          FileSpecException fse("unknown exception");
          fse.addText("Can't generate a CommonTime for this FileSpec");
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
-      
+
    }
 
-   std::string FileSpec::toString(const gpstk::CommonTime& dt,
+   std::string FileSpec::toString(const gnsstk::CommonTime& dt,
                                   const FSTStringMap& fstsMap) const
    {
       string toReturn;
@@ -300,12 +300,23 @@ namespace gpstk
                   // than the original implementation which simply
                   // didn't set the field width even if one was
                   // specified (which would cause RTT failures).
-               toReturn += 
-                  rightJustify((*fstsItr).second, (*fslItr).numCh);
+                  // Also, if width is unspecified (0), copy the
+                  // entire text field into the file spec.
+               if ((*fslItr).numCh == 0)
+               {
+                     // Use as much space as necessary
+                  toReturn += (*fstsItr).second;
+               }
+               else
+               {
+                     // Use at most numCh characters
+                  toReturn +=
+                     leftJustify((*fstsItr).second, (*fslItr).numCh);
+               }
             }
             else
             {
-               toReturn += 
+               toReturn +=
                   rightJustify((*fstsItr).second, (*fslItr).numCh, '0');
             }
          }
@@ -322,7 +333,7 @@ namespace gpstk
       return toReturn;
    }
 
-   void FileSpec::sortList(vector<string>& fileList, 
+   void FileSpec::sortList(vector<string>& fileList,
                            const FileSpecSortType fsst) const
    {
       FileSpecSort q(*this, fsst);
@@ -333,11 +344,11 @@ namespace gpstk
          // the version field to the name with the version field. since its
          // sorted, the highest version will be the last one set and the map
          // will only have the latest versions...
-         // 
+         //
          // ex.  a1a a2a a3a a4a a5a     file spec: a%1va
          // copyOfFileList after versions removed:  aa aa aa aa aa
          // versionMap[aa] = a1a then a2a, a3a, a4a, and finally a5a
-         // 
+         //
          // note that this only handles 1 version field right now, not that
          // it couldnt do more but it gets very difficult...
 
@@ -370,7 +381,7 @@ namespace gpstk
 
             // now make one more pass on the copied list. whenever two strings
             // match, go to the original list and compare the version numbers.
-            // erase the lower version. 
+            // erase the lower version.
 
             // FIX: this will only compare the first version field encountered.
             // it could be changed to do more, but it's not essential now...
@@ -397,7 +408,7 @@ namespace gpstk
       while (itr != fileSpecList.end())
       {
          o << setw(6) << (*itr).offset << setw(6) << (*itr).numCh
-           << setw(6) << convertFileSpecType((*itr).type) 
+           << setw(6) << convertFileSpecType((*itr).type)
                // this makes the field bigger if the string is
                // bigger than 5 characters
            << setw(6 + ((*itr).field.size() > 5 ? ((*itr).field.size()-5): 0))
@@ -421,7 +432,7 @@ namespace gpstk
 
             // copy the string so we can mess with it
          string fs(fileSpec);
-         
+
             // bit by bit, parse out the string into FileSpecElements,
             // stripping out the used parts as we go
          while (!fs.empty())
@@ -455,65 +466,70 @@ namespace gpstk
                   offset += atom.size();
                   atom.erase(atom.begin(), atom.end());
                }
-               
+
                   // erase the '%'
                   // also make sure that atom holds the string that
                   // makes up this element.
                atom += fs[0];
                fs.erase(0,1);
-               
-                  // get any integers that come before the letter we're lookin 
+
+                  // get any integers that come before the letter we're lookin
                   // for, then erase them
-               int numChs = asInt(fs);
-               if (numChs == 0)
-                  numChs = 1;
-               
+               int rawNumChs = asInt(fs);
+               int numChs = (rawNumChs == 0) ? 1 : rawNumChs;
+
                if (fs[0] == '0')
                   atom += '0';
 
                stripLeading(fs, "0");
                stripLeading(fs, asString(numChs));
 
-               atom += asString(numChs);
-               
-                  // get the file spec type and erase that part of the string
+                  // get the file spec type
                FileSpecType fst = convertFileSpecType(fs.substr(0,1));
+
+                  // super special case - %x -> %0x
+               if ((fs.substr(0,1) == string("x")) && (rawNumChs == 0))
+                  numChs = 0;
+
+                  // super special case - %Y -> %4y
+               if ((fs.substr(0,1) == string("Y")) && (numChs < 4))
+                  numChs = 4;
+
+               atom += asString(numChs);
                atom += fs[0];
 
-                  // super special case - %Y -> %4y  FIX shouldn't this be <4?
-               if ((fs.substr(0,1) == string("Y")) && (numChs != 4))
-                  numChs = 4;
+                  // erase the file spec element type character
                fs.erase(0,1);
-               
+
                FileSpecElement fse(numChs, offset, fst, atom);
                fileSpecList.push_back(fse);
                fileSpecSet.insert(fst);
                offset += numChs;
             }
-            
+
          } // while !fs.empty()
       }
       catch(FileSpecException& e)
       {
          e.addText("Check your file spec for errors: " + fileSpec);
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
       catch(StringException& e)
       {
          FileSpecException fse(e);
          fse.addText("String exception: Check the file spec for errors: " + fileSpec);
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
       catch(std::exception& e)
       {
          FileSpecException fse("std::exception: " + string(e.what()));
          fse.addText("Check the file spec for errors: " + fileSpec);
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
       catch(...)
       {
          FileSpecException fse("Unknown exception: Check the file spec for errors: " + fileSpec);
-         GPSTK_THROW(fse);
+         GNSSTK_THROW(fse);
       }
    }
 

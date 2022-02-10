@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -42,7 +42,7 @@
 #include "TimeString.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 /** Threshold for how much different our velocities can be between
  * being computed directly via svXvt and computed via differencing
@@ -306,7 +306,7 @@ equalityTest()
    TUASSERTE(BrcKeplerOrbit, orbit, orbitCopy);
    orbitCopy.endFit = GPSWeekZcount(1267, 56533);
    TUASSERT(orbitCopy != orbit);
-   TUASSERT(!(orbitCopy == orbit));   
+   TUASSERT(!(orbitCopy == orbit));
    TURETURN();
 }
 
@@ -316,10 +316,10 @@ svXvtTest()
    TUDEF("BrcKeplerOrbit", "svXvt");
    BrcKeplerOrbit orbit;
    ObsID oi(ObservationType::NavMsg, CarrierBand::L1, TrackingCode::Y);
-   gpstk::CommonTime toc = gpstk::CivilTime(2015,7,19,1,59,28.0,
-                                            gpstk::TimeSystem::GPS);
+   gnsstk::CommonTime toc = gnsstk::CivilTime(2015,7,19,1,59,28.0,
+                                            gnsstk::TimeSystem::GPS);
    orbit.loadData("GPS", oi, 2, toc, toc+7200,
-                  gpstk::GPSWeekSecond(1854,.716800000000e+04), 0, true,
+                  gnsstk::GPSWeekSecond(1854,.716800000000e+04), 0, true,
                   -.324845314026e-05, .101532787085e-04, .168968750000e+03,
                   -.646250000000e+02, .320374965668e-06, .117346644402e-06,
                   -.136404614938e+01, .489591822036e-08, 0,
@@ -327,19 +327,19 @@ svXvtTest()
                   .515359719276e+04, 0, -.296605403382e+01,
                   .941587707856e+00, -.224753761329e+01, -.804390648956e-08,
                   .789318592573e-10);
-                  
+
    bool testFailed = false;
    try
    {
          // first compute Xvt
       static const unsigned SECONDS = 7200;
-      gpstk::Xvt zeroth_array[SECONDS];
+      gnsstk::Xvt zeroth_array[SECONDS];
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
          zeroth_array[ii] = orbit.svXvt(orbit.getOrbitEpoch() + ii);
       }
          // then compute first derivative of position, i.e. velocity
-      gpstk::Triple deriv[SECONDS];
+      gnsstk::Triple deriv[SECONDS];
       double h = 1; // time step size in seconds
       for (unsigned ii = 0; ii < SECONDS; ii++)
       {
@@ -395,7 +395,7 @@ svXvtTest()
          TUPASS("velocity check");
       }
    }
-   catch (gpstk::Exception& exc)
+   catch (gnsstk::Exception& exc)
    {
       cerr << exc;
       TUFAIL("Exception");

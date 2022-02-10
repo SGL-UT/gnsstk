@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -53,7 +53,7 @@
 #define LDEXP(x,y) std::ldexp(x,y)
 #endif
 
-namespace gpstk
+namespace gnsstk
 {
    /// DecodeBits .
    struct DecodeBits
@@ -126,7 +126,7 @@ namespace gpstk
          { 14,   0,  0,   1.0L, 0,{ {287, 1},{  0, 0} } }, // fit init
          { 15,   0,  0, 900.0L, 0,{ {288, 5},{  0, 0} } }, // AODO
       },
-      { 
+      {
             // Pattern 3
          //idx pow2 powPI scale signq fmt
          {  0,   0,  0,   1.0L, 0,{ {  1, 8},{  0, 0} } }, // Preamble
@@ -144,7 +144,7 @@ namespace gpstk
          { 12,  11,  0,   1.0L, 0,{ {271, 8},{  0, 0} } }, // AODE
          { 13, -43,  1,   1.0L, 1,{ {279,14},{  0, 0} } }, // idot
       },
-      { 
+      {
             // Pattern 4
          //idx pow2 powPI scale signq fmt
          {  0,   0,  0,   1.0L, 0,{ {  1, 8},{  0, 0} } }, // Preamble
@@ -168,7 +168,7 @@ namespace gpstk
          { 18,   0,  0,   1.0L, 0,{ {  0, 0},{  0, 0} } }, // REF WEEK
          { 19,   0,  0,   1.0L, 0,{ { 63, 6},{  0, 0} } }, // PRN #
       },
-      { 
+      {
             // Pattern 5
          //idx pow2 powPI scale signq fmt
          {  0,   0,  0,   1.0L, 0,{ {  1, 8},{  0, 0} } }, // Preamble
@@ -204,7 +204,7 @@ namespace gpstk
          { 30,   0,  0,   1.0L, 0,{ {253, 6},{  0, 0} } }, // SV23 Hlth
          { 31,   0,  0,   1.0L, 0,{ {259, 6},{  0, 0} } }, // SV24 Hlth
       },
-      { 
+      {
             // Pattern 6
          //idx pow2 powPI scale signq fmt
          {  0,   0,  0,   1.0L, 0,{ {  1, 8},{  0, 0} } }, // Preamble
@@ -223,7 +223,7 @@ namespace gpstk
          { 13,   0,  0,   1.0L, 0,{ {241, 8},{  0, 0} } }, // Reserved
          { 14,   0,  0,   1.0L, 0,{ {249,16},{  0, 0} } }, // Reserved
       },
-      { 
+      {
             // Pattern 7
          //idx pow2 powPI scale signq fmt
          {  0,   0,  0,   1.0L, 0,{ {  1, 8},{  0, 0} } }, // Preamble
@@ -242,7 +242,7 @@ namespace gpstk
          { 13,   0,  0,   1.0L, 0,{ {241, 8},{  0, 0} } }, // Reserved
          { 14,   0,  0,   1.0L, 0,{ {249,16},{  0, 0} } }, // Reserved
       },
-      { 
+      {
             // Pattern 8
          //idx pow2 powPI scale signq fmt
          {  0,   0,  0,   1.0L, 0,{ {  1, 8},{  0, 0} } }, // Preamble
@@ -269,7 +269,7 @@ namespace gpstk
          { 21,   0,  0,   1.0L, 0,{ {257, 8},{  0, 0} } }, // DN
          { 22,   0,  0,   1.0L, 1,{ {271, 8},{  0, 0} } }, // DELTALSF
       },
-      { 
+      {
             // Pattern 9
          //idx pow2 powPI scale signq fmt
          {  0,   0,  0,   1.0L, 0,{ {  1, 8},{  0, 0} } }, // Preamble
@@ -320,7 +320,7 @@ namespace gpstk
          { 45,   0,  0,   1.0L, 0,{ {277, 6},{  0, 0} } }, // SV31 Hlth
          { 46,   0,  0,   1.0L, 0,{ {283, 6},{  0, 0} } }, // SV32 Hlth
       },
-      { 
+      {
             // Pattern 10
          //idx pow2 powPI scale signq fmt
          {  0,   0,  0,   1.0L, 0,{ {  1, 8},{  0, 0} } }, // Preamble
@@ -710,7 +710,7 @@ namespace gpstk
       return D | d;
    }
 
-      /// This is the OLD GPSTk method, left here for compatibility
+      /// This is the OLD GNSSTk method, left here for compatibility
    bool EngNav :: subframeParity(const long input[10])
    {
       uint32_t temp[10];
@@ -796,7 +796,7 @@ namespace gpstk
       dval = LDEXP(dval,dq.pow2);         // Scale by power of 2
       output[dq.outIndex] = dval;         // Store result in output array
    }
- 
+
    void EngNav :: dump(std::ostream& s)
    {
       for(short pattern = 1; pattern <= 10; pattern++)
@@ -825,7 +825,7 @@ namespace gpstk
             s << std::dec << std::setw(2) << n << "        " << std::setw(3) << p->outIndex
               << "    " << std::setw(3) << p->pow2
               << "      " << std::setw(3) << p->powPI
-              << "       " << std::setw(3) << p->scale 
+              << "       " << std::setw(3) << p->scale
               << "     " << std::setw(3) << p->signq
               << "     " << std::setw(3) << p->fmt[0].startBit
               << "    " << std::setw(3) << p->fmt[0].numBits
@@ -841,9 +841,9 @@ namespace gpstk
       for(int i = 0; i < 7; i++)
       {
          s << "    " << i << "       " << std::setw(2) << x << "        " << std::setw(8) << std::setprecision(5) << PItab[i] << std::endl;
-         x++;  
+         x++;
       }
- 
+
 
    }
 
@@ -861,7 +861,7 @@ namespace gpstk
       {
          InvalidParameter exc("getNMCTValidity called using non-subframe 2"
                               " data");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
          // no math functions in anything but common time, so extra
          // conversions, yay.

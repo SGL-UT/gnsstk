@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,22 +29,23 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 #include "RinexSatID.hpp"
+#include "GNSSconstants.hpp"
 
 /**
  * @file RinexSatID.cpp
- * gpstk::RinexSatID - navigation system-independent representation of
+ * gnsstk::RinexSatID - navigation system-independent representation of
  * a satellite as defined by the RINEX specification.
  */
 
-namespace gpstk
+namespace gnsstk
 {
    char RinexSatID::fillchar = '0';
 
@@ -71,6 +72,7 @@ namespace gpstk
          case SatelliteSystem::QZSS:    return 'J';
          case SatelliteSystem::BeiDou:  return 'C';
          case SatelliteSystem::IRNSS:   return 'I';
+         case SatelliteSystem::Mixed:   return 'M';
          default:                       return '?';
       }
    }
@@ -90,6 +92,7 @@ namespace gpstk
          case SatelliteSystem::QZSS:    return "QZSS";
          case SatelliteSystem::BeiDou:  return "BeiDou";
          case SatelliteSystem::IRNSS:   return "IRNSS";
+         case SatelliteSystem::Mixed:   return "Mixed";
          default:                       return "Unknown";
       }
    }
@@ -109,6 +112,7 @@ namespace gpstk
          case SatelliteSystem::QZSS:    return "QZS";
          case SatelliteSystem::BeiDou:  return "BDS";
          case SatelliteSystem::IRNSS:   return "IRN";      // RINEX ver 3.03
+         case SatelliteSystem::Mixed:   return "Mix";
          default:                       return "Unk";
       }
    }
@@ -164,7 +168,7 @@ namespace gpstk
          default:                   // non-RINEX system character
             Exception e(std::string("Invalid system character \"")
                         + c + std::string("\""));
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
       }
       iss >> id;
       if(id <= 0)
@@ -183,7 +187,7 @@ namespace gpstk
                if (id < 83)
                {
                      // PRN codes in the range of 193-197
-                  id += 192;
+                  id += MIN_PRN_QZS-1;
                }
                else
                {
@@ -213,10 +217,10 @@ namespace gpstk
                rinexID -= 100;
                break;
             case SatelliteSystem::QZSS:
-               if (rinexID >= 193)
+               if (rinexID >= MIN_PRN_QZS)
                {
                      // PRN codes in the range of 193-197
-                  rinexID -= 192;
+                  rinexID -= MIN_PRN_QZS-1;
                }
                else
                {

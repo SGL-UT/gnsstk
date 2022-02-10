@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,12 +41,13 @@
  * Vector base class operators, including I/O, min(), dot(), comparisons, etc
  */
 
-#ifndef GPSTK_VECTOR_BASE_OPERATORS_HPP
-#define GPSTK_VECTOR_BASE_OPERATORS_HPP
+#ifndef GNSSTK_VECTOR_BASE_OPERATORS_HPP
+#define GNSSTK_VECTOR_BASE_OPERATORS_HPP
 
 #include <fstream> // for copyfmt
 #include <vector>
 #include <iomanip>
+#include "VectorBase.hpp"
 
 // to solve the conflict with windows.h
 #if defined(min)
@@ -57,15 +58,15 @@
 #undef max
 #endif
 
-namespace gpstk
+namespace gnsstk
 {
 
       /// @ingroup MathGroup
       //@{
- 
+
       /** Output operator for ConstVectorBase objects */
    template <class T, class E>
-   std::ostream& operator<<(std::ostream& s, const ConstVectorBase<T, E>& a) 
+   std::ostream& operator<<(std::ostream& s, const ConstVectorBase<T, E>& a)
    {
       std::ofstream savefmt;
       savefmt.copyfmt(s);
@@ -81,7 +82,7 @@ namespace gpstk
       /** Returns the sum of the elements of the vector */
    template <class T, class BaseClass>
    inline T sum(const ConstVectorBase<T, BaseClass>& l)
-   { 
+   {
       T total(0);
       size_t i;
       for (i = 0; i < l.size(); i++)
@@ -94,16 +95,16 @@ namespace gpstk
        */
    template <class T, class BaseClass>
    inline T minabs(const ConstVectorBase<T, BaseClass>& l)
-   { 
+   {
       if (l.size() == 0)
       {
          VectorException e("Can't find the minabs of an empty vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       T min = l[0];
       size_t i;
       for (i = 1; i < l.size(); i++)
-         if (ABS(l[i]) < ABS(min)) 
+         if (ABS(l[i]) < ABS(min))
             min = l[i];
       return min;
    }
@@ -113,16 +114,16 @@ namespace gpstk
        */
    template <class T, class BaseClass>
    inline T min(const ConstVectorBase<T, BaseClass>& l)
-   { 
+   {
       if (l.size() == 0)
       {
          VectorException e("Can't find the min of an empty vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       T min = l[0];
       size_t i;
       for (i = 1; i < l.size(); i++)
-         if (l[i] < min) 
+         if (l[i] < min)
             min = l[i];
       return min;
    }
@@ -134,12 +135,12 @@ namespace gpstk
       if (l.size() == 0)
       {
          VectorException e("Can't find the maxabs of an empty vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       T max = l[0];
       size_t i;
       for (i = 1; i < l.size(); i++)
-         if (ABS(l[i]) > ABS(max)) 
+         if (ABS(l[i]) > ABS(max))
             max = l[i];
       return max;
    }
@@ -151,20 +152,20 @@ namespace gpstk
       if (l.size() == 0)
       {
          VectorException e("Can't find the max of an empty vector");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       T max = l[0];
       size_t i;
       for (i = 1; i < l.size(); i++)
-         if (l[i] > max) 
+         if (l[i] > max)
             max = l[i];
       return max;
    }
 
       /** returns the dot product of the two vectors */
-   template <class T, class BaseClass, class BaseClass2> 
-   inline T dot(const ConstVectorBase<T, BaseClass>& l, 
-                const ConstVectorBase<T, BaseClass2>& r) 
+   template <class T, class BaseClass, class BaseClass2>
+   inline T dot(const ConstVectorBase<T, BaseClass>& l,
+                const ConstVectorBase<T, BaseClass2>& r)
    {
       T sum(0);
       size_t i,n=(l.size() > r.size() ? r.size() : l.size());
@@ -173,11 +174,11 @@ namespace gpstk
          sum += l[i] * r[i];
       }
       return sum;
-   } 
+   }
 
       /** returns the dot product of a vector and a scalar */
-   template <class T, class BaseClass> 
-   inline T dot(const ConstVectorBase<T, BaseClass>& l, const T r) 
+   template <class T, class BaseClass>
+   inline T dot(const ConstVectorBase<T, BaseClass>& l, const T r)
    {
       T sum(0);
       size_t i;
@@ -189,8 +190,8 @@ namespace gpstk
    }
 
       /** returns the dot product of a scalar and a vector */
-   template <class T, class BaseClass> 
-   inline T dot(const T l, const ConstVectorBase<T, BaseClass>& r) 
+   template <class T, class BaseClass>
+   inline T dot(const T l, const ConstVectorBase<T, BaseClass>& r)
    {
       T sum(0);
       size_t i;
@@ -202,8 +203,8 @@ namespace gpstk
    }
 
       /** returns the norm of the vector */
-   template <class T, class BaseClass> 
-   inline T norm(const ConstVectorBase<T, BaseClass>& v) 
+   template <class T, class BaseClass>
+   inline T norm(const ConstVectorBase<T, BaseClass>& v)
    {
       T mag=T(0);
       if(v.size()==0) return mag;
@@ -217,17 +218,17 @@ namespace gpstk
             mag *= SQRT(T(2));
       }
       return mag;
-   } 
+   }
 
       /** return the Minkowski product of two vectors of length 4. */
-   template <class T, class BaseClass, class BaseClass2> 
-   inline T Minkowski(const ConstVectorBase<T, BaseClass>& v, 
-                      const ConstVectorBase<T, BaseClass2>& w) 
+   template <class T, class BaseClass, class BaseClass2>
+   inline T Minkowski(const ConstVectorBase<T, BaseClass>& v,
+                      const ConstVectorBase<T, BaseClass2>& w)
    {
       if (v.size()<4 || w.size()<4)
       {
          VectorException e("Minkowski requires vector length 4");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       return (v(0)*w(0)+v(1)*w(1)+v(2)*w(2)-v(3)*w(3));
    }
@@ -292,6 +293,6 @@ namespace gpstk
 
    //@}
 
-}  // namespace gpstk
- 
-#endif // GPSTK_VECTOR_BASE_OPERATORS_HPP
+}  // namespace gnsstk
+
+#endif // GNSSTK_VECTOR_BASE_OPERATORS_HPP

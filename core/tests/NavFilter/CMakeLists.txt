@@ -1,11 +1,11 @@
 add_executable(NavFilterMgr_T NavFilterMgr_T.cpp)
-target_link_libraries(NavFilterMgr_T gpstk)
+target_link_libraries(NavFilterMgr_T gnsstk)
 add_test(NavFilter_NavFilterMgr NavFilterMgr_T)
 
 add_executable(CNavFilter_T CNavFilter_T.cpp)
-target_link_libraries(CNavFilter_T gpstk)
+target_link_libraries(CNavFilter_T gnsstk)
 add_test(NavFilter_CNavFilter CNavFilter_T)
 
 add_executable(CNav2Filter_T CNav2Filter_T.cpp)
-target_link_libraries(CNav2Filter_T gpstk)
+target_link_libraries(CNav2Filter_T gnsstk)
 add_test(NavFilter_CNav2Filter CNav2Filter_T)

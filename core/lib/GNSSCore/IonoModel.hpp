@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,15 +41,15 @@
  * Implementation of the IS-GPS-200 Ionosphere model (20.3.3.5.2.5).
  */
 
-#ifndef GPSTK_IONOMODEL_HPP
-#define GPSTK_IONOMODEL_HPP
+#ifndef GNSSTK_IONOMODEL_HPP
+#define GNSSTK_IONOMODEL_HPP
 
 #include "CommonTime.hpp"
 #include "CarrierBand.hpp"
 #include "EngAlmanac.hpp"
 #include "Position.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup GPSsolutions
       //@{
@@ -70,18 +70,18 @@ namespace gpstk
    class IonoModel
    {
    public:
-        
+
          /// Exception, thrown when attempting to use a model for which not all
          /// the necessary parameters have been specified.
          /// @ingroup exceptiongroup
-      NEW_EXCEPTION_CLASS(InvalidIonoModel, gpstk::Exception);
- 
+      NEW_EXCEPTION_CLASS(InvalidIonoModel, gnsstk::Exception);
+
          /// Default constructor, creates an invalid model for lack of parameters.
       IonoModel() throw() : valid(false) {}
-      
+
          /// Destructor.
       virtual ~IonoModel() throw() {}
-      
+
          /** Ionosphere model constructor.
           * Creates a valid model with satellite transmitted alpha and beta
           * (Klobuchar) parameters provided by the user.
@@ -90,19 +90,19 @@ namespace gpstk
           * @param[in] semicircle_units A boolean indicating params are in
           *                         semicircles (T, default) or radians (F).
           * Note that the IS-GPS-200 defines the algorithm and parameters
-          * in terms of semi-circles, not radians; but that the GPSTk for
+          * in terms of semi-circles, not radians; but that the GNSSTk for
           * historical reasons extracts parameters from a GPS Nav message
           * in power of inverse radians.  Hence the need for the boolean flag.
           */
       IonoModel(const double a[4], const double b[4],
                 const bool semicircle_units = true) throw();
-      
+
          /** EngAlmanac constructor.
           * Creates a valid model from and EngAlmanac object.
           * @param[in] engalm An EngAlmanac object.
           */
       IonoModel(const EngAlmanac& engalm) throw();
-      
+
          /** Method to feed the model with satellite-transmitted alpha and
           * beta parameters from the passed almanac.
           * See the IS-GPS-200, 20.3.3.3.3.2.
@@ -111,13 +111,13 @@ namespace gpstk
           */
       void setModel(const double a[4], const double b[4],
                     const bool semicircle_units = true) throw();
-      
+
          /** Return whether the model contains valid data.
           * @return model validity
           */
       bool isValid() const throw()
       { return valid; }
-      
+
          /** Get the ionospheric correction value.
           * @param[in] time Time of the observation.
           * @param[in] rxgeo WGS84 geodetic position of the receiver.
@@ -137,7 +137,7 @@ namespace gpstk
       bool operator==(const IonoModel& right) const throw();
 
          /// Inequality operator
-      bool operator!=(const IonoModel& right) const throw();     
+      bool operator!=(const IonoModel& right) const throw();
 
          /** Get the raw model contents in semicircle units.
           * @param[in,out] a Ionospheric model alpha parameters
@@ -160,6 +160,6 @@ namespace gpstk
    };
       //@}
 
-}  // namespace gpstk
+}  // namespace gnsstk
 
-#endif  // GPSTK_IONOMODEL_HPP
+#endif  // GNSSTK_IONOMODEL_HPP

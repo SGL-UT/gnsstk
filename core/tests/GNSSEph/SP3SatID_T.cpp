@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -53,16 +53,16 @@ public:
 //==========================================================================================================================
    int initializationTest(void)
    {
-      gpstk::TestUtil testFramework("SP3SatID", "Constructor", __FILE__, __LINE__);
+      gnsstk::TestUtil testFramework("SP3SatID", "Constructor", __FILE__, __LINE__);
 
 
          //---------------------------------------------------------------------
          //Does the Explicit Constructor function?
          //---------------------------------------------------------------------
-      gpstk::SP3SatID Compare1(5, gpstk::SatelliteSystem(1));
+      gnsstk::SP3SatID Compare1(5, gnsstk::SatelliteSystem(1));
       testFramework.assert(Compare1.id == 5,
                            "Explicit constructor did not set the correct ID", __LINE__);
-      testFramework.assert(Compare1.system == gpstk::SatelliteSystem(1),
+      testFramework.assert(Compare1.system == gnsstk::SatelliteSystem(1),
                            "Explicit constructor did not set the correct SatelliteSystem", __LINE__);
 
 
@@ -70,10 +70,10 @@ public:
          //Does the Default Constructor function?
          //---------------------------------------------------------------------
       testFramework.changeSourceMethod("ConstructorDefault");
-      gpstk::SP3SatID Compare2;
+      gnsstk::SP3SatID Compare2;
       testFramework.assert(Compare2.id == -1,
                            "Default constructor did not set the expected ID", __LINE__);
-      testFramework.assert(Compare2.system == gpstk::SatelliteSystem(1),
+      testFramework.assert(Compare2.system == gnsstk::SatelliteSystem(1),
                            "Default constructor did not set the expected SatelliteSystem", __LINE__);
 
 
@@ -81,21 +81,21 @@ public:
          //Does the fromString Constructor function?
          //---------------------------------------------------------------------
       testFramework.changeSourceMethod("ConstructorFromString");
-      gpstk::SP3SatID Compare3("G 10");
+      gnsstk::SP3SatID Compare3("G 10");
       testFramework.assert(Compare3.id == 10,
                            "fromString constructor did not set the correct ID", __LINE__);
-      testFramework.assert(Compare3.system == gpstk::SatelliteSystem(1),
+      testFramework.assert(Compare3.system == gnsstk::SatelliteSystem(1),
                            "fromString constructor did not set the correct SatelliteSystem", __LINE__);
 
          //Did the constructor throw an exception for an improper string?
       try
       {
-         gpstk::SP3SatID Compare4("Z 1");
+         gnsstk::SP3SatID Compare4("Z 1");
          testFramework.assert(false,
                               "fromString constructor did not throw an exception for an improper string",
                               __LINE__);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
          testFramework.assert(true, "fromString threw the expected exception",
                               __LINE__);
@@ -105,11 +105,11 @@ public:
          //Does the SatID Constructor function?
          //---------------------------------------------------------------------
       testFramework.changeSourceMethod("ConstructorSatID");
-      gpstk::SatID sat1(7, gpstk::SatelliteSystem(1));
-      gpstk::SP3SatID Compare4(sat1);
+      gnsstk::SatID sat1(7, gnsstk::SatelliteSystem(1));
+      gnsstk::SP3SatID Compare4(sat1);
       testFramework.assert(Compare4.id == 7,
                            "SatID constructor did not set the correct ID", __LINE__);
-      testFramework.assert(Compare4.system == gpstk::SatelliteSystem(1),
+      testFramework.assert(Compare4.system == gnsstk::SatelliteSystem(1),
                            "SatID constructor did not set the correct SatelliteSystem", __LINE__);
 
       return testFramework.countFails();
@@ -121,16 +121,16 @@ public:
 //==========================================================================================================================
    int operatorTest(void) //including <<
    {
-      gpstk::TestUtil testFramework( "SatID", "OperatorEquivalence", __FILE__, __LINE__);
+      gnsstk::TestUtil testFramework( "SatID", "OperatorEquivalence", __FILE__, __LINE__);
 
 
-      gpstk::SP3SatID Compare    (5, gpstk::SatelliteSystem(2) );
-      gpstk::SP3SatID Equivalent (5, gpstk::SatelliteSystem(2) );
-      gpstk::SP3SatID LessThanID (2, gpstk::SatelliteSystem(2) );
-      gpstk::SP3SatID DiffSatSys (5, gpstk::SatelliteSystem(3) );
-      gpstk::SP3SatID DiffEvery  (2, gpstk::SatelliteSystem(3) );
-      gpstk::SP3SatID DiffEvery2 (7, gpstk::SatelliteSystem(1) );
-      gpstk::SP3SatID Redirected (6, gpstk::SatelliteSystem(1) );
+      gnsstk::SP3SatID Compare    (5, gnsstk::SatelliteSystem(2) );
+      gnsstk::SP3SatID Equivalent (5, gnsstk::SatelliteSystem(2) );
+      gnsstk::SP3SatID LessThanID (2, gnsstk::SatelliteSystem(2) );
+      gnsstk::SP3SatID DiffSatSys (5, gnsstk::SatelliteSystem(3) );
+      gnsstk::SP3SatID DiffEvery  (2, gnsstk::SatelliteSystem(3) );
+      gnsstk::SP3SatID DiffEvery2 (7, gnsstk::SatelliteSystem(1) );
+      gnsstk::SP3SatID Redirected (6, gnsstk::SatelliteSystem(1) );
 
          //---------------------------------------------------------------------
          //Does the == Operator function?
@@ -331,26 +331,26 @@ public:
 //==========================================================================================================================
    int fromStringTest(void)
    {
-      gpstk::TestUtil testFramework("SP3SatID", "fromString", __FILE__, __LINE__);
+      gnsstk::TestUtil testFramework("SP3SatID", "fromString", __FILE__, __LINE__);
 
       std::string inputStringArray[12] = {"7", "07", "30", "E10", "E100", "G08", "E08", "R08", "L08", "C08", "J08", "M08"};
       int         expectedID[12]       = {  7,    7,   30,    10,    100,     8,     8,     8,     8,     8,    200,     8};
-      gpstk::SatelliteSystem expectedSatSysArray[12] =
+      gnsstk::SatelliteSystem expectedSatSysArray[12] =
          {
-            gpstk::SatelliteSystem::GPS,
-            gpstk::SatelliteSystem::GPS,
-            gpstk::SatelliteSystem::GPS,
-            gpstk::SatelliteSystem::Galileo,
-            gpstk::SatelliteSystem::Galileo,
-            gpstk::SatelliteSystem::GPS,
-            gpstk::SatelliteSystem::Galileo,
-            gpstk::SatelliteSystem::Glonass,
-            gpstk::SatelliteSystem::LEO,
-            gpstk::SatelliteSystem::BeiDou,
-            gpstk::SatelliteSystem::QZSS,
-            gpstk::SatelliteSystem::Mixed
+            gnsstk::SatelliteSystem::GPS,
+            gnsstk::SatelliteSystem::GPS,
+            gnsstk::SatelliteSystem::GPS,
+            gnsstk::SatelliteSystem::Galileo,
+            gnsstk::SatelliteSystem::Galileo,
+            gnsstk::SatelliteSystem::GPS,
+            gnsstk::SatelliteSystem::Galileo,
+            gnsstk::SatelliteSystem::Glonass,
+            gnsstk::SatelliteSystem::LEO,
+            gnsstk::SatelliteSystem::BeiDou,
+            gnsstk::SatelliteSystem::QZSS,
+            gnsstk::SatelliteSystem::Mixed
          };
-      gpstk::SP3SatID Compare;
+      gnsstk::SP3SatID Compare;
 
 
       for (int i = 0; i < (sizeof(expectedID)/sizeof(expectedID[0])); i++)
@@ -359,14 +359,14 @@ public:
          {
             Compare.fromString(inputStringArray[i]);
          }
-         catch(gpstk::Exception& e)
+         catch(gnsstk::Exception& e)
          {
             std::stringstream s;
             s << "Exception in fromString call on input: " << inputStringArray[i];
             testFramework.assert(false,
                                  s.str(),__LINE__);
          }
-         
+
          testFramework.assert(Compare.id == expectedID[i],
                               "fromString did not set the correct ID", __LINE__);
          testFramework.assert(Compare.system == expectedSatSysArray[i],
@@ -376,11 +376,11 @@ public:
          //Additional check to ensure fromString cannot set an improper string
       try
       {
-         gpstk::SP3SatID Compare4("Z 1");
+         gnsstk::SP3SatID Compare4("Z 1");
          testFramework.assert(false,
                               "fromString did not throw an exception for an improper string", __LINE__);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
          testFramework.assert(true, "fromString threw the expected exception",
                               __LINE__);
@@ -395,7 +395,7 @@ public:
 //==========================================================================================================================
    int toStringTest(void)
    {
-      gpstk::TestUtil testFramework("SP3SatID", "toString", __FILE__, __LINE__);
+      gnsstk::TestUtil testFramework("SP3SatID", "toString", __FILE__, __LINE__);
       std::stringstream s;
       std::string outputString1, compareString1;
       std::string outputString2, compareString2;
@@ -406,10 +406,10 @@ public:
       std::string outputString7, compareString7;
       std::string outputString8, compareString8;
       std::string outputString9, compareString9;
-      
+
       try
       {
-         gpstk::SP3SatID Compare1(5, gpstk::SatelliteSystem::GPS);
+         gnsstk::SP3SatID Compare1(5, gnsstk::SatelliteSystem::GPS);
          outputString1 = Compare1.toString();
          compareString1 = "G05";
          s.str("");
@@ -418,7 +418,7 @@ public:
          testFramework.assert(outputString1 == compareString1,
                               s.str(), __LINE__);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
          s.str("Exception in toString call, expected output: ");
          s << compareString1;
@@ -428,7 +428,7 @@ public:
 
       try
       {
-         gpstk::SP3SatID Compare2(20, gpstk::SatelliteSystem::Galileo);
+         gnsstk::SP3SatID Compare2(20, gnsstk::SatelliteSystem::Galileo);
          outputString2 = Compare2.toString();
          compareString2 = "E20";
          s.str("");
@@ -437,7 +437,7 @@ public:
          testFramework.assert(outputString2 == compareString2,
                               s.str(), __LINE__);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
          s.str("Exception in toString call, expected output: ");
          s << compareString2;
@@ -447,7 +447,7 @@ public:
 
       try
       {
-         gpstk::SP3SatID Compare3(-5, gpstk::SatelliteSystem::GPS);
+         gnsstk::SP3SatID Compare3(-5, gnsstk::SatelliteSystem::GPS);
          outputString3 = Compare3.toString();
          compareString3 = "G-5";
          s.str("");
@@ -456,7 +456,7 @@ public:
          testFramework.assert(outputString3 == compareString3,
                               s.str(), __LINE__);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
          s.str("Exception in toString call, expected output: ");
          s << compareString3;
@@ -466,7 +466,7 @@ public:
 
       try
       {
-         gpstk::SP3SatID Compare4(1, gpstk::SatelliteSystem::Glonass);
+         gnsstk::SP3SatID Compare4(1, gnsstk::SatelliteSystem::Glonass);
          outputString4 = Compare4.toString();
          compareString4 = "R01";
          s.str("");
@@ -475,7 +475,7 @@ public:
          testFramework.assert(outputString4 == compareString4,
                               s.str(), __LINE__);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
          s.str("Exception in toString call, expected output: ");
          s << compareString4;
@@ -485,7 +485,7 @@ public:
 
       try
       {
-         gpstk::SP3SatID Compare5(1, gpstk::SatelliteSystem::LEO);
+         gnsstk::SP3SatID Compare5(1, gnsstk::SatelliteSystem::LEO);
          outputString5 = Compare5.toString();
          compareString5 = "L01";
          s.str("");
@@ -494,7 +494,7 @@ public:
          testFramework.assert(outputString5 == compareString5,
                               s.str(), __LINE__);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
          s.str("Exception in toString call, expected output: ");
          s << compareString5;
@@ -504,7 +504,7 @@ public:
 
       try
       {
-         gpstk::SP3SatID Compare6(1, gpstk::SatelliteSystem::BeiDou);
+         gnsstk::SP3SatID Compare6(1, gnsstk::SatelliteSystem::BeiDou);
          outputString6 = Compare6.toString();
          compareString6 = "C01";
          s.str("");
@@ -513,7 +513,7 @@ public:
          testFramework.assert(outputString6 == compareString6,
                               s.str(), __LINE__);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
          s.str("Exception in toString call, expected output: ");
          s << compareString6;
@@ -523,7 +523,7 @@ public:
 
       try
       {
-         gpstk::SP3SatID Compare7(193, gpstk::SatelliteSystem::QZSS);
+         gnsstk::SP3SatID Compare7(193, gnsstk::SatelliteSystem::QZSS);
          outputString7 = Compare7.toString();
          compareString7 = "J01";
          s.str("");
@@ -532,7 +532,7 @@ public:
          testFramework.assert(outputString7 == compareString7,
                               s.str(), __LINE__);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
          s.str("Exception in toString call, expected output: ");
          s << compareString7;
@@ -542,7 +542,7 @@ public:
 
       try
       {
-         gpstk::SP3SatID Compare8(1, gpstk::SatelliteSystem::Mixed);
+         gnsstk::SP3SatID Compare8(1, gnsstk::SatelliteSystem::Mixed);
          outputString8 = Compare8.toString();
          compareString8 = "M01";
          s.str("");
@@ -551,7 +551,7 @@ public:
          testFramework.assert(outputString8 == compareString8,
                               s.str(), __LINE__);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
          s.str("Exception in toString call, expected output: ");
          s << compareString8;
@@ -562,7 +562,7 @@ public:
       // finally, test that bad system inputs cause '?' outputs from toString
       try
       {
-         gpstk::SP3SatID Compare9(1, gpstk::SatelliteSystem::Unknown);
+         gnsstk::SP3SatID Compare9(1, gnsstk::SatelliteSystem::Unknown);
          outputString9 = Compare9.toString();
          compareString9 = "?-1";
          s.str("");
@@ -571,14 +571,14 @@ public:
          testFramework.assert(outputString9 == compareString9,
                               s.str(), __LINE__);
       }
-      catch(gpstk::Exception& e)
+      catch(gnsstk::Exception& e)
       {
          s.str("Exception in toString call, expected output: ");
          s << compareString9;
          testFramework.assert(false,
                               s.str(),__LINE__);
       }
-      
+
       return testFramework.countFails();
    }
 

@@ -2,13 +2,13 @@ Introduction
 ==================
 
 This documentation describes the architecture and design of the Python bindings
-of the GPS ToolKit (GPSTk), produced by the Space and Geophysics Laboratory (SGL)
+of the GPS ToolKit (GNSSTk), produced by the Space and Geophysics Laboratory (SGL)
 of Applied Research Laboratories, The University of Texas at Austin (ARL:UT).
 
 
-About the GPSTk
+About the GNSSTk
 *****************
-The GPSTK is a library of support routines designed for use by programmers
+The GNSSTK is a library of support routines designed for use by programmers
 developing applications that read and write (particularly in RINEX format),
 process and otherwise manipulate GPS data. It is characterized by the following:
 
@@ -18,14 +18,14 @@ process and otherwise manipulate GPS data. It is characterized by the following:
 - Includes full implementation of the RINEX (Receiver Independent Exchange Format) I/O.
 
 
-The official GPSTk homepage is at http://www.gpstk.org/
-The original C++ API is documented at http://www.gpstk.org/doxygen/
+The official GNSSTk homepage is at http://www.gnsstk.org/
+The original C++ API is documented at http://www.gnsstk.org/doxygen/
 
 
 
-Getting the Python GPSTk
+Getting the Python GNSSTk
 ****************************
-Building the GPSTk from source can be a fairly involved process, see :ref:`build_label`
+Building the GNSSTk from source can be a fairly involved process, see :ref:`build_label`
 for the details.
 
 
@@ -34,12 +34,12 @@ for the details.
 About the Python Bindings
 ********************************************
 Though effort has been taken to reduce the uniquely C++ idioms when using these Python
-classes where possible and practical. The GPSTk is primarily a C++ library and some aspects
+classes where possible and practical. The GNSSTk is primarily a C++ library and some aspects
 may require unusual semantics. It is recommended that you avoid using some of these unusual
-classes, such as gpstk.vector_double (std::vector<double>) as much as a possible.
+classes, such as gnsstk.vector_double (std::vector<double>) as much as a possible.
 A much better replacement would be a numpy array.
 
-Example of how C++ GPSTk reads and prints a Rinex3Obs file:
+Example of how C++ GNSSTk reads and prints a Rinex3Obs file:
 
 .. parsed-literal::
     // Create the input file stream
@@ -57,7 +57,7 @@ Example of how C++ GPSTk reads and prints a Rinex3Obs file:
       std::cout << data << std::endl;
    }
 
-Compare to the simpler Python GPSTk read process:
+Compare to the simpler Python GNSSTk read process:
 
 .. parsed-literal::
    # read in the header and data
@@ -79,9 +79,9 @@ of the C Python API heavily.
 
 Package Organization
 ************************
-All classes and functions are in the gpstk namespace, mirroring the namespace organization
+All classes and functions are in the gnsstk namespace, mirroring the namespace organization
  found on the C++ side.
-Additional sub-packages are represented in the python namespace as gpstk.data and gpstk.test.
+Additional sub-packages are represented in the python namespace as gnsstk.data and gnsstk.test.
 
 How to Use This Documentation
 **************************************
@@ -93,14 +93,14 @@ Changes and additions to the C++ core are noted in this documentation,
 as well as in the docstrings themselves.
 
 A good first step is to browse the things available in the :ref:`quickref_label`
-section. If you are coming from writing C++ GPSTk programs, you should be sure to read
+section. If you are coming from writing C++ GNSSTk programs, you should be sure to read
 the section on how C++ structures have been changed for python.
 
 
 
 Scope
 **********
-The GPSTk C++ library is the product of a large number of people over a
+The GNSSTk C++ library is the product of a large number of people over a
 sparse time period; as a result, the focus of the library has been somewhat
 lost. There are many non-GPS related utilities implemented that have been
 implemented more efficiently, robustly, and accurately by others.
@@ -132,12 +132,12 @@ Any changes for the sake of the Python API could not duplicate code.
 
 **Namespaces:**
 
-The GPSTk largely only uses the gpstk namespace, which is roughly the gpstk package now.
-Exceptions include the subpackages created for gpstk.data and gpstk.test.
+The GNSSTk largely only uses the gnsstk namespace, which is roughly the gnsstk package now.
+Exceptions include the subpackages created for gnsstk.data and gnsstk.test.
 
-Note that SWIG build createa a module called gpstk (gpstk.py and _gpstk.so).
-ALl attributes of this module are inported into a single package namespace "gpstk".
-The subpackages gpstk.data and gpstk.test are unique to the python package, and not 
+Note that SWIG build createa a module called gnsstk (gnsstk.py and _gnsstk.so).
+ALl attributes of this module are inported into a single package namespace "gnsstk".
+The subpackages gnsstk.data and gnsstk.test are unique to the python package, and not 
 available on the C++ side.
 
 **Enumerations:**
@@ -149,10 +149,10 @@ whole enum is no long used.
 
 **Templates:**
 
-Templates in the GPSTk were largely for 3 purposes:
+Templates in the GNSSTk were largely for 3 purposes:
 
 * standard library containers (std::vector<T>, std::map<K,V>)
-* accepting any numeric type (gpstk::Vector<T>)
+* accepting any numeric type (gnsstk::Vector<T>)
 * creating specialized class for use in inheritance
     (such as how YumaAlmanacStore is a subclass of FileStore<YumaHeader>)
 
@@ -160,7 +160,7 @@ Using the standard library containers of C++ is discouraged,
 so only a few were created for use.
 
 The only class that uses the numeric template type that is wrapped
-in gpstk::Vector, which only accepts floating point numbers now.
+in gnsstk::Vector, which only accepts floating point numbers now.
 
 The templates in inheritance are not needed as they are not visible to the end-user.
 
@@ -168,7 +168,7 @@ The templates in inheritance are not needed as they are not visible to the end-u
 
 **Streams:**
 
-Streams were used all over the GPSTk for input and output.
+Streams were used all over the GNSSTk for input and output.
 Many classes had a dump or operator<< function that could be used for
 string output, these have been replaced with the __str__ method.
 
@@ -180,7 +180,7 @@ and is described at :ref:`fileio_label`.
 **Inner Classes:**
 
 SWIG cannot wrap nested classes/structs (as of v2.0.7), so many of the
-inner classes and exceptions were simply pulled into the gpstk namespace.
+inner classes and exceptions were simply pulled into the gnsstk namespace.
 
 
 **Standard Library Classes:**
@@ -205,7 +205,7 @@ are defined in the cpp submodule.
     Reading documentation can get difficult in dealing with heavily-templated
     wrapped C++ code. Use these structures as little as possible.
     If containers are small it might be wise to use the provided functions in
-    gpstk.cpp to convert the containers to native python lists/dicts.
+    gnsstk.cpp to convert the containers to native python lists/dicts.
 
 
 
@@ -213,11 +213,11 @@ are defined in the cpp submodule.
 **Exceptions:**
 
 Exceptions were tricky to get right. In general, most exceptions thrown by
-calling GPSTk routines should be caught in the standard way in Python. ::
+calling GNSSTk routines should be caught in the standard way in Python. ::
 
     try:
-        a = gpstk.someFunction()
-    except gpstk.exceptions.InvalidRequest:  # the most used exception in the GPSTk
+        a = gnsstk.someFunction()
+    except gnsstk.exceptions.InvalidRequest:  # the most used exception in the GNSSTk
         print 'Could not process data.'
 
 When an exception is thrown by the C++ code, it is propagated to the SWIG
@@ -248,9 +248,9 @@ Simple wrappers are added to the library that have a signature of:
 
 Which behaves as expected when used in Python: ::
 
-    >>> import gpstk
-    >>> u = gpstk.Position(100, 200, 300)
-    >>> v = gpstk.Position.convertCartesianToGeocentric(u)
+    >>> import gnsstk
+    >>> u = gnsstk.Position(100, 200, 300)
+    >>> v = gnsstk.Position.convertCartesianToGeocentric(u)
     >>> print v
     (53.30077479951032, 63.434948822921655, 374.16573867739413)
 

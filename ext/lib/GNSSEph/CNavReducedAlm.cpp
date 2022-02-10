@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -49,31 +49,31 @@
 #include "TimeString.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
-namespace gpstk
+namespace gnsstk
 {
    const double CNavReducedAlm::A_ref = 26559710.0;
 
    CNavReducedAlm::CNavReducedAlm()
       :L1HEALTH(1),
-       L2HEALTH(1), 
+       L2HEALTH(1),
        L5HEALTH(1),
        dataLoadedFlag(0)
    {
    }
 
-   CNavReducedAlm::CNavReducedAlm(const AlmType almType, const CommonTime& ctAlm, 
+   CNavReducedAlm::CNavReducedAlm(const AlmType almType, const CommonTime& ctAlm,
                                   const PackedNavBits& pnb, const unsigned int startBit)
       :L1HEALTH(1),
-       L2HEALTH(1), 
+       L2HEALTH(1),
        L5HEALTH(1),
        dataLoadedFlag(0)
    {
       loadData(atCNAV2, ctAlm, pnb, startBit);
    }
 
-   bool CNavReducedAlm::isSameData(const CNavReducedAlm& right) const      
+   bool CNavReducedAlm::isSameData(const CNavReducedAlm& right) const
    {
             // Finally, examine the contents
       if (ctAlmEpoch  != right.ctAlmEpoch) return false;
@@ -84,13 +84,13 @@ namespace gpstk
       if (L1HEALTH    != right.L1HEALTH)   return false;
       if (L2HEALTH    != right.L2HEALTH)   return false;
       if (L5HEALTH    != right.L5HEALTH)   return false;
-      return true; 
+      return true;
    }
 
 
-   void CNavReducedAlm::loadData(const AlmType almType, 
-                                 const CommonTime& ctAlm, 
-                                 const PackedNavBits& pnb, 
+   void CNavReducedAlm::loadData(const AlmType almType,
+                                 const CommonTime& ctAlm,
+                                 const PackedNavBits& pnb,
                                  const unsigned int startBit)
    {
          // Verify that the PackedNavBits contains an appropriate data set
@@ -99,12 +99,12 @@ namespace gpstk
       if (almType==atCNAV2)
       {
          unsigned pageID = pnb.asUnsignedLong(8,6,1);
-         if (pageID!=3) 
+         if (pageID!=3)
          {
             stringstream ss;
             ss << "CNavReducedAlm::loadData().  Expected CNAV-2, Subframe 3, Page 3.   Found page " << pageID;
             InvalidParameter ip(ss.str());
-            GPSTK_THROW(ip); 
+            GNSSTK_THROW(ip);
          }
       }
          // Check CNAV case
@@ -116,7 +116,7 @@ namespace gpstk
             stringstream ss;
             ss << "CNavReducedAlm::loadData().  Expected CNAV, MT 12 or MT 21.   Found MT " << mt;
             InvalidParameter ip(ss.str());
-            GPSTK_THROW(ip); 
+            GNSSTK_THROW(ip);
          }
       }
 
@@ -126,16 +126,16 @@ namespace gpstk
       if (endBit>pnb.getNumBits())
       {
          stringstream ss;
-         ss << "Requested packet from bits " << startBit << "-" << (endBit-1) << " but there are only " 
-            << pnb.getNumBits() << " in the PackedNavBits object."; 
+         ss << "Requested packet from bits " << startBit << "-" << (endBit-1) << " but there are only "
+            << pnb.getNumBits() << " in the PackedNavBits object.";
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
 
       unsigned prnLen = 6;
       unsigned offset = 0;
       if (almType==atCNAV2) { offset+=2; prnLen=8; }
-      
+
       unsigned prnId = pnb.asUnsignedLong(startBit, prnLen, 1);
       if (prnId==0)
       {
@@ -143,7 +143,7 @@ namespace gpstk
          ss << "Reduced almanac packet starting at bit " << startBit << " has PRN of 0."
             << "  It does not contain data. ";
          InvalidParameter ip(ss.str());
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
 
       ctAlmEpoch = ctAlm;
@@ -154,17 +154,17 @@ namespace gpstk
       A = deltaA + A_ref;
 
       nextStart = startBit + 14 + offset;
-      OMEGA0 = pnb.asDoubleSemiCircles(nextStart, 7, -6); 
+      OMEGA0 = pnb.asDoubleSemiCircles(nextStart, 7, -6);
 
       nextStart = startBit + 21 + offset;
-      Psi0 = pnb.asDoubleSemiCircles(nextStart, 7, -6); 
+      Psi0 = pnb.asDoubleSemiCircles(nextStart, 7, -6);
 
       nextStart = startBit + 28 + offset;
       L1HEALTH = (unsigned short) pnb.asUnsignedLong(nextStart,1,1);
       L2HEALTH = (unsigned short) pnb.asUnsignedLong(nextStart+1,1,1);
       L5HEALTH = (unsigned short) pnb.asUnsignedLong(nextStart+2,1,1);
 
-      dataLoadedFlag = true;   
+      dataLoadedFlag = true;
    } // end of loadData()
 
          /** Output the contents of this orbit data to the given stream.
@@ -175,10 +175,10 @@ namespace gpstk
       if (!dataLoadedFlag)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
 
-      string ssys = convertSatelliteSystemToString(subjSv.system); 
+      string ssys = convertSatelliteSystemToString(subjSv.system);
       s << setw(7) << ssys;
       s << ":" << setw(2) << setfill('0') << subjSv.id << setfill(' ');
    }

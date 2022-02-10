@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -43,7 +43,7 @@
 #include "TimeConverters.hpp"
 #include "GPSWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       // Not really keen on having the day of week names in
       // GPSWeekZcount but this is where the %w translation takes
@@ -81,7 +81,7 @@ namespace gpstk
       catch (InvalidParameter& ip)
       {
          InvalidRequest ir(ip);
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
    }
 
@@ -93,7 +93,7 @@ namespace gpstk
       if (ct < MIN_CT)
       {
          InvalidRequest ir("Unable to convert CommonTime to GPSWeekZcount.");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
 
       long day, sod;
@@ -115,7 +115,7 @@ namespace gpstk
    {
       try
       {
-         using gpstk::StringUtils::formattedPrint;
+         using gnsstk::StringUtils::formattedPrint;
 
          std::string rv = GPSWeek::printf( fmt );
 
@@ -137,9 +137,9 @@ namespace gpstk
                               "Ps", StringUtils::asString(timeSystem).c_str() );
          return rv;
       }
-      catch( gpstk::StringUtils::StringException& exc )
+      catch( gnsstk::StringUtils::StringException& exc )
       {
-         GPSTK_RETHROW( exc );
+         GNSSTK_RETHROW( exc );
       }
    }
 
@@ -147,7 +147,7 @@ namespace gpstk
    {
       try
       {
-         using gpstk::StringUtils::formattedPrint;
+         using gnsstk::StringUtils::formattedPrint;
 
          std::string rv = GPSWeek::printError( fmt );
 
@@ -165,15 +165,15 @@ namespace gpstk
                               "Ps", getError().c_str() );
          return rv;
       }
-      catch( gpstk::StringUtils::StringException& exc )
+      catch( gnsstk::StringUtils::StringException& exc )
       {
-         GPSTK_RETHROW( exc );
+         GNSSTK_RETHROW( exc );
       }
    }
 
    bool GPSWeekZcount::setFromInfo( const IdToValue& info )
    {
-      using namespace gpstk::StringUtils;
+      using namespace gnsstk::StringUtils;
 
       GPSWeek::setFromInfo(info);
 
@@ -203,7 +203,7 @@ namespace gpstk
                break;
 
             case 'P':
-               timeSystem = gpstk::StringUtils::asTimeSystem(i->second);
+               timeSystem = gnsstk::StringUtils::asTimeSystem(i->second);
                break;
 
             default:
@@ -247,8 +247,8 @@ namespace gpstk
       week += inWeeks;
       if (week < 0)
       {
-         gpstk::InvalidRequest exc("addWeeks results in negative week");
-         GPSTK_THROW(exc);
+         gnsstk::InvalidRequest exc("addWeeks results in negative week");
+         GNSSTK_THROW(exc);
       }
       return *this;
    }
@@ -284,22 +284,22 @@ namespace gpstk
          zcount = tmp;
          return *this;
       }
-      catch (gpstk::InvalidRequest& ir)
+      catch (gnsstk::InvalidRequest& ir)
       {
          week = originalWeek;
          zcount = originalZcount;
          ir.addText("Did not add " + StringUtils::asString(inZcounts) +
                     " Z-counts.");
-         GPSTK_RETHROW(ir);
+         GNSSTK_RETHROW(ir);
       }
-      catch (gpstk::InvalidParameter& ip)
+      catch (gnsstk::InvalidParameter& ip)
       {
          week = originalWeek;
          zcount = originalZcount;
-         gpstk::InvalidRequest ir(ip);
+         gnsstk::InvalidRequest ir(ip);
          ir.addText("Did not add " + StringUtils::asString(inZcounts) +
                     " Z-counts.");
-         GPSTK_THROW(ir);
+         GNSSTK_THROW(ir);
       }
    }
 

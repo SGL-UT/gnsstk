@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,8 +41,8 @@
  * Vector operators, including arithmetic, trig, cross, RMS, etc
  */
 
-#ifndef GPSTK_VECTOR_OPERATORS_HPP
-#define GPSTK_VECTOR_OPERATORS_HPP
+#ifndef GNSSTK_VECTOR_OPERATORS_HPP
+#define GNSSTK_VECTOR_OPERATORS_HPP
 
 #include "Vector.hpp"
 
@@ -55,7 +55,7 @@ namespace std
 #define VecBaseNewUnaryOperator(func)                                   \
    /** performs func on each element of x, returning a new vector */    \
    template <class T, class BaseClass>                                  \
-   gpstk::Vector<T> func(const gpstk::ConstVectorBase<T, BaseClass>& x) \
+   gnsstk::Vector<T> func(const gnsstk::ConstVectorBase<T, BaseClass>& x) \
    {                                                                    \
       BaseClass toReturn(x.size());                                     \
       size_t i; for (i=0; i < x.size(); i++) toReturn[i] = func(x[i]);  \
@@ -79,7 +79,7 @@ namespace std
    VecBaseNewUnaryOperator(tanh)
 }
 
-namespace gpstk
+namespace gnsstk
 {
 
 #define VecBaseNewBinaryOperator(func, retval)                          \
@@ -91,7 +91,7 @@ namespace gpstk
       if (l.size() != r.size())                                         \
       {                                                                 \
          VectorException e("Unequal lengths vectors");                  \
-         GPSTK_THROW(e);                                                \
+         GNSSTK_THROW(e);                                                \
       }                                                                 \
       retval toReturn(l.size());                                        \
       size_t i;                                                         \
@@ -115,7 +115,7 @@ namespace gpstk
       size_t i;                                                         \
       for (i=0; i < r.size(); i++) toReturn[i] = l func r[i];           \
       return toReturn;                                                  \
-   } 
+   }
 
    VecBaseNewBinaryOperator(*, Vector<T>)
    VecBaseNewBinaryOperator(/, Vector<T>)
@@ -136,8 +136,8 @@ namespace gpstk
 #define VecBaseNewBinaryTranscendentalOperator(func, retval)            \
    /** performs func between each element of l and r, returning a retval */ \
    template <class T, class BaseClass, class BaseClass2>                \
-   retval func(const gpstk::ConstVectorBase<T, BaseClass>& l,           \
-               const gpstk::ConstVectorBase<T, BaseClass2>& r)          \
+   retval func(const gnsstk::ConstVectorBase<T, BaseClass>& l,           \
+               const gnsstk::ConstVectorBase<T, BaseClass2>& r)          \
    {                                                                    \
       retval toReturn(l.size());                                        \
       size_t i;                                                         \
@@ -146,7 +146,7 @@ namespace gpstk
    }                                                                    \
    /** performs func between each element of l and (scalar)r, returning a retval */ \
    template <class T, class BaseClass>                                  \
-   retval func(const gpstk::ConstVectorBase<T, BaseClass>& l, const T r) \
+   retval func(const gnsstk::ConstVectorBase<T, BaseClass>& l, const T r) \
    {                                                                    \
       retval toReturn(l.size());                                        \
       size_t i;                                                         \
@@ -155,25 +155,25 @@ namespace gpstk
    }                                                                    \
    /** performs func between (scalar)l and each element of r, returning a retval */ \
    template <class T, class BaseClass>                                  \
-   retval func(const T l, const gpstk::ConstVectorBase<T, BaseClass>& r) \
+   retval func(const T l, const gnsstk::ConstVectorBase<T, BaseClass>& r) \
    {                                                                    \
       retval toReturn(r.size());                                        \
       size_t i;                                                         \
       for (i=0; i < r.size(); i++) toReturn[i] = func(l, r[i]);         \
       return toReturn;                                                  \
-   } 
+   }
 
    /** finds the cross product between l and r
     * @throw VectorException
     */
-   template <class T, class BaseClass, class BaseClass2> 
-   Vector<T> cross(const ConstVectorBase<T, BaseClass>& l, 
+   template <class T, class BaseClass, class BaseClass2>
+   Vector<T> cross(const ConstVectorBase<T, BaseClass>& l,
                    const ConstVectorBase<T, BaseClass2>& r)
-   { 
+   {
       if ((l.size() != 3) && (r.size() != 3))
       {
          VectorException e("Cross product requires vectors of size 3");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       BaseClass toReturn(3);
       toReturn[0] = l[1] * r[2] - l[2] * r[1];
@@ -184,27 +184,27 @@ namespace gpstk
 
       /** returns a new vector with the normalized version of l */
    template <class T, class BaseClass>
-   Vector<T> normalize(const ConstVectorBase<T, BaseClass>& l) 
-   { return l / norm(l); } 
+   Vector<T> normalize(const ConstVectorBase<T, BaseClass>& l)
+   { return l / norm(l); }
 
       /** returns the root-sum-square of the elements of l */
    template <class T, class BaseClass>
-   T RSS(const ConstVectorBase<T, BaseClass>& l) 
-   { return norm(l); } 
+   T RSS(const ConstVectorBase<T, BaseClass>& l)
+   { return norm(l); }
 
       /** returns the root-mean-square of the elements of l */
    template <class T, class BaseClass>
-   T RMS(const ConstVectorBase<T, BaseClass>& l) 
-   { return norm(l)/SQRT(T(l.size())); } 
+   T RMS(const ConstVectorBase<T, BaseClass>& l)
+   { return norm(l)/SQRT(T(l.size())); }
 
       //@}
- 
+
 }  // namespace
 
 namespace std
 {
-   VecBaseNewBinaryTranscendentalOperator(atan, gpstk::Vector<T>)
-   VecBaseNewBinaryTranscendentalOperator(pow, gpstk::Vector<T>)
+   VecBaseNewBinaryTranscendentalOperator(atan2, gnsstk::Vector<T>)
+   VecBaseNewBinaryTranscendentalOperator(pow, gnsstk::Vector<T>)
 }
 
 #endif

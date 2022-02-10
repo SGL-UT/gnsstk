@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -48,18 +48,18 @@ class Vector_T
    /* Tests the initialization of Vector objects */
    int initializationTest(void)
    {
-      gpstk::TestUtil testFramework("Vector","initializationTest",__FILE__,__LINE__);
+      gnsstk::TestUtil testFramework("Vector","initializationTest",__FILE__,__LINE__);
       std::string failMesg;
 
       int badCount=0;
 
-      gpstk::Vector<double> v1(250,1.0);
-      gpstk::Vector<double> v2(1000,5.0);
-      gpstk::Vector<double> st(250); //Initialize without values
-      gpstk::Vector<double> Compare(v1); //Copy Constructor
+      gnsstk::Vector<double> v1(250,1.0);
+      gnsstk::Vector<double> v2(1000,5.0);
+      gnsstk::Vector<double> st(250); //Initialize without values
+      gnsstk::Vector<double> Compare(v1); //Copy Constructor
 
       std::valarray<double> valarray1(10.0, 250);
-      gpstk::Vector<double> val(valarray1);
+      gnsstk::Vector<double> val(valarray1);
 
       int i = 0;
 
@@ -124,13 +124,13 @@ class Vector_T
    /* Tests addition and subtraction between vector objects */
    int operatorTest(void)
    {
-      gpstk::TestUtil testFramework( "Vector", "== Operator", __FILE__, __LINE__);
+      gnsstk::TestUtil testFramework( "Vector", "== Operator", __FILE__, __LINE__);
       std::string failMesg;
 
-      gpstk::Vector<double> v1(3,1.0);
-      gpstk::Vector<double> v2(12,3.0);
-      gpstk::Vector<double> v3 = v2;
-      gpstk::Vector<double> v4 = -v1;
+      gnsstk::Vector<double> v1(3,1.0);
+      gnsstk::Vector<double> v2(12,3.0);
+      gnsstk::Vector<double> v3 = v2;
+      gnsstk::Vector<double> v4 = -v1;
 
       int badCount = 0;
 
@@ -162,7 +162,7 @@ class Vector_T
       testFramework.changeSourceMethod("+= Operator");
       v2 -= v3; // 5 5 5 ...
       v2 -= 4; // 1 1 1 ...
-   
+
       for(int i = 0; i < v1.size(); i++)
       {
       failMesg = "Were the previous subtraction operators successful?";
@@ -171,7 +171,7 @@ class Vector_T
       testFramework.assert(badCount==0, failMesg, __LINE__);
 
       v2 += 2; // 3 3 3 ...
-   
+
       v1 = v1&&v2; // 3 3 3 3 3 3 ...
 
       failMesg = "Was the previous && operators successful in joining similar vectors?";

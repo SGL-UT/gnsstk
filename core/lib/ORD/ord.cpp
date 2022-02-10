@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -45,7 +45,7 @@
 using std::vector;
 using std::cout;
 
-namespace gpstk {
+namespace gnsstk {
 namespace ord {
 
 // When calculating range with the receiver's clock, the rotation of the earth
@@ -75,23 +75,23 @@ double IonosphereFreeRange(const std::vector<double>& frequencies,
         const std::vector<double>& pseudoranges) {
     // Check vectors are same length
     if (frequencies.size() != pseudoranges.size()) {
-        gpstk::Exception exc(
+        gnsstk::Exception exc(
             "Mismatch between frequency and pseudorange array size");
-        GPSTK_THROW(exc)
+        GNSSTK_THROW(exc)
     }
 
     // Check vectors are at least two
     if (frequencies.size() < 2) {
-        gpstk::Exception exc(
+        gnsstk::Exception exc(
             "Multiple frequency and range values are required.");
-        GPSTK_THROW(exc)
+        GNSSTK_THROW(exc)
     }
 
     // Check vectors aren't greater than two
     if (frequencies.size() > 2) {
-        gpstk::Exception exc(
+        gnsstk::Exception exc(
             "Only dual-frequency ionosphere correction is supported.");
-        GPSTK_THROW(exc)
+        GNSSTK_THROW(exc)
     }
 
     // TODO(someone): Add proper gamma calculation for arbitrary
@@ -105,9 +105,9 @@ double IonosphereFreeRange(const std::vector<double>& frequencies,
     return icpr;
 }
 
-double IonosphereModelCorrection(const gpstk::IonoModelStore& ionoModel,
-        const gpstk::CommonTime& time, CarrierBand band,
-        const gpstk::Position& rxLoc, const gpstk::Xvt& svXvt) {
+double IonosphereModelCorrection(const gnsstk::IonoModelStore& ionoModel,
+        const gnsstk::CommonTime& time, CarrierBand band,
+        const gnsstk::Position& rxLoc, const gnsstk::Xvt& svXvt) {
     Position trx(rxLoc);
     Position svPos(svXvt);
 
@@ -118,14 +118,19 @@ double IonosphereModelCorrection(const gpstk::IonoModelStore& ionoModel,
     return -iono;
 }
 
-gpstk::Xvt getSvXvt(const gpstk::SatID& satId, const gpstk::CommonTime& time,
-        const gpstk::XvtStore<gpstk::SatID>& ephemeris) {
-    return ephemeris.getXvt(satId, time);
+gnsstk::Xvt getSvXvt(const gnsstk::SatID& satId, const gnsstk::CommonTime& time,
+        NavLibrary& ephemeris) {
+   Xvt rv;
+      /** @todo getXvt was expected to throw an exception on failure
+       * in the past.  This assert more or less mimics that behavior.
+       * Refactoring is needed.  */
+   GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), time, rv));
+   return rv;
 }
 
-double RawRange1(const gpstk::Position& rxLoc, const gpstk::SatID& satId,
-        const gpstk::CommonTime& timeReceived,
-        const gpstk::XvtStore<gpstk::SatID>& ephemeris, gpstk::Xvt& svXvt) {
+double RawRange1(const gnsstk::Position& rxLoc, const gnsstk::SatID& satId,
+        const gnsstk::CommonTime& timeReceived,
+        NavLibrary& ephemeris, gnsstk::Xvt& svXvt) {
     try {
         int nit;
         double tof, tof_old, rawrange;
@@ -143,9 +148,13 @@ double RawRange1(const gpstk::Position& rxLoc, const gpstk::SatID& satId,
             tof_old = tof;
             // get SV position
             try {
-                svPosVel = ephemeris.getXvt(satId, transmit);
+                  /** @todo getXvt was expected to throw an exception on
+                   * failure in the past.  This assert more or less mimics
+                   * that behavior.  Refactoring is needed.  */
+               GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), transmit,
+                                              svPosVel));
             } catch (InvalidRequest& e) {
-                GPSTK_RETHROW(e);
+                GNSSTK_RETHROW(e);
             }
 
             svPosVel = rotateEarth(rxLoc, svPosVel, ellipsoid);
@@ -158,14 +167,14 @@ double RawRange1(const gpstk::Position& rxLoc, const gpstk::SatID& satId,
         svXvt = svPosVel;
 
         return rawrange;
-    } catch (gpstk::Exception& e) {
-        GPSTK_RETHROW(e);
+    } catch (gnsstk::Exception& e) {
+        GNSSTK_RETHROW(e);
     }
 }
 
-double RawRange2(double pseudorange, const gpstk::Position& rxLoc,
-        const gpstk::SatID& satId, const gpstk::CommonTime& time,
-        const gpstk::XvtStore<gpstk::SatID>& ephemeris, gpstk::Xvt& svXvt) {
+double RawRange2(double pseudorange, const gnsstk::Position& rxLoc,
+        const gnsstk::SatID& satId, const gnsstk::CommonTime& time,
+        NavLibrary& ephemeris, gnsstk::Xvt& svXvt) {
     try {
         CommonTime tt, transmit;
         Xvt svPosVel;     // Initialize to zero
@@ -181,9 +190,13 @@ double RawRange2(double pseudorange, const gpstk::Position& rxLoc,
         for (int i = 0; i < 2; i++) {
             // get SV position
             try {
-                svPosVel = ephemeris.getXvt(satId, tt);
+                  /** @todo getXvt was expected to throw an exception on
+                   * failure in the past.  This assert more or less mimics
+                   * that behavior.  Refactoring is needed.  */
+               GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), tt,
+                                              svPosVel));
             } catch (InvalidRequest& e) {
-                GPSTK_RETHROW(e);
+                GNSSTK_RETHROW(e);
             }
             tt = transmit;
             // remove clock bias and relativity correction
@@ -200,18 +213,23 @@ double RawRange2(double pseudorange, const gpstk::Position& rxLoc,
         svXvt = svPosVel;
 
         return rawrange;
-    } catch (gpstk::Exception& e) {
-        GPSTK_RETHROW(e);
+    } catch (gnsstk::Exception& e) {
+        GNSSTK_RETHROW(e);
     }
 }
 
-double RawRange3(double pseudorange, const gpstk::Position& rxLoc,
-        const gpstk::SatID& satId, const gpstk::CommonTime& time,
-        const gpstk::XvtStore<gpstk::SatID>& ephemeris, gpstk::Xvt& svXvt) {
+double RawRange3(double pseudorange, const gnsstk::Position& rxLoc,
+        const gnsstk::SatID& satId, const gnsstk::CommonTime& time,
+        NavLibrary& ephemeris, gnsstk::Xvt& svXvt) {
     Position trx(rxLoc);
     trx.asECEF();
 
-    Xvt svPosVel = ephemeris.getXvt(satId, time);
+    Xvt svPosVel;
+       /** @todo getXvt was expected to throw an exception on
+        * failure in the past.  This assert more or less mimics
+        * that behavior.  Refactoring is needed.  */
+    GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), time,
+                                   svPosVel));
 
     // compute rotation angle in the time of signal transit
 
@@ -235,33 +253,38 @@ double RawRange3(double pseudorange, const gpstk::Position& rxLoc,
     return rawrange;
 }
 
-double RawRange4(const gpstk::Position& rxLoc, const gpstk::SatID& satId,
-        const gpstk::CommonTime& time,
-        const gpstk::XvtStore<gpstk::SatID>& ephemeris, gpstk::Xvt& svXvt) {
+double RawRange4(const gnsstk::Position& rxLoc, const gnsstk::SatID& satId,
+        const gnsstk::CommonTime& time,
+        NavLibrary& ephemeris, gnsstk::Xvt& svXvt) {
     try {
-       gpstk::GPSEllipsoid gm;
-       Xvt svPosVel = ephemeris.getXvt(satId, time);
+       gnsstk::GPSEllipsoid gm;
+       Xvt svPosVel;
+          /** @todo getXvt was expected to throw an exception on
+           * failure in the past.  This assert more or less mimics
+           * that behavior.  Refactoring is needed.  */
+       GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), time,
+                                      svPosVel));
        double pr = svPosVel.preciseRho(rxLoc, gm);
        return RawRange2(pr, rxLoc, satId, time, ephemeris, svXvt);
     }
-    catch(gpstk::Exception& e) {
-       GPSTK_RETHROW(e);
+    catch(gnsstk::Exception& e) {
+       GNSSTK_RETHROW(e);
     }
 }
 
-double SvClockBiasCorrection(const gpstk::Xvt& svXvt) {
+double SvClockBiasCorrection(const gnsstk::Xvt& svXvt) {
     double svclkbias = svXvt.clkbias * C_MPS;
     double svclkdrift = svXvt.clkdrift * C_MPS;
     return -svclkbias;
 }
 
-double SvRelativityCorrection(gpstk::Xvt& svXvt) {
+double SvRelativityCorrection(gnsstk::Xvt& svXvt) {
     double relativity = svXvt.computeRelativityCorrection() * C_MPS;
     return -relativity;
 }
 
-double TroposphereCorrection(const gpstk::TropModel& tropModel,
-        const gpstk::Position& rxLoc, const gpstk::Xvt& svXvt) {
+double TroposphereCorrection(const gnsstk::TropModel& tropModel,
+        const gnsstk::Position& rxLoc, const gnsstk::Xvt& svXvt) {
     Position trx(rxLoc);
     Position svPos(svXvt);
 
@@ -279,17 +302,17 @@ double TroposphereCorrection(const gpstk::TropModel& tropModel,
  *
 double calculate_ord(const std::vector<CarrierBand>& bands,
                      const std::vector<double>& pseudoranges,
-                     const gpstk::Position& rx_loc,
-                     const gpstk::SatID& sat_id,
-                     const gpstk::CommonTime& transmit_time,
-                     const gpstk::CommonTime& receive_time,
-                     const gpstk::IonoModelStore& iono_model,
-                     const gpstk::TropModel& trop_model,
-                     const gpstk::XvtStore<gpstk::SatID>& ephemeris,
+                     const gnsstk::Position& rx_loc,
+                     const gnsstk::SatID& sat_id,
+                     const gnsstk::CommonTime& transmit_time,
+                     const gnsstk::CommonTime& receive_time,
+                     const gnsstk::IonoModelStore& iono_model,
+                     const gnsstk::TropModel& trop_model,
+                     NavLibrary& ephemeris,
                      int range_method) {
     double ps_range = IonosphereFreeRange(bands, pseudoranges);
 
-    gpstk::Xvt sv_xvt;
+    gnsstk::Xvt sv_xvt;
     // find raw_range
     double range = 0;
     switch (range_method) {
@@ -328,4 +351,4 @@ double calculate_ord(const std::vector<CarrierBand>& bands,
  */
 
 }  // namespace ord
-}  // namespace gpstk
+}  // namespace gnsstk

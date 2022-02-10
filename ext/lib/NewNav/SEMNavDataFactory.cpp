@@ -1,38 +1,38 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,10 +40,11 @@
 #include "SEMStream.hpp"
 #include "SEMHeader.hpp"
 #include "GPSLNavHealth.hpp"
+#include "GPSWeekSecond.hpp"
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    SEMNavDataFactory ::
    SEMNavDataFactory()
@@ -56,7 +57,8 @@ namespace gpstk
 
 
    bool SEMNavDataFactory ::
-   loadIntoMap(const std::string& filename, NavMessageMap& navMap)
+   loadIntoMap(const std::string& filename, NavMessageMap& navMap,
+               NavNearMessageMap& navNearMap, OffsetCvtMap& ofsMap)
    {
       bool rv = true;
       bool processAlm = (procNavTypes.count(NavMessageType::Almanac) > 0);
@@ -116,7 +118,7 @@ namespace gpstk
                {
                   if (alm->validate() == expect)
                   {
-                     if (!addNavData(alm))
+                     if (!addNavData(alm, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
@@ -124,7 +126,7 @@ namespace gpstk
                {
                   if (health->validate() == expect)
                   {
-                     if (!addNavData(health))
+                     if (!addNavData(health, navMap, navNearMap, ofsMap))
                         return false;
                   }
                }
@@ -133,18 +135,18 @@ namespace gpstk
             {
                if (processAlm)
                {
-                  if (!addNavData(alm))
+                  if (!addNavData(alm, navMap, navNearMap, ofsMap))
                      return false;
                }
                if (processHea)
                {
-                  if (!addNavData(health))
+                  if (!addNavData(health, navMap, navNearMap, ofsMap))
                      return false;
                }
             }
          }
       }
-      catch (gpstk::Exception& exc)
+      catch (gnsstk::Exception& exc)
       {
          rv = false;
          cerr << exc << endl;
@@ -236,6 +238,8 @@ namespace gpstk
       gps = dynamic_cast<GPSLNavHealth*>(healthOut.get());
          // NavData
       fillNavData(navIn, healthOut);
+         // this is the only timestamp we have from SEM
+      gps->timeStamp = GPSWeekSecond(navIn.week, navIn.Toa);
          // GPSLNavHealth
       gps->svHealth = navIn.SV_health;
       return rv;

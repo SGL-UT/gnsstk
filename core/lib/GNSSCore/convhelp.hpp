@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,12 +41,12 @@
  * Conversion of units (deg F to C, meters to cycles, etc)
  */
 
-#ifndef GPSTK_CONVHELP_HPP
-#define GPSTK_CONVHELP_HPP
+#ifndef GNSSTK_CONVHELP_HPP
+#define GNSSTK_CONVHELP_HPP
 
 #include "EllipsoidModel.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /** @defgroup geodeticgroup Geodetic coordinates and geoids */
       //@{
@@ -63,7 +63,7 @@ namespace gpstk
    {
       return ellipsoid.c()/freq * phase;
    }
-   
+
       /**
        * Convert a range and frequency to cycles
        * @param range Distance in meters
@@ -76,7 +76,7 @@ namespace gpstk
    {
       return freq/ellipsoid.c() * range;
    }
-   
+
       /**
        * Convert a temperature from Celsius to Fahrenheit
        * @param c Temperature in degrees Celsius
@@ -87,7 +87,7 @@ namespace gpstk
    {
       return 9.0 / 5.0 * c + 32;
    }
-   
+
       /**
        * Convert a temperature from Fahrenheit to Celsius
        * @param f Temperature in degrees Fahrenheit
@@ -98,7 +98,7 @@ namespace gpstk
    {
       return 5.0 / 9.0 * (f - 32);
    }
-   
+
       /**
        * Convert pressure from millibars to inches of mercury
        * @param mb Pressure in millibars
@@ -109,7 +109,7 @@ namespace gpstk
    {
       return mb / 33.8638815789;
    }
-   
+
       /**
        * Convert pressure from inches of mercury to millibars
        * @param hg Pressure in inches of mercury

@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -48,10 +48,10 @@
 #include "SEMStream.hpp"
 
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    SEMData::SEMData()
          : ecc(0, FFLead::Zero, 15, 4, 0, 'E', FFSign::NegSpace),
@@ -86,15 +86,15 @@ namespace gpstk
       strm << asString<short>(URAnum) << endl;
 
       //Ecc, i_offset, OMEGAdot
-      strm << ecc << " " << (i_offset / gpstk::PI) << " "
-           << (OMEGAdot / gpstk::PI) << endl;
+      strm << ecc << " " << (i_offset / gnsstk::PI) << " "
+           << (OMEGAdot / gnsstk::PI) << endl;
 
       //Ahalf, OMEGA0, w
-      strm << Ahalf << " " << (OMEGA0/gpstk::PI) << " " << (w/gpstk::PI)
+      strm << Ahalf << " " << (OMEGA0/gnsstk::PI) << " " << (w/gnsstk::PI)
            << endl;
 
       //M0, AF0, AF1
-      strm << (M0/gpstk::PI) << " " << AF0 << " " << AF1 << endl;
+      strm << (M0/gnsstk::PI) << " " << AF0 << " " << AF1 << endl;
 
       //SV_health
       strm << asString<short>(SV_health) << endl;
@@ -153,9 +153,9 @@ namespace gpstk
       length = line.length() - front;
       OMEGAdot = line.substr(front,length);
       // Convert from semicircles to radians.
-      i_offset *= gpstk::PI;
-      i_total *= gpstk::PI;
-      OMEGAdot *= gpstk::PI;
+      i_offset *= gnsstk::PI;
+      i_total *= gnsstk::PI;
+      OMEGAdot *= gnsstk::PI;
 
       // Sixth line - Sqrt of A, Omega0, and Arg of Perigee
       strm.formattedGetLine(line, true);
@@ -172,9 +172,9 @@ namespace gpstk
 
       front = line.find_first_not_of(whitespace,end);
       length = line.length() - front;
-      OMEGA0 *= gpstk::PI;
+      OMEGA0 *= gnsstk::PI;
       w = line.substr(front,length);
-      w *= gpstk::PI;
+      w *= gnsstk::PI;
 
       // Seventh Line - M0, AF0, AF1
       strm.formattedGetLine(line, true);
@@ -183,7 +183,7 @@ namespace gpstk
       end = line.find_first_of(whitespace,front);
       length = end - front;
       M0 = line.substr(front,length);
-      M0 *= gpstk::PI;
+      M0 *= gnsstk::PI;
 
       front = line.find_first_not_of(whitespace,end);
       end = line.find_first_of(whitespace,front);
@@ -237,54 +237,6 @@ namespace gpstk
                    w, M0, AF0, AF1, Toa, xmit_time, week, SV_health);
 
       return ao;
-   }
-
-   SEMData::operator OrbAlmGen() const
-   {
-     OrbAlmGen oag;
-
-     oag.AHalf    = Ahalf; 
-     oag.A        = Ahalf * Ahalf; 
-     oag.af1      = AF1;
-     oag.af0      = AF0;
-     oag.OMEGA0   = OMEGA0; 
-     oag.ecc      = ecc;
-     oag.deltai   = i_offset;
-     oag.i0       = i_total;
-     oag.OMEGAdot = OMEGAdot;
-     oag.w        = w;
-     oag.M0       = M0;
-     oag.toa      = Toa;
-     oag.health   = SV_health; 
-     
-     // At this writing Yuma almanacs only exist for GPS
-     oag.subjectSV = SatID(PRN, SatelliteSystem::GPS); 
-
-     // Unfortunately, we've NO IDEA which SV transmitted 
-     // these data.
-     oag.satID = SatID(0,SatelliteSystem::GPS); 
-
-     // 
-     oag.ctToe = GPSWeekSecond(week,Toa,TimeSystem::GPS);
-
-     // There is no transmit time in the SEM alamanc format.  
-     // Therefore, beginValid and endvalid are estimated.  The
-     // estimate is based on IS-GPS-200 Table 20-XIII.  
-     oag.beginValid = oag.ctToe - (70 * 3600.0);
-     oag.endValid   = oag.beginValid + (144 * 3600.0);
-
-     oag.dataLoadedFlag = true; 
-     oag.setHealthy(false);
-     if (oag.health==0) 
-        oag.setHealthy(true);
-
-        // It is assumed that the data were broadcast on
-        // each of L1 C/A, L1 P(Y), and L2 P(Y).   We'll
-        // load obsID with L1 C/A for the sake of completeness,
-        // but this will probably never be examined.
-     oag.obsID = ObsID(ObservationType::NavMsg,CarrierBand::L1,TrackingCode::CA);
-
-     return oag;       
    }
 
 

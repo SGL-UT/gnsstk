@@ -1,0 +1,49 @@
+#!/bin/bash
+
+exit_with_usage ()
+{
+    echo "Usage: $0 --prefix|--includedir|--libdir|--bindir|--help"
+    exit $1
+}
+
+if [ "$1" = "" ] ; then
+    exit_with_usage 1
+fi
+
+INCLUDE_DIR=@CMAKE_INSTALL_PREFIX@/@GNSSTK_INCLUDE_PARENT@
+BIN_DIR=@CMAKE_INSTALL_PREFIX@/bin
+LIBRARY_DIR=@CMAKE_INSTALL_PREFIX@/lib
+ROOT_DIR=@CMAKE_INSTALL_PREFIX@
+
+# Scan for --help or unknown argument.
+for ARG in $*
+do
+    case $ARG in
+        --help)
+            exit_with_usage 0
+        ;;
+        --prefix|--includedir|--libdir|--bindir|--help)
+        ;;
+        *)
+            exit_with_usage 1
+        ;;
+    esac
+done
+
+for ARG in $*
+do
+    case $ARG in
+        --prefix)
+            echo "$ROOT_DIR"
+        ;;
+        --includedir)
+            echo "$INCLUDE_DIR"
+        ;;
+        --libdir)
+            echo "$LIBRARY_DIR"
+        ;;
+        --bindir)
+            echo "$BIN_DIR"
+        ;;
+    esac
+done

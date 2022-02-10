@@ -5,26 +5,26 @@ An example reading a RINEX obs, nav and met file and using
 PRSolutionLegacy to computer a receiver position and compare
 this to the position in the obs header.
 """
-import gpstk
+import gnsstk
 import sys
 
-obsfn = gpstk.getPathData() + '/arlm200z.15o'
-navfn = gpstk.getPathData() + '/arlm200z.15n'
-metfn = gpstk.getPathData() + '/arlm200z.15m'
+obsfn = gnsstk.getPathData() + '/arlm200z.15o'
+navfn = gnsstk.getPathData() + '/arlm200z.15n'
+metfn = gnsstk.getPathData() + '/arlm200z.15m'
 
-navHeader, navData = gpstk.readRinex3Nav(navfn)
-ephStore = gpstk.gpstk.Rinex3EphemerisStore()
+navHeader, navData = gnsstk.readRinex3Nav(navfn)
+ephStore = gnsstk.gnsstk.Rinex3EphemerisStore()
 for navDataObj in navData:
     ephStore.addEphemeris(navDataObj)
 
-tropModel = gpstk.GGTropModel()
-metHeader, metData = gpstk.readRinexMet(metfn)
+tropModel = gnsstk.GGTropModel()
+metHeader, metData = gnsstk.readRinexMet(metfn)
 
-obsHeader, obsData = gpstk.readRinex3Obs(obsfn)
+obsHeader, obsData = gnsstk.readRinex3Obs(obsfn)
 
 indexP1 = obsHeader.getObsIndex('C1W')
 indexP2 = obsHeader.getObsIndex('C2W')
-raimSolver = gpstk.PRSolutionLegacy()
+raimSolver = gnsstk.PRSolutionLegacy()
 
 for obsObj in obsData:
     for metObj in metData:
@@ -32,17 +32,17 @@ for obsObj in obsData:
             break
         else:
             metDataDict = metObj.getData()
-            temp = metDataDict[gpstk.RinexMetHeader.TD]
-            pressure = metDataDict[gpstk.RinexMetHeader.PR]
-            humidity = metDataDict[gpstk.RinexMetHeader.HR]
+            temp = metDataDict[gnsstk.RinexMetHeader.TD]
+            pressure = metDataDict[gnsstk.RinexMetHeader.PR]
+            humidity = metDataDict[gnsstk.RinexMetHeader.HR]
             tropModel.setWeather(temp, pressure, humidity)
 
     if obsObj.epochFlag == 0 or obsObj.epochFlag == 1:
         # Note that we use lists here, but we will need types backed
         # by C++ std::vectors later. We'll just keep it easy and use
-        # gpstk.seqToVector to convert them. If there was a speed
-        # bottleneck we could use gpstk.cpp.vector_SatID and
-        # gpstk.cpp.vector_double though.
+        # gnsstk.seqToVector to convert them. If there was a speed
+        # bottleneck we could use gnsstk.cpp.vector_SatID and
+        # gnsstk.cpp.vector_double though.
         prnList = []
         rangeList = []
 
@@ -56,7 +56,7 @@ for obsObj in obsData:
             P1 = 0.0
             try:
                 P1 = obsObj.getObs(satID, indexP1).data
-            except gpstk.exceptions.Exception:
+            except gnsstk.exceptions.Exception:
                 continue  # Ignore this satellite if P1 is not found
 
             ionocorr = 0.0
@@ -69,11 +69,11 @@ for obsObj in obsData:
                 P2 = 0.0
                 try:
                     P2 = obsObj.getObs(satID, indexP2).data
-                except gpstk.exceptions.Exception:
+                except gnsstk.exceptions.Exception:
                     continue  # Ignore this satellite if P1 is not found
                 # list 'vecList' contains RinexDatum, whose public
                 # attribute "data" indeed holds the actual data point
-                ionocorr = 1.0 / (1.0 - gpstk.GAMMA_GPS) * ( P1 - P2 )
+                ionocorr = 1.0 / (1.0 - gnsstk.GAMMA_GPS) * ( P1 - P2 )
 
             # Now, we include the current PRN number in the first part
             # of "it" iterator into the list holding the satellites.
@@ -106,8 +106,8 @@ for obsObj in obsData:
         # 2nd argument, but the list is of RinexSatID, which is a subclass of SatID.
         # Since C++ containers are NOT covariant, it is neccessary to change the
         # output to a vector or SatID's rather thta a vector of RinexSatID's.
-        satVector = gpstk.seqToVector(prnList, outtype='vector_SatID')
-        rangeVector = gpstk.seqToVector(rangeList)
+        satVector = gnsstk.seqToVector(prnList, outtype='vector_SatID')
+        rangeVector = gnsstk.seqToVector(rangeList)
         raimSolver.RAIMCompute(time, satVector, rangeVector, ephStore, tropModel)
 
         # Note: Given that the default constructor sets public
@@ -122,6 +122,6 @@ for obsObj in obsData:
             # Vector "Solution" holds the coordinates, expressed in
             # meters in an Earth Centered, Earth Fixed (ECEF) reference
             # frame. The order is x, y, z  (as all ECEF objects)
-            pos = gpstk.Triple(raimSolver.Solution[0],  raimSolver.Solution[1], raimSolver.Solution[2])
+            pos = gnsstk.Triple(raimSolver.Solution[0],  raimSolver.Solution[1], raimSolver.Solution[2])
             err = obsHeader.antennaPosition - pos
             print err

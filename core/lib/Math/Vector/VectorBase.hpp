@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,21 +40,21 @@
  * @file VectorBase.hpp
  * Base Vector class
  */
- 
-#ifndef GPSTK_VECTOR_BASE_HPP
-#define GPSTK_VECTOR_BASE_HPP
+
+#ifndef GNSSTK_VECTOR_BASE_HPP
+#define GNSSTK_VECTOR_BASE_HPP
 
 #include <valarray>
 #include "Exception.hpp"
 
 #include "MathBase.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
- 
+
       /// An exception thrown when there's a problem with a vector
       /// @ingroup exceptiongroup
-   NEW_EXCEPTION_CLASS(VectorException, gpstk::Exception);
+   NEW_EXCEPTION_CLASS(VectorException, gnsstk::Exception);
 
       /// @ingroup MathGroup
       //@{
@@ -73,7 +73,7 @@ namespace gpstk
        * classes, so, for example, operator* only needs to be written
        * in terms of ConstVectorBase to work correctly with Vector,
        * VectorSlice and ConstVectorSlice.
-       * 
+       *
        * Remember that a slice MUST refer to a vector or matrix; you
        * cannot have a slice independent of a base vector or matrix.
        *
@@ -91,7 +91,7 @@ namespace gpstk
        * - come up with a policy for when zeroize() will be used before results
        *   are returned.
        *
-       * @warning MSVC cant deal with cmath header.  
+       * @warning MSVC cant deal with cmath header.
        * Changes to accomidate this may break complex!
        */
 
@@ -111,10 +111,10 @@ namespace gpstk
       size_t size() const
       { return static_cast<const BaseClass*>(this)->size(); }
          /// returns the element at index i
-      T operator[] (size_t i) const 
+      T operator[] (size_t i) const
       { return constVectorRef(i); }
          /// returns the element at index i
-      T operator() (size_t i) const 
+      T operator() (size_t i) const
       { return constVectorRef(i); }
 
    protected:
@@ -128,7 +128,7 @@ namespace gpstk
          if (i >= b.size())
          {
             VectorException e("Invalid ConstVectorBase index");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
          return b[i];
@@ -158,16 +158,16 @@ namespace gpstk
          /// constructor
       explicit RefVectorBase() {}
          /// returns a modifiable version of the element at index i.
-      T& operator[] (size_t i) 
+      T& operator[] (size_t i)
       { return vecRef(i); }
          /// returns a modifiable version of the element at index i.
-      T& operator() (size_t i) 
+      T& operator() (size_t i)
       { return vecRef(i); }
          /// Any value in the vector with absolute value below
          /// zeroTolerance is set to zero.
       BaseClass& zeroize()
       {
-         BaseClass& me = static_cast<BaseClass&>(*this); 
+         BaseClass& me = static_cast<BaseClass&>(*this);
          size_t i;
          for (i = 0; i < me.size(); i++)
             if (ABS(me[i]) < zeroTolerance)
@@ -188,7 +188,7 @@ namespace gpstk
       if (x.size() != me.size())                                \
       {                                                         \
          VectorException e("Unequal lengths for vectors");      \
-         GPSTK_THROW(e);                                        \
+         GNSSTK_THROW(e);                                        \
       }                                                         \
       size_t i; for (i=0; i < me.size(); i++) me[i] func x[i];  \
       return me;
@@ -216,10 +216,10 @@ namespace gpstk
       BaseClass& funcName(T x)                                          \
       { VecBaseAtomicAssignMacro(op) }
 
-         /** 
+         /**
           * Remember that operator= is NOT inherited. Derived classes can
           * use assignFrom to initialize values from a copy constructor or
-          * their own operator= rather than explicitly copying them. 
+          * their own operator= rather than explicitly copying them.
           */
       VecBaseNewAssignOperator(assignFrom, =);
       VecBaseNewAssignOperator(operator+=, +=);
@@ -249,17 +249,17 @@ namespace gpstk
          /** Returns a modifiable object at index i.
           * @throw VectorException
           */
-      inline T& vecRef(size_t i) 
+      inline T& vecRef(size_t i)
       {
          BaseClass& b = static_cast<BaseClass&>(*this);
 #ifdef RANGECHECK
          if (i >= b.size())
          {
             VectorException e("Invalid VectorBase index");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
-         return b[i]; 
+         return b[i];
       }
    };
 
@@ -296,15 +296,15 @@ namespace gpstk
               ((start() + (size() - 1) * stride()) >= sourceSize) )
          {
             VectorException e("Invalid range for slice");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 #endif
       }
    };
 
-      /** 
-       * A vector slice base class that doesn't allow modification of the 
-       * internal elements. 
+      /**
+       * A vector slice base class that doesn't allow modification of the
+       * internal elements.
        */
    template <class T, class BaseClass>
    class ConstVectorSliceBase : public VectorSliceBase<BaseClass>,
@@ -313,10 +313,10 @@ namespace gpstk
    public:
       explicit ConstVectorSliceBase() {}
    };
-   
-      /** 
-       * A vector slice base class that does allow modification of the 
-       * internal elements. 
+
+      /**
+       * A vector slice base class that does allow modification of the
+       * internal elements.
        */
    template <class T, class BaseClass>
    class RefVectorSliceBase : public VectorSliceBase<BaseClass>,
@@ -328,8 +328,8 @@ namespace gpstk
 
       //@}
 
-}  // namespace gpstk
+}  // namespace gnsstk
 
 #include "VectorBaseOperators.hpp"
 
-#endif //GPSTK_VECTOR_BASE_HPP
+#endif //GNSSTK_VECTOR_BASE_HPP

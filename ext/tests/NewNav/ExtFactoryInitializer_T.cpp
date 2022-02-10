@@ -1,38 +1,38 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,10 +41,10 @@
 #include "SEMNavDataFactory.hpp"
 #include "YumaNavDataFactory.hpp"
 
-class TestClass : public gpstk::MultiFormatNavDataFactory
+class TestClass : public gnsstk::MultiFormatNavDataFactory
 {
 public:
-   static gpstk::NavDataFactoryMap& getFactories()
+   static std::shared_ptr<gnsstk::NavDataFactoryMap> getFactories()
    { return factories(); }
 };
 
@@ -67,14 +67,14 @@ constructorTest()
       // Iterate over the factories and try to find the expected
       // factory objects.  The factories map may also contain ext
       // factories, so we ignore anything else.
-   for (auto& i : TestClass::getFactories())
+   for (auto& i : *(TestClass::getFactories()))
    {
-      gpstk::NavDataFactory *p = i.second.get();
-      if (dynamic_cast<gpstk::YumaNavDataFactory*>(p) != nullptr)
+      gnsstk::NavDataFactory *p = i.second.get();
+      if (dynamic_cast<gnsstk::YumaNavDataFactory*>(p) != nullptr)
       {
          foundYuma = true;
       }
-      else if (dynamic_cast<gpstk::SEMNavDataFactory*>(p) != nullptr)
+      else if (dynamic_cast<gnsstk::SEMNavDataFactory*>(p) != nullptr)
       {
          foundSEM = true;
       }

@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,9 +40,9 @@
  * @file FileFilter.hpp
  * A framework for sorting and filtering file data.
  */
- 
-#ifndef GPSTK_FILEFILTER_HPP
-#define GPSTK_FILEFILTER_HPP
+
+#ifndef GNSSTK_FILEFILTER_HPP
+#define GNSSTK_FILEFILTER_HPP
 
 #include <functional>
 #include <algorithm>
@@ -51,7 +51,7 @@
 #include "FFData.hpp"
 #include "FileSpec.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /** @defgroup FileDirProc File and Directory Processing Utilities
        * Tools for locating and processing files in a directory
@@ -109,12 +109,12 @@ namespace gpstk
             i++;
             itr++;
          }
-         
+
             // use SortAdapter to use comp with the pointer vector
             // then sort the vector
          SortAdapter<Compare> sa(comp);
          std::stable_sort(data.begin(), data.end(), sa);
-         
+
             // make a new list of the data in the right order, then copy that
             // over dataVec.
          lType fdlist;
@@ -123,7 +123,7 @@ namespace gpstk
             fdlist.push_back(*data[i]);
          }
          dataVec = fdlist;
-         
+
             /*
                // move the items into the correct order with splice.
                   // splice does nothing if (itr == data[i]) || (itr == ++data[i])
@@ -161,10 +161,10 @@ namespace gpstk
       {
             //  FIX: unique is broken or doesnt like my syntax
             //  so i wrote my own version of it.
-            //      list<FileData>::iterator itr = 
+            //      list<FileData>::iterator itr =
             //         unique(dataVec.begin(), dataVec.end(), bp);
          filtered = 0;
-        
+
          typename std::list<FileData>::iterator first = dataVec.begin();
          typename std::list<FileData>::iterator second= dataVec.begin();
 
@@ -172,7 +172,7 @@ namespace gpstk
             second++;
          else
             return *this;  // empty list
-         
+
             // keep only the first of many unique values
          while (second != dataVec.end())
          {
@@ -187,7 +187,7 @@ namespace gpstk
                second++;
             }
          }
-         
+
          return *this;
       }
 
@@ -200,9 +200,9 @@ namespace gpstk
       {
             // delete all values for which up() is true
          filtered = 0;
-         
+
          typename std::list<FileData>::iterator itr = dataVec.begin();
-         
+
          while (itr != dataVec.end())
          {
             if (up(*itr))
@@ -213,7 +213,7 @@ namespace gpstk
             else
                itr++;
          }
-         
+
          return *this;
       }
 
@@ -225,16 +225,16 @@ namespace gpstk
       FileFilter& touch(Operation& op)
       {
          filtered = 0;
-         
+
          typename std::list<FileData>::iterator itr = dataVec.begin();
-         
+
          while (itr != dataVec.end())
          {
             if (op(*itr))
                filtered++;
             itr++;
          }
-         
+
          return *this;
       }
 
@@ -248,28 +248,28 @@ namespace gpstk
 
          /// Returns two lists - one of the data in *this that isn't in r and
          /// the second of data in r that isn't in *this.  Remember that /a p
-         /// has to be a strict weak ordering on the data.  
-         /// @warning the input data needs to be sorted according to /a p 
+         /// has to be a strict weak ordering on the data.
+         /// @warning the input data needs to be sorted according to /a p
          /// before running diff().  This also means that /a p is a strict
          /// weak ordering on the data (i.e. /a p sorts the data).
       template <class BinaryPredicate>
-      std::pair< std::list<FileData>, std::list<FileData> > 
+      std::pair< std::list<FileData>, std::list<FileData> >
       diff(const FileFilter<FileData>& r, BinaryPredicate p) const
       {
          std::pair< std::list<FileData>, std::list<FileData> > toReturn;
 
          std::set_difference(dataVec.begin(), dataVec.end(),
                              r.dataVec.begin(), r.dataVec.end(),
-                             std::inserter(toReturn.first, 
+                             std::inserter(toReturn.first,
                                            toReturn.first.begin()),
                              p);
-         
+
          std::set_difference(r.dataVec.begin(), r.dataVec.end(),
                              dataVec.begin(), dataVec.end(),
-                             std::inserter(toReturn.second, 
+                             std::inserter(toReturn.second,
                                            toReturn.second.begin()),
                              p);
-         
+
          return toReturn;
       }
 
@@ -279,15 +279,15 @@ namespace gpstk
       {
          std::list<FileData> toReturn;
          typename std::list<FileData>::const_iterator itr = dataVec.begin();
-         
+
          while (itr != dataVec.end())
          {
             if (p(*itr))
                toReturn.push_back((*itr));
             itr++;
          }
-         
-         return toReturn;      
+
+         return toReturn;
       }
 
          /// Returns the number of items filtered from the last filter()
@@ -304,7 +304,7 @@ namespace gpstk
       { return dataVec; }
 
          /// Returns the number of data items in the filter.
-      typename std::list<FileData>::size_type getDataCount(void) const 
+      typename std::list<FileData>::size_type getDataCount(void) const
       { return dataVec.size(); }
 
       typename std::list<FileData>::const_iterator begin() const
@@ -313,10 +313,10 @@ namespace gpstk
       typename std::list<FileData>::const_iterator end() const
       { return dataVec.end(); }
 
-      typename std::list<FileData>::iterator begin() 
+      typename std::list<FileData>::iterator begin()
       { return dataVec.begin(); }
 
-      typename std::list<FileData>::iterator end() 
+      typename std::list<FileData>::iterator end()
       { return dataVec.end(); }
 
       bool empty() const
@@ -330,25 +330,25 @@ namespace gpstk
 
       FileData& front()
       {
-         GPSTK_ASSERT(!empty());
+         GNSSTK_ASSERT(!empty());
          return dataVec.front();
       }
 
       const FileData& front() const
       {
-         GPSTK_ASSERT(!empty());
+         GNSSTK_ASSERT(!empty());
          return dataVec.front();
       }
 
       FileData& back()
       {
-         GPSTK_ASSERT(!empty());
+         GNSSTK_ASSERT(!empty());
          return dataVec.back();
       }
 
       const FileData& back() const
       {
-         GPSTK_ASSERT(!empty());
+         GNSSTK_ASSERT(!empty());
          return dataVec.back();
       }
 
@@ -360,10 +360,10 @@ namespace gpstk
 
          /// SortAdapter is an adapter class that takes any comparison
          /// function and instead uses list iterator objects instead
-         /// of FileData.  This is only used by sort() and shouldn't be 
+         /// of FileData.  This is only used by sort() and shouldn't be
          /// used elsewhere.
       template<class Compare>
-      class SortAdapter  : 
+      class SortAdapter  :
          public std::binary_function<lItrType, lItrType, bool>
       {
       public:
@@ -397,7 +397,7 @@ namespace gpstk
    }
 
    template<class FileData>
-   FileFilter<FileData>& FileFilter<FileData> :: 
+   FileFilter<FileData>& FileFilter<FileData> ::
    addData(const FileData& ffd)
    {
       dataVec.push_back(ffd);
@@ -405,14 +405,14 @@ namespace gpstk
    }
 
    template <class FileData>
-   FileFilter<FileData>& FileFilter<FileData> :: 
+   FileFilter<FileData>& FileFilter<FileData> ::
    addData(const std::list<FileData>& datavec)
    {
       std::copy(datavec.begin(), datavec.end(),
                 std::inserter(dataVec, dataVec.begin()));
       return *this;
    }
-   
+
    template <class FileData>
    FileFilter<FileData>&
    FileFilter<FileData> ::
@@ -420,15 +420,15 @@ namespace gpstk
    {
          // cast out const to use the non-const version of getData()
       FileFilter<FileData>& r = (FileFilter<FileData>&)(right);
-      
+
          // copy rightData into *this
       std::list<FileData>& rightData = r.getData();
       std::copy(rightData.begin(), rightData.end(),
                 std::inserter(dataVec, dataVec.begin()));
-      
+
       return *this;
    }
 
-} // namespace gpstk
+} // namespace gnsstk
 
-#endif // GPSTK_FILEFILTER_HPP
+#endif // GNSSTK_FILEFILTER_HPP

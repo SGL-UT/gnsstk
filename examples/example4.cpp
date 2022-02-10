@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,14 +29,14 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
-// GPSTk example program #4
+// GNSSTk example program #4
 
 
    // First, let's include Standard Template Library classes
@@ -63,26 +63,30 @@
    // Class for handling tropospheric model
 #include "GGTropModel.hpp"
 
-   // Class for storing "broadcast-type" ephemerides
-#include "GPSEphemerisStore.hpp"
+   // Classes for storing ephemerides
+#include "NavLibrary.hpp"
+#include "MultiFormatNavDataFactory.hpp"
 
    // Class for handling RAIM
-#include "PRSolutionLegacy.hpp"
+#include "PRSolution.hpp"
 
    // Class defining GPS system constants
 #include "GNSSconstants.hpp"
 
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 
 int main(int argc, char *argv[])
 {
 
-      // Declaration of objects for storing ephemerides and handling RAIM
-   GPSEphemerisStore bcestore;
-   PRSolutionLegacy raimSolver;
+      /// High level nav store interface.
+   NavLibrary navLib;
+      /// nav data file reader
+   gnsstk::NavDataFactoryPtr ndfp;
+      /// Declaration of object for handling RAIM
+   PRSolution raimSolver;
 
       // Object for void-type tropospheric model (in case no meteorological
       // RINEX is available)
@@ -114,34 +118,31 @@ int main(int argc, char *argv[])
    try
    {
 
-         // Read nav file and store unique list of ephemerides
-      Rinex3NavStream rnffs(argv[2]);    // Open ephemerides data file
-      Rinex3NavData rne;
-      Rinex3NavHeader hdr;
-
-         // Let's read the header (may be skipped)
-      rnffs >> hdr;
-
-         // Storing the ephemeris in "bcstore"
-      while (rnffs >> rne) bcestore.addEphemeris(rne);
-
-         // Setting the criteria for looking up ephemeris
-      bcestore.SearchNear();
+         // Create the nav file reader
+      ndfp = std::make_shared<gnsstk::MultiFormatNavDataFactory>();
+         // Add the nav file reader to the nav library interface
+      navLib.addFactory(ndfp);
+         // Read nav file and store navigation data
+      if (!ndfp->addDataSource(argv[2]))
+      {
+         cerr << "Failed to read \"" << argv[2] << "\"" << endl;
+         return 1;
+      }
 
          // If provided, open and store met file into a linked list.
       list<RinexMetData> rml;
-        
+
       if( argc == 4 )
       {
 
          RinexMetStream rms(argv[3]);    // Open meteorological data file
          RinexMetHeader rmh;
-            
+
             // Let's read the header (may be skipped)
          rms >> rmh;
 
          RinexMetData rmd;
-            
+
             // If meteorological data is provided, let's change pointer to
             // a GG-model object
          tropModelPtr=&ggTropModel;
@@ -227,7 +228,7 @@ int main(int argc, char *argv[])
             vector<SatID> prnVec;
             vector<double> rangeVec;
 
-               // Define the "it" iterator to visit the observations PRN map. 
+               // Define the "it" iterator to visit the observations PRN map.
                // Rinex3ObsData::DataMap is a map from RinexSatID to
                // vector<RinexDatum>:
                //      std::map<RinexSatID, vector<RinexDatum> >
@@ -295,7 +296,7 @@ int main(int argc, char *argv[])
 
             }  // End of 'for( it = rod.obs.begin(); it!= rod.obs.end(); ...'
 
-               // The default constructor for PRSolutionLegacy objects (like
+               // The default constructor for PRSolution objects (like
                // "raimSolver") is to set a RMSLimit of 6.5. We change that
                // here. With this value of 3e6 the solution will have a lot
                // more dispersion.
@@ -305,11 +306,11 @@ int main(int argc, char *argv[])
                // vector of visible satellites, the vector of corresponding
                // ranges, the object containing satellite ephemerides, and a
                // pointer to the tropospheric model to be applied
-            raimSolver.RAIMCompute( rod.time,
-                                    prnVec,
-                                    rangeVec,
-                                    bcestore,
-                                    tropModelPtr );
+            raimSolver.RAIMComputeUnweighted( rod.time,
+                                              prnVec,
+                                              rangeVec,
+                                              navLib,
+                                              tropModelPtr );
 
                // Note: Given that the default constructor sets public
                // attribute "Algebraic" to FALSE, a linearized least squares

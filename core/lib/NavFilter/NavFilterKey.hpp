@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -42,9 +42,9 @@
 #include <ostream>
 #include "ObsID.hpp"
 #include "CommonTime.hpp"
-#include "gpstkplatform.h"
+#include "gnsstkplatform.h"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup NavFilter
       //@{
@@ -72,16 +72,16 @@ namespace gpstk
           * on GNSS and implementation.  Refer to the documentation
           * for the validate methods of individual filters for any
           * requirements on the contents of this field. */
-      gpstk::CommonTime timeStamp;
+      gnsstk::CommonTime timeStamp;
       std::string stationID;       ///< site/station identifier for data source
       std::string rxID;            ///< receiver identifier for data source
-      uint32_t prn;                ///< identifier of broadcasting satellite 
+      uint32_t prn;                ///< identifier of broadcasting satellite
       CarrierBand carrier;  ///< carrier band of navigation message
-      gpstk::TrackingCode code;    ///< ranging code of navigation message
+      gnsstk::TrackingCode code;    ///< ranging code of navigation message
          // Nav code is not necessary as each filter is unique to a
          // given navigation message structure.
 
-      virtual void dump(std::ostream& s) const; 
+      virtual void dump(std::ostream& s) const;
 
          // Do not define an operator<(), let the filter classes
          // define their own sorting algorithms as needed.
@@ -92,9 +92,9 @@ namespace gpstk
    };
 
       //@}
-   
+
       // Write to output stream
-   std::ostream& operator<<(std::ostream& s, const NavFilterKey& nfk); 
+   std::ostream& operator<<(std::ostream& s, const NavFilterKey& nfk);
 }
 
 #endif // NAVFILTERKEY_HPP

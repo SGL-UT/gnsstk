@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -44,7 +44,6 @@
 
 #include "StringUtils.hpp"
 #include "Exception.hpp"
-#include "RinexEphemerisStore.hpp"
 
 #include "build_config.h"
 
@@ -52,7 +51,7 @@
 #include <string>
 #include <iostream>
 
-using namespace gpstk;
+using namespace gnsstk;
 
 //=============================================================================
 // Class declarations
@@ -131,8 +130,8 @@ private:
 void Rinex3Nav_T :: init()
 {
 
-   dataFilePath = gpstk::getPathData();
-   tempFilePath = gpstk::getPathTestTemp();
+   dataFilePath = gnsstk::getPathData();
+   tempFilePath = gnsstk::getPathTestTemp();
 
       //----------------------------------------
       // Full file paths
@@ -278,11 +277,11 @@ unsigned Rinex3Nav_T :: hardCodeTest()
 
    try
    {
-      gpstk::Rinex3NavStream rinex3NavStream(inputRinexNavExample.c_str());
-      gpstk::Rinex3NavStream out(outputTestOutput.c_str(), std::ios::out);
-      gpstk::Rinex3NavStream dmp(outputRinexDump.c_str(), std::ios::out);
-      gpstk::Rinex3NavHeader rinex3NavHeader;
-      gpstk::Rinex3NavData rinex3NavData;
+      gnsstk::Rinex3NavStream rinex3NavStream(inputRinexNavExample.c_str());
+      gnsstk::Rinex3NavStream out(outputTestOutput.c_str(), std::ios::out);
+      gnsstk::Rinex3NavStream dmp(outputRinexDump.c_str(), std::ios::out);
+      gnsstk::Rinex3NavHeader rinex3NavHeader;
+      gnsstk::Rinex3NavData rinex3NavData;
 
       rinex3NavStream >> rinex3NavHeader;
       out << rinex3NavHeader;
@@ -324,10 +323,10 @@ unsigned Rinex3Nav_T :: hardCodeTest()
       TUCMPFILE(inputRinexNavExample, outputTestOutput, 2);
 
          //------------------------------------------------------------
-      gpstk::Rinex3NavStream rinex3NavStream2(outputTestOutput.c_str());
-      gpstk::Rinex3NavStream out2(outputTestOutput2.c_str(), std::ios::out);
-      gpstk::Rinex3NavHeader rinex3NavHeader2;
-      gpstk::Rinex3NavData rinex3NavData2;
+      gnsstk::Rinex3NavStream rinex3NavStream2(outputTestOutput.c_str());
+      gnsstk::Rinex3NavStream out2(outputTestOutput2.c_str(), std::ios::out);
+      gnsstk::Rinex3NavHeader rinex3NavHeader2;
+      gnsstk::Rinex3NavData rinex3NavData2;
 
       rinex3NavStream2 >> rinex3NavHeader2;
       out2 << rinex3NavHeader2;
@@ -337,10 +336,10 @@ unsigned Rinex3Nav_T :: hardCodeTest()
          out2 << rinex3NavData2;
       }
 
-      gpstk::Rinex3NavStream rinex3NavStream3(outputTestOutput2.c_str());
-      gpstk::Rinex3NavStream out3(outputTestOutput3.c_str() , std::ios::out);
-      gpstk::Rinex3NavHeader rinex3NavHeader3;
-      gpstk::Rinex3NavData rinex3NavData3;
+      gnsstk::Rinex3NavStream rinex3NavStream3(outputTestOutput2.c_str());
+      gnsstk::Rinex3NavStream out3(outputTestOutput3.c_str() , std::ios::out);
+      gnsstk::Rinex3NavHeader rinex3NavHeader3;
+      gnsstk::Rinex3NavData rinex3NavData3;
 
       rinex3NavStream3 >> rinex3NavHeader3;
       out3 << rinex3NavHeader3;
@@ -370,20 +369,20 @@ unsigned Rinex3Nav_T :: headerExceptionTest()
    TUDEF("rinex3NavStream", "");
 
    std::string msg_test_desc       = " ";
-   std::string msg_expected    = ", should throw a gpstk::Exception";
+   std::string msg_expected    = ", should throw a gnsstk::Exception";
    std::string msg_false_pass  = ", but threw no exception.";
    std::string msg_true_fail   = ", but instead threw an unknown exception.";
 
    try
    {
-      gpstk::Rinex3NavStream invalidLineLength(inputInvalidLineLength.c_str());
-      gpstk::Rinex3NavStream notaNavFile(inputNotaNavFile.c_str());
-      gpstk::Rinex3NavStream unknownHeaderLabel(inputUnknownHeaderLabel.c_str());
-      gpstk::Rinex3NavStream incompleteHeader(inputIncompleteHeader.c_str());
-      gpstk::Rinex3NavStream unsupportedRinex(inputUnsupportedRinex.c_str());
-      gpstk::Rinex3NavStream badHeader(inputBadHeader.c_str());
-      gpstk::Rinex3NavStream out(outputTestOutputHeader.c_str(), std::ios::out);
-      gpstk::Rinex3NavHeader header;
+      gnsstk::Rinex3NavStream invalidLineLength(inputInvalidLineLength.c_str());
+      gnsstk::Rinex3NavStream notaNavFile(inputNotaNavFile.c_str());
+      gnsstk::Rinex3NavStream unknownHeaderLabel(inputUnknownHeaderLabel.c_str());
+      gnsstk::Rinex3NavStream incompleteHeader(inputIncompleteHeader.c_str());
+      gnsstk::Rinex3NavStream unsupportedRinex(inputUnsupportedRinex.c_str());
+      gnsstk::Rinex3NavStream badHeader(inputBadHeader.c_str());
+      gnsstk::Rinex3NavStream out(outputTestOutputHeader.c_str(), std::ios::out);
+      gnsstk::Rinex3NavHeader header;
 
       invalidLineLength.exceptions( std::fstream::failbit);
       notaNavFile.exceptions(       std::fstream::failbit);
@@ -400,7 +399,7 @@ unsigned Rinex3Nav_T :: headerExceptionTest()
          invalidLineLength >> header;
          TUFAIL(msg_test_desc + msg_expected + msg_false_pass);
       }
-      catch(gpstk::Exception e)
+      catch(gnsstk::Exception e)
       {
          TUPASS(msg_test_desc + msg_expected);
       }
@@ -416,7 +415,7 @@ unsigned Rinex3Nav_T :: headerExceptionTest()
          notaNavFile >> header;
          TUFAIL(msg_test_desc + msg_expected + msg_false_pass);
       }
-      catch(gpstk::Exception e)
+      catch(gnsstk::Exception e)
       {
          TUPASS(msg_test_desc + msg_expected);
       }
@@ -432,7 +431,7 @@ unsigned Rinex3Nav_T :: headerExceptionTest()
          unknownHeaderLabel >> header;
          TUFAIL(msg_test_desc + msg_expected + msg_false_pass);
       }
-      catch(gpstk::Exception e)
+      catch(gnsstk::Exception e)
       {
          TUPASS(msg_test_desc + msg_expected);
       }
@@ -448,7 +447,7 @@ unsigned Rinex3Nav_T :: headerExceptionTest()
          incompleteHeader >> header;
          TUFAIL(msg_test_desc + msg_expected + msg_false_pass);
       }
-      catch(gpstk::Exception e)
+      catch(gnsstk::Exception e)
       {
          TUPASS(msg_test_desc + msg_expected);
       }
@@ -464,7 +463,7 @@ unsigned Rinex3Nav_T :: headerExceptionTest()
                        UnsupportedRinex >> header;
                        test2.assert(false, msg_test_desc + msg_expected + msg_false_pass , __LINE__);
                    }
-                   catch(gpstk::Exception e)
+                   catch(gnsstk::Exception e)
                    {
                        test2.assert(true, msg_test_desc + msg_expected, __LINE__);
                    }
@@ -480,7 +479,7 @@ unsigned Rinex3Nav_T :: headerExceptionTest()
                        BadHeader >> header;
                        test2.assert(false, msg_test_desc + msg_expected + msg_false_pass , __LINE__);
                    }
-                   catch(gpstk::Exception e)
+                   catch(gnsstk::Exception e)
                    {
                        test2.assert(true, msg_test_desc + msg_expected, __LINE__);
                    }
@@ -557,19 +556,19 @@ unsigned Rinex3Nav_T :: filterOperatorsTest()
    try
    {
 
-      gpstk::Rinex3NavStream FilterStream1(inputFilterStream1.c_str());
+      gnsstk::Rinex3NavStream FilterStream1(inputFilterStream1.c_str());
       FilterStream1.open(inputFilterStream1.c_str(), std::ios::in);
-      gpstk::Rinex3NavStream FilterStream2(inputFilterStream2.c_str());
-      gpstk::Rinex3NavStream FilterStream3(inputFilterStream3.c_str());
-      gpstk::Rinex3NavStream out(outputFilterOutput.c_str(), std::ios::out);
+      gnsstk::Rinex3NavStream FilterStream2(inputFilterStream2.c_str());
+      gnsstk::Rinex3NavStream FilterStream3(inputFilterStream3.c_str());
+      gnsstk::Rinex3NavStream out(outputFilterOutput.c_str(), std::ios::out);
 
-      gpstk::Rinex3NavHeader FilterHeader1;
-      gpstk::Rinex3NavHeader FilterHeader2;
-      gpstk::Rinex3NavHeader FilterHeader3;
+      gnsstk::Rinex3NavHeader FilterHeader1;
+      gnsstk::Rinex3NavHeader FilterHeader2;
+      gnsstk::Rinex3NavHeader FilterHeader3;
 
-      gpstk::Rinex3NavData FilterData1;
-      gpstk::Rinex3NavData FilterData2;
-      gpstk::Rinex3NavData FilterData3;
+      gnsstk::Rinex3NavData FilterData1;
+      gnsstk::Rinex3NavData FilterData2;
+      gnsstk::Rinex3NavData FilterData3;
 
       FilterStream1 >> FilterHeader1;
       FilterStream2 >> FilterHeader2;
@@ -585,12 +584,12 @@ unsigned Rinex3Nav_T :: filterOperatorsTest()
       {
       }
 
-      gpstk::Rinex3NavHeaderTouchHeaderMerge merged;
+      gnsstk::Rinex3NavHeaderTouchHeaderMerge merged;
       merged(FilterHeader1);
       merged(FilterHeader2);
       out << merged.theHeader;
 
-      gpstk::Rinex3NavDataOperatorEqualsFull EqualsFull;
+      gnsstk::Rinex3NavDataOperatorEqualsFull EqualsFull;
 
       msg_test_desc =
          "rinex3NavDataOperatorEqualsFull, EqualsFUll FilterData1 FilterData2, fail";
@@ -601,14 +600,14 @@ unsigned Rinex3Nav_T :: filterOperatorsTest()
       test4.assert(!EqualsFull(FilterData1, FilterData3), msg_test_desc,
                     __LINE__);
 
-      gpstk::Rinex3NavDataOperatorLessThanSimple LessThanSimple;
+      gnsstk::Rinex3NavDataOperatorLessThanSimple LessThanSimple;
 
       msg_test_desc =
          "rinex3NavDataOperatorLessThanSimple, not LessThanSimple FilterData1 FilterData3, fail";
       test4.assert(!LessThanSimple(FilterData1, FilterData2), msg_test_desc,
                     __LINE__);
 
-      gpstk::Rinex3NavDataOperatorLessThanFull LessThanFull;
+      gnsstk::Rinex3NavDataOperatorLessThanFull LessThanFull;
 
       msg_test_desc =
          "rinex3NavDataOperatorLessThanFull, not LessThanFull FilterData1 FilterData1, fail";
@@ -617,7 +616,7 @@ unsigned Rinex3Nav_T :: filterOperatorsTest()
 
       std::list<long> list;
       list.push_front(6);
-      gpstk::Rinex3NavDataFilterPRN FilterPRN(list);
+      gnsstk::Rinex3NavDataFilterPRN FilterPRN(list);
       msg_test_desc = "rinex3NavDataFilterPRN, FilterPRN FilterData3, fail";
       test4.assert(FilterPRN(FilterData3), msg_test_desc, __LINE__);
    }
@@ -639,10 +638,10 @@ unsigned Rinex3Nav_T :: version3ToVersion2Test()
 {
    TUDEF("Rinex3Nav", "Convert v.3 to v.2");
 
-   gpstk::Rinex3NavStream inputStream(inputRinex3Nav.c_str());
-   gpstk::Rinex3NavStream outputStream(outputRinex2Nav.c_str(), std::ios::out);
-   gpstk::Rinex3NavHeader navHeader;
-   gpstk::Rinex3NavData navData;
+   gnsstk::Rinex3NavStream inputStream(inputRinex3Nav.c_str());
+   gnsstk::Rinex3NavStream outputStream(outputRinex2Nav.c_str(), std::ios::out);
+   gnsstk::Rinex3NavHeader navHeader;
+   gnsstk::Rinex3NavData navData;
 
    inputStream >> navHeader;
 
@@ -669,10 +668,10 @@ unsigned Rinex3Nav_T :: version2ToVersion3Test()
 {
    TUDEF("Rinex3Nav", "Convert v.2 to v.3");
 
-   gpstk::Rinex3NavStream inputStream(inputRinex2Nav.c_str());
-   gpstk::Rinex3NavStream outputStream(outputRinex3Nav.c_str(), std::ios::out);
-   gpstk::Rinex3NavHeader navHeader;
-   gpstk::Rinex3NavData navData;
+   gnsstk::Rinex3NavStream inputStream(inputRinex2Nav.c_str());
+   gnsstk::Rinex3NavStream outputStream(outputRinex3Nav.c_str(), std::ios::out);
+   gnsstk::Rinex3NavHeader navHeader;
+   gnsstk::Rinex3NavData navData;
 
    inputStream >> navHeader;
 

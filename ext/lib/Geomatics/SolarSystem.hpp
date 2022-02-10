@@ -73,26 +73,26 @@
 //------------------------------------------------------------------------------------
 // includes
 // system
-#   include <fstream>
-#   include <iostream>
-#   include <map>
-#   include <string>
-#   include <vector>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <string>
+#include <vector>
 
 // GNSSTk
-#   include "EphTime.hpp"
-#   include "Exception.hpp"
-#   include "Position.hpp"
-#   include "XvtStore.hpp"
+#include "EphTime.hpp"
+#include "Exception.hpp"
+#include "Position.hpp"
+//#   include "XvtStore.hpp"
 
 // geomatics
-#   include "EOPStore.hpp"
-#   include "EarthOrientation.hpp"
-#   include "IERSConvention.hpp"
-#   include "SolarSystemEphemeris.hpp"
-#   include "SolidEarthTides.hpp"
-#   include "SunEarthSatGeometry.hpp"
-#   include "logstream.hpp"
+#include "EOPStore.hpp"
+#include "EarthOrientation.hpp"
+#include "IERSConvention.hpp"
+#include "SolarSystemEphemeris.hpp"
+#include "SolidEarthTides.hpp"
+#include "SunEarthSatGeometry.hpp"
+#include "logstream.hpp"
 
 namespace gnsstk
 {

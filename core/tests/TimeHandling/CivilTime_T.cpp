@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -43,7 +43,7 @@
 #include <fstream>
 #include <cmath>
 
-using namespace gpstk;
+using namespace gnsstk;
 using namespace std;
 
 class CivilTime_T
@@ -70,9 +70,9 @@ class CivilTime_T
 		testFramework.assert( 8 == (int)Compare.month,                 "Explicit constructor did not set the month properly",      __LINE__);
 		testFramework.assert(21 == (int)Compare.day,                   "Explicit constructor did not set the day properly",        __LINE__);
 		testFramework.assert(13 == (int)Compare.hour,                  "Explicit constructor did not set the hour properly",       __LINE__);
-		testFramework.assert(30 == (int)Compare.minute,                "Explicit constructor did not set the minute properly",     __LINE__); 
+		testFramework.assert(30 == (int)Compare.minute,                "Explicit constructor did not set the minute properly",     __LINE__);
 		testFramework.assert(15 == (double)Compare.second,             "Explicit constructor did not set the second properly",     __LINE__);
- 
+
 
 		testFramework.changeSourceMethod("ConstructorCopy");
 		CivilTime Copy(Compare); // Initialize with copy constructor
@@ -84,8 +84,8 @@ class CivilTime_T
 		testFramework.assert(8 == (int)Copy.month,                  "Copy constructor did not set the month properly",      __LINE__);
 		testFramework.assert(21 == (int)Copy.day,                   "Copy constructor did not set the day properly",        __LINE__);
 		testFramework.assert(13 == (int)Copy.hour,                  "Copy constructor did not set the hour properly",       __LINE__);
-		testFramework.assert(30 == (int)Copy.minute,                "Copy constructor did not set the minute properly",     __LINE__); 
-		testFramework.assert(15 == (double)Copy.second,             "Copy constructor did not set the second properly",     __LINE__); 
+		testFramework.assert(30 == (int)Copy.minute,                "Copy constructor did not set the minute properly",     __LINE__);
+		testFramework.assert(15 == (double)Copy.second,             "Copy constructor did not set the second properly",     __LINE__);
 
 
 		CivilTime Assigned;
@@ -99,8 +99,8 @@ class CivilTime_T
 		testFramework.assert(8 == (int)Assigned.month,                  "Set Operator did not set the month properly",      __LINE__);
 		testFramework.assert(21 == (int)Assigned.day,                   "Set Operator did not set the day properly",        __LINE__);
 		testFramework.assert(13 == (int)Assigned.hour,                  "Set Operator did not set the hour properly",       __LINE__);
-		testFramework.assert(30 == (int)Assigned.minute,                "Set Operator did not set the mimute properly",     __LINE__); 
-		testFramework.assert(15 == (double)Assigned.second,             "Set Operator did not set the second properly",     __LINE__); 
+		testFramework.assert(30 == (int)Assigned.minute,                "Set Operator did not set the mimute properly",     __LINE__);
+		testFramework.assert(15 == (double)Assigned.second,             "Set Operator did not set the second properly",     __LINE__);
 
 		return testFramework.countFails();
 	}
@@ -133,7 +133,7 @@ class CivilTime_T
 		//Can a CivilTime object be set with b,d,Y,H,M,S,P options?
 		//---------------------------------------------------------------------
 		testFramework.assert(setFromInfo1.setFromInfo(Id), "setFromInfo experienced an error and returned false", __LINE__);
-		testFramework.assert(setFromInfo1 == Check, "setFromInfo did not set all of the values properly", __LINE__); 
+		testFramework.assert(setFromInfo1 == Check, "setFromInfo did not set all of the values properly", __LINE__);
 
 
 		Id.erase('b');
@@ -145,9 +145,9 @@ class CivilTime_T
 		//Can a CivilTime object be set with d,m,y,H,M,S,P options?
 		//---------------------------------------------------------------------
 		testFramework.assert(setFromInfo2.setFromInfo(Id), "setFromInfo experienced an error and returned false", __LINE__);
-    		testFramework.assert(setFromInfo2 == Check2, "setFromInfo did not set all of the values properly", __LINE__); 
+    		testFramework.assert(setFromInfo2 == Check2, "setFromInfo did not set all of the values properly", __LINE__);
 
-		
+
 		Id.erase('y');
 		Id['y'] = "006";
 		//---------------------------------------------------------------------
@@ -217,7 +217,7 @@ class CivilTime_T
 		testFramework.assert(  Aug21 != LessThanMinute, "Not-equal operator found different minute objects to be equivalent", __LINE__);
 		testFramework.assert(  Aug21 != LessThanSecond, "Not-equal operator found different second objects to be equivalent", __LINE__);
 		testFramework.assert(!(Aug21 != Aug21Copy),     "Not-equal operator found equivalent objects to not be equivalent",   __LINE__);
-   
+
 		testFramework.changeSourceMethod("OperatorLessThan");
 		//---------------------------------------------------------------------
 		//Does the < operator function?
@@ -316,7 +316,7 @@ class CivilTime_T
 		//---------------------------------------------------------------------
 		testFramework.assert(Aug21.isValid(), "Time provided found to be unable to convert to/from CommonTime", __LINE__);
 
-  		
+
   		CommonTime Test = Aug21.convertToCommonTime();
 
   		CivilTime Test2;
@@ -332,7 +332,7 @@ class CivilTime_T
   		testFramework.assert(Test2.day == Aug21.day,                       "Day provided found to be different after converting to and from CommonTime",        __LINE__);
   		testFramework.assert(Test2.hour == Aug21.hour,                     "Hour provided found to be different after converting to and from CommonTime",       __LINE__);
   		testFramework.assert(Test2.minute == Aug21.minute,                 "Minute provided found to be different after converting to and from CommonTime",     __LINE__);
-  		testFramework.assert(Test2.second == Aug21.second,                 "Second provided found to be different after converting to and from CommonTime",     __LINE__);		
+  		testFramework.assert(Test2.second == Aug21.second,                 "Second provided found to be different after converting to and from CommonTime",     __LINE__);
 
 		return testFramework.countFails();
 	}
@@ -397,14 +397,14 @@ class CivilTime_T
 		testFramework.assert(GPS1 != UNKNOWN, "Equivalent objects with differing TimeSystems are found to be equal",                                  __LINE__);
 		testFramework.assert(!(GPS1 != ANY),  "Equivalent objects with differing TimeSystems where one is TimeSystem::Any are found to be not-equal", __LINE__);
 
-		testFramework.changeSourceMethod("OperatorLessThanWithDifferingTimeSystem");	
+		testFramework.changeSourceMethod("OperatorLessThanWithDifferingTimeSystem");
 		//---------------------------------------------------------------------
-		//Verify TimeSystem=ANY does not matter in other operator comparisons 
+		//Verify TimeSystem=ANY does not matter in other operator comparisons
 		//---------------------------------------------------------------------
 		testFramework.assert(ANY2 < GPS1, "Less than object with Any TimeSystem is not found to be less than", __LINE__);
 		testFramework.assert(GPS2 < ANY,"Less than object with GPS TimeSystem is not found to be less-than a greater object with Any TimeSystem", __LINE__);
 
-		testFramework.changeSourceMethod("setTimeSystem");	
+		testFramework.changeSourceMethod("setTimeSystem");
   		UNKNOWN.setTimeSystem(TimeSystem(2)); //Set the Unknown TimeSystem
 		//---------------------------------------------------------------------
 		//Ensure resetting a Time System changes it
@@ -435,7 +435,7 @@ class CivilTime_T
                        (std::string)"2008 08 08 Aug 21 13 30 15 15.000000 UTC", "printf did not output in the proper format", __LINE__);
 
 
-		testFramework.changeSourceMethod("printError");	
+		testFramework.changeSourceMethod("printError");
 		//---------------------------------------------------------------------
 		//Verify printed error message matches expectation
 		//---------------------------------------------------------------------
@@ -444,7 +444,7 @@ class CivilTime_T
 		testFramework.assert(UTC1.printError("%04Y %02y %02m %02b %02d %02H %02M %02S %02f %02P") ==
                        (std::string)"ErrorBadTime ErrorBadTime ErrorBadTime ErrorBadTime ErrorBadTime ErrorBadTime ErrorBadTime ErrorBadTime ErrorBadTime ErrorBadTime", "printError did not output in the proper format", __LINE__);
 
-		
+
 		return testFramework.countFails();
 	}
 
@@ -477,7 +477,7 @@ int main() //Main function to initialize and run all tests above
 
 	check = testClass.printfTest();
         errorCounter += check;
-	
+
 	std::cout << "Total Errors: " << errorCounter << std::endl;
 
 	return errorCounter; //Return the total number of errors

@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,48 +29,48 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 //
 //
-#ifndef GPSTK_RACROTATION_HPP
-#define GPSTK_RACROTATION_HPP
+#ifndef GNSSTK_RACROTATION_HPP
+#define GNSSTK_RACROTATION_HPP
 
-// gpstk
+// gnsstk
 #include "Triple.hpp"
 #include "Matrix.hpp"
 #include "Vector.hpp"
 #include "Xvt.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup MathGroup
       //@{
 
-   class RACRotation : public gpstk::Matrix<double>
+   class RACRotation : public gnsstk::Matrix<double>
    {
       public:
             // Constructors
-         RACRotation( const gpstk::Triple& SVPositionVector,
-                      const gpstk::Triple& SVVelocityVector);
-         RACRotation(const gpstk::Xvt& xvt);
-         
+         RACRotation( const gnsstk::Triple& SVPositionVector,
+                      const gnsstk::Triple& SVVelocityVector);
+         RACRotation(const gnsstk::Xvt& xvt);
+
             // Methods
-         gpstk::Vector<double> convertToRAC( const gpstk::Vector<double>& inV );
-         gpstk::Triple         convertToRAC( const gpstk::Triple& inVec );
-         gpstk::Xvt            convertToRAC( const gpstk::Xvt& in );
-                                  
+         gnsstk::Vector<double> convertToRAC( const gnsstk::Vector<double>& inV );
+         gnsstk::Triple         convertToRAC( const gnsstk::Triple& inVec );
+         gnsstk::Xvt            convertToRAC( const gnsstk::Xvt& in );
+
             // Utilities
       protected:
-         void compute( const gpstk::Triple& SVPositionVector,
-                       const gpstk::Triple& SVVelocityVector);
+         void compute( const gnsstk::Triple& SVPositionVector,
+                       const gnsstk::Triple& SVVelocityVector);
    };
 
       //@}
-}   
-#endif      
+}
+#endif

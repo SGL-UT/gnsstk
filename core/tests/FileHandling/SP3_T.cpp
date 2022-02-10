@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -54,14 +54,14 @@ public:
       //
       // @return  number of failures, i.e., 0=PASS, !0=FAIL
       //
-   int doReadWriteTests(gpstk::SP3Header::Version ver, const std::string& inFile)
+   int doReadWriteTests(gnsstk::SP3Header::Version ver, const std::string& inFile)
    {
-      gpstk::TestUtil  tester( "SP3Data", "Read/Write (" + inFile + ")", __FILE__, __LINE__ );
+      gnsstk::TestUtil  tester( "SP3Data", "Read/Write (" + inFile + ")", __FILE__, __LINE__ );
 
-      std::string  dataFilePath = gpstk::getPathData();
-      std::string  dataFileName = dataFilePath + gpstk::getFileSep() +
+      std::string  dataFilePath = gnsstk::getPathData();
+      std::string  dataFileName = dataFilePath + gnsstk::getFileSep() +
          "test_input_" + inFile + ".sp3";
-      gpstk::SP3Stream  inStream(dataFileName.c_str(), std::ios::in);
+      gnsstk::SP3Stream  inStream(dataFileName.c_str(), std::ios::in);
 
       tester.assert( inStream.good(), "error creating input stream", __LINE__ );
 
@@ -73,7 +73,7 @@ public:
          inStream >> inStream.header;
          tester.assert( true, "header read successfully", __LINE__ );
       }
-      catch (gpstk::Exception& e)
+      catch (gnsstk::Exception& e)
       {
          std::ostringstream  oss;
          oss << "stream exception reading header: " << e;
@@ -85,16 +85,16 @@ public:
       }
 
          // read in all records
-      std::vector<gpstk::SP3Data>  data;
+      std::vector<gnsstk::SP3Data>  data;
       while (inStream.good() && (EOF != inStream.peek() ) )
       {
-         gpstk::SP3Data  record;
+         gnsstk::SP3Data  record;
          try
          {
             inStream >> record;
             data.push_back(record);
          }
-         catch (gpstk::Exception& e)
+         catch (gnsstk::Exception& e)
          {
             std::ostringstream  oss;
             oss << "stream exception reading record: " << e;
@@ -107,10 +107,10 @@ public:
       }
       inStream.close();
 
-      std::string  tempFilePath = gpstk::getPathTestTemp();
-      std::string  tempFileName = tempFilePath + gpstk::getFileSep() +
+      std::string  tempFilePath = gnsstk::getPathTestTemp();
+      std::string  tempFileName = tempFilePath + gnsstk::getFileSep() +
          "test_output_" + inFile + "_tmp.sp3";
-      gpstk::SP3Stream  outStream(tempFileName.c_str(), std::ios::out);
+      gnsstk::SP3Stream  outStream(tempFileName.c_str(), std::ios::out);
 
       tester.assert( outStream.good(), "error creating ouput stream", __LINE__ );
 
@@ -123,7 +123,7 @@ public:
          outStream << outStream.header;
          tester.assert( true, "header written successfully", __LINE__ );
       }
-      catch (gpstk::Exception& e)
+      catch (gnsstk::Exception& e)
       {
          std::ostringstream  oss;
          oss << "stream exception writing header: " << e;
@@ -135,7 +135,7 @@ public:
       }
 
          // write all records
-      std::vector<gpstk::SP3Data>::iterator  recordIter = data.begin();
+      std::vector<gnsstk::SP3Data>::iterator  recordIter = data.begin();
       for ( ; recordIter != data.end(); ++recordIter)
       {
          try
@@ -143,7 +143,7 @@ public:
             outStream << *recordIter;
             tester.assert( true, "put record", __LINE__ );
          }
-         catch (gpstk::Exception& e)
+         catch (gnsstk::Exception& e)
          {
             std::ostringstream  oss;
             oss << "exception writing record: " << e;
@@ -235,8 +235,8 @@ public:
             std::ostringstream  oss;
             oss << "Line " << lineNumber << " in the reference file exceeeds "
                 << "the maximum valid SP3 line length (80)";
-            gpstk::Exception exc(oss.str());
-            GPSTK_THROW(exc);
+            gnsstk::Exception exc(oss.str());
+            GNSSTK_THROW(exc);
          }
          for (int pos = 0; pos <= lastPos; ++pos)
          {
@@ -305,24 +305,24 @@ int main()  //Main function to initialize and run all tests above
 
    try
    {
-      errorTotal += testClass.doReadWriteTests(gpstk::SP3Header::SP3a, "SP3a");
-      errorTotal += testClass.doReadWriteTests(gpstk::SP3Header::SP3a, "SP3ae");
-      errorTotal += testClass.doReadWriteTests(gpstk::SP3Header::SP3b, "SP3b");
-      errorTotal += testClass.doReadWriteTests(gpstk::SP3Header::SP3c, "SP3c");
-      errorTotal += testClass.doReadWriteTests(gpstk::SP3Header::SP3d, "SP3d");
-      
+      errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3a, "SP3a");
+      errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3a, "SP3ae");
+      errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3b, "SP3b");
+      errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3c, "SP3c");
+      errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3d, "SP3d");
+
       // The SP3c_mgex# series tries do approximate a set of "unit" tests using
       // mocked SP3c files. Multiple satellite systems, unusual time systems,
       // unusual reference frames, etc, are all fair game. SP3c file comments
       // describe the types SP3 features that it intends to exercise.
-      errorTotal += testClass.doReadWriteTests(gpstk::SP3Header::SP3c, "SP3c_mgex1");
-      errorTotal += testClass.doReadWriteTests(gpstk::SP3Header::SP3c, "SP3c_mgex2");
-      errorTotal += testClass.doReadWriteTests(gpstk::SP3Header::SP3c, "SP3c_mgex3");
-      errorTotal += testClass.doReadWriteTests(gpstk::SP3Header::SP3c, "SP3c_mgex4");
-      errorTotal += testClass.doReadWriteTests(gpstk::SP3Header::SP3c, "SP3c_mgex5");
-      errorTotal += testClass.doReadWriteTests(gpstk::SP3Header::SP3c, "SP3c_mgex6");
+      errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3c, "SP3c_mgex1");
+      errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3c, "SP3c_mgex2");
+      errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3c, "SP3c_mgex3");
+      errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3c, "SP3c_mgex4");
+      errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3c, "SP3c_mgex5");
+      errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3c, "SP3c_mgex6");
    }
-   catch (gpstk::Exception& e)
+   catch (gnsstk::Exception& e)
    {
       ++errorTotal;
       std::cerr << "unexpected exception executing tests: " << e;

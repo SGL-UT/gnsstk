@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -44,10 +44,10 @@
 #include <iostream>
 #include "Xvt.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 
-   std::ostream& operator<<(std::ostream& os, const gpstk::Xvt& xvt) throw()
+   std::ostream& operator<<(std::ostream& os, const gnsstk::Xvt& xvt) throw()
    {
       os << "x:" << xvt.x
          << ", v:" << xvt.v
@@ -109,7 +109,7 @@ namespace gpstk
       // correct the rotation by a small amount.
    double Xvt::preciseRho(const Triple& rxPos,
                           const EllipsoidModel& ellips,
-                          double correction) const 
+                          double correction) const
       throw()
    {
          // Compute initial time of flight estimate using the
@@ -124,14 +124,14 @@ namespace gpstk
 
          // rotate original GS coordinates to new values to correct for
          // rotation of ECEF frame
-         // Ref: Satellite Geodesy, Gunter Seeber, 1993, pg 291  and the 
+         // Ref: Satellite Geodesy, Gunter Seeber, 1993, pg 291  and the
          // ICD-GPS-200 sheet 102 May 1993 version
          //   xnew[0]=xg[0]*cos(rotation_angle)-xg[1]*sin(rotation_angle);
          //   xnew[1]=xg[1]*cos(rotation_angle)+xg[0]*sin(rotation_angle);
          //   xnew[2]=xg[2];
          // since cosine and sine are small, approximate by the first
          // order terms in an expansion.
-      gpstk::Triple xnew;
+      gnsstk::Triple xnew;
       for (int i = 0; i < 2; i++)
       {
          xnew[0] = x[0] - x[1] * rotation_angle;
@@ -141,15 +141,15 @@ namespace gpstk
             // Compute geometric slant range from ground station to
             // the rotated new coord's
          sr1 = rxPos.slantRange(xnew);
-   
+
             // Recompute the time of flight (dt) based on PR, with the
             // time of flight based on geometric range.  Note that
             // this is a really unneeded, in that the change in PR is
             // < 40 m, hence the change in tof is < 20 ns
          dt = sr1 / ellips.c();
-   
-            // Compute new rotation in this time 
-         rotation_angle = -ellips.angVelocity() * dt;  
+
+            // Compute new rotation in this time
+         rotation_angle = -ellips.angVelocity() * dt;
       }
 
          // Account for SV clock drift, relativity and user input correction
@@ -159,4 +159,4 @@ namespace gpstk
 
    } // end of preciseRho()
 
-} // end of gpstk namespace
+} // end of gnsstk namespace

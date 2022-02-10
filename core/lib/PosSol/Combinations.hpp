@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,13 +40,13 @@
  * @file Combinations.hpp
  * Find all the combinations of n things taken k at a time.
  */
- 
+
 #ifndef COMBINATIONS_INCLUDE
 #define COMBINATIONS_INCLUDE
 
 #include "Exception.hpp"
 
-namespace gpstk {
+namespace gnsstk {
 
 
 /// Class Combinations will compute C(n,k), all the combinations of n things
@@ -118,7 +118,7 @@ private:
    {
       if(K > N || N < 0 || K < 0) {
          Exception e("Combinations(n,k) must have k <= n, with n,k >= 0");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
 
       Index = std::vector<int>(K);
@@ -152,6 +152,6 @@ private:
 
 }; // end class Combinations
 
-} // end namespace gpstk
+} // end namespace gnsstk
 
 #endif // COMBINATIONS_INCLUDE

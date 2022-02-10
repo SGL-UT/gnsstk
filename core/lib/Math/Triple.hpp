@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,21 +41,21 @@
  * Three element double vectors, for use with geodetic coordinates
  */
 
-#ifndef GPSTK_TRIPLE_HPP
-#define GPSTK_TRIPLE_HPP
+#ifndef GNSSTK_TRIPLE_HPP
+#define GNSSTK_TRIPLE_HPP
 
 #include <valarray>
 #include <vector>
 #include "Exception.hpp"
 #include "Vector.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @todo determine if this file should be moved into GNSSCore
 
-      /// Thrown when a gpstk::Triple operation can't be completed.
+      /// Thrown when a gnsstk::Triple operation can't be completed.
       /// @ingroup exceptiongroup
-   NEW_EXCEPTION_CLASS(GeometryException, gpstk::Exception);
+   NEW_EXCEPTION_CLASS(GeometryException, gnsstk::Exception);
 
       /// @ingroup MathGroup
       //@{
@@ -75,8 +75,8 @@ namespace gpstk
       Triple(const Triple& right);
 
          /// Construct from three doubles.
-      Triple(double a, 
-             double b, 
+      Triple(double a,
+             double b,
              double c);
 
          /// Destructor
@@ -90,7 +90,7 @@ namespace gpstk
           */
       Triple& operator=(const std::valarray<double>& right);
 
-         
+
          /// Return the data as a Vector<double> object
       Vector<double> toVector();
 
@@ -103,9 +103,9 @@ namespace gpstk
           * @param right vector to compute dot product with.
           * @return The dot product of \c this and \c right
           */
-      double dot(const Triple& right) const 
+      double dot(const Triple& right) const
          throw();
-   
+
          /**
           * Computes the Cross Product of two vectors
           * @param right vector to compute cross product with
@@ -113,19 +113,19 @@ namespace gpstk
           */
       Triple cross(const Triple& right) const
          throw();
-   
+
          /**
           * Computes the Magnigude of this vector
           */
-      double mag() const 
+      double mag() const
          throw();
-   
+
          /**
           * Returns the unit vector of this vector
           * @throw GeometryException
           */
       Triple unitVector() const;
-      
+
          /**
           * Computes the Cosine of the Angle Between this vector and another.
           * @param right the other vector
@@ -133,15 +133,15 @@ namespace gpstk
           * @throw GeometryException
           */
       double cosVector(const Triple& right) const;
-      
+
          /**
           * Computes the slant range between this vector and another
           * @param right A Vector
           * @return The slant range between \c this and \c right
           */
-      double slantRange(const Triple& right) const 
+      double slantRange(const Triple& right) const
          throw();
-      
+
          /**
           * Computes the elevation of a point with respect to this
           * point.
@@ -150,38 +150,38 @@ namespace gpstk
           * @throw GeometryException
           */
       double elvAngle(const Triple& right) const;
-      
+
          /**
           * Computes an azimuth from this point.
           * @param right The position to determine azimuth of.
           * @return The azimuth of \c right relative to \c this
           * @throw GeometryException
-          */ 
+          */
       double azAngle(const Triple& right) const;
-      
+
          /** Computes rotation about axis X.
           * @param angle    Angle to rotate, in degrees
           * @return A triple which is the original triple rotated angle about X
           */
       Triple R1(const double& angle) const
          throw();
-   
-      
+
+
          /** Computes rotation about axis Y.
           * @param angle    Angle to rotate, in degrees
           * @return A triple which is the original triple rotated angle about Y
           */
       Triple R2(const double& angle) const
          throw();
-   
-      
+
+
          /** Computes rotation about axis Z.
           * @param angle    Angle to rotate, in degrees
           * @return A triple which is the original triple rotated angle about Z
           */
       Triple R3(const double& angle) const
          throw();
-   
+
          /**
           * Return a reference to the element at /a index.
           * @param index the index of the element to return.
@@ -198,14 +198,14 @@ namespace gpstk
       double operator[](const size_t index) const
       { return theArray[index]; }
 
-     
+
          /**
           * Equality Operator.
           * @param right the Triple to test equality against
           * @return true if left is equal to right
           */
       bool operator== (const Triple& right) const ;
-     
+
 
          /**
           * Difference Operator.
@@ -224,13 +224,13 @@ namespace gpstk
          /**
           * Multiplication Operator.
           * @param scale the scale by which to multiply a Triple
-          * @param rhs   the Triple to scale 
+          * @param rhs   the Triple to scale
           * @return a Triple containing the scaled result
           */
       friend Triple operator*(double scale, const Triple& rhs);
 
          /// Multiplication by a scalar on the right
-         /// @param rhs   the Triple to scale 
+         /// @param rhs   the Triple to scale
          /// @param left the scale by which to multiply a Triple
          /// @return a Triple containing the scaled result
       friend Triple operator*(const Triple& rhs, double left)
@@ -245,16 +245,16 @@ namespace gpstk
           * @param s output stream to which \c v is sent
           * @param v dvec that is sent to \c s
           */
-      friend std::ostream& operator<<(std::ostream& s, 
-                                      const gpstk::Triple& v);
-      
+      friend std::ostream& operator<<(std::ostream& s,
+                                      const gnsstk::Triple& v);
+
       std::valarray<double> theArray;
 
    }; // class Triple
 
       //@}
 
-} // namespace gpstk
+} // namespace gnsstk
 
 
 #endif

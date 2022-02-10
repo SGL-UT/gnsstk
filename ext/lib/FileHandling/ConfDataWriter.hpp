@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,8 +41,8 @@
 * Class to write configuration data files.
 */
 
-#ifndef GPSTK_CONFDATA_WRITER_HPP
-#define GPSTK_CONFDATA_WRITER_HPP
+#ifndef GNSSTK_CONFDATA_WRITER_HPP
+#define GNSSTK_CONFDATA_WRITER_HPP
 
 #include <string>
 #include <map>
@@ -50,11 +50,11 @@
 #include "StringUtils.hpp"
 
 
-namespace gpstk
+namespace gnsstk
 {
 
-	
-	   /// @ingroup formattedfile 
+
+	   /// @ingroup formattedfile
       //@{
 
       /** This is a class to write configuration data files.
@@ -68,12 +68,12 @@ namespace gpstk
        *
        *      // Open and parse configuration file
        *   confWriter.open("configuration.txt");
-       *   
+       *
        *   confWriter.writeVariable(cutOffElevation,
        *         10.0,
        *         "minimum allowed satellite elevation",
        *         "in degrees");
-       *   
+       *
        *
        * @endcode
        *
@@ -137,12 +137,12 @@ namespace gpstk
 #pragma clang diagnostic pop
 
          /// Write a common header for all of the configuration data files
-         /// written by this class. 
+         /// written by this class.
 		virtual void writeHeader();
-         
+
          /// Write a comment line start by '#'
 		void writeCommentLine(const std::string& comment);
-         
+
          /// Write a comment line as a separator line
          /// @param s    char of the separator line
          /// @param n    size of the separator line
@@ -151,25 +151,25 @@ namespace gpstk
 
          /// Write several blank lines default write one line
 		void writeBlankLine(const int& n=1);
-         
+
          /** Write a string variable with general format
           *
           * @param var          variable name
           * @param val          variable value
-          * @param varComment   variable comment 
+          * @param varComment   variable comment
           * @param valComment   value comment
           */
-		void writeVariable(const std::string& var, 
-                                   const std::string& val, 
+		void writeVariable(const std::string& var,
+                                   const std::string& val,
                                    const std::string& varComment = "",
                                    const std::string& valComment = "");
-		
-		   
+
+
          /** Write a integer variable with general format
           *
           * @param var          variable name
           * @param val          variable value
-          * @param varComment   variable comment 
+          * @param varComment   variable comment
           * @param valComment   value comment
           */
       void writeVariable(const std::string& var,
@@ -177,13 +177,13 @@ namespace gpstk
                          const std::string& varComment = "",
                          const std::string& valComment = "")
       { writeVariable(var,StringUtils::asString(val),varComment,valComment);}
-		
-         
+
+
          /** Write a double variable with general format
           *
           * @param var          variable name
           * @param val          variable value
-          * @param varComment   variable comment 
+          * @param varComment   variable comment
           * @param valComment   value comment
           */
       void writeVariable(const std::string& var,
@@ -192,13 +192,13 @@ namespace gpstk
                          const std::string& valComment = "");
 
 
-		   
+
          /** Write a string variable list with general format
           *
           * @param var          variable name
           * @param valList      variable list values
           * @param n            size of the variable list
-          * @param varComment   variable comment 
+          * @param varComment   variable comment
           * @param valComment   value comment
           */
       void writeVariableList(const std::string& var,
@@ -206,27 +206,27 @@ namespace gpstk
                              const int&    n,
                              const std::string& varComment = "",
                              const std::string& valComment = "");
-		
+
 
          /** Write a string variable list with general format
           *
           * @param var          variable name
           * @param valList      variable list values by std::vector
-          * @param varComment   variable comment 
+          * @param varComment   variable comment
           * @param valComment   value comment
           */
       void writeVariableList(const std::string&         var,
                              std::vector<std::string>   valList,
                              const std::string&         varComment = "",
                              const std::string&         valComment = "");
-		
+
 
          /** Write a int variable list with general format
           *
           * @param var          variable name
           * @param valList      variable list values
           * @param n            size of the variable list
-          * @param varComment   variable comment 
+          * @param varComment   variable comment
           * @param valComment   value comment
           */
       void writeVariableList(const std::string& var,
@@ -234,14 +234,14 @@ namespace gpstk
                              const int&    n,
                              const std::string& varComment = "",
                              const std::string& valComment = "");
-		
+
 
          /** Write a double variable list with general format
           *
           * @param var          variable name
           * @param valList      variable list values
           * @param n            size of the variable list
-          * @param varComment   variable comment 
+          * @param varComment   variable comment
           * @param valComment   value comment
           */
       void writeVariableList(const std::string& var,
@@ -249,8 +249,8 @@ namespace gpstk
                              const int&    n,
                              const std::string& varComment = "",
                              const std::string& valComment = "");
-		
-      
+
+
          /** Write a new section with some comment
           *
           * @param name          name of the section to be written
@@ -258,7 +258,7 @@ namespace gpstk
           */
       void writeSection(const std::string& name,
                         const std::string& comment = "");
-         
+
          /// Write a common tailer for all of the configuration data files
          /// written by this class.
       void writeEnd();
@@ -279,15 +279,15 @@ namespace gpstk
 		void formattedPutLine(const std::string& sline);
 
       int variableWidth;
-      
+
       int valuePrecison;
 
 	};  // End of class 'ConfDataWriter'
 
        //@}
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk
 
 
 
-#endif  //  GPSTK_CONFDATA_WRITER_HPP
+#endif  //  GNSSTK_CONFDATA_WRITER_HPP

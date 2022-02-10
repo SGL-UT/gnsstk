@@ -9,7 +9,7 @@
 # build directories
 build*/
 cmake-build-debug/
-gpstk.egg-info/
+gnsstk.egg-info/
 
 # OS/X File system droppings
 *.DS_Store

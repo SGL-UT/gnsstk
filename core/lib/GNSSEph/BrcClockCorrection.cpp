@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -46,10 +46,10 @@
 #include "GPS_URA.hpp"
 #include <cmath>
 
-namespace gpstk
+namespace gnsstk
 {
    using namespace std;
-   using namespace gpstk;
+   using namespace gnsstk;
 
    BrcClockCorrection::BrcClockCorrection()
       throw()
@@ -175,7 +175,7 @@ namespace gpstk
       if (!subframeConvert(subframe1, fullweeknum, ficked))
       {
          InvalidParameter exc("Subframe 1 not valid.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       double Txmit  = ficked[2];     // Time of week from handover word
       short weeknum = static_cast<short>( ficked[5] );
@@ -251,7 +251,7 @@ namespace gpstk
       if(!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return PRNID;
    }
@@ -261,7 +261,7 @@ namespace gpstk
       if(!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return obsID;
    }
@@ -271,7 +271,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       GPSWeekSecond gpsws(Toc);
       return (gpsws.week);
@@ -284,7 +284,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
          //if (obsID.code == "tcCA" ) // L1 C/A
       accuracy = ura2accuracy(URAoc);
@@ -305,7 +305,7 @@ namespace gpstk
       else if (ndx == 1) return URAoc1;
       else if (ndx == 2) return URAoc2;
       InvalidParameter exc ("Required data not stored.");
-      GPSTK_THROW(exc);
+      GNSSTK_THROW(exc);
    }
 
    double BrcClockCorrection::getToc() const
@@ -313,7 +313,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       GPSWeekSecond gpsws(Toc);
       return gpsws.sow;
@@ -324,7 +324,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return af0;
    }
@@ -334,7 +334,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return af1;
    }
@@ -344,7 +344,7 @@ namespace gpstk
       if (!dataLoaded)
       {
          InvalidRequest exc("Required data not stored.");
-         GPSTK_THROW(exc);
+         GNSSTK_THROW(exc);
       }
       return af2;
    }

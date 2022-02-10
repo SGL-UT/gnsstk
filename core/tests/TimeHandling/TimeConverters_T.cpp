@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,7 +41,7 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
-using namespace gpstk;
+using namespace gnsstk;
 
 
 class xTimeConverters
@@ -63,16 +63,16 @@ class xTimeConverters
 			int expectedMonth[8] = {      8,      10,       3,       2,       3,       1,       6,       3};
 			int expectedDay[8]   = {     23,       3,       1,      29,       1,       1,      25,       1};
 
-			
+
 			for (int i = 0; i < 8; i++)
 			{
 				convertJDtoCalendar(inputJD[i],year,month,day);
 				//---------------------------------------------------------------------
 				//Was the correct calendar day found for the above JD?
-				//---------------------------------------------------------------------		
-				testFramework.assert(expectedYear[i]  == year , "The year from the JD conversion was not correct",  __LINE__);			
-				testFramework.assert(expectedMonth[i] == month, "The month from the JD conversion was not correct", __LINE__);				
-				testFramework.assert(expectedDay[i]   == day  , "The day from the JD conversion was not correct",   __LINE__);	
+				//---------------------------------------------------------------------
+				testFramework.assert(expectedYear[i]  == year , "The year from the JD conversion was not correct",  __LINE__);
+				testFramework.assert(expectedMonth[i] == month, "The month from the JD conversion was not correct", __LINE__);
+				testFramework.assert(expectedDay[i]   == day  , "The day from the JD conversion was not correct",   __LINE__);
 			}
 
 			return testFramework.countFails();
@@ -98,8 +98,8 @@ class xTimeConverters
 				JD = convertCalendarToJD(inputYear[i],inputMonth[i],inputDay[i]);
 				//---------------------------------------------------------------------
 				//Was the correct JD found for the above Calendar day?
-				//---------------------------------------------------------------------	
-				testFramework.assert(expectedJD[i] == JD, "The JD found from the calendar-JD conversion was not correct",  __LINE__);	
+				//---------------------------------------------------------------------
+				testFramework.assert(expectedJD[i] == JD, "The JD found from the calendar-JD conversion was not correct",  __LINE__);
 			}
 
 			return testFramework.countFails();
@@ -127,7 +127,7 @@ class xTimeConverters
 				convertSODtoTime(inputSOD[i],hour,minute,second);
 				//---------------------------------------------------------------------
 				//Was the correct Time found for the above SOD?
-				//---------------------------------------------------------------------	
+				//---------------------------------------------------------------------
 				relativeError = fabs(expectedSecond[i]-second)/fabs(expectedSecond[i]);
 				testFramework.assert(expectedHour[i] == hour    , "The SOD to Time conversion found an incorrect hour"  , __LINE__ );
 				testFramework.assert(expectedMinute[i] == minute, "The SOD to Time conversion found an incorrect minute", __LINE__ );
@@ -158,7 +158,7 @@ class xTimeConverters
 				SOD = convertTimeToSOD(inputHour[i],inputMinute[i],inputSecond[i]);
 				//---------------------------------------------------------------------
 				//Was the correct SOD found for the above Time?
-				//---------------------------------------------------------------------	
+				//---------------------------------------------------------------------
 				relativeError = fabs(expectedSOD[i]-SOD)/fabs(expectedSOD[i]);
 				testFramework.assert(relativeError < eps, "The Time to SOD conversion found an incorrect SOD", __LINE__ );
 			}
@@ -183,9 +183,9 @@ int main() //Main function to initialize and run all tests above
 	check = testClass.SODtoTimeTest();
 	errorCounter += check;
 
-	check = testClass.TimetoSODTest(); 
+	check = testClass.TimetoSODTest();
 	errorCounter += check;
-	
+
 	std::cout << "Total Errors for " << __FILE__<<": "<< errorCounter << std::endl;
 
 	return errorCounter; //Return the total number of errors

@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -48,7 +48,7 @@
 #include <string>
 #include <iostream>
 
-namespace gpstk
+namespace gnsstk
 {
 /// levels that the user may give the log stream output in the output statement,
 /// e.g. LOG(ERROR) << "This is an error message"; DEBUGn levels appear indented
@@ -202,7 +202,7 @@ template <class T> inline std::string Log<T>::NowTime()
    struct timeval tv;
    gettimeofday(&tv, 0);
    char result[100] = {0};
-   std::sprintf(result, "%s.%03ld", buffer, (long)tv.tv_usec / 1000); 
+   std::sprintf(result, "%s.%03ld", buffer, (long)tv.tv_usec / 1000);
    return result;
 }
 
@@ -239,7 +239,7 @@ template <class T> inline std::string Log<T>::NowTime()
 ///
 /// NB. All the ConfigureLOG:: settings are defined in ALL linked modules that
 /// includes logstream.hpp, whenever they are set in ANY such module.
-/// 
+///
 /// How to use: 4. write to LOG(level) where level is one of the LogLevel choices.
 ///                Only output at or below the ReportingLevel() will appear in log.
 /// @code
@@ -291,7 +291,7 @@ inline std::ostream*& ConfigureLOGstream::Stream()
 }
 
 inline void ConfigureLOGstream::Output(const std::string& msg)
-{   
+{
    std::ostream *pStream = Stream();
    if(!pStream) return;
    *pStream << msg << std::flush;

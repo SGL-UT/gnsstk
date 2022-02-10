@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,10 +40,11 @@
 #include "TestUtil.hpp"
 #include <iostream>
 #include <iomanip>
+#include "GalileoIonoEllipsoid.hpp"
 
 using namespace std;
-using namespace gpstk;
-using namespace gpstk::StringUtils;
+using namespace gnsstk;
+using namespace gnsstk::StringUtils;
 
 class Position_T
 {
@@ -65,7 +66,7 @@ public:
       try
       {
          Position c,s,d,g; //An object for each of the Position types.
-        
+
             // test transformTo
 
             // Start in ECEF (Cartesian)
@@ -80,7 +81,7 @@ public:
 
          t = c; // Reset comparison object
          t.transformTo(Position::Spherical);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
 
             //Start in Geodetic
          TUCSM("Geodetic transformTo");
@@ -91,18 +92,18 @@ public:
 
          t = d;  // Reset comparison object
          t.transformTo(Position::Geocentric);
-         TUASSERTFEPS(0, range(t,d), eps); 
+         TUASSERTFEPS(0, range(t,d), eps);
 
          t = d;  // Reset comparison object
          t.transformTo(Position::Spherical);
-         TUASSERTFEPS(0, range(t,d), eps); 
+         TUASSERTFEPS(0, range(t,d), eps);
 
             //Start in Geocentric
          TUCSM("Geocentric transformTo");
          g.setGeocentric(38.811958506159,251.499999999370,6371110.627671023800);
          t = g;  // Reset comparison object
          t.transformTo(Position::Cartesian);
-         TUASSERTFEPS(0, range(t,g), eps); 
+         TUASSERTFEPS(0, range(t,g), eps);
 
          t = g;  // Reset comparison object
          t.transformTo(Position::Geodetic);
@@ -110,7 +111,7 @@ public:
 
          t = g;  // Reset comparison object
          t.transformTo(Position::Spherical);
-         TUASSERTFEPS(0, range(t,g), eps); 
+         TUASSERTFEPS(0, range(t,g), eps);
 
             //Start in Spherical
          TUCSM("Spherical transformTo");
@@ -125,7 +126,7 @@ public:
 
          t = s;
          t.transformTo(Position::Geodetic);
-         TUASSERTFEPS(0, range(t,s), eps); 
+         TUASSERTFEPS(0, range(t,s), eps);
       }
       catch(...)
       {
@@ -232,7 +233,7 @@ public:
             "%a degN %L degE %r m",
             "%x m %y m %z m",
             "%t deg %p deg %r M"};
-         for(int i=1; i<5; i++) 
+         for(int i=1; i<5; i++)
          {
             string str;
                // A dummy Position initialized at c and another
@@ -308,23 +309,23 @@ public:
          t.transformTo(Position::Geodetic);
          TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Geocentric);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Spherical);
          TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Cartesian);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Geodetic);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Cartesian);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Spherical);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Geodetic);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Spherical);
          TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Geocentric);
-         TUASSERTFEPS(0, range(t,c), eps); 
+         TUASSERTFEPS(0, range(t,c), eps);
          t.transformTo(Position::Cartesian);
          TUASSERTFEPS(0, range(t,c), eps);
       }
@@ -338,7 +339,7 @@ public:
    }
 
       /*      Many of the tests above use the range() function to
-              measure the distances between two positions. It in turn 
+              measure the distances between two positions. It in turn
               needs to be tested to ensure that it works. */
    unsigned rangeTest()
    {
@@ -364,6 +365,53 @@ public:
       }
       TURETURN();
    }
+
+
+   unsigned getZenithAngleTest()
+   {
+      TUDEF("Position", "getZenithAngle");
+         // test data originated from EU Galileo iono model
+         // NeQuickG_JRC_ray_test.c (km converted to meters)
+      gnsstk::Position p1(82.494293510, 297.659539798, 78.107446,
+                         gnsstk::Position::Geodetic);
+      gnsstk::Position p2(54.445029416, 241.529931024, 20370730.845002,
+                         gnsstk::Position::Geodetic);
+      double expected = 0.713414;
+      gnsstk::AngleReduced delta, expectedDelta(0.52852299785161971357,
+                                               0.84891898361500717218);
+      gnsstk::GalileoIonoEllipsoid ell;
+      p1.setEllipsoidModel(&ell);
+      p2.setEllipsoidModel(&ell);
+      gnsstk::Angle zeta = p1.getZenithAngle(p2, delta);
+      TUASSERTFEPS(expected, zeta.rad(), 1e-6);
+      TUASSERTFEPS(expectedDelta.sin(), delta.sin(), 1e-6);
+      TUASSERTFEPS(expectedDelta.cos(), delta.cos(), 1e-6);
+      TURETURN();
+   }
+
+
+   unsigned getRayPerigeeTest()
+   {
+      TUDEF("Position", "getRayPerigee");
+         // test data originated from EU Galileo iono model
+         // NeQuickG_JRC_ray_test.c (km converted to meters)
+      gnsstk::GalileoIonoEllipsoid ell;
+      gnsstk::Position p1(82.494293510, 297.659539798, 78.107446,
+                         gnsstk::Position::Geodetic, &ell);
+      gnsstk::Position p2(54.445029416, 241.529931024, 20370730.845002,
+                         gnsstk::Position::Geodetic, &ell);
+         // 405 degrees longitude?  Ok, Galileo.
+      gnsstk::Position expected(43.550617197, 405.289045373, 4169486.317342,
+                               gnsstk::Position::Geocentric, &ell);
+      TUASSERTE(gnsstk::Position, expected, p1.getRayPerigee(p2));
+      gnsstk::Position f1(82.49, 297.66, 78.11, gnsstk::Position::Geodetic, &ell);
+      gnsstk::Position f2(54.29, 8.23, 20281546.18, gnsstk::Position::Geodetic,
+                         &ell);
+      gnsstk::Position foo = f1.getRayPosition(1000, f2);
+      cerr << "radius=" << foo.radius() << " m" << endl;
+//      p1.getRayPosition do something here check against NeQuickG_JRC_ray and test for consistency in sigmap value
+      TURETURN();
+   }
 };
 
 int main() //Main function to initialize and run all tests above
@@ -377,6 +425,8 @@ int main() //Main function to initialize and run all tests above
    errorTotal += testClass.scanTest();
    errorTotal += testClass.elevationAzimuthTest();
    errorTotal += testClass.poleTransformTest();
+   errorTotal += testClass.getZenithAngleTest();
+   errorTotal += testClass.getRayPerigeeTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

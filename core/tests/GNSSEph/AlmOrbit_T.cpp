@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -45,7 +45,7 @@
 #include <sstream>
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
 /** Threshold for how much different our velocities can be between
  * being computed directly via svXvt and computed via differencing
@@ -69,7 +69,7 @@ public:
       TUDEF("AlmOrbit", "Default Constructor");
       std::string testMesg;
 
-      gpstk::AlmOrbit empty;
+      gnsstk::AlmOrbit empty;
 
          //--------------------------------------------------------------------
          //Does the default constructor function correctly?
@@ -112,7 +112,7 @@ public:
 
 //============================================================================
 
-      gpstk::AlmOrbit compare(1, 0.00346661, 0.00388718, -8.01176E-09, 5153.58,
+      gnsstk::AlmOrbit compare(1, 0.00346661, 0.00388718, -8.01176E-09, 5153.58,
                               -0.296182, -1.31888, 2.79387, 0.000148773,
                               7.63976E-11, 466944, 250560, 797, 0);
 
@@ -160,7 +160,7 @@ public:
       TUDEF("AlmOrbit", "Dump");
       std::string testMesg;
 
-      gpstk::AlmOrbit compare(1, 0.00346661, 0.00388718, -8.01176E-09, 5153.58,
+      gnsstk::AlmOrbit compare(1, 0.00346661, 0.00388718, -8.01176E-09, 5153.58,
                               -0.296182, -1.31888, 2.79387, 0.000148773,
                               7.63976E-11, 466944, 250560, 797, 0);
 
@@ -232,7 +232,7 @@ public:
       std::stringstream outputStream;
       std::string outputString, referenceString;
 
-      gpstk::AlmOrbit compare(1, 0.00346661, 0.00388718, -8.01176E-09, 5153.58,
+      gnsstk::AlmOrbit compare(1, 0.00346661, 0.00388718, -8.01176E-09, 5153.58,
                               -0.296182, -1.31888, 2.79387, 0.000148773,
                               7.63976E-11, 466944, 250560, 797, 0);
 
@@ -262,26 +262,26 @@ public:
       TUDEF("AlmOrbit", "get Methods");
       std::string testMesg;
 
-      gpstk::AlmOrbit compare(1, 0.00346661, 0.00388718, -8.01176E-09, 5153.58,
+      gnsstk::AlmOrbit compare(1, 0.00346661, 0.00388718, -8.01176E-09, 5153.58,
                               -0.296182, -1.31888, 2.79387, 0.000148773,
                               7.63976E-11, 466944, 250560, 797, 0);
 
-      gpstk::GPSWeekSecond reference1(797,466944);
-      gpstk::CommonTime cRef1 (reference1);
+      gnsstk::GPSWeekSecond reference1(797,466944);
+      gnsstk::CommonTime cRef1 (reference1);
 
          //------------------------------------------------------------------
          //Did the getToaTime method function correctly?
          //------------------------------------------------------------------
       testMesg = "getToaTime method did not function correctly";
-      TUASSERTE(gpstk::CommonTime, cRef1, compare.getToaTime());
+      TUASSERTE(gnsstk::CommonTime, cRef1, compare.getToaTime());
 
-      gpstk::GPSWeekSecond reference2(797, 250560);
-      gpstk::CommonTime cRef2 (reference2);
+      gnsstk::GPSWeekSecond reference2(797, 250560);
+      gnsstk::CommonTime cRef2 (reference2);
          //------------------------------------------------------------------
          //Did the getTransmitTime method function correctly?
          //------------------------------------------------------------------
       testMesg = "getTransmitTime method did not function correctly";
-      TUASSERTE(gpstk::CommonTime, cRef2, compare.getTransmitTime());
+      TUASSERTE(gnsstk::CommonTime, cRef2, compare.getTransmitTime());
 
          //------------------------------------------------------------------
          //Did the getFullWeek method function correctly?
@@ -290,7 +290,7 @@ public:
       TUASSERTE(short, 797, compare.getFullWeek());
 
          //setting Toa to < -302400 & xmit_time to 0
-      gpstk::AlmOrbit compare1(1, 0.00346661, 0.00388718, -8.01176E-09,
+      gnsstk::AlmOrbit compare1(1, 0.00346661, 0.00388718, -8.01176E-09,
                                5153.58, -0.296182, -1.31888, 2.79387,
                                0.000148773, 7.63976E-11, -302401, 0, 797, 0);
 
@@ -301,7 +301,7 @@ public:
       TUASSERTE(short, 796, compare1.getFullWeek());
 
          //setting Toa to > 302400 & xmit_time to 0
-      gpstk::AlmOrbit compare2(1, 0.00346661, 0.00388718, -8.01176E-09,
+      gnsstk::AlmOrbit compare2(1, 0.00346661, 0.00388718, -8.01176E-09,
                                5153.58, -0.296182, -1.31888, 2.79387,
                                0.000148773, 7.63976E-11, 302401, 0, 797, 0);
 
@@ -319,8 +319,8 @@ public:
    int svXvtTest(void)
    {
       TUDEF("AlmOrbit", "svXvt");
-      gpstk::AlmOrbit oe(2, .146582192974e-01,
-                         .941587707856e+00 - (0.3*gpstk::PI),
+      gnsstk::AlmOrbit oe(2, .146582192974e-01,
+                         .941587707856e+00 - (0.3*gnsstk::PI),
                          -.804390648956e-08, .515359719276e+04,
                          -.296605403382e+01, -.224753761329e+01,
                          -.136404614938e+01, .579084269702e-03,
@@ -330,13 +330,13 @@ public:
       {
             // first compute Xvt
          static const unsigned SECONDS = 7200;
-         gpstk::Xvt zeroth_array[SECONDS];
+         gnsstk::Xvt zeroth_array[SECONDS];
          for (unsigned ii = 0; ii < SECONDS; ii++)
          {
             zeroth_array[ii] = oe.svXvt(oe.getToaTime() + ii);
          }
             // then compute first derivative of position, i.e. velocity
-         gpstk::Triple deriv[SECONDS];
+         gnsstk::Triple deriv[SECONDS];
          double h = 1; // time step size in seconds
          for (unsigned ii = 0; ii < SECONDS; ii++)
          {
@@ -392,7 +392,7 @@ public:
             TUPASS("velocity check");
          }
       }
-      catch (gpstk::Exception& exc)
+      catch (gnsstk::Exception& exc)
       {
          cerr << exc;
          TUFAIL("Exception");

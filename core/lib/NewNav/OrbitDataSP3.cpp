@@ -1,38 +1,38 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -40,7 +40,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    OrbitDataSP3 ::
    OrbitDataSP3()
@@ -95,7 +95,7 @@ namespace gpstk
       }
       xvt.clkbias = clkBias * 1e-6; // microseconds to seconds
       xvt.clkdrift = clkDrift * 1e-6;
-      xvt.health = Xvt::HealthStatus::Unavailable;
+      xvt.health = Xvt::HealthStatus::Unused;
       xvt.computeRelativityCorrection();
          /// @todo set xvt.frame
       return true;
@@ -103,10 +103,10 @@ namespace gpstk
 
 
    void OrbitDataSP3 ::
-   dump(std::ostream& s, Detail dl) const
+   dump(std::ostream& s, DumpDetail dl) const
    {
       NavData::dump(s,dl);
-      if (dl == Detail::OneLine)
+      if (dl == DumpDetail::OneLine)
          return;
       const ios::fmtflags oldFlags = s.flags();
       s << fixed << setprecision(6) << "P: {";
@@ -117,7 +117,7 @@ namespace gpstk
       for (unsigned i = 0; i < vel.size(); i++)
          s << " " << vel[i];
       s << "} drift: " << clkDrift << endl;
-      if (dl == Detail::Brief)
+      if (dl == DumpDetail::Brief)
          return;
       s << "A: {";
       for (unsigned i = 0; i < acc.size(); i++)

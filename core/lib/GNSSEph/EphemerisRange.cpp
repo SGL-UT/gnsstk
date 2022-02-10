@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -46,23 +46,27 @@
 #include "MiscMath.hpp"
 #include "GPSEllipsoid.hpp"
 #include "GNSSconstants.hpp"
-#include "GNSSconstants.hpp"
+#include "GPSLNavEph.hpp"
+#include "TimeString.hpp"
 
 using namespace std;
-using namespace gpstk;
+using namespace gnsstk;
 
-namespace gpstk
+namespace gnsstk
 {
    // Compute the corrected range at RECEIVE time, from receiver at position Rx,
    // to the GPS satellite given by SatID sat, as well as all the CER quantities,
-   // given the nominal receive time tr_nom and an EphemerisStore. Note that this
+   // given the nominal receive time trNom and an EphemerisStore. Note that this
    // routine does not intrinsicly account for the receiver clock error
    // like the ComputeAtTransmitTime routine does.
    double CorrectedEphemerisRange::ComputeAtReceiveTime(
-      const CommonTime& tr_nom,
+      const CommonTime& trNom,
       const Position& Rx,
       const SatID sat,
-      const XvtStore<SatID>& Eph)
+      NavLibrary& navLib,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       try {
          int nit;
@@ -73,15 +77,19 @@ namespace gpstk
          tof = 0.07;       // initial guess 70ms
          do {
             // best estimate of transmit time
-            transmit = tr_nom;
+            transmit = trNom;
             transmit -= tof;
             tof_old = tof;
             // get SV position
             try {
-               svPosVel = Eph.getXvt(sat, transmit);
+                  /** @todo getXvt was expected to throw an exception on
+                   * failure in the past.  This assert more or less mimics
+                   * that behavior.  Refactoring is needed.  */
+               GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), transmit,
+                                    order, xmitHealth, valid));
             }
-            catch(InvalidRequest& e) {
-               GPSTK_RETHROW(e);
+            catch(AssertionFailure& e) {
+               GNSSTK_RETHROW(e);
             }
 
             rotateEarth(Rx);
@@ -97,28 +105,31 @@ namespace gpstk
 
          return (rawrange-svclkbias-relativity);
       }
-      catch(gpstk::Exception& e) {
-         GPSTK_RETHROW(e);
+      catch(gnsstk::Exception& e) {
+         GNSSTK_RETHROW(e);
       }
    }  // end CorrectedEphemerisRange::ComputeAtReceiveTime
 
 
       // Compute the corrected range at TRANSMIT time, from receiver at position Rx,
       // to the GPS satellite given by SatID sat, as well as all the CER quantities,
-      // given the nominal receive time tr_nom and an EphemerisStore, as well as
+      // given the nominal receive time trNom and an EphemerisStore, as well as
       // the raw measured pseudorange.
    double CorrectedEphemerisRange::ComputeAtTransmitTime(
-      const CommonTime& tr_nom,
+      const CommonTime& trNom,
       const double& pr,
       const Position& Rx,
       const SatID sat,
-      const XvtStore<SatID>& Eph)
+      NavLibrary& navLib,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       try {
          CommonTime tt;
 
          // 0-th order estimate of transmit time = receiver - pseudorange/c
-         transmit = tr_nom;
+         transmit = trNom;
          transmit -= pr/C_MPS;
          tt = transmit;
 
@@ -126,10 +137,14 @@ namespace gpstk
          for(int i=0; i<2; i++) {
             // get SV position
             try {
-               svPosVel = Eph.getXvt(sat,tt);
+                  /** @todo getXvt was expected to throw an exception on
+                   * failure in the past.  This assert more or less mimics
+                   * that behavior.  Refactoring is needed.  */
+               GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), tt,
+                                    order, xmitHealth, valid));
             }
             catch(InvalidRequest& e) {
-               GPSTK_RETHROW(e);
+               GNSSTK_RETHROW(e);
             }
             tt = transmit;
             // remove clock bias and relativity correction
@@ -146,43 +161,57 @@ namespace gpstk
 
          return (rawrange-svclkbias-relativity);
       }
-      catch(gpstk::Exception& e) {
-         GPSTK_RETHROW(e);
+      catch(gnsstk::Exception& e) {
+         GNSSTK_RETHROW(e);
       }
    }  // end CorrectedEphemerisRange::ComputeAtTransmitTime
 
 
    double CorrectedEphemerisRange::ComputeAtTransmitTime(
-      const CommonTime& tr_nom,
+      const CommonTime& trNom,
       const Position& Rx,
       const SatID sat,
-      const XvtStore<SatID>& Eph)
+      NavLibrary& navLib,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       try {
-         gpstk::GPSEllipsoid gm;
-         svPosVel = Eph.getXvt(sat, tr_nom);
+         gnsstk::GPSEllipsoid gm;
+            /** @todo getXvt was expected to throw an exception on
+             * failure in the past.  This assert more or less mimics
+             * that behavior.  Refactoring is needed.  */
+         GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), trNom,
+                              order, xmitHealth, valid));
          double pr = svPosVel.preciseRho(Rx, gm);
-         return ComputeAtTransmitTime(tr_nom, pr, Rx, sat, Eph);
+         return ComputeAtTransmitTime(trNom, pr, Rx, sat, navLib);
       }
-      catch(gpstk::Exception& e) {
-         GPSTK_RETHROW(e);
+      catch(gnsstk::Exception& e) {
+         GNSSTK_RETHROW(e);
       }
    }
 
 
    double CorrectedEphemerisRange::ComputeAtTransmitSvTime(
-      const CommonTime& tt_nom,
+      const CommonTime& ttNom,
       const double& pr,
       const Position& rx,
       const SatID sat,
-      const XvtStore<SatID>& eph)
+      NavLibrary& navLib,
+      NavSearchOrder order,
+      SVHealth xmitHealth,
+      NavValidityType valid)
    {
       try
       {
          Position trx(rx);
          trx.asECEF();
 
-         svPosVel = eph.getXvt(sat, tt_nom);
+            /** @todo getXvt was expected to throw an exception on
+             * failure in the past.  This assert more or less mimics
+             * that behavior.  Refactoring is needed.  */
+         GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), ttNom,
+                              order, xmitHealth, valid));
 
          // compute rotation angle in the time of signal transit
 
@@ -206,7 +235,7 @@ namespace gpstk
          return rawrange - svclkbias - relativity;
       }
       catch (Exception& e) {
-         GPSTK_RETHROW(e);
+         GNSSTK_RETHROW(e);
       }
    }
 
@@ -248,6 +277,39 @@ namespace gpstk
    }
 
 
+   bool CorrectedEphemerisRange ::
+   getXvt(NavLibrary& navLib, const NavSatelliteID& sat, const CommonTime& when,
+          NavSearchOrder order,
+          SVHealth xmitHealth,
+          NavValidityType valid)
+   {
+      NavMessageID nmid(sat, NavMessageType::Ephemeris);
+      NavDataPtr ndp;
+      std::shared_ptr<OrbitData> od;
+      std::shared_ptr<GPSLNavEph> ephLNav;
+      if (!navLib.find(nmid, when, ndp, xmitHealth, valid, order))
+      {
+         return false;
+      }
+      if (od = std::dynamic_pointer_cast<OrbitData>(ndp))
+      {
+         if (!od->getXvt(when, svPosVel))
+            return false;
+      }
+      else
+      {
+            // Not orbit data? How?
+         return false;
+      }
+      if (ephLNav = std::dynamic_pointer_cast<GPSLNavEph>(ndp))
+      {
+         iodc = ephLNav->iodc;
+         health = ephLNav->healthBits;
+      }
+      return true;
+   }
+
+
    double RelativityCorrection(const Xvt& svPosVel)
    {
       // relativity correction
@@ -259,4 +321,4 @@ namespace gpstk
       return dtr;
    }
 
-}  // namespace gpstk
+}  // namespace gnsstk

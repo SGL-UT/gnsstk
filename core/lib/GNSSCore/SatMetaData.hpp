@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -36,14 +36,14 @@
 //
 //==============================================================================
 
-#ifndef GPSTK_SATMETADATA_HPP
-#define GPSTK_SATMETADATA_HPP
+#ifndef GNSSTK_SATMETADATA_HPP
+#define GNSSTK_SATMETADATA_HPP
 
 #include <cstdint>
 #include "SatID.hpp"
 #include "CommonTime.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /** Store information about a GNSS satellite's configuration.
        * @note This class only implements the data storage and does
@@ -94,9 +94,9 @@ namespace gpstk
       int32_t chl;     ///< Channel ID for FDMA satellites.
       uint32_t slotID; ///< Slot ID for FDMA satellites.
       SatelliteSystem sys;   ///< Which GNSS this satellite is from.
-      gpstk::CommonTime launchTime; ///< When the satellite was launched.
-      gpstk::CommonTime startTime;  ///< When the satellite became operational.
-      gpstk::CommonTime endTime;    ///< When the satellite ceased operation.
+      gnsstk::CommonTime launchTime; ///< When the satellite was launched.
+      gnsstk::CommonTime startTime;  ///< When the satellite became operational.
+      gnsstk::CommonTime endTime;    ///< When the satellite ceased operation.
       std::string plane;            ///< Satellite plane identifier.
       std::string slot;             ///< Slot within the plane.
       std::string type;             ///< Typically block number.
@@ -124,6 +124,6 @@ namespace gpstk
       return s;
    }
 
-} // namespace gpstk
+} // namespace gnsstk
 
-#endif // GPSTK_SATMETADATA_HPP
+#endif // GNSSTK_SATMETADATA_HPP

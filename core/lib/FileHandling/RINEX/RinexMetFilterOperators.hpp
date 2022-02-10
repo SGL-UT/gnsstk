@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,8 +41,8 @@
  * Operators for FileFilter using RINEX 2 & 3 Met file data.
  */
 
-#ifndef GPSTK_RINEXMETFILTEROPERATORS_HPP
-#define GPSTK_RINEXMETFILTEROPERATORS_HPP
+#ifndef GNSSTK_RINEXMETFILTEROPERATORS_HPP
+#define GNSSTK_RINEXMETFILTEROPERATORS_HPP
 
 #include <set>
 
@@ -51,7 +51,7 @@
 #include "RinexMetData.hpp"
 #include "RinexMetHeader.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
@@ -65,7 +65,7 @@ namespace gpstk
    {
    public:
 
-         /// The set is a set of RinexMetType that the two files have in 
+         /// The set is a set of RinexMetType that the two files have in
          /// common.  This is easily generated with the set_intersection
          /// STL function.  See difftools/rmwdiff.cpp for an example.
       RinexMetDataOperatorLessThanFull
@@ -86,7 +86,7 @@ namespace gpstk
             // Then check that each observation has the same data
             // for each item in the set of common observations.
 
-         RinexMetData::RinexMetMap::const_iterator 
+         RinexMetData::RinexMetMap::const_iterator
             lItr, rItr;
          std::set<RinexMetHeader::RinexMetType>::const_iterator
             obsItr = obsSet.begin();
@@ -166,7 +166,7 @@ namespace gpstk
          }
          else
          {
-            std::set<RinexMetHeader::RinexMetType> thisMetSet, 
+            std::set<RinexMetHeader::RinexMetType> thisMetSet,
                tempMetSet;
             std::set<std::string> commentSet;
             obsSet.clear();
@@ -197,7 +197,7 @@ namespace gpstk
                // then copy the obsTypes back into theHeader
             theHeader.obsTypeList.clear();
             copy(obsSet.begin(), obsSet.end(),
-                 inserter(theHeader.obsTypeList, 
+                 inserter(theHeader.obsTypeList,
                           theHeader.obsTypeList.begin()));
          }
          return true;
@@ -234,6 +234,6 @@ namespace gpstk
 
       //@}
 
-} // namespace gpstk
+} // namespace gnsstk
 
 #endif

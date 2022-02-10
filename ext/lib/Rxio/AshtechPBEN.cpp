@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -45,7 +45,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
  {
    const char* AshtechPBEN::myId = "PBN";
 
@@ -60,7 +60,7 @@ namespace gpstk
 
       // If this object doesn't have an id set yet, assume that the streams
       // most recent read id is what we need to be
-      if (id == "" && rawData.size()>=11 && 
+      if (id == "" && rawData.size()>=11 &&
           rawData.substr(0,7) == preamble &&
           rawData[10]==',')
          id = rawData.substr(7,3);
@@ -76,7 +76,7 @@ namespace gpstk
    //---------------------------------------------------------------------------
    void AshtechPBEN::decode(const std::string& data)
    {
-      using gpstk::BinUtils::decodeVar;
+      using gnsstk::BinUtils::decodeVar;
 
       string str(data);
       if (str.length() == 69)
@@ -146,15 +146,15 @@ namespace gpstk
    void AshtechPBEN::dump(ostream& out) const throw()
    {
       ostringstream oss;
-      using gpstk::StringUtils::asString;
-      using gpstk::StringUtils::leftJustify;
+      using gnsstk::StringUtils::asString;
+      using gnsstk::StringUtils::leftJustify;
 
       AshtechData::dump(out);
       oss << getName() << "1:"
           << " SOW:" << asString(sow, 1)
           << " #SV:" << (int)numSV
           << " PDOP:" << (int)pdop
-          << " ClkOff:" << asString(navt, 3) 
+          << " ClkOff:" << asString(navt, 3)
           << " ClkDft:" << asString(navtdot, 3)
           << " sitename:" << sitename
           << " " << (ascii?"ascii":"bin")
@@ -169,4 +169,4 @@ namespace gpstk
           << endl;
       out << oss.str() << flush;
    }
-} // namespace gpstk
+} // namespace gnsstk

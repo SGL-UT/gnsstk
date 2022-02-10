@@ -1,43 +1,43 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GPSTK_NAVSIGNALID_HPP
-#define GPSTK_NAVSIGNALID_HPP
+#ifndef GNSSTK_NAVSIGNALID_HPP
+#define GNSSTK_NAVSIGNALID_HPP
 
 #include <iostream>
 #include <set>
@@ -45,7 +45,7 @@
 #include "ObsID.hpp"
 #include "NavType.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup NavFactory
       //@{
@@ -61,9 +61,11 @@ namespace gpstk
           * @param[in] sys The GNSS this signal originates from.
           * @param[in] car The carrier band of this signal.
           * @param[in] track The tracking code of this signal.
-          * @param[in] nmt The navigation message format of this signal. */
+          * @param[in] nmt The navigation message format of this signal.
+          * @param[in] mcode Data to uniquely identify M-code signal.
+          * @param[in] mcodeMask Bitmask for matching mcode. */
       NavSignalID(SatelliteSystem sys, CarrierBand car, TrackingCode track,
-                  NavType nmt);
+                  NavType nmt, uint32_t mcode = 0, uint32_t mcodeMask = -1);
 
          /** Initialize all data to specified values.
           * @param[in] sys The GNSS this signal originates from.
@@ -102,7 +104,7 @@ namespace gpstk
    };
 
       /// Set of nav data signal identifiers.
-   using NavSignalSet = std::set<NavSignalID>;
+   typedef std::set<NavSignalID> NavSignalSet;
 
 
    inline std::ostream& operator<<(std::ostream& s, const NavSignalID& nsid)
@@ -117,4 +119,4 @@ namespace gpstk
 
 }
 
-#endif // GPSTK_NAVSIGNALID_HPP
+#endif // GNSSTK_NAVSIGNALID_HPP

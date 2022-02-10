@@ -37,7 +37,7 @@
 //==============================================================================
 
 /** @file PreciseRange.cpp
-    Implement computation of range and associated quantities from XvtStore,
+    Implement computation of range and associated quantities from NavLibrary,
     given receiver position and time.
 */
 
@@ -58,11 +58,16 @@ using namespace std;
 
 namespace gnsstk
 {
-   double PreciseRange::ComputeAtTransmitTime(
-      const CommonTime& nomRecTime, double pr, const Position& Receiver,
-      const SatID sat, const AntexData& antenna, const std::string& Freq1,
-      const std::string& Freq2, SolarSystem& SolSys, const XvtStore<SatID>& Eph,
-      bool isCOM)
+   double PreciseRange::ComputeAtTransmitTime(const CommonTime& nomRecTime,
+                                              const double pr,
+                                              const Position& Receiver,
+                                              const SatID sat,
+                                              const AntexData& antenna,
+                                              const std::string& Freq1,
+                                              const std::string& Freq2,
+                                              SolarSystem& SolSys,
+                                              NavLibrary& Eph,
+                                              bool isCOM)
    {
       try
       {
@@ -80,11 +85,14 @@ namespace gnsstk
                correcting for the satellite clock bias and other delays */
          try
          {
-            svPosVel = Eph.getXvt(sat, transmit);
+               /** @todo getXvt was expected to throw an exception on
+               * failure in the past.  This assert more or less mimics
+               * that behavior.  Refactoring is needed.  */
+            GNSSTK_ASSERT(Eph.getXvt(NavSatelliteID(sat), transmit, svPosVel));
             SatR.setECEF(svPosVel.x[0], svPosVel.x[1], svPosVel.x[2]);
          }
             // this should be a 'no ephemeris' exception
-         catch (InvalidRequest& e)
+         catch (AssertionFailure& e)
          {
             GNSSTK_RETHROW(e);
          }
@@ -116,7 +124,11 @@ namespace gnsstk
             // iterate satellite position
          try
          {
-            svPosVel = Eph.getXvt(sat, transmit);
+               /** @todo getXvt was expected to throw an exception on
+               * failure in the past.  This assert more or less mimics
+               * that behavior.  Refactoring is needed.  */
+            GNSSTK_ASSERT(Eph.getXvt(NavSatelliteID(sat), transmit, svPosVel));
+
                // Do NOT replace these with Xvt
             SatR.setECEF(svPosVel.x[0], svPosVel.x[1], svPosVel.x[2]);
             SatV.setECEF(svPosVel.v[0], svPosVel.v[1], svPosVel.v[2]);

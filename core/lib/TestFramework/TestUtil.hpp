@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,12 +29,15 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+
+#ifndef GNSSTK_TESTUTIL_HPP
+#define GNSSTK_TESTUTIL_HPP
 
 #include <typeinfo>
 #include <iostream>
@@ -50,7 +53,7 @@
 #include "Matrix.hpp"
 
 // Define a TestUtil object named testFramework
-#define TUDEF(CLASS,METHOD) gpstk::TestUtil testFramework(CLASS, METHOD, __FILE__, __LINE__)
+#define TUDEF(CLASS,METHOD) gnsstk::TestUtil testFramework(CLASS, METHOD, __FILE__, __LINE__)
 
 // Macro to make test code look nice...
 #define TUCSM(METHOD) testFramework.changeSourceMethod(METHOD)
@@ -62,7 +65,7 @@
    {                                                                    \
       testFramework.assert(EXPR, "Assertion failure: "#EXPR, __LINE__); \
    }                                                                    \
-   catch (gpstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                        \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false, "Exception during "#EXPR, __LINE__);  \
@@ -80,7 +83,7 @@
    {                                                                    \
       testFramework.assert_equals<TYPE>(EXP, GOT, __LINE__);            \
    }                                                                    \
-   catch (gpstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                        \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false,                                       \
@@ -102,7 +105,7 @@
    {                                                                    \
       testFramework.assert_equals(EXP, GOT, __LINE__);                  \
    }                                                                    \
-   catch (gpstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                        \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false,                                       \
@@ -125,7 +128,7 @@
    {                                                                    \
       testFramework.assert_equals(EXP, GOT, __LINE__, "", EPS);         \
    }                                                                    \
-   catch (gpstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                        \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false,                                       \
@@ -147,7 +150,7 @@
                                        "File mismatch: "+F1+" "+F2,     \
                                        SKIP);                           \
    }                                                                    \
-   catch (gpstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                        \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false,                                       \
@@ -169,7 +172,7 @@
       STATEMENT;                                \
       TUPASS(#STATEMENT);                       \
    }                                            \
-   catch (gpstk::Exception &exc)                \
+   catch (gnsstk::Exception &exc)                \
    {                                            \
       std::cerr << exc << std::endl;            \
       TUFAIL("Exception");                      \
@@ -187,7 +190,7 @@
       STATEMENT;                                \
       TUFAIL("Did not throw Exception");        \
    }                                            \
-   catch (gpstk::Exception &exc)                \
+   catch (gnsstk::Exception &exc)                \
    {                                            \
       TUPASS(#STATEMENT);                       \
    }                                            \
@@ -204,7 +207,7 @@
 // Usual return from a test function
 #define TURETURN() return testFramework.countFails()
 
-namespace gpstk
+namespace gnsstk
 {
       /// @return a string with the name of the type
    template<typename T>
@@ -223,7 +226,7 @@ namespace gpstk
       //============================================================
       // class:   TestUtil
       // purpose: TestUtil is a utility class (not parent class)
-      //          for use with test classes and test methods in GPSTk.
+      //          for use with test classes and test methods in GNSSTk.
       // Example: Source usage for a test method with 4 sub-tests:
       //
       //     TUDEF("SomeClass", "SomeMethod");
@@ -296,7 +299,7 @@ namespace gpstk
           *   A default message will simply say what was expected and
           *   what the value actually was when expected != got.
           * @param[in] epsilon The maximum difference between expected
-          *   and got that will be considered "equal". If this number is 
+          *   and got that will be considered "equal". If this number is
           *   less than zero, the type's epsilon is used.
           */
       void assert_equals( double expected,
@@ -305,28 +308,28 @@ namespace gpstk
                           const std::string& testMsg = std::string(),
                           double epsilon=-1)
       {assert_equals_fp<double>(expected, got, lineNumber, testMsg, epsilon);}
-   
+
       void assert_equals( long double expected,
                           long double got,
                           int lineNumber,
                           const std::string& testMsg = std::string(),
                           long double epsilon=-1)
       {assert_equals_fp<double>(expected, got, lineNumber, testMsg, epsilon);}
-   
+
       void assert_equals( float expected,
                           float got,
                           int lineNumber,
                           const std::string& testMsg = std::string(),
                           float epsilon=-1)
       {assert_equals_fp<double>(expected, got, lineNumber, testMsg, epsilon);}
-   
+
       template <typename T>
       void assert_equals_fp( const T& expected,
                              const T& got,
                              int lineNumber,
                              const std::string& testMsg = std::string(),
                              T epsilon = -1);
-   
+
 
          /** Takes two matricies, compares them and passes the test
           * if the values are equal within an epsilon.
@@ -338,22 +341,22 @@ namespace gpstk
           *   A default message will simply say what was expected and
           *   what the value actually was when expected != got.
           * @param[in] epsilon The maximum difference between expected
-          *   and got that will be considered "equal". If this number is 
+          *   and got that will be considered "equal". If this number is
           *   less than zero, the type's epsilon is used.
           */
       template<typename T>
-      void assert_equals( const gpstk::Matrix<T>& expected,
-                          const gpstk::Matrix<T>& got,
+      void assert_equals( const gnsstk::Matrix<T>& expected,
+                          const gnsstk::Matrix<T>& got,
                           int lineNumber,
                           const std::string& testMsg = std::string(),
                           T epsilon = -1);
       template<typename T>
-      void assert_equals( const gpstk::Vector<T>& expected,
-                          const gpstk::Vector<T>& got,
+      void assert_equals( const gnsstk::Vector<T>& expected,
+                          const gnsstk::Vector<T>& got,
                           int lineNumber,
                           const std::string& testMsg = std::string(),
                           T epsilon = -1);
-   
+
          /** Compare two text files, line-by-line.  Test passes if there
           * are no differences according to the rules set by parameters.
           * @param[in] lineNumber The line of source in the test file
@@ -482,7 +485,7 @@ namespace gpstk
          /** if failBit==1 && verbosity>=1, print this string description
           * of why the test failed to be set by the test app developer */
       std::string testMessage;
-    
+
          /// store the result of a test (0=pass, 1=fail)
       int failBit;
          /** if verbosity>=0, print summary line; if verbosity>=1, print
@@ -537,7 +540,7 @@ namespace gpstk
              const std::string& testFileInput,
              const         int& testLineInput,
              const         int& verbosityInput )
-      : outputKeyword( "GPSTkTest" ),
+      : outputKeyword( "GNSSTkTest" ),
         sourceClass( sourceClassInput  ),
         sourceMethod( sourceMethodInput ),
         testFileName( testFileInput ),
@@ -554,7 +557,7 @@ namespace gpstk
 
          // strip off the path from the full-path filename
          // so that "/home/user/test.txt" becomes "test.txt"
-      std::string file_sep = gpstk::getFileSep();
+      std::string file_sep = gnsstk::getFileSep();
       testFileName = testFileName.substr(
          testFileName.find_last_of( file_sep ) + 1 );
    }
@@ -567,7 +570,7 @@ namespace gpstk
    {
       setTestMessage( testMsg );
       setTestLine( lineNumber );
-      
+
       if( testExpression == false )
       {
          fail();
@@ -626,22 +629,22 @@ namespace gpstk
             ostr << " > ";
          ostr << epsilon;
          mess = ostr.str();
-      }      
+      }
       assert(good, mess, lineNumber);
    }
 
 
    template<typename T>
    void TestUtil ::
-   assert_equals( const gpstk::Matrix<T>& expected,
-                  const gpstk::Matrix<T>& got,
+   assert_equals( const gnsstk::Matrix<T>& expected,
+                  const gnsstk::Matrix<T>& got,
                   int lineNumber,
                   const std::string& testMsg,
                   T epsilon )
    {
       if (epsilon < 0)
          epsilon = std::numeric_limits<T>::epsilon();
-   
+
       std::string mess(testMsg);
       T mag = maxabs(expected - got);
       if (testMsg.empty())
@@ -656,8 +659,8 @@ namespace gpstk
 
    template<typename T>
    void TestUtil ::
-   assert_equals( const gpstk::Vector<T>& expected,
-                  const gpstk::Vector<T>& got,
+   assert_equals( const gnsstk::Vector<T>& expected,
+                  const gnsstk::Vector<T>& got,
                   int lineNumber,
                   const std::string& testMsg,
                   T epsilon )
@@ -763,15 +766,15 @@ namespace gpstk
       std::ifstream checkStream;
       std::string   refLine;
       std::string   checkLine;
-   
+
       refStream.open( refFile.c_str() );
       checkStream.open( checkFile.c_str() );
-   
+
          // Compare each line until you reach the end of Ref
       while( !refStream.eof() )
       {
          lineNumber++;
-      
+
             // If we reach the end of Check, but there is
             // more left in Ref, then they are not equal
          if( checkStream.eof() )
@@ -779,14 +782,14 @@ namespace gpstk
             filesEqual = false;
             return( filesEqual );
          }
-      
+
             // get the next line and compare
          getline( refStream, refLine );
          getline( checkStream, checkLine );
-      
+
          if (lineNumber <= numLinesSkip)
             continue;
-      
+
          if (ignoreLeadingSpaces)
          {
             std::size_t idx = refLine.find_first_not_of(" \t\r\n\f\v");
@@ -817,7 +820,7 @@ namespace gpstk
             bool ignore = false;
             for (int i = 0; i < ignoreRegex.size(); i++)
             {
-               if (gpstk::StringUtils::isLike(refLine, ignoreRegex[i]))
+               if (gnsstk::StringUtils::isLike(refLine, ignoreRegex[i]))
                {
                   ignore = true;
                   break;
@@ -826,7 +829,7 @@ namespace gpstk
             if (ignore)
                continue;
          }
-      
+
             // only fail if you find differences AFTER the skipped lines
          if (refLine != checkLine)
          {
@@ -834,7 +837,7 @@ namespace gpstk
             return( filesEqual );
          }
       }
-   
+
          // If we reach the end of Ref, but there is
          // more left in Check, then they are not equal
       if( !checkStream.eof() )
@@ -865,7 +868,9 @@ namespace gpstk
       std::vector<char> refBuf(bufsize, 0), checkBuf(bufsize, 0);
       std::ifstream ref(refFile.c_str()), check(checkFile.c_str());
       if (!ref || !check)
+      {
          return false; // missing or inaccessible file
+      }
          // get the file sizes
       unsigned long long refSize, checkSize, curPos;
       ref.seekg(0, std::ios_base::end);
@@ -873,19 +878,25 @@ namespace gpstk
       check.seekg(0, std::ios_base::end);
       checkSize = check.tellg();
       if (refSize != checkSize)
+      {
          return false; // files not the same size
+      }
          // set our limit to the smaller of the file size and "to"
       to = std::min(to, refSize);
       if (!ref.seekg(from, std::ios_base::beg))
+      {
          return false; // seek failure, usually file too short
+      }
       if (!check.seekg(from, std::ios_base::beg))
+      {
          return false; // seek failure, usually file too short
+      }
 
       while (!done)
       {
          curPos = ref.tellg();
             // stop where requested
-         if ((curPos + readsize) > to)
+         if (((curPos + readsize) > to) || (curPos > refSize))
          {
             readsize = 1+(to - curPos);
             done = true;
@@ -893,7 +904,9 @@ namespace gpstk
          ref.read(&refBuf[0], readsize);
          check.read(&checkBuf[0], readsize);
          if (refBuf != checkBuf)
+         {
             return false;
+         }
       }
       return true;
    }
@@ -970,7 +983,7 @@ namespace gpstk
    {
          // increment subtest counter/ID
       subtestID = countTests() + 1;
-   
+
          // reset fail parameters for next/new subtest
       failBit = 0;
       testMessage = "Developer is a lazy slacker";
@@ -994,3 +1007,5 @@ namespace gpstk
       next();
    }
 }
+
+#endif // GNSSTK_TESTUTIL_HPP

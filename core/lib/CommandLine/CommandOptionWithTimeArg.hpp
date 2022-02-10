@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -47,7 +47,7 @@
 #include "CommandOption.hpp"
 #include "CommonTime.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup CommandLine
       //@{
@@ -58,13 +58,13 @@ namespace gpstk
        * representations of time. The programmer must specify the
        * format to be accepted.  Refer to CommonTime::printf() for
        * details on the formatting specifications. */
-   class CommandOptionWithTimeArg : public gpstk::CommandOptionWithAnyArg
+   class CommandOptionWithTimeArg : public gnsstk::CommandOptionWithAnyArg
    {
    public:
          /** Constructor
           * @param shOpt The one character command line option.  Set to 0
           *    if unused.
-          * @param loOpt The long command option.  Set to std::string() 
+          * @param loOpt The long command option.  Set to std::string()
           *    if unused.
           * @param timeFormat format for scanning argument into a CommonTime
           *    (\see CommonTime::setToString() for details).
@@ -76,7 +76,7 @@ namespace gpstk
                                const std::string& timeFormat,
                                const std::string& desc,
                                const bool required = false)
-            : gpstk::CommandOptionWithAnyArg(shOpt, loOpt, desc, required),
+            : gnsstk::CommandOptionWithAnyArg(shOpt, loOpt, desc, required),
               timeSpec(timeFormat)
       {}
 
@@ -123,7 +123,7 @@ namespace gpstk
          /** Constructor
           * @param shOpt The one character command line option.  Set to 0
           *    if unused.
-          * @param loOpt The long command option.  Set to std::string() 
+          * @param loOpt The long command option.  Set to std::string()
           *    if unused.
           * @param desc A string describing what this option does.
           * @param required Set to true if this is a required option.
@@ -148,6 +148,6 @@ namespace gpstk
 
       //@}
 
-} // namespace gpstk
+} // namespace gnsstk
 
 #endif

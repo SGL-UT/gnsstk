@@ -1,51 +1,54 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
-//  This software was developed by Applied Research Laboratories at the 
+//
+//  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
 
 //==============================================================================
 //
-//  This software was developed by Applied Research Laboratories at the 
-//  University of Texas at Austin, under contract to an agency or agencies 
-//  within the U.S. Department of Defense. The U.S. Government retains all 
-//  rights to use, duplicate, distribute, disclose, or release this software. 
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 #include "MultiFormatNavDataFactory.hpp"
 #include "BasicTimeSystemConverter.hpp"
+#include "NDFUniqConstIterator.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    MultiFormatNavDataFactory ::
    MultiFormatNavDataFactory()
    {
+         // get our own shared pointer to the factories map.
+      myFactories = factories();
          // keys for factories are not unique but that doesn't really matter.
-      for (const auto& i : factories())
+      for (const auto& i : *myFactories)
       {
          supportedSignals.insert(i.first);
       }
@@ -61,15 +64,26 @@ namespace gpstk
 
    bool MultiFormatNavDataFactory ::
    find(const NavMessageID& nmid, const CommonTime& when,
-        NavDataPtr& navData, SVHealth xmitHealth, NavValidityType valid,
+        NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
         NavSearchOrder order)
    {
-         // search factories until we find what we want.
-      auto range = factories().equal_range(nmid);
-      for (auto fi = range.first; fi != range.second; ++fi)
+         // Don't use factories.equal_range(nmid), as it can result in
+         // range.first and range.second being the same iterator, in
+         // which case the loop won't process anything at all.
+         // Also don't use the unique iterator as it will result in
+         // skipping over valid factories, e.g. looking for CNAV but
+         // LNAV is first in the map, the signals don't match and the
+         // factory won't be looked at again.
+      std::set<NavDataFactory*> uniques;
+      for (auto& fi : *myFactories)
       {
-         if (fi->second->find(nmid, when, navData, xmitHealth, valid, order))
-            return true;
+         // std::cerr << "fi.first = " << fi.first << "   nmid = " << nmid << std::endl;
+         if ((fi.first == nmid) && (uniques.count(fi.second.get()) == 0))
+         {
+            if (fi.second->find(nmid, when, navOut, xmitHealth, valid, order))
+               return true;
+            uniques.insert(fi.second.get());
+         }
       }
       return false;
    }
@@ -80,16 +94,9 @@ namespace gpstk
              const CommonTime& when, NavDataPtr& offset,
              SVHealth xmitHealth, NavValidityType valid)
    {
-         // Search through factories until we get a match or run out
-         // of factories.  Use unique pointers to avoid double-searching.
-      std::set<NavDataFactory*> uniques;
-      for (auto fi = factories().begin(); fi != factories().end(); ++fi)
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
-         NavDataFactory *ndfp = dynamic_cast<NavDataFactory*>(fi->second.get());
-         if (uniques.count(ndfp))
-            continue; // already processed
-         uniques.insert(ndfp);
-         if (fi->second->getOffset(fromSys, toSys, when, offset, xmitHealth,
+         if (fi.second->getOffset(fromSys, toSys, when, offset, xmitHealth,
                                    valid))
          {
             return true;
@@ -102,20 +109,9 @@ namespace gpstk
    void MultiFormatNavDataFactory ::
    edit(const CommonTime& fromTime, const CommonTime& toTime)
    {
-         // use a set to make sure we only process a factory once
-      std::set<NavDataFactory*> edited;
-      for (auto& i : factories())
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
-         NavDataFactory *ndfp = i.second.get();
-         if (edited.count(ndfp))
-            continue; // already processed
-         edited.insert(ndfp);
-         NavDataFactoryWithStore *ndfs =
-            dynamic_cast<NavDataFactoryWithStore*>(ndfp);
-         if (ndfs != nullptr)
-         {
-            ndfs->edit(fromTime,toTime);
-         }
+         fi.second->edit(fromTime,toTime);
       }
    }
 
@@ -124,20 +120,9 @@ namespace gpstk
    edit(const CommonTime& fromTime, const CommonTime& toTime,
         const NavSatelliteID& satID)
    {
-         // use a set to make sure we only process a factory once
-      std::set<NavDataFactory*> edited;
-      for (auto& i : factories())
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
-         NavDataFactory *ndfp = i.second.get();
-         if (edited.count(ndfp))
-            continue; // already processed
-         edited.insert(ndfp);
-         NavDataFactoryWithStore *ndfs =
-            dynamic_cast<NavDataFactoryWithStore*>(ndfp);
-         if (ndfs != nullptr)
-         {
-            ndfs->edit(fromTime,toTime,satID);
-         }
+         fi.second->edit(fromTime,toTime,satID);
       }
    }
 
@@ -146,20 +131,9 @@ namespace gpstk
    edit(const CommonTime& fromTime, const CommonTime& toTime,
         const NavSignalID& signal)
    {
-         // use a set to make sure we only process a factory once
-      std::set<NavDataFactory*> edited;
-      for (auto& i : factories())
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
-         NavDataFactory *ndfp = i.second.get();
-         if (edited.count(ndfp))
-            continue; // already processed
-         edited.insert(ndfp);
-         NavDataFactoryWithStore *ndfs =
-            dynamic_cast<NavDataFactoryWithStore*>(ndfp);
-         if (ndfs != nullptr)
-         {
-            ndfs->edit(fromTime,toTime,signal);
-         }
+         fi.second->edit(fromTime,toTime,signal);
       }
    }
 
@@ -167,20 +141,9 @@ namespace gpstk
    void MultiFormatNavDataFactory ::
    clear()
    {
-         // use a set to make sure we only process a factory once
-      std::set<NavDataFactory*> edited;
-      for (auto& i : factories())
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
-         NavDataFactory *ndfp = i.second.get();
-         if (edited.count(ndfp))
-            continue; // already processed
-         edited.insert(ndfp);
-         NavDataFactoryWithStore *ndfs =
-            dynamic_cast<NavDataFactoryWithStore*>(ndfp);
-         if (ndfs != nullptr)
-         {
-            ndfs->clear();
-         }
+         fi.second->clear();
       }
    }
 
@@ -194,31 +157,20 @@ namespace gpstk
       BasicTimeSystemConverter btsc;
       CommonTime rv = CommonTime::END_OF_TIME;
       rv.setTimeSystem(TimeSystem::Any);
-         // use a set to make sure we only process a factory once
-      std::set<NavDataFactory*> used;
-      for (auto& i : factories())
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
-         NavDataFactory *ndfp = i.second.get();
-         if (used.count(ndfp))
-            continue; // already processed
-         used.insert(ndfp);
-         NavDataFactoryWithStore *ndfs =
-            dynamic_cast<NavDataFactoryWithStore*>(ndfp);
-         if (ndfs != nullptr)
+         CommonTime t = fi.second->getInitialTime();
+         if ((rv.getTimeSystem() == TimeSystem::Any) ||
+             (t.getTimeSystem() == TimeSystem::Any) ||
+             (t.getTimeSystem() == rv.getTimeSystem()))
          {
-            CommonTime t = ndfs->getInitialTime();
-            if ((rv.getTimeSystem() == TimeSystem::Any) ||
-                (t.getTimeSystem() == TimeSystem::Any) ||
-                (t.getTimeSystem() == rv.getTimeSystem()))
-            {
-               rv = std::min(rv,t);
-            }
-            else
-            {
-               t.changeTimeSystem(TimeSystem::UTC, &btsc);
-               rv.changeTimeSystem(TimeSystem::UTC, &btsc);
-               rv = std::min(rv,t);
-            }
+            rv = std::min(rv,t);
+         }
+         else
+         {
+            t.changeTimeSystem(TimeSystem::UTC, &btsc);
+            rv.changeTimeSystem(TimeSystem::UTC, &btsc);
+            rv = std::min(rv,t);
          }
       }
       return rv;
@@ -234,34 +186,91 @@ namespace gpstk
       BasicTimeSystemConverter btsc;
       CommonTime rv = CommonTime::BEGINNING_OF_TIME;
       rv.setTimeSystem(TimeSystem::Any);
-         // use a set to make sure we only process a factory once
-      std::set<NavDataFactory*> used;
-      for (auto& i : factories())
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
-         NavDataFactory *ndfp = i.second.get();
-         if (used.count(ndfp))
-            continue; // already processed
-         used.insert(ndfp);
-         NavDataFactoryWithStore *ndfs =
-            dynamic_cast<NavDataFactoryWithStore*>(ndfp);
-         if (ndfs != nullptr)
+         CommonTime t = fi.second->getFinalTime();
+         if ((rv.getTimeSystem() == TimeSystem::Any) ||
+             (t.getTimeSystem() == TimeSystem::Any) ||
+             (t.getTimeSystem() == rv.getTimeSystem()))
          {
-            CommonTime t = ndfs->getFinalTime();
-            if ((rv.getTimeSystem() == TimeSystem::Any) ||
-                (t.getTimeSystem() == TimeSystem::Any) ||
-                (t.getTimeSystem() == rv.getTimeSystem()))
-            {
-               rv = std::max(rv,t);
-            }
-            else
-            {
-               t.changeTimeSystem(TimeSystem::UTC, &btsc);
-               rv.changeTimeSystem(TimeSystem::UTC, &btsc);
-               rv = std::max(rv,t);
-            }
+            rv = std::max(rv,t);
+         }
+         else
+         {
+            t.changeTimeSystem(TimeSystem::UTC, &btsc);
+            rv.changeTimeSystem(TimeSystem::UTC, &btsc);
+            rv = std::max(rv,t);
          }
       }
       return rv;
+   }
+
+
+   NavSatelliteIDSet MultiFormatNavDataFactory ::
+   getAvailableSats(const CommonTime& fromTime, const CommonTime& toTime)
+      const
+   {
+      NavSatelliteIDSet rv, tmp;
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
+      {
+         tmp = fi.second->getAvailableSats(fromTime, toTime);
+         for (const auto& i : tmp)
+         {
+            rv.insert(i);
+         }
+      }
+      return rv;
+   }
+
+
+   NavSatelliteIDSet MultiFormatNavDataFactory ::
+   getAvailableSats(NavMessageType nmt,
+                    const CommonTime& fromTime,
+                    const CommonTime& toTime)
+      const
+   {
+      NavSatelliteIDSet rv, tmp;
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
+      {
+         tmp = fi.second->getAvailableSats(nmt, fromTime, toTime);
+         for (const auto& i : tmp)
+         {
+            rv.insert(i);
+         }
+      }
+      return rv;
+   }
+
+
+   NavMessageIDSet MultiFormatNavDataFactory ::
+   getAvailableMsgs(const CommonTime& fromTime,
+                    const CommonTime& toTime)
+      const
+   {
+      NavMessageIDSet rv, tmp;
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
+      {
+         tmp = fi.second->getAvailableMsgs(fromTime, toTime);
+         for (const auto& i : tmp)
+         {
+            rv.insert(i);
+         }
+      }
+      return rv;
+   }
+
+
+   bool MultiFormatNavDataFactory ::
+   isPresent(const NavMessageID& nmid,
+             const CommonTime& fromTime,
+             const CommonTime& toTime)
+   {
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
+      {
+         if (fi.second->isPresent(nmid, fromTime, toTime))
+            return true;
+      }
+      return false;
    }
 
 
@@ -270,15 +279,10 @@ namespace gpstk
    {
          // this one is easy, it's just the sum of each individual
          // factory's size
-         // use a set to make sure we only process a factory once
-      std::set<NavDataFactory*> uniqueFact;
       size_t rv = 0;
-      for (auto& i : factories())
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
-         NavDataFactory *ndfp = i.second.get();
-         if (uniqueFact.count(ndfp))
-            continue; // already processed
-         uniqueFact.insert(ndfp);
+         NavDataFactory *ndfp = fi.second.get();
          NavDataFactoryWithStore *ndfs =
             dynamic_cast<NavDataFactoryWithStore*>(ndfp);
          if (ndfs != nullptr)
@@ -291,17 +295,32 @@ namespace gpstk
 
 
    size_t MultiFormatNavDataFactory ::
+   count(const NavMessageID& nmid) const
+   {
+         // this one is easy, it's just the sum of each individual
+         // factory's count() results
+      size_t rv = 0;
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
+      {
+         NavDataFactory *ndfp = fi.second.get();
+         NavDataFactoryWithStore *ndfs =
+            dynamic_cast<NavDataFactoryWithStore*>(ndfp);
+         if (ndfs != nullptr)
+         {
+            rv += ndfs->count(nmid);
+         }
+      }
+      return rv;
+   }
+
+
+   size_t MultiFormatNavDataFactory ::
    numSignals() const
    {
-         // use a set to make sure we only process a factory once
-      std::set<NavDataFactory*> uniqueFact;
       std::set<NavSignalID> uniqueSig;
-      for (auto& i : factories())
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
-         NavDataFactory *ndfp = i.second.get();
-         if (uniqueFact.count(ndfp))
-            continue; // already processed
-         uniqueFact.insert(ndfp);
+         NavDataFactory *ndfp = fi.second.get();
          NavDataFactoryWithStore *ndfs =
             dynamic_cast<NavDataFactoryWithStore*>(ndfp);
          if (ndfs != nullptr)
@@ -322,15 +341,10 @@ namespace gpstk
    size_t MultiFormatNavDataFactory ::
    numSatellites() const
    {
-         // use a set to make sure we only process a factory once
-      std::set<NavDataFactory*> uniqueFact;
       std::set<NavSatelliteID> uniqueSat;
-      for (auto& i : factories())
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
-         NavDataFactory *ndfp = i.second.get();
-         if (uniqueFact.count(ndfp))
-            continue; // already processed
-         uniqueFact.insert(ndfp);
+         NavDataFactory *ndfp = fi.second.get();
          NavDataFactoryWithStore *ndfs =
             dynamic_cast<NavDataFactoryWithStore*>(ndfp);
          if (ndfs != nullptr)
@@ -355,7 +369,7 @@ namespace gpstk
          // times for any factory that has multiple supported signals,
          // but the end result is the same whether we check for
          // duplicates or not.
-      for (auto& i : factories())
+      for (auto& i : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
          i.second->setValidityFilter(nvt);
       }
@@ -369,7 +383,7 @@ namespace gpstk
          // for any factory that has multiple supported signals, but
          // the end result is the same whether we check for duplicates
          // or not.
-      for (auto& i : factories())
+      for (auto& i : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
          i.second->setTypeFilter(nmts);
       }
@@ -394,7 +408,7 @@ namespace gpstk
          // the map, it's a convenience.
       for (const auto& si : fact->supportedSignals)
       {
-         factories().insert(NavDataFactoryMap::value_type(si,fact));
+         factories()->insert(NavDataFactoryMap::value_type(si,fact));
       }
       return true;
    }
@@ -403,23 +417,16 @@ namespace gpstk
    bool MultiFormatNavDataFactory ::
    addDataSource(const std::string& source)
    {
-         // factories can have multiple copies of a given factory, so
-         // keep track of which ones we've checked already.
-      std::set<NavDataFactory*> ptrs;
-      for (auto& fi : factories())
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
          NavDataFactory *ptr = fi.second.get();
-         if (ptrs.count(ptr) == 0)
+         NavDataFactoryWithStoreFile *fact =
+            dynamic_cast<NavDataFactoryWithStoreFile*>(ptr);
+         if (fact != nullptr)
          {
-            ptrs.insert(ptr);
-            NavDataFactoryWithStoreFile *fact =
-               dynamic_cast<NavDataFactoryWithStoreFile*>(ptr);
-            if (fact != nullptr)
+            if (fact->addDataSource(source))
             {
-               if (fact->addDataSource(source))
-               {
-                  return true;
-               }
+               return true;
             }
          }
       }
@@ -429,19 +436,12 @@ namespace gpstk
 
 
    void MultiFormatNavDataFactory ::
-   dump(std::ostream& s, NavData::Detail dl) const
+   dump(std::ostream& s, DumpDetail dl) const
    {
-         // factories can have multiple copies of a given factory, so
-         // keep track of which ones we've checked already.
-      std::set<NavDataFactory*> ptrs;
-      for (auto& fi : factories())
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          NavDataFactory *ptr = fi.second.get();
-         if (ptrs.count(ptr) == 0)
-         {
-            ptrs.insert(ptr);
-            ptr->dump(s,dl);
-         }
+         ptr->dump(s,dl);
       }
    }
 
@@ -449,33 +449,27 @@ namespace gpstk
    std::string MultiFormatNavDataFactory ::
    getFactoryFormats() const
    {
-         // factories can have multiple copies of a given factory, so
-         // keep track of which ones we've checked already.
-      std::set<NavDataFactory*> ptrs;
       std::string rv;
-      for (const auto& fi : factories())
+      for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(*myFactories))
       {
          NavDataFactory *ptr = fi.second.get();
-         if (ptrs.count(ptr) == 0)
+         std::string ff(ptr->getFactoryFormats());
+         if (!ff.empty())
          {
-            ptrs.insert(ptr);
-            std::string ff(ptr->getFactoryFormats());
-            if (!ff.empty())
-            {
-               if (!rv.empty())
-                  rv += ", ";
-               rv += ff;
-            }
+            if (!rv.empty())
+               rv += ", ";
+            rv += ff;
          }
       }
       return rv;
    }
 
 
-   NavDataFactoryMap& MultiFormatNavDataFactory ::
+   std::shared_ptr<NavDataFactoryMap> MultiFormatNavDataFactory ::
    factories()
    {
-      static NavDataFactoryMap rv;
+      static std::shared_ptr<NavDataFactoryMap> rv =
+         std::make_shared<NavDataFactoryMap>();
       return rv;
    }
 }

@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -41,8 +41,8 @@
  * Encapsulate header of Rinex observation file, including I/O
  */
 
-#ifndef GPSTK_RINEX3OBSHEADER_HPP
-#define GPSTK_RINEX3OBSHEADER_HPP
+#ifndef GNSSTK_RINEX3OBSHEADER_HPP
+#define GNSSTK_RINEX3OBSHEADER_HPP
 
 #include <vector>
 #include <list>
@@ -57,9 +57,10 @@
 #include "Triple.hpp"
 #include "RinexSatID.hpp"
 #include "RinexObsID.hpp"
+#include "XmitAnt.hpp"
 
 
-namespace gpstk
+namespace gnsstk
 {
 
       /// @ingroup FileHandling
@@ -138,7 +139,7 @@ namespace gpstk
 
       /**
        * This class models the header for a RINEX 3 Observation File.
-       * @sa gpstk::Rinex3ObsData and gpstk::Rinex3ObsStream.
+       * @sa gnsstk::Rinex3ObsData and gnsstk::Rinex3ObsStream.
        * @sa rinex_obs_test.cpp and rinex_obs_read_write.cpp for examples.
        *
        * RINEX 2 is also supported.
@@ -198,6 +199,8 @@ namespace gpstk
       static const std::string hsNumSats;           ///< # OF SATELLITES
       static const std::string hsPrnObs;            ///< PRN / # OF OBS
       static const std::string hsEoH;               ///< END OF HEADER
+      static const std::string hsAntennaStandard;   ///< Fixed comment xmit ant
+      static const std::string hsAntennaRegional;   ///< Fixed comment xmit ant
          ///@}
 
          /** Validity bits for the RINEX Observation Header - please
@@ -242,7 +245,7 @@ namespace gpstk
          validPrnObs,                         ///< PRN / # OF OBS
          validLast                            ///< Used for testing only.
       };
-   
+
          /** RINEX 3 DCBS/PCVS info (for differential code bias and
           * phase center variations corr.) */
       class Rinex3CorrInfo
@@ -441,7 +444,7 @@ namespace gpstk
          /// file sys char: RinexSatID system OR Mixed
       std::string fileSys;
          /** If false, the file type and system will be re-generated
-          * in the gpstk preferred format when writing the header,
+          * in the gnsstk preferred format when writing the header,
           * otherwise the strings fileType fileSys will be written
           * unaltered */
       bool preserveVerType;
@@ -464,16 +467,16 @@ namespace gpstk
       std::string recVers;             ///< receiver version
       std::string antNo;               ///< antenna number
       std::string antType;             ///< antenna type
-      gpstk::Triple antennaPosition;   ///< APPROX POSITION XYZ
-      gpstk::Triple antennaDeltaHEN;   ///< ANTENNA: DELTA H/E/N
-      gpstk::Triple antennaDeltaXYZ;   ///< ANTENNA: DELTA X/Y/Z
+      gnsstk::Triple antennaPosition;   ///< APPROX POSITION XYZ
+      gnsstk::Triple antennaDeltaHEN;   ///< ANTENNA: DELTA H/E/N
+      gnsstk::Triple antennaDeltaXYZ;   ///< ANTENNA: DELTA X/Y/Z
       std::string antennaSatSys;       ///< ANTENNA P.CTR BLOCK: SAT SYS
       std::string antennaObsCode;      ///< ANTENNA P.CTR BLOCK: OBS CODE
-      gpstk::Triple antennaPhaseCtr;   ///< ANTENNA P.CTR BLOCK: PCTR POS
-      gpstk::Triple antennaBsightXYZ;  ///< ANTENNA B.SIGHT XYZ
+      gnsstk::Triple antennaPhaseCtr;   ///< ANTENNA P.CTR BLOCK: PCTR POS
+      gnsstk::Triple antennaBsightXYZ;  ///< ANTENNA B.SIGHT XYZ
       double        antennaZeroDirAzi; ///< ANTENNA ZERODIR AZI
-      gpstk::Triple antennaZeroDirXYZ; ///< ANTENNA ZERODIR XYZ
-      gpstk::Triple centerOfMass;      ///< vehicle CENTER OF MASS: XYZ
+      gnsstk::Triple antennaZeroDirXYZ; ///< ANTENNA ZERODIR XYZ
+      gnsstk::Triple centerOfMass;      ///< vehicle CENTER OF MASS: XYZ
       RinexObsMap mapObsTypes;         ///< SYS / # / OBS TYPES
       short wavelengthFactor[2];       ///< WAVELENGTH FACT (system-wide)
       FactorVector extraWaveFactList;  ///< WAVELENGTH FACT (per SV)
@@ -492,6 +495,7 @@ namespace gpstk
       short numSVs;                    ///< # OF SATELLITES
       PRNNumObsMap numObsForSat;       ///< PRN / # OF OBS
 
+      XmitAnt xmitAnt;                 ///< Non-standard, transmitter ID.
 
          /// number & types of observations R2 only
          ///@bug  this is being used but is not actually being filled
@@ -524,7 +528,7 @@ namespace gpstk
           */
       virtual void dump(std::ostream& s) const
       { dump(s, version); }
-         
+
          /** This is a debug output function which provides a lot of
           * detail about the header contents for a specified RINEX
           * format version.
@@ -553,7 +557,7 @@ namespace gpstk
 
          /** Parse a single header record, and modify valid
           * accordingly.  Used by reallyGetRecord for both
-          * Rinex3ObsHeader and Rinex3ObsData. 
+          * Rinex3ObsHeader and Rinex3ObsData.
           * @throw FFStreamError
           */
       void parseHeaderRecord(std::string& line);
@@ -636,7 +640,7 @@ namespace gpstk
 
          /** Helper methods
           * The conversion between RINEX v2.11 to RINEX v3 observation
-          * type is fraught with system-specific idiosyncracies.   These 
+          * type is fraught with system-specific idiosyncracies.   These
           * methods read the list of v2.11 obs types stored in R2ObsTypes
           * and attempt to build a corresponding list of v3 observation
           * types where appropriate.
@@ -690,4 +694,4 @@ namespace gpstk
 
 } // namespace
 
-#endif // GPSTK_RINEX3OBSHEADER_HPP
+#endif // GNSSTK_RINEX3OBSHEADER_HPP

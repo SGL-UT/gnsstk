@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,15 +29,15 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
 
 /// @file ObsID.hpp
-/// gpstk::ObsID - navigation system, receiver, and file specification
+/// gnsstk::ObsID - navigation system, receiver, and file specification
 /// independent representation of the types of observation data that can
 /// be collected.  This class is analogous to the RinexObsType class that
 /// is used to represent the observation codes in a RINEX file. It is
@@ -59,8 +59,12 @@
 #include "ObservationType.hpp"
 #include "CarrierBand.hpp"
 #include "TrackingCode.hpp"
+#include "XmitAnt.hpp"
 
-namespace gpstk
+// forward declaration of test class
+class ObsID_T;
+
+namespace gnsstk
 {
    class ObsID;
    namespace StringUtils
@@ -78,29 +82,48 @@ namespace gpstk
    {
    public:
          /// empty constructor, creates a wildcard object.
-         /// mcode and freqOffs are kept non-wild by default intentionally.
+         /// mcode and freqOffs are kept wild by default intentionally.
       ObsID()
             : type(ObservationType::Unknown), band(CarrierBand::Unknown),
-              code(TrackingCode::Unknown), freqOffs(0), freqOffsWild(false),
-              mcode(0), mcodeMask(-1)
+              code(TrackingCode::Unknown), freqOffs(0), freqOffsWild(true),
+              mcode(0), mcodeMask(0), xmitAnt(XmitAnt::Any)
       {}
 
          /// Explicit constructor
-         /// mcode and freqOffs are kept non-wild by default intentionally.
-      ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc)
-            : type(ot), band(cb), code(tc), freqOffs(0), freqOffsWild(false),
-              mcode(0), mcodeMask(-1)
+         /// mcode and freqOffs are kept wild by default intentionally.
+      ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc,
+            XmitAnt transmitter = XmitAnt::Any)
+            : type(ot), band(cb), code(tc), freqOffs(0), freqOffsWild(true),
+              mcode(0), mcodeMask(0), xmitAnt(transmitter)
       {}
 
          /** Explicit constructor for GLONASS.
           * @param[in] ot The observation type (range, phase,, etc.).
           * @param[in] cb The carrier band (L1, L2, etc.).
           * @param[in] tc The tracking code (CA, L2CM, etc.).
-          * @param[in] fo Thre frequency offset of the GLONASS signal. */
+          * @param[in] fo The frequency offset of the GLONASS signal.
+          * @param[in] fw If true, fo is ignored and freqOffs will
+          *   match any value. */
       explicit ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc,
-                     int fo)
-            : type(ot), band(cb), code(tc), freqOffs(fo), freqOffsWild(false),
-              mcode(0), mcodeMask(-1)
+                     int fo, XmitAnt transmitter = XmitAnt::Any,
+                     bool fw = false)
+            : type(ot), band(cb), code(tc), freqOffs(fo), freqOffsWild(fw),
+              mcode(0), mcodeMask(0), xmitAnt(transmitter)
+      {}
+
+         /** Explicit constructor for avoiding wildcard values.
+          * @param[in] ot The observation type (range, phase,, etc.).
+          * @param[in] cb The carrier band (L1, L2, etc.).
+          * @param[in] tc The tracking code (CA, L2CM, etc.).
+          * @param[in] fo The frequency offset of the GLONASS signal.
+          * @param[in] mc The mcode bits to match.
+          * @param[in] fw If true, fo is ignored and freqOffs will
+          *   match any value. */
+      explicit ObsID(ObservationType ot, CarrierBand cb, TrackingCode tc,
+                     int fo, uint32_t mc,
+                     XmitAnt transmitter = XmitAnt::Standard, bool fw = false)
+            : type(ot), band(cb), code(tc), freqOffs(fo), freqOffsWild(fw),
+              mcode(mc), mcodeMask(-1), xmitAnt(transmitter)
       {}
 
          /// Equality requires all fields to be the same
@@ -142,14 +165,42 @@ namespace gpstk
          /// Return true if any of the data are wildcard values.
       bool isWild() const;
 
+         /// Set the value of mcode while simultaneously setting the mask.
+      void setMcodeBits(uint32_t newval, uint32_t newmask = -1)
+      { mcode = newval; mcodeMask = newmask; }
+         /** Alter the value of mcode by replacing only the masked
+          * bits in newmask with the value in newval.
+          * @param[in] newval The data to be inserted into the mcode bitflag.
+          * @param[in] newmask Only bits set in newmask will be set in
+          *   mcode, and mcodeMask will be updated to include set bits
+          *   in newmask.
+          * @post mcode = (mcode & ~newmask) | (newval & newmask)
+          * @post mcodeMask |= newmask */
+      void maskMcodeBits(uint32_t newval, uint32_t newmask)
+      {
+         mcode = (mcode & ~newmask) | (newval & newmask);
+         mcodeMask |= newmask;
+      }
+         /// Return the value of mcode
+      uint32_t getMcodeBits() const
+      { return mcode; }
+         /// Set the value of mcodeMask on its own.
+      void setMcodeMask(uint32_t newmask = -1)
+      { mcodeMask = newmask; }
+         /// Clear bits in mcodeMask that are set in clearmask.
+      void clearMcodeMask(uint32_t clearmask)
+      { mcodeMask = mcodeMask & ~clearmask; }
+         /// Return the value of mcodeMask
+      uint32_t getMcodeMask() const
+      { return mcodeMask; }
+
          // Note that these are the only data members of objects of this class.
       ObservationType  type;
       CarrierBand      band;
       TrackingCode     code;
+      XmitAnt xmitAnt;    ///< Identify the transmitting antenna.
       int freqOffs;       ///< GLONASS frequency offset.
       bool freqOffsWild;  ///< True=Treat freqOffs as a wildcard when matching.
-      uint32_t mcode;     ///< Data to uniquely identify M-code signal.
-      uint32_t mcodeMask; ///< Bitmask for matching mcode. 
 
          /// SWIG accessor. Not overloaded, because SWIG.
       static std::string getDescTC(TrackingCode e)
@@ -169,8 +220,13 @@ namespace gpstk
           * flags that were added more recently, so this also
           * preserves traditional output. */
       static bool verbose;
+
+   private:
+      uint32_t mcode;     ///< Data to uniquely identify M-code signal.
+      uint32_t mcodeMask; ///< Bitmask for matching mcode.
+      friend class ::ObsID_T;
    }; // class ObsID
 
 
-} // namespace gpstk
+} // namespace gnsstk
 #endif   // OBSID_HPP

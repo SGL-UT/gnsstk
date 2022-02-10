@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -49,10 +49,10 @@
 
 
 using namespace std;
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 
 
-namespace gpstk
+namespace gnsstk
 {
    const string IonexData::startTecMapString    =  "START OF TEC MAP";
    const string IonexData::startRmsMapString    =  "START OF RMS MAP";
@@ -105,9 +105,9 @@ namespace gpstk
       }
       else
       {
-         FFStreamError err("This isn't a valid standard IONEX value type: " + 
+         FFStreamError err("This isn't a valid standard IONEX value type: " +
             asString(type.description) );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       strm << line << endl;
       strm.lineNumber++;
@@ -127,7 +127,7 @@ namespace gpstk
 
       for (int ilat = 0; ilat < nlat; ilat++)
       {
-            // write record initializing a new TEC/RMS 
+            // write record initializing a new TEC/RMS
             // data block for latitude 'currLat'
          double currLat = lat[0] + ilat*lat[2];
 
@@ -154,7 +154,7 @@ namespace gpstk
                          std::pow(10.0,-exponent)*data[index] : 9999.0;
 
                // we need to put there an integer, i.e., the neareast integer
-            int valint = (val > 0.0) ? 
+            int valint = (val > 0.0) ?
                          static_cast<int>(val+0.5) : static_cast<int>(val-0.5);
             line += rightJustify( asString<short>(valint), 5 );
 
@@ -192,9 +192,9 @@ namespace gpstk
       }
       else
       {
-         FFStreamError err("This isn't a valid standard IONEX value type: " + 
+         FFStreamError err("This isn't a valid standard IONEX value type: " +
             asString(type.description) );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       strm << line << endl;
       strm.lineNumber++;
@@ -249,7 +249,7 @@ namespace gpstk
          if (line.size() > 80)
          {
             FFStreamError e("Bad epoch line");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
             // skip empty lines
@@ -302,7 +302,7 @@ namespace gpstk
                             / hdr.lon[2] + 1 ); // consider Greenwich meridian
 
             dim[2] = (hdr.hgt[2] == 0) ?
-                     1 : static_cast<int>( (hdr.hgt[1]-hdr.hgt[0]) 
+                     1 : static_cast<int>( (hdr.hgt[1]-hdr.hgt[0])
                                            / hdr.hgt[2]+1 );
 
             data.resize( dim[0]*dim[1]*dim[2], 999.9 );
@@ -314,16 +314,16 @@ namespace gpstk
             if (ityp == 0)
             {
                FFStreamError e(string("Map type undefined: " + line) );
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
-#ifdef GPSTK_IONEX_UNUSED
+#ifdef GNSSTK_IONEX_UNUSED
             const double lat0 = asDouble(line.substr( 2,6)),
                          lon1 = asDouble(line.substr( 8,6)),
                          lon2 = asDouble(line.substr(14,6)),
                          dlon = asDouble(line.substr(20,6)),
                          hgt  = asDouble(line.substr(26,6));
-#endif  // GPSTK_IONEX_UNUSED
+#endif  // GNSSTK_IONEX_UNUSED
 
                //read single data block
             for (int ival = 0,line_ndx = 0; ival < dim[1]; ival++, line_ndx++)
@@ -343,7 +343,7 @@ namespace gpstk
                   {
 
                     FFStreamError e("Error reading IONEX data. Bad epoch line");
-                    GPSTK_THROW(e);
+                    GNSSTK_THROW(e);
 
                   }
 
@@ -401,7 +401,7 @@ namespace gpstk
          {
 
             FFStreamError e(string("Unidentified Ionex Data record " + line) );
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
 
          }
 
@@ -468,7 +468,7 @@ namespace gpstk
          InvalidRequest e( "Irregular latitude. Latitude "
                            + asString(in[0]) + " DEG" );
 
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
 
       }
 
@@ -508,7 +508,7 @@ namespace gpstk
 
          InvalidRequest e( "Irregular longitude. Longitude: "
                            + asString(in[1]) + " DEG" );
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
 
       }
 
@@ -540,7 +540,7 @@ namespace gpstk
             InvalidRequest e( "Irregular height. Height: "
                               + asString( in[2]/1000.0 ) + " km.");
 
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
 
          }  // End of 'if ( (ihgt >= 1) && (ihgt <= nhgt) )...'
 
@@ -562,7 +562,7 @@ namespace gpstk
 
          InvalidRequest e( "Position object is not in GEOCENTRIC coordinates");
 
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
 
       }
 
@@ -571,7 +571,7 @@ namespace gpstk
       int e[4];
       double xsum = 0.0;
 
-         // the object is required for AEarth to be consistent with 
+         // the object is required for AEarth to be consistent with
          // Position::getIonosphericPiercePoint()
       WGS84Ellipsoid WGS84;
 
@@ -580,9 +580,9 @@ namespace gpstk
       double lambda  = p.theArray[1];
       double height  = p.theArray[2]-WGS84.a();
 
-         // we need this step because in the Position object the longitude is 
-         // expressed in degrees E (i.e., [0 +360]), while in IONEX files 
-         // longitude takes values within [-180 180]) (see IONEX manual) 
+         // we need this step because in the Position object the longitude is
+         // expressed in degrees E (i.e., [0 +360]), while in IONEX files
+         // longitude takes values within [-180 180]) (see IONEX manual)
       if (lambda > 180.0)
       {
          lambda = lambda - 360.0;
@@ -601,7 +601,7 @@ namespace gpstk
       if ( (xp < 0) || (xp > 1) || (xq < 0) || (xq > 1) )
       {
 
-         GPSTK_THROW(Exception("IonexData::getValue(): Wrong xp and xq factors!!!"));
+         GNSSTK_THROW(Exception("IonexData::getValue(): Wrong xp and xq factors!!!"));
 
       }
 
@@ -631,7 +631,7 @@ namespace gpstk
          else
          {
             FFStreamError e("Undefined TEC/RMS value(s).");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
          }
 
       }  // End of 'for (int i = 0; i < 4; i++)...'
@@ -686,4 +686,4 @@ namespace gpstk
 
 
 
-}  // End of namespace gpstk
+}  // End of namespace gnsstk

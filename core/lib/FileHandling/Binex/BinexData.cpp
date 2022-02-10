@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -48,7 +48,7 @@
 
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    #if BYTE_ORDER == LITTLE_ENDIAN
       const bool BinexData::nativeLittleEndian = true;
@@ -107,7 +107,7 @@ namespace gpstk
          std::ostringstream errStrm;
          errStrm << "BINEX UBNXI overflow: " << ul;
          FFStreamError err(errStrm.str() );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       value = ul;
@@ -126,7 +126,7 @@ namespace gpstk
          std::ostringstream errStrm;
          errStrm << "Invalid offset into BINEX UBNXI input buffer: " << offset;
          FFStreamError err(errStrm.str() );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       bool more = true;
       for (size = 0, value = 0L; (size < MAX_BYTES) && more; size++)
@@ -166,7 +166,7 @@ namespace gpstk
          std::ostringstream errStrm;
          errStrm << "Invalid offset into BINEX UBNXI output buffer: " << offset;
          FFStreamError err(errStrm.str() );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       switch (size)
       {
@@ -256,7 +256,7 @@ namespace gpstk
             std::ostringstream errStrm;
             errStrm << "BINEX UBNXI invalid size: " << size;
             FFStreamError err(errStrm.str() );
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
             break;
       }
       return size;
@@ -290,7 +290,7 @@ namespace gpstk
             if (!strm.good() )
             {
                FFStreamError err("Error reading BINEX UBNXI");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
             if (littleEndian)
             {
@@ -318,7 +318,7 @@ namespace gpstk
                std::ostringstream errStrm;
                errStrm << "Invalid offset into BINEX UBNXI output buffer: " << offset;
                FFStreamError err(errStrm.str() );
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
          }
       }
@@ -349,7 +349,7 @@ namespace gpstk
             std::ostringstream errStrm;
             errStrm << "Invalid offset into BINEX UBNXI output buffer: " << offset;
             FFStreamError err(errStrm.str() );
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
       }
       if (reverseBytes)
@@ -360,7 +360,7 @@ namespace gpstk
       if (!strm.good() )
       {
          FFStreamError err("Error writing BINEX UBNXI");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       return size;
    }
@@ -423,7 +423,7 @@ namespace gpstk
          std::ostringstream errStrm;
          errStrm << "BINEX MGFZI overflow: " << ll;
          FFStreamError err(errStrm.str() );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -445,7 +445,7 @@ namespace gpstk
          std::ostringstream errStrm;
          errStrm << "Invalid offset into BINEX MGFZI input buffer: " << offset;
          FFStreamError err(errStrm.str() );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       if (inBuffer.size() == 0)
@@ -471,7 +471,7 @@ namespace gpstk
          errStrm << "BINEX MGFZI is too large for the supplied decode buffer: "
                  << "MGFZI size = " << size << " , buffer size = " << inBuffer.size();
          FFStreamError err(errStrm.str() );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       switch (size)
@@ -605,7 +605,7 @@ namespace gpstk
             errStrm << "BINEX MGFZI invalid size: " << size;
             FFStreamError err(errStrm.str() );
             size  = 0;
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
             break;
 
       } // switch (flag)
@@ -631,7 +631,7 @@ namespace gpstk
          std::ostringstream errStrm;
          errStrm << "Invalid offset into BINEX MGFZI output buffer: " << offset;
          FFStreamError err(errStrm.str() );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       long long      absValue = llabs(value);
@@ -830,7 +830,7 @@ namespace gpstk
          if (!strm.good() || ((size_t)strm.gcount() + 1 != size))
          {
             FFStreamError err("Error reading BINEX MGFZI");
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
       }
       if (reverseBytes)
@@ -849,7 +849,7 @@ namespace gpstk
             std::ostringstream errStrm;
             errStrm << "Invalid offset into BINEX MGFZI output buffer: " << offset;
             FFStreamError err(errStrm.str() );
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
       }
 
@@ -885,7 +885,7 @@ namespace gpstk
             std::ostringstream errStrm;
             errStrm << "Invalid offset into BINEX MGFZI output buffer: " << offset;
             FFStreamError err(errStrm.str() );
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
       }
       if (reverseBytes)
@@ -896,7 +896,7 @@ namespace gpstk
       if (!strm.good() )
       {
          FFStreamError err("Error writing BINEX MGFZI");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       return size;
    }
@@ -957,7 +957,7 @@ namespace gpstk
       if (id > UBNXI::MAX_VALUE)
       {
          FFStreamError err("BINEX record ID overflow");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       recID = id;
@@ -1022,7 +1022,7 @@ namespace gpstk
          std::ostringstream errStrm;
          errStrm << "Requested message length exceeds allowable maximum: " << cap;
          InvalidParameter ip(errStrm.str() );
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
       msg.reserve(cap);
       return *this;
@@ -1082,7 +1082,7 @@ namespace gpstk
          std::ostringstream errStrm;
          errStrm << "Invalid data size: " << size;
          InvalidParameter ip(errStrm.str() );
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
       msg.replace(offset, size, data, 0, size);
       offset += size;
@@ -1114,7 +1114,7 @@ namespace gpstk
          std::ostringstream errStrm;
          errStrm << "Message buffer offset invalid: " << offset;
          InvalidParameter ip(errStrm.str() );
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
       bool littleEndian  = ( (syncByte & eBigEndian) == 0) ? true : false;
       offset += data.decode(msg, offset, littleEndian);
@@ -1132,7 +1132,7 @@ namespace gpstk
          std::ostringstream errStrm;
          errStrm << "Message buffer offset invalid: " << offset;
          InvalidParameter ip(errStrm.str() );
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
       bool littleEndian  = ( (syncByte & eBigEndian) == 0) ? true : false;
       offset += data.decode(msg, offset, littleEndian);
@@ -1151,7 +1151,7 @@ namespace gpstk
          std::ostringstream errStrm;
          errStrm << "Message buffer offset invalid: " << offset;
          InvalidParameter ip(errStrm.str() );
-         GPSTK_THROW(ip);
+         GNSSTK_THROW(ip);
       }
       data.assign(msg, offset, size);
       offset += size;
@@ -1166,7 +1166,7 @@ namespace gpstk
       {
          FFStreamError e("Attempt to read a BinexData object"
                          " from a non-BinexStream FFStream.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       putRecord(dynamic_cast<std::ostream&>(ffs));
    }
@@ -1184,7 +1184,7 @@ namespace gpstk
             errStrm << "Invalid BINEX synchronization byte: "
                     << static_cast<uint16_t>(syncByte);
             FFStreamError err(errStrm.str() );
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
             // Buffer, etc. for non-msg data
          std::string    headBuf;
@@ -1233,18 +1233,18 @@ namespace gpstk
       catch(std::exception& exc)
       {
          FFStreamError err(exc.what());
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       catch(...)
       {
          FFStreamError err("Unknown exception");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       if (strm.fail() || strm.bad())
       {
          FFStreamError err("Error writing data");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
    }
 
@@ -1255,7 +1255,7 @@ namespace gpstk
       {
          FFStreamError e("Attempt to read a BinexData object"
                          " from a non-BinexStream FFStream.");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       getRecord(dynamic_cast<std::istream&>(ffs));
    }
@@ -1286,13 +1286,13 @@ namespace gpstk
          {
                // Process as EOF
             EndOfFile err("EOF encountered");
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
          else
          {
                // Rethrow if not EOF
             FFStreamError err(e.what() );
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
       }
 
@@ -1323,7 +1323,7 @@ namespace gpstk
             if (!strm.good() || ((unsigned long)strm.gcount() != msgLen) )
             {
                FFStreamError err("Incomplete BINEX record message");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
             msg.assign((char*)&msgBuf[0], msgLen);
 
@@ -1336,12 +1336,12 @@ namespace gpstk
             if (!strm.good() || ((size_t)strm.gcount() != crcLen) )
             {
                FFStreamError err("Error reading BINEX CRC");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
             if (memcmp(crc, expectedCrc.data(), crcLen) )
             {
                FFStreamError err("Bad BINEX CRC");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
          }
          else if (isTailSyncByteValid(syncBuf, expectedSyncByte) )
@@ -1359,7 +1359,7 @@ namespace gpstk
             if (!strm.good() || ((unsigned long)strm.gcount() != revRecSize) )
             {
                FFStreamError err("Incomplete BINEX record message");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
             std::string revRecBuf( (char*)&revRecVec[0], revRecSize);
             reverseBuffer(revRecBuf, revRecSize);
@@ -1367,7 +1367,7 @@ namespace gpstk
             if (revRecBuf[0] != expectedSyncByte)
             {
                FFStreamError err("BINEX head/tail synchronization byte mismatch");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
             syncByte = expectedSyncByte;
             offset += 1;
@@ -1389,7 +1389,7 @@ namespace gpstk
                || expectedCrc.compare(revRecBuf.substr(offset, crcLen) ) )
             {
                FFStreamError err("Bad BINEX CRC");
-               GPSTK_THROW(err);
+               GNSSTK_THROW(err);
             }
          }
          else
@@ -1398,24 +1398,24 @@ namespace gpstk
             errStrm << "Invalid BINEX synchronization byte: "
                     << static_cast<uint16_t>(syncBuf);
             FFStreamError err(errStrm.str() );
-            GPSTK_THROW(err);
+            GNSSTK_THROW(err);
          }
 
          endpos = strm.tellg();
       }
       catch(FFStreamError& exc)
       {
-         GPSTK_RETHROW(exc);
+         GNSSTK_RETHROW(exc);
       }
       catch(std::exception& exc)
       {
          FFStreamError err(exc.what() );
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       catch(...)
       {
          FFStreamError err("Unknown exception");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
 
       return (endpos-stpos);
@@ -1642,12 +1642,12 @@ namespace gpstk
       if (size > sizeof(value) )
       {
          FFStreamError err("Invalid data size parsing BINEX data buffer");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       if (offset + size > buffer.size() )
       {
          FFStreamError err("Invalid offset parsing BINEX data buffer");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       char* valp = (char*)&value;
       for (size_t i = 0; i < size; i++, valp++)
@@ -1685,13 +1685,13 @@ namespace gpstk
       if (offset >= buffer.size() )
       {
          FFStreamError err("Invalid offset reversing BINEX data buffer");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       size_t back = (n == std::string::npos) ? buffer.size() - 1: offset + n;
       if (back >= buffer.size() )
       {
          FFStreamError err("Invalid size reversing BINEX data buffer");
-         GPSTK_THROW(err);
+         GNSSTK_THROW(err);
       }
       --back;
       unsigned char tmp;
@@ -1721,4 +1721,4 @@ namespace gpstk
    }
 
 
-}  // namespace gpstk
+}  // namespace gnsstk

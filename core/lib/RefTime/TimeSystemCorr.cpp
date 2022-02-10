@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -39,7 +39,7 @@
 #include "TimeSystemCorr.hpp"
 #include "BDSWeekSecond.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
    TimeSystemCorrection ::
    TimeSystemCorrection()
@@ -64,13 +64,13 @@ namespace gpstk
       A1 = 0.0;
       refTime = CommonTime::BEGINNING_OF_TIME;
       geoProvider = "";
-      geoUTCid = 0; 
+      geoUTCid = 0;
    }
 
    void TimeSystemCorrection ::
    fromString(const std::string& str)
    {
-      std::string STR(gpstk::StringUtils::upperCase(str));
+      std::string STR(gnsstk::StringUtils::upperCase(str));
       if(STR == std::string("GPUT"))
       {
          type = GPUT;
@@ -91,55 +91,55 @@ namespace gpstk
          toTS = TimeSystem::UTC;
       }
       else if(STR == std::string("GLUT"))
-      { 
+      {
          type = GLUT;
          frTS = TimeSystem::GLO;
          toTS = TimeSystem::UTC;
       }
       else if(STR == std::string("GPGA") || STR == std::string("GAGP")) // R3.04 A5
-      { 
+      {
          type = GPGA;
          frTS = TimeSystem::GPS;
          toTS = TimeSystem::GAL;
       }
       else if(STR == std::string("GLGP"))
-      { 
+      {
          type = GLGP;
          frTS = TimeSystem::GLO;
          toTS = TimeSystem::GPS;
       }
       else if(STR == std::string("QZGP"))
-      { 
+      {
          type = QZGP;
          frTS = TimeSystem::QZS;
          toTS = TimeSystem::GPS;
       }
       else if(STR == std::string("QZUT"))
-      { 
+      {
          type = QZUT;
          frTS = TimeSystem::QZS;
          toTS = TimeSystem::UTC;
       }
       else if(STR == std::string("BDUT"))
-      { 
+      {
          type = BDUT;
          frTS = TimeSystem::BDT;
          toTS = TimeSystem::UTC;
       }
       else if(STR == std::string("BDGP"))
-      { 
+      {
          type = BDGP;
          frTS = TimeSystem::BDT;
          toTS = TimeSystem::GPS;
       }
       else if(STR == std::string("IRUT"))
-      { 
+      {
          type = IRUT;
          frTS = TimeSystem::IRN;
          toTS = TimeSystem::UTC;
       }
       else if(STR == std::string("IRGP"))
-      { 
+      {
          type = IRGP;
          frTS = TimeSystem::IRN;
          toTS = TimeSystem::GPS;
@@ -147,7 +147,7 @@ namespace gpstk
       else
       {
          Exception e("Unknown TimeSystemCorrection type: " + str);
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
    }
 
@@ -276,12 +276,12 @@ namespace gpstk
       if(ts1 == ts2)
       {
          Exception e("Identical time systems");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       if(ts1 == TimeSystem::Unknown || ts2 == TimeSystem::Unknown)
       {
          Exception e("Unknown time systems");
-         GPSTK_THROW(e);
+         GNSSTK_THROW(e);
       }
       if((ts1 == frTS && ts2 == toTS) || (ts2 == frTS && ts1 == toTS))
       {
@@ -306,7 +306,7 @@ namespace gpstk
          case GPUT:
             if(fromTS != TimeSystem::GPS && fromTS != TimeSystem::UTC)
             {
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // dt = fromTime - refTime
@@ -322,7 +322,7 @@ namespace gpstk
          case GAUT:
             if(fromTS != TimeSystem::GAL && fromTS != TimeSystem::UTC)
             {
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // dt = fromTime - rtc
@@ -336,13 +336,13 @@ namespace gpstk
             break;
 
          case SBUT:
-            GPSTK_THROW(eSBAS);
+            GNSSTK_THROW(eSBAS);
             break;
 
          case GLUT:
             if(fromTS != TimeSystem::GLO && fromTS != TimeSystem::UTC)
             {
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             if(fromTS == TimeSystem::GLO)             // GLO => UTC
@@ -355,7 +355,7 @@ namespace gpstk
          case GPGA:
             if(fromTS != TimeSystem::GPS && fromTS != TimeSystem::GAL)
             {
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // dt = fromTime - rtc
@@ -371,7 +371,7 @@ namespace gpstk
          case GLGP:
             if(fromTS != TimeSystem::GLO && fromTS != TimeSystem::GPS)
             {
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             if(fromTS == TimeSystem::GLO)             // GLO => GPS
@@ -384,7 +384,7 @@ namespace gpstk
          case QZGP:
             if(fromTS != TimeSystem::QZS && fromTS != TimeSystem::GPS)
             {
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             if(fromTS == TimeSystem::QZS)             // QZS => GPS
@@ -397,7 +397,7 @@ namespace gpstk
          case QZUT:
             if(fromTS != TimeSystem::QZS && fromTS != TimeSystem::UTC)
             {
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // dt = fromTime - rtc
@@ -413,7 +413,7 @@ namespace gpstk
          case BDUT:
             if(fromTS != TimeSystem::BDT && fromTS != TimeSystem::UTC)
             {
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // dt = fromTime - rtc
@@ -429,7 +429,7 @@ namespace gpstk
          case BDGP:
             if(fromTS != TimeSystem::BDT && fromTS != TimeSystem::GPS)
             {
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // dt = fromTime - rtc
@@ -445,7 +445,7 @@ namespace gpstk
          case IRUT:
             if(fromTS != TimeSystem::IRN && fromTS != TimeSystem::UTC)
             {
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
                // dt = fromTime - rtc
@@ -461,7 +461,7 @@ namespace gpstk
          case IRGP:
             if(fromTS != TimeSystem::IRN && fromTS != TimeSystem::GPS)
             {
-               GPSTK_THROW(e);
+               GNSSTK_THROW(e);
             }
 
             dt = ct - rtc;
@@ -475,7 +475,7 @@ namespace gpstk
 
          default:
             Exception e("TimeSystemCorrection is not defined.");
-            GPSTK_THROW(e);
+            GNSSTK_THROW(e);
             break;
       }
 
@@ -532,5 +532,5 @@ namespace gpstk
             break;
       }
    }
-   
-} // namespace gpstk
+
+} // namespace gnsstk

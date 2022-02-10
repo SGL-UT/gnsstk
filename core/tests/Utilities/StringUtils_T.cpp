@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -43,7 +43,7 @@
 #include "StringUtils.hpp"
 #include "TestUtil.hpp"
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
 namespace std
@@ -151,7 +151,7 @@ public:
       static const int BUF_SIZ = 512;
       ifstream s(fileName.c_str());
       std::string rv;
-      GPSTK_ASSERT(s);
+      GNSSTK_ASSERT(s);
       char *buffer = new char[BUF_SIZ];
       while (s)
       {
@@ -189,7 +189,7 @@ public:
       leftJustify(manipulatedString, manipulatedString.length()+6, fillerChar);
       TUCSM("leftJustify");
       TUASSERTE(std::string, resultString, manipulatedString);
-			
+
       manipulatedString = baseString;
       resultString = string(3, fillerChar) + baseString +
          string(3, fillerChar);
@@ -242,7 +242,7 @@ public:
          // Strip all of the string --'s from the beginning of the string
       manipulatedString = stripLeading(manipulatedString, stringToBeRemoved);
       TUASSERTE(std::string, resultString, manipulatedString);
-			
+
       TURETURN();
    }
 
@@ -286,7 +286,7 @@ public:
          // Strip all of the string --'s from the end of the string
       manipulatedString = stripTrailing(manipulatedString, stringToBeRemoved);
       TUASSERTE(std::string, resultString, manipulatedString);
-			
+
       TURETURN();
    }
 
@@ -329,7 +329,7 @@ public:
          // Strip all of the string --'s from both ends of the string
       manipulatedString = strip(manipulatedString, stringToBeRemoved);
       TUASSERTE(std::string, resultString, manipulatedString);
-			
+
       TURETURN();
    }
 
@@ -618,7 +618,7 @@ public:
       TUASSERTE(std::string, "", words("", 1));
       resultString = words("", 2);
       TUASSERTE(std::string, std::string(), resultString);
-      
+
       resultString = words(originalString, 3);
       TUASSERTE(std::string, allWordsFromFourthOn, resultString);
 
@@ -924,10 +924,10 @@ public:
       stringstream printableMessageStream;
 
          // Correct format for hexDumpData
-      string refPath = gpstk::getPathData() +
-         gpstk::getFileSep() +
+      string refPath = gnsstk::getPathData() +
+         gnsstk::getFileSep() +
          "StringUtils" +
-         gpstk::getFileSep() +
+         gnsstk::getFileSep() +
          "hexToAsciiTest_";
       correctHexDump = getFileContents(refPath + "hexDump.exp");
 
@@ -975,10 +975,10 @@ public:
       stringstream printableMessageStream;
 
          // Correct format for hexDumpData
-      string refPath = gpstk::getPathData() +
-         gpstk::getFileSep() +
+      string refPath = gnsstk::getPathData() +
+         gnsstk::getFileSep() +
          "StringUtils" +
-         gpstk::getFileSep() +
+         gnsstk::getFileSep() +
          "hexDumpDataTest_";
       correctHexDump = getFileContents(refPath + "hexDump.exp");
 
@@ -1020,10 +1020,10 @@ public:
       string correctHexDump;
 
          // Correct format for hexDumpData
-      string refPath = gpstk::getPathData() +
-         gpstk::getFileSep() +
+      string refPath = gnsstk::getPathData() +
+         gnsstk::getFileSep() +
          "StringUtils" +
-         gpstk::getFileSep() +
+         gnsstk::getFileSep() +
          "hexDumpDataStreamFlagTest_";
 
       correctHexDump = getFileContents(refPath + "hexDump.exp");
@@ -1052,10 +1052,10 @@ public:
       string hexDumpString;
 
          // Correct format for hexDumpData
-      string refPath = gpstk::getPathData() +
-         gpstk::getFileSep() +
+      string refPath = gnsstk::getPathData() +
+         gnsstk::getFileSep() +
          "StringUtils" +
-         gpstk::getFileSep() +
+         gnsstk::getFileSep() +
          "hexDumpDataConfigTest_";
 
          // no index

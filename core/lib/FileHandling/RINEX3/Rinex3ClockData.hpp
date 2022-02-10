@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -49,7 +49,7 @@
 #include "CommonTime.hpp"
 #include <iomanip>
 
-namespace gpstk
+namespace gnsstk
 {
       /// @ingroup FileHandling
       //@{
@@ -70,7 +70,7 @@ namespace gpstk
        *
        * while (ss >> sd) {
        *    // Interesting stuff...
-       * }    
+       * }
        *
        * Rinex3ClockStream ssout("myfile.clk_30s", ios::out);
        * ssout << sh;
@@ -80,7 +80,7 @@ namespace gpstk
        * }
        * @endcode
        *
-       * @sa gpstk::Rinex3ClockHeader and gpstk::Rinex3ClockStream for
+       * @sa gnsstk::Rinex3ClockHeader and gnsstk::Rinex3ClockStream for
        * more information.
        */
    class Rinex3ClockData : public Rinex3ClockBase
@@ -88,10 +88,10 @@ namespace gpstk
    public:
          /// Constructor.
       Rinex3ClockData();
-     
+
          /// Destructor
       virtual ~Rinex3ClockData() {}
-     
+
          // The next four lines is our common interface
          /// Rinex3ClockData is "data" so this function always returns true.
       virtual bool isData() const {return true;}
@@ -103,13 +103,13 @@ namespace gpstk
       RinexSatID sat;         ///< Satellite ID        (if AS)
       std::string site;       ///< Site label (4-char) (if AR)
       CommonTime time;        ///< Time of epoch for this record
-      RCDouble bias;          ///< Clock bias in seconds
-      RCDouble sig_bias;      ///< Clock bias sigma in seconds
-      RCDouble drift;         ///< Clock drift in sec/sec
-      RCDouble sig_drift;     ///< Clock drift sigma in sec/sec
-      RCDouble accel;         ///< Clock acceleration in 1/sec
-      RCDouble sig_accel;     ///< Clock acceleration sigma in 1/sec
-      
+      R3CDouble bias;         ///< Clock bias in seconds
+      R3CDouble sig_bias;     ///< Clock bias sigma in seconds
+      R3CDouble drift;        ///< Clock drift in sec/sec
+      R3CDouble sig_drift;    ///< Clock drift sigma in sec/sec
+      R3CDouble accel;        ///< Clock acceleration in 1/sec
+      R3CDouble sig_accel;    ///< Clock acceleration sigma in 1/sec
+
    protected:
 
       void clear() throw()
@@ -130,7 +130,7 @@ namespace gpstk
 
          /**
           * This function reads a record from the given FFStream.
-          * If an error is encountered in retrieving the record, the 
+          * If an error is encountered in retrieving the record, the
           * stream is reset to its original position and its fail-bit is set.
           * @throw std::exception
           * @throw StringException when a StringUtils function fails

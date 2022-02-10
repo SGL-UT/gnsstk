@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-//  
+//
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -29,9 +29,9 @@
 //  within the U.S. Department of Defense. The U.S. Government retains all
 //  rights to use, duplicate, distribute, disclose, or release this software.
 //
-//  Pursuant to DoD Directive 523024 
+//  Pursuant to DoD Directive 523024
 //
-//  DISTRIBUTION STATEMENT A: This software has been approved for public 
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
 //                            release, distribution is unlimited.
 //
 //==============================================================================
@@ -67,12 +67,12 @@
 *  MEMBER METHODS
 *     SVNumXRef( ); - Constructor.  Works from a fixed table that is compiled
 *                     into the code.
-*     int getNAVSTAR( const int PRNID, const gpstk::CommonTime dt ) const; -
+*     int getNAVSTAR( const int PRNID, const gnsstk::CommonTime dt ) const; -
 *                     Given a PRNID and a date, return the NAVSTAR number
 *                     related to thsat PRNID at the date provided.  May
 *                     throw "NoNAVSTARNumFound" error. The date defaults to
 *                     the current date if one is not provided.
-*     int getPRNID( const int NAVSTARID, const gpstk::CommonTime dt ) const; -
+*     int getPRNID( const int NAVSTARID, const gnsstk::CommonTime dt ) const; -
 *                     Given a NAVSTAR Number and a date, return the corresponding
 *                     PRNID related to the NAVSTAR Number on the specified date.
 *                     May throw "No PRNNumberFound" error." The date defaults to
@@ -82,11 +82,11 @@
 *  means of determining is the specified information is available prior to
 *  making a "get" call.  This is useful if you want to avoid writing
 *  "try/catch" blocks.
-*     bool PRNIDavailable( const int NAVSTARID, const gpstk::CommonTime dt ) const;
-*     bool NAVSTARIDAvailable( const int PRNID, const gpstk::CommonTime dt ) const;
+*     bool PRNIDavailable( const int NAVSTARID, const gnsstk::CommonTime dt ) const;
+*     bool NAVSTARIDAvailable( const int PRNID, const gnsstk::CommonTime dt ) const;
 *
 *
-*     bool NAVSTARIDActive( const int NAVSTARID, const gpstk::CommonTime dt ) const; -
+*     bool NAVSTARIDActive( const int NAVSTARID, const gnsstk::CommonTime dt ) const; -
 *     Given a NAVSTAR ID and a date, return true if the specified NAVSTAR ID was
 *     active on the date provided. The date defaults to the current date if one
 *     is not provided.
@@ -105,32 +105,32 @@
 #include "TimeRange.hpp"
 
 
-namespace gpstk
+namespace gnsstk
 {
 
-  NEW_EXCEPTION_CLASS( NoPRNNumberFound, gpstk::Exception);
-  NEW_EXCEPTION_CLASS( NoNAVSTARNumberFound, gpstk::Exception);
+  NEW_EXCEPTION_CLASS( NoPRNNumberFound, gnsstk::Exception);
+  NEW_EXCEPTION_CLASS( NoNAVSTARNumberFound, gnsstk::Exception);
 
 
   class XRefNode
   {
      public:
        XRefNode( const int NumArg,
-		     const gpstk::TimeRange tr );
+		     const gnsstk::TimeRange tr );
        XRefNode( const int NumArg,
-                     const gpstk::CommonTime begDT,
-                     const gpstk::CommonTime endDT );
+                     const gnsstk::CommonTime begDT,
+                     const gnsstk::CommonTime endDT );
        int getNAVSTARNum() const;
        int getPRNNum() const;
-       gpstk::CommonTime getBeginTime() const;
-       gpstk::CommonTime getEndTime() const;
-       gpstk::TimeRange getTimeRange() const;
-       bool isApplicable( gpstk::CommonTime dt ) const;
+       gnsstk::CommonTime getBeginTime() const;
+       gnsstk::CommonTime getEndTime() const;
+       gnsstk::TimeRange getTimeRange() const;
+       bool isApplicable( gnsstk::CommonTime dt ) const;
        std::string toString() const;
 
      protected:
         int Num;
-        gpstk::TimeRange valid;
+        gnsstk::TimeRange valid;
   };
 
     typedef std::multimap<int, XRefNode>::const_iterator SVNumXRefListCI;
@@ -156,12 +156,12 @@ namespace gpstk
       ~SVNumXRef() {}
       BlockType getBlockType( const int NAVSTARID ) const;
       std::string getBlockTypeString( const int NAVSTARID ) const;
-      int getNAVSTAR( const int PRNID, const gpstk::CommonTime dt ) const;
-      int getPRNID( const int NAVSTARID, const gpstk::CommonTime dt ) const;
-      bool PRNIDAvailable( const int NAVSTARID, const gpstk::CommonTime dt ) const;
-      bool NAVSTARIDAvailable( const int PRNID, const gpstk::CommonTime dt ) const;
+      int getNAVSTAR( const int PRNID, const gnsstk::CommonTime dt ) const;
+      int getPRNID( const int NAVSTARID, const gnsstk::CommonTime dt ) const;
+      bool PRNIDAvailable( const int NAVSTARID, const gnsstk::CommonTime dt ) const;
+      bool NAVSTARIDAvailable( const int PRNID, const gnsstk::CommonTime dt ) const;
       bool BlockTypeAvailable( const int NAVSTARID ) const;
-      bool NAVSTARIDActive( const int NAVSTARID, const gpstk::CommonTime dt ) const;
+      bool NAVSTARIDActive( const int NAVSTARID, const gnsstk::CommonTime dt ) const;
       void dump(std::ostream& out=std::cout) const;
       bool isConsistent() const;
 
@@ -176,9 +176,9 @@ namespace gpstk
 
     inline int XRefNode::getNAVSTARNum() const { return(Num); }
     inline int XRefNode::getPRNNum() const { return(Num); }
-    inline gpstk::CommonTime XRefNode::getBeginTime() const { return( valid.getStart() ); }
-    inline gpstk::CommonTime XRefNode::getEndTime() const { return( valid.getEnd() ); }
-    inline gpstk::TimeRange XRefNode::getTimeRange() const { return( valid ); }
+    inline gnsstk::CommonTime XRefNode::getBeginTime() const { return( valid.getStart() ); }
+    inline gnsstk::CommonTime XRefNode::getEndTime() const { return( valid.getEnd() ); }
+    inline gnsstk::TimeRange XRefNode::getTimeRange() const { return( valid ); }
 
 
   }
