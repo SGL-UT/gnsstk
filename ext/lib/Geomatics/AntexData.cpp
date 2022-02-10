@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -51,10 +51,10 @@
 #include "StringUtils.hpp"
 #include "TimeString.hpp"
 
-using namespace gpstk::StringUtils;
+using namespace gnsstk::StringUtils;
 using namespace std;
 
-namespace gpstk
+namespace gnsstk
 {
    const string AntexData::startAntennaString = "START OF ANTENNA";
    const string AntexData::typeSerNumString   = "TYPE / SERIAL NO";
@@ -206,7 +206,7 @@ namespace gpstk
    {
       if (!isValid())
       {
-         gpstk::Exception e("Invalid AntexData object");
+         gnsstk::Exception e("Invalid AntexData object");
          GPSTK_THROW(e);
       }
 
@@ -215,7 +215,7 @@ namespace gpstk
          freqPCVmap.find(freq);
       if (it == freqPCVmap.end())
       {
-         gpstk::Exception e(
+         gnsstk::Exception e(
             "Frequency " + freq +
             " not found! System not supported or data corrupted.");
          GPSTK_THROW(e);
@@ -1168,4 +1168,4 @@ namespace gpstk
       return line;
    }
 
-} // namespace gpstk
+} // namespace gnsstk

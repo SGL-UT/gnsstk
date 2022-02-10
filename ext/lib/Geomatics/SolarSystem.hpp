@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -79,7 +79,7 @@
 #   include <string>
 #   include <vector>
 
-// GPSTk
+// GNSSTk
 #   include "EphTime.hpp"
 #   include "Exception.hpp"
 #   include "Position.hpp"
@@ -94,7 +94,7 @@
 #   include "SunEarthSatGeometry.hpp"
 #   include "logstream.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 
    //---------------------------------------------------------------------------------
@@ -376,7 +376,7 @@ namespace gpstk
          try
          {
             Position Sun = SolarSystem::SolarPosition(tt);
-            return gpstk::SatelliteAttitude(SV, Sun);
+            return gnsstk::SatelliteAttitude(SV, Sun);
          }
          catch (Exception& e)
          {
@@ -409,7 +409,7 @@ namespace gpstk
          try
          {
             Position Sun = SolarSystem::SolarPosition(tt);
-            gpstk::SunOrbitAngles(Pos, Vel, Sun, beta, phi);
+            gnsstk::SunOrbitAngles(Pos, Vel, Sun, beta, phi);
          }
          catch (Exception& e)
          {
@@ -421,7 +421,7 @@ namespace gpstk
           Compute the site displacement due to solid Earth tides for the given
           Position (assumed to be fixed to the solid Earth) at the given time,
           given the position of the site of interest; cf.
-          gpstk::computeSolidEarthTides(). Return a Triple containing the site
+          gnsstk::computeSolidEarthTides(). Return a Triple containing the site
           displacement in ECEF XYZ coordinates with units meters. Reference IERS
           Conventions (1996) found in IERS Technical Note 21
                 and IERS Conventions (2003) found in IERS Technical Note 32
@@ -442,7 +442,7 @@ namespace gpstk
             const Position Moon = SolarSystem::LunarPosition(tt);
             const double EMRAT  = SolarSystem::ratioEarthToMoonMass();
             const double SERAT  = SolarSystem::ratioSunToEarthMass();
-            return gpstk::computeSolidEarthTides(site, tt, Sun, Moon, EMRAT,
+            return gnsstk::computeSolidEarthTides(site, tt, Sun, Moon, EMRAT,
                                                  SERAT, iersconv);
          }
          catch (Exception& e)
@@ -469,7 +469,7 @@ namespace gpstk
             EphTime ttag(tt);
             ttag.convertSystemTo(TimeSystem::UTC);
             const EarthOrientation eo = EOPStore::getEOP(ttag.dMJD(), iersconv);
-            return gpstk::computePolarTides(site, tt, eo.xp, eo.yp, iersconv);
+            return gnsstk::computePolarTides(site, tt, eo.xp, eo.yp, iersconv);
          }
          catch (Exception& e)
          {
@@ -510,7 +510,7 @@ namespace gpstk
 
    }; // end class SolarSystem
 
-} // end namespace gpstk
+} // end namespace gnsstk
 
 #endif // SOLAR_SYSTEM_INCLUDE
 // nothing below this

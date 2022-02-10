@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -54,7 +54,7 @@
 #include "RinexSatID.hpp"
 #include "RinexUtilities.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 
       /**
@@ -236,7 +236,7 @@ namespace gpstk
           @param endTime   reject data after this time (END_OF TIME)
           @return -1 if the filenames list is empty, otherwise return the number
                        of files successfully read (may be less than the number input).
-          @throw gpstk::Exception if there are exceptions while reading, if the data
+          @throw gnsstk::Exception if there are exceptions while reading, if the data
                        in the file is out of time order.
           @deprecated in favor of RinexObsFilesLoader version
          */
@@ -905,9 +905,9 @@ namespace gpstk
        @param sp SatPass to write
        @return reference to os.
       */
-   std::ostream& operator<<(std::ostream& os, gpstk::SatPass& sp);
+   std::ostream& operator<<(std::ostream& os, gnsstk::SatPass& sp);
 
-} // end namespace gpstk
+} // end namespace gnsstk
 
 // -----------------------------------------------------------------------------------
 #endif // GPSTK_SATELLITE_PASS_INCLUDE

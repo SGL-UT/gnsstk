@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -47,7 +47,7 @@
 #include <string>
 #include <vector>
 
-// GPSTk
+// GNSSTk
 #include "CommonTime.hpp"
 #include "Exception.hpp"
 #include "MostCommonValue.hpp"
@@ -58,7 +58,7 @@
 // gpstk-geomatics
 #include "SatPass.hpp"
 
-namespace gpstk
+namespace gnsstk
 {
 
    //--------------------------------------------------------------------------------
@@ -292,7 +292,7 @@ namespace gpstk
 
          /**
           set time format
-          @param[in] fmt format (cf. gpstk::Epoch::printf) for time output in
+          @param[in] fmt format (cf. gnsstk::Epoch::printf) for time output in
           dumps
          */
       inline void setTimeFormat(std::string fmt) { timefmt = fmt; }
@@ -434,7 +434,7 @@ namespace gpstk
           @param s to which to write the data
          */
       void dumpStoreEpoch(std::ostream& s,
-                          const gpstk::Rinex3ObsData& rod) const;
+                          const gnsstk::Rinex3ObsData& rod) const;
 
          /**
           Dump the stored data - NB setTimeFormat()
@@ -453,6 +453,6 @@ namespace gpstk
 
    //@}
 
-} // end namespace gpstk
+} // end namespace gnsstk
 
 #endif // GPSTK_RINEX3_FILE_LOADER_INCLUDE

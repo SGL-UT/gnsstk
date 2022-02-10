@@ -1,24 +1,24 @@
 //==============================================================================
 //
-//  This file is part of GPSTk, the GPS Toolkit.
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
 //
-//  The GPSTk is free software; you can redistribute it and/or modify
+//  The GNSSTk is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU Lesser General Public License as published
 //  by the Free Software Foundation; either version 3.0 of the License, or
 //  any later version.
 //
-//  The GPSTk is distributed in the hope that it will be useful,
+//  The GNSSTk is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU Lesser General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public
-//  License along with GPSTk; if not, write to the Free Software Foundation,
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2021, The Board of Regents of The University of Texas System
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -51,7 +51,7 @@
 #include <sstream>
 #include <string>
 
-namespace gpstk
+namespace gnsstk
 {
       /**
        A base class for implementing Kalman filter using SRIFilter. Define a
@@ -217,36 +217,36 @@ namespace gpstk
       double big, small; ///< condition number at last inversion = b/s
       std::string KFtag; ///< optional tag to put in output (2nd field)
 
-      gpstk::Vector<double> State;   ///< filter state
-      gpstk::Matrix<double> Cov;     ///< filter covariance
-      gpstk::SRIFilter srif;         ///< SRIF
+      gnsstk::Vector<double> State;   ///< filter state
+      gnsstk::Matrix<double> Cov;     ///< filter covariance
+      gnsstk::SRIFilter srif;         ///< SRIF
                              // MU
-      gpstk::Vector<double> PFResid; ///< post-fit residuals - valid after MU
-      gpstk::Matrix<double>
+      gnsstk::Vector<double> PFResid; ///< post-fit residuals - valid after MU
+      gnsstk::Matrix<double>
          Partials;                   ///< matrix defined by defineM() and used in MU
-      gpstk::Vector<double>
+      gnsstk::Vector<double>
          Data;                       ///< vector defined by defineM() and used in MU
-      gpstk::Matrix<double> MCov;    ///< measurement covariance (defineM() for MU)
+      gnsstk::Matrix<double> MCov;    ///< measurement covariance (defineM() for MU)
                             // TU
-      gpstk::Vector<double> Zw;      ///< SRIF vector used internally
-      gpstk::Vector<double> Control; ///< SRIF vector used internally
-      gpstk::Matrix<double>
+      gnsstk::Vector<double> Zw;      ///< SRIF vector used internally
+      gnsstk::Vector<double> Control; ///< SRIF vector used internally
+      gnsstk::Matrix<double>
          PhiInv;                     ///< SRIF matrix used internally - inv state trans
-      gpstk::Matrix<double> G;       ///< SRIF matrix used internally - noise
-      gpstk::Matrix<double> Rw;      ///< SRIF matrix used internally
+      gnsstk::Matrix<double> G;       ///< SRIF matrix used internally - noise
+      gnsstk::Matrix<double> Rw;      ///< SRIF matrix used internally
                             // SU
-      gpstk::Vector<double>
+      gnsstk::Vector<double>
          SMResid;                    ///< post-smoother residuals - value after SU
 
          /// Storage for smoothing algorithm; stored by forward filter, used by SU
       typedef struct Smoother_storage_record
       {
-         gpstk::Matrix<double> Rw;
-         gpstk::Matrix<double> Rwx;
-         gpstk::Matrix<double> PhiInv;
-         gpstk::Matrix<double> G;
-         gpstk::Vector<double> Zw;
-         gpstk::Vector<double> Control;
+         gnsstk::Matrix<double> Rw;
+         gnsstk::Matrix<double> Rwx;
+         gnsstk::Matrix<double> PhiInv;
+         gnsstk::Matrix<double> G;
+         gnsstk::Vector<double> Zw;
+         gnsstk::Vector<double> Control;
          double Time;
       } SmootherStoreRec;
       std::map<int, SmootherStoreRec> SmootherStore;
@@ -273,8 +273,8 @@ namespace gpstk
          * @return 1 for state/cov, -1 for information, 0 for
          *   nothing provided
          */
-      virtual int defineInitial(double& T0, gpstk::Vector<double>& X,
-                                gpstk::Matrix<double>& Cov) = 0;
+      virtual int defineInitial(double& T0, gnsstk::Vector<double>& X,
+                                gnsstk::Matrix<double>& Cov) = 0;
 
          /** Pure virtual function, to be overloaded and provided by the
          * caller, providing members Partials, Data and MCov
@@ -298,8 +298,8 @@ namespace gpstk
          *            processing or output
          */
       virtual KalmanReturn defineMeasurements(double& T,
-                                              const gpstk::Vector<double>& X,
-                                              const gpstk::Matrix<double>& C,
+                                              const gnsstk::Vector<double>& X,
+                                              const gnsstk::Matrix<double>& C,
                                               bool useFlag) = 0;
 
          /** Pure virtual function, to be overloaded and provided by the
@@ -313,8 +313,8 @@ namespace gpstk
          * @param[in] useFlag if false, State and Cov are singular - do not use
          */
       virtual void defineTimestep(double T, double DT,
-                                  const gpstk::Vector<double>& State,
-                                  const gpstk::Matrix<double>& Cov,
+                                  const gnsstk::Vector<double>& State,
+                                  const gnsstk::Matrix<double>& Cov,
                                   bool useFlag) = 0;
 
          /** Pure virtual function, to be overloaded and provided by the
@@ -345,13 +345,13 @@ namespace gpstk
           Constructor given an initial Namelist for the filter state
           @param NL Namelist of the filter states (determines Nstate)
          */
-      KalmanFilter(const gpstk::Namelist& NL) { Reset(NL); }
+      KalmanFilter(const gnsstk::Namelist& NL) { Reset(NL); }
 
          /**
           Reset or recreate filter - use this after the empty constructor
           @param NL Namelist of the filter states (determines Nstate)
          */
-      void Reset(const gpstk::Namelist& NL) { initialize(NL); }
+      void Reset(const gnsstk::Namelist& NL) { initialize(NL); }
 
          /// destructor
       virtual ~KalmanFilter(){};
@@ -367,8 +367,8 @@ namespace gpstk
             double T;
 
             int isInfo;
-            gpstk::Vector<double> initX;
-            gpstk::Matrix<double> initCov; // may be info or cov
+            gnsstk::Vector<double> initX;
+            gnsstk::Matrix<double> initCov; // may be info or cov
 
             // call derived class to get initial time, apriori state
             // and covariance
@@ -399,7 +399,7 @@ namespace gpstk
                   inverted = false;
                }
             }
-            catch (gpstk::Exception& e)
+            catch (gnsstk::Exception& e)
             {
                e.addText("Failed to add apriori");
                GPSTK_RETHROW(e);
@@ -410,7 +410,7 @@ namespace gpstk
                output(NTU);
             }
          }
-         catch (gpstk::Exception& e)
+         catch (gnsstk::Exception& e)
          {
             e.addText("initializeFilter");
             GPSTK_RETHROW(e);
@@ -438,7 +438,7 @@ namespace gpstk
             // don't allow a non-positive timestep
             if ((!timeReversed && DT <= 0.0) || (timeReversed && DT >= 0.0))
             {
-               gpstk::Exception e(
+               gnsstk::Exception e(
                   std::string("Filter time step must be ") +
                   (timeReversed ? std::string("< 0") : std::string("> 0")));
                GPSTK_THROW(e);
@@ -548,7 +548,7 @@ namespace gpstk
 
             } // end loop over forward filter
          }
-         catch (gpstk::Exception& e)
+         catch (gnsstk::Exception& e)
          {
             e.addText("ForwardFilter");
             GPSTK_RETHROW(e);
@@ -563,7 +563,7 @@ namespace gpstk
       void BackwardFilter(double M)
       {
          GPSTK_THROW(
-            gpstk::Exception("BackwardFilter must be called with integer NTU"));
+            gnsstk::Exception("BackwardFilter must be called with integer NTU"));
       }
 
       // -------------------------------------------------------------
@@ -578,12 +578,12 @@ namespace gpstk
          {
             if (!isSmoother())
             {
-               gpstk::Exception e("Use setSmoother(true) to turn on smoothing");
+               gnsstk::Exception e("Use setSmoother(true) to turn on smoothing");
                GPSTK_THROW(e);
             }
             if (singular)
             {
-               gpstk::Exception e("Cannot smooth singular filter");
+               gnsstk::Exception e("Cannot smooth singular filter");
                GPSTK_THROW(e);
             }
 
@@ -616,7 +616,7 @@ namespace gpstk
 
             } // end loop
          }
-         catch (gpstk::Exception& e)
+         catch (gnsstk::Exception& e)
          {
             e.addText("BackwardFilter");
             GPSTK_RETHROW(e);
@@ -653,7 +653,7 @@ namespace gpstk
             oss << ((stage == MU || stage == Init) ? "KNL" : "KSL") << KFtag
                 << " " << std::fixed << N << " " << std::setprecision(3)
                 << time;
-            gpstk::Namelist NL = srif.getNames();
+            gnsstk::Namelist NL = srif.getNames();
             for (i = 0; i < NL.size(); i++)
                oss << std::setw(10) << NL.getName(i);
 
@@ -720,7 +720,7 @@ namespace gpstk
             }
             return iret;
          }
-         catch (gpstk::Exception& e)
+         catch (gnsstk::Exception& e)
          {
             e.addText("KINT");
             GPSTK_RETHROW(e);
@@ -745,7 +745,7 @@ namespace gpstk
             // catch up
             KalmanReturn ret =
                defineMeasurements(T, State, Cov, !singular && inverted);
-            PFResid = gpstk::Vector<double>(0);
+            PFResid = gnsstk::Vector<double>(0);
             if (ret == Process || ret == ProcessThenQuit)
             {
                if (extended)
@@ -768,7 +768,7 @@ namespace gpstk
 
             return ret;
          }
-         catch (gpstk::Exception& e)
+         catch (gnsstk::Exception& e)
          {
             e.addText("KMU");
             GPSTK_RETHROW(e);
@@ -792,7 +792,7 @@ namespace gpstk
             defineTimestep(time, DT, State, Cov, !singular && inverted);
 
             Nnoise = Rw.rows(); // Nnoise is member, but temporary
-            Zw     = gpstk::Vector<double>(Nnoise);
+            Zw     = gnsstk::Vector<double>(Nnoise);
 
             // control
             if (Control.size() > 0)
@@ -815,7 +815,7 @@ namespace gpstk
             }
 
             Zw = 0.0; // yes this is necessary
-            gpstk::Matrix<double> Rwx(Nnoise, Nstate, 0.0);
+            gnsstk::Matrix<double> Rwx(Nnoise, Nstate, 0.0);
             if (!dryRun)
             {
                srif.timeUpdate(PhiInv, Rw, G, Zw, Rwx);
@@ -834,7 +834,7 @@ namespace gpstk
 
             NTU++;
          }
-         catch (gpstk::Exception& e)
+         catch (gnsstk::Exception& e)
          {
             e.addText("KTU");
             GPSTK_RETHROW(e);
@@ -853,11 +853,11 @@ namespace gpstk
             // LOG(DEBUG) << " SU at " << NTU << " with state " <<
             // srif.getNames();
             SmootherStoreRec &rec(SmootherStore[NTU]);
-            gpstk::Matrix<double> Rw     = rec.Rw;
-            gpstk::Matrix<double> Rwx    = rec.Rwx;
-            gpstk::Matrix<double> PhiInv = rec.PhiInv;
-            gpstk::Matrix<double> G      = rec.G;
-            gpstk::Vector<double> Zw     = rec.Zw;
+            gnsstk::Matrix<double> Rw     = rec.Rw;
+            gnsstk::Matrix<double> Rwx    = rec.Rwx;
+            gnsstk::Matrix<double> PhiInv = rec.PhiInv;
+            gnsstk::Matrix<double> G      = rec.G;
+            gnsstk::Vector<double> Zw     = rec.Zw;
             // SU knows nothing about time; this is just for output purposes
             time = rec.Time;
 
@@ -867,7 +867,7 @@ namespace gpstk
             {
                if (doSRISU)
                {
-                  gpstk::Matrix<double> Phi;
+                  gnsstk::Matrix<double> Phi;
                   Phi = inverse(PhiInv);
                   srif.smootherUpdate(Phi, Rw, G, Zw, Rwx);
                   inverted = false;
@@ -881,7 +881,7 @@ namespace gpstk
             // correct for Control vector
             if (rec.Control.size() > 0)
             {
-               gpstk::Vector<double> Control = rec.Control;
+               gnsstk::Vector<double> Control = rec.Control;
                if (doSRISU)
                {
                   srif.shift(PhiInv * Control);
@@ -892,7 +892,7 @@ namespace gpstk
                }
             }
          }
-         catch (gpstk::Exception& e)
+         catch (gnsstk::Exception& e)
          {
             e.addText("KSU");
             GPSTK_RETHROW(e);
@@ -938,18 +938,18 @@ namespace gpstk
       void setTag(std::string tag) { KFtag = tag; }
 
          /// get the filter SRI
-      void setSRI(gpstk::SRI& sri)
+      void setSRI(gnsstk::SRI& sri)
       {
-         srif = static_cast<gpstk::SRIFilter&>(sri);
+         srif = static_cast<gnsstk::SRIFilter&>(sri);
       }
-      gpstk::SRI getSRI() { return static_cast<gpstk::SRI>(srif); }
+      gnsstk::SRI getSRI() { return static_cast<gnsstk::SRI>(srif); }
 
          /// get the state namelist
-      gpstk::Namelist getNames() { return srif.getNames(); }
+      gnsstk::Namelist getNames() { return srif.getNames(); }
          /// get the state (must be non-singular)
-      gpstk::Vector<double> getState() { return State; }
+      gnsstk::Vector<double> getState() { return State; }
          /// get the covariance (must be non-singular)
-      gpstk::Matrix<double> getCovariance() { return Cov; }
+      gnsstk::Matrix<double> getCovariance() { return Cov; }
 
          /// get number of measurements processed
       int getNMU() { return NMU; }
@@ -960,7 +960,7 @@ namespace gpstk
           for internal use in constructors and by Reset. Create SRIF and
           initialize counters and stores
          */
-      void initialize(const gpstk::Namelist& NL)
+      void initialize(const gnsstk::Namelist& NL)
       {
          Nstate = NL.size();
          // Nnoise = Ns;    // Nnoise is for the user only
@@ -969,11 +969,11 @@ namespace gpstk
          stage = Unknown;
 
          // initialize the SRIF
-         srif     = gpstk::SRIFilter(NL);
+         srif     = gnsstk::SRIFilter(NL);
          inverted = false;
 
-         State = gpstk::Vector<double>(Nstate, 0.0);
-         Cov   = gpstk::Matrix<double>(Nstate, Nstate, 0.0);
+         State = gnsstk::Vector<double>(Nstate, 0.0);
+         Cov   = gnsstk::Matrix<double>(Nstate, Nstate, 0.0);
 
          // clear smoother store
          SmootherStore.clear();
@@ -1002,7 +1002,7 @@ namespace gpstk
             Nstate   = srif.size();
             LOG(DEBUG) << msg << " (non-singular)";
          }
-         catch (gpstk::Exception& e)
+         catch (gnsstk::Exception& e)
          {
             singular = true;
             inverted = false;
@@ -1012,12 +1012,12 @@ namespace gpstk
          }
          catch (std::exception& e)
          {
-            gpstk::Exception E(std::string("std exception: ") + e.what());
+            gnsstk::Exception E(std::string("std exception: ") + e.what());
             GPSTK_THROW(E);
          }
       }
 
    }; // end class KalmanFilter
 
-} // namespace gpstk
+} // namespace gnsstk
 #endif
