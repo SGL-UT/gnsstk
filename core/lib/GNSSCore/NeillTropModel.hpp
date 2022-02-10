@@ -91,36 +91,39 @@ namespace gnsstk
       { validHeight=false; validLat=false; validDOY=false; valid=false; };
 
 
-         /// Constructor to create a Neill trop model providing just the
-         /// height of the receiver above mean sea level. The other
-         /// parameters must be set with the appropriate set methods before
-         /// calling correction methods.
-         ///
-         /// @param ht   Height of the receiver above mean sea level, in
-         ///             meters.
+         /** Constructor to create a Neill trop model providing just the
+          *  height of the receiver above mean sea level. The other
+          *  parameters must be set with the appropriate set methods before
+          *  calling correction methods.
+         *  
+          *  @param ht   Height of the receiver above mean sea level, in
+          *              meters.
+          */
       NeillTropModel(const double& ht)
       { setReceiverHeight(ht); };
 
 
-         /// Constructor to create a Neill trop model providing the height of
-         /// the receiver above mean sea level (as defined by ellipsoid
-         /// model), its latitude and the day of year.
-         ///
-         /// @param ht   Height of the receiver above mean sea level,
-         ///             in meters.
-         /// @param lat  Latitude of receiver, in degrees.
-         /// @param doy  Day of year.
+         /** Constructor to create a Neill trop model providing the height of
+          *  the receiver above mean sea level (as defined by ellipsoid
+          *  model), its latitude and the day of year.
+         *  
+          *  @param ht   Height of the receiver above mean sea level,
+          *              in meters.
+          *  @param lat  Latitude of receiver, in degrees.
+          *  @param doy  Day of year.
+          */
       NeillTropModel( const double& ht,
                       const double& lat,
                       const int& doy )
       { setReceiverHeight(ht); setReceiverLatitude(lat); setDayOfYear(doy); };
 
 
-         /// Constructor to create a Neill trop model providing the position
-         /// of the receiver and current time.
-         ///
-         /// @param RX   Receiver position.
-         /// @param time Time.
+         /** Constructor to create a Neill trop model providing the position
+          *  of the receiver and current time.
+         *  
+          *  @param RX   Receiver position.
+          *  @param time Time.
+          */
       NeillTropModel( const Position& RX,
                       const CommonTime& time );
 
@@ -311,32 +314,36 @@ namespace gnsstk
       {}
 
 
-         /// Define the receiver height; this is required before calling
-         /// correction() or any of the zenith_delay routines.
-         ///
-         /// @param ht   Height of the receiver above mean sea level,
-         ///             in meters.
+         /** Define the receiver height; this is required before calling
+          *  correction() or any of the zenith_delay routines.
+         *  
+          *  @param ht   Height of the receiver above mean sea level,
+          *              in meters.
+          */
       virtual void setReceiverHeight(const double& ht);
 
 
-         /// Define the receiver latitude; this is required before calling
-         /// correction() or any of the zenith_delay routines.
-         ///
-         /// @param lat  Latitude of receiver, in degrees.
+         /** Define the receiver latitude; this is required before calling
+          *  correction() or any of the zenith_delay routines.
+         *  
+          *  @param lat  Latitude of receiver, in degrees.
+          */
       virtual void setReceiverLatitude(const double& lat);
 
 
-         /// Set the time when tropospheric correction will be computed for,
-         /// in days of the year.
-         ///
-         /// @param doy  Day of the year.
+         /** Set the time when tropospheric correction will be computed for,
+          *  in days of the year.
+         *  
+          *  @param doy  Day of the year.
+          */
       virtual void setDayOfYear(const int& doy);
 
 
-         /// Set the time when tropospheric correction will be computed for,
-         /// in days of the year.
-         ///
-         /// @param time  Time object.
+         /** Set the time when tropospheric correction will be computed for,
+          *  in days of the year.
+         *  
+          *  @param time  Time object.
+          */
       virtual void setDayOfYear(const CommonTime& time);
 
 

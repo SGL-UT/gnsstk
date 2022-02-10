@@ -300,10 +300,11 @@ namespace gnsstk
    }
 
 
-   // Compute and return the full tropospheric delay. The receiver height,
-   // latitude and time must has been set before using the appropriate
-   // methods.
-   // @param elevation Elevation of satellite as seen at receiver, in degrees
+   /* Compute and return the full tropospheric delay. The receiver height,
+    * latitude and time must has been set before using the appropriate
+    * methods.
+    * @param elevation Elevation of satellite as seen at receiver, in degrees
+    */
    double GlobalTropModel::correction(double elevation) const
    {
       try { testValidity(); }
@@ -323,19 +324,20 @@ namespace gnsstk
 
    }  // end GlobalTropModel::correction(elevation)
 
-   // Compute and return the full tropospheric delay, given the
-   // positions of receiver and satellite.
-   //
-   // This version is more useful within positioning algorithms, where
-   // the receiver position may vary; it computes the elevation (and
-   // other receiver location information as height and latitude) and
-   // passes them to appropriate methods.
-   //
-   // You must set time using method setReceiverDOY() before calling
-   // this method.
-   //
-   // @param RX  Receiver position.
-   // @param SV  Satellite position.
+   /* Compute and return the full tropospheric delay, given the
+    * positions of receiver and satellite.
+   * 
+    * This version is more useful within positioning algorithms, where
+    * the receiver position may vary; it computes the elevation (and
+    * other receiver location information as height and latitude) and
+    * passes them to appropriate methods.
+   * 
+    * You must set time using method setReceiverDOY() before calling
+    * this method.
+   * 
+    * @param RX  Receiver position.
+    * @param SV  Satellite position.
+    */
    double GlobalTropModel::correction(const Position& RX, const Position& SV)
    {
       try {
@@ -362,9 +364,10 @@ namespace gnsstk
 
    }  // end GlobalTropModel::correction(RX,SV)
 
-   // Compute and return the zenith delay for hydrostatic (dry) component of
-   // the troposphere. Use the Saastamoinen value.
-   // Ref. Davis etal 1985 and Leick, 3rd ed, pg 197.
+   /* Compute and return the zenith delay for hydrostatic (dry) component of
+    * the troposphere. Use the Saastamoinen value.
+    * Ref. Davis etal 1985 and Leick, 3rd ed, pg 197.
+    */
    double GlobalTropModel::dry_zenith_delay() const
    {
       try { testValidity(); } catch(InvalidTropModel& e) { GNSSTK_RETHROW(e); }
@@ -372,8 +375,9 @@ namespace gnsstk
 
    }  // end GlobalTropModel::dry_zenith_delay()
 
-   // Compute and return the zenith delay for wet component of
-   // the troposphere. Ref. Leick, 3rd ed, pg 197, Leick, 4th ed, pg 482.
+   /* Compute and return the zenith delay for wet component of
+    * the troposphere. Ref. Leick, 3rd ed, pg 197, Leick, 4th ed, pg 482.
+    */
    double GlobalTropModel::wet_zenith_delay() const
    {
       double T = temp + CELSIUS_TO_KELVIN;
@@ -381,9 +385,10 @@ namespace gnsstk
       return (0.0122 + 0.00943 * pwv);
    }
 
-   // Compute and return the mapping function for hydrostatic (dry) component of
-   // the troposphere.
-   // @param elevation Elevation of satellite as seen at receiver, in degrees
+   /* Compute and return the mapping function for hydrostatic (dry) component of
+    * the troposphere.
+    * @param elevation Elevation of satellite as seen at receiver, in degrees
+    */
    double GlobalTropModel::dry_mapping_function(double elevation) const
    {
       try { testValidity(); } catch(InvalidTropModel& e) { GNSSTK_RETHROW(e); }
@@ -436,43 +441,44 @@ namespace gnsstk
 
    }  // end GlobalTropModel::dry_mapping_function()
 
-   // Compute and return the mapping function for wet component of the
-   // troposphere.
-   // param elevation Elevation of satellite as seen at receiver,
-   //
-   // computing the derivative - do it numerically instead
-   // note that sin[elev] = cos[zenith]
-   //             f(1)                               a
-   //   map = ------------      where f(x) = x + ---------
-   //         f(sin[elev])                             b
-   //                                            x + -----
-   //                                                x + c
-   //
-   //                a (x+c)    x(x^2 + xc + b) + a(x+c)
-   // f(x) = x + ------------ = ------------------------
-   //            x^2 + xc + b        x^2 + xc + b
-   //
-   //        x^3 + x^2 c + x(a+b) + ac
-   //      = -------------------------
-   //               x^2 + xc + b
-   //
-   // so            -f(1)f'(x)    -map(x)f'(x)                    N'D-D'N
-   //     map'(x) = ---------- = -------------,     where f'(x) = -------
-   //                 f^2(x)         f(x)                           D^2
-   //
-   //                [3x^2+2xc+a+b][x^2+xc+b]-[2x+c][x^3+x^2c+x(a+b)+ac]
-   //     f'(x) = x' --------------------------------------------------------------
-   //                            [x^2 + xc + b]^2
-   //
-   //                   [3x^4 + x^3(5c) + x^2(a+4b+2c^2) + x(a+b+2bc) + ab+b^2]
-   //                + [-2x^4 - x^3(3c) - x^2(2a+2b+c^2) - x(c(3a+b)) - ac^2]
-   //           = x'  ----------------------------------------------------------
-   //                   x^4 + x^3(2c) + x^2(2b+c^2) + x(2bc) + b^2
-   //
-   //                x^4 + x^3(2c) + x^2(-a+2b+c^2) + x(a+b+3bc+3ac) + ab+b^2-ac^2
-   //           = x' -------------------------------------------------------------
-   //                  x^4 + x^3(2c) + x^2(2b+c^2) + x(2bc) + b^2
-   //
+   /* Compute and return the mapping function for wet component of the
+    * troposphere.
+    * param elevation Elevation of satellite as seen at receiver,
+   * 
+    * computing the derivative - do it numerically instead
+    * note that sin[elev] = cos[zenith]
+    *             f(1)                               a
+    *   map = ------------      where f(x) = x + ---------
+    *         f(sin[elev])                             b
+    *                                            x + -----
+    *                                                x + c
+   * 
+    *                a (x+c)    x(x^2 + xc + b) + a(x+c)
+    * f(x) = x + ------------ = ------------------------
+    *            x^2 + xc + b        x^2 + xc + b
+   * 
+    *        x^3 + x^2 c + x(a+b) + ac
+    *      = -------------------------
+    *               x^2 + xc + b
+   * 
+    * so            -f(1)f'(x)    -map(x)f'(x)                    N'D-D'N
+    *     map'(x) = ---------- = -------------,     where f'(x) = -------
+    *                 f^2(x)         f(x)                           D^2
+   * 
+    *                [3x^2+2xc+a+b][x^2+xc+b]-[2x+c][x^3+x^2c+x(a+b)+ac]
+    *     f'(x) = x' --------------------------------------------------------------
+    *                            [x^2 + xc + b]^2
+   * 
+    *                   [3x^4 + x^3(5c) + x^2(a+4b+2c^2) + x(a+b+2bc) + ab+b^2]
+    *                + [-2x^4 - x^3(3c) - x^2(2a+2b+c^2) - x(c(3a+b)) - ac^2]
+    *           = x'  ----------------------------------------------------------
+    *                   x^4 + x^3(2c) + x^2(2b+c^2) + x(2bc) + b^2
+   * 
+    *                x^4 + x^3(2c) + x^2(-a+2b+c^2) + x(a+b+3bc+3ac) + ab+b^2-ac^2
+    *           = x' -------------------------------------------------------------
+    *                  x^4 + x^3(2c) + x^2(2b+c^2) + x(2bc) + b^2
+   * 
+   */
    double GlobalTropModel::wet_mapping_function(double elevation) const
    {
       try { testValidity(); }
@@ -515,8 +521,9 @@ namespace gnsstk
 
    }  // end GlobalTropModel::wet_mapping_function()
 
-   // Compute the pressure and temperature at height, and the undulation,
-   // for the given position and time.
+   /* Compute the pressure and temperature at height, and the undulation,
+    * for the given position and time.
+    */
    void GlobalTropModel::getGPT(double& P, double& T, double& U)
    {
       try { testValidity(); }
@@ -558,9 +565,10 @@ namespace gnsstk
       T = v0 - 6.5e-3 * orthoht;
    }
 
-   // Define the receiver height; this is required before calling
-   // correction() or any of the zenith_delay routines.
-   // @param ht   Height of the receiver above mean sea level, in meters.
+   /* Define the receiver height; this is required before calling
+    * correction() or any of the zenith_delay routines.
+    * @param ht   Height of the receiver above mean sea level, in meters.
+    */
    void GlobalTropModel::setReceiverHeight(const double& ht)
    {
       if(height != ht) {
@@ -571,9 +579,10 @@ namespace gnsstk
       }
    }
 
-   // Define the receiver latitude; this is required before calling
-   // correction() or any of the zenith_delay routines.
-   // @param lat  Latitude of receiver, in degrees.
+   /* Define the receiver latitude; this is required before calling
+    * correction() or any of the zenith_delay routines.
+    * @param lat  Latitude of receiver, in degrees.
+    */
    void GlobalTropModel::setReceiverLatitude(const double& lat)
    {
       if(latitude != lat) {
@@ -584,9 +593,10 @@ namespace gnsstk
       }
    }
 
-   // Define the receiver longitude; this is required before calling
-   // correction() or any of the zenith_delay routines.
-   // @param lat  Longitude of receiver, in degrees East.
+   /* Define the receiver longitude; this is required before calling
+    * correction() or any of the zenith_delay routines.
+    * @param lat  Longitude of receiver, in degrees East.
+    */
    void GlobalTropModel::setReceiverLongitude(const double& lon)
    {
       if(longitude != lon) {
@@ -597,9 +607,10 @@ namespace gnsstk
       }
    }
 
-   // Define the day of year; this is required before calling
-   // correction() or any of the zenith_delay routines.
-   // @param mjd double MJD
+   /* Define the day of year; this is required before calling
+    * correction() or any of the zenith_delay routines.
+    * @param mjd double MJD
+    */
    void GlobalTropModel::setTime(const double& mjd)
    {
       double df(TWO_PI*(mjd - 44266.0)/365.25);       // -44239 + 1 - 28
@@ -611,27 +622,30 @@ namespace gnsstk
       }
    }
 
-   // Define the day of year; this is required before calling
-   // correction() or any of the zenith_delay routines.
-   // @param time  CommonTime of interest
+   /* Define the day of year; this is required before calling
+    * correction() or any of the zenith_delay routines.
+    * @param time  CommonTime of interest
+    */
    void GlobalTropModel::setTime(const CommonTime& time)
    {
       double mjd = static_cast<MJD>(time).mjd;
       setTime(mjd);
    }
 
-   // Define the day of year; this is required before calling
-   // correction() or any of the zenith_delay routines.
-   // @param doy Day of year (year does not matter)
+   /* Define the day of year; this is required before calling
+    * correction() or any of the zenith_delay routines.
+    * @param doy Day of year (year does not matter)
+    */
    void GlobalTropModel::setDayOfYear(const int& doy)
    {
       double mjd = 44266.0 + (double)doy;       // year doesn't matter
       setTime(mjd);
    }
 
-   // Convenient method to set all non-weather model parameters in one call
-   // @param time  CommonTime of interest
-   // @param rxPos Receiver position object.
+   /* Convenient method to set all non-weather model parameters in one call
+    * @param time  CommonTime of interest
+    * @param rxPos Receiver position object.
+    */
    void GlobalTropModel::setParameters(const CommonTime& time, const Position& rxPos)
    {
       validDay = validHeight = validLat = validLon = validCoeff = false;

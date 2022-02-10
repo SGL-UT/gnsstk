@@ -44,7 +44,6 @@
 
 namespace gnsstk
 {
-      //---------------------------------------------------------------------------------
       /// A simple Black model of the troposphere. temp is in Kelvin.
    class SimpleTropModel : public TropModel
    {
@@ -119,10 +118,10 @@ namespace gnsstk
       virtual void setWeather(const WxObservation& wx);
 
    private:
-      double Cdrydelay;
-      double Cwetdelay;
-      double Cdrymap;
-      double Cwetmap;
+      double Cdrydelay; ///< computed dry delay
+      double Cwetdelay; ///< computed wet delay
+      double Cdrymap;   ///< computed dry map function
+      double Cwetmap;   ///< computed wet map function
    };
 }
 #endif

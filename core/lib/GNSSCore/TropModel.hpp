@@ -276,8 +276,6 @@ namespace gnsstk
 
    }; // end class TropModel
 
-
-      //---------------------------------------------------------------------------------
       /// The 'zero' trop model, meaning it always returns zero.
    class ZeroTropModel : public TropModel
    {

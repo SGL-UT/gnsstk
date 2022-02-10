@@ -44,7 +44,6 @@
 
 namespace gnsstk
 {
-   //---------------------------------------------------------------------------------
    /** Tropospheric model based on Goad and Goodman(1974),
     *  "A Modified Hopfield Tropospheric Refraction Correction Model," Paper
     * presented at the Fall Annual Meeting of the American Geophysical Union,

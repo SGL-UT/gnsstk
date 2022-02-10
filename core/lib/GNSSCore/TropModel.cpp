@@ -56,9 +56,10 @@ namespace gnsstk
       // for temperature conversion from Celcius to Kelvin
    const double TropModel::CELSIUS_TO_KELVIN = 273.15;
 
-      // Compute and return the full tropospheric delay. Typically call
-      // setWeather(T,P,H) before making this call.
-      // @param elevation Elevation of satellite as seen at receiver, in degrees
+      /* Compute and return the full tropospheric delay. Typically call
+       * setWeather(T,P,H) before making this call.
+       * @param elevation Elevation of satellite as seen at receiver, in degrees
+       */
    double TropModel::correction(double elevation) const
    {
       THROW_IF_INVALID();
@@ -71,15 +72,16 @@ namespace gnsstk
 
    }  // end TropModel::correction(elevation)
 
-      // Compute and return the full tropospheric delay, given the positions of
-      // receiver and satellite and the time tag. This version is most useful
-      // within positioning algorithms, where the receiver position and timetag may
-      // vary; it computes the elevation (and other receiver location information)
-      // and passes them to appropriate set...() routines and the
-      // correction(elevation) routine.
-      // @param RX  Receiver position in ECEF cartesian coordinates (meters)
-      // @param SV  Satellite position in ECEF cartesian coordinates (meters)
-      // @param tt  Time tag of the signal
+      /* Compute and return the full tropospheric delay, given the positions of
+       * receiver and satellite and the time tag. This version is most useful
+       * within positioning algorithms, where the receiver position and timetag may
+       * vary; it computes the elevation (and other receiver location information)
+       * and passes them to appropriate set...() routines and the
+       * correction(elevation) routine.
+       * @param RX  Receiver position in ECEF cartesian coordinates (meters)
+       * @param SV  Satellite position in ECEF cartesian coordinates (meters)
+       * @param tt  Time tag of the signal
+       */
    double TropModel::correction(const Position& RX,
                                 const Position& SV,
                                 const CommonTime& tt)
@@ -98,11 +100,12 @@ namespace gnsstk
       return c;
    }  // end TropModel::correction(RX,SV,TT)
 
-      // Re-define the tropospheric model with explicit weather data.
-      // Typically called just before correction().
-      // @param T temperature in degrees Celsius
-      // @param P atmospheric pressure in millibars
-      // @param H relative humidity in percent
+      /* Re-define the tropospheric model with explicit weather data.
+       * Typically called just before correction().
+       * @param T temperature in degrees Celsius
+       * @param P atmospheric pressure in millibars
+       * @param H relative humidity in percent
+       */
    void TropModel::setWeather(const double& T,
                               const double& P,
                               const double& H)
@@ -128,17 +131,19 @@ namespace gnsstk
          InvalidParameter e("Invalid humidity.");
          GNSSTK_THROW(e);
       }
-         // truncates humidity to 100 if between 105 and 100.
-         // models cannot handle supersaturation.
+         /* truncates humidity to 100 if between 105 and 100.
+          * models cannot handle supersaturation.
+          */
       if (humid > 100)
       {
          humid = 100.0;
       }
    }  // end TropModel::setWeather(T,P,H)
 
-      // Re-define the tropospheric model with explicit weather data.
-      // Typically called just before correction().
-      // @param wx the weather to use for this correction
+      /* Re-define the tropospheric model with explicit weather data.
+       * Typically called just before correction().
+       * @param wx the weather to use for this correction
+       */
    void TropModel::setWeather(const WxObservation& wx)
    {
       if (wx.isAllValid())
@@ -161,12 +166,13 @@ namespace gnsstk
          GNSSTK_THROW(e);
       }
    }
-      /// get weather data by a standard atmosphere model
-      /// reference to white paper of Bernese 5.0, P243
-      /// @param ht     Height of the receiver in meters.
-      /// @param T      temperature in degrees Celsius
-      /// @param P      atmospheric pressure in millibars
-      /// @param H      relative humidity in percent
+      /* get weather data by a standard atmosphere model
+       * reference to white paper of Bernese 5.0, P243
+       * @param ht     Height of the receiver in meters.
+       * @param T      temperature in degrees Celsius
+       * @param P      atmospheric pressure in millibars
+       * @param H      relative humidity in percent
+       */
    void TropModel::weatherByStandardAtmosphereModel(const double& ht, double& T, double& P, double& H)
    {
          // reference height and it's relate weather(T P H)
