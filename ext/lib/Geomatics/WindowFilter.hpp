@@ -1455,12 +1455,14 @@ namespace gnsstk
 
       bool notfound(true);
       for (i = 0; i < analvec.size(); i++)
+      {
          if (analvec[i].index == sg.index)
          {
             j        = i;
             notfound = false;
             break;
          }
+      }
       if (notfound)
       {
          return;
