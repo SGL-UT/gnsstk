@@ -371,12 +371,12 @@ namespace gnsstk
           @return Matrix<double>(3,3) Rotation matrix from XYZ to Satellite body frame.
           @throw Exception
          */
-      Matrix<double> SatelliteAttitude(const EphTime& tt, const Position& SV)
+      Matrix<double> satelliteAttitude(const EphTime& tt, const Position& SV)
       {
          try
          {
             Position Sun = SolarSystem::SolarPosition(tt);
-            return gnsstk::SatelliteAttitude(SV, Sun);
+            return gnsstk::satelliteAttitude(SV, Sun);
          }
          catch (Exception& e)
          {

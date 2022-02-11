@@ -56,7 +56,7 @@ namespace gnsstk
 {
 
       // -----------------------------------------------------------------------------
-      // Same as UpEastNorth(), but with rows re-ordered.
+      // Same as upEastNorth(), but with rows re-ordered.
    Matrix<double> northEastUp(Position& P, bool geocentric)
    {
       try
@@ -127,7 +127,7 @@ namespace gnsstk
          perpendicular to the geoid. Return the vectors in the form of a
          3x3 Matrix<double>, this is in fact the rotation matrix that will take an
          ECEF vector into a local topocentric or 'up-east-north' vector. */
-   Matrix<double> UpEastNorth(Position& P, bool geocentric)
+   Matrix<double> upEastNorth(Position& P, bool geocentric)
    {
       try
       {
@@ -156,17 +156,17 @@ namespace gnsstk
       }
    }
 
-      /* Same as UpEastNorth, but using geocentric coordinates, so that the -Up
+      /* Same as upEastNorth, but using geocentric coordinates, so that the -Up
          direction will meet the center of Earth. */
-   Matrix<double> UpEastNorthGeocentric(Position& P)
+   Matrix<double> upEastNorthGeocentric(Position& P)
    {
-      return UpEastNorth(P, true);
+      return upEastNorth(P, true);
    }
 
-      // Same as UpEastNorth, but using geodetic coordinates
-   Matrix<double> UpEastNorthGeodetic(Position& P)
+      // Same as upEastNorth, but using geodetic coordinates
+   Matrix<double> upEastNorthGeodetic(Position& P)
    {
-      return UpEastNorth(P, false);
+      return upEastNorth(P, false);
    }
 
    //------------------------------------------------------------------------------
@@ -319,7 +319,7 @@ namespace gnsstk
          Also return the shadow factor = fraction of sun's area not visible to
          satellite, and the angle in radians between sun and satellite as seen from
          Earth. */
-   Matrix<double> SatelliteAttitude(const Position& Sat, const Position& Sun)
+   Matrix<double> satelliteAttitude(const Position& Sat, const Position& Sun)
    {
       try
       {
@@ -453,7 +453,7 @@ namespace gnsstk
          @param SV Position Satellite position
          @param RX Position Receiver position
          @param Rot Matrix<double> Rotation matrix (3,3), output of
-         SatelliteAttitude
+         satelliteAttitude
          @param nadir double Output nadir angle in degrees
          @param azimuth double Output azimuth angle in degrees */
    void SatelliteNadirAzimuthAngles(const Position& SV, const Position& RX,

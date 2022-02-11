@@ -110,26 +110,26 @@ namespace gnsstk
                    local topocentric or North,East,Up frame at the position P.
        @throw Exception
       */
-   Matrix<double> UpEastNorth(Position& P, bool geoc = false);
+   Matrix<double> upEastNorth(Position& P, bool geoc = false);
 
       /**
-       Same as UpEastNorth, but using geocentric coordinates, so that the -Up
+       Same as upEastNorth, but using geocentric coordinates, so that the -Up
        direction will meet the center of Earth.
        @param P  Position at which the rotation matrix will be defined.
        @return  3x3 rotation matrix that will transform an ECEF vector into the
                    local topocentric or North,East,Up frame at the position P.
        @throw Exception
       */
-   Matrix<double> UpEastNorthGeocentric(Position& P);
+   Matrix<double> upEastNorthGeocentric(Position& P);
 
       /**
-       Same as UpEastNorth, but using geodetic coordinates
+       Same as upEastNorth, but using geodetic coordinates
        @param P  Position at which the rotation matrix will be defined.
        @return  3x3 rotation matrix that will transform an ECEF vector into the
                    local topocentric or North,East,Up frame at the position P.
        @throw Exception
       */
-   Matrix<double> UpEastNorthGeodetic(Position& P);
+   Matrix<double> upEastNorthGeodetic(Position& P);
 
       /**
        Compute the fraction of the Sun covered by the earth as seen from a
@@ -160,7 +160,7 @@ namespace gnsstk
        Compute the satellite attitude, given the time, the satellite position
        SV, and a Sun position. NB. Use either class SolarSystem (high accuracy)
        or module SolarPosition (low accuracy) to get the Sun position; however
-       note that SolarSystem::SatelliteAttitude(tt, SV, shadow, SunSVangle)
+       note that SolarSystem::satelliteAttitude(tt, SV, shadow, SunSVangle)
        makes both calls. Return a 3x3 Matrix which contains, as rows, the unit
        (ECEF) vectors X,Y,Z in the body frame of the satellite, namely
           Z = along the boresight (i.e. towards Earth center),
@@ -178,7 +178,7 @@ namespace gnsstk
        @return Matrix<double>(3,3) Rotation matrix from XYZ to Satellite body frame.
        @throw Exception
       */
-   Matrix<double> SatelliteAttitude(const Position& pos, const Position& Sun);
+   Matrix<double> satelliteAttitude(const Position& pos, const Position& Sun);
 
       /**
        Compute the satellite attitude, given the satellite position P and
@@ -207,7 +207,7 @@ namespace gnsstk
        azimuth is measured from the X axis.
        @param SV Position           Satellite position
        @param RX Position           Receiver position
-       @param Rot Matrix<double>    Rotation matrix (3,3), output of SatelliteAttitude
+       @param Rot Matrix<double>    Rotation matrix (3,3), output of satelliteAttitude
        @param nadir double          Output nadir angle in degrees
        @param azimuth double        Output azimuth angle in degrees
        @throw Exception if rotation matrix has wrong dimentions.

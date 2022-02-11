@@ -424,7 +424,7 @@ namespace gnsstk
             double AR;
             Position Sun = solarPosition(ct, AR);
             Position Rx  = Position(satVector);
-            SVAtt        = SatelliteAttitude(Rx, Sun);
+            SVAtt        = satelliteAttitude(Rx, Sun);
 
                // phase center offset vector in body frame (at L1)
             Vector<double> PCO(3);
