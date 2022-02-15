@@ -84,6 +84,8 @@ public:
       TUDEF( "ValidType", " == Operator");
       std::string failMesg;
 
+      ValidType<float> CompareU1; // uninitalized
+      ValidType<float> CompareU2; // uninitalized
       ValidType<float> Compare1 (6.);
       ValidType<float> Compare2 (6.);
       ValidType<float> Compare3 (8.);
@@ -91,9 +93,15 @@ public:
       ValidType<float> vfloat;
 
       //Are two equvalent objects equal?
+      TUASSERT(CompareU1 == CompareU2);
+      TUASSERT(!(CompareU1 != CompareU2));
       TUASSERT(Compare1 == Compare2);
+      TUASSERT(!(Compare1 != Compare2));
 
       //Are two non-equvalent objects equal?
+      TUASSERT(!(CompareU1 == Compare3));
+      TUASSERT(CompareU1 != Compare3);
+      TUASSERT(!(Compare1 == Compare3));
       TUASSERT(Compare1 != Compare3);
 
       vfloat = 7.;
