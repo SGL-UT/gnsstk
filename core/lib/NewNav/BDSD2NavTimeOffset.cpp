@@ -58,7 +58,7 @@ namespace gnsstk
    bool BDSD2NavTimeOffset ::
    validate() const
    {
-      return ((dn <= maxDN) && (a0 != 0.0) && (a1 != 0.0));
+      return ((dn <= maxDN) && ((a0 != 0.0) || (a1 != 0.0)));
    }
 }
 
