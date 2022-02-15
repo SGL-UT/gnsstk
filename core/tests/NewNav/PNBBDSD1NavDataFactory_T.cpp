@@ -715,7 +715,7 @@ processSF5Pg10Test()
          TUASSERTFE(4.0, to->deltatLSF);
             // BDSD1NavTimeOffset has no fields, but we check validate here
          TUCSM("validate");
-         TUASSERTE(bool, false, to->validate());
+         TUASSERTE(bool, true, to->validate());
          TUCSM("processSF5Pg10");
       }
    }
