@@ -135,7 +135,7 @@ namespace gnsstk
          // healthBits + ln = ephemeris
       if (healthBits.is_valid() && ln.is_valid())
       {
-         return ((ln != false) || (healthBits & 0x04)
+         return ((ln.get_value() != false) || (healthBits & 0x04)
                  ? SVHealth::Unhealthy
                  : SVHealth::Healthy);
       }
