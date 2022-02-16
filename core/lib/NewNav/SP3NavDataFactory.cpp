@@ -1398,7 +1398,7 @@ namespace gnsstk
    setClockLinearInterp()
    {
       interpType = ClkInterpType::Linear;
-      halfOrderClk = 2;
+      halfOrderClk = 1;
    }
 
 
