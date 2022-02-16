@@ -81,6 +81,7 @@ namespace gnsstk
          std::ios::openmode mode )
    {
       FFTextStream::open(fn, mode);
+      init();
    }
 
 
