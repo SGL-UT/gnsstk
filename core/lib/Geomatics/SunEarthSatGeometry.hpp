@@ -110,26 +110,26 @@ namespace gnsstk
                    local topocentric or North,East,Up frame at the position P.
        @throw Exception
       */
-   Matrix<double> upEastNorth(Position& P, bool geoc = false);
+   Matrix<double> UpEastNorth(Position& P, bool geoc = false);
 
       /**
-       Same as upEastNorth, but using geocentric coordinates, so that the -Up
+       Same as UpEastNorth, but using geocentric coordinates, so that the -Up
        direction will meet the center of Earth.
        @param P  Position at which the rotation matrix will be defined.
        @return  3x3 rotation matrix that will transform an ECEF vector into the
                    local topocentric or North,East,Up frame at the position P.
        @throw Exception
       */
-   Matrix<double> upEastNorthGeocentric(Position& P);
+   Matrix<double> UpEastNorthGeocentric(Position& P);
 
       /**
-       Same as upEastNorth, but using geodetic coordinates
+       Same as UpEastNorth, but using geodetic coordinates
        @param P  Position at which the rotation matrix will be defined.
        @return  3x3 rotation matrix that will transform an ECEF vector into the
                    local topocentric or North,East,Up frame at the position P.
        @throw Exception
       */
-   Matrix<double> upEastNorthGeodetic(Position& P);
+   Matrix<double> UpEastNorthGeodetic(Position& P);
 
       /**
        Compute the fraction of the Sun covered by the earth as seen from a
