@@ -49,55 +49,82 @@ using namespace gnsstk;
 
 class SystemTime_T
 {
-        public:
-		SystemTime_T(){}// Default Constructor, set the precision value
-		~SystemTime_T() {} // Default Desructor
-//==========================================================================================================================
-//	SystemTime inherits from UnixTime. The only added ability is to read the time from the machine.
-//	This one test will read the system time and compare it with the ctime value. However, since
-//	this test will need to read the time twice no guarantees can be made for strict tolerances.
-//	In fact, the tolerance will be set so that the time will be accurate to the second only.
-//==========================================================================================================================
-		int obtainTimeFromSystemTest ( void )
-		{
-			TestUtil testFramework( "SystemTime", "Constructor", __FILE__, __LINE__ );
+public:
+   SystemTime_T(){}// Default Constructor, set the precision value
+   ~SystemTime_T() {} // Default Destructor
+      /** SystemTime inherits from UnixTime. The only added ability is
+       * to read the time from the machine.  This one test will read
+       * the system time and compare it with the ctime value. However,
+       * since this test will need to read the time twice no
+       * guarantees can be made for strict tolerances.  In fact, the
+       * tolerance will be set so that the time will be accurate to
+       * the second only. */
+   int obtainTimeFromSystemTest ()
+   {
+      TUDEF("SystemTime", "SystemTime()");
 
-			long day, day2;
-			long sod, sod2;
-			double fsod, fsod2;
+      unsigned failcount = 0, succcount = 0;
+         // Run the test at most 5 times, or until we have more
+         // successes than failures.  We do this because we sometimes
+         // get failures because the seconds of day don't always
+         // exactly match when the system time queries being compared
+         // don't happen at the exact same time.
+      while (((failcount + succcount) < 5) && (succcount <= failcount))
+      {
+         long day, day2;
+         long sod, sod2;
+         double fsod, fsod2;
 
-			SystemTime timeFrom_SystemTime;
-			time_t t;
-			time( &t );
-			ANSITime   timeFrom_ctime( t );
+         SystemTime timeFromSystemTime;
+         time_t t;
+         time(&t);
+         ANSITime timeFromctime(t);
 
-			CommonTime commonTime_SystemTime = timeFrom_SystemTime.convertToCommonTime();
-			CommonTime commonTime_ctime      = timeFrom_ctime.convertToCommonTime();
+         CommonTime commonTimeSystemTime(timeFromSystemTime);
+         CommonTime commonTimectime(timeFromctime);
 
-			commonTime_SystemTime.get(day,sod,fsod);
-			commonTime_ctime.get(day2,sod2,fsod2);
-			//---------------------------------------------------------------------
-			//Was the time obtained properly?
-			//---------------------------------------------------------------------
-			testFramework.assert( day == day2, "The obtained day was not correct", __LINE__ );
-			testFramework.assert( sod == sod2, "The obtained sod was not correct", __LINE__ );
-			testFramework.assert( commonTime_SystemTime.getTimeSystem() == TimeSystem(8), "The set TimeSystem was unexpected", __LINE__ );
-
-			return testFramework.countFails();
-		}
+         commonTimeSystemTime.get(day,sod,fsod);
+         commonTimectime.get(day2,sod2,fsod2);
+            // Was the time obtained properly?
+         if (day != day2)
+         {
+            cerr << "day mismatch" << endl;
+            failcount++;
+         }
+         else if (sod != sod2)
+         {
+            cerr << "second mismatch" << endl;
+            failcount++;
+         }
+         else if (TimeSystem::UTC != commonTimeSystemTime.getTimeSystem())
+         {
+            cerr << "time system mismatch" << endl;
+            failcount++;
+         }
+         else
+         {
+            succcount++;
+         }
+      }
+      if (failcount >= succcount)
+      {
+         TUFAIL("too many mismatches");
+      }
+      TURETURN();
+   }
 
 };
 
 
-int main() //Main function to initialize and run all tests above
+int main()
 {
-	int check, errorCounter = 0;
-	SystemTime_T testClass;
+   unsigned errorCounter = 0;
+   SystemTime_T testClass;
 
-	check = testClass.obtainTimeFromSystemTest();
-	errorCounter += check;
+   errorCounter += testClass.obtainTimeFromSystemTest();
 
-	std::cout << "Total Failures for " << __FILE__ << ": " << errorCounter << std::endl;
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorCounter
+             << std::endl;
 
-	return errorCounter; //Return the total number of errors
+   return errorCounter;
 }
