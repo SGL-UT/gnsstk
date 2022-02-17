@@ -246,7 +246,7 @@ namespace gnsstk
 
    //---------------------------------------------------------------------------------
       // From AA 1990 D46
-   Position lunarPosition(const CommonTime& t, double& AR)
+   Position LunarPosition(const CommonTime& t, double& AR)
    {
          // days since J2000
       double N = static_cast<JulianDate>(t).jd - 2451545.0;

@@ -83,7 +83,7 @@ namespace gnsstk
        @param AR  Output apparent angular radius of moon as seen at Earth (deg)
        @return  Position (ECEF) of the Moon at t
       */
-   Position lunarPosition(const CommonTime& t, double& AR);
+   Position LunarPosition(const CommonTime& t, double& AR);
 
       /**
        Compute the fraction of the area of the Sun covered by the Earth as seen
