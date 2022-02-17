@@ -89,7 +89,7 @@ namespace gnsstk
                                     order, xmitHealth, valid));
             }
             catch(AssertionFailure& e) {
-               GNSSTK_RETHROW(e);
+               GNSSTK_THROW(InvalidRequest(e));
             }
 
             rotateEarth(Rx);
@@ -143,6 +143,9 @@ namespace gnsstk
                GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), tt,
                                     order, xmitHealth, valid));
             }
+            catch(AssertionFailure& e) {
+               GNSSTK_THROW(InvalidRequest(e));
+            }
             catch(InvalidRequest& e) {
                GNSSTK_RETHROW(e);
             }
@@ -177,13 +180,20 @@ namespace gnsstk
       NavValidityType valid)
    {
       try {
-         gnsstk::GPSEllipsoid gm;
-            /** @todo getXvt was expected to throw an exception on
-             * failure in the past.  This assert more or less mimics
-             * that behavior.  Refactoring is needed.  */
-         GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), trNom,
+         try {
+               /** @todo getXvt was expected to throw an exception on
+               * failure in the past.  This assert more or less mimics
+               * that behavior.  Refactoring is needed.  */
+            GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), trNom,
                               order, xmitHealth, valid));
+         }
+         catch(AssertionFailure& e) {
+            GNSSTK_THROW(InvalidRequest(e));
+         }
+
+         gnsstk::GPSEllipsoid gm;
          double pr = svPosVel.preciseRho(Rx, gm);
+
          return ComputeAtTransmitTime(trNom, pr, Rx, sat, navLib);
       }
       catch(gnsstk::Exception& e) {
@@ -207,11 +217,16 @@ namespace gnsstk
          Position trx(rx);
          trx.asECEF();
 
-            /** @todo getXvt was expected to throw an exception on
-             * failure in the past.  This assert more or less mimics
-             * that behavior.  Refactoring is needed.  */
-         GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), ttNom,
-                              order, xmitHealth, valid));
+         try {
+               /** @todo getXvt was expected to throw an exception on
+               * failure in the past.  This assert more or less mimics
+               * that behavior.  Refactoring is needed.  */
+            GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), ttNom,
+                                 order, xmitHealth, valid));
+         }
+         catch(AssertionFailure& e) {
+            GNSSTK_THROW(InvalidRequest(e));
+         }
 
          // compute rotation angle in the time of signal transit
 

@@ -189,13 +189,13 @@ namespace gnsstk
                // accuracy version from SunEarthSatGeometry and SolarPosition.
             if (SolSys.EphNumber() != -1)
             {
-               SVAtt = SolSys.satelliteAttitude(transmit, SatR);
+               SVAtt = SolSys.SatelliteAttitude(transmit, SatR);
             }
             else
             {
                double AR; // angular radius of sun
-               Position Sun = solarPosition(transmit, AR);
-               SVAtt        = satelliteAttitude(SatR, Sun);
+               Position Sun = SolarPosition(transmit, AR);
+               SVAtt        = SatelliteAttitude(SatR, Sun);
             }
 
                // phase center offset vector in body frame
