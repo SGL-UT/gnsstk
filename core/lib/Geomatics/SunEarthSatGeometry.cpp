@@ -56,8 +56,8 @@ namespace gnsstk
 {
 
       // -----------------------------------------------------------------------------
-      // Same as upEastNorth(), but with rows re-ordered.
-   Matrix<double> northEastUp(Position& P, bool geocentric)
+      // Same as UpEastNorth(), but with rows re-ordered.
+   Matrix<double> NorthEastUp(Position& P, bool geocentric)
    {
       try
       {
@@ -109,16 +109,16 @@ namespace gnsstk
       }
    }
 
-      // Same as northEastUp(P,true).
-   Matrix<double> northEastUpGeocentric(Position& P)
+      // Same as NorthEastUp(P,true).
+   Matrix<double> NorthEastUpGeocentric(Position& P)
    {
-      return northEastUp(P, true);
+      return NorthEastUp(P, true);
    }
 
-      // Same as northEastUp(P,false).
-   Matrix<double> northEastUpGeodetic(Position& P)
+      // Same as NorthEastUp(P,false).
+   Matrix<double> NorthEastUpGeodetic(Position& P)
    {
-      return northEastUp(P, false);
+      return NorthEastUp(P, false);
    }
 
       /* -----------------------------------------------------------------------------
@@ -127,11 +127,11 @@ namespace gnsstk
          perpendicular to the geoid. Return the vectors in the form of a
          3x3 Matrix<double>, this is in fact the rotation matrix that will take an
          ECEF vector into a local topocentric or 'up-east-north' vector. */
-   Matrix<double> upEastNorth(Position& P, bool geocentric)
+   Matrix<double> UpEastNorth(Position& P, bool geocentric)
    {
       try
       {
-         Matrix<double> R = northEastUp(P, geocentric);
+         Matrix<double> R = NorthEastUp(P, geocentric);
          for (int i = 0; i < 3; i++)
          {
             double r = R(0, i);
@@ -156,17 +156,17 @@ namespace gnsstk
       }
    }
 
-      /* Same as upEastNorth, but using geocentric coordinates, so that the -Up
+      /* Same as UpEastNorth, but using geocentric coordinates, so that the -Up
          direction will meet the center of Earth. */
-   Matrix<double> upEastNorthGeocentric(Position& P)
+   Matrix<double> UpEastNorthGeocentric(Position& P)
    {
-      return upEastNorth(P, true);
+      return UpEastNorth(P, true);
    }
 
-      // Same as upEastNorth, but using geodetic coordinates
-   Matrix<double> upEastNorthGeodetic(Position& P)
+      // Same as UpEastNorth, but using geodetic coordinates
+   Matrix<double> UpEastNorthGeodetic(Position& P)
    {
-      return upEastNorth(P, false);
+      return UpEastNorth(P, false);
    }
 
    //------------------------------------------------------------------------------
@@ -319,7 +319,7 @@ namespace gnsstk
          Also return the shadow factor = fraction of sun's area not visible to
          satellite, and the angle in radians between sun and satellite as seen from
          Earth. */
-   Matrix<double> satelliteAttitude(const Position& Sat, const Position& Sun)
+   Matrix<double> SatelliteAttitude(const Position& Sat, const Position& Sun)
    {
       try
       {
@@ -452,8 +452,7 @@ namespace gnsstk
          azimuth is measured from the X axis.
          @param SV Position Satellite position
          @param RX Position Receiver position
-         @param Rot Matrix<double> Rotation matrix (3,3), output of
-         satelliteAttitude
+         @param Rot Matrix<double> Rotation matrix (3,3), output of SatelliteAttitude
          @param nadir double Output nadir angle in degrees
          @param azimuth double Output azimuth angle in degrees */
    void SatelliteNadirAzimuthAngles(const Position& SV, const Position& RX,

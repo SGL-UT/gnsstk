@@ -65,7 +65,7 @@ namespace gnsstk
        @param AR  Output apparent angular radius of sun as seen at Earth (deg)
        @return  Position (ECEF) of the Sun at t
       */
-   Position solarPosition(const CommonTime& t, double& AR);
+   Position SolarPosition(const CommonTime& t, double& AR);
 
       /**
        Compute the latitude and longitude of the Sun using a very simple

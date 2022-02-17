@@ -93,7 +93,7 @@ namespace gnsstk
             lat,lon,R     latitude, longitude and distance (deg,deg,m in ECEF) of
             sun at t. AR            apparent angular radius of sun as seen at Earth
             (deg) at t. */
-   Position solarPosition(const CommonTime& t, double& AR)
+   Position SolarPosition(const CommonTime& t, double& AR)
    {
          // const double mPerAU = 149598.0e6;
       double D;    // days since J2000

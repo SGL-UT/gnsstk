@@ -422,9 +422,9 @@ namespace gnsstk
 
                // Use low accuracy Sun vector from SunEarthSatGeometry
             double AR;
-            Position Sun = solarPosition(ct, AR);
+            Position Sun = SolarPosition(ct, AR);
             Position Rx  = Position(satVector);
-            SVAtt        = satelliteAttitude(Rx, Sun);
+            SVAtt        = SatelliteAttitude(Rx, Sun);
 
                // phase center offset vector in body frame (at L1)
             Vector<double> PCO(3);
