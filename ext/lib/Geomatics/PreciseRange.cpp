@@ -94,7 +94,7 @@ namespace gnsstk
             // this should be a 'no ephemeris' exception
          catch (AssertionFailure& e)
          {
-            GNSSTK_RETHROW(e);
+            GNSSTK_THROW(InvalidRequest(e));
          }
 
             // update the transmit time for sat clk bias + relativity
@@ -132,6 +132,10 @@ namespace gnsstk
                // Do NOT replace these with Xvt
             SatR.setECEF(svPosVel.x[0], svPosVel.x[1], svPosVel.x[2]);
             SatV.setECEF(svPosVel.v[0], svPosVel.v[1], svPosVel.v[2]);
+         }
+         catch (AssertionFailure& e)
+         {
+            GNSSTK_THROW(InvalidRequest(e));
          }
          catch (InvalidRequest& e)
          {
