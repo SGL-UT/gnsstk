@@ -76,20 +76,17 @@ namespace gnsstk
          nit = 0;
          tof = 0.07;       // initial guess 70ms
          do {
-            // best estimate of transmit time
+               // best estimate of transmit time
             transmit = trNom;
             transmit -= tof;
             tof_old = tof;
-            // get SV position
-            try {
-                  /** @todo getXvt was expected to throw an exception on
-                   * failure in the past.  This assert more or less mimics
-                   * that behavior.  Refactoring is needed.  */
-               GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), transmit,
-                                    order, xmitHealth, valid));
-            }
-            catch(AssertionFailure& e) {
-               GNSSTK_THROW(InvalidRequest(e));
+
+               // get SV position
+            if(!getXvt(navLib, NavSatelliteID(sat), transmit, order,
+                        xmitHealth, valid))
+            {
+               InvalidRequest ir("getXvt failed");
+               GNSSTK_THROW(ir);
             }
 
             rotateEarth(Rx);
@@ -135,22 +132,16 @@ namespace gnsstk
 
          // correct for SV clock
          for(int i=0; i<2; i++) {
-            // get SV position
-            try {
-                  /** @todo getXvt was expected to throw an exception on
-                   * failure in the past.  This assert more or less mimics
-                   * that behavior.  Refactoring is needed.  */
-               GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), tt,
-                                    order, xmitHealth, valid));
+               // get SV position
+            if(! getXvt(navLib, NavSatelliteID(sat), tt,
+                                    order, xmitHealth, valid))
+            {
+               InvalidRequest ir("getXvt failed");
+               GNSSTK_THROW(ir);
             }
-            catch(AssertionFailure& e) {
-               GNSSTK_THROW(InvalidRequest(e));
-            }
-            catch(InvalidRequest& e) {
-               GNSSTK_RETHROW(e);
-            }
+
             tt = transmit;
-            // remove clock bias and relativity correction
+               // remove clock bias and relativity correction
             tt -= (svPosVel.clkbias + svPosVel.relcorr);
          }
 
@@ -180,15 +171,11 @@ namespace gnsstk
       NavValidityType valid)
    {
       try {
-         try {
-               /** @todo getXvt was expected to throw an exception on
-               * failure in the past.  This assert more or less mimics
-               * that behavior.  Refactoring is needed.  */
-            GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), trNom,
-                              order, xmitHealth, valid));
-         }
-         catch(AssertionFailure& e) {
-            GNSSTK_THROW(InvalidRequest(e));
+         if(!getXvt(navLib, NavSatelliteID(sat), trNom,
+                              order, xmitHealth, valid))
+         {
+            InvalidRequest ir("getXvt failed");
+            GNSSTK_THROW(ir);
          }
 
          gnsstk::GPSEllipsoid gm;
@@ -217,15 +204,11 @@ namespace gnsstk
          Position trx(rx);
          trx.asECEF();
 
-         try {
-               /** @todo getXvt was expected to throw an exception on
-               * failure in the past.  This assert more or less mimics
-               * that behavior.  Refactoring is needed.  */
-            GNSSTK_ASSERT(getXvt(navLib, NavSatelliteID(sat), ttNom,
-                                 order, xmitHealth, valid));
-         }
-         catch(AssertionFailure& e) {
-            GNSSTK_THROW(InvalidRequest(e));
+         if(!getXvt(navLib, NavSatelliteID(sat), ttNom,
+                                 order, xmitHealth, valid))
+         {
+            InvalidRequest ir("getXvt failed");
+            GNSSTK_THROW(ir);
          }
 
          // compute rotation angle in the time of signal transit

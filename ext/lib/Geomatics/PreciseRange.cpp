@@ -83,19 +83,13 @@ namespace gnsstk
 
             /* get the satellite position at the nominal time, computing and
                correcting for the satellite clock bias and other delays */
-         try
+         if(! Eph.getXvt(NavSatelliteID(sat), transmit, svPosVel))
          {
-               /** @todo getXvt was expected to throw an exception on
-               * failure in the past.  This assert more or less mimics
-               * that behavior.  Refactoring is needed.  */
-            GNSSTK_ASSERT(Eph.getXvt(NavSatelliteID(sat), transmit, svPosVel));
-            SatR.setECEF(svPosVel.x[0], svPosVel.x[1], svPosVel.x[2]);
+            InvalidRequest ir("getXvt failed");
+            GNSSTK_THROW(ir);
          }
-            // this should be a 'no ephemeris' exception
-         catch (AssertionFailure& e)
-         {
-            GNSSTK_THROW(InvalidRequest(e));
-         }
+
+         SatR.setECEF(svPosVel.x[0], svPosVel.x[1], svPosVel.x[2]);
 
             // update the transmit time for sat clk bias + relativity
          transmit -= svPosVel.clkbias + svPosVel.relcorr;
@@ -122,25 +116,14 @@ namespace gnsstk
          transmit -= relativity2 / ellips.c();
 
             // iterate satellite position
-         try
+         if(! Eph.getXvt(NavSatelliteID(sat), transmit, svPosVel))
          {
-               /** @todo getXvt was expected to throw an exception on
-               * failure in the past.  This assert more or less mimics
-               * that behavior.  Refactoring is needed.  */
-            GNSSTK_ASSERT(Eph.getXvt(NavSatelliteID(sat), transmit, svPosVel));
-
-               // Do NOT replace these with Xvt
-            SatR.setECEF(svPosVel.x[0], svPosVel.x[1], svPosVel.x[2]);
-            SatV.setECEF(svPosVel.v[0], svPosVel.v[1], svPosVel.v[2]);
+            InvalidRequest ir("getXvt failed");
+            GNSSTK_THROW(ir);
          }
-         catch (AssertionFailure& e)
-         {
-            GNSSTK_THROW(InvalidRequest(e));
-         }
-         catch (InvalidRequest& e)
-         {
-            GNSSTK_RETHROW(e);
-         }
+            // Do NOT replace these with Xvt
+         SatR.setECEF(svPosVel.x[0], svPosVel.x[1], svPosVel.x[2]);
+         SatV.setECEF(svPosVel.v[0], svPosVel.v[1], svPosVel.v[2]);
 
             // ----------------------------------------------------------
             // save relativity and satellite clock
