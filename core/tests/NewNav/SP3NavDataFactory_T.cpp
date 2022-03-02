@@ -267,6 +267,8 @@ findExactTest()
    TUASSERTFEPS(  2077.583886, uut->vel[1], 0.000001);
    TUASSERTFEPS(-28974.934472, uut->vel[2], 0.000001);
    TUASSERTFEPS(-2.52832e-5, uut->clkDrift, 0.0000000001);
+   TUASSERTE(std::string, "WGS84", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::WGS84, uut->frame);
 
       // test find with a different carrier/ranging code
    TUASSERT(fact.find(nmid1b, ct1, nd1, gnsstk::SVHealth::Any,
@@ -297,6 +299,8 @@ findExactTest()
    TUASSERTFEPS(  2077.583886, uut->vel[1], 0.000001);
    TUASSERTFEPS(-28974.934472, uut->vel[2], 0.000001);
    TUASSERTFEPS(-2.52832e-5, uut->clkDrift, 0.0000000001);
+   TUASSERTE(std::string, "WGS84", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::WGS84, uut->frame);
 
       // test find with exact epoch at end of file
    gnsstk::CivilTime civ2(2001, 7, 22, 0, 45, 0, gnsstk::TimeSystem::GPS);
@@ -335,6 +339,8 @@ findExactTest()
    TUASSERTFEPS(  13950.254271, uut->vel[1], 0.000001);
    TUASSERTFEPS(  20382.028718, uut->vel[2], 0.000001);
    TUASSERTFEPS(      8.499e-7, uut->clkDrift, 0.0000000001);
+   TUASSERTE(std::string, "WGS84", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::WGS84, uut->frame);
 
       // test find with exact epoch in the middle of file
    gnsstk::CivilTime civ3(2001, 7, 22, 0, 30, 0, gnsstk::TimeSystem::GPS);
@@ -373,6 +379,8 @@ findExactTest()
    TUASSERTFEPS(    -35.054953, uut->vel[1], 0.000001);
    TUASSERTFEPS( -29243.893155, uut->vel[2], 0.000001);
    TUASSERTFEPS(      2.133e-7, uut->clkDrift, 0.0000000001);
+   TUASSERTE(std::string, "WGS84", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::WGS84, uut->frame);
 
       // Test using data where velocity is missing and must be interpolated.
       // This test makes sure we're getting velocity data when there
@@ -416,6 +424,8 @@ findExactTest()
    TUASSERTFE(237.71409059520243545, uut->vel[1]);
    TUASSERTFE(-12599.181107279617208, uut->vel[2]);
    TUASSERTFE(8.4786249559075835378e-05, uut->clkDrift);
+   TUASSERTE(std::string, "ITR94", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::ITRF94,uut->frame);
    TURETURN();
 }
 
@@ -488,6 +498,8 @@ findInterpTest()
    TUASSERTFE(0, uut->driftSig);
    TUASSERTFE(0, uut->clkDrRate);
    TUASSERTFE(0, uut->drRateSig);
+   TUASSERTE(std::string, "ITR94", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::ITRF94,uut->frame);
    TURETURN();
 }
 
@@ -552,6 +564,8 @@ findEdgeTest()
    TUASSERTFE(0, uut->driftSig);
    TUASSERTFE(0, uut->clkDrRate);
    TUASSERTFE(0, uut->drRateSig);
+   TUASSERTE(std::string, "ITR94", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::ITRF94,uut->frame);
       // Just after start - can't interpolate
    ct = gnsstk::CivilTime(1997,4,6,0,0,2,gnsstk::TimeSystem::GPS);
    TUASSERT(!fact.find(nmid1, ct, nd, gnsstk::SVHealth::Any,
@@ -588,6 +602,8 @@ findEdgeTest()
    TUASSERTFE(0, uut->driftSig);
    TUASSERTFE(0, uut->clkDrRate);
    TUASSERTFE(0, uut->drRateSig);
+   TUASSERTE(std::string, "ITR94", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::ITRF94,uut->frame);
       // Still not enough data to interpolate
    ct = gnsstk::CivilTime(1997,4,6,0,15,2,gnsstk::TimeSystem::GPS);
    TUASSERT(!fact.find(nmid1, ct, nd, gnsstk::SVHealth::Any,
@@ -624,6 +640,8 @@ findEdgeTest()
    TUASSERTFE(0, uut->driftSig);
    TUASSERTFE(0, uut->clkDrRate);
    TUASSERTFE(0, uut->drRateSig);
+   TUASSERTE(std::string, "ITR94", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::ITRF94,uut->frame);
       // Still not enough data to interpolate
    ct = gnsstk::CivilTime(1997,4,6,0,30,2,gnsstk::TimeSystem::GPS);
    TUASSERT(!fact.find(nmid1, ct, nd, gnsstk::SVHealth::Any,
@@ -665,6 +683,8 @@ findEdgeTest()
    TUASSERTFE(0, uut->driftSig);
    TUASSERTFE(0, uut->clkDrRate);
    TUASSERTFE(0, uut->drRateSig);
+   TUASSERTE(std::string, "ITR94", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::ITRF94,uut->frame);
       // now we can interpolate
    ct = gnsstk::CivilTime(1997,4,6,1,0,2,gnsstk::TimeSystem::GPS);
    TUASSERT(fact.find(nmid1, ct, nd, gnsstk::SVHealth::Any,
@@ -695,6 +715,8 @@ findEdgeTest()
    TUASSERTFE(0, uut->driftSig);
    TUASSERTFE(0, uut->clkDrRate);
    TUASSERTFE(0, uut->drRateSig);
+   TUASSERTE(std::string, "ITR94", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::ITRF94,uut->frame);
       // interpolating near the end of the data set
    ct = gnsstk::CivilTime(1997,4,6,22,30,2,gnsstk::TimeSystem::GPS);
    TUASSERT(fact.find(nmid1, ct, nd, gnsstk::SVHealth::Any,
@@ -725,6 +747,8 @@ findEdgeTest()
    TUASSERTFE(0, uut->driftSig);
    TUASSERTFE(0, uut->clkDrRate);
    TUASSERTFE(0, uut->drRateSig);
+   TUASSERTE(std::string, "ITR94", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::ITRF94,uut->frame);
       // The last time we can interpolate
    ct = gnsstk::CivilTime(1997,4,6,22,45,0,gnsstk::TimeSystem::GPS);
    TUASSERT(fact.find(nmid1, ct, nd, gnsstk::SVHealth::Any,
@@ -755,6 +779,8 @@ findEdgeTest()
    TUASSERTFE(0, uut->driftSig);
    TUASSERTFE(0, uut->clkDrRate);
    TUASSERTFE(0, uut->drRateSig);
+   TUASSERTE(std::string, "ITR94", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::ITRF94,uut->frame);
       // no longer able to interpolate
    ct = gnsstk::CivilTime(1997,4,6,22,45,2,gnsstk::TimeSystem::GPS);
    TUASSERT(!fact.find(nmid1, ct, nd, gnsstk::SVHealth::Any,
@@ -792,6 +818,8 @@ findEdgeTest()
    TUASSERTFE(0, uut->driftSig);
    TUASSERTFE(0, uut->clkDrRate);
    TUASSERTFE(0, uut->drRateSig);
+   TUASSERTE(std::string, "ITR94", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::ITRF94,uut->frame);
    TURETURN();
 }
 
@@ -844,6 +872,8 @@ sp3cPVTest()
    TUASSERTFE(0.0010629999999999999259, uut->biasSig);
    TUASSERTFE(1.3259000000000000871e-06, uut->clkDrift);
    TUASSERTFE(1.0175328004541179996e-07, uut->driftSig);
+   TUASSERTE(std::string, "WGS84", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::WGS84, uut->frame);
       /// @note drift rate value not confirmed by SP3EphemerisStore
    TUASSERTFE(-2.1102292768909279853e-13, uut->clkDrRate);
    TUASSERTFE(1.130592000504575508e-10, uut->drRateSig);
@@ -877,6 +907,8 @@ sp3cPVTest()
    TUASSERTFE(9.9773393246897238821e-08, uut->driftSig);
    TUASSERTFE(-2.5152847174005956486e-13, uut->clkDrRate);
    TUASSERTFE(1.1085932582988582625e-10, uut->drRateSig);
+   TUASSERTE(std::string, "WGS84", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::WGS84, uut->frame);
    TURETURN();
 }
 
@@ -930,6 +962,8 @@ sp3cPTest()
    TUASSERTFE(1.1811111111111110024e-06, uut->driftSig);
    TUASSERTFE(0, uut->clkDrRate);
    TUASSERTFE(0, uut->drRateSig);
+   TUASSERTE(std::string, "WGS84", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::WGS84, uut->frame);
       // interpolated match
    ct = gnsstk::CivilTime(2011,10,9,2,1,3,gnsstk::TimeSystem::GPS);
    TUASSERT(fact.find(nmid1, ct, nd, gnsstk::SVHealth::Any,
@@ -961,6 +995,8 @@ sp3cPTest()
    TUASSERTFE(1.3895838261423968146e-06, uut->driftSig);
    TUASSERTFE(0, uut->clkDrRate);
    TUASSERTFE(0, uut->drRateSig);
+   TUASSERTE(std::string, "WGS84", uut->coordSystem);
+   TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::WGS84, uut->frame);
    TURETURN();
 }
 
