@@ -94,6 +94,10 @@ namespace gnsstk
       double driftSig; ///< SV clock drift std deviation in microseconds/sec.
       double clkDrRate;///< SV clock drift rate in s/s**2.
       double drRateSig;///< SV clock drift rate std deviation.
+         /// Copy of SP3Header::coordSystem since it might not translate.
+      std::string coordSystem;
+         /// Translation of coordSystem into an enum, if possible.
+      ReferenceFrame frame;
    };
 
       //@}

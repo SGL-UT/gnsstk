@@ -41,6 +41,7 @@
 
 #include <iostream>
 #include <string>
+#include "EnumIterator.hpp"
 
 namespace gnsstk
 {
@@ -59,12 +60,23 @@ namespace gnsstk
       WGS84G873,  ///< WGS84, GPS week 873 version
       WGS84G1150, ///< WGS84, GPS week 1150 version
       ITRF,       ///< ITRF, assumed to be the latest version
+      ITRF94,     ///< ITRF, 1994 version
+      ITRF96,     ///< ITRF, 1996 version
+      ITRF97,     ///< ITRF, 1997 version
+      ITRF2000,   ///< ITRF, 2000 version
+      ITRF2005,   ///< ITRF, 2005 version
+      ITRF2008,   ///< ITRF, 2008 version
+      ITRF2014,   ///< ITRF, 2014 version
       PZ90,       ///< PZ90 (GLONASS)
       PZ90KGS,    ///< PZ90 the "original"
       CGCS2000,   ///< CGCS200 (BDS)
          // Last MUST BE LAST
       Last        ///< Used to verify that all items are described at compile time
    };
+
+      /** Define an iterator so C++11 can do things like
+       * for (ReferenceFrame i : ReferenceFrameIterator()) */
+   typedef EnumIterator<ReferenceFrame, ReferenceFrame::Unknown, ReferenceFrame::Last> ReferenceFrameIterator;
 
    namespace StringUtils
    {

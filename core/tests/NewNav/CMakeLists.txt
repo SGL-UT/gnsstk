@@ -346,6 +346,16 @@ target_link_libraries(BDSD1NavTimeOffset_T gnsstk)
 add_test(BDSD1NavTimeOffset_T BDSD1NavTimeOffset_T)
 set_property(TEST BDSD1NavTimeOffset_T PROPERTY LABELS NewNav)
 
+add_executable(BDSD2NavAlm_T BDSD2NavAlm_T.cpp)
+target_link_libraries(BDSD2NavAlm_T gnsstk)
+add_test(BDSD2NavAlm_T BDSD2NavAlm_T)
+set_property(TEST BDSD2NavAlm_T PROPERTY LABELS NewNav)
+
+add_executable(BDSD2NavEph_T BDSD2NavEph_T.cpp)
+target_link_libraries(BDSD2NavEph_T gnsstk)
+add_test(BDSD2NavEph_T BDSD2NavEph_T)
+set_property(TEST BDSD2NavEph_T PROPERTY LABELS NewNav)
+
 add_executable(GLOFNavAlm_T GLOFNavAlm_T.cpp)
 target_link_libraries(GLOFNavAlm_T gnsstk)
 add_test(GLOFNavAlm_T GLOFNavAlm_T)

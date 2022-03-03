@@ -36,9 +36,9 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "GPSLNavAlm.hpp"
+#include "BDSD2NavAlm.hpp"
 #include "TestUtil.hpp"
-#include "GPSWeekSecond.hpp"
+#include "BDSWeekSecond.hpp"
 #include "CivilTime.hpp"
 
 namespace gnsstk
@@ -50,7 +50,7 @@ namespace gnsstk
    }
 }
 
-class GPSLNavAlm_T
+class BDSD2NavAlm_T
 {
 public:
       /// Make sure constructor initializes data members correctly.
@@ -61,43 +61,45 @@ public:
 };
 
 
-unsigned GPSLNavAlm_T ::
+unsigned BDSD2NavAlm_T ::
 constructorTest()
 {
-   TUDEF("GPSLNavAlm", "GPSLNavAlm");
-   gnsstk::GPSLNavAlm uut;
+   TUDEF("BDSD2NavAlm", "BDSD2NavAlm");
+   gnsstk::BDSD2NavAlm uut;
    TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Almanac,
              uut.signal.messageType);
-   TUASSERTE(uint8_t, 0xff, uut.healthBits);
+   TUASSERTE(unsigned, 0xff, uut.pnum);
    TUASSERTFE(0.0, uut.deltai);
    TUASSERTFE(0.0, uut.toa);
+   TUASSERTE(uint16_t, 0xffff, uut.healthBits);
+   TUASSERTE(bool, false, uut.isDefault);
    TURETURN();
 }
 
 
-unsigned GPSLNavAlm_T ::
+unsigned BDSD2NavAlm_T ::
 getUserTimeTest()
 {
-   TUDEF("GPSLNavAlm", "getUserTime");
-   gnsstk::GPSLNavAlm uut;
-   uut.timeStamp = gnsstk::GPSWeekSecond(2100,135.0);
-   gnsstk::CommonTime exp(gnsstk::GPSWeekSecond(2100,135.0));
+   TUDEF("BDSD2NavAlm", "getUserTime");
+   gnsstk::BDSD2NavAlm uut;
+   uut.timeStamp = gnsstk::BDSWeekSecond(2100,135.0);
+   gnsstk::CommonTime exp(gnsstk::BDSWeekSecond(2100,135.0));
       // almanac = 1 subframes * 6 seconds
+      // We don't take the timestamp of the WNa page into account here.
    exp = exp + 6.0;
    TUASSERTE(gnsstk::CommonTime, exp, uut.getUserTime());
    TURETURN();
 }
 
 
-unsigned GPSLNavAlm_T ::
+unsigned BDSD2NavAlm_T ::
 fixFitTest()
 {
-   TUDEF("GPSLNavAlm", "fixFit");
-   gnsstk::CommonTime toa = gnsstk::GPSWeekSecond(2100,135.0);
-   gnsstk::CommonTime expBegin = toa - (70.0 * 3600.0);
-   gnsstk::CommonTime expEnd   = toa + (74.0 * 3600.0);
-   gnsstk::GPSLNavAlm uut;
-   uut.Toe = toa;
+   TUDEF("BDSD2NavAlm", "fixFit");
+   gnsstk::CommonTime expBegin = gnsstk::BDSWeekSecond(2100,135.0);
+   gnsstk::CommonTime expEnd   = gnsstk::CommonTime::END_OF_TIME;
+   gnsstk::BDSD2NavAlm uut;
+   uut.xmitTime = gnsstk::BDSWeekSecond(2100,135.0);
    TUCATCH(uut.fixFit());
    TUASSERTE(gnsstk::CommonTime, expBegin, uut.beginFit);
    TUASSERTE(gnsstk::CommonTime, expEnd, uut.endFit);
@@ -105,27 +107,27 @@ fixFitTest()
 }
 
 
-unsigned GPSLNavAlm_T ::
+unsigned BDSD2NavAlm_T ::
 getXvtTest()
 {
-   TUDEF("GPSLNavAlm", "getXvt");
-   gnsstk::GPSLNavAlm uut;
+   TUDEF("BDSD2NavAlm", "getXvt");
+   gnsstk::BDSD2NavAlm uut;
    gnsstk::Xvt xvt;
-   uut.xmitTime = gnsstk::GPSWeekSecond(1854, .720000000000e+04);
-   uut.Toe = gnsstk::GPSWeekSecond(1854, .143840000000e+05);
-   uut.Toc = gnsstk::CivilTime(2015,7,19,3,59,44.0,gnsstk::TimeSystem::GPS);
+   uut.xmitTime = gnsstk::BDSWeekSecond(1854, .720000000000e+04);
+   uut.Toe = gnsstk::BDSWeekSecond(1854, .143840000000e+05);
+   uut.Toc = gnsstk::CivilTime(2015,7,19,3,59,44.0,gnsstk::TimeSystem::BDT);
    uut.health = gnsstk::SVHealth::Healthy;
-   gnsstk::CivilTime civ(2015,7,19,2,0,35.0,gnsstk::TimeSystem::GPS);
+   gnsstk::CivilTime civ(2015,7,19,2,0,35.0,gnsstk::TimeSystem::BDT);
    TUASSERT(uut.getXvt(civ, xvt));
    TUASSERTE(gnsstk::Xvt::HealthStatus, gnsstk::Xvt::Healthy, xvt.health);
-   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::WGS84,xvt.frame);
+   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::CGCS2000,xvt.frame);
    TURETURN();
 }
 
 
 int main()
 {
-   GPSLNavAlm_T testClass;
+   BDSD2NavAlm_T testClass;
    unsigned errorTotal = 0;
 
    errorTotal += testClass.constructorTest();
