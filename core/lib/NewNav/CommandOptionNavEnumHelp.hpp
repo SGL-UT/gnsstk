@@ -22,7 +22,6 @@
 //
 //==============================================================================
 
-
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -36,40 +35,41 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GNSSTK_NAVSEARCHORDER_HPP
-#define GNSSTK_NAVSEARCHORDER_HPP
 
-#include <string>
-#include "EnumIterator.hpp"
+#ifndef GNSSTK_COMMANDOPTIONNAVENUMHELP_HPP
+#define GNSSTK_COMMANDOPTIONNAVENUMHELP_HPP
+
+#include <iostream>
+#include "CommandOption.hpp"
 
 namespace gnsstk
 {
-      /// @ingroup NavFactory
-      //@{
-
-      /// Specify the behavior of nav data searches in NavLibrary/NavDataFactory
-   enum class NavSearchOrder
+      /** Command-line optino to provide help information for
+       * specifying codes, carrier frequencies and other common
+       * enumerations used throughout the NewNav code. */
+   class CommandOptionNavEnumHelp : public CommandOptionHelp
    {
-      Unknown,///< Search order is not known or is uninitialized.
-      User,   ///< Return the latest message before the search time.
-      Nearest,///< Return the message closest to the search time.
-      Last    ///< Used to create an iterator.
+   public:
+       /** Constructor.
+          * @param[in] shOpt The one character command line option.
+          *   Set to 0 if unused.
+          * @param[in] loOpt The long command option.  Set to
+          *   std::string() if unused.
+          * @param[in] desc A string describing what this option does.
+          */ 
+      CommandOptionNavEnumHelp(const char shOpt,
+                               const std::string& loOpt,
+                               const std::string& desc = std::string(
+                                  "Get help for enums, specify one of system,"
+                                  " obstype, carrier, range, antenna, navtype,"
+                                  " navmsgtype, health, validity, order,"
+                                  " detail"));
+
+         /** Print the requested help information.
+          * @param[in] out The stream to which the help text will be printed.
+          * @param[in] pretty Unused in this child class. */
+      void printHelp(std::ostream& out, bool pretty = true) override;
    };
-
-      /** Define an iterator so C++11 can do things like
-       * for (NavSearchOrder i : NavSearchOrderIterator()) */
-   typedef EnumIterator<NavSearchOrder, NavSearchOrder::Unknown, NavSearchOrder::Last> NavSearchOrderIterator;
-
-   namespace StringUtils
-   {
-         /// Convert a NavSearchOrder to a whitespace-free string name.
-      std::string asString(NavSearchOrder e) throw();
-         /// Convert a string name to an NavSearchOrder
-      NavSearchOrder asNavSearchOrder(const std::string& s) throw();
-   }
-
-      //@}
-
 }
 
-#endif // GNSSTK_NAVSEARCHORDER_HPP
+#endif // GNSSTK_COMMANDOPTIONNAVENUMHELP_HPP

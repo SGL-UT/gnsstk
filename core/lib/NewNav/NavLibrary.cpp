@@ -44,6 +44,7 @@
 #include "NDFUniqIterator.hpp"
 #include "IonoNavData.hpp"
 #include "InterSigCorr.hpp"
+#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -52,6 +53,7 @@ namespace gnsstk
           bool useAlm, SVHealth xmitHealth, NavValidityType valid,
           NavSearchOrder order)
    {
+      DEBUGTRACE_FUNCTION();
       NavMessageID nmid(sat, useAlm ? NavMessageType::Almanac :
                         NavMessageType::Ephemeris);
       NavDataPtr ndp;
@@ -66,6 +68,7 @@ namespace gnsstk
    getXvt(const NavSatelliteID& sat, const CommonTime& when, Xvt& xvt,
           SVHealth xmitHealth, NavValidityType valid, NavSearchOrder order)
    {
+      DEBUGTRACE_FUNCTION();
       NavMessageID nmid(sat, NavMessageType::Ephemeris);
       NavDataPtr ndp;
       if (!find(nmid, when, ndp, xmitHealth, valid, order))
@@ -86,6 +89,7 @@ namespace gnsstk
              SVHealth& healthOut, SVHealth xmitHealth, NavValidityType valid,
              NavSearchOrder order)
    {
+      DEBUGTRACE_FUNCTION();
       NavMessageID nmid(sat, NavMessageType::Health);
       NavDataPtr ndp;
       if (!find(nmid, when, ndp, xmitHealth, valid, order))
@@ -101,6 +105,7 @@ namespace gnsstk
              const CommonTime& when, double& offset, SVHealth xmitHealth,
              NavValidityType valid)
    {
+      DEBUGTRACE_FUNCTION();
       NavDataPtr timeOffset;
       if (getOffset(fromSys, toSys, when, timeOffset, xmitHealth, valid))
       {
@@ -116,6 +121,7 @@ namespace gnsstk
              const CommonTime& when, NavDataPtr& offset, SVHealth xmitHealth,
              NavValidityType valid)
    {
+      DEBUGTRACE_FUNCTION();
       for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          if (fi.second->getOffset(fromSys, toSys, when, offset, xmitHealth,
@@ -133,6 +139,7 @@ namespace gnsstk
                const Position& rxgeo, const Position& svgeo,
                CarrierBand band, double& corrOut, NavType nt)
    {
+      DEBUGTRACE_FUNCTION();
       SatID sysOnly(sys);
       NavMessageID nmid(
          NavSatelliteID(
@@ -161,6 +168,7 @@ namespace gnsstk
                CarrierBand band, double& corrOut, NavType nt, int freqOffs,
                bool freqOffsWild)
    {
+      DEBUGTRACE_FUNCTION();
       if (sat.isWild())
       {
             // wildcards in sat are not allowed, we need a specific
@@ -192,6 +200,7 @@ namespace gnsstk
    bool NavLibrary ::
    getISC(const ObsID& oid, const CommonTime& when, double& corrOut)
    {
+      DEBUGTRACE_FUNCTION();
       std::list<NavMessageID> msgIDs(getISCNMID(oid));
       if (msgIDs.empty())
          return false;
@@ -216,6 +225,7 @@ namespace gnsstk
    getISC(const ObsID& oid1, const ObsID& oid2, const CommonTime& when,
           double& corrOut)
    {
+      DEBUGTRACE_FUNCTION();
          // This ugly mess is a special case as GPS LNAV does not have
          // ISCs that apply to the iono-free combined pseudorange.
       if ((oid1.band == CarrierBand::L1) && (oid2.band == CarrierBand::L2) &&
@@ -257,6 +267,7 @@ namespace gnsstk
    std::list<NavMessageID> NavLibrary ::
    getISCNMID(const ObsID& oid)
    {
+      DEBUGTRACE_FUNCTION();
       std::list<NavMessageID> rv;
       const SatID gpsAnySat(SatelliteSystem::GPS);
       const ObsID anyObs(ObservationType::NavMsg,
@@ -392,6 +403,7 @@ namespace gnsstk
    std::list<NavMessageID> NavLibrary ::
    getISCNMID(const ObsID& oid1, const ObsID& oid2)
    {
+      DEBUGTRACE_FUNCTION();
       std::list<NavMessageID> rv;
       const SatID gpsAnySat(SatelliteSystem::GPS);
       const ObsID anyObs(ObservationType::NavMsg,
@@ -477,6 +489,7 @@ namespace gnsstk
    find(const NavMessageID& nmid, const CommonTime& when, NavDataPtr& navOut,
         SVHealth xmitHealth, NavValidityType valid, NavSearchOrder order)
    {
+      DEBUGTRACE_FUNCTION();
          // Don't use factories.equal_range(nmid), as it can result in
          // range.first and range.second being the same iterator, in
          // which case the loop won't process anything at all.
@@ -502,6 +515,7 @@ namespace gnsstk
    void NavLibrary ::
    setValidityFilter(NavValidityType nvt)
    {
+      DEBUGTRACE_FUNCTION();
       for (auto& i : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          i.second->setValidityFilter(nvt);
@@ -512,6 +526,7 @@ namespace gnsstk
    void NavLibrary ::
    setTypeFilter(const NavMessageTypeSet& nmts)
    {
+      DEBUGTRACE_FUNCTION();
       for (auto& i : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          i.second->setTypeFilter(nmts);
@@ -522,6 +537,7 @@ namespace gnsstk
    void NavLibrary ::
    addFactory(NavDataFactoryPtr& fact)
    {
+      DEBUGTRACE_FUNCTION();
          // Yes, we do add multiple copies of the NavDataFactoryPtr to
          // the map, it's a convenience.
       for (const auto& si : fact->supportedSignals)
@@ -534,6 +550,7 @@ namespace gnsstk
    void NavLibrary ::
    dump(std::ostream& s, DumpDetail dl) const
    {
+      DEBUGTRACE_FUNCTION();
       for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
          NavDataFactory *ptr = fi.second.get();
@@ -545,6 +562,7 @@ namespace gnsstk
    void NavLibrary ::
    edit(const CommonTime& fromTime, const CommonTime& toTime)
    {
+      DEBUGTRACE_FUNCTION();
       for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          fi.second->edit(fromTime, toTime);
@@ -556,6 +574,7 @@ namespace gnsstk
    edit(const CommonTime& fromTime, const CommonTime& toTime,
         const NavSatelliteID& satID)
    {
+      DEBUGTRACE_FUNCTION();
       for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          fi.second->edit(fromTime, toTime, satID);
@@ -567,6 +586,7 @@ namespace gnsstk
    edit(const CommonTime& fromTime, const CommonTime& toTime,
         const NavSignalID& signal)
    {
+      DEBUGTRACE_FUNCTION();
       for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          fi.second->edit(fromTime, toTime, signal);
@@ -577,6 +597,7 @@ namespace gnsstk
    void NavLibrary ::
    clear()
    {
+      DEBUGTRACE_FUNCTION();
       for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories))
       {
          fi.second->clear();
@@ -587,6 +608,7 @@ namespace gnsstk
    CommonTime NavLibrary ::
    getInitialTime() const
    {
+      DEBUGTRACE_FUNCTION();
       CommonTime rv = CommonTime::END_OF_TIME;
       for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
@@ -600,6 +622,7 @@ namespace gnsstk
    CommonTime NavLibrary ::
    getFinalTime() const
    {
+      DEBUGTRACE_FUNCTION();
       CommonTime rv = CommonTime::BEGINNING_OF_TIME;
       for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
@@ -613,6 +636,7 @@ namespace gnsstk
    getAvailableSats(const CommonTime& fromTime, const CommonTime& toTime)
       const
    {
+      DEBUGTRACE_FUNCTION();
       NavSatelliteIDSet rv, tmp;
       for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
@@ -632,6 +656,7 @@ namespace gnsstk
                     const CommonTime& toTime)
       const
    {
+      DEBUGTRACE_FUNCTION();
       NavSatelliteIDSet rv, tmp;
       for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
@@ -649,6 +674,7 @@ namespace gnsstk
    getIndexSet(const CommonTime& fromTime,
                const CommonTime& toTime) const
    {
+      DEBUGTRACE_FUNCTION();
       NavSatelliteIDSet fullSatSet = getAvailableSats(fromTime,toTime);
       std::set<SatID> rv;
       for (const auto& fssi : fullSatSet)
@@ -664,6 +690,7 @@ namespace gnsstk
                const CommonTime& fromTime,
                const CommonTime& toTime) const
    {
+      DEBUGTRACE_FUNCTION();
       NavSatelliteIDSet fullSatSet = getAvailableSats(nmt,fromTime,toTime);
       std::set<SatID> rv;
       for (const auto& fssi : fullSatSet)
@@ -679,6 +706,7 @@ namespace gnsstk
                     const CommonTime& toTime)
       const
    {
+      DEBUGTRACE_FUNCTION();
       NavMessageIDSet rv, tmp;
       for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
@@ -697,6 +725,7 @@ namespace gnsstk
              const CommonTime& fromTime,
              const CommonTime& toTime)
    {
+      DEBUGTRACE_FUNCTION();
       for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {
          if (fi.second->isPresent(nmid, fromTime, toTime))
@@ -709,6 +738,7 @@ namespace gnsstk
    std::string NavLibrary ::
    getFactoryFormats() const
    {
+      DEBUGTRACE_FUNCTION();
       std::string rv;
       for (const auto& fi : NDFUniqConstIterator<NavDataFactoryMap>(factories))
       {

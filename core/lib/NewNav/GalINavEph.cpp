@@ -131,7 +131,7 @@ namespace gnsstk
         << printTime(xmit4,"Word 4 TOW : %6.0g  %3a-%1w:%02H:%02M:%02S")
         << setw(13) << iodnav4 << endl
         << printTime(xmit5,"Word 5 TOW : %6.0g  %3a-%1w:%02H:%02M:%02S")
-        << endl
+        << endl << endl
         << "           SV STATUS" << endl
         << endl
         << "E5b_DVS             : " << setw(9) << static_cast<int>(dvsE5b)
@@ -143,6 +143,8 @@ namespace gnsstk
         << "E1B_HS              : " << setw(9) << static_cast<int>(hsE1B)
         << " (" << gnsstk::StringUtils::asString(hsE1B) << ")" << endl
         << "SISA                : " << setw(9) << (unsigned)sisaIndex << endl
+        << "Health              : " << setw(9)
+        << gnsstk::StringUtils::asString(health) << endl
         << setprecision(6)
         << "Bgd(E1-E5a)         : " << setw(13) << bgdE5aE1 << " sec" << endl
         << "Bgd(E1-E5b)         : " << setw(13) << bgdE5bE1 << " sec" << endl;
