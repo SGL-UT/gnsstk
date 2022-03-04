@@ -36,70 +36,27 @@
 //
 //==============================================================================
 
-/**
- * @file AshtechPBEN.hpp
- * gnsstk::AshtechPBEN - class for storing ashtech nav solution record
- */
-
-#ifndef ASHTECHPBEN_HPP
-#define ASHTECHPBEN_HPP
-
-#include "gnsstk_export.h"
-#include "AshtechData.hpp"
-
-#ifdef SWIG
-%immutable gnsstk::AshtechPBEN::myId;
-#endif
+#include "logstream.hpp"
 
 namespace gnsstk
 {
-   class AshtechPBEN : public AshtechData
-   {
-   public:
 
-      AshtechPBEN() {};
-
-      std::string header; // 11 characters exactly
-
-      double   sow;
-      std::string sitename; // 4 characters exactly
-      double   navx;    // meters
-      double   navy;    // meters
-      double   navz;    // meters
-      float    navt;    // meters
-      float    navxdot; // meters/sec
-      float    navydot; // meters/sec
-      float    navzdot; // meters/sec
-      float    navtdot; // meters/sec
-      unsigned pdop;
-
-      // These items are not part of the binary output and only exist in the
-      // ascii output
-      float lat, lon, alt, numSV, hdop, vdop, tdop;
-
-
-      GNSSTK_EXPORT static const char* myId;
-
-      virtual std::string getName() const {return "pben";}
-
-      bool checkId(const std::string& hdrId) const {return hdrId==myId;}
-
-      void dump(std::ostream& out) const throw();
-
-         /**
-          * @throw std::exception
-          * @throw FFStreamError
-          */
-      virtual void decode(const std::string& data);
-
-   protected:
-         /**
-          * @throw std::exception
-          * @throw FFStreamError
-          * @throw EndOfFile
-          */
-      virtual void reallyGetRecord(FFStream& ffs);
-   };
-} // namespace gnsstk
-
+      // This is a terrible kludge that nevertheless is necessary
+      // under Windows 2003 and 2005 because global optimization
+      // (compiler switch /O1 or /O2 or /Og) causes the reportingLevel
+      // to be defined ONLY in the module in which ReportingLevel() is
+      // assigned. Rather than give up optimization or
+      // ReportingLevel(), I came up with this kludge, which is to
+      // remove reportingLevel from the ReportingLevel() function and
+      // make it a static member of the class, then initialize it
+      // outside the class.
+      // Similarly for dumpTimeTags and dumpLevels.
+#ifdef WIN32
+//#ifndef LOGSTREAM_INITIALIZE_REPORTING_LEVEL
+//#define LOGSTREAM_INITIALIZE_REPORTING_LEVEL
+   template<> LogLevel Log<ConfigureLOGstream>::reportingLevel = INFO;
+   template<> bool Log<ConfigureLOGstream>::dumpTimeTags = false;
+   template<> bool Log<ConfigureLOGstream>::dumpLevels = false;
+//#endif
 #endif
+}

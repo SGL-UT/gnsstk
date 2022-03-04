@@ -46,6 +46,7 @@
 #ifndef GNSSTK_DISCONTINUITY_CORRECTOR_INCLUDE
 #define GNSSTK_DISCONTINUITY_CORRECTOR_INCLUDE
 
+#include "gnsstk_export.h"
 #include "Epoch.hpp"
 #include "RinexSatID.hpp"
 #include "RinexObsHeader.hpp"
@@ -124,6 +125,7 @@ namespace gnsstk {
 
       void initialize(void);
 
+      GNSSTK_EXPORT
       static const std::string GDCVersion;
 
    }; // end class GDCconfiguration

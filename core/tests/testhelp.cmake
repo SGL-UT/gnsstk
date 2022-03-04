@@ -4,6 +4,11 @@
 
 # help alone
 
+get_cmake_property(_variableNames VARIABLES)
+foreach (_variableName ${_variableNames})
+   message(STATUS "${_variableName} = ${${_variableName}}")
+endforeach()
+
 execute_process(COMMAND ${TEST_PROG} -h
                 OUTPUT_QUIET
                 ERROR_QUIET

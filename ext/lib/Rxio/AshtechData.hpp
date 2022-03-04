@@ -47,6 +47,7 @@
 #include <map>
 #include <iostream>
 
+#include "gnsstk_export.h"
 #include "Exception.hpp"
 #include "StringUtils.hpp"
 #include "BinUtils.hpp"
@@ -92,8 +93,8 @@ namespace gnsstk
        */
       void dump(std::ostream& out) const throw();
 
-      static int debugLevel;
-      static bool hexDump;
+      GNSSTK_EXPORT static int debugLevel;
+      GNSSTK_EXPORT static bool hexDump;
 
       std::string id;
       bool ascii;
@@ -102,8 +103,8 @@ namespace gnsstk
       // to believe it isn't trustworthy except in the PBN and MPC messages.
       uint16_t checksum;
 
-      static const std::string preamble;
-      static const std::string trailer;
+      GNSSTK_EXPORT static const std::string preamble;
+      GNSSTK_EXPORT static const std::string trailer;
 
    protected:
          /**

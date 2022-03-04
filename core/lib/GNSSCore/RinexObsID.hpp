@@ -45,6 +45,7 @@
  * observation identifiers.
  */
 
+#include "gnsstk_export.h"
 #include "ObsID.hpp"
 #include "RinexObsHeader.hpp"
 
@@ -258,16 +259,16 @@ namespace gnsstk
       double rinexVersion;
 
          /// This string contains the system characters for all RINEX systems.
-      static std::string validRinexSystems;
+      GNSSTK_EXPORT static std::string validRinexSystems;
 
          /// These maps transform between 1-char and 3-char system descriptors,
          /// e.g. map1to3sys["G"] = "GPS" and map3to1sys["GPS"] = "G"
-      static std::map<std::string, std::string> map1to3sys;
-      static std::map<std::string, std::string> map3to1sys;
+      GNSSTK_EXPORT static std::map<std::string, std::string> map1to3sys;
+      GNSSTK_EXPORT static std::map<std::string, std::string> map3to1sys;
 
          /** This string contains the (1-digit) frequency code for all
           * RINEX systems. */
-      static std::string validRinexFrequencies;
+      GNSSTK_EXPORT static std::string validRinexFrequencies;
 
          /** This map[sys][freq] = valid codes gives valid tracking
           * codes for RINEX observations given the system and
@@ -277,16 +278,16 @@ namespace gnsstk
           * N (codeless)
           * @note These tracking code characters are ORDERED,
           * basically 'best' to 'worst' */
-      static std::map<char, std::map<char, std::string> > validRinexTrackingCodes;
+      GNSSTK_EXPORT static std::map<char, std::map<char, std::string> > validRinexTrackingCodes;
 
          /** These strings are used to translate this object to and
           * from a string id */
-      static std::map< char, ObservationType> char2ot;
-      static std::map< char, CarrierBand> char2cb;
-      static std::map< char, TrackingCode> char2tc;
-      static std::map< ObservationType, char > ot2char;
-      static std::map< CarrierBand, char > cb2char;
-      static std::map< TrackingCode, char> tc2char;
+      GNSSTK_EXPORT static std::map< char, ObservationType> char2ot;
+      GNSSTK_EXPORT static std::map< char, CarrierBand> char2cb;
+      GNSSTK_EXPORT static std::map< char, TrackingCode> char2tc;
+      GNSSTK_EXPORT static std::map< ObservationType, char > ot2char;
+      GNSSTK_EXPORT static std::map< CarrierBand, char > cb2char;
+      GNSSTK_EXPORT static std::map< TrackingCode, char> tc2char;
 
          /** Return a string containing all the keys of char2ot.
           * Intended for use by SWIG/Python where the mappings of

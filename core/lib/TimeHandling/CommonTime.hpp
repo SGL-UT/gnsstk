@@ -39,6 +39,7 @@
 #ifndef GNSSTK_COMMONTIME_HPP
 #define GNSSTK_COMMONTIME_HPP
 
+#include "gnsstk_export.h"
 #include <memory>
 #include "Exception.hpp"
 #include "TimeConstants.hpp"
@@ -91,19 +92,19 @@ namespace gnsstk
          /// 'julian day' of earliest epoch expressible by CommonTime:
          /// 1/1/4713 B.C.E.
          /// @see m_day.
-      static const long BEGIN_LIMIT_JDAY;
+      GNSSTK_EXPORT static const long BEGIN_LIMIT_JDAY;
          /// 'julian day' of latest epoch expressible by CommonTime:
          /// 1/1/4713 C.E.
          /// @see m_day.
-      static const long END_LIMIT_JDAY;
+      GNSSTK_EXPORT static const long END_LIMIT_JDAY;
 
          /// earliest representable CommonTime
-      static const CommonTime BEGINNING_OF_TIME;
+      GNSSTK_EXPORT static const CommonTime BEGINNING_OF_TIME;
          /// latest representable CommonTime
-      static const CommonTime END_OF_TIME;
+      GNSSTK_EXPORT static const CommonTime END_OF_TIME;
 
          /// Default tolerance for time equality in days.
-      static const double eps;
+      GNSSTK_EXPORT static const double eps;
          //@}
 
          /**
@@ -402,7 +403,7 @@ namespace gnsstk
 
          /** If set, this object will provide the ability for
           * changeTimeSystem(TimeSystem) to function. */
-      static std::shared_ptr<TimeSystemConverter> tsConv;
+      GNSSTK_EXPORT static std::shared_ptr<TimeSystemConverter> tsConv;
 
    protected:
 

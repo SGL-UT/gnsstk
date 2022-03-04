@@ -51,6 +51,7 @@
 #include <iostream>
 #include <iomanip>
 
+#include "gnsstk_export.h"
 #include "CivilTime.hpp"
 #include "FFStream.hpp"
 #include "Rinex3ObsBase.hpp"
@@ -422,6 +423,7 @@ namespace gnsstk
          FieldSet fieldsSet;
       };
 
+      GNSSTK_EXPORT
       static const Fields allValid2, allValid30, allValid301, allValid302,
          allValid303;
 
@@ -509,7 +511,7 @@ namespace gnsstk
       bool PisY;
 
          /// Used to help debug this class
-      static int debug;
+      GNSSTK_EXPORT static int debug;
 
          /// Destructor
       virtual ~Rinex3ObsHeader()

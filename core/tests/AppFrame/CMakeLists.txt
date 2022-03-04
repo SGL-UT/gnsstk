@@ -2,7 +2,7 @@
 
 #add_executable(HelmertTransform_T HelmertTransform_T.cpp ftest.cpp)
 #target_link_libraries(HelmertTransform_T gnsstk)
-#add_test(RefTime_HelmertTransform HelmertTransform_T)
+#add_test(NAME RefTime_HelmertTransform COMMAND $<TARGET_FILE:HelmertTransform_T>)
 
 add_executable(BasicFrameworkHelp_T BasicFrameworkHelp_T.cpp)
 target_link_libraries(BasicFrameworkHelp_T gnsstk)

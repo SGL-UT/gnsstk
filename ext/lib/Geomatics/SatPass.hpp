@@ -47,6 +47,7 @@
 #include <map>
 #include <ostream>
 
+#include "gnsstk_export.h"
 #include "Epoch.hpp"
 #include "RinexSatID.hpp"
 #include "GNSSconstants.hpp"
@@ -689,32 +690,41 @@ public:
 
 // public member data -----------------------------------------------
    /// flag indicating bad data
+   GNSSTK_EXPORT
    static const unsigned short BAD;
 
    /// flag indicating good data with no phase discontinuity
    /// NB test for 'good' data using (flag != SatPass::BAD),
    ///                           NOT (flag == SatPass::OK).
+   GNSSTK_EXPORT
    static const unsigned short OK;
 
    /// flag indicating good data with phase discontinuity on L1 only.
    /// if(flag & LL1) then there is an L1 discontinuity
+   GNSSTK_EXPORT
    static const unsigned short LL1;
 
    /// flag indicating good data with phase discontinuity on L2 only.
    /// if(flag & LL2) then there is an L2 discontinuity
+   GNSSTK_EXPORT
    static const unsigned short LL2;
 
    /// flag indicating good data with phase discontinuity on both L1 and L2.
    /// if(flag & LL3) then there are L1 and L2 discontinuities
+   GNSSTK_EXPORT
    static const unsigned short LL3;
 
    /// size of maximum time gap, in seconds, allowed within SatPass data.
+   GNSSTK_EXPORT
    static double maxGap;
 
    /// format string, as defined in class Epoch, for output of times
    /// used by smooth (debug), dump and operator<<
+   GNSSTK_EXPORT
    static int outRound;
+   GNSSTK_EXPORT
    static std::string outFormat;
+   GNSSTK_EXPORT
    static std::string longfmt;
 
 protected:

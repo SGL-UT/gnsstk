@@ -50,6 +50,7 @@
 #include <iostream>
 #include <iomanip>
 
+#include "gnsstk_export.h"
 #include "CommonTime.hpp"
 #include "FFStream.hpp"
 #include "RinexObsBase.hpp"
@@ -187,36 +188,36 @@ namespace gnsstk
 
          /// @name Standard RINEX observation types
          //@{
-      static const RinexObsType UN;
-      static const RinexObsType L1;
-      static const RinexObsType L2;
-      static const RinexObsType C1;
-      static const RinexObsType C2;
-      static const RinexObsType P1;
-      static const RinexObsType P2;
-      static const RinexObsType D1;
-      static const RinexObsType D2;
-      static const RinexObsType S1;
-      static const RinexObsType S2;
-      static const RinexObsType T1;
-      static const RinexObsType T2;
-      static const RinexObsType C5;
-      static const RinexObsType L5;
-      static const RinexObsType D5;
-      static const RinexObsType S5;
+      GNSSTK_EXPORT static const RinexObsType UN;
+      GNSSTK_EXPORT static const RinexObsType L1;
+      GNSSTK_EXPORT static const RinexObsType L2;
+      GNSSTK_EXPORT static const RinexObsType C1;
+      GNSSTK_EXPORT static const RinexObsType C2;
+      GNSSTK_EXPORT static const RinexObsType P1;
+      GNSSTK_EXPORT static const RinexObsType P2;
+      GNSSTK_EXPORT static const RinexObsType D1;
+      GNSSTK_EXPORT static const RinexObsType D2;
+      GNSSTK_EXPORT static const RinexObsType S1;
+      GNSSTK_EXPORT static const RinexObsType S2;
+      GNSSTK_EXPORT static const RinexObsType T1;
+      GNSSTK_EXPORT static const RinexObsType T2;
+      GNSSTK_EXPORT static const RinexObsType C5;
+      GNSSTK_EXPORT static const RinexObsType L5;
+      GNSSTK_EXPORT static const RinexObsType D5;
+      GNSSTK_EXPORT static const RinexObsType S5;
          // Galileo only
-      static const RinexObsType C6;
-      static const RinexObsType L6;
-      static const RinexObsType D6;
-      static const RinexObsType S6;
-      static const RinexObsType C7;
-      static const RinexObsType L7;
-      static const RinexObsType D7;
-      static const RinexObsType S7;
-      static const RinexObsType C8;
-      static const RinexObsType L8;
-      static const RinexObsType D8;
-      static const RinexObsType S8;
+      GNSSTK_EXPORT static const RinexObsType C6;
+      GNSSTK_EXPORT static const RinexObsType L6;
+      GNSSTK_EXPORT static const RinexObsType D6;
+      GNSSTK_EXPORT static const RinexObsType S6;
+      GNSSTK_EXPORT static const RinexObsType C7;
+      GNSSTK_EXPORT static const RinexObsType L7;
+      GNSSTK_EXPORT static const RinexObsType D7;
+      GNSSTK_EXPORT static const RinexObsType S7;
+      GNSSTK_EXPORT static const RinexObsType C8;
+      GNSSTK_EXPORT static const RinexObsType L8;
+      GNSSTK_EXPORT static const RinexObsType D8;
+      GNSSTK_EXPORT static const RinexObsType S8;
 
          //@}
 

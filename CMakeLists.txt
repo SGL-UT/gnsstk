@@ -25,6 +25,18 @@ include( GNUInstallDirs )
 # Set a filename for collecting exported targets.
 set( EXPORT_TARGETS_FILENAME "GNSSTKTargets" )
 
+if ( WIN32 )
+   # Make cmake do most of the work of creating the DLL exports
+   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+   # put everything in the same directory to make it easier for tests
+   # to find the DLL.
+   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+else ( WIN32 )
+   # This disables the Windows-specific export things for non-Windows platforms.
+   add_definitions(-DGNSSTK_STATIC_DEFINE)
+endif ( WIN32 )
+include(GenerateExportHeader)
+
 
 option( DEBUG_SWITCH "HELP: DEBUG_SWITCH: Default = OFF, print some CMake variable values to stdout." OFF )
 option( DEBUG_VERBOSE "HELP: DEBUG_VERBOSE: Default = OFF, print all CMake variable values." OFF )
@@ -161,11 +173,16 @@ if ( ${PROFILER} )
   # don't build the shared library with profiler enabled
   add_library( gnsstk STATIC ${GNSSTK_SRC_FILES} ${GNSSTK_INC_FILES} )
 elseif( WIN32 )
-  # someday we'll figure out how to do shared libs for windows...
-  add_library( gnsstk STATIC ${GNSSTK_SRC_FILES} ${GNSSTK_INC_FILES} )
+  add_library( gnsstk ${GNSSTK_SRC_FILES} ${GNSSTK_INC_FILES} )
 else()
   add_library( gnsstk SHARED ${GNSSTK_SRC_FILES} ${GNSSTK_INC_FILES} )
 endif()
+
+# always generate the header because it's an include file whose
+# absence would break the build on non-windows.
+generate_export_header(gnsstk)
+include_directories(AFTER SYSTEM ${PROJECT_BINARY_DIR})
+install( FILES ${PROJECT_BINARY_DIR}/gnsstk_export.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 
 install( TARGETS gnsstk DESTINATION "${CMAKE_INSTALL_LIBDIR}" EXPORT "${EXPORT_TARGETS_FILENAME}" )
 
