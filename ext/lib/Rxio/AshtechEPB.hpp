@@ -44,6 +44,7 @@
 #ifndef ASHTECHEPB_HPP
 #define ASHTECHEPB_HPP
 
+#include "gnsstk_export.h"
 #include "AshtechData.hpp"
 
 #ifdef SWIG
@@ -67,7 +68,7 @@ namespace gnsstk
       // element 0 of each index is not used.
       long     word[4][11];
 
-      static const char* myId;
+      GNSSTK_EXPORT static const char* myId;
 
       virtual std::string getName() const {return "epb";}
 

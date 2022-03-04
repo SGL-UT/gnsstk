@@ -45,6 +45,7 @@
 
 #include <vector>
 #include <ostream>
+#include "gnsstk_export.h"
 #include "stl_helpers.hpp"
 #include "GNSSconstants.hpp"
 #include "CommonTime.hpp"
@@ -642,7 +643,7 @@ namespace gnsstk
       static const std::string calfmt,gpsfmt,timfmt;
 
       /// empty vector used to detect default
-      static const Vector<double> PRSNullVector;
+      GNSSTK_EXPORT static const Vector<double> PRSNullVector;
 
    }; // end class PRSolution
 

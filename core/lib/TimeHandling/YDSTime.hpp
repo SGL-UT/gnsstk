@@ -39,6 +39,7 @@
 #ifndef GNSSTK_YDSTIME_HPP
 #define GNSSTK_YDSTIME_HPP
 
+#include "gnsstk_export.h"
 #include "TimeTag.hpp"
 #include "Exception.hpp"
 #include "TimeConstants.hpp"
@@ -65,7 +66,7 @@ namespace gnsstk
           * YDSTime constant corresponding to CommonTime::BEGINNING_OF_TIME
           */
 
-      static const YDSTime BEGIN_TIME;
+      GNSSTK_EXPORT static const YDSTime BEGIN_TIME;
 
          //@}
          /**

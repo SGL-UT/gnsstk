@@ -44,6 +44,7 @@
 #include <map>
 #include <string>
 
+#include "gnsstk_export.h"
 #include "Exception.hpp"
 #include "ReferenceFrame.hpp"
 #include "CommonTime.hpp"
@@ -189,13 +190,13 @@ namespace gnsstk
       { return Epoch; }
 
       /// Epoch at which GLONASS transitions from PZ90 to PZ90.02
-      static const CommonTime PZ90Epoch;
+      GNSSTK_EXPORT static const CommonTime PZ90Epoch;
 
       /// length of array of pre-defined HelmertTransforms
-      static const int stdCount = 5; // equal to number listed in HelmertTransform.cpp
+      GNSSTK_EXPORT static const int stdCount = 5; // equal to number listed in HelmertTransform.cpp
 
       /// array of all pre-defined HelmertTransforms
-      static const HelmertTransform stdTransforms[stdCount];
+      GNSSTK_EXPORT static const HelmertTransform stdTransforms[stdCount];
 
    protected:
       // member data

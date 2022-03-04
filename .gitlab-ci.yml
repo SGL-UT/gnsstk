@@ -44,11 +44,33 @@ variables:
   BLD_VS2019:
     value: "True"
     description: "If True, then build under Windows using Visual Studio 2019"
+  BLD_ONLY_VS2019:
+    value: "False"
+    description: "If True, then ONLY build Windows using Visual Studio 2019 and skips Visual Studio 2015 jobs. Defaults to False"
+  BLD_VS_DLL:
+    value: "True"
+    description: "If True, then build Windows Dynamic Link Libraries (VS2019 only)"
+  BLD_VS_STATIC:
+    value: "True"
+    description: "If True, then build Windows Static Libraries (VS2019 only, VS2015 always builds static)"
+
 # Template for all normal jobs.
 .normal_build:
+  except:
+    variables:
+      - $BLD_ONLY_VS2019 == "True"
+
+.vs2019_build:
   only:
     variables:
-      - $RELEASE_ONLY != "True"
+      - $BLD_VS2019 == "True"
+      - $BLD_VS_STATIC == "True"
+
+.vs2019_dll_build:
+  only:
+    variables:
+      - $BLD_VS2019 == "True"
+      - $BLD_VS_DLL == "True"
 
 # Template for all "big" builds.
 .big_build:
@@ -303,23 +325,38 @@ build_windows:
 build_windows_vs2019:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019
-  only:
-    variables:
-      - $BLD_VS2019 == "True"
   stage: build
   needs: []
-  extends: .normal_build
+  extends: .vs2019_build
   tags:
     - win10-vs2019
   script:
     - mkdir build
     - cd build
-    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ../
+    - cmake -DBUILD_SHARED_LIBS=FALSE -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ../
     - cmake --build . --config Release -- /m
   artifacts:
     paths:
       - build/
-  allow_failure: true
+  allow_failure: false
+
+build_windows_vs2019_dll:
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019_dll
+  stage: build
+  needs: []
+  extends: .vs2019_dll_build
+  tags:
+    - win10-vs2019
+  script:
+    - mkdir build
+    - cd build
+    - cmake -DBUILD_SHARED_LIBS=TRUE -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ../
+    - cmake --build . --config Release -- /m
+  artifacts:
+    paths:
+      - build/
+  allow_failure: false
 
 # Test Stage
 # Runs all tests of GNSSTK for each platform
@@ -476,18 +513,15 @@ test_windows:
     - build_windows
   timeout: 10m
   # Allow failures here to prevent blocking the rest of the pipeline.
-  allow_failure: true
+  allow_failure: false
 
 test_windows_vs2019:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019
     GIT_STRATEGY: none
-  only:
-    variables:
-      - $BLD_VS2019 == "True"
   stage: test
   needs: [build_windows_vs2019]
-  extends: .normal_build
+  extends: .vs2019_build
   tags:
     - win10-vs2019
   script:
@@ -502,7 +536,30 @@ test_windows_vs2019:
     - build_windows_vs2019
   timeout: 10m
   # Allow failures here to prevent blocking the rest of the pipeline.
-  allow_failure: true
+  allow_failure: false
+
+test_windows_vs2019_dll:
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019_dll
+    GIT_STRATEGY: none
+  stage: test
+  needs: [build_windows_vs2019_dll]
+  extends: .vs2019_dll_build
+  tags:
+    - win10-vs2019
+  script:
+    - cd build
+    - cmake --build . --target RUN_TESTS --config Release
+  artifacts:
+    when: on_failure
+    paths:
+      - build/Testing/Temporary/
+      - build/swig/
+  dependencies:
+    - build_windows_vs2019_dll
+  timeout: 10m
+  # Allow failures here to prevent blocking the rest of the pipeline.
+  allow_failure: false
 
 # User_Install Stage
 
@@ -618,19 +675,16 @@ user_install_windows:
     - test_windows
   timeout: 20m
   # Allow failures here to prevent blocking the rest of the pipeline.
-  allow_failure: true
+  allow_failure: false
   retry: 2
 
 user_install_windows_vs2019:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019
     GIT_STRATEGY: none
-  only:
-    variables:
-      - $BLD_VS2019 == "True"
   stage: install
   needs: [build_windows_vs2019,test_windows_vs2019]
-  extends: .normal_build
+  extends: .vs2019_build
   tags:
     - win10-vs2019
   script:
@@ -644,7 +698,30 @@ user_install_windows_vs2019:
   dependencies:
     - build_windows_vs2019
     - test_windows_vs2019
-  allow_failure: true
+  allow_failure: false
+  timeout: 20m
+
+user_install_windows_vs2019_dll:
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019_dll
+    GIT_STRATEGY: none
+  stage: install
+  needs: [build_windows_vs2019_dll,test_windows_vs2019_dll]
+  extends: .vs2019_dll_build
+  tags:
+    - win10-vs2019
+  script:
+    - cd build
+    - cmake --build . --config Release --target install
+    - cd ..
+    - dir build\install
+  artifacts:
+    paths:
+      - build/install/
+  dependencies:
+    - build_windows_vs2019_dll
+    - test_windows_vs2019_dll
+  allow_failure: false
   timeout: 20m
 
 # System Stage
@@ -891,7 +968,11 @@ package_redhat_8_py36:
   dependencies: []
 
 package_windows:
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}
+    GIT_STRATEGY: none
   stage: package
+  extends: .normal_build
   needs: [build_windows]
   tags:
     - win10-vs2019
@@ -901,6 +982,44 @@ package_windows:
 #    - cpack -G WIX -C Release
   dependencies:
     - build_windows
+  artifacts:
+    paths:
+      - build/_CPack_Packages
+
+package_windows_vs2019:
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019
+    GIT_STRATEGY: none
+  stage: package
+  needs: [build_windows_vs2019]
+  extends: .vs2019_build
+  tags:
+    - win10-vs2019
+  script:
+    - cd build
+    - cpack -C Release
+#    - cpack -G WIX -C Release
+  dependencies:
+    - build_windows_vs2019
+  artifacts:
+    paths:
+      - build/_CPack_Packages
+
+package_windows_vs2019_dll:
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019_dll
+    GIT_STRATEGY: none
+  stage: package
+  needs: [build_windows_vs2019_dll]
+  extends: .vs2019_dll_build
+  tags:
+    - win10-vs2019
+  script:
+    - cd build
+    - cpack -C Release
+#    - cpack -G WIX -C Release
+  dependencies:
+    - build_windows_vs2019_dll
   artifacts:
     paths:
       - build/_CPack_Packages
