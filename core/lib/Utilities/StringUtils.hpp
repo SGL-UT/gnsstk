@@ -1344,6 +1344,21 @@ namespace gnsstk
          return temp;
       }
 
+         /** Create a table in text consisting of cells organized in
+          * row-major order.  Output is space separated, and columns
+          * widths are adjusted to accomodate the maximum size of the
+          * cells.
+          * @param[in] cells The table cells to format.
+          * @param[in] width The maximum number of characters per row.
+          * @param[in] force If true, width is always used to govern
+          *   the table width, otherwise an attempt is made to
+          *   determine the console width to use instead (falling back
+          *   on \a width). 
+          * @return A string containing the table, with newlines etc. */
+      inline std::string tabularize(const std::vector<std::string>& cells,
+                                    std::string::size_type width = 80,
+                                    bool force = false);
+
          /** Split a string by some delimiters
           * @param  aStr           the string to be split
           * @param  theDelimiters  the delimiters to split the string
@@ -2815,6 +2830,42 @@ namespace gnsstk
                                    std::string(e.what()));
             GNSSTK_THROW(strexc);
          }
+      }
+
+      inline std::string tabularize(const std::vector<std::string>& cells,
+                                    std::string::size_type width,
+                                    bool force)
+      {
+         std::string rv;
+            // get maximum cell size;
+         std::string::size_type maxWidth = 0;
+         for (unsigned i = 0; i < cells.size(); i++)
+         {
+            maxWidth = std::max(maxWidth, cells[i].size());
+         }
+         maxWidth++; // for a separator
+            // check the console width
+         if (!force)
+         {
+            char *colch = getenv("COLUMNS");
+            if (colch)
+            {
+               std::string colStr(colch);
+               width = asInt(colStr);
+            }
+         }
+            // how many columns can we have?
+         std::string::size_type numCols = width / maxWidth;
+         for (unsigned i = 0; i < cells.size(); i++)
+         {
+            rv += leftJustify(cells[i], maxWidth);
+            if (((i % numCols) == (numCols-1)) ||
+                (i == (cells.size() - 1)))
+            {
+               rv += '\n';
+            }
+         }
+         return rv;
       }
 
          //@}

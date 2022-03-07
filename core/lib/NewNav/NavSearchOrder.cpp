@@ -36,40 +36,34 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GNSSTK_NAVSEARCHORDER_HPP
-#define GNSSTK_NAVSEARCHORDER_HPP
-
-#include <string>
-#include "EnumIterator.hpp"
+#include "NavSearchOrder.hpp"
+#include "StringUtils.hpp"
 
 namespace gnsstk
 {
-      /// @ingroup NavFactory
-      //@{
-
-      /// Specify the behavior of nav data searches in NavLibrary/NavDataFactory
-   enum class NavSearchOrder
-   {
-      Unknown,///< Search order is not known or is uninitialized.
-      User,   ///< Return the latest message before the search time.
-      Nearest,///< Return the message closest to the search time.
-      Last    ///< Used to create an iterator.
-   };
-
-      /** Define an iterator so C++11 can do things like
-       * for (NavSearchOrder i : NavSearchOrderIterator()) */
-   typedef EnumIterator<NavSearchOrder, NavSearchOrder::Unknown, NavSearchOrder::Last> NavSearchOrderIterator;
-
    namespace StringUtils
    {
-         /// Convert a NavSearchOrder to a whitespace-free string name.
-      std::string asString(NavSearchOrder e);
-         /// Convert a string name to an NavSearchOrder
-      NavSearchOrder asNavSearchOrder(const std::string& s);
-   }
+      std::string asString(NavSearchOrder e)
+      {
+         switch (e)
+         {
+            case NavSearchOrder::Unknown: return "Unknown";
+            case NavSearchOrder::User:    return "User";
+            case NavSearchOrder::Nearest: return "Nearest";
+            default:                      return "???";
+         } // switch (e)
+      } // asString(NavSearchOrder)
 
-      //@}
 
-}
-
-#endif // GNSSTK_NAVSEARCHORDER_HPP
+      NavSearchOrder asNavSearchOrder(const std::string& s)
+      {
+         std::string lower(s);
+         StringUtils::lowerCase(lower);
+         if (lower == "user")
+            return NavSearchOrder::User;
+         if (lower == "nearest")
+            return NavSearchOrder::Nearest;
+         return NavSearchOrder::Unknown;
+      } // asNavSearchOrder(string)
+   } // namespace StringUtils
+} // namespace gnsstk
