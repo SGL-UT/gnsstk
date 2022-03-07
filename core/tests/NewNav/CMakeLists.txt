@@ -348,12 +348,12 @@ set_property(TEST BDSD1NavTimeOffset_T PROPERTY LABELS NewNav)
 
 add_executable(BDSD2NavAlm_T BDSD2NavAlm_T.cpp)
 target_link_libraries(BDSD2NavAlm_T gnsstk)
-add_test(BDSD2NavAlm_T BDSD2NavAlm_T)
+add_test(NAME BDSD2NavAlm_T COMMAND $<TARGET_FILE:BDSD2NavAlm_T>)
 set_property(TEST BDSD2NavAlm_T PROPERTY LABELS NewNav)
 
 add_executable(BDSD2NavEph_T BDSD2NavEph_T.cpp)
 target_link_libraries(BDSD2NavEph_T gnsstk)
-add_test(BDSD2NavEph_T BDSD2NavEph_T)
+add_test(NAME BDSD2NavEph_T COMMAND $<TARGET_FILE:BDSD2NavEph_T>)
 set_property(TEST BDSD2NavEph_T PROPERTY LABELS NewNav)
 
 add_executable(GLOFNavAlm_T GLOFNavAlm_T.cpp)
