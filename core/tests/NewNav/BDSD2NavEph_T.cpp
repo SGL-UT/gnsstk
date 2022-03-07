@@ -36,9 +36,9 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "GPSCNav2Eph.hpp"
+#include "BDSD2NavEph.hpp"
 #include "TestUtil.hpp"
-#include "GPSWeekSecond.hpp"
+#include "BDSWeekSecond.hpp"
 #include "CivilTime.hpp"
 
 namespace gnsstk
@@ -50,7 +50,7 @@ namespace gnsstk
    }
 }
 
-class GPSCNav2Eph_T
+class BDSD2NavEph_T
 {
 public:
       /// Make sure constructor initializes data members correctly.
@@ -58,109 +58,125 @@ public:
    unsigned getUserTimeTest();
    unsigned fixFitTest();
    unsigned validateTest();
+   unsigned getAODTest();
    unsigned getXvtTest();
 };
 
 
-unsigned GPSCNav2Eph_T ::
+unsigned BDSD2NavEph_T ::
 constructorTest()
 {
-   TUDEF("GPSCNav2Eph", "GPSCNav2Eph");
-   gnsstk::GPSCNav2Eph uut;
-   TUASSERTE(bool, true, uut.healthL1C);
-   TUASSERTE(int8_t, -16, uut.uraED);
-   TUASSERTE(int8_t, -16, uut.uraNED0);
-   TUASSERTE(uint8_t, 0, uut.uraNED1);
-   TUASSERTE(uint8_t, 0, uut.uraNED2);
-   TUASSERTE(bool, false, uut.integStat);
-   TUASSERTFE(0, uut.deltaA);
-   TUASSERTFE(0, uut.dOMEGAdot);
-   TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::BEGINNING_OF_TIME, uut.top);
-   TUASSERTFE(0, uut.tgd);
-   TUASSERTFE(0, uut.iscL1CP);
-   TUASSERTFE(0, uut.iscL1CD);
+   TUDEF("BDSD2NavEph", "BDSD2NavEph");
+   gnsstk::BDSD2NavEph obj;
+   TUASSERTE(uint32_t, 0, obj.pre);
+   TUASSERTE(uint32_t, 0, obj.rev);
+   TUASSERTE(uint16_t, 0, obj.sow);
+   TUASSERTE(bool, true, obj.satH1);
+   TUASSERTE(unsigned, 0xff, obj.aodc);
+   TUASSERTE(unsigned, 0xff, obj.aode);
+   TUASSERTE(unsigned, 15, obj.uraIndex);
+   TUASSERTE(bool, true, std::isnan(obj.tgd2));
+   TUASSERTE(bool, true, std::isnan(obj.tgd2));
    TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Ephemeris,
-             uut.signal.messageType);
+             obj.signal.messageType);
    TURETURN();
 }
 
 
-unsigned GPSCNav2Eph_T ::
+unsigned BDSD2NavEph_T ::
 getUserTimeTest()
 {
-   TUDEF("GPSCNav2Eph", "getUserTime");
-   gnsstk::GPSCNav2Eph uut;
-      // just using made-up numbers
-   uut.timeStamp = gnsstk::GPSWeekSecond(2100,135.0);
-   uut.xmitTime = gnsstk::GPSWeekSecond(2100,139.0);
-      // Note that the transmit time and timestamp are typically the
-      // same, but getUserTime() by default uses the timeStamp, which
-      // is present in NavData while xmitTime is not.  Therefore, the
-      // expected user time is timeStamp+12 and not xmitTime+12.
-   gnsstk::CommonTime exp(gnsstk::GPSWeekSecond(2100,147.0));
-   uut.signal = gnsstk::NavMessageID(
-      gnsstk::NavSatelliteID(1, 1, gnsstk::SatelliteSystem::GPS,
-                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::L1CD,
-                            gnsstk::NavType::GPSCNAV2),
-      gnsstk::NavMessageType::Ephemeris);
-   TUASSERTE(gnsstk::CommonTime, exp, uut.getUserTime());
+   TUDEF("BDSD2NavEph", "getUserTime");
+   gnsstk::BDSD2NavEph obj;
+   obj.timeStamp = gnsstk::BDSWeekSecond(2100,253.0);
+   obj.xmitTime = gnsstk::BDSWeekSecond(2100,135.0);
+   gnsstk::CommonTime exp(gnsstk::BDSWeekSecond(2100,165.0));
+   TUASSERTE(gnsstk::CommonTime, exp, obj.getUserTime());
    TURETURN();
 }
 
 
-unsigned GPSCNav2Eph_T ::
+unsigned BDSD2NavEph_T ::
 fixFitTest()
 {
-   TUDEF("GPSCNav2Eph", "fixFit");
-   gnsstk::GPSCNav2Eph uut;
-   gnsstk::GPSWeekSecond beginExpWS2(2059, 597600), endExpWS2(2060, 3600);
+   TUDEF("BDSD2NavEph", "fixFit");
+   gnsstk::BDSD2NavEph obj;
+   gnsstk::BDSWeekSecond beginExpWS2(826,511200), endExpWS2(826,525600);
    gnsstk::CommonTime beginExp2(beginExpWS2), endExp2(endExpWS2);
-   uut.Toe = gnsstk::GPSWeekSecond(2059, 603000);
-   uut.xmitTime = gnsstk::GPSWeekSecond(2059,597600);
-   TUCATCH(uut.fixFit());
-   TUASSERTE(gnsstk::CommonTime, beginExp2, uut.beginFit);
-   TUASSERTE(gnsstk::CommonTime, endExp2, uut.endFit);
-      //uut.dump(std::cerr, gnsstk::OrbitDataKepler::Detail::Full);
+   obj.Toe = obj.Toc = gnsstk::BDSWeekSecond(826,518400);
+   obj.xmitTime = gnsstk::BDSWeekSecond(826,518400);
+   TUCATCH(obj.fixFit());
+   TUASSERTE(gnsstk::CommonTime, beginExp2, obj.beginFit);
+   TUASSERTE(gnsstk::CommonTime, endExp2, obj.endFit);
+      //obj.dump(std::cerr, gnsstk::OrbitDataKepler::Detail::Full);
+   gnsstk::BDSWeekSecond beginExpWS3(826,547620), endExpWS3(826,554400);
+   gnsstk::CommonTime beginExp3(beginExpWS3), endExp3(endExpWS3);
+   obj.Toe = obj.Toc = gnsstk::BDSWeekSecond(826,547200);
+   obj.xmitTime = gnsstk::BDSWeekSecond(826,547620);
+   TUCATCH(obj.fixFit());
+   TUASSERTE(gnsstk::CommonTime, beginExp3, obj.beginFit);
+   TUASSERTE(gnsstk::CommonTime, endExp3, obj.endFit);
    TURETURN();
 }
 
 
-unsigned GPSCNav2Eph_T ::
+unsigned BDSD2NavEph_T ::
 validateTest()
 {
-   TUDEF("GPSCNav2Data", "validate");
-      /// @todo implement some tests when we implement validate()
+   TUDEF("BDSD2NavData", "validate");
+   gnsstk::BDSD2NavEph obj;
+   obj.fraID = 1;
+   TUASSERTE(bool, true, obj.validate());
+   obj.pre = 0x22c; // this is not valid
+   TUASSERTE(bool, false, obj.validate());
+   obj.pre = 0x712; // this is valid
+   TUASSERTE(bool, true, obj.validate());
    TURETURN();
 }
 
 
-unsigned GPSCNav2Eph_T ::
+unsigned BDSD2NavEph_T ::
+getAODTest()
+{
+   TUDEF("BDSD2NavEph", "getAOD");
+   for (uint8_t i = 0; i < 32; i++)
+   {
+      unsigned exp = i < 25 ? i : (i-23)*24;
+      TUASSERTE(unsigned, exp, gnsstk::BDSD2NavEph::getAOD(i));
+   }
+   TUASSERTE(unsigned, -1, gnsstk::BDSD2NavEph::getAOD(33));
+   TURETURN();
+}
+
+
+unsigned BDSD2NavEph_T ::
 getXvtTest()
 {
-   TUDEF("GPSCNav2Eph", "getXvt");
-   gnsstk::GPSCNav2Eph uut;
+   TUDEF("BDSD2NavEph", "getXvt");
+   gnsstk::BDSD2NavEph uut;
    gnsstk::Xvt xvt;
-   uut.xmitTime = gnsstk::GPSWeekSecond(1854, .720000000000e+04);
-   uut.Toe = gnsstk::GPSWeekSecond(1854, .143840000000e+05);
-   uut.Toc = gnsstk::CivilTime(2015,7,19,3,59,44.0,gnsstk::TimeSystem::GPS);
+   uut.xmitTime = gnsstk::BDSWeekSecond(1854, .720000000000e+04);
+   uut.Toe = gnsstk::BDSWeekSecond(1854, .143840000000e+05);
+   uut.Toc = gnsstk::CivilTime(2015,7,19,3,59,44.0,gnsstk::TimeSystem::BDT);
    uut.health = gnsstk::SVHealth::Healthy;
-   gnsstk::CivilTime civ(2015,7,19,2,0,35.0,gnsstk::TimeSystem::GPS);
+   gnsstk::CivilTime civ(2015,7,19,2,0,35.0,gnsstk::TimeSystem::BDT);
    TUASSERT(uut.getXvt(civ, xvt));
    TUASSERTE(gnsstk::Xvt::HealthStatus, gnsstk::Xvt::Healthy, xvt.health);
-   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::WGS84,xvt.frame);
+   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::CGCS2000,xvt.frame);
    TURETURN();
 }
 
 
 int main()
 {
-   GPSCNav2Eph_T testClass;
+   BDSD2NavEph_T testClass;
    unsigned errorTotal = 0;
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.fixFitTest();
    errorTotal += testClass.validateTest();
+   errorTotal += testClass.getAODTest();
    errorTotal += testClass.getXvtTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal

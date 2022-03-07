@@ -45,7 +45,7 @@ set(JPLDIR ${CMAKE_CURRENT_SOURCE_DIR}/../../apps/geomatics/JPLeph/JPL/)
 ###############################################################################
 add_executable(StatsFilter_T StatsFilter_T.cpp)
 target_link_libraries(StatsFilter_T gnsstk)
-add_test(StatsFilter StatsFilter_T)
+add_test(NAME StatsFilter COMMAND $<TARGET_FILE:StatsFilter_T>)
 set_property(TEST StatsFilter PROPERTY LABELS Geomatics)
 
 ################################################################################
@@ -102,7 +102,7 @@ set_property(TEST Rinex3ObsLoader_R210 PROPERTY LABELS Geomatics)
 ###############################################################################
 add_executable(KalmanFilter_T KalmanFilter_T.cpp)
 target_link_libraries(KalmanFilter_T gnsstk)
-add_test(KalmanFilter KalmanFilter_T)
+add_test(NAME KalmanFilter COMMAND $<TARGET_FILE:KalmanFilter_T>)
 set_property(TEST KalmanFilter PROPERTY LABELS Geomatics)
 
 ################################################################################

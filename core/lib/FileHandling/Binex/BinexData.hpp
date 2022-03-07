@@ -45,7 +45,7 @@
 #define GNSSTK_BINEXDATA_HPP
 
 #include "gnsstkplatform.h"
-
+#include "gnsstk_export.h"
 #include "BinUtils.hpp"
 #include "FFData.hpp"
 #include "FFStream.hpp"
@@ -67,15 +67,15 @@ namespace gnsstk
    public:
 
          // The endianness of the native platform
-      static const bool nativeLittleEndian;
+      GNSSTK_EXPORT static const bool nativeLittleEndian;
 
       typedef uint32_t  RecordID;  ///< Record ID type
       typedef uint8_t   SyncByte;  ///< Synchronization byte (record flags)
 
-      static const RecordID  INVALID_RECORD_ID;     /// 0xFFFFFFFF
+      GNSSTK_EXPORT static const RecordID  INVALID_RECORD_ID;     /// 0xFFFFFFFF
 
-      static const SyncByte  DEFAULT_RECORD_FLAGS;  /// 0x20
-      static const SyncByte  VALID_RECORD_FLAGS;    /// 0x38
+      GNSSTK_EXPORT static const SyncByte  DEFAULT_RECORD_FLAGS;  /// 0x20
+      GNSSTK_EXPORT static const SyncByte  VALID_RECORD_FLAGS;    /// 0x38
 
          // Flags indicating whether a record is reversed, whether a record
          // is big endian, and whether a record contains an enhanced CRC.
@@ -97,9 +97,9 @@ namespace gnsstk
       {
       public:
 
-         static const unsigned long  MIN_VALUE;  /// 0
-         static const unsigned long  MAX_VALUE;  /// 536870911
-         static const unsigned char  MAX_BYTES;  /// 4
+         GNSSTK_EXPORT static const unsigned long  MIN_VALUE;  /// 0
+         GNSSTK_EXPORT static const unsigned long  MAX_VALUE;  /// 536870911
+         GNSSTK_EXPORT static const unsigned char  MAX_BYTES;  /// 4
 
             /**
              * Default constructor - sets value to 0.
@@ -294,9 +294,9 @@ namespace gnsstk
       {
       public:
 
-         static const long long      MIN_VALUE;  /// -1157442765409226759LL
-         static const long long      MAX_VALUE;  ///  1157442765409226759LL
-         static const unsigned char  MAX_BYTES;  ///  8
+         GNSSTK_EXPORT static const long long      MIN_VALUE;  /// -1157442765409226759LL
+         GNSSTK_EXPORT static const long long      MAX_VALUE;  ///  1157442765409226759LL
+         GNSSTK_EXPORT static const unsigned char  MAX_BYTES;  ///  8
 
             /**
              * Default constructor - sets value to 0.

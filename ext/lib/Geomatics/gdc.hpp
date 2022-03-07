@@ -52,6 +52,7 @@
 #include <vector>
 #include <map>
 
+#include "gnsstk_export.h"
 #include "Exception.hpp"
 #include "Epoch.hpp"
 #include "RinexSatID.hpp"
@@ -427,6 +428,7 @@ private:
 
 protected:
    /// Version string
+   GNSSTK_EXPORT
    static const std::string GDCVersion;
 
    // NB flags[] is either good (0) or not (!0);

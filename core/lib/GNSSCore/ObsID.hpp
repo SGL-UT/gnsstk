@@ -53,6 +53,7 @@
 #include <string>
 #include <map>
 
+#include "gnsstk_export.h"
 #include "Exception.hpp"
 #include "SatID.hpp"
 #include "Rinex3ObsBase.hpp"
@@ -212,14 +213,14 @@ namespace gnsstk
       static std::string getDescOT(ObservationType e)
       { return otDesc[e]; }
          /// These strings are for forming a somewhat verbose description
-      static std::map< TrackingCode,    std::string > tcDesc;
-      static std::map< CarrierBand,     std::string > cbDesc;
-      static std::map< ObservationType, std::string > otDesc;
+      GNSSTK_EXPORT static std::map< TrackingCode,    std::string > tcDesc;
+      GNSSTK_EXPORT static std::map< CarrierBand,     std::string > cbDesc;
+      GNSSTK_EXPORT static std::map< ObservationType, std::string > otDesc;
          /** If true, dump and operator<< will include the values of
           * freqOffs, freqOffsWild, mcode, and mcodeMask.  These are
           * flags that were added more recently, so this also
           * preserves traditional output. */
-      static bool verbose;
+      GNSSTK_EXPORT static bool verbose;
 
    private:
       uint32_t mcode;     ///< Data to uniquely identify M-code signal.

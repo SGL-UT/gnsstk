@@ -44,6 +44,7 @@
 #ifndef GNSSTK_RINEX3OBSBASE_HPP
 #define GNSSTK_RINEX3OBSBASE_HPP
 
+#include "gnsstk_export.h"
 #include "FFData.hpp"
 
 namespace gnsstk
@@ -68,7 +69,7 @@ namespace gnsstk
           * @note this is declared here and not in header to avoid
           *   issues with cross-dependent code, e.g. ObsID depending
           *   on Rinex3ObsHeader and vice-versa. */
-      static const double currentVersion;
+      GNSSTK_EXPORT static const double currentVersion;
    };
 
       //@}

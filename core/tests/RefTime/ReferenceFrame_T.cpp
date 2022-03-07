@@ -63,6 +63,13 @@ public:
       ReferenceFrame rf3(ReferenceFrame::Unknown);
       TUASSERTE(std::string, unk, gnsstk::StringUtils::asString(rf3));
 
+      for (ReferenceFrame i : ReferenceFrameIterator())
+      {
+         std::string s = gnsstk::StringUtils::asString(i);
+         gnsstk::ReferenceFrame e = gnsstk::StringUtils::asReferenceFrame(s);
+         TUASSERTE(gnsstk::ReferenceFrame, i, e);
+      }
+
       TURETURN();
    }
 
@@ -344,11 +351,6 @@ public:
       TUASSERT(frame == rf3);
 
       frame = gnsstk::StringUtils::asReferenceFrame("PZ90");
-      TUASSERT(frame != rf1);
-      TUASSERT(frame != rf2);
-      TUASSERT(frame == rf3);
-
-      frame = ReferenceFrame((ReferenceFrame)6);
       TUASSERT(frame != rf1);
       TUASSERT(frame != rf2);
       TUASSERT(frame == rf3);

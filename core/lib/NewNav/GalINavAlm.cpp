@@ -63,6 +63,7 @@ namespace gnsstk
          // instead as there is no guarantee that the two word types
          // making up this almanac are consecutive.
       msgLenSec = 2.0;
+      frame = ReferenceFrame::ITRF;
    }
 
 

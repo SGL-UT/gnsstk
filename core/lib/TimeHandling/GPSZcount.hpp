@@ -48,6 +48,7 @@
 #include <ostream>
 
 // GNSSTK includes
+#include "gnsstk_export.h"
 #include "Exception.hpp"
 
 namespace gnsstk
@@ -75,13 +76,13 @@ namespace gnsstk
    {
    public:
          /// Z-counts per minute (40)
-      static const long ZCOUNT_MINUTE;
+      GNSSTK_EXPORT static const long ZCOUNT_MINUTE;
          /// Z-counts per hour (2400)
-      static const long ZCOUNT_HOUR;
+      GNSSTK_EXPORT static const long ZCOUNT_HOUR;
          /// Z-counts per day (57600)
-      static const long ZCOUNT_DAY;
+      GNSSTK_EXPORT static const long ZCOUNT_DAY;
          /// Z-counts per whole GPS week. (403200)
-      static const long ZCOUNT_WEEK;
+      GNSSTK_EXPORT static const long ZCOUNT_WEEK;
 
          /** Separate Week and Z-count Constructor.
           * @param inWeek the GPS week to use in this object.

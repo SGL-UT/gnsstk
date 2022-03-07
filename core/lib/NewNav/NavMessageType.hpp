@@ -41,7 +41,14 @@
 
 #include <string>
 #include <set>
+#include "gnsstk_export.h"
 #include "EnumIterator.hpp"
+
+// SWIG kludge because SWIG doesn't drill down in include files, so it
+// doesn't know about GNSSTK_EXPORT defined in the above include file.
+#if defined(SWIG) && !defined(GNSSTK_EXPORT)
+#define GNSSTK_EXPORT
+#endif
 
 namespace gnsstk
 {
@@ -70,7 +77,7 @@ namespace gnsstk
 
       /** Convenient set of all valid (non-meta) message types.
        * @note This is defined in NavStatic.cpp */
-   extern const NavMessageTypeSet allNavMessageTypes;
+   GNSSTK_EXPORT extern const NavMessageTypeSet allNavMessageTypes;
 
    namespace StringUtils
    {

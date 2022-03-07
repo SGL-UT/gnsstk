@@ -46,6 +46,7 @@
 
 #include <cstring>
 #include <algorithm>
+#include "gnsstk_export.h"
 #include "gnsstkplatform.h"
 
 #ifdef __sun
@@ -301,13 +302,13 @@ namespace gnsstk
       };
 
          /// CCITT CRC parameters
-      extern const CRCParam CRCCCITT;
+      GNSSTK_EXPORT extern const CRCParam CRCCCITT;
          /// CRC-16 parameters
-      extern const CRCParam CRC16;
+      GNSSTK_EXPORT extern const CRCParam CRC16;
          /// CRC-32 parameters
-      extern const CRCParam CRC32;
+      GNSSTK_EXPORT extern const CRCParam CRC32;
          /// CRC-24Q parameters
-      extern const CRCParam CRC24Q;
+      GNSSTK_EXPORT extern const CRCParam CRC24Q;
 
          /**
           * Compute CRC (suitable for polynomial orders from 1 to 32).

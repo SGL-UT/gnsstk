@@ -191,6 +191,8 @@ namespace gnsstk
 
       CommonTime beginFit; ///< Time at beginning of fit interval
       CommonTime endFit;   ///< Time at end of fit interval
+
+      ReferenceFrame frame;///< Reference frame of produced Xvt data.
    };
 
       //@}

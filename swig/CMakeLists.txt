@@ -86,6 +86,7 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/NewNav )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/SWIGHelpers )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/TimeHandling )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/Utilities )
+include_directories(AFTER SYSTEM ${PROJECT_BINARY_DIR})
 
 swig_add_module( ${SWIG_MODULE} python gnsstk.i )
 swig_link_libraries( ${SWIG_MODULE} gnsstk )

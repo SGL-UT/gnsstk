@@ -2,39 +2,39 @@
 
 add_executable(Convhelp_T Convhelp_T.cpp)
 target_link_libraries(Convhelp_T gnsstk)
-add_test(GNSSCore_Convhelp Convhelp_T)
+add_test(NAME GNSSCore_Convhelp COMMAND $<TARGET_FILE:Convhelp_T>)
 
 add_executable(IonoModel_T IonoModel_T.cpp)
 target_link_libraries(IonoModel_T gnsstk)
-add_test(GNSSCore_IonoModel IonoModel_T)
+add_test(NAME GNSSCore_IonoModel COMMAND $<TARGET_FILE:IonoModel_T>)
 
 add_executable(IonoModelStore_T IonoModelStore_T.cpp)
 target_link_libraries(IonoModelStore_T gnsstk)
-add_test(GNSSCore_IonoModelStore IonoModelStore_T)
+add_test(NAME GNSSCore_IonoModelStore COMMAND $<TARGET_FILE:IonoModelStore_T>)
 
 add_executable(ObsID_T ObsID_T.cpp)
 target_link_libraries(ObsID_T gnsstk)
-add_test(GNSSCore_ObsID ObsID_T)
+add_test(NAME GNSSCore_ObsID COMMAND $<TARGET_FILE:ObsID_T>)
 
 add_executable(ObsIDInitializer_T ObsIDInitializer_T.cpp)
 target_link_libraries(ObsIDInitializer_T gnsstk)
-add_test(GNSSCore_ObsIDInitializer ObsIDInitializer_T)
+add_test(NAME GNSSCore_ObsIDInitializer COMMAND $<TARGET_FILE:ObsIDInitializer_T>)
 
 add_executable(Position_T Position_T.cpp)
 target_link_libraries(Position_T gnsstk)
-add_test(GNSSCore_Position Position_T)
+add_test(NAME GNSSCore_Position COMMAND $<TARGET_FILE:Position_T>)
 
 add_executable(TropModel_T TropModel_T.cpp)
 target_link_libraries(TropModel_T gnsstk)
-add_test(GNSSCore_TropModel TropModel_T)
+add_test(NAME GNSSCore_TropModel COMMAND $<TARGET_FILE:TropModel_T>)
 
 add_executable(WxObsMap_T WxObsMap_T.cpp)
 target_link_libraries(WxObsMap_T gnsstk)
-add_test(GNSSCore_WxObsMap WxObsMap_T)
+add_test(NAME GNSSCore_WxObsMap COMMAND $<TARGET_FILE:WxObsMap_T>)
 
 add_executable(Xvt_T Xvt_T.cpp)
 target_link_libraries(Xvt_T gnsstk)
-add_test(GNSSCore_Xvt Xvt_T)
+add_test(NAME GNSSCore_Xvt COMMAND $<TARGET_FILE:Xvt_T>)
 
 ###############################################################################
 add_executable(Tropdump Tropdump.cpp)
@@ -159,39 +159,39 @@ set_property(TEST TropModel_Zero PROPERTY LABELS Tropmodel)
 
 add_executable(SatMetaDataStore_T SatMetaDataStore_T.cpp)
 target_link_libraries(SatMetaDataStore_T gnsstk)
-add_test(GNSSCore_SatMetaDataStore SatMetaDataStore_T)
+add_test(NAME GNSSCore_SatMetaDataStore COMMAND $<TARGET_FILE:SatMetaDataStore_T>)
 
 add_executable(RinexObsID_T RinexObsID_T.cpp)
 target_link_libraries(RinexObsID_T gnsstk)
-add_test(GNSSCore_RinexObsID RinexObsID_T)
+add_test(NAME GNSSCore_RinexObsID COMMAND $<TARGET_FILE:RinexObsID_T>)
 
 add_executable(RinexSatID_T RinexSatID_T.cpp)
 target_link_libraries(RinexSatID_T gnsstk)
-add_test(GNSSCore_RinexSatID RinexSatID_T)
+add_test(NAME GNSSCore_RinexSatID COMMAND $<TARGET_FILE:RinexSatID_T>)
 
 add_executable(SatID_T SatID_T.cpp)
 target_link_libraries(SatID_T gnsstk)
-add_test(GNSSCore_SatID SatID_T)
+add_test(NAME GNSSCore_SatID COMMAND $<TARGET_FILE:SatID_T>)
 
 add_executable(XmitAnt_T XmitAnt_T.cpp)
 target_link_libraries(XmitAnt_T gnsstk)
-add_test(GNSSCore_XmitAnt XmitAnt_T)
+add_test(NAME GNSSCore_XmitAnt COMMAND $<TARGET_FILE:XmitAnt_T>)
 
 add_executable(FreqConv_T FreqConv_T.cpp)
 target_link_libraries(FreqConv_T gnsstk)
-add_test(GNSSCore_FreqConv FreqConv_T)
+add_test(NAME GNSSCore_FreqConv COMMAND $<TARGET_FILE:FreqConv_T>)
 
 add_executable(AngleReduced_T AngleReduced_T.cpp)
 target_link_libraries(AngleReduced_T gnsstk)
-add_test(GNSSCore_AngleReduced AngleReduced_T)
+add_test(NAME GNSSCore_AngleReduced COMMAND $<TARGET_FILE:AngleReduced_T>)
 
 add_executable(Angle_T Angle_T.cpp)
 target_link_libraries(Angle_T gnsstk)
-add_test(GNSSCore_Angle Angle_T)
+add_test(NAME GNSSCore_Angle COMMAND $<TARGET_FILE:Angle_T>)
 
 add_executable(AngleType_T AngleType_T.cpp)
 target_link_libraries(AngleType_T gnsstk)
-add_test(GNSSCore_AngleType AngleType_T)
+add_test(NAME GNSSCore_AngleType COMMAND $<TARGET_FILE:AngleType_T>)
 
 ###############################################################################
 ###############################################################################
