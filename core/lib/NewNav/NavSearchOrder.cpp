@@ -37,12 +37,13 @@
 //
 //==============================================================================
 #include "NavSearchOrder.hpp"
+#include "StringUtils.hpp"
 
 namespace gnsstk
 {
    namespace StringUtils
    {
-      std::string asString(NavSearchOrder e) throw()
+      std::string asString(NavSearchOrder e)
       {
          switch (e)
          {
@@ -54,11 +55,13 @@ namespace gnsstk
       } // asString(NavSearchOrder)
 
 
-      NavSearchOrder asNavSearchOrder(const std::string& s) throw()
+      NavSearchOrder asNavSearchOrder(const std::string& s)
       {
-         if (s == "User")
+         std::string lower(s);
+         StringUtils::lowerCase(lower);
+         if (lower == "user")
             return NavSearchOrder::User;
-         if (s == "Nearest")
+         if (lower == "nearest")
             return NavSearchOrder::Nearest;
          return NavSearchOrder::Unknown;
       } // asNavSearchOrder(string)

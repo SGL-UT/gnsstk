@@ -63,9 +63,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a NavSearchOrder to a whitespace-free string name.
-      std::string asString(NavSearchOrder e) throw();
+      std::string asString(NavSearchOrder e);
          /// Convert a string name to an NavSearchOrder
-      NavSearchOrder asNavSearchOrder(const std::string& s) throw();
+      NavSearchOrder asNavSearchOrder(const std::string& s);
    }
 
       //@}
