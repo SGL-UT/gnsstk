@@ -868,7 +868,7 @@ package_debian_10:
     - if: $CI_COMMIT_REF_NAME =~ /main/ || $CI_COMMIT_REF_NAME =~/^ci_.*$/ || $CI_COMMIT_REF_NAME=~/^version_.*_prep$/
       variables:
         BUILD_TYPE: debug
-      when: on_success
+    - when: on_success
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/debian10_fai_ish
