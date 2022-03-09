@@ -183,10 +183,10 @@ namespace gnsstk
 
 
    bool OrbitDataKepler ::
-   getXvt(const CommonTime& when, Xvt& xvt)
+   getXvt(const CommonTime& when, Xvt& xvt, const ObsID& oid)
    {
       GPSEllipsoid ell;
-      return getXvt(when, ell, xvt);
+      return getXvt(when, ell, xvt, oid);
    }
 
 
@@ -199,7 +199,8 @@ namespace gnsstk
 
 
    bool OrbitDataKepler ::
-   getXvt(const CommonTime& when, const EllipsoidModel& ell, Xvt& xvt)
+   getXvt(const CommonTime& when, const EllipsoidModel& ell, Xvt& xvt,
+          const ObsID& oid)
    {
       GPSWeekSecond gpsws = (Toe);
       double ToeSOW = gpsws.sow;

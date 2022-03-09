@@ -959,6 +959,35 @@ namespace gnsstk
                   NavValidityType valid = NavValidityType::ValidOnly,
                   NavSearchOrder order = NavSearchOrder::User);
 
+         /** Get the position and velocity of a satellite at a
+          * specific time.  This implementation differs from the other
+          * getXvt method in that it will first attempt to find a
+          * matching ephemeris, and if that fails, it will attempt to
+          * search for a matching almanac, as opposed to one or the other.
+          * Additionally, it allows the user to specify an ObsID to
+          * get an antenna phase center that is different from the
+          * transmitting antenna, when applicable.
+          * @param[in] sat Satellite to get the position/velocity for.
+          * @param[in] when The time that the position should be computed for.
+          * @param[out] xvt The computed position and velocity at when.
+          * @param[in] oid When it is possible to have different
+          *   antenna phase centers on a single SV, this parameter
+          *   allows you to specify a different APC than the
+          *   navigation data was being transmitted from.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time.
+          * @return true if successful, false if no nav data was found
+          *   to compute the Xvt. */
+      bool getXvt(const NavSatelliteID& sat, const CommonTime& when,
+                  Xvt& xvt, const ObsID& oid,
+                  SVHealth xmitHealth = SVHealth::Any,
+                  NavValidityType valid = NavValidityType::ValidOnly,
+                  NavSearchOrder order = NavSearchOrder::User);
+
          /** Get the health status of a satellite at a specific time.
           * @param[in] sat Satellite to get the health status for.
           * @param[in] when The time that the health should be retrieved.

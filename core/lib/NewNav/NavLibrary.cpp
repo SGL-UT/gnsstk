@@ -69,6 +69,18 @@ namespace gnsstk
           SVHealth xmitHealth, NavValidityType valid, NavSearchOrder order)
    {
       DEBUGTRACE_FUNCTION();
+         // Use the standard default ObsID for standard default behavior.
+      ObsID oid;
+      return getXvt(sat, when, xvt, oid, xmitHealth, valid, order);
+   }
+
+
+   bool NavLibrary ::
+   getXvt(const NavSatelliteID& sat, const CommonTime& when, Xvt& xvt,
+          const ObsID& oid, SVHealth xmitHealth, NavValidityType valid,
+          NavSearchOrder order)
+   {
+      DEBUGTRACE_FUNCTION();
       NavMessageID nmid(sat, NavMessageType::Ephemeris);
       NavDataPtr ndp;
       if (!find(nmid, when, ndp, xmitHealth, valid, order))
@@ -80,7 +92,7 @@ namespace gnsstk
          }
       }
       OrbitData *orb = dynamic_cast<OrbitData*>(ndp.get());
-      return orb->getXvt(when, xvt);
+      return orb->getXvt(when, xvt, oid);
    }
 
 

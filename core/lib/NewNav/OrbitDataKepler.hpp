@@ -99,9 +99,11 @@ namespace gnsstk
           * @note Defaults to using the GPS ellipsoid parameters.
           * @param[in] when The time at which to compute the xvt.
           * @param[out] xvt The resulting computed position/velocity.
+          * @param[in] oid Ignored at this level, only used in derived classes.
           * @return true if successful, false if required nav data was
           *   unavailable. */
-      bool getXvt(const CommonTime& when, Xvt& xvt) override;
+      bool getXvt(const CommonTime& when, Xvt& xvt,
+                  const ObsID& = ObsID()) override;
 
          /** Compute satellite relativity correction (sec) at the given time.
           * @note Defaults to using the GPS ellipsoid parameters.
@@ -128,9 +130,11 @@ namespace gnsstk
           *   (specifically EllipsoidModel::gm() and
           *   EllipsoidModel::angVelocity()).
           * @param[out] xvt The resulting computed position/velocity.
+          * @param[in] oid Ignored at this level, only used in derived classes.
           * @return true if successful, false if required nav data was
           *   unavailable. */
-      bool getXvt(const CommonTime& when, const EllipsoidModel& ell, Xvt& xvt);
+      bool getXvt(const CommonTime& when, const EllipsoidModel& ell, Xvt& xvt,
+                  const ObsID& oid = ObsID());
 
          /** Compute satellite relativity correction (sec) at the given time.
           * @param[in] ell The ellipsoid used in computing the Xvt

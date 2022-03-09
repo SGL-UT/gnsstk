@@ -61,7 +61,7 @@ namespace gnsstk
 
 
    bool BDSD2NavEph ::
-   getXvt(const CommonTime& when, Xvt& xvt)
+   getXvt(const CommonTime& when, Xvt& xvt, const ObsID& oid)
    {
       CGCS2000Ellipsoid ell;
 

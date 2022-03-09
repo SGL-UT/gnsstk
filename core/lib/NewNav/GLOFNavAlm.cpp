@@ -83,7 +83,7 @@ namespace gnsstk
 
 
    bool GLOFNavAlm ::
-   getXvt(const CommonTime& when, Xvt& xvt)
+   getXvt(const CommonTime& when, Xvt& xvt, const ObsID& oid)
    {
       bool rv = math.getXvt(when, xvt, *this);
       xvt.health = (healthBits ? Xvt::Healthy : Xvt::Unhealthy);

@@ -79,7 +79,7 @@ namespace gnsstk
 
 
    bool OrbitDataSP3 ::
-   getXvt(const CommonTime& when, Xvt& xvt)
+   getXvt(const CommonTime& when, Xvt& xvt, const ObsID& oid)
    {
          // The OrbitDataSP3 object is generated on request and is
          // specific to a given time since the data that must be used
