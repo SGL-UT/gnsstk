@@ -42,6 +42,7 @@
 #include <atomic>
 #include <sstream>
 #include <iomanip>
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -82,7 +83,7 @@ namespace gnsstk
          /// If enabled is true, print \c s to stderr.
       static void trace(const std::string& s);
          /// If true, debugging/trace output will be printed to stderr.
-      static std::atomic<bool> enabled;
+      GNSSTK_EXPORT static std::atomic<bool> enabled;
    private:
          /** Save the name of the function so that the destructor
           * knows what to print. */
