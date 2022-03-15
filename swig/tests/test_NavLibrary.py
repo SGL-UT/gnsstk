@@ -139,14 +139,44 @@ class TestNavLibrary(unittest.TestCase):
         # rudimentary test of setValidityFilter, just make sure it doesn't die
         navLib.setValidityFilter(gnsstk.NavValidityType.ValidOnly)
 
-    def test_setTypeFilter(self):
-        navLib = gnsstk.NavLibrary()
-        ndf = gnsstk.RinexNavDataFactory()
-        navLib.addFactory(ndf)
+        # Unfortunately we're currently unable to translate between python and
+        # C++ for containers of enums - in python it comes out as a set of
+        # unknown SWIG objects.
+    # def test_setTypeFilter(self):
+        # navLib = gnsstk.NavLibrary()
+        # ndf = gnsstk.RinexNavDataFactory()
+        # navLib.addFactory(ndf)
         # rudimentary test of setTypeFilter
         # nmts = gnsstk.NavMessageTypeSet()
         # nmts.add(gnsstk.NavMessageType.Almanac)
         # navLib.setTypeFilter(nmts)
+
+        # we can test addTypeFilter and clearTypeFilter up to a point, we can't
+        # actually verify the contents without causing the same sort of errors
+        # experienced by setTypeFilter() (meaning, the set of unknown objects)
+    def test_addTypeFilter(self):
+        navLib = gnsstk.NavLibrary()
+        ndf = gnsstk.RinexNavDataFactory()
+        navLib.addFactory(ndf)
+        navLib.clearTypeFilter();
+        nmts = ndf.getTypeFilter()
+        self.assertEqual(0, len(nmts))
+        navLib.addTypeFilter(gnsstk.NavMessageType.Almanac)
+        nmts = ndf.getTypeFilter()
+        self.assertFalse(len(nmts) == 0)
+        # The above filter should result in an empty store (no alms in RINEX)
+        ndf.addDataSource(args.input_dir+'/arlm2000.15n')
+        satset = navLib.getAvailableSats(gnsstk.CommonTime.BEGINNING_OF_TIME,
+                                         gnsstk.CommonTime.END_OF_TIME)
+        self.assertEqual(0, len(satset))
+        # Try again, this time with only ephemerides, which RINEX has.
+        navLib.clear()
+        navLib.clearTypeFilter()
+        navLib.addTypeFilter(gnsstk.NavMessageType.Ephemeris)
+        ndf.addDataSource(args.input_dir+'/arlm2000.15n')
+        satset = navLib.getAvailableSats(gnsstk.CommonTime.BEGINNING_OF_TIME,
+                                         gnsstk.CommonTime.END_OF_TIME)
+        self.assertEqual(31, len(satset))
 
     def test_getTime(self):
         navLib = gnsstk.NavLibrary()
