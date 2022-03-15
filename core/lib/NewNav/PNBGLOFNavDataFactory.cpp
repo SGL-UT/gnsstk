@@ -137,14 +137,21 @@ namespace gnsstk
                          navIn->getobsID(), navIn->getNavID());
       if ((stringID < 1) || (stringID > 4))
          return false; // not actually part of the ephemeris.
-      if ((stringID == esidtaun) && PNBNavDataFactory::processISC)
+      if (stringID == 4)
       {
-         NavDataPtr p2 = std::make_shared<GLOFNavISC>();
-         GLOFNavISC *isc = dynamic_cast<GLOFNavISC*>(p2.get());
-         isc->timeStamp = navIn->getTransmitTime();
-         isc->signal = NavMessageID(key, NavMessageType::ISC);
-         isc->isc = navIn->asSignMagDouble(esbdtaun,enbdtaun,escdtaun);
-         navOut.push_back(p2);
+         if (PNBNavDataFactory::processISC)
+         {
+            NavDataPtr p2 = std::make_shared<GLOFNavISC>();
+            GLOFNavISC *isc = dynamic_cast<GLOFNavISC*>(p2.get());
+            isc->timeStamp = navIn->getTransmitTime();
+            isc->signal = NavMessageID(key, NavMessageType::ISC);
+            isc->isc = navIn->asSignMagDouble(esbdtaun,enbdtaun,escdtaun);
+            navOut.push_back(p2);
+         }
+         if (PNBNavDataFactory::processTim)
+         {
+            timeAcc[key].setNT(navIn->asUnsignedLong(esbNT,enbNT,escNT));
+         }
       }
       if (!PNBNavDataFactory::processEph && !PNBNavDataFactory::processHea)
       {
@@ -186,6 +193,10 @@ namespace gnsstk
          hea->healthBits = ephS[esiBn]->asUnsignedLong(esbBn,enbBn,escBn);
          hea->ln = ephS[esiln]->asBool(esbln);
          navOut.push_back(p1);
+      }
+      if (!PNBNavDataFactory::processEph)
+      {
+         return true;
       }
       NavDataPtr p0 = std::make_shared<GLOFNavEph>();
       GLOFNavEph *eph = dynamic_cast<GLOFNavEph*>(p0.get());
@@ -258,7 +269,6 @@ namespace gnsstk
       eph->aod = ephS[esiEn]->asUnsignedLong(esbEn,enbEn,escEn);
       eph->accIndex = ephS[esiFT]->asUnsignedLong(esbFT,enbFT,escFT);
       eph->dayCount = ephS[esiNT]->asUnsignedLong(esbNT,enbNT,escNT);
-      timeAcc[key].setNT(eph->dayCount);
       eph->slot = ephS[esin]->asUnsignedLong(esbn,enbn,escn);
       eph->satType = static_cast<GLOFNavEph::SatType>(
          ephS[esiM]->asUnsignedLong(esbM,enbM,escM));
@@ -400,7 +410,7 @@ namespace gnsstk
       {
          NavDataPtr p1 = std::make_shared<GLOFNavHealth>();
          p1->timeStamp = almS[almIdx]->getTransmitTime();
-         p1->signal = NavMessageID(key, NavMessageType::Health);
+         p1->signal = NavMessageID(sat, NavMessageType::Health);
          GLOFNavHealth *hea = dynamic_cast<GLOFNavHealth*>(p1.get());
          hea->Cn = almS[almIdx+asoC]->asBool(asbC);
          hea->ln = almS[almIdx+asol]->asBool(asbl);
@@ -479,7 +489,9 @@ namespace gnsstk
          hea->ln = navIn->asBool(tsbln);
          navOut.push_back(p1);
       }
-      if (PNBNavDataFactory::processAlm)
+         // This code block gets the reference time used for both
+         // almanac orbital elements as well as almanac health.
+      if (PNBNavDataFactory::processAlm || PNBNavDataFactory::processHea)
       {
             // day within four-year interval
          unsigned NA = navIn->asUnsignedLong(tsbNA,tnbNA,tscNA);
@@ -512,7 +524,7 @@ namespace gnsstk
          }
          unsigned year = 1996 + 4*(N4-1) + (J - 1);
          almDOY = YDSTime(year,doy,0);
-         cerr << "almDOY = " << almDOY << "  year=" << year << "  doy=" << doy << "  N4=" << N4 << "  J=" << J << "  pendingAlms=" << pendingAlms << endl;
+            // cerr << "almDOY = " << almDOY << "  year=" << year << "  doy=" << doy << "  N4=" << N4 << "  J=" << J << "  pendingAlms=" << pendingAlms << endl;
          if (pendingAlms)
          {
                // iterate through the almanac accumulator and finish any
