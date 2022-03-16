@@ -94,9 +94,12 @@ namespace gnsstk
           *   available calculators.
           * @param[in] when The time at which to compute the xvt.
           * @param[out] xvt The resulting computed position/velocity.
+          * @param[in] oid Value is ignored - GLONASS does not have
+          *   distinct transmitters.
           * @return true if successful, false if required nav data was
           *   unavailable. */
-      bool getXvt(const CommonTime& when, Xvt& xvt) override;
+      bool getXvt(const CommonTime& when, Xvt& xvt,
+                  const ObsID& = ObsID()) override;
 
          /** Returns the time when the navigation message would have
           * first been available to the user equipment, i.e. the time

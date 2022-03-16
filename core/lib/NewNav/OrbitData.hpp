@@ -56,9 +56,14 @@ namespace gnsstk
          /** Compute the satellites position and velocity at a time.
           * @param[in] when The time at which to compute the xvt.
           * @param[out] xvt The resulting computed position/velocity.
+          * @param[in] oid When it is possible to have different
+          *   antenna phase centers on a single SV, this parameter
+          *   allows you to specify a different APC than the
+          *   navigation data was being transmitted from.
           * @return true if successful, false if required nav data was
           *   unavailable. */
-      virtual bool getXvt(const CommonTime& when, Xvt& xvt) = 0;
+      virtual bool getXvt(const CommonTime& when, Xvt& xvt,
+                          const ObsID& oid = ObsID()) = 0;
 
          /// @copydoc NavData::isSameData
       bool isSameData(const NavDataPtr& right) const override

@@ -74,7 +74,7 @@ namespace gnsstk
 
 
    bool GLOFNavEph ::
-   getXvt(const CommonTime& when, Xvt& xvt)
+   getXvt(const CommonTime& when, Xvt& xvt, const ObsID& oid)
    {
          // If the exact epoch is found, let's return the values
       if (when == Toe)

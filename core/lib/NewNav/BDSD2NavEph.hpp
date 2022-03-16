@@ -66,9 +66,12 @@ namespace gnsstk
           *   implementation.
           * @param[in] when The time at which to compute the xvt.
           * @param[out] xvt The resulting computed position/velocity.
+          * @param[in] oid Value is ignored - BeiDou does not have
+          *   distinct transmitters.
           * @return true if successful, false if required nav data was
           *   unavailable. */
-      bool getXvt(const CommonTime& when, Xvt& xvt) override;
+      bool getXvt(const CommonTime& when, Xvt& xvt,
+                  const ObsID& = ObsID()) override;
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.

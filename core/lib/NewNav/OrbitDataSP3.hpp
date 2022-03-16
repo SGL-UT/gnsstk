@@ -78,9 +78,11 @@ namespace gnsstk
           * @note Defaults to using the GPS ellipsoid parameters.
           * @param[in] when The time at which to compute the xvt.
           * @param[out] xvt The resulting computed position/velocity.
+          * @param[in] oid Value is ignored - SP3 has no such information.
           * @return true if successful, false if required nav data was
           *   unavailable. */
-      bool getXvt(const CommonTime& when, Xvt& xvt) override;
+      bool getXvt(const CommonTime& when, Xvt& xvt,
+                  const ObsID& oid = ObsID()) override;
 
       Triple pos;      ///< ECEF position (km) of satellite at time.
       Triple posSig;   ///< Standard deviation of position.

@@ -60,7 +60,8 @@ namespace gnsstk
 class TestClass : public gnsstk::GLOFNavData
 {
 public:
-   bool getXvt(const gnsstk::CommonTime& t, gnsstk::Xvt& xvt) override
+   bool getXvt(const gnsstk::CommonTime& t, gnsstk::Xvt& xvt,
+               const gnsstk::ObsID& oid = gnsstk::ObsID()) override
    { return false; }
 };
 
