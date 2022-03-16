@@ -535,6 +535,28 @@ namespace gnsstk
 
 
    void NavLibrary ::
+   clearTypeFilter()
+   {
+      DEBUGTRACE_FUNCTION();
+      for (auto& i : NDFUniqIterator<NavDataFactoryMap>(factories))
+      {
+         i.second->clearTypeFilter();
+      }
+   }
+
+
+   void NavLibrary ::
+   addTypeFilter(NavMessageType nmt)
+   {
+      DEBUGTRACE_FUNCTION();
+      for (auto& i : NDFUniqIterator<NavDataFactoryMap>(factories))
+      {
+         i.second->addTypeFilter(nmt);
+      }
+   }
+
+
+   void NavLibrary ::
    addFactory(NavDataFactoryPtr& fact)
    {
       DEBUGTRACE_FUNCTION();

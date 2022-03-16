@@ -266,6 +266,19 @@ namespace gnsstk
           *   processed by the factories. */
       void setTypeFilter(const NavMessageTypeSet& nmts) override;
 
+         /** Clear the type filters of each of the factories.  This
+          * should be used prior to loading data, and prior to using
+          * addTypeFilter(), if that API is going to be used instead
+          * of setTypeFilter(). */
+      void clearTypeFilter() override;
+
+         /** Add a NavMessageType to be processed to each of the
+          * factories.  This should be used prior to loading data and
+          * as an alternate approach to setTypeFilter().
+          * @param[in] nmt The NavMessageType to be processed on the
+          *   next load. */
+      void addTypeFilter(NavMessageType nmt) override;
+
          /** Method for loading data.  This will iterate over the
           * available factories, calling their load method until one
           * succeeds, since failure typically indicates an invalid

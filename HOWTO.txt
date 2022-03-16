@@ -60,5 +60,4 @@ super-important stuff that we want at the top of the navigation bar,
 but before the other pages.
 \endinternal
 
-\page apps Application Documentation
 \page APIguide API Guides

@@ -118,6 +118,7 @@ public:
    unsigned constructorTest();
    unsigned setValidityFilterTest();
    unsigned setTypeFilterTest();
+   unsigned addTypeFilterTest();
 };
 
 
@@ -173,6 +174,36 @@ setTypeFilterTest()
 }
 
 
+unsigned NavDataFactory_T ::
+addTypeFilterTest()
+{
+   TUDEF("NavDataFactory", "clearTypeFilter");
+   TestClass uut;
+      // some random examples
+   gnsstk::NavMessageTypeSet s1 { gnsstk::NavMessageType::Almanac,
+                                 gnsstk::NavMessageType::Health };
+   gnsstk::NavMessageTypeSet s2 { gnsstk::NavMessageType::Ephemeris };
+   gnsstk::NavMessageTypeSet s3 { gnsstk::NavMessageType::Ephemeris,
+                                 gnsstk::NavMessageType::TimeOffset,
+                                 gnsstk::NavMessageType::Health };
+   TUASSERTE(gnsstk::NavMessageTypeSet, gnsstk::allNavMessageTypes,
+             uut.getTypeFilter());
+   TUCATCH(uut.clearTypeFilter());
+   TUASSERT(uut.getTypeFilter().empty());
+   TUCSM("addTypeFilter");
+   TUCATCH(uut.addTypeFilter(gnsstk::NavMessageType::Almanac));
+   TUCATCH(uut.addTypeFilter(gnsstk::NavMessageType::Health));
+   TUASSERTE(gnsstk::NavMessageTypeSet, s1, uut.getTypeFilter());
+   TUCATCH(uut.clearTypeFilter());
+   TUCATCH(uut.addTypeFilter(gnsstk::NavMessageType::Ephemeris));
+   TUASSERTE(gnsstk::NavMessageTypeSet, s2, uut.getTypeFilter());
+   TUCATCH(uut.addTypeFilter(gnsstk::NavMessageType::TimeOffset));
+   TUCATCH(uut.addTypeFilter(gnsstk::NavMessageType::Health));
+   TUASSERTE(gnsstk::NavMessageTypeSet, s3, uut.getTypeFilter());
+   TURETURN();
+}
+
+
 int main()
 {
    NavDataFactory_T testClass;
@@ -181,6 +212,7 @@ int main()
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.setValidityFilterTest();
    errorTotal += testClass.setTypeFilterTest();
+   errorTotal += testClass.addTypeFilterTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

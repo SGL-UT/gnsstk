@@ -5,6 +5,7 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType)
 ENUM_MAPPER(gnsstk::NavType, NavType)
 ENUM_MAPPER(gnsstk::TimeSystem, TimeSystem)
 ENUM_MAPPER(gnsstk::ReferenceFrame, ReferenceFrame)
+ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType)
 
 %include "SatelliteSystem.hpp"
 %include "CarrierBand.hpp"

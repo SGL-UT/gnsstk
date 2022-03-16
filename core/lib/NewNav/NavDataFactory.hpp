@@ -131,6 +131,30 @@ namespace gnsstk
       virtual void setTypeFilter(const NavMessageTypeSet& nmts)
       { procNavTypes = nmts; }
 
+         /** Return the set of NavMessageType that would be processed
+          * on the next load.
+          * @warning MultiFormatNavDataFactory can get out of sync and
+          *   report incorrect type filter information, if, for
+          *   example, you manipulate its contained factories' type
+          *   filters independently. */
+      NavMessageTypeSet getTypeFilter() const
+      { return procNavTypes; }
+
+         /** Clear the type filters of each of this factory.  This
+          * should be used prior to loading data, and prior to using
+          * addTypeFilter(), if that API is going to be used instead
+          * of setTypeFilter(). */
+      virtual void clearTypeFilter()
+      { procNavTypes.clear(); }
+
+         /** Add a NavMessageType to be processed to this factory.
+          * This should be used prior to loading data and as an
+          * alternate approach to setTypeFilter().
+          * @param[in] nmt The NavMessageType to be processed on the
+          *   next load. */
+      virtual void addTypeFilter(NavMessageType nmt)
+      { procNavTypes.insert(nmt); }
+
          /** Add a data source for this factory.  This could be a file
           * name, an IP address and port, or something else entirely,
           * depending on the factory implementation.  This method is
