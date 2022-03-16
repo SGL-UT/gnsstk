@@ -379,7 +379,7 @@ namespace gnsstk
    void MultiFormatNavDataFactory ::
    setTypeFilter(const NavMessageTypeSet& nmts)
    {
-      procNavTypes = nmts;
+      NavDataFactory::setTypeFilter(nmts);
          // This will end up setting the type filter multiple times
          // for any factory that has multiple supported signals, but
          // the end result is the same whether we check for duplicates
@@ -394,6 +394,7 @@ namespace gnsstk
    void MultiFormatNavDataFactory ::
    clearTypeFilter()
    {
+      NavDataFactory::clearTypeFilter();
       for (auto& i : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
          i.second->clearTypeFilter();
@@ -404,6 +405,7 @@ namespace gnsstk
    void MultiFormatNavDataFactory ::
    addTypeFilter(NavMessageType nmt)
    {
+      NavDataFactory::addTypeFilter(nmt);
       for (auto& i : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
       {
          i.second->addTypeFilter(nmt);
