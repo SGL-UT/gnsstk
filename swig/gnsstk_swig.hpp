@@ -148,6 +148,7 @@
 #include "CodeBuffer.hpp"
 #include "Combinations.hpp"
 /* #include "CommandLine.hpp" */
+/* #include "CommandOptionNavEnumHelp.hpp" */
 /* #include "CommandOptionWithCommonTimeArg.hpp" */
 /* #include "CommandOptionWithPositionArg.hpp" */
 /* #include "CommandOptionWithTimeArg.hpp" */
@@ -283,6 +284,7 @@
 #include "IonexHeader.hpp"
 #include "IonexStream.hpp"
 #include "IonexData.hpp"
+#include "IonexStoreStrategy.hpp"
 #include "IonexStore.hpp"
 #include "Namelist.hpp"
 /* #include "SRIMatrix.hpp" */
