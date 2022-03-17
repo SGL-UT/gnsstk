@@ -196,6 +196,7 @@
 %include "CodeBuffer.hpp"
 %include "Combinations.hpp"
 /* %include "CommandLine.hpp" */
+/* %include "CommandOptionNavEnumHelp.hpp" */
 /* %include "CommandOptionWithCommonTimeArg.hpp" */
 /* %include "CommandOptionWithPositionArg.hpp" */
 /* %include "CommandOptionWithTimeArg.hpp" */
@@ -362,6 +363,7 @@
 %feature("flatnested");
 %include "IonexData.hpp"
 %feature("flatnested", "");
+%include "IonexStoreStrategy.hpp"
 %include "IonexStore.hpp"
 %include "Namelist.hpp"
 /* %include "SRIMatrix.hpp" */

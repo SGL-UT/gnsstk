@@ -77,18 +77,46 @@ namespace gnsstk
                                                  "TECU" );
 
 
-   //--------------------------------------------------------------------
-   //--------------------------------------------------------------------
+   IonexData::IonexValType ::
+   IonexValType()
+         : type( std::string("UN") ),
+           description( std::string("Unknown or Invalid") ),
+           units( std::string("") )
+   {
+   }
+
+
+   IonexData::IonexValType ::
+   IonexValType(const std::string& t, const std::string& d,
+                const std::string& u)
+         : type(t), description(d), units(u)
+   {
+   }
+
+
+   IonexData ::
+   IonexData()
+         : time(CommonTime::BEGINNING_OF_TIME), valid(false)
+   {
+   }
+
+
+   IonexData ::
+   ~IonexData()
+   {
+   }
+
+
+      //--------------------------------------------------------------------
+      //--------------------------------------------------------------------
    void IonexData::reallyPutRecord(FFStream& ffs) const
    {
-
          // is there anything to write?
       if ( !valid || data.empty() )
          return;
 
       IonexStream& strm = dynamic_cast<IonexStream&>(ffs);
       string line;
-
 
          // write record opening TEC/RMS map
       line.clear();
@@ -97,30 +125,28 @@ namespace gnsstk
 
       if (type == IonexData::TEC)
       {
-         line += leftJustify(startTecMapString,20);
+         line += startTecMapString;
       }
       else if (type == IonexData::RMS)
       {
-         line += leftJustify(startRmsMapString,20);
+         line += startRmsMapString;
       }
       else
       {
          FFStreamError err("This isn't a valid standard IONEX value type: " +
-            asString(type.description) );
+                           asString(type.description) );
          GNSSTK_THROW(err);
       }
       strm << line << endl;
       strm.lineNumber++;
 
-
          // write epoch of current TEC/RMS map
       line.clear();
       line += writeTime(time);
       line += string(24, ' ');
-      line += leftJustify(currentEpochString,20);
+      line += currentEpochString;
       strm << line << endl;
       strm.lineNumber++;
-
 
          // write TEC/RMS data sequence
       int nlat(dim[0]), nlon(dim[1]);
@@ -139,10 +165,9 @@ namespace gnsstk
          line += rightJustify( asString(lon[2],1), 6 );
          line += rightJustify( asString(hgt[0],1), 6 );
          line += string(28, ' ');
-         line += leftJustify(dataBlockString,20);
+         line += dataBlockString;
          strm << line << endl;
          strm.lineNumber++;
-
 
             // write single TEC/RMS data block
          line.clear();
@@ -151,11 +176,11 @@ namespace gnsstk
             int index = ilat*dim[1]+ilon;
 
             double val = (data[index] != 999.9) ?
-                         std::pow(10.0,-exponent)*data[index] : 9999.0;
+               std::pow(10.0,-exponent)*data[index] : 9999.0;
 
                // we need to put there an integer, i.e., the neareast integer
             int valint = (val > 0.0) ?
-                         static_cast<int>(val+0.5) : static_cast<int>(val-0.5);
+               static_cast<int>(val+0.5) : static_cast<int>(val-0.5);
             line += rightJustify( asString<short>(valint), 5 );
 
             if (line.size() == 80)  // maximum 16 values per record
@@ -166,7 +191,6 @@ namespace gnsstk
             }
             else if (ilon == nlon-1)  // last longitude
             {
-               line += string(80-line.size(), ' ');
                strm << line << endl;
                strm.lineNumber++;
                line.clear();
@@ -176,7 +200,6 @@ namespace gnsstk
 
       }  // End of 'for (int ilat = 0; ilat < nlat; ilat++)'
 
-
          // write closing TEC/RMS map
       line.clear();
       line += rightJustify( asString(mapID), 6 );
@@ -184,27 +207,25 @@ namespace gnsstk
 
       if (type == IonexData::TEC)
       {
-         line += leftJustify(endTecMapString,20);
+         line += endTecMapString;
       }
       else if (type == IonexData::RMS)
       {
-         line += leftJustify(endRmsMapString,20);
+         line += endRmsMapString;
       }
       else
       {
          FFStreamError err("This isn't a valid standard IONEX value type: " +
-            asString(type.description) );
+                           asString(type.description) );
          GNSSTK_THROW(err);
       }
       strm << line << endl;
       strm.lineNumber++;
-
    }  // End of method 'IonexData::reallyPutRecord()'
 
 
    void IonexData::reallyGetRecord(FFStream& ffs)
    {
-
       IonexStream& strm = dynamic_cast<IonexStream&>(ffs);
 
          // If the header has not been read, read it
@@ -229,11 +250,9 @@ namespace gnsstk
          hgt[i] = hdr.hgt[i];
       }
 
-
       string line;
 
          // some initializations before looping
-
          // ityp may be -1(initialize), 0(unknown), 1(TEC), 2(RMS), 3(HGT)
       int ityp(-1);
 
@@ -262,33 +281,26 @@ namespace gnsstk
 
          if (label == startTecMapString)
          {
-
             type = IonexData::TEC;
             ityp = 1;
             mapID = asInt(line.substr(0,6));
             ilat = 0;
-
          }
          else if (label == startRmsMapString)
          {
-
             type = IonexData::RMS;
             ityp = 2;
             mapID = asInt(line.substr(0,6));
             ilat = 0;
-
          }
          else if (label == startHgtMapString)
          {
-
             ityp = 3;
             mapID = asInt(line.substr(0,6));
             ilat = 0;
-
          }
          else if (label == currentEpochString)
          {
-
             time = parseTime(line);
 
                // Get grid dimensions to know how much memory has to be
@@ -296,21 +308,19 @@ namespace gnsstk
                // initialize all elements of the object member with dummy
                // values, i.e., 999.9
             dim[0] = static_cast<int>( ( hdr.lat[1] - hdr.lat[0] )
-                            / hdr.lat[2] + 1 ); // consider Equator as well
+                                       / hdr.lat[2] + 1 ); // consider Equator as well
 
             dim[1] = static_cast<int>( ( hdr.lon[1] - hdr.lon[0] )
-                            / hdr.lon[2] + 1 ); // consider Greenwich meridian
+                                       / hdr.lon[2] + 1 ); // consider Greenwich meridian
 
             dim[2] = (hdr.hgt[2] == 0) ?
-                     1 : static_cast<int>( (hdr.hgt[1]-hdr.hgt[0])
-                                           / hdr.hgt[2]+1 );
+               1 : static_cast<int>( (hdr.hgt[1]-hdr.hgt[0])
+                                     / hdr.hgt[2]+1 );
 
             data.resize( dim[0]*dim[1]*dim[2], 999.9 );
-
          }
          else if (label == dataBlockString)
          {
-
             if (ityp == 0)
             {
                FFStreamError e(string("Map type undefined: " + line) );
@@ -319,20 +329,18 @@ namespace gnsstk
 
 #ifdef GNSSTK_IONEX_UNUSED
             const double lat0 = asDouble(line.substr( 2,6)),
-                         lon1 = asDouble(line.substr( 8,6)),
-                         lon2 = asDouble(line.substr(14,6)),
-                         dlon = asDouble(line.substr(20,6)),
-                         hgt  = asDouble(line.substr(26,6));
+               lon1 = asDouble(line.substr( 8,6)),
+               lon2 = asDouble(line.substr(14,6)),
+               dlon = asDouble(line.substr(20,6)),
+               hgt  = asDouble(line.substr(26,6));
 #endif  // GNSSTK_IONEX_UNUSED
 
                //read single data block
             for (int ival = 0,line_ndx = 0; ival < dim[1]; ival++, line_ndx++)
             {
-
                   // only 16 values per line - same as (line_ndx % 16 == 0)
                if (!(line_ndx % 16))
                {
-
                      // Get new line
                   strm.formattedGetLine(line);
 
@@ -341,10 +349,9 @@ namespace gnsstk
 
                   if (line.size() > 80)
                   {
-
-                    FFStreamError e("Error reading IONEX data. Bad epoch line");
-                    GNSSTK_THROW(e);
-
+                     FFStreamError e(
+                        "Error reading IONEX data. Bad epoch line");
+                     GNSSTK_THROW(e);
                   }
 
                      // skip empty lines if any
@@ -352,7 +359,6 @@ namespace gnsstk
                   {
                      continue;
                   }
-
                }  // End of 'if (!(line_ndx % 16))...'
 
 
@@ -364,51 +370,37 @@ namespace gnsstk
 
                   // add value
                data[ilat*dim[1]+ival] = (val != 9999) ?
-                                        std::pow(10.0,exponent)*val : 999.9;
-
+                  std::pow(10.0,exponent)*val : 999.9;
             }  // End of 'for (int ival = 0,line_ndx = 0; ival < dim[1];...'
-
                // next latitude
             ilat++;
-
          }  // End of 'if (label == dataBlockString)...'
          else if (label == endTecMapString)
          {
-
             ityp = 0;
             valid = true;
-
          }
          else if (label == endRmsMapString)
          {
-
             ityp = 0;
             valid = true;
-
          }
          else if (label == endOfFile)
          {
-
-            // Remember that there is one more line in Ionex definition
-            // before EOF. The IonexData object has been initialized already
-            // but we mark the flag 'valid' as false. This helps when we shall
-            // store this data into an IonexStore object.
+               // Remember that there is one more line in Ionex
+               // definition before EOF. The IonexData object has been
+               // initialized already but we mark the flag 'valid' as
+               // false. This helps when we shall store this data into
+               // an IonexStore object.
             ityp = 0;
             valid = false;
-
          }
          else
          {
-
             FFStreamError e(string("Unidentified Ionex Data record " + line) );
             GNSSTK_THROW(e);
-
          }
-
       }  // end of 'while (ityp != 0)' loop
-
-      return;
-
    }  // End of method 'IonexData::reallyGetRecord()'
 
 
@@ -416,31 +408,26 @@ namespace gnsstk
       // A debug output function.
    void IonexData::dump(std::ostream& os) const
    {
-
       os << endl;
       os << "IonexData dump() function"      << std::endl;
       os << "Epoch                       : " << time << std::endl;
       os << "Map index                   : " << mapID << std::endl;
       os << "Data type                   : " << type.type
-                << " (" << type.units << ")" << std::endl;
+         << " (" << type.units << ")" << std::endl;
       os << "Grid size (lat x lon x hgt) : " << dim[0]
-                << " x " << dim[1]
-                << " x " << dim[2] << std::endl;
+         << " x " << dim[1]
+         << " x " << dim[2] << std::endl;
       os << "Number of values            : " << data.size()
-                << " values." << std::endl;
+         << " values." << std::endl;
       os << "Valid object?               : " << isValid() << endl;
-
-      return;
-
    }  // End of method 'IonexData::dump()'
 
 
 
    int IonexData::getIndex( const Triple& in,
-                            const int& igp,
+                            int igp,
                             Triple& ABC ) const
    {
-
          // grid dimensions
       int nlat = dim[0];
       int nlon = dim[1];
@@ -454,94 +441,71 @@ namespace gnsstk
       xlat = (in[0] - lat[0]) / lat[2] + 1.0;
 
       ilat = (igp == 1) ?
-             static_cast<int>(xlat+0.5) : static_cast<int>(xlat);
+         static_cast<int>(xlat+0.5) : static_cast<int>(xlat);
 
       if (ilat >= 1 && ilat <= nlat)
       {
-
          ABC[0] = lat[0] + (ilat-1)*lat[2];
-
       }
       else
       {
-
          InvalidRequest e( "Irregular latitude. Latitude "
                            + asString(in[0]) + " DEG" );
-
          GNSSTK_THROW(e);
-
       }
-
 
          // longitude
       xlon = (in[1] - lon[0]) / lon[2] + 1.0;
 
       ilon = (igp == 1) ?
-             static_cast<int>(xlon + 0.5) : static_cast<int>(xlon);
+         static_cast<int>(xlon + 0.5) : static_cast<int>(xlon);
 
          // Round to neareast integer
       ncyc = static_cast<int>( ( 360.0 / std::abs(lon[2]) ) + 0.5 );
 
-
       if (ilon < 1)
       {
-
          ilon = ilon + ncyc;
-
       }
       else if (ilon > nlon)
       {
-
          ilon = ilon - ncyc;
-
       }
 
 
       if ( (ilon >= 1) && (ilon <= nlon) )
       {
-
          ABC[1] = lon[0] + (ilon-1) * lon[2];
-
       }
       else
       {
-
          InvalidRequest e( "Irregular longitude. Longitude: "
                            + asString(in[1]) + " DEG" );
          GNSSTK_THROW(e);
-
       }
 
          // height
       if (hgt[2] == 0)
       {
-
          ihgt = 1;
          ABC[2] = hgt[0];
-
       }
       else
       {
-
          xhgt = (in[2]/1000.0 - hgt[0]) / hgt[2] + 1.0;
 
          ihgt = (igp == 1) ?
-                static_cast<int>(xhgt + 0.5) : static_cast<int>(xhgt);
+            static_cast<int>(xhgt + 0.5) : static_cast<int>(xhgt);
 
          if ( (ihgt >= 1) && (ihgt <= nhgt) )
          {
-
             ABC[2] = ( hgt[0] + (ihgt-1) * hgt[2] ) * 1000.0;  //meters
-
          }
          else
          {
-
             InvalidRequest e( "Irregular height. Height: "
                               + asString( in[2]/1000.0 ) + " km.");
-
             GNSSTK_THROW(e);
-
          }  // End of 'if ( (ihgt >= 1) && (ihgt <= nhgt) )...'
 
       }  // End of 'if (hgt[2] == 0)...'
@@ -554,16 +518,12 @@ namespace gnsstk
 
    double IonexData::getValue( const Position& p ) const
    {
-
          // this never should happen but just in case
       Position pos(p);
-      if ( pos.getSystemName() != "Geocentric" )
+      if ( pos.getCoordinateSystem() != Position::Geocentric )
       {
-
          InvalidRequest e( "Position object is not in GEOCENTRIC coordinates");
-
          GNSSTK_THROW(e);
-
       }
 
          // some useful declarations
@@ -601,7 +561,8 @@ namespace gnsstk
       if ( (xp < 0) || (xp > 1) || (xq < 0) || (xq > 1) )
       {
 
-         GNSSTK_THROW(Exception("IonexData::getValue(): Wrong xp and xq factors!!!"));
+         Exception exc("IonexData::getValue(): Wrong xp and xq factors!");
+         GNSSTK_THROW(exc);
 
       }
 
@@ -621,7 +582,6 @@ namespace gnsstk
       double pntval[4];
       for (int i = 0; i < 4; i++)
       {
-
          double xval( data[e[i]] );
 
          if (xval != 999.9)
@@ -633,23 +593,20 @@ namespace gnsstk
             FFStreamError e("Undefined TEC/RMS value(s).");
             GNSSTK_THROW(e);
          }
-
       }  // End of 'for (int i = 0; i < 4; i++)...'
 
          // bivariate interpolation (pag.3, IONEX manual)
       xsum = (1.0-xp) * (1.0-xq) * pntval[0] +
-                  xp  * (1.0-xq) * pntval[1] +
-             (1.0-xp) *      xq  * pntval[2] +
-                  xp  *      xq  * pntval[3];
+         xp  * (1.0-xq) * pntval[1] +
+         (1.0-xp) *      xq  * pntval[2] +
+         xp  *      xq  * pntval[3];
 
       return xsum;
-
    }  // End of method 'IonexData::getValue()'
 
 
    CommonTime IonexData::parseTime( const std::string& line ) const
    {
-
       int year, month, day, hour, min, sec;
 
       year  = asInt(line.substr( 0,6));
@@ -660,13 +617,11 @@ namespace gnsstk
       sec   = asInt(line.substr(30,6));
 
       return CivilTime( year, month, day, hour, min, (double)sec );
-
    }  // End of method 'IonexData::parseTime()'
 
 
    string IonexData::writeTime(const CommonTime& dt) const
    {
-
       if (dt == CommonTime::BEGINNING_OF_TIME)
       {
          return string(36, ' ');
@@ -674,14 +629,16 @@ namespace gnsstk
 
       string line;
       line  = rightJustify(asString<short>(static_cast<CivilTime>(dt).year), 6);
-      line += rightJustify(asString<short>(static_cast<CivilTime>(dt).month), 6);
+      line += rightJustify(asString<short>(static_cast<CivilTime>(dt).month),
+                           6);
       line += rightJustify(asString<short>(static_cast<CivilTime>(dt).day), 6);
       line += rightJustify(asString<short>(static_cast<CivilTime>(dt).hour), 6);
-      line += rightJustify(asString<short>(static_cast<CivilTime>(dt).minute), 6);
-      line += rightJustify(asString (static_cast<int>(static_cast<CivilTime>(dt).second)), 6);
+      line += rightJustify(asString<short>(static_cast<CivilTime>(dt).minute),
+                           6);
+      line += rightJustify(
+         asString(static_cast<int>(static_cast<CivilTime>(dt).second)), 6);
 
       return line;
-
    }  // End of method 'IonexData::writeTime()'
 
 

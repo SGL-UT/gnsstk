@@ -70,7 +70,6 @@ namespace gnsstk
    {
    public:
 
-
          /**
           * @name IonexDataFormatStrings
           * IONEX Data Formatting Strings
@@ -91,20 +90,14 @@ namespace gnsstk
          /// A structure used to store IONEX Value Types
       struct IonexValType
       {
+         IonexValType();
+
+         IonexValType(const std::string& t, const std::string& d,
+                      const std::string& u);
 
          std::string type;          ///< type e.g. TEC, RMS
          std::string description;   ///< Description (optional)
          std::string units;         ///< units (optional). E.g. "meters"
-
-         IonexValType()
-            : type( std::string("UN") ),
-              description( std::string("Unknown or Invalid") ),
-              units( std::string("") )
-         {};
-
-         IonexValType(std::string t, std::string d, std::string u)
-            : type(t), description(d), units(u) {};
-
       }; // End of struct 'IonexValType'
 
 
@@ -139,18 +132,11 @@ namespace gnsstk
       bool valid;             ///< Validity flag
          //@}
 
-
          /// Default constructor.
-      IonexData()
-         : time(CommonTime::BEGINNING_OF_TIME), valid(false) {};
-
+      IonexData();
 
          /// Destructor
-      virtual ~IonexData() {};
-
-
-
-         // The next four lines define our common interface
+      virtual ~IonexData();
 
          /// IonexData is a "data", so this function always returns true
       virtual bool isData() const
@@ -159,7 +145,7 @@ namespace gnsstk
 
          /// Am I an valid object?
       virtual bool isValid() const
-      { return valid; };
+      { return valid; }
 
 
          /// A debug output function.
@@ -179,7 +165,7 @@ namespace gnsstk
           *          between [87.5, -87.5], longitude between [-180, 180])
           *          when you construct a Triple object.
           */
-      int getIndex( const Triple& in, const int& igp, Triple& out ) const;
+      int getIndex( const Triple& in, int igp, Triple& out ) const;
 
 
          /** Get IONEX TEC or RMS value as a function of the position
@@ -209,7 +195,7 @@ namespace gnsstk
           * @throw FFStreamError
           * @throw StringException when a StringUtils function fails
           */
-      virtual void reallyPutRecord(FFStream& s) const;
+      void reallyPutRecord(FFStream& s) const override;
 
 
          /** This function obtains a IONEX Data record from
@@ -224,7 +210,7 @@ namespace gnsstk
           *   a read or formatting error occurs.  This also resets the
           *   stream to its pre-read position.
           */
-      virtual void reallyGetRecord(FFStream& s);
+      void reallyGetRecord(FFStream& s) override;
 
 
    private:

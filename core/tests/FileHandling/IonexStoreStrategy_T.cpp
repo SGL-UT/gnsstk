@@ -22,6 +22,7 @@
 //
 //==============================================================================
 
+
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -35,75 +36,56 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-
-/**
- * @file IonexStream.hpp
- * File stream for IONEX format files
- */
-
-#ifndef GNSSTK_IONEXSTREAM_HPP
-#define GNSSTK_IONEXSTREAM_HPP
-
-#include "FFTextStream.hpp"
-#include "IonexHeader.hpp"
+#include "IonexStoreStrategy.hpp"
+#include "TestUtil.hpp"
 
 namespace gnsstk
 {
-
-      /// @ingroup FileHandling
-      //@{
-
-      /** This class provides access to IONEX files.
-       *
-       * @sa gnsstk::IonexHeader and gnsstk::IonexData for more information.
-       * @sa main_ionextest.cpp for an example.
-       */
-   class IonexStream : public FFTextStream
+   std::ostream& operator<<(std::ostream& s, gnsstk::IonexStoreStrategy e)
    {
-   public:
-
-         /// Default constructor
-      IonexStream()
-            : headerRead(false) {};
-
-
-         /** Common constructor.
-          *
-          * @param fn      IONEX file to open
-          * @param mode    Mode to open \a fn.
-          */
-      IonexStream(const char* fn, std::ios::openmode mode=std::ios::in)
-            : FFTextStream(fn, mode), headerRead(false) {};
+      s << StringUtils::asString(e);
+      return s;
+   }
+}
 
 
-         /// Destructor
-      virtual ~IonexStream() {};
+class IonexStoreStrategy_T
+{
+public:
+   unsigned convertTest();
+};
 
 
-         /// Overrides open to reset the header
-      virtual void open(const char* fn, std::ios::openmode mode)
-      {
-
-         FFTextStream::open(fn, mode);
-         headerRead = false;
-         header = IonexHeader();
-
-      };
-
-
-         /// Whether or not the IonexHeader has been read
-      bool headerRead;
-
-
-         /// The header for this file.
-      IonexHeader header;
-
-
-   }; // End of class 'IonexStream'
-
-
-      //@}
+unsigned IonexStoreStrategy_T ::
+convertTest()
+{
+   TUDEF("IonexStoreStrategy", "asString");
+      // This effectively tests IonexStoreStrategyIterator, asString and
+      // asIonexStoreStrategy all at once.
+   for (gnsstk::IonexStoreStrategy e : gnsstk::IonexStoreStrategyIterator())
+   {
+      TUCSM("asString");
+      std::string s(gnsstk::StringUtils::asString(e));
+      TUASSERT(!s.empty());
+      TUASSERT(s != "???");
+      TUCSM("asIonexStoreStrategy");
+      gnsstk::IonexStoreStrategy e2 =
+         gnsstk::StringUtils::asIonexStoreStrategy(s);
+      TUASSERTE(gnsstk::IonexStoreStrategy, e, e2);
+   }
+   TURETURN();
+}
 
 
-}  // End of namespace gnsstk
-#endif   // GNSSTK_IONEXSTREAM_HPP
+int main()
+{
+   IonexStoreStrategy_T testClass;
+   unsigned errorTotal = 0;
+
+   errorTotal += testClass.convertTest();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+             << std::endl;
+
+   return errorTotal;
+}

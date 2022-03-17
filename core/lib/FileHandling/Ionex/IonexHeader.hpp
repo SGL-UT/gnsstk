@@ -71,11 +71,11 @@ namespace gnsstk
    public:
 
          /// Default constructor
-      IonexHeader() : version(1.0), exponent(-1), valid(false) {}
+      IonexHeader();
 
 
          /// Clear (empty out) header
-      void clear(void);
+      void clear();
 
 
          /**
@@ -83,99 +83,79 @@ namespace gnsstk
           * IONEX Header Formatting Strings
           */
          //@{
-      static const std::string versionString;            ///< "IONEXVERSION / TYPE"
-      static const std::string runByString;              ///< "PGM / RUN BY / DATE"
-      static const std::string descriptionString;        ///< "DESCRIPTION"
-      static const std::string commentString;            ///< "COMMENT"
-      static const std::string firstTimeString;          ///< "EPOCH OF FIRST MAP"
-      static const std::string lastTimeString;           ///< "EPOCH OF LAST MAP"
-      static const std::string intervalString;           ///< "INTERVAL"
-      static const std::string numMapsString;            ///< "# OF MAPS IN FILE"
-      static const std::string mappingFunctionString;    ///< "MAPPING FUNCTION"
-      static const std::string elevationString;          ///< "ELEVATION CUTOFF"
-      static const std::string observablesUsedString;    ///< "OBSERVABLES USED"
-      static const std::string numStationsString;        ///< "# OF STATIONS"
-      static const std::string numSatsString;            ///< "# OF SATELLITES"
-      static const std::string baseRadiusString;         ///< "BASE RADIUS"
-      static const std::string mapDimensionString;       ///< "MAP DIMENSION"
-      static const std::string hgtGridString;            ///< "HGT1 / HGT2 / DHGT"
-      static const std::string latGridString;            ///< "LAT1 / LAT2 / DLAT"
-      static const std::string lonGridString;            ///< "LON1 / LON2 / DLON"
-      static const std::string exponentString;           ///< "EXPONENT"
-      static const std::string startAuxDataString;       ///< "START OF AUX DATA"
-      static const std::string endAuxDataString;         ///< "END OF AUX DATA"
-      static const std::string endOfHeader;              ///< "END OF HEADER"
+      static const std::string versionString;         ///< "IONEXVERSION / TYPE"
+      static const std::string runByString;           ///< "PGM / RUN BY / DATE"
+      static const std::string descriptionString;     ///< "DESCRIPTION"
+      static const std::string commentString;         ///< "COMMENT"
+      static const std::string firstTimeString;       ///< "EPOCH OF FIRST MAP"
+      static const std::string lastTimeString;        ///< "EPOCH OF LAST MAP"
+      static const std::string intervalString;        ///< "INTERVAL"
+      static const std::string numMapsString;         ///< "# OF MAPS IN FILE"
+      static const std::string mappingFunctionString; ///< "MAPPING FUNCTION"
+      static const std::string elevationString;       ///< "ELEVATION CUTOFF"
+      static const std::string observablesUsedString; ///< "OBSERVABLES USED"
+      static const std::string numStationsString;     ///< "# OF STATIONS"
+      static const std::string numSatsString;         ///< "# OF SATELLITES"
+      static const std::string baseRadiusString;      ///< "BASE RADIUS"
+      static const std::string mapDimensionString;    ///< "MAP DIMENSION"
+      static const std::string hgtGridString;         ///< "HGT1 / HGT2 / DHGT"
+      static const std::string latGridString;         ///< "LAT1 / LAT2 / DLAT"
+      static const std::string lonGridString;         ///< "LON1 / LON2 / DLON"
+      static const std::string exponentString;        ///< "EXPONENT"
+      static const std::string startAuxDataString;    ///< "START OF AUX DATA"
+      static const std::string endAuxDataString;      ///< "END OF AUX DATA"
+      static const std::string endOfHeader;           ///< "END OF HEADER"
          //@}
 
          // Differential Code Bias structure
       struct DCB
       {
-
+            // If isPRN is true, system and prn are set, otherwise
+            // name and number are set.  bias and rms should always be
+            // set.
          char system;   ///< one char indicating the system for this satellite
                         ///< (i.e., 'U' for unknown, 'G' or blank for GPS and
                         ///< 'R' for GLONASS)
          int prn;       ///< 2-digit satellite identifier (pseudo random number)
          double bias;   ///< differential (L1-L2) code bias in nanoseconds
          double rms;    ///< RMS error of DCB in nanoseconds
-
+         bool isPRN;    ///< True if a PRN / BIAS / RMS block, false if STATION
+         std::string name;   ///< Marker name (4 characters)
+         std::string number; ///< Marker number (15 characters)
 
             /// Default constructor. Defines and invalid structure.
-         DCB() : system('U'), prn(-1), bias(0), rms(0.0) {};
+         DCB();
 
-
-            /** Common constructor
+            /** Constructor for PRN data
              *
-             * @param s    System type. ('U' for unknown, 'G' or blank for
-             *             GPS, and 'R' for GLONASS).
-             * @param p    Satellite PRN (2-digit integer).
-             * @param b    Differential (L1-L2) code bias.
-             * @param r    RMS error of DCB, in nanoseconds.
+             * @param[in] s    System type. ('U' for unknown, 'G' or blank for
+             *                 GPS, and 'R' for GLONASS).
+             * @param[in] p    Satellite PRN (2-digit integer).
+             * @param[in] b    Differential (L1-L2) code bias.
+             * @param[in] r    RMS error of DCB, in nanoseconds.
              */
-         DCB(char s, int p, double b, double r)
-            : system(s), prn(p), bias(b), rms(r)
-         {};
+         DCB(char s, int p, double b, double r);
 
+            /** Constructor for STATION data
+             *
+             * @param[in] s    4-character marker name.
+             * @param[in] n    15-character (max) marker number.
+             * @param[in] b    Differential (L1-L2) code bias.
+             * @param[in] r    RMS error of DCB, in nanoseconds.
+             */
+         DCB(const std::string& s, const std::string& n, double b, double r);
 
             /**
              * @name DCBformatStrings
              * Differential Code Bias Formatting Strings
              */
             //@{
-         static const std::string svsAuxDataString;   ///< "PRN / BIAS / RMS"
-         static const std::string stationsAuxDataString;///< "STATION/BIAS/RMS";
+         static const std::string svsAuxDataString;      ///< "PRN / BIAS / RMS"
+         static const std::string stationsAuxDataString; ///< "STATION/BIAS/RMS"
             //@}
 
             /// convert DCB structure to a string
-         std::string toString() const throw()
-         {
-            std::string line(3, ' ');
-            line += std::string(3, '0');
-
-               // update with the system char
-            line[3] = system;
-
-               // convert the prn into 2-digit string
-            std::string s = StringUtils::asString(prn);
-            if (prn < 10)
-            {
-               line[5] = s[0];
-            }
-            else
-            {
-               line[4] = s[0];
-               line[5] = s[1];
-            }
-
-               // append bias and rms
-            line += StringUtils::rightJustify(
-                                 StringUtils::asString(bias,3), 10 );
-            line += StringUtils::rightJustify(
-                                 StringUtils::asString(rms, 3), 10 );
-
-            return line;
-
-         }  // End of method 'DCB::toString()'
-
+         std::string toString() const;
       }; // End of 'DCB' data structure
 
 
@@ -209,21 +189,24 @@ namespace gnsstk
       double baseRadius;  ///< Mean earth radius, or bottom of height grid (km)
       size_t mapDims;     ///< Dimension of maps (2 or 3)
 
-      double hgt[3];    ///< Definition of an equidistand grid in height
-                        /// 'hgt[0]' to 'hgt[1]' with increment 'hgt[2]' in km
+      double hgt[3];    ///< Definition of an equidistant grid in height.
+                        /// 'hgt[0]' to 'hgt[1]' with increment 'hgt[2]' in km.
                         /// For 2-dimensional maps hgt[0]=hgt[1] and hgt[2]=0.
-      double lat[3];    ///< Definition of the grid in latitude
-                        /// 'lat[0]' to 'lat[1]' with increment 'hgt[2]' in deg
-      double lon[3];    ///< Definition of the grid in longitude
-                        /// 'lon[0]' to 'lon[1]' with increment 'hon[2]' in deg
+      double lat[3];    ///< Definition of the grid in latitude.
+                        /// 'lat[0]' to 'lat[1]' with increment 'hgt[2]' in deg.
+      double lon[3];    ///< Definition of the grid in longitude.
+                        /// 'lon[0]' to 'lon[1]' with increment 'hon[2]' in deg.
 
       int exponent;    ///< Exponent defining the unit of the values (optional)
       std::string auxData;          ///< Type of auxiliar data (optional)
 
          /// The key to this map is the svid of the satellite (usually the prn)
       typedef std::map<SatID,DCB> SatDCBMap;
+         /// The key to this map is the marker name of the station
+      typedef std::map<std::string,DCB> StaDCBMap;
 
       SatDCBMap svsmap;    ///< Map of satellites' DCBs (in nanoseconds)
+      StaDCBMap stamap;    ///< Map of stations' DCBs (in nanoseconds)
       bool auxDataFlag;    ///< Flag to monitor the sequence of auxiliar data
 
          /// return code, Am I valid?
@@ -231,12 +214,12 @@ namespace gnsstk
          //@}
 
          /// Destructor
-      virtual ~IonexHeader() {};
+      virtual ~IonexHeader();
 
 
          // IonexHeader is a "header" so this function always returns true.
       virtual bool isHeader() const
-      { return true; };
+      { return true; }
 
 
          /** Simple debug output function.
@@ -252,7 +235,7 @@ namespace gnsstk
           * code biases".
           * @throw FFStreamError
           */
-      void ParseDcbRecord(std::string &line);
+      void parseDcbRecord(const std::string& line);
 
 
          /** Parse a single header record, and modify 'valid' accordingly.
@@ -260,7 +243,7 @@ namespace gnsstk
           * Used by reallyGetRecord for both IonexHeader and IonexData.
           * @throw FFStreamError
           */
-      void ParseHeaderRecord(std::string& line);
+      void parseHeaderRecord(const std::string& line);
 
 
          /**
@@ -269,7 +252,7 @@ namespace gnsstk
           * @throw FFStreamError
           * @throw StringUtils::StringException
           */
-      void WriteHeaderRecords(FFStream& s) const;
+      void writeHeaderRecords(FFStream& s) const;
 
 
 
@@ -282,7 +265,7 @@ namespace gnsstk
           * @throw FFStreamError
           * @throw StringException when a StringUtils function fails
           */
-      virtual void reallyPutRecord(FFStream& s) const;
+      void reallyPutRecord(FFStream& s) const override;
 
 
          /** This function retrieves the IONEX header from the given FFStream.
@@ -296,13 +279,7 @@ namespace gnsstk
           *  a read or formatting error occurs. This also resets the stream
           *  to its pre-read position.
           */
-      virtual void reallyGetRecord(FFStream& s);
-
-
-         // Not sure how it helps (seen in SP3Header and RinexObsHeader)
-      friend class IonexData;
-
-
+      void reallyGetRecord(FFStream& s) override;
 
    private:
          /** Converts the CommonTime \a dt into a Ionex Obs time
@@ -316,14 +293,9 @@ namespace gnsstk
           * It looks at \a line to obtain the needed information.
           */
       CommonTime parseTime(const std::string& line) const;
-
-
-
    }; // End of class 'IonexHeader'
 
-
       //@}
-
 
 }  // End of namespace gnsstk
 #endif   // GNSSTK_IONEXHEADER_HPP

@@ -53,7 +53,7 @@ namespace gnsstk
       /// @ingroup FileHandling
       //@{
 
-      /** This class does not served any purpose other than to make readable
+      /** This class does not serve any purpose other than to make readable
        *  inheritance diagrams.
        */
    class IonexBase : public FFData
@@ -61,7 +61,7 @@ namespace gnsstk
    public:
 
          /// Destructor per the coding standards
-      virtual ~IonexBase() {};
+      virtual ~IonexBase() {}
 
    }; // End of class 'IonexBase'
 

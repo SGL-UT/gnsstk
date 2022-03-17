@@ -64,4 +64,12 @@ add_executable(FFBinaryStream_T FFBinaryStream_T.cpp)
 target_link_libraries(FFBinaryStream_T gnsstk)
 add_test(NAME FileHandling_FFBinaryStream COMMAND $<TARGET_FILE:FFBinaryStream_T>)
 
+add_executable(Ionex_T Ionex_T.cpp)
+target_link_libraries(Ionex_T gnsstk)
+add_test(NAME FileHandling_Ionex COMMAND $<TARGET_FILE:Ionex_T>)
+
+add_executable(IonexStoreStrategy_T IonexStoreStrategy_T.cpp)
+target_link_libraries(IonexStoreStrategy_T gnsstk)
+add_test(NAME FileHandling_IonexStoreStrategy COMMAND $<TARGET_FILE:IonexStoreStrategy_T>)
+
 set( df_diff ${GNSSTK_BINDIR}/df_diff)
