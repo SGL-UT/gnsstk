@@ -183,7 +183,7 @@ namespace gnsstk
       double A;            ///< Semi-major axis (m)
       double Ahalf;        ///< Square Root of semi-major axis (m**.5)
       double Adot;         ///< Rate of semi-major axis (m/sec)
-      double OMEGA0;       ///< Rt ascension of ascending node (rad)
+      double OMEGA0;       ///< Longitude of ascending node at weekly epoch (rad)
       double i0;           ///< Inclination (rad)
       double w;            ///< Argument of perigee (rad)
       double OMEGAdot;     ///< Rate of Rt ascension (rad/sec)
