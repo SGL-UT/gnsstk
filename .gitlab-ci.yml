@@ -305,6 +305,25 @@ build_redhat_8:
     paths:
       - build/
 
+build_windows_vs2019_dll:
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019_dll
+  stage: build
+  needs: []
+  extends: .vs2019_dll_build
+  tags:
+    - win10-vs2019
+  script:
+    - mkdir build
+    - cd build
+    - cmake -DBUILD_SHARED_LIBS=TRUE -DDEBUGTRACE=off -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ../
+    - cmake --build . --config Release -- /m
+  artifacts:
+    paths:
+      - build/
+  allow_failure: false
+  timeout: 180m
+
 build_windows:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/$CI_PIPELINE_ID
@@ -316,7 +335,7 @@ build_windows:
   script:
     - mkdir build
     - cd build
-    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
+    - cmake -DCMAKE_INSTALL_PREFIX=install -DDEBUGTRACE=off -DCMAKE_BUILD_TYPE=release -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
     - cmake --build . --config Release -- /m
   artifacts:
     paths:
@@ -333,25 +352,7 @@ build_windows_vs2019:
   script:
     - mkdir build
     - cd build
-    - cmake -DBUILD_SHARED_LIBS=FALSE -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ../
-    - cmake --build . --config Release -- /m
-  artifacts:
-    paths:
-      - build/
-  allow_failure: false
-
-build_windows_vs2019_dll:
-  variables:
-    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019_dll
-  stage: build
-  needs: []
-  extends: .vs2019_dll_build
-  tags:
-    - win10-vs2019
-  script:
-    - mkdir build
-    - cd build
-    - cmake -DBUILD_SHARED_LIBS=TRUE -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ../
+    - cmake -DBUILD_SHARED_LIBS=FALSE -DDEBUGTRACE=off -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ../
     - cmake --build . --config Release -- /m
   artifacts:
     paths:

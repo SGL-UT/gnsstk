@@ -54,6 +54,7 @@
 #include "RinexSatID.hpp"
 #include "TimeSystemCorr.hpp"
 #include "RNDouble.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -190,18 +191,30 @@ namespace gnsstk
       long leapWeek;                 ///< Week number of ref time
       long leapDay;                  ///< Day of week of ref time
 
+      GNSSTK_EXPORT
       static const std::string stringVersion;      // "RINEX VERSION / TYPE"
+      GNSSTK_EXPORT
       static const std::string stringRunBy;        // "PGM / RUN BY / DATE"
+      GNSSTK_EXPORT
       static const std::string stringComment;      // "COMMENT"
          // R3.x
+      GNSSTK_EXPORT
       static const std::string stringIonoCorr;     // "IONOSPHERIC CORR"
+      GNSSTK_EXPORT
       static const std::string stringTimeSysCorr;  // "TIME SYSTEM CORR"
+      GNSSTK_EXPORT
       static const std::string stringLeapSeconds;  // "LEAP SECONDS"
+      GNSSTK_EXPORT
       static const std::string stringDeltaUTC;     // "DELTA-UTC: A0,A1,T,W" // R2.11 GPS
+      GNSSTK_EXPORT
       static const std::string stringCorrSysTime;  // "CORR TO SYSTEM TIME"  // R2.10 GLO
+      GNSSTK_EXPORT
       static const std::string stringDUTC;         // "D-UTC A0,A1,T,W,S,U"  // R2.11 GEO
+      GNSSTK_EXPORT
       static const std::string stringIonAlpha;     // "ION ALPHA"            // R2.11
+      GNSSTK_EXPORT
       static const std::string stringIonBeta;      // "ION BETA"             // R2.11
+      GNSSTK_EXPORT
       static const std::string stringEoH;          // "END OF HEADER"
 
 

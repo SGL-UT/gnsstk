@@ -51,6 +51,7 @@
 #include "CommonTime.hpp"
 #include "SatID.hpp"
 #include "IonexBase.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -83,27 +84,49 @@ namespace gnsstk
           * IONEX Header Formatting Strings
           */
          //@{
+      GNSSTK_EXPORT
       static const std::string versionString;         ///< "IONEXVERSION / TYPE"
+      GNSSTK_EXPORT
       static const std::string runByString;           ///< "PGM / RUN BY / DATE"
+      GNSSTK_EXPORT
       static const std::string descriptionString;     ///< "DESCRIPTION"
+      GNSSTK_EXPORT
       static const std::string commentString;         ///< "COMMENT"
+      GNSSTK_EXPORT
       static const std::string firstTimeString;       ///< "EPOCH OF FIRST MAP"
+      GNSSTK_EXPORT
       static const std::string lastTimeString;        ///< "EPOCH OF LAST MAP"
+      GNSSTK_EXPORT
       static const std::string intervalString;        ///< "INTERVAL"
+      GNSSTK_EXPORT
       static const std::string numMapsString;         ///< "# OF MAPS IN FILE"
+      GNSSTK_EXPORT
       static const std::string mappingFunctionString; ///< "MAPPING FUNCTION"
+      GNSSTK_EXPORT
       static const std::string elevationString;       ///< "ELEVATION CUTOFF"
+      GNSSTK_EXPORT
       static const std::string observablesUsedString; ///< "OBSERVABLES USED"
+      GNSSTK_EXPORT
       static const std::string numStationsString;     ///< "# OF STATIONS"
+      GNSSTK_EXPORT
       static const std::string numSatsString;         ///< "# OF SATELLITES"
+      GNSSTK_EXPORT
       static const std::string baseRadiusString;      ///< "BASE RADIUS"
+      GNSSTK_EXPORT
       static const std::string mapDimensionString;    ///< "MAP DIMENSION"
+      GNSSTK_EXPORT
       static const std::string hgtGridString;         ///< "HGT1 / HGT2 / DHGT"
+      GNSSTK_EXPORT
       static const std::string latGridString;         ///< "LAT1 / LAT2 / DLAT"
+      GNSSTK_EXPORT
       static const std::string lonGridString;         ///< "LON1 / LON2 / DLON"
+      GNSSTK_EXPORT
       static const std::string exponentString;        ///< "EXPONENT"
+      GNSSTK_EXPORT
       static const std::string startAuxDataString;    ///< "START OF AUX DATA"
+      GNSSTK_EXPORT
       static const std::string endAuxDataString;      ///< "END OF AUX DATA"
+      GNSSTK_EXPORT
       static const std::string endOfHeader;           ///< "END OF HEADER"
          //@}
 
@@ -150,7 +173,9 @@ namespace gnsstk
              * Differential Code Bias Formatting Strings
              */
             //@{
+         GNSSTK_EXPORT
          static const std::string svsAuxDataString;      ///< "PRN / BIAS / RMS"
+         GNSSTK_EXPORT
          static const std::string stationsAuxDataString; ///< "STATION/BIAS/RMS"
             //@}
 

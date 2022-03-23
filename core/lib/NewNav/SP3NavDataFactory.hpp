@@ -42,6 +42,7 @@
 #include "NavDataFactoryWithStoreFile.hpp"
 #include "SP3Data.hpp"
 #include "SP3Header.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -64,9 +65,11 @@ namespace gnsstk
          Lagrange
       };
          /// Generic ObsIDs for each GNSS.
-      static const ObsID oidGPS, oidGalileo, oidQZSS, oidGLONASS, oidBeiDou;
+      GNSSTK_EXPORT static const ObsID oidGPS, oidGalileo, oidQZSS, oidGLONASS,
+         oidBeiDou;
          /// Generic NavTypes for each GNSS.
-      static const NavType ntGPS, ntGalileo, ntQZSS, ntGLONASS, ntBeiDou;
+      GNSSTK_EXPORT static const NavType ntGPS, ntGalileo, ntQZSS, ntGLONASS,
+         ntBeiDou;
 
          /** Fill supportedSignals.
           * @note Only GPS nav is supported so only that

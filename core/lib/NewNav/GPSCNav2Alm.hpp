@@ -40,6 +40,7 @@
 #define GNSSTK_GPSCNAV2ALM_HPP
 
 #include "OrbitDataKepler.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -52,10 +53,10 @@ namespace gnsstk
    public:
          /** Midi almanac inclination offset, this + delta i = i0,
           * defined in IS-GPS-800. */
-      static const double refi0GPS;
+      GNSSTK_EXPORT static const double refi0GPS;
          /** Midi almanac inclination offset, this + delta i = i0,
           * defined in IS-QZSS-PNT-004. */
-      static const double refi0QZSS;
+      GNSSTK_EXPORT static const double refi0QZSS;
 
          /// Sets the nav message type.
       GPSCNav2Alm();

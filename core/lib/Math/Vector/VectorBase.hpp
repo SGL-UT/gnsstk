@@ -48,6 +48,7 @@
 #include "Exception.hpp"
 
 #include "MathBase.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -143,7 +144,7 @@ namespace gnsstk
    public:
          /// used with zeroize(), any number below this value will become 0.
          /// this variable can be assigned any value.
-      static double zeroTolerance;
+      GNSSTK_EXPORT static double zeroTolerance;
    };
 
       /**

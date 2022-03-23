@@ -51,6 +51,7 @@
 #include "RinexSatID.hpp"
 #include "RinexObsID.hpp"
 #include "TimeSystem.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -71,24 +72,43 @@ namespace gnsstk
 
          /// @name RINEX Clock Header Formatting Strings
          //@{
+      GNSSTK_EXPORT
       static const std::string versionString;         ///< "RINEX VERSION / TYPE"
+      GNSSTK_EXPORT
       static const std::string runByString;           ///< "PGM / RUN BY / DATE"
+      GNSSTK_EXPORT
       static const std::string commentString;         ///< "COMMENT"
+      GNSSTK_EXPORT
       static const std::string sysString;             ///< "SYS / # / OBS TYPES"
+      GNSSTK_EXPORT
       static const std::string timeSystemString;      ///< "TIME SYSTEM ID"
+      GNSSTK_EXPORT
       static const std::string leapSecondsString;     ///< "LEAP SECONDS"
+      GNSSTK_EXPORT
       static const std::string sysDCBString;          ///< "SYS / DCBS APPLIED"
+      GNSSTK_EXPORT
       static const std::string sysPCVString;          ///< "SYS / PCVS APPLIED"
+      GNSSTK_EXPORT
       static const std::string numDataString;         ///< "# / TYPES OF DATA"
+      GNSSTK_EXPORT
       static const std::string stationNameString;     ///< "STATION NAME / NUM"
+      GNSSTK_EXPORT
       static const std::string stationClockRefString; ///< "STATION CLK REF"
+      GNSSTK_EXPORT
       static const std::string analysisCenterString;  ///< "ANALYSIS CENTER"
+      GNSSTK_EXPORT
       static const std::string numClockRefString;     ///< "# OF CLK REF"
+      GNSSTK_EXPORT
       static const std::string analysisClkRefrString; ///< "ANALYSIS CLK REF"
+      GNSSTK_EXPORT
       static const std::string numReceiversString;    ///< "# OF SOLN STA / TRF"
+      GNSSTK_EXPORT
       static const std::string solnStateString;       ///< "SOLN STA NAME / NUM"
+      GNSSTK_EXPORT
       static const std::string numSolnSatsString;     ///< "# OF SOLN SATS"
+      GNSSTK_EXPORT
       static const std::string prnListString;         ///< "PRN LIST"
+      GNSSTK_EXPORT
       static const std::string endOfHeaderString;     ///< "END OF HEADER"
          //@}
 

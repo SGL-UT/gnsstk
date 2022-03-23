@@ -51,6 +51,7 @@
 #include "SatID.hpp"
 #include "FFStream.hpp"
 #include "StringUtils.hpp"
+#include "gnsstk_export.h"
 
 
 namespace gnsstk
@@ -70,20 +71,35 @@ namespace gnsstk
 
          /// @name RINEX Clock Header Formatting Strings
          //@{
+      GNSSTK_EXPORT
       static const std::string versionString;        ///< "RINEX VERSION / TYPE"
+      GNSSTK_EXPORT
       static const std::string runByString;          ///< "PGM / RUN BY / DATE"
+      GNSSTK_EXPORT
       static const std::string commentString;        ///< "COMMENT"
+      GNSSTK_EXPORT
       static const std::string leapSecondsString;    ///< "LEAP SECONDS"
+      GNSSTK_EXPORT
       static const std::string dataTypesString;      ///< "# / TYPES OF DATA"
+      GNSSTK_EXPORT
       static const std::string stationNameString;    ///< "STATION NAME / NUM"
+      GNSSTK_EXPORT
       static const std::string calibrationClkString; ///< "STATION CLK REF"
+      GNSSTK_EXPORT
       static const std::string acNameString;         ///< "ANALYSIS CENTER"
+      GNSSTK_EXPORT
       static const std::string numRefClkString;      ///< "# OF CLK REF"
+      GNSSTK_EXPORT
       static const std::string analysisClkRefString; ///< "ANALYSIS CLK REF"
+      GNSSTK_EXPORT
       static const std::string numStationsString;    ///< "# OF SOLN STA / TRF"
+      GNSSTK_EXPORT
       static const std::string solnStaNameString;    ///< "SOLN STA NAME / NUM"
+      GNSSTK_EXPORT
       static const std::string numSatsString;        ///< "# OF SOLN SATS"
+      GNSSTK_EXPORT
       static const std::string prnListString;        ///< "PRN LIST"
+      GNSSTK_EXPORT
       static const std::string endOfHeader;          ///< "END OF HEADER"
          //@}
 

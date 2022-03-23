@@ -7,10 +7,26 @@ message(STATUS "swig test path ${MODULE_PATH}")
 message(STATUS "swig test bin dir ${CMAKE_BINARY_DIR}")
 set(tp  ${MODULE_PATH}/tests)
 set(td  ${MODULE_PATH}/gnsstk)
+if (WIN32)
+  # @todo Using CMAKE_BUILD_TYPE isn't really right as it ignores the
+  # --config option, effectively, but I haven't figured out a way to
+  # expand $<CONFIG> or whatever such that it can be used here to set
+  # the PATH environment variable.
+  set(TESTPATH "${MODULE_PATH}/gnsstk;${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE};$ENV{PATH}")
+  # Windows uses ; to separate paths, cmake uses it to separate list
+  # items, so we have to do this replacement to make things behave as
+  # they should.
+  string(REPLACE ";" "\\;" TESTPATH "${TESTPATH}")
+  string(REPLACE "/" "\\" TESTPATH "${TESTPATH}")
+endif()
 
 macro(prep_swig_test target labels)
   set_property(TEST ${target} PROPERTY LABELS swig ${labels})
-  set_property(TEST ${target} PROPERTY ENVIRONMENT "LD_LIBRARY_PATH=${CMAKE_BINARY_DIR};PYTHONPATH=${td}")
+  if (WIN32)
+    set_property(TEST ${target} PROPERTY ENVIRONMENT "PATH=${TESTPATH};PYTHONPATH=${td}")
+  else()
+    set_property(TEST ${target} PROPERTY ENVIRONMENT "LD_LIBRARY_PATH=${CMAKE_BINARY_DIR};PYTHONPATH=${td}")
+  endif()
 endmacro(prep_swig_test)
 
 add_test(NAME swig_test_import

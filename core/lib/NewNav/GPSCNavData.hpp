@@ -40,6 +40,7 @@
 #define GNSSTK_GPSCNAVDATA_HPP
 
 #include "OrbitDataKepler.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -53,43 +54,43 @@ namespace gnsstk
    public:
          /** Ephemeris/Reduced Almanac Aref value defined in
           * IS-GPS-200 (meters). */
-      static const double refAGPS;
+      GNSSTK_EXPORT static const double refAGPS;
          /** Ephemeris OMEGA dot reference value defined in IS-GPS-200
           * (radians). */
-      static const double refOMEGAdotEphGPS;
+      GNSSTK_EXPORT static const double refOMEGAdotEphGPS;
          /** Reduced almanac OMEGA dot reference value defined in IS-GPS-200
           * (radians). */
-      static const double refOMEGAdotRedAlmGPS;
+      GNSSTK_EXPORT static const double refOMEGAdotRedAlmGPS;
          /** Midi almanac inclination offset, this + delta i = i0,
           * defined in IS-GPS-200. */
-      static const double refi0GPS;
+      GNSSTK_EXPORT static const double refi0GPS;
          /** Reduced almanac delta i reference value defined in
           * IS-GPS-200 (radians). */
-      static const double refdeltaiGPS;
+      GNSSTK_EXPORT static const double refdeltaiGPS;
          /// Argument of perigee reference value (radians, guessed at).
-      static const double refwGPS;
+      GNSSTK_EXPORT static const double refwGPS;
          /** Reduced almanac reference eccentricity for reduced
           * almanac in IS-GPS-200. */
-      static const double refEccGPS;
+      GNSSTK_EXPORT static const double refEccGPS;
 
          /** Ephemeris/Reduced Almanac Aref value defined in
           * IS-QZSS (meters). */
-      static const double refAQZSS;
+      GNSSTK_EXPORT static const double refAQZSS;
          /// Ephemeris OMEGA dot reference value for QZSS (radians).
-      static const double refOMEGAdotEphQZSS;
+      GNSSTK_EXPORT static const double refOMEGAdotEphQZSS;
          /// Reduced almanac OMEGA dot reference value for QZSS (radians).
-      static const double refOMEGAdotRedAlmQZSS;
+      GNSSTK_EXPORT static const double refOMEGAdotRedAlmQZSS;
          /** Midi almanac inclination offset, this + delta i = i0,
           * defined in IS-QZSS. */
-      static const double refi0QZSS;
+      GNSSTK_EXPORT static const double refi0QZSS;
          /** Reduced almanac delta i reference value defined in
           * IS-QZSS (radians). */
-      static const double refdeltaiQZSS;
+      GNSSTK_EXPORT static const double refdeltaiQZSS;
          /// Argument of perigee reference value in IS-QZSS (radians).
-      static const double refwQZSS;
+      GNSSTK_EXPORT static const double refwQZSS;
          /** Reduced almanac reference eccentricity for reduced
           * almanac in IS-QZSS-200. */
-      static const double refEccQZSS;
+      GNSSTK_EXPORT static const double refEccQZSS;
 
          /// Initialize data members.
       GPSCNavData();

@@ -52,6 +52,7 @@
 #include "Position.hpp"
 #include "Matrix.hpp"
 #include "GNSSconstants.hpp"
+#include "gnsstk_export.h"
 
 #define THROW_IF_INVALID() {if (!valid) {InvalidTropModel e("Invalid model");GNSSTK_THROW(e);}}
 
@@ -104,7 +105,7 @@ namespace gnsstk
    class TropModel
    {
    public:
-      static const double CELSIUS_TO_KELVIN;
+      GNSSTK_EXPORT static const double CELSIUS_TO_KELVIN;
 
          /// Destructor
       virtual ~TropModel() {}

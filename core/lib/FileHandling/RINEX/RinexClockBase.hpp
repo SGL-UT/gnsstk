@@ -49,6 +49,7 @@
 #include "StringUtils.hpp"
 #include "CivilTime.hpp"
 #include "FormattedDouble.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -106,12 +107,12 @@ namespace gnsstk
          /** @name Standard RINEX clock data types
           */
          //@{
-      static const RinexClkType UN;
-      static const RinexClkType AR;
-      static const RinexClkType AS;
-      static const RinexClkType CR;
-      static const RinexClkType DR;
-      static const RinexClkType MS;
+      GNSSTK_EXPORT static const RinexClkType UN;
+      GNSSTK_EXPORT static const RinexClkType AR;
+      GNSSTK_EXPORT static const RinexClkType AS;
+      GNSSTK_EXPORT static const RinexClkType CR;
+      GNSSTK_EXPORT static const RinexClkType DR;
+      GNSSTK_EXPORT static const RinexClkType MS;
          //@}
 
    protected:

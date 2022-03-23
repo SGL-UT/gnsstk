@@ -43,7 +43,9 @@ elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
     set( CMAKE_CXX_FLAGS "-std=c++11 -Wno-write-strings" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
-    set( CMAKE_CXX_FLAGS "-std=c++11" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj" )
+    get_filename_component(PYTHON_LIBRARY_PATH "${PYTHON_LIBRARY}" DIRECTORY)
+    link_directories(${PYTHON_LIBRARY_PATH})
 endif()
 
 
@@ -110,7 +112,7 @@ set( CMAKE_SWIG_OUTDIR ${MODULE_PATH}/${SWIG_MODULE} )
 add_custom_target(swig-make-directory ALL
     COMMAND ${CMAKE_COMMAND} -E make_directory ${MODULE_PATH}/gnsstk)
 add_dependencies("_${SWIG_MODULE}" swig-make-directory)
-add_custom_command( TARGET "_${SWIG_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "_${SWIG_MODULE}.so" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${SWIG_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${SWIG_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
 add_custom_command( TARGET "_${SWIG_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${SWIG_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
 
 # Find all files in the gnsstk, apps, and tests directories and set up dependancies to
@@ -140,7 +142,13 @@ if( NOT EXISTS ${SWIG_DOC_DIR}/doc.i )
     file( WRITE ${SWIG_DOC_DIR}/doc.i "// dummy file. Is written if docs are not generated for python bindings.")
 endif()
 
-# Provide ability to use CMake variables to define some values within the setup.py script
+# Provide ability to use CMake variables to define some values within
+# the setup.py script
+set( SWIG_MODULE_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX} )
+# just because, apparently.
+if (WIN32)
+    set( SWIG_MODULE_SUFFIX ".pyd" )
+endif(WIN32)
 set( SETUP_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in" )
 set( SETUP_PY    "${MODULE_PATH}/setup.py" )
 configure_file( ${SETUP_PY_IN} ${SETUP_PY} )
@@ -149,17 +157,23 @@ set( GNSSTK_ROOT_PY_IN "${CMAKE_CURRENT_SOURCE_DIR}/gnsstk/__init__.py.in" )
 set( GNSSTK_ROOT_PY    "${MODULE_PATH}/gnsstk/__init__.py" )
 configure_file( ${GNSSTK_ROOT_PY_IN} ${GNSSTK_ROOT_PY} )
 
+# fix paths for windows
+if (WIN32)
+    string(REPLACE "/" "\\\\" PYTHON_INSTALL_PREFIX "${PYTHON_INSTALL_PREFIX}")
+    string(REPLACE "/" "\\\\" MODULE_PATH "${MODULE_PATH}")
+endif()
 
 # Note: For setup.py install options, see https://docs.python.org/2/install/
 if( BUILD_FOR_PACKAGE_SWITCH )
-    # If building for a package, use the "root" switch to imitate the system package path
+    # If building for a package, use the "root" switch to imitate the
+    # system package path
     install( DIRECTORY DESTINATION ${PYTHON_INSTALL_PREFIX}/lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages )
     install( CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} install --root=${PYTHON_INSTALL_PREFIX} WORKING_DIRECTORY ${MODULE_PATH})" )
 elseif( PYTHON_USER_INSTALL )
-    # If performing a user-install, use the `--user` flag, otherwise it may not create the correct directores.
+    # If performing a user-install, use the `--user` flag, otherwise
+    # it may not create the correct directores.
     install( CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} install --user WORKING_DIRECTORY ${MODULE_PATH})" )
 else()
-    install( DIRECTORY DESTINATION ${PYTHON_INSTALL_PREFIX}/lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages )
     install( CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} -m pip install --prefix=${PYTHON_INSTALL_PREFIX} ${MODULE_PATH} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})" )
 endif()
 

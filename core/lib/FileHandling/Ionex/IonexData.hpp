@@ -52,6 +52,7 @@
 #include "WGS84Ellipsoid.hpp"
 
 #include "IonexStream.hpp"
+#include "gnsstk_export.h"
 
 
 
@@ -75,14 +76,23 @@ namespace gnsstk
           * IONEX Data Formatting Strings
           */
          //@{
+      GNSSTK_EXPORT
       static const std::string startTecMapString;     ///<"START OF TEC MAP"
+      GNSSTK_EXPORT
       static const std::string startRmsMapString;     ///<"START OF RMS MAP"
+      GNSSTK_EXPORT
       static const std::string startHgtMapString;     ///<"START OF HEIGHT MAP"
+      GNSSTK_EXPORT
       static const std::string currentEpochString;    ///<"EPOCH OF CURRENT MAP"
+      GNSSTK_EXPORT
       static const std::string dataBlockString;       ///<"LAT/LON1/LON2/DLON/H"
+      GNSSTK_EXPORT
       static const std::string endTecMapString;       ///<"END OF TEC MAP"
+      GNSSTK_EXPORT
       static const std::string endRmsMapString;       ///<"END OF RMS MAP"
+      GNSSTK_EXPORT
       static const std::string endHgtMapString;       ///<"END OF HEIGHT MAP"
+      GNSSTK_EXPORT
       static const std::string endOfFile;             ///<"END OF FILE"
          //@}
 
@@ -105,8 +115,11 @@ namespace gnsstk
           * @name Standard IONEX value types
           */
          //@{
+      GNSSTK_EXPORT
       static const IonexValType UN;
+      GNSSTK_EXPORT
       static const IonexValType TEC;
+      GNSSTK_EXPORT
       static const IonexValType RMS;
          //@}
 
