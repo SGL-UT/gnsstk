@@ -139,17 +139,16 @@ class TestNavLibrary(unittest.TestCase):
         # rudimentary test of setValidityFilter, just make sure it doesn't die
         navLib.setValidityFilter(gnsstk.NavValidityType.ValidOnly)
 
-        # Unfortunately we're currently unable to translate between python and
-        # C++ for containers of enums - in python it comes out as a set of
-        # unknown SWIG objects.
-    # def test_setTypeFilter(self):
-        # navLib = gnsstk.NavLibrary()
-        # ndf = gnsstk.RinexNavDataFactory()
-        # navLib.addFactory(ndf)
+    def test_setTypeFilter(self):
+        navLib = gnsstk.NavLibrary()
+        ndf = gnsstk.RinexNavDataFactory()
+        navLib.addFactory(ndf)
         # rudimentary test of setTypeFilter
-        # nmts = gnsstk.NavMessageTypeSet()
-        # nmts.add(gnsstk.NavMessageType.Almanac)
-        # navLib.setTypeFilter(nmts)
+        nmts = gnsstk.NavMessageTypeSet()
+        nmts.add(gnsstk.NavMessageType.Almanac)
+        navLib.setTypeFilter(nmts)
+        nmts = ndf.getTypeFilter()
+        self.assertEqual(1, len(nmts))
 
         # we can test addTypeFilter and clearTypeFilter up to a point, we can't
         # actually verify the contents without causing the same sort of errors
