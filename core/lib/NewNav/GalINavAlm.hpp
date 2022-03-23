@@ -41,6 +41,7 @@
 
 #include "OrbitDataKepler.hpp"
 #include "GalHealthStatus.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -52,9 +53,9 @@ namespace gnsstk
    {
    public:
          /// A ref value defined in OS-SIS-ICD Table 75 (meters).
-      static const double refA;
+      GNSSTK_EXPORT static const double refA;
          /// inclination offset, this + delta i = i0, defined in OS-SIS-ICD.
-      static const double refioffset;
+      GNSSTK_EXPORT static const double refioffset;
 
          /// Sets the nav message type.
       GalINavAlm();

@@ -45,6 +45,7 @@
 
 #include "Exception.hpp"
 #include "SatID.hpp"
+#include "gnsstk_export.h"
 
 /**
  * @file SP3SatID.hpp
@@ -152,7 +153,8 @@ namespace gnsstk
          /// If an unsupported system is used, set to unknown and PRN -1.
       void validate();
 
-      static char fillchar;  ///< fill character used during stream output
+         /// fill character used during stream output
+      GNSSTK_EXPORT static char fillchar;
 
    }; // class SP3SatID
 

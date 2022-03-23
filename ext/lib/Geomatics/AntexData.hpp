@@ -55,6 +55,7 @@
 #include "CommonTime.hpp"
 #include "Triple.hpp"
 #include "CivilTime.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -122,22 +123,39 @@ namespace gnsstk
          /** @name AntexDataFormatStrings
           * ANTEX Data Formatting Strings */
          //@{
+      GNSSTK_EXPORT
       static const std::string startAntennaString;    ///< "START OF ANTENNA"
+      GNSSTK_EXPORT
       static const std::string typeSerNumString;      ///< "TYPE / SERIAL NO"
+      GNSSTK_EXPORT
       static const std::string methodString;          ///< "METH / BY / # / DATE"
+      GNSSTK_EXPORT
       static const std::string daziString;            ///< "DAZI"
+      GNSSTK_EXPORT
       static const std::string zenithString;          ///< "ZEN1 / ZEN2 / DZEN"
+      GNSSTK_EXPORT
       static const std::string numFreqString;         ///< "# OF FREQUENCIES"
+      GNSSTK_EXPORT
       static const std::string validFromString;       ///< "VALID FROM"
+      GNSSTK_EXPORT
       static const std::string validUntilString;      ///< "VALID UNTIL"
+      GNSSTK_EXPORT
       static const std::string sinexCodeString;       ///< "SINEX CODE"
+      GNSSTK_EXPORT
       static const std::string dataCommentString;     ///< "COMMENT"
+      GNSSTK_EXPORT
       static const std::string startFreqString;       ///< "START OF FREQUENCY"
+      GNSSTK_EXPORT
       static const std::string neuFreqString;         ///< "NORTH / EAST / UP"
+      GNSSTK_EXPORT
       static const std::string endOfFreqString;       ///< "END OF FREQUENCY"
+      GNSSTK_EXPORT
       static const std::string startFreqRMSString;    ///< "START OF FREQ RMS"
+      GNSSTK_EXPORT
       static const std::string neuFreqRMSString;      ///< "NORTH / EAST / UP"
+      GNSSTK_EXPORT
       static const std::string endOfFreqRMSString;    ///< "END OF FREQ RMS"
+      GNSSTK_EXPORT
       static const std::string endOfAntennaString;    ///< "END OF ANTENNA"
          //@}
 
@@ -168,7 +186,7 @@ namespace gnsstk
 
          /** Values of 'type' that are satellites
           * @note keep this updated from the IGS file 'rcvr_ant.tab' */
-      static const std::vector<std::string> SatelliteTypes;
+      GNSSTK_EXPORT static const std::vector<std::string> SatelliteTypes;
 
          /// map from zenith angle (degrees) to PC offset (millimeters)
       typedef std::map<double, double> zenOffsetMap;

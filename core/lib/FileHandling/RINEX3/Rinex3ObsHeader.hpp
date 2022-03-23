@@ -165,42 +165,79 @@ namespace gnsstk
 
          /// @name RINEX observation file header formatting strings
          ///@{
+      GNSSTK_EXPORT
       static const std::string hsVersion;           ///< RINEX VERSION / TYPE
+      GNSSTK_EXPORT
       static const std::string hsRunBy;             ///< PGM / RUN BY / DATE
+      GNSSTK_EXPORT
       static const std::string hsComment;           ///< COMMENT
+      GNSSTK_EXPORT
       static const std::string hsMarkerName;        ///< MARKER NAME
+      GNSSTK_EXPORT
       static const std::string hsMarkerNumber;      ///< MARKER NUMBER
+      GNSSTK_EXPORT
       static const std::string hsMarkerType;        ///< MARKER TYPE
+      GNSSTK_EXPORT
       static const std::string hsObserver;          ///< OBSERVER / AGENCY
+      GNSSTK_EXPORT
       static const std::string hsReceiver;          ///< REC # / TYPE / VERS
+      GNSSTK_EXPORT
       static const std::string hsAntennaType;       ///< ANT # / TYPE
+      GNSSTK_EXPORT
       static const std::string hsAntennaPosition;   ///< APPROX POSITION XYZ
+      GNSSTK_EXPORT
       static const std::string hsAntennaDeltaHEN;   ///< ANTENNA: DELTA H/E/N
+      GNSSTK_EXPORT
       static const std::string hsAntennaDeltaXYZ;   ///< ANTENNA: DELTA X/Y/Z
+      GNSSTK_EXPORT
       static const std::string hsAntennaPhaseCtr;   ///< ANTENNA: PHASECENTER
+      GNSSTK_EXPORT
       static const std::string hsAntennaBsightXYZ;  ///< ANTENNA: B.SIGHT XYZ
+      GNSSTK_EXPORT
       static const std::string hsAntennaZeroDirAzi; ///< ANTENNA: ZERODIR AZI
+      GNSSTK_EXPORT
       static const std::string hsAntennaZeroDirXYZ; ///< ANTENNA: ZERODIR XYZ
+      GNSSTK_EXPORT
       static const std::string hsCenterOfMass;      ///< CENTER OF MASS: XYZ
+      GNSSTK_EXPORT
       static const std::string hsNumObs;            ///< # / TYPES OF OBSERV
+      GNSSTK_EXPORT
       static const std::string hsSystemNumObs;      ///< SYS / # / OBS TYPES
+      GNSSTK_EXPORT
       static const std::string hsWaveFact;          ///< WAVELENGTH FACT L1/2
+      GNSSTK_EXPORT
       static const std::string hsSigStrengthUnit;   ///< SIGNAL STRENGTH UNIT
+      GNSSTK_EXPORT
       static const std::string hsInterval;          ///< INTERVAL
+      GNSSTK_EXPORT
       static const std::string hsFirstTime;         ///< TIME OF FIRST OBS
+      GNSSTK_EXPORT
       static const std::string hsLastTime;          ///< TIME OF LAST OBS
+      GNSSTK_EXPORT
       static const std::string hsReceiverOffset;    ///< RCV CLOCK OFFS APPL
+      GNSSTK_EXPORT
       static const std::string hsSystemDCBSapplied; ///< SYS / DCBS APPLIED
+      GNSSTK_EXPORT
       static const std::string hsSystemPCVSapplied; ///< SYS / PCVS APPLIED
+      GNSSTK_EXPORT
       static const std::string hsSystemScaleFac;    ///< SYS / SCALE FACTOR
+      GNSSTK_EXPORT
       static const std::string hsSystemPhaseShift;  ///< SYS / PHASE SHIFT
+      GNSSTK_EXPORT
       static const std::string hsGlonassSlotFreqNo; ///< GLONASS SLOT / FRQ #
+      GNSSTK_EXPORT
       static const std::string hsGlonassCodPhsBias; ///< GLONASS COD/PHS/BIS
+      GNSSTK_EXPORT
       static const std::string hsLeapSeconds;       ///< LEAP SECONDS
+      GNSSTK_EXPORT
       static const std::string hsNumSats;           ///< # OF SATELLITES
+      GNSSTK_EXPORT
       static const std::string hsPrnObs;            ///< PRN / # OF OBS
+      GNSSTK_EXPORT
       static const std::string hsEoH;               ///< END OF HEADER
+      GNSSTK_EXPORT
       static const std::string hsAntennaStandard;   ///< Fixed comment xmit ant
+      GNSSTK_EXPORT
       static const std::string hsAntennaRegional;   ///< Fixed comment xmit ant
          ///@}
 

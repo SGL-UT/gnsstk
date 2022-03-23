@@ -47,6 +47,7 @@
 
 #include "AntexBase.hpp"
 #include "FFStream.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -74,9 +75,13 @@ namespace gnsstk
          /// @name AntexHeaderFormatStrings
          /// ANTEX Header Formatting Strings
          //@{
+      GNSSTK_EXPORT
       static const std::string versionString;         ///< "ANTEX VERSION / SYST"
+      GNSSTK_EXPORT
       static const std::string pcvTypeString;         ///< "PCV TYPE / REFANT"
+      GNSSTK_EXPORT
       static const std::string headerCommentString;   ///< "COMMENT"
+      GNSSTK_EXPORT
       static const std::string endOfHeaderString;     ///< "END OF HEADER"
          //@}
 

@@ -214,6 +214,7 @@ namespace gnsstk
       std::vector<sensorType> sensorTypeList;    ///< A list of sensors used in the file
       std::vector<sensorPosType> sensorPosList;  ///< A list of sensor positions used in the file
 
+      GNSSTK_EXPORT
       static const int maxObsPerLine;       ///< Holds the max records per line
 
       GNSSTK_EXPORT

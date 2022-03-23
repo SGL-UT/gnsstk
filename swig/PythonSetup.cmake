@@ -42,9 +42,11 @@ if( ${PYTHON_CUSTOM_CONFIG} MATCHES "NOTFOUND" )
   # will be copacetic with. So, we set CMAKE_INCLUDE_PATH to what is returned
   # by the found python-config.
 
-  # For python2, we only need to se tthe include path specifically.
+  # For python2, we only need to set the include path specifically.
   # Python3 requires more paths from python-config.
-  if( ${PYTHON_VERSION_MAJOR} EQUAL 3 )
+  if( WIN32 )
+    find_package( PythonLibs ${PYTHON_VERSION_STRING} REQUIRED )
+  elseif( ${PYTHON_VERSION_MAJOR} EQUAL 3 )
 
     # Find the python-config file.  First check for one next to the python
     # interpreter, then look anywhere in the system path.
@@ -112,6 +114,16 @@ if( ${PYTHON_CUSTOM_CONFIG} MATCHES "NOTFOUND" )
 
 endif()
 
+# an OR could conceivably be used here, but I'm setting this to match
+# the if/else chain in swig/CMakeLists.txt
+if (BUILD_FOR_PACKAGE_SWITCH)
+  set(GNSSTK_SWIG_MODULE_DIR "lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages")
+elseif (PYTHON_USER_INSTALL)
+  set(GNSSTK_SWIG_MODULE_DIR "lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages")
+else()
+  # Is this a peculiarty of Miniconda3 under Windows?  I'm not sure.
+  set(GNSSTK_SWIG_MODULE_DIR "lib/site-packages")
+endif()
 
 #------------------------------------------------------------
 # Debug messaging

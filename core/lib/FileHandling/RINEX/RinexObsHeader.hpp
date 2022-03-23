@@ -56,6 +56,7 @@
 #include "RinexObsBase.hpp"
 #include "Triple.hpp"
 #include "RinexSatID.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -73,13 +74,13 @@ namespace gnsstk
                        units(std::string("")),depend(0) {}
       RinexObsType(std::string t, std::string d, std::string u, unsigned int dep=0) :
             type(t),description(d),units(u),depend(dep) {}
-      static const unsigned int C1depend;
-      static const unsigned int L1depend;
-      static const unsigned int L2depend;
-      static const unsigned int P1depend;
-      static const unsigned int P2depend;
-      static const unsigned int EPdepend;
-      static const unsigned int PSdepend;
+      GNSSTK_EXPORT static const unsigned int C1depend;
+      GNSSTK_EXPORT static const unsigned int L1depend;
+      GNSSTK_EXPORT static const unsigned int L2depend;
+      GNSSTK_EXPORT static const unsigned int P1depend;
+      GNSSTK_EXPORT static const unsigned int P2depend;
+      GNSSTK_EXPORT static const unsigned int EPdepend;
+      GNSSTK_EXPORT static const unsigned int PSdepend;
    };
 
 
@@ -131,25 +132,45 @@ namespace gnsstk
 
          /// @name RINEX Observation Header Formatting Strings
          //@{
+      GNSSTK_EXPORT
       static const std::string versionString;         ///< "RINEX VERSION / TYPE"
+      GNSSTK_EXPORT
       static const std::string runByString;           ///< "PGM / RUN BY / DATE"
+      GNSSTK_EXPORT
       static const std::string commentString;         ///< "COMMENT"
+      GNSSTK_EXPORT
       static const std::string markerNameString;      ///< "MARKER NAME"
+      GNSSTK_EXPORT
       static const std::string markerNumberString;    ///< "MARKER NUMBER"
+      GNSSTK_EXPORT
       static const std::string observerString;        ///< "OBSERVER / AGENCY"
+      GNSSTK_EXPORT
       static const std::string receiverString;        ///< "REC # / TYPE / VERS"
+      GNSSTK_EXPORT
       static const std::string antennaTypeString;     ///< "ANT # / TYPE"
+      GNSSTK_EXPORT
       static const std::string antennaPositionString; ///< "APPROX POSITION XYZ"
+      GNSSTK_EXPORT
       static const std::string antennaOffsetString;   ///< "ANTENNA: DELTA H/E/N"
+      GNSSTK_EXPORT
       static const std::string waveFactString;        ///< "WAVELENGTH FACT L1/2"
+      GNSSTK_EXPORT
       static const std::string numObsString;          ///< "# / TYPES OF OBSERV"
+      GNSSTK_EXPORT
       static const std::string intervalString;        ///< "INTERVAL"
+      GNSSTK_EXPORT
       static const std::string firstTimeString;       ///< "TIME OF FIRST OBS"
+      GNSSTK_EXPORT
       static const std::string lastTimeString;        ///< "TIME OF LAST OBS"
+      GNSSTK_EXPORT
       static const std::string receiverOffsetString;  ///< "RCV CLOCK OFFS APPL"
+      GNSSTK_EXPORT
       static const std::string leapSecondsString;     ///< "LEAP SECONDS"
+      GNSSTK_EXPORT
       static const std::string numSatsString;         ///< "# OF SATELLITES"
+      GNSSTK_EXPORT
       static const std::string prnObsString;          ///< "PRN / # OF OBS"
+      GNSSTK_EXPORT
       static const std::string endOfHeader;           ///< "END OF HEADER"
          //@}
 
@@ -221,7 +242,9 @@ namespace gnsstk
 
          //@}
 
+      GNSSTK_EXPORT
       static const std::vector<RinexObsType> StandardRinexObsTypes;
+      GNSSTK_EXPORT
       static std::vector<RinexObsType> RegisteredRinexObsTypes;
 
 

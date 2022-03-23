@@ -50,6 +50,7 @@
 #include "FFStream.hpp"
 #include "RinexMetBase.hpp"
 #include "RinexMetHeader.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -103,10 +104,10 @@ namespace gnsstk
       RinexMetMap data;  ///< The data itself in map form.
 
          /// The maximum number of obs per line before you need a new line
-      static const int maxObsPerLine;
+      GNSSTK_EXPORT static const int maxObsPerLine;
          /// The max number of obs per continuation line before you need
          /// a new line.
-      static const int maxObsPerContinuationLine;
+      GNSSTK_EXPORT static const int maxObsPerContinuationLine;
 
    protected:
 
