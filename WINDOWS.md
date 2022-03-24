@@ -31,9 +31,8 @@ preprocessor macro, e.g.
 SWIG
 ----
 
-While gnsstk currently does not support SWIG under Windows, the
-exports used to accomodate Windows DLL building conflict with how SWIG
-works.  SWIG's code generator does not "drill down" into include
+The exports used to accomodate Windows DLL building conflict with how
+SWIG works.  SWIG's code generator does not "drill down" into include
 files, so certain include files in the library are forced to manually
 `#define GNSSTK_EXPORT` so that SWIG doesn't result in a syntax error.
 
