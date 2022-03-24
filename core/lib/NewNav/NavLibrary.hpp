@@ -1037,6 +1037,9 @@ namespace gnsstk
          /** Get the offset as a NavDataPtr that refers to a
           * TimeOffset object, to apply to times when converting them
           * from fromSys to toSys.
+          * @pre If xmithHealth is set to anything other than "Any",
+          *   ephemeris data must be loaded in order to obtain
+          *   satellite health to match.
           * @param[in] fromSys The time system to convert from.
           * @param[in] toSys The time system to convert to.
           * @param[in] when The time being converted, usually in the
@@ -1057,6 +1060,9 @@ namespace gnsstk
 
          /** Get the offset, in seconds, to apply to times when
           * converting them from fromSys to toSys.
+          * @pre If xmithHealth is set to anything other than "Any",
+          *   ephemeris data must be loaded in order to obtain
+          *   satellite health to match.
           * @param[in] fromSys The time system to convert from.
           * @param[in] toSys The time system to convert to.
           * @param[in] when The time being converted, usually in the

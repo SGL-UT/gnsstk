@@ -116,13 +116,16 @@ endif()
 
 # an OR could conceivably be used here, but I'm setting this to match
 # the if/else chain in swig/CMakeLists.txt
+set(GNSSTK_SWIG_MODULE_DIR "lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages")
 if (BUILD_FOR_PACKAGE_SWITCH)
-  set(GNSSTK_SWIG_MODULE_DIR "lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages")
+  # nothing extra to do here
 elseif (PYTHON_USER_INSTALL)
-  set(GNSSTK_SWIG_MODULE_DIR "lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages")
+  # nothing extra to do here
 else()
-  # Is this a peculiarty of Miniconda3 under Windows?  I'm not sure.
-  set(GNSSTK_SWIG_MODULE_DIR "lib/site-packages")
+  if (WIN32)
+    # Is this a peculiarty of Miniconda3 under Windows?  Seems like it.
+    set(GNSSTK_SWIG_MODULE_DIR "lib/site-packages")
+  endif()
 endif()
 
 #------------------------------------------------------------
