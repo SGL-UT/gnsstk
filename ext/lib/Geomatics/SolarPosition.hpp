@@ -45,42 +45,55 @@
 //------------------------------------------------------------------------------------
 // includes
 // system
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
-
 // GNSSTk
 #include "CommonTime.hpp"
 #include "Position.hpp"
 
-// geomatics
+namespace gnsstk
+{
+      /**
+       Compute the Position of the Sun in WGS84 ECEF coordinates.
+       Ref. Astronomical Almanac pg C24, as presented on USNO web site; claimed
+       accuracy is about 1 arcminute, when t is within 2 centuries of 2000.
+       @param t  Input epoch of interest
+       @param AR  Output apparent angular radius of sun as seen at Earth (deg)
+       @return  Position (ECEF) of the Sun at t
+      */
+   Position solarPosition(const CommonTime& t, double& AR);
 
-namespace gnsstk {
+      /**
+       Compute the latitude and longitude of the Sun using a very simple
+       algorithm. Adapted from sunpos by D. Coco ARL:UT 12/15/94
+       @param t  Input epoch of interest
+       @param lat Output latitude of the Sun at t
+       @param lon Output longitude of the Sun at t
+      */
+   void crudeSolarPosition(const CommonTime& t, double& lat, double& lon);
 
-   /// Compute the Position of the Sun in WGS84 ECEF coordinates.
-   /// Ref. Astronomical Almanac pg C24, as presented on USNO web site; claimed
-   /// accuracy is about 1 arcminute, when t is within 2 centuries of 2000.
-   /// @param t  Input epoch of interest
-   /// @param AR  Output apparent angular radius of sun as seen at Earth (deg)
-   /// @return  Position (ECEF) of the Sun at t
-   Position SolarPosition(CommonTime t, double& AR) throw();
+      /**
+       Compute the Position of the Moon in WGS84 ECEF coordinates.
+       Ref. Astronomical Almanac 1990 D46
+       @param t  Input epoch of interest
+       @param AR  Output apparent angular radius of moon as seen at Earth (deg)
+       @return  Position (ECEF) of the Moon at t
+      */
+   Position lunarPosition(const CommonTime& t, double& AR);
 
-   /// Compute the latitude and longitude of the Sun using a very simple algorithm.
-   /// Adapted from sunpos by D. Coco ARL:UT 12/15/94
-   /// @param t  Input epoch of interest
-   /// @param lat Output latitude of the Sun at t
-   /// @param lon Output longitude of the Sun at t
-   void CrudeSolarPosition(CommonTime t, double& lat, double& lon) throw();
+      /**
+       Compute the fraction of the area of the Sun covered by the Earth as seen
+       from another body (e.g. satellite).
+       @param Rearth  Apparent angular radius of Earth.
+       @param Rsun    Apparent angular radius of Sun.
+       @param dES     Angular separation of Sun and Earth.
+       @return Fraction (0 <= factor <= 1) of Sun area covered by Earth
+      */
+   double solarPositionShadowFactor(double Rearth, double Rsun, double dES);
 
-   /// Compute the Position of the Moon in WGS84 ECEF coordinates.
-   /// Ref. Astronomical Almanac 1990 D46
-   /// @param t  Input epoch of interest
-   /// @param AR  Output apparent angular radius of moon as seen at Earth (deg)
-   /// @return  Position (ECEF) of the Moon at t
-   Position LunarPosition(CommonTime t, double& AR) throw();
-
-}  // end namespace gnsstk
+} // end namespace gnsstk
 
 #endif // SOLAR_POSITION_INCLUDE
 // nothing below this

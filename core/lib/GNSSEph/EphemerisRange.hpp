@@ -38,7 +38,7 @@
 
 /**
  * @file EphemerisRange.hpp
- * Computation of range and associated quantities from XvtStore
+ * Computation of range and associated quantities from NavLib
  */
 
 #ifndef NEW_EPHEMERIS_RANGE_HPP
@@ -58,7 +58,7 @@ namespace gnsstk
       /** Compute the corrected range from receiver at position Rx, to
        * the GPS satellite given by SatID sat, as well as azimuth,
        * elevation, etc., given a nominal timetag (either received or
-       * transmitted time) and an XvtStore.
+       * transmitted time) and a NavLib.
        */
    class CorrectedEphemerisRange
    {

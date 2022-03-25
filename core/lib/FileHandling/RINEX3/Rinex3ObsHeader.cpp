@@ -2697,6 +2697,7 @@ namespace gnsstk
       else if(version < 3.03) return allValid302;
       else if(version < 3.04) return allValid303;
       else if(version < 3.05) return allValid303;
+      else if(version < 3.06) return allValid303;
       return Fields();
    }
 

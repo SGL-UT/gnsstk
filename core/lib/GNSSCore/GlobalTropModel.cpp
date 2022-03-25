@@ -284,6 +284,8 @@ namespace gnsstk
       479001600, 6227020800, 87178291200, 1307674368000, 20922789888000,
       355687428096000, 6402373705728000 };
 
+   const double GlobalTropModel::HEIGHT_LIMIT = 44243.;
+
    GlobalTropModel :: GlobalTropModel()
          : validCoeff(false), validHeight(false), validLat(false),
            validLon(false), validDay(false), height(0.0), latitude(0.0),
@@ -525,8 +527,11 @@ namespace gnsstk
       U = 0.0;
       for(i=0; i<55; i++) U += (Ageoid[i]*aP[i] + Bgeoid[i]*bP[i]);
       double orthoht(height - U);
-      if(orthoht > 44247.) GNSSTK_THROW(InvalidTropModel(
-                           "Invalid Global trop model: Rx Height is too large"));
+      if(orthoht > HEIGHT_LIMIT)
+      {
+         InvalidTropModel exc("Invalid Global trop model: Rx Height exceeds limit");
+         GNSSTK_THROW(exc);
+      }
 
       // press at geoid
       double am(0.0),aa(0.0),v0;

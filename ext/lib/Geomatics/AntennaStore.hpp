@@ -36,22 +36,23 @@
 //
 //==============================================================================
 
-/// @file AntennaStore.hpp
-/// Store antenna phase center offset information, in AntexData objects, with
-/// receiver/satellite name.
-/// Access using name (receivers), or name and time (satellites); compute compute PCOs
-/// at any (elevation, azimuth).
+/** @file AntennaStore.hpp
+    Store antenna phase center offset information, in AntexData objects, with
+    receiver/satellite name.
+    Access using name (receivers), or name and time (satellites); compute
+    compute PCOs at any (elevation, azimuth).
+*/
 
 #ifndef GNSSTK_ANTENNA_STORE_INCLUDE
 #define GNSSTK_ANTENNA_STORE_INCLUDE
 
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 
-#include "AntexHeader.hpp"
 #include "AntexData.hpp"
+#include "AntexHeader.hpp"
 #include "AntexStream.hpp"
 #include "CommonTime.hpp"
 #include "SatID.hpp"
@@ -59,143 +60,159 @@
 
 namespace gnsstk
 {
-   /// Store antenna phase center offset information, in AntexData objects, in a
-   /// std::map with receiver/satellite name.
-   ///
-   /// An entire ANTEX format file may be added to the store with a call to
-   /// the function addANTEXfile(); optional input arguments allow the caller to add
-   /// only receiver antennas in a given list (std::vector) and only satellites
-   /// that are valid at a given time. Calling the include/exclude functions (e.g.
-   /// void includeAllSatellites()) before calling addANTEXfile() controls whether
-   /// satellite antennas are excluded from the store.
-   ///
-   /// Names are formed by the AntexData member function name(); these names are
-   /// strictly follow the IGS conventions found in the file rcvr_ant.tab and are
-   /// equal to the string AntexData::type, except in the case of satellite names.
-   /// Satellite names, which would be ambiguous if only AntexData::type were used,
-   /// are defined to be the string AntexData::type + "/" + AntexData::serialNo.
-   /// The AntexData serial number for a satellite is typically the system character
-   /// followed by the PRN number, e.g. G17 or R24. Thus example names are:
-   /// "ASH701945D_M    SCIS"
-   /// "ASH701975.01A   NONE"
-   /// "JPSREGANT_DD_E  NONE"
-   /// "LEIAT504GG      NONE"
-   /// "NAVAN2004T      NONE"
-   /// "BLOCK IIR-A/G21"
-   /// "BLOCK IIR-B/G02"
-   /// "BLOCK IIR-M/G12"
-   /// "BLOCK IIR-M/G31"
-   /// "GLONASS-M/R15"
-   /// Note there is no leading or trailing, but there may be embedded, whitespace.
-   ///
+       /**
+       Store antenna phase center offset information, in AntexData objects, in a
+       std::map with receiver/satellite name.
+
+       An entire ANTEX format file may be added to the store with a call to
+       the function addANTEXfile(); optional input arguments allow the caller to
+       add only receiver antennas in a given list (std::vector) and only
+       satellites that are valid at a given time. Calling the include/exclude
+       functions (e.g. void includeAllSatellites()) before calling
+       addANTEXfile() controls whether satellite antennas are excluded from the
+       store.
+
+       Names are formed by the AntexData member function name(); these names are
+       strictly follow the IGS conventions found in the file rcvr_ant.tab and
+       are equal to the string AntexData::type, except in the case of satellite
+       names. Satellite names, which would be ambiguous if only AntexData::type
+       were used, are defined to be the string AntexData::type + "/" +
+       AntexData::serialNo. The AntexData serial number for a satellite is
+       typically the system character followed by the PRN number, e.g. G17 or
+       R24. Thus example names are: "ASH701945D_M    SCIS" "ASH701975.01A NONE"
+       "JPSREGANT_DD_E  NONE"
+       "LEIAT504GG      NONE"
+       "NAVAN2004T      NONE"
+       "BLOCK IIR-A/G21"
+       "BLOCK IIR-B/G02"
+       "BLOCK IIR-M/G12"
+       "BLOCK IIR-M/G31"
+       "GLONASS-M/R15"
+       Note there is no leading or trailing, but there may be embedded,
+       whitespace.
+       */
    class AntennaStore
    {
    public:
-
       /// Empty constructor
       AntennaStore() : includeSats(0) {}
 
       /// Destructor
       ~AntennaStore() {}
 
-      /// Add the given name, AntexData pair. If the name already exists in the store,
-      /// replace the data for it with the input object.
-      /// @throw Exception if the AntexData is invalid.
-      void addAntenna(std::string name, AntexData& antdata);
+         /**
+          Add the given name, AntexData pair. If the name already exists in the
+          store, replace the data for it with the input object.
+          @throw Exception if the AntexData is invalid.
+         */
+      void addAntenna(const std::string& name, AntexData& antdata);
 
-      /// Get the antenna data for the given name from the store.
-      /// @return true if successful, false if input name was not found in the store
-      bool getAntenna(std::string name, AntexData& antdata) throw();
+         /**
+          Get the antenna data for the given name from the store.
+          @return true if successful, false if input name was not found in the
+          store
+         */
+      bool getAntenna(const std::string& name, AntexData& antdata);
 
-      /// Get the antenna data for the given satellite from the store.
-      /// Satellites are identified by two things:
-      /// system character: G or blank GPS, R GLONASS, E GALILEO, M MIXED
-      /// and integer PRN or SVN number.
-      /// NB. PRNs apply to GLONASS as well as GPS
-      /// NB. Typically there is more than one antenna per satellite in ANTEX files;
-      /// after calling include...Satellites(), when the store is loaded using
-      /// addANTEXfile(), a time tag should be passed as input; this will load only
-      /// the satellites valid at that time tag - most likely exactly one per sys/PRN.
-      /// @param sys  System character for the satellite: G,R,E or M
-      /// @param n  PRN (or SVN) of the satellite
-      /// @param name  Output antenna (ANTEX) name for the given satellite
-      /// @param data  Output antenna data for the given satellite
-      /// @param inputPRN  If false, parameter n is SVN not PRN (default true).
-      /// @return true if successful, false if satellite was not found in the store
-      bool getSatelliteAntenna(const char sys, const int n,
-                               std::string& name, AntexData& data,
-                               bool inputPRN=true) const throw();
+         /**
+          Get the antenna data for the given satellite from the store.
+          Satellites are identified by two things:
+          system character: G or blank GPS, R GLONASS, E GALILEO, M MIXED
+          and integer PRN or SVN number.
+          NB. PRNs apply to GLONASS as well as GPS
+          NB. Typically there is more than one antenna per satellite in ANTEX
+          files; after calling include...Satellites(), when the store is loaded
+          using addANTEXfile(), a time tag should be passed as input; this will
+          load only the satellites valid at that time tag - most likely exactly
+          one per sys/PRN.
+          @param sys  System character for the satellite: G,R,E or M
+          @param n  PRN (or SVN) of the satellite
+          @param name  Output antenna (ANTEX) name for the given satellite
+          @param data  Output antenna data for the given satellite
+          @param inputPRN  If false, parameter n is SVN not PRN (default true).
+          @return true if successful, false if satellite was not found in the
+          store
+         */
+      bool getSatelliteAntenna(const char sys, const int n, std::string& name,
+                               AntexData& data, bool inputPRN = true) const;
 
       /// Get a vector of all antenna names in the store
-      void getNames(std::vector<std::string>& names) throw();
+      void getNames(std::vector<std::string>& names);
 
       /// Get a vector of all receiver antenna names in the store
-      void getReceiverNames(std::vector<std::string>& names) throw();
+      void getReceiverNames(std::vector<std::string>& names);
 
       /// get the number of antennas stored
-      unsigned int size(void) const throw() { return antennaMap.size(); }
+      unsigned int size() const { return antennaMap.size(); }
 
       /// clear the store of all information
-      void clear(void) throw() { antennaMap.clear(); }
+      void clear() { antennaMap.clear(); }
 
-      /// call to have satellite antennas included in store
-      /// NB. call before addAntenna() or addANTEXfile()
-      void includeAllSatellites(void) { includeSats = 2; }
+         /**
+          call to have satellite antennas included in store
+          NB. call before addAntenna() or addANTEXfile()
+         */
+      void includeAllSatellites() { includeSats = 2; }
 
-      /// call to have satellite antennas included in store
-      /// NB. call before addAntenna() or addANTEXfile()
-      void includeGPSSatellites(void) { includeSats = 1; }
+         /**
+          call to have satellite antennas included in store
+          NB. call before addAntenna() or addANTEXfile()
+         */
+      void includeGPSSatellites() { includeSats = 1; }
 
-      /// call to have satellite antennas excluded from store (the default).
-      /// NB. call before addAntenna() or addANTEXfile()
-      void excludeAllSatellites(void) { includeSats = 0; }
+         /**
+          call to have satellite antennas excluded from store (the default).
+          NB. call before addAntenna() or addANTEXfile()
+         */
+      void excludeAllSatellites() { includeSats = 0; }
 
-      /// call to give the store a list of receiver antenna names so that only
-      /// those names will be included in the store (not applicable to satellites).
-      /// If there are already other names in the store, they will be removed.
-      /// NB. call before addAntenna() or addANTEXfile()
-      void includeReceivers(std::vector<std::string>& names) throw();
+         /**
+          call to give the store a list of receiver antenna names so that only
+          those names will be included in the store (not applicable to
+          satellites). If there are already other names in the store, they will
+          be removed. NB. call before addAntenna() or addANTEXfile()
+         */
+      void includeReceivers(std::vector<std::string>& names);
 
-      /// Open and read an ANTEX format file with the given name, and read it.
-      /// Add to the store all the receivers with names in the given std::vector,
-      /// if it has been provided in a previous call to includeReceivers(),
-      /// otherwise include all receiver antennas found.
-      /// NB. call includeSats() or includeGPSsats() to include satellite antennas,
-      /// before calling this routine.
-      /// @param filename the name of the ANTEX file to read.
-      /// @param time     the time (any) of interest, used to choose valid satellites
-      /// @return the number of antennas added.
-      /// @throw any exception caught during reading the file.
-      int addANTEXfile(std::string filename,
+         /**
+          Open and read an ANTEX format file with the given name, and read it.
+          Add to the store all the receivers with names in the given
+          std::vector, if it has been provided in a previous call to
+          includeReceivers(), otherwise include all receiver antennas found. NB.
+          call includeSats() or includeGPSsats() to include satellite antennas,
+          before calling this routine.
+          @param filename the name of the ANTEX file to read.
+          @param time     the time (any) of interest, used to choose valid satellites
+          @return the number of antennas added.
+          @throw any exception caught during reading the file.
+         */
+      int addANTEXfile(const std::string& filename,
                        CommonTime time = CommonTime::BEGINNING_OF_TIME);
 
-      /// Compute the vector from the SV Center of Mass (COM) to
-      /// the phase center of the antenna.
-      /// Satellites are identified by two things:
-      /// system character: G or blank GPS, R GLONASS, E GALILEO, M MIXED, C BeiDou
-      /// and integer PRN or SVN number.
-      /// NB. PRNs apply to GLONASS as well as GPS
-      /// NB. Typically there is more than one antenna per satellite in ANTEX files;
-      /// after calling include...Satellites(), when the store is loaded using
-      /// addANTEXfile(), a time tag should be passed as input; this will load only
-      /// the satellites valid at that time tag - most likely exactly one per sys/PRN.
-      /// @param sys  System character for the satellite: G,R,E or M
-      /// @param n  PRN (or SVN) of the satellite
-      /// @param inputPRN  If false, parameter n is SVN not PRN (default true).
-      /// @return vector (m) from COM to PC
-      /// @throw InvalidRequest if no data available
-      Triple ComToPcVector(const char sys,
-                           const int n,
-                           const CommonTime& ct,
-                           const Triple& satVector,
-                           bool inputPRN=true) const;
+         /**
+          Compute the vector from the SV Center of Mass (COM) to
+          the phase center of the antenna.
+          Satellites are identified by two things:
+          system character: G or blank GPS, R GLONASS, E GALILEO, M MIXED, C
+          BeiDou and integer PRN or SVN number. NB. PRNs apply to GLONASS as
+          well as GPS NB. Typically there is more than one antenna per satellite
+          in ANTEX files; after calling include...Satellites(), when the store
+          is loaded using addANTEXfile(), a time tag should be passed as input;
+          this will load only the satellites valid at that time tag - most
+          likely exactly one per sys/PRN.
+          @param sys  System character for the satellite: G,R,E or M
+          @param n  PRN (or SVN) of the satellite
+          @param inputPRN  If false, parameter n is SVN not PRN (default true).
+          @return vector (m) from COM to PC
+          @throw InvalidRequest if no data available
+         */
+      Triple ComToPcVector(const char sys, const int n, const CommonTime& ct,
+                           const Triple& satVector, bool inputPRN = true) const;
 
-         /** Same as above except with different calling sequence for
-          * convenience
-          * @throw Exception
-          */
-      Triple ComToPcVector(const SatID& sidr,
-                           const CommonTime& ct,
+      /** Same as above except with different calling sequence for
+       * convenience
+       */
+      Triple ComToPcVector(const SatID& sidr, const CommonTime& ct,
                            const Triple& satVector) const;
 
       /// dump the store
@@ -205,8 +222,10 @@ namespace gnsstk
       /// List of receiver names to include in store
       std::vector<std::string> namesToInclude;
 
-      /// flags determining which types of satellite antennas will be added
-      /// 0 = no sats; 1 = GPS sats only; >1 = all sats
+         /**
+          flags determining which types of satellite antennas will be added
+          0 = no sats; 1 = GPS sats only; >1 = all sats
+         */
       int includeSats;
 
       /// map from name of antenna to AntexData object
@@ -215,4 +234,4 @@ namespace gnsstk
    }; // end class AntennaStore
 
 } // namespace gnsstk
-#endif  // GNSSTK_ANTENNA_STORE_INCLUDE
+#endif // GNSSTK_ANTENNA_STORE_INCLUDE

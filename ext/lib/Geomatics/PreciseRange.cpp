@@ -36,20 +36,21 @@
 //
 //==============================================================================
 
-/// @file PreciseRange.cpp
-/// Implement computation of range and associated quantities from NavLibrary,
-/// given receiver position and time.
+/** @file PreciseRange.cpp
+    Implement computation of range and associated quantities from NavLibrary,
+    given receiver position and time.
+*/
 
 // system includes
-#include <sstream>               // for ostringstream
+#include <sstream> // for ostringstream
 // GNSSTk includes
-#include "MiscMath.hpp"
-#include "GPSEllipsoid.hpp"
 #include "GNSSconstants.hpp"
+#include "GPSEllipsoid.hpp"
+#include "MiscMath.hpp"
 #include "Xvt.hpp"
 // geomatics
-#include "SunEarthSatGeometry.hpp"
 #include "SolarPosition.hpp"
+#include "SunEarthSatGeometry.hpp"
 
 #include "PreciseRange.hpp"
 
@@ -66,154 +67,181 @@ namespace gnsstk
                                               const std::string& Freq2,
                                               SolarSystem& SolSys,
                                               NavLibrary& Eph,
-                                              const bool isCOM)
+                                              bool isCOM)
    {
-   try {
-      int i;
-      Position Rx(Receiver);
-      GPSEllipsoid ellips;
-      Xvt svPosVel;
+      try
+      {
+         int i;
+         Position Rx(Receiver);
+         GPSEllipsoid ellips;
+         Xvt svPosVel;
 
-      // nominal transmit time
-      transmit = nomRecTime;     // receive time on receiver's clock
-      transmit -= pr/ellips.c(); // correct for measured time of flight and Rx clock
+            // nominal transmit time
+         transmit = nomRecTime; // receive time on receiver's clock
+         transmit -=
+            pr / ellips.c(); // correct for measured time of flight and Rx clock
 
-      // get the satellite position at the nominal time, computing and
-      // correcting for the satellite clock bias and other delays
-      try {
-            /** @todo getXvt was expected to throw an exception on
-             * failure in the past.  This assert more or less mimics
-             * that behavior.  Refactoring is needed.  */
-         GNSSTK_ASSERT(Eph.getXvt(NavSatelliteID(sat), transmit, svPosVel));
-         SatR.setECEF(svPosVel.x[0],svPosVel.x[1],svPosVel.x[2]);
-      }
-      // this should be a 'no ephemeris' exception
-      catch(AssertionFailure& e) { GNSSTK_RETHROW(e); }
-
-      // update the transmit time for sat clk bias + relativity
-      transmit -= svPosVel.clkbias + svPosVel.relcorr;
-
-      // Sagnac effect
-      // ref. Ashby and Spilker, GPS: Theory and Application, 1996 Vol 1, pg 673.
-      // this is w(Earth) * (SatR cross Rx).Z() / c*c in seconds
-      // beware numerical error by differencing very large to get very small
-      Sagnac = ( (SatR.X()/ellips.c()) * (Rx.Y()/ellips.c())
-               - (SatR.Y()/ellips.c()) * (Rx.X()/ellips.c()) ) * ellips.angVelocity();
-      transmit -= Sagnac;
-
-      // compute other delays -- very small
-      // 2GM/c^2 = 0.00887005608 m^3/s^2 * s^2/m^2 = m
-      double rx = Rx.radius();
-      if(::fabs(rx) < 1.e-8) GNSSTK_THROW(Exception("Rx at origin!"));
-      double rs = SatR.radius();
-      double dr = range(SatR,Rx);
-      relativity2 = -0.00887005608 * ::log((rx+rs+dr)/(rx+rs-dr));
-      transmit -= relativity2 / ellips.c();
-
-      // iterate satellite position
-      try {
-            /** @todo getXvt was expected to throw an exception on
-             * failure in the past.  This assert more or less mimics
-             * that behavior.  Refactoring is needed.  */
-         GNSSTK_ASSERT(Eph.getXvt(NavSatelliteID(sat), transmit, svPosVel));
-         // Do NOT replace these with Xvt
-         SatR.setECEF(svPosVel.x[0],svPosVel.x[1],svPosVel.x[2]);
-         SatV.setECEF(svPosVel.v[0],svPosVel.v[1],svPosVel.v[2]);
-      }
-      catch(InvalidRequest& e) { GNSSTK_RETHROW(e); }
-
-      // ----------------------------------------------------------
-      // save relativity and satellite clock
-      relativity = svPosVel.relcorr * ellips.c();
-      satclkbias = svPosVel.clkbias * ellips.c();
-      satclkdrift = svPosVel.clkdrift * ellips.c();
-
-      // correct for Earth rotation
-      double sxyz[3], wt;
-      rawrange = range(SatR,Rx);
-      wt = ellips.angVelocity() * rawrange/ellips.c();
-      sxyz[0] =  ::cos(wt)*SatR.X() + ::sin(wt)*SatR.Y();
-      sxyz[1] = -::sin(wt)*SatR.X() + ::cos(wt)*SatR.Y();
-      sxyz[2] = SatR.Z();
-      SatR.setECEF(sxyz);
-      sxyz[0] =  ::cos(wt)*SatV.X() + ::sin(wt)*SatV.Y();
-      sxyz[1] = -::sin(wt)*SatV.X() + ::cos(wt)*SatV.Y();
-      sxyz[2] = SatV.Z();
-      SatV.setECEF(sxyz);
-
-      // geometric range, again
-      rawrange = range(SatR,Rx);
-
-      // Compute line of sight, satellite to receiver
-      Triple S2R(Rx.X()-SatR.X(),Rx.Y()-SatR.Y(),Rx.Z()-SatR.Z());
-      S2R = S2R.unitVector();
-
-      // ----------------------------------------------------------
-      // satellite antenna pco and pcv
-      if(isCOM && antenna.isValid()) {
-         // must combine PCO/V from freq1,2
-         unsigned int freq1(strtoul(Freq1.substr(1).c_str(),0,10));
-         unsigned int freq2(strtoul(Freq2.substr(1).c_str(),0,10));
-         double alpha(getAlpha(sat.system,freq1,freq2));
-         double fact1((alpha+1.0)/alpha);
-         double fact2(-1.0/alpha);
-
-         // rotation matrix from satellite attitude: Rot*[XYZ]=[body frame]
-         Matrix<double> SVAtt;
-
-         // get satellite attitude from SolarSystem; if not valid, get low accuracy
-         // version from SunEarthSatGeometry and SolarPosition.
-         if(SolSys.EphNumber() != -1) {
-            SVAtt = SolSys.SatelliteAttitude(transmit, SatR);
-         }
-         else {
-            double AR;     // angular radius of sun
-            Position Sun = SolarPosition(transmit, AR);
-            SVAtt = satelliteAttitude(SatR, Sun);
+            /* get the satellite position at the nominal time, computing and
+               correcting for the satellite clock bias and other delays */
+         if(! Eph.getXvt(NavSatelliteID(sat), transmit, svPosVel))
+         {
+            InvalidRequest ir("getXvt failed");
+            GNSSTK_THROW(ir);
          }
 
-         // phase center offset vector in body frame
-         Triple pco1 = antenna.getPhaseCenterOffset(Freq1);
-         Triple pco2 = antenna.getPhaseCenterOffset(Freq2);
-         Vector<double> PCO(3);
-         for(i=0; i<3; i++)            // body frame, mm -> m, iono-free combo
-            PCO(i) = (fact1*pco1[i]+fact2*pco2[i])/1000.0;
+         SatR.setECEF(svPosVel.x[0], svPosVel.x[1], svPosVel.x[2]);
 
-         // PCO vector (from COM to PC) in ECEF XYZ frame, m
-         SatPCOXYZ = transpose(SVAtt) * PCO;
+            // update the transmit time for sat clk bias + relativity
+         transmit -= svPosVel.clkbias + svPosVel.relcorr;
 
-         Triple pcoxyz(SatPCOXYZ(0),SatPCOXYZ(1),SatPCOXYZ(2));
-         // line of sight phase center offset
-         satLOSPCO = pcoxyz.dot(S2R);                       // meters
+            /* Sagnac effect
+               ref. Ashby and Spilker, GPS: Theory and Application, 1996 Vol 1, pg
+               673. this is w(Earth) * (SatR cross Rx).Z() / c*c in seconds beware
+               numerical error by differencing very large to get very small */
+         Sagnac = ((SatR.X() / ellips.c()) * (Rx.Y() / ellips.c()) -
+                   (SatR.Y() / ellips.c()) * (Rx.X() / ellips.c())) *
+                  ellips.angVelocity();
+         transmit -= Sagnac;
 
-         // phase center variation TD should this should be subtracted from rawrange?
-         // get the body frame azimuth and nadir angles
-         double nadir,az;
-         satelliteNadirAzimuthAngles(SatR, Rx, SVAtt, nadir, az);
-         satLOSPCV = 0.001*(fact1 * antenna.getPhaseCenterVariation(Freq1, az, nadir)
-                         + fact2 * antenna.getPhaseCenterVariation(Freq2, az, nadir));
+            /* compute other delays -- very small
+               2GM/c^2 = 0.00887005608 m^3/s^2 * s^2/m^2 = m */
+         double rx = Rx.radius();
+         if (::fabs(rx) < 1.e-8)
+         {
+            GNSSTK_THROW(Exception("Rx at origin!"));
+         }
+         double rs   = SatR.radius();
+         double dr   = range(SatR, Rx);
+         relativity2 = -0.00887005608 * ::log((rx + rs + dr) / (rx + rs - dr));
+         transmit -= relativity2 / ellips.c();
+
+            // iterate satellite position
+         if(! Eph.getXvt(NavSatelliteID(sat), transmit, svPosVel))
+         {
+            InvalidRequest ir("getXvt failed");
+            GNSSTK_THROW(ir);
+         }
+            // Do NOT replace these with Xvt
+         SatR.setECEF(svPosVel.x[0], svPosVel.x[1], svPosVel.x[2]);
+         SatV.setECEF(svPosVel.v[0], svPosVel.v[1], svPosVel.v[2]);
+
+            // ----------------------------------------------------------
+            // save relativity and satellite clock
+         relativity  = svPosVel.relcorr * ellips.c();
+         satclkbias  = svPosVel.clkbias * ellips.c();
+         satclkdrift = svPosVel.clkdrift * ellips.c();
+
+            // correct for Earth rotation
+         double sxyz[3], wt;
+         rawrange = range(SatR, Rx);
+         wt       = ellips.angVelocity() * rawrange / ellips.c();
+         sxyz[0]  = ::cos(wt) * SatR.X() + ::sin(wt) * SatR.Y();
+         sxyz[1]  = -::sin(wt) * SatR.X() + ::cos(wt) * SatR.Y();
+         sxyz[2]  = SatR.Z();
+         SatR.setECEF(sxyz);
+         sxyz[0] = ::cos(wt) * SatV.X() + ::sin(wt) * SatV.Y();
+         sxyz[1] = -::sin(wt) * SatV.X() + ::cos(wt) * SatV.Y();
+         sxyz[2] = SatV.Z();
+         SatV.setECEF(sxyz);
+
+            // geometric range, again
+         rawrange = range(SatR, Rx);
+
+            // Compute line of sight, satellite to receiver
+         Triple S2R(Rx.X() - SatR.X(), Rx.Y() - SatR.Y(), Rx.Z() - SatR.Z());
+         S2R = S2R.unitVector();
+
+            // ----------------------------------------------------------
+            // satellite antenna pco and pcv
+         if (isCOM && antenna.isValid())
+         {
+               // must combine PCO/V from freq1,2
+            unsigned int freq1(strtoul(Freq1.substr(1).c_str(), 0, 10));
+            unsigned int freq2(strtoul(Freq2.substr(1).c_str(), 0, 10));
+            double alpha(getAlpha(sat.system, freq1, freq2));
+            double fact1((alpha + 1.0) / alpha);
+            double fact2(-1.0 / alpha);
+
+               // if single frequency, freq2==alpha==0, fact's=nan
+            if (freq2 == 0)
+            {
+               fact1 = 1.0;
+               fact2 = 0.0;
+            }
+
+               // rotation matrix from satellite attitude: Rot*[XYZ]=[body frame]
+            Matrix<double> SVAtt;
+
+               // get satellite attitude from SolarSystem; if not valid, get low
+               // accuracy version from SunEarthSatGeometry and SolarPosition.
+            if (SolSys.EphNumber() != -1)
+            {
+               SVAtt = SolSys.satelliteAttitude(transmit, SatR);
+            }
+            else
+            {
+               double AR; // angular radius of sun
+               Position Sun = solarPosition(transmit, AR);
+               SVAtt        = satelliteAttitude(SatR, Sun);
+            }
+
+               // phase center offset vector in body frame
+            Vector<double> PCO(3);
+            Triple pco2, pco1(antenna.getPhaseCenterOffset(Freq1));
+            if (freq2 != 0)
+            {
+               pco2 = antenna.getPhaseCenterOffset(Freq2);
+            }
+            for (i = 0; i < 3; i++) // body frame, mm -> m, iono-free combo
+               PCO(i) = (fact1 * pco1[i] + fact2 * pco2[i]) / 1000.0;
+
+               // PCO vector (from COM to PC) in ECEF XYZ frame, m
+            SatPCOXYZ = transpose(SVAtt) * PCO;
+
+            Triple pcoxyz(SatPCOXYZ(0), SatPCOXYZ(1), SatPCOXYZ(2));
+               // line of sight phase center offset
+            satLOSPCO = pcoxyz.dot(S2R); // meters
+
+               // phase center variation TD should this should be subtracted from
+               // rawrange? get the body frame azimuth and nadir angles
+            double nadir, az, pcv1, pcv2(0.0);
+            satelliteNadirAzimuthAngles(SatR, Rx, SVAtt, nadir, az);
+            pcv1 = antenna.getPhaseCenterVariation(Freq1, az, nadir);
+            if (freq2 != 0)
+            {
+               pcv2 = antenna.getPhaseCenterVariation(Freq2, az, nadir);
+            }
+            satLOSPCV = 0.001 * (fact1 * pcv1 + fact2 * pcv2);
+         }
+         else
+         {
+            satLOSPCO = satLOSPCV = 0.0;
+            SatPCOXYZ             = Vector<double>(3, 0.0);
+         }
+
+            // ----------------------------------------------------------
+            // direction cosines
+         for (i = 0; i < 3; i++)
+         {
+            cosines[i] = -S2R[i]; // receiver to satellite
+         }
+
+            // elevation and azimuth
+         elevation         = Rx.elevation(SatR);
+         azimuth           = Rx.azimuth(SatR);
+         elevationGeodetic = Rx.elevationGeodetic(SatR);
+         azimuthGeodetic   = Rx.azimuthGeodetic(SatR);
+
+            // return corrected ephemeris range
+         return (rawrange - satclkbias - relativity - relativity2 - satLOSPCO +
+                 satLOSPCV);
+
+      } // end try
+      catch (gnsstk::Exception& e)
+      {
+         GNSSTK_RETHROW(e);
       }
-      else {
-         satLOSPCO = satLOSPCV = 0.0;
-         SatPCOXYZ=Vector<double>(3,0.0);
-      }
 
-      // ----------------------------------------------------------
-      // direction cosines
-      for(i=0; i<3; i++) cosines[i] = -S2R[i];            // receiver to satellite
+   } // end PreciseRange::ComputeAtTransmitTime
 
-      // elevation and azimuth
-      elevation = Rx.elevation(SatR);
-      azimuth = Rx.azimuth(SatR);
-      elevationGeodetic = Rx.elevationGeodetic(SatR);
-      azimuthGeodetic = Rx.azimuthGeodetic(SatR);
-
-      // return corrected ephemeris range
-      return (rawrange-satclkbias-relativity-relativity2-satLOSPCO+satLOSPCV);
-
-   }  // end try
-   catch(gnsstk::Exception& e) { GNSSTK_RETHROW(e); }
-
-   }  // end PreciseRange::ComputeAtTransmitTime
-
-}  // namespace gnsstk
+} // namespace gnsstk

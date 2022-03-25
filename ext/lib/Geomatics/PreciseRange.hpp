@@ -36,10 +36,10 @@
 //
 //==============================================================================
 
-/// @file PreciseRange.hpp
-/// Include file defining class PreciseRange: computation of range and associated
-/// quantities from NavLibrary, given receiver position and time.
- 
+/** @file PreciseRange.hpp
+    Include file defining class PreciseRange: computation of range and
+    associated quantities from NavLibrary, given receiver position and time. */
+
 //------------------------------------------------------------------------------------
 #ifndef PRECISE_EPHEMERIS_RANGE_INCLUDE
 #define PRECISE_EPHEMERIS_RANGE_INCLUDE
@@ -47,10 +47,10 @@
 //------------------------------------------------------------------------------------
 // GNSSTk
 #include "CommonTime.hpp"
-#include "Position.hpp"
-#include "NavLibrary.hpp"
-#include "SatID.hpp"
 #include "Matrix.hpp"
+#include "Position.hpp"
+#include "SatID.hpp"
+#include "NavLibrary.hpp"
 
 // geomatics
 #include "AntexData.hpp"
@@ -62,33 +62,38 @@ namespace gnsstk
    /// @ingroup ephemcalc
    //@{
 
-   /// class PreciseRange. Compute the corrected range from receiver
-   /// at position Rx, to the GPS satellite given by SatID sat, as well as azimuth,
-   /// elevation, etc., given a nominal timetag (either received or transmitted
-   /// time) and a NavLibrary.
+      /**
+       class PreciseRange. Compute the corrected range from receiver
+       at position Rx, to the GPS satellite given by SatID sat, as well as
+       azimuth, elevation, etc., given a nominal timetag (either received or
+       transmitted time) and a NavLibrary.
+      */
    class PreciseRange
    {
    public:
          /// Default constructor.
       PreciseRange() {}
 
-      /// Compute the corrected range at transmit time from ephemeris is the given
-      /// NavLibrary, from receiver at position Rx with measured pseudorange pr and
-      /// time tag nomRecTime, to the GPS satellite given by SatID sat,
-      /// as well as all the CER quantities.
-      /// @param nomRecTime  nominal receive time
-      /// @param pr           measured pseudorange at this time
-      /// @param Rx        receiver position
-      /// @param sat           satellite
-      /// @param antenna  satellite antenna data;
-      /// @param freq1,freq2 ANTEX frequencies to evaluate PCO/Vs eg 'G01'
-      /// @param SolSys SolarSystem object, to get SatelliteAttitude()
-      ///   if any of above 4 not valid, PCO/V correction is NOT done (silently)
-      /// @param Eph        Ephemeris store
-      /// @param isCOM          if true, Eph is Center-of-mass,
-      ///                               else antenna-phase-center, default false.
-      /// @return corrected raw range
-      /// @throw Exception if ephemeris is not found
+         /**
+          Compute the corrected range at transmit time from ephemeris is the
+          given NavLibrary, from receiver at position Rx with measured pseudorange
+          pr and time tag nomRecTime, to the GPS satellite given by SatID sat,
+          as well as all the CER quantities.
+          @param nomRecTime  nominal receive time
+          @param pr          measured pseudorange at this time
+          @param Rx          receiver position
+          @param sat         satellite
+          @param antenna     satellite antenna data;
+          @param freq1,freq2 ANTEX frequencies to evaluate PCO/Vs eg 'G01'
+          @param SolSys      SolarSystem object, to get SatelliteAttitude()
+                 if any of above 4 not valid, PCO/V correction is NOT done (silently)
+          @param Eph        Ephemeris store
+          @param isCOM          if true, Eph is Center-of-mass,
+                                        else antenna-phase-center, default
+                                        false.
+          @return corrected raw range
+          @throw Exception if ephemeris is not found
+         */
       double ComputeAtTransmitTime(const CommonTime& nomRecTime,
                                    const double pr,
                                    const Position& Rx,
@@ -98,11 +103,13 @@ namespace gnsstk
                                    const std::string& freq2,
                                    SolarSystem& SolSys,
                                    NavLibrary& Eph,
-                                   const bool isCOM=false);
+                                   bool isCOM = false);
 
-      /// Version with no antenna, and therefore no Attitude and no SolarSystem;
-      /// cf. doc for other version for details.
-      /// @throw Exception
+         /**
+          Version with no antenna, and therefore no Attitude and no SolarSystem;
+          cf. doc for other version for details.
+          @throw Exception
+         */
       double ComputeAtTransmitTime(const CommonTime& nomRecTime,
                                    const double pr,
                                    const Position& Rx,
@@ -114,56 +121,72 @@ namespace gnsstk
          AntexData ant;
          SolarSystem ss;
          std::string s;
-         return ComputeAtTransmitTime(nomRecTime,pr,Rx,sat,ant,s,s,ss,Eph);
+         return ComputeAtTransmitTime(nomRecTime, pr, Rx, sat, ant, s, s, ss,
+                                      Eph);
       }
 
-      /// The computed raw (geometric) range in meters, with NO corrections applied;
-      /// to correct it, use
-      /// rawrange -= satclkbias+relativity+relativity2-satLOSPCO-satLOSPCV.
+         /**
+          The computed raw (geometric) range in meters, with NO corrections
+          applied; to correct it, use rawrange -=
+          satclkbias+relativity+relativity2-satLOSPCO-satLOSPCV.
+         */
       double rawrange;
 
-      /// The relativity correction in meters, and high precision correction
+         /// The relativity correction in meters, and high precision correction
       double relativity, relativity2;
 
-      /// The satellite position (m) and velocity (m/s) in ECEF coordinates
+         /// The satellite position (m) and velocity (m/s) in ECEF coordinates
       Position SatR, SatV;
 
-      /// The satellite clock bias (m) and drift (m/s) at transmit time, from NavLibrary
+         /**
+          The satellite clock bias (m) and drift (m/s) at transmit time, from
+          NavLibrary
+         */
       double satclkbias, satclkdrift;
 
-      /// The satellite elevation (spheroidal), as seen at the receiver, in degrees.
+         /**
+          The satellite elevation (spheroidal), as seen at the receiver, in
+          degrees.
+         */
       double elevation;
 
-      /// The satellite azimuth (spheroidal), as seen at the receiver, in degrees.
+         /**
+          The satellite azimuth (spheroidal), as seen at the receiver, in
+          degrees.
+         */
       double azimuth;
 
-      /// The satellite elevation (geodetic), as seen at the receiver, in degrees.
+         /**
+          The satellite elevation (geodetic), as seen at the receiver, in
+          degrees.
+         */
       double elevationGeodetic;
 
-      /// The satellite azimuth (geodetic), as seen at the receiver, in degrees.
+         /// The satellite azimuth (geodetic), as seen at the receiver, in degrees.
       double azimuthGeodetic;
 
-      /// The computed transmit time of the signal.
+         /// The computed transmit time of the signal.
       CommonTime transmit;
 
-      /// The direction cosines of the satellite, as seen at the receiver (XYZ).
+         /// The direction cosines of the satellite, as seen at the receiver (XYZ).
       Triple cosines;
 
-      /// The net line-of-sight offset, in the direction from sat to rx,
-      /// of the antenna PCO and PCVs, meters
-      double satLOSPCO,satLOSPCV;
+         /**
+          The net line-of-sight offset, in the direction from sat to rx,
+          of the antenna PCO and PCVs, meters
+         */
+      double satLOSPCO, satLOSPCV;
 
-      /// The Satellite PCO vector, in ECEF XYZ, meters (from COM to PC)
+         /// The Satellite PCO vector, in ECEF XYZ, meters (from COM to PC)
       Vector<double> SatPCOXYZ;
 
-      /// Net time delay due to Sagnac effect in seconds
+         /// Net time delay due to Sagnac effect in seconds
       double Sagnac;
-
 
    }; // end class PreciseRange
 
    //@}
 
-}  // namespace gnsstk
+} // namespace gnsstk
 
 #endif // PRECISE_EPHEMERIS_RANGE_INCLUDE

@@ -36,29 +36,32 @@
 //
 //==============================================================================
 
-/// @file SolarSystem.cpp
-/// This class provides the functionality of SolarSytemEphemeris in the Earth-centered
-/// Earth-fixed (ECEF) frame, and makes use of this to implement models for solid
-/// Earth tides (SETs) as well as geometry-related functions involving satellite, Sun,
-/// Moon and Earth, e.g. satellite attitude.
-///
-/// The class publicly inherits two large classes:
-///    class SolarSystemEphemeris (the JPL solar system ephemeris) and
-///    class EOPStore (storage and retrieval of Earth orientiation parameters).
-/// The motivation for this design is that the fundamental routine of the ephemeris,
-/// SolarSystem::ECEFPositionVelocity(planet,time), always requires simultaneous
-/// EarthOrientiation data, and this class enforces that requirement.
-/// This design allows the class to retrieve EOPs and with them implement the
-/// transformation from the inertial (celestial) frame of the solar system ephemeris
-/// to the ECEF (terrestrial) frame (using class EarthOrientation).
-///
-/// The class must first be initialized by initializing both SolarSystemEphemeris and
-/// EOPStore. SolarSystemEphemeris is initialized by calling
-/// initializeWithBinaryFile(filename), passing the name of a SolarSystem binary file
-/// (cf. the convertSSEph app that read JPL ASCII files and creates a binary file).
-/// EOPStore is initialized by calling addIERSFile(filename), passing it the
-/// finals2000A.data or similar file obtained, e.g. from USNO.
-/// (See documentation for both SolarSystemEphemeris and EOPStore).
+/** @file SolarSystem.cpp
+    This class provides the functionality of SolarSytemEphemeris in the
+    Earth-centered Earth-fixed (ECEF) frame, and makes use of this to implement
+    models for solid Earth tides (SETs) as well as geometry-related functions
+    involving satellite, Sun, Moon and Earth, e.g. satellite attitude.
+
+    The class publicly inherits two large classes:
+       class SolarSystemEphemeris (the JPL solar system ephemeris) and
+       class EOPStore (storage and retrieval of Earth orientiation parameters).
+    The motivation for this design is that the fundamental routine of the
+    ephemeris, SolarSystem::ECEFPositionVelocity(planet,time), always requires
+    simultaneous EarthOrientiation data, and this class enforces that
+    requirement. This design allows the class to retrieve EOPs and with them
+    implement the transformation from the inertial (celestial) frame of the
+    solar system ephemeris to the ECEF (terrestrial) frame (using class
+    EarthOrientation).
+
+    The class must first be initialized by initializing both
+    SolarSystemEphemeris and EOPStore. SolarSystemEphemeris is initialized by
+    calling initializeWithBinaryFile(filename), passing the name of a
+    SolarSystem binary file (cf. the convertSSEph app that read JPL ASCII files
+    and creates a binary file). EOPStore is initialized by calling
+    addIERSFile(filename), passing it the finals2000A.data or similar file
+    obtained, e.g. from USNO. (See documentation for both SolarSystemEphemeris
+    and EOPStore).
+*/
 
 //------------------------------------------------------------------------------------
 #include "SolarSystem.hpp"
@@ -69,76 +72,91 @@ using namespace std;
 namespace gnsstk
 {
    //---------------------------------------------------------------------------------
-   // Compute the ECEF (terrestrial frame, relative to Earth's center) position of a
-   // Solar System body at the input time, with units meters.
-   // param body  SolarSystem::Planet of interest (input)
-   // param time  Time of interest (input)
-   // return ECEF Position of the body in meters.
+      /* Compute the ECEF (terrestrial frame, relative to Earth's center) position
+         of a Solar System body at the input time, with units meters. param body
+         SolarSystem::Planet of interest (input) param time  Time of interest
+         (input) return ECEF Position of the body in meters. */
    Position SolarSystem::ECEFPosition(const SolarSystemEphemeris::Planet body,
-                                      const EphTime time)
+                                      const EphTime& time)
    {
-      try {
+      try
+      {
          Position Pos, Vel;
          ECEFPositionVelocity(body, time, Pos, Vel);
          return Pos;
       }
-      catch(Exception& e) { GNSSTK_RETHROW(e); }
+      catch (Exception& e)
+      {
+         GNSSTK_RETHROW(e);
+      }
    }
 
    //---------------------------------------------------------------------------------
-   // Compute the ECEF (terrestrial frame, relative to Earth's center) position and
-   // velocity of a Solar System body at the input time, with units meters and m/s.
-   // param body  SolarSystem::Planet of interest (input)
-   // param time  Time of interest, in system TDB (input)
-   // return double PV[6] containing position XYZ components (PV[0-2]) in meters
-   //  and velocity XYZ components (PV[3-5]) in m/sec.
-   void SolarSystem::ECEFPositionVelocity(const SolarSystemEphemeris::Planet body,
-                                          const EphTime time,
-                                          Position& Pos, Position& Vel)
+      /* Compute the ECEF (terrestrial frame, relative to Earth's center) position
+         and velocity of a Solar System body at the input time, with units meters
+         and m/s. param body  SolarSystem::Planet of interest (input) param time
+         Time of interest, in system TDB (input) return double PV[6] containing
+         position XYZ components (PV[0-2]) in meters
+          and velocity XYZ components (PV[3-5]) in m/sec. */
+   void
+   SolarSystem::ECEFPositionVelocity(const SolarSystemEphemeris::Planet body,
+                                     const EphTime& time, Position& Pos,
+                                     Position& Vel)
    {
-      try {
+      try
+      {
          int i;
          double PV[6];
 
-         // get inertial frame position and velocity relative to Earth
+            // get inertial frame position and velocity relative to Earth
          EphTime ttag(time);
          ttag.convertSystemTo(TimeSystem::TDB);
-         RelativeInertialPositionVelocity(ttag.dMJD(), body, idEarth, PV);// km,km/day
+         relativeInertialPositionVelocity(ttag.dMJD(), body, idEarth,
+                                          PV); // km,km/day
 
-         // copy into 3-vectors
-         Vector<double> iPos(3),iVel(3),tPos(3),tVel(3);
-         for(i=0; i<3; i++) {
+            // copy into 3-vectors
+         Vector<double> iPos(3), iVel(3), tPos(3), tVel(3);
+         for (i = 0; i < 3; i++)
+         {
             iPos(i) = PV[i];
-            iVel(i) = PV[i+3];
+            iVel(i) = PV[i + 3];
          }
 
-         // get EOP at time
+            // get EOP at time
          ttag.convertSystemTo(TimeSystem::UTC);
          EarthOrientation eo = EOPStore::getEOP(ttag.dMJD(), iersconv);
 
-         // get transformation i-to-t = transpose(terrestrial-to-inertial)
+            // get transformation i-to-t = transpose(terrestrial-to-inertial)
          Matrix<double> Rot = transpose(eo.ECEFtoInertial(time));
 
-         // transform inertial to terrestrial
+            // transform inertial to terrestrial
          tPos = Rot * iPos;
          tVel = Rot * iVel;
 
-         // change units
-         tPos *= 1000.0;                                 // convert km to meters
-         tVel *= 1000.0/86400.0;                         // convert km/day to m/s
+            // change units
+         tPos *= 1000.0;           // convert km to meters
+         tVel *= 1000.0 / 86400.0; // convert km/day to m/s
 
-         // copy out
-         Pos = Position(tPos(0),tPos(1),tPos(2),Position::Cartesian);
-         Vel = Position(tVel(0),tVel(1),tVel(2),Position::Cartesian);
+            // copy out
+         Pos = Position(tPos(0), tPos(1), tPos(2), Position::Cartesian);
+         Vel = Position(tVel(0), tVel(1), tVel(2), Position::Cartesian);
 
          return;
       }
-      catch(Exception& e) { GNSSTK_RETHROW(e); }
-      catch(exception& e) {
+      catch (Exception& e)
+      {
+         GNSSTK_RETHROW(e);
+      }
+      catch (exception& e)
+      {
          Exception E("std except: " + string(e.what()));
          GNSSTK_THROW(E);
       }
-      catch(...) { Exception e("Unknown exception"); GNSSTK_THROW(e); }
+      catch (...)
+      {
+         Exception e("Unknown exception");
+         GNSSTK_THROW(e);
+      }
    }
 
-}  // end namespace gnsstk
+} // end namespace gnsstk

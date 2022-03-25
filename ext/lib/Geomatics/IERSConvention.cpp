@@ -36,8 +36,7 @@
 //
 //==============================================================================
 
-/// @file IERSConvention.cpp
-/// Implementation of class IERSConvention.
+/// @file IERSConvention.cpp Implementation of class IERSConvention.
 
 // GNSSTk includes
 #include "IERSConvention.hpp"
@@ -52,22 +51,38 @@ namespace gnsstk
       {
          switch (e)
          {
-            case IERSConvention::Unknown:  return "Unknown";
-            case IERSConvention::IERS1996: return "IERS1996";
-            case IERSConvention::IERS2003: return "IERS2003";
-            case IERSConvention::IERS2010: return "IERS2010";
-            default:                       return "???";
+            case IERSConvention::Unknown:
+               return "Unknown";
+            case IERSConvention::IERS1996:
+               return "IERS1996";
+            case IERSConvention::IERS2003:
+               return "IERS2003";
+            case IERSConvention::IERS2010:
+               return "IERS2010";
+            default:
+               return "???";
          }
       }
 
-
       IERSConvention asIERSConvention(const std::string& s)
       {
-         if (s == "Unknown")  return IERSConvention::Unknown;
-         if (s == "IERS1996") return IERSConvention::IERS1996;
-         if (s == "IERS2003") return IERSConvention::IERS2003;
-         if (s == "IERS2010") return IERSConvention::IERS2010;
+         if (s == "Unknown")
+         {
+            return IERSConvention::Unknown;
+         }
+         if (s == "IERS1996")
+         {
+            return IERSConvention::IERS1996;
+         }
+         if (s == "IERS2003")
+         {
+            return IERSConvention::IERS2003;
+         }
+         if (s == "IERS2010")
+         {
+            return IERSConvention::IERS2010;
+         }
          return IERSConvention::Unknown;
       }
-   }
+   } // namespace StringUtils
 } // end namespace gnsstk
