@@ -892,7 +892,9 @@ namespace gnsstk
          */
       GNSSTK_EXPORT
       static int outRound;
+      GNSSTK_EXPORT
       static std::string outFormat;
+      GNSSTK_EXPORT
       static std::string longfmt;
 
    protected:
