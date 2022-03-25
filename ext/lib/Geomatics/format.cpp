@@ -36,8 +36,7 @@
 //
 //==============================================================================
 
-/// @file format.cpp
-/// Simple class to encapsulate output format
+/// @file format.cpp Simple class to encapsulate output format
 
 //-----------------------------------------------------------------------------
 #include "format.hpp"
@@ -46,14 +45,20 @@ using namespace std;
 
 namespace gnsstk
 {
-ostream& operator<<(ostream& os, const format& f)
-{
-   if(f.form) os << (f.form==1 ? fixed : scientific);
-   if(f.wide > 0) os << setw(f.wide);
-   os << setprecision(f.prec);
-   return os;
-}
-}
+   ostream& operator<<(ostream& os, const format& f)
+   {
+      if (f.form)
+      {
+         os << (f.form == 1 ? fixed : scientific);
+      }
+      if (f.wide > 0)
+      {
+         os << setw(f.wide);
+      }
+      os << setprecision(f.prec);
+      return os;
+   }
+} // namespace gnsstk
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

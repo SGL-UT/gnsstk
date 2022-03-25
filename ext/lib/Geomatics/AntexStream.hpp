@@ -36,59 +36,60 @@
 //
 //==============================================================================
 
-/// @file AntexStream.hpp
-/// File stream for Rinex observation file data
+/// @file AntexStream.hpp File stream for Rinex observation file data
 
 #ifndef GNSSTK_ANTEX_STREAM_HPP
 #define GNSSTK_ANTEX_STREAM_HPP
 
-#include <vector>
 #include <list>
 #include <map>
+#include <vector>
 
-#include "FFTextStream.hpp"
 #include "AntexHeader.hpp"
+#include "FFTextStream.hpp"
 
 namespace gnsstk
 {
-      /// @ingroup FileHandling
-      //@{
+   /// @ingroup FileHandling
+   //@{
 
-      /// This class reads an Antex files.
-      ///
-      /// @sa gnsstk::AntexData and gnsstk::AntexHeader.
+   /// This class reads an Antex files. @sa gnsstk::AntexData and gnsstk::AntexHeader.
    class AntexStream : public FFTextStream
    {
    public:
-         /// Default constructor
+      /// Default constructor
       AntexStream() : headerRead(false) {}
 
-         /// Constructor given a file name
-         /// @param fn the Antex file to open
-         /// @param mode how to open \a fn.
-      AntexStream(const char* fn, std::ios::openmode mode=std::ios::in)
-            : FFTextStream(fn, mode), headerRead(false) {}
+         /**
+          Constructor given a file name
+          @param fn the Antex file to open
+          @param mode how to open \a fn.
+         */
+      AntexStream(const char *fn, std::ios::openmode mode = std::ios::in)
+         : FFTextStream(fn, mode), headerRead(false)
+      {
+      }
 
-         /// Destructor
+      /// Destructor
       virtual ~AntexStream() {}
 
-         /// overrides open to reset the header
-      virtual void open(const char* fn, std::ios::openmode mode)
+      /// overrides open to reset the header
+      virtual void open(const char *fn, std::ios::openmode mode)
       {
          FFTextStream::open(fn, mode);
          headerRead = false;
-         header = AntexHeader();
+         header     = AntexHeader();
       }
 
-         /// Whether or not the AntexHeader has been read
+      /// Whether or not the AntexHeader has been read
       bool headerRead;
 
-         /// The header for this file.
+      /// The header for this file.
       AntexHeader header;
    };
 
-      //@}
+   //@}
 
-} // namespace
+} // namespace gnsstk
 
 #endif

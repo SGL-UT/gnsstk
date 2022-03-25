@@ -43,6 +43,7 @@
 #include "MathBase.hpp"
 #include "PRSolution.hpp"
 #include "GPSEllipsoid.hpp"
+#include "GlobalTropModel.hpp"
 #include "Combinations.hpp"
 #include "TimeString.hpp"
 #include "logstream.hpp"
@@ -304,6 +305,7 @@ namespace gnsstk
 
          // -----------------------------------------------------------
          // iteration loop
+         vector<RinexSatID> RSats;
          do {
             TropFlag = false;       // true means the trop corr was NOT applied
 
@@ -314,6 +316,8 @@ namespace gnsstk
             for(n=0,i=0; i<Sats.size(); i++) {
                // ignore marked satellites
                if(Sats[i].id <= 0) continue;
+               RinexSatID rs(Sats[i].id, Sats[i].system);
+               RSats.push_back(rs);
 
                // ------------ ephemeris
                // rho is time of flight (sec)
@@ -351,15 +355,21 @@ namespace gnsstk
                   S.setECEF(SV.x[0],SV.x[1],SV.x[2]);
 
                   // trop
-                  double tc(R.getHeight());  // tc is a dummy here
                   // must test R for reasonableness to avoid corrupting TropModel
-                  // Global model sets the upper limit
-                  if(R.elevation(S) < 0.0 || tc > 44247. || tc < -1000.0) {
+                  double tc(R.getHeight());  // tc is a dummy here
+
+                  // Global model sets the upper limit - first test it
+                  GlobalTropModel* p = dynamic_cast<GlobalTropModel*>(pTropModel);
+                  bool bad(p && tc > p->getHeightLimit());
+
+                  if(bad || R.elevation(S) < 0.0 || tc < -1000.0)
+                  {
                      tc = 0.0;
                      TropFlag = true;        // true means failed to apply trop corr
                   }
-                  else
+                  else {
                      tc = pTropModel->correction(R,S,T);    // pTropModel not const
+                  }
 
                   CRange(n) -= tc;
                   LOG(DEBUG) << "Trop " << i << " " << Sats[i] << " "
@@ -438,6 +448,18 @@ namespace gnsstk
             converge = norm(dX);
             if(n_iterate > 1 && converge < convLimit) {              // success: quit
                iret = 0;
+
+               //// dump the linearized problem
+               //for(n=0; n<P.rows(); n++)
+               //   LOG(INFO) << "LPRSP " << fixed << setprecision(6)
+               //      << " " << printTime(T,gpsfmt)
+               //      << " " << setw(2) << n << " " << RSats[n]
+               //      << " " << setw(9) << P(n,0)
+               //      << " " << setw(9) << P(n,1)
+               //      << " " << setw(9) << P(n,2)
+               //      << " " << setw(13) << Resids(n)
+               //      << " " << setw(13) << CRange(n);
+
                break;
             }
             if(n_iterate >= niter_limit || converge > 1.e10) {       // failure: quit

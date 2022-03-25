@@ -36,8 +36,7 @@
 //
 //==============================================================================
 
-/// @file AntexBase.hpp
-/// Base class for Antex file data
+/// @file AntexBase.hpp Base class for Antex file data
 
 #ifndef GNSSTK_ANTEX_BASE_HPP
 #define GNSSTK_ANTEX_BASE_HPP
@@ -46,21 +45,21 @@
 
 namespace gnsstk
 {
-      /// @ingroup FileHandling
-      //@{
+   /// @ingroup FileHandling
+   //@{
 
-      /** This level isn't serving any purpose other than to make
-       * the class diagram look nice...
-       */
+   /** This level isn't serving any purpose other than to make
+    * the class diagram look nice...
+    */
    class AntexBase : public FFData
    {
    public:
-         /// Destructor per the coding standards
+      /// Destructor per the coding standards
       virtual ~AntexBase() {}
    };
 
-      //@}
+   //@}
 
-}  // namespace
+} // namespace gnsstk
 
 #endif
