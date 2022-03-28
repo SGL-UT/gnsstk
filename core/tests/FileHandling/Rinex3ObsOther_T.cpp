@@ -64,6 +64,8 @@ public:
       /** Make sure that ionospheric delay pseudo-observables are
        * written to the file correctly. */
    unsigned ionoDelayTest();
+      /// Make sure reusing a stream object doesn't break.
+   unsigned reopenTest();
       /// generic filling of generic data.
    void setObs(gnsstk::TestUtil& testFramework, const std::string& system,
                gnsstk::Rinex3ObsHeader& hdr, gnsstk::Rinex3ObsData& rod);
@@ -595,6 +597,33 @@ fillHeader304(gnsstk::Rinex3ObsHeader& hdr)
 }
 
 
+unsigned Rinex3ObsOther_T ::
+reopenTest()
+{
+   TUDEF("Rinex3ObsOther", "open");
+   gnsstk::Rinex3ObsStream uut;
+   gnsstk::Rinex3ObsData data;
+   std::string inp1 = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "arlm200a.15o";
+   std::string inp2 = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "mixed211.05o";
+      // read and verify the 1st header
+   TUCATCH(uut.open(inp1.c_str(), ios::in));
+   TUASSERTE(bool, true, static_cast<bool>(uut));
+   TUCATCH(uut >> data);
+   TUASSERTE(bool, true, static_cast<bool>(uut));
+   TUASSERTE(std::string, "ARL1", uut.header.markerName);
+   uut.close();
+      // read and verify the 2nd header using the same stream.
+   TUCATCH(uut.open(inp2.c_str(), ios::in));
+   TUASSERTE(bool, true, static_cast<bool>(uut));
+   TUCATCH(uut >> data);
+   TUASSERTE(bool, true, static_cast<bool>(uut));
+   TUASSERTE(std::string, "A 9080", uut.header.markerName);
+   TURETURN();
+}
+
+
 int main()
 {
    unsigned errorTotal = 0;
@@ -604,6 +633,7 @@ int main()
    errorTotal += testClass.channelNumTest();
    errorTotal += testClass.ionoDelayTest();
    errorTotal += testClass.obsIDVersionTest();
+   errorTotal += testClass.reopenTest();
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
    return errorTotal;
 }

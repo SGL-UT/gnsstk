@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 13.0.0
+%define version 13.1.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,18 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 24 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v13.1.0 release
+- Update SystemTime test so it doesn't fail so often and so it meets style rules
+- Fix SP3NavDataFactory clock linear interpolation half-order
+- Add gnsstk::ValidType::operator!=()
+- Update moved windows cleanup script to ci_control repo.
+- Fix Rinex3ObsStream so the object can be reused.
+- Update BDS TimeOffset validate() so any one term can be 0 but not both
+- Fix TestUtil::fileCompTest to properly detect EOF under Windows.
+- Fix Rinex3NavDataOperatorLessThanFull's broken sorting.
+- Fix Rinex3NavData to right-align satellite IDs when writing RINEX 2.
+- Fix python docstring generator from Doxygen output
 * Fri Jan 21 2022 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v13.0.0 release
 -   Add windows packaging job

@@ -90,6 +90,8 @@ namespace gnsstk
          return ((!this->valid && !r.valid) ||
                  (this->valid && r.valid && this->value == r.value));
       }
+      bool operator!=(const ValidType& r) const
+      { return !(*this == r); }
 
       bool is_valid() const { return valid; }
       T get_value() const { return value; }

@@ -1,3 +1,25 @@
+# Version 13.1.0   Thursday February 24, 2022
+
+Modifications by Author
+-----------------------
+     Anthony Hughes <anthony@arlut.utexas.edu> (1):
+           Add ValidType::operator!=() to correctly handle all comparisons involving invalid ValidTypes as per tks-520.
+
+     David Barber <dbarber@arlut.utexas.edu> (1):
+           moving cleanup job to ci_control repo since it references downstream private repos.
+
+     John Knutson <johnk@arlut.utexas.edu> (5):
+           Fix TestFramework's file compare so it doesn't get stuck in an infinite loop under windows
+           Update BDS TimeOffset validate() so any one term can be 0 but not both
+           Make sure a Rinex3ObsStream can be closed and reopened and reused
+           Correct clock linear interpolation half-order
+           clean up systemtime test
+
+     Taben Malik <malik@arlut.utexas.edu> (1):
+           Fixed Doxygen to Python docstring generator
+
+
+
 # Version 13.0.0   Friday January 21, 2022
 
 Modifications by Author

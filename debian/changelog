@@ -1,3 +1,21 @@
+gnsstk (13.1.0-1) stable; urgency=low
+
+  * Updated to version 13.1.0
+  * Fix python docstring generator from Doxygen output
+  * Fix Rinex3NavData to right-align satellite IDs when writing RINEX 2.
+  * Fix Rinex3NavDataOperatorLessThanFull's broken sorting.
+  * Fix TestUtil::fileCompTest to properly detect EOF under Windows.
+  * Update BDS TimeOffset validate() so any one term can be 0 but not
+    both
+  * Fix Rinex3ObsStream so the object can be reused.
+  * Update moved windows cleanup script to ci_control repo.
+  * Add gnsstk::ValidType::operator!=()
+  * Fix SP3NavDataFactory clock linear interpolation half-order
+  * Update SystemTime test so it doesn't fail so often and so it meets
+    style rules
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 24 Feb 2022 14:04:29 -0600
+
 gnsstk (13.0.0-1) stable; urgency=low
 
   * Updated to version 13.0.0

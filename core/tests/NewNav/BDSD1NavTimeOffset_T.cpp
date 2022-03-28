@@ -91,8 +91,10 @@ validateTest()
    gnsstk::BDSD1NavTimeOffset offs;
    TUASSERTE(bool, false, offs.validate());
    offs.a0 = 1;
-   TUASSERTE(bool, false, offs.validate());
+   TUASSERTE(bool, true, offs.validate());
    offs.a1 = 1;
+   TUASSERTE(bool, true, offs.validate());
+   offs.a0 = 0;
    TUASSERTE(bool, true, offs.validate());
    offs.dn = 6;
    TUASSERTE(bool, true, offs.validate());
