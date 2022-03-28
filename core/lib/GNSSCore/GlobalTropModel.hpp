@@ -282,8 +282,8 @@ namespace gnsstk
       virtual void setParameters(const CommonTime& time, const Position& rxPos);
 
       /// Get the height limit for this model, in meters
-      double getHeightLimit(void)
-      { return HeightLimit; }
+      double getHeightLimit()
+      { return HEIGHT_LIMIT; }
 
    private:
       /** Define the time of interest; this is required before calling
@@ -322,7 +322,8 @@ namespace gnsstk
       static const double Factorial[19];
 
       /// Model is limited in height, at this value, in m
-      static const double HeightLimit;
+      GNSSTK_EXPORT
+      static const double HEIGHT_LIMIT;
 
       double height, latitude, longitude, dayfactor, undul;
       double P[10][10], aP[55], bP[55];

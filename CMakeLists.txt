@@ -25,6 +25,18 @@ include( GNUInstallDirs )
 # Set a filename for collecting exported targets.
 set( EXPORT_TARGETS_FILENAME "GNSSTKTargets" )
 
+if ( WIN32 )
+   # Make cmake do most of the work of creating the DLL exports
+   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+   # put everything in the same directory to make it easier for tests
+   # to find the DLL.
+   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+else ( WIN32 )
+   # This disables the Windows-specific export things for non-Windows platforms.
+   add_definitions(-DGNSSTK_STATIC_DEFINE)
+endif ( WIN32 )
+include(GenerateExportHeader)
+
 
 option( DEBUG_SWITCH "HELP: DEBUG_SWITCH: Default = OFF, print some CMake variable values to stdout." OFF )
 option( DEBUG_VERBOSE "HELP: DEBUG_VERBOSE: Default = OFF, print all CMake variable values." OFF )
@@ -37,6 +49,8 @@ option( PIP_WHEEL_SWITCH "HELP: PIP_WHEEL_SWITCH: SWITCH, Default= OFF, Build a 
 option( BUILD_FOR_PACKAGE_SWITCH "HELP: BUILD_FOR_PACKAGE_SWITCH: SWITCH, Default= OFF, Modify python install paths assuming creation of deb/rpm." OFF )
 option( PYTHON_USER_INSTALL "HELP: PYTHON_USER_INSTALL: SWITCH, Default= OFF, Install python in user mode." OFF )
 option( VERSIONED_HEADER_INSTALL "HELP: VERSIONED_HEADER_INSTALL: SWITCH, Default= OFF, Install header files into maj/min versioned directory." OFF )
+
+set(PYTHON_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE PATH "Directory to install SWIG files for Python")
 
 if( PYTHON_USER_INSTALL AND !BUILD_PYTHON )
     message( WARNING "Combination of PYTHON_USER_INSTALL=ON and BUILD_PYTHON=OFF is not allowed. " )
@@ -161,11 +175,16 @@ if ( ${PROFILER} )
   # don't build the shared library with profiler enabled
   add_library( gnsstk STATIC ${GNSSTK_SRC_FILES} ${GNSSTK_INC_FILES} )
 elseif( WIN32 )
-  # someday we'll figure out how to do shared libs for windows...
-  add_library( gnsstk STATIC ${GNSSTK_SRC_FILES} ${GNSSTK_INC_FILES} )
+  add_library( gnsstk ${GNSSTK_SRC_FILES} ${GNSSTK_INC_FILES} )
 else()
   add_library( gnsstk SHARED ${GNSSTK_SRC_FILES} ${GNSSTK_INC_FILES} )
 endif()
+
+# always generate the header because it's an include file whose
+# absence would break the build on non-windows.
+generate_export_header(gnsstk)
+include_directories(AFTER SYSTEM ${PROJECT_BINARY_DIR})
+install( FILES ${PROJECT_BINARY_DIR}/gnsstk_export.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 
 install( TARGETS gnsstk DESTINATION "${CMAKE_INSTALL_LIBDIR}" EXPORT "${EXPORT_TARGETS_FILENAME}" )
 
@@ -217,6 +236,7 @@ if( BUILD_EXT )
        # keep cmake quiet
        set( PYTHON_VERSION_MAJOR 0 )
        set( PYTHON_VERSION_MINOR 0 )
+       set(GNSSTK_SWIG_MODULE_DIR "")
    endif()
 endif()
 
@@ -229,7 +249,7 @@ set( INSTALL_CONFIG_DIR ${CMAKE_INSTALL_DATADIR}/cmake/GNSSTK)
 configure_package_config_file( ${CMAKE_CURRENT_SOURCE_DIR}/GNSSTKConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/GNSSTKConfig.cmake
     INSTALL_DESTINATION ${INSTALL_CONFIG_DIR}
-    PATH_VARS CMAKE_INSTALL_LIBDIR CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_BINDIR CMAKE_INSTALL_PREFIX INSTALL_CONFIG_DIR PYTHON_VERSION_MAJOR PYTHON_VERSION_MINOR BUILD_PYTHON )
+    PATH_VARS CMAKE_INSTALL_LIBDIR CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_BINDIR CMAKE_INSTALL_PREFIX INSTALL_CONFIG_DIR PYTHON_VERSION_MAJOR PYTHON_VERSION_MINOR BUILD_PYTHON GNSSTK_SWIG_MODULE_DIR )
 write_basic_package_version_file( ${CMAKE_CURRENT_BINARY_DIR}/GNSSTKConfigVersion.cmake
     VERSION ${GNSSTK_VERSION}
     COMPATIBILITY ExactVersion )

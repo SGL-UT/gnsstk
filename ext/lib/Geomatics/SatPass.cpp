@@ -44,7 +44,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
-// gpstk
+// gnsstk
 #include "RinexObsData.hpp"
 #include "RinexObsHeader.hpp"
 #include "RinexObsStream.hpp"

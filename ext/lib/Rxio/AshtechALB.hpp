@@ -45,6 +45,7 @@
 #ifndef ASHTECHALB_HPP
 #define ASHTECHALB_HPP
 
+#include "gnsstk_export.h"
 #include "AshtechData.hpp"
 
 #ifdef SWIG
@@ -64,7 +65,7 @@ namespace gnsstk
       unsigned svid;
       long     word[10];
 
-      static const char* myId;
+      GNSSTK_EXPORT static const char* myId;
 
       virtual std::string getName() const {return "alb";}
 

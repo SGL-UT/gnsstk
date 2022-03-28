@@ -41,7 +41,7 @@
     loading. */
 
 #ifndef CLASS_ATMOSPHERICLOADING_INCLUDE
-#   define CLASS_ATMOSPHERICLOADING_INCLUDE
+#define CLASS_ATMOSPHERICLOADING_INCLUDE
 
 //------------------------------------------------------------------------------------
 // system includes

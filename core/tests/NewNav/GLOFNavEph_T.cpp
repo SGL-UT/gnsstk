@@ -164,6 +164,7 @@ getXvtTest()
    TUASSERTFE(exp1.clkbias, xvt.clkbias);
    TUASSERTFE(exp1.clkdrift, xvt.clkdrift);
    TUASSERTFE(exp1.relcorr, xvt.relcorr);
+   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::PZ90,xvt.frame);
       // same ephemeris, orbit 306 seconds in the future of Toe
    TUASSERTE(bool, true, uut.getXvt(uut.Toe + 306, xvt));
    TUASSERTE(gnsstk::Xvt::HealthStatus,
@@ -176,6 +177,7 @@ getXvtTest()
    TUASSERTFE(exp2.clkbias, xvt.clkbias);
    TUASSERTFE(exp2.clkdrift, xvt.clkdrift);
    TUASSERTFE(exp2.relcorr, xvt.relcorr);
+   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::PZ90,xvt.frame);
    TURETURN();
 }
 

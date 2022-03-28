@@ -44,6 +44,7 @@
 #ifndef ASHTECHPBEN_HPP
 #define ASHTECHPBEN_HPP
 
+#include "gnsstk_export.h"
 #include "AshtechData.hpp"
 
 #ifdef SWIG
@@ -77,7 +78,7 @@ namespace gnsstk
       float lat, lon, alt, numSV, hdop, vdop, tdop;
 
 
-      static const char* myId;
+      GNSSTK_EXPORT static const char* myId;
 
       virtual std::string getName() const {return "pben";}
 

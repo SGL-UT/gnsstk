@@ -60,7 +60,7 @@ namespace gnsstk
    //---------------------------------------------------------------------------------
       // constants
    //---------------------------------------------------------------------------------
-      /* JulianEpoch is the epoch for CoordTransTime
+      /* JulianEpoch is the epoch for coordTransTime
          const double EarthOrientation::JulianEpoch=2451545.0;     // JD */
    const double EarthOrientation::JulianEpoch = 51544.5; // MJD
    const int EarthOrientation::intJulianEpoch = 51544;
@@ -94,9 +94,9 @@ namespace gnsstk
    //---------------------------------------------------------------------------------
       // EOP interpolation and correction routines - internal use only
 
-      /* Compute fundamental arguments at CoordTransTime T, which are
+      /* Compute fundamental arguments at coordTransTime T, which are
          GMST+pi, L, Lp, F, D, Omega. These are valid for interpolating EOPs in
-         both IERS 2003 and 2010 conventions. param T CoordTransTime for epoch of
+         both IERS 2003 and 2010 conventions. param T coordTransTime for epoch of
          interest param args array of 6 fundamental arguments at T, units radians */
    static void computeFundamentalArgs(double T, double args[6]);
 
@@ -134,7 +134,7 @@ namespace gnsstk
 
       /* Corrections to UT1 and length of day (LOD) due to subdiurnal librations
          using USNO IERS2010 algorithm.
-         param args array of 6 fundamental arguments at T (CoordTransTime), in
+         param args array of 6 fundamental arguments at T (coordTransTime), in
          radians
           NB result of computeFundamentalArgs()
          param dUT correction to UT1mUTC in seconds
@@ -736,7 +736,7 @@ namespace gnsstk
    //---------------------------------------------------------------------------------
       /* Corrections to UT1 and length of day (LOD) due to subdiurnal librations
          using USNO IERS2010 algorithm.
-         param args array of 6 fundamental arguments at T (CoordTransTime), in
+         param args array of 6 fundamental arguments at T (coordTransTime), in
          radians param dUT correction to UT1mUTC in seconds param dld correction to
          length of day in seconds/day */
    void correctEarthRotationLibrations(const double args[6], double& dUT,
@@ -802,7 +802,7 @@ namespace gnsstk
          transformations.
          Throws if the TimeSystem conversion fails (if
          t.system==TimeSystem::Unknown) */
-   double EarthOrientation::CoordTransTime(EphTime ttag)
+   double EarthOrientation::coordTransTime(EphTime ttag)
    {
       try
       {
@@ -827,7 +827,7 @@ namespace gnsstk
 
    //---------------------------------------------------------------------------------
       /* Return mean longitude of lunar ascending node, in radians,
-         given T, the CoordTransTime at the Epoch of interest. (Ref: F5 pg 23)
+         given T, the coordTransTime at the Epoch of interest. (Ref: F5 pg 23)
          valid for IERS1996 */
    double EarthOrientation::Omega(double T)
    {
@@ -841,7 +841,7 @@ namespace gnsstk
 
    //---------------------------------------------------------------------------------
       /* Return mean longitude of lunar ascending node, in radians,
-         given T, the CoordTransTime at the Epoch of interest.
+         given T, the coordTransTime at the Epoch of interest.
          valid for IERS 2003, 2010 */
    double EarthOrientation::Omega2003(double T)
    {
@@ -855,7 +855,7 @@ namespace gnsstk
 
    //---------------------------------------------------------------------------------
       /* Return mean longitude of the moon - Omega, in radians,
-         given T, the CoordTransTime at the Epoch of interest. (Ref: F3 pg 23)
+         given T, the coordTransTime at the Epoch of interest. (Ref: F3 pg 23)
          valid for IERS1996, IERS2003, IERS2010 */
    double EarthOrientation::F(double T)
    {
@@ -869,7 +869,7 @@ namespace gnsstk
 
    //---------------------------------------------------------------------------------
       /* Return mean elongation of the moon from the sun, in radians,
-         given T, the CoordTransTime at the Epoch of interest. (Ref: F4 pg 23)
+         given T, the coordTransTime at the Epoch of interest. (Ref: F4 pg 23)
          valid for IERS1996, IERS2003 */
    double EarthOrientation::D(double T)
    {
@@ -883,7 +883,7 @@ namespace gnsstk
 
    //---------------------------------------------------------------------------------
       /* Return mean anomaly of the moon, in radians,
-         given T, the CoordTransTime at the Epoch of interest. (Ref: F1 pg 23)
+         given T, the coordTransTime at the Epoch of interest. (Ref: F1 pg 23)
          valid for IERS1996, IERS2003 */
    double EarthOrientation::L(double T)
    {
@@ -896,7 +896,7 @@ namespace gnsstk
    }
 
    //---------------------------------------------------------------------------------
-      /* Return mean anomaly of the sun, in radians, given T, the CoordTransTime at
+      /* Return mean anomaly of the sun, in radians, given T, the coordTransTime at
          the time of interest. (Ref: F2 pg 23) valid for IERS1996, IERS2003 */
    double EarthOrientation::Lp(double T)
    {
@@ -912,7 +912,7 @@ namespace gnsstk
 
    //------------------------------------------------------------------------------
       /* Compute the mean longitude of Mercury, in radians, given T, the
-         CoordTransTime at the time of interest. Valid for IERS2003, IERS2010 param
+         coordTransTime at the time of interest. Valid for IERS2003, IERS2010 param
          T coordinate transformation time. return LMe in radians. */
    double EarthOrientation::LMe(double T)
    {
@@ -922,7 +922,7 @@ namespace gnsstk
 
    //------------------------------------------------------------------------------
       /* Compute the mean longitude of Venus, in radians, given T, the
-         CoordTransTime at the time of interest. Valid for IERS2003, IERS2010 param
+         coordTransTime at the time of interest. Valid for IERS2003, IERS2010 param
          T coordinate transformation time. return LV in radians. */
    double EarthOrientation::LV(double T)
    {
@@ -932,7 +932,7 @@ namespace gnsstk
 
    //------------------------------------------------------------------------------
       /* Compute the mean longitude of Earth, in radians, given T, the
-         CoordTransTime at the time of interest. Valid for IERS2003, IERS2010 param
+         coordTransTime at the time of interest. Valid for IERS2003, IERS2010 param
          T coordinate transformation time. return LE in radians. */
    double EarthOrientation::LE(double T)
    {
@@ -942,7 +942,7 @@ namespace gnsstk
 
    //------------------------------------------------------------------------------
       /* Compute the mean longitude of Mars, in radians, given T, the
-         CoordTransTime at the time of interest. Valid for IERS2003, IERS2010 param
+         coordTransTime at the time of interest. Valid for IERS2003, IERS2010 param
          T coordinate transformation time. return LMa in radians. */
    double EarthOrientation::LMa(double T)
    {
@@ -952,7 +952,7 @@ namespace gnsstk
 
    //------------------------------------------------------------------------------
       /* Compute the mean longitude of Jupiter, in radians, given T, the
-         CoordTransTime at the time of interest. Valid for IERS2003, IERS2010
+         coordTransTime at the time of interest. Valid for IERS2003, IERS2010
          param T coordinate transformation time.
          return LJ in radians. */
    double EarthOrientation::LJ(double T)
@@ -963,7 +963,7 @@ namespace gnsstk
 
    //------------------------------------------------------------------------------
       /* Compute the mean longitude of Saturn, in radians, given T, the
-         CoordTransTime at the time of interest. Valid for IERS2003, IERS2010
+         coordTransTime at the time of interest. Valid for IERS2003, IERS2010
          param T coordinate transformation time.
          return LS in radians. */
    double EarthOrientation::LS(double T)
@@ -974,7 +974,7 @@ namespace gnsstk
 
    //------------------------------------------------------------------------------
       /* Compute the mean longitude of Uranus, in radians, given T, the
-         CoordTransTime at the time of interest. Valid for IERS2003, IERS2010
+         coordTransTime at the time of interest. Valid for IERS2003, IERS2010
          param T coordinate transformation time.
          return LU in radians. */
    double EarthOrientation::LU(double T)
@@ -985,7 +985,7 @@ namespace gnsstk
 
    //------------------------------------------------------------------------------
       /* Compute the mean longitude of Neptune, in radians, given T, the
-         CoordTransTime at the time of interest. Valid for IERS2003, IERS2010
+         coordTransTime at the time of interest. Valid for IERS2003, IERS2010
          param T coordinate transformation time.
          return LN in radians. */
    double EarthOrientation::LN(double T)
@@ -996,7 +996,7 @@ namespace gnsstk
 
    //------------------------------------------------------------------------------
       /* Compute the general precession in longitude, in radians,
-         given T, the CoordTransTime at the time of interest.
+         given T, the coordTransTime at the time of interest.
          Valid for IERS2003
          param T coordinate transformation time.
          return Pa in radians. */
@@ -1008,21 +1008,21 @@ namespace gnsstk
 
    //---------------------------------------------------------------------------------
       /* Compute eps, the obliquity of the ecliptic, in radians,
-         given T, the CoordTransTime at the time of interest.
+         given T, the coordTransTime at the time of interest.
          throw if convention is not defined */
-   double EarthOrientation::Obliquity(double T)
+   double EarthOrientation::obliquity(double T)
    {
       if (convention == IERSConvention::IERS1996)
       {
-         return Obliquity1996(T);
+         return obliquity1996(T);
       }
       else if (convention == IERSConvention::IERS2003)
       {
-         return Obliquity1996(T); // same as 96
+         return obliquity1996(T); // same as 96
       }
       else if (convention == IERSConvention::IERS2010)
       {
-         return Obliquity2010(T);
+         return obliquity2010(T);
       }
       else
       {
@@ -1108,19 +1108,19 @@ namespace gnsstk
          motion angles xp and yp (arcseconds)), as found in the IERS bulletin; see
          class EarthOrientation. param t EphTime epoch of the rotation. throw if
          convention is not defined */
-   Matrix<double> EarthOrientation::PolarMotionMatrix(const EphTime& t)
+   Matrix<double> EarthOrientation::polarMotionMatrix(const EphTime& t)
    {
       if (convention == IERSConvention::IERS1996)
       {
-         return PolarMotionMatrix1996(xp, yp);
+         return polarMotionMatrix1996(xp, yp);
       }
       else if (convention == IERSConvention::IERS2003)
       {
-         return PolarMotionMatrix2003(t, xp, yp);
+         return polarMotionMatrix2003(t, xp, yp);
       }
       else if (convention == IERSConvention::IERS2010)
       {
-         return PolarMotionMatrix2003(t, xp, yp); // valid also for 2010
+         return polarMotionMatrix2003(t, xp, yp); // valid also for 2010
       }
       else
       {
@@ -1133,20 +1133,20 @@ namespace gnsstk
       /* Compute the precession matrix, a 3x3 rotation matrix, given T,
          the coordinate transformation time at the time of interest
          throw if convention is not defined */
-   Matrix<double> EarthOrientation::PrecessionMatrix(const EphTime& t)
+   Matrix<double> EarthOrientation::precessionMatrix(const EphTime& t)
    {
-      double T = CoordTransTime(t);
+      double T = coordTransTime(t);
       if (convention == IERSConvention::IERS1996)
       {
-         return PrecessionMatrix1996(T);
+         return precessionMatrix1996(T);
       }
       else if (convention == IERSConvention::IERS2003)
       {
-         return PrecessionMatrix2003(T);
+         return precessionMatrix2003(T);
       }
       else if (convention == IERSConvention::IERS2010)
       {
-         return PrecessionMatrix2010(T);
+         return precessionMatrix2010(T);
       }
       else
       {
@@ -1162,17 +1162,17 @@ namespace gnsstk
          param dpsi, nutation of the longitude (output) in radians
          throw if convention is not defined
          NB this is never called internally
-         void EarthOrientation::NutationAngles(double T, double& deps, double&
+         void EarthOrientation::nutationAngles(double T, double& deps, double&
          dpsi)
         {
            if(convention == IERSConvention::IERS1996) {
               double om;
-              NutationAngles1996(T,deps,dpsi,om);
+              nutationAngles1996(T,deps,dpsi,om);
            }
            if(convention == IERSConvention::IERS2003)
-              NutationAngles2003(T,deps,dpsi);
+              nutationAngles2003(T,deps,dpsi);
            if(convention == IERSConvention::IERS2010)
-              NutationAngles2010(T,deps,dpsi);
+              nutationAngles2010(T,deps,dpsi);
            else {
               Exception e("IERS convention is not defined");
               GNSSTK_THROW(e);
@@ -1181,22 +1181,22 @@ namespace gnsstk
 
    //---------------------------------------------------------------------------------
       // Compute the nutation matrix, given coordinate transformation time T
-   Matrix<double> EarthOrientation::NutationMatrix(const EphTime& t)
+   Matrix<double> EarthOrientation::nutationMatrix(const EphTime& t)
    {
       try
       {
-         double T = CoordTransTime(t);
+         double T = coordTransTime(t);
          if (convention == IERSConvention::IERS1996)
          {
-            return NutationMatrix1996(T);
+            return nutationMatrix1996(T);
          }
          else if (convention == IERSConvention::IERS2003)
          {
-            return NutationMatrix2003(T);
+            return nutationMatrix2003(T);
          }
          else if (convention == IERSConvention::IERS2010)
          {
-            return NutationMatrix2010(T);
+            return nutationMatrix2010(T);
          }
          else
          {
@@ -1217,7 +1217,7 @@ namespace gnsstk
          return 3x3 rotation matrix
          throw if the TimeSystem conversion fails (if
          t.system==TimeSystem::Unknown) throw if convention is not defined */
-   Matrix<double> EarthOrientation::PreciseEarthRotation(const EphTime& t)
+   Matrix<double> EarthOrientation::preciseEarthRotation(const EphTime& t)
    {
       if (convention == IERSConvention::IERS1996)
       {
@@ -1225,11 +1225,11 @@ namespace gnsstk
       }
       else if (convention == IERSConvention::IERS2003)
       {
-         return PreciseEarthRotation2003(CoordTransTime(t));
+         return preciseEarthRotation2003(coordTransTime(t));
       }
       else if (convention == IERSConvention::IERS2010)
       {
-         return PreciseEarthRotation2010(CoordTransTime(t));
+         return preciseEarthRotation2010(coordTransTime(t));
       }
       else
       {
@@ -1761,13 +1761,13 @@ namespace gnsstk
 
    //------------------------------------------------------------------------------
       /* Equation of the equinoxes complementary terms, IAU 2000 (IERS 2003)
-         Note that GAST = GMST + EquationOfEquinoxes2003
+         Note that GAST = GMST + equationOfEquinoxes2003
          param t EphTime epoch of interest
          return the ee in radians
          throw if the TimeSystem conversion fails (if
          t.system==TimeSystem::Unknown) Based on IERS function EECT2000.f; all
          planets but Venus dropped b/c their contribution is zero. */
-   double EarthOrientation::EquationOfEquinoxes2003(EphTime t)
+   double EarthOrientation::equationOfEquinoxes2003(EphTime t)
    {
          // first define the coefficients
 
@@ -1837,7 +1837,7 @@ namespace gnsstk
       try
       {
             // coordinate transformation time
-         double T(CoordTransTime(t));
+         double T(coordTransTime(t));
             // fundamental arguments l   lp  f   d   o   lme lv  le  pa
          double farg[N];
 
@@ -1911,16 +1911,16 @@ namespace gnsstk
       double l(L(T));     // mean anomaly of the moon
       double lp(Lp(T));   // mean anomaly of the sun
 
-//-----------------------------------------------------------------------
-// include code that forms UT1mUT1R dlodR domegaR
-#include "IERS1996UT1mUTCData.hpp"
+      //-----------------------------------------------------------------------
+      // include code that forms UT1mUT1R dlodR domegaR
+      #include "IERS1996UT1mUTCData.hpp"
    }
 
    //---------------------------------------------------------------------------------
       /* Compute eps, the obliquity of the ecliptic, in radians,
-         given T, the CoordTransTime at the time of interest. IAU76 IAU80 for
+         given T, the coordTransTime at the time of interest. IAU76 IAU80 for
          IERS1996,03 */
-   double EarthOrientation::Obliquity1996(double T)
+   double EarthOrientation::obliquity1996(double T)
    {
          /* double eps; // seconds of arc
             eps = T*(-46.8150 + T*(-0.00059 + T*0.001813));
@@ -1934,8 +1934,8 @@ namespace gnsstk
 
    //---------------------------------------------------------------------------------
       /* Compute eps, the obliquity of the ecliptic, in radians,
-         given T, the CoordTransTime at the time of interest. */
-   double EarthOrientation::Obliquity2010(double T)
+         given T, the coordTransTime at the time of interest. */
+   double EarthOrientation::obliquity2010(double T)
    {
          /* double eps;
             mean obliquity cf. sofa obl06.c
@@ -1968,14 +1968,14 @@ namespace gnsstk
          if (reduced)
          {
             double dlodR, domegaR, UT1mUT1R;
-            UT1mUTCTidalCorrections(CoordTransTime(t), UT1mUT1R, dlodR,
+            UT1mUTCTidalCorrections(coordTransTime(t), UT1mUT1R, dlodR,
                                     domegaR);
             UT1mUTC = UT1mUT1R - UT1mUTC;
          }
             // convert to UT1
          t += UT1mUTC;
 
-            // dont use CoordTransTime() b/c UT1 is needed here, not TT
+            // dont use coordTransTime() b/c UT1 is needed here, not TT
          double T((t.dMJD() - JulianEpoch) / 36525.0);
 
             // Compute GMST in radians
@@ -2027,7 +2027,7 @@ namespace gnsstk
       try
       {
             // TT days since epoch
-         double T(CoordTransTime(t)), G;
+         double T(coordTransTime(t)), G;
          double era = EarthRotationAngle(t, UT1mUTC);
          G          = ::fmod(
             era + (0.014506 +
@@ -2058,7 +2058,7 @@ namespace gnsstk
          double era = EarthRotationAngle(t, UT1mUTC); // radians
 
             // IERS2010 - cf sofa gmst06.c and TN36 eqn 5.32
-         double T = CoordTransTime(t);
+         double T = coordTransTime(t);
             /* double G = ::fmod(era+(0.014506 + (4612.156534 + (1.3915817 +
                (-0.00000044
                   + (-0.000029956 + (-0.0000000368)*T)*T)*T)*T)*T)*ARCSEC_TO_RAD,
@@ -2081,7 +2081,7 @@ namespace gnsstk
    //---------------------------------------------------------------------------------
       /* Helper to compute the Greenwich hour angle of the true vernal equinox, or
          Greenwich Apparent Sidereal Time (GAST) in radians, for IERS1996,
-         given the (UT) time of interest t, and, where T = CoordTransTime(t),
+         given the (UT) time of interest t, and, where T = coordTransTime(t),
          o  = Omega(T) = mean longitude of lunar ascending node, in radians,
          eps = the obliquity of the ecliptic, in radians,
          dpsi = nutation in longitude (counted in the ecliptic),
@@ -2143,11 +2143,11 @@ namespace gnsstk
    {
       try
       {
-         double T(CoordTransTime(t));
+         double T(coordTransTime(t));
          double omega, deps, dpsi, G;
-         double eps(Obliquity1996(T)), epsa;
+         double eps(obliquity1996(T)), epsa;
 
-         NutationAngles1996(T, deps, dpsi, omega); // deps is not used...
+         nutationAngles1996(T, deps, dpsi, omega); // deps is not used...
 
             // if reduced (NGA), correct for tides
          double UT1mUT1R, dlodR, domegaR;
@@ -2180,21 +2180,21 @@ namespace gnsstk
       try
       {
          double omega, deps, dpsi, G;
-         double T(CoordTransTime(t));
+         double T(coordTransTime(t));
 
             // precession and obliquity corrections (rad/century)
          double dpsipr, depspr;
-         PrecessionRateCorrections2003(T, dpsipr, depspr); // dpsipr not used
+         precessionRateCorrections2003(T, dpsipr, depspr); // dpsipr not used
 
             // compute mean obliquity from IERS Tech Note 32 Chapter 5, eqn 32.
-         double eps(Obliquity1996(T));
+         double eps(obliquity1996(T));
             // mean obliquity consistent with IAU 2000 P-N models
          double epsa(eps + depspr);
 
-         NutationAngles2003(T, deps, dpsi);
+         nutationAngles2003(T, deps, dpsi);
 
             // Equation of the equinoxes.
-         double ee = EquationOfEquinoxes2003(t);
+         double ee = equationOfEquinoxes2003(t);
          LOG(DEBUG7) << "\nee = " << fixed << setprecision(15) << showpos
                      << 1.e6 * ee * RAD_TO_DEG << " / 1.e6";
          ee = dpsi * ::cos(epsa) + ee;
@@ -2220,14 +2220,14 @@ namespace gnsstk
       try
       {
          Matrix<double> NutPreBias =
-            PreciseEarthRotation2010(CoordTransTime(t));
+            preciseEarthRotation2010(coordTransTime(t));
 
             // extract X and Y coords of the CIP from the matrix
             // cf. sofa bpn2xy.c
          double X(NutPreBias(2, 0)), Y(NutPreBias(2, 1));
 
             // get T and the CIO locator s
-         double T(CoordTransTime(t));
+         double T(coordTransTime(t));
          double s(S(T, X, Y, IERSConvention::IERS2010));
 
             // get ERA(UT1)
@@ -2263,7 +2263,7 @@ namespace gnsstk
          param xp, Earth wobble in arcseconds, as found in the IERS bulletin.
          param yp, Earth wobble in arcseconds, as found in the IERS bulletin.
          return Matrix<double>(3,3) rotation matrix */
-   Matrix<double> EarthOrientation::PolarMotionMatrix1996(double xp,
+   Matrix<double> EarthOrientation::polarMotionMatrix1996(double xp,
                                                           double yp)
    {
       xp *= ARCSEC_TO_RAD;
@@ -2283,12 +2283,12 @@ namespace gnsstk
          param xp, Earth wobble in arcseconds, as found in the IERS bulletin.
          param yp, Earth wobble in arcseconds, as found in the IERS bulletin.
          return Matrix<double>(3,3) rotation matrix CIP -> TRS */
-   Matrix<double> EarthOrientation::PolarMotionMatrix2003(EphTime t, double xp,
+   Matrix<double> EarthOrientation::polarMotionMatrix2003(EphTime t, double xp,
                                                           double yp)
    {
       double sp(Sprime(t)); // parameter s' provides position of TEO on CIP
       LOG(DEBUG7) << "\nsp = " << fixed << setprecision(15) << setw(18) << sp
-                  << " with T = " << CoordTransTime(t);
+                  << " with T = " << coordTransTime(t);
       xp *= ARCSEC_TO_RAD;
       yp *= ARCSEC_TO_RAD;
       Matrix<double> R1, R2, R3;
@@ -2301,7 +2301,7 @@ namespace gnsstk
    //------------------------------------------------------------------------------
       /* Compute Fukushima-Williams angles for computing nutation, frame bias and
          precession matrices in IERS2010; cf. FukushimaWilliams().
-         NB. fourth angle is Obliquity. */
+         NB. fourth angle is obliquity. */
    void EarthOrientation::FukushimaWilliams(double T, double& gamb,
                                             double& phib, double& psib,
                                             double& eps)
@@ -2330,7 +2330,7 @@ namespace gnsstk
              ARCSEC_TO_RAD;
 
          // obliquity
-      eps = Obliquity2010(T);
+      eps = obliquity2010(T);
    }
 
    //---------------------------------------------------------------------------------
@@ -2341,9 +2341,9 @@ namespace gnsstk
          Get   B by passing the full F-W angles at J2000 (T=0).
          Get  PB by passing the full F-W angles at time time of interest.
          Get NPB by passing the full F-W angles at time time of interest with
-            nutation angle corrections (NutationAngles2010()). Specifically,
+            nutation angle corrections (nutationAngles2010()). Specifically,
              FukushimaWilliams(T, gamb, phib, psib, eps);
-             NutationAngles2010(T, deps, dpsi);
+             nutationAngles2010(T, deps, dpsi);
              NPB = FukushimaWilliams(gamb, phib, psib+dpsi, eps+deps);
          Thus the precession matrix is computed as PB * transpose(B), and
               the nutation matrix is computes as N = NPB * transpose(PB).
@@ -2369,7 +2369,7 @@ namespace gnsstk
          param deps, nutation of the obliquity, in radians (output)
          param dpsi, nutation of the longitude, in radians (output)
          param om, longitude mean ascending node of lunar orbit, from mean equinox */
-   void EarthOrientation::NutationAngles1996(double T, double& deps,
+   void EarthOrientation::nutationAngles1996(double T, double& deps,
                                              double& dpsi, double& om)
    {
 // include coefficients array; defines coeff[Ncoeff]
@@ -2444,7 +2444,7 @@ namespace gnsstk
          core n). param T,    the coordinate transformation time at the time of
          interest param deps, nutation of the obliquity, in radians (output) param
          dpsi, nutation of the longitude, in radians (output) */
-   void EarthOrientation::NutationAngles2003(double T, double& deps,
+   void EarthOrientation::nutationAngles2003(double T, double& deps,
                                              double& dpsi)
    {
          // sin and cos coefficients have units 0.1 microarcsec = 1e-7as
@@ -2569,10 +2569,10 @@ namespace gnsstk
          transformation time at the time of interest param deps, nutation of the
          obliquity, in radians (output) param dpsi, nutation of the longitude, in
          radians (output) */
-   void EarthOrientation::NutationAngles2010(double T, double& deps,
+   void EarthOrientation::nutationAngles2010(double T, double& deps,
                                              double& dpsi)
    {
-      NutationAngles2003(T, deps, dpsi);
+      nutationAngles2003(T, deps, dpsi);
       double fj2(-2.7774e-6 * T);
       dpsi *= (1.0 + 0.4697e-6 + fj2);
       deps *= (1.0 + fj2);
@@ -2583,7 +2583,7 @@ namespace gnsstk
          eps,  the obliquity of the ecliptic, in radians,
          dpsi, the nutation in longitude (counted in the ecliptic), in radians
          deps, the nutation in obliquity, in radians. */
-   Matrix<double> EarthOrientation::NutationMatrix(double eps, double dpsi,
+   Matrix<double> EarthOrientation::nutationMatrix(double eps, double dpsi,
                                                    double deps)
    {
       Matrix<double> R1 = rotation(eps, 1);
@@ -2596,12 +2596,12 @@ namespace gnsstk
       /* IERS1996 nutation matrix, a 3x3 rotation matrix, given
          param T, the coordinate transformation time at the time of interest
          return nutation matrix Matrix<double>(3,3) */
-   Matrix<double> EarthOrientation::NutationMatrix1996(double T)
+   Matrix<double> EarthOrientation::nutationMatrix1996(double T)
    {
-      double eps(Obliquity1996(T)), deps, dpsi, om;
+      double eps(obliquity1996(T)), deps, dpsi, om;
 
-      NutationAngles1996(T, deps, dpsi, om);
-      return NutationMatrix(eps, dpsi, deps);
+      nutationAngles1996(T, deps, dpsi, om);
+      return nutationMatrix(eps, dpsi, deps);
    }
 
    //------------------------------------------------------------------------------
@@ -2609,17 +2609,17 @@ namespace gnsstk
          (including the frame bias matrix), given
          param T, the coordinate transformation time at the time of interest
          return nutation matrix Matrix<double>(3,3) */
-   Matrix<double> EarthOrientation::NutationMatrix2003(double T)
+   Matrix<double> EarthOrientation::nutationMatrix2003(double T)
    {
-      double eps(Obliquity1996(T)), deps, dpsi; // same as Obliquity2003
-      NutationAngles2003(T, deps, dpsi);
+      double eps(obliquity1996(T)), deps, dpsi; // same as obliquity2003
+      nutationAngles2003(T, deps, dpsi);
 
          /* Precession rate contributions with respect to IAU 2000
             Precession and obliquity corrections (radians) */
       double depspr = -0.02524 * ARCSEC_TO_RAD * T;
       eps += depspr;
 
-      return NutationMatrix(eps, dpsi, deps);
+      return nutationMatrix(eps, dpsi, deps);
    }
 
    //------------------------------------------------------------------------------
@@ -2627,7 +2627,7 @@ namespace gnsstk
          param T, the coordinate transformation time at the time of interest;
          cf. FukushimaWilliams().
          return nutation matrix Matrix<double>(3,3) */
-   Matrix<double> EarthOrientation::NutationMatrix2010(double T)
+   Matrix<double> EarthOrientation::nutationMatrix2010(double T)
    {
       double deps, dpsi, eps;
 
@@ -2636,10 +2636,10 @@ namespace gnsstk
             FukushimaWilliams(T, gamb, phib, psib, eps);
 
          get nutation angles
-            NutationAngles2010(T,deps,dpsi);
+            nutationAngles2010(T,deps,dpsi);
 
          construct nutation x precession x frame bias matrix
-         NB this is the same as PreciseEarthRotation2010(T)
+         NB this is the same as preciseEarthRotation2010(T)
             Matrix<double> NPB = FukushimaWilliams(gamb,phib,psib+dpsi,eps+deps);
 
          now get PB alone - see FukushimaWilliams()
@@ -2648,15 +2648,15 @@ namespace gnsstk
             return (NPB * transpose(PB)); */
 
          // same result
-      NutationAngles2010(T, deps, dpsi);
-      return NutationMatrix(Obliquity2010(T), dpsi, deps);
+      nutationAngles2010(T, deps, dpsi);
+      return nutationMatrix(obliquity2010(T), dpsi, deps);
    }
 
    //------------------------------------------------------------------------------
       /* Compute the IERS1996 precession matrix, a 3x3 rotation matrix, given
          param T, the coordinate transformation time at the time of interest
          return precession matrix Matrix<double>(3,3) */
-   Matrix<double> EarthOrientation::PrecessionMatrix1996(double T)
+   Matrix<double> EarthOrientation::precessionMatrix1996(double T)
    {
          /* IAU76 - ref McCarthy - seconds of arc
             NB t0==0 in sofa prec76.c - TD why do they do these things? */
@@ -2678,7 +2678,7 @@ namespace gnsstk
          param T, the coordinate transformation time at the time of interest
          Includes the frame bias matrix. cf sofa bp00.c
          return precession matrix Matrix<double>(3,3) */
-   Matrix<double> EarthOrientation::PrecessionMatrix2003(double T)
+   Matrix<double> EarthOrientation::precessionMatrix2003(double T)
    {
          // obliquity at the J2000.0 epoch
       static const double eps0(84381.448 * ARCSEC_TO_RAD);
@@ -2713,7 +2713,7 @@ namespace gnsstk
          /* Precession rate contributions with respect to IAU 2000 p-n models
             Precession and obliquity corrections (radians)  cf sofa pr00.c */
       double dpsipr, depspr;
-      PrecessionRateCorrections2003(T, dpsipr, depspr);
+      precessionRateCorrections2003(T, dpsipr, depspr);
 
          // Apply precession corrections
       LOG(DEBUG7) << "precession rate = " << fixed << setprecision(15)
@@ -2749,7 +2749,7 @@ namespace gnsstk
       /* Compute the IERS2003 precession and obliquity rate corrections, IAU 2000
          param T, the coordinate transformation time at the time of interest
          return precession, obliquity corrections in radians */
-   void EarthOrientation::PrecessionRateCorrections2003(double T, double& dpsi,
+   void EarthOrientation::precessionRateCorrections2003(double T, double& dpsi,
                                                         double& deps)
    {
          // Precession rate contributions with respect to IAU 2000
@@ -2761,7 +2761,7 @@ namespace gnsstk
    //------------------------------------------------------------------------------
       /* IERS2010 frame bias matrix, a 3x3 rotation matrix; cf.
          FukushimaWilliams(). return frame bias matrix Matrix<double>(3,3) */
-   Matrix<double> EarthOrientation::BiasMatrix2010()
+   Matrix<double> EarthOrientation::biasMatrix2010()
    {
          // get F-W angles at J2000
       double gamb, phib, psib, epsa;
@@ -2776,13 +2776,13 @@ namespace gnsstk
          param T, the coordinate transformation time at the time of interest
          Does not include the frame bias matrix. Cf. FukushimaWilliams().
          return precession matrix Matrix<double>(3,3) */
-   Matrix<double> EarthOrientation::PrecessionMatrix2010(double T)
+   Matrix<double> EarthOrientation::precessionMatrix2010(double T)
    {
          // the F-W angles
       double gamb, phib, psib, epsa;
 
          // get frame bias matrix
-      Matrix<double> B = BiasMatrix2010();
+      Matrix<double> B = biasMatrix2010();
 
          // get F-W angles at epoch
       FukushimaWilliams(T, gamb, phib, psib, epsa);
@@ -2796,14 +2796,14 @@ namespace gnsstk
    //------------------------------------------------------------------------------
       /* Generate precise transformation matrix (3X3 rotation) for Earth motion due
          to precession, nutation and frame bias (NPB matrix), at the given time of
-         interest, for IERS 2003. param T CoordTransTime of interest return 3x3
+         interest, for IERS 2003. param T coordTransTime of interest return 3x3
          rotation matrix */
-   Matrix<double> EarthOrientation::PreciseEarthRotation2003(double T)
+   Matrix<double> EarthOrientation::preciseEarthRotation2003(double T)
    {
       try
       {
-         Matrix<double> N = NutationMatrix2003(T);
-         Matrix<double> P = PrecessionMatrix2003(T); // includes bias
+         Matrix<double> N = nutationMatrix2003(T);
+         Matrix<double> P = precessionMatrix2003(T); // includes bias
 
             /* Matrix<double> NPB(N*P);
                LOG(DEBUG7) << "\nNPB matrix:\n" << fixed << setprecision(15) <<
@@ -2821,9 +2821,9 @@ namespace gnsstk
    //------------------------------------------------------------------------------
       /* Generate precise transformation matrix (3X3 rotation) for Earth motion due
          to precession, nutation and frame bias (NPB matrix), at the given time of
-         interest, for IERS 2010. param T CoordTransTime of interest return 3x3
+         interest, for IERS 2010. param T coordTransTime of interest return 3x3
          rotation matrix */
-   Matrix<double> EarthOrientation::PreciseEarthRotation2010(double T)
+   Matrix<double> EarthOrientation::preciseEarthRotation2010(double T)
    {
       try
       {
@@ -2834,7 +2834,7 @@ namespace gnsstk
          FukushimaWilliams(T, gamb, phib, psib, epsa);
 
             // get nutation angles
-         NutationAngles2010(T, deps, dpsi);
+         nutationAngles2010(T, deps, dpsi);
 
             // construct nutation x precession x frame bias matrix
          return FukushimaWilliams(gamb, phib, psib + dpsi, epsa + deps);
@@ -2860,25 +2860,25 @@ namespace gnsstk
       {
          Matrix<double> P, N, W, S;
 
-         double T = CoordTransTime(t);
+         double T = coordTransTime(t);
 
             // precession
-         P = PrecessionMatrix1996(T);
+         P = precessionMatrix1996(T);
          LOG(DEBUG7) << "\nprecession matrix:\n"
                      << fixed << setprecision(15) << setw(18) << showpos << P;
 
             // nutation
          double eps, deps, dpsi, om;
             // mean obliquity radians
-         eps = Obliquity1996(T);
+         eps = obliquity1996(T);
          LOG(DEBUG7) << "\nmean obliquity " << fixed << setprecision(15)
                      << showpos << eps;
             // nutation angles - om is used in gast
-         NutationAngles1996(T, deps, dpsi, om);
+         nutationAngles1996(T, deps, dpsi, om);
          LOG(DEBUG7) << "\nnutation angles psi eps " << fixed
                      << setprecision(15) << showpos << dpsi << " " << deps;
             // nutation matrix
-         N = NutationMatrix(eps, dpsi, deps);
+         N = nutationMatrix(eps, dpsi, deps);
          LOG(DEBUG7) << "\nnutation matrix:\n"
                      << fixed << setprecision(15) << setw(18) << showpos << N;
 
@@ -2904,7 +2904,7 @@ namespace gnsstk
                      << S * N * P;
 
             // Polar Motion
-         W = PolarMotionMatrix1996(xp, yp);
+         W = polarMotionMatrix1996(xp, yp);
          LOG(DEBUG7) << "\npolar motion matrix:\n"
                      << fixed << setprecision(15) << setw(18) << showpos << W;
 
@@ -2930,7 +2930,7 @@ namespace gnsstk
       {
          Matrix<double> P, N, R, W;
 
-         double T(CoordTransTime(t));
+         double T(coordTransTime(t));
 
          if (LOGlevel >= DEBUG7)
          {
@@ -2945,27 +2945,27 @@ namespace gnsstk
 
             // nutation
          double deps, dpsi, dpsipr, depspr;
-         NutationAngles2003(T, deps, dpsi);
+         nutationAngles2003(T, deps, dpsi);
          LOG(DEBUG7) << "\nnutation angles psi eps " << fixed
                      << setprecision(15) << showpos << dpsi << " " << deps;
 
             /* Precession rate contributions with respect to IAU 2000
                Precession and obliquity corrections (radians) */
-         PrecessionRateCorrections2003(T, dpsipr, depspr);
+         precessionRateCorrections2003(T, dpsipr, depspr);
          LOG(DEBUG7) << "\nprecession-rate " << fixed << setprecision(15)
                      << showpos << dpsipr << " " << depspr;
 
-         double eps(Obliquity1996(T)); // same as 2003
+         double eps(obliquity1996(T)); // same as 2003
          LOG(DEBUG7) << "\nmean obliquity " << fixed << setprecision(15)
                      << showpos << eps;
          eps += depspr;
 
-         N = NutationMatrix(eps, dpsi, deps);
+         N = nutationMatrix(eps, dpsi, deps);
          LOG(DEBUG7) << "\nnutation matrix:\n"
                      << fixed << setprecision(15) << setw(18) << showpos << N;
 
             // precession
-         P = PrecessionMatrix2003(T);
+         P = precessionMatrix2003(T);
 
          Matrix<double> NPB(N * P);
          LOG(DEBUG7) << "\nNPB matrix:\n"
@@ -2981,7 +2981,7 @@ namespace gnsstk
                R = rotation(gast,3); */
 
             // polar motion
-         W = PolarMotionMatrix2003(t, xp, yp);
+         W = polarMotionMatrix2003(t, xp, yp);
          LOG(DEBUG7) << "\npolar motion matrix:\n"
                      << fixed << setprecision(15) << setw(18) << showpos << W;
 
@@ -3005,7 +3005,7 @@ namespace gnsstk
    {
       try
       {
-         double T(CoordTransTime(t));
+         double T(coordTransTime(t));
 
             /* get the CIO coordinates and s
                note that X,Y could also be obtained as (2,0),(2,1) components
@@ -3029,7 +3029,7 @@ namespace gnsstk
                      << fixed << setprecision(15) << setw(18) << showpos
                      << GCRStoCIRS;
 
-            // note that we could have called PreciseEarthRotation2010() instead
+            // note that we could have called preciseEarthRotation2010() instead
 
             // get ERA at UT1
          double era = EarthRotationAngle(t, UT1mUTC);
@@ -3046,15 +3046,15 @@ namespace gnsstk
 
             // compute the polar motion matrix, TIRS-to-ITRS
             // double sprime(Sprime(T));
-         Matrix<double> PolarMotion(
-            PolarMotionMatrix2003(t, xp, yp)); // 2010 == 2003
+         Matrix<double> polarMotion(
+            polarMotionMatrix2003(t, xp, yp)); // 2010 == 2003
          LOG(DEBUG7) << "\npolar motion matrix:\n"
                      << fixed << setprecision(15) << setw(18) << showpos
-                     << PolarMotion;
+                     << polarMotion;
 
             // combine to get GCRS-to-ITRS
          Matrix<double> GCRStoITRS;
-         GCRStoITRS = PolarMotion * CIRStoTIRS * GCRStoCIRS;
+         GCRStoITRS = polarMotion * CIRStoTIRS * GCRStoCIRS;
 
             // invert to get ITRS-to-GCRS or ECEFtoInertial
          return (transpose(GCRStoITRS));

@@ -57,6 +57,7 @@
 #include "ValidType.hpp"
 #include "SatID.hpp"
 #include "GNSSconstants.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -346,7 +347,7 @@ namespace gnsstk
       void applyClockOffset(double clockOffset)
       { ord -= clockOffset; }
 
-      static bool debug;
+      GNSSTK_EXPORT static bool debug;
 
    private:
       void computeOrd(double obs,

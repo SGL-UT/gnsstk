@@ -113,7 +113,7 @@ namespace gnsstk
       /** compute average differences and detect adjusts. call after all input
           at one time is done, passing it the _next_ timetag.
           @param ttag the next time */
-      void compute(CommonTime ttag);
+      void compute(const CommonTime ttag);
 
     public:
       /** empty and only constructor - note that setDT() must be called before
@@ -148,7 +148,7 @@ namespace gnsstk
           @param sat   satellite of the data
           @param obstype string observation type of the data (L1 L2 C1 C2 P1 P2)
           @param data  value of obstype for sat at ttag */
-      void add(CommonTime ttag, SatID sat, std::string obstype, double data);
+      void add(CommonTime ttag, const SatID sat, const std::string obstype, double data);
 
       /** After all add() calls, and before calling fix()
           @return number of fixes to apply */
@@ -163,7 +163,7 @@ namespace gnsstk
           @param sat   satellite of the data
           @param obstype string observation type of the data (L1 L2 C1 C2 P1 P2)
           @param data  value of obstype for sat at ttag */
-      void fix(CommonTime &ttag, SatID sat, std::string obstype, double &data);
+      void fix(CommonTime &ttag, const SatID sat, const std::string obstype, double &data);
 
       /// get messages generated during detection phase
       std::string getFindMessage(bool verbose = false);

@@ -1317,6 +1317,8 @@ namespace gnsstk
                }
                hea = dynamic_cast<NavHealthData*>(heaPtr.get());
                rv = (xmitHealth == hea->getHealth());
+               DEBUGTRACE("transmit health "
+                          << (rv ? "matches" : "does not match"));
             }
             break;
          default:

@@ -878,6 +878,9 @@ namespace gnsstk
             }
             break;
       }
+      gps->coordSystem = head.coordSystem;
+      gps->frame = gnsstk::StringUtils::asReferenceFrame(
+         gps->coordSystem);
       return true;
    }
 

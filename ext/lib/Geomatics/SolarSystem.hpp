@@ -68,7 +68,7 @@
 
 //------------------------------------------------------------------------------------
 #ifndef SOLAR_SYSTEM_INCLUDE
-#   define SOLAR_SYSTEM_INCLUDE
+#define SOLAR_SYSTEM_INCLUDE
 
 //------------------------------------------------------------------------------------
 // includes
@@ -83,7 +83,6 @@
 #include "EphTime.hpp"
 #include "Exception.hpp"
 #include "Position.hpp"
-//#   include "XvtStore.hpp"
 
 // geomatics
 #include "EOPStore.hpp"
@@ -283,7 +282,7 @@ namespace gnsstk
           @return ECEF Position of the Sun in meters.
           @throw Exception
          */
-      Position SolarPosition(const EphTime& tt)
+      Position solarPosition(const EphTime& tt)
       {
          try
          {
@@ -301,7 +300,7 @@ namespace gnsstk
           @return ECEF Position of the Moon in meters.
           @throw Exception
          */
-      Position LunarPosition(const EphTime& tt)
+      Position lunarPosition(const EphTime& tt)
       {
          try
          {
@@ -320,7 +319,7 @@ namespace gnsstk
           @param Vel   Position containing result for Solar velocity in m/s in XYZ
           @throw Exception
          */
-      void SolarPositionVelocity(const EphTime& tt, Position& Pos, Position& Vel)
+      void solarPositionVelocity(const EphTime& tt, Position& Pos, Position& Vel)
       {
          try
          {
@@ -340,7 +339,7 @@ namespace gnsstk
           @param Vel   Position containing result for Lunar velocity in m/s in XYZ
           @throw Exception
          */
-      void LunarPositionVelocity(const EphTime& tt, Position& Pos, Position& Vel)
+      void lunarPositionVelocity(const EphTime& tt, Position& Pos, Position& Vel)
       {
          try
          {
@@ -371,12 +370,12 @@ namespace gnsstk
           @return Matrix<double>(3,3) Rotation matrix from XYZ to Satellite body frame.
           @throw Exception
          */
-      Matrix<double> SatelliteAttitude(const EphTime& tt, const Position& SV)
+      Matrix<double> satelliteAttitude(const EphTime& tt, const Position& SV)
       {
          try
          {
-            Position Sun = SolarSystem::SolarPosition(tt);
-            return gnsstk::SatelliteAttitude(SV, Sun);
+            Position Sun = SolarSystem::solarPosition(tt);
+            return gnsstk::satelliteAttitude(SV, Sun);
          }
          catch (Exception& e)
          {
@@ -403,13 +402,13 @@ namespace gnsstk
                cos(sesa)=cos(beta)*cos(phi).
           @throw Exception
          */
-      void SunOrbitAngles(const EphTime& tt, const Position& Pos,
+      void sunOrbitAngles(const EphTime& tt, const Position& Pos,
                           const Position& Vel, double& beta, double& phi)
       {
          try
          {
-            Position Sun = SolarSystem::SolarPosition(tt);
-            gnsstk::SunOrbitAngles(Pos, Vel, Sun, beta, phi);
+            Position Sun = SolarSystem::solarPosition(tt);
+            gnsstk::sunOrbitAngles(Pos, Vel, Sun, beta, phi);
          }
          catch (Exception& e)
          {
@@ -438,8 +437,8 @@ namespace gnsstk
       {
          try
          {
-            const Position Sun  = SolarSystem::SolarPosition(tt);
-            const Position Moon = SolarSystem::LunarPosition(tt);
+            const Position Sun  = SolarSystem::solarPosition(tt);
+            const Position Moon = SolarSystem::lunarPosition(tt);
             const double EMRAT  = SolarSystem::ratioEarthToMoonMass();
             const double SERAT  = SolarSystem::ratioSunToEarthMass();
             return gnsstk::computeSolidEarthTides(site, tt, Sun, Moon, EMRAT,

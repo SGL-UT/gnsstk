@@ -99,9 +99,11 @@ namespace gnsstk
           * @note Defaults to using the GPS ellipsoid parameters.
           * @param[in] when The time at which to compute the xvt.
           * @param[out] xvt The resulting computed position/velocity.
+          * @param[in] oid Ignored at this level, only used in derived classes.
           * @return true if successful, false if required nav data was
           *   unavailable. */
-      bool getXvt(const CommonTime& when, Xvt& xvt) override;
+      bool getXvt(const CommonTime& when, Xvt& xvt,
+                  const ObsID& = ObsID()) override;
 
          /** Compute satellite relativity correction (sec) at the given time.
           * @note Defaults to using the GPS ellipsoid parameters.
@@ -128,9 +130,11 @@ namespace gnsstk
           *   (specifically EllipsoidModel::gm() and
           *   EllipsoidModel::angVelocity()).
           * @param[out] xvt The resulting computed position/velocity.
+          * @param[in] oid Ignored at this level, only used in derived classes.
           * @return true if successful, false if required nav data was
           *   unavailable. */
-      bool getXvt(const CommonTime& when, const EllipsoidModel& ell, Xvt& xvt);
+      bool getXvt(const CommonTime& when, const EllipsoidModel& ell, Xvt& xvt,
+                  const ObsID& oid = ObsID());
 
          /** Compute satellite relativity correction (sec) at the given time.
           * @param[in] ell The ellipsoid used in computing the Xvt
@@ -179,7 +183,7 @@ namespace gnsstk
       double A;            ///< Semi-major axis (m)
       double Ahalf;        ///< Square Root of semi-major axis (m**.5)
       double Adot;         ///< Rate of semi-major axis (m/sec)
-      double OMEGA0;       ///< Rt ascension of ascending node (rad)
+      double OMEGA0;       ///< Longitude of ascending node at weekly epoch (rad)
       double i0;           ///< Inclination (rad)
       double w;            ///< Argument of perigee (rad)
       double OMEGAdot;     ///< Rate of Rt ascension (rad/sec)
@@ -191,6 +195,8 @@ namespace gnsstk
 
       CommonTime beginFit; ///< Time at beginning of fit interval
       CommonTime endFit;   ///< Time at end of fit interval
+
+      ReferenceFrame frame;///< Reference frame of produced Xvt data.
    };
 
       //@}

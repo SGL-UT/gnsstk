@@ -40,6 +40,7 @@
 #define GNSSTK_GPSCNAV2EPH_HPP
 
 #include "OrbitDataKepler.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -51,13 +52,13 @@ namespace gnsstk
    {
    public:
          /// Aref value defined in IS-GPS-800 (meters).
-      static const double refAGPS;
+      GNSSTK_EXPORT static const double refAGPS;
          /// OMEGA dot reference value defined in IS-GPS-800 (radians).
-      static const double refOMEGAdotGPS;
+      GNSSTK_EXPORT static const double refOMEGAdotGPS;
          /// Aref value defined in IS-QZSS-PNT-004 (meters).
-      static const double refAQZSS;
+      GNSSTK_EXPORT static const double refAQZSS;
          /// OMEGA dot reference value defined in IS-QZSS-PNT-004 (radians).
-      static const double refOMEGAdotQZSS;
+      GNSSTK_EXPORT static const double refOMEGAdotQZSS;
 
          /// Sets the nav message type and all other data members to 0.
       GPSCNav2Eph();

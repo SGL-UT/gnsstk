@@ -41,6 +41,7 @@
 
 #include "GLOFNavData.hpp"
 #include "PZ90Ellipsoid.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -53,25 +54,25 @@ namespace gnsstk
    {
    public:
          /// Ellipsoid parameters used by GLONASS
-      static const PZ90Ellipsoid ell;
+      GNSSTK_EXPORT static const PZ90Ellipsoid ell;
          /// Gravitational constant.
-      static const double mu;
+      GNSSTK_EXPORT static const double mu;
          /// Equatorial radius of Earth in km.
-      static const double ae;
+      GNSSTK_EXPORT static const double ae;
          /** Fatty acids? No, Earth's rotation rate.
           * @note This is incorrectly listed as .73... in one
           * location.  It is, in fact, .72... */
-      static constexpr double omega3 = 0.7292115e-4;
+      GNSSTK_EXPORT static constexpr double omega3 = 0.7292115e-4;
          /// i<sub>cp</cp> as defined in GLONASS ICD appendix 3.2.1
-      static const double icp;
+      GNSSTK_EXPORT static const double icp;
          /// T<sub>cp</cp> as defined in GLONASS ICD appendix 3.2.1
-      static const double Tcp;
+      GNSSTK_EXPORT static const double Tcp;
          /// Second zonal harmonic of spherical harmonic expansion.
-      static const double C20;
+      GNSSTK_EXPORT static const double C20;
          /// Some constant or other related to C20.
-      static const double J;
+      GNSSTK_EXPORT static const double J;
          /// Term used in computing orbit.
-      static const double C20Term;
+      GNSSTK_EXPORT static const double C20Term;
 
          /// Sets the nav message type, and all other data members to 0.
       GLOFNavAlm();
@@ -94,9 +95,12 @@ namespace gnsstk
           *   available calculators.
           * @param[in] when The time at which to compute the xvt.
           * @param[out] xvt The resulting computed position/velocity.
+          * @param[in] oid Value is ignored - GLONASS does not have
+          *   distinct transmitters.
           * @return true if successful, false if required nav data was
           *   unavailable. */
-      bool getXvt(const CommonTime& when, Xvt& xvt) override;
+      bool getXvt(const CommonTime& when, Xvt& xvt,
+                  const ObsID& = ObsID()) override;
 
          /** Returns the time when the navigation message would have
           * first been available to the user equipment, i.e. the time

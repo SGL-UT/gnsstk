@@ -143,10 +143,65 @@ commands instead of build.sh:
 Windows and Microsoft Visual Studio: Building with CMake:
 ---------------------------------------------------------
 
-Step-by-step procedure with pictures on building, installing, and testing the GNSSTk under Visual Studio 
-2012 can be found at gnsstk.org:
+The following procedure will build and install the GNSSTk.  We
+typically do this in a gitbash window, hence the '$' prompt below.
 
-    http://www.gnsstk.org/bin/view/Documentation/BuildingGNSSTkUnderWindows
+   1. Ensure the prerequisites have been installed:
+      - Visual Studio (2015 and 2019 are currently supported)
+      - cmake
+
+   2. Obtain the GNSSTk source distribution.
+
+   3. If needed, extract the GNSSTk compressed archive.
+
+   4. Navigate to the root directory of the extracted GNSSTk file tree
+
+      $ cd gnsstk
+
+   5. Create the build output directory and navigate into it.
+
+      $ mkdir build
+
+      $ cd build
+
+   6. Use cmake to create the build environment.
+      - Options used below:
+
+         - BUILD_SHARED_LIBS If "TRUE", build and link to DLLs.  If
+           "FALSE", build and link to static libraries.
+
+         - CMAKE_BUILD_TYPE If "release", no debug symbols are
+           included. If "debug", debugging symbols are included in the
+           produced binaries.
+
+         - CMAKE_INSTALL_PREFIX The path where the binaries will
+           ultimately be installed.
+
+         - BUILD_EXT If "ON", build unsupported extensions to the
+           library (in the ext directory).
+
+         - BUILD_PYTHON If "OFF", do not build the SWIG bindings
+           (currently unsupported/untested under Windows).
+
+      - Using Visual Studio 2019:
+
+         $ cmake -DBUILD_SHARED_LIBS=TRUE -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ..
+
+      - Using Visual Studio 2015:
+
+         $ cmake -DBUILD_SHARED_LIBS=TRUE -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ..
+
+   7. Build the library (and tests, if specified above).
+
+      $ cmake --build . --config Release -j
+
+   8. Execute the tests (if TEST_SWITCH=ON).
+
+      $ cmake --build . --config Release --target RUN_TESTS -j
+
+   9. Install the library and related files.
+
+      $ cmake --build . --config Release --target install
 
 
 Linking Against the GNSSTk Library:

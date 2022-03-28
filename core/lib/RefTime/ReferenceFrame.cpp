@@ -54,6 +54,13 @@ namespace gnsstk
             case ReferenceFrame::WGS84G873:  return "WGS84(G873)";
             case ReferenceFrame::WGS84G1150: return "WGS84(G1150)";
             case ReferenceFrame::ITRF:       return "ITRF";
+            case ReferenceFrame::ITRF94:     return "ITRF(1994)";
+            case ReferenceFrame::ITRF96:     return "ITRF(1996)";
+            case ReferenceFrame::ITRF97:     return "ITRF(1997)";
+            case ReferenceFrame::ITRF2000:   return "ITRF(2000)";
+            case ReferenceFrame::ITRF2005:   return "ITRF(2005)";
+            case ReferenceFrame::ITRF2008:   return "ITRF(2008)";
+            case ReferenceFrame::ITRF2014:   return "ITRF(2014)";
             case ReferenceFrame::PZ90:       return "PZ90";
             case ReferenceFrame::PZ90KGS:    return "PZ90KGS";
             case ReferenceFrame::CGCS2000:   return "CGCS2000";
@@ -70,9 +77,20 @@ namespace gnsstk
          if (s == "WGS84(G873)")  return ReferenceFrame::WGS84G873;
          if (s == "WGS84(G1150)") return ReferenceFrame::WGS84G1150;
          if (s == "ITRF")         return ReferenceFrame::ITRF;
+         if (s == "ITRF(1994)")   return ReferenceFrame::ITRF94;
+         if (s == "ITRF(1996)")   return ReferenceFrame::ITRF96;
+         if (s == "ITRF(1997)")   return ReferenceFrame::ITRF97;
+         if (s == "ITRF(2000)")   return ReferenceFrame::ITRF2000;
+         if (s == "ITRF(2005)")   return ReferenceFrame::ITRF2005;
+         if (s == "ITRF(2008)")   return ReferenceFrame::ITRF2008;
+         if (s == "ITRF(2014)")   return ReferenceFrame::ITRF2014;
          if (s == "PZ90")         return ReferenceFrame::PZ90;
          if (s == "PZ90KGS")      return ReferenceFrame::PZ90KGS;
          if (s == "CGCS2000")     return ReferenceFrame::CGCS2000;
+            // strings as they (probably) appear in SP3
+         if (s == "ITR94")        return ReferenceFrame::ITRF94;
+         if (s == "ITR96")        return ReferenceFrame::ITRF96;
+         if (s == "ITR97")        return ReferenceFrame::ITRF97;
          return ReferenceFrame::Unknown;
       }
    }

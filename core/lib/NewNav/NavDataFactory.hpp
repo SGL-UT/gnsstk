@@ -94,6 +94,9 @@ namespace gnsstk
 
          /** Get the offset, in seconds, to apply to times when
           * converting them from fromSys to toSys.
+          * @pre If xmithHealth is set to anything other than "Any",
+          *   ephemeris data must be loaded in order to obtain
+          *   satellite health to match.
           * @param[in] fromSys The time system to convert from.
           * @param[in] toSys The time system to convert to.
           * @param[in] when The time being converted, usually in the
@@ -130,6 +133,30 @@ namespace gnsstk
           *   processed by the factories. */
       virtual void setTypeFilter(const NavMessageTypeSet& nmts)
       { procNavTypes = nmts; }
+
+         /** Return the set of NavMessageType that would be processed
+          * on the next load.
+          * @warning MultiFormatNavDataFactory can get out of sync and
+          *   report incorrect type filter information, if, for
+          *   example, you manipulate its contained factories' type
+          *   filters independently. */
+      NavMessageTypeSet getTypeFilter() const
+      { return procNavTypes; }
+
+         /** Clear the type filters of each of this factory.  This
+          * should be used prior to loading data, and prior to using
+          * addTypeFilter(), if that API is going to be used instead
+          * of setTypeFilter(). */
+      virtual void clearTypeFilter()
+      { procNavTypes.clear(); }
+
+         /** Add a NavMessageType to be processed to this factory.
+          * This should be used prior to loading data and as an
+          * alternate approach to setTypeFilter().
+          * @param[in] nmt The NavMessageType to be processed on the
+          *   next load. */
+      virtual void addTypeFilter(NavMessageType nmt)
+      { procNavTypes.insert(nmt); }
 
          /** Add a data source for this factory.  This could be a file
           * name, an IP address and port, or something else entirely,

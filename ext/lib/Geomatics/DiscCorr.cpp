@@ -52,7 +52,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-// gpstk
+// gnsstk
 #include "GNSSconstants.hpp" // PI,C_MPS,OSC_FREQ_GPS,L1_MULT_GPS,L2_MULT_GPS
 #include "PolyFit.hpp"
 #include "RobustStats.hpp"
@@ -68,7 +68,7 @@ using namespace StringUtils;
 //------------------------------------------------------------------------------------
 // class GDCconfiguration
 //------------------------------------------------------------------------------------
-// class GDCconfiguration: string giving version of gpstk Discontinuity
+// class GDCconfiguration: string giving version of gnsstk Discontinuity
 // Corrector
 const string GDCconfiguration::GDCVersion = string("6.3 12/15/2015");
 
@@ -994,9 +994,9 @@ int GDCPass::preprocess()
       {
          Epoch CurrentTime;
             // CurrentTime.setLocalTime();
-         log << "\n======== Beg GPSTK Discontinuity Corrector " << GDCUnique
+         log << "\n======== Beg GNSSTK Discontinuity Corrector " << GDCUnique
              << " ================================================\n";
-         log << "GPSTK Discontinuity Corrector Ver. " << GDCVersion << " Run "
+         log << "GNSSTK Discontinuity Corrector Ver. " << GDCVersion << " Run "
              << CurrentTime << endl;
       }
 
@@ -3792,7 +3792,6 @@ int GDCPass::WLconsistencyCheck()
          if (absmag > cfg(WLSlipSize) && absmag > pastStats.StdDev() &&
              absmag > futureStats.StdDev())
          {
-
             long nwl;
             nwl = long(mag + (mag > 0 ? 0.5 : -0.5));
 
@@ -4267,7 +4266,7 @@ string GDCPass::finish(int iret, SatPass& svp, vector<string>& editCmds)
 
       if (cfg(Debug) >= 2)
       {
-         log << "======== End GPSTK Discontinuity Corrector " << GDCUnique
+         log << "======== End GNSSTK Discontinuity Corrector " << GDCUnique
              << " ================================================\n";
       }
 

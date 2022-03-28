@@ -2045,8 +2045,14 @@ namespace gnsstk
    // These can be inverted by looping over columns, and filling L from diagonal
    // down. So fill L in this way
    //     d         do diagonal element first, then the column below it
-   //     1d        at each row i below the diagonal, save the element^2 in
-   //     rowSums[i] 12d 123d 123 d 123  d 123   d 123    d 123 etc d
+   //     1d        at each row i below the diagonal, save the element^2 in rowSums[i]
+   //     12d
+   //     123d
+   //     123 d
+   //     123  d
+   //     123   d
+   //     123    d
+   //     123 etc d
 
       /**
        Compute lower triangular square root of a symmetric positive definite

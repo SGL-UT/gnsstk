@@ -42,6 +42,7 @@
 #include <memory>
 #include <map>
 #include <list>
+#include "gnsstk_export.h"
 #include "CommonTime.hpp"
 #include "NavSignalID.hpp"
 #include "NavMessageID.hpp"
@@ -86,9 +87,9 @@ namespace gnsstk
    {
    public:
          /// Time format used for the dump method (Full).
-      static const std::string dumpTimeFmt;
+      GNSSTK_EXPORT static const std::string dumpTimeFmt;
          /// Time format used for the dump method (Brief).
-      static const std::string dumpTimeFmtBrief;
+      GNSSTK_EXPORT static const std::string dumpTimeFmtBrief;
          /// Initialize internal data fields.
       NavData();
          /** Checks the contents of this message against known
@@ -169,7 +170,7 @@ namespace gnsstk
       NavMessageID signal;
 
          /// Set this to a valid store to get PRN->SVN translations in dump().
-      static gnsstk::SatMetaDataStore *satMetaDataStore;
+      GNSSTK_EXPORT static gnsstk::SatMetaDataStore *satMetaDataStore;
          /// Accessor for python
       static void setSatMetaDataStore(gnsstk::SatMetaDataStore *smds)
       { satMetaDataStore = smds; }

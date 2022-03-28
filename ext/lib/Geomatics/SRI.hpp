@@ -213,7 +213,7 @@ namespace gnsstk
                            const Vector<double>& State, const Namelist& NL);
 
          /// copy constructor
-      SRI(const SRI& );
+      SRI(const SRI& s);
 
          /// operator=
       SRI& operator=(const SRI& right);

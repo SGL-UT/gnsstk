@@ -121,7 +121,7 @@ namespace gnsstk
    // -------------------------------------------------------------------------------
    /* add data at one epoch. May be repeated at the same epoch, but MUST be done
       in time order. NB assumes, as in RINEX, that data==0 means it is missing. */
-   void msecHandler::add(CommonTime ttag, SatID sat, string obstype,
+   void msecHandler::add(CommonTime ttag, const SatID sat, const string obstype,
                          double data)
    {
       if (dt == -1.0)
@@ -211,7 +211,7 @@ namespace gnsstk
       NB may call repeatedly with the same ttag, however
       NB ttag gets fixed every call, so don't keep calling with same variable
       ttag. */
-   void msecHandler::fix(CommonTime &ttag, SatID sat, string obstype,
+   void msecHandler::fix(CommonTime &ttag, const SatID sat, const string obstype,
                          double &data)
    {
       // define the first linear clock
@@ -260,8 +260,8 @@ namespace gnsstk
             if (data != 0.0)
             {
                data -= ntot * (wl == 0.0 ? Rfact : Rfact / wl);
-         }
             }
+         }
       }
 
       /* remove gross (piece-wise linear) clock by adjusting time tags and all
@@ -291,7 +291,9 @@ namespace gnsstk
 
       findMsg += string("Searched for millisecond adjusts on obs types:");
       for (i = 0; i < obstypes.size(); i++)
+      {
          findMsg += string(" ") + obstypes[i];
+      }
       findMsg += string("\n");
 
       findMsg += string("Millisecond adjusts: ") +
@@ -300,9 +302,11 @@ namespace gnsstk
                  StringUtils::asString(badMsgs.size()) + string(" invalid");
 
       for (map<string, int>::iterator tit = typesMap.begin();
-           tit != typesMap.end(); ++tit)
+                                          tit != typesMap.end(); ++tit)
+      {
          findMsg += string("\n  Found ") + StringUtils::asString(tit->second) +
                     string(" adjusts for ") + tit->first;
+      }
 
       if (typesMap.size() > 1)
       {
@@ -321,9 +325,13 @@ namespace gnsstk
       if (verbose)
       {
          for (i = 0; i < adjMsgs.size(); i++)
+         {
             findMsg += string("\n") + adjMsgs[i];
+         }
          for (i = 0; i < badMsgs.size(); i++)
+         {
             findMsg += string("\n") + badMsgs[i];
+         }
       }
 
       return findMsg;
@@ -335,7 +343,9 @@ namespace gnsstk
    {
       map<CommonTime, int> adjusts;
       for (unsigned int i = 0; i < times.size(); i++)
+      {
          adjusts.insert(map<CommonTime, int>::value_type(times[i], nms[i]));
+      }
 
       return adjusts;
    }
@@ -343,7 +353,7 @@ namespace gnsstk
    // -------------------------------------------------------------------------------
    /* compute - pass it the upcoming ttag
       NB. ineq1620.14o - trimble has 2 and 3 ms adjusts */
-   void msecHandler::compute(CommonTime ttag)
+   void msecHandler::compute(const CommonTime ttag)
    {
       size_t i, j;
       int ii, in, nadj;
@@ -359,10 +369,11 @@ namespace gnsstk
             {
                ave[i] *= wavelengths[i];
             }
+
             if (npt[i] > 0)
             {
-               ave[i] *=
-                  1000.0 / (npt[i] * C_MPS); // form average and convert to ms
+                  // form average and convert to ms
+               ave[i] *= 1000.0 / (npt[i] * C_MPS);
             }
             else
             {
@@ -378,7 +389,9 @@ namespace gnsstk
          // round to nearest integer ms
          vector<int> iave(N + 1); // element [N] is timetag
          for (i = 0; i < N; i++)  // L1 L2 C1 C2 P1 P2
+         {
             iave[i] = int(ave[i] + (ave[i] >= 0.0 ? 0.5 : -0.5));
+         }
          iave[N] = (del + (del > 0.0 ? 0.5 : -0.5)); // N is timetag
 
          // test - is there an adjust? are the non-zero number-of-ms consistent?
@@ -397,6 +410,7 @@ namespace gnsstk
                {
                   adjPR = true;
                }
+
                if (nadj == 0)
                {
                   nadj = iave[i];
@@ -437,13 +451,19 @@ namespace gnsstk
                      deltas.push_back(del);
                   }
                }
+
                // get the median, an outlier will not affect this
                med = median<double>(deltas);
+
                // compute abs(deviation from median)
                for (j = 0; j < deltas.size(); j++)
+               {
                   deltas[j] = ::fabs(deltas[j] - med);
+               }
+
                // get median absolute deviation
                mad = median<double>(deltas);
+
                /* replace average with median, which will be insensitive to
                   outliers */
                if (mad < 0.5)
@@ -451,6 +471,7 @@ namespace gnsstk
                   ave[i]  = med;
                   iave[i] = int(ave[i] + (ave[i] >= 0.0 ? 0.5 : -0.5));
                }
+
                if (iave[i] != 0)
                {
                   foundPhase = true;
@@ -503,8 +524,8 @@ namespace gnsstk
             ostringstream oss;
             in = -1;
             bool onphase(false);
-            for (i = 0; i < N; i++)
-            { // phase only
+            for (i = 0; i < N; i++) // phase only
+            {
                if (wavelengths[i] == 0.0)
                {
                   continue; // skip PR

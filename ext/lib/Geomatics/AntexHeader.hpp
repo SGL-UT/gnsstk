@@ -46,6 +46,7 @@
 
 #include "AntexBase.hpp"
 #include "FFStream.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -69,17 +70,21 @@ namespace gnsstk
          commentList.clear();
       }
 
-      /// @name AntexHeaderFormatStrings
-      /// ANTEX Header Formatting Strings
-      //@{
-      static const std::string versionString;       ///< "ANTEX VERSION / SYST"
-      static const std::string pcvTypeString;       ///< "PCV TYPE / REFANT"
-      static const std::string headerCommentString; ///< "COMMENT"
-      static const std::string endOfHeaderString;   ///< "END OF HEADER"
-                                                  //@}
+         /// @name AntexHeaderFormatStrings
+         /// ANTEX Header Formatting Strings
+         //@{
+      GNSSTK_EXPORT
+      static const std::string versionString;         ///< "ANTEX VERSION / SYST"
+      GNSSTK_EXPORT
+      static const std::string pcvTypeString;         ///< "PCV TYPE / REFANT"
+      GNSSTK_EXPORT
+      static const std::string headerCommentString;   ///< "COMMENT"
+      GNSSTK_EXPORT
+      static const std::string endOfHeaderString;     ///< "END OF HEADER"
+         //@}
 
-      /// Validity bits for the ANTEX Header
-      /// NB. if version is updated, add allValid<ver> and update isValid()
+         /// Validity bits for the ANTEX Header
+         /// NB. if version is updated, add allValid<ver> and update isValid()
       enum validBits
       {
          versionValid = 0x01,        ///< "ANTEX VERSION / SYST"

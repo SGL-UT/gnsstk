@@ -47,6 +47,7 @@
 #include <sstream>
 #include <string>
 #include <iostream>
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -86,9 +87,9 @@ protected:
    std::ostringstream os;
 
 #ifdef WIN32                  // see kludge note below
-   static LogLevel reportingLevel;  ///< static data for ReportingLevel()
-   static bool dumpTimeTags;        ///< static data for ReportTimeTags()
-   static bool dumpLevels;          ///< static data for ReportLevels()
+   GNSSTK_EXPORT static LogLevel reportingLevel; ///< static data for ReportingLevel()
+   GNSSTK_EXPORT static bool dumpTimeTags; ///< static data for ReportTimeTags()
+   GNSSTK_EXPORT static bool dumpLevels;   ///< static data for ReportLevels()
 #endif
 
 private:
@@ -309,26 +310,6 @@ public:
 };
 
 //----- end class ConfigureLOG
-
-// This is a terrible kludge that nevertheless is necessary under Windows 2003 and
-// 2005 because global optimization (compiler switch /O1 or /O2 or /Og) causes the
-// reportingLevel to be defined ONLY in the module in which ReportingLevel() is
-// assigned. Rather than give up optimization or ReportingLevel(), I came up with
-// this kludge, which is to remove reportingLevel from the ReportingLevel() function
-// and make it a static member of the class, then initialize it outside the class.
-// Similarly for dumpTimeTags and dumpLevels.
-// Notice that this ought to fail (!) because putting this initialization in the
-// include file means that it occurs more than once - in every module in which it
-// appears. However Windows allows this; hence I have commented out the inner macro
-// here. Ah, the joys of developing under MS....
-#ifdef WIN32
-//#ifndef LOGSTREAM_INITIALIZE_REPORTING_LEVEL
-//#define LOGSTREAM_INITIALIZE_REPORTING_LEVEL
-template<> LogLevel Log<ConfigureLOGstream>::reportingLevel = INFO;
-template<> bool Log<ConfigureLOGstream>::dumpTimeTags = false;
-template<> bool Log<ConfigureLOGstream>::dumpLevels = false;
-//#endif
-#endif
 
 /// define the macro that is used to write to the log stream
 #define LOG(level) \

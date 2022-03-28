@@ -54,6 +54,8 @@
 #include <string>
 #include <vector>
 
+#include "gnsstk_export.h"
+#include "Exception.hpp"
 #include "Epoch.hpp"
 #include "Exception.hpp"
 #include "FDiffFilter.hpp"
@@ -64,7 +66,6 @@
 
 namespace gnsstk
 {
-
    //---------------------------------------------------------------------------
       /**
        Class Arc encapsulates information for both break points in the data, due
@@ -80,6 +81,8 @@ namespace gnsstk
       */
    class Arc
    {
+      friend class gdc;
+
    private:
          /// helper routine to initialize markStr map
       static std::map<unsigned, std::string> create_mark_string_map()
@@ -509,6 +512,7 @@ namespace gnsstk
 
    protected:
          /// Version string
+      GNSSTK_EXPORT
       static const std::string GDCVersion;
 
       // NB flags[] is either good (0) or not (!0);

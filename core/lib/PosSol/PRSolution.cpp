@@ -362,12 +362,14 @@ namespace gnsstk
                   GlobalTropModel* p = dynamic_cast<GlobalTropModel*>(pTropModel);
                   bool bad(p && tc > p->getHeightLimit());
 
-                  if(bad || R.elevation(S) < 0.0 || tc < -1000.0) {
+                  if(bad || R.elevation(S) < 0.0 || tc < -1000.0)
+                  {
                      tc = 0.0;
                      TropFlag = true;        // true means failed to apply trop corr
                   }
-                  else
+                  else {
                      tc = pTropModel->correction(R,S,T);    // pTropModel not const
+                  }
 
                   CRange(n) -= tc;
                   LOG(DEBUG) << "Trop " << i << " " << Sats[i] << " "

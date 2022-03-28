@@ -46,6 +46,7 @@
 #include "ReferenceFrame.hpp"
 #include "Xvt.hpp"
 #include "Angle.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -154,14 +155,14 @@ namespace gnsstk
          // ----------- Part  2: member functions: tolerance ------------------
          //
          /// One millimeter tolerance.
-      static const double ONE_MM_TOLERANCE;
+      GNSSTK_EXPORT static const double ONE_MM_TOLERANCE;
          /// One centimeter tolerance.
-      static const double ONE_CM_TOLERANCE;
+      GNSSTK_EXPORT static const double ONE_CM_TOLERANCE;
          /// One micron tolerance.
-      static const double ONE_UM_TOLERANCE;
+      GNSSTK_EXPORT static const double ONE_UM_TOLERANCE;
 
          /// Default tolerance for time equality in days.
-      static double POSITION_TOLERANCE;
+      GNSSTK_EXPORT static double POSITION_TOLERANCE;
 
          /// Changes the POSITION_TOLERANCE for all Position objects
       static double setPositionTolerance(const double tol)

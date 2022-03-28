@@ -54,7 +54,6 @@ using namespace gnsstk::StringUtils;
 
 namespace gnsstk
 {
-
       // ---------------------------- read and write SatPass lists
       // ---------------------
    void dump(vector<SatPass>& SatPassList, ostream& os, bool rev, bool dbug)

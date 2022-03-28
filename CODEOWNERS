@@ -75,3 +75,7 @@ examples/ @johnk @btolman @renfrob
 [Swig Reviewers]
 *.i    @code-reviewers/swig
 
+[CMAKE Reviewers]
+CMakeLists.txt   @code-reviewers/cmake
+*.cmake          @code-reviewers/cmake
+

@@ -63,6 +63,7 @@ namespace gnsstk
          // instead as there is no guarantee that the two word types
          // making up this almanac are consecutive.
       msgLenSec = 2.0;
+      frame = ReferenceFrame::ITRF;
    }
 
 
@@ -131,7 +132,9 @@ namespace gnsstk
         << "E5b_HS              : " << setw(9) << static_cast<int>(hsE5b)
         << " (" << gnsstk::StringUtils::asString(hsE5b) << ")" << endl
         << "E1B_HS              : " << setw(9) << static_cast<int>(hsE1B)
-        << " (" << gnsstk::StringUtils::asString(hsE1B) << ")" << endl;
+        << " (" << gnsstk::StringUtils::asString(hsE1B) << ")" << endl
+        << "Health              : " << setw(9)
+        << gnsstk::StringUtils::asString(health) << endl;
       s.flags(oldFlags);
    }
 }

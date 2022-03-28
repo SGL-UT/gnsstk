@@ -48,16 +48,16 @@
 
 //------------------------------------------------------------------------------------
 #ifndef SOLID_EARTH_TIDES_INCLUDE
-#   define SOLID_EARTH_TIDES_INCLUDE
+#define SOLID_EARTH_TIDES_INCLUDE
 
 //------------------------------------------------------------------------------------
 // system
 // GNSSTk
-#   include "EphTime.hpp"
-#   include "Exception.hpp"
-#   include "IERSConvention.hpp"
-#   include "Position.hpp"
-#   include "Triple.hpp"
+#include "EphTime.hpp"
+#include "Exception.hpp"
+#include "IERSConvention.hpp"
+#include "Position.hpp"
+#include "Triple.hpp"
 
 namespace gnsstk
 {

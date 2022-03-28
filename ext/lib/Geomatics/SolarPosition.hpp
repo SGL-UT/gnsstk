@@ -40,23 +40,21 @@
 
 //------------------------------------------------------------------------------------
 #ifndef SOLAR_POSITION_INCLUDE
-#   define SOLAR_POSITION_INCLUDE
+#define SOLAR_POSITION_INCLUDE
 
 //------------------------------------------------------------------------------------
 // includes
 // system
-#   include <fstream>
-#   include <iostream>
-#   include <string>
-#   include <vector>
-
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
 // GNSSTk
-#   include "CommonTime.hpp"
-#   include "Position.hpp"
+#include "CommonTime.hpp"
+#include "Position.hpp"
 
 namespace gnsstk
 {
-
       /**
        Compute the Position of the Sun in WGS84 ECEF coordinates.
        Ref. Astronomical Almanac pg C24, as presented on USNO web site; claimed
@@ -65,7 +63,7 @@ namespace gnsstk
        @param AR  Output apparent angular radius of sun as seen at Earth (deg)
        @return  Position (ECEF) of the Sun at t
       */
-   Position SolarPosition(const CommonTime& t, double& AR);
+   Position solarPosition(const CommonTime& t, double& AR);
 
       /**
        Compute the latitude and longitude of the Sun using a very simple
@@ -83,7 +81,7 @@ namespace gnsstk
        @param AR  Output apparent angular radius of moon as seen at Earth (deg)
        @return  Position (ECEF) of the Moon at t
       */
-   Position LunarPosition(const CommonTime& t, double& AR);
+   Position lunarPosition(const CommonTime& t, double& AR);
 
       /**
        Compute the fraction of the area of the Sun covered by the Earth as seen
@@ -93,7 +91,7 @@ namespace gnsstk
        @param dES     Angular separation of Sun and Earth.
        @return Fraction (0 <= factor <= 1) of Sun area covered by Earth
       */
-   double shadowFactor(double Rearth, double Rsun, double dES);
+   double solarPositionShadowFactor(double Rearth, double Rsun, double dES);
 
 } // end namespace gnsstk
 

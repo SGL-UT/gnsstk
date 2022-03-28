@@ -45,7 +45,6 @@
 #include "GLOFNavEph.hpp"
 #include "Angle.hpp"
 #include "Position.hpp"
-#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -136,7 +135,8 @@ getXvtTest()
    TUASSERTFEPS(2060.8444711932389, xvt.v[2], 1e-12);
    TUASSERTFE(0, xvt.clkbias);
    TUASSERTFE(0, xvt.clkdrift);
-   TUASSERTFE(0, xvt.relcorr);
+   TUASSERTFE(1.5097189886318696151e-09, xvt.relcorr);
+   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::PZ90,xvt.frame);
 #if 0
       // This is more code that was used to track down what was going
       // on with getXvt.  Specifically it first helped me confirm that
@@ -347,7 +347,6 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.validateTest();
-   DEBUGTRACE_ENABLE();
    errorTotal += testClass.getXvtTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.fixFitTest();

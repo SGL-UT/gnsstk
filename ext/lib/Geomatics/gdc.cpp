@@ -57,7 +57,7 @@ namespace gnsstk
    //---------------------------------------------------------------------------------
       // static data
    //---------------------------------------------------------------------------------
-      // class gdc: string giving version of gpstk Discontinuity Corrector
+      // class gdc: string giving version of gnsstk Discontinuity Corrector
    const string gdc::GDCVersion = string("9.0 5/20/17");
 
       /* ----------------------- flags and bitmaps

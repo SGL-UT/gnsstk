@@ -54,6 +54,15 @@ namespace gnsstk
          std::free
       };
       return (status == 0) ? res.get() : name;
+#elif defined(WIN32)
+         // remove "class " from the start of the name in windows
+      std::string rv(name);
+      if (rv.find("class ") == 0)
+      {
+            // 6=strlen("class ")
+         rv.erase(0, 6);
+      }
+      return rv;
 #else
          // do nothing if not G++
       return name;

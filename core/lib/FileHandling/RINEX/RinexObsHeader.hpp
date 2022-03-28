@@ -50,11 +50,13 @@
 #include <iostream>
 #include <iomanip>
 
+#include "gnsstk_export.h"
 #include "CommonTime.hpp"
 #include "FFStream.hpp"
 #include "RinexObsBase.hpp"
 #include "Triple.hpp"
 #include "RinexSatID.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -72,13 +74,13 @@ namespace gnsstk
                        units(std::string("")),depend(0) {}
       RinexObsType(std::string t, std::string d, std::string u, unsigned int dep=0) :
             type(t),description(d),units(u),depend(dep) {}
-      static const unsigned int C1depend;
-      static const unsigned int L1depend;
-      static const unsigned int L2depend;
-      static const unsigned int P1depend;
-      static const unsigned int P2depend;
-      static const unsigned int EPdepend;
-      static const unsigned int PSdepend;
+      GNSSTK_EXPORT static const unsigned int C1depend;
+      GNSSTK_EXPORT static const unsigned int L1depend;
+      GNSSTK_EXPORT static const unsigned int L2depend;
+      GNSSTK_EXPORT static const unsigned int P1depend;
+      GNSSTK_EXPORT static const unsigned int P2depend;
+      GNSSTK_EXPORT static const unsigned int EPdepend;
+      GNSSTK_EXPORT static const unsigned int PSdepend;
    };
 
 
@@ -130,25 +132,45 @@ namespace gnsstk
 
          /// @name RINEX Observation Header Formatting Strings
          //@{
+      GNSSTK_EXPORT
       static const std::string versionString;         ///< "RINEX VERSION / TYPE"
+      GNSSTK_EXPORT
       static const std::string runByString;           ///< "PGM / RUN BY / DATE"
+      GNSSTK_EXPORT
       static const std::string commentString;         ///< "COMMENT"
+      GNSSTK_EXPORT
       static const std::string markerNameString;      ///< "MARKER NAME"
+      GNSSTK_EXPORT
       static const std::string markerNumberString;    ///< "MARKER NUMBER"
+      GNSSTK_EXPORT
       static const std::string observerString;        ///< "OBSERVER / AGENCY"
+      GNSSTK_EXPORT
       static const std::string receiverString;        ///< "REC # / TYPE / VERS"
+      GNSSTK_EXPORT
       static const std::string antennaTypeString;     ///< "ANT # / TYPE"
+      GNSSTK_EXPORT
       static const std::string antennaPositionString; ///< "APPROX POSITION XYZ"
+      GNSSTK_EXPORT
       static const std::string antennaOffsetString;   ///< "ANTENNA: DELTA H/E/N"
+      GNSSTK_EXPORT
       static const std::string waveFactString;        ///< "WAVELENGTH FACT L1/2"
+      GNSSTK_EXPORT
       static const std::string numObsString;          ///< "# / TYPES OF OBSERV"
+      GNSSTK_EXPORT
       static const std::string intervalString;        ///< "INTERVAL"
+      GNSSTK_EXPORT
       static const std::string firstTimeString;       ///< "TIME OF FIRST OBS"
+      GNSSTK_EXPORT
       static const std::string lastTimeString;        ///< "TIME OF LAST OBS"
+      GNSSTK_EXPORT
       static const std::string receiverOffsetString;  ///< "RCV CLOCK OFFS APPL"
+      GNSSTK_EXPORT
       static const std::string leapSecondsString;     ///< "LEAP SECONDS"
+      GNSSTK_EXPORT
       static const std::string numSatsString;         ///< "# OF SATELLITES"
+      GNSSTK_EXPORT
       static const std::string prnObsString;          ///< "PRN / # OF OBS"
+      GNSSTK_EXPORT
       static const std::string endOfHeader;           ///< "END OF HEADER"
          //@}
 
@@ -187,40 +209,42 @@ namespace gnsstk
 
          /// @name Standard RINEX observation types
          //@{
-      static const RinexObsType UN;
-      static const RinexObsType L1;
-      static const RinexObsType L2;
-      static const RinexObsType C1;
-      static const RinexObsType C2;
-      static const RinexObsType P1;
-      static const RinexObsType P2;
-      static const RinexObsType D1;
-      static const RinexObsType D2;
-      static const RinexObsType S1;
-      static const RinexObsType S2;
-      static const RinexObsType T1;
-      static const RinexObsType T2;
-      static const RinexObsType C5;
-      static const RinexObsType L5;
-      static const RinexObsType D5;
-      static const RinexObsType S5;
+      GNSSTK_EXPORT static const RinexObsType UN;
+      GNSSTK_EXPORT static const RinexObsType L1;
+      GNSSTK_EXPORT static const RinexObsType L2;
+      GNSSTK_EXPORT static const RinexObsType C1;
+      GNSSTK_EXPORT static const RinexObsType C2;
+      GNSSTK_EXPORT static const RinexObsType P1;
+      GNSSTK_EXPORT static const RinexObsType P2;
+      GNSSTK_EXPORT static const RinexObsType D1;
+      GNSSTK_EXPORT static const RinexObsType D2;
+      GNSSTK_EXPORT static const RinexObsType S1;
+      GNSSTK_EXPORT static const RinexObsType S2;
+      GNSSTK_EXPORT static const RinexObsType T1;
+      GNSSTK_EXPORT static const RinexObsType T2;
+      GNSSTK_EXPORT static const RinexObsType C5;
+      GNSSTK_EXPORT static const RinexObsType L5;
+      GNSSTK_EXPORT static const RinexObsType D5;
+      GNSSTK_EXPORT static const RinexObsType S5;
          // Galileo only
-      static const RinexObsType C6;
-      static const RinexObsType L6;
-      static const RinexObsType D6;
-      static const RinexObsType S6;
-      static const RinexObsType C7;
-      static const RinexObsType L7;
-      static const RinexObsType D7;
-      static const RinexObsType S7;
-      static const RinexObsType C8;
-      static const RinexObsType L8;
-      static const RinexObsType D8;
-      static const RinexObsType S8;
+      GNSSTK_EXPORT static const RinexObsType C6;
+      GNSSTK_EXPORT static const RinexObsType L6;
+      GNSSTK_EXPORT static const RinexObsType D6;
+      GNSSTK_EXPORT static const RinexObsType S6;
+      GNSSTK_EXPORT static const RinexObsType C7;
+      GNSSTK_EXPORT static const RinexObsType L7;
+      GNSSTK_EXPORT static const RinexObsType D7;
+      GNSSTK_EXPORT static const RinexObsType S7;
+      GNSSTK_EXPORT static const RinexObsType C8;
+      GNSSTK_EXPORT static const RinexObsType L8;
+      GNSSTK_EXPORT static const RinexObsType D8;
+      GNSSTK_EXPORT static const RinexObsType S8;
 
          //@}
 
+      GNSSTK_EXPORT
       static const std::vector<RinexObsType> StandardRinexObsTypes;
+      GNSSTK_EXPORT
       static std::vector<RinexObsType> RegisteredRinexObsTypes;
 
 

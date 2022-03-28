@@ -93,7 +93,7 @@ namespace gnsstk
             lat,lon,R     latitude, longitude and distance (deg,deg,m in ECEF) of
             sun at t. AR            apparent angular radius of sun as seen at Earth
             (deg) at t. */
-   Position SolarPosition(const CommonTime& t, double& AR)
+   Position solarPosition(const CommonTime& t, double& AR)
    {
          // const double mPerAU = 149598.0e6;
       double D;    // days since J2000
@@ -215,7 +215,7 @@ namespace gnsstk
          dES       angular distance of the sun from the earth
          return    fraction (0 <= f <= 1) of area of sun covered by earth
          units only need be consistent */
-   double shadowFactor(double Rearth, double Rsun, double dES)
+   double solarPositionShadowFactor(double Rearth, double Rsun, double dES)
    {
       if (dES >= Rearth + Rsun)
       {
@@ -246,7 +246,7 @@ namespace gnsstk
 
    //---------------------------------------------------------------------------------
       // From AA 1990 D46
-   Position LunarPosition(const CommonTime& t, double& AR)
+   Position lunarPosition(const CommonTime& t, double& AR)
    {
          // days since J2000
       double N = static_cast<JulianDate>(t).jd - 2451545.0;

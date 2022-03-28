@@ -47,6 +47,7 @@
 #include "FFStream.hpp"
 #include "RinexNavBase.hpp"
 #include "RNDouble.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -115,13 +116,21 @@ namespace gnsstk
       long UTCRefWeek;
       long leapSeconds;
 
+      GNSSTK_EXPORT
       static const std::string versionString; //"RINEX VERSION / TYPE"
+      GNSSTK_EXPORT
       static const std::string runByString; //"PGM / RUN BY / DATE"
+      GNSSTK_EXPORT
       static const std::string commentString; // "COMMENT"
+      GNSSTK_EXPORT
       static const std::string ionAlphaString;  //"ION ALPHA"
+      GNSSTK_EXPORT
       static const std::string ionBetaString;  //"ION BETA"
+      GNSSTK_EXPORT
       static const std::string deltaUTCString; //"DELTA-UTC: A0,A1,T,W"
+      GNSSTK_EXPORT
       static const std::string leapSecondsString; //"LEAP SECONDS"
+      GNSSTK_EXPORT
       static const std::string endOfHeader;  //"END OF HEADER"
 
    protected:

@@ -52,6 +52,7 @@
 #include "AlmOrbit.hpp"
 #include "SEMBase.hpp"
 #include "StringUtils.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -81,7 +82,7 @@ namespace gnsstk
          /// available in the SEM file.  If this value is 0 it is ignored.
          /// Otherwise, the 10-bit week is moved into the GPS Epoch
          /// centered on the given full week.
-      static short nearFullWeek;
+      GNSSTK_EXPORT static short nearFullWeek;
 
       short numRecords;
       std::string Title;

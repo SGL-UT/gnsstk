@@ -45,7 +45,7 @@
 #define GNSSTK_RINEXMETHEADER_HPP
 
 #include <vector>
-
+#include "gnsstk_export.h"
 #include "StringUtils.hpp"
 #include "FFStream.hpp"
 #include "RinexMetBase.hpp"
@@ -214,16 +214,26 @@ namespace gnsstk
       std::vector<sensorType> sensorTypeList;    ///< A list of sensors used in the file
       std::vector<sensorPosType> sensorPosList;  ///< A list of sensor positions used in the file
 
+      GNSSTK_EXPORT
       static const int maxObsPerLine;       ///< Holds the max records per line
 
+      GNSSTK_EXPORT
       static const std::string stringVersion;       ///< "RINEX VERSION / TYPE"
+      GNSSTK_EXPORT
       static const std::string stringRunBy;         ///< "PGM / RUN BY / DATE"
+      GNSSTK_EXPORT
       static const std::string stringComment;       ///< "COMMENT"
+      GNSSTK_EXPORT
       static const std::string stringMarkerName;    ///< "MARKER NAME"
+      GNSSTK_EXPORT
       static const std::string stringMarkerNumber;  ///< "MARKER NUMBER"
+      GNSSTK_EXPORT
       static const std::string stringObsType;       ///< "# / TYPES OF OBSERV"
+      GNSSTK_EXPORT
       static const std::string stringSensorType;    ///< "SENSOR MOD/TYPE/ACC"
+      GNSSTK_EXPORT
       static const std::string stringSensorPos;     ///< "SENSOR POS XYZ/H"
+      GNSSTK_EXPORT
       static const std::string stringEoH;           ///< "END OF HEADER"
 
 #ifndef SWIG // nested structs not supported by SWIG

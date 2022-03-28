@@ -13,11 +13,14 @@ namespace gnsstk
 }
 
 %inline %{
+#ifndef EXCEPTION_I_INLINE
+#define EXCEPTION_I_INLINE
    namespace gnsstk
    {
          // Class for StopIterator Python exception, used by Vector.i
       class StopIterator {};
    }
+#endif
 %}
 
 %exception
@@ -51,7 +54,7 @@ namespace gnsstk
    {
       std::string s("GNSSTk exception\n"), s2(e.what());
       s = s + s2;
-      SWIG_exception(SWIG_RuntimeError, s.c_str());
+      SWIG_exception_fail(SWIG_RuntimeError, s.c_str());
    }
 
    // STL exceptions:
@@ -59,19 +62,19 @@ namespace gnsstk
    {
       std::string s("STL exception\n"), s2(e.what());
       s = s + s2;
-      SWIG_exception(SWIG_RuntimeError, s.c_str());
+      SWIG_exception_fail(SWIG_RuntimeError, s.c_str());
    }
 
    // Exception to stop Python iterator
    catch (gnsstk::StopIterator)
    {
-       PyErr_SetString(PyExc_StopIteration, "Reached end of Iterator");
-       return NULL;
+      PyErr_SetString(PyExc_StopIteration, "Reached end of Iterator");
+      return NULL;
    }
 
    // any other exception:
    catch (...)
    {
-       SWIG_exception(SWIG_RuntimeError, "unknown exception");
+      SWIG_exception_fail(SWIG_RuntimeError, "unknown exception");
    }
 }

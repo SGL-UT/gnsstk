@@ -39,6 +39,7 @@
 #include "GPSLNavEph.hpp"
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
+#include "CivilTime.hpp"
 
 namespace gnsstk
 {
@@ -65,6 +66,7 @@ public:
       /** This is actually implemented in NavData but needs to be in
        * any one of the leaf classes to be tested properly. */
    unsigned getClassNameTest();
+   unsigned getXvtTest();
 };
 
 
@@ -167,6 +169,24 @@ validateTest()
 }
 
 
+unsigned GPSLNavEph_T ::
+getXvtTest()
+{
+   TUDEF("GPSLNavEph", "getXvt");
+   gnsstk::GPSLNavEph uut;
+   gnsstk::Xvt xvt;
+   uut.xmitTime = gnsstk::GPSWeekSecond(1854, .720000000000e+04);
+   uut.Toe = gnsstk::GPSWeekSecond(1854, .143840000000e+05);
+   uut.Toc = gnsstk::CivilTime(2015,7,19,3,59,44.0,gnsstk::TimeSystem::GPS);
+   uut.health = gnsstk::SVHealth::Healthy;
+   gnsstk::CivilTime civ(2015,7,19,2,0,35.0,gnsstk::TimeSystem::GPS);
+   TUASSERT(uut.getXvt(civ, xvt));
+   TUASSERTE(gnsstk::Xvt::HealthStatus, gnsstk::Xvt::Healthy, xvt.health);
+   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::WGS84,xvt.frame);
+   TURETURN();
+}
+
+
 int main()
 {
    GPSLNavEph_T testClass;
@@ -176,6 +196,7 @@ int main()
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.fixFitTest();
    errorTotal += testClass.validateTest();
+   errorTotal += testClass.getXvtTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

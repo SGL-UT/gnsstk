@@ -138,6 +138,7 @@ public:
    unsigned numSatellitesTest();
    unsigned setValidityFilterTest();
    unsigned setTypeFilterTest();
+   unsigned addTypeFilterTest();
       /// Exercise loadIntoMap by loading data with different options in place.
    unsigned loadIntoMapTest();
    unsigned getFactoryTest();
@@ -533,6 +534,43 @@ setTypeFilterTest()
 
 
 unsigned MultiFormatNavDataFactory_T ::
+addTypeFilterTest()
+{
+   TUDEF("MultiFormatNavDataFactory", "clearTypeFilter");
+   TestClass mfact;
+   gnsstk::NavMessageTypeSet exp3 { gnsstk::NavMessageType::Almanac };
+   for (const auto& i : *(TestClass::getFactories()))
+   {
+      TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
+      TUASSERTE(gnsstk::NavMessageTypeSet, gnsstk::allNavMessageTypes,
+                tfp->getTypeFilter());
+   }
+   TUCATCH(mfact.clearTypeFilter());
+   for (const auto& i : *(TestClass::getFactories()))
+   {
+      TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
+      TUASSERT(tfp->getTypeFilter().empty());
+   }
+   TUCSM("addTypeFilter");
+   TUCATCH(mfact.addTypeFilter(gnsstk::NavMessageType::Almanac));
+   for (const auto& i : *(TestClass::getFactories()))
+   {
+      TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
+      TUASSERTE(gnsstk::NavMessageTypeSet, exp3, tfp->getTypeFilter());
+   }
+      // Set the type filter back to all so that other tests work.
+   TUCATCH(mfact.setTypeFilter(gnsstk::allNavMessageTypes));
+   for (const auto& i : *(TestClass::getFactories()))
+   {
+      TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
+      TUASSERTE(gnsstk::NavMessageTypeSet, gnsstk::allNavMessageTypes,
+                tfp->getTypeFilter());
+   }
+   TURETURN();
+}
+
+
+unsigned MultiFormatNavDataFactory_T ::
 loadIntoMapTest()
 {
    TUDEF("MultiFormatNavDataFactory", "loadIntoMap");
@@ -613,6 +651,7 @@ int main()
    errorTotal += testClass.numSatellitesTest();
    errorTotal += testClass.setValidityFilterTest();
    errorTotal += testClass.setTypeFilterTest();
+   errorTotal += testClass.addTypeFilterTest();
    errorTotal += testClass.loadIntoMapTest();
    errorTotal += testClass.getFactoryTest();
 

@@ -334,9 +334,9 @@ try {
 
    // get rotation matrix XYZ->NEU for pos
    Matrix<double> Rotate,RotOTL,RotATM;
-   Rotate = NorthEastUp(C.posset);
-   RotOTL = NorthEastUp(C.posotl);
-   RotATM = NorthEastUp(C.posatm);
+   Rotate = northEastUp(C.posset);
+   RotOTL = northEastUp(C.posotl);
+   RotATM = northEastUp(C.posatm);
 
    // -------------------------------------------------------------------------
    if(!isValid) {
@@ -376,8 +376,8 @@ try {
       ttag.setTimeSystem(TimeSystem::UTC);
       if(C.doSolid) {
          if(C.doSimple) {
-            Position Sun(SolarPosition(ttag, arad));
-            Position Moon(LunarPosition(ttag, arad));
+            Position Sun(solarPosition(ttag, arad));
+            Position Moon(lunarPosition(ttag, arad));
             dXYZ = computeSolidEarthTides(C.posset, ttag, Sun, Moon);
          }
          else {

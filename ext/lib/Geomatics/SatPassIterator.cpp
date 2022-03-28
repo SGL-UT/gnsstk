@@ -43,10 +43,11 @@
 
 using namespace std;
 using namespace gnsstk::StringUtils;
+
 namespace gnsstk
 {
 
-      // -------------------------------------------------------------------------------
+      // -----------------------------------------------------------------------------
       // only constructor
    SatPassIterator::SatPassIterator(std::vector<SatPass>& splist, bool rev,
                                     bool dbug)
@@ -108,7 +109,7 @@ namespace gnsstk
       reset(timeReverse, debug);
    }
 
-      // -------------------------------------------------------------------------------
+      // -----------------------------------------------------------------------------
       // restart the iteration
    void SatPassIterator::reset(bool rev, bool dbug)
    {
@@ -176,7 +177,7 @@ namespace gnsstk
       } // end loop over the list
    }
 
-      /* -------------------------------------------------------------------------------
+      /* -----------------------------------------------------------------------------
          return 1 for success, 0 at end of data
          Access (all of) the data for the next epoch. As long as this function
          returns non-zero, there is more data to be accessed. Ignore passes with
@@ -383,7 +384,7 @@ namespace gnsstk
       return 1;
    }
 
-      /* -------------------------------------------------------------------------------
+      /* -----------------------------------------------------------------------------
          return 1 for success, 0 at end of data
          NB This assumes all the passes have the same obstypes in the same order,
          AND

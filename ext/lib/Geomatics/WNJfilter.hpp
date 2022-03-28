@@ -45,7 +45,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-// gpstk
+// gnsstk
 #include "Exception.hpp"
 #include "KalmanFilter.hpp"
 #include "Matrix.hpp"

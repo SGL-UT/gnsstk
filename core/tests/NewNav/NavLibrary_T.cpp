@@ -145,6 +145,9 @@ public:
       /** Make sure NavLibrary::setTypeFilter updates getTypeFilter() in
        * all factories. */
    unsigned setTypeFilterTest();
+      /** Make sure NavLibrary::addTypeFilter and clearTypeFilter
+       * updates getTypeFilter() in all factories. */
+   unsigned addTypeFilterTest();
       /** Make sure addFactory() puts the factory in each supported
        * signal in the factories map. */
    unsigned addFactoryTest();
@@ -406,6 +409,44 @@ setTypeFilterTest()
 
 
 unsigned NavLibrary_T ::
+addTypeFilterTest()
+{
+   TUDEF("NavLibrary", "clearTypeFilter");
+   gnsstk::NavLibrary navLib;
+   gnsstk::NavDataFactoryPtr ndfp1(std::make_shared<TestFactory>());
+   gnsstk::NavDataFactoryPtr
+      ndfp2(std::make_shared<RinexTestFactory>());
+   TUCATCH(navLib.addFactory(ndfp1));
+   TUCATCH(navLib.addFactory(ndfp2));
+   TestFactory *tfp = dynamic_cast<TestFactory*>(ndfp1.get());
+   RinexTestFactory *rndfp =
+      dynamic_cast<RinexTestFactory*>(ndfp2.get());
+   TUASSERT(tfp != nullptr);
+   TUASSERT(rndfp != nullptr);
+   gnsstk::NavMessageTypeSet nmts1 { gnsstk::NavMessageType::Unknown };
+   gnsstk::NavMessageTypeSet nmts2 { gnsstk::NavMessageType::Ephemeris };
+   TUCATCH(navLib.clearTypeFilter());
+   TUASSERT(tfp->getTypeFilter().empty());
+   TUASSERT(rndfp->getTypeFilter().empty());
+   TUCSM("addTypeFilter");
+   TUCATCH(navLib.addTypeFilter(gnsstk::NavMessageType::Unknown));
+   TUASSERTE(gnsstk::NavMessageTypeSet, nmts1, tfp->getTypeFilter());
+   TUASSERTE(gnsstk::NavMessageTypeSet, nmts1, rndfp->getTypeFilter());
+   TUCATCH(navLib.clearTypeFilter());
+   TUCATCH(navLib.addTypeFilter(gnsstk::NavMessageType::Ephemeris));
+   TUASSERTE(gnsstk::NavMessageTypeSet, nmts2, tfp->getTypeFilter());
+   TUASSERTE(gnsstk::NavMessageTypeSet, nmts2, rndfp->getTypeFilter());
+      // Set type type filter back to all so that other tests work.
+   navLib.setTypeFilter(gnsstk::allNavMessageTypes);
+   TUASSERTE(gnsstk::NavMessageTypeSet, gnsstk::allNavMessageTypes,
+             tfp->getTypeFilter());
+   TUASSERTE(gnsstk::NavMessageTypeSet, gnsstk::allNavMessageTypes,
+             rndfp->getTypeFilter());
+   TURETURN();
+}
+
+
+unsigned NavLibrary_T ::
 addFactoryTest()
 {
    TUDEF("NavLibrary", "addFactory");
@@ -634,6 +675,7 @@ int main()
    errorTotal += testClass.findTest();
    errorTotal += testClass.setValidityFilterTest();
    errorTotal += testClass.setTypeFilterTest();
+   errorTotal += testClass.addTypeFilterTest();
    errorTotal += testClass.addFactoryTest();
    errorTotal += testClass.getTimeTest();
    errorTotal += testClass.getAvailableSatsTest();

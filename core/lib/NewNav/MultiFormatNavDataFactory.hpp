@@ -39,6 +39,7 @@
 #ifndef GNSSTK_MULTIFORMATNAVDATAFACTORY_HPP
 #define GNSSTK_MULTIFORMATNAVDATAFACTORY_HPP
 
+#include "gnsstk_export.h"
 #include "NavDataFactoryWithStoreFile.hpp"
 #include "NDFUniqIterator.hpp"
 
@@ -265,6 +266,19 @@ namespace gnsstk
           *   processed by the factories. */
       void setTypeFilter(const NavMessageTypeSet& nmts) override;
 
+         /** Clear the type filters of each of the factories.  This
+          * should be used prior to loading data, and prior to using
+          * addTypeFilter(), if that API is going to be used instead
+          * of setTypeFilter(). */
+      void clearTypeFilter() override;
+
+         /** Add a NavMessageType to be processed to each of the
+          * factories.  This should be used prior to loading data and
+          * as an alternate approach to setTypeFilter().
+          * @param[in] nmt The NavMessageType to be processed on the
+          *   next load. */
+      void addTypeFilter(NavMessageType nmt) override;
+
          /** Method for loading data.  This will iterate over the
           * available factories, calling their load method until one
           * succeeds, since failure typically indicates an invalid
@@ -299,12 +313,12 @@ namespace gnsstk
          /** Known nav data factories, organized by signal to make
           * searches simpler and/or quicker.  Declared static so that
           * other libraries can transparently add factories. */
-     static std::shared_ptr<NavDataFactoryMap> factories();
+      static std::shared_ptr<NavDataFactoryMap> factories();
      
-        /** Keep a cached copy of the shared_ptr to the static
-         * NavDataFactoryMap so that windows doesn't destroy it before
-         * destroying this. */
-     std::shared_ptr<NavDataFactoryMap> myFactories;
+         /** Keep a cached copy of the shared_ptr to the static
+          * NavDataFactoryMap so that windows doesn't destroy it before
+          * destroying this. */
+      std::shared_ptr<NavDataFactoryMap> myFactories;
 
    private:
          /** This method makes no sense in this context, because we

@@ -39,18 +39,16 @@
 /// @file SatPassUtilities.hpp Various utilities using class SatPass.
 
 #ifndef GNSSTK_SATELLITE_PASS_UTILS_INCLUDE
-#   define GNSSTK_SATELLITE_PASS_UTILS_INCLUDE
-
-#   include "SatPassIterator.hpp"
-#   include "Rinex3ObsHeader.hpp"
-#   include "RinexObsHeader.hpp"
-#   include "RinexSatID.hpp"
-#   include "RinexUtilities.hpp"
-#   include "msecHandler.hpp"
+#define GNSSTK_SATELLITE_PASS_UTILS_INCLUDE
+#include "SatPassIterator.hpp"
+#include "Rinex3ObsHeader.hpp"
+#include "RinexObsHeader.hpp"
+#include "RinexSatID.hpp"
+#include "RinexUtilities.hpp"
+#include "msecHandler.hpp"
 
 namespace gnsstk
 {
-
    // -------------------------------------------------------------------------------
    // -------------------------------------------------------------------------------
       /**

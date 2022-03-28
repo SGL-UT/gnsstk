@@ -29,15 +29,15 @@ if ( EXISTS ${GMOCK_INCLUDE_DIR}/CMakeLists.txt )
     
     add_executable(GTestExperiments_T GTestExperiments.cpp)
     target_link_libraries(GTestExperiments_T pthread gmock_main gmock gtest_main gtest)
-    add_test(GTestExperimentalTests GTestExperiments_T)
+    add_test(NAME GTestExperimentalTests COMMAND $<TARGET_FILE:GTestExperiments_T>)
     
     add_executable(OrdUnitTests_T OrdUnitTests_T.cpp)
     target_link_libraries(OrdUnitTests_T gnsstk pthread gmock_main)
-    add_test(OrdUnitTests OrdUnitTests_T)
+    add_test(NAME OrdUnitTests COMMAND $<TARGET_FILE:OrdUnitTests_T>)
     
     add_executable(OrdRegressionChecks_T OrdRegressionChecks_T.cpp)
     target_link_libraries(OrdRegressionChecks_T gnsstk pthread gmock_main gmock)
-    add_test(OrdRegressionCheck OrdRegressionChecks_T)
+    add_test(NAME OrdRegressionCheck COMMAND $<TARGET_FILE:OrdRegressionChecks_T>)
 else ( )
     message( WARNING "Unable to locate GTest/GMock.  Some tests cannot be run." )
 endif( )

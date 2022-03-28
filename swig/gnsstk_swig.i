@@ -79,7 +79,6 @@
 %include "NavSatelliteID.hpp"
 %template(NavSatelliteIDSet) std::set<gnsstk::NavSatelliteID>;
 %include "NavMessageType.hpp"
-%template(NavMessageTypeSet) std::set<gnsstk::NavMessageType>;
 %include "NavMessageID.hpp"
 %template(NavMessageIDSet) std::set<gnsstk::NavMessageID>;
 %include "DumpDetail.hpp"
@@ -196,6 +195,7 @@
 %include "CodeBuffer.hpp"
 %include "Combinations.hpp"
 /* %include "CommandLine.hpp" */
+/* %include "CommandOptionNavEnumHelp.hpp" */
 /* %include "CommandOptionWithCommonTimeArg.hpp" */
 /* %include "CommandOptionWithPositionArg.hpp" */
 /* %include "CommandOptionWithTimeArg.hpp" */
@@ -244,6 +244,7 @@
 %include "NavSearchOrder.hpp"
 %include "NavDataFactory.hpp"
 %include "NavLibrary.hpp"
+%template(NavMessageTypeSet) std::set<gnsstk::NavMessageType>;
 %include "ValidType.hpp"
 %include "EphemerisRange.hpp"
 %feature("flatnested");
@@ -362,6 +363,7 @@
 %feature("flatnested");
 %include "IonexData.hpp"
 %feature("flatnested", "");
+%include "IonexStoreStrategy.hpp"
 %include "IonexStore.hpp"
 %include "Namelist.hpp"
 /* %include "SRIMatrix.hpp" */

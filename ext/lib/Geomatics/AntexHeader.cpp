@@ -207,7 +207,6 @@ namespace gnsstk
             the header and are now re-reading it. some of these could be full
             and we need to empty them. */
       commentList.clear();
-         // version = 1.3;
       valid = 0;
 
       string line;

@@ -53,6 +53,7 @@
 #include "YumaBase.hpp"
 #include "YumaHeader.hpp"
 #include "StringUtils.hpp"
+#include "gnsstk_export.h"
 
 namespace gnsstk
 {
@@ -79,21 +80,21 @@ namespace gnsstk
          /// available in the SEM file.  If this value is 0 it is ignored.
          /// Otherwise, the 10-bit week is moved into the GPS Epoch
          /// centered on the given full week.
-      static short nearFullWeek;
+      GNSSTK_EXPORT static short nearFullWeek;
 
-      static const std::string sID;     // ID label string
-      static const std::string sHlth;   // Satellite Health string
-      static const std::string sEcc;    // Eccentricity string
-      static const std::string sTOA;
-      static const std::string sOrbI;
-      static const std::string sRRA;
-      static const std::string sSqrA;
-      static const std::string sRtAs;
-      static const std::string sArgP;
-      static const std::string sMnAn;
-      static const std::string sAf0;
-      static const std::string sAf1;
-      static const std::string sweek;
+      GNSSTK_EXPORT static const std::string sID;     // ID label string
+      GNSSTK_EXPORT static const std::string sHlth;   // Satellite Health string
+      GNSSTK_EXPORT static const std::string sEcc;    // Eccentricity string
+      GNSSTK_EXPORT static const std::string sTOA;
+      GNSSTK_EXPORT static const std::string sOrbI;
+      GNSSTK_EXPORT static const std::string sRRA;
+      GNSSTK_EXPORT static const std::string sSqrA;
+      GNSSTK_EXPORT static const std::string sRtAs;
+      GNSSTK_EXPORT static const std::string sArgP;
+      GNSSTK_EXPORT static const std::string sMnAn;
+      GNSSTK_EXPORT static const std::string sAf0;
+      GNSSTK_EXPORT static const std::string sAf1;
+      GNSSTK_EXPORT static const std::string sweek;
 
 
       short PRN;

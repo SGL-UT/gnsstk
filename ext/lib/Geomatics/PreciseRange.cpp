@@ -176,13 +176,13 @@ namespace gnsstk
                // accuracy version from SunEarthSatGeometry and SolarPosition.
             if (SolSys.EphNumber() != -1)
             {
-               SVAtt = SolSys.SatelliteAttitude(transmit, SatR);
+               SVAtt = SolSys.satelliteAttitude(transmit, SatR);
             }
             else
             {
                double AR; // angular radius of sun
-               Position Sun = SolarPosition(transmit, AR);
-               SVAtt        = SatelliteAttitude(SatR, Sun);
+               Position Sun = solarPosition(transmit, AR);
+               SVAtt        = satelliteAttitude(SatR, Sun);
             }
 
                // phase center offset vector in body frame
@@ -192,8 +192,9 @@ namespace gnsstk
             {
                pco2 = antenna.getPhaseCenterOffset(Freq2);
             }
-            for (i = 0; i < 3; i++) // body frame, mm -> m, iono-free combo
+            for (i = 0; i < 3; i++) { // body frame, mm -> m, iono-free combo
                PCO(i) = (fact1 * pco1[i] + fact2 * pco2[i]) / 1000.0;
+            }
 
                // PCO vector (from COM to PC) in ECEF XYZ frame, m
             SatPCOXYZ = transpose(SVAtt) * PCO;
@@ -205,7 +206,7 @@ namespace gnsstk
                // phase center variation TD should this should be subtracted from
                // rawrange? get the body frame azimuth and nadir angles
             double nadir, az, pcv1, pcv2(0.0);
-            SatelliteNadirAzimuthAngles(SatR, Rx, SVAtt, nadir, az);
+            satelliteNadirAzimuthAngles(SatR, Rx, SVAtt, nadir, az);
             pcv1 = antenna.getPhaseCenterVariation(Freq1, az, nadir);
             if (freq2 != 0)
             {
@@ -222,7 +223,9 @@ namespace gnsstk
             // ----------------------------------------------------------
             // direction cosines
          for (i = 0; i < 3; i++)
+         {
             cosines[i] = -S2R[i]; // receiver to satellite
+         }
 
             // elevation and azimuth
          elevation         = Rx.elevation(SatR);

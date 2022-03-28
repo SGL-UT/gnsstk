@@ -85,6 +85,7 @@ namespace gnsstk
           @param sat         satellite
           @param antenna     satellite antenna data;
           @param freq1,freq2 ANTEX frequencies to evaluate PCO/Vs eg 'G01'
+                 if freq2 is zero e.g. 'G00', compute single freq (freq1) PCO/Vs
           @param SolSys      SolarSystem object, to get SatelliteAttitude()
                  if any of above 4 not valid, PCO/V correction is NOT done (silently)
           @param Eph        Ephemeris store

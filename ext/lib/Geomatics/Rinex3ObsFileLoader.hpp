@@ -55,7 +55,7 @@
 #include "Rinex3ObsHeader.hpp"
 #include "stl_helpers.hpp" // vectorindex
 
-// gpstk-geomatics
+// gnsstk-geomatics
 #include "SatPass.hpp"
 
 namespace gnsstk

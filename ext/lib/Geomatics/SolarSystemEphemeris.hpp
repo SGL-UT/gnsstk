@@ -48,19 +48,19 @@
 
 //------------------------------------------------------------------------------------
 #ifndef SOLAR_SYSTEM_EPHEMERIS_INCLUDE
-#   define SOLAR_SYSTEM_EPHEMERIS_INCLUDE
+#define SOLAR_SYSTEM_EPHEMERIS_INCLUDE
 
 //------------------------------------------------------------------------------------
 // includes
 // system
-#   include <fstream>
-#   include <iostream>
-#   include <map>
-#   include <string>
-#   include <vector>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <string>
+#include <vector>
 // GNSSTk
-#   include "Exception.hpp"
-#   include "TimeConstants.hpp"
+#include "Exception.hpp"
+#include "TimeConstants.hpp"
 
 namespace gnsstk
 {
@@ -80,10 +80,10 @@ namespace gnsstk
        ephemeris (e.g. ascp1975.403, ascp2000.403 and ascp2025.403 - these files
        contain the complete "DE403" ephemeris covering years 1975 to 2025). The
        user should then use a conversion program (such as convertEphemeris in
-       the gpstk) to read these files and write out a single binary file for use
+       the gnsstk) to read these files and write out a single binary file for use
        in applications. Writing the binary file on the platform on which it is
        going to be used avoids potential problems with platform dependencies.
-       The gpstk also includes a test program, testEphemeris, which will read a
+       The gnsstk also includes a test program, testEphemeris, which will read a
        test file (also at the JPL ftp site) and compute several states,
        comparing them with JPL-generated 'truth' values; this will validate the
        generated binary file. To make use of this class and the generated binary

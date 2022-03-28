@@ -47,6 +47,7 @@
 #include <map>
 #include <iostream>
 #include <cmath>
+#include "gnsstk_export.h"
 #include "AshtechData.hpp"
 
 #ifdef SWIG
@@ -136,7 +137,7 @@ namespace gnsstk
       code_block p1;
       code_block p2;
 
-      static const char *mpcId, *mcaId;
+      GNSSTK_EXPORT static const char *mpcId, *mcaId;
 
       virtual std::string getName() const {return "mben";}
 

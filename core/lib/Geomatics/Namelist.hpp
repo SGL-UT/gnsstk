@@ -66,6 +66,21 @@ namespace gnsstk
    class Namelist;            ///< forward declaration
 
    /** class LabeledVector. Pretty print a Vector using the labels in a Namelist.
+       For example, the following code produces the following output:
+       @code
+        Matrix<double> Cneu; //....
+        Namelist PosLabNEU("bake-N","bake-E","bake-U");
+        LabeledMatrix LMcovNEU(PosLabNEU,Cneu);
+        LMcovNEU.scientific().setw(15).setprecision(3).symmetric();
+        LOG(INFO) << "\nFixed NEU covariance, " << "REF-to-REF, " << "final total";
+        LOG(INFO) << LMcovNEU;
+
+           Fixed NEU covariance, REF-to-REF, final total
+                                 bake-N         bake-E         bake-U
+                  bake-N      2.824e-06
+                  bake-E     -4.396e-07      2.966e-06
+                  bake-U      1.509e-06      2.502e-07      1.266e-05
+       @endcode
    */
    class LabeledVector
    {

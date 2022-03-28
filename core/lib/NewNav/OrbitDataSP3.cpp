@@ -48,7 +48,7 @@ namespace gnsstk
            vel(0.0, 0.0, 0.0), velSig(0.0, 0.0, 0.0),
            acc(0.0, 0.0, 0.0), accSig(0.0, 0.0, 0.0),
            clkBias(0.0), biasSig(0.0), clkDrift(0.0), driftSig(0.0),
-           clkDrRate(0.0), drRateSig(0.0)
+           clkDrRate(0.0), drRateSig(0.0), frame(ReferenceFrame::Unknown)
    {
       signal.messageType = NavMessageType::Ephemeris;
    }
@@ -79,7 +79,7 @@ namespace gnsstk
 
 
    bool OrbitDataSP3 ::
-   getXvt(const CommonTime& when, Xvt& xvt)
+   getXvt(const CommonTime& when, Xvt& xvt, const ObsID& oid)
    {
          // The OrbitDataSP3 object is generated on request and is
          // specific to a given time since the data that must be used
@@ -97,7 +97,7 @@ namespace gnsstk
       xvt.clkdrift = clkDrift * 1e-6;
       xvt.health = Xvt::HealthStatus::Unused;
       xvt.computeRelativityCorrection();
-         /// @todo set xvt.frame
+      xvt.frame = frame;
       return true;
    }
 

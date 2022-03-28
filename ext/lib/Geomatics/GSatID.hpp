@@ -41,6 +41,7 @@
 #ifndef CLASS_GEOMATIC_SATELLITE_ID_INCLUDE
 #define CLASS_GEOMATIC_SATELLITE_ID_INCLUDE
 
+#include "gnsstk_export.h"
 #include "Exception.hpp"
 #include "SatID.hpp"
 
@@ -300,7 +301,9 @@ namespace gnsstk
       }
 
    private:
-      static char fillchar; ///< fill character used during stream output
+
+      GNSSTK_EXPORT
+      static char fillchar;  ///< fill character used during stream output
 
    }; // class GSatID
 

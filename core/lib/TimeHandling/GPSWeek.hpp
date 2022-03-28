@@ -39,6 +39,7 @@
 #ifndef GNSSTK_GPSWEEK_HPP
 #define GNSSTK_GPSWEEK_HPP
 
+#include "gnsstk_export.h"
 #include "TimeTag.hpp"
 
 namespace gnsstk
@@ -83,10 +84,10 @@ namespace gnsstk
    public:
          /// This is a 10-bit mask used in the several special Epoch and
          /// 10-bit Week methods.
-      static const int bits10 = 0x3FF;
+      GNSSTK_EXPORT static const int bits10 = 0x3FF;
          /// This is the greatest week value for which a conversion to or
          /// from CommonTime would work.
-      static const int MAX_WEEK;
+      GNSSTK_EXPORT static const int MAX_WEEK;
 
          /// Constructor.
       GPSWeek( int w = 0,

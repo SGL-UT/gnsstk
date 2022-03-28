@@ -44,6 +44,7 @@
 #ifndef COMMANDOPTION_HPP
 #define COMMANDOPTION_HPP
 
+#include "gnsstk_export.h"
 #include "getopt.h"
 
 #include <string>
@@ -67,7 +68,7 @@ namespace gnsstk
 
       /// The default command option list used by CommandOption and
       /// gnsstk::CommandOptionParser
-   extern CommandOptionVec defaultCommandOptionList;
+   GNSSTK_EXPORT extern CommandOptionVec defaultCommandOptionList;
 
       /**
        * This class is part of a replacement for getopt.

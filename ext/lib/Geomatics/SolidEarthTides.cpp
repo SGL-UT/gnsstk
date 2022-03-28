@@ -547,8 +547,9 @@ namespace gnsstk
          }
 
             // convert total to meters
-         for (i = 0; i < 3; i++)
+         for (i = 0; i < 3; i++) {
             tmp[i] /= 1000.0; // mm -> m
+         }
 
          LOG(DEBUG6) << "DX4 " << setw(4) << icount << fixed << setprecision(15)
                      << " " << setw(18) << tmp[0] << " " << setw(18) << tmp[1]

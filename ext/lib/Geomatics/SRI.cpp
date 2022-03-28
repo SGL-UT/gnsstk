@@ -544,8 +544,9 @@ namespace gnsstk
          return;
       }
 
-      for (unsigned int j = n; j < R.cols(); j++)
+      for (unsigned int j = n; j < R.cols(); j++) {
          R(n, j) = 0.0;
+      }
       Z(n) = 0.0;
    }
 
@@ -569,8 +570,9 @@ namespace gnsstk
 
       for (unsigned int i = 0; i < n; i++)
       {
-         for (unsigned int j = i; j < R.cols(); j++)
+         for (unsigned int j = i; j < R.cols(); j++) {
             R(i, j) = 0.0;
+         }
          Z(i) = 0.0;
       }
    }
@@ -929,8 +931,12 @@ namespace gnsstk
          }
             // move the X(in) terms to the data vector on the RHS
          for (k = 0; k < m; k++)
+         {
             for (i = 0; i < indx[k]; i++)
+            {
                Z(i) -= R(i, indx[k]) * value[k];
+            }
+         }
 
             // first remove the rows in indx
          bool skip;
@@ -940,11 +946,13 @@ namespace gnsstk
          {
             skip = false;
             for (j = 0; j < m; j++)
+            {
                if ((int)i == indx[j])
                {
                   skip = true;
                   break;
                }
+            }
             if (skip)
             {
                continue; // skip row to be dropped
@@ -952,7 +960,9 @@ namespace gnsstk
 
             Ztmp(k) = Z(i);
             for (j = i; j < n; j++)
+            {
                Rtmp(k, j) = R(i, j);
+            }
             k++;
          }
 
@@ -965,18 +975,22 @@ namespace gnsstk
          {
             skip = false;
             for (i = 0; i < m; i++)
+            {
                if ((int)j == indx[i])
                {
                   skip = true;
                   break;
                }
+            }
             if (skip)
             {
                continue; // skip col to be dropped
             }
 
             for (i = 0; i <= j; i++)
+            {
                R(i, k) = Rtmp(i, j);
+            }
             k++;
          }
 
@@ -1108,7 +1122,9 @@ namespace gnsstk
          }
          double sum = Z(i);
          for (j = i + 1; j < n; j++) // sum over columns to right of diagonal
+         {
             sum -= R(i, j) * X(j);
+         }
          X(i) = sum / R(i, i);
       }
    }

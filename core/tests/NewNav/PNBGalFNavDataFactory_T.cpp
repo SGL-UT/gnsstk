@@ -116,12 +116,12 @@ addDataAllTest()
    gnsstk::ObsID gloid(gnsstk::ObservationType::NavMsg, gnsstk::CarrierBand::G1,
                       gnsstk::TrackingCode::Standard);
    gnsstk::NavID gloNav(gnsstk::NavType::GloCivilF);
-   gnsstk::PackedNavBitsPtr nonGPS =
+   gnsstk::PackedNavBitsPtr nonGal =
       std::make_shared<gnsstk::PackedNavBits>(gloSid,gloid,gloNav,"XX",
-                                             navFNAVGalPT1ct);
+                                              navFNAVGalPT1ct);
    gnsstk::NavDataPtrList navOut;
-      // should refuse non-GPS data
-   TUASSERTE(bool, false, uut.addData(nonGPS, navOut));
+      // should refuse non-Galileo data
+   TUASSERTE(bool, false, uut.addData(nonGal, navOut));
    fc.validateResults(navOut, __LINE__);
       // The rest is checking that we're processing the good data
       // appropriately, but I'm not bothering to check the detailed
@@ -304,8 +304,9 @@ processEphTest()
    gnsstk::PNBGalFNavDataFactory uut;
    gnsstk::NavMessageID nmidExpE5a(
       gnsstk::NavSatelliteID(1, 1, gnsstk::SatelliteSystem::Galileo,
-                            gnsstk::CarrierBand::L5, gnsstk::TrackingCode::E5aI,
-                            gnsstk::NavType::GalFNAV),
+                             gnsstk::CarrierBand::L5,
+                             gnsstk::TrackingCode::E5aI,
+                             gnsstk::NavType::GalFNAV),
       gnsstk::NavMessageType::Health);
    gnsstk::CommonTime toeExp = gnsstk::GALWeekSecond(1014,517200.0);
    gnsstk::CommonTime tocExp = gnsstk::GALWeekSecond(1014,517200.0);

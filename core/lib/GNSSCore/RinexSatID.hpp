@@ -43,6 +43,7 @@
 #include <sstream>
 #include <iomanip>
 
+#include "gnsstk_export.h"
 #include "Exception.hpp"
 #include "SatID.hpp"
 
@@ -133,6 +134,7 @@ namespace gnsstk
          /// If an unsupported system is used, set to unknown and PRN -1.
       void validate();
 
+      GNSSTK_EXPORT
       static char fillchar;  ///< Fill character used during stream output.
 
    }; // class RinexSatID
