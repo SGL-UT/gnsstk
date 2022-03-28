@@ -1,3 +1,39 @@
+gnsstk (13.2.0-1) stable; urgency=low
+
+  * Updated to version 13.2.0
+  * Update NewNav getXvt methods to set the reference frame.
+  * Add the ability to build gnsstk as a DLL under Windows
+  * Fix test issues arising from merging.
+  * Update GalINavAlm/Eph dump() to show interpreted health status.
+  * Add NavLibrary debug tracing
+  * Add tabularize() to StringUtils
+  * Add CommandOptionNavEnumHelp class
+  * Fix gitlab CI Lint warning
+  * Add CMAKE as a special class of reviewers.
+  * Add Visual Studio export qualifier to DebugTrace::enabled
+  * Update CCIR documentation to explain error conditions.
+  * Fix PNBGLOFNavDataFactory to use the correct string for decoding
+    ISC.
+  * Fix PNBGLOFNavDataFactory to properly include the correct subject
+    satellite for almanac health.
+  * Add missing PNBGLOFNavDataFactory documentation.
+  * Add missing NewNav tests.
+  * Add clearTypeFilter and addTypeFilter methods to NewNav for C++ and
+    Python use
+  * Update NewNav getXvt() method to support optionally specifying a
+    different phase center than the default.
+  * Migrate IONEX file processing code into core, updating to meet
+    style.
+  * Minor comment fix-up for OMEGA0
+  * Update exports and cmake files to allow SWIG to build under Visual
+    Studio 2019
+  * Fix for non-windows builds broken by the fixes for windows builds.
+  * Update per style guide
+  * Update to SatPass.hpp to expand GNSSTK_EXPORT macro for outFormat
+    and longfmt.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Mon, 28 Mar 2022 14:36:28 -0500
+
 gnsstk (13.1.0-1) stable; urgency=low
 
   * Updated to version 13.1.0

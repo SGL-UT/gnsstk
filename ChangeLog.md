@@ -1,3 +1,41 @@
+# Version 13.2.0   Monday March 28, 2022
+
+Modifications by Author
+-----------------------
+     Andrew Joplin <ajoplin@arlut.utexas.edu> (1):
+           OMEGA0 is LAN, not RAAN
+
+     Andrew Kuck <kuck@arlut.utexas.edu> (1):
+           Add CMAKE Reviewers to CODEOWNERS
+
+     David Barber <dbarber@arlut.utexas.edu> (4):
+           Fix CI Lint warning in gitlab
+           Revert "Fix CI Lint warning in gitlab"
+           Style guide updates
+           fix gnsstk-apps geomatics cycleclips linking error for windows ddl jobs
+
+     John Knutson <johnk@arlut.utexas.edu> (18):
+           Make sure xvt reference frame is set
+           Add reference frames to OrbitDataSP3/SP3NavDataFactory
+           Updates to GalINav dump methods
+           Add Windows DLL support
+           Updates from review
+           Fix issues from merges
+           Updates in support of cross-code xvt computation
+           Windows exports
+           Add NewNav tests, fix bugs, add documentation
+           Update CCIR docs
+           Add clearTypeFilter/addTypeFilter methods to NewNav for C++ and Python use
+           Update getXvt comments as suggested and add another prototype that should have been there
+           add/clear/setTypeFilter methods in MultiFormatNavDataFactory should call parent class implementation
+           Make Ionex code suitable to be in core
+           SWIG updates for windows
+           Add some comments explaining how getTimeOffset behaves when xmitHealth is set to anything other than Any
+           Restore NavLibrary setTypeFilter test for SWIG
+           Remove comment in docs saying we don't support swig under windows
+
+
+
 # Version 13.1.0   Thursday February 24, 2022
 
 Modifications by Author

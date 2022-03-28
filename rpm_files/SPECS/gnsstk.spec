@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 13.1.0
+%define version 13.2.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,31 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 28 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v13.2.0 release
+- Update to SatPass.hpp to expand GNSSTK_EXPORT macro for outFormat and longfmt.
+- Update per style guide
+- Fix for non-windows builds broken by the fixes for windows builds.
+- Update exports and cmake files to allow SWIG to build under Visual Studio 2019
+- Minor comment fix-up for OMEGA0
+- Migrate IONEX file processing code into core, updating to meet style.
+- Update NewNav getXvt() method to support optionally specifying a different phase center than the default.
+- Add clearTypeFilter and addTypeFilter methods to NewNav for C++ and Python use
+- Add missing NewNav tests.
+- Add missing PNBGLOFNavDataFactory documentation.
+- Fix PNBGLOFNavDataFactory to properly include the correct subject satellite for almanac health.
+- Fix PNBGLOFNavDataFactory to use the correct string for decoding ISC.
+- Update CCIR documentation to explain error conditions.
+- Add Visual Studio export qualifier to DebugTrace::enabled
+- Add CMAKE as a special class of reviewers.
+- Fix gitlab CI Lint warning
+- Add CommandOptionNavEnumHelp class
+- Add tabularize() to StringUtils
+- Add NavLibrary debug tracing
+- Update GalINavAlm/Eph dump() to show interpreted health status.
+- Fix test issues arising from merging.
+- Add the ability to build gnsstk as a DLL under Windows
+- Update NewNav getXvt methods to set the reference frame.
 * Thu Feb 24 2022 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v13.1.0 release
 - Update SystemTime test so it doesn't fail so often and so it meets style rules
