@@ -14,7 +14,6 @@ Updates since v13.1.0
 
 **Build System and Test Suite**
   * Fix test issues arising from merging.
-  * Fix for non-windows builds broken by the fixes for windows builds.
 
 **Library Changes**
   * Add the ability to build gnsstk as a DLL under Windows
@@ -40,6 +39,7 @@ Fixes since v13.1.0
 --------------------
   * Fix PNBGLOFNavDataFactory to use the correct string for decoding ISC.
   * Fix PNBGLOFNavDataFactory to properly include the correct subject satellite for almanac health.
+  * Fix for non-windows builds broken by the fixes for windows builds.
 
 New Modules
 -------------------------------
