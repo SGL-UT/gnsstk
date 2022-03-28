@@ -1,0 +1,330 @@
+//==============================================================================
+//
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
+//
+//  The GNSSTk is free software; you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published
+//  by the Free Software Foundation; either version 3.0 of the License, or
+//  any later version.
+//
+//  The GNSSTk is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
+//  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+//
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin.
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
+//
+//==============================================================================
+
+//==============================================================================
+//
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
+//
+//  Pursuant to DoD Directive 523024
+//
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
+//                            release, distribution is unlimited.
+//
+//==============================================================================
+
+/**
+ * @file IonexStore.hpp
+ * Read and store Ionosphere maps. It computes TEC and RMS values with respect
+ * to time and receiver position. Based on extracted TEC values, it calculates
+ * the ionospheric delay.
+ */
+
+#ifndef GNSSTK_IONEXSTORE_HPP
+#define GNSSTK_IONEXSTORE_HPP
+
+#include <map>
+
+#include "FileStore.hpp"
+#include "IonexData.hpp"
+#include "IonexStoreStrategy.hpp"
+
+#include "GNSSconstants.hpp"                   // DEG_TO_RAD
+#include "GNSSconstants.hpp"          // LX_FREQ, with X = 1,2,5,6,7,8
+#include "Triple.hpp"
+
+namespace gnsstk
+{
+
+      /// @ingroup FileHandling
+      //@{
+
+      /** This class reads and stores Ionosphere maps.
+       *
+       * It computes TEC and RMS values with respect to time and receiver
+       * position. Based on extracted TEC values, it calculates the ionospheric
+       * delay.
+       *
+       * @sa test ionex store.cpp for an example
+       *
+       *
+       * @warning The first IONEX map refers to 00:00 UT, the last map
+       *          to 24:00 UT. The time spacing of the maps (snapshots) is 2
+       *          hours. When two consecutive files are loaded the previuous
+       *          map for 24:00 UT is overwritten by the new 00:00 UT. This
+       *          might affect the interpolation strategy.
+       */
+   class IonexStore : public FileStore<IonexHeader>
+   {
+   public:
+         /// Default constructor.
+      IonexStore();
+
+         /// destructor
+      virtual ~IonexStore();
+
+         /** Load the given IONEX file
+          * @throw FileMissingException
+          */
+      virtual void loadFile(const std::string& filename);
+
+         /// Insert a new IonexData object into the store
+      void addMap(const IonexData& iod);
+
+         /** Dump the store to the provided std::ostream (std::cout by default).
+          *
+          * @param[in,out] s   std::ostream object to dump the data to.
+          * @param[in] detail Determines how much detail to include in
+          *   the output:
+          *   0 list of filenames with their start and stop times.
+          *   1 list of filenames with their start, stop times, type
+          *     of data and for how many epochs.
+          */
+      void dump( std::ostream& s = std::cout,
+                 short detail = 0 ) const;
+
+         /// Remove all data
+      void clear();
+
+         /** Get IONEX TEC, RMS and ionosphere height values as a function of
+          *  epoch and receiver's position.
+          *
+          * Four interpolation strategies are suported  (see also Ionex manual:
+          * http://igscb.jpl.nasa.gov/igscb/data/format/ionex1.pdf )
+          *
+          * A simple 4-point formula is applied to interpolate between the grid
+          * points. See more at IonexData::getValue()
+          *
+          * @param[in] t          Time tag of signal (CommonTime object)
+          * @param[in] RX         Receiver position in ECEF cartesian
+          *                       coordinates (meters).
+          * @param[in] strategy   Interpolation strategy.
+          *
+          * @return values    TEC, RMS and ionosphere height values
+          *                   (Triple object with: TEC and RMS in TECU and
+          *                   the ionosphere height in meters)
+          * @throw InvalidRequest
+          */
+      Triple getIonexValue( const CommonTime& t,
+                            const Position& RX,
+                            IonexStoreStrategy strategy =
+                            IonexStoreStrategy::ConsRot ) const;
+
+         /** Get slant total electron content (STEC) in TECU
+          *
+          * @param[in] elevation    Time tag of signal (CommonTime object)
+          * @param[in] tecval       TEC value as derived from IONEX file (TECU)
+          * @param[in] ionoMapType  Type of ionosphere mapping function (string)
+          *                         @sa IonexStore::ionoMappingFunction
+          * @return                 slant total electron content (TECU)
+          * @throw InvalidParameter
+          */
+      double getSTEC( double elevation,
+                      double tecval,
+                      const std::string& ionoMapType ) const;
+
+         /** Get ionospheric slant delay for a given frequency
+          *
+          * @param[in] elevation    Time tag of signal (CommonTime object)
+          * @param[in] tecval       TEC value as derived from IONEX file (TECU)
+          * @param[in] freq         Frequency value, in Hz
+          * @param[in] ionoMapType  Type of ionosphere mapping function (string)
+          *                         @sa IonexStore::ionoMappingFunction
+          * @return                 Ionosphere slant delay (meters)
+          * @throw InvalidParameter
+          */
+      double getIono( double elevation,
+                      double tecval,
+                      double freq,
+                      const std::string& ionoMapType ) const;
+
+         // The next 6 functions define the interface for calculating
+         // the ionospheric slant delay for a specific frequency
+
+         /** Get ionospheric slant delay for L1 frequency
+          *
+          * @param[in] elevation    Time tag of signal (CommonTime object)
+          * @param[in] tecval       TEC value as derived from IONEX file (TECU)
+          * @param[in] ionoMapType  Type of ionosphere mapping function (string)
+          *                         @sa IonexStore::ionoMappingFunction
+          * @return                 Ionosphere slant delay (meters)
+          * @throw InvalidParameter
+          */
+      double getIonoL1( double elevation,
+                        double tecval,
+                        const std::string& ionoMapType ) const
+      { return getIono(elevation, tecval, L1_FREQ_GPS, ionoMapType); }
+
+         /** Get ionospheric slant delay for L2 frequency
+          *
+          * @param[in] elevation    Time tag of signal (CommonTime object)
+          * @param[in] tecval       TEC value as derived from IONEX file (TECU)
+          * @param[in] ionoMapType  Type of ionosphere mapping function (string)
+          *                         @sa IonexStore::ionoMappingFunction
+          * @return                 Ionosphere slant delay (meters)
+          * @throw InvalidParameter
+          */
+      double getIonoL2( double elevation,
+                        double tecval,
+                        const std::string& ionoMapType ) const
+      { return getIono(elevation, tecval, L2_FREQ_GPS, ionoMapType); }
+
+         /** Get ionospheric slant delay for L5 frequency
+          *
+          * @param[in] elevation    Time tag of signal (CommonTime object)
+          * @param[in] tecval       TEC value as derived from IONEX file (TECU)
+          * @param[in] ionoMapType  Type of ionosphere mapping function (string)
+          *                         @sa IonexStore::ionoMappingFunction
+          * @return                 Ionosphere slant delay (meters)
+          * @throw InvalidParameter
+          */
+      double getIonoL5( double elevation,
+                        double tecval,
+                        const std::string& ionoMapType ) const
+      { return getIono(elevation, tecval, L5_FREQ_GPS, ionoMapType); }
+
+         /** Get ionospheric slant delay for L6 frequency
+          *
+          * @param[in] elevation    Time tag of signal (CommonTime object)
+          * @param[in] tecval       TEC value as derived from IONEX file (TECU)
+          * @param[in] ionoMapType  Type of ionosphere mapping function (string)
+          *                         @sa IonexStore::ionoMappingFunction
+          * @return                 Ionosphere slant delay (meters)
+          * @throw InvalidParameter
+          */
+      double getIonoL6( double elevation,
+                        double tecval,
+                        const std::string& ionoMapType ) const
+      { return getIono(elevation, tecval, L6_FREQ_GAL, ionoMapType); }
+
+         /** Get ionospheric slant delay for L7 frequency
+          *
+          * @param[in] elevation    Time tag of signal (CommonTime object)
+          * @param[in] tecval       TEC value as derived from IONEX file (TECU)
+          * @param[in] ionoMapType  Type of ionosphere mapping function (string)
+          *                         @sa IonexStore::ionoMappingFunction
+          * @return                 Ionosphere slant delay (meters)
+          * @throw InvalidParameter
+          */
+      double getIonoL7( double elevation,
+                        double tecval,
+                        const std::string& ionoMapType ) const
+      { return getIono(elevation, tecval, L7_FREQ_GAL, ionoMapType); }
+
+         /** Get ionospheric slant delay for L8 frequency
+          *
+          * @param[in] elevation    Time tag of signal (CommonTime object)
+          * @param[in] tecval       TEC value as derived from IONEX file (TECU)
+          * @param[in] ionoMapType  Type of ionosphere mapping function (string)
+          *                         @sa IonexStore::ionoMappingFunction
+          * @return                 Ionosphere slant delay (meters)
+          * @throw InvalidParameter
+          */
+      double getIonoL8( double elevation,
+                        double tecval,
+                        const std::string& ionoMapType ) const
+      { return getIono(elevation, tecval, L8_FREQ_GAL, ionoMapType); }
+
+         /** Ionosphere mapping function
+          *
+          * @param[in] elevation    Elevation of satellite as seen at receiver
+          *                         (degrees).
+          * @param[in] ionoMapType  Type of ionosphere mapping function (string)
+          *                         (0) NONE no mapping function is applied
+          *                         (1) SLM  Single Layer Model (IGS)
+          *                         (2) MSLM Modified Single Layer Model (CODE)
+          *                         (3) ESM  Extended Slab Model (JLP)
+          *
+          * Details at: http://aiuws.unibe.ch/ionosphere/mslm.pdf
+          *
+          * @warning No implementation for JPL's mapping function.
+          */
+      double ionoMappingFunction( double elevation,
+                                  const std::string& ionoMapType ) const;
+
+         /** Determine the earliest time for which this object can
+          *  successfully determine the TEC values, and implicitly, the
+          *  ionospheric delay for any object.
+          *
+          * @return     Initial time.
+          *
+          * @throw      InvalidRequest This is thrown if the object has no data.
+          */
+      CommonTime getInitialTime() const
+      { return initialTime; }
+
+         /** Determine the latest time for which this object can successfully
+          *  determine the TEC values, and implicitly, the ionospheric delay
+          *  for any object.
+          *
+          * @return     Final time.
+          *
+          * @throw      InvalidRequest This is thrown if the object has no data.
+          */
+      CommonTime getFinalTime() const
+      { return finalTime; }
+
+         /** Find a DCB value
+          *
+          * @param[in] sat     SatID of satellite of interest
+          * @param[in] time    Time to search for DCB
+          *
+          * @return            DCB value found (nanoseconds).
+          *
+          * @throw InvalidRequest object thrown when no DCB value is found
+          */
+      double findDCB( const SatID& sat,
+                      const CommonTime& time ) const;
+
+   private:
+         /** These fields set the overall span of time for which this object
+          *  contains data.
+          *
+          * @warning There may be gaps in the data, i.e. the data may not be
+          *          continuous.
+          */
+      CommonTime initialTime, finalTime;
+
+         /// The key to this map is IonexValType
+      typedef std::map<IonexData::IonexValType, IonexData> IonexValTypeMap;
+
+         /// The key to this map is the time
+      typedef std::map<CommonTime, IonexValTypeMap> IonexMap;
+
+         /// Map of IONEX maps
+      IonexMap inxMaps;
+
+         /// The key of this map is the time (first epoch as in IonexHeader)
+      typedef std::map<CommonTime, IonexHeader::SatDCBMap> IonexDCBMap;
+
+         /// Map of DCB values (IonexHeader.firstEpoch, IonexHeader.svsmap)
+      IonexDCBMap inxDCBMap;
+   }; // End of class 'IonexStore'
+
+      //@}
+
+}  // End of namespace gnsstk
+#endif   // GNSSTK_IONEXSTORE_HPP
