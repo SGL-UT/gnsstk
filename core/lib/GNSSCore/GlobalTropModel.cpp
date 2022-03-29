@@ -326,15 +326,15 @@ namespace gnsstk
 
    /* Compute and return the full tropospheric delay, given the
     * positions of receiver and satellite.
-   * 
+    * 
     * This version is more useful within positioning algorithms, where
     * the receiver position may vary; it computes the elevation (and
     * other receiver location information as height and latitude) and
     * passes them to appropriate methods.
-   * 
+    * 
     * You must set time using method setReceiverDOY() before calling
     * this method.
-   * 
+    * 
     * @param RX  Receiver position.
     * @param SV  Satellite position.
     */
@@ -444,7 +444,7 @@ namespace gnsstk
    /* Compute and return the mapping function for wet component of the
     * troposphere.
     * param elevation Elevation of satellite as seen at receiver,
-   * 
+    * 
     * computing the derivative - do it numerically instead
     * note that sin[elev] = cos[zenith]
     *             f(1)                               a
@@ -452,33 +452,33 @@ namespace gnsstk
     *         f(sin[elev])                             b
     *                                            x + -----
     *                                                x + c
-   * 
+    * 
     *                a (x+c)    x(x^2 + xc + b) + a(x+c)
     * f(x) = x + ------------ = ------------------------
     *            x^2 + xc + b        x^2 + xc + b
-   * 
+    * 
     *        x^3 + x^2 c + x(a+b) + ac
     *      = -------------------------
     *               x^2 + xc + b
-   * 
+    * 
     * so            -f(1)f'(x)    -map(x)f'(x)                    N'D-D'N
     *     map'(x) = ---------- = -------------,     where f'(x) = -------
     *                 f^2(x)         f(x)                           D^2
-   * 
+    * 
     *                [3x^2+2xc+a+b][x^2+xc+b]-[2x+c][x^3+x^2c+x(a+b)+ac]
     *     f'(x) = x' --------------------------------------------------------------
     *                            [x^2 + xc + b]^2
-   * 
+    * 
     *                   [3x^4 + x^3(5c) + x^2(a+4b+2c^2) + x(a+b+2bc) + ab+b^2]
     *                + [-2x^4 - x^3(3c) - x^2(2a+2b+c^2) - x(c(3a+b)) - ac^2]
     *           = x'  ----------------------------------------------------------
     *                   x^4 + x^3(2c) + x^2(2b+c^2) + x(2bc) + b^2
-   * 
+    * 
     *                x^4 + x^3(2c) + x^2(-a+2b+c^2) + x(a+b+3bc+3ac) + ab+b^2-ac^2
     *           = x' -------------------------------------------------------------
     *                  x^4 + x^3(2c) + x^2(2b+c^2) + x(2bc) + b^2
-   * 
-   */
+    * 
+    */
    double GlobalTropModel::wet_mapping_function(double elevation) const
    {
       try { testValidity(); }

@@ -60,10 +60,10 @@ namespace gnsstk
     * Technical Note 32, IERS, 2004. The mapping functions are from
     * Neill, A.E., 1996, 'Global Mapping Functions for the Atmosphere Delay of
     * Radio Wavelengths,' J. Geophys. Res., 101, pp. 3227-3246 (also see IERS TN 32).
-   * 
+    * 
     * This model includes a wet and dry component, and requires input of the
     * geodetic latitude, day of year and height above the ellipsoid of the receiver.
-   * 
+    * 
     * Usually, the caller will set the latitude and day of year at the same
     * time the weather is set
     *   SaasTropModel stm;
@@ -74,7 +74,7 @@ namespace gnsstk
     * should be set before the call to correction(elevation):
     *   stm.setReceiverHeight(height);
     *   trop_corr = stm.correction(elevation);
-   * 
+    * 
     * NB in this model, units of 'temp' are degrees Celcius and
     * humid actually stores water vapor partial pressure in mbars
     */

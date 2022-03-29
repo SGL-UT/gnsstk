@@ -90,7 +90,7 @@ namespace gnsstk
 
       /* Constructor to create a Neill trop model providing the position
        * of the receiver and current time.
-      * 
+       * 
        * @param RX   Receiver position.
        * @param time Time.
        */
@@ -142,7 +142,7 @@ namespace gnsstk
       /* Compute and return the full tropospheric delay. The receiver height,
        * latitude and Day oy Year must has been set before using the
        * appropriate constructor or the provided methods.
-      * 
+       * 
        * @param elevation Elevation of satellite as seen at receiver,
        * in degrees
        */
@@ -265,7 +265,7 @@ namespace gnsstk
        * Compute and return the full tropospheric delay, given the positions
        * of receiver and satellite. . You must set time using method
        * setDayOfYear() before calling this method.
-      * 
+       * 
        * @param RX  Receiver position in ECEF cartesian coordinates (meters)
        * @param SV  Satellite position in ECEF cartesian coordinates (meters)
        * This function is deprecated; use the Position version
@@ -284,7 +284,7 @@ namespace gnsstk
        * within positioning algorithms, where the receiver position may vary;
        * it computes the elevation (and other receiver location information as
        * height and latitude) and passes them to appropriate methods.
-      * 
+       * 
        * @param RX  Receiver position in ECEF cartesian coordinates (meters)
        * @param SV  Satellite position in ECEF cartesian coordinates (meters)
        * @param tt  Time (CommonTime object).
@@ -307,7 +307,7 @@ namespace gnsstk
        * within positioning algorithms, where the receiver position may vary;
        * it computes the elevation (and other receiver location information as
        * height and latitude) and passes them to appropriate methods.
-      * 
+       * 
        * @param RX  Receiver position in ECEF cartesian coordinates (meters)
        * @param SV  Satellite position in ECEF cartesian coordinates (meters)
        * @param doy Day of year.
@@ -345,7 +345,7 @@ namespace gnsstk
 
       /* Compute and return the mapping function for dry component of
        * the troposphere.
-      * 
+       * 
        * @param elevation Elevation of satellite as seen at receiver, in
        *                  degrees
        */
@@ -411,7 +411,7 @@ namespace gnsstk
 
       /* Compute and return the mapping function for wet component of the
        * troposphere.
-      * 
+       * 
        * @param elevation Elevation of satellite as seen at receiver,
        *                  in degrees.
        */
@@ -484,7 +484,7 @@ namespace gnsstk
 
       /* Define the receiver height; this is required before calling
        * correction() or any of the zenith_delay routines.
-      * 
+       * 
        * @param ht   Height of the receiver above mean sea level,
        *             in meters.
        */
@@ -503,7 +503,7 @@ namespace gnsstk
 
       /* Define the receiver latitude; this is required before calling
        * correction() or any of the zenith_delay routines.
-      * 
+       * 
        * @param lat  Latitude of receiver, in degrees.
        */
    void NeillTropModel::setReceiverLatitude(const double& lat)
@@ -521,7 +521,7 @@ namespace gnsstk
 
       /* Set the time when tropospheric correction will be computed for,
        * in days of the year.
-      * 
+       * 
        * @param doy  Day of the year.
        */
    void NeillTropModel::setDayOfYear(const int& doy)
@@ -547,7 +547,7 @@ namespace gnsstk
 
       /* Set the time when tropospheric correction will be computed for,
        * in days of the year.
-      * 
+       * 
        * @param time  Time object.
        */
    void NeillTropModel::setDayOfYear(const CommonTime& time)

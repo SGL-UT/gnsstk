@@ -55,7 +55,7 @@ namespace gnsstk
 
    /** Tropospheric model based on the Global mapping functions (GMF)
     *  and Global Pressure and Temperature (GPT) models.
-   *  
+    *  
     *  Ref (GMF). Boehm, J., A.E. Niell, P. Tregoning, H. Schuh (2006),
     *   "Global Mapping Functions (GMF): A new empirical mapping function
     *   based on numerical weather model data," Geoph. Res. Letters,
@@ -63,19 +63,19 @@ namespace gnsstk
     *  Ref (GPT). J. Böhm, R. Heinkelmann, H. Schuh (2007), "Short Note:
     *   A Global Model of Pressure and Temperature for Geodetic Applications,"
     *   Journal of Geodesy, doi:10.1007/s00190-007-0135-3.
-   *  
+    *  
     *  The user must specify a time (date) and a receiver position.
     *  The model then computes the (GPT) pressure and temperature, as well as
     *  (GMF) wet and hydrostatic (dry) zenith delays and, with the elevation
     *  angle, mapping functions.
     *  NB the GPT model is valid only for receiver height less than 44247 meters.
-   *  
+    *  
     *  depedency cheat sheet:
     *   User provides:    Model computes/stores:           Output of model:
     *     lat,lon,ht ---> coeffs  [in updateGTMCoeff()]
     *     time (doy) ---> dayfactor [ setTime(mjd) ]
     *     humidity%  ---> humid
-   *  
+    *   
     *     [in getGPT():]  height,coeffs,dayfactor -> P,T
     *                     humid,T -----------------------> wet_zenith_delay()
     *                     P,T,lat -----------------------> dry_zenith_delay()
@@ -86,11 +86,11 @@ namespace gnsstk
     *             ht    => coeffs => P,T => wet/dry zen/map
     *             time  => dayfactor => P,T => wet/dry zen/map
     *             humid => wet zen
-   *  
+    *  
     *  NB. members of base TropModel::temp,press,humid; valid
     *      members of GlobalTropModel::height,latitude,longitude,dayfactor,undul;
     *                                   validHeight, validLat, validLon, validDay
-   *  
+    *  
     *  @warning The Global mapping functions are defined for elevation
     *  angles down to 3 degrees, below that the correction is set to zero.
     */
