@@ -287,19 +287,19 @@ namespace gnsstk
    class Namelist
    {
       friend class SRI;
-      friend std::ostream& operator<<(std::ostream& , const LabeledMatrix& );
-      friend std::ostream& operator<<(std::ostream& , const LabeledVector& );
+      friend std::ostream& operator<<(std::ostream& os, const LabeledMatrix& N);
+      friend std::ostream& operator<<(std::ostream& os, const LabeledVector& N);
 
    public:
       /// empty constructor
       Namelist() {}
 
       /// constructor given dimension - creates default labels
-      Namelist(const unsigned int& );
+      Namelist(const unsigned int& n);
 
       /** explicit constructor - only a unique subset of the input will be
           included. */
-      Namelist(const std::vector<std::string>& );
+      Namelist(const std::vector<std::string>& names);
 
       /// copy constructor
       Namelist(const Namelist& names) { labels = names.labels; }
@@ -316,7 +316,7 @@ namespace gnsstk
 
       /** add a single name to the Namelist
           @throw if the name is not unique */
-      Namelist& operator+=(const std::string& );
+      Namelist& operator+=(const std::string& name);
 
       /// add entire Namelist to this using operator+=(string)
       Namelist& operator+=(const Namelist& right)
@@ -335,17 +335,17 @@ namespace gnsstk
 
       /** remove a name from the Namelist; does nothing if the name is not
           found. */
-      Namelist& operator-=(const std::string& );
+      Namelist& operator-=(const std::string& name);
 
       /** swap two elements, as given by their indexes; no effect if either
           index is out of range. */
-      void swap(const unsigned int& , const unsigned int& );
+      void swap(const unsigned int& i, const unsigned int& j);
 
       /// reorder the list by sorting
       void sort();
 
       /// resize the list by either truncation or adding default names.
-      void resize(unsigned int);
+      void resize(unsigned int n);
 
       /// randomize the list
       void randomize(long seed = 0);
@@ -357,25 +357,25 @@ namespace gnsstk
       bool valid() const;
 
       /// does the Namelist contain the input name?
-      bool contains(const std::string& ) const;
+      bool contains(const std::string& name) const;
 
       /// are two Namelists identical, ignoring permutations?
-      friend bool operator==(const Namelist& , const Namelist& );
+      friend bool operator==(const Namelist& N1, const Namelist& N2);
 
       /// are two Namelists different, ignoring permutations?
-      friend bool operator!=(const Namelist& , const Namelist& );
+      friend bool operator!=(const Namelist& N1, const Namelist& N2);
 
       /// are two Namelists exactly identical, even considering permutations?
-      friend bool identical(const Namelist& , const Namelist& );
+      friend bool identical(const Namelist& N1, const Namelist& N2);
 
       /// construct the subset Namelist which is common to the two inputs (AND)
-      friend Namelist operator&(const Namelist& , const Namelist& );
+      friend Namelist operator&(const Namelist& N1, const Namelist& N2);
 
       /// merge two Namelists, i.e. construct a non-redundant combination (OR)
-      friend Namelist operator|(const Namelist& , const Namelist& );
+      friend Namelist operator|(const Namelist& N1, const Namelist& N2);
 
       /// construct the subset Namelist which is NOT common to two others (XOR)
-      friend Namelist operator^(const Namelist& , const Namelist& );
+      friend Namelist operator^(const Namelist& N1, const Namelist& N2);
 
       /// replace this with (this&  input)
       Namelist& operator&=(const Namelist& N);
@@ -415,21 +415,21 @@ namespace gnsstk
       /** access to a specific name, given its index.
           returns 'out-of-range' if the index is out of range.
        */
-      std::string getName(const unsigned int) const;
+      std::string getName(const unsigned int in) const;
 
       /** assign a specific name, given its index;
           no effect if the name is not unique;
           return true if successful.
        */
-      bool setName(const unsigned int, const std::string& );
+      bool setName(const unsigned int in, const std::string& name);
 
       /** return the index of the name in the list that matches the input,
           -1 if not found.
       */
-      int index(const std::string& ) const;
+      int index(const std::string& name) const;
 
       /// output ostream operator
-      friend std::ostream& operator<<(std::ostream& s, const Namelist& );
+      friend std::ostream& operator<<(std::ostream& os, const Namelist& N);
 
       // member data
 
