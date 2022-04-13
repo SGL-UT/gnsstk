@@ -79,7 +79,9 @@ namespace gnsstk
             labels.push_back(name);
          }
       }
-      catch (Exception& e) { GNSSTK_RETHROW(e); }
+      catch (Exception& e) {
+         GNSSTK_RETHROW(e);
+      }
    }
 
    // explicit constructor - only a unique subset of names will be included.
