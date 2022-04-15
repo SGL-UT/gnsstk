@@ -522,7 +522,10 @@ getAvailableSatsTest()
    TUCATCH(satset = uut.getAvailableSats(
               gnsstk::CommonTime::BEGINNING_OF_TIME,
               gnsstk::CommonTime::END_OF_TIME));
-   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 32, satset.size());
+      // We're loading RINEX, so the 33rd "satellite" is really a
+      // dummy value because RINEX gives no signal source for any of
+      // the time offset data it contains.
+   TUASSERTE(gnsstk::NavSatelliteIDSet::size_type, 33, satset.size());
    TUCATCH(satset = uut.getAvailableSats(
               gnsstk::CivilTime(2020,4,12,0,56,0,gnsstk::TimeSystem::GPS),
               gnsstk::CivilTime(2020,4,12,0,57,0,gnsstk::TimeSystem::GPS)));

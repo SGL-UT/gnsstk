@@ -752,6 +752,34 @@ namespace gnsstk
             /** @todo add support for delta t LSF in RINEX 3
              * (leapDelta, leapWeek, leapDay in Rinex3NavHeader). */
          rto->timeStamp = mti.second.refTime;
+            // Kludge because RINEX.  Makes sure the RINEX time
+            // offsets are in different map entries in
+            // navMap/navNearMap, without which exceptions would be
+            // thrown because of time system mismatches.
+         switch (rto->timeStamp.getTimeSystem())
+         {
+            case TimeSystem::GPS:
+               rto->signal.system = SatelliteSystem::GPS;
+               break;
+            case TimeSystem::GLO:
+               rto->signal.system = SatelliteSystem::Glonass;
+               break;
+            case TimeSystem::GAL:
+               rto->signal.system = SatelliteSystem::Galileo;
+               break;
+            case TimeSystem::QZS:
+               rto->signal.system = SatelliteSystem::QZSS;
+               break;
+            case TimeSystem::BDT:
+               rto->signal.system = SatelliteSystem::BeiDou;
+               break;
+            case TimeSystem::IRN:
+               rto->signal.system = SatelliteSystem::IRNSS;
+               break;
+            default:
+               rto->signal.system = SatelliteSystem::Unknown;
+               break;
+         }
          navOut.push_back(rto);
       }
       return true;

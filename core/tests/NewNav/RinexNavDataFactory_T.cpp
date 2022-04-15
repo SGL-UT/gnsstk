@@ -41,6 +41,7 @@
 #include "TestUtil.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
+#include "GPSLNavIono.hpp"
 #include "GPSLNavISC.hpp"
 #include "GalINavEph.hpp"
 #include "GalINavIono.hpp"
@@ -295,7 +296,8 @@ loadIntoMapTest()
       // count INAV, FNAV, and LNAV data
    unsigned ephICount = 0, ephFCount = 0, ephLCount = 0, heaICount = 0,
       heaLCount = 0, ionoCount = 0, iscLCount = 0, iscICount = 0,
-      otherCount = 0, heaFCount = 0, iscFCount = 0;
+      otherCount = 0, heaFCount = 0, iscFCount = 0, timeRCount = 0;
+   gnsstk::RinexTimeOffset *timeR;
    for (auto& nmti : f8.getData())
    {
       for (auto& sati : nmti.second)
@@ -685,6 +687,44 @@ loadIntoMapTest()
                }
                iscICount++;
             }
+            else if ((timeR = dynamic_cast<gnsstk::RinexTimeOffset*>(
+                         ti.second.get())) != nullptr)
+            {
+               if (timeRCount == 0)
+               {
+                  static const gnsstk::CommonTime expTS =
+                     gnsstk::GPSWeekSecond(2108, 61440);
+                     // Have to make this non-const to set it to the
+                     // right truth value.
+                  gnsstk::NavMessageID expNMID(
+                     gnsstk::NavSatelliteID(),
+                     gnsstk::NavMessageType::TimeOffset);
+                  expNMID.system = gnsstk::SatelliteSystem::GPS;
+                     // NavData
+                  TUASSERTE(gnsstk::CommonTime, expTS, timeR->timeStamp);
+                  TUASSERTE(gnsstk::NavMessageID, expNMID, timeR->signal);
+                     // TimeOffsetData has no data of its own
+                     // TimeSystemCorrection
+                     // Note that the TIME SYSTEM CORR data doesn't
+                     // come out in the same order it's in the file.
+                     // Probably not good for round-trips.
+                  TUASSERTE(gnsstk::TimeSystemCorrection::CorrType,
+                            gnsstk::TimeSystemCorrection::GPUT,
+                            timeR->type);
+                  TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GPS,
+                            timeR->frTS);
+                  TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::UTC,
+                            timeR->toTS);
+                  TUASSERTFE(-.931322574615e-09, timeR->A0);
+                  TUASSERTFE(-.355271367880e-14, timeR->A1);
+                  TUASSERTE(gnsstk::CommonTime, expTS, timeR->refTime);
+                  TUASSERTE(std::string, "", timeR->geoProvider);
+                  TUASSERTE(int, 0, timeR->geoUTCid);
+                     // RinexTimeOffset
+                  TUASSERTFE(18, timeR->deltatLS);
+               }
+               timeRCount++;
+            }
             else
             {
                otherCount++;
@@ -701,6 +741,7 @@ loadIntoMapTest()
    TUASSERTE(unsigned, 1, heaLCount);
    TUASSERTE(unsigned, 1, ionoCount);
    TUASSERTE(unsigned, 1, iscLCount);
+   TUASSERTE(unsigned, 4, timeRCount);
    TUASSERTE(unsigned, 0, otherCount);
 
 
@@ -716,6 +757,7 @@ loadIntoMapTest()
       // 1 ISC
    TUASSERTE(size_t, 4, f9.size());
    unsigned eph2Count = 0, hea2Count = 0, isc2Count = 0;
+   timeRCount = 0;
    otherCount = 0;
    for (auto& nmti : f9.getData())
    {
@@ -835,6 +877,44 @@ loadIntoMapTest()
                }
                isc2Count++;
             }
+            else if ((timeR = dynamic_cast<gnsstk::RinexTimeOffset*>(
+                         ti.second.get())) != nullptr)
+            {
+               if (timeRCount == 0)
+               {
+                  static const gnsstk::CommonTime expTS =
+                     gnsstk::BDSWeekSecond(435, 14);
+                     // Have to make this non-const to set it to the
+                     // right truth value.
+                  static gnsstk::NavMessageID expNMID(
+                     gnsstk::NavSatelliteID(),
+                     gnsstk::NavMessageType::TimeOffset);
+                  expNMID.system = gnsstk::SatelliteSystem::BeiDou;
+                     // NavData
+                  TUASSERTE(gnsstk::CommonTime, expTS, timeR->timeStamp);
+                  TUASSERTE(gnsstk::NavMessageID, expNMID, timeR->signal);
+                     // TimeOffsetData has no data of its own
+                     // TimeSystemCorrection
+                     // Note that the TIME SYSTEM CORR data doesn't
+                     // come out in the same order it's in the file.
+                     // Probably not good for round-trips.
+                  TUASSERTE(gnsstk::TimeSystemCorrection::CorrType,
+                            gnsstk::TimeSystemCorrection::BDUT,
+                            timeR->type);
+                  TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::BDT,
+                            timeR->frTS);
+                  TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::UTC,
+                            timeR->toTS);
+                  TUASSERTFE(-9.3132257462e-10, timeR->A0);
+                  TUASSERTFE(9.769962617e-15, timeR->A1);
+                  TUASSERTE(gnsstk::CommonTime, expTS, timeR->refTime);
+                  TUASSERTE(std::string, "", timeR->geoProvider);
+                  TUASSERTE(int, 0, timeR->geoUTCid);
+                     // RinexTimeOffset
+                  TUASSERTFE(0, timeR->deltatLS);
+               }
+               timeRCount++;
+            }
             else
             {
                otherCount++;
@@ -845,6 +925,7 @@ loadIntoMapTest()
    TUASSERTE(unsigned, 1, eph2Count);
    TUASSERTE(unsigned, 1, hea2Count);
    TUASSERTE(unsigned, 1, isc2Count);
+   TUASSERTE(unsigned, 1, timeRCount);
    TUASSERTE(unsigned, 0, otherCount);
 
       // Test RINEX 2 mixed (GLONASS in particular)
@@ -859,6 +940,9 @@ loadIntoMapTest()
       // 2 ISC
       // 2 time offset (2 duplicates)
    ephFCount = ephLCount = heaFCount = heaLCount = iscFCount = iscLCount = 0;
+   unsigned ionoLCount = 0;
+   timeRCount = 0;
+   otherCount = 0;
    for (auto& nmti : f10.getData())
    {
       for (auto& sati : nmti.second)
@@ -868,6 +952,7 @@ loadIntoMapTest()
             gnsstk::GPSLNavEph *ephL;
             gnsstk::GPSLNavHealth *heaL;
             gnsstk::GPSLNavISC *iscL;
+            gnsstk::GPSLNavIono *ionoL;
             gnsstk::GLOFNavEph *ephF;
             gnsstk::GLOFNavHealth *heaF;
             gnsstk::GLOFNavISC *iscF;
@@ -984,6 +1069,54 @@ loadIntoMapTest()
             {
                iscLCount++;
             }
+            else if ((ionoL = dynamic_cast<gnsstk::GPSLNavIono*>(
+                         ti.second.get())) != nullptr)
+            {
+               ionoLCount++;
+            }
+            else if ((timeR = dynamic_cast<gnsstk::RinexTimeOffset*>(
+                         ti.second.get())) != nullptr)
+            {
+               if (timeRCount == 0)
+               {
+                  static const gnsstk::CommonTime expTS =
+                     gnsstk::GPSWeekSecond(1395, 147456);
+                     // Have to make this non-const to set it to the
+                     // right truth value.
+                  static gnsstk::NavMessageID expNMID(
+                     gnsstk::NavSatelliteID(),
+                     gnsstk::NavMessageType::TimeOffset);
+                  expNMID.system = gnsstk::SatelliteSystem::GPS;
+                     // NavData
+                  TUASSERTE(gnsstk::CommonTime, expTS, timeR->timeStamp);
+                  TUASSERTE(gnsstk::NavMessageID, expNMID, timeR->signal);
+                     // TimeOffsetData has no data of its own
+                     // TimeSystemCorrection
+                     // Note that the TIME SYSTEM CORR data doesn't
+                     // come out in the same order it's in the file.
+                     // Probably not good for round-trips.
+                  TUASSERTE(gnsstk::TimeSystemCorrection::CorrType,
+                            gnsstk::TimeSystemCorrection::GPUT,
+                            timeR->type);
+                  TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GPS,
+                            timeR->frTS);
+                  TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::UTC,
+                            timeR->toTS);
+                  TUASSERTFE(0.2793967723E-08, timeR->A0);
+                  TUASSERTFE(0, timeR->A1);
+                  TUASSERTE(gnsstk::CommonTime, expTS, timeR->refTime);
+                  TUASSERTE(std::string, "", timeR->geoProvider);
+                  TUASSERTE(int, 0, timeR->geoUTCid);
+                     // RinexTimeOffset
+                  TUASSERTFE(14, timeR->deltatLS);
+               }
+               timeRCount++;
+            }
+            else
+            {
+               otherCount++;
+               ti.second->dump(std::cerr,gnsstk::DumpDetail::Full);
+            }
          }
       }
    }
@@ -993,6 +1126,9 @@ loadIntoMapTest()
    TUASSERTE(unsigned, 2, heaFCount);
    TUASSERTE(unsigned, 0, iscFCount);
    TUASSERTE(unsigned, 2, iscLCount);
+   TUASSERTE(unsigned, 2, timeRCount);
+   TUASSERTE(unsigned, 1, ionoLCount);
+   TUASSERTE(unsigned, 0, otherCount);
    TUASSERTE(size_t, 14, f10.size());
    TURETURN();
 }

@@ -236,7 +236,7 @@ class TestNavLibrary(unittest.TestCase):
         sat1 = gnsstk.NavSatelliteID(satid)
         satset = navLib.getAvailableSats(gnsstk.CommonTime.BEGINNING_OF_TIME,
                                          gnsstk.CommonTime.END_OF_TIME)
-        self.assertEqual(32, len(satset))
+        self.assertEqual(33, len(satset))
         t1 = gnsstk.CivilTime(2020,4,12,0,56,0,gnsstk.TimeSystem.GPS).toCommonTime()
         t2 = gnsstk.CivilTime(2020,4,12,0,57,0,gnsstk.TimeSystem.GPS).toCommonTime()
         satset = navLib.getAvailableSats(t1, t2)

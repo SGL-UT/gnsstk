@@ -898,20 +898,18 @@ namespace gnsstk
          if (!updateInitialFinal(odp->timeStamp,odp->timeStamp))
             return false;
       }
-         // do NOT use else here
-      if ((todp = dynamic_cast<TimeOffsetData*>(nd.get())) == nullptr)
+         // always add to navMap/navNearMap
+      navMap[nd->signal.messageType][nd->signal][nd->getUserTime()] = nd;
+      navNearMap[nd->signal.messageType][nd->signal][nd->getNearTime()]
+         .push_back(nd);
+         // TimeOffsetData has its own special map for look-up.
+      if ((todp = dynamic_cast<TimeOffsetData*>(nd.get())) != nullptr)
       {
-            // everything BUT TimeOffsetData
-         navMap[nd->signal.messageType][nd->signal][nd->getUserTime()] = nd;
-         navNearMap[nd->signal.messageType][nd->signal][nd->getNearTime()]
-            .push_back(nd);
-         return true;
-      }
-         // TimeOffsetData
-      TimeCvtSet conversions = todp->getConversions();
-      for (const auto& ci : conversions)
-      {
-         ofsMap[ci][nd->getUserTime()][nd->signal] = nd;
+         TimeCvtSet conversions = todp->getConversions();
+         for (const auto& ci : conversions)
+         {
+            ofsMap[ci][nd->getUserTime()][nd->signal] = nd;
+         }
       }
       return true;
    }
@@ -976,21 +974,9 @@ namespace gnsstk
             rv += satIt.second.size();
          }
       }
-         // OffsetCvtMap can contain duplicates when a TimeOffsetData
-         // object applies to multiple time systems, so count unique
-         // pointers.
-      std::set<NavData*> ndpUnique;
-      for (const auto& ocmi : offsetData)
-      {
-         for (const auto& oemi : ocmi.second)
-         {
-            for (const auto& omi : oemi.second)
-            {
-               ndpUnique.insert(omi.second.get());
-            }
-         }
-      }
-      return rv + ndpUnique.size();
+         // OffsetCvtMap doesn't need to be counted because the data
+         // is now also being stored in the data above.
+      return rv;
    }
 
 
@@ -1015,63 +1001,32 @@ namespace gnsstk
             continue;
          }
          DEBUGTRACE("counting message type " << StringUtils::asString(i));
-         if (i == NavMessageType::TimeOffset)
+         auto dataIt = data.find(i);
+         if (dataIt == data.end())
          {
-               // TimeOffset has a separate internal store from the rest.
-               // OffsetCvtMap can contain duplicates when a TimeOffsetData
-               // object applies to multiple time systems, so count unique
-               // pointers.
-            std::set<NavData*> ndpUnique;
-            for (const auto& ocmi : offsetData)
-            {
-               for (const auto& oemi : ocmi.second)
-               {
-                  for (const auto& omi : oemi.second)
-                  {
-                     DEBUGTRACE("wildcard search: " << nmid);
-                        // treat the SatelliteSystem::Unknown like a wildcard
-                     if (nmid.system == SatelliteSystem::Unknown)
-                        key.system = omi.first.system;
-                     if (omi.first == key)
-                     {
-                        DEBUGTRACE("matches " << omi.first);
-                        ndpUnique.insert(omi.second.get());
-                     }
-                     else
-                     {
-                        DEBUGTRACE(omi.first << " != " << nmid);
-                     }
-                  }
-               }
-            }
-            rv += ndpUnique.size();
+               // no data for this message type, move on
+            continue;
          }
-         else
+            // There are no non-wildcard searches because we treat
+            // SatelliteSystem::Unknown as a wildcard when it normally
+            // is not.
+         DEBUGTRACE("wildcard search: " << nmid);
+         for (const auto& sati : dataIt->second)
          {
-            auto dataIt = data.find(i);
-            if (dataIt == data.end())
+               // treat the SatelliteSystem::Unknown like a wildcard
+            if (nmid.system == SatelliteSystem::Unknown)
             {
-                  // no data for this message type, move on
-               continue;
+               key.system = sati.first.system;
             }
-               // There are no non-wildcard searches because we treat
-               // SatelliteSystem::Unknown as a wildcard when it normally
-               // is not.
-            DEBUGTRACE("wildcard search: " << nmid);
-            for (const auto& sati : dataIt->second)
+            if (sati.first == key)
             {
-                  // treat the SatelliteSystem::Unknown like a wildcard
-               if (nmid.system == SatelliteSystem::Unknown)
-                  key.system = sati.first.system;
-               if (sati.first == key)
-               {
-                  DEBUGTRACE("matches " << sati.first);
-                  rv += sati.second.size();
-               }
-               else
-               {
-                  DEBUGTRACE(sati.first << " != " << nmid);
-               }
+               DEBUGTRACE("matches " << sati.second.size() << " x "
+                          << sati.first);
+               rv += sati.second.size();
+            }
+            else
+            {
+               DEBUGTRACE(sati.first << " != " << nmid);
             }
          }
       }
@@ -1144,16 +1099,6 @@ namespace gnsstk
             uniques.insert(satIt.first);
          }
       }
-      for (const auto& ocmi : offsetData)
-      {
-         for (const auto& oemi : ocmi.second)
-         {
-            for (const auto& omi : oemi.second)
-            {
-               uniques.insert(omi.first);
-            }
-         }
-      }
       return uniques.size();
    }
 
@@ -1167,16 +1112,6 @@ namespace gnsstk
          for (const auto& satIt : mti.second)
          {
             uniques.insert(satIt.first);
-         }
-      }
-      for (const auto& ocmi : offsetData)
-      {
-         for (const auto& oemi : ocmi.second)
-         {
-            for (const auto& omi : oemi.second)
-            {
-               uniques.insert(omi.first);
-            }
          }
       }
       return uniques.size();
@@ -1510,42 +1445,6 @@ namespace gnsstk
                   }
                   break;
             }
-         }
-      }
-      DEBUGTRACE("offsetData.size() = " << offsetData.size());
-         // time offset data is a separate map, but still needs to be dumped.
-      std::string label = StringUtils::asString(NavMessageType::TimeOffset);
-      for (const auto& ocmi : offsetData)
-      {
-         switch (dl)
-         {
-            case DumpDetail::OneLine:
-                  /// @todo Support Terse dump in TimeOffsetData
-            case DumpDetail::Terse:
-               s << label << " " << ocmi.first.first << " -> "
-                 << ocmi.first.second << std::endl;
-               break;
-            case DumpDetail::Brief:
-               for (const auto& oemi : ocmi.second)
-               {
-                  for (const auto& omi : oemi.second)
-                  {
-                     s << label << " " << ocmi.first.first << " -> "
-                       << ocmi.first.second << " " << omi.first << "   "
-                       << printTime(oemi.first, "%Y %2m %2d %02H:%02M:%04.1f")
-                       << std::endl;
-                  }
-               }
-               break;
-            case DumpDetail::Full:
-               for (const auto& oemi : ocmi.second)
-               {
-                  for (const auto& omi : oemi.second)
-                  {
-                     omi.second->dump(s,dl);
-                  }
-               }
-               break;
          }
       }
    }
