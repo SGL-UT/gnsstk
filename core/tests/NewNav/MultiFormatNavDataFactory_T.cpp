@@ -446,15 +446,26 @@ numSignalsTest()
    TUASSERT(fact.addDataSource(dpath + "test_input_SP3a.sp3"));
    TUCSM("numSignals");
       // should just be one, L1 C/A LNav
-   TUASSERTE(size_t, 1, fact.numSignals());
+      // But because of the RINEX kludge for time offset data, we get
+      // two (there's no way to know where the time offset data in a
+      // RINEX file came from).
+   TUASSERTE(size_t, 2, fact.numSignals());
    for (const auto& fi : *(TestClass::getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(fi.second.get());
       TUASSERT(tfp != nullptr);
       if (tfp == nullptr)
+      {
          continue;
+      }
       for (const auto& di : tfp->getData())
       {
+         if (di.first == gnsstk::NavMessageType::TimeOffset)
+         {
+               // Just skip checking the TimeOffset signal ID because
+               // it's bunk for RINEX.
+            continue;
+         }
          for (const auto& sigi : di.second)
          {
             TUASSERTE(gnsstk::NavSignalID, expSig, sigi.first);
@@ -475,7 +486,7 @@ numSatellitesTest()
    TUASSERT(fact.addDataSource(dpath + "arlm2000.15n"));
    TUASSERT(fact.addDataSource(dpath + "test_input_SP3a.sp3"));
    TUCSM("numSatellites");
-   TUASSERTE(size_t, 33, fact.numSatellites());
+   TUASSERTE(size_t, 34, fact.numSatellites());
    TURETURN();
 }
 
