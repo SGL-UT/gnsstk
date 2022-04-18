@@ -233,7 +233,7 @@ build_debian_11:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian:11
+  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
   script:
     - mkdir -p build
     - cd build
