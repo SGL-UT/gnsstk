@@ -48,14 +48,15 @@
 
 namespace gnsstk
 {
-   // ------------------------------------------------------------------------
-   // Tropospheric model based on Goad and Goodman(1974),
-   // "A Modified Hopfield Tropospheric Refraction Correction Model," Paper
-   // presented at the Fall Annual Meeting of the American Geophysical Union,
-   // San Francisco, December 1974.
-   // See Leick, "GPS Satellite Surveying," Wiley, NY, 1990, Chapter 9,
-   // particularly Table 9.1.
-   // ------------------------------------------------------------------------
+   /* ------------------------------------------------------------------------
+    * Tropospheric model based on Goad and Goodman(1974),
+    * "A Modified Hopfield Tropospheric Refraction Correction Model," Paper
+    * presented at the Fall Annual Meeting of the American Geophysical Union,
+    * San Francisco, December 1974.
+    * See Leick, "GPS Satellite Surveying," Wiley, NY, 1990, Chapter 9,
+    * particularly Table 9.1.
+    * ------------------------------------------------------------------------
+    */
 
    static const double GGdryscale = 8594.777388436570600;
    static const double GGwetscale = 2540.042008403690900;
@@ -71,18 +72,20 @@ namespace gnsstk
       valid = true;
    }  // end GGTropModel::GGTropModel()
 
-      // Creates a trop model from a weather observation
-      // @param wx the weather to use for this correction.
+      /* Creates a trop model from a weather observation
+       * @param wx the weather to use for this correction.
+       */
    GGTropModel::GGTropModel(const WxObservation& wx)
    {
       setWeather(wx);
       valid = true;
    }
 
-      // Create a tropospheric model from explicit weather data
-      // @param T temperature in degrees Celsius
-      // @param P atmospheric pressure in millibars
-      // @param H relative humidity in percent
+      /* Create a tropospheric model from explicit weather data
+       * @param T temperature in degrees Celsius
+       * @param P atmospheric pressure in millibars
+       * @param H relative humidity in percent
+       */
    GGTropModel::GGTropModel(const double& T,
                             const double& P,
                             const double& H)
@@ -177,9 +180,10 @@ namespace gnsstk
    {
       TropModel::setWeather(T,P,H);
       double th=300./temp;
-         // water vapor partial pressure (mb)
-         // this comes from Leick and is not good.
-         // double wvpp=6.108*(RHum*0.01)*exp((17.15*Tk-4684.0)/(Tk-38.45));
+         /* water vapor partial pressure (mb)
+          * this comes from Leick and is not good.
+          * double wvpp=6.108*(RHum*0.01)*exp((17.15*Tk-4684.0)/(Tk-38.45));
+          */
       double wvpp=2.409e9*humid*th*th*th*th*std::exp(-22.64*th);
       Cdrydelay = 7.7624e-5*press/temp;
       Cwetdelay = 1.0e-6*(-12.92+3.719e+05/temp)*(wvpp/temp);
@@ -188,9 +192,10 @@ namespace gnsstk
       valid = true;
    }  // end GGTropModel::setWeather(T,P,H)
 
-      // Re-define the tropospheric model with explicit weather data.
-      // Typically called just before correction().
-      // @param wx the weather to use for this correction
+      /* Re-define the tropospheric model with explicit weather data.
+       * Typically called just before correction().
+       * @param wx the weather to use for this correction
+       */
    void GGTropModel::setWeather(const WxObservation& wx)
    {
       TropModel::setWeather(wx);

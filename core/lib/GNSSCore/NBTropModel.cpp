@@ -49,22 +49,23 @@
 
 namespace gnsstk
 {
-   // ------------------------------------------------------------------------
-   // Tropospheric model developed by University of New Brunswick and described in
-   // "A Tropospheric Delay Model for the User of the Wide Area Augmentation
-   // System," J. Paul Collins and Richard B. Langley, Technical Report No. 187,
-   // Dept. of Geodesy and Geomatics Engineering, University of New Brunswick,
-   // 1997. See particularly Appendix C.
-   //
-   // This model includes a wet and dry component, and was designed for the user
-   // without access to measurements of temperature, pressure and relative humidity
-   // at ground level. It requires input of the latitude, day of year and height
-   // above the ellipsoid, and it interpolates a table of values, using these
-   // inputs, to get the ground level weather parameters plus other parameters and
-   // the mapping function constants.
-   //
-   // NB in this model, units of temp are degrees Celsius, and humid is the water
-   // vapor partial pressure.
+   /* ------------------------------------------------------------------------
+    * Tropospheric model developed by University of New Brunswick and described in
+    * "A Tropospheric Delay Model for the User of the Wide Area Augmentation
+    * System," J. Paul Collins and Richard B. Langley, Technical Report No. 187,
+    * Dept. of Geodesy and Geomatics Engineering, University of New Brunswick,
+    * 1997. See particularly Appendix C.
+   * 
+    * This model includes a wet and dry component, and was designed for the user
+    * without access to measurements of temperature, pressure and relative humidity
+    * at ground level. It requires input of the latitude, day of year and height
+    * above the ellipsoid, and it interpolates a table of values, using these
+    * inputs, to get the ground level weather parameters plus other parameters and
+    * the mapping function constants.
+   * 
+    * NB in this model, units of temp are degrees Celsius, and humid is the water
+    * vapor partial pressure.
+    */
 
    static const double NBRd=287.054;   // J/kg/K = m*m*K/s*s
    static const double NBg=9.80665;    // m/s*s
@@ -158,13 +159,15 @@ namespace gnsstk
 
       // Default constructor
    NBTropModel::NBTropModel(void):
-      validWeather(false), validRxLatitude(false), validDOY(false),validRxHeight(false)
+      validWeather(false), validRxLatitude(false),
+      validDOY(false), validRxHeight(false)
    {}
 
-      // Create a trop model using the minimum information: latitude and doy.
-      // Interpolate the weather unless setWeather (optional) is called.
-      // @param lat Latitude of the receiver in degrees.
-      // @param day Day of year.
+      /* Create a trop model using the minimum information: latitude and doy.
+       * Interpolate the weather unless setWeather (optional) is called.
+       * @param lat Latitude of the receiver in degrees.
+       * @param day Day of year.
+       */
    NBTropModel::NBTropModel(const double& lat,
                             const int& day)
          : validWeather(false), validRxLatitude(false), validDOY(false),
@@ -175,10 +178,11 @@ namespace gnsstk
       setWeather();
    }
 
-      // Create a trop model with weather.
-      // @param lat Latitude of the receiver in degrees.
-      // @param day Day of year.
-      // @param wx the weather to use for this correction.
+      /* Create a trop model with weather.
+       * @param lat Latitude of the receiver in degrees.
+       * @param day Day of year.
+       * @param wx the weather to use for this correction.
+       */
    NBTropModel::NBTropModel(const double& lat,
                             const int& day,
                             const WxObservation& wx)
@@ -190,12 +194,13 @@ namespace gnsstk
       setWeather(wx);
    }
 
-      // Create a tropospheric model from explicit weather data
-      // @param lat Latitude of the receiver in degrees.
-      // @param day Day of year.
-      // @param T temperature in degrees Celsius
-      // @param P atmospheric pressure in millibars
-      // @param H relative humidity in percent
+      /* Create a tropospheric model from explicit weather data
+       * @param lat Latitude of the receiver in degrees.
+       * @param day Day of year.
+       * @param T temperature in degrees Celsius
+       * @param P atmospheric pressure in millibars
+       * @param H relative humidity in percent
+       */
    NBTropModel::NBTropModel(const double& lat,
                             const int& day,
                             const double& T,
@@ -209,11 +214,12 @@ namespace gnsstk
       setWeather(T,P,H);
    }
 
-      // Create a valid model from explicit input (weather will be estimated
-      // internally by this model).
-      // @param ht Height of the receiver in meters.
-      // @param lat Latitude of the receiver in degrees.
-      // @param d Day of year.
+      /* Create a valid model from explicit input (weather will be estimated
+       * internally by this model).
+       * @param ht Height of the receiver in meters.
+       * @param lat Latitude of the receiver in degrees.
+       * @param d Day of year.
+       */
    NBTropModel::NBTropModel(const double& ht,
                             const double& lat,
                             const int& day)
@@ -237,15 +243,16 @@ namespace gnsstk
             + wet_zenith_delay() * wet_mapping_function(elevation));
    }
 
-      // Compute and return the full tropospheric delay, given the positions of
-      // receiver and satellite and the time tag. This version is most useful
-      // within positioning algorithms, where the receiver position and timetag
-      // may vary; it computes the elevation (and other receiver location
-      // information) and passes them to appropriate set...() routines
-      // and the correction(elevation) routine.
-      // @param RX  Receiver position
-      // @param SV  Satellite position
-      // @param tt  Time tag of the signal
+      /* Compute and return the full tropospheric delay, given the positions of
+       * receiver and satellite and the time tag. This version is most useful
+       * within positioning algorithms, where the receiver position and timetag
+       * may vary; it computes the elevation (and other receiver location
+       * information) and passes them to appropriate set...() routines
+       * and the correction(elevation) routine.
+       * @param RX  Receiver position
+       * @param SV  Satellite position
+       * @param tt  Time tag of the signal
+       */
    double NBTropModel::correction(const Position& RX,
                                   const Position& SV,
                                   const CommonTime& tt)
@@ -262,16 +269,17 @@ namespace gnsstk
       return TropModel::correction(RX.elevation(SV));
    }
 
-      // Compute and return the full tropospheric delay, given the positions of
-      // receiver and satellite and the time tag. This version is most useful
-      // within positioning algorithms, where the receiver position and timetag
-      // may vary; it computes the elevation (and other receiver location
-      // information) and passes them to appropriate set...() routines
-      // and the correction(elevation) routine.
-      // @param RX  Receiver position in ECEF cartesian coordinates (meters)
-      // @param SV  Satellite position in ECEF cartesian coordinates (meters)
-      // @param tt  Time tag of the signal
-      // This function is deprecated; use the Position version
+      /* Compute and return the full tropospheric delay, given the positions of
+       * receiver and satellite and the time tag. This version is most useful
+       * within positioning algorithms, where the receiver position and timetag
+       * may vary; it computes the elevation (and other receiver location
+       * information) and passes them to appropriate set...() routines
+       * and the correction(elevation) routine.
+       * @param RX  Receiver position in ECEF cartesian coordinates (meters)
+       * @param SV  Satellite position in ECEF cartesian coordinates (meters)
+       * @param tt  Time tag of the signal
+       * This function is deprecated; use the Position version
+       */
    double NBTropModel::correction(const Xvt& RX,
                                   const Xvt& SV,
                                   const CommonTime& tt)
@@ -288,8 +296,9 @@ namespace gnsstk
       double beta = NB_Interpolate(latitude,doy,ZB);
       double gm = 9.784*(1.0-2.66e-3*std::cos(2.0*latitude*DEG_TO_RAD)-2.8e-7*height);
 
-         // scale factors for height above mean sea level
-         // if weather is given, assume it's measured at ht -> kw=kd=1
+         /* scale factors for height above mean sea level
+          * if weather is given, assume it's measured at ht -> kw=kd=1
+          */
       double kd=1, base=std::log(1.0-beta*height/temp);
       if(interpolateWeather)
          kd = std::exp(base*NBg/(NBRd*beta));
@@ -308,8 +317,9 @@ namespace gnsstk
       double lam = NB_Interpolate(latitude,doy,ZL);
       double gm = 9.784*(1.0-2.66e-3*std::cos(2.0*latitude*DEG_TO_RAD)-2.8e-7*height);
 
-         // scale factors for height above mean sea level
-         // if weather is given, assume it's measured at ht -> kw=kd=1
+         /* scale factors for height above mean sea level
+          * if weather is given, assume it's measured at ht -> kw=kd=1
+          */
       double kw=1, base=std::log(1.0-beta*height/temp);
       if(interpolateWeather)
          kw = std::exp(base*(-1.0+(lam+1)*NBg/(NBRd*beta)));
@@ -319,10 +329,11 @@ namespace gnsstk
 
    }  // end NBTropModel::wet_zenith_delay()
 
-      // Compute and return the mapping function for dry component
-      // of the troposphere
-      // @param elevation Elevation of satellite as seen at receiver,
-      //                  in degrees
+      /* Compute and return the mapping function for dry component
+       * of the troposphere
+       * @param elevation Elevation of satellite as seen at receiver,
+       *                  in degrees
+       */
    double NBTropModel::dry_mapping_function(double elevation) const
    {
       THROW_IF_INVALID_DETAILED();
@@ -347,10 +358,11 @@ namespace gnsstk
 
    }  // end NBTropModel::dry_mapping_function()
 
-      // Compute and return the mapping function for wet component
-      // of the troposphere
-      // @param elevation Elevation of satellite as seen at receiver,
-      //                  in degrees
+      /* Compute and return the mapping function for wet component
+       * of the troposphere
+       * @param elevation Elevation of satellite as seen at receiver,
+       *                  in degrees
+       */
    double NBTropModel::wet_mapping_function(double elevation) const
    {
       THROW_IF_INVALID_DETAILED();
@@ -367,11 +379,12 @@ namespace gnsstk
 
    }  // end NBTropModel::wet_mapping_function()
 
-      // Re-define the weather data.
-      // If called, typically called before any calls to correction().
-      // @param T temperature in degrees Celsius
-      // @param P atmospheric pressure in millibars
-      // @param H relative humidity in percent
+      /* Re-define the weather data.
+       * If called, typically called before any calls to correction().
+       * @param T temperature in degrees Celsius
+       * @param P atmospheric pressure in millibars
+       * @param H relative humidity in percent
+       */
    void NBTropModel::setWeather(const double& T,
                                 const double& P,
                                 const double& H)
@@ -386,9 +399,10 @@ namespace gnsstk
 
    }  // end NBTropModel::setWeather()
 
-      // Re-define the tropospheric model with explicit weather data.
-      // Typically called just before correction().
-      // @param wx the weather to use for this correction
+      /* Re-define the tropospheric model with explicit weather data.
+       * Typically called just before correction().
+       * @param wx the weather to use for this correction
+       */
    void NBTropModel::setWeather(const WxObservation& wx)
    {
       interpolateWeather = false;
@@ -408,8 +422,9 @@ namespace gnsstk
       }
    }
 
-      // configure the model to estimate the weather from the internal model,
-      // using lat and doy
+      /* configure the model to estimate the weather from the internal model,
+       * using lat and doy
+       */
    void NBTropModel::setWeather()
    {
       interpolateWeather = true;
@@ -433,8 +448,9 @@ namespace gnsstk
       valid = validWeather && validRxHeight && validRxLatitude && validDOY;
    }
 
-      // Define the receiver height; this required before calling
-      // correction() or any of the zenith_delay or mapping_function routines.
+      /* Define the receiver height; this required before calling
+       * correction() or any of the zenith_delay or mapping_function routines.
+       */
    void NBTropModel::setReceiverHeight(const double& ht)
    {
       height = ht;
@@ -444,8 +460,9 @@ namespace gnsstk
          setWeather();
    }
 
-      // Define the latitude of the receiver; this is required before calling
-      // correction() or any of the zenith_delay or mapping_function routines.
+      /* Define the latitude of the receiver; this is required before calling
+       * correction() or any of the zenith_delay or mapping_function routines.
+       */
    void NBTropModel::setReceiverLatitude(const double& lat)
    {
       latitude = lat;
@@ -455,8 +472,9 @@ namespace gnsstk
          setWeather();
    }
 
-      // Define the day of year; this is required before calling
-      // correction() or any of the zenith_delay or mapping_function routines.
+      /* Define the day of year; this is required before calling
+       * correction() or any of the zenith_delay or mapping_function routines.
+       */
    void NBTropModel::setDayOfYear(const int& d)
    {
       doy = d;

@@ -109,7 +109,9 @@ namespace gnsstk
                                  const vector<double> &waves)
    {
       if (ots.size() != waves.size())
+      {
          GNSSTK_THROW(Exception("Inconsistent input"));
+      }
       N           = ots.size();
       obstypes    = ots;
       wavelengths = waves;
@@ -123,15 +125,23 @@ namespace gnsstk
                          double data)
    {
       if (dt == -1.0)
+      {
          GNSSTK_THROW(Exception("Must set nominal timestep first"));
+      }
 
       if (data == 0.0)
+      {
          return; // NB assumes, as in RINEX, that data==0 is missing.
+      }
 
       if (currttag == CommonTime::BEGINNING_OF_TIME)
+      {
          currttag = ttag;
+      }
       if (ttag != currttag)
+      {
          compute(ttag);
+      }
 
       // first find it in obstypes
       vector<string>::const_iterator it;
@@ -422,7 +432,9 @@ namespace gnsstk
             for (i = 0; i < N; i++)
             { // just phases
                if (wavelengths[i] == 0.0)
+               {
                   continue;
+               }
 
                double med, mad;
                vector<double> deltas;
@@ -515,13 +527,21 @@ namespace gnsstk
             for (i = 0; i < N; i++) // phase only
             {
                if (wavelengths[i] == 0.0)
+               {
                   continue; // skip PR
+               }
                if (npt[i] == 0)
+               {
                   continue; // skip no data
+               }
                if (iave[i] != 0)
+               {
                   onphase = true;
+               }
                if (in == -1)
+               {
                   in = i;
+               }
                if (iave[i] != iave[in])
                {
                   consist = false;
@@ -622,7 +642,9 @@ namespace gnsstk
 
                // increment types map
                if (typesMap.find(types) == typesMap.end())
+               {
                   typesMap.insert(map<string, int>::value_type(types, 0));
+               }
                typesMap[types]++;
 
                adjMsgs.push_back(oss.str());

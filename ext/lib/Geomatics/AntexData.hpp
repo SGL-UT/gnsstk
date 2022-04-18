@@ -55,7 +55,6 @@
 #include "CommonTime.hpp"
 #include "FFStream.hpp"
 #include "Triple.hpp"
-#include "CivilTime.hpp"
 #include "gnsstk_export.h"
 
 namespace gnsstk

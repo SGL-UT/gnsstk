@@ -227,10 +227,10 @@ namespace gnsstk
       double height;             ///< height (m) of the receiver above the geoid
       double latitude;           ///< latitude (deg) of receiver
       int doy;                   ///< day of year
-      bool validWeather;
-      bool validRxLatitude;
-      bool validRxHeight;
-      bool validDOY;
+      bool validWeather;         ///< flag for valid weather
+      bool validRxLatitude;      ///< flag for valid Rx latitude
+      bool validRxHeight;        ///< flag for valid Rx longitude
+      bool validDOY;             ///< flag for valid day of year
    };
 
 }

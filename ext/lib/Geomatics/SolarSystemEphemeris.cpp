@@ -666,6 +666,7 @@ namespace gnsstk
 
             // TD clear the array after writing
             // store.clear();
+
          return 0;
       }
       catch (Exception& e)

@@ -200,27 +200,29 @@ namespace gnsstk
           */
       virtual void setWeather(const WxObservation& wx);
 
-         /// Re-define the heights at which the weather parameters apply.
-         /// Typically called whenever setWeather is called.
-         /// @param hT height at which temperature applies in meters.
-         /// @param hP height at which atmospheric pressure applies in meters.
-         /// @param hH height at which relative humidity applies in meters.
+         /** Re-define the heights at which the weather parameters apply.
+          *  Typically called whenever setWeather is called.
+          *  @param hT height at which temperature applies in meters.
+          *  @param hP height at which atmospheric pressure applies in meters.
+          *  @param hH height at which relative humidity applies in meters.
+          */
       void setHeights(const double& hT,
                       const double& hP,
                       const double& hH);
 
-         /// Define the receiver height; this required before calling
-         /// correction() or any of the zenith_delay or mapping_function routines.
+         /** Define the receiver height; this required before calling
+          *  correction() or any of the zenith_delay or mapping_function routines.
+          */
       void setReceiverHeight(const double& ht);
 
    private:
-      double height;                // height (m) of the receiver
-      double htemp;                 // height (m) at which temp applies
-      double hpress;                // height (m) at which press applies
-      double hhumid;                // height (m) at which humid applies
-      bool validWeather;
-      bool validHeights;
-      bool validRxHeight;
+      double height;                ///< height (m) of the receiver
+      double htemp;                 ///< height (m) at which temp applies
+      double hpress;                ///< height (m) at which press applies
+      double hhumid;                ///< height (m) at which humid applies
+      bool validWeather;            ///< flag for valid weather
+      bool validHeights;            ///< flag for valid height
+      bool validRxHeight;           ///< flag for valid receiver height
    };
 }
 

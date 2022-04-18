@@ -41,7 +41,6 @@
 
 namespace gnsstk
 {
-   // -----------------------------------------------------------------------
    // Simple Black model. This has been used as the 'default' for many years.
 
       // Default constructor
@@ -55,18 +54,20 @@ namespace gnsstk
       valid = true;
    }
 
-      // Creates a trop model from a weather observation
-      // @param wx the weather to use for this correction.
+      /* Creates a trop model from a weather observation
+       * @param wx the weather to use for this correction.
+       */
    SimpleTropModel::SimpleTropModel(const WxObservation& wx)
    {
       setWeather(wx);
       valid = true;
    }
 
-      // Create a tropospheric model from explicit weather data
-      // @param T temperature in degrees Celsius
-      // @param P atmospheric pressure in millibars
-      // @param H relative humidity in percent
+      /* Create a tropospheric model from explicit weather data
+       * @param T temperature in degrees Celsius
+       * @param P atmospheric pressure in millibars
+       * @param H relative humidity in percent
+       */
    SimpleTropModel::SimpleTropModel(const double& T,
                                     const double& P,
                                     const double& H)
@@ -75,11 +76,12 @@ namespace gnsstk
       valid = true;
    }
 
-      // Re-define the tropospheric model with explicit weather data.
-      // Typically called just before correction().
-      // @param T temperature in degrees Celsius
-      // @param P atmospheric pressure in millibars
-      // @param H relative humidity in percent
+      /* Re-define the tropospheric model with explicit weather data.
+       * Typically called just before correction().
+       * @param T temperature in degrees Celsius
+       * @param P atmospheric pressure in millibars
+       * @param H relative humidity in percent
+       */
    void SimpleTropModel::setWeather(const double& T,
                                     const double& P,
                                     const double& H)
@@ -94,9 +96,10 @@ namespace gnsstk
       valid = true;
    }
 
-      // Re-define the tropospheric model with explicit weather data.
-      // Typically called just before correction().
-      // @param wx the weather to use for this correction
+      /* Re-define the tropospheric model with explicit weather data.
+       * Typically called just before correction().
+       * @param wx the weather to use for this correction
+       */
    void SimpleTropModel::setWeather(const WxObservation& wx)
    {
       TropModel::setWeather(wx);
@@ -116,10 +119,11 @@ namespace gnsstk
       return Cwetdelay;
    }
 
-      // Compute and return the mapping function for dry component
-      // of the troposphere
-      // @param elevation is the Elevation of satellite as seen at receiver,
-      //                  in degrees
+      /* Compute and return the mapping function for dry component
+       * of the troposphere
+       * @param elevation is the Elevation of satellite as seen at receiver,
+       *                  in degrees
+       */
    double SimpleTropModel::dry_mapping_function(double elevation) const
    {
       THROW_IF_INVALID();
@@ -131,10 +135,11 @@ namespace gnsstk
       return (1.0/SQRT(1.0-d*d));
    }
 
-      // Compute and return the mapping function for wet component
-      // of the troposphere
-      // @param elevation is the Elevation of satellite as seen at receiver,
-      //                  in degrees
+      /* Compute and return the mapping function for wet component
+       * of the troposphere
+       * @param elevation is the Elevation of satellite as seen at receiver,
+       *                  in degrees
+       */
    double SimpleTropModel::wet_mapping_function(double elevation) const
    {
       THROW_IF_INVALID();

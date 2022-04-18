@@ -631,7 +631,7 @@ namespace gnsstk
                         flag = SatPass::BAD;
                      }
                   }
-                     // LOG(INFO) << " ind " << ind << " SPOT " << obsit->second[i]
+                  // LOG(INFO) << " ind " << ind << " SPOT " << obsit->second[i]
                   //<< " R3OT " << (ind >= 0 ? wantedObsTypes[ind]:"NA")
                   //<< " sat " << sat
                   //<< " data " << fixed << setprecision(4)

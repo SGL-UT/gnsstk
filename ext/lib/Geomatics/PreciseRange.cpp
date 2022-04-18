@@ -192,8 +192,11 @@ namespace gnsstk
             {
                pco2 = antenna.getPhaseCenterOffset(Freq2);
             }
-            for (i = 0; i < 3; i++) // body frame, mm -> m, iono-free combo
+            for (i = 0; i < 3; i++)
+            {
+                  // body frame, mm -> m, iono-free combo
                PCO(i) = (fact1 * pco1[i] + fact2 * pco2[i]) / 1000.0;
+            }
 
                // PCO vector (from COM to PC) in ECEF XYZ frame, m
             SatPCOXYZ = transpose(SVAtt) * PCO;

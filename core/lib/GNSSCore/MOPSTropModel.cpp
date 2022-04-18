@@ -134,11 +134,12 @@ namespace gnsstk
    }
 
 
-      // Compute and return the full tropospheric delay. The receiver height,
-      // latitude and Day oy Year must has been set before using the
-      // appropriate constructor or the provided methods.
-      // @param elevation Elevation of satellite as seen at receiver, in
-      // degrees
+      /* Compute and return the full tropospheric delay. The receiver height,
+       * latitude and Day oy Year must has been set before using the
+       * appropriate constructor or the provided methods.
+       * @param elevation Elevation of satellite as seen at receiver, in
+       * degrees
+       */
    double MOPSTropModel::correction(double elevation) const
    {
       THROW_IF_INVALID_DETAILED();
@@ -155,15 +156,15 @@ namespace gnsstk
 
    }
 
-
-      // Compute and return the full tropospheric delay, given the positions of
-      // receiver and satellite. This version is most useful within
-      // positioning algorithms, where the receiver position may vary; it
-      // computes the elevation (and other receiver location information as
-      // height and latitude) and passes them to appropriate methods. You must
-      // set time using method setDayOfYear() before calling this method.
-      // @param RX  Receiver position
-      // @param SV  Satellite position
+      /* Compute and return the full tropospheric delay, given the positions of
+       * receiver and satellite. This version is most useful within
+       * positioning algorithms, where the receiver position may vary; it
+       * computes the elevation (and other receiver location information as
+       * height and latitude) and passes them to appropriate methods. You must
+       * set time using method setDayOfYear() before calling this method.
+       * @param RX  Receiver position
+       * @param SV  Satellite position
+       */
    double MOPSTropModel::correction( const Position& RX,
                                      const Position& SV )
    {
@@ -195,14 +196,15 @@ namespace gnsstk
    }
 
 
-      // Compute and return the full tropospheric delay, given the positions of
-      // receiver and satellite and the time tag. This version is most useful
-      // within positioning algorithms, where the receiver position may vary;
-      // it computes the elevation (and other receiver location information as
-      // height  and latitude) and passes them to appropriate methods.
-      // @param RX  Receiver position in ECEF cartesian coordinates (meters)
-      // @param SV  Satellite position in ECEF cartesian coordinates (meters)
-      // @param tt  Time (CommonTime object).
+      /* Compute and return the full tropospheric delay, given the positions of
+       * receiver and satellite and the time tag. This version is most useful
+       * within positioning algorithms, where the receiver position may vary;
+       * it computes the elevation (and other receiver location information as
+       * height  and latitude) and passes them to appropriate methods.
+       * @param RX  Receiver position in ECEF cartesian coordinates (meters)
+       * @param SV  Satellite position in ECEF cartesian coordinates (meters)
+       * @param tt  Time (CommonTime object).
+       */
    double MOPSTropModel::correction( const Position& RX,
                                      const Position& SV,
                                      const CommonTime& tt )
@@ -213,15 +215,16 @@ namespace gnsstk
    }
 
 
-      // Compute and return the full tropospheric delay, given the positions of
-      // receiver and satellite and the day of the year. This version is most
-      // useful within positioning algorithms, where the receiver position may
-      // vary; it computes the elevation (and other receiver location
-      // information as height and latitude) and passes them to appropriate
-      // methods.
-      // @param RX  Receiver position in ECEF cartesian coordinates (meters)
-      // @param SV  Satellite position in ECEF cartesian coordinates (meters)
-      // @param doy Day of year.
+      /* Compute and return the full tropospheric delay, given the positions of
+       * receiver and satellite and the day of the year. This version is most
+       * useful within positioning algorithms, where the receiver position may
+       * vary; it computes the elevation (and other receiver location
+       * information as height and latitude) and passes them to appropriate
+       * methods.
+       * @param RX  Receiver position in ECEF cartesian coordinates (meters)
+       * @param SV  Satellite position in ECEF cartesian coordinates (meters)
+       * @param doy Day of year.
+       */
    double MOPSTropModel::correction( const Position& RX,
                                      const Position& SV,
                                      const int& doy )
@@ -233,13 +236,14 @@ namespace gnsstk
 
 
 
-      // deprecated
-      // Compute and return the full tropospheric delay, given the positions of
-      // receiver and satellite. You must set time using method setDayOfYear()
-      // before calling this method.
-      // @param RX  Receiver position in ECEF cartesian coordinates (meters)
-      // @param SV  Satellite position in ECEF cartesian coordinates (meters)
-      // This function is deprecated; use the Position version
+      /* deprecated
+       * Compute and return the full tropospheric delay, given the positions of
+       * receiver and satellite. You must set time using method setDayOfYear()
+       * before calling this method.
+       * @param RX  Receiver position in ECEF cartesian coordinates (meters)
+       * @param SV  Satellite position in ECEF cartesian coordinates (meters)
+       * This function is deprecated; use the Position version
+       */
    double MOPSTropModel::correction( const Xvt& RX,
                                      const Xvt& SV )
    {
@@ -249,16 +253,17 @@ namespace gnsstk
    }
 
 
-      // deprecated
-      // Compute and return the full tropospheric delay, given the positions of
-      // receiver and satellite and the time tag. This version is most useful
-      // within positioning algorithms, where the receiver position may vary;
-      // it computes the elevation (and other receiver location information as
-      // height and latitude) and passes them to appropriate methods.
-      // @param RX  Receiver position in ECEF cartesian coordinates (meters)
-      // @param SV  Satellite position in ECEF cartesian coordinates (meters)
-      // @param tt  Time (CommonTime object).
-      // This function is deprecated; use the Position version
+      /* deprecated
+       * Compute and return the full tropospheric delay, given the positions of
+       * receiver and satellite and the time tag. This version is most useful
+       * within positioning algorithms, where the receiver position may vary;
+       * it computes the elevation (and other receiver location information as
+       * height and latitude) and passes them to appropriate methods.
+       * @param RX  Receiver position in ECEF cartesian coordinates (meters)
+       * @param SV  Satellite position in ECEF cartesian coordinates (meters)
+       * @param tt  Time (CommonTime object).
+       * This function is deprecated; use the Position version
+       */
    double MOPSTropModel::correction( const Xvt& RX,
                                      const Xvt& SV,
                                      const CommonTime& tt )
@@ -270,17 +275,18 @@ namespace gnsstk
    }
 
 
-      // deprecated
-      // Compute and return the full tropospheric delay, given the positions of
-      // receiver and satellite and the day of the year. This version is most
-      // useful within positioning algorithms, where the receiver position may
-      // vary; it computes the elevation (and other receiver location
-      // information as height and latitude) and passes them to appropriate
-      // methods.
-      // @param RX  Receiver position in ECEF cartesian coordinates (meters)
-      // @param SV  Satellite position in ECEF cartesian coordinates (meters)
-      // @param doy Day of year.
-      // This function is deprecated; use the Position version
+      /* deprecated
+       * Compute and return the full tropospheric delay, given the positions of
+       * receiver and satellite and the day of the year. This version is most
+       * useful within positioning algorithms, where the receiver position may
+       * vary; it computes the elevation (and other receiver location
+       * information as height and latitude) and passes them to appropriate
+       * methods.
+       * @param RX  Receiver position in ECEF cartesian coordinates (meters)
+       * @param SV  Satellite position in ECEF cartesian coordinates (meters)
+       * @param doy Day of year.
+       * This function is deprecated; use the Position version
+       */
    double MOPSTropModel::correction( const Xvt& RX,
                                      const Xvt& SV,
                                      const int& doy )
@@ -292,8 +298,9 @@ namespace gnsstk
    }
 
 
-      // Compute and return the zenith delay for the dry component of the
-      // troposphere
+      /* Compute and return the zenith delay for the dry component of the
+       * troposphere
+       */
    double MOPSTropModel::dry_zenith_delay(void) const
    {
       THROW_IF_INVALID();
@@ -308,8 +315,9 @@ namespace gnsstk
          // Zero-altitude dry zenith delay:
       zh_dry = 0.000001*(MOPSk1*MOPSRd)*P/MOPSgm;
 
-         // Zenith delay terms at MOPSHeight meters of height above mean sea
-         // level
+         /* Zenith delay terms at MOPSHeight meters of height above mean sea
+          * level
+          */
       exponent = MOPSg/MOPSRd/beta;
       ddry = zh_dry * std::pow( (1.0 - beta*MOPSHeight/T), exponent );
 
@@ -335,8 +343,9 @@ namespace gnsstk
          // Zero-altitude wet zenith delay:
       zh_wet = (0.000001*MOPSk2)*MOPSRd/(MOPSgm*(lambda+1.0)-beta*MOPSRd)*e/T;
 
-         // Zenith delay terms at MOPSHeight meters of height above mean sea
-         // level
+         /* Zenith delay terms at MOPSHeight meters of height above mean sea
+          * level
+          */
       exponent = ( (lambda+1.0)*MOPSg/MOPSRd/beta)-1.0;
       dwet= zh_wet * std::pow( (1.0 - beta*MOPSHeight/T), exponent );
 
@@ -345,9 +354,10 @@ namespace gnsstk
    }  // end MOPSTropModel::wet_zenith_delay()
 
 
-      // This method configure the model to estimate the weather using height,
-      // latitude and day of year (DOY). It is called automatically when
-      // setting those parameters.
+      /* This method configure the model to estimate the weather using height,
+       * latitude and day of year (DOY). It is called automatically when
+       * setting those parameters.
+       */
    void MOPSTropModel::setWeather()
    {
       if(!validLat)
@@ -366,8 +376,9 @@ namespace gnsstk
          GNSSTK_THROW(e);
       }
 
-         // In order to compute tropospheric delay we need to compute some
-         // extra parameters
+         /* In order to compute tropospheric delay we need to compute some
+          * extra parameters
+          */
       try
       {
          prepareParameters();
@@ -485,16 +496,18 @@ namespace gnsstk
    }
 
 
-      // Compute and return the sigma-squared value of tropospheric delay
-      // residual error (meters^2)
-      // @param elevation  Elevation of satellite as seen at receiver,
-      //                   in degrees
+      /* Compute and return the sigma-squared value of tropospheric delay
+       * residual error (meters^2)
+       * @param elevation  Elevation of satellite as seen at receiver,
+       *                   in degrees
+       */
    double MOPSTropModel::MOPSsigma2(double elevation)
    {
       double map_f;
 
-         // If elevation is below bounds, fail in a sensible way returning a
-         // very big sigma value
+         /* If elevation is below bounds, fail in a sensible way returning a
+          * very big sigma value
+          */
       if(elevation < 5.0)
       {
          return 9.9e9;

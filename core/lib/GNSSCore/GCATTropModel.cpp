@@ -80,10 +80,11 @@ namespace gnsstk
        * @endcode
        */
 
-      // Constructor to create a GCAT trop model providing  the height of the
-      // receiver above mean sea level (as defined by ellipsoid model).
-      //
-      // @param ht Height of the receiver above mean sea level, in meters.
+      /* Constructor to create a GCAT trop model providing  the height of the
+         receiver above mean sea level (as defined by ellipsoid model).
+        
+       * @param ht Height of the receiver above mean sea level, in meters.
+       */
    GCATTropModel::GCATTropModel(const double& ht)
    {
       setReceiverHeight(ht);
