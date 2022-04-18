@@ -481,6 +481,25 @@ test_debian_10_virtualenv:
   dependencies:
     - build_debian_10_virtualenv
 
+test_debian_11:
+  stage: test
+  needs: [build_debian_11]
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  script:
+    - cd build
+    - ctest -j 4
+    - touch $CI_PROJECT_DIR/success
+  artifacts:
+    when: on_failure
+    paths:
+    - build/Testing/Temporary/
+    - build/swig/
+  dependencies:
+    - build_debian_11
+
 test_conda_py27:
   stage: test
   needs: [build_conda_py27]
@@ -640,7 +659,7 @@ user_install_debian_9:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian9_fai_ish
+  image: $DOCKER_REGISTRY/debian10_fai_ish
   script:
     - cd build
     - export gnsstk=`pwd`/install
@@ -671,6 +690,24 @@ user_install_debian_10:
     expire_in: 4 days
   dependencies:
     - build_debian_10
+
+user_install_debian_11:
+  stage: install
+  needs: [build_debian_11]
+  extends: .big_build
+  tags:
+    - docker-executor
+  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  script:
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_USER_INSTALL=ON ../
+    - make install -j 4
+  artifacts:
+    paths:
+      - build/install
+  dependencies:
+    - build_debian_11
 
 virtualenv_install_debian_10:
   stage: install
@@ -968,6 +1005,43 @@ package_debian_10:
   timeout:  90m
   dependencies:
     - build_debian_10
+
+package_debian_11:
+  stage: package
+  needs: []
+  variables:
+    BUILD_TYPE: fast
+  rules:
+    # Add this rule to prevent an "additional" single element pipeline for merge requests.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_REF_NAME =~ /main/ || $CI_COMMIT_REF_NAME =~/^ci_.*$/ || $CI_COMMIT_REF_NAME=~/^version_.*_prep$/
+      variables:
+        BUILD_TYPE: debug
+    - when: on_success
+  tags:
+    - docker-executor
+  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  script:
+    - rm -rf ../*.deb
+    # Mark the debian log so that this package is a backport.
+    # Use the most recent Maintainer as current maintainer.
+    - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
+    - dch --bpo "No Changes"
+    - if [ "$BUILD_TYPE" == "debug" ]; then BUILD_PROFILES="pkg_python,debug_package"; else BUILD_PROFILES="pkg_python"; fi
+    - dpkg-buildpackage --build-profiles=${BUILD_PROFILES} -us -uc -d --changes-option="-DDistribution=bullseye-sgl"
+    - mkdir debs
+    - mv ../*.deb debs
+    - mv ../*.changes debs
+    - mv ../*.dsc debs
+    - mv ../*.git debs
+    - mv ../*.buildinfo debs
+  artifacts:
+    paths:
+      - debs/
+  timeout:  90m
+  dependencies:
+    - build_debian_11
 
 package_conda:
   stage: package
