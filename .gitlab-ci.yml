@@ -264,6 +264,25 @@ build_debian_10_virtualenv:
       - build/
     expire_in: 4 days
 
+build_debian_11_virtualenv:
+  stage: build
+  needs: []
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  script:
+    - python3 -m virtualenv --system-site-packages -p /usr/bin/python3 myenv
+    - source myenv/bin/activate
+    - mkdir -p build
+    - cd build
+    - cmake -DDEBUG_SWITCH=ON -DPYTHON_INSTALL_PREFIX=$VIRTUAL_ENV -DCMAKE_INSTALL_PREFIX=$VIRTUAL_ENV $CMAKE_ARG_DEFAULT -DPYTHON_EXECUTABLE=$VIRTUAL_ENV/bin/python3
+    - make all -j 4
+  artifacts:
+    paths:
+      - myenv/
+      - build/
+
 build_conda_py27:
   stage: build
   needs: []
@@ -460,6 +479,25 @@ test_debian_10:
   dependencies:
     - build_debian_10
 
+test_debian_11:
+  stage: test
+  needs: [build_debian_11]
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  script:
+    - cd build
+    - ctest -j 4
+    - touch $CI_PROJECT_DIR/success
+  artifacts:
+    when: on_failure
+    paths:
+    - build/Testing/Temporary/
+    - build/swig/
+  dependencies:
+    - build_debian_11
+
 test_debian_10_virtualenv:
   stage: test
   needs: [build_debian_10_virtualenv]
@@ -481,14 +519,15 @@ test_debian_10_virtualenv:
   dependencies:
     - build_debian_10_virtualenv
 
-test_debian_11:
+test_debian_11_virtualenv:
   stage: test
-  needs: [build_debian_11]
+  needs: [build_debian_11_virtualenv]
   extends: .normal_build
   tags:
     - docker-executor
   image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
   script:
+    - source myenv/bin/activate
     - cd build
     - ctest -j 4
     - touch $CI_PROJECT_DIR/success
@@ -498,7 +537,7 @@ test_debian_11:
     - build/Testing/Temporary/
     - build/swig/
   dependencies:
-    - build_debian_11
+    - build_debian_11_virtualenv
 
 test_conda_py27:
   stage: test
@@ -726,6 +765,23 @@ virtualenv_install_debian_10:
     expire_in: 4 days
   dependencies:
     - build_debian_10_virtualenv
+
+virtualenv_install_debian_11:
+  stage: install
+  needs: [build_debian_11_virtualenv]
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  script:
+    - source myenv/bin/activate
+    - cd build
+    - make install -j 4
+  artifacts:
+    paths:
+      - myenv
+  dependencies:
+    - build_debian_11_virtualenv
 
 user_install_redhat:
   stage: install
@@ -1208,6 +1264,22 @@ deploy_debian_10:
   dependencies:
     - package_debian_10
 
+deploy_debian_11:
+  stage: deploy
+  needs: [package_debian_11]
+  extends: .big_build
+  tags:
+    - docker-executor
+  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  script:
+    - cd debs
+    - sudo apt-get -y install ./*.deb
+    - python3 -c "import gnsstk"
+    - df_diff -h
+    - gnsstk-config --includedir
+  dependencies:
+    - package_debian_11
+
 deploy_redhat:
   stage: deploy
   needs: [package_redhat]
@@ -1263,5 +1335,5 @@ push_artifacts:
     DEB_10_PACKAGES: "debs/*bpo10*.deb"
     #RPM_PACKAGES: "rpm_files/RPMS/x86_64/*.rpm"
   stage: push
-  needs: [package_conda, package_debian_9, package_debian_10, package_redhat_8, package_redhat_8_py36]
-  dependencies: [package_conda, package_debian_9, package_debian_10, package_redhat_8, package_redhat_8_py36]
+  needs: [package_conda, package_debian_9, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36]
+  dependencies: [package_conda, package_debian_9, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36]
