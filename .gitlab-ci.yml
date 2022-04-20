@@ -1273,7 +1273,7 @@ deploy_debian_11:
   image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
   script:
     - cd debs
-    - sudo apt-get -y install ./*.deb
+    - apt-get -y install ./*.deb
     - python3 -c "import gnsstk"
     - df_diff -h
     - gnsstk-config --includedir
