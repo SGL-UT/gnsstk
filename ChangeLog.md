@@ -1,3 +1,25 @@
+# Version 13.3.0   Thursday April 21, 2022
+
+Modifications by Author
+-----------------------
+     Benjamin Glass <bglass@arlut.utexas.edu> (3):
+           CMakeLists: Mark as compatible with same major version
+
+     Brian Tolman <btolman@.arlut.utexas.edu> (7):
+           missed one file
+           trivial
+           small style changes
+           make prototype in hpp match cpp
+
+     David Barber <dbarber@arlut.utexas.edu> (7):
+           Release v13.3.0
+
+     John Knutson <johnk@arlut.utexas.edu> (6):
+           Store TimeOffsetData in primary internal stores
+           Fix RPATH to be platform independent
+
+
+
 # Version 13.2.0   Monday March 28, 2022
 
 Modifications by Author
