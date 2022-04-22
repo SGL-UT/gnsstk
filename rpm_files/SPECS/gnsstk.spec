@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 13.2.0
+%define version 13.3.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Apr 21 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v13.3.0 release
+- Fix RPATH to be platform independent
+- Update Geomatics libs, including some style
+- Update NavDataFactoryWithStore to store TimeOffsetData in the primary store so find() can be used on it.
+- Update CMake package to be compatible with same major version.
 * Mon Mar 28 2022 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v13.2.0 release
 - Update to SatPass.hpp to expand GNSSTK_EXPORT macro for outFormat and longfmt.

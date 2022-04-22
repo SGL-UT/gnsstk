@@ -1,3 +1,14 @@
+gnsstk (13.3.0-1) stable; urgency=low
+
+  * Updated to version 13.3.0
+  * Update CMake package to be compatible with same major version.
+  * Update NavDataFactoryWithStore to store TimeOffsetData in the
+    primary store so find() can be used on it.
+  * Update Geomatics libs, including some style
+  * Fix RPATH to be platform independent
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 21 Apr 2022 10:45:19 -0500
+
 gnsstk (13.2.0-1) stable; urgency=low
 
   * Updated to version 13.2.0

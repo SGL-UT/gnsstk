@@ -79,6 +79,7 @@ variables:
       - main
       - /^ci_.*$/
       - /^version_.*_prep$/
+      - stable
     variables:
       - $RELEASE_ONLY != "True" && $NO_BIGBUILD_CI != "True"
 
