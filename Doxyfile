@@ -1137,7 +1137,7 @@ CLANG_OPTIONS          =
 # If clang assisted parsing is enabled you can provide the clang parser with the
 # path to the directory containing a file called compile_commands.json. This
 # file is the compilation database (see:
-# http://clang.llvm.org/docs/HowToSetupToolingForLLVM.html) containing the
+# https://clang.llvm.org/docs/HowToSetupToolingForLLVM.html) containing the
 # options used when the source files were built. This is equivalent to
 # specifying the -p option to a clang tool, such as clang-check. These options
 # will then be passed to the parser. Any options specified with CLANG_OPTIONS
