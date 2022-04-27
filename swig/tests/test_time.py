@@ -22,7 +22,7 @@ class TestTimeHandling(unittest.TestCase):
     def test_CommonTime(self):
         a = gnsstk.CommonTime(gnsstk.TimeSystem.GPS)
         self.assertIsInstance(a, gnsstk.CommonTime)
-        self.assertTrue(str(a.getTimeSystem()) == "GPS")
+        self.assertEqual(str(a.getTimeSystem()), "GPS")
 
     def test_ANSITime(self):
         a = gnsstk.ANSITime()

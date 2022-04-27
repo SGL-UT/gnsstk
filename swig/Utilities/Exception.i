@@ -15,11 +15,6 @@ namespace gnsstk
 %inline %{
 #ifndef EXCEPTION_I_INLINE
 #define EXCEPTION_I_INLINE
-   namespace gnsstk
-   {
-         // Class for StopIterator Python exception, used by Vector.i
-      class StopIterator {};
-   }
 #endif
 %}
 

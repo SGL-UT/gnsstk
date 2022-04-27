@@ -489,5 +489,18 @@ namespace gnsstk
       /// @ingroup exceptiongroup
    NEW_EXCEPTION_CLASS(UnimplementedException, Exception);
 
+      /// FFStreamError is an exception for when the file read doesn't
+      /// match the specs for that file type.
+      /// @ingroup FileHandling
+      /// @ingroup exceptionclass
+   NEW_EXCEPTION_CLASS(FFStreamError, gnsstk::Exception);
+
+      /// This gets thrown if a valid EOF occurs on formattedGetLine.
+      /// @ingroup exceptionclass
+   NEW_EXCEPTION_CLASS(EndOfFile, gnsstk::FFStreamError);
+
+      /// Class for StopIterator Python exception, used by Vector.i
+   class StopIterator {};
+
 } // namespace gnsstk
 #endif

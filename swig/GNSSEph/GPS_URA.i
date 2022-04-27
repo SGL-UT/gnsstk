@@ -1,3 +1,9 @@
+%exceptionclass Exception;
+
+%include "Exception.i"
+
+%include "GPS_URA.hpp"
+
 // Wrappers on the GPS_URA arrays that SWIG can't use.
 // Also wraps a similar array from GNSSconstants.hpp
 // (it puts them in PyObject double* wrappers, which are useless in Python)

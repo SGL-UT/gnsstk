@@ -1,4 +1,4 @@
-%module TimeHandling
+%module ORD
 
 %pythonbegin %{
 from __future__ import absolute_import
@@ -51,12 +51,6 @@ from __future__ import absolute_import
 %include "Ignore.i"
 
 // =============================================================
-//  Section 5: Enumerations
-// =============================================================
-
-ENUM_MAPPER(gnsstk::TimeSystem, TimeSystem, "gnsstk")
-
-// =============================================================
 //  Section 6: C++ exception class handling
 // =============================================================
 
@@ -69,45 +63,10 @@ ENUM_MAPPER(gnsstk::TimeSystem, TimeSystem, "gnsstk")
 //  Include classes IN DEPENDENCY ORDER otherwise swig will fail.
 // =============================================================
 
- // I don't know why some of these require the module option and others don't,
- // but without it, you get warnings saying to do it.
-%import(module="gnsstk.gnsstk") "Exception.hpp"
-%import "TimeSystemConverter.hpp"
-%import "TimeSystem.hpp"
+%import "CarrierBand.hpp"
+%import "NavLibrary.hpp"
 
-%include "TimeConstants.hpp"
-%include "CommonTime.hpp"
-%include "TimeTag.hpp"
-%include "ANSITime.hpp"
-%include "TimeConverters.hpp"
-%include "Week.hpp"
-%include "WeekSecond.hpp"
-%include "BDSWeekSecond.hpp"
-%include "CivilTime.hpp"
-%include "GPSZcount.hpp"
-%include "UnixTime.hpp"
-%include "SystemTime.hpp"
-%include "JulianDate.hpp"
-%include "MJD.hpp"
-%include "YDSTime.hpp"
-%include "GPSWeek.hpp"
-%include "GPSWeekZcount.hpp"
-%include "GPSWeekSecond.hpp"
-%include "GALWeekSecond.hpp"
-%include "QZSWeekSecond.hpp"
-/* %include "Epoch.hpp" */
-%include "IRNWeekSecond.hpp"
-%include "PosixTime.hpp"
-%include "TimeCorrection.hpp"
-%feature("flatnested");
-%include "TimeRange.hpp"
-%feature("flatnested", "");
-%include "TimeString.i"
-
-// =============================================================
-//  Section 13: Aggregated features (e.g. string translation)
-// =============================================================
-STR_STREAM_HELPER(GPSZcount)
+%include "ord.hpp"
 
 // =============================================================
 //  Section 14: Final clean-up

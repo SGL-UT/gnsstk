@@ -37,20 +37,16 @@ set( CMAKE_SKIP_RPATH TRUE )
 # truckload because the Python C API uses char* instead of
 # const char*
 if( ${CMAKE_SYSTEM_NAME} MATCHES "SunOS" )
-    set( CMAKE_CXX_FLAGS "-std=c++11" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -std=c++11" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
-    set( CMAKE_CXX_FLAGS "-std=c++11 -Wno-write-strings" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-write-strings" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj" )
     get_filename_component(PYTHON_LIBRARY_PATH "${PYTHON_LIBRARY}" DIRECTORY)
     link_directories(${PYTHON_LIBRARY_PATH})
 endif()
-
-
-set_property(SOURCE gnsstk.i PROPERTY CPLUSPLUS ON )
-set_property(SOURCE gnsstk.i PROPERTY USE_SWIG_DEPENDENCIES TRUE)
 
 if( DEBUG_SWITCH )
     message( STATUS "SWIG_EXECUTABLE          = ${SWIG_EXECUTABLE}" )
@@ -70,11 +66,11 @@ endif()
 #
 # Note: list of all headers files are included in
 #       gnsstk_swig.hpp which is included in gnsstk.i
-set( SWIG_MODULE "gnsstk" )
 
 include_directories( ${PYTHON_INCLUDE_DIRS} )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/src )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/FileDirProc )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/FileHandling )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/FileHandling/Binex )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/FileHandling/RINEX )
@@ -85,14 +81,133 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/GNSSEph )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/Math )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/NavFilter )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/NewNav )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/PosSol )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/SWIGHelpers )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/RefTime )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/TimeHandling )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/Utilities )
 include_directories(AFTER SYSTEM ${PROJECT_BINARY_DIR})
 
+set(TK_EXTRA_FLAGS -DGNSSTK_EXPORT -DSWIG_TYPE_TABLE=gnsstk)
+
+set( CLOCKMODEL_MODULE "ClockModel" )
+set(SWIG_MODULE_${CLOCKMODEL_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(ClockModel/ClockModel.i PROPERTIES CPLUSPLUS ON
+                                         USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${CLOCKMODEL_MODULE} python ClockModel/ClockModel.i )
+swig_link_libraries( ${CLOCKMODEL_MODULE} gnsstk )
+
+set( CODEGEN_MODULE "CodeGen" )
+set(SWIG_MODULE_${CODEGEN_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(CodeGen/CodeGen.i PROPERTIES CPLUSPLUS ON
+                                         USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${CODEGEN_MODULE} python CodeGen/CodeGen.i )
+swig_link_libraries( ${CODEGEN_MODULE} gnsstk )
+
+set( FILEDIRPROC_MODULE "FileDirProc" )
+set(SWIG_MODULE_${FILEDIRPROC_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(FileDirProc/FileDirProc.i PROPERTIES CPLUSPLUS ON
+                                                USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${FILEDIRPROC_MODULE} python FileDirProc/FileDirProc.i )
+swig_link_libraries( ${FILEDIRPROC_MODULE} gnsstk )
+
+set( FILEHANDLING_MODULE "FileHandling" )
+set(SWIG_MODULE_${FILEHANDLING_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(FileHandling/FileHandling.i PROPERTIES CPLUSPLUS ON
+                                                USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${FILEHANDLING_MODULE} python FileHandling/FileHandling.i )
+swig_link_libraries( ${FILEHANDLING_MODULE} gnsstk )
+
+set( GEOMATICS_MODULE "Geomatics" )
+set(SWIG_MODULE_${GEOMATICS_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(Geomatics/Geomatics.i PROPERTIES CPLUSPLUS ON
+                                                USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${GEOMATICS_MODULE} python Geomatics/Geomatics.i )
+swig_link_libraries( ${GEOMATICS_MODULE} gnsstk )
+
+set( GNSSCORE_MODULE "GNSSCore" )
+set(SWIG_MODULE_${GNSSCORE_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(GNSSCore/GNSSCore.i PROPERTIES CPLUSPLUS ON
+                                                USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${GNSSCORE_MODULE} python GNSSCore/GNSSCore.i )
+swig_link_libraries( ${GNSSCORE_MODULE} gnsstk )
+
+set( GNSSEPH_MODULE "GNSSEph" )
+set(SWIG_MODULE_${GNSSEPH_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(GNSSEph/GNSSEph.i PROPERTIES CPLUSPLUS ON
+                                                USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${GNSSEPH_MODULE} python GNSSEph/GNSSEph.i )
+swig_link_libraries( ${GNSSEPH_MODULE} gnsstk )
+
+set( MATH_MODULE "Math" )
+set(SWIG_MODULE_${MATH_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(Math/Math.i PROPERTIES CPLUSPLUS ON
+                                                USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${MATH_MODULE} python Math/Math.i )
+swig_link_libraries( ${MATH_MODULE} gnsstk )
+
+set( NAVFILTER_MODULE "NavFilter" )
+set(SWIG_MODULE_${NAVFILTER_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(NavFilter/NavFilter.i PROPERTIES CPLUSPLUS ON
+                                            USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${NAVFILTER_MODULE} python NavFilter/NavFilter.i )
+swig_link_libraries( ${NAVFILTER_MODULE} gnsstk )
+
+set( NEWNAV_MODULE "NewNav" )
+set(SWIG_MODULE_${NEWNAV_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(NewNav/NewNav.i PROPERTIES CPLUSPLUS ON
+                                            USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${NEWNAV_MODULE} python NewNav/NewNav.i )
+swig_link_libraries( ${NEWNAV_MODULE} gnsstk )
+
+set( ORD_MODULE "ORD" )
+set(SWIG_MODULE_${ORD_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(ORD/ORD.i PROPERTIES CPLUSPLUS ON
+                                            USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${ORD_MODULE} python ORD/ORD.i )
+swig_link_libraries( ${ORD_MODULE} gnsstk )
+
+set( POSSOL_MODULE "PosSol" )
+set(SWIG_MODULE_${POSSOL_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(PosSol/PosSol.i PROPERTIES CPLUSPLUS ON
+                                            USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${POSSOL_MODULE} python PosSol/PosSol.i )
+swig_link_libraries( ${POSSOL_MODULE} gnsstk )
+
+set( REFTIME_MODULE "RefTime" )
+set(SWIG_MODULE_${REFTIME_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(RefTime/RefTime.i PROPERTIES CPLUSPLUS ON
+                                                USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${REFTIME_MODULE} python RefTime/RefTime.i )
+swig_link_libraries( ${REFTIME_MODULE} gnsstk )
+
+set( RXIO_MODULE "Rxio" )
+set(SWIG_MODULE_${RXIO_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(Rxio/Rxio.i PROPERTIES CPLUSPLUS ON
+                                            USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${RXIO_MODULE} python Rxio/Rxio.i )
+swig_link_libraries( ${RXIO_MODULE} gnsstk )
+
+set( TIMEHANDLING_MODULE "TimeHandling" )
+set(SWIG_MODULE_${TIMEHANDLING_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(TimeHandling/TimeHandling.i PROPERTIES CPLUSPLUS ON
+                                                USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${TIMEHANDLING_MODULE} python TimeHandling/TimeHandling.i )
+swig_link_libraries( ${TIMEHANDLING_MODULE} gnsstk )
+
+set( UTILITIES_MODULE "Utilities" )
+set(SWIG_MODULE_${UTILITIES_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(Utilities/Utilities.i PROPERTIES CPLUSPLUS ON
+                                                USE_SWIG_DEPENDENCIES TRUE)
+swig_add_module( ${UTILITIES_MODULE} python Utilities/Utilities.i )
+swig_link_libraries( ${UTILITIES_MODULE} gnsstk )
+
+set( SWIG_MODULE "gnsstk" )
+set(SWIG_MODULE_${SWIG_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
+set_source_files_properties(gnsstk.i PROPERTIES CPLUSPLUS ON
+                                     USE_SWIG_DEPENDENCIES TRUE)
 swig_add_module( ${SWIG_MODULE} python gnsstk.i )
 swig_link_libraries( ${SWIG_MODULE} gnsstk )
-#swig_link_libraries( ${SWIG_MODULE} ${PYTHON_LIBRARIES} )
 
 # Install the gnsstk module into the package file tree
 set( MODULE_PATH ${CMAKE_CURRENT_BINARY_DIR}/module )
@@ -102,7 +217,7 @@ set( CMAKE_SWIG_OUTDIR ${MODULE_PATH}/${SWIG_MODULE} )
 #----------------------------------------
 # Add custom commands to the _gnsstk.so build target
 #----------------------------------------
-#    ...to relocate the output from teh swig build target to
+#    ...to relocate the output from the swig build target to
 #    the correct directory within the python package file tree
 #        CMake documentation claims that all SWIG target output
 #        will be written to $CMAKE_SWIG_OUTDIR, but
@@ -112,6 +227,55 @@ set( CMAKE_SWIG_OUTDIR ${MODULE_PATH}/${SWIG_MODULE} )
 add_custom_target(swig-make-directory ALL
     COMMAND ${CMAKE_COMMAND} -E make_directory ${MODULE_PATH}/gnsstk)
 add_dependencies("_${SWIG_MODULE}" swig-make-directory)
+
+add_custom_command( TARGET "_${CLOCKMODEL_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${CLOCKMODEL_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${CLOCKMODEL_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${CLOCKMODEL_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${CODEGEN_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${CODEGEN_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${CODEGEN_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${CODEGEN_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${FILEDIRPROC_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${FILEDIRPROC_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${FILEDIRPROC_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${FILEDIRPROC_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${FILEHANDLING_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${FILEHANDLING_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${FILEHANDLING_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${FILEHANDLING_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${GEOMATICS_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${GEOMATICS_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${GEOMATICS_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${GEOMATICS_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${GNSSCORE_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${GNSSCORE_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${GNSSCORE_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${GNSSCORE_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${GNSSEPH_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${GNSSEPH_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${GNSSEPH_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${GNSSEPH_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${MATH_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${MATH_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${MATH_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${MATH_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${NAVFILTER_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${NAVFILTER_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${NAVFILTER_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${NAVFILTER_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${NEWNAV_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${NEWNAV_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${NEWNAV_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${NEWNAV_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${ORD_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${ORD_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${ORD_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${ORD_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${POSSOL_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${POSSOL_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${POSSOL_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${POSSOL_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${REFTIME_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${REFTIME_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${REFTIME_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${REFTIME_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${RXIO_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${RXIO_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${RXIO_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${RXIO_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${TIMEHANDLING_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${TIMEHANDLING_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${TIMEHANDLING_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${TIMEHANDLING_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
+add_custom_command( TARGET "_${UTILITIES_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${UTILITIES_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
+add_custom_command( TARGET "_${UTILITIES_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${UTILITIES_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+
 add_custom_command( TARGET "_${SWIG_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${SWIG_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
 add_custom_command( TARGET "_${SWIG_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${SWIG_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
 
@@ -126,7 +290,7 @@ make_copy_targets(module_files ${CMAKE_CURRENT_SOURCE_DIR} ${MODULE_PATH})
 
 # Do the same for the boilerplate files
 set(meta_files "" )
-list(APPEND meta_files AUTHORS.md COPYING.md COPYING.LESSER.md ChangeLog.md INSTALL.md README.md )
+list(APPEND meta_files AUTHORS.md COPYING.md COPYING.LESSER.md ChangeLog.md INSTALL.md README.md TESTING.md )
 make_copy_targets(meta_files ${CMAKE_SOURCE_DIR} ${MODULE_PATH})
 
 

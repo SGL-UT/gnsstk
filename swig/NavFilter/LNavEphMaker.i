@@ -1,3 +1,5 @@
+%include "LNavEphMaker.hpp"
+
    // Wrap () operator overloads
 %extend gnsstk::LNavEphMakerSort
 {

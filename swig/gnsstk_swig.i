@@ -1,150 +1,150 @@
-%include "Exception.hpp"
-%include "TimeConstants.hpp"
-%include "EnumIterator.hpp"
-%include "TimeSystem.hpp"
-%include "TimeSystemConverter.hpp"
-%include "CommonTime.hpp"
-%include "HexDumpDataConfig.hpp"
- //%include "StringUtils.hpp"
-%include "TimeTag.hpp"
-%include "ANSITime.hpp"
-%include "AllanDeviation.hpp"
-%include "gps_constants.hpp"
-%include "SatelliteSystem.hpp"
+%import(module="gnsstk") "Exception.hpp"
+%import(module="gnsstk") "TimeConstants.hpp"
+%import(module="gnsstk") "EnumIterator.hpp"
+%import(module="gnsstk") "TimeSystem.hpp"
+%import(module="gnsstk") "TimeSystemConverter.hpp"
+%import(module="gnsstk") "CommonTime.hpp"
+%import(module="gnsstk") "HexDumpDataConfig.hpp"
+ //%import(module="gnsstk") "StringUtils.hpp"
+%import(module="gnsstk") "TimeTag.hpp"
+%import(module="gnsstk") "ANSITime.hpp"
+%import(module="gnsstk") "AllanDeviation.hpp"
+%import(module="gnsstk") "gps_constants.hpp"
+%import(module="gnsstk") "SatelliteSystem.hpp"
 %template(std_vector_GNSS)       std::vector<gnsstk::SatelliteSystem>;
-%include "SatID.hpp"
+%import(module="gnsstk") "SatID.hpp"
 %template(std_vector_SatID)      std::vector<gnsstk::SatID>;
-%include "MathBase.hpp"
-%include "VectorBase.hpp"
-%include "VectorBaseOperators.hpp"
-%include "Vector.hpp"
-%include "Triple.hpp"
-%include "EllipsoidModel.hpp"
-%include "ReferenceFrame.hpp"
-%include "DeprecatedConsts.hpp"
-%include "FreqConsts.hpp"
-%include "GNSSconstants.hpp"
-%include "Xvt.hpp"
-%include "AlmOrbit.hpp"
-%include "AngleType.hpp"
-%include "AngleReduced.hpp"
-%include "Angle.hpp"
-%include "FFStreamError.hpp"
-%include "FFData.hpp"
-%include "AntexBase.hpp"
-%include "FFStream.hpp"
-%include "AntexHeader.hpp"
-%include "CivilTime.hpp"
+%import(module="gnsstk") "MathBase.hpp"
+%import(module="gnsstk") "VectorBase.hpp"
+%import(module="gnsstk") "VectorBaseOperators.hpp"
+%import(module="gnsstk") "Vector.hpp"
+%import(module="gnsstk") "Triple.hpp"
+%import(module="gnsstk") "EllipsoidModel.hpp"
+%import(module="gnsstk") "ReferenceFrame.hpp"
+%import(module="gnsstk") "DeprecatedConsts.hpp"
+%import(module="gnsstk") "FreqConsts.hpp"
+%import(module="gnsstk") "GNSSconstants.hpp"
+%import(module="gnsstk") "Xvt.hpp"
+%import(module="gnsstk") "AlmOrbit.hpp"
+%import(module="gnsstk") "AngleType.hpp"
+%import(module="gnsstk") "AngleReduced.hpp"
+%import(module="gnsstk") "Angle.hpp"
+%import(module="gnsstk") "FFStreamError.hpp"
+%import(module="gnsstk") "FFData.hpp"
+%import(module="gnsstk") "AntexBase.hpp"
+%import(module="gnsstk") "FFStream.hpp"
+%import(module="gnsstk") "AntexHeader.hpp"
+%import(module="gnsstk") "CivilTime.hpp"
 %feature("flatnested");
-%include "AntexData.hpp"
+%import(module="gnsstk") "AntexData.hpp"
 %feature("flatnested", "");
-%include "FFTextStream.hpp"
-%include "AntexStream.hpp"
-%include "AntennaStore.hpp"
-%include "DataStatus.hpp"
-%include "AshtechData.hpp"
-%include "AshtechALB.hpp"
-%include "AshtechEPB.hpp"
+%import(module="gnsstk") "FFTextStream.hpp"
+%import(module="gnsstk") "AntexStream.hpp"
+%import(module="gnsstk") "AntennaStore.hpp"
+%import(module="gnsstk") "DataStatus.hpp"
+%import(module="gnsstk") "AshtechData.hpp"
+%import(module="gnsstk") "AshtechALB.hpp"
+%import(module="gnsstk") "AshtechEPB.hpp"
 %feature("flatnested");
-%include "AshtechMBEN.hpp"
+%import(module="gnsstk") "AshtechMBEN.hpp"
 %feature("flatnested", "");
-%include "AshtechPBEN.hpp"
-%include "FFBinaryStream.hpp"
-%include "AshtechStream.hpp"
-%include "MJD.hpp"
-%include "TimeConverters.hpp"
-%include "EphTime.hpp"
-%include "AtmLoadTides.hpp"
-/* %include "BDSD1Bits.hpp" */
-%include "Rinex3ObsBase.hpp"
-%include "ObservationType.hpp"
+%import(module="gnsstk") "AshtechPBEN.hpp"
+%import(module="gnsstk") "FFBinaryStream.hpp"
+%import(module="gnsstk") "AshtechStream.hpp"
+%import(module="gnsstk") "MJD.hpp"
+%import(module="gnsstk") "TimeConverters.hpp"
+%import(module="gnsstk") "EphTime.hpp"
+%import(module="gnsstk") "AtmLoadTides.hpp"
+/* %import(module="gnsstk") "BDSD1Bits.hpp" */
+%import(module="gnsstk") "Rinex3ObsBase.hpp"
+%import(module="gnsstk") "ObservationType.hpp"
 %template(std_map_ObservationType_string) std::map<gnsstk::ObservationType, std::string>;
 %template(std_map_char_ObservationType) std::map<char, gnsstk::ObservationType>;
 %template(std_map_ObservationType_char) std::map<gnsstk::ObservationType,char>;
-%include "CarrierBand.hpp"
+%import(module="gnsstk") "CarrierBand.hpp"
 %template(std_map_CarrierBand_string) std::map<gnsstk::CarrierBand, std::string>;
 %template(std_map_char_CarrierBand) std::map<char, gnsstk::CarrierBand>;
 %template(std_map_CarrierBand_char) std::map<gnsstk::CarrierBand,char>;
-%include "TrackingCode.hpp"
+%import(module="gnsstk") "TrackingCode.hpp"
 %template(std_map_TrackingCode_string) std::map<gnsstk::TrackingCode, std::string>;
 %template(std_map_char_TrackingCode) std::map<char, gnsstk::TrackingCode>;
 %template(std_map_TrackingCode_char) std::map<gnsstk::TrackingCode,char>;
-%include "XmitAnt.hpp"
-%include "ObsID.hpp"
+%import(module="gnsstk") "XmitAnt.hpp"
+%import(module="gnsstk") "ObsID.hpp"
 %template(std_vector_ObsID)      std::vector<gnsstk::ObsID>;
 %template(std_map_SvObsEpoch) std::map< gnsstk::ObsID, double >;
-%include "NavType.hpp"
-%include "NavSignalID.hpp"
-%include "NavID.hpp"
-%include "NavSatelliteID.hpp"
+%import(module="gnsstk") "NavType.hpp"
+%import(module="gnsstk") "NavSignalID.hpp"
+%import(module="gnsstk") "NavID.hpp"
+%import(module="gnsstk") "NavSatelliteID.hpp"
 %template(NavSatelliteIDSet) std::set<gnsstk::NavSatelliteID>;
-%include "NavMessageType.hpp"
-%include "NavMessageID.hpp"
+%import(module="gnsstk") "NavMessageType.hpp"
+%import(module="gnsstk") "NavMessageID.hpp"
 %template(NavMessageIDSet) std::set<gnsstk::NavMessageID>;
-%include "DumpDetail.hpp"
-%include "SatMetaData.hpp"
-%include "SatMetaDataSort.hpp"
+%import(module="gnsstk") "DumpDetail.hpp"
+%import(module="gnsstk") "SatMetaData.hpp"
+%import(module="gnsstk") "SatMetaDataSort.hpp"
 %feature("flatnested");
-%include "SatMetaDataStore.hpp"
+%import(module="gnsstk") "SatMetaDataStore.hpp"
 %feature("flatnested", "");
-%include "NavData.hpp"
-%include "OrbitData.hpp"
-%include "SVHealth.hpp"
-%include "OrbitDataKepler.hpp"
-%include "BDSD1NavData.hpp"
-%include "BDSD1NavAlm.hpp"
-%include "BDSD1NavEph.hpp"
-%include "NavHealthData.hpp"
-%include "BDSD1NavHealth.hpp"
-%include "PackedNavBits.hpp"
-%include "InterSigCorr.hpp"
-%include "BDSD1NavISC.hpp"
-%include "Position.hpp"
-%include "IonoNavData.hpp"
-%include "KlobucharIonoNavData.hpp"
-%include "BDSD1NavIono.hpp"
-%include "TimeOffsetData.hpp"
-%include "StdNavTimeOffset.hpp"
-%include "BDSD1NavTimeOffset.hpp"
-/* %include "BDSD2Bits.hpp" */
-%include "BDSD2NavData.hpp"
-%include "BDSD2NavAlm.hpp"
-%include "BDSD2NavEph.hpp"
-%include "BDSD2NavHealth.hpp"
-%include "BDSD2NavISC.hpp"
-%include "BDSD2NavIono.hpp"
-%include "BDSD2NavTimeOffset.hpp"
-%include "Week.hpp"
-%include "WeekSecond.hpp"
-%include "BDSWeekSecond.hpp"
-%include "BDSconsts.hpp"
-%include "MatrixBase.hpp"
-%include "MatrixBaseOperators.hpp"
-%include "Matrix.hpp"
-%include "Matrix.i"
-%include "BLQDataReader.hpp"
+%import(module="gnsstk") "NavData.hpp"
+%import(module="gnsstk") "OrbitData.hpp"
+%import(module="gnsstk") "SVHealth.hpp"
+%import(module="gnsstk") "OrbitDataKepler.hpp"
+%import(module="gnsstk") "BDSD1NavData.hpp"
+%import(module="gnsstk") "BDSD1NavAlm.hpp"
+%import(module="gnsstk") "BDSD1NavEph.hpp"
+%import(module="gnsstk") "NavHealthData.hpp"
+%import(module="gnsstk") "BDSD1NavHealth.hpp"
+%import(module="gnsstk") "PackedNavBits.hpp"
+%import(module="gnsstk") "InterSigCorr.hpp"
+%import(module="gnsstk") "BDSD1NavISC.hpp"
+%import(module="gnsstk") "Position.hpp"
+%import(module="gnsstk") "IonoNavData.hpp"
+%import(module="gnsstk") "KlobucharIonoNavData.hpp"
+%import(module="gnsstk") "BDSD1NavIono.hpp"
+%import(module="gnsstk") "TimeOffsetData.hpp"
+%import(module="gnsstk") "StdNavTimeOffset.hpp"
+%import(module="gnsstk") "BDSD1NavTimeOffset.hpp"
+/* %import(module="gnsstk") "BDSD2Bits.hpp" */
+%import(module="gnsstk") "BDSD2NavData.hpp"
+%import(module="gnsstk") "BDSD2NavAlm.hpp"
+%import(module="gnsstk") "BDSD2NavEph.hpp"
+%import(module="gnsstk") "BDSD2NavHealth.hpp"
+%import(module="gnsstk") "BDSD2NavISC.hpp"
+%import(module="gnsstk") "BDSD2NavIono.hpp"
+%import(module="gnsstk") "BDSD2NavTimeOffset.hpp"
+%import(module="gnsstk") "Week.hpp"
+%import(module="gnsstk") "WeekSecond.hpp"
+%import(module="gnsstk") "BDSWeekSecond.hpp"
+%import(module="gnsstk") "BDSconsts.hpp"
+%import(module="gnsstk") "MatrixBase.hpp"
+%import(module="gnsstk") "MatrixBaseOperators.hpp"
+%import(module="gnsstk") "Matrix.hpp"
+%import(module="gnsstk") "Matrix.i"
+%import(module="gnsstk") "BLQDataReader.hpp"
 /* %include "CommandOption.hpp" */
 /* %include "CommandOptionParser.hpp" */
 /* %include "BasicFramework.hpp" */
-%include "BasicTimeSystemConverter.hpp"
+%import(module="gnsstk") "BasicTimeSystemConverter.hpp"
 %feature("flatnested");
-%include "BinexData.hpp"
+%import(module="gnsstk") "BinexData.hpp"
 %feature("flatnested", "");
 %template(std_binary_function_BinexData) std::binary_function<gnsstk::BinexData, gnsstk::BinexData, bool>;
 %feature("flatnested");
-%include "FileSpec.hpp"
+%import(module="gnsstk") "FileSpec.hpp"
 %feature("flatnested", "");
 %feature("flatnested");
-%include "FileFilter.hpp"
+%import(module="gnsstk") "FileFilter.hpp"
 %feature("flatnested", "");
-%include "BinexFilterOperators.hpp"
-%include "BinexStream.hpp"
-%include "MiscMath.hpp"
+%import(module="gnsstk") "BinexFilterOperators.hpp"
+%import(module="gnsstk") "BinexStream.hpp"
+%import(module="gnsstk") "MiscMath.hpp"
 %template(SimpleLagrangeInterpolation_double) gnsstk::SimpleLagrangeInterpolation<double>;
 %template(LagrangeInterpolation_double) gnsstk::LagrangeInterpolation<double>;
 %template(LagrangeInterpolating2ndDerivative_double) gnsstk::LagrangeInterpolating2ndDerivative<double>;
 %template(RSS_double) gnsstk::RSS<double>;
-%include "Stats.hpp"
+%import(module="gnsstk") "Stats.hpp"
    // Template Instantiations for non-member Stats Functions
 %template(median_double) gnsstk::median<double>;
 %template(median_int) gnsstk::median<int>;
@@ -154,394 +154,394 @@
 %template(SeqStats_double) gnsstk::SeqStats<double>;
 %template(WtdStats_double) gnsstk::WtdStats<double>;
 %template(TwoSampleStats_double) gnsstk::TwoSampleStats<double>;
-%include "BivarStats.hpp"
+%import(module="gnsstk") "BivarStats.hpp"
 %template(BivarStats_double) gnsstk::BivarStats<double>;
-%include "GPSWeekSecond.hpp"
-%include "NMCTMeta.hpp"
-%include "EngNav.hpp"
-%include "YDSTime.hpp"
-%include "BrcClockCorrection.hpp"
-%include "WGS84Ellipsoid.hpp"
-%include "GPSEllipsoid.hpp"
-%include "RinexSatID.hpp"
+%import(module="gnsstk") "GPSWeekSecond.hpp"
+%import(module="gnsstk") "NMCTMeta.hpp"
+%import(module="gnsstk") "EngNav.hpp"
+%import(module="gnsstk") "YDSTime.hpp"
+%import(module="gnsstk") "BrcClockCorrection.hpp"
+%import(module="gnsstk") "WGS84Ellipsoid.hpp"
+%import(module="gnsstk") "GPSEllipsoid.hpp"
+%import(module="gnsstk") "RinexSatID.hpp"
 %template(std_vector_RinexSatID) std::vector<gnsstk::RinexSatID>;
-%include "GPS_URA.hpp"
-%include "BrcKeplerOrbit.hpp"
-%include "CCIR.hpp"
-%include "CGCS2000Ellipsoid.hpp"
-%include "NavFilterKey.hpp"
+%import(module="gnsstk") "GPS_URA.hpp"
+%import(module="gnsstk") "BrcKeplerOrbit.hpp"
+%import(module="gnsstk") "CCIR.hpp"
+%import(module="gnsstk") "CGCS2000Ellipsoid.hpp"
+%import(module="gnsstk") "NavFilterKey.hpp"
 %template(std_binary_function_NavFilterKey) std::binary_function<gnsstk::NavFilterKey *, gnsstk::NavFilterKey *, bool >;
-%include "NavFilter.hpp"
-%include "CNav2SanityFilter.hpp"
+%import(module="gnsstk") "NavFilter.hpp"
+%import(module="gnsstk") "CNav2SanityFilter.hpp"
 %template(std_binary_function_CNavFilterData) std::binary_function< gnsstk::CNavFilterData,gnsstk::CNavFilterData,bool >;
 %template(std_binary_function_CNavFilterDataPtr) std::binary_function< gnsstk::CNavFilterData *, gnsstk::CNavFilterData *, bool >;
-%include "CNavFilterData.hpp"
-%include "CNavCookFilter.hpp"
-%include "NavFilterMgr.hpp"
-%include "CNavCrossSourceFilter.hpp"
-/* %include "CNavDataElement.hpp" */
-/* %include "CNavDataElementStore.hpp" */
-/* %include "CNavEOP.hpp" */
-/* %include "CNavEmptyFilter.hpp" */
-/* %include "CNavGGTO.hpp" */
-/* %include "CNavISC.hpp" */
-%include "CNavParityFilter.hpp"
-%include "CNavReducedAlm.hpp"
-%include "CNavTOWFilter.hpp"
-/* %include "CNavText.hpp" */
-/* %include "CNavUTC.hpp" */
-%include "ClockModel.hpp"
-%include "PCodeConst.hpp"
-%include "CodeBuffer.hpp"
-%include "Combinations.hpp"
+%import(module="gnsstk") "CNavFilterData.hpp"
+%import(module="gnsstk") "CNavCookFilter.hpp"
+%import(module="gnsstk") "NavFilterMgr.hpp"
+%import(module="gnsstk") "CNavCrossSourceFilter.hpp"
+/* %import(module="gnsstk") "CNavDataElement.hpp" */
+/* %import(module="gnsstk") "CNavDataElementStore.hpp" */
+/* %import(module="gnsstk") "CNavEOP.hpp" */
+/* %import(module="gnsstk") "CNavEmptyFilter.hpp" */
+/* %import(module="gnsstk") "CNavGGTO.hpp" */
+/* %import(module="gnsstk") "CNavISC.hpp" */
+%import(module="gnsstk") "CNavParityFilter.hpp"
+%import(module="gnsstk") "CNavReducedAlm.hpp"
+%import(module="gnsstk") "CNavTOWFilter.hpp"
+/* %import(module="gnsstk") "CNavText.hpp" */
+/* %import(module="gnsstk") "CNavUTC.hpp" */
+%import(module="gnsstk") "ClockModel.hpp"
+%import(module="gnsstk") "PCodeConst.hpp"
+%import(module="gnsstk") "CodeBuffer.hpp"
+%import(module="gnsstk") "Combinations.hpp"
 /* %include "CommandLine.hpp" */
-/* %include "CommandOptionNavEnumHelp.hpp" */
+/* %import(module="gnsstk") "CommandOptionNavEnumHelp.hpp" */
 /* %include "CommandOptionWithCommonTimeArg.hpp" */
 /* %include "CommandOptionWithPositionArg.hpp" */
 /* %include "CommandOptionWithTimeArg.hpp" */
-%include "ConfDataReader.hpp"
- /* %include "ConfDataWriter.hpp" */ // error on typemaps for list of double
-%include "CubicSpline.hpp"
-%include "DCBDataReader.hpp"
-/* %include "DebugTrace.hpp" */
-%include "DiffCorrBase.hpp"
-%include "DiffCorrClk.hpp"
-%include "DiffCorrEph.hpp"
-%include "GPSZcount.hpp"
-%include "UnixTime.hpp"
-%include "SystemTime.hpp"
-%include "JulianDate.hpp"
-%include "GPSWeek.hpp"
-%include "GPSWeekZcount.hpp"
-%include "GALWeekSecond.hpp"
-%include "QZSWeekSecond.hpp"
-/* %include "Epoch.hpp" */
-%include "RinexObsBase.hpp"
+%import(module="gnsstk") "ConfDataReader.hpp"
+ /* %import(module="gnsstk") "ConfDataWriter.hpp" */ // error on typemaps for list of double
+%import(module="gnsstk") "CubicSpline.hpp"
+%import(module="gnsstk") "DCBDataReader.hpp"
+/* %import(module="gnsstk") "DebugTrace.hpp" */
+%import(module="gnsstk") "DiffCorrBase.hpp"
+%import(module="gnsstk") "DiffCorrClk.hpp"
+%import(module="gnsstk") "DiffCorrEph.hpp"
+%import(module="gnsstk") "GPSZcount.hpp"
+%import(module="gnsstk") "UnixTime.hpp"
+%import(module="gnsstk") "SystemTime.hpp"
+%import(module="gnsstk") "JulianDate.hpp"
+%import(module="gnsstk") "GPSWeek.hpp"
+%import(module="gnsstk") "GPSWeekZcount.hpp"
+%import(module="gnsstk") "GALWeekSecond.hpp"
+%import(module="gnsstk") "QZSWeekSecond.hpp"
+/* %import(module="gnsstk") "Epoch.hpp" */
+%import(module="gnsstk") "RinexObsBase.hpp"
 %feature("flatnested");
-%include "RinexObsHeader.hpp"
+%import(module="gnsstk") "RinexObsHeader.hpp"
 %feature("flatnested", "");
 %template(std_vector_RinexObsType) std::vector<gnsstk::RinexObsType>;
 %template(std_unary_function_RinexObsHeader) std::unary_function<gnsstk::RinexObsHeader, bool>;
-%include "RinexDatum.hpp"
+%import(module="gnsstk") "RinexDatum.hpp"
 %template(std_vector_RinexDatum) std::vector<gnsstk::RinexDatum>;
 %template(std_map_RinexSatID_std_vector_RinexDatum) std::map<gnsstk::RinexSatID, std::vector<gnsstk::RinexDatum> >;
 %template(std_map_RinexObsType_RinexDatum) std::map<gnsstk::RinexObsType, gnsstk::RinexDatum>;
 %template(std_map_RinexSatID_RinexObsTypeMap) std::map<gnsstk::SatID, std::map<gnsstk::RinexObsType, gnsstk::RinexDatum> >;
-%include "RinexObsData.hpp"
+%import(module="gnsstk") "RinexObsData.hpp"
 %template(std_binary_function_RinexObsData) std::binary_function<gnsstk::RinexObsData,gnsstk::RinexObsData,bool>;
-%include "RinexUtilities.hpp"
-%include "TimeString.hpp"
-/* %include "SatPass.hpp" */
-/* %include "DiscCorr.hpp" */
-%include "ENUUtil.hpp"
-%include "IERSConvention.hpp"
-/* %include "EarthOrientation.hpp" */
-/* %include "EOPPrediction.hpp" */
-/* %include "EOPStore.hpp" */
-%include "EngAlmanac.hpp"
-%include "EngEphemeris.hpp"
-%include "NavValidityType.hpp"
-%include "NavSearchOrder.hpp"
-%include "NavDataFactory.hpp"
-%include "NavLibrary.hpp"
+%import(module="gnsstk") "RinexUtilities.hpp"
+%import(module="gnsstk") "TimeString.hpp"
+/* %import(module="gnsstk") "SatPass.hpp" */
+/* %import(module="gnsstk") "DiscCorr.hpp" */
+%import(module="gnsstk") "ENUUtil.hpp"
+%import(module="gnsstk") "IERSConvention.hpp"
+/* %import(module="gnsstk") "EarthOrientation.hpp" */
+/* %import(module="gnsstk") "EOPPrediction.hpp" */
+/* %import(module="gnsstk") "EOPStore.hpp" */
+%import(module="gnsstk") "EngAlmanac.hpp"
+%import(module="gnsstk") "EngEphemeris.hpp"
+%import(module="gnsstk") "NavValidityType.hpp"
+%import(module="gnsstk") "NavSearchOrder.hpp"
+%import(module="gnsstk") "NavDataFactory.hpp"
+%import(module="gnsstk") "NavLibrary.hpp"
 %template(NavMessageTypeSet) std::set<gnsstk::NavMessageType>;
-%include "ValidType.hpp"
-%include "EphemerisRange.hpp"
+%import(module="gnsstk") "ValidType.hpp"
+%import(module="gnsstk") "EphemerisRange.hpp"
 %feature("flatnested");
-%include "IonoModel.hpp"
+%import(module="gnsstk") "IonoModel.hpp"
 %feature("flatnested", "");
 %feature("flatnested");
-%include "IonoModelStore.hpp"
+%import(module="gnsstk") "IonoModelStore.hpp"
 %feature("flatnested", "");
-%include "SvObsEpoch.hpp"
+%import(module="gnsstk") "SvObsEpoch.hpp"
 %template(std_map_ObsEpoch) std::map<gnsstk::SatID, gnsstk::SvObsEpoch>;
-%include "ObsEpochMap.hpp"
+%import(module="gnsstk") "ObsEpochMap.hpp"
 %template(ObsEpochMap) std::map<gnsstk::CommonTime, gnsstk::ObsEpoch>;
-%include "WxObsMap.hpp"
-%include "TropModel.hpp"
-%include "NBTropModel.hpp"
-%include "ObsRngDev.hpp"
-%include "ORDEpoch.hpp"
-%include "ObsClockModel.hpp"
-%include "EpochClockModel.hpp"
-%include "Expression.hpp"
-%include "StatsFilterHit.hpp"
-%include "RobustStats.hpp"
-%include "FDiffFilter.hpp"
-%include "FileSpecFind.hpp"
-%include "FileUtils.hpp"
-%include "FileFilterFrame.hpp"
-%include "RinexObsID.hpp"
+%import(module="gnsstk") "WxObsMap.hpp"
+%import(module="gnsstk") "TropModel.hpp"
+%import(module="gnsstk") "NBTropModel.hpp"
+%import(module="gnsstk") "ObsRngDev.hpp"
+%import(module="gnsstk") "ORDEpoch.hpp"
+%import(module="gnsstk") "ObsClockModel.hpp"
+%import(module="gnsstk") "EpochClockModel.hpp"
+%import(module="gnsstk") "Expression.hpp"
+%import(module="gnsstk") "StatsFilterHit.hpp"
+%import(module="gnsstk") "RobustStats.hpp"
+%import(module="gnsstk") "FDiffFilter.hpp"
+%import(module="gnsstk") "FileSpecFind.hpp"
+%import(module="gnsstk") "FileUtils.hpp"
+%import(module="gnsstk") "FileFilterFrame.hpp"
+%import(module="gnsstk") "RinexObsID.hpp"
 %template(std_vector_RinexObsID) std::vector<gnsstk::RinexObsID>;
 %template(std_map_string_vector_RinexObsID) std::map<std::string, std::vector<gnsstk::RinexObsID> >;
  // Use a special wrapper for the include file which resolves issues
  // with the nested definitions
-%include "Rinex3ObsHeader.i"
+%import(module="gnsstk") "Rinex3ObsHeader.i"
 %template(std_unary_function_Rinex3ObsHeader) std::unary_function<gnsstk::Rinex3ObsHeader, bool>;
-%include "Rinex3ObsData.hpp"
+%import(module="gnsstk") "Rinex3ObsData.hpp"
 %template(std_vector_Rinex3ObsData) std::vector<gnsstk::Rinex3ObsData>;
 %template(std_binary_function_Rinex3ObsData) std::binary_function<gnsstk::Rinex3ObsData,gnsstk::Rinex3ObsData,bool>;
-%include "FileFilterFrameWithHeader.hpp"
-%include "FileStore.hpp"
+%import(module="gnsstk") "FileFilterFrameWithHeader.hpp"
+%import(module="gnsstk") "FileStore.hpp"
 %feature("flatnested");
-%include "FirstDiffFilter.hpp"
+%import(module="gnsstk") "FirstDiffFilter.hpp"
 %feature("flatnested", "");
-%include "FormattedDouble.hpp"
-%include "FreqConv.hpp"
-%include "GCATTropModel.hpp"
-%include "GGHeightTropModel.hpp"
-%include "GGTropModel.hpp"
-%include "GLOFBits.hpp"
-%include "GLOFNavData.hpp"
-%include "PZ90Ellipsoid.hpp"
-%include "GLOFNavAlm.hpp"
-%include "GLOFNavEph.hpp"
-%include "GLOFNavHealth.hpp"
-%include "GLOFNavISC.hpp"
-%include "GLOFNavTimeOffset.hpp"
-%include "GLOFNavUT1TimeOffset.hpp"
-%include "GPSCNav2Alm.hpp"
-%include "GPSCNav2Eph.hpp"
-%include "GPSCNav2Health.hpp"
-%include "GPSCNav2ISC.hpp"
-%include "GPSCNav2Iono.hpp"
-%include "GPSCNav2TimeOffset.hpp"
-%include "GPSCNavData.hpp"
-%include "GPSCNavAlm.hpp"
-%include "GPSCNavEph.hpp"
-%include "GPSCNavHealth.hpp"
-%include "GPSCNavISC.hpp"
-%include "GPSCNavIono.hpp"
-%include "GPSCNavRedAlm.hpp"
-%include "GPSCNavTimeOffset.hpp"
-%include "GPSLNavData.hpp"
-%include "GPSLNavAlm.hpp"
-%include "GPSLNavEph.hpp"
-%include "GPSLNavHealth.hpp"
-%include "GPSLNavISC.hpp"
-%include "GPSLNavIono.hpp"
-%include "GPSLNavTimeOffset.hpp"
-%include "GSatID.hpp"
-%include "GalDataValid.hpp"
-%include "GalHealthStatus.hpp"
-%include "GalFNavAlm.hpp"
-%include "GalFNavEph.hpp"
-%include "GalFNavHealth.hpp"
-%include "GalFNavISC.hpp"
-%include "MODIP.hpp"
-%include "GalileoEllipsoid.hpp"
-%include "GalileoIonoEllipsoid.hpp"
+%import(module="gnsstk") "FormattedDouble.hpp"
+%import(module="gnsstk") "FreqConv.hpp"
+%import(module="gnsstk") "GCATTropModel.hpp"
+%import(module="gnsstk") "GGHeightTropModel.hpp"
+%import(module="gnsstk") "GGTropModel.hpp"
+%import(module="gnsstk") "GLOFBits.hpp"
+%import(module="gnsstk") "GLOFNavData.hpp"
+%import(module="gnsstk") "PZ90Ellipsoid.hpp"
+%import(module="gnsstk") "GLOFNavAlm.hpp"
+%import(module="gnsstk") "GLOFNavEph.hpp"
+%import(module="gnsstk") "GLOFNavHealth.hpp"
+%import(module="gnsstk") "GLOFNavISC.hpp"
+%import(module="gnsstk") "GLOFNavTimeOffset.hpp"
+%import(module="gnsstk") "GLOFNavUT1TimeOffset.hpp"
+%import(module="gnsstk") "GPSCNav2Alm.hpp"
+%import(module="gnsstk") "GPSCNav2Eph.hpp"
+%import(module="gnsstk") "GPSCNav2Health.hpp"
+%import(module="gnsstk") "GPSCNav2ISC.hpp"
+%import(module="gnsstk") "GPSCNav2Iono.hpp"
+%import(module="gnsstk") "GPSCNav2TimeOffset.hpp"
+%import(module="gnsstk") "GPSCNavData.hpp"
+%import(module="gnsstk") "GPSCNavAlm.hpp"
+%import(module="gnsstk") "GPSCNavEph.hpp"
+%import(module="gnsstk") "GPSCNavHealth.hpp"
+%import(module="gnsstk") "GPSCNavISC.hpp"
+%import(module="gnsstk") "GPSCNavIono.hpp"
+%import(module="gnsstk") "GPSCNavRedAlm.hpp"
+%import(module="gnsstk") "GPSCNavTimeOffset.hpp"
+%import(module="gnsstk") "GPSLNavData.hpp"
+%import(module="gnsstk") "GPSLNavAlm.hpp"
+%import(module="gnsstk") "GPSLNavEph.hpp"
+%import(module="gnsstk") "GPSLNavHealth.hpp"
+%import(module="gnsstk") "GPSLNavISC.hpp"
+%import(module="gnsstk") "GPSLNavIono.hpp"
+%import(module="gnsstk") "GPSLNavTimeOffset.hpp"
+%import(module="gnsstk") "GSatID.hpp"
+%import(module="gnsstk") "GalDataValid.hpp"
+%import(module="gnsstk") "GalHealthStatus.hpp"
+%import(module="gnsstk") "GalFNavAlm.hpp"
+%import(module="gnsstk") "GalFNavEph.hpp"
+%import(module="gnsstk") "GalFNavHealth.hpp"
+%import(module="gnsstk") "GalFNavISC.hpp"
+%import(module="gnsstk") "MODIP.hpp"
+%import(module="gnsstk") "GalileoEllipsoid.hpp"
+%import(module="gnsstk") "GalileoIonoEllipsoid.hpp"
 %feature("flatnested");
-%include "NeQuickIonoNavData.hpp"
+%import(module="gnsstk") "NeQuickIonoNavData.hpp"
 %feature("flatnested", "");
-%include "GalFNavIono.hpp"
-%include "GalFNavTimeOffset.hpp"
-%include "GalINavAlm.hpp"
-%include "GalINavEph.hpp"
-%include "GalINavHealth.hpp"
-%include "GalINavISC.hpp"
-%include "GalINavIono.hpp"
-%include "GalINavTimeOffset.hpp"
-%include "GenXSequence.hpp"
-%include "GenericNavFilterData.hpp"
-%include "GloEphemeris.hpp"
-%include "GlobalTropModel.hpp"
-%include "HelmertTransform.hpp"
- //%include "IERS1996NutationData.hpp"
- //%include "IERS1996UT1mUTCData.hpp"
- //%include "IERS2003NutationData.hpp"
-/* %include "IERS2010CIOSeriesData.hpp" */
-%include "IRNWeekSecond.hpp"
+%import(module="gnsstk") "GalFNavIono.hpp"
+%import(module="gnsstk") "GalFNavTimeOffset.hpp"
+%import(module="gnsstk") "GalINavAlm.hpp"
+%import(module="gnsstk") "GalINavEph.hpp"
+%import(module="gnsstk") "GalINavHealth.hpp"
+%import(module="gnsstk") "GalINavISC.hpp"
+%import(module="gnsstk") "GalINavIono.hpp"
+%import(module="gnsstk") "GalINavTimeOffset.hpp"
+%import(module="gnsstk") "GenXSequence.hpp"
+%import(module="gnsstk") "GenericNavFilterData.hpp"
+%import(module="gnsstk") "GloEphemeris.hpp"
+%import(module="gnsstk") "GlobalTropModel.hpp"
+%import(module="gnsstk") "HelmertTransform.hpp"
+ //%import(module="gnsstk") "IERS1996NutationData.hpp"
+ //%import(module="gnsstk") "IERS1996UT1mUTCData.hpp"
+ //%import(module="gnsstk") "IERS2003NutationData.hpp"
+/* %import(module="gnsstk") "IERS2010CIOSeriesData.hpp" */
+%import(module="gnsstk") "IRNWeekSecond.hpp"
 /* %include "LoopedFramework.hpp" */
 /* %include "InOutFramework.hpp" */
-%include "IonexBase.hpp"
+%import(module="gnsstk") "IonexBase.hpp"
 %feature("flatnested");
-%include "IonexHeader.hpp"
+%import(module="gnsstk") "IonexHeader.hpp"
 %feature("flatnested", "");
 %template(FileStore_IonexHeader) gnsstk::FileStore<gnsstk::IonexHeader>;
-%include "IonexStream.hpp"
+%import(module="gnsstk") "IonexStream.hpp"
 %feature("flatnested");
-%include "IonexData.hpp"
+%import(module="gnsstk") "IonexData.hpp"
 %feature("flatnested", "");
-%include "IonexStoreStrategy.hpp"
-%include "IonexStore.hpp"
-%include "Namelist.hpp"
-/* %include "SRIMatrix.hpp" */
-/* %include "SparseVector.hpp" */
-/* %include "SparseMatrix.hpp" */
-/* %include "SRI.hpp" */
-/* %include "SRIFilter.hpp" */
-/* %include "logstream.hpp" */
+%import(module="gnsstk") "IonexStoreStrategy.hpp"
+%import(module="gnsstk") "IonexStore.hpp"
+%import(module="gnsstk") "Namelist.hpp"
+/* %import(module="gnsstk") "SRIMatrix.hpp" */
+/* %import(module="gnsstk") "SparseVector.hpp" */
+/* %import(module="gnsstk") "SparseMatrix.hpp" */
+/* %import(module="gnsstk") "SRI.hpp" */
+/* %import(module="gnsstk") "SRIFilter.hpp" */
+/* %import(module="gnsstk") "logstream.hpp" */
 %feature("flatnested");
-%include "KalmanFilter.hpp"
+%import(module="gnsstk") "KalmanFilter.hpp"
 %feature("flatnested", "");
 %template(std_binary_function_LNavFilterData) std::binary_function< gnsstk::LNavFilterData *, gnsstk::LNavFilterData *, bool >;
-%include "LNavFilterData.hpp"
-%include "LNavAlmValFilter.hpp"
-%include "LNavCookFilter.hpp"
-%include "LNavCrossSourceFilter.hpp"
-%include "LNavEmptyFilter.hpp"
-%include "LNavEphMaker.hpp"
-%include "LNavOrderFilter.hpp"
-%include "LNavParityFilter.hpp"
-%include "LNavTLMHOWFilter.hpp"
-%include "LinearClockModel.hpp"
-%include "MOPSTropModel.hpp"
-%include "MatrixImplementation.hpp"
-%include "MatrixFunctors.hpp"
-%include "MatrixOperators.hpp"
-%include "MetReader.hpp"
-%include "MostCommonValue.hpp"
-%include "NavDataFactoryWithStore.hpp"
-%include "NavDataFactoryWithStoreFile.hpp"
-%include "NDFUniqIterator.hpp"
+%import(module="gnsstk") "LNavFilterData.hpp"
+%import(module="gnsstk") "LNavAlmValFilter.hpp"
+%import(module="gnsstk") "LNavCookFilter.hpp"
+%import(module="gnsstk") "LNavCrossSourceFilter.hpp"
+%import(module="gnsstk") "LNavEmptyFilter.hpp"
+%import(module="gnsstk") "LNavEphMaker.hpp"
+%import(module="gnsstk") "LNavOrderFilter.hpp"
+%import(module="gnsstk") "LNavParityFilter.hpp"
+%import(module="gnsstk") "LNavTLMHOWFilter.hpp"
+%import(module="gnsstk") "LinearClockModel.hpp"
+%import(module="gnsstk") "MOPSTropModel.hpp"
+%import(module="gnsstk") "MatrixImplementation.hpp"
+%import(module="gnsstk") "MatrixFunctors.hpp"
+%import(module="gnsstk") "MatrixOperators.hpp"
+%import(module="gnsstk") "MetReader.hpp"
+%import(module="gnsstk") "MostCommonValue.hpp"
+%import(module="gnsstk") "NavDataFactoryWithStore.hpp"
+%import(module="gnsstk") "NavDataFactoryWithStoreFile.hpp"
+%import(module="gnsstk") "NDFUniqIterator.hpp"
 %template (NDFUniqIterator_NavDataFactoryMap) gnsstk::NDFUniqIterator<gnsstk::NavDataFactoryMap>;
-%include "MultiFormatNavDataFactory.hpp"
-%include "NDFUniqConstIterator.hpp"
+%import(module="gnsstk") "MultiFormatNavDataFactory.hpp"
+%import(module="gnsstk") "NDFUniqConstIterator.hpp"
 %template (NDFUniqConstIterator_NavDataFactoryMap) gnsstk::NDFUniqConstIterator<gnsstk::NavDataFactoryMap>;
-%include "NEDUtil.hpp"
-%include "NavMsgData.hpp"
-%include "NavMsgDataBits.hpp"
-%include "NavMsgDataPNB.hpp"
-%include "NavMsgDataWords.hpp"
+%import(module="gnsstk") "NEDUtil.hpp"
+%import(module="gnsstk") "NavMsgData.hpp"
+%import(module="gnsstk") "NavMsgDataBits.hpp"
+%import(module="gnsstk") "NavMsgDataPNB.hpp"
+%import(module="gnsstk") "NavMsgDataWords.hpp"
 %template(NavMsgDataWords_30) gnsstk::NavMsgDataWords<30>;
-%include "NavOrderFilter.hpp"
-%include "NavTimeSystemConverter.hpp"
-%include "NeillTropModel.hpp"
+%import(module="gnsstk") "NavOrderFilter.hpp"
+%import(module="gnsstk") "NavTimeSystemConverter.hpp"
+%import(module="gnsstk") "NeillTropModel.hpp"
 %feature("flatnested");
-%include "OceanLoadTides.hpp"
+%import(module="gnsstk") "OceanLoadTides.hpp"
 %feature("flatnested", "");
-%include "OceanLoading.hpp"
-%include "OrbitDataSP3.hpp"
-%include "PNBNavDataFactory.hpp"
+%import(module="gnsstk") "OceanLoading.hpp"
+%import(module="gnsstk") "OrbitDataSP3.hpp"
+%import(module="gnsstk") "PNBNavDataFactory.hpp"
 %feature("flatnested");
-%include "PNBBDSD1NavDataFactory.hpp"
+%import(module="gnsstk") "PNBBDSD1NavDataFactory.hpp"
 %feature("flatnested", "");
 %feature("flatnested");
-%include "PNBBDSD2NavDataFactory.hpp"
+%import(module="gnsstk") "PNBBDSD2NavDataFactory.hpp"
 %feature("flatnested", "");
-%include "PNBGLOFNavDataFactory.hpp"
-%include "PNBGPSCNav2DataFactory.hpp"
-%include "PNBGPSCNavDataFactory.hpp"
-%include "PNBGPSLNavDataFactory.hpp"
-%include "PNBGalFNavDataFactory.hpp"
-%include "PNBGalINavDataFactory.hpp"
-%include "PNBMultiGNSSNavDataFactory.hpp"
-%include "stl_helpers.hpp"
-%include "PRSolution.hpp"
-%include "PoleTides.hpp"
-%include "PolyFit.hpp"
+%import(module="gnsstk") "PNBGLOFNavDataFactory.hpp"
+%import(module="gnsstk") "PNBGPSCNav2DataFactory.hpp"
+%import(module="gnsstk") "PNBGPSCNavDataFactory.hpp"
+%import(module="gnsstk") "PNBGPSLNavDataFactory.hpp"
+%import(module="gnsstk") "PNBGalFNavDataFactory.hpp"
+%import(module="gnsstk") "PNBGalINavDataFactory.hpp"
+%import(module="gnsstk") "PNBMultiGNSSNavDataFactory.hpp"
+%import(module="gnsstk") "stl_helpers.hpp"
+%import(module="gnsstk") "PRSolution.hpp"
+%import(module="gnsstk") "PoleTides.hpp"
+%import(module="gnsstk") "PolyFit.hpp"
 %template(PolyFit_double) gnsstk::PolyFit<double>;
-%include "PosixTime.hpp"
- //%include "PowerSum.hpp"
-%include "SolarSystemEphemeris.hpp"
-%include "SunEarthSatGeometry.i"
-%include "SolidEarthTides.hpp"
-/* %include "SolarSystem.hpp" */
-/* %include "PreciseRange.hpp" */
-%include "RACRotation.hpp"
-%include "RNDouble.hpp"
-/* %include "RTFileFrame.hpp" */
+%import(module="gnsstk") "PosixTime.hpp"
+ //%import(module="gnsstk") "PowerSum.hpp"
+%import(module="gnsstk") "SolarSystemEphemeris.hpp"
+%import(module="gnsstk") "SunEarthSatGeometry.i"
+%import(module="gnsstk") "SolidEarthTides.hpp"
+/* %import(module="gnsstk") "SolarSystem.hpp" */
+/* %import(module="gnsstk") "PreciseRange.hpp" */
+%import(module="gnsstk") "RACRotation.hpp"
+%import(module="gnsstk") "RNDouble.hpp"
+/* %import(module="gnsstk") "RTFileFrame.hpp" */
 %feature("flatnested");
-%include "Rinex3ClockBase.hpp"
+%import(module="gnsstk") "Rinex3ClockBase.hpp"
 %feature("flatnested", "");
-%include "Rinex3ClockData.hpp"
-%include "Rinex3ClockHeader.hpp"
-%include "Rinex3ClockStream.hpp"
-%include "Rinex3NavBase.hpp"
-%include "TimeSystemCorr.hpp"
-%include "Rinex3NavHeader.hpp"
+%import(module="gnsstk") "Rinex3ClockData.hpp"
+%import(module="gnsstk") "Rinex3ClockHeader.hpp"
+%import(module="gnsstk") "Rinex3ClockStream.hpp"
+%import(module="gnsstk") "Rinex3NavBase.hpp"
+%import(module="gnsstk") "TimeSystemCorr.hpp"
+%import(module="gnsstk") "Rinex3NavHeader.hpp"
 %template(std_unary_function_Rinex3NavHeader) std::unary_function<gnsstk::Rinex3NavHeader, bool>;
-%include "Rinex3NavStream.hpp"
-%include "RinexNavBase.hpp"
-%include "RinexNavData.hpp"
+%import(module="gnsstk") "Rinex3NavStream.hpp"
+%import(module="gnsstk") "RinexNavBase.hpp"
+%import(module="gnsstk") "RinexNavData.hpp"
 %template(std_binary_function_RinexNavData) std::binary_function<gnsstk::RinexNavData,gnsstk::RinexNavData,bool>;
 %template(std_unary_function_RinexNavData) std::unary_function<gnsstk::RinexNavData,bool>;
-%include "Rinex3NavData.hpp"
+%import(module="gnsstk") "Rinex3NavData.hpp"
 %template(std_binary_function_Rinex3NavData) std::binary_function<gnsstk::Rinex3NavData,gnsstk::Rinex3NavData,bool>;
 %template(std_unary_function_Rinex3NavData) std::unary_function<gnsstk::Rinex3NavData,bool>;
-%include "Rinex3NavFilterOperators.hpp"
-/* %include "Rinex3ObsFileLoader.hpp" */
-%include "Rinex3ObsFilterOperators.hpp"
-%include "Rinex3ObsStream.hpp"
+%import(module="gnsstk") "Rinex3NavFilterOperators.hpp"
+/* %import(module="gnsstk") "Rinex3ObsFileLoader.hpp" */
+%import(module="gnsstk") "Rinex3ObsFilterOperators.hpp"
+%import(module="gnsstk") "Rinex3ObsStream.hpp"
 %feature("flatnested");
-%include "RinexClockBase.hpp"
+%import(module="gnsstk") "RinexClockBase.hpp"
 %feature("flatnested", "");
-%include "RinexClockData.hpp"
+%import(module="gnsstk") "RinexClockData.hpp"
 %feature("flatnested");
-%include "RinexClockHeader.hpp"
+%import(module="gnsstk") "RinexClockHeader.hpp"
 %feature("flatnested", "");
-%include "RinexClockStream.hpp"
-%include "RinexMetBase.hpp"
+%import(module="gnsstk") "RinexClockStream.hpp"
+%import(module="gnsstk") "RinexMetBase.hpp"
 %feature("flatnested");
-%include "RinexMetHeader.hpp"
+%import(module="gnsstk") "RinexMetHeader.hpp"
 %feature("flatnested", "");
 %template(std_unary_function_RinexMetHeader) std::unary_function<gnsstk::RinexMetHeader,bool>;
-%include "RinexMetData.hpp"
+%import(module="gnsstk") "RinexMetData.hpp"
 %template(std_binary_function_RinexMetData) std::binary_function<gnsstk::RinexMetData,gnsstk::RinexMetData,bool>;
-%include "RinexMetFilterOperators.hpp"
-%include "RinexMetStream.hpp"
-%include "RinexNavDataFactory.hpp"
-%include "RinexNavHeader.hpp"
+%import(module="gnsstk") "RinexMetFilterOperators.hpp"
+%import(module="gnsstk") "RinexMetStream.hpp"
+%import(module="gnsstk") "RinexNavDataFactory.hpp"
+%import(module="gnsstk") "RinexNavHeader.hpp"
 %template (FileStore_RinexNavHeader) gnsstk::FileStore<gnsstk::RinexNavHeader>;
 %template(std_unary_function_RinexNavHeader) std::unary_function<gnsstk::RinexNavHeader,bool>;
-%include "RinexNavFilterOperators.hpp"
-%include "RinexNavStream.hpp"
-%include "RinexObsFilterOperators.hpp"
-%include "RinexObsStream.hpp"
-%include "RinexTimeOffset.hpp"
-%include "SEMBase.hpp"
-%include "SEMHeader.hpp"
+%import(module="gnsstk") "RinexNavFilterOperators.hpp"
+%import(module="gnsstk") "RinexNavStream.hpp"
+%import(module="gnsstk") "RinexObsFilterOperators.hpp"
+%import(module="gnsstk") "RinexObsStream.hpp"
+%import(module="gnsstk") "RinexTimeOffset.hpp"
+%import(module="gnsstk") "SEMBase.hpp"
+%import(module="gnsstk") "SEMHeader.hpp"
 %template(FileStore_SEMHeader) gnsstk::FileStore<gnsstk::SEMHeader>;
-%include "SEMData.hpp"
-%include "SEMNavDataFactory.hpp"
-%include "SEMStream.hpp"
-%include "SP3Base.hpp"
-%include "SP3SatID.hpp"
-%include "SP3Data.hpp"
-%include "SP3Header.hpp"
-%include "SP3NavDataFactory.hpp"
-%include "SP3Stream.hpp"
-/* %include "SRIleastSquares.hpp" */
-%include "X1Sequence.hpp"
-%include "X2Sequence.hpp"
-%include "SVPCodeGen.hpp"
-%include "SaasTropModel.hpp"
-%include "SatDataReader.hpp"
-/* %include "SatPassIterator.hpp" */
-%include "msecHandler.hpp"
-/* %include "SatPassUtilities.hpp" */
-%include "SimpleTropModel.hpp"
-/* %include "SinexBase.hpp" */
-/* %include "SinexHeader.hpp" */
-/* %include "SinexTypes.hpp" */
-/* %include "SinexBlock.hpp" */
-/* %include "SinexData.hpp" */
-/* %include "SinexStream.hpp" */
-%include "SolarPosition.i"
-/* %include "SpecialFuncs.hpp" */
-%include "StreamBuf.hpp"
-%include "TimeCorrection.hpp"
-%include "TimeNamedFileStream.hpp"
+%import(module="gnsstk") "SEMData.hpp"
+%import(module="gnsstk") "SEMNavDataFactory.hpp"
+%import(module="gnsstk") "SEMStream.hpp"
+%import(module="gnsstk") "SP3Base.hpp"
+%import(module="gnsstk") "SP3SatID.hpp"
+%import(module="gnsstk") "SP3Data.hpp"
+%import(module="gnsstk") "SP3Header.hpp"
+%import(module="gnsstk") "SP3NavDataFactory.hpp"
+%import(module="gnsstk") "SP3Stream.hpp"
+/* %import(module="gnsstk") "SRIleastSquares.hpp" */
+%import(module="gnsstk") "X1Sequence.hpp"
+%import(module="gnsstk") "X2Sequence.hpp"
+%import(module="gnsstk") "SVPCodeGen.hpp"
+%import(module="gnsstk") "SaasTropModel.hpp"
+%import(module="gnsstk") "SatDataReader.hpp"
+/* %import(module="gnsstk") "SatPassIterator.hpp" */
+%import(module="gnsstk") "msecHandler.hpp"
+/* %import(module="gnsstk") "SatPassUtilities.hpp" */
+%import(module="gnsstk") "SimpleTropModel.hpp"
+/* %import(module="gnsstk") "SinexBase.hpp" */
+/* %import(module="gnsstk") "SinexHeader.hpp" */
+/* %import(module="gnsstk") "SinexTypes.hpp" */
+/* %import(module="gnsstk") "SinexBlock.hpp" */
+/* %import(module="gnsstk") "SinexData.hpp" */
+/* %import(module="gnsstk") "SinexStream.hpp" */
+%import(module="gnsstk") "SolarPosition.i"
+/* %import(module="gnsstk") "SpecialFuncs.hpp" */
+%import(module="gnsstk") "StreamBuf.hpp"
+%import(module="gnsstk") "TimeCorrection.hpp"
+%import(module="gnsstk") "TimeNamedFileStream.hpp"
 %feature("flatnested");
-%include "TimeRange.hpp"
+%import(module="gnsstk") "TimeRange.hpp"
 %feature("flatnested", "");
-%include "VectorOperators.hpp"
-%include "WNJfilter.hpp"
+%import(module="gnsstk") "VectorOperators.hpp"
+%import(module="gnsstk") "WNJfilter.hpp"
 %feature("flatnested");
-%include "WindowFilter.hpp"
+%import(module="gnsstk") "WindowFilter.hpp"
 %feature("flatnested", "");
-%include "YumaBase.hpp"
-%include "YumaHeader.hpp"
+%import(module="gnsstk") "YumaBase.hpp"
+%import(module="gnsstk") "YumaHeader.hpp"
 %template(FileStore_YumaHeader) gnsstk::FileStore<gnsstk::YumaHeader>;
-%include "YumaData.hpp"
-%include "YumaNavDataFactory.hpp"
-%include "YumaStream.hpp"
-%include "convhelp.hpp"
-%include "demangle.hpp"
-%include "expandtilde.hpp"
-%include "format.hpp"
-/* %include "gdc.hpp" */
-%include "ord.hpp"
-%include "random.hpp"
-%include "singleton.hpp"
+%import(module="gnsstk") "YumaData.hpp"
+%import(module="gnsstk") "YumaNavDataFactory.hpp"
+%import(module="gnsstk") "YumaStream.hpp"
+%import(module="gnsstk") "convhelp.hpp"
+%import(module="gnsstk") "demangle.hpp"
+%import(module="gnsstk") "expandtilde.hpp"
+%import(module="gnsstk") "format.hpp"
+/* %import(module="gnsstk") "gdc.hpp" */
+%import(module="gnsstk") "ord.hpp"
+%import(module="gnsstk") "random.hpp"
+%import(module="gnsstk") "singleton.hpp"

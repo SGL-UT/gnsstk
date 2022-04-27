@@ -1,3 +1,5 @@
+%include "NavOrderFilter.hpp"
+
    // Wrap () operator of NavTimeSort
 %extend gnsstk::NavTimeSort
 {
