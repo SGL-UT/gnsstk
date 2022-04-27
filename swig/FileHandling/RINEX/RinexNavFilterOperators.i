@@ -1,3 +1,5 @@
+%include "RinexNavFilterOperators.hpp"
+
    // Wrap () operators for NavDataOperators
 %extend gnsstk::RinexNavDataOperatorLessThanFull
 {

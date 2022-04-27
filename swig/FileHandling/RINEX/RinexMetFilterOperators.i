@@ -1,3 +1,5 @@
+%include "RinexMetFilterOperators.hpp"
+
 namespace gnsstk
 {
       // Wrap () operators for MetData operators

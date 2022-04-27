@@ -1,4 +1,4 @@
-%module TimeHandling
+%module Rxio
 
 %pythonbegin %{
 from __future__ import absolute_import
@@ -51,12 +51,6 @@ from __future__ import absolute_import
 %include "Ignore.i"
 
 // =============================================================
-//  Section 5: Enumerations
-// =============================================================
-
-ENUM_MAPPER(gnsstk::TimeSystem, TimeSystem, "gnsstk")
-
-// =============================================================
 //  Section 6: C++ exception class handling
 // =============================================================
 
@@ -65,49 +59,78 @@ ENUM_MAPPER(gnsstk::TimeSystem, TimeSystem, "gnsstk")
 %include "Exception.i"
 
 // =============================================================
+//  Section 8: C++ container template instances using only atomic types
+// =============================================================
+
+%import "STLTemplates.i"
+
+// =============================================================
 //  Section 10: C++ include files
 //  Include classes IN DEPENDENCY ORDER otherwise swig will fail.
 // =============================================================
 
- // I don't know why some of these require the module option and others don't,
- // but without it, you get warnings saying to do it.
-%import(module="gnsstk.gnsstk") "Exception.hpp"
-%import "TimeSystemConverter.hpp"
-%import "TimeSystem.hpp"
+%import(module="gnsstk.FileHandling") "FFData.hpp"
+%import "FFStream.hpp"
+%import(module="gnsstk.FileHandling") "FFBinaryStream.hpp"
 
-%include "TimeConstants.hpp"
-%include "CommonTime.hpp"
-%include "TimeTag.hpp"
-%include "ANSITime.hpp"
-%include "TimeConverters.hpp"
-%include "Week.hpp"
-%include "WeekSecond.hpp"
-%include "BDSWeekSecond.hpp"
-%include "CivilTime.hpp"
-%include "GPSZcount.hpp"
-%include "UnixTime.hpp"
-%include "SystemTime.hpp"
-%include "JulianDate.hpp"
-%include "MJD.hpp"
-%include "YDSTime.hpp"
-%include "GPSWeek.hpp"
-%include "GPSWeekZcount.hpp"
-%include "GPSWeekSecond.hpp"
-%include "GALWeekSecond.hpp"
-%include "QZSWeekSecond.hpp"
-/* %include "Epoch.hpp" */
-%include "IRNWeekSecond.hpp"
-%include "PosixTime.hpp"
-%include "TimeCorrection.hpp"
+%include "DataStatus.hpp"
+%include "AshtechData.hpp"
+%include "AshtechALB.hpp"
+%include "AshtechEPB.hpp"
 %feature("flatnested");
-%include "TimeRange.hpp"
+%include "AshtechMBEN.hpp"
 %feature("flatnested", "");
-%include "TimeString.i"
+%include "AshtechPBEN.hpp"
+%include "AshtechStream.hpp"
+%include "MetReader.hpp"
 
 // =============================================================
-//  Section 13: Aggregated features (e.g. string translation)
+//  Section 11: Explicit Python wrappers
 // =============================================================
-STR_STREAM_HELPER(GPSZcount)
+
+%extend gnsstk::AshtechStream
+{
+   // methods for the stream itself:
+   static gnsstk::AshtechStream* inAshtechStream(const std::string fileName)
+   {
+      gnsstk::AshtechStream *s = new gnsstk::AshtechStream (fileName.c_str());
+      return s;
+   }
+
+   static gnsstk::AshtechStream* outAshtechStream(const std::string fileName)
+   {
+      gnsstk::AshtechStream *s = new gnsstk::AshtechStream(
+         fileName.c_str(), std::ios::out|std::ios::trunc);
+      return s;
+   }
+
+   static void _remove(gnsstk::AshtechStream *ptr)
+   {
+      delete ptr;
+   }
+
+   // reader functions:
+   gnsstk::AshtechData readHeader()
+   {
+      gnsstk::AshtechData head;
+      (*($self)) >> head;
+      return head;
+   }
+
+   gnsstk::AshtechData readData()
+   {
+      gnsstk::AshtechData data;
+      if( (*($self)) >> data )
+      {
+         return data;
+      }
+      else
+      {
+         gnsstk::EndOfFile e("AshtechStream reached an EOF.");
+         GNSSTK_THROW(e);
+      }
+   }
+}
 
 // =============================================================
 //  Section 14: Final clean-up

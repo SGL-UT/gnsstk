@@ -1,4 +1,4 @@
-%module NavFilter
+%module "ClockModel"
 
 %pythonbegin %{
 from __future__ import absolute_import
@@ -59,87 +59,49 @@ from __future__ import absolute_import
 %include "Exception.i"
 
 // =============================================================
-//  Section 8: function class templates
+//  Section 8: C++ container template instances using only atomic types
 // =============================================================
 
-namespace std
-{
-   template <typename ArgumentType, typename ResultType> struct unary_function {};
-   template <class Arg1, class Arg2, class Result> struct binary_function {};
-}
+%import "STLTemplates.i"
 
 // =============================================================
 //  Section 10: C++ include files
 //  Include classes IN DEPENDENCY ORDER otherwise swig will fail.
 // =============================================================
 
+%import "CommonTime.hpp"
+%import "SatID.hpp"
+%import "ValidType.hpp"
+%import "Triple.hpp"
+%import "Position.hpp"
+%import "NavLibrary.hpp"
+%import "EllipsoidModel.hpp"
+%import "NavSearchOrder.hpp"
+%import "SVHealth.hpp"
+%import "NavValidityType.hpp"
+%import "IonoModelStore.hpp"
 %import "CarrierBand.hpp"
-%import "PackedNavBits.hpp"
+%import "TropModel.hpp"
+%import "Stats.hpp"
+%import(module="gnsstk.GNSSCore") "ObsID.i"
 
-%include "NavFilterKey.hpp"
-%template(std_binary_function_NavFilterKey) std::binary_function<gnsstk::NavFilterKey *, gnsstk::NavFilterKey *, bool >;
-%include "NavFilter.hpp"
-%include "CNav2SanityFilter.hpp"
-%template(std_binary_function_CNavFilterData) std::binary_function< gnsstk::CNavFilterData,gnsstk::CNavFilterData,bool >;
-%template(std_binary_function_CNavFilterDataPtr) std::binary_function< gnsstk::CNavFilterData *, gnsstk::CNavFilterData *, bool >;
-%include "CNavFilterData.hpp"
-%include "CNavCookFilter.hpp"
-%include "NavFilterMgr.hpp"
-%include "CNavCrossSourceFilter.hpp"
-/* %include "CNavEmptyFilter.hpp" */
-%include "CNavParityFilter.hpp"
-%include "CNavTOWFilter.hpp"
-%include "GenericNavFilterData.hpp"
-%template(std_binary_function_LNavFilterData) std::binary_function< gnsstk::LNavFilterData *, gnsstk::LNavFilterData *, bool >;
-%include "LNavFilterData.i"
-%include "LNavAlmValFilter.hpp"
-%include "LNavCookFilter.hpp"
-%include "LNavCrossSourceFilter.hpp"
-%include "LNavEmptyFilter.hpp"
-%include "LNavEphMaker.i"
-%include "LNavOrderFilter.i"
-%include "LNavParityFilter.hpp"
-%include "LNavTLMHOWFilter.hpp"
-%include "NavMsgData.hpp"
-%include "NavMsgDataBits.hpp"
-%include "NavMsgDataPNB.hpp"
-%include "NavMsgDataWords.hpp"
-%template(NavMsgDataWords_30) gnsstk::NavMsgDataWords<30>;
-%include "NavOrderFilter.i"
-
-%include "CNavFilter.i"
+%include "ClockModel.hpp"
+%include "SvObsEpoch.hpp"
+%template(std_map_ObsEpoch) std::map<gnsstk::SatID, gnsstk::SvObsEpoch>;
+%include "ObsEpochMap.hpp"
+%template(ObsEpochMap) std::map<gnsstk::CommonTime, gnsstk::ObsEpoch>;
+%include "ObsRngDev.hpp"
+%include "ORDEpoch.hpp"
+%include "ObsClockModel.hpp"
+%include "EpochClockModel.hpp"
+%include "LinearClockModel.hpp"
 
 // =============================================================
 //  Section 13: Aggregated features (e.g. string translation)
 // =============================================================
 
-STR_DUMP_HELPER(CNavCrossSourceFilter)
-/** @todo Check why this seg faults at least on objects created with
- * default constructor */
-STR_DUMP_HELPER(CNavFilterData)
-STR_DUMP_HELPER(GenericNavFilterData)
-
-STR_DUMP_DETAIL_HELPER(NavMsgDataWords)
-STR_DUMP_DETAIL_HELPER(NavMsgDataBits)
-STR_DUMP_DETAIL_HELPER(NavMsgDataPNB)
-
-STR_STREAM_HELPER(NavFilterKey)
-/** @todo Check why this seg faults at least on objects created with
- * default constructor */
-STR_STREAM_HELPER(LNavFilterData)
-
-STR_FILTER_HELPER(CNavParityFilter)
-STR_FILTER_HELPER(CNavCookFilter)
-STR_FILTER_HELPER(CNavTOWFilter)
-STR_FILTER_HELPER(CNav2SanityFilter)
-STR_FILTER_HELPER(LNavAlmValFilter)
-STR_FILTER_HELPER(LNavCookFilter)
-STR_FILTER_HELPER(LNavCrossSourceFilter)
-STR_FILTER_HELPER(LNavEmptyFilter)
-STR_FILTER_HELPER(LNavEphMaker)
-STR_FILTER_HELPER(LNavOrderFilter)
-STR_FILTER_HELPER(LNavParityFilter)
-STR_FILTER_HELPER(LNavTLMHOWFilter)
+STR_STREAM_HELPER(SvObsEpoch)
+STR_STREAM_HELPER(ObsEpoch)
 
 // =============================================================
 //  Section 14: Final clean-up

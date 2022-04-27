@@ -37,7 +37,7 @@ class TestRinex3(unittest.TestCase):
 
     def test_rinex3obs_fields(self):
         """
-        Test that the Fields subclass of Rinex3ObsHeader is wrapped correctly for PySGLTk
+        Test that the Fields subclass of Rinex3ObsHeader is wrapped correctly for python.
         Please contact Andrew Kuck before deleting or modifying this test.
         """
 

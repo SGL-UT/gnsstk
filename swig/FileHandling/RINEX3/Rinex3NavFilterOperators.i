@@ -1,3 +1,5 @@
+%include "Rinex3NavFilterOperators.hpp"
+
 namespace gnsstk
 {
       // Wrap () operators for NavDataOperators

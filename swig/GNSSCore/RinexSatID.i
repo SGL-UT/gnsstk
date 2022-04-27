@@ -1,3 +1,5 @@
+%include "RinexSatID.hpp"
+
 %extend gnsstk::RinexSatID
 {
    std::string __str__()

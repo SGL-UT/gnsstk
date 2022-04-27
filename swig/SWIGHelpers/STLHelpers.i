@@ -134,23 +134,3 @@ def vectorToSeq(vector):
         list[i] = vector[i]
     return list
 %}
-
-%pythoncode %{
-    import sys
-    if sys.version_info[0] < 3:
-        from collections import Iterable
-    else:
-        from collections.abc import Iterable
-    enum_vec_classes = [std_vector_GNSS]
-    for cls in enum_vec_classes:
-        orig_constructor = cls.__init__
-        def new_constructor(self, *args):
-            # We assume that the argument is not exhaustible
-            if len(args) == 1 and isinstance(args[0], Iterable) and all(isinstance(x, int) for x in args[0]):
-                orig_constructor(self)
-                for x in args[0]:
-                    self.append(x)
-            else:
-                orig_constructor(self, *args)
-        cls.__init__ = new_constructor
-%}

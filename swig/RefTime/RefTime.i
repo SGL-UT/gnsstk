@@ -1,4 +1,4 @@
-%module TimeHandling
+%module RefTime
 
 %pythonbegin %{
 from __future__ import absolute_import
@@ -12,6 +12,7 @@ from __future__ import absolute_import
 // The header includes are kept in a separate file so they can be used
 // to build other swig modules
 #include "gnsstk_swig.hpp"
+#include "TimeSystem.hpp"
 %}
 
 
@@ -55,6 +56,16 @@ from __future__ import absolute_import
 // =============================================================
 
 ENUM_MAPPER(gnsstk::TimeSystem, TimeSystem, "gnsstk")
+ENUM_MAPPER(gnsstk::ReferenceFrame, ReferenceFrame, "gnsstk")
+%include "TimeSystem.hpp"
+%include "ReferenceFrame.hpp"
+
+%include "renameEnums.i"
+%pythoncode %{
+   renameEnums('TimeSystem')
+   renameEnums('ReferenceFrame')
+%}
+%include "cleanup.i"
 
 // =============================================================
 //  Section 6: C++ exception class handling
@@ -68,46 +79,74 @@ ENUM_MAPPER(gnsstk::TimeSystem, TimeSystem, "gnsstk")
 //  Section 10: C++ include files
 //  Include classes IN DEPENDENCY ORDER otherwise swig will fail.
 // =============================================================
+%import "Vector.hpp"
+%import "Triple.hpp"
+%import "Xvt.hpp"
+%import "Position.hpp"
+%import "EngNav.hpp"
+%import "FFData.hpp"
+%import "RinexObsBase.hpp"
+%import "NavLibrary.hpp"
 
- // I don't know why some of these require the module option and others don't,
- // but without it, you get warnings saying to do it.
-%import(module="gnsstk.gnsstk") "Exception.hpp"
-%import "TimeSystemConverter.hpp"
-%import "TimeSystem.hpp"
-
-%include "TimeConstants.hpp"
-%include "CommonTime.hpp"
-%include "TimeTag.hpp"
-%include "ANSITime.hpp"
-%include "TimeConverters.hpp"
-%include "Week.hpp"
-%include "WeekSecond.hpp"
-%include "BDSWeekSecond.hpp"
-%include "CivilTime.hpp"
-%include "GPSZcount.hpp"
-%include "UnixTime.hpp"
-%include "SystemTime.hpp"
-%include "JulianDate.hpp"
-%include "MJD.hpp"
-%include "YDSTime.hpp"
-%include "GPSWeek.hpp"
-%include "GPSWeekZcount.hpp"
-%include "GPSWeekSecond.hpp"
-%include "GALWeekSecond.hpp"
-%include "QZSWeekSecond.hpp"
-/* %include "Epoch.hpp" */
-%include "IRNWeekSecond.hpp"
-%include "PosixTime.hpp"
-%include "TimeCorrection.hpp"
-%feature("flatnested");
-%include "TimeRange.hpp"
-%feature("flatnested", "");
-%include "TimeString.i"
+%include "TimeSystemConverter.hpp"
+%include "BasicTimeSystemConverter.hpp"
+%include "ReferenceFrame.hpp"
+%include "HelmertTransform.hpp"
+%include "NavTimeSystemConverter.hpp"
+%include "TimeSystem.hpp"
+%include "TimeSystemCorr.hpp"
 
 // =============================================================
-//  Section 13: Aggregated features (e.g. string translation)
+//  Section 11: Explicit Python wrappers
 // =============================================================
-STR_STREAM_HELPER(GPSZcount)
+
+%pythoncode %{
+
+from gnsstk.TimeHandling import CommonTime
+
+def now(timeSystem=TimeSystem.UTC):
+    """
+    Returns the current time (defined by what SystemTime() returns)
+    in a CommonTime format, in the given TimeSystem.
+
+    Parameters:
+            -----------
+
+        timeSystem:  the TimeSystem to assign to the output
+    """
+    t = SystemTime().toCommonTime()
+    t.setTimeSystem(timeSystem)
+    return t
+
+
+def times(starttime, endtime, seconds=0.0, days=0):
+    """
+    Returns a generator expression of CommonTime objects between (or equal to)
+    starttime and endtime.
+
+    You may specify a timestep in seconds (floating/integral type)
+    and/or days (integral type). Not specifying a timestep will
+    return a generator that yields the starttime and endtime parameters.
+    The timestep must be positive, or a gnsstk.exceptions.InvalidRequest
+    will be raised.
+    """
+    if (seconds < 0.0) or (days < 0):
+        raise InvalidRequest('Negative time steps may not be used.')
+        return
+
+    if (seconds == 0.0) and (days == 0):
+        # empty generator:
+        yield starttime
+        yield endtime
+        return
+
+    t = CommonTime(starttime)
+    while t <= endtime:
+        yield CommonTime(t)
+        t.addSeconds(seconds)
+        t.addDays(days)
+
+%}
 
 // =============================================================
 //  Section 14: Final clean-up

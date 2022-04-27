@@ -48,11 +48,6 @@
 
 namespace gnsstk
 {
-      /// FFStreamError is an exception for when the file read doesn't
-      /// match the specs for that file type.
-      /// @ingroup FileHandling
-      /// @ingroup exceptionclass
-   NEW_EXCEPTION_CLASS(FFStreamError, gnsstk::Exception);
 }
 
 #endif

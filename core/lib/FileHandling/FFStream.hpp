@@ -62,10 +62,6 @@ namespace gnsstk
        * structured data formats, for example, RINEX.
        */
 
-      /// This gets thrown if a valid EOF occurs on formattedGetLine.
-      /// @ingroup exceptionclass
-   NEW_EXCEPTION_CLASS(EndOfFile, gnsstk::FFStreamError);
-
       /// @ingroup FileHandling
       //@{
 
