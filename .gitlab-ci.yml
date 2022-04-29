@@ -182,6 +182,7 @@ generate_documentation:
   artifacts:
     paths:
       - docs/
+    expire_in: 4 days
 
 build_debian_9:
   stage: build
@@ -199,6 +200,7 @@ build_debian_9:
   artifacts:
     paths:
     - build/
+    expire_in: 4 days
 
 build_debian_10:
   stage: build
@@ -216,6 +218,7 @@ build_debian_10:
   artifacts:
     paths:
       - build/
+    expire_in: 4 days
 
 build_debian_10_virtualenv:
   stage: build
@@ -235,6 +238,7 @@ build_debian_10_virtualenv:
     paths:
       - myenv/
       - build/
+    expire_in: 4 days
 
 build_conda_py27:
   stage: build
@@ -253,6 +257,7 @@ build_conda_py27:
   artifacts:
     paths:
       - build/
+    expire_in: 4 days
 
 build_conda_py36:
   stage: build
@@ -271,6 +276,7 @@ build_conda_py36:
   artifacts:
     paths:
       - build/
+    expire_in: 4 days
 
 build_redhat:
   stage: build
@@ -288,6 +294,7 @@ build_redhat:
   artifacts:
     paths:
     - build/
+    expire_in: 4 days
 
 build_redhat_8:
   stage: build
@@ -305,6 +312,7 @@ build_redhat_8:
   artifacts:
     paths:
       - build/
+    expire_in: 4 days
 
 build_windows_vs2019_dll:
   variables:
@@ -322,6 +330,7 @@ build_windows_vs2019_dll:
   artifacts:
     paths:
       - build/
+    expire_in: 4 days
   allow_failure: false
   timeout: 180m
 
@@ -341,6 +350,7 @@ build_windows:
   artifacts:
     paths:
     - build/
+    expire_in: 4 days
 
 build_windows_vs2019:
   variables:
@@ -358,6 +368,7 @@ build_windows_vs2019:
   artifacts:
     paths:
       - build/
+    expire_in: 4 days
   allow_failure: false
 
 # Test Stage
@@ -378,6 +389,7 @@ test_debian_9:
     paths:
     - build/Testing/Temporary/
     - build/swig/
+    expire_in: 4 days
   dependencies:
     - build_debian_9
 
@@ -417,6 +429,7 @@ test_debian_10_virtualenv:
     paths:
     - build/Testing/Temporary/
     - build/swig/
+    expire_in: 4 days
   dependencies:
     - build_debian_10_virtualenv
 
@@ -437,6 +450,7 @@ test_conda_py27:
     paths:
     - build/Testing/Temporary/
     - build/swig/
+    expire_in: 4 days
   dependencies:
     - build_conda_py27
 
@@ -457,6 +471,7 @@ test_conda_py36:
     paths:
     - build/Testing/Temporary/
     - build/swig/
+    expire_in: 4 days
   dependencies:
     - build_conda_py36
 
@@ -474,6 +489,7 @@ test_redhat:
     when: on_failure
     paths:
     - build/Testing/Temporary/
+    expire_in: 4 days
   dependencies:
     - build_redhat
 
@@ -491,6 +507,7 @@ test_redhat_8:
     when: on_failure
     paths:
       - build/Testing/Temporary/
+    expire_in: 4 days
   dependencies:
     - build_redhat_8
 
@@ -511,6 +528,7 @@ test_windows:
     paths:
     - build/Testing/Temporary/
     - build/swig/
+    expire_in: 4 days
   dependencies:
     - build_windows
   timeout: 10m
@@ -534,6 +552,7 @@ test_windows_vs2019:
     paths:
       - build/Testing/Temporary/
       - build/swig/
+    expire_in: 4 days
   dependencies:
     - build_windows_vs2019
   timeout: 10m
@@ -557,6 +576,7 @@ test_windows_vs2019_dll:
     paths:
       - build/Testing/Temporary/
       - build/swig/
+    expire_in: 4 days
   dependencies:
     - build_windows_vs2019_dll
   timeout: 10m
@@ -581,6 +601,7 @@ user_install_debian_9:
   artifacts:
     paths:
       - build/install
+    expire_in: 4 days
   dependencies:
     - build_debian_9
 
@@ -599,6 +620,7 @@ user_install_debian_10:
   artifacts:
     paths:
       - build/install
+    expire_in: 4 days
   dependencies:
     - build_debian_10
 
@@ -616,6 +638,7 @@ virtualenv_install_debian_10:
   artifacts:
     paths:
       - myenv
+    expire_in: 4 days
   dependencies:
     - build_debian_10_virtualenv
 
@@ -634,6 +657,7 @@ user_install_redhat:
   artifacts:
     paths:
       - build/install
+    expire_in: 4 days
   dependencies:
     - build_redhat
 
@@ -652,6 +676,7 @@ user_install_redhat_8:
   artifacts:
     paths:
       - build/install
+    expire_in: 4 days
   dependencies:
     - build_redhat_8
 
@@ -672,6 +697,7 @@ user_install_windows:
   artifacts:
     paths:
       - build/install/
+    expire_in: 4 days
   dependencies:
     - build_windows
     - test_windows
@@ -697,6 +723,7 @@ user_install_windows_vs2019:
   artifacts:
     paths:
       - build/install/
+    expire_in: 4 days
   dependencies:
     - build_windows_vs2019
     - test_windows_vs2019
@@ -720,6 +747,7 @@ user_install_windows_vs2019_dll:
   artifacts:
     paths:
       - build/install/
+    expire_in: 4 days
   dependencies:
     - build_windows_vs2019_dll
     - test_windows_vs2019_dll
@@ -850,7 +878,6 @@ package_debian_9:
     - mv ../*.deb debs
     - mv ../*.changes debs
     - mv ../*.dsc debs
-    - mv ../*.git debs
     - mv ../*.buildinfo debs
   artifacts:
     paths:
@@ -886,7 +913,6 @@ package_debian_10:
     - mv ../*.deb debs
     - mv ../*.changes debs
     - mv ../*.dsc debs
-    - mv ../*.git debs
     - mv ../*.buildinfo debs
   artifacts:
     paths:
