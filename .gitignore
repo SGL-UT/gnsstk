@@ -19,3 +19,7 @@ gnsstk.egg-info/
 
 # Coverage file results
 gcovr
+
+# Sonar files
+.scannerwork/
+.sonar/
