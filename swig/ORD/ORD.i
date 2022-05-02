@@ -59,6 +59,12 @@ from __future__ import absolute_import
 %include "Exception.i"
 
 // =============================================================
+//  Section 8: C++ container template instances using only atomic types
+// =============================================================
+
+%import(module="gnsstk") "STLTemplates.i"
+
+// =============================================================
 //  Section 10: C++ include files
 //  Include classes IN DEPENDENCY ORDER otherwise swig will fail.
 // =============================================================
