@@ -15,6 +15,8 @@ include:
   - project: sgl-tks/ci-control
     file: /general/artifactory-upload.yml
     ref: main
+  - project: 'sgl/ci-control'
+    file: 'common/scanning/sonar.yml'
 
 stages:
 - check
@@ -53,6 +55,11 @@ variables:
   BLD_VS_STATIC:
     value: "True"
     description: "If True, then build Windows Static Libraries (VS2019 only, VS2015 always builds static)"
+  SONAR_EXCLUSIONS: '**/tests/**,**/conda_recipe/**,**/data/**,**/coverage-reports/**,**/build*/**,**/debian/**,**/deprecated/**,**/examples/**,**/ref/**,**/rpm_files/**,**/swig/**'
+  SONAR_SOURCES: 'core'
+  SONAR_TEST_SOURCES: 'core/tests'
+  SONAR_TEST_INCLUSION: 'core/tests'
+  SONAR_PROJECT_KEY: gnsstk
 
 # Template for all normal jobs.
 .normal_build:
@@ -277,6 +284,30 @@ build_conda_py36:
     paths:
       - build/
     expire_in: 4 days
+
+sonar_conda_py36:
+  stage: build
+  needs: []
+  extends: 
+   - .normal_build
+   - .sonarqube-check
+  tags:
+    - docker
+  image: $DOCKER_REGISTRY/deb9_conda_py36
+  script:
+    - conda activate py36
+    - conda install -y cmake=3.22.1 nodejs
+    - mkdir -p build coverage-reports
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+    - build-wrapper-linux-x86-64 --out-dir . make all -j 4
+    - ctest -j 4 --output-junit $CI_PROJECT_DIR/coverage-reports/coverage-cpp.xml
+    - cd ..
+    - !reference [.scan-c++, script]
+  artifacts:
+    paths:
+      - build/
 
 build_redhat:
   stage: build
