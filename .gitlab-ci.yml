@@ -87,6 +87,7 @@ variables:
       - /^ci_.*$/
       - /^version_.*_prep$/
       - stable
+      - /^release\/v[0-9.]*$/
     variables:
       - $RELEASE_ONLY != "True" && $NO_BIGBUILD_CI != "True"
 
@@ -961,6 +962,8 @@ package_conda:
   script:
     - conda activate conda_builder
     - export GIT_COMMIT=$CI_COMMIT_REF_NAME
+    - export GIT_LAST_TAG=$(git describe --abbrev=0 origin/stable)
+    - export GIT_CHANGES_LAST_TAG=$(git rev-list --count $(git describe --abbrev=0 origin/stable)..@)
     # Build Conda Py27 package
     - conda-build conda_recipe
     # Copy files to local directory for archiving.
