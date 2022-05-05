@@ -53,11 +53,8 @@
 #include "PNBBDSD1NavDataFactory.hpp"
 #include "PNBBDSD2NavDataFactory.hpp"
 #include "PNBGLOFNavDataFactory.hpp"
-#ifdef BUILD_EXT
-// Support for Ext factories must be added here to enforce initialization order
 #include "YumaNavDataFactory.hpp"
 #include "SEMNavDataFactory.hpp"
-#endif
 
 namespace gnsstk
 {
@@ -98,14 +95,13 @@ namespace gnsstk
             // ignore the return value
          MultiFormatNavDataFactory::addFactory(ndfp1);
          MultiFormatNavDataFactory::addFactory(ndfp2);
-#ifdef BUILD_EXT
+
          gnsstk::NavDataFactoryPtr
             ndfp3(std::make_shared<gnsstk::YumaNavDataFactory>());
          gnsstk::NavDataFactoryPtr
             ndfp4(std::make_shared<gnsstk::SEMNavDataFactory>());
          MultiFormatNavDataFactory::addFactory(ndfp3);
          MultiFormatNavDataFactory::addFactory(ndfp4);
-#endif
 
          gnsstk::PNBNavDataFactoryPtr
             lnav(std::make_shared<gnsstk::PNBGPSLNavDataFactory>());

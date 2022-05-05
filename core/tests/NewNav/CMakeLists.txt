@@ -433,3 +433,13 @@ add_executable(PNBGLOFNavDataFactory_T PNBGLOFNavDataFactory_T.cpp)
 target_link_libraries(PNBGLOFNavDataFactory_T gnsstk)
 add_test(NAME PNBGLOFNavDataFactory_T COMMAND $<TARGET_FILE:PNBGLOFNavDataFactory_T>)
 set_property(TEST PNBGLOFNavDataFactory_T PROPERTY LABELS NewNav)
+
+add_executable(YumaNavDataFactory_T YumaNavDataFactory_T.cpp)
+target_link_libraries(YumaNavDataFactory_T gnsstk)
+add_test(NAME YumaNavDataFactory_T COMMAND $<TARGET_FILE:YumaNavDataFactory_T>)
+set_property(TEST YumaNavDataFactory_T PROPERTY LABELS NewNav)
+
+add_executable(SEMNavDataFactory_T SEMNavDataFactory_T.cpp)
+target_link_libraries(SEMNavDataFactory_T gnsstk)
+add_test(NAME SEMNavDataFactory_T COMMAND $<TARGET_FILE:SEMNavDataFactory_T>)
+set_property(TEST SEMNavDataFactory_T PROPERTY LABELS NewNav)
