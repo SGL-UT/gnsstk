@@ -52,74 +52,87 @@
 #include "build_config.h"
 #include "TestUtil.hpp"
 
+class Yuma_T
+{
+public:
+   unsigned openMissingFileTest();
+   unsigned openInvalidFileTest();
+   unsigned roundTripTest();
+};
+
+
+unsigned Yuma_T ::
+openMissingFileTest()
+{
+   TUDEF("YumaStream", "open");
+   const char testfn[] = "wioefoqwief.wiroug04tu24tgjlv";
+   std::ifstream fstr(testfn, std::ios::in);
+   TUASSERT(!fstr);
+   gnsstk::YumaStream str(testfn, std::ios::in);
+   TUASSERT(!str);
+   TURETURN();
+}
+
+
+unsigned Yuma_T ::
+openInvalidFileTest()
+{
+   TUDEF("YumaStream", "open");
+   std::string testfn(gnsstk::getPathData() + gnsstk::getFileSep() +
+                      "timeconvert_2015_200_0.exp");
+   gnsstk::YumaStream str(testfn.c_str(), std::ios::in);
+      // opening works because there's no header.
+   TUASSERT((bool)str);
+   gnsstk::YumaData data;
+   str >> data;
+      // reading data should fail
+   TUASSERT(!str);
+   TURETURN();
+}
+
+
+unsigned Yuma_T ::
+roundTripTest()
+{
+   TUDEF("YumaData", "operator<</>>");
+   std::string testfn(gnsstk::getPathData() + gnsstk::getFileSep() +
+                      "test_input_yuma377.txt");
+   std::string outfn(gnsstk::getPathTestTemp() + gnsstk::getFileSep() +
+                     "test_output_yuma377.out");
+   gnsstk::YumaStream istr(testfn.c_str(), std::ios::in);
+   TUASSERT(static_cast<bool>(istr));
+   gnsstk::YumaStream ostr(outfn.c_str(), std::ios::out);
+   TUASSERT(static_cast<bool>(ostr));
+   gnsstk::YumaData data;
+   while (istr >> data)
+   {
+      ostr << data;
+   }
+   istr.close();
+   ostr.close();
+      // We need to use df_diff externally to compare the files
+      // because of slight spacing changes as well as slight
+      // formatting differences for numbers, e.g.
+      // 5.9690475460E-03 vs
+      // 0.5969047546E-002
+      /** @todo determine if this is still valid or if the spec
+       * dictates that exact format. */
+   TURETURN();
+}
+
 using namespace std;
 using namespace gnsstk;
 
 int main( int argc, char * argv[] )
 {
-   TUDEF("Yuma_T","readData");
+   int errorTotal = 0;
+   Yuma_T testClass;
 
-   string origFile("test_input_yuma377.txt");
-   string testFile("test_output_yuma377.out");
-   string testFile2("test_output_Yuma_T.out");
+   errorTotal += testClass.openMissingFileTest();
+   errorTotal += testClass.openInvalidFileTest();
+   errorTotal += testClass.roundTripTest();
 
-   std::list<OrbAlmGen> oagList;
+   cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
-      // Read an existing Yuma almanac file and write it back out.
-   try
-   {
-      string fs = getFileSep();
-      string df(getPathData()+fs);
-      string inFile = df + origFile;
-
-      string tf(getPathTestTemp()+fs);
-      string outFile1 = tf + testFile;
-
-      YumaStream In(inFile.c_str());
-      YumaStream Out(outFile1.c_str(), ios::out);
-      YumaData Data;
-
-      string outFile2 = tf + testFile2;
-      ofstream outAlmDmp;
-      outAlmDmp.open(outFile2.c_str(),ios::out);
-
-      while (In >> Data)
-      {
-         Out << Data;
-
-         OrbAlmGen oag = OrbAlmGen(Data);
-         oag.dump(outAlmDmp);
-         oagList.push_back(oag);
-      }
-      In.close();
-      Out.close();
-
-      TUCSM("RereadData");
-      YumaStream In2(outFile1.c_str(), ios::in);
-      std::list<OrbAlmGen>::const_iterator cit = oagList.begin();
-      int index = 0;
-      while (In2 >> Data)
-      {
-         OrbAlmGen oag2 = OrbAlmGen(Data);
-         const OrbAlmGen& oagRef = *cit;
-         bool test = oag2.isSameData(&(oagRef));
-         TUASSERTE(bool,test,true);
-         index++;
-         cit++;
-      }
-      outAlmDmp.close();
-    }
-   catch(gnsstk::Exception& e)
-   {
-      stringstream ss;
-      ss << e;
-      TUFAIL(ss.str());
-   }
-   catch (...)
-   {
-      stringstream ss;
-      ss << "unknown error.  Done.";
-      TUFAIL(ss.str());
-   }
-   TURETURN();
+   return errorTotal;
 }

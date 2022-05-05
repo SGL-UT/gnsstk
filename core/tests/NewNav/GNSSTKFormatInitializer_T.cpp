@@ -40,6 +40,8 @@
 #include "TestUtil.hpp"
 #include "SP3NavDataFactory.hpp"
 #include "RinexNavDataFactory.hpp"
+#include "SEMNavDataFactory.hpp"
+#include "YumaNavDataFactory.hpp"
 
 class TestClass : public gnsstk::MultiFormatNavDataFactory
 {
@@ -64,6 +66,8 @@ constructorTest()
    TUDEF("GNSSTKFormatInitializer", "GNSSTKFormatInitializer");
    bool foundRinex = false;
    bool foundSP3 = false;
+   bool foundYuma = false;
+   bool foundSEM = false;
       // Iterate over the factories and try to find the expected
       // factory objects.  The factories map may also contain ext
       // factories, so we ignore anything else.
@@ -78,9 +82,19 @@ constructorTest()
       {
          foundSP3 = true;
       }
+      else if (dynamic_cast<gnsstk::YumaNavDataFactory*>(p) != nullptr)
+      {
+         foundYuma = true;
+      }
+      else if (dynamic_cast<gnsstk::SEMNavDataFactory*>(p) != nullptr)
+      {
+         foundSEM = true;
+      }
    }
    TUASSERT(foundRinex);
    TUASSERT(foundSP3);
+   TUASSERT(foundYuma);
+   TUASSERT(foundSEM);
    TURETURN();
 }
 
