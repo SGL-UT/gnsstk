@@ -231,6 +231,25 @@ namespace gnsstk
          return true;
       }
 
+
+      GPSWeekSecond& weekRolloverAdj(const GPSWeekSecond& refTime)
+      {
+         double diff = sow - refTime.sow;
+         if (diff < -HALFWEEK)
+         {
+            week = refTime.week + 1;
+         }
+         else if (diff > HALFWEEK)
+         {
+            week = refTime.week - 1;
+         }
+         else
+         {
+            week = refTime.week;
+         }
+         return *this;
+      }
+
    }; // end class GPSWeekSecond
 
       //@}

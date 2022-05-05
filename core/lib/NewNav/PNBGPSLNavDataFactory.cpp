@@ -586,10 +586,15 @@ namespace gnsstk
          // Use the transmit time to get a full week for toe/toc
       GPSWeekSecond refTime(eph->xmitTime);
       long refWeek = refTime.week;
+         // cerr << "toe=" << toe << "  refTime=" << refTime << "  wn(1)=" << wn
+         //      << "  refWeek=" << refWeek;
+         // this is the 10-bit week rollover fix
       wn = timeAdjustWeekRollover(wn, refWeek);
+         // cerr << "  wn(2)=" << wn << endl;
          // Now we can set the Toe/Toc properly
-      eph->Toe = GPSWeekSecond(wn,toe);
-      eph->Toc = GPSWeekSecond(wn,toc);
+         // and use the half-week test for week rollover fixation.
+      eph->Toe = GPSWeekSecond(wn,toe).weekRolloverAdj(refTime);
+      eph->Toc = GPSWeekSecond(wn,toc).weekRolloverAdj(refTime);
       if (navIn->getsatSys().system == gnsstk::SatelliteSystem::QZSS)
       {
          eph->Toe.setTimeSystem(gnsstk::TimeSystem::QZS);
@@ -799,7 +804,8 @@ namespace gnsstk
          GPSWeekSecond ws(navIn->getTransmitTime());
          long refWeek = ws.week;
          unsigned fullWNa = timeAdjust8BitWeekRollover(shortWNa, refWeek);
-         fullWNaMap[xmitSat.id] = GPSWeekSecond(fullWNa, toa);
+         fullWNaMap[xmitSat.id] = GPSWeekSecond(fullWNa,toa);
+         fullWNaMap[xmitSat.id].weekRolloverAdj(ws);
          // cerr << "page 51 WNa = " << shortWNa << "  toa = " << toa
          //      << "  WNx = " << (ws.week & 0x0ff) << "  tox = " << ws.sow
          //      << "  fullWNa = " << fullWNa << endl;
