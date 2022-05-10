@@ -104,7 +104,7 @@ static_analysis:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
   script:
     - ./lint_test.sh
   # Allow failures here to prevent blocking the rest of the pipeline.
@@ -117,7 +117,7 @@ sgllint_lint:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos7_conda_py27:latest
+  image: $DOCKER_REGISTRY/sgl_ci/centos7_conda_py27:latest
   script:
     - '######'
     - '# This job checks all files for required lines like copyright/license statements.'
@@ -137,7 +137,7 @@ protected_term_lint:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/deb9_conda_py36:latest
+  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36:latest
   script:
     - '######'
     - '# This job checks all files for protected terms in files modified since the branch split from default.'
@@ -157,7 +157,7 @@ protected_history_lint:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/deb9_conda_py36:latest
+  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36:latest
   script:
     - '######'
     - '# This job checks all files modified on this branch for sensitive terms.'
@@ -178,7 +178,7 @@ generate_documentation:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
   script:
     # Install GraphViz
     - sudo apt-get install -y graphviz
@@ -197,7 +197,7 @@ build_debian_9:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
   script:
     - mkdir -p build
     - cd build
@@ -215,7 +215,7 @@ build_debian_10:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
   script:
     - mkdir -p build
     - cd build
@@ -233,7 +233,7 @@ build_debian_11:
   extends: .normal_build
   tags:
     - docker-executor
-  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - mkdir -p build
     - cd build
@@ -250,7 +250,7 @@ build_debian_10_virtualenv:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
   script:
     - python3 -m virtualenv --system-site-packages -p /usr/bin/python3 myenv
     - source myenv/bin/activate
@@ -270,7 +270,7 @@ build_debian_11_virtualenv:
   extends: .normal_build
   tags:
     - docker-executor
-  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - python3 -m virtualenv --system-site-packages -p /usr/bin/python3 myenv
     - source myenv/bin/activate
@@ -289,7 +289,7 @@ build_conda_py27:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/deb9_conda_py27
+  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py27
   script:
     - conda activate py27
     - mkdir -p build
@@ -308,7 +308,7 @@ build_conda_py36:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/deb9_conda_py36
+  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36
   script:
     - conda activate py36
     - mkdir -p build
@@ -329,7 +329,7 @@ sonar_conda_py36:
    - .sonarqube-check
   tags:
     - docker
-  image: $DOCKER_REGISTRY/deb9_conda_py36
+  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36
   script:
     - conda activate py36
     - conda install -y cmake=3.22.1 nodejs
@@ -351,7 +351,7 @@ build_redhat:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos7_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos7_sgl
   script:
     - mkdir -p build
     - cd build
@@ -369,7 +369,7 @@ build_redhat_8:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
   script:
     - mkdir -p build
     - cd build
@@ -446,7 +446,7 @@ test_debian_9:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
   script:
     - cd build
     - ctest -j 4
@@ -466,7 +466,7 @@ test_debian_10:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
   script:
     - cd build
     - ctest -j 4
@@ -485,7 +485,7 @@ test_debian_11:
   extends: .normal_build
   tags:
     - docker-executor
-  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - cd build
     - ctest -j 4
@@ -504,7 +504,7 @@ test_debian_10_virtualenv:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
   script:
     - source myenv/bin/activate
     - cd build
@@ -525,7 +525,7 @@ test_debian_11_virtualenv:
   extends: .normal_build
   tags:
     - docker-executor
-  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - source myenv/bin/activate
     - cd build
@@ -545,7 +545,7 @@ test_conda_py27:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/deb9_conda_py27
+  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py27
   script:
     - conda activate py27
     - cd build
@@ -566,7 +566,7 @@ test_conda_py36:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/deb9_conda_py36
+  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36
   script:
     - conda activate py36
     - cd build
@@ -587,7 +587,7 @@ test_redhat:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos7_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos7_sgl
   script:
     - cd build
     - ctest -j 4
@@ -605,7 +605,7 @@ test_redhat_8:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
   script:
     - cd build
     - ctest -j 4
@@ -698,7 +698,7 @@ user_install_debian_9:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
   script:
     - cd build
     - export gnsstk=`pwd`/install
@@ -717,7 +717,7 @@ user_install_debian_10:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
   script:
     - cd build
     - export gnsstk=`pwd`/install
@@ -736,7 +736,7 @@ user_install_debian_11:
   extends: .big_build
   tags:
     - docker-executor
-  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - cd build
     - export gnsstk=`pwd`/install
@@ -754,7 +754,7 @@ virtualenv_install_debian_10:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
   script:
     - source myenv/bin/activate
     - cd build
@@ -772,7 +772,7 @@ virtualenv_install_debian_11:
   extends: .normal_build
   tags:
     - docker-executor
-  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - source myenv/bin/activate
     - cd build
@@ -789,7 +789,7 @@ user_install_redhat:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos7_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos7_sgl
   script:
     - cd build
     - export gnsstk=`pwd`/install
@@ -808,7 +808,7 @@ user_install_redhat_8:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
   script:
     - cd build
     - export gnsstk=`pwd`/install
@@ -903,7 +903,7 @@ system_install_debian_9:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
   script:
     - cd build
     - export gnsstk=/usr/local
@@ -918,7 +918,7 @@ system_install_redhat:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos7_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos7_sgl
   script:
     - cd build
     - export gnsstk=/usr/local
@@ -933,7 +933,7 @@ system_install_redhat_8:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
   script:
     - cd build
     - export gnsstk=/usr/local
@@ -957,7 +957,7 @@ system_install_redhat_8:
 #     - docker-executor
 #     # Not all docker runners support debian 7
 #     - deb7-support
-#   image: $DOCKER_REGISTRY/debian7_fai_ish
+#   image: $DOCKER_REGISTRY/sgl_ci/debian7_fai_ish
 #   script:
 #     - rm -rf ../*.deb
 #     # Mark the debian log so that this package is a backport.
@@ -987,7 +987,7 @@ system_install_redhat_8:
 #   needs: []
 #   tags:
 #     - docker-executor
-#   image: $DOCKER_REGISTRY/debian8_fai_ish
+#   image: $DOCKER_REGISTRY/sgl_ci/debian8_fai_ish
 #   script:
 #     - rm -rf ../*.deb
 #     # Mark the debian log so that this package is a backport.
@@ -1011,7 +1011,7 @@ package_debian_9:
   needs: []
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
   script:
     - rm -rf ../*.deb
     - dpkg-buildpackage --build-profiles=pkg_python,debug_package -us -uc -d --changes-option="-DDistribution=stretch-sgl"
@@ -1041,7 +1041,7 @@ package_debian_10:
     - when: on_success
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
   script:
     - rm -rf ../*.deb
     # Mark the debian log so that this package is a backport.
@@ -1077,7 +1077,7 @@ package_debian_11:
     - when: on_success
   tags:
     - docker-executor
-  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - rm -rf ../*.deb
     # Mark the debian log so that this package is a backport.
@@ -1104,7 +1104,7 @@ package_conda:
   needs: []
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/deb9_conda_py36
+  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36
   script:
     - conda activate conda_builder
     - export GIT_COMMIT=$CI_COMMIT_REF_NAME
@@ -1127,7 +1127,7 @@ package_redhat:
   needs: []
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos7_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos7_sgl
   script:
     - bash rpm_files/setup_dirs.sh
     - git archive --prefix gnsstk-master/ -o rpm_files/SOURCES/gnsstk-master.tar.gz HEAD
@@ -1144,7 +1144,7 @@ package_redhat_8:
   needs: []
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
   script:
     - bash rpm_files/setup_dirs.sh
     - git archive --prefix gnsstk-master/ -o rpm_files/SOURCES/gnsstk-master.tar.gz HEAD
@@ -1161,7 +1161,7 @@ package_redhat_8_py36:
   needs: []
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
   script:
     - bash rpm_files/setup_dirs.sh
     - git archive --prefix python3-gnsstk-master/ -o rpm_files/SOURCES/python3-gnsstk-master.tar.gz HEAD
@@ -1239,7 +1239,7 @@ deploy_debian_9:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
   script:
     - cd debs
     - sudo apt-get -y install ./*.deb
@@ -1254,7 +1254,7 @@ deploy_debian_10:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
   script:
     - cd debs
     - sudo apt-get -y install ./*.deb
@@ -1270,7 +1270,7 @@ deploy_debian_11:
   extends: .big_build
   tags:
     - docker-executor
-  image: sgl-artifactory.arlut.utexas.edu/artifactory/sgl-docker/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - cd debs
     - apt-get -y install ./*.deb
@@ -1286,7 +1286,7 @@ deploy_redhat:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos7_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos7_sgl
   script:
     - cd rpm_files/RPMS/x86_64/
     - sudo yum install gnsstk-*.rpm -y
@@ -1301,7 +1301,7 @@ deploy_redhat_8:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
   script:
     - cd rpm_files/RPMS/x86_64/
     - sudo yum install gnsstk-*.rpm -y
@@ -1316,7 +1316,7 @@ deploy_redhat_py36:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
   script:
     - cd rpm_files/RPMS/x86_64/
     - sudo yum install gnsstk-*.rpm -y
