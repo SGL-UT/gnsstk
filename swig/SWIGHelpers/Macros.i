@@ -48,7 +48,7 @@ catch(const gnsstk:: NAME &e)
          "NAME",
          desc);
    }
-   SWIG_fail;
+   return nullptr;;
 }
 %enddef
 
@@ -88,7 +88,7 @@ catch(const gnsstk:: NAME &e)
         $self->print(stream);
         return stream.str();
     }
-}   
+}
 %enddef
 
 
@@ -158,7 +158,7 @@ catch(const gnsstk:: NAME &e)
 
     std::string __repr__() {
         return gnsstk::StringUtils::asString(*($self));
-    } 
+    }
 }
 %enddef
 
