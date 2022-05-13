@@ -3,8 +3,7 @@ package:
   version: {{ environ.get('GIT_DESCRIBE_TAG', 'v0.0')[1:] }}
 
 source:
-  git_rev: {{ environ.get('GIT_COMMIT', 'main') }}
-  git_url: https://sgl-git.arlut.utexas.edu/sgl/gpstk.git
+  path: ../
 
 build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}

@@ -1,3 +1,10 @@
+gpstk (11.2.2-2) stable; urgency=low
+
+  * Add Breaks statement to insure proper upgrade ordering.
+  * Fix py3 py2 packages to allow coinstall.
+ 
+ -- Andrew Kuck <kuck@arlut.utexas.edu>  Wed, 8 Mar 2022 12:00:00 -0500
+
 gpstk (11.2.2-1) stable; urgency=low
 
   * Updated to version 11.2.2
