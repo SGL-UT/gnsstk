@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     help:           $ python setup.py --help-commands
-    system install: $ python setup.py install 
+    system install: $ python setup.py install
     user install:   $ python setup.py install --prefix=~/.local
     documentation:  https://docs.python.org/2/install/
 
@@ -21,22 +21,31 @@ Details:
 """
 
 import os
-
+import sys
 from setuptools import setup
 
 
 MODULE_DIR = os.path.split(__file__)[0]
 
+
+
+
 #----------------------------------------
 # File lists
 #----------------------------------------
 
+# Below Python 3, we install a reduced set of files to avoid colliding with the python3 variant.
+if sys.version_info < (3, 0):
+    scripts_list = []
+    data_files = []
+else:
+    scripts_list = [
+        "apps/gpstk_timeconvert.py",
+        "apps/sem_plot.py",
+        "apps/position_difference.py",
+        ]
+    data_files = [('', ['README.md',]),]
 
-scripts_list = [
-    "apps/gpstk_timeconvert.py",
-    "apps/sem_plot.py",
-    "apps/position_difference.py",
-    ]
 
 # For package distribution channels
 classifiers_list = ['License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
@@ -76,7 +85,7 @@ setup(name              = "gpstk",
       classifiers       = classifiers_list,
       packages          = ['gpstk'],
       package_data      = { 'gpstk': ['_gpstk.so', 'libgpstk.so*'], },
-      data_files        = [('', ['README.md',]),],
+      data_files        = data_files,
       scripts           = scripts_list,
       zip_safe          = False,
       )
