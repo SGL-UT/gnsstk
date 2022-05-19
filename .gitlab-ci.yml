@@ -45,6 +45,7 @@ variables:
       - main
       - /^ci_.*$/
       - /^version_.*_prep$/
+      - /^release_.*$/
     variables:
       - $RELEASE_ONLY != "True"
 
@@ -58,7 +59,7 @@ variables:
       - /^version_.*_prep$/
       - tags
       - /^tag_.*$/
-      - maint_11.x
+      - /^release_.*$/
 
 # Check Stage
 # Runs static analysis on code.
@@ -894,7 +895,9 @@ sgltk_redhat:
 
 
 push_artifacts:
-  extends: .push_selected_artifacts
+  extends: 
+    - .push_selected_artifacts
+    - .package_build
   variables:
     CONDA_PACKAGES: ""
     DEB_9_PACKAGES: "debs/*-2_amd64.deb"
