@@ -345,6 +345,8 @@ sonar_conda_py36:
   artifacts:
     paths:
       - build/
+  # Allow failures in case sonarqube is not available
+  allow_failure: true
 
 build_redhat:
   stage: build

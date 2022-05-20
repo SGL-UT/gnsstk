@@ -1,3 +1,36 @@
+# Version 13.4.0   Friday May 20, 2022
+
+Modifications by Author
+-----------------------
+     Andrew Kuck <kuck@arlut.utexas.edu> (9):
+           Update .gitlab-ci.yml
+           Use build image.
+           Return nullptr instead of fail
+           Update .gitlab-ci.yml
+           Updated doxyfile to 1.9
+           Ignore names defined outside namespaces.
+           Update to test packages deploy.
+           No sudo on deb11.
+           Update DOCKER_REGISTRY variable.
+
+     David Barber <dbarber@arlut.utexas.edu> (2):
+           Remove .git folder from deb pkgs and add 4 day artifact expiration for non-package jobs
+           Update conda recipe and CI pipeline to release from stable branch
+
+     John Knutson <johnk@arlut.utexas.edu> (4):
+           Split SWIG bindings into multiple smaller modules
+           Do proper half-week rollover test for GPS LNAV
+           Move Geomatics stuff from ext to core
+           Migrate Yuma and SEM support from ext to core
+
+     Taben Malik <malik@arlut.utexas.edu> (1):
+           Apply 1 suggestion(s) to 1 file(s)
+
+     Zachariah Dicus <dicus@arlut.utexas.edu> (1):
+           Adding job for sonar.
+
+
+
 # Version 13.3.0   Thursday April 21, 2022
 
 Modifications by Author
