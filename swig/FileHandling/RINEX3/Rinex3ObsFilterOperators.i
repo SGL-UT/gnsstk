@@ -1,3 +1,5 @@
+%include "Rinex3ObsFilterOperators.hpp"
+
 namespace gnsstk
 {
       // Wrap () operators for ObsFilterOperators

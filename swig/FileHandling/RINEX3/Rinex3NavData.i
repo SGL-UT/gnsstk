@@ -1,3 +1,5 @@
+%include "Rinex3NavData.hpp"
+
    // Allows cast from Rinex3NavData to EngEphemeris
 %extend gnsstk::EngEphemeris
 {

@@ -1,3 +1,19 @@
+gnsstk (13.4.0-1) stable; urgency=low
+
+  * Updated to version 13.4.0
+  * Refactor SWIG bindings into separate modules
+  * Update gitlab pipeline for job artifacts.
+  * Fix swig wrapper missing class/template issue
+  * Adding pipeline job for sonar
+  * Fix PNBGPSLNavDataFactory missing half-week test.
+  * Move Geomatics code from ext into core
+  * Move SEM and Yuma file support from ext to core.
+  * Add support for deploying to Debian 11
+  * Update DOCKER_REGISTRY variable.
+  * Update conda recipe and CI pipeline to release from stable branch
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Fri, 20 May 2022 09:30:02 -0500
+
 gnsstk (13.3.0-1) stable; urgency=low
 
   * Updated to version 13.3.0

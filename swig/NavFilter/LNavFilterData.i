@@ -1,3 +1,5 @@
+%include "LNavFilterData.hpp"
+
 %extend gnsstk::LNavMsgSort
 {
    bool __call__(const gnsstk::LNavFilterData*const &l,

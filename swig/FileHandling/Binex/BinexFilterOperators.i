@@ -1,3 +1,5 @@
+%include "BinexFilterOperators.hpp"
+
 namespace gnsstk
 {
       // Wraps overloaded () operator

@@ -40,6 +40,9 @@
 /** @file BDSconsts.hpp Define constants that are specific to BDS but
  * are not specific to one message type (ephemeris, etc). */
 
+#ifndef GNSSTK_BDSCONSTS_HPP
+#define GNSSTK_BDSCONSTS_HPP
+
 namespace gnsstk
 {
    namespace bds
@@ -70,3 +73,5 @@ namespace gnsstk
       };
    }
 }
+
+#endif // GNSSTK_BDSCONSTS_HPP

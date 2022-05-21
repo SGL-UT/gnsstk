@@ -1,6 +1,7 @@
-
-// For whatever reason, swig assumes that it owns the pointers created by the operator|= function, and
-// will attempt to delete them later.  It doesn't own them, so this causes a free(): invalid pointer error.
+// For whatever reason, swig assumes that it owns the pointers created
+// by the operator|= function, and will attempt to delete them later.
+// It doesn't own them, so this causes a free(): invalid pointer
+// error.
 // This disables pointer ownership for that method.
 // See: https://github.com/swig/swig/blob/rel-3.0.12/Lib/python/pyopers.swg#L196
 #if SWIG_VERSION < 0x030000
@@ -150,13 +151,16 @@
 
 
 // There's a possible bug in SWIG related to flatnested.
-// The static const members of a class are set prior to their type being defined.
-// For us, this results in them being a SwigPyObject type instead of a Fields type.
-// By re-assigning them after the Fields class is defined, we appear to work around the bug.
+// The static const members of a class are set prior to their type
+// being defined.  For us, this results in them being a SwigPyObject
+// type instead of a Fields type.  By re-assigning them after the
+// Fields class is defined, we appear to work around the bug.
 %pythoncode %{
-Rinex3ObsHeader.allValid2 = _gnsstk.cvar.Rinex3ObsHeader_allValid2
-Rinex3ObsHeader.allValid30 = _gnsstk.cvar.Rinex3ObsHeader_allValid30
-Rinex3ObsHeader.allValid301 = _gnsstk.cvar.Rinex3ObsHeader_allValid301
-Rinex3ObsHeader.allValid302 = _gnsstk.cvar.Rinex3ObsHeader_allValid302
-Rinex3ObsHeader.allValid303 = _gnsstk.cvar.Rinex3ObsHeader_allValid303
+Rinex3ObsHeader.allValid2 = _FileHandling.cvar.Rinex3ObsHeader_allValid2
+Rinex3ObsHeader.allValid30 = _FileHandling.cvar.Rinex3ObsHeader_allValid30
+Rinex3ObsHeader.allValid301 = _FileHandling.cvar.Rinex3ObsHeader_allValid301
+Rinex3ObsHeader.allValid302 = _FileHandling.cvar.Rinex3ObsHeader_allValid302
+Rinex3ObsHeader.allValid303 = _FileHandling.cvar.Rinex3ObsHeader_allValid303
 %};
+
+%template(std_unary_function_Rinex3ObsHeader) std::unary_function<gnsstk::Rinex3ObsHeader, bool>;

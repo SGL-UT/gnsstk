@@ -1,12 +1,28 @@
 #!/usr/bin/python
 """The GNSS Toolkit, python extension package - gnsstk module
     an open source library to the satellite navigation community."""
-
-import os
-import warnings
+from __future__ import absolute_import
 
 #----------
 # Populate gnsstk namespace
 #----------
-from .gnsstk import *
+from gnsstk.gnsstk import *
+from gnsstk.GNSSCore import *
+from gnsstk.Math import *
+from gnsstk.ClockModel import *
+from gnsstk.CodeGen import *
+from gnsstk.FileDirProc import *
+from gnsstk.FileHandling import *
+from gnsstk.GNSSEph import *
+from gnsstk.Geomatics import *
+
+from gnsstk.NavFilter import *
+from gnsstk.NewNav import *
+from gnsstk.ORD import *
+from gnsstk.PosSol import *
+from gnsstk.RefTime import *
+from gnsstk.Rxio import *
+from gnsstk.TimeHandling import *
+from gnsstk.Utilities import *
+
 __version__ = "@GNSSTK_VERSION@"

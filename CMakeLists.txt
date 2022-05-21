@@ -10,7 +10,7 @@ cmake_minimum_required( VERSION 2.8.5 )
 
 project( GNSSTK )
 set( GNSSTK_VERSION_MAJOR "13" )
-set( GNSSTK_VERSION_MINOR "3" )
+set( GNSSTK_VERSION_MINOR "4" )
 set( GNSSTK_VERSION_PATCH "0" )
 set( GNSSTK_VERSION "${GNSSTK_VERSION_MAJOR}.${GNSSTK_VERSION_MINOR}.${GNSSTK_VERSION_PATCH}" )
 
@@ -214,8 +214,8 @@ endif( )
 if( COVERAGE_SWITCH )
   if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang"
     OR ((${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER "4.9.0" ) AND CMAKE_COMPILER_IS_GNUCXX))
-    message(STATUS "Enabling address sanitizer for debug build")
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage" )
+    message(STATUS "Enabling test coverage (gcov)")
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage --coverage" )
   endif()
 endif( )
 
@@ -227,7 +227,6 @@ endif( )
 add_subdirectory( core )
 
 if( BUILD_EXT )
-   add_subdirectory( ext )
    add_subdirectory( examples )
    if( BUILD_PYTHON )
        include( swig/PythonSetup.cmake )

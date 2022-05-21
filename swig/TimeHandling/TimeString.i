@@ -1,3 +1,5 @@
+%include "TimeString.hpp"
+
 %inline %{ //Insert into header portion of TimeString.hpp
    gnsstk::CommonTime scanTime(const std::string& str, const std::string& fmt)
    {

@@ -1,12 +1,12 @@
 package:
   name: gnsstk
-  version: {{ environ.get('GIT_DESCRIBE_TAG', 'v0.0')[1:] }}
+  version: {{ environ.get('GIT_LAST_TAG', 'v0.0.0')[1:] }}
 
 source:
   path: ../
 
 build:
-  number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
+  number: {{ environ.get('GIT_CHANGES_LAST_TAG', 0) }}
   script_env:
     - GIT_COMMIT
 

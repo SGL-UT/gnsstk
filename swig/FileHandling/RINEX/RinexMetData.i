@@ -1,3 +1,5 @@
+%include "RinexMetData.hpp"
+
     // Add lookup method to look up data given an integer form of an enum
 %extend gnsstk::RinexMetData {
    double _lookup_data(int x) {

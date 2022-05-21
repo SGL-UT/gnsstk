@@ -1,5 +1,8 @@
 %module gnsstk
 
+%pythonbegin %{
+from __future__ import absolute_import
+%}
 // =============================================================
 //  Section 0: C++ template containers & typedefs
 // =============================================================
@@ -50,7 +53,8 @@
 //  Section 5: Enumerations
 // =============================================================
 
-%include "Enums.i"
+ // Now only appearing in each individual sub-module.
+ // Section left here for organizational clarity and direction.
 
 // =============================================================
 //  Section 6: C++ exception class handling
@@ -64,7 +68,8 @@
 //  Section 7: C++11 shared_ptr handling
 // =============================================================
 
-%include "NewNavSharedPtr.i"
+ // Now only appearing in each individual sub-module.
+ // Section left here for organizational clarity and direction.
 
 // =============================================================
 //  Section 8: C++ container template instances using only atomic types
@@ -78,15 +83,6 @@
 //  Section 9: typemaps that must be declared before the %includes
 // =============================================================
 
- /** @todo Resolve the SWIG warnings caused by this include:
-gnsstk/core/lib/NewNav/NavLibrary.hpp:984: Warning 509: Overloaded method gnsstk::NavLibrary::getOffset(gnsstk::TimeSystem,gnsstk::TimeSystem,gnsstk::CommonTime const &,double &) effectively ignored,
-gnsstk/core/lib/NewNav/NavLibrary.hpp:964: Warning 509: as it is shadowed by gnsstk::NavLibrary::getOffset(gnsstk::TimeSystem,gnsstk::TimeSystem,gnsstk::CommonTime const &,gnsstk::NavDataPtr &).
-gnsstk/core/lib/NewNav/NavLibrary.hpp:964: Warning 509: Overloaded method gnsstk::NavLibrary::getOffset(gnsstk::TimeSystem,gnsstk::TimeSystem,gnsstk::CommonTime const &,gnsstk::NavDataPtr &,gnsstk::SVHealth) effectively ignored,
-gnsstk/core/lib/NewNav/NavLibrary.hpp:984: Warning 509: as it is shadowed by gnsstk::NavLibrary::getOffset(gnsstk::TimeSystem,gnsstk::TimeSystem,gnsstk::CommonTime const &,double &,gnsstk::SVHealth).
-gnsstk/core/lib/NewNav/NavLibrary.hpp:984: Warning 509: Overloaded method gnsstk::NavLibrary::getOffset(gnsstk::TimeSystem,gnsstk::TimeSystem,gnsstk::CommonTime const &,double &,gnsstk::SVHealth,gnsstk::NavValidityType) effectively ignored,
-gnsstk/core/lib/NewNav/NavLibrary.hpp:964: Warning 509: as it is shadowed by gnsstk::NavLibrary::getOffset(gnsstk::TimeSystem,gnsstk::TimeSystem,gnsstk::CommonTime const &,gnsstk::NavDataPtr &,gnsstk::SVHealth,gnsstk::NavValidityType).
- */
-%include "NewNavTypemaps.i"
 %include "gnsstk_typemaps.i"
 
 // =============================================================
@@ -94,34 +90,22 @@ gnsstk/core/lib/NewNav/NavLibrary.hpp:964: Warning 509: as it is shadowed by gns
 //  Include classes IN DEPENDENCY ORDER otherwise swig will fail.
 // =============================================================
 
-%include "gnsstk_swig.i"
+ // Now only appearing in each individual sub-module.
+ // Section left here for organizational clarity and direction.
+%include "Exception.hpp"
 
 // =============================================================
 //  Section 11: Explicit Python wrappers
 // =============================================================
 
-// Encapsulation of many the __str__, __getitem__, etc. functions to
-// avoid clutter.  When the only change to a class is adding a simple
-// wrapper, add to pythonfunctions instead of creating another small
-// file.
-%include "pythonfunctions.i"
-%include "Stream.i"
-
-%include "FileHandling.i"
-%include "Geomatics.i"
-%include "GNSSCore.i"
-%include "GNSSEph.i"
-%include "Math.i"
-%include "NavFilter.i"
-%include "TimeHandling.i"
-%include "Utilities.i"
+ // Now only appearing in each individual sub-module.
+ // Section left here for organizational clarity and direction.
 
 // =============================================================
 //  Section 12: Template declarations
 // =============================================================
 
 %include "STLHelpers.i"
-
 
 // =============================================================
 //  Section 13: Aggregated features (e.g. string translation)

@@ -1,3 +1,5 @@
+%include "FormattedDouble.hpp"
+
 namespace gnsstk
 {
    %extend FormattedDouble

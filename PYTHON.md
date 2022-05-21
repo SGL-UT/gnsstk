@@ -293,29 +293,11 @@ Position Functions:
 	The next four functions are simply light wrappers over some relatively simple classes. The use of a entire class 
 	objects was warranted in C++, but they are not neccessary for typical python usage.
 
-	gnsstk.moonPosition(time)
-		
-		Returns the current position (A gnsstk.Triple) of the moon. This is a functional wrapper on the moonPosition class.
-
-		>>> print gnsstk.moonPosition(gnsstk.now())
-		(62424169.398472935, -365987646.51255625, -83100797.60563189)
-
-	gnsstk.sunPosition(time)
-	
-		Returns the current position (A gnsstk.Triple) of the moon. This is a functional wrapper on the MoonPosition class.
-
 	gnsstk.poleTides(time, position, x, y)
 
 		Returns the effect (a gnsstk.Triple) of pole tides (meters) on the given position, in the Up-East-North (UEN) 
 		reference frame. This is a functional wrapper on the (hidden) PoleTides class.
 
-	gnsstk.solidTides(time, position)
-		
-		Returns the effect (a gnsstk.Triple) of solid Earth tides (meters) at the given position and epoch, in the 
-		Up-East-North (UEN) reference frame. This is a functional wrapper on the (hidden) SolidTides class.
-
-		>>> print gnsstk.solidTides(gnsstk.now(), gnsstk.geodetic(latitude=29, longitude=95, height=0))
-		(0.1601640329929359, -0.0031534542100034955, -0.03016846270875466)
 
 File I/O Functions:
 

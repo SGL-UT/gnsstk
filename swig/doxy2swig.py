@@ -279,6 +279,8 @@ class Doxy2SWIG:
             name = first['name'].firstChild.data
             if name[:8] == 'operator': # Don't handle operators yet.
                 return
+            if name[:2] == '::':    # don't handle out-of-namespace methods.
+                return 
 
             if not 'definition' in first or \
                    kind in ['variable', 'typedef']:

@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 13.3.0
+%define version 13.4.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,18 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 20 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v13.4.0 release
+- Update conda recipe and CI pipeline to release from stable branch
+- Update DOCKER_REGISTRY variable.
+- Add support for deploying to Debian 11
+- Move SEM and Yuma file support from ext to core.
+- Move Geomatics code from ext into core
+- Fix PNBGPSLNavDataFactory missing half-week test.
+- Adding pipeline job for sonar
+- Fix swig wrapper missing class/template issue
+- Update gitlab pipeline for job artifacts.
+- Refactor SWIG bindings into separate modules
 * Thu Apr 21 2022 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v13.3.0 release
 - Fix RPATH to be platform independent

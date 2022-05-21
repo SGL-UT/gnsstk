@@ -104,7 +104,6 @@ function(test_app_with_stdout test_name app_name labels args diff_args)
 endfunction()
 
 if (TEST_SWITCH)
-    # library testing
     add_subdirectory( ClockModel )
     add_subdirectory( TimeHandling )
     add_subdirectory( FileDirProc )
@@ -119,13 +118,5 @@ if (TEST_SWITCH)
     add_subdirectory( NewNav )
     add_subdirectory( ORD )
     add_subdirectory( AppFrame )
-
-    # application testing
-    # add_subdirectory( difftools )
-    # add_subdirectory( filetools )
-    # add_subdirectory( time )
-    # add_subdirectory( positioning )
-    # add_subdirectory( Rinextools )
-    # add_subdirectory( mergetools )
-    # add_subdirectory( checktools )
+    add_subdirectory( Geomatics )
 endif()
