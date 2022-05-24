@@ -1,13 +1,8 @@
-[Default Owners]
-* @kuck @johnk
+# Default Owners
+* @sgl-tks
 
 [CODEOWNERS]
 CODEOWNERS @kuck @rain
-
-[Distribution Reviewers]
-conda_recipe/ @kuck @barber
-debian/ @kuck @barber
-rpm_files/ @kuck @barber
 
 [Python/Swig]
 swig/ @kuck @malik
@@ -78,4 +73,9 @@ examples/ @johnk @btolman @renfrob
 [CMAKE Reviewers]
 CMakeLists.txt   @code-reviewers/cmake
 *.cmake          @code-reviewers/cmake
+
+[Distribution Reviewers]
+conda_recipe/ @code-reviewers/conda-recipes
+debian/ @code-reviewers/debian_pkgs
+rpm_files/ @code-reviewers/rpm_pkgs
 
