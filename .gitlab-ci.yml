@@ -900,7 +900,7 @@ push_artifacts:
     - .package_build
   variables:
     CONDA_PACKAGES: ""
-    DEB_9_PACKAGES: "debs/*-2_amd64.deb"
+    DEB_9_PACKAGES: "debs/*-1_amd64.deb"
     DEB_10_PACKAGES: "debs/*bpo10*.deb"
     #RPM_PACKAGES: "rpm_files/RPMS/x86_64/*.rpm"
   stage: push

@@ -1,5 +1,5 @@
 %define name gpstk
-%define version 11.2.2
+%define version 11.2.3
 %define release 1
 
 Summary:        GPS Toolkit
@@ -57,6 +57,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 24 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v11.2.3 release
+- Update add maintenance branches to pipeline.
+- Update 11.x CMake package for major version compatibility.
+- Update to allow co-installation of python3 and python2 packages.
 * Thu Jul 22 2021 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v11.2.1 release
 - Updated git url ref to new sgl-git

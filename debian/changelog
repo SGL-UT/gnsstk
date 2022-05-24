@@ -1,7 +1,15 @@
+gpstk (11.2.3-1) stable; urgency=low
+
+  * Updated to version 11.2.3
+  * Update to allow co-installation of python3 and python2 packages.
+  * Update 11.x CMake package for major version compatibility.
+  * Update add maintenance branches to pipeline.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Tue, 24 May 2022 15:27:38 -0500
+
 gpstk (11.2.2-2) stable; urgency=low
 
   * Add Breaks statement to insure proper upgrade ordering.
-  * Fix py3 py2 packages to allow coinstall.
  
  -- Andrew Kuck <kuck@arlut.utexas.edu>  Wed, 8 Mar 2022 12:00:00 -0500
 

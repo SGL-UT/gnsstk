@@ -1,3 +1,18 @@
+# Version 11.2.3   Tuesday May 24, 2022
+
+Modifications by Author
+-----------------------
+     Andrew Kuck <kuck@arlut.utexas.edu> (1):
+           Hotfix/Python3 support
+
+     Benjamin Glass <bglass@arlut.utexas.edu> (1):
+           CMakeLists.txt: specify major version API compatibility
+
+     David Barber <dbarber@arlut.utexas.edu> (1):
+           Add release maintenance branch to package builds.
+
+
+
 # Version 11.2.2   Thursday December 09, 2021
 
 Modifications by Author
