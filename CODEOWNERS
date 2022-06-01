@@ -1,11 +1,5 @@
-# Default Owners
-* @sgl-tks
-
 [CODEOWNERS]
 CODEOWNERS @kuck @rain
-
-[Python/Swig]
-swig/ @kuck @malik
 
 [Documentation]
 docs/ @johnk @rain
@@ -13,6 +7,8 @@ ref/papers/ @renfrob @rain @kuck
 ref/usersguide/ @johnk @renfrob @rain
 
 [Subject Matter Experts]
+# Default Owners
+* @sgl-tks
 
 # Core apps
 core/apps/ @johnk @btolman
@@ -68,6 +64,7 @@ examples/ @johnk @btolman @renfrob
 *.py   @code-reviewers/python
 
 [Swig Reviewers]
+swig/  @code-reviewers/swig
 *.i    @code-reviewers/swig
 
 [CMAKE Reviewers]
