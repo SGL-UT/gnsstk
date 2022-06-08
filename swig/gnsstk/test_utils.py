@@ -71,3 +71,23 @@ def run_unit_tests():
 
     rc = runner.run(isuite)
     sys.exit(len(rc.failures) + len(rc.errors))
+
+
+def assertSequenceAlmostEqual(test_case, l1, l2, **kwargs):
+    """
+    Compare two lists of elements where the elements are almost equal to each other
+
+    Uses `assertAlmostEqual` to compare elements between `l1` and `l2`.
+    `l1` and `l2` must be equal in length.
+    """
+    test_case.assertEqual(len(l1), len(l2))
+    for l1_i, l2_i in zip(l1, l2):
+        test_case.assertAlmostEqual(l1_i, l2_i, **kwargs)
+
+
+def vec_to_list(s):
+    """
+    A kludge since many swigged gnsstk objects are not properly iterable
+    """
+    return [s[i] for i in range(s.size())]
+

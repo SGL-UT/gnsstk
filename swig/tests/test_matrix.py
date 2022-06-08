@@ -2,187 +2,234 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gnsstk.test_utils import args, run_unit_tests
+from gnsstk.test_utils import args, assertSequenceAlmostEqual, run_unit_tests, vec_to_list
 
 import gnsstk
 import math
 
-# Tests for vector
-def test_matrix():
-    actual = 0
-    expected = 0
-    test_num = 1
-
-    # Matrix Constructor tests
-    a = gnsstk.Matrix_double()
-    actual = (a.size(), a.empty(), a.rows(), a.cols())
-    expected = (0, True, 0, 0)
-    check_test(actual, expected, "Default Matrix Constructor", test_num)
-    test_num += 1
-
-    a = gnsstk.Matrix_int(34, 67)
-    actual = (a.size(), a.empty(), a.rows(), a.cols())
-    expected = (2278, False, 34, 67)
-    check_test(actual, expected, "Matrix Constructor with initial size", test_num)
-    test_num += 1
-
-    a = gnsstk.Matrix_int(34, 67, 5)
-    actual = (a.size(), a.empty(), a.rows(), a.cols(), a.get_value(1, 2), a.get_value(23, 34))
-    expected = (2278, False, 34, 67, 5, 5)
-    check_test(actual, expected, "Matrix Constructor with initial size and value", test_num)
-    test_num += 1
-
-    # Size, Num Rows, Num Cols, Empty, Max Size tests
-    a = gnsstk.Matrix_double()
-    actual = []
-    actual.append(a.empty())
-    a = gnsstk.Matrix_double(12, 23, 5)
-    actual.extend([a.rows(), a.cols(), a.empty(), a.size(), a.max_size()])
-    expected = [True, 12, 23, False, 276, 276]
-    check_test(actual, expected, "Size, Num Rows, Num Cols, Empty, Max Size", test_num)
-    test_num += 1
-
-    # TODO:
-    # rowRef, colRef, row, col tests
-
-    # Resize
-    a = gnsstk.Matrix_double(12, 34, 5)
-    actual = [a.rows(), a.cols(), a.size()]
-    b = a.resize(34, 56)
-    actual.extend([a.rows(), a.cols(), a.size(), b.rows(), b.cols(), b.size()])
-    expected = [12, 34, 408, 34, 56, 34*56, 34, 56, 34*56]
-    check_test(actual, expected, "Matrix Resize", test_num)
-    test_num += 1
-
-    # zeroize, zeroizeRow, zeroizeCol
-    a = gnsstk.Matrix_double(12, 34, 10**-9)
-    a.zeroizeRow(7)
-    actual = [slice_is_value(a[7])]
-    a = gnsstk.Matrix_double(12, 34, 10**-11)
-    a.zeroizeRow(7)
-    actual.append(slice_is_value(a[7]))
-
-    a_col_slice = gnsstk.MatrixColSlice_double(a, 30)
-    actual.append(slice_is_value(a_col_slice))
-    a.zeroizeCol(30)
-    actual.append(slice_is_value(a_col_slice))
-
-    actual.append(matrices_are_equal(a, gnsstk.Matrix_double(12, 34, 0)))
-    a.zeroize()
-    actual.append(matrices_are_equal(a, gnsstk.Matrix_double(12, 34, 0)))
-
-    expected = [False, True, False, True, False, True]
-    check_test(actual, expected, "Matrix zeroize zeroizeRow zeroizeCol", test_num)
-    test_num += 1
-
-    # Upper Triangular, Lower Triangular, Square, Diagonal, Symmetric
-    a = gnsstk.Matrix_double(45, 45, 1)
-    b = gnsstk.Matrix_double(45, 33, 0)
-    c = gnsstk.Matrix_double(45, 45, 0)
-    actual = [a.isSquare(), b.isSquare(), c.isSquare(), a.isUT(), b.isUT(), c.isUT(), a.isLT(), b.isLT(), c.isLT(),
-              a.isDiagonal(), b.isDiagonal(), c.isDiagonal(), a.isSymmetric(), b.isSymmetric(), c.isSymmetric()]
-    expected = [True, False, True, False, False, True, False, False, True, False, False, True, True, False, True]
-    check_test(actual, expected, "UT LT Square Diagonal Symmetric", test_num)
-    test_num += 1
-
-    # ColCopy, rowCopy, diagCopy
-    a = gnsstk.Matrix_double(34, 12, 1)
-    vec1 = a.colCopy(5, 23)
-    vec2 = a.rowCopy(33, 7)
-    vec3 = a.diagCopy()
-    actual = [vec1.size(), vec2.size(), vec3.size()]
-    expected = [34-23, 12-7, 12]
-    check_test(actual, expected, "Colcopy rowCopy diagCopy", test_num)
-    test_num += 1
-
-    # Swap rows and columns
-    a = gnsstk.Matrix_double(34, 34)
-    for i in range(a.rows()):
-        for j in range(a.cols()):
-            a[i][j] = i
-    actual = [slice_is_value(a[1], 1), slice_is_value(a[20], 20)]
-    a.swapRows(1, 20)
-    actual.extend([slice_is_value(a[1], 20), slice_is_value(a[20], 1)])
-
-    for i in range(a.rows()):
-        for j in range(a.cols()):
-            a[i][j] = j
-    col1 = gnsstk.MatrixColSlice_double(a, 1)
-    col20 = gnsstk.MatrixColSlice_double(a, 20)
-    actual.extend([slice_is_value(col1, 1), slice_is_value(col20, 20)])
-    a.swapCols(1, 20)
-    actual.extend([slice_is_value(col1, 20), slice_is_value(col20, 1)])
-    expected = [True, True, True, True, True, True, True, True]
-    check_test(actual, expected, "Swap rows and columns", test_num)
-    test_num += 1
-
-    # AssignFrom
-    a = gnsstk.Matrix_double(5, 5)
-    b = gnsstk.Matrix_double(5, 5, 10)
-    a.assignFromMatrix(b) # AssignFrom matrix
-    b[2][3] = -3
-    actual = [matrices_are_equal(a, gnsstk.Matrix_double(5, 5, 10)), matrices_are_equal(b, gnsstk.Matrix_double(5, 5, 10))]
-
-    b = gnsstk.Vector_double(25, -78)
-    a.assignFromVector(b) # AssignFrom GNSSTK vector
-    b[2] = 30
-    actual.extend([matrices_are_equal(a, gnsstk.Matrix_double(5, 5, -78)), slice_is_value(b, -78)])
-    # This test is the only place that array_double is used, and the
-    # array_double declarations cause downstream errors and have been
-    # commented out.  See gnsstk.i
-    # double_array = gnsstk.array_double(25)
-    # for i in range(25):
-    #     double_array[i] = 4
-    # a.assignFrom(double_array) # AssignFrom array
-    # actual.append(matrices_are_equal(a, gnsstk.Matrix_double(5, 5, 4)))
-
-    a.assignFrom(5) # AssignFrom value
-    actual.append(matrices_are_equal(a, gnsstk.Matrix_double(5, 5, 5)))
-    expected = [True, False, True, False, True, True]
-    check_test(actual, expected, "AssignFrom", test_num)
-    test_num += 1
-
-    # Operators +=, -=,  *=, /=, and unary negation
-    # @todo actually do some tests...
-    a = gnsstk.Matrix_double(5, 5, 3)
-    b = gnsstk.Matrix_double(5, 5, 10)
-    vec = gnsstk.Vector_double(25, -8)
-
-    # ident, trace, normF, normCol, slowDet
+# TODO: need additional tests for:
+#   * rowRef, colRef, row, col tests
+#   * Operators +=, -=,  *=, /=, and unary negation
+#   * ident, trace, normF, normCol, slowDet
 
 
-# Rounds a list of floats to a certain decimal point
-def round_list(lst, tolerance=3):
-    return [round(x , tolerance) for x in lst]
-
-def slice_is_value(row, value=0):
-    for i in range(row.size()):
-        if row[i] != value:
-            return False
-    return True
-
-def matrices_are_equal(a, b):
+def assertMatricesEqual(test_case, a, b):
+    """
+    Naming scheme attempts to match assertions names from unittest module.
+    """
     # Check if the number of columns and rows are equal
-    if a.rows() != b.rows() or a.cols() != b.cols():
-        return False
+    test_case.assertEqual(a.rows(), b.rows())
+    test_case.assertEqual(a.cols(), b.cols())
+
     # Check if each element equals each other
     for i in range(a.rows()):
         for j in range(a.cols()):
-            if a.get_value(i, j) != b.get_value(i, j):
-                return False
-    return True
+            test_case.assertEqual(a.get_value(i, j), b.get_value(i, j))
 
-# Checks if something is
-def check_test(observed, expected, description="", test_num=0):
-    if expected != observed:
-        print("FAILED TEST", test_num, ":", description, "test")
-    else:
-        print("passed test", test_num, ":", description, "test")
+
+
+class TestMatrix(unittest.TestCase):
+
+    def test_constructor(self):
+        # Matrix Constructor tests
+        a = gnsstk.Matrix_double()
+        self.assertEqual(0, a.size())
+        self.assertTrue(a.empty())
+        self.assertEqual(0, a.rows())
+        self.assertEqual(0, a.cols())
+
+        # Constructor with rows/columns
+        a = gnsstk.Matrix_int(34, 67)
+        self.assertEqual(2278, a.size())
+        self.assertFalse(a.empty())
+        self.assertEqual(34, a.rows())
+        self.assertEqual(67, a.cols())
+
+        # Constructor with rows/columns and a default fill value
+        a = gnsstk.Matrix_int(34, 67, 5)
+        self.assertEqual(2278, a.size())
+        self.assertFalse(a.empty())
+        self.assertEqual(34, a.rows())
+        self.assertEqual(67, a.cols())
+        self.assertEqual(5, a.get_value(23, 34))
+
+    def test_accessors(self):
+        # Testing accessors of size, num rows, num cols, empty, and max_size
+        a = gnsstk.Matrix_double()
+        self.assertTrue(a.empty())
+
+        a = gnsstk.Matrix_double(12, 23, 5)
+        self.assertFalse(a.empty())
+        self.assertEqual(12, a.rows())
+        self.assertEqual(23, a.cols())
+        self.assertEqual(276, a.size())
+        self.assertEqual(276, a.max_size())
+
+    def test_resize(self):
+        a = gnsstk.Matrix_double(12, 34, 5)
+        self.assertEqual(12, a.rows())
+        self.assertEqual(34, a.cols())
+        self.assertEqual(408, a.size())
+
+        # This "works" but all of the data is scrapped in the resize due to the implementation of Vector.resize()
+        _ = a.resize(34, 56)
+        self.assertEqual(34, a.rows())
+        self.assertEqual(56, a.cols())
+        self.assertEqual(1904, a.size())
+
+        # Resize and replace all values with given default value
+        _ = a.resize(1, 1, 13)
+        self.assertEqual(1, a.rows())
+        self.assertEqual(1, a.cols())
+        self.assertEqual(1, a.size())
+        self.assertEqual(13, a.get_value(0, 0))
+
+    def test_zeroize(self):
+        # Zeroize results depends on the value of RefVectorBaseHelper::zeroTolerance
+        # Zeroize will set a value to zero if it is less than RefVectorBaseHelper::zeroTolerance
+
+        # Attempt to zeroize, but nothing is less than RefVectorBaseHelper::zeroTolerance
+        a = gnsstk.Matrix_double(12, 34, 10**-9)
+        a.zeroizeRow(7)
+        assertSequenceAlmostEqual(self, [10**-9] * 34, vec_to_list(a[7]))
+
+        # Zeroize and all values in row are below RefVectorBaseHelper::zeroTolerance
+        a = gnsstk.Matrix_double(12, 34, 10**-11)
+        a.zeroizeRow(7)
+        self.assertSequenceEqual([0] * 34, vec_to_list(a[7]))
+
+        a = gnsstk.Matrix_double(12, 34, 10**-11)
+        a.zeroizeCol(30)
+        self.assertSequenceEqual([0] * 12, vec_to_list(gnsstk.MatrixColSlice_double(a, 30)))
+
+        a = gnsstk.Matrix_double(12, 34, 10**-11)
+        a.zeroize()
+        ref = gnsstk.Matrix_double(12, 34, 0)
+        assertMatricesEqual(self, ref, a)
+
+    def test_matrix_properties(self):
+        # TODO: should these tests be expanded on, or is it sufficient to simply exercise the swig calls?
+        a = gnsstk.Matrix_double(45, 45, 1)
+        b = gnsstk.Matrix_double(45, 33, 0)
+        c = gnsstk.Matrix_double(45, 45, 0)
+
+        self.assertTrue(a.isSquare())
+        self.assertFalse(b.isSquare())
+        self.assertTrue(c.isSquare())
+
+        self.assertFalse(a.isUT())
+        self.assertFalse(b.isUT())
+        self.assertTrue(c.isUT())
+
+        self.assertFalse(a.isLT())
+        self.assertFalse(b.isLT())
+        self.assertTrue(c.isLT())
+
+        self.assertFalse(a.isDiagonal())
+        self.assertFalse(b.isDiagonal())
+        self.assertTrue(c.isDiagonal())
+
+        self.assertTrue(a.isSymmetric())
+        self.assertFalse(b.isSymmetric())
+        self.assertTrue(c.isSymmetric())
+
+    def test_slice_copy(self):
+        # ColCopy, rowCopy, diagCopy
+        a = gnsstk.Matrix_double(34, 12, 1)
+        vec1 = a.colCopy(5, 23)
+        self.assertEqual(11, vec1.size())
+
+        vec2 = a.rowCopy(33, 7)
+        self.assertEqual(5, vec2.size())
+
+        vec3 = a.diagCopy()
+        self.assertEqual(12, vec3.size())
+
+    def test_swap_rows(self):
+        a = gnsstk.Matrix_double(34, 34)
+
+        # Setting values of matrix to their row number
+        for i in range(a.rows()):
+            for j in range(a.cols()):
+                a[i][j] = i
+
+        # Asserting current state before swapping rows
+        self.assertSequenceEqual([1] * 34, vec_to_list(a[1]))
+        self.assertSequenceEqual([20] * 34, vec_to_list(a[20]))
+
+        a.swapRows(1, 20)
+
+        # Rows should be swapped
+        self.assertSequenceEqual([20] * 34, vec_to_list(a[1]))
+        self.assertSequenceEqual([1] * 34, vec_to_list(a[20]))
+
+    def test_swap_cols(self):
+        a = gnsstk.Matrix_double(34, 34)
+
+        # Settings values of matrix to their col number for e
+        for i in range(a.rows()):
+            for j in range(a.cols()):
+                a[i][j] = j
+
+        # Asserting current state before swapping cols
+        self.assertSequenceEqual([1] * 34, vec_to_list(gnsstk.MatrixColSlice_double(a, 1)))
+        self.assertSequenceEqual([20] * 34, vec_to_list(gnsstk.MatrixColSlice_double(a, 20)))
+        
+        a.swapCols(1, 20)
+        
+        # Cols should be swapped
+        self.assertSequenceEqual([20] * 34, vec_to_list(gnsstk.MatrixColSlice_double(a, 1)))
+        self.assertSequenceEqual([1] * 34, vec_to_list(gnsstk.MatrixColSlice_double(a, 20)))
+
+    def test_swap_rows_and_cols(self):
+        a = gnsstk.Matrix_int(5, 5)
+        for i in range(a.rows()):
+            for j in range(a.cols()):
+                a[i][j] = i + j
+
+        a.swapRows(0, 4)
+        a.swapCols(1, 2)
+
+        self.assertSequenceEqual([6, 3, 4, 5, 2], vec_to_list(gnsstk.MatrixColSlice_int(a, 1)))
+        self.assertSequenceEqual([0, 2, 1, 3, 4], vec_to_list(a[4]))
+
+    def test_assign_from(self):
+        # AssignFrom
+        a = gnsstk.Matrix_double(5, 5)
+        b = gnsstk.Matrix_double(5, 5, 10)
+        ref = gnsstk.Matrix_double(5, 5, 10)
+        a.assignFromMatrix(b)
+
+        assertMatricesEqual(self, a, ref)
+
+        # a and b should not be linked in any way. Changing b should not result in a change of a
+        b[2][3] = -3
+        assertMatricesEqual(self, a, ref)
+
+        # The vector represents all elements of the matrix. i.e. it is a flattened matrix 
+        a = gnsstk.Matrix_int(5, 5, 0)
+        ref = gnsstk.Matrix_int(5, 5, -78)
+        v = gnsstk.Vector_int(25, -78)
+        
+        a.assignFromVector(v)
+        v[2] = 30  # A change to `v` should not propogate to `a`
+        assertMatricesEqual(self, a, ref)
+        
+        # This test is the only place that array_double is used, and the
+        # array_double declarations cause downstream errors and have been
+        # commented out.  See gnsstk.i
+        # double_array = gnsstk.array_double(25)
+        # for i in range(25):
+        #     double_array[i] = 4
+        # a.assignFrom(double_array) # AssignFrom array
+        # actual.append(matrices_are_equal(a, gnsstk.Matrix_double(5, 5, 4)))
+
+        a = gnsstk.Matrix_int(5, 5, 0)
+        ref = gnsstk.Matrix_int(5, 5, 42)
+
+        a.assignFrom(42)
+        assertMatricesEqual(self, a, ref)
+
 
 if __name__ == "__main__":
-    test_matrix()
-#     # a = gnsstk.Vector_double(5, 10)
-#     # b = gnsstk.Vector_double(5, -9)
-#     # a = gnsstk.WtdStats_double(a, b)
-#     print(a)
-
+    run_unit_tests()
