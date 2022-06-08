@@ -45,12 +45,13 @@
 #include "CGCS2000Ellipsoid.hpp"
 #include "EllipsoidModel.hpp"
 #include "GPSEllipsoid.hpp"
+#include "GalileoEllipsoid.hpp"
 #include "YDSTime.hpp"
 #include "CivilTime.hpp"
 #include "TimeSystem.hpp"
 #include "TimeString.hpp"
 #include "MathBase.hpp"
-
+#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -183,6 +184,7 @@ namespace gnsstk
       // LNAV loaders.
    Xvt OrbElem::svXvt(const CommonTime& t) const
    {
+      DEBUGTRACE_FUNCTION();
       if (!dataLoaded())
       {
          InvalidRequest exc("Required data not stored.");
@@ -209,10 +211,18 @@ namespace gnsstk
          // Several GNSSs use this algorithm.  In some cases the physical
          // constants need to be different.
       EllipsoidModel *ell;
-      if (satID.system==SatelliteSystem::BeiDou)
-         ell = new CGCS2000Ellipsoid();
-      else
-         ell = new GPSEllipsoid();
+      switch (satID.system)
+      {
+         case SatelliteSystem::BeiDou:
+            ell = new CGCS2000Ellipsoid();
+            break;
+         case SatelliteSystem::Galileo:
+            ell = new GalileoEllipsoid();
+            break;
+         default:
+            ell = new GPSEllipsoid();
+            break;
+      }
 
          // Compute time since ephemeris & clock epochs
       elapte = t - ctToe;
@@ -355,10 +365,18 @@ namespace gnsstk
          // Several GNSSs use this algorithm.  In some cases the physical
          // constants need to be different.
       EllipsoidModel *ell;
-      if (satID.system==SatelliteSystem::BeiDou)
-         ell = new CGCS2000Ellipsoid();
-      else
-         ell = new GPSEllipsoid();
+      switch (satID.system)
+      {
+         case SatelliteSystem::BeiDou:
+            ell = new CGCS2000Ellipsoid();
+            break;
+         case SatelliteSystem::Galileo:
+            ell = new GalileoEllipsoid();
+            break;
+         default:
+            ell = new GPSEllipsoid();
+            break;
+      }
 
       double twoPI  = 2.0e0 * PI;
       double sqrtgm = SQRT(ell->gm());
