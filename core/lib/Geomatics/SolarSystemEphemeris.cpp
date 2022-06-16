@@ -1195,10 +1195,10 @@ namespace gnsstk
 
             // 2. 400 keys from the const array, each of length 6
          vector<string> consts_names;
-         buffer[6] = '\0';
          for (i = 0; i < 400; i++)
          {
             readBinary(buffer, 6);
+            buffer[6] = '\0';
             recLength += 6;
             word = stripLeading(string(buffer));
             if (!word.empty())

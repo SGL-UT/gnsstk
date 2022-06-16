@@ -134,6 +134,11 @@ namespace gnsstk
          case Maw: pave=&NBMaw[0];                 break;
          case Mbw: pave=&NBMbw[0];                 break;
          case Mcw: pave=&NBMcw[0];                 break;
+         default:
+         {
+            InvalidRequest exc("NB_Interpolate called with unknown entry");
+            GNSSTK_THROW(exc);
+         }
       }
 
          // find the index i such that NBLat[i] <= lat < NBLat[i+1]
