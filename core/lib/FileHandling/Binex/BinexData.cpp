@@ -157,9 +157,9 @@ namespace gnsstk
       size_t        offset,
       bool          littleEndian) const
    {
-      unsigned char  uc;
-      unsigned short us, us1;
-      unsigned long  ul, ul1, ul2, ul3;
+      uint8_t  uc;
+      uint16_t us, us1;
+      uint32_t ul, ul1, ul2, ul3;
 
       if (offset > outBuffer.size() )
       {
@@ -171,12 +171,12 @@ namespace gnsstk
       switch (size)
       {
          case 1:
-            uc   = (unsigned char)value;
+            uc   = (uint8_t)value;
             outBuffer.replace(offset, size, reinterpret_cast<char*>(&uc), size);
             break;
 
          case 2:
-            us   = (unsigned short)value;
+            us   = (uint16_t)value;
             us1  = 0x7f00 & (us << 1);
             us  &= 0x007f;
             us  |= us1;
@@ -184,7 +184,7 @@ namespace gnsstk
             if (littleEndian != nativeLittleEndian)
             {
                   // Allow encoding to non-native byte ordering
-               reverseBuffer((unsigned char*)&us, 2);
+               reverseBytes(us);
             }
             us  |= nativeLittleEndian ? 0x0080 : 0x8000;
 
@@ -192,7 +192,7 @@ namespace gnsstk
             break;
 
          case 3:
-            ul   = (unsigned long)value;
+            ul   = (uint32_t)value;
             ul2  = 0x007f0000 & (ul << 2);
             ul1  = 0x00007f00 & (ul << 1);
             ul  &= 0x0000007f;
@@ -201,7 +201,7 @@ namespace gnsstk
             if (littleEndian != nativeLittleEndian)
             {
                   // Allow encoding to non-native byte ordering
-               reverseBuffer((unsigned char*)&ul, 4);
+               reverseBytes(ul);
                ul >>= 8;
             }
             if (nativeLittleEndian)
@@ -220,7 +220,7 @@ namespace gnsstk
          case 4:
             if (littleEndian)
             {
-               ul   = (unsigned long)value;
+               ul   = (uint32_t)value;
                ul3  = 0xff000000 & (ul << 3);
                ul2  = 0x007f0000 & (ul << 2);
                ul1  = 0x00007f00 & (ul << 1);
@@ -230,12 +230,12 @@ namespace gnsstk
                if (!nativeLittleEndian)
                {
                      // Allow encoding to non-native byte ordering
-                  reverseBuffer((unsigned char*)&ul, 4);
+                  reverseBytes(ul);
                }
             }
             else
             {
-               ul   = (unsigned long)value;
+               ul   = (uint32_t)value;
                ul2  = 0x7f000000 & (ul << 2);
                ul1  = 0x007f0000 & (ul << 1);
                ul  &= 0x00007fff;
@@ -244,7 +244,7 @@ namespace gnsstk
                if (nativeLittleEndian)
                {
                      // Allow encoding to non-native byte ordering
-                  reverseBuffer((unsigned char*)&ul, 4);
+                  reverseBytes(ul);
                }
             }
             ul  |= nativeLittleEndian ? 0x00808080 : 0x80808000;
@@ -437,7 +437,7 @@ namespace gnsstk
    {
       long long          absValue = 0;
       unsigned char      flags;
-      unsigned long long ull;
+      uint64_t           ull;
       short              sign;
 
       if (offset > inBuffer.size() )
@@ -469,7 +469,8 @@ namespace gnsstk
       {
          std::ostringstream errStrm;
          errStrm << "BINEX MGFZI is too large for the supplied decode buffer: "
-                 << "MGFZI size = " << size << " , buffer size = " << inBuffer.size();
+                 << "MGFZI size = " << size << " , buffer size = "
+                 << inBuffer.size();
          FFStreamError err(errStrm.str() );
          GNSSTK_THROW(err);
       }
@@ -501,7 +502,7 @@ namespace gnsstk
             ull = parseBuffer(inBuffer, offset, 2);
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&ull, 8);
+               reverseBytes(ull);
                ull >>= 48;
             }
             absValue = littleEndian
@@ -516,7 +517,7 @@ namespace gnsstk
             ull = parseBuffer(inBuffer, offset, 3);
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&ull, 8);
+               reverseBytes(ull);
                ull >>= 40;
             }
             absValue = littleEndian
@@ -531,7 +532,7 @@ namespace gnsstk
             ull = parseBuffer(inBuffer, offset, 4);
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&ull, 8);
+               reverseBytes(ull);
                ull >>= 32;
             }
             absValue = littleEndian
@@ -546,7 +547,7 @@ namespace gnsstk
             ull = parseBuffer(inBuffer, offset, 5);
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&ull, 8);
+               reverseBytes(ull);
                ull >>= 24;
             }
             absValue = littleEndian
@@ -561,7 +562,7 @@ namespace gnsstk
             ull = parseBuffer(inBuffer, offset, 6);
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&ull, 8);
+               reverseBytes(ull);
                ull >>= 16;
             }
             absValue = littleEndian
@@ -576,7 +577,7 @@ namespace gnsstk
             ull = parseBuffer(inBuffer, offset, 7);
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&ull, 8);
+               reverseBytes(ull);
                ull >>= 8;
             }
             absValue = littleEndian
@@ -591,7 +592,7 @@ namespace gnsstk
             ull = parseBuffer(inBuffer, offset, 8);
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&ull, 8);
+               reverseBytes(ull);
             }
             absValue = littleEndian
                      ? ull >> 4
@@ -621,10 +622,10 @@ namespace gnsstk
       bool          littleEndian) const
    {
       char               buffer[MAX_BYTES];
-      unsigned char      uc;
-      unsigned short     us;
-      unsigned long      ul;
-      unsigned long long ull;
+      uint8_t            uc;
+      uint16_t           us;
+      uint32_t           ul;
+      uint64_t           ull;
 
       if (offset > outBuffer.size() )
       {
@@ -671,7 +672,7 @@ namespace gnsstk
             }
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&us, 2);
+               reverseBytes(us);
             }
             memcpy((void*)buffer, (const void*)&us, 2);
             break;
@@ -690,7 +691,7 @@ namespace gnsstk
             }
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&ul, 4);
+               reverseBytes(ul);
             }
             memcpy((void*)buffer, (const void*)&ul, 3);
             break;
@@ -709,7 +710,7 @@ namespace gnsstk
             }
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&ul, 4);
+               reverseBytes(ul);
             }
             memcpy((void*)buffer, (const void*)&ul, 4);
             break;
@@ -728,7 +729,7 @@ namespace gnsstk
             }
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&ull, 8);
+               reverseBytes(ull);
             }
             memcpy((void*)buffer, (const void*)&ull, 5);
             break;
@@ -747,7 +748,7 @@ namespace gnsstk
             }
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&ull, 8);
+               reverseBytes(ull);
             }
             memcpy((void*)buffer, (const void*)&ull, 6);
             break;
@@ -766,7 +767,7 @@ namespace gnsstk
             }
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&ull, 8);
+               reverseBytes(ull);
             }
             memcpy((void*)buffer, (const void*)&ull, 7);
             break;
@@ -785,7 +786,7 @@ namespace gnsstk
             }
             if (littleEndian != nativeLittleEndian)
             {
-               reverseBuffer( (unsigned char*)&ull, 8);
+               reverseBytes(ull);
             }
             memcpy((void*)buffer, (const void*)&ull, 8);
             break;
@@ -810,7 +811,7 @@ namespace gnsstk
       bool          reverseBytes,
       bool          littleEndian)
    {
-      unsigned char  buffer   [MAX_BYTES];
+      std::string    buffer(" ");
       unsigned char  flags;
 
          // Read the flags byte
@@ -826,6 +827,7 @@ namespace gnsstk
 
       if (size > 1)
       {
+         buffer.resize(size);
          strm.read((char*)&buffer[1], size - 1);
          if (!strm.good() || ((size_t)strm.gcount() + 1 != size))
          {
@@ -835,19 +837,20 @@ namespace gnsstk
       }
       if (reverseBytes)
       {
-         reverseBuffer(buffer, size);
+         reverseBuffer(buffer);
       }
       if (outBuffer)
       {
             // Store the as-read bytes
          if (offset <= outBuffer->size() )
          {
-            outBuffer->replace(offset, size, (char*)&buffer[0], size);
+            outBuffer->replace(offset, size, buffer, 0, size);
          }
          else
          {
             std::ostringstream errStrm;
-            errStrm << "Invalid offset into BINEX MGFZI output buffer: " << offset;
+            errStrm << "Invalid offset into BINEX MGFZI output buffer: "
+                    << offset;
             FFStreamError err(errStrm.str() );
             GNSSTK_THROW(err);
          }
@@ -1661,19 +1664,19 @@ namespace gnsstk
       return value;
    }
 
-   // -------------------------------------------------------------------------
+
+   template <class T>
    void
-   BinexData::reverseBuffer(unsigned char  *buffer,
-                            size_t         bufferLength)
+   BinexData::reverseBytes(T& val)
    {
-      unsigned char tmp;
-      for (size_t i = 1; i <= (bufferLength >> 1); i++)
+      T copy(val);
+      uint8_t *from((uint8_t*)(&copy)), *to((uint8_t*)(&val));
+      for (unsigned i = 0; i < sizeof(T); i++)
       {
-         tmp = buffer[i - 1];
-         buffer[i - 1] = buffer[bufferLength - i];
-         buffer[bufferLength - i] = tmp;
+         to[i] = from[sizeof(T)-(i+1)];
       }
    }
+
 
    // -------------------------------------------------------------------------
    void
