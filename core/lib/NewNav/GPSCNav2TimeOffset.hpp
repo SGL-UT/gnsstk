@@ -64,6 +64,9 @@ namespace gnsstk
    public:
          /// Initialize all data to 0.
       GPSCNav2TimeOffset();
+         /// Create a deep copy of this object.
+      NavDataPtr clone() const override
+      { return std::make_shared<GPSCNav2TimeOffset>(*this); }
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.

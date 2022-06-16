@@ -91,6 +91,8 @@ public:
    {}
    bool validate() const override
    { return true; }
+   gnsstk::NavDataPtr clone() const override
+   { return std::make_shared<FakeODK>(*this); }
 };
 
    /** Implement a test class to expose protected members rather than
