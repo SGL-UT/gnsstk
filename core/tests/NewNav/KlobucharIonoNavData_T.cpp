@@ -50,6 +50,14 @@ namespace gnsstk
    }
 }
 
+/// non-abstract class under test
+class TestClass : public gnsstk::KlobucharIonoNavData
+{
+public:
+   gnsstk::NavDataPtr clone() const override
+   { return std::make_shared<TestClass>(*this); }
+};
+
 class KlobucharIonoNavData_T
 {
 public:
@@ -64,7 +72,7 @@ unsigned KlobucharIonoNavData_T ::
 constructorTest()
 {
    TUDEF("KlobucharIonoNavData", "KlobucharIonoNavData");
-   gnsstk::KlobucharIonoNavData uut;
+   TestClass uut;
    TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Iono,
              uut.signal.messageType);
    TUASSERTFE(0.0, uut.alpha[0]);
@@ -83,7 +91,7 @@ unsigned KlobucharIonoNavData_T ::
 getIonoCorrTest()
 {
    TUDEF("KlobucharIonoNavData", "getIonoCorr");
-   gnsstk::KlobucharIonoNavData uut;
+   TestClass uut;
    gnsstk::CommonTime when = gnsstk::GPSWeekSecond(2100,135.0);
    gnsstk::Position rx, sv;
    rx.setECEF(-1575232.0141,-4707872.2332, 3993198.4383);
@@ -108,7 +116,7 @@ unsigned KlobucharIonoNavData_T ::
 rolloverTest()
 {
    TUDEF("KlobucharIonoNavData", "getIonoCorr(day rollover)");
-   gnsstk::KlobucharIonoNavData uut;
+   TestClass uut;
    gnsstk::CommonTime when = gnsstk::CivilTime(2020, 10, 1, 23, 30, 0.0);
    gnsstk::Position rx, sv;
    rx.setECEF(-740290.055522, -5457071.691343, 3207245.635068);
