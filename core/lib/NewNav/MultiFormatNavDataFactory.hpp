@@ -309,6 +309,12 @@ namespace gnsstk
       template <class Fact>
       std::shared_ptr<Fact> getFactory();
 
+         /** Set the configuration parameters for this and any child
+          * NavDataFactory or PNBNavDataFactory objects.
+          * @param[in] ctrl The configuration for the factory/factories.
+          */
+      void setControl(const FactoryControl& ctrl) override;
+
    protected:
          /** Known nav data factories, organized by signal to make
           * searches simpler and/or quicker.  Declared static so that

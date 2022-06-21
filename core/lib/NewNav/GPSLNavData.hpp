@@ -40,7 +40,7 @@
 #define GNSSTK_GPSLNAVDATA_HPP
 
 #include "gnsstk_export.h"
-#include "OrbitDataKepler.hpp"
+#include "OrbitDataGPS.hpp"
 
 namespace gnsstk
 {
@@ -53,7 +53,7 @@ namespace gnsstk
        *   data in the case of an ephemeris, or the single subframe
        *   for almanac data.
        * @see GPSLNavEph for data from subframes 2 and 3. */
-   class GPSLNavData : public OrbitDataKepler
+   class GPSLNavData : public OrbitDataGPS
    {
    public:
          /// inclination offset, this + delta i = i0, defined in IS-GPS-200.

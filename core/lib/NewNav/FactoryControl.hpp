@@ -36,60 +36,45 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GNSSTK_GPSCNAV2ALM_HPP
-#define GNSSTK_GPSCNAV2ALM_HPP
+#ifndef GNSSTK_FACTORYCONTROL_HPP
+#define GNSSTK_FACTORYCONTROL_HPP
 
-#include "OrbitDataGPS.hpp"
-#include "gnsstk_export.h"
+#include "TimeOffsetFilter.hpp"
 
 namespace gnsstk
 {
       /// @ingroup NavFactory
       //@{
 
-      /// Class containing data elements unique to GPS CNav2 midi almanac.
-   class GPSCNav2Alm : public OrbitDataGPS
+      /** Class to use for configuring NavDataFactory and
+       * PNBNavDataFactory objects.  The parameters may not always
+       * apply to any given factory. */
+   class FactoryControl
    {
    public:
-         /** Midi almanac inclination offset, this + delta i = i0,
-          * defined in IS-GPS-800. */
-      GNSSTK_EXPORT static const double refi0GPS;
-         /** Midi almanac inclination offset, this + delta i = i0,
-          * defined in IS-QZSS-PNT-004. */
-      GNSSTK_EXPORT static const double refi0QZSS;
-
-         /// Sets the nav message type.
-      GPSCNav2Alm();
-         /// Create a deep copy of this object.
-      NavDataPtr clone() const override
-      { return std::make_shared<GPSCNav2Alm>(*this); }
-
-         /** Checks the contents of this message against known
-          * validity rules as defined in the appropriate ICD.
-          * @todo implement some checking.
-          * @return true if this message is valid according to ICD criteria.
-          */
-      bool validate() const override;
-
-         /** Override dumpHarmonics to hide them in output since GPS
-          * CNav2 almanacs don't contain this data. */
-      void dumpHarmonics(std::ostream& s) const override
+         /// Initialize data to reasonable defaults.
+      FactoryControl()
+            : bdsTimeZZfilt(false), timeOffsFilt(TimeOffsetFilter::NoFilt)
       {}
 
-         /// Fill the beginFit and endFit values for this object.
-      void fixFit();
+         /** If true, ignore BeiDou time offsets with A0 and A1 terms
+          * both zero. */
+      bool bdsTimeZZfilt;
 
-         /// @note The health flags are true if unhealthy.
-      bool healthL1;      ///< L1 signal health.
-      bool healthL2;      ///< L2 signal health.
-      bool healthL5;      ///< L5 signal health.
-      double deltai;      ///< Inclination in rad relative to 0.3*pi rad.
-      unsigned wna;       ///< Reference week for toa.
-      double toa;         ///< Convenience storage of unqualified toa.
+         /** Specify how NavDataFactoryWithStore::addNavData() should
+          * process TimeOffsetData objects. 
+          * @note This only applies to classes derived from
+          *   StdNavTimeOffset, which currently excludes
+          *   RinexTimeOffset and GLOFNavUT1TimeOffset.
+          * @todo Determine if RinexTimeOffset or GLOFNavUT1TimeOffset
+          *   can be refactored so they derive from StdNavTimeOffset,
+          *   or at the very least can/should be filtered via
+          *   TimeOffsetUnique in NavDataFactoryWithStore. */
+      TimeOffsetFilter timeOffsFilt;
    };
 
       //@}
 
-}
+} // namespace gnsstk
 
-#endif // GNSSTK_GPSCNAV2ALM_HPP
+#endif // GNSSTK_FACTORYCONTROL_HPP

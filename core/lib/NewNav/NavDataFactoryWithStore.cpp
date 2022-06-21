@@ -857,6 +857,42 @@ namespace gnsstk
       DEBUGTRACE("addNavData user = " << nd->getUserTime()
                  << "  nearest = " << nd->getNearTime());
       SatID satID = nd->signal.sat;
+         // transmit satellite to use as key
+      SatID xsat(nd->signal.xmitSat);
+      switch (factControl.timeOffsFilt)
+      {
+         case TimeOffsetFilter::NoFilt:
+               // this is default behavior
+            break;
+         case TimeOffsetFilter::BySV:
+            if (auto stodp = std::dynamic_pointer_cast<StdNavTimeOffset>(nd))
+            {
+               auto result = touBySV[xsat].insert(stodp);
+               if (!result.second)
+               {
+                     // already in set
+                  return true;
+               }
+            }
+               // Default is still to add, which it will do if the
+               // data type is not a StdNavTimeOffset.
+            break;
+         case TimeOffsetFilter::BySignal:
+            if (auto stodp = std::dynamic_pointer_cast<StdNavTimeOffset>(nd))
+            {
+               auto result = touBySig[nd->signal].insert(stodp);
+               if (!result.second)
+               {
+                     // already in set
+                  return true;
+               }
+            }
+               // Default is still to add, which it will do if the
+               // data type is not a StdNavTimeOffset.
+            break;
+         default:
+            break;
+      }
          // TimeOffset data doesn't have an associated satellite, so
          // ignore those to avoid time system conflicts in this block
          // of code.
@@ -1447,5 +1483,21 @@ namespace gnsstk
             }
          }
       }
+   } // NavDataFactoryWithStore::dump()
+
+
+   bool NavDataFactoryWithStore::UniqueTimeOffset ::
+   operator()(const std::shared_ptr<StdNavTimeOffset>& left,
+              const std::shared_ptr<StdNavTimeOffset>& right) const
+   {
+      if (left->refTime < right->refTime) return true;
+      if (right->refTime < left->refTime) return false;
+      if (left->a0 < right->a0) return true;
+      if (right->a0 < left->a0) return false;
+      if (left->a1 < right->a1) return true;
+      if (right->a1 < left->a1) return false;
+      if (left->a2 < right->a2) return true;
+      return false;
    }
-}
+
+} // namespace gnsstk

@@ -232,6 +232,54 @@ almD1NAVSF5p9->addUnsignedLong(0x1555554B,30,1);
 almD1NAVSF5p9->addUnsignedLong(0x1555554B,30,1);
 almD1NAVSF5p9->trimsize();
 
+almD1NAVSF5p9A0 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+                                                          almD1NAVSF5p9ct);
+almD1NAVSF5p9A0->setNavID(gnsstk::NavType::BeiDou_D1);
+almD1NAVSF5p9A0->addUnsignedLong(0x38905548,30,1); // 1
+almD1NAVSF5p9A0->addUnsignedLong(0x1C202406,30,1); // 31
+almD1NAVSF5p9A0->addUnsignedLong(0x00000000,30,1); // 61
+almD1NAVSF5p9A0->addUnsignedLong(0x00000000, 6,1); // 91
+almD1NAVSF5p9A0->addUnsignedLong(0x00003fff,14,1); // A0gps
+almD1NAVSF5p9A0->addUnsignedLong(0x00000000, 2,1); // A1gps msb
+almD1NAVSF5p9A0->addUnsignedLong(0x00000000, 8,1); // parity
+almD1NAVSF5p9A0->addUnsignedLong(0x00000000,14,1); // A1gps lsb
+almD1NAVSF5p9A0->addUnsignedLong(0x000000ff, 8,1); // A0gal msb
+almD1NAVSF5p9A0->addUnsignedLong(0x00000000, 8,1); // parity
+almD1NAVSF5p9A0->addUnsignedLong(0x0000003f, 6,1); // A0gal lsb
+almD1NAVSF5p9A0->addUnsignedLong(0x00000000,16,1); // A1gal
+almD1NAVSF5p9A0->addUnsignedLong(0x00000000, 8,1); // parity
+almD1NAVSF5p9A0->addUnsignedLong(0x00003fff,14,1); // A0glo
+almD1NAVSF5p9A0->addUnsignedLong(0x00000000, 8,1); // A1glo msb
+almD1NAVSF5p9A0->addUnsignedLong(0x00000000, 8,1); // parity
+almD1NAVSF5p9A0->addUnsignedLong(0x0015556B,30,1);
+almD1NAVSF5p9A0->addUnsignedLong(0x1555554B,30,1);
+almD1NAVSF5p9A0->addUnsignedLong(0x1555554B,30,1);
+almD1NAVSF5p9A0->trimsize();
+
+almD1NAVSF5p9A1 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+                                                          almD1NAVSF5p9ct);
+almD1NAVSF5p9A1->setNavID(gnsstk::NavType::BeiDou_D1);
+almD1NAVSF5p9A1->addUnsignedLong(0x38905548,30,1); // 1
+almD1NAVSF5p9A1->addUnsignedLong(0x1C202406,30,1); // 31
+almD1NAVSF5p9A1->addUnsignedLong(0x00000000,30,1); // 61
+almD1NAVSF5p9A1->addUnsignedLong(0x00000000, 6,1); // 91
+almD1NAVSF5p9A1->addUnsignedLong(0x00000000,14,1); // A0gps
+almD1NAVSF5p9A1->addUnsignedLong(0x00000003, 2,1); // A1gps msb
+almD1NAVSF5p9A1->addUnsignedLong(0x00000000, 8,1); // parity
+almD1NAVSF5p9A1->addUnsignedLong(0x00003fff,14,1); // A1gps lsb
+almD1NAVSF5p9A1->addUnsignedLong(0x00000000, 8,1); // A0gal msb
+almD1NAVSF5p9A1->addUnsignedLong(0x00000000, 8,1); // parity
+almD1NAVSF5p9A1->addUnsignedLong(0x00000000, 6,1); // A0gal lsb
+almD1NAVSF5p9A1->addUnsignedLong(0x0000ffff,16,1); // A1gal
+almD1NAVSF5p9A1->addUnsignedLong(0x00000000, 8,1); // parity
+almD1NAVSF5p9A1->addUnsignedLong(0x00000000,14,1); // A0glo
+almD1NAVSF5p9A1->addUnsignedLong(0x000000ff, 8,1); // A1glo msb
+almD1NAVSF5p9A1->addUnsignedLong(0x00000000, 8,1); // parity
+almD1NAVSF5p9A1->addUnsignedLong(0x3f15556B,30,1);
+almD1NAVSF5p9A1->addUnsignedLong(0x1555554B,30,1);
+almD1NAVSF5p9A1->addUnsignedLong(0x1555554B,30,1);
+almD1NAVSF5p9A1->trimsize();
+
 
 almD1NAVSF4p10ct = gnsstk::BDSWeekSecond(810,345902);
 almD1NAVSF4p10 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
@@ -264,6 +312,39 @@ almD1NAVSF5p10->addUnsignedLong(0x1555554B,30,1);
 almD1NAVSF5p10->addUnsignedLong(0x1555554B,30,1);
 almD1NAVSF5p10->addUnsignedLong(0x1555554B,30,1);
 almD1NAVSF5p10->trimsize();
+
+almD1NAVSF5p10ZZ = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+                                                           almD1NAVSF5p10ct);
+almD1NAVSF5p10ZZ->setNavID(gnsstk::NavType::BeiDou_D1);
+almD1NAVSF5p10ZZ->addUnsignedLong(0x38905548,30,1); // 1
+almD1NAVSF5p10ZZ->addUnsignedLong(0x1C9828C1,30,1); // 31
+almD1NAVSF5p10ZZ->addUnsignedLong(0x04043DE2,30,1); // 61
+almD1NAVSF5p10ZZ->addUnsignedLong(0x00000000,30,1); // 91
+almD1NAVSF5p10ZZ->addUnsignedLong(0x00000000,30,1); // 121
+almD1NAVSF5p10ZZ->addUnsignedLong(0x0000190D,30,1); // 151
+almD1NAVSF5p10ZZ->addUnsignedLong(0x1555554B,30,1); // 181
+almD1NAVSF5p10ZZ->addUnsignedLong(0x1555554B,30,1); // 211
+almD1NAVSF5p10ZZ->addUnsignedLong(0x1555554B,30,1); // 241
+almD1NAVSF5p10ZZ->addUnsignedLong(0x1555554B,30,1); // 271
+almD1NAVSF5p10ZZ->trimsize();
+
+almD1NAVSF5p10A1 = std::make_shared<gnsstk::PackedNavBits>(almD1NAVSid,oidD1NAV,
+                                                           almD1NAVSF5p10ct);
+almD1NAVSF5p10A1->setNavID(gnsstk::NavType::BeiDou_D1);
+almD1NAVSF5p10A1->addUnsignedLong(0x38905548,30,1); // 1
+almD1NAVSF5p10A1->addUnsignedLong(0x1C9828C1,30,1); // 31
+almD1NAVSF5p10A1->addUnsignedLong(0x04043DE2,30,1); // 61
+almD1NAVSF5p10A1->addUnsignedLong(0x00000000,30,1); // 91
+almD1NAVSF5p10A1->addUnsignedLong(0x00000000,10,1); // A0UTC lsb
+almD1NAVSF5p10A1->addUnsignedLong(0x00000fff,12,1); // A1UTC msb
+almD1NAVSF5p10A1->addUnsignedLong(0x00000000, 8,1); // parity
+almD1NAVSF5p10A1->addUnsignedLong(0x00000fff,12,1); // A1UTC lsb
+almD1NAVSF5p10A1->addUnsignedLong(0x00000000,18,1); // up to 180
+almD1NAVSF5p10A1->addUnsignedLong(0x1555554B,30,1); // 181
+almD1NAVSF5p10A1->addUnsignedLong(0x1555554B,30,1); // 211
+almD1NAVSF5p10A1->addUnsignedLong(0x1555554B,30,1); // 241
+almD1NAVSF5p10A1->addUnsignedLong(0x1555554B,30,1); // 271
+almD1NAVSF5p10A1->trimsize();
 
 
 almD1NAVSF4p11ct = gnsstk::BDSWeekSecond(810,345932);

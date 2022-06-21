@@ -39,7 +39,7 @@
 #ifndef GNSSTK_GALINAVEPH_HPP
 #define GNSSTK_GALINAVEPH_HPP
 
-#include "OrbitDataKepler.hpp"
+#include "OrbitDataGal.hpp"
 #include "GalHealthStatus.hpp"
 #include "GalDataValid.hpp"
 
@@ -49,7 +49,7 @@ namespace gnsstk
       //@{
 
       /// Class containing data elements unique to GPS LNav ephemerides.
-   class GalINavEph : public OrbitDataKepler
+   class GalINavEph : public OrbitDataGal
    {
    public:
          /// Sets the nav message type and all other data members to 0.

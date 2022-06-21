@@ -193,6 +193,9 @@ namespace gnsstk
           * @param[in,out] s The stream to write the debug output to. */
       void dumpState(std::ostream& s) const;
 
+         /// Return true if a0 and a1 are zero and double 0 filtering is enabled
+      inline bool filterTimeOffset(double a0, double a1)
+      { return (factControl.bdsTimeZZfilt && (a0 == 0.0) && (a1 == 0.0)); }
 
    protected:
          /// Store transmit time and corresponding AmEpID for amEpIDMap.

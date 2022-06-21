@@ -48,6 +48,7 @@
 #include "NavMessageID.hpp"
 #include "NavSearchOrder.hpp"
 #include "SVHealth.hpp"
+#include "FactoryControl.hpp"
 
 namespace gnsstk
 {
@@ -360,6 +361,13 @@ namespace gnsstk
          /// Return a comma-separated list of formats supported by this factory.
       virtual std::string getFactoryFormats() const = 0;
 
+         /** Set the configuration parameters for this and any child
+          * NavDataFactory or PNBNavDataFactory objects.
+          * @param[in] ctrl The configuration for the factory/factories.
+          */
+      virtual void setControl(const FactoryControl& ctrl)
+      { factControl = ctrl; }
+
          /** Define which signals this factory supports.  This will be
           * empty by default, which means that NavLibrary would not
           * use this factory, so it is up to the derived classes to
@@ -367,6 +375,9 @@ namespace gnsstk
       NavSignalSet supportedSignals;
 
    protected:
+         /// Configuration for the behavior of this factory.
+      FactoryControl factControl;
+
          /** Determines how the factory should load nav data from the store.
           * @note There's nothing to prevent someone from doing
           *   something silly like setting this to "InvalidOnly" then

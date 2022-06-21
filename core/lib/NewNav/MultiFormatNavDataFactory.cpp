@@ -469,6 +469,17 @@ namespace gnsstk
    }
 
 
+   void MultiFormatNavDataFactory ::
+   setControl(const FactoryControl& ctrl)
+   {
+      NavDataFactory::setControl(ctrl);
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
+      {
+         fi.second->setControl(ctrl);
+      }
+   }
+
+
    std::string MultiFormatNavDataFactory ::
    getFactoryFormats() const
    {

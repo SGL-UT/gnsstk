@@ -118,4 +118,14 @@ namespace gnsstk
          std::make_shared<PNBNavDataFactoryMap>();
       return rv;
    }
+
+
+   void PNBMultiGNSSNavDataFactory ::
+   setControl(const FactoryControl& ctrl)
+   {
+      for (auto& fi : *myFactories)
+      {
+         fi.second->setControl(ctrl);
+      }
+   }
 }

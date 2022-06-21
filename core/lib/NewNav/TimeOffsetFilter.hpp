@@ -36,60 +36,42 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GNSSTK_GPSCNAV2ALM_HPP
-#define GNSSTK_GPSCNAV2ALM_HPP
+#ifndef GNSSTK_TIMEOFFSETFILTER_HPP
+#define GNSSTK_TIMEOFFSETFILTER_HPP
 
-#include "OrbitDataGPS.hpp"
-#include "gnsstk_export.h"
+#include <string>
+#include "EnumIterator.hpp"
 
 namespace gnsstk
 {
       /// @ingroup NavFactory
       //@{
 
-      /// Class containing data elements unique to GPS CNav2 midi almanac.
-   class GPSCNav2Alm : public OrbitDataGPS
+      /** Specify how NavDataFactoryWithStore::addNavData() should
+       * process TimeOffsetData objects. */
+   enum class TimeOffsetFilter
    {
-   public:
-         /** Midi almanac inclination offset, this + delta i = i0,
-          * defined in IS-GPS-800. */
-      GNSSTK_EXPORT static const double refi0GPS;
-         /** Midi almanac inclination offset, this + delta i = i0,
-          * defined in IS-QZSS-PNT-004. */
-      GNSSTK_EXPORT static const double refi0QZSS;
-
-         /// Sets the nav message type.
-      GPSCNav2Alm();
-         /// Create a deep copy of this object.
-      NavDataPtr clone() const override
-      { return std::make_shared<GPSCNav2Alm>(*this); }
-
-         /** Checks the contents of this message against known
-          * validity rules as defined in the appropriate ICD.
-          * @todo implement some checking.
-          * @return true if this message is valid according to ICD criteria.
-          */
-      bool validate() const override;
-
-         /** Override dumpHarmonics to hide them in output since GPS
-          * CNav2 almanacs don't contain this data. */
-      void dumpHarmonics(std::ostream& s) const override
-      {}
-
-         /// Fill the beginFit and endFit values for this object.
-      void fixFit();
-
-         /// @note The health flags are true if unhealthy.
-      bool healthL1;      ///< L1 signal health.
-      bool healthL2;      ///< L2 signal health.
-      bool healthL5;      ///< L5 signal health.
-      double deltai;      ///< Inclination in rad relative to 0.3*pi rad.
-      unsigned wna;       ///< Reference week for toa.
-      double toa;         ///< Convenience storage of unqualified toa.
+      Unknown,  ///< Uninitialized or unknown value.
+      NoFilt,   ///< No filtering is performed on TimeOffsetData.
+      BySV,     ///< TimeOffsetData is unique filtered on a per-SV basis.
+      BySignal, ///< TimeOffsetData is unique filtered across a signal.
+      Last      ///< Used to create an iterator.
    };
+
+      /** Define an iterator so C++11 can do things like
+       * for (TimeOffsetFilter i : TimeOffsetFilterIterator()) */
+   typedef EnumIterator<TimeOffsetFilter, TimeOffsetFilter::Unknown, TimeOffsetFilter::Last> TimeOffsetFilterIterator;
+
+   namespace StringUtils
+   {
+         /// Convert a TimeOffsetFilter to a whitespace-free string name.
+      std::string asString(TimeOffsetFilter e) throw();
+         /// Convert a string name to a TimeOffsetFilter
+      TimeOffsetFilter asTimeOffsetFilter(const std::string& s) throw();
+   }
 
       //@}
 
 }
 
-#endif // GNSSTK_GPSCNAV2ALM_HPP
+#endif // GNSSTK_TIMEOFFSETFILTER_HPP

@@ -36,60 +36,48 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GNSSTK_GPSCNAV2ALM_HPP
-#define GNSSTK_GPSCNAV2ALM_HPP
+#ifndef GNSSTK_ORBITDATABDS_HPP
+#define GNSSTK_ORBITDATABDS_HPP
 
-#include "OrbitDataGPS.hpp"
-#include "gnsstk_export.h"
+#include "OrbitDataKepler.hpp"
+#include "CGCS2000Ellipsoid.hpp"
 
 namespace gnsstk
 {
       /// @ingroup NavFactory
       //@{
 
-      /// Class containing data elements unique to GPS CNav2 midi almanac.
-   class GPSCNav2Alm : public OrbitDataGPS
+      /// Base class for all BeiDou broadcast orbit data.
+   class OrbitDataBDS : public OrbitDataKepler
    {
    public:
-         /** Midi almanac inclination offset, this + delta i = i0,
-          * defined in IS-GPS-800. */
-      GNSSTK_EXPORT static const double refi0GPS;
-         /** Midi almanac inclination offset, this + delta i = i0,
-          * defined in IS-QZSS-PNT-004. */
-      GNSSTK_EXPORT static const double refi0QZSS;
-
-         /// Sets the nav message type.
-      GPSCNav2Alm();
-         /// Create a deep copy of this object.
-      NavDataPtr clone() const override
-      { return std::make_shared<GPSCNav2Alm>(*this); }
-
-         /** Checks the contents of this message against known
-          * validity rules as defined in the appropriate ICD.
-          * @todo implement some checking.
-          * @return true if this message is valid according to ICD criteria.
-          */
-      bool validate() const override;
-
-         /** Override dumpHarmonics to hide them in output since GPS
-          * CNav2 almanacs don't contain this data. */
-      void dumpHarmonics(std::ostream& s) const override
+      OrbitDataBDS()
       {}
 
-         /// Fill the beginFit and endFit values for this object.
-      void fixFit();
+         /** Compute the satellite's position and velocity at a time.
+          * @note Defaults to using the BeiDou ellipsoid parameters.
+          * @param[in] when The time at which to compute the xvt.
+          * @param[out] xvt The resulting computed position/velocity.
+          * @param[in] oid Ignored at this level, only used in derived classes.
+          * @return true if successful, false if required nav data was
+          *   unavailable. */
+      bool getXvt(const CommonTime& when, Xvt& xvt,
+                  const ObsID& oid = ObsID()) override
+      {
+         CGCS2000Ellipsoid ell;
+         return OrbitDataKepler::getXvt(when, ell, xvt, oid);
+      }
 
-         /// @note The health flags are true if unhealthy.
-      bool healthL1;      ///< L1 signal health.
-      bool healthL2;      ///< L2 signal health.
-      bool healthL5;      ///< L5 signal health.
-      double deltai;      ///< Inclination in rad relative to 0.3*pi rad.
-      unsigned wna;       ///< Reference week for toa.
-      double toa;         ///< Convenience storage of unqualified toa.
+         /** Compute satellite relativity correction (sec) at the given time.
+          * @param[in] when The time at which to get the relativity correction.
+          * @return the relativity correction in seconds.
+          */
+      double svRelativity(const CommonTime& when) const override
+      {
+         CGCS2000Ellipsoid ell;
+         return OrbitDataKepler::svRelativity(when, ell);
+      }
    };
+} // namespace gnsstk
 
-      //@}
-
-}
-
-#endif // GNSSTK_GPSCNAV2ALM_HPP
+#endif // GNSSTK_ORBITDATABDS_HPP

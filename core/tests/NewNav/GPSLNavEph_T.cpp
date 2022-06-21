@@ -67,6 +67,7 @@ public:
        * any one of the leaf classes to be tested properly. */
    unsigned getClassNameTest();
    unsigned getXvtTest();
+   unsigned svRelativityTest();
 };
 
 
@@ -187,6 +188,52 @@ getXvtTest()
 }
 
 
+unsigned GPSLNavEph_T ::
+svRelativityTest()
+{
+   TUDEF("GPSLNavEph", "svRelativity");
+   gnsstk::GPSLNavEph uut;
+   gnsstk::CommonTime ct(
+      gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   uut.xmitTime = gnsstk::GPSWeekSecond(1854, .720000000000e+04);
+   uut.Toe = gnsstk::GPSWeekSecond(1854, .143840000000e+05);
+   uut.Toc = gnsstk::CivilTime(2015,7,19,3,59,44.0,gnsstk::TimeSystem::GPS);
+   uut.health = gnsstk::SVHealth::Healthy;
+   uut.Cuc = .200793147087e-05;
+   uut.Cus = .823289155960e-05;
+   uut.Crc = .214593750000e+03;
+   uut.Crs = .369375000000e+02;
+   uut.Cic = -.175088644028e-06;
+   uut.Cis = .335276126862e-07;
+   uut.M0 = .218771233916e+01;
+   uut.dn = .511592738462e-08;
+      // dndot
+   uut.ecc = .422249664553e-02;
+   uut.Ahalf =.515360180473e+04;
+   uut.A = uut.Ahalf * uut.Ahalf;
+      // Adot
+   uut.OMEGA0 = -.189462874179e+01;
+   uut.i0 = .946122987969e+00;
+   uut.w = .374892043461e+00;
+   uut.OMEGAdot = -.823034282681e-08;
+   uut.idot = .492877673191e-09;
+   uut.af0 = -.216379296035e-03;
+   uut.af1 = .432009983342e-11;
+   uut.af2 = .000000000000e+00;
+      //uut.iode = .190000000000e+02;
+      // uut.codes = .100000000000e+01
+      //uut.week = .185400000000e+04
+      //uut.l2p = .000000000000e+00
+      //uut.accuracy = .240000000000e+01
+      //uut.tgd = -.107102096081e-07
+      //uut.iodc = .190000000000e+02
+      //uut.fitint = .400000000000e+01;
+   TUASSERTFE(-8.7994080166185110758e-09, uut.svRelativity(ct));
+   TUASSERTFE(-8.8197758101551758427e-09, uut.svRelativity(ct+35));
+   TURETURN();
+}
+
+
 int main()
 {
    GPSLNavEph_T testClass;
@@ -197,6 +244,7 @@ int main()
    errorTotal += testClass.fixFitTest();
    errorTotal += testClass.validateTest();
    errorTotal += testClass.getXvtTest();
+   errorTotal += testClass.svRelativityTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

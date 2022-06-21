@@ -94,12 +94,8 @@ namespace gnsstk
 }
 
 // for windows, which doesn't define __PRETTY_FUNCTION__
-#if !defined(__PRETTY_FUNCTION__)
-#ifdef __FUNCSIG__
+#ifdef WIN32
 #define __PRETTY_FUNCTION__ __FUNCSIG__
-#else
-#define __PRETTY_FUNCTION__ __FUNCTION__
-#endif
 #endif
 
 #ifdef DEBUG_NO_TRACE
@@ -110,21 +106,21 @@ namespace gnsstk
 #else
 #define DEBUGTRACE_ENABLE()                                             \
    {                                                                    \
-      gnsstk::DebugTrace::enabled = true;                                \
+      gnsstk::DebugTrace::enabled = true;                               \
       std::cerr << "WARNING: Tracing is enabled, expect slow performance" \
                 << std::endl;                                           \
    }
-#define DEBUGTRACE_DISABLE()                    \
-   {                                            \
+#define DEBUGTRACE_DISABLE()                     \
+   {                                             \
       gnsstk::DebugTrace::enabled = false;       \
    }
 #define DEBUGTRACE_FUNCTION()                                   \
    gnsstk::DebugTrace gnsstkTraceObject(__PRETTY_FUNCTION__)
-#define DEBUGTRACE(EXPR)                                \
-   {                                                    \
-      std::ostringstream os;                            \
-      os << "* " << std::fixed << std::setprecision(15) \
-         << EXPR << std::endl;                          \
+#define DEBUGTRACE(EXPR)                                 \
+   {                                                     \
+      std::ostringstream os;                             \
+      os << "* " << std::fixed << std::setprecision(15)  \
+         << EXPR << std::endl;                           \
       gnsstk::DebugTrace::trace(os.str());               \
    }
 #endif

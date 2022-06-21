@@ -57,6 +57,7 @@ from __future__ import absolute_import
 ENUM_MAPPER(gnsstk::NavType, NavType, "gnsstk")
 ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 
+%include "TimeOffsetFilter.hpp"
 %include "NavType.hpp"
 %include "NavMessageType.hpp"
 %include "SVHealth.hpp"
@@ -68,6 +69,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 
 %include "renameEnums.i"
 %pythoncode %{
+   renameEnums('TimeOffsetFilter')
    renameEnums('NavType')
    renameEnums('NavMessageType')
    renameEnums('SVHealth')
@@ -147,6 +149,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %include "OrbitData.hpp"
 %include "SVHealth.hpp"
 %include "OrbitDataKepler.hpp"
+%include "OrbitDataBDS.hpp"
 %include "BDSD1NavData.hpp"
 %include "BDSD1NavAlm.hpp"
 %include "BDSD1NavEph.hpp"
@@ -173,6 +176,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 /* %include "CommandOptionNavEnumHelp.hpp" */
 %include "NavValidityType.hpp"
 %include "NavSearchOrder.hpp"
+%include "FactoryControl.hpp"
 %include "NavDataFactory.hpp"
 %include "NavLibrary.hpp"
 %template(NavMessageTypeSet) std::set<gnsstk::NavMessageType>;
@@ -184,6 +188,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %include "GLOFNavISC.hpp"
 %include "GLOFNavTimeOffset.hpp"
 %include "GLOFNavUT1TimeOffset.hpp"
+%include "OrbitDataGPS.hpp"
 %include "GPSCNav2Alm.hpp"
 %include "GPSCNav2Eph.hpp"
 %include "GPSCNav2Health.hpp"
@@ -206,6 +211,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %include "GPSLNavIono.hpp"
 %include "GPSLNavTimeOffset.hpp"
 %include "GalDataValid.hpp"
+%include "OrbitDataGal.hpp"
 %include "GalHealthStatus.hpp"
 %include "GalFNavAlm.hpp"
 %include "GalFNavEph.hpp"
