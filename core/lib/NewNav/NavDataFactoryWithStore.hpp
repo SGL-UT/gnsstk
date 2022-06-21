@@ -41,6 +41,7 @@
 
 #include "NavDataFactory.hpp"
 #include "TimeOffsetData.hpp"
+#include "StdNavTimeOffset.hpp"
 
 namespace gnsstk
 {
@@ -467,6 +468,28 @@ namespace gnsstk
 
          /// Grant access to MultiFormatNavDataFactory for various functions.
       friend class MultiFormatNavDataFactory;
+
+   private:
+         /** Class used to keep track of which StdNavTimeOffset
+          * objects are unique, by ordering the shared pointers in a
+          * set in a specific way. */
+      class UniqueTimeOffset
+      {
+      public:
+         bool operator()(const std::shared_ptr<StdNavTimeOffset>& left,
+                         const std::shared_ptr<StdNavTimeOffset>& right) const;
+      };
+
+         /// Collect unique StdNavTimeOffset data.
+      using TOUSet = std::set<std::shared_ptr<StdNavTimeOffset>,
+                              UniqueTimeOffset>;
+         /// Map transmitting satellite to unique time offsets.
+      using TOUSatMap = std::map<SatID, TOUSet>;
+         /// Map signal to unique time offsets.
+      using TOUSigMap = std::map<NavSignalID, TOUSet>;
+
+      TOUSatMap touBySV;  ///< Each satellite's uniquely transmitted time offset
+      TOUSigMap touBySig; ///< Each signal's uniquely transmitted time offset
    };
 
       //@}

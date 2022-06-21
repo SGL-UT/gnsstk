@@ -91,6 +91,11 @@ public:
    {}
    bool validate() const override
    { return true; }
+   bool getXvt(const gnsstk::CommonTime& when, gnsstk::Xvt& xvt,
+               const gnsstk::ObsID& oid = gnsstk::ObsID()) override
+   { GNSSTK_THROW(gnsstk::Exception("Not implemented")); }
+   double svRelativity(const gnsstk::CommonTime& when) const override
+   { GNSSTK_THROW(gnsstk::Exception("Not implemented")); }
    gnsstk::NavDataPtr clone() const override
    { return std::make_shared<FakeODK>(*this); }
 };

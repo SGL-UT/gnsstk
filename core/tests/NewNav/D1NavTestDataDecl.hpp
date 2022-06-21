@@ -45,7 +45,11 @@ gnsstk::PackedNavBitsPtr ephD1NAVSF1, ephD1NAVSF2, ephD1NAVSF3,
    almD1NAVSF4p7, almD1NAVSF5p7,
    almD1NAVSF4p8, almD1NAVSF5p8,
    almD1NAVSF4p9, almD1NAVSF5p9,
+// note that these two are synthesized and wouldn't pass a parity test
+   almD1NAVSF5p9A0, almD1NAVSF5p9A1,
    almD1NAVSF4p10, almD1NAVSF5p10,
+// note that these two are synthesized and wouldn't pass a parity test
+   almD1NAVSF5p10ZZ, almD1NAVSF5p10A1,
    almD1NAVSF4p11, almD1NAVSF5p11,
    almD1NAVSF4p24B, almD1NAVSF5p24B,
    almD1NAVSF4p8B, almD1NAVSF5p8B,

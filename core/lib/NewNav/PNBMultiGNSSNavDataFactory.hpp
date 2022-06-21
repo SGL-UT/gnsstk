@@ -114,6 +114,12 @@ namespace gnsstk
           * discontinuous data. */
       void resetState() override;
 
+         /** Set the configuration parameters for this and any child
+          * PNBNavDataFactory objects.
+          * @param[in] ctrl The configuration for the factory/factories.
+          */
+      void setControl(const FactoryControl& ctrl) override;
+
    protected:
          /** Known PNB -> nav data factories, organized by navigation
           * message type.  Declared static so that the user doesn't

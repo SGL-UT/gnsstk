@@ -39,7 +39,7 @@
 #ifndef GNSSTK_BDSD1NAVDATA_HPP
 #define GNSSTK_BDSD1NAVDATA_HPP
 
-#include "OrbitDataKepler.hpp"
+#include "OrbitDataBDS.hpp"
 
 namespace gnsstk
 {
@@ -52,7 +52,7 @@ namespace gnsstk
        *   data in the case of an ephemeris, or the single subframe
        *   for almanac data.
        * @see BDSD1NavEph for data from subframes 2 and 3. */
-   class BDSD1NavData : public OrbitDataKepler
+   class BDSD1NavData : public OrbitDataBDS
    {
    public:
          /// inclination offset, this + delta i = i0, defined in SIS-ICD.

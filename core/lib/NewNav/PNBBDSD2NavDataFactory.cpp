@@ -679,7 +679,10 @@ namespace gnsstk
                                             cnbA1GPSl,cscA1GPS);
          gps->refTime = ref;
             // cerr << "add D2NAV time offset" << endl;
-         navOut.push_back(gps);
+         if (!filterTimeOffset(gps->a0, gps->a1))
+         {
+            navOut.push_back(gps);
+         }
 
             // BDT-Galileo time offset
          std::shared_ptr<BDSD2NavTimeOffset> gal =
@@ -695,7 +698,10 @@ namespace gnsstk
          gal->a1 = sf*navIn->asSignedDouble(csbA1GAL,cnbA1GAL,cscA1GAL);
          gal->refTime = ref;
             // cerr << "add D2NAV time offset" << endl;
-         navOut.push_back(gal);
+         if (!filterTimeOffset(gal->a0, gal->a1))
+         {
+            navOut.push_back(gal);
+         }
 
             // BDT-GLONASS time offset
          std::shared_ptr<BDSD2NavTimeOffset> glo =
@@ -711,7 +717,10 @@ namespace gnsstk
                                             cnbA1GLOl,cscA1GLO);
          glo->refTime = ref;
             // cerr << "add D2NAV time offset" << endl;
-         navOut.push_back(glo);
+         if (!filterTimeOffset(glo->a0, glo->a1))
+         {
+            navOut.push_back(glo);
+         }
       }
       return true;
    }
@@ -754,7 +763,10 @@ namespace gnsstk
          // cerr << "wnLSF="  << to->wnLSF << "  dn=" << to->dn << "  refTime=" << to->refTime << endl;
          to->deltatLSF = navIn->asLong(csbdtLSF,cnbdtLSF,cscdtLSF);
             // cerr << "add D2NAV time offset" << endl;
-         navOut.push_back(to);
+         if (!factControl.bdsTimeZZfilt || (to->a0 != 0.0) || (to->a1 != 0.0))
+         {
+            navOut.push_back(to);
+         }
       }
       return true;
    }

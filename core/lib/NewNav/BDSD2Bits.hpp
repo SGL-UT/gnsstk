@@ -829,7 +829,7 @@ namespace gnsstk
          esba0l = esbParity134+enbParity134,
          enba0l = 12,
 
-         esia1m = pg1,                        ///< Clock correction 1st order term MSB
+         esia1m = pg3,                        ///< Clock correction 1st order term MSB
          esba1m = esba0l+enba0l,
          enba1m = 4,
          esca1 = -50,

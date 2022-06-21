@@ -103,14 +103,16 @@ namespace gnsstk
           * @return true if successful, false if required nav data was
           *   unavailable. */
       bool getXvt(const CommonTime& when, Xvt& xvt,
-                  const ObsID& = ObsID()) override;
+                  const ObsID& oid = ObsID()) override = 0;
 
          /** Compute satellite relativity correction (sec) at the given time.
-          * @note Defaults to using the GPS ellipsoid parameters.
+          * @note Each child class must implement this method to call
+          *   svRelativity(CommonTime,EllipsoidModel) with the
+          *   appropriate EllipsoidModel.
           * @param[in] when The time at which to get the relativity correction.
           * @return the relativity correction in seconds.
           */
-      double svRelativity(const CommonTime& when) const;
+      virtual double svRelativity(const CommonTime& when) const = 0;
 
          /** Compute the satellite clock bias (sec) at the given time
           * @param[in] when The time at which to get the satellite clock bias.
