@@ -1,3 +1,27 @@
+gnsstk (13.5.0-1) stable; urgency=low
+
+  * Updated to version 13.5.0
+  * Revert "clone" method additions for now.
+  * Update CODEOWNERS to use package reviewer groups.
+  * Update the debian-11 to store less history.
+  * Replaced cloning repo_utils with pip installed tks_ci_tools
+  * Update CODEOWNERS to eliminate superfluous required merge approvals.
+  * Updated the linux build scripts to specify a release build type.
+  * Update SWIG math tests to use unittest framework
+  * Clean up example code
+  * Add NavData::clone method
+  * Fix BinexData potential buffer overflow issues.
+  * Fix NBTropModel potential null dereference issue.
+  * Fix SolarSystemEphemeris potential string termination issue.
+  * Fix NewNav OrbitDataKepler children to use appropriate ellipsoids.
+  * Fix error in decoding BDS D2 ephemeris A1 parameter.
+  * Add FactoryControl class for configuring aspects of NavDataFactory
+    classes (initially, adding a filter to throw out empty BDS time
+    offset data, and another for filtering time offset data in general).
+  * Fix Doxygen project title & index top label.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 23 Jun 2022 14:27:05 -0500
+
 gnsstk (13.4.0-1) stable; urgency=low
 
   * Updated to version 13.4.0
