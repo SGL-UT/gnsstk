@@ -63,8 +63,6 @@ public:
    bool getXvt(const gnsstk::CommonTime& t, gnsstk::Xvt& xvt,
                const gnsstk::ObsID& oid = gnsstk::ObsID()) override
    { return false; }
-   gnsstk::NavDataPtr clone() const override
-   { return std::make_shared<TestClass>(*this); }
 };
 
 

@@ -52,9 +52,6 @@ namespace gnsstk
    public:
          /// Set data to default values.
       GPSCNavRedAlm();
-         /// Create a deep copy of this object.
-      NavDataPtr clone() const override
-      { return std::make_shared<GPSCNavRedAlm>(*this); }
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.

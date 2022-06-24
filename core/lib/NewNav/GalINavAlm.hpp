@@ -59,9 +59,6 @@ namespace gnsstk
 
          /// Sets the nav message type.
       GalINavAlm();
-         /// Create a deep copy of this object.
-      NavDataPtr clone() const override
-      { return std::make_shared<GalINavAlm>(*this); }
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.

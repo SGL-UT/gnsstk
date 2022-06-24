@@ -63,8 +63,6 @@ public:
    { return validOids.empty(); }
    bool validate() const override
    { return true; }
-   gnsstk::NavDataPtr clone() const override
-   { return std::make_shared<TestClass>(*this); }
 };
 
 

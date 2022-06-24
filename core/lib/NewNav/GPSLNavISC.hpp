@@ -55,9 +55,6 @@ namespace gnsstk
    public:
          /// Initialize data members.
       GPSLNavISC();
-         /// Create a deep copy of this object.
-      NavDataPtr clone() const override
-      { return std::make_shared<GPSLNavISC>(*this); }
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.

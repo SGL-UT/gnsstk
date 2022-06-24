@@ -69,8 +69,6 @@ public:
                const gnsstk::EllipsoidModel& ell, gnsstk::Xvt& xvt,
                const gnsstk::ObsID& oid = gnsstk::ObsID())
    { return OrbitDataKepler::getXvt(when,ell,xvt,oid); }
-   gnsstk::NavDataPtr clone() const override
-   { return std::make_shared<TestClass>(*this); }
 };
 
 

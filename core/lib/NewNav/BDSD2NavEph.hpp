@@ -59,9 +59,6 @@ namespace gnsstk
    public:
          /// Sets the nav message type and all other data members to 0.
       BDSD2NavEph();
-         /// Create a deep copy of this object.
-      NavDataPtr clone() const override
-      { return std::make_shared<BDSD2NavEph>(*this); }
 
          /** Compute the satellites position and velocity at a time.
           * @note This overrides the default OrbitDataKepler

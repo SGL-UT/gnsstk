@@ -96,8 +96,6 @@ public:
    { GNSSTK_THROW(gnsstk::Exception("Not implemented")); }
    double svRelativity(const gnsstk::CommonTime& when) const override
    { GNSSTK_THROW(gnsstk::Exception("Not implemented")); }
-   gnsstk::NavDataPtr clone() const override
-   { return std::make_shared<FakeODK>(*this); }
 };
 
    /** Implement a test class to expose protected members rather than
