@@ -57,9 +57,6 @@ namespace gnsstk
       {
          msgLenSec = 5.48;
       }
-         /// Create a deep copy of this object.
-      NavDataPtr clone() const override
-      { return std::make_shared<GPSCNav2Iono>(*this); }
    };
 
       //@}

@@ -52,9 +52,6 @@ namespace gnsstk
    public:
          /// Sets the nav message type.
       BDSD2NavAlm();
-         /// Create a deep copy of this object.
-      NavDataPtr clone() const override
-      { return std::make_shared<BDSD2NavAlm>(*this); }
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.

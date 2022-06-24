@@ -45,8 +45,6 @@ class TestClass : public gnsstk::BDSD2NavData
 public:
    gnsstk::CommonTime getUserTime() const override
    { return gnsstk::CommonTime::BEGINNING_OF_TIME; }
-   gnsstk::NavDataPtr clone() const override
-   { return std::make_shared<TestClass>(*this); }
 };
 
 

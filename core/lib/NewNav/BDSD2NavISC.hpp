@@ -53,9 +53,6 @@ namespace gnsstk
    public:
          /// Initialize data members.
       BDSD2NavISC();
-         /// Create a deep copy of this object.
-      NavDataPtr clone() const override
-      { return std::make_shared<BDSD2NavISC>(*this); }
 
          /** Print the actual corrections provided by this object in a
           * human-readable format.  Typically called by dump().

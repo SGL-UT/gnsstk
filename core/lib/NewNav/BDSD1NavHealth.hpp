@@ -73,9 +73,6 @@ namespace gnsstk
 
          /// Initialize to unhealthy using a value typically not seen in health.
       BDSD1NavHealth();
-         /// Create a deep copy of this object.
-      NavDataPtr clone() const override
-      { return std::make_shared<BDSD1NavHealth>(*this); }
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.

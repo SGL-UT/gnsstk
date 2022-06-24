@@ -69,9 +69,6 @@ namespace gnsstk
    public:
          /// Initialize all data to 0.
       BDSD2NavTimeOffset();
-         /// Create a deep copy of this object.
-      NavDataPtr clone() const override
-      { return std::make_shared<BDSD2NavTimeOffset>(*this); }
 
          /** Return the number of seconds prior to the effectivity
           * time (2/3 of a day) during which the standard delta t

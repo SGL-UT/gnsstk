@@ -52,9 +52,6 @@ namespace gnsstk
    public:
          /// Sets the nav message type.
       GPSLNavAlm();
-         /// Create a deep copy of this object.
-      NavDataPtr clone() const override
-      { return std::make_shared<GPSLNavAlm>(*this); }
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
