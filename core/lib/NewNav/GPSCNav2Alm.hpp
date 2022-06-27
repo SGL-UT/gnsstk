@@ -39,7 +39,7 @@
 #ifndef GNSSTK_GPSCNAV2ALM_HPP
 #define GNSSTK_GPSCNAV2ALM_HPP
 
-#include "OrbitDataKepler.hpp"
+#include "OrbitDataGPS.hpp"
 #include "gnsstk_export.h"
 
 namespace gnsstk
@@ -48,7 +48,7 @@ namespace gnsstk
       //@{
 
       /// Class containing data elements unique to GPS CNav2 midi almanac.
-   class GPSCNav2Alm : public OrbitDataKepler
+   class GPSCNav2Alm : public OrbitDataGPS
    {
    public:
          /** Midi almanac inclination offset, this + delta i = i0,

@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 13.4.0
+%define version 13.5.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,24 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 23 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v13.5.0 release
+- Revert "clone" method additions for now.
+- Fix Doxygen project title & index top label.
+- Add FactoryControl class for configuring aspects of NavDataFactory classes (initially, adding a filter to throw out empty BDS time offset data, and another for filtering time offset data in general).
+- Fix error in decoding BDS D2 ephemeris A1 parameter.
+- Fix NewNav OrbitDataKepler children to use appropriate ellipsoids.
+- Fix SolarSystemEphemeris potential string termination issue.
+- Fix NBTropModel potential null dereference issue.
+- Fix BinexData potential buffer overflow issues.
+- Add NavData::clone method
+- Clean up example code
+- Update SWIG math tests to use unittest framework
+- Updated the linux build scripts to specify a release build type.
+- Update CODEOWNERS to eliminate superfluous required merge approvals.
+- Replaced cloning repo_utils with pip installed tks_ci_tools
+- Update the debian-11 to store less history.
+- Update CODEOWNERS to use package reviewer groups.
 * Fri May 20 2022 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v13.4.0 release
 - Update conda recipe and CI pipeline to release from stable branch

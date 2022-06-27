@@ -1,37 +1,40 @@
 # examples/CMakeLists.txt
 
-add_executable(example1 example1.cpp)
-target_link_libraries(example1 gnsstk)
+# The numbers are used in case in the future we want to create
+# additional examples of a given class or set of classes.
 
-add_executable(example2 example2.cpp)
-target_link_libraries(example2 gnsstk)
+add_executable(time_example_1 time_example_1.cpp)
+target_link_libraries(time_example_1 gnsstk)
 
-add_executable(example3 example3.cpp)
-target_link_libraries(example3 gnsstk)
+add_executable(Rinex3ObsStream_example_1 Rinex3ObsStream_example_1.cpp)
+target_link_libraries(Rinex3ObsStream_example_1 gnsstk)
 
-add_executable(example4 example4.cpp)
-target_link_libraries(example4 gnsstk)
+add_executable(Rinex3ObsStream_example_2 Rinex3ObsStream_example_2.cpp)
+target_link_libraries(Rinex3ObsStream_example_2 gnsstk)
 
-add_executable(example12 example12.cpp)
-target_link_libraries(example12 gnsstk)
+add_executable(PRSolution_example_1 PRSolution_example_1.cpp)
+target_link_libraries(PRSolution_example_1 gnsstk)
 
-add_executable(example15 example15.cpp)
-target_link_libraries(example15 gnsstk)
+add_executable(RinexObsID_custom_example RinexObsID_custom_example.cpp)
+target_link_libraries(RinexObsID_custom_example gnsstk)
 
-add_executable(navfilterex navfilterex.cpp)
-target_link_libraries(navfilterex gnsstk)
+add_executable(Stats_example_1 Stats_example_1.cpp)
+target_link_libraries(Stats_example_1 gnsstk)
 
-add_executable(CommandOption1 CommandOption1.cpp)
-target_link_libraries(CommandOption1 gnsstk)
+add_executable(NavFilter_example_1 NavFilter_example_1.cpp)
+target_link_libraries(NavFilter_example_1 gnsstk)
 
-add_executable(CommandOption2 CommandOption2.cpp)
-target_link_libraries(CommandOption2 gnsstk)
+add_executable(CommandOption_example_1 CommandOption_example_1.cpp)
+target_link_libraries(CommandOption_example_1 gnsstk)
 
-add_executable(CommandOption3 CommandOption3.cpp)
-target_link_libraries(CommandOption3 gnsstk)
+add_executable(CommandOption_example_2 CommandOption_example_2.cpp)
+target_link_libraries(CommandOption_example_2 gnsstk)
 
-add_executable(CommandOption4 CommandOption4.cpp)
-target_link_libraries(CommandOption4 gnsstk)
+add_executable(CommandOption_example_3 CommandOption_example_3.cpp)
+target_link_libraries(CommandOption_example_3 gnsstk)
 
-add_executable(CommandOption5 CommandOption5.cpp)
-target_link_libraries(CommandOption5 gnsstk)
+add_executable(CommandOption_example_4 CommandOption_example_4.cpp)
+target_link_libraries(CommandOption_example_4 gnsstk)
+
+add_executable(CommandOption_example_5 CommandOption_example_5.cpp)
+target_link_libraries(CommandOption_example_5 gnsstk)

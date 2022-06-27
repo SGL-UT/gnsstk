@@ -1,63 +1,47 @@
-GNSSTk 13.4.0 Release Notes
+GNSSTk 13.5.0 Release Notes
 ========================
 
  * This release includes the following:
-   * Refactoring SWIG bindings into separate modules for better build performance.
-   * Moving Geomatics, SEM and Yuma file support, from ext to core.
-   * Adding support for deploying to Debian 11.
-   * Adding support for SonarQube code quality analysis.
- * Additionally, it contains bug fixes and CI updates.
+   * Reorganizing Kepler-based orbit classes in NewNav (See new modules below).
+     * Adding FactoryControl class for configuring aspects of NavDataFactory classes
+     * Fixing NewNav OrbitDataKepler children to use appropriate ellipsoids.
+     * Fixing error in decoding BDS D2 ephemeris A1 parameter.
+   * Cleaning up C++ example code.
+   * Updating SWIG math tests to use unittest framework.
+ * Additionally, it contains bug fixes, build and CI updates.
 
-Updates since v13.3.0
+Updates since v13.4.0
 ---------------------
 
 **Build System and Test Suite**
-  * Add support for deploying to Debian 11
+  * Update the debian-11 to store less history.
+  * Updated the linux build scripts to specify a release build type.
+  * Update SWIG math tests to use unittest framework
+  * Replaced cloning repo_utils with pip installed tks_ci_tools
 
 **Gitlab CI**
-  * Adding pipeline job for sonar
-  * Update DOCKER_REGISTRY variable.
-  * Update conda recipe and CI pipeline to release from stable branch
+  * Update CODEOWNERS to eliminate superfluous required merge approvals.
+  * Update CODEOWNERS to use package reviewer groups.  
 
 **Library Changes**
-  * Refactor SWIG bindings into separate modules
-  * Move Geomatics code from ext into core
-  * Move SEM and Yuma file support from ext to core.
+  * Add FactoryControl class for configuring aspects of NavDataFactory classes (initially, 
+    adding a filter to throw out empty BDS time offset data, and another for filtering time offset data in general).
 
-Fixes since v13.3.0
+Fixes since v13.4.0
 --------------------
-  * Fix swig wrapper missing class/template issue
-  * Fix PNBGPSLNavDataFactory missing half-week test.
-
-Removed Code due to Deprecation
--------------------------------
-     ext/tests/FileHandling/SEM_T.cpp
-     ext/tests/NewNav/ExtFactoryInitializer_T.cpp
-     ext/tests/RinexNav/xRinexNav.cpp
-     ext/tests/RinexNav/xRinexTest.cpp
-     ext/tests/geomatics/KalmanFilter_T.cpp
-     ext/tests/geomatics/StatsFilter_T.cpp
-     ext/tests/geomatics/testSSEph.cpp
-     ext/tests/geomatics/test_EO_SOFA.cpp
-     ext/tests/geomatics/test_tides.cpp
-     swig/SWIGHelpers/Enums.i
-     swig/SWIGHelpers/pythonfunctions.i
+  * Fix BinexData potential buffer overflow issues.
+  * Fix NBTropModel potential null dereference issue.
+  * Fix SolarSystemEphemeris potential string termination issue.
+  * Fix NewNav OrbitDataKepler children to use appropriate ellipsoids.
+  * Fix error in decoding BDS D2 ephemeris A1 parameter.
+  * Fix Doxygen project title & index top label.
+  * Clean up example code
 
 New Modules
 -------------------------------
-     core/tests/FileHandling/SEM_T.cpp
-     core/tests/Geomatics/KalmanFilter_T.cpp
-     core/tests/Geomatics/StatsFilter_T.cpp
-     core/tests/Geomatics/testSSEph.cpp
-     core/tests/Geomatics/test_EO_SOFA.cpp
-     core/tests/Geomatics/test_tides.cpp
-     swig/ClockModel/ClockModel.i
-     swig/CodeGen/CodeGen.i
-     swig/FileDirProc/FileDirProc.i
-     swig/NewNav/NewNav.i
-     swig/ORD/ORD.i
-     swig/PosSol/PosSol.i
-     swig/RefTime/RefTime.i
-     swig/Rxio/Rxio.i
-     swig/SWIGHelpers/cleanup.i
-     swig/SWIGHelpers/renameEnums.i
+     core/lib/NewNav/FactoryControl.hpp
+     core/lib/NewNav/OrbitDataBDS.hpp
+     core/lib/NewNav/OrbitDataGPS.hpp
+     core/lib/NewNav/OrbitDataGal.hpp
+     core/lib/NewNav/TimeOffsetFilter.cpp
+     core/lib/NewNav/TimeOffsetFilter.hpp

@@ -1,3 +1,33 @@
+# Version 13.5.0   Thursday June 23, 2022
+
+Modifications by Author
+-----------------------
+     Andrew Kuck <kuck@arlut.utexas.edu> (3):
+           Update CODEOWNERS to use package reviewer groups.
+           Don't package the whole git repo. Just snapshot.
+           Cleanup CODEOWNERS for better approval listings.
+
+     Dan Wright <dan.wright@arlut.utexas.edu> (1):
+           Replaced repo_utils with tks_ci_tools
+
+     Dave Rainwater <rain@arlut.utexas.edu> (1):
+           Fix project title & index tree label in Doxygen docs
+
+     John Knutson <johnk@arlut.utexas.edu> (5):
+           Clean up example code
+           Add NavData::clone method and to leaf classes to make alterable shared_ptr...
+           Fix Fortify issues
+           Reorganize Kepler-based orbit classes in NewNav
+           Revert "clone" method additions for now.
+
+     Sarah Magliocca <magliocca@arlut.utexas.edu> (1):
+           Updating build scripts to specify the build type
+
+     Taben Malik <malik@arlut.utexas.edu> (1):
+           Update SWIG Math Tests
+
+
+
 # Version 13.4.0   Friday May 20, 2022
 
 Modifications by Author

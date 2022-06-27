@@ -39,7 +39,7 @@
 #ifndef GNSSTK_GPSCNAV2EPH_HPP
 #define GNSSTK_GPSCNAV2EPH_HPP
 
-#include "OrbitDataKepler.hpp"
+#include "OrbitDataGPS.hpp"
 #include "gnsstk_export.h"
 
 namespace gnsstk
@@ -48,7 +48,7 @@ namespace gnsstk
       //@{
 
       /// Class containing data elements unique to GPS CNav2 ephemerides.
-   class GPSCNav2Eph : public OrbitDataKepler
+   class GPSCNav2Eph : public OrbitDataGPS
    {
    public:
          /// Aref value defined in IS-GPS-800 (meters).

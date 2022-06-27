@@ -626,7 +626,7 @@ processSF5Pg9Test()
       gnsstk::NavMessageType::TimeOffset);
    gnsstk::CommonTime refTimeExp = gnsstk::BDSWeekSecond(810,0);
    gnsstk::CommonTime effTimeExp;
-   gnsstk::NavDataPtrList navOut;
+   gnsstk::NavDataPtrList navOut, navOut2, navOut3, navOut4;
    gnsstk::BDSD1NavTimeOffset *to;
    uint16_t expHea;
       // success, time offset data only
@@ -668,6 +668,24 @@ processSF5Pg9Test()
       }
    }
    fc.validateResults(navOut, __LINE__, 3, 0, 0, 3);
+      // Test with double-zero filtering enabled
+   gnsstk::FactoryControl ctrl;
+   ctrl.bdsTimeZZfilt = true;
+   gnsstk::PNBBDSD1NavDataFactory uut2;
+   uut2.setControl(ctrl);
+   TUASSERTE(bool, true, uut2.processSF5Pg9(almD1NAVSF5p9, navOut2));
+      // all the time offset data has double-zeroes
+   TUASSERT(navOut2.empty());
+      // Test double-zero filter with A0 != 0, A1 = 0 
+   gnsstk::PNBBDSD1NavDataFactory uut3;
+   uut3.setControl(ctrl);
+   TUASSERTE(bool, true, uut3.processSF5Pg9(almD1NAVSF5p9A0, navOut3));
+   fc.validateResults(navOut3, __LINE__, 3, 0, 0, 3);
+      // Test double-zero filter with A0 = 0, A1 != 0 
+   gnsstk::PNBBDSD1NavDataFactory uut4;
+   uut4.setControl(ctrl);
+   TUASSERTE(bool, true, uut4.processSF5Pg9(almD1NAVSF5p9A0, navOut4));
+   fc.validateResults(navOut4, __LINE__, 3, 0, 0, 3);
    TURETURN();
 }
 
@@ -686,7 +704,7 @@ processSF5Pg10Test()
    gnsstk::CommonTime refTimeExp = gnsstk::BDSWeekSecond(810,0);
       // Seems strange that this would be in the future rather than the past.
    gnsstk::CommonTime effTimeExp = gnsstk::BDSWeekSecond(829,518400);
-   gnsstk::NavDataPtrList navOut;
+   gnsstk::NavDataPtrList navOut, navOut2, navOut3, navOut4;
    gnsstk::BDSD1NavTimeOffset *to;
    uint16_t expHea;
       // success, time offset data only
@@ -720,6 +738,23 @@ processSF5Pg10Test()
       }
    }
    fc.validateResults(navOut, __LINE__, 1, 0, 0, 1);
+      // Test double-zero filter with A0 != 0, A1 = 0
+   gnsstk::FactoryControl ctrl;
+   ctrl.bdsTimeZZfilt = true;
+   gnsstk::PNBBDSD1NavDataFactory uut2;
+   uut2.setControl(ctrl);
+   TUASSERTE(bool, true, uut2.processSF5Pg10(almD1NAVSF5p10, navOut2));
+   fc.validateResults(navOut2, __LINE__, 1, 0, 0, 1);
+      // Test with double-zero filtering enabled
+   gnsstk::PNBBDSD1NavDataFactory uut3;
+   uut3.setControl(ctrl);
+   TUASSERTE(bool, true, uut3.processSF5Pg10(almD1NAVSF5p10ZZ, navOut3));
+   fc.validateResults(navOut3, __LINE__, 0, 0, 0, 0);
+      // Test double-zero filter with A0 != 0, A1 = 0
+   gnsstk::PNBBDSD1NavDataFactory uut4;
+   uut4.setControl(ctrl);
+   TUASSERTE(bool, true, uut4.processSF5Pg10(almD1NAVSF5p10, navOut4));
+   fc.validateResults(navOut4, __LINE__, 1, 0, 0, 1);
    TURETURN();
 }
 

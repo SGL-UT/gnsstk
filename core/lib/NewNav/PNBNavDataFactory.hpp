@@ -44,6 +44,7 @@
 #include "PackedNavBits.hpp"
 #include "NavData.hpp"
 #include "NavValidityType.hpp"
+#include "FactoryControl.hpp"
 
 namespace gnsstk
 {
@@ -101,7 +102,17 @@ namespace gnsstk
           * discontinuous data. */
       virtual void resetState() = 0;
 
+         /** Set the configuration parameters for this and any child
+          * PNBNavDataFactory objects.
+          * @param[in] ctrl The configuration for the factory/factories.
+          */
+      virtual void setControl(const FactoryControl& ctrl)
+      { factControl = ctrl; }
+
    protected:
+         /// Configuration for the behavior of this factory.
+      FactoryControl factControl;
+
          /// Determines how the factory should filter added data.
       NavValidityType navValidity;
 

@@ -60,6 +60,7 @@ variables:
   SONAR_TEST_SOURCES: 'core/tests'
   SONAR_TEST_INCLUSION: 'core/tests'
   SONAR_PROJECT_KEY: gnsstk
+  
 
 # Template for all normal jobs.
 .normal_build:
@@ -118,18 +119,18 @@ sgllint_lint:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos7_conda_py27:latest
+  image: $DOCKER_REGISTRY/sgl/debian-10:python3      
   script:
     - '######'
     - '# This job checks all files for required lines like copyright/license statements.'
     - '######'
-    - conda activate py27
     # Obtain the latest version of ./sgl_lint.py
-    - git clone --depth 1 https://${CI_USER}:${CI_TOKEN}@${REPO_HOST}/sgl/repo_utils.git
-    - python repo_utils/sgl_lint.py -v -R core
-    - python repo_utils/sgl_lint.py -v -R ext
-    - python repo_utils/sgl_lint.py -v -R swig/apps
-    - python repo_utils/sgl_lint.py -v -R swig/gnsstk
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install sgl-ci-tools --extra-index-url https://sgl-artifactory.arlut.utexas.edu/artifactory/api/pypi/pypi-ci/simple
+    - sgl_lint -v -R core
+    - sgl_lint -v -R ext
+    - sgl_lint -v -R swig/apps
+    - sgl_lint -v -R swig/gnsstk
   dependencies: []
 
 protected_term_lint:
@@ -138,16 +139,17 @@ protected_term_lint:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36:latest
+  image: $DOCKER_REGISTRY/sgl/debian-10:python3
   script:
     - '######'
     - '# This job checks all files for protected terms in files modified since the branch split from default.'
     - '######'
-    - conda activate py36
-    - git clone --depth 1 https://${CI_USER}:${CI_TOKEN}@${REPO_HOST}/sgl/repo_utils.git
+    - apt-get update && apt-get install -y git
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install tks-ci-tools --extra-index-url https://sgl-artifactory.arlut.utexas.edu/artifactory/api/pypi/pypi-ci/simple/
     # We pull the default branch because the CI doesn't normally have any branches other than the one being tested.
     - git fetch -uf origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
-    - bash repo_utils/dw_search/modified_file_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
+    - modified_file_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
   dependencies: []
   # This has the occasional false-positive, so it's advisory only.
   allow_failure: true
@@ -158,16 +160,17 @@ protected_history_lint:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36:latest
+  image: $DOCKER_REGISTRY/sgl/debian-10:python3
   script:
     - '######'
     - '# This job checks all files modified on this branch for sensitive terms.'
     - '######'
-    - conda activate py36
-    - git clone --depth 1 https://${CI_USER}:${CI_TOKEN}@${REPO_HOST}/sgl/repo_utils.git
+    - apt-get update && apt-get install -y git
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install tks-ci-tools --extra-index-url https://sgl-artifactory.arlut.utexas.edu/artifactory/api/pypi/pypi-ci/simple/
     # We pull the default branch because the CI doesn't normally have any branches other than the one being tested.
     - git fetch -uf origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
-    - bash repo_utils/dw_search/history_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
+    - history_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
   dependencies: []
   # Temporarily allowing to fail so pipeline doesn't fail
   allow_failure: true
@@ -977,7 +980,7 @@ system_install_redhat_8:
 #     - mv ../*.deb debs
 #     - mv ../*.changes debs
 #     - mv ../*.dsc debs
-#     - mv ../*.git debs
+#     - mv ../*.git ../*.gitshallow debs
 #   artifacts:
 #     paths:
 #     - debs/
@@ -1022,6 +1025,7 @@ package_debian_9:
     - mv ../*.deb debs
     - mv ../*.changes debs
     - mv ../*.dsc debs
+    - mv ../*.git ../*.gitshallow debs
     - mv ../*.buildinfo debs
   artifacts:
     paths:
@@ -1057,6 +1061,7 @@ package_debian_10:
     - mv ../*.deb debs
     - mv ../*.changes debs
     - mv ../*.dsc debs
+    - mv ../*.git ../*.gitshallow debs
     - mv ../*.buildinfo debs
   artifacts:
     paths:
@@ -1093,7 +1098,7 @@ package_debian_11:
     - mv ../*.deb debs
     - mv ../*.changes debs
     - mv ../*.dsc debs
-    - mv ../*.git debs
+    - mv ../*.git ../*.gitshallow debs
     - mv ../*.buildinfo debs
   artifacts:
     paths:

@@ -39,7 +39,7 @@
 #ifndef GNSSTK_BDSD2NAVDATA_HPP
 #define GNSSTK_BDSD2NAVDATA_HPP
 
-#include "OrbitDataKepler.hpp"
+#include "OrbitDataBDS.hpp"
 
 namespace gnsstk
 {
@@ -48,7 +48,7 @@ namespace gnsstk
 
       /** Class that defines nav message data information that is
        * shared between BDS D2 Nav almanac and ephemeris messages. */
-   class BDSD2NavData : public OrbitDataKepler
+   class BDSD2NavData : public OrbitDataBDS
    {
    public:
          /// inclination offset, this + delta i = i0, defined in SIS-ICD.

@@ -39,7 +39,7 @@
 #ifndef GNSSTK_GPSCNAVDATA_HPP
 #define GNSSTK_GPSCNAVDATA_HPP
 
-#include "OrbitDataKepler.hpp"
+#include "OrbitDataGPS.hpp"
 #include "gnsstk_export.h"
 
 namespace gnsstk
@@ -49,7 +49,7 @@ namespace gnsstk
 
       /** Class that defines nav message data information that is
        * shared between GPS CNav almanac and ephemeris messages. */
-   class GPSCNavData : public OrbitDataKepler
+   class GPSCNavData : public OrbitDataGPS
    {
    public:
          /** Ephemeris/Reduced Almanac Aref value defined in

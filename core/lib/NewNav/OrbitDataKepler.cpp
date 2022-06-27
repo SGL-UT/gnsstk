@@ -183,22 +183,6 @@ namespace gnsstk
 
 
    bool OrbitDataKepler ::
-   getXvt(const CommonTime& when, Xvt& xvt, const ObsID& oid)
-   {
-      GPSEllipsoid ell;
-      return getXvt(when, ell, xvt, oid);
-   }
-
-
-   double OrbitDataKepler ::
-   svRelativity(const CommonTime& when) const
-   {
-      GPSEllipsoid ell;
-      return svRelativity(when, ell);
-   }
-
-
-   bool OrbitDataKepler ::
    getXvt(const CommonTime& when, const EllipsoidModel& ell, Xvt& xvt,
           const ObsID& oid)
    {

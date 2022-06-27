@@ -91,6 +91,11 @@ public:
    {}
    bool validate() const override
    { return true; }
+   bool getXvt(const gnsstk::CommonTime& when, gnsstk::Xvt& xvt,
+               const gnsstk::ObsID& oid = gnsstk::ObsID()) override
+   { GNSSTK_THROW(gnsstk::Exception("Not implemented")); }
+   double svRelativity(const gnsstk::CommonTime& when) const override
+   { GNSSTK_THROW(gnsstk::Exception("Not implemented")); }
 };
 
    /** Implement a test class to expose protected members rather than

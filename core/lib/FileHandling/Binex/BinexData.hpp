@@ -952,16 +952,10 @@ namespace gnsstk
                   size_t              offset,
                   size_t              size);
 
-         /**
-          * Reverses the order of the first bufferLength bytes in the
-          * specified buffer.
-          *
-          * @param buffer       Pointer to the bytes
-          * @param bufferLength Number of bytes to reverse
-          */
-      static void
-      reverseBuffer(unsigned char *buffer,
-                    size_t        bufferLength);
+   private:
+
+      template <class T>
+      static void reverseBytes(T& val);
 
          /**
           * Reverses the order of the first bufferLength bytes in the
@@ -979,8 +973,6 @@ namespace gnsstk
       SyncByte     syncByte;  ///< Flags for endianness, CRC, etc.
       RecordID     recID;     ///< Record ID
       std::string  msg;       ///< Record message (opaque)
-
-   private:
 
    };  // class BinexData
 

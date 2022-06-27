@@ -39,7 +39,7 @@
 #ifndef GNSSTK_GALFNAVALM_HPP
 #define GNSSTK_GALFNAVALM_HPP
 
-#include "OrbitDataKepler.hpp"
+#include "OrbitDataGal.hpp"
 #include "GalHealthStatus.hpp"
 #include "gnsstk_export.h"
 
@@ -49,7 +49,7 @@ namespace gnsstk
       //@{
 
       /// Class containing data elements unique to Galileo F/NAV almanacs.
-   class GalFNavAlm : public OrbitDataKepler
+   class GalFNavAlm : public OrbitDataGal
    {
    public:
          /// A ref value defined in OS-SIS-ICD Table 75 (meters).

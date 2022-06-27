@@ -39,6 +39,7 @@
 #include "OrbitDataKepler.hpp"
 #include "TestUtil.hpp"
 #include "GPSWeekSecond.hpp"
+#include "GPSEllipsoid.hpp"
 #include "CivilTime.hpp"
 #include <iomanip>
 
@@ -59,6 +60,15 @@ public:
    { return true; }
    gnsstk::CommonTime getUserTime() const override
    { return gnsstk::CommonTime::BEGINNING_OF_TIME; }
+   bool getXvt(const gnsstk::CommonTime& when, gnsstk::Xvt& xvt,
+               const gnsstk::ObsID& oid = gnsstk::ObsID()) override
+   { GNSSTK_THROW(gnsstk::Exception("Not implemented")); }
+   double svRelativity(const gnsstk::CommonTime& when) const override
+   { GNSSTK_THROW(gnsstk::Exception("Not implemented")); }
+   bool getXvt(const gnsstk::CommonTime& when,
+               const gnsstk::EllipsoidModel& ell, gnsstk::Xvt& xvt,
+               const gnsstk::ObsID& oid = gnsstk::ObsID())
+   { return OrbitDataKepler::getXvt(when,ell,xvt,oid); }
 };
 
 
@@ -69,7 +79,6 @@ public:
 
    unsigned constructorTest();
    unsigned getXvtTest();
-   unsigned svRelativityTest();
    unsigned svClockBiasTest();
    unsigned svClockDriftTest();
    unsigned isSameDataTest();
@@ -137,8 +146,9 @@ getXvtTest()
    TUDEF("OrbitDataKepler", "getXvt");
    TestClass uut;
    gnsstk::Xvt xvt;
+   gnsstk::GPSEllipsoid ell;
    fillTestClass(uut);
-   TUASSERT(uut.getXvt(ct+35, xvt));
+   TUASSERT(uut.getXvt(ct+35, ell, xvt));
       // TUASSERTE is not good for this check as we're testing a bunch
       // of floating point numbers, so we use TUSSERTFE instead for
       // each field.
@@ -154,18 +164,6 @@ getXvtTest()
    TUASSERTFE(4.3200998334200003381e-12, xvt.clkdrift);
    TUASSERTFE(-8.8197758101551758427e-09, xvt.relcorr);
    TUASSERTE(gnsstk::Xvt::HealthStatus, gnsstk::Xvt::Healthy, xvt.health);
-   TURETURN();
-}
-
-
-unsigned OrbitDataKepler_T ::
-svRelativityTest()
-{
-   TUDEF("OrbitDataKepler", "svRelativity");
-   TestClass uut;
-   fillTestClass(uut);
-   TUASSERTFE(-8.7994080166185110758e-09, uut.svRelativity(ct));
-   TUASSERTFE(-8.8197758101551758427e-09, uut.svRelativity(ct+35));
    TURETURN();
 }
 
@@ -254,7 +252,6 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getXvtTest();
-   errorTotal += testClass.svRelativityTest();
    errorTotal += testClass.svClockBiasTest();
    errorTotal += testClass.svClockDriftTest();
    errorTotal += testClass.isSameDataTest();
