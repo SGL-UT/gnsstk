@@ -42,12 +42,12 @@ import sys
 import os
 import argparse
 import unittest
-from nose.tools import nottest
+
 import gnsstk
 
 args = None
 
-@nottest
+
 def run_unit_tests():
     """A function to run unit tests without using the argument parsing of
     unittest.main() """
