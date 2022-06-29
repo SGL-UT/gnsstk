@@ -60,7 +60,7 @@ variables:
   SONAR_TEST_SOURCES: 'core/tests'
   SONAR_TEST_INCLUSION: 'core/tests'
   SONAR_PROJECT_KEY: gnsstk
-  
+
 
 # Template for all normal jobs.
 .normal_build:
@@ -119,7 +119,7 @@ sgllint_lint:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl/debian-10:python3      
+  image: $DOCKER_REGISTRY/sgl/debian-10:python3
   script:
     - '######'
     - '# This job checks all files for required lines like copyright/license statements.'
@@ -287,26 +287,7 @@ build_debian_11_virtualenv:
       - myenv/
       - build/
 
-build_conda_py27:
-  stage: build
-  needs: []
-  extends: .normal_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py27
-  script:
-    - conda activate py27
-    - mkdir -p build
-    - cd build
-    - export gnsstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
-    - make all -j 4
-  artifacts:
-    paths:
-      - build/
-    expire_in: 4 days
-
-build_conda_py36:
+.build_conda:
   stage: build
   needs: []
   extends: .normal_build
@@ -314,7 +295,10 @@ build_conda_py36:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36
   script:
-    - conda activate py36
+    - export CONDA_ENVS_PATH=/tmp/conda_envs
+    - export CONDA_PKGS_DIRS=/tmp/conda_pkgs
+    - conda create --name py${PYTHON_VERSION} "python=${PYTHON_VERSION}"
+    - conda activate py${PYTHON_VERSION}
     - mkdir -p build
     - cd build
     - export gnsstk=`pwd`/install
@@ -325,10 +309,35 @@ build_conda_py36:
       - build/
     expire_in: 4 days
 
+build_conda_py2.7:
+  variables:
+    PYTHON_VERSION: "2.7"
+  extends: .build_conda
+
+build_conda_py3.6:
+  variables:
+    PYTHON_VERSION: "3.6"
+  extends: .build_conda
+
+build_conda_py3.7:
+  variables:
+    PYTHON_VERSION: "3.7"
+  extends: .build_conda
+
+build_conda_py3.8:
+  variables:
+    PYTHON_VERSION: "3.8"
+  extends: .build_conda
+
+build_conda_py3.9:
+  variables:
+    PYTHON_VERSION: "3.9"
+  extends: .build_conda
+
 sonar_conda_py36:
   stage: build
   needs: []
-  extends: 
+  extends:
    - .normal_build
    - .sonarqube-check
   tags:
@@ -545,36 +554,17 @@ test_debian_11_virtualenv:
   dependencies:
     - build_debian_11_virtualenv
 
-test_conda_py27:
+.test_conda:
   stage: test
-  needs: [build_conda_py27]
-  extends: .normal_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py27
-  script:
-    - conda activate py27
-    - cd build
-    - ctest -j 4
-    - touch $CI_PROJECT_DIR/success
-  artifacts:
-    when: on_failure
-    paths:
-    - build/Testing/Temporary/
-    - build/swig/
-    expire_in: 4 days
-  dependencies:
-    - build_conda_py27
-
-test_conda_py36:
-  stage: test
-  needs: [build_conda_py36]
   extends: .normal_build
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36
   script:
-    - conda activate py36
+    - export CONDA_ENVS_PATH=/tmp/conda_envs
+    - export CONDA_PKGS_DIRS=/tmp/conda_pkgs
+    - conda create --name py${PYTHON_VERSION} "python=${PYTHON_VERSION}" nose enum34
+    - conda activate py${PYTHON_VERSION}
     - cd build
     - ctest -j 4
     - touch $CI_PROJECT_DIR/success
@@ -584,8 +574,41 @@ test_conda_py36:
     - build/Testing/Temporary/
     - build/swig/
     expire_in: 4 days
-  dependencies:
-    - build_conda_py36
+
+test_conda_py2.7:
+  variables:
+    PYTHON_VERSION: "2.7"
+  extends: .test_conda
+  needs: [build_conda_py2.7]
+  dependencies: [build_conda_py2.7]
+
+test_conda_py3.6:
+  variables:
+    PYTHON_VERSION: "3.6"
+  extends: .test_conda
+  needs: [build_conda_py3.6]
+  dependencies: [build_conda_py3.6]
+
+test_conda_py3.7:
+  variables:
+    PYTHON_VERSION: "3.7"
+  extends: .test_conda
+  needs: [build_conda_py3.7]
+  dependencies: [build_conda_py3.7]
+
+test_conda_py3.8:
+  variables:
+    PYTHON_VERSION: "3.8"
+  extends: .test_conda
+  needs: [build_conda_py3.8]
+  dependencies: [build_conda_py3.8]
+
+test_conda_py3.9:
+  variables:
+    PYTHON_VERSION: "3.9"
+  extends: .test_conda
+  needs: [build_conda_py3.9]
+  dependencies: [build_conda_py3.9]
 
 test_redhat:
   stage: test
@@ -1118,19 +1141,20 @@ package_conda:
     - export GIT_COMMIT=$CI_COMMIT_REF_NAME
     - export GIT_LAST_TAG=$(git describe --abbrev=0 origin/stable)
     - export GIT_CHANGES_LAST_TAG=$(git rev-list --count $(git describe --abbrev=0 origin/stable)..@)
-    # Build Conda Py27 package
-    - conda-build conda_recipe
-    # Copy files to local directory for archiving.
+    # Output directory must exist before conda build
     - mkdir -p conda-bld
-    - cp -r $CONDA_PREFIX/conda-bld/* conda-bld/
+    - conda build --output-folder conda-bld --python=$PYTHON_VERSION conda_recipe
     # Don't archive the cache files.
     - rm -r conda-bld/linux-64/.cache
-    # Display the contents of the py36 tarball
-    - tar -tf conda-bld/linux-64/gnsstk-*py36*.tar.bz2
+    # Display the contents of the py tarball
+    - tar -tf conda-bld/linux-64/gnsstk-*py*.tar.bz2
   artifacts:
     paths:
       - conda-bld/linux-64/
   dependencies: []
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.6", "3.7", "3.8", "3.9"]
 
 package_redhat:
   stage: package
@@ -1345,5 +1369,17 @@ push_artifacts:
     DEB_10_PACKAGES: "debs/*bpo10*.deb"
     #RPM_PACKAGES: "rpm_files/RPMS/x86_64/*.rpm"
   stage: push
-  needs: [package_conda, package_debian_9, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36]
-  dependencies: [package_conda, package_debian_9, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36]
+  needs:
+    - package_conda
+    - package_debian_9
+    - package_debian_10
+    - package_debian_11
+    - package_redhat_8
+    - package_redhat_8_py36
+  dependencies:
+    - package_conda
+    - package_debian_9
+    - package_debian_10
+    - package_debian_11
+    - package_redhat_8
+    - package_redhat_8_py36
