@@ -422,7 +422,7 @@ namespace gnsstk
             try {
                Covariance = inverseSVD(Covariance);
             }
-            catch(SingularMatrixException& sme) { return -2; }
+            catch(MatrixException& sme) { return -2; }
             LOG(DEBUG) << "InvCov (" << Covariance.rows() << "x" << Covariance.cols()
                << ")\n" << fixed << setprecision(4) << Covariance;
 
