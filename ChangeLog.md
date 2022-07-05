@@ -1,3 +1,15 @@
+# Version 13.5.1   Tuesday July 05, 2022
+
+Modifications by Author
+-----------------------
+     Dave Rainwater <rain@arlut.utexas.edu> (1):
+           Use correct exception handling in Covariance matrix check
+
+     Taben Malik <malik@arlut.utexas.edu> (1):
+           Python 3.7/3.8/3.9 Packages
+
+
+
 # Version 13.5.0   Thursday June 23, 2022
 
 Modifications by Author
