@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     help:           $ python setup.py --help-commands
-    system install: $ python setup.py install 
+    system install: $ python setup.py install
     user install:   $ python setup.py install --prefix=~/.local
     documentation:  https://docs.python.org/2/install/
 
@@ -55,7 +55,6 @@ classifiers_list = ['License :: OSI Approved :: GNU Library or Lesser General Pu
 
 # Dependencies for easy_install (may not be needed)
 requirements_list = [ "python >= 2.7.3",
-                      "numpy >= 1.4.4",
                       "setuptools >= 0.6",
                       ]
 
