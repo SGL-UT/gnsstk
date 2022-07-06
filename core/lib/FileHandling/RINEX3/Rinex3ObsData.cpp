@@ -273,20 +273,29 @@ namespace gnsstk
          obs[svID].resize(index+1);
       if (obsID.type == ObservationType::Channel)
       {
+            // double, because everything is floating point in RINEX...
+         double channel = data.data;
+         if (channel == 0)
+         {
+               // substitute 99 for 0 so we always have something
+               // (unless someone sets the channel to a negative
+               // number).
+            channel = 99;
+         }
             /** @todo If the existing channel data is greater than or
              * equal to this number, we have stuffed the maximum
              * number of channels into the field.  I don't really know
              * what to do in the event that we exceed this limit. */
             // also checking for channel being < 1, which is not allowed
             // per RINEX 3.04
-         if ((obs[svID][index].data < 0100000000) &&
-             (data.data >= 1))
+         if ((obs[svID][index].data < 100000000) &&
+             (channel >= 1))
          {
             obs[svID][index].data *= 100;
                // We assume the channel number is in the supplied
                // RinexDatum, but we need to keep it under 100
                // according to RINEX 3.04.  This is a kludge.
-            obs[svID][index].data += fmod(data.data, 100);
+            obs[svID][index].data += fmod(channel, 100);
             obs[svID][index].lliBlank = obs[svID][index].ssiBlank = true;
          }
       }
