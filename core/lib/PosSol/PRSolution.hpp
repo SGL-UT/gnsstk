@@ -546,24 +546,26 @@ namespace gnsstk
             was.setMessage(msg);
             os << was << std::endl;
 
-            if(ndof > 0) {
-               // scale covariance
-               double sig(::sqrt(APV/ndof));
-               Matrix<double> Cov(was.getCov());
-               for(size_t i=0; i<Cov.rows(); i++) for(size_t j=i; j<Cov.cols(); j++)
-                  Cov(i,j) = Cov(j,i) = Cov(i,j)*sig;
-               // print cov as labelled matrix
-               Namelist NL;
-               NL += "ECEF_X"; NL += "ECEF_Y"; NL += "ECEF_Z";
-               LabeledMatrix LM(NL,Cov);
-               LM.scientific().setprecision(3).setw(14).symmetric(true);
-
-               os << "Covariance: " << msg << std::endl << LM << std::endl;
-               os << "APV: " << msg << std::fixed << std::setprecision(3)
-                  << " sigma = " << sig << " meters with "
-                  << ndof << " degrees of freedom.\n";
+            Matrix<double> Cov(was.getCov());
+            double sig(ndof > 0 ? ::sqrt(APV/ndof) : 0.0);
+            if(ndof > 0)               // scale covariance
+            {
+               for(size_t i=0; i<Cov.rows(); i++)
+               {
+                  for(size_t j=i; j<Cov.cols(); j++)
+                     Cov(i,j) = Cov(j,i) = Cov(i,j)*sig;
+               }
             }
-            else os << " Not enough data for covariance.\n";
+            // print cov as labeled matrix
+            Namelist NL;
+            NL += "ECEF_X"; NL += "ECEF_Y"; NL += "ECEF_Z";
+            LabeledMatrix LM(NL,Cov);
+            LM.scientific().setprecision(3).setw(14).symmetric(true);
+
+            os << "Covariance: " << msg << std::endl << LM << std::endl;
+            os << "APV: " << msg << std::fixed << std::setprecision(3)
+               << " sigma = " << sig << " meters with "
+               << ndof << " degrees of freedom.\n";
          }
          catch(Exception& e) { GNSSTK_RETHROW(e); }
       }
