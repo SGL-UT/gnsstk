@@ -53,6 +53,8 @@ namespace gnsstk
             case ReferenceFrame::WGS84G730:  return "WGS84(G730)";
             case ReferenceFrame::WGS84G873:  return "WGS84(G873)";
             case ReferenceFrame::WGS84G1150: return "WGS84(G1150)";
+	    case ReferenceFrame::WGS84G1674: return "WGS84(G1674)";
+	    case ReferenceFrame::WGS84G1762: return "WGS84(G1762)";
             case ReferenceFrame::ITRF:       return "ITRF";
             case ReferenceFrame::ITRF94:     return "ITRF(1994)";
             case ReferenceFrame::ITRF96:     return "ITRF(1996)";
@@ -76,6 +78,8 @@ namespace gnsstk
          if (s == "WGS84(G730)")  return ReferenceFrame::WGS84G730;
          if (s == "WGS84(G873)")  return ReferenceFrame::WGS84G873;
          if (s == "WGS84(G1150)") return ReferenceFrame::WGS84G1150;
+         if (s == "WGS84(G1674)") return ReferenceFrame::WGS84G1674;
+         if (s == "WGS84(G1762)") return ReferenceFrame::WGS84G1762;
          if (s == "ITRF")         return ReferenceFrame::ITRF;
          if (s == "ITRF(1994)")   return ReferenceFrame::ITRF94;
          if (s == "ITRF(1996)")   return ReferenceFrame::ITRF96;
