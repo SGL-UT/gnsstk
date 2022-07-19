@@ -1,3 +1,15 @@
+# Version 12.1.1   Tuesday July 19, 2022
+
+Modifications by Author
+-----------------------
+     Anthony Hughes <anthony@arlut.utexas.edu> (1):
+           Fixed handling of the text file spec type (%x) and added relevant unit tests as per TKS-435.
+
+     John Knutson <johnk@arlut.utexas.edu> (1):
+           Use correct ellipsoid model for Galileo
+
+
+
 # Version 12.1.0   Thursday October 28, 2021
 
 Modifications by Author

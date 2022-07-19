@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 12.1.0
+%define version 12.1.1
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jul 19 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v12.1.1 release
+- Fixed handling of the text file spec type (%x) and added relevant unit tests as per TKS-435.
+- Fix OrbElem to use the correct ellipsoid model for Gallileo.
 * Thu Oct 28 2021 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v12.1.0 release
 - Update SolarPosition SWIG bindings to map output data.

@@ -1,3 +1,12 @@
+gnsstk (12.1.1-1) stable; urgency=low
+
+  * Updated to version 12.1.1
+  * Fix OrbElem to use the correct ellipsoid model for Gallileo.
+  * Fixed handling of the text file spec type (%x) and added relevant
+    unit tests as per TKS-435.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Tue, 19 Jul 2022 12:52:42 -0500
+
 gnsstk (12.1.0-1) stable; urgency=low
 
   * Updated to version 12.1.0
