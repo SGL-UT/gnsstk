@@ -59,6 +59,8 @@ namespace gnsstk
       WGS84G730,  ///< WGS84, GPS week 730 version
       WGS84G873,  ///< WGS84, GPS week 873 version
       WGS84G1150, ///< WGS84, GPS week 1150 version
+      WGS84G1674, ///< WGS84, GPS week 1674 version
+      WGS84G1762, ///< WGS84, GPS week 1762 version
       ITRF,       ///< ITRF, assumed to be the latest version
       ITRF94,     ///< ITRF, 1994 version
       ITRF96,     ///< ITRF, 1996 version
