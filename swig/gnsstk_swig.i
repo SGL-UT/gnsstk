@@ -179,17 +179,9 @@
 %import(module="gnsstk") "CNavCookFilter.hpp"
 %import(module="gnsstk") "NavFilterMgr.hpp"
 %import(module="gnsstk") "CNavCrossSourceFilter.hpp"
-/* %import(module="gnsstk") "CNavDataElement.hpp" */
-/* %import(module="gnsstk") "CNavDataElementStore.hpp" */
-/* %import(module="gnsstk") "CNavEOP.hpp" */
 /* %import(module="gnsstk") "CNavEmptyFilter.hpp" */
-/* %import(module="gnsstk") "CNavGGTO.hpp" */
-/* %import(module="gnsstk") "CNavISC.hpp" */
 %import(module="gnsstk") "CNavParityFilter.hpp"
-%import(module="gnsstk") "CNavReducedAlm.hpp"
 %import(module="gnsstk") "CNavTOWFilter.hpp"
-/* %import(module="gnsstk") "CNavText.hpp" */
-/* %import(module="gnsstk") "CNavUTC.hpp" */
 %import(module="gnsstk") "ClockModel.hpp"
 %import(module="gnsstk") "PCodeConst.hpp"
 %import(module="gnsstk") "CodeBuffer.hpp"
@@ -204,9 +196,6 @@
 %import(module="gnsstk") "CubicSpline.hpp"
 %import(module="gnsstk") "DCBDataReader.hpp"
 /* %import(module="gnsstk") "DebugTrace.hpp" */
-%import(module="gnsstk") "DiffCorrBase.hpp"
-%import(module="gnsstk") "DiffCorrClk.hpp"
-%import(module="gnsstk") "DiffCorrEph.hpp"
 %import(module="gnsstk") "GPSZcount.hpp"
 %import(module="gnsstk") "UnixTime.hpp"
 %import(module="gnsstk") "SystemTime.hpp"
