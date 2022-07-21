@@ -83,20 +83,9 @@ from __future__ import absolute_import
 %include "BrcClockCorrection.hpp"
 %include "GPS_URA.i"
 %include "BrcKeplerOrbit.hpp"
-/* %include "CNavDataElement.hpp" */
-/* %include "CNavDataElementStore.hpp" */
 %include "NavType.hpp"
 %include "NavID.i"
 %include "PackedNavBits.hpp"
-/* %include "CNavEOP.hpp" */
-/* %include "CNavGGTO.hpp" */
-/* %include "CNavISC.hpp" */
-%include "CNavReducedAlm.hpp"
-/* %include "CNavText.hpp" */
-/* %include "CNavUTC.hpp" */
-%include "DiffCorrBase.hpp"
-%include "DiffCorrClk.hpp"
-%include "DiffCorrEph.hpp"
 %include "EngAlmanac.hpp"
 %include "EngEphemeris.hpp"
 %include "EphemerisRange.hpp"
