@@ -1,4 +1,4 @@
-%module NewNav
+%module(directors="1") NewNav
 
 %pythonbegin %{
 from __future__ import absolute_import
@@ -230,6 +230,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %include "GalINavIono.hpp"
 %include "GalINavTimeOffset.hpp"
 %include "NavDataFactoryWithStore.hpp"
+%include "NavDataFactoryCallback.hpp"
 %include "NavDataFactoryWithStoreFile.hpp"
 %include "NDFUniqIterator.hpp"
 %template (NDFUniqIterator_NavDataFactoryMap) gnsstk::NDFUniqIterator<gnsstk::NavDataFactoryMap>;
@@ -256,6 +257,8 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %include "SEMNavDataFactory.hpp"
 %include "SP3NavDataFactory.hpp"
 %include "YumaNavDataFactory.hpp"
+
+%feature("director") gnsstk::NavDataFactoryCallback;
 
 
 // =============================================================

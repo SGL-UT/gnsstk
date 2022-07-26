@@ -1,4 +1,4 @@
-%module gnsstk
+%module(directors="1") gnsstk
 
 %pythonbegin %{
 from __future__ import absolute_import

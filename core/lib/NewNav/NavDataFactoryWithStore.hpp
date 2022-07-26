@@ -468,6 +468,8 @@ namespace gnsstk
 
          /// Grant access to MultiFormatNavDataFactory for various functions.
       friend class MultiFormatNavDataFactory;
+         /// Grant access to NavDataFactoryStoreCallback to data maps.
+      friend class NavDataFactoryStoreCallback;
 
    private:
          /** Class used to keep track of which StdNavTimeOffset

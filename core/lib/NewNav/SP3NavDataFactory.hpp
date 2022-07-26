@@ -104,6 +104,10 @@ namespace gnsstk
                 NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
                 NavSearchOrder order) override;
 
+         /// @copydoc NavDataFactoryWithStoreFile::process(const std::string&,NavDataFactoryCallback&)
+      bool process(const std::string& filename,
+                   NavDataFactoryCallback& cb) override;
+
          /** Load a file into internal store.
           * @post If RINEX clock data is successfully loaded, the
           *   factory will be automatically switched to use RINEX
@@ -322,8 +326,10 @@ namespace gnsstk
           *   factory will be automatically switched to use RINEX
           *   clock data in place of SP3 clock.
           * @param[in] source The path to the RINEX clock file to load.
+          * @param[in] cb The callback object that stores or otherwise
+          *   processes the given data (obj).
           * @return true on success, false on failure. */
-      bool addRinexClock(const std::string& source);
+      bool addRinexClock(const std::string& source, NavDataFactoryCallback& cb);
       
          /** Store the given NavDataPtr object internally, provided it
           * passes any requested valditity checking. 
@@ -331,12 +337,14 @@ namespace gnsstk
           *   no storing or validation is done.  This is done to
           *   obviate having to check whether ephemeris or clock data
           *   is being processed prior to calling this method. 
+          * @param[in] cb The callback object that stores or otherwise
+          *   processes the given data (obj).
           * @param[in,out] obj The object to (potentially) be stored.
           *   Regardless of whether the object is stored, the pointer
           *   will be reset, freeing this particular use. 
           * @return false if a failed attempt was made to store the
           *   data, true otherwise. */
-      bool store(bool process, NavDataPtr& obj);
+      bool store(bool process, NavDataFactoryCallback& cb, NavDataPtr& obj);
 
          /** Implementation of the core of what goes on in the find()
           * method.  This is a separate function because the

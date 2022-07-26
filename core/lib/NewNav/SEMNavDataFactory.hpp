@@ -77,6 +77,10 @@ namespace gnsstk
                        NavNearMessageMap& navNearMap,
                        OffsetCvtMap& ofsMap) override;
 
+         /// @copydoc NavDataFactoryWithStoreFile::process(const std::string&,NavDataFactoryCallback&)
+      bool process(const std::string& filename,
+                   NavDataFactoryCallback& cb) override;
+
          /// Return a comma-separated list of formats supported by this factory.
       std::string getFactoryFormats() const override;
 
