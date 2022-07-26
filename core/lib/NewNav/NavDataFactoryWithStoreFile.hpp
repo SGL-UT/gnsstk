@@ -40,6 +40,7 @@
 #define GNSSTK_NAVDATAFACTORYWITHSTOREFILE_HPP
 
 #include "NavDataFactoryWithStore.hpp"
+#include "NavDataFactoryCallback.hpp"
 
 namespace gnsstk
 {
@@ -78,6 +79,18 @@ namespace gnsstk
                                NavMessageMap& navMap,
                                NavNearMessageMap& navNearMap,
                                OffsetCvtMap& ofsMap) = 0;
+
+         /** Process the data in the specified file using a custom
+          * callback.  Each message decoded by the factory class will
+          * be run through NavDataFactoryCallback::process().  It is
+          * expected that the user will derive a class from
+          * NavDataFactoryCallback, implement the details of the
+          * process method to suit their use case, and apply it here.
+          * @param[in] filename The path of the file to process.
+          * @param[in] cb The call back to use to process the data in the file.
+          * @return true on success, false on failure. */
+      virtual bool process(const std::string& filename,
+                           NavDataFactoryCallback& cb) = 0;
    };
 
       //@}

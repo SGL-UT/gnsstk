@@ -48,6 +48,7 @@
 #include "TimeString.hpp"
 #include "MiscMath.hpp"
 #include "DebugTrace.hpp"
+#include "NavDataFactoryStoreCallback.hpp"
 
 using namespace std;
 
@@ -555,6 +556,16 @@ namespace gnsstk
    addDataSource(const std::string& source)
    {
       DEBUGTRACE_FUNCTION();
+      gnsstk::NavDataFactoryStoreCallback cb(this, data, nearestData,
+                                             offsetData);
+      return process(source, cb);
+   }
+
+
+   bool SP3NavDataFactory ::
+   process(const std::string& filename,
+           NavDataFactoryCallback& cb)
+   {
       bool rv = true;
       bool processEph = (procNavTypes.count(NavMessageType::Ephemeris) > 0);
       bool processClk = (procNavTypes.count(NavMessageType::Clock) > 0);
@@ -565,7 +576,7 @@ namespace gnsstk
       NavDataPtr eph, clk;
       try
       {
-         SP3Stream is(source.c_str(), ios::in);
+         SP3Stream is(filename.c_str(), ios::in);
          SP3Header head;
          SP3Data data;
          if (!is)
@@ -575,7 +586,7 @@ namespace gnsstk
          is >> head;
          if (!is)
          {
-            return addRinexClock(source);
+            return addRinexClock(filename, cb);
          }
 
             // know whether to look for the extra info contained in SP3c
@@ -618,10 +629,10 @@ namespace gnsstk
                lastSat = data.sat;
                lastTime = data.time;
                DEBUGTRACE("storing eph");
-               if (!store(processEph, eph))
+               if (!store(processEph, cb, eph))
                   return false;
                DEBUGTRACE("storing clk");
-               if (!store(processClk && useSP3clock, clk))
+               if (!store(processClk && useSP3clock, cb, clk))
                   return false;
             }
                // Don't process time records otherwise we'll end up
@@ -668,10 +679,10 @@ namespace gnsstk
          }
             // store the final record(s)
          DEBUGTRACE("storing last eph");
-         if (!store(processEph, eph))
+         if (!store(processEph, cb, eph))
             return false;
          DEBUGTRACE("storing last clk");
-         if (!store(processClk, clk))
+         if (!store(processClk, cb, clk))
             return false;
       }
       catch (gnsstk::Exception& exc)
@@ -694,7 +705,7 @@ namespace gnsstk
 
 
    bool SP3NavDataFactory ::
-   addRinexClock(const std::string& source)
+   addRinexClock(const std::string& source, NavDataFactoryCallback& cb)
    {
       bool rv = true;
          // We have to handle this a bit carefully.  If we're not
@@ -783,7 +794,7 @@ namespace gnsstk
                gps->driftSig = data.sig_drift;
                gps->clkDrRate = data.accel;
                gps->drRateSig = data.sig_accel;
-               if (!store(processClk, clk))
+               if (!store(processClk, cb, clk))
                   return false;
             }
          }
@@ -926,7 +937,7 @@ namespace gnsstk
 
 
    bool SP3NavDataFactory ::
-   store(bool process, NavDataPtr& obj)
+   store(bool process, NavDataFactoryCallback& cb, NavDataPtr& obj)
    {
       DEBUGTRACE_FUNCTION();
          // only process if we have something to process.
@@ -957,7 +968,7 @@ namespace gnsstk
             {
                if (obj->validate() == expect)
                {
-                  if (!addNavData(obj, data, nearestData, offsetData))
+                  if (!cb.process(obj))
                   {
                      DEBUGTRACE("store failed to add nav data");
                      return false;
@@ -969,7 +980,7 @@ namespace gnsstk
          {
             if (process)
             {
-               if (!addNavData(obj, data, nearestData, offsetData))
+               if (!cb.process(obj))
                {
                   DEBUGTRACE("store failed to add nav data");
                   return false;

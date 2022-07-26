@@ -382,6 +382,7 @@
 %import(module="gnsstk") "MetReader.hpp"
 %import(module="gnsstk") "MostCommonValue.hpp"
 %import(module="gnsstk") "NavDataFactoryWithStore.hpp"
+%import(module="gnsstk") "NavDataFactoryCallback.hpp"
 %import(module="gnsstk") "NavDataFactoryWithStoreFile.hpp"
 %import(module="gnsstk") "NDFUniqIterator.hpp"
 %template (NDFUniqIterator_NavDataFactoryMap) gnsstk::NDFUniqIterator<gnsstk::NavDataFactoryMap>;
@@ -389,6 +390,7 @@
 %import(module="gnsstk") "NDFUniqConstIterator.hpp"
 %template (NDFUniqConstIterator_NavDataFactoryMap) gnsstk::NDFUniqConstIterator<gnsstk::NavDataFactoryMap>;
 %import(module="gnsstk") "NEDUtil.hpp"
+%import(module="gnsstk") "NavDataFactoryStoreCallback.hpp"
 %import(module="gnsstk") "NavMsgData.hpp"
 %import(module="gnsstk") "NavMsgDataBits.hpp"
 %import(module="gnsstk") "NavMsgDataPNB.hpp"
