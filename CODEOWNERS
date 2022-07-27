@@ -10,11 +10,6 @@ ref/usersguide/ @johnk @renfrob @rain
 # Default Owners
 * @sgl-tks
 
-# Core apps
-core/apps/ @johnk @btolman
-core/apps/positioning/ @btolman @renfrob
-core/apps/Rinextools/ @btolman @renfrob
-
 # Core lib
 core/lib/ @johnk
 core/lib/AppFrame/ @johnk @anthony
@@ -24,30 +19,23 @@ core/lib/CommandLine/ @johnk @anthony
 core/lib/FileDirProc/ @johnk @anthony
 core/lib/FileHandling/ @anthony @johnk
 core/lib/Geomatics/ @btolman @johnk
-core/lib/GNSSCore/ @anthony @johnk
-core/lib/GNSSEph/ @renfrob @johnk @anthony
+core/lib/GNSSCore/ @anthony @johnk @jmedeiros
+core/lib/GNSSEph/ @johnk @anthony @renfrob
 core/lib/Math/ @anthony @btolman
 core/lib/NavFilter/ @johnk @anthony @renfrob
+core/lib/NewNav/ @johnk @jmedeiros
 core/lib/ORD/ @kuck @rcathriner
 core/lib/PosSol/ @btolman @renfrob
 core/lib/RefTime/ @btolman @renfrob
 core/lib/TestFramework/ @anthony @johnk
-core/lib/TimeHandling/ @anthony @renfrob @johnk
+core/lib/TimeHandling/ @anthony @johnk @renfrob
 core/lib/Utilities/ @johnk @anthony
 
 # Core tests
 core/tests/ @johnk @anthony @renfrob
 
-# Ext
+# Ext -- unsupported & unmaintained, not part of the API
 ext/ @johnk @dbarber
-ext/apps/filetools/ @btolman @renfrob
-ext/apps/geomatics/ @btolman
-ext/apps/misc/ @renfrob @johnk
-ext/apps/rfw/ @johnk @renfrob
-ext/apps/Rinextools/ @btolman @renfrob
-ext/lib/Geomatics/ @btolman @renfrob
-ext/lib/GNSSEph/ @renfrob @rcathriner
-ext/lib/PosSol/ @btolman @johnk
 
 # Other
 data/ @dbarber @kuck
@@ -75,4 +63,3 @@ CMakeLists.txt   @code-reviewers/cmake
 conda_recipe/ @code-reviewers/conda-recipes
 debian/ @code-reviewers/debian_pkgs
 rpm_files/ @code-reviewers/rpm_pkgs
-
