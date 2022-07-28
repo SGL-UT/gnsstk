@@ -1,3 +1,27 @@
+# Version 13.6.0   Thursday July 28, 2022
+
+Modifications by Author
+-----------------------
+     Brian Tolman <btolman@arlut.utexas.edu> (1):
+           output covariance for one-epoch solution, even though APV and sigma undefined
+
+     Dave Rainwater <rain@arlut.utexas.edu> (2):
+           [ci-skip] First rough pass at cleanup
+           Update WGS84 revision enums
+
+     David Rainwater <rain@arlut.utexas.edu> (1):
+           Remove very old incompatible CNAV file handling
+
+     John Knutson <johnk@arlut.utexas.edu> (3):
+           Bug fixes for RINEX 3 OBS data channel handling
+           Eliminate warnings about missing swig wrappers for recently added OrbitData* classes
+           First cut at NavDataFactoryWithStore callback
+
+     Taben Malik <malik@arlut.utexas.edu> (1):
+           Removing usage of nose
+
+
+
 # Version 13.5.1   Tuesday July 05, 2022
 
 Modifications by Author
