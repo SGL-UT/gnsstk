@@ -288,6 +288,10 @@ namespace gnsstk
           *   factories succeeded. */
       bool addDataSource(const std::string& source) override;
 
+         /// @copydoc NavDataFactoryWithStoreFile::process(const std::string&,NavDataFactoryCallback&)
+      bool process(const std::string& filename,
+                   NavDataFactoryCallback& cb) override;
+
          /** Add a new factory to the library.  The factory must be
           * derived from NavDataFactoryWithStoreFile but not a
           * MultiFormatNavDataFactory.

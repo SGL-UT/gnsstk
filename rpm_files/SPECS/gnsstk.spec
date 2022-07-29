@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 13.5.1
+%define version 13.6.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 28 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v13.6.0 release
+- Update CODEOWNERS file.
+- Fix SWIG warnings for new OrbitData* classes
+- Add callback capability to NavDataFactory classes
+- Deprecate old incompatible (nonfunctional) CNAV code.
+- Update WGS84 ref frame enums.
+- Fix Rinex3ObsData handling of channel zero
+- Update PRSolution (incl. PRSolve) output a covariance in the case of data from only a single epoch.
+- Remove usage of `nose` in testing of swig generated python.
 * Tue Jul 05 2022 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v13.5.1 release
 - Fix exception handling bug in PRSolution.

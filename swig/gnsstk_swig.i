@@ -91,6 +91,7 @@
 %import(module="gnsstk") "OrbitData.hpp"
 %import(module="gnsstk") "SVHealth.hpp"
 %import(module="gnsstk") "OrbitDataKepler.hpp"
+%import(module="gnsstk") "OrbitDataBDS.hpp"
 %import(module="gnsstk") "BDSD1NavData.hpp"
 %import(module="gnsstk") "BDSD1NavAlm.hpp"
 %import(module="gnsstk") "BDSD1NavEph.hpp"
@@ -179,17 +180,9 @@
 %import(module="gnsstk") "CNavCookFilter.hpp"
 %import(module="gnsstk") "NavFilterMgr.hpp"
 %import(module="gnsstk") "CNavCrossSourceFilter.hpp"
-/* %import(module="gnsstk") "CNavDataElement.hpp" */
-/* %import(module="gnsstk") "CNavDataElementStore.hpp" */
-/* %import(module="gnsstk") "CNavEOP.hpp" */
 /* %import(module="gnsstk") "CNavEmptyFilter.hpp" */
-/* %import(module="gnsstk") "CNavGGTO.hpp" */
-/* %import(module="gnsstk") "CNavISC.hpp" */
 %import(module="gnsstk") "CNavParityFilter.hpp"
-%import(module="gnsstk") "CNavReducedAlm.hpp"
 %import(module="gnsstk") "CNavTOWFilter.hpp"
-/* %import(module="gnsstk") "CNavText.hpp" */
-/* %import(module="gnsstk") "CNavUTC.hpp" */
 %import(module="gnsstk") "ClockModel.hpp"
 %import(module="gnsstk") "PCodeConst.hpp"
 %import(module="gnsstk") "CodeBuffer.hpp"
@@ -204,9 +197,6 @@
 %import(module="gnsstk") "CubicSpline.hpp"
 %import(module="gnsstk") "DCBDataReader.hpp"
 /* %import(module="gnsstk") "DebugTrace.hpp" */
-%import(module="gnsstk") "DiffCorrBase.hpp"
-%import(module="gnsstk") "DiffCorrClk.hpp"
-%import(module="gnsstk") "DiffCorrEph.hpp"
 %import(module="gnsstk") "GPSZcount.hpp"
 %import(module="gnsstk") "UnixTime.hpp"
 %import(module="gnsstk") "SystemTime.hpp"
@@ -300,6 +290,7 @@
 %import(module="gnsstk") "GLOFNavISC.hpp"
 %import(module="gnsstk") "GLOFNavTimeOffset.hpp"
 %import(module="gnsstk") "GLOFNavUT1TimeOffset.hpp"
+%import(module="gnsstk") "OrbitDataGPS.hpp"
 %import(module="gnsstk") "GPSCNav2Alm.hpp"
 %import(module="gnsstk") "GPSCNav2Eph.hpp"
 %import(module="gnsstk") "GPSCNav2Health.hpp"
@@ -323,6 +314,7 @@
 %import(module="gnsstk") "GPSLNavTimeOffset.hpp"
 %import(module="gnsstk") "GSatID.hpp"
 %import(module="gnsstk") "GalDataValid.hpp"
+%import(module="gnsstk") "OrbitDataGal.hpp"
 %import(module="gnsstk") "GalHealthStatus.hpp"
 %import(module="gnsstk") "GalFNavAlm.hpp"
 %import(module="gnsstk") "GalFNavEph.hpp"
@@ -393,6 +385,7 @@
 %import(module="gnsstk") "MetReader.hpp"
 %import(module="gnsstk") "MostCommonValue.hpp"
 %import(module="gnsstk") "NavDataFactoryWithStore.hpp"
+%import(module="gnsstk") "NavDataFactoryCallback.hpp"
 %import(module="gnsstk") "NavDataFactoryWithStoreFile.hpp"
 %import(module="gnsstk") "NDFUniqIterator.hpp"
 %template (NDFUniqIterator_NavDataFactoryMap) gnsstk::NDFUniqIterator<gnsstk::NavDataFactoryMap>;
@@ -400,6 +393,7 @@
 %import(module="gnsstk") "NDFUniqConstIterator.hpp"
 %template (NDFUniqConstIterator_NavDataFactoryMap) gnsstk::NDFUniqConstIterator<gnsstk::NavDataFactoryMap>;
 %import(module="gnsstk") "NEDUtil.hpp"
+%import(module="gnsstk") "NavDataFactoryStoreCallback.hpp"
 %import(module="gnsstk") "NavMsgData.hpp"
 %import(module="gnsstk") "NavMsgDataBits.hpp"
 %import(module="gnsstk") "NavMsgDataPNB.hpp"

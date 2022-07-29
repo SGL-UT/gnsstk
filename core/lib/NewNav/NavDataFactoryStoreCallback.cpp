@@ -18,9 +18,10 @@
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2022, The Board of Regents of The University of Texas System
+//  Copyright 2004-2021, The Board of Regents of The University of Texas System
 //
 //==============================================================================
+
 
 //==============================================================================
 //
@@ -35,71 +36,31 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-
-/**
- * @file CNavText.hpp
- * Designed to support loading CNAV text data
- * (Message Type 15 and/or Type 36)
- */
-
-#ifndef GNSSTK_CNAVTEXT_HPP
-#define GNSSTK_CNAVTEXT_HPP
-
-#include <string>
-#include <iostream>
-
-#include "CNavDataElement.hpp"
-#include "PackedNavBits.hpp"
+#include "NavDataFactoryStoreCallback.hpp"
 
 namespace gnsstk
 {
-   class CNavText : public CNavDataElement
+   NavDataFactoryStoreCallback ::
+   NavDataFactoryStoreCallback(NavDataFactoryWithStore* ndf)
+         : fact(ndf), navMap(ndf->data), navNearMap(ndf->nearestData),
+           ofsMap(ndf->offsetData)
+   {}
+
+
+   NavDataFactoryStoreCallback ::
+   NavDataFactoryStoreCallback(
+      NavDataFactoryWithStore* ndf,
+      NavMessageMap& othNavMap,
+      NavNearMessageMap& othNavNearMap,
+      NavDataFactoryWithStore::OffsetCvtMap& othOfsMap)
+         : fact(ndf), navMap(othNavMap), navNearMap(othNavNearMap),
+           ofsMap(othOfsMap)
+   {}
+
+
+   bool NavDataFactoryStoreCallback ::
+   process(const NavDataPtr& navOut)
    {
-   public:
-         /// Default constructor
-      CNavText();
-
-         /**
-          * @throw InvalidParameter
-          */
-      CNavText(const PackedNavBits& pnb);
-
-         /// Destructor
-      virtual ~CNavText() {}
-
-         /// Clone method
-      virtual CNavText* clone() const;
-
-         /**
-          * Store the contents of message this object.
-          * @param pnb - 300 bits of Message Type 15 or 37
-          * @throw InvalidParameter if message data is invalid
-          */
-      void loadData(const PackedNavBits& pnb);
-
-      virtual std::string getName() const
-      {
-         return "CnavText";
-      }
-
-      virtual std::string getNameLong() const
-      {
-         return "Civilian Navigation (CNAV) Text Message";
-      }
-
-      virtual bool isSameData(const CNavDataElement* right) const;
-
-         /**
-          * @throw InvalidRequest
-          */
-      virtual void dumpBody(std::ostream& s = std::cout) const;
-
-      std::string textMessage;
-      int textPage;
-
-   }; // end class CnavText
-
-   std::ostream& operator<<(std::ostream& s, const CNavText& eph);
-} // end namespace
-
-#endif // GNSSTK_CNAVTEXT_HPP
+      return fact->addNavData(navOut, navMap, navNearMap, ofsMap);
+   }
+}

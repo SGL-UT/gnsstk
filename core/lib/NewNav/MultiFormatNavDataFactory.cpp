@@ -458,6 +458,28 @@ namespace gnsstk
    }
 
 
+   bool MultiFormatNavDataFactory ::
+   process(const std::string& filename,
+           NavDataFactoryCallback& cb)
+   {
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(factories()))
+      {
+         NavDataFactory *ptr = fi.second.get();
+         NavDataFactoryWithStoreFile *fact =
+            dynamic_cast<NavDataFactoryWithStoreFile*>(ptr);
+         if (fact != nullptr)
+         {
+            if (fact->process(filename,cb))
+            {
+               return true;
+            }
+         }
+      }
+         // none of the existing factories were able to load the data
+      return false;
+   }
+
+
    void MultiFormatNavDataFactory ::
    dump(std::ostream& s, DumpDetail dl) const
    {

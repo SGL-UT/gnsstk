@@ -41,6 +41,7 @@
 #include "YumaHeader.hpp"
 #include "GPSLNavHealth.hpp"
 #include "GPSWeekSecond.hpp"
+#include "NavDataFactoryStoreCallback.hpp"
 
 using namespace std;
 
@@ -59,6 +60,15 @@ namespace gnsstk
    bool YumaNavDataFactory ::
    loadIntoMap(const std::string& filename, NavMessageMap& navMap,
                NavNearMessageMap& navNearMap, OffsetCvtMap& ofsMap)
+   {
+      gnsstk::NavDataFactoryStoreCallback cb(this, navMap, navNearMap, ofsMap);
+      return process(filename, cb);
+   }
+
+
+   bool YumaNavDataFactory ::
+   process(const std::string& filename,
+           NavDataFactoryCallback& cb)
    {
       bool rv = true;
       bool processAlm = (procNavTypes.count(NavMessageType::Almanac) > 0);
@@ -119,7 +129,7 @@ namespace gnsstk
                {
                   if (alm->validate() == expect)
                   {
-                     if (!addNavData(alm, navMap, navNearMap, ofsMap))
+                     if (!cb.process(alm))
                         return false;
                   }
                }
@@ -127,7 +137,7 @@ namespace gnsstk
                {
                   if (health->validate() == expect)
                   {
-                     if (!addNavData(health, navMap, navNearMap, ofsMap))
+                     if (!cb.process(health))
                         return false;
                   }
                }
@@ -136,12 +146,12 @@ namespace gnsstk
             {
                if (processAlm)
                {
-                  if (!addNavData(alm, navMap, navNearMap, ofsMap))
+                  if (!cb.process(alm))
                      return false;
                }
                if (processHea)
                {
-                  if (!addNavData(health, navMap, navNearMap, ofsMap))
+                  if (!cb.process(health))
                      return false;
                }
             }

@@ -1,3 +1,18 @@
+gnsstk (13.6.0-1) stable; urgency=low
+
+  * Updated to version 13.6.0
+  * Remove usage of `nose` in testing of swig generated python.
+  * Update PRSolution (incl. PRSolve) output a covariance in the case of
+    data from only a single epoch.
+  * Fix Rinex3ObsData handling of channel zero
+  * Update WGS84 ref frame enums.
+  * Deprecate old incompatible (nonfunctional) CNAV code.
+  * Add callback capability to NavDataFactory classes
+  * Fix SWIG warnings for new OrbitData* classes
+  * Update CODEOWNERS file.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 28 Jul 2022 11:02:26 -0500
+
 gnsstk (13.5.1-1) stable; urgency=low
 
   * Updated to version 13.5.1

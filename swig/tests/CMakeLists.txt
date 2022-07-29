@@ -268,3 +268,9 @@ add_test(NAME swig_test_vector
   WORKING_DIRECTORY ${td}
   )
 prep_swig_test(swig_test_vector swig)
+
+add_test(NAME swig_test_NavDataFactoryCallback
+  COMMAND ${PYTHON_EXECUTABLE} ${tp}/test_NavDataFactoryCallback.py -i ${GNSSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+prep_swig_test(swig_test_NavDataFactoryCallback swig)
