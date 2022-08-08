@@ -61,6 +61,9 @@ public:
    unsigned findSatBySVNTest();
    unsigned findSatBySlotFdmaTest();
    unsigned getPRNTest();
+   unsigned getSignalSetTest();
+   unsigned getSatsBySignalTest();
+   unsigned operatorEqSignalTest();
 };
 
 
@@ -341,6 +344,187 @@ getPRNTest()
 }
 
 
+unsigned SatMetaDataStore_T ::
+getSignalSetTest()
+{
+   TUDEF("SatMetaDataStore", "getSignalSet");
+   gnsstk::SatMetaDataStore uut;
+   TUASSERT(uut.loadData(gnsstk::getPathData() + gnsstk::getFileSep() +
+                         "sats.csv"));
+   std::set<std::string> groups;
+   TUCATCH(groups = uut.getSignalSet(gnsstk::CarrierBand::L1,
+                                     gnsstk::TrackingCode::CA,
+                                     gnsstk::NavType::GPSLNAV));
+   TUASSERTE(size_t, 5, groups.size());
+   TUASSERTE(size_t, 1, groups.count("GPS I"));
+   TUASSERTE(size_t, 1, groups.count("GPS IIR"));
+   TUASSERTE(size_t, 1, groups.count("GPS IIR-M"));
+   TUASSERTE(size_t, 1, groups.count("GPS IIF"));
+   TUASSERTE(size_t, 1, groups.count("GPS III"));
+   TUCATCH(groups = uut.getSignalSet(gnsstk::CarrierBand::L2,
+                                     gnsstk::TrackingCode::L2CM,
+                                     gnsstk::NavType::GPSCNAVL2));
+   TUASSERTE(size_t, 3, groups.size());
+   TUASSERTE(size_t, 1, groups.count("GPS IIR-M"));
+   TUASSERTE(size_t, 1, groups.count("GPS IIF"));
+   TUASSERTE(size_t, 1, groups.count("GPS III"));
+   TUCATCH(groups = uut.getSignalSet(gnsstk::CarrierBand::L2,
+                                     gnsstk::TrackingCode::Any,
+                                     gnsstk::NavType::GPSCNAVL2));
+   TUASSERTE(size_t, 3, groups.size());
+   TUASSERTE(size_t, 1, groups.count("GPS IIR-M"));
+   TUASSERTE(size_t, 1, groups.count("GPS IIF"));
+   TUASSERTE(size_t, 1, groups.count("GPS III"));
+   TUCATCH(groups = uut.getSignalSet(gnsstk::CarrierBand::Any,
+                                     gnsstk::TrackingCode::Any,
+                                     gnsstk::NavType::GPSCNAVL2));
+   TUASSERTE(size_t, 3, groups.size());
+   TUASSERTE(size_t, 1, groups.count("GPS IIR-M"));
+   TUASSERTE(size_t, 1, groups.count("GPS IIF"));
+   TUASSERTE(size_t, 1, groups.count("GPS III"));
+   gnsstk::SatMetaDataStore::Signal sig1(gnsstk::CarrierBand::L2,
+                                         gnsstk::TrackingCode::L2CM,
+                                         gnsstk::NavType::GPSCNAVL2);
+   TUCATCH(groups = uut.getSignalSet(sig1));
+   TUASSERTE(size_t, 3, groups.size());
+   TUASSERTE(size_t, 1, groups.count("GPS IIR-M"));
+   TUASSERTE(size_t, 1, groups.count("GPS IIF"));
+   TUASSERTE(size_t, 1, groups.count("GPS III"));
+   gnsstk::SatMetaDataStore::Signal sig2(gnsstk::CarrierBand::L1,
+                                         gnsstk::TrackingCode::CA,
+                                         gnsstk::NavType::GPSLNAV);
+   TUCATCH(groups = uut.getSignalSet({sig1, sig2}));
+   TUASSERTE(size_t, 3, groups.size());
+   TUASSERTE(size_t, 1, groups.count("GPS IIR-M"));
+   TUASSERTE(size_t, 1, groups.count("GPS IIF"));
+   TUASSERTE(size_t, 1, groups.count("GPS III"));
+   gnsstk::SatMetaDataStore::Signal sig3(gnsstk::CarrierBand::L5,
+                                         gnsstk::TrackingCode::L5I,
+                                         gnsstk::NavType::GPSCNAVL5);
+   TUCATCH(groups = uut.getSignalSet({sig1, sig3}));
+   TUASSERTE(size_t, 2, groups.size());
+   TUASSERTE(size_t, 1, groups.count("GPS IIF"));
+   TUASSERTE(size_t, 1, groups.count("GPS III"));
+   TURETURN();
+}
+
+
+unsigned SatMetaDataStore_T ::
+getSatsBySignalTest()
+{
+   TUDEF("SatMetaDataStore", "getSatsBySignal");
+   gnsstk::SatMetaDataStore uut;
+   TUASSERT(uut.loadData(gnsstk::getPathData() + gnsstk::getFileSep() +
+                         "sats.csv"));
+   gnsstk::SatMetaDataStore::Signal sig1(gnsstk::CarrierBand::L1,
+                                         gnsstk::TrackingCode::L1CD,
+                                         gnsstk::NavType::GPSCNAV2);
+   gnsstk::SatMetaDataStore::SatSet sats;
+   TUCATCH(sats = uut.getSatsBySignal({sig1}));
+   TUASSERTE(size_t, 1, sats.size());
+   if (sats.size() >= 1)
+   {
+      gnsstk::SatMetaData got = *sats.begin();
+      TUASSERTE(uint32_t, 4, got.prn);
+      TUASSERTE(std::string, "74", got.svn);
+      TUASSERTE(int32_t, 43873, got.norad);
+      TUASSERTE(gnsstk::SatelliteSystem, gnsstk::SatelliteSystem::GPS, got.sys);
+   }
+   gnsstk::SatMetaDataStore::Signal sig2(gnsstk::CarrierBand::L1,
+                                         gnsstk::TrackingCode::MD,
+                                         gnsstk::NavType::GPSMNAV);
+   TUCATCH(sats = uut.getSatsBySignal({sig2}));
+   TUASSERTE(size_t, 28, sats.size());
+   gnsstk::YDSTime when(2131,0,0,gnsstk::TimeSystem::Any);
+   TUCATCH(sats = uut.getSatsBySignal({sig2}, when));
+   TUASSERTE(size_t, 20, sats.size());
+   gnsstk::SatMetaDataStore::Signal sig3(gnsstk::CarrierBand::L1,
+                                         gnsstk::TrackingCode::Y,
+                                         gnsstk::NavType::GPSLNAV);
+   TUCATCH(sats = uut.getSatsBySignal(
+      {sig3},
+      gnsstk::YDSTime(2020,71,0,gnsstk::TimeSystem::Any),
+      gnsstk::YDSTime(2020,360,0,gnsstk::TimeSystem::Any)));
+   TUASSERTE(size_t, 32, sats.size());
+   TUCATCH(sats = uut.getSatsBySignal(
+      {sig3},
+      gnsstk::YDSTime(2020,71,0,gnsstk::TimeSystem::Any),
+      gnsstk::YDSTime(2020,360,0,gnsstk::TimeSystem::Any),
+      { gnsstk::SatMetaData::Status::Decommissioned }));
+   TUASSERTE(size_t, 1, sats.size());
+   TUCATCH(sats = uut.getSatsBySignal(
+      {sig3},
+      gnsstk::YDSTime(2020,71,0,gnsstk::TimeSystem::Any),
+      gnsstk::YDSTime(2020,360,0,gnsstk::TimeSystem::Any),
+      { gnsstk::SatMetaData::Status::Decommissioned,
+            gnsstk::SatMetaData::Status::Test }));
+   TUASSERTE(size_t, 1, sats.size());
+   TUCATCH(sats = uut.getSatsBySignal(
+      {sig3},
+      gnsstk::YDSTime(2004,190,0,gnsstk::TimeSystem::Any),
+      gnsstk::YDSTime(2004,192,0,gnsstk::TimeSystem::Any),
+      { gnsstk::SatMetaData::Status::Operational,
+            gnsstk::SatMetaData::Status::Test }));
+   TUASSERTE(size_t, 12, sats.size());
+   TUCATCH(sats = uut.getSatsBySignal(
+      {sig3},
+      gnsstk::YDSTime(2004,190,0,gnsstk::TimeSystem::Any),
+      gnsstk::YDSTime(2004,192,0,gnsstk::TimeSystem::Any),
+      { gnsstk::SatMetaData::Status::Test }));
+   TUASSERTE(size_t, 1, sats.size());
+
+   gnsstk::SatMetaDataStore::Signal sig4(gnsstk::CarrierBand::L1,
+                                         gnsstk::TrackingCode::CA,
+                                         gnsstk::NavType::Any);
+   TUCATCH(sats = uut.getSatsBySignal(
+      {sig4},
+      gnsstk::YDSTime(2020,71,0,gnsstk::TimeSystem::Any),
+      gnsstk::YDSTime(2020,360,0,gnsstk::TimeSystem::Any)));
+   TUASSERTE(size_t, 32, sats.size());
+   TURETURN();
+}
+
+
+unsigned SatMetaDataStore_T ::
+operatorEqSignalTest()
+{
+   TUDEF("SatMetaDataStore::Signal", "operator==");
+   gnsstk::SatMetaDataStore::Signal
+      uut1(gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+           gnsstk::NavType::GPSLNAV),
+      uut2(gnsstk::CarrierBand::L2, gnsstk::TrackingCode::CA,
+           gnsstk::NavType::GPSLNAV),
+      uut3(gnsstk::CarrierBand::L1, gnsstk::TrackingCode::Y,
+           gnsstk::NavType::GPSLNAV),
+      uut4(gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+           gnsstk::NavType::GPSMNAV),
+      uut5(gnsstk::CarrierBand::Any, gnsstk::TrackingCode::CA,
+           gnsstk::NavType::GPSLNAV),
+      uut6(gnsstk::CarrierBand::L1, gnsstk::TrackingCode::Any,
+           gnsstk::NavType::GPSLNAV),
+      uut7(gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+           gnsstk::NavType::Any),
+      uut8(gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+           gnsstk::NavType::GPSLNAV);
+   TUASSERTE(bool, false, uut1.operator==(uut2));
+   TUASSERTE(bool, false, uut1.operator==(uut3));
+   TUASSERTE(bool, false, uut1.operator==(uut4));
+   TUASSERTE(bool, true, uut1.operator==(uut5));
+   TUASSERTE(bool, true, uut1.operator==(uut6));
+   TUASSERTE(bool, true, uut1.operator==(uut7));
+   TUASSERTE(bool, true, uut1.operator==(uut8));
+   TUCSM("operator!=");
+   TUASSERTE(bool, true, uut1.operator!=(uut2));
+   TUASSERTE(bool, true, uut1.operator!=(uut3));
+   TUASSERTE(bool, true, uut1.operator!=(uut4));
+   TUASSERTE(bool, false, uut1.operator!=(uut5));
+   TUASSERTE(bool, false, uut1.operator!=(uut6));
+   TUASSERTE(bool, false, uut1.operator!=(uut7));
+   TUASSERTE(bool, false, uut1.operator!=(uut8));
+   TURETURN();
+}
+
+
 int main()
 {
    SatMetaDataStore_T testClass;
@@ -352,6 +536,9 @@ int main()
    errorTotal += testClass.findSatBySVNTest();
    errorTotal += testClass.findSatBySlotFdmaTest();
    errorTotal += testClass.getPRNTest();
+   errorTotal += testClass.getSignalSetTest();
+   errorTotal += testClass.getSatsBySignalTest();
+   errorTotal += testClass.operatorEqSignalTest();
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
    return errorTotal;
 }
