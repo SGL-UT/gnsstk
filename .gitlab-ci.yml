@@ -248,6 +248,53 @@ build_debian_11:
     paths:
       - build/
 
+build_ext_noswig:
+  stage: build
+  needs: []
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  script:
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DCMAKE_INSTALL_PREFIX=install ..
+    - test -d CMakeFiles/gnsstk.dir/ext
+    - test ! -d swig
+
+build_noext_noswig:
+  stage: build
+  needs: []
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  script:
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DBUILD_EXT=OFF -DBUILD_PYTHON=OFF -DCMAKE_INSTALL_PREFIX=install ..
+    - test ! -d CMakeFiles/gnsstk.dir/ext
+    - test ! -d swig
+
+# this should print a warning and continue by flipping BUILD_EXT on
+build_swig_noext:
+  stage: build
+  needs: []
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  script:
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DBUILD_EXT=OFF -DBUILD_PYTHON=ON -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install ..
+    # ext is implicitly enabled if you request swig and not ext
+    - test -d CMakeFiles/gnsstk.dir/ext
+    - test -d swig
+
 build_debian_10_virtualenv:
   stage: build
   needs: []

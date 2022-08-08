@@ -30,7 +30,7 @@ The primary goals of the GNSSTk project are to:
 %build
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_EXT=ON -DUSE_RPATH=OFF -DBUILD_FOR_PACKAGE_SWITCH=ON -DVERSIONED_HEADER_INSTALL=ON ../
+cmake -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_EXT=ON -DUSE_RPATH=OFF -DVERSIONED_HEADER_INSTALL=ON ../
 make all -j 4
 
 # Install bin/lib/include folders in RPM BUILDROOT for packaging
