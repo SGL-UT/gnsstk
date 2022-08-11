@@ -19,6 +19,7 @@ include:
     file: 'common/scanning/sonar.yml'
 
 stages:
+- quality
 - check
 - build
 - test
@@ -55,12 +56,12 @@ variables:
   BLD_VS_STATIC:
     value: "True"
     description: "If True, then build Windows Static Libraries (VS2019 only, VS2015 always builds static)"
-  SONAR_EXCLUSIONS: '**/tests/**,**/conda_recipe/**,**/data/**,**/coverage-reports/**,**/build*/**,**/debian/**,**/deprecated/**,**/examples/**,**/ref/**,**/rpm_files/**,**/swig/**'
+  SONAR_EXCLUSIONS: '**/tests/**,**/rpm_files/**,**/conda_recipe/**,**/data/**,**/coverage-cpp.xml,**/build*/**,**/debian/**,**/deprecated/**,**/examples/**,**/ref/**,**/rpm_files/**,**/swig/**,**/DoxygenLayout.xml,**/custom.css'
   SONAR_SOURCES: 'core'
   SONAR_TEST_SOURCES: 'core/tests'
   SONAR_TEST_INCLUSION: 'core/tests'
   SONAR_PROJECT_KEY: gnsstk
-
+  SONAR_ADDTIONAL_PARAMS: "-Dsonar.python.coverage.reportPaths=coverage-python.xml -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.python.version=3.7"
 
 # Template for all normal jobs.
 .normal_build:
@@ -380,32 +381,67 @@ build_conda_py3.9:
     PYTHON_VERSION: "3.9"
   extends: .build_conda
 
-sonar_conda_py36:
-  stage: build
+# sonar_conda_py36:
+#   stage: build
+#   needs: []
+#   extends:
+#    - .normal_build
+#    - .sonarqube-check
+#   tags:
+#     - docker
+#   image: $DOCKER_REGISTRY/tks/centos-conda:python-3.6
+#   script:
+#     - source /opt/miniconda/etc/profile.d/conda.sh
+#     - conda activate py36
+#     - conda install -y cmake=3.22.1 nodejs
+#     - mkdir -p build coverage-reports
+#     - cd build
+#     - export gnsstk=`pwd`/install
+#     - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+#     - build-wrapper-linux-x86-64 --out-dir . make all -j 4
+#     - ctest -j 4 --output-junit $CI_PROJECT_DIR/coverage-reports/coverage-cpp.xml
+#     - cd ..
+#     - !reference [.scan-c++, script]
+#   artifacts:
+#     paths:
+#       - build/
+#   # Allow failures in case sonarqube is not available
+#   allow_failure: true
+
+sonar-scan:
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  stage: quality
   needs: []
   extends:
-   - .normal_build
-   - .sonarqube-check
+    - .sonarqube-check
   tags:
-    - docker
-  image: $DOCKER_REGISTRY/tks/centos-conda:python-3.6
+    - docker-executor
   script:
-    - source /opt/miniconda/etc/profile.d/conda.sh
-    - conda activate py36
-    - conda install -y cmake=3.22.1 nodejs
-    - mkdir -p build coverage-reports
+    - apt-get install gcovr lcov -y
+    # Install gnsstk from latest deb CI artifacts first.
+    - mkdir build
     - cd build
     - export gnsstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install -DCOVERAGE_SWITCH=ON -DDEBUG_SWITCH=ON -DPYTHON_EXECUTABLE=/usr/bin/python3 $CMAKE_ARG_DEFAULT
     - build-wrapper-linux-x86-64 --out-dir . make all -j 4
-    - ctest -j 4 --output-junit $CI_PROJECT_DIR/coverage-reports/coverage-cpp.xml
+    - ctest -j 4
     - cd ..
+    - gcovr --exclude=build* --xml-pretty --exclude-unreachable-branches --print-summary -o coverage-cpp.xml -r .
+    - for f in `find . -name '*.o'`; do echo "Processing $f file..."; pushd `dirname $f`; gcov -o `basename $f` x; popd ;done
     - !reference [.scan-c++, script]
-  artifacts:
-    paths:
-      - build/
-  # Allow failures in case sonarqube is not available
+    - touch $CI_PROJECT_DIR/success
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "main" || $CI_COMMIT_REF_NAME == "stable"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+  # Sonar Quality Profile will fail since code coverage is below 80%
+  # Allowing job to fail so sonar scan doesn't fail the pipeline for nightly big chain.
   allow_failure: true
+  # only:
+  #   - merge_requests
+  #   - main
+  #   - tags
+  #   - stable
 
 build_redhat:
   stage: build
