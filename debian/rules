@@ -27,7 +27,14 @@ major = $(shell dpkg-parsechangelog -S Version | sed -ne 's/^\([0-9]\+\)\..*$$/\
 minor = $(shell dpkg-parsechangelog -S Version | sed -ne 's/^[0-9]\+\.\([0-9]\+\)\..*$$/\1/p')
 
 # add python bindings for package builds using profile pkg_python
-ifneq ($(filter pkg_python,$(DEB_BUILD_PROFILES)), )
+ifneq ($(filter pkg_python3,$(DEB_BUILD_PROFILES)), )
+    PYTHON_FLAG="ON"
+    BUILD_FOR_PACKAGE_SWITCH_FLAG="ON"
+    PYTHON_EXE_PARAM="-DPYTHON_EXECUTABLE=/usr/bin/python3"
+    PYTHON_INSTALL_PREFIX_PARAM="-DPYTHON_INSTALL_PREFIX=$(CURDIR)/debian/python3-gnsstk"
+endif
+
+ifneq ($(filter pkg_python2,$(DEB_BUILD_PROFILES)), )
     PYTHON_FLAG="ON"
     BUILD_FOR_PACKAGE_SWITCH_FLAG="ON"
     PYTHON_EXE_PARAM="-DPYTHON_EXECUTABLE=/usr/bin/python"
@@ -41,7 +48,7 @@ gen_control:
 
 # main packaging script based on dh7 syntax
 %:
-	dh $@  --parallel --with python2
+	dh $@  --parallel --with python2,python3
 
 override_dh_auto_configure: gen_control
 	debian/check_versions_match.sh
@@ -54,6 +61,7 @@ override_dh_auto_configure: gen_control
 	 -DUSE_RPATH=OFF \
 	 -DVERSIONED_HEADER_INSTALL=ON \
 	 -DCMAKE_BUILD_TYPE=relwithdebinfo
+
 
 override_dh_auto_clean: gen_control
 	dh_auto_clean

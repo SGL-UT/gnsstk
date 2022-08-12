@@ -472,7 +472,7 @@ gnsstk (3.1.0-1) stable; urgency=low
 
 gnsstk (3.0.0-1) stable; urgency=medium
 
-  * Build for stretch 
+  * Build for stretch
 
  -- Bryan Parsons <bparsons@clau>  Tue, 11 Feb 2020 11:02:39 -0600
 

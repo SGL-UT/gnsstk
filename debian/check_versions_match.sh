@@ -75,7 +75,7 @@ then
    unset FIXDEBIANFILESAUTOMAGICALLY
    $0
    EXIT_CODE=$?
-   
+
    if [ $EXIT_CODE -eq 0 ]
    then
       echo "   ... rerun passed!"
