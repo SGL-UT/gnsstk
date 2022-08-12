@@ -823,7 +823,6 @@ deploy_debian_9:
     - sudo apt-get -y install ./*.deb
     - python3 -c "import gnsstk"
     - python2 -c "import gnsstk"
-    - timeconvert
   dependencies:
     - package_debian_9
     - package_debian_9_py2

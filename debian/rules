@@ -59,8 +59,7 @@ override_dh_auto_configure: gen_control
 	 $(PYTHON_INSTALL_PREFIX_PARAM) \
 	 -DBUILD_FOR_PACKAGE_SWITCH=$(BUILD_FOR_PACKAGE_SWITCH_FLAG) \
 	 -DUSE_RPATH=OFF \
-	 -DVERSIONED_HEADER_INSTALL=ON \
-	 -DCMAKE_BUILD_TYPE=relwithdebinfo
+	 -DVERSIONED_HEADER_INSTALL=ON
 
 
 override_dh_auto_clean: gen_control
