@@ -36,10 +36,8 @@
 //
 //==============================================================================
 
-/// @file HelmertTransform.hpp
-
-#ifndef GNSSTK_HELMERT_TRANSFORM_HPP
-#define GNSSTK_HELMERT_TRANSFORM_HPP
+#ifndef GNSSTK_HELMERTTRANSFORM_HPP
+#define GNSSTK_HELMERTTRANSFORM_HPP
 
 #include <map>
 #include <string>
@@ -55,184 +53,201 @@
 
 namespace gnsstk
 {
-   /// Helmert transformations, which are 7-parameter transformations between
-   /// reference frames (i.e. ECEF position coordinates). A Helmert tranformation is
-   /// defined by 7 parameters: a rotation(3), a translation(3) and scale factor(1).
+      /** Helmert transformations, which are 7-parameter
+       * transformations between reference frames (i.e. ECEF position
+       * coordinates). A Helmert tranformation is defined by 7
+       * parameters: a rotation(3), a translation(3) and scale
+       * factor(1). */
    class HelmertTransform
    {
    public:
+         /// Default constructor
+      HelmertTransform() throw();
 
-      /// Default constructor
-      HelmertTransform() throw() : fromFrame(ReferenceFrame::Unknown),
-                                   toFrame(ReferenceFrame::Unknown),
-                                   description("Undefined")
-         {};
+         /** Explicit constructor, from the 7 parameters.
+          * All the inputs are unchanged.
+          *
+          * This constructor and class are for data to be used with
+          * the transformation of the either of the two following
+          * forms (view via doxygen).
+          *
+          * @warning If the transformation parameters you wish to use
+          * use the transposed version of the rotation matrix
+          * (i.e. the signs on the rotation angles are reversed from
+          * what is shown below), make sure to flip the sign on the
+          * irx,iry,irz parameters to the constructor.
+          *
+          * \f[
+          * \left[ {\begin{array}{c} X_{tgt} \\
+          *                          Y_{tgt} \\
+          *                          Z_{tgt} \\
+          *         \end{array} }
+          * \right] = \left[ {\begin{array}{c} T_x \\
+          *                                    T_y \\
+          *                                    T_z \\
+          *           \end{array} }
+          *  \right] + (1 + S_c) \left[ {\begin{array}{ccc} 1 & R_z & -R_y \\
+          *                                                 -R_z & 1 & R_x \\
+          *                                                 R_y & -R_x & 1 \\
+          *                              \end{array} }
+          *                      \right]
+          * \left[ {\begin{array}{c} X_{src} \\ 
+          *                          Y_{src} \\ 
+          *                          Z_{src} \\
+          *         \end{array} }
+          * \right]
+          * \f]
+          *
+          * \f[
+          * \left[ {\begin{array}{c} X_{tgt} \\ 
+          *                          Y_{tgt} \\ 
+          *                          Z_{tgt} \\
+          *         \end{array} }
+          * \right] = \left[ {\begin{array}{c} X_{src} \\ 
+          *                                    Y_{src} \\
+          *                                    Z_{src} \\ 
+          *                   \end{array} } 
+          * \right] + \left[ {\begin{array}{c} T_x \\ 
+          *                                    T_y \\ 
+          *                                    T_z \\
+          *                   \end{array} }
+          * \right] + \left[ {\begin{array}{ccc} S_c & R_z & -R_y \\
+          *                                      -R_z & S_c & R_x \\ 
+          *                                      R_y & -R_x & S_c \\
+          *                   \end{array} }
+          * \right] \left[ {\begin{array}{c} X_{src} \\
+          *                                  Y_{src} \\
+          *                                  Z_{src} \\ 
+          *                 \end{array} }
+          * \right]
+          * \f]
+          *
+          * @param[in] from Transform takes "from" -> "to"
+          * @param[in] to Transform takes "from" -> "to"
+          * @param[in] irx X axis rotation angle in degrees
+          * @param[in] iry Y axis rotation angle in degrees
+          * @param[in] irz Z axis rotation angle in degrees
+          * @param[in] itx X axis translation in meters
+          * @param[in] ity Y axis translation in meters
+          * @param[in] itz Z axis translation in meters
+          * @param[in] sc scale factor (dimensionless)
+          * @param[in] desc description of the transform, should include
+          * @param[in] refEpoch time when transform became applicable
+          *   (default=BOT) reference frames and an indication of the
+          *   source (e.g. literature citation).
+          * @throw InvalidRequest if the transform is invalid. */
+      HelmertTransform(ReferenceFrame from, ReferenceFrame to,
+                       double irx, double iry, double irz,
+                       double itx, double ity, double itz,
+                       double sc, const std::string& desc,
+                       const CommonTime& refEpoch);
 
-      /// Explicit constructor, from the 7 parameters.
-      /// All the inputs are unchanged.
-      /// @param from Transform takes "from" -> "to"
-      /// @param to Transform takes "from" -> "to"
-      /// @param Rx X axis rotation angle in degrees
-      /// @param Ry Y axis rotation angle in degrees
-      /// @param Rz Z axis rotation angle in degrees
-      /// @param Tx X axis translation in meters
-      /// @param Ty Y axis translation in meters
-      /// @param Tz Z axis translation in meters
-      /// @param Scale scale factor (dimensionless)
-      /// @param Desc description of the transform, should include
-      /// @param epoch time when transform became applicable (default=BOT)
-      /// reference frames and an indication of the source (e.g. literature citation).
-      /// @throw InvalidRequest if the transform is invalid.
-      HelmertTransform(const ReferenceFrame& from, const ReferenceFrame& to,
-                       const double& Rx, const double& Ry, const double& Rz,
-                       const double& Tx, const double& Ty, const double& Tz,
-                       const double& Scale, const std::string& Desc,
-                       CommonTime epoch);
-
-      /// Dump the object to a multi-line string including reference frames, the
-      /// 7 parameters and description.
+         /** Dump the object to a multi-line string including
+          * reference frames, the 7 parameters and description. */
       std::string asString() const throw();
 
-      /// Transform Position to another frame using this transform or its inverse.
-      /// @param pos position to be transformed; unchanged on output.
-      /// @param result position after transformation.
-      /// @throw InvalidRequest if transformation, or inverse, cannot act on ReferenceFrame of input.
+         /** Transform Position to another frame using this transform
+          * or its inverse.
+          * @param[in] pos position to be transformed; unchanged on output.
+          * @param[out] result position after transformation.
+          * @throw InvalidRequest if transformation, or inverse,
+          *   cannot act on ReferenceFrame of input. */
       void transform(const Position& pos, Position& result);
 
-      /// Transform a 3-vector, in the given frame, using this Helmert transformation.
-      /// @param vec 3-vector of position coordinates in "from" frame.
-      /// @param frame Transform takes "frame" -> "new-frame"
-      /// @param result 3-vector in "new-frame" frame.
-      /// @throw InvalidRequest if transformation, or inverse, cannot act on ReferenceFrame of input.
-      void transform(const Vector<double>& vec, const ReferenceFrame& frame,
-                     Vector<double>& result)
-      {
-         if(vec.size() > 3) {
-            InvalidRequest e("Input Vector is not of length 3");
-            GNSSTK_THROW(e);
-         }
-         try {
-            Position pos(vec[0],vec[1],vec[2],Position::Cartesian), res;
-            pos.setReferenceFrame(frame);
-            transform(pos, res);
-            result = Vector<double>(3);
-            result[0] = res.X();
-            result[1] = res.Y();
-            result[2] = res.Z();
-         }
-         catch(Exception& e) { GNSSTK_RETHROW(e); }
-      }
+         /** Transform a 3-vector, in the given frame, using this
+          * Helmert transformation.
+          * @param[in] vec 3-vector of position coordinates in "from" frame.
+          * @param[in] frame Transform takes "frame" -> "new-frame"
+          * @param[out] result 3-vector in "new-frame" frame.
+          * @throw InvalidRequest if transformation, or inverse,
+          *   cannot act on ReferenceFrame of input. */
+      void transform(const Vector<double>& vec, ReferenceFrame frame,
+                     Vector<double>& result);
 
-      /// Transform a Triple using this Helmert transformation or its inverse.
-      /// @param vec containing position and frame to be transformed.
-      /// @param frame Transform takes "frame" -> "new-frame"
-      /// @param result with position in new frame
-      /// @throw InvalidRequest if transformation, or inverse, cannot act on ReferenceFrame of input.
-      void transform(const Triple& vec, const ReferenceFrame& frame, Triple& result)
-      {
-         try {
-            Position pos(vec, Position::Cartesian), res;
-            pos.setReferenceFrame(frame);
-            transform(pos, res);
-            result[0] = res[0];
-            result[1] = res[1];
-            result[2] = res[2];
-         }
-         catch(Exception& e) { GNSSTK_RETHROW(e); }
-      }
+         /** Transform a Triple using this Helmert transformation or
+          * its inverse.
+          * @param[in] vec containing position and frame to be transformed.
+          * @param[in] frame Transform takes "frame" -> "new-frame"
+          * @param[out] result with position in new frame
+          * @throw InvalidRequest if transformation, or inverse,
+          *   cannot act on ReferenceFrame of input. */
+      void transform(const Triple& vec, ReferenceFrame frame, Triple& result);
 
-      /// Transform an Xvt using this Helmert transformation or its inverse.
-      /// @param xvt containing position and frame to be transformed.
-      /// @param result with position in new frame
-      /// @throw InvalidRequest if transformation, or inverse, cannot act on ReferenceFrame of input.
-      void transform(const Xvt& xvt, Xvt& result)
-      {
-         try {
-            Position pos(xvt.x, Position::Cartesian), res;
-            pos.setReferenceFrame(xvt.frame);
-            transform(pos, res);
-            result = xvt;
-            result.x[0] = res[0];
-            result.x[1] = res[1];
-            result.x[2] = res[2];
-         }
-         catch(Exception& e) { GNSSTK_RETHROW(e); }
-      }
+         /** Transform an Xvt using this Helmert transformation or its inverse.
+          * @param[in] xvt containing position and frame to be transformed.
+          * @param[out] result with position in new frame
+          * @throw InvalidRequest if transformation, or inverse,
+          *   cannot act on ReferenceFrame of input. */
+      void transform(const Xvt& xvt, Xvt& result);
 
-      /// Transform 3 doubles, in the given frame, using this Helmert transformation.
-      /// @param x,y,z 3-vector of position coordinates in "from" frame.
-      /// @param frame Transform takes "frame" -> "new-frame"
-      /// @param rx,ry,rz result 3-vector in "new-frame" frame.
-      /// @throw InvalidRequest if transformation, or inverse, cannot act on ReferenceFrame of input.
-      void transform(const double& x, const double& y, const double& z,
-                     const ReferenceFrame& frame,
-                     double& rx, double& ry, double& rz)
-      {
-         try {
-            Position pos(x,y,z,Position::Cartesian), res;
-            pos.setReferenceFrame(frame);
-            transform(pos, res);
-            rx = res.X();
-            ry = res.Y();
-            rz = res.Z();
-         }
-         catch(Exception& e) { GNSSTK_RETHROW(e); }
-      }
+         /** Transform 3 doubles, in the given frame, using this
+          * Helmert transformation.
+          * @param[in] x,y,z 3-vector of position coordinates in "from" frame.
+          * @param[in] frame Transform takes "frame" -> "new-frame"
+          * @param[out] rx,ry,rz result 3-vector in "new-frame" frame.
+          * @throw InvalidRequest if transformation, or inverse,
+          *   cannot act on ReferenceFrame of input. */
+      void transform(double x, double y, double z,
+                     ReferenceFrame frame,
+                     double& rx, double& ry, double& rz);
 
-      // accessors
-      ReferenceFrame getFromFrame(void) const throw()
+         /// Get the reference frame this transform can convert from (or to).
+      ReferenceFrame getFromFrame() const throw()
       { return fromFrame; }
 
-      ReferenceFrame getToFrame(void) const throw()
+         /// Get the reference frame this transform can convert to (or from).
+      ReferenceFrame getToFrame() const throw()
       { return toFrame; }
 
-      CommonTime getEpoch(void) const throw()
-      { return Epoch; }
+         /// Get the time at which this transform becomes valid.
+      CommonTime getEpoch() const throw()
+      { return epoch; }
 
-      /// Epoch at which GLONASS transitions from PZ90 to PZ90.02
+         /// Epoch at which GLONASS transitions from PZ90 to PZ90.02
       GNSSTK_EXPORT static const CommonTime PZ90Epoch;
 
-      /// length of array of pre-defined HelmertTransforms
+         /// length of array of pre-defined HelmertTransforms
       GNSSTK_EXPORT static const int stdCount = 5; // equal to number listed in HelmertTransform.cpp
 
-      /// array of all pre-defined HelmertTransforms
+         /// array of all pre-defined HelmertTransforms
       GNSSTK_EXPORT static const HelmertTransform stdTransforms[stdCount];
 
    protected:
-      // member data
+         // member data
 
-      // this transformation takes fromFrame -> toFrame
+         // this transformation takes fromFrame -> toFrame
       ReferenceFrame fromFrame;  ///< Reference frame to which *this is applied.
       ReferenceFrame toFrame;    ///< Reference frame resulting from *this transform.
 
-      // the 7 parameters that define the tranformation
+         // the 7 parameters that define the tranformation
       double rx;                 ///< X axis rotation in radians
       double ry;                 ///< Y axis rotation in radians
       double rz;                 ///< Z axis rotation in radians
       double tx;                 ///< X axis translation in meters
       double ty;                 ///< Y axis translation in meters
       double tz;                 ///< Z axis translation in meters
-      double Scale;              ///< scale factor, dimensionless, 0 means no scale
+      double scale;              ///< scale factor, dimensionless, 0=no scale
 
-      // transform quantities derived from the 7 parameters
-      Matrix<double> Rotation;   ///< the transform 3x3 rotation matrix (w/o scale)
-      Vector<double> Translation;///< the transform 3-vector in meters
+         // transform quantities derived from the 7 parameters
+      Matrix<double> rotation;   ///< the transform 3x3 rotation matrix (w/o scale)
+      Vector<double> translation;///< the transform 3-vector in meters
 
-      /// epoch at which transform is first applicable
-      CommonTime Epoch;
+         /// epoch at which transform is first applicable
+      CommonTime epoch;
 
-      /// an arbitrary string describing the transform; it should include the source.
+         /** an arbitrary string describing the transform; it should
+          * include the source. */
       std::string description;
 
    }; // end class HelmertTransform
 
-   /// degrees per milliarcsecond (1e-3/3600.)
+      /// degrees per milliarcsecond (1e-3/3600.)
    static const double DEG_PER_MAS = 2.77777777777e-7;
 
-   /// radians per milliarcsecond
+      /// radians per milliarcsecond
    static const double RAD_PER_MAS = 4.84813681e-9;
 
-   /// parts per billion
+      /// parts per billion
    static const double PPB = 1.e-9;
 
 } // end namespace gnsstk
