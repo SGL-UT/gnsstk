@@ -838,7 +838,6 @@ deploy_debian_10:
     - cd debs
     - sudo apt-get -y install ./*.deb
     - python3 -c "import gnsstk"
-    - timeconvert
     - gnsstk-config --includedir
   dependencies:
     - package_debian_10
@@ -854,7 +853,6 @@ deploy_redhat:
   script:
     - cd rpm_files/RPMS/x86_64/
     - sudo yum install gnsstk-*.rpm -y
-    - timeconvert
     - gnsstk-config --includedir
   dependencies:
     - package_redhat
@@ -869,7 +867,6 @@ deploy_redhat_8:
   script:
     - cd rpm_files/RPMS/x86_64/
     - sudo yum install gnsstk-*.rpm -y
-    - timeconvert
     - gnsstk-config --includedir
   dependencies:
     - package_redhat_8
@@ -886,7 +883,6 @@ deploy_redhat_py36:
     - sudo yum install gnsstk-*.rpm -y
     - sudo yum install python3-gnsstk-*.rpm -y
     - python3 -c "import gnsstk"
-    - timeconvert
   dependencies:
     - package_redhat_8_py36
     - package_redhat_8
