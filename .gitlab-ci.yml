@@ -658,7 +658,13 @@ package_debian_9:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
   script:
+    - sudo apt-get update
+    - sudo apt-get install -y devscripts
     - rm -rf ../*.deb
+     # Mark the debian log so that this package is a backport.
+     # Use the most recent Maintainer as current maintainer.
+    - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
+    - dch --bpo "No Changes"
     - dpkg-buildpackage --build-profiles=pkg_python3 -us -uc -d --changes-option="-DDistribution=stretch-sgl"
     - mkdir debs
     - mv ../*.deb debs
@@ -677,7 +683,13 @@ package_debian_9_py2:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
   script:
+    - sudo apt-get update
+    - sudo apt-get install -y devscripts
     - rm -rf ../*.deb
+     # Mark the debian log so that this package is a backport.
+     # Use the most recent Maintainer as current maintainer.
+    - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
+    - dch --bpo "No Changes"
     - dpkg-buildpackage --build-profiles=pkg_python2 -us -uc -d --changes-option="-DDistribution=stretch-sgl"
     - mkdir debs
     - mv ../python-*.deb debs
@@ -908,7 +920,7 @@ push_artifacts:
     - .package_build
   variables:
     CONDA_PACKAGES: ""
-    DEB_9_PACKAGES: "debs/*-1_amd64.deb"
+    DEB_9_PACKAGES: "debs/*bpo9*.deb"
     DEB_10_PACKAGES: "debs/*bpo10*.deb"
     #RPM_PACKAGES: "rpm_files/RPMS/x86_64/*.rpm"
   stage: push
