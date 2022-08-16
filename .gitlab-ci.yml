@@ -699,7 +699,7 @@ package_debian_10:
     # Use the most recent Maintainer as current maintainer.
     - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
     - dch --bpo "No Changes"
-    - dpkg-buildpackage --build-profiles=pkg_python -us -uc -d --changes-option="-DDistribution=buster-sgl"
+    - dpkg-buildpackage --build-profiles=pkg_python3 -us -uc -d --changes-option="-DDistribution=buster-sgl"
     - mkdir debs
     - mv ../*.deb debs
     - mv ../*.changes debs
