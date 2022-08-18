@@ -1,3 +1,11 @@
+gnsstk (12.1.2-1) stable; urgency=low
+
+  * Updated to version 12.1.2
+  * Add support for python3-gnsstk package
+  * Allowed python3-gnsstk and python-gnsstk coinstallation.
+
+ -- Andrew Kuck <kuck@arlut.utexas.edu>  Thu, 18 Aug 2022 16:09:05 -0500
+
 gnsstk (12.1.1-1) stable; urgency=low
 
   * Updated to version 12.1.1

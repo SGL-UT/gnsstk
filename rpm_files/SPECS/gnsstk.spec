@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 12.1.1
+%define version 12.1.2
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 18 2022 Andrew Kuck <kuck@arlut.utexas.edu>
+- Updated for v12.1.2 release
+- Allowed python3-gnsstk and python-gnsstk coinstallation.
 * Tue Jul 19 2022 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v12.1.1 release
 - Fixed handling of the text file spec type (%x) and added relevant unit tests as per TKS-435.

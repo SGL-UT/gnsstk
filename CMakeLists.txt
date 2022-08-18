@@ -11,7 +11,7 @@ cmake_minimum_required( VERSION 2.8.5 )
 project( GNSSTK )
 set( GNSSTK_VERSION_MAJOR "12" )
 set( GNSSTK_VERSION_MINOR "1" )
-set( GNSSTK_VERSION_PATCH "1" )
+set( GNSSTK_VERSION_PATCH "2" )
 set( GNSSTK_VERSION "${GNSSTK_VERSION_MAJOR}.${GNSSTK_VERSION_MINOR}.${GNSSTK_VERSION_PATCH}" )
 
 # Test data file source directory
