@@ -510,7 +510,6 @@ user_install_debian_9:
     - export gnsstk=`pwd`/install
     - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_USER_INSTALL=ON ../
     - make install -j 4
-    - python -c "import gnsstk"
   artifacts:
     paths:
       - build/install
@@ -614,7 +613,6 @@ system_install_debian_9:
     - export PYTHONPATH=$gnsstk/lib/python2.7/site-packages
     - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk ../
     - sudo make install -j 4
-    - python -c "import gnsstk"
   dependencies:
     - build_debian_9
 
