@@ -1,14 +1,15 @@
-GNSSTk 12.1.1 Release Notes
+GNSSTk 12.1.2 Release Notes
 ========================
 
- * This release introduces a patch for the following.
-   * Fixing OrbElem to use the correct ellipsoid model for Gallileo.
-   * Fixing the handling of the text file spec type (%x) and added relevant unit tests as per TKS-435.
+ * This version added python3 package support for v12 
 
-Updates since v12.1.0
+Updates since v12.1.1
 ---------------------
 
-Fixes since v12.1.0
+**Gitlab CI**
+  * Updated rel 12 branch to support current CI infrastructure
+
+Fixes since v12.1.1
 --------------------
-  * Fix OrbElem to use the correct ellipsoid model for Gallileo.
-  * Fix handling of the text file spec type (%x) and added relevant unit tests as per TKS-435.
+  * Allowed python3-gnsstk and python-gnsstk coinstallation.
+

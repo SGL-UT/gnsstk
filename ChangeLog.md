@@ -1,3 +1,16 @@
+# Version 12.1.2   Thursday August 18, 2022
+
+Modifications by Author
+-----------------------
+     Andrew Kuck <kuck@arlut.utexas.edu> (6):
+           Updates to pipeline and debian files.
+           Remove file collisions.
+           Remove debug info.
+           Use correct build-profile.
+           Remove CI references to timeconvert.
+           Use bpo for deb9
+
+
 # Version 12.1.1   Tuesday July 19, 2022
 
 Modifications by Author
