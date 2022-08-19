@@ -308,7 +308,7 @@ build_windows_vs2019:
   tags:
     - win10-vs2019
   script:
-    - mkdirbuild
+    - mkdir build
     - cd build
     - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ../
     - cmake --build . --config Release -- /m
