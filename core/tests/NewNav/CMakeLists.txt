@@ -443,3 +443,96 @@ add_executable(SEMNavDataFactory_T SEMNavDataFactory_T.cpp)
 target_link_libraries(SEMNavDataFactory_T gnsstk)
 add_test(NAME SEMNavDataFactory_T COMMAND $<TARGET_FILE:SEMNavDataFactory_T>)
 set_property(TEST SEMNavDataFactory_T PROPERTY LABELS NewNav)
+
+add_executable(NewNavToRinex_T NewNavToRinex_T.cpp)
+target_link_libraries(NewNavToRinex_T gnsstk)
+add_test(NAME NewNavToRinex_no_files
+         COMMAND ${CMAKE_COMMAND}
+         -DTEST_PROG=$<TARGET_FILE:NewNavToRinex_T>
+         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testfailexp.cmake)
+set_property(TEST NewNavToRinex_no_files PROPERTY LABELS NewNav)
+
+add_test(NAME NewNavToRinex_one_file
+         COMMAND ${CMAKE_COMMAND}
+         -DTEST_PROG=$<TARGET_FILE:NewNavToRinex_T>
+         -DARGS=${GNSSTK_TEST_DATA_DIR}/mixed-rewrite.06n
+         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testfailexp.cmake)
+set_property(TEST NewNavToRinex_one_file PROPERTY LABELS NewNav)
+
+# Test GPS + GLONASS
+add_test(NAME NewNavToRinex_mixed_glo
+         COMMAND ${CMAKE_COMMAND}
+         -DTEST_PROG=$<TARGET_FILE:NewNavToRinex_T>
+         -DSPARG1=${GNSSTK_TEST_DATA_DIR}/mixed.06n
+         -DSPARG2=${GNSSTK_TEST_OUTPUT_DIR}/NewNavToRinex_mixed_glo.out
+         -DOWNOUTPUT=TRUE
+         -DDIFF_PROG=$<TARGET_FILE:df_diff>
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
+         -DTESTBASE=NewNavToRinex_mixed_glo
+         -DTESTNAME=NewNavToRinex_mixed_glo
+         -DDIFF_ARGS=-l2\ -v
+         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testsuccexp.cmake)
+set_property(TEST NewNavToRinex_mixed_glo PROPERTY LABELS NewNav)
+
+# Test GPS + Galileo
+add_test(NAME NewNavToRinex_mixed_gal
+         COMMAND ${CMAKE_COMMAND}
+         -DTEST_PROG=$<TARGET_FILE:NewNavToRinex_T>
+         -DSPARG1=${GNSSTK_TEST_DATA_DIR}/test_input_rinex3_nav_gal.20n
+         -DSPARG2=${GNSSTK_TEST_OUTPUT_DIR}/NewNavToRinex_mixed_gal.out
+         -DOWNOUTPUT=TRUE
+         -DDIFF_PROG=$<TARGET_FILE:df_diff>
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
+         -DTESTBASE=NewNavToRinex_mixed_gal
+         -DTESTNAME=NewNavToRinex_mixed_gal
+         -DDIFF_ARGS=-l2\ -v
+         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testsuccexp.cmake)
+set_property(TEST NewNavToRinex_mixed_gal PROPERTY LABELS NewNav)
+
+# Test BDS
+add_test(NAME NewNavToRinex_bds2_a
+         COMMAND ${CMAKE_COMMAND}
+         -DTEST_PROG=$<TARGET_FILE:NewNavToRinex_T>
+         -DSPARG1=${GNSSTK_TEST_DATA_DIR}/test_input_rinex3_nav_BeiDou.14n
+         -DSPARG2=${GNSSTK_TEST_OUTPUT_DIR}/NewNavToRinex_bds2_a.out
+         -DOWNOUTPUT=TRUE
+         -DDIFF_PROG=$<TARGET_FILE:df_diff>
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
+         -DTESTBASE=NewNavToRinex_bds2_a
+         -DTESTNAME=NewNavToRinex_bds2_a
+         -DDIFF_ARGS=-l2\ -v
+         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testsuccexp.cmake)
+set_property(TEST NewNavToRinex_bds2_a PROPERTY LABELS NewNav)
+
+add_test(NAME NewNavToRinex_bds1_b
+         COMMAND ${CMAKE_COMMAND}
+         -DTEST_PROG=$<TARGET_FILE:NewNavToRinex_T>
+         -DSPARG1=${GNSSTK_TEST_DATA_DIR}/rinnav_BDS_D1_test.14n
+         -DSPARG2=${GNSSTK_TEST_OUTPUT_DIR}/NewNavToRinex_bds1_b.out
+         -DOWNOUTPUT=TRUE
+         -DDIFF_PROG=$<TARGET_FILE:df_diff>
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
+         -DTESTBASE=NewNavToRinex_bds1_b
+         -DTESTNAME=NewNavToRinex_bds1_b
+         -DDIFF_ARGS=-l2\ -v
+         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testsuccexp.cmake)
+set_property(TEST NewNavToRinex_bds1_b PROPERTY LABELS NewNav)
+
+add_test(NAME NewNavToRinex_bds2_b
+         COMMAND ${CMAKE_COMMAND}
+         -DTEST_PROG=$<TARGET_FILE:NewNavToRinex_T>
+         -DSPARG1=${GNSSTK_TEST_DATA_DIR}/rinnav_BDS_D2_test.14n
+         -DSPARG2=${GNSSTK_TEST_OUTPUT_DIR}/NewNavToRinex_bds2_b.out
+         -DOWNOUTPUT=TRUE
+         -DDIFF_PROG=$<TARGET_FILE:df_diff>
+         -DSOURCEDIR=${GNSSTK_TEST_DATA_DIR}
+         -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
+         -DTESTBASE=NewNavToRinex_bds2_b
+         -DTESTNAME=NewNavToRinex_bds2_b
+         -DDIFF_ARGS=-l2\ -v
+         -P ${CMAKE_CURRENT_SOURCE_DIR}/../testsuccexp.cmake)
+set_property(TEST NewNavToRinex_bds2_b PROPERTY LABELS NewNav)

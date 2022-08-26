@@ -152,10 +152,103 @@ namespace gnsstk
    }
 
 
+   bool TimeSystemCorrection ::
+   convertTimeSystemToCorrType(TimeSystem src, TimeSystem tgt,
+                               TimeSystemCorrection::CorrType& ct)
+   {
+      ct = TimeSystemCorrection::Unknown;
+      switch (src)
+      {
+         case TimeSystem::BDT:
+            switch (tgt)
+            {
+               case TimeSystem::UTC:
+                  ct = TimeSystemCorrection::BDUT;
+                  break;
+               case TimeSystem::GPS:
+                  ct = TimeSystemCorrection::BDGP;
+                  break;
+               default:
+                  break;
+            }
+            break;
+         case TimeSystem::GAL:
+            switch (tgt)
+            {
+               case TimeSystem::UTC:
+                  ct = TimeSystemCorrection::GAUT;
+                  break;
+               case TimeSystem::GPS:
+                  ct = TimeSystemCorrection::GAGP;
+                  break;
+               default:
+                  break;
+            }
+            break;
+         case TimeSystem::GLO:
+            switch (tgt)
+            {
+               case TimeSystem::UTC:
+                  ct = TimeSystemCorrection::GLUT;
+                  break;
+               case TimeSystem::GPS:
+                  ct = TimeSystemCorrection::GLGP;
+                  break;
+               default:
+                  break;
+            }
+            break;
+         case TimeSystem::GPS:
+            switch (tgt)
+            {
+               case TimeSystem::UTC:
+                  ct = TimeSystemCorrection::GPUT;
+                  break;
+               case TimeSystem::GAL:
+                  ct = TimeSystemCorrection::GPGA;
+                  break;
+               default:
+                  break;
+            }
+            break;
+         case TimeSystem::IRN:
+            switch (tgt)
+            {
+               case TimeSystem::UTC:
+                  ct = TimeSystemCorrection::IRUT;
+                  break;
+               case TimeSystem::GPS:
+                  ct = TimeSystemCorrection::IRGP;
+                  break;
+               default:
+                  break;
+            }
+            break;
+         case TimeSystem::QZS:
+            switch (tgt)
+            {
+               case TimeSystem::UTC:
+                  ct = TimeSystemCorrection::QZUT;
+                  break;
+               case TimeSystem::GPS:
+                  ct = TimeSystemCorrection::QZGP;
+                  break;
+               default:
+                  break;
+            }
+            break;
+         default:
+            break;
+      }
+      return (ct != TimeSystemCorrection::Unknown);
+   }
+
+
    std::string TimeSystemCorrection ::
    asString() const
    {
-      switch(type) {
+      switch (type)
+      {
          case GPUT: return std::string("GPS to UTC");
          case GAUT: return std::string("GAL to UTC");
          case SBUT: return std::string("SBAS to UTC");

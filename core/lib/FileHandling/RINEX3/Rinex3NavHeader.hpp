@@ -73,6 +73,7 @@ namespace gnsstk
          GAL,     ///< Galileo
          GPSA,    ///< GPS alpha
          GPSB     ///< GPS beta
+            /// @todo add support for remaining systems in RINEX 3.04
       };
 
          /// Set data members to default values
@@ -110,7 +111,7 @@ namespace gnsstk
          //// Public member functions
 
          /// Constructor
-      Rinex3NavHeader(void)
+      Rinex3NavHeader()
          : valid(0), version(3.02),
            leapSeconds(0), leapDelta(0), leapWeek(0),leapDay(0)
       {}
@@ -120,7 +121,7 @@ namespace gnsstk
       {}
 
          /// Rinex3NavHeader is a "header" so this function always returns true.
-      virtual bool isHeader(void) const
+      virtual bool isHeader() const
       { return true; }
 
          /// This function dumps the contents of the header.
