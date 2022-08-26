@@ -48,6 +48,7 @@
 #include "GalINavISC.hpp"
 #include "GalFNavEph.hpp"
 #include "GalINavHealth.hpp"
+#include "GalFNavHealth.hpp"
 #include "BDSD1NavEph.hpp"
 #include "BDSD1NavHealth.hpp"
 #include "BDSD1NavIono.hpp"
@@ -122,6 +123,7 @@ public:
       /// Exercise loadIntoMap with QZSS data.
    unsigned loadIntoMapQZSSTest();
    unsigned decodeSISATest();
+   unsigned encodeSISATest();
       /** Use dynamic_cast to verify that the contents of nmm are the
        * right class.
        * @param[in] testFramework The test framework created by TUDEF,
@@ -140,21 +142,21 @@ constructorTest()
    gnsstk::RinexNavDataFactory fact;
       // check for expected signal support
    gnsstk::NavSignalID nsid1(gnsstk::SatelliteSystem::GPS,
-                            gnsstk::CarrierBand::L1,
-                            gnsstk::TrackingCode::CA,
-                            gnsstk::NavType::GPSLNAV);
+                             gnsstk::CarrierBand::L1,
+                             gnsstk::TrackingCode::CA,
+                             gnsstk::NavType::GPSLNAV);
    gnsstk::NavSignalID nsid2(gnsstk::SatelliteSystem::Galileo,
-                            gnsstk::CarrierBand::L1,
-                            gnsstk::TrackingCode::E1B,
-                            gnsstk::NavType::GalINAV);
+                             gnsstk::CarrierBand::L1,
+                             gnsstk::TrackingCode::E1B,
+                             gnsstk::NavType::GalINAV);
    gnsstk::NavSignalID nsid3(gnsstk::SatelliteSystem::Galileo,
-                            gnsstk::CarrierBand::E5b,
-                            gnsstk::TrackingCode::E5bI,
-                            gnsstk::NavType::GalINAV);
+                             gnsstk::CarrierBand::E5b,
+                             gnsstk::TrackingCode::E5bI,
+                             gnsstk::NavType::GalINAV);
    gnsstk::NavSignalID nsid4(gnsstk::SatelliteSystem::Galileo,
-                            gnsstk::CarrierBand::L5,
-                            gnsstk::TrackingCode::E5aI,
-                            gnsstk::NavType::GalFNAV);
+                             gnsstk::CarrierBand::L5,
+                             gnsstk::TrackingCode::E5aI,
+                             gnsstk::NavType::GalFNAV);
    gnsstk::NavSignalID nsid5(gnsstk::SatelliteSystem::QZSS,
                              gnsstk::CarrierBand::L1,
                              gnsstk::TrackingCode::CA,
@@ -191,9 +193,9 @@ loadIntoMapTest()
    TUASSERT(f2.addDataSource(f2name));
    TUASSERTE(size_t, 507, f2.size());
    gnsstk::CommonTime expti2 = gnsstk::CivilTime(2015,7,19,0,0,0,
-                                               gnsstk::TimeSystem::GPS);
+                                                 gnsstk::TimeSystem::GPS);
    gnsstk::CommonTime exptf2 = gnsstk::CivilTime(2015,7,20,2,0,0,
-                                               gnsstk::TimeSystem::GPS);
+                                                 gnsstk::TimeSystem::GPS);
    TUASSERTE(gnsstk::CommonTime, expti2, f2.getInitialTime());
    TUASSERTE(gnsstk::CommonTime, exptf2, f2.getFinalTime());
 
@@ -282,21 +284,24 @@ loadIntoMapTest()
    std::string f8name = gnsstk::getPathData() + gnsstk::getFileSep() +
       "test_input_rinex3_nav_gal.20n";
       // this should implicitly load into the data map
+   DEBUGTRACE_ENABLE();
    TUASSERT(f8.addDataSource(f8name));
+   DEBUGTRACE_DISABLE();
       // x 4 time offset
       // x 1 GPS ephemeris
       // x 1 GPS health
       // x 1 GPS ISC
       // x 39 Galileo ephemerides
       // x 39 Galileo ISC
-      // x 3*39 Galileo health
+      // x 90 Galileo health
       // x 1 Galileo kludge health for iono corrections
       // x 1 Galileo iono correction
-   TUASSERTE(size_t, 204, f8.size());
+   TUASSERTE(size_t, 177, f8.size());
       // count INAV, FNAV, and LNAV data
    unsigned ephICount = 0, ephFCount = 0, ephLCount = 0, heaICount = 0,
       heaLCount = 0, ionoCount = 0, iscLCount = 0, iscICount = 0,
-      otherCount = 0, heaFCount = 0, iscFCount = 0, timeRCount = 0;
+      otherCount = 0, heaFCount = 0, iscFCount = 0, timeRCount = 0,
+      heaGalFCount = 0;
    gnsstk::RinexTimeOffset *timeR;
    for (auto& nmti : f8.getData())
    {
@@ -307,6 +312,7 @@ loadIntoMapTest()
                // Count each data type and spot check the first one of each.
             gnsstk::GalINavEph *ephI;
             gnsstk::GalFNavEph *ephF;
+            gnsstk::GalFNavHealth *heaGalF;
             gnsstk::GalINavHealth *heaI;
             gnsstk::GalINavIono *iono;
             gnsstk::GalINavISC *iscI;
@@ -333,10 +339,10 @@ loadIntoMapTest()
                   static const gnsstk::CommonTime expEnd = expToe + (3600.0*4.0);
                   static const gnsstk::NavMessageID expNMID(
                      gnsstk::NavSatelliteID(1, 1,
-                                           gnsstk::SatelliteSystem::Galileo,
-                                           gnsstk::CarrierBand::E5b,
-                                           gnsstk::TrackingCode::E5bI,
-                                           gnsstk::NavType::GalINAV),
+                                            gnsstk::SatelliteSystem::Galileo,
+                                            gnsstk::CarrierBand::E5b,
+                                            gnsstk::TrackingCode::E5bI,
+                                            gnsstk::NavType::GalINAV),
                      gnsstk::NavMessageType::Ephemeris);
                      // NavData
                   TUASSERTE(gnsstk::CommonTime, expXmit1, ephI->timeStamp);
@@ -396,7 +402,7 @@ loadIntoMapTest()
                ephICount++;
             }
             else if ((ephF = dynamic_cast<gnsstk::GalFNavEph*>(ti.second.get()))
-                != nullptr)
+                     != nullptr)
             {
                if (ephFCount == 0)
                {
@@ -414,10 +420,10 @@ loadIntoMapTest()
                   static const gnsstk::CommonTime expEnd = expToe + (3600.0*4.0);
                   static const gnsstk::NavMessageID expNMID(
                      gnsstk::NavSatelliteID(10, 10,
-                                           gnsstk::SatelliteSystem::Galileo,
-                                           gnsstk::CarrierBand::L5,
-                                           gnsstk::TrackingCode::E5aI,
-                                           gnsstk::NavType::GalFNAV),
+                                            gnsstk::SatelliteSystem::Galileo,
+                                            gnsstk::CarrierBand::L5,
+                                            gnsstk::TrackingCode::E5aI,
+                                            gnsstk::NavType::GalFNAV),
                      gnsstk::NavMessageType::Ephemeris);
                      // NavData
                   TUASSERTE(gnsstk::CommonTime, expXmit1, ephF->timeStamp);
@@ -471,7 +477,7 @@ loadIntoMapTest()
                ephFCount++;
             }
             else if ((ephL = dynamic_cast<gnsstk::GPSLNavEph*>(ti.second.get()))
-                != nullptr)
+                     != nullptr)
             {
                if (ephLCount == 0)
                {
@@ -486,10 +492,10 @@ loadIntoMapTest()
                   static const gnsstk::CommonTime expEnd = expToe + (3600.0*2.0);
                   static const gnsstk::NavMessageID expNMID(
                      gnsstk::NavSatelliteID(1, 1,
-                                           gnsstk::SatelliteSystem::GPS,
-                                           gnsstk::CarrierBand::L1,
-                                           gnsstk::TrackingCode::CA,
-                                           gnsstk::NavType::GPSLNAV),
+                                            gnsstk::SatelliteSystem::GPS,
+                                            gnsstk::CarrierBand::L1,
+                                            gnsstk::TrackingCode::CA,
+                                            gnsstk::NavType::GPSLNAV),
                      gnsstk::NavMessageType::Ephemeris);
                      // NavData
                   TUASSERTE(gnsstk::CommonTime, expTS, ephL->timeStamp);
@@ -554,19 +560,18 @@ loadIntoMapTest()
                ephLCount++;
             }
             else if ((heaI=dynamic_cast<gnsstk::GalINavHealth*>(ti.second.get()))
-                != nullptr)
+                     != nullptr)
             {
                if (heaICount == 1)
                {
                   static const gnsstk::CommonTime expXmit1 =
                      gnsstk::GPSWeekSecond(2107,433714);
-                     /// @note this may change when we fix F/NAV support
                   static const gnsstk::NavMessageID expNMID(
                      gnsstk::NavSatelliteID(1, 1,
-                                           gnsstk::SatelliteSystem::Galileo,
-                                           gnsstk::CarrierBand::L1,
-                                           gnsstk::TrackingCode::E1B,
-                                           gnsstk::NavType::GalINAV),
+                                            gnsstk::SatelliteSystem::Galileo,
+                                            gnsstk::CarrierBand::L5,
+                                            gnsstk::TrackingCode::E5bI,
+                                            gnsstk::NavType::GalINAV),
                      gnsstk::NavMessageType::Health);
                      // NavData
                   TUASSERTE(gnsstk::CommonTime, expXmit1, heaI->timeStamp);
@@ -577,16 +582,40 @@ loadIntoMapTest()
                             gnsstk::GalHealthStatus::OK, heaI->sigHealthStatus);
                   TUASSERTE(gnsstk::GalDataValid, gnsstk::GalDataValid::Valid,
                             heaI->dataValidityStatus);
-                     /** @todo This is probably due to our handling of
-                      * F/NAV and I/NAV health under the assumption
-                      * that both are valid in a given record.  See
-                      * RinexNavDataFactory::convertToHealth. */
-                  TUASSERTE(unsigned, 255, heaI->sisaIndex);
+                  TUASSERTE(unsigned, 107, heaI->sisaIndex);
                }
                heaICount++;
             }
+            else if ((heaGalF = dynamic_cast<gnsstk::GalFNavHealth*>(
+                         ti.second.get())) != nullptr)
+            {
+               if (heaGalFCount == 1)
+               {
+                  static const gnsstk::CommonTime expXmit1 =
+                     gnsstk::GPSWeekSecond(2107,433864);
+                  static const gnsstk::NavMessageID expNMID(
+                     gnsstk::NavSatelliteID(1, 1,
+                                            gnsstk::SatelliteSystem::Galileo,
+                                            gnsstk::CarrierBand::L5,
+                                            gnsstk::TrackingCode::E5aI,
+                                            gnsstk::NavType::GalFNAV),
+                     gnsstk::NavMessageType::Health);
+                     // NavData
+                  TUASSERTE(gnsstk::CommonTime, expXmit1, heaGalF->timeStamp);
+                  TUASSERTE(gnsstk::NavMessageID, expNMID, heaGalF->signal);
+                     // NavHealthData has nothing.
+                     // GalFNavHealth
+                  TUASSERTE(gnsstk::GalHealthStatus,
+                            gnsstk::GalHealthStatus::OK,
+                            heaGalF->sigHealthStatus);
+                  TUASSERTE(gnsstk::GalDataValid, gnsstk::GalDataValid::Valid,
+                            heaGalF->dataValidityStatus);
+                  TUASSERTE(unsigned, 255, heaGalF->sisaIndex);
+               }
+               heaGalFCount++;
+            }
             else if ((heaL=dynamic_cast<gnsstk::GPSLNavHealth*>(ti.second.get()))
-                != nullptr)
+                     != nullptr)
             {
                if (heaLCount == 0)
                {
@@ -594,10 +623,10 @@ loadIntoMapTest()
                      gnsstk::GPSWeekSecond(2107,4.320180000000e+05);
                   static const gnsstk::NavMessageID expNMID(
                      gnsstk::NavSatelliteID(1, 1,
-                                           gnsstk::SatelliteSystem::GPS,
-                                           gnsstk::CarrierBand::L1,
-                                           gnsstk::TrackingCode::CA,
-                                           gnsstk::NavType::GPSLNAV),
+                                            gnsstk::SatelliteSystem::GPS,
+                                            gnsstk::CarrierBand::L1,
+                                            gnsstk::TrackingCode::CA,
+                                            gnsstk::NavType::GPSLNAV),
                      gnsstk::NavMessageType::Health);
                      // NavData
                   TUASSERTE(gnsstk::CommonTime, expTS, heaL->timeStamp);
@@ -617,10 +646,10 @@ loadIntoMapTest()
                      gnsstk::GPSWeekSecond(2107,439200);
                   static const gnsstk::NavMessageID expNMID(
                      gnsstk::NavSatelliteID(0, 0,
-                                           gnsstk::SatelliteSystem::Galileo,
-                                           gnsstk::CarrierBand::L1,
-                                           gnsstk::TrackingCode::E1B,
-                                           gnsstk::NavType::GalINAV),
+                                            gnsstk::SatelliteSystem::Galileo,
+                                            gnsstk::CarrierBand::L1,
+                                            gnsstk::TrackingCode::E1B,
+                                            gnsstk::NavType::GalINAV),
                      gnsstk::NavMessageType::Iono);
                      // NavData
                   TUASSERTE(gnsstk::CommonTime, expTS, iono->timeStamp);
@@ -644,10 +673,10 @@ loadIntoMapTest()
                   gnsstk::GPSWeekSecond(2107,4.320180000000e+05);
                static const gnsstk::NavMessageID expNMID(
                   gnsstk::NavSatelliteID(1, 1,
-                                        gnsstk::SatelliteSystem::GPS,
-                                        gnsstk::CarrierBand::L1,
-                                        gnsstk::TrackingCode::CA,
-                                        gnsstk::NavType::GPSLNAV),
+                                         gnsstk::SatelliteSystem::GPS,
+                                         gnsstk::CarrierBand::L1,
+                                         gnsstk::TrackingCode::CA,
+                                         gnsstk::NavType::GPSLNAV),
                   gnsstk::NavMessageType::ISC);
                   // NavData
                TUASSERTE(gnsstk::CommonTime, expTS, iscL->timeStamp);
@@ -671,10 +700,10 @@ loadIntoMapTest()
                      gnsstk::GPSWeekSecond(2107,433714);
                   static const gnsstk::NavMessageID expNMID(
                      gnsstk::NavSatelliteID(1, 1,
-                                           gnsstk::SatelliteSystem::Galileo,
-                                           gnsstk::CarrierBand::E5b,
-                                           gnsstk::TrackingCode::E5bI,
-                                           gnsstk::NavType::GalINAV),
+                                            gnsstk::SatelliteSystem::Galileo,
+                                            gnsstk::CarrierBand::E5b,
+                                            gnsstk::TrackingCode::E5bI,
+                                            gnsstk::NavType::GalINAV),
                      gnsstk::NavMessageType::ISC);
                      // NavData
                   TUASSERTE(gnsstk::CommonTime, expTS, iscI->timeStamp);
@@ -735,8 +764,8 @@ loadIntoMapTest()
    TUASSERTE(unsigned, 36, ephICount);
    TUASSERTE(unsigned, 3, ephFCount);
    TUASSERTE(unsigned, 1, ephLCount);
-      /// @bug are we producing "I/NAV" health containing data from F/NAV?
-   TUASSERTE(unsigned, 39*3+1, heaICount);
+   TUASSERTE(unsigned, 52, heaICount);
+   TUASSERTE(unsigned, 39, heaGalFCount);
    TUASSERTE(unsigned, 39, iscICount);
    TUASSERTE(unsigned, 1, heaLCount);
    TUASSERTE(unsigned, 1, ionoCount);
@@ -1162,10 +1191,28 @@ decodeSISATest()
    for (unsigned index = 100; index < 126; index++)
    {
       double accuracy = 2.0 + ((index-100) * 0.16);
-      // std::cerr /*<< std::setprecision(20)*/ << "index=" << index << "  accuracy=" << accuracy << std::endl;
+         // std::cerr /*<< std::setprecision(20)*/ << "index=" << index << "  accuracy=" << accuracy << std::endl;
       TUASSERTE(unsigned, index,
                 gnsstk::RinexNavDataFactory::decodeSISA(accuracy));
    }
+   TURETURN();
+}
+
+
+unsigned RinexNavDataFactory_T ::
+encodeSISATest()
+{
+   TUDEF("RinexNavDataFactory", "encodeSISA");
+   for (unsigned idx = 0; idx <= 125; idx++)
+   {
+      double accuracy;
+      unsigned sisa;
+      TUCATCH(accuracy = gnsstk::RinexNavDataFactory::encodeSISA(idx));
+      TUCATCH(sisa = gnsstk::RinexNavDataFactory::decodeSISA(accuracy));
+      TUASSERTE(unsigned, idx, sisa);
+   }
+      // 126-254 are spare
+   TUASSERTFE(-1.0, gnsstk::RinexNavDataFactory::encodeSISA(255));
    TURETURN();
 }
 
@@ -1179,27 +1226,27 @@ loadIntoMapQZSSTest()
       "qzsssampl_U_20141330729_01D_RN.rnx";
    gnsstk::NavMessageID nmidExp(
       gnsstk::NavSatelliteID(193, 193, gnsstk::SatelliteSystem::QZSS,
-                            gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
-                            gnsstk::NavType::GPSLNAV),
+                             gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
+                             gnsstk::NavType::GPSLNAV),
       gnsstk::NavMessageType::Health);
    gnsstk::CommonTime expTS = gnsstk::CivilTime(2014,5,13,7,15,0,
-                                              gnsstk::TimeSystem::QZS);
+                                                gnsstk::TimeSystem::QZS);
    gnsstk::CommonTime expXT = gnsstk::CivilTime(2014,5,13,7,15,0,
-                                               gnsstk::TimeSystem::QZS);
+                                                gnsstk::TimeSystem::QZS);
    gnsstk::CommonTime expti2 = gnsstk::CivilTime(2014,5,13,7,15,0,
-                                               gnsstk::TimeSystem::QZS);
+                                                 gnsstk::TimeSystem::QZS);
    gnsstk::CommonTime exptf2 = gnsstk::CivilTime(2014,5,13,10,30,0,
-                                               gnsstk::TimeSystem::QZS);
+                                                 gnsstk::TimeSystem::QZS);
    gnsstk::CommonTime toeExp = gnsstk::GPSWeekSecond(1792,202512,
-                                                   gnsstk::TimeSystem::QZS);
-   gnsstk::CommonTime beginExp = gnsstk::GPSWeekSecond(1792, 198900,
                                                      gnsstk::TimeSystem::QZS);
+   gnsstk::CommonTime beginExp = gnsstk::GPSWeekSecond(1792, 198900,
+                                                       gnsstk::TimeSystem::QZS);
    gnsstk::CommonTime endExp = gnsstk::GPSWeekSecond(1792, 210600,
-                                                   gnsstk::TimeSystem::QZS);
+                                                     gnsstk::TimeSystem::QZS);
    TUASSERT(uut.addDataSource(fname));
    TUASSERTE(size_t, 3, uut.size());
    gnsstk::NavMessageMap &nmm(uut.getData());
-   // uut.dump(std::cerr, gnsstk::DumpDetail::Full);
+      // uut.dump(std::cerr, gnsstk::DumpDetail::Full);
    TUASSERTE(gnsstk::CommonTime, expti2, uut.getInitialTime());
    TUASSERTE(gnsstk::CommonTime, exptf2, uut.getFinalTime());
    gnsstk::GPSLNavEph *eph;
@@ -1284,7 +1331,7 @@ loadIntoMapQZSSTest()
                heaCount++;
             }
             else if ((isc = dynamic_cast<gnsstk::GPSLNavISC*>(ti.second.get()))
-                != nullptr)
+                     != nullptr)
             {
                iscCount++;
                nmidExp.messageType = gnsstk::NavMessageType::ISC;
@@ -1342,6 +1389,7 @@ int main()
    errorTotal += testClass.loadIntoMapTest();
    errorTotal += testClass.loadIntoMapQZSSTest();
    errorTotal += testClass.decodeSISATest();
+   errorTotal += testClass.encodeSISATest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

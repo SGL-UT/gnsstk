@@ -86,10 +86,10 @@ namespace gnsstk
       virtual ~Rinex3NavData() {}
 
          /// Rinex3NavData is "data" so this function always returns true.
-      virtual bool isData(void) const {return true;}
+      virtual bool isData() const {return true;}
 
          /// Write selected info (system dependent) as a single line
-      std::string dumpString(void) const;
+      std::string dumpString() const;
 
          /// A debug output function.
          /// Prints the PRN id and the IODC for this record.

@@ -511,7 +511,7 @@ namespace gnsstk
          }
       }
 
-      if(valid & validIonoCorrGPS)
+      if ((valid & validIonoCorrGPS) || (valid & validIonoCorrGal))
       {
             // "IONOSPHERIC CORR"
          map<string,IonoCorr>::const_iterator it;
@@ -525,7 +525,7 @@ namespace gnsstk
                   {
                      strm << it->second.param[j];
                   }
-                  strm << "   .0000D+00" << setw(7) << ' ' << stringIonoCorr;
+                  strm << "            " << setw(7) << ' ' << stringIonoCorr;
                   break;
                case IonoCorr::GPSA:
                   if(version >= 3)
@@ -609,15 +609,19 @@ namespace gnsstk
                   strm << right << setw(7) << (unsigned)ws.sow
                        << right << setw(5) << ws.week;
                }
-               if(tc.type == TimeSystemCorrection::SBUT)
+                  // For SBAS this should be one of the three
+                  // providers (EGNOS, WAAS or MSAS).  For others it
+                  // should be system and number Snn of GNSS satellite
+                  // broadcasting the time system difference.
+               if (!tc.geoProvider.empty())
                {
-                  strm << right << setw(6) << tc.geoProvider << " ";
+                  strm << ' ' << right << setw(5) << tc.geoProvider << ' ';
                }
                else
                {
                   strm << setw(7) << ' ';
                }
-               strm << right << setw(2) << tc.geoUTCid << " "
+               strm << right << setw(2) << tc.geoUTCid << ' '
                     << stringTimeSysCorr;
             }
             else

@@ -90,6 +90,14 @@ namespace gnsstk
 
       void fromString(const std::string& str);
 
+         /** Convert a pair of TimeSystem enums to a CorrType enum.
+          * @param[in] src The source time system for the conversion.
+          * @param[in] tgt The target time system for the conversion.
+          * @param[out] ct The source/target time system paired enum.
+          * @return false if src/tgt aren't available as a CorrType pair. */
+      static bool convertTimeSystemToCorrType(
+         TimeSystem src, TimeSystem tgt, TimeSystemCorrection::CorrType& ct);
+
          /// Return readable string version of CorrType
       std::string asString() const;
 

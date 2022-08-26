@@ -117,6 +117,27 @@ namespace gnsstk
       static bool convertToHealth(const Rinex3NavData& navIn,
                                   NavDataPtrList& healthOut);
 
+         /** Convert RINEX nav data for Galileo E1B to a GalINavHealth object.
+          * @param[in] navIn The RINEX nav message data to convert.
+          * @param[out] healthOut The NavHealthData object(s) to be added
+          *   to the factory data map. */
+      static void convertToHealthE1B(const Rinex3NavData& navIn,
+                                     NavDataPtrList& healthOut);
+
+         /** Convert RINEX nav data for Galileo E5a to a GalFNavHealth object.
+          * @param[in] navIn The RINEX nav message data to convert.
+          * @param[out] healthOut The NavHealthData object(s) to be added
+          *   to the factory data map. */
+      static void convertToHealthE5a(const Rinex3NavData& navIn,
+                                     NavDataPtrList& healthOut);
+
+         /** Convert RINEX nav data for Galileo E5b to a GalINavHealth object.
+          * @param[in] navIn The RINEX nav message data to convert.
+          * @param[out] healthOut The NavHealthData object(s) to be added
+          *   to the factory data map. */
+      static void convertToHealthE5b(const Rinex3NavData& navIn,
+                                     NavDataPtrList& healthOut);
+
          /** Convert RINEX nav header data to a TimeOffsetData object.
           * @param[in] navIn The RINEX nav header to convert.
           * @param[out] navOut The GPSCNavTimeOffset object generated from
@@ -190,6 +211,14 @@ namespace gnsstk
           *   to mean No Accuracy Predicition Available.
           * @param[in] accuracy The signal accuracy in meters. */
       static uint8_t decodeSISA(double accuracy);
+
+         /** Convert a Galileo Signal In Space Accuracy index to
+          * accuracy in meters.
+          * @note This uses RINEX conventions (naturally) of using -1
+          *   to mean No Accuracy Predicition Available.
+          * @param[in] sisa The signal in space accuracy index.
+          * @return The signal accuracy in meters. */
+      static double encodeSISA(uint8_t sisa);
    };
 
       //@}

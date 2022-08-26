@@ -357,6 +357,7 @@
 #include "RinexNavBase.hpp"
 #include "RinexNavData.hpp"
 #include "Rinex3NavData.hpp"
+#include "NewNavToRinex.hpp"
 #include "Rinex3NavFilterOperators.hpp"
 /* #include "Rinex3ObsFileLoader.hpp" */
 #include "Rinex3ObsFilterOperators.hpp"
