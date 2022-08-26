@@ -1,3 +1,19 @@
+gnsstk (13.7.0-1) stable; urgency=low
+
+  * Updated to version 13.7.0
+  * Fix cmake issue with ext/swig
+  * Update SatMetaDataStore to properly process SIG records and look-up
+    data via signals.
+  * Replaced sgl_ci docker images with sgl equivalent
+  * Clean up HelmertTransform: Comply with style, fix/add tests and
+    documentation
+  * Add SonarQube analysis
+  * Add NewNavToRinex conversion utility class
+  * Fix Rinex3NavHeader to support the source specification for TIME
+    SYSTEM CORR
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Fri, 26 Aug 2022 13:42:51 -0500
+
 gnsstk (13.6.0-1) stable; urgency=low
 
   * Updated to version 13.6.0

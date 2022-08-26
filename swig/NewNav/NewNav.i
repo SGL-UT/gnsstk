@@ -237,6 +237,8 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %include "MultiFormatNavDataFactory.hpp"
 %include "NDFUniqConstIterator.hpp"
 %template (NDFUniqConstIterator_NavDataFactoryMap) gnsstk::NDFUniqConstIterator<gnsstk::NavDataFactoryMap>;
+%include "NavDataFactoryStoreCallback.hpp"
+%include "NewNavToRinex.hpp"
 %include "OrbitDataSP3.hpp"
 %include "PNBNavDataFactory.hpp"
 %feature("flatnested");

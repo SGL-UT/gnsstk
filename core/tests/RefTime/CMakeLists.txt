@@ -1,8 +1,8 @@
 #Tests for RefTime Classes
 
-#add_executable(HelmertTransform_T HelmertTransform_T.cpp ftest.cpp)
-#target_link_libraries(HelmertTransform_T gnsstk)
-#add_test(NAME RefTime_HelmertTransform COMMAND $<TARGET_FILE:HelmertTransform_T>)
+add_executable(HelmertTransform_T HelmertTransform_T.cpp)
+target_link_libraries(HelmertTransform_T gnsstk)
+add_test(NAME RefTime_HelmertTransform COMMAND $<TARGET_FILE:HelmertTransform_T>)
 
 add_executable(ReferenceFrame_T ReferenceFrame_T.cpp)
 target_link_libraries(ReferenceFrame_T gnsstk)

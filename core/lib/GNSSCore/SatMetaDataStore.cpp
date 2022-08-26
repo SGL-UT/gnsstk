@@ -37,6 +37,7 @@
 //==============================================================================
 
 #include <fstream>
+#include <algorithm>
 #include "SatMetaDataStore.hpp"
 #include "StringUtils.hpp"
 #include "YDSTime.hpp"
@@ -309,9 +310,36 @@ namespace gnsstk
       std::string carrier = vals[i++];
       std::string code = vals[i++];
       std::string nav = vals[i++];
-         /** @todo implement the rest of this when we have some
-          * from/to string translation methods for the enumerations
-          * used in Signal. */
+      sig.carrier = StringUtils::asCarrierBand(carrier);
+      if ((sig.carrier == CarrierBand::Unknown) ||
+          (sig.carrier == CarrierBand::Any) ||
+          (sig.carrier == CarrierBand::Undefined) ||
+          (sig.carrier == CarrierBand::Last))
+      {
+         cerr << "Invalid carrier \"" << carrier << "\" on line " << lineNo
+              << endl;
+         return false;
+      }
+      sig.code = StringUtils::asTrackingCode(code);
+      if ((sig.code == TrackingCode::Unknown) ||
+          (sig.code == TrackingCode::Any) ||
+          (sig.code == TrackingCode::Undefined) ||
+          (sig.code == TrackingCode::Last))
+      {
+         cerr << "Invalid code \"" << code << "\" on line " << lineNo
+              << endl;
+         return false;
+      }
+      sig.nav = StringUtils::asNavType(nav);
+      if ((sig.nav == NavType::Unknown) ||
+          (sig.nav == NavType::Any) ||
+          (sig.nav == NavType::Last))
+      {
+         cerr << "Invalid nav \"" << nav << "\" on line " << lineNo
+              << endl;
+         return false;
+      }
+      sigMap[name].insert(sig);
       return true;
    }
 
@@ -566,5 +594,121 @@ namespace gnsstk
          return true;
       }
       return false;
+   }
+
+
+   std::set<std::string> SatMetaDataStore ::
+   getSignalSet(const Signal& sig)
+      const
+   {
+      std::set<std::string> rv;
+      for (const auto& smi : sigMap)
+      {
+         for (const auto& ssi : smi.second)
+         {
+            if (ssi == sig)
+            {
+               rv.insert(smi.first);
+                  // Break the inner loop since we've already matched
+                  // the signal and can move on to the next signal.
+               break;
+            }
+         }
+      }
+      return rv;
+   }
+
+
+   std::set<std::string> SatMetaDataStore ::
+   getSignalSet(const SignalSet& signals)
+      const
+   {
+      std::set<std::string> rv;
+      for (const auto& smi : sigMap)
+      {
+         bool completeMatch = true;
+            // set_intersection does not use operator== and neither
+            // does count, but we want operator== to support
+            // wildcards, but not operator<.  So we have to roll this
+            // by hand.
+         for (const auto& si : signals)
+         {
+            bool matched = false;
+            for (const auto& smsi : smi.second)
+            {
+               if (si == smsi)
+               {
+                  matched = true;
+                  break;
+               }
+            }
+            if (!matched)
+            {
+               completeMatch = false;
+               break;
+            }
+         }
+         if (completeMatch)
+         {
+            rv.insert(smi.first);
+         }
+      }
+      return rv;
+   }
+
+
+   SatMetaDataStore::SatSet SatMetaDataStore ::
+   getSatsBySignal(const SignalSet& signals)
+   {
+      SatSet rv;
+      std::set<std::string> groups = getSignalSet(signals);
+      for (const auto& smmi : satMap)
+      {
+         for (const auto& ssi : smmi.second)
+         {
+            if (groups.count(ssi.signals) > 0)
+            {
+               rv.insert(ssi);
+            }
+         }
+      }
+      return rv;
+   }
+
+
+   SatMetaDataStore::SatSet SatMetaDataStore ::
+   getSatsBySignal(const SignalSet& signals, const CommonTime& when)
+   {
+      SatSet intermediate = getSatsBySignal(signals);
+      SatSet rv;
+      for (const auto& ii : intermediate)
+      {
+         if ((when >= ii.startTime) && (when < ii.endTime))
+         {
+            rv.insert(ii);
+         }
+      }
+      return rv;
+   }
+
+
+   SatMetaDataStore::SatSet SatMetaDataStore ::
+   getSatsBySignal(const SignalSet& signals,
+                   const CommonTime& beginTime,
+                   const CommonTime& endTime,
+                   const std::set<SatMetaData::Status>& status)
+   {
+      SatSet intermediate = getSatsBySignal(signals);
+      SatSet rv;
+      for (const auto& ii : intermediate)
+      {
+         if ((ii.startTime <= endTime) &&
+             (ii.endTime >= beginTime) &&
+             (status.count(ii.status) > 0))
+         {
+            rv.insert(ii);
+         }
+      }
+      return rv;
    }
 }

@@ -141,6 +141,22 @@ namespace gnsstk
          /// Specifies a single GNSS signal.
       struct Signal
       {
+            /// Initialize everything to unknown.
+         Signal()
+               : carrier(CarrierBand::Unknown), code(TrackingCode::Unknown),
+                 nav(NavType::Unknown)
+         {}
+            /// Initialize using complete set of specified values.
+         Signal(CarrierBand c, TrackingCode r, NavType n)
+               : carrier(c), code(r), nav(n)
+         {}
+            /// Ordering for template/container.
+         inline bool operator<(const Signal& right) const;
+            /// Comparison operator that allows "Any" to be a wildcard.
+         inline bool operator==(const Signal& right) const;
+            /// Comparison operator that allows "Any" to be a wildcard.
+         inline bool operator!=(const Signal& right) const
+         { return !operator==(right); }
          CarrierBand carrier; ///< Carrier frequency.
          TrackingCode code;   ///< Tracking code.
          NavType nav;         ///< Navigation code.
@@ -295,6 +311,74 @@ namespace gnsstk
                   uint32_t& prn)
          const;
 
+         /** Get the names of signal sets that include the specified signal.
+          * The "Any" enum value may be used to match as a wildcard.
+          * @param[in] sig The signal to match.
+          * @return A set of the signal set names that include the
+          *   specified signal. */
+      std::set<std::string> getSignalSet(const Signal& sig)
+         const;
+
+         /** Get the names of signal sets that include ALL of the
+          * specified signals.  The "Any" enum value may be used to
+          * match as a wildcard.
+          * @param[in] signals The signals to match.
+          * @return A set of the signal set names that include all of the
+          *   specified signals. */
+      std::set<std::string> getSignalSet(const SignalSet& signals)
+         const;
+
+         /** Get the names of signal sets that include the specified signal.
+          * The "Any" enum value may be used to match as a wildcard.
+          * @param[in] band The carrier band to match.
+          * @param[in] code The tracking code to match.
+          * @param[in] nav The navigation message format to match.
+          * @return A set of the signal set names that include the
+          *   specified signal. */
+      std::set<std::string> getSignalSet(CarrierBand band, TrackingCode code,
+                                         NavType nav)
+         const
+      { return getSignalSet(Signal(band,code,nav)); }
+      
+         /** Get a set of all of the SAT records that match ALL of the
+          * specified signals.
+          * @param[in] signals The signals to match.
+          * @return A set of the satellites that broadcast all of the
+          *   specified signals. */
+      SatSet getSatsBySignal(const SignalSet& signals);
+      
+         /** Get a set of all of the SAT records that match ALL of the
+          * specified signals and the specified time is between the
+          * start and end time for the record.
+          * @param[in] signals The signals to match.
+          * @param[in] when The time of interest of the desired satellites.
+          * @return A set of the satellites that broadcast all of the
+          *   specified signals at the time of interest. */
+      SatSet getSatsBySignal(const SignalSet& signals, const CommonTime& when);
+
+         /** Get a set of all of the SAT records that match ALL of the
+          * specified signals and the specified status at any time
+          * during the specified time range.  Specifically, if the
+          * startTime and endTime of the SAT record overlap at all
+          * with the specified beginTime and endTime, that is
+          * considered a match.
+          * @param[in] signals The signals to match.
+          * @param[in] beginTime The earliest time for which a SAT
+          *   record may match.
+          * @param[in] endTime The latest time for which a SAT record may match.
+          * @param[in] status The desired status values of the
+          *   satellite at the time range of interest (default=all).
+          * @return A set of the satellites that broadcast all of the
+          *   specified signals during the time range of interest. */
+      SatSet getSatsBySignal(
+         const SignalSet& signals,
+         const CommonTime& beginTime,
+         const CommonTime& endTime,
+         const std::set<SatMetaData::Status>& status = {
+            SatMetaData::Status::Operational,
+            SatMetaData::Status::Decommissioned,
+            SatMetaData::Status::Test });
+
          /// Storage of all the satellite metadata.
       SatMetaMap satMap;
          /// Map signal set name to the actual signals.
@@ -340,6 +424,60 @@ namespace gnsstk
           */
       bool addNORAD(const std::vector<std::string>& vals, unsigned long lineNo);
    }; // class SatMetaDataStore
+
+
+   bool SatMetaDataStore::Signal ::
+   operator<(const Signal& right)
+      const
+   {
+      if (static_cast<int>(carrier) < static_cast<int>(right.carrier))
+      {
+         return true;
+      }
+      if (static_cast<int>(carrier) > static_cast<int>(right.carrier))
+      {
+         return false;
+      }
+      if (static_cast<int>(code) < static_cast<int>(right.code))
+      {
+         return true;
+      }
+      if (static_cast<int>(code) > static_cast<int>(right.code))
+      {
+         return false;
+      }
+      if (static_cast<int>(nav) < static_cast<int>(right.nav))
+      {
+         return true;
+      }
+      return false;
+   }
+
+
+   bool SatMetaDataStore::Signal ::
+   operator==(const Signal& right)
+      const
+   {
+      if ((carrier != CarrierBand::Any) &&
+          (right.carrier != CarrierBand::Any) &&
+          (carrier != right.carrier))
+      {
+         return false;
+      }
+      if ((code != TrackingCode::Any) &&
+          (right.code != TrackingCode::Any) &&
+          (code != right.code))
+      {
+         return false;
+      }
+      if ((nav != NavType::Any) &&
+          (right.nav != NavType::Any) &&
+          (nav != right.nav))
+      {
+         return false;
+      }
+      return true;
+   }
 
 
    bool SatMetaDataStore::SystemBlock ::

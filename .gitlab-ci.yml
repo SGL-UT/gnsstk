@@ -19,6 +19,7 @@ include:
     file: 'common/scanning/sonar.yml'
 
 stages:
+- quality
 - check
 - build
 - test
@@ -55,12 +56,12 @@ variables:
   BLD_VS_STATIC:
     value: "True"
     description: "If True, then build Windows Static Libraries (VS2019 only, VS2015 always builds static)"
-  SONAR_EXCLUSIONS: '**/tests/**,**/conda_recipe/**,**/data/**,**/coverage-reports/**,**/build*/**,**/debian/**,**/deprecated/**,**/examples/**,**/ref/**,**/rpm_files/**,**/swig/**'
+  SONAR_EXCLUSIONS: '**/tests/**,**/rpm_files/**,**/conda_recipe/**,**/data/**,**/coverage-cpp.xml,**/build*/**,**/debian/**,**/deprecated/**,**/examples/**,**/ref/**,**/rpm_files/**,**/swig/**,**/DoxygenLayout.xml,**/custom.css'
   SONAR_SOURCES: 'core'
   SONAR_TEST_SOURCES: 'core/tests'
   SONAR_TEST_INCLUSION: 'core/tests'
   SONAR_PROJECT_KEY: gnsstk
-
+  SONAR_ADDTIONAL_PARAMS: "-Dsonar.python.coverage.reportPaths=coverage-python.xml -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.python.version=3.7"
 
 # Template for all normal jobs.
 .normal_build:
@@ -106,7 +107,7 @@ static_analysis:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
   script:
     - ./lint_test.sh
   # Allow failures here to prevent blocking the rest of the pipeline.
@@ -125,8 +126,7 @@ sgllint_lint:
     - '# This job checks all files for required lines like copyright/license statements.'
     - '######'
     # Obtain the latest version of ./sgl_lint.py
-    - python3 -m pip install --upgrade pip
-    - python3 -m pip install sgl-ci-tools --extra-index-url https://sgl-artifactory.arlut.utexas.edu/artifactory/api/pypi/pypi-ci/simple
+    - python3 -m pip install sgl-ci-tools
     - sgl_lint -v -R core
     - sgl_lint -v -R ext
     - sgl_lint -v -R swig/apps
@@ -145,8 +145,7 @@ protected_term_lint:
     - '# This job checks all files for protected terms in files modified since the branch split from default.'
     - '######'
     - apt-get update && apt-get install -y git
-    - python3 -m pip install --upgrade pip
-    - python3 -m pip install tks-ci-tools --extra-index-url https://sgl-artifactory.arlut.utexas.edu/artifactory/api/pypi/pypi-ci/simple/
+    - python3 -m pip install tks-ci-tools
     # We pull the default branch because the CI doesn't normally have any branches other than the one being tested.
     - git fetch -uf origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
     - modified_file_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
@@ -166,8 +165,7 @@ protected_history_lint:
     - '# This job checks all files modified on this branch for sensitive terms.'
     - '######'
     - apt-get update && apt-get install -y git
-    - python3 -m pip install --upgrade pip
-    - python3 -m pip install tks-ci-tools --extra-index-url https://sgl-artifactory.arlut.utexas.edu/artifactory/api/pypi/pypi-ci/simple/
+    - python3 -m pip install tks-ci-tools
     # We pull the default branch because the CI doesn't normally have any branches other than the one being tested.
     - git fetch -uf origin ${CI_DEFAULT_BRANCH}:${CI_DEFAULT_BRANCH}
     - history_check.sh ${CI_DEFAULT_BRANCH} $CI_COMMIT_SHA
@@ -182,7 +180,7 @@ generate_documentation:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
   script:
     # Install GraphViz
     - sudo apt-get install -y graphviz
@@ -201,7 +199,7 @@ build_debian_9:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
   script:
     - mkdir -p build
     - cd build
@@ -219,12 +217,12 @@ build_debian_10:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - mkdir -p build
     - cd build
     - export gnsstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT -DPYTHON_EXECUTABLE=/usr/bin/python3
     - make all -j 4
   artifacts:
     paths:
@@ -248,13 +246,60 @@ build_debian_11:
     paths:
       - build/
 
+build_ext_noswig:
+  stage: build
+  needs: []
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  script:
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DCMAKE_INSTALL_PREFIX=install ..
+    - test -d CMakeFiles/gnsstk.dir/ext
+    - test ! -d swig
+
+build_noext_noswig:
+  stage: build
+  needs: []
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  script:
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DBUILD_EXT=OFF -DBUILD_PYTHON=OFF -DCMAKE_INSTALL_PREFIX=install ..
+    - test ! -d CMakeFiles/gnsstk.dir/ext
+    - test ! -d swig
+
+# this should print a warning and continue by flipping BUILD_EXT on
+build_swig_noext:
+  stage: build
+  needs: []
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  script:
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DBUILD_EXT=OFF -DBUILD_PYTHON=ON -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install ..
+    # ext is implicitly enabled if you request swig and not ext
+    - test -d CMakeFiles/gnsstk.dir/ext
+    - test -d swig
+
 build_debian_10_virtualenv:
   stage: build
   needs: []
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - python3 -m virtualenv --system-site-packages -p /usr/bin/python3 myenv
     - source myenv/bin/activate
@@ -293,7 +338,9 @@ build_debian_11_virtualenv:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36
+  image: $DOCKER_REGISTRY/tks/centos-conda:python-3.6
+  before_script:
+    - source /opt/miniconda/etc/profile.d/conda.sh
   script:
     - export CONDA_ENVS_PATH=/tmp/conda_envs
     - export CONDA_PKGS_DIRS=/tmp/conda_pkgs
@@ -334,31 +381,67 @@ build_conda_py3.9:
     PYTHON_VERSION: "3.9"
   extends: .build_conda
 
-sonar_conda_py36:
-  stage: build
+# sonar_conda_py36:
+#   stage: build
+#   needs: []
+#   extends:
+#    - .normal_build
+#    - .sonarqube-check
+#   tags:
+#     - docker
+#   image: $DOCKER_REGISTRY/tks/centos-conda:python-3.6
+#   script:
+#     - source /opt/miniconda/etc/profile.d/conda.sh
+#     - conda activate py36
+#     - conda install -y cmake=3.22.1 nodejs
+#     - mkdir -p build coverage-reports
+#     - cd build
+#     - export gnsstk=`pwd`/install
+#     - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+#     - build-wrapper-linux-x86-64 --out-dir . make all -j 4
+#     - ctest -j 4 --output-junit $CI_PROJECT_DIR/coverage-reports/coverage-cpp.xml
+#     - cd ..
+#     - !reference [.scan-c++, script]
+#   artifacts:
+#     paths:
+#       - build/
+#   # Allow failures in case sonarqube is not available
+#   allow_failure: true
+
+sonar-scan:
+  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  stage: quality
   needs: []
   extends:
-   - .normal_build
-   - .sonarqube-check
+    - .sonarqube-check
   tags:
-    - docker
-  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36
+    - docker-executor
   script:
-    - conda activate py36
-    - conda install -y cmake=3.22.1 nodejs
-    - mkdir -p build coverage-reports
+    - apt-get install gcovr lcov -y
+    # Install gnsstk from latest deb CI artifacts first.
+    - mkdir build
     - cd build
     - export gnsstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install -DCOVERAGE_SWITCH=ON -DDEBUG_SWITCH=ON -DPYTHON_EXECUTABLE=/usr/bin/python3 $CMAKE_ARG_DEFAULT
     - build-wrapper-linux-x86-64 --out-dir . make all -j 4
-    - ctest -j 4 --output-junit $CI_PROJECT_DIR/coverage-reports/coverage-cpp.xml
+    - ctest -j 4
     - cd ..
+    - gcovr --exclude=build* --xml-pretty --exclude-unreachable-branches --print-summary -o coverage-cpp.xml -r .
+    - for f in `find . -name '*.o'`; do echo "Processing $f file..."; pushd `dirname $f`; gcov -o `basename $f` x; popd ;done
     - !reference [.scan-c++, script]
-  artifacts:
-    paths:
-      - build/
-  # Allow failures in case sonarqube is not available
+    - touch $CI_PROJECT_DIR/success
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "main" || $CI_COMMIT_REF_NAME == "stable"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+  # Sonar Quality Profile will fail since code coverage is below 80%
+  # Allowing job to fail so sonar scan doesn't fail the pipeline for nightly big chain.
   allow_failure: true
+  # only:
+  #   - merge_requests
+  #   - main
+  #   - tags
+  #   - stable
 
 build_redhat:
   stage: build
@@ -366,12 +449,12 @@ build_redhat:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos7_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-7:pkgbuild
   script:
     - mkdir -p build
     - cd build
     - export gnsstk=`pwd`/install
-    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DTEST_SWITCH=ON ../
+    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DTEST_SWITCH=ON -DPYTHON_EXECUTABLE=/usr/bin/python3 ../
     - make all -j 4
   artifacts:
     paths:
@@ -384,7 +467,7 @@ build_redhat_8:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
   script:
     - mkdir -p build
     - cd build
@@ -461,7 +544,7 @@ test_debian_9:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
   script:
     - cd build
     - ctest -j 4
@@ -481,7 +564,7 @@ test_debian_10:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - cd build
     - ctest -j 4
@@ -519,7 +602,7 @@ test_debian_10_virtualenv:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - source myenv/bin/activate
     - cd build
@@ -559,7 +642,9 @@ test_debian_11_virtualenv:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36
+  image: $DOCKER_REGISTRY/tks/centos-conda:python-3.6
+  before_script:
+    - source /opt/miniconda/etc/profile.d/conda.sh
   script:
     - export CONDA_ENVS_PATH=/tmp/conda_envs
     - export CONDA_PKGS_DIRS=/tmp/conda_pkgs
@@ -574,6 +659,7 @@ test_debian_11_virtualenv:
     - build/Testing/Temporary/
     - build/swig/
     expire_in: 4 days
+
 
 test_conda_py2.7:
   variables:
@@ -616,7 +702,7 @@ test_redhat:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos7_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-7:pkgbuild
   script:
     - cd build
     - ctest -j 4
@@ -634,7 +720,7 @@ test_redhat_8:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
   script:
     - cd build
     - ctest -j 4
@@ -727,7 +813,7 @@ user_install_debian_9:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
   script:
     - cd build
     - export gnsstk=`pwd`/install
@@ -746,11 +832,11 @@ user_install_debian_10:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - cd build
     - export gnsstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_USER_INSTALL=ON ../
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_USER_INSTALL=ON -DPYTHON_EXECUTABLE=/usr/bin/python3 ../
     - make install -j 4
   artifacts:
     paths:
@@ -783,7 +869,7 @@ virtualenv_install_debian_10:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - source myenv/bin/activate
     - cd build
@@ -818,11 +904,11 @@ user_install_redhat:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos7_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-7:pkgbuild
   script:
     - cd build
     - export gnsstk=`pwd`/install
-    - cmake -DCMAKE_INSTALL_PREFIX=$gnsstk ../
+    - cmake -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_EXECUTABLE=/usr/bin/python3 ../
     - make install -j 4
   artifacts:
     paths:
@@ -837,7 +923,7 @@ user_install_redhat_8:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
   script:
     - cd build
     - export gnsstk=`pwd`/install
@@ -932,7 +1018,7 @@ system_install_debian_9:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
   script:
     - cd build
     - export gnsstk=/usr/local
@@ -947,11 +1033,11 @@ system_install_redhat:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos7_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-7:pkgbuild
   script:
     - cd build
     - export gnsstk=/usr/local
-    - cmake -DCMAKE_INSTALL_PREFIX=$gnsstk ../
+    - cmake -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_EXECUTABLE=/usr/bin/python3 ../
     - sudo make install -j 4
   dependencies:
     - build_redhat
@@ -962,7 +1048,7 @@ system_install_redhat_8:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
   script:
     - cd build
     - export gnsstk=/usr/local
@@ -1040,7 +1126,7 @@ package_debian_9:
   needs: []
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
   script:
     - rm -rf ../*.deb
     - dpkg-buildpackage --build-profiles=pkg_python,debug_package -us -uc -d --changes-option="-DDistribution=stretch-sgl"
@@ -1071,7 +1157,7 @@ package_debian_10:
     - when: on_success
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - rm -rf ../*.deb
     # Mark the debian log so that this package is a backport.
@@ -1135,7 +1221,9 @@ package_conda:
   needs: []
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/deb9_conda_py36
+  image: $DOCKER_REGISTRY/tks/centos-conda:python-3.6
+  before_script:
+    - source /opt/miniconda/etc/profile.d/conda.sh
   script:
     - conda activate conda_builder
     - export GIT_COMMIT=$CI_COMMIT_REF_NAME
@@ -1161,7 +1249,7 @@ package_redhat:
   needs: []
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos7_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-7:pkgbuild
   script:
     - bash rpm_files/setup_dirs.sh
     - git archive --prefix gnsstk-master/ -o rpm_files/SOURCES/gnsstk-master.tar.gz HEAD
@@ -1178,7 +1266,7 @@ package_redhat_8:
   needs: []
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
   script:
     - bash rpm_files/setup_dirs.sh
     - git archive --prefix gnsstk-master/ -o rpm_files/SOURCES/gnsstk-master.tar.gz HEAD
@@ -1195,7 +1283,7 @@ package_redhat_8_py36:
   needs: []
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
   script:
     - bash rpm_files/setup_dirs.sh
     - git archive --prefix python3-gnsstk-master/ -o rpm_files/SOURCES/python3-gnsstk-master.tar.gz HEAD
@@ -1273,7 +1361,7 @@ deploy_debian_9:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian9_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
   script:
     - cd debs
     - sudo apt-get -y install ./*.deb
@@ -1288,7 +1376,7 @@ deploy_debian_10:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/debian10_fai_ish
+  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - cd debs
     - sudo apt-get -y install ./*.deb
@@ -1320,7 +1408,7 @@ deploy_redhat:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos7_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-7:pkgbuild
   script:
     - cd rpm_files/RPMS/x86_64/
     - sudo yum install gnsstk-*.rpm -y
@@ -1335,7 +1423,7 @@ deploy_redhat_8:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
   script:
     - cd rpm_files/RPMS/x86_64/
     - sudo yum install gnsstk-*.rpm -y
@@ -1350,7 +1438,7 @@ deploy_redhat_py36:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl_ci/centos8_sgl
+  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
   script:
     - cd rpm_files/RPMS/x86_64/
     - sudo yum install gnsstk-*.rpm -y

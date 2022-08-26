@@ -1,3 +1,21 @@
+# Version 13.7.0   Friday August 26, 2022
+
+Modifications by Author
+-----------------------
+     Dan Wright <dan.wright@arlut.utexas.edu> (1):
+           Ci docker swap
+
+     David Barber <dbarber@arlut.utexas.edu> (1):
+           Adding sonar scan job
+
+     John Knutson <johnk@arlut.utexas.edu> (4):
+           Fix cmake issue with ext/swig
+           Add the ability to look up satellites by signal(s) to SatMetaDataStore
+           Clean up HelmertTransform: Comply with style, fix/add tests and documentation
+           Add NewNavToRinex conversion utility class
+
+
+
 # Version 13.6.0   Thursday July 28, 2022
 
 Modifications by Author

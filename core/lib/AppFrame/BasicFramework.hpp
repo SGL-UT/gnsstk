@@ -390,6 +390,9 @@ namespace gnsstk
          /** Exit code used when an exception has been caught in
           * run().  Not guaranteed to be unique to this condition. */
       static const int EXCEPTION_ERROR = 1;
+         /** Non-specific exit code.  Not guaranteed to be unique to
+          * this condition. */
+      static const int GENERAL_ERROR = 1;
          /** Exit code used when an error has occurred in processing
           * command-line options.  Not guaranteed to be unique to this
           * condition. */

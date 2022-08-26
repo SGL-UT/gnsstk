@@ -1,5 +1,5 @@
 %define name python3-gnsstk
-%define version 13.6.0
+%define version 13.7.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -67,6 +67,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Aug 26 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v13.7.0 release
+- Fix Rinex3NavHeader to support the source specification for TIME SYSTEM CORR
+- Add NewNavToRinex conversion utility class
+- Add SonarQube analysis
+- Clean up HelmertTransform: Comply with style, fix/add tests and documentation
+- Replaced sgl_ci docker images with sgl equivalent
+- Update SatMetaDataStore to properly process SIG records and look-up data via signals.
+- Fix cmake issue with ext/swig
 * Thu Jul 28 2022 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v13.6.0 release
 - Update CODEOWNERS file.

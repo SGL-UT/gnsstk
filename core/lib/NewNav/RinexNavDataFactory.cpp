@@ -47,6 +47,7 @@
 #include "GalINavISC.hpp"
 #include "GalFNavEph.hpp"
 #include "GalINavHealth.hpp"
+#include "GalFNavHealth.hpp"
 #include "BDSD1NavEph.hpp"
 #include "BDSD1NavHealth.hpp"
 #include "BDSD1NavIono.hpp"
@@ -435,7 +436,7 @@ namespace gnsstk
                   // really a Galileo week number.
                galFNav->Toe = GPSWeekSecond(navIn.weeknum, navIn.Toe);
                   //galFNav->Toe.setTimeSystem(TimeSystem::GAL);
-                  // @todo set sv health correctly
+                  /// @todo set sv health correctly
                   // galFNav->health = ((navIn.health == 0) ? SVHealth::Healthy :
                   //                SVHealth::Unhealthy);
                convertToOrbitDataKepler(navIn, galFNav);
@@ -483,7 +484,14 @@ namespace gnsstk
                bdsD2Nav->aodc = navIn.IODC;
                bdsD2Nav->aode = navIn.IODE;
                   // Table 5-4 of ICD-B1I-v3.0 is the same as what GPS uses
-               bdsD2Nav->uraIndex = accuracy2ura(navIn.accuracy);
+               if (navIn.accuracy > 6144)
+               {
+                  bdsD2Nav->uraIndex = 15;
+               }
+               else
+               {
+                  bdsD2Nav->uraIndex = accuracy2ura(navIn.accuracy);
+               }
                bdsD2Nav->sow = BDSWeekSecond(bdsD2Nav->xmitTime).sow;
                bdsD2Nav->tgd1 = navIn.Tgd;
                bdsD2Nav->tgd2 = navIn.Tgd2;
@@ -506,7 +514,14 @@ namespace gnsstk
                bdsD1Nav->aodc = navIn.IODC;
                bdsD1Nav->aode = navIn.IODE;
                   // Table 5-4 of ICD-B1I-v3.0 is the same as what GPS uses
-               bdsD1Nav->uraIndex = accuracy2ura(navIn.accuracy);
+               if (navIn.accuracy > 6144)
+               {
+                  bdsD1Nav->uraIndex = 15;
+               }
+               else
+               {
+                  bdsD1Nav->uraIndex = accuracy2ura(navIn.accuracy);
+               }
                bdsD1Nav->xmit2 = bdsD1Nav->xmitTime + bdsD1Nav->msgLenSec;
                bdsD1Nav->xmit3 = bdsD1Nav->xmit2 + bdsD1Nav->msgLenSec;
                bdsD1Nav->sow = BDSWeekSecond(bdsD1Nav->xmitTime).sow;
@@ -634,75 +649,16 @@ namespace gnsstk
             healthOut.push_back(health);
             break;
          case SatelliteSystem::Galileo:
-               // construct three health objects, one for each signal
-               // in the RINEX record.
-               // E1-B first
-               /** @todo This probably should be split to produce
-                * I/NAV health when the data source is I/NAV and F/NAV
-                * health when the data source is F/NAV, and include
-                * only the health status for those codes.  The Galileo
-                * ephemeris doesn't include health status for the
-                * "other" nav code. */
-            health = std::make_shared<GalINavHealth>();
-            galNav = dynamic_cast<GalINavHealth*>(health.get());
-               // NavData
-            fillNavData(navIn, health);
-               // GalINavHealth
-               // start with original health bits from RINEX, decode and shift.
-            healthBits = navIn.health;
-            galNav->dataValidityStatus = static_cast<GalDataValid>(
-               healthBits & 0x01);
-            healthBits >>= 1;
-            galNav->sigHealthStatus = static_cast<GalHealthStatus>(
-               navIn.health & 0x3);
-            healthBits >>= 2;
-            galNav->signal.obs.band = CarrierBand::L1;
-            galNav->signal.obs.code = TrackingCode::E1B;
-            healthOut.push_back(health);
-               // Now decode E5a
-            health = std::make_shared<GalINavHealth>();
-            galNav = dynamic_cast<GalINavHealth*>(health.get());
-               // NavData
-            fillNavData(navIn, health);
-               // GalINavHealth
-            galNav->dataValidityStatus = static_cast<GalDataValid>(
-               healthBits & 0x01);
-            healthBits >>= 1;
-            galNav->sigHealthStatus = static_cast<GalHealthStatus>(
-               navIn.health & 0x3);
-            healthBits >>= 2;
-            galNav->signal.obs.band = CarrierBand::L5;
-            galNav->signal.obs.code = TrackingCode::E5aI;
-            if (navIn.datasources & 0x0100)
-            {
-                  // The current implementation of Rinex3NavData
-                  // doesn't do detailed conversion from accuracy to
-                  // SISA index.
-               galNav->sisaIndex = decodeSISA(navIn.accuracy);
-            }
-            healthOut.push_back(health);
-               // Finally, decode E5b
-            health = std::make_shared<GalINavHealth>();
-            galNav = dynamic_cast<GalINavHealth*>(health.get());
-               // NavData
-            fillNavData(navIn, health);
-               // GalINavHealth
-            galNav->dataValidityStatus = static_cast<GalDataValid>(
-               healthBits & 0x01);
-            healthBits >>= 1;
-            galNav->sigHealthStatus = static_cast<GalHealthStatus>(
-               navIn.health & 0x3);
-            healthBits >>= 2;
-            galNav->signal.obs.band = CarrierBand::L5;
-            galNav->signal.obs.code = TrackingCode::E5bI;
-            if (navIn.datasources & 0x0200)
-            {
-                  // The current implementation of Rinex3NavData
-                  // doesn't do detailed conversion from accuracy to
-                  // SISA index.
-               galNav->sisaIndex = decodeSISA(navIn.accuracy);
-            }
-            healthOut.push_back(health);
+            DEBUGTRACE("Galileo health conversion, health=" << navIn.health);
+            DEBUGTRACE("E1B DVS=" << (navIn.health & 0x01));
+            DEBUGTRACE("E1B HS =" << ((navIn.health >> 1) & 0x03));
+            DEBUGTRACE("E5a DVS=" << ((navIn.health >> 3) & 0x01));
+            DEBUGTRACE("E5a HS =" << ((navIn.health >> 4) & 0x03));
+            DEBUGTRACE("E5b DVS=" << ((navIn.health >> 6) & 0x01));
+            DEBUGTRACE("E5b HS =" << ((navIn.health >> 7) & 0x03));
+            convertToHealthE1B(navIn, healthOut);
+            convertToHealthE5a(navIn, healthOut);
+            convertToHealthE5b(navIn, healthOut);
             break;
          case SatelliteSystem::BeiDou:
             if (isBeiDouGEO(navIn.sat))
@@ -743,6 +699,111 @@ namespace gnsstk
             break;
       }
       return rv;
+   }
+
+
+   void RinexNavDataFactory ::
+   convertToHealthE1B(const Rinex3NavData& navIn,
+                      NavDataPtrList& healthOut)
+   {
+         // Make an I/NAV health for E1B if it's selected as a data
+         // source, or if neither of the I/NAV signals are selected as
+         // a data source (i.e. in the case where the ephemeris
+         // originated from F/NAV but we still have the I/NAV signal
+         // health info).
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("E1B=" << (navIn.datasources & 0x01)
+                 << "  E5a=" << (navIn.datasources & 0x02)
+                 << "  E5b=" << (navIn.datasources & 0x04));
+      if ((navIn.datasources & 0x01) ||
+          ((navIn.datasources & 0x04) == 0))
+      {
+         NavDataPtr health = std::make_shared<GalINavHealth>();
+         GalINavHealth *galNav = dynamic_cast<GalINavHealth*>(health.get());
+            // NavData
+         fillNavData(navIn, health);
+            // GalINavHealth
+            // start with original health bits from RINEX, decode and shift.
+         galNav->dataValidityStatus = static_cast<GalDataValid>(
+            navIn.health & 0x01);
+         galNav->sigHealthStatus = static_cast<GalHealthStatus>(
+            (navIn.health >> 1) & 0x03);
+         galNav->signal.obs.band = CarrierBand::L1;
+         galNav->signal.obs.code = TrackingCode::E1B;
+         galNav->signal.nav = NavType::GalINAV;
+            /** @note the RINEX 3.04 spec has bits 8-9 of data sources
+             * to indicate whether SISA etc. are for E5a or E5b.
+             * There's no mention of E1B. */
+         DEBUGTRACE("added E1B health");
+         healthOut.push_back(health);
+      }
+   }
+
+
+   void RinexNavDataFactory ::
+   convertToHealthE5a(const Rinex3NavData& navIn,
+                      NavDataPtrList& healthOut)
+   {
+      DEBUGTRACE_FUNCTION();
+         // Always output F/NAV health.
+      NavDataPtr health = std::make_shared<GalFNavHealth>();
+      GalFNavHealth *galNav = dynamic_cast<GalFNavHealth*>(health.get());
+         // NavData
+      fillNavData(navIn, health);
+         // GalFNavHealth
+         // start with original health bits from RINEX, decode and shift.
+      galNav->dataValidityStatus = static_cast<GalDataValid>(
+         (navIn.health >> 3) & 0x01);
+      galNav->sigHealthStatus = static_cast<GalHealthStatus>(
+         (navIn.health >> 4) & 0x03);
+      galNav->signal.obs.band = CarrierBand::L5;
+      galNav->signal.obs.code = TrackingCode::E5aI;
+      galNav->signal.nav = NavType::GalFNAV;
+         // check if SISA (accuracy) is for E5a
+      if (navIn.datasources & 0x0100)
+      {
+            // The current implementation of Rinex3NavData
+            // doesn't do detailed conversion from accuracy to
+            // SISA index.
+         galNav->sisaIndex = decodeSISA(navIn.accuracy);
+      }
+      DEBUGTRACE("signal=" << health->signal);
+      DEBUGTRACE("added E5a health");
+      healthOut.push_back(health);
+   }
+
+
+   void RinexNavDataFactory ::
+   convertToHealthE5b(const Rinex3NavData& navIn,
+                      NavDataPtrList& healthOut)
+   {
+      DEBUGTRACE_FUNCTION();
+      if (navIn.datasources & 0x04)
+      {
+         NavDataPtr health = std::make_shared<GalINavHealth>();
+         GalINavHealth *galNav = dynamic_cast<GalINavHealth*>(health.get());
+            // NavData
+         fillNavData(navIn, health);
+            // GalINavHealth
+            // start with original health bits from RINEX, decode and shift.
+         galNav->dataValidityStatus = static_cast<GalDataValid>(
+            (navIn.health >> 6) & 0x01);
+         galNav->sigHealthStatus = static_cast<GalHealthStatus>(
+            (navIn.health >> 7) & 0x03);
+         galNav->signal.obs.band = CarrierBand::L5;
+         galNav->signal.obs.code = TrackingCode::E5bI;
+         galNav->signal.nav = NavType::GalINAV;
+            // check if SISA (accuracy) is for E5b
+         if (navIn.datasources & 0x0200)
+         {
+               // The current implementation of Rinex3NavData
+               // doesn't do detailed conversion from accuracy to
+               // SISA index.
+            galNav->sisaIndex = decodeSISA(navIn.accuracy);
+         }
+         DEBUGTRACE("added E5b health");
+         healthOut.push_back(health);
+      }
    }
 
 
@@ -1250,5 +1311,35 @@ namespace gnsstk
       if (accuracy <= 6)
          return (uint8_t)((100+(accuracy-2)/0.16)+0.5);
       return 255;
+   }
+
+
+   double RinexNavDataFactory ::
+   encodeSISA(uint8_t sisa)
+   {
+         // Implementation of Galileo-OS-SIS-ICD section 5.1.11
+         // (Signal-In-Space Accuracy (SISA))
+         // accuracy = -1 (or less than zero anyway)
+      if (sisa == 255)
+      {
+         return -1;
+      }
+      else if (sisa < 50)
+      {
+         return sisa / 100.0;
+      }
+      else if (sisa < 75)
+      {
+         return ((sisa-50)*0.02) + 0.5;
+      }
+      else if (sisa < 100)
+      {
+         return ((sisa-75)*0.04) + 1.0;
+      }
+      else if (sisa < 126)
+      {
+         return ((sisa-100)*0.16) + 2.0;
+      }
+      return -1;
    }
 }
