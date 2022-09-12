@@ -94,6 +94,7 @@ gnsstk::Xvt getSvXvt(const gnsstk::SatID& sat_id, const gnsstk::CommonTime& time
         NavLibrary& ephemeris);
 
 /// Calculate the raw range at RECEIVE time per RECEIVER clock.
+/// @see CorrectedEphemerisRange::ComputeAtReceiveTime()
 /// @param rx_loc The location of the receiver.
 /// @param sat_id Identifier for the satellite
 /// @param time The nominal receive time.
@@ -105,6 +106,7 @@ double RawRange1(const gnsstk::Position& rx_loc, const gnsstk::SatID& sat_id,
         NavLibrary& ephemeris, gnsstk::Xvt& sv_xvt);
 
 /// Calculate the raw range at TRANSMIT time per the RECEIVER clock.
+/// @see CorrectedEphemerisRange::ComputeAtTransmitTime(const CommonTime&, const double&, const Position&, const SatID, NavLibrary&, NavSearchOrder, SVHealth, NavValidityType)
 /// @param pseudorange Pseudorange in meters to seed the calculation.
 /// @param rx_loc The location of the receiver.
 /// @param sat_id Identifier for the satellite
@@ -117,6 +119,7 @@ double RawRange2(double pseudorange, const gnsstk::Position& rx_loc,
         NavLibrary& ephemeris, gnsstk::Xvt& sv_xvt);
 
 /// Calculate the raw range at TRANSMIT time per the SATELLITE clock
+/// @see CorrectedEphemerisRange::ComputeAtTransmitSvTime()
 /// @param pseudorange Pseudorange in meters to seed the calculation.
 /// @param rx_loc The location of the receiver.
 /// @param sat_id Identifier for the satellite
@@ -130,6 +133,7 @@ double RawRange3(double pseudorange, const gnsstk::Position& rx_loc,
 
 /// Calculate the raw range at TRANSMIT time per RECEIVER clock, without
 /// seeding the pseudorange.
+/// @see CorrectedEphemerisRange::ComputeAtTransmitTime(const CommonTime& trNom, const Position&, const SatID, NavLibrary&, NavSearchOrder, SVHealth, NavValidityType)
 /// @param rx_loc The location of the receiver.
 /// @param sat_id Identifier for the satellite
 /// @param time The nominal receive time.
