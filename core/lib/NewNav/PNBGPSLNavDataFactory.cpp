@@ -45,307 +45,10 @@
 #include "GPSLNavISC.hpp"
 #include "TimeCorrection.hpp"
 #include "EngNav.hpp"
+#include "GPSLBits.hpp"
 
 using namespace std;
-
-/** Start bits, bit counts and scale factor (*n for integer
- * quantities, *2^n for floating point quantities) for fields that
- * apply to all messages. */
-enum FullBitInfo
-{
-      // every subframe has a preamble and tlm so no subframe index here.
-   fsbPre = 0, ///< Preamble start bit
-   fnbPre = 8, ///< Preamble number of bits
-   fscPre = 1, ///< Preamble scale factor
-
-   fsbTLM = fsbPre+fnbPre,  ///< Telemetry Message start bit
-   fnbTLM = 14, ///< Telemetry Message number of bits
-   fscTLM = 1,  ///< Telemetry Message scale factor
-
-   fsbISF = fsbTLM+fnbTLM, ///< Integrity Status Flag bit
-   fnbISF = 1,             ///< Integrity Status Flag number of bits
-   fscISF = 1,             ///< Integrity Status Flag scale factor
-
-   fsbAlert = 47, ///< Alert flag start bit
-   fnbAlert = 1,  ///< Alert flag number of bits
-   fscAlert = 1,  ///< Alert flag scale factor
-
-   fsbAS = 48, ///< Anti-spoof flag start bit
-   fnbAS = 1,  ///< Anti-spoof flag number of bits
-   fscAS = 1,  ///< Anti-spoof flag scale factor
-};
-
-// Miscellaneous constants.  Using enums instead of constants because it
-// doesn't use any memory that way.
-enum MiscConst
-{
-   dataIDGPSonQZSS = 0, ///< Neither GPS nor QZSS use this any longer.
-   dataIDGPS = 1,       ///< Standard GPS data ID.
-   dataIDQZSS = 3,      ///< QZSS almanacs for QZSS satellites.
-};
-
-// This enum is only used here and it's being used to avoid confusion
-// on vector indices.  Using enums instead of constants because it
-// doesn't use any memory that way.  Also not using strongly typed
-// enums because we actually want these values to be implicitly cast
-// to integer values.
-enum SFIndex
-{
-   sf1 = 0,
-   sf2 = 1,
-   sf3 = 2
-};
-
-/** Subframe index, start bits, bit counts and scale factor (*n for
- * integer quantities, *2^n for floating point quantities) for each of
- * the ephemeris fields.
- * Bit positions/sizes from IS-GPS-200 Figure 20-1, sheet 1-3.
- * Scale factors taken from Tables 20-I and 20-III.
- */
-enum EphBitInfo
-{
-   esiWN = sf1, ///< WN subframe index
-   esbWN = 60,  ///< WN start bit
-   enbWN = 10,  ///< WN number of bits
-   escWN = 1,   ///< WN scale factor
-
-   esiL2 = sf1, ///< L2 codes subframe index
-   esbL2 = 70,  ///< L2 codes start bit
-   enbL2 = 2,   ///< L2 codes number of bits
-   escL2 = 1,   ///< L2 codes scale factor
-
-   esiURA = sf1, ///< URA index subframe index
-   esbURA = 72,  ///< URA index start bit
-   enbURA = 4,   ///< URA index number of bits
-   escURA = 1,   ///< URA index scale factor
-
-   esiHea = sf1, ///< SV health subframe index
-   esbHea = 76,  ///< SV health start bit
-   enbHea = 6,   ///< SV health number of bits
-   escHea = 1,   ///< SV health scale factor
-
-   esiIODC  = sf1, ///< IODC subframe index
-   esbIODCm = 82,  ///< IODC MSBs start bit
-   enbIODCm = 2,   ///< IODC MSBs number of bits
-   escIODC = 1,    ///< IODC scale factor
-
-   esiL2P = sf1, ///< L2 P data flag subframe index
-   esbL2P = 90,  ///< L2 P data flag start bit
-   enbL2P = 1,   ///< L2 P data flag number of bits
-   escL2P = 1,   ///< L2 P data flag scale factor
-
-   esiTGD = sf1, ///< Tgd subframe index
-   esbTGD = 196, ///< Tgd start bit
-   enbTGD = 8,   ///< Tgd number of bits
-   escTGD = -31, ///< Tgd scale factor
-
-   esbIODCl = 210, ///< IODC LSBs start bit
-   enbIODCl = 8,   ///< IODC LSBs number of bits
-
-   esitoc = sf1, ///< toc subframe index
-   esbtoc = 218, ///< toc start bit
-   enbtoc = 16,  ///< toc number of bits
-   esctoc = 4,   ///< toc scale factor
-
-   esiaf2 = sf1, ///< af2 subframe index
-   esbaf2 = 240, ///< af2 start bit
-   enbaf2 = 8,   ///< af2 number of bits
-   escaf2 = -55, ///< af2 scale factor
-
-   esiaf1 = sf1, ///< af1 subframe index
-   esbaf1 = 248, ///< af1 start bit
-   enbaf1 = 16,  ///< af1 number of bits
-   escaf1 = -43, ///< af1 scale factor
-
-   esiaf0 = sf1, ///< af0 subframe index
-   esbaf0 = 270, ///< af0 start bit
-   enbaf0 = 22,  ///< af0 number of bits
-   escaf0 = -31, ///< af0 scale factor
-
-   esiIODE2 = sf2, ///< IODE2 subframe index
-   esbIODE2 = 60,  ///< IODE2 start bit
-   enbIODE2 = 8,   ///< IODE2 number of bits
-   escIODE2 = 1,   ///< IODE2 scale factor
-
-   esiCrs = sf2, ///< Crs subframe index
-   esbCrs = 68,  ///< Crs start bit
-   enbCrs = 16,  ///< Crs number of bits
-   escCrs = -5,  ///< Crs scale factor
-
-   esidn = sf2, ///< Delta n subframe index
-   esbdn = 90,  ///< Delta n start bit
-   enbdn = 16,  ///< Delta n number of bits
-   escdn = -43, ///< Delta n scale factor
-
-   esiM0  = sf2, ///< M0 subframe index
-   esbM0m = 106, ///< M0 MSBs start bit
-   enbM0m = 8,   ///< M0 MSBs number of bits
-   escM0  = -31, ///< M0 scale factor
-
-   esbM0l = 120, ///< M0 LSBs start bit
-   enbM0l = 24,  ///< M0 LSBs number of bits
-
-   esiCuc = sf2, ///< Cuc subframe index
-   esbCuc = 150, ///< Cuc start bit
-   enbCuc = 16,  ///< Cuc number of bits
-   escCuc = -29, ///< Cuc scale factor
-
-   esiEcc  = sf2, ///< Ecc subframe index
-   esbEccm = 166, ///< Ecc MSBs start bit
-   enbEccm = 8,   ///< Ecc MSBs number of bits
-   escEcc  = -33, ///< Ecc scale factor
-
-   esbEccl = 180, ///< Ecc LSBs start bit
-   enbEccl = 24,  ///< Ecc LSBs number of bits
-
-   esiCus = sf2, ///< Cus subframe index
-   esbCus = 210, ///< Cus start bit
-   enbCus = 16,  ///< Cus number of bits
-   escCus = -29, ///< Cus scale factor
-
-   esiAhalf  = sf2, ///< Ahalf subframe index
-   esbAhalfm = 226, ///< Ahalf MSBs start bit
-   enbAhalfm = 8,   ///< Ahalf MSBs number of bits
-   escAhalf  = -19, ///< Ahalf scale factor
-
-   esbAhalfl = 240, ///< Ahalf LSBs start bit
-   enbAhalfl = 24,  ///< Ahalf LSBs number of bits
-
-   esitoe = sf2, ///< toe subframe index
-   esbtoe = 270, ///< toe start bit
-   enbtoe = 16,  ///< toe number of bits
-   esctoe = 4,   ///< toe scale factor
-
-   esiFitInt = sf2, ///< Fit interval flag subframe index
-   esbFitInt = 286, ///< Fit interval flag start bit
-   enbFitInt = 1,   ///< Fit interval flag number of bits
-   escFitInt = 1,   ///< Fit interval flag scale factor
-
-   esiAODO = sf2, ///< AODO subframe index
-   esbAODO = 287, ///< AODO start bit
-   enbAODO = 5,   ///< AODO number of bits
-   escAODO = 900, ///< AODO scale factor
-
-   esiCic = sf3, ///< Cic subframe index
-   esbCic = 60,  ///< Cic start bit
-   enbCic = 16,  ///< Cic number of bits
-   escCic = -29, ///< Cic scale factor
-
-   esiOMEGA0  = sf3, ///< OMEGA0 subframe index
-   esbOMEGA0m = 76,  ///< OMEGA0 MSBs start bit
-   enbOMEGA0m = 8,   ///< OMEGA0 MSBs number of bits
-   escOMEGA0  = -31, ///< OMEGA0 scale factor
-
-   esbOMEGA0l = 90,  ///< OMEGA0 LSBs start bit
-   enbOMEGA0l = 24,  ///< OMEGA0 LSBs number of bits
-
-   esiCis = sf3, ///< Cis subframe index
-   esbCis = 120, ///< Cis start bit
-   enbCis = 16,  ///< Cis number of bits
-   escCis = -29, ///< Cis scale factor
-
-   esii0  = sf3, ///< i0 subframe index
-   esbi0m = 136, ///< i0 MSBs start bit
-   enbi0m = 8,   ///< i0 MSBs number of bits
-   esci0  = -31, ///< i0 scale factor
-
-   esbi0l = 150, ///< i0 LSBs start bit
-   enbi0l = 24,  ///< i0 LSBs number of bits
-
-   esiCrc = sf3, ///< Crc subframe index
-   esbCrc = 180, ///< Crc start bit
-   enbCrc = 16,  ///< Crc number of bits
-   escCrc = -5,  ///< Crc scale factor
-
-   esiw  = sf3, ///< w subframe index
-   esbwm = 196, ///< w MSBs start bit
-   enbwm = 8,   ///< w MSBs number of bits
-   escw  = -31, ///< w scale factor
-
-   esbwl = 210, ///< w LSBs start bit
-   enbwl = 24,  ///< w LSBs number of bits
-
-   esiOMEGAdot = sf3, ///< OMEGAdot subframe index
-   esbOMEGAdot = 240, ///< OMEGAdot start bit
-   enbOMEGAdot = 24,  ///< OMEGAdot number of bits
-   escOMEGAdot = -43, ///< OMEGAdot scale factor
-
-   esiIODE3 = sf3, ///< IODE3 subframe index
-   esbIODE3 = 270, ///< IODE3 start bit
-   enbIODE3 = 8,   ///< IODE3 number of bits
-   escIODE3 = 1,   ///< IODE3 scale factor
-
-   esiidot = sf3, ///< idot subframe index
-   esbidot = 278, ///< idot start bit
-   enbidot = 14,  ///< idot number of bits
-   escidot = -43, ///< idot scale factor
-};
-
-/** Subframe index, start bits, bit counts and scale factor (*n for
- * integer quantities, *2^n for floating point quantities) for each of
- * the almanac fields.
- * Bit positions/sizes from IS-GPS-200 Figure 20-1, sheet 1-3.
- * Scale factors taken from Tables 20-I and 20-III.
- * @todo Add enumerations for almanac data bits.
- */
-enum AlmBitInfo
-{
-      // orbital elements, SVID 1-32 (sf5 p1-24, sf4, p 2,3,4,5,7,8,9,10)
-
-   asbDataID = 60,
-   anbDataID = 2,
-   ascDataID = 1,
-
-   asbPageID = asbDataID + anbDataID,
-   anbPageID = 6,
-   ascPageID = 1,
-
-      // ionospheric parameters (sf4 p18)
-
-   asbAlpha0 = asbPageID + anbPageID,
-   anbAlpha0 = 8,
-   ascAlpha0 = -30,
-
-   asbAlpha1 = asbAlpha0 + anbAlpha0,
-   anbAlpha1 = 8,
-   ascAlpha1 = -27,
-
-   asbParity3 = asbAlpha1 + anbAlpha1,
-   anbParity3 = 6,
-   ascParity3 = 1,
-
-   asbAlpha2 = asbParity3 + anbParity3,
-   anbAlpha2 = 8,
-   ascAlpha2 = -24,
-
-   asbAlpha3 = asbAlpha2 + anbAlpha2,
-   anbAlpha3 = 8,
-   ascAlpha3 = -24,
-
-   asbBeta0 = asbAlpha3 + anbAlpha3,
-   anbBeta0 = 8,
-   ascBeta0 = 11,
-
-   asbParity4 = asbBeta0 + anbBeta0,
-   anbParity4 = 6,
-   ascParity4 = 1,
-
-   asbBeta1 = asbParity4 + anbParity4,
-   anbBeta1 = 8,
-   ascBeta1 = 14,
-
-   asbBeta2 = asbBeta1 + anbBeta1,
-   anbBeta2 = 8,
-   ascBeta2 = 16,
-
-   asbBeta3 = asbBeta2 + anbBeta2,
-   anbBeta3 = 8,
-   ascBeta3 = 16,
-
-   asbParity5 = asbBeta3 + anbBeta3,
-   anbParity5 = 6,
-   ascParity5 = 1,
-};
+using namespace gnsstk::gpslnav;
 
 namespace gnsstk
 {
@@ -362,20 +65,7 @@ namespace gnsstk
       bool useQZSS = false;
       try
       {
-            /*
-         cerr << "preamble:  " << hex << navIn->asUnsignedLong(0,8,1) << dec
-              << endl
-              << "  tlm msg: " << hex << navIn->asUnsignedLong(8,14,1) << dec
-              << endl
-              << "  integ:   " << navIn->asUnsignedLong(22,1,1) << endl
-              << "  reserved:" << navIn->asUnsignedLong(23,1,1) << endl
-              << "  parity:  " << hex << navIn->asUnsignedLong(24,6,1) << endl
-              << "  tow:     " << navIn->asUnsignedLong(30,17,1) << endl
-              << "  alert:   " << navIn->asUnsignedLong(47,1,1) << endl
-              << "  A/S:     " << navIn->asUnsignedLong(48,1,1) << endl
-              << "  sfid:    " << navIn->asUnsignedLong(49,3,1) << endl;
-            */
-         unsigned long sfid = navIn->asUnsignedLong(49,3,1);
+         unsigned long sfid = navIn->asUnsignedLong(fsbSFID,fnbSFID,fscSFID);
          unsigned long svid = 0;
          unsigned dataID = -1;
          bool checkParity = false, expParity = false;
@@ -698,7 +388,7 @@ namespace gnsstk
          p1->timeStamp = navIn->getTransmitTime();
          p1->signal = NavMessageID(sat, NavMessageType::Health);
          dynamic_cast<GPSLNavHealth*>(p1.get())->svHealth =
-            navIn->asUnsignedLong(136,8,1);
+            navIn->asUnsignedLong(asbHea,anbHea,ascHea);
          // cerr << "add LNAV alm health" << endl;
          navOut.push_back(p1);
       }
@@ -729,12 +419,12 @@ namespace gnsstk
       alm->alert = navIn->asBool(fsbAlert);
       alm->asFlag = navIn->asBool(fsbAS);
       alm->xmitTime = navIn->getTransmitTime();
-      alm->ecc = navIn->asUnsignedDouble(68,16,-21);
-      alm->toa = navIn->asUnsignedDouble(90,8,12);
+      alm->ecc = navIn->asUnsignedDouble(asbEcc,anbEcc,ascEcc);
+      alm->toa = navIn->asUnsignedDouble(asbtoa,anbtoa,asctoa);
       GPSWeekSecond ws(alm->xmitTime);
       // cerr << "page " << prn << " WNa = ??  toa = " << alm->toa
       //      << "  WNx = " << (ws.week & 0x0ff) << "  tox = " << ws.sow << endl;
-      alm->deltai = navIn->asDoubleSemiCircles(98,16,-19);
+      alm->deltai = navIn->asDoubleSemiCircles(asbdeltai,anbdeltai,ascdeltai);
          /** @todo determine if this offset applies only when the
           * subject satellite is QZSS or if it is used whenever the
           * transmitting satellite is QZSS. */
@@ -748,20 +438,21 @@ namespace gnsstk
       {
          alm->i0 = GPSLNavData::refioffsetGPS + alm->deltai;
       }
-      alm->OMEGAdot = navIn->asDoubleSemiCircles(120,16,-38);
-      alm->healthBits = navIn->asUnsignedLong(136,8,1);
+      alm->OMEGAdot = navIn->asDoubleSemiCircles(asbOMEGAdot,anbOMEGAdot,
+                                                 ascOMEGAdot);
+      alm->healthBits = navIn->asUnsignedLong(asbHea,anbHea,ascHea);
       alm->health = (alm->healthBits == 0 ? SVHealth::Healthy :
                      SVHealth::Unhealthy);
-      alm->Ahalf = navIn->asUnsignedDouble(150,24,-11);
+      alm->Ahalf = navIn->asUnsignedDouble(asbAhalf,anbAhalf,ascAhalf);
       alm->A = alm->Ahalf * alm->Ahalf;
-      alm->OMEGA0 = navIn->asDoubleSemiCircles(180,24,-23);
-      alm->w = navIn->asDoubleSemiCircles(210,24,-23);
-      alm->M0 = navIn->asDoubleSemiCircles(240,24,-23);
-      const unsigned af0start[] = {270,289};
-      const unsigned af0num[] = {8,3};
+      alm->OMEGA0 = navIn->asDoubleSemiCircles(asbOMEGA0,anbOMEGA0,ascOMEGA0);
+      alm->w = navIn->asDoubleSemiCircles(asbw,anbw,ascw);
+      alm->M0 = navIn->asDoubleSemiCircles(asbM0,anbM0,ascM0);
+      const unsigned af0start[] = {asbaf0m,asbaf0l};
+      const unsigned af0num[] = {anbaf0m,anbaf0l};
          // 2 is the size of the af0start/af0num arrays
-      alm->af0 = navIn->asSignedDouble(af0start,af0num,2,-20);
-      alm->af1 = navIn->asSignedDouble(278,11,-38);
+      alm->af0 = navIn->asSignedDouble(af0start,af0num,2,ascaf0);
+      alm->af1 = navIn->asSignedDouble(asbaf1,anbaf1,ascaf1);
          // If we have a wna for this transmitting PRN, use it to set
          // the toa (identified as Toe/Toc in OrbitDataKepler).
          // Otherwise, stash the data until we do have a wna.
@@ -799,8 +490,8 @@ namespace gnsstk
             // Set the fullWNa now that we have something to go on,
             // but only if we're processing almanac data, which is the
             // only situation where it's used.
-         double toa = navIn->asUnsignedDouble(68,8,12);
-         unsigned shortWNa = navIn->asUnsignedLong(76, 8, 1);
+         double toa = navIn->asUnsignedDouble(asbtoa51,anbtoa51,asctoa51);
+         unsigned shortWNa = navIn->asUnsignedLong(asbWNa51,anbWNa51,ascWNa51);
          GPSWeekSecond ws(navIn->getTransmitTime());
          long refWeek = ws.week;
          unsigned fullWNa = timeAdjust8BitWeekRollover(shortWNa, refWeek);
@@ -1029,18 +720,18 @@ namespace gnsstk
          /** @note while some of the values are stored as doubles,
           * they may be extracted as long (e.g. deltatLS) because
           * there is no scaling for the encoded value. */
-      const unsigned a0start[] = { 180,210 };
-      const unsigned a0num[] = { 24,8 };
-      to->deltatLS = navIn->asLong(240,8,1);
+      const unsigned a0start[] = { asbA0m, asbA0l };
+      const unsigned a0num[] = { anbA0m, anbA0l };
+      to->deltatLS = navIn->asLong(asbDeltatLS,anbDeltatLS,ascDeltatLS);
          // 2 is the size of the start/num arrays, while -30 is the
          // scale factor i.e. x*2^-30
-      to->a0 = navIn->asSignedDouble(a0start,a0num,2,-30);
-      to->a1 = navIn->asSignedDouble(150,24,-50);
-      to->tot = navIn->asUnsignedDouble(218,8,12);
-      to->wnot = navIn->asUnsignedLong(226,8,1);
-      to->wnLSF = navIn->asUnsignedLong(248,8,1);
-      to->dn = navIn->asUnsignedLong(256,8,1);
-      to->deltatLSF = navIn->asLong(270,8,1);
+      to->a0 = navIn->asSignedDouble(a0start,a0num,2,ascA0);
+      to->a1 = navIn->asSignedDouble(asbA1,anbA1,ascA1);
+      to->tot = navIn->asUnsignedDouble(asbtot,anbtot,asctot);
+      to->wnot = navIn->asUnsignedLong(asbWNt,anbWNt,ascWNt);
+      to->wnLSF = navIn->asUnsignedLong(asbWNLSF,anbWNLSF,ascWNLSF);
+      to->dn = navIn->asUnsignedLong(asbDN,anbDN,ascDN);
+      to->deltatLSF = navIn->asLong(asbDeltatLSF,anbDeltatLSF,ascDeltatLSF);
          // adjust week numbers to full week
       GPSWeekSecond ws(p0->timeStamp);
       long refWeek = ws.week;
