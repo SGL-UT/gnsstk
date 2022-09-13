@@ -145,3 +145,64 @@ navINAVGalWT10->addUnsignedLong(0x8FFFC3FC,32,1);
 navINAVGalWT10->addUnsignedLong(0x9FFC6436,32,1);
 navINAVGalWT10->trimsize();
 
+
+
+oidINAVWR = gnsstk::ObsID(gnsstk::ObservationType::NavMsg,
+                          gnsstk::CarrierBand::E5b,
+                          gnsstk::TrackingCode::E5bI);
+ephINAVWRsid = gnsstk::SatID(1,gnsstk::SatelliteSystem::Galileo);
+
+navINAVWRWT1ct = gnsstk::GALWeekSecond(1196, 0);
+navINAVWRWT1 = std::make_shared<gnsstk::PackedNavBits>(ephINAVWRsid,
+                                                       oidINAVWR,
+                                                       navINAVWRWT1ct);
+navINAVWRWT1->setNavID(gnsstk::NavType::GalINAV);
+navINAVWRWT1->addUnsignedLong(0x046E9D31,32,1);
+navINAVWRWT1->addUnsignedLong(0xE1C64A8C,32,1);
+navINAVWRWT1->addUnsignedLong(0x006148DE,32,1);
+navINAVWRWT1->addUnsignedLong(0xA8139DEF,32,1);
+navINAVWRWT1->trimsize();
+
+navINAVWRWT2ct = gnsstk::GALWeekSecond(1196, 20);
+navINAVWRWT2 = std::make_shared<gnsstk::PackedNavBits>(ephINAVWRsid,
+                                                       oidINAVWR,
+                                                       navINAVWRWT2ct);
+navINAVWRWT2->setNavID(gnsstk::NavType::GalINAV);
+navINAVWRWT2->addUnsignedLong(0x086EE7F2,32,1);
+navINAVWRWT2->addUnsignedLong(0xC6DB27A4,32,1);
+navINAVWRWT2->addUnsignedLong(0x594ABE59,32,1);
+navINAVWRWT2->addUnsignedLong(0x5812EE89,32,1);
+navINAVWRWT2->trimsize();
+
+navINAVWRWT3ct = gnsstk::GALWeekSecond(1196, 2);
+navINAVWRWT3 = std::make_shared<gnsstk::PackedNavBits>(ephINAVWRsid,
+                                                       oidINAVWR,
+                                                       navINAVWRWT3ct);
+navINAVWRWT3->setNavID(gnsstk::NavType::GalINAV);
+navINAVWRWT3->addUnsignedLong(0x0C6EFFC6,32,1);
+navINAVWRWT3->addUnsignedLong(0xBA1D070A,32,1);
+navINAVWRWT3->addUnsignedLong(0x7116AD0E,32,1);
+navINAVWRWT3->addUnsignedLong(0x470D416B,32,1);
+navINAVWRWT3->trimsize();
+
+navINAVWRWT4ct = gnsstk::GALWeekSecond(1196, 22);
+navINAVWRWT4 = std::make_shared<gnsstk::PackedNavBits>(ephINAVWRsid,
+                                                       oidINAVWR,
+                                                       navINAVWRWT4ct);
+navINAVWRWT4->setNavID(gnsstk::NavType::GalINAV);
+navINAVWRWT4->addUnsignedLong(0x106E07FF,32,1);
+navINAVWRWT4->addUnsignedLong(0xABFFFA74,32,1);
+navINAVWRWT4->addUnsignedLong(0xCFEEEE0B,32,1);
+navINAVWRWT4->addUnsignedLong(0x5FFDFC01,32,1);
+navINAVWRWT4->trimsize();
+
+navINAVWRWT5ct = gnsstk::GALWeekSecond(1196, 4);
+navINAVWRWT5 = std::make_shared<gnsstk::PackedNavBits>(ephINAVWRsid,
+                                                       oidINAVWR,
+                                                       navINAVWRWT5ct);
+navINAVWRWT5->setNavID(gnsstk::NavType::GalINAV);
+navINAVWRWT5->addUnsignedLong(0x15238160,32,1);
+navINAVWRWT5->addUnsignedLong(0x2F800280,32,1);
+navINAVWRWT5->addUnsignedLong(0xA0256000,32,1);
+navINAVWRWT5->addUnsignedLong(0x022AAAAA,32,1);
+navINAVWRWT5->trimsize();

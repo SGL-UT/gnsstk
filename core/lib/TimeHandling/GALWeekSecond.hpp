@@ -201,6 +201,30 @@ namespace gnsstk
          return true;
       }
 
+
+         /** This is, unfortunately, a duplication of what's in
+          * GPSWeekSecond.  To make a polymorphic function in the
+          * parent class, WeekSecond, that worked for both GPS and
+          * Galileo would require a change of the API, and I don't
+          * want to do that right now. */
+      GALWeekSecond& weekRolloverAdj(const GALWeekSecond& refTime)
+      {
+         double diff = sow - refTime.sow;
+         if (diff < -HALFWEEK)
+         {
+            week = refTime.week + 1;
+         }
+         else if (diff > HALFWEEK)
+         {
+            week = refTime.week - 1;
+         }
+         else
+         {
+            week = refTime.week;
+         }
+         return *this;
+      }
+
    }; // end class GALWeekSecond
 
       //@}

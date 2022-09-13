@@ -268,8 +268,9 @@ namespace gnsstk
       unsigned wn = ephWord[isiWN]->asUnsignedLong(isbWN,inbWN,iscWN);
       unsigned tow = ephWord[isiTOW]->asUnsignedLong(isbTOW,inbTOW,iscTOW);
       // cerr << "  wn=" << wn << "  tow=" << tow << "  t0e=" << t0e << "  t0c=" << t0c << endl;
-      eph->Toe = GALWeekSecond(wn,t0e);
-      eph->Toc = GALWeekSecond(wn,t0c);
+      GALWeekSecond xmit(wn, tow);
+      eph->Toe = GALWeekSecond(wn,t0e).weekRolloverAdj(xmit);
+      eph->Toc = GALWeekSecond(wn,t0c).weekRolloverAdj(xmit);
          // health is set below
       eph->Cuc = ephWord[esiCuc]->asSignedDouble(esbCuc,enbCuc,escCuc);
       eph->Cus = ephWord[esiCus]->asSignedDouble(esbCus,enbCus,escCus);

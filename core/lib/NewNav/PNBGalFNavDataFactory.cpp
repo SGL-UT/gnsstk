@@ -292,12 +292,14 @@ namespace gnsstk
       unsigned wn_1 = ephPage[esiWN_1]->asUnsignedLong(esbWN_1,enbWN_1,escWN_1);
       unsigned tow_1 = ephPage[esiTOW_1]->asUnsignedLong(esbTOW_1,enbTOW_1,
                                                          escTOW_1);
+      GALWeekSecond xmit1(wn_1, tow_1);
       unsigned wn_3 = ephPage[esiWN_3]->asUnsignedLong(esbWN_3,enbWN_3,escWN_3);
       unsigned tow_3 = ephPage[esiTOW_3]->asUnsignedLong(esbTOW_3,enbTOW_3,
                                                          escTOW_3);
+      GALWeekSecond xmit3(wn_3, tow_3);
       // cerr << "  wn_1=" << wn_1 << "  tow_1=" << tow_1 << "  wn_3=" << wn_3 << "  tow_3=" << tow_3 << "  t0e=" << t0e << "  t0c=" << t0c << endl;
-      eph->Toe = GALWeekSecond(wn_3,t0e);
-      eph->Toc = GALWeekSecond(wn_1,t0c);
+      eph->Toe = GALWeekSecond(wn_3,t0e).weekRolloverAdj(xmit3);
+      eph->Toc = GALWeekSecond(wn_1,t0c).weekRolloverAdj(xmit1);
          // health is set below
       eph->Cuc = ephPage[esiCuc]->asSignedDouble(esbCuc,enbCuc,escCuc);
       eph->Cus = ephPage[esiCus]->asSignedDouble(esbCus,enbCus,escCus);

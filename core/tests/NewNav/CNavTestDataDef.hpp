@@ -287,3 +287,60 @@ msg37CNAVQZSSL5->addUnsignedLong(0x7FD57B7F, 32, 1);
 msg37CNAVQZSSL5->addUnsignedLong(0xA6C010C0, 32, 1);
 msg37CNAVQZSSL5->addUnsignedLong(0xC91, 12, 1);
 msg37CNAVQZSSL5->trimsize();
+
+
+oidCNAVWR = gnsstk::ObsID(gnsstk::ObservationType::NavMsg,
+                          gnsstk::CarrierBand::L2,
+                          gnsstk::TrackingCode::L2CM);
+ephCNAVWRsid = gnsstk::SatID(1, gnsstk::SatelliteSystem::GPS);
+
+msg10CNAVWRct = gnsstk::GPSWeekSecond(2220,0);
+msg10CNAVWR = std::make_shared<gnsstk::PackedNavBits>(ephCNAVWRsid,
+                                                      oidCNAVWR,
+                                                      msg10CNAVWRct);
+msg10CNAVWR->setNavID(gnsstk::NavType::GPSCNAVL2);
+msg10CNAVWR->addUnsignedLong(0x8B04A000, 32, 1);
+msg10CNAVWR->addUnsignedLong(0x1115876F, 32, 1);
+msg10CNAVWR->addUnsignedLong(0x7C090084, 32, 1);
+msg10CNAVWR->addUnsignedLong(0x61DFFD2B, 32, 1);
+msg10CNAVWR->addUnsignedLong(0x02A34000, 32, 1);
+msg10CNAVWR->addUnsignedLong(0xA2D2DFD8, 32, 1);
+msg10CNAVWR->addUnsignedLong(0x43403150, 32, 1);
+msg10CNAVWR->addUnsignedLong(0x61389876, 32, 1);
+msg10CNAVWR->addUnsignedLong(0x91400FC3, 32, 1);
+msg10CNAVWR->addUnsignedLong(0xEED, 12, 1);
+msg10CNAVWR->trimsize();
+
+msg11CNAVWRct = gnsstk::GPSWeekSecond(2220,12);
+msg11CNAVWR = std::make_shared<gnsstk::PackedNavBits>(ephCNAVWRsid,
+                                                      oidCNAVWR,
+                                                      msg11CNAVWRct);
+msg11CNAVWR->setNavID(gnsstk::NavType::GPSCNAVL2);
+msg11CNAVWR->addUnsignedLong(0x8B04B000, 32, 1);
+msg11CNAVWR->addUnsignedLong(0x20091E74, 32, 1);
+msg11CNAVWR->addUnsignedLong(0x619C8A10, 32, 1);
+msg11CNAVWR->addUnsignedLong(0x2D2DC027, 32, 1);
+msg11CNAVWR->addUnsignedLong(0x5F6CE005, 32, 1);
+msg11CNAVWR->addUnsignedLong(0xFFEF5FF7, 32, 1);
+msg11CNAVWR->addUnsignedLong(0x048025BB, 32, 1);
+msg11CNAVWR->addUnsignedLong(0xA01431FF, 32, 1);
+msg11CNAVWR->addUnsignedLong(0x7E13E6A0, 32, 1);
+msg11CNAVWR->addUnsignedLong(0x21E, 12, 1);
+msg11CNAVWR->trimsize();
+
+msg30CNAVWRct = gnsstk::GPSWeekSecond(2220,24);
+msg30CNAVWR = std::make_shared<gnsstk::PackedNavBits>(ephCNAVWRsid,
+                                                      oidCNAVWR,
+                                                      msg30CNAVWRct);
+msg30CNAVWR->setNavID(gnsstk::NavType::GPSCNAVL2);
+msg30CNAVWR->addUnsignedLong(0x8B05E000, 32, 1);
+msg30CNAVWR->addUnsignedLong(0x336F6970, 32, 1);
+msg30CNAVWR->addUnsignedLong(0x2452B819, 32, 1);
+msg30CNAVWR->addUnsignedLong(0xFFBFA800, 32, 1);
+msg30CNAVWR->addUnsignedLong(0x0B0FFA7E, 32, 1);
+msg30CNAVWR->addUnsignedLong(0x7C1D40ED, 32, 1);
+msg30CNAVWR->addUnsignedLong(0x0A03FFFE, 32, 1);
+msg30CNAVWR->addUnsignedLong(0x3108FFF9, 32, 1);
+msg30CNAVWR->addUnsignedLong(0xAB99A5B7, 32, 1);
+msg30CNAVWR->addUnsignedLong(0x529, 12, 1);
+msg30CNAVWR->trimsize();
