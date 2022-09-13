@@ -120,18 +120,17 @@ namespace gnsstk
    {
       const ios::fmtflags oldFlags = s.flags();
       s.setf(ios::scientific, ios::floatfield);
+      const std::string poFmt("TOW :  " + weekFmt +
+                              "  %6.0g  %3a-%1w:%02H:%02M:%02S");
       s << "           PAGE OVERHEAD" << endl
         << endl
-        << "                SOW    DOW:HH:MM:SS      IOD_NAV" << endl
-        << printTime(xmitTime,"Word 1 TOW : %6.0g  %3a-%1w:%02H:%02M:%02S")
-        << setw(13) << iodnav1 << endl
-        << printTime(xmit2,"Word 2 TOW : %6.0g  %3a-%1w:%02H:%02M:%02S")
-        << setw(13) << iodnav2 << endl
-        << printTime(xmit3,"Word 3 TOW : %6.0g  %3a-%1w:%02H:%02M:%02S")
-        << setw(13) << iodnav3 << endl
-        << printTime(xmit4,"Word 4 TOW : %6.0g  %3a-%1w:%02H:%02M:%02S")
-        << setw(13) << iodnav4 << endl
-        << printTime(xmit5,"Word 5 TOW : %6.0g  %3a-%1w:%02H:%02M:%02S")
+        << "              Week(10bt)     SOW    DOW:HH:MM:SS      IOD_NAV"
+        << endl
+        << printTime(xmitTime,"Word 1 "+poFmt) << setw(13) << iodnav1 << endl
+        << printTime(xmit2,"Word 2 "+poFmt) << setw(13) << iodnav2 << endl
+        << printTime(xmit3,"Word 3 "+poFmt) << setw(13) << iodnav3 << endl
+        << printTime(xmit4,"Word 4 "+poFmt) << setw(13) << iodnav4 << endl
+        << printTime(xmit5,"Word 5 "+poFmt)
         << endl << endl
         << "           SV STATUS" << endl
         << endl

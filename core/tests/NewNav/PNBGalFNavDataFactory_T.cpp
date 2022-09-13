@@ -95,6 +95,8 @@ public:
    unsigned processEphTest();
       /// Test processAlm method, and implicitly, processAlmOrb
    unsigned processAlmTest();
+      // week rollover test for decoding ephemerides
+   unsigned processEphWRTest();
 
 #include "GalFNavTestDataDecl.hpp"
 };
@@ -585,6 +587,46 @@ processAlmTest()
 }
 
 
+unsigned PNBGalFNavDataFactory_T :: processEphWRTest()
+{
+   TUDEF("PNBGalFNavDataFactory", "processEph");
+   gnsstk::PNBGalFNavDataFactory uut;
+   gnsstk::CommonTime toeExp = gnsstk::GALWeekSecond(1195,603600.0);
+   gnsstk::CommonTime tocExp = gnsstk::GALWeekSecond(1195,603600.0);
+   gnsstk::CommonTime beginExp = navFNAVWRPT1ct;
+   gnsstk::CommonTime endExp = toeExp + (4.0 * 3600.0);
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GalFNavEph *eph;
+   TUCATCH(uut.setTypeFilter({gnsstk::NavMessageType::Ephemeris}));
+   TUASSERTE(bool, true, uut.addData(navFNAVWRPT1, navOut));
+   TUASSERTE(gnsstk::NavDataPtrList::size_type, 0, navOut.size());
+   TUASSERTE(bool, true, uut.addData(navFNAVWRPT2, navOut));
+   TUASSERTE(gnsstk::NavDataPtrList::size_type, 0, navOut.size());
+   TUASSERTE(bool, true, uut.addData(navFNAVWRPT3, navOut));
+   TUASSERTE(gnsstk::NavDataPtrList::size_type, 0, navOut.size());
+   TUASSERTE(bool, true, uut.addData(navFNAVWRPT4, navOut));
+   TUASSERTE(gnsstk::NavDataPtrList::size_type, 1, navOut.size());
+   if (navOut.size() >= 1)
+   {
+      if ((eph = dynamic_cast<gnsstk::GalFNavEph*>(navOut.begin()->get()))
+          != nullptr)
+      {
+         TUASSERTE(gnsstk::CommonTime, navFNAVWRPT1ct, eph->timeStamp);
+         TUASSERTE(gnsstk::CommonTime, navFNAVWRPT1ct, eph->xmitTime);
+         TUASSERTE(gnsstk::CommonTime, toeExp, eph->Toe);
+         TUASSERTE(gnsstk::CommonTime, tocExp, eph->Toc);
+         TUASSERTE(gnsstk::CommonTime, beginExp, eph->beginFit);
+         TUASSERTE(gnsstk::CommonTime, endExp, eph->endFit);
+         TUASSERTE(gnsstk::CommonTime, navFNAVWRPT2ct, eph->xmit2);
+         TUASSERTE(gnsstk::CommonTime, navFNAVWRPT3ct, eph->xmit3);
+         TUASSERTE(gnsstk::CommonTime, navFNAVWRPT4ct, eph->xmit4);
+      }
+   }
+   TURETURN();
+}
+
+
+
 int main()
 {
    PNBGalFNavDataFactory_T testClass;
@@ -599,6 +641,7 @@ int main()
    errorTotal += testClass.addDataAlmHealthTest();
    errorTotal += testClass.processEphTest();
    errorTotal += testClass.processAlmTest();
+   errorTotal += testClass.processEphWRTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
