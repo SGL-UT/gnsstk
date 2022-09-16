@@ -1409,8 +1409,8 @@ namespace gnsstk
       inline void hexDumpData(std::ostream& s, const std::string& data,
                               unsigned indent, const HexDumpDataConfig& cfg)
       {
-         std::string instr(indent, ' ');
-         hexDumpData(s, data, instr, cfg);
+         std::string tagstr(indent, ' ');
+         hexDumpData(s, data, tagstr, cfg);
       }
 
       inline void hexDumpData(std::ostream& s, const std::string& data,
