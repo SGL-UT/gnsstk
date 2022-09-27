@@ -39,168 +39,197 @@
 #include <iostream>
 #include <string>
 
-#include "gmock/gmock.h"
-
-#include "Exception.hpp"
-#include "XvtStore.hpp"
-#include "CommonTime.hpp"
-#include "Xvt.hpp"
-#include "Triple.hpp"
-#include "SatID.hpp"
-#include "TimeSystem.hpp"
-#include "EphemerisRange.hpp"
+#include "FreqConsts.hpp"
+#include "GNSSconstants.hpp"
+#include "TestUtil.hpp"
 #include "ord.hpp"
+#include "EphemerisRange.hpp"
+#include "NavLibrary.hpp"
+#include "GPSLNavData.hpp"
+#include "ObsID.hpp"
+#include "RinexNavDataFactory.hpp"
 
-#include "OrdMockClasses.hpp"
+using namespace gnsstk::ord;
 
-using gnsstk::CorrectedEphemerisRange;
-using gnsstk::GAMMA_GPS;
-using gnsstk::L1_FREQ_GPS;
-using gnsstk::L2_FREQ_GPS;
+class OrdRegressionTests_T
+{
+public:
+   OrdRegressionTests_T();
+   unsigned testIonoFreeRange();
+   unsigned testRawRange1();
+   unsigned testRawRange2();
+   unsigned testRawRange3();
+   unsigned testRawRange4();
 
-using ::testing::Return;
-using ::testing::Invoke;
-using ::testing::_;
+   gnsstk::NavLibrary navLib;
+};
 
-TEST(OrdTestRegression, TestIonoFreeRange) {
-    std::vector<double> frequencies;
-    frequencies.push_back(L1_FREQ_GPS);
-    frequencies.push_back(L2_FREQ_GPS);
-    std::vector<double> pseudoranges;
-    pseudoranges.push_back(5000.0);
-    pseudoranges.push_back(6000.0);
+OrdRegressionTests_T ::
+OrdRegressionTests_T()
+      : navLib()
+{
+   gnsstk::NavDataFactoryPtr
+      ndfp(std::make_shared<gnsstk::RinexNavDataFactory>());
 
-    for (int i = 0; i < pseudoranges.size(); i++) {
-        std::cout << "PR[" << i << "] is: " << pseudoranges[i] << std::endl;
-    }
+   std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "arlm2000.15n";
 
-    double range = gnsstk::ord::IonosphereFreeRange(frequencies, pseudoranges);
+   navLib.addFactory(ndfp);
 
-    // Old calculation in ObsRngDev.cpp
-    // for dual frequency see IS-GPS-200, section 20.3.3.3.3.3
-    double icpr = (pseudoranges[1] - GAMMA_GPS *
-                   pseudoranges[0])/(1-GAMMA_GPS);
+   gnsstk::RinexNavDataFactory *rndfp =
+      dynamic_cast<gnsstk::RinexNavDataFactory*>(ndfp.get());
 
-    // Compare the new calculation to the old, for our contrived variables.
-    double delta = fabs(range-icpr);
-    std::cout << "difference of: " << delta << std::endl;
-    // ASSERT_EQ(range, icpr);
-    // TODO(someone) Is this an acceptable difference?
-    ASSERT_LT(delta, 1e-5);
+   GNSSTK_ASSERT(rndfp->addDataSource(fname));
 }
 
-TEST(OrdTestRegression, TestRawRange1) {
-    MockXvtStore foo;
-    gnsstk::Position rxLocation(10, 10, 0);
-    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
-    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
-    gnsstk::Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(10, 0, 0);
-    fakeXvt.clkbias = 10;
-    fakeXvt.clkdrift = 10;
-    fakeXvt.relcorr = 10;
-    Xvt returnedXvt;
 
-    EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
+unsigned OrdRegressionTests_T ::
+testIonoFreeRange()
+{
+   TUDEF("ORD", "IonosphereFreeRange");
 
-    double resultRange = gnsstk::ord::RawRange1(rxLocation, satId, time, foo,
-            returnedXvt);
-    resultRange += gnsstk::ord::SvClockBiasCorrection(returnedXvt);
-    resultRange += gnsstk::ord::SvRelativityCorrection(returnedXvt);
+   std::vector<double> frequencies;
+   frequencies.push_back(gnsstk::FREQ_GPS_L1);
+   frequencies.push_back(gnsstk::FREQ_GPS_L2);
 
-    CorrectedEphemerisRange cer;
+   std::vector<double> pseudoranges;
+   pseudoranges.push_back(5000.0);
+   pseudoranges.push_back(6000.0);
 
-    double originalRange = cer.ComputeAtReceiveTime(time, rxLocation, satId,
-            foo);
+   for (int i = 0; i < pseudoranges.size(); i++) {
+       std::cout << "PR[" << i << "] is: " << pseudoranges[i] << std::endl;
+   }
 
-    // Compare the new calculation to the old, for our contrived variables.
-    ASSERT_EQ(resultRange, originalRange);
+   double range = IonosphereFreeRange(frequencies, pseudoranges);
+
+      // Iononsphere Corrected Pseudorange: Old calculation in ObsRngDev.cpp
+      // for dual frequency see IS-GPS-200, section 20.3.3.3.3.3
+   double icpr = (pseudoranges[1] - gnsstk::GAMMA_GPS * pseudoranges[0])
+                  / (1 - gnsstk::GAMMA_GPS);
+
+      // Compare the new calculation to the old, for our contrived variables.
+   double delta = fabs(range-icpr);
+   std::cout << "difference of: " << delta << std::endl;
+      // @todo Is this an acceptable difference?
+   TUASSERTFEPS(icpr, range, 1e-5);
+   TURETURN();
 }
 
-TEST(OrdTestRegression, TestRawRange2) {
-    MockXvtStore foo;
-    gnsstk::Position rxLocation(10, 10, 0);
-    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
-    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
-    gnsstk::Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(10, 0, 0);
-    fakeXvt.clkbias = 10;
-    fakeXvt.clkdrift = 10;
-    fakeXvt.relcorr = 10;
-    Xvt returnedXvt;
+unsigned OrdRegressionTests_T ::
+testRawRange1()
+{
+   TUDEF("ORD", "RawRange1");
 
-    EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
+   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::Xvt xvt;
 
-    double resultRange = gnsstk::ord::RawRange2(0, rxLocation, satId, time, foo,
-            returnedXvt);
-    resultRange += gnsstk::ord::SvClockBiasCorrection(returnedXvt);
-    resultRange += gnsstk::ord::SvRelativityCorrection(returnedXvt);
+   double resultRange = RawRange1(rxLocation, satId, time, navLib, xvt);
+   resultRange += SvClockBiasCorrection(xvt);
+   resultRange += SvRelativityCorrection(xvt);
 
-    CorrectedEphemerisRange cer;
+   gnsstk::CorrectedEphemerisRange cer;
 
-    double originalRange = cer.ComputeAtTransmitTime(time, 0, rxLocation, satId,
-            foo);
+   double originalRange =
+      cer.ComputeAtReceiveTime(time, rxLocation, satId, navLib);
 
-    // Compare the new calculation to the old, for our contrived variables.
-    ASSERT_EQ(resultRange, originalRange);
+      // Compare the new calculation to the old, for our contrived variables.
+   TUASSERTFE(originalRange, resultRange);
+   TURETURN();
 }
 
-TEST(OrdTestRegression, TestRawRange3) {
-    MockXvtStore foo;
-    gnsstk::Position rxLocation(10, 10, 0);
-    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
-    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
-    gnsstk::Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(10, 0, 0);
-    fakeXvt.clkbias = 10;
-    fakeXvt.clkdrift = 10;
-    fakeXvt.relcorr = 10;
-    Xvt returnedXvt;
+unsigned OrdRegressionTests_T ::
+testRawRange2()
+{
+   TUDEF("ORD", "RawRange2");
 
-    EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
+   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::Xvt xvt;
+   double pseduorange = 999999999;
 
-    double resultRange = gnsstk::ord::RawRange3(0, rxLocation, satId, time, foo,
-            returnedXvt);
-    resultRange += gnsstk::ord::SvClockBiasCorrection(returnedXvt);
-    resultRange += gnsstk::ord::SvRelativityCorrection(returnedXvt);
+   double resultRange =
+      RawRange2(pseduorange, rxLocation, satId, time, navLib, xvt);
+   resultRange += SvClockBiasCorrection(xvt);
+   resultRange += SvRelativityCorrection(xvt);
 
-    CorrectedEphemerisRange cer;
+   gnsstk::CorrectedEphemerisRange cer;
+   double originalRange =
+      cer.ComputeAtTransmitTime(time, pseduorange, rxLocation, satId, navLib);
 
-    double originalRange = cer.ComputeAtTransmitSvTime(time, 0,
-            rxLocation, satId, foo);
-
-    // Compare the new calculation to the old, for our contrived variables.
-    ASSERT_EQ(resultRange, originalRange);
+      // Compare the new calculation to the old, for our contrived variables.
+   TUASSERTFE(originalRange, resultRange);
+   TURETURN();
 }
 
-TEST(OrdTestRegression, TestRawRange4) {
-    MockXvtStore foo;
-    gnsstk::Position rxLocation(10, 10, 0);
-    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
-    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
-    gnsstk::Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(10, 0, 0);
-    fakeXvt.clkbias = 10;
-    fakeXvt.clkdrift = 10;
-    fakeXvt.relcorr = 10;
-    Xvt returnedXvt;
+unsigned OrdRegressionTests_T ::
+testRawRange3()
+{
+   TUDEF("ORD", "RawRange3");
 
-    EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
+   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::Xvt xvt;
+   double pseduorange = 999999999;
 
-    double resultRange = gnsstk::ord::RawRange4(rxLocation, satId, time, foo,
-            returnedXvt);
-    resultRange += gnsstk::ord::SvClockBiasCorrection(returnedXvt);
-    resultRange += gnsstk::ord::SvRelativityCorrection(returnedXvt);
+   double resultRange =
+      RawRange3(pseduorange, rxLocation, satId, time, navLib, xvt);
+   resultRange += SvClockBiasCorrection(xvt);
+   resultRange += SvRelativityCorrection(xvt);
 
-    CorrectedEphemerisRange cer;
+   gnsstk::CorrectedEphemerisRange cer;
 
-    double originalRange = cer.ComputeAtTransmitTime(time, rxLocation, satId,
-            foo);
+   double originalRange =
+      cer.ComputeAtTransmitSvTime(time, pseduorange, rxLocation, satId, navLib);
 
-    // Compare the new calculation to the old, for our contrived variables.
-    ASSERT_EQ(resultRange, originalRange);
+      // Compare the new calculation to the old, for our contrived variables.
+   TUASSERTFE(originalRange, resultRange);
+   TURETURN();
+}
+
+unsigned OrdRegressionTests_T ::
+testRawRange4()
+{
+   TUDEF("ORD", "RawRange4");
+
+   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::Xvt xvt;
+
+   double resultRange = RawRange4(rxLocation, satId, time, navLib, xvt);
+   resultRange += SvClockBiasCorrection(xvt);
+   resultRange += SvRelativityCorrection(xvt);
+
+   gnsstk::CorrectedEphemerisRange cer;
+   double originalRange =
+      cer.ComputeAtTransmitTime(time, rxLocation, satId, navLib);
+
+      // Compare the new calculation to the old, for our contrived variables.
+   TUASSERTFE(originalRange, resultRange);
+   TURETURN();
+}
+
+int main()
+{
+   OrdRegressionTests_T testClass;
+   unsigned errorTotal = 0;
+
+   errorTotal += testClass.testIonoFreeRange();
+   errorTotal += testClass.testRawRange1();
+   errorTotal += testClass.testRawRange2();
+   errorTotal += testClass.testRawRange3();
+   errorTotal += testClass.testRawRange4();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+            << std::endl;
+
+   return errorTotal;
 }
