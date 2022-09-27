@@ -39,291 +39,427 @@
 #include <iostream>
 #include <string>
 
-#include "gmock/gmock.h"
-
-#include "Exception.hpp"
-#include "XvtStore.hpp"
 #include "CommonTime.hpp"
 #include "Xvt.hpp"
 #include "Triple.hpp"
 #include "SatID.hpp"
-#include "TimeSystem.hpp"
 #include "ord.hpp"
+#include "NBTropModel.hpp"
+#include "ord.hpp"
+#include "TestUtil.hpp"
+#include "RinexNavDataFactory.hpp"
 
-#include "OrdMockClasses.hpp"
+using namespace gnsstk::ord;
 
-using std::vector;
+class OrdUnitTests_T
+{
+public:
+   OrdUnitTests_T();
+   unsigned testBasicIonosphereFreeRange();
+   unsigned testBasicIonosphereFreeRangeRequiresMoreThanOne();
+   unsigned testBasicIonosphereFreeRangeRejectsHigherThanDual();
+   unsigned testBasicIonosphereFreeRangeRejectsSizeMismatch();
+   unsigned testGetXvtFromStore();
+   unsigned testRawRange1();
+   unsigned testRawRange1HandlesException();
+   unsigned testRawRange2();
+   unsigned testRawRange2HandlesException();
+   unsigned testRawRange3();
+   unsigned testRawRange3HandlesException();
+   unsigned testRawRange4();
+   unsigned testRawRange4HandlesException();
+   unsigned testSvRelativityCorrection();
+   unsigned testTropoCorrection();
+   unsigned testIonoCorrection();
 
-using gnsstk::SatID;
-using gnsstk::CommonTime;
-using gnsstk::Xvt;
-using gnsstk::Position;
-using gnsstk::ord::IonosphereFreeRange;
-using gnsstk::ord::RawRange1;
-using gnsstk::ord::RawRange2;
-using gnsstk::ord::RawRange3;
-using gnsstk::ord::RawRange4;
-using gnsstk::ord::SvRelativityCorrection;
-using gnsstk::ord::TroposphereCorrection;
-using gnsstk::ord::IonosphereModelCorrection;
+   gnsstk::NavLibrary navLib;
+};
 
-using ::testing::Return;
-using ::testing::Invoke;
-using ::testing::Throw;
-using ::testing::_;
+OrdUnitTests_T ::
+OrdUnitTests_T()
+      : navLib()
+{
+   gnsstk::NavDataFactoryPtr
+      ndfp(std::make_shared<gnsstk::RinexNavDataFactory>());
 
-TEST(OrdTestCase, TestBasicIonosphereFreeRange) {
-    static const double arr[] = {1.0, 2.0};
+   std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "arlm2000.15n";
 
-    std::vector<double> frequencies(arr, arr + sizeof(arr) / sizeof(arr[0]) );
-    std::vector<double> pseudoranges(arr, arr + sizeof(arr) / sizeof(arr[0]) );
+   navLib.addFactory(ndfp);
 
-    double return_value = IonosphereFreeRange(frequencies, pseudoranges);
+   gnsstk::RinexNavDataFactory *rndfp =
+      dynamic_cast<gnsstk::RinexNavDataFactory*>(ndfp.get());
 
-    ASSERT_GT(return_value, 0);
-}
-
-TEST(OrdTestCase, TestBasicIonosphereFreeRangeRequiresMoreThanOne) {
-    static const double arr[] = {1.0};
-
-    std::vector<double> frequencies(arr, arr + sizeof(arr) / sizeof(arr[0]) );
-    std::vector<double> pseudoranges(arr, arr + sizeof(arr) / sizeof(arr[0]) );
-
-    ASSERT_THROW(IonosphereFreeRange(frequencies, pseudoranges),
-            gnsstk::Exception);
-}
-
-TEST(OrdTestCase, TestBasicIonosphereFreeRangeRejectsHigherThanDual) {
-    static const double arr[] = {1.0, 2.0, 3.0, 4.0, 5.0};
-
-    std::vector<double> frequencies(arr, arr + sizeof(arr) / sizeof(arr[0]) );
-    std::vector<double> pseudoranges(arr, arr + sizeof(arr) / sizeof(arr[0]) );
-
-    ASSERT_THROW(IonosphereFreeRange(frequencies, pseudoranges),
-            gnsstk::Exception);
+   GNSSTK_ASSERT(rndfp->addDataSource(fname));
 }
 
 
-TEST(OrdTestCase, TestBasicIonosphereFreeRangeRejectsSizeMismatch) {
-    static const double arr[] = {1.0, 2.0, 3.0, 4.0, 5.0};
-    static const double shortarr[] = {1.0, 2.0, 3.0, 4.0};
+unsigned OrdUnitTests_T ::
+testBasicIonosphereFreeRange()
+{
+   TUDEF("ORD", "IonosphereFreeRange");
+   static const double arr[] = {1.0, 2.0};
 
-    std::vector<double> frequencies(shortarr,
-            shortarr + sizeof(shortarr) / sizeof(shortarr[0]) );
-    std::vector<double> pseudoranges(arr,
-            arr + sizeof(arr) / sizeof(arr[0]) );
+   std::vector<double> frequencies(std::begin(arr), std::end(arr));
+   std::vector<double> pseudoranges(std::begin(arr), std::end(arr));
 
-    ASSERT_THROW(IonosphereFreeRange(frequencies, pseudoranges),
-            gnsstk::Exception);
+   double return_value = IonosphereFreeRange(frequencies, pseudoranges);
+
+   TUASSERT(return_value > 0);
+   TURETURN();
 }
 
+unsigned OrdUnitTests_T ::
+testBasicIonosphereFreeRangeRequiresMoreThanOne()
+{
+   TUDEF("ORD", "IonosphereFreeRange");
+   static const double arr[] = {1.0};
 
-TEST(OrdTestCase, TestGetXvtFromStore) {
-    MockXvtStore foo;
-    SatID satId(10, SatelliteSystem::UserDefined);
-    CommonTime time(CommonTime::BEGINNING_OF_TIME);
-    Xvt fakeXvt;
+   std::vector<double> frequencies(std::begin(arr), std::end(arr));
+   std::vector<double> pseudoranges(std::begin(arr), std::end(arr));
 
-    EXPECT_CALL(foo, getXvt(satId, time)).WillOnce(Return(fakeXvt));
-
-    Xvt resultXvt = gnsstk::ord::getSvXvt(satId, time, foo);
-
-    // This assertion is a proxy for verifying that the two Xvt instances are
-    // the same.
-    ASSERT_EQ(fakeXvt.clkbias, resultXvt.clkbias);
-    ASSERT_EQ(resultXvt.x.theArray[0], fakeXvt.x.theArray[0]);
+   TUTHROW(IonosphereFreeRange(frequencies, pseudoranges));
+   TURETURN();
 }
 
-TEST(OrdTestCase, TestRawRange1) {
-    MockXvtStore foo;
-    Position rxLocation(10, 10, 0);
-    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
-    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
-    Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(0, 0, 0);
-    Xvt returnedXvt;
+unsigned OrdUnitTests_T ::
+testBasicIonosphereFreeRangeRejectsHigherThanDual()
+{
+   TUDEF("ORD", "IonosphereFreeRange");
+   static const double arr[] = {1.0, 2.0, 3.0, 4.0, 5.0};
 
-    EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
+   std::vector<double> frequencies(std::begin(arr), std::end(arr));
+   std::vector<double> pseudoranges(std::begin(arr), std::end(arr));
 
-    double resultrange = RawRange1(rxLocation, satId, time, foo, returnedXvt);
+   TUTHROW(IonosphereFreeRange(frequencies, pseudoranges));
+   TURETURN();
 
-    ASSERT_GT(resultrange, 0);
-    // Can't really check returnedXvt, since it will have been rotated
-    // by the earth.
-    // ASSERT_EQ(returnedXvt.x.theArray[0], fakeXvt.x.theArray[0]);
 }
 
-TEST(OrdTestCase, TestRawRange1HandlesException) {
-    MockXvtStore foo;
-    Position rxLocation(10, 10, 0);
-    SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
-    CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
-    Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(0, 0, 0);
-    Xvt returnedXvt;
+unsigned OrdUnitTests_T ::
+testBasicIonosphereFreeRangeRejectsSizeMismatch()
+{
+   TUDEF("ORD", "IonosphereFreeRange");
+   static const double arr[] = {1.0, 2.0, 3.0, 4.0, 5.0};
+   static const double shortarr[] = {1.0, 2.0, 3.0, 4.0};
 
-    EXPECT_CALL(foo, getXvt(satId, _)).WillOnce(
-            Throw(gnsstk::InvalidRequest("Unsupported satellite system")));
+   std::vector<double> frequencies(std::begin(shortarr), std::end(shortarr));
+   std::vector<double> pseudoranges(std::begin(arr), std::end(arr));
 
-    ASSERT_THROW(RawRange1(rxLocation, satId, time, foo, returnedXvt),
-            gnsstk::Exception);
+   TUTHROW(IonosphereFreeRange(frequencies, pseudoranges));
+   TURETURN();
 }
 
-TEST(OrdTestCase, TestRawRange2) {
-    MockXvtStore foo;
-    Position rxLocation(10, 10, 0);
-    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
-    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
-    Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(0, 0, 0);
-    Xvt returnedXvt;
+unsigned OrdUnitTests_T ::
+testGetXvtFromStore()
+{
+   TUDEF("ORD", "getSvXvt");
 
-    EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
+   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
 
-    double range = RawRange2(0, rxLocation, satId, time, foo, returnedXvt);
+   gnsstk::Xvt xvt = getSvXvt(satId, time+35, navLib);
 
-    ASSERT_GT(range, 0);
-
-    // Check to see that returnedXvt has been assigned _something_.
-    ASSERT_GT(returnedXvt.x.theArray[0], 0);
+   TUASSERTFE(9345531.5274733770639,  xvt.x[0]);
+   TUASSERTFE(-12408177.088141856715, xvt.x[1]);
+   TUASSERTFE(21486320.848036296666,  xvt.x[2]);
+   TUASSERTFE(2081.276961058104007,   xvt.v[0]);
+   TUASSERTFE(1792.4445008638492709,  xvt.v[1]);
+   TUASSERTFE(148.29209115082824155,  xvt.v[2]);
+   TUASSERTFE(-0.00021641018042870913346, xvt.clkbias);
+   TUASSERTFE(4.3200998334200003381e-12,  xvt.clkdrift);
+   TUASSERTFE(-8.8197758101551758427e-09, xvt.relcorr);
+   TURETURN();
 }
 
-TEST(OrdTestCase, TestRawRange2HandlesException) {
-    MockXvtStore foo;
-    Position rxLocation(10, 10, 0);
-    SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
-    CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
-    Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(0, 0, 0);
-    Xvt returnedXvt;
+unsigned OrdUnitTests_T ::
+testRawRange1()
+{
+   TUDEF("ORD", "RawRange1");
 
-    EXPECT_CALL(foo, getXvt(satId, _)).WillOnce(
-            Throw(gnsstk::InvalidRequest("Unsupported satellite system")));
+   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
 
-    ASSERT_THROW(RawRange2(0, rxLocation, satId, time, foo, returnedXvt),
-            gnsstk::Exception);
+   gnsstk::Xvt xvt;
+   double resultrange = RawRange1(rxLocation, satId, time, navLib, xvt);
+
+      // @note These fields are slightly different than the Xvt tagged
+      // at the given time. RawRange tries to determine the position of the SV
+      // at time of transmit but rotates the coordinates into the ECEF frame
+      // at time of receive.
+   TUASSERTFE(9272491.2966336440295,  xvt.x[0]);
+   TUASSERTFE(-12471194.724280735478, xvt.x[1]);
+   TUASSERTFE(21480834.569836761802,  xvt.x[2]);
+   TUASSERTFE(2077.3534126001304685,  xvt.v[0]);
+   TUASSERTFE(1796.0590315277861464,  xvt.v[1]);
+   TUASSERTFE(164.41418674784648601,  xvt.v[2]);
+   TUASSERTFE(-0.00021641042660146218705, xvt.clkbias);
+   TUASSERTFE(4.3200998334200003381e-12,  xvt.clkdrift);
+   TUASSERTFE(-8.8008904512895476221e-09, xvt.relcorr);
+   TURETURN();
 }
 
-TEST(OrdTestCase, TestRawRange3) {
-    MockXvtStore foo;
-    Position rxLocation(10, 10, 0);
-    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
-    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
-    Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(0, 0, 0);
-    Xvt returnedXvt;
+unsigned OrdUnitTests_T ::
+testRawRange1HandlesException()
+{
+   TUDEF("ORD", "RawRange1");
 
-    EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
+   gnsstk::Position rxLocation(10, 10, 0);
+      // PRN 1 should not exist in the Nav file
+   gnsstk::SatID satId(1, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::Xvt xvt;
 
-    double range = RawRange3(0, rxLocation, satId, time, foo, returnedXvt);
-
-    ASSERT_GT(range, 0);
-
-    // Check to see that returnedXvt has been assigned _something_.
-    ASSERT_GT(returnedXvt.x.theArray[0], 0);
+   TUTHROW(RawRange1(rxLocation, satId, time, navLib, xvt));
+   TURETURN();
 }
 
-TEST(OrdTestCase, TestRawRange3HandlesException) {
-    MockXvtStore foo;
-    Position rxLocation(10, 10, 0);
-    SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
-    CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
-    Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(0, 0, 0);
-    Xvt returnedXvt;
+unsigned OrdUnitTests_T ::
+testRawRange2()
+{
+   TUDEF("ORD", "RawRange2");
 
-    EXPECT_CALL(foo, getXvt(satId, _)).WillOnce(
-            Throw(gnsstk::InvalidRequest("Unsupported satellite system")));
+   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::Xvt xvt;
 
-    ASSERT_THROW(RawRange3(0, rxLocation, satId, time, foo, returnedXvt),
-            gnsstk::Exception);
+   double pseduorange = 999999999;
+   double range = RawRange2(pseduorange, rxLocation, satId, time, navLib, xvt);
+
+      // @note These fields are slightly different than the Xvt tagged
+      // at the given time. RawRange tries to determine the position of the SV
+      // at time of transmit but rotates the coordinates into the ECEF frame
+      // at time of receive.
+   TUASSERTFE(9265746.753331027925,   xvt.x[0]);
+   TUASSERTFE(-12477027.044897323474, xvt.x[1]);
+   TUASSERTFE(21480298.297345437109,  xvt.x[2]);
+   TUASSERTFE(2076.9863342169719544,  xvt.v[0]);
+   TUASSERTFE(1796.3919531321621434,  xvt.v[1]);
+   TUASSERTFE(165.90589423444734507,  xvt.v[2]);
+   TUASSERTFE(-0.00021641044062876963307, xvt.clkbias);
+   TUASSERTFE(4.3200998334200003381e-12,  xvt.clkdrift);
+   TUASSERTFE(-8.7989903408158179378e-09, xvt.relcorr);
+   TURETURN();
 }
 
-TEST(OrdTestCase, TestRawRange4) {
-    MockXvtStore foo;
-    Position rxLocation(10, 10, 0);
-    gnsstk::SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
-    gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
-    Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(0, 0, 0);
-    Xvt returnedXvt;
+unsigned OrdUnitTests_T ::
+testRawRange2HandlesException()
+{
+   TUDEF("ORD", "RawRange2");
 
-    EXPECT_CALL(foo, getXvt(satId, _)).WillRepeatedly(Return(fakeXvt));
+   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::SatID satId(1, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::Xvt xvt;
+   double pseduorange = 999999999;
 
-    double resultrange = RawRange4(rxLocation, satId, time, foo, returnedXvt);
-
-    ASSERT_GT(resultrange, 0);
-
-    // Check to see that returnedXvt has been assigned _something_.
-    ASSERT_GT(returnedXvt.x.theArray[0], 0);
+   TUTHROW(RawRange2(pseduorange, rxLocation, satId, time, navLib, xvt));
+   TURETURN();
 }
 
-TEST(OrdTestCase, TestRawRange4HandlesException) {
-    MockXvtStore foo;
-    Position rxLocation(10, 10, 0);
-    SatID satId(10, gnsstk::SatelliteSystem::UserDefined);
-    CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
-    Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(0, 0, 0);
-    Xvt returnedXvt;
+unsigned OrdUnitTests_T ::
+testRawRange3()
+{
+   TUDEF("ORD", "RawRange3");
 
-    EXPECT_CALL(foo, getXvt(satId, _)).WillOnce(
-            Throw(gnsstk::InvalidRequest("Unsupported satellite system")));
+   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::Xvt xvt;
 
-    ASSERT_THROW(RawRange4(rxLocation, satId, time, foo, returnedXvt),
-            gnsstk::Exception);
+   double pseduorange = 999999999;
+   double range = RawRange3(pseduorange, rxLocation, satId, time, navLib, xvt);
+
+      // @note These fields are slightly different than the Xvt tagged
+      // at the given time. RawRange tries to determine the position of the SV
+      // at time of transmit but rotates the coordinates into the ECEF frame
+      // at time of receive.
+   TUASSERTFE(9269721.8167515993118,  xvt.x[0]);
+   TUASSERTFE(-12473230.988021081313, xvt.x[1]);
+   TUASSERTFE(21480849.108445473015,  xvt.x[2]);
+   TUASSERTFE(2077.3518208497298474,  xvt.v[0]);
+   TUASSERTFE(1796.0633538716695057,  xvt.v[1]);
+   TUASSERTFE(164.37355694668559636,  xvt.v[2]);
+   TUASSERTFE(-0.00021641042621940267715, xvt.clkbias);
+   TUASSERTFE(4.3200998334200003381e-12,  xvt.clkdrift);
+   TUASSERTFE(-8.8009421765298224418e-09, xvt.relcorr);
+   TURETURN();
 }
 
-TEST(OrdTestCase, TestSvRelativityCorrection) {
-    MockXvt sv_xvt;
+unsigned OrdUnitTests_T ::
+testRawRange3HandlesException()
+{
+   TUDEF("ORD", "RawRange3");
 
-    EXPECT_CALL(sv_xvt, computeRelativityCorrection()).WillOnce(Return(5.6));
+   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::SatID satId(1, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::Xvt xvt;
 
-    double return_value = gnsstk::ord::SvRelativityCorrection(sv_xvt);
+   double pseduorange = 999999999;
+   TUTHROW(RawRange3(pseduorange, rxLocation, satId, time, navLib, xvt));
 
-    // Only verify that the number is less than -1e6
-    // --- it's been multiplied by the speed of light.
-    ASSERT_LT(return_value, -1e6);
+   TURETURN();
 }
 
-TEST(OrdTestCase, TestTropoCorrection) {
-    Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(0, 0, 0);
-    MockTropo tropo;
+unsigned OrdUnitTests_T ::
+testRawRange4()
+{
+   TUDEF("ORD", "RawRange4");
 
-    Position rxLocation(10, 10, 0);
+   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::Xvt xvt;
 
-    EXPECT_CALL(tropo, correction_wrap(_)).WillOnce(Return(42.0));
+   double resultrange = RawRange4(rxLocation, satId, time, navLib, xvt);
 
-    double return_value = TroposphereCorrection(tropo, rxLocation, fakeXvt);
-
-    ASSERT_EQ(return_value, 42.0);
+      // @note These fields are slightly different than the Xvt tagged
+      // at the given time. RawRange tries to determine the position of the SV
+      // at time of transmit but rotates the coordinates into the ECEF frame
+      // at time of receive.
+   TUASSERTFE(9272491.2966245152056, xvt.x[0]);
+   TUASSERTFE(-12471194.72428862378, xvt.x[1]);
+   TUASSERTFE(21480834.569836035371, xvt.x[2]);
+   TUASSERTFE(2077.3534125996338844, xvt.v[0]);
+   TUASSERTFE(1796.0590315282379379, xvt.v[1]);
+   TUASSERTFE(164.41418674986550741, xvt.v[2]);
+   TUASSERTFE(-0.00021641042660146218705, xvt.clkbias);
+   TUASSERTFE(4.3200998334200003381e-12,  xvt.clkdrift);
+   TUASSERTFE(-8.8008904512869767448e-09, xvt.relcorr);
+   TURETURN();
 }
 
-TEST(OrdTestCase, TestIonoCorrection) {
-    Xvt fakeXvt;
-    fakeXvt.x = gnsstk::Triple(100, 100, 100);
-    fakeXvt.v = gnsstk::Triple(0, 0, 0);
-    CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
-    MockIono iono;
+unsigned OrdUnitTests_T ::
+testRawRange4HandlesException()
+{
+   TUDEF("ORD", "RawRange4");
 
-    Position rxLocation(10, 10, 0);
+   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::SatID satId(1, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::Xvt xvt;
 
-    EXPECT_CALL(iono, getCorrection_wrap(_, _, _, _, _)).WillOnce(Return(42.0));
-
-    double return_value = IonosphereModelCorrection(iono, time,
-            gnsstk::IonoModel::L1, rxLocation, fakeXvt);
-
-    ASSERT_EQ(return_value, -42.0);
+   TUTHROW(RawRange4(rxLocation, satId, time, navLib, xvt));
+   TURETURN();
 }
 
+unsigned OrdUnitTests_T ::
+testSvRelativityCorrection()
+{
+   class MockXvt : public gnsstk::Xvt
+   {
+   public:
+      double computeRelativityCorrection()
+      {
+         return 5.6;
+      }
+   };
 
+   TUDEF("ORD", "SvRelativityCorrection");
+   MockXvt svXvt;
+
+   double relcorr = SvRelativityCorrection(svXvt);
+
+   TUASSERTFE(-1678837764.7999999523, relcorr);
+   TURETURN();
+}
+
+unsigned OrdUnitTests_T ::
+testTropoCorrection()
+{
+   class MockTropo : public gnsstk::NBTropModel
+   {
+      double correction(double elevation) const
+      {
+         return 42.0;
+      }
+   };
+
+   TUDEF("ORD", "TroposphereCorrection");
+   gnsstk::Xvt fakeXvt;
+   fakeXvt.x = gnsstk::Triple(100, 100, 100);
+   fakeXvt.v = gnsstk::Triple(0, 0, 0);
+   MockTropo tropo;
+
+   gnsstk::Position rxLocation(10, 10, 0);
+
+   double return_value = TroposphereCorrection(tropo, rxLocation, fakeXvt);
+
+   TUASSERTFE(return_value, 42.0);
+   TURETURN();
+}
+
+unsigned OrdUnitTests_T ::
+testIonoCorrection()
+{
+   class MockIono : public gnsstk::IonoModelStore
+   {
+   public:
+      double getCorrection(
+               const gnsstk::CommonTime& time,
+               const gnsstk::Position& rxgeo,
+               double svel,
+               double svaz,
+               gnsstk::CarrierBand band) const override
+      {
+         return 42.0;
+      }
+
+   };
+
+   TUDEF("ORD", "IonosphereModelCorrection");
+   gnsstk::Xvt fakeXvt;
+   fakeXvt.x = gnsstk::Triple(100, 100, 100);
+   fakeXvt.v = gnsstk::Triple(0, 0, 0);
+   gnsstk::CommonTime time(gnsstk::CommonTime::BEGINNING_OF_TIME);
+   MockIono iono;
+
+   gnsstk::Position rxLocation(10, 10, 0);
+
+   double return_value = IonosphereModelCorrection(
+      iono, time, gnsstk::CarrierBand::L1, rxLocation, fakeXvt);
+
+   TUASSERTFE(return_value, -42.0);
+
+   TURETURN();
+}
+
+int main()
+{
+   OrdUnitTests_T testClass;
+   unsigned errorTotal = 0;
+
+   errorTotal += testClass.testBasicIonosphereFreeRange();
+   errorTotal += testClass.testBasicIonosphereFreeRangeRequiresMoreThanOne();
+   errorTotal += testClass.testBasicIonosphereFreeRangeRejectsHigherThanDual();
+   errorTotal += testClass.testBasicIonosphereFreeRangeRejectsSizeMismatch();
+   errorTotal += testClass.testGetXvtFromStore();
+   errorTotal += testClass.testRawRange1();
+   errorTotal += testClass.testRawRange1HandlesException();
+   errorTotal += testClass.testRawRange2();
+   errorTotal += testClass.testRawRange2HandlesException();
+   errorTotal += testClass.testRawRange3();
+   errorTotal += testClass.testRawRange3HandlesException();
+   errorTotal += testClass.testRawRange4();
+   errorTotal += testClass.testRawRange4HandlesException();
+   errorTotal += testClass.testSvRelativityCorrection();
+   errorTotal += testClass.testTropoCorrection();
+   errorTotal += testClass.testIonoCorrection();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+            << std::endl;
+
+   return errorTotal;
+}

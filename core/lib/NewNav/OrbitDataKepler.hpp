@@ -148,12 +148,12 @@ namespace gnsstk
                                   const EllipsoidModel& ell)
          const;
 
-         /** Returns true if this two objects are 
+         /** Returns true if this two objects are
           *   1. same concrete type, and
           *   2. same data contents.
           * This is intended as a "data uniqueness test" to allow
           * detection of successive transmissions of same data
-          * and avoid duplicate storage.  The exact rules for 
+          * and avoid duplicate storage.  The exact rules for
           * uniqueness will vary by descendent class.
           * @note This method assumes that no tweaking of values has
           *   been made, i.e. it checks all potentially relevant
