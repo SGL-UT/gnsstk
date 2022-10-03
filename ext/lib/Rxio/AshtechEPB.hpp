@@ -74,7 +74,7 @@ namespace gnsstk
 
       bool checkId(const std::string& hdrId) const {return hdrId==myId;}
 
-      void dump(std::ostream& out) const throw();
+      void dump(std::ostream& out) const noexcept;
 
          /**
           * @throw std::exception

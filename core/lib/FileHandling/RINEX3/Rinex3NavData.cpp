@@ -401,7 +401,7 @@ namespace gnsstk
 
       // Deprecated; use GPSEphemeris.
       // Converts this Rinex3NavData to an EngEphemeris object.
-   Rinex3NavData::operator EngEphemeris() const throw()
+   Rinex3NavData::operator EngEphemeris() const noexcept
    {
       EngEphemeris ee;
 

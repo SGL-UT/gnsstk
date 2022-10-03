@@ -409,7 +409,7 @@ namespace gnsstk
           */
       BasicFramework( const std::string& applName,
                       const std::string& applDesc )
-         throw();
+         noexcept;
 
 
          /// Destructor.
@@ -431,7 +431,7 @@ namespace gnsstk
       virtual bool initialize( int argc,
                                char *argv[],
                                bool pretty = true )
-         throw();
+         noexcept;
 
 
          /** Run the program. Processes only once (refer to subclasses
@@ -439,7 +439,7 @@ namespace gnsstk
           *
           * @return false if an exception occurred
           */
-      bool run() throw();
+      bool run() noexcept;
 
 
          /** A place to store the exit code for the application.

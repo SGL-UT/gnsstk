@@ -63,9 +63,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a GalDataValid to a whitespace-free string name.
-      std::string asString(GalDataValid e) throw();
+      std::string asString(GalDataValid e) noexcept;
          /// Convert a string name to an GalDataValid
-      GalDataValid asGalDataValid(const std::string& s) throw();
+      GalDataValid asGalDataValid(const std::string& s) noexcept;
    }
 
       //@}

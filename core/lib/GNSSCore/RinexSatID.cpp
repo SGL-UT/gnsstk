@@ -51,7 +51,7 @@ namespace gnsstk
 
    RinexSatID ::
    RinexSatID(int p, SatelliteSystem s)
-      throw()
+      noexcept
          : SatID(p, s)
    {
       validate();
@@ -60,7 +60,7 @@ namespace gnsstk
 
    char RinexSatID ::
    systemChar() const
-      throw()
+      noexcept
    {
       switch(system)
       {
@@ -80,7 +80,7 @@ namespace gnsstk
 
    std::string RinexSatID ::
    systemString() const
-      throw()
+      noexcept
    {
       switch(system)
       {
@@ -100,7 +100,7 @@ namespace gnsstk
 
    std::string RinexSatID ::
    systemString3() const
-      throw()
+      noexcept
    {
       switch(system)
       {
@@ -202,7 +202,7 @@ namespace gnsstk
 
    std::string RinexSatID ::
    toString() const
-      throw()
+      noexcept
    {
       std::ostringstream oss;
       oss.fill(fillchar);

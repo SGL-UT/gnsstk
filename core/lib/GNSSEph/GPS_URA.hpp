@@ -109,7 +109,7 @@ namespace gnsstk
 
 
    inline
-   short accuracy2ura(double acc) throw()
+   short accuracy2ura(double acc) noexcept
    {
       short ura = 0;
       while ( (ura <= SV_ACCURACY_GPS_MAX_INDEX_VALUE) &&
@@ -121,7 +121,7 @@ namespace gnsstk
    }
 
    inline
-   double ura2accuracy(short ura) throw()
+   double ura2accuracy(short ura) noexcept
    {
       if(ura < 0)
          return SV_ACCURACY_GPS_MAX_INDEX[0];
@@ -131,7 +131,7 @@ namespace gnsstk
    }
 
    inline
-   short nominalAccuracy2ura(double acc) throw()
+   short nominalAccuracy2ura(double acc) noexcept
    {
       short ura = 0;
       while ( (ura <= SV_ACCURACY_GPS_MAX_INDEX_VALUE) &&
@@ -143,7 +143,7 @@ namespace gnsstk
    }
 
    inline
-   double ura2nominalAccuracy(short ura) throw()
+   double ura2nominalAccuracy(short ura) noexcept
    {
       if(ura < 0)
          return SV_ACCURACY_GPS_NOMINAL_INDEX[0];
@@ -153,7 +153,7 @@ namespace gnsstk
    }
 
    inline
-   short accuracy2CNAVura(double acc) throw()
+   short accuracy2CNAVura(double acc) noexcept
    {
       short ura = -15;
       while ( (ura <= SV_CNAV_ACCURACY_GPS_MAX_INDEX_VALUE) &&

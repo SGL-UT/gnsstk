@@ -71,7 +71,7 @@ namespace gnsstk
 
 
    ObsClockModel& ObsClockModel::setSvModeMap(const SvModeMap& right)
-      throw()
+      noexcept
    {
       for(int prn = 1; prn <= gnsstk::MAX_PRN; prn++)
          modes[SatID(prn, SatelliteSystem::GPS)] = IGNORE;
@@ -169,7 +169,7 @@ namespace gnsstk
       return stat;
    }
 
-   void ObsClockModel::dump(ostream& s, short detail) const throw()
+   void ObsClockModel::dump(ostream& s, short detail) const noexcept
    {
       s << "min elev:" << elvmask
         << ", max sigma:" << sigmam

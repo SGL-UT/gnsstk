@@ -59,32 +59,32 @@ namespace gnsstk
    public:
 
          /// @return semi-major axis of Earth in meters.
-      virtual double a() const throw()
+      virtual double a() const noexcept
       { return a_km() * 1000.0; }
 
          /// Defined in galileo:iono section 2.5.2 as R<sub>E</sub>
          /// @return semi-major axis of Earth in km.
-      virtual double a_km() const throw()
+      virtual double a_km() const noexcept
       { return 6371.2; }
 
          /// @return flattening (ellipsoid parameter).
-      virtual double flattening() const throw()
+      virtual double flattening() const noexcept
       { return 0; }
 
          /// Unstated in Galileo OS SIS ICD. Derived as e = sqrt(2f - f*f)
          /// based on NGA TR8350.2 Section 7.4
          /// @return eccentricity (ellipsoid parameter).
-      virtual double eccentricity() const throw()
+      virtual double eccentricity() const noexcept
       { return 0; }
 
          /// Unstated in Galileo OS SIS ICD. Derived as e^2 = 2f - f*f
          /// based on NGA TR8350.2 Section 7.4
          /// @return eccentricity squared (ellipsoid parameter).
-      virtual double eccSquared() const throw()
+      virtual double eccSquared() const noexcept
       { return 0; }
 
          /// Destructor.
-      virtual ~GalileoIonoEllipsoid() throw() {}
+      virtual ~GalileoIonoEllipsoid() noexcept {}
 
    }; // class GalileoIonoEllipsoid
 

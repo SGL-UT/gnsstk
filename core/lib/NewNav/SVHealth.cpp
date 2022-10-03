@@ -67,7 +67,7 @@ namespace gnsstk
 
    namespace StringUtils
    {
-      std::string asString(SVHealth e) throw()
+      std::string asString(SVHealth e) noexcept
       {
          switch (e)
          {
@@ -81,7 +81,7 @@ namespace gnsstk
       } // asString(SVHealth)
 
 
-      SVHealth asSVHealth(const std::string& s) throw()
+      SVHealth asSVHealth(const std::string& s) noexcept
       {
          if (s == "Unknown")
             return SVHealth::Unknown;

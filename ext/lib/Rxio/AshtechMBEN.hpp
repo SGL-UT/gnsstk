@@ -127,7 +127,7 @@ namespace gnsstk
              *   the magnitude for those receivers is not 2.18.
              * @return the SNR in dB*Hz.
              */
-         float snr(float chipRate, float magnitude = 4.14) const throw();
+         float snr(float chipRate, float magnitude = 4.14) const noexcept;
          void dump(std::ostream& out) const;
       };
 
@@ -144,7 +144,7 @@ namespace gnsstk
       virtual bool checkId(const std::string& hdrId) const
       {return hdrId==mpcId || hdrId==mcaId;}
 
-      void dump(std::ostream& out) const throw();
+      void dump(std::ostream& out) const noexcept;
             /**
              * @throw std::exception
              * @throw FFStreamError

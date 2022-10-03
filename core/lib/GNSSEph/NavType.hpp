@@ -81,9 +81,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a NavType to a whitespace-free string name.
-      std::string asString(NavType e) throw();
+      std::string asString(NavType e) noexcept;
          /// Convert a string name to an NavType
-      NavType asNavType(const std::string& s) throw();
+      NavType asNavType(const std::string& s) noexcept;
    }
       /** Translate nav type enumeration to its string representation.
        * @note The string representation is being used in file

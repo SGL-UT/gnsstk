@@ -49,7 +49,7 @@ namespace gnsstk
 {
    namespace StringUtils
    {
-      std::string asString(CarrierBand e) throw()
+      std::string asString(CarrierBand e) noexcept
       {
          switch (e)
          {
@@ -77,7 +77,7 @@ namespace gnsstk
       } // asString(CarrierBand)
 
 
-      CarrierBand asCarrierBand(const std::string& s) throw()
+      CarrierBand asCarrierBand(const std::string& s) noexcept
       {
          if (s == "Unknown")
             return CarrierBand::Unknown;

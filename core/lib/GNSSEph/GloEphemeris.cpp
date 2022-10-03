@@ -318,7 +318,7 @@ namespace gnsstk
 
       // Output the contents of this ephemeris to the given stream as a single line.
    void GloEphemeris::dump(std::ostream& s) const
-      throw()
+      noexcept
    {
 
       s << "Sys:" << satSys << ", PRN:" << PRNID

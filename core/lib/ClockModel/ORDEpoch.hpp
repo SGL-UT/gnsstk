@@ -64,7 +64,7 @@ namespace gnsstk
          /// defines a store for each SV's ord, indexed by prn
       typedef std::map<SatID, ObsRngDev> ORDMap;
 
-      ORDEpoch& removeORD(const SatID& svid) throw()
+      ORDEpoch& removeORD(const SatID& svid) noexcept
       {
          ORDMap::iterator i = ords.find(svid);
          if(i != ords.end())
@@ -72,7 +72,7 @@ namespace gnsstk
          return *this;
       }
 
-      ORDEpoch& applyClockModel(const ClockModel& cm) throw()
+      ORDEpoch& applyClockModel(const ClockModel& cm) noexcept
       {
          if (cm.isOffsetValid(time))
          {
@@ -82,7 +82,7 @@ namespace gnsstk
          return *this;
       }
 
-      ORDEpoch& removeOffset(const double offset) throw()
+      ORDEpoch& removeOffset(const double offset) noexcept
       {
          ORDMap::iterator i;
          for (i = ords.begin(); i != ords.end(); i++)
@@ -98,7 +98,7 @@ namespace gnsstk
 
       friend std::ostream& operator<<(std::ostream& s,
                                       const ORDEpoch& oe)
-         throw()
+         noexcept
       {
          s << "t=" << oe.time
            << " clk=" << oe.clockOffset << std::endl;

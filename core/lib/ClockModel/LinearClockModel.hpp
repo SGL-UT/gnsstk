@@ -66,7 +66,7 @@ namespace gnsstk
             :ObsClockModel(sigma, elmask, mode) {reset();};
 
       virtual double getOffset(const gnsstk::CommonTime& t) const
-         throw()
+         noexcept
       {
          if (!isOffsetValid(t))
             return 0;
@@ -74,7 +74,7 @@ namespace gnsstk
             return clockModel.Slope()*(t-baseTime) + clockModel.Intercept();
       };
 
-      virtual bool isOffsetValid(const gnsstk::CommonTime& t) const throw()
+      virtual bool isOffsetValid(const gnsstk::CommonTime& t) const noexcept
       {return t >= startTime && t <= endTime && clockModel.N() > 1;};
 
          /** Add in the given ord to the clock model.
@@ -83,9 +83,9 @@ namespace gnsstk
       virtual void addEpoch(const ORDEpoch& oe);
 
          /// Reset the accumulated statistics on the clock
-      void reset() throw();
+      void reset() noexcept;
 
-      void dump(std::ostream& s, short detail=1) const throw();
+      void dump(std::ostream& s, short detail=1) const noexcept;
 
       friend std::ostream& operator<<(std::ostream& s, const LinearClockModel& r)
       { r.dump(s, 0); return s; };

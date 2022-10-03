@@ -98,7 +98,7 @@ namespace gnsstk
           * @return true if the model was added, false otherwise
           */
       bool addIonoModel(const CommonTime& mt,
-                        const IonoModel& im) throw();
+                        const IonoModel& im) noexcept;
 
          /** Edit the dataset, removing data outside the indicated time interval
           *

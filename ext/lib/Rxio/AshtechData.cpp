@@ -159,7 +159,7 @@ namespace gnsstk
 
 
     //---------------------------------------------------------------------------
-    void AshtechData::dump(ostream& out) const throw()
+    void AshtechData::dump(ostream& out) const noexcept
     {
        ostringstream oss;
        oss << getName() << " : id:" << id

@@ -222,7 +222,7 @@ namespace gnsstk
           * SubframeBuf buf(numRx * numCode * numChl * mgr.processingDepth());
           * \endcode
           */
-      unsigned processingDepth() const throw();
+      unsigned processingDepth() const noexcept;
 
          /** This set contains any filters with rejected data after a
           * validate() or finalize() call.  The set will be cleared at

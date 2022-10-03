@@ -96,7 +96,7 @@ namespace gnsstk
    }
 
    //---------------------------------------------------------------------------
-   void AshtechALB::dump(ostream& out) const throw()
+   void AshtechALB::dump(ostream& out) const noexcept
    {
       ostringstream oss;
       using gnsstk::StringUtils::asString;

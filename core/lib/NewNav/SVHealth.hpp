@@ -69,9 +69,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a SVHealth to a whitespace-free string name.
-      std::string asString(SVHealth e) throw();
+      std::string asString(SVHealth e) noexcept;
          /// Convert a string name to an SVHealth
-      SVHealth asSVHealth(const std::string& s) throw();
+      SVHealth asSVHealth(const std::string& s) noexcept;
    }
 
       //@}

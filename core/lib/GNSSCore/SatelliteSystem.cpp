@@ -49,7 +49,7 @@ namespace gnsstk
 {
    namespace StringUtils
    {
-      std::string asString(SatelliteSystem e) throw()
+      std::string asString(SatelliteSystem e) noexcept
       {
          switch (e)
          {
@@ -70,7 +70,7 @@ namespace gnsstk
       } // asString(SatelliteSystem)
 
 
-      SatelliteSystem asSatelliteSystem(const std::string& s) throw()
+      SatelliteSystem asSatelliteSystem(const std::string& s) noexcept
       {
          if (s == "Unknown")
             return SatelliteSystem::Unknown;

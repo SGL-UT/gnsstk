@@ -60,7 +60,7 @@ namespace gnsstk
          /// Constructor.
       GALWeekSecond(unsigned int w = 0,
                     double s = 0.,
-                    TimeSystem ts = TimeSystem::GAL) throw()
+                    TimeSystem ts = TimeSystem::GAL) noexcept
             : WeekSecond(w,s)
       { timeSystem = ts; }
 
@@ -71,7 +71,7 @@ namespace gnsstk
       }
 
          /// Destructor.
-      ~GALWeekSecond() throw() {}
+      ~GALWeekSecond() noexcept {}
 
          /// Return the number of bits in the bitmask used to get the ModWeek from the
          /// full week.

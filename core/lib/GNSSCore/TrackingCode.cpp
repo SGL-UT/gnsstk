@@ -49,7 +49,7 @@ namespace gnsstk
 {
    namespace StringUtils
    {
-      std::string asString(TrackingCode e) throw()
+      std::string asString(TrackingCode e) noexcept
       {
          switch (e)
          {
@@ -179,7 +179,7 @@ namespace gnsstk
       } // asString(TrackingCode)
 
 
-      TrackingCode asTrackingCode(const std::string& s) throw()
+      TrackingCode asTrackingCode(const std::string& s) noexcept
       {
          if (s == "Unknown")
             return TrackingCode::Unknown;

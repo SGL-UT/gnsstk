@@ -293,7 +293,7 @@ public:
 
    // -------------------------------------------------------------
    /// Define the text after 'Usage: '; default is '\<prgm\> [options] ...'
-   void DefineUsageString(std::string str) throw()
+   void DefineUsageString(std::string str) noexcept
    {
       syntaxPage = "Usage: " + str;
       syntaxPageBuilt = 1;

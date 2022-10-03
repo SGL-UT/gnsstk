@@ -42,7 +42,7 @@ namespace gnsstk
 {
    namespace StringUtils
    {
-      std::string asString(NavMessageType e) throw()
+      std::string asString(NavMessageType e) noexcept
       {
          switch (e)
          {
@@ -59,7 +59,7 @@ namespace gnsstk
       } // asString(NavMessageType)
 
 
-      NavMessageType asNavMessageType(const std::string& s) throw()
+      NavMessageType asNavMessageType(const std::string& s) noexcept
       {
          if (s == "Unknown")
             return NavMessageType::Unknown;

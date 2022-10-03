@@ -77,7 +77,7 @@ namespace gnsstk
    {
    public:
          /// Default constructor
-      BrcClockCorrection() throw();
+      BrcClockCorrection() noexcept;
 
 	 /// General purpose constructor
       BrcClockCorrection( const std::string satSysArg, const ObsID obsIDArg,
@@ -96,8 +96,8 @@ namespace gnsstk
          /// Destructor
       virtual ~BrcClockCorrection() {}
 
-      bool operator==(const BrcClockCorrection& right) const throw();
-      bool operator!=(const BrcClockCorrection& right) const throw()
+      bool operator==(const BrcClockCorrection& right) const noexcept;
+      bool operator!=(const BrcClockCorrection& right) const noexcept
       { return !operator==(right); }
 
          /**

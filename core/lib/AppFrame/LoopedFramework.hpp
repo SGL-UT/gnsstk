@@ -77,7 +77,7 @@ namespace gnsstk
           */
       LoopedFramework(const std::string& applName,
                       const std::string& applDesc)
-            throw()
+            noexcept
             : BasicFramework(applName, applDesc), timeToDie(false)
       { }
 

@@ -51,7 +51,7 @@ namespace gnsstk
 {
 
    WxObservation WxObsData::getMostRecent( const CommonTime& t ) const
-      throw()
+      noexcept
    {
       if(obs.size() == 0)
          return WxObservation();
@@ -65,7 +65,7 @@ namespace gnsstk
    };
 
    void WxObsData::insertObservation( const WxObservation& wx )
-      throw()
+      noexcept
    {
       obs[wx.t] = wx;
       if (wx.t > lastTime)  lastTime=wx.t;
@@ -73,14 +73,14 @@ namespace gnsstk
    }
 
    bool WxObservation::isAllValid() const
-      throw()
+      noexcept
    {
       return temperatureSource != noWx
          && pressureSource != noWx
          && humiditySource != noWx;
    };
 
-   void WxObsData::flush(const CommonTime& t) throw()
+   void WxObsData::flush(const CommonTime& t) noexcept
    {
       // remove data from the WxObsMap
       // map is sorted by time, stop removing data at
@@ -230,7 +230,7 @@ namespace gnsstk
 
    // These are just to facilitate debugging.
    std::ostream& operator<<(std::ostream& s, const gnsstk::WxObservation& obs)
-      throw()
+      noexcept
    {
       // Note that this does not flag where the wx data came from
       s << obs.t << ", t=" << obs.temperature

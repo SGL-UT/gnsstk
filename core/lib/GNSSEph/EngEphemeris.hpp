@@ -88,13 +88,13 @@ namespace gnsstk
    public:
          /// Default constructor
       EngEphemeris()
-      throw();
+      noexcept;
 
          /// Destructor
       virtual ~EngEphemeris() {}
 
-      bool operator==(const EngEphemeris& right) const throw();
-      bool operator!=(const EngEphemeris& right) const throw()
+      bool operator==(const EngEphemeris& right) const noexcept;
+      bool operator!=(const EngEphemeris& right) const noexcept
       { return !(operator==(right)); }
 
          /**
@@ -169,7 +169,7 @@ namespace gnsstk
           * in the IS-GPS-200.
           * @return true if all values are within their effective range.
           */
-      bool isValid() const throw();
+      bool isValid() const noexcept;
 
          /**
           * Query presence of subframe in this object.
@@ -236,7 +236,7 @@ namespace gnsstk
          /// Return 0x8b, the upper 5 bits of the 22-bit TLM word.
          // kinda pointless, huh?
       unsigned char getTLMPreamble() const
-         throw()
+         noexcept
       { return 0x8b; }
 
          /** Return the lower 16 bits of the TLM word for the given subframe.
@@ -263,12 +263,12 @@ namespace gnsstk
 
          /// used for template functions
       CommonTime getTimestamp() const
-         throw()
+         noexcept
       { return getEpochTime(); }
 
          /** This functions returns the GNSS type (satellite system code) */
       std::string getSatSys() const
-         throw()
+         noexcept
       { return satSys; }
 
          /** This function returns the PRN ID of the SV.

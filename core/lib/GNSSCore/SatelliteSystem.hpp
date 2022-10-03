@@ -76,9 +76,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a SatelliteSystem to a whitespace-free string name.
-      std::string asString(SatelliteSystem e) throw();
+      std::string asString(SatelliteSystem e) noexcept;
          /// Convert a string name to an SatelliteSystem
-      SatelliteSystem asSatelliteSystem(const std::string& s) throw();
+      SatelliteSystem asSatelliteSystem(const std::string& s) noexcept;
    }
 
       /** Translate system enumeration to its string representation.

@@ -66,9 +66,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a XmitAnt to a whitespace-free string name.
-      std::string asString(XmitAnt e) throw();
+      std::string asString(XmitAnt e) noexcept;
          /// Convert a string name to an XmitAnt
-      XmitAnt asXmitAnt(const std::string& s) throw();
+      XmitAnt asXmitAnt(const std::string& s) noexcept;
    }
 } // namespace gnsstk
 
