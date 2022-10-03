@@ -42,7 +42,7 @@ namespace gnsstk
 {
    namespace StringUtils
    {
-      std::string asString(NavValidityType e) throw()
+      std::string asString(NavValidityType e) noexcept
       {
          switch (e)
          {
@@ -55,7 +55,7 @@ namespace gnsstk
       } // asString(NavValidityType)
 
 
-      NavValidityType asNavValidityType(const std::string& s) throw()
+      NavValidityType asNavValidityType(const std::string& s) noexcept
       {
          if (s == "Unknown")
             return NavValidityType::Unknown;

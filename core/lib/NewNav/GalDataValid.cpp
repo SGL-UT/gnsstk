@@ -42,7 +42,7 @@ namespace gnsstk
 {
    namespace StringUtils
    {
-      std::string asString(GalDataValid e) throw()
+      std::string asString(GalDataValid e) noexcept
       {
          switch (e)
          {
@@ -54,7 +54,7 @@ namespace gnsstk
       } // asString(GalDataValid)
 
 
-      GalDataValid asGalDataValid(const std::string& s) throw()
+      GalDataValid asGalDataValid(const std::string& s) noexcept
       {
          if (s == "Unknown")
             return GalDataValid::Unknown;

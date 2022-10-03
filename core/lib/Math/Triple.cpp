@@ -105,7 +105,7 @@ namespace gnsstk
 
       // returns the dot product of the two vectors
    double Triple :: dot(const Triple& right) const
-      throw()
+      noexcept
    {
       Triple z;
       z = (this->theArray)*(right.theArray);
@@ -116,7 +116,7 @@ namespace gnsstk
 
       // retuns v1 x v2 , vector cross product
    Triple Triple :: cross(const Triple& right) const
-      throw()
+      noexcept
    {
       Triple cp;
       cp[0] = (*this)[1] * right[2] - (*this)[2] * right[1];
@@ -126,7 +126,7 @@ namespace gnsstk
    }
 
 
-   double Triple :: mag() const throw()
+   double Triple :: mag() const noexcept
    {
       return std::sqrt(dot(*this));
    }
@@ -171,7 +171,7 @@ namespace gnsstk
 
       // Computes the slant range between two vectors
    double Triple :: slantRange(const Triple& right) const
-      throw()
+      noexcept
    {
       Triple z;
       z = right.theArray - this->theArray;
@@ -247,7 +247,7 @@ namespace gnsstk
        * @return A triple which is the original triple rotated angle about X
        */
    Triple Triple::R1(const double& angle) const
-      throw()
+      noexcept
    {
       double ang(angle*DEG_TO_RAD);
       double sinangle(std::sin(ang));
@@ -265,7 +265,7 @@ namespace gnsstk
        * @return A triple which is the original triple rotated angle about Y
        */
    Triple Triple::R2(const double& angle) const
-      throw()
+      noexcept
    {
       double ang(angle*DEG_TO_RAD);
       double sinangle(std::sin(ang));
@@ -283,7 +283,7 @@ namespace gnsstk
        * @return A triple which is the original triple rotated angle about Z
        */
    Triple Triple::R3(const double& angle) const
-      throw()
+      noexcept
    {
       double ang(angle*DEG_TO_RAD);
       double sinangle(std::sin(ang));

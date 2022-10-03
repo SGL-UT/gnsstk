@@ -51,7 +51,7 @@ public:
          : gnsstk::FFBinaryStream(fn, mode)
    {}
 
-   virtual bool isStreamLittleEndian() const throw()
+   virtual bool isStreamLittleEndian() const noexcept
    { return true; }
 };
 
@@ -64,7 +64,7 @@ public:
          : gnsstk::FFBinaryStream(fn, mode)
    {}
 
-   virtual bool isStreamLittleEndian() const throw()
+   virtual bool isStreamLittleEndian() const noexcept
    { return false; }
 };
 

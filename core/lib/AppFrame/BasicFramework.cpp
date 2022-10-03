@@ -55,7 +55,7 @@ namespace gnsstk
 
    BasicFramework :: BasicFramework( const std::string& applName,
                                      const std::string& applDesc )
-      throw()
+      noexcept
          : debugLevel(0),
            verboseLevel(0),
            exitCode(0),
@@ -71,7 +71,7 @@ namespace gnsstk
    bool BasicFramework :: initialize( int argc,
                                       char *argv[],
                                       bool pretty )
-      throw()
+      noexcept
    {
 
          // Creating the parser here ensures that all the subclasses'
@@ -124,7 +124,7 @@ namespace gnsstk
 
 
    bool BasicFramework :: run()
-      throw()
+      noexcept
    {
 
       try

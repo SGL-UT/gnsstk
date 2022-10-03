@@ -55,7 +55,7 @@ class DFDiff : public gnsstk::BasicFramework
 {
 public:
    DFDiff(const string& applName)
-      throw()
+      noexcept
       : gnsstk::BasicFramework(
          applName,
          "Differences two input files while allowing small differences"
@@ -86,7 +86,7 @@ public:
       return v;
    }
 
-   bool initialize(int argc, char *argv[]) throw()
+   bool initialize(int argc, char *argv[]) noexcept
    {
       gnsstk::CommandOptionWithAnyArg
          input1Option('1', "input1", "First file to take the input from.", true),

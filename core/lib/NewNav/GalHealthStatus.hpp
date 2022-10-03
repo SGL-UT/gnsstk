@@ -65,9 +65,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a GalHealthStatus to a whitespace-free string name.
-      std::string asString(GalHealthStatus e) throw();
+      std::string asString(GalHealthStatus e) noexcept;
          /// Convert a string name to an GalHealthStatus
-      GalHealthStatus asGalHealthStatus(const std::string& s) throw();
+      GalHealthStatus asGalHealthStatus(const std::string& s) noexcept;
    }
 
       //@}

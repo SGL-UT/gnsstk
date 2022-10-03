@@ -82,9 +82,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a CarrierBand to a whitespace-free string name.
-      std::string asString(CarrierBand e) throw();
+      std::string asString(CarrierBand e) noexcept;
          /// Convert a string name to an CarrierBand
-      CarrierBand asCarrierBand(const std::string& s) throw();
+      CarrierBand asCarrierBand(const std::string& s) noexcept;
    }
 } // namespace gnsstk
 

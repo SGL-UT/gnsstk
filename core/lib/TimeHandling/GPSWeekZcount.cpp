@@ -345,7 +345,7 @@ namespace gnsstk
 
 
    long GPSWeekZcount::operator-(const GPSWeekZcount& right) const
-      throw()
+      noexcept
    {
       return (((long(week) - long(right.week)) * ZCOUNT_PER_WEEK) +
               (long(zcount) - long(right.zcount)));
@@ -367,7 +367,7 @@ namespace gnsstk
    bool GPSWeekZcount::inSameTimeBlock(const GPSWeekZcount& other,
                                        unsigned long inZcountBlock,
                                        unsigned long inZcountOffset)
-      throw()
+      noexcept
    {
       if (inZcountBlock < ZCOUNT_PER_WEEK)
       {

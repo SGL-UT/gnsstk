@@ -65,9 +65,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a DumpDetail to a whitespace-free string name.
-      std::string asString(DumpDetail e) throw();
+      std::string asString(DumpDetail e) noexcept;
          /// Convert a string name to an DumpDetail
-      DumpDetail asDumpDetail(const std::string& s) throw();
+      DumpDetail asDumpDetail(const std::string& s) noexcept;
    }
 
       //@}

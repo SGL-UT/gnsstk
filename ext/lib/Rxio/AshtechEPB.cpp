@@ -96,7 +96,7 @@ namespace gnsstk
    }
 
    //---------------------------------------------------------------------------
-   void AshtechEPB::dump(ostream& out) const throw()
+   void AshtechEPB::dump(ostream& out) const noexcept
    {
       ostringstream oss;
       using gnsstk::StringUtils::asString;

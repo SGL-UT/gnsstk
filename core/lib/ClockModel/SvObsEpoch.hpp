@@ -58,7 +58,7 @@ namespace gnsstk
       vfloat azimuth, elevation;
    };
 
-   std::ostream& operator<<(std::ostream& s, const SvObsEpoch& obs) throw();
+   std::ostream& operator<<(std::ostream& s, const SvObsEpoch& obs) noexcept;
 
       //@}
 

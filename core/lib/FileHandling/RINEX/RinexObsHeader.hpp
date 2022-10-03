@@ -317,7 +317,7 @@ namespace gnsstk
       void ParseHeaderRecord(std::string& line);
 
          /// Compute the number of valid header records which WriteHeaderRecords() will write
-      int NumberHeaderRecordsToBeWritten(void) const throw();
+      int NumberHeaderRecordsToBeWritten(void) const noexcept;
 
          /**
           * Write all valid header records to the given stream.

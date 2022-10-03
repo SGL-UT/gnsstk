@@ -43,7 +43,7 @@ namespace gnsstk
 {
    namespace StringUtils
    {
-      std::string asString(TimeOffsetFilter e) throw()
+      std::string asString(TimeOffsetFilter e) noexcept
       {
          switch (e)
          {
@@ -56,7 +56,7 @@ namespace gnsstk
       } // asString(TimeOffsetFilter)
 
 
-      TimeOffsetFilter asTimeOffsetFilter(const std::string& s) throw()
+      TimeOffsetFilter asTimeOffsetFilter(const std::string& s) noexcept
       {
          std::string copy(s);
          gnsstk::StringUtils::lowerCase(copy);

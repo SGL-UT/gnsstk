@@ -62,7 +62,7 @@ namespace gnsstk
    {
    public:
          /// Default constructor
-      HelmertTransform() throw();
+      HelmertTransform() noexcept;
 
          /** Explicit constructor, from the 7 parameters.
           * All the inputs are unchanged.
@@ -144,7 +144,7 @@ namespace gnsstk
 
          /** Dump the object to a multi-line string including
           * reference frames, the 7 parameters and description. */
-      std::string asString() const throw();
+      std::string asString() const noexcept;
 
          /** Transform Position to another frame using this transform
           * or its inverse.
@@ -192,15 +192,15 @@ namespace gnsstk
                      double& rx, double& ry, double& rz);
 
          /// Get the reference frame this transform can convert from (or to).
-      ReferenceFrame getFromFrame() const throw()
+      ReferenceFrame getFromFrame() const noexcept
       { return fromFrame; }
 
          /// Get the reference frame this transform can convert to (or from).
-      ReferenceFrame getToFrame() const throw()
+      ReferenceFrame getToFrame() const noexcept
       { return toFrame; }
 
          /// Get the time at which this transform becomes valid.
-      CommonTime getEpoch() const throw()
+      CommonTime getEpoch() const noexcept
       { return epoch; }
 
          /// Epoch at which GLONASS transitions from PZ90 to PZ90.02

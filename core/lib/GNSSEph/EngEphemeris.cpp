@@ -60,7 +60,7 @@ namespace gnsstk
    using namespace std;
 
    EngEphemeris::EngEphemeris()
-      throw()
+      noexcept
    {
       haveSubframe[0] = haveSubframe[1] = haveSubframe[2] = false;
 
@@ -98,7 +98,7 @@ namespace gnsstk
    }
 
 
-   bool EngEphemeris::operator==(const gnsstk::EngEphemeris& right) const throw()
+   bool EngEphemeris::operator==(const gnsstk::EngEphemeris& right) const noexcept
    {
          // ignored as not important for eng eph comparison
          //haveSubframe
@@ -375,7 +375,7 @@ namespace gnsstk
    }
 
    bool EngEphemeris :: isValid() const
-      throw()
+      noexcept
    {
       try
       {

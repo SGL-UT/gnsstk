@@ -69,9 +69,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a AngleType to a whitespace-free string name.
-      std::string asString(AngleType e) throw();
+      std::string asString(AngleType e) noexcept;
          /// Convert a string name to an AngleType
-      AngleType asAngleType(const std::string& s) throw();
+      AngleType asAngleType(const std::string& s) noexcept;
    }
 
       //@}

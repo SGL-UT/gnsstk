@@ -62,7 +62,7 @@ namespace gnsstk
    class ClockModel
    {
    public:
-      ClockModel() throw() {};
+      ClockModel() noexcept {};
 
       virtual double getOffset(const gnsstk::CommonTime& t) const = 0;
 

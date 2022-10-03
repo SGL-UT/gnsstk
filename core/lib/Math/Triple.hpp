@@ -104,7 +104,7 @@ namespace gnsstk
           * @return The dot product of \c this and \c right
           */
       double dot(const Triple& right) const
-         throw();
+         noexcept;
 
          /**
           * Computes the Cross Product of two vectors
@@ -112,13 +112,13 @@ namespace gnsstk
           * @return The cross product of \c v1 and \c v2
           */
       Triple cross(const Triple& right) const
-         throw();
+         noexcept;
 
          /**
           * Computes the Magnigude of this vector
           */
       double mag() const
-         throw();
+         noexcept;
 
          /**
           * Returns the unit vector of this vector
@@ -140,7 +140,7 @@ namespace gnsstk
           * @return The slant range between \c this and \c right
           */
       double slantRange(const Triple& right) const
-         throw();
+         noexcept;
 
          /**
           * Computes the elevation of a point with respect to this
@@ -164,7 +164,7 @@ namespace gnsstk
           * @return A triple which is the original triple rotated angle about X
           */
       Triple R1(const double& angle) const
-         throw();
+         noexcept;
 
 
          /** Computes rotation about axis Y.
@@ -172,7 +172,7 @@ namespace gnsstk
           * @return A triple which is the original triple rotated angle about Y
           */
       Triple R2(const double& angle) const
-         throw();
+         noexcept;
 
 
          /** Computes rotation about axis Z.
@@ -180,7 +180,7 @@ namespace gnsstk
           * @return A triple which is the original triple rotated angle about Z
           */
       Triple R3(const double& angle) const
-         throw();
+         noexcept;
 
          /**
           * Return a reference to the element at /a index.

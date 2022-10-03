@@ -95,7 +95,7 @@ class GlobalData : public Singleton<GlobalData> {
 public:
 
    /// Default and only constructor, sets defaults.
-   GlobalData() throw() { SetDefaults(); }
+   GlobalData() noexcept { SetDefaults(); }
 
    /// Create, parse and process command line options and user input
    /// @param argc argv std command line arguments
@@ -127,7 +127,7 @@ public:
 
 private:
    /// Define defaults for all command line input and global data
-   void SetDefaults(void) throw();
+   void SetDefaults(void) noexcept;
 
 public:
    // member data
@@ -180,7 +180,7 @@ const string GlobalData::Version(string("1.0 4/13/17"));
 
 //------------------------------------------------------------------------------------
 // Define defaults for all command line input and global data
-void GlobalData::SetDefaults(void) throw()
+void GlobalData::SetDefaults(void) noexcept
 {
    logfile = string();
 

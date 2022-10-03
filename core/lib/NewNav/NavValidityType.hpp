@@ -66,9 +66,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a NavValidityType to a whitespace-free string name.
-      std::string asString(NavValidityType e) throw();
+      std::string asString(NavValidityType e) noexcept;
          /// Convert a string name to an NavValidityType
-      NavValidityType asNavValidityType(const std::string& s) throw();
+      NavValidityType asNavValidityType(const std::string& s) noexcept;
    }
 
       //@}

@@ -603,7 +603,7 @@ namespace gnsstk
 
          /** Compute number of valid header records that
           * writeHeaderRecords() will write */
-      int numberHeaderRecordsToBeWritten(void) const throw();
+      int numberHeaderRecordsToBeWritten(void) const noexcept;
 
          /** Write all valid header records to the given stream.  Used
           * by reallyPutRecord for both Rinex3ObsHeader and

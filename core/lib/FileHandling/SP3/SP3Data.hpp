@@ -113,7 +113,7 @@ namespace gnsstk
          /// Debug output function.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Woverloaded-virtual"
-      virtual void dump(std::ostream& s=std::cout, bool includeC=true) const throw();
+      virtual void dump(std::ostream& s=std::cout, bool includeC=true) const noexcept;
 #pragma clang diagnostic pop
 
       char RecType;    ///< Data type indicator. P position, V velocity, * epoch

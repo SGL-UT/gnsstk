@@ -80,7 +80,7 @@ namespace gnsstk
           */
       InOutFramework( const std::string& applName,
                       const std::string& applDesc )
-            throw()
+            noexcept
             : LoopedFramework(applName, applDesc)
       {};
 
@@ -92,7 +92,7 @@ namespace gnsstk
       bool initialize( int argc,
                        char *argv[],
                        bool pretty = true )
-         throw()
+         noexcept
       {
          using std::ios;
 

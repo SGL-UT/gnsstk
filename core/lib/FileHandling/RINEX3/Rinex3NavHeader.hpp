@@ -84,7 +84,7 @@ namespace gnsstk
       IonoCorr(std::string str);
 
          /// Return string version of CorrType
-      std::string asString() const throw();
+      std::string asString() const noexcept;
 
          /** Set type value from RINEX correction type string.
           * @throw Exception

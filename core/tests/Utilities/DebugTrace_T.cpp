@@ -51,7 +51,7 @@ public:
    DebugTrace_T(const string& applName)
          : gnsstk::BasicFramework(applName, "Compile-time test of DebugTrace")
    {}
-   bool initialize(int argc, char *argv[], bool pretty = true) throw()
+   bool initialize(int argc, char *argv[], bool pretty = true) noexcept
       override
    {
       if (!BasicFramework::initialize(argc, argv, pretty))

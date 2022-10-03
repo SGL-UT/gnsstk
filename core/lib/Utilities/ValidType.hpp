@@ -69,11 +69,11 @@ namespace gnsstk
       ValidType(const T& v):value(v),valid(true){}
       ValidType():value(0),valid(false){}
 
-      ValidType& operator=(const T& v) throw()
+      ValidType& operator=(const T& v) noexcept
       { this->valid = true; this->value = v; return *this; }
 
-      ValidType& operator+=(const T& r) throw(){value+=r; return *this;}
-      ValidType& operator-=(const T& r) throw(){value-=r; return *this;}
+      ValidType& operator+=(const T& r) noexcept{value+=r; return *this;}
+      ValidType& operator-=(const T& r) noexcept{value-=r; return *this;}
 
          /** A conversion operator, will throw an exception if the object
           * is marked invalid.
@@ -96,7 +96,7 @@ namespace gnsstk
       bool is_valid() const { return valid; }
       T get_value() const { return value; }
 
-      void set_valid(const bool& v) throw()
+      void set_valid(const bool& v) noexcept
       { valid=v; }
 
    private:
@@ -117,7 +117,7 @@ namespace gnsstk
 
 
    template <class T>
-   std::ostream& operator<<(std::ostream& s, const ValidType<T>& r) throw()
+   std::ostream& operator<<(std::ostream& s, const ValidType<T>& r) noexcept
    {
       if (r.is_valid())
          s << r.get_value();

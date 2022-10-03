@@ -97,7 +97,7 @@ public:
    vector<string> cmdlineUnrecog;
 
       // ctor with defaults
-   InputConfig() throw() 
+   InputConfig() noexcept 
    {
       fmtGPS = string("%F,%g");
       fmtCAL = string("%Y,%m,%d,%02H,%M,%f");

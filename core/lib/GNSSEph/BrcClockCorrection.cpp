@@ -52,7 +52,7 @@ namespace gnsstk
    using namespace gnsstk;
 
    BrcClockCorrection::BrcClockCorrection()
-      throw()
+      noexcept
    {
       dataLoaded = false;
 
@@ -95,7 +95,7 @@ namespace gnsstk
 
 
    bool BrcClockCorrection::operator==(const BrcClockCorrection& right) const
-      throw()
+      noexcept
    {
          // EngNav has no data
       return ((dataLoaded == right.dataLoaded) &&

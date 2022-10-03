@@ -77,8 +77,8 @@ public:
 class BasicFrameworkHelp_T : public gnsstk::BasicFramework
 {
 public:
-   BasicFrameworkHelp_T(const std::string& applName) throw();
-   bool initialize(int argc, char *argv[], bool pretty = true) throw();
+   BasicFrameworkHelp_T(const std::string& applName) noexcept;
+   bool initialize(int argc, char *argv[], bool pretty = true) noexcept;
    virtual ~BasicFrameworkHelp_T()
    { delete reqOpt; }
    CommandOptionHelpTest xOpt;
@@ -91,7 +91,7 @@ public:
 
 BasicFrameworkHelp_T ::
 BasicFrameworkHelp_T(const std::string& applName)
-      throw()
+      noexcept
       : BasicFramework(applName, "Facilitate testing of help-like options"),
         sOpt('w', "whelp", "It was just a coincidence, I swear.",
              "Odd groups got left, even groups got right. That means 1, 3, 5,\n"
@@ -117,7 +117,7 @@ BasicFrameworkHelp_T(const std::string& applName)
 
 bool BasicFrameworkHelp_T ::
 initialize(int argc, char *argv[], bool pretty)
-   throw()
+   noexcept
 {
       // Change behavior slightly based on the application name.  This
       // is neither unusual nor unprecedented.

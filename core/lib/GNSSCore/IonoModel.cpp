@@ -50,13 +50,13 @@
 namespace gnsstk
 {
    IonoModel::IonoModel(const double a[4], const double b[4],
-                        const bool semicircle_units) throw()
+                        const bool semicircle_units) noexcept
    {
         setModel(a, b, semicircle_units);
    }
 
 
-   IonoModel::IonoModel(const EngAlmanac& engalm) throw()
+   IonoModel::IonoModel(const EngAlmanac& engalm) noexcept
    {
       try
       {
@@ -71,7 +71,7 @@ namespace gnsstk
 
 
    void IonoModel::setModel(const double a[4], const double b[4],
-                            const bool semicircle_units) throw()
+                            const bool semicircle_units) noexcept
    {
       for (int n = 0; n < 4; n++)
       {
@@ -174,7 +174,7 @@ namespace gnsstk
    }
 
 
-   bool IonoModel::operator==(const IonoModel& right) const throw()
+   bool IonoModel::operator==(const IonoModel& right) const noexcept
    {
       for (int n = 0; n < 4; n++)
       {
@@ -185,13 +185,13 @@ namespace gnsstk
    }
 
 
-   bool IonoModel::operator!=(const IonoModel&right) const throw()
+   bool IonoModel::operator!=(const IonoModel&right) const noexcept
    {
       return !(operator==(right));
    }
 
 
-   bool IonoModel::getModel(double a[4], double b[4]) const throw()
+   bool IonoModel::getModel(double a[4], double b[4]) const noexcept
    {
       if (valid)
       {

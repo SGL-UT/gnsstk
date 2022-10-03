@@ -66,7 +66,7 @@ namespace gnsstk
       /// A time history of the observations collected from a single receiver.
    typedef std::map<CommonTime, ObsEpoch> ObsEpochMap;
 
-   std::ostream& operator<<(std::ostream& s, const ObsEpoch& oe) throw();
+   std::ostream& operator<<(std::ostream& s, const ObsEpoch& oe) noexcept;
 
       //@}
 

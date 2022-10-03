@@ -121,7 +121,7 @@ namespace gnsstk
 
 
    std::string IonoCorr ::
-   asString() const throw()
+   asString() const noexcept
    {
       switch(type)
       {

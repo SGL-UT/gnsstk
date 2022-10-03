@@ -77,7 +77,7 @@ namespace gnsstk
       };
 
          /// default constructor
-      EngNav() throw();
+      EngNav() noexcept;
 
          /// destructor
       virtual ~EngNav() {}
@@ -188,7 +188,7 @@ namespace gnsstk
       static bool subframeConvert(const long input[10],
                                   int gpsWeek,
                                   double output[60])
-         throw();
+         noexcept;
 
          /**
           * Given 10 words of a navigation message subframe (as
@@ -210,7 +210,7 @@ namespace gnsstk
       static bool subframeConvert(const uint32_t input[10],
                                   short gpsWeek,
                                   double output[60])
-         throw();
+         noexcept;
 
          /** Convert the week number in \c out from 8-bit to full
           * using the full week number \c gpsWeek.
@@ -220,7 +220,7 @@ namespace gnsstk
           * each other.
           */
       static bool convert8bit(int gpsWeek, double *out)
-         throw();
+         noexcept;
 
          /** Convert the week number in \c out from 10-bit to full
           * using the full week number \c gpsWeek.
@@ -230,7 +230,7 @@ namespace gnsstk
           * each other.
           */
       static bool convert10bit(int gpsWeek, double *out)
-         throw();
+         noexcept;
 
          /** Convert the week number in \c out from 8 or 10-bit to full
           * using the full week number \c fullGPSWeek.
@@ -270,9 +270,9 @@ namespace gnsstk
           * @return the pattern ID as defined in the above table.
           */
       static short getSubframePattern(const long input[10])
-         throw();
+         noexcept;
       static short getSubframePattern(const uint32_t input[10])
-         throw();
+         noexcept;
 
          /**
           * Given an SV/Page ID (1-63), set the subframe ID and page
@@ -287,7 +287,7 @@ namespace gnsstk
           * be one of the possible pages for that SV/Page ID.
           */
       static bool sv2page(short svpgid, short& subframe, short& page)
-         throw();
+         noexcept;
 
 
          /**
@@ -301,7 +301,7 @@ namespace gnsstk
           * be one of the possible pages for that SV/Page ID.
           */
       static bool sfpage2svid(short subframe, short page, short& svpgid)
-         throw();
+         noexcept;
 
 
          /**
@@ -315,7 +315,7 @@ namespace gnsstk
           */
       static bool zcount2page(unsigned long zcount,
                               short& subframe, short& page)
-         throw();
+         noexcept;
 
          /**
           * Emit human-readable instance data to the specified stream.
@@ -390,7 +390,7 @@ namespace gnsstk
       static void convertQuant(const uint32_t input[10],
                                double output[60],
                                const DecodeQuant& dq)
-         throw();
+         noexcept;
    }; // class EngNav
 
       //@}

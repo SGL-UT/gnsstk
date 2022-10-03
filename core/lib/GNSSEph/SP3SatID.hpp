@@ -68,7 +68,7 @@ namespace gnsstk
       SP3SatID() = default;
 
          /// explicit constructor, no defaults, SP3 systems only
-      SP3SatID(int p, SatelliteSystem s) throw();
+      SP3SatID(int p, SatelliteSystem s) noexcept;
 
          /** constructor from string
           * @throw Exception
@@ -80,17 +80,17 @@ namespace gnsstk
       }
 
          /// cast SatID to SP3SatID
-      SP3SatID(const SatID& sat) throw()
+      SP3SatID(const SatID& sat) noexcept
             : SatID(sat)
       { validate(); }
 
          /// set the fill character used in output
          /// return the current fill character
-      char setfill(char c) throw()
+      char setfill(char c) noexcept
       { char csave=fillchar; fillchar=c; return csave; }
 
          /// get the fill character used in output
-      char getfill() throw()
+      char getfill() noexcept
       { return fillchar; }
 
          // operator=, copy constructor and destructor built by compiler
@@ -136,9 +136,9 @@ namespace gnsstk
          /// return a character based on the system
          /// return the single-character system descriptor
          /// @note return only SP3 types, for non-SP3 systems return '?'
-      char systemChar() const throw();
+      char systemChar() const noexcept;
 
-      std::string systemString() const throw();
+      std::string systemString() const noexcept;
 
          /** read from string
           * @note GPS is default system (no or unknown system char)
@@ -147,7 +147,7 @@ namespace gnsstk
       void fromString(const std::string s);
 
          /// convert to string
-      std::string toString() const throw();
+      std::string toString() const noexcept;
 
    private:
          /// If an unsupported system is used, set to unknown and PRN -1.

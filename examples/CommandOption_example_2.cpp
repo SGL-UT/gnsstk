@@ -62,7 +62,7 @@ public:
       /// Initialize command-line arguments
    CommandOption2Example(const string& applName);
       /// Process command-line arguments
-   bool initialize(int argc, char *argv[], bool pretty = true) throw() override;
+   bool initialize(int argc, char *argv[], bool pretty = true) noexcept override;
       /// Do the processing.
    void process() override;
       /// Clean up.
@@ -97,7 +97,7 @@ CommandOption2Example(const string& applName)
 
 
 bool CommandOption2Example ::
-initialize(int argc, char *argv[], bool pretty) throw()
+initialize(int argc, char *argv[], bool pretty) noexcept
 {
    if (!BasicFramework::initialize(argc, argv, pretty))
       return false;

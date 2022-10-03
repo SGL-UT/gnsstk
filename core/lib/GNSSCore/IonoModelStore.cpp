@@ -86,7 +86,7 @@ namespace gnsstk
        * \return true if the model was added, false otherwise
        */
    bool IonoModelStore::addIonoModel(const CommonTime& mt, const IonoModel& im)
-      throw()
+      noexcept
    {
       if (!im.isValid())
          return false;
