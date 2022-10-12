@@ -111,6 +111,58 @@ Any expected result data should be placed in the gnsstk/data/expected/ directory
 Also, any further sub-organization of the testing data is left to the developer's discretion, but make sure that the name of the grouped content is clear. For example, if testing an app called foo required one of each of the Rinex filetypes for a single day, all of the data could be grouped into a directory named for the day.
 
 
+Submodules
+----------
+
+As of the October 2022 release, the test data for gnsstk is kept in an
+independent repository and managed via submodules.
+
+If you wish to run the unit tests, new clones can be created
+with the --recurse-submodules option, e.g.
+
+    git clone --recurse-submodules $GITSERVER/gnsstk.git
+
+For existing clones, you can set up the submodules using:
+
+    git fetch
+    git submodule update --init
+
+
+Changes to the code repositories work the same as always.  If you need
+to make changes to the test data repo, you should also make sure that
+the source repos have a consistent link to that changed repo.
+
+During development, you can use commands like the following to make
+temporary changes which will be reflected in the CI pipeline
+(replacing "feature/tks-XXX" with the branch name you want to use for
+the data repo changes):
+
+    ~/src/gnsstk$ cd data
+    ~/src/gnsstk/data$ git checkout -b "feature/tks-XXX" main
+    *edit, change, etc.*
+    ~/src/gnsstk/data$ git commit -am "Made some changes"
+    ~/src/gnsstk/data$ git push -u origin "feature/tks-XXX"
+    ~/src/gnsstk/data$ cd ..
+    ~/src/gnsstk$ git commit -am "Made some changes"
+    ~/src/gnsstk$ git push
+
+*NOTE: this will push a commit that contains a change of the submodule
+ commit reference to the above branch*
+
+When the CI pipeline for the code repository (gnsstk) succeeds, you
+can merge the changes to the *data* repository (gnsstk-data).  After
+those changes are merged, you will need to update the code submodule
+commit reference:
+
+    ~/src/gnsstk$ git submodule update --recursive --remote
+    ~/src/gnsstk$ git commit -am "Updated test data submodule reference"
+    ~/src/gnsstk$ git push
+
+The CI pipeline should complete successfully.  Repeat this in other
+repositories that use the gnsstk-data repo as a submodule (e.g
+gnsstk-apps).
+
+
 
 Examples
 --------

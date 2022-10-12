@@ -32,6 +32,7 @@ stages:
 - clean
 
 variables:
+  GIT_SUBMODULE_STRATEGY: recursive
   # Default cmake arguments
   CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
   # this can be used for incremental builds
@@ -132,6 +133,20 @@ sgllint_lint:
     - sgl_lint -v -R swig/apps
     - sgl_lint -v -R swig/gnsstk
   dependencies: []
+
+submodule_check:
+  stage: check
+  needs: []
+  extends: .normal_build
+  tags:
+    - docker-executor
+  variables:
+    GIT_SUBMODULE_UPDATE_FLAGS: --remote
+  only:
+    - main
+  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
+  script:
+    - (! git status --porcelain | grep 'M data')
 
 protected_term_lint:
   stage: check
@@ -1074,7 +1089,7 @@ system_install_redhat_8:
 #     - deb7-support
 #   image: $DOCKER_REGISTRY/sgl_ci/debian7_fai_ish
 #   script:
-#     - rm -rf ../*.deb
+#     - rm -rf ../*.deb .gitmodules
 #     # Mark the debian log so that this package is a backport.
 #     # dpkg-parsechangelog doesn't support -S under debian 7, so hard code it.
 #     - export DEBEMAIL="No One <nobody@arlut.utexas.edu>"
@@ -1104,7 +1119,7 @@ system_install_redhat_8:
 #     - docker-executor
 #   image: $DOCKER_REGISTRY/sgl_ci/debian8_fai_ish
 #   script:
-#     - rm -rf ../*.deb
+#     - rm -rf ../*.deb .gitmodules
 #     # Mark the debian log so that this package is a backport.
 #     # Use the most recent Maintainer as current maintainer.
 #     - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
@@ -1128,7 +1143,7 @@ package_debian_9:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
   script:
-    - rm -rf ../*.deb
+    - rm -rf ../*.deb .gitmodules
     # Mark the debian log so that this package is a backport.
     # Use the most recent Maintainer as current maintainer.
     - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
@@ -1163,7 +1178,7 @@ package_debian_10:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
-    - rm -rf ../*.deb
+    - rm -rf ../*.deb .gitmodules
     # Mark the debian log so that this package is a backport.
     # Use the most recent Maintainer as current maintainer.
     - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
@@ -1200,7 +1215,7 @@ package_debian_11:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
-    - rm -rf ../*.deb
+    - rm -rf ../*.deb .gitmodules
     # Mark the debian log so that this package is a backport.
     # Use the most recent Maintainer as current maintainer.
     - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)

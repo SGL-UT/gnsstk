@@ -165,6 +165,9 @@ The most recent version of the GNSSTk source code can be found here:
 * http://www.gnsstk.org
 * https://github.com/SGL-UT/GNSSTk
 
+Note: As of the October 2022 release, submodules are being used for
+test data.  Refer to TESTING.md for details.
+
 The tools used for the build and install frameworks are cross-platform.
 These include CMake, SWIG, and python (distutils).
 
