@@ -160,8 +160,11 @@ namespace gnsstk
       bool operator!=(const NavSatelliteID& right) const
       { return !(operator==(right)); }
 
-         /// return true if any of the fields are set to match wildcards.
+         /// Return true if any of the fields are set to match wildcards.
       bool isWild() const override;
+
+         /// Return true if this object identifies a GLONASS FDMA signal.
+      bool isGLOFDMA() const;
 
       SatID sat;     ///< ID of satellite to which the nav data applies.
       SatID xmitSat; ///< ID of the satellite transmitting the nav data.

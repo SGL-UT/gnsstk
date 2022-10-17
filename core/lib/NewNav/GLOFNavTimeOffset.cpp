@@ -47,8 +47,11 @@ namespace gnsstk
    GLOFNavTimeOffset()
    {
       msgLenSec = 2.0;
-      src = TimeSystem::GLO;
-      tgt = TimeSystem::GPS;
+         // The ICD uses the opposite sign convention from what
+         // StdNavTimeOffset uses, so just swap the src and tgt from
+         // what you would normally expect.
+      src = TimeSystem::GPS;
+      tgt = TimeSystem::GLO;
       weekFmt = "";
    }
 

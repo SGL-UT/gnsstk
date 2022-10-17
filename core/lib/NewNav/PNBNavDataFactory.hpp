@@ -75,6 +75,10 @@ namespace gnsstk
          /** Indicate what nav message types the factories should be
           * loading.  This should be called before any addData()
           * calls.
+          * @warning You MUST include Health data in the type filter
+          *   if you intend to look up data by health status other
+          *   than "Any" (exceptions: if you're ONLY looking up orbit
+          *   data that has self-contained health status).
           * @param[in] nmts The set of nav message types to be
           *   processed by the factories. */
       virtual void setTypeFilter(const NavMessageTypeSet& nmts);

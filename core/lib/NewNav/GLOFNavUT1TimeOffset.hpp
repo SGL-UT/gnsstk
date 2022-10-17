@@ -48,7 +48,7 @@ namespace gnsstk
       //@{
 
       /** Defines the class that provides the ability to convert
-       * GLONASS to/from UT1 (UTC Grenwich, to distinguish it from
+       * GLONASS to/from UT1 (UTC Greenwich, to distinguish it from
        * UTC(SU)), using data extracted from GLONASS navigation
        * messages.
        * The algorithm is sufficiently different from what's in
@@ -97,7 +97,6 @@ namespace gnsstk
       bool validate() const override;
 
 
-         /// @todo document this stuff as well as you can
       double tauc; ///< Non-integer correction between UTC(SU) and GLONASS.
       double B1;   ///< Time bias in seconds.
       double B2;   ///< Time drift in s/s.

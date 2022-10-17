@@ -40,6 +40,7 @@
 #define GNSSTK_GLOFNAVDATA_HPP
 
 #include "OrbitData.hpp"
+#include "NavFit.hpp"
 #include "SVHealth.hpp"
 
 namespace gnsstk
@@ -49,7 +50,7 @@ namespace gnsstk
 
       /** Class containing data elements shared between GLONASS Civil F-Nav
        * ephemerides and almanacs. */
-   class GLOFNavData : public OrbitData
+   class GLOFNavData : public OrbitData, public NavFit
    {
    public:
          /** Values for Word P.  The values indicate whether the tau_c
@@ -88,8 +89,6 @@ namespace gnsstk
       unsigned slot;      ///< Slot number (n).
       bool lhealth;       ///< Health flag? Different from B_n and C_n?
       SVHealth health;    ///< SV health status.
-      CommonTime beginFit;///< Time at beginning of fit interval.
-      CommonTime endFit;  ///< Time at end of fit interval.
    };
 
       //@}

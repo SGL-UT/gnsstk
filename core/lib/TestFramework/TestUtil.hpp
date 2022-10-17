@@ -65,7 +65,7 @@
    {                                                                    \
       testFramework.assert(EXPR, "Assertion failure: "#EXPR, __LINE__); \
    }                                                                    \
-   catch (gnsstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                       \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false, "Exception during "#EXPR, __LINE__);  \
@@ -83,7 +83,7 @@
    {                                                                    \
       testFramework.assert_equals<TYPE>(EXP, GOT, __LINE__);            \
    }                                                                    \
-   catch (gnsstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                       \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false,                                       \
@@ -105,7 +105,7 @@
    {                                                                    \
       testFramework.assert_equals(EXP, GOT, __LINE__);                  \
    }                                                                    \
-   catch (gnsstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                       \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false,                                       \
@@ -128,7 +128,31 @@
    {                                                                    \
       testFramework.assert_equals(EXP, GOT, __LINE__, "", EPS);         \
    }                                                                    \
-   catch (gnsstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                       \
+   {                                                                    \
+      std::cerr << exc << std::endl;                                    \
+      testFramework.assert(false,                                       \
+                           "Exception evaluating " #EXP " or " #GOT,    \
+                           __LINE__);                                   \
+   }                                                                    \
+   catch (...)                                                          \
+   {                                                                    \
+      testFramework.assert(false,                                       \
+                           "Exception evaluating " #EXP " or " #GOT,    \
+                           __LINE__);                                   \
+   }
+
+
+// Macro for doing equality tests of double/float values with an
+// epsilon chosen based on the representable precision given an
+// expected exponent.  Expects a TestUtil instance named
+// testFramework.
+#define TUASSERTFESMRT(EXP,GOT)                                         \
+   try                                                                  \
+   {                                                                    \
+      testFramework.assert_equals_fps(EXP, GOT, __LINE__, "");          \
+   }                                                                    \
+   catch (gnsstk::Exception &exc)                                       \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false,                                       \
@@ -150,7 +174,7 @@
                                        "File mismatch: "+F1+" "+F2,     \
                                        SKIP);                           \
    }                                                                    \
-   catch (gnsstk::Exception &exc)                                        \
+   catch (gnsstk::Exception &exc)                                       \
    {                                                                    \
       std::cerr << exc << std::endl;                                    \
       testFramework.assert(false,                                       \
@@ -172,7 +196,7 @@
       STATEMENT;                                \
       TUPASS(#STATEMENT);                       \
    }                                            \
-   catch (gnsstk::Exception &exc)                \
+   catch (gnsstk::Exception &exc)               \
    {                                            \
       std::cerr << exc << std::endl;            \
       TUFAIL("Exception");                      \
@@ -190,7 +214,7 @@
       STATEMENT;                                \
       TUFAIL("Did not throw Exception");        \
    }                                            \
-   catch (gnsstk::Exception &exc)                \
+   catch (gnsstk::Exception &exc)               \
    {                                            \
       TUPASS(#STATEMENT);                       \
    }                                            \
@@ -329,6 +353,22 @@ namespace gnsstk
                              int lineNumber,
                              const std::string& testMsg = std::string(),
                              T epsilon = -1);
+
+         /** Smart floating point number comparison taking into
+          * account the representable digits in the mantissa and the
+          * expected exponent.
+          * @param[in] expected The expected value to be compared against.
+          * @param[in] got The value produced by the method under test.
+          * @param[in] lineNumber The line of source in the test file
+          *   where this assert is being performed, typically __LINE__.
+          * @param[in] testMsg A message to be printed on failure.
+          *   A default message will simply say what was expected and
+          *   what the value actually was when expected != got. */
+      template <typename T>
+      void assert_equals_fps( const T& expected,
+                              const T& got,
+                              int lineNumber,
+                              const std::string& testMsg = std::string());
 
 
          /** Takes two matricies, compares them and passes the test
@@ -540,17 +580,17 @@ namespace gnsstk
              const std::string& testFileInput,
              const         int& testLineInput,
              const         int& verbosityInput )
-      : outputKeyword( "GNSSTkTest" ),
-        sourceClass( sourceClassInput  ),
-        sourceMethod( sourceMethodInput ),
-        testFileName( testFileInput ),
-        testFileLine( "0" ),
-        testMessage( "Developer is a lazy slacker" ),
-        failBit( 0 ),
-        verbosity( verbosityInput ),
-        testCount( 0 ),
-        subtestID( 1 ),
-        failCount( 0 )
+         : outputKeyword( "GNSSTkTest" ),
+           sourceClass( sourceClassInput  ),
+           sourceMethod( sourceMethodInput ),
+           testFileName( testFileInput ),
+           testFileLine( "0" ),
+           testMessage( "Developer is a lazy slacker" ),
+           failBit( 0 ),
+           verbosity( verbosityInput ),
+           testCount( 0 ),
+           subtestID( 1 ),
+           failCount( 0 )
    {
          // convert int to string
       setTestLine( testLineInput );
@@ -616,7 +656,7 @@ namespace gnsstk
       if (epsilon < 0)
          epsilon = std::numeric_limits<T>::epsilon();
 
-      bool good = err < epsilon;
+      bool good = err <= epsilon;
       std::string mess(testMsg);
       if (testMsg.empty())
       {
@@ -631,6 +671,25 @@ namespace gnsstk
          mess = ostr.str();
       }
       assert(good, mess, lineNumber);
+   }
+
+
+   template<typename T>
+   void TestUtil ::
+   assert_equals_fps( const T& expected,
+                      const T& got,
+                      int lineNumber,
+                      const std::string& testMsg )
+   {
+      T err = std::abs(expected - got);
+         // exp = the exponent of expected
+      int exp = 1 + (int)std::floor(std::log10(std::fabs(expected)));
+         // digs10 = the number of decimal digits representable in type T
+      int digs10 = std::numeric_limits<decltype(got+expected)>::digits10;
+         // Make a sensible epsilon based on usable number of
+         // digits exp has after the decimal.
+      double epsilon = std::pow(10, exp-digs10);
+      assert_equals_fp(expected, got, lineNumber, testMsg, epsilon);
    }
 
 

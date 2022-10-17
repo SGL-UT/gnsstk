@@ -48,6 +48,14 @@ namespace gnsstk
       /// @ingroup NavFactory
       //@{
 
+      /** This class provides a factory that processes PackedNavBits
+       * data containing GLONASS FDMA civil nav data as defined in the
+       * GLONASS (FDMA) ICD.  The results of the addData method (in
+       * the navOut argument) may contain any number of GLOFNavAlm,
+       * GLOFNavEph, GLOFNavHealth, GLOFNavISC, GLOFNavTimeOffset or
+       * GLOFNavUT1TimeOffset objects, according to what data is fed
+       * to the method and what data is requested via the validity and
+       * type filters (see PNBNavDataFactory). */
    class PNBGLOFNavDataFactory : public PNBNavDataFactory
    {
    public:
@@ -155,6 +163,13 @@ namespace gnsstk
           * @throw AssertionFailure if unable to convert the time
           *   system of xmitTime to GLO.*/
       unsigned getFrameNum(const CommonTime& xmitTime);
+
+         /// Return true if the PNB is 85 or 96 bits.
+      inline static bool validSize(const PackedNavBitsPtr& navIn)
+      {
+         size_t sz = navIn->getNumBits();
+         return ((sz == 85) || (sz == 96));
+      }
 
    protected:
          /// Class to store fields used to turn GLONASS into UT1.

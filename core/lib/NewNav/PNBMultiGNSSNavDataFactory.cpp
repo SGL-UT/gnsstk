@@ -37,6 +37,7 @@
 //
 //==============================================================================
 #include "PNBMultiGNSSNavDataFactory.hpp"
+#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -72,10 +73,13 @@ namespace gnsstk
    addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
            double cadence)
    {
+      DEBUGTRACE_FUNCTION();
       NavType navType = navIn->getNavID().navType;
       auto fi = myFactories->find(navType);
       if (fi == myFactories->end())
       {
+         DEBUGTRACE("No factory for " + StringUtils::asString(navType));
+         DEBUGTRACE(*(navIn.get()));
             // We don't have a factory for this navigation message type
          return false;
       }

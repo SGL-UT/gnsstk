@@ -202,6 +202,20 @@ namespace gnsstk
       return rv;
    }
 
+
+   void TimeTag ::
+   checkTimeSystem(TimeSystem ts1, TimeSystem ts2)
+   {
+      if ((ts1 != TimeSystem::Any) &&
+          (ts2 != TimeSystem::Any) &&
+          (ts1 != ts2))
+      {
+         InvalidRequest exc("TimeTag objects not in same time system,"
+                            " cannot be compared");
+         GNSSTK_THROW(exc);
+      }
+   }
+
 } // namespace
 
 std::ostream& operator<<( std::ostream& s,

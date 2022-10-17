@@ -65,6 +65,9 @@ namespace gnsstk
           * @param[out] xvt The resulting computed position/velocity.
           * @param[in] oid Value is ignored - GLONASS does not have
           *   distinct transmitters.
+          * @note There are a couple of typos in the ICD that were
+          *   resolved to make this work right.  See the
+          *   implementation for more.
           * @return true if successful, false if required nav data was
           *   unavailable. */
       bool getXvt(const CommonTime& when, Xvt& xvt,

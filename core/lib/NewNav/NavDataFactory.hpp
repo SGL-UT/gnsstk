@@ -130,6 +130,10 @@ namespace gnsstk
           * @warning In order to properly support SP3, if you want to
           *   include Ephemeris data, you should also include Clock
           *   data in the filter.
+          * @warning You MUST include Health data in the type filter
+          *   if you intend to look up data by health status other
+          *   than "Any" (exceptions: if you're ONLY looking up orbit
+          *   data that has self-contained health status).
           * @param[in] nmts The set of nav message types to be
           *   processed by the factories. */
       virtual void setTypeFilter(const NavMessageTypeSet& nmts)

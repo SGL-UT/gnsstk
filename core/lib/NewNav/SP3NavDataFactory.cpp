@@ -825,7 +825,7 @@ namespace gnsstk
           (procNavTypes.count(NavMessageType::Ephemeris) > 0) ||
           (procNavTypes.count(NavMessageType::Clock) > 0))
       {
-         return "SP3a, SP3c";
+         return "SP3a, SP3b, SP3c, SP3d";
       }
       return "";
    }
