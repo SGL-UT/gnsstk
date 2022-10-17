@@ -38,6 +38,7 @@
 
 #include "NavTimeSystemConverter.hpp"
 #include "CivilTime.hpp"
+#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -45,20 +46,29 @@ namespace gnsstk
    getOffset(TimeSystem fromSys, TimeSystem toSys,
              const CommonTime& t, double& offs)
    {
+      DEBUGTRACE_FUNCTION();
       if (fromSys == toSys)
       {
             // nothing to do
          offs = 0.;
+         DEBUGTRACE("same system, 0 offset");
          return true;
       }
       if (navLib.get() == nullptr)
+      {
+         DEBUGTRACE("null navLib");
          return false;
+      }
          // try direct offset first
          /** @note We use Any health because if someone loads the
           * NavLibrary with only TimeOffset data, there won't be any
           * health to match, resulting in a failure. */
       if (navLib->getOffset(fromSys, toSys, t, offs, SVHealth::Any))
+      {
+         DEBUGTRACE("successful direct conversion, offs="
+                    << std::setprecision(15) << std::scientific << offs);
          return true;
+      }
       double offs1, offs2;
          // that didn't work, try converting fromSys->UTC->toSys
       if (navLib->getOffset(fromSys, TimeSystem::UTC, t, offs1,
@@ -67,8 +77,11 @@ namespace gnsstk
                             SVHealth::Healthy))
       {
          offs = offs1 + offs2;
+         DEBUGTRACE("successful indirect conversion, offs="
+                    << std::setprecision(15) << std::scientific << offs);
          return true;
       }
+      DEBUGTRACE("unable to get time offset");
       return false;
    }
 }

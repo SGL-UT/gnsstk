@@ -54,7 +54,8 @@ namespace gnsstk
          << ", clk bias:" << xvt.clkbias
          << ", clk drift:" << xvt.clkdrift
          << ", relcorr:" << xvt.relcorr
-         << ", health:" << xvt.health;
+         << ", health:" << xvt.health
+         << ", frame:" << gnsstk::StringUtils::asString(xvt.frame);
       return os;
    }
 

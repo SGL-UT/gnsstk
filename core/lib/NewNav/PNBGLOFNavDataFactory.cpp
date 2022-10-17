@@ -46,7 +46,9 @@
 #include "GLOFNavUT1TimeOffset.hpp"
 #include "CivilTime.hpp"
 #include "YDSTime.hpp"
+#include "GLONASSTime.hpp"
 #include "TimeString.hpp"
+#include "DebugTrace.hpp"
 
 using namespace std;
 using namespace gnsstk::glo;
@@ -65,10 +67,13 @@ namespace gnsstk
    addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
            double cadence)
    {
+      DEBUGTRACE_FUNCTION();
       if ((navIn->getNavID().navType != NavType::GloCivilF) ||
-          (navIn->getNumBits() != 96))
+          (!validSize(navIn)))
       {
-            // This class only processes BeiDou D2 NAV.
+         DEBUGTRACE("fail bits=" << navIn->getNumBits() << "  nav="
+                    << StringUtils::asString(navIn->getNavID().navType));
+            // This class only processes GLONASS FDMA NAV.
          return false;
       }
       bool rv = true;
@@ -100,28 +105,34 @@ namespace gnsstk
             case 3:
             case 4:
                rv = processEph(stringID, navIn, navOut);
+               DEBUGTRACE("Eph rv=" << rv);
                break;
             case 5:
                rv = processTime(navIn, navOut);
+               DEBUGTRACE("Time rv=" << rv);
                break;
             default:
                   /// Everything else is almanac
                rv = processAlm(stringID, navIn, navOut);
+               DEBUGTRACE("Alm rv=" << rv);
                break;
          }
       }
       catch (Exception& exc)
       {
+         DEBUGTRACE("fail exception");
          rv = false;
          cerr << exc << endl;
       }
       catch (std::exception& exc)
       {
+         DEBUGTRACE("fail exception");
          rv = false;
          cerr << exc.what() << endl;
       }
       catch (...)
       {
+         DEBUGTRACE("fail exception");
          rv = false;
          cerr << "Unknown exception" << endl;
       }
@@ -145,6 +156,7 @@ namespace gnsstk
             GLOFNavISC *isc = dynamic_cast<GLOFNavISC*>(p2.get());
             isc->timeStamp = navIn->getTransmitTime();
             isc->signal = NavMessageID(key, NavMessageType::ISC);
+            DEBUGTRACE("ISC signal = " << isc->signal);
             isc->isc = navIn->asSignMagDouble(esbdtaun,enbdtaun,escdtaun);
             navOut.push_back(p2);
          }
@@ -172,10 +184,10 @@ namespace gnsstk
          // stop processing if we don't have a complete, consecutive
          // set of strings
       if (!ephS[str1] || !ephS[str2] || !ephS[str3] || !ephS[str4] ||
-          (ephS[str1]->getNumBits() != 96) ||
-          (ephS[str2]->getNumBits() != 96) ||
-          (ephS[str3]->getNumBits() != 96) ||
-          (ephS[str4]->getNumBits() != 96) ||
+          !validSize(ephS[str1]) ||
+          !validSize(ephS[str2]) ||
+          !validSize(ephS[str3]) ||
+          !validSize(ephS[str4]) ||
           (ephS[str2]->getTransmitTime()-ephS[str1]->getTransmitTime() != 2) ||
           (ephS[str3]->getTransmitTime()-ephS[str2]->getTransmitTime() != 2) ||
           (ephS[str4]->getTransmitTime()-ephS[str3]->getTransmitTime() != 2))
@@ -189,6 +201,7 @@ namespace gnsstk
          NavDataPtr p1 = std::make_shared<GLOFNavHealth>();
          p1->timeStamp = navIn->getTransmitTime();
          p1->signal = NavMessageID(key, NavMessageType::Health);
+         DEBUGTRACE("Health signal = " << p1->signal);
          GLOFNavHealth *hea = dynamic_cast<GLOFNavHealth*>(p1.get());
          hea->healthBits = ephS[esiBn]->asUnsignedLong(esbBn,enbBn,escBn);
          hea->ln = ephS[esiln]->asBool(esbln);
@@ -202,6 +215,7 @@ namespace gnsstk
       GLOFNavEph *eph = dynamic_cast<GLOFNavEph*>(p0.get());
       eph->timeStamp = ephS[str1]->getTransmitTime();
       eph->signal = NavMessageID(key, NavMessageType::Ephemeris);
+      DEBUGTRACE("Eph signal = " << eph->signal);
       unsigned long tk = ephS[esitk]->asUnsignedLong(esbtk,enbtk,esctk);
          // 30 second offset since the beginning of the day, the
          // document says, but at one bit it's obviously relative to
@@ -221,16 +235,15 @@ namespace gnsstk
       eph->xmit2 = ephS[str2]->getTransmitTime();
       eph->xmit3 = ephS[str3]->getTransmitTime();
       eph->xmit4 = ephS[str4]->getTransmitTime();
-         // convert km to m
-      eph->pos[0]=ephS[esixn]->asSignMagDouble(esbxn,enbxn,escxn)*1000.;
-      eph->pos[1]=ephS[esiyn]->asSignMagDouble(esbyn,enbyn,escyn)*1000.;
-      eph->pos[2]=ephS[esizn]->asSignMagDouble(esbzn,enbzn,esczn)*1000.;
-      eph->vel[0]=ephS[esixnp]->asSignMagDouble(esbxnp,enbxnp,escxnp)*1000.;
-      eph->vel[1]=ephS[esiynp]->asSignMagDouble(esbynp,enbynp,escynp)*1000.;
-      eph->vel[2]=ephS[esiznp]->asSignMagDouble(esbznp,enbznp,escznp)*1000.;
-      eph->acc[0]=ephS[esixnpp]->asSignMagDouble(esbxnpp,enbxnpp,escxnpp)*1000.;
-      eph->acc[1]=ephS[esiynpp]->asSignMagDouble(esbynpp,enbynpp,escynpp)*1000.;
-      eph->acc[2]=ephS[esiznpp]->asSignMagDouble(esbznpp,enbznpp,escznpp)*1000.;
+      eph->pos[0]=ephS[esixn]->asSignMagDouble(esbxn,enbxn,escxn);
+      eph->pos[1]=ephS[esiyn]->asSignMagDouble(esbyn,enbyn,escyn);
+      eph->pos[2]=ephS[esizn]->asSignMagDouble(esbzn,enbzn,esczn);
+      eph->vel[0]=ephS[esixnp]->asSignMagDouble(esbxnp,enbxnp,escxnp);
+      eph->vel[1]=ephS[esiynp]->asSignMagDouble(esbynp,enbynp,escynp);
+      eph->vel[2]=ephS[esiznp]->asSignMagDouble(esbznp,enbznp,escznp);
+      eph->acc[0]=ephS[esixnpp]->asSignMagDouble(esbxnpp,enbxnpp,escxnpp);
+      eph->acc[1]=ephS[esiynpp]->asSignMagDouble(esbynpp,enbynpp,escynpp);
+      eph->acc[2]=ephS[esiznpp]->asSignMagDouble(esbznpp,enbznpp,escznpp);
       eph->clkBias = ephS[esitaun]->asSignMagDouble(esbtaun,enbtaun,esctaun);
       eph->freqBias = ephS[esiGamman]->asSignMagDouble(
          esbGamman,enbGamman,escGamman);
@@ -283,7 +296,7 @@ namespace gnsstk
          // time stamp can be only 30 seconds after the orbit epoch.
       unsigned interval = (eph->interval > 0 ? eph->interval : 30);
       toe.sod = eph->tb * 2 * interval;
-         // Move from Moscow Time to UTC
+         // Move from Moscow Time to UTC(SU) aka TimeSystem::GLO
          /** @bug This doesn't seem right, adding a day to seconds of
           * day then subtracting?  Shouldn't it just be subtracting 3
           * hours (10800 seconds from the CommonTime object once
@@ -295,7 +308,7 @@ namespace gnsstk
          toe.sod += 86400;
          toe.sod -= 10800;
       }
-      toe.setTimeSystem(TimeSystem::UTC);
+      toe.setTimeSystem(TimeSystem::GLO);
       eph->Toe = toe;
       eph->fixFit();
       navOut.push_back(p0);
@@ -411,6 +424,7 @@ namespace gnsstk
          NavDataPtr p1 = std::make_shared<GLOFNavHealth>();
          p1->timeStamp = almS[almIdx]->getTransmitTime();
          p1->signal = NavMessageID(sat, NavMessageType::Health);
+         DEBUGTRACE("Health signal = " << p1->signal);
          GLOFNavHealth *hea = dynamic_cast<GLOFNavHealth*>(p1.get());
          hea->Cn = almS[almIdx+asoC]->asBool(asbC);
          hea->ln = almS[almIdx+asol]->asBool(asbl);
@@ -428,7 +442,7 @@ namespace gnsstk
          // Actual satellite ID (subject and transmit)
       alm->slot = slot;
       alm->signal = NavMessageID(sat, NavMessageType::Almanac);
-      // cerr << "signal=" << alm->signal << endl;
+      DEBUGTRACE("Alm signal = " << alm->signal);
       alm->healthBits = almS[almIdx+asoC]->asBool(asbC);
       alm->health = (alm->healthBits == 1
                      ? SVHealth::Healthy
@@ -453,10 +467,10 @@ namespace gnsstk
       alm->tLambdanA = almS[almIdx+asot]->asUnsignedDouble(asbt,anbt,asct);
          // Epoch time for the almanac is tied to the first ascending
          // crossing of the plane.  The NATIVE timescale for GLONASS
-         // time is UTC + 3h.  The Na parameter from String 5 should
-         // be reference to UTC + 3h.   Therefore, we can add the
-         // SOD epoch time to the almanac day (all in UTC+3h)
-         // then move that time to UTC.
+         // time is UTC(SU) + 3h.  The Na parameter from String 5 should
+         // be reference to UTC(SU) + 3h.   Therefore, we can add the
+         // SOD epoch time to the almanac day (all in UTC(SU)+3h)
+         // then move that time to UTC(SU).
       YDSTime almYDS(almDOY);
       alm->Toa = YDSTime(almYDS.year,almYDS.doy,alm->tLambdanA,TimeSystem::GLO);
       alm->deltaTnA = almS[almIdx+asoDeltaT]->asSignMagDouble(
@@ -485,6 +499,7 @@ namespace gnsstk
          NavDataPtr p1 = std::make_shared<GLOFNavHealth>();
          p1->timeStamp = navIn->getTransmitTime();
          p1->signal = NavMessageID(key, NavMessageType::Health);
+         DEBUGTRACE("Health signal = " << p1->signal);
          GLOFNavHealth *hea = dynamic_cast<GLOFNavHealth*>(p1.get());
          hea->ln = navIn->asBool(tsbln);
          navOut.push_back(p1);
@@ -498,33 +513,7 @@ namespace gnsstk
          timeAcc[key].setNA(NA);
             // number of leap years since 1996
          unsigned N4 = navIn->asUnsignedLong(tsbN4,tnbN4,tscN4);
-            // day of year within the current year
-         unsigned doy;
-            // current year number in the four year interval, see ICD A.3.1.3
-         unsigned J;
-         if (NA<=366)
-         {
-            J = 1;
-            doy = NA;
-         }
-         else if (NA<=731)
-         {
-            J = 2;
-            doy = NA -  366;
-         }
-         else if (NA<=1096)
-         {
-            J = 3;
-            doy = NA -  731;
-         }
-         else
-         {
-            J = 4;
-            doy = NA - 1096;
-         }
-         unsigned year = 1996 + 4*(N4-1) + (J - 1);
-         almDOY = YDSTime(year,doy,0);
-            // cerr << "almDOY = " << almDOY << "  year=" << year << "  doy=" << doy << "  N4=" << N4 << "  J=" << J << "  pendingAlms=" << pendingAlms << endl;
+         almDOY = GLONASSTime(N4, NA, 0);
          if (pendingAlms)
          {
                // iterate through the almanac accumulator and finish any
@@ -546,6 +535,7 @@ namespace gnsstk
          NavDataPtr p0 = std::make_shared<GLOFNavTimeOffset>();
          p0->timeStamp = navIn->getTransmitTime();
          p0->signal = NavMessageID(key, NavMessageType::TimeOffset);
+         DEBUGTRACE("Time signal = " << p0->signal);
          GLOFNavTimeOffset *to = dynamic_cast<GLOFNavTimeOffset*>(p0.get());
          to->a0 = navIn->asSignMagDouble(tsbtauGPS,tnbtauGPS,tsctauGPS);
             /** @bug Table 4.9 in the ICD suggests there are two sets
@@ -597,6 +587,7 @@ namespace gnsstk
          NavDataPtr p0 = timeAcc[key];
          p0->timeStamp = navIn->getTransmitTime();
          p0->signal = NavMessageID(key, NavMessageType::TimeOffset);
+         DEBUGTRACE("Time signal = " << p0->signal);
          navOut.push_back(p0);
       }
       return true;

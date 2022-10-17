@@ -10,6 +10,7 @@
   * OrbitDataKepler needed to be added to the %shared_ptr declarations
   * below.
   */
+%shared_ptr(gnsstk::NavFit)
 %shared_ptr(gnsstk::NavData)
 %shared_ptr(gnsstk::TimeOffsetData)
 %shared_ptr(gnsstk::StdNavTimeOffset)
@@ -72,6 +73,12 @@
 %shared_ptr(gnsstk::BDSD2NavTimeOffset)
 %shared_ptr(gnsstk::BDSD2NavIono)
 %shared_ptr(gnsstk::BDSD2NavISC)
+%shared_ptr(gnsstk::GLOCNavAlm)
+%shared_ptr(gnsstk::GLOCNavData)
+%shared_ptr(gnsstk::GLOCNavEph)
+%shared_ptr(gnsstk::GLOCNavHealth)
+%shared_ptr(gnsstk::GLOCNavIono)
+%shared_ptr(gnsstk::GLOCNavUT1TimeOffset)
 %shared_ptr(gnsstk::GLOFNavAlm)
 %shared_ptr(gnsstk::GLOFNavData)
 %shared_ptr(gnsstk::GLOFNavEph)
@@ -97,6 +104,7 @@
 %shared_ptr(gnsstk::PNBGalFNavDataFactory)
 %shared_ptr(gnsstk::PNBBDSD1NavDataFactory)
 %shared_ptr(gnsstk::PNBBDSD2NavDataFactory)
+%shared_ptr(gnsstk::PNBGLOCNavDataFactory)
 %shared_ptr(gnsstk::PNBGLOFNavDataFactory)
  // silence warnings from swig
 %shared_ptr(gnsstk::TimeSystemCorrection)

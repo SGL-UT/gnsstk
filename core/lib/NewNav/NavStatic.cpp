@@ -53,6 +53,7 @@
 #include "PNBBDSD1NavDataFactory.hpp"
 #include "PNBBDSD2NavDataFactory.hpp"
 #include "PNBGLOFNavDataFactory.hpp"
+#include "PNBGLOCNavDataFactory.hpp"
 #include "YumaNavDataFactory.hpp"
 #include "SEMNavDataFactory.hpp"
 
@@ -138,6 +139,10 @@ namespace gnsstk
          gnsstk::PNBNavDataFactoryPtr
             glof(std::make_shared<gnsstk::PNBGLOFNavDataFactory>());
          PNBMultiGNSSNavDataFactory::addFactory(NavType::GloCivilF,glof);
+
+         gnsstk::PNBNavDataFactoryPtr
+            gloc(std::make_shared<gnsstk::PNBGLOCNavDataFactory>());
+         PNBMultiGNSSNavDataFactory::addFactory(NavType::GloCivilC,gloc);
       }
    };
 

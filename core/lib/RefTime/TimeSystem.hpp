@@ -58,7 +58,7 @@ namespace gnsstk
       Unknown = 0, ///< unknown time frame; for legacy code compatibility
       Any,         ///< wildcard; allows comparison with any other type
       GPS,         ///< GPS system time
-      GLO,         ///< GLONASS system time
+      GLO,         ///< GLONASS system time (aka UTC(SU))
       GAL,         ///< Galileo system time
       QZS,         ///< QZSS system Time
       BDT,         ///< BeiDou system Time
@@ -85,7 +85,7 @@ namespace gnsstk
        * @note GPS = TAI-19sec and so GPS-UTC = getLeapSeconds()-19 == dtLS.
        * @note GLO = UTC = GPS - dtLS. but not incl. RINEX::TIME
        *   SYSTEM CORR::GPUT
-       * @note GLO is actually UTC(SU) Moscow
+       * @note GLO is actually UTC(SU)
        * @note GAL = GPS = UTC + dtLS this does not incl. RINEX::TIME
        *   SYSTEM CORR::GAUT
        * @note BDT = GPS - 15 but this does not include RINEX::TIME

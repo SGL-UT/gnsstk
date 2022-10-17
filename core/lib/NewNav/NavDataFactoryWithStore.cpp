@@ -41,6 +41,8 @@
 #include "TimeString.hpp"
 #include "OrbitDataKepler.hpp"
 #include "NavHealthData.hpp"
+#include "GLOFNavData.hpp"
+#include "GLOCNavData.hpp"
 #include "BasicTimeSystemConverter.hpp"
 #include "DebugTrace.hpp"
 
@@ -83,11 +85,11 @@ namespace gnsstk
       if (rv)
       {
             // One last check for fit interval validity, but it only
-            // applies to OrbitDataKepler.
-         OrbitDataKepler *odk = dynamic_cast<OrbitDataKepler*>(navOut.get());
-         if (odk != nullptr)
+            // applies to classes that inherit from NavFit.
+         NavFit *nf = dynamic_cast<NavFit*>(navOut.get());
+         if (nf != nullptr)
          {
-            if ((when < odk->beginFit) || (when > odk->endFit))
+            if ((when < nf->beginFit) || (when > nf->endFit))
             {
                   // not a valid match, so clear the results.
                navOut.reset();
@@ -851,7 +853,7 @@ namespace gnsstk
    {
       DEBUGTRACE_FUNCTION();
       DEBUGTRACE("class: " << getClassName());
-      OrbitDataKepler *odkp = nullptr;
+      NavFit *nf = nullptr;
       OrbitData *odp = nullptr;
       TimeOffsetData *todp = nullptr;
       DEBUGTRACE("addNavData user = " << nd->getUserTime()
@@ -922,9 +924,9 @@ namespace gnsstk
                firstLastMap[satID].second = nd->timeStamp;
          }
       }
-      if ((odkp = dynamic_cast<OrbitDataKepler*>(nd.get())) != nullptr)
+      if ((nf = dynamic_cast<NavFit*>(nd.get())) != nullptr)
       {
-         if (!updateInitialFinal(odkp->beginFit, odkp->endFit))
+         if (!updateInitialFinal(nf->beginFit, nf->endFit))
             return false;
       }
       else if ((odp = dynamic_cast<OrbitData*>(nd.get())) != nullptr)
@@ -1180,11 +1182,11 @@ namespace gnsstk
    {
       bool rv = true;
          // One last check for fit interval validity, but it only
-         // applies to OrbitDataKepler.
-      OrbitDataKepler *odk = dynamic_cast<OrbitDataKepler*>(ndp.get());
-      if (odk != nullptr)
+         // applies to classes that inherit from NavFit.
+      NavFit *nf = dynamic_cast<NavFit*>(ndp.get());
+      if (nf != nullptr)
       {
-         if ((when < odk->beginFit) || (when > odk->endFit))
+         if ((when < nf->beginFit) || (when > nf->endFit))
          {
             return false;
          }
@@ -1231,6 +1233,8 @@ namespace gnsstk
          // satellite.
       bool rvSet = false;
       OrbitDataKepler *orb;
+      GLOFNavData *glof;
+      GLOCNavData *gloc;
       NavHealthData *hea;
       switch (xmitHealth)
       {
@@ -1248,6 +1252,17 @@ namespace gnsstk
                if ((orb = dynamic_cast<OrbitDataKepler*>(ndp)) != nullptr)
                {
                   rv = (xmitHealth == orb->health);
+                  rvSet = true;
+               }
+               else if ((glof = dynamic_cast<GLOFNavData*>(ndp)) != nullptr)
+               {
+                  rv = (xmitHealth == glof->health);
+                  rvSet = true;
+               }
+               else if ((gloc = dynamic_cast<GLOCNavData*>(ndp)) != nullptr)
+               {
+                  DEBUGTRACE("gloc->header.health=" << StringUtils::asString(gloc->header.health));
+                  rv = (xmitHealth == gloc->header.health);
                   rvSet = true;
                }
                else if ((hea = dynamic_cast<NavHealthData*>(ndp)) != nullptr)
@@ -1296,6 +1311,7 @@ namespace gnsstk
                // treat all other cases as valid
             break;
       }
+      DEBUGTRACE("matchHealth rv=" << rv);
       return rv;
    }
 

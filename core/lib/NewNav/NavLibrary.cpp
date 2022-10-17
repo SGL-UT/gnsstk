@@ -527,8 +527,17 @@ namespace gnsstk
          // std::cerr << "fi.first = " << fi.first << "   nmid = " << nmid << std::endl;
          if ((fi.first == nmid) && (uniques.count(fi.second.get()) == 0))
          {
-            if (fi.second->find(nmid, when, navOut, xmitHealth, valid, order))
-               return true;
+            try
+            {
+               if (fi.second->find(nmid, when, navOut, xmitHealth, valid, order))
+               {
+                  return true;
+               }
+            }
+            catch (gnsstk::Exception& exc)
+            {
+               GNSSTK_RETHROW(exc);
+            }
             uniques.insert(fi.second.get());
          }
       }

@@ -309,6 +309,8 @@ namespace gnsstk
       GNSSTK_EXPORT extern const CRCParam CRC32;
          /// CRC-24Q parameters
       GNSSTK_EXPORT extern const CRCParam CRC24Q;
+         /// GLONASS CDMA L3 CRC parameters
+      GNSSTK_EXPORT extern const CRCParam CRCGLOL3;
 
          /**
           * Compute CRC (suitable for polynomial orders from 1 to 32).

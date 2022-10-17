@@ -66,8 +66,8 @@ constructorTest()
 {
    TUDEF("GLOFNavTimeOffset", "GLOFNavTimeOffset");
    gnsstk::GLOFNavTimeOffset uut;
-   TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GLO, uut.src);
-   TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GPS, uut.tgt);
+   TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GPS, uut.src);
+   TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GLO, uut.tgt);
    TUASSERTFE(0.0, uut.a0);
    TUASSERTFE(0.0, uut.a1);
    TUASSERTFE(0.0, uut.a2);
@@ -134,10 +134,10 @@ getOffsetTest()
       /// @todo Truth values here need to be verified.
    TUASSERT(uut.getOffset(gnsstk::TimeSystem::GLO, gnsstk::TimeSystem::GPS,
                           when1, offset));
-   TUASSERTFE(18.001708985305999278, offset);
+   TUASSERTFE(-18.001708985305999278, offset);
    TUASSERT(uut.getOffset(gnsstk::TimeSystem::GLO, gnsstk::TimeSystem::GPS,
                           when2, offset));
-   TUASSERTFE(18.001708985305999278, offset);
+   TUASSERTFE(-18.001708985305999278, offset);
    TURETURN();
 }
 

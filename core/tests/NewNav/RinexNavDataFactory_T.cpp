@@ -1021,16 +1021,16 @@ loadIntoMapTest()
                   TUASSERTE(gnsstk::CommonTime, expTS, ephF->ref);
                   TUASSERTE(gnsstk::CommonTime, expTS+4.0, ephF->xmit3);
                   TUASSERTE(gnsstk::CommonTime, expTS+6.0, ephF->xmit4);
-                     // 1 nm tolerance.
-                  TUASSERTFEPS( 0.157594921875E+08, ephF->pos[0], 1e-9);
-                  TUASSERTFEPS(-0.813711474609E+07, ephF->pos[1], 1e-9);
-                  TUASSERTFEPS( 0.183413398438E+08, ephF->pos[2], 1e-9);
-                  TUASSERTFEPS(-0.145566368103E+04, ephF->vel[0], 1e-9);
-                  TUASSERTFEPS( 0.205006790161E+04, ephF->vel[1], 1e-9);
-                  TUASSERTFEPS( 0.215388488770E+04, ephF->vel[2], 1e-9);
+                     // 1 um tolerance.
+                  TUASSERTFEPS( 0.157594921875E+05, ephF->pos[0], 1e-9);
+                  TUASSERTFEPS(-0.813711474609E+04, ephF->pos[1], 1e-9);
+                  TUASSERTFEPS( 0.183413398438E+05, ephF->pos[2], 1e-9);
+                  TUASSERTFEPS(-0.145566368103E+01, ephF->vel[0], 1e-9);
+                  TUASSERTFEPS( 0.205006790161E+01, ephF->vel[1], 1e-9);
+                  TUASSERTFEPS( 0.215388488770E+01, ephF->vel[2], 1e-9);
                   TUASSERTFEPS( 0.000000000000E+00, ephF->acc[0], 1e-9);
-                  TUASSERTFEPS( 0.931322574615E-06, ephF->acc[1], 1e-9);
-                  TUASSERTFEPS(-0.186264514923E-05, ephF->acc[2], 1e-9);
+                  TUASSERTFEPS( 0.931322574615E-09, ephF->acc[1], 1e-9);
+                  TUASSERTFEPS(-0.186264514923E-08, ephF->acc[2], 1e-9);
                   TUASSERTFE(0.137668102980E-04, ephF->clkBias);
                   TUASSERTFE(-0.454747350886E-11, ephF->freqBias);
                   TUASSERTE(unsigned, 0, ephF->healthBits);
@@ -1048,7 +1048,7 @@ loadIntoMapTest()
                   TUASSERTE(unsigned, -1, ephF->accIndex);
                   TUASSERTE(unsigned, -1, ephF->dayCount);
                   TUASSERTE(gnsstk::CommonTime, expToe, ephF->Toe);
-                  TUASSERTFE(1, ephF->step);
+                  TUASSERTFE(60, ephF->step);
                }
                ephFCount++;
             }
