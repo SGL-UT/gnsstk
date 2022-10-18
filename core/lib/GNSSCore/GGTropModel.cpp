@@ -48,21 +48,10 @@
 
 namespace gnsstk
 {
-   /* ------------------------------------------------------------------------
-    * Tropospheric model based on Goad and Goodman(1974),
-    * "A Modified Hopfield Tropospheric Refraction Correction Model," Paper
-    * presented at the Fall Annual Meeting of the American Geophysical Union,
-    * San Francisco, December 1974.
-    * See Leick, "GPS Satellite Surveying," Wiley, NY, 1990, Chapter 9,
-    * particularly Table 9.1.
-    * ------------------------------------------------------------------------
-    */
-
    static const double GGdryscale = 8594.777388436570600;
    static const double GGwetscale = 2540.042008403690900;
 
-      // Default constructor
-   GGTropModel::GGTropModel(void)
+   GGTropModel::GGTropModel()
    {
       TropModel::setWeather(20.0, 980.0, 50.0);
       Cdrydelay = 2.59629761092150147e-4;    // zenith delay, dry
@@ -72,20 +61,14 @@ namespace gnsstk
       valid = true;
    }  // end GGTropModel::GGTropModel()
 
-      /* Creates a trop model from a weather observation
-       * @param wx the weather to use for this correction.
-       */
+
    GGTropModel::GGTropModel(const WxObservation& wx)
    {
       setWeather(wx);
       valid = true;
    }
 
-      /* Create a tropospheric model from explicit weather data
-       * @param T temperature in degrees Celsius
-       * @param P atmospheric pressure in millibars
-       * @param H relative humidity in percent
-       */
+
    GGTropModel::GGTropModel(const double& T,
                             const double& P,
                             const double& H)
@@ -94,13 +77,13 @@ namespace gnsstk
       valid = true;
    }
 
-   double GGTropModel::dry_zenith_delay(void) const
+   double GGTropModel::dry_zenith_delay() const
    {
       THROW_IF_INVALID();
       return (Cdrydelay * GGdryscale);
    }
 
-   double GGTropModel::wet_zenith_delay(void) const
+   double GGTropModel::wet_zenith_delay() const
    {
       THROW_IF_INVALID();
       return (Cwetdelay * GGwetscale);
@@ -140,7 +123,7 @@ namespace gnsstk
 
    }
 
-      // compute wet component of the mapping function
+
    double GGTropModel::wet_mapping_function(double elevation) const
    {
       THROW_IF_INVALID();
@@ -192,10 +175,7 @@ namespace gnsstk
       valid = true;
    }  // end GGTropModel::setWeather(T,P,H)
 
-      /* Re-define the tropospheric model with explicit weather data.
-       * Typically called just before correction().
-       * @param wx the weather to use for this correction
-       */
+
    void GGTropModel::setWeather(const WxObservation& wx)
    {
       TropModel::setWeather(wx);

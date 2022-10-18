@@ -50,35 +50,6 @@
 
 namespace gnsstk
 {
-   /* Saastamoinen tropospheric model.
-    * This model needs work; it is not the Saastamoinen model, but appears to be
-    * a combination of the Neill mapping functions and an unknown delay model.
-    * Based on Saastamoinen, J., 'Atmospheric
-    * Correction for the Troposphere and Stratosphere in Radio Ranging of
-    * Satellites,' Geophysical Monograph 15, American Geophysical Union, 1972,
-    * and Ch. 9 of McCarthy, D. and Petit, G., IERS Conventions (2003), IERS
-    * Technical Note 32, IERS, 2004. The mapping functions are from
-    * Neill, A.E., 1996, 'Global Mapping Functions for the Atmosphere Delay of
-    * Radio Wavelengths,' J. Geophys. Res., 101, pp. 3227-3246 (also see IERS TN 32).
-    * 
-    * This model includes a wet and dry component, and requires input of the
-    * geodetic latitude, day of year and height above the ellipsoid of the receiver.
-    * 
-    * Usually, the caller will set the latitude and day of year at the same
-    * time the weather is set
-    *   SaasTropModel stm;
-    *   stm.setReceiverLatitude(lat);
-    *   stm.setDayOfYear(doy);
-    *   stm.setWeather(T,P,H);
-    * Then, when the correction (and/or delay and map) is computed, receiver height
-    * should be set before the call to correction(elevation):
-    *   stm.setReceiverHeight(height);
-    *   trop_corr = stm.correction(elevation);
-    * 
-    * NB in this model, units of 'temp' are degrees Celcius and
-    * humid actually stores water vapor partial pressure in mbars
-    */
-
    // constants for wet mapping function
    static const double SaasWetA[5]=
      { 0.00058021897, 0.00056794847, 0.00058118019, 0.00059727542, 0.00061641693 };
@@ -102,8 +73,8 @@ namespace gnsstk
    static const double SaasDryC1[5]=
      { 0.0, 0.000090128400, 0.000043497037, 0.00084795348, 0.0017037206 };
 
-      // Default constructor
-   SaasTropModel::SaasTropModel(void)
+
+   SaasTropModel::SaasTropModel()
    {
       validWeather = false;
       validRxLatitude = false;
@@ -111,11 +82,7 @@ namespace gnsstk
       validRxHeight = false;
    } // end SaasTropModel::SaasTropModel()
 
-      /* Create a trop model using the minimum information: latitude and doy.
-       * Interpolate the weather unless setWeather (optional) is called.
-       * @param lat Latitude of the receiver in degrees.
-       * @param day Day of year.
-       */
+
    SaasTropModel::SaasTropModel(const double& lat,
                                 const int& day)
    {
@@ -125,11 +92,7 @@ namespace gnsstk
       SaasTropModel::setDayOfYear(day);
    } // end SaasTropModel::SaasTropModel
 
-      /* Create a trop model with weather.
-       * @param lat Latitude of the receiver in degrees.
-       * @param day Day of year.
-       * @param wx the weather to use for this correction.
-       */
+
    SaasTropModel::SaasTropModel(const double& lat,
                                 const int& day,
                                 const WxObservation& wx)
@@ -140,13 +103,7 @@ namespace gnsstk
       SaasTropModel::setWeather(wx);
    }  // end SaasTropModel::SaasTropModel(weather)
 
-      /* Create a tropospheric model from explicit weather data
-       * @param lat Latitude of the receiver in degrees.
-       * @param day Day of year.
-       * @param T temperature in degrees Celsius
-       * @param P atmospheric pressure in millibars
-       * @param H relative humidity in percent
-       */
+
    SaasTropModel::SaasTropModel(const double& lat,
                                 const int& day,
                                 const double& T,
@@ -188,16 +145,7 @@ namespace gnsstk
 
    }  // end SaasTropModel::correction(elevation)
 
-      /* Compute and return the full tropospheric delay, given the positions of
-       * receiver and satellite and the time tag. This version is most useful
-       * within positioning algorithms, where the receiver position and timetag
-       * may vary; it computes the elevation (and other receiver location
-       * information) and passes them to appropriate set...() routines
-       * and the correction(elevation) routine.
-       * @param RX  Receiver position
-       * @param SV  Satellite position
-       * @param tt  Time tag of the signal
-       */
+
    double SaasTropModel::correction(const Position& RX,
                                     const Position& SV,
                                     const CommonTime& tt)
@@ -228,6 +176,7 @@ namespace gnsstk
 
    }  // end SaasTropModel::correction(RX,SV,TT)
 
+
    double SaasTropModel::correction(const Xvt& RX,
                                     const Xvt& SV,
                                     const CommonTime& tt)
@@ -236,8 +185,8 @@ namespace gnsstk
       return SaasTropModel::correction(R,S,tt);
    }
 
-      // Compute and return the zenith delay for dry component of the troposphere
-   double SaasTropModel::dry_zenith_delay(void) const
+
+   double SaasTropModel::dry_zenith_delay() const
    {
       THROW_IF_INVALID_DETAILED();
 
@@ -246,8 +195,8 @@ namespace gnsstk
 
    }  // end SaasTropModel::dry_zenith_delay()
 
-      // Compute and return the zenith delay for wet component of the troposphere
-   double SaasTropModel::wet_zenith_delay(void) const
+
+   double SaasTropModel::wet_zenith_delay() const
    {
       THROW_IF_INVALID_DETAILED();
 
@@ -271,9 +220,7 @@ namespace gnsstk
 
    }  // end SaasTropModel::wet_zenith_delay()
 
-      /* Compute and return the mapping function for dry component of the troposphere
-       * @param elevation Elevation of satellite as seen at receiver, in degrees
-       */
+
    double SaasTropModel::dry_mapping_function(double elevation) const
    {
       THROW_IF_INVALID_DETAILED();
@@ -322,9 +269,7 @@ namespace gnsstk
 
    }  // end SaasTropModel::dry_mapping_function()
 
-      /* Compute and return the mapping function for wet component of the troposphere
-       * @param elevation Elevation of satellite as seen at receiver, in degrees.
-       */
+
    double SaasTropModel::wet_mapping_function(double elevation) const
    {
       THROW_IF_INVALID_DETAILED();
@@ -357,12 +302,7 @@ namespace gnsstk
 
    }
 
-      /* Re-define the weather data.
-       * If called, typically called before any calls to correction().
-       * @param T temperature in degrees Celsius
-       * @param P atmospheric pressure in millibars
-       * @param H relative humidity in percent
-       */
+
    void SaasTropModel::setWeather(const double& T,
                                   const double& P,
                                   const double& H)
@@ -378,10 +318,7 @@ namespace gnsstk
 
    }
 
-      /* Re-define the tropospheric model with explicit weather data.
-       * Typically called just before correction().
-       * @param wx the weather to use for this correction
-       */
+
    void SaasTropModel::setWeather(const WxObservation& wx)
    {
       try
@@ -395,9 +332,7 @@ namespace gnsstk
       }
    }
 
-      /* Define the receiver height; this required before calling
-       * correction() or any of the zenith_delay or mapping_function routines.
-       */
+
    void SaasTropModel::setReceiverHeight(const double& ht)
    {
       height = ht;
@@ -405,9 +340,7 @@ namespace gnsstk
       valid = (validWeather && validRxHeight && validRxLatitude && validDOY);
    }
 
-      /* Define the latitude of the receiver; this is required before calling
-       * correction() or any of the zenith_delay or mapping_function routines.
-       */
+
    void SaasTropModel::setReceiverLatitude(const double& lat)
    {
       latitude = lat;
@@ -415,9 +348,7 @@ namespace gnsstk
       valid = (validWeather && validRxHeight && validRxLatitude && validDOY);
    }
 
-      /* Define the day of year; this is required before calling
-       * correction() or any of the zenith_delay or mapping_function routines.
-       */
+
    void SaasTropModel::setDayOfYear(const int& d)
    {
       doy = d;

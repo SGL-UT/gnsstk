@@ -111,48 +111,54 @@ namespace gnsstk
       virtual ~TropModel() {}
 
          /// Return validity of model
-      bool isValid(void)
+      bool isValid()
       { return valid; }
 
          /// Return the name of the model
-      virtual std::string name(void)
+      virtual std::string name()
       { return std::string("Undefined"); }
 
-         /** Compute and return the full tropospheric delay
+         /** Compute and return the full tropospheric delay, in meters
           * @param elevation Elevation of satellite as seen at
           *   receiver, in degrees
+          * @return The tropospheric delay (meters)
           * @throw InvalidTropModel
           */
       virtual double correction(double elevation) const;
 
-         /**
-          * Compute and return the full tropospheric delay, given the
-          * positions of receiver and satellite and the time tag. This
-          * version is most useful within positioning algorithms,
+         /** Compute and return the full tropospheric delay, in meters,
+          * given the positions of receiver and satellite and the time tag.
+          * This version is most useful within positioning algorithms,
           * where the receiver position and timetag may vary; it
           * computes the elevation (and other receiver location
           * information) and passes them to appropriate set...()
           * routines and the correction(elevation) routine.
-          * @param RX  Receiver position
-          * @param SV  Satellite position
-          * @param tt  Time tag of the signal
+          * @param RX Receiver position
+          * @param SV Satellite position
+          * @param tt Time tag of the signal
+          * @return The tropospheric delay (meters)
           * @throw InvalidTropModel
           */
       virtual double correction(const Position& RX,
                                 const Position& SV,
                                 const CommonTime& tt);
 
-         /** \deprecated
-          * Compute and return the full tropospheric delay, given the
-          * positions of receiver and satellite and the time tag. This
-          * version is most useful within positioning algorithms,
+         /** Compute and return the full tropospheric delay, in meters,
+          * given the positions of receiver and satellite and the time tag.
+          *
+          * @deprecated This method is deprecated.
+          *   Use correction(const Position&,const Position&,const CommonTime&)
+          *   instead.
+          *
+          * This version is most useful within positioning algorithms,
           * where the receiver position and timetag may vary; it
           * computes the elevation (and other receiver location
           * information) and passes them to appropriate set...()
           * routines and the correction(elevation) routine.
-          * @param RX  Receiver position in ECEF cartesian coordinates (meters)
-          * @param SV  Satellite position in ECEF cartesian coordinates (meters)
-          * @param tt  Time tag of the signal
+          * @param RX Receiver position in ECEF cartesian coordinates (meters)
+          * @param SV Satellite position in ECEF cartesian coordinates (meters)
+          * @param tt Time tag of the signal
+          * @return The tropospheric delay (meters)
           * @throw InvalidTropModel
           */
       virtual double correction(const Xvt& RX,
@@ -161,19 +167,19 @@ namespace gnsstk
       { Position R(RX),S(SV);  return TropModel::correction(R,S,tt); }
 
          /** Compute and return the zenith delay for hydrostatic (dry)
-          * component of the troposphere
+          * component of the troposphere, in meters.
           * @throw InvalidTropModel
           */
-      virtual double dry_zenith_delay(void) const = 0;
+      virtual double dry_zenith_delay() const = 0;
 
          /** Compute and return the zenith delay for wet component of
-          * the troposphere.
+          * the troposphere, in meters.
           * @throw InvalidTropModel
           */
-      virtual double wet_zenith_delay(void) const = 0;
+      virtual double wet_zenith_delay() const = 0;
 
          /** Compute and return the mapping function for hydrostatic (dry)
-          * component of the troposphere.
+          * component of the troposphere, in meters.
           * @param elevation Elevation of satellite as seen at
           *   receiver, in degrees
           * @throw InvalidTropModel
@@ -182,7 +188,7 @@ namespace gnsstk
          const = 0;
 
          /** Compute and return the mapping function for wet component of
-          * the troposphere.
+          * the troposphere, in meters.
           * @param elevation Elevation of satellite as seen at
           *   receiver, in degrees
           * @throw InvalidTropModel
@@ -208,10 +214,10 @@ namespace gnsstk
           */
       virtual void setWeather(const WxObservation& wx);
 
-         /** Define the receiver height; this required by some models
+         /** Define the receiver height; this is required by some models
           * before calling correction() or any of the zenith_delay or
           * mapping_function routines.
-          * @param ht Height of the receiver in meters.
+          * @param ht Height of the receiver above mean sea level, in meters.
           */
       virtual void setReceiverHeight(const double& ht) {}
 
@@ -250,7 +256,7 @@ namespace gnsstk
           * Length, Radio Science, Vol. 20, No. 6, pp. 1593-1607,
           * 1985.
           * @param pr pressure in millibars
-          * @param lat  latitude in degrees
+          * @param lat latitude in degrees
           * @param ht ellipsoid height in meters
           */
       double SaasDryDelay(const double pr, const double lat, const double ht)
@@ -259,7 +265,7 @@ namespace gnsstk
          return (0.0022768*pr/(1-0.00266*::cos(2*lat*DEG_TO_RAD)-0.00028*ht/1000.));
       }
 
-         /** get weather data by a standard atmosphere model
+         /** Get weather data by a standard atmosphere model
           * reference to white paper of Bernese 5.0, P243
           * @param ht     height of the receiver in meters.
           * @param T      temperature in degrees Celsius
@@ -284,81 +290,38 @@ namespace gnsstk
    {
    public:
          /// Return the name of the model
-      virtual std::string name(void)
+      virtual std::string name()
       { return std::string("Zero"); }
 
-         /** Compute and return the full tropospheric delay
-          * @param elevation Elevation of satellite as seen at receiver, in degrees
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::correction(double elevation) const
       virtual double correction(double elevation) const
       { return 0.0; }
 
-         /**
-          * Compute and return the full tropospheric delay, given the
-          * positions of receiver and satellite and the time tag. This
-          * version is most useful within positioning algorithms,
-          * where the receiver position and timetag may vary; it
-          * computes the elevation (and other receiver location
-          * information) and passes them to appropriate set...()
-          * routines and the correction(elevation) routine.
-          * @param RX  Receiver position
-          * @param SV  Satellite position
-          * @param tt  Time tag of the signal
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::correction(const Position&,const Position&,const CommonTime&)
       virtual double correction(const Position& RX,
                                 const Position& SV,
                                 const CommonTime& tt)
       { return 0.0; }
 
-         /** \deprecated
-          * Compute and return the full tropospheric delay, given the
-          * positions of receiver and satellite and the time tag. This
-          * version is most useful within positioning algorithms,
-          * where the receiver position and timetag may vary; it
-          * computes the elevation (and other receiver location
-          * information) and passes them to appropriate set...()
-          * routines and the correction(elevation) routine.
-          * @param RX  Receiver position in ECEF cartesian coordinates (meters)
-          * @param SV  Satellite position in ECEF cartesian coordinates (meters)
-          * @param tt  Time tag of the signal
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::correction(const Xvt&,const Xvt&,const CommonTime&)
       virtual double correction(const Xvt& RX,
                                 const Xvt& SV,
                                 const CommonTime& tt)
       { return 0.0; }
 
-         /** Compute and return the zenith delay for hydrostatic (dry)
-          * component of the troposphere
-          * @throw InvalidTropModel
-          */
-      virtual double dry_zenith_delay(void) const
+         /// @copydoc TropModel::dry_zenith_delay() const
+      virtual double dry_zenith_delay() const
       { return 0.0; }
 
-         /** Compute and return the zenith delay for wet component of
-          * the troposphere
-          * @throw InvalidTropModel
-          */
-      virtual double wet_zenith_delay(void) const
+         /// @copydoc TropModel::wet_zenith_delay() const
+      virtual double wet_zenith_delay() const
       { return 0.0; }
 
-         /** Compute and return the mapping function for hydrostatic (dry)
-          * component of the troposphere.
-          * @param elevation Elevation of satellite as seen at
-          *   receiver, in degrees
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::dry_mapping_function(double) const
       virtual double dry_mapping_function(double elevation) const
       { return 0.0; }
 
-         /** Compute and return the mapping function for wet component of
-          * the troposphere.
-          * @param elevation Elevation of satellite as seen at
-          *   receiver, in degrees
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::wet_mapping_function(double) const
       virtual double wet_mapping_function(double elevation) const
       { return 0.0; }
 

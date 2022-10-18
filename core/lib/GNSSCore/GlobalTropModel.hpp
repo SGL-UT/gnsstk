@@ -53,62 +53,82 @@ namespace gnsstk
    /** @addtogroup GPSsolutions */
    //@{
 
-   /** Tropospheric model based on the Global mapping functions (GMF)
-    *  and Global Pressure and Temperature (GPT) models.
-    *  
-    *  Ref (GMF). Boehm, J., A.E. Niell, P. Tregoning, H. Schuh (2006),
-    *   "Global Mapping Functions (GMF): A new empirical mapping function
-    *   based on numerical weather model data," Geoph. Res. Letters,
-    *   Vol. 33, L07304, doi:10.1029/2005GL025545.
-    *  Ref (GPT). J. Böhm, R. Heinkelmann, H. Schuh (2007), "Short Note:
-    *   A Global Model of Pressure and Temperature for Geodetic Applications,"
-    *   Journal of Geodesy, doi:10.1007/s00190-007-0135-3.
-    *  
-    *  The user must specify a time (date) and a receiver position.
-    *  The model then computes the (GPT) pressure and temperature, as well as
-    *  (GMF) wet and hydrostatic (dry) zenith delays and, with the elevation
-    *  angle, mapping functions.
-    *  NB the GPT model is valid only for receiver height less than 44247 meters.
-    *  
-    *  depedency cheat sheet:
-    *   User provides:    Model computes/stores:           Output of model:
-    *     lat,lon,ht ---> coeffs  [in updateGTMCoeff()]
-    *     time (doy) ---> dayfactor [ setTime(mjd) ]
-    *     humidity%  ---> humid
-    *   
-    *     [in getGPT():]  height,coeffs,dayfactor -> P,T
-    *                     humid,T -----------------------> wet_zenith_delay()
-    *                     P,T,lat -----------------------> dry_zenith_delay()
-    *                     dayfactor,coeffs --------------> wet_mapping_function(elev)
-    *                     dayfactor,coeffs --------------> dry_mapping_function(elev)
-    *  So, change lat   => coeffs => P,T => wet/dry zen/map
-    *             lon   => coeffs => P,T => wet/dry zen/map
-    *             ht    => coeffs => P,T => wet/dry zen/map
-    *             time  => dayfactor => P,T => wet/dry zen/map
-    *             humid => wet zen
-    *  
-    *  NB. members of base TropModel::temp,press,humid; valid
-    *      members of GlobalTropModel::height,latitude,longitude,dayfactor,undul;
-    *                                   validHeight, validLat, validLon, validDay
-    *  
-    *  @warning The Global mapping functions are defined for elevation
-    *  angles down to 3 degrees, below that the correction is set to zero.
-    */
+      /** Tropospheric model based on the Global mapping functions (GMF)
+       * and Global Pressure and Temperature (GPT) models.
+       *
+       * Ref (GMF). Boehm, J., A.E. Niell, P. Tregoning, H. Schuh (2006),
+       *   "Global Mapping Functions (GMF): A new empirical mapping function
+       *   based on numerical weather model data," Geoph. Res. Letters,
+       *   Vol. 33, L07304, doi:10.1029/2005GL025545.
+       * Ref (GPT). J. Böhm, R. Heinkelmann, H. Schuh (2007), "Short Note:
+       *   A Global Model of Pressure and Temperature for Geodetic Applications,"
+       *   Journal of Geodesy, doi:10.1007/s00190-007-0135-3.
+       *
+       * The user must specify a time (date) and a receiver position.
+       * The model then computes the (GPT) pressure and temperature, as well as
+       * (GMF) wet and hydrostatic (dry) zenith delays and, with the elevation
+       * angle, mapping functions.
+       * @note the GPT model is valid only for receiver height less than 44247 meters.
+       *
+       * <pre>
+       *  depedency cheat sheet:
+       *   User provides:    Model computes/stores:           Output of model:
+       *     lat,lon,ht ---> coeffs  [in updateGTMCoeff()]
+       *     time (doy) ---> dayfactor [ setTime(mjd) ]
+       *     humidity%  ---> humid
+       *
+       *     [in getGPT():]  height,coeffs,dayfactor -> P,T
+       *                     humid,T -----------------------> wet_zenith_delay()
+       *                     P,T,lat -----------------------> dry_zenith_delay()
+       *                     dayfactor,coeffs --------------> wet_mapping_function(elev)
+       *                     dayfactor,coeffs --------------> dry_mapping_function(elev)
+       *  So, change lat   => coeffs => P,T => wet/dry zen/map
+       *             lon   => coeffs => P,T => wet/dry zen/map
+       *             ht    => coeffs => P,T => wet/dry zen/map
+       *             time  => dayfactor => P,T => wet/dry zen/map
+       *             humid => wet zen
+       *
+       * </pre>
+       *
+       * @note Members of base TropModel::temp,press,humid,valid. 
+       *   Members of GlobalTropModel::height,latitude,longitude,dayfactor,undul,
+       *   validHeight, validLat, validLon, validDay
+       *
+       * A typical way to use this model follows:
+       *
+       * @code
+       *   GlobalTropModel globalTM;
+       *   globalTM.setReceiverLatitude(lat);
+       *   globalTM.setReceiverLongitude(lon);
+       *   globalTM.setReceiverHeight(height);
+       *   globalTM.setDayOfYear(doy);
+       *   globalTM.setHumidity(humidity);
+       * @endcode
+       *
+       * Once all the basic model parameters are set, then we are able to
+       * compute the tropospheric correction as a function of elevation:
+       *
+       * @code
+       *   trop = globalTM.correction(elevation);
+       * @endcode
+       *
+       * @warning The Global mapping functions are defined for elevation
+       *   angles down to 3 degrees, below that the correction is set to zero.
+       */
    class GlobalTropModel : public TropModel
    {
    public:
-      /// Default constructor
+         /// Default constructor
       GlobalTropModel();
 
-      /** Constructor to create a Global trop model providing the height of
-       *  the receiver above mean sea level (as defined by ellipsoid
-       *  model), its latitude and the day of year.
-       *  @param ht   Height of the receiver above mean sea level,
-       *              in meters.
-       *  @param lat  Latitude of receiver, in degrees.
-       *  @param lon  Longitude of receiver, in degrees.
-       *  @param mjd  MJD (double)
-       */
+         /** Constructor to create a Global trop model providing the height of
+          * the receiver above mean sea level (as defined by ellipsoid
+          * model), its latitude and the day of year.
+          * @param ht Height of the receiver above mean sea level, in meters.
+          * @param lat Latitude of receiver, in degrees.
+          * @param lon Longitude of receiver, in degrees.
+          * @param mjd MJD (double)
+          */
       GlobalTropModel(const double& ht, const double& lat, const double& lon,
                       const double& mjd)
       {
@@ -120,11 +140,11 @@ namespace gnsstk
          setTime(mjd);
       }
 
-      /** Constructor to create a Global trop model providing the position
-       *  of the receiver and current time.
-       *  @param RX   Receiver position.
-       *  @param time Time.
-       */
+         /** Constructor to create a Global trop model providing the position
+          * of the receiver and current time.
+          * @param RX Receiver position.
+          * @param time Time.
+          */
       GlobalTropModel(const Position& RX, const CommonTime& time)
       {
          validCoeff = validHeight = validLat = validLon = validDay = valid = false;
@@ -134,21 +154,15 @@ namespace gnsstk
          setTime(time);
       }
 
-      /// Return the name of the model
+         /// @copydoc TropModel::name()
       virtual std::string name()
       { return std::string("Global"); }
 
-         /** Compute and return the full tropospheric delay. The receiver
-          * height, latitude and Day oy Year must has been set before using
-          * the appropriate constructor or the provided methods.
-          * @param elevation Elevation of satellite as seen at receiver,
-          *                  in degrees.
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::correction(double elevation) const
       virtual double correction(double elevation) const;
 
-         /** Compute and return the full tropospheric delay, given the
-          *  positions of receiver and satellite.
+         /** Compute and return the full tropospheric delay, in meters,
+          * given the positions of receiver and satellite.
           *
           * This version is more useful within positioning algorithms, where
           * the receiver position may vary; it computes the elevation (and
@@ -158,25 +172,14 @@ namespace gnsstk
           * You must set time using method setReceiverDOY() before calling
           * this method.
           *
-          * @param RX  Receiver position.
-          * @param SV  Satellite position.
+          * @param RX Receiver position.
+          * @param SV Satellite position.
+          * @return The tropospheric delay (meters)
           * @throw InvalidTropModel
           */
       virtual double correction(const Position& RX, const Position& SV);
 
-         /** Compute and return the full tropospheric delay, given the
-          *  positions of receiver and satellite and the time tag.
-          *
-          * This version is more useful within positioning algorithms, where
-          * the receiver position may vary; it computes the elevation (and
-          * other receiver location information as height and latitude), and
-          * passes them to appropriate methods.
-          *
-          * @param RX  Receiver position.
-          * @param SV  Satellite position.
-          * @param tt  Time (used to get DOY only)
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::correction(const Position&,const Position&,const CommonTime&)
       virtual double correction(const Position& RX,
                                 const Position& SV,
                                 const CommonTime& tt)
@@ -198,20 +201,10 @@ namespace gnsstk
           */
       virtual double wet_zenith_delay() const;
 
-         /** Compute and return the mapping function for hydrostatic (dry)
-          * component of the troposphere.
-          * @param elevation Elevation of satellite as seen at
-          *   receiver, in degrees
-          * @throw InvalidTropModel
-          */
+         /// @copydoc dry_mapping_function(double) const
       virtual double dry_mapping_function(double elevation) const;
 
-         /** Compute and return the mapping function for wet component of
-          * the troposphere.
-          * @param[in] elevation Elevation of satellite as seen at
-          *   receiver, in degrees
-          * @throw InvalidTropModel
-          */
+         /// @copydoc wet_mapping_function(double) const
       virtual double wet_mapping_function(double elevation) const;
 
          /** Compute the pressure and temperature at height, and the undulation,
@@ -224,14 +217,16 @@ namespace gnsstk
           */
       void getGPT(double& P, double& T, double& U);
 
-         /** GlobalTropModel does not accept weather input, except humid
-          * @throw InvalidParameter
+         /** @copydoc TropModel::setWeather(const double&,const double&,const double&)
+          *
+          * @note The Global model will only use the humidity parameter.
           */
       virtual void setWeather(const double& T, const double& P, const double& H)
       { setHumidity(H); }
 
-         /** GlobalTropModel does not accept weather input, except humid
-          * @throw InvalidParameter
+         /** @copydoc TropModel::setWeather(const WxObservation& wx)
+          *
+          * @note The Global model will only use the humidity parameter.
           */
       virtual void setWeather(const WxObservation& wx)
       { setHumidity(wx.humidity); }
@@ -251,33 +246,21 @@ namespace gnsstk
          humid = rh;
       }
 
-      /** Define the receiver latitude; this is required before calling
-       *  correction() or any of the zenith_delay routines.
-       *  @param lat  Latitude of receiver, in degrees.
-       */
+      /// @copydoc TropModel::setReceiverLatitude(const double&)
       virtual void setReceiverLatitude(const double& lat);
 
-      /** Define the receiver longitude; this is required before calling
-       *  correction() or any of the zenith_delay routines.
-       *  @param lon  Longitude of receiver, in degrees East.
-       */
+      /// @copydoc TropModel::setReceiverLongitude(const double&)
       virtual void setReceiverLongitude(const double& lon);
 
-      /** Define the receiver height; this is required before calling
-       *  correction() or any of the zenith_delay routines.
-       *  @param ht   Height of the receiver above mean sea level, in meters.
-       */
+      /// @copydoc TropModel::setReceiverHeight(const double&)
       virtual void setReceiverHeight(const double& ht);
 
-      /** Define the day of year; this is required before calling
-       *  correction() or any of the zenith_delay routines.
-       *  @param doy Day of year (year does not matter)
-       */
+      /// @copydoc TropModel::setDayOfYear
       virtual void setDayOfYear(const int& doy);
 
       /** Convenient method to set all non-weather model parameters in one call
-       *  @param time  CommonTime of interest
-       *  @param rxPos Receiver position object.
+       * @param time CommonTime of interest
+       * @param rxPos Receiver position object.
        */
       virtual void setParameters(const CommonTime& time, const Position& rxPos);
 
@@ -287,14 +270,14 @@ namespace gnsstk
 
    private:
       /** Define the time of interest; this is required before calling
-       *  correction() or any of the zenith_delay routines.
-       *  @param mjd  MJD (double)
+       * correction() or any of the zenith_delay routines.
+       * @param mjd  MJD (double)
        */
       void setTime(const double& mjd);
 
       /** Define the time of interest; this is required before calling
-       *  correction() or any of the zenith_delay routines.
-       *  @param time  CommonTime of interest
+       * correction() or any of the zenith_delay routines.
+       * @param time  CommonTime of interest
        */
       void setTime(const CommonTime& time);
 

@@ -46,16 +46,16 @@ namespace gnsstk
 {
    //---------------------------------------------------------------------------------
    /** Tropospheric model with heights based on Goad and Goodman(1974),
-    *  "A Modified Hopfield Tropospheric Refraction Correction Model," Paper
-    *  presented at the Fall Annual Meeting of the American Geophysical Union,
-    *  San Francisco, December 1974.
+    * "A Modified Hopfield Tropospheric Refraction Correction Model," Paper
+    * presented at the Fall Annual Meeting of the American Geophysical Union,
+    * San Francisco, December 1974.
     *
-    *  (Not the same as GGTropModel because this has height dependence, and the
-    *  computation of this model does not break cleanly into wet and dry components.)
+    * (Not the same as GGTropModel because this has height dependence, and the
+    * computation of this model does not break cleanly into wet and dry components.)
     *
-    *  NB this model requires heights, both of the weather parameters,
-    *    and of the receiver.
-    *  Thus, usually, caller will set heights at the same time the weather is set:
+    * @note This model requires heights, both of the weather parameters,
+    * and of the receiver. Thus, usually, caller will set heights at the
+    * same time the weather is set:
     *
     * @code
     *    GGHeightTropModel ggh;
@@ -63,22 +63,22 @@ namespace gnsstk
     *    ggh.setHeights(hT,hP,hH);
     * @endcode
     *
-    *  and when the correction (and/or delay and map) is computed,
-    *  receiver height is set before the call to correction(elevation):
+    * And when the correction (and/or delay and map) is computed,
+    * receiver height is set before the call to correction(elevation):
     *
     * @code
     *    ggh.setReceiverHeight(height);
     *    trop = ggh.correction(elevation);
     * @endcode
     *
-    *  NB setReceiverHeight(ht) sets the 'weather heights' as well, if they are not
-    *    already defined.
+    * @note setReceiverHeight(ht) sets the 'weather heights' as well, if they are not
+    * already defined.
     */
    class GGHeightTropModel : public TropModel
    {
    public:
          /// Empty constructor
-      GGHeightTropModel(void);
+      GGHeightTropModel();
 
          /** Creates a trop model, with weather observation input
           * @param wx the weather to use for this correction.
@@ -112,92 +112,41 @@ namespace gnsstk
                         const double hP,
                         const double hH);
 
-         /// Return the name of the model
-      virtual std::string name(void)
+         /// @copydoc TropModel::name()
+      virtual std::string name()
       { return std::string("GGHeight"); }
 
-         /** Compute and return the full tropospheric delay
-          * @param elevation Elevation of satellite as seen at
-          *   receiver, in degrees
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::correction(double) const
       virtual double correction(double elevation) const;
 
-         /**
-          * Compute and return the full tropospheric delay, given the positions of
-          * receiver and satellite and the time tag. This version is most useful
-          * within positioning algorithms, where the receiver position and timetag
-          * may vary; it computes the elevation (and other receiver location
-          * information) and passes them to appropriate set...() routines and the
-          * correction(elevation) routine.
-          * @param RX  Receiver position
-          * @param SV  Satellite position
-          * @param tt  Time tag of the signal
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::correction(const Position&,const Position&,const CommonTime&)
       virtual double correction(const Position& RX,
                                 const Position& SV,
                                 const CommonTime& tt);
 
-         /** \deprecated
-          * Compute and return the full tropospheric delay, given the positions of
-          * receiver and satellite and the time tag. This version is most useful
-          * within positioning algorithms, where the receiver position and timetag
-          * may vary; it computes the elevation (and other receiver location
-          * information) and passes them to appropriate set...() routines and the
-          * correction(elevation) routine.
-          * @param RX  Receiver position in ECEF cartesian coordinates (meters)
-          * @param SV  Satellite position in ECEF cartesian coordinates (meters)
-          * @param tt  Time tag of the signal
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::correction(const Xvt&,const Xvt&,const CommonTime&)
       virtual double correction(const Xvt& RX,
                                 const Xvt& SV,
                                 const CommonTime& tt);
 
-         /** Compute and return the zenith delay for dry component
-          * of the troposphere
-          * @throw InvalidTropModel
-          */
-      virtual double dry_zenith_delay(void) const;
+         /// @copydoc TropModel::dry_zenith_delay() const
+      virtual double dry_zenith_delay() const;
 
-         /** Compute and return the zenith delay for wet component of
-          * the troposphere
-          * @throw InvalidTropModel */
-      virtual double wet_zenith_delay(void) const;
+         /// @copydoc TropModel::wet_zenith_delay() const
+      virtual double wet_zenith_delay() const;
 
-         /** Compute and return the mapping function for dry component of
-          * the troposphere.
-          * @param elevation Elevation of satellite as seen at
-          *   receiver, in degrees
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::dry_mapping_function(double) const
       virtual double dry_mapping_function(double elevation) const;
 
-         /** Compute and return the mapping function for wet component of
-          * the troposphere.
-          * @param elevation Elevation of satellite as seen at
-          *   receiver, in degrees
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::wet_mapping_function(double) const
       virtual double wet_mapping_function(double elevation) const;
 
-         /** Re-define the weather data.
-          * Typically called initially, and whenever the weather changes.
-          * @param T temperature in degrees Celsius
-          * @param P atmospheric pressure in millibars
-          * @param H relative humidity in percent
-          * @throw InvalidParameter
-          */
+         /// @copydoc TropModel::setWeather(const double&,const double&,const double&)
       virtual void setWeather(const double& T,
                               const double& P,
                               const double& H);
 
-         /** Re-define the tropospheric model with explicit weather data.
-          * Typically called just before correction().
-          * @param wx the weather to use for this correction
-          * @throw InvalidParameter
-          */
+         /// @copydoc TropModel::setWeather(const WxObservation&)
       virtual void setWeather(const WxObservation& wx);
 
          /** Re-define the heights at which the weather parameters apply.
@@ -210,9 +159,7 @@ namespace gnsstk
                       const double& hP,
                       const double& hH);
 
-         /** Define the receiver height; this required before calling
-          *  correction() or any of the zenith_delay or mapping_function routines.
-          */
+         /// @copydoc TropModel::setReceiverHeight(const double&)
       void setReceiverHeight(const double& ht);
 
    private:
