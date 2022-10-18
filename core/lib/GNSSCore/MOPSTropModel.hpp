@@ -83,57 +83,50 @@ namespace gnsstk
    public:
 
          /// Empty constructor
-      MOPSTropModel(void);
+      MOPSTropModel();
 
 
          /** Constructor to create a MOPS trop model providing just the height
-          *  of the receiver above mean sea level. The other parameters must be
-          *  set with the appropriate set methods before calling correction
-          *  methods.
+          * of the receiver above mean sea level. The other parameters must be
+          * set with the appropriate set methods before calling correction
+          * methods.
           *
-          * @param ht   Height of the receiver above mean sea level, in meters.
+          * @param ht Height of the receiver above mean sea level, in meters.
           */
       MOPSTropModel(const double& ht)
       { setReceiverHeight(ht); };
 
 
          /** Constructor to create a MOPS trop model providing the height of
-          *  the receiver above mean sea level (as defined by ellipsoid model),
-          *  its latitude and the day of year.
+          * the receiver above mean sea level (as defined by ellipsoid model),
+          * its latitude and the day of year.
           *
-          * @param ht   Height of the receiver above mean sea level, in meters.
-          * @param lat  Latitude of receiver, in degrees.
-          * @param doy  Day of year.
+          * @param ht Height of the receiver above mean sea level, in meters.
+          * @param lat Latitude of receiver, in degrees.
+          * @param doy Day of year.
           */
       MOPSTropModel(const double& ht, const double& lat, const int& doy);
 
 
          /** Constructor to create a MOPS trop model providing the position of
-          *  the receiver and current time.
+          * the receiver and current time.
           *
-          * @param RX   Receiver position.
+          * @param RX Receiver position.
           * @param time Time.
           */
       MOPSTropModel(const Position& RX, const CommonTime& time);
 
-      /// Return the name of the model
-      virtual std::string name(void)
+         /// @copydoc TropModel::name()
+      virtual std::string name()
          { return std::string("MOPS"); }
 
 
-         /** Compute and return the full tropospheric delay. The receiver
-          *  height, latitude and Day oy Year must has been set before using
-          *  the appropriate constructor or the provided methods.
-          *
-          * @param elevation   Elevation of satellite as seen at receiver, in
-          *                    degrees.
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::correction(double) const
       virtual double correction(double elevation) const;
 
 
-         /** Compute and return the full tropospheric delay, given the
-          *  positions of receiver and satellite.
+         /** Compute and return the full tropospheric delay, in meters,
+          * given the positions of receiver and satellite.
           *
           * This version is most useful within positioning  algorithms, where
           * the receiver position may vary; it computes the elevation (and
@@ -143,32 +136,21 @@ namespace gnsstk
           *
           * @param RX  Receiver position.
           * @param SV  Satellite position.
+          * @return The tropospheric delay (meters)
           * @throw InvalidTropModel
           */
       virtual double correction( const Position& RX,
                                  const Position& SV );
 
 
-         /** Compute and return the full tropospheric delay, given the
-          *  positions of receiver and satellite and the time tag.
-          *
-          * This version is most useful within positioning algorithms, where
-          * the receiver position may vary; it computes the elevation (and
-          * other receiver location information as height and latitude) and
-          * passes them to appropriate methods.
-          *
-          * @param RX  Receiver position.
-          * @param SV  Satellite position.
-          * @param tt  Time (CommonTime object).
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::correction(const Position&,const Position&,const CommonTime&)
       virtual double correction( const Position& RX,
                                  const Position& SV,
                                  const CommonTime& tt );
 
 
-         /** Compute and return the full tropospheric delay, given the
-          *  positions of receiver and satellite and the day of the year.
+         /** Compute and return the full tropospheric delay, in meters, given
+          * the positions of receiver and satellite and the day of the year.
           *
           * This version is most useful within positioning algorithms, where
           * the receiver position may vary; it computes the elevation (and
@@ -178,6 +160,7 @@ namespace gnsstk
           * @param RX  Receiver position.
           * @param SV  Satellite position.
           * @param doy Day of year.
+          * @return The tropospheric delay (meters)
           * @throw InvalidTropModel
           */
       virtual double correction( const Position& RX,
@@ -185,54 +168,42 @@ namespace gnsstk
                                  const int& doy );
 
 
-         /** \deprecated
-          * Compute and return the full tropospheric delay, given the positions
+         /** Compute and return the full tropospheric delay, given the positions
           * of receiver and satellite. . You must set time using method
           * setReceiverDOY() before calling this method.
           *
-          * @param RX   Receiver position in ECEF cartesian coordinates
-          *             (meters).
-          * @param SV   Satellite position in ECEF cartesian coordinates
-          *             (meters).
+          * @deprecated This method is deprecated.
+          *   Use correction(const Position&,const Position&) instead
+          *
+          * @param RX Receiver position in ECEF cartesian coordinates (meters).
+          * @param SV Satellite position in ECEF cartesian coordinates (meters).
+          * @return The tropospheric delay (meters)
           * @throw InvalidTropModel
           */
       virtual double correction( const Xvt& RX,
                                  const Xvt& SV );
 
 
-         /** \deprecated
-          * Compute and return the full tropospheric delay, given the positions
-          * of receiver and satellite and the time tag. This version is most
-          * useful within positioning algorithms, where the receiver position
-          * may vary; it computes the elevation (and other receiver location
-          * information as height and latitude) and passes them to appropriate
-          * methods.
-          *
-          * @param RX   Receiver position in ECEF cartesian coordinates
-          *             (meters)
-          * @param SV   Satellite position in ECEF cartesian coordinates
-          *             (meters)
-          * @param tt   Time (CommonTime object).
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::correction(const Xvt&,const Xvt&,const CommonTime&)
       virtual double correction( const Xvt& RX,
                                  const Xvt& SV,
                                  const CommonTime& tt );
 
 
-         /** \deprecated
-          * Compute and return the full tropospheric delay, given the positions
+         /** Compute and return the full tropospheric delay, given the positions
           * of receiver and satellite and the day of the year. This version is
           * most useful within positioning algorithms, where the receiver
           * position may vary; it computes the elevation (and other receiver
           * location information as height and latitude) and passes them to
           * appropriate methods.
           *
-          * @param RX   Receiver position in ECEF cartesian coordinates
-          *             (meters)
-          * @param SV   Satellite position in ECEF cartesian coordinates
-          *             (meters)
-          * @param doy  Day of year.
+          * @deprecated This method is deprecated.
+          *   Use correction(const Position&,const Position&,const int&) instead
+          *
+          * @param RX Receiver position in ECEF cartesian coordinates (meters)
+          * @param SV Satellite position in ECEF cartesian coordinates (meters)
+          * @param doy Day of year.
+          * @return The tropospheric delay (meters)
           * @throw InvalidTropModel
           */
       virtual double correction( const Xvt& RX,
@@ -240,23 +211,17 @@ namespace gnsstk
                                  const int& doy );
 
 
-         /** Compute and return the zenith delay for dry component of the
-          * troposphere.
-          * @throw InvalidTropModel
-          */
-      virtual double dry_zenith_delay(void) const;
+         /// @copydoc TropModel::dry_zenith_delay() const
+      virtual double dry_zenith_delay() const;
 
 
-         /** Compute and return the zenith delay for wet component of the
-          * troposphere.
-          * @throw InvalidTropModel
-          */
-      virtual double wet_zenith_delay(void) const;
+         /// @copydoc TropModel::wet_zenith_delay()) const
+      virtual double wet_zenith_delay() const;
 
 
          /** This method configure the model to estimate the weather using
-          *  height, latitude and day of year (DOY). It is called automatically
-          *  when setting those parameters.
+          * height, latitude and day of year (DOY). It is called automatically
+          * when setting those parameters.
           * @throw InvalidTropModel
           */
       void setWeather();
@@ -280,41 +245,29 @@ namespace gnsstk
       {}
 
 
-         /** Define the receiver height; this is required before calling
-          *  correction() or any of the zenith_delay routines.
-          *
-          * @param ht   Height of the receiver above mean sea level, in meters.
-          */
+         /// @copydoc TropModel::setReceiverHeight(const double&)
       virtual void setReceiverHeight(const double& ht);
 
 
-         /** Define the receiver latitude; this is required before calling
-          *  correction() or any of the zenith_delay routines.
-          *
-          * @param lat  Latitude of receiver, in degrees.
-          */
+         /// @copydoc TropModel::setReceiverLatitude(const double&)
       virtual void setReceiverLatitude(const double& lat);
 
 
-         /** Set the time when tropospheric correction will be computed for, in
-          *  days of the year.
-          *
-          * @param doy  Day of the year.
-          */
+         /// @copydoc TropModel::setDayOfYear(const int&)
       virtual void setDayOfYear(const int& doy);
 
 
          /** Set the time when tropospheric correction will be computed for, in
-          *  days of the year.
+          * days of the year.
           *
-          * @param time  Time object.
+          * @param time Time object.
           */
       virtual void setDayOfYear(const CommonTime& time);
 
 
          /** Convenient method to set all model parameters in one pass.
           *
-          * @param time  Time object.
+          * @param time Time object.
           * @param rxPos Receiver position object.
           */
       virtual void setAllParameters( const CommonTime& time,
@@ -322,10 +275,10 @@ namespace gnsstk
 
 
          /** Compute and return the sigma-squared value of tropospheric delay
-          *  residual error (meters^2).
+          * residual error (meters^2).
           *
-          * @param elevation  Elevation of satellite as seen at receiver,
-          *                   in degrees
+          * @param elevation Elevation of satellite as seen at receiver,
+          *   in degrees
           * @throw InvalidTropModel
           */
       double MOPSsigma2(double elevation);
@@ -349,11 +302,11 @@ namespace gnsstk
           * parameters.
           * @throw InvalidTropModel
           */
-      virtual void prepareParameters(void);
+      virtual void prepareParameters();
 
 
          // The MOPS tropospheric model uses several predefined data tables
-      virtual void prepareTables(void);
+      virtual void prepareTables();
    };
 }
 #endif

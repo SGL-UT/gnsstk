@@ -45,7 +45,7 @@
 namespace gnsstk
 {
    /** Tropospheric model based on Goad and Goodman(1974),
-    *  "A Modified Hopfield Tropospheric Refraction Correction Model," Paper
+    * "A Modified Hopfield Tropospheric Refraction Correction Model," Paper
     * presented at the Fall Annual Meeting of the American Geophysical Union,
     * San Francisco, December 1974, as presented in Leick, "GPS Satellite Surveying,"
     * Wiley, NY, 1990, Chapter 9 (note particularly Table 9.1).
@@ -54,7 +54,7 @@ namespace gnsstk
    {
    public:
          /// Empty constructor
-      GGTropModel(void);
+      GGTropModel();
 
          /** Creates a trop model, with weather observation input
           * @param wx the weather to use for this correction.
@@ -72,55 +72,28 @@ namespace gnsstk
                   const double& P,
                   const double& H);
 
-         /// Return the name of the model
-      virtual std::string name(void)
+         /// @copydoc TropModel::name()
+      virtual std::string name()
       { return std::string("GG"); }
 
-         /** Compute and return the zenith delay for dry component
-          * of the troposphere
-          * @throw InvalidTropModel
-          */
-      virtual double dry_zenith_delay(void) const;
+         /// @copydoc TropModel::dry_zenith_delay() const
+      virtual double dry_zenith_delay() const;
 
-         /** Compute and return the zenith delay for wet component
-          * of the troposphere
-          * @throw InvalidTropModel
-          */
-      virtual double wet_zenith_delay(void) const;
+         /// @copydoc TropModel::wet_zenith_delay() const
+      virtual double wet_zenith_delay() const;
 
-         /** Compute and return the mapping function for dry component
-          * of the troposphere
-          * @param elevation Elevation of satellite as seen at
-          *   receiver, in degrees
-          * @throw InvalidTropModel
-          */
+         /// @copydoc TropModel::dry_mapping_function(double) const
       virtual double dry_mapping_function(double elevation) const;
 
-         /** Compute and return the mapping function for wet component
-          * of the troposphere
-          * @param elevation Elevation of satellite as seen at
-          *   receiver, in degrees
-          * @throw InvalidTropModel
-          */
-
+         /// @copydoc TropModel::wet_mapping_function(double) const
       virtual double wet_mapping_function(double elevation) const;
 
-         /** Re-define the tropospheric model with explicit weather data.
-          * Typically called initially, and whenever the weather changes.
-          * @param T temperature in degrees Celsius
-          * @param P atmospheric pressure in millibars
-          * @param H relative humidity in percent
-          * @throw InvalidParameter
-          */
+         /// @copydoc TropModel::setWeather(const double&,const double&,const double&)
       virtual void setWeather(const double& T,
                               const double& P,
                               const double& H);
 
-         /** Re-define the tropospheric model with explicit weather data.
-          * Typically called just before correction().
-          * @param wx the weather to use for this correction
-          * @throw InvalidParameter
-          */
+         /// @copydoc TropModel::setWeather(const WxObservation&)
       virtual void setWeather(const WxObservation& wx);
 
    private:
