@@ -89,6 +89,9 @@ class FakeODK : public gnsstk::OrbitDataKepler
 public:
    FakeODK()
    {}
+      /// Create a deep copy of this object.
+   gnsstk::NavDataPtr clone() const override
+   { return std::make_shared<FakeODK>(*this); }
    bool validate() const override
    { return true; }
    bool getXvt(const gnsstk::CommonTime& when, gnsstk::Xvt& xvt,

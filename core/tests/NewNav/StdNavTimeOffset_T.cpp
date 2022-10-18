@@ -57,6 +57,8 @@ class TestClass : public gnsstk::StdNavTimeOffset
 public:
    bool validate() const override
    { return true; }
+   gnsstk::NavDataPtr clone() const override
+   { return std::make_shared<TestClass>(*this); }
 };
 
 class StdNavTimeOffset_T
