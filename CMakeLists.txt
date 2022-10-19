@@ -6,7 +6,7 @@
 #           Is dependend on by $GNSSTK/build.sh
 #============================================================
 
-cmake_minimum_required( VERSION 2.8.5 )
+cmake_minimum_required( VERSION 3.7.2 )
 
 project( GNSSTK )
 set( GNSSTK_VERSION_MAJOR "13" )

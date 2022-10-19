@@ -2,7 +2,7 @@
 # gnsstk/swig/CMakeLists.txt
 #----------------------------------------
 
-cmake_minimum_required( VERSION 2.8.4  )
+cmake_minimum_required( VERSION 3.7.2  )
 include( make_copy_targets.cmake )
 
 find_package( SWIG REQUIRED )
