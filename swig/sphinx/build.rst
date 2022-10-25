@@ -31,22 +31,22 @@ The build system is composed of the following steps:
 - Installs the C++ library, C++ apps, and the Python package
 
 An example source file tree is provided here for the purpose
-of giving context to the build and install examples below, listing paths 
+of giving context to the build and install examples below, listing paths
 and files that play critical roles in the build and install process: ::
-  
+
 	$GNSSTK/build.sh
 	$GNSSTK/CMakeLists.txt
 	$GNSSTK/swig/CMakeLists.txt
-	$GNSSTK/swig/install_package/setup.py
+	$GNSSTK/swig/setup.py.in
 
 Current build and install is automated for Linux only.
-A bash script build.sh, is included with this GNSSTk 
-distribution for this automation, but also to document the 
-manual steps that support build and install on a wide 
+A bash script build.sh, is included with this GNSSTk
+distribution for this automation, but also to document the
+manual steps that support build and install on a wide
 variety of other platforms. The major dependencies are
 CMake, SWIG, gcc, and python (distutils). See setup.py
 for a detailed dependency listing with version numbers
-that were tested. Additional dependencies needed for 
+that were tested. Additional dependencies needed for
 the generation of documentation are doxygen and sphinx.
 
 Review the help comments of the build script found in the
@@ -54,8 +54,8 @@ top-level directory of the GNSSTk file tree: ::
 
 	$ build.sh -h
 
-The core library ($GNSSTK/core/)is built be default, but 
-additional source code that has not been fully tested 
+The core library ($GNSSTK/core/)is built be default, but
+additional source code that has not been fully tested
 ($GNSSTK/ext/) and can be built by using the "-e" flag: ::
 
     $ $GNSSTK/build.sh -e
@@ -71,7 +71,7 @@ There are two options for the install of the C++ library shared
 	C++ lib install path = /usr/local/lib
 	python install path  = /usr/lib/pythonX.X/gnsstk
 
-The "user" install option is selected by using the "-u" flag 
+The "user" install option is selected by using the "-u" flag
 
     $ $GNSSTK/build.sh -u
 
@@ -82,30 +82,30 @@ and installs to the following paths:
 
 If using the "user" install option, you must manually add the
  install path in $PATH or $LD_LIBRARY_PATH. For example: ::
-  
+
 	$ export LD_LIBRARY_PATH=$HOME/.local/gnsstk/lib
 
 This is left for the user to do as we did not want the automated
 script to change your environment variables without you knowing.
 
-To install the python package in an alternate prefix path, use 
+To install the python package in an alternate prefix path, use
 disutils directly with the included setup.py script, for example: ::
-  
+
 	# Move to the install package root diretory
 	$ cd $GNSSTK/swig/install_package
 	# run a check on the setup.py file
 	$ python setup.py check
 	# install the package
 	$ python setup.py install
-	
+
 Alternatively, to force install into your user home file tree: ::
 
 	# install the package under your home directory
 	$ python setup.py --prefix=~/.local
 
 Note that the CMake install uses setup.py.in to allow for CMake variable
-values to be written into the final setup.py file which is then used with 
+values to be written into the final setup.py file which is then used with
 distutils based install. Though setup.py is regenerated from setup.py.in
-by CMake, we've preserved setup.py for those who may not have CMake 
+by CMake, we've preserved setup.py for those who may not have CMake
 installed.
 

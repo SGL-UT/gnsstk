@@ -4,15 +4,15 @@ Developer Documentation
 =========================================
 
 The information herein is meant to help developers and maintainers of the GNSSTk.
-It contains essential build and release information as well as general 
-information about the organization of the source code file tree to help others 
+It contains essential build and release information as well as general
+information about the organization of the source code file tree to help others
 contribute to it.
 
 
 Source Code Organization
 ****************************************
 
-The majority of the SWIG interface files and Python source files for the C++ 
+The majority of the SWIG interface files and Python source files for the C++
 bindings are contained in the following path: ::
 
     $GNSSTK/swig
@@ -20,10 +20,9 @@ bindings are contained in the following path: ::
 Contents of the $GNSSTK/swig directory:
 
 - :file:`../CMakeLists.txt` is the CMake file for use in generating the build and install targets for the python package
-- :file:`../gnsstk.i` is the primary interface file for SWIG which contains include directives for other files.i
-- :file:`../src/` is for additional SWIG interface files.i, all of which are included in :file:`gnsstk.i`
+- :file:`../gnsstk/gnsstk.i` is the primary interface file for SWIG which contains include directives for other files.i
 - :file:`../sphinx/` contains all resources for the external documentation.
-- :file:`../install_package/` contains the python package that will be installed.
+- Other directories contain swig files for separate subpackages
 
 Packaging System
 *****************************************
@@ -47,15 +46,3 @@ The following files are output:
 
 .. _stdeb: https://pypi.python.org/pypi/stdeb
 
-
-
-Uploading
-*****************************************
-
-1. Run the above packaging script
-2. Upload the sdist to PyPI: ::
-
-        python setup.py sdist upload
-
-3. Login to your account on PyPI: https://pypi.python.org/pypi
-4. Upload the documentation archive gnsstk/python/bindings/dist/gnsstkpythondoc.zip
