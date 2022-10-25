@@ -19,8 +19,6 @@ process and otherwise manipulate GPS data. It is characterized by the following:
 
 
 The official GNSSTk homepage is at http://www.gnsstk.org/
-The original C++ API is documented at http://www.gnsstk.org/doxygen/
-
 
 
 Getting the Python GNSSTk
@@ -67,21 +65,14 @@ Compare to the simpler Python GNSSTk read process:
        print data
 
 
-
-A Note on Python Versions
-*****************************************
-These bindings were created with **Python 2.7** in mind and that is how they are supported
-at the moment. It is likely Python 3.2 or 3.3 will be supported some time in the future.
-
-The standard Python implementation, CPython, must be used. The wrapping makes use
-of the C Python API heavily.
-
-
 Package Organization
 ************************
-All classes and functions are in the gnsstk namespace, mirroring the namespace organization
- found on the C++ side.
-Additional sub-packages are represented in the python namespace as gnsstk.data and gnsstk.test.
+The python package is split into several subpackages that mirror the folder
+organization of the source code. In addition, everything from the subpackages
+is brought into the top level package scope. All classes and functions can be
+accessed by  either the individual subpackages/modules or from the top level
+package scope.
+
 
 How to Use This Documentation
 **************************************
@@ -89,13 +80,9 @@ The C++ API is the primary reference still, however much of it is embedded into
 the python source in the form of docstrings. This means you can use ipython
 to easily find out about classes and functions.
 
-Changes and additions to the C++ core are noted in this documentation,
-as well as in the docstrings themselves.
-
-A good first step is to browse the things available in the :ref:`quickref_label`
+A good first step is to browse the things available in the :ref:`api`
 section. If you are coming from writing C++ GNSSTk programs, you should be sure to read
 the section on how C++ structures have been changed for python.
-
 
 
 Scope
@@ -115,7 +102,6 @@ Prime examples of things **NOT wrapped** include (most of which are easily repla
 * Vector graphics utilities
 
 
-
 How some particular C++ structures are translated to Python
 ***************************************************************
 
@@ -132,20 +118,16 @@ Any changes for the sake of the Python API could not duplicate code.
 
 **Namespaces:**
 
-The GNSSTk largely only uses the gnsstk namespace, which is roughly the gnsstk package now.
-Exceptions include the subpackages created for gnsstk.data and gnsstk.test.
-
-Note that SWIG build createa a module called gnsstk (gnsstk.py and _gnsstk.so).
-ALl attributes of this module are inported into a single package namespace "gnsstk".
-The subpackages gnsstk.data and gnsstk.test are unique to the python package, and not 
-available on the C++ side.
+The GNSSTk largely only uses the gnsstk namespace, but the python bindings are
+split into several different subpackages. All contents of the subpackages are imported
+into the top level gnsstk package to rougly imitate the C++ namespace.
 
 **Enumerations:**
 
 Many classes use enums extensively (see: ObsID), especially in their constructors
 to specify options. These enums are simply wrapped to integer values. A enum
 value can be referred to by ClassName.ValueName. Note that the name given to the
-whole enum is no long used.
+whole enum is no longer used.
 
 **Templates:**
 
@@ -160,10 +142,9 @@ Using the standard library containers of C++ is discouraged,
 so only a few were created for use.
 
 The only class that uses the numeric template type that is wrapped
-in gnsstk::Vector, which only accepts floating point numbers now.
+is gnsstk::Vector, which only accepts floating point numbers now.
 
 The templates in inheritance are not needed as they are not visible to the end-user.
-
 
 
 **Streams:**
@@ -173,8 +154,22 @@ Many classes had a dump or operator<< function that could be used for
 string output, these have been replaced with the __str__ method.
 
 Streams were also used heavily for reading in Almanac and Ephemeris data from files.
-A more pythonic interface was provided over these streams (the streams are now hidden)
-and is described at :ref:`fileio_label`.
+A more pythonic interface was provided over these streams (the streams are now hidden).
+To replace the stream-oriented paradigm for file i/o used in the C++
+implementation, some thin wrapping was placed over the Stream objects.
+
+Because the i/o strategy was uniform across all file types in C++, the
+strategy is similarly uniform for the python bindings.
+
+As an example, to read a SP3 file: ::
+
+    >>> header, data = gnsstk.readSP3('sp3_data.txt')
+
+
+And to write an SP3 file... ::
+
+    >>> gnsstk.writeSP3('sp3_data.txt.new', header, data)
+
 
 
 **Inner Classes:**
