@@ -1,5 +1,5 @@
 %define name python3-gnsstk
-%define version 13.7.0
+%define version 13.8.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -67,6 +67,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 31 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v13.8.0 release
 * Fri Aug 26 2022 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v13.7.0 release
 - Fix Rinex3NavHeader to support the source specification for TIME SYSTEM CORR

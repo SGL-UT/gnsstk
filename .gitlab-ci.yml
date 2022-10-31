@@ -1308,11 +1308,9 @@ deploy_redhat_py36:
 push_artifacts:
   extends: .push_selected_artifacts
   variables:
-    # CONDA_PACKAGES: "conda-bld/linux-64/*.tar.bz2"
     DEB_9_PACKAGES: "debs/*bpo9*.deb"
     DEB_10_PACKAGES: "debs/*bpo10*.deb"
     DEB_11_PACKAGES: "debs/*bpo11*.deb"
-    #RPM_PACKAGES: "rpm_files/RPMS/x86_64/*.rpm"
   stage: push
-  needs: [package_conda, package_debian_9, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36]
-  dependencies: [package_conda, package_debian_9, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36]
+  needs: [package_conda, package_debian_9, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
+  dependencies: [package_conda, package_debian_9, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
