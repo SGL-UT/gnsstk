@@ -362,7 +362,7 @@ namespace gnsstk
        */
    template <class T, class BaseClass>
    inline T condNum(const ConstMatrixBase<T, BaseClass>& m, T& bigNum, T& smallNum)
-      throw()
+      noexcept
    {
       SVD<T> svd;
       svd(m);
@@ -381,7 +381,7 @@ namespace gnsstk
        */
    template <class T, class BaseClass>
    inline T condNum(const ConstMatrixBase<T, BaseClass>& m)
-      throw()
+      noexcept
    {
       T bigNum, smallNum;
       return condNum(m, bigNum, smallNum);
@@ -949,7 +949,7 @@ namespace gnsstk
        */
    template <class T, class BaseClass>
    inline T maxabs(const ConstMatrixBase<T, BaseClass>& a)
-      throw()
+      noexcept
    {
       T m=0;
       for(int i = 0; i < a.rows(); i++)

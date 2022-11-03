@@ -42,7 +42,7 @@ namespace gnsstk
 {
    namespace StringUtils
    {
-      std::string asString(DumpDetail e) throw()
+      std::string asString(DumpDetail e) noexcept
       {
          switch (e)
          {
@@ -56,7 +56,7 @@ namespace gnsstk
       } // asString(DumpDetail)
 
 
-      DumpDetail asDumpDetail(const std::string& s) throw()
+      DumpDetail asDumpDetail(const std::string& s) noexcept
       {
          if (s == "Unknown")
             return DumpDetail::Unknown;

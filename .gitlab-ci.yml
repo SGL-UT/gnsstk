@@ -32,6 +32,7 @@ stages:
 - clean
 
 variables:
+  GIT_SUBMODULE_STRATEGY: recursive
   # Default cmake arguments
   CMAKE_ARG_DEFAULT: "-DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
   # this can be used for incremental builds
@@ -132,6 +133,20 @@ sgllint_lint:
     - sgl_lint -v -R swig/apps
     - sgl_lint -v -R swig/gnsstk
   dependencies: []
+
+submodule_check:
+  stage: check
+  needs: []
+  extends: .normal_build
+  tags:
+    - docker-executor
+  variables:
+    GIT_SUBMODULE_UPDATE_FLAGS: --remote
+  only:
+    - main
+  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
+  script:
+    - (! git status --porcelain | grep 'M data')
 
 protected_term_lint:
   stage: check
@@ -443,24 +458,6 @@ sonar-scan:
   #   - tags
   #   - stable
 
-build_redhat:
-  stage: build
-  needs: []
-  extends: .normal_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-7:pkgbuild
-  script:
-    - mkdir -p build
-    - cd build
-    - export gnsstk=`pwd`/install
-    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DTEST_SWITCH=ON -DPYTHON_EXECUTABLE=/usr/bin/python3 ../
-    - make all -j 4
-  artifacts:
-    paths:
-    - build/
-    expire_in: 4 days
-
 build_redhat_8:
   stage: build
   needs: []
@@ -696,24 +693,6 @@ test_conda_py3.9:
   needs: [build_conda_py3.9]
   dependencies: [build_conda_py3.9]
 
-test_redhat:
-  stage: test
-  needs: [build_redhat]
-  extends: .normal_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-7:pkgbuild
-  script:
-    - cd build
-    - ctest -j 4
-  artifacts:
-    when: on_failure
-    paths:
-    - build/Testing/Temporary/
-    expire_in: 4 days
-  dependencies:
-    - build_redhat
-
 test_redhat_8:
   stage: test
   needs: [build_redhat_8]
@@ -898,25 +877,6 @@ virtualenv_install_debian_11:
   dependencies:
     - build_debian_11_virtualenv
 
-user_install_redhat:
-  stage: install
-  needs: [build_redhat]
-  extends: .big_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-7:pkgbuild
-  script:
-    - cd build
-    - export gnsstk=`pwd`/install
-    - cmake -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_EXECUTABLE=/usr/bin/python3 ../
-    - make install -j 4
-  artifacts:
-    paths:
-      - build/install
-    expire_in: 4 days
-  dependencies:
-    - build_redhat
-
 user_install_redhat_8:
   stage: install
   needs: [build_redhat_8]
@@ -1027,21 +987,6 @@ system_install_debian_9:
   dependencies:
     - build_debian_9
 
-system_install_redhat:
-  stage: install
-  needs: [build_redhat]
-  extends: .big_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-7:pkgbuild
-  script:
-    - cd build
-    - export gnsstk=/usr/local
-    - cmake -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_EXECUTABLE=/usr/bin/python3 ../
-    - sudo make install -j 4
-  dependencies:
-    - build_redhat
-
 system_install_redhat_8:
   stage: install
   needs: [build_redhat_8]
@@ -1060,67 +1005,6 @@ system_install_redhat_8:
 # Package Stage
 # Tests packaging of Gnsstk on all platforms
 
-# Note: debian 7 can't build the swig bindings out of the box because
-# SWIG 2.0.7 doesn't understand enum classes.
-# This makes packaging difficult at best since the package config
-# assumes swig bindings were built.
-# package_debian_7:
-#   stage: package
-#   needs: []
-#   extends: .package_build
-#   tags:
-#     - docker-executor
-#     # Not all docker runners support debian 7
-#     - deb7-support
-#   image: $DOCKER_REGISTRY/sgl_ci/debian7_fai_ish
-#   script:
-#     - rm -rf ../*.deb
-#     # Mark the debian log so that this package is a backport.
-#     # dpkg-parsechangelog doesn't support -S under debian 7, so hard code it.
-#     - export DEBEMAIL="No One <nobody@arlut.utexas.edu>"
-#     - dch --bpo "No Changes"
-#     # make dpkg-source stop complaining about manual tweaking
-#     - echo 'extend-diff-ignore="debian/source/options"' >>debian/source/options
-#     - echo 'extend-diff-ignore="debian/control"' >>debian/source/options
-#     # manually tweak control file for deb7 compatibility
-#     - sed -i -e 's/ *<pkg_python>//g' -e '/Build-Profiles:/d' debian/control
-#     - dpkg-buildpackage -us -uc -d --changes-option="-DDistribution=wheezy-sgl"
-#     - mkdir debs
-#     - mv ../*.deb debs
-#     - mv ../*.changes debs
-#     - mv ../*.dsc debs
-#     - mv ../*.git ../*.gitshallow debs
-#   artifacts:
-#     paths:
-#     - debs/
-#   dependencies:
-#     - build_debian_7
-
-# According to the toolkit matrix, we don't need to support debian8.
-# package_debian_8:
-#   stage: package
-#   needs: []
-#   tags:
-#     - docker-executor
-#   image: $DOCKER_REGISTRY/sgl_ci/debian8_fai_ish
-#   script:
-#     - rm -rf ../*.deb
-#     # Mark the debian log so that this package is a backport.
-#     # Use the most recent Maintainer as current maintainer.
-#     - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
-#     - dch --bpo "No Changes"
-#     - dpkg-buildpackage -us -uc -d --changes-option="-DDistribution=jessie-sgl"
-#     - mkdir debs
-#     - mv ../*.deb debs
-#     - mv ../*.changes debs
-#     - mv ../*.dsc debs
-#     - mv ../*.git debs
-#   artifacts:
-#     paths:
-#     - debs/
-#   dependencies:
-#     - build_debian_8
-
 package_debian_9:
   stage: package
   needs: []
@@ -1128,7 +1012,11 @@ package_debian_9:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
   script:
-    - rm -rf ../*.deb
+    - rm -rf ../*.deb .gitmodules
+    # Mark the debian log so that this package is a backport.
+    # Use the most recent Maintainer as current maintainer.
+    - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
+    - dch --bpo "No Changes"
     - dpkg-buildpackage --build-profiles=pkg_python,debug_package -us -uc -d --changes-option="-DDistribution=stretch-sgl"
     - mkdir debs
     - mv ../*.deb debs
@@ -1159,7 +1047,7 @@ package_debian_10:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
-    - rm -rf ../*.deb
+    - rm -rf ../*.deb .gitmodules
     # Mark the debian log so that this package is a backport.
     # Use the most recent Maintainer as current maintainer.
     - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
@@ -1196,7 +1084,7 @@ package_debian_11:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
-    - rm -rf ../*.deb
+    - rm -rf ../*.deb .gitmodules
     # Mark the debian log so that this package is a backport.
     # Use the most recent Maintainer as current maintainer.
     - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
@@ -1243,23 +1131,6 @@ package_conda:
   parallel:
     matrix:
       - PYTHON_VERSION: ["3.6", "3.7", "3.8", "3.9"]
-
-package_redhat:
-  stage: package
-  needs: []
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-7:pkgbuild
-  script:
-    - bash rpm_files/setup_dirs.sh
-    - git archive --prefix gnsstk-master/ -o rpm_files/SOURCES/gnsstk-master.tar.gz HEAD
-    - pushd rpm_files
-    - rpmbuild --define "_topdir ${PWD}" --define "debug_package %{nil}" -ba SPECS/gnsstk.spec
-  artifacts:
-    paths:
-      - rpm_files/RPMS/x86_64/gnsstk-*
-      - rpm_files/SRPMS/gnsstk-*
-  dependencies: []
 
 package_redhat_8:
   stage: package
@@ -1402,21 +1273,6 @@ deploy_debian_11:
   dependencies:
     - package_debian_11
 
-deploy_redhat:
-  stage: deploy
-  needs: [package_redhat]
-  extends: .big_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-7:pkgbuild
-  script:
-    - cd rpm_files/RPMS/x86_64/
-    - sudo yum install gnsstk-*.rpm -y
-    - df_diff -h
-    - gnsstk-config --includedir
-  dependencies:
-    - package_redhat
-
 deploy_redhat_8:
   stage: deploy
   needs: [package_redhat_8]
@@ -1452,22 +1308,9 @@ deploy_redhat_py36:
 push_artifacts:
   extends: .push_selected_artifacts
   variables:
-    # CONDA_PACKAGES: "conda-bld/linux-64/*.tar.bz2"
-    DEB_9_PACKAGES: "debs/*-1_amd64.deb"
+    DEB_9_PACKAGES: "debs/*bpo9*.deb"
     DEB_10_PACKAGES: "debs/*bpo10*.deb"
-    #RPM_PACKAGES: "rpm_files/RPMS/x86_64/*.rpm"
+    DEB_11_PACKAGES: "debs/*bpo11*.deb"
   stage: push
-  needs:
-    - package_conda
-    - package_debian_9
-    - package_debian_10
-    - package_debian_11
-    - package_redhat_8
-    - package_redhat_8_py36
-  dependencies:
-    - package_conda
-    - package_debian_9
-    - package_debian_10
-    - package_debian_11
-    - package_redhat_8
-    - package_redhat_8_py36
+  needs: [package_conda, package_debian_9, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
+  dependencies: [package_conda, package_debian_9, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]

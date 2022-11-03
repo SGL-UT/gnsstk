@@ -37,8 +37,8 @@
 //
 //==============================================================================
 
-#ifndef GNSSTK_BDSD1BITS_HPP
-#define GNSSTK_BDSD1BITS_HPP
+#ifndef GNSSTK_BDSD2BITS_HPP
+#define GNSSTK_BDSD2BITS_HPP
 
 namespace gnsstk
 {
@@ -1133,7 +1133,7 @@ namespace gnsstk
          esbidotl = esbParity102+enbParity102,
          enbidotl = 13,
       };
-   } // namespace BDSD1Bits
+   } // namespace bds
 } // namespace gnsstk
 
-#endif // GNSSTK_BDSD1BITS_HPP
+#endif // GNSSTK_BDSD2BITS_HPP

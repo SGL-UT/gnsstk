@@ -167,4 +167,55 @@ namespace gnsstk
    {
       return sat.isWild() || xmitSat.isWild() || NavSignalID::isWild();
    }
+
+
+   bool NavSatelliteID ::
+   isGLOFDMA() const
+   {
+      if (system != SatelliteSystem::Glonass)
+      {
+         return false;
+      }
+      if ((sat.system != SatelliteSystem::Glonass) &&
+          (sat.wildSys != true))
+      {
+         return false;
+      }
+      switch (obs.band)
+      {
+         case CarrierBand::Any:
+               // FDMA still possible
+            break;
+         case CarrierBand::G1:
+         case CarrierBand::G2:
+         case CarrierBand::G1a:
+         case CarrierBand::G2a:
+               // FDMA certain
+            return true;
+         default:
+            return false;
+      }
+      switch (obs.code)
+      {
+         case TrackingCode::Any:
+               // FDMA still possible
+            break;
+         case TrackingCode::Standard:
+         case TrackingCode::Precise:
+               // should be GLONASS assuming someone didn't use w/o reading.
+            return true;
+         default:
+            return false;
+      }
+      if (nav == NavType::GloCivilF)
+      {
+         return true;
+      }
+      if (nav != NavType::Any)
+      {
+         return false;
+      }
+         // last possible check...
+      return !obs.freqOffsWild;
+   }
 }

@@ -60,7 +60,7 @@ namespace gnsstk
          /// Constructor.
       GALWeekSecond(unsigned int w = 0,
                     double s = 0.,
-                    TimeSystem ts = TimeSystem::GAL) throw()
+                    TimeSystem ts = TimeSystem::GAL) noexcept
             : WeekSecond(w,s)
       { timeSystem = ts; }
 
@@ -71,7 +71,7 @@ namespace gnsstk
       }
 
          /// Destructor.
-      ~GALWeekSecond() throw() {}
+      ~GALWeekSecond() noexcept {}
 
          /// Return the number of bits in the bitmask used to get the ModWeek from the
          /// full week.
@@ -199,6 +199,30 @@ namespace gnsstk
          } // end of for loop
 
          return true;
+      }
+
+
+         /** This is, unfortunately, a duplication of what's in
+          * GPSWeekSecond.  To make a polymorphic function in the
+          * parent class, WeekSecond, that worked for both GPS and
+          * Galileo would require a change of the API, and I don't
+          * want to do that right now. */
+      GALWeekSecond& weekRolloverAdj(const GALWeekSecond& refTime)
+      {
+         double diff = sow - refTime.sow;
+         if (diff < -HALFWEEK)
+         {
+            week = refTime.week + 1;
+         }
+         else if (diff > HALFWEEK)
+         {
+            week = refTime.week - 1;
+         }
+         else
+         {
+            week = refTime.week;
+         }
+         return *this;
       }
 
    }; // end class GALWeekSecond

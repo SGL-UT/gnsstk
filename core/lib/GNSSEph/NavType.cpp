@@ -49,7 +49,7 @@ namespace gnsstk
 {
    namespace StringUtils
    {
-      std::string asString(NavType e) throw()
+      std::string asString(NavType e) noexcept
       {
          switch (e)
          {
@@ -72,7 +72,7 @@ namespace gnsstk
       } // asString(NavType)
 
 
-      NavType asNavType(const std::string& s) throw()
+      NavType asNavType(const std::string& s) noexcept
       {
          if (s == "Unknown")
             return NavType::Unknown;

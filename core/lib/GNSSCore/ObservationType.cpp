@@ -49,7 +49,7 @@ namespace gnsstk
 {
    namespace StringUtils
    {
-      std::string asString(ObservationType e) throw()
+      std::string asString(ObservationType e) noexcept
       {
          switch (e)
          {
@@ -75,7 +75,7 @@ namespace gnsstk
       } // asString(ObservationType)
 
 
-      ObservationType asObservationType(const std::string& s) throw()
+      ObservationType asObservationType(const std::string& s) noexcept
       {
          if (s == "Unknown")
             return ObservationType::Unknown;

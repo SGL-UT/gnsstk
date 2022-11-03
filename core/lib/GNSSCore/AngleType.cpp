@@ -43,7 +43,7 @@ namespace gnsstk
 {
    namespace StringUtils
    {
-      std::string asString(AngleType e) throw()
+      std::string asString(AngleType e) noexcept
       {
          switch (e)
          {
@@ -58,7 +58,7 @@ namespace gnsstk
       }
 
 
-      AngleType asAngleType(const std::string& s) throw()
+      AngleType asAngleType(const std::string& s) noexcept
       {
          std::string lc(gnsstk::StringUtils::lowerCase(s));
          if (lc == "unknown")

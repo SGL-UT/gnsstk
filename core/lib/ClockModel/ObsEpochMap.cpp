@@ -52,7 +52,7 @@ namespace gnsstk
    // is quite ad-hoc and may change.
 
    std::ostream& operator<<(std::ostream& s, const ObsEpoch& oe)
-      throw()
+      noexcept
    {
       s << oe.time << ", rxClock: " << oe.rxClock << endl;
       ObsEpoch::const_iterator i;

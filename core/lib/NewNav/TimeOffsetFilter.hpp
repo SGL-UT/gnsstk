@@ -65,9 +65,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a TimeOffsetFilter to a whitespace-free string name.
-      std::string asString(TimeOffsetFilter e) throw();
+      std::string asString(TimeOffsetFilter e) noexcept;
          /// Convert a string name to a TimeOffsetFilter
-      TimeOffsetFilter asTimeOffsetFilter(const std::string& s) throw();
+      TimeOffsetFilter asTimeOffsetFilter(const std::string& s) noexcept;
    }
 
       //@}

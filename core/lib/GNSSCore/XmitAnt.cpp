@@ -42,7 +42,7 @@ namespace gnsstk
 {
    namespace StringUtils
    {
-      std::string asString(XmitAnt e) throw()
+      std::string asString(XmitAnt e) noexcept
       {
          switch (e)
          {
@@ -55,7 +55,7 @@ namespace gnsstk
       } // asString(XmitAnt)
 
 
-      XmitAnt asXmitAnt(const std::string& s) throw()
+      XmitAnt asXmitAnt(const std::string& s) noexcept
       {
          if (s == "Unknown")
             return XmitAnt::Unknown;

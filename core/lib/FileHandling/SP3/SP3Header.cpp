@@ -523,7 +523,7 @@ namespace gnsstk
    }
 
 
-   void SP3Header::dump(ostream& s) const throw()
+   void SP3Header::dump(ostream& s) const noexcept
    {
       s << "SP3 Header: version " << versionString() << " containing ";
       if(containsVelocity) s << "positions and velocities.";

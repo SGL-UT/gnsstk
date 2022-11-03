@@ -189,6 +189,16 @@ namespace gnsstk
           */
       bool changeTimeSystem(TimeSystem timeSys);
 
+         /** Check to see if two time systems are comparable
+          * (including "Any" handling).
+          * @note This method replicates the standard time system
+          *   checking currently in most (all?) TimeTag classes.
+          * @param[in] ts1 The first time system.
+          * @param[in] ts2 The second time system.
+          * @throw InvalidRequest if neither ts1 or ts2 are "Any" and
+          *   they are not equal. */
+      static void checkTimeSystem(TimeSystem ts1, TimeSystem ts2);
+
    protected:
 
       TimeSystem timeSystem; ///< time system (representation) of the data

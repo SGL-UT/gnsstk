@@ -97,7 +97,7 @@ namespace gnsstk
 
          /// deprecated; use GPSEphemeris, GPS-only.
          /// Converts Rinex3NavData to an EngEphemeris object.
-      operator EngEphemeris() const throw();
+      operator EngEphemeris() const noexcept;
 
          /// Converts the (non-CommonTime) data to an easy list
          /// for comparison operators.

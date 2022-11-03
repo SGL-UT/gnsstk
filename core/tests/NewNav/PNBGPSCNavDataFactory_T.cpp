@@ -92,6 +92,8 @@ public:
    unsigned process31Test();
    unsigned process33Test();
    unsigned process35Test();
+      // week rollover test for decoding ephemerides
+   unsigned processEphWRTest();
 
 #include "CNavTestDataDecl.hpp"
 };
@@ -1082,6 +1084,44 @@ process35Test()
 }
 
 
+unsigned PNBGPSCNavDataFactory_T ::
+processEphWRTest()
+{
+   TUDEF("PNBGPSCNavDataFactory", "processEph");
+   gnsstk::PNBGPSCNavDataFactory uut;
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GPSCNavEph *eph;
+   gnsstk::CommonTime toeExp(gnsstk::GPSWeekSecond(2220,5400));
+   gnsstk::CommonTime topExp(gnsstk::GPSWeekSecond(2219,527400));
+   gnsstk::CommonTime beginExp(gnsstk::GPSWeekSecond(2220,0));
+   gnsstk::CommonTime endExp(gnsstk::GPSWeekSecond(2220,10800));
+   TUCATCH(uut.setTypeFilter({gnsstk::NavMessageType::Ephemeris}));
+   TUASSERTE(bool, true, uut.addData(msg10CNAVWR, navOut));
+   TUASSERTE(gnsstk::NavDataPtrList::size_type, 0, navOut.size());
+   TUASSERTE(bool, true, uut.addData(msg11CNAVWR, navOut));
+   TUASSERTE(gnsstk::NavDataPtrList::size_type, 0, navOut.size());
+   TUASSERTE(bool, true, uut.addData(msg30CNAVWR, navOut));
+   TUASSERTE(gnsstk::NavDataPtrList::size_type, 1, navOut.size());
+   if (navOut.size() >= 1)
+   {
+      if ((eph = dynamic_cast<gnsstk::GPSCNavEph*>(navOut.begin()->get()))
+          != nullptr)
+      {
+         TUASSERTE(gnsstk::CommonTime, msg10CNAVWRct, eph->timeStamp);
+         TUASSERTE(gnsstk::CommonTime, msg10CNAVWRct, eph->xmitTime);
+         TUASSERTE(gnsstk::CommonTime, toeExp, eph->Toe);
+         TUASSERTE(gnsstk::CommonTime, toeExp, eph->Toc);
+         TUASSERTE(gnsstk::CommonTime, topExp, eph->top);
+         TUASSERTE(gnsstk::CommonTime, beginExp, eph->beginFit);
+         TUASSERTE(gnsstk::CommonTime, endExp, eph->endFit);
+         TUASSERTE(gnsstk::CommonTime, msg11CNAVWRct, eph->xmit11);
+         TUASSERTE(gnsstk::CommonTime, msg30CNAVWRct, eph->xmitClk);
+      }
+   }
+   TURETURN();
+}
+
+
 int main()
 {
    PNBGPSCNavDataFactory_T testClass;
@@ -1102,6 +1142,7 @@ int main()
    errorTotal += testClass.process31Test();
    errorTotal += testClass.process33Test();
    errorTotal += testClass.process35Test();
+   errorTotal += testClass.processEphWRTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

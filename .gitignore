@@ -23,3 +23,12 @@ gcovr
 # Sonar files
 .scannerwork/
 .sonar/
+
+# Auto-generated Documentation
+docs/
+doxyfoo
+doxygen.warnings
+gnsstk_doc_cpp.tgz
+_build/
+api/
+quickref.rst

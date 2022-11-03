@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 13.7.0
+%define version 13.8.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,24 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 31 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v13.8.0 release
+- Fix Remove SystemTime tests that randomly fail
+- Update Deprecate extraneous swig binding for function that no longer exists.
+- Update CODEOWNERS.
+- Update sphinx documentation of SWIG bindings
+- Update Changed the minimum cmake version
+- Update documentation of TropModel classes
+- Fix bugs in GLONASS CDMA nav data processing
+- Add support for GLONASS CDMA nav data processing
+- Add Split test data into gnsstk-data repo with submodules configured
+- Update exception specifications from throw() to noexcept
+- Fix ORD tests to use the GNSSTk testing framework
+- Update change string name in StringUtils to avoid conflict with curses library macro
+- Fix week rollover issues in GPS LNav, Galileo F/Nav and Galileo I/Nav decoders.
+- Update move nav message bit definition enums out of PNBNavDataFactory.cpp files and into their own files.
+- Add documentation on raw range (geometric range) computations
+- Fix pipeline push artifacts
 * Fri Aug 26 2022 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v13.7.0 release
 - Fix Rinex3NavHeader to support the source specification for TIME SYSTEM CORR

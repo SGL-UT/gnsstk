@@ -186,7 +186,9 @@ public:
                        << ", clk bias:" << output.clkbias
                        << ", clk drift:" << output.clkdrift
                        << ", relcorr:" << output.relcorr
-                       << ", health:" << output.health;
+                       << ", health:" << output.health
+                       << ", frame:"
+                       << gnsstk::StringUtils::asString(output.frame);
          stringCompare = streamCompare.str();
          TUASSERTE(std::string, stringCompare, stringOutput);
       }

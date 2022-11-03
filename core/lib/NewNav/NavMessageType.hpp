@@ -82,9 +82,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a NavMessageType to a whitespace-free string name.
-      std::string asString(NavMessageType e) throw();
+      std::string asString(NavMessageType e) noexcept;
          /// Convert a string name to an NavMessageType
-      NavMessageType asNavMessageType(const std::string& s) throw();
+      NavMessageType asNavMessageType(const std::string& s) noexcept;
    }
 
       //@}

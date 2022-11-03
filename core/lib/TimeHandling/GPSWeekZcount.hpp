@@ -242,7 +242,7 @@ namespace gnsstk
           * @return weeks * ZCOUNT_PER_WEEK + zcount
           */
       unsigned long getTotalZcounts() const
-         throw()
+         noexcept
       { return (unsigned long)week * ZCOUNT_PER_WEEK + zcount; }
 
          /** Add the given number of weeks to the current value.
@@ -320,7 +320,7 @@ namespace gnsstk
           * @param[in] right the GPSWeekZcount to subtract from this object.
           * @return the number of Z-counts between this object and \a right */
       long operator-(const GPSWeekZcount& right) const
-         throw();
+         noexcept;
 
          /** Add the given number of Z-counts to the current value.
           * This may cause a roll-(over/under) of the Z-count and
@@ -366,7 +366,7 @@ namespace gnsstk
       bool inSameTimeBlock(const GPSWeekZcount& other,
                            unsigned long inZcountBlock,
                            unsigned long inZcountOffset = 0)
-         throw();
+         noexcept;
 
       unsigned int zcount;
    };

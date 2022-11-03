@@ -622,7 +622,7 @@ namespace gnsstk
       static constexpr double OH = 0.5;      // one half
       static constexpr double TH = 3.0/2.0;  // three halves
       static constexpr double FH = 5.0/2.0;  // five halves
-      static constexpr double SH = 7.0/2.0;  // five halves
+      static constexpr double SH = 7.0/2.0;  // seven halves
       static constexpr double STH = 17.0/2.0; // seventeen halves
       static constexpr double ST = 7.0/3.0;  // seven thirds
       static constexpr double OQ = 1.0/4.0;  // one quarter
@@ -693,6 +693,7 @@ namespace gnsstk
                              - OH * math.sin2lambdaBar
                              - SS * math.l * math.sin3lambdaBar
                              + SS * math.h * math.cos3lambdaBar));
+/* Unused code, unknown purpose.
       double K81 = (2.0 * math.JsinTerm * (n * tau +
                                          SQ * math.l * math.sinlambdaBar -
                                          SQ * math.h * math.coslambdaBar));
@@ -707,6 +708,7 @@ namespace gnsstk
                                      - OH * math.sin2lambdaBar
                                      - SS * math.l * math.sin3lambdaBar
                                      + SS * math.h * math.cos3lambdaBar));
+*/
       int m = (tau == 0) ? 1 : 2;
       DEBUGTRACE("deltaa(m=" << m << ")/a = " << a_a);
       DEBUGTRACE("deltah(m=" << m << ") = " << deltah);

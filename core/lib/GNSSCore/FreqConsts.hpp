@@ -190,7 +190,7 @@ namespace gnsstk
        */
    inline double getWavelength(SatelliteSystem sys,
                                int rinexBandNum, int gloChan=0)
-      throw()
+      noexcept
    {
       switch(sys)
       {
@@ -269,7 +269,7 @@ namespace gnsstk
        * @return 0 if either of the input n's are not valid RINEX bands
        *   for the system. */
    inline double getBeta(SatelliteSystem sys, int na, int nb)
-      throw()
+      noexcept
    {
       double wla = getWavelength(sys,na);
       double wlb = getWavelength(sys,nb);
@@ -284,7 +284,7 @@ namespace gnsstk
        * @return 0 if either of the input n's are not valid RINEX
        *   bands for the satellite system. */
    inline double getAlpha(SatelliteSystem sys, int na, int nb)
-      throw()
+      noexcept
    {
       double beta(getBeta(sys,na,nb));
       if (beta == 0.0)

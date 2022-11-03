@@ -101,7 +101,7 @@ namespace gnsstk
          }
       }
 
-      void dump(std::ostream& s = std::cout) const throw()
+      void dump(std::ostream& s = std::cout) const noexcept
       {
          std::vector<double>::const_iterator i=deviation.begin(),j=time.begin();
          for (; i != deviation.end() && j != time.end(); i++,j++)

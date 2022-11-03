@@ -1,3 +1,29 @@
+gnsstk (13.8.0-1) stable; urgency=low
+
+  * Updated to version 13.8.0
+  * Fix pipeline push artifacts
+  * Add documentation on raw range (geometric range) computations
+  * Update move nav message bit definition enums out of
+    PNBNavDataFactory.cpp files and into their own files.
+  * Fix week rollover issues in GPS LNav, Galileo F/Nav and Galileo
+    I/Nav decoders.
+  * Update change string name in StringUtils to avoid conflict with
+    curses library macro
+  * Fix ORD tests to use the GNSSTk testing framework
+  * Update exception specifications from throw() to noexcept
+  * Add Split test data into gnsstk-data repo with submodules configured
+  * Add support for GLONASS CDMA nav data processing
+  * Fix bugs in GLONASS CDMA nav data processing
+  * Update documentation of TropModel classes
+  * Update Changed the minimum cmake version
+  * Update sphinx documentation of SWIG bindings
+  * Update CODEOWNERS.
+  * Update Deprecate extraneous swig binding for function that no longer
+    exists.
+  * Fix Remove SystemTime tests that randomly fail
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Mon, 31 Oct 2022 11:13:27 -0500
+
 gnsstk (13.7.0-1) stable; urgency=low
 
   * Updated to version 13.7.0

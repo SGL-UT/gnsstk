@@ -52,6 +52,13 @@
 #include "GPSCNavAlm.hpp"
 #include "GPSCNavRedAlm.hpp"
 #include "GPSCNavIono.hpp"
+#include "PNBBDSD1NavDataFactory.hpp"
+#include "PNBBDSD2NavDataFactory.hpp"
+#include "PNBGalFNavDataFactory.hpp"
+#include "PNBGalINavDataFactory.hpp"
+#include "PNBGLOCNavDataFactory.hpp"
+#include "PNBGLOFNavDataFactory.hpp"
+
 
 namespace gnsstk
 {
@@ -139,6 +146,12 @@ constructorTest()
    bool foundGPSLNav = false;
    bool foundGPSCNav = false;
    bool foundGPSCNav2 = false;
+   bool foundBDSD1Nav = false;
+   bool foundBDSD2Nav = false;
+   bool foundGalFNav = false;
+   bool foundGalINav = false;
+   bool foundGLOCNav = false;
+   bool foundGLOFNav = false;
    bool foundTest = false;
       // Iterate over the factories and try to find the expected
       // factory objects.  The factories map may also contain ext
@@ -158,6 +171,30 @@ constructorTest()
       {
          foundGPSCNav2 = true;
       }
+      else if (dynamic_cast<gnsstk::PNBBDSD1NavDataFactory*>(p) != nullptr)
+      {
+         foundBDSD1Nav = true;
+      }
+      else if (dynamic_cast<gnsstk::PNBBDSD2NavDataFactory*>(p) != nullptr)
+      {
+         foundBDSD2Nav = true;
+      }
+      else if (dynamic_cast<gnsstk::PNBGalFNavDataFactory*>(p) != nullptr)
+      {
+         foundGalFNav = true;
+      }
+      else if (dynamic_cast<gnsstk::PNBGalINavDataFactory*>(p) != nullptr)
+      {
+         foundGalINav = true;
+      }
+      else if (dynamic_cast<gnsstk::PNBGLOCNavDataFactory*>(p) != nullptr)
+      {
+         foundGLOCNav = true;
+      }
+      else if (dynamic_cast<gnsstk::PNBGLOFNavDataFactory*>(p) != nullptr)
+      {
+         foundGLOFNav = true;
+      }
       else if (dynamic_cast<PNBTestFactory*>(p) != nullptr)
       {
          foundTest = true;
@@ -166,6 +203,12 @@ constructorTest()
    TUASSERT(foundGPSLNav);
    TUASSERT(foundGPSCNav);
    TUASSERT(foundGPSCNav2);
+   TUASSERT(foundBDSD1Nav);
+   TUASSERT(foundBDSD2Nav);
+   TUASSERT(foundGalFNav);
+   TUASSERT(foundGalINav);
+   TUASSERT(foundGLOCNav);
+   TUASSERT(foundGLOFNav);
    TUASSERT(foundTest);
    TURETURN();
 }

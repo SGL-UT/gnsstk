@@ -2,7 +2,7 @@
 # gnsstk/swig/make_copy_targets.cmake
 #----------------------------------------
 
-cmake_minimum_required( VERSION 2.8.9  )
+cmake_minimum_required( VERSION 3.7.2  )
 
 function(make_copy_targets file_list source_dir dest_dir)
     foreach(fn ${${file_list}})

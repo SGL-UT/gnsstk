@@ -48,3 +48,9 @@ gnsstk::ObsID oidCNAVQZSSL5;
 gnsstk::SatID ephCNAVQZSSL5sid;
 gnsstk::CommonTime msg10CNAVQZSSL5ct, msg11CNAVQZSSL5ct, msg12CNAVQZSSL5ct, msg30CNAVQZSSL5ct, msg31CNAVQZSSL5ct, msg32CNAVQZSSL5ct, msg33CNAVQZSSL5ct, msg35CNAVQZSSL5ct, msg37CNAVQZSSL5ct;
 gnsstk::PackedNavBitsPtr msg10CNAVQZSSL5, msg11CNAVQZSSL5, msg12CNAVQZSSL5, msg30CNAVQZSSL5, msg31CNAVQZSSL5, msg32CNAVQZSSL5, msg33CNAVQZSSL5, msg35CNAVQZSSL5, msg37CNAVQZSSL5;
+
+// week rollover test data
+gnsstk::ObsID oidCNAVWR;
+gnsstk::SatID ephCNAVWRsid;
+gnsstk::CommonTime msg10CNAVWRct, msg11CNAVWRct, msg30CNAVWRct;
+gnsstk::PackedNavBitsPtr msg10CNAVWR, msg11CNAVWR, msg30CNAVWR;

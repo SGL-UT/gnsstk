@@ -342,7 +342,7 @@ processEphTest()
                              gnsstk::NavType::GloCivilF),
       gnsstk::NavMessageType::Ephemeris);
    gnsstk::CommonTime toeExp = gnsstk::CivilTime(2015,6,27,0,45,0,
-                                                 gnsstk::TimeSystem::UTC);
+                                                 gnsstk::TimeSystem::GLO);
    gnsstk::CommonTime refExp = gnsstk::CivilTime(2015,6,27,3,40,0,
                                                  gnsstk::TimeSystem::GLO);
    gnsstk::CommonTime beginExp = navFNAVGLOStr1ct;
@@ -402,15 +402,15 @@ processEphTest()
          TUASSERTE(gnsstk::CommonTime, refExp, eph->ref);
          TUASSERTE(gnsstk::CommonTime, navFNAVGLOStr3ct, eph->xmit3);
          TUASSERTE(gnsstk::CommonTime, navFNAVGLOStr4ct, eph->xmit4);
-         TUASSERTFE(10148424.8046875, eph->pos[0]);
-         TUASSERTFE(5279212.40234375, eph->pos[1]);
-         TUASSERTFE(22808465.33203125, eph->pos[2]);
-         TUASSERTFE(-643.3887481689453125, eph->vel[0]);
-         TUASSERTFE(3052.2518157958984375, eph->vel[1]);
-         TUASSERTFE(-419.1455841064453125, eph->vel[2]);
-         TUASSERTFE(-9.3132257461547851562e-07, eph->acc[0]);
-         TUASSERTFE(9.3132257461547851562e-07, eph->acc[1]);
-         TUASSERTFE(-1.8626451492309570312e-06, eph->acc[2]);
+         TUASSERTFE(10148.4248046875, eph->pos[0]);
+         TUASSERTFE(5279.21240234375, eph->pos[1]);
+         TUASSERTFE(22808.46533203125, eph->pos[2]);
+         TUASSERTFE(-.6433887481689453125, eph->vel[0]);
+         TUASSERTFE(3.0522518157958984375, eph->vel[1]);
+         TUASSERTFE(-.4191455841064453125, eph->vel[2]);
+         TUASSERTFE(-9.3132257461547851562e-10, eph->acc[0]);
+         TUASSERTFE(9.3132257461547851562e-10, eph->acc[1]);
+         TUASSERTFE(-1.8626451492309570312e-09, eph->acc[2]);
          TUASSERTFE(0.00015267729759216308594, eph->clkBias);
          TUASSERTFE(0, eph->freqBias);
          TUASSERTE(unsigned, 0, eph->healthBits);
@@ -427,7 +427,7 @@ processEphTest()
          TUASSERTE(unsigned, 1, eph->accIndex);
          TUASSERTE(unsigned, 1274, eph->dayCount);
          TUASSERTE(gnsstk::CommonTime, toeExp, eph->Toe);
-         TUASSERTFE(1.0, eph->step);
+         TUASSERTFE(60.0, eph->step);
       }
    }
    fc.validateResults(navOut, __LINE__, 3, 0, 1, 0, 1, 0, 1);
@@ -470,8 +470,8 @@ processAlmTest()
          TUASSERTE(gnsstk::NavMessageID, nmidExp, ofs->signal);
             // TimeOffsetData has no data of its own
             // StdNavTimeOffset fields
-         TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GLO, ofs->src);
-         TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GPS, ofs->tgt);
+         TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GPS, ofs->src);
+         TUASSERTE(gnsstk::TimeSystem, gnsstk::TimeSystem::GLO, ofs->tgt);
          TUASSERTFE(-1.5832483768463134766e-08, ofs->a0);
          TUASSERTFE(0, ofs->a1);
          TUASSERTFE(0, ofs->a2);

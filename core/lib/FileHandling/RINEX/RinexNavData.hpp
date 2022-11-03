@@ -100,7 +100,7 @@ namespace gnsstk
          /**
           * Converts this RinexNavData to an EngEphemeris object.
           */
-      operator EngEphemeris() const throw();
+      operator EngEphemeris() const noexcept;
 
          /** Round a given seconds of week down to the nearest
           * possible subframe 1 transmit time. */
@@ -112,7 +112,7 @@ namespace gnsstk
           * defined to be the epoch time of the record (RINEX 2.11
           * Table A4).
           */
-      CommonTime getTocTime() const throw()
+      CommonTime getTocTime() const noexcept
       { return time; }
 
          /**

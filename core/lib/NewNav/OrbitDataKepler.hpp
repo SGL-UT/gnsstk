@@ -40,6 +40,7 @@
 #define GNSSTK_ORBITDATAKEPLER_HPP
 
 #include "OrbitData.hpp"
+#include "NavFit.hpp"
 #include "SVHealth.hpp"
 
 namespace gnsstk
@@ -48,7 +49,7 @@ namespace gnsstk
       //@{
 
       /// Base class for orbit information that uses Keplerian parameters.
-   class OrbitDataKepler : public OrbitData
+   class OrbitDataKepler : public OrbitData, public NavFit
    {
    public:
          /// Precision used when printing floating point numbers
@@ -148,12 +149,12 @@ namespace gnsstk
                                   const EllipsoidModel& ell)
          const;
 
-         /** Returns true if this two objects are 
+         /** Returns true if this two objects are
           *   1. same concrete type, and
           *   2. same data contents.
           * This is intended as a "data uniqueness test" to allow
           * detection of successive transmissions of same data
-          * and avoid duplicate storage.  The exact rules for 
+          * and avoid duplicate storage.  The exact rules for
           * uniqueness will vary by descendent class.
           * @note This method assumes that no tweaking of values has
           *   been made, i.e. it checks all potentially relevant
@@ -194,9 +195,6 @@ namespace gnsstk
       double af0;          ///< SV clock error (sec)
       double af1;          ///< SV clock drift (sec/sec)
       double af2;          ///< SV clock drift rate (sec/sec**2)
-
-      CommonTime beginFit; ///< Time at beginning of fit interval
-      CommonTime endFit;   ///< Time at end of fit interval
 
       ReferenceFrame frame;///< Reference frame of produced Xvt data.
    };

@@ -129,6 +129,11 @@ namespace gnsstk
       /// Weeks per BDS Epoch
    const long IRN_WEEK_PER_EPOCH = 1024L;
 
+   // GLO -------------------------------------------
+      /// 'Julian day' of GLONASS epoch (Jan. 1, 1996).
+   const double GLO_EPOCH_JD = 2450082.5;
+      /// Modified Julian Date of GLONASS epoch (Jan. 1, 1996).
+   const long GLO_EPOCH_MJD = 50083;
 
       //@}
 

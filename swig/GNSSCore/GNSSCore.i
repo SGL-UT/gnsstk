@@ -204,11 +204,6 @@ for cls in enum_vec_classes:
             orig_constructor(self, *args)
     cls.__init__ = new_constructor
 
-def klobuchar_correction(iono, com_time, rx_pos, elev, azim, band=CarrierBand.L1):
-    """
-    Returns the Klobuchar model ionospheric correction for a time, position, SV elev/azim, and GPS band (L1,L2,L5).
-    """
-    return iono.getCorrection(com_time, rx_pos, float(elev), float(azim), band)
 
 def cartesian(x=0.0, y=0.0, z=0.0,
               model=None, frame=ReferenceFrame.Unknown):

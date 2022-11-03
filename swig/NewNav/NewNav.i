@@ -136,6 +136,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %import "SP3Header.hpp"
 %import "YumaBase.hpp"
 %import "YumaData.hpp"
+%import "Vector.hpp"
 
 /* %include "BDSD1Bits.hpp" */
 %include "NavSignalID.hpp"
@@ -147,6 +148,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %include "DumpDetail.hpp"
 %include "NavData.hpp"
 %include "OrbitData.hpp"
+%include "NavFit.hpp"
 %include "SVHealth.hpp"
 %include "OrbitDataKepler.hpp"
 %include "OrbitDataBDS.hpp"
@@ -176,11 +178,24 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 /* %include "CommandOptionNavEnumHelp.hpp" */
 %include "NavValidityType.hpp"
 %include "NavSearchOrder.hpp"
+%include "TimeOffsetFilter.hpp"
 %include "FactoryControl.hpp"
 %include "NavDataFactory.hpp"
 %include "NavLibrary.hpp"
 %template(NavMessageTypeSet) std::set<gnsstk::NavMessageType>;
-%include "GLOFBits.hpp"
+/* %include "GLOCBits.hpp" */
+%include "GLOCNavHeader.hpp"
+%include "GLOCNavData.hpp"
+%include "GLOCSatType.hpp"
+%include "GLOCOrbitType.hpp"
+%include "GLOCNavAlm.hpp"
+%include "GLOCRegime.hpp"
+%include "GLOCNavLTDMP.hpp"
+%include "GLOCNavEph.hpp"
+%include "GLOCNavHealth.hpp"
+%include "GLOCNavIono.hpp"
+%include "GLOCNavUT1TimeOffset.hpp"
+/* %include "GLOFBits.hpp" */
 %include "GLOFNavData.hpp"
 %include "GLOFNavAlm.hpp"
 %include "GLOFNavEph.hpp"
@@ -247,6 +262,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %feature("flatnested");
 %include "PNBBDSD2NavDataFactory.hpp"
 %feature("flatnested", "");
+%include "PNBGLOCNavDataFactory.hpp"
 %include "PNBGLOFNavDataFactory.hpp"
 %include "PNBGPSCNav2DataFactory.hpp"
 %include "PNBGPSCNavDataFactory.hpp"

@@ -217,7 +217,7 @@ namespace gnsstk
 
 
    //---------------------------------------------------------------------------
-   float AshtechMBEN::code_block::snr(float chipRate, float m) const throw()
+   float AshtechMBEN::code_block::snr(float chipRate, float m) const noexcept
    {
       const float n = 20000;     // number of samples in 1 ms
       const float bw = 0.9 * chipRate; // equivalent noise bandwidth (Hz)
@@ -237,7 +237,7 @@ namespace gnsstk
    }
 
    //---------------------------------------------------------------------------
-   void AshtechMBEN::dump(ostream& out) const throw()
+   void AshtechMBEN::dump(ostream& out) const noexcept
    {
       ostringstream oss;
       using gnsstk::StringUtils::asString;

@@ -194,9 +194,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a TrackingCode to a whitespace-free string name.
-      std::string asString(TrackingCode e) throw();
+      std::string asString(TrackingCode e) noexcept;
          /// Convert a string name to an TrackingCode
-      TrackingCode asTrackingCode(const std::string& s) throw();
+      TrackingCode asTrackingCode(const std::string& s) noexcept;
    }
 } // namespace gnsstk
 

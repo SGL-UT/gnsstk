@@ -40,6 +40,7 @@
 #include "TimeString.hpp"
 #include "PZ90Ellipsoid.hpp"
 #include "YDSTime.hpp"
+#include "DebugTrace.hpp"
 
 using namespace std;
 
@@ -58,7 +59,8 @@ namespace gnsstk
            aod(-1),
            accIndex(-1),
            dayCount(-1),
-           step(1.0)
+              // recommended by ICD, good balance of performance and accuracy
+           step(60.0)
    {
       signal.messageType = NavMessageType::Ephemeris;
       msgLenSec = 8.0;
@@ -76,6 +78,7 @@ namespace gnsstk
    bool GLOFNavEph ::
    getXvt(const CommonTime& when, Xvt& xvt, const ObsID& oid)
    {
+      DEBUGTRACE_FUNCTION();
          // If the exact epoch is found, let's return the values
       if (when == Toe)
       {
@@ -89,49 +92,26 @@ namespace gnsstk
             // relativistic correction, therefore we must substract
             // the latter from the former.
          xvt.relcorr = xvt.computeRelativityCorrection();
-         xvt.clkbias = clkBias + freqBias * (when - Toe) - xvt.relcorr;
+            // Added negation here to match the SP3 sign
+         xvt.clkbias = -(clkBias + freqBias * (when - Toe) - xvt.relcorr);
          xvt.clkdrift = freqBias;
          xvt.frame = ReferenceFrame::PZ90;
          xvt.health = toXvtHealth(health);
          return true;
       }
-      double px(pos[0]);   // X coordinate (km)
-      double vx(vel[0]);   // X velocity   (km/s)
-      double ax(acc[0]);   // X acceleration (km/s^2)
-      double py(pos[1]);   // Y coordinate
-      double vy(vel[1]);   // Y velocity
-      double ay(acc[1]);   // Y acceleration
-      double pz(pos[2]);   // Z coordinate
-      double vz(vel[2]);   // Z velocity
-      double az(acc[2]);   // Z acceleration
-         // We will need some PZ-90 ellipsoid parameters
-      PZ90Ellipsoid pz90;
-      double we(pz90.angVelocity());
-         // Get sidereal time at Greenwich at 0 hours UT
-      double gst(getSiderealTime(Toe));
-      double s0(gst*PI/12.0);
-      YDSTime ytime(Toe);
-      double numSeconds(ytime.sod);
-      double s(s0 + we*numSeconds);
-      double cs(std::cos(s));
-      double ss(std::sin(s));
-         // Initial state matrix
-      Vector<double> initialState(6), accel(3), dxt1(6), dxt2(6), dxt3(6),
-                     dxt4(6), tempRes(6);
-         // Get the reference state out of GloEphemeris object data. Values
-         // must be rotated from PZ-90 to an absolute coordinate system
-         // Initial x coordinate (m)
-      initialState(0)  = (px*cs - py*ss);
-         // Initial y coordinate
-      initialState(2)  = (px*ss + py*cs);
-         // Initial z coordinate
-      initialState(4)  = pz;
-         // Initial x velocity   (m/s)
-      initialState(1)  = (vx*cs - vy*ss - we*initialState(2));
-         // Initial y velocity
-      initialState(3)  = (vx*ss + vy*cs + we*initialState(0));
-         // Initial z velocity
-      initialState(5)  = vz;
+      Vector<double> initialState(6), accel(3), k1(6), k2(6), k3(6),
+                     k4(6), tempRes(6);
+         // Convert broadcast values from km to m, which is what the
+         // differential equations use.
+      initialState(0)  = pos[0]*1000.0;
+      initialState(2)  = pos[1]*1000.0;
+      initialState(4)  = pos[2]*1000.0;
+      initialState(1)  = vel[0]*1000.0;
+      initialState(3)  = vel[1]*1000.0;
+      initialState(5)  = vel[2]*1000.0;
+      accel(0) = acc[0]*1000.0;
+      accel(1) = acc[1]*1000.0;
+      accel(2) = acc[2]*1000.0;
          // Integrate satellite state to desired epoch using the given step
       double rkStep(step);
       if ((when - Toe) < 0.0)
@@ -145,9 +125,9 @@ namespace gnsstk
       {
             // If we are about to overstep, change the stepsize appropriately
             // to hit our target final time.
-         if(rkStep > 0.0)
+         if (rkStep > 0.0)
          {
-            if((workEpoch + rkStep) > when)
+            if ((workEpoch + rkStep) > when)
             {
                rkStep = (when - workEpoch);
             }
@@ -159,35 +139,15 @@ namespace gnsstk
                rkStep = (when - workEpoch);
             }
          }
-         numSeconds += rkStep;
-         s = s0 + we*(numSeconds);
-         cs = std::cos(s);
-         ss = std::sin(s);
-            // Accelerations are computed once per iteration
-         accel(0) = ax*cs - ay*ss;
-         accel(1) = ax*ss + ay*cs;
-         accel(2) = az;
-         dxt1 = derivative(initialState, accel);
-         for(int j = 0; j < 6; ++j)
-         {
-            tempRes(j) = initialState(j) + rkStep*dxt1(j)/2.0;
-         }
-         dxt2 = derivative(tempRes, accel);
-         for(int j = 0; j < 6; ++j)
-         {
-            tempRes(j) = initialState(j) + rkStep*dxt2(j)/2.0;
-         }
-         dxt3 = derivative(tempRes, accel);
-         for(int j = 0; j < 6; ++j)
-         {
-            tempRes(j) = initialState(j) + rkStep*dxt3(j);
-         }
-         dxt4 = derivative(tempRes, accel);
-         for(int j = 0; j < 6; ++j)
-         {
-            initialState(j) = initialState(j) + rkStep *
-               (dxt1(j) + 2.0 * (dxt2(j) + dxt3(j)) + dxt4(j)) / 6.0;
-         }
+         k1 = derivative(initialState, accel);
+         tempRes = initialState + k1*rkStep/2.0;
+         k2 = derivative(tempRes, accel);
+         tempRes = initialState + k2*rkStep/2.0;
+         k3 = derivative(tempRes, accel);
+         tempRes = initialState + k3*rkStep;
+         k4 = derivative(tempRes, accel);
+         initialState = initialState +
+            (k1/6.0 + k2/3.0 + k3/3.0 + k4/6.0) * rkStep;
             // If we are within tolerance of the target time, we are done.
          workEpoch += rkStep;
          if (std::fabs(when - workEpoch) < tolerance)
@@ -195,22 +155,17 @@ namespace gnsstk
             done = true;
          }
       }  // while (!done)
-      px = initialState(0);
-      py = initialState(2);
-      pz = initialState(4);
-      vx = initialState(1);
-      vy = initialState(3);
-      vz = initialState(5);
-      xvt.x[0] = 1e3*(px*cs + py*ss);         // X coordinate
-      xvt.x[1] = 1e3*(-px*ss + py*cs);          // Y coordinate
-      xvt.x[2] = 1e3*pz;                        // Z coordinate
-      xvt.v[0] = 1e3*(vx*cs + vy*ss + we*(xvt.x[1]/1e3)); // X velocity
-      xvt.v[1] = 1e3*(-vx*ss + vy*cs - we*(xvt.x[0]/1e3)); // Y velocity
-      xvt.v[2] = 1e3*vz;                        // Z velocity
+      xvt.x[0] = initialState(0);
+      xvt.x[1] = initialState(2);
+      xvt.x[2] = initialState(4);
+      xvt.v[0] = initialState(1);
+      xvt.v[1] = initialState(3);
+      xvt.v[2] = initialState(5);
          // In the GLONASS system, 'clkbias' already includes the relativistic
          // correction, therefore we must substract the late from the former.
       xvt.relcorr = xvt.computeRelativityCorrection();
-      xvt.clkbias = clkBias + freqBias * (when - Toe) - xvt.relcorr;
+            // Added negation here to match the SP3 sign
+      xvt.clkbias = -(clkBias + freqBias * (when - Toe) - xvt.relcorr);
       xvt.clkdrift = freqBias;
       xvt.frame = ReferenceFrame::PZ90;
       xvt.health = toXvtHealth(health);
@@ -262,6 +217,19 @@ namespace gnsstk
       if (dl != DumpDetail::Full)
          return;
 
+      string otform("%7.0s  %3a-%1w:%02H:%02M:%02S %3P");
+      s << "           STRING OVERHEAD" << endl << endl
+        << "               SOD    DOW:HH:MM:SS" << endl
+        << left << setw(11) << "STR1" << right
+        << printTime(timeStamp, otform) << endl
+        << left << setw(11) << "STR2" << right
+        << printTime(xmit2, otform) << endl
+        << left << setw(11) << "STR3" << right
+        << printTime(xmit3, otform) << endl
+        << left << setw(11) << "STR4" << right
+        << printTime(xmit4, otform) << endl << endl;
+
+
       string tform("%02m/%02d/%Y %03j %02H:%02M:%02S  %7.0s  %P");
       s << "           TIMES OF INTEREST" << endl
         << "              MM/DD/YYYY DOY HH:MM:SS      SOD" << endl
@@ -278,19 +246,19 @@ namespace gnsstk
       s.fill(' ');
 
       s << "X, X', X''  "
-        << setw(16) << pos[0] << " m, "
-        << setw(16) << vel[0] << " m/s, "
-        << setw(16) << acc[0] << " m/s**2"
+        << setw(16) << pos[0] << " km, "
+        << setw(16) << vel[0] << " km/s, "
+        << setw(16) << acc[0] << " km/s**2"
         << endl
         << "Y, Y', Y''  "
-        << setw(16) << pos[1] << " m, "
-        << setw(16) << vel[1] << " m/s, "
-        << setw(16) << acc[1] << " m/s**2"
+        << setw(16) << pos[1] << " km, "
+        << setw(16) << vel[1] << " km/s, "
+        << setw(16) << acc[1] << " km/s**2"
         << endl
         << "Z, Z', Z''  "
-        << setw(16) << pos[2] << " m, "
-        << setw(16) << vel[2] << " m/s, "
-        << setw(16) << acc[2] << " m/s**2"
+        << setw(16) << pos[2] << " km, "
+        << setw(16) << vel[2] << " km/s, "
+        << setw(16) << acc[2] << " km/s**2"
         << endl
         << "tau         " << setw(16) << clkBias  << " sec" << endl
         << "gamma       " << setw(16) << freqBias << " sec/sec" << endl
@@ -457,9 +425,10 @@ namespace gnsstk
    {
          // We will need some important PZ90 ellipsoid values
       PZ90Ellipsoid pz90;
-      const double j20(pz90.j20());
-      const double mu(pz90.gm_km());
-      const double ae(pz90.a_km());
+      const double mu = pz90.gm();          // 398600.44e9;
+      const double ae = pz90.a();           // 6378136
+      const double j02 = -pz90.j20();       // 1082625.7e-9
+      const double we = pz90.angVelocity(); // 7.292115e-5
          // Let's start getting the current satellite position and velocity
       double  x(inState(0));          // X coordinate
       double  y(inState(2));          // Y coordinate
@@ -472,21 +441,20 @@ namespace gnsstk
       double yr(y/r);
       double zr(z/r);
       double zr2(zr*zr);
-      double k1(j20*xmu*1.5*rho*rho);
+      double k1(-1.5*j02*xmu*rho*rho);
       double  cm(k1*(1.0-5.0*zr2));
+         // ICD says 1-5, which is incorrect.
       double cmz(k1*(3.0-5.0*zr2));
       double k2(cm-xmu);
-      double gloAx(k2*xr + accel(0));
-      double gloAy(k2*yr + accel(1));
+      double gloAx(k2*xr + (we*we*x) + (2.0*we*inState(3)) + accel(0));
+         // ICD says +2, which is incorrect.
+      double gloAy(k2*yr + (we*we*y) + (-2.0*we*inState(1)) + accel(1));
       double gloAz((cmz-xmu)*zr + accel(2));
       Vector<double> dxt(6, 0.0);
-         // Let's insert data related to X coordinates
       dxt(0) = inState(1);       // Set X'  = Vx
       dxt(1) = gloAx;            // Set Vx' = gloAx
-         // Let's insert data related to Y coordinates
       dxt(2) = inState(3);       // Set Y'  = Vy
       dxt(3) = gloAy;            // Set Vy' = gloAy
-         // Let's insert data related to Z coordinates
       dxt(4) = inState(5);       // Set Z'  = Vz
       dxt(5) = gloAz;            // Set Vz' = gloAz
       return dxt;

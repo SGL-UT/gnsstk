@@ -49,36 +49,21 @@
 
 namespace gnsstk
 {
-   /* Tropospheric model with heights based on Goad and Goodman(1974),
-    * "A Modified Hopfield Tropospheric Refraction Correction Model," Paper
-    * presented at the Fall Annual Meeting of the American Geophysical Union,
-    * San Francisco, December 1974.
-    * (Not the same as GGTropModel because this has height dependence,
-    * and the computation of this model does not break cleanly into
-    * wet and dry components.)
-    */
-
-   GGHeightTropModel::GGHeightTropModel(void)
+   GGHeightTropModel::GGHeightTropModel()
    {
       validWeather = false; //setWeather(20.0,980.0,50.0);
       validHeights = false; //setHeights(0.0,0.0,0.0);
       validRxHeight = false;
    }
 
-      /* Creates a trop model from a weather observation
-       * @param wx the weather to use for this correction.
-       */
+
    GGHeightTropModel::GGHeightTropModel(const WxObservation& wx)
    {
       valid = validRxHeight = validHeights = false;
       setWeather(wx);
    }
 
-      /* Create a tropospheric model from explicit weather data
-       * @param T temperature in degrees Celsius
-       * @param P atmospheric pressure in millibars
-       * @param H relative humidity in percent
-       */
+
    GGHeightTropModel::GGHeightTropModel(const double& T,
                                         const double& P,
                                         const double& H)
@@ -87,14 +72,7 @@ namespace gnsstk
       setWeather(T,P,H);
    }
 
-      /* Create a valid model from explicit input.
-       * @param T temperature in degrees Celsius
-       * @param P atmospheric pressure in millibars
-       * @param H relative humidity in percent
-       * @param hT height at which temperature applies in meters.
-       * @param hP height at which atmospheric pressure applies in meters.
-       * @param hH height at which relative humidity applies in meters.
-       */
+
    GGHeightTropModel::GGHeightTropModel(const double& T,
                                         const double& P,
                                         const double& H,
@@ -119,16 +97,7 @@ namespace gnsstk
 
    }
 
-      /* Compute and return the full tropospheric delay, given the positions of
-       * receiver and satellite and the time tag. This version is most useful
-       * within positioning algorithms, where the receiver position and timetag
-       * may vary; it computes the elevation (and other receiver location
-       * information) and passes them to appropriate set...() routines and
-       * the correction(elevation) routine.
-       * @param RX  Receiver position
-       * @param SV  Satellite position
-       * @param tt  Time tag of the signal
-       */
+
    double GGHeightTropModel::correction(const Position& RX,
                                         const Position& SV,
                                         const CommonTime& tt)
@@ -142,17 +111,6 @@ namespace gnsstk
 
    }  // end GGHeightTropModel::correction(RX,SV,TT)
 
-      /* Compute and return the full tropospheric delay, given the positions of
-       * receiver and satellite and the time tag. This version is most useful
-       * within positioning algorithms, where the receiver position and timetag
-       * may vary; it computes the elevation (and other receiver location
-       * information) and passes them to appropriate set...() routines and
-       * the correction(elevation) routine.
-       * @param RX  Receiver position in ECEF cartesian coordinates (meters)
-       * @param SV  Satellite position in ECEF cartesian coordinates (meters)
-       * @param tt  Time tag of the signal
-       * This function is deprecated; use the Position version
-       */
    double GGHeightTropModel::correction(const Xvt& RX,
                                         const Xvt& SV,
                                         const CommonTime& tt)
@@ -161,8 +119,8 @@ namespace gnsstk
       return GGHeightTropModel::correction(R,S,tt);
    }
 
-      // Compute and return the zenith delay for dry component of the troposphere
-   double GGHeightTropModel::dry_zenith_delay(void) const
+
+   double GGHeightTropModel::dry_zenith_delay() const
    {
       THROW_IF_INVALID_DETAILED();
       double hrate=6.5e-3;
@@ -181,8 +139,8 @@ namespace gnsstk
 
    }
 
-      // Compute and return the zenith delay for wet component of the troposphere
-   double GGHeightTropModel::wet_zenith_delay(void) const
+
+   double GGHeightTropModel::wet_zenith_delay() const
    {
       THROW_IF_INVALID_DETAILED();
 
@@ -205,11 +163,7 @@ namespace gnsstk
 
    }
 
-      /* Compute and return the mapping function for dry component
-       * of the troposphere
-       * @param elevation Elevation of satellite as seen at receiver,
-       *                  in degrees
-       */
+
    double GGHeightTropModel::dry_mapping_function(double elevation) const
    {
       THROW_IF_INVALID_DETAILED();
@@ -252,11 +206,7 @@ namespace gnsstk
       return map/norm;
    }
 
-      /* Compute and return the mapping function for wet component
-       * of the troposphere
-       * @param elevation Elevation of satellite as seen at receiver,
-       *                  in degrees
-       */
+
    double GGHeightTropModel::wet_mapping_function(double elevation) const
    {
       THROW_IF_INVALID_DETAILED();
@@ -300,12 +250,7 @@ namespace gnsstk
 
    }
 
-      /* Re-define the weather data.
-       * Typically called just before correction().
-       * @param T temperature in degrees Celsius
-       * @param P atmospheric pressure in millibars
-       * @param H relative humidity in percent
-       */
+
    void GGHeightTropModel::setWeather(const double& T,
                                       const double& P,
                                       const double& H)
@@ -323,10 +268,7 @@ namespace gnsstk
       }
    }
 
-      /* Re-define the tropospheric model with explicit weather data.
-       * Typically called just before correction().
-       * @param wx the weather to use for this correction
-       */
+
    void GGHeightTropModel::setWeather(const WxObservation& wx)
    {
       try
@@ -343,12 +285,6 @@ namespace gnsstk
    }
 
 
-      /* Re-define the heights at which the weather parameters apply.
-       * Typically called just before correction().
-       * @param hT height (m) at which temperature applies
-       * @param hP height (m) at which atmospheric pressure applies
-       * @param hH height (m) at which relative humidity applies
-       */
    void GGHeightTropModel::setHeights(const double& hT,
                                       const double& hP,
                                       const double& hH)
@@ -360,9 +296,7 @@ namespace gnsstk
       valid = validWeather && validHeights && validRxHeight;
    }
 
-      /* Define the receiver height; this required before calling
-       * correction() or any of the zenith_delay or mapping_function routines.
-       */
+
    void GGHeightTropModel::setReceiverHeight(const double& ht)
    {
       height = ht;

@@ -121,7 +121,7 @@ namespace gnsstk
 
    unsigned NavFilterMgr ::
    processingDepth()
-      const throw()
+      const noexcept
    {
       FilterList::const_iterator fli;
       unsigned rv = 1;

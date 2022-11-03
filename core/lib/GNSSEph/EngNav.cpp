@@ -367,7 +367,7 @@ namespace gnsstk
 
 
    EngNav::EngNav()
-      throw()
+      noexcept
    {
    }
 
@@ -375,7 +375,7 @@ namespace gnsstk
    bool EngNav :: subframeConvert(const long input[10],
                                   int gpsWeek,
                                   double output[60])
-      throw()
+      noexcept
    {
       uint32_t tinput[10];
       for (int n=0;n<10;++n)
@@ -387,7 +387,7 @@ namespace gnsstk
    bool EngNav :: subframeConvert(const uint32_t input[10],
                                   short gpsWeek,
                                   double output[60])
-      throw()
+      noexcept
    {
       short patId = -2, i = 2;
       struct DecodeQuant *p=NULL;
@@ -434,7 +434,7 @@ namespace gnsstk
 
       // Retained for backward compatibility
    bool EngNav :: convert8bit(int gpsWeek, double *output)
-      throw()
+      noexcept
    {
       short tgpsWeek = static_cast<short>( gpsWeek );
       short toutput = static_cast<short> ( *output );
@@ -446,7 +446,7 @@ namespace gnsstk
 
       // Retained for backward compatibility
    bool EngNav :: convert10bit(int gpsWeek, double *output)
-      throw()
+      noexcept
    {
       short tgpsWeek = static_cast<short>( gpsWeek );
       short toutput = static_cast<short> ( *output );
@@ -476,7 +476,7 @@ namespace gnsstk
 
       // Retained for backward compatibility
    short EngNav :: getSubframePattern(const long input[10])
-      throw()
+      noexcept
    {
       uint32_t tinput[10];
       for (int n=0;n<10;++n)
@@ -485,7 +485,7 @@ namespace gnsstk
    }
 
    short EngNav :: getSubframePattern(const uint32_t input[10])
-      throw()
+      noexcept
    {
       short iret, svid;
       long  itemp;
@@ -522,7 +522,7 @@ namespace gnsstk
 
 
    bool EngNav :: sv2page(short svpgid, short& subframe, short& page)
-      throw()
+      noexcept
    {
       if (svpgid < 1)
          return false;
@@ -581,7 +581,7 @@ namespace gnsstk
 
 
    bool EngNav :: sfpage2svid(short subframe, short page, short& svpgid)
-      throw()
+      noexcept
    {
       static const short sf4pg[25] = { 57, 25, 26, 27, 28, 57, 29, 30, 31, 32,
                                        57, 62, 52, 53, 54, 57, 55, 56, 58, 59,
@@ -607,7 +607,7 @@ namespace gnsstk
 
    bool EngNav :: zcount2page(unsigned long zcount,
                               short& subframe, short& page)
-      throw()
+      noexcept
    {
       subframe = ((zcount % 20) / 4);
       if (subframe == 0)
@@ -742,7 +742,7 @@ namespace gnsstk
    void EngNav :: convertQuant(const uint32_t input[10],
                                double output[60],
                                const DecodeQuant& dq)
-      throw()
+      noexcept
    {
       double dval;
       short i, n, bit1, nword, nbit;

@@ -49,7 +49,7 @@ namespace gnsstk
    char SP3SatID::fillchar = '0';
 
    SP3SatID ::
-   SP3SatID(int p, SatelliteSystem s) throw()
+   SP3SatID(int p, SatelliteSystem s) noexcept
          : SatID(p,s)
    {
       validate();
@@ -57,7 +57,7 @@ namespace gnsstk
 
 
    char SP3SatID ::
-   systemChar() const throw()
+   systemChar() const noexcept
    {
       switch (system)
       {
@@ -75,7 +75,7 @@ namespace gnsstk
 
 
    std::string SP3SatID ::
-   systemString() const throw()
+   systemString() const noexcept
    {
       switch (system)
       {
@@ -156,7 +156,7 @@ namespace gnsstk
 
 
    std::string SP3SatID ::
-   toString() const throw()
+   toString() const noexcept
    {
       std::ostringstream oss;
       oss.fill(fillchar);

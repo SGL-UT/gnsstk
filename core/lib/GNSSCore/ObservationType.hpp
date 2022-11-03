@@ -81,9 +81,9 @@ namespace gnsstk
    namespace StringUtils
    {
          /// Convert a ObservationType to a whitespace-free string name.
-      std::string asString(ObservationType e) throw();
+      std::string asString(ObservationType e) noexcept;
          /// Convert a string name to an ObservationType
-      ObservationType asObservationType(const std::string& s) throw();
+      ObservationType asObservationType(const std::string& s) noexcept;
    }
 } // namespace gnsstk
 

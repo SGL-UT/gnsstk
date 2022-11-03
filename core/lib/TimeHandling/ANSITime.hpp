@@ -111,7 +111,7 @@ namespace gnsstk
 
          /// Virtual Destructor.
       virtual ~ANSITime()
-      throw()
+      noexcept
       {}
          //@}
 

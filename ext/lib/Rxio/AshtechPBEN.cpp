@@ -143,7 +143,7 @@ namespace gnsstk
    }
 
    //---------------------------------------------------------------------------
-   void AshtechPBEN::dump(ostream& out) const throw()
+   void AshtechPBEN::dump(ostream& out) const noexcept
    {
       ostringstream oss;
       using gnsstk::StringUtils::asString;

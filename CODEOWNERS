@@ -24,7 +24,7 @@ core/lib/GNSSEph/ @johnk @anthony @renfrob
 core/lib/Math/ @anthony @btolman
 core/lib/NavFilter/ @johnk @anthony @renfrob
 core/lib/NewNav/ @johnk @jmedeiros
-core/lib/ORD/ @kuck @rcathriner
+core/lib/ORD/ @malik @johnk @rcathriner
 core/lib/PosSol/ @btolman @renfrob
 core/lib/RefTime/ @btolman @renfrob
 core/lib/TestFramework/ @anthony @johnk

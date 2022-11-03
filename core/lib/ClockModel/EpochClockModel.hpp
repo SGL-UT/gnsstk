@@ -97,10 +97,10 @@ namespace gnsstk
          // An unchecked accessor for programs that don't need the generic
          // interface
       double getOffset() const
-         throw() {return clkc;};
+         noexcept {return clkc;};
 
       bool isOffsetValid() const
-         throw() {return valid;};
+         noexcept {return valid;};
 
          /**
           * @throw InvalidValue

@@ -1,0 +1,4 @@
+[submodule "data"]
+	path = data
+	url = ../gnsstk-data.git
+	branch = main

@@ -434,6 +434,36 @@ target_link_libraries(PNBGLOFNavDataFactory_T gnsstk)
 add_test(NAME PNBGLOFNavDataFactory_T COMMAND $<TARGET_FILE:PNBGLOFNavDataFactory_T>)
 set_property(TEST PNBGLOFNavDataFactory_T PROPERTY LABELS NewNav)
 
+add_executable(GLOCNavAlm_T GLOCNavAlm_T.cpp)
+target_link_libraries(GLOCNavAlm_T gnsstk)
+add_test(NAME GLOCNavAlm_T COMMAND $<TARGET_FILE:GLOCNavAlm_T>)
+set_property(TEST GLOCNavAlm_T PROPERTY LABELS NewNav)
+
+add_executable(GLOCNavEph_T GLOCNavEph_T.cpp)
+target_link_libraries(GLOCNavEph_T gnsstk)
+add_test(NAME GLOCNavEph_T COMMAND $<TARGET_FILE:GLOCNavEph_T>)
+set_property(TEST GLOCNavEph_T PROPERTY LABELS NewNav)
+
+add_executable(GLOCNavHealth_T GLOCNavHealth_T.cpp)
+target_link_libraries(GLOCNavHealth_T gnsstk)
+add_test(NAME GLOCNavHealth_T COMMAND $<TARGET_FILE:GLOCNavHealth_T>)
+set_property(TEST GLOCNavHealth_T PROPERTY LABELS NewNav)
+
+add_executable(GLOCNavLTDMP_T GLOCNavLTDMP_T.cpp)
+target_link_libraries(GLOCNavLTDMP_T gnsstk)
+add_test(NAME GLOCNavLTDMP_T COMMAND $<TARGET_FILE:GLOCNavLTDMP_T>)
+set_property(TEST GLOCNavLTDMP_T PROPERTY LABELS NewNav)
+
+add_executable(GLOCNavUT1TimeOffset_T GLOCNavUT1TimeOffset_T.cpp)
+target_link_libraries(GLOCNavUT1TimeOffset_T gnsstk)
+add_test(NAME GLOCNavUT1TimeOffset_T COMMAND $<TARGET_FILE:GLOCNavUT1TimeOffset_T>)
+set_property(TEST GLOCNavUT1TimeOffset_T PROPERTY LABELS NewNav)
+
+add_executable(PNBGLOCNavDataFactory_T PNBGLOCNavDataFactory_T.cpp)
+target_link_libraries(PNBGLOCNavDataFactory_T gnsstk)
+add_test(NAME PNBGLOCNavDataFactory_T COMMAND $<TARGET_FILE:PNBGLOCNavDataFactory_T>)
+set_property(TEST PNBGLOCNavDataFactory_T PROPERTY LABELS NewNav)
+
 add_executable(YumaNavDataFactory_T YumaNavDataFactory_T.cpp)
 target_link_libraries(YumaNavDataFactory_T gnsstk)
 add_test(NAME YumaNavDataFactory_T COMMAND $<TARGET_FILE:YumaNavDataFactory_T>)

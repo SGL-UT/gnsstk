@@ -47,19 +47,20 @@
 namespace gnsstk
 {
 
-   std::ostream& operator<<(std::ostream& os, const gnsstk::Xvt& xvt) throw()
+   std::ostream& operator<<(std::ostream& os, const gnsstk::Xvt& xvt) noexcept
    {
       os << "x:" << xvt.x
          << ", v:" << xvt.v
          << ", clk bias:" << xvt.clkbias
          << ", clk drift:" << xvt.clkdrift
          << ", relcorr:" << xvt.relcorr
-         << ", health:" << xvt.health;
+         << ", health:" << xvt.health
+         << ", frame:" << gnsstk::StringUtils::asString(xvt.frame);
       return os;
    }
 
    std::ostream& operator<<(std::ostream& os, const Xvt::HealthStatus& health)
-      throw()
+      noexcept
    {
       switch (health)
       {
@@ -110,7 +111,7 @@ namespace gnsstk
    double Xvt::preciseRho(const Triple& rxPos,
                           const EllipsoidModel& ellips,
                           double correction) const
-      throw()
+      noexcept
    {
          // Compute initial time of flight estimate using the
          // geometric range at transmit time.  This fails to account

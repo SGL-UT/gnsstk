@@ -332,12 +332,17 @@ namespace gnsstk
                              const int numBits,
                              const int power2) const
    {
-      long smag = asSignMagLong(startBit, numBits, 1);
-
+      int startBitMag = startBit + 1;
+      int numBitsMag = numBits - 1;
+      uint64_t mag = asUint64_t(startBitMag, numBitsMag);
+      uint64_t uint = asUint64_t(startBit, 1);
+      int64_t smag = (int64_t)mag;
+      if (uint == 1)
+      {
+         smag = -smag;
+      }
          // Convert to double and scale
-      double dval = (double) smag;
-      dval *= pow(static_cast<double>(2), power2);
-      return( dval );
+      return ldexp((double)smag, power2);
    }
 
          /* Unpack a sign/mag double with units of semi-circles */
@@ -959,7 +964,7 @@ namespace gnsstk
    }
 
    void PackedNavBits::dump(ostream& s) const
-      throw()
+      noexcept
    {
       ios::fmtflags oldFlags = s.flags();
 

@@ -68,7 +68,7 @@ namespace gnsstk
 
          /// Explicit constructor, no defaults, RINEX systems only.
       RinexSatID(int p, SatelliteSystem s)
-         throw();
+         noexcept;
 
          /** Constructor from a string.
           * @throw Exception
@@ -81,20 +81,20 @@ namespace gnsstk
 
          /// Cast a SatID to a RinexSatID.
       RinexSatID(const SatID& sat)
-         throw()
+         noexcept
             : SatID(sat)
       { validate(); }
 
          /// Set the fill character used in output and
          /// return the current fill character.
       char setfill(char c)
-         throw()
+         noexcept
       { char csave = fillchar; fillchar = c; return csave; }
 
 
          /// Get the fill character used in output.
       char getfill() const
-         throw()
+         noexcept
       { return fillchar; }
 
          // operator=, copy constructor and destructor built by compiler
@@ -104,19 +104,19 @@ namespace gnsstk
           * @note return only RINEX types, for non-RINEX systems return '?'
           */
       char systemChar() const
-         throw();
+         noexcept;
 
          /* Return the system name as a string.
           * @note Return only RINEX types or 'Unknown'.
           */
       std::string systemString() const
-         throw();
+         noexcept;
 
          /** Return the system name as a string of length 3.
           * @note Return only RINEX types or 'Unknown'.
           */
       std::string systemString3() const
-         throw();
+         noexcept;
 
          /** Set the RinexSatID from a string (1 character plus
           * 2-digit integer).
@@ -128,7 +128,7 @@ namespace gnsstk
          /** Convert the RinexSatID to string (1 character plus
           * 2-digit integer). */
       std::string toString() const
-         throw();
+         noexcept;
 
    private:
          /// If an unsupported system is used, set to unknown and PRN -1.

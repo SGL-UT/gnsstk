@@ -77,10 +77,10 @@ namespace gnsstk
       NEW_EXCEPTION_CLASS(InvalidIonoModel, gnsstk::Exception);
 
          /// Default constructor, creates an invalid model for lack of parameters.
-      IonoModel() throw() : valid(false) {}
+      IonoModel() noexcept : valid(false) {}
 
          /// Destructor.
-      virtual ~IonoModel() throw() {}
+      virtual ~IonoModel() noexcept {}
 
          /** Ionosphere model constructor.
           * Creates a valid model with satellite transmitted alpha and beta
@@ -95,13 +95,13 @@ namespace gnsstk
           * in power of inverse radians.  Hence the need for the boolean flag.
           */
       IonoModel(const double a[4], const double b[4],
-                const bool semicircle_units = true) throw();
+                const bool semicircle_units = true) noexcept;
 
          /** EngAlmanac constructor.
           * Creates a valid model from and EngAlmanac object.
           * @param[in] engalm An EngAlmanac object.
           */
-      IonoModel(const EngAlmanac& engalm) throw();
+      IonoModel(const EngAlmanac& engalm) noexcept;
 
          /** Method to feed the model with satellite-transmitted alpha and
           * beta parameters from the passed almanac.
@@ -110,12 +110,12 @@ namespace gnsstk
           * @param[in] b An array containing the four beta terms.
           */
       void setModel(const double a[4], const double b[4],
-                    const bool semicircle_units = true) throw();
+                    const bool semicircle_units = true) noexcept;
 
          /** Return whether the model contains valid data.
           * @return model validity
           */
-      bool isValid() const throw()
+      bool isValid() const noexcept
       { return valid; }
 
          /** Get the ionospheric correction value.
@@ -134,17 +134,17 @@ namespace gnsstk
                            CarrierBand band = CarrierBand::L1) const;
 
          /// Equality operator
-      bool operator==(const IonoModel& right) const throw();
+      bool operator==(const IonoModel& right) const noexcept;
 
          /// Inequality operator
-      bool operator!=(const IonoModel& right) const throw();
+      bool operator!=(const IonoModel& right) const noexcept;
 
          /** Get the raw model contents in semicircle units.
           * @param[in,out] a Ionospheric model alpha parameters
           * @param[in,out] b Ionospheric model beta parameters
           * @return true if \a a and \a b were populated successfully
           */
-      bool getModel(double a[4], double b[4]) const throw();
+      bool getModel(double a[4], double b[4]) const noexcept;
 
          /** Dump to contents of the model in human-readable form.
           * @param[in,out] s Stream to receive the output; defaults to cout

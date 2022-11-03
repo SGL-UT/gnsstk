@@ -53,3 +53,11 @@ gnsstk::CommonTime navFNAVGalPT1ct,
    navFNAVGalPT5ct,
    navFNAVGalPT6ct;
 gnsstk::SatID navFNAVGalSid;
+
+// week rollover test data
+gnsstk::ObsID oidFNAVWR;
+gnsstk::SatID ephFNAVWRsid;
+gnsstk::CommonTime navFNAVWRPT1ct, navFNAVWRPT2ct, navFNAVWRPT3ct,
+   navFNAVWRPT4ct;
+gnsstk::PackedNavBitsPtr navFNAVWRPT1, navFNAVWRPT2, navFNAVWRPT3,
+   navFNAVWRPT4;

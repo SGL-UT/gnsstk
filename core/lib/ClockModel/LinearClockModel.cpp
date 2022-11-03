@@ -51,7 +51,7 @@ namespace gnsstk
 {
    using namespace std;
 
-   void LinearClockModel::reset() throw()
+   void LinearClockModel::reset() noexcept
    {
       startTime = gnsstk::CommonTime::END_OF_TIME;
       endTime = gnsstk::CommonTime::BEGINNING_OF_TIME;
@@ -141,7 +141,7 @@ namespace gnsstk
       }
    }
 
-   void LinearClockModel::dump(std::ostream& s, short detail) const throw()
+   void LinearClockModel::dump(std::ostream& s, short detail) const noexcept
    {
       s << "base: " << baseTime
         << ", start: " << startTime

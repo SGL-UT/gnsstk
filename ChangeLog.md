@@ -1,3 +1,38 @@
+# Version 13.8.0   Monday October 31, 2022
+
+Modifications by Author
+-----------------------
+     Dan Wright <dan.wright@arlut.utexas.edu> (1):
+           Ci cmake version
+
+     Dave Rainwater <rain@arlut.utexas.edu> (1):
+           Adjust ORD SMEs
+
+     David Barber <dbarber@arlut.utexas.edu> (1):
+           fix pipeline push artifacts
+
+     Doug Davies <ddavies@npre106> (1):
+           Change string name in StringUtils to avoid conflict with curses library macro
+
+     Jacob Medeiros <jmedeiros@pre024> (1):
+           Removed extra swig binding
+
+     John Knutson <johnk@arlut.utexas.edu> (6):
+           Move nav message bit enums into their own files
+           Fix a week rollover bug
+           Change throw() to noexcept
+           Split test data into separate repo
+           Improve GLONASS support in newnav
+           Remove SystemTime tests that randomly fail
+
+     Taben Malik <malik@arlut.utexas.edu> (4):
+           Geometric Range Documentation
+           Use GNSSTk test framework for ORD tests
+           Improving TropModel documentation
+           Update Sphinx Documentation for SWIG Bindings
+
+
+
 # Version 13.7.0   Friday August 26, 2022
 
 Modifications by Author
