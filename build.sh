@@ -169,8 +169,20 @@ if [ -f "$LOG" ]; then
 fi
 
 if [ $clean ]; then
+
+    case `uname` in
+    Linux)
+       echo "Uninstalling using install_manifest.txt if it exists..."
+       find $build_root -name "install_manifest.txt" -exec cat {} \; | xargs rm -fv
+       ;;
+    *)
+        echo "Not running make uninstall on non-Linux systems"
+        ;;
+    esac
+
     rm -rf "$build_root"/*
     log "Cleaned out $build_root ..."
+
 fi
 
 if ((verbose>0)); then
