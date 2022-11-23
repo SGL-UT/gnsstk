@@ -53,6 +53,9 @@ namespace gnsstk
    public:
          /// Set the vector sizes and initialize everything to 0.
       OrbitDataSP3();
+         /// Create a deep copy of this object.
+      NavDataPtr clone() const override
+      { return std::make_shared<OrbitDataSP3>(*this); }
 
          /** Copy only the position, velocity and acceleration data.
           * @param[in] right The OrbitDataSP3 to copy XV data from.

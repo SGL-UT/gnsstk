@@ -92,6 +92,8 @@ namespace gnsstk
       GNSSTK_EXPORT static const std::string dumpTimeFmtBrief;
          /// Initialize internal data fields.
       NavData();
+         /// Create a deep copy of this object, whatever it truly is.
+      virtual NavDataPtr clone() const = 0;
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
           * @return true if this message is valid according to ICD criteria.

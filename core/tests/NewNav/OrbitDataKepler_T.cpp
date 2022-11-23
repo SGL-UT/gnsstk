@@ -60,6 +60,8 @@ public:
    { return true; }
    gnsstk::CommonTime getUserTime() const override
    { return gnsstk::CommonTime::BEGINNING_OF_TIME; }
+   gnsstk::NavDataPtr clone() const override
+   { return std::make_shared<TestClass>(*this); }
    bool getXvt(const gnsstk::CommonTime& when, gnsstk::Xvt& xvt,
                const gnsstk::ObsID& oid = gnsstk::ObsID()) override
    { GNSSTK_THROW(gnsstk::Exception("Not implemented")); }

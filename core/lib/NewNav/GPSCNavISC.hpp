@@ -52,6 +52,9 @@ namespace gnsstk
    public:
          /// Sets the internal data members.
       GPSCNavISC();
+         /// Create a deep copy of this object.
+      NavDataPtr clone() const override
+      { return std::make_shared<GPSCNavISC>(*this); }
 
          /** Print the actual corrections provided by this object in a
           * human-readable format.  Typically called by dump().

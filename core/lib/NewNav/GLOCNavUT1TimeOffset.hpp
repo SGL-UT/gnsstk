@@ -60,6 +60,9 @@ namespace gnsstk
    public:
          /// Initialize all data to 0.
       GLOCNavUT1TimeOffset();
+         /// Create a deep copy of this object.
+      NavDataPtr clone() const override
+      { return std::make_shared<GLOCNavUT1TimeOffset>(*this); }
 
          /** Print the contents of this object in a human-readable
           * format.  Uses parameters for GLONASS instead of generalized.
