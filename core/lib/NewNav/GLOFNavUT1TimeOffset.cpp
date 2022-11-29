@@ -81,16 +81,11 @@ namespace gnsstk
       }
       s << "****************************************************************"
         << "************" << endl
-        << "Time System Offset" << endl << endl
-        << "PRN : " << setw(2) << signal.sat << " / "
-        << "SVN : " << setw(2);
-      std::string svn;
-      if (getSVN(signal.sat, timeStamp, svn))
-      {
-         s << svn;
-      }
-
-      s << endl << endl
+        << "Time System Offset"
+        << endl
+        << endl
+        << getSignalString() << endl
+        << endl
         << "           TIMES OF INTEREST" << endl << endl
         << "              " << getDumpTimeHdr(dl) << endl
         << "Transmit:     " << getDumpTime(dl, timeStamp)

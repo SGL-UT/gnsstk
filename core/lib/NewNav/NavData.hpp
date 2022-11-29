@@ -154,6 +154,9 @@ namespace gnsstk
          return ((satMetaDataStore != nullptr) &&
                  satMetaDataStore->getSVN(sat,when,svn));
       }
+         /** Return lines of text containing the sufficient
+          * specification of the current nav message signal. */
+      std::string getSignalString() const;
          /** Return an appropriate header label for the time format in dump().
           * @param[in] dl The detail level for the time string to be dumped. 
           * @return A string labeling the columns of the time format
