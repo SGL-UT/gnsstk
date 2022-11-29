@@ -210,8 +210,10 @@ namespace gnsstk
 
       s << "****************************************************************"
         << "************" << endl
-        << "GLONASS ORB/CLK (IMMEDIATE) PARAMETERS" << endl << endl
-        << "SAT : " << signal.sat << endl << endl;
+        << "GLONASS ORB/CLK (IMMEDIATE) PARAMETERS"
+        << endl
+        << endl
+        << getSignalString() << endl;
 
          // the rest is full details, so just return if Full is not asked for.
       if (dl != DumpDetail::Full)

@@ -83,6 +83,47 @@ namespace gnsstk
 
 
    std::string NavData ::
+   getSignalString() const
+   {
+      using namespace std;
+      ostringstream s;
+      s << "PRN : " << setw(2) << signal.sat;;
+      string svn;
+      if (getSVN(signal.sat, timeStamp, svn))
+      {
+         s << " / " << "SVN : " << setw(2) << svn;
+      }
+      if (signal.messageType == NavMessageType::Almanac)
+      {
+            // for almanacs, print the transmitting satellite as well.
+         s << endl
+           << "XMIT: " << setw(2) << signal.xmitSat;
+         if (getSVN(signal.xmitSat, timeStamp, svn))
+         {
+            s << " / " << "SVN : " << setw(2) << svn;
+         }
+      }
+      s << endl;
+         // All the obs data is derived from the transmitting
+         // satellite so it makes sense to list it underneath the XMIT
+         // tag.
+      if (!signal.obs.freqOffsWild)
+      {
+         s << "FREQ: " << signal.obs.freqOffs << endl;
+      }
+      s << "CODE: " << gnsstk::StringUtils::asString(signal.nav)
+        << " " << gnsstk::StringUtils::asString(signal.obs.band)
+        << " " << gnsstk::StringUtils::asString(signal.obs.code) << endl;
+      if (signal.obs.xmitAnt != gnsstk::XmitAnt::Any)
+      {
+         s << "ANT : " << gnsstk::StringUtils::asString(signal.obs.xmitAnt)
+           << endl;
+      }
+      return s.str();
+   }
+
+
+   std::string NavData ::
    getDumpTimeHdr(DumpDetail dl) const
    {
       std::string hdr;

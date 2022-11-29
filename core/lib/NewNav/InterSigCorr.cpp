@@ -65,15 +65,10 @@ namespace gnsstk
          // "header"
       s << "****************************************************************"
         << "************" << endl
-        << "Inter-signal Corrections" << endl << endl
-        << "PRN : " << setw(2) << signal.sat << " / "
-        << "SVN : " << setw(2);
-      std::string svn;
-      if (getSVN(signal.sat, timeStamp, svn))
-      {
-         s << svn;
-      }
-      s << endl << endl;
+        << "Inter-signal Corrections"
+        << endl
+        << endl
+        << getSignalString() << endl;
 
          // the rest is full details, so just return if Full is not asked for.
       if (dl != DumpDetail::Full)

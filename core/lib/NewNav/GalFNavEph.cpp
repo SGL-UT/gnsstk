@@ -142,6 +142,8 @@ namespace gnsstk
         << "E5a_HS              : " << setw(9) << static_cast<int>(hsE5a)
         << " (" << gnsstk::StringUtils::asString(hsE5a) << ")" << endl
         << "SISA                : " << setw(9) << (unsigned)sisaIndex << endl
+        << "Health              : " << setw(9)
+        << gnsstk::StringUtils::asString(health) << endl
         << setprecision(6)
         << "Bgd(E1-E5a)         : " << setw(13) << bgdE5aE1 << " sec" << endl;
       s.flags(oldFlags);

@@ -133,8 +133,10 @@ namespace gnsstk
 
       s << "**************************************************************"
         << endl
-        << " GLONASS ORB/CLK (NON-IMMEDIATE) PARAMETERS for GLONASS Slot "
-        << signal.sat.id << endl;
+        << " GLONASS ORB/CLK (NON-IMMEDIATE) PARAMETERS"
+        << endl
+        << endl
+        << getSignalString() << endl;
 
          // the rest is full details, so just return if Full is not asked for.
       if (dl != DumpDetail::Full)

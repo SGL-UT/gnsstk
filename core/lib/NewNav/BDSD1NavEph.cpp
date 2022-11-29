@@ -119,7 +119,8 @@ namespace gnsstk
         << "URA index           : " << setw(6) << (unsigned)uraIndex << endl
         << "URA (nominal)       : " << setw(6) << fixed
         << SV_ACCURACY_GPS_NOMINAL_INDEX[uraIndex] << " m" << endl
-        << endl
+        << "Health              : " << setw(9)
+        << gnsstk::StringUtils::asString(health) << endl
         << "Tgd1                : " << setw(13) << setprecision(6)
         << scientific << tgd1 << " sec" << endl
         << "Tgd2                : " << setw(13) << setprecision(6)
