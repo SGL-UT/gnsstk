@@ -196,7 +196,7 @@ To build and install the python bindings, you have two options:
 Testing:
 --------
 
-See the TESTING.txt for details.
+See the TESTING.md for details.
 
 	
 Help & Docs:
