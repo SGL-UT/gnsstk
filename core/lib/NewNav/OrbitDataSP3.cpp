@@ -48,7 +48,7 @@ namespace gnsstk
            vel(0.0, 0.0, 0.0), velSig(0.0, 0.0, 0.0),
            acc(0.0, 0.0, 0.0), accSig(0.0, 0.0, 0.0),
            clkBias(0.0), biasSig(0.0), clkDrift(0.0), driftSig(0.0),
-           clkDrRate(0.0), drRateSig(0.0), frame(ReferenceFrame::Unknown)
+           clkDrRate(0.0), drRateSig(0.0)
    {
       signal.messageType = NavMessageType::Ephemeris;
    }

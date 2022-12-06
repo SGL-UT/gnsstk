@@ -230,7 +230,7 @@ class Position_test(unittest.TestCase):
     def test_functions(self):
         system = gnsstk.Position.Cartesian
         ell = gnsstk.PZ90Ellipsoid()
-        frame = gnsstk.ReferenceFrame.PZ90
+        frame = gnsstk.RefFrame(gnsstk.RefFrameRlz.PZ90Y2007)
         p = gnsstk.Position(10000.0, 150000.0, 200000.0, system, ell, frame)
         q = gnsstk.Position(20000.0, 160000.0, 190000.0, system, ell, frame)
         self.assertAlmostEqual(1.32756277187, q.elevation(p))
@@ -243,7 +243,7 @@ class Position_test(unittest.TestCase):
         self.assertEqual(gnsstk.Position.Cartesian, p.getCoordinateSystem())
         p = gnsstk.spherical(45, 60, 100000, model=gnsstk.PZ90Ellipsoid())
         self.assertEqual(gnsstk.Position.Spherical, p.getCoordinateSystem())
-        p = gnsstk.geodetic(frame=gnsstk.ReferenceFrame.WGS84)
+        p = gnsstk.geodetic(frame=gnsstk.RefFrame(gnsstk.RefFrameRlz.WGS84G0))
         self.assertEqual(gnsstk.Position.Geodetic, p.getCoordinateSystem())
         p = gnsstk.geocentric(latitude=60, radius=10000)
         self.assertEqual(gnsstk.Position.Geocentric, p.getCoordinateSystem())
@@ -387,7 +387,7 @@ class Xvt_test(unittest.TestCase):
         data.clkbias = 0.0001
         data.clkdrift = 0.05
         data.relcorr = 0.83
-        data.frame = gnsstk.ReferenceFrame.WGS84
+        data.frame = gnsstk.RefFrame(gnsstk.RefFrameRlz.WGS84G2139);
         self.assertAlmostEqual(0.0001, data.getClockBias())
 
         expected = 1.446445072869704e-11

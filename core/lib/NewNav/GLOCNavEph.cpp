@@ -102,7 +102,7 @@ namespace gnsstk
             // Added negation here to match the SP3 sign
          xvt.clkbias = -(clkBias + freqBias * (when - Toe) - xvt.relcorr);
          xvt.clkdrift = freqBias;
-         xvt.frame = ReferenceFrame::PZ90;
+         xvt.frame = RefFrame(RefFrameSys::PZ90, when);
          xvt.health = toXvtHealth(header.health);
          return true;
       }
@@ -186,7 +186,7 @@ namespace gnsstk
          // Added negation here to match the SP3 sign
       xvt.clkbias = -(clkBias + freqBias * (when - Toe) - xvt.relcorr);
       xvt.clkdrift = freqBias;
-      xvt.frame = ReferenceFrame::PZ90;
+      xvt.frame = RefFrame(RefFrameSys::PZ90, when);
       xvt.health = toXvtHealth(header.health);
       return true;
    }

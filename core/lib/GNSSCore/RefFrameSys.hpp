@@ -36,46 +36,42 @@
 //
 //==============================================================================
 
-#ifndef X_HELMERT_TRANSFORM_HPP
-#define X_HELMERT_TRANSFORM_HPP
+#ifndef GNSSTK_REFRAMESYS_HPP
+#define GNSSTK_REFRAMESYS_HPP
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-#include "HelmertTransform.hpp"
-#include "ReferenceFrame.hpp"
-#include "Position.hpp"
-#include "Xvt.hpp"
-#include "Triple.hpp"
-#include "Vector.hpp"
+#include <string>
+#include "EnumIterator.hpp"
 
-
-class HelmertTransform_T : public CPPUNIT_NS :: TestFixture
+namespace gnsstk
 {
-   CPPUNIT_TEST_SUITE (HelmertTransform_T);
-   CPPUNIT_TEST (positionTransformTest);
-   CPPUNIT_TEST (xtTransformTest);
-   CPPUNIT_TEST (xvtTransformTest);
-   CPPUNIT_TEST (triplePosTransformTest);
-   CPPUNIT_TEST (tripleVelTransformTest);
-   CPPUNIT_TEST (vectorPosTransformTest);
-   CPPUNIT_TEST (vectorVelTransformTest);
-   CPPUNIT_TEST_SUITE_END ();
+      /// @ingroup geodeticgroup
+      //@{
 
-   public:
-   void setUp();
-   void tearDown() {   };
+      /// Reference frame systems.  For specific realizations, see RefFrameRlz.
+   enum class RefFrameSys
+   {
+      Unknown,  ///< Unknown system or uninitialized value.
+      WGS84,    ///< The reference frame used by GPS.
+      ITRF,     ///< The reference frame used by Galileo.
+      PZ90,     ///< The reference frame used by Glonass.
+      CGCS2000, ///< The reference frame used by BeiDou.
+      Last      ///< Used to verify that all items are described at compile time
+   };
 
-   protected:
-   void positionTransformTest();
-   void xtTransformTest();
-   void xvtTransformTest();
-   void triplePosTransformTest();
-   void tripleVelTransformTest();
-   void vectorPosTransformTest();
-   void vectorVelTransformTest();
+      /** Define an iterator so C++11 can do things like
+       * for (RefFrameSys i : RefFrameSysIterator()) */
+   typedef EnumIterator<RefFrameSys, RefFrameSys::Unknown, RefFrameSys::Last> RefFrameSysIterator;
 
-   private:
+   namespace StringUtils
+   {
+         /// Convert a RefFrameSys to a whitespace-free string name.
+      std::string asString(RefFrameSys e) noexcept;
+         /// Convert a string name to an RefFrameSys
+      RefFrameSys asRefFrameSys(const std::string& s) noexcept;
+   }
 
-};
+      //@}
 
-#endif
+} // namespace gnsstk
+
+#endif // GNSSTK_REFRAMESYS_HPP

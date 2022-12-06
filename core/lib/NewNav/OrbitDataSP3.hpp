@@ -102,7 +102,7 @@ namespace gnsstk
          /// Copy of SP3Header::coordSystem since it might not translate.
       std::string coordSystem;
          /// Translation of coordSystem into an enum, if possible.
-      ReferenceFrame frame;
+      RefFrame frame;
    };
 
       //@}

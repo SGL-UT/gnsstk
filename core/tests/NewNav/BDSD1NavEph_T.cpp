@@ -168,6 +168,7 @@ getXvtTest()
    TUDEF("BDSD1NavEph", "getXvt");
    gnsstk::BDSD1NavEph uut;
    gnsstk::Xvt xvt;
+   gnsstk::RefFrame expRF(gnsstk::RefFrameRlz::CGCS2000Y2008);
    uut.xmitTime = gnsstk::BDSWeekSecond(1854, .720000000000e+04);
    uut.Toe = gnsstk::BDSWeekSecond(1854, .143840000000e+05);
    uut.Toc = gnsstk::CivilTime(2015,7,19,3,59,44.0,gnsstk::TimeSystem::BDT);
@@ -175,7 +176,7 @@ getXvtTest()
    gnsstk::CivilTime civ(2015,7,19,2,0,35.0,gnsstk::TimeSystem::BDT);
    TUASSERT(uut.getXvt(civ, xvt));
    TUASSERTE(gnsstk::Xvt::HealthStatus, gnsstk::Xvt::Healthy, xvt.health);
-   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::CGCS2000,xvt.frame);
+   TUASSERTE(gnsstk::RefFrame,expRF,xvt.frame);
    TURETURN();
 }
 

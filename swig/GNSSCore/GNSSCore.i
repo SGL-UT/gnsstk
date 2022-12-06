@@ -31,6 +31,7 @@ from __future__ import absolute_import
 %include "typemaps.i"
 %include "exception.i"
 %include "carrays.i"
+%include "std_shared_ptr.i"
 
 // =============================================================
 //  Section 2: Macros
@@ -59,12 +60,17 @@ ENUM_MAPPER(gnsstk::CarrierBand, CarrierBand, "gnsstk")
 ENUM_MAPPER(gnsstk::TrackingCode, TrackingCode, "gnsstk")
 ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 
+ // needs to be before RefFrameRlz.hpp at the very least.
+%import "CommonTime.hpp"
+
 %include "SatelliteSystem.hpp"
 %include "CarrierBand.hpp"
 %include "TrackingCode.hpp"
 %include "ObservationType.hpp"
 %include "AngleType.hpp"
 %include "XmitAnt.hpp"
+%include "RefFrameSys.hpp"
+%include "RefFrameRlz.hpp"
 
 %include "renameEnums.i"
 %pythoncode %{
@@ -74,6 +80,8 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
    renameEnums('ObservationType')
    renameEnums('AngleType')
    renameEnums('XmitAnt')
+   renameEnums('RefFrameSys')
+   renameEnums('RefFrameRlz')
 %}
 %include "cleanup.i"
 
@@ -84,6 +92,13 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 %exceptionclass Exception;
 
 %include "Exception.i"
+
+// =============================================================
+//  Section 7: C++11 shared_ptr handling
+// =============================================================
+
+%shared_ptr(gnsstk::Transformer)
+%shared_ptr(gnsstk::HelmertTransformer)
 
 // =============================================================
 //  Section 9: typemaps that must be declared before the %includes
@@ -99,7 +114,6 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
  // I don't know why some of these require the module option and others don't,
  // but without it, you get warnings saying to do it.
 %import(module="gnsstk") "Exception.hpp"
-%import "CommonTime.hpp"
 %import "EngNav.hpp"
 %import "EngAlmanac.hpp"
 %import "NavType.hpp"
@@ -108,11 +122,14 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 %import "FFData.hpp"
 %import "RinexObsBase.hpp"
 %import "RinexObsHeader.hpp"
+%import "Vector.hpp"
+%import "Matrix.hpp"
 
 %include "AngleType.hpp"
 %include "AngleReduced.hpp"
 %include "Angle.hpp"
 %include "EllipsoidModel.hpp"
+%include "RefFrame.hpp"
 %include "CGCS2000Ellipsoid.hpp"
 %include "CarrierBand.hpp"
 %template(std_map_CarrierBand_string) std::map<gnsstk::CarrierBand, std::string>;
@@ -141,6 +158,8 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 %include "GalileoEllipsoid.hpp"
 %include "GalileoIonoEllipsoid.hpp"
 %include "GlobalTropModel.hpp"
+%include "Transformer.hpp"
+%include "HelmertTransformer.hpp"
 %feature("flatnested");
 %include "IonoModel.hpp"
 %feature("flatnested", "");
@@ -177,6 +196,7 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 %include "SatMetaDataStore.hpp"
 %feature("flatnested", "");
 %include "SimpleTropModel.hpp"
+%include "TransformLibrary.hpp"
 %include "convhelp.hpp"
 
 // =============================================================
@@ -206,25 +226,25 @@ for cls in enum_vec_classes:
 
 
 def cartesian(x=0.0, y=0.0, z=0.0,
-              model=None, frame=ReferenceFrame.Unknown):
+              model=None, frame=RefFrame()):
     "Returns a Position in the Cartesian coordinate system."
     return Position(x, y, z, Position.Cartesian, model, frame)
 
 
 def geodetic(latitude=0.0, longitude=0.0, height=0.0,
-             model=None, frame=ReferenceFrame.Unknown):
+             model=None, frame=RefFrame()):
     "Returns a Position in the Geodetic coordinate system."
     return Position(latitude, longitude, height, Position.Geodetic, model, frame)
 
 
 def spherical(theta=0.0, phi=0.0, radius=0.0,
-              model=None, frame=ReferenceFrame.Unknown):
+              model=None, frame=RefFrame()):
     "Returns a Position in the Spherical coordinate system."
     return Position(theta, phi, radius, Position.Spherical, model, frame)
 
 
 def geocentric(latitude=0.0, longitude=0.0, radius=0.0,
-               model=None, frame=ReferenceFrame.Unknown):
+               model=None, frame=RefFrame()):
     "Returns a Position in the Geocentric coordinate system."
     return Position(latitude, longitude, radius, Position.Geocentric, model, frame)
 

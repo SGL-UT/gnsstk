@@ -36,30 +36,55 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "BDSD1NavData.hpp"
-#include "BDSconsts.hpp"
+#include "RefFrameSys.hpp"
+#include "TestUtil.hpp"
 
 namespace gnsstk
 {
-   BDSD1NavData ::
-   BDSD1NavData()
-         : pre(0),
-           rev(0),
-           fraID(0),
-           sow(0)
+   std::ostream& operator<<(std::ostream& s, gnsstk::RefFrameSys e)
    {
-      weekFmt = "%4D(%4e)";
-      frame = RefFrameSys::CGCS2000;
+      s << StringUtils::asString(e) << "(" << (int)e << ")";
+      return s;
    }
+}
 
 
-   bool BDSD1NavData ::
-   validate() const
+class RefFrameSys_T
+{
+public:
+   unsigned convertTest();
+};
+
+
+unsigned RefFrameSys_T ::
+convertTest()
+{
+   TUDEF("RefFrameSys", "asString");
+      // This effectively tests RefFrameSysIterator, asString and
+      // asRefFrameSys all at once.
+   for (gnsstk::RefFrameSys e : gnsstk::RefFrameSysIterator())
    {
-         // Section 5.2.4.2 indicates a subframe ID of 0 is not
-         // valid. Values of 6 and 7 are reserved, but we don't have
-         // any reason to consider them valid in this context.
-      return (((pre == 0) || (pre == bds::Preamble)) &&
-              (fraID >= bds::D1MinSF) && (fraID <= bds::D1MaxSF));
+      TUCSM("asString");
+      std::string s(gnsstk::StringUtils::asString(e));
+      TUASSERT(!s.empty());
+      TUASSERT(s != "???");
+      TUCSM("asRefFrameSys");
+      gnsstk::RefFrameSys e2 = gnsstk::StringUtils::asRefFrameSys(s);
+      TUASSERTE(gnsstk::RefFrameSys, e, e2);
    }
+   TURETURN();
+}
+
+
+int main()
+{
+   RefFrameSys_T testClass;
+   unsigned errorTotal = 0;
+
+   errorTotal += testClass.convertTest();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+             << std::endl;
+
+   return errorTotal;
 }

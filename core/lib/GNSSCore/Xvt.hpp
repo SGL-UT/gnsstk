@@ -47,7 +47,7 @@
 #include <iostream>
 #include "Triple.hpp"
 #include "EllipsoidModel.hpp"
-#include "ReferenceFrame.hpp"
+#include "RefFrame.hpp"
 #include "GNSSconstants.hpp"
 
 namespace gnsstk
@@ -100,7 +100,7 @@ namespace gnsstk
          /// Default constructor
       Xvt() : x(0.,0.,0.), v(0.,0.,0.),
               clkbias(0.), clkdrift(0.),
-              relcorr(0.), frame(ReferenceFrame::Unknown),
+              relcorr(0.),
               health(Uninitialized)
       {};
 
@@ -153,7 +153,7 @@ namespace gnsstk
       double clkbias;  ///< Sat clock correction in seconds
       double clkdrift; ///< satellite clock drift in seconds/second
       double relcorr;  ///< relativity correction (standard 2R.V/c^2 term), seconds
-      ReferenceFrame frame;   ///< reference frame of this data
+      RefFrame frame;  ///< reference frame of this data
       HealthStatus health;    ///< Health status of satellite at ref time.
 
    }; // end class Xvt

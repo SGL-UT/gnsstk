@@ -23,6 +23,7 @@ add_test(NAME GNSSCore_ObsIDInitializer COMMAND $<TARGET_FILE:ObsIDInitializer_T
 add_executable(Position_T Position_T.cpp)
 target_link_libraries(Position_T gnsstk)
 add_test(NAME GNSSCore_Position COMMAND $<TARGET_FILE:Position_T>)
+set_property(TEST GNSSCore_Position PROPERTY LABELS Geodetic)
 
 add_executable(TropModel_T TropModel_T.cpp)
 target_link_libraries(TropModel_T gnsstk)
@@ -35,6 +36,7 @@ add_test(NAME GNSSCore_WxObsMap COMMAND $<TARGET_FILE:WxObsMap_T>)
 add_executable(Xvt_T Xvt_T.cpp)
 target_link_libraries(Xvt_T gnsstk)
 add_test(NAME GNSSCore_Xvt COMMAND $<TARGET_FILE:Xvt_T>)
+set_property(TEST GNSSCore_Xvt PROPERTY LABELS Geodetic)
 
 ###############################################################################
 add_executable(Tropdump Tropdump.cpp)
@@ -164,10 +166,12 @@ add_test(NAME GNSSCore_SatMetaDataStore COMMAND $<TARGET_FILE:SatMetaDataStore_T
 add_executable(RinexObsID_T RinexObsID_T.cpp)
 target_link_libraries(RinexObsID_T gnsstk)
 add_test(NAME GNSSCore_RinexObsID COMMAND $<TARGET_FILE:RinexObsID_T>)
+set_property(TEST GNSSCore_RinexObsID PROPERTY LABELS FileHandling)
 
 add_executable(RinexSatID_T RinexSatID_T.cpp)
 target_link_libraries(RinexSatID_T gnsstk)
 add_test(NAME GNSSCore_RinexSatID COMMAND $<TARGET_FILE:RinexSatID_T>)
+set_property(TEST GNSSCore_RinexSatID PROPERTY LABELS FileHandling)
 
 add_executable(SatID_T SatID_T.cpp)
 target_link_libraries(SatID_T gnsstk)
@@ -184,14 +188,38 @@ add_test(NAME GNSSCore_FreqConv COMMAND $<TARGET_FILE:FreqConv_T>)
 add_executable(AngleReduced_T AngleReduced_T.cpp)
 target_link_libraries(AngleReduced_T gnsstk)
 add_test(NAME GNSSCore_AngleReduced COMMAND $<TARGET_FILE:AngleReduced_T>)
+set_property(TEST GNSSCore_AngleReduced PROPERTY LABELS Geodetic)
 
 add_executable(Angle_T Angle_T.cpp)
 target_link_libraries(Angle_T gnsstk)
 add_test(NAME GNSSCore_Angle COMMAND $<TARGET_FILE:Angle_T>)
+set_property(TEST GNSSCore_Angle PROPERTY LABELS Geodetic)
 
 add_executable(AngleType_T AngleType_T.cpp)
 target_link_libraries(AngleType_T gnsstk)
 add_test(NAME GNSSCore_AngleType COMMAND $<TARGET_FILE:AngleType_T>)
+set_property(TEST GNSSCore_AngleType PROPERTY LABELS Geodetic)
+
+add_executable(RefFrameSys_T RefFrameSys_T.cpp)
+target_link_libraries(RefFrameSys_T gnsstk)
+add_test(NAME GNSSCore_RefFrameSys COMMAND $<TARGET_FILE:RefFrameSys_T>)
+set_property(TEST GNSSCore_RefFrameSys PROPERTY LABELS Geodetic)
+
+add_executable(RefFrameRlz_T RefFrameRlz_T.cpp)
+target_link_libraries(RefFrameRlz_T gnsstk)
+add_test(NAME GNSSCore_RefFrameRlz COMMAND $<TARGET_FILE:RefFrameRlz_T>)
+set_property(TEST GNSSCore_RefFrameRlz PROPERTY LABELS Geodetic)
+
+add_executable(TransformLibrary_T TransformLibrary_T.cpp)
+target_link_libraries(TransformLibrary_T gnsstk)
+add_test(NAME GNSSCore_TransformLibrary COMMAND $<TARGET_FILE:TransformLibrary_T>)
+set_property(TEST GNSSCore_TransformLibrary PROPERTY LABELS Geodetic)
+
+add_executable(HelmertTransformer_T HelmertTransformer_T.cpp)
+target_link_libraries(HelmertTransformer_T gnsstk)
+add_test(NAME GNSSCore_HelmertTransformer COMMAND $<TARGET_FILE:HelmertTransformer_T>)
+set_property(TEST GNSSCore_HelmertTransformer PROPERTY LABELS Geodetic)
+
 
 ###############################################################################
 ###############################################################################

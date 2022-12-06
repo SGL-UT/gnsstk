@@ -196,7 +196,10 @@ namespace gnsstk
       double af1;          ///< SV clock drift (sec/sec)
       double af2;          ///< SV clock drift rate (sec/sec**2)
 
-      ReferenceFrame frame;///< Reference frame of produced Xvt data.
+         /** Reference frame system of produced Xvt data.  This is
+          * used in combination with the Xvt time to properly set the
+          * Xvt RefFrame. */
+      RefFrameSys frame;
    };
 
       //@}

@@ -43,22 +43,22 @@
 #include "StringUtils.hpp"
 #include "Triple.hpp"
 #include "EllipsoidModel.hpp"
-#include "ReferenceFrame.hpp"
+#include "RefFrame.hpp"
 #include "Xvt.hpp"
 #include "Angle.hpp"
 #include "gnsstk_export.h"
 
 namespace gnsstk
 {
-      /// @ingroup Geodetic
-      //@{
-
       // forward declarations
    class Position;
       /**
        * @throw GeometryException
        */
    double range(const Position& A, const Position& B);
+
+      /// @ingroup geodeticgroup
+      //@{
 
       /**
        * A position representation class for common 3D geographic
@@ -209,7 +209,7 @@ namespace gnsstk
                const double& c,
                CoordinateSystem s = Cartesian,
                const EllipsoidModel *ell = nullptr,
-               ReferenceFrame frame = ReferenceFrame::Unknown);
+               const RefFrame& frame = RefFrame());
 
          /**
           * Explicit constructor. Coordinate system may be specified
@@ -224,7 +224,7 @@ namespace gnsstk
       Position(const double ABC[3],
                CoordinateSystem s = Cartesian,
                const EllipsoidModel *ell = nullptr,
-               ReferenceFrame frame = ReferenceFrame::Unknown);
+               const RefFrame& frame = RefFrame());
 
          /**
           * Explicit constructor. Coordinate system may be specified
@@ -239,7 +239,7 @@ namespace gnsstk
       Position(const Triple& ABC,
                CoordinateSystem s = Cartesian,
                const EllipsoidModel *ell = nullptr,
-               ReferenceFrame frame = ReferenceFrame::Unknown);
+               const RefFrame& frame = RefFrame());
 
          /**
           * Explicit constructor from Xvt. The coordinate system is Cartesian,
@@ -398,8 +398,8 @@ namespace gnsstk
          // coordinate systems.
          //
 
-         /// return coordinate ReferenceFrame
-      const ReferenceFrame& getReferenceFrame() const
+         /// return coordinate RefFrame
+      const RefFrame& getReferenceFrame() const
          noexcept;
 
          /// return X coordinate (meters)
@@ -509,10 +509,10 @@ namespace gnsstk
          // ----------- Part  8: member functions: set ------------------------
          //
          /**
-          * Set the ReferenceFrame that this position is in.
-          * @param frame The ReferenceFrame to set to.
+          * Set the RefFrame that this position is in.
+          * @param frame The RefFrame to set to.
           */
-      void setReferenceFrame(const ReferenceFrame& frame)
+      void setReferenceFrame(const RefFrame& frame)
          noexcept;
 
          /**
@@ -1043,7 +1043,7 @@ namespace gnsstk
                       const double c,
                       CoordinateSystem s = Cartesian,
                       const EllipsoidModel *ell = nullptr,
-                      ReferenceFrame frame = ReferenceFrame::Unknown);
+                      const RefFrame& frame = RefFrame());
 
          /* Values of the coordinates, defined for each system as follows;
           *    Cartesian  : X,Y,Z in meters
@@ -1070,7 +1070,7 @@ namespace gnsstk
          /// tolerance used in comparisons
       double tolerance;
 
-      ReferenceFrame refFrame;
+      RefFrame refFrame;
 
    };   // end class Position
 

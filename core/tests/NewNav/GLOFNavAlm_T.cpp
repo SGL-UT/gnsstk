@@ -118,6 +118,7 @@ getXvtTest()
    uut.eccnA = 0.001482010;
    uut.omeganA = 0.440277100 * gnsstk::PI;
    uut.Toa = gnsstk::YDSTime(2001, 249, uut.tLambdanA, gnsstk::TimeSystem::GLO);
+   gnsstk::RefFrame expRF(gnsstk::RefFrameRlz::PZ90KGS);
 
       // Normally called by fixFit, but we don't care about the fit
       // interval for this test.
@@ -136,7 +137,7 @@ getXvtTest()
    TUASSERTFE(0, xvt.clkbias);
    TUASSERTFE(0, xvt.clkdrift);
    TUASSERTFE(1.5097189886318696151e-09, xvt.relcorr);
-   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::PZ90,xvt.frame);
+   TUASSERTE(gnsstk::RefFrame,expRF,xvt.frame);
 #if 0
       // This is more code that was used to track down what was going
       // on with getXvt.  Specifically it first helped me confirm that

@@ -237,6 +237,14 @@ namespace gnsstk
             GNSSTK_THROW(e);
          }
       }
+      else if (version == SP3a)
+      {
+            // standard for SP3a says "All times referred to in this
+            // document are GPS times".
+         timeSystem = gnsstk::TimeSystem::GPS;
+      }
+         // make sure header time is in the right time system
+      time.setTimeSystem(timeSystem);
 
       strm.formattedGetLine(line);
       lineCount++;
