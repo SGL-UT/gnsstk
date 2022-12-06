@@ -77,7 +77,7 @@ namespace gnsstk
 
       // TimeSystem for this stream
       TimeSystem timeSystem;
-      timeSystem = gnsstk::StringUtils::asTimeSystem(strm.header.timeSystemString());
+      timeSystem = strm.header.timeSystem;
 
       // loop until an error occurs, or until the entire record (which may consist
       // of two lines) is read.

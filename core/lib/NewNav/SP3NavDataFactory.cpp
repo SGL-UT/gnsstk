@@ -566,6 +566,7 @@ namespace gnsstk
    process(const std::string& filename,
            NavDataFactoryCallback& cb)
    {
+      DEBUGTRACE_FUNCTION();
       bool rv = true;
       bool processEph = (procNavTypes.count(NavMessageType::Ephemeris) > 0);
       bool processClk = (procNavTypes.count(NavMessageType::Clock) > 0);
@@ -890,8 +891,10 @@ namespace gnsstk
             break;
       }
       gps->coordSystem = head.coordSystem;
-      gps->frame = gnsstk::StringUtils::asReferenceFrame(
-         gps->coordSystem);
+      DEBUGTRACE("setting reference frame using time "
+                 << gnsstk::printTime(head.time,dts) << " "
+                 << StringUtils::asString(head.timeSystem));
+      gps->frame = RefFrame(gps->coordSystem, head.time);
       return true;
    }
 

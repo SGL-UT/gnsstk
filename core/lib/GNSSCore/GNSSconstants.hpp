@@ -51,7 +51,7 @@
 namespace gnsstk
 {
       /**
-       * @ingroup Geodetic
+       * @ingroup geodeticgroup
        * @name GNSS Constants
        * Time constants are in TimeConstants.hpp
        */
@@ -76,6 +76,12 @@ namespace gnsstk
    static const double DEG_TO_RAD = 1.7453292519943e-2;
       /// Conversion Factor from radians to degrees (units: degrees)
    static const double RAD_TO_DEG = 57.295779513082;
+      /// degrees per milliarcsecond (1e-3/3600.)
+   static const double DEG_PER_MAS = 2.77777777777e-7;
+      /// radians per milliarcsecond
+   static const double RAD_PER_MAS = 4.84813681e-9;
+      /// parts per billion
+   static const double PPB = 1.e-9;
 
       // ---------------- GPS --------------------------------------
       /// Hz, GPS Oscillator or chip frequency

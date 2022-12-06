@@ -46,7 +46,9 @@
 namespace gnsstk
 {
 
-      /// ECEF reference systems or frames.
+      /** ECEF reference systems or frames.
+       * @deprecated This enum is deprecated as of Dec 2022 and should
+       *   not be used.  Use RefFrame instead. */
    enum class ReferenceFrame
    {
          // add new frames BEFORE count, then add to

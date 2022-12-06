@@ -579,7 +579,7 @@ namespace gnsstk
       xvt.v[0] *= 1000.0;
       xvt.v[1] *= 1000.0;
       xvt.v[2] *= 1000.0;
-      xvt.frame = ReferenceFrame::PZ90;
+      xvt.frame = RefFrame(RefFrameSys::PZ90, when);
          // clock bias and drift are not available (?).
       xvt.relcorr = xvt.computeRelativityCorrection();
       return true;

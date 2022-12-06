@@ -342,6 +342,7 @@ getXvtTest()
    uut.deltaT = DeltaTA;
    uut.deltaTdot = DeltaTdotA;
    uut.Toa = gnsstk::GLONASSTime(0, NA, uut.tLambda, gnsstk::TimeSystem::GLO);
+   gnsstk::RefFrame expRF(gnsstk::RefFrameRlz::PZ90KGS);
 
    gnsstk::Xvt xvt;
    TUASSERTE(bool, true, uut.getXvt(toi, xvt));
@@ -360,7 +361,7 @@ getXvtTest()
    TUASSERTFESMRT(clkbiasExpected, xvt.clkbias);
    TUASSERTFESMRT(clkdriftExpected, xvt.clkdrift);
    TUASSERTFESMRT(relcorrExpected, xvt.relcorr);
-   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::PZ90,xvt.frame);
+   TUASSERTE(gnsstk::RefFrame,expRF,xvt.frame);
 
    TUASSERTFESMRT(DeltatprExpected, uut.math.Deltatpr);
    TUASSERTE(int, WExpected, uut.math.W);
@@ -565,7 +566,9 @@ CorrectedTest()
    TUASSERTFESMRT(vrExpected, uut.vr);
    TUCSM("setData(vu)");
    TUASSERTFESMRT(vuExpected, uut.vu);
-   gnsstk::Xvt got = uut.getXvt();
+      // time is only used to figure out the ref frame
+   gnsstk::CivilTime dummy(2023,1,1,0,0,0,gnsstk::TimeSystem::UTC);
+   gnsstk::Xvt got = uut.getXvt(dummy);
    TUCSM("getXvt(x)");
    TUASSERTFESMRT(xExpected, got.x[0]);
    TUCSM("getXvt(y)");

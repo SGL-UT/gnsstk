@@ -52,7 +52,7 @@ namespace gnsstk
            dn(0.0), dndot(0.0), ecc(0.0), A(0.0), Ahalf(0.0), Adot(0.0),
            OMEGA0(0.0), i0(0.0), w(0.0), OMEGAdot(0.0), idot(0.0), af0(0.0),
            af1(0.0), af2(0.0), health(SVHealth::Unknown),
-           frame(ReferenceFrame::WGS84)
+           frame(RefFrameSys::WGS84)
    {
    }
 
@@ -225,8 +225,7 @@ namespace gnsstk
       xvt.relcorr = svRelativity(when, ell);
       xvt.clkbias = svClockBias(when);
       xvt.clkdrift = svClockDrift(when);
-         // This appears to be only a string for naming
-      xvt.frame = ReferenceFrame::WGS84;
+      xvt.frame = RefFrame(frame, when);
 
          // Compute true anomaly
       q     = SQRT( 1.0e0 - lecc*lecc);
@@ -307,7 +306,6 @@ namespace gnsstk
       xvt.v[1] = vyef;
       xvt.v[2] = vzef;
       xvt.health = toXvtHealth(health);
-      xvt.frame = frame;
       return true;
    }
 

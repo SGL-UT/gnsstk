@@ -48,7 +48,7 @@
 
 namespace gnsstk
 {
-      /// @ingroup Geodetic
+      /// @ingroup geodeticgroup
       //@{
 
    class PZ90Ellipsoid : public EllipsoidModel

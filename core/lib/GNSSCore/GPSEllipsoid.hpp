@@ -49,7 +49,7 @@
 
 namespace gnsstk
 {
-      /// @ingroup Geodetic
+      /// @ingroup geodeticgroup
       //@{
 
       /**

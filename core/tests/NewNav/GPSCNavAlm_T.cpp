@@ -127,6 +127,7 @@ getXvtTest()
    TUDEF("GPSCNavAlm", "getXvt");
    gnsstk::GPSCNavAlm uut;
    gnsstk::Xvt xvt;
+   gnsstk::RefFrame expRF(gnsstk::RefFrameRlz::WGS84G1762);
    uut.xmitTime = gnsstk::GPSWeekSecond(1854, .720000000000e+04);
    uut.Toe = gnsstk::GPSWeekSecond(1854, .143840000000e+05);
    uut.Toc = gnsstk::CivilTime(2015,7,19,3,59,44.0,gnsstk::TimeSystem::GPS);
@@ -134,7 +135,7 @@ getXvtTest()
    gnsstk::CivilTime civ(2015,7,19,2,0,35.0,gnsstk::TimeSystem::GPS);
    TUASSERT(uut.getXvt(civ, xvt));
    TUASSERTE(gnsstk::Xvt::HealthStatus, gnsstk::Xvt::Healthy, xvt.health);
-   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::WGS84,xvt.frame);
+   TUASSERTE(gnsstk::RefFrame,expRF,xvt.frame);
    TURETURN();
 }
 

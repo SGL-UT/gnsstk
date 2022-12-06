@@ -287,8 +287,9 @@ namespace gnsstk
              * @pre r must be set
              * @pre lambda must be set
              * @pre u must be set
-             * @pre i must be set */
-         inline Xvt getXvt();
+             * @pre i must be set
+             * @param[in] toi The time at which the Xvt is being computed. */
+         inline Xvt getXvt(const gnsstk::CommonTime& toi);
       private:
          double E;       ///< Eccentric anomaly
          double epsilon; ///< epsilon prime, eccentricity.

@@ -22,7 +22,6 @@
 //
 //==============================================================================
 
-
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -36,30 +35,39 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "BDSD1NavData.hpp"
-#include "BDSconsts.hpp"
+
+#include "RefFrameSys.hpp"
+
+using namespace std;
 
 namespace gnsstk
 {
-   BDSD1NavData ::
-   BDSD1NavData()
-         : pre(0),
-           rev(0),
-           fraID(0),
-           sow(0)
+   namespace StringUtils
    {
-      weekFmt = "%4D(%4e)";
-      frame = RefFrameSys::CGCS2000;
-   }
+      std::string asString(RefFrameSys e)
+         noexcept
+      {
+         switch (e)
+         {
+            case RefFrameSys::Unknown:    return "Unknown";
+            case RefFrameSys::WGS84:      return "WGS84";
+            case RefFrameSys::ITRF:       return "ITRF";
+            case RefFrameSys::PZ90:       return "PZ90";
+            case RefFrameSys::CGCS2000:   return "CGCS2000";
+            default:                      return "???";
+         }
+      }
 
 
-   bool BDSD1NavData ::
-   validate() const
-   {
-         // Section 5.2.4.2 indicates a subframe ID of 0 is not
-         // valid. Values of 6 and 7 are reserved, but we don't have
-         // any reason to consider them valid in this context.
-      return (((pre == 0) || (pre == bds::Preamble)) &&
-              (fraID >= bds::D1MinSF) && (fraID <= bds::D1MaxSF));
+      RefFrameSys asRefFrameSys(const std::string& s)
+         noexcept
+      {
+         if (s == "Unknown")      return RefFrameSys::Unknown;
+         if (s == "WGS84")        return RefFrameSys::WGS84;
+         if (s == "ITRF")         return RefFrameSys::ITRF;
+         if (s == "PZ90")         return RefFrameSys::PZ90;
+         if (s == "CGCS2000")     return RefFrameSys::CGCS2000;
+         return RefFrameSys::Unknown;
+      }
    }
-}
+}   // end namespace

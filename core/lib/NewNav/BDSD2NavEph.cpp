@@ -129,8 +129,7 @@ namespace gnsstk
       xvt.relcorr = svRelativity(when);
       xvt.clkbias = svClockBias(when);
       xvt.clkdrift = svClockDrift(when);
-         // This appears to be only a string for naming
-      xvt.frame = ReferenceFrame::CGCS2000;
+      xvt.frame = RefFrame(frame, when);
 
          // Compute true anomaly
       q     = SQRT( 1.0e0 - lecc*lecc);

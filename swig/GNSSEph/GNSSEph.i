@@ -89,7 +89,6 @@ from __future__ import absolute_import
 %include "EngAlmanac.hpp"
 %include "EngEphemeris.hpp"
 %include "EphemerisRange.hpp"
-%include "GloEphemeris.hpp"
 %include "SP3SatID.hpp"
 
 
@@ -102,7 +101,6 @@ STR_DUMP_HELPER(BrcKeplerOrbit)
 STR_DUMP_HELPER(EngAlmanac)
 STR_DUMP_HELPER(EngEphemeris)
 STR_DUMP_HELPER(EngNav)
-STR_DUMP_HELPER(GloEphemeris)
 AS_STRING_HELPER(NavID)
 
 // =============================================================
