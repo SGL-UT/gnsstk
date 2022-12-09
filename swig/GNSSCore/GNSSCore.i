@@ -145,6 +145,7 @@ ENUM_MAPPER(gnsstk::CorrDupHandling, CorrDupHandling, "gnsstk")
 %import "NavLibrary.hpp"
 %import "Vector.hpp"
 %import "Matrix.hpp"
+%import "MetReader.hpp"
 
 %include "AngleType.hpp"
 %include "AngleReduced.hpp"
