@@ -609,6 +609,7 @@ getISCTest()
       ndfp(std::make_shared<RinexTestFactory>());
    std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() +
       "arlm2000.15n";
+   const gnsstk::SatID sat(1, gnsstk::SatelliteSystem::GPS);
    const gnsstk::CommonTime when = gnsstk::CivilTime(2015,7,19,10,0,0,
                                                    gnsstk::TimeSystem::GPS);
    const gnsstk::ObsID oid(gnsstk::ObservationType::Phase, gnsstk::CarrierBand::L2,
@@ -622,47 +623,10 @@ getISCTest()
    TUCATCH(uut.addFactory(ndfp));
    RinexTestFactory *rndfp = dynamic_cast<RinexTestFactory*>(ndfp.get());
    TUASSERT(rndfp->addDataSource(fname));
-   TUASSERTE(bool, true, uut.getISC(oid, when, corr));
+   TUASSERTE(bool, true, uut.getISC(sat, oid, when, corr));
    TUASSERTFE(expCorr, corr);
-      // check all the combos that are supposed to have 0 corrections
-   std::list<gnsstk::ObsID> oid1s({
-         gnsstk::ObsID(gnsstk::ObservationType::Range, gnsstk::CarrierBand::L1,
-                      gnsstk::TrackingCode::CA),
-         gnsstk::ObsID(gnsstk::ObservationType::Range, gnsstk::CarrierBand::L1,
-                      gnsstk::TrackingCode::P),
-         gnsstk::ObsID(gnsstk::ObservationType::Range, gnsstk::CarrierBand::L1,
-                      gnsstk::TrackingCode::Y),
-         gnsstk::ObsID(gnsstk::ObservationType::Range, gnsstk::CarrierBand::L1,
-                      gnsstk::TrackingCode::Ztracking),
-         gnsstk::ObsID(gnsstk::ObservationType::Range, gnsstk::CarrierBand::L1,
-                      gnsstk::TrackingCode::YCodeless),
-         gnsstk::ObsID(gnsstk::ObservationType::Range, gnsstk::CarrierBand::L1,
-                      gnsstk::TrackingCode::Semicodeless)
-      });
-   std::list<gnsstk::ObsID> oid2s({
-         gnsstk::ObsID(gnsstk::ObservationType::Range, gnsstk::CarrierBand::L2,
-                      gnsstk::TrackingCode::P),
-         gnsstk::ObsID(gnsstk::ObservationType::Range, gnsstk::CarrierBand::L2,
-                      gnsstk::TrackingCode::Y),
-         gnsstk::ObsID(gnsstk::ObservationType::Range, gnsstk::CarrierBand::L2,
-                      gnsstk::TrackingCode::Ztracking),
-         gnsstk::ObsID(gnsstk::ObservationType::Range, gnsstk::CarrierBand::L2,
-                      gnsstk::TrackingCode::YCodeless),
-         gnsstk::ObsID(gnsstk::ObservationType::Range, gnsstk::CarrierBand::L2,
-                      gnsstk::TrackingCode::Semicodeless)
-      });
-   for (const auto& i1 : oid1s)
-   {
-      for (const auto& i2 : oid2s)
-      {
-         corr = 1.2345;
-         TUASSERTE(bool, true, uut.getISC(i1, i2, when, corr));
-         TUASSERTFE(0.0, corr);
-      }
-   }
       // check wonky obs ID
-   TUASSERTE(bool, false, uut.getISC(woid1, when, corr));
-   TUASSERTE(bool, false, uut.getISC(woid1, woid2, when, corr));
+   TUASSERTE(bool, false, uut.getISC(sat, woid1, when, corr));
    TURETURN();
 }
 

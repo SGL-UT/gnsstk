@@ -36,35 +36,68 @@
 //
 //==============================================================================
 
-#ifndef METREADER_HPP
-#define METREADER_HPP
-
-#include <string>
-
-#include "CommandOption.hpp"
-#include "WxObsMap.hpp"
+#include "TestUtil.hpp"
+#include "GroupPathCorrector.hpp"
+#include "NavLibrary.hpp"
+#include "MultiFormatNavDataFactory.hpp"
+#include "CivilTime.hpp"
 
 namespace gnsstk
 {
-class MetReader
+   std::ostream& operator<<(std::ostream& s, CorrectorType t)
+   {
+      s << StringUtils::asString(t);
+      return s;
+   }
+}
+
+
+/// Make GroupPathCorrector instantiatable for testing.
+class TestClass : public gnsstk::GroupPathCorrector
 {
 public:
-   MetReader()
-      : verboseLevel(0)
-   {};
-
-   MetReader(const std::string& fn)
-      : verboseLevel(0)
-   { read(fn); };
-
-   int verboseLevel;
-
-   void read(const std::string& fn);
-
-   std::vector<std::string> filesRead;
-
-   gnsstk::WxObsData wx;
-
+   TestClass()
+   {}
+   bool getCorr(const gnsstk::Position& rxPos, const gnsstk::Position& svPos,
+                 const gnsstk::SatID& sat, const gnsstk::ObsID& obs,
+                 const gnsstk::CommonTime& when, gnsstk::NavType nav,
+                 double& corrOut) override
+   { return false; }
+   bool getCorr(const gnsstk::Position& rxPos, const gnsstk::Xvt& svPos,
+                 const gnsstk::SatID& sat, const gnsstk::ObsID& obs,
+                 const gnsstk::CommonTime& when, gnsstk::NavType nav,
+                 double& corrOut) override
+   { return false; }
 };
+
+
+class GroupPathCorrector_T
+{
+public:
+   unsigned constructorTest();
+};
+
+
+unsigned GroupPathCorrector_T ::
+constructorTest()
+{
+   TUDEF("GroupPathCorrector", "GroupPathCorrector");
+   TestClass uut;
+   TUASSERTE(gnsstk::CorrectorType, gnsstk::CorrectorType::Unknown,
+             uut.corrType);
+   TURETURN();
 }
-#endif
+
+
+int main()
+{
+   unsigned errorTotal = 0;
+   GroupPathCorrector_T testClass;
+
+   errorTotal += testClass.constructorTest();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+             << std::endl;
+
+   return errorTotal;
+}

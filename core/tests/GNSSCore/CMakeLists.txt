@@ -221,5 +221,50 @@ add_test(NAME GNSSCore_HelmertTransformer COMMAND $<TARGET_FILE:HelmertTransform
 set_property(TEST GNSSCore_HelmertTransformer PROPERTY LABELS Geodetic)
 
 
+add_executable(GroupPathCorrector_T GroupPathCorrector_T.cpp)
+target_link_libraries(GroupPathCorrector_T gnsstk)
+add_test(NAME GNSSCore_GroupPathCorrector COMMAND $<TARGET_FILE:GroupPathCorrector_T>)
+set_property(TEST GNSSCore_GroupPathCorrector PROPERTY LABELS Solutions)
+
+add_executable(BCISCorrector_T BCISCorrector_T.cpp)
+target_link_libraries(BCISCorrector_T gnsstk)
+add_test(NAME GNSSCore_BCISCorrector COMMAND $<TARGET_FILE:BCISCorrector_T>)
+set_property(TEST GNSSCore_BCISCorrector PROPERTY LABELS Solutions)
+
+add_executable(BCIonoCorrector_T BCIonoCorrector_T.cpp)
+target_link_libraries(BCIonoCorrector_T gnsstk)
+add_test(NAME GNSSCore_BCIonoCorrector COMMAND $<TARGET_FILE:BCIonoCorrector_T>)
+set_property(TEST GNSSCore_BCIonoCorrector PROPERTY LABELS Solutions)
+
+add_executable(TropCorrector_T TropCorrector_T.cpp)
+target_link_libraries(TropCorrector_T gnsstk)
+add_test(NAME GNSSCore_TropCorrector COMMAND $<TARGET_FILE:TropCorrector_T>)
+set_property(TEST GNSSCore_TropCorrector PROPERTY LABELS Solutions)
+
+add_executable(CorrectorType_T CorrectorType_T.cpp)
+target_link_libraries(CorrectorType_T gnsstk)
+add_test(NAME GNSSCore_CorrectorType COMMAND $<TARGET_FILE:CorrectorType_T>)
+set_property(TEST GNSSCore_CorrectorType PROPERTY LABELS Solutions)
+
+add_executable(CorrDupHandling_T CorrDupHandling_T.cpp)
+target_link_libraries(CorrDupHandling_T gnsstk)
+add_test(NAME GNSSCore_CorrDupHandling COMMAND $<TARGET_FILE:CorrDupHandling_T>)
+set_property(TEST GNSSCore_CorrDupHandling PROPERTY LABELS Solutions)
+
+add_executable(GroupPathCorr_T GroupPathCorr_T.cpp)
+target_link_libraries(GroupPathCorr_T gnsstk)
+add_test(NAME GNSSCore_GroupPathCorr COMMAND $<TARGET_FILE:GroupPathCorr_T>)
+set_property(TEST GNSSCore_GroupPathCorr PROPERTY LABELS Solutions)
+
+add_executable(CorrectionResult_T CorrectionResult_T.cpp)
+target_link_libraries(CorrectionResult_T gnsstk)
+add_test(NAME GNSSCore_CorrectionResult COMMAND $<TARGET_FILE:CorrectionResult_T>)
+set_property(TEST GNSSCore_CorrectionResult PROPERTY LABELS Solutions)
+
+add_executable(CorrectionResults_T CorrectionResults_T.cpp)
+target_link_libraries(CorrectionResults_T gnsstk)
+add_test(NAME GNSSCore_CorrectionResults COMMAND $<TARGET_FILE:CorrectionResults_T>)
+set_property(TEST GNSSCore_CorrectionResults PROPERTY LABELS Solutions)
+
 ###############################################################################
 ###############################################################################

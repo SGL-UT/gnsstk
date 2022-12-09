@@ -50,7 +50,7 @@
 
 namespace gnsstk
 {
-   /** @addtogroup GPSsolutions */
+   /** @addtogroup GNSSsolutions */
    //@{
 
       /** Tropospheric model based on the Global mapping functions (GMF)
