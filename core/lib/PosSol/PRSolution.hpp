@@ -58,7 +58,8 @@
 
 namespace gnsstk
 {
-   /** @defgroup GPSsolutions GPS solution algorithms and Tropospheric models */
+   /** @defgroup GNSSsolutions GNSS solution algorithms
+    * Solution algorithms and Tropospheric models. */
    //@{
 
    /// Class WtdAveStats encapsulates statistics on the PR solution and residuals

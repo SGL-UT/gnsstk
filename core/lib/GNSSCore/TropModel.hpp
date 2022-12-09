@@ -75,7 +75,7 @@
 
 namespace gnsstk
 {
-      /** @addtogroup GPSsolutions */
+      /** @addtogroup GNSSsolutions */
       //@{
 
 

@@ -1236,6 +1236,13 @@ namespace gnsstk
       GLOFNavData *glof;
       GLOCNavData *gloc;
       NavHealthData *hea;
+         // This is a kludge to handle those cases where we don't have
+         // a valid satellite ID, e.g. RINEX iono corrections.
+      if (ndp->signal.xmitSat.id == 0)
+      {
+         DEBUGTRACE("assuming health matches for missing sat ID");
+         return true;
+      }
       switch (xmitHealth)
       {
          case SVHealth::Healthy:

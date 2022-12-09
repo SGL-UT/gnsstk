@@ -58,7 +58,7 @@
 namespace gnsstk
 {
 
-      /// @ingroup GPSsolutions
+      /// @ingroup GNSSsolutions
       //@{
 
 

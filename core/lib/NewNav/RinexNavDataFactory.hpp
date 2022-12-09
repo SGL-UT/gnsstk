@@ -57,10 +57,7 @@ namespace gnsstk
    class RinexNavDataFactory : public NavDataFactoryWithStoreFile
    {
    public:
-         /** Fill supportedSignals.
-          * @note Currently only GPS nav is supported so only that
-          *   will be added to supportedSignals.
-          */
+         /// Fill supportedSignals.
       RinexNavDataFactory();
 
          /// Clean up.

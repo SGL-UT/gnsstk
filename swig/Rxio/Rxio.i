@@ -82,7 +82,6 @@ from __future__ import absolute_import
 %feature("flatnested", "");
 %include "AshtechPBEN.hpp"
 %include "AshtechStream.hpp"
-%include "MetReader.hpp"
 
 // =============================================================
 //  Section 11: Explicit Python wrappers

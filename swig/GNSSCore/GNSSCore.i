@@ -59,6 +59,8 @@ ENUM_MAPPER(gnsstk::SatelliteSystem, SatelliteSystem, "gnsstk")
 ENUM_MAPPER(gnsstk::CarrierBand, CarrierBand, "gnsstk")
 ENUM_MAPPER(gnsstk::TrackingCode, TrackingCode, "gnsstk")
 ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
+ENUM_MAPPER(gnsstk::CorrectorType, CorrectorType, "gnsstk")
+ENUM_MAPPER(gnsstk::CorrDupHandling, CorrDupHandling, "gnsstk")
 
  // needs to be before RefFrameRlz.hpp at the very least.
 %import "CommonTime.hpp"
@@ -67,6 +69,8 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 %include "CarrierBand.hpp"
 %include "TrackingCode.hpp"
 %include "ObservationType.hpp"
+%include "CorrectorType.hpp"
+%include "CorrDupHandling.hpp"
 %include "AngleType.hpp"
 %include "XmitAnt.hpp"
 %include "RefFrameSys.hpp"
@@ -78,6 +82,8 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
    renameEnums('CarrierBand')
    renameEnums('TrackingCode')
    renameEnums('ObservationType')
+   renameEnums('CorrectorType')
+   renameEnums('CorrDupHandling')
    renameEnums('AngleType')
    renameEnums('XmitAnt')
    renameEnums('RefFrameSys')
@@ -97,6 +103,18 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 //  Section 7: C++11 shared_ptr handling
 // =============================================================
 
+%include "std_shared_ptr.i"
+%shared_ptr(gnsstk::GroupPathCorrector)
+%shared_ptr(gnsstk::BCIonoCorrector)
+%shared_ptr(gnsstk::BCISCorrector)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::ZeroTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::SimpleTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::SaasTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::NBTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::GGTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::GGHeightTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::NeillTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::GlobalTropModel>)
 %shared_ptr(gnsstk::Transformer)
 %shared_ptr(gnsstk::HelmertTransformer)
 
@@ -104,6 +122,8 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 //  Section 9: typemaps that must be declared before the %includes
 // =============================================================
 
+// correction is an output
+%apply double &OUTPUT { double &corrOut };
 %include "gnsstk_typemaps.i"
 
 // =============================================================
@@ -122,6 +142,7 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 %import "FFData.hpp"
 %import "RinexObsBase.hpp"
 %import "RinexObsHeader.hpp"
+%import "NavLibrary.hpp"
 %import "Vector.hpp"
 %import "Matrix.hpp"
 
@@ -198,6 +219,23 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 %include "SimpleTropModel.hpp"
 %include "TransformLibrary.hpp"
 %include "convhelp.hpp"
+%include "GroupPathCorrector.hpp"
+%template(GroupPathCorrectorList) std::list<std::shared_ptr<gnsstk::GroupPathCorrector> >;
+%include "BCIonoCorrector.hpp"
+%include "BCISCorrector.hpp"
+%include "TropCorrector.hpp"
+%template(ZeroTropCorrector) gnsstk::TropCorrector<gnsstk::ZeroTropModel>;
+%template(SimpleTropCorrector) gnsstk::TropCorrector<gnsstk::SimpleTropModel>;
+%template(SaasTropCorrector) gnsstk::TropCorrector<gnsstk::SaasTropModel>;
+%template(NBTropCorrector) gnsstk::TropCorrector<gnsstk::NBTropModel>;
+%template(GGTropCorrector) gnsstk::TropCorrector<gnsstk::GGTropModel>;
+%template(GGHeightTropCorrector) gnsstk::TropCorrector<gnsstk::GGHeightTropModel>;
+%template(NeillTropCorrector) gnsstk::TropCorrector<gnsstk::NeillTropModel>;
+%template(GlobalTropCorrector) gnsstk::TropCorrector<gnsstk::GlobalTropModel>;
+%include "CorrectionResult.hpp"
+%template(CorrectionResultList) std::list<gnsstk::CorrectionResult>;
+%include "CorrectionResults.hpp"
+%include "GroupPathCorr.hpp"
 
 // =============================================================
 //  Section 11: Explicit Python wrappers

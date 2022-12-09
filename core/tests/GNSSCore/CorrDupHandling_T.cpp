@@ -22,6 +22,7 @@
 //
 //==============================================================================
 
+
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -35,42 +36,55 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <map>
-
-#include "MetReader.hpp"
-#include "RinexMetStream.hpp"
-#include "RinexMetData.hpp"
-
-using namespace std;
+#include "CorrDupHandling.hpp"
+#include "TestUtil.hpp"
 
 namespace gnsstk
 {
-
-// ---------------------------------------------------------------------
-// ---------------------------------------------------------------------
-void MetReader::read(const std::string& fn)
-{
-   RinexMetStream rms;
-   try { rms.open(fn.c_str(), ios::in); }
-   catch (...) {
-      cerr << "Error reading weather data from file " << fn << endl;
-      exit(-1);
-   }
-
-   RinexMetData rmd;
-   while (rms >> rmd)
+   std::ostream& operator<<(std::ostream& s, gnsstk::CorrDupHandling e)
    {
-      WxObservation wob(
-         rmd.time,
-         rmd.data[RinexMetHeader::TD],
-         rmd.data[RinexMetHeader::PR],
-         rmd.data[RinexMetHeader::HR]);
-      wx.insertObservation(wob);
+      s << StringUtils::asString(e);
+      return s;
    }
-} // end of read()
+}
 
+
+class CorrDupHandling_T
+{
+public:
+   unsigned convertTest();
+};
+
+
+unsigned CorrDupHandling_T ::
+convertTest()
+{
+   TUDEF("CorrDupHandling", "asString");
+      // This effectively tests CorrDupHandlingIterator, asString and
+      // asCorrDupHandling all at once.
+   for (gnsstk::CorrDupHandling e : gnsstk::CorrDupHandlingIterator())
+   {
+      TUCSM("asString");
+      std::string s(gnsstk::StringUtils::asString(e));
+      TUASSERT(!s.empty());
+      TUASSERT(s != "???");
+      TUCSM("asCorrDupHandling");
+      gnsstk::CorrDupHandling e2 = gnsstk::StringUtils::asCorrDupHandling(s);
+      TUASSERTE(gnsstk::CorrDupHandling, e, e2);
+   }
+   TURETURN();
+}
+
+
+int main()
+{
+   CorrDupHandling_T testClass;
+   unsigned errorTotal = 0;
+
+   errorTotal += testClass.convertTest();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+             << std::endl;
+
+   return errorTotal;
 }

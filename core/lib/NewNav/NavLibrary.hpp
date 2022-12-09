@@ -574,9 +574,10 @@ namespace gnsstk
        *     whether the orbit data came from LNAV or CNAV or CNAV2.
        *
        * \li Get ionospheric correction data...
-       *   * Sadly, this is not available in an abstract fashion at this
-       *     time, and if this data is needed, one will have to
-       *     process the system-specific data.
+       *   * Use the NavLibrary::getIonoCorr() method, or use
+       *     NavLibrary::find() while specifying NavMessageType::Iono,
+       *     then calling the IonoNavData::getIonoCorr() method on the
+       *     resulting match.
        *
        * \li Get satellite XVT/health/time offset (aka clock
        *     correction) from arbitrary input...
@@ -693,19 +694,6 @@ namespace gnsstk
        *     NavDataFactory::find() method to get your orbital data
        *     (ephemeris or almanac), then simply use the getXvt()
        *     method with different times.
-       *
-       * @todo GLONASS probably has health information in its
-       * non-Keplerian ephemeris data, but SP3 does not.  The GLONASS
-       * data have not been implemented yet in this library but at
-       * some point a decision will need to be made.  It might make
-       * sense to move the health field up to the OrbitData class and
-       * simply set it to "Unknown" for SP3.
-       *
-       * @todo Determine if OrbitDataKepler::beginFit and
-       * OrbitDataKepler::endFit need to be moved up to OrbitData.
-       * This mostly (if not exclusively) affects GLONASS orbits and
-       * OrbitDataSP3.  If so, NavDataLibraryWithStore needs to
-       * reflect this change.
        *
        * @todo Determine if a URA in meters should be added to
        * OrbitDataKepler or OrbitData.
@@ -1154,54 +1142,38 @@ namespace gnsstk
                        NavType nt = NavType::Any, int freqOffs = 0,
                        bool freqOffsWild = true);
 
-         /** Get inter-signal corrections for the single-frequency user.
+         /** Get inter-signal corrections.
+          * @param[in] sat The satellite whose inter-signal
+          *   corrections are to be obtained.
           * @param[in] oid The carrier band and tracking code of the
           *   signal to get the correction for.
           * @param[in] when The time of the observation being
           *   corrected.  This time is also used to look up ISC data.
           * @param[out] corrOut The correction in seconds for the
           *   given band/code.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time.
           * @return true If band/code are valid for this object and
           *   corrOut was set according to available data. */
-      bool getISC(const ObsID& oid, const CommonTime& when, double& corrOut);
-
-         /** Get inter-signal corrections for the dual-frequency user.
-          * @param[in] oid1 The carrier band/tracking code of the
-          *   primary signal that was used to create a dual-frequency,
-          *   iono-free combined pseudorange.
-          * @param[in] oid2 The carrier band/tracking code of the
-          *   secondary signal to get the correction for.
-          * @param[in] when The time of the observation being
-          *   corrected.  This time is also used to look up ISC data.
-          * @param[out] corrOut The correction in seconds for the given
-          *   band/code pair.
-          * @return true If bands/codes are valid for this object and
-          *   corrOut was set according to available data. */
-      bool getISC(const ObsID& oid1, const ObsID& oid2, const CommonTime& when,
-                  double& corrOut);
+      bool getISC(const SatID& sat, const ObsID& oid, const CommonTime& when,
+                  double& corrOut, SVHealth xmitHealth = SVHealth::Any,
+                  NavValidityType valid = NavValidityType::ValidOnly,
+                  NavSearchOrder order = NavSearchOrder::User);
 
          /** Get an appropriate NavMessageID to use to perform a
-          * search for ISC data for a given ObsID in a
-          * single-frequency user case.
+          * search for ISC data for a given SatID and ObsID.
+          * @param[in] sat The satellite whose inter-signal
+          *   corrections are to be obtained.
           * @param[in] oid The ObsID for which ISCs are desired.
           * @return A list of appropriate NavMessageID objects to use
           *   for searching.  This list will be empty if oid is not a
           *   signal for which ISC data sources are known. */
-      static std::list<NavMessageID> getISCNMID(const ObsID& oid);
-
-         /** Get an appropriate NavMessageID to use to perform a
-          * search for ISC data for a given pair of ObsID in a
-          * dual-frequency user case.
-          * @param[in] oid1 The carrier band/tracking code of the
-          *   primary signal that was used to create a dual-frequency,
-          *   iono-free combined pseudorange.
-          * @param[in] oid2 The carrier band/tracking code of the
-          *   secondary signal to get the correction for.
-          * @return A list of appropriate NavMessageID objects to use
-          *   for searching.  This list will be empty if oid is not a
-          *   signal for which ISC data sources are known. */
-      static std::list<NavMessageID> getISCNMID(const ObsID& oid1,
-                                                const ObsID& oid2);
+      static std::list<NavMessageID> getISCNMID(const SatID& sat,
+                                                const ObsID& oid);
 
          /** Search factories to find the navigation message that meets
           * the specified criteria.

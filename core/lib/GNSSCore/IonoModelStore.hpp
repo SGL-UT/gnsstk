@@ -52,7 +52,7 @@
 
 namespace gnsstk
 {
-      /// @ingroup GPSsolutions
+      /// @ingroup GNSSsolutions
       //@{
 
       /** This class defines an interface to hide how we determine
