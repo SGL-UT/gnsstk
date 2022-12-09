@@ -353,11 +353,6 @@ build_debian_11_virtualenv:
       - build/
     expire_in: 4 days
 
-build_conda_py2.7:
-  variables:
-    PYTHON_VERSION: "2.7"
-  extends: .build_conda
-
 build_conda_py3.6:
   variables:
     PYTHON_VERSION: "3.6"
@@ -619,13 +614,6 @@ test_debian_11_virtualenv:
     - build/swig/
     expire_in: 4 days
 
-
-test_conda_py2.7:
-  variables:
-    PYTHON_VERSION: "2.7"
-  extends: .test_conda
-  needs: [build_conda_py2.7]
-  dependencies: [build_conda_py2.7]
 
 test_conda_py3.6:
   variables:
