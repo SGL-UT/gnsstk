@@ -270,7 +270,8 @@ class TestCorrectorType(AbstractBaseTesters.EnumTester):
         gnsstk.CorrectorType.Trop: "Trop",
         gnsstk.CorrectorType.Iono: "Iono",
         gnsstk.CorrectorType.ISC: "ISC",
-        gnsstk.CorrectorType.Multipath: "Multipath"
+        gnsstk.CorrectorType.Multipath: "Multipath",
+        gnsstk.CorrectorType.RxChlBias: "RxChlBias"
     }
 
     STR_CONVERTER = gnsstk.asCorrectorType
