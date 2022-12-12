@@ -51,6 +51,7 @@ namespace gnsstk
             case CorrectorType::Iono:       return "Iono";
             case CorrectorType::ISC:        return "ISC";
             case CorrectorType::Multipath:  return "Multipath";
+            case CorrectorType::RxChlBias:  return "RxChlBias";
             default:                        return "???";
          } // switch (e)
       } // asString(CorrectorType)
@@ -68,6 +69,8 @@ namespace gnsstk
             return CorrectorType::ISC;
          if (s == "Multipath")
             return CorrectorType::Multipath;
+         if (s == "RxChlBias")
+            return CorrectorType::RxChlBias;
          return CorrectorType::Unknown;
       } // asCorrectorType(string)
    } // namespace StringUtils

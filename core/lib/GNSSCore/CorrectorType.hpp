@@ -56,6 +56,7 @@ namespace gnsstk
       Iono,       ///< Ionospheric corrector.
       ISC,        ///< Inter-signal bias corrector.
       Multipath,  ///< Multipath corrector.
+      RxChlBias,  ///< Receiver inter-channel bias corrector.
       Last        ///< Used to create an iterator.
    };
 
