@@ -91,6 +91,8 @@ variables:
       - /^version_.*_prep$/
       - stable
       - /^release\/v[0-9.]*$/
+      - /^bugfix\/ci_.*$/
+      - /^feature\/ci_.*$/
     variables:
       - $RELEASE_ONLY != "True" && $NO_BIGBUILD_CI != "True"
 
@@ -233,6 +235,23 @@ build_debian_11:
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  script:
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+    - make all -j 4
+  artifacts:
+    paths:
+      - build/
+
+build_ubuntu_20.04:
+  stage: build
+  needs: []
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - mkdir -p build
     - cd build
@@ -550,6 +569,25 @@ test_debian_11:
   dependencies:
     - build_debian_11
 
+test_ubuntu_20.04:
+  stage: test
+  needs: [build_ubuntu_20.04]
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  script:
+    - cd build
+    - ctest -j 4
+    - touch $CI_PROJECT_DIR/success
+  artifacts:
+    when: on_failure
+    paths:
+    - build/Testing/Temporary/
+    - build/swig/
+  dependencies:
+    - build_ubuntu_20.04
+
 test_debian_10_virtualenv:
   stage: test
   needs: [build_debian_10_virtualenv]
@@ -773,6 +811,24 @@ user_install_debian_11:
   dependencies:
     - build_debian_11
 
+user_install_ubuntu_20.04:
+  stage: install
+  needs: [build_ubuntu_20.04]
+  extends: .big_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  script:
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_USER_INSTALL=ON ../
+    - make install -j 4
+  artifacts:
+    paths:
+      - build/install
+  dependencies:
+    - build_ubuntu_20.04
+
 virtualenv_install_debian_10:
   stage: install
   needs: [build_debian_10_virtualenv]
@@ -994,6 +1050,43 @@ package_debian_11:
   dependencies:
     - build_debian_11
 
+package_ubuntu_20.04:
+  stage: package
+  needs: []
+  variables:
+    BUILD_TYPE: fast
+  rules:
+    # Add this rule to prevent an "additional" single element pipeline for merge requests.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_REF_NAME =~ /main/ || $CI_COMMIT_REF_NAME =~/^ci_.*$/ || $CI_COMMIT_REF_NAME=~/^version_.*_prep$/
+      variables:
+        BUILD_TYPE: debug
+    - when: on_success
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  script:
+    - rm -rf ../*.deb .gitmodules
+    # Mark the debian log so that this package is a backport.
+    # Use the most recent Maintainer as current maintainer.
+    - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
+    - dch --bpo "No Changes" && dch  -l "ubuntu" -D focal 'No Changes' -u low
+    - if [ "$BUILD_TYPE" == "debug" ]; then BUILD_PROFILES="pkg_python,debug_package"; else BUILD_PROFILES="pkg_python"; fi
+    - dpkg-buildpackage --build-profiles=${BUILD_PROFILES} -us -uc -d --changes-option="-DDistribution=focal-sgl"
+    - mkdir debs
+    - mv ../*.deb debs
+    - mv ../*.changes debs
+    - mv ../*.dsc debs
+    - mv ../*.git ../*.gitshallow debs
+    - mv ../*.buildinfo debs
+  artifacts:
+    paths:
+      - debs/
+  timeout:  90m
+  dependencies:
+    - build_ubuntu_20.04
+
 package_conda:
   stage: package
   needs: []
@@ -1147,6 +1240,22 @@ deploy_debian_11:
   dependencies:
     - package_debian_11
 
+deploy_ubuntu_20.04:
+  stage: deploy
+  needs: [package_ubuntu_20.04]
+  extends: .big_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  script:
+    - cd debs
+    - apt-get -y install ./*.deb
+    - python3 -c "import gnsstk"
+    - df_diff -h
+    - gnsstk-config --includedir
+  dependencies:
+    - package_ubuntu_20.04
+
 deploy_redhat_8:
   stage: deploy
   needs: [package_redhat_8]
@@ -1182,8 +1291,9 @@ deploy_redhat_py36:
 push_artifacts:
   extends: .push_selected_artifacts
   variables:
-    DEB_10_PACKAGES: "debs/*bpo10*.deb"
+    DEB_10_PACKAGES: "debs/*bpo10+1_amd64.deb"
     DEB_11_PACKAGES: "debs/*bpo11*.deb"
+    UBU_20_PACKAGES: "debs/*bpo10+1ubuntu*.deb"
   stage: push
-  needs: [package_conda, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
-  dependencies: [package_conda, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
+  needs: [package_conda, package_debian_10, package_debian_11, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
+  dependencies: [package_conda, package_debian_10, package_debian_11, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
