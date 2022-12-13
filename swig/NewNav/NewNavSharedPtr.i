@@ -108,5 +108,3 @@
 %shared_ptr(gnsstk::PNBGLOFNavDataFactory)
  // silence warnings from swig
 %shared_ptr(gnsstk::TimeSystemCorrection)
-
-%shared_ptr(gnsstk::NavLibrary)

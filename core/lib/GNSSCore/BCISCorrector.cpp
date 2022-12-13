@@ -42,7 +42,8 @@
 namespace gnsstk
 {
    BCISCorrector ::
-   BCISCorrector()
+   BCISCorrector(NavLibrary& nl)
+         : navLib(nl)
    {
       corrType = CorrectorType::ISC;
    }
@@ -54,12 +55,9 @@ namespace gnsstk
            const CommonTime& when, NavType nav,
            double& corrOut)
    {
-      if (navLib)
+      if (navLib.getISC(sat, obs, when, corrOut))
       {
-         if (navLib->getISC(sat, obs, when, corrOut))
-         {
-            return true;
-         }
+         return true;
       }
       corrOut = std::numeric_limits<double>::quiet_NaN();
       return false;

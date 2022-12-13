@@ -42,7 +42,8 @@
 namespace gnsstk
 {
    BCIonoCorrector ::
-   BCIonoCorrector()
+   BCIonoCorrector(NavLibrary& nl)
+         : navLib(nl)
    {
       corrType = CorrectorType::Iono;
    }
@@ -54,13 +55,10 @@ namespace gnsstk
            const CommonTime& when, NavType nav,
            double& corrOut)
    {
-      if (navLib)
+      if (navLib.getIonoCorr(sat.system, when, rxPos, svPos, obs.band,
+                             corrOut, nav))
       {
-         if (navLib->getIonoCorr(sat.system, when, rxPos, svPos, obs.band,
-                                 corrOut, nav))
-         {
-            return true;
-         }
+         return true;
       }
       corrOut = std::numeric_limits<double>::quiet_NaN();
       return false;
@@ -73,14 +71,11 @@ namespace gnsstk
            const CommonTime& when, NavType nav,
            double& corrOut)
    {
-      if (navLib)
+      Position svp(svPos.x);
+      if (navLib.getIonoCorr(sat.system, when, rxPos, svp, obs.band,
+                             corrOut, nav))
       {
-         Position svp(svPos.x);
-         if (navLib->getIonoCorr(sat.system, when, rxPos, svp, obs.band,
-                                 corrOut, nav))
-         {
-            return true;
-         }
+         return true;
       }
       corrOut = std::numeric_limits<double>::quiet_NaN();
       return false;

@@ -45,15 +45,13 @@
 namespace gnsstk
 {
    bool GroupPathCorr ::
-   init(std::shared_ptr<NavLibrary>& navLib)
+   init(NavLibrary& navLib)
    {
       GroupPathCorrectorPtr ec1, ec2;
-      ec1 = std::make_shared<BCISCorrector>();
-      ec2 = std::make_shared<BCIonoCorrector>();
+      ec1 = std::make_shared<BCISCorrector>(navLib);
+      ec2 = std::make_shared<BCIonoCorrector>(navLib);
       BCISCorrector *isc = dynamic_cast<BCISCorrector*>(ec1.get());
       BCIonoCorrector *iono = dynamic_cast<BCIonoCorrector*>(ec2.get());
-      isc->navLib = navLib;
-      iono->navLib = navLib;
       calcs.push_back(ec1);
       calcs.push_back(ec2);
          // No error conditions.  Yet.  Still returning true/false so
@@ -64,7 +62,7 @@ namespace gnsstk
 
 
    bool GroupPathCorr ::
-   initGlobal(std::shared_ptr<NavLibrary>& navLib,
+   initGlobal(NavLibrary& navLib,
               const std::string& rinMetFile)
    {
       if (!init(navLib))
@@ -88,7 +86,7 @@ namespace gnsstk
 
 
    bool GroupPathCorr ::
-   initNB(std::shared_ptr<NavLibrary>& navLib,
+   initNB(NavLibrary& navLib,
           const std::string& rinMetFile)
    {
       if (!init(navLib))
