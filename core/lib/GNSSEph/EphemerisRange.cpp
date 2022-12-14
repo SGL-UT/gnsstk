@@ -42,12 +42,15 @@
  * given receiver position and time.
  */
 
+#include <utility>
+
+#include "EllipsoidModel.hpp"
 #include "EphemerisRange.hpp"
 #include "MiscMath.hpp"
-#include "GPSEllipsoid.hpp"
 #include "GNSSconstants.hpp"
 #include "GPSLNavEph.hpp"
 #include "TimeString.hpp"
+#include "RawRange.hpp"
 
 using namespace std;
 using namespace gnsstk;
@@ -66,46 +69,30 @@ namespace gnsstk
       NavLibrary& navLib,
       NavSearchOrder order,
       SVHealth xmitHealth,
-      NavValidityType valid)
+      NavValidityType valid,
+      const EllipsoidModel& ellipsoid)
    {
       try {
          int nit;
          double tof,tof_old;
-         GPSEllipsoid ellipsoid;
+         bool success;
+         std::tie(success, rawrange, svPosVel) =
+            RawRange::fromReceive(Rx, trNom, navLib,
+                                  NavSatelliteID(sat), ellipsoid);
 
-         nit = 0;
-         tof = 0.07;       // initial guess 70ms
-         do {
-               // best estimate of transmit time
-            transmit = trNom;
-            transmit -= tof;
-            tof_old = tof;
-
-               // get SV position
-            if(!getXvt(navLib, NavSatelliteID(sat), transmit, order,
-                        xmitHealth, valid))
-            {
-               InvalidRequest ir("getXvt failed");
-               GNSSTK_THROW(ir);
-            }
-
-            rotateEarth(Rx);
-            // update raw range and time of flight
-            rawrange = RSS(svPosVel.x[0]-Rx.X(),
-                           svPosVel.x[1]-Rx.Y(),
-                           svPosVel.x[2]-Rx.Z());
-            tof = rawrange/ellipsoid.c();
-
-         } while(ABS(tof-tof_old)>1.e-13 && ++nit<5);
+         if(!success)
+         {
+            InvalidRequest ir("getXvt failed");
+            GNSSTK_THROW(ir);
+         }
 
          updateCER(Rx);
-
          return (rawrange-svclkbias-relativity);
       }
       catch(gnsstk::Exception& e) {
          GNSSTK_RETHROW(e);
       }
-   }  // end CorrectedEphemerisRange::ComputeAtReceiveTime
+   }
 
 
       // Compute the corrected range at TRANSMIT time, from receiver at position Rx,
@@ -120,45 +107,27 @@ namespace gnsstk
       NavLibrary& navLib,
       NavSearchOrder order,
       SVHealth xmitHealth,
-      NavValidityType valid)
+      NavValidityType valid,
+      const EllipsoidModel& ellipsoid)
    {
       try {
-         CommonTime tt;
-
-         // 0-th order estimate of transmit time = receiver - pseudorange/c
-         transmit = trNom;
-         transmit -= pr/C_MPS;
-         tt = transmit;
-
-         // correct for SV clock
-         for(int i=0; i<2; i++) {
-               // get SV position
-            if(! getXvt(navLib, NavSatelliteID(sat), tt,
-                                    order, xmitHealth, valid))
-            {
-               InvalidRequest ir("getXvt failed");
-               GNSSTK_THROW(ir);
-            }
-
-            tt = transmit;
-               // remove clock bias and relativity correction
-            tt -= (svPosVel.clkbias + svPosVel.relcorr);
+         bool success;
+         std::tie(success, rawrange, svPosVel) =
+            RawRange::fromNominalReceiveWithObs(Rx, trNom, pr, navLib,
+                                                NavSatelliteID(sat), ellipsoid);
+         if(!success)
+         {
+            InvalidRequest ir("getXvt failed");
+            GNSSTK_THROW(ir);
          }
 
-         rotateEarth(Rx);
-         // raw range
-         rawrange = RSS(svPosVel.x[0]-Rx.X(),
-                        svPosVel.x[1]-Rx.Y(),
-                        svPosVel.x[2]-Rx.Z());
-
          updateCER(Rx);
-
          return (rawrange-svclkbias-relativity);
       }
       catch(gnsstk::Exception& e) {
          GNSSTK_RETHROW(e);
       }
-   }  // end CorrectedEphemerisRange::ComputeAtTransmitTime
+   }
 
 
    double CorrectedEphemerisRange::ComputeAtTransmitTime(
@@ -168,20 +137,24 @@ namespace gnsstk
       NavLibrary& navLib,
       NavSearchOrder order,
       SVHealth xmitHealth,
-      NavValidityType valid)
+      NavValidityType valid,
+      const EllipsoidModel& ellipsoid)
    {
       try {
-         if(!getXvt(navLib, NavSatelliteID(sat), trNom,
-                              order, xmitHealth, valid))
+         bool success;
+         std::tie(success, rawrange, svPosVel) =
+            RawRange::fromNominalReceive(Rx, trNom, navLib,
+                                         NavSatelliteID(sat), ellipsoid);
+
+         if(!success)
          {
             InvalidRequest ir("getXvt failed");
             GNSSTK_THROW(ir);
          }
 
-         gnsstk::GPSEllipsoid gm;
-         double pr = svPosVel.preciseRho(Rx, gm);
+         updateCER(Rx);
 
-         return ComputeAtTransmitTime(trNom, pr, Rx, sat, navLib);
+         return (rawrange - svclkbias - relativity);
       }
       catch(gnsstk::Exception& e) {
          GNSSTK_RETHROW(e);
@@ -197,38 +170,24 @@ namespace gnsstk
       NavLibrary& navLib,
       NavSearchOrder order,
       SVHealth xmitHealth,
-      NavValidityType valid)
+      NavValidityType valid,
+      const EllipsoidModel& ellipsoid)
    {
       try
       {
-         Position trx(rx);
-         trx.asECEF();
+         bool success;
+         std::tie(success, rawrange, svPosVel)
+            = RawRange::fromSvTransmitWithObs(rx, pr, navLib,
+                                              NavSatelliteID(sat), ttNom,
+                                              ellipsoid, true);
 
-         if(!getXvt(navLib, NavSatelliteID(sat), ttNom,
-                                 order, xmitHealth, valid))
+         if(!success)
          {
             InvalidRequest ir("getXvt failed");
             GNSSTK_THROW(ir);
          }
 
-         // compute rotation angle in the time of signal transit
-
-         // While this is quite similiar to rotateEarth, its not the same
-         // and jcl doesn't know which is really correct
-         // BWT this uses the measured pseudorange, corrected for SV clock and
-         // relativity, to compute the time of flight; rotateEarth uses the value
-         // computed from the receiver position and the ephemeris. They should be
-         // very nearly the same, and multiplying by angVel/c should make the angle
-         // of rotation very nearly identical.
-         GPSEllipsoid ell;
-         double range(pr/ell.c() - svPosVel.clkbias - svPosVel.relcorr);
-         double rotation_angle = -ell.angVelocity() * range;
-         svPosVel.x[0] = svPosVel.x[0] - svPosVel.x[1] * rotation_angle;
-         svPosVel.x[1] = svPosVel.x[1] + svPosVel.x[0] * rotation_angle;
-         svPosVel.x[2] = svPosVel.x[2];
-
-         rawrange = trx.slantRange(svPosVel.x);
-         updateCER(trx);
+         updateCER(rx);
 
          return rawrange - svclkbias - relativity;
       }
@@ -255,58 +214,6 @@ namespace gnsstk
       elevationGeodetic = Rx.elevationGeodetic(SV);
       azimuthGeodetic = Rx.azimuthGeodetic(SV);
    }
-
-
-   void CorrectedEphemerisRange::rotateEarth(const Position& Rx)
-   {
-      GPSEllipsoid ellipsoid;
-      double tof = RSS(svPosVel.x[0]-Rx.X(),
-                       svPosVel.x[1]-Rx.Y(),
-                       svPosVel.x[2]-Rx.Z())/ellipsoid.c();
-      double wt = ellipsoid.angVelocity()*tof;
-      double sx =  ::cos(wt)*svPosVel.x[0] + ::sin(wt)*svPosVel.x[1];
-      double sy = -::sin(wt)*svPosVel.x[0] + ::cos(wt)*svPosVel.x[1];
-      svPosVel.x[0] = sx;
-      svPosVel.x[1] = sy;
-      sx =  ::cos(wt)*svPosVel.v[0] + ::sin(wt)*svPosVel.v[1];
-      sy = -::sin(wt)*svPosVel.v[0] + ::cos(wt)*svPosVel.v[1];
-      svPosVel.v[0] = sx;
-      svPosVel.v[1] = sy;
-   }
-
-
-   bool CorrectedEphemerisRange ::
-   getXvt(NavLibrary& navLib, const NavSatelliteID& sat, const CommonTime& when,
-          NavSearchOrder order,
-          SVHealth xmitHealth,
-          NavValidityType valid)
-   {
-      NavMessageID nmid(sat, NavMessageType::Ephemeris);
-      NavDataPtr ndp;
-      std::shared_ptr<OrbitData> od;
-      std::shared_ptr<GPSLNavEph> ephLNav;
-      if (!navLib.find(nmid, when, ndp, xmitHealth, valid, order))
-      {
-         return false;
-      }
-      if (od = std::dynamic_pointer_cast<OrbitData>(ndp))
-      {
-         if (!od->getXvt(when, svPosVel))
-            return false;
-      }
-      else
-      {
-            // Not orbit data? How?
-         return false;
-      }
-      if (ephLNav = std::dynamic_pointer_cast<GPSLNavEph>(ndp))
-      {
-         iodc = ephLNav->iodc;
-         health = ephLNav->healthBits;
-      }
-      return true;
-   }
-
 
    double RelativityCorrection(const Xvt& svPosVel)
    {

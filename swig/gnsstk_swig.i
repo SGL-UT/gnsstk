@@ -240,6 +240,7 @@
 %import(module="gnsstk") "NavLibrary.hpp"
 %template(NavMessageTypeSet) std::set<gnsstk::NavMessageType>;
 %import(module="gnsstk") "ValidType.hpp"
+%import(module="gnsstk") "RawRange.hpp"
 %import(module="gnsstk") "EphemerisRange.hpp"
 %feature("flatnested");
 %import(module="gnsstk") "IonoModel.hpp"

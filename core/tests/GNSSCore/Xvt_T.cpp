@@ -135,23 +135,29 @@ public:
       TURETURN();
    }
 
-#if 0
       /* Ensures the preciseRho method is accurate */
    unsigned preciseRhoTest()
    {
-      TUDEF("Xvt","preciseRho Method Unverified");
+      TUDEF("Xvt","preciseRho");
       std::string failMesg;
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-//      Unable to verify if operations done in Xvt.hpp are correct
-//      Creating placeholder for testing, and setting it to fail as a signifier
-      failMesg = "UNVERIFIED preciseRhoTest. Set to FAIL until verified";
-      testFramework.assert(false, failMesg, __LINE__);
+      Triple rxPos(-7.0e5, -5.0e6, 3.0e6);
+      Xvt xvt;
+      xvt.x = Triple(-9e5, -2e7, 9e6);
+      xvt.v = Triple(6e2, 1e3, 2e4);
+      xvt.clkbias = -0.3;
+      xvt.clkdrift = 0;
+      xvt.relcorr = -3.5e-6;
 
-      return testFramework.countFails();
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+      double rho;
+      GPSEllipsoid ellipsoid;
+      rho = xvt.preciseRho(rxPos, ellipsoid);
+      TUASSERTFESMRT(106095516.70592290163, rho);
+      rho = xvt.preciseRho(rxPos, ellipsoid, 10);
+      TUASSERTFESMRT(106095506.70592290163, rho);
+
+      TURETURN();
    }
-#endif
 
       /* Tests to see if the stream output operator << is functioning properly*/
    unsigned operatorTest()
@@ -232,7 +238,7 @@ int main() //Main function to initialize and run all tests above
    Xvt_T testClass;
 
    errorTotal += testClass.getTest();
-      //errorTotal += testClass.preciseRhoTest();
+   errorTotal += testClass.preciseRhoTest();
    errorTotal += testClass.computeRelativityCorrectionTest();
    errorTotal += testClass.operatorTest();
    errorTotal += testClass.healthStatusStreamTest();

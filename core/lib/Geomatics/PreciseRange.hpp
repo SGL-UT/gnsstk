@@ -46,6 +46,8 @@
 
 //------------------------------------------------------------------------------------
 // GNSSTk
+#include "EllipsoidModel.hpp"
+#include "GPSEllipsoid.hpp"
 #include "CommonTime.hpp"
 #include "Matrix.hpp"
 #include "Position.hpp"
@@ -81,30 +83,32 @@ namespace gnsstk
           as well as all the CER quantities.
           @param nomRecTime  nominal receive time
           @param pr          measured pseudorange at this time
-          @param Rx          receiver position
+          @param rxPos          receiver position
           @param sat         satellite
           @param antenna     satellite antenna data;
           @param freq1,freq2 ANTEX frequencies to evaluate PCO/Vs eg 'G01'
                  if freq2 is zero e.g. 'G00', compute single freq (freq1) PCO/Vs
-          @param SolSys      SolarSystem object, to get SatelliteAttitude()
+          @param solSys      SolarSystem object, to get SatelliteAttitude()
                  if any of above 4 not valid, PCO/V correction is NOT done (silently)
-          @param Eph        Ephemeris store
+          @param eph        Ephemeris store
           @param isCOM          if true, Eph is Center-of-mass,
                                         else antenna-phase-center, default
                                         false.
+          @param ellipsoid Ellipsoid model to provide an ECEF rotation rate.
           @return corrected raw range
           @throw Exception if ephemeris is not found
          */
       double ComputeAtTransmitTime(const CommonTime& nomRecTime,
                                    const double pr,
-                                   const Position& Rx,
+                                   const Position& rxPos,
                                    const SatID sat,
                                    const AntexData& antenna,
                                    const std::string& freq1,
                                    const std::string& freq2,
-                                   SolarSystem& SolSys,
-                                   NavLibrary& Eph,
-                                   bool isCOM = false);
+                                   SolarSystem& solSys,
+                                   NavLibrary& eph,
+                                   bool isCOM = false,
+                                   const EllipsoidModel& ellipsoid = GPSEllipsoid());
 
          /**
           Version with no antenna, and therefore no Attitude and no SolarSystem;
@@ -113,17 +117,18 @@ namespace gnsstk
          */
       double ComputeAtTransmitTime(const CommonTime& nomRecTime,
                                    const double pr,
-                                   const Position& Rx,
+                                   const Position& rxPos,
                                    const SatID sat,
-                                   NavLibrary& Eph)
+                                   NavLibrary& eph,
+                                   const EllipsoidModel& ellipsoid = GPSEllipsoid())
       {
          // ant will be invalid, so antenna computations will be skipped;
          // thus satellite attitude will not be needed.
          AntexData ant;
          SolarSystem ss;
          std::string s;
-         return ComputeAtTransmitTime(nomRecTime, pr, Rx, sat, ant, s, s, ss,
-                                      Eph);
+         return ComputeAtTransmitTime(nomRecTime, pr, rxPos, sat, ant, s, s, ss,
+                                      eph, false, ellipsoid);
       }
 
          /**

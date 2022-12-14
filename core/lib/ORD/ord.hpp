@@ -94,6 +94,8 @@ gnsstk::Xvt getSvXvt(const gnsstk::SatID& sat_id, const gnsstk::CommonTime& time
         NavLibrary& ephemeris);
 
 /// Calculate the raw range at RECEIVE time per RECEIVER clock.
+/// @deprecated This function is deprecated as of the December 2022 release
+///   Use RawRange::fromReceive() instead
 /// @see CorrectedEphemerisRange::ComputeAtReceiveTime()
 /// @param rx_loc The location of the receiver.
 /// @param sat_id Identifier for the satellite
@@ -106,6 +108,8 @@ double RawRange1(const gnsstk::Position& rx_loc, const gnsstk::SatID& sat_id,
         NavLibrary& ephemeris, gnsstk::Xvt& sv_xvt);
 
 /// Calculate the raw range at TRANSMIT time per the RECEIVER clock.
+/// @deprecated This function is deprecated as of the December 2022 release
+///   Use RawRange::fromNominalReceiveWithObs() instead
 /// @see CorrectedEphemerisRange::ComputeAtTransmitTime(const CommonTime&, const double&, const Position&, const SatID, NavLibrary&, NavSearchOrder, SVHealth, NavValidityType)
 /// @param pseudorange Pseudorange in meters to seed the calculation.
 /// @param rx_loc The location of the receiver.
@@ -119,6 +123,8 @@ double RawRange2(double pseudorange, const gnsstk::Position& rx_loc,
         NavLibrary& ephemeris, gnsstk::Xvt& sv_xvt);
 
 /// Calculate the raw range at TRANSMIT time per the SATELLITE clock
+/// @deprecated This function is deprecated as of the December 2022 release
+///   Use RawRange::fromSvTransmitWithObs() instead
 /// @see CorrectedEphemerisRange::ComputeAtTransmitSvTime()
 /// @param pseudorange Pseudorange in meters to seed the calculation.
 /// @param rx_loc The location of the receiver.
@@ -133,6 +139,8 @@ double RawRange3(double pseudorange, const gnsstk::Position& rx_loc,
 
 /// Calculate the raw range at TRANSMIT time per RECEIVER clock, without
 /// seeding the pseudorange.
+/// @deprecated This function is deprecated as of the December 2022 release
+///   Use RawRange::fromNominalReceive() instead
 /// @see CorrectedEphemerisRange::ComputeAtTransmitTime(const CommonTime& trNom, const Position&, const SatID, NavLibrary&, NavSearchOrder, SVHealth, NavValidityType)
 /// @param rx_loc The location of the receiver.
 /// @param sat_id Identifier for the satellite

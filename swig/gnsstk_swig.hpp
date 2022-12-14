@@ -185,6 +185,7 @@
 #include "NavDataFactory.hpp"
 #include "NavLibrary.hpp"
 #include "ValidType.hpp"
+#include "RawRange.hpp"
 #include "EphemerisRange.hpp"
 #include "IonoModel.hpp"
 #include "IonoModelStore.hpp"

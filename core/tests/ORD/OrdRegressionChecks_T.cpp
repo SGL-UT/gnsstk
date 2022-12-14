@@ -162,7 +162,7 @@ testRawRange2()
       cer.ComputeAtTransmitTime(time, pseduorange, rxLocation, satId, navLib);
 
       // Compare the new calculation to the old, for our contrived variables.
-   TUASSERTFE(originalRange, resultRange);
+   TUASSERTFESMRT(originalRange, resultRange);
    TURETURN();
 }
 
@@ -189,7 +189,7 @@ testRawRange3()
       cer.ComputeAtTransmitSvTime(time, pseduorange, rxLocation, satId, navLib);
 
       // Compare the new calculation to the old, for our contrived variables.
-   TUASSERTFE(originalRange, resultRange);
+   TUASSERTFESMRT(originalRange, resultRange);
    TURETURN();
 }
 
@@ -213,7 +213,7 @@ testRawRange4()
       cer.ComputeAtTransmitTime(time, rxLocation, satId, navLib);
 
       // Compare the new calculation to the old, for our contrived variables.
-   TUASSERTFE(originalRange, resultRange);
+   TUASSERTFESMRT(originalRange, resultRange);
    TURETURN();
 }
 

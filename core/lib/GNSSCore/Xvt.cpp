@@ -41,8 +41,10 @@
  * Position and velocity as Triples, clock bias and drift as doubles.
  */
 
+#include <tuple>
 #include <iostream>
 #include "Xvt.hpp"
+#include "RawRange.hpp"
 
 namespace gnsstk
 {
@@ -117,47 +119,13 @@ namespace gnsstk
          // geometric range at transmit time.  This fails to account
          // for the rotation of the earth, but should be good to
          // within about 40 m
-      double sr1 = rxPos.slantRange(x);
-      double dt = sr1 / ellips.c();
+      double tofEstimate = rxPos.slantRange(x) / ellips.c();
 
-         // compute rotation angle in the time of signal transit
-      double rotation_angle = -ellips.angVelocity() * dt;
+      double range;
+      std::tie(std::ignore, range, std::ignore) =
+         RawRange::fromSvPos(rxPos, *this, ellips, true, tofEstimate, 0, 2);
 
-         // rotate original GS coordinates to new values to correct for
-         // rotation of ECEF frame
-         // Ref: Satellite Geodesy, Gunter Seeber, 1993, pg 291  and the
-         // ICD-GPS-200 sheet 102 May 1993 version
-         //   xnew[0]=xg[0]*cos(rotation_angle)-xg[1]*sin(rotation_angle);
-         //   xnew[1]=xg[1]*cos(rotation_angle)+xg[0]*sin(rotation_angle);
-         //   xnew[2]=xg[2];
-         // since cosine and sine are small, approximate by the first
-         // order terms in an expansion.
-      gnsstk::Triple xnew;
-      for (int i = 0; i < 2; i++)
-      {
-         xnew[0] = x[0] - x[1] * rotation_angle;
-         xnew[1] = x[1] + x[0] * rotation_angle;
-         xnew[2] = x[2];
-
-            // Compute geometric slant range from ground station to
-            // the rotated new coord's
-         sr1 = rxPos.slantRange(xnew);
-
-            // Recompute the time of flight (dt) based on PR, with the
-            // time of flight based on geometric range.  Note that
-            // this is a really unneeded, in that the change in PR is
-            // < 40 m, hence the change in tof is < 20 ns
-         dt = sr1 / ellips.c();
-
-            // Compute new rotation in this time
-         rotation_angle = -ellips.angVelocity() * dt;
-      }
-
-         // Account for SV clock drift, relativity and user input correction
-      double rho = sr1 - (clkbias + relcorr) * ellips.c() - correction;
-
-      return rho;
-
-   } // end of preciseRho()
+      return range - (clkbias + relcorr) * ellips.c() - correction;
+   }
 
 } // end of gnsstk namespace
