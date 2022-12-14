@@ -229,6 +229,8 @@
 #include "GLOCNavIono.hpp"
 #include "GLOCNavUT1TimeOffset.hpp"
 /* #include "GLOFBits.hpp" */
+#include "GLOFNavPCode.hpp"
+#include "GLOFNavSatType.hpp"
 #include "GLOFNavData.hpp"
 #include "GLOFNavAlm.hpp"
 #include "GLOFNavEph.hpp"
@@ -253,6 +255,7 @@
 #include "GPSCNavRedAlm.hpp"
 #include "GPSCNavTimeOffset.hpp"
 #include "GPSLNavData.hpp"
+#include "GPSLNavL2Codes.hpp"
 #include "GPSLNavAlm.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"

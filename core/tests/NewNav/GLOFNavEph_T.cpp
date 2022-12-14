@@ -44,7 +44,7 @@
 
 namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, GLOFNavData::PCode e)
+   std::ostream& operator<<(std::ostream& s, GLOFNavPCode e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -93,7 +93,7 @@ constructorTest()
    TUASSERTE(unsigned, -1, uut.P3);
    TUASSERTE(unsigned, -1, uut.P4);
    TUASSERTE(unsigned, -1, uut.interval);
-   TUASSERTE(gnsstk::GLOFNavData::PCode, gnsstk::GLOFNavData::PCode::Unknown,
+   TUASSERTE(gnsstk::GLOFNavPCode, gnsstk::GLOFNavPCode::Unknown,
              uut.opStatus);
    TUASSERT(isnan(uut.tauDelta));
    TUASSERTE(unsigned, -1, uut.aod);

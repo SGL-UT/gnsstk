@@ -354,7 +354,7 @@ namespace gnsstk
       eph->alert3 = ephSF[sf3]->asBool(fsbAlert);
       eph->asFlag2 = ephSF[sf2]->asBool(fsbAS);
       eph->asFlag3 = ephSF[sf3]->asBool(fsbAS);
-      eph->codesL2 = static_cast<GPSLNavEph::L2Codes>(
+      eph->codesL2 = static_cast<GPSLNavL2Codes>(
          ephSF[esiL2]->asUnsignedLong(esbL2,enbL2,escL2));
       eph->L2Pdata = ephSF[esiL2P]->asUnsignedLong(esbL2P,enbL2P,escL2P);
       eph->aodo = ephSF[esiAODO]->asUnsignedLong(esbAODO,enbAODO,escAODO);

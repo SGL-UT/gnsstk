@@ -54,7 +54,7 @@ namespace gnsstk
            tb(-1),
            P1(-1), P2(-1), P3(-1), P4(-1),
            interval(-1),
-           opStatus(PCode::Unknown),
+           opStatus(GLOFNavPCode::Unknown),
            tauDelta(std::numeric_limits<double>::quiet_NaN()),
            aod(-1),
            accIndex(-1),

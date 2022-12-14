@@ -299,6 +299,8 @@
 %import(module="gnsstk") "GLOCNavIono.hpp"
 %import(module="gnsstk") "GLOCNavUT1TimeOffset.hpp"
 /* %import(module="gnsstk") "GLOFBits.hpp" */
+%import(module="gnsstk") "GLOFNavPCode.hpp"
+%import(module="gnsstk") "GLOFNavSatType.hpp"
 %import(module="gnsstk") "GLOFNavData.hpp"
 %import(module="gnsstk") "GLOFNavAlm.hpp"
 %import(module="gnsstk") "GLOFNavEph.hpp"
@@ -322,6 +324,7 @@
 %import(module="gnsstk") "GPSCNavIono.hpp"
 %import(module="gnsstk") "GPSCNavRedAlm.hpp"
 %import(module="gnsstk") "GPSCNavTimeOffset.hpp"
+%import(module="gnsstk") "GPSLNavL2Codes.hpp"
 %import(module="gnsstk") "GPSLNavData.hpp"
 %import(module="gnsstk") "GPSLNavAlm.hpp"
 %import(module="gnsstk") "GPSLNavEph.hpp"

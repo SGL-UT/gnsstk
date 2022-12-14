@@ -65,7 +65,7 @@
 
 namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, gnsstk::GPSLNavEph::L2Codes e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::GPSLNavL2Codes e)
    {
       s << static_cast<int>(e);
       return s;
@@ -90,12 +90,12 @@ namespace gnsstk
       s << StringUtils::asString(e);
       return s;
    }
-   std::ostream& operator<<(std::ostream& s, GLOFNavData::PCode e)
+   std::ostream& operator<<(std::ostream& s, GLOFNavPCode e)
    {
       s << StringUtils::asString(e);
       return s;
    }
-   std::ostream& operator<<(std::ostream& s, GLOFNavData::SatType e)
+   std::ostream& operator<<(std::ostream& s, GLOFNavSatType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -553,8 +553,8 @@ loadIntoMapTest()
                   TUASSERTE(unsigned, 0, ephL->healthBits);
                   TUASSERTE(unsigned, 0, ephL->uraIndex); // 2m
                   TUASSERTFE( 5.122274160385e-09, ephL->tgd);
-                  TUASSERTE(gnsstk::GPSLNavEph::L2Codes,
-                            gnsstk::GPSLNavEph::L2Codes::Pcode, ephL->codesL2);
+                  TUASSERTE(gnsstk::GPSLNavL2Codes,
+                            gnsstk::GPSLNavL2Codes::Pcode, ephL->codesL2);
                   TUASSERTE(bool, false, ephL->L2Pdata);
                }
                ephLCount++;
@@ -1008,8 +1008,8 @@ loadIntoMapTest()
                   TUASSERTE(gnsstk::NavMessageID, expNMID, ephF->signal);
                      // GLOFNavData
                   TUASSERTE(gnsstk::CommonTime, expTS+2.0, ephF->xmit2);
-                  TUASSERTE(gnsstk::GLOFNavData::SatType,
-                            gnsstk::GLOFNavData::SatType::Unknown,
+                  TUASSERTE(gnsstk::GLOFNavSatType,
+                            gnsstk::GLOFNavSatType::Unknown,
                             ephF->satType);
                   TUASSERTE(unsigned, 1, ephF->slot);
                   TUASSERTE(bool, false, ephF->lhealth);
@@ -1040,8 +1040,8 @@ loadIntoMapTest()
                   TUASSERTE(unsigned, -1, ephF->P3);
                   TUASSERTE(unsigned, -1, ephF->P4);
                   TUASSERTE(unsigned, 0, ephF->interval);
-                  TUASSERTE(gnsstk::GLOFNavData::PCode,
-                            gnsstk::GLOFNavData::PCode::Unknown,
+                  TUASSERTE(gnsstk::GLOFNavPCode,
+                            gnsstk::GLOFNavPCode::Unknown,
                             ephF->opStatus);
                   TUASSERTE(int, 1, isnan(ephF->tauDelta));
                   TUASSERTE(unsigned, 1, ephF->aod);
@@ -1321,8 +1321,8 @@ loadIntoMapQZSSTest()
                TUASSERTE(bool, false, eph->alert3);
                TUASSERTE(bool, false, eph->asFlag2);
                TUASSERTE(bool, false, eph->asFlag3);
-               TUASSERTE(gnsstk::GPSLNavEph::L2Codes,
-                         gnsstk::GPSLNavEph::L2Codes::CAcode, eph->codesL2);
+               TUASSERTE(gnsstk::GPSLNavL2Codes,
+                         gnsstk::GPSLNavL2Codes::CAcode, eph->codesL2);
                TUASSERTE(bool, true, eph->L2Pdata);
             }
             else if ((hea=dynamic_cast<gnsstk::GPSLNavHealth*>(ti.second.get()))

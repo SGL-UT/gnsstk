@@ -48,7 +48,7 @@ namespace gnsstk
       s << StringUtils::asString(e);
       return s;
    }
-   std::ostream& operator<<(std::ostream& s, gnsstk::GPSLNavEph::L2Codes e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::GPSLNavL2Codes e)
    {
       s << static_cast<long>(e);
       return s;
@@ -102,7 +102,7 @@ constructorTest()
    TUASSERTE(bool, false, obj.asFlag3);
    TUASSERTE(bool, false, obj.alert2);
    TUASSERTE(bool, false, obj.alert3);
-   TUASSERTE(gnsstk::GPSLNavEph::L2Codes, gnsstk::GPSLNavEph::L2Codes::Invalid1,
+   TUASSERTE(gnsstk::GPSLNavL2Codes, gnsstk::GPSLNavL2Codes::Invalid1,
              obj.codesL2);
    TUASSERTE(bool, false, obj.L2Pdata);
    TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Ephemeris,
