@@ -266,5 +266,9 @@ target_link_libraries(CorrectionResults_T gnsstk)
 add_test(NAME GNSSCore_CorrectionResults COMMAND $<TARGET_FILE:CorrectionResults_T>)
 set_property(TEST GNSSCore_CorrectionResults PROPERTY LABELS Solutions)
 
+add_executable(RawRange_T RawRange_T.cpp)
+target_link_libraries(RawRange_T gnsstk)
+add_test(NAME GNSSCore_RawRange COMMAND $<TARGET_FILE:RawRange_T>)
+
 ###############################################################################
 ###############################################################################

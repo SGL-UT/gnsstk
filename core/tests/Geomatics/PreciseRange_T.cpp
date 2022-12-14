@@ -43,22 +43,22 @@
 #include "RinexNavDataFactory.hpp"
 #include "NavLibrary.hpp"
 #include "EphemerisRange.hpp"
+#include "PreciseRange.hpp"
+#include "SolarSystem.hpp"
 
-class EphemerisRange_T
+class PreciseRange_T
 {
 public:
-   EphemerisRange_T();
-   unsigned testComputeAtReceiveTime();
-   unsigned testComputeAtTransmitTime();
-   unsigned testComputeAtTransmitTime2();
-   unsigned testComputeAtTransmitSvTime();
+   PreciseRange_T();
+   unsigned testComputeAtTransmitTimeWithAntenna();
+   unsigned testComputeAtTransmitTimeWithoutAntenna();
 
    gnsstk::NavLibrary navLib;
 };
 
 
-EphemerisRange_T ::
-EphemerisRange_T()
+PreciseRange_T ::
+PreciseRange_T()
       : navLib()
 {
    gnsstk::NavDataFactoryPtr
@@ -76,87 +76,87 @@ EphemerisRange_T()
 }
 
 
-unsigned EphemerisRange_T ::
-testComputeAtReceiveTime()
+unsigned PreciseRange_T ::
+testComputeAtTransmitTimeWithAntenna()
 {
-   TUDEF("CorrectedEphemerisRange", "ComputeAtReceiveTime");
+   TUDEF("PreciseRange_T", "ComputeAtTransmitTime");
 
    gnsstk::Position rxPos(-7.0e5, -5.0e6, 3.0e6);
    gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
    gnsstk::CommonTime
       time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
-   gnsstk::CorrectedEphemerisRange cer;
-   double corrected_range = cer.ComputeAtReceiveTime(time, rxPos, satId, navLib);
 
-   TUASSERTFESMRT(22289257.145863413811, cer.rawrange);
-   TUASSERTFESMRT(22354137.99468812719, corrected_range);
+   gnsstk::AntexData::antennaPCOandPCVData l1data;
+   l1data.PCOvalue[0] = 1;
+   l1data.PCOvalue[1] = 2;
+   l1data.PCOvalue[2] = 3;
+   l1data.hasAzimuth = true;
+   gnsstk::AntexData::azimZenMap l1PcvData = {
+      {  0.0, {{0.0, 0.0}, {90.0, 16.0}}},
+      {360.0, {{0.0, 0.0}, {90.0, 16.0}}}
+   };
+   l1data.PCVvalue = l1PcvData;
+
+   gnsstk::AntexData::antennaPCOandPCVData l2data;
+   l2data.PCOvalue[0] = 3;
+   l2data.PCOvalue[1] = 2;
+   l2data.PCOvalue[2] = 1;
+   l2data.hasAzimuth = true;
+   gnsstk::AntexData::azimZenMap l2PcvData = {
+      {  0.0, {{0.0, 0.0}, {90.0, 11.0}}},
+      {360.0, {{0.0, 0.0}, {90.0, 11.0}}}
+   };
+   l2data.PCVvalue = l2PcvData;
+
+   gnsstk::AntexData antenna;
+   antenna.valid = gnsstk::AntexData::validBits::allValid13;
+   antenna.isRxAntenna = true;
+
+   std::map<std::string, gnsstk::AntexData::antennaPCOandPCVData> antennaData;
+   antennaData["G01"] = l1data;
+   antennaData["G02"] = l2data;
+   antenna.freqPCVmap = antennaData;
+
+      // Not bothering to setup a mock solar system object.
+      // PreciseRange should default to a lower accuracy computation
+   gnsstk::SolarSystem solsys;
+
+   gnsstk::PreciseRange pr;
+   double corrected_range =
+         pr.ComputeAtTransmitTime(time, 2e7, rxPos, satId, antenna,
+                                  "G01", "G02", solsys, navLib, true);
+
+   TUASSERTFESMRT(22289260.787348996848, pr.rawrange);
+   TUASSERTFESMRT(22354141.670028157532, corrected_range);
    TURETURN();
 }
 
 
-unsigned EphemerisRange_T ::
-testComputeAtTransmitTime()
+unsigned PreciseRange_T ::
+testComputeAtTransmitTimeWithoutAntenna()
 {
-   TUDEF("CorrectedEphemerisRange", "ComputeAtTransmitTime");
+   TUDEF("PreciseRange_T", "ComputeAtTransmitTime");
 
    gnsstk::Position rxPos(-7.0e5, -5.0e6, 3.0e6);
    gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
    gnsstk::CommonTime
       time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
-   gnsstk::CorrectedEphemerisRange cer;
-   double corrected_range = cer.ComputeAtTransmitTime(time, 2.7e7, rxPos, satId, navLib);
+   gnsstk::PreciseRange pr;
+   double corrected_range = pr.ComputeAtTransmitTime(time, 2e7, rxPos, satId, navLib);
 
-   TUASSERTFESMRT(22289249.959460116923, cer.rawrange);
-   TUASSERTFESMRT(22354130.808302134275, corrected_range);
-   TURETURN();
-}
-
-
-unsigned EphemerisRange_T ::
-testComputeAtTransmitTime2()
-{
-   TUDEF("CorrectedEphemerisRange", "ComputeAtTransmitTime");
-
-   gnsstk::Position rxPos(-7.0e5, -5.0e6, 3.0e6);
-   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
-   gnsstk::CommonTime
-      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
-   gnsstk::CorrectedEphemerisRange cer;
-   double corrected_range = cer.ComputeAtTransmitTime(time, rxPos, satId, navLib);
-
-   TUASSERTFESMRT(22289257.145802032202, cer.rawrange);
-   TUASSERTFESMRT(22354137.994626745582, corrected_range);
-   TURETURN();
-}
-
-
-unsigned EphemerisRange_T ::
-testComputeAtTransmitSvTime()
-{
-   TUDEF("CorrectedEphemerisRange", "ComputeAtTransmitSvTime");
-
-   gnsstk::Position rxPos(-7.0e5, -5.0e6, 3.0e6);
-   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
-   gnsstk::CommonTime
-      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
-   gnsstk::CorrectedEphemerisRange cer;
-   double corrected_range = cer.ComputeAtTransmitSvTime(time, 2.7e7, rxPos, satId, navLib);
-
-   TUASSERTFESMRT(22289288.75284050405, cer.rawrange);
-   TUASSERTFESMRT(22354169.60158220306, corrected_range);
+   TUASSERTFESMRT(22289260.787348996848, pr.rawrange);
+   TUASSERTFESMRT(22354141.654476162046, corrected_range);
    TURETURN();
 }
 
 
 int main()
 {
-   EphemerisRange_T testClass;
+   PreciseRange_T testClass;
    unsigned errorTotal = 0;
 
-   errorTotal += testClass.testComputeAtReceiveTime();
-   errorTotal += testClass.testComputeAtTransmitTime();
-   errorTotal += testClass.testComputeAtTransmitTime2();
-   errorTotal += testClass.testComputeAtTransmitSvTime();
+   errorTotal += testClass.testComputeAtTransmitTimeWithAntenna();
+   errorTotal += testClass.testComputeAtTransmitTimeWithoutAntenna();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
             << std::endl;

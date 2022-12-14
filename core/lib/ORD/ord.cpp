@@ -36,40 +36,26 @@
 //
 //==============================================================================
 
+#include <tuple>
 #include <typeinfo>
 #include <vector>
 #include "ord.hpp"
 #include "GPSEllipsoid.hpp"
 #include "GNSSconstants.hpp"
+#include "RawRange.hpp"
+#include "Position.hpp"
+#include "SatID.hpp"
+#include "CommonTime.hpp"
+#include "NavLibrary.hpp"
+#include "Xvt.hpp"
+#include "NavSatelliteID.hpp"
+#include "GPSEllipsoid.hpp"
 
 using std::vector;
 using std::cout;
 
 namespace gnsstk {
 namespace ord {
-
-// When calculating range with the receiver's clock, the rotation of the earth
-// during the time between transmission and receipt must be included. This
-// updates svPosVel to account for that rotation.
-//
-Xvt rotateEarth(const Position& Rx, const Xvt& svPosVel,
-        const EllipsoidModel& ellipsoid) {
-    Xvt revisedXvt(svPosVel);
-
-    double tof = RSS(svPosVel.x[0] - Rx.X(), svPosVel.x[1] - Rx.Y(),
-            svPosVel.x[2] - Rx.Z()) / ellipsoid.c();
-    double wt = ellipsoid.angVelocity() * tof;
-    double sx = ::cos(wt) * svPosVel.x[0] + ::sin(wt) * svPosVel.x[1];
-    double sy = -::sin(wt) * svPosVel.x[0] + ::cos(wt) * svPosVel.x[1];
-    revisedXvt.x[0] = sx;
-    revisedXvt.x[1] = sy;
-    sx = ::cos(wt) * svPosVel.v[0] + ::sin(wt) * svPosVel.v[1];
-    sy = -::sin(wt) * svPosVel.v[0] + ::cos(wt) * svPosVel.v[1];
-    revisedXvt.v[0] = sx;
-    revisedXvt.v[1] = sy;
-
-    return revisedXvt;
-}
 
 double IonosphereFreeRange(const std::vector<double>& frequencies,
         const std::vector<double>& pseudoranges) {
@@ -128,148 +114,91 @@ gnsstk::Xvt getSvXvt(const gnsstk::SatID& satId, const gnsstk::CommonTime& time,
    return rv;
 }
 
-double RawRange1(const gnsstk::Position& rxLoc, const gnsstk::SatID& satId,
-        const gnsstk::CommonTime& timeReceived,
-        NavLibrary& ephemeris, gnsstk::Xvt& svXvt) {
-    try {
-        int nit;
-        double tof, tof_old, rawrange;
-        GPSEllipsoid ellipsoid;
-
-        CommonTime transmit(timeReceived);
-        Xvt svPosVel;     // Initialize to zero
-
-        nit = 0;
-        tof = 0.07;       // Initial guess 70ms
-        do {
-            // best estimate of transmit time
-            transmit = timeReceived;
-            transmit -= tof;
-            tof_old = tof;
-            // get SV position
-            try {
-                  /** @todo getXvt was expected to throw an exception on
-                   * failure in the past.  This assert more or less mimics
-                   * that behavior.  Refactoring is needed.  */
-               GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), transmit,
-                                              svPosVel));
-            } catch (InvalidRequest& e) {
-                GNSSTK_RETHROW(e);
-            }
-
-            svPosVel = rotateEarth(rxLoc, svPosVel, ellipsoid);
-            // update raw range and time of flight
-            rawrange = RSS(svPosVel.x[0] - rxLoc.X(), svPosVel.x[1] - rxLoc.Y(),
-                    svPosVel.x[2] - rxLoc.Z());
-            tof = rawrange / ellipsoid.c();
-        } while (ABS(tof-tof_old) > 1.e-13 && ++nit < 5);
-
-        svXvt = svPosVel;
-
-        return rawrange;
-    } catch (gnsstk::Exception& e) {
-        GNSSTK_RETHROW(e);
-    }
+double RawRange1(
+   const Position& rxLoc,
+   const SatID& satId,
+   const CommonTime& timeReceived,
+   NavLibrary& ephemeris,
+   Xvt& svXvt
+)
+{
+   bool success;
+   double range;
+   GPSEllipsoid ellipsoid;
+   std::tie(success, range, svXvt) =
+      RawRange::fromReceive(rxLoc, timeReceived, ephemeris,
+                            NavSatelliteID(satId), ellipsoid);
+   GNSSTK_ASSERT(success);
+   return range;
 }
 
-double RawRange2(double pseudorange, const gnsstk::Position& rxLoc,
-        const gnsstk::SatID& satId, const gnsstk::CommonTime& time,
-        NavLibrary& ephemeris, gnsstk::Xvt& svXvt) {
-    try {
-        CommonTime tt, transmit;
-        Xvt svPosVel;     // Initialize to zero
-        double rawrange;
-        GPSEllipsoid ellipsoid;
 
-        // 0-th order estimate of transmit time = receiver - pseudorange/c
-        transmit = time;
-        transmit -= pseudorange / C_MPS;
-        tt = transmit;
+double RawRange2(double pseudorange, const Position& rxLoc,
+        const SatID& satId, const CommonTime& time,
+        NavLibrary& ephemeris, Xvt& svXvt) {
 
-        // correct for SV clock
-        for (int i = 0; i < 2; i++) {
-            // get SV position
-            try {
-                  /** @todo getXvt was expected to throw an exception on
-                   * failure in the past.  This assert more or less mimics
-                   * that behavior.  Refactoring is needed.  */
-               GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), tt,
-                                              svPosVel));
-            } catch (InvalidRequest& e) {
-                GNSSTK_RETHROW(e);
-            }
-            tt = transmit;
-            // remove clock bias and relativity correction
-            tt -= (svPosVel.clkbias + svPosVel.relcorr);
-        }
-
-        svPosVel = rotateEarth(rxLoc, svPosVel, ellipsoid);
-
-        // raw range
-        rawrange = RSS(svPosVel.x[0] - rxLoc.X(),
-                       svPosVel.x[1] - rxLoc.Y(),
-                       svPosVel.x[2] - rxLoc.Z());
-
-        svXvt = svPosVel;
-
-        return rawrange;
-    } catch (gnsstk::Exception& e) {
-        GNSSTK_RETHROW(e);
-    }
+   bool success;
+   double range;
+   GPSEllipsoid ellipsoid;
+   std::tie(success, range, svXvt) =
+      RawRange::fromNominalReceiveWithObs(rxLoc, time, pseudorange, ephemeris,
+                                          NavSatelliteID(satId), ellipsoid);
+   GNSSTK_ASSERT(success);
+   return range;
 }
+
 
 double RawRange3(double pseudorange, const gnsstk::Position& rxLoc,
         const gnsstk::SatID& satId, const gnsstk::CommonTime& time,
         NavLibrary& ephemeris, gnsstk::Xvt& svXvt) {
-    Position trx(rxLoc);
-    trx.asECEF();
-
-    Xvt svPosVel;
-       /** @todo getXvt was expected to throw an exception on
-        * failure in the past.  This assert more or less mimics
-        * that behavior.  Refactoring is needed.  */
-    GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), time,
-                                   svPosVel));
-
-    // compute rotation angle in the time of signal transit
-
-    // While this is quite similiar to rotateEarth, its not the same
-    // and jcl doesn't know which is really correct
-    // BWT this uses the measured pseudorange, corrected for SV clock and
-    // relativity, to compute the time of flight; rotateEarth uses the value
-    // computed from the receiver position and the ephemeris. They should be
-    // very nearly the same, and multiplying by angVel/c should make the angle
-    // of rotation very nearly identical.
-    GPSEllipsoid ell;
-    double range(pseudorange/ell.c() - svPosVel.clkbias - svPosVel.relcorr);
-    double rotation_angle = -ell.angVelocity() * range;
-    svPosVel.x[0] = svPosVel.x[0] - svPosVel.x[1] * rotation_angle;
-    svPosVel.x[1] = svPosVel.x[1] + svPosVel.x[0] * rotation_angle;
-    // svPosVel.x[2] = svPosVel.x[2];  // ?? Reassign for readability ??
-
-    double rawrange = trx.slantRange(svPosVel.x);
-
-    svXvt = svPosVel;
-    return rawrange;
+   bool success;
+   double range;
+   GPSEllipsoid ellipsoid;
+   std::tie(success, range, svXvt) =
+      RawRange::fromSvTransmitWithObs(rxLoc, pseudorange, ephemeris,
+                                      NavSatelliteID(satId), time, ellipsoid,
+                                      true);
+   GNSSTK_ASSERT(success);
+   return range;
 }
 
 double RawRange4(const gnsstk::Position& rxLoc, const gnsstk::SatID& satId,
         const gnsstk::CommonTime& time,
         NavLibrary& ephemeris, gnsstk::Xvt& svXvt) {
-    try {
-       gnsstk::GPSEllipsoid gm;
-       Xvt svPosVel;
-          /** @todo getXvt was expected to throw an exception on
-           * failure in the past.  This assert more or less mimics
-           * that behavior.  Refactoring is needed.  */
-       GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), time,
-                                      svPosVel));
-       double pr = svPosVel.preciseRho(rxLoc, gm);
-       return RawRange2(pr, rxLoc, satId, time, ephemeris, svXvt);
-    }
-    catch(gnsstk::Exception& e) {
-       GNSSTK_RETHROW(e);
-    }
+
+   GNSSTK_ASSERT(ephemeris.getXvt(NavSatelliteID(satId), time, svXvt));
+
+      // Compute initial time of flight estimate using the
+      // geometric range at transmit time.  This fails to account
+      // for the rotation of the earth, but should be good to
+      // within about 40 m
+   GPSEllipsoid ellipsoid;
+   double tofEstimate = rxLoc.slantRange(svXvt.x) / ellipsoid.c();
+
+   bool success;
+   double range;
+   Xvt rotatedSvXvt;
+
+      // First estimate the range by using the receiveNominal as the
+      // transmit time.
+   std::tie(success, range, rotatedSvXvt) =
+      RawRange::fromSvTransmit(rxLoc, ephemeris, NavSatelliteID(satId), time,
+                               ellipsoid, true, SVHealth::Any,
+                               NavValidityType::ValidOnly, NavSearchOrder::User,
+                               tofEstimate, 0, 2);
+   GNSSTK_ASSERT(success);
+
+      // Create a mock pseudorange using the estimated range and SV clock offsets
+   double fakePsuedorange = range -
+      (rotatedSvXvt.clkbias + rotatedSvXvt.relcorr) * ellipsoid.c();
+
+   std::tie(success, range, rotatedSvXvt) =
+      RawRange::fromNominalReceiveWithObs(rxLoc, time, fakePsuedorange,
+                                          ephemeris, NavSatelliteID(satId),
+                                          ellipsoid, false);
+   GNSSTK_ASSERT(success);
+   svXvt = rotatedSvXvt;
+   return range;
 }
 
 double SvClockBiasCorrection(const gnsstk::Xvt& svXvt) {

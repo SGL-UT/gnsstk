@@ -27,6 +27,7 @@ from __future__ import absolute_import
 %include "std_list.i"
 %include "std_set.i"
 %include "std_multimap.i"
+%include "std_tuple.i"
 %include "stdint.i"
 %include "typemaps.i"
 %include "exception.i"
@@ -68,12 +69,15 @@ from __future__ import absolute_import
 %import "SatelliteSystem.hpp"
 %import(module="gnsstk.GNSSCore") "SatID.hpp"
 %import "Triple.hpp"
+%import "EllipsoidModel.hpp"
 %import(module="gnsstk.GNSSCore") "Xvt.hpp"
 %import "ObsID.hpp"
 %import "SVHealth.hpp"
 %import "Position.hpp"
 %import "NavValidityType.hpp"
 %import "NavSearchOrder.hpp"
+%import "NavSignalID.hpp"
+%import "NavSatelliteID.hpp"
 %import "NavLibrary.hpp"
 %import "ValidType.hpp"
 
@@ -88,6 +92,11 @@ from __future__ import absolute_import
 %include "PackedNavBits.hpp"
 %include "EngAlmanac.hpp"
 %include "EngEphemeris.hpp"
+%std_tuple(ComputeRangeResultXvt, double, gnsstk::Xvt);
+%std_tuple(ComputeRangeResultPosition, double, gnsstk::Position);
+%std_tuple(EstTimeResult, bool, gnsstk::CommonTime);
+%std_tuple(RawRangeResult, bool, double, gnsstk::Xvt);
+%include "RawRange.hpp"
 %include "EphemerisRange.hpp"
 %include "SP3SatID.hpp"
 
