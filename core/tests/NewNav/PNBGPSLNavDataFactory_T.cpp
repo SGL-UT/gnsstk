@@ -55,7 +55,7 @@ using GPSFactoryCounter = FactoryCounter<gnsstk::GPSLNavAlm,gnsstk::GPSLNavEph,g
 
 namespace gnsstk
 {
-   ostream& operator<<(ostream& s, GPSLNavEph::L2Codes e)
+   ostream& operator<<(ostream& s, GPSLNavL2Codes e)
    {
       s << static_cast<int>(e);
       return s;
@@ -494,8 +494,8 @@ processEphTest()
          TUASSERTE(bool, false, eph->alert3);
          TUASSERTE(bool, true, eph->asFlag2);
          TUASSERTE(bool, true, eph->asFlag3);
-         TUASSERTE(gnsstk::GPSLNavEph::L2Codes,
-                   gnsstk::GPSLNavEph::L2Codes::Pcode, eph->codesL2);
+         TUASSERTE(gnsstk::GPSLNavL2Codes,
+                   gnsstk::GPSLNavL2Codes::Pcode, eph->codesL2);
          TUASSERTE(bool, false, eph->L2Pdata);
       }
    }
@@ -980,8 +980,8 @@ processEphQZSSTest()
          TUASSERTE(bool, false, eph->alert3);
          TUASSERTE(bool, false, eph->asFlag2);
          TUASSERTE(bool, false, eph->asFlag3);
-         TUASSERTE(gnsstk::GPSLNavEph::L2Codes,
-                   gnsstk::GPSLNavEph::L2Codes::CAcode, eph->codesL2);
+         TUASSERTE(gnsstk::GPSLNavL2Codes,
+                   gnsstk::GPSLNavL2Codes::CAcode, eph->codesL2);
          TUASSERTE(bool, true, eph->L2Pdata);
       }
    }

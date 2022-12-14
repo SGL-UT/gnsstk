@@ -36,43 +36,38 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GNSSTK_GLOFNAVDATA_HPP
-#define GNSSTK_GLOFNAVDATA_HPP
+#ifndef GNSSTK_GLOFNAVSATTYPE_HPP
+#define GNSSTK_GLOFNAVSATTYPE_HPP
 
-#include "OrbitData.hpp"
-#include "NavFit.hpp"
-#include "SVHealth.hpp"
-#include "GLOFNavPCode.hpp"
-#include "GLOFNavSatType.hpp"
+#include <string>
+#include "EnumIterator.hpp"
 
 namespace gnsstk
 {
       /// @ingroup NavFactory
       //@{
 
-      /** Class containing data elements shared between GLONASS Civil F-Nav
-       * ephemerides and almanacs. */
-   class GLOFNavData : public OrbitData, public NavFit
+      /// Values for GLONASS FDMA nav message, Word M.
+   enum class GLOFNavSatType
    {
-   public:
-         /// Sets the nav message type and all other data members to 0.
-      GLOFNavData();
-
-         /** Checks the contents of this message against known
-          * validity rules as defined in the appropriate ICD.
-          * @return true if this message is valid according to ICD criteria.
-          */
-      bool validate() const override;
-
-      CommonTime xmit2;   ///< Transmit time for string 2 (eph) or odd string.
-      GLOFNavSatType satType; ///< Satellite type (M_n: GLONASS or GLONASS-M).
-      unsigned slot;      ///< Slot number (n).
-      bool lhealth;       ///< Health flag? Different from B_n and C_n?
-      SVHealth health;    ///< SV health status.
+      Unknown = -1,  ///< Unknown/Uninitialized value.
+      GLONASS = 0,   ///< Legacy GLONASS satellite.
+      GLONASS_M = 1, ///< GLONASS-M satellite.
+      Last,          ///< Used to verify that all items are described at compile time
    };
+
+      /** Define an iterator so C++11 can do things like
+       * for (GLOFNavSatType i : GLOFNavSatTypeIterator()) */
+   typedef EnumIterator<GLOFNavSatType, GLOFNavSatType::Unknown, GLOFNavSatType::Last> GLOFNavSatTypeIterator;
+
+   namespace StringUtils
+   {
+         /// Convert SatType to a printable string for dump().
+      std::string asString(GLOFNavSatType e);
+   }
 
       //@}
 
 }
 
-#endif // GNSSTK_GLOFNAVDATA_HPP
+#endif // GNSSTK_GLOFNAVSATTYPE_HPP

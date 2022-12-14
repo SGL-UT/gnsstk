@@ -36,43 +36,25 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GNSSTK_GLOFNAVDATA_HPP
-#define GNSSTK_GLOFNAVDATA_HPP
-
-#include "OrbitData.hpp"
-#include "NavFit.hpp"
-#include "SVHealth.hpp"
-#include "GLOFNavPCode.hpp"
 #include "GLOFNavSatType.hpp"
+
+using namespace std;
 
 namespace gnsstk
 {
-      /// @ingroup NavFactory
-      //@{
-
-      /** Class containing data elements shared between GLONASS Civil F-Nav
-       * ephemerides and almanacs. */
-   class GLOFNavData : public OrbitData, public NavFit
+   namespace StringUtils
    {
-   public:
-         /// Sets the nav message type and all other data members to 0.
-      GLOFNavData();
-
-         /** Checks the contents of this message against known
-          * validity rules as defined in the appropriate ICD.
-          * @return true if this message is valid according to ICD criteria.
-          */
-      bool validate() const override;
-
-      CommonTime xmit2;   ///< Transmit time for string 2 (eph) or odd string.
-      GLOFNavSatType satType; ///< Satellite type (M_n: GLONASS or GLONASS-M).
-      unsigned slot;      ///< Slot number (n).
-      bool lhealth;       ///< Health flag? Different from B_n and C_n?
-      SVHealth health;    ///< SV health status.
-   };
-
-      //@}
-
-}
-
-#endif // GNSSTK_GLOFNAVDATA_HPP
+      std::string asString(GLOFNavSatType e)
+      {
+         switch (e)
+         {
+            case GLOFNavSatType::GLONASS:
+               return "GLONASS SV";
+            case GLOFNavSatType::GLONASS_M:
+               return "GLONASS-M SV";
+            default:
+               return "??????";
+         }
+      } // asString(GLOFNavData::SatType e)
+   } // namespace StringUtils
+} // namespace gnsstk

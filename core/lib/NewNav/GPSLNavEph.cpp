@@ -63,7 +63,7 @@ namespace gnsstk
            asFlag3(false),
            alert2(false),
            alert3(false),
-           codesL2(L2Codes::Invalid1),
+           codesL2(GPSLNavL2Codes::Invalid1),
            aodo(-1),
            L2Pdata(false)
    {
@@ -234,22 +234,6 @@ namespace gnsstk
       }
       s << endl;
       s.flags(oldFlags);
-   }
-
-
-   namespace StringUtils
-   {
-      std::string asString(GPSLNavEph::L2Codes e)
-      {
-         switch (e)
-         {
-            case GPSLNavEph::L2Codes::Invalid1: return "Invalid1";
-            case GPSLNavEph::L2Codes::Pcode:    return "P only";
-            case GPSLNavEph::L2Codes::CAcode:   return "C/A only";
-            case GPSLNavEph::L2Codes::Invalid2: return "Invalid2";
-            default:                            return "Unknown";
-         }
-      }
    }
 
 

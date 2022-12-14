@@ -36,43 +36,38 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#ifndef GNSSTK_GLOFNAVDATA_HPP
-#define GNSSTK_GLOFNAVDATA_HPP
+#ifndef GNSSTK_GPSLNAVL2CODES_HPP
+#define GNSSTK_GPSLNAVL2CODES_HPP
 
-#include "OrbitData.hpp"
-#include "NavFit.hpp"
-#include "SVHealth.hpp"
-#include "GLOFNavPCode.hpp"
-#include "GLOFNavSatType.hpp"
+#include <string>
+#include "EnumIterator.hpp"
 
 namespace gnsstk
 {
       /// @ingroup NavFactory
       //@{
 
-      /** Class containing data elements shared between GLONASS Civil F-Nav
-       * ephemerides and almanacs. */
-   class GLOFNavData : public OrbitData, public NavFit
+      /// Codes on L2 channel, per IS-GPS-200 20.3.3.3.1.2
+   enum class GPSLNavL2Codes
    {
-   public:
-         /// Sets the nav message type and all other data members to 0.
-      GLOFNavData();
-
-         /** Checks the contents of this message against known
-          * validity rules as defined in the appropriate ICD.
-          * @return true if this message is valid according to ICD criteria.
-          */
-      bool validate() const override;
-
-      CommonTime xmit2;   ///< Transmit time for string 2 (eph) or odd string.
-      GLOFNavSatType satType; ///< Satellite type (M_n: GLONASS or GLONASS-M).
-      unsigned slot;      ///< Slot number (n).
-      bool lhealth;       ///< Health flag? Different from B_n and C_n?
-      SVHealth health;    ///< SV health status.
+      Unknown  =-1, ///< Unknown/Uninitialized value.
+      Invalid1 = 0, ///< Not a valid broadcast value.
+      Pcode    = 1, ///< P/Y-code is broadcast on L2.
+      CAcode   = 2, ///< C/A-code is broadcast on L2.
+      Invalid2 = 3, ///< Not a valid broadcast value.
+      Last,         ///< Used to verify that all items are described at compile time
    };
 
-      //@}
+      /** Define an iterator so C++11 can do things like
+       * for (GPSLNavL2Codes i : GPSLNavL2CodesIterator()) */
+   typedef EnumIterator<GPSLNavL2Codes, GPSLNavL2Codes::Unknown, GPSLNavL2Codes::Last> GPSLNavL2CodesIterator;
 
-}
+   namespace StringUtils
+   {
+         /// Convert GPSLNavL2Codes to a printable string for dump().
+      std::string asString(GPSLNavL2Codes e);
+   }
 
-#endif // GNSSTK_GLOFNAVDATA_HPP
+} // namespace gnsstk
+
+#endif // GNSSTK_GPSLNAVL2CODES_HPP

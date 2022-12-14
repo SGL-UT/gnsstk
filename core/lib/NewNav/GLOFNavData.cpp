@@ -45,7 +45,7 @@ namespace gnsstk
    GLOFNavData ::
    GLOFNavData()
          : health(SVHealth::Unknown),
-           satType(SatType::Unknown),
+           satType(GLOFNavSatType::Unknown),
            slot(-1),
            lhealth(false)
    {
@@ -58,40 +58,5 @@ namespace gnsstk
    {
          /// @todo implement some checking.
       return true;
-   }
-
-
-   namespace StringUtils
-   {
-      std::string asString(GLOFNavData::PCode e)
-      {
-         switch (e)
-         {
-            case GLOFNavData::PCode::CRelGPSRel:
-               return "tau_c from CS, tau_GPS from CS";
-            case GLOFNavData::PCode::CRelGPSCalc:
-               return "tau_c from CS, tau_GPS calc SV";
-            case GLOFNavData::PCode::CCalcGPSRel:
-               return "tau_c calc SV, tau_GPS from CS";
-            case GLOFNavData::PCode::CCalcGPSCalc:
-               return "tau_c calc SV, tau_GPS calc SV";
-            default:
-               return "???????";
-         }
-      }
-
-
-      std::string asString(GLOFNavData::SatType e)
-      {
-         switch (e)
-         {
-            case GLOFNavData::SatType::GLONASS:
-               return "GLONASS SV";
-            case GLOFNavData::SatType::GLONASS_M:
-               return "GLONASS-M SV";
-            default:
-               return "??????";
-         }
-      }
    }
 }
