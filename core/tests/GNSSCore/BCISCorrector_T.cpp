@@ -73,9 +73,10 @@ unsigned BCISCorrector_T ::
 constructorTest()
 {
    TUDEF("BCISCorrector", "BCISCorrector");
-   gnsstk::BCISCorrector uut;
+   gnsstk::NavLibrary nl;
+   gnsstk::BCISCorrector uut(nl);
    TUASSERTE(gnsstk::CorrectorType, gnsstk::CorrectorType::ISC, uut.corrType);
-   TUASSERT(!uut.navLib);
+   TUASSERTE(gnsstk::NavLibrary*, &nl, &uut.navLib);
    TURETURN();
 }
 
@@ -84,8 +85,8 @@ unsigned BCISCorrector_T ::
 getCorrTestPosition()
 {
    TUDEF("BCISCorrector", "getCorr(Position)");
-   gnsstk::BCISCorrector uut;
-   std::shared_ptr<gnsstk::NavLibrary> navLib;
+   gnsstk::NavLibrary navLib;
+   gnsstk::BCISCorrector uut(navLib);
    gnsstk::NavDataFactoryPtr ndf;
    gnsstk::Position stnPos(-740290.01, -5457071.705, 3207245.599);
    gnsstk::Position svPos(-16208820.579, -207275.833, 21038422.516);
@@ -99,10 +100,8 @@ getCorrTestPosition()
    gnsstk::MultiFormatNavDataFactory *mfndf =
       dynamic_cast<gnsstk::MultiFormatNavDataFactory*>(ndf.get());
    TUASSERTE(bool, true, mfndf->addDataSource(dataPath + "arlm2000.15n"));
-   navLib = std::make_shared<gnsstk::NavLibrary>();
-   TUCATCH(navLib->addFactory(ndf));
+   TUCATCH(navLib.addFactory(ndf));
    double corr = 0.0;
-   uut.navLib = navLib;
    TUASSERTE(bool, true, uut.getCorr(stnPos, svPos, sat, oid, when, nav, corr));
    TUASSERTFE(2.04890966415e-08, corr);
    TURETURN();
@@ -113,8 +112,8 @@ unsigned BCISCorrector_T ::
 getCorrTestXvt()
 {
    TUDEF("BCISCorrector", "getCorr(Xvt)");
-   gnsstk::BCISCorrector uut;
-   std::shared_ptr<gnsstk::NavLibrary> navLib;
+   gnsstk::NavLibrary navLib;
+   gnsstk::BCISCorrector uut(navLib);
    gnsstk::NavDataFactoryPtr ndf;
    gnsstk::Position stnPos(-740290.01, -5457071.705, 3207245.599);
    gnsstk::Xvt svPos;
@@ -135,10 +134,8 @@ getCorrTestXvt()
    gnsstk::MultiFormatNavDataFactory *mfndf =
       dynamic_cast<gnsstk::MultiFormatNavDataFactory*>(ndf.get());
    TUASSERTE(bool, true, mfndf->addDataSource(dataPath + "arlm2000.15n"));
-   navLib = std::make_shared<gnsstk::NavLibrary>();
-   TUCATCH(navLib->addFactory(ndf));
+   TUCATCH(navLib.addFactory(ndf));
    double corr = 0.0;
-   uut.navLib = navLib;
    TUASSERTE(bool, true, uut.getCorr(stnPos, svPos, sat, oid, when, nav, corr));
    TUASSERTFE(2.04890966415e-08, corr);
    TURETURN();

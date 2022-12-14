@@ -98,7 +98,7 @@ namespace gnsstk
           * BCIonoCorrector.
           * @param[in] navLib The NavLibrary for the correctors to use.
           * @return true on success, false on error. */
-      bool init(std::shared_ptr<NavLibrary>& navLib);
+      bool init(NavLibrary& navLib);
 
          /** Fill calcs with the default set of BCISCorrector,
           * BCIonoCorrector and GlobalTropCorrector.
@@ -109,7 +109,7 @@ namespace gnsstk
           *   will be up to the caller to do any loading of data
           *   later.
           * @return true on success, false on error. */
-      bool initGlobal(std::shared_ptr<NavLibrary>& navLib,
+      bool initGlobal(NavLibrary& navLib,
                       const std::string& rinMetFile = "");
 
          /** Fill calcs with the default set of BCISCorrector,
@@ -121,7 +121,7 @@ namespace gnsstk
           *   NBTropModel in this case will use its own internal data
           *   model.
           * @return true on success, false on error. */
-      bool initNB(std::shared_ptr<NavLibrary>& navLib,
+      bool initNB(NavLibrary& navLib,
                   const std::string& rinMetFile = "");
 
          /** @param[in] dups Indicate how duplicate CorrectorType

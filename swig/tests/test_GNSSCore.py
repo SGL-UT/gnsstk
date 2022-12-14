@@ -173,10 +173,9 @@ class TestBCISCorrector(unittest.TestCase):
         Python users should be able to create a BCISCorrector
         and compute a correction from inputs.
         """
-        isc = gnsstk.BCISCorrector()
-
         navLib = gnsstk.NavLibrary()
-        isc.navLib = navLib
+        isc = gnsstk.BCISCorrector(navLib)
+
         ndf = gnsstk.MultiFormatNavDataFactory()
         ndf.addDataSource(os.path.join(args.input_dir, "arlm2000.15n"))
         navLib.addFactory(ndf)
@@ -213,10 +212,9 @@ class TestBCIonoCorrector(unittest.TestCase):
         Python users should be able to create a BCIonoCorrector
         and compute a correction from inputs.
         """
-        iono = gnsstk.BCIonoCorrector()
-
         navLib = gnsstk.NavLibrary()
-        iono.navLib = navLib
+        iono = gnsstk.BCIonoCorrector(navLib)
+
         ndf = gnsstk.MultiFormatNavDataFactory()
         ndf.addDataSource(os.path.join(args.input_dir, "mixed.06n"))
         navLib.addFactory(ndf)
@@ -287,7 +285,8 @@ class TestCorrectionResult(unittest.TestCase):
         Test general manipulation of CorrectionResult object
         """
         corr_nan = gnsstk.CorrectionResult()
-        corr_iono = gnsstk.CorrectionResult(100, gnsstk.BCIonoCorrector())
+        navLib = gnsstk.NavLibrary()
+        corr_iono = gnsstk.CorrectionResult(100, gnsstk.BCIonoCorrector(navLib))
 
         self.assertTrue(math.isnan(corr_nan.result))
         self.assertEqual(corr_iono.result, 100)
@@ -306,11 +305,12 @@ class TestCorrectionResults(unittest.TestCase):
         and getting individual corrections within the list.
         """
         corr_results = gnsstk.CorrectionResults()
+        navLib = gnsstk.NavLibrary()
 
         corr_trop = gnsstk.CorrectionResult(150, gnsstk.GlobalTropCorrector())
-        corr_iono = gnsstk.CorrectionResult(100, gnsstk.BCIonoCorrector())
-        corr_ISC = gnsstk.CorrectionResult(-75, gnsstk.BCISCorrector())
-        corr_ISC2 = gnsstk.CorrectionResult(45, gnsstk.BCISCorrector())
+        corr_iono = gnsstk.CorrectionResult(100, gnsstk.BCIonoCorrector(navLib))
+        corr_ISC = gnsstk.CorrectionResult(-75, gnsstk.BCISCorrector(navLib))
+        corr_ISC2 = gnsstk.CorrectionResult(45, gnsstk.BCISCorrector(navLib))
 
         corr_results.addResult(corr_trop)
         corr_results.addResult(corr_iono)
@@ -347,13 +347,11 @@ class TestGroupPathCorr(unittest.TestCase):
         oid = gnsstk.ObsID(gnsstk.ObservationType.Iono,gnsstk.CarrierBand.L1,gnsstk.TrackingCode.CA)
         nav = gnsstk.NavType.GPSLNAV
 
-        iono = gnsstk.BCIonoCorrector()
-        iono.navLib = navLib
+        iono = gnsstk.BCIonoCorrector(navLib)
         trop = gnsstk.GlobalTropCorrector()
         trop.setDefaultWx()
 
-        isc = gnsstk.BCISCorrector()
-        isc.navLib = navLib
+        isc = gnsstk.BCISCorrector(navLib)
 
         pec.calcs.append(iono)
         pec.calcs.append(trop)

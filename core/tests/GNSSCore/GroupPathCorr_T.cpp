@@ -193,7 +193,7 @@ getCorrTestPositionDouble()
    gnsstk::BCIonoCorrector *iono;
    gnsstk::GlobalTropCorrector *trop;
    gnsstk::GroupPathCorr uut;
-   std::shared_ptr<gnsstk::NavLibrary> navLib;
+   gnsstk::NavLibrary navLib;
    gnsstk::NavDataFactoryPtr ndf;
    gnsstk::Position stnPos(-740290.01, -5457071.705, 3207245.599);
    gnsstk::Position svPos(-16208820.579, -207275.833, 21038422.516);
@@ -207,19 +207,16 @@ getCorrTestPositionDouble()
    gnsstk::MultiFormatNavDataFactory *mfndf =
       dynamic_cast<gnsstk::MultiFormatNavDataFactory*>(ndf.get());
    TUASSERTE(bool, true, mfndf->addDataSource(dataPath + "arlm2000.15n"));
-   navLib = std::make_shared<gnsstk::NavLibrary>();
-   TUCATCH(navLib->addFactory(ndf));
+   TUCATCH(navLib.addFactory(ndf));
    double corr = 0.0;
    gnsstk::GroupPathCorrectorPtr ec1, ec2, ec3;
-   ec1 = std::make_shared<gnsstk::BCISCorrector>();
-   ec2 = std::make_shared<gnsstk::BCIonoCorrector>();
+   ec1 = std::make_shared<gnsstk::BCISCorrector>(navLib);
+   ec2 = std::make_shared<gnsstk::BCIonoCorrector>(navLib);
    ec3 = std::make_shared<gnsstk::GlobalTropCorrector>();
    isc = dynamic_cast<gnsstk::BCISCorrector*>(ec1.get());
    iono = dynamic_cast<gnsstk::BCIonoCorrector*>(ec2.get());
    trop = dynamic_cast<gnsstk::GlobalTropCorrector*>(ec3.get());
    TUASSERTE(bool, true, trop->loadFile(dataPath+"arlm2000.15m"));
-   isc->navLib = navLib;
-   iono->navLib = navLib;
    uut.calcs.push_back(ec1);
    uut.calcs.push_back(ec2);
    uut.calcs.push_back(ec3);
@@ -237,7 +234,7 @@ getCorrTestXvtDouble()
    gnsstk::BCIonoCorrector *iono;
    gnsstk::GlobalTropCorrector *trop;
    gnsstk::GroupPathCorr uut;
-   std::shared_ptr<gnsstk::NavLibrary> navLib;
+   gnsstk::NavLibrary navLib;
    gnsstk::NavDataFactoryPtr ndf;
    gnsstk::Position stnPos(-740290.01, -5457071.705, 3207245.599);
    gnsstk::Xvt svPos;
@@ -258,19 +255,16 @@ getCorrTestXvtDouble()
    gnsstk::MultiFormatNavDataFactory *mfndf =
       dynamic_cast<gnsstk::MultiFormatNavDataFactory*>(ndf.get());
    TUASSERTE(bool, true, mfndf->addDataSource(dataPath + "arlm2000.15n"));
-   navLib = std::make_shared<gnsstk::NavLibrary>();
-   TUCATCH(navLib->addFactory(ndf));
+   TUCATCH(navLib.addFactory(ndf));
    double corr = 0.0;
    gnsstk::GroupPathCorrectorPtr ec1, ec2, ec3;
-   ec1 = std::make_shared<gnsstk::BCISCorrector>();
-   ec2 = std::make_shared<gnsstk::BCIonoCorrector>();
+   ec1 = std::make_shared<gnsstk::BCISCorrector>(navLib);
+   ec2 = std::make_shared<gnsstk::BCIonoCorrector>(navLib);
    ec3 = std::make_shared<gnsstk::GlobalTropCorrector>();
    isc = dynamic_cast<gnsstk::BCISCorrector*>(ec1.get());
    iono = dynamic_cast<gnsstk::BCIonoCorrector*>(ec2.get());
    trop = dynamic_cast<gnsstk::GlobalTropCorrector*>(ec3.get());
    TUASSERTE(bool, true, trop->loadFile(dataPath+"arlm2000.15m"));
-   isc->navLib = navLib;
-   iono->navLib = navLib;
    uut.calcs.push_back(ec1);
    uut.calcs.push_back(ec2);
    uut.calcs.push_back(ec3);
@@ -452,15 +446,17 @@ initTest()
 {
    TUDEF("GroupPathCorr", "init");
    gnsstk::GroupPathCorr uut;
-   auto navLib = std::make_shared<gnsstk::NavLibrary>();
+   gnsstk::NavLibrary navLib;
    TUASSERTE(bool, true, uut.init(navLib));
       // While the order isn't important, we assume it hasn't changed.
    auto i = uut.calcs.begin();
    TUASSERT(dynamic_cast<gnsstk::BCISCorrector*>(i->get()) != nullptr);
-   TUASSERT(dynamic_cast<gnsstk::BCISCorrector*>(i->get())->navLib == navLib);
+   TUASSERTE(gnsstk::NavLibrary*, &navLib,
+             &(dynamic_cast<gnsstk::BCISCorrector*>(i->get())->navLib));
    i++;
    TUASSERT(dynamic_cast<gnsstk::BCIonoCorrector*>(i->get()) != nullptr);
-   TUASSERT(dynamic_cast<gnsstk::BCIonoCorrector*>(i->get())->navLib == navLib);
+   TUASSERTE(gnsstk::NavLibrary*, &navLib,
+             &(dynamic_cast<gnsstk::BCIonoCorrector*>(i->get())->navLib));
    TURETURN();
 }
 
@@ -470,15 +466,17 @@ initGlobalTest()
 {
    TUDEF("GroupPathCorr", "initGlobal");
    gnsstk::GroupPathCorr uut;
-   auto navLib = std::make_shared<gnsstk::NavLibrary>();
+   gnsstk::NavLibrary navLib;
    TUASSERTE(bool, true, uut.initGlobal(navLib, dataPath+"arlm2000.15m"));
       // While the order isn't important, we assume it hasn't changed.
    auto i = uut.calcs.begin();
    TUASSERT(dynamic_cast<gnsstk::BCISCorrector*>(i->get()) != nullptr);
-   TUASSERT(dynamic_cast<gnsstk::BCISCorrector*>(i->get())->navLib == navLib);
+   TUASSERTE(gnsstk::NavLibrary*, &navLib,
+             &(dynamic_cast<gnsstk::BCISCorrector*>(i->get())->navLib));
    i++;
    TUASSERT(dynamic_cast<gnsstk::BCIonoCorrector*>(i->get()) != nullptr);
-   TUASSERT(dynamic_cast<gnsstk::BCIonoCorrector*>(i->get())->navLib == navLib);
+   TUASSERTE(gnsstk::NavLibrary*, &navLib,
+             &(dynamic_cast<gnsstk::BCIonoCorrector*>(i->get())->navLib));
    i++;
    TUASSERT(dynamic_cast<gnsstk::GlobalTropCorrector*>(i->get()) != nullptr);
    TUASSERTE(bool, false,
@@ -492,15 +490,17 @@ initNBTest()
 {
    TUDEF("GroupPathCorr", "initNB");
    gnsstk::GroupPathCorr uut;
-   auto navLib = std::make_shared<gnsstk::NavLibrary>();
+   gnsstk::NavLibrary navLib;
    TUASSERTE(bool, true, uut.initNB(navLib, dataPath+"arlm2000.15m"));
       // While the order isn't important, we assume it hasn't changed.
    auto i = uut.calcs.begin();
    TUASSERT(dynamic_cast<gnsstk::BCISCorrector*>(i->get()) != nullptr);
-   TUASSERT(dynamic_cast<gnsstk::BCISCorrector*>(i->get())->navLib == navLib);
+   TUASSERTE(gnsstk::NavLibrary*, &navLib,
+             &(dynamic_cast<gnsstk::BCISCorrector*>(i->get())->navLib));
    i++;
    TUASSERT(dynamic_cast<gnsstk::BCIonoCorrector*>(i->get()) != nullptr);
-   TUASSERT(dynamic_cast<gnsstk::BCIonoCorrector*>(i->get())->navLib == navLib);
+   TUASSERTE(gnsstk::NavLibrary*, &navLib,
+             &(dynamic_cast<gnsstk::BCIonoCorrector*>(i->get())->navLib));
    i++;
    TUASSERT(dynamic_cast<gnsstk::NBTropCorrector*>(i->get()) != nullptr);
    TUASSERTE(bool, false,

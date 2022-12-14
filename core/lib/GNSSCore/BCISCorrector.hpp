@@ -57,8 +57,9 @@ namespace gnsstk
    class BCISCorrector : public GroupPathCorrector
    {
    public:
-         /// Set the #corrType to ISC for GroupPathCorr.
-      BCISCorrector();
+         /** Set the #corrType to ISC for GroupPathCorr.
+          * @param[in] nl The NavLibrary to use to obtain ISC data. */
+      BCISCorrector(NavLibrary& nl);
          /// @copydoc GroupPathCorrector::getCorr(const Position&, const Position&, const SatID&, const ObsID&, const CommonTime&, NavType, double&)
       bool getCorr(const Position& rxPos, const Position& svPos,
                    const SatID& sat, const ObsID& obs,
@@ -70,8 +71,8 @@ namespace gnsstk
                    const CommonTime& when, NavType nav,
                    double& corrOut) override;
 
-         /// Pointer to the nav library from which we will get ISC data.
-      std::shared_ptr<NavLibrary> navLib;
+         /// Reference to the nav library from which we will get ISC data.
+      NavLibrary& navLib;
    }; // class BCISCorrector
 
       //@}
