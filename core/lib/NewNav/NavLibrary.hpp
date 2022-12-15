@@ -63,7 +63,7 @@ namespace gnsstk
        *
        * The NavFactory classes provide an interface for searching for
        * navigation message data, including ephemeris, almanac, health
-       * and time offset data, where
+       * ionospheric, ISC and time offset data, where
        *   \li Ephemeris is the more precise orbital information where
        *       the subject and transmitting satellite are the same.
        *   \li Almanac is less precise orbit information where the
@@ -73,6 +73,16 @@ namespace gnsstk
        *       is in a usable state.
        *   \li Time offset data provides the necessary data for
        *       converting between time systems, e.g. GPS and UTC.
+       *   \li Ionospheric data is provided by the system to model
+       *       signal delays through the ionosphere for
+       *       single-frequency users.
+       *   \li ISC (inter-signal correction) data is provided by the
+       *       system to determine the delay between a given signal
+       *       and the defined reference signal.
+       *
+       * @note Clock data also appears but only in SP3 data and is
+       * really only used for internal storage.  It is factored into
+       * the computed Xvt in that case.
        *
        * The simplest portion of this interface is defined in the
        * NavLibrary class, which provides an interface for computing
@@ -91,6 +101,8 @@ namespace gnsstk
        *       below), velocity and clock offset.
        *   \li NavLibrary::getHealth() to get a satellite's health status.
        *   \li NavLibrary::getOffset() to get TimeSystem conversion information.
+       *   \li NavLibrary::getIonoCorr() to get ionospheric corrections.
+       *   \li NavLibrary::getISC() to get inter-signal corrections.
        *   \li NavLibrary::find() to get arbitrary navigation message
        *       data (excluding TimeOffset information).
        *
@@ -213,9 +225,9 @@ namespace gnsstk
        * }
        *    // Search the NavLibrary
        * gnsstk::NavSatelliteID sat(subjID, system, gnsstk::CarrierBand::Any,
-       *                           gnsstk::TrackingCode::Any,
-       *                           gnsstk::XmitAnt::Any, freqOffs,
-       *                           !freqOffsSpec);
+       *                            gnsstk::TrackingCode::Any,
+       *                            gnsstk::XmitAnt::Any, freqOffs,
+       *                            !freqOffsSpec);
        * if (!navLib.getXvt(sat, when, xvt))
        * {
        *    cerr << "Unable to find XVT for " << sat << " @ " << when << endl;
@@ -259,7 +271,7 @@ namespace gnsstk
        * }
        *    // Search the NavLibrary
        * gnsstk::NavSatelliteID sat(subjID, system, band, code, xmitAnt,
-       *                           freqOffs, !freqOffsSpec, nav);
+       *                            freqOffs, !freqOffsSpec, nav);
        * if (!navLib.getXvt(sat, when, xvt, false))
        * {
        *    cerr << "Unable to find XVT for " << sat << " @ " << when << endl;
@@ -305,7 +317,7 @@ namespace gnsstk
        * }
        *    // Search the NavLibrary
        * gnsstk::ObsID oid(gnsstk::ObservationType::NavMsg, band, code,
-       *                  freqOffs, xmitAnt, !freqOffsSpec);
+       *                   freqOffs, xmitAnt, !freqOffsSpec);
        * gnsstk::SatID subjSat(subjID, subjSys);
        * gnsstk::SatID xmitSat(xmitID, xmitSys);
        * gnsstk::NavSatelliteID sat(subjSat, xmitSat, oid, nav);
@@ -349,6 +361,34 @@ namespace gnsstk
        *    }
        * }
        * \endcode
+       *
+       * @subsubsection NavLibraryPracticalExamples Practical Examples
+       *
+       * Some practical examples may be found in gnsstk (library
+       * code).  These are:
+       *
+       * | Source file         | Use case |
+       * | ------------------- | -------- |
+       * | EphemerisRange.cpp  | Get Xvt+IODC+health |
+       * | BCIonoCorrector.cpp | Look up ionospheric corrections |
+       * | BCISCorrector.cpp   | Look up inter-signal corrections |
+       * 
+       * More complete practical examples for NavLibrary and related classes
+       * can be found in the gnsstk-apps repository.  Those are:
+       *
+       * | Source file     | Use case |
+       * | --------------- | -------- |
+       * | timeconvert.cpp | Look up TimeOffsetData and change time systems. |
+       * | navdump.cpp     | Dump data, look up arbitrary data types, compute |
+       * | ^               | Xvt, load different data types from different |
+       * | ^               | files. |
+       * | WhereSat.cpp    | Print Xvt of all known satellites in a time range |
+       * 
+       * (If you see ^ rendered in the table above, try a newer
+       * version of Doxygen)
+       *
+       * Practical examples using Python are somewhat scarce, but what
+       * there is can be found in swig/tests, e.g. test_NavLibrary.py.
        *
        * @section NavFactorySearchParams Search Parameters
        *
@@ -615,10 +655,10 @@ namespace gnsstk
        *
        * \li Only use data from healthy satellites...
        *   * The NavLibrary::getXvt(), NavLibrary::getHealth(),
-       *     NavLibrary::getOffset(), NavLibrary::find() and
-       *     NavDataFactory::find() methods all support the
-       *     specification of the desired health status of the
-       *     transmitting satellite (in the form of the SVHealth
+       *     NavLibrary::getOffset(), NavLibrary::getISC(),
+       *     NavLibrary::find() and NavDataFactory::find() methods all
+       *     support the specification of the desired health status of
+       *     the transmitting satellite (in the form of the SVHealth
        *     enumeration).  By default, the health of the transmitting
        *     satellite is ignored, which is the fastest option as it
        *     does not engender searches for or checking of health
@@ -827,8 +867,6 @@ namespace gnsstk
        *      constructor is called at run time, thereby adding the
        *      custom factory to MultiFormatNavDataFactory whenever the
        *      code is used.
-       *
-       * As an example of how this is done, refer to ExtFactoryInitializer.cpp.
        *
        * @warning It is possible that even with this implementation,
        * the static initialization may not happen properly, a problem
