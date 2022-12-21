@@ -1,3 +1,34 @@
+# Version 14.0.0   Tuesday December 20, 2022
+
+Modifications by Author
+-----------------------
+     Dan Wright <dan.wright@arlut.utexas.edu> (2):
+           Ci clean build
+           Deprecated debian 9
+
+     David Barber <dbarber@arlut.utexas.edu> (1):
+           adding ubuntu-20.04 jobs
+
+     John Knutson <johnk@arlut.utexas.edu> (10):
+           Add NavData::clone method to leaf classes to make alterable shared_ptr copies that don't affect the original
+           Update SWIG cmake rules now that we're no longer supporting cmake version 2
+           Add signal details to nav dump methods
+           Helmert transform/reference frames refactor
+           Implement group delay calculator
+           Fix swig build error
+           Add a CorrectorType that was missed
+           Change group path corrector navLib from shared_ptr to reference to work around swig/python problem
+           Move NewNav enums to the namespace level for consistency
+           Update NewNav docs
+
+     Sarah Magliocca <magliocca@arlut.utexas.edu> (1):
+           Updating the GNSSTk build scripts for visual studio 2019
+
+     Taben Malik <malik@arlut.utexas.edu> (1):
+           Refactored RawRange
+
+
+
 # Version 13.8.0   Monday October 31, 2022
 
 Modifications by Author

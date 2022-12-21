@@ -1,90 +1,102 @@
-GNSSTk 13.8.0 Release Notes
+GNSSTk 14.0.0 Release Notes
 ========================
 
- * This release includes the following:
-   * Updating documentation of TropModel classes.
-   * Spliting test data into gnsstk-data repo with submodules configured.
-   * Updating sphinx documentation of SWIG bindings.
-   * Adding support for GLONASS CDMA nav data processing (See New Modules below)
- * Additionally, it contains bug fixes, build and CI updates.
+ * This release introduces a major update to the toolkit.
+ * It includes the following:
+   * Refactoring HelmertTransform into HelmertTransformer and reference frames into RefFrame.
+   * Adding signal details to nav dump methods.
+   * Adding group path delay calculator GroupPathCorr and related classes. (See New Modules below).
+   * Refactoring duplicate raw range implementations into a single class.
+   * Moving NewNav enums to the namespace level for consistency.
+   * Deprecating support for Debian 9.
+   * Adding support for Ubuntu20.04 (focal)
+ * Additionally, it contains minor library updates and bug fixes
 
-Updates since v13.7.0
+Updates since v13.8.0
 ---------------------
 
 **Build System and Test Suite**
-  * Update Changed the minimum cmake version
-  * Fix Remove SystemTime tests that randomly fail
-  * Fix ORD tests to use the GNSSTk testing framework
+  * Update the clean build parameter
+  * Update SWIG cmake rules now that we're no longer supporting cmake version 2
+  * Update compiler to Visual Studio 2019 in the Windows build scripts.
 
 **Gitlab CI**
-  * Update CODEOWNERS.
-  * Fix pipeline push artifacts
+  * Update Deprecated Debian 9 build
+  * Add Ubuntu 20.04 pipeline jobs
 
 **Library Changes**
-  * Update change string name in StringUtils to avoid conflict with curses library macro
-  * Update exception specifications from throw() to noexcept
-  * Update documentation of TropModel classes
-  * Update move nav message bit definition enums out of PNBNavDataFactory.cpp files and into their own files.
-  * Add documentation on raw range (geometric range) computations
-  * Add Split test data into gnsstk-data repo with submodules configured
-  * Add support for GLONASS CDMA nav data processing
-  * Update sphinx documentation of SWIG bindings
-  * Update Deprecate extraneous swig binding for function that no longer exists.
+  * Add group path delay calculator (GroupPathCorr and related classes).
+  * Update Refactor HelmertTransform into HelmertTransformer
+  * Update Refactor reference frames into RefFrame
+  * Update the nonsensical ISC interface in NavLibrary with one that does make sense.
+  * Update Refactor duplicate raw range implementations into a single class.
+  * Update group path corrector navLib from shared_ptr to reference to work around swig/python problem
+  * Update Move NewNav enums to the namespace level for consistency
+  * Update NewNav docs
+  * Add NavData::clone method
+  * Add signal details to nav dump methods
+  * Add group path delay calculator (GroupPathCorr and related classes).
+  * Add a CorrectorType that was missed
 
-Fixes since v13.7.0
+Fixes since v13.8.0
 --------------------
-  * Fix week rollover issues in GPS LNav, Galileo F/Nav and Galileo I/Nav decoders.
-  * Fix bugs in GLONASS CDMA nav data processing
+  * Fix swig build error
 
 Removed Code due to Deprecation
 -------------------------------
-     core/tests/ORD/OrdMockClasses.hpp
-     swig/sphinx/sphinxsetup.py
+     core/lib/GNSSEph/GloEphemeris.cpp
+     core/lib/GNSSEph/GloEphemeris.hpp
 
 New Modules
 -------------------------------
-     core/lib/NewNav/GLOCBits.hpp
-     core/lib/NewNav/GLOCNavAlm.cpp
-     core/lib/NewNav/GLOCNavAlm.hpp
-     core/lib/NewNav/GLOCNavAlmCorrected.hpp
-     core/lib/NewNav/GLOCNavAlmDeltas.hpp
-     core/lib/NewNav/GLOCNavAlmNumberCruncher.hpp
-     core/lib/NewNav/GLOCNavAlmUncorrected.hpp
-     core/lib/NewNav/GLOCNavData.cpp
-     core/lib/NewNav/GLOCNavEph.cpp
-     core/lib/NewNav/GLOCNavEph.hpp
-     core/lib/NewNav/GLOCNavHeader.cpp
-     core/lib/NewNav/GLOCNavHeader.hpp
-     core/lib/NewNav/GLOCNavHealth.cpp
-     core/lib/NewNav/GLOCNavHealth.hpp
-     core/lib/NewNav/GLOCNavIono.cpp
-     core/lib/NewNav/GLOCNavIono.hpp
-     core/lib/NewNav/GLOCNavLTDMP.cpp
-     core/lib/NewNav/GLOCNavLTDMP.hpp
-     core/lib/NewNav/GLOCNavUT1TimeOffset.cpp
-     core/lib/NewNav/GLOCNavUT1TimeOffset.hpp
-     core/lib/NewNav/GLOCOrbitType.cpp
-     core/lib/NewNav/GLOCOrbitType.hpp
-     core/lib/NewNav/GLOCRegime.cpp
-     core/lib/NewNav/GLOCRegime.hpp
-     core/lib/NewNav/GLOCSatType.cpp
-     core/lib/NewNav/GLOCSatType.hpp
-     core/lib/NewNav/GPSC2Bits.hpp
-     core/lib/NewNav/GPSCBits.hpp
-     core/lib/NewNav/GPSLBits.hpp
-     core/lib/NewNav/GalFBits.hpp
-     core/lib/NewNav/GalIBits.hpp
-     core/lib/NewNav/NavFit.hpp
-     core/lib/NewNav/PNBGLOCNavDataFactory.cpp
-     core/lib/NewNav/PNBGLOCNavDataFactory.hpp
-     core/lib/TimeHandling/GLONASSTime.cpp
-     core/lib/TimeHandling/GLONASSTime.hpp
-     core/tests/NewNav/GLOCNavAlm_T.cpp
-     core/tests/NewNav/GLOCNavEph_T.cpp
-     core/tests/NewNav/GLOCNavHealth_T.cpp
-     core/tests/NewNav/GLOCNavLTDMP_T.cpp
-     core/tests/NewNav/GLOCNavTestDataDecl.hpp
-     core/tests/NewNav/GLOCNavTestDataDef.hpp
-     core/tests/NewNav/GLOCNavUT1TimeOffset_T.cpp
-     core/tests/NewNav/PNBGLOCNavDataFactory_T.cpp
-     core/tests/TimeHandling/GLONASSTime_T.cpp
+     core/lib/FileHandling/MetReader.hpp
+     core/lib/GNSSCore/BCISCorrector.cpp
+     core/lib/GNSSCore/BCISCorrector.hpp
+     core/lib/GNSSCore/BCIonoCorrector.cpp
+     core/lib/GNSSCore/BCIonoCorrector.hpp
+     core/lib/GNSSCore/CorrDupHandling.cpp
+     core/lib/GNSSCore/CorrDupHandling.hpp
+     core/lib/GNSSCore/CorrectionResult.hpp
+     core/lib/GNSSCore/CorrectionResults.cpp
+     core/lib/GNSSCore/CorrectionResults.hpp
+     core/lib/GNSSCore/CorrectorType.cpp
+     core/lib/GNSSCore/CorrectorType.hpp
+     core/lib/GNSSCore/GroupPathCorr.cpp
+     core/lib/GNSSCore/GroupPathCorr.hpp
+     core/lib/GNSSCore/GroupPathCorrector.hpp
+     core/lib/GNSSCore/HelmertTransformer.cpp
+     core/lib/GNSSCore/HelmertTransformer.hpp
+     core/lib/GNSSCore/RefFrame.cpp
+     core/lib/GNSSCore/RefFrame.hpp
+     core/lib/GNSSCore/RefFrameRlz.cpp
+     core/lib/GNSSCore/RefFrameRlz.hpp
+     core/lib/GNSSCore/RefFrameSys.cpp
+     core/lib/GNSSCore/RefFrameSys.hpp
+     core/lib/GNSSCore/TransformLibrary.cpp
+     core/lib/GNSSCore/TransformLibrary.hpp
+     core/lib/GNSSCore/Transformer.hpp
+     core/lib/GNSSCore/TropCorrector.hpp
+     core/lib/GNSSEph/RawRange.cpp
+     core/lib/GNSSEph/RawRange.hpp
+     core/lib/NewNav/GLOFNavPCode.cpp
+     core/lib/NewNav/GLOFNavPCode.hpp
+     core/lib/NewNav/GLOFNavSatType.hpp
+     core/lib/NewNav/GPSLNavL2Codes.cpp
+     core/lib/NewNav/GPSLNavL2Codes.hpp
+     core/tests/FileHandling/MetReader_T.cpp
+     core/tests/GNSSCore/BCISCorrector_T.cpp
+     core/tests/GNSSCore/BCIonoCorrector_T.cpp
+     core/tests/GNSSCore/CorrDupHandling_T.cpp
+     core/tests/GNSSCore/CorrectionResults_T.cpp
+     core/tests/GNSSCore/CorrectorType_T.cpp
+     core/tests/GNSSCore/GroupPathCorr_T.cpp
+     core/tests/GNSSCore/GroupPathCorrector_T.cpp
+     core/tests/GNSSCore/HelmertTransformer_T.cpp
+     core/tests/GNSSCore/RawRange_T.cpp
+     core/tests/GNSSCore/RefFrameRlz_T.cpp
+     core/tests/GNSSCore/RefFrameSys_T.cpp
+     core/tests/GNSSCore/TransformLibrary_T.cpp
+     core/tests/GNSSCore/TropCorrector_T.cpp
+     core/tests/Geomatics/PreciseRange_T.cpp
+     swig/SWIGHelpers/std_tuple.i
+     swig/tests/__init__.py
