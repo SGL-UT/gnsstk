@@ -36,18 +36,130 @@
 //
 //==============================================================================
 
-#include "TestUtil.hpp"
 #include <iostream>
+
+#include "TestUtil.hpp"
+#include "NavDataFactory.hpp"
+#include "RinexNavDataFactory.hpp"
+#include "NavLibrary.hpp"
+#include "EphemerisRange.hpp"
 
 class EphemerisRange_T
 {
 public:
-   EphemerisRange_T() {} // Default Constructor, set the precision value
-   ~EphemerisRange_T() {} // Default Desructor
+   EphemerisRange_T();
+   unsigned testComputeAtReceiveTime();
+   unsigned testComputeAtTransmitTime();
+   unsigned testComputeAtTransmitTime2();
+   unsigned testComputeAtTransmitSvTime();
+
+   gnsstk::NavLibrary navLib;
 };
 
 
-int main() //Main function to initialize and run all tests above
+EphemerisRange_T ::
+EphemerisRange_T()
+      : navLib()
 {
-   return 0; //Return the total number of errors
+   gnsstk::NavDataFactoryPtr
+      ndfp(std::make_shared<gnsstk::RinexNavDataFactory>());
+
+   std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "arlm2000.15n";
+
+   navLib.addFactory(ndfp);
+
+   gnsstk::RinexNavDataFactory *rndfp =
+      dynamic_cast<gnsstk::RinexNavDataFactory*>(ndfp.get());
+
+   GNSSTK_ASSERT(rndfp->addDataSource(fname));
+}
+
+
+unsigned EphemerisRange_T ::
+testComputeAtReceiveTime()
+{
+   TUDEF("CorrectedEphemerisRange", "ComputeAtReceiveTime");
+
+   gnsstk::Position rxPos(-7.0e5, -5.0e6, 3.0e6);
+   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::CorrectedEphemerisRange cer;
+   double corrected_range = cer.ComputeAtReceiveTime(time, rxPos, satId, navLib);
+
+   TUASSERTFESMRT(22289257.145863413811, cer.rawrange);
+   TUASSERTFESMRT(22354137.99468812719, corrected_range);
+   TURETURN();
+}
+
+
+unsigned EphemerisRange_T ::
+testComputeAtTransmitTime()
+{
+   TUDEF("CorrectedEphemerisRange", "ComputeAtTransmitTime");
+
+   gnsstk::Position rxPos(-7.0e5, -5.0e6, 3.0e6);
+   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::CorrectedEphemerisRange cer;
+   double corrected_range = cer.ComputeAtTransmitTime(time, 2.7e7, rxPos, satId, navLib);
+
+   TUASSERTFESMRT(22289249.959460116923, cer.rawrange);
+   TUASSERTFESMRT(22354130.808302134275, corrected_range);
+   TURETURN();
+}
+
+
+unsigned EphemerisRange_T ::
+testComputeAtTransmitTime2()
+{
+   TUDEF("CorrectedEphemerisRange", "ComputeAtTransmitTime");
+
+   gnsstk::Position rxPos(-7.0e5, -5.0e6, 3.0e6);
+   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::CorrectedEphemerisRange cer;
+   double corrected_range = cer.ComputeAtTransmitTime(time, rxPos, satId, navLib);
+
+   TUASSERTFESMRT(22289257.145802032202, cer.rawrange);
+   TUASSERTFESMRT(22354137.994626745582, corrected_range);
+   TURETURN();
+}
+
+
+unsigned EphemerisRange_T ::
+testComputeAtTransmitSvTime()
+{
+   TUDEF("CorrectedEphemerisRange", "ComputeAtTransmitSvTime");
+
+   gnsstk::Position rxPos(-7.0e5, -5.0e6, 3.0e6);
+   gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
+   gnsstk::CommonTime
+      time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
+   gnsstk::CorrectedEphemerisRange cer;
+   double corrected_range = cer.ComputeAtTransmitSvTime(time, 2.7e7, rxPos, satId, navLib);
+
+   TUASSERTFESMRT(22289288.75284050405, cer.rawrange);
+   TUASSERTFESMRT(22354169.60158220306, corrected_range);
+   TURETURN();
+}
+
+
+int main()
+{
+   EphemerisRange_T testClass;
+   unsigned errorTotal = 0;
+
+   errorTotal += testClass.testComputeAtReceiveTime();
+   errorTotal += testClass.testComputeAtTransmitTime();
+   errorTotal += testClass.testComputeAtTransmitTime2();
+   errorTotal += testClass.testComputeAtTransmitSvTime();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+            << std::endl;
+
+   return errorTotal;
 }

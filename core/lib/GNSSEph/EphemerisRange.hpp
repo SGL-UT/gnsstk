@@ -44,6 +44,8 @@
 #ifndef NEW_EPHEMERIS_RANGE_HPP
 #define NEW_EPHEMERIS_RANGE_HPP
 
+#include "EllipsoidModel.hpp"
+#include "GPSEllipsoid.hpp"
 #include "CommonTime.hpp"
 #include "SatID.hpp"
 #include "Position.hpp"
@@ -108,6 +110,7 @@ namespace gnsstk
           *   satellite transmitting the nav data.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
+          * @param[in] ellipsoid Ellipsoid model to provide an ECEF rotation rate.
           * @return The corrected range from rx to sat at trNom. */
       double ComputeAtReceiveTime(
          const CommonTime& trNom,
@@ -116,7 +119,8 @@ namespace gnsstk
          NavLibrary& navLib,
          NavSearchOrder order = NavSearchOrder::User,
          SVHealth xmitHealth = SVHealth::Any,
-         NavValidityType valid = NavValidityType::ValidOnly);
+         NavValidityType valid = NavValidityType::ValidOnly,
+         const EllipsoidModel& ellipsoid = GPSEllipsoid());
 
          /** Compute the corrected range at TRANSMIT time (receiver time frame)
           * from rx to sat at trNom.
@@ -156,6 +160,7 @@ namespace gnsstk
           *   satellite transmitting the nav data.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
+          * @param[in] ellipsoid Ellipsoid model to provide an ECEF rotation rate.
           * @return The corrected range from rx to sat at trNom. */
       double ComputeAtTransmitTime(
          const CommonTime& trNom,
@@ -165,7 +170,8 @@ namespace gnsstk
          NavLibrary& navLib,
          NavSearchOrder order = NavSearchOrder::User,
          SVHealth xmitHealth = SVHealth::Any,
-         NavValidityType valid = NavValidityType::ValidOnly);
+         NavValidityType valid = NavValidityType::ValidOnly,
+         const EllipsoidModel& ellipsoid = GPSEllipsoid());
 
          /** Compute the corrected range at TRANSMIT time (receiver
           * time frame), from rx to sat at trNom.
@@ -200,6 +206,7 @@ namespace gnsstk
           *   satellite transmitting the nav data.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
+          * @param[in] ellipsoid Ellipsoid model to provide an ECEF rotation rate.
           * @return The corrected range from rx to sat at trNom. */
       double ComputeAtTransmitTime(
          const CommonTime& trNom,
@@ -208,7 +215,8 @@ namespace gnsstk
          NavLibrary& navLib,
          NavSearchOrder order = NavSearchOrder::User,
          SVHealth xmitHealth = SVHealth::Any,
-         NavValidityType valid = NavValidityType::ValidOnly);
+         NavValidityType valid = NavValidityType::ValidOnly,
+         const EllipsoidModel& ellipsoid = GPSEllipsoid());
 
          /** Compute the corrected range at TRANSMIT time (SV time
           * frame), from rx to sat at ttNom.
@@ -229,6 +237,7 @@ namespace gnsstk
           *   satellite transmitting the nav data.
           * @param[in] valid Specify whether to search only for valid
           *   or invalid messages, or both.
+          * @param[in] ellipsoid Ellipsoid model to provide an ECEF rotation rate.
           * @return The corrected range from rx to sat at ttNom. */
       double ComputeAtTransmitSvTime(
          const CommonTime& ttNom,
@@ -238,7 +247,8 @@ namespace gnsstk
          NavLibrary& navLib,
          NavSearchOrder order = NavSearchOrder::User,
          SVHealth xmitHealth = SVHealth::Any,
-         NavValidityType valid = NavValidityType::ValidOnly);
+         NavValidityType valid = NavValidityType::ValidOnly,
+         const EllipsoidModel& ellipsoid = GPSEllipsoid());
 
          /// The computed raw (geometric) range in meters.
       double rawrange;
@@ -276,12 +286,6 @@ namespace gnsstk
    private:
          // These are just helper functions to keep from repeating code
       void updateCER(const Position& rx);
-      void rotateEarth(const Position& rx);
-      bool getXvt(NavLibrary& navLib, const NavSatelliteID& sat,
-                  const CommonTime& when,
-                  NavSearchOrder order,
-                  SVHealth xmitHealth,
-                  NavValidityType valid);
 
    }; // end class CorrectedEphemerisRange
 

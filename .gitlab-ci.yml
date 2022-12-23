@@ -91,6 +91,8 @@ variables:
       - /^version_.*_prep$/
       - stable
       - /^release\/v[0-9.]*$/
+      - /^bugfix\/ci_.*$/
+      - /^feature\/ci_.*$/
     variables:
       - $RELEASE_ONLY != "True" && $NO_BIGBUILD_CI != "True"
 
@@ -108,7 +110,7 @@ static_analysis:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - ./lint_test.sh
   # Allow failures here to prevent blocking the rest of the pipeline.
@@ -195,7 +197,7 @@ generate_documentation:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     # Install GraphViz
     - sudo apt-get install -y graphviz
@@ -206,24 +208,6 @@ generate_documentation:
   artifacts:
     paths:
       - docs/
-    expire_in: 4 days
-
-build_debian_9:
-  stage: build
-  needs: []
-  extends: .normal_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
-  script:
-    - mkdir -p build
-    - cd build
-    - export gnsstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
-    - make all -j 4
-  artifacts:
-    paths:
-    - build/
     expire_in: 4 days
 
 build_debian_10:
@@ -251,6 +235,23 @@ build_debian_11:
   tags:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  script:
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+    - make all -j 4
+  artifacts:
+    paths:
+      - build/
+
+build_ubuntu_20.04:
+  stage: build
+  needs: []
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - mkdir -p build
     - cd build
@@ -370,11 +371,6 @@ build_debian_11_virtualenv:
     paths:
       - build/
     expire_in: 4 days
-
-build_conda_py2.7:
-  variables:
-    PYTHON_VERSION: "2.7"
-  extends: .build_conda
 
 build_conda_py3.6:
   variables:
@@ -535,26 +531,6 @@ build_windows_vs2019:
 
 # Test Stage
 # Runs all tests of GNSSTK for each platform
-test_debian_9:
-  stage: test
-  needs: [build_debian_9]
-  extends: .normal_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
-  script:
-    - cd build
-    - ctest -j 4
-    - touch $CI_PROJECT_DIR/success
-  artifacts:
-    when: on_failure
-    paths:
-    - build/Testing/Temporary/
-    - build/swig/
-    expire_in: 4 days
-  dependencies:
-    - build_debian_9
-
 test_debian_10:
   stage: test
   needs: [build_debian_10]
@@ -592,6 +568,25 @@ test_debian_11:
     - build/swig/
   dependencies:
     - build_debian_11
+
+test_ubuntu_20.04:
+  stage: test
+  needs: [build_ubuntu_20.04]
+  extends: .normal_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  script:
+    - cd build
+    - ctest -j 4
+    - touch $CI_PROJECT_DIR/success
+  artifacts:
+    when: on_failure
+    paths:
+    - build/Testing/Temporary/
+    - build/swig/
+  dependencies:
+    - build_ubuntu_20.04
 
 test_debian_10_virtualenv:
   stage: test
@@ -657,13 +652,6 @@ test_debian_11_virtualenv:
     - build/swig/
     expire_in: 4 days
 
-
-test_conda_py2.7:
-  variables:
-    PYTHON_VERSION: "2.7"
-  extends: .test_conda
-  needs: [build_conda_py2.7]
-  dependencies: [build_conda_py2.7]
 
 test_conda_py3.6:
   variables:
@@ -786,25 +774,6 @@ test_windows_vs2019_dll:
 # User_Install Stage
 
 # Tests user install of Gnsstk on each platform, saves artifacts for downstream builds.
-user_install_debian_9:
-  stage: install
-  needs: [build_debian_9]
-  extends: .big_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
-  script:
-    - cd build
-    - export gnsstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_USER_INSTALL=ON ../
-    - make install -j 4
-  artifacts:
-    paths:
-      - build/install
-    expire_in: 4 days
-  dependencies:
-    - build_debian_9
-
 user_install_debian_10:
   stage: install
   needs: [build_debian_10]
@@ -841,6 +810,24 @@ user_install_debian_11:
       - build/install
   dependencies:
     - build_debian_11
+
+user_install_ubuntu_20.04:
+  stage: install
+  needs: [build_ubuntu_20.04]
+  extends: .big_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  script:
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_USER_INSTALL=ON ../
+    - make install -j 4
+  artifacts:
+    paths:
+      - build/install
+  dependencies:
+    - build_ubuntu_20.04
 
 virtualenv_install_debian_10:
   stage: install
@@ -972,21 +959,6 @@ user_install_windows_vs2019_dll:
 
 # System Stage
 # Tests install of Gnsstk on each platform, saves artifacts for downstream builds.
-system_install_debian_9:
-  stage: install
-  needs: [build_debian_9]
-  extends: .big_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
-  script:
-    - cd build
-    - export gnsstk=/usr/local
-    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk ../
-    - sudo make install -j 4
-  dependencies:
-    - build_debian_9
-
 system_install_redhat_8:
   stage: install
   needs: [build_redhat_8]
@@ -1004,32 +976,6 @@ system_install_redhat_8:
 
 # Package Stage
 # Tests packaging of Gnsstk on all platforms
-
-package_debian_9:
-  stage: package
-  needs: []
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
-  script:
-    - rm -rf ../*.deb .gitmodules
-    # Mark the debian log so that this package is a backport.
-    # Use the most recent Maintainer as current maintainer.
-    - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
-    - dch --bpo "No Changes"
-    - dpkg-buildpackage --build-profiles=pkg_python,debug_package -us -uc -d --changes-option="-DDistribution=stretch-sgl"
-    - mkdir debs
-    - mv ../*.deb debs
-    - mv ../*.changes debs
-    - mv ../*.dsc debs
-    - mv ../*.git ../*.gitshallow debs
-    - mv ../*.buildinfo debs
-  artifacts:
-    paths:
-      - debs/
-  dependencies:
-    - build_debian_9
-
 package_debian_10:
   stage: package
   needs: []
@@ -1103,6 +1049,43 @@ package_debian_11:
   timeout:  90m
   dependencies:
     - build_debian_11
+
+package_ubuntu_20.04:
+  stage: package
+  needs: []
+  variables:
+    BUILD_TYPE: fast
+  rules:
+    # Add this rule to prevent an "additional" single element pipeline for merge requests.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_REF_NAME =~ /main/ || $CI_COMMIT_REF_NAME =~/^ci_.*$/ || $CI_COMMIT_REF_NAME=~/^version_.*_prep$/
+      variables:
+        BUILD_TYPE: debug
+    - when: on_success
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  script:
+    - rm -rf ../*.deb .gitmodules
+    # Mark the debian log so that this package is a backport.
+    # Use the most recent Maintainer as current maintainer.
+    - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
+    - dch --bpo "No Changes" && dch  -l "ubuntu" -D focal 'No Changes' -u low
+    - if [ "$BUILD_TYPE" == "debug" ]; then BUILD_PROFILES="pkg_python,debug_package"; else BUILD_PROFILES="pkg_python"; fi
+    - dpkg-buildpackage --build-profiles=${BUILD_PROFILES} -us -uc -d --changes-option="-DDistribution=focal-sgl"
+    - mkdir debs
+    - mv ../*.deb debs
+    - mv ../*.changes debs
+    - mv ../*.dsc debs
+    - mv ../*.git ../*.gitshallow debs
+    - mv ../*.buildinfo debs
+  artifacts:
+    paths:
+      - debs/
+  timeout:  90m
+  dependencies:
+    - build_ubuntu_20.04
 
 package_conda:
   stage: package
@@ -1225,22 +1208,6 @@ package_windows_vs2019_dll:
 
 # Deploy Stage
 # Tests install of Gnsstk package on each platform, saves artifacts for downstream builds.
-
-deploy_debian_9:
-  stage: deploy
-  needs: [package_debian_9]
-  extends: .big_build
-  tags:
-    - docker-executor
-  image: $DOCKER_REGISTRY/sgl/debian-9:pkgbuild
-  script:
-    - cd debs
-    - sudo apt-get -y install ./*.deb
-    - python3 -c "import gnsstk"
-    - df_diff -h
-  dependencies:
-    - package_debian_9
-
 deploy_debian_10:
   stage: deploy
   needs: [package_debian_10]
@@ -1272,6 +1239,22 @@ deploy_debian_11:
     - gnsstk-config --includedir
   dependencies:
     - package_debian_11
+
+deploy_ubuntu_20.04:
+  stage: deploy
+  needs: [package_ubuntu_20.04]
+  extends: .big_build
+  tags:
+    - docker-executor
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  script:
+    - cd debs
+    - apt-get -y install ./*.deb
+    - python3 -c "import gnsstk"
+    - df_diff -h
+    - gnsstk-config --includedir
+  dependencies:
+    - package_ubuntu_20.04
 
 deploy_redhat_8:
   stage: deploy
@@ -1308,9 +1291,9 @@ deploy_redhat_py36:
 push_artifacts:
   extends: .push_selected_artifacts
   variables:
-    DEB_9_PACKAGES: "debs/*bpo9*.deb"
-    DEB_10_PACKAGES: "debs/*bpo10*.deb"
+    DEB_10_PACKAGES: "debs/*bpo10+1_amd64.deb"
     DEB_11_PACKAGES: "debs/*bpo11*.deb"
+    UBU_20_PACKAGES: "debs/*bpo10+1ubuntu*.deb"
   stage: push
-  needs: [package_conda, package_debian_9, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
-  dependencies: [package_conda, package_debian_9, package_debian_10, package_debian_11, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
+  needs: [package_conda, package_debian_10, package_debian_11, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
+  dependencies: [package_conda, package_debian_10, package_debian_11, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]

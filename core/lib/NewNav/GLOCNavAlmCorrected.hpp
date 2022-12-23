@@ -68,7 +68,7 @@ namespace gnsstk
 
 
    inline Xvt GLOCNavAlm::Corrected ::
-   getXvt()
+   getXvt(const gnsstk::CommonTime& toi)
    {
       Xvt rv;
       double xterm = cos(lambda)*cos(u) - sin(lambda)*sin(u)*cos(i);
@@ -91,7 +91,7 @@ namespace gnsstk
       rv.v[0] *= 1000.0;
       rv.v[1] *= 1000.0;
       rv.v[2] *= 1000.0;
-      rv.frame = ReferenceFrame::PZ90;
+      rv.frame = RefFrame(RefFrameSys::PZ90, toi);
          // clock bias and drift are not available (?).
       rv.relcorr = rv.computeRelativityCorrection();
       return rv;

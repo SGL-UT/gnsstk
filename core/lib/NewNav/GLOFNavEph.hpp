@@ -53,6 +53,9 @@ namespace gnsstk
    public:
          /// Sets the nav message type and all other data members to 0.
       GLOFNavEph();
+         /// Create a deep copy of this object.
+      NavDataPtr clone() const override
+      { return std::make_shared<GLOFNavEph>(*this); }
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
@@ -121,7 +124,7 @@ namespace gnsstk
       unsigned P3;        ///< Flag 1=5 almanac sats in frame, 0=4 almanac sats.
       unsigned P4;        ///< Flag 1=ephemeris present/uploaded. 0=nope.
       unsigned interval;  ///< P1 interval (minutes, see PNBGLOFNavDataFactory).
-      PCode opStatus;     ///< Operational status flag.
+      GLOFNavPCode opStatus; ///< Operational status flag.
       double tauDelta;    ///< Inter-frequency bias.
       unsigned aod;       ///< Age of data in days (E_n).
       unsigned accIndex;  ///< User accuracy index (F_T).

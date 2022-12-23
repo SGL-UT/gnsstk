@@ -67,14 +67,7 @@ namespace gnsstk
         << "Ionospheric correction data"
         << endl
         << endl
-        << "PRN : " << setw(2) << signal.sat << " / "
-        << "SVN : " << setw(2);
-      std::string svn;
-      if (getSVN(signal.sat, timeStamp, svn))
-      {
-         s << svn;
-      }
-      s << endl << endl;
+        << getSignalString() << endl;
 
          // the rest is full details, so just return if Full is not asked for.
       if (dl != DumpDetail::Full)
@@ -88,8 +81,7 @@ namespace gnsstk
       s.precision(0);
       s.fill(' ');
 
-      s << endl
-        << "           TIMES OF INTEREST"
+      s << "           TIMES OF INTEREST"
         << endl << endl
         << "              " << getDumpTimeHdr(dl) << endl
         << "Transmit:     " << getDumpTime(dl, timeStamp) << endl;

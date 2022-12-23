@@ -54,6 +54,9 @@ namespace gnsstk
    public:
          /// Initialize to unhealthy using a value typically not seen in health.
       GLOCNavHealth();
+         /// Create a deep copy of this object.
+      NavDataPtr clone() const override
+      { return std::make_shared<GLOCNavHealth>(*this); }
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.

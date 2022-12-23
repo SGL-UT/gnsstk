@@ -42,6 +42,8 @@
 #include "OrbitData.hpp"
 #include "NavFit.hpp"
 #include "SVHealth.hpp"
+#include "GLOFNavPCode.hpp"
+#include "GLOFNavSatType.hpp"
 
 namespace gnsstk
 {
@@ -53,28 +55,6 @@ namespace gnsstk
    class GLOFNavData : public OrbitData, public NavFit
    {
    public:
-         /** Values for Word P.  The values indicate whether the tau_c
-          * parameter and tau_GPS parameter are relayed from the control
-          * segment or calculated on-board the GLONASS-M satellite. 
-          * @note This seems to imply P has no meaning on legacy
-          * GLONASS, only in GLONASS-M. */
-      enum class PCode
-      {
-         Unknown      =-1, ///< Unknown/Uninitialized value.
-         CRelGPSRel   = 0, ///< C parameter relayed, GPS parameter relayed
-         CRelGPSCalc  = 1, ///< C parameter relayed, GPS parameter calculated
-         CCalcGPSRel  = 2, ///< C parameter calculated, GPS parameter relayed
-         CCalcGPSCalc = 3, ///< C parameter calculated, GPS parameter calculated
-      };
-
-         /// Values for Word M.
-      enum class SatType
-      {
-         Unknown = -1,  ///< Unknown/Uninitialized value.
-         GLONASS = 0,   ///< Legacy GLONASS satellite.
-         GLONASS_M = 1, ///< GLONASS-M satellite.
-      };
-
          /// Sets the nav message type and all other data members to 0.
       GLOFNavData();
 
@@ -85,21 +65,13 @@ namespace gnsstk
       bool validate() const override;
 
       CommonTime xmit2;   ///< Transmit time for string 2 (eph) or odd string.
-      SatType satType;    ///< Satellite type (M_n: GLONASS or GLONASS-M).
+      GLOFNavSatType satType; ///< Satellite type (M_n: GLONASS or GLONASS-M).
       unsigned slot;      ///< Slot number (n).
       bool lhealth;       ///< Health flag? Different from B_n and C_n?
       SVHealth health;    ///< SV health status.
    };
 
       //@}
-
-   namespace StringUtils
-   {
-         /// Convert PCode to a printable string for dump().
-      std::string asString(GLOFNavData::PCode e);
-         /// Convert SatType to a printable string for dump().
-      std::string asString(GLOFNavData::SatType e);
-   }
 
 }
 

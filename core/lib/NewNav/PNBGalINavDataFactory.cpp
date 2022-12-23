@@ -126,10 +126,11 @@ namespace gnsstk
    {
       NavSatelliteID key(navIn->getsatSys().id, navIn->getsatSys(),
                          navIn->getobsID(), navIn->getNavID());
-      if (!PNBNavDataFactory::processEph && !PNBNavDataFactory::processHea)
+      if (!PNBNavDataFactory::processEph && !PNBNavDataFactory::processHea &&
+          !PNBNavDataFactory::processIono && !PNBNavDataFactory::processISC)
       {
-            // User doesn't want ephemerides or health so don't do any
-            // processing.
+            // User doesn't want any of the messages we're capable of
+            // decoding, so don't do any processing.
          return true;
       }
       if (ephAcc.find(key) == ephAcc.end())

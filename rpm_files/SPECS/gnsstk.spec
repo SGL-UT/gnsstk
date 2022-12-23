@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 13.8.0
+%define version 14.0.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,25 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 20 2022 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v14.0.0 release
+- Update NewNav docs
+- Update Move NewNav enums to the namespace level for consistency
+- Update group path corrector navLib from shared_ptr to reference to work around swig/python problem
+- Update Refactor duplicate raw range implementations into a single class.
+- Add Ubuntu 20.04 pipeline jobs
+- Add a CorrectorType that was missed
+- Fix swig build error
+- Update the nonsensical ISC interface in NavLibrary with one that does make sense.
+- Add group path delay calculator (GroupPathCorr and related classes).
+- Update Refactor reference frames into RefFrame
+- Update Refactor HelmertTransform into HelmertTransformer
+- Update compiler to Visual Studio 2019 in the Windows build scripts.
+- Add signal details to nav dump methods
+- Update Deprecated Debian 9 build
+- Update SWIG cmake rules now that we're no longer supporting cmake version 2
+- Add NavData::clone method
+- Updated the clean build parameter
 * Mon Oct 31 2022 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v13.8.0 release
 - Fix Remove SystemTime tests that randomly fail

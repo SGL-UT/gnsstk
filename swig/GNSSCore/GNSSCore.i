@@ -31,6 +31,7 @@ from __future__ import absolute_import
 %include "typemaps.i"
 %include "exception.i"
 %include "carrays.i"
+%include "std_shared_ptr.i"
 
 // =============================================================
 //  Section 2: Macros
@@ -58,13 +59,22 @@ ENUM_MAPPER(gnsstk::SatelliteSystem, SatelliteSystem, "gnsstk")
 ENUM_MAPPER(gnsstk::CarrierBand, CarrierBand, "gnsstk")
 ENUM_MAPPER(gnsstk::TrackingCode, TrackingCode, "gnsstk")
 ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
+ENUM_MAPPER(gnsstk::CorrectorType, CorrectorType, "gnsstk")
+ENUM_MAPPER(gnsstk::CorrDupHandling, CorrDupHandling, "gnsstk")
+
+ // needs to be before RefFrameRlz.hpp at the very least.
+%import "CommonTime.hpp"
 
 %include "SatelliteSystem.hpp"
 %include "CarrierBand.hpp"
 %include "TrackingCode.hpp"
 %include "ObservationType.hpp"
+%include "CorrectorType.hpp"
+%include "CorrDupHandling.hpp"
 %include "AngleType.hpp"
 %include "XmitAnt.hpp"
+%include "RefFrameSys.hpp"
+%include "RefFrameRlz.hpp"
 
 %include "renameEnums.i"
 %pythoncode %{
@@ -72,8 +82,12 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
    renameEnums('CarrierBand')
    renameEnums('TrackingCode')
    renameEnums('ObservationType')
+   renameEnums('CorrectorType')
+   renameEnums('CorrDupHandling')
    renameEnums('AngleType')
    renameEnums('XmitAnt')
+   renameEnums('RefFrameSys')
+   renameEnums('RefFrameRlz')
 %}
 %include "cleanup.i"
 
@@ -86,9 +100,30 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 %include "Exception.i"
 
 // =============================================================
+//  Section 7: C++11 shared_ptr handling
+// =============================================================
+
+%include "std_shared_ptr.i"
+%shared_ptr(gnsstk::GroupPathCorrector)
+%shared_ptr(gnsstk::BCIonoCorrector)
+%shared_ptr(gnsstk::BCISCorrector)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::ZeroTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::SimpleTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::SaasTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::NBTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::GGTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::GGHeightTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::NeillTropModel>)
+%shared_ptr(gnsstk::TropCorrector<gnsstk::GlobalTropModel>)
+%shared_ptr(gnsstk::Transformer)
+%shared_ptr(gnsstk::HelmertTransformer)
+
+// =============================================================
 //  Section 9: typemaps that must be declared before the %includes
 // =============================================================
 
+// correction is an output
+%apply double &OUTPUT { double &corrOut };
 %include "gnsstk_typemaps.i"
 
 // =============================================================
@@ -99,7 +134,6 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
  // I don't know why some of these require the module option and others don't,
  // but without it, you get warnings saying to do it.
 %import(module="gnsstk") "Exception.hpp"
-%import "CommonTime.hpp"
 %import "EngNav.hpp"
 %import "EngAlmanac.hpp"
 %import "NavType.hpp"
@@ -108,11 +142,16 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 %import "FFData.hpp"
 %import "RinexObsBase.hpp"
 %import "RinexObsHeader.hpp"
+%import "NavLibrary.hpp"
+%import "Vector.hpp"
+%import "Matrix.hpp"
+%import "MetReader.hpp"
 
 %include "AngleType.hpp"
 %include "AngleReduced.hpp"
 %include "Angle.hpp"
 %include "EllipsoidModel.hpp"
+%include "RefFrame.hpp"
 %include "CGCS2000Ellipsoid.hpp"
 %include "CarrierBand.hpp"
 %template(std_map_CarrierBand_string) std::map<gnsstk::CarrierBand, std::string>;
@@ -141,6 +180,8 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 %include "GalileoEllipsoid.hpp"
 %include "GalileoIonoEllipsoid.hpp"
 %include "GlobalTropModel.hpp"
+%include "Transformer.hpp"
+%include "HelmertTransformer.hpp"
 %feature("flatnested");
 %include "IonoModel.hpp"
 %feature("flatnested", "");
@@ -177,7 +218,25 @@ ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 %include "SatMetaDataStore.hpp"
 %feature("flatnested", "");
 %include "SimpleTropModel.hpp"
+%include "TransformLibrary.hpp"
 %include "convhelp.hpp"
+%include "GroupPathCorrector.hpp"
+%template(GroupPathCorrectorList) std::list<std::shared_ptr<gnsstk::GroupPathCorrector> >;
+%include "BCIonoCorrector.hpp"
+%include "BCISCorrector.hpp"
+%include "TropCorrector.hpp"
+%template(ZeroTropCorrector) gnsstk::TropCorrector<gnsstk::ZeroTropModel>;
+%template(SimpleTropCorrector) gnsstk::TropCorrector<gnsstk::SimpleTropModel>;
+%template(SaasTropCorrector) gnsstk::TropCorrector<gnsstk::SaasTropModel>;
+%template(NBTropCorrector) gnsstk::TropCorrector<gnsstk::NBTropModel>;
+%template(GGTropCorrector) gnsstk::TropCorrector<gnsstk::GGTropModel>;
+%template(GGHeightTropCorrector) gnsstk::TropCorrector<gnsstk::GGHeightTropModel>;
+%template(NeillTropCorrector) gnsstk::TropCorrector<gnsstk::NeillTropModel>;
+%template(GlobalTropCorrector) gnsstk::TropCorrector<gnsstk::GlobalTropModel>;
+%include "CorrectionResult.hpp"
+%template(CorrectionResultList) std::list<gnsstk::CorrectionResult>;
+%include "CorrectionResults.hpp"
+%include "GroupPathCorr.hpp"
 
 // =============================================================
 //  Section 11: Explicit Python wrappers
@@ -206,25 +265,25 @@ for cls in enum_vec_classes:
 
 
 def cartesian(x=0.0, y=0.0, z=0.0,
-              model=None, frame=ReferenceFrame.Unknown):
+              model=None, frame=RefFrame()):
     "Returns a Position in the Cartesian coordinate system."
     return Position(x, y, z, Position.Cartesian, model, frame)
 
 
 def geodetic(latitude=0.0, longitude=0.0, height=0.0,
-             model=None, frame=ReferenceFrame.Unknown):
+             model=None, frame=RefFrame()):
     "Returns a Position in the Geodetic coordinate system."
     return Position(latitude, longitude, height, Position.Geodetic, model, frame)
 
 
 def spherical(theta=0.0, phi=0.0, radius=0.0,
-              model=None, frame=ReferenceFrame.Unknown):
+              model=None, frame=RefFrame()):
     "Returns a Position in the Spherical coordinate system."
     return Position(theta, phi, radius, Position.Spherical, model, frame)
 
 
 def geocentric(latitude=0.0, longitude=0.0, radius=0.0,
-               model=None, frame=ReferenceFrame.Unknown):
+               model=None, frame=RefFrame()):
     "Returns a Position in the Geocentric coordinate system."
     return Position(latitude, longitude, radius, Position.Geocentric, model, frame)
 

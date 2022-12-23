@@ -1,3 +1,30 @@
+gnsstk (14.0.0-1) stable; urgency=low
+
+  * Updated to version 14.0.0
+  * Updated the clean build parameter
+  * Add NavData::clone method
+  * Update SWIG cmake rules now that we're no longer supporting cmake
+    version 2
+  * Update Deprecated Debian 9 build
+  * Add signal details to nav dump methods
+  * Update compiler to Visual Studio 2019 in the Windows build scripts.
+  * Update Refactor HelmertTransform into HelmertTransformer
+  * Update Refactor reference frames into RefFrame
+  * Add group path delay calculator (GroupPathCorr and related classes).
+  * Update the nonsensical ISC interface in NavLibrary with one that
+    does make sense.
+  * Fix swig build error
+  * Add a CorrectorType that was missed
+  * Add Ubuntu 20.04 pipeline jobs
+  * Update Refactor duplicate raw range implementations into a single
+    class.
+  * Update group path corrector navLib from shared_ptr to reference to
+    work around swig/python problem
+  * Update Move NewNav enums to the namespace level for consistency
+  * Update NewNav docs
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Tue, 20 Dec 2022 11:22:45 -0600
+
 gnsstk (13.8.0-1) stable; urgency=low
 
   * Updated to version 13.8.0

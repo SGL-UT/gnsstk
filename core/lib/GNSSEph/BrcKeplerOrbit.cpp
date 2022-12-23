@@ -364,7 +364,7 @@ namespace gnsstk
          // Compute clock corrections
       sv.relcorr = svRelativity(t);
          // This appears to be only a string for naming
-      sv.frame = ReferenceFrame::WGS84;
+      sv.frame = RefFrame(RefFrameSys::WGS84, t);
 
          // Compute true anomaly
       q     = SQRT( 1.0e0 - lecc*lecc);

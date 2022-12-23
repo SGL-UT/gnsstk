@@ -106,3 +106,7 @@ add_test(NAME KalmanFilter COMMAND $<TARGET_FILE:KalmanFilter_T>)
 set_property(TEST KalmanFilter PROPERTY LABELS Geomatics)
 
 ################################################################################
+add_executable(PreciseRange_T PreciseRange_T.cpp)
+target_link_libraries(PreciseRange_T gnsstk)
+add_test(NAME PreciseRange COMMAND $<TARGET_FILE:PreciseRange_T>)
+set_property(TEST PreciseRange PROPERTY LABELS Geomatics)

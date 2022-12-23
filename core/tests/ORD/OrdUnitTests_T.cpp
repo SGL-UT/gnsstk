@@ -161,15 +161,15 @@ testGetXvtFromStore()
 
    gnsstk::Xvt xvt = getSvXvt(satId, time+35, navLib);
 
-   TUASSERTFE(9345531.5274733770639,  xvt.x[0]);
-   TUASSERTFE(-12408177.088141856715, xvt.x[1]);
-   TUASSERTFE(21486320.848036296666,  xvt.x[2]);
-   TUASSERTFE(2081.276961058104007,   xvt.v[0]);
-   TUASSERTFE(1792.4445008638492709,  xvt.v[1]);
-   TUASSERTFE(148.29209115082824155,  xvt.v[2]);
-   TUASSERTFE(-0.00021641018042870913346, xvt.clkbias);
-   TUASSERTFE(4.3200998334200003381e-12,  xvt.clkdrift);
-   TUASSERTFE(-8.8197758101551758427e-09, xvt.relcorr);
+   TUASSERTFESMRT(9345531.5274733770639,  xvt.x[0]);
+   TUASSERTFESMRT(-12408177.088141856715, xvt.x[1]);
+   TUASSERTFESMRT(21486320.848036296666,  xvt.x[2]);
+   TUASSERTFESMRT(2081.276961058104007,   xvt.v[0]);
+   TUASSERTFESMRT(1792.4445008638492709,  xvt.v[1]);
+   TUASSERTFESMRT(148.29209115082824155,  xvt.v[2]);
+   TUASSERTFESMRT(-0.00021641018042870913346, xvt.clkbias);
+   TUASSERTFESMRT(4.3200998334200003381e-12,  xvt.clkdrift);
+   TUASSERTFESMRT(-8.8197758101551758427e-09, xvt.relcorr);
    TURETURN();
 }
 
@@ -178,27 +178,28 @@ testRawRange1()
 {
    TUDEF("ORD", "RawRange1");
 
-   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::Position rxLocation(-7.0e5, -5.0e6, 3.0e6);
    gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
    gnsstk::CommonTime
       time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
 
    gnsstk::Xvt xvt;
-   double resultrange = RawRange1(rxLocation, satId, time, navLib, xvt);
+   double range = RawRange1(rxLocation, satId, time, navLib, xvt);
 
       // @note These fields are slightly different than the Xvt tagged
       // at the given time. RawRange tries to determine the position of the SV
       // at time of transmit but rotates the coordinates into the ECEF frame
       // at time of receive.
-   TUASSERTFE(9272491.2966336440295,  xvt.x[0]);
-   TUASSERTFE(-12471194.724280735478, xvt.x[1]);
-   TUASSERTFE(21480834.569836761802,  xvt.x[2]);
-   TUASSERTFE(2077.3534126001304685,  xvt.v[0]);
-   TUASSERTFE(1796.0590315277861464,  xvt.v[1]);
-   TUASSERTFE(164.41418674784648601,  xvt.v[2]);
-   TUASSERTFE(-0.00021641042660146218705, xvt.clkbias);
-   TUASSERTFE(4.3200998334200003381e-12,  xvt.clkdrift);
-   TUASSERTFE(-8.8008904512895476221e-09, xvt.relcorr);
+   TUASSERTFESMRT(9272533.3762740660459,  xvt.x[0]);
+   TUASSERTFESMRT(-12471159.893898375332, xvt.x[1]);
+   TUASSERTFESMRT(21480836.886172864586,  xvt.x[2]);
+   TUASSERTFESMRT(2077.3531590469665389,  xvt.v[0]);
+   TUASSERTFESMRT(1796.0597201257969573,  xvt.v[1]);
+   TUASSERTFESMRT(164.40771415613258455,  xvt.v[2]);
+   TUASSERTFESMRT(-0.00021641042654059759786, xvt.clkbias);
+   TUASSERTFESMRT(4.3200998334200003381e-12,  xvt.clkdrift);
+   TUASSERTFESMRT(-8.8008986915573278037e-09, xvt.relcorr);
+   TUASSERTFESMRT(22289257.145863413811, range);
    TURETURN();
 }
 
@@ -207,7 +208,7 @@ testRawRange1HandlesException()
 {
    TUDEF("ORD", "RawRange1");
 
-   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::Position rxLocation(-7.0e5, -5.0e6, 3.0e6);
       // PRN 1 should not exist in the Nav file
    gnsstk::SatID satId(1, gnsstk::SatelliteSystem::GPS);
    gnsstk::CommonTime
@@ -223,28 +224,29 @@ testRawRange2()
 {
    TUDEF("ORD", "RawRange2");
 
-   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::Position rxLocation(-7.0e5, -5.0e6, 3.0e6);
    gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
    gnsstk::CommonTime
       time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
    gnsstk::Xvt xvt;
 
-   double pseduorange = 999999999;
+   double pseduorange = 2e7;
    double range = RawRange2(pseduorange, rxLocation, satId, time, navLib, xvt);
 
       // @note These fields are slightly different than the Xvt tagged
       // at the given time. RawRange tries to determine the position of the SV
       // at time of transmit but rotates the coordinates into the ECEF frame
       // at time of receive.
-   TUASSERTFE(9265746.753331027925,   xvt.x[0]);
-   TUASSERTFE(-12477027.044897323474, xvt.x[1]);
-   TUASSERTFE(21480298.297345437109,  xvt.x[2]);
-   TUASSERTFE(2076.9863342169719544,  xvt.v[0]);
-   TUASSERTFE(1796.3919531321621434,  xvt.v[1]);
-   TUASSERTFE(165.90589423444734507,  xvt.v[2]);
-   TUASSERTFE(-0.00021641044062876963307, xvt.clkbias);
-   TUASSERTFE(4.3200998334200003381e-12,  xvt.clkdrift);
-   TUASSERTFE(-8.7989903408158179378e-09, xvt.relcorr);
+   TUASSERTFESMRT(9272549.688764328137,   xvt.x[0]);
+   TUASSERTFESMRT(-12471145.790274851024, xvt.x[1]);
+   TUASSERTFESMRT(21480838.177179995924,  xvt.x[2]);
+   TUASSERTFESMRT(2077.3540461841112119,  xvt.v[0]);
+   TUASSERTFESMRT(1796.058914385570688,  xvt.v[1]);
+   TUASSERTFESMRT(164.40410655412986785,  xvt.v[2]);
+   TUASSERTFESMRT(-0.000216410426506673752147, xvt.clkbias);
+   TUASSERTFESMRT(4.3200998334200003381e-12,  xvt.clkdrift);
+   TUASSERTFESMRT(-8.8009032843852035206e-09, xvt.relcorr);
+   TUASSERTFESMRT(22289260.787328250706, range);
    TURETURN();
 }
 
@@ -253,12 +255,12 @@ testRawRange2HandlesException()
 {
    TUDEF("ORD", "RawRange2");
 
-   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::Position rxLocation(-7.0e5, -5.0e6, 3.0e6);
    gnsstk::SatID satId(1, gnsstk::SatelliteSystem::GPS);
    gnsstk::CommonTime
       time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
    gnsstk::Xvt xvt;
-   double pseduorange = 999999999;
+   double pseduorange = 2e7;
 
    TUTHROW(RawRange2(pseduorange, rxLocation, satId, time, navLib, xvt));
    TURETURN();
@@ -269,28 +271,29 @@ testRawRange3()
 {
    TUDEF("ORD", "RawRange3");
 
-   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::Position rxLocation(-7.0e5, -5.0e6, 3.0e6);
    gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
    gnsstk::CommonTime
       time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
    gnsstk::Xvt xvt;
 
-   double pseduorange = 999999999;
+   double pseduorange = 2e7;
    double range = RawRange3(pseduorange, rxLocation, satId, time, navLib, xvt);
 
       // @note These fields are slightly different than the Xvt tagged
       // at the given time. RawRange tries to determine the position of the SV
       // at time of transmit but rotates the coordinates into the ECEF frame
       // at time of receive.
-   TUASSERTFE(9269721.8167515993118,  xvt.x[0]);
-   TUASSERTFE(-12473230.988021081313, xvt.x[1]);
-   TUASSERTFE(21480849.108445473015,  xvt.x[2]);
-   TUASSERTFE(2077.3518208497298474,  xvt.v[0]);
-   TUASSERTFE(1796.0633538716695057,  xvt.v[1]);
-   TUASSERTFE(164.37355694668559636,  xvt.v[2]);
-   TUASSERTFE(-0.00021641042621940267715, xvt.clkbias);
-   TUASSERTFE(4.3200998334200003381e-12,  xvt.clkdrift);
-   TUASSERTFE(-8.8009421765298224418e-09, xvt.relcorr);
+   TUASSERTFESMRT(9272694.5732459314167,  xvt.x[0]);
+   TUASSERTFESMRT(-12471021.342128152028, xvt.x[1]);
+   TUASSERTFESMRT(21480849.108445473015,  xvt.x[2]);
+   TUASSERTFESMRT(2077.3605866395218982,  xvt.v[0]);
+   TUASSERTFESMRT(1796.0532152374469206,  xvt.v[1]);
+   TUASSERTFESMRT(164.37355694668559636,  xvt.v[2]);
+   TUASSERTFESMRT(-0.00021641042621940267715, xvt.clkbias);
+   TUASSERTFESMRT(4.3200998334200003381e-12,  xvt.clkdrift);
+   TUASSERTFESMRT(-8.8009421765298224418e-09, xvt.relcorr);
+   TUASSERTFESMRT(22289292.96130572632, range);
    TURETURN();
 }
 
@@ -305,7 +308,7 @@ testRawRange3HandlesException()
       time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
    gnsstk::Xvt xvt;
 
-   double pseduorange = 999999999;
+   double pseduorange = 2e7;
    TUTHROW(RawRange3(pseduorange, rxLocation, satId, time, navLib, xvt));
 
    TURETURN();
@@ -316,27 +319,28 @@ testRawRange4()
 {
    TUDEF("ORD", "RawRange4");
 
-   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::Position rxLocation(-7.0e5, -5.0e6, 3.0e6);
    gnsstk::SatID satId(5, gnsstk::SatelliteSystem::GPS);
    gnsstk::CommonTime
       time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));
    gnsstk::Xvt xvt;
 
-   double resultrange = RawRange4(rxLocation, satId, time, navLib, xvt);
+   double range = RawRange4(rxLocation, satId, time, navLib, xvt);
 
       // @note These fields are slightly different than the Xvt tagged
       // at the given time. RawRange tries to determine the position of the SV
       // at time of transmit but rotates the coordinates into the ECEF frame
       // at time of receive.
-   TUASSERTFE(9272491.2966245152056, xvt.x[0]);
-   TUASSERTFE(-12471194.72428862378, xvt.x[1]);
-   TUASSERTFE(21480834.569836035371, xvt.x[2]);
-   TUASSERTFE(2077.3534125996338844, xvt.v[0]);
-   TUASSERTFE(1796.0590315282379379, xvt.v[1]);
-   TUASSERTFE(164.41418674986550741, xvt.v[2]);
-   TUASSERTFE(-0.00021641042660146218705, xvt.clkbias);
-   TUASSERTFE(4.3200998334200003381e-12,  xvt.clkdrift);
-   TUASSERTFE(-8.8008904512869767448e-09, xvt.relcorr);
+   TUASSERTFESMRT(9272533.3759945072234, xvt.x[0]);
+   TUASSERTFESMRT(-12471159.894135156646, xvt.x[1]);
+   TUASSERTFESMRT(21480836.886153958738, xvt.x[2]);
+   TUASSERTFESMRT(2077.353159039827915, xvt.v[0]);
+   TUASSERTFESMRT(1796.0597201308269177, xvt.v[1]);
+   TUASSERTFESMRT(164.40771420896862764, xvt.v[2]);
+   TUASSERTFESMRT(-0.00021641042654059808575, xvt.clkbias);
+   TUASSERTFESMRT(4.3200998334200003381e-12,  xvt.clkdrift);
+   TUASSERTFESMRT(-8.8008986914900614763e-09, xvt.relcorr);
+   TUASSERTFESMRT(22289257.145802032202, range);
    TURETURN();
 }
 
@@ -345,7 +349,7 @@ testRawRange4HandlesException()
 {
    TUDEF("ORD", "RawRange4");
 
-   gnsstk::Position rxLocation(10, 10, 0);
+   gnsstk::Position rxLocation(-7.0e5, -5.0e6, 3.0e6);
    gnsstk::SatID satId(1, gnsstk::SatelliteSystem::GPS);
    gnsstk::CommonTime
       time(gnsstk::CivilTime(2015,7,19,2,0,0.0,gnsstk::TimeSystem::GPS));

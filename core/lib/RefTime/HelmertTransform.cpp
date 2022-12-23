@@ -163,7 +163,7 @@ namespace gnsstk
          result[0] = res(0);
          result[1] = res(1);
          result[2] = res(2);
-         result.setReferenceFrame(toFrame);
+         result.setReferenceFrame(RefFrame(toFrame, epoch));
       }
       else if (pos.getReferenceFrame() == toFrame)
       {
@@ -178,7 +178,7 @@ namespace gnsstk
          result[0] = res(0);
          result[1] = res(1);
          result[2] = res(2);
-         result.setReferenceFrame(fromFrame);
+         result.setReferenceFrame(RefFrame(fromFrame, epoch));
       }
       else
       {
@@ -202,7 +202,7 @@ namespace gnsstk
       try
       {
          Position pos(vec[0],vec[1],vec[2],Position::Cartesian), res;
-         pos.setReferenceFrame(frame);
+         pos.setReferenceFrame(RefFrame(frame, epoch));
          transform(pos, res);
          result = Vector<double>(3);
          result[0] = res.X();
@@ -222,7 +222,7 @@ namespace gnsstk
       try
       {
          Position pos(vec, Position::Cartesian), res;
-         pos.setReferenceFrame(frame);
+         pos.setReferenceFrame(RefFrame(frame, epoch));
          transform(pos, res);
          result[0] = res[0];
          result[1] = res[1];
@@ -264,7 +264,7 @@ namespace gnsstk
       try
       {
          Position pos(x,y,z,Position::Cartesian), res;
-         pos.setReferenceFrame(frame);
+         pos.setReferenceFrame(RefFrame(frame, epoch));
          transform(pos, res);
          rx = res.X();
          ry = res.Y();

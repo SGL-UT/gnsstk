@@ -22,6 +22,7 @@
 //
 //==============================================================================
 
+
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -35,42 +36,38 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#ifndef GNSSTK_GLOFNAVSATTYPE_HPP
+#define GNSSTK_GLOFNAVSATTYPE_HPP
 
-#include <iostream>
-#include <iomanip>
 #include <string>
-#include <map>
-
-#include "MetReader.hpp"
-#include "RinexMetStream.hpp"
-#include "RinexMetData.hpp"
-
-using namespace std;
+#include "EnumIterator.hpp"
 
 namespace gnsstk
 {
+      /// @ingroup NavFactory
+      //@{
 
-// ---------------------------------------------------------------------
-// ---------------------------------------------------------------------
-void MetReader::read(const std::string& fn)
-{
-   RinexMetStream rms;
-   try { rms.open(fn.c_str(), ios::in); }
-   catch (...) {
-      cerr << "Error reading weather data from file " << fn << endl;
-      exit(-1);
-   }
-
-   RinexMetData rmd;
-   while (rms >> rmd)
+      /// Values for GLONASS FDMA nav message, Word M.
+   enum class GLOFNavSatType
    {
-      WxObservation wob(
-         rmd.time,
-         rmd.data[RinexMetHeader::TD],
-         rmd.data[RinexMetHeader::PR],
-         rmd.data[RinexMetHeader::HR]);
-      wx.insertObservation(wob);
+      Unknown = -1,  ///< Unknown/Uninitialized value.
+      GLONASS = 0,   ///< Legacy GLONASS satellite.
+      GLONASS_M = 1, ///< GLONASS-M satellite.
+      Last,          ///< Used to verify that all items are described at compile time
+   };
+
+      /** Define an iterator so C++11 can do things like
+       * for (GLOFNavSatType i : GLOFNavSatTypeIterator()) */
+   typedef EnumIterator<GLOFNavSatType, GLOFNavSatType::Unknown, GLOFNavSatType::Last> GLOFNavSatTypeIterator;
+
+   namespace StringUtils
+   {
+         /// Convert SatType to a printable string for dump().
+      std::string asString(GLOFNavSatType e);
    }
-} // end of read()
+
+      //@}
 
 }
+
+#endif // GNSSTK_GLOFNAVSATTYPE_HPP

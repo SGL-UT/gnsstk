@@ -40,6 +40,7 @@
 #define GNSSTK_GPSLNAVEPH_HPP
 
 #include "GPSLNavData.hpp"
+#include "GPSLNavL2Codes.hpp"
 
 namespace gnsstk
 {
@@ -50,17 +51,11 @@ namespace gnsstk
    class GPSLNavEph : public GPSLNavData
    {
    public:
-         /// Codes on L2 channel, per IS-GPS-200 20.3.3.3.1.2
-      enum class L2Codes
-      {
-         Invalid1 = 0,
-         Pcode = 1,
-         CAcode = 2,
-         Invalid2 = 3
-      };
-
          /// Sets the nav message type and all other data members to 0.
       GPSLNavEph();
+         /// Create a deep copy of this object.
+      NavDataPtr clone() const override
+      { return std::make_shared<GPSLNavEph>(*this); }
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
@@ -110,7 +105,7 @@ namespace gnsstk
       bool alert3;        ///< Alert flag from SF3 HOW
       bool asFlag2;       ///< Anti-spoof flag from SF2 HOW.
       bool asFlag3;       ///< Anti-spoof flag from SF3 HOW.
-      L2Codes codesL2;    ///< Code on L2 in-phase component.
+      GPSLNavL2Codes codesL2; ///< Code on L2 in-phase component.
          /** L2 P data flag from subframe 1, word 3.
           * @note This retains the behavior as described in
           *   IS-GPS-200K 20.3.3.3.1.6, in that true (1) indicates the
@@ -119,13 +114,6 @@ namespace gnsstk
       bool L2Pdata;
       long aodo;          ///< Age of Data Offset in seconds (-1=uninitialized).
    };
-
-
-   namespace StringUtils
-   {
-         /// Convert L2Codes to a printable string for dump().
-      std::string asString(GPSLNavEph::L2Codes e);
-   }
 
       /** Class that sorts GPSLNavEph using the combination of
        * NavSatelliteID, GPS week and IODC.  Intended to be used as a

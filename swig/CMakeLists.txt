@@ -3,6 +3,14 @@
 #----------------------------------------
 
 cmake_minimum_required( VERSION 3.7.2  )
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13.0")
+  # UseSWIG target_name_policy
+  cmake_policy(SET CMP0078 OLD)
+endif()
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.14.0")
+  # UseSWIG module_name_policy
+  cmake_policy(SET CMP0086 NEW)
+endif()
 include( make_copy_targets.cmake )
 
 find_package( SWIG REQUIRED )
@@ -94,119 +102,170 @@ set( CLOCKMODEL_MODULE "ClockModel" )
 set(SWIG_MODULE_${CLOCKMODEL_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(ClockModel/ClockModel.i PROPERTIES CPLUSPLUS ON
                                          USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${CLOCKMODEL_MODULE} python ClockModel/ClockModel.i )
+swig_add_library( ${CLOCKMODEL_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES ClockModel/ClockModel.i )
 swig_link_libraries( ${CLOCKMODEL_MODULE} gnsstk )
 
 set( CODEGEN_MODULE "CodeGen" )
 set(SWIG_MODULE_${CODEGEN_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(CodeGen/CodeGen.i PROPERTIES CPLUSPLUS ON
                                          USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${CODEGEN_MODULE} python CodeGen/CodeGen.i )
+swig_add_library( ${CODEGEN_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES CodeGen/CodeGen.i )
 swig_link_libraries( ${CODEGEN_MODULE} gnsstk )
 
 set( FILEDIRPROC_MODULE "FileDirProc" )
 set(SWIG_MODULE_${FILEDIRPROC_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(FileDirProc/FileDirProc.i PROPERTIES CPLUSPLUS ON
                                                 USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${FILEDIRPROC_MODULE} python FileDirProc/FileDirProc.i )
+swig_add_library( ${FILEDIRPROC_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES FileDirProc/FileDirProc.i )
 swig_link_libraries( ${FILEDIRPROC_MODULE} gnsstk )
 
 set( FILEHANDLING_MODULE "FileHandling" )
 set(SWIG_MODULE_${FILEHANDLING_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(FileHandling/FileHandling.i PROPERTIES CPLUSPLUS ON
                                                 USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${FILEHANDLING_MODULE} python FileHandling/FileHandling.i )
+swig_add_library( ${FILEHANDLING_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES FileHandling/FileHandling.i )
 swig_link_libraries( ${FILEHANDLING_MODULE} gnsstk )
 
 set( GEOMATICS_MODULE "Geomatics" )
 set(SWIG_MODULE_${GEOMATICS_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(Geomatics/Geomatics.i PROPERTIES CPLUSPLUS ON
                                                 USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${GEOMATICS_MODULE} python Geomatics/Geomatics.i )
+swig_add_library( ${GEOMATICS_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES Geomatics/Geomatics.i )
 swig_link_libraries( ${GEOMATICS_MODULE} gnsstk )
 
 set( GNSSCORE_MODULE "GNSSCore" )
 set(SWIG_MODULE_${GNSSCORE_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(GNSSCore/GNSSCore.i PROPERTIES CPLUSPLUS ON
                                                 USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${GNSSCORE_MODULE} python GNSSCore/GNSSCore.i )
+swig_add_library( ${GNSSCORE_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES GNSSCore/GNSSCore.i )
 swig_link_libraries( ${GNSSCORE_MODULE} gnsstk )
 
 set( GNSSEPH_MODULE "GNSSEph" )
 set(SWIG_MODULE_${GNSSEPH_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(GNSSEph/GNSSEph.i PROPERTIES CPLUSPLUS ON
                                                 USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${GNSSEPH_MODULE} python GNSSEph/GNSSEph.i )
+swig_add_library( ${GNSSEPH_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES GNSSEph/GNSSEph.i )
 swig_link_libraries( ${GNSSEPH_MODULE} gnsstk )
 
 set( MATH_MODULE "Math" )
 set(SWIG_MODULE_${MATH_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(Math/Math.i PROPERTIES CPLUSPLUS ON
                                                 USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${MATH_MODULE} python Math/Math.i )
+swig_add_library( ${MATH_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES Math/Math.i )
 swig_link_libraries( ${MATH_MODULE} gnsstk )
 
 set( NAVFILTER_MODULE "NavFilter" )
 set(SWIG_MODULE_${NAVFILTER_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(NavFilter/NavFilter.i PROPERTIES CPLUSPLUS ON
                                             USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${NAVFILTER_MODULE} python NavFilter/NavFilter.i )
+swig_add_library( ${NAVFILTER_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES NavFilter/NavFilter.i )
 swig_link_libraries( ${NAVFILTER_MODULE} gnsstk )
 
 set( NEWNAV_MODULE "NewNav" )
 set(SWIG_MODULE_${NEWNAV_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(NewNav/NewNav.i PROPERTIES CPLUSPLUS ON
                                             USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${NEWNAV_MODULE} python NewNav/NewNav.i )
+swig_add_library( ${NEWNAV_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES NewNav/NewNav.i )
 swig_link_libraries( ${NEWNAV_MODULE} gnsstk )
 
 set( ORD_MODULE "ORD" )
 set(SWIG_MODULE_${ORD_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(ORD/ORD.i PROPERTIES CPLUSPLUS ON
                                             USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${ORD_MODULE} python ORD/ORD.i )
+swig_add_library( ${ORD_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES ORD/ORD.i )
 swig_link_libraries( ${ORD_MODULE} gnsstk )
 
 set( POSSOL_MODULE "PosSol" )
 set(SWIG_MODULE_${POSSOL_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(PosSol/PosSol.i PROPERTIES CPLUSPLUS ON
                                             USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${POSSOL_MODULE} python PosSol/PosSol.i )
+swig_add_library( ${POSSOL_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES PosSol/PosSol.i )
 swig_link_libraries( ${POSSOL_MODULE} gnsstk )
 
 set( REFTIME_MODULE "RefTime" )
 set(SWIG_MODULE_${REFTIME_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(RefTime/RefTime.i PROPERTIES CPLUSPLUS ON
                                                 USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${REFTIME_MODULE} python RefTime/RefTime.i )
+swig_add_library( ${REFTIME_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES RefTime/RefTime.i )
 swig_link_libraries( ${REFTIME_MODULE} gnsstk )
 
 set( RXIO_MODULE "Rxio" )
 set(SWIG_MODULE_${RXIO_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(Rxio/Rxio.i PROPERTIES CPLUSPLUS ON
                                             USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${RXIO_MODULE} python Rxio/Rxio.i )
+swig_add_library( ${RXIO_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES Rxio/Rxio.i )
 swig_link_libraries( ${RXIO_MODULE} gnsstk )
 
 set( TIMEHANDLING_MODULE "TimeHandling" )
 set(SWIG_MODULE_${TIMEHANDLING_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(TimeHandling/TimeHandling.i PROPERTIES CPLUSPLUS ON
                                                 USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${TIMEHANDLING_MODULE} python TimeHandling/TimeHandling.i )
+swig_add_library( ${TIMEHANDLING_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES TimeHandling/TimeHandling.i )
 swig_link_libraries( ${TIMEHANDLING_MODULE} gnsstk )
 
 set( UTILITIES_MODULE "Utilities" )
 set(SWIG_MODULE_${UTILITIES_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(Utilities/Utilities.i PROPERTIES CPLUSPLUS ON
                                                 USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${UTILITIES_MODULE} python Utilities/Utilities.i )
+swig_add_library( ${UTILITIES_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES Utilities/Utilities.i )
 swig_link_libraries( ${UTILITIES_MODULE} gnsstk )
 
 set( SWIG_MODULE "gnsstk" )
 set(SWIG_MODULE_${SWIG_MODULE}_EXTRA_FLAGS ${TK_EXTRA_FLAGS})
 set_source_files_properties(gnsstk.i PROPERTIES CPLUSPLUS ON
                                      USE_SWIG_DEPENDENCIES TRUE)
-swig_add_module( ${SWIG_MODULE} python gnsstk.i )
+swig_add_library( ${SWIG_MODULE}
+                  TYPE MODULE
+                  LANGUAGE python
+                  SOURCES gnsstk.i )
 swig_link_libraries( ${SWIG_MODULE} gnsstk )
 
 # Install the gnsstk module into the package file tree
@@ -226,7 +285,7 @@ set( CMAKE_SWIG_OUTDIR ${MODULE_PATH}/${SWIG_MODULE} )
 #----------------------------------------
 add_custom_target(swig-make-directory ALL
     COMMAND ${CMAKE_COMMAND} -E make_directory ${MODULE_PATH}/gnsstk)
-add_dependencies("_${SWIG_MODULE}" swig-make-directory)
+add_dependencies("${SWIG_MODULE}" swig-make-directory)
 
 add_custom_command( TARGET "_${CLOCKMODEL_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:_${CLOCKMODEL_MODULE}>" ${CMAKE_SWIG_OUTDIR} )
 add_custom_command( TARGET "_${CLOCKMODEL_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${CLOCKMODEL_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
@@ -345,7 +404,7 @@ if( PIP_WHEEL_SWITCH )
     add_custom_target(swig-make-wheel ALL
             COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} bdist_wheel
             WORKING_DIRECTORY ${MODULE_PATH}
-            DEPENDS "_${SWIG_MODULE}")
+            DEPENDS "${SWIG_MODULE}")
 endif()
 
 

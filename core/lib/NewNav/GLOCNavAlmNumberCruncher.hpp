@@ -62,7 +62,7 @@ namespace gnsstk
       k1.setData(B, L1, uncorrected);
       k2.setData(B, L, uncorrected);
       corrected.setData(L, uncorrected, k1, k2);
-      return corrected.getXvt();
+      return corrected.getXvt(toi);
    }
 
 

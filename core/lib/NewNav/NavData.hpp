@@ -92,6 +92,8 @@ namespace gnsstk
       GNSSTK_EXPORT static const std::string dumpTimeFmtBrief;
          /// Initialize internal data fields.
       NavData();
+         /// Create a deep copy of this object, whatever it truly is.
+      virtual NavDataPtr clone() const = 0;
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
           * @return true if this message is valid according to ICD criteria.
@@ -152,6 +154,9 @@ namespace gnsstk
          return ((satMetaDataStore != nullptr) &&
                  satMetaDataStore->getSVN(sat,when,svn));
       }
+         /** Return lines of text containing the sufficient
+          * specification of the current nav message signal. */
+      std::string getSignalString() const;
          /** Return an appropriate header label for the time format in dump().
           * @param[in] dl The detail level for the time string to be dumped. 
           * @return A string labeling the columns of the time format

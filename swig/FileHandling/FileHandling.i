@@ -221,6 +221,7 @@ from __future__ import absolute_import
 %template(FileStore_YumaHeader) gnsstk::FileStore<gnsstk::YumaHeader>;
 %include "YumaData.hpp"
 %include "YumaStream.hpp"
+%include "MetReader.hpp"
 
 // =============================================================
 //  Section 11: Explicit Python wrappers

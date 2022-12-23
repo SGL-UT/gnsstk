@@ -63,7 +63,7 @@ namespace gnsstk
        *
        * The NavFactory classes provide an interface for searching for
        * navigation message data, including ephemeris, almanac, health
-       * and time offset data, where
+       * ionospheric, ISC and time offset data, where
        *   \li Ephemeris is the more precise orbital information where
        *       the subject and transmitting satellite are the same.
        *   \li Almanac is less precise orbit information where the
@@ -73,6 +73,16 @@ namespace gnsstk
        *       is in a usable state.
        *   \li Time offset data provides the necessary data for
        *       converting between time systems, e.g. GPS and UTC.
+       *   \li Ionospheric data is provided by the system to model
+       *       signal delays through the ionosphere for
+       *       single-frequency users.
+       *   \li ISC (inter-signal correction) data is provided by the
+       *       system to determine the delay between a given signal
+       *       and the defined reference signal.
+       *
+       * @note Clock data also appears but only in SP3 data and is
+       * really only used for internal storage.  It is factored into
+       * the computed Xvt in that case.
        *
        * The simplest portion of this interface is defined in the
        * NavLibrary class, which provides an interface for computing
@@ -91,6 +101,8 @@ namespace gnsstk
        *       below), velocity and clock offset.
        *   \li NavLibrary::getHealth() to get a satellite's health status.
        *   \li NavLibrary::getOffset() to get TimeSystem conversion information.
+       *   \li NavLibrary::getIonoCorr() to get ionospheric corrections.
+       *   \li NavLibrary::getISC() to get inter-signal corrections.
        *   \li NavLibrary::find() to get arbitrary navigation message
        *       data (excluding TimeOffset information).
        *
@@ -213,9 +225,9 @@ namespace gnsstk
        * }
        *    // Search the NavLibrary
        * gnsstk::NavSatelliteID sat(subjID, system, gnsstk::CarrierBand::Any,
-       *                           gnsstk::TrackingCode::Any,
-       *                           gnsstk::XmitAnt::Any, freqOffs,
-       *                           !freqOffsSpec);
+       *                            gnsstk::TrackingCode::Any,
+       *                            gnsstk::XmitAnt::Any, freqOffs,
+       *                            !freqOffsSpec);
        * if (!navLib.getXvt(sat, when, xvt))
        * {
        *    cerr << "Unable to find XVT for " << sat << " @ " << when << endl;
@@ -259,7 +271,7 @@ namespace gnsstk
        * }
        *    // Search the NavLibrary
        * gnsstk::NavSatelliteID sat(subjID, system, band, code, xmitAnt,
-       *                           freqOffs, !freqOffsSpec, nav);
+       *                            freqOffs, !freqOffsSpec, nav);
        * if (!navLib.getXvt(sat, when, xvt, false))
        * {
        *    cerr << "Unable to find XVT for " << sat << " @ " << when << endl;
@@ -305,7 +317,7 @@ namespace gnsstk
        * }
        *    // Search the NavLibrary
        * gnsstk::ObsID oid(gnsstk::ObservationType::NavMsg, band, code,
-       *                  freqOffs, xmitAnt, !freqOffsSpec);
+       *                   freqOffs, xmitAnt, !freqOffsSpec);
        * gnsstk::SatID subjSat(subjID, subjSys);
        * gnsstk::SatID xmitSat(xmitID, xmitSys);
        * gnsstk::NavSatelliteID sat(subjSat, xmitSat, oid, nav);
@@ -349,6 +361,34 @@ namespace gnsstk
        *    }
        * }
        * \endcode
+       *
+       * @subsubsection NavLibraryPracticalExamples Practical Examples
+       *
+       * Some practical examples may be found in gnsstk (library
+       * code).  These are:
+       *
+       * | Source file         | Use case |
+       * | ------------------- | -------- |
+       * | EphemerisRange.cpp  | Get Xvt+IODC+health |
+       * | BCIonoCorrector.cpp | Look up ionospheric corrections |
+       * | BCISCorrector.cpp   | Look up inter-signal corrections |
+       * 
+       * More complete practical examples for NavLibrary and related classes
+       * can be found in the gnsstk-apps repository.  Those are:
+       *
+       * | Source file     | Use case |
+       * | --------------- | -------- |
+       * | timeconvert.cpp | Look up TimeOffsetData and change time systems. |
+       * | navdump.cpp     | Dump data, look up arbitrary data types, compute |
+       * | ^               | Xvt, load different data types from different |
+       * | ^               | files. |
+       * | WhereSat.cpp    | Print Xvt of all known satellites in a time range |
+       * 
+       * (If you see ^ rendered in the table above, try a newer
+       * version of Doxygen)
+       *
+       * Practical examples using Python are somewhat scarce, but what
+       * there is can be found in swig/tests, e.g. test_NavLibrary.py.
        *
        * @section NavFactorySearchParams Search Parameters
        *
@@ -574,9 +614,10 @@ namespace gnsstk
        *     whether the orbit data came from LNAV or CNAV or CNAV2.
        *
        * \li Get ionospheric correction data...
-       *   * Sadly, this is not available in an abstract fashion at this
-       *     time, and if this data is needed, one will have to
-       *     process the system-specific data.
+       *   * Use the NavLibrary::getIonoCorr() method, or use
+       *     NavLibrary::find() while specifying NavMessageType::Iono,
+       *     then calling the IonoNavData::getIonoCorr() method on the
+       *     resulting match.
        *
        * \li Get satellite XVT/health/time offset (aka clock
        *     correction) from arbitrary input...
@@ -614,10 +655,10 @@ namespace gnsstk
        *
        * \li Only use data from healthy satellites...
        *   * The NavLibrary::getXvt(), NavLibrary::getHealth(),
-       *     NavLibrary::getOffset(), NavLibrary::find() and
-       *     NavDataFactory::find() methods all support the
-       *     specification of the desired health status of the
-       *     transmitting satellite (in the form of the SVHealth
+       *     NavLibrary::getOffset(), NavLibrary::getISC(),
+       *     NavLibrary::find() and NavDataFactory::find() methods all
+       *     support the specification of the desired health status of
+       *     the transmitting satellite (in the form of the SVHealth
        *     enumeration).  By default, the health of the transmitting
        *     satellite is ignored, which is the fastest option as it
        *     does not engender searches for or checking of health
@@ -693,19 +734,6 @@ namespace gnsstk
        *     NavDataFactory::find() method to get your orbital data
        *     (ephemeris or almanac), then simply use the getXvt()
        *     method with different times.
-       *
-       * @todo GLONASS probably has health information in its
-       * non-Keplerian ephemeris data, but SP3 does not.  The GLONASS
-       * data have not been implemented yet in this library but at
-       * some point a decision will need to be made.  It might make
-       * sense to move the health field up to the OrbitData class and
-       * simply set it to "Unknown" for SP3.
-       *
-       * @todo Determine if OrbitDataKepler::beginFit and
-       * OrbitDataKepler::endFit need to be moved up to OrbitData.
-       * This mostly (if not exclusively) affects GLONASS orbits and
-       * OrbitDataSP3.  If so, NavDataLibraryWithStore needs to
-       * reflect this change.
        *
        * @todo Determine if a URA in meters should be added to
        * OrbitDataKepler or OrbitData.
@@ -839,8 +867,6 @@ namespace gnsstk
        *      constructor is called at run time, thereby adding the
        *      custom factory to MultiFormatNavDataFactory whenever the
        *      code is used.
-       *
-       * As an example of how this is done, refer to ExtFactoryInitializer.cpp.
        *
        * @warning It is possible that even with this implementation,
        * the static initialization may not happen properly, a problem
@@ -1154,54 +1180,38 @@ namespace gnsstk
                        NavType nt = NavType::Any, int freqOffs = 0,
                        bool freqOffsWild = true);
 
-         /** Get inter-signal corrections for the single-frequency user.
+         /** Get inter-signal corrections.
+          * @param[in] sat The satellite whose inter-signal
+          *   corrections are to be obtained.
           * @param[in] oid The carrier band and tracking code of the
           *   signal to get the correction for.
           * @param[in] when The time of the observation being
           *   corrected.  This time is also used to look up ISC data.
           * @param[out] corrOut The correction in seconds for the
           *   given band/code.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          * @param[in] order Specify whether to search by receiver
+          *   behavior or by nearest to when in time.
           * @return true If band/code are valid for this object and
           *   corrOut was set according to available data. */
-      bool getISC(const ObsID& oid, const CommonTime& when, double& corrOut);
-
-         /** Get inter-signal corrections for the dual-frequency user.
-          * @param[in] oid1 The carrier band/tracking code of the
-          *   primary signal that was used to create a dual-frequency,
-          *   iono-free combined pseudorange.
-          * @param[in] oid2 The carrier band/tracking code of the
-          *   secondary signal to get the correction for.
-          * @param[in] when The time of the observation being
-          *   corrected.  This time is also used to look up ISC data.
-          * @param[out] corrOut The correction in seconds for the given
-          *   band/code pair.
-          * @return true If bands/codes are valid for this object and
-          *   corrOut was set according to available data. */
-      bool getISC(const ObsID& oid1, const ObsID& oid2, const CommonTime& when,
-                  double& corrOut);
+      bool getISC(const SatID& sat, const ObsID& oid, const CommonTime& when,
+                  double& corrOut, SVHealth xmitHealth = SVHealth::Any,
+                  NavValidityType valid = NavValidityType::ValidOnly,
+                  NavSearchOrder order = NavSearchOrder::User);
 
          /** Get an appropriate NavMessageID to use to perform a
-          * search for ISC data for a given ObsID in a
-          * single-frequency user case.
+          * search for ISC data for a given SatID and ObsID.
+          * @param[in] sat The satellite whose inter-signal
+          *   corrections are to be obtained.
           * @param[in] oid The ObsID for which ISCs are desired.
           * @return A list of appropriate NavMessageID objects to use
           *   for searching.  This list will be empty if oid is not a
           *   signal for which ISC data sources are known. */
-      static std::list<NavMessageID> getISCNMID(const ObsID& oid);
-
-         /** Get an appropriate NavMessageID to use to perform a
-          * search for ISC data for a given pair of ObsID in a
-          * dual-frequency user case.
-          * @param[in] oid1 The carrier band/tracking code of the
-          *   primary signal that was used to create a dual-frequency,
-          *   iono-free combined pseudorange.
-          * @param[in] oid2 The carrier band/tracking code of the
-          *   secondary signal to get the correction for.
-          * @return A list of appropriate NavMessageID objects to use
-          *   for searching.  This list will be empty if oid is not a
-          *   signal for which ISC data sources are known. */
-      static std::list<NavMessageID> getISCNMID(const ObsID& oid1,
-                                                const ObsID& oid2);
+      static std::list<NavMessageID> getISCNMID(const SatID& sat,
+                                                const ObsID& oid);
 
          /** Search factories to find the navigation message that meets
           * the specified criteria.

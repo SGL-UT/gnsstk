@@ -47,7 +47,7 @@
 
 namespace gnsstk
 {
-      /// @ingroup Geodetic
+      /// @ingroup geodeticgroup
       //@{
 
       /** Wrap data for just the sine and cosine of an angle.

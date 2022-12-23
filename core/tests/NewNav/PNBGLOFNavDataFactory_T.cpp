@@ -66,12 +66,12 @@ namespace gnsstk
       s << StringUtils::asString(h);
       return s;
    }
-   ostream& operator<<(ostream& s, GLOFNavData::SatType e)
+   ostream& operator<<(ostream& s, GLOFNavSatType e)
    {
       s << StringUtils::asString(e);
       return s;
    }
-   ostream& operator<<(ostream& s, GLOFNavData::PCode e)
+   ostream& operator<<(ostream& s, GLOFNavPCode e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -391,8 +391,8 @@ processEphTest()
             // OrbitData has no data of its own
             // GLOFNavData fields
          TUASSERTE(gnsstk::CommonTime, navFNAVGLOStr2ct, eph->xmit2);
-         TUASSERTE(gnsstk::GLOFNavData::SatType,
-                   gnsstk::GLOFNavData::SatType::GLONASS_M, eph->satType);
+         TUASSERTE(gnsstk::GLOFNavSatType,
+                   gnsstk::GLOFNavSatType::GLONASS_M, eph->satType);
          TUASSERTE(unsigned, 1, eph->slot);
          TUASSERTE(bool, false, eph->lhealth);
          TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Healthy, eph->health);
@@ -420,8 +420,8 @@ processEphTest()
          TUASSERTE(unsigned, 1, eph->P3);
          TUASSERTE(unsigned, 0, eph->P4);
          TUASSERTE(unsigned, 0, eph->interval);
-         TUASSERTE(gnsstk::GLOFNavData::PCode,
-                   gnsstk::GLOFNavData::PCode::CCalcGPSCalc, eph->opStatus);
+         TUASSERTE(gnsstk::GLOFNavPCode,
+                   gnsstk::GLOFNavPCode::CCalcGPSCalc, eph->opStatus);
          TUASSERTFE(8.3819031715393066406e-09, eph->tauDelta);
          TUASSERTE(unsigned, 0, eph->aod);
          TUASSERTE(unsigned, 1, eph->accIndex);
@@ -515,8 +515,8 @@ processAlmTest()
             // OrbitData has no data of its own
             // GLOFNavData fields
          TUASSERTE(gnsstk::CommonTime, navFNAVGLOStr7ct, alm->xmit2);
-         TUASSERTE(gnsstk::GLOFNavData::SatType,
-                   gnsstk::GLOFNavData::SatType::GLONASS_M, alm->satType);
+         TUASSERTE(gnsstk::GLOFNavSatType,
+                   gnsstk::GLOFNavSatType::GLONASS_M, alm->satType);
          TUASSERTE(unsigned, 1, alm->slot);
          TUASSERTE(bool, false, alm->lhealth);
          TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Healthy, alm->health);

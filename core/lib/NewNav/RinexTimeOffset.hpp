@@ -54,6 +54,9 @@ namespace gnsstk
    public:
          /// Initialize all data to 0.
       RinexTimeOffset();
+         /// Create a deep copy of this object.
+      NavDataPtr clone() const override
+      { return std::make_shared<RinexTimeOffset>(*this); }
 
          /** Construct from a pre-existing TimeSystemCorrection object
           * and leap seconds.

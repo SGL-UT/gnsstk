@@ -275,7 +275,7 @@ namespace gnsstk
             eph->interval = 0;
             break;
       }
-      eph->opStatus = static_cast<GLOFNavEph::PCode>(
+      eph->opStatus = static_cast<GLOFNavPCode>(
          ephS[esiP]->asUnsignedLong(esbP,enbP,escP));
       eph->tauDelta = ephS[esidtaun]->asSignMagDouble(
          esbdtaun,enbdtaun,escdtaun);
@@ -283,7 +283,7 @@ namespace gnsstk
       eph->accIndex = ephS[esiFT]->asUnsignedLong(esbFT,enbFT,escFT);
       eph->dayCount = ephS[esiNT]->asUnsignedLong(esbNT,enbNT,escNT);
       eph->slot = ephS[esin]->asUnsignedLong(esbn,enbn,escn);
-      eph->satType = static_cast<GLOFNavEph::SatType>(
+      eph->satType = static_cast<GLOFNavSatType>(
          ephS[esiM]->asUnsignedLong(esbM,enbM,escM));
       YDSTime toe(eph->timeStamp);
          // This is a kludge to have what was deemed to be a
@@ -447,15 +447,9 @@ namespace gnsstk
       alm->health = (alm->healthBits == 1
                      ? SVHealth::Healthy
                      : SVHealth::Unhealthy);
-      alm->satType = static_cast<GLOFNavEph::SatType>(
+      alm->satType = static_cast<GLOFNavSatType>(
          almS[almIdx+asoM]->asUnsignedLong(asbM,anbM,ascM));
       alm->taunA = almS[almIdx+asotau]->asSignMagDouble(asbtau,anbtau,asctau);
-      // cerr << "almIdx+asolambda=" << (almIdx+asolambda) << endl;
-      unsigned long fudge1 = almS[almIdx]->asUnsignedLong(
-         fsbStrNum,fnbStrNum,fscStrNum);
-      unsigned long fudge2 = almS[almIdx+1]->asUnsignedLong(
-         fsbStrNum,fnbStrNum,fscStrNum);
-      // cerr << "fudge1=" << fudge1 << "  fudge2=" << fudge2 << endl;
       alm->lambdanA = almS[almIdx+asolambda]->asSignMagDoubleSemiCircles(
          asblambda,anblambda,asclambda);
       alm->deltainA = almS[almIdx+asodeltai]->asSignMagDoubleSemiCircles(

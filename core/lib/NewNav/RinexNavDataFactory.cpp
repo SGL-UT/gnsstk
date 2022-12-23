@@ -367,7 +367,7 @@ namespace gnsstk
                gps->asFlag = gps->asFlag2 = gps->asFlag3 = false;
             }
             gps->alert = gps->alert2 = gps->alert3 = false;
-            gps->codesL2 = (GPSLNavEph::L2Codes)navIn.codeflgs;
+            gps->codesL2 = (GPSLNavL2Codes)navIn.codeflgs;
             gps->L2Pdata = (navIn.L2Pdata > 0);
             gps->fixFit();
             break;

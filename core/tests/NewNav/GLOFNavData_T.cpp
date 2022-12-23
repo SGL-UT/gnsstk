@@ -41,7 +41,7 @@
 
 namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, GLOFNavData::SatType e)
+   std::ostream& operator<<(std::ostream& s, GLOFNavSatType e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -63,6 +63,8 @@ public:
    bool getXvt(const gnsstk::CommonTime& t, gnsstk::Xvt& xvt,
                const gnsstk::ObsID& oid = gnsstk::ObsID()) override
    { return false; }
+   gnsstk::NavDataPtr clone() const override
+   { return std::make_shared<TestClass>(*this); }
 };
 
 
@@ -81,7 +83,7 @@ constructorTest()
    TestClass uut;
    gnsstk::CommonTime exp;
    TUASSERTE(gnsstk::CommonTime, exp, uut.xmit2);
-   TUASSERTE(gnsstk::GLOFNavData::SatType,gnsstk::GLOFNavData::SatType::Unknown,
+   TUASSERTE(gnsstk::GLOFNavSatType, gnsstk::GLOFNavSatType::Unknown,
              uut.satType);
    TUASSERTE(unsigned, -1, uut.slot);
    TUASSERTE(bool, false, uut.lhealth);

@@ -44,7 +44,7 @@
 
 namespace gnsstk
 {
-      /// @ingroup Geodetic
+      /// @ingroup geodeticgroup
       //@{
 
       /** Because the angle can be initialized via a variety of

@@ -78,6 +78,9 @@ namespace gnsstk
 
          /// Sets the nav message type, and all other data members to 0.
       GLOCNavAlm();
+         /// Create a deep copy of this object.
+      NavDataPtr clone() const override
+      { return std::make_shared<GLOCNavAlm>(*this); }
 
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
@@ -284,8 +287,9 @@ namespace gnsstk
              * @pre r must be set
              * @pre lambda must be set
              * @pre u must be set
-             * @pre i must be set */
-         inline Xvt getXvt();
+             * @pre i must be set
+             * @param[in] toi The time at which the Xvt is being computed. */
+         inline Xvt getXvt(const gnsstk::CommonTime& toi);
       private:
          double E;       ///< Eccentric anomaly
          double epsilon; ///< epsilon prime, eccentricity.

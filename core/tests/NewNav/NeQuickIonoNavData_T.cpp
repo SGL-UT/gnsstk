@@ -60,6 +60,15 @@ gnsstk::CivilTime convertTime(double hour, int month)
 /// Use this "ellipsoid" (sphere) for all testing
 gnsstk::GalileoIonoEllipsoid galEll;
 
+/// non-abstract class under test
+class TestClass : public gnsstk::NeQuickIonoNavData
+{
+public:
+   TestClass() = default;
+   gnsstk::NavDataPtr clone() const override
+   { return std::make_shared<TestClass>(*this); }
+};
+
 class NeQuickIonoNavData_T
 {
 public:
@@ -667,7 +676,7 @@ unsigned NeQuickIonoNavData_T ::
 constructorTest()
 {
    TUDEF("NeQuickIonoNavData", "NeQuickIonoNavData()");
-   gnsstk::NeQuickIonoNavData uut;
+   TestClass uut;
    TUASSERTFE(0.0, uut.ai[0]);
    TUASSERTFE(0.0, uut.ai[1]);
    TUASSERTFE(0.0, uut.ai[2]);
@@ -685,7 +694,7 @@ getEffIonoLevelTest()
 {
    TUDEF("NeQuickIonoNavData", "getEffIonoLevel");
    unsigned numTests = sizeof(testDataAz)/sizeof(testDataAz[0]);
-   gnsstk::NeQuickIonoNavData uut;
+   TestClass uut;
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
       const TestDataAz& td(testDataAz[testNum]);
@@ -848,7 +857,7 @@ getTECTest()
    using namespace std;
    TUDEF("NeQuickIonoNavData::ModelParameters", "getTEC");
    unsigned numTests = sizeof(testDataTEC)/sizeof(testDataTEC[0]);
-   gnsstk::NeQuickIonoNavData uut;
+   TestClass uut;
       /// E layer maximum density height in km.
    constexpr double hmE = 120.0;                                        //eq.78
    for (unsigned testNum = 0; testNum < numTests; testNum++)
@@ -889,7 +898,7 @@ getIonoCorrTest()
    using namespace std;
    TUDEF("NeQuickIonoNavData::ModelParameters", "getIonoCorr");
    unsigned numTests = sizeof(testDataTEC)/sizeof(testDataTEC[0]);
-   gnsstk::NeQuickIonoNavData uut;
+   TestClass uut;
       /// E layer maximum density height in km.
    constexpr double hmE = 120.0;                                        //eq.78
    gnsstk::CarrierBand band;

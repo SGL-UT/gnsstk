@@ -222,17 +222,18 @@ namespace gnsstk
 
 
    bool NavLibrary ::
-   getISC(const ObsID& oid, const CommonTime& when, double& corrOut)
+   getISC(const SatID& sat, const ObsID& oid, const CommonTime& when,
+          double& corrOut, SVHealth xmitHealth, NavValidityType valid,
+          NavSearchOrder order)
    {
       DEBUGTRACE_FUNCTION();
-      std::list<NavMessageID> msgIDs(getISCNMID(oid));
+      std::list<NavMessageID> msgIDs(getISCNMID(sat, oid));
       if (msgIDs.empty())
          return false;
       NavDataPtr navOut;
       for (const auto& nmid : msgIDs)
       {
-         if (find(nmid, when, navOut, SVHealth::Healthy,
-                  NavValidityType::ValidOnly, NavSearchOrder::Nearest))
+         if (find(nmid, when, navOut, xmitHealth, valid, order))
          {
             InterSigCorr *isc = dynamic_cast<InterSigCorr*>(navOut.get());
                // This if test allows getISC to fail and the loop to
@@ -245,266 +246,142 @@ namespace gnsstk
    }
 
 
-   bool NavLibrary ::
-   getISC(const ObsID& oid1, const ObsID& oid2, const CommonTime& when,
-          double& corrOut)
-   {
-      DEBUGTRACE_FUNCTION();
-         // This ugly mess is a special case as GPS LNAV does not have
-         // ISCs that apply to the iono-free combined pseudorange.
-      if ((oid1.band == CarrierBand::L1) && (oid2.band == CarrierBand::L2) &&
-          ((oid1.code == TrackingCode::CA) ||
-           (oid1.code == TrackingCode::P) ||
-           (oid1.code == TrackingCode::Y) ||
-           (oid1.code == TrackingCode::Ztracking) ||
-           (oid1.code == TrackingCode::YCodeless) ||
-           (oid1.code == TrackingCode::Semicodeless)) &&
-          ((oid2.code == TrackingCode::P) ||
-           (oid2.code == TrackingCode::Y) ||
-           (oid2.code == TrackingCode::Ztracking) ||
-           (oid2.code == TrackingCode::YCodeless) ||
-           (oid2.code == TrackingCode::Semicodeless)))
-      {
-         corrOut = 0.0;
-         return true;
-      }
-      std::list<NavMessageID> msgIDs(getISCNMID(oid1,oid2));
-      if (msgIDs.empty())
-         return false;
-      NavDataPtr navOut;
-      for (const auto& nmid : msgIDs)
-      {
-         if (find(nmid, when, navOut, SVHealth::Healthy,
-                  NavValidityType::ValidOnly, NavSearchOrder::Nearest))
-         {
-            InterSigCorr *isc = dynamic_cast<InterSigCorr*>(navOut.get());
-               // This if test allows getISC to fail and the loop to
-               // continue and attempt to find another match.
-            if (isc->getISC(oid1, oid2, corrOut))
-               return true;
-         }
-      }
-      return false;
-   }
-
-
    std::list<NavMessageID> NavLibrary ::
-   getISCNMID(const ObsID& oid)
+   getISCNMID(const SatID& sat, const ObsID& oid)
    {
       DEBUGTRACE_FUNCTION();
       std::list<NavMessageID> rv;
-      const SatID gpsAnySat(SatelliteSystem::GPS);
       const ObsID anyObs(ObservationType::NavMsg,
                          CarrierBand::Any,
                          TrackingCode::Any,
                          XmitAnt::Any);
-      NavMessageID nmid(
-         NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                        NavType::Unknown),
-         NavMessageType::ISC);
-      switch (oid.code)
+      if (sat.system == SatelliteSystem::GPS)
       {
-         case TrackingCode::CA:
-            if (oid.band == CarrierBand::L1)
-            {
-               nmid.nav = NavType::GPSLNAV;
-               rv.push_back(nmid);
-               rv.push_back(
-                  NavMessageID(
-                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                                    NavType::GPSCNAVL2),
-                     NavMessageType::ISC));
-               rv.push_back(
-                  NavMessageID(
-                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                                    NavType::GPSCNAVL5),
-                     NavMessageType::ISC));
-               rv.push_back(
-                  NavMessageID(
-                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                                    NavType::GPSCNAV2),
-                     NavMessageType::ISC));
-            }
-            break;
-         case TrackingCode::P:
-         case TrackingCode::Y:
-         case TrackingCode::Ztracking:
-         case TrackingCode::YCodeless:
-         case TrackingCode::Semicodeless:
-            switch (oid.band)
-            {
-               case CarrierBand::L1:
-               case CarrierBand::L2:
-                  rv.push_back(
-                     NavMessageID(
-                        NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                                       NavType::GPSLNAV),
-                        NavMessageType::ISC));
-                  break;
-            }
-            break;
-         case TrackingCode::MD:
-         case TrackingCode::MDP:
-         case TrackingCode::MP:
-         case TrackingCode::MPA:
-         case TrackingCode::MARLD:
-         case TrackingCode::MARLP:
-         case TrackingCode::Mprime:
-         case TrackingCode::MprimePA:
-            switch (oid.band)
-            {
-               case CarrierBand::L1:
-               case CarrierBand::L2:
-                  rv.push_back(
-                     NavMessageID(
-                        NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                                       NavType::GPSMNAV),
-                        NavMessageType::ISC));
-                  break;
-            }
-            break;
-         case TrackingCode::L2CM:
-         case TrackingCode::L2CL:
-         case TrackingCode::L2CML:
-            if (oid.band == CarrierBand::L2)
-            {
-               rv.push_back(
-                  NavMessageID(
-                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                                    NavType::GPSCNAVL2),
-                     NavMessageType::ISC));
-               rv.push_back(
-                  NavMessageID(
-                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                                    NavType::GPSCNAVL5),
-                     NavMessageType::ISC));
-               rv.push_back(
-                  NavMessageID(
-                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                                    NavType::GPSCNAV2),
-                     NavMessageType::ISC));
-            }
-            break;
-         case TrackingCode::L5I:
-         case TrackingCode::L5Q:
-         case TrackingCode::L5IQ:
-            if (oid.band == CarrierBand::L5)
-            {
-               rv.push_back(
-                  NavMessageID(
-                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                                    NavType::GPSCNAVL5),
-                     NavMessageType::ISC));
-               rv.push_back(
-                  NavMessageID(
-                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                                    NavType::GPSCNAVL2),
-                     NavMessageType::ISC));
-               rv.push_back(
-                  NavMessageID(
-                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                                    NavType::GPSCNAV2),
-                     NavMessageType::ISC));
-            }
-            break;
-         case TrackingCode::L1CP:
-         case TrackingCode::L1CD:
-         case TrackingCode::L1CDP:
-            if (oid.band == CarrierBand::L1)
-            {
-               rv.push_back(
-                  NavMessageID(
-                     NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                                    NavType::GPSCNAV2),
-                     NavMessageType::ISC));
-            }
-            break;
-      }
-      return rv;
-   }
-
-
-   std::list<NavMessageID> NavLibrary ::
-   getISCNMID(const ObsID& oid1, const ObsID& oid2)
-   {
-      DEBUGTRACE_FUNCTION();
-      std::list<NavMessageID> rv;
-      const SatID gpsAnySat(SatelliteSystem::GPS);
-      const ObsID anyObs(ObservationType::NavMsg,
-                         CarrierBand::Any,
-                         TrackingCode::Any,
-                         XmitAnt::Any);
-      if ((oid1.band == CarrierBand::L1) &&
-          (oid1.code == TrackingCode::CA) &&
-          (((oid2.band == CarrierBand::L5) &&
-            ((oid2.code == TrackingCode::L5I) ||
-             (oid2.code == TrackingCode::L5Q))) ||
-           ((oid2.band == CarrierBand::L2) &&
-            ((oid2.code == TrackingCode::L2CM) ||
-             (oid2.code == TrackingCode::L2CL) ||
-             (oid2.code == TrackingCode::L2CML)))))
-      {
-         rv.push_back(
-            NavMessageID(
-               NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                              NavType::GPSCNAVL2),
-               NavMessageType::ISC));
-         NavMessageID l5(
-            NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                           NavType::GPSCNAVL5),
+         const SatID gpsAnySat(SatelliteSystem::GPS);
+         NavMessageID nmid(
+            NavSatelliteID(sat, gpsAnySat, anyObs,
+                           NavType::Unknown),
             NavMessageType::ISC);
-            // Push the codes so they're in order preferring the same
-            // band, mostly because it's expected that if you're
-            // processing L2 you'll have L2 nav data, etc.
-         if (oid2.band == CarrierBand::L5)
-            rv.push_front(l5);
-         else
-            rv.push_back(l5);
-         rv.push_back(
-            NavMessageID(
-               NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                              NavType::GPSCNAV2),
-               NavMessageType::ISC));
-      }
-      else if ((oid1.band == CarrierBand::L1) &&
-               ((oid1.code == TrackingCode::L1CP) ||
-                (oid1.code == TrackingCode::L1CD)) &&
-               (oid2.band == CarrierBand::L2) &&
-               ((oid2.code == TrackingCode::L2CM) ||
-                (oid2.code == TrackingCode::L2CL) ||
-                (oid2.code == TrackingCode::L2CML)))
-      {
-         rv.push_back(
-            NavMessageID(
-               NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                              NavType::GPSCNAV2),
-               NavMessageType::ISC));
-      }
-      else if ((oid1.band == CarrierBand::L1) &&
-               (oid2.band == CarrierBand::L2) &&
-               ((oid1.code == TrackingCode::MD) ||
-                (oid1.code == TrackingCode::MDP) ||
-                (oid1.code == TrackingCode::MP) ||
-                (oid1.code == TrackingCode::MPA) ||
-                (oid1.code == TrackingCode::MARLD) ||
-                (oid1.code == TrackingCode::MARLP) ||
-                (oid1.code == TrackingCode::Mprime) ||
-                (oid1.code == TrackingCode::MprimePA)) &&
-               ((oid2.code == TrackingCode::MD) ||
-                (oid2.code == TrackingCode::MDP) ||
-                (oid2.code == TrackingCode::MP) ||
-                (oid2.code == TrackingCode::MPA) ||
-                (oid2.code == TrackingCode::MARLD) ||
-                (oid2.code == TrackingCode::MARLP) ||
-                (oid2.code == TrackingCode::Mprime) ||
-                (oid2.code == TrackingCode::MprimePA)))
-      {
-         rv.push_back(
-            NavMessageID(
-               NavSatelliteID(gpsAnySat, gpsAnySat, anyObs,
-                              NavType::GPSMNAV),
-               NavMessageType::ISC));
-      }
+         switch (oid.code)
+         {
+            case TrackingCode::CA:
+               if (oid.band == CarrierBand::L1)
+               {
+                  nmid.nav = NavType::GPSLNAV;
+                  rv.push_back(nmid);
+                  rv.push_back(
+                     NavMessageID(
+                        NavSatelliteID(sat, gpsAnySat, anyObs,
+                                       NavType::GPSCNAVL2),
+                        NavMessageType::ISC));
+                  rv.push_back(
+                     NavMessageID(
+                        NavSatelliteID(sat, gpsAnySat, anyObs,
+                                       NavType::GPSCNAVL5),
+                        NavMessageType::ISC));
+                  rv.push_back(
+                     NavMessageID(
+                        NavSatelliteID(sat, gpsAnySat, anyObs,
+                                       NavType::GPSCNAV2),
+                        NavMessageType::ISC));
+               }
+               break;
+            case TrackingCode::P:
+            case TrackingCode::Y:
+            case TrackingCode::Ztracking:
+            case TrackingCode::YCodeless:
+            case TrackingCode::Semicodeless:
+               switch (oid.band)
+               {
+                  case CarrierBand::L1:
+                  case CarrierBand::L2:
+                     rv.push_back(
+                        NavMessageID(
+                           NavSatelliteID(sat, gpsAnySat, anyObs,
+                                          NavType::GPSLNAV),
+                           NavMessageType::ISC));
+                     break;
+               }
+               break;
+            case TrackingCode::MD:
+            case TrackingCode::MDP:
+            case TrackingCode::MP:
+            case TrackingCode::MPA:
+            case TrackingCode::MARLD:
+            case TrackingCode::MARLP:
+            case TrackingCode::Mprime:
+            case TrackingCode::MprimePA:
+               switch (oid.band)
+               {
+                  case CarrierBand::L1:
+                  case CarrierBand::L2:
+                     rv.push_back(
+                        NavMessageID(
+                           NavSatelliteID(sat, gpsAnySat, anyObs,
+                                          NavType::GPSMNAV),
+                           NavMessageType::ISC));
+                     break;
+               }
+               break;
+            case TrackingCode::L2CM:
+            case TrackingCode::L2CL:
+            case TrackingCode::L2CML:
+               if (oid.band == CarrierBand::L2)
+               {
+                  rv.push_back(
+                     NavMessageID(
+                        NavSatelliteID(sat, gpsAnySat, anyObs,
+                                       NavType::GPSCNAVL2),
+                        NavMessageType::ISC));
+                  rv.push_back(
+                     NavMessageID(
+                        NavSatelliteID(sat, gpsAnySat, anyObs,
+                                       NavType::GPSCNAVL5),
+                        NavMessageType::ISC));
+                  rv.push_back(
+                     NavMessageID(
+                        NavSatelliteID(sat, gpsAnySat, anyObs,
+                                       NavType::GPSCNAV2),
+                        NavMessageType::ISC));
+               }
+               break;
+            case TrackingCode::L5I:
+            case TrackingCode::L5Q:
+            case TrackingCode::L5IQ:
+               if (oid.band == CarrierBand::L5)
+               {
+                  rv.push_back(
+                     NavMessageID(
+                        NavSatelliteID(sat, gpsAnySat, anyObs,
+                                       NavType::GPSCNAVL5),
+                        NavMessageType::ISC));
+                  rv.push_back(
+                     NavMessageID(
+                        NavSatelliteID(sat, gpsAnySat, anyObs,
+                                       NavType::GPSCNAVL2),
+                        NavMessageType::ISC));
+                  rv.push_back(
+                     NavMessageID(
+                        NavSatelliteID(sat, gpsAnySat, anyObs,
+                                       NavType::GPSCNAV2),
+                        NavMessageType::ISC));
+               }
+               break;
+            case TrackingCode::L1CP:
+            case TrackingCode::L1CD:
+            case TrackingCode::L1CDP:
+               if (oid.band == CarrierBand::L1)
+               {
+                  rv.push_back(
+                     NavMessageID(
+                        NavSatelliteID(sat, gpsAnySat, anyObs,
+                                       NavType::GPSCNAV2),
+                        NavMessageType::ISC));
+               }
+               break;
+         }
+      } // if (sat.system == SatelliteSystem::GPS)
+         /// @todo Add support for other GNSSes to getISCNMID.
       return rv;
    }
 

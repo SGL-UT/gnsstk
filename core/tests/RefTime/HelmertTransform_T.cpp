@@ -68,6 +68,8 @@ public:
 
    gnsstk::ReferenceFrame initialRF;
    gnsstk::ReferenceFrame finalRF;
+   gnsstk::RefFrame initRF;
+   gnsstk::RefFrame finRF;
    gnsstk::HelmertTransform uut1, uut2;
       /// initial positions and transformed positions
    std::vector<double> p1, x1, p2, x2;
@@ -77,14 +79,16 @@ public:
 HelmertTransform_T ::
 HelmertTransform_T()
       : initialRF(gnsstk::ReferenceFrame::WGS84),
+        initRF(initialRF,gnsstk::YDSTime(2020,123,456,gnsstk::TimeSystem::UTC)),
         finalRF(gnsstk::ReferenceFrame::CGCS2000),
+        finRF(finalRF, gnsstk::YDSTime(1994,1,0,gnsstk::TimeSystem::UTC)),
         uut1(initialRF, finalRF, 0, 0, 0, 10, 10, 10, 1, "hi there",
-             gnsstk::YDSTime(2020,123,456)),
+             gnsstk::YDSTime(2020,123,456,gnsstk::TimeSystem::UTC)),
            // https://d28rz98at9flks.cloudfront.net/71433/71433.pdf
         uut2(initialRF, finalRF, -24.1665*gnsstk::DEG_PER_MAS,
              -20.9515*gnsstk::DEG_PER_MAS, -21.3961*gnsstk::DEG_PER_MAS,
              -42.7e-3, -17.06e-3, 28.81e-3, 11.474*gnsstk::PPB, "step 2",
-             gnsstk::YDSTime(1994, 1, 0)),
+             gnsstk::YDSTime(1994, 1, 0,gnsstk::TimeSystem::UTC)),
         p1({150, 150, 150}),
         x1({310, 310, 310}),      // 100% scale, 10m translation
         p2({-4052052.3678, 4212836.0411, -2545105.1089}),
@@ -112,7 +116,7 @@ constructorTest()
 
    TestClass uut2(gnsstk::ReferenceFrame::PZ90, gnsstk::ReferenceFrame::WGS84,
                   1e-4, 2e-4, 3e-4, 4, 5, 6, 7, "hi there",
-                  gnsstk::YDSTime(2020,123,456));
+                  gnsstk::YDSTime(2020,123,456,gnsstk::TimeSystem::UTC));
    TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::PZ90,
              uut2.getFromFrame());
    TUASSERTE(gnsstk::ReferenceFrame, gnsstk::ReferenceFrame::WGS84,
@@ -125,7 +129,8 @@ constructorTest()
    TUASSERTFE(6, uut2.gettz());
    TUASSERTFE(7, uut2.getscale());
    TUASSERTE(std::string, "hi there", uut2.getdescription());
-   TUASSERTE(gnsstk::CommonTime, gnsstk::YDSTime(2020,123,456),
+   TUASSERTE(gnsstk::CommonTime,
+             gnsstk::YDSTime(2020,123,456,gnsstk::TimeSystem::UTC),
              uut2.getEpoch());
    TURETURN();
 }
@@ -137,9 +142,9 @@ transformPositionTest()
    TUDEF("HelmertTransform", "transform(Position)");
 
    gnsstk::Position pos1(&p1[0], gnsstk::Position::Cartesian, nullptr,
-                         initialRF);
+                         initRF);
    gnsstk::Position exp1(&x1[0], gnsstk::Position::Cartesian, nullptr,
-                         finalRF);
+                         finRF);
    gnsstk::Position out1;
    TUCATCH(uut1.transform(pos1, out1));
    TUASSERTFE(exp1.getX(), out1.getX());
@@ -147,8 +152,8 @@ transformPositionTest()
    TUASSERTFE(exp1.getZ(), out1.getZ());
 
    gnsstk::Position pos2(&p2[0], gnsstk::Position::Cartesian, nullptr,
-                         initialRF);
-   gnsstk::Position exp2(&x2[0], gnsstk::Position::Cartesian, nullptr, finalRF);
+                         initRF);
+   gnsstk::Position exp2(&x2[0], gnsstk::Position::Cartesian, nullptr, finRF);
    gnsstk::Position out2;
       // forward transform
    TUCATCH(uut2.transform(pos2, out2));
@@ -238,14 +243,14 @@ transformXvtTest()
    pos1.clkbias = 4;
    pos1.clkdrift = 5;
    pos1.relcorr = 6;
-   pos1.frame = initialRF;
+   pos1.frame = initRF;
    pos1.health = gnsstk::Xvt::Degraded;
    exp1.x = gnsstk::Triple({x1[0], x1[1], x1[2]});
    exp1.v = gnsstk::Triple({1, 2, 3});
    exp1.clkbias = 4;
    exp1.clkdrift = 5;
    exp1.relcorr = 6;
-   exp1.frame = finalRF;
+   exp1.frame = finRF;
    exp1.health = gnsstk::Xvt::Degraded;
    TUCATCH(uut1.transform(pos1, out1));
    TUASSERTFE(exp1.x[0], out1.x[0]);
@@ -257,7 +262,7 @@ transformXvtTest()
    TUASSERTFE(exp1.clkbias, out1.clkbias);
    TUASSERTFE(exp1.clkdrift, out1.clkdrift);
    TUASSERTFE(exp1.relcorr, out1.relcorr);
-   TUASSERTE(gnsstk::ReferenceFrame, exp1.frame, out1.frame);
+   TUASSERTE(gnsstk::RefFrame, exp1.frame, out1.frame);
    TUASSERTE(gnsstk::Xvt::HealthStatus, exp1.health, out1.health);
 
    gnsstk::Xvt pos2, exp2, out2;
@@ -266,14 +271,14 @@ transformXvtTest()
    pos2.clkbias = 4;
    pos2.clkdrift = 5;
    pos2.relcorr = 6;
-   pos2.frame = initialRF;
+   pos2.frame = gnsstk::RefFrame(gnsstk::RefFrameSys::WGS84, uut2.getEpoch());
    pos2.health = gnsstk::Xvt::Degraded;
    exp2.x = gnsstk::Triple({x2[0], x2[1], x2[2]});
    exp2.v = gnsstk::Triple({1, 2, 3});
    exp2.clkbias = 4;
    exp2.clkdrift = 5;
    exp2.relcorr = 6;
-   exp2.frame = finalRF;
+   exp2.frame = finRF;
    exp2.health = gnsstk::Xvt::Degraded;
       // forward transform
    TUCATCH(uut2.transform(pos2, out2));
@@ -286,7 +291,7 @@ transformXvtTest()
    TUASSERTFE(exp2.clkbias, out2.clkbias);
    TUASSERTFE(exp2.clkdrift, out2.clkdrift);
    TUASSERTFE(exp2.relcorr, out2.relcorr);
-   TUASSERTE(gnsstk::ReferenceFrame, exp2.frame, out2.frame);
+   TUASSERTE(gnsstk::RefFrame, exp2.frame, out2.frame);
    TUASSERTE(gnsstk::Xvt::HealthStatus, exp2.health, out2.health);
       // reverse transform
    TUCATCH(uut2.transform(exp2, out2));
@@ -299,7 +304,7 @@ transformXvtTest()
    TUASSERTFE(pos2.clkbias, out2.clkbias);
    TUASSERTFE(pos2.clkdrift, out2.clkdrift);
    TUASSERTFE(pos2.relcorr, out2.relcorr);
-   TUASSERTE(gnsstk::ReferenceFrame, pos2.frame, out2.frame);
+   TUASSERTE(gnsstk::RefFrame, pos2.frame, out2.frame);
    TUASSERTE(gnsstk::Xvt::HealthStatus, pos2.health, out2.health);
 
    TURETURN();

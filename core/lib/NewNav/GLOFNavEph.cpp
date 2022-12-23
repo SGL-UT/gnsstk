@@ -54,7 +54,7 @@ namespace gnsstk
            tb(-1),
            P1(-1), P2(-1), P3(-1), P4(-1),
            interval(-1),
-           opStatus(PCode::Unknown),
+           opStatus(GLOFNavPCode::Unknown),
            tauDelta(std::numeric_limits<double>::quiet_NaN()),
            aod(-1),
            accIndex(-1),
@@ -95,7 +95,7 @@ namespace gnsstk
             // Added negation here to match the SP3 sign
          xvt.clkbias = -(clkBias + freqBias * (when - Toe) - xvt.relcorr);
          xvt.clkdrift = freqBias;
-         xvt.frame = ReferenceFrame::PZ90;
+         xvt.frame = RefFrame(RefFrameSys::PZ90, when);
          xvt.health = toXvtHealth(health);
          return true;
       }
@@ -167,7 +167,7 @@ namespace gnsstk
             // Added negation here to match the SP3 sign
       xvt.clkbias = -(clkBias + freqBias * (when - Toe) - xvt.relcorr);
       xvt.clkdrift = freqBias;
-      xvt.frame = ReferenceFrame::PZ90;
+      xvt.frame = RefFrame(RefFrameSys::PZ90, when);
       xvt.health = toXvtHealth(health);
       return true;
    }
@@ -210,8 +210,10 @@ namespace gnsstk
 
       s << "****************************************************************"
         << "************" << endl
-        << "GLONASS ORB/CLK (IMMEDIATE) PARAMETERS" << endl << endl
-        << "SAT : " << signal.sat << endl << endl;
+        << "GLONASS ORB/CLK (IMMEDIATE) PARAMETERS"
+        << endl
+        << endl
+        << getSignalString() << endl;
 
          // the rest is full details, so just return if Full is not asked for.
       if (dl != DumpDetail::Full)

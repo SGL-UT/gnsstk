@@ -58,7 +58,7 @@
 namespace gnsstk
 {
 
-      /// @ingroup GPSsolutions
+      /// @ingroup GNSSsolutions
       //@{
 
       /** This class computes the effect of pole tides, or more properly

@@ -44,7 +44,7 @@
 
 namespace gnsstk
 {
-   std::ostream& operator<<(std::ostream& s, GLOFNavData::PCode e)
+   std::ostream& operator<<(std::ostream& s, GLOFNavPCode e)
    {
       s << StringUtils::asString(e);
       return s;
@@ -93,7 +93,7 @@ constructorTest()
    TUASSERTE(unsigned, -1, uut.P3);
    TUASSERTE(unsigned, -1, uut.P4);
    TUASSERTE(unsigned, -1, uut.interval);
-   TUASSERTE(gnsstk::GLOFNavData::PCode, gnsstk::GLOFNavData::PCode::Unknown,
+   TUASSERTE(gnsstk::GLOFNavPCode, gnsstk::GLOFNavPCode::Unknown,
              uut.opStatus);
    TUASSERT(isnan(uut.tauDelta));
    TUASSERTE(unsigned, -1, uut.aod);
@@ -122,6 +122,7 @@ getXvtTest()
    TUDEF("GLOFNavEph", "getXvt()");
    gnsstk::GLOFNavEph uut;
    gnsstk::Xvt xvt, exp1, exp2;
+   gnsstk::RefFrame expRF(gnsstk::RefFrameRlz::PZ90KGS);
       // This data was probably originally obtained by setting uut to
       // values obtained from the broadcast data and running it
       // through the now deprecated GloEphemeris class, but that
@@ -172,7 +173,7 @@ getXvtTest()
    TUASSERTFE(exp1.clkbias, xvt.clkbias);
    TUASSERTFE(exp1.clkdrift, xvt.clkdrift);
    TUASSERTFE(exp1.relcorr, xvt.relcorr);
-   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::PZ90,xvt.frame);
+   TUASSERTE(gnsstk::RefFrame,expRF,xvt.frame);
       // same ephemeris, orbit 306 seconds in the future of Toe
    TUASSERTE(bool, true, uut.getXvt(uut.Toe + 306, xvt));
    TUASSERTE(gnsstk::Xvt::HealthStatus,
@@ -185,7 +186,7 @@ getXvtTest()
    TUASSERTFE(exp2.clkbias, xvt.clkbias);
    TUASSERTFE(exp2.clkdrift, xvt.clkdrift);
    TUASSERTFE(exp2.relcorr, xvt.relcorr);
-   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::PZ90,xvt.frame);
+   TUASSERTE(gnsstk::RefFrame,expRF,xvt.frame);
    TURETURN();
 }
 

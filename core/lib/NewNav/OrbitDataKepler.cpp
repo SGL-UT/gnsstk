@@ -52,7 +52,7 @@ namespace gnsstk
            dn(0.0), dndot(0.0), ecc(0.0), A(0.0), Ahalf(0.0), Adot(0.0),
            OMEGA0(0.0), i0(0.0), w(0.0), OMEGAdot(0.0), idot(0.0), af0(0.0),
            af1(0.0), af2(0.0), health(SVHealth::Unknown),
-           frame(ReferenceFrame::WGS84)
+           frame(RefFrameSys::WGS84)
    {
    }
 
@@ -76,25 +76,7 @@ namespace gnsstk
             // - " << getNameLong();
         << endl
         << endl
-        << "PRN : " << setw(2) << signal.sat << " / "
-        << "SVN : " << setw(2);
-      std::string svn;
-      if (getSVN(signal.sat, timeStamp, svn))
-      {
-         s << svn;
-      }
-      if (signal.messageType == NavMessageType::Almanac)
-      {
-            // for almanacs, print the transmitting satellite as well.
-         s << endl
-           << "XMIT: " << setw(2) << signal.xmitSat << " / "
-           << "SVN : " << setw(2);
-         if (getSVN(signal.xmitSat, timeStamp, svn))
-         {
-            s << svn;
-         }
-      }
-      s << endl << endl;
+        << getSignalString() << endl;
 
          // the rest is full details, so just return if Full is not asked for.
       if (dl != DumpDetail::Full)
@@ -243,8 +225,7 @@ namespace gnsstk
       xvt.relcorr = svRelativity(when, ell);
       xvt.clkbias = svClockBias(when);
       xvt.clkdrift = svClockDrift(when);
-         // This appears to be only a string for naming
-      xvt.frame = ReferenceFrame::WGS84;
+      xvt.frame = RefFrame(frame, when);
 
          // Compute true anomaly
       q     = SQRT( 1.0e0 - lecc*lecc);
@@ -325,7 +306,6 @@ namespace gnsstk
       xvt.v[1] = vyef;
       xvt.v[2] = vzef;
       xvt.health = toXvtHealth(health);
-      xvt.frame = frame;
       return true;
    }
 

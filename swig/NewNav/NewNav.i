@@ -64,8 +64,11 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %include "NavSearchOrder.hpp"
 %include "NavValidityType.hpp"
 %include "DumpDetail.hpp"
+%include "GPSLNavL2Codes.hpp"
 %include "GalHealthStatus.hpp"
 %include "GalDataValid.hpp"
+%include "GLOFNavPCode.hpp"
+%include "GLOFNavSatType.hpp"
 
 %include "renameEnums.i"
 %pythoncode %{
@@ -76,8 +79,11 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
    renameEnums('NavSearchOrder')
    renameEnums('NavValidityType')
    renameEnums('DumpDetail')
+   renameEnums('GPSLNavL2Codes')
    renameEnums('GalHealthStatus')
    renameEnums('GalDataValid')
+   renameEnums('GLOFNavPCode')
+   renameEnums('GLOFNavSatType')
 %}
 %include "cleanup.i"
 
@@ -113,7 +119,10 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %import "SatID.hpp"
 %import "Triple.i"
 %import "EllipsoidModel.hpp"
+%import "RefFrameSys.hpp"
+%import "RefFrameRlz.hpp"
 %import "ReferenceFrame.hpp"
+%import "RefFrame.hpp"
 %import "Xvt.hpp"
 %import "FFData.hpp"
 %import "CarrierBand.hpp"

@@ -48,7 +48,7 @@ namespace gnsstk
       s << StringUtils::asString(e);
       return s;
    }
-   std::ostream& operator<<(std::ostream& s, gnsstk::GPSLNavEph::L2Codes e)
+   std::ostream& operator<<(std::ostream& s, gnsstk::GPSLNavL2Codes e)
    {
       s << static_cast<long>(e);
       return s;
@@ -102,7 +102,7 @@ constructorTest()
    TUASSERTE(bool, false, obj.asFlag3);
    TUASSERTE(bool, false, obj.alert2);
    TUASSERTE(bool, false, obj.alert3);
-   TUASSERTE(gnsstk::GPSLNavEph::L2Codes, gnsstk::GPSLNavEph::L2Codes::Invalid1,
+   TUASSERTE(gnsstk::GPSLNavL2Codes, gnsstk::GPSLNavL2Codes::Invalid1,
              obj.codesL2);
    TUASSERTE(bool, false, obj.L2Pdata);
    TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Ephemeris,
@@ -176,6 +176,7 @@ getXvtTest()
    TUDEF("GPSLNavEph", "getXvt");
    gnsstk::GPSLNavEph uut;
    gnsstk::Xvt xvt;
+   gnsstk::RefFrame expRF(gnsstk::RefFrameRlz::WGS84G1762);
    uut.xmitTime = gnsstk::GPSWeekSecond(1854, .720000000000e+04);
    uut.Toe = gnsstk::GPSWeekSecond(1854, .143840000000e+05);
    uut.Toc = gnsstk::CivilTime(2015,7,19,3,59,44.0,gnsstk::TimeSystem::GPS);
@@ -183,7 +184,7 @@ getXvtTest()
    gnsstk::CivilTime civ(2015,7,19,2,0,35.0,gnsstk::TimeSystem::GPS);
    TUASSERT(uut.getXvt(civ, xvt));
    TUASSERTE(gnsstk::Xvt::HealthStatus, gnsstk::Xvt::Healthy, xvt.health);
-   TUASSERTE(gnsstk::ReferenceFrame,gnsstk::ReferenceFrame::WGS84,xvt.frame);
+   TUASSERTE(gnsstk::RefFrame,expRF,xvt.frame);
    TURETURN();
 }
 

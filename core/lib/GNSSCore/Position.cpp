@@ -101,7 +101,7 @@ namespace gnsstk
                       const double& c,
                       Position::CoordinateSystem s,
                       const EllipsoidModel *ell,
-                      ReferenceFrame frame)
+                      const RefFrame& frame)
    {
       try {
          initialize(a,b,c,s,ell,frame);
@@ -114,7 +114,7 @@ namespace gnsstk
    Position::Position(const double ABC[3],
                       CoordinateSystem s,
                       const EllipsoidModel *ell,
-                      ReferenceFrame frame)
+                      const RefFrame& frame)
    {
       double a=ABC[0];
       double b=ABC[1];
@@ -130,7 +130,7 @@ namespace gnsstk
    Position::Position(const Triple& ABC,
                       CoordinateSystem s,
                       const EllipsoidModel *ell,
-                      ReferenceFrame frame)
+                      const RefFrame& frame)
    {
       double a=ABC[0];
       double b=ABC[1];
@@ -343,7 +343,7 @@ namespace gnsstk
    // system if that is required.
    //
 
-   const ReferenceFrame& Position::getReferenceFrame() const
+   const RefFrame& Position::getReferenceFrame() const
       noexcept
    {
       return refFrame;
@@ -464,7 +464,7 @@ namespace gnsstk
 
    // ----------- Part  8: member functions: set -----------------------------
    //
-   void Position::setReferenceFrame(const ReferenceFrame& frame)
+   void Position::setReferenceFrame(const RefFrame& frame)
       noexcept
    {
       refFrame = frame;
@@ -1703,7 +1703,7 @@ namespace gnsstk
                   const double c,
                   Position::CoordinateSystem s,
                   const EllipsoidModel *ell,
-                  ReferenceFrame frame)
+                  const RefFrame& frame)
    {
       double bb(b);
       if(s == Geodetic || s==Geocentric)

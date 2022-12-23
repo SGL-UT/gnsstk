@@ -43,7 +43,7 @@
 
 namespace gnsstk
 {
-      /// @ingroup Geodetic
+      /// @ingroup geodeticgroup
       //@{
 
       /** Wrap data for an angle, including the angle in degrees,

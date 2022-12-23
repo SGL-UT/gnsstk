@@ -51,7 +51,7 @@
 
 namespace gnsstk
 {
-      /// @ingroup GPSsolutions
+      /// @ingroup GNSSsolutions
       //@{
 
       /** Simple model of the ionosphere ("Klobuchar"), specified in the GPS IS.

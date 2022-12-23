@@ -133,8 +133,10 @@ namespace gnsstk
 
       s << "**************************************************************"
         << endl
-        << " GLONASS ORB/CLK (NON-IMMEDIATE) PARAMETERS for GLONASS Slot "
-        << signal.sat.id << endl;
+        << " GLONASS ORB/CLK (NON-IMMEDIATE) PARAMETERS"
+        << endl
+        << endl
+        << getSignalString() << endl;
 
          // the rest is full details, so just return if Full is not asked for.
       if (dl != DumpDetail::Full)
@@ -577,7 +579,7 @@ namespace gnsstk
       xvt.v[0] *= 1000.0;
       xvt.v[1] *= 1000.0;
       xvt.v[2] *= 1000.0;
-      xvt.frame = ReferenceFrame::PZ90;
+      xvt.frame = RefFrame(RefFrameSys::PZ90, when);
          // clock bias and drift are not available (?).
       xvt.relcorr = xvt.computeRelativityCorrection();
       return true;

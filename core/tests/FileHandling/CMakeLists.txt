@@ -103,3 +103,8 @@ add_executable(SEM_T SEM_T.cpp)
 target_link_libraries(SEM_T gnsstk)
 add_test(NAME FileHandling_SEM COMMAND $<TARGET_FILE:SEM_T>)
 set_property(TEST FileHandling_SEM PROPERTY LABELS FileHandling)
+
+add_executable(MetReader_T MetReader_T.cpp)
+target_link_libraries(MetReader_T gnsstk)
+add_test(NAME FileHandling_MetReader COMMAND $<TARGET_FILE:MetReader_T>)
+set_property(TEST FileHandling_MetReader PROPERTY LABELS FileHandling)
