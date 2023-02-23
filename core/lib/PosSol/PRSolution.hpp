@@ -43,7 +43,10 @@
 #ifndef PRS_POSITION_SOLUTION_HPP
 #define PRS_POSITION_SOLUTION_HPP
 
+#include <tuple>
 #include <vector>
+#include <functional>
+
 #include <ostream>
 #include "gnsstk_export.h"
 #include "stl_helpers.hpp"
@@ -58,6 +61,9 @@
 
 namespace gnsstk
 {
+   using FilteredSats = std::vector<std::pair<int, std::reference_wrapper<SatID>>>;
+   using FilteredConstSats = std::vector<std::pair<int, std::reference_wrapper<const SatID>>>;
+
    /** @defgroup GNSSsolutions GNSS solution algorithms
     * Solution algorithms and Tropospheric models. */
    //@{
@@ -487,7 +493,7 @@ namespace gnsstk
       // output -----------------------------------------------------
       /// conveniences for printing the results of the pseudorange solution algorithm
       /// return string of position, error code and V/NV
-      std::string outputPOSString(std::string tag, int iret=-99,
+      std::string outputPOSString(const std::string& tag, int iret=-99,
                                     const Vector<double>& Vec=PRSNullVector);
 
       /// return string of {SYS clock} for all systems, error code and V/NV
@@ -499,11 +505,11 @@ namespace gnsstk
 
       /// return string of Nsvs, RMS residual, TDOP, PDOP, GDOP, Slope, niter, conv,
       /// satellites, error code and V/NV
-      std::string outputRMSString(std::string tag, int iret=-99);
+      std::string outputRMSString(const std::string& tag, int iret=-99);
       std::string outputValidString(int iret=-99);
 
       /// return string of NAV and RMS strings
-      std::string outputString(std::string tag, int iret=-99,
+      std::string outputString(const std::string& tag, int iret=-99,
                                const Vector<double>& Vec=PRSNullVector);
       /// return string of the form "#tag label etc" which is header for data strings
       std::string outputStringHeader(std::string tag)
@@ -513,7 +519,7 @@ namespace gnsstk
       std::string errorCodeString(int iret);
 
       /// A convenience for printing the current configuarion
-      std::string configString(std::string tag);
+      std::string configString(const std::string& tag);
 
       // ------------------------------------------------------------
       /// Fix the apriori solution to the given constant value (XYZ,m)
@@ -636,17 +642,448 @@ namespace gnsstk
 
    private:
 
-      /// flag: output content is valid.
+         /// flag: output content is valid.
       bool Valid;
 
-      /// time tag of the current solution
+         /// time tag of the current solution
       CommonTime currTime;
 
-      /// time formats used in prints
+         /// time formats used in prints
       static const std::string calfmt,gpsfmt,timfmt;
 
-      /// empty vector used to detect default
+         /// empty vector used to detect default
       GNSSTK_EXPORT static const Vector<double> PRSNullVector;
+
+
+         /// Mark SVs that are disallowed GNSS
+      void markDisallowedGNSS(
+            std::vector<SatID>& sats, 
+            const std::vector<SatelliteSystem>& allowed) const;
+
+
+         /** Compute the time-of-flight corrected range between SV and RX.
+          *
+          * @param[in,out] svPos the SV's position at transmit time. This will be
+          *    updated to account for the rotation of the ECEF frame during the
+          *    transmission.
+          * @param[in] rxPos the receiver's ECEF position.
+          * @param[in] firstIteration specify if this is the first iteration
+          *    in an iterative weighted least squares solution.
+          *    If True, the SV to RX range uses an intial estimate.
+          * @returns the distance between the SV at transmit time and the
+          *    receiver at receive time.
+          */
+      double computeRange(
+            Position& svPos, 
+            const Position& rxPos, 
+            bool firstIteration) const;
+
+
+         /** Compute tropospheric delay.
+          *
+          * @param[in] svPos the ECEF position of the SV.
+          * @param[in] rxPos the ECEF position of the receiver.
+          * @param[in] pTropModel the tropospheric model to compute the delay.
+          * @param[in] time the receiver epoch time.
+          * @return a tuple of tropSuccess (bool) and delay correction (double).
+          *    The tropSuccess is true if the tropospheric delay was
+          *    computed without issue. A trop correction will not be computed
+          *    for certain scenarios -- negative SV elevation,
+          *    or unreasonable rx height -- which may come from a poorly known
+          *    receiver position.
+          */
+      std::tuple<bool, double> computeTropDelay(
+            const Position& svPos, 
+            const Position& rxPos, 
+            TropModel *pTropModel, 
+            const CommonTime& time) const;
+         
+
+         /** Mark the satellite to remove from processing.
+          *
+          * Marking is currently performed by setting the Satellite ID as
+          * negative. 
+          *
+          * @param[in, out] sat Satellite to mark. 
+          *    The sat's id will be modified.
+          */
+      void markSatellite(SatID& sat) const;
+
+
+         /** Checks if a satellite is marked.
+          *
+          * See markSatellite() for marking a satellite.
+          *
+          * @param[in] sat the SatID to check.
+          * @return true if the satellite is marked.
+          */
+      bool isMarked(const SatID& sat) const;
+   
+
+         /** Create a filtered view, that cannot be modified, of unmarked sats.
+          *
+          * @param[in] sats vector of SatIDs that may be marked.
+          * @returns a vector of pairs where each pair consists
+          * of the index into the original sats vector and a reference to the
+          * sat at that index.
+          */
+      FilteredConstSats filterMarkedSats(const std::vector<SatID>& sats) const;
+      
+
+         /** Create a filtered view, that can be modified, of unmarked sats.
+          *
+          * @param[in] sats vector of SatIDs that may be marked.
+          * @returns a vector of pairs where each pair consists
+          * of the index into the original sats vector and a reference to the
+          * sat at that index.
+          */
+      FilteredSats filterMarkedSats(std::vector<SatID>& sats) const;
+      
+         
+         /** Search for satellite ephemeris at the SV transmit time.
+          *
+          * Uses pseudorange obs to estimate the SV's transmit time.
+          *
+          * @param[out] satXvt the resulting SV ephemeris, if found.
+          * @param[in] nominalReceive the receiver's nominal receive time
+          *    of the provided pseudorange.
+          * @param[in] pseudorange the observed pseudorange of the SV at the
+          *    nominalReceive time.
+          * @param[in] eph the ephemeris to search through.
+          * @param[in] sat the SatID to find ephemeris for.
+          * @param[in] order Specify whether to search by receiver behavior
+          *    or by nearest in time.
+          * @return true if ephemeris was found for the SV.
+          */
+      bool getSatPVT(
+            Xvt& satXvt, 
+            const CommonTime& nominalReceive, 
+            double pseudorange, 
+            NavLibrary& eph, 
+            SatID& sat, 
+            NavSearchOrder order) const;
+
+
+         /* Compute the single point weighted least squares solution.
+          *
+          * At each receiver epoch, the set of pseudorange residual equations
+          * can be linearized as such:
+          *
+          * @f[
+          *    \delta p = P * \delta x + \delta\epsilon
+          * @f]
+          *
+          * where @f$\delta p@f$ is the pseudorange residual (i.e.
+          * measured minus predicted), @f$P@f$ is the partial derivatives
+          * matrix (a.k.a. the geometry matrix), @f$\delta x@f$ is the correction
+          * to the initial state estimate, and @f$\delta\epsilon@f$ is the
+          * measurement error.
+          *
+          * In this equation, the @f$\delta x@f$ correction is unknown but
+          * the residuals vector and partials matrix can be computed with 
+          * known information. The state estimate correction must be solved
+          * by using a weighted least squares regression.
+          *
+          * @f[
+          * \delta x \approx (P^{T} * W * P)^{-1} * P^{T} * W * \delta p
+          * @f]
+          *
+          * The W matrix is a weight matrix that assigns a weight to each 
+          * observation. If all observations are equally weighted then an
+          * identity matrix can be used. The most common weight matrix
+          * is to use the inverse of the measurement covariance matrix.
+          * Another possible weighting scheme is to set less weight to lower
+          * elevation observations.
+          *
+          * @param[out] dX the correction to the a priori state estimate
+          *    as solved by the weighted least squares regression.
+          * @param[out] partials the partials matrix (a.k.a. geometry matrix)
+          *    of the linearized pseudorange resdiual equation. This matrix
+          *    contains the line-of-sight unit vectors and clock state index
+          *    for each sat. The size of this matrix will be NxM where
+          *    N is the number of unmarked sats and M is size of the state
+          *    estimate (i.e. position (3) + rx clock biases in a given time
+          *    system (1 per system).
+          * @param[out] G the weighted least squares solution matrix.
+          *    i.e. G = (P^T * W * P)^-1 * P^T * W , where P is the partials matrix
+          *    and W is the weight matrix.
+          * @param[out] covariance the computed covariance matrix from the
+          *    weighted least squares solution.
+          *    i.e. covariance = (P^T * W * P)^-1
+          * @param[out] residuals the computed pseudorange residuals from
+          *    the last iteration.
+          * @param[in] aPriorSolution the initial estimate of the receiver
+          *    position and receiver clock biases in each satellite system's
+          *    time.
+          * @param[in] filteredSats a view of the unmarked sats for the
+          *    current solution.
+          * @param[in] svp the matrix of SV positions and a portion of the
+          *    pseudorange residuals. This matrix is sized by the original
+          *    full vector of sats and must be indexed by the original indices
+          *    of the sat as stored in filteredSats.
+          * @param[in] pTropModel the tropospheric model to generate the 
+          *    tropospheric delay at the given time for each SV.
+          * @param[in] nominalReceive the receiver epoch time.
+          * @param[in] firstIteration specify if this is the first iteration
+          *    in an iterative weighted least squares solution.
+          *    If True, the tropospheric delay is not applied and the SV to RX
+          *    range uses an intial estimate. If the aPrioriSolution is 
+          *    extremely off then the tropospheric delay can potentially
+          *    cause the solution to never converge. Therefore, on the first
+          *    iteration, the tropospheric delay is skipped in order to compute
+          *    a good first-order solution.
+          * @param[in] currGNSS the set of systems for the current solution.
+          *    Used to determine the size and ordering of the state estimate
+          *    vector.
+          * @param[in] weights a weight matrix for the unmarked sats in the
+          *    current weighted least squares solution.
+          * @return true if the tropospheric delay was evaluated and applied
+          *    without issues.
+          */
+      bool singlePointWLSSolution(
+            Vector<double>& dX,
+            Matrix<double>& partials,
+            Matrix<double>& G,
+            Matrix<double>& covariance,
+            Vector<double>& residuals,
+            const Vector<double>& aPrioriSolution, 
+            const FilteredConstSats filteredSats, 
+            const Matrix<double>& svp, 
+            TropModel *pTropModel, 
+            const CommonTime& nominalReceive, 
+            bool firstIteration, 
+            const std::vector<SatelliteSystem>& currGNSS, 
+            const Matrix<double>& weights) const;
+   
+
+         /** Iteratively compute a single point weighted least squares solution.
+          * 
+          * If the a priori estimate is off by a lot, the single point
+          * least squares solution can be solved iteratively until the 
+          * change in the state estimate is small. This function returns
+          * the total correction to the original a priori solution.
+          *
+          * The iterative single point least square solution can be used as a 
+          * generalized version of the least square solution even if the
+          * a priori solution is good. A better a priori estimate will
+          * result in fewer iterations.
+          *
+          * See singlePointWLSSolution() for more info.
+          *
+          * @param[out] dX the total correction to the a priori state estimate.
+          * @param[out] partials the partials matrix (a.k.a. geometry matrix)
+          *    of the linearized pseudorange resdiual equation from the
+          *    final iteration.
+          * @param[out] G the weighted least squares solution matrix from the
+          *    final iteration.
+          *    i.e. G = (P^T * W * P)^-1 * P^T * W , where P is the partials matrix
+          *    and W is the weight matrix.
+          * @param[out] covariance the computed covariance matrix from the
+          *    weighted least squares solution from the last iteration.
+          *    i.e. covariance = (P^T * W * P)^-1
+          * @param[out] residuals the computed pseudorange residuals from
+          *    the last iteration.
+          * @param[in] aPriorSolution the initial estimate of the receiver
+          *    position and receiver clock biases to each satellite system's
+          *    time.
+          * @param[in] filteredSats a view of the unmarked sats for the
+          *    current solution.
+          * @param[in] svp the matrix of SV positions and a portion of the
+          *    pseudorange residuals. This matrix is sized by the original
+          *    full vector of sats and must be indexed by the original indices
+          *    of the sat as stored in filteredSats.
+          * @param[in] pTropModel the tropospheric model to generate the 
+          *    tropospheric delay at the given time for each SV.
+          * @param[in] nominalReceive the receiver epoch time.
+          * @param[in] currGNSS the set of systems for the current solution.
+          *    Used to determine the size and ordering of the state estimate
+          *    vector.
+          * @param[in] weights a weight matrix for the unmarked sats in the
+          *    current weighted least squares solution.
+          * @param[in] convLimit the convergence threshold for the norm of the
+          *    state estimate correction.
+          * @param[in] niterLimit a max number of iterations.
+          * @return a tuple of tropSuccess (bool), the last computed convergence
+          *    test (double), and the number actual number of iterations
+          *    used in the solution (int). The tropSuccess returns true if
+          *    the tropospheric delay was correctly applied on the final 
+          *    iteration. The returned convergence and iterations can be used
+          *    to determine if convergence failed.
+          */
+      std::tuple<bool, double, int> iterativeSinglePointWLSSolution(
+            Vector<double>& dX,
+            Matrix<double>& partials,
+            Matrix<double>& G,
+            Matrix<double>& covariance,
+            Vector<double>& residuals,
+            const Vector<double>& aPrioriSolution, 
+            const FilteredConstSats& filteredSats, 
+            const Matrix<double>& svp, 
+            TropModel *pTropModel, 
+            const CommonTime& nominalRecieve, 
+            const std::vector<SatelliteSystem>& currGNSS,
+            const Matrix<double>& weights,
+            double convLimit,
+            int niterLimit) const;
+
+         /** Compute the partial derivates matrix and pseudorange residuals.
+          *
+          * The partials matrix, also known as the geometry matrix in GNSS
+          * literature, is the matrix consisting of line-of-sight unit vectors
+          * and clock status for each satellite in the solution. Here, the
+          * matrix is denoted as `partials` or more simply @f$P@f$.
+          *
+          * The pseudorange measurement residuals are the differences between
+          * predicted and observed pseudorange measurements. The residuals
+          * vector is usually denoted as @f$\delta p@f$.
+          *
+          * Together, these quantities make up the linearized measurement
+          * residuals equation that needs to be solved.
+          *
+          * @f[
+          * \delta p = P\delta x + \delta\epsilon
+          * @f]
+          *
+          * where @f$\delta x@f$ is a correction to the a priori state estimate
+          * and @f$\delta\epsilon@f$ is measurement error.
+          *
+          * @param[out] partials the partial derivatives matrix for the 
+          *    linearized measurement residuals of the given sats. This matrix 
+          *    will be sized NxM where N is the number of sats and M is 
+          *    dimension of the state estimate
+          *    (i.e. position (3) + number of system clocks).
+          * @param[out] residuals the computed pseudorange residuals.
+          *    This vector will be size N where N is the nubmer of sats.
+          * @param[in] filteredSats a view of the unmarked sats for the
+          *    current solution.
+          * @param[in] svp the matrix of SV positions and a portion of the
+          *    pseudorange residuals. This matrix is sized by the original
+          *    full vector of sats and must be indexed by the original indices
+          *    of the sat as stored in filteredSats.
+          * @param[in] aPrioriSolution the inital conditions of the state
+          *    estimate. Might be a previously surveyed position or a
+          *    previous solution.
+          * @param[in] firstIteration specify if this is the first iteration
+          *    in an iterative weighted least squares solution.
+          *    If True, the tropospheric delay is not applied and the SV to RX
+          *    range uses an intial estimate. If the aPrioriSolution is 
+          *    extremely off then the tropospheric delay can potentially
+          *    cause the solution to never converge. Therefore, on the first
+          *    iteration, the tropospheric delay is skipped in order to compute
+          *    a good first-order solution.
+          * @param[in] pTropModel the tropospheric model to generate the 
+          *    tropospheric delay at the given time for each SV.
+          * @param[in] nominalReceive the receiver epoch time.
+          * @param[in] currGNSS the set of systems for the current solution.
+          *    Used to determine the size and ordering of the state estimate
+          *    vector.
+          * @return true if the tropospheric delay was evaluated and applied
+          *    without issues.
+          */
+      bool computePartialsAndResiduals(
+            Matrix<double>& partials,
+            Vector<double>& residuals,
+            const FilteredConstSats& filteredSats, 
+            const Matrix<double>& svp, 
+            const Vector<double>& aPrioriSolution,
+            bool firstIteration, 
+            TropModel *pTropModel, 
+            const CommonTime& nominalReceive, 
+            const std::vector<SatelliteSystem>& currGNSS) const;
+
+         /** Reduce the weight matrix to the matching filtered sats.
+          *
+          * @param[in] weights matrix sized by the original sats vector.
+          *    For each solution computed, a set of sats are marked to be
+          *    removed from the solution. Thus, the weight matrix must
+          *    also be reconstructed by only keeping the weights related
+          *    to the filtered sats.
+          * @param[in] filteredSats the view of unmarked sats to be used
+          *    in the weighted least squares solution. This view must
+          *    contain the indices into the original larger sat vector
+          *    to properly select the elements in the weight matrix
+          */
+      Matrix<double> filterWeights(
+            const Matrix<double>& weights, 
+            const FilteredConstSats& filteredSats) const;
+
+         /** Compute the slopes of the linear regression solution.
+          *
+          * The slopes vector matches the size and ordering of the
+          * *filtered* sats.
+          *
+          * @param[out] slopes the computed slope for each unmarked SV.
+          * @param[in] partials the partial derivatives matrix from the 
+          *    weighted least squares solution.
+          * @param[in] G the weighted least squares solution matrix
+          *    i.e. (P^T * W * P)^-1 * P^T * W , where P is the partials matrix
+          *    and W is the weight matrix.
+          * @params[in] filteredSats the view of unmarked sats used in the
+          *    weighted least squares solution.
+          */
+      void computeSlopes(
+            Vector<double>& slopes,
+            const Matrix<double>& partials, 
+            const Matrix<double>& G, 
+            const FilteredConstSats& filteredSats) const;
+
+         /** Create matrix to contain SV position and portion of pseudorange residual.
+          * 
+          * The order of the returned SVP matrix matches the order of the `sats`
+          * vector. Use the index of the `sats` vector to index into the SVP
+          * matrix. If ephemeris could not be found for a sat, the sat is marked
+          * and the row in the SVP matrix is left empty.
+          *
+          * @param[in,out] sats SatIDs to look up ephemeris for. If the 
+          *    ephemeris lookup fails for a sat it is marked.
+          * @param[in] time a receiver epoch time to determine SV ephemeris.
+          * @param[in] pseudorange a vector of pseudorange observations to match
+          *    the vector of sats.
+          * @param[in] NavLibrary to search ephemeris with
+          * @param[in] order Specify whether to search by receiver behavior
+          *    or by nearest in time.
+          * @return a matrix where each row is an SV position (SVP) and
+          *    a portion of a pseudorange residual.
+          */
+      Matrix<double> createSVP(
+            std::vector<SatID>& sats, 
+            const CommonTime& time, 
+            const std::vector<double>& pseudorange, 
+            NavLibrary& eph, 
+            NavSearchOrder order) const;
+   
+         /** Filter systems down to those represented in the filtered satellites.
+          * 
+          * The return vector maintains the same ordering of SatelliteSystems
+          * as allowedGNSS.
+          *
+          * @param[in] allowedGNSS containing the satellite systems allowed
+          *    in the solution.
+          * @param[in] filteredSats a filtered view of unmarked satellites
+          *    for the current solution.
+          * @return a new vector of SatelliteSystems represented in the filtered
+          *    sats.
+          */
+      std::vector<SatelliteSystem> filterGNSS(
+            const std::vector<SatelliteSystem>& allowedGNSS, 
+            const FilteredConstSats& filteredSats) const;
+
+         /// Provides human readable names to the exit codes of PRSolution
+      enum RETURN_CODE {
+         DEGRADED = 1,
+         OK = 0,
+         FAILED_CONVERGENCE = -1,
+         SINGULAR_SOLUTION = -2,
+         NOT_ENOUGH_SVS = -3,
+         NO_EPHEMERIS = -4,
+      };
+
+      enum INDEX {
+         X = 0,
+         Y = 1,
+         Z = 2,
+         P_HAT = 3
+      };
 
    }; // end class PRSolution
 
