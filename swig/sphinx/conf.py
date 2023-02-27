@@ -13,8 +13,8 @@ project = 'GNSSTk'
 copyright = '2022, ARL:UT'
 
 import gnsstk
-version = '14.0'
-release = '14.0.0'
+version = '14.1'
+release = '14.1.0'
 
 # -- General configuration ------------------------------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

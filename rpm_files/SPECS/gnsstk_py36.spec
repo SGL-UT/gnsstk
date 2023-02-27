@@ -1,5 +1,5 @@
 %define name python3-gnsstk
-%define version 14.0.0
+%define version 14.1.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -67,6 +67,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 27 2023 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v14.1.0 release
+- Update refactor PRSolution to update style and decompose large functions.
+- Add SWIG bindings for MOPS and GCAT TropModel correctors.
+- Fix swig4.0 compile time issues.
+- Fix sphinx docs hidden navigation bar
 * Tue Dec 20 2022 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v14.0.0 release
 * Mon Oct 31 2022 David Barber <dbarber@arlut.utexas.edu>
