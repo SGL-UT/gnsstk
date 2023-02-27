@@ -1,3 +1,14 @@
+gnsstk (14.1.0-1) focal; urgency=low
+
+  * Updated to version 14.1.0
+  * Fix sphinx docs hidden navigation bar
+  * Fix swig4.0 compile time issues.
+  * Add SWIG bindings for MOPS and GCAT TropModel correctors.
+  * Update refactor PRSolution to update style and decompose large
+    functions.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Mon, 27 Feb 2023 09:13:31 -0600
+
 gnsstk (14.0.0-1) stable; urgency=low
 
   * Updated to version 14.0.0

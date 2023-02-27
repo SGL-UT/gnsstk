@@ -1,3 +1,14 @@
+# Version 14.1.0   Monday February 27, 2023
+
+Modifications by Author
+-----------------------
+     Taben Malik <malik@arlut.utexas.edu> (3):
+           Hiding link from pydata-sphinx-theme due to browser incompatibilities
+           Missing TropCorrectors in SWIG
+           PRSolution Cleanup
+
+
+
 # Version 14.0.0   Tuesday December 20, 2022
 
 Modifications by Author
