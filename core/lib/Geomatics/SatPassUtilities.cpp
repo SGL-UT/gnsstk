@@ -396,7 +396,7 @@ namespace gnsstk
                   continue;
                }
 
-               if (prevtime != CommonTime::BEGINNING_OF_TIME)
+               if (prevtime != Epoch(CommonTime::BEGINNING_OF_TIME))
                {
                      // compute time since the last epoch
                   dt = obsdata.time - prevtime;
