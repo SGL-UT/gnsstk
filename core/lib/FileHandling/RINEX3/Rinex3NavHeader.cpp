@@ -56,12 +56,28 @@
 #include <iostream>
 #include <set>
 #include <cmath>
+#include <unordered_map>
+#include <sstream>
 
 using namespace gnsstk::StringUtils;
 using namespace std;
 
 namespace gnsstk
 {
+
+   static const unordered_map<IonoCorr::CorrType, IonoCorr::CorrType>
+   dependent_pairs
+   {
+      {IonoCorr::CorrType::GPSA, IonoCorr::CorrType::GPSB},
+      {IonoCorr::CorrType::QZSA, IonoCorr::CorrType::QZSB},
+      {IonoCorr::CorrType::BDSA, IonoCorr::CorrType::BDSB},
+      {IonoCorr::CorrType::IRNA, IonoCorr::CorrType::IRNB},
+      {IonoCorr::CorrType::GPSB, IonoCorr::CorrType::GPSA},
+      {IonoCorr::CorrType::QZSB, IonoCorr::CorrType::QZSA},
+      {IonoCorr::CorrType::BDSB, IonoCorr::CorrType::BDSA},
+      {IonoCorr::CorrType::IRNB, IonoCorr::CorrType::IRNA}
+   };
+
    const string Rinex3NavHeader::stringVersion     = "RINEX VERSION / TYPE";
    const string Rinex3NavHeader::stringRunBy       = "PGM / RUN BY / DATE";
    const string Rinex3NavHeader::stringComment     = "COMMENT";
@@ -128,6 +144,12 @@ namespace gnsstk
          case GAL:  return std::string("GAL");
          case GPSA: return std::string("GPSA");
          case GPSB: return std::string("GPSB");
+         case QZSA: return std::string("QZSA");
+         case QZSB: return std::string("QZSB");
+         case BDSA: return std::string("BDSA");
+         case BDSB: return std::string("BDSB");
+         case IRNA: return std::string("IRNA");
+         case IRNB: return std::string("IRNB");
          case Unknown:
             break;
       }
@@ -138,18 +160,24 @@ namespace gnsstk
    void IonoCorr ::
    fromString(const std::string str)
    {
-      std::string STR(gnsstk::StringUtils::upperCase(str));
-      if (STR == std::string("GAL"))
-         type = GAL;
-      else if (STR == std::string("GPSA"))
-         type = GPSA;
-      else if (STR == std::string("GPSB"))
-         type = GPSB;
-      else
+      static const std::unordered_map<std::string, IonoCorr::CorrType> from_string
       {
-         Exception e("Unknown IonoCorr type: " + str);
-         GNSSTK_THROW(e);
-      }
+         {"GAL", CorrType::GAL},
+         {"GPSA", CorrType::GPSA},
+         {"GPSB", CorrType::GPSB},
+         {"QZSA", CorrType::QZSA},
+         {"QZSB", CorrType::QZSB},
+         {"BDSA", CorrType::BDSA},
+         {"BDSB", CorrType::BDSB},
+         {"IRNA", CorrType::IRNA},
+         {"IRNB", CorrType::IRNB}
+      };
+      std::string key = gnsstk::StringUtils::upperCase(str);
+
+      if (!from_string.contains(key))
+         GNSSTK_THROW(Exception("Unknown ionospheric correction parameter: " + str));
+
+      type = from_string.at(key);
    }
 
 
@@ -266,21 +294,21 @@ namespace gnsstk
          {
                // GPS alpha "ION ALPHA"  R2.11
             IonoCorr ic("GPSA");
-            for(i=0; i < 4; i++)
+            for(i = 0; i < 4; i++)
                ic.param[i] = line.substr(2 + 12*i, 12);
-            mapIonoCorr[ic.asString()] = ic;
-            if(mapIonoCorr.find("GPSB") != mapIonoCorr.end())
-               valid |= validIonoCorrGPS;
+            mapIonoCorr[ic.type] = ic;
+            if (mapIonoCorr.contains(IonoCorr::CorrType::GPSB))
+               valid |= validIonoCorr;
          }
          else if(thisLabel == stringIonBeta)
          {
                // GPS beta "ION BETA"  R2.11
             IonoCorr ic("GPSB");
-            for(i=0; i < 4; i++)
+            for(i = 0; i < 4; i++)
                ic.param[i] = line.substr(2 + 12*i, 12);
-            mapIonoCorr[ic.asString()] = ic;
-            if(mapIonoCorr.find("GPSA") != mapIonoCorr.end())
-               valid |= validIonoCorrGPS;
+            mapIonoCorr[ic.type] = ic;
+            if (mapIonoCorr.contains(IonoCorr::CorrType::GPSA))
+               valid |= validIonoCorr;
          }
          else if(thisLabel == stringIonoCorr)
          {
@@ -295,25 +323,12 @@ namespace gnsstk
                FFStreamError fse(e.what());
                GNSSTK_THROW(e);
             }
-            for(i=0; i < 4; i++)
+            for(i = 0; i < 4; i++)
                ic.param[i] = line.substr(5 + 12*i, 12);
-
-            if(ic.type == IonoCorr::GAL)
-            {
-               valid |= validIonoCorrGal;
-            }
-            else if(ic.type == IonoCorr::GPSA)
-            {
-               if(mapIonoCorr.find("GPSB") != mapIonoCorr.end())
-                  valid |= validIonoCorrGPS;
-            }
-            else if(ic.type == IonoCorr::GPSB)
-            {
-               if(mapIonoCorr.find("GPSA") != mapIonoCorr.end())
-                  valid |= validIonoCorrGPS;
-            }
-               //else
-            mapIonoCorr[ic.asString()] = ic;
+            mapIonoCorr[ic.type] = ic;
+            if (!dependent_pairs.contains(ic.type)
+                || mapIonoCorr.contains(dependent_pairs.at(ic.type)))
+               valid |= validIonoCorr;
          }
          else if(thisLabel == stringDeltaUTC)
          {
@@ -511,68 +526,17 @@ namespace gnsstk
          }
       }
 
-      if ((valid & validIonoCorrGPS) || (valid & validIonoCorrGal))
+      if (valid & validIonoCorr)
       {
             // "IONOSPHERIC CORR"
-         map<string,IonoCorr>::const_iterator it;
-         for(it=mapIonoCorr.begin(); it != mapIonoCorr.end(); ++it)
+         for (auto const& [type, value] : mapIonoCorr)
          {
-            switch(it->second.type)
-            {
-               case IonoCorr::GAL:
-                  strm << "GAL  ";
-                  for(j=0; j<3; j++)
-                  {
-                     strm << it->second.param[j];
-                  }
-                  strm << "            " << setw(7) << ' ' << stringIonoCorr;
-                  break;
-               case IonoCorr::GPSA:
-                  if(version >= 3)
-                  {
-                     strm << "GPSA ";
-                     for(j=0; j<4; j++)
-                     {
-                        strm << it->second.param[j];
-                     }
-                     strm << setw(7) << ' ' << stringIonoCorr;
-                  }
-                  else
-                  {
-                        // "ION ALPHA" // R2.11
-                     strm << "  ";
-                     for(j=0; j<4; j++)
-                     {
-                        strm << it->second.param[j];
-                     }
-                     strm << setw(10) << ' ' << stringIonAlpha;
-                  }
-                  break;
-               case IonoCorr::GPSB:
-                  if(version >= 3)
-                  {
-                     strm << "GPSB ";
-                     for(j=0; j<4; j++)
-                        strm << it->second.param[j];
-                     strm << setw(7) << ' ' << stringIonoCorr;
-                  }
-                  else
-                  {
-                        // "ION BETA" // R2.11
-                     strm << "  ";
-                     for(j=0; j<4; j++)
-                        strm << it->second.param[j];
-                     strm << setw(10) << ' ' << stringIonBeta;
-                  }
-                  break;
-               case IonoCorr::Unknown:
-               default:
-                  FFStreamError err("Unknown IonoCorr type " +
-                                    asString(it->second.type));
-                  GNSSTK_THROW(err);
-                  break;
-            }
-            strm << endlpp;
+            std::stringstream data;
+
+            data << std::left << std::setw(5) << value.asString();
+            for (auto const& parameter : value.param)
+               data << parameter;
+            strm << std::setw(60) << data.str() << stringIonoCorr << endlpp;
          }
       }
 
@@ -724,38 +688,30 @@ namespace gnsstk
          s << endl;
       }
 
-      map<string,IonoCorr>::const_iterator icit;
-      for(icit=mapIonoCorr.begin(); icit != mapIonoCorr.end(); ++icit)
+      for (auto const & [type, value] : mapIonoCorr)
       {
-         s << "Iono correction for " << icit->second.asString() << " : "
+         s << "Iono correction for " << value.asString() << ": "
            << scientific << setprecision(4);
-         switch(icit->second.type)
+         switch (type)
          {
-            case IonoCorr::GAL:
-               s << "ai0 = " << icit->second.param[0]
-                 << ", ai1 = " << icit->second.param[1]
-                 << ", ai2 = " << icit->second.param[2];
-               break;
-            case IonoCorr::GPSA:
-               s << "alpha " << icit->second.param[0]
-                 << " " << icit->second.param[1]
-                 << " " << icit->second.param[2]
-                 << " " << icit->second.param[3];
-               break;
-            case IonoCorr::GPSB:
-               s << "beta  " << icit->second.param[0]
-                 << " " << icit->second.param[1]
-                 << " " << icit->second.param[2]
-                 << " " << icit->second.param[3];
-               break;
-            case IonoCorr::Unknown:
-            default:
-               FFStreamError err("Unknown IonoCorr type " +
-                                 asString(icit->second.type));
-               GNSSTK_THROW(err);
-               break;
+         case IonoCorr::CorrType::GPSA:
+         case IonoCorr::CorrType::QZSA:
+         case IonoCorr::CorrType::BDSA:
+         case IonoCorr::CorrType::IRNA:
+            s << "aplha";
+            break;
+         case IonoCorr::CorrType::GPSB:
+         case IonoCorr::CorrType::QZSB:
+         case IonoCorr::CorrType::BDSB:
+         case IonoCorr::CorrType::IRNB:
+            s << "beta";
+            break;
+         default:
+            s << "ai";
          }
-         s << endl;
+         for (auto const& parameter : value.param)
+            s << " " << parameter;
+         s << std::endl;
       }
 
       if(valid & validLeapSeconds)
@@ -891,26 +847,6 @@ namespace gnsstk
       else
       {
          lineMap[stringDUTC] = true;
-      }
-      if (((lici = mapIonoCorr.find("GPSA")) != mapIonoCorr.end()) &&
-          ((rici = right.mapIonoCorr.find("GPSA")) != right.mapIonoCorr.end()))
-
-      {
-//         lineMap[stringIonAlpha] = lici->second == rici->second;
-      }
-      else
-      {
-         lineMap[stringIonAlpha] = true;
-      }
-      if (((lici = mapIonoCorr.find("GPSB")) != mapIonoCorr.end()) &&
-          ((rici = right.mapIonoCorr.find("GPSB")) != right.mapIonoCorr.end()))
-
-      {
-//         lineMap[stringIonBeta] = lici->second == rici->second;
-      }
-      else
-      {
-         lineMap[stringIonBeta] = true;
       }
          // ...then filter by inclExclList later
       if (incl)

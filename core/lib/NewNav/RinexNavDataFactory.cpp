@@ -861,9 +861,9 @@ namespace gnsstk
    convertToIono(const CommonTime& when, const Rinex3NavHeader& navIn,
                  NavDataPtrList& navOut)
    {
-      std::map<std::string,IonoCorr>::const_iterator ai, bi;
-      if (((ai = navIn.mapIonoCorr.find("GPSA")) != navIn.mapIonoCorr.end()) &&
-          ((bi = navIn.mapIonoCorr.find("GPSB")) != navIn.mapIonoCorr.end()))
+      std::map<IonoCorr::CorrType,IonoCorr>::const_iterator ai, bi;
+      if (((ai = navIn.mapIonoCorr.find(IonoCorr::CorrType::GPSA)) != navIn.mapIonoCorr.end()) &&
+          ((bi = navIn.mapIonoCorr.find(IonoCorr::CorrType::GPSB)) != navIn.mapIonoCorr.end()))
       {
             // we have the GPS alpha and beta terms.
          std::shared_ptr<GPSLNavIono> iono(std::make_shared<GPSLNavIono>());
@@ -916,7 +916,7 @@ namespace gnsstk
          health->svHealth = 0; // force "PRN 0" to be healthy
          navOut.push_back(health);
       }
-      if ((ai = navIn.mapIonoCorr.find("GAL")) != navIn.mapIonoCorr.end())
+      if ((ai = navIn.mapIonoCorr.find(IonoCorr::CorrType::GAL)) != navIn.mapIonoCorr.end())
       {
             // we have the Galileo (NeQuickG) ai terms.
             /** @todo We don't know whether the iono data came from
@@ -968,8 +968,8 @@ namespace gnsstk
          health->sisaIndex = 0;
          navOut.push_back(health);
       }
-      if (((ai = navIn.mapIonoCorr.find("BDSA")) != navIn.mapIonoCorr.end()) &&
-          ((bi = navIn.mapIonoCorr.find("BDSB")) != navIn.mapIonoCorr.end()))
+      if (((ai = navIn.mapIonoCorr.find(IonoCorr::CorrType::BDSA)) != navIn.mapIonoCorr.end()) &&
+          ((bi = navIn.mapIonoCorr.find(IonoCorr::CorrType::BDSB)) != navIn.mapIonoCorr.end()))
       {
             // we have the BDS alpha and beta terms.
             // we *don't* have any idea if these came from D1 or D2, so assume.
