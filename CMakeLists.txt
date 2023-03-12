@@ -196,8 +196,12 @@ install( FILES ${GNSSTK_INC_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 # GNSSTK Library parameters
 #============================================================
 
-set_target_properties(gnsstk PROPERTIES VERSION "${GNSSTK_VERSION_MAJOR}.${GNSSTK_VERSION_MINOR}.${GNSSTK_VERSION_PATCH}"
-                                       SOVERSION "${GNSSTK_VERSION_MAJOR}")
+set_target_properties(gnsstk PROPERTIES
+  VERSION "${GNSSTK_VERSION_MAJOR}.${GNSSTK_VERSION_MINOR}.${GNSSTK_VERSION_PATCH}"
+  SOVERSION "${GNSSTK_VERSION_MAJOR}"
+  CXX_STANDARD 20
+  CXX_EXTENSIONS YES
+)
 
 #============================================================
 # Testing

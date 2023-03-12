@@ -180,9 +180,9 @@ namespace gnsstk
                icB.param[1] = kiPtr->beta[1];
                icB.param[2] = kiPtr->beta[2];
                icB.param[3] = kiPtr->beta[3];
-               h.mapIonoCorr[icA.asString()] = icA;
-               h.mapIonoCorr[icB.asString()] = icB;
-               h.valid |= Rinex3NavHeader::validIonoCorrGPS;
+               h.mapIonoCorr[icA.type] = icA;
+               h.mapIonoCorr[icB.type] = icB;
+               h.valid |= Rinex3NavHeader::validIonoCorr;
                rv = true;
             }
             else
@@ -202,8 +202,8 @@ namespace gnsstk
                   ic.param[1] = neqiPtr->ai[1];
                   ic.param[2] = neqiPtr->ai[2];
                   ic.type = IonoCorr::GAL;
-                  h.mapIonoCorr[ic.asString()] = ic;
-                  h.valid |= Rinex3NavHeader::validIonoCorrGal;
+                  h.mapIonoCorr[ic.type] = ic;
+                  h.valid |= Rinex3NavHeader::validIonoCorr;
                   rv = true;
                }
             }
