@@ -42,6 +42,7 @@
 #include "GPSLNavHealth.hpp"
 #include "GPSWeekSecond.hpp"
 #include "NavDataFactoryStoreCallback.hpp"
+#include "SatelliteSystem.hpp"
 
 using namespace std;
 
@@ -230,7 +231,7 @@ namespace gnsstk
       gps->i0 = navIn.i_total;
       gps->w = navIn.w;
       gps->OMEGAdot = navIn.OMEGAdot;
-      gps->idot = navIn.i_offset;
+      gps->idot = 0;
       gps->af0 = navIn.AF0;
       gps->af1 = navIn.AF1;
       gps->af2 = 0.0;
@@ -262,6 +263,7 @@ namespace gnsstk
          // NavData
          // SEM isn't really transmitted, so we set the sats the same
       navOut->signal.sat = SatID(navIn.PRN,SatelliteSystem::GPS);
+      navOut->signal.system = SatelliteSystem::GPS;
       navOut->signal.xmitSat = SatID(navIn.PRN,SatelliteSystem::GPS);
          // we can't obtain these from SEM nav, so just assume L1 C/A
       navOut->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::L1,
