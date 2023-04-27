@@ -39,6 +39,7 @@
 #ifndef GNSSTK_SEMNAVDATAFACTORY_HPP
 #define GNSSTK_SEMNAVDATAFACTORY_HPP
 
+#include "NavData.hpp"
 #include "NavDataFactoryWithStoreFile.hpp"
 #include "SEMData.hpp"
 #include "GPSLNavAlm.hpp"
@@ -105,6 +106,17 @@ namespace gnsstk
           */
       static bool convertToHealth(const SEMData& navIn,
                                   NavDataPtr& healthOut);
+
+         /** Convert SEM nav data to a system/code-appropriate
+          * SystemNavData object.
+          * @param[in] navIn The SEM nav message data to convert.
+          * @param[out] healthOut The NavHealthData object to be added
+          *   to the factory data map.
+          * @return true if the conversion is valid, false if the
+          *   input data is unsupported.
+          */
+      static bool convertToSystem(const SEMData& navIn,
+                                  NavDataPtr& systemOut);
 
          /** Fill the high level (NavData and above) data for an
           * object using information from a SEM nav record.

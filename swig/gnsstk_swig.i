@@ -91,6 +91,7 @@
 %import(module="gnsstk") "SatMetaDataStore.hpp"
 %feature("flatnested", "");
 %import(module="gnsstk") "NavData.hpp"
+%import(module="gnsstk") "SystemNavData.hpp"
 %import(module="gnsstk") "OrbitData.hpp"
 %import(module="gnsstk") "NavFit.hpp"
 %import(module="gnsstk") "SVHealth.hpp"
@@ -333,6 +334,8 @@
 %import(module="gnsstk") "GPSLNavISC.hpp"
 %import(module="gnsstk") "GPSLNavIono.hpp"
 %import(module="gnsstk") "GPSLNavTimeOffset.hpp"
+%import(module="gnsstk") "GPSSVConfig.hpp"
+%import(module="gnsstk") "GPSNavConfig.hpp"
 %import(module="gnsstk") "GSatID.hpp"
 %import(module="gnsstk") "GalDataValid.hpp"
 %import(module="gnsstk") "OrbitDataGal.hpp"

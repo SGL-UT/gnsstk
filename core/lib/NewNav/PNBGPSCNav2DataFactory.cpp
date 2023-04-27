@@ -36,15 +36,19 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include <math.h>
-#include <memory>
 #include "PNBGPSCNav2DataFactory.hpp"
+
+#include <cmath>
+#include <memory>
+
+#include "GPSNavConfig.hpp"
 #include "GPSCNav2Alm.hpp"
 // #include "GPSCNav2RedAlm.hpp"
 #include "GPSCNav2Eph.hpp"
 #include "GPSCNav2Health.hpp"
 #include "GPSCNav2TimeOffset.hpp"
 #include "GPSCNav2Iono.hpp"
+#include "SatID.hpp"
 #include "TimeCorrection.hpp"
 #include "YDSTime.hpp"
 #include "GPSC2Bits.hpp"
@@ -242,6 +246,10 @@ namespace gnsstk
          case npgMAlm:
             return processAlmOrb(navIn, navOut, offset);
             break;
+#if false /// @todo enable this if the SV config page is ever observed
+         case npgSVConfig:
+            return processSVConfig(navIn, navOut, offset);
+#endif
          default:
                // Just ignore everything else.
             return true;
@@ -493,6 +501,38 @@ namespace gnsstk
       navOut.push_back(p0);
       return true;
    }
+
+
+#if false // TODO: enable this if the SV config page is ever observed
+   bool PNBGPSCNav2DataFactory ::
+   processSVConfig(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
+                   unsigned offset)
+   {
+      if (!processSys)
+      {
+            // User doesn't want time offset data so don't do any processing.
+         return true;
+      }
+
+      for (unsigned prn = 1; prn <= numSVConfs; ++prn)
+      {
+         auto configPtr{std::make_shared<GPSNavConfig>()};
+         configPtr->timeStamp = getSF3Time(navIn->getTransmitTime());
+         configPtr->signal = NavMessageID{
+            NavSatelliteID{
+               prn, navIn->getsatSys(), navIn->getobsID(), navIn->getNavID()},
+            NavMessageType::System};
+
+         configPtr->antispoofOn = 
+            navIn->asBool(offset + asbConf1 + anbConfLen * (prn - 1));
+         configPtr->svConfig = navIn->asUnsignedLong(
+            offset + asbConf1 + anbConfLen * (prn - 1) + 1, 3, 1);
+
+         navOut.emplace_back(configPtr);         
+      }
+      return true;
+   }
+#endif
 
 
    bool PNBGPSCNav2DataFactory ::

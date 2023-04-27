@@ -36,33 +36,55 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "PNBNavDataFactory.hpp"
-#include "NavMessageType.hpp"
-
-using namespace std;
+#include "GPSSVConfig.hpp"
+#include "TestUtil.hpp"
 
 namespace gnsstk
 {
-   PNBNavDataFactory ::
-   PNBNavDataFactory()
-         : navValidity(NavValidityType::Any)
+   std::ostream& operator<<(std::ostream& s, gnsstk::GPSSVConfig e)
    {
-      setTypeFilter(allNavMessageTypes);
+      s << StringUtils::asString(e);
+      return s;
    }
+}
 
 
-   void PNBNavDataFactory ::
-   setTypeFilter(const NavMessageTypeSet& nmts)
+class GPSSVConfig_T
+{
+public:
+   unsigned convertTest();
+};
+
+
+unsigned GPSSVConfig_T ::
+convertTest()
+{
+   TUDEF("GPSSVConfig", "asString");
+      // This effectively tests GPSSVConfigIterator, asString and asGPSSVConfig
+      // all at once.
+   for (const auto c : gnsstk::GPSSVConfigIterator())
    {
-         // We use boolean values instead of a set so that we're not
-         // checking a set every time a new subframe is added.
-      processEph  = nmts.count(gnsstk::NavMessageType::Ephemeris) > 0;
-      processAlm  = nmts.count(gnsstk::NavMessageType::Almanac) > 0;
-      processHea  = nmts.count(gnsstk::NavMessageType::Health) > 0;
-      processTim  = nmts.count(gnsstk::NavMessageType::TimeOffset) > 0;
-      processIono = nmts.count(gnsstk::NavMessageType::Iono) > 0;
-      processISC  = nmts.count(gnsstk::NavMessageType::ISC) > 0;
-      processSys  = nmts.count(gnsstk::NavMessageType::System) > 0;
-   }
+      TUCSM("asString");
+      const auto s{gnsstk::StringUtils::asString(c)};
+      TUASSERT(!s.empty());
+      TUASSERT(s != "???");
 
+      TUCSM("asGPSSVConfig");
+      const auto c2{gnsstk::StringUtils::asGPSSVConfig(s)};
+      TUASSERTE(gnsstk::GPSSVConfig, c, c2);
+   }
+   TURETURN();
+}
+
+
+int main()
+{
+   GPSSVConfig_T testClass;
+   unsigned errorTotal = 0;
+
+   errorTotal += testClass.convertTest();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal << '\n';
+
+   return errorTotal;
 }

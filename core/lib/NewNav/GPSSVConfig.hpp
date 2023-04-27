@@ -18,10 +18,9 @@
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2022, The Board of Regents of The University of Texas System
+//  Copyright 2004-2023, The Board of Regents of The University of Texas System
 //
 //==============================================================================
-
 
 //==============================================================================
 //
@@ -36,33 +35,45 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "PNBNavDataFactory.hpp"
-#include "NavMessageType.hpp"
+#ifndef GNSSTK_GPSSVCONFIG_HPP
+#define GNSSTK_GPSSVCONFIG_HPP
 
-using namespace std;
+#include <cstdint>
+#include <string>
+
+#include "EnumIterator.hpp"
 
 namespace gnsstk
 {
-   PNBNavDataFactory ::
-   PNBNavDataFactory()
-         : navValidity(NavValidityType::Any)
+      /// @ingroup NavFactory
+      //@{
+
+      /// Identify GPS SV configuration states.
+   enum class GPSSVConfig : uint8_t
    {
-      setTypeFilter(allNavMessageTypes);
+      noInfo = 0,
+      blockIIR = 1,
+      blockIIRM = 2,
+      blockIIF = 3,
+      blockIII = 4,
+      blockIIIF = 5,
+      last
+   };
+
+      /// Define an iterator so C++11 can do range-for loops.
+   using GPSSVConfigIterator =
+      gnsstk::EnumIterator<GPSSVConfig, GPSSVConfig::noInfo, GPSSVConfig::last>;
+
+   namespace StringUtils
+   {
+         /// Convert a GPSSVConfig to a whitespace-free string name.
+      std::string asString(GPSSVConfig g) noexcept;
+         /// Convert a string name to a GPSSVConfig.
+      GPSSVConfig asGPSSVConfig(const std::string& s) noexcept;
    }
 
+      //@}
 
-   void PNBNavDataFactory ::
-   setTypeFilter(const NavMessageTypeSet& nmts)
-   {
-         // We use boolean values instead of a set so that we're not
-         // checking a set every time a new subframe is added.
-      processEph  = nmts.count(gnsstk::NavMessageType::Ephemeris) > 0;
-      processAlm  = nmts.count(gnsstk::NavMessageType::Almanac) > 0;
-      processHea  = nmts.count(gnsstk::NavMessageType::Health) > 0;
-      processTim  = nmts.count(gnsstk::NavMessageType::TimeOffset) > 0;
-      processIono = nmts.count(gnsstk::NavMessageType::Iono) > 0;
-      processISC  = nmts.count(gnsstk::NavMessageType::ISC) > 0;
-      processSys  = nmts.count(gnsstk::NavMessageType::System) > 0;
-   }
+} // namespace gnsstk
 
-}
+#endif // GNSSTK_GPSSVCONFIG_HPP

@@ -132,6 +132,8 @@ namespace gnsstk
       bool processIono;
          /// If true, inter-signal correction data will be output by addData.
       bool processISC;
+         /// If true, GNSS system message will be output by addData.
+      bool processSys;
    }; // class PNBNavDataFactory
 
       /// Managed pointer to a PNBNavDataFactory.

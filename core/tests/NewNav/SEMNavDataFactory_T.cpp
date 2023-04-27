@@ -36,6 +36,7 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#include "GPSNavConfig.hpp"
 #include "SEMNavDataFactory.hpp"
 #include "TestUtil.hpp"
 #include "GPSLNavEph.hpp"
@@ -156,6 +157,23 @@ loadIntoMapTest()
       "test_input_SP3a.sp3";
    TUASSERT(!f7.addDataSource(f7name));
    TUASSERTE(size_t, 0, f7.size());
+
+   TestClass f8;
+   std::string f8name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sem387.txt";
+   TUCATCH(f8.setTypeFilter({gnsstk::NavMessageType::System}));
+      // this should implicitly load into the data map
+   TUASSERT(f8.addDataSource(f8name));
+   TUASSERTE(size_t, 30, f8.size());
+   gnsstk::NavMessageMap &nmm8(f8.getData());
+      // only one message type
+   TUASSERTE(size_t, 1, nmm8.size());
+      // and it's SV config.
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::System,
+             nmm8.begin()->first);
+   TUCSM("convertToHealth/fillNavData");
+   verifyDataType<gnsstk::GPSNavConfig>(testFramework, nmm8);
+   TUCSM("loadIntoMap");
 
    TURETURN();
 }

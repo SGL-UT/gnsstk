@@ -65,6 +65,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %include "NavValidityType.hpp"
 %include "DumpDetail.hpp"
 %include "GPSLNavL2Codes.hpp"
+%include "GPSSVConfig.hpp"
 %include "GalHealthStatus.hpp"
 %include "GalDataValid.hpp"
 %include "GLOFNavPCode.hpp"
@@ -80,6 +81,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
    renameEnums('NavValidityType')
    renameEnums('DumpDetail')
    renameEnums('GPSLNavL2Codes')
+   renameEnums('GPSSVConfig')
    renameEnums('GalHealthStatus')
    renameEnums('GalDataValid')
    renameEnums('GLOFNavPCode')
@@ -157,6 +159,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %template(NavMessageIDSet) std::set<gnsstk::NavMessageID>;
 %include "DumpDetail.hpp"
 %include "NavData.hpp"
+%include "SystemNavData.hpp"
 %template() std::map<gnsstk::CommonTime, gnsstk::NavDataPtr>;
 %template() std::map<gnsstk::NavSatelliteID, gnsstk::NavMap>;
 %template() std::list<gnsstk::NavDataPtr>;
@@ -242,6 +245,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %include "GPSLNavISC.hpp"
 %include "GPSLNavIono.hpp"
 %include "GPSLNavTimeOffset.hpp"
+%include "GPSNavConfig.hpp"
 %include "GalDataValid.hpp"
 %include "OrbitDataGal.hpp"
 %include "GalHealthStatus.hpp"

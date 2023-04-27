@@ -37,12 +37,17 @@
 //
 //==============================================================================
 #include "SEMNavDataFactory.hpp"
-#include "SEMStream.hpp"
-#include "SEMHeader.hpp"
+
+#include <memory>
+
 #include "GPSLNavHealth.hpp"
+#include "GPSNavConfig.hpp"
 #include "GPSWeekSecond.hpp"
 #include "NavDataFactoryStoreCallback.hpp"
+#include "NavMessageType.hpp"
 #include "SatelliteSystem.hpp"
+#include "SEMHeader.hpp"
+#include "SEMStream.hpp"
 
 using namespace std;
 
@@ -74,6 +79,7 @@ namespace gnsstk
       bool rv = true;
       bool processAlm = (procNavTypes.count(NavMessageType::Almanac) > 0);
       bool processHea = (procNavTypes.count(NavMessageType::Health) > 0);
+      bool processSys{procNavTypes.count(NavMessageType::System) > 0};
       try
       {
          SEMStream is(filename.c_str(), ios::in);
@@ -94,7 +100,7 @@ namespace gnsstk
                else
                   return false; // some other error
             }
-            NavDataPtr alm, health;
+            NavDataPtr alm, health, sys;
             if (processAlm)
             {
                if (!convertToOrbit(data, alm))
@@ -104,6 +110,13 @@ namespace gnsstk
             {
                if (!convertToHealth(data, health))
                   return false;
+            }
+            if (processSys)
+            {
+               if (!convertToSystem(data, sys))
+               {
+                  return false;
+               }
             }
                // check the validity
             bool check = false;
@@ -141,6 +154,16 @@ namespace gnsstk
                         return false;
                   }
                }
+               if (processSys)
+               {
+                  if (sys->validate() == expect)
+                  {
+                     if (!cb.process(sys))
+                     {
+                        return false;
+                     }
+                  }
+               }
             }
             else
             {
@@ -153,6 +176,13 @@ namespace gnsstk
                {
                   if (!cb.process(health))
                      return false;
+               }
+               if (processSys)
+               {
+                  if (!cb.process(sys))
+                  {
+                    return false;
+                  }
                }
             }
          }
@@ -181,7 +211,8 @@ namespace gnsstk
    {
       if (procNavTypes.empty() ||
           (procNavTypes.count(NavMessageType::Almanac) > 0) ||
-          (procNavTypes.count(NavMessageType::Health) > 0))
+          (procNavTypes.count(NavMessageType::Health) > 0) ||
+          (procNavTypes.count(NavMessageType::System) > 0))
       {
          return "SEM";
       }
@@ -254,6 +285,25 @@ namespace gnsstk
          // GPSLNavHealth
       gps->svHealth = navIn.SV_health;
       return rv;
+   }
+
+
+   bool SEMNavDataFactory ::
+   convertToSystem(const SEMData &navIn, NavDataPtr &systemOut)
+   {
+     systemOut = std::make_shared<GPSNavConfig>();
+     fillNavData(navIn, systemOut);
+
+     // Dynamically cast to a GPSNavConfig pointer.
+     auto configOut{std::dynamic_pointer_cast<GPSNavConfig>(systemOut)};
+     // The only available timestamp in SEM.
+     configOut->timeStamp = GPSWeekSecond(navIn.week, navIn.Toa);
+     // Antispoof is the MSB of the four valid bits in the config word.
+     configOut->antispoofOn = (navIn.satConfig & 0x8) != 0;
+     // SV config is the 3 LSBs of the four valid bits in the config word.
+     configOut->svConfig = navIn.satConfig & 0x7;
+
+     return true;
    }
 
 
