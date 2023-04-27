@@ -84,7 +84,8 @@ allNavMessageTypesTest()
    TUDEF("NavMessageType", "allNavMessageTypes");
    for (gnsstk::NavMessageType e : gnsstk::NavMessageTypeIterator())
    {
-      size_t exp = (e == gnsstk::NavMessageType::Unknown) ? 0 : 1;
+      size_t exp = (e == gnsstk::NavMessageType::Unknown
+                    || e == gnsstk::NavMessageType::System) ? 0 : 1;
       TUASSERTE(size_t, exp, gnsstk::allNavMessageTypes.count(e));
    }
    TURETURN();

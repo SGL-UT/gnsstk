@@ -54,6 +54,7 @@ namespace gnsstk
             case NavMessageType::Clock:      return "Clock";
             case NavMessageType::Iono:       return "Iono";
             case NavMessageType::ISC:        return "ISC";
+            case NavMessageType::System:     return "System";
             default:                         return "???";
          } // switch (e)
       } // asString(NavMessageType)
@@ -77,6 +78,8 @@ namespace gnsstk
             return NavMessageType::Iono;
          if (s == "ISC")
             return NavMessageType::ISC;
+         if (s == "System")
+            return NavMessageType::System;
          return NavMessageType::Unknown;
       } // asNavMessageType(string)
    } // namespace StringUtils

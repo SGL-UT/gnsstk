@@ -18,7 +18,7 @@
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2022, The Board of Regents of The University of Texas System
+//  Copyright 2004-2023, The Board of Regents of The University of Texas System
 //
 //==============================================================================
 
@@ -36,33 +36,44 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "PNBNavDataFactory.hpp"
-#include "NavMessageType.hpp"
+#include "GPSSVConfig.hpp"
 
-using namespace std;
+#include <string>
 
 namespace gnsstk
 {
-   PNBNavDataFactory ::
-   PNBNavDataFactory()
-         : navValidity(NavValidityType::Any)
+   namespace StringUtils
    {
-      setTypeFilter(allNavMessageTypes);
-   }
+      std::string asString(GPSSVConfig g) noexcept
+      {
+         switch (g)
+         {
+            case GPSSVConfig::noInfo:    return "NoInfo";
+            case GPSSVConfig::blockIIR:  return "BlockIIR";
+            case GPSSVConfig::blockIIRM: return "BlockIIRM";
+            case GPSSVConfig::blockIIF:  return "BlockIIF";
+            case GPSSVConfig::blockIII:  return "BlockIII";
+            case GPSSVConfig::blockIIIF: return "BlockIIIF";
+            default:                     return "???";
+         } // switch (g)
+      } // asString(GPSSVConfig)
 
 
-   void PNBNavDataFactory ::
-   setTypeFilter(const NavMessageTypeSet& nmts)
-   {
-         // We use boolean values instead of a set so that we're not
-         // checking a set every time a new subframe is added.
-      processEph  = nmts.count(gnsstk::NavMessageType::Ephemeris) > 0;
-      processAlm  = nmts.count(gnsstk::NavMessageType::Almanac) > 0;
-      processHea  = nmts.count(gnsstk::NavMessageType::Health) > 0;
-      processTim  = nmts.count(gnsstk::NavMessageType::TimeOffset) > 0;
-      processIono = nmts.count(gnsstk::NavMessageType::Iono) > 0;
-      processISC  = nmts.count(gnsstk::NavMessageType::ISC) > 0;
-      processSys  = nmts.count(gnsstk::NavMessageType::System) > 0;
-   }
-
-}
+      GPSSVConfig asGPSSVConfig(const std::string& s) noexcept
+      {
+         if (s == "NoInfo")
+            return GPSSVConfig::noInfo;
+         if (s == "BlockIIR")
+            return GPSSVConfig::blockIIR;
+         if (s == "BlockIIRM")
+            return GPSSVConfig::blockIIRM;
+         if (s == "BlockIIF")
+            return GPSSVConfig::blockIIF;
+         if (s == "BlockIII")
+            return GPSSVConfig::blockIII;
+         if (s == "BlockIIIF")
+            return GPSSVConfig::blockIIIF;
+         return GPSSVConfig::noInfo;
+      } // asGPSSVConfig(string)
+   } // namespace StringUtils
+} // namespace gnsstk

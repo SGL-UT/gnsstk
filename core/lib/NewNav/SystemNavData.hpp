@@ -18,10 +18,9 @@
 //
 //  This software was developed by Applied Research Laboratories at the
 //  University of Texas at Austin.
-//  Copyright 2004-2022, The Board of Regents of The University of Texas System
+//  Copyright 2004-2023, The Board of Regents of The University of Texas System
 //
 //==============================================================================
-
 
 //==============================================================================
 //
@@ -36,33 +35,29 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include "PNBNavDataFactory.hpp"
-#include "NavMessageType.hpp"
+#ifndef GNSSTK_SYSTEMNAVDATA_HPP
+#define GNSSTK_SYSTEMNAVDATA_HPP
 
-using namespace std;
+#include "NavData.hpp"
+#include "NavMessageType.hpp"
 
 namespace gnsstk
 {
-   PNBNavDataFactory ::
-   PNBNavDataFactory()
-         : navValidity(NavValidityType::Any)
+      /// @ingroup NavFactory
+      //@{
+
+      /** Given the widely varying contents of system-specific nav messages, no
+       * common data members or functionality can be defined here.  Define this
+       * solely to preserve a semantic inheritance tree. */
+   class SystemNavData : public NavData
    {
-      setTypeFilter(allNavMessageTypes);
-   }
+   public:
+         /// Set our message type to health so we don't have to in every leaf.
+      SystemNavData()
+      { signal.messageType = NavMessageType::System; }
+   };
 
-
-   void PNBNavDataFactory ::
-   setTypeFilter(const NavMessageTypeSet& nmts)
-   {
-         // We use boolean values instead of a set so that we're not
-         // checking a set every time a new subframe is added.
-      processEph  = nmts.count(gnsstk::NavMessageType::Ephemeris) > 0;
-      processAlm  = nmts.count(gnsstk::NavMessageType::Almanac) > 0;
-      processHea  = nmts.count(gnsstk::NavMessageType::Health) > 0;
-      processTim  = nmts.count(gnsstk::NavMessageType::TimeOffset) > 0;
-      processIono = nmts.count(gnsstk::NavMessageType::Iono) > 0;
-      processISC  = nmts.count(gnsstk::NavMessageType::ISC) > 0;
-      processSys  = nmts.count(gnsstk::NavMessageType::System) > 0;
-   }
-
+      //@}
 }
+
+#endif // GNSSTK_SYSTEMNAVDATA_HPP
