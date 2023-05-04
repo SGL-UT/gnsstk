@@ -93,7 +93,8 @@ namespace gnsstk
           * @param[in] toSys The time system to convert to.
           * @param[in] t The time at which the offset is being
           *   requested (i.e. the time being converted).
-          * @param[out] offs The resulting offset, if available.
+          * @param[out] offs The resulting offset in seconds, 
+          *   if available, where when(toSys)=when(fromSys)-offset.
           * @return true if successful, false if unavailable. */
       bool getOffset(TimeSystem fromSys, TimeSystem toSys,
                      const CommonTime& t, double& offs) override;
