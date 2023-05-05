@@ -132,9 +132,9 @@ getOffsetTest()
    double result = 0;
    TUASSERT(uut.getOffset(gnsstk::TimeSystem::GPS, gnsstk::TimeSystem::UTC,
                           ct+35, result));
-   TUASSERTFE(-17.0, result);
+   TUASSERTFE(17.0, result);
       // Expect the NavTimeSystemConverter to match BasicTimeSystemConverter
-      // for this given data. At the very least, they should have the same 
+      // for this given data. At the very least, they should have the same
       // sign.
    gnsstk::BasicTimeSystemConverter btsc;
    double result2;
@@ -146,7 +146,7 @@ getOffsetTest()
    utc35.setTimeSystem(gnsstk::TimeSystem::UTC);
    TUASSERT(uut.getOffset(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::GPS,
                           utc35, result));
-   TUASSERTFE(17.0, result);
+   TUASSERTFE(-17.0, result);
       // expect this to not work
    TUASSERT(!uut.getOffset(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::BDT,
                            utc35, result));
