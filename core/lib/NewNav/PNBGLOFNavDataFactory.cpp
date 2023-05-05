@@ -550,7 +550,7 @@ namespace gnsstk
          rv &= result;
          if (result)
          {
-            to->deltatLS = offset;
+            to->deltatLS = -offset;
                // These values don't really matter much, since A1 and A2 are 0.
                // We set them mostly for display purposes (dump).
             to->refTime = to->effTime = to->timeStamp;
@@ -593,8 +593,8 @@ namespace gnsstk
    {
       CommonTime rv(xmitTime);
       GNSSTK_ASSERT(rv.changeTimeSystem(TimeSystem::GLO, &btsc));
-      double dSOD = static_cast<YDSTime>(rv).sod; 
-      unsigned long SOD = (unsigned long) dSOD; 
+      double dSOD = static_cast<YDSTime>(rv).sod;
+      unsigned long SOD = (unsigned long) dSOD;
          // 30 second per frame
          // ...and frames are in the range 1-5
       unsigned long frameCount = SOD / 30;
