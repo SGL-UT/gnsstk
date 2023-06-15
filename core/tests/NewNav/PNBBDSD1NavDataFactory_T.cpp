@@ -331,7 +331,7 @@ processEphTest()
       gnsstk::NavMessageType::Health);
    gnsstk::CommonTime toeExp = gnsstk::BDSWeekSecond(810,345600.0);
    gnsstk::CommonTime beginExp = gnsstk::BDSWeekSecond(810,345614.0);
-   gnsstk::CommonTime endExp = gnsstk::BDSWeekSecond(810,352800.0);
+   gnsstk::CommonTime endExp = gnsstk::BDSWeekSecond(810,432044.0);
    gnsstk::NavDataPtrList navOut;
    gnsstk::BDSD1NavHealth *hea;
    gnsstk::BDSD1NavEph *eph;

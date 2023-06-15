@@ -101,7 +101,7 @@ fixFitTest()
 {
    TUDEF("BDSD2NavEph", "fixFit");
    gnsstk::BDSD2NavEph obj;
-   gnsstk::BDSWeekSecond beginExpWS2(826,511200), endExpWS2(826,525600);
+   gnsstk::BDSWeekSecond beginExpWS2(826,511200), endExpWS2(827,30);
    gnsstk::CommonTime beginExp2(beginExpWS2), endExp2(endExpWS2);
    obj.Toe = obj.Toc = gnsstk::BDSWeekSecond(826,518400);
    obj.xmitTime = gnsstk::BDSWeekSecond(826,518400);
@@ -109,7 +109,7 @@ fixFitTest()
    TUASSERTE(gnsstk::CommonTime, beginExp2, obj.beginFit);
    TUASSERTE(gnsstk::CommonTime, endExp2, obj.endFit);
       //obj.dump(std::cerr, gnsstk::OrbitDataKepler::Detail::Full);
-   gnsstk::BDSWeekSecond beginExpWS3(826,547620), endExpWS3(826,554400);
+   gnsstk::BDSWeekSecond beginExpWS3(826,547620), endExpWS3(826,634050);
    gnsstk::CommonTime beginExp3(beginExpWS3), endExp3(endExpWS3);
    obj.Toe = obj.Toc = gnsstk::BDSWeekSecond(826,547200);
    obj.xmitTime = gnsstk::BDSWeekSecond(826,547620);
