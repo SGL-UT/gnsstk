@@ -11,6 +11,7 @@
 #include "AllanDeviation.hpp"
 #include "gps_constants.hpp"
 #include "SatelliteSystem.hpp"
+#include "SatTimeSystem.hpp"
 #include "SatID.hpp"
 #include "MathBase.hpp"
 #include "VectorBase.hpp"
