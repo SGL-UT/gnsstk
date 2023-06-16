@@ -54,6 +54,10 @@
 #include "NavSatelliteID.hpp"
 #include "PNBNavDataFactory.hpp"
 #include "TimeCorrection.hpp"
+#include "EngNav.hpp"
+#include "GPSLBits.hpp"
+#include "DebugTrace.hpp"
+#include "TimeString.hpp"
 
 using namespace std;
 using namespace gnsstk::gpslnav;
@@ -185,6 +189,7 @@ namespace gnsstk
    processEph(unsigned sfid, const PackedNavBitsPtr& navIn,
               NavDataPtrList& navOut)
    {
+      DEBUGTRACE_FUNCTION();
       NavSatelliteID key(navIn->getsatSys().id, navIn->getsatSys(),
                          navIn->getobsID(), navIn->getNavID());
       if (sfid == 1)
@@ -272,6 +277,8 @@ namespace gnsstk
          // NavData
       eph->timeStamp = ephSF[sf1]->getTransmitTime();
       eph->signal = NavMessageID(key, NavMessageType::Ephemeris);
+      DEBUGTRACE("IODC=" << hex << iodc << dec << " prn=" << eph->signal.sat.id
+                 << printTime(eph->timeStamp, " timeStamp=%Y %j %s"));
       // cerr << "Ready for full LNAV eph processing for " << (NavSignalID)key << endl;
          // OrbitData = empty
          // OrbitDataKepler

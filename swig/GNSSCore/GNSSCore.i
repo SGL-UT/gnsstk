@@ -66,6 +66,7 @@ ENUM_MAPPER(gnsstk::CorrDupHandling, CorrDupHandling, "gnsstk")
 %import "CommonTime.hpp"
 
 %include "SatelliteSystem.hpp"
+%include "SatTimeSystem.hpp"
 %include "CarrierBand.hpp"
 %include "TrackingCode.hpp"
 %include "ObservationType.hpp"

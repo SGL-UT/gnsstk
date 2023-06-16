@@ -12,6 +12,7 @@
 %import(module="gnsstk") "gps_constants.hpp"
 %import(module="gnsstk") "SatelliteSystem.hpp"
 %template(std_vector_GNSS)       std::vector<gnsstk::SatelliteSystem>;
+%import(module="gnsstk") "SatTimeSystem.hpp"
 %import(module="gnsstk") "SatID.hpp"
 %template(std_vector_SatID)      std::vector<gnsstk::SatID>;
 %import(module="gnsstk") "MathBase.hpp"

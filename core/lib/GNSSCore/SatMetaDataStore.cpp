@@ -582,6 +582,22 @@ namespace gnsstk
 
 
    bool SatMetaDataStore ::
+   getNORAD(SatelliteSystem sys, uint32_t prn,
+            const gnsstk::CommonTime& when,
+            int32_t& norad)
+      const
+   {
+      SatMetaData sat;
+      if (findSat(sys, prn, when, sat))
+      {
+         norad = sat.norad;
+         return true;
+      }
+      return false;
+   }
+
+
+   bool SatMetaDataStore ::
    getPRN(SatelliteSystem sys, const std::string& svn,
           const gnsstk::CommonTime& when,
           uint32_t& prn)
