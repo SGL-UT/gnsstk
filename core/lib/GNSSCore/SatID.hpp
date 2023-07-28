@@ -42,6 +42,9 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#if __cplusplus >= 201703L
+#include <optional>
+#endif
 #include "gps_constants.hpp"
 #include "SatelliteSystem.hpp"
 
@@ -155,6 +158,14 @@ namespace gnsstk
       bool wildId;              ///< If true, any satellite matches.
       SatelliteSystem system;   ///< System for this satellite
       bool wildSys;             ///< If true, any system matches.
+#if __cplusplus >= 201703L
+         /** NORAD assigned identifier for this satellite.
+          * @note This value is only used as additional metadata.  It
+          *   is intentionally not taken into account for sorting or
+          *   comparing to avoid breaking code that doesn't actively
+          *   support it. */
+      std::optional<unsigned long> norad;
+#endif
    }; // class SatID
 
       /// stream output for SatID

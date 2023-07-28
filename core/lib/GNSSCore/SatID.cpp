@@ -96,6 +96,12 @@ namespace gnsstk
          s << "*";
       else
          s << id;
+#if __cplusplus >= 201703L
+      if (norad.has_value())
+      {
+         s << " NORAD " << *norad;
+      }
+#endif
    }
 
 
