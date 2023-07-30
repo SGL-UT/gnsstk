@@ -1,1 +1,3 @@
 usr/lib/*/lib*.so.*
+debian/enable usr/share/gnsstk__VER__
+debian/gnsstk_enable.sh usr/share/gnsstk__VER__

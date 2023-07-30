@@ -1,0 +1,4 @@
+export PATH=/usr/share/gnsstk${GNSSTK_VER}/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=/usr/share/gnsstk${GNSSTK_VER}/lib/__DEBHOSTGNUTYPE__${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+export CPLUS_INCLUDE_PATH=/usr/include/gnsstk${GNSSTK_VER}${CPLUS_INCLUDEPATH:+:${CPLUS_INCLUDE_PATH}}
+export PYTHONPATH=/usr/share/gnsstk${GNSSTK_VER}/lib/python__PYVER__/dist-packages${PYTHONPATH:+:${PYTHONPATH}}

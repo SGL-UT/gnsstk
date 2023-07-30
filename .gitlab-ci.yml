@@ -1292,8 +1292,11 @@ deploy_debian_10:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
-    - cd debs
+    - pushd debs
     - sudo apt-get -y install ./*.deb
+    - popd
+    # source gnsstk's enable script
+    - source /etc/profile.d/gnsstk_enable.sh
     - python3 -c "import gnsstk"
     - df_diff -h
     - gnsstk-config --includedir
@@ -1308,8 +1311,11 @@ deploy_debian_11:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
-    - cd debs
+    - pushd debs
     - apt-get -y install ./*.deb
+    - popd
+    # source gnsstk's enable script
+    - source /etc/profile.d/gnsstk_enable.sh
     - python3 -c "import gnsstk"
     - df_diff -h
     - gnsstk-config --includedir
@@ -1324,8 +1330,11 @@ deploy_ubuntu_20.04:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
-    - cd debs
+    - pushd debs
     - apt-get -y install ./*.deb
+    - popd
+    # source gnsstk's enable script
+    - source /etc/profile.d/gnsstk_enable.sh
     - python3 -c "import gnsstk"
     - df_diff -h
     - gnsstk-config --includedir
@@ -1340,8 +1349,11 @@ deploy_ubuntu_20.04_cpp17:
     - docker-executor
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
-    - cd debs
+    - pushd debs
     - apt-get -y install ./*.deb
+    - popd
+    # source gnsstk's enable script
+    - source /etc/profile.d/gnsstk_enable.sh
     - python3 -c "import gnsstk"
     - df_diff -h
     - gnsstk-config --includedir

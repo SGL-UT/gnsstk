@@ -10,9 +10,20 @@ Homepage: http://www.gnsstk.org/
 Vcs-Git: https://github.com/SGL-UT/GNSSTk.git
 Vcs-Browser: https://github.com/SGL-UT/GNSSTk.git
 
-Package: gnsstk-bin
+Package: libgnsstk__VER__
 Architecture: any
-Depends: libgnsstk__VER__ (>= ${binary:Version}), python3-gnsstk <pkg_python>, ${misc:Depends}, ${shlibs:Depends}, ${python3:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: GNSS Toolkit (GNSSTk) - Shared Libraries
+ The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by
+ the Space and Geophysics Laboratory (SGL), part of the Applied Research
+ Laboratories (ARL) at The University of Texas at Austin.
+ The primary goals of the GNSSTk project are to:
+ * provide applications for use by the GNSS and satellite navigation community.
+ * provide a core library to facilitate the development of GNSS applications.
+
+Package: gnsstk__VER__-bin
+Architecture: any
+Depends: libgnsstk__VER__ (>= ${binary:Version}), python3-gnsstk__VER__ <pkg_python>, ${misc:Depends}, ${shlibs:Depends}, ${python3:Depends}
 Description: GNSS Toolkit (GNSSTk) - command line tools
  The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by
  the Space and Geophysics Laboratory (SGL), part of the Applied Research
@@ -26,17 +37,6 @@ Section: libdevel
 Architecture: any
 Depends: libgnsstk__VER__ (= ${binary:Version}), ${misc:Depends}
 Description: GNSS Toolkit (GNSSTk) - Headers
- The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by
- the Space and Geophysics Laboratory (SGL), part of the Applied Research
- Laboratories (ARL) at The University of Texas at Austin.
- The primary goals of the GNSSTk project are to:
- * provide applications for use by the GNSS and satellite navigation community.
- * provide a core library to facilitate the development of GNSS applications.
-
-Package: libgnsstk__VER__
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: GNSS Toolkit (GNSSTk) - Shared Libraries
  The GNSS Toolkit (GNSSTk) is an open-source (LGPL) project sponsored by
  the Space and Geophysics Laboratory (SGL), part of the Applied Research
  Laboratories (ARL) at The University of Texas at Austin.
@@ -58,7 +58,7 @@ Description: GNSS Toolkit (GNSSTk) - Shared Library Debugging Symbols
  * provide applications for use by the GNSS and satellite navigation community.
  * provide a core library to facilitate the development of GNSS applications.
 
-Package: python3-gnsstk
+Package: python3-gnsstk__VER__
 Build-Profiles: <pkg_python>
 Section: python
 Architecture: any
