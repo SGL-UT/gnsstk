@@ -1,3 +1,0 @@
-#!/bin/bash
-# Prevent gnsstk-config from being included in gnsstk-bin, even though it's installed to the bin directory.
-find debian/tmp/usr/bin -type f \! -name "gnsstk-config"
