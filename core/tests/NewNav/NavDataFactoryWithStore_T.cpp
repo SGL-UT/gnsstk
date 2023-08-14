@@ -376,7 +376,7 @@ addNavDataTimeTest()
    navOut->signal.nav = gnsstk::NavType::GPSLNAV;
    TUASSERT(fact.addNavData(navOut));
 
-   TUASSERTE(gnsstk::CommonTime, bt3, fact.getInitialTime());
+   TUASSERTE(gnsstk::CommonTime, bt0, fact.getInitialTime());
    TUASSERTE(gnsstk::CommonTime, et3, fact.getFinalTime());
 
    TURETURN();

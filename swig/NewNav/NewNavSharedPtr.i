@@ -12,6 +12,7 @@
   */
 %shared_ptr(gnsstk::NavFit)
 %shared_ptr(gnsstk::NavData)
+%shared_ptr(gnsstk::SystemNavData)
 %shared_ptr(gnsstk::TimeOffsetData)
 %shared_ptr(gnsstk::StdNavTimeOffset)
 %shared_ptr(gnsstk::NavHealthData)
@@ -44,6 +45,7 @@
 %shared_ptr(gnsstk::GPSCNav2TimeOffset)
 %shared_ptr(gnsstk::GPSCNav2Iono)
 %shared_ptr(gnsstk::GPSCNav2ISC)
+%shared_ptr(gnsstk::GPSNavConfig)
 %shared_ptr(gnsstk::OrbitDataSP3)
 %shared_ptr(gnsstk::RinexTimeOffset)
 %shared_ptr(gnsstk::OrbitDataGal)

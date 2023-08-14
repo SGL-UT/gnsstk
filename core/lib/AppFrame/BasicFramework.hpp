@@ -387,6 +387,8 @@ namespace gnsstk
    class BasicFramework
    {
    public:
+         /// Exit code used when no errors have occurred.
+      static const int NO_ERROR = 0;
          /** Exit code used when an exception has been caught in
           * run().  Not guaranteed to be unique to this condition. */
       static const int EXCEPTION_ERROR = 1;

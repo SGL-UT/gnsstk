@@ -66,6 +66,7 @@ namespace gnsstk
       Clock,      ///< SV Clock offset data.  Currently only used by SP3.
       Iono,       ///< Ionospheric correction data.
       ISC,        ///< Inter-signal corrections.
+      System,     ///< GNSS system-specific messages
       Last        ///< Used to create an iterator.
    };
 

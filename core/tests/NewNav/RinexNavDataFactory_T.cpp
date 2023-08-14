@@ -812,7 +812,7 @@ loadIntoMapTest()
                   static const gnsstk::CommonTime expTS =
                      gnsstk::BDSWeekSecond(435,5.184000000000e+05);
                   static const gnsstk::CommonTime expBeg = expToe-(3600.0*2.0);
-                  static const gnsstk::CommonTime expEnd = expToe+(3600.0*2.0);
+                  static const gnsstk::CommonTime expEnd = expXmit1+(3600.0*24.0+30.0);
                   static const gnsstk::NavMessageID expNMID(
                      gnsstk::NavSatelliteID(1, 1,
                                             gnsstk::SatelliteSystem::BeiDou,

@@ -37,6 +37,7 @@
 //
 //==============================================================================
 #include "PNBNavDataFactory.hpp"
+#include "NavMessageType.hpp"
 
 using namespace std;
 
@@ -55,12 +56,13 @@ namespace gnsstk
    {
          // We use boolean values instead of a set so that we're not
          // checking a set every time a new subframe is added.
-      processEph = (nmts.count(gnsstk::NavMessageType::Ephemeris) > 0);
-      processAlm = (nmts.count(gnsstk::NavMessageType::Almanac) > 0);
-      processHea = (nmts.count(gnsstk::NavMessageType::Health) > 0);
-      processTim = (nmts.count(gnsstk::NavMessageType::TimeOffset) > 0);
-      processIono= (nmts.count(gnsstk::NavMessageType::Iono) > 0);
-      processISC = (nmts.count(gnsstk::NavMessageType::ISC) > 0);
+      processEph  = nmts.count(gnsstk::NavMessageType::Ephemeris) > 0;
+      processAlm  = nmts.count(gnsstk::NavMessageType::Almanac) > 0;
+      processHea  = nmts.count(gnsstk::NavMessageType::Health) > 0;
+      processTim  = nmts.count(gnsstk::NavMessageType::TimeOffset) > 0;
+      processIono = nmts.count(gnsstk::NavMessageType::Iono) > 0;
+      processISC  = nmts.count(gnsstk::NavMessageType::ISC) > 0;
+      processSys  = nmts.count(gnsstk::NavMessageType::System) > 0;
    }
 
 }

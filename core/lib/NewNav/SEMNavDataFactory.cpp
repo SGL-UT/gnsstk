@@ -37,11 +37,17 @@
 //
 //==============================================================================
 #include "SEMNavDataFactory.hpp"
-#include "SEMStream.hpp"
-#include "SEMHeader.hpp"
+
+#include <memory>
+
 #include "GPSLNavHealth.hpp"
+#include "GPSNavConfig.hpp"
 #include "GPSWeekSecond.hpp"
 #include "NavDataFactoryStoreCallback.hpp"
+#include "NavMessageType.hpp"
+#include "SatelliteSystem.hpp"
+#include "SEMHeader.hpp"
+#include "SEMStream.hpp"
 
 using namespace std;
 
@@ -73,6 +79,7 @@ namespace gnsstk
       bool rv = true;
       bool processAlm = (procNavTypes.count(NavMessageType::Almanac) > 0);
       bool processHea = (procNavTypes.count(NavMessageType::Health) > 0);
+      bool processSys{procNavTypes.count(NavMessageType::System) > 0};
       try
       {
          SEMStream is(filename.c_str(), ios::in);
@@ -93,7 +100,7 @@ namespace gnsstk
                else
                   return false; // some other error
             }
-            NavDataPtr alm, health;
+            NavDataPtr alm, health, sys;
             if (processAlm)
             {
                if (!convertToOrbit(data, alm))
@@ -103,6 +110,13 @@ namespace gnsstk
             {
                if (!convertToHealth(data, health))
                   return false;
+            }
+            if (processSys)
+            {
+               if (!convertToSystem(data, sys))
+               {
+                  return false;
+               }
             }
                // check the validity
             bool check = false;
@@ -140,6 +154,16 @@ namespace gnsstk
                         return false;
                   }
                }
+               if (processSys)
+               {
+                  if (sys->validate() == expect)
+                  {
+                     if (!cb.process(sys))
+                     {
+                        return false;
+                     }
+                  }
+               }
             }
             else
             {
@@ -152,6 +176,13 @@ namespace gnsstk
                {
                   if (!cb.process(health))
                      return false;
+               }
+               if (processSys)
+               {
+                  if (!cb.process(sys))
+                  {
+                    return false;
+                  }
                }
             }
          }
@@ -180,7 +211,8 @@ namespace gnsstk
    {
       if (procNavTypes.empty() ||
           (procNavTypes.count(NavMessageType::Almanac) > 0) ||
-          (procNavTypes.count(NavMessageType::Health) > 0))
+          (procNavTypes.count(NavMessageType::Health) > 0) ||
+          (procNavTypes.count(NavMessageType::System) > 0))
       {
          return "SEM";
       }
@@ -230,7 +262,7 @@ namespace gnsstk
       gps->i0 = navIn.i_total;
       gps->w = navIn.w;
       gps->OMEGAdot = navIn.OMEGAdot;
-      gps->idot = navIn.i_offset;
+      gps->idot = 0;
       gps->af0 = navIn.AF0;
       gps->af1 = navIn.AF1;
       gps->af2 = 0.0;
@@ -256,12 +288,32 @@ namespace gnsstk
    }
 
 
+   bool SEMNavDataFactory ::
+   convertToSystem(const SEMData &navIn, NavDataPtr &systemOut)
+   {
+     systemOut = std::make_shared<GPSNavConfig>();
+     fillNavData(navIn, systemOut);
+
+     // Dynamically cast to a GPSNavConfig pointer.
+     auto configOut{std::dynamic_pointer_cast<GPSNavConfig>(systemOut)};
+     // The only available timestamp in SEM.
+     configOut->timeStamp = GPSWeekSecond(navIn.week, navIn.Toa);
+     // Antispoof is the MSB of the four valid bits in the config word.
+     configOut->antispoofOn = (navIn.satConfig & 0x8) != 0;
+     // SV config is the 3 LSBs of the four valid bits in the config word.
+     configOut->svConfig = navIn.satConfig & 0x7;
+
+     return true;
+   }
+
+
    void SEMNavDataFactory ::
    fillNavData(const SEMData& navIn, NavDataPtr& navOut)
    {
          // NavData
          // SEM isn't really transmitted, so we set the sats the same
       navOut->signal.sat = SatID(navIn.PRN,SatelliteSystem::GPS);
+      navOut->signal.system = SatelliteSystem::GPS;
       navOut->signal.xmitSat = SatID(navIn.PRN,SatelliteSystem::GPS);
          // we can't obtain these from SEM nav, so just assume L1 C/A
       navOut->signal.obs = ObsID(ObservationType::NavMsg, CarrierBand::L1,

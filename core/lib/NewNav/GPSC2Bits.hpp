@@ -63,6 +63,7 @@ namespace gnsstk
          npgUTC = 1,            ///< UTC & Iono page number for subframe 3.
          npgGGTO = 2,           ///< GPS-GNSS time offset page number for subframe 3.
          npgMAlm = 4,           ///< Midi Almanac page number for subframe 3.
+         npgSVConfig = 7,       ///< SV configuration page number for subframe 3.
 
             // these apply to subframe 2
 
@@ -373,6 +374,12 @@ namespace gnsstk
          asbaf1 = 155,          ///< af1 start bit
          anbaf1 = 10,           ///< af1 number of bits
          ascaf1 = -37,          ///< af1 power factor
+
+            // These apply to subframe 3 page 7 (SV configuration)
+
+         asbConf1 = 14,         ///< 1st SV config start bit
+         anbConfLen = 4,        ///< Length of each SV config entry, in bits
+         numSVConfs = 63,       ///< Number of SV config entries
       };
    } // namespace gpscnav2
 } // namespace gnsstk

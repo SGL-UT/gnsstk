@@ -117,12 +117,12 @@ namespace gnsstk
           * @return true if successful (navOut may still be empty). */
       bool processSVID51(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
-         /** Process SV/page ID 63.  This includes health data for
-          * PRNs 25-32.
-          * @param[in] navIn The PackedNavBits data containing the subframe.
-          * @param[out] navOut The GPSLNavHealth objects generated from
-          *   navIn.
-          * @return true if successful. */
+      /** Process SV/page ID 63.  This includes health data for
+       * PRNs 25-32 and SV config for PRNs 1-32.
+       * @param[in] navIn The PackedNavBits data containing the subframe.
+       * @param[out] navOut The GPSLNavHealth and/or GPSNavConfig objects
+       *   generated from navIn.
+       * @return true if successful. */
       bool processSVID63(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
          /** Process SV/page ID 56.  This includes GPS-UTC time offset

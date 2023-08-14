@@ -304,7 +304,12 @@ namespace gnsstk
       auto dataIt = data.find(nmt);
       if (dataIt == data.end())
       {
-         DEBUGTRACE("no data for nav message type");
+         DEBUGTRACE("NO data for nav message type "
+                    << StringUtils::asString(nmt));
+         for (const auto dit : data)
+         {
+            DEBUGTRACE("found: " << StringUtils::asString(dit.first));
+         }
          return false;
       }
       if (!nsid.isWild())
@@ -1446,7 +1451,12 @@ namespace gnsstk
       std::map<unsigned long,long> countStep;
       if (dataIt == data.end())
       {
-         DEBUGTRACE("no data for nav message type");
+         DEBUGTRACE("NO data for nav message type "
+                    << StringUtils::asString(nmid.messageType));
+         for (const auto dit : data)
+         {
+            DEBUGTRACE("found: " << StringUtils::asString(dit.first));
+         }
          return false;
       }
          // To support wildcard signals, we need to do a linear search.

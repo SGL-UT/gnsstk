@@ -37,15 +37,27 @@
 //
 //==============================================================================
 #include "PNBGPSLNavDataFactory.hpp"
+
+#include <memory>
+
+#include "EngNav.hpp"
+#include "GPSLBits.hpp"
 #include "GPSLNavAlm.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
-#include "GPSLNavTimeOffset.hpp"
-#include "GPSLNavIono.hpp"
 #include "GPSLNavISC.hpp"
+#include "GPSLNavIono.hpp"
+#include "GPSLNavTimeOffset.hpp"
+#include "GPSNavConfig.hpp"
+#include "NavMessageID.hpp"
+#include "NavMessageType.hpp"
+#include "NavSatelliteID.hpp"
+#include "PNBNavDataFactory.hpp"
 #include "TimeCorrection.hpp"
 #include "EngNav.hpp"
 #include "GPSLBits.hpp"
+#include "DebugTrace.hpp"
+#include "TimeString.hpp"
 
 using namespace std;
 using namespace gnsstk::gpslnav;
@@ -133,7 +145,7 @@ namespace gnsstk
                }
                else if (svid == 63)
                {
-                     // process health
+                     // process health and/or SV config
                   rv = processSVID63(navIn, navOut);
                }
                else if ((svid == 56) || (useQZSS && (svid == 61)))
@@ -177,6 +189,7 @@ namespace gnsstk
    processEph(unsigned sfid, const PackedNavBitsPtr& navIn,
               NavDataPtrList& navOut)
    {
+      DEBUGTRACE_FUNCTION();
       NavSatelliteID key(navIn->getsatSys().id, navIn->getsatSys(),
                          navIn->getobsID(), navIn->getNavID());
       if (sfid == 1)
@@ -264,6 +277,8 @@ namespace gnsstk
          // NavData
       eph->timeStamp = ephSF[sf1]->getTransmitTime();
       eph->signal = NavMessageID(key, NavMessageType::Ephemeris);
+      DEBUGTRACE("IODC=" << hex << iodc << dec << " prn=" << eph->signal.sat.id
+                 << printTime(eph->timeStamp, " timeStamp=%Y %j %s"));
       // cerr << "Ready for full LNAV eph processing for " << (NavSignalID)key << endl;
          // OrbitData = empty
          // OrbitDataKepler
@@ -595,74 +610,61 @@ namespace gnsstk
    bool PNBGPSLNavDataFactory ::
    processSVID63(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
    {
-         // No checks for correct svid, just assume that the input
-         // data has already been checked (it will have been by
-         // addData).
-         // svid 63 = sf 4 page 25. The format has SVs 25-32 in it.
-         // SV 25 is kind of off on its own so do it first, outside the loop
-      if (!PNBNavDataFactory::processHea)
-      {
-            // User doesn't want health so don't do any processing.
-         return true;
-      }
+         // No checks for correct svid, just assume that the input data has
+         // already been checked (it will have been by addData).
+
+         // svid 63 = sf 4 page 25. The format has SVs 25-32 health and SVs 1-32
+         // config in it.
+
       SatID xmitSat(navIn->getsatSys());
       ObsID oid(navIn->getobsID());
       NavID navid(navIn->getNavID());
-      NavDataPtr p0 = std::make_shared<GPSLNavHealth>();
-      p0->timeStamp = navIn->getTransmitTime();
-      p0->signal = NavMessageID(
-         NavSatelliteID(25, xmitSat, oid, navid),
-         NavMessageType::Health);
-         // prn 25 health starts at bit 229 (1-based), so we use 228 (0-based)
-      dynamic_cast<GPSLNavHealth*>(p0.get())->svHealth =
-         navIn->asUnsignedLong(228, 6, 1);
-      // cerr << "add LNAV page 63 health" << endl;
-      navOut.push_back(p0);
-      for (unsigned prn = 26, bit = 240; prn <= 32; prn += 4, bit += 30)
+
+      if (processSys)
       {
-         NavDataPtr p1 = std::make_shared<GPSLNavHealth>();
-         NavDataPtr p2 = std::make_shared<GPSLNavHealth>();
-         NavDataPtr p3 = std::make_shared<GPSLNavHealth>();
-         NavDataPtr p4;
-         p1->timeStamp = navIn->getTransmitTime();
-         p1->signal = NavMessageID(
-            NavSatelliteID(prn+0, xmitSat, oid, navid),
-            NavMessageType::Health);
-         dynamic_cast<GPSLNavHealth*>(p1.get())->svHealth =
-            navIn->asUnsignedLong(bit+0, 6, 1);
-         // cerr << "add LNAV page 63 health" << endl;
-         navOut.push_back(p1);
-         p2->timeStamp = navIn->getTransmitTime();
-         p2->signal = NavMessageID(
-            NavSatelliteID(prn+1, xmitSat, oid, navid),
-            NavMessageType::Health);
-         dynamic_cast<GPSLNavHealth*>(p2.get())->svHealth =
-            navIn->asUnsignedLong(bit+6, 6, 1);
-         // cerr << "add LNAV page 63 health" << endl;
-         navOut.push_back(p2);
-         p3->timeStamp = navIn->getTransmitTime();
-         p3->signal = NavMessageID(
-            NavSatelliteID(prn+2, xmitSat, oid, navid),
-            NavMessageType::Health);
-         dynamic_cast<GPSLNavHealth*>(p3.get())->svHealth =
-            navIn->asUnsignedLong(bit+12, 6, 1);
-         // cerr << "add LNAV page 63 health" << endl;
-         navOut.push_back(p3);
-            // Word 9 has 4 PRNs, word 10 only has 3, so we have to do
-            // this check.
-         if (prn < 30)
+         for (unsigned prn = 1; prn <= 32; ++prn)
          {
-            p4 = std::make_shared<GPSLNavHealth>();
-            p4->timeStamp = navIn->getTransmitTime();
-            p4->signal = NavMessageID(
-               NavSatelliteID(prn+3, xmitSat, oid, navid),
-               NavMessageType::Health);
-            dynamic_cast<GPSLNavHealth*>(p4.get())->svHealth =
-               navIn->asUnsignedLong(bit+18, 6, 1);
-            // cerr << "add LNAV page 63 health" << endl;
-            navOut.push_back(p4);
+            // PRNs 1-4 are at the end of word 2 (zero-indexed), then every word
+            // after that has the PRNs sequentially placed from the start of the
+            // word. This means that word selection (and location within the
+            // word) follow a predictable pattern.
+            const unsigned word{((prn + 1) / 6) + 2}; // zero-indexed
+            const unsigned bitInWord{((prn + 1) % 6) * 4}; // counting from MSB
+
+            auto configPtr{std::make_shared<GPSNavConfig>()};
+            configPtr->timeStamp = navIn->getTransmitTime();
+            configPtr->signal = NavMessageID{
+               NavSatelliteID{prn, xmitSat, oid, navid},
+               NavMessageType::System};
+            configPtr->antispoofOn = navIn->asBool(30 * word + bitInWord);
+            configPtr->svConfig =
+               navIn->asUnsignedLong(30 * word + bitInWord + 1, 3, 1);
+            navOut.emplace_back(configPtr);
          }
       }
+
+      if (processHea)
+      {
+         for (unsigned prn = 25; prn <= 32; ++prn)
+         {
+            // PRN 25 is at the end of word 7 (zero-indexed), then every word
+            // after that has the PRNs sequentially placed from the start of the
+            // word. This means that word selection (and location within the
+            // word) follow a predictable pattern.
+            const unsigned word{((prn + 2) / 4) + 1}; // zero-indexed
+            const unsigned bitInWord{((prn + 2) % 4) * 6}; // counting from MSB
+
+            auto healthPtr{std::make_shared<GPSLNavHealth>()};
+            healthPtr->timeStamp = navIn->getTransmitTime();
+            healthPtr->signal = NavMessageID{
+               NavSatelliteID{prn, xmitSat, oid, navid},
+               NavMessageType::Health};
+            healthPtr->svHealth =
+               navIn->asUnsignedLong(30 * word + bitInWord, 6, 1);
+            navOut.emplace_back(healthPtr);
+         }
+      }
+
       return true;
    }
 

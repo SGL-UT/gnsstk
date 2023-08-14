@@ -266,6 +266,32 @@ namespace gnsstk
          const
       { return getSVN(sat.system, sat.id, when, svn); }
 
+         /** Get the NORAD number of a satellite in the map by
+          * searching by PRN.
+          * @param[in] sys The GNSS of the desired satellite.
+          * @param[in] prn The pseudo-random number identifying the
+          *   desired satellite.
+          * @param[in] when The time of interest of the desired satellite.
+          * @param[out] norad If found the satellite's NORAD number.
+          * @return true if the requested satellite mapping was found.
+          */
+      bool getNORAD(SatelliteSystem sys, uint32_t prn,
+                    const gnsstk::CommonTime& when,
+                    int32_t& norad)
+         const;
+
+         /** Get the space vehicle number of a satellite in the map by
+          * searching by PRN.
+          * @param[in] sat The ID of the desired satellite.
+          * @param[in] when The time of interest of the desired satellite.
+          * @param[out] norad If found the satellite's NORAD number.
+          * @return true if the requested satellite mapping was found.
+          */
+      bool getNORAD(const SatID& sat, const gnsstk::CommonTime& when,
+                    int32_t& norad)
+         const
+      { return getNORAD(sat.system, sat.id, when, norad); }
+
          /** Find a satellite in the map by searching by SVN.
           * @param[in] sys The GNSS of the desired satellite.
           * @param[in] svn The system-unique space vehicle number

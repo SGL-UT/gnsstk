@@ -23,6 +23,8 @@ user_install_prefix+="/gnsstk"
 
 system_install_prefix+="/gnsstk"
 
+cppstd=c++11
+
 usage()
 {
     cat << EOF
@@ -87,12 +89,14 @@ OPTIONS:
 
    -p                   Build supported packages (source, binary, deb,  ...)
 
+   -C <c++-std>         Specify the C++ standard to use in g++ (default=${cppstd})
+
    -v                   Include debugging output.
 EOF
 }
 
 
-while getopts ":hab:cdepi:j:xnP:sutTKgv" OPTION; do
+while getopts ":hab:cdepi:j:xnP:sutTKgC:v" OPTION; do
     case $OPTION in
         h) usage
            exit 0
@@ -141,6 +145,8 @@ while getopts ":hab:cdepi:j:xnP:sutTKgv" OPTION; do
            EXTRA_CMAKE_ARGS="$EXTRA_CMAKE_ARGS -DCMAKE_BUILD_TYPE=debug"
            ;;
         g) coverage_switch=1
+           ;;
+        C) cppstd=${OPTARG}
            ;;
         v) verbose+=1
            ;;
@@ -207,6 +213,7 @@ if ((verbose>0)); then
     log "enable_profiler      = $(ptof $enable_profiler)"
     log "verbose              = $(ptof $verbose)"
     log "num_threads          = $num_threads"
+    log "cppstd               = $cppstd"
     log "cmake args           = $@"
     log "time                 =" `date`
     log "hostname             =" $hostname
@@ -266,13 +273,19 @@ args+=${test_switch:+" -DTEST_SWITCH=ON"}
 args+=${coverage_switch:+" -DCOVERAGE_SWITCH=ON"}
 args+=${enable_trace:+" -DDEBUGTRACE=ON"}
 args+=${build_docs:+" --graphviz=$build_root/doc/graphviz/gnsstk_graphviz.dot"}
+args+=" -DCPPSTD=${cppstd}"
 if [ $no_address_sanitizer ]; then
     args+=" -DADDRESS_SANITIZER=OFF"
 else
     args+=" -DADDRESS_SANITIZER=ON"
 fi
 
-case `uname` in
+# Check if Ninja exists, and preferentially use it over Make
+if command -v ninja; then
+    USE_NINJA="1"
+fi
+
+case $(uname) in
     MINGW32_NT-6.1)
         run cmake $args -G "Visual Studio 14 2015 Win64" $repo
         run cmake --build . --config Release
@@ -282,10 +295,15 @@ case `uname` in
         run cmake --build . --config Release
         ;;
     *)
-        echo "Run cmake $args $repo ##########################"
-        run cmake $args $repo
-        run make all -j $num_threads
-        #run make all -j $num_threads VERBOSE=1   # BWT make make verbose
+        if [[ "$USE_NINJA" -eq "1" ]]; then
+            echo "Run cmake -G "Ninja" $args $repo ##########################"
+            run cmake -G "Ninja" $args $repo
+            run ninja -j $num_threads
+        else
+            echo "Run cmake $args $repo ##########################"
+            run cmake $args $repo
+            run make all -j $num_threads
+        fi
 esac
 
 
@@ -316,7 +334,11 @@ if [ $install ]; then
         run cmake --build . --config Release --target install
         ;;
     *)
-        run make install -j $num_threads
+        if [[ "$USE_NINJA" -eq "1" ]]; then
+            run ninja install -j "$num_threads"
+        else
+            run make install -j "$num_threads"
+        fi
     esac
 fi
 
@@ -344,8 +366,13 @@ if [ $build_packages ]; then
             run cpack -C Release
             ;;
         *)
-            run make package
-            run make package_source
+            if [[ "$USE_NINJA" -eq "1" ]]; then
+                run ninja package
+                run ninja package_source
+            else
+                run make package
+                run make package_source
+            fi
     esac
     if [[ -z $exclude_python && $build_ext ]] ; then
         cd "$build_root"/swig/install_package

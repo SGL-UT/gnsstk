@@ -60,7 +60,9 @@
 namespace gnsstk
 {
       /** @note This must be initialized before instantiating
-       * factories and adding them to MultiFormatNavDataFactory. */
+       * factories and adding them to MultiFormatNavDataFactory.
+       * @note This deliberately omits the System type, as most users are not
+       * expected to use it.*/
    const NavMessageTypeSet allNavMessageTypes { NavMessageType::Almanac,
                                                 NavMessageType::Ephemeris,
                                                 NavMessageType::TimeOffset,

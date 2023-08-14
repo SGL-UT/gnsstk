@@ -13,6 +13,8 @@ class TestGNSSCore(unittest.TestCase):
     def test_SatelliteSystem(self):
         a = gnsstk.SatelliteSystem.GPS
         self.assertIsNotNone(a)
+        b = gnsstk.satTimeSystem(a)
+        self.assertIsNotNone(b)
 
     def test_vectorGNSS(self):
         a = gnsstk.std_vector_GNSS()

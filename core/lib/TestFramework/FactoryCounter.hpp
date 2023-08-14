@@ -69,7 +69,9 @@
    }
 
 /** Class for counting instances of various types of nav messages
- * produced by PNBNavDataFactory objects and the like. */
+ * produced by PNBNavDataFactory objects and the like. System messages are
+ * deliberately excluded due to a lack of system message types in some GNSS
+ * systems. */
 template <class Alm, class Eph, class TimeOffs, class Health, class Iono,
           class GrpDelay>
 class FactoryCounter

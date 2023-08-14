@@ -26,12 +26,21 @@ PYTHON_INSTALL_PREFIX_PARAM=
 major = $(shell dpkg-parsechangelog -S Version | sed -ne 's/^\([0-9]\+\)\..*$$/\1/p')
 minor = $(shell dpkg-parsechangelog -S Version | sed -ne 's/^[0-9]\+\.\([0-9]\+\)\..*$$/\1/p')
 
+# default to c++11
+CPPSTD=c++11
+# There's probably a better way to do this.
+ifneq ($(filter build_cpp17,$(DEB_BUILD_PROFILES)), )
+    CPPSTD=c++17
+endif
+
 # add python bindings for package builds using profile pkg_python
 ifneq ($(filter pkg_python,$(DEB_BUILD_PROFILES)), )
     PYTHON_FLAG="ON"
     BUILD_FOR_PACKAGE_SWITCH_FLAG="ON"
     PYTHON_EXE_PARAM="-DPYTHON_EXECUTABLE=/usr/bin/python3"
-    PYTHON_INSTALL_PREFIX_PARAM="-DPYTHON_INSTALL_PREFIX=$(CURDIR)/debian/python3-gnsstk"
+    PYTHON_INSTALL_PREFIX_PARAM="-DPYTHON_INSTALL_PREFIX=$(CURDIR)/debian/python3-gnsstk$(major)"
+    # Set python major version used in enable script
+    PYVER = 3
 endif
 
 DEBUG_PKG_PARAM=
@@ -45,7 +54,15 @@ builddir="./build"
 gen_control:
 	@echo "$@ Generated $(major) $(minor)."
 	sed -e 's/__VER__/$(major)/g' -e 's/__FULLVER__/$(major).$(minor)/g' debian/control.in >debian/control
-
+# Update install files for co-installation of major pkg versions
+	sed -e 's/__VER__/$(major)/g' -i debian/python3-gnsstk$(major).install
+	sed -e 's/__VER__/$(major)/g' -i debian/gnsstk$(major)-bin.install
+	sed -e 's/__VER__/$(major)/g;s/__DEBHOSTGNUTYPE__/$(DEB_HOST_GNU_TYPE)/g' -i debian/libgnsstk$(major).install
+	sed -e 's/__VER__/$(major)/g;s/__DEBHOSTGNUTYPE__/$(DEB_HOST_GNU_TYPE)/g' -i debian/libgnsstk$(major)-dev.install
+	sed -e 's/__DEBHOSTGNUTYPE__/$(DEB_HOST_GNU_TYPE)/g;s/__PYVER__/$(PYVER)/g' -i debian/enable
+	sed -e 's/__VER__/$(major)/g' -i debian/gnsstk_enable.sh
+	sed -e 's/__VER__/$(major)/g' -i debian/postinst
+	sed -e 's/__VER__/$(major)/g' -i debian/prerm
 
 # main packaging script based on dh7 syntax
 %:
@@ -72,6 +89,7 @@ override_dh_auto_configure: gen_control
 	 -DBUILD_FOR_PACKAGE_SWITCH=$(BUILD_FOR_PACKAGE_SWITCH_FLAG) \
 	 -DUSE_RPATH=OFF \
 	 -DVERSIONED_HEADER_INSTALL=ON \
+	 -DCPPSTD=$(CPPSTD) \
 	 $(DEBUG_PKG_PARAM)
 
 override_dh_auto_clean: gen_control
@@ -86,3 +104,20 @@ override_dh_strip:
 
 override_dh_shlibdeps:
 	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
+
+override_dh_python3: gen_control
+	dh_python3
+	mkdir -p $(CURDIR)/debian/python3-gnsstk$(major)/usr/share/gnsstk$(major)/lib
+	mv $(CURDIR)/debian/python3-gnsstk$(major)/usr/lib/python3 $(CURDIR)/debian/python3-gnsstk$(major)/usr/share/gnsstk$(major)/lib/
+	mv $(CURDIR)/debian/python3-gnsstk$(major)/usr/local/* $(CURDIR)/debian/python3-gnsstk$(major)/usr/share/gnsstk$(major)/
+	rmdir $(CURDIR)/debian/python3-gnsstk$(major)/usr/lib $(CURDIR)/debian/python3-gnsstk$(major)/usr/local
+
+override_dh_install: gen_control
+# Need to update gnsstk-config and GNSSTKConfig.cmake to point private share locations for co-installs
+	sed -e 's/BIN_DIR=.*/BIN_DIR=\/usr\/share\/gnsstk$(major)\/bin/g' -i debian/tmp/usr/bin/gnsstk-config
+	sed -e 's/PACKAGE_PREFIX_DIR}\/bin/PACKAGE_PREFIX_DIR}\/share\/gnsstk$(major)\/bin/g' -i debian/tmp/usr/share/cmake/GNSSTK/GNSSTKConfig.cmake
+	sed -e 's/\/lib\/python.*\/site-packages/\/share\/gnsstk$(major)\/lib\/python$(PYVER)\/\dist-packages/g' -i debian/tmp/usr/share/cmake/GNSSTK/GNSSTKConfig.cmake
+	sed -e 's/\/cmake\/GNSSTK/\/cmake\/GNSSTK$(major)/g' -i debian/tmp/usr/share/cmake/GNSSTK/GNSSTKConfig.cmake
+# Recreate DEV linker library name to point to global SONAME library
+	ln -sf /usr/lib/$(DEB_HOST_GNU_TYPE)/libgnsstk.so.$(major) $(CURDIR)/debian/tmp/usr/lib/$(DEB_HOST_GNU_TYPE)/libgnsstk.so
+	dh_install

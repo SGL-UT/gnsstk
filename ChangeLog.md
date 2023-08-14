@@ -1,3 +1,30 @@
+# Version 14.2.0   Friday August 11, 2023
+
+Modifications by Author
+-----------------------
+     Benjamin Glass <bglass@arlut.utexas.edu> (3):
+           build.sh: Opportunistically use Ninja, when available
+           SEMNavDataFactory: bugfixes
+           Add GPS SV config message to NewNav
+
+     Brent Renfro <renfrob@arlut.utexas.edu> (1):
+           Issue 509 bei dou end fit
+
+     David Barber <dbarber@arlut.utexas.edu> (2):
+           Update submodule data reference
+           create debian/ubuntu major version coinstallable package
+
+     John Knutson <johnk@arlut.utexas.edu> (3):
+           Add support for arbitrary C++ standards to the build, and specific CI builds for C++17 under ubuntu
+           Changes in support of CSMS.
+           Add support for norad IDs in SatID for those compilers that support c++17 or later
+
+     Taben Malik <malik@arlut.utexas.edu> (2):
+           Fix a sign convention for time offsets.
+           Missed a few sign convention changes
+
+
+
 # Version 14.1.0   Monday February 27, 2023
 
 Modifications by Author

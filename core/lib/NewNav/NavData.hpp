@@ -114,6 +114,9 @@ namespace gnsstk
           * is used by NavDataFactoryWithStore::find(). */
       virtual CommonTime getNearTime() const
       { return timeStamp; }
+         /// Const accessor for msgLenSec (total message transmit time).
+      double getMsgLenSec() const
+      { return msgLenSec; }
          /** Returns true if this two objects are 
           *   1. same concrete type, and
           *   2. same data contents.

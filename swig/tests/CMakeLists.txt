@@ -131,6 +131,12 @@ add_test(NAME swig_test_GPSLNavTimeOffset
   )
 prep_swig_test(swig_test_GPSLNavTimeOffset NewNav)
 
+add_test(NAME swig_test_GPSNavConfig
+  COMMAND ${PYTHON_EXECUTABLE} ${tp}/test_GPSNavConfig.py -i ${GNSSTK_TEST_DATA_DIR}
+  WORKING_DIRECTORY ${td}
+  )
+prep_swig_test(swig_test_GPSNavConfig NewNav)
+
 add_test(NAME swig_test_GPSCNavAlm
   COMMAND ${PYTHON_EXECUTABLE} ${tp}/test_GPSCNavAlm.py -i ${GNSSTK_TEST_DATA_DIR}
   WORKING_DIRECTORY ${td}
@@ -274,4 +280,3 @@ add_test(NAME swig_test_NavDataFactoryCallback
   WORKING_DIRECTORY ${td}
   )
 prep_swig_test(swig_test_NavDataFactoryCallback swig)
-

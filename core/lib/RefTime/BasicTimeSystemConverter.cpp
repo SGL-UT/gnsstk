@@ -62,8 +62,8 @@ namespace gnsstk
       CivilTime civ(t);
       try
       {
-         offs = getTimeSystemCorrection(fromSys, toSys, civ.year, civ.month,
-                                        civ.day);
+         offs = - getTimeSystemCorrection(fromSys, toSys, civ.year, civ.month,
+                                          civ.day);
       }
       catch (gnsstk::Exception& exc)
       {

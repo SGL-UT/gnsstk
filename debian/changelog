@@ -1,3 +1,24 @@
+gnsstk (14.2.0-1) focal; urgency=low
+
+  * Updated to version 14.2.0
+  * Add support for specifying which c++ standard to use when compiling
+    with g++
+  * Update build.sh to opportunistically use Ninja
+  * Fix SEM NavData system value
+  * Fix SEMNavDataFactory orbital inclination rate of change
+  * Add GPS SV config message to NewNav
+  * Fix time offset sign convention to be consistent between
+    BasicTimeSystemConverter and the NavTimeSystemConverter.
+  * Fix a few sign convention changes
+  * Update BDSD?NavEph.cpp Modified end fit determination
+  * Changes in support of CSMS
+  * Fix gnsstk data submodule reference
+  * Add support for norad IDs in SatID for those compilers that support
+    c++17 or later
+  * Update create debian/ubuntu major version coinstallable package
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Fri, 11 Aug 2023 10:25:37 -0500
+
 gnsstk (14.1.0-1) focal; urgency=low
 
   * Updated to version 14.1.0

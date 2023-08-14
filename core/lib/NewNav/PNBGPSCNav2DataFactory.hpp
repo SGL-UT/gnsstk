@@ -39,9 +39,11 @@
 #ifndef GNSSTK_PNBGPSCNAV2DATAFACTORY_HPP
 #define GNSSTK_PNBGPSCNAV2DATAFACTORY_HPP
 
+#include "NavData.hpp"
 #include "PNBNavDataFactory.hpp"
 #include "GPSWeekSecond.hpp"
 #include "GPSCNav2ISC.hpp"
+#include "PackedNavBits.hpp"
 
 namespace gnsstk
 {
@@ -82,8 +84,8 @@ namespace gnsstk
 
          /** Process subframe 3, any page.
           * @param[in] navIn The PackedNavBits data containing the message.
-          * @param[out] navOut The GPSCNav2Alm, GPSCNav2Health and/or
-          *   GPSCNav2TimeOffset objects generated from navIn.
+          * @param[out] navOut The GPSCNav2Alm, GPSCNav2Health, GPSNavConfig,
+          *   and/or GPSCNav2TimeOffset objects generated from navIn.
           * @param[in] offset The bit offset for the start of subframe 3.
           * @return true if successful (navOut may still be empty). */
       bool processSF3(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
@@ -115,6 +117,16 @@ namespace gnsstk
           * @return true if successful (navOut may still be empty). */
       bool processGGTOEOP(const PackedNavBitsPtr& navIn,
                           NavDataPtrList& navOut, unsigned offset = 0);
+
+#if false /// @todo enable this if the SV config page is ever observed
+         /** Process subframe 3 page 7 (SV config).
+          * @param[in] navIn The PackedNavBits data containing the message.
+          * @param[out] navOut The GPSNavConfig objects generated from navIn.
+          * @param[in] offset The bit offset for the start of the SV config.
+          * @return true if successful (navOut may still be empty). */
+      bool processSVConfig(const PackedNavBitsPtr& navIn,
+                           NavDataPtrList& navOut, unsigned offset = 0);
+#endif
 
          /**
           * @note If processISC is given a sequence of nothing but
