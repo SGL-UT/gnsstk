@@ -1,4 +1,3 @@
-#!/bin/bash
 # This file should be sourced and not executed as bash script.  Ex. source /etc/profile.d/gnsstk_enable.sh
 GNSSTK_VER=__VER__
 
@@ -13,7 +12,7 @@ if [ -f "$FILE" ]; then
 fi
 
 echo "gnsstk major version being used is $GNSSTK_VER"
-source /usr/share/gnsstk__VER__/enable
+. /usr/share/gnsstk__VER__/enable
 
 echo -e "\nThe following env variables have been set or are already set"
 env | grep 'LD_LIBRARY_PATH\|CPLUS_INCLUDE_PATH\|PYTHONPATH\|^PATH'
