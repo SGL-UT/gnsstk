@@ -8,7 +8,7 @@ FILE=/etc/toolkits.conf
 
 if [ -f "$FILE" ]; then
     echo "found $FILE so sourcing it"
-    set -o allexport && source $FILE && set +o allexport
+    set -o allexport && . $FILE && set +o allexport
 fi
 
 echo "gnsstk major version being used is $GNSSTK_VER"
