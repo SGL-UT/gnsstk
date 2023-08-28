@@ -53,6 +53,8 @@ namespace gnsstk
    public:
          /// Set the vector sizes and initialize everything to 0.
       OrbitDataSP3();
+         /// Initialize all values to the given one (e.g. NaN)
+      explicit OrbitDataSP3(double val);
          /// Create a deep copy of this object.
       NavDataPtr clone() const override
       { return std::make_shared<OrbitDataSP3>(*this); }

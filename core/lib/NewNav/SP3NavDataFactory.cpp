@@ -97,7 +97,8 @@ namespace gnsstk
            rejectPredClockFlag(false),
            interpType(ClkInterpType::Lagrange),
            halfOrderClk(5),
-           halfOrderPos(5)
+           halfOrderPos(5),
+           initOrbitDataVal(0.0)
    {
       supportedSignals.insert(NavSignalID(SatelliteSystem::BeiDou,
                                           CarrierBand::B1,
@@ -665,7 +666,7 @@ namespace gnsstk
                      // been asked to ignore position predictions, do
                      // so. Otherwise, add the data to the store.
                   if ((!rejectPredPosFlag || data.orbitPredFlag) &&
-                      !convertToOrbit(head, data, isC, eph))
+                      !convertToOrbit(head, data, isC, eph, initOrbitDataVal))
                   {
                      return false;
                   }
@@ -676,7 +677,7 @@ namespace gnsstk
                      // been asked to ignore clock predictions, do
                      // so. Otherwise, add the data to the store.
                   if ((!rejectPredClockFlag || data.clockPredFlag) &&
-                      !convertToClock(head, data, isC, clk))
+                      !convertToClock(head, data, isC, clk, initOrbitDataVal))
                   {
                      return false;
                   }
@@ -784,7 +785,8 @@ namespace gnsstk
             {
                data.time.setTimeSystem(head.timeSystem);
                OrbitDataSP3 *gps;
-               NavDataPtr clk = std::make_shared<OrbitDataSP3>();
+               NavDataPtr clk = std::make_shared<OrbitDataSP3>(
+                  initOrbitDataVal);
                   // Force the message type to clock because
                   // OrbitDataSP3 defaults to Ephemeris.
                clk->signal.messageType = NavMessageType::Clock;
@@ -839,7 +841,7 @@ namespace gnsstk
 
    bool SP3NavDataFactory ::
    convertToOrbit(const SP3Header& head, const SP3Data& navIn, bool isC,
-                  NavDataPtr& navOut)
+                  NavDataPtr& navOut, double initVal)
    {
       DEBUGTRACE_FUNCTION();
       OrbitDataSP3 *gps;
@@ -848,7 +850,7 @@ namespace gnsstk
       if (!navOut)
       {
          DEBUGTRACE("creating OrbitDataSP3");
-         navOut = std::make_shared<OrbitDataSP3>();
+         navOut = std::make_shared<OrbitDataSP3>(initVal);
       }
       gps = dynamic_cast<OrbitDataSP3*>(navOut.get());
       DEBUGTRACE("navIn.RecType=" << navIn.RecType);
@@ -906,7 +908,7 @@ namespace gnsstk
 
    bool SP3NavDataFactory ::
    convertToClock(const SP3Header& head, const SP3Data& navIn, bool isC,
-                  NavDataPtr& clkOut)
+                  NavDataPtr& clkOut, double initVal)
    {
       bool rv = true;
       OrbitDataSP3 *gps;
@@ -914,7 +916,7 @@ namespace gnsstk
          // velocity, so we only create new objects as needed.
       if (!clkOut)
       {
-         clkOut = std::make_shared<OrbitDataSP3>();
+         clkOut = std::make_shared<OrbitDataSP3>(initVal);
             // Force the message type to clock because OrbitDataSP3
             // defaults to Ephemeris.
          clkOut->signal.messageType = NavMessageType::Clock;
