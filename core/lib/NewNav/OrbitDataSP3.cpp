@@ -54,6 +54,18 @@ namespace gnsstk
    }
 
 
+   OrbitDataSP3 ::
+   OrbitDataSP3(double val)
+         : pos(val, val, val), posSig(val, val, val),
+           vel(val, val, val), velSig(val, val, val),
+           acc(val, val, val), accSig(val, val, val),
+           clkBias(val), biasSig(val), clkDrift(val), driftSig(val),
+           clkDrRate(val), drRateSig(val)
+   {
+      signal.messageType = NavMessageType::Ephemeris;
+   }
+
+
    void OrbitDataSP3 ::
    copyXV(const OrbitDataSP3& right)
    {
