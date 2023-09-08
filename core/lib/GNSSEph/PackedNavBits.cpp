@@ -758,7 +758,7 @@ namespace gnsstk
             // MSBs.
          unsigned bitsToAdd = 8;
          unsigned shiftRight = 0;
-         if ((i+1)*8 >= numBits)
+         if ((i+1)*8 > numBits)
          {
             bitsToAdd = rem;
             shiftRight = 8-rem;

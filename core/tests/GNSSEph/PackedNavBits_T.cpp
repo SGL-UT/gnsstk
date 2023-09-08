@@ -65,6 +65,7 @@ public:
    unsigned equalityTest();
    unsigned ancillaryMethods();
    unsigned addDataVecTest();
+   unsigned addDataVecByteAlignedTest();
 
    double eps;
 };
@@ -862,6 +863,25 @@ addDataVecTest()
    TURETURN();
 }
 
+   // Exposed a bug in addDataVec where the last byte
+   // of data was chopped off if the numBits to add was
+   // byte aligned.
+unsigned PackedNavBits_T ::
+addDataVecByteAlignedTest()
+{
+   TUDEF("PackedNavBits", "addDataVec");
+      // 32 bits.
+   std::vector<uint8_t> testVec { 0x8b, 0x31, 0x42, 0x59, 0x80 };
+   PackedNavBits uut;
+   uut.addDataVec(testVec, 32);
+   TUASSERTE(size_t, 32, uut.getNumBits());
+   for (unsigned i = 0; i < 32; i+= 8)
+   {
+      TUASSERTE(unsigned long, testVec[i>>3], uut.asUnsignedLong(i,8,1));
+   }
+   TURETURN();
+}
+
 
 int main()
 {
@@ -874,10 +894,9 @@ int main()
    errorTotal += testClass.equalityTest();
    errorTotal += testClass.ancillaryMethods();
    errorTotal += testClass.addDataVecTest();
+   errorTotal += testClass.addDataVecByteAlignedTest();
 
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
    return errorTotal; // Return the total number of errors
 }
-
-
