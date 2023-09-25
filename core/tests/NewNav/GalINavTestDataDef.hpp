@@ -206,3 +206,92 @@ navINAVWRWT5->addUnsignedLong(0x2F800280,32,1);
 navINAVWRWT5->addUnsignedLong(0xA0256000,32,1);
 navINAVWRWT5->addUnsignedLong(0x022AAAAA,32,1);
 navINAVWRWT5->trimsize();
+
+
+   // Ephemeris data in page pairs form.
+   // See Galileo OS-SIS-ICD 4.3.2.3
+ephINAVGalPP1 = std::make_shared<gnsstk::PackedNavBits>(ephINAVGalSid,oidINAVGal,
+                                                       ephINAVGalWT1ct);
+ephINAVGalPP1->setNavID(gnsstk::NavType::GalINAV);
+ephINAVGalPP1->addUnsignedLong(0x0,2,1);
+ephINAVGalPP1->addUnsignedLong(0x045E86B2,32,1);
+ephINAVGalPP1->addUnsignedLong(0x14606028,32,1);
+ephINAVGalPP1->addUnsignedLong(0x0039B8BE,32,1);
+ephINAVGalPP1->addUnsignedLong(0xA813,16,1);
+ephINAVGalPP1->addUnsignedLong(0x0,6,1);
+ephINAVGalPP1->addUnsignedLong(0x2,2,1);
+ephINAVGalPP1->addUnsignedLong(0xEC77,16,1);
+ephINAVGalPP1->addUnsignedLong(0x0,32,1);
+ephINAVGalPP1->addUnsignedLong(0x0,32,1);
+ephINAVGalPP1->addUnsignedLong(0x0,32,1);
+ephINAVGalPP1->addUnsignedLong(0x0,6,1);
+ephINAVGalPP1->trimsize();
+
+ephINAVGalPP2 = std::make_shared<gnsstk::PackedNavBits>(ephINAVGalSid,oidINAVGal,
+                                                       ephINAVGalWT2ct);
+ephINAVGalPP2->setNavID(gnsstk::NavType::GalINAV);
+ephINAVGalPP2->addUnsignedLong(0x0,2,1);
+ephINAVGalPP2->addUnsignedLong(0x085E78BB,32,1);
+ephINAVGalPP2->addUnsignedLong(0x0E292854,32,1);
+ephINAVGalPP2->addUnsignedLong(0x403C05B7,32,1);
+ephINAVGalPP2->addUnsignedLong(0x23FF,16,1);
+ephINAVGalPP2->addUnsignedLong(0x0,6,1);
+ephINAVGalPP2->addUnsignedLong(0x2,2,1);
+ephINAVGalPP2->addUnsignedLong(0xF7FD,16,1);
+ephINAVGalPP2->addUnsignedLong(0x0,32,1);
+ephINAVGalPP2->addUnsignedLong(0x0,32,1);
+ephINAVGalPP2->addUnsignedLong(0x0,32,1);
+ephINAVGalPP2->addUnsignedLong(0x0,6,1);
+ephINAVGalPP2->trimsize();
+
+ephINAVGalPP3 = std::make_shared<gnsstk::PackedNavBits>(ephINAVGalSid,oidINAVGal,
+                                                       ephINAVGalWT3ct);
+ephINAVGalPP3->setNavID(gnsstk::NavType::GalINAV);
+ephINAVGalPP3->addUnsignedLong(0x0,2,1);
+ephINAVGalPP3->addUnsignedLong(0x0C5EFFC8,32,1);
+ephINAVGalPP3->addUnsignedLong(0x1B1BAB09,32,1);
+ephINAVGalPP3->addUnsignedLong(0xAB19670C,32,1);
+ephINAVGalPP3->addUnsignedLong(0x0B0C,16,1);
+ephINAVGalPP3->addUnsignedLong(0x0,6,1);
+ephINAVGalPP3->addUnsignedLong(0x2,2,1);
+ephINAVGalPP3->addUnsignedLong(0x496B,16,1);
+ephINAVGalPP3->addUnsignedLong(0x0,32,1);
+ephINAVGalPP3->addUnsignedLong(0x0,32,1);
+ephINAVGalPP3->addUnsignedLong(0x0,32,1);
+ephINAVGalPP3->addUnsignedLong(0x0,6,1);
+ephINAVGalPP3->trimsize();
+
+ephINAVGalPP4 = std::make_shared<gnsstk::PackedNavBits>(ephINAVGalSid,oidINAVGal,
+                                                       ephINAVGalWT4ct);
+ephINAVGalPP4->setNavID(gnsstk::NavType::GalINAV);
+ephINAVGalPP4->addUnsignedLong(0x0,2,1);
+ephINAVGalPP4->addUnsignedLong(0x105E07FF,32,1);
+ephINAVGalPP4->addUnsignedLong(0xE3FFFA1A,32,1);
+ephINAVGalPP4->addUnsignedLong(0xCFEE8486,32,1);
+ephINAVGalPP4->addUnsignedLong(0xFFFD,16,1);
+ephINAVGalPP4->addUnsignedLong(0x0,6,1);
+ephINAVGalPP4->addUnsignedLong(0x2,2,1);
+ephINAVGalPP4->addUnsignedLong(0xC601,16,1);
+ephINAVGalPP4->addUnsignedLong(0x0,32,1);
+ephINAVGalPP4->addUnsignedLong(0x0,32,1);
+ephINAVGalPP4->addUnsignedLong(0x0,32,1);
+ephINAVGalPP4->addUnsignedLong(0x0,6,1);
+ephINAVGalPP4->trimsize();
+
+ephINAVGalPP5 = std::make_shared<gnsstk::PackedNavBits>(ephINAVGalSid,oidINAVGal,
+                                                       ephINAVGalWT5ct);
+ephINAVGalPP5->setNavID(gnsstk::NavType::GalINAV);
+ephINAVGalPP5->addUnsignedLong(0x0,2,1);
+ephINAVGalPP5->addUnsignedLong(0x145B82A0,32,1);
+ephINAVGalPP5->addUnsignedLong(0x0581F67D,32,1);
+ephINAVGalPP5->addUnsignedLong(0x401FB3F4,32,1);
+ephINAVGalPP5->addUnsignedLong(0x8CAA,16,1);
+ephINAVGalPP5->addUnsignedLong(0x0,6,1);
+ephINAVGalPP5->addUnsignedLong(0x2,2,1);
+ephINAVGalPP5->addUnsignedLong(0xAAAA,16,1);
+ephINAVGalPP5->addUnsignedLong(0x0,32,1);
+ephINAVGalPP5->addUnsignedLong(0x0,32,1);
+ephINAVGalPP5->addUnsignedLong(0x0,32,1);
+ephINAVGalPP5->addUnsignedLong(0x0,6,1);
+ephINAVGalPP5->trimsize();
+

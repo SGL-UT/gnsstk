@@ -36,6 +36,8 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#include <memory>
+
 #include "PNBGalINavDataFactory.hpp"
 #include "GalINavEph.hpp"
 #include "GalINavTimeOffset.hpp"
@@ -57,15 +59,29 @@ namespace gnsstk
            double cadence)
    {
       if ((navIn->getNavID().navType != NavType::GalINAV) ||
-          (navIn->getNumBits() != 128))
+          ((navIn->getNumBits() != 128) && (navIn->getNumBits() != 240)))
       {
             // This class only processes Galileo I/NAV.
          return false;
       }
+
+      PackedNavBitsPtr navFlex{navIn->clone()};
+         // If navIn looks like a page pair, attempt to 
+         // extract the data word.
+      if (navFlex->getNumBits() == 240)
+      {
+         navFlex->reset_num_bits(0);
+         if(!wordFromPagePair(*navIn, *navFlex))
+         {
+            return false;
+         }
+      }
+
+
       bool rv = true;
       try
       {
-         unsigned long wordType = navIn->asUnsignedLong(
+         unsigned long wordType = navFlex->asUnsignedLong(
             fsbType,fnbType,fscType);
             /// @todo implement validity checks if there are any.
          switch (wordType)
@@ -80,17 +96,17 @@ namespace gnsstk
             case 4:
             case 5:
                // cerr << "wordType " << wordType << " = ephemeris" << endl;
-               rv = processEph(wordType, navIn, navOut);
+               rv = processEph(wordType, navFlex, navOut);
                break;
             case 6:
-               rv = processOffset(navIn, navOut);
+               rv = processOffset(navFlex, navOut);
                break;
             case 7:
             case 8:
             case 9:
             case 10:
                // cerr << "wordType " << wordType << " = almanac" << endl;
-               rv = processAlm(wordType, navIn, navOut);
+               rv = processAlm(wordType, navFlex, navOut);
                break;
             default:
                // cerr << "wordType " << wordType << " = unhandled" << endl;
@@ -117,6 +133,56 @@ namespace gnsstk
          cerr << "Unknown exception" << endl;
       }
       return rv;
+   }
+
+   
+   bool PNBGalINavDataFactory ::
+   wordFromPagePair(const PackedNavBits& navIn,
+                    PackedNavBits& navOut)
+   {
+         // Determine odd or even page at beginning of word.
+         // If the two words are the same in their part arrangement,
+         // then they cannot be combinted. 
+      unsigned long pageEvenOdd = navIn.asUnsignedLong(0,1,1);
+
+         // Verify that this is a nominal page
+      unsigned long pageType = navIn.asUnsignedLong(1,1,1);
+      if (pageType==1)
+      {
+            // Can't convert alert pages to words
+         return false;
+      }
+
+         // Cross load the bits. 
+         // If first page is even, 
+      unsigned long word = 0x00000000;
+      unsigned nbit;
+
+      if (pageEvenOdd==0)
+         nbit = 2;
+      else
+         nbit = 122;
+   
+            // Move 96 bits of 112 of even page
+      for (int i=0;i<3;i++)
+      {
+         word = navIn.asUnsignedLong(nbit,32,1);
+         navOut.addUnsignedLong(word,32,1); 
+         nbit += 32;
+      }
+      word = navIn.asUnsignedLong(nbit,16,1);
+      navOut.addUnsignedLong(word,16,1); 
+
+         // Move remaining 16 bits of odd page
+      if (pageEvenOdd==0)
+         nbit = 122;
+      else
+         nbit = 2;
+      word = navIn.asUnsignedLong(nbit,16,1);
+      navOut.addUnsignedLong(word,16,1);
+
+      navOut.trimsize();
+      return true; 
    }
 
 
