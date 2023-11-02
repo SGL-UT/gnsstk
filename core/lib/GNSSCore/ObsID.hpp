@@ -47,6 +47,7 @@
 #ifndef OBSID_HPP
 #define OBSID_HPP
 
+#include <cstdint>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
