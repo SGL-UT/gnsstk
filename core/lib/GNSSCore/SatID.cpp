@@ -96,12 +96,10 @@ namespace gnsstk
          s << "*";
       else
          s << id;
-#if __cplusplus >= 201703L
-      if (norad.has_value())
+      if (hasNorad)
       {
-         s << " NORAD " << *norad;
+         s << " NORAD " << norad;
       }
-#endif
    }
 
 
@@ -150,5 +148,11 @@ namespace gnsstk
                //case SatelliteSystem::Transit:
          default: return (id > 0 && id < 100);
       }
+   }
+
+   void SatID :: setNorad(unsigned long n)
+   {
+      norad = n;
+      hasNorad = true;
    }
 }
