@@ -42,9 +42,6 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#if __cplusplus >= 201703L
-#include <optional>
-#endif
 #include "gps_constants.hpp"
 #include "SatelliteSystem.hpp"
 
@@ -154,18 +151,28 @@ namespace gnsstk
           * @note this is not used internally in the gnsstk library */
       bool isValid() const;
 
+         /** Assign a NORAD identifier for this satellite.
+          * A convienence method for setting the norad ID and #hasNorad field.
+          * See #norad for more info. */
+      void setNorad(unsigned long n);
+
       int id;                   ///< Satellite identifier, e.g. PRN
       bool wildId;              ///< If true, any satellite matches.
       SatelliteSystem system;   ///< System for this satellite
       bool wildSys;             ///< If true, any system matches.
-#if __cplusplus >= 201703L
+
          /** NORAD assigned identifier for this satellite.
           * @note This value is only used as additional metadata.  It
           *   is intentionally not taken into account for sorting or
           *   comparing to avoid breaking code that doesn't actively
-          *   support it. */
-      std::optional<unsigned long> norad;
-#endif
+          *   support it. 
+          * @todo replace norad/hasNorad with `std::optional` when 
+          *   C++ 17 is used.*/
+      unsigned long norad;
+         /// Set to True if #norad is set.
+         /// It is the user's responsibility to keep this variable valid.
+      bool hasNorad = false;
+
    }; // class SatID
 
       /// stream output for SatID
