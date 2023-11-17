@@ -66,6 +66,7 @@ public:
    unsigned ancillaryMethods();
    unsigned addDataVecTest();
    unsigned addDataVecByteAlignedTest();
+   unsigned overInitialCapacity();
 
    double eps;
 };
@@ -883,6 +884,28 @@ addDataVecByteAlignedTest()
 }
 
 
+   // Exposing a bug in PackedNavBits where the underlying data structure
+   // didn't ensure capacity beyond 900 bits and does not throw an exception
+   // if more bits, beyond 900, are added to the PNB object.
+unsigned PackedNavBits_T ::
+overInitialCapacity()
+{
+   TUDEF("PackedNavBits", "ensureCapacity");
+   PackedNavBits uut;
+      // Trimming the size (to 0) makes this test useful even if the default
+      // initial capacity changes.
+   uut.trimsize();
+      // Add a large number of bits to cause a segfault
+   for (unsigned i = 0; i < 100000; ++i)
+   {
+      uut.addUnsignedLong(42, 32, 1); 
+   }
+
+   TUPASS("Did not segfault");
+   TUASSERTE(size_t, 3200000, uut.getNumBits());
+   TURETURN();
+}
+
 int main()
 {
    unsigned errorTotal = 0;
@@ -895,7 +918,7 @@ int main()
    errorTotal += testClass.ancillaryMethods();
    errorTotal += testClass.addDataVecTest();
    errorTotal += testClass.addDataVecByteAlignedTest();
-
+   errorTotal += testClass.overInitialCapacity();
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
    return errorTotal; // Return the total number of errors

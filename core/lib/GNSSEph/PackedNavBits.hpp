@@ -654,6 +654,11 @@ namespace gnsstk
          /** Scales doubles by their corresponding scale factor */
       double ScaleValue( const double value, const int power2) const;
 
+         /** Ensures that #bits can hold a total of \p s elements.
+          * Resizies the vector if needed.
+          */
+      void ensureCapacity(const size_t s);
+
    }; // class PackedNavBits
 
       //@}
