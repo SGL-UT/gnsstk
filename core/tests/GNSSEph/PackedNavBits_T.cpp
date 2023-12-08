@@ -67,6 +67,7 @@ public:
    unsigned addDataVecTest();
    unsigned addDataVecByteAlignedTest();
    unsigned overInitialCapacity();
+   unsigned addBitVecTest();
 
    double eps;
 };
@@ -906,6 +907,66 @@ overInitialCapacity()
    TURETURN();
 }
 
+unsigned PackedNavBits_T ::
+addBitVecTest()
+{
+   TUDEF("PackedNavBits", "addBitVec");
+
+      // Byte aligned add
+   std::vector<int8_t> testVec{1, 0, 0, 1, 0, 1, 0, 1, 1, 1};
+   PackedNavBits uut;
+   uut.addBitVec(testVec.begin(), testVec.begin() + 8);
+   TUASSERTE(size_t, 8, uut.getNumBits());
+      // 149 is the decimal representation of 0b10010101
+   TUASSERTE(unsigned long, 149, uut.asUnsignedLong(0, 8, 1));
+   
+      // Non-byte aligned add
+   PackedNavBits uut2;
+   uut2.addBitVec(testVec.begin(), testVec.begin() + 9);
+   TUASSERTE(size_t, 9, uut2.getNumBits());
+      // 299 is the decimal representation of 0b100101011
+   TUASSERTE(unsigned long, 299, uut2.asUnsignedLong(0, 9, 1));
+
+      // All data add
+   PackedNavBits uut3;
+   uut3.addBitVec(testVec.begin(), testVec.end());
+   TUASSERTE(size_t, 10, uut3.getNumBits());
+      // 599 is the decimal representation of 0b1001010111
+   TUASSERTE(unsigned long, 599, uut3.asUnsignedLong(0, 10, 1));
+
+      // Bad data. Bits must be 0 or 1
+   std::vector<int8_t> testVec2{1, 0, 0, -1, 0};
+   PackedNavBits uut5;
+   TUTHROW(uut5.addBitVec(testVec2.begin(), testVec2.end()));
+
+      // Empty data should be fine
+   std::vector<int8_t> testVec3{};
+   PackedNavBits uut6;
+      // 0 bits from existing data
+   uut6.addBitVec(testVec.begin(), testVec.begin());
+   TUASSERTE(unsigned long, 0, uut6.getNumBits());
+      // 0 bits from empty data
+   uut6.addBitVec(testVec3.begin(), testVec3.end());
+   TUASSERTE(unsigned long, 0, uut6.getNumBits());
+
+      // Large datasets should expand PNB.
+   PackedNavBits uut7;
+   uut7.addUnsignedLong(7, 3, 1);
+      // Reduces the underlying vector be the same 
+      // size as the current set of data i.e. 3
+   uut7.trimsize();
+   TUASSERTE(unsigned long, 3, uut7.getNumBits());
+   TUASSERTE(size_t, 3, uut7.getBits().size());
+   TUASSERTE(unsigned long, 7, uut7.asUnsignedLong(0, 3, 1));
+   uut7.addBitVec(testVec.begin(), testVec.begin() + 1);
+   TUASSERTE(unsigned long, 4, uut7.getNumBits());
+   TUASSERT(uut7.getBits().size() >= 4);
+   TUASSERTE(unsigned long, 15, uut7.asUnsignedLong(0, 4, 1));
+
+   TURETURN();
+}
+
+
 int main()
 {
    unsigned errorTotal = 0;
@@ -919,6 +980,8 @@ int main()
    errorTotal += testClass.addDataVecTest();
    errorTotal += testClass.addDataVecByteAlignedTest();
    errorTotal += testClass.overInitialCapacity();
+   errorTotal += testClass.addBitVecTest();
+
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
    return errorTotal; // Return the total number of errors
