@@ -174,7 +174,7 @@ NavLibrary_T()
 unsigned NavLibrary_T ::
 getXvtTest()
 {
-   TUDEF("NavLibrary", "getXvt");
+   TUDEF("NavLibraryRinex", "getXvt");
    gnsstk::Xvt xvt;
    gnsstk::NavLibrary navLib;
    gnsstk::NavDataFactoryPtr
@@ -212,7 +212,7 @@ getXvtTest()
 unsigned NavLibrary_T ::
 getHealthTest()
 {
-   TUDEF("NavLibrary", "getHealth");
+   TUDEF("NavLibraryRinex", "getHealth");
    gnsstk::SVHealth health;
    gnsstk::NavLibrary navLib;
    gnsstk::NavDataFactoryPtr
@@ -250,7 +250,7 @@ getHealthTest()
 unsigned NavLibrary_T ::
 getOffsetTest()
 {
-   TUDEF("NavLibrary", "getOffset");
+   TUDEF("NavLibraryRinex", "getOffset");
    gnsstk::NavLibrary navLib;
    gnsstk::NavDataFactoryPtr ndfp(std::make_shared<TestFactory>());
    TestFactory *fact1 = dynamic_cast<TestFactory*>(ndfp.get());
@@ -292,7 +292,7 @@ getOffsetTest()
 unsigned NavLibrary_T ::
 findTest()
 {
-   TUDEF("NavLibrary", "find");
+   TUDEF("NavLibraryRinex", "find");
    gnsstk::NavLibrary navLib;
    gnsstk::NavDataFactoryPtr
       ndfp(std::make_shared<RinexTestFactory>());
@@ -327,6 +327,7 @@ findTest()
    eph = dynamic_cast<gnsstk::GPSLNavEph*>(ndp.get());
    TUASSERT(eph != nullptr);
    TUASSERTE(uint16_t, 64, eph->iode);
+
       // shouldn't have almanac data though
    TUASSERT(!navLib.find(nmida, civ3, ndp, gnsstk::SVHealth::Any,
                          gnsstk::NavValidityType::ValidOnly,
@@ -350,7 +351,7 @@ findTest()
 unsigned NavLibrary_T ::
 setValidityFilterTest()
 {
-   TUDEF("NavLibrary", "setValidityFilter");
+   TUDEF("NavLibraryRinex", "setValidityFilter");
    gnsstk::NavLibrary navLib;
    gnsstk::NavDataFactoryPtr ndfp1(std::make_shared<TestFactory>());
    gnsstk::NavDataFactoryPtr
@@ -379,7 +380,7 @@ setValidityFilterTest()
 unsigned NavLibrary_T ::
 setTypeFilterTest()
 {
-   TUDEF("NavLibrary", "setTypeFilter");
+   TUDEF("NavLibraryRinex", "setTypeFilter");
    gnsstk::NavLibrary navLib;
    gnsstk::NavDataFactoryPtr ndfp1(std::make_shared<TestFactory>());
    gnsstk::NavDataFactoryPtr
@@ -411,7 +412,7 @@ setTypeFilterTest()
 unsigned NavLibrary_T ::
 addTypeFilterTest()
 {
-   TUDEF("NavLibrary", "clearTypeFilter");
+   TUDEF("NavLibraryRinex", "clearTypeFilter");
    gnsstk::NavLibrary navLib;
    gnsstk::NavDataFactoryPtr ndfp1(std::make_shared<TestFactory>());
    gnsstk::NavDataFactoryPtr
@@ -449,7 +450,7 @@ addTypeFilterTest()
 unsigned NavLibrary_T ::
 addFactoryTest()
 {
-   TUDEF("NavLibrary", "addFactory");
+   TUDEF("NavLibraryRinex", "addFactory");
    TestClass navLib;
    gnsstk::NavDataFactoryPtr ndfp1(std::make_shared<TestFactory>());
    gnsstk::NavDataFactoryPtr
@@ -483,7 +484,7 @@ addFactoryTest()
 unsigned NavLibrary_T ::
 getTimeTest()
 {
-   TUDEF("NavLibrary", "getInitialTime");
+   TUDEF("NavLibraryRinex", "getInitialTime");
    gnsstk::NavLibrary navLib;
    gnsstk::NavDataFactoryPtr
       ndfp(std::make_shared<RinexTestFactory>());
@@ -508,7 +509,7 @@ getTimeTest()
 unsigned NavLibrary_T ::
 getAvailableSatsTest()
 {
-   TUDEF("NavLibrary", "getAvailableSats");
+   TUDEF("NavLibraryRinex", "getAvailableSats");
    gnsstk::NavLibrary uut;
    gnsstk::NavDataFactoryPtr
       ndfp(std::make_shared<RinexTestFactory>());
@@ -537,7 +538,7 @@ getAvailableSatsTest()
 unsigned NavLibrary_T ::
 isPresentTest()
 {
-   TUDEF("NavLibrary", "isPresent");
+   TUDEF("NavLibraryRinex", "isPresent");
    gnsstk::NavLibrary uut;
    gnsstk::NavDataFactoryPtr
       ndfp(std::make_shared<RinexTestFactory>());
@@ -567,7 +568,7 @@ isPresentTest()
 unsigned NavLibrary_T ::
 getIonoCorrTest()
 {
-   TUDEF("NavLibrary", "getIonoCorr");
+   TUDEF("NavLibraryRinex", "getIonoCorr");
    gnsstk::NavLibrary uut;
    gnsstk::NavDataFactoryPtr
       ndfp(std::make_shared<RinexTestFactory>());
@@ -603,7 +604,7 @@ getIonoCorrTest()
 unsigned NavLibrary_T ::
 getISCTest()
 {
-   TUDEF("NavLibrary", "getISC");
+   TUDEF("NavLibraryRinex", "getISC");
    gnsstk::NavLibrary uut;
    gnsstk::NavDataFactoryPtr
       ndfp(std::make_shared<RinexTestFactory>());
