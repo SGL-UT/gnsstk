@@ -282,6 +282,10 @@ namespace gnsstk
       fillNavData(navIn, healthOut);
          // this is the only timestamp we have from SEM
       gps->timeStamp = GPSWeekSecond(navIn.week, navIn.Toa);
+      // Set the fit times to toa-70h through toa+74 hours.  This
+      // is an estimate based on IS-GPS-200 Table 20-XIII.
+      gps->timeStamp -= (70 * 3600.0);
+
          // GPSLNavHealth
       gps->svHealth = navIn.SV_health;
       return rv;
