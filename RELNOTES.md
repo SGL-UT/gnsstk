@@ -1,42 +1,36 @@
-GNSSTk 14.2.0 Release Notes
+GNSSTk 14.3.0 Release Notes
 ========================
 
  * This release includes the following:
-   * Changes in support of CSMS. See New Modules below.
-   * Add GPS SV config message to NewNav
-   * Add support for norad IDs in SatID for those compilers that support c++17 or later
-   * Co-installation of major versions of debian packages.
+   * Adding the ability for SP3NavDataFactory to initialize OrbitDataSP3 fields to NaN or whatever.
+   * Adding Galileo I/NAV page pair parsing to PNB factory.
+   * Adding addBitVec method to PackedNavBits to allow easy packing of an array of 0/1 ints.
  * Additionally, it contains several bug fixes and build system updates.
 
+Updates since v14.2.0
+---------------------
+
 **Build System and Test Suite**
-  * Fix gnsstk data submodule reference
-  * Update build.sh to opportunistically use Ninja
-  * Update create debian/ubuntu major version coinstallable package
+  * Add tests for sem and al3 files (See New Modules below).
+  * Update gnsstk_enable.sh to be POSIX compliant for wider support.
+  * Update Removing special c++17 packages as they are no longer needed.
+
+**Gitlab CI**
+  * Update codeowners file to replace contributors that left
 
 **Library Changes**
-  * Add support for specifying which c++ standard to use when compiling with g++
-  * Add GPS SV config message to NewNav
-  * Add support for norad IDs in SatID for those compilers that support c++17 or later
-  * Update BDSD?NavEph.cpp Modified end fit determination
-  * Changes in support of CSMS
+  * Add the ability for SP3NavDataFactory to initialize OrbitDataSP3 fields to NaN or whatever
+  * Add Galileo I/NAV page pair parsing to PNB factory.
+  * Add addBitVec method to PackedNavBits to allow easy packing of an array of 0/1 ints.
 
-Fixes since v14.1.0
+Fixes since v14.2.0
 --------------------
-  * Fix SEM NavData system value
-  * Fix SEMNavDataFactory orbital inclination rate of change
-  * Fix time offset sign convention to be consistent between BasicTimeSystemConverter and the NavTimeSystemConverter.
-  * Fix a few sign convention changes
+  * Fix bug in PackedNavBits.addDataVec that would drop the last byte of data.
+  * Fix PNBGPSCNavDataFactory.cpp Fix weekrollover problem.
+  * Fix PackedNavBits segfaulting when add more bits beyond its initial capacity.
+  * Removed c++17 features due to segfaults.
 
 New Modules
 -------------------------------
-     core/lib/GNSSCore/SatTimeSystem.cpp
-     core/lib/GNSSCore/SatTimeSystem.hpp
-     core/lib/NewNav/GPSNavConfig.cpp
-     core/lib/NewNav/GPSNavConfig.hpp
-     core/lib/NewNav/GPSSVConfig.cpp
-     core/lib/NewNav/GPSSVConfig.hpp
-     core/lib/NewNav/SystemNavData.hpp
-     core/tests/GNSSCore/SatelliteSystem_T.cpp
-     core/tests/NewNav/GPSNavConfig_T.cpp
-     core/tests/NewNav/GPSSVConfig_T.cpp
-     swig/tests/test_GPSNavConfig.py
+     core/tests/NewNav/NavLibrarySEM_T.cpp
+     core/tests/NewNav/NavLibraryYuma_T.cpp

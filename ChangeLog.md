@@ -1,3 +1,31 @@
+# Version 14.3.0   Monday December 18, 2023
+
+Modifications by Author
+-----------------------
+     Brent Renfro <renfrob@arlut.utexas.edu> (1):
+           Correcting CNAV weekrollover issue
+
+     John Knutson <johnk@arlut.utexas.edu> (1):
+           Allow the SP3NavDataFactory to initialize OrbitDataSP3 fields to NaN or whatever
+
+     Jon Little <littlej@arlut.utexas.edu> (1):
+           Resolve "Testing sem and al3 support"
+
+     Sarah Magliocca <magliocca@arlut.utexas.edu> (1):
+           Replacing Brian Tolman as a CODEOWNER with GNSS Geospatial PO and others
+
+     Taben Malik <malik@arlut.utexas.edu> (8):
+           Making gnsstk_enable.sh POSIX compliant for wider support.
+           Update gnsstk_enable.sh
+           Discovered and fixed bug in PackedNavBits
+           Parse Galileo I/NAV page pairs in PNB factory.
+           Removing breaking CPP 17 feature
+           Removing special c++17 packages as they are no longer needed
+           Fix PackedNavBits segfaults
+           Introduce PNB method to add int8_t bit vector
+
+
+
 # Version 14.2.0   Friday August 11, 2023
 
 Modifications by Author
