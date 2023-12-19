@@ -65,6 +65,9 @@ public:
    unsigned equalityTest();
    unsigned ancillaryMethods();
    unsigned addDataVecTest();
+   unsigned addDataVecByteAlignedTest();
+   unsigned overInitialCapacity();
+   unsigned addBitVecTest();
 
    double eps;
 };
@@ -862,6 +865,107 @@ addDataVecTest()
    TURETURN();
 }
 
+   // Exposed a bug in addDataVec where the last byte
+   // of data was chopped off if the numBits to add was
+   // byte aligned.
+unsigned PackedNavBits_T ::
+addDataVecByteAlignedTest()
+{
+   TUDEF("PackedNavBits", "addDataVec");
+      // 32 bits.
+   std::vector<uint8_t> testVec { 0x8b, 0x31, 0x42, 0x59, 0x80 };
+   PackedNavBits uut;
+   uut.addDataVec(testVec, 32);
+   TUASSERTE(size_t, 32, uut.getNumBits());
+   for (unsigned i = 0; i < 32; i+= 8)
+   {
+      TUASSERTE(unsigned long, testVec[i>>3], uut.asUnsignedLong(i,8,1));
+   }
+   TURETURN();
+}
+
+
+   // Exposing a bug in PackedNavBits where the underlying data structure
+   // didn't ensure capacity beyond 900 bits and does not throw an exception
+   // if more bits, beyond 900, are added to the PNB object.
+unsigned PackedNavBits_T ::
+overInitialCapacity()
+{
+   TUDEF("PackedNavBits", "ensureCapacity");
+   PackedNavBits uut;
+      // Trimming the size (to 0) makes this test useful even if the default
+      // initial capacity changes.
+   uut.trimsize();
+      // Add a large number of bits to cause a segfault
+   for (unsigned i = 0; i < 100000; ++i)
+   {
+      uut.addUnsignedLong(42, 32, 1); 
+   }
+
+   TUPASS("Did not segfault");
+   TUASSERTE(size_t, 3200000, uut.getNumBits());
+   TURETURN();
+}
+
+unsigned PackedNavBits_T ::
+addBitVecTest()
+{
+   TUDEF("PackedNavBits", "addBitVec");
+
+      // Byte aligned add
+   std::vector<int8_t> testVec{1, 0, 0, 1, 0, 1, 0, 1, 1, 1};
+   PackedNavBits uut;
+   uut.addBitVec(testVec.begin(), testVec.begin() + 8);
+   TUASSERTE(size_t, 8, uut.getNumBits());
+      // 149 is the decimal representation of 0b10010101
+   TUASSERTE(unsigned long, 149, uut.asUnsignedLong(0, 8, 1));
+   
+      // Non-byte aligned add
+   PackedNavBits uut2;
+   uut2.addBitVec(testVec.begin(), testVec.begin() + 9);
+   TUASSERTE(size_t, 9, uut2.getNumBits());
+      // 299 is the decimal representation of 0b100101011
+   TUASSERTE(unsigned long, 299, uut2.asUnsignedLong(0, 9, 1));
+
+      // All data add
+   PackedNavBits uut3;
+   uut3.addBitVec(testVec.begin(), testVec.end());
+   TUASSERTE(size_t, 10, uut3.getNumBits());
+      // 599 is the decimal representation of 0b1001010111
+   TUASSERTE(unsigned long, 599, uut3.asUnsignedLong(0, 10, 1));
+
+      // Bad data. Bits must be 0 or 1
+   std::vector<int8_t> testVec2{1, 0, 0, -1, 0};
+   PackedNavBits uut5;
+   TUTHROW(uut5.addBitVec(testVec2.begin(), testVec2.end()));
+
+      // Empty data should be fine
+   std::vector<int8_t> testVec3{};
+   PackedNavBits uut6;
+      // 0 bits from existing data
+   uut6.addBitVec(testVec.begin(), testVec.begin());
+   TUASSERTE(unsigned long, 0, uut6.getNumBits());
+      // 0 bits from empty data
+   uut6.addBitVec(testVec3.begin(), testVec3.end());
+   TUASSERTE(unsigned long, 0, uut6.getNumBits());
+
+      // Large datasets should expand PNB.
+   PackedNavBits uut7;
+   uut7.addUnsignedLong(7, 3, 1);
+      // Reduces the underlying vector be the same 
+      // size as the current set of data i.e. 3
+   uut7.trimsize();
+   TUASSERTE(unsigned long, 3, uut7.getNumBits());
+   TUASSERTE(size_t, 3, uut7.getBits().size());
+   TUASSERTE(unsigned long, 7, uut7.asUnsignedLong(0, 3, 1));
+   uut7.addBitVec(testVec.begin(), testVec.begin() + 1);
+   TUASSERTE(unsigned long, 4, uut7.getNumBits());
+   TUASSERT(uut7.getBits().size() >= 4);
+   TUASSERTE(unsigned long, 15, uut7.asUnsignedLong(0, 4, 1));
+
+   TURETURN();
+}
+
 
 int main()
 {
@@ -874,10 +978,11 @@ int main()
    errorTotal += testClass.equalityTest();
    errorTotal += testClass.ancillaryMethods();
    errorTotal += testClass.addDataVecTest();
+   errorTotal += testClass.addDataVecByteAlignedTest();
+   errorTotal += testClass.overInitialCapacity();
+   errorTotal += testClass.addBitVecTest();
 
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
    return errorTotal; // Return the total number of errors
 }
-
-

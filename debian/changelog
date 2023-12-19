@@ -1,3 +1,24 @@
+gnsstk (14.3.0-1) focal; urgency=low
+
+  * Updated to version 14.3.0
+  * Add the ability for SP3NavDataFactory to initialize OrbitDataSP3
+    fields to NaN or whatever
+  * Update gnsstk_enable.sh to be POSIX compliant for wider support.
+  * Fix bug in PackedNavBits.addDataVec that would drop the last byte of
+    data.
+  * Add Galileo I/NAV page pair parsing to PNB factory.
+  * Fix PNBGPSCNavDataFactory.cpp Fix weekrollover problem_
+  * Update codeowners file to replace contributors that left
+  * Update removed c++17 features due to segfaults.
+  * Update Removing special c++17 packages as they are no longer needed
+  * Fix PackedNavBits segfaulting when add more bits beyond its initial
+    capacity.
+  * Add addBitVec method to PackedNavBits to allow easy packing of an
+    array of 0/1 ints.
+  * Add tests for sem and al3 files.
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Mon, 18 Dec 2023 09:59:09 -0600
+
 gnsstk (14.2.0-1) focal; urgency=low
 
   * Updated to version 14.2.0

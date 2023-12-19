@@ -50,6 +50,12 @@ gnsstk::PackedNavBitsPtr ephINAVGalWT1,
    navINAVGalWT8,
    navINAVGalWT9,
    navINAVGalWT10;
+   // Page pair versions
+gnsstk::PackedNavBitsPtr ephINAVGalPP1,
+   ephINAVGalPP2,
+   ephINAVGalPP3,
+   ephINAVGalPP4,
+   ephINAVGalPP5;
 gnsstk::CommonTime ephINAVGalWT1ct,
    ephINAVGalWT2ct,
    ephINAVGalWT3ct,

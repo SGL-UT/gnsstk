@@ -288,14 +288,14 @@ namespace gnsstk
           * Must be completed by January, 2137 :-) */
       unsigned wn = ephSF[esiWN]->asUnsignedLong(esbWN,enbWN,escWN);
          // Use the transmit time to get a full week for toe/toc
-         //GPSWeekSecond refTime(eph->xmitTime);
-         //long refWeek = refTime.week;
-         //wn = timeAdjustWeekRollover(wn, refWeek);
+      GPSWeekSecond refTime(eph->xmitTime);
+      long refWeek = refTime.week;
+      wn = timeAdjustWeekRollover(wn, refWeek);
          // Now we can set the Toe/Toc properly.  Note that IS-GPS-200
          // defines the toc and toe to be the same for a consistent
          // set of data, and we've already enforced they're the same
          // above.
-      eph->Toe = eph->Toc = GPSWeekSecond(wn,toe10);
+      eph->Toe = eph->Toc = GPSWeekSecond(wn,toe10).weekRolloverAdj(refTime);
       if (navIn->getsatSys().system == gnsstk::SatelliteSystem::QZSS)
       {
          eph->Toe.setTimeSystem(gnsstk::TimeSystem::QZS);

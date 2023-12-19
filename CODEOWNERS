@@ -13,20 +13,20 @@ ref/usersguide/ @johnk @renfrob @rain
 # Core lib
 core/lib/ @johnk
 core/lib/AppFrame/ @johnk @anthony
-core/lib/CommandLine/CommandLine.cpp @anthony @btolman @johnk
-core/lib/CommandLine/CommandLine.hpp @anthony @btolman @johnk
+core/lib/CommandLine/CommandLine.cpp @anthony @magliocca @johnk
+core/lib/CommandLine/CommandLine.hpp @anthony @magliocca @johnk
 core/lib/CommandLine/ @johnk @anthony
 core/lib/FileDirProc/ @johnk @anthony
 core/lib/FileHandling/ @anthony @johnk
-core/lib/Geomatics/ @btolman @johnk
+core/lib/Geomatics/ @magliocca @johnk @butcher
 core/lib/GNSSCore/ @anthony @johnk @jmedeiros
 core/lib/GNSSEph/ @johnk @anthony @renfrob
-core/lib/Math/ @anthony @btolman
+core/lib/Math/ @anthony @magliocca @malik
 core/lib/NavFilter/ @johnk @anthony @renfrob
 core/lib/NewNav/ @johnk @jmedeiros
 core/lib/ORD/ @malik @johnk @rcathriner
-core/lib/PosSol/ @btolman @renfrob
-core/lib/RefTime/ @btolman @renfrob
+core/lib/PosSol/ @magliocca @renfrob @malik
+core/lib/RefTime/ @magliocca @renfrob
 core/lib/TestFramework/ @anthony @johnk
 core/lib/TimeHandling/ @anthony @johnk @renfrob
 core/lib/Utilities/ @johnk @anthony
@@ -40,7 +40,7 @@ ext/ @johnk @dbarber
 # Other
 data/ @dbarber @kuck
 deprecated/ @dbarber @kuck
-examples/ @johnk @btolman @renfrob
+examples/ @johnk @magliocca @renfrob
 
 [CPP Reviewers]
 *.cpp   @code-reviewers/cpp

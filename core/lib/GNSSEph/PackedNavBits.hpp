@@ -44,8 +44,11 @@
 #ifndef GNSSTK_PACKEDNAVBITS_HPP
 #define GNSSTK_PACKEDNAVBITS_HPP
 
+#include <algorithm>
 #include <bitset>
+#include <iterator>
 #include <memory>
+#include <type_traits>
 #include <vector>
 #include <cstddef>
 #include "gnsstkplatform.h" //#include <stdint.h>
@@ -436,6 +439,41 @@ namespace gnsstk
           */
       void addDataVec(const std::vector<uint8_t>& data, unsigned numBits);
 
+
+         /** Pack a vector of bits.
+          * Each element must be either 0 or 1.
+          * @param[in] begin the start of data to add to this PNB.
+          * @param[in] end the end of data to add to the PNB.
+          * @throw InvalidParameter if an element is not 0 or 1.
+          */
+      template<class It>
+      void addBitVec(It begin, It end)
+      {
+         using it_datatype = typename std::iterator_traits<It>::value_type;
+         static_assert(std::is_integral<it_datatype>::value, "addBitVec: this function only processes integers");
+
+         const auto numBits{std::distance(begin, end)};
+         ensureCapacity(bits_used + numBits);
+
+         std::transform(begin, end, bits.begin() + bits_used, [](it_datatype bit)
+            {
+               if (bit == 1)
+               {
+                  return true;
+               }
+               if (bit == 0)
+               {
+                  return false;
+               }
+
+               gnsstk::InvalidParameter exc("Encountered data that is not 0 or 1");
+               GNSSTK_THROW(exc);
+            });
+
+         bits_used += numBits;
+      }
+
+
          /** Pack a bitset.  This is done by converting it first to a
           * string of 0 and 1 characters which are then treated as an
           * array that is appended to the end of the bits vector.  Not
@@ -653,6 +691,11 @@ namespace gnsstk
 
          /** Scales doubles by their corresponding scale factor */
       double ScaleValue( const double value, const int power2) const;
+
+         /** Ensures that #bits can hold a total of \p s elements.
+          * Resizies the vector if needed.
+          */
+      void ensureCapacity(const size_t s);
 
    }; // class PackedNavBits
 

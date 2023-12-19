@@ -132,11 +132,14 @@ namespace gnsstk
           * @param[in] isC If true, the SP3Data comes from an SP3c file.
           * @param[out] navOut The OrbitDataSP3 object to be added to the
           *   factory data map.
+          * @param[in] initVal The value to initialize all
+          *   OrbitDataSP3 members with.
           * @return true if the conversion is valid, false if the
           *   input data is unsupported.
           */
       static bool convertToOrbit(const SP3Header& head, const SP3Data& navIn,
-                                 bool isC, NavDataPtr& navOut);
+                                 bool isC, NavDataPtr& navOut,
+                                 double initVal);
 
          /** Convert SP3 nav data to a OrbitDataSP3 object with SV
           * clock offset data.
@@ -145,11 +148,14 @@ namespace gnsstk
           * @param[in] isC If true, the SP3Data comes from an SP3c file.
           * @param[out] clkOut The OrbitDataSP3 object to be added to the
           *   factory data map.
+          * @param[in] initVal The value to initialize all
+          *   OrbitDataSP3 members with.
           * @return true if the conversion is valid, false if the
           *   input data is unsupported.
           */
       static bool convertToClock(const SP3Header& head, const SP3Data& navIn,
-                                 bool isC, NavDataPtr& clkOut);
+                                 bool isC, NavDataPtr& clkOut,
+                                 double initVal);
 
          /** Because SP3 files don't identify signals (the data is
           * computed, not broadcast). we use this function to
@@ -322,6 +328,11 @@ namespace gnsstk
          /** Print the current configuration of this factory to the
           * given stream. */
       void dumpConfig(std::ostream& s) const;
+
+         /** This value is used to initialize OrbitDataSP3 parameters
+          * on construction.  Defaults to 0.
+          * @see OrbitDataSP3(double). */
+      double initOrbitDataVal;
 
    protected:
 

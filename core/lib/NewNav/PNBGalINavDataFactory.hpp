@@ -64,6 +64,7 @@ namespace gnsstk
    public:
          /** Process a PackedNavBits object, producing NavData objects
           * as appropriate.
+          * Accepts data words or full page pairs.
           * @param[in] navIn The PackedNavBits data to process.
           * @param[out] navOut Any resulting NavData objects that were
           *   completed, usually as a result of adding navIn to the
@@ -73,12 +74,23 @@ namespace gnsstk
       bool addData(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut,
                    double cadence = -1)
          override;
+     
+         /** Given a pair of I/NAV pages, assemble them into a word 1-10, 63.
+          * See Galileo OS-SIS-ICD 4.3.2.3 for more info on page pairs.
+          * @param[in] navIn The page pair of PackedNavBits to process.
+          * @param[out] navOut the resulting data word, if successful.
+          * @return false on error.
+          */
+      static bool wordFromPagePair(const PackedNavBits& navIn,
+                                   PackedNavBits& navOut);
 
          /** Process word types 1-5.  When a complete ephemeris of
           * word types 1,2,3,4,5 and consistent IODnav are accumulated
           * in ephAcc, that ephemeris is placed in navOut, along with
           * a GST-UTC time offset object, if such processing is
           * enabled.
+          * @note This function only accepts a data word. To extract
+          *   a data word from a page pair use wordFromPagePair().
           * @param[in] wordType The word type (1-5) pertaining to navIn.
           * @param[in] navIn The as-broadcast ephemeris bits.
           * @param[out] navOut If an ephemeris is completed, this will
@@ -91,6 +103,8 @@ namespace gnsstk
           * types 7,8,9,10 and consistent IODa are accumulated in
           * almAcc, that almanac is placed in navOut, along with a
           * GST-GPS time offset object, if such processing is enabled.
+          * @note This function only accepts a data word. To extract
+          *   a data word from a page pair use wordFromPagePair().
           * @param[in] wordType The word type (7-10) pertaining to navIn.
           * @param[in] navIn The as-broadcast almanac bits.
           * @param[out] navOut If an almanac is completed and the data
@@ -101,6 +115,8 @@ namespace gnsstk
 
          /** Decode an almanac and/or health from a vector of Galileo
           * almanac words.
+          * @note This function only accepts data words. To extract
+          *   a data word from a page pair use wordFromPagePair().
           * @param[in] almWord An vector of size 4 of Galileo word types 7-10.
           * @param[in,out] alm The pre-allocated almanac object to store
           *   the decoded data in.
@@ -187,6 +203,8 @@ namespace gnsstk
                          int asiE1Bhs, int asbE1Bhs);
 
          /** Process word type 6.  This includes GST-UTC time offset data.
+          * @note This function only accepts a data word. To extract
+          *   a data word from a page pair use wordFromPagePair().
           * @param[in] navIn The PackedNavBits data containing word type 6.
           * @param[out] navOut The GalINavTimeOffset object generated from
           *   navIn.

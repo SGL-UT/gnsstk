@@ -51,6 +51,11 @@
 //#include "YDSTime.hpp"
 #include "GNSSconstants.hpp"
 
+// @todo many of these functions could benefit from usage of the <algorithm> header.
+//    Usage of std::copy, std::transfrorm, std::accumulate could clarify intentions,
+//    better provide memory safety (i.e. out-of-bounds checks), and *possibly* be
+//    more performant than the many manual bounds checking and looping.
+
 namespace gnsstk
 {
    using namespace std;
@@ -145,11 +150,11 @@ namespace gnsstk
       rxID   = right.rxID;
       transmitTime = right.transmitTime;
       bits_used = right.bits_used;
-      bits.resize(bits_used);
+      ensureCapacity(bits_used);
       parityStatus = right.parityStatus;
       for (int i=0;i<bits_used;i++)
       {
-         bits[i] = right.bits[i];
+         bits.at(i) = right.bits.at(i);
       }
       xMitCoerced = right.xMitCoerced;
    }
@@ -257,7 +262,7 @@ namespace gnsstk
       for (size_t i=startBit; i<stop; ++i)
       {
          temp <<= 1;
-         if (bits[i]) temp++;
+         if (bits.at(i)) temp++;
       }
       return( temp );
    }
@@ -529,12 +534,12 @@ namespace gnsstk
                   const std::vector<PackedNavBitsPtr>& bits,
                   const int power2)
    {
-      int64_t s = bits[whichSF[0]]->SignExtend(startBits[0], numBits[0]);
+      int64_t s = bits.at(whichSF.at(0))->SignExtend(startBits.at(0), numBits.at(0));
       uint64_t temp;
       for (unsigned int i = 1; i < startBits.size(); i++)
       {
-         temp = bits[whichSF[i]]->asUint64_t(startBits[i], numBits[i]);
-         s <<= numBits[i];
+         temp = bits.at(whichSF.at(i))->asUint64_t(startBits.at(i), numBits.at(i));
+         s <<= numBits.at(i);
          s |= temp;
       }
 
@@ -550,12 +555,12 @@ namespace gnsstk
                     const std::vector<PackedNavBitsPtr>& bits,
                     const int power2)
    {
-      uint64_t ulong = bits[whichSF[0]]->asUint64_t(startBits[0], numBits[0]);
+      uint64_t ulong = bits.at(whichSF.at(0))->asUint64_t(startBits.at(0), numBits.at(0));
       uint64_t temp;
       for (unsigned int i = 1; i < startBits.size(); i++)
       {
-         temp = bits[whichSF[i]]->asUint64_t(startBits[i], numBits[i]);
-         ulong <<= numBits[i];
+         temp = bits.at(whichSF.at(i))->asUint64_t(startBits.at(i), numBits.at(i));
+         ulong <<= numBits.at(i);
          ulong |= temp;
       }
 
@@ -605,7 +610,7 @@ namespace gnsstk
 
    bool PackedNavBits::asBool( const unsigned bitNum) const
    {
-      return bits[bitNum];
+      return bits.at(bitNum);
    }
 
 
@@ -717,7 +722,7 @@ namespace gnsstk
       int i;
       for (i = 0; i < numToCopy; ++i)
       {
-         const unsigned char ch = String[i];
+         const unsigned char ch = String.at(i);
          bool valid = false;
          if ( ('A' <= ch && ch <= 'Z') || ('0' <= ch && ch <= ':') || (' ' == ch) ||
             ('"' == ch) || ('\'' == ch) || ('+' == ch) || ('-' <= ch && ch <= '/') ||
@@ -758,12 +763,12 @@ namespace gnsstk
             // MSBs.
          unsigned bitsToAdd = 8;
          unsigned shiftRight = 0;
-         if ((i+1)*8 >= numBits)
+         if ((i+1)*8 > numBits)
          {
             bitsToAdd = rem;
             shiftRight = 8-rem;
          }
-         addUint64_t(data[i] >> shiftRight, bitsToAdd);
+         addUint64_t(data.at(i) >> shiftRight, bitsToAdd);
       }
    }
 
@@ -772,27 +777,28 @@ namespace gnsstk
    {
       int old_bits_used = bits_used;
       bits_used += right.bits_used;
-      bits.resize(bits_used);
+      ensureCapacity(bits_used);
 
       for (int i=0;i<right.bits_used;i++)
       {
-         bits[i+old_bits_used] = right.bits[i];
+         bits.at(i+old_bits_used) = right.bits.at(i);
       }
    }
 
    void PackedNavBits::addUint64_t( const uint64_t value, const int numBits )
    {
+      ensureCapacity(bits_used + numBits);
       size_t ndx = bits_used;
       uint64_t mask = 0x0000000000000001L;
       mask <<= (numBits-1);
 
       for (int i=0; i<numBits; ++i)
       {
-         bits[ndx] = false;
+         bits.at(ndx) = false;
          if (value & mask)
          {
              //set the bits to true
-            bits[ndx] = true;
+            bits.at(ndx) = true;
          }
          mask>>= 1;
          ndx++;
@@ -825,12 +831,12 @@ namespace gnsstk
 
       for (int i=0;i<bits.size();i++)
       {
-         if (bits[i]==false && right.bits[i]==true)
+         if (bits.at(i)==false && right.bits.at(i)==true)
          //if (bits[i]<right.bits[i])
          {
             return true;
          }
-         if (bits[i]==true && right.bits[i]==false)
+         if (bits.at(i)==true && right.bits.at(i)==false)
          {
             return false;
          }
@@ -852,7 +858,7 @@ namespace gnsstk
          // the cost of a conditional statement.
       for (int i=0;i<bits.size();i++)
       {
-         bits[i] = 1 - bits[i];
+         bits.at(i) = 1 - bits.at(i);
       }
    }
 
@@ -879,7 +885,7 @@ namespace gnsstk
 
       for (short i=startBit; i<=finalBit; i++)
       {
-         bits[i] = src.bits[i];
+         bits.at(i) = src.bits.at(i);
       }
    }
 
@@ -915,10 +921,10 @@ namespace gnsstk
       mask <<= (numBits-1);
       for (int i=0; i<numBits; i++)
       {
-         bits[ndx] = false;
+         bits.at(ndx) = false;
          if (out & mask)
          {
-            bits[ndx] = true;
+            bits.at(ndx) = true;
          }
          mask >>= 1;
          ndx++;
@@ -1003,7 +1009,7 @@ namespace gnsstk
       for(size_t i = 0; i < bits.size(); ++i)
       {
          word <<= 1;
-         if (bits[i]) word++;
+         if (bits.at(i)) word++;
 
          numBitInWord++;
          if (numBitInWord >= 32)
@@ -1042,7 +1048,7 @@ namespace gnsstk
       for(size_t i = 0; i < bits.size(); ++i)
       {
          word <<= 1;
-         if (bits[i]) word++;
+         if (bits.at(i)) word++;
 
          numBitInWord++;
          if (numBitInWord >= numBitsPerWord)
@@ -1131,7 +1137,7 @@ namespace gnsstk
 
       for (int i=startBit;i<=endBit;i++)
       {
-         if (bits[i]!=right.bits[i])
+         if (bits.at(i)!=right.bits.at(i))
          {
             return false;
          }
@@ -1218,6 +1224,14 @@ namespace gnsstk
       trimsize();
 
       return;
+   }
+   
+   void PackedNavBits::ensureCapacity(const size_t s)
+   {
+      if (bits.size() < s)
+      {
+         bits.resize(s);
+      }
    }
 
    ostream& operator<<(ostream& s, const PackedNavBits& pnb)
