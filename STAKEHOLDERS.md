@@ -1,7 +1,8 @@
 # Stakeholders of the GNSSTk
+Consensus from appropriate approvers and from other stakeholders (i.e. Squads using the GNSSTk) is needed for large or breaking changes. See the [Toolkits Rules of Engagement](https://sgl-git.arlut.utexas.edu/sgl-tks/toolkit_docs/-/blob/main/user_documentation/toolkits_engagement_rules.md).
 
 ## Approvers
-See the [GNSSTk CODEOWNERS file](https://sgl-git.arlut.utexas.edu/sgl-tks/gnsstk/-/blob/main/CODEOWNERS). To be added to said file as an approver, submit an MR. Consensus from appropriate approvers and from other stakeholders (see Squads using the GNSSTk below) is needed for large or breaking changes. See the [Toolkits Rules of Engagement](https://sgl-git.arlut.utexas.edu/sgl-tks/toolkit_docs/-/blob/main/user_documentation/toolkits_engagement_rules.md).
+See the [GNSSTk CODEOWNERS file](https://sgl-git.arlut.utexas.edu/sgl-tks/gnsstk/-/blob/main/CODEOWNERS). To be added to said file as an approver, submit an MR. 
 
 ## Squads using the GNSSTk
 A number of squads within SGL make use of this PWI. The definitive list of such interfaces is, as always, the [sglorg documentation](https://sgl-git.arlut.utexas.edu/sgl/sglorg). This list is intended merely to serve as a general reference for new users of the GNSSTk to understand its general space within the laboratory, as well as a list of first contacts for determining who should review design documents:  
