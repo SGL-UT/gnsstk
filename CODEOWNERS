@@ -5,7 +5,7 @@ CODEOWNERS @kuck @rain
 ref/papers/ @renfrob @rain @kuck
 ref/usersguide/ @johnk @renfrob @rain
 
-[Stakeholder Review]
+# [Stakeholder Review]
 # Ensure stakeholder review for the design documents, which should
 # live in the sgl-tks/Toolkit-Docs repo. See ./STAKEHOLDERS for
 # first POC in finding who should review your design document. See
