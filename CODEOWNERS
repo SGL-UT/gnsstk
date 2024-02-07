@@ -2,12 +2,18 @@
 CODEOWNERS @kuck @rain
 
 [Documentation]
-docs/ @johnk @rain
 ref/papers/ @renfrob @rain @kuck
 ref/usersguide/ @johnk @renfrob @rain
 
+# [Stakeholder Review]
+# Ensure stakeholder review for the design documents, which should
+# live in the sgl-tks/Toolkit-Docs repo. See ./STAKEHOLDERS for
+# first POC in finding who should review your design document. See
+# the toolkits_engagement_rules to determine if they need to.
+
+
 [Subject Matter Experts]
-# Default Owners
+# Default Owners. They, at least, should review your design doc.
 * @sgl-tks
 
 # Core lib
@@ -17,7 +23,7 @@ core/lib/CommandLine/CommandLine.cpp @anthony @magliocca @johnk
 core/lib/CommandLine/CommandLine.hpp @anthony @magliocca @johnk
 core/lib/CommandLine/ @johnk @anthony
 core/lib/FileDirProc/ @johnk @anthony
-core/lib/FileHandling/ @anthony @johnk
+core/lib/FileHandling/ @anthony @bbauer
 core/lib/Geomatics/ @magliocca @johnk @butcher
 core/lib/GNSSCore/ @anthony @johnk @jmedeiros
 core/lib/GNSSEph/ @johnk @anthony @renfrob
