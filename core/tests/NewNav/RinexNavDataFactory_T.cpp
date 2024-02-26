@@ -991,11 +991,11 @@ loadIntoMapTest()
                if (ephFCount == 0)
                {
                   static const gnsstk::CommonTime expToe =
-                     gnsstk::CivilTime(2006, 10, 1, 0, 15, 0,
-                                       gnsstk::TimeSystem::UTC);
+                     gnsstk::CivilTime(2006, 10, 1, 3, 15, 0,
+                                       gnsstk::TimeSystem::GLO);
                   static const gnsstk::CommonTime expTS =
-                     gnsstk::CivilTime(2006, 10, 1, 0, 1, 30,
-                                       gnsstk::TimeSystem::UTC);
+                     gnsstk::CivilTime(2006, 10, 1, 3, 1, 30,
+                                       gnsstk::TimeSystem::GLO);
                   static const gnsstk::NavMessageID expNMID(
                      gnsstk::NavSatelliteID(1, gnsstk::SatelliteSystem::Glonass,
                                             gnsstk::CarrierBand::G1,
@@ -1003,6 +1003,7 @@ loadIntoMapTest()
                                             gnsstk::XmitAnt::Standard, 7, false,
                                             gnsstk::NavType::GloCivilF),
                      gnsstk::NavMessageType::Ephemeris);
+                     
                      // NavData
                   TUASSERTE(gnsstk::CommonTime, expTS, ephF->timeStamp);
                   TUASSERTE(gnsstk::NavMessageID, expNMID, ephF->signal);
@@ -1015,8 +1016,8 @@ loadIntoMapTest()
                   TUASSERTE(bool, false, ephF->lhealth);
                   TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Healthy,
                             ephF->health);
-                  TUASSERTE(gnsstk::CommonTime, expTS, ephF->beginFit);
-                  TUASSERTE(gnsstk::CommonTime, expToe+930.0, ephF->endFit);
+                  TUASSERTE(gnsstk::CommonTime, expTS+8.0, ephF->beginFit);
+                  TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::END_OF_TIME, ephF->endFit);                  
                      // GLOFNavEph
                   TUASSERTE(gnsstk::CommonTime, expTS, ephF->ref);
                   TUASSERTE(gnsstk::CommonTime, expTS+4.0, ephF->xmit3);
@@ -1063,8 +1064,8 @@ loadIntoMapTest()
                if (heaFCount == 0)
                {
                   static const gnsstk::CommonTime expTS =
-                     gnsstk::CivilTime(2006, 10, 1, 0, 1, 30,
-                                       gnsstk::TimeSystem::UTC);
+                     gnsstk::CivilTime(2006, 10, 1, 3, 1, 30,
+                                       gnsstk::TimeSystem::GLO);
                   static const gnsstk::NavMessageID expNMID(
                      gnsstk::NavSatelliteID(1, gnsstk::SatelliteSystem::Glonass,
                                             gnsstk::CarrierBand::G1,

@@ -51,6 +51,7 @@
 #include "KlobucharIonoNavData.hpp"
 #include "NeQuickIonoNavData.hpp"
 #include "DebugTrace.hpp"
+#include "BasicTimeSystemConverter.hpp"
 #include "TimeString.hpp"
 
 namespace gnsstk
@@ -567,14 +568,23 @@ namespace gnsstk
          return false;
       }
       rnd.time = eph->Toe;
+      // Object has time tags in GLONASS time while 
+      // RINEX 3.04 section 8.3.1 specifies that time 
+      // tags for GLONASS data are given in UTC in RINEX.
+      // Therefore we have to adjust by three hours.
+      BasicTimeSystemConverter btsc;
+      rnd.time.changeTimeSystem(TimeSystem::UTC, &btsc);
       rnd.satSys = "R";
       rnd.PRNID = eph->slot;
       rnd.sat = RinexSatID(eph->slot, SatelliteSystem::Glonass);
       rnd.TauN = -(eph->clkBias);
       rnd.GammaN = eph->freqBias;
          // We're only getting seconds of week so it's odd but okay to
-         // use GPSWeekSecond here.
-      GPSWeekSecond mft(eph->ref);
+         // use GPSWeekSecond here.  AFTER we move from GLONASS time to 
+         // UTC
+      CommonTime tmpU = eph->ref;
+      tmpU.changeTimeSystem(TimeSystem::UTC, &btsc);
+      GPSWeekSecond mft(tmpU);
       rnd.MFtime = mft.sow;
          // convert meters to km for RINEX
       rnd.px = eph->pos[0] / 1000.0;

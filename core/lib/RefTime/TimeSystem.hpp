@@ -85,7 +85,7 @@ namespace gnsstk
        * @note GPS = TAI-19sec and so GPS-UTC = getLeapSeconds()-19 == dtLS.
        * @note GLO = UTC = GPS - dtLS. but not incl. RINEX::TIME
        *   SYSTEM CORR::GPUT
-       * @note GLO is actually UTC(SU)
+       * @note GLO is UTC(SU) + 3 hours
        * @note GAL = GPS = UTC + dtLS this does not incl. RINEX::TIME
        *   SYSTEM CORR::GAUT
        * @note BDT = GPS - 15 but this does not include RINEX::TIME

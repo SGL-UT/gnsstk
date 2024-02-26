@@ -134,10 +134,15 @@ getOffsetTest()
       /// @todo Truth values here need to be verified.
    TUASSERT(uut.getOffset(gnsstk::TimeSystem::GLO, gnsstk::TimeSystem::GPS,
                           when1, offset));
-   TUASSERTFE(-18.001708985305999278, offset);
+   TUASSERTFE(10781.998291014693677, offset)
    TUASSERT(uut.getOffset(gnsstk::TimeSystem::GLO, gnsstk::TimeSystem::GPS,
                           when2, offset));
-   TUASSERTFE(-18.001708985305999278, offset);
+   TUASSERTFE(10781.998291014693677, offset);
+
+   gnsstk::CommonTime when3{gnsstk::CivilTime(2021, 11, 6, 0, 0, 8, gnsstk::TimeSystem::GPS)}; 
+   TUASSERT(uut.getOffset(gnsstk::TimeSystem::GPS, gnsstk::TimeSystem::GLO,
+                          when3, offset));
+   TUASSERTFE(-10781.998291014693677, offset);
    TURETURN();
 }
 

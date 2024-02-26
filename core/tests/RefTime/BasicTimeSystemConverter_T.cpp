@@ -69,13 +69,13 @@ public:
                                            gnsstk::TimeSystem::GLO,
                                            gnsstk::CivilTime(1992, 10, 3),
                                            offs));
-      TUASSERTFE(0, offs);
+      TUASSERTFE(-10800, offs);
 
       TUASSERTE(bool, true, btsc.getOffset(gnsstk::TimeSystem::GLO,
                                            gnsstk::TimeSystem::UTC,
                                            gnsstk::CivilTime(1995, 5, 10),
                                            offs));
-      TUASSERTFE(0, offs);
+      TUASSERTFE(10800, offs);
 
       TUASSERTE(bool, true, btsc.getOffset(gnsstk::TimeSystem::UTC,
                                            gnsstk::TimeSystem::GAL,
