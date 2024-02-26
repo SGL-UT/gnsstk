@@ -230,10 +230,14 @@ namespace gnsstk
       {
          dt = TAI_minus_GPSGAL_EPOCH;
       }
-      else if (inTS == TimeSystem::UTC ||  // UTC -> TAI
-               inTS == TimeSystem::GLO)    // GLO -> TAI
+      else if (inTS == TimeSystem::UTC)  // UTC -> TAI
       {
          dt = getLeapSeconds(year, month, day);
+      }
+      else if (inTS == TimeSystem::GLO)    // GLO -> TAI
+      {
+         dt = getLeapSeconds(year, month, day);
+         dt -= (3 * 3600.0);                     // GLO is 3h in advance of UTC 
       }
       else if (inTS == TimeSystem::BDT)    // BDT -> TAI
       {
@@ -268,10 +272,14 @@ namespace gnsstk
       {
          dt -= TAI_minus_GPSGAL_EPOCH;
       }
-      else if (outTS == TimeSystem::UTC || // TAI -> UTC
-               outTS == TimeSystem::GLO)   // TAI -> GLO
+      else if (outTS == TimeSystem::UTC) // TAI -> UTC
       {
          dt -= getLeapSeconds(year, month, day);
+      }
+      else if ( outTS == TimeSystem::GLO)   // TAI -> GLO
+      {
+         dt -= getLeapSeconds(year, month, day);
+         dt += (3 * 3600.0);                // GLO is 3h in advance of UTC
       }
       else if (outTS == TimeSystem::BDT)   // TAI -> BDT
       {
@@ -296,7 +304,6 @@ namespace gnsstk
 
       return dt;
    }
-
 
    namespace StringUtils
    {

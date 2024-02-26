@@ -59,6 +59,11 @@ namespace gnsstk
       NavDataPtr clone() const override
       { return std::make_shared<GLOFNavTimeOffset>(*this); }
 
+         /** copydoc */
+      bool getOffset(TimeSystem fromSys, TimeSystem toSys,
+                     const CommonTime& when, double& offset)
+         const override;
+
          /** Checks the contents of this message against known
           * validity rules as defined in the appropriate ICD.
           * @return true if this message is valid according to ICD criteria.
