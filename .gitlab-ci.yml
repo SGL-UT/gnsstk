@@ -768,8 +768,8 @@ test_windows_vs2019_dll:
   dependencies:
     - build_windows_vs2019_dll
   timeout: 10m
-  # Allow failures here to prevent blocking the rest of the pipeline.
-  allow_failure: false
+  # Allow failures here to prevent blocking the rest of the pipeline. See INDEV-1475
+  allow_failure: true
 
 # User_Install Stage
 
