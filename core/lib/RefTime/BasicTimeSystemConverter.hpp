@@ -82,15 +82,15 @@ namespace gnsstk
 
    protected:
          /// Time system being converted from using toffs.
-      TimeSystem fromSystem;
+      TimeSystem fromSystem{TimeSystem::Unknown};
          /// Time system being converted to using toffs.
-      TimeSystem toSystem;
+      TimeSystem toSystem{TimeSystem::Unknown};
          /// First time that toffs is known to be valid.
       CommonTime fromTimeStamp;
          /// Final time that toffs is known to be valid.
       CommonTime toTimeStamp;
          /// Stored offset for time system conversion.
-      double toffs;
+      double toffs{0.0};
    };
 }
       //@}
