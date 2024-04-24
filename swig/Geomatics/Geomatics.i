@@ -51,6 +51,14 @@ from __future__ import absolute_import
 %include "Ignore.i"
 
 // =============================================================
+//  Section 6: C++ exception class handling
+// =============================================================
+
+%exceptionclass Exception;
+
+%include "Exception.i"
+
+// =============================================================
 //  Section 8: Otherwise undefined std classes that SWIG complains about
 // =============================================================
 
