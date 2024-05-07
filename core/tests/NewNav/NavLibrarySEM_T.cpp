@@ -151,7 +151,8 @@ public:
    unsigned getHealthTest();
    unsigned findTest();
    unsigned getTimeTest();
-   unsigned epochTest();
+   unsigned getTimeTestDeprecated();
+   unsigned epochTestDeprecated();
    unsigned getAvailableSatsTest();
    unsigned isPresentTest();
 
@@ -179,6 +180,10 @@ unsigned NavLibrary_T ::
    std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() + fn;
    TUCATCH(navLib.addFactory(ndfp));
    SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   rndfp->setRefEpoch(epoch);
+   
    TUASSERT(rndfp->addDataSource(fname));
    // navLib.dump(std::cout, gnsstk::DumpDetail::Full);
    gnsstk::NavSatelliteID sat(5, 5, gnsstk::SatelliteSystem::GPS,
@@ -211,6 +216,10 @@ unsigned NavLibrary_T ::
    std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() + fn;
    TUCATCH(navLib.addFactory(ndfp));
    SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   rndfp->setRefEpoch(epoch);
+
    TUASSERT(rndfp->addDataSource(fname));
    gnsstk::NavSatelliteID sat(10, 10, gnsstk::SatelliteSystem::GPS,
                               gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
@@ -230,6 +239,9 @@ unsigned NavLibrary_T ::
    gnsstk::NavDataPtr ndp;
    TUCATCH(navLib.addFactory(ndfp));
    SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   rndfp->setRefEpoch(epoch);
    TUASSERT(rndfp->addDataSource(fname));
    gnsstk::NavSatelliteID sat(10, 10, gnsstk::SatelliteSystem::GPS,
                               gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
@@ -275,14 +287,38 @@ unsigned NavLibrary_T ::
    std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() + fn;
    TUCATCH(navLib.addFactory(ndfp));
    SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   rndfp->setRefEpoch(epoch);
+
    TUASSERT(rndfp->addDataSource(fname));
    TUASSERTE(gnsstk::CommonTime, ts, navLib.getInitialTime());
    TUASSERTE(gnsstk::CommonTime, te, navLib.getFinalTime());
    TURETURN();
 }
 
+/// This is testing using the deprecated use of gnsstk::SEMHeader::nearFullWeek
+/// and thus does not call \ref setRefEpoch(epoch);
 unsigned NavLibrary_T ::
-    epochTest()
+    getTimeTestDeprecated()
+{
+   TUDEF("NavLibrarySEM", "getTime");
+   gnsstk::NavLibrary navLib;
+   gnsstk::NavDataFactoryPtr ndfp(std::make_shared<SEMTestFactory>());
+   std::string fname = gnsstk::getPathData() + gnsstk::getFileSep() + fn;
+   TUCATCH(navLib.addFactory(ndfp));
+   SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   TUASSERT(rndfp->addDataSource(fname));
+   TUASSERTE(gnsstk::CommonTime, ts, navLib.getInitialTime());
+   TUASSERTE(gnsstk::CommonTime, te, navLib.getFinalTime());
+   TURETURN();
+}
+
+/// This is testing using the deprecated use of gnsstk::SEMHeader::nearFullWeek
+/// and thus does not call \ref setRefEpoch(epoch);
+unsigned NavLibrary_T ::
+    epochTestDeprecated()
 {
    TUDEF("NavLibrarySEM", "epoch");
    gnsstk::SEMHeader::nearFullWeek = 1024 + ws.week;
@@ -309,6 +345,10 @@ unsigned NavLibrary_T ::
    gnsstk::NavSatelliteIDSet satset;
    TUCATCH(uut.addFactory(ndfp));
    SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   rndfp->setRefEpoch(epoch);
+
    TUASSERT(rndfp->addDataSource(fname));
    TUCATCH(satset = uut.getAvailableSats(
                gnsstk::CommonTime::BEGINNING_OF_TIME,
@@ -329,6 +369,10 @@ unsigned NavLibrary_T ::
    // really basic tests, the real tests are in NavDataFactoryWithStore_T etc
    TUCATCH(uut.addFactory(ndfp));
    SEMTestFactory *rndfp = dynamic_cast<SEMTestFactory *>(ndfp.get());
+
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   rndfp->setRefEpoch(epoch);
+
    TUASSERT(rndfp->addDataSource(fname));
    gnsstk::NavSatelliteID sat1(gnsstk::SatID(23, gnsstk::SatelliteSystem::GPS));
    gnsstk::NavMessageID nmid1e(sat1, gnsstk::NavMessageType::Ephemeris),
@@ -351,7 +395,8 @@ int main()
    errorTotal += testClass.getHealthTest();
    errorTotal += testClass.findTest();
    errorTotal += testClass.getTimeTest();
-   errorTotal += testClass.epochTest();
+   errorTotal += testClass.getTimeTestDeprecated();
+   errorTotal += testClass.epochTestDeprecated();
    errorTotal += testClass.getAvailableSatsTest();
    errorTotal += testClass.isPresentTest();
    /// @todo test edit(), clear()

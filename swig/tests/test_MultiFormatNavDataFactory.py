@@ -8,7 +8,8 @@ import gnsstk
 
 class TestMultiFormatNavDataFactory(unittest.TestCase):
     def test_addDataSource(self):
-        ndf = gnsstk.MultiFormatNavDataFactory()
+        epoch = gnsstk.GPSWeekSecond(0, 0, gnsstk.TimeSystem.GPS).toCommonTime()
+        ndf = gnsstk.MultiFormatNavDataFactory(epoch)
         ndf.addDataSource(args.input_dir+'/test_input_yuma377.txt')
         ndf.addDataSource(args.input_dir+
                           '/test_input_rinex_nav_RinexNavExample.99n')

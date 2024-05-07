@@ -61,6 +61,16 @@ namespace gnsstk
           */
       SEMNavDataFactory();
 
+         /** Fill supportedSignals.
+          * @note Only GPS nav is supported so only that will be added
+          *   to supportedSignals.
+          *  Sets the reference time epoch.
+          * @param[in] refEpoch The reference time. Assumed to be invalid if
+          *   equivalent to \p CommonTime::BEGINNING_OF_TIME or
+          *   \p CommonTime::END_OF_TIME.
+          */
+      SEMNavDataFactory(const CommonTime& refEpoch);
+
          /// Clean up.
       virtual ~SEMNavDataFactory()
       {

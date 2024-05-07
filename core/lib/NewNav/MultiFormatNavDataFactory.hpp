@@ -77,6 +77,15 @@ namespace gnsstk
          /// Initialize supportedSignals from factories.
       MultiFormatNavDataFactory();
 
+         /** Initializes supportedSignals from factories.
+          *  Sets the reference time epoch for all the NavDataFactory
+          *  objects.
+          * @param[in] refEpoch The reference time. Assumed to be invalid if
+          *   equivalent to \p CommonTime::BEGINNING_OF_TIME or
+          *   \p CommonTime::END_OF_TIME.
+          */
+      MultiFormatNavDataFactory(const CommonTime& refEpoch);
+
          /** Clear all associated factories so as to avoid surprises
           * if you ever instantiate more than one
           * MultiFormatNavDataFactory in a session. */
@@ -322,6 +331,14 @@ namespace gnsstk
           * @param[in] ctrl The configuration for the factory/factories.
           */
       void setControl(const FactoryControl& ctrl) override;
+
+         /** @note Disallow this method by throwing exception.
+          * Reference epoch must be set via calling the constructor of this class.
+          * @param[in] refEpoch The reference time. Assumed to be invalid if
+          *   equivalent to \p CommonTime::BEGINNING_OF_TIME or
+          *   \p CommonTime::END_OF_TIME.
+          **/
+      void setRefEpoch(const CommonTime& refEpoch) override;
 
    protected:
          /** Known nav data factories, organized by signal to make

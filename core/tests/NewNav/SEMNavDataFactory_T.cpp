@@ -41,6 +41,7 @@
 #include "TestUtil.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
+#include "GPSWeekSecond.hpp"
 
 namespace gnsstk
 {
@@ -56,6 +57,10 @@ namespace gnsstk
 class TestClass : public gnsstk::SEMNavDataFactory
 {
 public:
+   TestClass() : SEMNavDataFactory() {}
+   TestClass(const gnsstk::CommonTime& refEpoch) :
+      SEMNavDataFactory(refEpoch) {}
+
       /// Grant access to protected data.
    gnsstk::NavMessageMap& getData()
    { return data; }
@@ -68,7 +73,20 @@ public:
       /// Make sure the constructor does what it's supposed to.
    unsigned constructorTest();
       /// Exercise loadIntoMap by loading data with different options in place.
+      /// Uses the ctor \ref SEMNavDataFactory(refEpoch)
    unsigned loadIntoMapTest();
+      /** Use dynamic_cast to verify that the contents of nmm are the
+       * right class.
+       * Test the deprecated use of gnsstk::SEMHeader::nearFullWeek
+       * @param[in] testFramework The test framework created by TUDEF,
+       *   used by TUASSERT macros in this function.
+       * @param[in] nmm The data map to check. */
+   unsigned loadIntoMapTestdDeprecated();
+      /**
+       * Test the use of \ref setRefEpoch call that is intended
+       * for internal use only.
+       * */
+   unsigned loadIntoMapTest_TestInternalUse();
       /** Use dynamic_cast to verify that the contents of nmm are the
        * right class.
        * @param[in] testFramework The test framework created by TUDEF,
@@ -91,6 +109,104 @@ constructorTest()
                             gnsstk::TrackingCode::CA,
                             gnsstk::NavType::GPSLNAV);
    TUASSERT(fact.supportedSignals.count(nsid1));
+
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   gnsstk::SEMNavDataFactory fact2(epoch);
+      // check for expected signal support
+   gnsstk::NavSignalID nsid2(gnsstk::SatelliteSystem::GPS,
+                            gnsstk::CarrierBand::L1,
+                            gnsstk::TrackingCode::CA,
+                            gnsstk::NavType::GPSLNAV);
+   TUASSERT(fact2.supportedSignals.count(nsid2));
+   TURETURN();
+}
+
+unsigned SEMNavDataFactory_T ::
+loadIntoMapTest_TestInternalUse()
+{
+   TUDEF("SEMNavDataFactory", "loadIntoMap");
+
+      // test loading SEM 2 nav
+   gnsstk::SEMNavDataFactory f2;
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   f2.setRefEpoch(epoch);
+   std::string f2name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sem387.txt";
+      // this should implicitly load into the data map
+   TUASSERT(f2.addDataSource(f2name));
+   TUASSERTE(size_t, 60, f2.size());
+
+   TestClass f4;
+   std::string f4name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sem387.txt";
+   TUCATCH(f4.setTypeFilter({gnsstk::NavMessageType::Almanac}));
+      // this should implicitly load into the data map
+   f4.setRefEpoch(epoch);
+   TUASSERT(f4.addDataSource(f4name));
+   TUASSERTE(size_t, 30, f4.size());
+   gnsstk::NavMessageMap &nmm4(f4.getData());
+      // only one message type
+   TUASSERTE(size_t, 1, nmm4.size());
+      // and it's almanac.
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Almanac,
+             nmm4.begin()->first);
+   TUCSM("convertToOrbit/fillNavData");
+   verifyDataType<gnsstk::GPSLNavAlm>(testFramework, nmm4);
+   TUCSM("loadIntoMap");
+
+   TestClass f5;
+   std::string f5name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sem387.txt";
+   TUCATCH(f5.setTypeFilter({gnsstk::NavMessageType::Health}));
+      // this should implicitly load into the data map
+   f5.setRefEpoch(epoch);
+   TUASSERT(f5.addDataSource(f5name));
+   TUASSERTE(size_t, 30, f5.size());
+   gnsstk::NavMessageMap &nmm5(f5.getData());
+      // only one message type
+   TUASSERTE(size_t, 1, nmm5.size());
+      // and it's health.
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Health,
+             nmm5.begin()->first);
+   TUCSM("convertToHealth/fillNavData");
+   verifyDataType<gnsstk::GPSLNavHealth>(testFramework, nmm5);
+   TUCSM("loadIntoMap");
+
+   TestClass f6;
+   std::string f6name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sem387.txt";
+   TUCATCH(f6.setTypeFilter({gnsstk::NavMessageType::Ephemeris}));
+      // this should implicitly load into the data map
+   f6.setRefEpoch(epoch);
+   TUASSERT(f6.addDataSource(f6name));
+      // except there isn't any data, because SEM nav doesn't contain ephemeris
+   TUASSERTE(size_t, 0, f6.size());
+
+      // test loading something that isn't SEM
+   TestClass f7;
+   std::string f7name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_SP3a.sp3";
+   TUASSERT(!f7.addDataSource(f7name));
+   TUASSERTE(size_t, 0, f7.size());
+
+   TestClass f8;
+   std::string f8name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sem387.txt";
+   TUCATCH(f8.setTypeFilter({gnsstk::NavMessageType::System}));
+      // this should implicitly load into the data map
+   f8.setRefEpoch(epoch);
+   TUASSERT(f8.addDataSource(f8name));
+   TUASSERTE(size_t, 30, f8.size());
+   gnsstk::NavMessageMap &nmm8(f8.getData());
+      // only one message type
+   TUASSERTE(size_t, 1, nmm8.size());
+      // and it's SV config.
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::System,
+             nmm8.begin()->first);
+   TUCSM("convertToHealth/fillNavData");
+   verifyDataType<gnsstk::GPSNavConfig>(testFramework, nmm8);
+   TUCSM("loadIntoMap");
+
    TURETURN();
 }
 
@@ -99,6 +215,92 @@ unsigned SEMNavDataFactory_T ::
 loadIntoMapTest()
 {
    TUDEF("SEMNavDataFactory", "loadIntoMap");
+
+      // test loading SEM 2 nav
+   gnsstk::CommonTime epoch = gnsstk::GPSWeekSecond{0, 0};
+   gnsstk::SEMNavDataFactory f2(epoch);
+   std::string f2name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sem387.txt";
+      // this should implicitly load into the data map
+   TUASSERT(f2.addDataSource(f2name));
+   TUASSERTE(size_t, 60, f2.size());
+
+   TestClass f4(epoch);
+   std::string f4name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sem387.txt";
+   TUCATCH(f4.setTypeFilter({gnsstk::NavMessageType::Almanac}));
+      // this should implicitly load into the data map
+   TUASSERT(f4.addDataSource(f4name));
+   TUASSERTE(size_t, 30, f4.size());
+   gnsstk::NavMessageMap &nmm4(f4.getData());
+      // only one message type
+   TUASSERTE(size_t, 1, nmm4.size());
+      // and it's almanac.
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Almanac,
+             nmm4.begin()->first);
+   TUCSM("convertToOrbit/fillNavData");
+   verifyDataType<gnsstk::GPSLNavAlm>(testFramework, nmm4);
+   TUCSM("loadIntoMap");
+
+   TestClass f5(epoch);
+   std::string f5name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sem387.txt";
+   TUCATCH(f5.setTypeFilter({gnsstk::NavMessageType::Health}));
+      // this should implicitly load into the data map
+   TUASSERT(f5.addDataSource(f5name));
+   TUASSERTE(size_t, 30, f5.size());
+   gnsstk::NavMessageMap &nmm5(f5.getData());
+      // only one message type
+   TUASSERTE(size_t, 1, nmm5.size());
+      // and it's health.
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::Health,
+             nmm5.begin()->first);
+   TUCSM("convertToHealth/fillNavData");
+   verifyDataType<gnsstk::GPSLNavHealth>(testFramework, nmm5);
+   TUCSM("loadIntoMap");
+
+   TestClass f6(epoch);
+   std::string f6name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sem387.txt";
+   TUCATCH(f6.setTypeFilter({gnsstk::NavMessageType::Ephemeris}));
+      // this should implicitly load into the data map
+   TUASSERT(f6.addDataSource(f6name));
+      // except there isn't any data, because SEM nav doesn't contain ephemeris
+   TUASSERTE(size_t, 0, f6.size());
+
+      // test loading something that isn't SEM
+   TestClass f7;
+   std::string f7name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_SP3a.sp3";
+   TUASSERT(!f7.addDataSource(f7name));
+   TUASSERTE(size_t, 0, f7.size());
+
+   TestClass f8(epoch);
+   std::string f8name = gnsstk::getPathData() + gnsstk::getFileSep() +
+      "test_input_sem387.txt";
+   TUCATCH(f8.setTypeFilter({gnsstk::NavMessageType::System}));
+      // this should implicitly load into the data map
+   TUASSERT(f8.addDataSource(f8name));
+   TUASSERTE(size_t, 30, f8.size());
+   gnsstk::NavMessageMap &nmm8(f8.getData());
+      // only one message type
+   TUASSERTE(size_t, 1, nmm8.size());
+      // and it's SV config.
+   TUASSERTE(gnsstk::NavMessageType, gnsstk::NavMessageType::System,
+             nmm8.begin()->first);
+   TUCSM("convertToHealth/fillNavData");
+   verifyDataType<gnsstk::GPSNavConfig>(testFramework, nmm8);
+   TUCSM("loadIntoMap");
+
+   TURETURN();
+}
+
+/// This is testing using the deprecated use of gnsstk::SEMHeader::nearFullWeek
+/// and thus does not call \ref setRefEpoch(epoch);
+unsigned SEMNavDataFactory_T ::
+loadIntoMapTestdDeprecated()
+{
+   TUDEF("SEMNavDataFactory", "loadIntoMapTestdDeprecated");
 
       // test loading SEM 2 nav
    gnsstk::SEMNavDataFactory f2;
@@ -178,7 +380,6 @@ loadIntoMapTest()
    TURETURN();
 }
 
-
 template <class NavClass>
 void SEMNavDataFactory_T ::
 verifyDataType(gnsstk::TestUtil& testFramework,
@@ -204,6 +405,7 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.loadIntoMapTest();
+   errorTotal += testClass.loadIntoMapTestdDeprecated();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

@@ -48,6 +48,7 @@
 #include "SatelliteSystem.hpp"
 #include "SEMHeader.hpp"
 #include "SEMStream.hpp"
+#include "DebugTrace.hpp"
 
 using namespace std;
 
@@ -60,6 +61,18 @@ namespace gnsstk
                                           CarrierBand::L1,
                                           TrackingCode::CA,
                                           NavType::GPSLNAV));
+   }
+
+
+   SEMNavDataFactory ::
+   SEMNavDataFactory(const CommonTime& refEpoch) : SEMNavDataFactory()
+   {
+      if (refEpoch != CommonTime::BEGINNING_OF_TIME
+          && refEpoch != CommonTime::END_OF_TIME)
+      {
+         referenceTimeEpoch = refEpoch;
+         referenceTimeEpochValid = true;
+      }
    }
 
 
@@ -82,8 +95,16 @@ namespace gnsstk
       bool processSys{procNavTypes.count(NavMessageType::System) > 0};
       try
       {
+         SEMHeader head{};
+         if (!referenceTimeEpochValid) {
+            DEBUGTRACE("Datasource for " + filename + " processed without reference epoch set before by calling "
+                       "gnsstk::NavDataFactory::setRefEpoch(). Using default reference epoch.");
+         }
+         else {
+            long referenceEpochInWeeks = GPSWeekSecond(referenceTimeEpoch).getWeek();
+            head = SEMHeader(referenceEpochInWeeks);
+         }
          SEMStream is(filename.c_str(), ios::in);
-         SEMHeader head;
          SEMData data;
          if (!is)
             return false;
