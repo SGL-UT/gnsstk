@@ -372,6 +372,21 @@ namespace gnsstk
       virtual void setControl(const FactoryControl& ctrl)
       { factControl = ctrl; }
 
+         /** @private Internal use for now. May be deprecated in the future.
+          * Do not use this method directy. Use the constructor of the factories
+          * such as \ref MultiFormatNavDataFactory(refEpoch) to pass
+          * the reference epoch.
+          * 
+          * Set the reference time epoch for this and any child NavDataFactory
+          * objects.
+          * @param[in] refEpoch The reference time. Assumed to be invalid if
+          *   equivalent to \p CommonTime::BEGINNING_OF_TIME or
+          *   \p CommonTime::END_OF_TIME.
+          * @note This should be called before loading data into this class.
+          *   Data that has already been loaded will not be affected by this
+          *   call. */
+      virtual void setRefEpoch(const CommonTime& refEpoch);
+
          /** Define which signals this factory supports.  This will be
           * empty by default, which means that NavLibrary would not
           * use this factory, so it is up to the derived classes to
@@ -392,6 +407,15 @@ namespace gnsstk
          /** Determines which types of navigation message data the
           * factory should be processing. */
       NavMessageTypeSet procNavTypes;
+
+         /** If the NavData produced by this factory contains a time ambiguity
+          * (e.g. GPS LNAV's 10-bit week rollover), child classes SHOULD
+          * disambiguate to the epoch that minimizes the time differential to
+          * this time (although not every child class is required to define the
+          * disambiguation).
+          * @note At C++17, this would better be handled by \p std::optional */
+      CommonTime referenceTimeEpoch{};
+      bool referenceTimeEpochValid{false};
    };
 
       /// Managed pointer to NavDataFactory.
