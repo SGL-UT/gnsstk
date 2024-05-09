@@ -216,10 +216,32 @@ namespace gnsstk
       eph->timeStamp = ephS[str1]->getTransmitTime();
       eph->signal = NavMessageID(key, NavMessageType::Ephemeris);
       DEBUGTRACE("Eph signal = " << eph->signal);
+      
+         // The navigation message is refernced to the quadrennial day.
+         // The quadrennial itself is in the almanac data, which isn't
+         // conveniently available.  We're going to do the following:
+         //  1.) Assume the transmit time tag is correct wrt the 
+         //     year. 
+         //  2.) Derive the beginning of the quadrennial from the current
+         //     year.       
+         //  3.) Add the correct number of days based on N_T.  
+         //  NOTE: N_T appears to begin at '1' as opposed to '0'. 
+      unsigned long quadrennialDay = ephS[esiNT]->asUnsignedLong(esbNT,enbNT,escNT);
+      CivilTime tmp(eph->timeStamp);
+      unsigned long year = tmp.year; 
+      year = year - (year % 4); 
+      CommonTime ctQuadrennial = CivilTime(year,1,1,0,0,0.0,TimeSystem::GLO);
+      ctQuadrennial += SEC_PER_DAY * (quadrennialDay-1);   
+      year = static_cast<CivilTime>(ctQuadrennial).year;
+      unsigned month = static_cast<CivilTime>(ctQuadrennial).month;
+      unsigned day = static_cast<CivilTime>(ctQuadrennial).day;
+      
+         // The "time of day" is encoded in a 12 bit string as HHHHHMMMMMMS
+         // where "S" is read as 0=:00 and 1=:30.  Since the reference time
+         // must correspond to the beginning of a 30s frame, that is sufficient.         
       unsigned long tk = ephS[esitk]->asUnsignedLong(esbtk,enbtk,esctk);
-         // 30 second offset since the beginning of the day, the
-         // document says, but at one bit it's obviously relative to
-         // the specified minute.
+      
+         // 30 second offset.
       unsigned long tk30s = tk & 0x01;
       tk >>= 1;
          // next 6 bits contain the minutes of the hour
@@ -227,11 +249,12 @@ namespace gnsstk
       tk >>= 6;
          // 5 MSBs contain the hour of day
       unsigned long tk1h = tk & 0x1f;
-         /** @todo I think reference time is referenced to the start
-          * of the transmit day, but is that true? */
-      CivilTime tmp(eph->timeStamp);
-      eph->ref = CivilTime(tmp.year, tmp.month, tmp.day,
+
+      // Now build the fully specified reference time (t_k)      
+      CommonTime ctRef = CivilTime(year, month, day,
                            tk1h, tk1m, 30.0 * tk30s, TimeSystem::GLO);
+      eph->ref = ctRef;
+                           
       eph->xmit2 = ephS[str2]->getTransmitTime();
       eph->xmit3 = ephS[str3]->getTransmitTime();
       eph->xmit4 = ephS[str4]->getTransmitTime();
@@ -257,8 +280,8 @@ namespace gnsstk
       eph->P2 = ephS[esiP2]->asUnsignedLong(esbP2,enbP2,escP2);
       eph->P3 = ephS[esiP3]->asUnsignedLong(esbP3,enbP3,escP3);
       eph->P4 = ephS[esiP4]->asUnsignedLong(esbP4,enbP4,escP4);
-         // factor to multiply tb by to get seconds of day.
-      unsigned tbFactor = 0;
+      
+         // Derive interval between CEI data set epochs (ICD Table 4.3)
       switch (eph->P1)
       {
          case 3:
@@ -285,42 +308,41 @@ namespace gnsstk
       eph->slot = ephS[esin]->asUnsignedLong(esbn,enbn,escn);
       eph->satType = static_cast<GLOFNavSatType>(
          ephS[esiM]->asUnsignedLong(esbM,enbM,escM));
-      YDSTime toe(eph->timeStamp);
-         // This is a kludge to have what was deemed to be a
-         // reasonable validity time span in older code by using a 30
-         // minute interval when P1==0.  I'm not convinced it's
-         // suitable, but it's here for now until someone comes up
-         // with a more definitive way to handle the fit interval.
-         // Without this kludge, the orbit epoch time stamp can go
-         // wonky early in the day (see bug below) or the end valid
-         // time stamp can be only 30 seconds after the orbit epoch.
-      unsigned interval = (eph->interval > 0 ? eph->interval : 30);
-      toe.sod = eph->tb * 2 * interval;
-         // Move from Moscow Time to UTC(SU) aka TimeSystem::GLO
-         /** @bug This doesn't seem right, adding a day to seconds of
-          * day then subtracting?  Shouldn't it just be subtracting 3
-          * hours (10800 seconds from the CommonTime object once
-          * constructed? */
-      if (toe.sod >= 10800)
-         toe.sod -= 10800;
-      else
-      {
-         toe.sod += 86400;
-         toe.sod -= 10800;
-      }
-      toe.setTimeSystem(TimeSystem::GLO);
+         
+         // According to the ICD, the epoch time is an offset from
+         // the beginning of the quadrennial day.  The offset is
+         // based on a multiple of t_b with the size of the multiple
+         // determined by P1 (see table 4.3).          
+         // HOWEVER, empirical observation shows that t_b is 
+         // actually the "minute count" withing the day that
+         // corresponds to the epoch time. 
+         // For example,
+         // CEI data start time    Epoch time      t_b
+         // -------------------    ----------    ------
+         //    03:00:00              03:15:00       195
+         //    03:30:00              03:45:00       225
+         //    04:00:00              04:15:00       255
+         //    04:30:00              04:45:00       285         
+         //
+         // Therefore, the epoch time is given by 
+         //  = begining of quadrennial day + t_b * 60         
+      YDSTime toe = ctQuadrennial + eph->tb * 60.0;
       eph->Toe = toe;
+
+         // The ICD is silent on the question of fit interval for
+         // the data.  
       eph->fixFit();
+      
       navOut.push_back(p0);
          // Clear out the broadcast ephemeris that's been processed.
       ephAcc.erase(key);
-      // cerr << "navOut.size()=" << navOut.size() << endl
+      //cerr << "navOut.size()=" << navOut.size() << endl
       //      << key.sat << "  Toe="
       //      << printTime(eph->Toe, "%Y/%02m/%02d %02H:%02M:%02S %P") << endl
       //      << key.sat << "  tb=" << eph->tb << "  tb*interval="
-      //      << eph->tb*interval << endl
-      //      << key.sat << "  toe.sod=" << toe.sod << endl
-      //      << key.sat << "  interval=" << eph->interval << " (" << interval
+      //      << eph->tb*eph->interval << endl
+      //       << key.sat << "  toe.sod=" << toe.sod << endl
+      //      << key.sat << "  interval=" << eph->interval << " (" << eph->interval
       //      << ")" << endl
       //      << key.sat << "  P1=" << eph->P1 << endl;
       return true;
@@ -544,13 +566,16 @@ namespace gnsstk
              * gnsstk::getLeapSeconds(), but I can't think of a more
              * reliable way to get this data here at the moment.
              * Luckily changes are few and far between. */
-         double offset = 0;
+         double offsetGPS = 0;
          bool result = btsc.getOffset(TimeSystem::GLO, TimeSystem::GPS,
-                                      to->timeStamp, offset);
+                                      to->timeStamp, offsetGPS);
+         double offsetUTC = 0;
+         result &= btsc.getOffset(TimeSystem::GLO, TimeSystem::UTC,
+                                  to->timeStamp, offsetUTC);
          rv &= result;
          if (result)
          {
-            to->deltatLS = -offset;
+            to->deltatLS = offsetUTC - offsetGPS;
                // These values don't really matter much, since A1 and A2 are 0.
                // We set them mostly for display purposes (dump).
             to->refTime = to->effTime = to->timeStamp;

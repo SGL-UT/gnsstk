@@ -37,6 +37,7 @@
 //
 //==============================================================================
 #include <iterator>
+#include "CommonTime.hpp"
 #include "NavDataFactory.hpp"
 #include "TimeString.hpp"
 #include "demangle.hpp"
@@ -117,5 +118,17 @@ namespace gnsstk
    getClassName() const
    {
       return demangle(typeid(*this).name());
+   }
+
+
+   void NavDataFactory ::
+   setRefEpoch(const CommonTime& refEpoch)
+   {
+      if (refEpoch != CommonTime::BEGINNING_OF_TIME
+          && refEpoch != CommonTime::END_OF_TIME)
+      {
+         referenceTimeEpoch = refEpoch;
+         referenceTimeEpochValid = true;
+      }
    }
 }

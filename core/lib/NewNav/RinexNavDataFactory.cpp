@@ -62,6 +62,7 @@
 #include "RinexTimeOffset.hpp"
 #include "TimeString.hpp"
 #include "NavDataFactoryStoreCallback.hpp"
+#include "BasicTimeSystemConverter.hpp"
 
 using namespace std;
 
@@ -332,6 +333,7 @@ namespace gnsstk
       BDSD1NavEph *bdsD1Nav;
       BDSD2NavEph *bdsD2Nav;
       GLOFNavEph *glo;
+      BasicTimeSystemConverter btsc;   // Needed for GLONASS.  Must be initialized outside case statement (for some reason)
       switch (navIn.sat.system)
       {
          case SatelliteSystem::GPS:
@@ -581,7 +583,10 @@ namespace gnsstk
             glo->aod = navIn.ageOfInfo;
                //glo->accIndex not in RINEX
                //glo->dayCount not in RINEX
+               // Oonce again, RINEX 3.04 Section 8.3.1 specifies the time
+               // tags are in UTC and not GLO.  Therefore, we need to adjust.
             glo->Toe = navIn.time;
+            glo->Toe.changeTimeSystem(TimeSystem::GLO,&btsc);
                //glo->step is algorithm configuration
             glo->fixFit();
             break;
@@ -1114,6 +1119,7 @@ namespace gnsstk
    void RinexNavDataFactory ::
    fillNavData(const Rinex3NavData& navIn, NavDataPtr& navOut)
    {
+      BasicTimeSystemConverter btsc; // Used by GLONASS option
       switch (navIn.sat.system)
       {
          case SatelliteSystem::GPS:
@@ -1198,6 +1204,11 @@ namespace gnsstk
             unsigned tkSOD = navIn.MFtime % 86400;
             tmp.sod = tkSOD;
             navOut->timeStamp = tmp;
+               // RINEX 3.04 Section 8.3.1 specifies that the GLONASS
+               // data is tagged in UTC, not GLONASS time.  Therefore,
+               // we convert the time tag to GLONASS time.
+            navOut->timeStamp.changeTimeSystem(TimeSystem::GLO,&btsc);
+            
                // sat and xmitSat are always the same for ephemeris
             navOut->signal.sat = navIn.sat;
             navOut->signal.xmitSat = navIn.sat;

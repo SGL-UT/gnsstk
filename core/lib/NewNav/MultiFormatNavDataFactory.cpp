@@ -39,6 +39,8 @@
 #include "MultiFormatNavDataFactory.hpp"
 #include "BasicTimeSystemConverter.hpp"
 #include "NDFUniqConstIterator.hpp"
+#include "NDFUniqIterator.hpp"
+#include "NavDataFactory.hpp"
 
 namespace gnsstk
 {
@@ -54,6 +56,14 @@ namespace gnsstk
       }
    }
 
+   MultiFormatNavDataFactory ::
+   MultiFormatNavDataFactory(const CommonTime& refEpoch) : MultiFormatNavDataFactory()
+   {
+      for (auto& fi : NDFUniqIterator<NavDataFactoryMap>(*myFactories))
+      {
+         fi.second->setRefEpoch(refEpoch);
+      }      
+   }
 
    MultiFormatNavDataFactory ::
    ~MultiFormatNavDataFactory()
@@ -499,6 +509,14 @@ namespace gnsstk
       {
          fi.second->setControl(ctrl);
       }
+   }
+
+
+   void MultiFormatNavDataFactory ::
+   setRefEpoch(const CommonTime &refEpoch)
+   {
+      throw std::runtime_error("MultiFormatNavDataFactory::setRefEpoch method cannot be called"
+         "Pass 'reference epoch' in the MultiFormatNavDataFactory constructor");
    }
 
 

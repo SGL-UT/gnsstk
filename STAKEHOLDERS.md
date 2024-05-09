@@ -1,0 +1,1 @@
+See the GNSSTK_STAKEHOLDERS.md located in the `sgl-tks/toolkit_docs` repository's `user_documentation/` directory.

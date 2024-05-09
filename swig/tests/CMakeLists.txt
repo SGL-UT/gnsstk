@@ -280,3 +280,9 @@ add_test(NAME swig_test_NavDataFactoryCallback
   WORKING_DIRECTORY ${td}
   )
 prep_swig_test(swig_test_NavDataFactoryCallback swig)
+
+add_test(NAME swig_test_exceptions
+    COMMAND ${PYTHON_EXECUTABLE} ${tp}/test_exceptions.py -i ${GNSSTK_TEST_DATA_DIR}
+    WORKING_DIRECTORY ${td}
+    )
+prep_swig_test(swig_test_exceptions swig)

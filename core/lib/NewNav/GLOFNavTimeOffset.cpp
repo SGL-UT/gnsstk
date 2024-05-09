@@ -36,8 +36,10 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#include "CivilTime.hpp"
 #include "GLOFNavTimeOffset.hpp"
 #include "GPSWeekSecond.hpp"
+#include "TimeSystem.hpp"
 
 using namespace std;
 
@@ -55,6 +57,34 @@ namespace gnsstk
       weekFmt = "";
    }
 
+
+   bool GLOFNavTimeOffset ::
+   getOffset(TimeSystem fromSys, TimeSystem toSys,
+             const CommonTime& when, double& offset) const
+   {
+      bool result = StdNavTimeOffset::getOffset(fromSys, toSys, when, offset);
+
+      if (!result)
+      {
+         return result;
+      }
+
+      // GLO is 3h in advance of UTC. 
+      // StdNavTimeOffset does not account for this bulk offset.
+      CivilTime civilWhen{when};
+      double offsetUTC = getTimeSystemCorrection(TimeSystem::GLO, 
+                                                 TimeSystem::UTC,
+                                                 civilWhen.year, 
+                                                 civilWhen.month, 
+                                                 civilWhen.day);
+      if (fromSys == tgt)
+      {
+         offsetUTC = -offsetUTC;
+      }
+      offset += offsetUTC;
+
+      return result;
+   }
 
    bool GLOFNavTimeOffset ::
    validate() const

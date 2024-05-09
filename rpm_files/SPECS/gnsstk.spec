@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 14.3.0
+%define version 14.4.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu May 09 2024 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v14.4.0 release
+- Add reference epoch support in constructor of `MultiFormatNavDataFactory` and `SEMNavDataFactory`
+- Fix intermittent test failure when using BasicTimeSystemConverter::getOffset
+- Add C++ exception support to Geomatics.
+- Update allow windows dll pipeline test job to fail so it doesn't short circuit the entire toolkit build chain.
+- Fix _NBGLOFNavDataFactory Correct Reference Times
+- Add STAKEHOLDERS document with stakeholder information
 * Mon Dec 18 2023 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v14.3.0 release
 - Add tests for sem and al3 files.

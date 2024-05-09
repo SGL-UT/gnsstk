@@ -1,3 +1,18 @@
+gnsstk (14.4.0-1) focal; urgency=low
+
+  * Updated to version 14.4.0
+  * Add STAKEHOLDERS document with stakeholder information
+  * Fix NBGLOFNavDataFactory Correct Reference Times
+  * Update allow windows dll pipeline test job to fail so it doesn't
+    short circuit the entire toolkit build chain.
+  * Add C++ exception support to Geomatics.
+  * Fix intermittent test failure when using
+    BasicTimeSystemConverter::getOffset
+  * Add reference epoch support in constructor of
+    `MultiFormatNavDataFactory` and `SEMNavDataFactory`
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 09 May 2024 09:02:09 -0500
+
 gnsstk (14.3.0-1) focal; urgency=low
 
   * Updated to version 14.3.0

@@ -99,8 +99,8 @@ public:
          //Check conversion from any given time system to UTC and back
       TUASSERTFE(6, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::GPS, 1990, 11, 6));
       TUASSERTFE(-13, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::GPS, gnsstk::TimeSystem::UTC, 2004, 11, 16));
-      TUASSERTFE(0, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::GLO, 1992, 10, 3));
-      TUASSERTFE(0, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::GLO, gnsstk::TimeSystem::UTC, 1995, 5, 10));
+      TUASSERTFE(10800, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::GLO, 1992, 10, 3));
+      TUASSERTFE(-10800, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::GLO, gnsstk::TimeSystem::UTC, 1995, 5, 10));
       TUASSERTFE(12, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::GAL, 1997, 7, 25));
       TUASSERTFE(-14, gnsstk::getTimeSystemCorrection(gnsstk::TimeSystem::GAL, gnsstk::TimeSystem::UTC, 2008, 6, 5));
 

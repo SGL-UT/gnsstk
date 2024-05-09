@@ -49,6 +49,8 @@
 #include "YDSTime.hpp"
 #include "TimeString.hpp"
 
+#include <iostream>  //debug
+
 using namespace std;
 
 /// GLONASS doesn't transmit iono data, so make up a class for FactoryCounter
@@ -341,12 +343,12 @@ processEphTest()
                              gnsstk::TrackingCode::Standard,
                              gnsstk::NavType::GloCivilF),
       gnsstk::NavMessageType::Ephemeris);
-   gnsstk::CommonTime toeExp = gnsstk::CivilTime(2015,6,27,0,45,0,
+   gnsstk::CommonTime toeExp = gnsstk::CivilTime(2015,6,27,3,45,0,
                                                  gnsstk::TimeSystem::GLO);
    gnsstk::CommonTime refExp = gnsstk::CivilTime(2015,6,27,3,40,0,
                                                  gnsstk::TimeSystem::GLO);
-   gnsstk::CommonTime beginExp = navFNAVGLOStr1ct;
-   gnsstk::CommonTime endExp = toeExp + 31.0*30.0;
+   gnsstk::CommonTime beginExp = toeExp - 930.0;
+   gnsstk::CommonTime endExp = toeExp + 930.0;
    gnsstk::NavDataPtrList navOut;
    gnsstk::GLOFNavEph *eph;
    gnsstk::GLOFNavHealth *hea;
@@ -396,8 +398,8 @@ processEphTest()
          TUASSERTE(unsigned, 1, eph->slot);
          TUASSERTE(bool, false, eph->lhealth);
          TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Healthy, eph->health);
-         TUASSERTE(gnsstk::CommonTime, beginExp, eph->beginFit);
-         TUASSERTE(gnsstk::CommonTime, endExp, eph->endFit);
+         TUASSERTE(gnsstk::CommonTime, navFNAVGLOStr5ct, eph->beginFit);
+         TUASSERTE(gnsstk::CommonTime, gnsstk::CommonTime::END_OF_TIME, eph->endFit);  // interval == 0
             // GLOFNavEph fields
          TUASSERTE(gnsstk::CommonTime, refExp, eph->ref);
          TUASSERTE(gnsstk::CommonTime, navFNAVGLOStr3ct, eph->xmit3);
@@ -522,6 +524,13 @@ processAlmTest()
          TUASSERTE(gnsstk::SVHealth, gnsstk::SVHealth::Healthy, alm->health);
          TUASSERTE(gnsstk::CommonTime, beginExp, alm->beginFit);
          TUASSERTE(gnsstk::CommonTime, endExp, alm->endFit);
+         
+         std::string tform("%02m/%02d/%04Y %02H:%02M:%02S %P");
+         std::cout << "beginExp :" << printTime(beginExp,tform) << std::endl;
+         std::cout << "beginFit :" << printTime(alm->beginFit,tform) << std::endl;
+         std::cout << "endExp :" << printTime(endExp,tform) << std::endl;
+         std::cout << "endFit :" << printTime(alm->endFit,tform) << std::endl;
+         
             // GLOFNavAlm
          TUASSERTE(gnsstk::CommonTime, toaExp, alm->Toa);
          TUASSERTE(bool, true, alm->healthBits);

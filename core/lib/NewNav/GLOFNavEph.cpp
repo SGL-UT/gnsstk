@@ -66,14 +66,12 @@ namespace gnsstk
       msgLenSec = 8.0;
    }
 
-
    bool GLOFNavEph ::
    validate() const
    {
          /// @todo implement some checking.
       return true;
    }
-
 
    bool GLOFNavEph ::
    getXvt(const CommonTime& when, Xvt& xvt, const ObsID& oid)
@@ -162,17 +160,19 @@ namespace gnsstk
       xvt.v[1] = initialState(3);
       xvt.v[2] = initialState(5);
          // In the GLONASS system, 'clkbias' already includes the relativistic
-         // correction, therefore we must substract the late from the former.
+         // correction, therefore we must substract the latter from the former.
       xvt.relcorr = xvt.computeRelativityCorrection();
-            // Added negation here to match the SP3 sign
-      xvt.clkbias = -(clkBias + freqBias * (when - Toe) - xvt.relcorr);
+            // Added negation to clkBias here to match the SP3 sign
+      xvt.clkbias = -clkBias + freqBias * (when - Toe) - xvt.relcorr;
       xvt.clkdrift = freqBias;
       xvt.frame = RefFrame(RefFrameSys::PZ90, when);
       xvt.health = toXvtHealth(health);
       return true;
    }
 
-
+   //
+   // This is problematic until the vub files are fixed to have
+   // GLONASS time tags. 
    CommonTime GLOFNavEph ::
    getUserTime() const
    {
@@ -181,16 +181,41 @@ namespace gnsstk
    }
 
 
+   // The ICD does not specify the fit interval.  However, the interval
+   // between epochs (in minutes) is defined by P1.  
+   // Therefore, the beginning of fit is set to the later of 
+   //   1.) Toe - 1/2 interval or 
+   //   2.) Earliest time data were available to the user.
+   //  The end of fit is set to epoch time + 1/2 the interval.  We've added 30s to that
+   // interval to allow for collection/processing of the next data set. 
+   //
+   // The exception is when the iterval is set to 0.  I assume this means
+   // "Use this CEI data set until the next one becaomes available."  That's 
+   // risky in that the prediction will diverge over time, but we'll set the
+   // end-of-fit to END_OF_TIME and trust the operators will act in their
+   // own best interest.
    void GLOFNavEph ::
    fixFit()
-   {
-      beginFit = timeStamp;
-         // See PNBGLOFNavDataFactory::processEph for more info
-      unsigned kludge = (interval > 0 ? interval : 30);
-         // half the interval in seconds = interval*60/2 = interval*30
-      endFit = Toe + (kludge*30.0 + 30.0);
+   {    
+      if (interval==0)
+      {
+         beginFit = getUserTime();
+         endFit = CommonTime::END_OF_TIME; 
+      }
+      else
+      {         
+         double halfFit = (interval * 60.0) / 2.0 + 30.0; 
+         beginFit = Toe - halfFit;
+         if (getUserTime()>beginFit)
+         {
+            beginFit = getUserTime();
+         }
+         // Add two minutes to the end-of-fit to allow for time 
+         // to collect next data set.  That is four frames, that
+         // is to say, four repetitions of the CEI data. 
+         endFit   = Toe + halfFit + 120.0;
+      }
    }
-
 
    void GLOFNavEph ::
    dump(std::ostream& s, DumpDetail dl) const

@@ -111,7 +111,10 @@ namespace gnsstk
       week = (short) asInt(values[0]);
       Toa = asInt(values[1]);
 
-      if (nearFullWeek > 0)
+      if (referenceEpochInWeeks > 0) {
+         week += referenceEpochInWeeks;
+      }
+      else if (nearFullWeek > 0)
       {
             // In case a full week is provided.
          week %= 1024;

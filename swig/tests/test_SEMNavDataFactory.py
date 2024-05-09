@@ -10,10 +10,12 @@ ws =  gnsstk.GPSWeekSecond(387, 589824, gnsstk.TimeSystem.GPS)
 toa = ws.toCommonTime()
 ti = toa - 70*3600
 tf = toa + 74*3600
+epoch = gnsstk.GPSWeekSecond(0, 0, gnsstk.TimeSystem.GPS).toCommonTime()
 
 class TestSEMNavDataFactory(unittest.TestCase):
-    def test_addDataSource(self):
+    def test_addDataSource_InternalUseOOfSetRefEpoch(self):
         ndf = gnsstk.SEMNavDataFactory()
+        ndf.setRefEpoch(epoch)
         self.assertTrue(ndf.addDataSource(args.input_dir+'/test_input_sem387.txt'))
         self.assertEqual(60, ndf.size())
         ndf.clear()
@@ -22,7 +24,7 @@ class TestSEMNavDataFactory(unittest.TestCase):
 
     def test_times(self):
         eph = gnsstk.NavLibrary()
-        ndf = gnsstk.SEMNavDataFactory()
+        ndf = gnsstk.SEMNavDataFactory(epoch)
         eph.addFactory(ndf)
         self.assertTrue(ndf.addDataSource(args.input_dir+'/test_input_sem387.txt'))
 
@@ -31,7 +33,7 @@ class TestSEMNavDataFactory(unittest.TestCase):
 
     def test_isPresent(self):
         eph = gnsstk.NavLibrary()
-        ndf = gnsstk.SEMNavDataFactory()
+        ndf = gnsstk.SEMNavDataFactory(epoch)
         eph.addFactory(ndf)
         self.assertTrue(ndf.addDataSource(args.input_dir+'/test_input_sem387.txt'))
 
@@ -43,7 +45,7 @@ class TestSEMNavDataFactory(unittest.TestCase):
 
     def test_getxvt(self):
         eph = gnsstk.NavLibrary()
-        ndf = gnsstk.SEMNavDataFactory()
+        ndf = gnsstk.SEMNavDataFactory(epoch)
         eph.addFactory(ndf)
         self.assertTrue(ndf.addDataSource(args.input_dir+'/test_input_sem387.txt'))
 
@@ -67,7 +69,7 @@ class TestSEMNavDataFactory(unittest.TestCase):
         ti = toa - 70*3600
 
         eph = gnsstk.NavLibrary()
-        ndf = gnsstk.SEMNavDataFactory()
+        ndf = gnsstk.SEMNavDataFactory(epoch)
         eph.addFactory(ndf)
         self.assertTrue(ndf.addDataSource(args.input_dir+'/test_input_sem387.txt'))
 

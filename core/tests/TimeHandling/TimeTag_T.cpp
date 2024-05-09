@@ -376,11 +376,11 @@ changeTimeSystemTest()
    TUASSERTE(gnsstk::CommonTime, uut, exp);
 
    uut = gnsstk::CivilTime(1992,10,3,0,0,0,gnsstk::TimeSystem::UTC);
-   exp = gnsstk::CivilTime(1992,10,3,0,0,0,gnsstk::TimeSystem::GLO);
+   exp = gnsstk::CivilTime(1992,10,3,3,0,0,gnsstk::TimeSystem::GLO);
    TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO,btsc));
    TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   uut = gnsstk::CivilTime(1995,5,10,3,0,0,gnsstk::TimeSystem::GLO);
    exp = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::UTC);
    TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::UTC,btsc));
    TUASSERTE(gnsstk::CommonTime, uut, exp);
@@ -391,7 +391,7 @@ changeTimeSystemTest()
    TUASSERTE(gnsstk::CommonTime, uut, exp);
 
    uut = gnsstk::CivilTime(2020,1,1,0,0,0,gnsstk::TimeSystem::GPS);
-   exp = gnsstk::CivilTime(2019,12,31,23,59,42,gnsstk::TimeSystem::GLO);
+   exp = gnsstk::CivilTime(2020,1,1,2,59,42,gnsstk::TimeSystem::GLO);
    TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO,btsc));
    TUASSERTE(gnsstk::CommonTime, uut, exp);
 
@@ -408,11 +408,11 @@ changeTimeSystemTest()
    TUASSERTE(gnsstk::CommonTime, uut, exp);
 
    uut = gnsstk::CivilTime(1992,10,3,0,0,0,gnsstk::TimeSystem::UTC);
-   exp = gnsstk::CivilTime(1992,10,3,0,0,0,gnsstk::TimeSystem::GLO);
+   exp = gnsstk::CivilTime(1992,10,3,3,0,0,gnsstk::TimeSystem::GLO);
    TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO));
    TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-   uut = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::GLO);
+   uut = gnsstk::CivilTime(1995,5,10,3,0,0,gnsstk::TimeSystem::GLO);
    exp = gnsstk::CivilTime(1995,5,10,0,0,0,gnsstk::TimeSystem::UTC);
    TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::UTC));
    TUASSERTE(gnsstk::CommonTime, uut, exp);
@@ -423,7 +423,7 @@ changeTimeSystemTest()
    TUASSERTE(gnsstk::CommonTime, uut, exp);
 
    uut = gnsstk::CivilTime(2020,1,1,0,0,0,gnsstk::TimeSystem::GPS);
-   exp = gnsstk::CivilTime(2019,12,31,23,59,42,gnsstk::TimeSystem::GLO);
+   exp = gnsstk::CivilTime(2020,1,1,2,59,42,gnsstk::TimeSystem::GLO);
    TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO));
    TUASSERTE(gnsstk::CommonTime, uut, exp);
 

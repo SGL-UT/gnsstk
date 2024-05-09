@@ -157,11 +157,11 @@ getXvtTest()
    exp2.v[0] = -490.60674449595484248;
    exp2.v[1] = 458.15034225547964297;
    exp2.v[2] = 3496.5690971077401628;
-   exp2.clkbias = -5.0644406829568993625e-05;
+   exp2.clkbias = -5.0663000192031008146e-05;
    exp2.clkdrift = 1.8189894035500000529e-12;
    exp2.relcorr = 9.8532919671748554905e-09;
       // m_day=2454010, m_msod=900000, GLO
-   uut.Toe = gnsstk::CivilTime(2006, 10, 1, 0, 15, 0, gnsstk::TimeSystem::GLO);
+   uut.Toe = gnsstk::CivilTime(2006, 10, 1, 3, 15, 0, gnsstk::TimeSystem::GLO);
    TUASSERTE(bool, true, uut.getXvt(uut.Toe, xvt));
    TUASSERTE(gnsstk::Xvt::HealthStatus,
              gnsstk::Xvt::HealthStatus::Healthy, xvt.health);
@@ -196,11 +196,11 @@ getUserTimeTest()
 {
    TUDEF("GLOFNavEph", "getUserTime()");
    gnsstk::GLOFNavEph uut;
-   uut.timeStamp = gnsstk::CivilTime(2021,5,19,0,1,13,gnsstk::TimeSystem::GLO);
-   uut.xmit2 = gnsstk::CivilTime(2021,5,19,0,1,19,gnsstk::TimeSystem::GLO);
-   uut.xmit3 = gnsstk::CivilTime(2021,5,19,0,1,15,gnsstk::TimeSystem::GLO);
-   uut.xmit4 = gnsstk::CivilTime(2021,5,19,0,1,17,gnsstk::TimeSystem::GLO);
-   gnsstk::CommonTime exp(gnsstk::CivilTime(2021,5,19,0,1,21,
+   uut.timeStamp = gnsstk::CivilTime(2021,5,19,3,1,13,gnsstk::TimeSystem::GLO);
+   uut.xmit2 = gnsstk::CivilTime(2021,5,19,3,1,19,gnsstk::TimeSystem::GLO);
+   uut.xmit3 = gnsstk::CivilTime(2021,5,19,3,1,15,gnsstk::TimeSystem::GLO);
+   uut.xmit4 = gnsstk::CivilTime(2021,5,19,3,1,17,gnsstk::TimeSystem::GLO);
+   gnsstk::CommonTime exp(gnsstk::CivilTime(2021,5,19,3,1,21,
                                             gnsstk::TimeSystem::GLO));
    TUASSERTE(gnsstk::CommonTime, exp, uut.getUserTime());
    TURETURN();
@@ -214,13 +214,19 @@ fixFitTest()
    gnsstk::GLOFNavEph uut;
       // test each of the possible interval values (0, 30, 45, 60)
    gnsstk::CommonTime
-      bexp(gnsstk::CivilTime(2021,5,19,0,1,13,gnsstk::TimeSystem::GLO)),
-      eexp0(gnsstk::CivilTime(2021,5,19,0,45,30,gnsstk::TimeSystem::GLO)),
-      eexp30(gnsstk::CivilTime(2021,5,19,0,45,30,gnsstk::TimeSystem::GLO)),
-      eexp45(gnsstk::CivilTime(2021,5,19,0,53,0,gnsstk::TimeSystem::GLO)),
-      eexp60(gnsstk::CivilTime(2021,5,19,1,0,30,gnsstk::TimeSystem::GLO));
-   uut.timeStamp = gnsstk::CivilTime(2021,5,19,0,1,13,gnsstk::TimeSystem::GLO);
-   uut.Toe = gnsstk::CivilTime(2021,5,19,0,30,0,gnsstk::TimeSystem::GLO);
+      bexp(gnsstk::CivilTime(2021,5,19,3,0,8,gnsstk::TimeSystem::GLO)),      // Based on getUserTime() data provided below
+      eexp0(gnsstk::CommonTime::END_OF_TIME),
+      eexp30(gnsstk::CivilTime(2021,5,19,3,32,30,gnsstk::TimeSystem::GLO)),
+      eexp45(gnsstk::CivilTime(2021,5,19,3,40,0,gnsstk::TimeSystem::GLO)),
+      eexp60(gnsstk::CivilTime(2021,5,19,3,47,30,gnsstk::TimeSystem::GLO));
+      
+   // Set up for getUserTime()
+   uut.timeStamp = gnsstk::CivilTime(2021,5,19,3,0,0,gnsstk::TimeSystem::GLO);
+   uut.xmit2 = gnsstk::CivilTime(2021,5,19,3,0,2,gnsstk::TimeSystem::GLO);
+   uut.xmit3 = gnsstk::CivilTime(2021,5,19,3,0,4,gnsstk::TimeSystem::GLO);
+   uut.xmit4 = gnsstk::CivilTime(2021,5,19,3,0,6,gnsstk::TimeSystem::GLO);
+
+   uut.Toe = gnsstk::CivilTime(2021,5,19,3,15,0,gnsstk::TimeSystem::GLO);
    uut.interval = 0;
    TUCATCH(uut.fixFit());
    TUASSERTE(gnsstk::CommonTime, bexp, uut.beginFit);

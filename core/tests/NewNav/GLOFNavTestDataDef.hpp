@@ -42,14 +42,14 @@
 oidFNAVGLO = gnsstk::ObsID(gnsstk::ObservationType::NavMsg,
                            gnsstk::CarrierBand::G1,
                            gnsstk::TrackingCode::Standard);
-navFNAVGLOStr1ct = gnsstk::CivilTime(2015,6,27,0,40,0,gnsstk::TimeSystem::GLO);
-navFNAVGLOStr2ct = gnsstk::CivilTime(2015,6,27,0,40,2,gnsstk::TimeSystem::GLO);
-navFNAVGLOStr3ct = gnsstk::CivilTime(2015,6,27,0,40,4,gnsstk::TimeSystem::GLO);
-navFNAVGLOStr4ct = gnsstk::CivilTime(2015,6,27,0,40,6,gnsstk::TimeSystem::GLO);
-navFNAVGLOStr5ct = gnsstk::CivilTime(2015,6,27,0,40,8,gnsstk::TimeSystem::GLO);
-navFNAVGLOStr6ct = gnsstk::CivilTime(2015,6,27,0,40,10,gnsstk::TimeSystem::GLO);
-navFNAVGLOStr7ct = gnsstk::CivilTime(2015,6,27,0,40,12,gnsstk::TimeSystem::GLO);
-navFNAVGLOStr14ct = gnsstk::CivilTime(2015,6,27,1,2,26,gnsstk::TimeSystem::GLO);
+navFNAVGLOStr1ct = gnsstk::CivilTime(2015,6,27,3,40,0,gnsstk::TimeSystem::GLO);
+navFNAVGLOStr2ct = gnsstk::CivilTime(2015,6,27,3,40,2,gnsstk::TimeSystem::GLO);
+navFNAVGLOStr3ct = gnsstk::CivilTime(2015,6,27,3,40,4,gnsstk::TimeSystem::GLO);
+navFNAVGLOStr4ct = gnsstk::CivilTime(2015,6,27,3,40,6,gnsstk::TimeSystem::GLO);
+navFNAVGLOStr5ct = gnsstk::CivilTime(2015,6,27,3,40,8,gnsstk::TimeSystem::GLO);
+navFNAVGLOStr6ct = gnsstk::CivilTime(2015,6,27,3,40,10,gnsstk::TimeSystem::GLO);
+navFNAVGLOStr7ct = gnsstk::CivilTime(2015,6,27,3,40,12,gnsstk::TimeSystem::GLO);
+navFNAVGLOStr14ct = gnsstk::CivilTime(2015,6,27,4,2,26,gnsstk::TimeSystem::GLO);
 navFNAVGLOSid = gnsstk::SatID(1,gnsstk::SatelliteSystem::Glonass);
 
 navFNAVGLOStr1 = std::make_shared<gnsstk::PackedNavBits>(navFNAVGLOSid,
