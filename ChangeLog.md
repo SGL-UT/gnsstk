@@ -1,3 +1,29 @@
+# Version 14.4.0   Thursday May 09, 2024
+
+Modifications by Author
+-----------------------
+     Brent Renfro <renfrob@arlut.utexas.edu> (1):
+           Correct GLONASS Reference Times in NewNav
+
+     David Barber <dbarber@arlut.utexas.edu> (1):
+           Temporarily allow windows dll unit tests jobs to fail for swig
+
+     Kyle Herrity <kherrity@arlut.utexas.edu> (1):
+           Add Exception support to Geomatics module
+
+     Sankara Muthukrishnan <sankara.m@arlut.utexas.edu> (2):
+           Initialize fields before using
+           Add reference epoch support for MultiFormatNavDataFactory and SEMNavDataFactory
+
+     bbauer <bbauer@arlut.utexas.edu> (5):
+           First rough stakeholders doc
+           Update codeowners, stakeholders
+           move things around
+           Remove some stakeholders to not trip the blacklist
+           Change the STAKEHOLDERS doc to redirect to the GNSSTK_STAKEHOLDERS in docs repo
+
+
+
 # Version 14.3.0   Monday December 18, 2023
 
 Modifications by Author

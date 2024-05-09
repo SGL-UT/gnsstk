@@ -1,36 +1,29 @@
-GNSSTk 14.3.0 Release Notes
+GNSSTk 14.4.0 Release Notes
 ========================
 
  * This release includes the following:
-   * Adding the ability for SP3NavDataFactory to initialize OrbitDataSP3 fields to NaN or whatever.
-   * Adding Galileo I/NAV page pair parsing to PNB factory.
-   * Adding addBitVec method to PackedNavBits to allow easy packing of an array of 0/1 ints.
+   * Adding reference epoch support in constructor of `MultiFormatNavDataFactory` and `SEMNavDataFactory`
+   * Adding C++ exception support to Geomatics.
  * Additionally, it contains several bug fixes and build system updates.
 
-Updates since v14.2.0
+Updates since v14.3.0
 ---------------------
 
 **Build System and Test Suite**
-  * Add tests for sem and al3 files (See New Modules below).
-  * Update gnsstk_enable.sh to be POSIX compliant for wider support.
-  * Update Removing special c++17 packages as they are no longer needed.
+  * Fix intermittent test failure when using BasicTimeSystemConverter::getOffset
 
 **Gitlab CI**
-  * Update codeowners file to replace contributors that left
+  * Update allow windows dll pipeline test job to fail so it doesn't short circuit the entire toolkit build chain.
 
 **Library Changes**
-  * Add the ability for SP3NavDataFactory to initialize OrbitDataSP3 fields to NaN or whatever
-  * Add Galileo I/NAV page pair parsing to PNB factory.
-  * Add addBitVec method to PackedNavBits to allow easy packing of an array of 0/1 ints.
+  * Add C++ exception support to Geomatics.
+  * Add reference epoch support in constructor of `MultiFormatNavDataFactory` and `SEMNavDataFactory`
 
-Fixes since v14.2.0
+Fixes since v14.3.0
 --------------------
-  * Fix bug in PackedNavBits.addDataVec that would drop the last byte of data.
-  * Fix PNBGPSCNavDataFactory.cpp Fix weekrollover problem.
-  * Fix PackedNavBits segfaulting when add more bits beyond its initial capacity.
-  * Removed c++17 features due to segfaults.
+  * Fix NBGLOFNavDataFactory Correct Reference Times
+  * Add STAKEHOLDERS document with stakeholder information
 
 New Modules
 -------------------------------
-     core/tests/NewNav/NavLibrarySEM_T.cpp
-     core/tests/NewNav/NavLibraryYuma_T.cpp
+     swig/tests/test_exceptions.py
