@@ -432,6 +432,13 @@ class Expression_test(unittest.TestCase):
         self.assertAlmostEqual(12.0, gnsstk.eval(e, x=5.5))
 
 
+class SatTimeSystem_test(unittest.TestCase):
+
+    def test_satTimeSystem(self):
+        time_sys = gnsstk.satTimeSystem(gnsstk.SatelliteSystem.Galileo)
+        self.assertEqual(time_sys, gnsstk.TimeSystem.GAL)
+
+
 
 if __name__ == '__main__':
     run_unit_tests()

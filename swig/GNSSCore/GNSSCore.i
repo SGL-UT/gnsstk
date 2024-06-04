@@ -61,12 +61,15 @@ ENUM_MAPPER(gnsstk::TrackingCode, TrackingCode, "gnsstk")
 ENUM_MAPPER(gnsstk::ObservationType, ObservationType, "gnsstk")
 ENUM_MAPPER(gnsstk::CorrectorType, CorrectorType, "gnsstk")
 ENUM_MAPPER(gnsstk::CorrDupHandling, CorrDupHandling, "gnsstk")
+// TimeSystem wrapping happens in RefTime.i
+// Not sure why importing TimeSystem.hpp does not also include the enum mapping
+ENUM_MAPPER(gnsstk::TimeSystem, TimeSystem, "gnsstk")
 
  // needs to be before RefFrameRlz.hpp at the very least.
 %import "CommonTime.hpp"
+%import "TimeSystem.hpp"
 
 %include "SatelliteSystem.hpp"
-%include "SatTimeSystem.hpp"
 %include "CarrierBand.hpp"
 %include "TrackingCode.hpp"
 %include "ObservationType.hpp"
@@ -149,6 +152,7 @@ ENUM_MAPPER(gnsstk::CorrDupHandling, CorrDupHandling, "gnsstk")
 %import "Vector.hpp"
 %import "Matrix.hpp"
 %import "MetReader.hpp"
+%import "TimeSystem.hpp"
 
 %include "AngleType.hpp"
 %include "AngleReduced.hpp"
@@ -164,6 +168,7 @@ ENUM_MAPPER(gnsstk::CorrDupHandling, CorrDupHandling, "gnsstk")
 %include "gps_constants.hpp"
 %include "SatelliteSystem.hpp"
 %template(std_vector_GNSS)       std::vector<gnsstk::SatelliteSystem>;
+%include "SatTimeSystem.hpp"
 %include "SatID.i"
 %template(std_vector_SatID)      std::vector<gnsstk::SatID>;
 %include "FreqConsts.hpp"
