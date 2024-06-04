@@ -494,6 +494,11 @@ target_link_libraries(SEMNavDataFactory_T gnsstk)
 add_test(NAME SEMNavDataFactory_T COMMAND $<TARGET_FILE:SEMNavDataFactory_T>)
 set_property(TEST SEMNavDataFactory_T PROPERTY LABELS NewNav)
 
+add_executable(SEMHeader_T SEMHeader_T.cpp)
+target_link_libraries(SEMHeader_T gnsstk)
+add_test(NAME SEMHeader_T COMMAND $<TARGET_FILE:SEMHeader_T>)
+set_property(TEST SEMHeader_T PROPERTY LABELS NewNav)
+
 add_executable(NewNavToRinex_T NewNavToRinex_T.cpp)
 target_link_libraries(NewNavToRinex_T gnsstk)
 add_test(NAME NewNavToRinex_no_files
