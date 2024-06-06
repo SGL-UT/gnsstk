@@ -354,7 +354,7 @@ build_debian_11_virtualenv:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/tks/centos-conda:python-3.6
+  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
   script:
@@ -391,33 +391,6 @@ build_conda_py3.9:
   variables:
     PYTHON_VERSION: "3.9"
   extends: .build_conda
-
-# sonar_conda_py36:
-#   stage: build
-#   needs: []
-#   extends:
-#    - .normal_build
-#    - .sonarqube-check
-#   tags:
-#     - docker
-#   image: $DOCKER_REGISTRY/tks/centos-conda:python-3.6
-#   script:
-#     - source /opt/miniconda/etc/profile.d/conda.sh
-#     - conda activate py36
-#     - conda install -y cmake=3.22.1 nodejs
-#     - mkdir -p build coverage-reports
-#     - cd build
-#     - export gnsstk=`pwd`/install
-#     - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
-#     - build-wrapper-linux-x86-64 --out-dir . make all -j 4
-#     - ctest -j 4 --output-junit $CI_PROJECT_DIR/coverage-reports/coverage-cpp.xml
-#     - cd ..
-#     - !reference [.scan-c++, script]
-#   artifacts:
-#     paths:
-#       - build/
-#   # Allow failures in case sonarqube is not available
-#   allow_failure: true
 
 sonar-scan:
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
@@ -460,7 +433,7 @@ build_redhat_8:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - mkdir -p build
     - cd build
@@ -634,7 +607,7 @@ test_debian_11_virtualenv:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/tks/centos-conda:python-3.6
+  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
   script:
@@ -687,7 +660,7 @@ test_redhat_8:
   extends: .normal_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd build
     - ctest -j 4
@@ -870,7 +843,7 @@ user_install_redhat_8:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd build
     - export gnsstk=`pwd`/install
@@ -965,7 +938,7 @@ system_install_redhat_8:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd build
     - export gnsstk=/usr/local
@@ -1095,7 +1068,7 @@ package_conda:
   needs: []
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/tks/centos-conda:python-3.6
+  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
   script:
@@ -1123,7 +1096,7 @@ package_redhat_8:
   needs: []
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - bash rpm_files/setup_dirs.sh
     - git archive --prefix gnsstk-master/ -o rpm_files/SOURCES/gnsstk-master.tar.gz HEAD
@@ -1140,7 +1113,7 @@ package_redhat_8_py36:
   needs: []
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - bash rpm_files/setup_dirs.sh
     - git archive --prefix python3-gnsstk-master/ -o rpm_files/SOURCES/python3-gnsstk-master.tar.gz HEAD
@@ -1274,7 +1247,7 @@ deploy_redhat_8:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd rpm_files/RPMS/x86_64/
     - sudo yum install gnsstk-*.rpm -y
@@ -1289,7 +1262,7 @@ deploy_redhat_py36:
   extends: .big_build
   tags:
     - docker-executor
-  image: $DOCKER_REGISTRY/sgl/centos-8:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd rpm_files/RPMS/x86_64/
     - sudo yum install gnsstk-*.rpm -y
