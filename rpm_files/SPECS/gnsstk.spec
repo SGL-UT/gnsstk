@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 14.4.0
+%define version 14.4.1
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jun 07 2024 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v14.4.1 release
+- Update pipeline to use rhel 8 ubi image instead of deprecated centos 8 appstream
+- Update navdatafactorywithstore_t find tests non breaking refactor
+- Update to handle already disambiguated GPS Week in SEM Almanacs
+- Fix SWIG wrapping of satTimeSystem()
+- Update Codeowners file with additional NewNav reviewer
 * Thu May 09 2024 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v14.4.0 release
 - Add reference epoch support in constructor of `MultiFormatNavDataFactory` and `SEMNavDataFactory`

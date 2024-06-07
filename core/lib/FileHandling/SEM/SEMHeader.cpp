@@ -55,6 +55,39 @@ namespace gnsstk
 {
    short SEMHeader::nearFullWeek = 0;
 
+   namespace detail
+   {
+      int32_t getDisAmbiguatedNearbyWeek(int32_t refEpochInWeeks, int32_t almanacWeek)
+      {
+         // No reference epoch passed. Just return the input almanacWeek.
+         if (refEpochInWeeks <= 0)
+            return almanacWeek;
+
+         // If already disambiguated, don't bother disambiguating. The user made an effort to 
+         // disambiguate using a trusted resource. So, just honor that.
+         // The disamgiguation algorithm can afterall yield something other than the input
+         // almancWeek.
+         if (almanacWeek > GPS_WEEK_PER_EPOCH - 1)
+            return almanacWeek;
+
+         // Algorithm:
+         // Compute the disambiguated GPS week that is closest (nearby) to the input almanacWeek.
+         // Note that the disambiguated GPS week must be centered around both sides of the 
+         // refEpochInWeeks and this modulo arithmetic guarantees that.
+         int32_t moduloWeekDifference = std::remainder(almanacWeek - refEpochInWeeks, GPS_WEEK_PER_EPOCH);
+         almanacWeek = refEpochInWeeks + moduloWeekDifference;
+
+         // As the modulo arithmetic can yield negative numbers for low values of refEpochInWeeks and
+         // negative resolved numbers are meaningless, 
+         // offset by adding GPS_WEEK_PER_EPOCH as a special case. This will give the same value as
+         // input almanacWeek
+         if (almanacWeek < 0)
+            almanacWeek += GPS_WEEK_PER_EPOCH;
+
+         return almanacWeek;
+      }
+   }
+
    void SEMHeader::reallyPutRecord(FFStream& ffs) const
    {
       string line;
@@ -111,19 +144,13 @@ namespace gnsstk
       week = (short) asInt(values[0]);
       Toa = asInt(values[1]);
 
-      if (referenceEpochInWeeks > 0) {
-         week += referenceEpochInWeeks;
+      if (nearReferenceEpochInWeeks > 0) 
+      {
+         week = detail::getDisAmbiguatedNearbyWeek(nearReferenceEpochInWeeks, week);
       }
       else if (nearFullWeek > 0)
       {
-            // In case a full week is provided.
-         week %= 1024;
-         week += (nearFullWeek / 1024) * 1024;
-         short diff = nearFullWeek - week;
-         if (diff > 512)
-            week += 512;
-         else if(diff < -512)
-            week -= 512;
+         week = detail::getDisAmbiguatedNearbyWeek(nearFullWeek, week);
       }
 
       strm.header = *this;

@@ -1,3 +1,22 @@
+# Version 14.4.1   Friday June 07, 2024
+
+Modifications by Author
+-----------------------
+     Benjamin Brutocao <benjamin.brutocao@arlut.utexas.edu> (1):
+           refactoring find tests
+
+     David Barber <dbarber@arlut.utexas.edu> (1):
+           refactor pipeline to use rhel 8 image instead of centos 8
+
+     Sankara Muthukrishnan <sankara.m@arlut.utexas.edu> (1):
+           Handle already disambiguated GPS Week in SEM almanac
+
+     Taben Malik <malik@arlut.utexas.edu> (2):
+           Fix SWIG wrapping of satTimeSystem()
+           NewNav Codeowners
+
+
+
 # Version 14.4.0   Thursday May 09, 2024
 
 Modifications by Author

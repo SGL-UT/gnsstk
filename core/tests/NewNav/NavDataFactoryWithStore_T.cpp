@@ -49,6 +49,15 @@
 // #include "BasicTimeSystemConverter.hpp"
 #include "TimeString.hpp"
 
+using SS = gnsstk::SatelliteSystem;
+using CB = gnsstk::CarrierBand;
+using TC = gnsstk::TrackingCode;
+using NT = gnsstk::NavType;
+using SH = gnsstk::SVHealth;
+using MT = gnsstk::NavMessageType;
+using VT = gnsstk::NavValidityType;
+using SO = gnsstk::NavSearchOrder;
+
 namespace gnsstk
 {
    std::ostream& operator<<(std::ostream& s, gnsstk::SatelliteSystem e)
@@ -165,6 +174,14 @@ public:
    unsigned countTest();
    unsigned getFirstLastTimeTest();
 
+   void MakeAssertions(gnsstk::TestUtil& testFramework,
+                     gnsstk::NavDataPtr result, gnsstk::CommonTime expTime, 
+                     gnsstk::NavMessageType mt, int satID, int xmitSatID,
+                     gnsstk::CarrierBand cb, gnsstk::TrackingCode tc);
+
+   void fillAlmanac(gnsstk::TestUtil& testFramework, TestClass& uut);
+
+
       /// Fill fact with test data
    void fillFactory(gnsstk::TestUtil& testFramework, TestClass& fact);
       /// Fill fact with test data for findXmitHealthTest()
@@ -196,6 +213,25 @@ public:
 
    gnsstk::GPSWeekSecond gws, gws5;
    gnsstk::CommonTime ct, ct5;
+
+   gnsstk::CommonTime refsf1ct = gnsstk::GPSWeekSecond(2101, 0);
+      // between copies 2 and 3, or i==57
+   gnsstk::CommonTime unhealthyStart = gnsstk::GPSWeekSecond(2101, 1710);
+   gnsstk::CommonTime refpg2ct = gnsstk::GPSWeekSecond(2101, 54);
+   gnsstk::CommonTime findTime1 = gnsstk::GPSWeekSecond(2101, 3838);
+   gnsstk::CommonTime findTime2 = gnsstk::GPSWeekSecond(2101, 3000);
+
+   gnsstk::NavMessageID findNMID1a = gnsstk::NavMessageID(gnsstk::NavSatelliteID(2, SS::GPS, CB::L1, TC::CA, NT::GPSLNAV), MT::Almanac);
+   gnsstk::NavMessageID findNMID2a = gnsstk::NavMessageID(gnsstk::NavSatelliteID(2, SS::GPS, CB::Any, TC::Any, NT::Any), MT::Almanac);
+   gnsstk::NavMessageID findNMID3a = gnsstk::NavMessageID(gnsstk::NavSatelliteID(2, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV), MT::Almanac);
+   gnsstk::NavMessageID findNMID4a = gnsstk::NavMessageID(gnsstk::NavSatelliteID(2, 1, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV),MT::Almanac);
+   gnsstk::NavMessageID findNMID5a = gnsstk::NavMessageID(gnsstk::NavSatelliteID(2, 3, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV),MT::Almanac);
+   gnsstk::NavMessageID findNMID1h = gnsstk::NavMessageID(gnsstk::NavSatelliteID(1, SS::GPS, CB::L1, TC::CA, NT::GPSLNAV),MT::Health);
+   gnsstk::NavMessageID findNMID1L1CAe = gnsstk::NavMessageID(gnsstk::NavSatelliteID(1, SS::GPS, CB::L1, TC::CA, NT::GPSLNAV),MT::Ephemeris);
+   gnsstk::NavMessageID findNMID1L2Ye = gnsstk::NavMessageID(gnsstk::NavSatelliteID(1, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV), MT::Ephemeris);
+   gnsstk::NavMessageID findNMID3L1CAe = gnsstk::NavMessageID(gnsstk::NavSatelliteID(3, SS::GPS, CB::L1, TC::CA, NT::GPSLNAV),MT::Ephemeris);
+   gnsstk::NavMessageID findNMID3e = gnsstk::NavMessageID(gnsstk::NavSatelliteID(3, SS::GPS, CB::Any, TC::Any, NT::Any),MT::Ephemeris);
+   gnsstk::NavMessageID findNMID3L2Ye = gnsstk::NavMessageID(gnsstk::NavSatelliteID(3, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV),MT::Ephemeris);
 };
 
 
@@ -428,496 +464,33 @@ findTest()
 }
 
 
-unsigned NavDataFactoryWithStore_T ::
-find2Test()
+void NavDataFactoryWithStore_T :: 
+MakeAssertions(
+   gnsstk::TestUtil& testFramework, gnsstk::NavDataPtr result,
+   gnsstk::CommonTime expTime, gnsstk::NavMessageType mt, int satID, 
+   int xmitSatID, gnsstk::CarrierBand cb, gnsstk::TrackingCode tc) 
 {
-   TUDEF("NavDataFactoryWithStore", "find");
-   TestClass uut;
-   using SS = gnsstk::SatelliteSystem;
-   using CB = gnsstk::CarrierBand;
-   using TC = gnsstk::TrackingCode;
-   using NT = gnsstk::NavType;
-   using SH = gnsstk::SVHealth;
-   using MT = gnsstk::NavMessageType;
-   using VT = gnsstk::NavValidityType;
-   using SO = gnsstk::NavSearchOrder;
-   gnsstk::CommonTime refsf1ct = gnsstk::GPSWeekSecond(2101, 0);
-      // between copies 2 and 3, or i==57
-   gnsstk::CommonTime unhealthyStart = gnsstk::GPSWeekSecond(2101, 1710);
-   gnsstk::CommonTime refpg2ct = gnsstk::GPSWeekSecond(2101, 54);
-   gnsstk::CommonTime findTime1 = gnsstk::GPSWeekSecond(2101, 3838);
-   gnsstk::NavMessageID findNMID1a(
-      gnsstk::NavSatelliteID(2, SS::GPS, CB::L1, TC::CA, NT::GPSLNAV),
-      MT::Almanac);
-   gnsstk::NavMessageID findNMID2a(
-      gnsstk::NavSatelliteID(2, SS::GPS, CB::Any, TC::Any, NT::Any),
-      MT::Almanac);
-   gnsstk::NavMessageID findNMID3a(
-      gnsstk::NavSatelliteID(2, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV),
-      MT::Almanac);
-   gnsstk::NavMessageID findNMID4a(
-      gnsstk::NavSatelliteID(2, 1, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV),
-      MT::Almanac);
-   gnsstk::NavMessageID findNMID5a(
-      gnsstk::NavSatelliteID(2, 3, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV),
-      MT::Almanac);
-   gnsstk::NavMessageID findNMID1h(
-      gnsstk::NavSatelliteID(1, SS::GPS, CB::L1, TC::CA, NT::GPSLNAV),
-      MT::Health);
-   gnsstk::NavMessageID findNMID1L1CAe(
-      gnsstk::NavSatelliteID(1, SS::GPS, CB::L1, TC::CA, NT::GPSLNAV),
-      MT::Ephemeris);
-   gnsstk::NavMessageID findNMID1L2Ye(
-      gnsstk::NavSatelliteID(1, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV),
-      MT::Ephemeris);
-   gnsstk::NavMessageID findNMID3L1CAe(
-      gnsstk::NavSatelliteID(3, SS::GPS, CB::L1, TC::CA, NT::GPSLNAV),
-      MT::Ephemeris);
-   gnsstk::NavMessageID findNMID3e(
-      gnsstk::NavSatelliteID(3, SS::GPS, CB::Any, TC::Any, NT::Any),
-      MT::Ephemeris);
-   gnsstk::NavMessageID findNMID3L2Ye(
-      gnsstk::NavSatelliteID(3, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV),
-      MT::Ephemeris);
-      // fill with "almanac pages"
-   for (unsigned i = 0; i < 10; i++)
-   {
-      addData(testFramework, uut, refpg2ct + (750*i), 2, 1, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Almanac);
-      addData(testFramework, uut, refpg2ct + (750*i), 2, 1, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Almanac);
-      addData(testFramework, uut, refpg2ct + (750*i), 2, 1, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Almanac);
-      addData(testFramework, uut, refpg2ct + (750*i), 2, 3, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Almanac);
-      addData(testFramework, uut, refpg2ct + (750*i), 2, 3, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Almanac);
-      addData(testFramework, uut, refpg2ct + (750*i), 2, 3, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Almanac);
-      addData(testFramework, uut, refpg2ct + (750*i), 2, 4, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Almanac);
-      addData(testFramework, uut, refpg2ct + (750*i), 2, 4, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Almanac);
-      addData(testFramework, uut, refpg2ct + (750*i), 2, 4, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Almanac);
-   }
-   TUASSERTE(size_t, 90, uut.size());
-      // add "ephemeris health"
-   for (unsigned i = 0; i < 228; i++)
-   {
-         // health data
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, (i >= 57 ? SH :: Unhealthy : SH::Healthy),
-              MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, (i >= 57 ? SH :: Unhealthy : SH::Healthy),
-              MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, (i >= 57 ? SH :: Unhealthy : SH::Healthy),
-              MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-         // ephemeris data
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, (i >= 57 ? SH :: Unhealthy : SH::Healthy),
-              MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, (i >= 57 ? SH :: Unhealthy : SH::Healthy),
-              MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, (i >= 57 ? SH :: Unhealthy : SH::Healthy),
-              MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-   }
-   TUASSERTE(size_t, 5562, uut.size());
-   gnsstk::NavDataPtr result;
-   gnsstk::GPSLNavHealth *hea;
-      // check find almanac with no restrictions on health or validity
-   TUASSERTE(bool, true,
-             uut.find(findNMID1a,findTime1,result,SH::Any,VT::Any,SO::User));
-   gnsstk::CommonTime expTime1(gnsstk::GPSWeekSecond(2101, 3804));
-   TUASSERTE(gnsstk::CommonTime, expTime1, result->timeStamp);
-   TUASSERTE(MT, MT::Almanac, result->signal.messageType);
-   TUASSERTE(int, 2, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 1, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.obs.band);
-   TUASSERTE(TC, TC::CA, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // look for health data before and after the state transition
-   TUASSERTE(bool, true,
-             uut.find(findNMID1h,gnsstk::GPSWeekSecond(2101,1710),result,
-                      SH::Any,VT::Any,SO::User));
-   // result->dump(std::cerr, gnsstk::DumpDetail::Full);
-   if (result)
-   {
-      hea = dynamic_cast<gnsstk::GPSLNavHealth*>(result.get());
-      TUASSERTE(unsigned, 0, hea->svHealth);
-   }
-   TUASSERTE(bool, true,
-             uut.find(findNMID1h,gnsstk::GPSWeekSecond(2101,1716),result,
-                      SH::Any, VT::Any,SO::User));
-   // result->dump(std::cerr, gnsstk::DumpDetail::Full);
-   if (result)
-   {
-      hea = dynamic_cast<gnsstk::GPSLNavHealth*>(result.get());
-      TUASSERTE(unsigned, 1, hea->svHealth);
-   }
-      // Look for healthy almanac data after the transition to
-      // unhealthy.  This should result in ignoring the almanac
-      // transmitted by PRN 1, since PRN 1 is unhealthy at this time,
-      // and returning the almanac transmitted by PRN 3 instead.
-   TUASSERTE(bool, true,
-             uut.find(findNMID1a,findTime1,result,SH::Healthy,VT::Any,
-                      SO::User));
-   TUASSERTE(gnsstk::CommonTime, expTime1, result->timeStamp);
-   TUASSERTE(MT, MT::Almanac, result->signal.messageType);
-   TUASSERTE(int, 2, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 3, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.obs.band);
-   TUASSERTE(TC, TC::CA, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for healthy almanac data after the transition to
-      // unhealthy with wildcards in the signal (band, code, nav).
-      // Should yield the same results as above because of ordering.
-   TUASSERTE(bool, true,
-             uut.find(findNMID2a,findTime1,result,SH::Healthy,VT::Any,
-                      SO::User));
-   TUASSERTE(gnsstk::CommonTime, expTime1, result->timeStamp);
-   TUASSERTE(MT, MT::Almanac, result->signal.messageType);
-   TUASSERTE(int, 2, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 3, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.obs.band);
-   TUASSERTE(TC, TC::CA, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for almanac data after the transition to unhealthy where
-      // we don't care about the health but we do specifically want
-      // L2-Y, so we expect xmit PRN = 1, L2/Y/LNav
-   TUASSERTE(bool, true,
-             uut.find(findNMID3a,findTime1,result,SH::Any,VT::Any,
-                      SO::User));
-   TUASSERTE(gnsstk::CommonTime, expTime1, result->timeStamp);
-   TUASSERTE(MT, MT::Almanac, result->signal.messageType);
-   TUASSERTE(int, 2, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 1, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.obs.band);
-   TUASSERTE(TC, TC::Y, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for almanac data after the transition to unhealthy where
-      // we do want healthy transmit satellites and do specifically
-      // want L2-Y, so we expect xmit PRN = 3, L2/Y/LNav
-   TUASSERTE(bool, true,
-             uut.find(findNMID3a,findTime1,result,SH::Healthy,VT::Any,
-                      SO::User));
-   TUASSERTE(gnsstk::CommonTime, expTime1, result->timeStamp);
-   TUASSERTE(MT, MT::Almanac, result->signal.messageType);
-   TUASSERTE(int, 2, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 3, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.obs.band);
-   TUASSERTE(TC, TC::Y, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for almanac data after the transition to unhealthy where
-      // we want the most recent almanac transmitted by PRN 1 when it
-      // was healthy, so we expect xmit PRN = 1, L2/Y/LNav at time 2*750+54
-   gnsstk::CommonTime expTime2(gnsstk::GPSWeekSecond(2101, 1554));
-   TUASSERTE(bool, true,
-             uut.find(findNMID4a,findTime1,result,SH::Healthy,VT::Any,
-                      SO::User));
-   TUASSERTE(gnsstk::CommonTime, expTime2, result->timeStamp);
-   TUASSERTE(MT, MT::Almanac, result->signal.messageType);
-   TUASSERTE(int, 2, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 1, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.obs.band);
-   TUASSERTE(TC, TC::Y, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for almanac data after the transition to unhealthy where
-      // we want the most recent almanac transmitted by PRN 1 when it
-      // was UNhealthy, so we expect xmit PRN = 1, L2/Y/LNav at time 5*750+54
-   TUASSERTE(bool, true,
-             uut.find(findNMID4a,findTime1,result,SH::Unhealthy,VT::Any,
-                      SO::User));
-   TUASSERTE(gnsstk::CommonTime, expTime1, result->timeStamp);
-   TUASSERTE(MT, MT::Almanac, result->signal.messageType);
-   TUASSERTE(int, 2, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 1, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.obs.band);
-   TUASSERTE(TC, TC::Y, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for almanac data transmitted by PRN 3 when it was
-      // UNhealthy, which it isn't, so we expect no results.
-   TUASSERTE(bool, false,
-             uut.find(findNMID5a,findTime1,result,SH::Unhealthy,VT::Any,
-                      SO::User));
-      // Look for ephemeris data from PRN 1 L1 CA
-   TUASSERTE(bool, true,
-             uut.find(findNMID1L1CAe,findTime1,result,SH::Any,VT::Any,
-                      SO::User));
-   gnsstk::CommonTime expTime1Eph(gnsstk::GPSWeekSecond(2101, 3210));
-   TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 1, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 1, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.obs.band);
-   TUASSERTE(TC, TC::CA, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for ephemeris data from PRN 3 L1 CA (Healthy)
-   TUASSERTE(bool, true,
-             uut.find(findNMID3L1CAe,findTime1,result,SH::Healthy,VT::Any,
-                      SO::User));
-   TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 3, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 3, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.obs.band);
-   TUASSERTE(TC, TC::CA, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for ephemeris data from PRN 3 any any (Healthy)
-   TUASSERTE(bool, true,
-             uut.find(findNMID3e,findTime1,result,SH::Healthy,VT::Any,
-                      SO::User));
-   TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 3, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 3, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.obs.band);
-   TUASSERTE(TC, TC::CA, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for ephemeris data from PRN 1 L2 Y
-   TUASSERTE(bool, true,
-             uut.find(findNMID1L2Ye,findTime1,result,SH::Any,VT::Any,
-                      SO::User));
-   TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 1, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 1, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.obs.band);
-   TUASSERTE(TC, TC::Y, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for ephemeris data from PRN 3 L2 Y (Healthy)
-   TUASSERTE(bool, true,
-             uut.find(findNMID3L2Ye,findTime1,result,SH::Healthy,VT::Any,
-                      SO::User));
-   TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 3, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 3, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.obs.band);
-   TUASSERTE(TC, TC::Y, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for ephemeris data from PRN 1 L2 Y (Healthy)
-   TUASSERTE(bool, true,
-             uut.find(findNMID1L2Ye,findTime1,result,SH::Healthy,VT::Any,
-                      SO::User));
-   gnsstk::CommonTime expTime2Eph(gnsstk::GPSWeekSecond(2100, 602880));
-   TUASSERTE(gnsstk::CommonTime, expTime2Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 1, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 1, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.obs.band);
-   TUASSERTE(TC, TC::Y, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for ephemeris data from PRN 1 L2 Y (Unhealthy)
-   TUASSERTE(bool, true,
-             uut.find(findNMID1L2Ye,findTime1,result,SH::Unhealthy,VT::Any,
-                      SO::User));
-   TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 1, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 1, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.obs.band);
-   TUASSERTE(TC, TC::Y, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for ephemeris data from PRN 3 L2 Y (Unhealthy)
-   TUASSERTE(bool, false,
-             uut.find(findNMID3L2Ye,findTime1,result,SH::Unhealthy,VT::Any,
-                      SO::User));
-   TURETURN();
-}
+   TUASSERTE(gnsstk::CommonTime, expTime, result->timeStamp);
+   TUASSERTE(MT, mt, result->signal.messageType);
+   TUASSERTE(int, satID, result->signal.sat.id);
 
+   TUASSERTE(bool, false, result->signal.sat.wildId);
+   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
+   TUASSERTE(bool, false, result->signal.sat.wildSys);
+   TUASSERTE(int, xmitSatID, result->signal.xmitSat.id);
+   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
+   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
+   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
+   TUASSERTE(SS, SS::GPS, result->signal.system);
+   TUASSERTE(CB, cb, result->signal.obs.band);
+   TUASSERTE(TC, tc, result->signal.obs.code);
+   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
 
-unsigned NavDataFactoryWithStore_T ::
-findNearestTest()
+};
+
+void NavDataFactoryWithStore_T :: 
+fillAlmanac(gnsstk::TestUtil& testFramework, TestClass& uut) 
 {
-   TUDEF("NavDataFactoryWithStore", "findNearest");
-   TestClass uut;
-   using SS = gnsstk::SatelliteSystem;
-   using CB = gnsstk::CarrierBand;
-   using TC = gnsstk::TrackingCode;
-   using NT = gnsstk::NavType;
-   using SH = gnsstk::SVHealth;
-   using MT = gnsstk::NavMessageType;
-   using VT = gnsstk::NavValidityType;
-   using SO = gnsstk::NavSearchOrder;
-   gnsstk::CommonTime refsf1ct = gnsstk::GPSWeekSecond(2101, 0);
-      // between copies 2 and 3, or i==57
-   gnsstk::CommonTime unhealthyStart = gnsstk::GPSWeekSecond(2101, 1710);
-   gnsstk::CommonTime refpg2ct = gnsstk::GPSWeekSecond(2101, 54);
-   gnsstk::CommonTime findTime1 = gnsstk::GPSWeekSecond(2101, 3838);
-   gnsstk::CommonTime findTime2 = gnsstk::GPSWeekSecond(2101, 3000);
-   gnsstk::NavMessageID findNMID1a(
-      gnsstk::NavSatelliteID(2, SS::GPS, CB::L1, TC::CA, NT::GPSLNAV),
-      MT::Almanac);
-   gnsstk::NavMessageID findNMID2a(
-      gnsstk::NavSatelliteID(2, SS::GPS, CB::Any, TC::Any, NT::Any),
-      MT::Almanac);
-   gnsstk::NavMessageID findNMID3a(
-      gnsstk::NavSatelliteID(2, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV),
-      MT::Almanac);
-   gnsstk::NavMessageID findNMID4a(
-      gnsstk::NavSatelliteID(2, 1, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV),
-      MT::Almanac);
-   gnsstk::NavMessageID findNMID5a(
-      gnsstk::NavSatelliteID(2, 3, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV),
-      MT::Almanac);
-   gnsstk::NavMessageID findNMID1h(
-      gnsstk::NavSatelliteID(1, SS::GPS, CB::L1, TC::CA, NT::GPSLNAV),
-      MT::Health);
-   gnsstk::NavMessageID findNMID1L1CAe(
-      gnsstk::NavSatelliteID(1, SS::GPS, CB::L1, TC::CA, NT::GPSLNAV),
-      MT::Ephemeris);
-   gnsstk::NavMessageID findNMID1L2Ye(
-      gnsstk::NavSatelliteID(1, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV),
-      MT::Ephemeris);
-   gnsstk::NavMessageID findNMID3L1CAe(
-      gnsstk::NavSatelliteID(3, SS::GPS, CB::L1, TC::CA, NT::GPSLNAV),
-      MT::Ephemeris);
-   gnsstk::NavMessageID findNMID3e(
-      gnsstk::NavSatelliteID(3, SS::GPS, CB::Any, TC::Any, NT::Any),
-      MT::Ephemeris);
-   gnsstk::NavMessageID findNMID3L2Ye(
-      gnsstk::NavSatelliteID(3, SS::GPS, CB::L2, TC::Y, NT::GPSLNAV),
-      MT::Ephemeris);
-      // fill with "almanac pages"
    for (unsigned i = 0; i <= 10; i++)
    {
       addData(testFramework, uut, refpg2ct + (750*i), 2, 1, SS::GPS, CB::L1,
@@ -939,229 +512,233 @@ findNearestTest()
       addData(testFramework, uut, refpg2ct + (750*i), 2, 4, SS::GPS, CB::L2,
               TC::Y, NT::GPSLNAV, SH::Healthy, MT::Almanac);
    }
+
+};
+
+
+unsigned NavDataFactoryWithStore_T ::
+find2Test()
+{
+   TUDEF("NavDataFactoryWithStore", "find2Test");
+   TestClass uut;
+   
+   fillAlmanac(testFramework, uut);
    TUASSERTE(size_t, 99, uut.size());
-      // add "ephemeris health"
+
+   SH health;
+
+   std::vector<CB> carrierBands({CB::L1, CB::L1, CB::L2});
+   std::vector<TC> trackingCodes({TC::CA, TC::Y, TC::Y});
+   std::vector<MT> msgTypes({MT::Health, MT::Ephemeris});
+
+   for (unsigned i = 0; i < 228; i++)
+   {
+      auto ct = refsf1ct + (30*i);
+
+      for (int j = 0; j < 24; j++)
+      {
+         int svn = (j/3) % 4 + 1;
+         health = SH::Healthy;
+         if ( svn == 1 )
+         {
+            health = (i >= 57 ? SH :: Unhealthy : SH::Healthy);
+         }
+         addData(
+            testFramework, uut, ct, svn, svn, SS::GPS, 
+            carrierBands[j % 3], trackingCodes[j % 3], 
+            NT::GPSLNAV, health, msgTypes[j/12]
+         );
+      }
+   }
+
+   //This was incremented for adherence to the new fill Almanac method
+   TUASSERTE(size_t, 5571, uut.size());
+   gnsstk::NavDataPtr result;
+   gnsstk::GPSLNavHealth *hea;
+
+      // check find almanac with no restrictions on health or validity
+   TUASSERTE(bool, true, uut.find(findNMID1a,findTime1,result,SH::Any,VT::Any,SO::User));
+   gnsstk::CommonTime expTime1(gnsstk::GPSWeekSecond(2101, 3804));
+   MakeAssertions(testFramework, result, expTime1, MT::Almanac, 2, 1, CB::L1, TC::CA);
+
+      // look for health data before and after the state transition
+   TUASSERTE(bool, true,uut.find(findNMID1h,gnsstk::GPSWeekSecond(2101,1710),result,SH::Any,VT::Any,SO::User));
+   // result->dump(std::cerr, gnsstk::DumpDetail::Full);
+   if (result)
+   {
+      hea = dynamic_cast<gnsstk::GPSLNavHealth*>(result.get());
+      TUASSERTE(unsigned, 0, hea->svHealth);
+   }
+   TUASSERTE(bool, true,uut.find(findNMID1h,gnsstk::GPSWeekSecond(2101,1716),result,SH::Any, VT::Any,SO::User));
+   // result->dump(std::cerr, gnsstk::DumpDetail::Full);
+   if (result)
+   {
+      hea = dynamic_cast<gnsstk::GPSLNavHealth*>(result.get());
+      TUASSERTE(unsigned, 1, hea->svHealth);
+   }
+      // Look for healthy almanac data after the transition to
+      // unhealthy.  This should result in ignoring the almanac
+      // transmitted by PRN 1, since PRN 1 is unhealthy at this time,
+      // and returning the almanac transmitted by PRN 3 instead.
+   TUASSERTE(bool, true,uut.find(findNMID1a,findTime1,result,SH::Healthy,VT::Any,SO::User));
+   MakeAssertions(testFramework, result, expTime1, MT::Almanac, 2, 3, CB::L1, TC::CA);
+
+      // Look for healthy almanac data after the transition to
+      // unhealthy with wildcards in the signal (band, code, nav).
+      // Should yield the same results as above because of ordering.
+   TUASSERTE(bool, true,uut.find(findNMID2a,findTime1,result,SH::Healthy,VT::Any,SO::User));
+   MakeAssertions(testFramework, result, expTime1, MT::Almanac, 2, 3, CB::L1, TC::CA);
+
+      // Look for almanac data after the transition to unhealthy where
+      // we don't care about the health but we do specifically want
+      // L2-Y, so we expect xmit PRN = 1, L2/Y/LNav
+   TUASSERTE(bool, true,uut.find(findNMID3a,findTime1,result,SH::Any,VT::Any,SO::User));
+   MakeAssertions(testFramework, result, expTime1, MT::Almanac, 2, 1, CB::L2, TC::Y);
+
+      // Look for almanac data after the transition to unhealthy where
+      // we do want healthy transmit satellites and do specifically
+      // want L2-Y, so we expect xmit PRN = 3, L2/Y/LNav
+   TUASSERTE(bool, true, uut.find(findNMID3a,findTime1,result,SH::Healthy,VT::Any,SO::User));
+   MakeAssertions(testFramework, result, expTime1, MT::Almanac, 2, 3, CB::L2, TC::Y);
+
+      // Look for almanac data after the transition to unhealthy where
+      // we want the most recent almanac transmitted by PRN 1 when it
+      // was healthy, so we expect xmit PRN = 1, L2/Y/LNav at time 2*750+54
+   gnsstk::CommonTime expTime2(gnsstk::GPSWeekSecond(2101, 1554));
+   TUASSERTE(bool, true,uut.find(findNMID4a,findTime1,result,SH::Healthy,VT::Any,SO::User));
+   MakeAssertions(testFramework, result, expTime2, MT::Almanac, 2, 1, CB::L2, TC::Y);  
+
+      // Look for almanac data after the transition to unhealthy where
+      // we want the most recent almanac transmitted by PRN 1 when it
+      // was UNhealthy, so we expect xmit PRN = 1, L2/Y/LNav at time 5*750+54
+   TUASSERTE(bool, true,uut.find(findNMID4a,findTime1,result,SH::Unhealthy,VT::Any,SO::User));
+   MakeAssertions(testFramework, result, expTime1, MT::Almanac, 2, 1, CB::L2, TC::Y);
+
+      // Look for almanac data transmitted by PRN 3 when it was
+      // UNhealthy, which it isn't, so we expect no results.
+   TUASSERTE(bool, false,uut.find(findNMID5a,findTime1,result,SH::Unhealthy,VT::Any,SO::User));
+
+      // Look for ephemeris data from PRN 1 L1 CA
+   TUASSERTE(bool, true,uut.find(findNMID1L1CAe,findTime1,result,SH::Any,VT::Any, SO::User));
+   gnsstk::CommonTime expTime1Eph(gnsstk::GPSWeekSecond(2101, 3210));
+   MakeAssertions(testFramework, result, expTime1Eph, MT::Ephemeris, 1, 1, CB::L1, TC::CA);
+
+      // Look for ephemeris data from PRN 3 L1 CA (Healthy)
+   TUASSERTE(bool, true,uut.find(findNMID3L1CAe,findTime1,result,SH::Healthy,VT::Any,SO::User));
+   MakeAssertions(testFramework, result, expTime1Eph, MT::Ephemeris, 3, 3, CB::L1, TC::CA);
+
+      // Look for ephemeris data from PRN 3 any any (Healthy)
+   TUASSERTE(bool, true, uut.find(findNMID3e,findTime1,result,SH::Healthy,VT::Any,SO::User));
+   MakeAssertions(testFramework, result, expTime1Eph, MT::Ephemeris, 3, 3, CB::L1, TC::CA);
+
+      // Look for ephemeris data from PRN 1 L2 Y
+   TUASSERTE(bool, true, uut.find(findNMID1L2Ye,findTime1,result,SH::Any,VT::Any,SO::User));
+   MakeAssertions(testFramework, result, expTime1Eph, MT::Ephemeris, 1, 1, CB::L2, TC::Y);
+
+      // Look for ephemeris data from PRN 3 L2 Y (Healthy)
+   TUASSERTE(bool, true,uut.find(findNMID3L2Ye,findTime1,result,SH::Healthy,VT::Any,SO::User));
+   MakeAssertions(testFramework, result, expTime1Eph, MT::Ephemeris, 3, 3, CB::L2, TC::Y);
+
+      // Look for ephemeris data from PRN 1 L2 Y (Healthy)
+   TUASSERTE(bool, true,uut.find(findNMID1L2Ye,findTime1,result,SH::Healthy,VT::Any,SO::User));
+   gnsstk::CommonTime expTime2Eph(gnsstk::GPSWeekSecond(2100, 602880));
+   MakeAssertions(testFramework, result, expTime2Eph, MT::Ephemeris, 1, 1, CB::L2, TC::Y);
+
+      // Look for ephemeris data from PRN 1 L2 Y (Unhealthy)
+   TUASSERTE(bool, true,uut.find(findNMID1L2Ye,findTime1,result,SH::Unhealthy,VT::Any,SO::User));
+   MakeAssertions(testFramework, result, expTime1Eph, MT::Ephemeris, 1, 1, CB::L2, TC::Y); 
+
+      // Look for ephemeris data from PRN 3 L2 Y (Unhealthy)
+   TUASSERTE(bool, false, uut.find(findNMID3L2Ye, findTime1, result, SH::Unhealthy, VT::Any, SO::User));
+
+   TURETURN();
+}
+
+
+unsigned NavDataFactoryWithStore_T ::
+findNearestTest()
+{
+   TUDEF("NavDataFactoryWithStore", "findNearestTest");
+   TestClass uut;
+
+   fillAlmanac(testFramework, uut);
+
+   TUASSERTE(size_t, 99, uut.size());
+   
+   SH health;
+
+   std::vector<CB> carrierBands({CB::L1, CB::L1, CB::L2});
+   std::vector<TC> trackingCodes({TC::CA, TC::Y, TC::Y});
+   std::vector<MT> msgTypes({MT::Health, MT::Ephemeris});
+
    for (unsigned i = 0; i <= 251; i++)
    {
          // health data
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV,
-              ((i >= 57 && i < 240) ? SH :: Unhealthy : SH::Healthy),
-              MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV,
-              ((i >= 57 && i < 240) ? SH :: Unhealthy : SH::Healthy),
-              MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV,
-              ((i >= 57 && i < 240) ? SH :: Unhealthy : SH::Healthy),
-              MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-         // ephemeris data
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV,
-              ((i >= 57 && i < 240) ? SH :: Unhealthy : SH::Healthy),
-              MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV,
-              ((i >= 57 && i < 240) ? SH :: Unhealthy : SH::Healthy),
-              MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV,
-              ((i >= 57 && i < 240) ? SH :: Unhealthy : SH::Healthy),
-              MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
+      auto ct = refsf1ct + (30*i);
+
+      for (int j = 0; j < 24; j++)
+      {
+         int svn = (j/3) % 4 + 1;
+         health = SH::Healthy;
+         if ( svn == 1 )
+         {
+            health = (i >= 57 && i < 240) ? SH::Unhealthy : SH::Healthy;
+         }
+         addData(
+            testFramework, uut, ct, svn, svn, SS::GPS, 
+            carrierBands[j % 3], trackingCodes[j % 3], 
+            NT::GPSLNAV, health, msgTypes[j/12]
+         );
+      }
+
    }
    TUASSERTE(size_t, 6147, uut.size());
+
    gnsstk::NavDataPtr result;
    gnsstk::GPSLNavHealth *hea;
       /// @todo add tests for findNearest using Almanac data and maybe Health.
-      // Look for ephemeris data from PRN 1 L1 CA
-   TUASSERTE(bool, true,
-             uut.find(findNMID1L1CAe,findTime1,result,SH::Any,VT::Any,
-                      SO::Nearest));
+      // Look for ephemeris data from PRN 1 L1 CA   
    gnsstk::CommonTime expTime1Eph(gnsstk::GPSWeekSecond(2101, 3600));
-   TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 1, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 1, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.obs.band);
-   TUASSERTE(TC, TC::CA, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
+
+   TUASSERTE(bool, true, uut.find(findNMID1L1CAe,findTime1,result,SH::Any,VT::Any, SO::Nearest));
+   MakeAssertions(testFramework, result, expTime1Eph, MT::Ephemeris, 1, 1, CB::L1, TC::CA);  
+
       // Look for ephemeris data from PRN 3 L1 CA (Healthy)
-   TUASSERTE(bool, true,
-             uut.find(findNMID3L1CAe,findTime1,result,SH::Healthy,VT::Any,
-                      SO::Nearest));
-   TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 3, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 3, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.obs.band);
-   TUASSERTE(TC, TC::CA, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
+   TUASSERTE(bool, true, uut.find(findNMID3L1CAe,findTime1,result,SH::Healthy,VT::Any, SO::Nearest));
+   MakeAssertions(testFramework, result, expTime1Eph, MT::Ephemeris, 3, 3, CB::L1, TC::CA);
+   
       // Look for ephemeris data from PRN 3 any any (Healthy)
-   TUASSERTE(bool, true,
-             uut.find(findNMID3e,findTime1,result,SH::Healthy,VT::Any,
-                      SO::Nearest));
-   TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 3, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 3, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L1, result->signal.obs.band);
-   TUASSERTE(TC, TC::CA, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
+   TUASSERTE(bool, true,uut.find(findNMID3e, findTime1,result, SH::Healthy,VT::Any, SO::Nearest));
+   MakeAssertions(testFramework, result, expTime1Eph, MT::Ephemeris, 3, 3, CB::L1, TC::CA);
+
       // Look for ephemeris data from PRN 1 L2 Y
-   TUASSERTE(bool, true,
-             uut.find(findNMID1L2Ye,findTime1,result,SH::Any,VT::Any,
-                      SO::Nearest));
-   TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 1, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 1, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.obs.band);
-   TUASSERTE(TC, TC::Y, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
+   TUASSERTE(bool, true,uut.find(findNMID1L2Ye,findTime1,result,SH::Any,VT::Any,SO::Nearest));
+   MakeAssertions(testFramework, result, expTime1Eph, MT::Ephemeris, 1, 1, CB::L2, TC::Y);
+
       // Look for ephemeris data from PRN 3 L2 Y (Healthy)
-   TUASSERTE(bool, true,
-             uut.find(findNMID3L2Ye,findTime1,result,SH::Healthy,VT::Any,
-                      SO::Nearest));
-   TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 3, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 3, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.obs.band);
-   TUASSERTE(TC, TC::Y, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
+   TUASSERTE(bool, true,uut.find(findNMID3L2Ye, findTime1, result, SH::Healthy, VT::Any, SO::Nearest));
+   MakeAssertions(testFramework, result, expTime1Eph, MT::Ephemeris, 3, 3, CB::L2, TC::Y);
+
       // Look for ephemeris data from PRN 1 L2 Y (Healthy)
-   TUASSERTE(bool, true,
-             uut.find(findNMID1L2Ye,findTime1,result,SH::Healthy,VT::Any,
-                      SO::Nearest));
-   TUASSERTE(gnsstk::CommonTime, expTime1Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 1, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 1, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.obs.band);
-   TUASSERTE(TC, TC::Y, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
-      // Look for ephemeris data from PRN 1 L2 Y (Healthy) at an earlier time
-   TUASSERTE(bool, true,
-             uut.find(findNMID1L2Ye,findTime2,result,SH::Healthy,VT::Any,
-                      SO::Nearest));
+   TUASSERTE(bool, true, uut.find(findNMID1L2Ye,findTime1,result,SH::Healthy,VT::Any,SO::Nearest));
+   MakeAssertions(testFramework, result, expTime1Eph, MT::Ephemeris, 1, 1, CB::L2, TC::Y);
+   
    gnsstk::CommonTime expTime2Eph(gnsstk::GPSWeekSecond(2100, 601200));
-   TUASSERTE(gnsstk::CommonTime, expTime2Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 1, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 1, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.obs.band);
-   TUASSERTE(TC, TC::Y, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
+
+      // Look for ephemeris data from PRN 1 L2 Y (Healthy) at an earlier time
+   TUASSERTE(bool, true, uut.find(findNMID1L2Ye,findTime2,result,SH::Healthy,VT::Any, SO::Nearest));
+   MakeAssertions(testFramework, result, expTime2Eph, MT::Ephemeris, 1, 1, CB::L2, TC::Y);
+
       // Look for ephemeris data from PRN 1 L2 Y (Unhealthy)
-   TUASSERTE(bool, true,
-             uut.find(findNMID1L2Ye,findTime1,result,SH::Unhealthy,VT::Any,
-                      SO::Nearest));
+   TUASSERTE(bool, true,uut.find(findNMID1L2Ye,findTime1,result,SH::Unhealthy,VT::Any,SO::Nearest));
+
       // this is the first of the unhealthy data
    gnsstk::CommonTime expTime3Eph(gnsstk::GPSWeekSecond(2100, 602910));
-   TUASSERTE(gnsstk::CommonTime, expTime3Eph, result->timeStamp);
-   TUASSERTE(MT, MT::Ephemeris, result->signal.messageType);
-   TUASSERTE(int, 1, result->signal.sat.id);
-   TUASSERTE(bool, false, result->signal.sat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.sat.system);
-   TUASSERTE(bool, false, result->signal.sat.wildSys);
-   TUASSERTE(int, 1, result->signal.xmitSat.id);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildId);
-   TUASSERTE(SS, SS::GPS, result->signal.xmitSat.system);
-   TUASSERTE(bool, false, result->signal.xmitSat.wildSys);
-   TUASSERTE(SS, SS::GPS, result->signal.system);
-   TUASSERTE(CB, CB::L2, result->signal.obs.band);
-   TUASSERTE(TC, TC::Y, result->signal.obs.code);
-   TUASSERTE(NT, NT::GPSLNAV, result->signal.nav);
+   MakeAssertions(testFramework, result, expTime3Eph, MT::Ephemeris, 1, 1, CB::L2, TC::Y);
+
       // Look for ephemeris data from PRN 3 L2 Y (Unhealthy)
-   TUASSERTE(bool, false,
-             uut.find(findNMID3L2Ye,findTime1,result,SH::Unhealthy,VT::Any,
-                      SO::Nearest));
+   TUASSERTE(bool, false,uut.find(findNMID3L2Ye,findTime1,result,SH::Unhealthy,VT::Any,SO::Nearest));
+
    TURETURN();
 }
 
@@ -1213,14 +790,6 @@ getOffset2Test()
 {
    TUDEF("NavDataFactoryWithStore", "getOffset");
    TestClass uut;
-   using SS = gnsstk::SatelliteSystem;
-   using CB = gnsstk::CarrierBand;
-   using TC = gnsstk::TrackingCode;
-   using NT = gnsstk::NavType;
-   using SH = gnsstk::SVHealth;
-   using MT = gnsstk::NavMessageType;
-   using VT = gnsstk::NavValidityType;
-   using SO = gnsstk::NavSearchOrder;
    gnsstk::CommonTime refsf1ct = gnsstk::GPSWeekSecond(2101, 0);
       // between copies 2 and 3, or i==57
    gnsstk::CommonTime unhealthyStart = gnsstk::GPSWeekSecond(2101, 1710);
@@ -1252,64 +821,31 @@ getOffset2Test()
    }
    TUASSERTE(size_t, 90, uut.size());
       // add "ephemeris health"
+
+   SH health;
+
+   std::vector<CB> carrierBands({CB::L1, CB::L1, CB::L2});
+   std::vector<TC> trackingCodes({TC::CA, TC::Y, TC::Y});
+   std::vector<MT> msgTypes({MT::Health, MT::Ephemeris});
    for (unsigned i = 0; i < 228; i++)
    {
          // health data
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, (i >= 57 ? SH :: Unhealthy : SH::Healthy),
-              MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, (i >= 57 ? SH :: Unhealthy : SH::Healthy),
-              MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, (i >= 57 ? SH :: Unhealthy : SH::Healthy),
-              MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Health);
-         // ephemeris data
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, (i >= 57 ? SH :: Unhealthy : SH::Healthy),
-              MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, (i >= 57 ? SH :: Unhealthy : SH::Healthy),
-              MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 1, 1, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, (i >= 57 ? SH :: Unhealthy : SH::Healthy),
-              MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 2, 2, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 3, 3, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L1,
-              TC::CA, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L1,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
-      addData(testFramework, uut, refsf1ct + (30*i), 4, 4, SS::GPS, CB::L2,
-              TC::Y, NT::GPSLNAV, SH::Healthy, MT::Ephemeris);
+      auto ct = refsf1ct + (30*i);
+
+      for (int j = 0; j < 24; j++)
+      {
+         int svn = (j/3) % 4 + 1;
+         health = SH::Healthy;
+         if ( svn == 1 )
+         {
+            health = (i >= 57 && i < 240) ? SH::Unhealthy : SH::Healthy;
+         }
+         addData(
+            testFramework, uut, ct, svn, svn, SS::GPS, 
+            carrierBands[j % 3], trackingCodes[j % 3], 
+            NT::GPSLNAV, health, msgTypes[j/12]
+         );
+      }
    }
    TUASSERTE(size_t, 5562, uut.size());
    gnsstk::TimeOffsetData *top;

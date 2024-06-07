@@ -101,8 +101,8 @@ namespace gnsstk
                        "gnsstk::NavDataFactory::setRefEpoch(). Using default reference epoch.");
          }
          else {
-            long referenceEpochInWeeks = GPSWeekSecond(referenceTimeEpoch).getWeek();
-            head = SEMHeader(referenceEpochInWeeks);
+            long nearReferenceEpochInWeeks = GPSWeekSecond(referenceTimeEpoch).getWeek();
+            head = SEMHeader(nearReferenceEpochInWeeks);
          }
          SEMStream is(filename.c_str(), ios::in);
          SEMData data;

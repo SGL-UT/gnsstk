@@ -1,29 +1,25 @@
-GNSSTk 14.4.0 Release Notes
+GNSSTk 14.4.1 Release Notes
 ========================
 
- * This release includes the following:
-   * Adding reference epoch support in constructor of `MultiFormatNavDataFactory` and `SEMNavDataFactory`
-   * Adding C++ exception support to Geomatics.
- * Additionally, it contains several bug fixes and build system updates.
+* This release includes the following:
+   * Updating the handling already disambiguated GPS Week in SEM Almanacs.
+   * Fixing SWIG wrapping of satTimeSystem().
+   * Updating navdatafactorywithstore_t find tests non breaking refactor.
+ * Additionally, it contains CI updates.
 
-Updates since v14.3.0
+Updates since v14.4.0
 ---------------------
 
 **Build System and Test Suite**
-  * Fix intermittent test failure when using BasicTimeSystemConverter::getOffset
+  * Update navdatafactorywithstore_t find tests non breaking refactor
 
 **Gitlab CI**
-  * Update allow windows dll pipeline test job to fail so it doesn't short circuit the entire toolkit build chain.
+  * Update Codeowners file with additional NewNav reviewer
+  * Update pipeline to use rhel 8 ubi image instead of deprecated centos 8 appstream
 
 **Library Changes**
-  * Add C++ exception support to Geomatics.
-  * Add reference epoch support in constructor of `MultiFormatNavDataFactory` and `SEMNavDataFactory`
+  * Update to handle already disambiguated GPS Week in SEM Almanacs 
 
-Fixes since v14.3.0
+Fixes since v14.4.0
 --------------------
-  * Fix NBGLOFNavDataFactory Correct Reference Times
-  * Add STAKEHOLDERS document with stakeholder information
-
-New Modules
--------------------------------
-     swig/tests/test_exceptions.py
+  * Fix SWIG wrapping of satTimeSystem()
