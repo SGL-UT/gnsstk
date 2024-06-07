@@ -14,7 +14,7 @@ copyright = '2022, ARL:UT'
 
 import gnsstk
 version = '14.4'
-release = '14.4.0'
+release = '14.4.1'
 
 # -- General configuration ------------------------------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
