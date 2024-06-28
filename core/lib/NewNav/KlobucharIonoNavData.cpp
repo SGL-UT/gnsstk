@@ -163,4 +163,19 @@ namespace gnsstk
       }
       return t_iono * C_MPS;
    }
+   
+   bool KlobucharIonoNavData::isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<KlobucharIonoNavData> rhs = std::dynamic_pointer_cast<KlobucharIonoNavData>(right);
+      if (!rhs)
+      {
+        return false;
+      }
+    
+      return (NavData::isSameData(right, ignore_timestamp) && 
+           (alpha == rhs->alpha) &&
+           (beta == rhs->beta));
+
+      // Checked 6/13/2024
+   } 
 }

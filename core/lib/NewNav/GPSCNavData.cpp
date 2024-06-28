@@ -68,4 +68,19 @@ namespace gnsstk
    {
       return ((pre == 0) || (pre == 0x8b));
    }
+
+   bool GPSCNavData::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSCNavData> rhs = std::dynamic_pointer_cast<GPSCNavData>(right);
+      
+      if (!rhs)
+      {
+         return false;
+      }
+      return (OrbitDataKepler::isSameData(right, ignore_timestamp));
+
+      // Checked 6/13/2024
+
+   }
 }

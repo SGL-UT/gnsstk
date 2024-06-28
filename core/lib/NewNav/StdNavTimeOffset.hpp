@@ -108,6 +108,29 @@ namespace gnsstk
       virtual double effEnd() const
       { return 6 * 3600; }
 
+      /*! @copydoc NavData::isSameData()
+      *
+      * Additional Checks at the StdNavTimeOffset Level
+      *   <table>
+      *     <tr><td>src<td>Source time system
+      *     <tr><td>tgt<td>Target time system
+      *     <tr><td>a0<td>Bias coefficient of source time scale
+      *     <tr><td>a1<td>Drift coefficient of source time scale
+      *     <tr><td>a2<td>Drift rate coefficient of source time scale
+      *     <tr><td>deltatLS<td>Current or past leap second count (UTC only)
+      *     <tr><td>refTime<td>Reference time for computation
+      *     <tr><td>effTime<td>Effectivity time (wnLSF,dn)
+      *     <tr><td>tot<td>Time data reference time of week (storage only)
+      *     <tr><td>wnot<td>Time data reference week number (storage only)
+      *     <tr><td>wnLSF<td>Leap second reference week number (UTC only)
+      *     <tr><td>dn<td>Leap second reference day number (UTC only)
+      *     <tr><td>deltatLSF<td>Current or future leap second count (UTC only)
+      *     <tr><td>dnSun<td>dn value for Sunday
+      *    </table>
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
+
          // These terms are referenced in the ICDs for multiple
          // systems, but you can find their definition in places like
          // IS-GPS-200 30.3.3.6.2.  They occasionally have different

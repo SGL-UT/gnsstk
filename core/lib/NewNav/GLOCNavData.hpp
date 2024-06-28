@@ -62,6 +62,13 @@ namespace gnsstk
           */
       bool validate() const override;
 
+      /*! @copydoc NavData::isSameData()
+       * 
+       * No additional data checked at GLOCNavData:
+       */ 
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
+
       GLOCNavHeader header; ///< Common data.
    };
 
