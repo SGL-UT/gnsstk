@@ -59,4 +59,18 @@ namespace gnsstk
    {
       return (header.validate());
    }
+
+
+   bool GLOCNavData::isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GLOCNavData> rhs = std::dynamic_pointer_cast<GLOCNavData>(right);
+      if (!rhs)
+      {
+         return false;
+      }
+   
+      return (NavData::isSameData(right, ignore_timestamp));
+
+      // Checked 6/13/2024
+   } 
 }

@@ -149,4 +149,29 @@ namespace gnsstk
       s << "} drift rate sigma: " << drRateSig << endl;
       s.flags(oldFlags);
    }
+
+   bool OrbitDataSP3::isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<OrbitDataSP3> rhs = std::dynamic_pointer_cast<OrbitDataSP3>(right);
+      if (!rhs)
+      {
+         return false;
+      }
+   
+      return (NavData::isSameData(right, ignore_timestamp) && 
+         (pos == rhs->pos) &&
+         (posSig == rhs->posSig) &&
+         (vel == rhs->vel) &&
+         (velSig == rhs->velSig) &&
+         (acc == rhs->acc) &&
+         (accSig == rhs->accSig) &&
+         (clkBias == rhs->clkBias) &&
+         (biasSig == rhs->biasSig) &&
+         (clkDrift == rhs->clkDrift) &&
+         (driftSig == rhs->driftSig) &&
+         (clkDrRate == rhs->clkDrRate) &&
+         (drRateSig == rhs->drRateSig) &&
+         (coordSystem == rhs->coordSystem)); 
+   }
+
 }

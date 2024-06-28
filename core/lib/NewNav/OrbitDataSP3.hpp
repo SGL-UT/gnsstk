@@ -88,6 +88,27 @@ namespace gnsstk
           *   unavailable. */
       bool getXvt(const CommonTime& when, Xvt& xvt,
                   const ObsID& oid = ObsID()) override;
+      
+      /*! @copydoc NavData::isSameData()
+      * 
+      * Additional Checks at the OrbitDataSP3 Level
+      *   <table>
+      *     <tr><td>pos<td>ECEF position (km) of satellite at time
+      *     <tr><td>posSig<td>Standard deviation of position
+      *     <tr><td>vel<td>ECEF velocity (dm/s) of satellite at time
+      *     <tr><td>velSig<td>Standard deviation of velocity
+      *     <tr><td>acc<td>Acceleration (m/s/s) of satellite at time
+      *     <tr><td>accSig<td>Standard deviation of acceleration
+      *     <tr><td>clkBias<td>SV clock bias in microseconds
+      *     <tr><td>biasSig<td>SV clock bias std deviation in microseconds
+      *     <tr><td>clkDrift<td>SV clock drift in s/s
+      *     <tr><td>driftSig<td>SV clock drift std deviation in microseconds/sec
+      *     <tr><td>clkDrRate<td>SV clock drift rate in s/s**2
+      *     <tr><td>drRateSig<td>SV clock drift rate std deviation
+      *     <tr><td>coordSystem<td>Copy of SP3Header::coordSystem since it might not translate
+      *    </table>
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
 
       Triple pos;      ///< ECEF position (km) of satellite at time.
       Triple posSig;   ///< Standard deviation of position.

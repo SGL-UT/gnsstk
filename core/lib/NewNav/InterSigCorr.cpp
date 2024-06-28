@@ -157,4 +157,19 @@ namespace gnsstk
       }
       return rv;
    }
+
+   bool InterSigCorr::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<InterSigCorr> iscPrime = std::dynamic_pointer_cast<InterSigCorr>(right);
+      
+      if (!iscPrime)
+      {
+         return false;
+      }
+      return (NavData::isSameData(right, ignore_timestamp) &&
+         (isc == iscPrime->isc));
+
+      // Checked 6/13/2024
+   }
 }

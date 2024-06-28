@@ -149,20 +149,45 @@ namespace gnsstk
                                   const EllipsoidModel& ell)
          const;
 
-         /** Returns true if this two objects are
-          *   1. same concrete type, and
-          *   2. same data contents.
-          * This is intended as a "data uniqueness test" to allow
-          * detection of successive transmissions of same data
-          * and avoid duplicate storage.  The exact rules for
-          * uniqueness will vary by descendent class.
+          /*! @copydoc NavData::isSameData()
+          *
           * @note This method assumes that no tweaking of values has
           *   been made, i.e. it checks all potentially relevant
           *   parameters, not just those that are specific to the type
           *   (e.g. Cuc etc. are checked even for almanacs, which
           *   should be fine as long as they remain in their initial
-          *   states). */
-      bool isSameData(const NavDataPtr& right) const override;
+          *   states). 
+          * 
+          * Additional Checks at the OrbitDataKepler Level
+          *   <table>
+          *     <tr><td>Toe<td>Orbit epoch
+          *     <tr><td>Toc<td>Clock epoch
+          *     <tr><td>health<td>SV health status
+          *     <tr><td>Cuc<td>Cosine latitude (rad)
+          *     <tr><td>Cus<td>Sine latitude (rad)
+          *     <tr><td>Crc<td>Cosine radius (m)
+          *     <tr><td>Crs<td>Sine radius (m)
+          *     <tr><td>Cic<td>Cosine inclination (rad)
+          *     <tr><td>Cis<td>Sine inclination (rad)
+          *     <tr><td>M0<td>Mean anomaly (rad)
+          *     <tr><td>dn<td>Correction to mean motion (rad/sec)
+          *     <tr><td>dndot<td>Rate of correction to mean motion (rad/sec/sec)
+          *     <tr><td>ecc<td>Eccentricity
+          *     <tr><td>A<td>Semi-major axis (m)
+          *     <tr><td>Ahalf<td>Square Root of semi-major axis (m**.5)
+          *     <tr><td>Adot<td>Rate of semi-major axis (m/sec)
+          *     <tr><td>OMEGA0<td>Longitude of ascending node at weekly epoch (rad)
+          *     <tr><td>i0<td>Inclination (rad)
+          *     <tr><td>w<td>Argument of perigee (rad)
+          *     <tr><td>OMEGAdot<td>Rate of Rt ascension (rad/sec)
+          *     <tr><td>idot<td>Rate of inclination angle (rad/sec)
+          *     <tr><td>af0<td>SV clock error (sec)
+          *     <tr><td>af1<td>SV clock drift (sec/sec)
+          *     <tr><td>af2<td>SV clock drift rate (sec/sec**2)
+          *    </table>
+          */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
          /// @copydoc NavData::compare
       std::list<std::string> compare(const NavDataPtr& right)
          const override;
