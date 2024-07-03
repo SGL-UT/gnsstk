@@ -118,4 +118,21 @@ namespace gnsstk
       }
       return false;
    }
+
+   bool BDSD1NavISC::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<BDSD1NavISC> isc = std::dynamic_pointer_cast<BDSD1NavISC>(right);
+      
+      if (!isc)
+      {
+         return false;
+      }
+      return (InterSigCorr::isSameData(right, true) &&
+         (tgd1 == isc->tgd1) &&
+         (tgd2 == isc->tgd2));
+
+         // Checked 6/12/2024
+   }
+
 }

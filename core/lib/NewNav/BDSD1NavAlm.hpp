@@ -75,6 +75,20 @@ namespace gnsstk
           * @param[in,out] s The stream to write the data to. */
       void dumpSVStatus(std::ostream& s) const override;
 
+      /*! @copydoc BDSD1NavData::isSameData() 
+      * 
+      * Additional Checks at the BDSD1NavAlm Level 
+      * 
+      *    <table>
+      *     <tr><td>pnum<td>Almanac page number
+      *     <tr><td>deltai<td>Inclination in rad relative to 0.3*pi rad
+      *     <tr><td>toa<td>Convenience storage of unqualified toa
+      *     <tr><td>healthBits<td>9 bits of health from sf5,pg7/8
+      *     <tr><td>isDefault<td>True if the source page was all 0s for orbit 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       uint8_t pnum;        ///< Almanac page number.
       double deltai;       ///< Inclination in rad relative to 0.3*pi rad.
       double toa;          ///< Convenience storage of unqualified toa.

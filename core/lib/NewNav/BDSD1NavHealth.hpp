@@ -95,6 +95,16 @@ namespace gnsstk
           * @return Healthy if no health bits are set. */
       SVHealth getHealth() const override;
 
+      /*! @copydoc NavData::isSameData() 
+      * 
+      * Additional Checks at the BDSD1NavHealth Level 
+      * 
+      *    <table>
+      *     <tr><td>getHealth()<td>getHealth() 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
          /// If true, svHealth is representative, otherwise satH1 is.
       bool isAlmHealth;
          /// Ephemeris health (autonomous satellite health flag).
