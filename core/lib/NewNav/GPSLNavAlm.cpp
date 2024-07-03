@@ -89,4 +89,26 @@ namespace gnsstk
         << " (" << gnsstk::StringUtils::asString(health) << ")" << endl;
       s.flags(oldFlags);
    }
+
+   bool GPSLNavAlm::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSLNavAlm> alm = std::dynamic_pointer_cast<GPSLNavAlm>(right);
+      
+      if (!alm)
+      {
+         return false;
+      }
+      
+      return (GPSLNavData::isSameData(right, ignore_timestamp) &&
+         (healthBits == alm->healthBits) &&
+         (deltai == alm->deltai) &&
+         (toa == alm->toa));
+
+      // Checked 6/6/2024
+
+   }
+
 }
+
+

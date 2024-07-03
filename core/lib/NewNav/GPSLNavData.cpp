@@ -68,7 +68,8 @@ namespace gnsstk
          return false;
       }
    
-      return (OrbitDataKepler::isSameData(right, ignore_timestamp));
+      return (OrbitDataKepler::isSameData(right, ignore_timestamp)&&
+             (isf == rhs->isf));
 
       // Checked 6/13/2024. Check isf in GPSLNavEph 
    } 

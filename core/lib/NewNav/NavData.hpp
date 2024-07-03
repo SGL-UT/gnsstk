@@ -130,6 +130,14 @@ namespace gnsstk
           * will allow for a true comparison. The default option was
           * decided upon in order to not break existing use cases.
           *
+          * In some instances, data attributes are left off of the isSameData
+          * equivalence check. The relevant data payload was determined as follows.
+          * 
+          * For GPS LNAV and CNAV, the reference is IS-GPS-200, Section 6.2.9.1, Table 6-I-1
+          * For everyone else, they lack such a definitive reference. Therefore, we are "guided 
+          * by the spirit of ..." IS-GPS-200, Section 6.2.9.1, Table 6-I-1. That is to say,
+          * uniqueness is defined as the parameters that will cause the result of a getXvt( ) call to change.
+          *
           * @note We use shared_ptr to allow for casting without
           *   risking memory leaks. 
           * @param[in] right The data to compare against.
