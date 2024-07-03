@@ -132,6 +132,44 @@ namespace gnsstk
       bool haveLTDMP() const
       { return ltdmp.isSVID(header11.svid); }
 
+      /*! @copydoc GLOCNavData::isSameData() 
+      * 
+      * Additional Checks at the GLOCNavEph Level 
+      * 
+      *    <table>
+      *     <tr><td>Toe<td>Reference time, combining N4, NT and tb
+      *     <tr><td>N4<td>Number of leap years since 1996
+      *     <tr><td>NT<td>Day within four-year interval N4
+      *     <tr><td>Mj<td>What satellite j is and what it transmits
+      *     <tr><td>tb<td>Instant in Moscow time this data relates to
+      *     <tr><td>EjE<td>Age of ephemeris (6-hour intervals)
+      *     <tr><td>EjT<td>Age of clock (6-hour intervals)
+      *     <tr><td>RjE<td>Regime for generation of ephemeris data
+      *     <tr><td>RjT<td>Regime for generation of clock data
+      *     <tr><td>FjE<td>Accuracy factors dependent on ephemeris errors
+      *     <tr><td>FjT<td>Accuracy factors dependent on clock errors
+      *     <tr><td>clkBias<td>Satellite clock bias in sec (tau^j)
+      *     <tr><td>freqBias<td>Satellite relative frequency bias (gamma^j)
+      *     <tr><td>driftRate<td>Half rate of relative deviation of carrier freq
+      *     <tr><td>tauc<td>Correction for GLONASS to Moscow time
+      *     <tr><td>taucdot<td>Rate of correction for GLONASS to Moscow time
+      *     <tr><td>pos<td>Satellite position at tb in km
+      *     <tr><td>vel<td>Satellite position at tb in km/s
+      *     <tr><td>acc<td>Satellite acceleration at tb in km/s**2
+      *     <tr><td>apcOffset<td>L3OC APC offset from center of mass
+      *     <tr><td>tauDelta<td>Offset of L3OCP time to L3OCD time
+      *     <tr><td>tauGPS<td>Fractional part of offset from GPS to GLONASS time
+      *     <tr><td>step<td>Integration step for Runge-Kutta algorithm (1 minute by default) 
+      *    </table> 
+      *
+      * Data Members not compared
+      *    <table>
+      *     <tr><td>PS<td>Related to message spacing and is not part of the CEI data set
+      *     <tr><td>ltdmp<td>Related to "stretching" the 30 min. window of a data set to extend for four hours.  This is not the default operational mode, therefore, we aren't considering these part of the CEI data set
+      *    </table>
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       CommonTime Toe;   ///< Reference time, combining N4, NT and tb.
       uint8_t N4;       ///< Number of leap years since 1996.
       uint16_t NT;      ///< Day within four-year interval N4.

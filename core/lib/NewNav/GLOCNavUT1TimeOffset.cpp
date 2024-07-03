@@ -157,5 +157,25 @@ namespace gnsstk
          /// @todo add some checks.
       return true;
    }
-}
 
+   bool GLOCNavUT1TimeOffset::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GLOCNavUT1TimeOffset> UT1TO = std::dynamic_pointer_cast<GLOCNavUT1TimeOffset>(right);
+      if (!UT1TO)
+      {
+         return false;
+      }
+      
+      return (TimeOffsetData::isSameData(right, true) && 
+            (refTime == UT1TO->refTime) &&
+            (NB == UT1TO->NB) &&
+            (B0 == UT1TO->B0) &&
+            (B1 == UT1TO->B1) &&
+            (B2 == UT1TO->B2) &&
+            (UTCTAI == UT1TO->UTCTAI)); 
+
+      // Checked 6/13/2024. Interesting values
+   } 
+
+}

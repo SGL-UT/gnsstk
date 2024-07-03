@@ -459,4 +459,44 @@ namespace gnsstk
          default:  return std::numeric_limits<double>::quiet_NaN();
       }
    }
+
+
+   bool GLOCNavEph::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GLOCNavEph> eph = std::dynamic_pointer_cast<GLOCNavEph>(right);
+      if (!eph)
+      {
+         return false;
+      }
+
+      return (GLOCNavData::isSameData(right, ignore_timestamp) &&
+            (Toe == eph->Toe) &&
+            (N4 == eph->N4) &&
+            (NT == eph->NT) &&
+            (Mj == eph->Mj) &&
+            (tb == eph->tb) &&
+            (EjE == eph->EjE) &&
+            (EjT == eph->EjT) &&
+            (RjE == eph->RjE) &&
+            (RjT == eph->RjT) &&
+            (FjE == eph->FjE) &&
+            (FjT == eph->FjT) &&
+            (clkBias == eph->clkBias) &&
+            (freqBias == eph->freqBias) &&
+            (driftRate == eph->driftRate) &&
+            (tauc == eph->tauc) &&
+            (taucdot == eph->taucdot) &&
+            (pos == eph->pos) &&
+            (vel == eph->vel) &&
+            (acc == eph->acc) &&
+            (apcOffset == eph->apcOffset) &&
+            (tauDelta == eph->tauDelta) &&
+            (tauGPS == eph->tauGPS) &&
+            (step == eph->step));
+
+            // Checked 6/13/2024
+      }
+
 }
+

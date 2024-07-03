@@ -79,6 +79,18 @@ namespace gnsstk
                          const Position& svgeo,
                          CarrierBand band) const override;
 
+      /*! @copydoc NavData::isSameData() 
+      * 
+      * Additional Checks at the GLOCNavIono Level 
+      * 
+      *    <table>
+      *     <tr><td>peakTECF2<td>Factor of peak TEC of F2 layer (c_A)
+      *     <tr><td>solarIndex<td>Solar activity index value (c_F10.7)
+      *     <tr><td>geoIndex<td>Geomagnetic activity index value (c_Ap) 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       double peakTECF2;  ///< Factor of peak TEC of F2 layer (c_A).
       double solarIndex; ///< Solar activity index value (c_F10.7).
       double geoIndex;   ///< Geomagnetic activity index value (c_Ap).
