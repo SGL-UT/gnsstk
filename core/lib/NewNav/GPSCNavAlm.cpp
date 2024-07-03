@@ -80,4 +80,25 @@ namespace gnsstk
       endFit   = gnsstk::CommonTime::END_OF_TIME;
       endFit.setTimeSystem(beginFit.getTimeSystem());
    }
+
+   bool GPSCNavAlm::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSCNavAlm> alm = std::dynamic_pointer_cast<GPSCNavAlm>(right);
+      
+      if (!alm)
+      {
+         return false;
+      }
+      return (GPSCNavData::isSameData(right, true) &&
+         (healthL1 == alm->healthL1) &&
+         (healthL2 == alm->healthL2) && 
+         (healthL5 == alm->healthL5) &&
+         (deltai == alm->deltai) &&
+         (wna == alm->wna) &&
+         (toa == alm->toa));
+
+         // Checked 6/11/2024
+   }
+
 }

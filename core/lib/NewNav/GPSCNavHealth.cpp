@@ -92,4 +92,21 @@ namespace gnsstk
       }
       s.flags(oldFlags);
    }
+
+   bool GPSCNavHealth::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSCNavHealth> health = std::dynamic_pointer_cast<GPSCNavHealth>(right);
+      
+      if (!health)
+      {
+         return false;
+      }
+
+      return (NavData::isSameData(right, true) &&
+         getHealth() == health->getHealth());
+
+      // Checked 6/11/2024
+   }
+
 }

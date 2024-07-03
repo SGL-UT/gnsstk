@@ -98,6 +98,20 @@ namespace gnsstk
       bool getISC(const ObsID& oid1, const ObsID& oid2, double& corr)
          const override;
 
+      /*! @copydoc InterSigCorr::isSameData() 
+      * 
+      * @note T_GD is stored as the isc data field in the parent class InterSigCorr
+      * Additional Checks at the GPSCNavISC Level 
+      * 
+      *    <table>
+      *     <tr><td>iscL1CA<td>Intersignal corrections for L1 C/A
+      *     <tr><td>iscL2C<td>Intersignal corrections for L2C
+      *     <tr><td>iscL5I5<td>Intersignal corrections for L5 in-phase
+      *     <tr><td>iscL5Q5<td>Intersignal corrections for L5 quadrature 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
          /** @note T_GD is stored as the isc data field in the parent
           * class InterSigCorr */
       uint32_t pre;   ///< The preamble from the start of the subframe.

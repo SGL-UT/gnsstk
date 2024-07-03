@@ -91,4 +91,20 @@ namespace gnsstk
          OMEGAdot = refOMEGAdotRedAlmGPS;
       }
    }
+
+   bool GPSCNavRedAlm::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSCNavRedAlm> red = std::dynamic_pointer_cast<GPSCNavRedAlm>(right);
+      
+      if (!red)
+      {
+         return false;
+      }
+      return (GPSCNavAlm::isSameData(right, true) &&
+         (deltaA == red->deltaA) &&
+         (phi0 == red->phi0));
+
+         // Checked 6/11/2024
+   }
 }

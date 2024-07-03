@@ -83,6 +83,27 @@ namespace gnsstk
           * @param[in,out] s The stream to write the data to. */
       void dumpSVStatus(std::ostream& s) const override;
 
+      /*! @copydoc GPSCNavData::isSameData() 
+      * 
+      * @note The health flags are true if unhealthy.
+      * Additional Checks at the GPSCNavEph Level 
+      * 
+      *    <table>
+      *     <tr><td>healthL1<td>L1 signal health from message type 10.
+      *     <tr><td>healthL2<td>L2 signal health from message type 10
+      *     <tr><td>healthL5<td>L5 signal health from message type 10
+      *     <tr><td>uraED<td>5-bit URA index from message type 10
+      *     <tr><td>uraNED0<td>non-elevation dependent URA from clock message
+      *     <tr><td>uraNED1<td>non-elevation dependent URA from clock message
+      *     <tr><td>uraNED2<td>non-elevation dependent URA from clock message
+      *     <tr><td>integStat<td>Integrity status flag
+      *     <tr><td>deltaA<td>Semi-major axis relative to reference (Aref)
+      *     <tr><td>dOMEGAdot<td>Rate of right ascension relative to -2.6e-9*pi
+      *     <tr><td>top<td>Time of prediction 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       uint32_t pre11;     ///< The preamble from the start of message type 11.
       uint32_t preClk;    ///< The preamble from the start of the clock message.
          /// @note The health flags are true if unhealthy.
