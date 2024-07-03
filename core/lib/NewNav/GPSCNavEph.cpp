@@ -165,4 +165,29 @@ namespace gnsstk
         << "Clock:        " << getDumpTime(DumpDetail::Full, xmitClk) << endl;
       s.flags(oldFlags);
    }
+
+   bool GPSCNavEph::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSCNavEph> eph = std::dynamic_pointer_cast<GPSCNavEph>(right);
+      
+      if (!eph)
+      {
+         return false;
+      }
+      return (GPSCNavData::isSameData(right, true) &&
+         (healthL1 == eph->healthL1) &&
+         (healthL2 == eph->healthL2) && 
+         (healthL5 == eph->healthL5) &&
+         (uraED == eph->uraED) &&
+         (uraNED0 == eph->uraNED0) &&
+         (uraNED1 == eph->uraNED1) &&
+         (uraNED2 == eph->uraNED2) &&
+         (integStat == eph->integStat) &&
+         (deltaA == eph->deltaA) &&
+         (dOMEGAdot == eph->dOMEGAdot) &&
+         (top == eph->top));
+
+         // Checked 6/11/2024
+   }
 }

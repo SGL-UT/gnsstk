@@ -71,6 +71,17 @@ namespace gnsstk
           * the signal. */
       void fixValues();
 
+      /*! @copydoc GPSCNavAlm::isSameData() 
+      * 
+      * Additional Checks at the GPSCNavRedAlm Level 
+      * 
+      *    <table>
+      *     <tr><td>deltaA<td>Semi-major axis relative to reference value
+      *     <tr><td>phi0<td>Argument of latitude at reference time (M0+w) 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       double deltaA;      ///< Semi-major axis relative to reference value.
       double phi0;        ///< Argument of latitude at reference time (M0+w).
    };
