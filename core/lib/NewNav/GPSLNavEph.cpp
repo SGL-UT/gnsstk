@@ -250,6 +250,29 @@ namespace gnsstk
       return false;
    }
 
+   bool GPSLNavEph::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSLNavEph> eph = std::dynamic_pointer_cast<GPSLNavEph>(right);
+      
+      if (!eph)
+      {
+         return false;
+      }
+      return (GPSLNavData::isSameData(right, ignore_timestamp) &&
+         (isf2 == eph->isf2) &&
+         (isf3 == eph->isf3) &&
+         (fitIntFlag == eph->fitIntFlag) &&
+         (healthBits == eph->healthBits) && 
+         (uraIndex == eph->uraIndex) &&
+         (tgd == eph->tgd) &&
+         (alert2 == eph->alert2) &&
+         (iodc == eph->iodc) &&
+         (iode == eph->iode) &&
+         (alert3 == eph->alert3));
+
+         // Checked 6/6
+   }
 
    bool GPSLNavEphCEIComp ::
    operator()(const std::shared_ptr<GPSLNavEph> lhs,

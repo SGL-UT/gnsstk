@@ -62,4 +62,22 @@ namespace gnsstk
    {
       return (KlobucharIonoNavData::validate() && ((pre == 0) || (pre == 0x8b)));
    }
+
+   bool GPSLNavIono::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSLNavIono> iono = std::dynamic_pointer_cast<GPSLNavIono>(right);
+      
+      if (!iono)
+      {
+         return false;
+      }
+      return (KlobucharIonoNavData::isSameData(right, ignore_timestamp) &&
+         (isf == iono->isf) &&
+         (alert == iono->alert));
+
+
+      // Checked 6/6/2024
+
+   }
 }

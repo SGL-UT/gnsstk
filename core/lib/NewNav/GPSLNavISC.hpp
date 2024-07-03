@@ -64,6 +64,16 @@ namespace gnsstk
           * @return true if this message is valid according to ICD criteria.
           */
       bool validate() const override;
+      
+      /*! @copydoc InterSigCorr::isSameData() 
+      * 
+      * Additional Checks at the GPSLNavISC Level 
+      * 
+      *    <table>
+      *     <tr><td>isf<td>Integrity status flag
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
 
       uint32_t pre;    ///< The TLM preamble from word 1 of the subframe.
       uint32_t tlm;    ///< The TLM message from word 1 of the subframe.

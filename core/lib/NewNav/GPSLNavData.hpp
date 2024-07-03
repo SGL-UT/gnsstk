@@ -41,6 +41,7 @@
 
 #include "gnsstk_export.h"
 #include "OrbitDataGPS.hpp"
+#include "OrbitDataKepler.hpp"
 
 namespace gnsstk
 {
@@ -79,7 +80,11 @@ namespace gnsstk
    
       /*! @copydoc OrbitDataKepler::isSameData()
        * 
-       * No additional data checked at GPSLNavData:
+      * Additional Checks at the GPSLNavISC Level 
+      * 
+      *    <table>
+      *     <tr><td>isf<td>Integrity status flag
+      *    </table> 
        */ 
       bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
 

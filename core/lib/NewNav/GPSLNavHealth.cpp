@@ -49,6 +49,21 @@ namespace gnsstk
       msgLenSec = 6.0;
    }
 
+   bool GPSLNavHealth::isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSLNavHealth> health = std::dynamic_pointer_cast<GPSLNavHealth>(right);
+      
+      if (!health)
+      {
+         return false;
+      }
+
+      return (NavData::isSameData(right, ignore_timestamp) &&
+         getHealth() == health->getHealth());
+
+      // Checked 6/6/2024
+   }
+
 
    void GPSLNavHealth ::
    dump(std::ostream& s, DumpDetail dl) const
